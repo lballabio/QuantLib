@@ -38,15 +38,12 @@ namespace QuantLib {
     class ZeroCouponBond : public Bond {
       public:
         ZeroCouponBond(Natural settlementDays,
+                       const Calendar& calendar,
                        Real faceAmount,
-                       const Calendar& calendar, // trading calender ??
                        const Date& maturityDate,
-                       const DayCounter& dayCounter, // yield dayconter ??
                        BusinessDayConvention paymentConvention = Following,
                        Real redemption = 100.0,
-                       const Date& issueDate = Date(),
-                       const Handle<YieldTermStructure>& discountCurve
-                                              = Handle<YieldTermStructure>());
+                       const Date& issueDate = Date());
     };
 
 }

@@ -55,35 +55,30 @@ namespace QuantLib {
           values.
     */
     class Bond : public Instrument {
-      protected:
-        Bond(Natural settlementDays,
-             Real faceAmount,
-             const Calendar& calendar,
-             const DayCounter& paymentDayCounter,
-             BusinessDayConvention paymentConvention,
-             const Handle<YieldTermStructure>& discountCurve
-                                              = Handle<YieldTermStructure>());
       public:
+        Bond(Natural settlementDays,
+             const Calendar& calendar,
+             Real faceAmount,
+             const Leg& leg = std::vector<boost::shared_ptr<CashFlow> >());
         class arguments;
         class results;
         class engine;
         //! \name Inspectors
         //@{
-        Date settlementDate(const Date& d = Date()) const;
-        Date issueDate() const;
-        Date maturityDate() const;
-        Date interestAccrualDate() const;
+        Natural settlementDays() const;
+        const Calendar& calendar() const;
+        Real faceAmount() const;
         /*! \warning the returned vector includes the redemption as
                      the last cash flow.
         */
         const Leg& cashflows() const;
         const boost::shared_ptr<CashFlow>& redemption() const;
-        const Calendar& calendar() const;
-        BusinessDayConvention paymentConvention() const;
-        Real faceAmount() const { return faceAmount_;}
-        const DayCounter& dayCounter() const;
-        Frequency frequency() const;
-        Handle<YieldTermStructure> discountCurve() const;
+
+        const Date& firstAccrualDate() const;
+        const Date& maturityDate() const;
+        const Date& issueDate() const;
+
+        Date settlementDate(const Date& d = Date()) const;
         //@}
         //! \name Calculations
         //@{
@@ -113,24 +108,32 @@ namespace QuantLib {
         /*! The default bond settlement and theoretical price are used
             for calculation.
         */
-        Rate yield(Compounding compounding,
+        Rate yield(const DayCounter& dc,
+                   Compounding comp,
+                   Frequency freq,
                    Real accuracy = 1.0e-8,
                    Size maxEvaluations = 100) const;
 
         //! clean price given a yield and settlement date
         /*! The default bond settlement is used if no date is given. */
         Real cleanPrice(Rate yield,
-                        Compounding compounding,
+                        const DayCounter& dc,
+                        Compounding comp,
+                        Frequency freq,
                         Date settlementDate = Date()) const;
         //! dirty price given a yield and settlement date
         /*! The default bond settlement is used if no date is given. */
         Real dirtyPrice(Rate yield,
-                        Compounding compounding,
+                        const DayCounter& dc,
+                        Compounding comp,
+                        Frequency freq,
                         Date settlementDate = Date()) const;
         //! yield given a (clean) price and settlement date
         /*! The default bond settlement is used if no date is given. */
         Rate yield(Real cleanPrice,
-                   Compounding compounding,
+                   const DayCounter& dc,
+                   Compounding comp,
+                   Frequency freq,
                    Date settlementDate = Date(),
                    Real accuracy = 1.0e-8,
                    Size maxEvaluations = 100) const;
@@ -142,9 +145,9 @@ namespace QuantLib {
             "Credit Spreads Explained", Lehman Brothers European Fixed
             Income Research - March 2004, D. O'Kane*/
         Real cleanPriceFromZSpread(Spread zSpread,
-                                   Compounding compounding,
-                                   Frequency frequency,
-                                   DayCounter paymentDayCounter,
+                                   const DayCounter& dc,
+                                   Compounding comp,
+                                   Frequency freq,
                                    Date settlementDate = Date()) const;
         //! dirty price given Z-spread
         /*! Z-spread compounding, frequency, daycount are taken into account
@@ -153,9 +156,9 @@ namespace QuantLib {
             "Credit Spreads Explained", Lehman Brothers European Fixed
             Income Research - March 2004, D. O'Kane*/
         Real dirtyPriceFromZSpread(Spread zSpread,
-                                   Compounding compounding,
-                                   Frequency frequency,
-                                   DayCounter paymentDayCounter,
+                                   const DayCounter& dc,
+                                   Compounding comp,
+                                   Frequency freq,
                                    Date settlementDate = Date()) const;
 
         //! accrued amount at a given date
@@ -174,18 +177,14 @@ namespace QuantLib {
         //@}
 
       protected:
-        void performCalculations() const;
         void setupArguments(PricingEngine::arguments*) const;
-        Natural settlementDays_;
-        Real faceAmount_;
-        Calendar calendar_;
-        DayCounter paymentDayCounter_;
-        BusinessDayConvention paymentConvention_;
-        Handle<YieldTermStructure> discountCurve_;
 
-        Date issueDate_, datedDate_, maturityDate_;
-        Frequency frequency_;
+        Natural settlementDays_;
+        Calendar calendar_;
+        Real faceAmount_;
         Leg cashflows_;
+        
+        Date firstAccrualDate_, maturityDate_, issueDate_;
     };
 
     class Bond::arguments : public PricingEngine::arguments {
@@ -193,9 +192,6 @@ namespace QuantLib {
         Date settlementDate;
         Leg cashflows;
         Calendar calendar;
-        BusinessDayConvention paymentConvention;
-        DayCounter paymentDayCounter;
-        Frequency frequency;
         void validate() const;
     };
 
@@ -207,20 +203,19 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Date Bond::issueDate() const {
-        return issueDate_;
+    inline Natural Bond::settlementDays() const {
+        return settlementDays_;
     }
 
-    inline Date Bond::maturityDate() const {
-        return maturityDate_;
+    inline const Calendar& Bond::calendar() const {
+        return calendar_;
     }
 
-    inline Date Bond::interestAccrualDate() const {
-        return datedDate_;
+    inline Real Bond::faceAmount() const {
+        return faceAmount_;
     }
 
-    inline
-    const Leg& Bond::cashflows() const {
+    inline const Leg& Bond::cashflows() const {
         return cashflows_;
     }
 
@@ -228,24 +223,16 @@ namespace QuantLib {
         return cashflows_.back();
     }
 
-    inline const Calendar& Bond::calendar() const {
-        return calendar_;
+    inline const Date& Bond::firstAccrualDate() const {
+        return firstAccrualDate_;
     }
 
-    inline BusinessDayConvention Bond::paymentConvention() const {
-        return paymentConvention_;
+    inline const Date& Bond::maturityDate() const {
+        return maturityDate_;
     }
 
-    inline const DayCounter& Bond::dayCounter() const {
-        return paymentDayCounter_;
-    }
-
-    inline Frequency Bond::frequency() const {
-        return frequency_;
-    }
-
-    inline Handle<YieldTermStructure> Bond::discountCurve() const {
-        return discountCurve_;
+    inline const Date& Bond::issueDate() const {
+        return issueDate_;
     }
 
 }

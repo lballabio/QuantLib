@@ -446,8 +446,8 @@ void LiborMarketModelTest::testSwaptionPricing() {
                     new EuropeanExercise(process->fixingDates()[i]));
 
                 boost::shared_ptr<Swaption> swaption(
-                    new Swaption(forwardSwap, exercise,
-                                 index->termStructure(), engine));
+                    new Swaption(forwardSwap, exercise));
+                swaption->setPricingEngine(engine);
 
                 GeneralStatistics stat;
 

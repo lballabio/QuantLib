@@ -129,17 +129,20 @@ void BermudanSwaptionTest::testCachedValues() {
 
     Real tolerance = 1.0e-4;
 
-    Swaption swaption(itmSwap, exercise, termStructure_, engine);
+    Swaption swaption(itmSwap, exercise);
+    swaption.setPricingEngine(engine);
     if (std::fabs(swaption.NPV()-itmValue) > tolerance)
         BOOST_ERROR("failed to reproduce cached in-the-money swaption value:\n"
                     << "calculated: " << swaption.NPV() << "\n"
                     << "expected:   " << itmValue);
-    swaption = Swaption(atmSwap, exercise, termStructure_, engine);
+    swaption = Swaption(atmSwap, exercise);
+    swaption.setPricingEngine(engine);
     if (std::fabs(swaption.NPV()-atmValue) > tolerance)
         BOOST_ERROR("failed to reproduce cached at-the-money swaption value:\n"
                     << "calculated: " << swaption.NPV() << "\n"
                     << "expected:   " << atmValue);
-    swaption = Swaption(otmSwap, exercise, termStructure_, engine);
+    swaption = Swaption(otmSwap, exercise);
+    swaption.setPricingEngine(engine);
     if (std::fabs(swaption.NPV()-otmValue) > tolerance)
         BOOST_ERROR("failed to reproduce cached out-of-the-money "
                     << "swaption value:\n"
@@ -157,17 +160,20 @@ void BermudanSwaptionTest::testCachedValues() {
     itmValue = 42.1974; atmValue = 12.7825; otmValue = 2.4399;
     #endif
 
-    swaption = Swaption(itmSwap, exercise, termStructure_, engine);
+    swaption = Swaption(itmSwap, exercise);
+    swaption.setPricingEngine(engine);
     if (std::fabs(swaption.NPV()-itmValue) > tolerance)
         BOOST_ERROR("failed to reproduce cached in-the-money swaption value:\n"
                     << "calculated: " << swaption.NPV() << "\n"
                     << "expected:   " << itmValue);
-    swaption = Swaption(atmSwap, exercise, termStructure_, engine);
+    swaption = Swaption(atmSwap, exercise);
+    swaption.setPricingEngine(engine);
     if (std::fabs(swaption.NPV()-atmValue) > tolerance)
         BOOST_ERROR("failed to reproduce cached at-the-money swaption value:\n"
                     << "calculated: " << swaption.NPV() << "\n"
                     << "expected:   " << atmValue);
-    swaption = Swaption(otmSwap, exercise, termStructure_, engine);
+    swaption = Swaption(otmSwap, exercise);
+    swaption.setPricingEngine(engine);
     if (std::fabs(swaption.NPV()-otmValue) > tolerance)
         BOOST_ERROR("failed to reproduce cached out-of-the-money "
                     << "swaption value:\n"

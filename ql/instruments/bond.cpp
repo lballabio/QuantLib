@@ -28,6 +28,7 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yieldcurves/zerospreadedtermstructure.hpp>
 #include <ql/settings.hpp>
+#include <ql/pricingengines/bond/bondengine.hpp>
 
 namespace QuantLib {
 
@@ -37,9 +38,9 @@ namespace QuantLib {
                    Real faceAmount,
                    const Leg& cashflows,
                    Rate yield,
+                   const DayCounter& dayCounter,
                    Compounding compounding,
                    Frequency frequency,
-                   const DayCounter& dayCounter,
                    const Date& settlement) {
 
             if (frequency == NoFrequency || frequency == Once)
@@ -104,8 +105,8 @@ namespace QuantLib {
                    Real faceAmount,
                    const Leg& cashflows,
                    Real dirtyPrice,
-                   Compounding compounding,
                    const DayCounter& dayCounter,
+                   Compounding compounding,
                    Frequency frequency,
                    const Date& settlement)
             : faceAmount_(faceAmount), cashflows_(cashflows),
@@ -116,9 +117,9 @@ namespace QuantLib {
                 return dirtyPrice_ - dirtyPriceFromYield(faceAmount_,
                                                          cashflows_,
                                                          yield,
+                                                         dayCounter_,
                                                          compounding_,
                                                          frequency_,
-                                                         dayCounter_,
                                                          settlement_);
             }
           private:
@@ -136,9 +137,9 @@ namespace QuantLib {
                             Real faceAmount,
                             const Leg& cashflows,
                             Spread zSpread,
+                            const DayCounter& dc,
                             Compounding comp,
                             Frequency freq,
-                            const DayCounter& dc,
                             const Date& settlement,
                             const Handle<YieldTermStructure>& discountCurve) {
 
@@ -203,17 +204,12 @@ namespace QuantLib {
     } // anonymous namespace ends here
 
     Bond::Bond(Natural settlementDays,
-               Real faceAmount,
                const Calendar& calendar,
-               const DayCounter& paymentDayCounter,
-               BusinessDayConvention paymentConvention,
-               const Handle<YieldTermStructure>& discountCurve)
-    : settlementDays_(settlementDays),  faceAmount_(faceAmount),
-      calendar_(calendar), paymentDayCounter_(paymentDayCounter),
-      paymentConvention_(paymentConvention), discountCurve_(discountCurve),
-      frequency_(NoFrequency) {
+               Real faceAmount,
+               const Leg& cashflows)
+    : settlementDays_(settlementDays), calendar_(calendar),
+      faceAmount_(faceAmount), cashflows_(cashflows) {
         registerWith(Settings::instance().evaluationDate());
-        registerWith(discountCurve_);
     }
 
     Date Bond::settlementDate(const Date& date) const {
@@ -235,71 +231,88 @@ namespace QuantLib {
     }
 
     Real Bond::dirtyPrice() const {
-        calculate();
-        // !!!
-        return NPV_/faceAmount_*100.0;
+        return NPV()/faceAmount_*100.0;
     }
 
-    Rate Bond::yield(Compounding compounding,
-                     Real accuracy, Size maxEvaluations) const {
+    Rate Bond::yield(const DayCounter& dc,
+                     Compounding comp,
+                     Frequency freq,
+                     Real accuracy,
+                     Size maxEvaluations) const {
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         YieldFinder objective(faceAmount_, cashflows_, dirtyPrice(),
-                              compounding, paymentDayCounter_, frequency_,
+                              dc, comp, freq,
                               settlementDate());
         return solver.solve(objective, accuracy, 0.02, 0.0, 1.0);
     }
 
-    Real Bond::cleanPrice(Rate yield, Compounding compounding,
+    Real Bond::cleanPrice(Rate yield,
+                          const DayCounter& dc,
+                          Compounding comp,
+                          Frequency freq,
                           Date settlement) const {
         if (settlement == Date())
             settlement = settlementDate();
-        return dirtyPrice(yield,compounding,settlement)
+        return dirtyPrice(yield, dc, comp, freq, settlement)
              - accruedAmount(settlement);
     }
 
-    Real Bond::dirtyPrice(Rate yield, Compounding compounding,
+    Real Bond::dirtyPrice(Rate yield,
+                          const DayCounter& dc,
+                          Compounding comp,
+                          Frequency freq,
                           Date settlement) const {
         if (settlement == Date())
             settlement = settlementDate();
         return dirtyPriceFromYield(faceAmount_, cashflows_, yield,
-                                   compounding, frequency_, paymentDayCounter_,
+                                   dc, comp, freq,
                                    settlement);
     }
 
-    Rate Bond::yield(Real cleanPrice, Compounding compounding,
+    Rate Bond::yield(Real cleanPrice,
+                     const DayCounter& dc,
+                     Compounding comp,
+                     Frequency freq,
                      Date settlement,
-                     Real accuracy, Size maxEvaluations) const {
+                     Real accuracy,
+                     Size maxEvaluations) const {
         if (settlement == Date())
             settlement = settlementDate();
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         Real dirtyPrice = cleanPrice + accruedAmount(settlement);
         YieldFinder objective(faceAmount_, cashflows_, dirtyPrice,
-                              compounding, paymentDayCounter_, frequency_,
+                              dc, comp, freq,
                               settlement);
         return solver.solve(objective, accuracy, 0.02, 0.0, 1.0);
     }
 
     Real Bond::cleanPriceFromZSpread(Spread zSpread,
+                                     const DayCounter& dc,
                                      Compounding comp,
                                      Frequency freq,
-                                     DayCounter dc,
                                      Date settlement) const {
-        Real p = dirtyPriceFromZSpread(zSpread, comp, freq, dc, settlement);
+        Real p = dirtyPriceFromZSpread(zSpread, dc, comp, freq, settlement);
         return p - accruedAmount(settlement);
     }
 
     Real Bond::dirtyPriceFromZSpread(Spread zSpread,
+                                     const DayCounter& dc,
                                      Compounding comp,
                                      Frequency freq,
-                                     DayCounter dc,
                                      Date settlement) const {
          if (settlement == Date())
              settlement = settlementDate();
+         QL_REQUIRE(engine_, "null pricing engine");
+         
+         boost::shared_ptr<BondEngine> bondEngine =
+             boost::dynamic_pointer_cast<BondEngine>(engine_);
+         QL_REQUIRE(bondEngine, "pricer not compatible with Bond instrument");
+
          return dirtyPriceFromZSpreadFunction(faceAmount_, cashflows_,
-                                              zSpread, comp, freq, dc,
-                                              settlement, discountCurve_);
+                                              zSpread, dc, comp, freq,
+                                              settlement, bondEngine->discountCurve());
     }
 
     Real Bond::accruedAmount(Date settlement) const {
@@ -333,18 +346,6 @@ namespace QuantLib {
         return CashFlows::currentCouponRate(cashflows_, settlement);
     }
 
-    void Bond::performCalculations() const {
-
-        if (engine_) {
-            Instrument::performCalculations();
-        } else {
-            QL_REQUIRE(!discountCurve_.empty(),
-                       "no discounting term structure set");
-            NPV_= CashFlows::npv(cashflows_, **discountCurve_,
-                                 settlementDate(), settlementDate());
-        }
-    }
-
     void Bond::setupArguments(PricingEngine::arguments* args) const {
         Bond::arguments* arguments = dynamic_cast<Bond::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong argument type");
@@ -352,9 +353,6 @@ namespace QuantLib {
         arguments->settlementDate = settlementDate();
         arguments->cashflows = cashflows_;
         arguments->calendar = calendar_;
-        arguments->paymentConvention = paymentConvention_;
-        arguments->paymentDayCounter = paymentDayCounter_;
-        arguments->frequency = frequency_;
     }
 
     void Bond::arguments::validate() const {

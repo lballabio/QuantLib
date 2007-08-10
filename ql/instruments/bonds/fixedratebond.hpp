@@ -48,23 +48,19 @@ namespace QuantLib {
                       const DayCounter& accrualDayCounter,
                       BusinessDayConvention paymentConvention = Following,
                       Real redemption = 100.0,
-                      const Date& issueDate = Date(),
-                      const Handle<YieldTermStructure>& discountCurve
-                                            = Handle<YieldTermStructure>());
+                      const Date& issueDate = Date());
         FixedRateBond(Natural settlementDays,
+                      const Calendar& calendar,
                       Real faceAmount,
                       const Date& startDate,
                       const Date& maturityDate,
-                      Frequency couponFrequency,
-                      const Calendar& calendar,
+                      const Period& tenor,
                       const std::vector<Rate>& coupons,
                       const DayCounter& accrualDayCounter,
                       BusinessDayConvention accrualConvention = Following,
                       BusinessDayConvention paymentConvention = Following,
                       Real redemption = 100.0,
                       const Date& issueDate = Date(),
-                      const Handle<YieldTermStructure>& discountCurve
-                                               = Handle<YieldTermStructure>(),
                       const Date& stubDate = Date(),
                       bool fromEnd = true);
     };

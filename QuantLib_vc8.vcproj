@@ -4176,6 +4176,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\pricingengines\discountengine.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\pricingengines\discountengine.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\pricingengines\genericmodelengine.hpp"
 				>
 			</File>
@@ -5376,6 +5384,18 @@
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\lookback\analyticcontinuousfloatinglookback.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="bond"
+				>
+				<File
+					RelativePath=".\ql\pricingengines\bond\bondengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\bond\bondengine.hpp"
 					>
 				</File>
 			</Filter>

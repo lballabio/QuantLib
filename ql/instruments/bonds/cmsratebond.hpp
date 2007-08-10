@@ -58,9 +58,7 @@ namespace QuantLib {
                                     = std::vector<Rate>(),
                     bool inArrears = false,
                     Real redemption = 100.0,
-                    const Date& issueDate = Date(),
-                    const Handle<YieldTermStructure>& discountCurve
-                                    = Handle<YieldTermStructure>());
+                    const Date& issueDate = Date());
     };
 
 }

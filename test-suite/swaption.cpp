@@ -67,18 +67,19 @@ boost::shared_ptr<Swaption> makeSwaption(
                     Volatility volatility,
                     Settlement::Type settlementType = Settlement::Physical) {
     Handle<Quote> vol(boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
-    boost::shared_ptr<PricingEngine> engine(new BlackSwaptionEngine(vol));
-    return boost::shared_ptr<Swaption>(new
+    boost::shared_ptr<PricingEngine> engine(new BlackSwaptionEngine(vol, termStructure_));
+
+    boost::shared_ptr<Swaption> result(new
         Swaption(swap,
                  boost::shared_ptr<Exercise>(new EuropeanExercise(exercise)),
-                 termStructure_,
-                 engine,
                  settlementType));
+    result->setPricingEngine(engine);
+    return result;
 }
 
 boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
     Handle<Quote> h(boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
-    return boost::shared_ptr<PricingEngine>(new BlackSwaptionEngine(h));
+    return boost::shared_ptr<PricingEngine>(new BlackSwaptionEngine(h, termStructure_));
 }
 
 void setup() {

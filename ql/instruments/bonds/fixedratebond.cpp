@@ -27,23 +27,20 @@
 
 namespace QuantLib {
 
-    FixedRateBond::FixedRateBond(
-                            Natural settlementDays,
-                            Real faceAmount,
-                            const Schedule& schedule,
-                            const std::vector<Rate>& coupons,
-                            const DayCounter& accrualDayCounter,
-                            BusinessDayConvention paymentConvention,
-                            Real redemption,
-                            const Date& issueDate,
-                            const Handle<YieldTermStructure>& discountCurve)
-    : Bond(settlementDays, faceAmount, schedule.calendar(),
-           accrualDayCounter, paymentConvention, discountCurve) {
+    FixedRateBond::FixedRateBond(Natural settlementDays,
+                                 Real faceAmount,
+                                 const Schedule& schedule,
+                                 const std::vector<Rate>& coupons,
+                                 const DayCounter& accrualDayCounter,
+                                 BusinessDayConvention paymentConvention,
+                                 Real redemption,
+                                 const Date& issueDate)
+    : Bond(settlementDays, schedule.calendar(), faceAmount) {
 
-        datedDate_    = schedule.startDate();
-        maturityDate_ = schedule.endDate();
-        frequency_    = schedule.tenor().frequency();
-        issueDate_    = (issueDate==Date() ? datedDate_ : issueDate);
+        firstAccrualDate_ = schedule.startDate();
+        maturityDate_     = schedule.endDate();
+
+        issueDate_ = (issueDate==Date() ? firstAccrualDate_ : issueDate);
 
         cashflows_ = FixedRateLeg(std::vector<Real>(1, faceAmount_),
                                   schedule,
@@ -59,33 +56,30 @@ namespace QuantLib {
         QL_ENSURE(!cashflows().empty(), "bond with no cashflows!");
     }
 
-    FixedRateBond::FixedRateBond(
-                            Natural settlementDays,
-                            Real faceAmount,
-                            const Date& startDate,
-                            const Date& maturityDate,
-                            Frequency couponFrequency,
-                            const Calendar& calendar,
-                            const std::vector<Rate>& coupons,
-                            const DayCounter& accrualDayCounter,
-                            BusinessDayConvention accrualConvention,
-                            BusinessDayConvention paymentConvention,
-                            Real redemption,
-                            const Date& issueDate,
-                            const Handle<YieldTermStructure>& discountCurve,
-                            const Date& stubDate,
-                            bool fromEnd)
-    : Bond(settlementDays, faceAmount, calendar,
-           accrualDayCounter, paymentConvention, discountCurve) {
+    FixedRateBond::FixedRateBond(Natural settlementDays,
+                                 const Calendar& calendar,
+                                 Real faceAmount,
+                                 const Date& startDate,
+                                 const Date& maturityDate,
+                                 const Period& tenor,
+                                 const std::vector<Rate>& coupons,
+                                 const DayCounter& accrualDayCounter,
+                                 BusinessDayConvention accrualConvention,
+                                 BusinessDayConvention paymentConvention,
+                                 Real redemption,
+                                 const Date& issueDate,
+                                 const Date& stubDate,
+                                 bool fromEnd)
+    : Bond(settlementDays, calendar, faceAmount) {
 
-        datedDate_    = startDate;
-        maturityDate_ = maturityDate;
-        frequency_    = couponFrequency;
-        issueDate_    = (issueDate==Date() ? startDate : issueDate);
+        firstAccrualDate_ = startDate;
+        maturityDate_     = maturityDate;
+
+        issueDate_ = (issueDate==Date() ? firstAccrualDate_ : issueDate);
 
         Date firstDate = (fromEnd ? Date() : stubDate);
         Date nextToLastDate = (fromEnd ? stubDate : Date());
-        Schedule schedule(datedDate_, maturityDate_, Period(frequency_),
+        Schedule schedule(firstAccrualDate_, maturityDate_, tenor,
                           calendar_, accrualConvention, accrualConvention,
                           fromEnd, false, firstDate, nextToLastDate);
 
@@ -104,4 +98,3 @@ namespace QuantLib {
     }
 
 }
-

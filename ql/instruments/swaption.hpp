@@ -78,8 +78,6 @@ namespace QuantLib {
         // constructors
         Swaption(const boost::shared_ptr<VanillaSwap>& swap,
                  const boost::shared_ptr<Exercise>& exercise,
-                 const Handle<YieldTermStructure>& termStructure,
-                 const boost::shared_ptr<PricingEngine>& engine,
                  Settlement::Type delivery = Settlement::Physical);
         //! \name Instrument interface
         //@{
@@ -104,7 +102,7 @@ namespace QuantLib {
       private:
         // arguments
         boost::shared_ptr<VanillaSwap> swap_;
-        Handle<YieldTermStructure> termStructure_;
+        //Handle<YieldTermStructure> termStructure_;
         Settlement::Type settlementType_;
         // helper class for implied volatility calculation
         class ImpliedVolHelper {
@@ -130,12 +128,14 @@ namespace QuantLib {
                       fixedRate(Null<Real>()),
                       fixedBPS(Null<Real>()),
                       fixedCashBPS(Null<Real>()),
+                      forecastingDiscount(Null<Real>()),
                       settlementType(Settlement::Physical) {}
 
         Rate fairRate;
         Rate fixedRate;
         Real fixedBPS;
         Real fixedCashBPS;
+        Real forecastingDiscount;
         Settlement::Type settlementType;
         void validate() const;
     };

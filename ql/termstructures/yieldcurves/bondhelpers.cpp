@@ -19,6 +19,7 @@
 
 #include <ql/termstructures/yieldcurves/bondhelpers.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/pricingengines/bond/bondengine.hpp>
 #include <ql/settings.hpp>
 
 namespace QuantLib {
@@ -57,7 +58,10 @@ namespace QuantLib {
         bond_ = boost::shared_ptr<FixedRateBond>(new
             FixedRateBond(settlementDays_, 100.0, schedule_,
                             coupons_, paymentDayCounter_, paymentConvention_,
-                            redemption_, issueDate_, termStructureHandle_));
+                            redemption_, issueDate_));
+        boost::shared_ptr<BondEngine> bondEngine = boost::shared_ptr<BondEngine>(new
+            BondEngine(termStructureHandle_));
+        bond_->setPricingEngine(bondEngine);
     }
 
     Real FixedCouponBondHelper::impliedQuote() const {

@@ -57,13 +57,13 @@ namespace QuantLib {
 
     MakeSwaption::operator Swaption() const {
         create();
-        return Swaption(underlyingSwap_, exercise_, underlyingSwap_->discountCurve(), engine_, delivery_);
+        return Swaption(underlyingSwap_, exercise_, delivery_);
     }
 
     MakeSwaption::operator boost::shared_ptr<Swaption>() const {
         create();
         return boost::shared_ptr<Swaption>(new
-            Swaption(underlyingSwap_, exercise_, underlyingSwap_->discountCurve(), engine_, delivery_));
+            Swaption(underlyingSwap_, exercise_, delivery_));
     }
 
     MakeSwaption& MakeSwaption::withSwaptionConvention(BusinessDayConvention bdc) {
@@ -75,7 +75,5 @@ namespace QuantLib {
         delivery_ = delivery;
         return *this;
     }
-
-
 
 }

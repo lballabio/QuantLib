@@ -32,29 +32,26 @@ namespace QuantLib {
 
     Swaption::Swaption(const boost::shared_ptr<VanillaSwap>& swap,
                        const boost::shared_ptr<Exercise>& exercise,
-                       const Handle<YieldTermStructure>& termStructure,
-                       const boost::shared_ptr<PricingEngine>& engine,
                        Settlement::Type delivery)
-    : Option(boost::shared_ptr<Payoff>(), exercise, engine), swap_(swap),
-      termStructure_(termStructure), settlementType_(delivery) {
+    : Option(boost::shared_ptr<Payoff>(), exercise), swap_(swap),
+      settlementType_(delivery) {
         registerWith(swap_);
-        registerWith(termStructure_);
     }
 
     bool Swaption::isExpired() const {
-        return exercise_->dates().back() < termStructure_->referenceDate();
+        return exercise_->dates().back() < swap_->discountCurve()->referenceDate();
     }
 
     void Swaption::setupArguments(PricingEngine::arguments* args) const {
 
         swap_->setupArguments(args);
-
+        
         Swaption::arguments* arguments =
             dynamic_cast<Swaption::arguments*>(args);
 
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
-        DayCounter counter = termStructure_->dayCounter();
+        DayCounter counter = swap_->discountCurve()->dayCounter();
 
         // volatilities are calculated for zero-spreaded swaps.
         // Therefore, the spread on the floating leg is removed
@@ -68,7 +65,7 @@ namespace QuantLib {
         // this is passed explicitly for precision
         arguments->fixedBPS = std::fabs(swap_->fixedLegBPS());
         arguments->settlementType = settlementType_;
-        Date settlement = termStructure_->referenceDate();
+        Date settlement = swap_->discountCurve()->referenceDate();
         // only if cash settled
         if (arguments->settlementType==Settlement::Cash) {
             const Leg& swapFixedLeg =
@@ -88,6 +85,8 @@ namespace QuantLib {
                                              exercise_->dates()[i]);
             arguments->stoppingTimes.push_back(time);
         }
+        arguments->forecastingDiscount = 
+            swap_->discountCurve()->discount(arguments->floatingPayTimes.back());
     }
 
     void Swaption::arguments::validate() const {
@@ -98,6 +97,8 @@ namespace QuantLib {
                    "fair swap rate null or not set");
         QL_REQUIRE(fixedBPS != Null<Real>(),
                    "fixed swap BPS null or not set");
+        QL_REQUIRE(forecastingDiscount != Null<Real>(),
+                   "forecasting discount null or not set");
         if(settlementType == Settlement::Cash) {
             QL_REQUIRE(fixedCashBPS != Null<Real>(),
                        "fixed swap cash BPS null or not set "
@@ -115,7 +116,7 @@ namespace QuantLib {
 
         Volatility guess = 0.10; // improve
 
-        ImpliedVolHelper f(*this,termStructure_,targetValue);
+        ImpliedVolHelper f(*this, swap_->discountCurve(), targetValue);
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);
@@ -129,7 +130,7 @@ namespace QuantLib {
 
         vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
         Handle<Quote> h(vol_);
-        engine_ = boost::shared_ptr<PricingEngine>(new BlackSwaptionEngine(h));
+        engine_ = boost::shared_ptr<PricingEngine>(new BlackSwaptionEngine(h, termStructure));
         swaption.setupArguments(engine_->getArguments());
 
         results_ =

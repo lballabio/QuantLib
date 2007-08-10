@@ -42,8 +42,6 @@ namespace QuantLib {
                 return -1;
         }
 
-        static const Spread basisPoint_ = 1.0e-4;
-
         class irrFinder : public std::unary_function<Rate,Real> {
           public:
             irrFinder(const Leg& cashflows,
@@ -67,31 +65,6 @@ namespace QuantLib {
             Compounding compounding_;
             Frequency frequency_;
             Date settlementDate_;
-        };
-
-        class BPSCalculator : public AcyclicVisitor,
-                              public Visitor<CashFlow>,
-                              public Visitor<Coupon> {
-          public:
-            BPSCalculator(const YieldTermStructure& termStructure,
-                          const Date& npvDate)
-            : termStructure_(termStructure), npvDate_(npvDate), result_(0.0) {}
-            void visit(Coupon& c)  {
-                result_ += c.accrualPeriod() *
-                           c.nominal() *
-                           termStructure_.discount(c.date());
-            }
-            void visit(CashFlow&) {}
-            Real result() const {
-                if (npvDate_==Date())
-                    return result_;
-                else
-                    return result_/termStructure_.discount(npvDate_);
-            }
-          private:
-            const YieldTermStructure& termStructure_;
-            Date npvDate_;
-            Real result_;
         };
 
         Real simpleDuration(const Leg& cashflows,
@@ -450,5 +423,20 @@ namespace QuantLib {
                                   npvDate, exDividendDays);
         return basisPoint_*npv/bps;
     }
+ 
+//===========================================================================//
+//                              BPSCalculator                                //
+//===========================================================================// 
 
+    void BPSCalculator::visit(Coupon& c)  {
+        result_ += c.accrualPeriod() *
+                   c.nominal() *
+                   termStructure_.discount(c.date());
+    }
+    Real BPSCalculator::result() const {
+        if (npvDate_==Date())
+            return result_;
+        else
+            return result_/termStructure_.discount(npvDate_);
+    }
 }

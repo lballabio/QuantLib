@@ -39,15 +39,19 @@ namespace QuantLib {
     class BlackSwaptionEngine : public Swaption::engine,
                                 public Observer {
       public:
-        BlackSwaptionEngine(const Handle<Quote>& volatility);
-        BlackSwaptionEngine(const Handle<SwaptionVolatilityStructure>&);
+        BlackSwaptionEngine(const Handle<Quote>& volatility,
+                            const Handle<YieldTermStructure>& discountCurve);
+        BlackSwaptionEngine(const Handle<SwaptionVolatilityStructure>&,
+                            const Handle<YieldTermStructure>& discountCurve);
         void calculate() const;
         void update();
+        Handle<YieldTermStructure> termStructure();
+        Handle<SwaptionVolatilityStructure> volatility();
       private:
         Handle<SwaptionVolatilityStructure> volatility_;
+        Handle<YieldTermStructure> discountCurve_;
     };
 
 }
-
 
 #endif

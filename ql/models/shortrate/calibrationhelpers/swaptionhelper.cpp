@@ -74,7 +74,7 @@ namespace QuantLib {
         boost::shared_ptr<Exercise> exercise(new
             EuropeanExercise(exerciseDate));
         swaption_ = boost::shared_ptr<Swaption>(new
-            Swaption(swap_, exercise, termStructure, engine_));
+            Swaption(swap_, exercise));
         marketValue_ = blackPrice(volatility_->value());
     }
 
@@ -94,7 +94,7 @@ namespace QuantLib {
 
     Real SwaptionHelper::blackPrice(Volatility sigma) const {
         Handle<Quote> vol(boost::shared_ptr<Quote>(new SimpleQuote(sigma)));
-        boost::shared_ptr<PricingEngine> black(new BlackSwaptionEngine(vol));
+        boost::shared_ptr<PricingEngine> black(new BlackSwaptionEngine(vol, termStructure_));
         swaption_->setPricingEngine(black);
         Real value = swaption_->NPV();
         swaption_->setPricingEngine(engine_);

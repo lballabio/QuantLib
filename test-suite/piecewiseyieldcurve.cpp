@@ -36,6 +36,7 @@
 #include <ql/math/interpolations/cubicspline.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <ql/pricingengines/bond/bondengine.hpp>
 #include <iomanip>
 
 using namespace QuantLib;
@@ -292,7 +293,12 @@ void testCurveConsistency(const T&, const I& interpolator) {
 
         FixedRateBond bond(bondSettlementDays, 100.0, schedules[i],
                            coupons, bondDayCounter, bondConvention,
-                           bondRedemption, issue, curveHandle);
+                           bondRedemption, issue);
+
+        boost::shared_ptr<BondEngine> bondEngine = boost::shared_ptr<BondEngine>(new
+            BondEngine(curveHandle));
+        bond.setPricingEngine(bondEngine);
+
         Real expectedPrice = bondData[i].price,
              estimatedPrice = bond.cleanPrice();
         Real tolerance = 1.0e-9;

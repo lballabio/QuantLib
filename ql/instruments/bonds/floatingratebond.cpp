@@ -41,15 +41,13 @@ namespace QuantLib {
                            const std::vector<Rate>& floors,
                            bool inArrears,
                            Real redemption,
-                           const Date& issueDate,
-                           const Handle<YieldTermStructure>& discountCurve)
-    : Bond(settlementDays, faceAmount, schedule.calendar(),
-           paymentDayCounter, paymentConvention, discountCurve) {
+                           const Date& issueDate)
+    : Bond(settlementDays, schedule.calendar(), faceAmount) {
 
-        datedDate_    = schedule.startDate();
-        maturityDate_ = schedule.endDate();
-        frequency_    = schedule.tenor().frequency();
-        issueDate_    = (issueDate==Date() ? datedDate_ : issueDate);
+        firstAccrualDate_ = schedule.startDate();
+        maturityDate_     = schedule.endDate();
+
+        issueDate_ = (issueDate==Date() ? firstAccrualDate_ : issueDate);
 
         cashflows_ = IborLeg(std::vector<Real>(1, faceAmount_),
                              schedule,
@@ -90,20 +88,18 @@ namespace QuantLib {
                            bool inArrears,
                            Real redemption,
                            const Date& issueDate,
-                           const Handle<YieldTermStructure>& discountCurve,
                            const Date& stubDate,
                            bool fromEnd)
-    : Bond(settlementDays, faceAmount, calendar,
-           accrualDayCounter, paymentConvention, discountCurve) {
+    : Bond(settlementDays, calendar, faceAmount) {
 
-        datedDate_    = startDate;
-        maturityDate_ = maturityDate;
-        frequency_    = couponFrequency;
-        issueDate_    = (issueDate==Date() ? startDate : issueDate);
+        firstAccrualDate_ = startDate;
+        maturityDate_     = maturityDate;
+
+        issueDate_ = (issueDate==Date() ? firstAccrualDate_ : issueDate);
 
         Date firstDate = (fromEnd ? Date() : stubDate);
         Date nextToLastDate = (fromEnd ? stubDate : Date());
-        Schedule schedule(datedDate_, maturityDate_, Period(frequency_),
+        Schedule schedule(firstAccrualDate_, maturityDate_, Period(couponFrequency),
                           calendar_, accrualConvention, accrualConvention,
                           fromEnd, false, firstDate, nextToLastDate);
 

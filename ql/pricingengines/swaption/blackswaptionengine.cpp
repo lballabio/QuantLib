@@ -24,20 +24,27 @@
 #include <ql/termstructures/volatilities/swaption/swaptionconstantvol.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
 
-    BlackSwaptionEngine::BlackSwaptionEngine(const Handle<Quote>& volatility)
-    : volatility_(boost::shared_ptr<SwaptionVolatilityStructure>(
-              new SwaptionConstantVolatility(0, NullCalendar(),
-                                             volatility, Actual365Fixed()))) {
+    BlackSwaptionEngine::BlackSwaptionEngine(const Handle<Quote>& volatility,
+                            const Handle<YieldTermStructure>& discountCurve)
+    : volatility_(boost::shared_ptr<SwaptionVolatilityStructure>(new
+                  SwaptionConstantVolatility(0, NullCalendar(),
+                                             volatility, Actual365Fixed()))),
+      discountCurve_(discountCurve) {
         registerWith(volatility_);
+        registerWith(discountCurve_);
     }
 
     BlackSwaptionEngine::BlackSwaptionEngine(
-                        const Handle<SwaptionVolatilityStructure>& volatility)
-    : volatility_(volatility) {
+                        const Handle<SwaptionVolatilityStructure>& volatility,
+                        const Handle<YieldTermStructure>& discountCurve)
+    : volatility_(volatility),
+      discountCurve_(discountCurve) {
         registerWith(volatility_);
+        registerWith(discountCurve_);
     }
 
     void BlackSwaptionEngine::update()
@@ -69,11 +76,14 @@ namespace QuantLib {
         Volatility vol = volatility_->volatility(exercise,
                                                  swapLength,
                                                  arguments_.fixedRate);
-        Option::Type w = arguments_.type==VanillaSwap::Payer ?
+        Option::Type w = (arguments_.type==VanillaSwap::Payer) ?
                                                 Option::Call : Option::Put;
+        Real forecastingDiscount = arguments_.forecastingDiscount;
+        Real discount = discountCurve_->discount(maturity);
         results_.value = annuity * blackFormula(w, arguments_.fixedRate,
                                                 arguments_.fairRate,
-                                                vol*std::sqrt(exercise));
+                                                vol*std::sqrt(exercise))*
+                         discount / forecastingDiscount;
         Real variance = volatility_->blackVariance(exercise,
                                                    swapLength,
                                                    arguments_.fixedRate);
@@ -81,6 +91,16 @@ namespace QuantLib {
         Rate forward = arguments_.fairRate;
         Rate strike = arguments_.fixedRate;
         results_.additionalResults["vega"] = std::sqrt(exercise) *
-            blackFormulaStdDevDerivative(strike, forward, stdDev, annuity);
+            blackFormulaStdDevDerivative(strike, forward, stdDev, annuity)*
+                         discount / forecastingDiscount;
     }
+
+    Handle<YieldTermStructure> BlackSwaptionEngine::termStructure() {
+        return discountCurve_;
+    }
+
+    Handle<SwaptionVolatilityStructure> BlackSwaptionEngine::volatility() {
+        return volatility_;
+    }
+
 }

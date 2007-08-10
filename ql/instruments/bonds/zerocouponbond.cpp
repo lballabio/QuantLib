@@ -23,22 +23,19 @@
 
 namespace QuantLib {
 
-    ZeroCouponBond::ZeroCouponBond(
-                        Natural settlementDays,
-                        Real faceAmount,
-                        const Calendar& calendar,
-                        const Date& maturityDate,
-                        const DayCounter& dayCounter,
-                        BusinessDayConvention paymentConvention,
-                        Real redemption,
-                        const Date& issueDate,
-                        const Handle<YieldTermStructure>& discountCurve)
-    : Bond(settlementDays, faceAmount, calendar,
-           dayCounter, paymentConvention, discountCurve) {
+    ZeroCouponBond::ZeroCouponBond(Natural settlementDays,
+                                   const Calendar& calendar,
+                                   Real faceAmount,
+                                   const Date& maturityDate,
+                                   BusinessDayConvention paymentConvention,
+                                   Real redemption,
+                                   const Date& issueDate)
+    : Bond(settlementDays, calendar, faceAmount) {
 
-        maturityDate_ = maturityDate;
-        frequency_    = Once;
-        issueDate_    = issueDate;
+        firstAccrualDate_= Null<Date>(); // redundant for the sake of clarity
+        maturityDate_    = maturityDate;
+
+        issueDate_       = (issueDate==Date() ? firstAccrualDate_ : issueDate);
 
         Date redemptionDate = calendar_.adjust(maturityDate_,
                                                paymentConvention);

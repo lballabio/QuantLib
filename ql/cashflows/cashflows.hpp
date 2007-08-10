@@ -34,12 +34,14 @@
 namespace QuantLib {
 
     class YieldTermStructure;
+    class Coupon;
 
     //! %duration type
     struct Duration {
         enum Type { Simple, Macaulay, Modified };
     };
 
+    static const Spread basisPoint_ = 1.0e-4;
     //! %cashflow-analysis functions
     /*! \todo add tests */
     class CashFlows {
@@ -171,6 +173,24 @@ namespace QuantLib {
                               const InterestRate& y,
                               Date settlementDate = Date());
     };
+           
+    class BPSCalculator : public AcyclicVisitor,
+                              public Visitor<CashFlow>,
+                              public Visitor<Coupon> {
+          public:
+            BPSCalculator(const YieldTermStructure& termStructure,
+                          const Date& npvDate)
+            : termStructure_(termStructure), npvDate_(npvDate), result_(0.0) {}
+            void visit(Coupon& c);
+            void visit(CashFlow&) {}
+            Real result() const;
+
+          private:
+            const YieldTermStructure& termStructure_;
+            Date npvDate_;
+            Real result_;
+        };
+
 
 }
 
