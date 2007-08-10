@@ -22,6 +22,7 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/exercise.hpp>
+#include <ql/settings.hpp>
 
 namespace QuantLib {
 
