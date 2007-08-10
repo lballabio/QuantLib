@@ -495,7 +495,7 @@ namespace QuantLib {
                    volatilities in sparse cube whose spreads are used in the calculation.
                    A similar imprecision is introduced to the volatilities in dense cube
                    whith moneyness near to 1.
-                   (See below how spreadVols are calculated).
+                   (See below how spreadVols are calculated). 
                    The extent of this error depends on the quality of the fit: in case of
                    good fits it is negligibile.                  
                 */
