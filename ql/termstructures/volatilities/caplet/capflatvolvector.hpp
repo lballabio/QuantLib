@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Katiuscia Manzoni
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005 StatPro Italia srl
 
@@ -27,7 +28,10 @@
 
 #include <ql/termstructures/capvolstructures.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/interpolations/cubicspline.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -45,15 +49,29 @@ namespace QuantLib {
     */
     class CapVolatilityVector : public CapVolatilityStructure {
       public:
-        CapVolatilityVector(const Date& settlementDate,
-                            const std::vector<Period>& lengths,
-                            const std::vector<Volatility>& volatilities,
-                            const DayCounter& dayCounter);
+        //! floating reference date, floating market data
         CapVolatilityVector(Natural settlementDays,
                             const Calendar& calendar,
-                            const std::vector<Period>& lengths,
+                            const std::vector<Period>& optionTenors,
+                            const std::vector<Handle<Quote> >& volatilities,
+                            const DayCounter& dayCounter);        
+        //! fixed reference date, floating market data
+        CapVolatilityVector(const Date& settlementDate,
+                            const std::vector<Period>& optionTenors,
+                            const std::vector<Handle<Quote> >& volatilities,
+                            const DayCounter& dayCounter);
+        //! fixed reference date, fixed market data
+        CapVolatilityVector(const Date& settlementDate,
+                            const std::vector<Period>& optionTenors,
                             const std::vector<Volatility>& volatilities,
                             const DayCounter& dayCounter);
+        //! floating reference date, fixed market data
+        CapVolatilityVector(Natural settlementDays,
+                            const Calendar& calendar,
+                            const std::vector<Period>& optionTenors,
+                            const std::vector<Volatility>& volatilities,
+                            const DayCounter& dayCounter);
+
         // inspectors
         DayCounter dayCounter() const { return dayCounter_; }
         Date maxDate() const;
@@ -61,54 +79,178 @@ namespace QuantLib {
         Real maxStrike() const;
         // observability
         void update();
+            //TermStructure::update();
+            //LazyObject::update();
+
+        // LazyObject interface
+        void performCalculations() const;
+
       private:
+        void checkInputs(Size volatilitiesRows,
+                         Size volatilitiesColumns) const;
+        void registerWithMarketData();
         DayCounter dayCounter_;
-        std::vector<Period> lengths_;
+        std::vector<Period> optionTenors_;
         std::vector<Time> timeLengths_;
-        std::vector<Volatility> volatilities_;
+        std::vector<Handle<Quote> > volHandles_;
+        mutable std::vector<double> volatilities_;
         Interpolation interpolation_;
         void interpolate();
-        Volatility volatilityImpl(Time length, Rate strike) const;
+        Date maxDate_;
+        Volatility volatilityImpl(Time length,
+                                  Rate) const;
     };
 
-
     // inline definitions
-
+    // floating reference date, floating market data
     inline CapVolatilityVector::CapVolatilityVector(
-                                          const Date& settlementDate,
-                                          const std::vector<Period>& lengths,
-                                          const std::vector<Volatility>& vols,
-                                          const DayCounter& dayCounter)
+                                Natural settlementDays,
+                                const Calendar& calendar,
+                                const std::vector<Period>& optionTenors,
+                                const std::vector<Handle<Quote> >& volatilities,
+                                const DayCounter& dayCounter)
+    : CapVolatilityStructure(settlementDays, calendar),
+      dayCounter_(dayCounter), 
+      optionTenors_(optionTenors),
+      timeLengths_(optionTenors.size()), 
+      volHandles_(volatilities),
+      volatilities_(volatilities.size()) {
+          checkInputs(optionTenors.size(), volatilities.size());
+          registerWithMarketData();
+          //QL_REQUIRE(optionTenors.size() == volatilities.size(),
+          //         "mismatch between number of cap lengths "
+          //         "and cap volatilities");
+        //volatilities_[0] = volatilities[0];
+        //std::copy(volatilities.begin(),volatilities.end(),volatilities_.begin()+1);
+        for (Size i=0; i<volatilities_.size(); ++i)
+            volatilities_[i] = volHandles_[i]->value();
+        interpolate();
+    }
+    
+    // fixed reference date, floating market data
+    inline CapVolatilityVector::CapVolatilityVector(
+                                const Date& settlementDate,
+                                const std::vector<Period>& optionTenors,
+                                const std::vector<Handle<Quote> >& volatilities,
+                                const DayCounter& dayCounter)
     : CapVolatilityStructure(settlementDate),
-      dayCounter_(dayCounter), lengths_(lengths),
-      timeLengths_(lengths.size()+1), volatilities_(vols.size()+1) {
-        QL_REQUIRE(lengths.size() == vols.size(),
-                   "mismatch between number of cap lengths "
-                   "and cap volatilities");
-        volatilities_[0] = vols[0];
-        std::copy(vols.begin(),vols.end(),volatilities_.begin()+1);
+      dayCounter_(dayCounter), 
+      optionTenors_(optionTenors),
+      timeLengths_(optionTenors.size()), 
+      volHandles_(volatilities),
+      volatilities_(volatilities.size()) {
+        checkInputs(optionTenors.size(), volatilities.size());
+        registerWithMarketData();
+        //QL_REQUIRE(optionTenors.size() == volatilities.size(),
+        //           "mismatch between number of cap lengths "
+        //           "and cap volatilities");
+        //volatilities_[0] = volatilities[0];
+        //std::copy(volatilities.begin(),volatilities.end(),volatilities_.begin()+1);
+        for (Size i=0; i<volatilities_.size(); ++i)
+            volatilities_[i] = volHandles_[i]->value();
         interpolate();
     }
 
+    // fixed reference date, fixed market data
     inline CapVolatilityVector::CapVolatilityVector(
-                                          Natural settlementDays,
-                                          const Calendar& calendar,
-                                          const std::vector<Period>& lengths,
-                                          const std::vector<Volatility>& vols,
-                                          const DayCounter& dayCounter)
-    : CapVolatilityStructure(settlementDays,calendar),
-      dayCounter_(dayCounter), lengths_(lengths),
-      timeLengths_(lengths.size()+1), volatilities_(vols.size()+1) {
-        QL_REQUIRE(lengths.size() == vols.size(),
-                   "mismatch between number of cap lengths "
-                   "and cap volatilities");
-        volatilities_[0] = vols[0];
-        std::copy(vols.begin(),vols.end(),volatilities_.begin()+1);
+                                const Date& settlementDate,
+                                const std::vector<Period>& optionTenors,
+                                const std::vector<Volatility>& volatilities,
+                                const DayCounter& dayCounter)
+    : CapVolatilityStructure(settlementDate),
+      dayCounter_(dayCounter), 
+      optionTenors_(optionTenors),
+      timeLengths_(optionTenors.size()), 
+      volatilities_(volatilities.size()) {
+        checkInputs(optionTenors.size(), volatilities.size());
+        // fill dummy handles to allow generic handle-based
+        // computations later on
+        for (Size i=0; i<volatilities.size(); i++) {
+            volHandles_[i] = Handle<Quote>(boost::shared_ptr<Quote>(
+                new SimpleQuote(volatilities[i])));
+        }
+        registerWithMarketData();
+        //QL_REQUIRE(optionTenors.size() == volatilities.size(),
+        //           "mismatch between number of cap lengths "
+        //           "and cap volatilities");
+        volatilities_[0] = volatilities[0];
+        std::copy(volatilities.begin(),volatilities.end(),volatilities_.begin()+1);
         interpolate();
+    }
+
+    // floating reference date, fixed market data
+    inline CapVolatilityVector::CapVolatilityVector(
+                                Natural settlementDays,
+                                const Calendar& calendar,
+                                const std::vector<Period>& optionTenors,
+                                const std::vector<Volatility>& volatilities,
+                                const DayCounter& dayCounter)
+    : CapVolatilityStructure(settlementDays,calendar),
+      dayCounter_(dayCounter), 
+      optionTenors_(optionTenors),
+      timeLengths_(optionTenors.size()), 
+      volatilities_(volatilities.size()) {
+        checkInputs(optionTenors.size(), volatilities.size());
+        // fill dummy handles to allow generic handle-based
+        // computations later on
+        for (Size i=0; i<volatilities.size(); i++) {
+            volHandles_[i] = Handle<Quote>(boost::shared_ptr<Quote>(
+                new SimpleQuote(volatilities[i])));
+        }
+        registerWithMarketData();
+        //QL_REQUIRE(optionTenors.size() == volatilities.size(),
+        //           "mismatch between number of cap lengths "
+        //           "and cap volatilities");
+        volatilities_[0] = volatilities[0];
+        std::copy(volatilities.begin(),volatilities.end(),volatilities_.begin()+1);
+        interpolate();
+    }
+
+    inline void CapVolatilityVector::checkInputs(Size volRows,
+                                                 Size volsColumns) const {
+        QL_REQUIRE(optionTenors_.size()==volRows,
+            "mismatch between number of cap lenght ("
+            << optionTenors_.size() << ") and number of cap volatilities ("
+            << volRows << ")");
+        }
+
+    inline void CapVolatilityVector::performCalculations() const {
+        //CapVolatilityVector::performCalculations();
+        for (Size i=0; i<volatilities_.size(); ++i)
+            volatilities_[i] = volHandles_[i]->value();
+    }
+
+    inline void CapVolatilityVector::registerWithMarketData()
+    {
+        for (Size i=0; i<volHandles_.size(); ++i)
+            registerWith(volHandles_[i]);
+    }
+
+    inline void CapVolatilityVector::interpolate() {
+        //timeLengths_[0] = 0.0;
+        for (Size i=0; i<optionTenors_.size(); i++) {
+            Date endDate = referenceDate() + optionTenors_[i];
+            timeLengths_[i] = timeFromReference(endDate);
+        }
+        interpolation_ =
+            CubicSpline(
+                timeLengths_.begin(),
+                timeLengths_.end(),
+                volatilities_.begin(),
+                CubicSpline::SecondDerivative,
+                0.0,
+                CubicSpline::SecondDerivative,
+                0.0,
+                false);
+            //LinearInterpolation(timeLengths_.begin(),
+            //                    timeLengths_.end(),
+            //                    volatilities_.begin());
+        interpolation_.update();
+        maxDate_ = referenceDate() + optionTenors_.back();
     }
 
     inline Date CapVolatilityVector::maxDate() const {
-        return referenceDate()+lengths_.back();
+        return referenceDate()+optionTenors_.back();
     }
 
     inline Real CapVolatilityVector::minStrike() const {
@@ -124,26 +266,11 @@ namespace QuantLib {
         interpolate();
     }
 
-    inline void CapVolatilityVector::interpolate() {
-        timeLengths_[0] = 0.0;
-        for (Size i=0; i<lengths_.size(); i++) {
-            Date endDate = referenceDate() + lengths_[i];
-            timeLengths_[i+1] = timeFromReference(endDate);
-        }
-        interpolation_ =
-            LinearInterpolation(timeLengths_.begin(),
-                                timeLengths_.end(),
-                                volatilities_.begin());
-        interpolation_.update();
-    }
-
-    inline Volatility CapVolatilityVector::volatilityImpl(
-                                                    Time length, Rate) const {
+    inline Volatility CapVolatilityVector::volatilityImpl(Time length, 
+                                                          Rate) const {
         return interpolation_(length, true);
     }
 
 }
 
-
 #endif
-

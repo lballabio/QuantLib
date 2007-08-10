@@ -3736,6 +3736,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\termstructures\volatilities\caplet\genericcapletvolatilitiesstructures.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatilities\caplet\genericcapletvolatilitiesstructures.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\termstructures\volatilities\caplet\spreadedcapletvolstructure.cpp"
 						>
 					</File>
