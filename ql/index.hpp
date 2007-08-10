@@ -27,13 +27,18 @@
 #ifndef quantlib_index_hpp
 #define quantlib_index_hpp
 
-#include <ql/settings.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/indexes/indexmanager.hpp>
 
 namespace QuantLib {
 
     //! purely virtual base class for indexes
+    /*!
+    \warning this class performs no check that the provided/requested fixings
+             are for dates in the past, i.e. for dates less than or equal to
+             the EvaluationDate. It is up to the client code to take care
+             of possible inconsistencies due to "seeing in the future"
+    */
     class Index : public Observable {
       public:
         virtual ~Index() {}
@@ -63,35 +68,47 @@ namespace QuantLib {
         /*! the dates passed as arguments must be the actual calendar
             dates of the fixings; no settlement days must be used.
         */
-        void addFixings(const std::vector<Date>& dates,
-                        const std::vector<Real>& values);
-        //! stores historical fixings at the given dates
-        /*! the dates passed as arguments must be the actual calendar
-            dates of the fixings; no settlement days must be used.
-        */
         template <class DateIterator, class ValueIterator>
         void addFixings(DateIterator dBegin, DateIterator dEnd,
-                        ValueIterator vBegin) {
+                        ValueIterator vBegin,
+                        bool forceOverwrite = false) {
             std::string tag = name();
             TimeSeries<Real> h = IndexManager::instance().getHistory(tag);
-            bool allValidFixings = true;
-            Date invalidDate, refDate=Settings::instance().evaluationDate();
-            Real invalidValue;
+            bool missingFixing, validFixing;
+            bool noInvalidFixing = true, noDuplicatedFixing = true;
+            Date invalidDate, duplicatedDate;
+            Real invalidValue, duplicatedValue, currentValue, nullValue = Null<Real>();
             while (dBegin != dEnd) {
-                if (isValidFixingDate(*dBegin) && *dBegin<=refDate)
-                    h[*(dBegin++)] = *(vBegin++);
-                else {
-                    allValidFixings = false;
+                validFixing = isValidFixingDate(*dBegin);
+                currentValue = h[*dBegin];
+                missingFixing = (forceOverwrite || currentValue==nullValue);
+                if (validFixing) {
+                    if (missingFixing)
+                        h[*(dBegin++)] = *(vBegin++);
+                    else if (currentValue==*(vBegin)) {
+                        ++dBegin;
+                        ++vBegin;
+                    } else {
+                        noDuplicatedFixing = false;
+                        duplicatedDate = *(dBegin++);
+                        duplicatedValue = *(vBegin++);
+                    }
+                } else {
+                    noInvalidFixing = false;
                     invalidDate = *(dBegin++);
                     invalidValue = *(vBegin++);
                 }
             }
             IndexManager::instance().setHistory(tag, h);
-            QL_REQUIRE(allValidFixings,
+            QL_REQUIRE(noInvalidFixing,
                        "At least one invalid fixing provided: " <<
                        invalidDate.weekday() << " " << invalidDate <<
-                       ", " << invalidValue <<
-                       ", evaluation date being " << refDate);
+                       ", " << invalidValue);
+            QL_REQUIRE(noDuplicatedFixing,
+                       "At least one duplicated fixing provided: " <<
+                       duplicatedDate << ", " << duplicatedValue <<
+                       " while " << h[duplicatedDate] <<
+                       " value is already present");
         }
         //! clears all stored historical fixings
         void clearFixings();
@@ -101,14 +118,6 @@ namespace QuantLib {
 
     inline const Calendar& Index::fixingCalendar() const {
         return fixingCalendar_;
-    }
-
-    inline void Index::addFixings(const std::vector<Date>& dates,
-                                  const std::vector<Real>& values) {
-        QL_REQUIRE(dates.size()==values.size(),
-                   "size mismatch between dates (" << dates.size() <<
-                   ") and values  (" << values.size() << ")");
-        addFixings(dates.begin(), dates.end(), values.begin());
     }
 
 }
