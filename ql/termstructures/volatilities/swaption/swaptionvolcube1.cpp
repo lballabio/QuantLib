@@ -479,8 +479,26 @@ namespace QuantLib {
         for (Size i=0; i<2; i++) {
             for (Size j=0; j<2; j++) {
                 atmForwards[i][j] = atmStrike(optionsDateNodes[i],
-                                              swapTenorNodes[j]);
-                atmVols[i][j] = smiles[i][j]->volatility(atmForwards[i][j]);
+                                              swapTenorNodes[j]);                
+                // atmVols[i][j] = smiles[i][j]->volatility(atmForwards[i][j]);
+                atmVols[i][j] = atmVol_->volatility(
+                    optionsDateNodes[i], swapTenorNodes[j], atmForwards[i][j]);
+                /* With the old implementation the interpolated spreads on ATM 
+                   volatilities were null even if the spreads on ATM volatilities to be
+                   interpolated were non-zero. The new implementation removes
+                   this behaviour, but introduces a small ERROR in the cube:
+                   even if no spreads are applied on any cube ATM volatility corresponding
+                   to quoted smile sections (that is ATM volatilities in sparse cube), the
+                   cube ATM volatilities corresponding to not quoted smile sections (that
+                   is ATM volatilities in dense cube) are no more exactly the quoted values,
+                   but that ones PLUS the linear interpolation of the fit errors on the ATM
+                   volatilities in sparse cube whose spreads are used in the calculation.
+                   A similar imprecision is introduced to the volatilities in dense cube
+                   whith moneyness near to 1.
+                   (See below how spreadVols are calculated).
+                   The extent of this error depends on the quality of the fit: in case of
+                   good fits it is negligibile.                  
+                */
             }
         }
 
@@ -494,7 +512,7 @@ namespace QuantLib {
                 for (Size j=0; j<2; j++){
                     strikes[i][j] = atmForwards[i][j]/moneyness;
                     spreadVols[i][j] =
-                        smiles[i][j]->volatility(strikes[i][j])-atmVols[i][j];
+                        smiles[i][j]->volatility(strikes[i][j]) - atmVols[i][j];
                 }
             }
            Cube localInterpolator(optionsDateNodes, swapTenorNodes,
