@@ -5195,6 +5195,16 @@
 					RelativePath=".\ql\pricingengines\lookback\analyticcontinuousfloatinglookback.hpp">
 				</File>
 			</Filter>
+			<Filter
+				Name="bond"
+				Filter="">
+				<File
+					RelativePath=".\ql\pricingengines\bond\bondengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\bond\bondengine.hpp">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="processes"
