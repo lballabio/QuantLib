@@ -27,7 +27,7 @@
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/pricingengines/barrier/mcbarrierengine.hpp>
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
-#include <ql/termstructures/volatilities/equity/blackconstantvol.hpp>
+#include <ql/termstructures/volatilities/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;

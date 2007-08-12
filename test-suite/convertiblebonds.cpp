@@ -32,7 +32,7 @@
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
 #include <ql/termstructures/yieldcurves/forwardspreadedtermstructure.hpp>
-#include <ql/termstructures/volatilities/equity/blackconstantvol.hpp>
+#include <ql/termstructures/volatilities/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/cashflows.hpp>

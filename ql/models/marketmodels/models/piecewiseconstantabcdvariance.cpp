@@ -20,7 +20,7 @@
 
 #include <ql/models/marketmodels/models/piecewiseconstantabcdvariance.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
-#include <ql/termstructures/volatilities/abcd.hpp>
+#include <ql/termstructures/volatilities/interestrate/abcd.hpp>
 
 namespace QuantLib {
 

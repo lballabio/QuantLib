@@ -22,7 +22,7 @@
 #include <ql/processes/merton76process.hpp>
 #include <ql/math/distributions/poissondistribution.hpp>
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
-#include <ql/termstructures/volatilities/equity/blackconstantvol.hpp>
+#include <ql/termstructures/volatilities/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/exercise.hpp>
 

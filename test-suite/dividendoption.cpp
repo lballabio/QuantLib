@@ -34,7 +34,7 @@
 #include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
-#include <ql/termstructures/volatilities/equity/blackconstantvol.hpp>
+#include <ql/termstructures/volatilities/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <map>
 #include <iostream>

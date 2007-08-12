@@ -27,10 +27,10 @@
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
 #include <ql/utilities/dataparsers.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/termstructures/volatilities/caplet/capstripper.hpp>
+#include <ql/termstructures/volatilities/interestrate/caplet/capstripper.hpp>
 #include <ql/termstructures/volatilities/interpolatedsmilesection.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
-#include <ql/termstructures/volatilities/caplet/spreadedcapletvolstructure.hpp>
+#include <ql/termstructures/volatilities/interestrate/caplet/spreadedcapletvolstructure.hpp>
 
 #include <iostream>
 

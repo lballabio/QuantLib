@@ -3525,22 +3525,6 @@
 				Name="volatilities"
 				>
 				<File
-					RelativePath=".\ql\termstructures\volatilities\abcd.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatilities\abcd.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatilities\abcdcalibration.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatilities\abcdcalibration.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\termstructures\volatilities\all.hpp"
 					>
 				</File>
@@ -3573,180 +3557,200 @@
 					>
 				</File>
 				<Filter
-					Name="equity"
+					Name="equityfx"
 					>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\equity\all.hpp"
+						RelativePath=".\ql\termstructures\volatilities\equityfx\all.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\equity\blackconstantvol.hpp"
+						RelativePath=".\ql\termstructures\volatilities\equityfx\blackconstantvol.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\equity\blackvariancecurve.cpp"
+						RelativePath=".\ql\termstructures\volatilities\equityfx\blackvariancecurve.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\equity\blackvariancecurve.hpp"
+						RelativePath=".\ql\termstructures\volatilities\equityfx\blackvariancecurve.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\equity\blackvariancesurface.cpp"
+						RelativePath=".\ql\termstructures\volatilities\equityfx\blackvariancesurface.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\equity\blackvariancesurface.hpp"
+						RelativePath=".\ql\termstructures\volatilities\equityfx\blackvariancesurface.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\equity\impliedvoltermstructure.hpp"
+						RelativePath=".\ql\termstructures\volatilities\equityfx\impliedvoltermstructure.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\equity\localconstantvol.hpp"
+						RelativePath=".\ql\termstructures\volatilities\equityfx\localconstantvol.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\equity\localvolcurve.hpp"
+						RelativePath=".\ql\termstructures\volatilities\equityfx\localvolcurve.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\equity\localvolsurface.cpp"
+						RelativePath=".\ql\termstructures\volatilities\equityfx\localvolsurface.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\equity\localvolsurface.hpp"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="swaption"
-					>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\swaption\all.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\swaption\cmsmarket.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\swaption\cmsmarket.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\swaption\cmsmarketcalibration.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\swaption\cmsmarketcalibration.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\swaption\spreadedswaptionvolstructure.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\swaption\spreadedswaptionvolstructure.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\swaption\swaptionconstantvol.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\swaption\swaptionconstantvol.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\swaption\swaptionvolcube.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\swaption\swaptionvolcube.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\swaption\swaptionvolcube1.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\swaption\swaptionvolcube1.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\swaption\swaptionvolcube2.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\swaption\swaptionvolcube2.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\swaption\swaptionvoldiscrete.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\swaption\swaptionvoldiscrete.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\swaption\swaptionvolmatrix.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\swaption\swaptionvolmatrix.hpp"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="caplet"
-					>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\caplet\all.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\caplet\capflatvolvector.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\caplet\capletconstantvol.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\caplet\capletvariancecurve.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\caplet\capletvolatilitiesstructures.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\caplet\capletvolatilitiesstructures.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\caplet\capstripper.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\caplet\capstripper.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\caplet\spreadedcapletvolstructure.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\caplet\spreadedcapletvolstructure.hpp"
+						RelativePath=".\ql\termstructures\volatilities\equityfx\localvolsurface.hpp"
 						>
 					</File>
 				</Filter>
 				<Filter
 					Name="interestrate"
 					>
+					<File
+						RelativePath=".\ql\termstructures\volatilities\interestrate\abcd.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatilities\interestrate\abcd.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatilities\interestrate\abcdcalibration.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatilities\interestrate\abcdcalibration.hpp"
+						>
+					</File>
+					<Filter
+						Name="caplet"
+						>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\all.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\capflatvolvector.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\capletconstantvol.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\capletvariancecurve.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\capletvolatilitiesstructures.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\capletvolatilitiesstructures.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\capstripper.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\capstripper.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\spreadedcapletvolstructure.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\spreadedcapletvolstructure.hpp"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="cap"
+						>
+					</Filter>
+					<Filter
+						Name="swaption"
+						>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\all.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\cmsmarket.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\cmsmarket.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\cmsmarketcalibration.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\cmsmarketcalibration.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\spreadedswaptionvolstructure.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\spreadedswaptionvolstructure.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\swaptionconstantvol.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\swaptionconstantvol.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\swaptionvolcube.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\swaptionvolcube.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\swaptionvolcube1.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\swaptionvolcube1.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\swaptionvolcube2.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\swaptionvolcube2.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\swaptionvoldiscrete.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\swaptionvoldiscrete.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\swaptionvolmatrix.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\swaptionvolmatrix.hpp"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter

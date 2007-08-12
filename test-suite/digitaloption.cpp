@@ -28,7 +28,7 @@
 #include <ql/pricingengines/vanilla/mcdigitalengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
-#include <ql/termstructures/volatilities/equity/blackconstantvol.hpp>
+#include <ql/termstructures/volatilities/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <boost/progress.hpp>
 #include <map>

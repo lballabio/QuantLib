@@ -34,7 +34,7 @@
 #include <ql/pricingengines/greeks.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
-#include <ql/termstructures/volatilities/equity/blackconstantvol.hpp>
+#include <ql/termstructures/volatilities/equityfx/blackconstantvol.hpp>
 
 namespace QuantLib {
 

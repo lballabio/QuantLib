@@ -28,7 +28,7 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
-#include <ql/termstructures/volatilities/swaption/swaptionvolmatrix.hpp>
+#include <ql/termstructures/volatilities/interestrate/swaption/swaptionvolmatrix.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <iostream>
 #include <vector>

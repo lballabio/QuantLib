@@ -27,7 +27,7 @@
 #include <ql/pricingengines/asian/mc_discr_geom_av_price.hpp>
 #include <ql/pricingengines/asian/mc_discr_arith_av_price.hpp>
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
-#include <ql/termstructures/volatilities/equity/blackconstantvol.hpp>
+#include <ql/termstructures/volatilities/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <boost/progress.hpp>
 #include <map>
