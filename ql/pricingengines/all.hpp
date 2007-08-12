@@ -15,6 +15,7 @@
 #include <ql/pricingengines/asian/all.hpp>
 #include <ql/pricingengines/barrier/all.hpp>
 #include <ql/pricingengines/basket/all.hpp>
+#include <ql/pricingengines/bond/all.hpp>
 #include <ql/pricingengines/capfloor/all.hpp>
 #include <ql/pricingengines/cliquet/all.hpp>
 #include <ql/pricingengines/forward/all.hpp>

@@ -373,6 +373,7 @@ AC_CONFIG_FILES([
     ql/pricingengines/asian/Makefile
     ql/pricingengines/barrier/Makefile
     ql/pricingengines/basket/Makefile
+    ql/pricingengines/bond/Makefile
     ql/pricingengines/capfloor/Makefile
     ql/pricingengines/cliquet/Makefile
     ql/pricingengines/forward/Makefile
