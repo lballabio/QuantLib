@@ -5359,6 +5359,18 @@
 				RelativePath=".\ql\termstructures\all.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\termstructures\blackatmvolcurve.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\blackatmvolcurve.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\blackvolsurface.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\blackvolsurface.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\termstructures\blackvoltermstructure.cpp">
 			</File>
 			<File
@@ -5387,6 +5399,12 @@
 				Filter="">
 				<File
 					RelativePath=".\ql\termstructures\volatilities\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatilities\equityfxvolsurface.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatilities\equityfxvolsurface.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\volatilities\interpolatedsmilesection.hpp">
