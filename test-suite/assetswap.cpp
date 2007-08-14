@@ -21,6 +21,7 @@
 #include "utilities.hpp"
 #include <ql/time/schedule.hpp>
 #include <ql/instruments/assetswap.hpp>
+#include <ql/instruments/bond.hpp>
 #include <ql/instruments/bonds/fixedratebond.hpp>
 #include <ql/instruments/bonds/floatingratebond.hpp>
 #include <ql/instruments/bonds/cmsratebond.hpp>
@@ -48,6 +49,7 @@
 #include <ql/termstructures/volatilities/interestrate/swaption/swaptionvolcube.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
 #include <ql/pricingengines/bond/bondengine.hpp>
 
 using namespace QuantLib;
@@ -1250,11 +1252,353 @@ void AssetSwapTest::testZSpread() {
 }
 
 
+void AssetSwapTest::testGenericBondImplied() {
+
+    BOOST_MESSAGE("Testing generic bond implied value against asset-swap fair price with spread=0...");
+
+    SavedSettings backup;
+
+    setup();
+
+    Calendar bondCalendar = TARGET();
+    Natural settlementDays = 3;
+    Natural fixingDays = 2;
+    bool payFixedRate = true;
+    bool parAssetSwap = true;
+    bool inArrears = false;
+
+    // Fixed Underlying bond (Isin: DE0001135275 DBR 4 01/04/37)
+    // maturity doesn't occur on a business day
+
+    Schedule fixedBondSchedule1(Date(4,January,2005),
+                                Date(4,January,2037),
+                                Period(Annual), bondCalendar,
+                                Unadjusted, Unadjusted, true, false);
+    Leg fixedBondLeg1 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
+                                     fixedBondSchedule1,
+                                     std::vector<Rate>(1, 0.04),
+                                     ActualActual(ActualActual::ISDA),
+                                     Following);
+    Date fixedbondRedemption1 = bondCalendar.adjust(Date(4,January,2037),
+                                                    Following);
+    fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
+                            SimpleCashFlow(100.0, fixedbondRedemption1)));
+    boost::shared_ptr<Bond> fixedBond1(new 
+                            Bond(settlementDays, bondCalendar, faceAmount_,Date(4,January,2005),
+                            fixedBondLeg1));
+    boost::shared_ptr<BondEngine> bondEngine = boost::shared_ptr<BondEngine>(new
+                                                  BondEngine(termStructure_));
+    fixedBond1->setPricingEngine(bondEngine);
+    Real fixedBondPrice1 = fixedBond1->cleanPrice();
+    AssetSwap fixedBondAssetSwap1(payFixedRate,
+                                  fixedBond1, fixedBondPrice1,
+                                  iborIndex_, spread_, termStructure_,
+                                  Schedule(),
+                                  iborIndex_->dayCounter(),
+                                  parAssetSwap);
+    Real fixedBondAssetSwapPrice1 = fixedBondAssetSwap1.fairPrice();
+    Real tolerance = 1.0e-13;
+    Real error1 = std::fabs(fixedBondAssetSwapPrice1-fixedBondPrice1);
+
+    if (error1>tolerance) {
+        BOOST_ERROR("wrong zero spread asset swap price for fixed bond:"
+                    << QL_FIXED << std::setprecision(4)
+                    << "\n  bond's clean price:      " << fixedBondPrice1
+                    << "\n  asset swap fair price: " << fixedBondAssetSwapPrice1
+                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << "\n  error:                 " << error1
+                    << "\n  tolerance:             " << tolerance);
+    }
+
+    // Fixed Underlying bond (Isin: IT0006527060 IBRD 5 02/05/19)
+    // maturity occurs on a business day
+
+    Schedule fixedBondSchedule2(Date(5,February,2005),
+                                Date(5,February,2019),
+                                Period(Annual), bondCalendar,
+                                Unadjusted, Unadjusted, true, false);
+    Leg fixedBondLeg2 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
+                                     fixedBondSchedule2,
+                                     std::vector<Rate>(1, 0.05),
+                                     Thirty360(Thirty360::BondBasis),
+                                     Following);
+    Date fixedbondRedemption2 = bondCalendar.adjust(Date(5,February,2019),
+                                                    Following);
+    fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
+                            SimpleCashFlow(100.0, fixedbondRedemption2)));
+    boost::shared_ptr<Bond> fixedBond2(new 
+                            Bond(settlementDays, bondCalendar, faceAmount_,
+                            Date(5,February,2005),fixedBondLeg2));
+    fixedBond2->setPricingEngine(bondEngine);
+
+    Real fixedBondPrice2 = fixedBond2->cleanPrice();
+    AssetSwap fixedBondAssetSwap2(payFixedRate,
+                                  fixedBond2, fixedBondPrice2,
+                                  iborIndex_, spread_, termStructure_,
+                                  Schedule(),
+                                  iborIndex_->dayCounter(),
+                                  parAssetSwap);
+    Real fixedBondAssetSwapPrice2 = fixedBondAssetSwap2.fairPrice();
+    Real error2 = std::fabs(fixedBondAssetSwapPrice2-fixedBondPrice2);
+
+    if (error2>tolerance) {
+        BOOST_ERROR("wrong zero spread asset swap price for fixed bond:"
+                    << QL_FIXED << std::setprecision(4)
+                    << "\n  bond's clean price:      " << fixedBondPrice2
+                    << "\n  asset swap fair price: " << fixedBondAssetSwapPrice2
+                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << "\n  error:                 " << error2
+                    << "\n  tolerance:             " << tolerance);
+    }
+//
+//    // FRN Underlying bond (Isin: IT0003543847 ISPIM 0 09/29/13)
+//    // maturity doesn't occur on a business day
+//
+//    Schedule floatingBondSchedule1(Date(29,September,2003),
+//                                   Date(29,September,2013),
+//                                   Period(Semiannual), bondCalendar,
+//                                   Unadjusted, Following,
+//                                   true, false);
+//
+//    boost::shared_ptr<Bond> floatingBond1(new
+//        FloatingRateBond(settlementDays, faceAmount_, floatingBondSchedule1,
+//                         iborIndex_, Actual360(),
+//                         Following, fixingDays,
+//                         std::vector<Real>(1,1), std::vector<Spread>(1,0.0056),
+//                         std::vector<Rate>(), std::vector<Rate>(),
+//                         inArrears,
+//                         100.0, Date(29,September,2003)));
+//
+//    floatingBond1->setPricingEngine(bondEngine);
+//
+//    setCouponPricer(floatingBond1->cashflows(),pricer_);
+//    iborIndex_->addFixing(Date(27,March,2007), 0.0402);
+//    Real floatingBondPrice1 = floatingBond1->cleanPrice();
+//    AssetSwap floatingBondAssetSwap1(payFixedRate,
+//                                     floatingBond1, floatingBondPrice1,
+//                                     iborIndex_, spread_, termStructure_,
+//                                     Schedule(),
+//                                     iborIndex_->dayCounter(),
+//                                     parAssetSwap);
+//    Real floatingBondAssetSwapPrice1 = floatingBondAssetSwap1.fairPrice();
+//    Real error3 = std::fabs(floatingBondAssetSwapPrice1-floatingBondPrice1);
+//
+//    if (error3>tolerance) {
+//        BOOST_ERROR("wrong zero spread asset swap price for floater:"
+//                    << QL_FIXED << std::setprecision(4)
+//                    << "\n  bond's clean price:      " << floatingBondPrice1
+//                    << "\n  asset swap fair price: " << floatingBondAssetSwapPrice1
+//                    << QL_SCIENTIFIC << std::setprecision(2)
+//                    << "\n  error:                 " << error3
+//                    << "\n  tolerance:             " << tolerance);
+//    }
+//
+//    // FRN Underlying bond (Isin: XS0090566539 COE 0 09/24/18)
+//    // maturity occurs on a business day
+//
+//    Schedule floatingBondSchedule2(Date(24,September,2004),
+//                                   Date(24,September,2018),
+//                                   Period(Semiannual), bondCalendar,
+//                                   ModifiedFollowing, ModifiedFollowing,
+//                                   true, false);
+//    boost::shared_ptr<Bond> floatingBond2(new
+//        FloatingRateBond(settlementDays, faceAmount_, floatingBondSchedule2,
+//                         iborIndex_, Actual360(),
+//                         ModifiedFollowing, fixingDays,
+//                         std::vector<Real>(1,1), std::vector<Spread>(1,0.0025),
+//                         std::vector<Rate>(), std::vector<Rate>(),
+//                         inArrears,
+//                         100.0, Date(24,September,2004)));
+//
+//    floatingBond2->setPricingEngine(bondEngine);
+//
+//    setCouponPricer(floatingBond2->cashflows(),pricer_);
+//    iborIndex_->addFixing(Date(22,March,2007), 0.04013);
+//    Real currentCoupon=0.04013+0.0025;
+//    Real floatingCurrentCoupon= floatingBond2->currentCoupon();
+//    Real error4= std::fabs(floatingCurrentCoupon-currentCoupon);
+//    if (error4>tolerance) {
+//        BOOST_ERROR("wrong current coupon is returned for floater bond:"
+//                    << QL_FIXED << std::setprecision(4)
+//                    << "\n  bond's calculated current coupon:      " << currentCoupon
+//                    << "\n  current coupon asked to the bond: " << floatingCurrentCoupon
+//                    << QL_SCIENTIFIC << std::setprecision(2)
+//                    << "\n  error:                 " << error4
+//                    << "\n  tolerance:             " << tolerance);
+//    }
+//
+//    Real floatingBondPrice2 = floatingBond2->cleanPrice();
+//    AssetSwap floatingBondAssetSwap2(payFixedRate,
+//                                     floatingBond2, floatingBondPrice2,
+//                                     iborIndex_, spread_, termStructure_,
+//                                     Schedule(),
+//                                     iborIndex_->dayCounter(),
+//                                     parAssetSwap);
+//    Real floatingBondAssetSwapPrice2 = floatingBondAssetSwap2.fairPrice();
+//    Real error5 = std::fabs(floatingBondAssetSwapPrice2-floatingBondPrice2);
+//
+//    if (error5>tolerance) {
+//        BOOST_ERROR("wrong zero spread asset swap price for floater:"
+//                    << QL_FIXED << std::setprecision(4)
+//                    << "\n  bond's clean price:      " << floatingBondPrice2
+//                    << "\n  asset swap fair price: " << floatingBondAssetSwapPrice2
+//                    << QL_SCIENTIFIC << std::setprecision(2)
+//                    << "\n  error:                 " << error5
+//                    << "\n  tolerance:             " << tolerance);
+//    }
+//
+//    // CMS Underlying bond (Isin: XS0228052402 CRDIT 0 8/22/20)
+//    // maturity doesn't occur on a business day
+//
+//    Schedule cmsBondSchedule1(Date(22,August,2005),
+//                              Date(22,August,2020),
+//                              Period(Annual), bondCalendar,
+//                              Unadjusted, Unadjusted,
+//                              true, false);
+//    boost::shared_ptr<Bond> cmsBond1(new
+//        CmsRateBond(settlementDays, faceAmount_, cmsBondSchedule1,
+//                    swapIndex_, Thirty360(),
+//                    Following, fixingDays,
+//                    std::vector<Real>(1,1.0), std::vector<Spread>(1,0.0),
+//                    std::vector<Rate>(1,0.055), std::vector<Rate>(1,0.025),
+//                    inArrears,
+//                    100.0, Date(22,August,2005)));
+//
+//    cmsBond1->setPricingEngine(bondEngine);
+//
+//    setCouponPricer(cmsBond1->cashflows(),cmspricer_);
+//    swapIndex_->addFixing(Date(18,August,2006), 0.04158);
+//    Real cmsBondPrice1 = cmsBond1->cleanPrice();
+//    AssetSwap cmsBondAssetSwap1(payFixedRate,
+//                                cmsBond1, cmsBondPrice1,
+//                                iborIndex_, spread_, termStructure_,
+//                                Schedule(),
+//                                iborIndex_->dayCounter(),
+//                                parAssetSwap);
+//    Real cmsBondAssetSwapPrice1 = cmsBondAssetSwap1.fairPrice();
+//    Real error6 = std::fabs(cmsBondAssetSwapPrice1-cmsBondPrice1);
+//
+//    if (error6>tolerance) {
+//        BOOST_ERROR("wrong zero spread asset swap price for cms bond:"
+//                    << QL_FIXED << std::setprecision(4)
+//                    << "\n  bond's clean price:      " << cmsBondPrice1
+//                    << "\n  asset swap fair price: " << cmsBondAssetSwapPrice1
+//                    << QL_SCIENTIFIC << std::setprecision(2)
+//                    << "\n  error:                 " << error6
+//                    << "\n  tolerance:             " << tolerance);
+//    }
+//
+//     // CMS Underlying bond (Isin: XS0218766664 ISPIM 0 5/6/15)
+//     // maturity occurs on a business day
+//
+//    Schedule cmsBondSchedule2(Date(06,May,2005),
+//                              Date(06,May,2015),
+//                              Period(Annual), bondCalendar,
+//                              Unadjusted, Unadjusted,
+//                              true, false);
+//    boost::shared_ptr<Bond> cmsBond2(new
+//        CmsRateBond(settlementDays, faceAmount_, cmsBondSchedule2,
+//                    swapIndex_, Thirty360(),
+//                    Following, fixingDays,
+//                    std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
+//                    std::vector<Rate>(), std::vector<Rate>(),
+//                    inArrears,
+//                    100.0, Date(06,May,2005)));
+//
+//    cmsBond2->setPricingEngine(bondEngine);
+//
+//    setCouponPricer(cmsBond2->cashflows(),cmspricer_);
+//    swapIndex_->addFixing(Date(04,May,2006), 0.04217);
+//    Real cmsBondPrice2 = cmsBond2->cleanPrice();
+//    AssetSwap cmsBondAssetSwap2(payFixedRate,
+//                                cmsBond2, cmsBondPrice2,
+//                                iborIndex_, spread_, termStructure_,
+//                                Schedule(),
+//                                iborIndex_->dayCounter(),
+//                                parAssetSwap);
+//    Real cmsBondAssetSwapPrice2 = cmsBondAssetSwap2.fairPrice();
+//    Real error7 = std::fabs(cmsBondAssetSwapPrice2-cmsBondPrice2);
+//
+//    if (error7>tolerance) {
+//        BOOST_ERROR("wrong zero spread asset swap price for cms bond:"
+//                    << QL_FIXED << std::setprecision(4)
+//                    << "\n  bond's clean price:      " << cmsBondPrice2
+//                    << "\n  asset swap fair price: " << cmsBondAssetSwapPrice2
+//                    << QL_SCIENTIFIC << std::setprecision(2)
+//                    << "\n  error:                 " << error7
+//                    << "\n  tolerance:             " << tolerance);
+//    }
+//
+//    // Zero Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
+//    // maturity doesn't occur on a business day
+//
+//    boost::shared_ptr<Bond> zeroCpnBond1(new
+//        ZeroCouponBond(settlementDays, bondCalendar, faceAmount_,
+//                       Date(20,December,2015),
+//                       Following,
+//                       100.0, Date(19,December,1985)));
+//
+//    zeroCpnBond1->setPricingEngine(bondEngine);
+//
+//    Real zeroCpnBondPrice1 = zeroCpnBond1->cleanPrice();
+//    AssetSwap zeroCpnAssetSwap1(payFixedRate,
+//                                zeroCpnBond1, zeroCpnBondPrice1,
+//                                iborIndex_, spread_, termStructure_,
+//                                Schedule(),
+//                                iborIndex_->dayCounter(),
+//                                parAssetSwap);
+//    Real zeroCpnBondAssetSwapPrice1 = zeroCpnAssetSwap1.fairPrice();
+//    Real error8 = std::fabs(cmsBondAssetSwapPrice1-cmsBondPrice1);
+//
+//    if (error8>tolerance) {
+//        BOOST_ERROR("wrong zero spread asset swap price for zero cpn bond:"
+//                    << QL_FIXED << std::setprecision(4)
+//                    << "\n  bond's clean price:      " << zeroCpnBondPrice1
+//                    << "\n  asset swap fair price: " << zeroCpnBondAssetSwapPrice1
+//                    << QL_SCIENTIFIC << std::setprecision(2)
+//                    << "\n  error:                 " << error8
+//                    << "\n  tolerance:             " << tolerance);
+//    }
+//
+//    // Zero Coupon bond (Isin: IT0001200390 ISPIM 0 02/17/28)
+//    // maturity occurs on a business day
+//
+//    boost::shared_ptr<Bond> zeroCpnBond2(new
+//        ZeroCouponBond(settlementDays, bondCalendar, faceAmount_,
+//                       Date(17,February,2028),
+//                       Following,
+//                       100.0, Date(17,February,1998)));
+//
+//    zeroCpnBond2->setPricingEngine(bondEngine);
+//
+//    Real zeroCpnBondPrice2 = zeroCpnBond2->cleanPrice();
+//    AssetSwap zeroCpnAssetSwap2(payFixedRate,
+//                                zeroCpnBond2, zeroCpnBondPrice2,
+//                                iborIndex_, spread_, termStructure_,
+//                                Schedule(),
+//                                iborIndex_->dayCounter(),
+//                                parAssetSwap);
+//    Real zeroCpnBondAssetSwapPrice2 = zeroCpnAssetSwap2.fairPrice();
+//    Real error9 = std::fabs(cmsBondAssetSwapPrice2-cmsBondPrice2);
+//
+//    if (error9>tolerance) {
+//        BOOST_ERROR("wrong zero spread asset swap price for zero cpn bond:"
+//                    << QL_FIXED << std::setprecision(4)
+//                    << "\n  bond's clean price:      " << zeroCpnBondPrice2
+//                    << "\n  asset swap fair price: " << zeroCpnBondAssetSwapPrice2
+//                    << QL_SCIENTIFIC << std::setprecision(2)
+//                    << "\n  error:                 " << error9
+//                    << "\n  tolerance:             " << tolerance);
+//    }
+}
+
+
 test_suite* AssetSwapTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("AssetSwap tests");
     suite->add(BOOST_TEST_CASE(&AssetSwapTest::testImpliedValue));
     suite->add(BOOST_TEST_CASE(&AssetSwapTest::testMarketASWSpread));
     suite->add(BOOST_TEST_CASE(&AssetSwapTest::testZSpread));
+    suite->add(BOOST_TEST_CASE(&AssetSwapTest::testGenericBondImplied));
 
 
     return suite;
