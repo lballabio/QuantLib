@@ -38,6 +38,11 @@ namespace QuantLib {
     class CashFlow : public Event {
       public:
         virtual ~CashFlow() {}
+        //! \name Event interface
+        //@{
+        //! \note This is inheirited from the event class
+        virtual const Date& date() const = 0;
+        //@}
         //! \name CashFlow interface
         //@{
         //! returns the amount of the cash flow
@@ -45,8 +50,6 @@ namespace QuantLib {
                   amount paid at the cash flow date.
         */
         virtual Real amount() const = 0;
-        //! \note This is inheirited from the event class
-        virtual Date date() const = 0;
         //@}
         //! \name Visitability
         //@{

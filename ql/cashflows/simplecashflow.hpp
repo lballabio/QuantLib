@@ -32,12 +32,16 @@ namespace QuantLib {
     /*! This cash flow pays a predetermined amount at a given date. */
     class SimpleCashFlow : public CashFlow {
       public:
-        SimpleCashFlow(Real amount, const Date& date)
+        SimpleCashFlow(Real amount,
+                       const Date& date)
         : amount_(amount), date_(date) {}
+        //! \name Event interface
+        //@{
+        const Date& date() const { return date_; }
+        //@}
         //! \name CashFlow interface
         //@{
         Real amount() const { return amount_; }
-        Date date() const { return date_; }
         //@}
         //! \name Visitability
         //@{

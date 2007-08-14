@@ -59,6 +59,7 @@ namespace QuantLib {
         Bond(Natural settlementDays,
              const Calendar& calendar,
              Real faceAmount,
+             const Date& issueDate = Null<Date>(),
              const Leg& leg = std::vector<boost::shared_ptr<CashFlow> >());
         class arguments;
         class results;
@@ -74,7 +75,6 @@ namespace QuantLib {
         const Leg& cashflows() const;
         const boost::shared_ptr<CashFlow>& redemption() const;
 
-        const Date& firstAccrualDate() const;
         const Date& maturityDate() const;
         const Date& issueDate() const;
 
@@ -184,7 +184,7 @@ namespace QuantLib {
         Real faceAmount_;
         Leg cashflows_;
         
-        Date firstAccrualDate_, maturityDate_, issueDate_;
+        Date maturityDate_, issueDate_;
     };
 
     class Bond::arguments : public PricingEngine::arguments {
@@ -223,12 +223,11 @@ namespace QuantLib {
         return cashflows_.back();
     }
 
-    inline const Date& Bond::firstAccrualDate() const {
-        return firstAccrualDate_;
-    }
-
     inline const Date& Bond::maturityDate() const {
-        return maturityDate_;
+        if (maturityDate_!=Null<Date>())
+            return maturityDate_;
+        else
+            return cashflows_.back()->date();
     }
 
     inline const Date& Bond::issueDate() const {

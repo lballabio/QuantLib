@@ -35,12 +35,9 @@ namespace QuantLib {
                                  BusinessDayConvention paymentConvention,
                                  Real redemption,
                                  const Date& issueDate)
-    : Bond(settlementDays, schedule.calendar(), faceAmount) {
+    : Bond(settlementDays, schedule.calendar(), faceAmount, issueDate) {
 
-        firstAccrualDate_ = schedule.startDate();
         maturityDate_     = schedule.endDate();
-
-        issueDate_ = (issueDate==Date() ? firstAccrualDate_ : issueDate);
 
         cashflows_ = FixedRateLeg(std::vector<Real>(1, faceAmount_),
                                   schedule,
@@ -70,16 +67,13 @@ namespace QuantLib {
                                  const Date& issueDate,
                                  const Date& stubDate,
                                  bool fromEnd)
-    : Bond(settlementDays, calendar, faceAmount) {
+    : Bond(settlementDays, calendar, faceAmount, issueDate) {
 
-        firstAccrualDate_ = startDate;
         maturityDate_     = maturityDate;
-
-        issueDate_ = (issueDate==Date() ? firstAccrualDate_ : issueDate);
 
         Date firstDate = (fromEnd ? Date() : stubDate);
         Date nextToLastDate = (fromEnd ? stubDate : Date());
-        Schedule schedule(firstAccrualDate_, maturityDate_, tenor,
+        Schedule schedule(startDate, maturityDate_, tenor,
                           calendar_, accrualConvention, accrualConvention,
                           fromEnd, false, firstDate, nextToLastDate);
 

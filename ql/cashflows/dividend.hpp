@@ -37,9 +37,12 @@ namespace QuantLib {
       public:
         Dividend(const Date& date)
         : date_(date) {}
+        //! \name Event interface
+        //@{
+        virtual const Date& date() const { return date_; }
+        //@}
         //! \name CashFlow interface
         //@{
-        virtual Date date() const { return date_; }
         virtual Real amount() const = 0;
         //@}
         virtual Real amount(Real underlying) const = 0;
