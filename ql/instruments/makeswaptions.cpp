@@ -34,7 +34,7 @@ namespace QuantLib {
       strike_(strike),
       optionTenor_(optionTenor),
       swapIndex_(swapIndex),
-      swaptionConvention_(Following),
+      swaptionConvention_(ModifiedFollowing),
       engine_(engine) { }
 
     void MakeSwaption::create() const {
