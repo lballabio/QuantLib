@@ -27,9 +27,13 @@
 
 #include <ql/math/interpolation.hpp>
 #include <ql/termstructures/volatilities/interestrate/abcd.hpp>
+#include <ql/termstructures/volatilities/interestrate/abcdcalibration.hpp>
 
 
 namespace QuantLib {
+
+    class EndCriteria;
+    class OptimizationMethod;
 
     //! %Abcd interpolation between discrete volatility points.
     class AbcdInterpolation : public Interpolation {
@@ -94,15 +98,15 @@ namespace QuantLib {
                 for ( ; x!=this->xEnd_; ++x, ++y) {
                         times.push_back(*x);
                         blackVols.push_back(*y);
-                    }  
+                }  
                 abcdCalibrator_(times, blackVols,
-                              aGuess, bGuess, 
-                              cGuess, dGuess,
-                              aIsFixed, bIsFixed,
-                              cIsFixed, dIsFixed,
-                              vegaWeighted,
-                              endCriteria,
-                              method)
+                                aGuess, bGuess, 
+                                cGuess, dGuess,
+                                aIsFixed, bIsFixed,
+                                cIsFixed, dIsFixed,
+                                vegaWeighted,
+                                endCriteria,
+                                method)
                 abcdCalibrator_.compute(); 
             }
 

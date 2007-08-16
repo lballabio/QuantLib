@@ -194,6 +194,6 @@ namespace QuantLib {
             "mismatch between number of tenors ("
             << nSwapTenors_ << ") and number of rows ("
             << volsColumns << ") in the vol matrix");
-        }
+    }
 
 }

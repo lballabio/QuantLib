@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file voltermstructure.hpp
+/*! \file equityfxvolsurface.hpp
     \brief Equity/FX vol (smile) surface
 */
 
@@ -39,7 +39,7 @@ namespace QuantLib {
         It's only in absence of smile that the concept of (at-the-money)
         forward volatility makes sense.
     */
-    class EquityFXAtmVolSurface : public BlackVolSurface {
+    class EquityFXVolSurface : public BlackVolSurface {
       public:
         /*! \name Constructors
             See the TermStructure documentation for issues regarding
@@ -51,15 +51,15 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        EquityFXAtmVolSurface(const DayCounter& dc = Actual365Fixed());
+        EquityFXVolSurface(const DayCounter& dc = Actual365Fixed());
         //! initialize with a fixed reference date
-        EquityFXAtmVolSurface(const Date& referenceDate,
-                              const Calendar& cal = Calendar(),
-                              const DayCounter& dc = Actual365Fixed());
+        EquityFXVolSurface(const Date& referenceDate,
+                           const Calendar& cal = Calendar(),
+                           const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
-        EquityFXAtmVolSurface(Natural settlementDays,
-                              const Calendar&,
-                              const DayCounter& dc = Actual365Fixed());
+        EquityFXVolSurface(Natural settlementDays,
+                           const Calendar&,
+                           const DayCounter& dc = Actual365Fixed());
         //@}
         //! \name Black Volatility
         //@{

@@ -37,6 +37,7 @@ namespace QuantLib {
 
     class AbcdCalibration {
       public:
+        AbcdCalibration() {};
         AbcdCalibration(
              const std::vector<Real>& t,
              const std::vector<Real>& blackVols,

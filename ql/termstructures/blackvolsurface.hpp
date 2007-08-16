@@ -29,6 +29,8 @@
 
 namespace QuantLib {
 
+    class SmileSection;
+
     //! Black volatility (smile) surface
     /*! This abstract class defines the interface of concrete
         Black volatility (smile) surface which will
@@ -59,33 +61,13 @@ namespace QuantLib {
                         const Calendar&,
                         const DayCounter& dc = Actual365Fixed());
         //@}
-        virtual Real atmLevel(const Date& maturity) const = 0;
-        virtual Real atmLevel(Time maturity) const = 0;
         //! \name Black spot volatility
         //@{
-        //! spot volatility
-        Volatility volatility(const Date& maturity,
-                              Real strike,
-                              bool extrapolate = false) const;
-        //! spot volatility
-        Volatility volatility(Time maturity,
-                              Real strike,
-                              bool extrapolate = false) const;
-        //! spot variance
-        Real variance(const Date& maturity,
-                      Real strike,
-                      bool extrapolate = false) const;
-        //! spot variance
-        Real variance(Time maturity,
-                      Real strike,
-                      bool extrapolate = false) const;
-        //@}
-        //! \name Limits
-        //@{
-        //! the minimum strike for which the term structure can return vols
-        virtual Real minStrike() const = 0;
-        //! the maximum strike for which the term structure can return vols
-        virtual Real maxStrike() const = 0;
+        //! returns the smile for a given option time
+        boost::shared_ptr<SmileSection> smileSection(Time optionTime) const;
+        //! returns the smile for a given option date and swap tenor
+        boost::shared_ptr<SmileSection> smileSection(
+                                            const Date& optionDate) const;
         //@}
         //! \name Visitability
         //@{
@@ -95,32 +77,20 @@ namespace QuantLib {
         //! \name BlackArtmVolCurve interface
         //@{
         //! spot at-the-money variance calculation
-        virtual Real atmVarianceImpl(Time t) const;
+        Real atmVarianceImpl(Time t) const;
         //! spot at-the-money volatility calculation
-        virtual Volatility atmVolImpl(Time t) const;
+        Volatility atmVolImpl(Time t) const;
         //@}
         /*! \name Calculations
 
-            These methods must be implemented in derived classes to perform
-            the actual volatility calculations. When they are called,
-            range check has already been performed; therefore, they must
-            assume that extrapolation is required.
+            This method must be implemented in derived classes to perform
+            the actual volatility calculations. When it is called,
+            time check has already been performed; therefore, it must
+            assume that time-extrapolation is allowed.
         */
         //@{
-        //! spot at-the-money variance calculation
-        virtual Real varianceImpl(Time t,
-                                  Real strike) const = 0;
-        //! spot at-the-money volatility calculation
-        virtual Volatility volImpl(Time t,
-                                   Real strike) const = 0;
+        virtual boost::shared_ptr<SmileSection> smileSectionImpl(Time) const=0;
         //@}
-      private:
-        void checkRange(const Date& d,
-                        Real strike,
-                        bool extrapolate) const;
-        void checkRange(Time t,
-                        Real strike,
-                        bool extrapolate) const;
     };
 
 }

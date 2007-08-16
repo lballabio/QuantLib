@@ -18,6 +18,7 @@
 */
 
 #include <ql/termstructures/blackvolsurface.hpp>
+#include <ql/termstructures/volatilities/smilesection.hpp>
 
 namespace QuantLib {
 
@@ -34,43 +35,12 @@ namespace QuantLib {
                                      const DayCounter& dc)
     : BlackAtmVolCurve(settlDays, cal, dc) {}
 
-    Volatility BlackVolSurface::volatility(const Date& maturity,
-                                           Real strike,
-                                           bool extrapolate) const {
-        Time t = timeFromReference(maturity);
-        checkRange(t, strike, extrapolate);
-        return volImpl(t, strike);
-    }
-
-    Volatility BlackVolSurface::volatility(Time maturity,
-                                           Real strike,
-                                           bool extrapolate) const {
-        checkRange(maturity, strike, extrapolate);
-        return volImpl(maturity, strike);
-    }
-
-    Real BlackVolSurface::variance(const Date& maturity,
-                                   Real strike,
-                                   bool extrapolate) const {
-        Time t = timeFromReference(maturity);
-        checkRange(t, strike, extrapolate);
-        return varianceImpl(t, strike);
-    }
-
-    Real BlackVolSurface::variance(Time maturity,
-                                   Real strike,
-                                   bool extrapolate) const {
-        checkRange(maturity, strike, extrapolate);
-        return varianceImpl(maturity, strike);
-    }
-
-
     Real BlackVolSurface::atmVarianceImpl(Time t) const {
-        return varianceImpl(t, atmLevel(t));
+        return smileSectionImpl(t)->variance();
     }
 
     Volatility BlackVolSurface::atmVolImpl(Time t) const {
-        return volImpl(t, atmLevel(t));
+        return smileSectionImpl(t)->volatility();
     }
 
     void BlackVolSurface::accept(AcyclicVisitor& v) {
@@ -80,26 +50,6 @@ namespace QuantLib {
             v1->visit(*this);
         else
             QL_FAIL("not a BlackVolSurface term structure visitor");
-    }
-
-    void BlackVolSurface::checkRange(const Date& d,
-                                     Real k,
-                                     bool extrapolate) const {
-        TermStructure::checkRange(d, extrapolate);
-        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
-                   (k >= minStrike() && k <= maxStrike()),
-                   "strike (" << k << ") is outside the curve domain ["
-                   << minStrike() << "," << maxStrike()<< "]");
-    }
-
-    void BlackVolSurface::checkRange(Time t,
-                                     Real k,
-                                     bool extrapolate) const {
-        TermStructure::checkRange(t, extrapolate);
-        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
-                   (k >= minStrike() && k <= maxStrike()),
-                   "strike (" << k << ") is outside the curve domain ["
-                   << minStrike() << "," << maxStrike()<< "]");
     }
 
 }

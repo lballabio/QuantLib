@@ -18,7 +18,7 @@
 */
 
 /*! \file smilesection.hpp
-    \brief Swaption volatility structure
+    \brief Smile section base class
 */
 
 #ifndef quantlib_smile_section_hpp
@@ -32,7 +32,9 @@
 #include <vector>
 
 namespace QuantLib {
+
     class SpreadedSmileSection;
+
     //! interest rate volatility smile section
     /*! This abstract class provides volatility smile section interface */
     class SmileSection : public virtual Observable, public Observer {
@@ -48,12 +50,12 @@ namespace QuantLib {
         
         virtual Real minStrike() const = 0;
         virtual Real maxStrike() const = 0;
-        virtual Real variance(Rate strike = Null<Rate>()) const;
-        virtual Volatility volatility(Rate strike = Null<Rate>()) const;
+        Real variance(Rate strike = Null<Rate>()) const;
+        Volatility volatility(Rate strike = Null<Rate>()) const;
         virtual Real atmLevel() const = 0;
-        virtual const Date& exerciseDate() const { return exerciseDate_; }
-        virtual Time exerciseTime() const { return exerciseTime_; }
-        virtual const DayCounter& dayCounter() const { return dc_; }
+        const Date& exerciseDate() const { return exerciseDate_; }
+        Time exerciseTime() const { return exerciseTime_; }
+        const DayCounter& dayCounter() const { return dc_; }
         void initializeExerciseTime() const;
         friend class SpreadedSmileSection;
       protected:
@@ -68,17 +70,15 @@ namespace QuantLib {
     };
 
     inline Real SmileSection::variance(Rate strike) const {
-        if(strike!=Null<Rate>())
-            return varianceImpl(strike);
-        else
-            return varianceImpl(atmLevel());
+        if (strike==Null<Rate>())
+            strike = atmLevel();
+        return varianceImpl(strike);
     }
 
     inline Volatility SmileSection::volatility(Rate strike) const {
-        if(strike!=Null<Rate>())
-            return volatilityImpl(strike);
-        else
-            return volatilityImpl(atmLevel());
+        if (strike==Null<Rate>())
+            strike = atmLevel();
+        return volatilityImpl(strike);
     }
 
     class FlatSmileSection : public SmileSection {

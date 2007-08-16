@@ -21,20 +21,20 @@
 
 namespace QuantLib {
 
-    EquityFXAtmVolSurface::EquityFXAtmVolSurface(const DayCounter& dc)
+    EquityFXVolSurface::EquityFXVolSurface(const DayCounter& dc)
     : BlackVolSurface(dc) {}
 
-    EquityFXAtmVolSurface::EquityFXAtmVolSurface(const Date& refDate,
+    EquityFXVolSurface::EquityFXVolSurface(const Date& refDate,
                                                  const Calendar& cal,
                                                  const DayCounter& dc)
     : BlackVolSurface(refDate, cal, dc) {}
 
-    EquityFXAtmVolSurface::EquityFXAtmVolSurface(Natural settlDays,
+    EquityFXVolSurface::EquityFXVolSurface(Natural settlDays,
                                                  const Calendar& cal,
                                                  const DayCounter& dc)
     : BlackVolSurface(settlDays, cal, dc) {}
 
-    Volatility EquityFXAtmVolSurface::atmForwardVol(const Date& date1,
+    Volatility EquityFXVolSurface::atmForwardVol(const Date& date1,
                                                     const Date& date2,
                                                     bool extrapolate) const {
         Real fwdVariance = atmForwardVariance(date1, date2, extrapolate);
@@ -42,7 +42,7 @@ namespace QuantLib {
         return std::sqrt(fwdVariance/t);
     }
 
-    Volatility EquityFXAtmVolSurface::atmForwardVol(Time time1,
+    Volatility EquityFXVolSurface::atmForwardVol(Time time1,
                                                     Time time2,
                                                     bool extrapolate) const {
         Real fwdVariance = atmForwardVariance(time1, time2, extrapolate);
@@ -50,7 +50,7 @@ namespace QuantLib {
         return std::sqrt(fwdVariance/t);
     }
 
-    Real EquityFXAtmVolSurface::atmForwardVariance(const Date& date1,
+    Real EquityFXVolSurface::atmForwardVariance(const Date& date1,
                                                    const Date& date2,
                                                    bool extrapolate) const {
         QL_REQUIRE(date1<date2, "wrong dates");
@@ -60,7 +60,7 @@ namespace QuantLib {
         return var2-var1;
     }
 
-    Real EquityFXAtmVolSurface::atmForwardVariance(Time time1,
+    Real EquityFXVolSurface::atmForwardVariance(Time time1,
                                                    Time time2,
                                                    bool extrapolate) const {
         QL_REQUIRE(time1<time2, "wrong times");
@@ -70,13 +70,13 @@ namespace QuantLib {
         return var2-var1;
     }
 
-    void EquityFXAtmVolSurface::accept(AcyclicVisitor& v) {
-        Visitor<EquityFXAtmVolSurface>* v1 =
-            dynamic_cast<Visitor<EquityFXAtmVolSurface>*>(&v);
+    void EquityFXVolSurface::accept(AcyclicVisitor& v) {
+        Visitor<EquityFXVolSurface>* v1 =
+            dynamic_cast<Visitor<EquityFXVolSurface>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else
-            QL_FAIL("not a EquityFXAtmVolSurface term structure visitor");
+            QL_FAIL("not a EquityFXVolSurface term structure visitor");
     }
 
 }

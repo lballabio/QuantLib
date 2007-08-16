@@ -165,11 +165,12 @@ namespace QuantLib {
         return bdc_;
     }
 
-    inline Date SwaptionVolatilityStructure::optionDateFromTenor(
+    inline Date
+    SwaptionVolatilityStructure::optionDateFromTenor(
                                            const Period& optionTenor) const {
-            return calendar().advance(referenceDate(),
-                                      optionTenor,
-                                      businessDayConvention());
+        return calendar().advance(referenceDate(),
+                                  optionTenor,
+                                  businessDayConvention());
     }
 
 

@@ -5407,6 +5407,12 @@
 					RelativePath=".\ql\termstructures\volatilities\equityfxvolsurface.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\volatilities\interestratevolsurface.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatilities\interestratevolsurface.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\volatilities\interpolatedsmilesection.hpp">
 				</File>
 				<File
@@ -5474,23 +5480,44 @@
 						RelativePath=".\ql\termstructures\volatilities\interestrate\abcd.hpp">
 					</File>
 					<File
+						RelativePath=".\ql\termstructures\volatilities\interestrate\abcdatmvolcurve.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatilities\interestrate\abcdatmvolcurve.hpp">
+					</File>
+					<File
 						RelativePath=".\ql\termstructures\volatilities\interestrate\abcdcalibration.cpp">
 					</File>
 					<File
 						RelativePath=".\ql\termstructures\volatilities\interestrate\abcdcalibration.hpp">
 					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatilities\interestrate\sabrvolsurface.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatilities\interestrate\sabrvolsurface.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatilities\interestrate\volcube.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatilities\interestrate\volcube.hpp">
+					</File>
 					<Filter
 						Name="cap"
 						Filter="">
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\cap\capflatvolvector.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\cap\capflatvolvector.hpp">
+						</File>
 					</Filter>
 					<Filter
 						Name="caplet"
 						Filter="">
 						<File
 							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\all.hpp">
-						</File>
-						<File
-							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\capflatvolvector.hpp">
 						</File>
 						<File
 							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\capletconstantvol.hpp">
