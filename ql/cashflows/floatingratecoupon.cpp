@@ -29,10 +29,6 @@
 
 namespace QuantLib {
 
-//===========================================================================//
-//                            FloatingRateCoupon                             //
-//===========================================================================//
-
     FloatingRateCoupon::FloatingRateCoupon(
                          const Date& paymentDate, const Real nominal,
                          const Date& startDate, const Date& endDate,
@@ -49,7 +45,7 @@ namespace QuantLib {
       gearing_(gearing), spread_(spread),
       isInArrears_(isInArrears)
     {
-        QL_REQUIRE(gearing_!=0, "Null gearing: degenerate Floating Rate Coupon not admitted");
+        QL_REQUIRE(gearing_!=0, "Null gearing not allowed");
 
         if (dayCounter_.empty())
             dayCounter_ = index_->dayCounter();
@@ -61,7 +57,7 @@ namespace QuantLib {
 
     void FloatingRateCoupon::setPricer(
                 const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
-            if(pricer_)
+            if (pricer_)
                 unregisterWith(pricer_);
             pricer_ = pricer;
             QL_REQUIRE(pricer_, "no adequate pricer given");
@@ -72,6 +68,7 @@ namespace QuantLib {
     Real FloatingRateCoupon::amount() const {
         return rate() * accrualPeriod() * nominal();
     }
+
     Real FloatingRateCoupon::accruedAmount(const Date& d) const {
         if (d <= accrualStartDate_ || d > paymentDate_) {
             return 0.0;
@@ -84,16 +81,17 @@ namespace QuantLib {
         }
     }
 
-
-    Real FloatingRateCoupon::price(const Handle<YieldTermStructure>& discountingCurve) const {
-        return amount()*discountingCurve->discount(date());
+    Real
+    FloatingRateCoupon::price(const Handle<YieldTermStructure>& yts) const {
+        return amount() * yts->discount(date());
     }
 
     DayCounter FloatingRateCoupon::dayCounter() const {
         return dayCounter_;
     }
 
-    const boost::shared_ptr<InterestRateIndex>& FloatingRateCoupon::index() const {
+    const boost::shared_ptr<InterestRateIndex>&
+    FloatingRateCoupon::index() const {
         return index_;
     }
 
@@ -116,10 +114,10 @@ namespace QuantLib {
         return spread_;
     }
 
-
     Rate FloatingRateCoupon::indexFixing() const {
         return index_->fixing(fixingDate());
     }
+
     Rate FloatingRateCoupon::rate() const {
         QL_REQUIRE(pricer_, "pricer not set");
         pricer_->initialize(*this);
@@ -129,9 +127,11 @@ namespace QuantLib {
     Rate FloatingRateCoupon::adjustedFixing() const{
         return (rate()-spread())/gearing();
     }
+
     Rate FloatingRateCoupon::convexityAdjustmentImpl(Rate f) const {
        return (gearing() == 0.0 ? 0.0 : adjustedFixing()-f);
     }
+
     Rate FloatingRateCoupon::convexityAdjustment() const {
         return convexityAdjustmentImpl(indexFixing());
     }
@@ -148,6 +148,5 @@ namespace QuantLib {
         else
             Coupon::accept(v);
     }
-
 
 }

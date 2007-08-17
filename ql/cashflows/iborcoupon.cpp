@@ -24,10 +24,6 @@
 
 namespace QuantLib {
 
-//===========================================================================//
-//                                  IborCoupon                               //
-//===========================================================================//
-
     IborCoupon::IborCoupon(const Date& paymentDate, const Real nominal,
                            const Date& startDate, const Date& endDate,
                            const Natural fixingDays,
@@ -42,9 +38,9 @@ namespace QuantLib {
 
     Rate IborCoupon::indexFixing() const {
 
-#ifdef QL_USE_INDEXED_COUPON
+    #ifdef QL_USE_INDEXED_COUPON
         return index_->fixing(fixingDate());
-#else
+    #else
         if (isInArrears()) {
             return index_->fixing(fixingDate());
         } else {
@@ -92,7 +88,7 @@ namespace QuantLib {
             // forecast: 4) implied fixing
             return (startDiscount/endDiscount-1.0)/spanningTime;
         }
-#endif
+    #endif
 
     }
 
@@ -106,4 +102,3 @@ namespace QuantLib {
     }
 
 }
-

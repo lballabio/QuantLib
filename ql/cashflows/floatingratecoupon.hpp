@@ -113,9 +113,6 @@ namespace QuantLib {
         boost::shared_ptr<FloatingRateCouponPricer> pricer_;
     };
 
-
-
-
 }
 
 #endif

@@ -46,7 +46,7 @@ namespace QuantLib {
                    const DayCounter& dayCounter = DayCounter(),
                    bool isInArrears = false);
         virtual ~IborCoupon() {}
-        // Implemeted in order to manage the case of par coupon
+        //! Implemented in order to manage the case of par coupon
         Rate indexFixing() const;
         //! \name Visitability
         //@{
