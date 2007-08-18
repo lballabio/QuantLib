@@ -1,29 +1,24 @@
 
-SUBDIRS = caplet equity swaption
+SUBDIRS = equityfx interestrate
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    abcd.hpp \
-    abcdcalibration.hpp \
     interpolatedsmilesection.hpp \
     sabr.hpp \
     sabrinterpolatedsmilesection.hpp \
     smilesection.hpp
 
 libVolatilities_la_SOURCES = \
-    abcd.cpp \
-    abcdcalibration.cpp \
     sabr.cpp \
     sabrinterpolatedsmilesection.cpp \
     smilesection.cpp
 
 libVolatilities_la_LIBADD = \
-    caplet/libCapletVol.la \
-    equity/libEquity.la \
-    swaption/libSwaptionVol.la
+    equityfx/libEquityFxVol.la \
+    interestrate/libInterestRateVol.la
 
 noinst_LTLIBRARIES = libVolatilities.la
 
