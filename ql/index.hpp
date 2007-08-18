@@ -77,10 +77,12 @@ namespace QuantLib {
             bool missingFixing, validFixing;
             bool noInvalidFixing = true, noDuplicatedFixing = true;
             Date invalidDate, duplicatedDate;
-            Real invalidValue, duplicatedValue, currentValue, nullValue = Null<Real>();
+            Real nullValue = Null<Real>();
+            Real invalidValue = Null<Real>();
+            Real duplicatedValue = Null<Real>();
             while (dBegin != dEnd) {
                 validFixing = isValidFixingDate(*dBegin);
-                currentValue = h[*dBegin];
+                Real currentValue = h[*dBegin];
                 missingFixing = (forceOverwrite || currentValue==nullValue);
                 if (validFixing) {
                     if (missingFixing)
