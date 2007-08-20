@@ -3,7 +3,7 @@
 
 #include <ql/termstructures/volatilities/interestrate/swaption/cmsmarket.hpp>
 #include <ql/termstructures/volatilities/interestrate/swaption/cmsmarketcalibration.hpp>
-#include <ql/termstructures/volatilities/interestrate/swaption/spreadedswaptionvolstructure.hpp>
+#include <ql/termstructures/volatilities/interestrate/swaption/spreadedswaptionvol.hpp>
 #include <ql/termstructures/volatilities/interestrate/swaption/swaptionconstantvol.hpp>
 #include <ql/termstructures/volatilities/interestrate/swaption/swaptionvolcube.hpp>
 #include <ql/termstructures/volatilities/interestrate/swaption/swaptionvolcube1.hpp>

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file spreadedswaptionvolstructure.hpp
+/*! \file spreadedswaptionvol.hpp
     \brief Spreaded swaption volatility
 */
 
@@ -53,24 +53,24 @@ namespace QuantLib {
         Rate maxStrike() const;
         Time maxSwapLength() const;
         BusinessDayConvention businessDayConvention() const;
-        
+
         std::pair<Time,Time> convertDates(const Date& optionDate,
                                           const Period& swapTenor) const;
-    
+
 
         Volatility volatilityImpl(Time optionTime,
                                   Time swapLength,
                                   Rate strike) const;
 
         boost::shared_ptr<SmileSection> smileSectionImpl(
-                                        Time optionTime, 
+                                        Time optionTime,
                                         Time swapLength) const;
-        
+
         virtual boost::shared_ptr<SmileSection> smileSectionImpl(
                                         const Date& optionDate,
                                         const Period& swapTenor) const;
-        
-        //@} 
+
+        //@}
 
     private:
         const Handle<SwaptionVolatilityStructure> underlyingVolStructure_;

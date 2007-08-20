@@ -28,7 +28,7 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatilities/interestrate/swaption/swaptionvolcube2.hpp>
 #include <ql/termstructures/volatilities/interestrate/swaption/swaptionvolcube1.hpp>
-#include <ql/termstructures/volatilities/interestrate/swaption/spreadedswaptionvolstructure.hpp>
+#include <ql/termstructures/volatilities/interestrate/swaption/spreadedswaptionvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
