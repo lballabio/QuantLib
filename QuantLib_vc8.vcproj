@@ -3755,11 +3755,11 @@
 							>
 						</File>
 						<File
-							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\spreadedswaptionvolstructure.cpp"
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\spreadedswaptionvol.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\spreadedswaptionvolstructure.hpp"
+							RelativePath=".\ql\termstructures\volatilities\interestrate\swaption\spreadedswaptionvol.hpp"
 							>
 						</File>
 						<File
