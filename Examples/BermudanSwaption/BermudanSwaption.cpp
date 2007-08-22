@@ -268,8 +268,7 @@ int main(int, char* []) {
         boost::shared_ptr<Exercise> bermudanExercise(
                                          new BermudanExercise(bermudanDates));
 
-        Swaption bermudanSwaption(atmSwap, bermudanExercise, rhTermStructure,
-                                  boost::shared_ptr<PricingEngine>());
+        Swaption bermudanSwaption(atmSwap, bermudanExercise);
 
         // Do the pricing for each model
 
@@ -297,8 +296,7 @@ int main(int, char* []) {
                   << "struck at " << io::rate(fixedOTMRate)
                   << " (OTM)" << std::endl;
 
-        Swaption otmBermudanSwaption(otmSwap,bermudanExercise,rhTermStructure,
-                                     boost::shared_ptr<PricingEngine>());
+        Swaption otmBermudanSwaption(otmSwap,bermudanExercise);
 
         // Do the pricing for each model
         otmBermudanSwaption.setPricingEngine(boost::shared_ptr<PricingEngine>(
@@ -324,8 +322,7 @@ int main(int, char* []) {
                   << "struck at " << io::rate(fixedITMRate)
                   << " (ITM)" << std::endl;
 
-        Swaption itmBermudanSwaption(itmSwap,bermudanExercise,rhTermStructure,
-                                     boost::shared_ptr<PricingEngine>());
+        Swaption itmBermudanSwaption(itmSwap,bermudanExercise);
 
         // Do the pricing for each model
         itmBermudanSwaption.setPricingEngine(boost::shared_ptr<PricingEngine>(

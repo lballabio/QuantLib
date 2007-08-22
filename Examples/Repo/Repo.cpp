@@ -129,12 +129,16 @@ int main(int, char* []) {
                                          bondDayCountConvention,
                                          bondBusinessDayConvention,
                                          bondRedemption,
-                                         bondIssueDate,
-                                         bondCurve));
+                                         bondIssueDate));
+        bond->setPricingEngine(
+                 boost::shared_ptr<PricingEngine>(new BondEngine(bondCurve)));
 
         bondCurve.linkTo(boost::shared_ptr<YieldTermStructure> (
                    new FlatForward(repoSettlementDate,
-                                   bond->yield(bondCleanPrice,Compounded),
+                                   bond->yield(bondCleanPrice,
+                                               bondDayCountConvention,
+                                               Compounded,
+                                               bondCouponFrequency),
                                    bondDayCountConvention,
                                    Compounded,
                                    bondCouponFrequency)));
