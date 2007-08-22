@@ -13,7 +13,7 @@ libInterestRateVol_la_SOURCES = \
     abcdcalibration.cpp 
 
 libInterestRateVol_la_LIBADD = \
-    cap/libCap.la \
+    cap/libCapVol.la \
     caplet/libCapletVol.la \
     swaption/libSwaptionVol.la
 
