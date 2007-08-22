@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
  Copyright (C) 2004, 2005, 2006 Ferdinando Ametrano
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2006 Toyin Akin
@@ -42,8 +42,8 @@ namespace QuantLib {
     }
 
     Date::Date(Day d, Month m, Year y) {
-        QL_REQUIRE(y > 1900 && y < 2100,
-                   "year " << y << " out of bound. It must be in [1901,2099]");
+        QL_REQUIRE(y > 1900 && y < 2200,
+                   "year " << y << " out of bound. It must be in [1901,2199]");
         QL_REQUIRE(Integer(m) > 0 && Integer(m) < 13,
                    "month " << Integer(m)
                    << " outside January-December range [1,12]");
@@ -166,9 +166,9 @@ namespace QuantLib {
                 y -= 1;
             }
 
-            QL_ENSURE(y >= 1900 && y <= 2099,
+            QL_ENSURE(y >= 1900 && y <= 2199,
                       "year " << y << " out of bounds. "
-                      << "It must be in [1901,2099]");
+                      << "It must be in [1901,2199]");
 
             Integer length = monthLength(Month(m), isLeap(y));
             if (d > length)
@@ -181,9 +181,9 @@ namespace QuantLib {
               Month m = date.month();
               Year y = date.year()+n;
 
-              QL_ENSURE(y >= 1900 && y <= 2099,
+              QL_ENSURE(y >= 1900 && y <= 2199,
                         "year " << y << " out of bounds. "
-                        << "It must be in [1901,2099]");
+                        << "It must be in [1901,2199]");
 
               if (d == 29 && m == February && !isLeap(y))
                   d = 28;
@@ -239,9 +239,30 @@ namespace QuantLib {
              true,false,false,false, true,false,false,false, true,false,
             // 2090-2099
             false,false, true,false,false,false, true,false,false,false,
-            // 2100
+            // 2100-2109
+            false,false,false,false, true,false,false,false, true,false,
+            // 2110-2119
+            false,false, true,false,false,false, true,false,false,false,
+            // 2120-2129
+             true,false,false,false, true,false,false,false, true,false,
+            // 2130-2139
+            false,false, true,false,false,false, true,false,false,false,
+            // 2140-2149
+             true,false,false,false, true,false,false,false, true,false,
+            // 2150-2159
+            false,false, true,false,false,false, true,false,false,false,
+            // 2160-2169
+             true,false,false,false, true,false,false,false, true,false,
+            // 2170-2179
+            false,false, true,false,false,false, true,false,false,false,
+            // 2180-2189
+             true,false,false,false, true,false,false,false, true,false,
+            // 2190-2199
+            false,false, true,false,false,false, true,false,false,false,
+            // 2200
             false
         };
+        QL_REQUIRE(y>=1900 && y<=2200, "year outside valid range");
         return YearIsLeap[y-1900];
     }
 
@@ -330,8 +351,28 @@ namespace QuantLib {
             65745,66111,66476,66841,67206,67572,67937,68302,68667,69033,
             // 2090-2099
             69398,69763,70128,70494,70859,71224,71589,71955,72320,72685,
-            // 2100
-            73050
+            // 2100-2109
+            73050,73415,73780,74145,74510,74876,75241,75606,75971,76337,
+            // 2110-2119
+            76702,77067,77432,77798,78163,78528,78893,79259,79624,79989,
+            // 2120-2129
+            80354,80720,81085,81450,81815,82181,82546,82911,83276,83642,
+            // 2130-2139
+            84007,84372,84737,85103,85468,85833,86198,86564,86929,87294,
+            // 2140-2149
+            87659,88025,88390,88755,89120,89486,89851,90216,90581,90947,
+            // 2150-2159
+            91312,91677,92042,92408,92773,93138,93503,93869,94234,94599,
+            // 2160-2169
+            94964,95330,95695,96060,96425,96791,97156,97521,97886,98252,
+            // 2170-2179
+            98617,98982,99347,99713,100078,100443,100808,101174,101539,101904,
+            // 2180-2189
+            102269,102635,103000,103365,103730,104096,104461,104826,105191,105557,
+            // 2190-2199
+            105922,106287,106652,107018,107383,107748,108113,108479,108844,109209,
+            // 2200
+            109574
         };
         return YearOffset[y-1900];
     }
@@ -341,7 +382,7 @@ namespace QuantLib {
     }
 
     BigInteger Date::maximumSerialNumber() {
-        return 73050;    // Dec 31st, 2099
+        return 109574;    // Dec 31st, 2199
     }
 
     void Date::checkSerialNumber(BigInteger serialNumber) {
