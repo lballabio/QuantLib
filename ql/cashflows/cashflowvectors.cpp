@@ -227,7 +227,7 @@ namespace QuantLib {
                     leg.push_back(boost::shared_ptr<CashFlow>(new
                         FloatingCouponType(paymentDate,
                                    get(nominals, i, Null<Real>()),
-                                   start, end, 
+                                   start, end,
                                    get(fixingDays, i, 2), index,
                                    get(gearings, i, 1.0),
                                    get(spreads, i, 0.0),
@@ -237,7 +237,7 @@ namespace QuantLib {
                     leg.push_back(boost::shared_ptr<CashFlow>(new
                         CappedFlooredCouponType(paymentDate,
                                                 get(nominals, i, Null<Real>()),
-                                                start, end, 
+                                                start, end,
                                                 get(fixingDays, i, 2), index,
                                                 get(gearings, i, 1.0),
                                                 get(spreads, i, 0.0),
@@ -263,7 +263,8 @@ namespace QuantLib {
                 const std::vector<Rate>& floors,
                 bool isInArrears) {
 
-        return FloatingLeg<IborIndex, IborCoupon, CappedFlooredIborCoupon>(
+        Leg cashflows =
+            FloatingLeg<IborIndex, IborCoupon, CappedFlooredIborCoupon>(
                 nominals,
                 schedule,
                 index,
@@ -275,9 +276,13 @@ namespace QuantLib {
                 caps,
                 floors,
                 isInArrears);
+
+        if (caps.empty() && floors.empty())
+            setCouponPricer(cashflows,
+                            boost::shared_ptr<FloatingRateCouponPricer>(
+                                                  new BlackIborCouponPricer));
+        return cashflows;
     }
-
-
 
     Leg CmsLeg(const std::vector<Real>& nominals,
                const Schedule& schedule,
@@ -368,7 +373,7 @@ namespace QuantLib {
                     leg.push_back(boost::shared_ptr<CashFlow>(new
                         FloatingCouponType(paymentDate, // diff
                                            get(nominals, i, Null<Real>()),
-                                           start, end, 
+                                           start, end,
                                            get(fixingDays, i, 2), index,
                                            get(gearings, i, 1.0), get(spreads, i, 0.0),
                                            refStart, refEnd,
@@ -377,7 +382,7 @@ namespace QuantLib {
                     leg.push_back(boost::shared_ptr<CashFlow>(new
                         CappedFlooredFloatingCouponType(paymentDate, // diff
                                            get(nominals, i, Null<Real>()),
-                                           start, end, 
+                                           start, end,
                                            get(fixingDays, i, 2), index,
                                            get(gearings, i, 1.0), get(spreads, i, 0.0),
                                            get(caps,   i, Null<Rate>()),
@@ -588,11 +593,11 @@ namespace QuantLib {
                                     paymentDayCounter,
                                     start, end, refStart, refEnd)));
             } else { // floating digital coupon
-                boost::shared_ptr<FloatingCouponType> underlying = 
-                    (boost::shared_ptr<FloatingCouponType>)(new 
+                boost::shared_ptr<FloatingCouponType> underlying =
+                    (boost::shared_ptr<FloatingCouponType>)(new
                         FloatingCouponType(paymentDate,
                                        get(nominals, i, Null<Real>()),
-                                       start, end, 
+                                       start, end,
                                        get(fixingDays, i, 2), index,
                                        get(gearings, i, 1.0),
                                        get(spreads, i, 0.0),
@@ -634,7 +639,7 @@ namespace QuantLib {
                 const std::vector<Rate>& putDigitalPayoffs,
                 Replication::Type replication,
                 Real eps) {
-    
+
         return FloatingDigitalLeg<IborIndex, IborCoupon, DigitalIborCoupon>(
                nominals,
                schedule,
@@ -675,7 +680,7 @@ namespace QuantLib {
                 const std::vector<Rate>& putDigitalPayoffs,
                 Replication::Type replication,
                 Real eps) {
-    
+
         return FloatingDigitalLeg<SwapIndex, CmsCoupon, DigitalCmsCoupon>(
                nominals,
                schedule,
