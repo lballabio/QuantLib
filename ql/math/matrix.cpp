@@ -26,7 +26,7 @@
 #pragma warning(push)
 #pragma warning(disable:4180)
 #endif
-#if !defined(__GNUC__) || __GNUC__ > 3 || __GNUC_MINOR__ > 3
+#if !defined(__GNUC__) || __GNUC__ > 3 || __GNUC_MINOR__ > 4
 #define QL_MATRIX_BLAS
 #endif
 
