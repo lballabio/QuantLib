@@ -78,7 +78,7 @@ namespace QuantLib {
         for (ibor=iborIndexes.begin(); ibor!=iborIndexes.end(); ++ibor) {
             boost::shared_ptr<SimpleQuote> quote(new SimpleQuote);
             iborQuotes.push_back(quote);
-            Handle<Quote> quoteHandle(quote); 
+            Handle<Quote> quoteHandle(quote);
             rateHelpers.push_back(boost::shared_ptr<RateHelper> (new
                 DepositRateHelper(quoteHandle,
                                   (*ibor)->tenor(),
@@ -109,7 +109,7 @@ namespace QuantLib {
         }
 
         // Set up the forward rates time grid
-        Period indexTenor = fwdIndex->tenor(); 
+        Period indexTenor = fwdIndex->tenor();
         Period fixingPeriod = initialGap;
         while (fixingPeriod<=horizon) {
             fixingPeriods.push_back(fixingPeriod);
@@ -131,16 +131,16 @@ namespace QuantLib {
                                                      rateHelpers,
                                                      yieldCurveDayCounter,
                                                      yieldCurveAccuracy,
-                                                     i); 
+                                                     i);
 
         // start with a valid business date
         Date currentDate = cal.advance(startDate, 1*Days, Following);
         bool isFirst = true;
-        // Loop over the historical dataset 
-        for (; currentDate<=endDate; 
+        // Loop over the historical dataset
+        for (; currentDate<=endDate;
             currentDate = cal.advance(currentDate, step, Following)) {
 
-            // move the evaluationDate to currentDate 
+            // move the evaluationDate to currentDate
             // and update ratehelpers dates...
             Settings::instance().evaluationDate() = currentDate;
 
@@ -175,7 +175,7 @@ namespace QuantLib {
                 continue;
             }
 
-            // From 2nd step onwards, calculate forward rate 
+            // From 2nd step onwards, calculate forward rate
             // relative differences
             if (!isFirst){
                 for (Size i=0; i<nRates; ++i)
@@ -183,17 +183,18 @@ namespace QuantLib {
                 // add observation
                 statistics.add(fwdRatesDiff.begin(), fwdRatesDiff.end());
             }
-            else 
+            else
                 isFirst = false;
 
             // Store last calculated forward rates
             std::swap(prevFwdRates, fwdRates);
-           
-        } 
+
+        }
     }
 
     class HistoricalForwardRatesAnalysis {
       public:
+        virtual ~HistoricalForwardRatesAnalysis() {}
         virtual const std::vector<Date>& skippedDates() const = 0;
         virtual const std::vector<std::string>& skippedDatesErrorMessage() const = 0;
         virtual const std::vector<Date>& failedDates() const = 0;
@@ -236,7 +237,7 @@ namespace QuantLib {
 
     // inline
     template<class Traits, class Interpolator>
-    const std::vector<Period>& 
+    const std::vector<Period>&
     HistoricalForwardRatesAnalysisImpl<Traits, Interpolator>::fixingPeriods() const {
         return fixingPeriods_;
     }
@@ -264,7 +265,7 @@ namespace QuantLib {
     HistoricalForwardRatesAnalysisImpl<Traits, Interpolator>::failedDatesErrorMessage() const {
         return failedDatesErrorMessage_;
     }
- 
+
     //inline const boost::shared_ptr<SequenceStatistics>&
     //HistoricalForwardRatesAnalysis::stats() const {
     //    return stats_;
@@ -287,8 +288,8 @@ namespace QuantLib {
                                        Interpolator>(
                     *stats_,
                     skippedDates_, skippedDatesErrorMessage_,
-                    failedDates_, failedDatesErrorMessage_, 
-                    fixingPeriods_, startDate, endDate, step, 
+                    failedDates_, failedDatesErrorMessage_,
+                    fixingPeriods_, startDate, endDate, step,
                     fwdIndex, initialGap, horizon,
                     iborIndexes, swapIndexes,
                     yieldCurveDayCounter, yieldCurveAccuracy);
