@@ -1,8 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Chiara Fornarola
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2006 Chiara Fornarola
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -130,7 +131,9 @@ namespace QuantLib {
             Real value(const Array&, Time t) const {
                 Rate forwardRate =
                     termStructure_->forwardRate(t, t, Continuous, NoFrequency);
-                Real temp = sigma_*(1.0 - std::exp(-a_*t))/a_;
+                Real temp = a_ < std::sqrt(QL_EPSILON) ?
+                            sigma_*t :
+                            sigma_*(1.0 - std::exp(-a_*t))/a_;
                 return (forwardRate + 0.5*temp*temp);
             }
           private:

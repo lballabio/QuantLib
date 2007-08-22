@@ -1,8 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Chiara Fornarola
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2006 Chiara Fornarola
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -86,8 +87,14 @@ namespace QuantLib {
                                        Time maturity,
                                        Time bondMaturity) const {
 
-        Real v = sigma()*B(maturity, bondMaturity)*
-            std::sqrt(0.5*(1.0 - std::exp(-2.0*a()*maturity))/a());
+        Real _a = a();
+        Real v;
+        if (_a < std::sqrt(QL_EPSILON)) {
+            v = sigma()*B(maturity, bondMaturity)* std::sqrt(maturity);
+        } else {
+            v = sigma()*B(maturity, bondMaturity)*
+                std::sqrt(0.5*(1.0 - std::exp(-2.0*_a*maturity))/_a);
+        }
         Real f = termStructure()->discount(bondMaturity);
         Real k = termStructure()->discount(maturity)*strike;
 
