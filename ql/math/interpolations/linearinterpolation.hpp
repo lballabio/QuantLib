@@ -82,8 +82,8 @@ namespace QuantLib {
             impl_ = boost::shared_ptr<Interpolation::Impl>(
                       new detail::LinearInterpolationImpl<I1,I2>(xBegin, xEnd,
                                                                  yBegin));
+            impl_->update();
         }
-        LinearInterpolation() : Interpolation() {}
     };
 
     //! %Linear-interpolation factory and traits

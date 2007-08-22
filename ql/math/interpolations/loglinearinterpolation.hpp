@@ -83,6 +83,7 @@ namespace QuantLib {
             impl_ = boost::shared_ptr<Interpolation::Impl>(
                    new detail::LogLinearInterpolationImpl<I1,I2>(xBegin, xEnd,
                                                                  yBegin));
+            impl_->update();
         }
     };
 

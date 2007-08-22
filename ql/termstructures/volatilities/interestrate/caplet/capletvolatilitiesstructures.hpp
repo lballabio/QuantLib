@@ -26,7 +26,7 @@
 
 #include <ql/termstructures/capvolstructures.hpp>
 #include <ql/math/matrix.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/interpolation.hpp>
 
 
 namespace QuantLib {
@@ -125,7 +125,7 @@ namespace QuantLib {
         void update(){};
     private:
         DayCounter dayCounter_;
-        LinearInterpolation firstRowInterpolator_;
+        Interpolation firstRowInterpolator_;
         std::vector<Time> tenorTimes_;
         std::vector<Rate> strikes_;
         mutable Matrix volatilities_;
@@ -188,7 +188,7 @@ namespace QuantLib {
         Rate maxStrike_, minStrike_;
     };
 
-    
+
     class HybridCapletVolatilityStructure:
         public ParametrizedCapletVolStructure{
     public:

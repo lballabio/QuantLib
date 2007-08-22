@@ -26,6 +26,7 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/termstructures/volatilities/smilesection.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 
 

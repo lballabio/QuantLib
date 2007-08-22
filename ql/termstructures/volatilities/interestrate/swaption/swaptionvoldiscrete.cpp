@@ -19,6 +19,7 @@
 */
 
 #include <ql/termstructures/volatilities/interestrate/swaption/swaptionvoldiscrete.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 namespace QuantLib {
@@ -144,9 +145,9 @@ namespace QuantLib {
         /* better than an any option date, for coherence between swaption atm vol matrix
            and swaption vol cube:
            otherwise, if both swaption atm vol matrix and swaption vol cube are created
-           and they have different first option date, the swap tenors of the structures may 
+           and they have different first option date, the swap tenors of the structures may
            differ
-        */           
+        */
         // Date startDate = optionDates_[0]; // as good as any
         Date endDate = startDate + swapTenors_[0];
         QL_REQUIRE(endDate>startDate, "first swap tenor is negative ("  << swapTenors_[0] << ")");
@@ -192,7 +193,7 @@ namespace QuantLib {
         Time swapLength = dayCounter().yearFraction(startDate, endDate);
         return std::make_pair(optionTime, swapLength);
     }
-        
+
     void SwaptionVolatilityDiscrete::performCalculations() const {
          if (moving_) // check if date recalculation could be avoided
             initializeOptionDatesAndTimes();

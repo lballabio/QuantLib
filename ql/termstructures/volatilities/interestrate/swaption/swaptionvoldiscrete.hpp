@@ -25,7 +25,7 @@
 #define quantlib_swaption_volatility_discrete_h
 
 #include <ql/termstructures/swaptionvolstructure.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/interpolation.hpp>
 #include <ql/patterns/lazyobject.hpp>
 
 namespace QuantLib {
@@ -85,7 +85,7 @@ namespace QuantLib {
         mutable std::vector<Date> optionDates_;
         mutable std::vector<Time> optionTimes_;
         mutable std::vector<Real> optionDatesAsReal_;
-        LinearInterpolation optionInterpolator_;
+        Interpolation optionInterpolator_;
 
         Size nSwapTenors_;
         std::vector<Period> swapTenors_;
