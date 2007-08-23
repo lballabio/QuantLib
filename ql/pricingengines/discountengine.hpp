@@ -32,9 +32,9 @@ namespace QuantLib {
     class DiscountEngine : public Observer,
                            public Observable {
       public:
-        DiscountEngine(const Handle<YieldTermStructure>& discountCurve = 
-                                        Handle<YieldTermStructure>());
- 
+        DiscountEngine(const Handle<YieldTermStructure>& discountCurve =
+                                                Handle<YieldTermStructure>());
+
         //! \name Observer interface
         //@{
         void update();

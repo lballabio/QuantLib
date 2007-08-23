@@ -22,7 +22,8 @@
 
 namespace QuantLib {
 
-    DiscountEngine::DiscountEngine(const Handle<YieldTermStructure>& discountCurve)
+    DiscountEngine::DiscountEngine(
+                              const Handle<YieldTermStructure>& discountCurve)
     : discountCurve_(discountCurve) {
         registerWith(discountCurve_);
     }
@@ -34,43 +35,29 @@ namespace QuantLib {
     Handle<YieldTermStructure> DiscountEngine::discountCurve() const {
         return discountCurve_;
     }
-        
+
     Real DiscountEngine::npv(const Leg& cashflows,
-                        const Date& settlementDate,
-                        const Date& npvDate,
-                        Integer exDividendDays) {
-        
-        Date d = settlementDate != Date() ?
-                 settlementDate :
-                 discountCurve_->referenceDate();
+                             const Date& settlementDate,
+                             const Date& npvDate,
+                             Integer exDividendDays) {
 
-        Real totalNPV = 0.0;
-        for (Size i=0; i<cashflows.size(); ++i) {
-            if (!cashflows[i]->hasOccurred(d+exDividendDays))
-                totalNPV += cashflows[i]->amount() *
-                            discountCurve_->discount(cashflows[i]->date());
-        }
-
-        if (npvDate==Date())
-            return totalNPV;
-        else
-            return totalNPV/discountCurve_->discount(npvDate);
+        return CashFlows::npv(cashflows,
+                              **discountCurve_,
+                              settlementDate,
+                              npvDate,
+                              exDividendDays);
     }
-        
+
     Real DiscountEngine::bps(const Leg& cashflows,
-                        const Date& settlementDate,
-                        const Date& npvDate,
-                        Integer exDividendDays) {
+                             const Date& settlementDate,
+                             const Date& npvDate,
+                             Integer exDividendDays) {
 
-        Date d = settlementDate;
-        if (d==Date())
-            d = discountCurve_->referenceDate();
-
-        BPSCalculator calc(**discountCurve_, npvDate);
-        for (Size i=0; i<cashflows.size(); ++i) {
-            if (!cashflows[i]->hasOccurred(d+exDividendDays))
-                cashflows[i]->accept(calc);
-        }
-        return basisPoint_*calc.result();
+        return CashFlows::bps(cashflows,
+                              **discountCurve_,
+                              settlementDate,
+                              npvDate,
+                              exDividendDays);
     }
+
 }
