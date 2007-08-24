@@ -29,6 +29,7 @@
 #define quantlib_bond_hpp
 
 #include <ql/instrument.hpp>
+#include <ql/cashflow.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/types.hpp>
@@ -183,7 +184,7 @@ namespace QuantLib {
         Calendar calendar_;
         Real faceAmount_;
         Leg cashflows_;
-        
+
         Date maturityDate_, issueDate_;
     };
 

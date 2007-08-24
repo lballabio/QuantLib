@@ -31,7 +31,6 @@
 #include <boost/any.hpp>
 #include <map>
 #include <string>
-#include <ql/cashflow.hpp>
 
 namespace QuantLib {
 
