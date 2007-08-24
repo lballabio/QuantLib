@@ -2,4 +2,5 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/termstructures/volatilities/interestrate/cap/capflatvolvector.hpp>
+#include <ql/termstructures/volatilities/interestrate/cap/capvolsurface.hpp>
 
