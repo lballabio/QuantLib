@@ -51,45 +51,8 @@ namespace QuantLib {
       fixedDayCount_(Thirty360()), floatDayCount_(index->dayCounter()) {}
 
     MakeVanillaSwap::operator VanillaSwap() const {
-
-        Date startDate;
-        if (effectiveDate_ != Date())
-            startDate=effectiveDate_;
-        else {
-          Natural fixingDays = index_->fixingDays();
-          Date referenceDate = Settings::instance().evaluationDate();
-          Date spotDate = floatCalendar_.advance(referenceDate,
-                                                 fixingDays*Days);
-          startDate = spotDate+forwardStart_;
-        }
-
-        Date terminationDate = startDate+swapTenor_;
-
-        Schedule fixedSchedule(startDate, terminationDate,
-                               fixedTenor_, fixedCalendar_,
-                               fixedConvention_,
-                               fixedTerminationDateConvention_,
-                               fixedBackward_, fixedEndOfMonth_,
-                               fixedFirstDate_, fixedNextToLastDate_);
-
-        Schedule floatSchedule(startDate, terminationDate,
-                               floatTenor_, floatCalendar_,
-                               floatConvention_,
-                               floatTerminationDateConvention_,
-                               floatBackward_, floatEndOfMonth_,
-                               floatFirstDate_, floatNextToLastDate_);
-
-        Rate usedFixedRate = fixedRate_;
-        if (fixedRate_ == Null<Rate>())
-            usedFixedRate = VanillaSwap(type_, nominal_,
-                       fixedSchedule, 0.0, fixedDayCount_,
-                       floatSchedule, index_, floatSpread_, floatDayCount_,
-                       discountingTermStructure_).fairRate();
-
-        return VanillaSwap(type_, nominal_,
-                       fixedSchedule, usedFixedRate, fixedDayCount_,
-                       floatSchedule, index_, floatSpread_, floatDayCount_,
-                       discountingTermStructure_);
+        boost::shared_ptr<VanillaSwap> swap = *this;
+        return *swap;
     }
 
     MakeVanillaSwap::operator boost::shared_ptr<VanillaSwap>() const {

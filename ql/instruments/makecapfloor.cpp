@@ -39,21 +39,8 @@ namespace QuantLib {
     }
 
     MakeCapFloor::operator CapFloor() const {
-
-        VanillaSwap swap = makeVanillaSwap_;
-
-        Leg leg = swap.floatingLeg();
-        if (firstCapletExcluded_)
-            leg.erase(leg.begin());
-
-
-        std::vector<Rate> strikeVector(1, strike_);
-        if (strike_ == Null<Rate>())
-            strikeVector[0] = CashFlows::atmRate(leg,
-                                                 **swap.discountCurve());
-
-        return CapFloor(capFloorType_, leg, strikeVector,
-                        swap.discountCurve(), engine_);
+        boost::shared_ptr<CapFloor> capfloor = *this;
+        return *capfloor;
     }
 
     MakeCapFloor::operator boost::shared_ptr<CapFloor>() const {
@@ -63,7 +50,6 @@ namespace QuantLib {
         Leg leg = swap.floatingLeg();
         if (firstCapletExcluded_)
             leg.erase(leg.begin());
-
 
         std::vector<Rate> strikeVector(1, strike_);
         if (strike_ == Null<Rate>())

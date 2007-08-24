@@ -74,60 +74,8 @@ namespace QuantLib {
       }
 
     MakeCms::operator Swap() const {
-
-        Date startDate;
-        if (effectiveDate_ != Date())
-            startDate=effectiveDate_;
-        else {
-          Natural fixingDays = swapIndex_->fixingDays();
-          Date referenceDate = Settings::instance().evaluationDate();
-          Date spotDate = floatCalendar_.advance(referenceDate, fixingDays*Days);
-          startDate = spotDate+forwardStart_;
-        }
-
-        Date terminationDate = startDate+swapTenor_;
-
-        Schedule cmsSchedule(startDate, terminationDate,
-                             cmsTenor_, cmsCalendar_,
-                             cmsConvention_,
-                             cmsTerminationDateConvention_,
-                             cmsBackward_, cmsEndOfMonth_,
-                             cmsFirstDate_, cmsNextToLastDate_);
-
-        Schedule floatSchedule(startDate, terminationDate,
-                               floatTenor_, floatCalendar_,
-                               floatConvention_,
-                               floatTerminationDateConvention_,
-                               floatBackward_, floatEndOfMonth_,
-                               floatFirstDate_, floatNextToLastDate_);
-
-        Leg cmsLeg = CmsLeg(std::vector<Real>(1, nominal_),
-                            cmsSchedule,
-                            swapIndex_,
-                            cmsDayCount_,
-                            cmsConvention_,
-                            std::vector<Natural>(1,swapIndex_->fixingDays()),
-                            std::vector<Real>(1, cmsGearing_),
-                            std::vector<Spread>(1, cmsSpread_),
-                            std::vector<Rate>(1, cmsCap_),
-                            std::vector<Rate>(1, cmsFloor_));
-
-        Leg floatLeg = IborLeg(std::vector<Real>(1, nominal_),
-                               floatSchedule,
-                               iborIndex_,
-                               floatDayCount_,
-                               floatConvention_,
-                               std::vector<Natural>(1,iborIndex_->fixingDays()),
-                               std::vector<Real>(1, 1.0), // gearing
-                               std::vector<Spread>(1, iborSpread_));
-        boost::shared_ptr<IborCouponPricer>
-                        fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
-        setCouponPricer(floatLeg,fictitiousPricer);
-
-        if (payCms_)
-            return Swap(discountingTermStructure_, cmsLeg, floatLeg);
-        else
-            return Swap(discountingTermStructure_, floatLeg, cmsLeg);
+        boost::shared_ptr<Swap> swap = *this;
+        return *swap;
     }
 
     MakeCms::operator boost::shared_ptr<Swap>() const {

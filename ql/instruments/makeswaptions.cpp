@@ -57,8 +57,8 @@ namespace QuantLib {
     }
 
     MakeSwaption::operator Swaption() const {
-        create();
-        return Swaption(underlyingSwap_, exercise_, delivery_);
+        boost::shared_ptr<Swaption> swaption = *this;
+        return *swaption;
     }
 
     MakeSwaption::operator boost::shared_ptr<Swaption>() const {
