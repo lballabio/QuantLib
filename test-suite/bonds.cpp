@@ -35,7 +35,7 @@
 #include <ql/time/schedule.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/cashflows.hpp>
-#include <ql/pricingengines/bond/bondengine.hpp>
+#include <ql/pricingengines/bond/discountingbondengine.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -106,7 +106,7 @@ void BondTest::testYield() {
                 Real price = bond.cleanPrice(yields[m],
                                              bondDayCount, compounding[n], frequencies[l]);
                 Rate calculated = bond.yield(price,
-                                             bondDayCount, compounding[n], frequencies[l], 
+                                             bondDayCount, compounding[n], frequencies[l],
                                              Date(),
                                              tolerance, maxEvaluations);
 
@@ -182,8 +182,8 @@ void BondTest::testTheoretical() {
                                bondDayCount, paymentConvention,
                                redemption, issue);
 
-            boost::shared_ptr<BondEngine> bondEngine = boost::shared_ptr<BondEngine>(new
-                BondEngine(discountCurve));
+            boost::shared_ptr<PricingEngine> bondEngine(
+                                    new DiscountingBondEngine(discountCurve));
             bond.setPricingEngine(bondEngine);
 
             for (Size m=0; m<LENGTH(yields); m++) {
@@ -259,9 +259,9 @@ void BondTest::testCached() {
                         std::vector<Rate>(1, 0.025),
                         bondDayCount, ModifiedFollowing,
                         100.0, Date(1, November, 2004));
-            
-    boost::shared_ptr<BondEngine> bondEngine = boost::shared_ptr<BondEngine>(new
-        BondEngine(discountCurve));
+
+    boost::shared_ptr<PricingEngine> bondEngine(
+                                    new DiscountingBondEngine(discountCurve));
     bond1.setPricingEngine(bondEngine);
 
     Real marketPrice1 = 99.203125;
@@ -466,8 +466,8 @@ void BondTest::testCachedZero() {
                          ModifiedFollowing,
                          100.0, Date(30,November,2004));
 
-    boost::shared_ptr<BondEngine> bondEngine = boost::shared_ptr<BondEngine>(new
-        BondEngine(discountCurve));
+    boost::shared_ptr<PricingEngine> bondEngine(
+                                    new DiscountingBondEngine(discountCurve));
     bond1.setPricingEngine(bondEngine);
 
     Real cachedPrice1 = 88.551726;
@@ -551,8 +551,8 @@ void BondTest::testCachedFixed() {
                           ModifiedFollowing,
                           100.0, Date(30,November,2004));
 
-    boost::shared_ptr<BondEngine> bondEngine = boost::shared_ptr<BondEngine>(new
-        BondEngine(discountCurve));
+    boost::shared_ptr<PricingEngine> bondEngine(
+                                    new DiscountingBondEngine(discountCurve));
     bond1.setPricingEngine(bondEngine);
 
     Real cachedPrice1 = 99.298100;
@@ -659,9 +659,9 @@ void BondTest::testCachedFloating() {
                            std::vector<Rate>(), std::vector<Rate>(),
                            false,
                            100.0, Date(30,November,2004));
-        
-    boost::shared_ptr<BondEngine> bondEngine = boost::shared_ptr<BondEngine>(new
-        BondEngine(riskFreeRate));
+
+    boost::shared_ptr<PricingEngine> bondEngine(
+                                     new DiscountingBondEngine(riskFreeRate));
     bond1.setPricingEngine(bondEngine);
 
     setCouponPricer(bond1.cashflows(),pricer);
@@ -691,9 +691,9 @@ void BondTest::testCachedFloating() {
                            std::vector<Rate>(), std::vector<Rate>(),
                            false,
                            100.0, Date(30,November,2004));
-        
-    boost::shared_ptr<BondEngine> bondEngine2 = boost::shared_ptr<BondEngine>(new
-        BondEngine(discountCurve));
+
+    boost::shared_ptr<PricingEngine> bondEngine2(
+                                    new DiscountingBondEngine(discountCurve));
     bond2.setPricingEngine(bondEngine2);
 
     setCouponPricer(bond2.cashflows(),pricer);

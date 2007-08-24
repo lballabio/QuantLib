@@ -17,24 +17,23 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file bondengine.hpp
-    \brief bond engine
+/*! \file discountingbondengine.hpp
+    \brief discounting bond engine
 */
 
-#ifndef quantlib_bond_engine_hpp
-#define quantlib_bond_engine_hpp
+#ifndef quantlib_discounting_bond_engine_hpp
+#define quantlib_discounting_bond_engine_hpp
 
 #include <ql/instruments/bond.hpp>
 #include <ql/termstructures/swaptionvolstructure.hpp>
 
 namespace QuantLib {
 
-
-    class BondEngine : public Bond::engine,
-                       public Observer {
+    class DiscountingBondEngine : public Bond::engine,
+                                  public Observer {
       public:
-        BondEngine(const Handle<YieldTermStructure>& discountCurve = 
-                                        Handle<YieldTermStructure>());
+        DiscountingBondEngine(const Handle<YieldTermStructure>& discountCurve =
+                                                Handle<YieldTermStructure>());
         void calculate() const;
         void update();
         Handle<YieldTermStructure> discountCurve() const;

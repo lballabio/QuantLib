@@ -28,7 +28,7 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yieldcurves/zerospreadedtermstructure.hpp>
 #include <ql/settings.hpp>
-#include <ql/pricingengines/bond/bondengine.hpp>
+#include <ql/pricingengines/bond/discountingbondengine.hpp>
 
 namespace QuantLib {
 
@@ -307,10 +307,10 @@ namespace QuantLib {
          if (settlement == Date())
              settlement = settlementDate();
          QL_REQUIRE(engine_, "null pricing engine");
-         
-         boost::shared_ptr<BondEngine> bondEngine =
-             boost::dynamic_pointer_cast<BondEngine>(engine_);
-         QL_REQUIRE(bondEngine, "pricer not compatible with Bond instrument");
+
+         boost::shared_ptr<DiscountingBondEngine> bondEngine =
+             boost::dynamic_pointer_cast<DiscountingBondEngine>(engine_);
+         QL_REQUIRE(bondEngine, "engine not compatible with calculation");
 
          return dirtyPriceFromZSpreadFunction(faceAmount_, cashflows_,
                                               zSpread, dc, comp, freq,

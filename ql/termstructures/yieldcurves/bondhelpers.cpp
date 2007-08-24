@@ -19,7 +19,7 @@
 
 #include <ql/termstructures/yieldcurves/bondhelpers.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/pricingengines/bond/bondengine.hpp>
+#include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/settings.hpp>
 
 namespace QuantLib {
@@ -59,8 +59,8 @@ namespace QuantLib {
             FixedRateBond(settlementDays_, 100.0, schedule_,
                             coupons_, paymentDayCounter_, paymentConvention_,
                             redemption_, issueDate_));
-        boost::shared_ptr<BondEngine> bondEngine = boost::shared_ptr<BondEngine>(new
-            BondEngine(termStructureHandle_));
+        boost::shared_ptr<PricingEngine> bondEngine(
+                             new DiscountingBondEngine(termStructureHandle_));
         bond_->setPricingEngine(bondEngine);
     }
 

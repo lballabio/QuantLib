@@ -50,7 +50,7 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
-#include <ql/pricingengines/bond/bondengine.hpp>
+#include <ql/pricingengines/bond/discountingbondengine.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -154,8 +154,8 @@ void AssetSwapTest::testImpliedValue() {
                       ActualActual(ActualActual::ISDA), Following,
                       100.0, Date(4,January,2005) ));
 
-    boost::shared_ptr<BondEngine> bondEngine = boost::shared_ptr<BondEngine>(new
-        BondEngine(termStructure_));
+    boost::shared_ptr<PricingEngine> bondEngine(
+                                   new DiscountingBondEngine(termStructure_));
     fixedBond1->setPricingEngine(bondEngine);
 
     Real fixedBondPrice1 = fixedBond1->cleanPrice();
@@ -191,7 +191,7 @@ void AssetSwapTest::testImpliedValue() {
                       std::vector<Rate>(1, 0.05),
                       Thirty360(Thirty360::BondBasis), Following,
                       100.0, Date(5,February,2005)));
-        
+
     fixedBond2->setPricingEngine(bondEngine);
 
     Real fixedBondPrice2 = fixedBond2->cleanPrice();
@@ -484,9 +484,9 @@ void AssetSwapTest::testMarketASWSpread() {
                       std::vector<Rate>(1, 0.04),
                       ActualActual(ActualActual::ISDA), Following,
                       100.0, Date(4,January,2005)));
-    
-    boost::shared_ptr<BondEngine> bondEngine = boost::shared_ptr<BondEngine>(new
-        BondEngine(termStructure_));
+
+    boost::shared_ptr<PricingEngine> bondEngine(
+                                   new DiscountingBondEngine(termStructure_));
     fixedBond1->setPricingEngine(bondEngine);
 
     Real fixedBondMktPrice1 = 89.22 ; // market price observed on 7th June 2007
@@ -871,8 +871,8 @@ void AssetSwapTest::testZSpread() {
                       ActualActual(ActualActual::ISDA), Following,
                       100.0, Date(4,January,2005)));
 
-    boost::shared_ptr<BondEngine> bondEngine = boost::shared_ptr<BondEngine>(new
-        BondEngine(termStructure_));
+    boost::shared_ptr<PricingEngine> bondEngine(
+                                   new DiscountingBondEngine(termStructure_));
     fixedBond1->setPricingEngine(bondEngine);
 
     Real fixedBondImpliedValue1 = fixedBond1->cleanPrice();
@@ -1283,11 +1283,11 @@ void AssetSwapTest::testGenericBondImplied() {
                                                     Following);
     fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
                             SimpleCashFlow(100.0, fixedbondRedemption1)));
-    boost::shared_ptr<Bond> fixedBond1(new 
+    boost::shared_ptr<Bond> fixedBond1(new
                             Bond(settlementDays, bondCalendar, faceAmount_,Date(4,January,2005),
                             fixedBondLeg1));
-    boost::shared_ptr<BondEngine> bondEngine = boost::shared_ptr<BondEngine>(new
-                                                  BondEngine(termStructure_));
+    boost::shared_ptr<PricingEngine> bondEngine(
+                                   new DiscountingBondEngine(termStructure_));
     fixedBond1->setPricingEngine(bondEngine);
     Real fixedBondPrice1 = fixedBond1->cleanPrice();
     AssetSwap fixedBondAssetSwap1(payFixedRate,
@@ -1326,7 +1326,7 @@ void AssetSwapTest::testGenericBondImplied() {
                                                     Following);
     fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
                             SimpleCashFlow(100.0, fixedbondRedemption2)));
-    boost::shared_ptr<Bond> fixedBond2(new 
+    boost::shared_ptr<Bond> fixedBond2(new
                             Bond(settlementDays, bondCalendar, faceAmount_,
                             Date(5,February,2005),fixedBondLeg2));
     fixedBond2->setPricingEngine(bondEngine);

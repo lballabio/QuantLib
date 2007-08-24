@@ -17,32 +17,35 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/bond/bondengine.hpp>
+#include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/cashflows/cashflows.hpp>
 
 namespace QuantLib {
 
-    BondEngine::BondEngine(const Handle<YieldTermStructure>& discountCurve)
+    DiscountingBondEngine::DiscountingBondEngine(
+                              const Handle<YieldTermStructure>& discountCurve)
     : discountCurve_(discountCurve) {
         registerWith(discountCurve_);
     }
 
-    void BondEngine::update() {
+    void DiscountingBondEngine::update() {
         notifyObservers();
     }
 
-    Handle<YieldTermStructure> BondEngine::discountCurve() const {
+    Handle<YieldTermStructure> DiscountingBondEngine::discountCurve() const {
         return discountCurve_;
     }
 
-    void BondEngine::calculate() const {
+    void DiscountingBondEngine::calculate() const {
 
         const Leg& cashflows = arguments_.cashflows;
         const Date& settlementDate = arguments_.settlementDate;
-        
-        QL_REQUIRE(!discountCurve_.empty(),"no discounting term structure set");
+
+        QL_REQUIRE(!discountCurve_.empty(),
+                   "no discounting term structure set");
         results_.value = CashFlows::npv(cashflows,
                                         **discountCurve_,
                                         settlementDate, settlementDate);
     }
+
 }

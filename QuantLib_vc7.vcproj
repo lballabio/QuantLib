@@ -5199,10 +5199,10 @@
 				Name="bond"
 				Filter="">
 				<File
-					RelativePath=".\ql\pricingengines\bond\bondengine.cpp">
+					RelativePath=".\ql\pricingengines\bond\discountingbondengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\pricingengines\bond\bondengine.hpp">
+					RelativePath=".\ql\pricingengines\bond\discountingbondengine.hpp">
 				</File>
 			</Filter>
 		</Filter>

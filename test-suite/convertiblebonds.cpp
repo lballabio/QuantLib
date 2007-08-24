@@ -36,7 +36,7 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/cashflows.hpp>
-#include <ql/pricingengines/bond/bondengine.hpp>
+#include <ql/pricingengines/bond/discountingbondengine.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -146,8 +146,8 @@ void ConvertibleBondTest::testBond() {
     ZeroCouponBond zero(settlementDays_, calendar_, 100.0, maturityDate_,
                         Following, redemption_, issueDate_);
 
-    boost::shared_ptr<BondEngine> bondEngine = boost::shared_ptr<BondEngine>(new
-        BondEngine(discountCurve));
+    boost::shared_ptr<PricingEngine> bondEngine(
+                                    new DiscountingBondEngine(discountCurve));
     zero.setPricingEngine(bondEngine);
 
     Real tolerance = 1.0e-2 * (faceAmount_/100.0);
@@ -193,7 +193,7 @@ void ConvertibleBondTest::testBond() {
     FixedRateBond fixed(settlementDays_, faceAmount_, schedule,
                         coupons, dayCounter_, Following,
                         redemption_, issueDate_);
-    
+
     fixed.setPricingEngine(bondEngine);
 
     tolerance = 2.0e-2 * (faceAmount_/100.0);
@@ -247,7 +247,7 @@ void ConvertibleBondTest::testBond() {
                               std::vector<Rate>(), std::vector<Rate>(),
                               false,
                               redemption_, issueDate_);
-    
+
     floating.setPricingEngine(bondEngine);
     setCouponPricer(floating.cashflows(),pricer);
 

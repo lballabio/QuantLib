@@ -130,8 +130,8 @@ int main(int, char* []) {
                                          bondBusinessDayConvention,
                                          bondRedemption,
                                          bondIssueDate));
-        bond->setPricingEngine(
-                 boost::shared_ptr<PricingEngine>(new BondEngine(bondCurve)));
+        bond->setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                       new DiscountingBondEngine(bondCurve)));
 
         bondCurve.linkTo(boost::shared_ptr<YieldTermStructure> (
                    new FlatForward(repoSettlementDate,
