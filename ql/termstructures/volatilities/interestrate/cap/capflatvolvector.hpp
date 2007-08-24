@@ -86,8 +86,7 @@ namespace QuantLib {
         void performCalculations() const;
 
       private:
-        void checkInputs(Size volatilitiesRows,
-                         Size volatilitiesColumns) const;
+        void checkInputs(Size volatilitiesRows) const;
         void registerWithMarketData();
         DayCounter dayCounter_;
         std::vector<Period> optionTenors_;

@@ -36,11 +36,8 @@ namespace QuantLib {
       timeLengths_(optionTenors.size()), 
       volHandles_(volatilities),
       volatilities_(volatilities.size()) {
-          checkInputs(optionTenors.size(), volatilities.size());
+          checkInputs(volatilities.size());
           registerWithMarketData();
-          //QL_REQUIRE(optionTenors.size() == volatilities.size(),
-          //         "mismatch between number of cap lengths "
-          //         "and cap volatilities");
         //volatilities_[0] = volatilities[0];
         //std::copy(volatilities.begin(),volatilities.end(),volatilities_.begin()+1);
         for (Size i=0; i<volatilities_.size(); ++i)
@@ -60,11 +57,8 @@ namespace QuantLib {
       timeLengths_(optionTenors.size()), 
       volHandles_(volatilities),
       volatilities_(volatilities.size()) {
-        checkInputs(optionTenors.size(), volatilities.size());
+        checkInputs(volatilities.size());
         registerWithMarketData();
-        //QL_REQUIRE(optionTenors.size() == volatilities.size(),
-        //           "mismatch between number of cap lengths "
-        //           "and cap volatilities");
         //volatilities_[0] = volatilities[0];
         //std::copy(volatilities.begin(),volatilities.end(),volatilities_.begin()+1);
         for (Size i=0; i<volatilities_.size(); ++i)
@@ -83,7 +77,7 @@ namespace QuantLib {
       optionTenors_(optionTenors),
       timeLengths_(optionTenors.size()), 
       volatilities_(volatilities.size()) {
-        checkInputs(optionTenors.size(), volatilities.size());
+        checkInputs(volatilities.size());
         // fill dummy handles to allow generic handle-based
         // computations later on
         for (Size i=0; i<volatilities.size(); i++) {
@@ -91,9 +85,6 @@ namespace QuantLib {
                 new SimpleQuote(volatilities[i])));
         }
         registerWithMarketData();
-        //QL_REQUIRE(optionTenors.size() == volatilities.size(),
-        //           "mismatch between number of cap lengths "
-        //           "and cap volatilities");
         volatilities_[0] = volatilities[0];
         std::copy(volatilities.begin(),volatilities.end(),volatilities_.begin()+1);
         interpolate();
@@ -111,7 +102,7 @@ namespace QuantLib {
       optionTenors_(optionTenors),
       timeLengths_(optionTenors.size()), 
       volatilities_(volatilities.size()) {
-        checkInputs(optionTenors.size(), volatilities.size());
+        checkInputs(volatilities.size());
         // fill dummy handles to allow generic handle-based
         // computations later on
         for (Size i=0; i<volatilities.size(); i++) {
@@ -119,16 +110,12 @@ namespace QuantLib {
                 new SimpleQuote(volatilities[i])));
         }
         registerWithMarketData();
-        //QL_REQUIRE(optionTenors.size() == volatilities.size(),
-        //           "mismatch between number of cap lengths "
-        //           "and cap volatilities");
         volatilities_[0] = volatilities[0];
         std::copy(volatilities.begin(),volatilities.end(),volatilities_.begin()+1);
         interpolate();
     }
 
-    void CapVolatilityVector::checkInputs(Size volRows,
-                                          Size volsColumns) const {
+    void CapVolatilityVector::checkInputs(Size volRows) const {
         QL_REQUIRE(optionTenors_.size()==volRows,
             "mismatch between number of cap lenght ("
             << optionTenors_.size() << ") and number of cap volatilities ("
