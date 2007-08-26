@@ -5512,6 +5512,12 @@
 						<File
 							RelativePath=".\ql\termstructures\volatilities\interestrate\cap\capflatvolvector.hpp">
 						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\cap\capvolsurface.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\cap\capvolsurface.hpp">
+						</File>
 					</Filter>
 					<Filter
 						Name="caplet"
