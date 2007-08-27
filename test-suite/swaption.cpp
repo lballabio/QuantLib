@@ -134,7 +134,7 @@ void SwaptionTest::testStrikeDependency() {
                     values.push_back(swaption->NPV());
                     boost::shared_ptr<Swaption> swaption_cash =
                         makeSwaption(swap,exerciseDate,vol,Settlement::Cash);
-                    values_cash.push_back(swaption->NPV());
+                    values_cash.push_back(swaption_cash->NPV());
                 }
                 // and check that they go the right way
                 if (type[k]==VanillaSwap::Payer) {
@@ -231,7 +231,7 @@ void SwaptionTest::testSpreadDependency() {
                     values.push_back(swaption->NPV());
                     boost::shared_ptr<Swaption> swaption_cash =
                         makeSwaption(swap,exerciseDate,0.20,Settlement::Cash);
-                    values_cash.push_back(swaption->NPV());
+                    values_cash.push_back(swaption_cash->NPV());
                 }
                 // and check that they go the right way
                 if (type[k]==VanillaSwap::Payer) {
