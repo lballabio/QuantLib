@@ -21,14 +21,14 @@
 
 namespace QuantLib {
 
-    void Index::addFixing(const Date& fixingDate, Real fixing) {
-        QL_REQUIRE(isValidFixingDate(fixingDate),
-                   "Fixing date " << fixingDate.weekday() << ", " <<
-                   fixingDate << " is not valid");
-        std::string tag = name();
-        TimeSeries<Real> h = IndexManager::instance().getHistory(tag);
-        h[fixingDate] = fixing;
-        IndexManager::instance().setHistory(tag,h);
+    void Index::addFixing(const Date& fixingDate,
+                          Real fixing,
+                          bool forceOverwrite) {
+        // using addFixings in order to avoid duplicating its full logic here
+        std::vector<Date> fixingDates(1, fixingDate);
+        std::vector<Real> fixings(1, fixing);
+        addFixings(fixingDates.begin(), fixingDates.end(),
+                   fixings.begin(), forceOverwrite);
     }
 
     void Index::clearFixings() {
