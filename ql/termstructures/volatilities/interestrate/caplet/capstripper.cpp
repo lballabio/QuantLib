@@ -27,7 +27,6 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/indexes/iborindex.hpp>
-#include <ql/pricingengines/discountengine.hpp>
 
 namespace {
 
@@ -86,21 +85,16 @@ namespace QuantLib {
         marketDataCap_.resize(tenors_.size());
         Rate dummyAtmRate = .04; // we will use a real one during boostrap
         // market data cap (used to compute the price to invert) construction
-        
-        boost::shared_ptr<DiscountEngine> discountEngine = 
-            boost::shared_ptr<DiscountEngine>(new DiscountEngine(index_->termStructure()));
-
         for (Size i = 0 ; i < tenors_.size(); i++) {
             marketDataCap_[i].resize(strikes_.size());
 
            for (Size j = 0 ; j < strikes_.size(); j++) {
                boost::shared_ptr<PricingEngine> blackCapFloorEngine(new
                    BlackCapFloorEngine(vols_[i][j], volatilityDayCounter_));
-                CapFloor::Type type =
+               CapFloor::Type type =
                    (strikes_[j] < dummyAtmRate)? CapFloor::Floor : CapFloor::Cap;
                marketDataCap_[i][j] = MakeCapFloor(type, tenors_[i],
                         index_, strikes_[j], 0*Days, blackCapFloorEngine);
-               marketDataCap_[i][j]->setDiscountEngine(discountEngine);
                const_cast<CapsStripper*>(this)->registerWith(marketDataCap_[i][j]);
            }
         }
@@ -163,7 +157,6 @@ namespace QuantLib {
                 calibCap_[i][j] = boost::shared_ptr<CapFloor>(new
                        CapFloor(*marketDataCap_[i][j]));
                 calibCap_[i][j]->setPricingEngine(calibBlackCapFloorEngine);
-                calibCap_[i][j]->setDiscountEngine(discountEngine);
             }
         }
     }
