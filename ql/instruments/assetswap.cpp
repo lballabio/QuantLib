@@ -43,8 +43,9 @@ namespace QuantLib {
       bondCleanPrice_(bondCleanPrice) {
 
         Schedule schedule = floatSch;
-        if (floatSch.empty())
-            schedule = Schedule(bond->settlementDate(),
+        if (floatSch.empty()) {
+            Date refDate = discountCurve->referenceDate();
+            schedule = Schedule(bond->settlementDate(refDate),
                                 bond->maturityDate(),
                                 index->tenor(),
                                 index->fixingCalendar(),
@@ -52,6 +53,7 @@ namespace QuantLib {
                                 index->businessDayConvention(),
                                 true,
                                 index->endOfMonth());
+        }
 
         // what if this date is not a business day??
         // we are assuming it is a business day!
