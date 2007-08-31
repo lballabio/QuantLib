@@ -76,8 +76,8 @@ namespace QuantLib {
         const Leg& cashflows() const;
         const boost::shared_ptr<CashFlow>& redemption() const;
 
-        const Date& maturityDate() const;
-        const Date& issueDate() const;
+        Date maturityDate() const;
+        Date issueDate() const;
 
         Date settlementDate(const Date& d = Date()) const;
         //@}
@@ -224,14 +224,14 @@ namespace QuantLib {
         return cashflows_.back();
     }
 
-    inline const Date& Bond::maturityDate() const {
+    inline Date Bond::maturityDate() const {
         if (maturityDate_!=Null<Date>())
             return maturityDate_;
         else
             return cashflows_.back()->date();
     }
 
-    inline const Date& Bond::issueDate() const {
+    inline Date Bond::issueDate() const {
         return issueDate_;
     }
 

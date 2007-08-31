@@ -49,7 +49,7 @@ namespace QuantLib {
                const Date& refPeriodEnd = Date());
         //! \name Partial CashFlow interface
         //@{
-        const Date& date() const;
+        Date date() const;
         //@}
         //! \name Inspectors
         //@{
@@ -86,7 +86,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline const Date& Coupon::date() const {
+    inline Date Coupon::date() const {
         return paymentDate_;
     }
 

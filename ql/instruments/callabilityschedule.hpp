@@ -61,7 +61,7 @@ namespace QuantLib {
             return *price_;
         }
         Type type() const { return type_; }
-        const Date& date() const { return date_; }
+        Date date() const { return date_; }
       private:
         boost::optional<Price> price_;
         Type type_;

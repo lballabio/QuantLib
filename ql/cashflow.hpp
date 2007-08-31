@@ -40,8 +40,8 @@ namespace QuantLib {
         virtual ~CashFlow() {}
         //! \name Event interface
         //@{
-        //! \note This is inheirited from the event class
-        virtual const Date& date() const = 0;
+        //! \note This is inheriited from the event class
+        virtual Date date() const = 0;
         //@}
         //! \name CashFlow interface
         //@{
