@@ -234,7 +234,6 @@ namespace QuantLib {
 
     }
 
-
     void setCouponPricer(
                   const Leg& leg,
                   const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
@@ -248,10 +247,16 @@ namespace QuantLib {
             const Leg& leg,
             const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >&
                                                                     pricers) {
-        QL_REQUIRE(leg.size() == pricers.size(),
-                   "mismatch between leg size and number of pricers");
-        for (Size i=0; i<leg.size(); ++i) {
-            PricerSetter setter(pricers[i]);
+        Size nCashFlows = leg.size();
+        QL_REQUIRE(nCashFlows>0, "no cashflows");
+
+        Size nPricers = pricers.size();
+        QL_REQUIRE(nCashFlows >= nPricers,
+                   "mismatch between leg size (" << nCashFlows <<
+                   ") and number of pricers (" << nPricers << ")");
+
+        for (Size i=0; i<nCashFlows; ++i) {
+            PricerSetter setter(i<nPricers ? pricers[i] : pricers[nPricers-1]);
             leg[i]->accept(setter);
         }
     }
