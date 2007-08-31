@@ -125,8 +125,8 @@ namespace QuantLib {
                                std::vector<Natural>(1,iborIndex_->fixingDays()),
                                std::vector<Real>(1, 1.0), // gearing
                                std::vector<Spread>(1, iborSpread_));
-        boost::shared_ptr<IborCouponPricer>
-                        fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+        boost::shared_ptr<IborCouponPricer> fictitiousPricer(new
+            BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
         setCouponPricer(floatLeg,fictitiousPricer);
 
         if (payCms_)
