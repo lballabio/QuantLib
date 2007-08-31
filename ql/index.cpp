@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,11 +24,8 @@ namespace QuantLib {
     void Index::addFixing(const Date& fixingDate,
                           Real fixing,
                           bool forceOverwrite) {
-        // using addFixings in order to avoid duplicating its full logic here
-        std::vector<Date> fixingDates(1, fixingDate);
-        std::vector<Real> fixings(1, fixing);
-        addFixings(fixingDates.begin(), fixingDates.end(),
-                   fixings.begin(), forceOverwrite);
+        addFixings(&fixingDate, (&fixingDate)+1,
+                   &fixing, forceOverwrite);
     }
 
     void Index::clearFixings() {
