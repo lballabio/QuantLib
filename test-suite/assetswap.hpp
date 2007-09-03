@@ -31,7 +31,11 @@ class AssetSwapTest {
     static void testMarketASWSpread();
     static void testZSpread();
     static void testGenericBondImplied();
-    static boost::unit_test_framework::test_suite* suite();
+    static void testMASWWithGenericBond();
+    static void testZSpreadWithGenericBond();
+    static void testSpecializedBondVsGenericBond();
+    static void testSpecializedBondVsGenericBondUsingAswSpread();
+    static  boost::unit_test_framework::test_suite* suite();
 };
 
 
