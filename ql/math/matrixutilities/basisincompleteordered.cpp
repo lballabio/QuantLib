@@ -49,7 +49,7 @@ namespace QuantLib {
                                             newVector_.end(),
                                             newVector_.begin(), 0.0));
 
-        if (norm==0.0) // maybe this should be a tolerance
+        if (norm<1e-12) // maybe this should be a tolerance
             return false;
 
         for (Size l=0; l<euclideanDimension_; ++l)
