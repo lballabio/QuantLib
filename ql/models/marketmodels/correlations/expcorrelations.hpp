@@ -20,7 +20,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file correlations.hpp
+/*! \file expcorrelations.hpp
     \brief exponential correlation matrix
 */
 
@@ -36,7 +36,7 @@ namespace QuantLib {
     /*! Exponential correlation
         L = long term correlation
         beta = exponential decay of correlation between far away forward rates
-        gamma = exponent for time to go  
+        gamma = exponent for time to go
         t = time dependence
     */
     Disposable<Matrix> exponentialCorrelations(

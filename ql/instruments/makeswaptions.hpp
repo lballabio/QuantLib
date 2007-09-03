@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file makeswaption.hpp
+/*! \file makeswaptions.hpp
     \brief Helper class to instantiate standard market swaption.
 */
 
@@ -63,7 +63,7 @@ namespace QuantLib {
 
         boost::shared_ptr<PricingEngine> engine_;
         mutable boost::shared_ptr<Exercise> exercise_;
-        mutable boost::shared_ptr<VanillaSwap> underlyingSwap_; 
+        mutable boost::shared_ptr<VanillaSwap> underlyingSwap_;
     };
 
 }

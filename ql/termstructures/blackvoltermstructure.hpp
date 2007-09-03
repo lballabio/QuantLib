@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file voltermstructure.hpp
+/*! \file blackvoltermstructure.hpp
     \brief Black volatility term structure base classes
 */
 

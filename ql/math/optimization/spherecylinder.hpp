@@ -30,12 +30,12 @@
 
 namespace QuantLib {
 
-    /*! we are in r^3 sphere centred at O radius r
-        vertical cylinder centred at (\alpha,0) radius s
-        Z some point in R3
-        find point on intersection that is closest to Z
+    /*! - we are in r^3 sphere centred at O radius r
+        - vertical cylinder centred at (alpha,0) radius s
+        - Z some point in R3
+        - find point on intersection that is closest to Z
 
-       the intersection may be empty!
+        the intersection may be empty!
     */
     class SphereCylinderOptimizer {
       public:
