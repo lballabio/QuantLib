@@ -206,11 +206,12 @@ namespace QuantLib {
     Bond::Bond(Natural settlementDays,
                const Calendar& calendar,
                Real faceAmount,
+               const Date& maturityDate,
                const Date& issueDate,
                const Leg& cashflows)
     : settlementDays_(settlementDays), calendar_(calendar),
       faceAmount_(faceAmount), cashflows_(cashflows),
-      issueDate_(issueDate) {
+      maturityDate_(maturityDate), issueDate_(issueDate) {
         registerWith(Settings::instance().evaluationDate());
     }
 

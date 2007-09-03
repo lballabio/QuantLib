@@ -30,10 +30,7 @@ namespace QuantLib {
                                    BusinessDayConvention paymentConvention,
                                    Real redemption,
                                    const Date& issueDate)
-    : Bond(settlementDays, calendar, faceAmount, issueDate) {
-
-        //firstAccrualDate_= Null<Date>(); // redundant for the sake of clarity
-        maturityDate_    = maturityDate;
+    : Bond(settlementDays, calendar, faceAmount, maturityDate, issueDate) {
 
         Date redemptionDate = calendar_.adjust(maturityDate_,
                                                paymentConvention);

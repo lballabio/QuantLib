@@ -40,12 +40,9 @@ namespace QuantLib {
             const DayCounter& dayCounter,
             const Schedule& schedule,
             Real)
-    : Bond(settlementDays, schedule.calendar(), 100.0, issueDate),
+    : Bond(settlementDays, schedule.calendar(), 100.0, schedule.endDate(), issueDate),
       conversionRatio_(conversionRatio), callability_(callability),
       dividends_(dividends), creditSpread_(creditSpread) {
-
-        //firstAccrualDate_ = schedule.startDate();
-        maturityDate_     = schedule.endDate();
 
         setPricingEngine(engine);
 

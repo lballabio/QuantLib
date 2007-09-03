@@ -60,6 +60,7 @@ namespace QuantLib {
         Bond(Natural settlementDays,
              const Calendar& calendar,
              Real faceAmount,
+             const Date& maturityDate,
              const Date& issueDate = Null<Date>(),
              const Leg& leg = std::vector<boost::shared_ptr<CashFlow> >());
         class arguments;

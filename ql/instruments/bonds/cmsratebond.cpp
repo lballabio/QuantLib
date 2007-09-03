@@ -42,10 +42,7 @@ namespace QuantLib {
                            bool inArrears,
                            Real redemption,
                            const Date& issueDate)
-    : Bond(settlementDays, schedule.calendar(), faceAmount, issueDate) {
-
-        //firstAccrualDate_ = schedule.startDate();
-        maturityDate_     = schedule.endDate();
+    : Bond(settlementDays, schedule.calendar(), faceAmount, schedule.endDate(), issueDate) {
 
         cashflows_ = CmsLeg(std::vector<Real>(1, faceAmount_),
                             schedule,

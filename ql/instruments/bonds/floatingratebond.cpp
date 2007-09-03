@@ -42,10 +42,7 @@ namespace QuantLib {
                            bool inArrears,
                            Real redemption,
                            const Date& issueDate)
-    : Bond(settlementDays, schedule.calendar(), faceAmount, issueDate) {
-
-        //firstAccrualDate_ = schedule.startDate();
-        maturityDate_     = schedule.endDate();
+    : Bond(settlementDays, schedule.calendar(), faceAmount, schedule.endDate(), issueDate) {
 
         cashflows_ = IborLeg(std::vector<Real>(1, faceAmount_),
                              schedule,
@@ -88,10 +85,7 @@ namespace QuantLib {
                            const Date& issueDate,
                            const Date& stubDate,
                            bool fromEnd)
-    : Bond(settlementDays, calendar, faceAmount, issueDate) {
-
-        //firstAccrualDate_ = startDate;
-        maturityDate_     = maturityDate;
+    : Bond(settlementDays, calendar, faceAmount, maturityDate, issueDate) {
 
         Date firstDate = (fromEnd ? Date() : stubDate);
         Date nextToLastDate = (fromEnd ? stubDate : Date());

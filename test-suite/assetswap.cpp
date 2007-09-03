@@ -75,6 +75,7 @@ Frequency floatingFrequency_ , fixedFrequency_;
 Natural settlementDays_ , swapSettlementDays_;
 RelinkableHandle<YieldTermStructure> termStructure_;
 
+
 void setup() {
     settlementDays_ = 3;
     swapSettlementDays_ = 2;
@@ -1270,9 +1271,10 @@ void AssetSwapTest::testGenericBondImplied() {
 
     // Fixed Underlying bond (Isin: DE0001135275 DBR 4 01/04/37)
     // maturity doesn't occur on a business day
-
-    Schedule fixedBondSchedule1(Date(4,January,2005),
-                                Date(4,January,2037),
+    Date fixedBondStartDate1 = Date(4,January,2005);
+    Date fixedBondMaturityDate1 = Date(4,January,2037);
+    Schedule fixedBondSchedule1(fixedBondStartDate1,
+                                fixedBondMaturityDate1,
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted, true, false);
     Leg fixedBondLeg1 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
@@ -1280,16 +1282,18 @@ void AssetSwapTest::testGenericBondImplied() {
                                      std::vector<Rate>(1, 0.04),
                                      ActualActual(ActualActual::ISDA),
                                      Following);
-    Date fixedbondRedemption1 = bondCalendar.adjust(Date(4,January,2037),
+    Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
     fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
-                            SimpleCashFlow(100.0, fixedbondRedemption1)));
+        SimpleCashFlow(100.0, fixedbondRedemption1)));
     boost::shared_ptr<Bond> fixedBond1(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,Date(4,January,2005),
-                            fixedBondLeg1));
-    boost::shared_ptr<PricingEngine> bondEngine(
-                                   new DiscountingBondEngine(termStructure_));
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             fixedBondMaturityDate1, fixedBondStartDate1,
+             fixedBondLeg1));
+    boost::shared_ptr<PricingEngine> bondEngine(new
+        DiscountingBondEngine(termStructure_));
     fixedBond1->setPricingEngine(bondEngine);
+
     Real fixedBondPrice1 = fixedBond1->cleanPrice();
     AssetSwap fixedBondAssetSwap1(payFixedRate,
                                   fixedBond1, fixedBondPrice1,
@@ -1313,9 +1317,10 @@ void AssetSwapTest::testGenericBondImplied() {
 
     // Fixed Underlying bond (Isin: IT0006527060 IBRD 5 02/05/19)
     // maturity occurs on a business day
-
-    Schedule fixedBondSchedule2(Date(5,February,2005),
-                                Date(5,February,2019),
+    Date fixedBondStartDate2 = Date(5,February,2005);
+    Date fixedBondMaturityDate2 = Date(5,February,2019);
+    Schedule fixedBondSchedule2(fixedBondStartDate2,
+                                fixedBondMaturityDate2,
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted, true, false);
     Leg fixedBondLeg2 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
@@ -1323,13 +1328,13 @@ void AssetSwapTest::testGenericBondImplied() {
                                      std::vector<Rate>(1, 0.05),
                                      Thirty360(Thirty360::BondBasis),
                                      Following);
-    Date fixedbondRedemption2 = bondCalendar.adjust(Date(5,February,2019),
+    Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
     fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
-                            SimpleCashFlow(100.0, fixedbondRedemption2)));
+        SimpleCashFlow(100.0, fixedbondRedemption2)));
     boost::shared_ptr<Bond> fixedBond2(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(5,February,2005),fixedBondLeg2));
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2));
     fixedBond2->setPricingEngine(bondEngine);
 
     Real fixedBondPrice2 = fixedBond2->cleanPrice();
@@ -1354,9 +1359,10 @@ void AssetSwapTest::testGenericBondImplied() {
 
     // FRN Underlying bond (Isin: IT0003543847 ISPIM 0 09/29/13)
     // maturity doesn't occur on a business day
-
-    Schedule floatingBondSchedule1(Date(29,September,2003),
-                                   Date(29,September,2013),
+    Date floatingBondStartDate1 = Date(29,September,2003);
+    Date floatingBondMaturityDate1 = Date(29,September,2013);
+    Schedule floatingBondSchedule1(floatingBondStartDate1,
+                                   floatingBondMaturityDate1,
                                    Period(Semiannual), bondCalendar,
                                    Unadjusted, Following,
                                    true, false);
@@ -1371,13 +1377,13 @@ void AssetSwapTest::testGenericBondImplied() {
                                    std::vector<Rate>(),
                                    std::vector<Rate>(),
                                    inArrears);
-    Date floatingbondRedemption1 = bondCalendar.adjust(Date(29,September,2013),
+    Date floatingbondRedemption1 = bondCalendar.adjust(floatingBondMaturityDate1,
                                                        Following);
     floatingBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
-                          SimpleCashFlow(100.0, floatingbondRedemption1)));
+        SimpleCashFlow(100.0, floatingbondRedemption1)));
     boost::shared_ptr<Bond> floatingBond1(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(29,September,2003),floatingBondLeg1));
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             floatingBondMaturityDate1, floatingBondStartDate1, floatingBondLeg1));
     floatingBond1->setPricingEngine(bondEngine);
 
     setCouponPricer(floatingBond1->cashflows(),pricer_);
@@ -1404,9 +1410,10 @@ void AssetSwapTest::testGenericBondImplied() {
 
     // FRN Underlying bond (Isin: XS0090566539 COE 0 09/24/18)
     // maturity occurs on a business day
-
-    Schedule floatingBondSchedule2(Date(24,September,2004),
-                                   Date(24,September,2018),
+    Date floatingBondStartDate2 = Date(24,September,2004);
+    Date floatingBondMaturityDate2 = Date(24,September,2018);
+    Schedule floatingBondSchedule2(floatingBondStartDate2,
+                                   floatingBondMaturityDate2,
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
                                    true, false);
@@ -1421,14 +1428,15 @@ void AssetSwapTest::testGenericBondImplied() {
                                    std::vector<Rate>(),
                                    std::vector<Rate>(),
                                    inArrears);
-    Date floatingbondRedemption2 = bondCalendar.adjust(Date(24,September,2018),
+    Date floatingbondRedemption2 = bondCalendar.adjust(floatingBondMaturityDate2,
                                                        ModifiedFollowing);
     floatingBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
-                          SimpleCashFlow(100.0, floatingbondRedemption2)));
+        SimpleCashFlow(100.0, floatingbondRedemption2)));
     boost::shared_ptr<Bond> floatingBond2(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(24,September,2004),floatingBondLeg2));
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             floatingBondMaturityDate2, floatingBondStartDate2, floatingBondLeg2));
     floatingBond2->setPricingEngine(bondEngine);
+
     setCouponPricer(floatingBond2->cashflows(),pricer_);
     iborIndex_->addFixing(Date(22,March,2007), 0.04013);
     Real currentCoupon=0.04013+0.0025;
@@ -1466,9 +1474,10 @@ void AssetSwapTest::testGenericBondImplied() {
 
     // CMS Underlying bond (Isin: XS0228052402 CRDIT 0 8/22/20)
     // maturity doesn't occur on a business day
-
-    Schedule cmsBondSchedule1(Date(22,August,2005),
-                              Date(22,August,2020),
+    Date cmsBondStartDate1 = Date(22,August,2005);
+    Date cmsBondMaturityDate1 = Date(22,August,2020);
+    Schedule cmsBondSchedule1(cmsBondStartDate1,
+                              cmsBondMaturityDate1,
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               true, false);
@@ -1483,13 +1492,13 @@ void AssetSwapTest::testGenericBondImplied() {
                              std::vector<Rate>(1,0.055), 
                              std::vector<Rate>(1,0.025),
                              inArrears);
-    Date cmsbondRedemption1 = bondCalendar.adjust(Date(22,August,2020),
+    Date cmsbondRedemption1 = bondCalendar.adjust(cmsBondMaturityDate1,
                                                   Following);
     cmsBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
-                          SimpleCashFlow(100.0, cmsbondRedemption1)));
+        SimpleCashFlow(100.0, cmsbondRedemption1)));
     boost::shared_ptr<Bond> cmsBond1(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(22,August,2005),cmsBondLeg1));
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             cmsBondMaturityDate1, cmsBondStartDate1, cmsBondLeg1));
     cmsBond1->setPricingEngine(bondEngine);
 
     setCouponPricer(cmsBond1->cashflows(),cmspricer_);
@@ -1514,11 +1523,12 @@ void AssetSwapTest::testGenericBondImplied() {
                     << "\n  tolerance:             " << tolerance);
     }
 
-     // CMS Underlying bond (Isin: XS0218766664 ISPIM 0 5/6/15)
-     // maturity occurs on a business day
-
-    Schedule cmsBondSchedule2(Date(06,May,2005),
-                              Date(06,May,2015),
+    // CMS Underlying bond (Isin: XS0218766664 ISPIM 0 5/6/15)
+    // maturity occurs on a business day
+    Date cmsBondStartDate2 = Date(06,May,2005);
+    Date cmsBondMaturityDate2 = Date(06,May,2015);
+    Schedule cmsBondSchedule2(cmsBondStartDate2,
+                              cmsBondMaturityDate2,
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               true, false);
@@ -1533,13 +1543,13 @@ void AssetSwapTest::testGenericBondImplied() {
                              std::vector<Rate>(), 
                              std::vector<Rate>(),
                              inArrears);
-    Date cmsbondRedemption2 = bondCalendar.adjust(Date(06,May,2015),
+    Date cmsbondRedemption2 = bondCalendar.adjust(cmsBondMaturityDate2,
                                                   Following);
     cmsBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
-                          SimpleCashFlow(100.0, cmsbondRedemption2)));
+        SimpleCashFlow(100.0, cmsbondRedemption2)));
     boost::shared_ptr<Bond> cmsBond2(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(06,May,2005),cmsBondLeg2));
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             cmsBondMaturityDate2, cmsBondStartDate2, cmsBondLeg2));
     cmsBond2->setPricingEngine(bondEngine);
 
     setCouponPricer(cmsBond2->cashflows(),cmspricer_);
@@ -1566,15 +1576,15 @@ void AssetSwapTest::testGenericBondImplied() {
 
     // Zero Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
     // maturity doesn't occur on a business day
-
-    Date zerocpbondRedemption1 = bondCalendar.adjust(Date(20,December,2015),
+    Date zeroCpnBondStartDate1 = Date(19,December,1985);
+    Date zeroCpnBondMaturityDate1 = Date(20,December,2015);
+    Date zeroCpnBondRedemption1 = bondCalendar.adjust(zeroCpnBondMaturityDate1,
                                                       Following);
     Leg zeroCpnBondLeg1 = Leg(1, boost::shared_ptr<CashFlow>(new
-            SimpleCashFlow(100.0, zerocpbondRedemption1)));
+        SimpleCashFlow(100.0, zeroCpnBondRedemption1)));
     boost::shared_ptr<Bond> zeroCpnBond1(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(19,December,1985),zeroCpnBondLeg1));
-
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             zeroCpnBondMaturityDate1, zeroCpnBondStartDate1, zeroCpnBondLeg1));
     zeroCpnBond1->setPricingEngine(bondEngine);
 
     Real zeroCpnBondPrice1 = zeroCpnBond1->cleanPrice();
@@ -1599,15 +1609,15 @@ void AssetSwapTest::testGenericBondImplied() {
 
     // Zero Coupon bond (Isin: IT0001200390 ISPIM 0 02/17/28)
     // maturity occurs on a business day
-
-    Date zerocpbondRedemption2 = bondCalendar.adjust(Date(17,February,2028),
+    Date zeroCpnBondStartDate2 = Date(17,February,1998);
+    Date zeroCpnBondMaturityDate2 = Date(17,February,2028);
+    Date zerocpbondRedemption2 = bondCalendar.adjust(zeroCpnBondMaturityDate2,
                                                       Following);
     Leg zeroCpnBondLeg2 = Leg(1, boost::shared_ptr<CashFlow>(new
-            SimpleCashFlow(100.0, zerocpbondRedemption2)));
+        SimpleCashFlow(100.0, zerocpbondRedemption2)));
     boost::shared_ptr<Bond> zeroCpnBond2(new
-           Bond(settlementDays, bondCalendar, faceAmount_,
-                Date(17,February,1998),zeroCpnBondLeg2));
-
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             zeroCpnBondMaturityDate2, zeroCpnBondStartDate2, zeroCpnBondLeg2));
     zeroCpnBond2->setPricingEngine(bondEngine);
 
     Real zeroCpnBondPrice2 = zeroCpnBond2->cleanPrice();
@@ -1652,8 +1662,10 @@ void AssetSwapTest::testMASWWithGenericBond() {
     // Fixed Underlying bond (Isin: DE0001135275 DBR 4 01/04/37)
     // maturity doesn't occur on a business day
 
-    Schedule fixedBondSchedule1(Date(4,January,2005),
-                                Date(4,January,2037),
+    Date fixedBondStartDate1 = Date(4,January,2005);
+    Date fixedBondMaturityDate1 = Date(4,January,2037);
+    Schedule fixedBondSchedule1(fixedBondStartDate1,
+                                fixedBondMaturityDate1,
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted, true, false);
     Leg fixedBondLeg1 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
@@ -1661,15 +1673,16 @@ void AssetSwapTest::testMASWWithGenericBond() {
                                      std::vector<Rate>(1, 0.04),
                                      ActualActual(ActualActual::ISDA),
                                      Following);
-    Date fixedbondRedemption1 = bondCalendar.adjust(Date(4,January,2037),
+    Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
     fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
-                            SimpleCashFlow(100.0, fixedbondRedemption1)));
+        SimpleCashFlow(100.0, fixedbondRedemption1)));
     boost::shared_ptr<Bond> fixedBond1(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(4,January,2005), fixedBondLeg1));
-    boost::shared_ptr<PricingEngine> bondEngine(
-                                   new DiscountingBondEngine(termStructure_));
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             fixedBondMaturityDate1, fixedBondStartDate1,
+             fixedBondLeg1));
+    boost::shared_ptr<PricingEngine> bondEngine(new
+        DiscountingBondEngine(termStructure_));
     fixedBond1->setPricingEngine(bondEngine);
 
     Real fixedBondMktPrice1 = 89.22 ; // market price observed on 7th June 2007
@@ -1706,8 +1719,10 @@ void AssetSwapTest::testMASWWithGenericBond() {
     // Fixed Underlying bond (Isin: IT0006527060 IBRD 5 02/05/19)
     // maturity occurs on a business day
 
-    Schedule fixedBondSchedule2(Date(5,February,2005),
-                                Date(5,February,2019),
+    Date fixedBondStartDate2 = Date(5,February,2005);
+    Date fixedBondMaturityDate2 = Date(5,February,2019);
+    Schedule fixedBondSchedule2(fixedBondStartDate2,
+                                fixedBondMaturityDate2,
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted, true, false);
     Leg fixedBondLeg2 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
@@ -1715,13 +1730,13 @@ void AssetSwapTest::testMASWWithGenericBond() {
                                      std::vector<Rate>(1, 0.05),
                                      Thirty360(Thirty360::BondBasis),
                                      Following);
-    Date fixedbondRedemption2 = bondCalendar.adjust(Date(5,February,2019),
+    Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
     fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
-                            SimpleCashFlow(100.0, fixedbondRedemption2)));
+        SimpleCashFlow(100.0, fixedbondRedemption2)));
     boost::shared_ptr<Bond> fixedBond2(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(5,February,2005),fixedBondLeg2));
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2));
     fixedBond2->setPricingEngine(bondEngine);
 
     Real fixedBondMktPrice2 = 99.98 ; // market price observed on 7th June 2007
@@ -1756,8 +1771,10 @@ void AssetSwapTest::testMASWWithGenericBond() {
     // FRN Underlying bond (Isin: IT0003543847 ISPIM 0 09/29/13)
     // maturity doesn't occur on a business day
 
-    Schedule floatingBondSchedule1(Date(29,September,2003),
-                                   Date(29,September,2013),
+    Date floatingBondStartDate1 = Date(29,September,2003);
+    Date floatingBondMaturityDate1 = Date(29,September,2013);
+    Schedule floatingBondSchedule1(floatingBondStartDate1,
+                                   floatingBondMaturityDate1,
                                    Period(Semiannual), bondCalendar,
                                    Unadjusted, Following,
                                    true, false);
@@ -1772,14 +1789,13 @@ void AssetSwapTest::testMASWWithGenericBond() {
                                    std::vector<Rate>(),
                                    std::vector<Rate>(),
                                    inArrears);
-    Date floatingbondRedemption1 = bondCalendar.adjust(Date(29,September,2013),
+    Date floatingbondRedemption1 = bondCalendar.adjust(floatingBondMaturityDate1,
                                                        Following);
     floatingBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
-                          SimpleCashFlow(100.0, floatingbondRedemption1)));
+        SimpleCashFlow(100.0, floatingbondRedemption1)));
     boost::shared_ptr<Bond> floatingBond1(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(29,September,2003),floatingBondLeg1));
-
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             floatingBondMaturityDate1, floatingBondStartDate1, floatingBondLeg1));
     floatingBond1->setPricingEngine(bondEngine);
 
     setCouponPricer(floatingBond1->cashflows(),pricer_);
@@ -1816,8 +1832,10 @@ void AssetSwapTest::testMASWWithGenericBond() {
     // FRN Underlying bond (Isin: XS0090566539 COE 0 09/24/18)
     // maturity occurs on a business day
 
-    Schedule floatingBondSchedule2(Date(24,September,2004),
-                                   Date(24,September,2018),
+    Date floatingBondStartDate2 = Date(24,September,2004);
+    Date floatingBondMaturityDate2 = Date(24,September,2018);
+    Schedule floatingBondSchedule2(floatingBondStartDate2,
+                                   floatingBondMaturityDate2,
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
                                    true, false);
@@ -1832,14 +1850,15 @@ void AssetSwapTest::testMASWWithGenericBond() {
                                    std::vector<Rate>(),
                                    std::vector<Rate>(),
                                    inArrears);
-    Date floatingbondRedemption2 = bondCalendar.adjust(Date(24,September,2018),
+    Date floatingbondRedemption2 = bondCalendar.adjust(floatingBondMaturityDate2,
                                                        ModifiedFollowing);
     floatingBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
-                          SimpleCashFlow(100.0, floatingbondRedemption2)));
+        SimpleCashFlow(100.0, floatingbondRedemption2)));
     boost::shared_ptr<Bond> floatingBond2(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(24,September,2004),floatingBondLeg2));
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             floatingBondMaturityDate2, floatingBondStartDate2, floatingBondLeg2));
     floatingBond2->setPricingEngine(bondEngine);
+
     setCouponPricer(floatingBond2->cashflows(),pricer_);
     iborIndex_->addFixing(Date(22,March,2007), 0.04013);
     Real floatingBondMktPrice2 = 101.248 ; // market price observed on 7th June 2007
@@ -1874,8 +1893,10 @@ void AssetSwapTest::testMASWWithGenericBond() {
     // CMS Underlying bond (Isin: XS0228052402 CRDIT 0 8/22/20)
     // maturity doesn't occur on a business day
 
-    Schedule cmsBondSchedule1(Date(22,August,2005),
-                              Date(22,August,2020),
+    Date cmsBondStartDate1 = Date(22,August,2005);
+    Date cmsBondMaturityDate1 = Date(22,August,2020);
+    Schedule cmsBondSchedule1(cmsBondStartDate1,
+                              cmsBondMaturityDate1,
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               true, false);
@@ -1890,15 +1911,13 @@ void AssetSwapTest::testMASWWithGenericBond() {
                              std::vector<Rate>(1,0.055), 
                              std::vector<Rate>(1,0.025),
                              inArrears);
-    Date cmsbondRedemption1 = bondCalendar.adjust(Date(22,August,2020),
+    Date cmsbondRedemption1 = bondCalendar.adjust(cmsBondMaturityDate1,
                                                   Following);
     cmsBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
-                          SimpleCashFlow(100.0, cmsbondRedemption1)));
+        SimpleCashFlow(100.0, cmsbondRedemption1)));
     boost::shared_ptr<Bond> cmsBond1(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(22,August,2005),cmsBondLeg1));
-    cmsBond1->setPricingEngine(bondEngine);
-
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             cmsBondMaturityDate1, cmsBondStartDate1, cmsBondLeg1));
     cmsBond1->setPricingEngine(bondEngine);
 
     setCouponPricer(cmsBond1->cashflows(),cmspricer_);
@@ -1935,8 +1954,10 @@ void AssetSwapTest::testMASWWithGenericBond() {
      // CMS Underlying bond (Isin: XS0218766664 ISPIM 0 5/6/15)
      // maturity occurs on a business day
 
-    Schedule cmsBondSchedule2(Date(06,May,2005),
-                              Date(06,May,2015),
+    Date cmsBondStartDate2 = Date(06,May,2005);
+    Date cmsBondMaturityDate2 = Date(06,May,2015);
+    Schedule cmsBondSchedule2(cmsBondStartDate2,
+                              cmsBondMaturityDate2,
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               true, false);
@@ -1951,14 +1972,13 @@ void AssetSwapTest::testMASWWithGenericBond() {
                              std::vector<Rate>(), 
                              std::vector<Rate>(),
                              inArrears);
-    Date cmsbondRedemption2 = bondCalendar.adjust(Date(06,May,2015),
+    Date cmsbondRedemption2 = bondCalendar.adjust(cmsBondMaturityDate2,
                                                   Following);
     cmsBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
-                          SimpleCashFlow(100.0, cmsbondRedemption2)));
+        SimpleCashFlow(100.0, cmsbondRedemption2)));
     boost::shared_ptr<Bond> cmsBond2(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(06,May,2005),cmsBondLeg2));
-
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             cmsBondMaturityDate2, cmsBondStartDate2, cmsBondLeg2));
     cmsBond2->setPricingEngine(bondEngine);
 
     setCouponPricer(cmsBond2->cashflows(),cmspricer_);
@@ -1995,14 +2015,15 @@ void AssetSwapTest::testMASWWithGenericBond() {
     // Zero Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
     // maturity doesn't occur on a business day
 
-    Date zerocpbondRedemption1 = bondCalendar.adjust(Date(20,December,2015),
+    Date zeroCpnBondStartDate1 = Date(19,December,1985);
+    Date zeroCpnBondMaturityDate1 = Date(20,December,2015);
+    Date zeroCpnBondRedemption1 = bondCalendar.adjust(zeroCpnBondMaturityDate1,
                                                       Following);
     Leg zeroCpnBondLeg1 = Leg(1, boost::shared_ptr<CashFlow>(new
-            SimpleCashFlow(100.0, zerocpbondRedemption1)));
+        SimpleCashFlow(100.0, zeroCpnBondRedemption1)));
     boost::shared_ptr<Bond> zeroCpnBond1(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(19,December,1985),zeroCpnBondLeg1));
-
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             zeroCpnBondMaturityDate1, zeroCpnBondStartDate1, zeroCpnBondLeg1));
     zeroCpnBond1->setPricingEngine(bondEngine);
 
     Real zeroCpnBondMktPrice1 = 70.436 ; // market price observed on 12th June 2007
@@ -2035,14 +2056,15 @@ void AssetSwapTest::testMASWWithGenericBond() {
     // Zero Coupon bond (Isin: IT0001200390 ISPIM 0 02/17/28)
     // maturity occurs on a business day
 
-    Date zerocpbondRedemption2 = bondCalendar.adjust(Date(17,February,2028),
+    Date zeroCpnBondStartDate2 = Date(17,February,1998);
+    Date zeroCpnBondMaturityDate2 = Date(17,February,2028);
+    Date zerocpbondRedemption2 = bondCalendar.adjust(zeroCpnBondMaturityDate2,
                                                       Following);
     Leg zeroCpnBondLeg2 = Leg(1, boost::shared_ptr<CashFlow>(new
-            SimpleCashFlow(100.0, zerocpbondRedemption2)));
+        SimpleCashFlow(100.0, zerocpbondRedemption2)));
     boost::shared_ptr<Bond> zeroCpnBond2(new
-           Bond(settlementDays, bondCalendar, faceAmount_,
-                Date(17,February,1998),zeroCpnBondLeg2));
-
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             zeroCpnBondMaturityDate2, zeroCpnBondStartDate2, zeroCpnBondLeg2));
     zeroCpnBond2->setPricingEngine(bondEngine);
 
     // Real zeroCpnBondPrice2 = zeroCpnBond2->cleanPrice();
@@ -2091,11 +2113,13 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Natural fixingDays = 2;
     bool inArrears = false;
 
-    // Fixed bond (Isin: DE0001135275 DBR 4 01/04/37)
+    // Fixed Underlying bond (Isin: DE0001135275 DBR 4 01/04/37)
     // maturity doesn't occur on a business day
 
-    Schedule fixedBondSchedule1(Date(4,January,2005),
-                                Date(4,January,2037),
+    Date fixedBondStartDate1 = Date(4,January,2005);
+    Date fixedBondMaturityDate1 = Date(4,January,2037);
+    Schedule fixedBondSchedule1(fixedBondStartDate1,
+                                fixedBondMaturityDate1,
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted, true, false);
     Leg fixedBondLeg1 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
@@ -2103,17 +2127,16 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                                      std::vector<Rate>(1, 0.04),
                                      ActualActual(ActualActual::ISDA),
                                      Following);
-    Date fixedbondRedemption1 = bondCalendar.adjust(Date(4,January,2037),
+    Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
     fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
-                            SimpleCashFlow(100.0, fixedbondRedemption1)));
+        SimpleCashFlow(100.0, fixedbondRedemption1)));
     boost::shared_ptr<Bond> fixedBond1(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,Date(4,January,2005),
-                            fixedBondLeg1));
-
-
-    boost::shared_ptr<PricingEngine> bondEngine(
-                                   new DiscountingBondEngine(termStructure_));
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             fixedBondMaturityDate1, fixedBondStartDate1,
+             fixedBondLeg1));
+    boost::shared_ptr<PricingEngine> bondEngine(new
+        DiscountingBondEngine(termStructure_));
     fixedBond1->setPricingEngine(bondEngine);
 
     Real fixedBondImpliedValue1 = fixedBond1->cleanPrice();
@@ -2149,11 +2172,13 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                     << "\n  tolerance:             " << tolerance);
     }
 
-    // Fixed bond (Isin: IT0006527060 IBRD 5 02/05/19)
+    // Fixed Underlying bond (Isin: IT0006527060 IBRD 5 02/05/19)
     // maturity occurs on a business day
 
-    Schedule fixedBondSchedule2(Date(5,February,2005),
-                                Date(5,February,2019),
+    Date fixedBondStartDate2 = Date(5,February,2005);
+    Date fixedBondMaturityDate2 = Date(5,February,2019);
+    Schedule fixedBondSchedule2(fixedBondStartDate2,
+                                fixedBondMaturityDate2,
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted, true, false);
     Leg fixedBondLeg2 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
@@ -2161,14 +2186,13 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                                      std::vector<Rate>(1, 0.05),
                                      Thirty360(Thirty360::BondBasis),
                                      Following);
-    Date fixedbondRedemption2 = bondCalendar.adjust(Date(5,February,2019),
+    Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
     fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
-                            SimpleCashFlow(100.0, fixedbondRedemption2)));
+        SimpleCashFlow(100.0, fixedbondRedemption2)));
     boost::shared_ptr<Bond> fixedBond2(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(5,February,2005),fixedBondLeg2));
-
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2));
     fixedBond2->setPricingEngine(bondEngine);
 
     Real fixedBondImpliedValue2 = fixedBond2->cleanPrice();
@@ -2204,15 +2228,16 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                     << "\n  tolerance:             " << tolerance);
     }
 
-    // FRN bond (Isin: IT0003543847 ISPIM 0 09/29/13)
+    // FRN Underlying bond (Isin: IT0003543847 ISPIM 0 09/29/13)
     // maturity doesn't occur on a business day
 
-    Schedule floatingBondSchedule1(Date(29,September,2003),
-                                   Date(29,September,2013),
+    Date floatingBondStartDate1 = Date(29,September,2003);
+    Date floatingBondMaturityDate1 = Date(29,September,2013);
+    Schedule floatingBondSchedule1(floatingBondStartDate1,
+                                   floatingBondMaturityDate1,
                                    Period(Semiannual), bondCalendar,
                                    Unadjusted, Following,
                                    true, false);
-
     Leg floatingBondLeg1 = IborLeg(std::vector<Real>(1, faceAmount_),
                                    floatingBondSchedule1,
                                    iborIndex_,
@@ -2224,14 +2249,13 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                                    std::vector<Rate>(),
                                    std::vector<Rate>(),
                                    inArrears);
-    Date floatingbondRedemption1 = bondCalendar.adjust(Date(29,September,2013),
+    Date floatingbondRedemption1 = bondCalendar.adjust(floatingBondMaturityDate1,
                                                        Following);
     floatingBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
-                          SimpleCashFlow(100.0, floatingbondRedemption1)));
+        SimpleCashFlow(100.0, floatingbondRedemption1)));
     boost::shared_ptr<Bond> floatingBond1(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(29,September,2003),floatingBondLeg1));
-
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             floatingBondMaturityDate1, floatingBondStartDate1, floatingBondLeg1));
     floatingBond1->setPricingEngine(bondEngine);
 
     setCouponPricer(floatingBond1->cashflows(),pricer_);
@@ -2269,11 +2293,13 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                     << "\n  tolerance:             " << tolerance);
     }
 
-    // FRN bond (Isin: XS0090566539 COE 0 09/24/18)
+    // FRN Underlying bond (Isin: XS0090566539 COE 0 09/24/18)
     // maturity occurs on a business day
 
-    Schedule floatingBondSchedule2(Date(24,September,2004),
-                                   Date(24,September,2018),
+    Date floatingBondStartDate2 = Date(24,September,2004);
+    Date floatingBondMaturityDate2 = Date(24,September,2018);
+    Schedule floatingBondSchedule2(floatingBondStartDate2,
+                                   floatingBondMaturityDate2,
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
                                    true, false);
@@ -2288,14 +2314,13 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                                    std::vector<Rate>(),
                                    std::vector<Rate>(),
                                    inArrears);
-    Date floatingbondRedemption2 = bondCalendar.adjust(Date(24,September,2018),
+    Date floatingbondRedemption2 = bondCalendar.adjust(floatingBondMaturityDate2,
                                                        ModifiedFollowing);
     floatingBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
-                          SimpleCashFlow(100.0, floatingbondRedemption2)));
+        SimpleCashFlow(100.0, floatingbondRedemption2)));
     boost::shared_ptr<Bond> floatingBond2(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(24,September,2004),floatingBondLeg2));
-
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             floatingBondMaturityDate2, floatingBondStartDate2, floatingBondLeg2));
     floatingBond2->setPricingEngine(bondEngine);
 
     setCouponPricer(floatingBond2->cashflows(),pricer_);
@@ -2334,11 +2359,13 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     }
 
 
-    //// CMS bond (Isin: XS0228052402 CRDIT 0 8/22/20)
-    //// maturity doesn't occur on a business day
+    // CMS Underlying bond (Isin: XS0228052402 CRDIT 0 8/22/20)
+    // maturity doesn't occur on a business day
 
-    Schedule cmsBondSchedule1(Date(22,August,2005),
-                              Date(22,August,2020),
+    Date cmsBondStartDate1 = Date(22,August,2005);
+    Date cmsBondMaturityDate1 = Date(22,August,2020);
+    Schedule cmsBondSchedule1(cmsBondStartDate1,
+                              cmsBondMaturityDate1,
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               true, false);
@@ -2353,14 +2380,13 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                              std::vector<Rate>(1,0.055), 
                              std::vector<Rate>(1,0.025),
                              inArrears);
-    Date cmsbondRedemption1 = bondCalendar.adjust(Date(22,August,2020),
+    Date cmsbondRedemption1 = bondCalendar.adjust(cmsBondMaturityDate1,
                                                   Following);
     cmsBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
-                          SimpleCashFlow(100.0, cmsbondRedemption1)));
+        SimpleCashFlow(100.0, cmsbondRedemption1)));
     boost::shared_ptr<Bond> cmsBond1(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(22,August,2005),cmsBondLeg1));
-
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             cmsBondMaturityDate1, cmsBondStartDate1, cmsBondLeg1));
     cmsBond1->setPricingEngine(bondEngine);
 
     setCouponPricer(cmsBond1->cashflows(),cmspricer_);
@@ -2397,11 +2423,13 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                     << "\n  tolerance:             " << tolerance);
     }
 
-     // CMS bond (Isin: XS0218766664 ISPIM 0 5/6/15)
-     // maturity occurs on a business day
+    // CMS Underlying bond (Isin: XS0218766664 ISPIM 0 5/6/15)
+    // maturity occurs on a business day
 
-    Schedule cmsBondSchedule2(Date(06,May,2005),
-                              Date(06,May,2015),
+    Date cmsBondStartDate2 = Date(06,May,2005);
+    Date cmsBondMaturityDate2 = Date(06,May,2015);
+    Schedule cmsBondSchedule2(cmsBondStartDate2,
+                              cmsBondMaturityDate2,
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               true, false);
@@ -2416,14 +2444,13 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                              std::vector<Rate>(), 
                              std::vector<Rate>(),
                              inArrears);
-    Date cmsbondRedemption2 = bondCalendar.adjust(Date(06,May,2015),
+    Date cmsbondRedemption2 = bondCalendar.adjust(cmsBondMaturityDate2,
                                                   Following);
     cmsBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
-                          SimpleCashFlow(100.0, cmsbondRedemption2)));
+        SimpleCashFlow(100.0, cmsbondRedemption2)));
     boost::shared_ptr<Bond> cmsBond2(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(06,May,2005),cmsBondLeg2));
-
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             cmsBondMaturityDate2, cmsBondStartDate2, cmsBondLeg2));
     cmsBond2->setPricingEngine(bondEngine);
 
     setCouponPricer(cmsBond2->cashflows(),cmspricer_);
@@ -2460,17 +2487,18 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                     << "\n  tolerance:             " << tolerance);
     }
 
-    // Zero-Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
+    // Zero Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
     // maturity doesn't occur on a business day
 
-    Date zerocpbondRedemption1 = bondCalendar.adjust(Date(20,December,2015),
+    Date zeroCpnBondStartDate1 = Date(19,December,1985);
+    Date zeroCpnBondMaturityDate1 = Date(20,December,2015);
+    Date zeroCpnBondRedemption1 = bondCalendar.adjust(zeroCpnBondMaturityDate1,
                                                       Following);
     Leg zeroCpnBondLeg1 = Leg(1, boost::shared_ptr<CashFlow>(new
-            SimpleCashFlow(100.0, zerocpbondRedemption1)));
+        SimpleCashFlow(100.0, zeroCpnBondRedemption1)));
     boost::shared_ptr<Bond> zeroCpnBond1(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(19,December,1985),zeroCpnBondLeg1));
-
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             zeroCpnBondMaturityDate1, zeroCpnBondStartDate1, zeroCpnBondLeg1));
     zeroCpnBond1->setPricingEngine(bondEngine);
 
     Real zeroCpnBondImpliedValue1 = zeroCpnBond1->cleanPrice();
@@ -2505,17 +2533,19 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                     << "\n  error:                 " << error14
                     << "\n  tolerance:             " << tolerance);
     }
-    // Zero Coupon bond (Isin: IT0001200390 ISPIM 0 02/17/28)
-    // maturity doesn't occur on a business day
 
-    Date zerocpbondRedemption2 = bondCalendar.adjust(Date(17,February,2028),
+    // Zero Coupon bond (Isin: IT0001200390 ISPIM 0 02/17/28)
+    // maturity occurs on a business day
+
+    Date zeroCpnBondStartDate2 = Date(17,February,1998);
+    Date zeroCpnBondMaturityDate2 = Date(17,February,2028);
+    Date zerocpbondRedemption2 = bondCalendar.adjust(zeroCpnBondMaturityDate2,
                                                       Following);
     Leg zeroCpnBondLeg2 = Leg(1, boost::shared_ptr<CashFlow>(new
-            SimpleCashFlow(100.0, zerocpbondRedemption2)));
+        SimpleCashFlow(100.0, zerocpbondRedemption2)));
     boost::shared_ptr<Bond> zeroCpnBond2(new
-           Bond(settlementDays, bondCalendar, faceAmount_,
-                Date(17,February,1998),zeroCpnBondLeg2));
-
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             zeroCpnBondMaturityDate2, zeroCpnBondStartDate2, zeroCpnBondLeg2));
     zeroCpnBond2->setPricingEngine(bondEngine);
 
     Real zeroCpnBondImpliedValue2 = zeroCpnBond2->cleanPrice();
@@ -2569,11 +2599,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     Natural fixingDays = 2;
     bool inArrears = false;
 
-    // Fixed bond (Isin: DE0001135275 DBR 4 01/04/37)
+    // Fixed Underlying bond (Isin: DE0001135275 DBR 4 01/04/37)
     // maturity doesn't occur on a business day
-
-    Schedule fixedBondSchedule1(Date(4,January,2005),
-                                Date(4,January,2037),
+    Date fixedBondStartDate1 = Date(4,January,2005);
+    Date fixedBondMaturityDate1 = Date(4,January,2037);
+    Schedule fixedBondSchedule1(fixedBondStartDate1,
+                                fixedBondMaturityDate1,
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted, true, false);
     Leg fixedBondLeg1 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
@@ -2581,63 +2612,63 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                                      std::vector<Rate>(1, 0.04),
                                      ActualActual(ActualActual::ISDA),
                                      Following);
-    Date fixedbondRedemption1 = bondCalendar.adjust(Date(4,January,2037),
+    Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
     fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
-                            SimpleCashFlow(100.0, fixedbondRedemption1)));
+        SimpleCashFlow(100.0, fixedbondRedemption1)));
+    boost::shared_ptr<Bond> fixedBond1(new
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             fixedBondMaturityDate1, fixedBondStartDate1,
+             fixedBondLeg1));
+    boost::shared_ptr<PricingEngine> bondEngine(new
+        DiscountingBondEngine(termStructure_));
+    fixedBond1->setPricingEngine(bondEngine);
 
     // specialized fixed rate bond 
-    boost::shared_ptr<Bond> fixedBond1(new
+    boost::shared_ptr<Bond> fixedSpecializedBond1(new
         FixedRateBond(settlementDays, faceAmount_, fixedBondSchedule1,
                       std::vector<Rate>(1, 0.04),
                       ActualActual(ActualActual::ISDA), Following,
                       100.0, Date(4,January,2005) ));
-    // equivalent generic bond given fixed leg
-    boost::shared_ptr<Bond> fixedGenericBond1(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,Date(4,January,2005),
-                            fixedBondLeg1));
-
-    boost::shared_ptr<PricingEngine> bondEngine(
-                                   new DiscountingBondEngine(termStructure_));
-    fixedBond1->setPricingEngine(bondEngine);
-    fixedGenericBond1->setPricingEngine(bondEngine);
+    fixedSpecializedBond1->setPricingEngine(bondEngine);
 
     Real fixedBondTheoValue1 = fixedBond1->cleanPrice();
-    Real fixedGenericBondTheoValue1 = fixedGenericBond1->cleanPrice();
+    Real fixedSpecializedBondTheoValue1 = fixedSpecializedBond1->cleanPrice();
     Real tolerance = 1.0e-13;
-    Real error1 = std::fabs(fixedBondTheoValue1-fixedGenericBondTheoValue1);
+    Real error1 = std::fabs(fixedBondTheoValue1-fixedSpecializedBondTheoValue1);
     if (error1>tolerance) {
         BOOST_ERROR("wrong clean price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
                     << "\n  specialized fixed rate bond's theo clean price: " 
                     << fixedBondTheoValue1
                     << "\n  generic equivalent bond's theo clean price: " 
-                    << fixedGenericBondTheoValue1
+                    << fixedSpecializedBondTheoValue1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error1
                     << "\n  tolerance:             " << tolerance);
     }
     Real fixedBondTheoDirty1 = fixedBondTheoValue1+fixedBond1->accruedAmount();
-    Real fixedGenericTheoDirty1 = fixedGenericBondTheoValue1+
-                                  fixedGenericBond1->accruedAmount();
-    Real error2 = std::fabs(fixedBondTheoDirty1-fixedGenericTheoDirty1);
+    Real fixedSpecializedTheoDirty1 = fixedSpecializedBondTheoValue1+
+                                  fixedSpecializedBond1->accruedAmount();
+    Real error2 = std::fabs(fixedBondTheoDirty1-fixedSpecializedTheoDirty1);
     if (error2>tolerance) {
         BOOST_ERROR("wrong dirty price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
                     << "\n  specialized fixed rate bond's theo dirty price: " 
                     << fixedBondTheoDirty1
                     << "\n  generic equivalent bond's theo dirty price: " 
-                    << fixedGenericTheoDirty1
+                    << fixedSpecializedTheoDirty1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error2
                     << "\n  tolerance:             " << tolerance);
     }
 
-    // Fixed bond (Isin: IT0006527060 IBRD 5 02/05/19)
+    // Fixed Underlying bond (Isin: IT0006527060 IBRD 5 02/05/19)
     // maturity occurs on a business day
-
-    Schedule fixedBondSchedule2(Date(5,February,2005),
-                                Date(5,February,2019),
+    Date fixedBondStartDate2 = Date(5,February,2005);
+    Date fixedBondMaturityDate2 = Date(5,February,2019);
+    Schedule fixedBondSchedule2(fixedBondStartDate2,
+                                fixedBondMaturityDate2,
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted, true, false);
     Leg fixedBondLeg2 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
@@ -2645,65 +2676,64 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                                      std::vector<Rate>(1, 0.05),
                                      Thirty360(Thirty360::BondBasis),
                                      Following);
-    Date fixedbondRedemption2 = bondCalendar.adjust(Date(5,February,2019),
+    Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
     fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
-                            SimpleCashFlow(100.0, fixedbondRedemption2)));
-    // specialized fixed rate bond 
+        SimpleCashFlow(100.0, fixedbondRedemption2)));
     boost::shared_ptr<Bond> fixedBond2(new
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2));
+    fixedBond2->setPricingEngine(bondEngine);
+
+    // specialized fixed rate bond 
+    boost::shared_ptr<Bond> fixedSpecializedBond2(new
          FixedRateBond(settlementDays, faceAmount_, fixedBondSchedule2,
                       std::vector<Rate>(1, 0.05),
                       Thirty360(Thirty360::BondBasis), Following,
                       100.0, Date(5,February,2005)));
-    // equivalent generic bond given fixed leg
-    boost::shared_ptr<Bond> fixedGenericBond2(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(5,February,2005),fixedBondLeg2));
-
-    fixedBond2->setPricingEngine(bondEngine);
-    fixedGenericBond2->setPricingEngine(bondEngine);
+    fixedSpecializedBond2->setPricingEngine(bondEngine);
 
     Real fixedBondTheoValue2 = fixedBond2->cleanPrice();
-    Real fixedGenericBondTheoValue2 = fixedGenericBond2->cleanPrice();
+    Real fixedSpecializedBondTheoValue2 = fixedSpecializedBond2->cleanPrice();
 
-    Real error3 = std::fabs(fixedBondTheoValue2-fixedGenericBondTheoValue2);
+    Real error3 = std::fabs(fixedBondTheoValue2-fixedSpecializedBondTheoValue2);
     if (error3>tolerance) {
         BOOST_ERROR("wrong clean price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
                     << "\n  specialized fixed rate bond's theo clean price: " 
                     << fixedBondTheoValue2
                     << "\n  generic equivalent bond's theo clean price: " 
-                    << fixedGenericBondTheoValue2
+                    << fixedSpecializedBondTheoValue2
                     << "\n  error:                 " << error3
                     << "\n  tolerance:             " << tolerance);
     }
     Real fixedBondTheoDirty2 = fixedBondTheoValue2+
                                fixedBond2->accruedAmount();
-    Real fixedGenericBondTheoDirty2 = fixedGenericBondTheoValue2+
-                                      fixedGenericBond2->accruedAmount();
+    Real fixedSpecializedBondTheoDirty2 = fixedSpecializedBondTheoValue2+
+                                      fixedSpecializedBond2->accruedAmount();
 
-    Real error4 = std::fabs(fixedBondTheoDirty2-fixedGenericBondTheoDirty2);
+    Real error4 = std::fabs(fixedBondTheoDirty2-fixedSpecializedBondTheoDirty2);
     if (error4>tolerance) {
         BOOST_ERROR("wrong dirty price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
                     << "\n  specialized fixed rate bond's dirty clean price: " 
                     << fixedBondTheoDirty2
                     << "\n  generic equivalent bond's theo dirty price: " 
-                    << fixedGenericBondTheoDirty2
+                    << fixedSpecializedBondTheoDirty2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error4
                     << "\n  tolerance:             " << tolerance);
     }
 
-    // FRN bond (Isin: IT0003543847 ISPIM 0 09/29/13)
+    // FRN Underlying bond (Isin: IT0003543847 ISPIM 0 09/29/13)
     // maturity doesn't occur on a business day
-
-    Schedule floatingBondSchedule1(Date(29,September,2003),
-                                   Date(29,September,2013),
+    Date floatingBondStartDate1 = Date(29,September,2003);
+    Date floatingBondMaturityDate1 = Date(29,September,2013);
+    Schedule floatingBondSchedule1(floatingBondStartDate1,
+                                   floatingBondMaturityDate1,
                                    Period(Semiannual), bondCalendar,
                                    Unadjusted, Following,
                                    true, false);
-
     Leg floatingBondLeg1 = IborLeg(std::vector<Real>(1, faceAmount_),
                                    floatingBondSchedule1,
                                    iborIndex_,
@@ -2715,12 +2745,17 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                                    std::vector<Rate>(),
                                    std::vector<Rate>(),
                                    inArrears);
-    Date floatingbondRedemption1 = bondCalendar.adjust(Date(29,September,2013),
+    Date floatingbondRedemption1 = bondCalendar.adjust(floatingBondMaturityDate1,
                                                        Following);
     floatingBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
-                          SimpleCashFlow(100.0, floatingbondRedemption1)));
-    // specialized floater
+        SimpleCashFlow(100.0, floatingbondRedemption1)));
     boost::shared_ptr<Bond> floatingBond1(new
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             floatingBondMaturityDate1, floatingBondStartDate1, floatingBondLeg1));
+    floatingBond1->setPricingEngine(bondEngine);
+
+    // specialized floater
+    boost::shared_ptr<Bond> floatingSpecializedBond1(new
            FloatingRateBond(settlementDays, faceAmount_, floatingBondSchedule1,
                             iborIndex_, Actual360(),
                             Following, fixingDays,
@@ -2729,56 +2764,51 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                             std::vector<Rate>(), std::vector<Rate>(),
                             inArrears,
                             100.0, Date(29,September,2003)));
-    // equivalent generic floater
-    boost::shared_ptr<Bond> floatingGenericBond1(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(29,September,2003),floatingBondLeg1));
-
-    floatingBond1->setPricingEngine(bondEngine);
-    floatingGenericBond1->setPricingEngine(bondEngine);
+    floatingSpecializedBond1->setPricingEngine(bondEngine);
 
     setCouponPricer(floatingBond1->cashflows(),pricer_);
-    setCouponPricer(floatingGenericBond1->cashflows(),pricer_);
+    setCouponPricer(floatingSpecializedBond1->cashflows(),pricer_);
     iborIndex_->addFixing(Date(27,March,2007), 0.0402);
     Real floatingBondTheoValue1 = floatingBond1->cleanPrice();
-    Real floatingGenericBondTheoValue1= floatingGenericBond1->cleanPrice();
+    Real floatingSpecializedBondTheoValue1= floatingSpecializedBond1->cleanPrice();
 
     Real error5 = std::fabs(floatingBondTheoValue1-
-                            floatingGenericBondTheoValue1);
+                            floatingSpecializedBondTheoValue1);
     if (error5>tolerance) {
         BOOST_ERROR("wrong clean price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
                     << "\n  specialized fixed rate bond's theo clean price: " 
                     << floatingBondTheoValue1
                     << "\n  generic equivalent bond's theo clean price: " 
-                    << floatingGenericBondTheoValue1
+                    << floatingSpecializedBondTheoValue1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error5
                     << "\n  tolerance:             " << tolerance);
     }
     Real floatingBondTheoDirty1 = floatingBondTheoValue1+
                                   floatingBond1->accruedAmount();
-    Real floatingGenericBondTheoDirty1 = floatingGenericBondTheoValue1+
-                                         floatingGenericBond1->accruedAmount();
+    Real floatingSpecializedBondTheoDirty1 = floatingSpecializedBondTheoValue1+
+                                         floatingSpecializedBond1->accruedAmount();
     Real error6 = std::fabs(floatingBondTheoDirty1-
-                            floatingGenericBondTheoDirty1);
+                            floatingSpecializedBondTheoDirty1);
     if (error6>tolerance) {
         BOOST_ERROR("wrong dirty price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
                     << "\n  specialized frn bond's dirty clean price: " 
                     << floatingBondTheoDirty1
                     << "\n  generic equivalent bond's theo dirty price: " 
-                    << floatingGenericBondTheoDirty1
+                    << floatingSpecializedBondTheoDirty1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error6
                     << "\n  tolerance:             " << tolerance);
     }
 
-    // FRN bond (Isin: XS0090566539 COE 0 09/24/18)
+    // FRN Underlying bond (Isin: XS0090566539 COE 0 09/24/18)
     // maturity occurs on a business day
-
-    Schedule floatingBondSchedule2(Date(24,September,2004),
-                                   Date(24,September,2018),
+    Date floatingBondStartDate2 = Date(24,September,2004);
+    Date floatingBondMaturityDate2 = Date(24,September,2018);
+    Schedule floatingBondSchedule2(floatingBondStartDate2,
+                                   floatingBondMaturityDate2,
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
                                    true, false);
@@ -2793,13 +2823,18 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                                    std::vector<Rate>(),
                                    std::vector<Rate>(),
                                    inArrears);
-    Date floatingbondRedemption2 = bondCalendar.adjust(Date(24,September,2018),
+    Date floatingbondRedemption2 = bondCalendar.adjust(floatingBondMaturityDate2,
                                                        ModifiedFollowing);
     floatingBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
-                          SimpleCashFlow(100.0, floatingbondRedemption2)));
+        SimpleCashFlow(100.0, floatingbondRedemption2)));
+    boost::shared_ptr<Bond> floatingBond2(new
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             floatingBondMaturityDate2, floatingBondStartDate2, floatingBondLeg2));
+    floatingBond2->setPricingEngine(bondEngine);
+
     // specialized floater
-   boost::shared_ptr<Bond> floatingBond2(new
-          FloatingRateBond(settlementDays, faceAmount_, floatingBondSchedule2,
+    boost::shared_ptr<Bond> floatingSpecializedBond2(new
+        FloatingRateBond(settlementDays, faceAmount_, floatingBondSchedule2,
                            iborIndex_, Actual360(),
                            ModifiedFollowing, fixingDays,
                            std::vector<Real>(1,1), 
@@ -2807,38 +2842,32 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                            std::vector<Rate>(), std::vector<Rate>(),
                            inArrears,
                            100.0, Date(24,September,2004)));
-    // equivalent generic floater
-    boost::shared_ptr<Bond> floatingGenericBond2(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(24,September,2004),floatingBondLeg2));
-
-    floatingBond2->setPricingEngine(bondEngine);
-    floatingGenericBond2->setPricingEngine(bondEngine);
+    floatingSpecializedBond2->setPricingEngine(bondEngine);
 
     setCouponPricer(floatingBond2->cashflows(),pricer_);
-    setCouponPricer(floatingGenericBond2->cashflows(),pricer_);
+    setCouponPricer(floatingSpecializedBond2->cashflows(),pricer_);
 
     iborIndex_->addFixing(Date(22,March,2007), 0.04013);
 
     Real floatingBondTheoValue2 = floatingBond2->cleanPrice();
-    Real floatingGenericBondTheoValue2= floatingGenericBond2->cleanPrice();
+    Real floatingSpecializedBondTheoValue2= floatingSpecializedBond2->cleanPrice();
 
-    Real error7 = std::fabs(floatingBondTheoValue2-floatingGenericBondTheoValue2);
+    Real error7 = std::fabs(floatingBondTheoValue2-floatingSpecializedBondTheoValue2);
     if (error7>tolerance) {
         BOOST_ERROR("wrong clean price for floater bond:"
                     << QL_FIXED << std::setprecision(4)
                     << "\n  specialized floater bond's theo clean price: " 
                     << floatingBondTheoValue2
                     << "\n  generic equivalent bond's theo clean price: " 
-                    << floatingGenericBondTheoValue2
+                    << floatingSpecializedBondTheoValue2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error7
                     << "\n  tolerance:             " << tolerance);
     }
     Real floatingBondTheoDirty2 = floatingBondTheoValue2+
                                   floatingBond2->accruedAmount();
-    Real floatingGenericTheoDirty2 = floatingGenericBondTheoValue2+
-                                     floatingGenericBond2->accruedAmount();
+    Real floatingGenericTheoDirty2 = floatingSpecializedBondTheoValue2+
+                                     floatingSpecializedBond2->accruedAmount();
 
     Real error8 = std::fabs(floatingBondTheoDirty2-floatingGenericTheoDirty2);
     if (error8>tolerance) {
@@ -2854,11 +2883,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     }
 
 
-    //// CMS bond (Isin: XS0228052402 CRDIT 0 8/22/20)
-    //// maturity doesn't occur on a business day
-
-    Schedule cmsBondSchedule1(Date(22,August,2005),
-                              Date(22,August,2020),
+    // CMS Underlying bond (Isin: XS0228052402 CRDIT 0 8/22/20)
+    // maturity doesn't occur on a business day
+    Date cmsBondStartDate1 = Date(22,August,2005);
+    Date cmsBondMaturityDate1 = Date(22,August,2020);
+    Schedule cmsBondSchedule1(cmsBondStartDate1,
+                              cmsBondMaturityDate1,
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               true, false);
@@ -2873,67 +2903,65 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                              std::vector<Rate>(1,0.055), 
                              std::vector<Rate>(1,0.025),
                              inArrears);
-    Date cmsbondRedemption1 = bondCalendar.adjust(Date(22,August,2020),
+    Date cmsbondRedemption1 = bondCalendar.adjust(cmsBondMaturityDate1,
                                                   Following);
     cmsBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
-                          SimpleCashFlow(100.0, cmsbondRedemption1)));
+        SimpleCashFlow(100.0, cmsbondRedemption1)));
+    boost::shared_ptr<Bond> cmsBond1(new
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             cmsBondMaturityDate1, cmsBondStartDate1, cmsBondLeg1));
+    cmsBond1->setPricingEngine(bondEngine);
 
     // specialized cms bond
-    boost::shared_ptr<Bond> cmsBond1(new
-    CmsRateBond(settlementDays, faceAmount_, cmsBondSchedule1,
+    boost::shared_ptr<Bond> cmsSpecializedBond1(new
+        CmsRateBond(settlementDays, faceAmount_, cmsBondSchedule1,
                 swapIndex_, Thirty360(),
                 Following, fixingDays,
                 std::vector<Real>(1,1.0), std::vector<Spread>(1,0.0),
                 std::vector<Rate>(1,0.055), std::vector<Rate>(1,0.025),
                 inArrears,
                 100.0, Date(22,August,2005)));
-
-    // equivalent generic cms bond
-    boost::shared_ptr<Bond> cmsGenericBond1(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(22,August,2005),cmsBondLeg1));
-
-    cmsBond1->setPricingEngine(bondEngine);
-    cmsGenericBond1->setPricingEngine(bondEngine);
+    cmsSpecializedBond1->setPricingEngine(bondEngine);
 
     setCouponPricer(cmsBond1->cashflows(),cmspricer_);
-    setCouponPricer(cmsGenericBond1->cashflows(),cmspricer_);
+    setCouponPricer(cmsSpecializedBond1->cashflows(),cmspricer_);
     swapIndex_->addFixing(Date(18,August,2006), 0.04158);
     Real cmsBondTheoValue1 = cmsBond1->cleanPrice();
-    Real cmsGenericBondTheoValue1 = cmsGenericBond1->cleanPrice();
-    Real error9 = std::fabs(cmsBondTheoValue1-cmsGenericBondTheoValue1);
+    Real cmsSpecializedBondTheoValue1 = cmsSpecializedBond1->cleanPrice();
+    Real error9 = std::fabs(cmsBondTheoValue1-cmsSpecializedBondTheoValue1);
     if (error9>tolerance) {
         BOOST_ERROR("wrong clean price for cms bond:"
                     << QL_FIXED << std::setprecision(4)
                     << "\n  specialized cms bond's theo clean price: " 
                     << cmsBondTheoValue1
                     <<  "\n  generic equivalent bond's theo clean price: " 
-                    << cmsGenericBondTheoValue1
+                    << cmsSpecializedBondTheoValue1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error9
                     << "\n  tolerance:             " << tolerance);
     }
     Real cmsBondTheoDirty1 = cmsBondTheoValue1+cmsBond1->accruedAmount();
-    Real cmsGenericBondTheoDirty1 = cmsGenericBondTheoValue1+
-                                    cmsGenericBond1->accruedAmount();
-    Real error10 = std::fabs(cmsBondTheoDirty1-cmsGenericBondTheoDirty1);
+    Real cmsSpecializedBondTheoDirty1 = cmsSpecializedBondTheoValue1+
+                                    cmsSpecializedBond1->accruedAmount();
+    Real error10 = std::fabs(cmsBondTheoDirty1-cmsSpecializedBondTheoDirty1);
     if (error10>tolerance) {
         BOOST_ERROR("wrong dirty price for cms bond:"
                     << QL_FIXED << std::setprecision(4)
                     << "\n  specialized cms bond's theo dirty price: " 
                     << cmsBondTheoDirty1
                     << "\n  generic cms bond's theo dirty price: " 
-                    << cmsGenericBondTheoDirty1
+                    << cmsSpecializedBondTheoDirty1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error10
                     << "\n  tolerance:             " << tolerance);
     }
 
-     // CMS bond (Isin: XS0218766664 ISPIM 0 5/6/15)
-     // maturity occurs on a business day
-
-    Schedule cmsBondSchedule2(Date(06,May,2005),
-                              Date(06,May,2015),
+    // CMS Underlying bond (Isin: XS0218766664 ISPIM 0 5/6/15)
+    // maturity occurs on a business day
+    Date cmsBondStartDate2 = Date(06,May,2005);
+    Date cmsBondMaturityDate2 = Date(06,May,2015);
+    Schedule cmsBondSchedule2(cmsBondStartDate2,
+                              cmsBondMaturityDate2,
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               true, false);
@@ -2948,149 +2976,144 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                              std::vector<Rate>(), 
                              std::vector<Rate>(),
                              inArrears);
-    Date cmsbondRedemption2 = bondCalendar.adjust(Date(06,May,2015),
+    Date cmsbondRedemption2 = bondCalendar.adjust(cmsBondMaturityDate2,
                                                   Following);
     cmsBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
-                          SimpleCashFlow(100.0, cmsbondRedemption2)));
+        SimpleCashFlow(100.0, cmsbondRedemption2)));
+    boost::shared_ptr<Bond> cmsBond2(new
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             cmsBondMaturityDate2, cmsBondStartDate2, cmsBondLeg2));
+    cmsBond2->setPricingEngine(bondEngine);
 
     // specialized cms bond
-    boost::shared_ptr<Bond> cmsBond2(new
-    CmsRateBond(settlementDays, faceAmount_, cmsBondSchedule2,
+    boost::shared_ptr<Bond> cmsSpecializedBond2(new
+        CmsRateBond(settlementDays, faceAmount_, cmsBondSchedule2,
                 swapIndex_, Thirty360(),
                 Following, fixingDays,
                 std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
                 std::vector<Rate>(), std::vector<Rate>(),
                 inArrears,
                 100.0, Date(06,May,2005)));
-
-    // equivalent generic cms bond
-    boost::shared_ptr<Bond> cmsGenericBond2(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(06,May,2005),cmsBondLeg2));
-
-    cmsBond2->setPricingEngine(bondEngine);
-    cmsGenericBond2->setPricingEngine(bondEngine);
+    cmsSpecializedBond2->setPricingEngine(bondEngine);
 
     setCouponPricer(cmsBond2->cashflows(),cmspricer_);
-    setCouponPricer(cmsGenericBond2->cashflows(),cmspricer_);
+    setCouponPricer(cmsSpecializedBond2->cashflows(),cmspricer_);
     swapIndex_->addFixing(Date(04,May,2006), 0.04217);
     Real cmsBondTheoValue2 = cmsBond2->cleanPrice();
-    Real cmsGenericBondTheoValue2 = cmsGenericBond2->cleanPrice();
+    Real cmsSpecializedBondTheoValue2 = cmsSpecializedBond2->cleanPrice();
 
-    Real error11 = std::fabs(cmsBondTheoValue2-cmsGenericBondTheoValue2);
+    Real error11 = std::fabs(cmsBondTheoValue2-cmsSpecializedBondTheoValue2);
     if (error11>tolerance) {
         BOOST_ERROR("wrong clean price for cms bond:"
                     << QL_FIXED << std::setprecision(4)
                     << "\n  specialized cms bond's theo clean price: " 
                     << cmsBondTheoValue2
                     << "\n  generic cms bond's theo clean price: " 
-                    << cmsGenericBondTheoValue2
+                    << cmsSpecializedBondTheoValue2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error11
                     << "\n  tolerance:             " << tolerance);
     }
     Real cmsBondTheoDirty2 = cmsBondTheoValue2+cmsBond2->accruedAmount();
-    Real cmsGenericBondTheoDirty2 = cmsGenericBondTheoValue2+cmsGenericBond2->accruedAmount();
-    Real error12 = std::fabs(cmsBondTheoDirty2-cmsGenericBondTheoDirty2);
+    Real cmsSpecializedBondTheoDirty2 = cmsSpecializedBondTheoValue2+cmsSpecializedBond2->accruedAmount();
+    Real error12 = std::fabs(cmsBondTheoDirty2-cmsSpecializedBondTheoDirty2);
     if (error12>tolerance) {
         BOOST_ERROR("wrong dirty price for cms bond:"
                     << QL_FIXED << std::setprecision(4)
                     << "\n  specialized cms bond's dirty price: " 
                     << cmsBondTheoDirty2
                     << "\n  generic cms bond's theo dirty price: " 
-                    << cmsGenericBondTheoDirty2
+                    << cmsSpecializedBondTheoDirty2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error12
                     << "\n  tolerance:             " << tolerance);
     }
 
-    // Zero-Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
+    // Zero Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
     // maturity doesn't occur on a business day
-
-    Date zerocpbondRedemption1 = bondCalendar.adjust(Date(20,December,2015),
+    Date zeroCpnBondStartDate1 = Date(19,December,1985);
+    Date zeroCpnBondMaturityDate1 = Date(20,December,2015);
+    Date zeroCpnBondRedemption1 = bondCalendar.adjust(zeroCpnBondMaturityDate1,
                                                       Following);
     Leg zeroCpnBondLeg1 = Leg(1, boost::shared_ptr<CashFlow>(new
-            SimpleCashFlow(100.0, zerocpbondRedemption1)));
-    // specialized zerocpn bond
+        SimpleCashFlow(100.0, zeroCpnBondRedemption1)));
     boost::shared_ptr<Bond> zeroCpnBond1(new
-    ZeroCouponBond(settlementDays, bondCalendar, faceAmount_,
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             zeroCpnBondMaturityDate1, zeroCpnBondStartDate1, zeroCpnBondLeg1));
+    zeroCpnBond1->setPricingEngine(bondEngine);
+
+    // specialized zerocpn bond
+    boost::shared_ptr<Bond> zeroCpnSpecializedBond1(new
+        ZeroCouponBond(settlementDays, bondCalendar, faceAmount_,
                   Date(20,December,2015),
                   Following,
                   100.0, Date(19,December,1985)));
-
-    // generic zerocpn bond
-    boost::shared_ptr<Bond> zeroCpnGenericBond1(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(19,December,1985),zeroCpnBondLeg1));
-
-    zeroCpnBond1->setPricingEngine(bondEngine);
-    zeroCpnGenericBond1->setPricingEngine(bondEngine);
+    zeroCpnSpecializedBond1->setPricingEngine(bondEngine);
 
     Real zeroCpnBondTheoValue1 = zeroCpnBond1->cleanPrice();
-    Real zeroCpnGenericBondTheoValue1 = zeroCpnGenericBond1->cleanPrice();
+    Real zeroCpnSpecializedBondTheoValue1 = zeroCpnSpecializedBond1->cleanPrice();
 
-    Real error13 = std::fabs(zeroCpnBondTheoValue1-zeroCpnGenericBondTheoValue1);
+    Real error13 = std::fabs(zeroCpnBondTheoValue1-zeroCpnSpecializedBondTheoValue1);
     if (error13>tolerance) {
         BOOST_ERROR("wrong clean price for zero coupon bond:"
                     << QL_FIXED << std::setprecision(4)
                     << "\n  specialized cms bond's clean price: " 
                     << zeroCpnBondTheoValue1
                     << "\n  generic cms bond's clean price: " 
-                    << zeroCpnGenericBondTheoValue1
+                    << zeroCpnSpecializedBondTheoValue1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error13
                     << "\n  tolerance:             " << tolerance);
     }
     Real zeroCpnBondTheoDirty1 = zeroCpnBondTheoValue1+
                                  zeroCpnBond1->accruedAmount();
-    Real zeroCpnGenericBondTheoDirty1 = zeroCpnGenericBondTheoValue1+
-                                        zeroCpnGenericBond1->accruedAmount();
-    Real error14 = std::fabs(zeroCpnBondTheoDirty1-zeroCpnGenericBondTheoDirty1);
+    Real zeroCpnSpecializedBondTheoDirty1 = zeroCpnSpecializedBondTheoValue1+
+                                        zeroCpnSpecializedBond1->accruedAmount();
+    Real error14 = std::fabs(zeroCpnBondTheoDirty1-zeroCpnSpecializedBondTheoDirty1);
     if (error14>tolerance) {
         BOOST_ERROR("wrong dirty price for zero bond:"
                     << QL_FIXED << std::setprecision(4)
                     << "\n  specialized zerocpn bond's dirty price: " 
                     << zeroCpnBondTheoDirty1
                     << "\n  generic zerocpn bond's clean price: " 
-                    << zeroCpnGenericBondTheoDirty1
+                    << zeroCpnSpecializedBondTheoDirty1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error14
                     << "\n  tolerance:             " << tolerance);
     }
 
     // Zero Coupon bond (Isin: IT0001200390 ISPIM 0 02/17/28)
-    // maturity doesn't occur on a business day
-
-    Date zerocpbondRedemption2 = bondCalendar.adjust(Date(17,February,2028),
+    // maturity occurs on a business day
+    Date zeroCpnBondStartDate2 = Date(17,February,1998);
+    Date zeroCpnBondMaturityDate2 = Date(17,February,2028);
+    Date zerocpbondRedemption2 = bondCalendar.adjust(zeroCpnBondMaturityDate2,
                                                       Following);
     Leg zeroCpnBondLeg2 = Leg(1, boost::shared_ptr<CashFlow>(new
-            SimpleCashFlow(100.0, zerocpbondRedemption2)));
-    // specialized zerocpn bond
+        SimpleCashFlow(100.0, zerocpbondRedemption2)));
     boost::shared_ptr<Bond> zeroCpnBond2(new
-    ZeroCouponBond(settlementDays, bondCalendar, faceAmount_,
+        Bond(settlementDays, bondCalendar, faceAmount_,
+             zeroCpnBondMaturityDate2, zeroCpnBondStartDate2, zeroCpnBondLeg2));
+    zeroCpnBond2->setPricingEngine(bondEngine);
+
+    // specialized zerocpn bond
+    boost::shared_ptr<Bond> zeroCpnSpecializedBond2(new
+        ZeroCouponBond(settlementDays, bondCalendar, faceAmount_,
                    Date(17,February,2028),
                    Following,
                    100.0, Date(17,February,1998)));
-
-    // generic zerocpn bond
-    boost::shared_ptr<Bond> zeroCpnGenericBond2(new
-           Bond(settlementDays, bondCalendar, faceAmount_,
-                Date(17,February,1998),zeroCpnBondLeg2));
-
-    zeroCpnBond2->setPricingEngine(bondEngine);
-    zeroCpnGenericBond2->setPricingEngine(bondEngine);
+    zeroCpnSpecializedBond2->setPricingEngine(bondEngine);
 
     Real zeroCpnBondTheoValue2 = zeroCpnBond2->cleanPrice();
-    Real zeroCpnGenericBondTheoValue2 = zeroCpnGenericBond2->cleanPrice();
+    Real zeroCpnSpecializedBondTheoValue2 = zeroCpnSpecializedBond2->cleanPrice();
 
-    Real error15 = std::fabs(zeroCpnBondTheoValue2 -zeroCpnGenericBondTheoValue2);
+    Real error15 = std::fabs(zeroCpnBondTheoValue2 -zeroCpnSpecializedBondTheoValue2);
     if (error15>tolerance) {
         BOOST_ERROR("wrong clean price for zero coupon bond:"
                     << QL_FIXED << std::setprecision(4)
                     << "\n  specialized cms bond's clean price: "  
                     << zeroCpnBondTheoValue2 
                     << "\n  generic cms bond's clean price: " 
-                    << zeroCpnGenericBondTheoValue2
+                    << zeroCpnSpecializedBondTheoValue2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error15
                     << "\n  tolerance:             " << tolerance);
@@ -3098,17 +3121,17 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     Real zeroCpnBondTheoDirty2 = zeroCpnBondTheoValue2+
                                  zeroCpnBond2->accruedAmount();
 
-    Real zeroCpnGenericBondTheoDirty2 = zeroCpnGenericBondTheoValue2+
-                                        zeroCpnGenericBond2->accruedAmount();
+    Real zeroCpnSpecializedBondTheoDirty2 = zeroCpnSpecializedBondTheoValue2+
+                                        zeroCpnSpecializedBond2->accruedAmount();
 
-    Real error16 = std::fabs(zeroCpnBondTheoDirty2-zeroCpnGenericBondTheoDirty2);
+    Real error16 = std::fabs(zeroCpnBondTheoDirty2-zeroCpnSpecializedBondTheoDirty2);
     if (error16>tolerance) {
         BOOST_ERROR("wrong dirty price for zero coupon bond:"
                     << QL_FIXED << std::setprecision(4)
                     << "\n  specialized zerocpn bond's dirty price: " 
                     << zeroCpnBondTheoDirty2
                     << "\n  generic zerocpn bond's dirty price: " 
-                    << zeroCpnGenericBondTheoDirty2
+                    << zeroCpnSpecializedBondTheoDirty2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error16
                     << "\n  tolerance:             " << tolerance);
@@ -3117,537 +3140,537 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
 
 
 void AssetSwapTest::testSpecializedBondVsGenericBondUsingAswSpread() {
-
-    BOOST_MESSAGE(
-    "Testing assetswap prices for specialized bond are equal to"
-    " theo clean and dirty prices for equivalent generic bond..."
-        );
-
-    SavedSettings backup;
-
-    setup();
-
-    Calendar bondCalendar = TARGET();
-    Natural settlementDays = 3;
-    Natural fixingDays = 2;
-    bool payFixedRate = true;
-    bool parAssetSwap = true;
-    bool inArrears = false;
-
-    //// Fixed bond (Isin: DE0001135275 DBR 4 01/04/37)
-    //// maturity doesn't occur on a business day
-
-    //Schedule fixedBondSchedule1(Date(4,January,2005),
-    //                            Date(4,January,2037),
-    //                            Period(Annual), bondCalendar,
-    //                            Unadjusted, Unadjusted, true, false);
-    //Leg fixedBondLeg1 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
-    //                                 fixedBondSchedule1,
-    //                                 std::vector<Rate>(1, 0.04),
-    //                                 ActualActual(ActualActual::ISDA),
-    //                                 Following);
-    //Date fixedbondRedemption1 = bondCalendar.adjust(Date(4,January,2037),
-    //                                                Following);
-    //fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
-    //                        SimpleCashFlow(100.0, fixedbondRedemption1)));
-
-    //// specialized fixed rate bond 
-    //boost::shared_ptr<Bond> fixedBond1(new
-    //    FixedRateBond(settlementDays, faceAmount_, fixedBondSchedule1,
-    //                  std::vector<Rate>(1, 0.04),
-    //                  ActualActual(ActualActual::ISDA), Following,
-    //                  100.0, Date(4,January,2005) ));
-    //// equivalent generic bond given fixed leg
-    //boost::shared_ptr<Bond> fixedGenericBond1(new
-    //                        Bond(settlementDays, bondCalendar, faceAmount_,Date(4,January,2005),
-    //                        fixedBondLeg1));
-
-    boost::shared_ptr<PricingEngine> bondEngine(
-                                   new DiscountingBondEngine(termStructure_));
-    //fixedBond1->setPricingEngine(bondEngine);
-    //fixedGenericBond1->setPricingEngine(bondEngine);
-
-    //Real fixedBondPrice1 = fixedBond1->cleanPrice();
-    //Real fixedGenericBondPrice1 = fixedGenericBond1->cleanPrice();
-    //AssetSwap fixedBondAssetSwap1(payFixedRate,
-    //                              fixedBond1, fixedBondPrice1,
-    //                              iborIndex_, nonnullspread_, termStructure_,
-    //                              Schedule(),
-    //                              iborIndex_->dayCounter(),
-    //                              parAssetSwap);
-    //AssetSwap fixedGenericBondAssetSwap1(payFixedRate,
-    //                                     fixedGenericBond1, 
-    //                                     fixedGenericBondPrice1,
-    //                                     iborIndex_, nonnullspread_, termStructure_,
-    //                                     Schedule(),
-    //                                     iborIndex_->dayCounter(),
-    //                                     parAssetSwap);
-    //Real fixedBondAssetSwapPrice1 = fixedBondAssetSwap1.fairPrice();
-    //Real fixedGenericBondAssetSwapPrice1 = fixedGenericBondAssetSwap1.fairPrice();
-    Real tolerance = 1.0e-13;
-    //Real error1 = std::fabs(fixedBondAssetSwapPrice1-fixedGenericBondAssetSwapPrice1);
-    //if (error1>tolerance) {
-    //    BOOST_ERROR("wrong clean price for fixed bond:"
-    //                << QL_FIXED << std::setprecision(4)
-    //                << "\n  specialized fixed rate bond's  clean price: " 
-    //                << fixedBondAssetSwapPrice1
-    //                << "\n  generic equivalent bond's clean price: " 
-    //                << fixedGenericBondAssetSwapPrice1
-    //                << QL_SCIENTIFIC << std::setprecision(2)
-    //                << "\n  error:                 " << error1
-    //                << "\n  tolerance:             " << tolerance);
-    //}
-
-   //  Fixed bond (Isin: IT0006527060 IBRD 5 02/05/19)
-   //  maturity occurs on a business day
-
-    Schedule fixedBondSchedule2(Date(5,February,2005),
-                                Date(5,February,2019),
-                                Period(Annual), bondCalendar,
-                                Unadjusted, Unadjusted, true, false);
-    Leg fixedBondLeg2 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
-                                     fixedBondSchedule2,
-                                     std::vector<Rate>(1, 0.05),
-                                     Thirty360(Thirty360::BondBasis),
-                                     Following);
-    Date fixedbondRedemption2 = bondCalendar.adjust(Date(5,February,2019),
-                                                    Following);
-    fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
-                            SimpleCashFlow(100.0, fixedbondRedemption2)));
-     //specialized fixed rate bond 
-    boost::shared_ptr<Bond> fixedBond2(new
-         FixedRateBond(settlementDays, faceAmount_, fixedBondSchedule2,
-                      std::vector<Rate>(1, 0.05),
-                      Thirty360(Thirty360::BondBasis), Following,
-                      100.0, Date(5,February,2005)));
-     //equivalent generic bond given fixed leg
-    boost::shared_ptr<Bond> fixedGenericBond2(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(5,February,2005),fixedBondLeg2));
-
-    fixedBond2->setPricingEngine(bondEngine);
-    fixedGenericBond2->setPricingEngine(bondEngine);
-
-    Real fixedBondPrice2 = fixedBond2->cleanPrice();
-    Real fixedGenericBondPrice2 = fixedGenericBond2->cleanPrice();
-    AssetSwap fixedBondAssetSwap2(payFixedRate,
-                                  fixedBond2, fixedBondPrice2,
-                                  iborIndex_, nonnullspread_, termStructure_,
-                                  Schedule(),
-                                  iborIndex_->dayCounter(),
-                                  parAssetSwap);
-    AssetSwap fixedGenericBondAssetSwap2(payFixedRate,
-                                         fixedGenericBond2, 
-                                         fixedGenericBondPrice2,
-                                         iborIndex_, nonnullspread_, termStructure_,
-                                         Schedule(),
-                                         iborIndex_->dayCounter(),
-                                         parAssetSwap);
-    Real fixedBondAssetSwapPrice2 = fixedBondAssetSwap2.fairPrice();
-    Real fixedGenericBondAssetSwapPrice2 = fixedGenericBondAssetSwap2.fairPrice();
-
-    Real error2 = std::fabs(fixedBondAssetSwapPrice2-fixedGenericBondAssetSwapPrice2);
-    if (error2>tolerance) {
-        BOOST_ERROR("wrong clean price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  specialized fixed rate bond's clean price: " 
-                    << fixedBondAssetSwapPrice2
-                    << "\n  generic equivalent bond's clean price: " 
-                    << fixedGenericBondAssetSwapPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error2
-                    << "\n  tolerance:             " << tolerance);
-    }
-
-   //  FRN bond (Isin: IT0003543847 ISPIM 0 09/29/13)
-   //  maturity doesn't occur on a business day
-
-    Schedule floatingBondSchedule1(Date(29,September,2003),
-                                   Date(29,September,2013),
-                                   Period(Semiannual), bondCalendar,
-                                   Unadjusted, Following,
-                                   true, false);
-
-    Leg floatingBondLeg1 = IborLeg(std::vector<Real>(1, faceAmount_),
-                                   floatingBondSchedule1,
-                                   iborIndex_,
-                                   Actual360(),
-                                   Following,
-                                   std::vector<Natural>(1,fixingDays),
-                                   std::vector<Real>(1,1), 
-                                   std::vector<Spread>(1,0.0056),
-                                   std::vector<Rate>(),
-                                   std::vector<Rate>(),
-                                   inArrears);
-    Date floatingbondRedemption1 = bondCalendar.adjust(Date(29,September,2013),
-                                                       Following);
-    floatingBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
-                          SimpleCashFlow(100.0, floatingbondRedemption1)));
-     //specialized floater
-    boost::shared_ptr<Bond> floatingBond1(new
-           FloatingRateBond(settlementDays, faceAmount_, floatingBondSchedule1,
-                            iborIndex_, Actual360(),
-                            Following, fixingDays,
-                            std::vector<Real>(1,1), 
-                            std::vector<Spread>(1,0.0056),
-                            std::vector<Rate>(), std::vector<Rate>(),
-                            inArrears,
-                            100.0, Date(29,September,2003)));
-     //equivalent generic floater
-    boost::shared_ptr<Bond> floatingGenericBond1(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(29,September,2003),floatingBondLeg1));
-
-    floatingBond1->setPricingEngine(bondEngine);
-    floatingGenericBond1->setPricingEngine(bondEngine);
-
-    setCouponPricer(floatingBond1->cashflows(),pricer_);
-    setCouponPricer(floatingGenericBond1->cashflows(),pricer_);
-    iborIndex_->addFixing(Date(27,March,2007), 0.0402);
-    Real floatingBondPrice1 = floatingBond1->cleanPrice();
-    Real floatingGenericBondPrice1= floatingGenericBond1->cleanPrice();
-    AssetSwap floatingBondAssetSwap1(payFixedRate,
-                                     floatingBond1, floatingBondPrice1,
-                                     iborIndex_, nonnullspread_, termStructure_,
-                                     Schedule(),
-                                     iborIndex_->dayCounter(),
-                                     parAssetSwap);
-    AssetSwap floatingGenericBondAssetSwap1(payFixedRate,
-                                            floatingGenericBond1, 
-                                            floatingGenericBondPrice1,
-                                            iborIndex_, nonnullspread_, termStructure_,
-                                            Schedule(),
-                                            iborIndex_->dayCounter(),
-                                            parAssetSwap);
-    Real floatingBondAssetSwapPrice1 = floatingBondAssetSwap1.fairPrice();
-    Real floatingGenericBondAssetSwapPrice1 = floatingGenericBondAssetSwap1.fairPrice();
-
-    Real error3 = std::fabs(floatingBondAssetSwapPrice1-floatingGenericBondAssetSwapPrice1);
-    if (error3>tolerance) {
-        BOOST_ERROR("wrong clean price for frnbond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  specialized frn rate bond's clean price: " 
-                    << floatingBondAssetSwapPrice1
-                    << "\n  generic equivalent bond's price: " 
-                    << floatingBondAssetSwapPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error3
-                    << "\n  tolerance:             " << tolerance);
-    }
-
-   //  FRN bond (Isin: XS0090566539 COE 0 09/24/18)
-   //  maturity occurs on a business day
-
-    Schedule floatingBondSchedule2(Date(24,September,2004),
-                                   Date(24,September,2018),
-                                   Period(Semiannual), bondCalendar,
-                                   ModifiedFollowing, ModifiedFollowing,
-                                   true, false);
-    Leg floatingBondLeg2 = IborLeg(std::vector<Real>(1, faceAmount_),
-                                   floatingBondSchedule2,
-                                   iborIndex_,
-                                   Actual360(),
-                                   ModifiedFollowing,
-                                   std::vector<Natural>(1,fixingDays),
-                                   std::vector<Real>(1,1), 
-                                   std::vector<Spread>(1,0.0025),
-                                   std::vector<Rate>(),
-                                   std::vector<Rate>(),
-                                   inArrears);
-    Date floatingbondRedemption2 = bondCalendar.adjust(Date(24,September,2018),
-                                                       ModifiedFollowing);
-    floatingBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
-                          SimpleCashFlow(100.0, floatingbondRedemption2)));
-     //specialized floater
-   boost::shared_ptr<Bond> floatingBond2(new
-          FloatingRateBond(settlementDays, faceAmount_, floatingBondSchedule2,
-                           iborIndex_, Actual360(),
-                           ModifiedFollowing, fixingDays,
-                           std::vector<Real>(1,1), 
-                           std::vector<Spread>(1,0.0025),
-                           std::vector<Rate>(), std::vector<Rate>(),
-                           inArrears,
-                           100.0, Date(24,September,2004)));
-     //equivalent generic floater
-    boost::shared_ptr<Bond> floatingGenericBond2(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(24,September,2004),floatingBondLeg2));
-
-    floatingBond2->setPricingEngine(bondEngine);
-    floatingGenericBond2->setPricingEngine(bondEngine);
-
-    setCouponPricer(floatingBond2->cashflows(),pricer_);
-    setCouponPricer(floatingGenericBond2->cashflows(),pricer_);
-
-    iborIndex_->addFixing(Date(22,March,2007), 0.04013);
-
-    Real floatingBondPrice2 = floatingBond2->cleanPrice();
-    Real floatingGenericBondPrice2= floatingGenericBond2->cleanPrice();
-    AssetSwap floatingBondAssetSwap2(payFixedRate,
-                                     floatingBond2, floatingBondPrice2,
-                                     iborIndex_, nonnullspread_, termStructure_,
-                                     Schedule(),
-                                     iborIndex_->dayCounter(),
-                                     parAssetSwap);
-    AssetSwap floatingGenericBondAssetSwap2(payFixedRate,
-                                            floatingGenericBond2, 
-                                            floatingGenericBondPrice2,
-                                            iborIndex_, nonnullspread_, termStructure_,
-                                            Schedule(),
-                                            iborIndex_->dayCounter(),
-                                            parAssetSwap);
-    Real floatingBondAssetSwapPrice2 = floatingBondAssetSwap2.fairPrice();
-    Real floatingGenericBondAssetSwapPrice2 = floatingGenericBondAssetSwap2.fairPrice();
-    Real error4 = std::fabs(floatingBondAssetSwapPrice2-floatingGenericBondAssetSwapPrice2);
-    if (error4>tolerance) {
-        BOOST_ERROR("wrong clean price for frnbond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  specialized frn rate bond's clean price: " 
-                    << floatingBondAssetSwapPrice2
-                    << "\n  generic equivalent bond's price: " 
-                    << floatingBondAssetSwapPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error4
-                    << "\n  tolerance:             " << tolerance);
-    }
-
-   //// // CMS bond (Isin: XS0228052402 CRDIT 0 8/22/20)
-   //// // maturity doesn't occur on a business day
-
-   // Schedule cmsBondSchedule1(Date(22,August,2005),
-   //                           Date(22,August,2020),
-   //                           Period(Annual), bondCalendar,
-   //                           Unadjusted, Unadjusted,
-   //                           true, false);
-   // Leg cmsBondLeg1 = CmsLeg(std::vector<Real>(1, faceAmount_),
-   //                          cmsBondSchedule1,
-   //                          swapIndex_,
-   //                          Thirty360(),
-   //                          Following,
-   //                          std::vector<Natural>(1,fixingDays),
-   //                          std::vector<Real>(1,1.0), 
-   //                          std::vector<Spread>(1,0.0),
-   //                          std::vector<Rate>(1,0.055), 
-   //                          std::vector<Rate>(1,0.025),
-   //                          inArrears);
-   // Date cmsbondRedemption1 = bondCalendar.adjust(Date(22,August,2020),
-   //                                               Following);
-   // cmsBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
-   //                       SimpleCashFlow(100.0, cmsbondRedemption1)));
-
-   ////  specialized cms bond
-   // boost::shared_ptr<Bond> cmsBond1(new
-   // CmsRateBond(settlementDays, faceAmount_, cmsBondSchedule1,
-   //             swapIndex_, Thirty360(),
-   //             Following, fixingDays,
-   //             std::vector<Real>(1,1.0), std::vector<Spread>(1,0.0),
-   //             std::vector<Rate>(1,0.055), std::vector<Rate>(1,0.025),
-   //             inArrears,
-   //             100.0, Date(22,August,2005)));
-
-   ////  equivalent generic cms bond
-   // boost::shared_ptr<Bond> cmsGenericBond1(new
-   //                         Bond(settlementDays, bondCalendar, faceAmount_,
-   //                         Date(22,August,2005),cmsBondLeg1));
-
-   // cmsBond1->setPricingEngine(bondEngine);
-   // cmsGenericBond1->setPricingEngine(bondEngine);
-
-   // setCouponPricer(cmsBond1->cashflows(),cmspricer_);
-   // setCouponPricer(cmsGenericBond1->cashflows(),cmspricer_);
-   // swapIndex_->addFixing(Date(18,August,2006), 0.04158);
-   // Real cmsBondPrice1 = cmsBond1->cleanPrice();
-   // Real cmsGenericBondPrice1 = cmsGenericBond1->cleanPrice();
-   // AssetSwap cmsBondAssetSwap1(payFixedRate,cmsBond1, cmsBondPrice1,
-   //                             iborIndex_, nonnullspread_, termStructure_,
-   //                             Schedule(),iborIndex_->dayCounter(),parAssetSwap);
-   // AssetSwap cmsGenericBondAssetSwap1(payFixedRate,cmsGenericBond1, 
-   //                                    cmsGenericBondPrice1, iborIndex_, 
-   //                                    nonnullspread_, termStructure_,
-   //                                    Schedule(),iborIndex_->dayCounter(),
-   //                                    parAssetSwap);
-   // Real cmsBondAssetSwapPrice1 = cmsBondAssetSwap1.fairPrice();
-   // Real cmsGenericBondAssetSwapPrice1 = cmsGenericBondAssetSwap1.fairPrice();
-   // Real error5 = std::fabs(cmsBondAssetSwapPrice1-cmsGenericBondAssetSwapPrice1);
-   // if (error5>tolerance) {
-   //     BOOST_ERROR("wrong clean price for cmsbond:"
-   //                 << QL_FIXED << std::setprecision(4)
-   //                 << "\n  specialized cms rate bond's clean price: " 
-   //                 << cmsBondAssetSwapPrice1
-   //                 << "\n  generic equivalent bond's price: " 
-   //                 << cmsGenericBondAssetSwapPrice1
-   //                 << QL_SCIENTIFIC << std::setprecision(2)
-   //                 << "\n  error:                 " << error5
-   //                 << "\n  tolerance:             " << tolerance);
-   // }
-
-
-
-      //CMS bond (Isin: XS0218766664 ISPIM 0 5/6/15)
-      //maturity occurs on a business day
-
-    Schedule cmsBondSchedule2(Date(06,May,2005),
-                              Date(06,May,2015),
-                              Period(Annual), bondCalendar,
-                              Unadjusted, Unadjusted,
-                              true, false);
-    Leg cmsBondLeg2 = CmsLeg(std::vector<Real>(1, faceAmount_),
-                             cmsBondSchedule2,
-                             swapIndex_,
-                             Thirty360(),
-                             Following,
-                             std::vector<Natural>(1,fixingDays),
-                             std::vector<Real>(1,0.84), 
-                             std::vector<Spread>(1,0.0),
-                             std::vector<Rate>(), 
-                             std::vector<Rate>(),
-                             inArrears);
-    Date cmsbondRedemption2 = bondCalendar.adjust(Date(06,May,2015),
-                                                  Following);
-    cmsBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
-                          SimpleCashFlow(100.0, cmsbondRedemption2)));
-
-     //specialized cms bond
-    boost::shared_ptr<Bond> cmsBond2(new
-    CmsRateBond(settlementDays, faceAmount_, cmsBondSchedule2,
-                swapIndex_, Thirty360(),
-                Following, fixingDays,
-                std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
-                std::vector<Rate>(), std::vector<Rate>(),
-                inArrears,
-                100.0, Date(06,May,2005)));
-
-     //equivalent generic cms bond
-    boost::shared_ptr<Bond> cmsGenericBond2(new
-                            Bond(settlementDays, bondCalendar, faceAmount_,
-                            Date(06,May,2005),cmsBondLeg2));
-
-    cmsBond2->setPricingEngine(bondEngine);
-    cmsGenericBond2->setPricingEngine(bondEngine);
-
-    setCouponPricer(cmsBond2->cashflows(),cmspricer_);
-    setCouponPricer(cmsGenericBond2->cashflows(),cmspricer_);
-    swapIndex_->addFixing(Date(04,May,2006), 0.04217);
-    Real cmsBondPrice2 = cmsBond2->cleanPrice();
-    Real cmsGenericBondPrice2 = cmsGenericBond2->cleanPrice();
-    AssetSwap cmsBondAssetSwap2(payFixedRate,cmsBond2, cmsBondPrice2,
-                                iborIndex_, nonnullspread_, termStructure_,
-                                Schedule(),iborIndex_->dayCounter(),parAssetSwap);
-    AssetSwap cmsGenericBondAssetSwap2(payFixedRate,cmsGenericBond2, 
-                                       cmsGenericBondPrice2, iborIndex_, 
-                                       nonnullspread_, termStructure_,
-                                       Schedule(),iborIndex_->dayCounter(),
-                                       parAssetSwap);
-    Real cmsBondAssetSwapPrice2 = cmsBondAssetSwap2.fairPrice();
-    Real cmsGenericBondAssetSwapPrice2 = cmsGenericBondAssetSwap2.fairPrice();
-    Real error6 = std::fabs(cmsBondAssetSwapPrice2-cmsGenericBondAssetSwapPrice2);
-    if (error6>tolerance) {
-        BOOST_ERROR("wrong clean price for cmsbond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  specialized cms rate bond's clean price: " 
-                    << cmsBondAssetSwapPrice2
-                    << "\n  generic equivalent bond's price: " 
-                    << cmsGenericBondAssetSwapPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error6
-                    << "\n  tolerance:             " << tolerance);
-    }
-
-   ////  Zero-Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
-   ////  maturity doesn't occur on a business day
-
-   // Date zerocpbondRedemption1 = bondCalendar.adjust(Date(20,December,2015),
-   //                                                   Following);
-   // Leg zeroCpnBondLeg1 = Leg(1, boost::shared_ptr<CashFlow>(new
-   //         SimpleCashFlow(100.0, zerocpbondRedemption1)));
-   //  //specialized zerocpn bond
-   // boost::shared_ptr<Bond> zeroCpnBond1(new
-   // ZeroCouponBond(settlementDays, bondCalendar, faceAmount_,
-   //               Date(20,December,2015),
-   //               Following,
-   //               100.0, Date(19,December,1985)));
-
-   //  //generic zerocpn bond
-   // boost::shared_ptr<Bond> zeroCpnGenericBond1(new
-   //                         Bond(settlementDays, bondCalendar, faceAmount_,
-   //                         Date(19,December,1985),zeroCpnBondLeg1));
-
-   // zeroCpnBond1->setPricingEngine(bondEngine);
-   // zeroCpnGenericBond1->setPricingEngine(bondEngine);
-
-   // Real zeroCpnBondPrice1 = zeroCpnBond1->cleanPrice();
-   // Real zeroCpnGenericBondPrice1 = zeroCpnGenericBond1->cleanPrice();
-   // AssetSwap zeroCpnBondAssetSwap1(payFixedRate,zeroCpnBond1, zeroCpnBondPrice1,
-   //                             iborIndex_, nonnullspread_, termStructure_,
-   //                             Schedule(),iborIndex_->dayCounter(),parAssetSwap);
-   // AssetSwap zeroCpnGenericBondAssetSwap1(payFixedRate,zeroCpnGenericBond1, 
-   //                                        zeroCpnGenericBondPrice1, iborIndex_, 
-   //                                        nonnullspread_, termStructure_,
-   //                                        Schedule(),iborIndex_->dayCounter(),
-   //                                        parAssetSwap);
-   // Real zeroCpnBondAssetSwapPrice1 = zeroCpnBondAssetSwap1.fairPrice();
-   // Real zeroCpnGenericBondAssetSwapPrice1 = 
-   //                            zeroCpnGenericBondAssetSwap1.fairPrice();
-   // Real error7 = std::fabs(zeroCpnBondAssetSwapPrice1-zeroCpnGenericBondAssetSwapPrice1);
-   // if (error7>tolerance) {
-   //     BOOST_ERROR("wrong clean price for zerocpn bond:"
-   //                 << QL_FIXED << std::setprecision(4)
-   //                 << "\n  specialized zero cpn bond's clean price: " 
-   //                 << zeroCpnBondAssetSwapPrice1
-   //                 << "\n  generic equivalent bond's price: " 
-   //                 << zeroCpnGenericBondAssetSwapPrice1
-   //                 << "\n  error:                 " << error7
-   //                 << "\n  tolerance:             " << tolerance);
-   // }
-
-   ////  Zero Coupon bond (Isin: IT0001200390 ISPIM 0 02/17/28)
-   ////  maturity doesn't occur on a business day
-
-   // Date zerocpbondRedemption2 = bondCalendar.adjust(Date(17,February,2028),
-   //                                                  Following);
-   // Leg zeroCpnBondLeg2 = Leg(1, boost::shared_ptr<CashFlow>(new
-   //         SimpleCashFlow(100.0, zerocpbondRedemption2)));
-   //  //specialized zerocpn bond
-   // boost::shared_ptr<Bond> zeroCpnBond2(new
-   // ZeroCouponBond(settlementDays, bondCalendar, faceAmount_,
-   //                Date(17,February,2028),
-   //                Following,
-   //                100.0, Date(17,February,1998)));
-
-   //  //generic zerocpn bond
-   // boost::shared_ptr<Bond> zeroCpnGenericBond2(new
-   //        Bond(settlementDays, bondCalendar, faceAmount_,
-   //             Date(17,February,1998),zeroCpnBondLeg2));
-
-   // zeroCpnBond2->setPricingEngine(bondEngine);
-   // zeroCpnGenericBond2->setPricingEngine(bondEngine);
-
-   // Real zeroCpnBondPrice2 = zeroCpnBond2->cleanPrice();
-   // Real zeroCpnGenericBondPrice2 = zeroCpnGenericBond2->cleanPrice();
-
-   // AssetSwap zeroCpnBondAssetSwap2(payFixedRate,zeroCpnBond2, zeroCpnBondPrice2,
-   //                                 iborIndex_, nonnullspread_, termStructure_,
-   //                                 Schedule(),iborIndex_->dayCounter(),parAssetSwap);
-   // AssetSwap zeroCpnGenericBondAssetSwap2(payFixedRate,zeroCpnGenericBond2, 
-   //                                        zeroCpnGenericBondPrice2, iborIndex_, 
-   //                                        nonnullspread_, termStructure_,
-   //                                        Schedule(),iborIndex_->dayCounter(),
-   //                                        parAssetSwap);
-   // Real zeroCpnBondAssetSwapPrice2 = zeroCpnBondAssetSwap2.fairPrice();
-   // Real zeroCpnGenericBondAssetSwapPrice2 = 
-   //                            zeroCpnGenericBondAssetSwap2.fairPrice();
-   // Real error8 = std::fabs(zeroCpnBondAssetSwapPrice2
-   //                         -zeroCpnGenericBondAssetSwapPrice2);
-   // if (error8>tolerance) {
-   //     BOOST_ERROR("wrong clean price for zerocpn bond:"
-   //                 << QL_FIXED << std::setprecision(4)
-   //                 << "\n  specialized zero cpn bond's clean price: " 
-   //                 << zeroCpnBondAssetSwapPrice2
-   //                 << "\n  generic equivalent bond's price: " 
-   //                 << zeroCpnGenericBondAssetSwapPrice2
-   //                 << "\n  error:                 " << error8
-   //                 << "\n  tolerance:             " << tolerance);
-   // }
+//
+//    BOOST_MESSAGE(
+//    "Testing assetswap prices for specialized bond are equal to"
+//    " theo clean and dirty prices for equivalent generic bond..."
+//        );
+//
+//    SavedSettings backup;
+//
+//    setup();
+//
+//    Calendar bondCalendar = TARGET();
+//    Natural settlementDays = 3;
+//    Natural fixingDays = 2;
+//    bool payFixedRate = true;
+//    bool parAssetSwap = true;
+//    bool inArrears = false;
+//
+//    //// Fixed bond (Isin: DE0001135275 DBR 4 01/04/37)
+//    //// maturity doesn't occur on a business day
+//
+//    //Schedule fixedBondSchedule1(Date(4,January,2005),
+//    //                            Date(4,January,2037),
+//    //                            Period(Annual), bondCalendar,
+//    //                            Unadjusted, Unadjusted, true, false);
+//    //Leg fixedBondLeg1 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
+//    //                                 fixedBondSchedule1,
+//    //                                 std::vector<Rate>(1, 0.04),
+//    //                                 ActualActual(ActualActual::ISDA),
+//    //                                 Following);
+//    //Date fixedbondRedemption1 = bondCalendar.adjust(Date(4,January,2037),
+//    //                                                Following);
+//    //fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
+//    //                        SimpleCashFlow(100.0, fixedbondRedemption1)));
+//
+//    //// specialized fixed rate bond 
+//    //boost::shared_ptr<Bond> fixedBond1(new
+//    //    FixedRateBond(settlementDays, faceAmount_, fixedBondSchedule1,
+//    //                  std::vector<Rate>(1, 0.04),
+//    //                  ActualActual(ActualActual::ISDA), Following,
+//    //                  100.0, Date(4,January,2005) ));
+//    //// equivalent generic bond given fixed leg
+//    //boost::shared_ptr<Bond> fixedGenericBond1(new
+//    //                        Bond(settlementDays, bondCalendar, faceAmount_,Date(4,January,2005),
+//    //                        fixedBondLeg1));
+//
+//    boost::shared_ptr<PricingEngine> bondEngine(
+//                                   new DiscountingBondEngine(termStructure_));
+//    //fixedBond1->setPricingEngine(bondEngine);
+//    //fixedGenericBond1->setPricingEngine(bondEngine);
+//
+//    //Real fixedBondPrice1 = fixedBond1->cleanPrice();
+//    //Real fixedGenericBondPrice1 = fixedGenericBond1->cleanPrice();
+//    //AssetSwap fixedBondAssetSwap1(payFixedRate,
+//    //                              fixedBond1, fixedBondPrice1,
+//    //                              iborIndex_, nonnullspread_, termStructure_,
+//    //                              Schedule(),
+//    //                              iborIndex_->dayCounter(),
+//    //                              parAssetSwap);
+//    //AssetSwap fixedGenericBondAssetSwap1(payFixedRate,
+//    //                                     fixedGenericBond1, 
+//    //                                     fixedGenericBondPrice1,
+//    //                                     iborIndex_, nonnullspread_, termStructure_,
+//    //                                     Schedule(),
+//    //                                     iborIndex_->dayCounter(),
+//    //                                     parAssetSwap);
+//    //Real fixedBondAssetSwapPrice1 = fixedBondAssetSwap1.fairPrice();
+//    //Real fixedGenericBondAssetSwapPrice1 = fixedGenericBondAssetSwap1.fairPrice();
+//    Real tolerance = 1.0e-13;
+//    //Real error1 = std::fabs(fixedBondAssetSwapPrice1-fixedGenericBondAssetSwapPrice1);
+//    //if (error1>tolerance) {
+//    //    BOOST_ERROR("wrong clean price for fixed bond:"
+//    //                << QL_FIXED << std::setprecision(4)
+//    //                << "\n  specialized fixed rate bond's  clean price: " 
+//    //                << fixedBondAssetSwapPrice1
+//    //                << "\n  generic equivalent bond's clean price: " 
+//    //                << fixedGenericBondAssetSwapPrice1
+//    //                << QL_SCIENTIFIC << std::setprecision(2)
+//    //                << "\n  error:                 " << error1
+//    //                << "\n  tolerance:             " << tolerance);
+//    //}
+//
+//   //  Fixed bond (Isin: IT0006527060 IBRD 5 02/05/19)
+//   //  maturity occurs on a business day
+//
+//    Schedule fixedBondSchedule2(Date(5,February,2005),
+//                                Date(5,February,2019),
+//                                Period(Annual), bondCalendar,
+//                                Unadjusted, Unadjusted, true, false);
+//    Leg fixedBondLeg2 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
+//                                     fixedBondSchedule2,
+//                                     std::vector<Rate>(1, 0.05),
+//                                     Thirty360(Thirty360::BondBasis),
+//                                     Following);
+//    Date fixedbondRedemption2 = bondCalendar.adjust(Date(5,February,2019),
+//                                                    Following);
+//    fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
+//                            SimpleCashFlow(100.0, fixedbondRedemption2)));
+//     //specialized fixed rate bond 
+//    boost::shared_ptr<Bond> fixedBond2(new
+//         FixedRateBond(settlementDays, faceAmount_, fixedBondSchedule2,
+//                      std::vector<Rate>(1, 0.05),
+//                      Thirty360(Thirty360::BondBasis), Following,
+//                      100.0, Date(5,February,2005)));
+//     //equivalent generic bond given fixed leg
+//    boost::shared_ptr<Bond> fixedGenericBond2(new
+//                            Bond(settlementDays, bondCalendar, faceAmount_,
+//                            Date(5,February,2005),fixedBondLeg2));
+//
+//    fixedBond2->setPricingEngine(bondEngine);
+//    fixedGenericBond2->setPricingEngine(bondEngine);
+//
+//    Real fixedBondPrice2 = fixedBond2->cleanPrice();
+//    Real fixedGenericBondPrice2 = fixedGenericBond2->cleanPrice();
+//    AssetSwap fixedBondAssetSwap2(payFixedRate,
+//                                  fixedBond2, fixedBondPrice2,
+//                                  iborIndex_, nonnullspread_, termStructure_,
+//                                  Schedule(),
+//                                  iborIndex_->dayCounter(),
+//                                  parAssetSwap);
+//    AssetSwap fixedGenericBondAssetSwap2(payFixedRate,
+//                                         fixedGenericBond2, 
+//                                         fixedGenericBondPrice2,
+//                                         iborIndex_, nonnullspread_, termStructure_,
+//                                         Schedule(),
+//                                         iborIndex_->dayCounter(),
+//                                         parAssetSwap);
+//    Real fixedBondAssetSwapPrice2 = fixedBondAssetSwap2.fairPrice();
+//    Real fixedGenericBondAssetSwapPrice2 = fixedGenericBondAssetSwap2.fairPrice();
+//
+//    Real error2 = std::fabs(fixedBondAssetSwapPrice2-fixedGenericBondAssetSwapPrice2);
+//    if (error2>tolerance) {
+//        BOOST_ERROR("wrong clean price for fixed bond:"
+//                    << QL_FIXED << std::setprecision(4)
+//                    << "\n  specialized fixed rate bond's clean price: " 
+//                    << fixedBondAssetSwapPrice2
+//                    << "\n  generic equivalent bond's clean price: " 
+//                    << fixedGenericBondAssetSwapPrice2
+//                    << QL_SCIENTIFIC << std::setprecision(2)
+//                    << "\n  error:                 " << error2
+//                    << "\n  tolerance:             " << tolerance);
+//    }
+//
+//   //  FRN bond (Isin: IT0003543847 ISPIM 0 09/29/13)
+//   //  maturity doesn't occur on a business day
+//
+//    Schedule floatingBondSchedule1(Date(29,September,2003),
+//                                   Date(29,September,2013),
+//                                   Period(Semiannual), bondCalendar,
+//                                   Unadjusted, Following,
+//                                   true, false);
+//
+//    Leg floatingBondLeg1 = IborLeg(std::vector<Real>(1, faceAmount_),
+//                                   floatingBondSchedule1,
+//                                   iborIndex_,
+//                                   Actual360(),
+//                                   Following,
+//                                   std::vector<Natural>(1,fixingDays),
+//                                   std::vector<Real>(1,1), 
+//                                   std::vector<Spread>(1,0.0056),
+//                                   std::vector<Rate>(),
+//                                   std::vector<Rate>(),
+//                                   inArrears);
+//    Date floatingbondRedemption1 = bondCalendar.adjust(Date(29,September,2013),
+//                                                       Following);
+//    floatingBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
+//                          SimpleCashFlow(100.0, floatingbondRedemption1)));
+//     //specialized floater
+//    boost::shared_ptr<Bond> floatingBond1(new
+//           FloatingRateBond(settlementDays, faceAmount_, floatingBondSchedule1,
+//                            iborIndex_, Actual360(),
+//                            Following, fixingDays,
+//                            std::vector<Real>(1,1), 
+//                            std::vector<Spread>(1,0.0056),
+//                            std::vector<Rate>(), std::vector<Rate>(),
+//                            inArrears,
+//                            100.0, Date(29,September,2003)));
+//     //equivalent generic floater
+//    boost::shared_ptr<Bond> floatingGenericBond1(new
+//                            Bond(settlementDays, bondCalendar, faceAmount_,
+//                            Date(29,September,2003),floatingBondLeg1));
+//
+//    floatingBond1->setPricingEngine(bondEngine);
+//    floatingGenericBond1->setPricingEngine(bondEngine);
+//
+//    setCouponPricer(floatingBond1->cashflows(),pricer_);
+//    setCouponPricer(floatingGenericBond1->cashflows(),pricer_);
+//    iborIndex_->addFixing(Date(27,March,2007), 0.0402);
+//    Real floatingBondPrice1 = floatingBond1->cleanPrice();
+//    Real floatingGenericBondPrice1= floatingGenericBond1->cleanPrice();
+//    AssetSwap floatingBondAssetSwap1(payFixedRate,
+//                                     floatingBond1, floatingBondPrice1,
+//                                     iborIndex_, nonnullspread_, termStructure_,
+//                                     Schedule(),
+//                                     iborIndex_->dayCounter(),
+//                                     parAssetSwap);
+//    AssetSwap floatingGenericBondAssetSwap1(payFixedRate,
+//                                            floatingGenericBond1, 
+//                                            floatingGenericBondPrice1,
+//                                            iborIndex_, nonnullspread_, termStructure_,
+//                                            Schedule(),
+//                                            iborIndex_->dayCounter(),
+//                                            parAssetSwap);
+//    Real floatingBondAssetSwapPrice1 = floatingBondAssetSwap1.fairPrice();
+//    Real floatingGenericBondAssetSwapPrice1 = floatingGenericBondAssetSwap1.fairPrice();
+//
+//    Real error3 = std::fabs(floatingBondAssetSwapPrice1-floatingGenericBondAssetSwapPrice1);
+//    if (error3>tolerance) {
+//        BOOST_ERROR("wrong clean price for frnbond:"
+//                    << QL_FIXED << std::setprecision(4)
+//                    << "\n  specialized frn rate bond's clean price: " 
+//                    << floatingBondAssetSwapPrice1
+//                    << "\n  generic equivalent bond's price: " 
+//                    << floatingBondAssetSwapPrice1
+//                    << QL_SCIENTIFIC << std::setprecision(2)
+//                    << "\n  error:                 " << error3
+//                    << "\n  tolerance:             " << tolerance);
+//    }
+//
+//   //  FRN bond (Isin: XS0090566539 COE 0 09/24/18)
+//   //  maturity occurs on a business day
+//
+//    Schedule floatingBondSchedule2(Date(24,September,2004),
+//                                   Date(24,September,2018),
+//                                   Period(Semiannual), bondCalendar,
+//                                   ModifiedFollowing, ModifiedFollowing,
+//                                   true, false);
+//    Leg floatingBondLeg2 = IborLeg(std::vector<Real>(1, faceAmount_),
+//                                   floatingBondSchedule2,
+//                                   iborIndex_,
+//                                   Actual360(),
+//                                   ModifiedFollowing,
+//                                   std::vector<Natural>(1,fixingDays),
+//                                   std::vector<Real>(1,1), 
+//                                   std::vector<Spread>(1,0.0025),
+//                                   std::vector<Rate>(),
+//                                   std::vector<Rate>(),
+//                                   inArrears);
+//    Date floatingbondRedemption2 = bondCalendar.adjust(Date(24,September,2018),
+//                                                       ModifiedFollowing);
+//    floatingBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
+//                          SimpleCashFlow(100.0, floatingbondRedemption2)));
+//     //specialized floater
+//   boost::shared_ptr<Bond> floatingBond2(new
+//          FloatingRateBond(settlementDays, faceAmount_, floatingBondSchedule2,
+//                           iborIndex_, Actual360(),
+//                           ModifiedFollowing, fixingDays,
+//                           std::vector<Real>(1,1), 
+//                           std::vector<Spread>(1,0.0025),
+//                           std::vector<Rate>(), std::vector<Rate>(),
+//                           inArrears,
+//                           100.0, Date(24,September,2004)));
+//     //equivalent generic floater
+//    boost::shared_ptr<Bond> floatingGenericBond2(new
+//                            Bond(settlementDays, bondCalendar, faceAmount_,
+//                            Date(24,September,2004),floatingBondLeg2));
+//
+//    floatingBond2->setPricingEngine(bondEngine);
+//    floatingGenericBond2->setPricingEngine(bondEngine);
+//
+//    setCouponPricer(floatingBond2->cashflows(),pricer_);
+//    setCouponPricer(floatingGenericBond2->cashflows(),pricer_);
+//
+//    iborIndex_->addFixing(Date(22,March,2007), 0.04013);
+//
+//    Real floatingBondPrice2 = floatingBond2->cleanPrice();
+//    Real floatingGenericBondPrice2= floatingGenericBond2->cleanPrice();
+//    AssetSwap floatingBondAssetSwap2(payFixedRate,
+//                                     floatingBond2, floatingBondPrice2,
+//                                     iborIndex_, nonnullspread_, termStructure_,
+//                                     Schedule(),
+//                                     iborIndex_->dayCounter(),
+//                                     parAssetSwap);
+//    AssetSwap floatingGenericBondAssetSwap2(payFixedRate,
+//                                            floatingGenericBond2, 
+//                                            floatingGenericBondPrice2,
+//                                            iborIndex_, nonnullspread_, termStructure_,
+//                                            Schedule(),
+//                                            iborIndex_->dayCounter(),
+//                                            parAssetSwap);
+//    Real floatingBondAssetSwapPrice2 = floatingBondAssetSwap2.fairPrice();
+//    Real floatingGenericBondAssetSwapPrice2 = floatingGenericBondAssetSwap2.fairPrice();
+//    Real error4 = std::fabs(floatingBondAssetSwapPrice2-floatingGenericBondAssetSwapPrice2);
+//    if (error4>tolerance) {
+//        BOOST_ERROR("wrong clean price for frnbond:"
+//                    << QL_FIXED << std::setprecision(4)
+//                    << "\n  specialized frn rate bond's clean price: " 
+//                    << floatingBondAssetSwapPrice2
+//                    << "\n  generic equivalent bond's price: " 
+//                    << floatingBondAssetSwapPrice2
+//                    << QL_SCIENTIFIC << std::setprecision(2)
+//                    << "\n  error:                 " << error4
+//                    << "\n  tolerance:             " << tolerance);
+//    }
+//
+//   //// // CMS bond (Isin: XS0228052402 CRDIT 0 8/22/20)
+//   //// // maturity doesn't occur on a business day
+//
+//   // Schedule cmsBondSchedule1(Date(22,August,2005),
+//   //                           Date(22,August,2020),
+//   //                           Period(Annual), bondCalendar,
+//   //                           Unadjusted, Unadjusted,
+//   //                           true, false);
+//   // Leg cmsBondLeg1 = CmsLeg(std::vector<Real>(1, faceAmount_),
+//   //                          cmsBondSchedule1,
+//   //                          swapIndex_,
+//   //                          Thirty360(),
+//   //                          Following,
+//   //                          std::vector<Natural>(1,fixingDays),
+//   //                          std::vector<Real>(1,1.0), 
+//   //                          std::vector<Spread>(1,0.0),
+//   //                          std::vector<Rate>(1,0.055), 
+//   //                          std::vector<Rate>(1,0.025),
+//   //                          inArrears);
+//   // Date cmsbondRedemption1 = bondCalendar.adjust(Date(22,August,2020),
+//   //                                               Following);
+//   // cmsBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
+//   //                       SimpleCashFlow(100.0, cmsbondRedemption1)));
+//
+//   ////  specialized cms bond
+//   // boost::shared_ptr<Bond> cmsBond1(new
+//   // CmsRateBond(settlementDays, faceAmount_, cmsBondSchedule1,
+//   //             swapIndex_, Thirty360(),
+//   //             Following, fixingDays,
+//   //             std::vector<Real>(1,1.0), std::vector<Spread>(1,0.0),
+//   //             std::vector<Rate>(1,0.055), std::vector<Rate>(1,0.025),
+//   //             inArrears,
+//   //             100.0, Date(22,August,2005)));
+//
+//   ////  equivalent generic cms bond
+//   // boost::shared_ptr<Bond> cmsGenericBond1(new
+//   //                         Bond(settlementDays, bondCalendar, faceAmount_,
+//   //                         Date(22,August,2005),cmsBondLeg1));
+//
+//   // cmsBond1->setPricingEngine(bondEngine);
+//   // cmsGenericBond1->setPricingEngine(bondEngine);
+//
+//   // setCouponPricer(cmsBond1->cashflows(),cmspricer_);
+//   // setCouponPricer(cmsGenericBond1->cashflows(),cmspricer_);
+//   // swapIndex_->addFixing(Date(18,August,2006), 0.04158);
+//   // Real cmsBondPrice1 = cmsBond1->cleanPrice();
+//   // Real cmsGenericBondPrice1 = cmsGenericBond1->cleanPrice();
+//   // AssetSwap cmsBondAssetSwap1(payFixedRate,cmsBond1, cmsBondPrice1,
+//   //                             iborIndex_, nonnullspread_, termStructure_,
+//   //                             Schedule(),iborIndex_->dayCounter(),parAssetSwap);
+//   // AssetSwap cmsGenericBondAssetSwap1(payFixedRate,cmsGenericBond1, 
+//   //                                    cmsGenericBondPrice1, iborIndex_, 
+//   //                                    nonnullspread_, termStructure_,
+//   //                                    Schedule(),iborIndex_->dayCounter(),
+//   //                                    parAssetSwap);
+//   // Real cmsBondAssetSwapPrice1 = cmsBondAssetSwap1.fairPrice();
+//   // Real cmsGenericBondAssetSwapPrice1 = cmsGenericBondAssetSwap1.fairPrice();
+//   // Real error5 = std::fabs(cmsBondAssetSwapPrice1-cmsGenericBondAssetSwapPrice1);
+//   // if (error5>tolerance) {
+//   //     BOOST_ERROR("wrong clean price for cmsbond:"
+//   //                 << QL_FIXED << std::setprecision(4)
+//   //                 << "\n  specialized cms rate bond's clean price: " 
+//   //                 << cmsBondAssetSwapPrice1
+//   //                 << "\n  generic equivalent bond's price: " 
+//   //                 << cmsGenericBondAssetSwapPrice1
+//   //                 << QL_SCIENTIFIC << std::setprecision(2)
+//   //                 << "\n  error:                 " << error5
+//   //                 << "\n  tolerance:             " << tolerance);
+//   // }
+//
+//
+//
+//      //CMS bond (Isin: XS0218766664 ISPIM 0 5/6/15)
+//      //maturity occurs on a business day
+//
+//    Schedule cmsBondSchedule2(Date(06,May,2005),
+//                              Date(06,May,2015),
+//                              Period(Annual), bondCalendar,
+//                              Unadjusted, Unadjusted,
+//                              true, false);
+//    Leg cmsBondLeg2 = CmsLeg(std::vector<Real>(1, faceAmount_),
+//                             cmsBondSchedule2,
+//                             swapIndex_,
+//                             Thirty360(),
+//                             Following,
+//                             std::vector<Natural>(1,fixingDays),
+//                             std::vector<Real>(1,0.84), 
+//                             std::vector<Spread>(1,0.0),
+//                             std::vector<Rate>(), 
+//                             std::vector<Rate>(),
+//                             inArrears);
+//    Date cmsbondRedemption2 = bondCalendar.adjust(Date(06,May,2015),
+//                                                  Following);
+//    cmsBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
+//                          SimpleCashFlow(100.0, cmsbondRedemption2)));
+//
+//     //specialized cms bond
+//    boost::shared_ptr<Bond> cmsBond2(new
+//    CmsRateBond(settlementDays, faceAmount_, cmsBondSchedule2,
+//                swapIndex_, Thirty360(),
+//                Following, fixingDays,
+//                std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
+//                std::vector<Rate>(), std::vector<Rate>(),
+//                inArrears,
+//                100.0, Date(06,May,2005)));
+//
+//     //equivalent generic cms bond
+//    boost::shared_ptr<Bond> cmsGenericBond2(new
+//                            Bond(settlementDays, bondCalendar, faceAmount_,
+//                            Date(06,May,2005),cmsBondLeg2));
+//
+//    cmsBond2->setPricingEngine(bondEngine);
+//    cmsGenericBond2->setPricingEngine(bondEngine);
+//
+//    setCouponPricer(cmsBond2->cashflows(),cmspricer_);
+//    setCouponPricer(cmsGenericBond2->cashflows(),cmspricer_);
+//    swapIndex_->addFixing(Date(04,May,2006), 0.04217);
+//    Real cmsBondPrice2 = cmsBond2->cleanPrice();
+//    Real cmsGenericBondPrice2 = cmsGenericBond2->cleanPrice();
+//    AssetSwap cmsBondAssetSwap2(payFixedRate,cmsBond2, cmsBondPrice2,
+//                                iborIndex_, nonnullspread_, termStructure_,
+//                                Schedule(),iborIndex_->dayCounter(),parAssetSwap);
+//    AssetSwap cmsGenericBondAssetSwap2(payFixedRate,cmsGenericBond2, 
+//                                       cmsGenericBondPrice2, iborIndex_, 
+//                                       nonnullspread_, termStructure_,
+//                                       Schedule(),iborIndex_->dayCounter(),
+//                                       parAssetSwap);
+//    Real cmsBondAssetSwapPrice2 = cmsBondAssetSwap2.fairPrice();
+//    Real cmsGenericBondAssetSwapPrice2 = cmsGenericBondAssetSwap2.fairPrice();
+//    Real error6 = std::fabs(cmsBondAssetSwapPrice2-cmsGenericBondAssetSwapPrice2);
+//    if (error6>tolerance) {
+//        BOOST_ERROR("wrong clean price for cmsbond:"
+//                    << QL_FIXED << std::setprecision(4)
+//                    << "\n  specialized cms rate bond's clean price: " 
+//                    << cmsBondAssetSwapPrice2
+//                    << "\n  generic equivalent bond's price: " 
+//                    << cmsGenericBondAssetSwapPrice2
+//                    << QL_SCIENTIFIC << std::setprecision(2)
+//                    << "\n  error:                 " << error6
+//                    << "\n  tolerance:             " << tolerance);
+//    }
+//
+//   ////  Zero-Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
+//   ////  maturity doesn't occur on a business day
+//
+//   // Date zerocpbondRedemption1 = bondCalendar.adjust(Date(20,December,2015),
+//   //                                                   Following);
+//   // Leg zeroCpnBondLeg1 = Leg(1, boost::shared_ptr<CashFlow>(new
+//   //         SimpleCashFlow(100.0, zerocpbondRedemption1)));
+//   //  //specialized zerocpn bond
+//   // boost::shared_ptr<Bond> zeroCpnBond1(new
+//   // ZeroCouponBond(settlementDays, bondCalendar, faceAmount_,
+//   //               Date(20,December,2015),
+//   //               Following,
+//   //               100.0, Date(19,December,1985)));
+//
+//   //  //generic zerocpn bond
+//   // boost::shared_ptr<Bond> zeroCpnGenericBond1(new
+//   //                         Bond(settlementDays, bondCalendar, faceAmount_,
+//   //                         Date(19,December,1985),zeroCpnBondLeg1));
+//
+//   // zeroCpnBond1->setPricingEngine(bondEngine);
+//   // zeroCpnGenericBond1->setPricingEngine(bondEngine);
+//
+//   // Real zeroCpnBondPrice1 = zeroCpnBond1->cleanPrice();
+//   // Real zeroCpnGenericBondPrice1 = zeroCpnGenericBond1->cleanPrice();
+//   // AssetSwap zeroCpnBondAssetSwap1(payFixedRate,zeroCpnBond1, zeroCpnBondPrice1,
+//   //                             iborIndex_, nonnullspread_, termStructure_,
+//   //                             Schedule(),iborIndex_->dayCounter(),parAssetSwap);
+//   // AssetSwap zeroCpnGenericBondAssetSwap1(payFixedRate,zeroCpnGenericBond1, 
+//   //                                        zeroCpnGenericBondPrice1, iborIndex_, 
+//   //                                        nonnullspread_, termStructure_,
+//   //                                        Schedule(),iborIndex_->dayCounter(),
+//   //                                        parAssetSwap);
+//   // Real zeroCpnBondAssetSwapPrice1 = zeroCpnBondAssetSwap1.fairPrice();
+//   // Real zeroCpnGenericBondAssetSwapPrice1 = 
+//   //                            zeroCpnGenericBondAssetSwap1.fairPrice();
+//   // Real error7 = std::fabs(zeroCpnBondAssetSwapPrice1-zeroCpnGenericBondAssetSwapPrice1);
+//   // if (error7>tolerance) {
+//   //     BOOST_ERROR("wrong clean price for zerocpn bond:"
+//   //                 << QL_FIXED << std::setprecision(4)
+//   //                 << "\n  specialized zero cpn bond's clean price: " 
+//   //                 << zeroCpnBondAssetSwapPrice1
+//   //                 << "\n  generic equivalent bond's price: " 
+//   //                 << zeroCpnGenericBondAssetSwapPrice1
+//   //                 << "\n  error:                 " << error7
+//   //                 << "\n  tolerance:             " << tolerance);
+//   // }
+//
+//   ////  Zero Coupon bond (Isin: IT0001200390 ISPIM 0 02/17/28)
+//   ////  maturity doesn't occur on a business day
+//
+//   // Date zerocpbondRedemption2 = bondCalendar.adjust(Date(17,February,2028),
+//   //                                                  Following);
+//   // Leg zeroCpnBondLeg2 = Leg(1, boost::shared_ptr<CashFlow>(new
+//   //         SimpleCashFlow(100.0, zerocpbondRedemption2)));
+//   //  //specialized zerocpn bond
+//   // boost::shared_ptr<Bond> zeroCpnBond2(new
+//   // ZeroCouponBond(settlementDays, bondCalendar, faceAmount_,
+//   //                Date(17,February,2028),
+//   //                Following,
+//   //                100.0, Date(17,February,1998)));
+//
+//   //  //generic zerocpn bond
+//   // boost::shared_ptr<Bond> zeroCpnGenericBond2(new
+//   //        Bond(settlementDays, bondCalendar, faceAmount_,
+//   //             Date(17,February,1998),zeroCpnBondLeg2));
+//
+//   // zeroCpnBond2->setPricingEngine(bondEngine);
+//   // zeroCpnGenericBond2->setPricingEngine(bondEngine);
+//
+//   // Real zeroCpnBondPrice2 = zeroCpnBond2->cleanPrice();
+//   // Real zeroCpnGenericBondPrice2 = zeroCpnGenericBond2->cleanPrice();
+//
+//   // AssetSwap zeroCpnBondAssetSwap2(payFixedRate,zeroCpnBond2, zeroCpnBondPrice2,
+//   //                                 iborIndex_, nonnullspread_, termStructure_,
+//   //                                 Schedule(),iborIndex_->dayCounter(),parAssetSwap);
+//   // AssetSwap zeroCpnGenericBondAssetSwap2(payFixedRate,zeroCpnGenericBond2, 
+//   //                                        zeroCpnGenericBondPrice2, iborIndex_, 
+//   //                                        nonnullspread_, termStructure_,
+//   //                                        Schedule(),iborIndex_->dayCounter(),
+//   //                                        parAssetSwap);
+//   // Real zeroCpnBondAssetSwapPrice2 = zeroCpnBondAssetSwap2.fairPrice();
+//   // Real zeroCpnGenericBondAssetSwapPrice2 = 
+//   //                            zeroCpnGenericBondAssetSwap2.fairPrice();
+//   // Real error8 = std::fabs(zeroCpnBondAssetSwapPrice2
+//   //                         -zeroCpnGenericBondAssetSwapPrice2);
+//   // if (error8>tolerance) {
+//   //     BOOST_ERROR("wrong clean price for zerocpn bond:"
+//   //                 << QL_FIXED << std::setprecision(4)
+//   //                 << "\n  specialized zero cpn bond's clean price: " 
+//   //                 << zeroCpnBondAssetSwapPrice2
+//   //                 << "\n  generic equivalent bond's price: " 
+//   //                 << zeroCpnGenericBondAssetSwapPrice2
+//   //                 << "\n  error:                 " << error8
+//   //                 << "\n  tolerance:             " << tolerance);
+//   // }
 }
 
 
