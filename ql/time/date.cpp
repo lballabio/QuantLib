@@ -447,7 +447,7 @@ namespace QuantLib {
                 char filler = out.fill();
                 out << std::setw(2) << std::setfill('0') << mm << "/";
                 out << std::setw(2) << std::setfill('0') << dd << "/";
-                out << "/" << yyyy;
+                out << yyyy;
                 out.fill(filler);
             }
             return out;
