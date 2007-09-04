@@ -34,7 +34,7 @@ class AssetSwapTest {
     static void testMASWWithGenericBond();
     static void testZSpreadWithGenericBond();
     static void testSpecializedBondVsGenericBond();
-    static void testSpecializedBondVsGenericBondUsingAswSpread();
+    static void testSpecializedBondVsGenericBondUsingAsw();
     static  boost::unit_test_framework::test_suite* suite();
 };
 
