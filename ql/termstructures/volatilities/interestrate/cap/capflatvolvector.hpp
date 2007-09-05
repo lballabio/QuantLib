@@ -27,11 +27,8 @@
 #define quantlib_cap_volatility_vector_hpp
 
 #include <ql/termstructures/capvolstructures.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/math/interpolations/cubicspline.hpp>
-#include <ql/time/daycounters/thirty360.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
-#include <ql/quotes/simplequote.hpp>
+#include <ql/math/interpolation.hpp>
+#include <ql/quote.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -54,43 +51,44 @@ namespace QuantLib {
                             const Calendar& calendar,
                             const std::vector<Period>& optionTenors,
                             const std::vector<Handle<Quote> >& volatilities,
-                            const DayCounter& dayCounter);        
+                            const DayCounter& dc = Actual365Fixed());        
         //! fixed reference date, floating market data
         CapVolatilityVector(const Date& settlementDate,
+                            const Calendar& calendar,
                             const std::vector<Period>& optionTenors,
                             const std::vector<Handle<Quote> >& volatilities,
-                            const DayCounter& dayCounter);
+                            const DayCounter& dc = Actual365Fixed());
         //! fixed reference date, fixed market data
         CapVolatilityVector(const Date& settlementDate,
+                            const Calendar& calendar,
                             const std::vector<Period>& optionTenors,
                             const std::vector<Volatility>& volatilities,
-                            const DayCounter& dayCounter);
+                            const DayCounter& dc = Actual365Fixed());
         //! floating reference date, fixed market data
         CapVolatilityVector(Natural settlementDays,
                             const Calendar& calendar,
                             const std::vector<Period>& optionTenors,
                             const std::vector<Volatility>& volatilities,
-                            const DayCounter& dayCounter);
-
-        // inspectors
-        DayCounter dayCounter() const { return dayCounter_; }
+                            const DayCounter& dc = Actual365Fixed());
+        //! \name TermStructure interface
+        //@{
         Date maxDate() const;
+        //@}
+        //! \name CapVolatilityStructure interface
+        //@{
         Real minStrike() const;
         Real maxStrike() const;
+        //@}
         // observability
         void update();
-            //TermStructure::update();
-            //LazyObject::update();
-
         // LazyObject interface
         void performCalculations() const;
 
       private:
         void checkInputs(Size volatilitiesRows) const;
         void registerWithMarketData();
-        DayCounter dayCounter_;
         std::vector<Period> optionTenors_;
-        std::vector<Time> timeLengths_;
+        std::vector<Time> optionTimes_;
         std::vector<Handle<Quote> > volHandles_;
         mutable std::vector<double> volatilities_;
         Interpolation interpolation_;
@@ -119,9 +117,9 @@ namespace QuantLib {
         interpolate();
     }
 
-    inline Volatility CapVolatilityVector::volatilityImpl(Time length, 
+    inline Volatility CapVolatilityVector::volatilityImpl(Time t, 
                                                           Rate) const {
-        return interpolation_(length, true);
+        return interpolation_(t, true);
     }
 
 }

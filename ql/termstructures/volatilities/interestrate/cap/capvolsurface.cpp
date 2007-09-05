@@ -18,22 +18,25 @@
 */
 
 #include <ql/termstructures/volatilities/interestrate/cap/capvolsurface.hpp>
+#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
+#include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {
 
     // floating reference date, floating market data
     CapVolatilitySurface::CapVolatilitySurface(
-                          Natural settlementDays,
-                          const Calendar& calendar,
-                          const std::vector<Period>& optionLenghts,
-                          const std::vector<Rate>& strikes,
-                          const std::vector<std::vector<Handle<Quote> > >& volatilities)
-    : CapVolatilityStructure(settlementDays, calendar),
-      optionLenghts_(optionLenghts),
-      optionTimes_(optionLenghts.size()), 
+                        Natural settlementDays,
+                        const Calendar& calendar,
+                        const std::vector<Period>& optionTenors,
+                        const std::vector<Rate>& strikes,
+                        const std::vector<std::vector<Handle<Quote> > >& vols,
+                        const DayCounter& dc)
+    : CapVolatilityStructure(settlementDays, calendar, dc),
+      optionTenors_(optionTenors),
+      optionTimes_(optionTenors.size()), 
       strikes_(strikes),
-      volHandles_(volatilities),
-      volatilities_(volatilities.size(), volatilities[0].size())
+      volHandles_(vols),
+      volatilities_(vols.size(), vols[0].size())
     {
         checkInputs(volatilities_.rows(), volatilities_.columns());
         registerWithMarketData();
@@ -45,16 +48,18 @@ namespace QuantLib {
     
     // fixed reference date, floating market data
     CapVolatilitySurface::CapVolatilitySurface(
-                                const Date& settlementDate,
-                                const std::vector<Period>& optionLenghts,
-                                const std::vector<Rate>& strikes,
-                                const std::vector<std::vector<Handle<Quote> > >& volatilities)
-    : CapVolatilityStructure(settlementDate),
-      optionLenghts_(optionLenghts),
-      optionTimes_(optionLenghts.size()), 
+                        const Date& settlementDate,
+                        const Calendar& calendar,
+                        const std::vector<Period>& optionTenors,
+                        const std::vector<Rate>& strikes,
+                        const std::vector<std::vector<Handle<Quote> > >& vols,
+                        const DayCounter& dc)
+    : CapVolatilityStructure(settlementDate, calendar, dc),
+      optionTenors_(optionTenors),
+      optionTimes_(optionTenors.size()), 
       strikes_(strikes),
-      volHandles_(volatilities),
-      volatilities_(volatilities.size(), volatilities[0].size())
+      volHandles_(vols),
+      volatilities_(vols.size(), vols[0].size())
     {
         checkInputs(volatilities_.rows(), volatilities_.columns());
         registerWithMarketData();
@@ -66,24 +71,26 @@ namespace QuantLib {
 
     // fixed reference date, fixed market data
     CapVolatilitySurface::CapVolatilitySurface(
-                                const Date& settlementDate,
-                                const std::vector<Period>& optionLenghts,
-                                const std::vector<Rate>& strikes,
-                                const Matrix& volatilities)
-    : CapVolatilityStructure(settlementDate),
-      optionLenghts_(optionLenghts),
-      optionTimes_(optionLenghts.size()), 
+                                    const Date& settlementDate,
+                                    const Calendar& calendar,
+                                    const std::vector<Period>& optionTenors,
+                                    const std::vector<Rate>& strikes,
+                                    const Matrix& vols,
+                                    const DayCounter& dc)
+    : CapVolatilityStructure(settlementDate, calendar, dc),
+      optionTenors_(optionTenors),
+      optionTimes_(optionTenors.size()), 
       strikes_(strikes),
-      volHandles_(volatilities.rows()),
-      volatilities_(volatilities)
+      volHandles_(vols.rows()),
+      volatilities_(vols)
     {
         checkInputs(volatilities_.rows(), volatilities_.columns());
         // fill dummy handles to allow generic handle-based computations later
         for (Size i=0; i<volatilities_.rows(); ++i) {
-            volHandles_[i].resize(volatilities.columns());
+            volHandles_[i].resize(volatilities_.columns());
             for (Size j=0; j<volatilities_.columns(); ++j)
                 volHandles_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
-                    SimpleQuote(volatilities[i][j])));
+                    SimpleQuote(volatilities_[i][j])));
         }
         registerWithMarketData();
         interpolate();
@@ -91,24 +98,26 @@ namespace QuantLib {
 
     // floating reference date, fixed market data
     CapVolatilitySurface::CapVolatilitySurface(
-                                Natural settlementDays,
-                                const Calendar& calendar,
-                                const std::vector<Period>& optionLenghts,
-                                const std::vector<Rate>& strikes,
-                                const Matrix& volatilities)
-    : CapVolatilityStructure(settlementDays,calendar),
-      optionLenghts_(optionLenghts),
+                                    Natural settlementDays,
+                                    const Calendar& calendar,
+                                    const std::vector<Period>& optionTenors,
+                                    const std::vector<Rate>& strikes,
+                                    const Matrix& vols,
+                                    const DayCounter& dc)
+    : CapVolatilityStructure(settlementDays, calendar, dc),
+      optionTenors_(optionTenors),
+      optionTimes_(optionTenors.size()), 
       strikes_(strikes),
-      volHandles_(volatilities.rows()),
-      volatilities_(volatilities)
+      volHandles_(vols.rows()),
+      volatilities_(vols)
     {
         checkInputs(volatilities_.rows(), volatilities_.columns());
         // fill dummy handles to allow generic handle-based computations later
         for (Size i=0; i<volatilities_.rows(); ++i) {
-            volHandles_[i].resize(volatilities.columns());
+            volHandles_[i].resize(volatilities_.columns());
             for (Size j=0; j<volatilities_.columns(); ++j)
                 volHandles_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
-                    SimpleQuote(volatilities[i][j])));
+                    SimpleQuote(volatilities_[i][j])));
         }
         registerWithMarketData();
         //volatilities_[0] = volatilities[0];
@@ -118,10 +127,10 @@ namespace QuantLib {
 
     void CapVolatilitySurface::checkInputs(Size volRows,
                                            Size volsColumns) const {
-        QL_REQUIRE(optionLenghts_.size()==volRows,
-                   "mismatch between number of cap lenght (" <<
-                   optionLenghts_.size() <<
-                   ") and number of cap volatilities (" << volRows << ")");
+        QL_REQUIRE(optionTenors_.size()==volRows,
+                   "mismatch between number of option tenors (" <<
+                   optionTenors_.size() <<
+                   ") and number of volatilities (" << volRows << ")");
         QL_REQUIRE(volatilities_.columns()==strikes_.size(),
                    "mismatch between strikes(" << strikes_.size() <<
                    ") and vol columns (" << volatilities_.columns() << ")");        
@@ -136,13 +145,13 @@ namespace QuantLib {
     void CapVolatilitySurface::registerWithMarketData()
     {
         for (Size i=0; i<volHandles_.size(); ++i)
-            for (Size j=0; j<volHandles_[0].size(); j++)
+            for (Size j=0; j<volHandles_[0].size(); ++j)
                 registerWith(volHandles_[i][j]);
     }
 
     void CapVolatilitySurface::interpolate() {
-        for (Size i=0; i<optionLenghts_.size(); i++) {
-            Date endDate = referenceDate() + optionLenghts_[i];
+        for (Size i=0; i<optionTenors_.size(); ++i) {
+            Date endDate = referenceDate() + optionTenors_[i];
             optionTimes_[i] = timeFromReference(endDate);
         }
         interpolation_ =
@@ -162,7 +171,7 @@ namespace QuantLib {
             //    optionTimes_.begin(), optionTimes_.end(),
             //    volatilities_);
         interpolation_.update();
-        maxDate_ = referenceDate() + optionLenghts_.back();
+        maxDate_ = referenceDate() + optionTenors_.back();
     }
 
 }

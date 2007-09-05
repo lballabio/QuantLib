@@ -25,15 +25,9 @@
 #define quantlib_cap_volatility_surface_hpp
 
 #include <ql/termstructures/capvolstructures.hpp>
-//#include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/math/interpolations/cubicspline.hpp>
-#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/interpolations/interpolation2d.hpp>
-//#include <ql/time/daycounters/thirty360.hpp>
-//#include <ql/time/daycounters/actual365fixed.hpp>
-#include <ql/quotes/simplequote.hpp>
+#include <ql/quote.hpp>
 #include <vector>
-#include <ql/patterns/lazyobject.hpp>
 
 namespace QuantLib {
 
@@ -48,41 +42,50 @@ namespace QuantLib {
         //! floating reference date, floating market data
         CapVolatilitySurface(Natural settlementDays,
                              const Calendar& calendar,
-                             const std::vector<Period>& optionLenghts,
+                             const std::vector<Period>& optionTenors,
                              const std::vector<Rate>& strikes,
-                             const std::vector<std::vector<Handle<Quote> > >& volatilities);        
+                             const std::vector<std::vector<Handle<Quote> > >&,
+                             const DayCounter& dc = Actual365Fixed());
         //! fixed reference date, floating market data
         CapVolatilitySurface(const Date& settlementDate,
-                             const std::vector<Period>& optionLenghts,
+                             const Calendar& calendar,
+                             const std::vector<Period>& optionTenors,
                              const std::vector<Rate>& strikes,
-                             const std::vector<std::vector<Handle<Quote> > >& volatilities);
+                             const std::vector<std::vector<Handle<Quote> > >&,
+                             const DayCounter& dc = Actual365Fixed());
         //! fixed reference date, fixed market data
         CapVolatilitySurface(const Date& settlementDate,
-                             const std::vector<Period>& optionLenghts,
+                             const Calendar& calendar,
+                             const std::vector<Period>& optionTenors,
                              const std::vector<Rate>& strikes,
-                             const Matrix& volatilities);
+                             const Matrix& volatilities,
+                             const DayCounter& dc = Actual365Fixed());
         //! floating reference date, fixed market data
         CapVolatilitySurface(Natural settlementDays,
                              const Calendar& calendar,
-                             const std::vector<Period>& optionLenghts,
+                             const std::vector<Period>& optionTenors,
                              const std::vector<Rate>& strikes,
-                             const Matrix& volatilities);
-
-        // inspectors
+                             const Matrix& volatilities,
+                             const DayCounter& dc = Actual365Fixed());
+        //! \name TermStructure interface
+        //@{
         Date maxDate() const;
+        //@}
+        //! \name CapVolatilityStructure interface
+        //@{
         Real minStrike() const;
         Real maxStrike() const;
+        //@}
         // observability
         void update();
-
-        // LazyObject interface
+        // (to be) LazyObject interface
         void performCalculations() const;
 
       private:
         void checkInputs(Size volatilitiesRows,
                          Size volatilitiesColumns) const;
         void registerWithMarketData();
-        std::vector<Period> optionLenghts_;
+        std::vector<Period> optionTenors_;
         std::vector<Time> optionTimes_;
         std::vector<Rate> strikes_;
         std::vector<std::vector<Handle<Quote> > > volHandles_;
@@ -97,7 +100,7 @@ namespace QuantLib {
     // inline definitions
 
     inline Date CapVolatilitySurface::maxDate() const {
-        return referenceDate()+optionLenghts_.back();
+        return referenceDate()+optionTenors_.back();
     }
 
     inline Real CapVolatilitySurface::minStrike() const {
@@ -113,9 +116,9 @@ namespace QuantLib {
         interpolate();
     }
 
-    inline Volatility CapVolatilitySurface::volatilityImpl(Time length,
+    inline Volatility CapVolatilitySurface::volatilityImpl(Time t,
                                                            Rate strike) const {
-        return interpolation_(strike, length);
+        return interpolation_(strike, t);
     }
 
 }
