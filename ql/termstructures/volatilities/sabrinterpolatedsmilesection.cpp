@@ -64,7 +64,7 @@ namespace QuantLib {
     } 
 
     void SabrInterpolatedSmileSection::performCalculations() const {
-        forwardValue_ = 1-forward_->value()/100;
+        forwardValue_ = forward_->value();
         Time exerciseTimeSquareRoot = std::sqrt(exerciseTime());
         vols_.clear();
         actualStrikes_.clear();
