@@ -26,6 +26,7 @@
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/termstructures/volatilities/interestrate/cap/capvolsurface.hpp>
 #include <ql/indexes/iborindex.hpp>
 
 namespace {
@@ -70,6 +71,21 @@ namespace {
             guess = 0.1;
         solver.solve(f, accuracy, guess, minVol, maxVol);
     }
+
+    class InterpolatedQuote : public Quote {
+      public:
+          InterpolatedQuote(const boost::shared_ptr<CapVolatilitySurface>& surface,
+                          Time time, Real strike):surface_(surface),
+                          time_(time), strike_(strike){}
+        Time time_;
+        Real strike_;
+        const boost::shared_ptr<CapVolatilitySurface> surface_;
+        Real value() const {
+            return surface_->volatility(time_, strike_);
+        }
+        bool isValid() const { return true; }
+    };
+
 }
 
 namespace QuantLib {
@@ -81,7 +97,7 @@ namespace QuantLib {
         capFloor.update();
     }
 
-    void CapsStripper::createMarketData() const {
+    void CapsStripper::createCaps() const {
         marketDataCap_.resize(tenors_.size());
         Rate dummyAtmRate = .04; // we will use a real one during boostrap
         // market data cap (used to compute the price to invert) construction
@@ -98,6 +114,47 @@ namespace QuantLib {
                const_cast<CapsStripper*>(this)->registerWith(marketDataCap_[i][j]);
            }
         }
+    }
+
+    void CapsStripper::createInterpolatedCaps(Period timeStep,
+        const boost::shared_ptr<CapVolatilitySurface>& surface) const {
+        std::vector<Period> interpolatedTenors;
+        std::vector<Period>::const_iterator tenor;
+
+        Period currentPeriod = tenors_.front();
+        for(tenor=tenors_.begin(); tenor!=tenors_.end(); ++tenor) {
+            while(currentPeriod<*(tenor+1)){
+                interpolatedTenors.push_back(currentPeriod);
+                currentPeriod += timeStep;
+            }
+        }
+        Date refDate = referenceDate();
+
+        marketDataCap_.resize(interpolatedTenors.size());
+        Rate dummyAtmRate = .04; // we will use a real one during boostrap
+        // market data cap (used to compute the price to invert) construction
+        for (Size i = 0 ; i < interpolatedTenors.size(); i++) {
+            marketDataCap_[i].resize(strikes_.size());
+            Time tenorTime = dayCounter().dayCount(refDate, refDate+interpolatedTenors[i]);
+
+           for (Size j=0 ; j<strikes_.size(); j++) {
+
+               boost::shared_ptr<InterpolatedQuote> interpolatedQuote(
+                   new InterpolatedQuote(surface, tenorTime, strikes_[j]));
+
+               boost::shared_ptr<PricingEngine> blackCapFloorEngine(new
+                   BlackCapFloorEngine(Handle<Quote>(interpolatedQuote), volatilityDayCounter_));
+               CapFloor::Type type =
+                   (strikes_[j] < dummyAtmRate)? CapFloor::Floor : CapFloor::Cap;
+               marketDataCap_[i][j] = MakeCapFloor(type, interpolatedTenors[i],
+                        index_, strikes_[j], 0*Days, blackCapFloorEngine);
+               
+           }
+        }
+        const_cast<CapsStripper*>(this)->registerWith(surface);
+    }
+
+    void CapsStripper::createCapletVolatilityStructure() const {
         // if the volatility surface given by the smile sections volatility
         // structure is empty we will use a simple caplet vol surface
         if (smileSectionInterfaces_.empty())
@@ -193,12 +250,42 @@ namespace QuantLib {
                    "mismatch between strikes(" << strikes.size() <<
                    ") and vol columns(" << vols[0].size() << ")");
         registerWith(Settings::instance().evaluationDate());
-        createMarketData();
+        createCaps();
+        createCapletVolatilityStructure();
+    }
+
+
+    CapsStripper::CapsStripper(
+         const std::vector<Period>& tenors,
+         const std::vector<Rate>& strikes,
+         const boost::shared_ptr<CapVolatilitySurface>& surface,
+         const boost::shared_ptr<IborIndex>& index,
+         Period timeStep,
+         const Handle< YieldTermStructure >,
+         const DayCounter& volatilityDayCounter,
+         Real impliedVolatilityAccuracy,
+         Size maxEvaluations,
+         bool allowExtrapolation,
+         bool decoupleInterpolation)
+    : CapletVolatilityStructure(0, index->fixingCalendar()),
+      volatilityDayCounter_(volatilityDayCounter),
+      tenors_(tenors), strikes_(strikes),
+      impliedVolatilityAccuracy_(impliedVolatilityAccuracy),
+      maxEvaluations_(maxEvaluations),
+      atmRates_(tenors_.size()),
+      index_(index),
+      decoupleInterpolation_(decoupleInterpolation),
+      evaluationDate_(Settings::instance().evaluationDate()){
+        enableExtrapolation(allowExtrapolation);
+        registerWith(Settings::instance().evaluationDate());
+        createInterpolatedCaps(timeStep , surface);
+        createCapletVolatilityStructure();
     }
 
     void CapsStripper::performCalculations () const {
         if(evaluationDate_ != Settings::instance().evaluationDate()) {
-            createMarketData();
+            createCaps();
+            createCapletVolatilityStructure();
             evaluationDate_ = Settings::instance().evaluationDate();
         }
         Matrix& volatilityParameters =

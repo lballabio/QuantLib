@@ -32,24 +32,40 @@ namespace QuantLib {
     class IborIndex;
     class YieldTermStructure;
     class Quote;
+    class CapVolatilitySurface;
 
     typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapMatrix;
 
     class CapsStripper : public CapletVolatilityStructure,
                          public LazyObject{
       public:
+
         CapsStripper(const std::vector<Period>& tenors,
-         const std::vector<Rate>& strikes,
-         const std::vector<std::vector<Handle<Quote> > >& vols,
-         const boost::shared_ptr<IborIndex>& index,
-         const Handle< YieldTermStructure > termStructure,
-         const DayCounter& volatilityDayCounter = Actual365Fixed(),
-         Real impliedVolatilityAccuracy = 1.0e-6,
-         Size maxEvaluations = 100,
-         const std::vector<boost::shared_ptr<SmileSection> >&
-             smileSectionInterfaces = std::vector<boost::shared_ptr<SmileSection> >(),
-         bool allowExtrapolation = true,
-         bool decoupleInterpolation = false);
+                     const std::vector<Rate>& strikes,
+                     const boost::shared_ptr<CapVolatilitySurface>& surface,
+                     const boost::shared_ptr<IborIndex>& index,
+                     Period timeStep,
+                     const Handle< YieldTermStructure >,
+                     const DayCounter& volatilityDayCounter = Actual365Fixed(),
+                     Real impliedVolatilityAccuracy = 1.0e-6,
+                     Size maxEvaluations = 100,
+                     bool allowExtrapolation = true,
+                     bool decoupleInterpolation = false);
+
+        CapsStripper(const std::vector<Period>& tenors,
+                     const std::vector<Rate>& strikes,
+                     const std::vector<std::vector<Handle<Quote> > >& vols,
+                     const boost::shared_ptr<IborIndex>& index,
+                     const Handle< YieldTermStructure > termStructure,
+                     const DayCounter& volatilityDayCounter = Actual365Fixed(),
+                     Real impliedVolatilityAccuracy = 1.0e-6,
+                     Size maxEvaluations = 100,
+                     const std::vector<boost::shared_ptr<SmileSection> >&
+                         smileSectionInterfaces = std::vector<boost::shared_ptr<SmileSection> >(),
+                     bool allowExtrapolation = true,
+                     bool decoupleInterpolation = false);
+
+       
 
         //@}
         //! \name LazyObject interface
@@ -87,7 +103,10 @@ namespace QuantLib {
           Volatility volatilityImpl(Time t, Rate r) const;
         //@}
       private:
-        void createMarketData() const;
+        void createCaps() const;
+        void createCapletVolatilityStructure() const;
+        void createInterpolatedCaps(Period timeStep,
+            const boost::shared_ptr<CapVolatilitySurface>& surface) const;
         mutable CapMatrix marketDataCap_, calibCap_;
         DayCounter volatilityDayCounter_;
         std::vector<Period> tenors_;
