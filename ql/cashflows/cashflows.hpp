@@ -26,6 +26,7 @@
 #ifndef quantlib_cashflows_hpp
 #define quantlib_cashflows_hpp
 
+#include <ql/cashflows/duration.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/interestrate.hpp>
 #include <ql/utilities/null.hpp>
@@ -35,11 +36,6 @@ namespace QuantLib {
 
     class YieldTermStructure;
     class Coupon;
-
-    //! %duration type
-    struct Duration {
-        enum Type { Simple, Macaulay, Modified };
-    };
 
     //! %cashflow-analysis functions
     /*! \todo add tests */
