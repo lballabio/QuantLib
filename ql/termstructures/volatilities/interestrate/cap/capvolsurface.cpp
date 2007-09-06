@@ -43,7 +43,12 @@ namespace QuantLib {
         for (Size i=0; i<volatilities_.rows(); ++i)
           for (Size j=0; j<volatilities_.columns(); ++j)
               volatilities_[i][j] = volHandles_[i][j]->value();
-        interpolate();
+        interpolation_ = BicubicSpline(
+                                strikes_.begin(),  
+                                strikes_.end(),
+                                optionTimes_.begin(),
+                                optionTimes_.end(),
+                                volatilities_);    
     }
     
     // fixed reference date, floating market data
@@ -66,7 +71,12 @@ namespace QuantLib {
         for (Size i=0; i<volatilities_.rows(); ++i)
           for (Size j=0; j<volatilities_.columns(); ++j)
               volatilities_[i][j] = volHandles_[i][j]->value();
-        interpolate();
+        interpolation_ = BicubicSpline(
+                                strikes_.begin(),  
+                                strikes_.end(),
+                                optionTimes_.begin(),
+                                optionTimes_.end(),
+                                volatilities_);
     }
 
     // fixed reference date, fixed market data
@@ -93,7 +103,12 @@ namespace QuantLib {
                     SimpleQuote(volatilities_[i][j])));
         }
         registerWithMarketData();
-        interpolate();
+        interpolation_ = BicubicSpline(
+                                strikes_.begin(),  
+                                strikes_.end(),
+                                optionTimes_.begin(),
+                                optionTimes_.end(),
+                                volatilities_);
     }
 
     // floating reference date, fixed market data
@@ -120,9 +135,6 @@ namespace QuantLib {
                     SimpleQuote(volatilities_[i][j])));
         }
         registerWithMarketData();
-        //volatilities_[0] = volatilities[0];
-        //std::copy(volatilities.begin(),volatilities.end(),volatilities_.begin()+1);
-        interpolate();
     }
 
     void CapVolatilitySurface::checkInputs(Size volRows,
@@ -136,12 +148,6 @@ namespace QuantLib {
                    ") and vol columns (" << volatilities_.columns() << ")");        
     }
 
-    void CapVolatilitySurface::performCalculations() const {
-        for (Size i=0; i<volatilities_.rows(); ++i)
-            for (Size j=0; j<volatilities_.columns(); ++j)
-                volatilities_[i][j] = volHandles_[i][j]->value();
-    }
-
     void CapVolatilitySurface::registerWithMarketData()
     {
         for (Size i=0; i<volHandles_.size(); ++i)
@@ -149,29 +155,18 @@ namespace QuantLib {
                 registerWith(volHandles_[i][j]);
     }
 
-    void CapVolatilitySurface::interpolate() {
+    void CapVolatilitySurface::performCalculations() const {
+
         for (Size i=0; i<optionTenors_.size(); ++i) {
             Date endDate = referenceDate() + optionTenors_[i];
             optionTimes_[i] = timeFromReference(endDate);
         }
-        interpolation_ =
-            BicubicSpline(
-                strikes_.begin(),  
-                strikes_.end(),
-                optionTimes_.begin(),
-                optionTimes_.end(),
-                volatilities_);
-                //CubicSpline::SecondDerivative,
-                //0.0,
-                //CubicSpline::SecondDerivative,
-                //0.0,
-                //false);
-            //BilinearInterpolation(
-            //    strikes_.begin(), strikes_.end(),
-            //    optionTimes_.begin(), optionTimes_.end(),
-            //    volatilities_);
-        interpolation_.update();
         maxDate_ = referenceDate() + optionTenors_.back();
+
+        for (Size i=0; i<volatilities_.rows(); ++i)
+            for (Size j=0; j<volatilities_.columns(); ++j)
+                volatilities_[i][j] = volHandles_[i][j]->value();
+        interpolation_.update();
     }
 
 }

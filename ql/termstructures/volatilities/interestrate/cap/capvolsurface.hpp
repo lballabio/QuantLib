@@ -27,6 +27,7 @@
 #include <ql/termstructures/capvolstructures.hpp>
 #include <ql/math/interpolations/interpolation2d.hpp>
 #include <ql/quote.hpp>
+#include <ql/patterns/lazyobject.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -37,7 +38,8 @@ namespace QuantLib {
         market term volatilities of a set of caps/floors with given
         length and given strike.
     */
-    class CapVolatilitySurface : public CapVolatilityStructure {
+    class CapVolatilitySurface : public CapVolatilityStructure,
+                                 public LazyObject {
       public:
         //! floating reference date, floating market data
         CapVolatilitySurface(Natural settlementDays,
@@ -76,30 +78,33 @@ namespace QuantLib {
         Real minStrike() const;
         Real maxStrike() const;
         //@}
-        // observability
-        void update();
-        // (to be) LazyObject interface
+        //! \name LazyObject interface
+        void update(){
+            TermStructure::update();
+            LazyObject::update();
+        };
         void performCalculations() const;
-
+        //@}
       private:
         void checkInputs(Size volatilitiesRows,
                          Size volatilitiesColumns) const;
         void registerWithMarketData();
         std::vector<Period> optionTenors_;
-        std::vector<Time> optionTimes_;
+        mutable std::vector<Time> optionTimes_;
         std::vector<Rate> strikes_;
         std::vector<std::vector<Handle<Quote> > > volHandles_;
         mutable Matrix volatilities_;
-        Interpolation2D interpolation_;
-        void interpolate();
-        Date maxDate_;
-        Volatility volatilityImpl(Time length,
+        mutable Interpolation2D interpolation_;
+        void interpolate() const;
+        mutable Date maxDate_;
+        Volatility volatilityImpl(Time t,
                                   Rate strike) const;
     };
 
     // inline definitions
 
     inline Date CapVolatilitySurface::maxDate() const {
+        calculate();
         return referenceDate()+optionTenors_.back();
     }
 
@@ -111,13 +116,9 @@ namespace QuantLib {
         return strikes_.back();
     }
 
-    inline void CapVolatilitySurface::update() {
-        CapVolatilityStructure::update();
-        interpolate();
-    }
-
     inline Volatility CapVolatilitySurface::volatilityImpl(Time t,
                                                            Rate strike) const {
+        calculate();
         return interpolation_(strike, t);
     }
 
