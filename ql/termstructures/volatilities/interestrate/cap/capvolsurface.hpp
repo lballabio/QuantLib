@@ -85,6 +85,10 @@ namespace QuantLib {
         };
         void performCalculations() const;
         //@}
+        //! \name some inspectors
+        const std::vector<Time>& optionTimes() const;
+        const std::vector<Rate>& strikes() const;
+        //@}
       private:
         void checkInputs(Size volatilitiesRows,
                          Size volatilitiesColumns) const;
@@ -122,6 +126,13 @@ namespace QuantLib {
         return interpolation_(strike, t);
     }
 
+    inline const std::vector<Time>& CapVolatilitySurface::optionTimes() const {
+        return optionTimes_;
+    }
+    
+    inline const std::vector<Rate>& CapVolatilitySurface::strikes() const {
+        return strikes_;
+    }
 }
 
 #endif
