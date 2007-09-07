@@ -110,8 +110,7 @@ namespace QuantLib {
                                 start, end, start, end)));
         } else {
             Date ref = end - schedule.tenor();
-            ref = calendar.adjust(ref,
-                                        schedule.businessDayConvention());
+            ref = calendar.adjust(ref, schedule.businessDayConvention());
             DayCounter dc = firstPeriodDayCount.empty() ?
                             paymentDayCounter :
                             firstPeriodDayCount;
@@ -122,7 +121,7 @@ namespace QuantLib {
         // regular periods
         for (Size i=2; i<schedule.size()-1; ++i) {
             start = end; end = schedule.date(i);
-            paymentDate = calendar.adjust(end,paymentAdj);
+            paymentDate = calendar.adjust(end, paymentAdj);
             if ((i-1) < couponRates.size())
                 rate = couponRates[i-1];
             else
@@ -139,7 +138,7 @@ namespace QuantLib {
             // last period might be short or long
             Size N = schedule.size();
             start = end; end = schedule.date(N-1);
-            paymentDate = calendar.adjust(end,paymentAdj);
+            paymentDate = calendar.adjust(end, paymentAdj);
             if ((N-2) < couponRates.size())
                 rate = couponRates[N-2];
             else
@@ -155,8 +154,7 @@ namespace QuantLib {
                                     start, end, start, end)));
             } else {
                 Date ref = start + schedule.tenor();
-                ref = calendar.adjust(ref,
-                                            schedule.businessDayConvention());
+                ref = calendar.adjust(ref, schedule.businessDayConvention());
                 leg.push_back(boost::shared_ptr<CashFlow>(new
                     FixedRateCoupon(nominal, paymentDate,
                                     rate, paymentDayCounter,
@@ -212,10 +210,14 @@ namespace QuantLib {
             refStart = start = schedule.date(i);
             refEnd   =   end = schedule.date(i+1);
             paymentDate = calendar.adjust(end, paymentAdj);
-            if (i==0   && !schedule.isRegular(i+1))
-                refStart = calendar.adjust(end - schedule.tenor(), paymentAdj);
-            if (i==n-1 && !schedule.isRegular(i+1))
-                refEnd = calendar.adjust(start + schedule.tenor(), paymentAdj);
+            if (i==0   && !schedule.isRegular(i+1)) {
+                BusinessDayConvention bdc = schedule.businessDayConvention();
+                refStart = calendar.adjust(end - schedule.tenor(), bdc);
+            }
+            if (i==n-1 && !schedule.isRegular(i+1)) {
+                BusinessDayConvention bdc = schedule.businessDayConvention();
+                refEnd = calendar.adjust(start + schedule.tenor(), bdc);
+            }
             if (get(gearings, i, 1.0) == 0.0) { // fixed coupon
                 leg.push_back(boost::shared_ptr<CashFlow>(new
                     FixedRateCoupon(get(nominals, i, Null<Real>()), paymentDate,
@@ -358,10 +360,14 @@ namespace QuantLib {
             refStart = start = schedule.date(i);
             refEnd   =   end = schedule.date(i+1);
             //paymentDate = calendar.adjust(end, paymentAdj);
-            if (i==0   && !schedule.isRegular(i+1))
-                refStart = calendar.adjust(end - schedule.tenor(), paymentAdj);
-            if (i==n-1 && !schedule.isRegular(i+1))
-                refEnd = calendar.adjust(start + schedule.tenor(), paymentAdj);
+            if (i==0   && !schedule.isRegular(i+1)) {
+                BusinessDayConvention bdc = schedule.businessDayConvention();
+                refStart = calendar.adjust(end - schedule.tenor(), bdc);
+            }
+            if (i==n-1 && !schedule.isRegular(i+1)) {
+                BusinessDayConvention bdc = schedule.businessDayConvention();
+                refEnd = calendar.adjust(start + schedule.tenor(), bdc);
+            }
             if (get(gearings, i, 1.0) == 0.0) { // fixed coupon
                 leg.push_back(boost::shared_ptr<CashFlow>(new
                     FixedRateCoupon(get(nominals, i, Null<Real>()), paymentDate,
@@ -491,10 +497,14 @@ namespace QuantLib {
             refStart = start = schedule.date(i);
             refEnd   =   end = schedule.date(i+1);
             paymentDate = calendar.adjust(end, paymentConvention);
-            if (i==0   && !schedule.isRegular(i+1))
-                refStart = calendar.adjust(end - schedule.tenor(), paymentConvention);
-            if (i==n-1 && !schedule.isRegular(i+1))
-                refEnd = calendar.adjust(start + schedule.tenor(), paymentConvention);
+            if (i==0   && !schedule.isRegular(i+1)) {
+                BusinessDayConvention bdc = schedule.businessDayConvention();
+                refStart = calendar.adjust(end - schedule.tenor(), bdc);
+            }
+            if (i==n-1 && !schedule.isRegular(i+1)) {
+                BusinessDayConvention bdc = schedule.businessDayConvention();
+                refEnd = calendar.adjust(start + schedule.tenor(), bdc);
+            }
             if (get(gearings, i, 1.0) == 0.0) { // fixed coupon
                 leg.push_back(boost::shared_ptr<CashFlow>(new
                     FixedRateCoupon(get(nominals, i, Null<Real>()), paymentDate,
@@ -582,10 +592,14 @@ namespace QuantLib {
             refStart = start = schedule.date(i);
             refEnd   =   end = schedule.date(i+1);
             paymentDate = calendar.adjust(end, paymentAdj);
-            if (i==0   && !schedule.isRegular(i+1))
-                refStart = calendar.adjust(end - schedule.tenor(), paymentAdj);
-            if (i==n-1 && !schedule.isRegular(i+1))
-                refEnd = calendar.adjust(start + schedule.tenor(), paymentAdj);
+            if (i==0   && !schedule.isRegular(i+1)) {
+                BusinessDayConvention bdc = schedule.businessDayConvention();
+                refStart = calendar.adjust(end - schedule.tenor(), bdc);
+            }
+            if (i==n-1 && !schedule.isRegular(i+1)) {
+                BusinessDayConvention bdc = schedule.businessDayConvention();
+                refEnd = calendar.adjust(start + schedule.tenor(), bdc);
+            }
             if (get(gearings, i, 1.0) == 0.0) { // fixed coupon
                 leg.push_back(boost::shared_ptr<CashFlow>(new
                     FixedRateCoupon(get(nominals, i, Null<Real>()), paymentDate,
