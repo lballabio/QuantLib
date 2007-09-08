@@ -4,4 +4,3 @@ PORTABILITY
 - Version 0.8.1 adds support for Boost 1.34 on Linux systems. If you
   are using version 0.8.0 on Windows systems, you do not need this
   upgrade.
-
