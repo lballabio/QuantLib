@@ -86,6 +86,8 @@ namespace QuantLib {
         void performCalculations() const;
         //@}
         //! \name some inspectors
+        const std::vector<Period>& optionTenors() const;
+
         const std::vector<Time>& optionTimes() const;
         const std::vector<Rate>& strikes() const;
         //@}
@@ -124,6 +126,10 @@ namespace QuantLib {
                                                            Rate strike) const {
         calculate();
         return interpolation_(strike, t);
+    }
+
+    inline const std::vector<Period>& CapVolatilitySurface::optionTenors() const {
+        return optionTenors_;
     }
 
     inline const std::vector<Time>& CapVolatilitySurface::optionTimes() const {

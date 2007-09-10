@@ -3711,6 +3711,14 @@
 							>
 						</File>
 						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\capstripper2.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\capstripper2.hpp"
+							>
+						</File>
+						<File
 							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\spreadedcapletvolstructure.cpp"
 							>
 						</File>
