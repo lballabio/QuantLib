@@ -41,12 +41,10 @@ namespace QuantLib {
                              Spread spread,
                              const DayCounter& floatingDayCount,
                              const Handle<YieldTermStructure>& termStructure)
-    : Swap(termStructure,
-           Leg(),
-           Leg()),
+    : Swap(termStructure, Leg(), Leg()),
       type_(type), fixedRate_(fixedRate), spread_(spread),
-      nominal_(nominal) {
-
+      nominal_(nominal)
+    {
         BusinessDayConvention convention =
             floatSchedule.businessDayConvention();
 
@@ -206,8 +204,7 @@ namespace QuantLib {
     }
 
     void VanillaSwap::arguments::validate() const {
-        QL_REQUIRE(nominal != Null<Real>(),
-                   "nominal null or not set");
+        QL_REQUIRE(nominal != Null<Real>(), "nominal null or not set");
         QL_REQUIRE(fixedResetTimes.size() == fixedPayTimes.size(),
                    "number of fixed start times different from "
                    "number of fixed payment times");
