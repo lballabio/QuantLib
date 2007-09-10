@@ -48,11 +48,11 @@ namespace QuantLib {
         BusinessDayConvention convention =
             floatSchedule.businessDayConvention();
 
-        Leg fixedLeg =FixedRateLeg(std::vector<Real>(1,nominal),
-                                   fixedSchedule,
-                                   std::vector<Rate>(1,fixedRate),
-                                   fixedDayCount,
-                                   convention);
+        Leg fixedLeg = FixedRateLeg(std::vector<Real>(1,nominal),
+                                    fixedSchedule,
+                                    std::vector<Rate>(1,fixedRate),
+                                    fixedDayCount,
+                                    convention);
 
         Leg floatingLeg = IborLeg(std::vector<Real>(1,nominal),
                                   floatSchedule,
