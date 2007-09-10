@@ -29,6 +29,7 @@
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
+#include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {
 
@@ -159,7 +160,10 @@ namespace QuantLib {
                        BusinessDayConvention fixedConvention,
                        const DayCounter& fixedDayCount,
                        // floating leg
-                       const boost::shared_ptr<IborIndex>& index);
+                       const boost::shared_ptr<IborIndex>& index,
+                       const Handle<Quote>& spread =
+                           Handle<Quote>(boost::shared_ptr<Quote>(new
+                                       SimpleQuote(0.0))));
         SwapRateHelper(Rate rate,
                        const Period& tenor,
                        Natural settlementDays,
@@ -169,7 +173,10 @@ namespace QuantLib {
                        BusinessDayConvention fixedConvention,
                        const DayCounter& fixedDayCount,
                        // floating leg
-                       const boost::shared_ptr<IborIndex>& index);
+                       const boost::shared_ptr<IborIndex>& index,
+                       const Handle<Quote>& spread =
+                           Handle<Quote>(boost::shared_ptr<Quote>(new
+                                       SimpleQuote(0.0))));
         Real impliedQuote() const;
         // implementing discountGuess() is not worthwhile,
         // and may not avoid the root-finding process
@@ -185,6 +192,7 @@ namespace QuantLib {
         boost::shared_ptr<IborIndex> index_;
         boost::shared_ptr<VanillaSwap> swap_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
+        Handle<Quote> spread_;
     };
 
 }

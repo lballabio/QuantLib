@@ -295,14 +295,16 @@ namespace QuantLib {
                                    Frequency fixedFrequency,
                                    BusinessDayConvention fixedConvention,
                                    const DayCounter& fixedDayCount,
-                                   const boost::shared_ptr<IborIndex>& index)
+                                   const boost::shared_ptr<IborIndex>& index,
+                                   const Handle<Quote>& spread)
     : RelativeDateRateHelper(rate),
       tenor_(tenor), settlementDays_(settlementDays),
       calendar_(calendar), fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
-      index_(index) {
+      index_(index), spread_(spread) {
         registerWith(index_);
+        registerWith(spread_);
         initializeDates();
     }
 
@@ -313,14 +315,16 @@ namespace QuantLib {
                                    Frequency fixedFrequency,
                                    BusinessDayConvention fixedConvention,
                                    const DayCounter& fixedDayCount,
-                                   const boost::shared_ptr<IborIndex>& index)
+                                   const boost::shared_ptr<IborIndex>& index,
+                                   const Handle<Quote>& spread)
     : RelativeDateRateHelper(rate),
       tenor_(tenor), settlementDays_(settlementDays),
       calendar_(calendar), fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
-      index_(index) {
+      index_(index), spread_(spread) {
         registerWith(index_);
+        registerWith(spread_);
         initializeDates();
     }
 
@@ -381,7 +385,13 @@ namespace QuantLib {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we didn't register as observers - force calculation
         swap_->recalculate();
-        return swap_->fairRate();
+        // weak implementation... to be improved
+        static const Spread basisPoint = 1.0e-4;
+        Real floatingLegNPV = swap_->floatingLegNPV();
+        Real spreadNPV = swap_->floatingLegBPS()*spread_->value();
+        Real totNPV = - (floatingLegNPV+spreadNPV);
+        Real result = totNPV/(swap_->fixedLegBPS()/basisPoint);
+        return result;
     }
 
 }
