@@ -26,6 +26,7 @@
 
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/termstructures/volatilities/interestrate/caplet/capletvolatilitiesstructures.hpp>
+#include <ql/quote.hpp>
 
 
 namespace QuantLib {
@@ -73,6 +74,54 @@ namespace QuantLib {
         const boost::shared_ptr<IborIndex> index_;
     };
 
+
+    class CapStripperQuote : public Quote,
+                             public Observer {
+      public:
+        CapStripperQuote(const boost::shared_ptr<CapsStripper2>& capsStripper,
+                         Period tenor,
+                         Real strike);
+        Real value() const;
+        bool isValid() const;
+        void update();
+      private:
+        boost::shared_ptr<CapsStripper2> capsStripper_;
+        Size tenorIndex_, strikeIndex_;
+    };
+
+    inline void CapStripperQuote::update() {
+        notifyObservers();
+    }
+    
+
+    inline Real CapStripperQuote::value() const {
+        return capsStripper_->forwardCapVolatilities()[tenorIndex_][strikeIndex_];
+    }
+
+    inline bool CapStripperQuote::isValid() const {
+        return capsStripper_;
+    }
+
+    template <class ContainerT, typename valueT>
+    Size checkedIndex(const ContainerT& container, 
+                      const valueT& value, 
+                      const std::string& name) {
+        ContainerT::const_iterator match;
+        match = std::find(container.begin(), container.end(), value);
+        QL_REQUIRE(match!=container.end(), name << " " << value << "does not belong \
+                                                             capStripper grid");
+        return match-container.begin();
+    }
+
+    inline CapStripperQuote::CapStripperQuote(const boost::shared_ptr<CapsStripper2>& capsStripper,
+                                              Period tenor,
+                                              Real strike):capsStripper_(capsStripper) 
+    {
+        tenorIndex_ = checkedIndex(capsStripper->tenors(), tenor, "tenor");
+        strikeIndex_ = checkedIndex(capsStripper->strikes(), strike, "strike");
+        registerWith(capsStripper);
+     }
+
     inline Rate CapsStripper2::minStrike() const {
         return strikes_.front();
     }
@@ -82,10 +131,12 @@ namespace QuantLib {
     }
 
     inline const Matrix& CapsStripper2::syntheticCapPrices() const {
+        calculate();
         return syntheticCapPrices_;
     }
 
     inline const Matrix& CapsStripper2::forwardCapVolatilities() const {
+        calculate();
         return forwardCapsVols_;
     }
 }

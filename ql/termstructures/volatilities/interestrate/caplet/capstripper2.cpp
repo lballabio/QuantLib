@@ -110,9 +110,10 @@ namespace QuantLib {
             for (Size i=0; i<tenors_.size(); i++) {
                 Date optionDate = calendar.advance(evaluationDate, tenors_[i]);
                 syntheticMarketDataCap_[i].resize(strikes_.size());
-                forwardCaps_[i].resize(strikes_.size());
+                if(i>0)
+                    forwardCaps_[i-1].resize(strikes_.size());
                 
-                Time tenorTime = dayCounter.dayCount(evaluationDate, 
+                Time tenorTime = dayCounter.yearFraction(evaluationDate, 
                                             evaluationDate + tenors_[i]);
                 tenorsTimes_.push_back(tenorTime);
                 std::vector<Handle<Quote> > capletImplStdevs;
