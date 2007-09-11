@@ -212,7 +212,7 @@ namespace QuantLib {
     }
 
     Rate CashFlows::previousCouponRate(const Leg& leg,
-                                   const Date& refDate) {
+                                       const Date& refDate) {
         Leg::const_iterator cf = lastCashFlow(leg, refDate);
         if (cf==leg.end()) return 0.0;
 
