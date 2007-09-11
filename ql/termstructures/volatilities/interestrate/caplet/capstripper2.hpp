@@ -73,18 +73,22 @@ namespace QuantLib {
     };
 
     inline const Matrix& CapletStripper::capletPrices() const {
+        calculate();
         return capletPrices_;
     }
 
     inline const Matrix& CapletStripper::capletVolatilities() const {
+        calculate();
         return capletVols_;
     }
 
     inline const Matrix& CapletStripper::capPrices() const {
+        calculate();
         return capPrices_;
     }
 
     inline const Matrix& CapletStripper::capVolatilities() const {
+        calculate();
         return capVols_;
     }
 
@@ -93,6 +97,7 @@ namespace QuantLib {
     }
 
     inline const std::vector<Date>& CapletStripper::optionDates() const {
+        calculate();
         return optionDates_;
     }
 
