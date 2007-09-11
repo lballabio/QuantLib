@@ -90,7 +90,7 @@ namespace QuantLib {
         std::vector<Period> optionTenors_;
         std::vector<Time> optionTimes_;
         std::vector<Handle<Quote> > volHandles_;
-        mutable std::vector<double> volatilities_;
+        mutable std::vector<Volatility> volatilities_;
         Interpolation interpolation_;
         void interpolate();
         Date maxDate_;
