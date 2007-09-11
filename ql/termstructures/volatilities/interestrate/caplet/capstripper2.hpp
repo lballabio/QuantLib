@@ -1,7 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 François du Vignaud
+ Copyright (C) 2007 Ferdinando ametrano
+ Copyright (C) 2007 François du Vignaud
+ Copyright (C) 2007 Katiuscia Manzoni
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,128 +19,83 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file capstripper.hpp
+/*! \file capstripper2.hpp
     \brief caplet volatility stripper
 */
 
-#ifndef quantlib_interpolated_caplet_variance_curve2_hpp
-#define quantlib_interpolated_caplet_variance_curve2_hpp
+#ifndef quantlib_capstripper2_hpp
+#define quantlib_capstripper2_hpp
 
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/termstructures/volatilities/interestrate/caplet/capletvolatilitiesstructures.hpp>
-#include <ql/quote.hpp>
-
 
 namespace QuantLib {
     class IborIndex;
     class YieldTermStructure;
-    class Quote;
     class CapVolatilitySurface;
     class SmileSection;
 
     typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapMatrix;
 
-
-    class CapsStripper2 : public LazyObject{
+    class CapletStripper : //public virtual Observer,
+                           //public virtual Observable,
+                           public LazyObject{
       public:
-        CapsStripper2(){}
-        CapsStripper2(const boost::shared_ptr<CapVolatilitySurface>& surface,
-                      const boost::shared_ptr<IborIndex>& index,
-                      Period timeStep);
-
-       const Matrix& capletPrices() const;
-       const Matrix& syntheticCapPrices() const;
-       const Matrix& forwardCapVolatilities() const;
-       const std::vector<boost::shared_ptr<SmileSection> >& smileSections() const;
-
+        CapletStripper(const boost::shared_ptr<CapVolatilitySurface>& surface,
+                       const boost::shared_ptr<IborIndex>& index);
+        //! \name Cap Stripper interface
+        //@{
+        const Matrix& capletPrices() const;
+        const Matrix& capletVolatilities() const;
+        const Matrix& capPrices() const;
+        const Matrix& capVolatilities() const;
+        const std::vector<Period>& optionTenors() const;
+        const std::vector<Date>& optionDates() const;
+        const std::vector<Rate>& strikes() const;
         //@}
         //! \name LazyObject interface
         //@{
         void performCalculations () const;
         //@}
-
-        Real minStrike() const;
-        Real maxStrike() const;
- 
-        const std::vector<Period>& tenors() { return tenors_; }
-        const std::vector<Rate>& strikes() { return strikes_; }
       private:
-        mutable Matrix syntheticCapPrices_, forwardCapsPrices_, forwardCapsVols_, forwardCapsStdev_;
         const boost::shared_ptr<CapVolatilitySurface> surface_;
-        mutable CapMatrix syntheticMarketDataCap_, forwardCaps_;
-        std::vector<boost::shared_ptr<SmileSection> > smileSections_;
-        Date maxDate_;
-        std::vector<Period> tenors_;
-        std::vector<Time> tenorsTimes_;
-        std::vector<Rate> strikes_;
         const boost::shared_ptr<IborIndex> index_;
+        Size nStrikes_;
+        std::vector<Period> optionTenors_;
+        Size nOptionTenors_;
+        mutable Matrix capPrices_, capletPrices_;
+        mutable Matrix capVols_, capletVols_;
+        mutable Matrix capletStDevs_;
+        mutable std::vector<Rate> atmCapletRate;
+        mutable std::vector<Date> optionDates_;
+        mutable std::vector<Time> optionTimes_;
+        mutable CapMatrix caps_;
     };
 
-
-    class CapStripperQuote : public Quote,
-                             public Observer {
-      public:
-        CapStripperQuote(const boost::shared_ptr<CapsStripper2>& capsStripper,
-                         Period tenor,
-                         Real strike);
-        Real value() const;
-        bool isValid() const;
-        void update();
-      private:
-        boost::shared_ptr<CapsStripper2> capsStripper_;
-        Size tenorIndex_, strikeIndex_;
-    };
-
-    inline void CapStripperQuote::update() {
-        notifyObservers();
-    }
-    
-
-    inline Real CapStripperQuote::value() const {
-        return capsStripper_->forwardCapVolatilities()[tenorIndex_][strikeIndex_];
+    inline const Matrix& CapletStripper::capletPrices() const {
+        return capletPrices_;
     }
 
-    inline bool CapStripperQuote::isValid() const {
-        return capsStripper_;
+    inline const Matrix& CapletStripper::capletVolatilities() const {
+        return capletVols_;
     }
 
-    template <class ContainerT, typename valueT>
-    Size checkedIndex(const ContainerT& container, 
-                      const valueT& value, 
-                      const std::string& name) {
-        ContainerT::const_iterator match;
-        match = std::find(container.begin(), container.end(), value);
-        QL_REQUIRE(match!=container.end(), name << " " << value << "does not belong \
-                                                             capStripper grid");
-        return match-container.begin();
+    inline const Matrix& CapletStripper::capPrices() const {
+        return capPrices_;
     }
 
-    inline CapStripperQuote::CapStripperQuote(const boost::shared_ptr<CapsStripper2>& capsStripper,
-                                              Period tenor,
-                                              Real strike):capsStripper_(capsStripper) 
-    {
-        tenorIndex_ = checkedIndex(capsStripper->tenors(), tenor, "tenor");
-        strikeIndex_ = checkedIndex(capsStripper->strikes(), strike, "strike");
-        registerWith(capsStripper);
-     }
-
-    inline Rate CapsStripper2::minStrike() const {
-        return strikes_.front();
+    inline const Matrix& CapletStripper::capVolatilities() const {
+        return capVols_;
     }
 
-    inline Rate CapsStripper2::maxStrike() const {
-        return strikes_.back();
+    inline const std::vector<Period>& CapletStripper::optionTenors() const {
+        return optionTenors_;
     }
 
-    inline const Matrix& CapsStripper2::syntheticCapPrices() const {
-        calculate();
-        return syntheticCapPrices_;
+    inline const std::vector<Date>& CapletStripper::optionDates() const {
+        return optionDates_;
     }
 
-    inline const Matrix& CapsStripper2::forwardCapVolatilities() const {
-        calculate();
-        return forwardCapsVols_;
-    }
 }
 
 #endif

@@ -17,164 +17,102 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file capletvariancecurve.hpp
-    \brief caplet variance curve
-*/
 
 #include <ql/termstructures/volatilities/interestrate/caplet/capstripper2.hpp>
-#include <ql/quotes/simplequote.hpp> 
-#include <ql/utilities/dataformatters.hpp>
 #include <ql/instruments/makecapfloor.hpp>
-#include <ql/termstructures/volatilities/sabrinterpolatedsmilesection.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatilities/interestrate/cap/capvolsurface.hpp>
 #include <ql/indexes/iborindex.hpp>
-#include <cmath>
-
-namespace {
-
-    using namespace QuantLib;
-
-    class MatrixPointQuote : public Quote {
-      public:
-          MatrixPointQuote(const Matrix& matrix, Size i, Size j):
-                          matrix_(matrix), i_(i), j_(j){}
-      private:
-        const Matrix& matrix_;
-        Size i_, j_;
-        Real value() const {
-            return matrix_[i_][j_];
-        }
-        bool isValid() const { return true; }
-    };
-
-    class InterpolatedQuote : public Quote {
-      public:
-          InterpolatedQuote(const boost::shared_ptr<CapVolatilitySurface>& surface,
-                          Time time, Real strike):surface_(surface),
-                          time_(time), strike_(strike){}
-      private:
-        Time time_;
-        Real strike_;
-        const boost::shared_ptr<CapVolatilitySurface> surface_;
-        Real value() const {
-            return surface_->volatility(time_, strike_);
-        }
-        bool isValid() const { return true; }
-    };
-
-
-    class CapAtmRate : public Quote {
-      public:
-          CapAtmRate(const boost::shared_ptr<CapFloor>& cap):
-                          cap_(cap){}
-      private:
-        boost::shared_ptr<CapFloor> cap_;
-        Real value() const {
-            return cap_->atmRate();
-        }
-        bool isValid() const { return true; }
-    };
-
-}
 
 namespace QuantLib {
 
-    CapsStripper2::CapsStripper2(
-        const boost::shared_ptr<CapVolatilitySurface>& surface,
-        const boost::shared_ptr<IborIndex>& index,
-        Period timeStep)
-        : strikes_(surface->strikes()),
-        index_(index), surface_(surface) {
+    CapletStripper::CapletStripper(
+                    const boost::shared_ptr<CapVolatilitySurface>& surface,
+                    const boost::shared_ptr<IborIndex>& index)
+    : surface_(surface), index_(index), nStrikes_(surface->strikes().size())
+    {
+        registerWith(surface);
+        registerWith(index);
+        registerWith(Settings::instance().evaluationDate());
 
-            Date evaluationDate = Settings::instance().evaluationDate();
-            
-            //  we construct the synthetic tenors grid
-            const std::vector<Period> marketTenors = surface->optionTenors();
-            for(Period tenor=marketTenors.front();
-                tenor<=marketTenors.back(); tenor+=timeStep) 
-                tenors_.push_back(tenor);
+        Period indexTenor = index->tenor();
+        Period maxSurfaceTenor = surface->optionTenors().back();
+        optionTenors_.push_back(indexTenor);
+        while (optionTenors_.back()<maxSurfaceTenor)
+            optionTenors_.push_back(optionTenors_.back()+indexTenor);
 
-            maxDate_ = evaluationDate + marketTenors.back();
+        capPrices_ = Matrix(nOptionTenors_, nStrikes_);
+        capletPrices_ = Matrix(nOptionTenors_, nStrikes_);
+        capVols_ = Matrix(nOptionTenors_, nStrikes_);
+        capletVols_ = Matrix(nOptionTenors_, nStrikes_);
+        capletStDevs_ = Matrix(nOptionTenors_, nStrikes_);
+        atmCapletRate = std::vector<Rate>(nOptionTenors_);
+        optionDates_ = std::vector<Date>(nOptionTenors_);
+        optionTimes_ = std::vector<Time>(nOptionTenors_);
+        caps_ = CapMatrix(nOptionTenors_);
 
-            forwardCapsVols_ = Matrix(tenors_.size()-1, strikes_.size());
-            syntheticCapPrices_ = Matrix(tenors_.size(), strikes_.size());
-            forwardCapsStdev_ = Matrix(tenors_.size(), strikes_.size());
-            forwardCapsPrices_ = Matrix(tenors_.size(), strikes_.size());
-
-            syntheticMarketDataCap_.resize(tenors_.size());
-            forwardCaps_.resize(tenors_.size()-1);
-            const DayCounter& dayCounter = index->termStructure()->dayCounter();
-            Rate dummyAtmRate = .04;
-            Volatility dummyVol = .12;
-            boost::shared_ptr<Quote> dummyQuote (new SimpleQuote(dummyVol));
-            boost::shared_ptr<PricingEngine> constantBlackCapFloorEngine(new
-                BlackCapFloorEngine(Handle<Quote>(dummyQuote), dayCounter));;
-            const Calendar& calendar = index->fixingCalendar();
-            for (Size i=0; i<tenors_.size(); i++) {
-                Date optionDate = calendar.advance(evaluationDate, tenors_[i]);
-                syntheticMarketDataCap_[i].resize(strikes_.size());
-                if(i>0)
-                    forwardCaps_[i-1].resize(strikes_.size());
-                
-                Time tenorTime = dayCounter.yearFraction(evaluationDate, 
-                                            evaluationDate + tenors_[i]);
-                tenorsTimes_.push_back(tenorTime);
-                std::vector<Handle<Quote> > capletImplStdevs;
-                for (Size j=0; j<strikes_.size(); j++) {
-
-                    boost::shared_ptr<InterpolatedQuote> interpolatedQuote(
-                        new InterpolatedQuote(surface, tenorTime, strikes_[j]));
-
-                    boost::shared_ptr<PricingEngine> blackCapFloorEngine(new
-                        BlackCapFloorEngine(Handle<Quote>(interpolatedQuote), dayCounter));
-                    CapFloor::Type type =
-                        (strikes_[j] < dummyAtmRate)? CapFloor::Floor : CapFloor::Cap;
-
-                    syntheticMarketDataCap_[i][j] = MakeCapFloor(type, tenors_[i],
-                        index_, strikes_[j], 0*Days, blackCapFloorEngine);
-
-                    if(i>0) {
-                        forwardCaps_[i-1][j] = MakeCapFloor(type, tenors_[i],
-                            index_, strikes_[j], tenors_[i-1], constantBlackCapFloorEngine);
-                        boost::shared_ptr<Quote> capletImplStdev(new MatrixPointQuote(forwardCapsStdev_, i, j));
-                        capletImplStdevs.push_back(Handle<Quote>(capletImplStdev));
-                    }
-                }
-
-                if(i>0) {
-                    boost::shared_ptr<Quote> capAtmRate(new CapAtmRate(forwardCaps_[i-1].front()));
-                    boost::shared_ptr<SmileSection> smileSection(new SabrInterpolatedSmileSection(
-                               optionDate,
-                               strikes_,
-                               capletImplStdevs,
-                               Handle<Quote>(capAtmRate),
-                               Null<Real>(),
-                               Null<Real>(),
-                               Null<Real>(),
-                               Null<Real>(),
-                               false,
-                               false,
-                               false,
-                               false));
-                    smileSections_.push_back(smileSection);
-                }
-            }
-            this->registerWith(surface);
     }
 
-    void CapsStripper2::performCalculations() const {
-        for(Size i=0; i<tenors_.size(); ++i) {
-            for(Size j=0; j<strikes_.size(); ++j) {
-                syntheticCapPrices_[i][j] = syntheticMarketDataCap_[i][j]->NPV();
-                if (i>0) {
-                    Real forwardCapsPrice = syntheticCapPrices_[i][j] - syntheticCapPrices_[i-1][j];
-                    forwardCapsPrices_[i-1][j] = forwardCapsPrice;
-                    Real forwardCapsVol = forwardCaps_[i-1][j]->impliedVolatility(forwardCapsPrice);
-                    forwardCapsVols_[i-1][j] = forwardCapsVol;
-                    forwardCapsStdev_[i-1][j] = forwardCapsVol*std::sqrt(tenorsTimes_[i-1]);
-                }
+    void CapletStripper::performCalculations() const {
+
+        Date evaluationDate = Settings::instance().evaluationDate();
+        const std::vector<Period>& tenors = surface_->optionTenors();
+        const std::vector<Rate>& strikes = surface_->strikes();
+
+        const Calendar& cal = index_->fixingCalendar();
+        const DayCounter& dc = surface_->dayCounter();
+        for (Size i=0; i<nOptionTenors_; ++i) {
+            boost::shared_ptr<BlackCapFloorEngine> dummy(new
+                                        BlackCapFloorEngine(0.20, dc));
+            CapFloor temp = MakeCapFloor(CapFloor::Cap, tenors[i], index_,
+                                         0.04, // dummy strike
+                                         0*Days,
+                                         dummy // dummy vol
+                                         );
+            //atmCapRate[i] = temp.atmRate();
+            optionDates_[i] = temp.lastFixingDate();
+            optionTimes_[i] = dc.yearFraction(evaluationDate, optionDates_[i]);
+
+            atmCapletRate[i] = index_->fixing(optionDates_[i]);
+            caps_[i].resize(nStrikes_);
+        }
+
+        Spread strikeRange = strikes.back()-strikes.front();
+        Rate switchStrike = strikes.front()+0.5*strikeRange;
+
+        for (Size j=0; j<nStrikes_; ++j) {
+            Real runningNPV = 0.0;
+            CapFloor::Type type = strikes[j] < switchStrike ?
+                                   CapFloor::Floor : CapFloor::Cap;
+            Option::Type optionType = type==CapFloor::Floor ?
+                                   Option::Put : Option::Call;
+            for (Size i=0; i<nOptionTenors_; ++i) {
+                capVols_[i][j] = surface_->volatility(optionTimes_[i], strikes[j]);
+                boost::shared_ptr<BlackCapFloorEngine> engine(new
+                                BlackCapFloorEngine(capVols_[i][j], dc));
+                caps_[i][j] = MakeCapFloor(type, tenors[i], index_,
+                                           strikes[j], 0*Days, engine);
+                capPrices_[i][j] = caps_[i][j]->NPV();
+                capletPrices_[i][j] = capPrices_[i][j]-runningNPV;
+                runningNPV = capPrices_[i][j];
+                DiscountFactor capletAnnuity = 0.5*1.0; // FIXME
+                capletStDevs_[i][j] = blackFormulaImpliedStdDev(optionType,
+                                                                strikes[j],
+                                                                atmCapletRate[i],
+                                                                capletPrices_[i][j],
+                                                                capletAnnuity,
+                                                                capVols_[i][j]);
+                capletVols_[i][j] = capletStDevs_[i][j] /
+                                                std::sqrt(optionTimes_[i]);
+
             }
         }
+
     }
+    
+    const std::vector<Rate>& CapletStripper::strikes() const {
+        return surface_->strikes();
+    }
+    
 }
