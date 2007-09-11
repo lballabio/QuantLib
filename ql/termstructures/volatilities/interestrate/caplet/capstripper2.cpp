@@ -22,7 +22,7 @@
 */
 
 #include <ql/termstructures/volatilities/interestrate/caplet/capstripper2.hpp>
-#include <ql/math/solvers1d/brent.hpp>
+#include <ql/quotes/simplequote.hpp> 
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/termstructures/volatilities/sabrinterpolatedsmilesection.hpp>
@@ -100,13 +100,17 @@ namespace QuantLib {
             forwardCapsVols_ = Matrix(tenors_.size()-1, strikes_.size());
             syntheticCapPrices_ = Matrix(tenors_.size(), strikes_.size());
             forwardCapsStdev_ = Matrix(tenors_.size(), strikes_.size());
+            forwardCapsPrices_ = Matrix(tenors_.size(), strikes_.size());
 
             syntheticMarketDataCap_.resize(tenors_.size());
             forwardCaps_.resize(tenors_.size()-1);
-            Rate dummyAtmRate = .04; 
-            boost::shared_ptr<PricingEngine> dummyBlackCapFloorEngine;
-            const Calendar& calendar = index->fixingCalendar();
             const DayCounter& dayCounter = index->termStructure()->dayCounter();
+            Rate dummyAtmRate = .04;
+            Volatility dummyVol = .12;
+            boost::shared_ptr<Quote> dummyQuote (new SimpleQuote(dummyVol));
+            boost::shared_ptr<PricingEngine> constantBlackCapFloorEngine(new
+                BlackCapFloorEngine(Handle<Quote>(dummyQuote), dayCounter));;
+            const Calendar& calendar = index->fixingCalendar();
             for (Size i=0; i<tenors_.size(); i++) {
                 Date optionDate = calendar.advance(evaluationDate, tenors_[i]);
                 syntheticMarketDataCap_[i].resize(strikes_.size());
@@ -132,7 +136,7 @@ namespace QuantLib {
 
                     if(i>0) {
                         forwardCaps_[i-1][j] = MakeCapFloor(type, tenors_[i],
-                            index_, strikes_[j], tenors_[i-1], dummyBlackCapFloorEngine);
+                            index_, strikes_[j], tenors_[i-1], constantBlackCapFloorEngine);
                         boost::shared_ptr<Quote> capletImplStdev(new MatrixPointQuote(forwardCapsStdev_, i, j));
                         capletImplStdevs.push_back(Handle<Quote>(capletImplStdev));
                     }
