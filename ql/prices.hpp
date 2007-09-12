@@ -1,6 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006, 2007 Ferdinando Ametrano
+ Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2006 Joseph Wang
 
  This file is part of QuantLib, a free-software/open-source library
@@ -102,6 +104,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

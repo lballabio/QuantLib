@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006, 2007 Ferdinando Ametrano
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2006 Joseph Wang
 
@@ -36,7 +37,7 @@ namespace QuantLib {
             else if (last != Null<Real>() && last > 0.0)   return last;
             else {
                 QL_REQUIRE(close != Null<Real>() && close > 0.0,
-                    "all input prices are invalid");
+                           "all input prices are invalid");
                 return close;
             }
         }
@@ -46,9 +47,9 @@ namespace QuantLib {
                  const Real ask)
     {
         QL_REQUIRE(bid != Null<Real>() && bid > 0.0,
-            "invalid bid price");
+                   "invalid bid price");
         QL_REQUIRE(ask != Null<Real>() && ask > 0.0,
-            "invalid ask price");
+                   "invalid ask price");
         return (bid+ask)/2.0;
     }
 
