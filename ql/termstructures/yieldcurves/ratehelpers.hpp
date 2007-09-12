@@ -61,9 +61,15 @@ namespace QuantLib {
                           BusinessDayConvention convention,
                           const DayCounter& dayCounter,
                           Rate convexityAdjustment = 0.0);
+        //! \name RateHelper interface
+        //@{
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
+        //@}
+        //! \name FuturesRateHelper inspectors
+        //@{
         Real convexityAdjustment() const;
+        //@}
       private:
         Time yearFraction_;
         Handle<Quote> convAdj_;
@@ -77,7 +83,10 @@ namespace QuantLib {
       public:
         RelativeDateRateHelper(const Handle<Quote>& quote);
         RelativeDateRateHelper(Real quote);
+        //! \name Observer interface
+        //@{
         void update();
+        //@}
       protected:
         virtual void initializeDates() = 0;
         Date evaluationDate_;
@@ -103,9 +112,12 @@ namespace QuantLib {
                           bool endOfMonth,
                           Natural fixingDays,
                           const DayCounter& dayCounter);
+        //! \name RateHelper interface
+        //@{
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
         void setTermStructure(YieldTermStructure*);
+        //@}
       private:
         void initializeDates();
         Date fixingDate_;
@@ -136,9 +148,12 @@ namespace QuantLib {
                       bool endOfMonth,
                       Natural fixingDays,
                       const DayCounter& dayCounter);
+        //! \name RateHelper interface
+        //@{
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
         void setTermStructure(YieldTermStructure*);
+        //@}
       private:
         void initializeDates();
         Date fixingDate_;
@@ -177,10 +192,17 @@ namespace QuantLib {
                        const Handle<Quote>& spread =
                            Handle<Quote>(boost::shared_ptr<Quote>(new
                                        SimpleQuote(0.0))));
+        //! \name RateHelper interface
+        //@{
         Real impliedQuote() const;
         // implementing discountGuess() is not worthwhile,
         // and may not avoid the root-finding process
         void setTermStructure(YieldTermStructure*);
+        //@}
+        //! \name SwapRateHelper inspectors
+        //@{
+        Real spread() const;
+        //@}
       protected:
         void initializeDates();
         Period tenor_;

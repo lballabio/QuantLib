@@ -394,4 +394,8 @@ namespace QuantLib {
         return result;
     }
 
+    Real SwapRateHelper::spread() const {
+        return spread_->value();
+    }
+
 }
