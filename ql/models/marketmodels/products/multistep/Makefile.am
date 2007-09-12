@@ -13,6 +13,7 @@ this_include_HEADERS = \
     multistepforwards.hpp \
     multistepnothing.hpp \
     multistepoptionlets.hpp \
+    multistepperiodcapletswaptions.hpp \
     multistepratchet.hpp \
     multistepswap.hpp
 
@@ -26,6 +27,7 @@ libMarketModelsProductsMultiStep_la_SOURCES = \
     multistepforwards.cpp \
     multistepnothing.cpp \
     multistepoptionlets.cpp \
+    multistepperiodcapletswaptions.cpp \
     multistepratchet.cpp \
     multistepswap.cpp
 

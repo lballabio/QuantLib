@@ -8,11 +8,13 @@ this_include_HEADERS = \
     capletvariancecurve.hpp \
     capletvolatilitiesstructures.hpp \
     capstripper.hpp \
+    capstripper2.hpp \
     spreadedcapletvolstructure.hpp
 
 libCapletVol_la_SOURCES = \
     capletvolatilitiesstructures.cpp \
     capstripper.cpp \
+    capstripper2.cpp \
     spreadedcapletvolstructure.cpp
 
 noinst_LTLIBRARIES = libCapletVol.la

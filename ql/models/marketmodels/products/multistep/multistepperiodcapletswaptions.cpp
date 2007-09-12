@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/products/multistep/multistepperiodcapletsswaptions.hpp>
+#include <ql/models/marketmodels/products/multistep/multistepperiodcapletswaptions.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
 #include <ql/instruments/payoffs.hpp>
@@ -32,8 +32,8 @@ namespace QuantLib {
                                      Size period,
                                      Size offset)
     : MultiProductMultiStep(rateTimes),
-      paymentTimes_(forwardOptionPaymentTimes), 
-      forwardOptionPaymentTimes_(forwardOptionPaymentTimes), 
+      paymentTimes_(forwardOptionPaymentTimes),
+      forwardOptionPaymentTimes_(forwardOptionPaymentTimes),
       swaptionPaymentTimes_(swaptionPaymentTimes),
       forwardPayOffs_(forwardPayOffs),
       swapPayOffs_(swapPayOffs),
@@ -50,13 +50,13 @@ namespace QuantLib {
         lastIndex_ = rateTimes.size()-1;
         numberFRAs_ = rateTimes.size()-1;
         numberBigFRAs_ = (numberFRAs_-offset_)/period_;
-      
+
 
         QL_REQUIRE(offset_< period_,
                        "the offset must be less then the period in MultiStepPeriodCapletSwaptions ");
         QL_REQUIRE(numberBigFRAs_ > 0,
                        "we must have at least one FRA after the periodizing in  MultiStepPeriodCapletSwaptions ");
-     
+
         QL_REQUIRE(forwardOptionPaymentTimes_.size() == numberBigFRAs_,
                        "we must have precisely one payment time for each forward option  MultiStepPeriodCapletSwaptions ");
 
@@ -69,7 +69,7 @@ namespace QuantLib {
          QL_REQUIRE(swapPayOffs_.size() == numberBigFRAs_,
                        "we must have precisely one payoff  for each swaption in  MultiStepPeriodCapletSwaptions ");
 
-   
+
 
     }
 
@@ -84,20 +84,20 @@ namespace QuantLib {
         numberCashFlowsThisStep[i]=0UL;
 
     if (currentIndex_ >=offset_ && (currentIndex_ - offset_) % period_ ==0)
-    {   
+    {
         // caplet first
         double df = currentState.discountRatio(currentIndex_,currentIndex_+period_);
         double tau = rateTimes_[currentIndex_+period_]- rateTimes_[currentIndex_];
         double forward = (1.0/df-1.0)/tau;
         double value = (*forwardPayOffs_[productIndex_])(forward);
         value *= tau*currentState.discountRatio(currentIndex_,currentIndex_+period_);
-   
+
         if (value >0)
-        {   
+        {
             numberCashFlowsThisStep[productIndex_]=1UL;
             genCashFlows[productIndex_][0].amount = value;
             genCashFlows[productIndex_][0].timeIndex= productIndex_;
-        }   
+        }
 
         // now swaption
 
@@ -118,21 +118,21 @@ namespace QuantLib {
         swaptionValue *=B;
 
         if (swaptionValue >0)
-        {   
+        {
             numberCashFlowsThisStep[productIndex_+numberBigFRAs_]=1UL;
             genCashFlows[productIndex_+numberBigFRAs_][0].amount = swaptionValue;
             genCashFlows[productIndex_+numberBigFRAs_][0].timeIndex=productIndex_+numberBigFRAs_;
-       }   
+       }
 
         ++productIndex_;
-        
+
     }
 
     ++currentIndex_;
 
     bool terminate =(productIndex_ >= numberBigFRAs_);
 
-        
+
     return terminate;
     }
 
