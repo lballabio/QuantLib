@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005, 2006 Piter Dias
+ Copyright (C) 2007 Richard Gomes
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,8 +39,29 @@ namespace QuantLib {
         <li>Labour Day, May 1st</li>
         <li>Independence Day, September 21th</li>
         <li>Nossa Sra. Aparecida Day, October 12th</li>
-        <li>Dead Day, October 2nd</li>
+        <li>All Souls Day, November 2nd</li>
         <li>Republic Day, November 15th</li>
+        <li>Black Consciousness Day, November 20th (since 2004)</li>
+        <li>Christmas, December 25th</li>
+        <li>Passion of Christ</li>
+        <li>Carnival</li>
+        <li>Corpus Christi</li>
+        </ul>
+
+        Holidays for the stock exchange
+        <ul>
+        <li>Saturdays</li>
+        <li>Sundays</li>
+        <li>New Year's Day, January 1st</li>
+        <li>Sao Paulo City Day, January 25th</li>
+        <li>Tiradentes's Day, April 21th</li>
+        <li>Labour Day, May 1st</li>
+        <li>Revolution Day, July 9th</li>
+        <li>Independence Day, September 21th</li>
+        <li>Nossa Sra. Aparecida Day, October 12th</li>
+        <li>All Souls Day, November 2nd</li>
+        <li>Republic Day, November 15th</li>
+        <li>Black Consciousness Day, November 20th (since 2004)</li>
         <li>Christmas, December 25th</li>
         <li>Passion of Christ</li>
         <li>Carnival</li>
@@ -58,9 +80,15 @@ namespace QuantLib {
             std::string name() const { return "Brazil"; }
             bool isBusinessDay(const Date&) const;
         };
+        class ExchangeImpl : public Calendar::WesternImpl {
+          public:
+            std::string name() const { return "BOVESPA"; }
+            bool isBusinessDay(const Date&) const;
+        };
       public:
         //! Brazilian calendars
-        enum Market { Settlement             //!< generic settlement calendar
+        enum Market { Settlement,            //!< generic settlement calendar
+                      Exchange               //!< BOVESPA calendar
         };
         Brazil(Market market = Settlement);
     };
@@ -69,3 +97,4 @@ namespace QuantLib {
 
 
 #endif
+

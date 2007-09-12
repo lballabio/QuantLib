@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005, 2006 Piter Dias
+ Copyright (C) 2007 Richard Gomes
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,10 +27,15 @@ namespace QuantLib {
         // all calendar instances on the same market share the same
         // implementation instance
         static boost::shared_ptr<Calendar::Impl> settlementImpl(
-            new Brazil::SettlementImpl);
+                                                  new Brazil::SettlementImpl);
+        static boost::shared_ptr<Calendar::Impl> exchangeImpl(
+                                                    new Brazil::ExchangeImpl);
         switch (market) {
           case Settlement:
             impl_ = settlementImpl;
+            break;
+          case Exchange:
+            impl_ = exchangeImpl;
             break;
           default:
             QL_FAIL("unknown market");
@@ -55,10 +61,54 @@ namespace QuantLib {
             || (d == 7 && m == September)
             // Nossa Sra. Aparecida Day
             || (d == 12 && m == October)
-            // Dead Day
+            // All Souls Day
             || (d == 2 && m == November)
             // Republic Day
             || (d == 15 && m == November)
+            // Black Consciousness Day
+            || (d == 20 && m == November && y >= 2004)
+            // Christmas
+            || (d == 25 && m == December)
+            // Passion of Christ
+            || (dd == em-3)
+            // Carnival
+            || (dd == em-49 || dd == em-48)
+            // Corpus Christi
+            || (dd == em+59)
+            )
+            return false;
+        return true;
+    }
+
+    bool Brazil::ExchangeImpl::isBusinessDay(const Date& date) const {
+        Weekday w = date.weekday();
+        Day d = date.dayOfMonth();
+        Month m = date.month();
+        Year y = date.year();
+        Day dd = date.dayOfYear();
+        Day em = easterMonday(y);
+
+        if (isWeekend(w)
+            // New Year's Day
+            || (d == 1 && m == January)
+            // Sao Paulo City Day
+            || (d == 25 && m == January)
+            // Tiradentes Day
+            || (d == 21 && m == April)
+            // Labor Day
+            || (d == 1 && m == May)
+            // Revolution Day
+            || (d == 9 && m == July)
+            // Independence Day
+            || (d == 7 && m == September)
+            // Nossa Sra. Aparecida Day
+            || (d == 12 && m == October)
+            // All Souls Day
+            || (d == 2 && m == November)
+            // Republic Day
+            || (d == 15 && m == November)
+            // Black Consciousness Day
+            || (d == 20 && m == November && y >= 2004)
             // Christmas
             || (d == 25 && m == December)
             // Passion of Christ
