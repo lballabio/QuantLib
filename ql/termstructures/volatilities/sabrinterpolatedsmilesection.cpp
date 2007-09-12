@@ -41,12 +41,13 @@ namespace QuantLib {
                        const boost::shared_ptr<OptimizationMethod>& method,
                        const DayCounter& dc)
     : SmileSection(optionDate, dc),
+      endCriteria_(endCriteria), method_(method),
       strikes_(strikes), stdDevHandles_(stdDevHandles), forward_(forward),
-      alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
-      isAlphaFixed_(isAlphaFixed), isBetaFixed_(isBetaFixed), 
-      isNuFixed_(isNuFixed), isRhoFixed_(isRhoFixed),
-      vegaWeighted_(vegaWeighted), endCriteria_(endCriteria), method_(method),
+      isRhoFixed_(isRhoFixed), vegaWeighted_(vegaWeighted),
       vols_(stdDevHandles.size()),
+      alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
+      isAlphaFixed_(isAlphaFixed), isBetaFixed_(isBetaFixed),
+      isNuFixed_(isNuFixed), 
       evaluationDate_(Settings::instance().evaluationDate()) {
         LazyObject::registerWith(forward_);
         for (Size i=0; i<stdDevHandles_.size(); ++i)
@@ -61,7 +62,7 @@ namespace QuantLib {
                      isNuFixed_, isRhoFixed_, vegaWeighted_,
                      endCriteria_, method_));
             swap(tmp, sabrInterpolation_);
-    } 
+    }
 
     void SabrInterpolatedSmileSection::performCalculations() const {
         forwardValue_ = forward_->value();
@@ -76,10 +77,10 @@ namespace QuantLib {
             }
         }
 
-        // we are recreating the sabrinterpolation object unconditionnaly to 
+        // we are recreating the sabrinterpolation object unconditionnaly to
         // avoid iterator invalidation
         createInterpolation();
-        
+
         sabrInterpolation_->update();
     }
 

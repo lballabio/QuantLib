@@ -75,8 +75,8 @@ namespace {
     class InterpolatedQuote : public Quote {
       public:
           InterpolatedQuote(const boost::shared_ptr<CapVolatilitySurface>& surface,
-                          Time time, Real strike):surface_(surface),
-                          time_(time), strike_(strike){}
+                            Time time, Real strike)
+          : time_(time), strike_(strike), surface_(surface) {}
         Time time_;
         Real strike_;
         const boost::shared_ptr<CapVolatilitySurface> surface_;
@@ -148,7 +148,7 @@ namespace QuantLib {
                    (strikes_[j] < dummyAtmRate)? CapFloor::Floor : CapFloor::Cap;
                marketDataCap_[i][j] = MakeCapFloor(type, interpolatedTenors[i],
                         index_, strikes_[j], 0*Days, blackCapFloorEngine);
-               
+
            }
         }
         const_cast<CapsStripper*>(this)->registerWith(surface);
