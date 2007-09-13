@@ -19,12 +19,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file capstripper2.hpp
-    \brief caplet volatility stripper
+/*! \file optionletstripper.hpp
+    \brief optionlet (cap/floor) volatility stripper
 */
 
-#ifndef quantlib_capstripper2_hpp
-#define quantlib_capstripper2_hpp
+#ifndef quantlib_optionletstripper_hpp
+#define quantlib_optionletstripper_hpp
 
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/termstructures/volatilities/interestrate/caplet/capletvolatilitiesstructures.hpp>
@@ -35,22 +35,22 @@ namespace QuantLib {
     class CapVolatilitySurface;
     class SmileSection;
 
-    typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapMatrix;
+    typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapFloorMatrix;
 
-    class CapletStripper : //public virtual Observer,
+    class OptionletStripper : //public virtual Observer,
                            //public virtual Observable,
                            public LazyObject{
       public:
-        CapletStripper(const boost::shared_ptr<CapVolatilitySurface>& surface,
+        OptionletStripper(const boost::shared_ptr<CapVolatilitySurface>& surface,
                        const boost::shared_ptr<IborIndex>& index);
         //! \name Cap Stripper interface
         //@{
-        const Matrix& capletPrices() const;
-        const Matrix& capletVolatilities() const;
-        const Matrix& capPrices() const;
-        const Matrix& capVolatilities() const;
-        const std::vector<Period>& optionTenors() const;
-        const std::vector<Date>& optionDates() const;
+        const Matrix& optionletPrices() const;
+        const Matrix& optionletVolatilities() const;
+        const Matrix& capfloorPrices() const;
+        const Matrix& capfloorVolatilities() const;
+        const std::vector<Period>& optionletTenors() const;
+        const std::vector<Date>& optionletDates() const;
         const std::vector<Rate>& strikes() const;
         //@}
         //! \name LazyObject interface
@@ -61,44 +61,47 @@ namespace QuantLib {
         const boost::shared_ptr<CapVolatilitySurface> surface_;
         const boost::shared_ptr<IborIndex> index_;
         Size nStrikes_;
-        std::vector<Period> optionTenors_;
-        Size nOptionTenors_;
-        mutable Matrix capPrices_, capletPrices_;
-        mutable Matrix capVols_, capletVols_;
-        mutable Matrix capletStDevs_;
-        mutable std::vector<Rate> atmCapletRate;
-        mutable std::vector<Date> optionDates_;
-        mutable std::vector<Time> optionTimes_;
-        mutable CapMatrix caps_;
+        std::vector<Period> optionletTenors_;
+        Size nOptionletTenors_;
+        mutable Matrix capfloorPrices_, optionletPrices_;
+        mutable Matrix capfloorVols_, optionletVols_;
+        mutable Matrix optionletStDevs_;
+        mutable std::vector<Rate> atmOptionletRate;
+        mutable std::vector<Date> optionletDates_;
+        mutable std::vector<Time> optionletTimes_;
+        std::vector<Period> capfloorLengths_;
+        mutable CapFloorMatrix capfloors_;
     };
 
-    inline const Matrix& CapletStripper::capletPrices() const {
+    inline const Matrix& OptionletStripper::optionletPrices() const {
         calculate();
-        return capletPrices_;
+        return optionletPrices_;
     }
 
-    inline const Matrix& CapletStripper::capletVolatilities() const {
+    inline const Matrix& OptionletStripper::optionletVolatilities() const {
         calculate();
-        return capletVols_;
+        return optionletVols_;
     }
 
-    inline const Matrix& CapletStripper::capPrices() const {
+    inline const Matrix& OptionletStripper::capfloorPrices() const {
         calculate();
-        return capPrices_;
+        return capfloorPrices_;
     }
 
-    inline const Matrix& CapletStripper::capVolatilities() const {
+    inline const Matrix& OptionletStripper::capfloorVolatilities() const {
         calculate();
-        return capVols_;
+        return capfloorVols_;
     }
 
-    inline const std::vector<Period>& CapletStripper::optionTenors() const {
-        return optionTenors_;
+    inline
+    const std::vector<Period>& OptionletStripper::optionletTenors() const {
+        return optionletTenors_;
     }
 
-    inline const std::vector<Date>& CapletStripper::optionDates() const {
+    inline
+    const std::vector<Date>& OptionletStripper::optionletDates() const {
         calculate();
-        return optionDates_;
+        return optionletDates_;
     }
 
 }
