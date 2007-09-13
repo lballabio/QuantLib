@@ -37,6 +37,7 @@ namespace QuantLib {
             const boost::shared_ptr<CurveState>& cs,
             Spread displacement,
             Real caplet0Swaption1Priority = 1.0);
+
         // actual calibration function
         static Natural capletMaxHomogeneityCalibration(
                     const EvolutionDescription& evolution,
@@ -48,15 +49,13 @@ namespace QuantLib {
                     const CurveState& cs,
                     const Spread displacement,
                     Real caplet0Swaption1Priority, 
-
                     Size numberOfFactors,
                     Size maxIterations,
                     Real tolerance,
-
                     Real& deformationSize,
                     Real& totalSwaptionError, // ?
+                    std::vector<Matrix>& swapCovariancePseudoRoots); // the thing we really want the pseudo root for each time step
 
-                    std::vector<Matrix>& swapCovariancePseudoRoots); // ?
       private:
         Natural calibrationImpl_(Natural numberOfFactors, 
                                  Natural maxIterations,

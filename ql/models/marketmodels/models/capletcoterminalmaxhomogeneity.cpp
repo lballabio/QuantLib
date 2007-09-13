@@ -262,6 +262,7 @@ namespace QuantLib {
                 ") must be in [0.0, 1.0]");
     }
 
+    // the actual calibration function, this is a static class member
     Natural CTSMMCapletMaxHomogeneityCalibration::capletMaxHomogeneityCalibration(
         const EvolutionDescription& evolution,
         const PiecewiseConstantCorrelation& corr,
@@ -270,17 +271,14 @@ namespace QuantLib {
         const std::vector<Volatility>& capletVols,
         const CurveState& cs,
         const Spread displacement,
-
         Real caplet0Swaption1Priority, 
-
         const Size numberOfFactors,
         Size maxIterations,
         Real tolerance,
-
-        Real& deformationSize,
-        Real& totalSwaptionError,
-
-        std::vector<Matrix>& swapCovariancePseudoRoots) {
+        Real& deformationSize,  // ret value
+        Real& totalSwaptionError, // ret value
+        std::vector<Matrix>& swapCovariancePseudoRoots) 
+    {
 
             CTSMMCapletCalibration::performChecks(evolution, corr,
                 displacedSwapVariances, capletVols, cs);
