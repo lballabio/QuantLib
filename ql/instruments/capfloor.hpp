@@ -60,12 +60,12 @@ namespace QuantLib {
                  const Leg& floatingLeg,
                  const std::vector<Rate>& capRates,
                  const std::vector<Rate>& floorRates,
-                 const Handle<YieldTermStructure>& termStructure,
+                 const Handle<YieldTermStructure>& discountCurve,
                  const boost::shared_ptr<PricingEngine>& engine);
         CapFloor(Type type,
                  const Leg& floatingLeg,
                  const std::vector<Rate>& strikes,
-                 const Handle<YieldTermStructure>& termStructure,
+                 const Handle<YieldTermStructure>& discountCurve,
                  const boost::shared_ptr<PricingEngine>& engine);
         //! \name Instrument interface
         //@{
@@ -92,6 +92,9 @@ namespace QuantLib {
         Date startDate() const;
         Date maturityDate() const;
         Date lastFixingDate() const;
+        const Handle<YieldTermStructure>& discountCurve() const {
+            return discountCurve_;
+        }
         //@}
         //! implied term volatility
         Volatility impliedVolatility(Real price,
@@ -104,7 +107,7 @@ namespace QuantLib {
         Leg floatingLeg_;
         std::vector<Rate> capRates_;
         std::vector<Rate> floorRates_;
-        Handle<YieldTermStructure> termStructure_;
+        Handle<YieldTermStructure> discountCurve_;
         friend void changeCapFloorType(CapFloor&);
         // helper class for implied volatility calculation
         
@@ -116,11 +119,11 @@ namespace QuantLib {
       public:
         Cap(const Leg& floatingLeg,
             const std::vector<Rate>& exerciseRates,
-            const Handle<YieldTermStructure>& termStructure,
+            const Handle<YieldTermStructure>& discountCurve,
             const boost::shared_ptr<PricingEngine>& engine)
         : CapFloor(CapFloor::Cap, floatingLeg,
                    exerciseRates, std::vector<Rate>(),
-                   termStructure, engine) {}
+                   discountCurve, engine) {}
     };
 
     //! Concrete floor class
@@ -129,11 +132,11 @@ namespace QuantLib {
       public:
         Floor(const Leg& floatingLeg,
               const std::vector<Rate>& exerciseRates,
-              const Handle<YieldTermStructure>& termStructure,
+              const Handle<YieldTermStructure>& discountCurve,
               const boost::shared_ptr<PricingEngine>& engine)
         : CapFloor(CapFloor::Floor, floatingLeg,
                    std::vector<Rate>(), exerciseRates,
-                   termStructure, engine) {}
+                   discountCurve, engine) {}
     };
 
     //! Concrete collar class
@@ -143,10 +146,10 @@ namespace QuantLib {
         Collar(const Leg& floatingLeg,
                const std::vector<Rate>& capRates,
                const std::vector<Rate>& floorRates,
-               const Handle<YieldTermStructure>& termStructure,
+               const Handle<YieldTermStructure>& discountCurve,
                const boost::shared_ptr<PricingEngine>& engine)
         : CapFloor(CapFloor::Collar, floatingLeg, capRates, floorRates,
-                   termStructure, engine) {}
+                   discountCurve, engine) {}
     };
 
 

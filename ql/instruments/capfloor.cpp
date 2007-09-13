@@ -37,7 +37,7 @@ namespace {
             Real derivative(Volatility x) const;
           private:
             boost::shared_ptr<PricingEngine> engine_;
-            Handle<YieldTermStructure> termStructure_;
+            Handle<YieldTermStructure> discountCurve_;
             Real targetValue_;
             boost::shared_ptr<SimpleQuote> vol_;
             const Instrument::results* results_;
@@ -45,9 +45,9 @@ namespace {
 
      ImpliedVolHelper::ImpliedVolHelper(
                               const CapFloor& cap,
-                              const Handle<YieldTermStructure>& termStructure,
+                              const Handle<YieldTermStructure>& discountCurve,
                               Real targetValue)
-    : termStructure_(termStructure), targetValue_(targetValue) {
+    : discountCurve_(discountCurve), targetValue_(targetValue) {
 
         vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
         Handle<Quote> h(vol_);
@@ -79,11 +79,11 @@ namespace QuantLib {
                  const Leg& floatingLeg,
                  const std::vector<Rate>& capRates,
                  const std::vector<Rate>& floorRates,
-                 const Handle<YieldTermStructure>& termStructure,
+                 const Handle<YieldTermStructure>& discountCurve,
                  const boost::shared_ptr<PricingEngine>& engine)
     : type_(type), floatingLeg_(floatingLeg),
       capRates_(capRates), floorRates_(floorRates),
-      termStructure_(termStructure) {
+      discountCurve_(discountCurve) {
         setPricingEngine(engine);
         if (type_ == Cap || type_ == Collar) {
             QL_REQUIRE(!capRates_.empty(), "no cap rates given");
@@ -101,7 +101,7 @@ namespace QuantLib {
         for (i = floatingLeg_.begin(); i != floatingLeg_.end(); ++i)
             registerWith(*i);
 
-        registerWith(termStructure);
+        registerWith(discountCurve);
         registerWith(Settings::instance().evaluationDate());
     }
 
@@ -109,10 +109,10 @@ namespace QuantLib {
                  CapFloor::Type type,
                  const Leg& floatingLeg,
                  const std::vector<Rate>& strikes,
-                 const Handle<YieldTermStructure>& termStructure,
+                 const Handle<YieldTermStructure>& discountCurve,
                  const boost::shared_ptr<PricingEngine>& engine)
     : type_(type), floatingLeg_(floatingLeg),
-      termStructure_(termStructure) {
+      discountCurve_(discountCurve) {
         setPricingEngine(engine);
         QL_REQUIRE(!strikes.empty(), "no strikes given");
         if (type_ == Cap) {
@@ -132,12 +132,12 @@ namespace QuantLib {
         for (i = floatingLeg_.begin(); i != floatingLeg_.end(); ++i)
             registerWith(*i);
 
-        registerWith(termStructure);
+        registerWith(discountCurve);
         registerWith(Settings::instance().evaluationDate());
     }
 
     Rate CapFloor::atmRate() const {
-        return CashFlows::atmRate(floatingLeg_, **termStructure_);
+        return CashFlows::atmRate(floatingLeg_, **discountCurve_);
     }
 
     bool CapFloor::isExpired() const {
@@ -145,7 +145,7 @@ namespace QuantLib {
         for (Size i=0; i<floatingLeg_.size(); i++)
             lastPaymentDate = std::max(lastPaymentDate,
                                        floatingLeg_[i]->date());
-        return lastPaymentDate < termStructure_->referenceDate();
+        return lastPaymentDate < discountCurve_->referenceDate();
     }
 
     Date CapFloor::startDate() const {
@@ -207,8 +207,8 @@ namespace QuantLib {
         arguments->type = type_;
 
         Date today = Settings::instance().evaluationDate();
-        Date settlement = termStructure_->referenceDate();
-        DayCounter counter = termStructure_->dayCounter();
+        Date settlement = discountCurve_->referenceDate();
+        DayCounter counter = discountCurve_->dayCounter();
 
         for (Size i=0; i<n; i++) {
             boost::shared_ptr<FloatingRateCoupon> coupon =
@@ -229,7 +229,7 @@ namespace QuantLib {
             if (arguments->endTimes.back() >= 0.0) { // but only if needed
                 arguments->forwards.push_back(coupon->adjustedFixing());
                 arguments->discounts.push_back(
-                                  termStructure_->discount(coupon->date()));
+                                  discountCurve_->discount(coupon->date()));
             } else {
                 arguments->forwards.push_back(Null<Rate>());
                 arguments->discounts.push_back(Null<DiscountFactor>());
@@ -287,7 +287,7 @@ namespace QuantLib {
 
         Volatility guess = 0.10;   // no way we can get a more accurate one
 
-        ImpliedVolHelper f(*this, termStructure_, targetValue);
+        ImpliedVolHelper f(*this, discountCurve_, targetValue);
         Brent solver;
         //NewtonSafe solver;
         solver.setMaxEvaluations(maxEvaluations);
