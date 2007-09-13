@@ -80,12 +80,6 @@ namespace QuantLib {
                 QL_REQUIRE(yEnd_-yBegin_ >= 2,
                            "not enough y points to interpolate: at least 2 "
                            "required, " << yEnd_-yBegin_ << " provided");
-                #if defined(QL_EXTRA_SAFETY_CHECKS)
-                for (I1 i=xBegin_, j=xBegin_+1; j!=xEnd_; i++, j++)
-                    QL_REQUIRE(*j > *i, "unsorted x values");
-                for (I2 k=yBegin_, l=yBegin_+1; l!=yEnd_; k++, l++)
-                    QL_REQUIRE(*l > *k, "unsorted y values");
-                #endif
             }
             Real xMin() const {
                 return *xBegin_;
@@ -109,17 +103,29 @@ namespace QuantLib {
                 return zData_;
             }
             bool isInRange(Real x, Real y) const {
+                #if defined(QL_EXTRA_SAFETY_CHECKS)
+                for (I1 i=xBegin_, j=xBegin_+1; j!=xEnd_; ++i, ++j)
+                    QL_REQUIRE(*j > *i, "unsorted x values");
+                #endif
                 Real x1 = xMin(), x2 = xMax();
                 bool xIsInrange = (x >= x1 && x <= x2) ||
                                   close(x,x1) ||
                                   close(x,x2);
                 if (!xIsInrange) return false;
 
+                #if defined(QL_EXTRA_SAFETY_CHECKS)
+                for (I2 k=yBegin_, l=yBegin_+1; l!=yEnd_; ++k, ++l)
+                    QL_REQUIRE(*l > *k, "unsorted y values");
+                #endif
                 Real y1 = yMin(), y2 = yMax();
                 return (y >= y1 && y <= y2) || close(y,y1) || close(y,y2);
             }
           protected:
             Size locateX(Real x) const {
+                #if defined(QL_EXTRA_SAFETY_CHECKS)
+                for (I1 i=xBegin_, j=xBegin_+1; j!=xEnd_; ++i, ++j)
+                    QL_REQUIRE(*j > *i, "unsorted x values");
+                #endif
                 if (x < *xBegin_)
                     return 0;
                 else if (x > *(xEnd_-1))
@@ -128,6 +134,10 @@ namespace QuantLib {
                     return std::upper_bound(xBegin_,xEnd_-1,x)-xBegin_-1;
             }
             Size locateY(Real y) const {
+                #if defined(QL_EXTRA_SAFETY_CHECKS)
+                for (I2 k=yBegin_, l=yBegin_+1; l!=yEnd_; ++k, ++l)
+                    QL_REQUIRE(*l > *k, "unsorted y values");
+                #endif
                 if (y < *yBegin_)
                     return 0;
                 else if (y > *(yEnd_-1))

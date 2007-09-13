@@ -69,10 +69,6 @@ namespace QuantLib {
                 QL_REQUIRE(xEnd_-xBegin_ >= 2,
                            "not enough points to interpolate: at least 2 "
                            "required, " << xEnd_-xBegin_ << " provided");
-                #if defined(QL_EXTRA_SAFETY_CHECKS)
-                for (I1 i=xBegin, j=xBegin+1; j!=xEnd; i++, j++)
-                    QL_REQUIRE(*j > *i, "unsorted x values");
-                #endif
             }
             Real xMin() const {
                 return *xBegin_;
@@ -87,11 +83,19 @@ namespace QuantLib {
                 return std::vector<Real>(yBegin_,yBegin_+(xEnd_-xBegin_));
             }
             bool isInRange(Real x) const {
+                #if defined(QL_EXTRA_SAFETY_CHECKS)
+                for (I1 i=xBegin_, j=xBegin_+1; j!=xEnd_; ++i, ++j)
+                    QL_REQUIRE(*j > *i, "unsorted x values");
+                #endif
                 Real x1 = xMin(), x2 = xMax();
                 return (x >= x1 && x <= x2) || close(x,x1) || close(x,x2);
             }
           protected:
             Size locate(Real x) const {
+                #if defined(QL_EXTRA_SAFETY_CHECKS)
+                for (I1 i=xBegin_, j=xBegin_+1; j!=xEnd_; ++i, ++j)
+                    QL_REQUIRE(*j > *i, "unsorted x values");
+                #endif
                 if (x < *xBegin_)
                     return 0;
                 else if (x > *(xEnd_-1))
