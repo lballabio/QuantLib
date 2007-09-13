@@ -159,48 +159,50 @@ namespace QuantLib {
     inline CapVolatilityStructure::CapVolatilityStructure(const DayCounter& dc)
     : TermStructure(dc) {}
 
-    inline CapVolatilityStructure::CapVolatilityStructure(
-                                                        const Date& refDate,
-                                                        const Calendar& cal,
-                                                        const DayCounter& dc)
+    inline
+    CapVolatilityStructure::CapVolatilityStructure(const Date& refDate,
+                                                   const Calendar& cal,
+                                                   const DayCounter& dc)
     : TermStructure(refDate, cal, dc) {}
 
-    inline CapVolatilityStructure::CapVolatilityStructure(
-                                                        Natural settlementDays,
-                                                        const Calendar& cal,
-                                                        const DayCounter& dc)
+    inline
+    CapVolatilityStructure::CapVolatilityStructure(Natural settlementDays,
+                                                   const Calendar& cal,
+                                                   const DayCounter& dc)
     : TermStructure(settlementDays, cal, dc) {}
 
 
-    inline Volatility CapVolatilityStructure::volatility(const Date& end,
-                                                         Rate strike,
-                                                         bool extrapolate)
-                                                                       const {
+    inline
+    Volatility CapVolatilityStructure::volatility(const Date& end,
+                                                  Rate strike,
+                                                  bool extrapolate) const {
         Time t = timeFromReference(end);
         checkRange(t,strike,extrapolate);
         return volatilityImpl(t,strike);
     }
 
-    inline Volatility CapVolatilityStructure::volatility(Time t,
-                                                         Rate strike,
-                                                         bool extrapolate)
-                                                                       const {
+    inline
+    Volatility CapVolatilityStructure::volatility(Time t,
+                                                  Rate strike,
+                                                  bool extrapolate) const {
         checkRange(t,strike,extrapolate);
         return volatilityImpl(t,strike);
     }
 
-    inline Volatility CapVolatilityStructure::volatility(
-                                                    const Period& optionTenor,
-                                                    Rate strike,
-                                                    bool extrapolate) const {
+    inline
+    Volatility CapVolatilityStructure::volatility(const Period& optionTenor,
+                                                  Rate strike,
+                                                  bool extrapolate) const {
         Date exerciseDate = calendar().advance(referenceDate(),
                                                optionTenor,
                                                Following); //FIXME
         return volatility(exerciseDate, strike, extrapolate);
     }
 
-    inline void CapVolatilityStructure::checkRange(
-                                     Time t, Rate k, bool extrapolate) const {
+    inline
+    void CapVolatilityStructure::checkRange(Time t,
+                                            Rate k,
+                                            bool extrapolate) const {
         TermStructure::checkRange(t, extrapolate);
         QL_REQUIRE(extrapolate || allowsExtrapolation() ||
                    (k >= minStrike() && k <= maxStrike()),
@@ -211,7 +213,8 @@ namespace QuantLib {
 
     // inline CapletVolatilityStructure definitions
 
-    inline CapletVolatilityStructure::CapletVolatilityStructure(const DayCounter& dc)
+    inline
+    CapletVolatilityStructure::CapletVolatilityStructure(const DayCounter& dc)
     : TermStructure(dc) {}
 
     inline CapletVolatilityStructure::CapletVolatilityStructure(
@@ -226,70 +229,65 @@ namespace QuantLib {
                              const DayCounter& dc)
     : TermStructure(settlementDays, cal, dc) {}
 
-    inline Volatility CapletVolatilityStructure::volatility(
-                                                        const Date& start,
-                                                        Rate strike,
-                                                        bool extrapolate)
-                                                                       const {
+    inline
+    Volatility CapletVolatilityStructure::volatility(const Date& start,
+                                                     Rate strike,
+                                                     bool extrapolate) const {
         Time t = timeFromReference(start);
-        checkRange(t,strike,extrapolate);
+        checkRange(t, strike, extrapolate);
         return volatilityImpl(t,strike);
     }
 
-    inline Volatility CapletVolatilityStructure::volatility(
-                                                        Time t,
-                                                        Rate strike,
-                                                        bool extrapolate)
-                                                                       const {
-        checkRange(t,strike,extrapolate);
+    inline
+    Volatility CapletVolatilityStructure::volatility(Time t,
+                                                     Rate strike,
+                                                     bool extrapolate) const {
+        checkRange(t, strike, extrapolate);
         return volatilityImpl(t,strike);
     }
 
-    inline Volatility CapletVolatilityStructure::volatility(
-                                                        const Period& optionTenor,
-                                                        Rate strike,
-                                                        bool extrapolate)
-                                                                       const {
+    inline
+    Volatility CapletVolatilityStructure::volatility(const Period& optionTenor,
+                                                     Rate strike,
+                                                     bool extrapolate) const {
         Date exerciseDate = calendar().advance(referenceDate(),
                                                optionTenor,
                                                Following); //FIXME
         return volatility(exerciseDate, strike, extrapolate);
     }
 
-    inline Volatility CapletVolatilityStructure::blackVariance(
-                                                        const Date& start,
+    inline
+    Volatility CapletVolatilityStructure::blackVariance(const Date& start,
                                                         Rate strike,
-                                                        bool extrapolate)
-                                                                       const {
+                                                        bool extrap) const {
         Time t = timeFromReference(start);
-        checkRange(t,strike,extrapolate);
+        checkRange(t, strike, extrap);
         Volatility vol = volatilityImpl(t, strike);
         return vol*vol*t;
     }
 
-    inline Volatility CapletVolatilityStructure::blackVariance(
-                                                        Time t,
+    inline
+    Volatility CapletVolatilityStructure::blackVariance(Time t,
                                                         Rate strike,
-                                                        bool extrapolate)
-                                                                       const {
-        checkRange(t,strike,extrapolate);
-        Volatility vol = volatilityImpl(t,strike);
+                                                        bool extrap) const {
+        checkRange(t, strike, extrap);
+        Volatility vol = volatilityImpl(t, strike);
         return vol*vol*t;
     }
 
-    inline Volatility CapletVolatilityStructure::blackVariance(
-                                                        const Period& optionTenor,
+    inline
+    Volatility CapletVolatilityStructure::blackVariance(const Period& optionT,
                                                         Rate strike,
-                                                        bool extrapolate)
-                                                                       const {
+                                                        bool extrap) const {
         Date exerciseDate = calendar().advance(referenceDate(),
-                                               optionTenor,
+                                               optionT,
                                                Following); //FIXME
-        return blackVariance(exerciseDate, strike, extrapolate);
+        return blackVariance(exerciseDate, strike, extrap);
     }
 
-    inline void CapletVolatilityStructure::checkRange(
-                                     Time t, Rate k, bool extrapolate) const {
+    inline void CapletVolatilityStructure::checkRange(Time t,
+                                                      Rate k,
+                                                      bool extrapolate) const {
         TermStructure::checkRange(t, extrapolate);
         QL_REQUIRE(extrapolate || allowsExtrapolation() ||
                    (k >= minStrike() && k <= maxStrike()),
