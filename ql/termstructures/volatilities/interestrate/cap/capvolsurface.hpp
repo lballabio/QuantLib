@@ -125,7 +125,7 @@ namespace QuantLib {
     inline Volatility CapVolatilitySurface::volatilityImpl(Time t,
                                                            Rate strike) const {
         calculate();
-        return interpolation_(strike, t);
+        return interpolation_(strike, t, true);
     }
 
     inline const std::vector<Period>& CapVolatilitySurface::optionTenors() const {
