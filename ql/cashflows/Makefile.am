@@ -13,11 +13,14 @@ this_include_HEADERS = \
     couponpricer.hpp \
     digitalcoupon.hpp \
     dividend.hpp \
+    duration.hpp \
     fixedratecoupon.hpp \
     floatingratecoupon.hpp \
     iborcoupon.hpp \
     rangeaccrual.hpp \
     replication.hpp \
+    shortfloatingcoupon.hpp \
+    shortindexedcoupon.hpp \
     simplecashflow.hpp \
     timebasket.hpp
 
@@ -31,10 +34,12 @@ libCashFlows_la_SOURCES = \
     couponpricer.cpp \
     digitalcoupon.cpp \
     dividend.cpp \
+    duration.cpp \
     floatingratecoupon.cpp \
     iborcoupon.cpp \
     rangeaccrual.cpp \
     replication.cpp \
+    shortfloatingcoupon.cpp \
     timebasket.cpp
 
 noinst_LTLIBRARIES = libCashFlows.la

@@ -10,11 +10,14 @@
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/digitalcoupon.hpp>
 #include <ql/cashflows/dividend.hpp>
+#include <ql/cashflows/duration.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/cashflows/replication.hpp>
+#include <ql/cashflows/shortfloatingcoupon.hpp>
+#include <ql/cashflows/shortindexedcoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/timebasket.hpp>
 
