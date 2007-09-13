@@ -16,8 +16,6 @@
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/cashflows/replication.hpp>
-#include <ql/cashflows/shortfloatingcoupon.hpp>
-#include <ql/cashflows/shortindexedcoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/timebasket.hpp>
 
