@@ -145,7 +145,7 @@ namespace QuantLib
             boost::shared_ptr<MarketModel> periodsmm(new FwdToCotSwapAdapter(periodflmm));
 
 
-            Matrix swaptionTotCovariance(periodsmm->totalCovariance(numberBigRates-1));
+            Matrix swaptionTotCovariance(periodsmm->totalCovariance(periodsmm->numberOfSteps()-1));
 
 
 
@@ -155,7 +155,7 @@ namespace QuantLib
             {
                 modelSwaptionVols[i] = sqrt(swaptionTotCovariance[i][i]/periodsmm->evolution().rateTimes()[i]);
                 Real scale = marketSwaptionVols[i]/modelSwaptionVols[i];
-                scalingFactors[i] *= scale*scale; // since applied to variance not vol
+                scalingFactors[i] *= scale; // since applied to vol
 
                 totalSwaptionError +=  (marketSwaptionVols[i]-modelSwaptionVols[i])* (marketSwaptionVols[i]-modelSwaptionVols[i]);
 
