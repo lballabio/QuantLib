@@ -34,7 +34,7 @@ namespace QuantLib {
                                 const DayCounter& dayCounter)
     : CapVolatilityStructure(settlementDays, calendar, dayCounter),
       optionTenors_(optionTenors),
-      optionTimes_(optionTenors.size()), 
+      optionTimes_(optionTenors.size()),
       volHandles_(volatilities),
       volatilities_(volatilities.size())
     {
@@ -44,7 +44,7 @@ namespace QuantLib {
             volatilities_[i] = volHandles_[i]->value();
         interpolate();
     }
-    
+
     // fixed reference date, floating market data
     CapVolatilityVector::CapVolatilityVector(
                             const Date& settlementDate,
@@ -54,7 +54,7 @@ namespace QuantLib {
                             const DayCounter& dayCounter)
     : CapVolatilityStructure(settlementDate, calendar, dayCounter),
       optionTenors_(optionTenors),
-      optionTimes_(optionTenors.size()), 
+      optionTimes_(optionTenors.size()),
       volHandles_(volatilities),
       volatilities_(volatilities.size())
     {
@@ -74,7 +74,8 @@ namespace QuantLib {
                                 const DayCounter& dayCounter)
     : CapVolatilityStructure(settlementDate, calendar, dayCounter),
       optionTenors_(optionTenors),
-      optionTimes_(optionTenors.size()), 
+      optionTimes_(optionTenors.size()),
+      volHandles_(volatilities.size()),
       volatilities_(volatilities.size())
     {
         checkInputs(volatilities.size());
@@ -100,7 +101,8 @@ namespace QuantLib {
                                 const DayCounter& dayCounter)
     : CapVolatilityStructure(settlementDays, calendar, dayCounter),
       optionTenors_(optionTenors),
-      optionTimes_(optionTenors.size()), 
+      optionTimes_(optionTenors.size()),
+      volHandles_(volatilities.size()),
       volatilities_(volatilities.size())
     {
         checkInputs(volatilities.size());
