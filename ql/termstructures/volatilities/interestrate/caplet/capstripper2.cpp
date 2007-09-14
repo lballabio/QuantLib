@@ -25,6 +25,7 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatilities/interestrate/cap/capvolsurface.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/utilities/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -86,7 +87,8 @@ namespace QuantLib {
         }
 
         Spread strikeRange = strikes.back()-strikes.front();
-        Rate switchStrike = strikes.front()+0.5*strikeRange;
+        Rate switchStrike = 0.5*strikeRange;
+        //Rate switchStrike = strikes.front()+0.5*strikeRange;
         for (Size j=0; j<nStrikes_; ++j) {
             CapFloor::Type capFloorType = strikes[j] < switchStrike ?
                                    CapFloor::Floor : CapFloor::Cap;
@@ -111,12 +113,24 @@ namespace QuantLib {
                 Real optionletAccrualPeriod = 0.5; //FIXME
                 DiscountFactor optionletAnnuity = optionletAccrualPeriod*d;
                 Real guess = capfloorVols_[i][j]*std::sqrt(optionletTimes_[i]);
-                optionletStDevs_[i][j] = blackFormulaImpliedStdDev(optionletType,
-                                                                   strikes[j],
-                                                                   atmOptionletRate[i],
-                                                                   optionletPrices_[i][j],
-                                                                   optionletAnnuity,
-                                                                   guess);
+                try {
+                    optionletStDevs_[i][j] =
+                        blackFormulaImpliedStdDev(optionletType,
+                                                  strikes[j],
+                                                  atmOptionletRate[i],
+                                                  optionletPrices_[i][j],
+                                                  optionletAnnuity,
+                                                  guess);
+                } catch (std::exception& e) {
+                    QL_FAIL("could not bootstrap the optionlet:"
+                            "\n date: " << optionletDates_[i] <<
+                            "\n type: " << optionletType <<
+                            "\n strike: " << io::rate(strikes[j]) <<
+                            "\n atm: " << io::rate(atmOptionletRate[i]) <<
+                            "\n price: " << optionletPrices_[i][j] <<
+                            "\n annuity: " << optionletAnnuity <<
+                            "\n error message: " << e.what());
+                }
                 optionletVols_[i][j] = optionletStDevs_[i][j] /
                                                 std::sqrt(optionletTimes_[i]);
 
