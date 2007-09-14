@@ -28,6 +28,7 @@
 class MarketModelSmmCapletHomoCalibrationTest {
   public:
     static void testFunction();
+    static void testPeriodFunction();
     static void testSphereCylinder();
     static boost::unit_test_framework::test_suite* suite();
 };

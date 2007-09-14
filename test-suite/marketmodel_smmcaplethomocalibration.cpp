@@ -64,6 +64,9 @@
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/math/statistics/sequencestatistics.hpp>
 #include <sstream>
+#include <ql/models/marketmodels/models/capletcoterminalperiodic.hpp>
+
+#include <ql/models/marketmodels/models/volatilityinterpolationspecifierabcd.hpp>
 
 #if defined(BOOST_MSVC)
 #include <float.h>
@@ -546,6 +549,175 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
 }
 
 
+
+void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction() 
+{
+
+    BOOST_MESSAGE("Testing max homogeneity periodic caplet calibration "
+                  "in a lognormal coterminal swap market model...");
+
+    setup();
+
+    Size numberOfRates = todaysForwards_.size();
+    Size period=2;
+    Size offset = numberOfRates % period;
+    Size numberBigRates = numberOfRates / period;
+
+    EvolutionDescription evolution(rateTimes_);
+
+    std::vector<Time> bigRateTimes(numberBigRates+1);
+    
+    for (Size i=0; i <= numberBigRates; ++i)
+        bigRateTimes[i] = rateTimes_[i*period+offset];
+
+    boost::shared_ptr<PiecewiseConstantCorrelation> fwdCorr(new
+        ExponentialForwardCorrelation(rateTimes_,
+                                      longTermCorrelation_,
+                                      beta_));
+
+    boost::shared_ptr<LMMCurveState> cs(new LMMCurveState(rateTimes_));
+    cs->setOnForwardRates(todaysForwards_);
+
+    boost::shared_ptr<PiecewiseConstantCorrelation> corr(new
+        CotSwapFromFwdCorrelation(fwdCorr, *cs, displacement_));
+
+    std::vector<PiecewiseConstantAbcdVariance >
+                                    swapVariances;
+    for (Size i=0; i<numberBigRates; ++i) {
+        swapVariances.push_back(
+            PiecewiseConstantAbcdVariance(a_, b_, c_, d_,
+                                          i, bigRateTimes));
+    }
+  
+    VolatilityInterpolationSpecifierabcd varianceInterpolator(period, offset, swapVariances, // these should be associated with the long rates
+                                                                   rateTimes_ // these should be associated with the shorter rates       
+                                                                   );
+    
+
+    // create calibrator
+    Real caplet0Swaption1Priority = 1.0;
+    if (printReport_) {
+        BOOST_MESSAGE("caplet market vols: " << QL_FIXED <<
+                      std::setprecision(4) << Array(capletVols_));
+        BOOST_MESSAGE("caplet0Swapt1Prior: " << caplet0Swaption1Priority);
+    }
+
+     // calibrate
+    Natural maxUnperiodicIterations = 10;
+    Real toleranceUnperiodic = 1e-4; // i.e. 1 bp
+    Natural max1dIterations = 100;
+    Real tolerance1d = 1e-8;
+    Size maxPeriodIterations = 10;
+    Real periodTolerance = 1e-4;
+
+     std::vector<Matrix> swapPseudoRoots;
+     Real deformationSize;
+     Real totalSwaptionError;
+     std::vector<Real>  finalScales;  //scalings used for matching
+     Size iterationsDone; // number of  period iteratations done 
+     Real errorImprovement; // improvement in error for last iteration
+     Matrix modelSwaptionVolsMatrix;
+
+       if (printReport_) {
+        BOOST_MESSAGE("numberOfFactors:    " << numberOfFactors_);
+        BOOST_MESSAGE("maxUnperiodicIterations:      " << maxUnperiodicIterations);
+        BOOST_MESSAGE("toleranceUnperiodic:    " << io::rate(toleranceUnperiodic));
+        BOOST_MESSAGE("max1dIterations: " << max1dIterations);
+        BOOST_MESSAGE("tolerance1d:     " << io::rate(tolerance1d));
+    
+       }
+    
+       Integer failures = capletSwaptionPeriodicCalibration(
+        evolution,
+        corr,
+        varianceInterpolator,
+        capletVols_,
+        cs,
+        displacement_,
+        caplet0Swaption1Priority, 
+        numberOfFactors_,
+        period, 
+        max1dIterations,
+        tolerance1d,
+        maxUnperiodicIterations,
+        toleranceUnperiodic, 
+        maxPeriodIterations, 
+        periodTolerance, 
+        deformationSize,
+        totalSwaptionError, // ?
+        swapPseudoRoots,  // the thing we really want the pseudo root for each time step
+        finalScales,  //scalings used for matching
+        iterationsDone, // number of  period iteratations done 
+        errorImprovement, // improvement in error for last iteration
+        modelSwaptionVolsMatrix // the swaption vols calibrated to at each step of the iteration
+        );
+   
+  
+    boost::shared_ptr<MarketModel> smm(new
+        PseudoRootFacade(swapPseudoRoots,
+                         rateTimes_,
+                         cs->coterminalSwapRates(),
+                         std::vector<Spread>(numberOfRates, displacement_)));
+    boost::shared_ptr<MarketModel> flmm(new CotSwapToFwdAdapter(smm));
+    Matrix capletTotCovariance = flmm->totalCovariance(numberOfRates-1);
+
+    std::vector<Volatility> capletVols(numberOfRates);
+    for (Size i=0; i<numberOfRates; ++i) {
+        capletVols[i] = std::sqrt(capletTotCovariance[i][i]/rateTimes_[i]);
+    }
+ 
+    Real error;
+    Real capletTolerance = 1e-4; // i.e. 1 bp
+
+    // check caplet fit
+    for (Size i=0; i<numberOfRates; ++i) {
+        error = std::fabs(capletVols[i]-capletVols_[i]);
+        if (error>capletTolerance)
+            BOOST_ERROR("\n failed to reproduce "
+                        << io::ordinal(i) << " caplet vol:"
+                        "\n expected:         " << io::rate(capletVols_[i]) <<
+                        "\n realized:         " << io::rate(capletVols[i]) <<
+                        "\n percentage error: " << error/capletVols_[i] <<
+                        "\n error:            " << error <<
+                        "\n tolerance:        " << capletTolerance);
+    }
+
+
+
+    std::vector<Spread> adaptedDisplacements(numberBigRates,displacement_);
+    boost::shared_ptr<MarketModel> adaptedFlmm(new FwdPeriodAdapter(flmm,period,offset,adaptedDisplacements));
+
+     boost::shared_ptr<MarketModel> adaptedsmm(new FwdToCotSwapAdapter(smm));
+   
+
+
+      // check perfect swaption fit
+    Real  swapTolerance = 1e-14;
+    
+    Matrix swapTerminalCovariance=   adaptedsmm->totalCovariance(numberBigRates-1);
+
+    
+    for (Size i=0; i<numberBigRates; ++i) {
+        Volatility expSwaptionVol = swapVariances[i].totalVolatility(i);
+        Volatility swaptionVol = std::sqrt(swapTerminalCovariance[i][i]/bigRateTimes[i]);
+        error = std::fabs(swaptionVol-expSwaptionVol);
+        if (error>swapTolerance)
+            BOOST_ERROR("\n failed to reproduce "
+                       << io::ordinal(i) << " swaption vol:"
+                       "\n expected:  " << io::rate(expSwaptionVol) <<
+                       "\n realized:  " << io::rate(swaptionVol) <<
+                       "\n error:     " << error <<
+                       "\n tolerance: " << swapTolerance);
+    }
+
+    
+
+
+
+
+}
+
+
 void MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder() {
 
     BOOST_MESSAGE("Testing SphereCylinder optimization...");
@@ -645,7 +817,9 @@ void MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder() {
 test_suite* MarketModelSmmCapletHomoCalibrationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("SMM Caplet homogeneous calibration test");
 
+    
     suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletHomoCalibrationTest::testFunction));
+  //  suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction));
     suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder));
 
     return suite;
