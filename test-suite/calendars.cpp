@@ -704,6 +704,7 @@ void CalendarTest::testBrazil() {
     expectedHol.push_back(Date(12,October,2005));
     expectedHol.push_back(Date(2,November,2005));
     expectedHol.push_back(Date(15,November,2005));
+    //expectedHol.push_back(Date(20,November,2005)); // Sunday
     //expectedHol.push_back(Date(25,December,2005)); // Sunday
 
     //expectedHol.push_back(Date(1,January,2006)); // Sunday
@@ -717,6 +718,7 @@ void CalendarTest::testBrazil() {
     expectedHol.push_back(Date(12,October,2006));
     expectedHol.push_back(Date(2,November,2006));
     expectedHol.push_back(Date(15,November,2006));
+    expectedHol.push_back(Date(20,November,2006));
     expectedHol.push_back(Date(25,December,2006));
 
     Calendar c = Brazil();
