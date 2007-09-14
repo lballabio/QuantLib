@@ -661,6 +661,9 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
     boost::shared_ptr<MarketModel> flmm(new CotSwapToFwdAdapter(smm));
     Matrix capletTotCovariance = flmm->totalCovariance(numberOfRates-1);
 
+
+
+
     std::vector<Volatility> capletVols(numberOfRates);
     for (Size i=0; i<numberOfRates; ++i) {
         capletVols[i] = std::sqrt(capletTotCovariance[i][i]/rateTimes_[i]);
@@ -688,18 +691,18 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
     boost::shared_ptr<MarketModel> adaptedFlmm(new FwdPeriodAdapter(flmm,period,offset,adaptedDisplacements));
 
      boost::shared_ptr<MarketModel> adaptedsmm(new FwdToCotSwapAdapter(smm));
-   
-
-
+  
       // check perfect swaption fit
     Real  swapTolerance = 1e-14;
-    
-    Matrix swapTerminalCovariance=   adaptedsmm->totalCovariance(numberBigRates-1);
+      
+    Matrix swapTerminalCovariance(adaptedsmm->totalCovariance(adaptedsmm->numberOfSteps()-1));
 
-    
     for (Size i=0; i<numberBigRates; ++i) {
         Volatility expSwaptionVol = swapVariances[i].totalVolatility(i);
-        Volatility swaptionVol = std::sqrt(swapTerminalCovariance[i][i]/bigRateTimes[i]);
+        Real cov = swapTerminalCovariance[i][i];
+        Time time = adaptedsmm->evolution().rateTimes()[i];
+        Volatility swaptionVol =  sqrt(swapTerminalCovariance[i][i]/time);
+  
         error = std::fabs(swaptionVol-expSwaptionVol);
         if (error>swapTolerance)
             BOOST_ERROR("\n failed to reproduce "
