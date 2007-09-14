@@ -7,6 +7,7 @@
 #include <ql/models/marketmodels/models/alphaformconcrete.hpp>
 #include <ql/models/marketmodels/models/capletcoterminalalphacalibration.hpp>
 #include <ql/models/marketmodels/models/capletcoterminalmaxhomogeneity.hpp>
+#include <ql/models/marketmodels/models/capletcoterminalperiodic.hpp>
 #include <ql/models/marketmodels/models/capletcoterminalswaptioncalibration.hpp>
 #include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
 #include <ql/models/marketmodels/models/ctsmmcapletcalibration.hpp>
@@ -16,4 +17,6 @@
 #include <ql/models/marketmodels/models/piecewiseconstantabcdvariance.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantvariance.hpp>
 #include <ql/models/marketmodels/models/pseudorootfacade.hpp>
+#include <ql/models/marketmodels/models/volatilityinterpolationspecifier.hpp>
+#include <ql/models/marketmodels/models/volatilityinterpolationspecifierabcd.hpp>
 

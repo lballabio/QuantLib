@@ -11,6 +11,7 @@ this_include_HEADERS = \
 	alphaformconcrete.hpp \
 	capletcoterminalalphacalibration.hpp \
 	capletcoterminalmaxhomogeneity.hpp \
+	capletcoterminalperiodic.hpp \
 	capletcoterminalswaptioncalibration.hpp \
 	cotswaptofwdadapter.hpp \
 	ctsmmcapletcalibration.hpp \
@@ -19,7 +20,9 @@ this_include_HEADERS = \
 	fwdtocotswapadapter.hpp \
 	piecewiseconstantabcdvariance.hpp \
 	piecewiseconstantvariance.hpp \
-	pseudorootfacade.hpp
+	pseudorootfacade.hpp \
+	volatilityinterpolationspecifier.hpp \
+	volatilityinterpolationspecifierabcd.hpp
 
 libMarketModelsModels_la_SOURCES = \
 	abcdvol.cpp \
@@ -27,6 +30,7 @@ libMarketModelsModels_la_SOURCES = \
 	alphaformconcrete.cpp \
 	capletcoterminalalphacalibration.cpp \
 	capletcoterminalmaxhomogeneity.cpp \
+	capletcoterminalperiodic.cpp \
 	capletcoterminalswaptioncalibration.cpp \
 	cotswaptofwdadapter.cpp \
 	ctsmmcapletcalibration.cpp \
@@ -35,7 +39,9 @@ libMarketModelsModels_la_SOURCES = \
 	fwdtocotswapadapter.cpp \
 	piecewiseconstantabcdvariance.cpp \
 	piecewiseconstantvariance.cpp \
-	pseudorootfacade.cpp
+	pseudorootfacade.cpp \
+	volatilityinterpolationspecifier.cpp \
+	volatilityinterpolationspecifierabcd.cpp
 
 noinst_LTLIBRARIES = libMarketModelsModels.la
 
