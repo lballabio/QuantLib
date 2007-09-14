@@ -2958,6 +2958,12 @@
 						RelativePath=".\ql\models\marketmodels\models\capletcoterminalmaxhomogeneity.hpp">
 					</File>
 					<File
+						RelativePath=".\ql\models\marketmodels\models\capletcoterminalperiodic.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\capletcoterminalperiodic.hpp">
+					</File>
+					<File
 						RelativePath=".\ql\models\marketmodels\models\capletcoterminalswaptioncalibration.cpp">
 					</File>
 					<File
@@ -3010,6 +3016,18 @@
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\models\pseudorootfacade.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\volatilityinterpolationspecifier.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\volatilityinterpolationspecifier.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\volatilityinterpolationspecifierabcd.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\volatilityinterpolationspecifierabcd.hpp">
 					</File>
 				</Filter>
 				<Filter
@@ -5542,6 +5560,12 @@
 						</File>
 						<File
 							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\capstripper.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\capstripper2.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\capstripper2.hpp">
 						</File>
 						<File
 							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\spreadedcapletvolstructure.cpp">
