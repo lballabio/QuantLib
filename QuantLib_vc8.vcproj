@@ -2640,6 +2640,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\models\marketmodels\models\capletcoterminalperiodic.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\capletcoterminalperiodic.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\models\marketmodels\models\capletcoterminalswaptioncalibration.cpp"
 						>
 					</File>
@@ -2709,6 +2717,22 @@
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\models\pseudorootfacade.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\volatilityinterpolationspecifier.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\volatilityinterpolationspecifier.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\volatilityinterpolationspecifierabcd.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\volatilityinterpolationspecifierabcd.hpp"
 						>
 					</File>
 				</Filter>
@@ -2836,6 +2860,14 @@
 						</File>
 						<File
 							RelativePath=".\ql\models\marketmodels\products\multistep\multistepoptionlets.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepperiodcapletsswaptions.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepperiodcapletswaptions.cpp"
 							>
 						</File>
 						<File
