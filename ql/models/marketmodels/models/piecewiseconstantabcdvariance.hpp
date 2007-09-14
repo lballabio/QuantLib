@@ -35,10 +35,15 @@ namespace QuantLib {
         const std::vector<Real>& variances() const;
         const std::vector<Real>& volatilities() const;
         const std::vector<Time>& rateTimes() const;
+        void getABCD(Real& a, Real& b, Real& c, Real& d) const;
       private:
         std::vector<Real> variances_;
         std::vector<Real> volatilities_;
         std::vector<Time> rateTimes_;
+        Real a_;
+        Real b_;
+        Real c_;
+        Real d_;
 
     };
 
