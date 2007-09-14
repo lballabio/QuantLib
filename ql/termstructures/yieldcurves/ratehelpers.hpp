@@ -202,6 +202,7 @@ namespace QuantLib {
         //! \name SwapRateHelper inspectors
         //@{
         Real spread() const;
+        boost::shared_ptr<VanillaSwap> swap() const;
         //@}
       protected:
         void initializeDates();

@@ -388,7 +388,10 @@ namespace QuantLib {
         // weak implementation... to be improved
         static const Spread basisPoint = 1.0e-4;
         Real floatingLegNPV = swap_->floatingLegNPV();
-        Real spreadNPV = swap_->floatingLegBPS()*spread_->value();
+        Real spreadNPV = swap_->floatingLegBPS()/basisPoint*spread_->value();
+        QL_ENSURE(floatingLegNPV*spreadNPV>=0.0,
+                  "ooops... spreadNPV " << spreadNPV <<
+                  " floatNPV " << floatingLegNPV);
         Real totNPV = - (floatingLegNPV+spreadNPV);
         Real result = totNPV/(swap_->fixedLegBPS()/basisPoint);
         return result;
@@ -396,6 +399,10 @@ namespace QuantLib {
 
     Real SwapRateHelper::spread() const {
         return spread_->value();
+    }
+
+    boost::shared_ptr<VanillaSwap> SwapRateHelper::swap() const {
+        return swap_;
     }
 
 }
