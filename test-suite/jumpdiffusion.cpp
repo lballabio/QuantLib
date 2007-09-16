@@ -24,8 +24,8 @@
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/jumpdiffusionengine.hpp>
 #include <ql/processes/merton76process.hpp>
-#include <ql/termstructures/yieldtermstructures/flatforward.hpp>
-#include <ql/termstructures/voltermstructures/equityfx/blackconstantvol.hpp>
+#include <ql/yieldtermstructures/flatforward.hpp>
+#include <ql/voltermstructures/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <map>
 

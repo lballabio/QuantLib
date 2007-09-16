@@ -22,11 +22,11 @@
 #include <ql/instruments/capfloor.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/termstructures/yieldtermstructures/flatforward.hpp>
+#include <ql/yieldtermstructures/flatforward.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/math/matrix.hpp>
-#include <ql/termstructures/voltermstructures/interestrate/caplet/capletconstantvol.hpp>
+#include <ql/voltermstructures/interestrate/caplet/capletconstantvol.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/schedule.hpp>

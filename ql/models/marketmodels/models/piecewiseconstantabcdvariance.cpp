@@ -20,7 +20,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include <ql/models/marketmodels/models/piecewiseconstantabcdvariance.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
-#include <ql/termstructures/voltermstructures/interestrate/abcd.hpp>
+#include <ql/voltermstructures/interestrate/abcd.hpp>
 
 namespace QuantLib {
 

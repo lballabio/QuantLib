@@ -26,7 +26,7 @@
 #include <ql/quotes/impliedstddevquote.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
-#include <ql/termstructures/yieldtermstructures/flatforward.hpp>
+#include <ql/yieldtermstructures/flatforward.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 

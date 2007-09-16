@@ -33,8 +33,8 @@
 #include <ql/pricingengines/vanilla/fddividendshoutengine.hpp>
 #include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/termstructures/yieldtermstructures/flatforward.hpp>
-#include <ql/termstructures/voltermstructures/equityfx/blackconstantvol.hpp>
+#include <ql/yieldtermstructures/flatforward.hpp>
+#include <ql/voltermstructures/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <map>
 #include <iostream>

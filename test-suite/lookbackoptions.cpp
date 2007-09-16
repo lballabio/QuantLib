@@ -25,8 +25,8 @@
 #include <ql/instruments/lookbackoption.hpp>
 #include <ql/pricingengines/lookback/analyticcontinuousfloatinglookback.hpp>
 #include <ql/pricingengines/lookback/analyticcontinuousfixedlookback.hpp>
-#include <ql/termstructures/yieldtermstructures/flatforward.hpp>
-#include <ql/termstructures/voltermstructures/equityfx/blackconstantvol.hpp>
+#include <ql/yieldtermstructures/flatforward.hpp>
+#include <ql/voltermstructures/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 

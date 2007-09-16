@@ -26,7 +26,7 @@
 #ifndef quantlib_range_accrual_h
 #define quantlib_range_accrual_h
 
-#include <ql/termstructures/voltermstructures/smilesection.hpp>
+#include <ql/voltermstructures/smilesection.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <vector>

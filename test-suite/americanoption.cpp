@@ -28,8 +28,8 @@
 #include <ql/pricingengines/vanilla/juquadraticengine.hpp>
 #include <ql/pricingengines/vanilla/fdamericanengine.hpp>
 #include <ql/pricingengines/vanilla/fdshoutengine.hpp>
-#include <ql/termstructures/yieldtermstructures/flatforward.hpp>
-#include <ql/termstructures/voltermstructures/equityfx/blackconstantvol.hpp>
+#include <ql/yieldtermstructures/flatforward.hpp>
+#include <ql/voltermstructures/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <map>
 

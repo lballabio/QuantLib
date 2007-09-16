@@ -20,10 +20,10 @@
 */
 
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/termstructures/voltermstructures/equityfx/localvolsurface.hpp>
-#include <ql/termstructures/voltermstructures/equityfx/localvolcurve.hpp>
-#include <ql/termstructures/voltermstructures/equityfx/localconstantvol.hpp>
-#include <ql/termstructures/yieldtermstructures/flatforward.hpp>
+#include <ql/voltermstructures/equityfx/localvolsurface.hpp>
+#include <ql/voltermstructures/equityfx/localvolcurve.hpp>
+#include <ql/voltermstructures/equityfx/localconstantvol.hpp>
+#include <ql/yieldtermstructures/flatforward.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 

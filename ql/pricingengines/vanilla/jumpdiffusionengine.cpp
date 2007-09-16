@@ -21,8 +21,8 @@
 #include <ql/pricingengines/vanilla/jumpdiffusionengine.hpp>
 #include <ql/processes/merton76process.hpp>
 #include <ql/math/distributions/poissondistribution.hpp>
-#include <ql/termstructures/yieldtermstructures/flatforward.hpp>
-#include <ql/termstructures/voltermstructures/equityfx/blackconstantvol.hpp>
+#include <ql/yieldtermstructures/flatforward.hpp>
+#include <ql/voltermstructures/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/exercise.hpp>
 

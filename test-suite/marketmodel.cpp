@@ -71,8 +71,8 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/math/integrals/segmentintegral.hpp>
 #include <ql/math/statistics/convergencestatistics.hpp>
-#include <ql/termstructures/voltermstructures/interestrate/abcd.hpp>
-#include <ql/termstructures/voltermstructures/interestrate/abcdcalibration.hpp>
+#include <ql/voltermstructures/interestrate/abcd.hpp>
+#include <ql/voltermstructures/interestrate/abcdcalibration.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/quotes/simplequote.hpp>

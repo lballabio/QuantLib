@@ -25,7 +25,7 @@
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/functional.hpp>
-#include <ql/termstructures/voltermstructures/interestrate/abcd.hpp>
+#include <ql/voltermstructures/interestrate/abcd.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

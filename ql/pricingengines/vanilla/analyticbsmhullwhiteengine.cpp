@@ -22,7 +22,7 @@
 */
 
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/termstructures/voltermstructures/blackvoltermstructure.hpp>
+#include <ql/voltermstructures/blackvoltermstructure.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analyticbsmhullwhiteengine.hpp>
 

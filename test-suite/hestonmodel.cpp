@@ -30,8 +30,8 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
-#include <ql/termstructures/yieldtermstructures/zerocurve.hpp>
-#include <ql/termstructures/yieldtermstructures/flatforward.hpp>
+#include <ql/yieldtermstructures/zerocurve.hpp>
+#include <ql/yieldtermstructures/flatforward.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/time/period.hpp>
 

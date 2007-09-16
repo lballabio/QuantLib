@@ -20,7 +20,7 @@
 
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/termstructures/voltermstructures/interestrate/caplet/capletconstantvol.hpp>
+#include <ql/voltermstructures/interestrate/caplet/capletconstantvol.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 
 namespace QuantLib {

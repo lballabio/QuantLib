@@ -19,9 +19,9 @@
 
 #include "piecewiseyieldcurve.hpp"
 #include "utilities.hpp"
-#include <ql/termstructures/yieldtermstructures/piecewiseyieldcurve.hpp>
-#include <ql/termstructures/yieldtermstructures/ratehelpers.hpp>
-#include <ql/termstructures/yieldtermstructures/bondhelpers.hpp>
+#include <ql/yieldtermstructures/piecewiseyieldcurve.hpp>
+#include <ql/yieldtermstructures/ratehelpers.hpp>
+#include <ql/yieldtermstructures/bondhelpers.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>

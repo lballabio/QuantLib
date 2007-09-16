@@ -29,7 +29,7 @@
 
 #include <ql/exercise.hpp>
 #include <ql/yieldtermstructure.hpp>
-#include <ql/termstructures/voltermstructures/blackvoltermstructure.hpp>
+#include <ql/voltermstructures/blackvoltermstructure.hpp>
 #include <ql/methods/montecarlo/mctraits.hpp>
 #include <ql/pricingengines/vanilla/mcvanillaengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>

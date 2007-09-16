@@ -24,11 +24,11 @@
 #include <ql/methods/montecarlo/multipathgenerator.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/math/statistics/generalstatistics.hpp>
-#include <ql/termstructures/yieldtermstructures/zerocurve.hpp>
+#include <ql/yieldtermstructures/zerocurve.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/actual360.hpp>
-#include <ql/termstructures/voltermstructures/interestrate/caplet/capletconstantvol.hpp>
-#include <ql/termstructures/voltermstructures/interestrate/caplet/capletvariancecurve.hpp>
+#include <ql/voltermstructures/interestrate/caplet/capletconstantvol.hpp>
+#include <ql/voltermstructures/interestrate/caplet/capletvariancecurve.hpp>
 #include <ql/processes/lfmhullwhiteparam.hpp>
 
 using namespace QuantLib;

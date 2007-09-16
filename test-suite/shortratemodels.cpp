@@ -30,7 +30,7 @@
 #include <ql/indexes/indexmanager.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <ql/termstructures/yieldtermstructures/discountcurve.hpp>
+#include <ql/yieldtermstructures/discountcurve.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/daycounters/actual360.hpp>
