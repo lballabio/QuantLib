@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando ametrano
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 François du Vignaud
  Copyright (C) 2007 Katiuscia Manzoni
 
@@ -56,16 +56,18 @@ namespace QuantLib {
         optionletPrices_ = Matrix(nOptionletTenors_, nStrikes_);
         capfloorVols_ = Matrix(nOptionletTenors_, nStrikes_);
         optionletVols_ = Matrix(nOptionletTenors_, nStrikes_);
-        optionletStDevs_ = Matrix(nOptionletTenors_, nStrikes_);
+        Real firstGuess = 0.14;
+        optionletStDevs_ = Matrix(nOptionletTenors_, nStrikes_, firstGuess);
         atmOptionletRate = std::vector<Rate>(nOptionletTenors_);
         optionletDates_ = std::vector<Date>(nOptionletTenors_);
         optionletTimes_ = std::vector<Time>(nOptionletTenors_);
+        optionletAccrualPeriods_ = std::vector<Time>(nOptionletTenors_);
         capfloors_ = CapFloorMatrix(nOptionletTenors_);
     }
 
     void OptionletStripper::performCalculations() const {
 
-        Date referenceDate = surface_->referenceDate();
+        const Date& referenceDate = surface_->referenceDate();
         const std::vector<Rate>& strikes = surface_->strikes();
         const Calendar& cal = index_->fixingCalendar();
         const DayCounter& dc = surface_->dayCounter();
@@ -79,10 +81,10 @@ namespace QuantLib {
                                          0*Days,
                                          dummy);
             optionletDates_[i] = temp.lastFixingDate();
+            optionletAccrualPeriods_[i] = 0.5; //FIXME
             optionletTimes_[i] = dc.yearFraction(referenceDate,
                                                  optionletDates_[i]);
-            // force forecast ??
-            atmOptionletRate[i] = index_->fixing(optionletDates_[i]);
+            atmOptionletRate[i] = index_->forecastFixing(optionletDates_[i]);
             capfloors_[i].resize(nStrikes_);
         }
 
@@ -90,6 +92,7 @@ namespace QuantLib {
         Rate switchStrike = 0.5*strikeRange;
         //Rate switchStrike = strikes.front()+0.5*strikeRange;
         for (Size j=0; j<nStrikes_; ++j) {
+            // using out-of-the-money options
             CapFloor::Type capFloorType = strikes[j] < switchStrike ?
                                    CapFloor::Floor : CapFloor::Cap;
             Option::Type optionletType = capFloorType==CapFloor::Floor ?
@@ -110,9 +113,7 @@ namespace QuantLib {
                 previousCapFloorPrice = capfloorPrices_[i][j];
                 DiscountFactor d = capfloors_[i][j]->discountCurve()->discount(
                                                         optionletDates_[i]);
-                Real optionletAccrualPeriod = 0.5; //FIXME
-                DiscountFactor optionletAnnuity = optionletAccrualPeriod*d;
-                Real guess = capfloorVols_[i][j]*std::sqrt(optionletTimes_[i]);
+                DiscountFactor optionletAnnuity=optionletAccrualPeriods_[i]*d;
                 try {
                     optionletStDevs_[i][j] =
                         blackFormulaImpliedStdDev(optionletType,
@@ -120,7 +121,7 @@ namespace QuantLib {
                                                   atmOptionletRate[i],
                                                   optionletPrices_[i][j],
                                                   optionletAnnuity,
-                                                  guess);
+                                                  optionletStDevs_[i][j]);
                 } catch (std::exception& e) {
                     QL_FAIL("could not bootstrap the optionlet:"
                             "\n date: " << optionletDates_[i] <<

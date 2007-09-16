@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando ametrano
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 François du Vignaud
  Copyright (C) 2007 Katiuscia Manzoni
 
@@ -27,7 +27,9 @@
 #define quantlib_optionletstripper_hpp
 
 #include <ql/patterns/lazyobject.hpp>
-#include <ql/termstructures/volatilities/interestrate/caplet/capletvolatilitiesstructures.hpp>
+#include <ql/instruments/capfloor.hpp>
+#include <ql/math/matrix.hpp>
+#include <vector>
 
 namespace QuantLib {
     class IborIndex;
@@ -37,12 +39,10 @@ namespace QuantLib {
 
     typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapFloorMatrix;
 
-    class OptionletStripper : //public virtual Observer,
-                           //public virtual Observable,
-                           public LazyObject{
+    class OptionletStripper : public LazyObject {
       public:
         OptionletStripper(const boost::shared_ptr<CapVolatilitySurface>& surface,
-                       const boost::shared_ptr<IborIndex>& index);
+                          const boost::shared_ptr<IborIndex>& index);
         //! \name Cap Stripper interface
         //@{
         const Matrix& optionletPrices() const;
@@ -68,6 +68,7 @@ namespace QuantLib {
         mutable Matrix optionletStDevs_;
         mutable std::vector<Rate> atmOptionletRate;
         mutable std::vector<Date> optionletDates_;
+        mutable std::vector<Time> optionletAccrualPeriods_;
         mutable std::vector<Time> optionletTimes_;
         std::vector<Period> capfloorLengths_;
         mutable CapFloorMatrix capfloors_;
