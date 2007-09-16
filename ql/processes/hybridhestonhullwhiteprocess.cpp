@@ -22,7 +22,7 @@
            with stochastic interest rates (hull white model)
 */
 
-#include <ql/termstructures/yieldcurves/flatforward.hpp>
+#include <ql/termstructures/yieldtermstructures/flatforward.hpp>
 #include <ql/processes/hybridhestonhullwhiteprocess.hpp>
 
 

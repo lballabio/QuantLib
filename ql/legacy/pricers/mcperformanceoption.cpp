@@ -19,7 +19,7 @@
 
 #include <ql/legacy/pricers/mcperformanceoption.hpp>
 #include <ql/instruments/payoffs.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 

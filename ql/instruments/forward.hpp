@@ -32,7 +32,7 @@
 #include <ql/types.hpp>
 #include <ql/handle.hpp>
 #include <ql/payoff.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 
 namespace QuantLib {
 

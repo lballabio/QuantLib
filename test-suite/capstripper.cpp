@@ -24,13 +24,13 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/instruments/makecapfloor.hpp>
-#include <ql/termstructures/yieldcurves/flatforward.hpp>
+#include <ql/termstructures/yieldtermstructures/flatforward.hpp>
 #include <ql/utilities/dataparsers.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/termstructures/volatilities/interestrate/caplet/capstripper.hpp>
-#include <ql/termstructures/volatilities/interpolatedsmilesection.hpp>
+#include <ql/termstructures/voltermstructures/interestrate/caplet/capstripper.hpp>
+#include <ql/termstructures/voltermstructures/interpolatedsmilesection.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
-#include <ql/termstructures/volatilities/interestrate/caplet/spreadedcapletvolstructure.hpp>
+#include <ql/termstructures/voltermstructures/interestrate/caplet/spreadedcapletvolstructure.hpp>
 
 #include <iostream>
 

@@ -27,7 +27,7 @@
 
 // Include file is needed so that handle knows that yieldtermstructure
 // is an observable
-#include <ql/termstructures/yieldtermstructure.hpp> 
+#include <ql/yieldtermstructure.hpp> 
 #include <ql/indexes/interestrateindex.hpp>
 
 namespace QuantLib {

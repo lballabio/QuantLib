@@ -21,7 +21,7 @@
 
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/coupon.hpp>
-#include <ql/termstructures/yieldcurves/flatforward.hpp>
+#include <ql/termstructures/yieldtermstructures/flatforward.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 

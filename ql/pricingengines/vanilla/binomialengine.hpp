@@ -33,8 +33,8 @@
 #include <ql/pricingengines/vanilla/discretizedvanillaoption.hpp>
 #include <ql/pricingengines/greeks.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/termstructures/yieldcurves/flatforward.hpp>
-#include <ql/termstructures/volatilities/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yieldtermstructures/flatforward.hpp>
+#include <ql/termstructures/voltermstructures/equityfx/blackconstantvol.hpp>
 
 namespace QuantLib {
 

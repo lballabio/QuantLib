@@ -24,7 +24,7 @@
 #ifndef quantlib_discount_engine_hpp
 #define quantlib_discount_engine_hpp
 
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 #include <ql/cashflows/cashflows.hpp>
 
 namespace QuantLib {

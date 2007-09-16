@@ -23,8 +23,8 @@
 #include <ql/processes/merton76process.hpp>
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
-#include <ql/termstructures/yieldcurves/flatforward.hpp>
-#include <ql/termstructures/yieldcurves/zerocurve.hpp>
+#include <ql/termstructures/yieldtermstructures/flatforward.hpp>
+#include <ql/termstructures/yieldtermstructures/zerocurve.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/pricingengines/vanilla/batesengine.hpp>

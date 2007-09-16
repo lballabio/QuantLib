@@ -26,8 +26,8 @@
 #define quantlib_abcd_interpolation_hpp
 
 #include <ql/math/interpolation.hpp>
-#include <ql/termstructures/volatilities/interestrate/abcd.hpp>
-#include <ql/termstructures/volatilities/interestrate/abcdcalibration.hpp>
+#include <ql/termstructures/voltermstructures/interestrate/abcd.hpp>
+#include <ql/termstructures/voltermstructures/interestrate/abcdcalibration.hpp>
 
 
 namespace QuantLib {

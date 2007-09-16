@@ -28,7 +28,7 @@
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/math/interpolation.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 #include <ql/handle.hpp>
 #include <vector>
 

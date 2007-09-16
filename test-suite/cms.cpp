@@ -26,9 +26,9 @@
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/termstructures/volatilities/interestrate/swaption/swaptionvolmatrix.hpp>
-#include <ql/termstructures/volatilities/interestrate/swaption/swaptionvolcube2.hpp>
-#include <ql/termstructures/volatilities/interestrate/swaption/swaptionvolcube1.hpp>
+#include <ql/termstructures/voltermstructures/interestrate/swaption/swaptionvolmatrix.hpp>
+#include <ql/termstructures/voltermstructures/interestrate/swaption/swaptionvolcube2.hpp>
+#include <ql/termstructures/voltermstructures/interestrate/swaption/swaptionvolcube1.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/schedule.hpp>

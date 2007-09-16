@@ -24,7 +24,7 @@
 #include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/indexes/interestrateindex.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 
 namespace QuantLib {
 

@@ -19,12 +19,12 @@
 
 #include "termstructures.hpp"
 #include "utilities.hpp"
-#include <ql/termstructures/yieldcurves/ratehelpers.hpp>
-#include <ql/termstructures/yieldcurves/flatforward.hpp>
-#include <ql/termstructures/yieldcurves/piecewiseyieldcurve.hpp>
-#include <ql/termstructures/yieldcurves/impliedtermstructure.hpp>
-#include <ql/termstructures/yieldcurves/forwardspreadedtermstructure.hpp>
-#include <ql/termstructures/yieldcurves/zerospreadedtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructures/ratehelpers.hpp>
+#include <ql/termstructures/yieldtermstructures/flatforward.hpp>
+#include <ql/termstructures/yieldtermstructures/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yieldtermstructures/impliedtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructures/forwardspreadedtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructures/zerospreadedtermstructure.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/actual360.hpp>

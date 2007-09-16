@@ -27,7 +27,7 @@
 #include <ql/instruments/bonds/cmsratebond.hpp>
 #include <ql/instruments/bonds/zerocouponbond.hpp>
 #include <ql/index.hpp>
-#include <ql/termstructures/yieldcurves/flatforward.hpp>
+#include <ql/termstructures/yieldtermstructures/flatforward.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
@@ -41,12 +41,12 @@
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
-#include <ql/termstructures/volatilities/interestrate/caplet/capletconstantvol.hpp>
-#include <ql/termstructures/volatilities/interestrate/swaption/swaptionconstantvol.hpp>
-#include <ql/termstructures/volatilities/interestrate/swaption/swaptionvolmatrix.hpp>
-#include <ql/termstructures/volatilities/interestrate/swaption/swaptionvolcube2.hpp>
-#include <ql/termstructures/volatilities/interestrate/swaption/swaptionvolcube1.hpp>
-#include <ql/termstructures/volatilities/interestrate/swaption/swaptionvolcube.hpp>
+#include <ql/termstructures/voltermstructures/interestrate/caplet/capletconstantvol.hpp>
+#include <ql/termstructures/voltermstructures/interestrate/swaption/swaptionconstantvol.hpp>
+#include <ql/termstructures/voltermstructures/interestrate/swaption/swaptionvolmatrix.hpp>
+#include <ql/termstructures/voltermstructures/interestrate/swaption/swaptionvolcube2.hpp>
+#include <ql/termstructures/voltermstructures/interestrate/swaption/swaptionvolcube1.hpp>
+#include <ql/termstructures/voltermstructures/interestrate/swaption/swaptionvolcube.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/simplecashflow.hpp>

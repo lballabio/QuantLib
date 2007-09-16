@@ -24,7 +24,7 @@
 #ifndef quantlib_longstaff_schwartz_path_pricer_hpp
 #define quantlib_longstaff_schwartz_path_pricer_hpp
 
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/linearleastsquaresregression.hpp>
 #include <ql/methods/montecarlo/pathpricer.hpp>

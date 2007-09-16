@@ -18,7 +18,7 @@
 */
 
 #include <ql/instruments/forward.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 #include <ql/settings.hpp>
 
 namespace QuantLib {

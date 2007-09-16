@@ -24,9 +24,9 @@
 #include <ql/pricingengines/forward/replicatingvarianceswapengine.hpp>
 #include <ql/pricingengines/forward/mcvarianceswapengine.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
-#include <ql/termstructures/yieldcurves/flatforward.hpp>
-#include <ql/termstructures/volatilities/equityfx/blackvariancecurve.hpp>
-#include <ql/termstructures/volatilities/equityfx/blackvariancesurface.hpp>
+#include <ql/termstructures/yieldtermstructures/flatforward.hpp>
+#include <ql/termstructures/voltermstructures/equityfx/blackvariancecurve.hpp>
+#include <ql/termstructures/voltermstructures/equityfx/blackvariancesurface.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 

@@ -31,8 +31,8 @@
 #include <ql/time/calendar.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/indexes/swapindex.hpp>
-#include <ql/termstructures/yieldcurves/piecewiseyieldcurve.hpp>
-#include <ql/termstructures/yieldcurves/ratehelpers.hpp>
+#include <ql/termstructures/yieldtermstructures/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yieldtermstructures/ratehelpers.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/math/statistics/sequencestatistics.hpp>
 #include <ql/time/date.hpp>

@@ -25,8 +25,8 @@
 #define quantlib_max_basket_pricer_h
 
 #include <ql/legacy/pricers/mcpricer.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/termstructures/blackvoltermstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/voltermstructures/blackvoltermstructure.hpp>
 
 namespace QuantLib {
     class Matrix;

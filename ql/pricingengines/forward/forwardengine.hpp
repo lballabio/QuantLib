@@ -27,8 +27,8 @@
 
 #include <ql/pricingengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/termstructures/volatilities/equityfx/impliedvoltermstructure.hpp>
-#include <ql/termstructures/yieldcurves/impliedtermstructure.hpp>
+#include <ql/termstructures/voltermstructures/equityfx/impliedvoltermstructure.hpp>
+#include <ql/termstructures/yieldtermstructures/impliedtermstructure.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/exercise.hpp>
 

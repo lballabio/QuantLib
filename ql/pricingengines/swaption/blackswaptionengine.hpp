@@ -26,7 +26,7 @@
 #define quantlib_pricers_black_swaption_hpp
 
 #include <ql/instruments/swaption.hpp>
-#include <ql/termstructures/swaptionvolstructure.hpp>
+#include <ql/termstructures/voltermstructures/swaptionvolstructure.hpp>
 
 namespace QuantLib {
 

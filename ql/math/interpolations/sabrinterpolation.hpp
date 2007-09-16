@@ -36,7 +36,7 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/utilities/null.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/termstructures/volatilities/sabr.hpp>
+#include <ql/termstructures/voltermstructures/sabr.hpp>
 #include <ql/math/optimization/projectedcostfunction.hpp>
 #include <ql/math/optimization/constraint.hpp>
 
