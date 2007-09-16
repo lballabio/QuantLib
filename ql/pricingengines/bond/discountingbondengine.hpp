@@ -25,7 +25,7 @@
 #define quantlib_discounting_bond_engine_hpp
 
 #include <ql/instruments/bond.hpp>
-#include <ql/voltermstructures/swaptionvolstructure.hpp>
+#include <ql/voltermstructures/interestrate/swaption/swaptionvolstructure.hpp>
 
 namespace QuantLib {
 

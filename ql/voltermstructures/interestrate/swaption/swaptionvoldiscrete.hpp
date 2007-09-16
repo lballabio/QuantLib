@@ -24,7 +24,7 @@
 #ifndef quantlib_swaption_volatility_discrete_h
 #define quantlib_swaption_volatility_discrete_h
 
-#include <ql/voltermstructures/swaptionvolstructure.hpp>
+#include <ql/voltermstructures/interestrate/swaption/swaptionvolstructure.hpp>
 #include <ql/math/interpolation.hpp>
 #include <ql/patterns/lazyobject.hpp>
 

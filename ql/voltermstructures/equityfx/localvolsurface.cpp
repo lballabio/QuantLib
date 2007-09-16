@@ -18,7 +18,7 @@
 */
 
 #include <ql/voltermstructures/equityfx/localvolsurface.hpp>
-#include <ql/voltermstructures/blackvoltermstructure.hpp>
+#include <ql/voltermstructures/equityfx/blackvoltermstructure.hpp>
 #include <ql/yieldtermstructure.hpp>
 #include <ql/quotes/simplequote.hpp>
 

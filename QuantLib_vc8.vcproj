@@ -3526,14 +3526,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\voltermstructures\blackvoltermstructure.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\voltermstructures\blackvoltermstructure.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\voltermstructures\equityfxvolsurface.cpp"
 				>
 			</File>
@@ -3551,14 +3543,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\voltermstructures\interpolatedsmilesection.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\voltermstructures\localvoltermstructure.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\voltermstructures\localvoltermstructure.hpp"
 				>
 			</File>
 			<File
@@ -3583,14 +3567,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\voltermstructures\smilesection.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\voltermstructures\swaptionvolstructure.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\voltermstructures\swaptionvolstructure.hpp"
 				>
 			</File>
 			<Filter
@@ -3621,6 +3597,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\voltermstructures\equityfx\blackvoltermstructure.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\voltermstructures\equityfx\blackvoltermstructure.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\voltermstructures\equityfx\impliedvoltermstructure.hpp"
 					>
 				</File>
@@ -3638,6 +3622,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\voltermstructures\equityfx\localvolsurface.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\voltermstructures\equityfx\localvoltermstructure.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\voltermstructures\equityfx\localvoltermstructure.hpp"
 					>
 				</File>
 			</Filter>
@@ -3853,6 +3845,14 @@
 					</File>
 					<File
 						RelativePath=".\ql\voltermstructures\interestrate\swaption\swaptionvolmatrix.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\voltermstructures\interestrate\swaption\swaptionvolstructure.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\voltermstructures\interestrate\swaption\swaptionvolstructure.hpp"
 						>
 					</File>
 				</Filter>

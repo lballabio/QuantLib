@@ -29,8 +29,8 @@
 #include <ql/stochasticprocess.hpp>
 #include <ql/processes/eulerdiscretization.hpp>
 #include <ql/yieldtermstructure.hpp>
-#include <ql/voltermstructures/blackvoltermstructure.hpp>
-#include <ql/voltermstructures/localvoltermstructure.hpp>
+#include <ql/voltermstructures/equityfx/blackvoltermstructure.hpp>
+#include <ql/voltermstructures/equityfx/localvoltermstructure.hpp>
 #include <ql/quote.hpp>
 
 namespace QuantLib {

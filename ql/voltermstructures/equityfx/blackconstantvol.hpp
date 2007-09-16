@@ -25,7 +25,7 @@
 #ifndef quantlib_blackconstantvol_hpp
 #define quantlib_blackconstantvol_hpp
 
-#include <ql/voltermstructures/blackvoltermstructure.hpp>
+#include <ql/voltermstructures/equityfx/blackvoltermstructure.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 

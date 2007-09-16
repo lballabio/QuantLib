@@ -26,7 +26,7 @@
 
 #include <ql/legacy/pricers/mcpricer.hpp>
 #include <ql/yieldtermstructure.hpp>
-#include <ql/voltermstructures/blackvoltermstructure.hpp>
+#include <ql/voltermstructures/equityfx/blackvoltermstructure.hpp>
 
 namespace QuantLib {
     class Matrix;

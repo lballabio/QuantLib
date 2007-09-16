@@ -25,7 +25,7 @@
 #define quantlib_quanto_term_structure_hpp
 
 #include <ql/yieldtermstructures/zeroyieldstructure.hpp>
-#include <ql/voltermstructures/blackvoltermstructure.hpp>
+#include <ql/voltermstructures/equityfx/blackvoltermstructure.hpp>
 
 namespace QuantLib {
 

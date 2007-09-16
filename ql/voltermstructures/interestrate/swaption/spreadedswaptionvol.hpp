@@ -24,7 +24,7 @@
 #ifndef quantlib_spreaded_swaption_volstructure_h
 #define quantlib_spreaded_swaption_volstructure_h
 
-#include <ql/voltermstructures/swaptionvolstructure.hpp>
+#include <ql/voltermstructures/interestrate/swaption/swaptionvolstructure.hpp>
 #include <ql/quote.hpp>
 
 namespace QuantLib {

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/voltermstructures/localvoltermstructure.hpp>
+#include <ql/voltermstructures/equityfx/localvoltermstructure.hpp>
 
 namespace QuantLib {
 
