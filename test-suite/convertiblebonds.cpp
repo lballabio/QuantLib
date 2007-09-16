@@ -236,7 +236,7 @@ void ConvertibleBondTest::testBond() {
                                            dayCounter_, schedule, redemption_);
 
     boost::shared_ptr<IborCouponPricer> pricer(new
-        BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+        BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
 
     Schedule floatSchedule(issueDate_, maturityDate_, Period(frequency_),
                            calendar_, Following, Following, true, false);

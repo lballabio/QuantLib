@@ -51,14 +51,17 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackVolSurface(const DayCounter& dc = Actual365Fixed());
+        BlackVolSurface(BusinessDayConvention bdc = Following,
+                        const DayCounter& dc = Actual365Fixed());
         //! initialize with a fixed reference date
         BlackVolSurface(const Date& referenceDate,
                         const Calendar& cal = Calendar(),
+                        BusinessDayConvention bdc = Following,
                         const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
         BlackVolSurface(Natural settlementDays,
                         const Calendar&,
+                        BusinessDayConvention bdc = Following,
                         const DayCounter& dc = Actual365Fixed());
         //@}
         //! \name Black spot volatility

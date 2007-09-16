@@ -36,7 +36,7 @@ namespace QuantLib {
 
     typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapMatrix;
 
-    class CapsStripper : public CapletVolatilityStructure,
+    class CapsStripper : public OptionletVolatilityStructure,
                          public LazyObject{
       public:
 
@@ -81,7 +81,7 @@ namespace QuantLib {
         Date maxDate() const;
         DayCounter dayCounter() const;
         //@}
-        //! \name CapletVolatilityStructure interface
+        //! \name OptionletVolatilityStructure interface
         //@{
         Real minStrike() const;
         Real maxStrike() const;
@@ -98,7 +98,7 @@ namespace QuantLib {
                 return parametrizedCapletVolStructure_;}
         //@}
       protected:
-        //! \name CapletVolatilityStructure interface
+        //! \name OptionletVolatilityStructure interface
         //@{
           Volatility volatilityImpl(Time t, Rate r) const;
         //@}

@@ -24,7 +24,7 @@
 #ifndef caplet_volatilities_structures_hpp
 #define caplet_volatilities_structures_hpp
 
-#include <ql/termstructures/capvolstructures.hpp>
+#include <ql/termstructures/volatilities/interestrate/caplet/optionletvolatilitystructure.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/math/interpolation.hpp>
 
@@ -42,7 +42,7 @@ namespace QuantLib {
     typedef std::vector<Handle<SmileSection> > \
         SmileSectionInterfaceHandlesVector;
 
-   class SmileSectionsVolStructure: public CapletVolatilityStructure{
+   class SmileSectionsVolStructure: public OptionletVolatilityStructure{
     public:
         SmileSectionsVolStructure(
            const Date& referenceDate,
@@ -61,7 +61,7 @@ namespace QuantLib {
         DayCounter dayCounter() const;
         //@}
 
-        //! \name CapletVolatilityStructure interface
+        //! \name OptionletVolatilityStructure interface
         //@{
         Real minStrike() const;
         Real maxStrike() const;
@@ -75,10 +75,10 @@ namespace QuantLib {
     };
 
     class ParametrizedCapletVolStructure:
-       public CapletVolatilityStructure{
+       public OptionletVolatilityStructure{
     public:
         ParametrizedCapletVolStructure(Date referenceDate):
-          CapletVolatilityStructure(referenceDate){};
+          OptionletVolatilityStructure(referenceDate){};
        virtual Matrix& volatilityParameters() const = 0;
        virtual Time minTime() const = 0;
        virtual void setClosestTenors(Time time,
@@ -117,7 +117,7 @@ namespace QuantLib {
         DayCounter dayCounter() const;
         //@}
 
-        //! \name CapletVolatilityStructure interface
+        //! \name OptionletVolatilityStructure interface
         //@{
         Real minStrike() const;
         Real maxStrike() const;
@@ -169,7 +169,7 @@ namespace QuantLib {
         DayCounter dayCounter() const;
         //@}
 
-        //! \name CapletVolatilityStructure interface
+        //! \name OptionletVolatilityStructure interface
         //@{
         Real minStrike() const;
         Real maxStrike() const;
@@ -213,7 +213,7 @@ namespace QuantLib {
         DayCounter dayCounter() const;
         //@}
 
-        //! \name CapletVolatilityStructure interface
+        //! \name OptionletVolatilityStructure interface
         //@{
         Real minStrike() const;
         Real maxStrike() const;

@@ -24,12 +24,12 @@
 #ifndef quantlib_caplet_variance_curve_hpp
 #define quantlib_caplet_variance_curve_hpp
 
-#include <ql/termstructures/capvolstructures.hpp>
+#include <ql/termstructures/volatilities/interestrate/caplet/optionletvolatilitystructure.hpp>
 #include <ql/termstructures/volatilities/equityfx/blackvariancecurve.hpp>
 
 namespace QuantLib {
 
-    class CapletVarianceCurve : public CapletVolatilityStructure {
+    class CapletVarianceCurve : public OptionletVolatilityStructure {
       public:
         CapletVarianceCurve(const Date& referenceDate,
                             const std::vector<Date>& dates,
@@ -58,7 +58,7 @@ namespace QuantLib {
                                 const std::vector<Date>& dates,
                                 const std::vector<Volatility>& capletVolCurve,
                                 const DayCounter& dayCounter)
-    : CapletVolatilityStructure(referenceDate),
+    : OptionletVolatilityStructure(referenceDate),
       blackCurve_(referenceDate, dates, capletVolCurve, dayCounter, false) {}
 
     inline DayCounter CapletVarianceCurve::dayCounter() const {

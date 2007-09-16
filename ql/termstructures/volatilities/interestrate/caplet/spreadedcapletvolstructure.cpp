@@ -22,16 +22,17 @@
 namespace QuantLib {
 
     SpreadedCapletVolatilityStructure::SpreadedCapletVolatilityStructure(
-            const Handle<CapletVolatilityStructure>& underlyingVolStructure,
+            const Handle<OptionletVolatilityStructure>& underlyingVol,
             const Handle<Quote>& spread)
-    : CapletVolatilityStructure(underlyingVolStructure->settlementDays(), 
-                                underlyingVolStructure->calendar(),
-                                underlyingVolStructure->dayCounter()),
-      underlyingVolStructure_(underlyingVolStructure),
+    : OptionletVolatilityStructure(underlyingVol->settlementDays(), 
+                                   underlyingVol->calendar(),
+                                   underlyingVol->businessDayConvention(),
+                                   underlyingVol->dayCounter()),
+      underlyingVolStructure_(underlyingVol),
       spread_(spread) {
           registerWith(underlyingVolStructure_);
           registerWith(spread_);
-          enableExtrapolation(underlyingVolStructure->allowsExtrapolation());
+          enableExtrapolation(underlyingVol->allowsExtrapolation());
     }
 
     Volatility SpreadedCapletVolatilityStructure::volatilityImpl(

@@ -628,7 +628,7 @@ void CmsTest::testCmsSwap() {
                                               floatingCmsConvention_,
                                               std::vector<Natural>(1,settlementDays_));
                     boost::shared_ptr<IborCouponPricer>
-                      fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+                      fictitiousPricer(new BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
                     setCouponPricer(floatingLeg,fictitiousPricer);
 
                     boost::shared_ptr<Swap> swap(new

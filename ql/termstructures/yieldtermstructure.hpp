@@ -221,7 +221,7 @@ namespace QuantLib {
                                                  Compounding comp,
                                                  Frequency freq,
                                                  bool extrapolate) const {
-        if(d==referenceDate()) {
+        if (d==referenceDate()) {
             Time t = 0.0001;
             Real compound = 1.0/discount(t, extrapolate);
             return InterestRate::impliedRate(compound, t, dayCounter,

@@ -68,18 +68,18 @@
 #define QL_LIB_VERSION "0_9_0"
 
 #if   defined(HAVE_CONFIG_H)    // Dynamically created by configure
-    #include <ql/config.hpp>
+   #include <ql/config.hpp>
 #elif defined(__MWERKS__)       // Metrowerks CodeWarrior
-    #include <ql/config.mwcw.hpp>
+   #include <ql/config.mwcw.hpp>
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
 */
 #elif defined(BOOST_MSVC)       // Microsoft Visual C++
-    #include <ql/config.msvc.hpp>
+   #include <ql/config.msvc.hpp>
 #elif defined(__MINGW32__)      // Minimalistic GNU for Windows
-    #include <ql/config.mingw.hpp>
+   #include <ql/config.mingw.hpp>
 #else                           // We hope that the compiler follows ANSI
-    #include <ql/config.ansi.hpp>
+   #include <ql/config.ansi.hpp>
 #endif
 
 

@@ -120,10 +120,10 @@ namespace QuantLib {
         Real minStrike () const { return 0.0; }
         Real maxStrike () const { return QL_MAX_REAL; }
         Real atmLevel() const { return forward_; }
-    protected:
+      protected:
         Real varianceImpl(Rate strike) const;
         Volatility volatilityImpl(Rate strike) const;
-    private:
+      private:
         Real alpha_, beta_, nu_, rho_, forward_;
     };
 

@@ -203,7 +203,7 @@ namespace QuantLib {
                                         smileSectionsVolStructure));
         }
 
-       Handle<CapletVolatilityStructure> bilinInterpCapletVolStructureHandle(
+       Handle<OptionletVolatilityStructure> bilinInterpCapletVolStructureHandle(
            parametrizedCapletVolStructure_);
         boost::shared_ptr<PricingEngine> calibBlackCapFloorEngine(new
             BlackCapFloorEngine(bilinInterpCapletVolStructureHandle));
@@ -231,7 +231,7 @@ namespace QuantLib {
              smileSectionInterfaces,
          bool allowExtrapolation,
          bool decoupleInterpolation)
-    : CapletVolatilityStructure(0, index->fixingCalendar()),
+    : OptionletVolatilityStructure(0, index->fixingCalendar()),
       volatilityDayCounter_(volatilityDayCounter),
       tenors_(tenors), strikes_(strikes),
       impliedVolatilityAccuracy_(impliedVolatilityAccuracy),
@@ -267,7 +267,7 @@ namespace QuantLib {
          Size maxEvaluations,
          bool allowExtrapolation,
          bool decoupleInterpolation)
-    : CapletVolatilityStructure(0, index->fixingCalendar()),
+    : OptionletVolatilityStructure(0, index->fixingCalendar()),
       volatilityDayCounter_(volatilityDayCounter),
       tenors_(tenors), strikes_(strikes),
       impliedVolatilityAccuracy_(impliedVolatilityAccuracy),

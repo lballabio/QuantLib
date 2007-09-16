@@ -101,7 +101,7 @@ void setup() {
     //settlement_ = calendar_.advance(today_,settlementDays_,Days);
     termStructure_.linkTo(flatRate(today_,0.05,Actual365Fixed()));
     pricer_= boost::shared_ptr<IborCouponPricer> (new
-        BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+        BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
     Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure(
            boost::shared_ptr<SwaptionVolatilityStructure>(new
            SwaptionConstantVolatility(Settings::instance().evaluationDate(),0.2,

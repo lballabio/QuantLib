@@ -73,7 +73,7 @@ namespace QuantLib {
                                   index->businessDayConvention(),
                                   std::vector<Natural>(1,0));
         boost::shared_ptr<IborCouponPricer> fictitiousPricer(new
-            BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+            BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
         setCouponPricer(floatingLeg, fictitiousPricer);
 
         Schedule fixedSchedule(startDate, maturity, Period(fixedLegFrequency),

@@ -266,8 +266,8 @@ void SwapTest::testInArrears() {
     Natural fixingDays = 0;
 
     Volatility capletVolatility = 0.22;
-    Handle<CapletVolatilityStructure> vol(
-        boost::shared_ptr<CapletVolatilityStructure>(new
+    Handle<OptionletVolatilityStructure> vol(
+        boost::shared_ptr<OptionletVolatilityStructure>(new
             CapletConstantVolatility(today_, capletVolatility, dayCounter)));
     boost::shared_ptr<IborCouponPricer> pricer(new
         BlackIborCouponPricer(vol));

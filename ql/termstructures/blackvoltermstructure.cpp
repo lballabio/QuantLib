@@ -23,18 +23,21 @@ namespace QuantLib {
 
 	const Time BlackVolTermStructure::dT = 1.0/365.0;
 
-    BlackVolTermStructure::BlackVolTermStructure(const DayCounter& dc)
-    : TermStructure(dc) {}
+    BlackVolTermStructure::BlackVolTermStructure(BusinessDayConvention bdc,
+                                                 const DayCounter& dc)
+    : VolatilityTermStructure(bdc, dc) {}
 
     BlackVolTermStructure::BlackVolTermStructure(const Date& refDate,
                                                  const Calendar& cal,
+                                                 BusinessDayConvention bdc,
                                                  const DayCounter& dc)
-    : TermStructure(refDate, cal, dc) {}
+    : VolatilityTermStructure(refDate, cal, bdc, dc) {}
 
     BlackVolTermStructure::BlackVolTermStructure(Natural settlDays,
                                                  const Calendar& cal,
+                                                 BusinessDayConvention bdc,
                                                  const DayCounter& dc)
-    : TermStructure(settlDays, cal, dc) {}
+    : VolatilityTermStructure(settlDays, cal, bdc, dc) {}
 
     Volatility BlackVolTermStructure::blackForwardVol(const Date& date1,
                                                       const Date& date2,
@@ -102,35 +105,41 @@ namespace QuantLib {
     }
 
     BlackVolatilityTermStructure::BlackVolatilityTermStructure(
-                                                        const DayCounter& dc)
-    : BlackVolTermStructure(dc) {}
+                                                    BusinessDayConvention bdc,
+                                                    const DayCounter& dc)
+    : BlackVolTermStructure(bdc, dc) {}
 
     BlackVolatilityTermStructure::BlackVolatilityTermStructure(
-                                                        const Date& refDate,
-                                                        const Calendar& cal,
-                                                        const DayCounter& dc)
-    : BlackVolTermStructure(refDate, cal, dc) {}
+                                                    const Date& refDate,
+                                                    const Calendar& cal,
+                                                    BusinessDayConvention bdc,
+                                                    const DayCounter& dc)
+    : BlackVolTermStructure(refDate, cal, bdc, dc) {}
 
     BlackVolatilityTermStructure::BlackVolatilityTermStructure(
                                                     Natural settlementDays,
                                                     const Calendar& cal,
+                                                    BusinessDayConvention bdc,
                                                     const DayCounter& dc)
-    : BlackVolTermStructure(settlementDays, cal, dc) {}
+    : BlackVolTermStructure(settlementDays, cal, bdc, dc) {}
 
     BlackVarianceTermStructure::BlackVarianceTermStructure(
+                                                    BusinessDayConvention bdc,
                                                     const DayCounter& dc)
-    : BlackVolTermStructure(dc) {}
+    : BlackVolTermStructure(bdc, dc) {}
 
     BlackVarianceTermStructure::BlackVarianceTermStructure(
                                                     const Date& refDate,
                                                     const Calendar& cal,
+                                                    BusinessDayConvention bdc,
                                                     const DayCounter& dc)
-    : BlackVolTermStructure(refDate, cal, dc) {}
+    : BlackVolTermStructure(refDate, cal, bdc, dc) {}
 
     BlackVarianceTermStructure::BlackVarianceTermStructure(
                                                     Natural settlementDays,
                                                     const Calendar& cal,
+                                                    BusinessDayConvention bdc,
                                                     const DayCounter& dc)
-    : BlackVolTermStructure(settlementDays, cal, dc) {}
+    : BlackVolTermStructure(settlementDays, cal, bdc, dc) {}
 
 }

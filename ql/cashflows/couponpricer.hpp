@@ -25,7 +25,7 @@
 #ifndef quantlib_coupon_pricer_hpp
 #define quantlib_coupon_pricer_hpp
 
-#include <ql/termstructures/capvolstructures.hpp>
+#include <ql/termstructures/volatilities/interestrate/caplet/optionletvolatilitystructure.hpp>
 #include <ql/termstructures/swaptionvolstructure.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/option.hpp>
@@ -59,14 +59,14 @@ namespace QuantLib {
     //! base pricer for capped/floored Ibor coupons
     class IborCouponPricer : public FloatingRateCouponPricer {
       public:
-        IborCouponPricer(const Handle<CapletVolatilityStructure>& capletVol)
+        IborCouponPricer(const Handle<OptionletVolatilityStructure>& capletVol)
         : capletVol_(capletVol) { registerWith(capletVol_); }
 
-        Handle<CapletVolatilityStructure> capletVolatility() const{
+        Handle<OptionletVolatilityStructure> capletVolatility() const{
             return capletVol_;
         }
         void setCapletVolatility(
-                         const Handle<CapletVolatilityStructure>& capletVol) {
+                         const Handle<OptionletVolatilityStructure>& capletVol) {
             unregisterWith(capletVol_);
             capletVol_ = capletVol;
             QL_REQUIRE(!capletVol_.empty(), "no adequate capletVol given");
@@ -74,15 +74,15 @@ namespace QuantLib {
             update();
         }
       private:
-        Handle<CapletVolatilityStructure> capletVol_;
+        Handle<OptionletVolatilityStructure> capletVol_;
     };
 
     //! Black-formula pricer for capped/floored Ibor coupons
     class BlackIborCouponPricer : public IborCouponPricer {
       public:
         BlackIborCouponPricer(
-                          const Handle<CapletVolatilityStructure>& capletVol =
-                                          Handle<CapletVolatilityStructure>())
+                          const Handle<OptionletVolatilityStructure>& capletVol =
+                                          Handle<OptionletVolatilityStructure>())
         : IborCouponPricer(capletVol) {};
         virtual void initialize(const FloatingRateCoupon& coupon);
         /* */

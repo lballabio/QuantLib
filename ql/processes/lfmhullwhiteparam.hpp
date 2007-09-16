@@ -42,7 +42,7 @@ namespace QuantLib {
       public:
         LfmHullWhiteParameterization(
             const boost::shared_ptr<LiborForwardModelProcess> & process,
-            const boost::shared_ptr<CapletVolatilityStructure> & capletVol,
+            const boost::shared_ptr<OptionletVolatilityStructure> & capletVol,
             const Matrix& correlation = Matrix(), Size factors = 1);
 
         Disposable<Matrix> diffusion (

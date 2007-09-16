@@ -158,7 +158,7 @@ namespace QuantLib {
                              std::vector<Natural>(1,fixingDays),
                              std::vector<Real>(1, 1.0), spreads);
         boost::shared_ptr<IborCouponPricer> fictitiousPricer(new
-            BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+            BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
         setCouponPricer(cashflows_,fictitiousPricer);
 
         redemption *= faceAmount_/100.0;

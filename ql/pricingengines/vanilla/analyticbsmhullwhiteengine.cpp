@@ -36,6 +36,7 @@ namespace QuantLib {
                 const Handle<BlackVolTermStructure> & volTS) 
                 : BlackVolTermStructure(volTS->referenceDate(),
                                         volTS->calendar(),
+                                        Following,
                                         volTS->dayCounter()),
                   varianceOffset_(varianceOffset),
                   volTS_(volTS) { }

@@ -3534,10 +3534,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\termstructures\capvolstructures.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\termstructures\localvoltermstructure.cpp"
 				>
 			</File>
@@ -3551,6 +3547,10 @@
 			</File>
 			<File
 				RelativePath=".\ql\termstructures\swaptionvolstructure.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\voltermstructure.hpp"
 				>
 			</File>
 			<File
@@ -3739,6 +3739,14 @@
 							>
 						</File>
 						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\optionletvolatilitystructure.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\optionletvolatilitystructure.hpp"
+							>
+						</File>
+						<File
 							RelativePath=".\ql\termstructures\volatilities\interestrate\caplet\spreadedcapletvolstructure.cpp"
 							>
 						</File>
@@ -3756,6 +3764,14 @@
 						</File>
 						<File
 							RelativePath=".\ql\termstructures\volatilities\interestrate\cap\capflatvolvector.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\cap\capfloorvolatilitystructure.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\termstructures\volatilities\interestrate\cap\capfloorvolatilitystructure.hpp"
 							>
 						</File>
 						<File

@@ -26,7 +26,7 @@
 #ifndef quantlib_swaption_volatility_structure_hpp
 #define quantlib_swaption_volatility_structure_hpp
 
-#include <ql/termstructure.hpp>
+#include <ql/termstructures/voltermstructure.hpp>
 
 namespace QuantLib {
     class SmileSection;
@@ -34,7 +34,7 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of concrete
         swaption volatility structures which will be derived from this one.
     */
-    class SwaptionVolatilityStructure : public TermStructure {
+    class SwaptionVolatilityStructure : public VolatilityTermStructure {
       public:
         /*! \name Constructors
             See the TermStructure documentation for issues regarding
@@ -121,11 +121,6 @@ namespace QuantLib {
         //! implements the conversion between dates and times
         virtual std::pair<Time,Time> convertDates(const Date& optionDate,
                                                   const Period& swapTenor) const;
-        //! the business day convention used for option date calculation
-        virtual BusinessDayConvention businessDayConvention() const;
-        //! implements the conversion between optionTenors and optionDates
-        Date optionDateFromTenor(const Period& optionTenor) const;
-
 
       protected:
         //! return smile section
@@ -160,19 +155,6 @@ namespace QuantLib {
 
 
     // inline definitions
-
-    inline BusinessDayConvention SwaptionVolatilityStructure::businessDayConvention() const {
-        return bdc_;
-    }
-
-    inline Date
-    SwaptionVolatilityStructure::optionDateFromTenor(
-                                           const Period& optionTenor) const {
-        return calendar().advance(referenceDate(),
-                                  optionTenor,
-                                  businessDayConvention());
-    }
-
 
     // Volatility, variance (Time - Time - Rate)
     inline Volatility SwaptionVolatilityStructure::volatility(

@@ -24,16 +24,16 @@
 #ifndef quantlib_spreaded_caplet_volstructure_h
 #define quantlib_spreaded_caplet_volstructure_h
 
-#include <ql/termstructures/capvolstructures.hpp>
+#include <ql/termstructures/volatilities/interestrate/caplet/optionletvolatilitystructure.hpp>
 #include <ql/quote.hpp>
 
 namespace QuantLib {
 
     class SpreadedCapletVolatilityStructure : 
-                                         public CapletVolatilityStructure {
+                                         public OptionletVolatilityStructure {
       public:
         SpreadedCapletVolatilityStructure(
-            const Handle<CapletVolatilityStructure>& underlyingVolStructure,
+            const Handle<OptionletVolatilityStructure>& underlyingVolStructure,
             const Handle<Quote>& spread);
 
       protected:
@@ -47,7 +47,7 @@ namespace QuantLib {
         Calendar calendar() const;
         Natural settlementDays() const;
         //@}
-        //! \name CapletVolatilityStructure interface
+        //! \name OptionletVolatilityStructure interface
         //@{
         Rate minStrike() const;
         Rate maxStrike() const;
@@ -58,7 +58,7 @@ namespace QuantLib {
         //@} 
 
     private:
-        const Handle<CapletVolatilityStructure> underlyingVolStructure_;
+        const Handle<OptionletVolatilityStructure> underlyingVolStructure_;
         const Handle<Quote> spread_;
 
     };

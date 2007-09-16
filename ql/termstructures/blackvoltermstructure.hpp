@@ -25,7 +25,7 @@
 #ifndef quantlib_black_vol_term_structures_hpp
 #define quantlib_black_vol_term_structures_hpp
 
-#include <ql/termstructure.hpp>
+#include <ql/termstructures/voltermstructure.hpp>
 #include <ql/patterns/visitor.hpp>
 
 namespace QuantLib {
@@ -37,7 +37,7 @@ namespace QuantLib {
 
         Volatilities are assumed to be expressed on an annual basis.
     */
-    class BlackVolTermStructure : public TermStructure {
+    class BlackVolTermStructure : public VolatilityTermStructure {
       public:
         /*! \name Constructors
             See the TermStructure documentation for issues regarding
@@ -49,14 +49,17 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackVolTermStructure(const DayCounter& dc = Actual365Fixed());
+        BlackVolTermStructure(BusinessDayConvention bdc = Following,
+                              const DayCounter& dc = Actual365Fixed());
         //! initialize with a fixed reference date
         BlackVolTermStructure(const Date& referenceDate,
                               const Calendar& cal = Calendar(),
+                              BusinessDayConvention bdc = Following,
                               const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
         BlackVolTermStructure(Natural settlementDays,
                               const Calendar&,
+                              BusinessDayConvention bdc = Following,
                               const DayCounter& dc = Actual365Fixed());
         //@}
         virtual ~BlackVolTermStructure() {}
@@ -148,14 +151,17 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackVolatilityTermStructure(const DayCounter& dc = Actual365Fixed());
+        BlackVolatilityTermStructure(BusinessDayConvention bdc = Following,
+                                     const DayCounter& dc = Actual365Fixed());
         //! initialize with a fixed reference date
         BlackVolatilityTermStructure(const Date& referenceDate,
                                      const Calendar& cal = Calendar(),
+                                     BusinessDayConvention bdc = Following,
                                      const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
         BlackVolatilityTermStructure(Natural settlementDays,
                                      const Calendar&,
+                                     BusinessDayConvention bdc = Following,
                                      const DayCounter& dc = Actual365Fixed());
         //@}
         //! \name Visitability
@@ -190,14 +196,17 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackVarianceTermStructure(const DayCounter& dc = Actual365Fixed());
+        BlackVarianceTermStructure(BusinessDayConvention bdc = Following,
+                                   const DayCounter& dc = Actual365Fixed());
         //! initialize with a fixed reference date
         BlackVarianceTermStructure(const Date& referenceDate,
                                    const Calendar& cal = Calendar(),
+                                   BusinessDayConvention bdc = Following,
                                    const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
         BlackVarianceTermStructure(Natural settlementDays,
                                    const Calendar&,
+                                   BusinessDayConvention bdc = Following,
                                    const DayCounter& dc = Actual365Fixed());
         //@}
         //! \name Visitability

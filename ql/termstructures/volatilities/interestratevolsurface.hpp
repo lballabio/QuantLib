@@ -48,16 +48,19 @@ namespace QuantLib {
                      by overriding the referenceDate() method.
         */
         InterestRateVolSurface(const boost::shared_ptr<InterestRateIndex>&,
+                               BusinessDayConvention bdc = Following,
                                const DayCounter& dc = Actual365Fixed());
         //! initialize with a fixed reference date
         InterestRateVolSurface(const boost::shared_ptr<InterestRateIndex>&,
                                const Date& referenceDate,
                                const Calendar& cal = Calendar(),
+                               BusinessDayConvention bdc = Following,
                                const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
         InterestRateVolSurface(const boost::shared_ptr<InterestRateIndex>&,
                                Natural settlementDays,
                                const Calendar&,
+                               BusinessDayConvention bdc = Following,
                                const DayCounter& dc = Actual365Fixed());
         //@}
         const boost::shared_ptr<InterestRateIndex>& index() const;

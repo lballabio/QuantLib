@@ -21,18 +21,21 @@
 
 namespace QuantLib {
 
-    BlackAtmVolCurve::BlackAtmVolCurve(const DayCounter& dc)
-    : TermStructure(dc) {}
+    BlackAtmVolCurve::BlackAtmVolCurve(BusinessDayConvention bdc,
+                                       const DayCounter& dc)
+    : VolatilityTermStructure(bdc, dc) {}
 
     BlackAtmVolCurve::BlackAtmVolCurve(const Date& refDate,
                                        const Calendar& cal,
+                                       BusinessDayConvention bdc,
                                        const DayCounter& dc)
-    : TermStructure(refDate, cal, dc) {}
+    : VolatilityTermStructure(refDate, cal, bdc, dc) {}
 
     BlackAtmVolCurve::BlackAtmVolCurve(Natural settlDays,
                                        const Calendar& cal,
+                                       BusinessDayConvention bdc,
                                        const DayCounter& dc)
-    : TermStructure(settlDays, cal, dc) {}
+    : VolatilityTermStructure(settlDays, cal, bdc, dc) {}
 
     Volatility BlackAtmVolCurve::atmVol(const Date& d,
                                         bool extrapolate) const {

@@ -72,21 +72,21 @@ namespace QuantLib {
     inline VolatilityTermStructure::VolatilityTermStructure(
                                                     BusinessDayConvention bdc,
                                                     const DayCounter& dc)
-    : TermStructure(dc) {}
+    : TermStructure(dc), bdc_(bdc) {}
 
     inline VolatilityTermStructure::VolatilityTermStructure(
                                                     const Date& referenceDate,
                                                     const Calendar& cal,
                                                     BusinessDayConvention bdc,
                                                     const DayCounter& dc)
-    : TermStructure(referenceDate, cal, dc) {}
+    : TermStructure(referenceDate, cal, dc), bdc_(bdc) {}
 
     inline VolatilityTermStructure::VolatilityTermStructure(
                                                     Natural settlementDays,
                                                     const Calendar& cal,
                                                     BusinessDayConvention bdc,
                                                     const DayCounter& dc)
-    : TermStructure(settlementDays, cal, dc) {}
+    : TermStructure(settlementDays, cal, dc), bdc_(bdc) {}
 
     inline BusinessDayConvention
     VolatilityTermStructure::businessDayConvention() const {

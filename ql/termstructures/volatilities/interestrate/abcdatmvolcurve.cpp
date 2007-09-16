@@ -28,9 +28,9 @@ namespace QuantLib {
                                      const Calendar& cal,
                                      const std::vector<Period>& optionTenors,
                                      const std::vector<Handle<Quote> >& vols,
-                                     const DayCounter& dc,
-                                     BusinessDayConvention bdc)
-    : BlackAtmVolCurve(settlDays, cal, dc),
+                                     BusinessDayConvention bdc,
+                                     const DayCounter& dc)
+    : BlackAtmVolCurve(settlDays, cal, bdc, dc),
       nOptionTenors_(optionTenors.size()),
       optionTenors_(optionTenors),
       optionDates_(optionTenors.size()),
@@ -61,13 +61,6 @@ namespace QuantLib {
         //                                   optionTimes_.end(),
         //                                   vols_.begin());
    }
-
-    inline Date
-    AbcdAtmVolCurve::optionDateFromTenor(const Period& optionTenor) const {
-        return calendar().advance(referenceDate(),
-                                  optionTenor,
-                                  businessDayConvention());
-    }
 
     void AbcdAtmVolCurve::accept(AcyclicVisitor& v) {
         Visitor<AbcdAtmVolCurve>* v1 =

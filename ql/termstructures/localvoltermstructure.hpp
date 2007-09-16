@@ -25,7 +25,7 @@
 #ifndef quantlib_local_vol_term_structures_hpp
 #define quantlib_local_vol_term_structures_hpp
 
-#include <ql/termstructure.hpp>
+#include <ql/termstructures/voltermstructure.hpp>
 #include <ql/patterns/visitor.hpp>
 
 namespace QuantLib {
@@ -35,7 +35,7 @@ namespace QuantLib {
 
         Volatilities are assumed to be expressed on an annual basis.
     */
-    class LocalVolTermStructure : public TermStructure {
+    class LocalVolTermStructure : public VolatilityTermStructure {
       public:
         /*! \name Constructors
             See the TermStructure documentation for issues regarding
@@ -47,14 +47,17 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        LocalVolTermStructure(const DayCounter& dc = Actual365Fixed());
+        LocalVolTermStructure(BusinessDayConvention bdc = Following,
+                              const DayCounter& dc = Actual365Fixed());
         //! initialize with a fixed reference date
         LocalVolTermStructure(const Date& referenceDate,
                               const Calendar& cal = Calendar(),
+                              BusinessDayConvention bdc = Following,
                               const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
         LocalVolTermStructure(Natural settlementDays,
                               const Calendar&,
+                              BusinessDayConvention bdc = Following,
                               const DayCounter& dc = Actual365Fixed());
         //@}
         virtual ~LocalVolTermStructure() {}

@@ -25,7 +25,7 @@
 #ifndef quantlib_black_atm_vol_curve_hpp
 #define quantlib_black_atm_vol_curve_hpp
 
-#include <ql/termstructure.hpp>
+#include <ql/termstructures/voltermstructure.hpp>
 #include <ql/patterns/visitor.hpp>
 
 namespace QuantLib {
@@ -37,7 +37,7 @@ namespace QuantLib {
 
         Volatilities are assumed to be expressed on an annual basis.
     */
-    class BlackAtmVolCurve : public TermStructure {
+    class BlackAtmVolCurve : public VolatilityTermStructure {
       public:
         /*! \name Constructors
             See the TermStructure documentation for issues regarding
@@ -49,14 +49,17 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackAtmVolCurve(const DayCounter& dc = Actual365Fixed());
+        BlackAtmVolCurve(BusinessDayConvention bdc = Following,
+                         const DayCounter& dc = Actual365Fixed());
         //! initialize with a fixed reference date
         BlackAtmVolCurve(const Date& referenceDate,
                          const Calendar& cal = Calendar(),
+                         BusinessDayConvention bdc = Following,
                          const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
         BlackAtmVolCurve(Natural settlementDays,
                          const Calendar&,
+                         BusinessDayConvention bdc = Following,
                          const DayCounter& dc = Actual365Fixed());
         //@}
         virtual ~BlackAtmVolCurve() {}

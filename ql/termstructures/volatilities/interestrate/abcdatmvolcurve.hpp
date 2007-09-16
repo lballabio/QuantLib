@@ -41,15 +41,11 @@ namespace QuantLib {
                         const Calendar& cal,
                         const std::vector<Period>& optionTenors,
                         const std::vector<Handle<Quote> >& vols,
-                        const DayCounter& dc = Actual365Fixed(),
-                        BusinessDayConvention bdc = Following);
+                        BusinessDayConvention bdc = Following,
+                        const DayCounter& dc = Actual365Fixed());
         const std::vector<Period>& optionTenors() const;
         const std::vector<Date>& optionDates() const;
         const std::vector<Time>& optionTimes() const;
-        //! implements the conversion between option tenors and dates
-        Date optionDateFromTenor(const Period& optionTenor) const;
-        //! the business day convention used for option date calculation
-        BusinessDayConvention businessDayConvention() const;
         //! \name TermStructure interface
         //@{
         virtual Date maxDate() const;
@@ -99,11 +95,6 @@ namespace QuantLib {
 
     inline const std::vector<Time>& AbcdAtmVolCurve::optionTimes() const {
         return optionTimes_;
-    }
-
-    inline BusinessDayConvention
-    AbcdAtmVolCurve::businessDayConvention() const {
-        return bdc_;
     }
 
     inline Date AbcdAtmVolCurve::maxDate() const {

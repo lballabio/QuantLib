@@ -78,7 +78,7 @@ namespace QuantLib {
                const Date& referenceDate,
                const DayCounter& dayCounter,
                const SmileSectionInterfaceVector& smileSections):
-        CapletVolatilityStructure(referenceDate),
+        OptionletVolatilityStructure(referenceDate),
         dayCounter_(dayCounter),
         tenorTimes_(smileSections.size()),
         smileSections_(smileSections) {

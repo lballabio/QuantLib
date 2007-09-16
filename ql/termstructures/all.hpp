@@ -2,7 +2,7 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/termstructures/blackvoltermstructure.hpp>
-#include <ql/termstructures/capvolstructures.hpp>
+#include <ql/termstructures/volatilities/interestrate/caplet/optionletvolatilitystructure.hpp>
 #include <ql/termstructures/localvoltermstructure.hpp>
 #include <ql/termstructures/swaptionvolstructure.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>

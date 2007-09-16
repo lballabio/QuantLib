@@ -23,21 +23,24 @@ namespace QuantLib {
 
     InterestRateVolSurface::InterestRateVolSurface(
                             const boost::shared_ptr<InterestRateIndex>& index,
+                            BusinessDayConvention bdc,
                             const DayCounter& dc)
-    : BlackVolSurface(dc), index_(index) {}
+    : BlackVolSurface(bdc, dc), index_(index) {}
 
     InterestRateVolSurface::InterestRateVolSurface(
                             const boost::shared_ptr<InterestRateIndex>& index,
                             const Date& refDate,
                             const Calendar& cal,
+                            BusinessDayConvention bdc,
                             const DayCounter& dc)
-    : BlackVolSurface(refDate, cal, dc), index_(index) {}
+    : BlackVolSurface(refDate, cal, bdc, dc), index_(index) {}
 
     InterestRateVolSurface::InterestRateVolSurface(
                             const boost::shared_ptr<InterestRateIndex>& index,
                             Natural settlDays,
                             const Calendar& cal,
+                            BusinessDayConvention bdc,
                             const DayCounter& dc)
-    : BlackVolSurface(settlDays, cal, dc), index_(index) {}
+    : BlackVolSurface(settlDays, cal, bdc, dc), index_(index) {}
 
 }

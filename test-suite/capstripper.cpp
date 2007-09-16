@@ -268,7 +268,7 @@ void CapsStripperTest::highPrecisionTest(){
     static const Real tolerance = 1e-12;
     static const Real priceThreshold = 1e-6;
 
-    Handle <CapletVolatilityStructure> strippedVolatilityStructureHandle(capsStripper);
+    Handle <OptionletVolatilityStructure> strippedVolatilityStructureHandle(capsStripper);
     boost::shared_ptr<BlackCapFloorEngine> strippedVolatilityBlackCapFloorEngine
         (new BlackCapFloorEngine(strippedVolatilityStructureHandle));
     for (Size tenorIndex = 0; tenorIndex < tenors.size() ; tenorIndex++){
@@ -320,10 +320,10 @@ void CapsStripperTest::testSpreadedStripper() {
     std::vector<boost::shared_ptr<SmileSection> > smileSections;
     setup(smileSections);
 
-    Handle <CapletVolatilityStructure> strippedVolatilityStructureHandle(capsStripper);
+    Handle <OptionletVolatilityStructure> strippedVolatilityStructureHandle(capsStripper);
     boost::shared_ptr<SimpleQuote> spread (new SimpleQuote(0.0001));
     Handle<Quote> spreadHandle(spread);
-    boost::shared_ptr<CapletVolatilityStructure> spreadedStripper(
+    boost::shared_ptr<OptionletVolatilityStructure> spreadedStripper(
         new SpreadedCapletVolatilityStructure
         (strippedVolatilityStructureHandle, spreadHandle));
     std::vector<Real> strikes;

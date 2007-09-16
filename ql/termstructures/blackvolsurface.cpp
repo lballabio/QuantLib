@@ -22,18 +22,21 @@
 
 namespace QuantLib {
 
-    BlackVolSurface::BlackVolSurface(const DayCounter& dc)
-    : BlackAtmVolCurve(dc) {}
+    BlackVolSurface::BlackVolSurface(BusinessDayConvention bdc,
+                                     const DayCounter& dc)
+    : BlackAtmVolCurve(bdc, dc) {}
 
     BlackVolSurface::BlackVolSurface(const Date& refDate,
                                      const Calendar& cal,
+                                     BusinessDayConvention bdc,
                                      const DayCounter& dc)
-    : BlackAtmVolCurve(refDate, cal, dc) {}
+    : BlackAtmVolCurve(refDate, cal, bdc, dc) {}
 
     BlackVolSurface::BlackVolSurface(Natural settlDays,
                                      const Calendar& cal,
+                                     BusinessDayConvention bdc,
                                      const DayCounter& dc)
-    : BlackAtmVolCurve(settlDays, cal, dc) {}
+    : BlackAtmVolCurve(settlDays, cal, bdc, dc) {}
 
     Real BlackVolSurface::atmVarianceImpl(Time t) const {
         return smileSectionImpl(t)->variance();

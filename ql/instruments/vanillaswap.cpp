@@ -63,7 +63,7 @@ namespace QuantLib {
                                   std::vector<Real>(1,1.0),
                                   std::vector<Spread>(1,spread));
         boost::shared_ptr<IborCouponPricer> fictitiousPricer(new
-            BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+            BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
         setCouponPricer(floatingLeg, fictitiousPricer);
 
         Leg::const_iterator i;

@@ -72,7 +72,7 @@ Leg makeLeg(const Date& startDate, Integer length) {
                           std::vector<Real>(),
                           std::vector<Spread>());
     boost::shared_ptr<IborCouponPricer>
-                        fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+                        fictitiousPricer(new BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
     setCouponPricer(floatLeg,fictitiousPricer);
     return floatLeg;
 }

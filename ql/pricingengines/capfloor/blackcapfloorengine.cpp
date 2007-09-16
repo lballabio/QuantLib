@@ -27,20 +27,20 @@ namespace QuantLib {
 
     BlackCapFloorEngine::BlackCapFloorEngine(Volatility volatility,
                                              const DayCounter& dc)
-    : volatility_(boost::shared_ptr<CapletVolatilityStructure>(
+    : volatility_(boost::shared_ptr<OptionletVolatilityStructure>(
                               new CapletConstantVolatility(volatility, dc))) {
         registerWith(volatility_);
     }
 
     BlackCapFloorEngine::BlackCapFloorEngine(const Handle<Quote>& volatility,
                                              const DayCounter& dc)
-    : volatility_(boost::shared_ptr<CapletVolatilityStructure>(
+    : volatility_(boost::shared_ptr<OptionletVolatilityStructure>(
                               new CapletConstantVolatility(volatility, dc))) {
         registerWith(volatility_);
     }
 
     BlackCapFloorEngine::BlackCapFloorEngine(
-                          const Handle<CapletVolatilityStructure>& volatility)
+                          const Handle<OptionletVolatilityStructure>& volatility)
     : volatility_(volatility) {
         registerWith(volatility_);
     }

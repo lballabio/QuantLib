@@ -28,7 +28,7 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/instruments/capfloor.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/termstructures/capvolstructures.hpp>
+#include <ql/termstructures/volatilities/interestrate/caplet/optionletvolatilitystructure.hpp>
 #include <ql/quote.hpp>
 
 namespace QuantLib {
@@ -42,11 +42,11 @@ namespace QuantLib {
                             const DayCounter& dc = Actual365Fixed());
         BlackCapFloorEngine(const Handle<Quote>& volatility,
                             const DayCounter& dc = Actual365Fixed());
-        BlackCapFloorEngine(const Handle<CapletVolatilityStructure>&);
+        BlackCapFloorEngine(const Handle<OptionletVolatilityStructure>&);
         void calculate() const;
         void update();
       private:
-        Handle<CapletVolatilityStructure> volatility_;
+        Handle<OptionletVolatilityStructure> volatility_;
         CumulativeNormalDistribution N_;
     };
 

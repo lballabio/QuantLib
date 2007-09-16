@@ -86,7 +86,7 @@ namespace QuantLib {
                            gearings, spreads);
 
         boost::shared_ptr<IborCouponPricer> fictitiousPricer(new
-            BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+            BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
         setCouponPricer(legs_[1], fictitiousPricer);
 
         for (Leg::const_iterator i=legs_[1].begin(); i<legs_[1].end(); ++i)

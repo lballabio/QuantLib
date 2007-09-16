@@ -113,7 +113,6 @@ namespace QuantLib {
         DayCounter dayCounter_;
     };
 
-
     // inline definitions
 
     inline TermStructure::TermStructure(const DayCounter& dc)
@@ -182,6 +181,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

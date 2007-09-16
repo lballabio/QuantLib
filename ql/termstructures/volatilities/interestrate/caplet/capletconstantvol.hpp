@@ -24,31 +24,34 @@
 #ifndef quantlib_caplet_constant_volatility_hpp
 #define quantlib_caplet_constant_volatility_hpp
 
-#include <ql/termstructures/capvolstructures.hpp>
+#include <ql/termstructures/volatilities/interestrate/caplet/optionletvolatilitystructure.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 
 namespace QuantLib {
 
     //! Constant caplet volatility, no time-strike dependence
-    class CapletConstantVolatility : public CapletVolatilityStructure {
+    class CapletConstantVolatility : public OptionletVolatilityStructure {
       public:
         CapletConstantVolatility(const Date& referenceDate,
                                  Volatility volatility,
-                                 const DayCounter& dayCounter);
+                                 const DayCounter& dayCounter,
+                                 BusinessDayConvention bdc = Following);
         CapletConstantVolatility(const Date& referenceDate,
                                  const Handle<Quote>& volatility,
-                                 const DayCounter& dayCounter);
+                                 const DayCounter& dayCounter,
+                                 BusinessDayConvention bdc = Following);
         CapletConstantVolatility(Volatility volatility,
-                                 const DayCounter& dayCounter);
+                                 const DayCounter& dayCounter,
+                                 BusinessDayConvention bdc = Following);
         CapletConstantVolatility(const Handle<Quote>& volatility,
-                                 const DayCounter& dayCounter);
+                                 const DayCounter& dayCounter,
+                                 BusinessDayConvention bdc = Following);
         //! \name TermStructure interface
         //@{
-        DayCounter dayCounter() const { return dayCounter_; }
         Date maxDate() const;
         //@}
-        //! \name CapletVolatilityStructure interface
+        //! \name OptionletVolatilityStructure interface
         //@{
         Real minStrike() const;
         Real maxStrike() const;
@@ -57,7 +60,6 @@ namespace QuantLib {
         //@}
       private:
         Handle<Quote> volatility_;
-        DayCounter dayCounter_;
     };
 
 
@@ -66,32 +68,34 @@ namespace QuantLib {
     inline CapletConstantVolatility::CapletConstantVolatility(
                                               const Date& referenceDate,
                                               Volatility volatility,
-                                              const DayCounter& dayCounter)
-    : CapletVolatilityStructure(referenceDate),
-      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))),
-      dayCounter_(dayCounter) {}
+                                              const DayCounter& dc,
+                                              BusinessDayConvention bdc)
+    : OptionletVolatilityStructure(referenceDate, Calendar(), bdc, dc),
+      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))) {}
 
     inline CapletConstantVolatility::CapletConstantVolatility(
                                               const Date& referenceDate,
                                               const Handle<Quote>& volatility,
-                                              const DayCounter& dayCounter)
-    : CapletVolatilityStructure(referenceDate), volatility_(volatility),
-      dayCounter_(dayCounter) {
+                                              const DayCounter& dc,
+                                              BusinessDayConvention bdc)
+    : OptionletVolatilityStructure(referenceDate, Calendar(), bdc, dc),
+      volatility_(volatility) {
         registerWith(volatility_);
     }
 
     inline CapletConstantVolatility::CapletConstantVolatility(
                                               Volatility volatility,
-                                              const DayCounter& dayCounter)
-    : CapletVolatilityStructure(0, NullCalendar()),
-      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))),
-      dayCounter_(dayCounter) {}
+                                              const DayCounter& dc,
+                                              BusinessDayConvention bdc)
+    : OptionletVolatilityStructure(0, NullCalendar(), bdc, dc),
+      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))) {}
 
     inline CapletConstantVolatility::CapletConstantVolatility(
                                               const Handle<Quote>& volatility,
-                                              const DayCounter& dayCounter)
-    : CapletVolatilityStructure(0, NullCalendar()), volatility_(volatility),
-      dayCounter_(dayCounter) {
+                                              const DayCounter& dc,
+                                              BusinessDayConvention bdc)
+    : OptionletVolatilityStructure(0, NullCalendar(), bdc, dc),
+      volatility_(volatility) {
         registerWith(volatility_);
     }
 

@@ -23,15 +23,15 @@
 namespace QuantLib {
 
     SabrVolSurface::SabrVolSurface(
-        const Handle<AbcdAtmVolCurve>& atmCurve,
         const boost::shared_ptr<InterestRateIndex>& index,
         const std::vector<Period>& optionTenors,
+        const Handle<AbcdAtmVolCurve>& atmCurve,
         const std::vector<Spread>& atmRateSpreads,
         const std::vector<std::vector<Handle<Quote> > >& volSpreads)
     : InterestRateVolSurface(index),
+      optionTenors_(optionTenors),
       atmCurve_(atmCurve),
       atmRateSpreads_(atmRateSpreads),
-      optionTenors_(optionTenors),
       volSpreads_(volSpreads) {
 
           // checks

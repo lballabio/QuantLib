@@ -27,25 +27,28 @@ namespace QuantLib {
     SwaptionVolatilityStructure::SwaptionVolatilityStructure(
                                                     const DayCounter& dc,
                                                     BusinessDayConvention bdc)
-    : TermStructure(dc), bdc_(bdc) {}
+    : VolatilityTermStructure(bdc, dc) {}
 
     SwaptionVolatilityStructure::SwaptionVolatilityStructure(
                                                 const Date& referenceDate,
                                                 const Calendar& calendar,
                                                 const DayCounter& dc,
                                                 BusinessDayConvention bdc)
-    : TermStructure(referenceDate, calendar, dc), bdc_(bdc) {}
+    : VolatilityTermStructure(referenceDate, calendar, bdc, dc) {}
 
     SwaptionVolatilityStructure::SwaptionVolatilityStructure(
                                                 Natural settlementDays,
                                                 const Calendar& calendar,
                                                 const DayCounter& dc,
                                                 BusinessDayConvention bdc)
-    : TermStructure(settlementDays, calendar, dc), bdc_(bdc) {}
+    : VolatilityTermStructure(settlementDays, calendar, bdc, dc) {}
 
 
     Time SwaptionVolatilityStructure::maxSwapLength() const {
-        return timeFromReference(referenceDate()+maxSwapTenor());
+        //Date d = referenceDate()+maxSwapTenor();
+        Date d = optionDateFromTenor(maxSwapTenor());
+        Time t = timeFromReference(d);
+        return t;
     }
 
     std::pair<Time,Time>

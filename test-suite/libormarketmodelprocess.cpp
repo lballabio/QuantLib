@@ -118,7 +118,7 @@ void LiborMarketModelProcessTest::testInitialisation() {
         flatRate(Date::todaysDate(), 0.04, dayCounter));
 
     boost::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
-    boost::shared_ptr<CapletVolatilityStructure> capletVol(new
+    boost::shared_ptr<OptionletVolatilityStructure> capletVol(new
         CapletConstantVolatility(termStructure->referenceDate(),
                                  0.2,
                                  termStructure->dayCounter()));

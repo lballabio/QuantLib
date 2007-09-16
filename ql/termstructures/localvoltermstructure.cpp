@@ -21,18 +21,21 @@
 
 namespace QuantLib {
 
-    LocalVolTermStructure::LocalVolTermStructure(const DayCounter& dc)
-    : TermStructure(dc) {}
+    LocalVolTermStructure::LocalVolTermStructure(BusinessDayConvention bdc,
+                                                 const DayCounter& dc)
+    : VolatilityTermStructure(bdc, dc) {}
 
     LocalVolTermStructure::LocalVolTermStructure(const Date& referenceDate,
                                                  const Calendar& cal,
+                                                 BusinessDayConvention bdc,
                                                  const DayCounter& dc)
-    : TermStructure(referenceDate, cal, dc) {}
+    : VolatilityTermStructure(referenceDate, cal, bdc, dc) {}
 
     LocalVolTermStructure::LocalVolTermStructure(Natural settlementDays,
                                                  const Calendar& cal,
+                                                 BusinessDayConvention bdc,
                                                  const DayCounter& dc)
-    : TermStructure(settlementDays, cal, dc) {}
+    : VolatilityTermStructure(settlementDays, cal, bdc, dc) {}
 
     Volatility LocalVolTermStructure::localVol(const Date& d,
                                                Real underlyingLevel,

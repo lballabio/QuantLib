@@ -641,7 +641,7 @@ void BondTest::testCachedFloating() {
     Real tolerance = 1.0e-6;
 
     boost::shared_ptr<IborCouponPricer> pricer(new
-        BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+        BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
 
     // plain
 
