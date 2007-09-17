@@ -57,5 +57,9 @@ namespace QuantLib {
     Rate OptionletStripperAdapter::maxStrike() const {
         return optionletStripper_->strikes().back();
     }
+    
+    Date OptionletStripperAdapter::maxDate() const {
+        return optionletStripper_->optionDates().back();
+    }
 
 }

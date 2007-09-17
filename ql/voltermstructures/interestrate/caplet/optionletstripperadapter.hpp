@@ -40,7 +40,10 @@ namespace QuantLib {
         OptionletStripperAdapter(const Handle<OptionletStripper>& optionletStripper);
 
       protected:
-
+        //! \name TermStructure interface
+        //@{
+        Date maxDate() const;
+        //@}
         //@}
         //! \name OptionletVolatilityStructure interface
         //@{
