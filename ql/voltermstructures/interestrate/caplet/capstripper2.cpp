@@ -89,7 +89,7 @@ namespace QuantLib {
         }
 
         Spread strikeRange = strikes.back()-strikes.front();
-        Rate switchStrike = 0.5*strikeRange;
+        Rate switchStrike = 0.45; //FIXME
         //Rate switchStrike = strikes.front()+0.5*strikeRange;
         for (Size j=0; j<nStrikes_; ++j) {
             // using out-of-the-money options
