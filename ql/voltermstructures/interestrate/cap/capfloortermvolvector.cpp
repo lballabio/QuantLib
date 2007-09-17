@@ -20,14 +20,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/voltermstructures/interestrate/cap/capflatvolvector.hpp>
+#include <ql/voltermstructures/interestrate/cap/capfloortermvolvector.hpp>
 #include <ql/math/interpolations/cubicspline.hpp>
 #include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {
 
     // floating reference date, floating market data
-    CapVolatilityVector::CapVolatilityVector(
+    CapFloorTermVolVector::CapFloorTermVolVector(
                         Natural settlementDays,
                         const Calendar& calendar,
                         const std::vector<Period>& optionTenors,
@@ -48,7 +48,7 @@ namespace QuantLib {
     }
 
     // fixed reference date, floating market data
-    CapVolatilityVector::CapVolatilityVector(
+    CapFloorTermVolVector::CapFloorTermVolVector(
                             const Date& settlementDate,
                             const Calendar& calendar,
                             const std::vector<Period>& optionTenors,
@@ -69,7 +69,7 @@ namespace QuantLib {
     }
 
     // fixed reference date, fixed market data
-    CapVolatilityVector::CapVolatilityVector(
+    CapFloorTermVolVector::CapFloorTermVolVector(
                                 const Date& settlementDate,
                                 const Calendar& calendar,
                                 const std::vector<Period>& optionTenors,
@@ -93,7 +93,7 @@ namespace QuantLib {
     }
 
     // floating reference date, fixed market data
-    CapVolatilityVector::CapVolatilityVector(
+    CapFloorTermVolVector::CapFloorTermVolVector(
                                 Natural settlementDays,
                                 const Calendar& calendar,
                                 const std::vector<Period>& optionTenors,
@@ -116,20 +116,20 @@ namespace QuantLib {
         interpolate();
     }
 
-    void CapVolatilityVector::checkInputs(Size volRows) const {
+    void CapFloorTermVolVector::checkInputs(Size volRows) const {
         QL_REQUIRE(optionTenors_.size()==volRows,
-            "mismatch between number of option tenors ("
-            << optionTenors_.size() <<
-            ") and number of cap volatilities (" << volRows << ")");
+                   "mismatch between number of option tenors (" <<
+                   optionTenors_.size() <<
+                   ") and number of cap volatilities (" << volRows << ")");
         }
 
-    void CapVolatilityVector::registerWithMarketData()
+    void CapFloorTermVolVector::registerWithMarketData()
     {
         for (Size i=0; i<volHandles_.size(); ++i)
             registerWith(volHandles_[i]);
     }
 
-    void CapVolatilityVector::interpolate() const
+    void CapFloorTermVolVector::interpolate() const
     {
         interpolation_ = CubicSpline(optionTimes_.begin(),
                                      optionTimes_.end(),
@@ -139,12 +139,9 @@ namespace QuantLib {
                                      CubicSpline::SecondDerivative,
                                      0.0,
                                      false);
-        //interpolation_ = LinearInterpolation(optionTimes_.begin(),
-        //                                     optionTimes_.end(),
-        //                                     volatilities_.begin());
     }
 
-    void CapVolatilityVector::performCalculations() const {
+    void CapFloorTermVolVector::performCalculations() const {
 
         for (Size i=0; i<optionTenors_.size(); ++i) {
             Date endDate = optionDateFromTenor(optionTenors_[i]);

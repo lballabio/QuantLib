@@ -39,41 +39,41 @@ namespace QuantLib {
         market term volatilities of a set of caps/floors with given
         length and given strike.
     */
-    class CapVolatilitySurface : public CapFloorVolatilityStructure,
-                                 public LazyObject {
+    class CapFloorTermVolSurface : public CapFloorVolatilityStructure,
+                                   public LazyObject {
       public:
         //! floating reference date, floating market data
-        CapVolatilitySurface(Natural settlementDays,
-                             const Calendar& calendar,
-                             const std::vector<Period>& optionTenors,
-                             const std::vector<Rate>& strikes,
-                             const std::vector<std::vector<Handle<Quote> > >&,
-                             BusinessDayConvention bdc = Following,
-                             const DayCounter& dc = Actual365Fixed());
+        CapFloorTermVolSurface(Natural settlementDays,
+                               const Calendar& calendar,
+                               const std::vector<Period>& optionTenors,
+                               const std::vector<Rate>& strikes,
+                               const std::vector<std::vector<Handle<Quote> > >&,
+                               BusinessDayConvention bdc = Following,
+                               const DayCounter& dc = Actual365Fixed());
         //! fixed reference date, floating market data
-        CapVolatilitySurface(const Date& settlementDate,
-                             const Calendar& calendar,
-                             const std::vector<Period>& optionTenors,
-                             const std::vector<Rate>& strikes,
-                             const std::vector<std::vector<Handle<Quote> > >&,
-                             BusinessDayConvention bdc = Following,
-                             const DayCounter& dc = Actual365Fixed());
+        CapFloorTermVolSurface(const Date& settlementDate,
+                               const Calendar& calendar,
+                               const std::vector<Period>& optionTenors,
+                               const std::vector<Rate>& strikes,
+                               const std::vector<std::vector<Handle<Quote> > >&,
+                               BusinessDayConvention bdc = Following,
+                               const DayCounter& dc = Actual365Fixed());
         //! fixed reference date, fixed market data
-        CapVolatilitySurface(const Date& settlementDate,
-                             const Calendar& calendar,
-                             const std::vector<Period>& optionTenors,
-                             const std::vector<Rate>& strikes,
-                             const Matrix& volatilities,
-                             BusinessDayConvention bdc = Following,
-                             const DayCounter& dc = Actual365Fixed());
+        CapFloorTermVolSurface(const Date& settlementDate,
+                               const Calendar& calendar,
+                               const std::vector<Period>& optionTenors,
+                               const std::vector<Rate>& strikes,
+                               const Matrix& volatilities,
+                               BusinessDayConvention bdc = Following,
+                               const DayCounter& dc = Actual365Fixed());
         //! floating reference date, fixed market data
-        CapVolatilitySurface(Natural settlementDays,
-                             const Calendar& calendar,
-                             const std::vector<Period>& optionTenors,
-                             const std::vector<Rate>& strikes,
-                             const Matrix& volatilities,
-                             BusinessDayConvention bdc = Following,
-                             const DayCounter& dc = Actual365Fixed());
+        CapFloorTermVolSurface(Natural settlementDays,
+                               const Calendar& calendar,
+                               const std::vector<Period>& optionTenors,
+                               const std::vector<Rate>& strikes,
+                               const Matrix& volatilities,
+                               BusinessDayConvention bdc = Following,
+                               const DayCounter& dc = Actual365Fixed());
         //! \name TermStructure interface
         //@{
         Date maxDate() const;
@@ -111,41 +111,44 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Date CapVolatilitySurface::maxDate() const {
+    inline Date CapFloorTermVolSurface::maxDate() const {
         calculate();
         return optionDateFromTenor(optionTenors_.back());
     }
 
-    inline Real CapVolatilitySurface::minStrike() const {
+    inline Real CapFloorTermVolSurface::minStrike() const {
         return strikes_.front();
     }
 
-    inline Real CapVolatilitySurface::maxStrike() const {
+    inline Real CapFloorTermVolSurface::maxStrike() const {
         return strikes_.back();
     }
 
-    inline void CapVolatilitySurface::update() {
+    inline void CapFloorTermVolSurface::update() {
         TermStructure::update();
         LazyObject::update();
         //CapFloorVolatilityStructure::update();
         //interpolate();
     }
 
-    inline Volatility CapVolatilitySurface::volatilityImpl(Time t,
-                                                           Rate strike) const {
+    inline
+    Volatility CapFloorTermVolSurface::volatilityImpl(Time t,
+                                                      Rate strike) const {
         calculate();
         return interpolation_(strike, t, true);
     }
 
-    inline const std::vector<Period>& CapVolatilitySurface::optionTenors() const {
+    inline
+    const std::vector<Period>& CapFloorTermVolSurface::optionTenors() const {
         return optionTenors_;
     }
 
-    inline const std::vector<Time>& CapVolatilitySurface::optionTimes() const {
+    inline
+    const std::vector<Time>& CapFloorTermVolSurface::optionTimes() const {
         return optionTimes_;
     }
     
-    inline const std::vector<Rate>& CapVolatilitySurface::strikes() const {
+    inline const std::vector<Rate>& CapFloorTermVolSurface::strikes() const {
         return strikes_;
     }
 }

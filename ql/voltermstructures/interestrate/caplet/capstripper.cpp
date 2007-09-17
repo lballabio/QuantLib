@@ -26,7 +26,7 @@
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
-#include <ql/voltermstructures/interestrate/cap/capvolsurface.hpp>
+#include <ql/voltermstructures/interestrate/cap/capfloortermvolsurface.hpp>
 #include <ql/indexes/iborindex.hpp>
 
 namespace {
@@ -74,12 +74,12 @@ namespace {
 
     class InterpolatedQuote : public Quote {
       public:
-          InterpolatedQuote(const boost::shared_ptr<CapVolatilitySurface>& surface,
+          InterpolatedQuote(const boost::shared_ptr<CapFloorTermVolSurface>& surface,
                             Time time, Real strike)
           : time_(time), strike_(strike), surface_(surface) {}
         Time time_;
         Real strike_;
-        const boost::shared_ptr<CapVolatilitySurface> surface_;
+        const boost::shared_ptr<CapFloorTermVolSurface> surface_;
         Real value() const {
             return surface_->volatility(time_, strike_);
         }
@@ -117,7 +117,7 @@ namespace QuantLib {
     }
 
     void CapsStripper::createInterpolatedCaps(Period timeStep,
-        const boost::shared_ptr<CapVolatilitySurface>& surface) const {
+        const boost::shared_ptr<CapFloorTermVolSurface>& surface) const {
         std::vector<Period> interpolatedTenors;
         std::vector<Period>::const_iterator tenor;
 
@@ -258,7 +258,7 @@ namespace QuantLib {
     CapsStripper::CapsStripper(
          const std::vector<Period>& tenors,
          const std::vector<Rate>& strikes,
-         const boost::shared_ptr<CapVolatilitySurface>& surface,
+         const boost::shared_ptr<CapFloorTermVolSurface>& surface,
          const boost::shared_ptr<IborIndex>& index,
          Period timeStep,
          const Handle< YieldTermStructure >,

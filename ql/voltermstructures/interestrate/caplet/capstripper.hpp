@@ -32,7 +32,7 @@ namespace QuantLib {
     class IborIndex;
     class YieldTermStructure;
     class Quote;
-    class CapVolatilitySurface;
+    class CapFloorTermVolSurface;
 
     typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapMatrix;
 
@@ -42,7 +42,7 @@ namespace QuantLib {
 
         CapsStripper(const std::vector<Period>& tenors,
                      const std::vector<Rate>& strikes,
-                     const boost::shared_ptr<CapVolatilitySurface>& surface,
+                     const boost::shared_ptr<CapFloorTermVolSurface>& surface,
                      const boost::shared_ptr<IborIndex>& index,
                      Period timeStep,
                      const Handle< YieldTermStructure >,
@@ -106,7 +106,7 @@ namespace QuantLib {
         void createCaps() const;
         void createCapletVolatilityStructure() const;
         void createInterpolatedCaps(Period timeStep,
-            const boost::shared_ptr<CapVolatilitySurface>& surface) const;
+            const boost::shared_ptr<CapFloorTermVolSurface>& surface) const;
         mutable CapMatrix marketDataCap_, calibCap_;
         DayCounter volatilityDayCounter_;
         std::vector<Period> tenors_;

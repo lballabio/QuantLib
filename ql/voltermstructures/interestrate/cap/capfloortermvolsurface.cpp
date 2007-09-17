@@ -18,14 +18,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/voltermstructures/interestrate/cap/capvolsurface.hpp>
+#include <ql/voltermstructures/interestrate/cap/capfloortermvolsurface.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {
 
     // floating reference date, floating market data
-    CapVolatilitySurface::CapVolatilitySurface(
+    CapFloorTermVolSurface::CapFloorTermVolSurface(
                         Natural settlementDays,
                         const Calendar& calendar,
                         const std::vector<Period>& optionTenors,
@@ -50,7 +50,7 @@ namespace QuantLib {
     }
     
     // fixed reference date, floating market data
-    CapVolatilitySurface::CapVolatilitySurface(
+    CapFloorTermVolSurface::CapFloorTermVolSurface(
                         const Date& settlementDate,
                         const Calendar& calendar,
                         const std::vector<Period>& optionTenors,
@@ -75,7 +75,7 @@ namespace QuantLib {
     }
 
     // fixed reference date, fixed market data
-    CapVolatilitySurface::CapVolatilitySurface(
+    CapFloorTermVolSurface::CapFloorTermVolSurface(
                         const Date& settlementDate,
                         const Calendar& calendar,
                         const std::vector<Period>& optionTenors,
@@ -104,7 +104,7 @@ namespace QuantLib {
     }
 
     // floating reference date, fixed market data
-    CapVolatilitySurface::CapVolatilitySurface(
+    CapFloorTermVolSurface::CapFloorTermVolSurface(
                         Natural settlementDays,
                         const Calendar& calendar,
                         const std::vector<Period>& optionTenors,
@@ -132,8 +132,8 @@ namespace QuantLib {
         interpolate();
     }
 
-    void CapVolatilitySurface::checkInputs(Size volRows,
-                                           Size volsColumns) const {
+    void CapFloorTermVolSurface::checkInputs(Size volRows,
+                                             Size volsColumns) const {
         QL_REQUIRE(optionTenors_.size()==volRows,
                    "mismatch between number of option tenors (" <<
                    optionTenors_.size() <<
@@ -143,14 +143,14 @@ namespace QuantLib {
                    ") and vol columns (" << volatilities_.columns() << ")");        
     }
 
-    void CapVolatilitySurface::registerWithMarketData()
+    void CapFloorTermVolSurface::registerWithMarketData()
     {
         for (Size i=0; i<volHandles_.size(); ++i)
             for (Size j=0; j<volHandles_[0].size(); ++j)
                 registerWith(volHandles_[i][j]);
     }
 
-    void CapVolatilitySurface::interpolate() const
+    void CapFloorTermVolSurface::interpolate() const
     {
         interpolation_ = BicubicSpline(strikes_.begin(),  
                                        strikes_.end(),
@@ -159,7 +159,7 @@ namespace QuantLib {
                                        volatilities_);    
     }
 
-    void CapVolatilitySurface::performCalculations() const {
+    void CapFloorTermVolSurface::performCalculations() const {
 
         for (Size i=0; i<optionTenors_.size(); ++i) {
             Date endDate = optionDateFromTenor(optionTenors_[i]);

@@ -3696,11 +3696,19 @@
 						>
 					</File>
 					<File
-						RelativePath=".\ql\voltermstructures\interestrate\cap\capflatvolvector.cpp"
+						RelativePath=".\ql\voltermstructures\interestrate\cap\capfloortermvolsurface.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\voltermstructures\interestrate\cap\capflatvolvector.hpp"
+						RelativePath=".\ql\voltermstructures\interestrate\cap\capfloortermvolsurface.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\voltermstructures\interestrate\cap\capfloortermvolvector.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\voltermstructures\interestrate\cap\capfloortermvolvector.hpp"
 						>
 					</File>
 					<File
@@ -3709,14 +3717,6 @@
 					</File>
 					<File
 						RelativePath=".\ql\voltermstructures\interestrate\cap\capfloorvolatilitystructure.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\voltermstructures\interestrate\cap\capvolsurface.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\voltermstructures\interestrate\cap\capvolsurface.hpp"
 						>
 					</File>
 				</Filter>

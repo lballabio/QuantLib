@@ -19,7 +19,7 @@
 */
 
 #include <ql/voltermstructures/interestrate/caplet/optionletstripperadapter.hpp>
-#include <ql/voltermstructures/interestrate/caplet/capstripper2.hpp>
+#include <ql/voltermstructures/interestrate/caplet/optionletstripper.hpp>
 
 namespace QuantLib {
 

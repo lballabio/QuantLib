@@ -46,37 +46,37 @@ namespace QuantLib {
               the length vector but an interpolation pointing to the
               original ones.
     */
-    class CapVolatilityVector : public CapFloorVolatilityStructure,
-                                public LazyObject  {
+    class CapFloorTermVolVector : public CapFloorVolatilityStructure,
+                                  public LazyObject  {
       public:
         //! floating reference date, floating market data
-        CapVolatilityVector(Natural settlementDays,
-                            const Calendar& calendar,
-                            const std::vector<Period>& optionTenors,
-                            const std::vector<Handle<Quote> >& volatilities,
-                            BusinessDayConvention bdc = Following,
-                            const DayCounter& dc = Actual365Fixed());        
+        CapFloorTermVolVector(Natural settlementDays,
+                              const Calendar& calendar,
+                              const std::vector<Period>& optionTenors,
+                              const std::vector<Handle<Quote> >& volatilities,
+                              BusinessDayConvention bdc = Following,
+                              const DayCounter& dc = Actual365Fixed());        
         //! fixed reference date, floating market data
-        CapVolatilityVector(const Date& settlementDate,
-                            const Calendar& calendar,
-                            const std::vector<Period>& optionTenors,
-                            const std::vector<Handle<Quote> >& volatilities,
-                            BusinessDayConvention bdc = Following,
-                            const DayCounter& dc = Actual365Fixed());
+        CapFloorTermVolVector(const Date& settlementDate,
+                              const Calendar& calendar,
+                              const std::vector<Period>& optionTenors,
+                              const std::vector<Handle<Quote> >& volatilities,
+                              BusinessDayConvention bdc = Following,
+                              const DayCounter& dc = Actual365Fixed());
         //! fixed reference date, fixed market data
-        CapVolatilityVector(const Date& settlementDate,
-                            const Calendar& calendar,
-                            const std::vector<Period>& optionTenors,
-                            const std::vector<Volatility>& volatilities,
-                            BusinessDayConvention bdc = Following,
-                            const DayCounter& dc = Actual365Fixed());
+        CapFloorTermVolVector(const Date& settlementDate,
+                              const Calendar& calendar,
+                              const std::vector<Period>& optionTenors,
+                              const std::vector<Volatility>& volatilities,
+                              BusinessDayConvention bdc = Following,
+                              const DayCounter& dc = Actual365Fixed());
         //! floating reference date, fixed market data
-        CapVolatilityVector(Natural settlementDays,
-                            const Calendar& calendar,
-                            const std::vector<Period>& optionTenors,
-                            const std::vector<Volatility>& volatilities,
-                            BusinessDayConvention bdc = Following,
-                            const DayCounter& dc = Actual365Fixed());
+        CapFloorTermVolVector(Natural settlementDays,
+                              const Calendar& calendar,
+                              const std::vector<Period>& optionTenors,
+                              const std::vector<Volatility>& volatilities,
+                              BusinessDayConvention bdc = Following,
+                              const DayCounter& dc = Actual365Fixed());
         //! \name TermStructure interface
         //@{
         Date maxDate() const;
@@ -112,37 +112,40 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Date CapVolatilityVector::maxDate() const {
+    inline Date CapFloorTermVolVector::maxDate() const {
         calculate();
         return optionDateFromTenor(optionTenors_.back());
     }
 
-    inline Real CapVolatilityVector::minStrike() const {
+    inline Real CapFloorTermVolVector::minStrike() const {
         return QL_MIN_REAL;
     }
 
-    inline Real CapVolatilityVector::maxStrike() const {
+    inline Real CapFloorTermVolVector::maxStrike() const {
         return QL_MAX_REAL;
     }
 
-    inline void CapVolatilityVector::update() {
+    inline void CapFloorTermVolVector::update() {
         //TermStructure::update();
         //LazyObject::update();
         CapFloorVolatilityStructure::update();
         interpolate();
     }
 
-    inline Volatility CapVolatilityVector::volatilityImpl(Time t, 
-                                                          Rate) const {
+    inline
+    Volatility CapFloorTermVolVector::volatilityImpl(Time t, 
+                                                     Rate) const {
         calculate();
         return interpolation_(t, true);
     }
 
-    inline const std::vector<Period>& CapVolatilityVector::optionTenors() const {
+    inline
+    const std::vector<Period>& CapFloorTermVolVector::optionTenors() const {
         return optionTenors_;
     }
 
-    inline const std::vector<Time>& CapVolatilityVector::optionTimes() const {
+    inline
+    const std::vector<Time>& CapFloorTermVolVector::optionTimes() const {
         return optionTimes_;
     }
 

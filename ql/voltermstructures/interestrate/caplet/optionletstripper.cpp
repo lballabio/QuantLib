@@ -29,7 +29,7 @@
 namespace QuantLib {
 
     OptionletStripper::OptionletStripper(
-                    const boost::shared_ptr<CapVolatilitySurface>& surface,
+                    const boost::shared_ptr<CapFloorTermVolSurface>& surface,
                     const boost::shared_ptr<IborIndex>& index)
     : surface_(surface), index_(index), nStrikes_(surface->strikes().size())
     {

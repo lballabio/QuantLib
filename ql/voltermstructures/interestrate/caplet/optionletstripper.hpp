@@ -28,14 +28,14 @@
 
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/instruments/capfloor.hpp>
-#include <ql/voltermstructures/interestrate/cap/capvolsurface.hpp>
+#include <ql/voltermstructures/interestrate/cap/capfloortermvolsurface.hpp>
 #include <ql/math/matrix.hpp>
 #include <vector>
 
 namespace QuantLib {
     class IborIndex;
     class YieldTermStructure;
-    class CapVolatilitySurface;
+    class CapFloorTermVolSurface;
     class DayCounter;
     class Calendar;
 
@@ -43,7 +43,7 @@ namespace QuantLib {
 
     class OptionletStripper : public LazyObject {
       public:
-        OptionletStripper(const boost::shared_ptr<CapVolatilitySurface>& surface,
+        OptionletStripper(const boost::shared_ptr<CapFloorTermVolSurface>& surface,
                           const boost::shared_ptr<IborIndex>& index);
         //! \name Cap Stripper interface
         //@{
@@ -65,7 +65,7 @@ namespace QuantLib {
         void performCalculations () const;
         //@}
       private:
-        const boost::shared_ptr<CapVolatilitySurface> surface_;
+        const boost::shared_ptr<CapFloorTermVolSurface> surface_;
         const boost::shared_ptr<IborIndex> index_;
         Size nStrikes_;
         std::vector<Period> optionletTenors_;
