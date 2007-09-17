@@ -18,12 +18,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file capvolsurface.hpp
+/*! \file capfloortermvolsurface.hpp
     \brief Cap/floor smile volatility surface
 */
 
-#ifndef quantlib_cap_volatility_surface_hpp
-#define quantlib_cap_volatility_surface_hpp
+#ifndef quantlib_cap_floor_term_vol_surface_hpp
+#define quantlib_cap_floor_term_vol_surface_hpp
 
 #include <ql/voltermstructures/interestrate/cap/capfloorvolatilitystructure.hpp>
 #include <ql/math/interpolations/interpolation2d.hpp>
