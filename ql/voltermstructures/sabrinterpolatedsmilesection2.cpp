@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 François du Vignaud
+ Copyright (C) 2007 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,10 +42,8 @@ namespace QuantLib {
                        const boost::shared_ptr<OptimizationMethod>& method,
                        const DayCounter& dc)
     : SabrInterpolatedSmileSection(optionDate,
-                       strikeSpreads,
-                       volSpreads,
-                       forward,
-                       alpha, beta, nu, rho,
+                       strikeSpreads, volSpreads,
+                       forward, alpha, beta, nu, rho,
                        isAlphaFixed, isBetaFixed,
                        isNuFixed, isRhoFixed, vegaWeighted,
                        endCriteria, method, dc),
