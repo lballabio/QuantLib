@@ -54,7 +54,7 @@ namespace QuantLib {
                             = boost::shared_ptr<OptimizationMethod>(),
                            const DayCounter& dc = Actual365Fixed()
                            );
-        void performCalculations() const;
+        virtual void performCalculations() const;
         virtual void update();
         Real varianceImpl(Rate strike) const;
         Volatility volatilityImpl(Rate strike) const;
@@ -68,7 +68,7 @@ namespace QuantLib {
         Real minStrike () const;
         Real maxStrike () const;
         Real atmLevel() const;
-      private:
+      protected:
         void createInterpolation() const;
         const boost::shared_ptr<EndCriteria> endCriteria_;
         const boost::shared_ptr<OptimizationMethod> method_;
@@ -132,12 +132,12 @@ namespace QuantLib {
 
     inline Real SabrInterpolatedSmileSection::minStrike() const {
         calculate();
-        return strikes_.front();
+        return actualStrikes_.front();
     }
 
     inline Real SabrInterpolatedSmileSection::maxStrike() const {
         calculate();
-        return strikes_.back();
+        return actualStrikes_.back();
     }
 
     inline Real SabrInterpolatedSmileSection::atmLevel() const {
