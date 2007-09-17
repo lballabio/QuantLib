@@ -2077,12 +2077,14 @@ test_suite* MarketModelTest::suite() {
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepForwardsAndOptionlets));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepNormalForwardsAndOptionlets));
 
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAllMultiStepProducts));
 
     //// just one of the tests below is run in order to reduce running times...
     //// uncomment as much as you prefer...
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapLS));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapAnderson));
 
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testGreeks));

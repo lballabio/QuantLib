@@ -1328,10 +1328,12 @@ test_suite* EuropeanOptionTest::suite() {
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testTIANBinomialEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testLRBinomialEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testJOSHIBinomialEngines));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testFdEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testIntegralEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testMcEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testQmcEngines));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testPriceCurve));
 
     return suite;

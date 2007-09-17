@@ -290,6 +290,7 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
 
 test_suite* MCLongstaffSchwartzEngineTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Longstaff Schwartz MC engine tests");
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(
          &MCLongstaffSchwartzEngineTest::testAmericanOption));
     suite->add(BOOST_TEST_CASE(

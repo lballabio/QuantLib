@@ -168,6 +168,7 @@ void OperatorTest::testBSMOperatorConsistency() {
 test_suite* OperatorTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Operator tests");
     suite->add(BOOST_TEST_CASE(&OperatorTest::testConsistency));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&OperatorTest::testBSMOperatorConsistency));
     return suite;
 }

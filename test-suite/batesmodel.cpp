@@ -391,8 +391,11 @@ void BatesModelTest::testDAXCalibration() {
 
 test_suite* BatesModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Bates model tests");
+     // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&BatesModelTest::testAnalyticVsBlack));
+     // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&BatesModelTest::testAnalyticVsJumpDiffusion));
+     // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&BatesModelTest::testDAXCalibration));
     return suite;
 }

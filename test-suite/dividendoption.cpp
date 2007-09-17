@@ -925,10 +925,15 @@ test_suite* DividendOptionTest::suite() {
     // Doesn't quite work.  Need to use discounted values
     // suite->add(BOOST_TEST_CASE(&DividendOptionTest::testEuropeanEndLimit));
     suite->add(BOOST_TEST_CASE(&DividendOptionTest::testEuropeanGreeks));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdEuropeanValues));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdEuropeanGreeks));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdAmericanGreeks));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdEuropeanDegenerate));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdAmericanDegenerate));
     return suite;
 }

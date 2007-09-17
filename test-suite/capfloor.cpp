@@ -638,6 +638,7 @@ test_suite* CapFloorTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Cap/floor tests");
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testStrikeDependency));
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testConsistency));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testParity));
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testVega));
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testATMRate));

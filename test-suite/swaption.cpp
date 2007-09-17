@@ -899,6 +899,7 @@ test_suite* SwaptionTest::suite() {
     suite->add(BOOST_TEST_CASE(&SwaptionTest::testCachedValue));
     suite->add(BOOST_TEST_CASE(&SwaptionTest::testImpliedVolatility));
 
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&SwaptionTest::testVega));
 
     return suite;

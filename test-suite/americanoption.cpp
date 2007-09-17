@@ -388,6 +388,7 @@ void AmericanOptionTest::testFdValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(juValues[i].type, juValues[i].strike));
 
+        // FLOATING_POINT_EXCEPTION
         Date exDate = today + Integer(juValues[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
@@ -553,9 +554,13 @@ test_suite* AmericanOptionTest::suite() {
           BOOST_TEST_CASE(&AmericanOptionTest::testBaroneAdesiWhaleyValues));
     suite->add(
           BOOST_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandValues));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&AmericanOptionTest::testJuValues));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&AmericanOptionTest::testFdValues));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&AmericanOptionTest::testFdAmericanGreeks));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));
     return suite;
 }

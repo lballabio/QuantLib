@@ -822,6 +822,7 @@ test_suite* MarketModelSmmCapletHomoCalibrationTest::suite() {
 
     
     suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletHomoCalibrationTest::testFunction));
+    // FLOATING_POINT_EXCEPTION
   //  suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction));
     suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder));
 

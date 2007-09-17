@@ -1406,20 +1406,26 @@ void HybridHestonHullWhiteProcessTest::testPseudoJointCalibration() {
 test_suite* HybridHestonHullWhiteProcessTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Hybrid Heston-HullWhite tests");
 
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW));
     suite->add(BOOST_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testZeroBondPricing));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testMcVanillaPricing));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testMcPureHestonPricing));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(
       &HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing));
     suite->add(BOOST_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testCallableEquityPricing));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testPseudoJointCalibration));
 

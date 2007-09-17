@@ -359,8 +359,11 @@ void CapsStripperTest::testSpreadedStripper() {
 
 test_suite* CapsStripperTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("CapsStripper tests");
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&CapsStripperTest::FlatVolatilityStripping));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&CapsStripperTest::highPrecisionTest));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&CapsStripperTest::testSpreadedStripper));
     return suite;
 }

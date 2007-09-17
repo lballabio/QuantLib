@@ -438,7 +438,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
         boost::shared_ptr<PlainVanillaPayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today + Integer(values[i].t*30+0.5);
+        Date exDate = today + Integer(values[i].t)*30;
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
         boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                     exDate));
@@ -851,6 +851,7 @@ void BasketOptionTest::testOddSamples() {
 test_suite* BasketOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Basket option tests");
     suite->add(BOOST_TEST_CASE(&BasketOptionTest::testEuroTwoValues));
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&BasketOptionTest::testBarraquandThreeValues));
     suite->add(BOOST_TEST_CASE(&BasketOptionTest::testTavellaValues));
     suite->add(BOOST_TEST_CASE(&BasketOptionTest::testOneDAmericanValues));
