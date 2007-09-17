@@ -2863,11 +2863,11 @@
 							>
 						</File>
 						<File
-							RelativePath=".\ql\models\marketmodels\products\multistep\multistepperiodcapletsswaptions.hpp"
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepperiodcapletswaptions.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\ql\models\marketmodels\products\multistep\multistepperiodcapletswaptions.cpp"
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepperiodcapletswaptions.hpp"
 							>
 						</File>
 						<File
