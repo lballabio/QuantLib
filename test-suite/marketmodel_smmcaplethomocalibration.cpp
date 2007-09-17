@@ -604,11 +604,11 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
 
      // calibrate
     Natural maxUnperiodicIterations = 10;
-    Real toleranceUnperiodic = 1e-4; // i.e. 1 bp
+    Real toleranceUnperiodic = 1e-5; // i.e. 1 bp
     Natural max1dIterations = 100;
     Real tolerance1d = 1e-8;
-    Size maxPeriodIterations = 10;
-    Real periodTolerance = 1e-4;
+    Size maxPeriodIterations = 30;
+    Real periodTolerance = 1e-5;
 
      std::vector<Matrix> swapPseudoRoots;
      Real deformationSize;
@@ -690,10 +690,10 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
     std::vector<Spread> adaptedDisplacements(numberBigRates,displacement_);
     boost::shared_ptr<MarketModel> adaptedFlmm(new FwdPeriodAdapter(flmm,period,offset,adaptedDisplacements));
 
-     boost::shared_ptr<MarketModel> adaptedsmm(new FwdToCotSwapAdapter(smm));
+     boost::shared_ptr<MarketModel> adaptedsmm(new FwdToCotSwapAdapter(adaptedFlmm));
   
       // check perfect swaption fit
-    Real  swapTolerance = 1e-14;
+    Real  swapTolerance = 2e-5;
       
     Matrix swapTerminalCovariance(adaptedsmm->totalCovariance(adaptedsmm->numberOfSteps()-1));
 
@@ -822,8 +822,9 @@ test_suite* MarketModelSmmCapletHomoCalibrationTest::suite() {
 
     
     suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletHomoCalibrationTest::testFunction));
-    // FLOATING_POINT_EXCEPTION
-  //  suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction));
+    suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction));
+    
+	// FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder));
 
     return suite;
