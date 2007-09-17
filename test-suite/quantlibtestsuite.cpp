@@ -179,20 +179,21 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     test->add(BOOST_TEST_CASE(startTimer));
 
-    test->add(AmericanOptionTest::suite());
+    
+    test->add(AmericanOptionTest::suite());   // FLOATING_POINT_EXCEPTION
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
     test->add(AssetSwapTest::suite()); // fails whith QL_USE_INDEXED_COUPON
     test->add(BarrierOptionTest::suite());
-    test->add(BasketOptionTest::suite());
-    test->add(BatesModelTest::suite());
+    test->add(BasketOptionTest::suite());   // FLOATING_POINT_EXCEPTION
+    test->add(BatesModelTest::suite());       // FLOATING_POINT_EXCEPTION
     test->add(BermudanSwaptionTest::suite());
     test->add(BondTest::suite());
     test->add(BrownianBridgeTest::suite());
     test->add(CalendarTest::suite());
-    test->add(CapFloorTest::suite());
+    test->add(CapFloorTest::suite());       // FLOATING_POINT_EXCEPTION
     test->add(CapFlooredCouponTest::suite());
-    test->add(CapsStripperTest::suite());
+    test->add(CapsStripperTest::suite());   // FLOATING_POINT_EXCEPTION
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
     test->add(CompoundForwardTest::suite()); // fails whith QL_USE_INDEXED_COUPON
@@ -202,16 +203,16 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(DateTest::suite());
     test->add(DayCounterTest::suite());
     test->add(DigitalCouponTest::suite()); // might fail whith QL_USE_INDEXED_COUPON
-    test->add(DigitalOptionTest::suite());
+    test->add(DigitalOptionTest::suite());  // FLOATING_POINT_EXCEPTION
     test->add(DistributionTest::suite());
-    test->add(DividendOptionTest::suite());
-    test->add(EuropeanOptionTest::suite());
+    test->add(DividendOptionTest::suite());   // FLOATING_POINT_EXCEPTION
+    test->add(EuropeanOptionTest::suite());   // FLOATING_POINT_EXCEPTION
     test->add(ExchangeRateTest::suite());
     test->add(FactorialTest::suite());
     test->add(ForwardOptionTest::suite());
     test->add(GaussianQuadraturesTest::suite());
-    test->add(HestonModelTest::suite());
-    test->add(HybridHestonHullWhiteProcessTest::suite());
+    test->add(HestonModelTest::suite());        // FLOATING_POINT_EXCEPTION
+    test->add(HybridHestonHullWhiteProcessTest::suite());   // FLOATING_POINT_EXCEPTION
     test->add(InstrumentTest::suite());
     test->add(IntegralTest::suite());
     test->add(InterestRateTest::suite());
@@ -224,15 +225,15 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MarketModelSmmTest::suite());
     test->add(MarketModelSmmCapletAlphaCalibrationTest::suite());
     test->add(MarketModelSmmCapletCalibrationTest::suite());
-    test->add(MarketModelSmmCapletHomoCalibrationTest::suite());
-    test->add(MarketModelTest::suite());
+    test->add(MarketModelSmmCapletHomoCalibrationTest::suite());    // FLOATING_POINT_EXCEPTION
+    test->add(MarketModelTest::suite());                          // FLOATING_POINT_EXCEPTION
     test->add(MatricesTest::suite());
-    test->add(MCLongstaffSchwartzEngineTest::suite());
+    test->add(MCLongstaffSchwartzEngineTest::suite());              // FLOATING_POINT_EXCEPTION
     test->add(MersenneTwisterTest::suite());
     test->add(MoneyTest::suite());
-    test->add(OperatorTest::suite());
+    test->add(OperatorTest::suite());                             // FLOATING_POINT_EXCEPTION
     test->add(OptimizersTest::suite());
-    test->add(PathGeneratorTest::suite());
+    test->add(PathGeneratorTest::suite());                          // FLOATING_POINT_EXCEPTION
     test->add(PeriodTest::suite());
     test->add(PiecewiseYieldCurveTest::suite());
     test->add(QuantoOptionTest::suite());
@@ -247,7 +248,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(SurfaceTest::suite());
     test->add(SwapTest::suite());
     test->add(SwapForwardMappingsTest::suite());
-    test->add(SwaptionTest::suite());
+    test->add(SwaptionTest::suite());                               // FLOATING_POINT_EXCEPTION
     test->add(SwaptionVolatilityCubeTest::suite());
     test->add(SwaptionVolatilityMatrixTest::suite());
     test->add(TermStructureTest::suite());
@@ -258,10 +259,10 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(VarianceSwapTest::suite());
     test->add(VolatilityModelsTest::suite());
 
-    // tests for deprecated (or generally old-style) classes
+     //tests for deprecated (or generally old-style) classes
     test->add(LiborMarketModelTest::suite());
     test->add(LiborMarketModelProcessTest::suite());
-    test->add(OldPricerTest::suite());
+    test->add(OldPricerTest::suite());                               // FLOATING_POINT_EXCEPTION
 
     test->add(BOOST_TEST_CASE(stopTimer));
 
