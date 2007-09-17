@@ -28,6 +28,7 @@
 
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/instruments/capfloor.hpp>
+#include <ql/voltermstructures/interestrate/cap/capvolsurface.hpp>
 #include <ql/math/matrix.hpp>
 #include <vector>
 
@@ -35,7 +36,8 @@ namespace QuantLib {
     class IborIndex;
     class YieldTermStructure;
     class CapVolatilitySurface;
-    class SmileSection;
+    class DayCounter;
+    class Calendar;
 
     typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapFloorMatrix;
 
@@ -51,7 +53,12 @@ namespace QuantLib {
         const Matrix& capfloorVolatilities() const;
         const std::vector<Period>& optionletTenors() const;
         const std::vector<Date>& optionletDates() const;
+        const std::vector<Time>& optionletTimes() const;
         const std::vector<Rate>& strikes() const;
+        Natural settlementDays() const;
+        Calendar calendar() const;
+        BusinessDayConvention businessDayConvention() const;
+        DayCounter dayCounter() const;
         //@}
         //! \name LazyObject interface
         //@{
@@ -103,6 +110,12 @@ namespace QuantLib {
     const std::vector<Date>& OptionletStripper::optionletDates() const {
         calculate();
         return optionletDates_;
+    }
+     
+    inline
+    const std::vector<Time>& OptionletStripper::optionletTimes() const {
+        calculate();
+        return optionletTimes_;
     }
 
 }

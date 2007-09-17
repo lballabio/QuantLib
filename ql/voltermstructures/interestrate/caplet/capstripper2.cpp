@@ -23,7 +23,6 @@
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/voltermstructures/interestrate/cap/capvolsurface.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
@@ -143,5 +142,24 @@ namespace QuantLib {
     const std::vector<Rate>& OptionletStripper::strikes() const {
         return surface_->strikes();
     }
-    
+
+    Natural OptionletStripper::settlementDays() const {
+        calculate();
+        return surface_->settlementDays();
+    }
+
+    Calendar OptionletStripper::calendar() const {
+        calculate();
+        return surface_->calendar();
+    }
+
+    BusinessDayConvention OptionletStripper::businessDayConvention() const {
+        calculate();
+        return surface_->businessDayConvention();
+    }
+
+    DayCounter OptionletStripper::dayCounter() const {
+        calculate();
+        return surface_->dayCounter();
+    }
 }

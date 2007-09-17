@@ -3760,6 +3760,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\voltermstructures\interestrate\caplet\optionletstripperadapter.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\voltermstructures\interestrate\caplet\optionletstripperadapter.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\voltermstructures\interestrate\caplet\optionletvolatilitystructure.cpp"
 						>
 					</File>
