@@ -12,9 +12,10 @@ SUBDIRS = \
     pricingengines \
     processes \
     quotes \
-    termstructures \
     time \
-    utilities
+    utilities \
+    voltermstructures \
+    yieldtermstructures
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
@@ -83,9 +84,10 @@ libQuantLib_la_LIBADD = \
     pricingengines/libPricingEngines.la \
     processes/libProcesses.la \
     quotes/libQuotes.la \
-    termstructures/libTermStructures.la \
     time/libTime.la \
-    utilities/libUtilities.la
+    utilities/libUtilities.la \
+    voltermstructures/libVolTermStructures.la \
+    yieldtermstructures/libYieldTermStructures.la
 
 EXTRA_DIST= \
 	config.ansi.hpp \

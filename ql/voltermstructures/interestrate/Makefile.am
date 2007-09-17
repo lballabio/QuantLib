@@ -6,11 +6,15 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     abcd.hpp \
-    abcdcalibration.hpp
+    abcdatmvolcurve.hpp \
+    abcdcalibration.hpp \
+    volcube.hpp
 
 libInterestRateVol_la_SOURCES = \
     abcd.cpp \
-    abcdcalibration.cpp 
+    abcdatmvolcurve.cpp \
+    abcdcalibration.cpp \
+    volcube.cpp 
 
 libInterestRateVol_la_LIBADD = \
     cap/libCapVol.la \

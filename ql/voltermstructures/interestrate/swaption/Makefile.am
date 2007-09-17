@@ -12,7 +12,8 @@ this_include_HEADERS = \
     swaptionvolcube1.hpp \
     swaptionvolcube2.hpp \
     swaptionvoldiscrete.hpp \
-    swaptionvolmatrix.hpp
+    swaptionvolmatrix.hpp \
+    swaptionvolstructure.hpp
 
 libSwaptionVol_la_SOURCES = \
     cmsmarket.cpp \
@@ -23,7 +24,8 @@ libSwaptionVol_la_SOURCES = \
     swaptionvolcube1.cpp \
     swaptionvolcube2.cpp \
     swaptionvoldiscrete.cpp \
-    swaptionvolmatrix.cpp
+    swaptionvolmatrix.cpp \
+    swaptionvolstructure.cpp
 
 noinst_LTLIBRARIES = libSwaptionVol.la
 

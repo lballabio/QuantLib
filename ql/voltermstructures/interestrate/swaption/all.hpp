@@ -10,4 +10,5 @@
 #include <ql/voltermstructures/interestrate/swaption/swaptionvolcube2.hpp>
 #include <ql/voltermstructures/interestrate/swaption/swaptionvoldiscrete.hpp>
 #include <ql/voltermstructures/interestrate/swaption/swaptionvolmatrix.hpp>
+#include <ql/voltermstructures/interestrate/swaption/swaptionvolstructure.hpp>
 

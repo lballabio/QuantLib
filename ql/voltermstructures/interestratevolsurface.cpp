@@ -43,4 +43,14 @@ namespace QuantLib {
                             const DayCounter& dc)
     : BlackVolSurface(settlDays, cal, bdc, dc), index_(index) {}
 
+    void InterestRateVolSurface::accept(AcyclicVisitor& v) {
+        Visitor<InterestRateVolSurface>* v1 =
+            dynamic_cast<Visitor<InterestRateVolSurface>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            BlackVolSurface::accept(v);
+    }
+
 }
+

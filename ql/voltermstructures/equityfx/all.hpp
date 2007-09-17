@@ -4,8 +4,10 @@
 #include <ql/voltermstructures/equityfx/blackconstantvol.hpp>
 #include <ql/voltermstructures/equityfx/blackvariancecurve.hpp>
 #include <ql/voltermstructures/equityfx/blackvariancesurface.hpp>
+#include <ql/voltermstructures/equityfx/blackvoltermstructure.hpp>
 #include <ql/voltermstructures/equityfx/impliedvoltermstructure.hpp>
 #include <ql/voltermstructures/equityfx/localconstantvol.hpp>
 #include <ql/voltermstructures/equityfx/localvolcurve.hpp>
 #include <ql/voltermstructures/equityfx/localvolsurface.hpp>
+#include <ql/voltermstructures/equityfx/localvoltermstructure.hpp>
 

@@ -4,10 +4,12 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     capflatvolvector.hpp \
+    capfloorvolatilitystructure.hpp \
     capvolsurface.hpp
 
 libCapVol_la_SOURCES = \
     capflatvolvector.cpp \
+    capfloorvolatilitystructure.cpp \
     capvolsurface.cpp
 
 noinst_LTLIBRARIES = libCapVol.la

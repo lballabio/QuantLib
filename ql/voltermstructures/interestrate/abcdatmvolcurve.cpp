@@ -81,7 +81,7 @@ namespace QuantLib {
         }
         TermStructure::update();
         LazyObject::update();
-    };
+    }
 
     void AbcdAtmVolCurve::performCalculations() const {
 

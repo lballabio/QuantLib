@@ -39,7 +39,7 @@ namespace QuantLib {
           // create ref smile sections
     }
 
-    boost::shared_ptr<SmileSection> 
+    boost::shared_ptr<SmileSection>
     SabrVolSurface::smileSectionImpl(Time t) const {
 
         BigInteger n = BigInteger(t*365.0);
@@ -67,6 +67,15 @@ namespace QuantLib {
         boost::shared_ptr<SmileSection> result(new
             SabrSmileSection(d, atmRate, sabrParameters, dayCounter()));
         return result;
+    }
+
+    void SabrVolSurface::accept(AcyclicVisitor& v) {
+        Visitor<SabrVolSurface>* v1 =
+            dynamic_cast<Visitor<SabrVolSurface>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            InterestRateVolSurface::accept(v);
     }
 
 }

@@ -9,12 +9,14 @@ this_include_HEADERS = \
     capletvolatilitiesstructures.hpp \
     capstripper.hpp \
     capstripper2.hpp \
+    optionletvolatilitystructure.hpp \
     spreadedcapletvolstructure.hpp
 
 libCapletVol_la_SOURCES = \
     capletvolatilitiesstructures.cpp \
     capstripper.cpp \
     capstripper2.cpp \
+    optionletvolatilitystructure.cpp \
     spreadedcapletvolstructure.cpp
 
 noinst_LTLIBRARIES = libCapletVol.la

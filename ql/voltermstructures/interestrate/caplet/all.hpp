@@ -6,5 +6,6 @@
 #include <ql/voltermstructures/interestrate/caplet/capletvolatilitiesstructures.hpp>
 #include <ql/voltermstructures/interestrate/caplet/capstripper.hpp>
 #include <ql/voltermstructures/interestrate/caplet/capstripper2.hpp>
+#include <ql/voltermstructures/interestrate/caplet/optionletvolatilitystructure.hpp>
 #include <ql/voltermstructures/interestrate/caplet/spreadedcapletvolstructure.hpp>
 
