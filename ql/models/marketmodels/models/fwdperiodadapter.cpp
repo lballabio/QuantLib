@@ -37,7 +37,7 @@ namespace QuantLib {
       numberOfFactors_(largeModel->numberOfFactors()),
           numberOfRates_((largeModel->numberOfRates()-offset) / (period > 0 ? period : 1) ),
       numberOfSteps_(largeModel->numberOfSteps()),
-      pseudoRoots_(numberOfSteps_, Matrix((numberOfRates_-offset)/(period > 0 ? period :  1),
+      pseudoRoots_(numberOfSteps_, Matrix(numberOfRates_,
                                           numberOfFactors_)),
                                           displacements_(newDisplacements)
     {
