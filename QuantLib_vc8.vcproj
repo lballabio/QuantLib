@@ -3752,11 +3752,11 @@
 						>
 					</File>
 					<File
-						RelativePath=".\ql\voltermstructures\interestrate\caplet\capstripper2.cpp"
+						RelativePath=".\ql\voltermstructures\interestrate\caplet\optionletstripper.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\voltermstructures\interestrate\caplet\capstripper2.hpp"
+						RelativePath=".\ql\voltermstructures\interestrate\caplet\optionletstripper.hpp"
 						>
 					</File>
 					<File
