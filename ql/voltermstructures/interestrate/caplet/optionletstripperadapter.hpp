@@ -39,20 +39,14 @@ namespace QuantLib {
       public:
         OptionletStripperAdapter(const Handle<OptionletStripper>& optionletStripper);
 
-      protected:
         //! \name TermStructure interface
         //@{
         Date maxDate() const;
-        //@}
         //@}
         //! \name OptionletVolatilityStructure interface
         //@{
         Rate minStrike() const;
         Rate maxStrike() const;
-        BusinessDayConvention businessDayConvention() const;
-
-        Volatility volatilityImpl(Time length,
-                                  Rate strike) const;
         //@} 
         //! \name LazyObject interface
         //@{
@@ -60,6 +54,12 @@ namespace QuantLib {
         void performCalculations() const;
         //@}
 
+      protected:
+        //! \name OptionletVolatilityStructure interface
+        //@{
+        Volatility volatilityImpl(Time length,
+                                  Rate strike) const;
+        //@} 
     private:
         const Handle<OptionletStripper> optionletStripper_;
         mutable Interpolation2D interpolation_;

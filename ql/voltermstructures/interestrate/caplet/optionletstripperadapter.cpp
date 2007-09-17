@@ -36,7 +36,7 @@ namespace QuantLib {
     Volatility OptionletStripperAdapter::volatilityImpl(Time length,
                                                         Rate strike) const {
         calculate();
-        return interpolation_.operator()(strike, length, true);
+        return interpolation_(strike, length, true);
     }
         
     void OptionletStripperAdapter::performCalculations() const {
