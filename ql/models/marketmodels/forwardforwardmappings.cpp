@@ -52,7 +52,7 @@ namespace QuantLib {
                 {
                 Real value = df * tau[m]*cs.discountRatio(m+1,m)-1;
                 value /= bigTau;
-                jacobian[l][m]=value;
+                jacobian[l][m]=-value;
 
                 }
             }
@@ -123,7 +123,7 @@ namespace QuantLib {
            for (Size i=0; i < k+1; ++i)
            {
                times[i] = cs.rateTimes()[i*multiplier+offset];
-               discRatios[i] = cs.discountRatio(0,i*multiplier+offset);
+               discRatios[i] = cs.discountRatio(i*multiplier+offset,0);
            }
 
            LMMCurveState newState(times);
