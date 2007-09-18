@@ -61,5 +61,8 @@ namespace QuantLib {
     Date OptionletStripperAdapter::maxDate() const {
         return optionletStripper_->optionletDates().back();
     }
-
+    
+    const Date& OptionletStripperAdapter::referenceDate() const {
+        return optionletStripper_->surface()->referenceDate();
+    }
 }
