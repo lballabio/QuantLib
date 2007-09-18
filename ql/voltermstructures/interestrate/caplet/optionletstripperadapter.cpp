@@ -24,10 +24,10 @@
 namespace QuantLib {
 
     OptionletStripperAdapter::OptionletStripperAdapter(const Handle<OptionletStripper>& optionletStripper)
-    : OptionletVolatilityStructure(optionletStripper->settlementDays(),
-                                   optionletStripper->calendar(),
-                                   optionletStripper->businessDayConvention(),
-                                   optionletStripper->dayCounter()),
+    : OptionletVolatilityStructure(optionletStripper->surface()->settlementDays(),
+                                   optionletStripper->surface()->calendar(),
+                                   optionletStripper->surface()->businessDayConvention(),
+                                   optionletStripper->surface()->dayCounter()),
       optionletStripper_(optionletStripper){
 
         registerWith(optionletStripper_);

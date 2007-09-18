@@ -55,10 +55,7 @@ namespace QuantLib {
         const std::vector<Date>& optionletDates() const;
         const std::vector<Time>& optionletTimes() const;
         const std::vector<Rate>& strikes() const;
-        Natural settlementDays() const;
-        Calendar calendar() const;
-        BusinessDayConvention businessDayConvention() const;
-        DayCounter dayCounter() const;
+        boost::shared_ptr<CapFloorTermVolSurface> surface() const;
         //@}
         //! \name LazyObject interface
         //@{

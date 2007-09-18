@@ -143,23 +143,7 @@ namespace QuantLib {
         return surface_->strikes();
     }
 
-    Natural OptionletStripper::settlementDays() const {
-        calculate();
-        return surface_->settlementDays();
-    }
-
-    Calendar OptionletStripper::calendar() const {
-        calculate();
-        return surface_->calendar();
-    }
-
-    BusinessDayConvention OptionletStripper::businessDayConvention() const {
-        calculate();
-        return surface_->businessDayConvention();
-    }
-
-    DayCounter OptionletStripper::dayCounter() const {
-        calculate();
-        return surface_->dayCounter();
+    boost::shared_ptr<CapFloorTermVolSurface> OptionletStripper::surface() const {
+        return surface_;
     }
 }
