@@ -35,42 +35,6 @@ namespace QuantLib {
     class EndCriteria;
     class OptimizationMethod;
 
-    //! %Abcd interpolation between discrete volatility points.
-    class AbcdInterpolation : public Interpolation {
-      public:
-        template <class I1, class I2>
-        AbcdInterpolation(const I1& xBegin,  // x = times
-                          const I1& xEnd,
-                          const I2& yBegin,  // y = volatilities
-                          Real aGuess = -0.06,
-                          Real bGuess =  0.17,
-                          Real cGuess =  0.54,
-                          Real dGuess =  0.17,
-                          bool aIsFixed = false,
-                          bool bIsFixed = false,
-                          bool cIsFixed = false,
-                          bool dIsFixed = false,
-                          bool vegaWeighted = false,
-                          const boost::shared_ptr<EndCriteria>& endCriteria
-                                  = boost::shared_ptr<EndCriteria>(),
-                          const boost::shared_ptr<OptimizationMethod>& method
-                                  = boost::shared_ptr<OptimizationMethod>()) {
-
-
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
-                detail::AbcdInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
-                                                     aGuess, bGuess, 
-                                                     cGuess, dGuess,
-                                                     aIsFixed, bIsFixed,
-                                                     cIsFixed, dIsFixed,
-                                                     vegaWeighted,
-                                                     endCriteria,
-                                                     method));
-            impl_->update();
-        }
-
-    };
-
     namespace detail {
 
         template <class I1, class I2>
@@ -80,7 +44,7 @@ namespace QuantLib {
             AbcdInterpolationImpl(
                 const I1& xBegin, const I1& xEnd,
                 const I2& yBegin,
-                Real aGuess, Real bGuess, 
+                Real aGuess, Real bGuess,
                 Real cGuess, Real dGuess,
                 bool aIsFixed,
                 bool bIsFixed,
@@ -95,29 +59,29 @@ namespace QuantLib {
                 vegaWeighted_(vegaWeighted),
                 endCriteria_(endCriteria), method_(method) { }
 
-            void update() { 
+            void update() {
                 std::vector<Real>::const_iterator x = this->xBegin_;
                 std::vector<Real>::const_iterator y = this->yBegin_;
                 std::vector<Real> times, blackVols;
                 for ( ; x!=this->xEnd_; ++x, ++y) {
                         times.push_back(*x);
                         blackVols.push_back(*y);
-                }  
+                }
                 abcdCalibrator_ = AbcdCalibration(times, blackVols,
-                                aGuess_, bGuess_, 
+                                aGuess_, bGuess_,
                                 cGuess_, dGuess_,
                                 aIsFixed_, bIsFixed_,
                                 cIsFixed_, dIsFixed_,
                                 vegaWeighted_,
                                 endCriteria_,
                                 method_);
-                abcdCalibrator_.compute(); 
+                abcdCalibrator_.compute();
 
             }
 
             Real value(Real x) const {
                 QL_REQUIRE(x>=0.0, "time must be non negative: " <<
-                                   x << " not allowed");                
+                                   x << " not allowed");
                 return abcdCalibrator_.value(x);
             }
 
@@ -142,6 +106,42 @@ namespace QuantLib {
         };
 
     }
+
+    //! %Abcd interpolation between discrete volatility points.
+    class AbcdInterpolation : public Interpolation {
+      public:
+        template <class I1, class I2>
+        AbcdInterpolation(const I1& xBegin,  // x = times
+                          const I1& xEnd,
+                          const I2& yBegin,  // y = volatilities
+                          Real aGuess = -0.06,
+                          Real bGuess =  0.17,
+                          Real cGuess =  0.54,
+                          Real dGuess =  0.17,
+                          bool aIsFixed = false,
+                          bool bIsFixed = false,
+                          bool cIsFixed = false,
+                          bool dIsFixed = false,
+                          bool vegaWeighted = false,
+                          const boost::shared_ptr<EndCriteria>& endCriteria
+                                  = boost::shared_ptr<EndCriteria>(),
+                          const boost::shared_ptr<OptimizationMethod>& method
+                                  = boost::shared_ptr<OptimizationMethod>()) {
+
+
+            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+                detail::AbcdInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
+                                                     aGuess, bGuess,
+                                                     cGuess, dGuess,
+                                                     aIsFixed, bIsFixed,
+                                                     cIsFixed, dIsFixed,
+                                                     vegaWeighted,
+                                                     endCriteria,
+                                                     method));
+            impl_->update();
+        }
+
+    };
 
 }
 
