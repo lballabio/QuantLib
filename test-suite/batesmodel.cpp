@@ -223,6 +223,7 @@ void BatesModelTest::testAnalyticVsJumpDiffusion() {
         boost::shared_ptr<Exercise> exercise(
             new EuropeanExercise(exerciseDate));
         VanillaOption batesOption(process, payoff, exercise, batesEngine);
+        // FLOATING_POINT_EXCEPTION
         Real calculated = batesOption.NPV();
 
         EuropeanOption mertonOption(stochProcess, payoff,
@@ -328,6 +329,7 @@ void BatesModelTest::testDAXCalibration() {
             Period maturity((int)((t[m]+3)/7.), Weeks); // round to weeks
 
             // this is the calibration helper for the bates models
+            // FLOATING_POINT_EXCEPTION
             options.push_back(boost::shared_ptr<CalibrationHelper>(
                         new HestonModelHelper(maturity, calendar,
                                               s0->value(), strike[s], vol,
@@ -391,7 +393,6 @@ void BatesModelTest::testDAXCalibration() {
 
 test_suite* BatesModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Bates model tests");
-     // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&BatesModelTest::testAnalyticVsBlack));
      // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&BatesModelTest::testAnalyticVsJumpDiffusion));

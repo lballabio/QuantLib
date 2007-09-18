@@ -143,7 +143,7 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
 
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
-
+        // FLOATING_POINT_EXCEPTION
         Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
@@ -205,7 +205,7 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
 
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
-
+        //FLOATING_POINT_EXCEPTION
         Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
@@ -335,7 +335,7 @@ void AmericanOptionTest::testJuValues() {
 
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(juValues[i].type, juValues[i].strike));
-
+        //FLOATING_POINT_EXCEPTION
         Date exDate = today + Integer(juValues[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
@@ -480,7 +480,7 @@ void testFdGreeks(const Engine&) {
                         qRate->setValue(q);
                         rRate->setValue(r);
                         vol->setValue(v);
-
+                        //FLOATING_POINT_EXCEPTION
                         Real value = option.NPV();
                         calculated["delta"]  = option.delta();
                         calculated["gamma"]  = option.gamma();

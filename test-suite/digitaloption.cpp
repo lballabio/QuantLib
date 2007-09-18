@@ -688,7 +688,7 @@ void DigitalOptionTest::testMCCashAtHit() {
 
         boost::shared_ptr<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
             values[i].type, values[i].strike, 15.0));
-
+        //FLOATING_POINT_EXCEPTION
         Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> amExercise(
                                          new AmericanExercise(today, exDate));

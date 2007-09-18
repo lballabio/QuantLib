@@ -71,6 +71,7 @@ void setFlatVolatilityTermStructure(Volatility flatVolatility){
     for (Size i = 0 ; i < tenors.size(); i++)
         tenors[i] = Period(i+1, Years);
     strikes.resize(strikes.size());
+    // FLOATING_POINT_EXCEPTION
     for (Size j = 0 ; j < strikes.size(); j++)
         strikes[j] = double(j+1)/100;
 
@@ -196,6 +197,7 @@ void setup(std::vector<boost::shared_ptr<SmileSection> >& smileSections,
     rhTermStructure.linkTo(myTermStructure);
 
     xiborIndex = boost::shared_ptr<IborIndex>(new Euribor6M(rhTermStructure));
+    // FLOATING_POINT_EXCEPTION
     capsStripper = boost::shared_ptr<CapsStripper>(new CapsStripper(tenors,
                                                 strikes,
                                                 volatilityQuoteHandle,

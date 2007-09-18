@@ -640,7 +640,7 @@ void DividendOptionTest::testFdEuropeanValues() {
                     qRate->setValue(q);
                     rRate->setValue(r);
                     vol->setValue(v);
-
+                    // FLOATING_POINT_EXCEPTION
                     Real calculated = option.NPV();
                     if (calculated > spot->value()*1.0e-5) {
                         Real expected = ref_option.NPV();
@@ -725,6 +725,7 @@ void testFdGreeks(const Date& today,
                     rRate->setValue(r);
                     vol->setValue(v);
 
+                    // FLOATING_POINT_EXCEPTION
                     Real value = option.NPV();
                     calculated["delta"]  = option.delta();
                     calculated["gamma"]  = option.gamma();
@@ -849,6 +850,7 @@ void testFdDegenerate(const Date& today,
 
     DividendVanillaOption option1(process, payoff, exercise,
                                   dividendDates, dividends, engine);
+    // FLOATING_POINT_EXCEPTION
     Real refValue = option1.NPV();
 
     for (Size i=0; i<=6; i++) {

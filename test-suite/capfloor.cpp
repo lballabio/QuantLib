@@ -338,6 +338,7 @@ void CapFloorTest::testParity() {
                              schedule, strikes[j], index_->dayCounter(),
                              schedule, index_, 0.0, index_->dayCounter(),
                              termStructure_);
+            // FLOATING_POINT_EXCEPTION
             if (std::fabs((cap->NPV()-floor->NPV()) - swap.NPV()) > 1.0e-10) {
                 BOOST_FAIL(
                     "put/call parity violated:\n"
