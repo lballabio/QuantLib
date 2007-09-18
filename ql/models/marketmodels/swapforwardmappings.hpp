@@ -34,6 +34,13 @@ namespace QuantLib {
     class SwapForwardMappings {
       public:
 
+		//!  compute derivative of arbitrary swap-rate 
+		static Real annuity(const CurveState& cs, Size startIndex, Size endIndex,Size numeraireIndex);
+
+		//! compute derivative of swap-rate to underlying forward rate
+		static Real swapDerivative(const CurveState& cs, Size startIndex, Size endIndex, Size forwardIndex);
+
+
         /*! Returns the dsr[i]/df[j] jacobian between
             coterminal swap rates and forward rates */
         static Disposable<Matrix>
@@ -44,6 +51,18 @@ namespace QuantLib {
         static Disposable<Matrix>
         coterminalSwapZedMatrix(const CurveState& cs,
                                 const Spread displacement);
+
+		        /*! Returns the dsr[i]/df[j] jacobian between
+            coinitial swap rates and forward rates */
+        static Disposable<Matrix>
+        coinitialSwapForwardJacobian(const CurveState& cs);
+
+        /*! Returns the Z matrix to switch base from forward to
+            coinitial swap rates */
+        static Disposable<Matrix>
+        coinitialSwapZedMatrix(const CurveState& cs,
+                                const Spread displacement);
+
 
         /*! \ todo implement the following
             Returns the dsr[i]/df[j] jacobian between
