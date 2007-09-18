@@ -27,7 +27,7 @@
 
 #include <ql/voltermstructures/interestrate/caplet/optionletvolatilitystructure.hpp>
 #include <ql/patterns/lazyobject.hpp>
-#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
+#include <ql/math/interpolations/bilinearinterpolation.hpp>
 
 namespace QuantLib {
 

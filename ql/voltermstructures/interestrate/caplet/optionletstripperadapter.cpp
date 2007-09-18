@@ -43,7 +43,7 @@ namespace QuantLib {
 
         const std::vector<Rate>& strikes = optionletStripper_->strikes();
         const std::vector<Time>& optionletTimes = optionletStripper_->optionletTimes();
-        interpolation_ = BicubicSpline(strikes.begin(),  
+        interpolation_ = BilinearInterpolation(strikes.begin(),  
                                        strikes.end(),
                                        optionletTimes.begin(),
                                        optionletTimes.end(),

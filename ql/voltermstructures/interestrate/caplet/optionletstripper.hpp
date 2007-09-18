@@ -44,7 +44,8 @@ namespace QuantLib {
     class OptionletStripper : public LazyObject {
       public:
         OptionletStripper(const boost::shared_ptr<CapFloorTermVolSurface>& surface,
-                          const boost::shared_ptr<IborIndex>& index);
+                          const boost::shared_ptr<IborIndex>& index,
+                          std::vector<Rate> switchStrikes = std::vector<Rate>());
         //! \name Cap Stripper interface
         //@{
         const Matrix& optionletPrices() const;
@@ -76,6 +77,7 @@ namespace QuantLib {
         mutable std::vector<Time> optionletTimes_;
         std::vector<Period> capfloorLengths_;
         mutable CapFloorMatrix capfloors_;
+        std::vector<Rate> switchStrikes_;
     };
 
     inline const Matrix& OptionletStripper::optionletPrices() const {
