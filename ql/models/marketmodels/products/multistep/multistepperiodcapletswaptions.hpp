@@ -77,7 +77,7 @@ namespace QuantLib {
     }
 
     inline Size MultiStepPeriodCapletSwaptions::numberOfProducts() const {
-        return lastIndex_*2;
+        return numberBigFRAs_*2;
     }
 
     inline Size

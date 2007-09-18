@@ -86,11 +86,11 @@ namespace QuantLib {
     if (currentIndex_ >=offset_ && (currentIndex_ - offset_) % period_ ==0)
     {
         // caplet first
-        double df = currentState.discountRatio(currentIndex_,currentIndex_+period_);
+        double df = currentState.discountRatio(currentIndex_+period_,currentIndex_);
         double tau = rateTimes_[currentIndex_+period_]- rateTimes_[currentIndex_];
         double forward = (1.0/df-1.0)/tau;
         double value = (*forwardPayOffs_[productIndex_])(forward);
-        value *= tau*currentState.discountRatio(currentIndex_,currentIndex_+period_);
+        value *= tau*currentState.discountRatio(currentIndex_+period_,currentIndex_);
 
         if (value >0)
         {
@@ -104,11 +104,11 @@ namespace QuantLib {
         unsigned long numberPeriods = numberBigFRAs_ - productIndex_;
         double B=0.0;
         double P0 = 1.0; // i.e currentState.discountRatio(currentIndex_,currentIndex_);
-        double Pn = currentState.discountRatio(currentIndex_,currentIndex_+numberPeriods*period_);
+        double Pn = currentState.discountRatio(currentIndex_+numberPeriods*period_,currentIndex_);
         for (unsigned long i=0; i < numberPeriods; ++i)
         {
             double tau = rateTimes_[currentIndex_+(i+1)*period_]- rateTimes_[currentIndex_+i*period_];
-            B+= tau*currentState.discountRatio(currentIndex_,currentIndex_+(i+1)*period_);
+            B+= tau*currentState.discountRatio(currentIndex_+(i+1)*period_,currentIndex_);
         }
 
 
