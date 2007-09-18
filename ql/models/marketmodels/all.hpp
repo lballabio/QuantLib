@@ -11,6 +11,7 @@
 #include <ql/models/marketmodels/evolver.hpp>
 #include <ql/models/marketmodels/forwardforwardmappings.hpp>
 #include <ql/models/marketmodels/historicalforwardratesanalysis.hpp>
+#include <ql/models/marketmodels/historicalratesanalysis.hpp>
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/models/marketmodels/marketmodeldifferences.hpp>
 #include <ql/models/marketmodels/multiproduct.hpp>
