@@ -35,7 +35,6 @@ namespace QuantLib {
               sophisticated to distinguish between fixed dividends and
               fractional dividends
     */
-    class Arguments;
     class FDDividendEngineBase : public FDMultiPeriodEngine {
     public:
         FDDividendEngineBase(Size timeSteps = 100,

@@ -43,8 +43,6 @@ namespace QuantLib {
 
         \ingroup vanillaengines
     */
-    class Arguments;
-    class Results;
     class FDVanillaEngine {
       public:
         FDVanillaEngine(Size timeSteps, Size gridPoints,
