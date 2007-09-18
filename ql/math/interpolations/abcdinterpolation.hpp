@@ -56,6 +56,7 @@ namespace QuantLib {
                           const boost::shared_ptr<OptimizationMethod>& method
                                   = boost::shared_ptr<OptimizationMethod>()) {
 
+
             impl_ = boost::shared_ptr<Interpolation::Impl>(new
                 detail::AbcdInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
                                                      aGuess, bGuess, 
@@ -65,6 +66,7 @@ namespace QuantLib {
                                                      vegaWeighted,
                                                      endCriteria,
                                                      method));
+            impl_->update();
         }
 
     };
@@ -73,7 +75,8 @@ namespace QuantLib {
 
         template <class I1, class I2>
         class AbcdInterpolationImpl : public Interpolation::templateImpl<I1,I2> {
-          public:
+        public:
+
             AbcdInterpolationImpl(
                 const I1& xBegin, const I1& xEnd,
                 const I2& yBegin,
@@ -86,10 +89,11 @@ namespace QuantLib {
                 bool vegaWeighted,
                 const boost::shared_ptr<EndCriteria>& endCriteria,
                 const boost::shared_ptr<OptimizationMethod>& method)
-            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin) {
-                                    
-
-            }
+            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
+                aGuess_(aGuess), bGuess_(bGuess), cGuess_(cGuess), dGuess_(dGuess),
+                aIsFixed_(aIsFixed), bIsFixed_(bIsFixed), cIsFixed_(cIsFixed), dIsFixed_(dIsFixed),
+                vegaWeighted_(vegaWeighted),
+                endCriteria_(endCriteria), method_(method) { }
 
             void update() { 
                 std::vector<Real>::const_iterator x = this->xBegin_;
@@ -99,20 +103,21 @@ namespace QuantLib {
                         times.push_back(*x);
                         blackVols.push_back(*y);
                 }  
-                abcdCalibrator_(times, blackVols,
-                                aGuess, bGuess, 
-                                cGuess, dGuess,
-                                aIsFixed, bIsFixed,
-                                cIsFixed, dIsFixed,
-                                vegaWeighted,
-                                endCriteria,
-                                method)
+                abcdCalibrator_ = AbcdCalibration(times, blackVols,
+                                aGuess_, bGuess_, 
+                                cGuess_, dGuess_,
+                                aIsFixed_, bIsFixed_,
+                                cIsFixed_, dIsFixed_,
+                                vegaWeighted_,
+                                endCriteria_,
+                                method_);
                 abcdCalibrator_.compute(); 
+
             }
 
             Real value(Real x) const {
                 QL_REQUIRE(x>=0.0, "time must be non negative: " <<
-                                   x << " not allowed");
+                                   x << " not allowed");                
                 return abcdCalibrator_.value(x);
             }
 
@@ -127,6 +132,13 @@ namespace QuantLib {
             }
           private:
             AbcdCalibration abcdCalibrator_;
+        private:
+            Real aGuess_, bGuess_, cGuess_, dGuess_;
+            bool aIsFixed_, bIsFixed_, cIsFixed_, dIsFixed_;
+            bool vegaWeighted_;
+            const boost::shared_ptr<EndCriteria>& endCriteria_;
+            const boost::shared_ptr<OptimizationMethod>& method_;
+
         };
 
     }

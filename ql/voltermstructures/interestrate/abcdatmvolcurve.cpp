@@ -19,8 +19,7 @@
 
 #include <ql/voltermstructures/interestrate/abcdatmvolcurve.hpp>
 #include <ql/utilities/dataformatters.hpp>
-//#include <ql/math/interpolations/abcdinterpolation.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/interpolations/abcdinterpolation.hpp>
 
 namespace QuantLib {
 
@@ -54,12 +53,12 @@ namespace QuantLib {
         for (Size i=0; i<volHandles_.size(); ++i)
             registerWith(volHandles_[i]);
 
-        interpolation_ = LinearInterpolation(optionTimes_.begin(),
-                                             optionTimes_.end(),
-                                             vols_.begin());
-        //interpolation_ = AbcdInterpolation(optionTimes_.begin(),
-        //                                   optionTimes_.end(),
-        //                                   vols_.begin());
+        initializeOptionDatesAndTimes();
+        performCalculations();
+
+        interpolation_ = AbcdInterpolation(optionTimes_.begin(),
+                                           optionTimes_.end(),
+                                           vols_.begin());
    }
 
     void AbcdAtmVolCurve::accept(AcyclicVisitor& v) {
@@ -88,6 +87,7 @@ namespace QuantLib {
         // we might use iterators here...
         for (Size i=0; i<vols_.size(); ++i)
             vols_[i] = volHandles_[i]->value();
+
     }
 
     Real AbcdAtmVolCurve::atmVarianceImpl(Time t) const {
