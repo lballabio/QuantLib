@@ -64,7 +64,9 @@ namespace QuantLib {
         optionletTimes_ = std::vector<Time>(nOptionletTenors_);
         optionletAccrualPeriods_ = std::vector<Time>(nOptionletTenors_);
         capfloors_ = CapFloorMatrix(nOptionletTenors_);
-        
+
+        if(switchStrikes.size()==1) 
+            switchStrikes_= std::vector<QuantLib::Rate>(nOptionletTenors_, switchStrikes[0]);       
         if(switchStrikes==std::vector<Rate>())
             switchStrikes_ = std::vector<Rate>(nOptionletTenors_, 0.04); 
         QL_REQUIRE(nOptionletTenors_==switchStrikes_.size(), "nOptionletTenors_!=switchStrikes_.size()");
