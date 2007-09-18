@@ -3,14 +3,14 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    capflatvolvector.hpp \
+    capfloortermvolvector.hpp \
     capfloorvolatilitystructure.hpp \
-    capvolsurface.hpp
+    capfloortermvolsurface.hpp
 
 libCapVol_la_SOURCES = \
-    capflatvolvector.cpp \
+    capfloortermvolvector.cpp \
     capfloorvolatilitystructure.cpp \
-    capvolsurface.cpp
+    capfloortermvolsurface.cpp
 
 noinst_LTLIBRARIES = libCapVol.la
 
