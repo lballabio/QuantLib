@@ -233,7 +233,6 @@ namespace QuantLib {
             if (tenor_==Period()) return true;
             return isRegular_[i-1];
         }
-        QL_DUMMY_RETURN(true);
     }
 
 

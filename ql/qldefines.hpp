@@ -69,8 +69,6 @@
 
 #if   defined(HAVE_CONFIG_H)    // Dynamically created by configure
    #include <ql/config.hpp>
-#elif defined(__MWERKS__)       // Metrowerks CodeWarrior
-   #include <ql/config.mwcw.hpp>
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
 */
@@ -91,37 +89,7 @@
 #endif
 
 
-/*! \defgroup miscMacros Generic macros
-
-    Miscellaneous macros for compiler idiosyncrasies not fitting other
-    categories.
-
-    @{
-*/
-
-/*! \def QL_DUMMY_RETURN
-    \brief Is a dummy return statement required?
-
-    Some compilers will issue a warning if it is missing even though
-    it could never be reached during execution, e.g., after a block like
-    \code
-    if (condition)
-        return validResult;
-    else
-        QL_FAIL("whatever the reason");
-    \endcode
-    On the other hand, other compilers will issue a warning if it is present
-    because it cannot be reached.
-    For the code to be portable this macro should be used after the block.
-*/
-#if defined(REQUIRES_DUMMY_RETURN)
-    #define QL_DUMMY_RETURN(x)        return x;
-#else
-    #define QL_DUMMY_RETURN(x)
-#endif
-/*! @} */
-
-
+// import global functions into std namespace
 #include <cmath>
 #if defined(BOOST_NO_STDC_NAMESPACE)
     namespace std {

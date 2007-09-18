@@ -34,6 +34,8 @@
 #include <ql/timeseries.hpp>
 #include <ql/types.hpp>
 #include <ql/volatilitymodel.hpp>
+#include <ql/voltermstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 
 #include <ql/cashflows/all.hpp>
 #include <ql/currencies/all.hpp>

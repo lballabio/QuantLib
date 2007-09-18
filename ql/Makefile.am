@@ -52,7 +52,9 @@ this_include_HEADERS = \
 	timegrid.hpp \
 	timeseries.hpp \
 	types.hpp \
-	volatilitymodel.hpp
+	volatilitymodel.hpp \
+	voltermstructure.hpp \
+	yieldtermstructure.hpp
 
 libQuantLib_la_SOURCES = \
     currency.cpp \

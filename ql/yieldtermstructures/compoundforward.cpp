@@ -181,7 +181,6 @@ namespace QuantLib {
                 return fwdinterp_(t,true);
             }
         }
-        QL_DUMMY_RETURN(Rate());
     }
 
     Rate CompoundForward::compoundForwardImpl(Time t, Integer f) const {

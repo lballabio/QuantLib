@@ -108,7 +108,6 @@ namespace QuantLib {
 
             return adjust(d1, c);
         }
-        QL_DUMMY_RETURN(Date());
     }
 
     Date Calendar::advance(const Date & d,
