@@ -45,7 +45,7 @@ namespace QuantLib {
       public:
         OptionletStripper(const boost::shared_ptr<CapFloorTermVolSurface>& surface,
                           const boost::shared_ptr<IborIndex>& index,
-                          std::vector<Rate> switchStrikes = std::vector<Rate>());
+                          const std::vector<Rate>& switchStrikes);
         //! \name Cap Stripper interface
         //@{
         const Matrix& optionletPrices() const;

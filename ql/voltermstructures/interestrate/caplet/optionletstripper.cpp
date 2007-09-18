@@ -31,7 +31,7 @@ namespace QuantLib {
     OptionletStripper::OptionletStripper(
                     const boost::shared_ptr<CapFloorTermVolSurface>& surface,
                     const boost::shared_ptr<IborIndex>& index,
-                    std::vector<Rate> switchStrikes)
+                    const std::vector<Rate>& switchStrikes)
     : surface_(surface), index_(index), 
       nStrikes_(surface->strikes().size()), switchStrikes_(switchStrikes)
     {
