@@ -45,16 +45,18 @@ namespace QuantLib {
         if (forwardIndex >= endIndex)
             return 0.0;
 
-        Real numerator = cs.discountRatio(endIndex,startIndex)-1;
+        Real numerator = cs.discountRatio(startIndex,endIndex)-1;
         Real swapAnnuity = annuity(cs, startIndex, endIndex,endIndex);
 
         Real ratio = cs.rateTaus()[forwardIndex]/(1+ cs.rateTaus()[forwardIndex]*cs.forwardRate(forwardIndex));
 
-        Real part1 = ratio*numerator/swapAnnuity;
+        Real part1 = ratio*(numerator+1)/swapAnnuity;
         Real part2 = numerator/(swapAnnuity*swapAnnuity);
 
-        part2*= ratio* annuity(cs,forwardIndex,endIndex,endIndex);
-
+        if (forwardIndex >=1)
+            part2*= ratio* annuity(cs,startIndex,forwardIndex,endIndex);
+        else 
+            part2 =0.0;
 
         return part1-part2;
     }
