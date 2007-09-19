@@ -157,59 +157,115 @@ QL_END_TEST_LOCALS(SwapForwardMappingsTest)
 
 void SwapForwardMappingsTest::testForwardSwapJacobians()
 {
-    
-    BOOST_MESSAGE("Testing forward-rate coinitial-swap jacobian...");
-    MarketModelData marketData;
-    const std::vector<Time>& rateTimes = marketData.rateTimes();
-    const std::vector<Rate>& forwards = marketData.forwards();
-    const Size nbRates = marketData.nbRates();
-    LMMCurveState lmmCurveState(rateTimes);
-    lmmCurveState.setOnForwardRates(forwards);
+    {
+        BOOST_MESSAGE("Testing forward-rate coinitial-swap jacobian...");
+        MarketModelData marketData;
+        const std::vector<Time>& rateTimes = marketData.rateTimes();
+        const std::vector<Rate>& forwards = marketData.forwards();
+        const Size nbRates = marketData.nbRates();
+        LMMCurveState lmmCurveState(rateTimes);
+        lmmCurveState.setOnForwardRates(forwards);
 
-    Real bumpSize = 1e-8;
+        Real bumpSize = 1e-8;
 
-    std::vector<Rate> bumpedForwards(forwards);
+        std::vector<Rate> bumpedForwards(forwards);
 
-    Matrix coinitialJacobian(nbRates,nbRates);
+        Matrix coinitialJacobian(nbRates,nbRates);
 
-    for (Size i=0; i < nbRates; ++i)
-        for (Size j=0; j < nbRates; ++j)
-        {
-            bumpedForwards = forwards;
-            bumpedForwards[j]+= bumpSize;
-            lmmCurveState.setOnForwardRates(bumpedForwards);
-            Real upRate = lmmCurveState.cmSwapRate(0,i+1);
-            bumpedForwards[j]-= 2.0*bumpSize;
-            lmmCurveState.setOnForwardRates(bumpedForwards);
-            Real downRate = lmmCurveState.cmSwapRate(0,i+1);
-            Real deriv = (upRate-downRate)/(2.0*bumpSize);
-            coinitialJacobian[i][j] = deriv;
-
-        }
-
-        Matrix modelJacobian(SwapForwardMappings::coinitialSwapForwardJacobian(lmmCurveState));
-
-        Real errorTolerance = 1e-5;
-
-            
         for (Size i=0; i < nbRates; ++i)
             for (Size j=0; j < nbRates; ++j)
-                if( fabs(modelJacobian[i][j]-coinitialJacobian[i][j]) > errorTolerance)
-                {
-                    BOOST_MESSAGE(
-                        "rate " << i
-                        << ", sensitivity "  <<  j
-                        << ", formula value " << modelJacobian[i][j]
+            {
+                bumpedForwards = forwards;
+                bumpedForwards[j]+= bumpSize;
+                lmmCurveState.setOnForwardRates(bumpedForwards);
+                Real upRate = lmmCurveState.cmSwapRate(0,i+1);
+                bumpedForwards[j]-= 2.0*bumpSize;
+                lmmCurveState.setOnForwardRates(bumpedForwards);
+                Real downRate = lmmCurveState.cmSwapRate(0,i+1);
+                Real deriv = (upRate-downRate)/(2.0*bumpSize);
+                coinitialJacobian[i][j] = deriv;
+
+            }
+
+            Matrix modelJacobian(SwapForwardMappings::coinitialSwapForwardJacobian(lmmCurveState));
+
+            Real errorTolerance = 1e-5;
+
+
+            for (Size i=0; i < nbRates; ++i)
+                for (Size j=0; j < nbRates; ++j)
+                    if( fabs(modelJacobian[i][j]-coinitialJacobian[i][j]) > errorTolerance)
+                    {
+                        BOOST_MESSAGE(
+                            "rate " << i
+                            << ", sensitivity "  <<  j
+                            << ", formula value " << modelJacobian[i][j]
                         << " bumping value " << coinitialJacobian[i][j]
                         <<  "\n");
 
-                    BOOST_ERROR("test failed");
+                        BOOST_ERROR("test failed");
+
+                    }
+    }
+
+    {
+
+        BOOST_MESSAGE("Testing forward-rate cm-swap jacobian...");
+        MarketModelData marketData;
+        const std::vector<Time>& rateTimes = marketData.rateTimes();
+        const std::vector<Rate>& forwards = marketData.forwards();
+        const Size nbRates = marketData.nbRates();
+        LMMCurveState lmmCurveState(rateTimes);
+        lmmCurveState.setOnForwardRates(forwards);
+
+        Real bumpSize = 1e-8;
+
+        for( Size spanningForwards = 1; spanningForwards < nbRates; ++spanningForwards)
+        {
+
+            std::vector<Rate> bumpedForwards(forwards);
+
+            Matrix cmsJacobian(nbRates,nbRates);
+
+            for (Size i=0; i < nbRates; ++i)
+                for (Size j=0; j < nbRates; ++j)
+                {
+                    bumpedForwards = forwards;
+                    bumpedForwards[j]+= bumpSize;
+                    lmmCurveState.setOnForwardRates(bumpedForwards);
+                    Real upRate = lmmCurveState.cmSwapRate(i,spanningForwards);
+                    bumpedForwards[j]-= 2.0*bumpSize;
+                    lmmCurveState.setOnForwardRates(bumpedForwards);
+                    Real downRate = lmmCurveState.cmSwapRate(i,spanningForwards);
+                    Real deriv = (upRate-downRate)/(2.0*bumpSize);
+                    cmsJacobian[i][j] = deriv;
 
                 }
 
+                Matrix modelJacobian(SwapForwardMappings::cmSwapForwardJacobian(lmmCurveState, spanningForwards));
 
+                Real errorTolerance = 1e-5;
+
+
+                for (Size i=0; i < nbRates; ++i)
+                    for (Size j=0; j < nbRates; ++j)
+                        if( fabs(modelJacobian[i][j]-cmsJacobian[i][j]) > errorTolerance)
+                        {
+                            BOOST_MESSAGE(
+                                "rate " << i
+                                << ", sensitivity "  <<  j
+                                << ", formula value " << modelJacobian[i][j]
+                            << " bumping value " << cmsJacobian[i][j]
+                            <<  "\n");
+
+                            BOOST_ERROR("test failed");
+
+                        }
+        }
+
+    }
 }
-    
+
 
 void SwapForwardMappingsTest::testForwardCoterminalMappings() {
 
