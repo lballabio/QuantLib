@@ -11,6 +11,7 @@ this_include_HEADERS = \
 	inversecumulativerng.hpp \
 	inversecumulativersg.hpp \
 	knuthuniformrng.hpp \
+	latticersg.hpp \
 	lecuyeruniformrng.hpp \
 	mt19937uniformrng.hpp \
 	primitivepolynomials.h \
@@ -24,6 +25,7 @@ libRandomNumbers_la_SOURCES = \
     faurersg.cpp \
     haltonrsg.cpp \
 	knuthuniformrng.cpp \
+	latticersg.cpp \
 	lecuyeruniformrng.cpp \
 	mt19937uniformrng.cpp \
 	primitivepolynomials.c \
