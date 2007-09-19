@@ -120,6 +120,20 @@ namespace QuantLib {
     }
 
     Disposable<Matrix>
+        SwapForwardMappings::cmSwapForwardJacobian(const CurveState& cs,
+        Size spanningForwards)
+    {
+        Size n = cs.numberOfRates();
+
+        Matrix jacobian = Matrix(n, n, 0.0);
+        for (Size i=0; i<n; ++i)      // i = swap rate index
+            for (Size j=0; j<n; ++j)  // j = forward rate index
+                jacobian[i][j] =swapDerivative(cs, i, std::min(n,i+spanningForwards), j);
+
+        return jacobian;
+    }
+
+    Disposable<Matrix>
         SwapForwardMappings::coinitialSwapZedMatrix(const CurveState& cs,
         const Spread displacement)
     {
@@ -139,5 +153,25 @@ namespace QuantLib {
 
     }
 
+ Disposable<Matrix>
+        SwapForwardMappings::cmSwapZedMatrix(const CurveState& cs,
+        Size spanningForwards,
+        const Spread displacement)
+    {
+        Size n = cs.numberOfRates();
+        Matrix zMatrix = cmSwapForwardJacobian(cs,spanningForwards);
+        const std::vector<Rate>& f = cs.forwardRates();
+        std::vector<Rate> sr(n);
+
+        for (Size i=0; i<n; ++i)
+            sr[i] = cs.cmSwapRate(i,spanningForwards+i);
+
+        for (Size i=0; i<n; ++i)
+            for (Size j=i; j<n; ++j)
+                zMatrix[i][j] *= (f[j]+displacement)/(sr[i]+displacement);
+        return zMatrix;
+
+
+    }
 
 }

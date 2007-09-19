@@ -64,17 +64,18 @@ namespace QuantLib {
                                 const Spread displacement);
 
 
-        /*! \ todo implement the following
+        /*! 
             Returns the dsr[i]/df[j] jacobian between
             constant maturity swap rates and forward rates */
         static Disposable<Matrix>
-        cmSwapForwardJacobian(const CurveState& cs);
+        cmSwapForwardJacobian(const CurveState& cs, Size spanningForwards);
 
-        /*! \ todo implement the following
+        /*! 
             Returns the Z matrix to switch base from forward to
-            coterminal swap rates */
+             constant maturity swap rates */
         static Disposable<Matrix>
         cmSwapZedMatrix(const CurveState& cs,
+                        Size spanningForwards,
                         const Spread displacement);
 
     };
