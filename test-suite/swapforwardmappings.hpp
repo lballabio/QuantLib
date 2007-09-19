@@ -27,6 +27,8 @@
 
 class SwapForwardMappingsTest {
   public:
+      
+    static void testForwardSwapJacobians();
     static void testForwardCoterminalMappings();
     static boost::unit_test_framework::test_suite* suite();
 };
