@@ -90,8 +90,10 @@ namespace QuantLib {
                 Position::Type longPutOptions = Position::Long,
                 bool isPutATMIncluded = false,
                 const std::vector<Rate>& putDigitalPayoffs = std::vector<Rate>(),
-                Replication::Type replication = Replication::Central,
-                Real eps = 1e-4);
+                const boost::shared_ptr<DigitalReplication>& replication =
+                      boost::shared_ptr<DigitalReplication>()
+                /*Replication::Type replication = Replication::Central,
+                Real eps = 1e-4*/);
 
     //! helper function building a sequence of capped/floored cms rate coupons
     Leg CmsLeg(const std::vector<Real>& nominals,
@@ -124,8 +126,10 @@ namespace QuantLib {
                 Position::Type longPutOptions = Position::Long,
                 bool isPutATMIncluded = false,
                 const std::vector<Rate>& putDigitalPayoffs = std::vector<Rate>(),
-                Replication::Type replication = Replication::Central,
-                Real eps = 1e-4);
+                const boost::shared_ptr<DigitalReplication>& replication =
+                      boost::shared_ptr<DigitalReplication>()
+                /*Replication::Type replication = Replication::Central,
+                Real eps = 1e-4*/);
     
     //! helper function building a sequence of capped/floored cms zero rate coupons
     Leg CmsZeroLeg(const std::vector<Real>& nominals,

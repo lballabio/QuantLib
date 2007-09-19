@@ -26,16 +26,15 @@
 namespace QuantLib {
 
     DigitalCoupon::DigitalCoupon(const boost::shared_ptr<FloatingRateCoupon>& underlying,
-                      Rate callStrike,
-                      Position::Type callPosition,
-                      bool isCallATMIncluded,
-                      Rate callDigitalPayoff,
-                      Rate putStrike,
-                      Position::Type putPosition,
-                      bool isPutATMIncluded,
-                      Rate putDigitalPayoff,
-                      Replication::Type replication,
-                      Real eps)
+                  Rate callStrike,
+                  Position::Type callPosition,
+                  bool isCallATMIncluded,
+                  Rate callDigitalPayoff,
+                  Rate putStrike,
+                  Position::Type putPosition,
+                  bool isPutATMIncluded,
+                  Rate putDigitalPayoff,
+                  const boost::shared_ptr<DigitalReplication>& replication) 
     : FloatingRateCoupon(underlying->date(),
                          underlying->nominal(),
                          underlying->accrualStartDate(),
@@ -51,12 +50,12 @@ namespace QuantLib {
       underlying_(underlying), callCsi_(0.), putCsi_(0.),
       isCallATMIncluded_(isCallATMIncluded), isPutATMIncluded_(isPutATMIncluded),
       isCallCashOrNothing_(false), isPutCashOrNothing_(false),
-      callLeftEps_(eps/2.), callRightEps_(eps/2.),
-      putLeftEps_(eps/2.), putRightEps_(eps/2.),
+      callLeftEps_(replication->gap()/2.), callRightEps_(replication->gap()/2.),
+      putLeftEps_(replication->gap()/2.), putRightEps_(replication->gap()/2.),
       hasPutStrike_(false), hasCallStrike_(false),
-      replicationType_(replication) {
+      replicationType_(replication->replicationType()) {
 
-        QL_REQUIRE(eps>0.0, "Non positive epsilon not allowed");
+        QL_REQUIRE(replication->gap()>0.0, "Non positive epsilon not allowed");
 
         if (putStrike == Null<Rate>())
             QL_REQUIRE(putDigitalPayoff == Null<Rate>(),
@@ -68,7 +67,7 @@ namespace QuantLib {
             QL_REQUIRE(callStrike >= 0., "negative call strike not allowed");
             hasCallStrike_ = true;
             callStrike_ = callStrike;
-            QL_REQUIRE(callStrike_>=eps/2., "call strike < eps/2");
+            QL_REQUIRE(callStrike_>=replication->gap()/2., "call strike < eps/2");
             switch (callPosition) {
                 case Position::Long :
                     callCsi_ = 1.0;
@@ -104,7 +103,7 @@ namespace QuantLib {
             }
         }
 
-        switch (replication) {
+        switch (replicationType_) {
           case Replication::Central :
             // do nothing
             break;
@@ -113,10 +112,10 @@ namespace QuantLib {
                 switch (callPosition) {
                     case Position::Long :
                         callLeftEps_ = 0.;
-                        callRightEps_ = eps;
+                        callRightEps_ = replication->gap();
                         break;
                     case Position::Short :
-                        callLeftEps_ = eps;
+                        callLeftEps_ = replication->gap();
                         callRightEps_ = 0.;
                         break;
                     default:
@@ -126,12 +125,12 @@ namespace QuantLib {
             if (hasPutStrike_) {
                 switch (putPosition) {
                     case Position::Long :
-                        putLeftEps_ = eps;
+                        putLeftEps_ = replication->gap();
                         putRightEps_ = 0.;
                         break;
                     case Position::Short :
                         putLeftEps_ = 0.;
-                        putRightEps_ = eps;
+                        putRightEps_ = replication->gap();
                         break;
                     default:
                         QL_FAIL("unsupported position type");
@@ -142,12 +141,12 @@ namespace QuantLib {
             if (hasCallStrike_) {
                 switch (callPosition) {
                     case Position::Long :
-                        callLeftEps_ = eps;
+                        callLeftEps_ = replication->gap();
                         callRightEps_ = 0.;
                         break;
                     case Position::Short :
                         callLeftEps_ = 0.;
-                        callRightEps_ = eps;
+                        callRightEps_ = replication->gap();
                         break;
                     default:
                         QL_FAIL("unsupported position type");
@@ -157,10 +156,10 @@ namespace QuantLib {
                 switch (putPosition) {
                     case Position::Long :
                         putLeftEps_ = 0.;
-                        putRightEps_ = eps;
+                        putRightEps_ = replication->gap();
                         break;
                     case Position::Short :
-                        putLeftEps_ = eps;
+                        putLeftEps_ = replication->gap();
                         putRightEps_ = 0.;
                         break;
                     default:
@@ -174,6 +173,7 @@ namespace QuantLib {
 
         registerWith(underlying);
     }
+
 
     Rate DigitalCoupon::callOptionRate() const {
 

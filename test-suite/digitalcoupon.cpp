@@ -86,7 +86,8 @@ void DigitalCouponTest::testAssetOrNothing() {
 
     Real gap = 1e-7; /* low, in order to compare digital option value
                         with black formula result */
-
+    boost::shared_ptr<DigitalReplication>
+        replication(new DigitalReplication(Replication::Central, gap));
     for (Size i = 0; i< LENGTH(vols); i++) {
             Volatility capletVol = vols[i];
             RelinkableHandle<OptionletVolatilityStructure> vol;
@@ -117,7 +118,7 @@ void DigitalCouponTest::testAssetOrNothing() {
                     DigitalCoupon digitalCappedCoupon(underlying,
                                         strike, Position::Short, false, nullstrike,
                                         nullstrike, Position::Short, false, nullstrike,
-                                        Replication::Central, gap);
+                                        replication);
                     boost::shared_ptr<IborCouponPricer> pricer(new
                                                             BlackIborCouponPricer(vol));
                     digitalCappedCoupon.setPricer(pricer);
@@ -193,7 +194,7 @@ void DigitalCouponTest::testAssetOrNothing() {
                     DigitalCoupon digitalFlooredCoupon(underlying,
                                         nullstrike, Position::Long, false, nullstrike,
                                         strike, Position::Long, false, nullstrike,
-                                        Replication::Central, gap);
+                                        replication);
                     digitalFlooredCoupon.setPricer(pricer);
 
                     // Check digital option price vs N(d1) price
@@ -272,12 +273,14 @@ void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
     RelinkableHandle<OptionletVolatilityStructure> volatility;
     volatility.linkTo(boost::shared_ptr<OptionletVolatilityStructure>(new
             CapletConstantVolatility(today_, capletVolatility, Actual360())));
+    Real gap = 1e-4;
+    boost::shared_ptr<DigitalReplication>
+        replication(new DigitalReplication(Replication::Central, gap));
 
     for (Size k = 0; k<10; k++) {   // Loop on start and end dates
         Date startDate = calendar_.advance(settlement_,(k+1)*Years);
         Date endDate = calendar_.advance(settlement_,(k+2)*Years);
         Rate nullstrike = Null<Rate>();
-        Real gap = 1e-4;
         Date paymentDate = endDate;
 
         boost::shared_ptr<FloatingRateCoupon> underlying(
@@ -295,7 +298,7 @@ void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
         DigitalCoupon digitalCappedCoupon(underlying,
                                           strike, Position::Short, false, nullstrike,
                                           nullstrike, Position::Short, false, nullstrike,
-                                          Replication::Central, gap);
+                                          replication);
         boost::shared_ptr<IborCouponPricer> pricer(
             new BlackIborCouponPricer(volatility));
         digitalCappedCoupon.setPricer(pricer);
@@ -339,7 +342,7 @@ void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
         DigitalCoupon digitalFlooredCoupon(underlying,
                                           nullstrike, Position::Long, false, nullstrike,
                                           strike, Position::Long, false, nullstrike,
-                                          Replication::Central, gap);
+                                          replication);
         digitalFlooredCoupon.setPricer(pricer);
 
         // Check price vs its target price
@@ -390,12 +393,14 @@ void DigitalCouponTest::testAssetOrNothingDeepOutTheMoney() {
     RelinkableHandle<OptionletVolatilityStructure> volatility;
     volatility.linkTo(boost::shared_ptr<OptionletVolatilityStructure>(new
                         CapletConstantVolatility(today_, capletVolatility, Actual360())));
+    Real gap = 1e-4;
+    boost::shared_ptr<DigitalReplication>
+        replication(new DigitalReplication(Replication::Central, gap));
 
     for (Size k = 0; k<10; k++) { // loop on start and end dates
         Date startDate = calendar_.advance(settlement_,(k+1)*Years);
         Date endDate = calendar_.advance(settlement_,(k+2)*Years);
         Rate nullstrike = Null<Rate>();
-        Real gap = 1e-4;
         Date paymentDate = endDate;
 
         boost::shared_ptr<FloatingRateCoupon> underlying(new IborCoupon(paymentDate,
@@ -412,7 +417,7 @@ void DigitalCouponTest::testAssetOrNothingDeepOutTheMoney() {
         DigitalCoupon digitalCappedCoupon(underlying,
                                           strike, Position::Short, false, nullstrike,
                                           nullstrike, Position::Long, false, nullstrike,
-                                          Replication::Central, gap);
+                                          replication/*Replication::Central, gap*/);
         boost::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer(volatility));
         digitalCappedCoupon.setPricer(pricer);
 
@@ -455,7 +460,7 @@ void DigitalCouponTest::testAssetOrNothingDeepOutTheMoney() {
         DigitalCoupon digitalFlooredCoupon(underlying,
                                           nullstrike, Position::Long, false, nullstrike,
                                           strike, Position::Long, false, nullstrike,
-                                          Replication::Central, gap);
+                                          replication);
         digitalFlooredCoupon.setPricer(pricer);
 
         // Check price vs its target
@@ -510,6 +515,12 @@ void DigitalCouponTest::testCashOrNothing() {
 
     Real gearing = 3.0;
     Real spread = -0.0002;
+                
+    Real gap = 1e-08; /* very low, in order to compare digital option value
+                                     with black formula result */
+    boost::shared_ptr<DigitalReplication>
+        replication(new DigitalReplication(Replication::Central, gap));
+
 
     for (Size i = 0; i< LENGTH(vols); i++) {
             Volatility capletVol = vols[i];
@@ -523,8 +534,7 @@ void DigitalCouponTest::testCashOrNothing() {
                 Date endDate = calendar_.advance(settlement_,(k+2)*Years);
                 Rate nullstrike = Null<Rate>();
                 Rate cashRate = 0.01;
-                Real gap = 1e-08; /* very low, in order to compare digital option value
-                                     with black formula result */
+
                 Date paymentDate = endDate;
                 boost::shared_ptr<FloatingRateCoupon> underlying(
                                             new IborCoupon(paymentDate,
@@ -539,7 +549,7 @@ void DigitalCouponTest::testCashOrNothing() {
                 DigitalCoupon digitalCappedCoupon(underlying,
                                           strike, Position::Short, false, cashRate,
                                           nullstrike, Position::Short, false, nullstrike,
-                                          Replication::Central, gap);
+                                          replication);
                 boost::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer(vol));
                 digitalCappedCoupon.setPricer(pricer);
 
@@ -602,7 +612,7 @@ void DigitalCouponTest::testCashOrNothing() {
                 DigitalCoupon digitalFlooredCoupon(underlying,
                                           nullstrike, Position::Long, false, nullstrike,
                                           strike, Position::Long, false, cashRate,
-                                          Replication::Central, gap);
+                                          replication);
                 digitalFlooredCoupon.setPricer(pricer);
 
 
@@ -668,6 +678,8 @@ void DigitalCouponTest::testCashOrNothingDeepInTheMoney() {
         Rate nullstrike = Null<Rate>();
         Rate cashRate = 0.01;
         Real gap = 1e-4;
+        boost::shared_ptr<DigitalReplication>
+            replication(new DigitalReplication(Replication::Central, gap));
         Date paymentDate = endDate;
 
         boost::shared_ptr<FloatingRateCoupon> underlying(new IborCoupon(paymentDate,
@@ -683,7 +695,7 @@ void DigitalCouponTest::testCashOrNothingDeepInTheMoney() {
         DigitalCoupon digitalCappedCoupon(underlying,
                                           strike, Position::Short, false, cashRate,
                                           nullstrike, Position::Short, false, nullstrike,
-                                          Replication::Central, gap);
+                                          replication);
         boost::shared_ptr<IborCouponPricer> pricer(
             new BlackIborCouponPricer(volatility));
         digitalCappedCoupon.setPricer(pricer);
@@ -729,7 +741,7 @@ void DigitalCouponTest::testCashOrNothingDeepInTheMoney() {
         DigitalCoupon digitalFlooredCoupon(underlying,
                                           nullstrike, Position::Long, false, nullstrike,
                                           strike, Position::Long, false, cashRate,
-                                          Replication::Central, gap);
+                                          replication);
         digitalFlooredCoupon.setPricer(pricer);
 
         // Check price vs its target
@@ -784,6 +796,8 @@ void DigitalCouponTest::testCashOrNothingDeepOutTheMoney() {
         Rate nullstrike = Null<Rate>();
         Rate cashRate = 0.01;
         Real gap = 1e-4;
+        boost::shared_ptr<DigitalReplication>
+            replication(new DigitalReplication(Replication::Central, gap));
         Date paymentDate = endDate;
 
         boost::shared_ptr<FloatingRateCoupon> underlying(new IborCoupon(paymentDate,
@@ -799,7 +813,7 @@ void DigitalCouponTest::testCashOrNothingDeepOutTheMoney() {
         DigitalCoupon digitalCappedCoupon(underlying,
                                           strike, Position::Short, false, cashRate,
                                           nullstrike, Position::Short, false, nullstrike,
-                                          Replication::Central, gap);
+                                          replication);
 
         boost::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer(volatility));
         digitalCappedCoupon.setPricer(pricer);
@@ -843,7 +857,7 @@ void DigitalCouponTest::testCashOrNothingDeepOutTheMoney() {
         DigitalCoupon digitalFlooredCoupon(underlying,
                                           nullstrike, Position::Long, false, nullstrike,
                                           strike, Position::Long, false, cashRate,
-                                          Replication::Central, gap);
+                                          replication);
         digitalFlooredCoupon.setPricer(pricer);
 
         // Check price vs its target
@@ -893,6 +907,10 @@ void DigitalCouponTest::testCallPutParity() {
     Real gearing = 1.0;
     Real spread = 0.0;
 
+    Real gap = 1e-04;
+    boost::shared_ptr<DigitalReplication>
+        replication(new DigitalReplication(Replication::Central, gap));
+
     for (Size i = 0; i< LENGTH(vols); i++) {
             Volatility capletVolatility = vols[i];
             RelinkableHandle<OptionletVolatilityStructure> volatility;
@@ -904,7 +922,6 @@ void DigitalCouponTest::testCallPutParity() {
                 Date startDate = calendar_.advance(settlement_,(k+1)*Years);
                 Date endDate = calendar_.advance(settlement_,(k+2)*Years);
                 Rate nullstrike = Null<Rate>();
-                Real gap = 1e-04;
 
                 Date paymentDate = endDate;
 
@@ -923,7 +940,7 @@ void DigitalCouponTest::testCallPutParity() {
                 DigitalCoupon cash_digitalCallCoupon(underlying,
                                           strike, Position::Long, false, cashRate,
                                           nullstrike, Position::Long, false, nullstrike,
-                                          Replication::Central, gap);
+                                          replication);
                 boost::shared_ptr<IborCouponPricer> pricer(
                     new BlackIborCouponPricer(volatility));
                 cash_digitalCallCoupon.setPricer(pricer);
@@ -931,7 +948,7 @@ void DigitalCouponTest::testCallPutParity() {
                 DigitalCoupon cash_digitalPutCoupon(underlying,
                                           nullstrike, Position::Long, false, nullstrike,
                                           strike, Position::Short, false, cashRate,
-                                          Replication::Central, gap);
+                                          replication);
 
                 cash_digitalPutCoupon.setPricer(pricer);
                 Real digitalPrice = cash_digitalCallCoupon.price(termStructure_) -
@@ -958,13 +975,13 @@ void DigitalCouponTest::testCallPutParity() {
                 DigitalCoupon asset_digitalCallCoupon(underlying,
                                           strike, Position::Long, false, nullstrike,
                                           nullstrike, Position::Long, false, nullstrike,
-                                          Replication::Central, gap);
+                                          replication);
                 asset_digitalCallCoupon.setPricer(pricer);
                 // Floating Rate Coupon - Put Digital option
                 DigitalCoupon asset_digitalPutCoupon(underlying,
                                           nullstrike, Position::Long, false, nullstrike,
                                           strike, Position::Short, false, nullstrike,
-                                          Replication::Central, gap);
+                                          replication);
                 asset_digitalPutCoupon.setPricer(pricer);
                 digitalPrice = asset_digitalCallCoupon.price(termStructure_) -
                                asset_digitalPutCoupon.price(termStructure_);
@@ -1000,6 +1017,14 @@ void DigitalCouponTest::testReplicationType() {
     Real gearing = 1.0;
     Real spread = 0.0;
 
+    Real gap = 1e-04;
+    boost::shared_ptr<DigitalReplication>
+        subReplication(new DigitalReplication(Replication::Sub, gap));
+    boost::shared_ptr<DigitalReplication>
+        centralReplication(new DigitalReplication(Replication::Central, gap));
+    boost::shared_ptr<DigitalReplication>
+        superReplication(new DigitalReplication(Replication::Super, gap));
+
     for (Size i = 0; i< LENGTH(vols); i++) {
             Volatility capletVolatility = vols[i];
             RelinkableHandle<OptionletVolatilityStructure> volatility;
@@ -1011,7 +1036,6 @@ void DigitalCouponTest::testReplicationType() {
                 Date startDate = calendar_.advance(settlement_,(k+1)*Years);
                 Date endDate = calendar_.advance(settlement_,(k+2)*Years);
                 Rate nullstrike = Null<Rate>();
-                Real gap = 1e-04;
 
                 Date paymentDate = endDate;
 
@@ -1030,15 +1054,15 @@ void DigitalCouponTest::testReplicationType() {
                 DigitalCoupon sub_cash_longDigitalCallCoupon(underlying,
                                           strike, Position::Long, false, cashRate,
                                           nullstrike, Position::Long, false, nullstrike,
-                                          Replication::Sub, gap);
+                                          subReplication);
                 DigitalCoupon central_cash_longDigitalCallCoupon(underlying,
                                           strike, Position::Long, false, cashRate,
                                           nullstrike, Position::Long, false, nullstrike,
-                                          Replication::Central, gap);
+                                          centralReplication);
                 DigitalCoupon over_cash_longDigitalCallCoupon(underlying,
                                           strike, Position::Long, false, cashRate,
                                           nullstrike, Position::Long, false, nullstrike,
-                                          Replication::Super, gap);
+                                          superReplication);
                 boost::shared_ptr<IborCouponPricer> pricer(
                     new BlackIborCouponPricer(volatility));
                 sub_cash_longDigitalCallCoupon.setPricer(pricer);
@@ -1066,15 +1090,15 @@ void DigitalCouponTest::testReplicationType() {
                 DigitalCoupon sub_cash_shortDigitalCallCoupon(underlying,
                                           strike, Position::Short, false, cashRate,
                                           nullstrike, Position::Long, false, nullstrike,
-                                          Replication::Sub, gap);
+                                          subReplication);
                 DigitalCoupon central_cash_shortDigitalCallCoupon(underlying,
                                           strike, Position::Short, false, cashRate,
                                           nullstrike, Position::Long, false, nullstrike,
-                                          Replication::Central, gap);
+                                          centralReplication);
                 DigitalCoupon over_cash_shortDigitalCallCoupon(underlying,
                                           strike, Position::Short, false, cashRate,
                                           nullstrike, Position::Long, false, nullstrike,
-                                          Replication::Super, gap);
+                                          superReplication);
                 sub_cash_shortDigitalCallCoupon.setPricer(pricer);
                 central_cash_shortDigitalCallCoupon.setPricer(pricer);
                 over_cash_shortDigitalCallCoupon.setPricer(pricer);
@@ -1098,15 +1122,15 @@ void DigitalCouponTest::testReplicationType() {
                 DigitalCoupon sub_cash_longDigitalPutCoupon(underlying,
                                           nullstrike, Position::Long, false, nullstrike,
                                           strike, Position::Long, false, cashRate,
-                                          Replication::Sub, gap);
+                                          subReplication);
                 DigitalCoupon central_cash_longDigitalPutCoupon(underlying,
                                           nullstrike, Position::Long, false, nullstrike,
                                           strike, Position::Long, false, cashRate,
-                                          Replication::Central, gap);
+                                          centralReplication);
                 DigitalCoupon over_cash_longDigitalPutCoupon(underlying,
                                           nullstrike, Position::Long, false, nullstrike,
                                           strike, Position::Long, false, cashRate,
-                                          Replication::Super, gap);
+                                          superReplication);
                 sub_cash_longDigitalPutCoupon.setPricer(pricer);
                 central_cash_longDigitalPutCoupon.setPricer(pricer);
                 over_cash_longDigitalPutCoupon.setPricer(pricer);
@@ -1131,15 +1155,15 @@ void DigitalCouponTest::testReplicationType() {
                 DigitalCoupon sub_cash_shortDigitalPutCoupon(underlying,
                                           nullstrike, Position::Long, false, nullstrike,
                                           strike, Position::Short, false, cashRate,
-                                          Replication::Sub, gap);
+                                          subReplication);
                 DigitalCoupon central_cash_shortDigitalPutCoupon(underlying,
                                           nullstrike, Position::Long, false, nullstrike,
                                           strike, Position::Short, false, cashRate,
-                                          Replication::Central, gap);
+                                          centralReplication);
                 DigitalCoupon over_cash_shortDigitalPutCoupon(underlying,
                                           nullstrike, Position::Long, false, nullstrike,
                                           strike, Position::Short, false, cashRate,
-                                          Replication::Super, gap);
+                                          superReplication);
                 sub_cash_shortDigitalPutCoupon.setPricer(pricer);
                 central_cash_shortDigitalPutCoupon.setPricer(pricer);
                 over_cash_shortDigitalPutCoupon.setPricer(pricer);

@@ -25,6 +25,7 @@
 #define quantlib_replication_hpp
 
 #include <ostream>
+#include <ql/types.hpp>
 
 namespace QuantLib {
 
@@ -39,6 +40,17 @@ namespace QuantLib {
     /*! \relates Replication */
     std::ostream& operator<<(std::ostream&,
                              Replication::Type);
+
+    class DigitalReplication {
+    public:
+        DigitalReplication(Replication::Type t = Replication::Central, 
+                           Real gap = 1e-4);
+        Replication::Type replicationType() const { return replicationType_;};
+        Real gap() const { return gap_;};
+    private:
+        Real gap_;
+        Replication::Type replicationType_;
+    };
 
 }
 

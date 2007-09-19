@@ -89,8 +89,8 @@ namespace QuantLib {
                       Position::Type putPosition = Position::Long,
                       bool isPutITMIncluded = false,
                       Rate putDigitalPayoff = Null<Rate>(),
-                      Replication::Type replication = Replication::Central,
-                      Real eps = 1e-4);
+                      const boost::shared_ptr<DigitalReplication>& replication =
+                        boost::shared_ptr<DigitalReplication>() );
 
         //@}
         //! \name Coupon interface
@@ -193,8 +193,8 @@ namespace QuantLib {
                       Position::Type putPosition = Position::Long,
                       bool isPutATMIncluded = false,
                       Rate putDigitalPayoff = Null<Rate>(),
-                      Replication::Type replication = Replication::Central,
-                      Real eps = 1e-4) :
+                      const boost::shared_ptr<DigitalReplication>& replication =
+                      boost::shared_ptr<DigitalReplication>()):
             DigitalCoupon(underlying,
                           callStrike,
                           callPosition,
@@ -204,8 +204,7 @@ namespace QuantLib {
                           putPosition,
                           isPutATMIncluded,
                           putDigitalPayoff,
-                          replication,
-                          eps) {}
+                          replication ) {}
 
         //@}
         //! \name Visitability
@@ -225,8 +224,8 @@ namespace QuantLib {
                       Position::Type putPosition = Position::Long,
                       bool isPutATMIncluded = false,
                       Rate putDigitalPayoff = Null<Rate>(),
-                      Replication::Type replication = Replication::Central,
-                      Real eps = 1e-4) :
+                      const boost::shared_ptr<DigitalReplication>& replication =
+                      boost::shared_ptr<DigitalReplication>() ):
             DigitalCoupon(underlying,
                           callStrike,
                           callPosition,
@@ -236,8 +235,7 @@ namespace QuantLib {
                           putPosition,
                           isPutATMIncluded,
                           putDigitalPayoff,
-                          replication,
-                          eps) {}
+                          replication) {}
         //@}
         //! \name Visitability
         //@{

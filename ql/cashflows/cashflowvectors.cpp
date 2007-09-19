@@ -558,8 +558,7 @@ namespace QuantLib {
                    Position::Type putPosition,
                    bool isPutATMIncluded,
                    const std::vector<Rate>& putDigitalPayoffs,
-                   Replication::Type replication,
-                   Real eps) {
+                   const boost::shared_ptr<DigitalReplication>& replication) {
 
         QL_REQUIRE(!nominals.empty(), "no nominal given");
 
@@ -627,8 +626,7 @@ namespace QuantLib {
                                        putPosition,
                                        isPutATMIncluded,
                                        get(putDigitalPayoffs, i, Null<Real>()),
-                                       replication,
-                                       eps)));
+                                       replication)));
             }
         }
         return leg;
@@ -651,8 +649,7 @@ namespace QuantLib {
                 Position::Type longPutOption,
                 bool isPutATMIncluded,
                 const std::vector<Rate>& putDigitalPayoffs,
-                Replication::Type replication,
-                Real eps) {
+                const boost::shared_ptr<DigitalReplication>& replication) {
 
         return FloatingDigitalLeg<IborIndex, IborCoupon, DigitalIborCoupon>(
                nominals,
@@ -672,8 +669,8 @@ namespace QuantLib {
                longPutOption,
                isPutATMIncluded,
                putDigitalPayoffs,
-               replication,
-               eps);    }
+               replication);
+    }
 
     Leg DigitalCmsLeg(const std::vector<Real>& nominals,
                 const Schedule& schedule,
@@ -692,8 +689,7 @@ namespace QuantLib {
                 Position::Type putPosition,
                 bool isPutATMIncluded,
                 const std::vector<Rate>& putDigitalPayoffs,
-                Replication::Type replication,
-                Real eps) {
+                const boost::shared_ptr<DigitalReplication>& replication) {
 
         return FloatingDigitalLeg<SwapIndex, CmsCoupon, DigitalCmsCoupon>(
                nominals,
@@ -713,8 +709,7 @@ namespace QuantLib {
                putPosition,
                isPutATMIncluded,
                putDigitalPayoffs,
-               replication,
-               eps);
+               replication);
     }
 
 }

@@ -36,4 +36,7 @@ namespace QuantLib {
         }
     }
 
+    DigitalReplication::DigitalReplication(Replication::Type t, Real gap) :
+            replicationType_(t), gap_(gap) {}
+
 }
