@@ -9,6 +9,7 @@
 #include <ql/math/randomnumbers/inversecumulativersg.hpp>
 #include <ql/math/randomnumbers/knuthuniformrng.hpp>
 #include <ql/math/randomnumbers/latticersg.hpp>
+#include <ql/math/randomnumbers/latticerules.hpp>
 #include <ql/math/randomnumbers/lecuyeruniformrng.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/randomnumbers/primitivepolynomials.h>
