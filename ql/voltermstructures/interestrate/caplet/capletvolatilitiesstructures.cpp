@@ -155,7 +155,6 @@ namespace QuantLib {
            be known*/
         for (Size i = 0; i < tenorTimes_.size(); i++){
             Date tenorDate = referenceCaps[i].front()->lastFixingDate();
-            // FLOATING_POINT_EXCEPTION
             tenorTimes_[i] = dayCounter_.yearFraction(
                 TermStructure::referenceDate(), tenorDate);
         }

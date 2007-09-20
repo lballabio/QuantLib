@@ -67,7 +67,6 @@ namespace QuantLib {
     }
 
     Time GeneralizedBlackScholesProcess::time(const Date& d) const {
-        // FLOATING_POINT_EXCEPTION
         return riskFreeRate_->dayCounter().yearFraction(
                                            riskFreeRate_->referenceDate(), d);
     }
