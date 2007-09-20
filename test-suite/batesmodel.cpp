@@ -181,6 +181,7 @@ void BatesModelTest::testAnalyticVsJumpDiffusion() {
     Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100)));
 
     Real v0 = 0.0433;
+    // FLOATING_POINT_EXCEPTION
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(std::sqrt(v0)));
     boost::shared_ptr<BlackVolTermStructure> volTS =
         flatVol(settlementDate, vol, dayCounter);
@@ -272,7 +273,7 @@ void BatesModelTest::testDAXCalibration() {
         dates.push_back(settlementDate + t[i]);
         rates.push_back(r[i]);
     }
-
+     // FLOATING_POINT_EXCEPTION
     Handle<YieldTermStructure> riskFreeTS(
                        boost::shared_ptr<YieldTermStructure>(
                                     new ZeroCurve(dates, rates, dayCounter)));

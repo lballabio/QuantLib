@@ -185,6 +185,7 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
                        polynomTypes[0*(i*3+j)%LENGTH(polynomTypes)]);
 
             americanOption.setPricingEngine(mcengine);
+            // FLOATING_POINT_EXCEPTION
             const Real calculated = americanOption.NPV();
             const Real errorEstimate = americanOption.errorEstimate();
 

@@ -148,6 +148,7 @@ void setup() {
 	todaysForwards = std::vector<Rate>(paymentTimes.size());
 	displacement = 0.0;
 	for (Size i=0; i<todaysForwards.size(); ++i)
+        // FLOATING_POINT_EXCEPTION
 		todaysForwards[i] = 0.03 + 0.0010*i;
 
 	// Discounts

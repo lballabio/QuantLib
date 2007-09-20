@@ -126,6 +126,7 @@ void setup() {
     alphaMin_ = -1.0;
     displacement_ = 0.0;
     for (Size i=0; i<todaysForwards_.size(); ++i) {
+        // FLOATING_POINT_EXCEPTION
         todaysForwards_[i] = 0.03 + 0.0025*i;
      //    todaysForwards_[i] = 0.03;
     }

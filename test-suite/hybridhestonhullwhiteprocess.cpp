@@ -81,6 +81,7 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
     const Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
+    // FLOATING_POINT_EXCEPTION
     boost::shared_ptr<HullWhite> hullWhiteModel(
         new HullWhite(Handle<YieldTermStructure>(rTS), 0.00883, 0.00526));
 
@@ -168,6 +169,7 @@ void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
 
     for (Size i=0; i <= 40; ++i) {
         dates.push_back(today+Period(i, Years));
+        // FLOATING_POINT_EXCEPTION
         rates.push_back(0.01 + 0.02*std::exp(std::sin(i/4.0)));
         divRates.push_back(0.02 + 0.01*std::exp(std::sin(i/5.0)));
         times.push_back(dc.yearFraction(today, dates.back()));
@@ -393,6 +395,7 @@ void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
 
     for (Size i=0; i <= 40; ++i) {
         dates.push_back(today+Period(i, Years));
+        // FLOATING_POINT_EXCEPTION
         rates.push_back(0.01 + 0.02*std::exp(std::sin(i/4.0)));
         divRates.push_back(0.02 + 0.01*std::exp(std::sin(i/5.0)));
         times.push_back(dc.yearFraction(today, dates.back()));
@@ -480,6 +483,7 @@ void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
 
     for (Size i=0; i <= 40; ++i) {
         dates.push_back(today+Period(i, Months));
+        // FLOATING_POINT_EXCEPTION
         rates.push_back(0.01 + 0.02*std::exp(std::sin(i/10.0)));
         divRates.push_back(0.02 + 0.01*std::exp(std::sin(i/20.0)));
         times.push_back(dc.yearFraction(today, dates.back()));
@@ -585,6 +589,7 @@ void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
 
     for (Size i=0; i <= 40; ++i) {
         dates.push_back(today+Period(i, Years));
+        // FLOATING_POINT_EXCEPTION
         rates.push_back(0.03 + 0.01*std::exp(std::sin(i/4.0)));
         divRates.push_back(0.02 + 0.02*std::exp(std::sin(i/3.0)));
         times.push_back(dc.yearFraction(today, dates.back()));
@@ -675,6 +680,7 @@ void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
 
     const boost::shared_ptr<HestonProcess> hestonProcess(
             new HestonProcess(rTS, qTS, spot, 0.0625, 1.0, 0.0625, 1e-4, 0.0));
+    // FLOATING_POINT_EXCEPTION
     const boost::shared_ptr<HullWhiteForwardProcess> hwProcess(
             new HullWhiteForwardProcess(rTS, 0.00883, 0.00526));
     hwProcess->setForwardMeasureTime(
@@ -1271,6 +1277,7 @@ void HybridHestonHullWhiteProcessTest::testPseudoJointCalibration() {
     const boost::shared_ptr<HestonModel> hestonModel(
                           new HestonModel(hestonProcess));
 
+    // FLOATING_POINT_EXCEPTION
     const boost::shared_ptr<HullWhiteForwardProcess> hwProcess(
                           new HullWhiteForwardProcess(rTS, 0.012, 0.01));
     hwProcess->setForwardMeasureTime(

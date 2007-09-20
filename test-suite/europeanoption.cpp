@@ -183,6 +183,7 @@ std::string engineTypeToString(EngineType type) {
 }
 
 Integer timeToDays(Time t) {
+    // FLOATING_POINT_EXCEPTION
     return Integer(t*360+0.5);
 }
 
@@ -996,6 +997,7 @@ void testEngineConsistency(EngineType engine,
                       expected.clear();
                       calculated.clear();
 
+                      // FLOATING_POINT_EXCEPTION
                       expected["value"] = refOption->NPV();
                       calculated["value"] = option->NPV();
 
@@ -1257,6 +1259,7 @@ void EuropeanOptionTest::testPriceCurve() {
 
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
+        // FLOATING_POINT_EXCEPTION
         Date exDate = today + timeToDays(values[i].t);
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 

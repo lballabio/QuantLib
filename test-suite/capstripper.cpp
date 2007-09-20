@@ -71,8 +71,8 @@ void setFlatVolatilityTermStructure(Volatility flatVolatility){
     for (Size i = 0 ; i < tenors.size(); i++)
         tenors[i] = Period(i+1, Years);
     strikes.resize(strikes.size());
-    // FLOATING_POINT_EXCEPTION
     for (Size j = 0 ; j < strikes.size(); j++)
+        // FLOATING_POINT_EXCEPTION
         strikes[j] = double(j+1)/100;
 
     volatilityQuoteHandle.resize(tenors.size());

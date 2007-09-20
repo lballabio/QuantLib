@@ -48,6 +48,7 @@ void OperatorTest::testConsistency() {
     Real xMin = average - 4*sigma,
          xMax = average + 4*sigma;
     Size N = 10001;
+    // FLOATING_POINT_EXCEPTION
     Real h = (xMax-xMin)/(N-1);
 
     Array x(N), y(N), yi(N), yd(N), temp(N), diff(N);
@@ -94,6 +95,7 @@ void OperatorTest::testBSMOperatorConsistency() {
     Size i;
     for (i = 0; i < grid.size(); i++) {
         grid[i] = price;
+        // FLOATING_POINT_EXCEPTION
         price *= factor;
     }
     Real dx = std::log(factor);
@@ -167,6 +169,7 @@ void OperatorTest::testBSMOperatorConsistency() {
 
 test_suite* OperatorTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Operator tests");
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&OperatorTest::testConsistency));
     // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&OperatorTest::testBSMOperatorConsistency));
