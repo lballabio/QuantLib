@@ -2,6 +2,8 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
+ 
+ Copyright (C) 2007 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,6 +33,8 @@
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <boost/progress.hpp>
+#include <ql/math/randomnumbers/latticerules.hpp>
+#include <ql/math/randomnumbers/latticersg.hpp>
 
 //#define PRINT_ONLY
 #ifdef PRINT_ONLY
@@ -102,6 +106,68 @@ void LowDiscrepancyTest::testRandomizedLowDiscrepancySequence() {
     rldsg3.nextRandomizer();
 
 }
+
+namespace
+{
+    void testRandomizedLatticeRule(LatticeRule::type name, std::string nameString)
+    {
+        Size maxDim = 30;
+        Size N = 1024;
+        Size numberBatches = 32;
+
+        BOOST_MESSAGE("Testing randomized lattice sequences, " << nameString << " up to "
+            "dimension " << maxDim << "...");
+
+        std::vector<Real> z;
+
+        LatticeRule::getRule(name, z, N);
+        LatticeRsg latticeGenerator(maxDim,
+            z,
+            N);
+
+        RandomizedLDS<LatticeRsg, RandomSequenceGenerator<MersenneTwisterUniformRng> > rldsg(latticeGenerator);
+
+        SequenceStatistics outerStats(maxDim);
+
+        for (Size i=0; i < numberBatches; ++i)
+        {
+            SequenceStatistics innerStats(maxDim);
+            for (Size j=0; j < N; ++j)
+            {
+                innerStats.add(rldsg.nextSequence().value);
+            }
+            outerStats.add(innerStats.mean());
+            rldsg.nextRandomizer();
+        }
+
+        std::vector<Real> means(outerStats.mean());
+        std::vector<Real> sds(outerStats.errorEstimate());
+
+        std::vector<Real> errorInSds(maxDim);
+
+        for (Size i=0; i < maxDim; ++i)
+            errorInSds[i] = (means[i]-0.5)/ sds[i];
+
+        Real tolerance = 4.0;
+
+        for (Size i=0; i < maxDim; ++i)
+            if (fabs(errorInSds[i] ) > tolerance)
+                BOOST_ERROR("Lattice generator" << nameString <<" returns  a mean of " <<
+                means[i] << " with standard deviation " << errorInSds[i] 
+            << " in dimension " << i);
+    }
+}   
+
+
+void LowDiscrepancyTest::testRandomizedLattices() 
+{
+    testRandomizedLatticeRule(LatticeRule::A, "A");
+    testRandomizedLatticeRule(LatticeRule::B, "B");
+    testRandomizedLatticeRule(LatticeRule::C, "C");
+    testRandomizedLatticeRule(LatticeRule::D, "D");
+
+}
+
 
 void LowDiscrepancyTest::testSobol() {
 
@@ -1012,6 +1078,10 @@ void LowDiscrepancyTest::testSobolSkipping() {
 
 test_suite* LowDiscrepancyTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Low-discrepancy sequence tests");
+
+      suite->add(BOOST_TEST_CASE(
+           &LowDiscrepancyTest::testRandomizedLattices));
+
 
     suite->add(BOOST_TEST_CASE(
            &LowDiscrepancyTest::testSeedGenerator));
