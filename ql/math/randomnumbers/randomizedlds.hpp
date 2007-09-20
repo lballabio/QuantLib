@@ -77,7 +77,7 @@ namespace QuantLib {
         }
         Size dimension() const {return dimension_;}
       private:
-        LDS ldsg_, pristineldsg_;
+        mutable LDS ldsg_, pristineldsg_; // mutable because nextSequence is const
         PRS prsg_;
         Size dimension_;
         mutable sample_type x, randomizer_;
