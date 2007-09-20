@@ -163,6 +163,13 @@ namespace QuantLib {
         return lastFloatingCoupon->fixingDate();
     }
 
+    Real CapFloor::lastAccrualPeriod() const {
+        boost::shared_ptr<CashFlow> lastCF(floatingLeg_.back());
+        boost::shared_ptr<Coupon> lastCoupon =
+            boost::dynamic_pointer_cast<Coupon>(lastCF);
+        return lastCoupon->accrualPeriod();
+    }
+
     void CapFloor::setupArguments(PricingEngine::arguments* args) const {
         CapFloor::arguments* arguments =
             dynamic_cast<CapFloor::arguments*>(args);

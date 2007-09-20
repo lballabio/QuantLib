@@ -92,6 +92,7 @@ namespace QuantLib {
         Date startDate() const;
         Date maturityDate() const;
         Date lastFixingDate() const;
+        Real lastAccrualPeriod() const;
         const Handle<YieldTermStructure>& discountCurve() const {
             return discountCurve_;
         }

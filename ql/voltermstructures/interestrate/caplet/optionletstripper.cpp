@@ -88,7 +88,7 @@ namespace QuantLib {
                                          0*Days,
                                          dummy);
             optionletDates_[i] = temp.lastFixingDate();
-            optionletAccrualPeriods_[i] = 0.5; //FIXME
+            optionletAccrualPeriods_[i] = temp.lastAccrualPeriod();
             optionletTimes_[i] = dc.yearFraction(referenceDate,
                                                  optionletDates_[i]);
             atmOptionletRate[i] = index_->forecastFixing(optionletDates_[i]);
