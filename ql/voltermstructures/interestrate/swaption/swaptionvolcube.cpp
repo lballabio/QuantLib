@@ -47,10 +47,11 @@ namespace QuantLib {
     {
 
         QL_REQUIRE(nStrikes_>1, "too few strikes (" << nStrikes_ << ")");
-        for (Size i=1; i<nStrikes_; i++) {
+        for (Size i=1; i<nStrikes_; ++i)
             QL_REQUIRE(strikeSpreads_[i-1]<strikeSpreads_[i],
-                "non increasing strike spreads");
-        }
+                       "non increasing strike spreads: " <<
+                       io::ordinal(i-1) << " is " << strikeSpreads_[i-1] << ", " <<
+                       io::ordinal(i) << " is " << strikeSpreads_[i]);
 
         QL_REQUIRE(!volSpreads_.empty(), "empty vol spreads matrix");
 
