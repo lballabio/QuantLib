@@ -46,13 +46,13 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        ZeroYieldStructure(const DayCounter& dc = Actual365Fixed());
+        ZeroYieldStructure(const DayCounter& dc = DayCounter());
         ZeroYieldStructure(const Date& referenceDate,
                            const Calendar& calendar = Calendar(),
-                           const DayCounter& dc = Actual365Fixed());
+                           const DayCounter& dc = DayCounter());
         ZeroYieldStructure(Natural settlementDays,
                            const Calendar&,
-                           const DayCounter& dc = Actual365Fixed());
+                           const DayCounter& dc = DayCounter());
         //@}
         virtual ~ZeroYieldStructure() {}
       protected:

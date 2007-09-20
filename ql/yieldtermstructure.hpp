@@ -57,15 +57,15 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        YieldTermStructure(const DayCounter& dc = Actual365Fixed());
+        YieldTermStructure(const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
         YieldTermStructure(const Date& referenceDate,
                            const Calendar& cal = Calendar(),
-                           const DayCounter& dc = Actual365Fixed());
+                           const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
         YieldTermStructure(Natural settlementDays,
                            const Calendar&,
-                           const DayCounter& dc = Actual365Fixed());
+                           const DayCounter& dc = DayCounter());
         //@}
         virtual ~YieldTermStructure() {}
         /*! \name zero-yield rates

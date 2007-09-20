@@ -29,7 +29,9 @@
 #include <ql/voltermstructure.hpp>
 
 namespace QuantLib {
+
     class SmileSection;
+
     //! %Swaption-volatility structure
     /*! This class is purely abstract and defines the interface of concrete
         swaption volatility structures which will be derived from this one.
@@ -46,17 +48,17 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        SwaptionVolatilityStructure(const DayCounter& dc = Actual365Fixed(),
+        SwaptionVolatilityStructure(const DayCounter& dc = DayCounter(),
                                     BusinessDayConvention bdc = Following);
         //! initialize with a fixed reference date
         SwaptionVolatilityStructure(const Date& referenceDate,
                                     const Calendar& calendar = Calendar(),
-                                    const DayCounter& dc = Actual365Fixed(),
+                                    const DayCounter& dc = DayCounter(),
                                     BusinessDayConvention bdc = Following);
         //! calculate the reference date based on the global evaluation date
         SwaptionVolatilityStructure(Natural settlementDays,
                                     const Calendar&,
-                                    const DayCounter& dc = Actual365Fixed(),
+                                    const DayCounter& dc = DayCounter(),
                                     BusinessDayConvention bdc = Following);
         //@}
         virtual ~SwaptionVolatilityStructure() {}

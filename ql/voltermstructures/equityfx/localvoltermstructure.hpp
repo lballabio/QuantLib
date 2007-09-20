@@ -48,17 +48,17 @@ namespace QuantLib {
                      by overriding the referenceDate() method.
         */
         LocalVolTermStructure(BusinessDayConvention bdc = Following,
-                              const DayCounter& dc = Actual365Fixed());
+                              const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
         LocalVolTermStructure(const Date& referenceDate,
                               const Calendar& cal = Calendar(),
                               BusinessDayConvention bdc = Following,
-                              const DayCounter& dc = Actual365Fixed());
+                              const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
         LocalVolTermStructure(Natural settlementDays,
                               const Calendar&,
                               BusinessDayConvention bdc = Following,
-                              const DayCounter& dc = Actual365Fixed());
+                              const DayCounter& dc = DayCounter());
         //@}
         virtual ~LocalVolTermStructure() {}
         //! \name Local Volatility

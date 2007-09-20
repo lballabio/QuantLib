@@ -40,14 +40,14 @@ namespace QuantLib {
     class SmileSection : public virtual Observable, public Observer {
       public:
         SmileSection(const Date& d,
-                     const DayCounter& dc = Actual365Fixed(),
+                     const DayCounter& dc = DayCounter(),
                      const Date& referenceDate = Date());
         SmileSection(Time exerciseTime,
-                     const DayCounter& dc = Actual365Fixed());
+                     const DayCounter& dc = DayCounter());
         SmileSection() {}
         virtual void update();
         virtual ~SmileSection() {}
-        
+
         virtual Real minStrike() const = 0;
         virtual Real maxStrike() const = 0;
         Real variance(Rate strike = Null<Rate>()) const;
@@ -88,7 +88,7 @@ namespace QuantLib {
                          const DayCounter& dc,
                          const Date& referenceDate = Date(),
                          Real atmLevel = Null<Rate>())
-        : SmileSection(d, dc, referenceDate), 
+        : SmileSection(d, dc, referenceDate),
           vol_(vol),
           atmLevel_(atmLevel){}
 
@@ -137,22 +137,22 @@ namespace QuantLib {
         }
 
         void update(){ notifyObservers(); }
-      
+
         Real minStrike() const { return underlyingSection_->minStrike(); }
         Real maxStrike() const { return underlyingSection_->maxStrike(); }
 
         const Date& exerciseDate() const { return underlyingSection_->exerciseDate(); }
         Time exerciseTime() const { return underlyingSection_->exerciseTime(); }
         const DayCounter& dayCounter() const { return underlyingSection_->dayCounter(); }
-        
+
         Real atmLevel() const { return underlyingSection_->atmLevel(); }
       protected:
-        Real varianceImpl(Rate strike) const { 
+        Real varianceImpl(Rate strike) const {
             Volatility vol = volatilityImpl(strike);
-            return vol*vol*exerciseTime(); 
+            return vol*vol*exerciseTime();
         }
-        Volatility volatilityImpl(Rate strike) const { 
-            return underlyingSection_->volatilityImpl(strike)+spread_->value(); 
+        Volatility volatilityImpl(Rate strike) const {
+            return underlyingSection_->volatilityImpl(strike)+spread_->value();
         }
       private:
         const boost::shared_ptr<SmileSection> underlyingSection_;

@@ -50,17 +50,17 @@ namespace QuantLib {
                      by overriding the referenceDate() method.
         */
         BlackVolTermStructure(BusinessDayConvention bdc = Following,
-                              const DayCounter& dc = Actual365Fixed());
+                              const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
         BlackVolTermStructure(const Date& referenceDate,
                               const Calendar& cal = Calendar(),
                               BusinessDayConvention bdc = Following,
-                              const DayCounter& dc = Actual365Fixed());
+                              const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
         BlackVolTermStructure(Natural settlementDays,
                               const Calendar&,
                               BusinessDayConvention bdc = Following,
-                              const DayCounter& dc = Actual365Fixed());
+                              const DayCounter& dc = DayCounter());
         //@}
         virtual ~BlackVolTermStructure() {}
         //! \name Black Volatility
@@ -152,17 +152,17 @@ namespace QuantLib {
                      by overriding the referenceDate() method.
         */
         BlackVolatilityTermStructure(BusinessDayConvention bdc = Following,
-                                     const DayCounter& dc = Actual365Fixed());
+                                     const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
         BlackVolatilityTermStructure(const Date& referenceDate,
                                      const Calendar& cal = Calendar(),
                                      BusinessDayConvention bdc = Following,
-                                     const DayCounter& dc = Actual365Fixed());
+                                     const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
         BlackVolatilityTermStructure(Natural settlementDays,
                                      const Calendar&,
                                      BusinessDayConvention bdc = Following,
-                                     const DayCounter& dc = Actual365Fixed());
+                                     const DayCounter& dc = DayCounter());
         //@}
         //! \name Visitability
         //@{
@@ -197,17 +197,17 @@ namespace QuantLib {
                      by overriding the referenceDate() method.
         */
         BlackVarianceTermStructure(BusinessDayConvention bdc = Following,
-                                   const DayCounter& dc = Actual365Fixed());
+                                   const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
         BlackVarianceTermStructure(const Date& referenceDate,
                                    const Calendar& cal = Calendar(),
                                    BusinessDayConvention bdc = Following,
-                                   const DayCounter& dc = Actual365Fixed());
+                                   const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
         BlackVarianceTermStructure(Natural settlementDays,
                                    const Calendar&,
                                    BusinessDayConvention bdc = Following,
-                                   const DayCounter& dc = Actual365Fixed());
+                                   const DayCounter& dc = DayCounter());
         //@}
         //! \name Visitability
         //@{

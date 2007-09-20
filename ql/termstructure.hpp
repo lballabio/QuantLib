@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -64,15 +64,15 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        TermStructure(const DayCounter& dc = Actual365Fixed());
+        TermStructure(const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
         TermStructure(const Date& referenceDate,
                       const Calendar& calendar = Calendar(),
-                      const DayCounter& dc = Actual365Fixed());
+                      const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
         TermStructure(Natural settlementDays,
                       const Calendar&,
-                      const DayCounter& dc = Actual365Fixed());
+                      const DayCounter& dc = DayCounter());
         //@}
         virtual ~TermStructure() {}
         //! \name Dates
@@ -152,7 +152,7 @@ namespace QuantLib {
     inline DayCounter TermStructure::dayCounter() const {
         return dayCounter_;
     }
-    
+
     inline Natural TermStructure::settlementDays() const {
         return settlementDays_;
     }
