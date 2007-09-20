@@ -140,7 +140,12 @@ namespace QuantLib {
                    ") and number of volatilities (" << volRows << ")");
         QL_REQUIRE(volatilities_.columns()==strikes_.size(),
                    "mismatch between strikes(" << strikes_.size() <<
-                   ") and vol columns (" << volatilities_.columns() << ")");        
+                   ") and vol columns (" << volatilities_.columns() << ")"); 
+        std::vector<Rate> strikes = strikes_;
+        sort(strikes.begin(), strikes.end());
+        for(Size i=0; i<strikes.size(); i++)
+            QL_REQUIRE(strikes[i]==strikes_[i],
+                       "strikes are not sorted");
     }
 
     void CapFloorTermVolSurface::registerWithMarketData()
