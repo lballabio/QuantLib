@@ -164,6 +164,7 @@ namespace QuantLib {
     }
 
     inline Time TermStructure::timeFromReference(const Date& d) const {
+        // FLOATING_POINT_EXCEPTION
         return dayCounter().yearFraction(referenceDate(),d);
     }
 

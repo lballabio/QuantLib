@@ -54,6 +54,7 @@ namespace QuantLib {
             = boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
 
         if (strikePayoff) {
+            // FLOATING_POINT_EXCEPTION
             scalingValue_/=strikePayoff->strike();
         }
     }

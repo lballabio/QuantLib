@@ -104,7 +104,7 @@ namespace QuantLib {
         for (Size i=0; i<fixedCoupons.size(); ++i) {
             boost::shared_ptr<FixedRateCoupon> coupon =
                 boost::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
-
+            // FLOATING_POINT_EXCEPTION
             Time time = counter.yearFraction(settlement, coupon->date());
             arguments->fixedPayTimes[i] = time;
             time = counter.yearFraction(settlement,

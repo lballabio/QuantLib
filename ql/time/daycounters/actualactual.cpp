@@ -152,6 +152,7 @@ namespace QuantLib {
              dib2 = (Date::isLeap(y2) ? 366.0 : 365.0);
 
         Time sum = y2 - y1 - 1;
+        // FLOATING_POINT_EXCEPTION
         sum += dayCount(d1, Date(1,January,y1+1))/dib1;
         sum += dayCount(Date(1,January,y2),d2)/dib2;
         return sum;

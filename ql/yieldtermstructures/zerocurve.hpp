@@ -159,6 +159,7 @@ namespace QuantLib {
             #if !defined(QL_NEGATIVE_RATES)
             QL_REQUIRE(data_[i] >= 0.0, "negative yield");
             #endif
+            // FLOATING_POINT_EXCEPTION
             times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
         }
 
