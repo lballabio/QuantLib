@@ -27,42 +27,47 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 namespace QuantLib {
 
 
-    Real SwapForwardMappings::annuity(const CurveState& cs, Size startIndex, Size endIndex,Size numeraireIndex)
+    Real SwapForwardMappings::annuity(const CurveState& cs,
+                                      Size startIndex,
+                                      Size endIndex,
+                                      Size numeraireIndex)
     {
-        Real annuity =0.0;
-        for (Size i=startIndex; i < endIndex; ++i)
-            annuity+= cs.rateTaus()[i]*cs.discountRatio(i+1,numeraireIndex);
-
+        Real annuity = 0.0;
+        for (Size i=startIndex; i<endIndex; ++i)
+            annuity += cs.rateTaus()[i]*cs.discountRatio(i+1, numeraireIndex);
         return annuity;
-
     }
 
     // compute derivative of swap-rate to underlying forward rate
-    Real SwapForwardMappings::swapDerivative(const CurveState& cs, Size startIndex, Size endIndex, Size forwardIndex)
+    Real SwapForwardMappings::swapDerivative(const CurveState& cs,
+                                             Size startIndex,
+                                             Size endIndex,
+                                             Size forwardIndex)
     {
         if (forwardIndex < startIndex)
             return 0.0;
         if (forwardIndex >= endIndex)
             return 0.0;
 
-        Real numerator = cs.discountRatio(startIndex,endIndex)-1;
+        Real numerator = cs.discountRatio(startIndex, endIndex)-1;
         Real swapAnnuity = annuity(cs, startIndex, endIndex,endIndex);
 
-        Real ratio = cs.rateTaus()[forwardIndex]/(1+ cs.rateTaus()[forwardIndex]*cs.forwardRate(forwardIndex));
+        Real ratio = cs.rateTaus()[forwardIndex] /
+            (1 + cs.rateTaus()[forwardIndex] * cs.forwardRate(forwardIndex));
 
         Real part1 = ratio*(numerator+1)/swapAnnuity;
         Real part2 = numerator/(swapAnnuity*swapAnnuity);
 
         if (forwardIndex >=1)
-            part2*= ratio* annuity(cs,startIndex,forwardIndex,endIndex);
+            part2 *= ratio* annuity(cs, startIndex, forwardIndex, endIndex);
         else 
-            part2 =0.0;
+            part2 = 0.0;
 
         return part1-part2;
     }
 
     Disposable<Matrix>
-        SwapForwardMappings::coterminalSwapForwardJacobian(const CurveState& cs)
+    SwapForwardMappings::coterminalSwapForwardJacobian(const CurveState& cs)
     {
         Size n = cs.numberOfRates();
         const std::vector<Rate>& f = cs.forwardRates();
@@ -93,8 +98,8 @@ namespace QuantLib {
     }
 
     Disposable<Matrix>
-        SwapForwardMappings::coterminalSwapZedMatrix(const CurveState& cs,
-        const Spread displacement) {
+    SwapForwardMappings::coterminalSwapZedMatrix(const CurveState& cs,
+                                                 const Spread displacement) {
             Size n = cs.numberOfRates();
             Matrix zMatrix = coterminalSwapForwardJacobian(cs);
             const std::vector<Rate>& f = cs.forwardRates();
@@ -107,7 +112,7 @@ namespace QuantLib {
 
 
     Disposable<Matrix>
-        SwapForwardMappings::coinitialSwapForwardJacobian(const CurveState& cs)
+    SwapForwardMappings::coinitialSwapForwardJacobian(const CurveState& cs)
     {
         Size n = cs.numberOfRates();
 
@@ -120,8 +125,8 @@ namespace QuantLib {
     }
 
     Disposable<Matrix>
-        SwapForwardMappings::cmSwapForwardJacobian(const CurveState& cs,
-        Size spanningForwards)
+    SwapForwardMappings::cmSwapForwardJacobian(const CurveState& cs,
+                                               const Size spanningForwards)
     {
         Size n = cs.numberOfRates();
 
@@ -134,8 +139,8 @@ namespace QuantLib {
     }
 
     Disposable<Matrix>
-        SwapForwardMappings::coinitialSwapZedMatrix(const CurveState& cs,
-        const Spread displacement)
+    SwapForwardMappings::coinitialSwapZedMatrix(const CurveState& cs,
+                                                const Spread displacement)
     {
         Size n = cs.numberOfRates();
         Matrix zMatrix = coinitialSwapForwardJacobian(cs);
@@ -149,14 +154,12 @@ namespace QuantLib {
             for (Size j=i; j<n; ++j)
                 zMatrix[i][j] *= (f[j]+displacement)/(sr[i]+displacement);
         return zMatrix;
-
-
     }
 
- Disposable<Matrix>
-        SwapForwardMappings::cmSwapZedMatrix(const CurveState& cs,
-        Size spanningForwards,
-        const Spread displacement)
+    Disposable<Matrix>
+    SwapForwardMappings::cmSwapZedMatrix(const CurveState& cs,
+                                         const Size spanningForwards,
+                                         const Spread displacement)
     {
         Size n = cs.numberOfRates();
         Matrix zMatrix = cmSwapForwardJacobian(cs,spanningForwards);
@@ -170,8 +173,6 @@ namespace QuantLib {
             for (Size j=i; j<n; ++j)
                 zMatrix[i][j] *= (f[j]+displacement)/(sr[i]+displacement);
         return zMatrix;
-
-
     }
 
 }

@@ -48,14 +48,17 @@ namespace QuantLib {
                           const std::vector<Rate>& switchStrikes);
         //! \name Cap Stripper interface
         //@{
-        const Matrix& optionletPrices() const;
-        const Matrix& optionletVolatilities() const;
         const Matrix& capfloorPrices() const;
         const Matrix& capfloorVolatilities() const;
+
+        const Matrix& optionletPrices() const;
+        const Matrix& optionletVolatilities() const;
+        const std::vector<Rate>& strikes() const;
+
         const std::vector<Period>& optionletTenors() const;
         const std::vector<Date>& optionletDates() const;
         const std::vector<Time>& optionletTimes() const;
-        const std::vector<Rate>& strikes() const;
+
         boost::shared_ptr<CapFloorTermVolSurface> surface() const;
         //@}
         //! \name LazyObject interface

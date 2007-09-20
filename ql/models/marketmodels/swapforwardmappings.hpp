@@ -34,12 +34,17 @@ namespace QuantLib {
     class SwapForwardMappings {
       public:
 
-		//!  compute derivative of arbitrary swap-rate 
-		static Real annuity(const CurveState& cs, Size startIndex, Size endIndex,Size numeraireIndex);
+		//! compute annuity of arbitrary swap-rate
+		static Real annuity(const CurveState& cs,
+                            Size startIndex,
+                            Size endIndex,
+                            Size numeraireIndex);
 
 		//! compute derivative of swap-rate to underlying forward rate
-		static Real swapDerivative(const CurveState& cs, Size startIndex, Size endIndex, Size forwardIndex);
-
+		static Real swapDerivative(const CurveState& cs, 
+                                   Size startIndex,
+                                   Size endIndex,
+                                   Size forwardIndex);
 
         /*! Returns the dsr[i]/df[j] jacobian between
             coterminal swap rates and forward rates */
@@ -52,7 +57,7 @@ namespace QuantLib {
         coterminalSwapZedMatrix(const CurveState& cs,
                                 const Spread displacement);
 
-		        /*! Returns the dsr[i]/df[j] jacobian between
+        /*! Returns the dsr[i]/df[j] jacobian between
             coinitial swap rates and forward rates */
         static Disposable<Matrix>
         coinitialSwapForwardJacobian(const CurveState& cs);
@@ -61,21 +66,20 @@ namespace QuantLib {
             coinitial swap rates */
         static Disposable<Matrix>
         coinitialSwapZedMatrix(const CurveState& cs,
-                                const Spread displacement);
+                               const Spread displacement);
 
 
-        /*! 
-            Returns the dsr[i]/df[j] jacobian between
+        /*! Returns the dsr[i]/df[j] jacobian between
             constant maturity swap rates and forward rates */
         static Disposable<Matrix>
-        cmSwapForwardJacobian(const CurveState& cs, Size spanningForwards);
+        cmSwapForwardJacobian(const CurveState& cs,
+                              const Size spanningForwards);
 
-        /*! 
-            Returns the Z matrix to switch base from forward to
-             constant maturity swap rates */
+        /*! Returns the Z matrix to switch base from forward to
+            constant maturity swap rates */
         static Disposable<Matrix>
         cmSwapZedMatrix(const CurveState& cs,
-                        Size spanningForwards,
+                        const Size spanningForwards,
                         const Spread displacement);
 
     };
