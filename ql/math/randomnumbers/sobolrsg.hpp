@@ -93,7 +93,7 @@ namespace QuantLib {
       public:
         typedef Sample<std::vector<Real> > sample_type;
         enum DirectionIntegers {
-            Unit, Jaeckel, SobolLevitan, SobolLevitanLemieux };
+            Unit, Jaeckel, SobolLevitan, SobolLevitanLemieux, Kuo };
         /*! \pre dimensionality must be <= PPMT_MAX_DIM */
         SobolRsg(Size dimensionality,
                  unsigned long seed = 0,
