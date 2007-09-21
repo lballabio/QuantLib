@@ -56,8 +56,9 @@ namespace QuantLib {
         const std::vector<Rate>& strikes() const;
 
         const std::vector<Period>& optionletTenors() const;
-        const std::vector<Date>& optionletDates() const;
-        const std::vector<Time>& optionletTimes() const;
+        const std::vector<Date>& optionletFixingDates() const;
+        const std::vector<Date>& optionletPaymentDates() const;
+        const std::vector<Time>& optionletFixingTimes() const;
 
         boost::shared_ptr<CapFloorTermVolSurface> surface() const;
         //@}
@@ -74,10 +75,11 @@ namespace QuantLib {
         mutable Matrix capfloorPrices_, optionletPrices_;
         mutable Matrix capfloorVols_, optionletVols_;
         mutable Matrix optionletStDevs_;
-        mutable std::vector<Rate> atmOptionletRate;
-        mutable std::vector<Date> optionletDates_;
+        mutable std::vector<Rate> atmOptionletRate_;
+        mutable std::vector<Date> optionletFixingDates_;
+        mutable std::vector<Date> optionletPaymentDates_;
         mutable std::vector<Time> optionletAccrualPeriods_;
-        mutable std::vector<Time> optionletTimes_;
+        mutable std::vector<Time> optionletFixingTimes_;
         std::vector<Period> capfloorLengths_;
         mutable CapFloorMatrix capfloors_;
         std::vector<Rate> switchStrikes_;
@@ -109,15 +111,21 @@ namespace QuantLib {
     }
 
     inline
-    const std::vector<Date>& OptionletStripper::optionletDates() const {
+    const std::vector<Date>& OptionletStripper::optionletFixingDates() const {
         calculate();
-        return optionletDates_;
+        return optionletFixingDates_;
     }
      
     inline
-    const std::vector<Time>& OptionletStripper::optionletTimes() const {
+    const std::vector<Date>& OptionletStripper::optionletPaymentDates() const {
         calculate();
-        return optionletTimes_;
+        return optionletPaymentDates_;
+    }
+     
+    inline
+    const std::vector<Time>& OptionletStripper::optionletFixingTimes() const {
+        calculate();
+        return optionletFixingTimes_;
     }
 
 }

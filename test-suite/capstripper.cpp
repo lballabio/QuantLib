@@ -230,10 +230,10 @@ void CapsStripperTest::FlatVolatilityStripping() {
     setup(smileSections);
     const CapMatrix& marketDataCap = capsStripper->marketDataCap();
     for (Size tenorIndex = 0; tenorIndex < tenors.size() ; tenorIndex++){
-        Date tenorDate = marketDataCap[tenorIndex][0]->lastFixingDate();
+        Date tenorDate = marketDataCap[tenorIndex][0]->lastFloatingRateCoupon()->fixingDate();
         Time tenorTime =  dayCounter.yearFraction(
             Settings::instance().evaluationDate(), tenorDate);
-        for (Size strikeIndex = 0; strikeIndex < strikes.size() ; strikeIndex ++){
+        for (Size strikeIndex=0; strikeIndex<strikes.size(); strikeIndex ++) {
             Real blackVariance =
                 capsStripper->blackVariance(tenorDate, strikes[strikeIndex],true);
             Volatility volatility = std::sqrt(blackVariance/tenorTime);

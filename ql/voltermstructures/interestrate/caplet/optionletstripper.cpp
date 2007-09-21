@@ -59,17 +59,19 @@ namespace QuantLib {
         optionletVols_ = Matrix(nOptionletTenors_, nStrikes_);
         Real firstGuess = 0.14;
         optionletStDevs_ = Matrix(nOptionletTenors_, nStrikes_, firstGuess);
-        atmOptionletRate = std::vector<Rate>(nOptionletTenors_);
-        optionletDates_ = std::vector<Date>(nOptionletTenors_);
-        optionletTimes_ = std::vector<Time>(nOptionletTenors_);
+        atmOptionletRate_ = std::vector<Rate>(nOptionletTenors_);
+        optionletFixingDates_ = std::vector<Date>(nOptionletTenors_);
+        optionletPaymentDates_ = std::vector<Date>(nOptionletTenors_);
+        optionletFixingTimes_ = std::vector<Time>(nOptionletTenors_);
         optionletAccrualPeriods_ = std::vector<Time>(nOptionletTenors_);
         capfloors_ = CapFloorMatrix(nOptionletTenors_);
 
-        if(switchStrikes.size()==1) 
+        if (switchStrikes.size()==1) 
             switchStrikes_= std::vector<QuantLib::Rate>(nOptionletTenors_, switchStrikes[0]);       
-        if(switchStrikes==std::vector<Rate>())
+        if (switchStrikes==std::vector<Rate>())
             switchStrikes_ = std::vector<Rate>(nOptionletTenors_, 0.04); 
-        QL_REQUIRE(nOptionletTenors_==switchStrikes_.size(), "nOptionletTenors_!=switchStrikes_.size()");
+        QL_REQUIRE(nOptionletTenors_==switchStrikes_.size(),
+                   "nOptionletTenors_!=switchStrikes_.size()");
     }
 
     void OptionletStripper::performCalculations() const {
@@ -87,11 +89,14 @@ namespace QuantLib {
                                          0.04, // dummy strike
                                          0*Days,
                                          dummy);
-            optionletDates_[i] = temp.lastFixingDate();
-            optionletAccrualPeriods_[i] = temp.lastAccrualPeriod();
-            optionletTimes_[i] = dc.yearFraction(referenceDate,
-                                                 optionletDates_[i]);
-            atmOptionletRate[i] = index_->forecastFixing(optionletDates_[i]);
+            boost::shared_ptr<FloatingRateCoupon> lFRC =
+                                                temp.lastFloatingRateCoupon();
+            optionletFixingDates_[i] = lFRC->fixingDate();
+            optionletPaymentDates_[i] = lFRC->date();
+            optionletAccrualPeriods_[i] = lFRC->accrualPeriod();
+            optionletFixingTimes_[i] =
+                dc.yearFraction(referenceDate, optionletFixingDates_[i]);
+            atmOptionletRate_[i] = index_->forecastFixing(optionletFixingDates_[i]);
             capfloors_[i].resize(nStrikes_);
         }
 
@@ -119,28 +124,29 @@ namespace QuantLib {
                                                         previousCapFloorPrice;
                 previousCapFloorPrice = capfloorPrices_[i][j];
                 DiscountFactor d = capfloors_[i][j]->discountCurve()->discount(
-                                                        optionletDates_[i]);
+                                                        optionletPaymentDates_[i]);
                 DiscountFactor optionletAnnuity=optionletAccrualPeriods_[i]*d;
                 try {
                     optionletStDevs_[i][j] =
                         blackFormulaImpliedStdDev(optionletType,
                                                   strikes[j],
-                                                  atmOptionletRate[i],
+                                                  atmOptionletRate_[i],
                                                   optionletPrices_[i][j],
                                                   optionletAnnuity,
                                                   optionletStDevs_[i][j]);
                 } catch (std::exception& e) {
                     QL_FAIL("could not bootstrap the optionlet:"
-                            "\n date: " << optionletDates_[i] <<
-                            "\n type: " << optionletType <<
-                            "\n strike: " << io::rate(strikes[j]) <<
-                            "\n atm: " << io::rate(atmOptionletRate[i]) <<
-                            "\n price: " << optionletPrices_[i][j] <<
-                            "\n annuity: " << optionletAnnuity <<
+                            "\n fixing date:   " << optionletFixingDates_[i] <<
+                            "\n payment date:  " << optionletPaymentDates_[i] <<
+                            "\n type:          " << optionletType <<
+                            "\n strike:        " << io::rate(strikes[j]) <<
+                            "\n atm:           " << io::rate(atmOptionletRate_[i]) <<
+                            "\n price:         " << optionletPrices_[i][j] <<
+                            "\n annuity:       " << optionletAnnuity <<
                             "\n error message: " << e.what());
                 }
                 optionletVols_[i][j] = optionletStDevs_[i][j] /
-                                                std::sqrt(optionletTimes_[i]);
+                                                std::sqrt(optionletFixingTimes_[i]);
 
             }
         }

@@ -154,7 +154,7 @@ namespace QuantLib {
         /* we compute the times for which the volatilities points will
            be known*/
         for (Size i = 0; i < tenorTimes_.size(); i++){
-            Date tenorDate = referenceCaps[i].front()->lastFixingDate();
+            Date tenorDate = referenceCaps[i].front()->lastFloatingRateCoupon()->fixingDate();
             tenorTimes_[i] = dayCounter_.yearFraction(
                 TermStructure::referenceDate(), tenorDate);
         }
@@ -167,7 +167,7 @@ namespace QuantLib {
             tenorTimes_.begin(),tenorTimes_.end(), volatilities_));
         maxStrike_ = strikes_.back();
         minStrike_ = strikes_.front();
-        maxDate_ = referenceCaps.back().front()->lastFixingDate();
+        maxDate_ = referenceCaps.back().front()->lastFloatingRateCoupon()->fixingDate();
     }
 
 
@@ -212,7 +212,7 @@ namespace QuantLib {
         /* we compute the times for which the volatilities points will
            be known*/
         for (Size i = 0; i < tenorTimes_.size(); i++){
-            Date tenorDate = referenceCaps[i].front()->lastFixingDate();
+            Date tenorDate = referenceCaps[i].front()->lastFloatingRateCoupon()->fixingDate();
             tenorTimes_[i] = dayCounter_.yearFraction(
                 TermStructure::referenceDate(), tenorDate);
             //volatilities_[i].resize(strikes_.size(), .2);
@@ -225,7 +225,7 @@ namespace QuantLib {
         // the interpolator will be used for shorter maturities
         maxStrike_ = strikes_.back();
         minStrike_ = strikes_.front();
-        maxDate_ = referenceCaps.back().front()->lastFixingDate();
+        maxDate_ = referenceCaps.back().front()->lastFloatingRateCoupon()->fixingDate();
     }
 
 

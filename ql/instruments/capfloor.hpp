@@ -91,8 +91,7 @@ namespace QuantLib {
         Rate atmRate() const;
         Date startDate() const;
         Date maturityDate() const;
-        Date lastFixingDate() const;
-        Real lastAccrualPeriod() const;
+        boost::shared_ptr<FloatingRateCoupon> CapFloor::lastFloatingRateCoupon() const;
         const Handle<YieldTermStructure>& discountCurve() const {
             return discountCurve_;
         }
