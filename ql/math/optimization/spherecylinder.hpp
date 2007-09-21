@@ -72,7 +72,8 @@ namespace QuantLib {
                                                      Real z2,
                                                      Real z3,
                                                      Natural maxIterations,
-                                                     Real tolerance);
+                                                     Real tolerance,
+                                                     Real finalWeight = 1.0);
 
 }
 
