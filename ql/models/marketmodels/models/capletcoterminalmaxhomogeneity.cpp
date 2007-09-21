@@ -41,7 +41,8 @@ namespace QuantLib {
             Real capletSwaptionPriority,
             Size maxIterations,
             Real tolerance,
-            std::vector<Volatility>& solution, 
+            std::vector<Volatility>& solution,
+            Real finalWeight,
             Real& swaptionError,
             Real& capletError)
         {
@@ -188,7 +189,7 @@ namespace QuantLib {
 
             Real Z1=0.0, Z2=0.0, Z3=0.0;
 
-            SphereCylinderOptimizer optimizer(R, S, alpha, movedTarget[0], movedTarget[1],movedTarget[movedTarget.size()-1]);
+            SphereCylinderOptimizer optimizer(R, S, alpha, movedTarget[0], movedTarget[1],movedTarget[movedTarget.size()-1],finalWeight);
 
             bool success = false;
 
@@ -323,7 +324,10 @@ namespace QuantLib {
             newVols.push_back(firstRateVols);
 
             // final caplet and swaption are the same, so we skip that case
-            for (Size i=0; i<numberOfRates-1; ++i) {
+            for (Size i=0; i<numberOfRates-1; ++i) 
+            {
+                // final weight dont do anything when i < 2 
+                Real thisFinalWeight = i  > 1 ? (i-1)/2.0 : 1.0;
                 // we will calibrate caplet on forward rate i,
                 // we will do this by modifying the vol of swap rate i+1
                 const std::vector<Real>& var =
@@ -356,7 +360,7 @@ namespace QuantLib {
                 bool success = singleRateClosestPointFinder(
                     i, secondRateVols, firstRateVols, targetCapletVariance, correlations,
                     w0, w1, caplet0Swaption1Priority,maxIterations, tolerance,
-                    theseNewVols, thisSwaptionError, thisCapletError);
+                    theseNewVols, thisFinalWeight ,thisSwaptionError, thisCapletError);
 
                 totalSwaptionError+= thisSwaptionError*thisSwaptionError;
 
