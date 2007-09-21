@@ -152,7 +152,9 @@ namespace QuantLib {
     {
    //     Real x1 = alpha_ - sqrt(s_*s_-x2*x2);
       
-        Real x2 = sqrt(s_*s_ - (x1-alpha_)*(x1-alpha_));
+        Real x2sq = s_*s_ - (x1-alpha_)*(x1-alpha_);
+         // a negative number will be minuscule and a result of rounding error
+        Real x2 = x2sq >= 0.0 ? sqrt(x2sq) : 0.0;
         Real x3= sqrt(r_*r_ - x1*x1-x2*x2);
 
         Real err=0.0;
