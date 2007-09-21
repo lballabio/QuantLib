@@ -48,8 +48,8 @@ namespace QuantLib {
                     cov[i][j]/(stdDevs_[i]*stdDevs_[j]);
             }
         }
-        Matrix root = pseudoSqrt(correlationMatrix_, sa);
-        Matrix trasposedRoot = transpose(root);
-        correlationMatrix_ = root * trasposedRoot;
+        //Matrix root = pseudoSqrt(correlationMatrix_, sa);
+        //Matrix trasposedRoot = transpose(root);
+        //correlationMatrix_ = root * trasposedRoot;
     }
 }
