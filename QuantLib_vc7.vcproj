@@ -1708,6 +1708,12 @@
 					RelativePath=".\ql\math\randomnumbers\latticersg.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\math\randomnumbers\latticerules.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\randomnumbers\latticerules.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\math\randomnumbers\lecuyeruniformrng.cpp">
 				</File>
 				<File
