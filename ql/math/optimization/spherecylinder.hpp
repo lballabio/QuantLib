@@ -44,7 +44,8 @@ namespace QuantLib {
                                 Real alpha,
                                 Real z1,
                                 Real z2,
-                                Real z3);
+                                Real z3,
+                                Real zweight =1.0);
         bool isIntersectionNonEmpty() const;
         void findClosest(Size maxIterations,
                          Real tolerance,
@@ -61,6 +62,7 @@ namespace QuantLib {
         Real topValue_;
         Real bottomValue_;
         bool nonEmpty_;
+        Real zweight_;
     };
 
     std::vector<Real> sphereCylinderOptimizerClosest(Real r,

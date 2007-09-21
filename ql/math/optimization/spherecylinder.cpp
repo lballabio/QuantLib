@@ -83,8 +83,10 @@ namespace QuantLib {
                                                      Real alpha,
                                                      Real z1,
                                                      Real z2,
-                                                     Real z3)
-    : r_(r), s_(s), alpha_(alpha), z1_(z1), z2_(z2), z3_(z3) {
+                                                     Real z3,
+                                                     Real zweight)
+    : r_(r), s_(s), alpha_(alpha), z1_(z1), z2_(z2), z3_(z3), zweight_(zweight)
+    {
 
         QL_REQUIRE(r>0,
                    "sphere must have positive radius");
@@ -160,7 +162,7 @@ namespace QuantLib {
         Real err=0.0;
         err+= (x1-z1_)*(x1-z1_);
         err+= (x2-z2_)*(x2-z2_);
-        err+= (x3-z3_)*(x3-z3_);
+        err+= (x3-z3_)*(x3-z3_)*zweight_;
 
         return err;
     }
@@ -201,9 +203,11 @@ namespace QuantLib {
                                                      Real z2,
                                                      Real z3,
                                                      Natural maxIterations,
-                                                     Real tolerance) {
+                                                     Real tolerance,
+                                                     Real zweight) 
+    {
 
-        SphereCylinderOptimizer optimizer(r, s, alpha, z1, z2, z3);
+        SphereCylinderOptimizer optimizer(r, s, alpha, z1, z2, z3, zweight);
         std::vector<Real> y(3);
 
         QL_REQUIRE(optimizer.isIntersectionNonEmpty(),
