@@ -108,8 +108,8 @@ namespace QuantLib {
             }
         } while (++ite<=maxIterations && keeplooping);
 
-        QL_REQUIRE(ite<=maxIterations,
-                   "Too many iterations reached");
+        QL_ENSURE(ite<=maxIterations,
+                  "Too many iterations (" << maxIterations << ") reached");
 
 
         // sort (eigenvalues, eigenvectors)

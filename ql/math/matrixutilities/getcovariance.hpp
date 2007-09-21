@@ -27,6 +27,7 @@
 
 #include <ql/math/matrix.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <ql/math/matrixutilities/pseudosqrt.hpp>
 
 namespace QuantLib {
 
@@ -94,8 +95,10 @@ namespace QuantLib {
     class CovarianceDecomposition {
       public:
         /*! \pre covarianceMatrix must be symmetric */
-        CovarianceDecomposition(const Matrix& covarianceMatrix,
-                                Real tolerance = 1.0e-12);
+        CovarianceDecomposition(
+            const Matrix& covarianceMatrix,
+            Real tolerance = 1.0e-12,
+            SalvagingAlgorithm::Type sa = SalvagingAlgorithm::None);
         /*! returns the variances Array */
         const Array& variances() const { return variances_; }
         /*! returns the standard deviations Array */
