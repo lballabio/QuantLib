@@ -42,7 +42,7 @@ namespace QuantLib {
         initializeOptionDatesAndTimes();
         registerWithMarketData();
         interpolate();
-   }
+    }
 
     void AbcdAtmVolCurve::checkInputs() const
     {
