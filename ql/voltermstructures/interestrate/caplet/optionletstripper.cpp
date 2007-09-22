@@ -52,6 +52,7 @@ namespace QuantLib {
         while (nextCapFloorLength<=maxCapFloorTenor) {
             optionletTenors_.push_back(capFloorLengths_.back());
             capFloorLengths_.push_back(nextCapFloorLength);
+            nextCapFloorLength += indexTenor;
         }
         nOptionletTenors_ = optionletTenors_.size();
 
