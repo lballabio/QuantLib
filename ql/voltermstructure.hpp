@@ -45,16 +45,17 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        VolatilityTermStructure(BusinessDayConvention bdc = Following,
+        VolatilityTermStructure(const Calendar& cal,
+                                BusinessDayConvention bdc = Following,
                                 const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
         VolatilityTermStructure(const Date& referenceDate,
-                                const Calendar& cal = Calendar(),
+                                const Calendar& cal,
                                 BusinessDayConvention bdc = Following,
                                 const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
         VolatilityTermStructure(Natural settlementDays,
-                                const Calendar&,
+                                const Calendar& cal,
                                 BusinessDayConvention bdc = Following,
                                 const DayCounter& dc = DayCounter());
         //@}
@@ -68,25 +69,6 @@ namespace QuantLib {
     };
 
     // inline definitions
-
-    inline VolatilityTermStructure::VolatilityTermStructure(
-                                                    BusinessDayConvention bdc,
-                                                    const DayCounter& dc)
-    : TermStructure(dc), bdc_(bdc) {}
-
-    inline VolatilityTermStructure::VolatilityTermStructure(
-                                                    const Date& referenceDate,
-                                                    const Calendar& cal,
-                                                    BusinessDayConvention bdc,
-                                                    const DayCounter& dc)
-    : TermStructure(referenceDate, cal, dc), bdc_(bdc) {}
-
-    inline VolatilityTermStructure::VolatilityTermStructure(
-                                                    Natural settlementDays,
-                                                    const Calendar& cal,
-                                                    BusinessDayConvention bdc,
-                                                    const DayCounter& dc)
-    : TermStructure(settlementDays, cal, dc), bdc_(bdc) {}
 
     inline BusinessDayConvention
     VolatilityTermStructure::businessDayConvention() const {
