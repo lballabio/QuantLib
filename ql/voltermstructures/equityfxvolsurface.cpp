@@ -41,9 +41,10 @@ namespace QuantLib {
     Volatility EquityFXVolSurface::atmForwardVol(const Date& date1,
                                                  const Date& date2,
                                                  bool extrapolate) const {
-        Real fwdVariance = atmForwardVariance(date1, date2, extrapolate);
-        Time t = dayCounter().yearFraction(date1, date2);
-        return std::sqrt(fwdVariance/t);
+        QL_REQUIRE(date1<date2, "wrong dates");
+        Time t1 = timeFromReference(date1);
+        Time t2 = timeFromReference(date2);
+        return atmForwardVol(t1, t2, extrapolate);
     }
 
     Volatility EquityFXVolSurface::atmForwardVol(Time time1,
@@ -58,10 +59,9 @@ namespace QuantLib {
                                                 const Date& date2,
                                                 bool extrapolate) const {
         QL_REQUIRE(date1<date2, "wrong dates");
-        Real var1 = atmVariance(date1, extrapolate);
-        Real var2 = atmVariance(date2, extrapolate);
-        QL_ENSURE(var1<var2, "non-increasing variances");
-        return var2-var1;
+        Time t1 = timeFromReference(date1);
+        Time t2 = timeFromReference(date2);
+        return atmForwardVariance(t1, t2, extrapolate);
     }
 
     Real EquityFXVolSurface::atmForwardVariance(Time time1,
