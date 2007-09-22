@@ -3796,19 +3796,19 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\voltermstructures\interestrate\capfloor\capfloortermvolcurve.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\voltermstructures\interestrate\capfloor\capfloortermvolcurve.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\voltermstructures\interestrate\capfloor\capfloortermvolsurface.cpp"
 						>
 					</File>
 					<File
 						RelativePath=".\ql\voltermstructures\interestrate\capfloor\capfloortermvolsurface.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\voltermstructures\interestrate\capfloor\capfloortermvolvector.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\voltermstructures\interestrate\capfloor\capfloortermvolvector.hpp"
 						>
 					</File>
 				</Filter>
