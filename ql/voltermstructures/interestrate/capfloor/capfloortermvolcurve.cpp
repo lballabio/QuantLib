@@ -20,7 +20,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/voltermstructures/interestrate/capfloor/capfloortermvolvector.hpp>
+#include <ql/voltermstructures/interestrate/capfloor/capfloortermvolcurve.hpp>
 #include <ql/math/interpolations/cubicspline.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
