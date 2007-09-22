@@ -82,15 +82,14 @@ namespace QuantLib {
         //! the latest date for which the curve can return values
         virtual Date maxDate() const = 0;
         //! the latest time for which the curve can return values
-        virtual Time maxTime() const { return timeFromReference(maxDate()); }
+        virtual Time maxTime() const;
         //! the date at which discount = 1.0 and/or variance = 0.0
         virtual const Date& referenceDate() const;
-        //! the calendar used for reference date calculation
+        //! the calendar used for reference and/or option date calculation
         virtual Calendar calendar() const;
         //! the settlementDays used for reference date calculation
         virtual Natural settlementDays() const;
         //@}
-
         //! \name Observer interface
         //@{
         void update();
@@ -102,65 +101,33 @@ namespace QuantLib {
         void checkRange(const Date&,
                         bool extrapolate) const;
         //! time-range check
-        void checkRange(Time,
+        void checkRange(Time t,
                         bool extrapolate) const;
         bool moving_;
+        Calendar calendar_;
       private:
         mutable Date referenceDate_;
         mutable bool updated_;
         Natural settlementDays_;
-        Calendar calendar_;
         DayCounter dayCounter_;
     };
 
     // inline definitions
 
-    inline TermStructure::TermStructure(const DayCounter& dc)
-    : moving_(false), updated_(true), settlementDays_(Null<Size>()),
-      dayCounter_(dc) {}
-
-    inline TermStructure::TermStructure(const Date& referenceDate,
-                                        const Calendar& cal,
-                                        const DayCounter& dc)
-    : moving_(false), referenceDate_(referenceDate), updated_(true),
-      settlementDays_(Null<Natural>()), calendar_(cal), dayCounter_(dc) {}
-
-    inline TermStructure::TermStructure(Natural settlementDays,
-                                        const Calendar& cal,
-                                        const DayCounter& dc)
-    : moving_(true), updated_(false), settlementDays_(settlementDays),
-      calendar_(cal), dayCounter_(dc) {
-        registerWith(Settings::instance().evaluationDate());
-        // verify immediately if calendar and settlementDays are ok
-        Date today = Settings::instance().evaluationDate();
-        referenceDate_ = calendar().advance(today, settlementDays_, Days);
+    inline DayCounter TermStructure::dayCounter() const {
+        return dayCounter_;
     }
 
-    inline const Date& TermStructure::referenceDate() const {
-        if (!updated_) {
-            Date today = Settings::instance().evaluationDate();
-            referenceDate_ = calendar().advance(today, settlementDays_, Days);
-            updated_ = true;
-        }
-        return referenceDate_;
+    inline Time TermStructure::maxTime() const {
+        return timeFromReference(maxDate());
     }
 
     inline Calendar TermStructure::calendar() const {
         return calendar_;
     }
 
-    inline DayCounter TermStructure::dayCounter() const {
-        return dayCounter_;
-    }
-
     inline Natural TermStructure::settlementDays() const {
         return settlementDays_;
-    }
-
-    inline void TermStructure::update() {
-        if (moving_)
-            updated_ = false;
-        notifyObservers();
     }
 
     inline Time TermStructure::timeFromReference(const Date& d) const {
@@ -169,15 +136,7 @@ namespace QuantLib {
 
     inline void TermStructure::checkRange(const Date& d,
                                           bool extrapolate) const {
-        checkRange(timeFromReference(d),extrapolate);
-    }
-
-    inline void TermStructure::checkRange(Time t, bool extrapolate) const {
-        QL_REQUIRE(t >= 0.0,
-                   "negative time (" << t << ") given");
-        QL_REQUIRE(extrapolate || allowsExtrapolation() || t <= maxTime(),
-                   "time (" << t << ") is past max curve time ("
-                            << maxTime() << ")");
+        checkRange(timeFromReference(d), extrapolate);
     }
 
 }
