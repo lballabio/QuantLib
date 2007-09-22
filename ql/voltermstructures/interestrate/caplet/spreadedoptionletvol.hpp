@@ -29,10 +29,9 @@
 
 namespace QuantLib {
 
-    class SpreadedCapletVolatilityStructure : 
-                                         public OptionletVolatilityStructure {
+    class SpreadedOptionletVol : public OptionletVolatilityStructure {
       public:
-        SpreadedCapletVolatilityStructure(
+        SpreadedOptionletVol(
             const Handle<OptionletVolatilityStructure>& underlyingVolStructure,
             const Handle<Quote>& spread);
 

@@ -17,11 +17,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/voltermstructures/interestrate/caplet/spreadedcapletvolstructure.hpp>
+#include <ql/voltermstructures/interestrate/caplet/spreadedoptionletvol.hpp>
 
 namespace QuantLib {
 
-    SpreadedCapletVolatilityStructure::SpreadedCapletVolatilityStructure(
+    SpreadedOptionletVol::SpreadedOptionletVol(
             const Handle<OptionletVolatilityStructure>& underlyingVol,
             const Handle<Quote>& spread)
     : OptionletVolatilityStructure(underlyingVol->settlementDays(), 
@@ -35,42 +35,41 @@ namespace QuantLib {
           enableExtrapolation(underlyingVol->allowsExtrapolation());
     }
 
-    Volatility SpreadedCapletVolatilityStructure::volatilityImpl(
-                                                    Time length,
+    Volatility SpreadedOptionletVol::volatilityImpl(Time length,
                                                     Rate strike) const {
         return underlyingVolStructure_->volatility(length, strike)
                                                         +spread_->value();
     }
 
-    Rate SpreadedCapletVolatilityStructure::minStrike() const {
+    Rate SpreadedOptionletVol::minStrike() const {
         return underlyingVolStructure_->minStrike();
     }
     
-    Rate SpreadedCapletVolatilityStructure::maxStrike() const {
+    Rate SpreadedOptionletVol::maxStrike() const {
         return underlyingVolStructure_->maxStrike();
     }
 
-    DayCounter SpreadedCapletVolatilityStructure::dayCounter() const {
+    DayCounter SpreadedOptionletVol::dayCounter() const {
         return underlyingVolStructure_->dayCounter();
     }
     
-    Date SpreadedCapletVolatilityStructure::maxDate() const {
+    Date SpreadedOptionletVol::maxDate() const {
         return underlyingVolStructure_->maxDate();
     }
 
-    Time SpreadedCapletVolatilityStructure::maxTime() const {
+    Time SpreadedOptionletVol::maxTime() const {
         return underlyingVolStructure_->maxTime();
     }
         
-    const Date& SpreadedCapletVolatilityStructure::referenceDate() const {
+    const Date& SpreadedOptionletVol::referenceDate() const {
         return underlyingVolStructure_->referenceDate();
     }
         
-    Calendar SpreadedCapletVolatilityStructure::calendar() const {
+    Calendar SpreadedOptionletVol::calendar() const {
         return underlyingVolStructure_->calendar();
     }
         
-    Natural SpreadedCapletVolatilityStructure::settlementDays() const {
+    Natural SpreadedOptionletVol::settlementDays() const {
         return underlyingVolStructure_->settlementDays();
     }
 }
