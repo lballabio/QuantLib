@@ -62,15 +62,7 @@ namespace QuantLib {
         //@}
         //! \name LazyObject interface
         //@{
-        void update() {
-            if (evaluationDate_ != Settings::instance().evaluationDate()) {
-                evaluationDate_ = Settings::instance().evaluationDate();
-                if (moving_) // check if date recalculation could be avoided
-                        initializeOptionDatesAndTimes();
-            }
-            TermStructure::update();
-            LazyObject::update();
-        };
+        void update();
         void performCalculations() const;
         //@}
       protected:

@@ -20,6 +20,7 @@
 #include "varianceswaps.hpp"
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/instruments/varianceswap.hpp>
 #include <ql/pricingengines/forward/replicatingvarianceswapengine.hpp>
 #include <ql/pricingengines/forward/mcvarianceswapengine.hpp>
@@ -181,8 +182,9 @@ void VarianceSwapTest::testReplicatingVarianceSwap() {
             strikes.push_back(callStrikes[k]);
         }
 
-        boost::shared_ptr<BlackVolTermStructure> volTS(
-                   new BlackVarianceSurface(today, dates, strikes, vols, dc));
+        boost::shared_ptr<BlackVolTermStructure> volTS(new
+            BlackVarianceSurface(today, NullCalendar(),
+                                 dates, strikes, vols, dc));
 
         boost::shared_ptr<GeneralizedBlackScholesProcess> stochProcess(
                              new BlackScholesMertonProcess(

@@ -74,6 +74,7 @@ namespace QuantLib {
         DayCounter rfdc  = process->riskFreeRate()->dayCounter();
         DayCounter divdc = process->dividendYield()->dayCounter();
         DayCounter voldc = process->blackVolatility()->dayCounter();
+        Calendar volcal = process->blackVolatility()->calendar();
 
         Real s0 = process->stateVariable()->value();
         Volatility v = process->blackVolatility()->blackVol(
@@ -94,7 +95,7 @@ namespace QuantLib {
                 new FlatForward(referenceDate, q, divdc)));
         Handle<BlackVolTermStructure> flatVol(
             boost::shared_ptr<BlackVolTermStructure>(
-                new BlackConstantVol(referenceDate, v, voldc)));
+                new BlackConstantVol(referenceDate, volcal, v, voldc)));
 
         boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);

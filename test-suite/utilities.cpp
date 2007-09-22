@@ -86,22 +86,23 @@ namespace QuantLib {
     flatVol(const Date& today,
             const boost::shared_ptr<Quote>& vol,
             const DayCounter& dc) {
-        return boost::shared_ptr<BlackVolTermStructure>(
-                      new BlackConstantVol(today, Handle<Quote>(vol), dc));
+        return boost::shared_ptr<BlackVolTermStructure>(new
+            BlackConstantVol(today, NullCalendar(), Handle<Quote>(vol), dc));
     }
 
     boost::shared_ptr<BlackVolTermStructure>
     flatVol(const Date& today, Volatility vol,
             const DayCounter& dc) {
-        return flatVol(today, boost::shared_ptr<Quote>(new SimpleQuote(vol)),
+        return flatVol(today,
+                       boost::shared_ptr<Quote>(new SimpleQuote(vol)),
                        dc);
     }
 
     boost::shared_ptr<BlackVolTermStructure>
     flatVol(const boost::shared_ptr<Quote>& vol,
             const DayCounter& dc) {
-        return boost::shared_ptr<BlackVolTermStructure>(
-             new BlackConstantVol(0, NullCalendar(), Handle<Quote>(vol), dc));
+        return boost::shared_ptr<BlackVolTermStructure>(new
+            BlackConstantVol(0, NullCalendar(), Handle<Quote>(vol), dc));
     }
 
     boost::shared_ptr<BlackVolTermStructure>

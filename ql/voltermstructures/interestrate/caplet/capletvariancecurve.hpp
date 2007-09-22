@@ -42,11 +42,11 @@ namespace QuantLib {
         //@}
         Real minStrike() const;
         Real maxStrike() const;
-        template <class Interpolator>
-        void setInterpolation(const Interpolator& i = Interpolator()) {
-            blackCurve_.setInterpolation(i);
-            notifyObservers();
-        }
+        //template <class Interpolator>
+        //void setInterpolation(const Interpolator& i = Interpolator()) {
+        //    blackCurve_.setInterpolation(i);
+        //    notifyObservers();
+        //}
       protected:
         Volatility volatilityImpl(Time t, Rate) const;
       private:
@@ -83,6 +83,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

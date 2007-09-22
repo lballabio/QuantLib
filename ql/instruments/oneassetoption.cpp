@@ -218,10 +218,11 @@ namespace QuantLib {
             originalProcess->blackVolatility();
         vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
         Handle<BlackVolTermStructure> volatility(
-               boost::shared_ptr<BlackVolTermStructure>(
-                    new BlackConstantVol(blackVol->referenceDate(),
-                                         Handle<Quote>(vol_),
-                                         blackVol->dayCounter())));
+            boost::shared_ptr<BlackVolTermStructure>(new
+                BlackConstantVol(blackVol->referenceDate(),
+                                 blackVol->calendar(),
+                                 Handle<Quote>(vol_),
+                                 blackVol->dayCounter())));
 
         boost::shared_ptr<StochasticProcess> process(
                new GeneralizedBlackScholesProcess(stateVariable, dividendYield,

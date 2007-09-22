@@ -3720,6 +3720,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\voltermstructures\interestrate\cap\capfloortermvolatilitystructure.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\voltermstructures\interestrate\cap\capfloortermvolatilitystructure.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\voltermstructures\interestrate\cap\capfloortermvolsurface.cpp"
 						>
 					</File>
@@ -3735,24 +3743,12 @@
 						RelativePath=".\ql\voltermstructures\interestrate\cap\capfloortermvolvector.hpp"
 						>
 					</File>
-					<File
-						RelativePath=".\ql\voltermstructures\interestrate\cap\capfloorvolatilitystructure.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\voltermstructures\interestrate\cap\capfloorvolatilitystructure.hpp"
-						>
-					</File>
 				</Filter>
 				<Filter
 					Name="caplet"
 					>
 					<File
 						RelativePath=".\ql\voltermstructures\interestrate\caplet\all.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\voltermstructures\interestrate\caplet\capletconstantvol.hpp"
 						>
 					</File>
 					<File
@@ -3773,6 +3769,14 @@
 					</File>
 					<File
 						RelativePath=".\ql\voltermstructures\interestrate\caplet\capstripper.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\voltermstructures\interestrate\caplet\constantoptionletvol.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\voltermstructures\interestrate\caplet\constantoptionletvol.hpp"
 						>
 					</File>
 					<File
@@ -3800,11 +3804,11 @@
 						>
 					</File>
 					<File
-						RelativePath=".\ql\voltermstructures\interestrate\caplet\spreadedcapletvolstructure.cpp"
+						RelativePath=".\ql\voltermstructures\interestrate\caplet\spreadedoptionletvol.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\voltermstructures\interestrate\caplet\spreadedcapletvolstructure.hpp"
+						RelativePath=".\ql\voltermstructures\interestrate\caplet\spreadedoptionletvol.hpp"
 						>
 					</File>
 				</Filter>
@@ -6549,6 +6553,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ql\termstructure.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\ql\termstructure.hpp"
 			>
 		</File>
@@ -6577,7 +6585,15 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ql\voltermstructure.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\ql\voltermstructure.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\yieldtermstructure.cpp"
 			>
 		</File>
 		<File

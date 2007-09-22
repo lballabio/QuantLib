@@ -29,7 +29,7 @@
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/voltermstructures/interestrate/caplet/capletconstantvol.hpp>
+#include <ql/voltermstructures/interestrate/caplet/constantoptionletvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
@@ -268,7 +268,8 @@ void SwapTest::testInArrears() {
     Volatility capletVolatility = 0.22;
     Handle<OptionletVolatilityStructure> vol(
         boost::shared_ptr<OptionletVolatilityStructure>(new
-            CapletConstantVolatility(today_, capletVolatility, dayCounter)));
+            ConstantOptionletVol(today_, capletVolatility,
+                                 NullCalendar(), dayCounter)));
     boost::shared_ptr<IborCouponPricer> pricer(new
         BlackIborCouponPricer(vol));
 

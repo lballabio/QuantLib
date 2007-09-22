@@ -48,17 +48,18 @@ namespace QuantLib {
                           const std::vector<Rate>& switchStrikes);
         //! \name Cap Stripper interface
         //@{
-        const Matrix& capfloorPrices() const;
-        const Matrix& capfloorVolatilities() const;
+        const Matrix& capFloorPrices() const;
+        const Matrix& capFloorVolatilities() const;
 
         const Matrix& optionletPrices() const;
         const Matrix& optionletVolatilities() const;
         const std::vector<Rate>& strikes() const;
 
         const std::vector<Period>& optionletTenors() const;
-        const std::vector<Date>& optionletFixingDates() const;
+        const std::vector<Date>& optionletDates() const;
+        const std::vector<Time>& optionletTimes() const;
+
         const std::vector<Date>& optionletPaymentDates() const;
-        const std::vector<Time>& optionletFixingTimes() const;
 
         boost::shared_ptr<CapFloorTermVolSurface> surface() const;
         //@}
@@ -72,16 +73,16 @@ namespace QuantLib {
         Size nStrikes_;
         std::vector<Period> optionletTenors_;
         Size nOptionletTenors_;
-        mutable Matrix capfloorPrices_, optionletPrices_;
-        mutable Matrix capfloorVols_, optionletVols_;
+        mutable Matrix capFloorPrices_, optionletPrices_;
+        mutable Matrix capFloorVols_, optionletVols_;
         mutable Matrix optionletStDevs_;
         mutable std::vector<Rate> atmOptionletRate_;
-        mutable std::vector<Date> optionletFixingDates_;
+        mutable std::vector<Date> optionletDates_;
         mutable std::vector<Date> optionletPaymentDates_;
         mutable std::vector<Time> optionletAccrualPeriods_;
-        mutable std::vector<Time> optionletFixingTimes_;
-        std::vector<Period> capfloorLengths_;
-        mutable CapFloorMatrix capfloors_;
+        mutable std::vector<Time> optionletTimes_;
+        std::vector<Period> capFloorLengths_;
+        mutable CapFloorMatrix capFloors_;
         std::vector<Rate> switchStrikes_;
     };
 
@@ -95,14 +96,14 @@ namespace QuantLib {
         return optionletVols_;
     }
 
-    inline const Matrix& OptionletStripper::capfloorPrices() const {
+    inline const Matrix& OptionletStripper::capFloorPrices() const {
         calculate();
-        return capfloorPrices_;
+        return capFloorPrices_;
     }
 
-    inline const Matrix& OptionletStripper::capfloorVolatilities() const {
+    inline const Matrix& OptionletStripper::capFloorVolatilities() const {
         calculate();
-        return capfloorVols_;
+        return capFloorVols_;
     }
 
     inline
@@ -111,9 +112,9 @@ namespace QuantLib {
     }
 
     inline
-    const std::vector<Date>& OptionletStripper::optionletFixingDates() const {
+    const std::vector<Date>& OptionletStripper::optionletDates() const {
         calculate();
-        return optionletFixingDates_;
+        return optionletDates_;
     }
      
     inline
@@ -123,9 +124,9 @@ namespace QuantLib {
     }
      
     inline
-    const std::vector<Time>& OptionletStripper::optionletFixingTimes() const {
+    const std::vector<Time>& OptionletStripper::optionletTimes() const {
         calculate();
-        return optionletFixingTimes_;
+        return optionletTimes_;
     }
 
 }

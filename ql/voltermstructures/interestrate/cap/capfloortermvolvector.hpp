@@ -27,7 +27,7 @@
 #ifndef quantlib_cap_volatility_vector_hpp
 #define quantlib_cap_volatility_vector_hpp
 
-#include <ql/voltermstructures/interestrate/cap/capfloorvolatilitystructure.hpp>
+#include <ql/voltermstructures/interestrate/cap/capfloortermvolatilitystructure.hpp>
 #include <ql/math/interpolation.hpp>
 #include <ql/quote.hpp>
 #include <ql/patterns/lazyobject.hpp>
@@ -46,42 +46,42 @@ namespace QuantLib {
               the length vector but an interpolation pointing to the
               original ones.
     */
-    class CapFloorTermVolVector : public CapFloorVolatilityStructure,
+    class CapFloorTermVolCurve : public CapFloorTermVolatilityStructure,
                                   public LazyObject  {
       public:
         //! floating reference date, floating market data
-        CapFloorTermVolVector(Natural settlementDays,
+        CapFloorTermVolCurve(Natural settlementDays,
                               const Calendar& calendar,
                               const std::vector<Period>& optionTenors,
-                              const std::vector<Handle<Quote> >& volatilities,
+                              const std::vector<Handle<Quote> >& vols,
                               BusinessDayConvention bdc = Following,
                               const DayCounter& dc = Actual365Fixed());        
         //! fixed reference date, floating market data
-        CapFloorTermVolVector(const Date& settlementDate,
+        CapFloorTermVolCurve(const Date& settlementDate,
                               const Calendar& calendar,
                               const std::vector<Period>& optionTenors,
-                              const std::vector<Handle<Quote> >& volatilities,
+                              const std::vector<Handle<Quote> >& vols,
                               BusinessDayConvention bdc = Following,
                               const DayCounter& dc = Actual365Fixed());
         //! fixed reference date, fixed market data
-        CapFloorTermVolVector(const Date& settlementDate,
+        CapFloorTermVolCurve(const Date& settlementDate,
                               const Calendar& calendar,
                               const std::vector<Period>& optionTenors,
-                              const std::vector<Volatility>& volatilities,
+                              const std::vector<Volatility>& vols,
                               BusinessDayConvention bdc = Following,
                               const DayCounter& dc = Actual365Fixed());
         //! floating reference date, fixed market data
-        CapFloorTermVolVector(Natural settlementDays,
+        CapFloorTermVolCurve(Natural settlementDays,
                               const Calendar& calendar,
                               const std::vector<Period>& optionTenors,
-                              const std::vector<Volatility>& volatilities,
+                              const std::vector<Volatility>& vols,
                               BusinessDayConvention bdc = Following,
                               const DayCounter& dc = Actual365Fixed());
         //! \name TermStructure interface
         //@{
         Date maxDate() const;
         //@}
-        //! \name CapFloorVolatilityStructure interface
+        //! \name CapFloorTermVolatilityStructure interface
         //@{
         Real minStrike() const;
         Real maxStrike() const;
@@ -94,58 +94,69 @@ namespace QuantLib {
         //! \name some inspectors
         //@{
         const std::vector<Period>& optionTenors() const;
+        const std::vector<Date>& optionDates() const;
         const std::vector<Time>& optionTimes() const;
-        const std::vector<Rate>& strikes() const;
         //@}
-      private:
-        void checkInputs(Size volatilitiesRows) const;
-        void registerWithMarketData();
-        std::vector<Period> optionTenors_;
-        mutable std::vector<Time> optionTimes_;
-        std::vector<Handle<Quote> > volHandles_;
-        mutable std::vector<Volatility> volatilities_;
-        mutable Interpolation interpolation_;
-        void interpolate() const;
+      protected:
         Volatility volatilityImpl(Time length,
                                   Rate) const;
+      private:
+        void checkInputs() const;
+        void initializeOptionDatesAndTimes();
+        void registerWithMarketData();
+        void interpolate();
+
+        Size nOptionTenors_;
+        std::vector<Period> optionTenors_;
+        mutable std::vector<Date> optionDates_;
+        mutable std::vector<Time> optionTimes_;
+        Date evaluationDate_;
+
+        std::vector<Handle<Quote> > volHandles_;
+        mutable std::vector<Volatility> vols_;
+
+        // make it not mutable if possible
+        mutable Interpolation interpolation_;
     };
 
     // inline definitions
 
-    inline Date CapFloorTermVolVector::maxDate() const {
+    inline Date CapFloorTermVolCurve::maxDate() const {
         calculate();
         return optionDateFromTenor(optionTenors_.back());
     }
 
-    inline Real CapFloorTermVolVector::minStrike() const {
+    inline Real CapFloorTermVolCurve::minStrike() const {
         return QL_MIN_REAL;
     }
 
-    inline Real CapFloorTermVolVector::maxStrike() const {
+    inline Real CapFloorTermVolCurve::maxStrike() const {
         return QL_MAX_REAL;
     }
 
-    inline void CapFloorTermVolVector::update() {
-        //TermStructure::update();
-        //LazyObject::update();
-        CapFloorVolatilityStructure::update();
-        interpolate();
-    }
-
     inline
-    Volatility CapFloorTermVolVector::volatilityImpl(Time t, 
+    Volatility CapFloorTermVolCurve::volatilityImpl(Time t, 
                                                      Rate) const {
         calculate();
         return interpolation_(t, true);
     }
 
     inline
-    const std::vector<Period>& CapFloorTermVolVector::optionTenors() const {
+    const std::vector<Period>& CapFloorTermVolCurve::optionTenors() const {
         return optionTenors_;
     }
 
     inline
-    const std::vector<Time>& CapFloorTermVolVector::optionTimes() const {
+    const std::vector<Date>& CapFloorTermVolCurve::optionDates() const {
+        // what if quotes are not available?
+        calculate();
+        return optionDates_;
+    }
+
+    inline
+    const std::vector<Time>& CapFloorTermVolCurve::optionTimes() const {
+        // what if quotes are not available?
+        calculate();
         return optionTimes_;
     }
 

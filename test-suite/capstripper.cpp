@@ -30,7 +30,7 @@
 #include <ql/voltermstructures/interestrate/caplet/capstripper.hpp>
 #include <ql/voltermstructures/interpolatedsmilesection.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
-#include <ql/voltermstructures/interestrate/caplet/spreadedcapletvolstructure.hpp>
+#include <ql/voltermstructures/interestrate/caplet/spreadedoptionletvol.hpp>
 
 #include <iostream>
 
@@ -326,7 +326,7 @@ void CapsStripperTest::testSpreadedStripper() {
     boost::shared_ptr<SimpleQuote> spread (new SimpleQuote(0.0001));
     Handle<Quote> spreadHandle(spread);
     boost::shared_ptr<OptionletVolatilityStructure> spreadedStripper(
-        new SpreadedCapletVolatilityStructure
+        new SpreadedOptionletVol
         (strippedVolatilityStructureHandle, spreadHandle));
     std::vector<Real> strikes;
     for (Size k=1; k<100; k++)

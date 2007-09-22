@@ -42,12 +42,12 @@ namespace QuantLib {
     void OptionletStripperAdapter::performCalculations() const {
 
         const std::vector<Rate>& strikes = optionletStripper_->strikes();
-        const std::vector<Time>& optionletFixingTimes = optionletStripper_->optionletFixingTimes();
+        const std::vector<Time>& optionletTimes = optionletStripper_->optionletTimes();
         interpolation_ = BilinearInterpolation(
                                        strikes.begin(),  
                                        strikes.end(),
-                                       optionletFixingTimes.begin(),
-                                       optionletFixingTimes.end(),
+                                       optionletTimes.begin(),
+                                       optionletTimes.end(),
                                        optionletStripper_->optionletVolatilities());    
     }
 
@@ -60,7 +60,7 @@ namespace QuantLib {
     }
     
     Date OptionletStripperAdapter::maxDate() const {
-        return optionletStripper_->optionletFixingDates().back();
+        return optionletStripper_->optionletDates().back();
     }
     
     const Date& OptionletStripperAdapter::referenceDate() const {

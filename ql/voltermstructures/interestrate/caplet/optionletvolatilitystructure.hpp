@@ -45,7 +45,8 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        OptionletVolatilityStructure(BusinessDayConvention bdc = Following,
+        OptionletVolatilityStructure(const Calendar& cal = Calendar(),
+                                     BusinessDayConvention bdc = Following,
                                      const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
         OptionletVolatilityStructure(const Date& referenceDate,
@@ -65,26 +66,26 @@ namespace QuantLib {
         Volatility volatility(const Date& exerciseDate,
                               Rate strike,
                               bool extrapolate = false) const;
-        //! returns the volatility for a given exercise time and strike rate
-        Volatility volatility(Time t,
-                              Rate strike,
-                              bool extrapolate = false) const;
         //! returns the volatility for a given option tenor and strike rate
         Volatility volatility(const Period& optionTenor,
+                              Rate strike,
+                              bool extrapolate = false) const;
+        //! returns the volatility for a given exercise time and strike rate
+        Volatility volatility(Time t,
                               Rate strike,
                               bool extrapolate = false) const;
         //! returns the Black variance for a given exercise date and strike rate
         Real blackVariance(const Date& exerciseDate,
                            Rate strike,
                            bool extrapolate = false) const;
-        //! returns the Black variance for a given start time and strike rate
-        Real blackVariance(Time t,
-                           Rate strike,
-                           bool extrapolate = false) const;
         //! returns the Black variance for a given option tenor and strike rate
         Volatility blackVariance(const Period& optionTenor,
                                  Rate strike,
                                  bool extrapolate = false) const;
+        //! returns the Black variance for a given start time and strike rate
+        Real blackVariance(Time t,
+                           Rate strike,
+                           bool extrapolate = false) const;
         //@}
         //! \name Limits
         //@{

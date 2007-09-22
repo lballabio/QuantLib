@@ -51,7 +51,8 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        EquityFXVolSurface(BusinessDayConvention bdc = Following,
+        EquityFXVolSurface(const Calendar& cal = Calendar(),
+                           BusinessDayConvention bdc = Following,
                            const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
         EquityFXVolSurface(const Date& referenceDate,

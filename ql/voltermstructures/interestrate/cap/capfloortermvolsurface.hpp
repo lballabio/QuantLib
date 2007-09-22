@@ -25,7 +25,7 @@
 #ifndef quantlib_cap_floor_term_vol_surface_hpp
 #define quantlib_cap_floor_term_vol_surface_hpp
 
-#include <ql/voltermstructures/interestrate/cap/capfloorvolatilitystructure.hpp>
+#include <ql/voltermstructures/interestrate/cap/capfloortermvolatilitystructure.hpp>
 #include <ql/math/interpolations/interpolation2d.hpp>
 #include <ql/quote.hpp>
 #include <ql/patterns/lazyobject.hpp>
@@ -39,7 +39,7 @@ namespace QuantLib {
         market term volatilities of a set of caps/floors with given
         length and given strike.
     */
-    class CapFloorTermVolSurface : public CapFloorVolatilityStructure,
+    class CapFloorTermVolSurface : public CapFloorTermVolatilityStructure,
                                    public LazyObject {
       public:
         //! floating reference date, floating market data
@@ -78,7 +78,7 @@ namespace QuantLib {
         //@{
         Date maxDate() const;
         //@}
-        //! \name CapFloorVolatilityStructure interface
+        //! \name CapFloorTermVolatilityStructure interface
         //@{
         Real minStrike() const;
         Real maxStrike() const;
@@ -91,22 +91,33 @@ namespace QuantLib {
         //! \name some inspectors
         //@{
         const std::vector<Period>& optionTenors() const;
+        const std::vector<Date>& optionDates() const;
         const std::vector<Time>& optionTimes() const;
         const std::vector<Rate>& strikes() const;
         //@}
-      private:
-        void checkInputs(Size volatilitiesRows,
-                         Size volatilitiesColumns) const;
-        void registerWithMarketData();
-        std::vector<Period> optionTenors_;
-        mutable std::vector<Time> optionTimes_;
-        std::vector<Rate> strikes_;
-        std::vector<std::vector<Handle<Quote> > > volHandles_;
-        mutable Matrix volatilities_;
-        mutable Interpolation2D interpolation_;
-        void interpolate() const;
+      protected:
         Volatility volatilityImpl(Time t,
                                   Rate strike) const;
+      private:
+        void checkInputs() const;
+        void initializeOptionDatesAndTimes();
+        void registerWithMarketData();
+        void interpolate();
+        
+        Size nOptionTenors_;
+        std::vector<Period> optionTenors_;
+        mutable std::vector<Date> optionDates_;
+        mutable std::vector<Time> optionTimes_;
+        Date evaluationDate_;
+
+        Size nStrikes_;
+        std::vector<Rate> strikes_;
+
+        std::vector<std::vector<Handle<Quote> > > volHandles_;
+        mutable Matrix vols_;
+
+        // make it not mutable if possible
+        mutable Interpolation2D interpolation_;
     };
 
     // inline definitions
@@ -124,13 +135,6 @@ namespace QuantLib {
         return strikes_.back();
     }
 
-    inline void CapFloorTermVolSurface::update() {
-        TermStructure::update();
-        LazyObject::update();
-        //CapFloorVolatilityStructure::update();
-        //interpolate();
-    }
-
     inline
     Volatility CapFloorTermVolSurface::volatilityImpl(Time t,
                                                       Rate strike) const {
@@ -144,10 +148,19 @@ namespace QuantLib {
     }
 
     inline
+    const std::vector<Date>& CapFloorTermVolSurface::optionDates() const {
+        // what if quotes are not available?
+        calculate();
+        return optionDates_;
+    }
+
+    inline
     const std::vector<Time>& CapFloorTermVolSurface::optionTimes() const {
+        // what if quotes are not available?
+        calculate();
         return optionTimes_;
     }
-    
+
     inline const std::vector<Rate>& CapFloorTermVolSurface::strikes() const {
         return strikes_;
     }

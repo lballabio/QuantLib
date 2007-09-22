@@ -86,7 +86,7 @@ boost::shared_ptr<IborIndex> makeIndex() {
 }
 
 
-boost::shared_ptr<CapletVarianceCurve>
+boost::shared_ptr<OptionletVolatilityStructure>
 makeCapVolCurve(const Date& todaysDate) {
     Volatility vols[] = {14.40, 17.15, 16.81, 16.64, 16.17,
                          15.78, 15.40, 15.21, 14.86};
@@ -202,7 +202,7 @@ void LiborMarketModelTest::testCapletPricing() {
         new LiborForwardModelProcess(size, index));
 
     // set-up pricing engine
-    const boost::shared_ptr<CapletVarianceCurve> capVolCurve =
+    const boost::shared_ptr<OptionletVolatilityStructure> capVolCurve =
         makeCapVolCurve(Settings::instance().evaluationDate());
 
     Array variances = LfmHullWhiteParameterization(process, capVolCurve)

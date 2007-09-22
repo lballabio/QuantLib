@@ -41,7 +41,7 @@
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
-#include <ql/voltermstructures/interestrate/caplet/capletconstantvol.hpp>
+#include <ql/voltermstructures/interestrate/caplet/constantoptionletvol.hpp>
 #include <ql/voltermstructures/interestrate/swaption/swaptionconstantvol.hpp>
 #include <ql/voltermstructures/interestrate/swaption/swaptionvolmatrix.hpp>
 #include <ql/voltermstructures/interestrate/swaption/swaptionvolcube2.hpp>

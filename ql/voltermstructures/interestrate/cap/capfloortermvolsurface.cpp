@@ -34,19 +34,23 @@ namespace QuantLib {
                         const std::vector<std::vector<Handle<Quote> > >& vols,
                         BusinessDayConvention bdc,
                         const DayCounter& dc)
-    : CapFloorVolatilityStructure(settlementDays, calendar, bdc, dc),
+    : CapFloorTermVolatilityStructure(settlementDays, calendar, bdc, dc),
+      nOptionTenors_(optionTenors.size()),
       optionTenors_(optionTenors),
-      optionTimes_(optionTenors.size()), 
+      optionDates_(nOptionTenors_),
+      optionTimes_(nOptionTenors_), 
+      nStrikes_(strikes.size()),
       strikes_(strikes),
       volHandles_(vols),
-      volatilities_(vols.size(), vols[0].size())
+      vols_(vols.size(), vols[0].size())
     {
-        checkInputs(volatilities_.rows(), volatilities_.columns());
+        checkInputs();
+        initializeOptionDatesAndTimes();
+        for (Size i=0; i<nOptionTenors_; ++i)
+            QL_REQUIRE(volHandles_[i].size()==nStrikes_,
+                       io::ordinal(i) << " row of vol handles has size " <<
+                       volHandles_[i].size() << " instead of " << nStrikes_);
         registerWithMarketData();
-        for (Size i=0; i<volatilities_.rows(); ++i)
-          for (Size j=0; j<volatilities_.columns(); ++j)
-              volatilities_[i][j] = volHandles_[i][j]->value();
-
         interpolate();
     }
     
@@ -59,19 +63,23 @@ namespace QuantLib {
                         const std::vector<std::vector<Handle<Quote> > >& vols,
                         BusinessDayConvention bdc,
                         const DayCounter& dc)
-    : CapFloorVolatilityStructure(settlementDate, calendar, bdc, dc),
+    : CapFloorTermVolatilityStructure(settlementDate, calendar, bdc, dc),
+      nOptionTenors_(optionTenors.size()),
       optionTenors_(optionTenors),
-      optionTimes_(optionTenors.size()), 
+      optionDates_(nOptionTenors_),
+      optionTimes_(nOptionTenors_), 
+      nStrikes_(strikes.size()),
       strikes_(strikes),
       volHandles_(vols),
-      volatilities_(vols.size(), vols[0].size())
+      vols_(vols.size(), vols[0].size())
     {
-        checkInputs(volatilities_.rows(), volatilities_.columns());
+        checkInputs();
+        initializeOptionDatesAndTimes();
+        for (Size i=0; i<nOptionTenors_; ++i)
+            QL_REQUIRE(volHandles_[i].size()==nStrikes_,
+                       io::ordinal(i) << " row of vol handles has size " <<
+                       volHandles_[i].size() << " instead of " << nStrikes_);
         registerWithMarketData();
-        for (Size i=0; i<volatilities_.rows(); ++i)
-          for (Size j=0; j<volatilities_.columns(); ++j)
-              volatilities_[i][j] = volHandles_[i][j]->value();
-
         interpolate();
     }
 
@@ -84,23 +92,25 @@ namespace QuantLib {
                         const Matrix& vols,
                         BusinessDayConvention bdc,
                         const DayCounter& dc)
-    : CapFloorVolatilityStructure(settlementDate, calendar, bdc, dc),
+    : CapFloorTermVolatilityStructure(settlementDate, calendar, bdc, dc),
+      nOptionTenors_(optionTenors.size()),
       optionTenors_(optionTenors),
-      optionTimes_(optionTenors.size()), 
+      optionDates_(nOptionTenors_),
+      optionTimes_(nOptionTenors_), 
+      nStrikes_(strikes.size()),
       strikes_(strikes),
       volHandles_(vols.rows()),
-      volatilities_(vols)
+      vols_(vols)
     {
-        checkInputs(volatilities_.rows(), volatilities_.columns());
+        checkInputs();
+        initializeOptionDatesAndTimes();
         // fill dummy handles to allow generic handle-based computations later
-        for (Size i=0; i<volatilities_.rows(); ++i) {
-            volHandles_[i].resize(volatilities_.columns());
-            for (Size j=0; j<volatilities_.columns(); ++j)
+        for (Size i=0; i<nOptionTenors_; ++i) {
+            volHandles_[i].resize(nStrikes_);
+            for (Size j=0; j<nStrikes_; ++j)
                 volHandles_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
-                    SimpleQuote(volatilities_[i][j])));
+                    SimpleQuote(vols_[i][j])));
         }
-        registerWithMarketData();
-
         interpolate();
     }
 
@@ -113,71 +123,98 @@ namespace QuantLib {
                         const Matrix& vols,
                         BusinessDayConvention bdc,
                         const DayCounter& dc)
-    : CapFloorVolatilityStructure(settlementDays, calendar, bdc, dc),
+    : CapFloorTermVolatilityStructure(settlementDays, calendar, bdc, dc),
+      nOptionTenors_(optionTenors.size()),
       optionTenors_(optionTenors),
-      optionTimes_(optionTenors.size()), 
+      optionDates_(nOptionTenors_),
+      optionTimes_(nOptionTenors_), 
+      nStrikes_(strikes.size()),
       strikes_(strikes),
       volHandles_(vols.rows()),
-      volatilities_(vols)
+      vols_(vols)
     {
-        checkInputs(volatilities_.rows(), volatilities_.columns());
+        checkInputs();
+        initializeOptionDatesAndTimes();
         // fill dummy handles to allow generic handle-based computations later
-        for (Size i=0; i<volatilities_.rows(); ++i) {
-            volHandles_[i].resize(volatilities_.columns());
-            for (Size j=0; j<volatilities_.columns(); ++j)
+        for (Size i=0; i<nOptionTenors_; ++i) {
+            volHandles_[i].resize(nStrikes_);
+            for (Size j=0; j<nStrikes_; ++j)
                 volHandles_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
-                    SimpleQuote(volatilities_[i][j])));
+                    SimpleQuote(vols_[i][j])));
         }
-        registerWithMarketData();
-
         interpolate();
     }
 
-    void CapFloorTermVolSurface::checkInputs(Size volRows,
-                                             Size volsColumns) const {
-        QL_REQUIRE(optionTenors_.size()==volRows,
-                   "mismatch between number of option tenors (" <<
-                   optionTenors_.size() <<
-                   ") and number of volatilities (" << volRows << ")");
-        QL_REQUIRE(volatilities_.columns()==strikes_.size(),
-                   "mismatch between strikes(" << strikes_.size() <<
-                   ") and vol columns (" << volatilities_.columns() << ")"); 
-        
-        QL_REQUIRE(strikes_.size()>1, "too few strikes (" << strikes_.size()<< ")");
-        for (Size i=1; i<strikes_.size(); ++i)
-            QL_REQUIRE(strikes_[i-1]<strikes_[i],
-                       "non increasing strikes: " <<
-                       io::ordinal(i-1) << " is " << strikes_[i-1] << ", " <<
-                       io::ordinal(i) << " is " << strikes_[i]);
+    void CapFloorTermVolSurface::checkInputs() const {
 
+        QL_REQUIRE(!optionTenors_.empty(), "empty option tenor vector");
+        QL_REQUIRE(nOptionTenors_==vols_.rows(),
+                   "mismatch between number of option tenors (" <<
+                   nOptionTenors_ << ") and number of volatility rows (" <<
+                   vols_.rows() << ")");
+        QL_REQUIRE(optionTenors_[0]>0*Days,
+                   "negative first option tenor: " << optionTenors_[0]);
+        for (Size i=1; i<nOptionTenors_; ++i)
+            QL_REQUIRE(optionTenors_[i]>optionTenors_[i-1],
+                       "non increasing option tenor: " << io::ordinal(i-1) <<
+                       " is " << optionTenors_[i-1] << ", " <<
+                       io::ordinal(i) << " is " << optionTenors_[i]);
+
+        QL_REQUIRE(nStrikes_==vols_.columns(),
+                   "mismatch between strikes(" << strikes_.size() <<
+                   ") and vol columns (" << vols_.columns() << ")"); 
+        for (Size j=1; j<nStrikes_; ++j)
+            QL_REQUIRE(strikes_[j-1]<strikes_[j],
+                       "non increasing strikes: " << io::ordinal(j-1) <<
+                       " is " << io::rate(strikes_[j-1]) << ", " <<
+                       io::ordinal(j) << " is " << io::rate(strikes_[j]));
     }
 
     void CapFloorTermVolSurface::registerWithMarketData()
     {
-        for (Size i=0; i<volHandles_.size(); ++i)
+        for (Size i=0; i<nOptionTenors_; ++i)
             for (Size j=0; j<volHandles_[0].size(); ++j)
                 registerWith(volHandles_[i][j]);
     }
 
-    void CapFloorTermVolSurface::interpolate() const
+    void CapFloorTermVolSurface::interpolate()
     {
         interpolation_ = BicubicSpline(strikes_.begin(),  
                                        strikes_.end(),
                                        optionTimes_.begin(),
                                        optionTimes_.end(),
-                                       volatilities_);    
+                                       vols_);    
     }
 
-    void CapFloorTermVolSurface::performCalculations() const {
-
-        for (Size i=0; i<optionTenors_.size(); ++i) {
-            Date endDate = optionDateFromTenor(optionTenors_[i]);
-            optionTimes_[i] = timeFromReference(endDate);
+    void CapFloorTermVolSurface::update()
+    {
+        // recalculate dates if necessary...
+        if (moving_) {
+            Date d = Settings::instance().evaluationDate();
+            if (evaluationDate_ != d) {
+                evaluationDate_ = d;
+                initializeOptionDatesAndTimes();
+            }
         }
+        CapFloorTermVolatilityStructure::update();
+        LazyObject::update();
+    }
 
-        for (Size i=0; i<volatilities_.rows(); ++i)
-            for (Size j=0; j<volatilities_.columns(); ++j)
-                volatilities_[i][j] = volHandles_[i][j]->value();
+    void CapFloorTermVolSurface::initializeOptionDatesAndTimes()
+    {
+        for (Size i=0; i<nOptionTenors_; ++i) {
+            optionDates_[i] = optionDateFromTenor(optionTenors_[i]);
+            optionTimes_[i] = timeFromReference(optionDates_[i]);
+        }
+    }
+
+    void CapFloorTermVolSurface::performCalculations() const
+    {
+        // check if date recalculation must be called here
+
+        for (Size i=0; i<nOptionTenors_; ++i)
+            for (Size j=0; j<vols_.columns(); ++j)
+                vols_[i][j] = volHandles_[i][j]->value();
 
         interpolation_.update();
     }

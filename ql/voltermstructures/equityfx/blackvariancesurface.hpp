@@ -49,6 +49,7 @@ namespace QuantLib {
         enum Extrapolation { ConstantExtrapolation,
                              InterpolatorDefaultExtrapolation };
         BlackVarianceSurface(const Date& referenceDate,
+                             const Calendar& cal,
                              const std::vector<Date>& dates,
                              const std::vector<Real>& strikes,
                              const Matrix& blackVolMatrix,

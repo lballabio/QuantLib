@@ -20,22 +20,22 @@
 
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/voltermstructures/interestrate/caplet/capletconstantvol.hpp>
+#include <ql/voltermstructures/interestrate/caplet/constantoptionletvol.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 
 namespace QuantLib {
 
     BlackCapFloorEngine::BlackCapFloorEngine(Volatility volatility,
                                              const DayCounter& dc)
-    : volatility_(boost::shared_ptr<OptionletVolatilityStructure>(
-                              new CapletConstantVolatility(volatility, dc))) {
+    : volatility_(boost::shared_ptr<OptionletVolatilityStructure>(new
+                        ConstantOptionletVol(volatility, Calendar(), dc))) {
         registerWith(volatility_);
     }
 
     BlackCapFloorEngine::BlackCapFloorEngine(const Handle<Quote>& volatility,
                                              const DayCounter& dc)
-    : volatility_(boost::shared_ptr<OptionletVolatilityStructure>(
-                              new CapletConstantVolatility(volatility, dc))) {
+    : volatility_(boost::shared_ptr<OptionletVolatilityStructure>(new
+                        ConstantOptionletVol(volatility, Calendar(), dc))) {
         registerWith(volatility_);
     }
 

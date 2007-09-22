@@ -57,6 +57,7 @@ namespace QuantLib {
         Real variance = jdProcess->blackVolatility()->blackVariance(
                                         arguments_.exercise->lastDate(), 1.0);
         DayCounter voldc = jdProcess->blackVolatility()->dayCounter();
+        Calendar volcal = jdProcess->blackVolatility()->calendar();
         Date volRefDate = jdProcess->blackVolatility()->referenceDate();
         Time t = voldc.yearFraction(volRefDate,
                                     arguments_.exercise->lastDate());
@@ -111,10 +112,10 @@ namespace QuantLib {
             v = std::sqrt((variance + i*jumpSquareVol)/t);
             r = riskFreeRate - jdProcess->jumpIntensity()->value()*k
                 + i*muPlusHalfSquareVol/t;
-            riskFreeTS.linkTo(boost::shared_ptr<YieldTermStructure>(
-                                new FlatForward(rateRefDate, r, voldc)));
-            volTS.linkTo(boost::shared_ptr<BlackVolTermStructure>(
-                                new BlackConstantVol(rateRefDate, v, voldc)));
+            riskFreeTS.linkTo(boost::shared_ptr<YieldTermStructure>(new
+                FlatForward(rateRefDate, r, voldc)));
+            volTS.linkTo(boost::shared_ptr<BlackVolTermStructure>(new
+                BlackConstantVol(rateRefDate, volcal, v, voldc)));
 
             baseArguments->validate();
             baseEngine_->calculate();

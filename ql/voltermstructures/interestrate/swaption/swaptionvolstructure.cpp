@@ -25,9 +25,10 @@
 namespace QuantLib {
 
     SwaptionVolatilityStructure::SwaptionVolatilityStructure(
+                                                    const Calendar& cal,
                                                     const DayCounter& dc,
                                                     BusinessDayConvention bdc)
-    : VolatilityTermStructure(bdc, dc) {}
+    : VolatilityTermStructure(cal, bdc, dc) {}
 
     SwaptionVolatilityStructure::SwaptionVolatilityStructure(
                                                 const Date& referenceDate,

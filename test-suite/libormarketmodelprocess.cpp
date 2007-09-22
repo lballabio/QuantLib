@@ -27,7 +27,7 @@
 #include <ql/yieldtermstructures/zerocurve.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/actual360.hpp>
-#include <ql/voltermstructures/interestrate/caplet/capletconstantvol.hpp>
+#include <ql/voltermstructures/interestrate/caplet/constantoptionletvol.hpp>
 #include <ql/voltermstructures/interestrate/caplet/capletvariancecurve.hpp>
 #include <ql/processes/lfmhullwhiteparam.hpp>
 
@@ -119,9 +119,10 @@ void LiborMarketModelProcessTest::testInitialisation() {
 
     boost::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
     boost::shared_ptr<OptionletVolatilityStructure> capletVol(new
-        CapletConstantVolatility(termStructure->referenceDate(),
-                                 0.2,
-                                 termStructure->dayCounter()));
+        ConstantOptionletVol(termStructure->referenceDate(),
+                             0.2,
+                             termStructure->calendar(),
+                             termStructure->dayCounter()));
 
     Calendar calendar = index->fixingCalendar();
 

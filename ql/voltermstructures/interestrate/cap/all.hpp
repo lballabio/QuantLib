@@ -2,6 +2,6 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/voltermstructures/interestrate/cap/capfloortermvolvector.hpp>
-#include <ql/voltermstructures/interestrate/cap/capfloorvolatilitystructure.hpp>
+#include <ql/voltermstructures/interestrate/cap/capfloortermvolatilitystructure.hpp>
 #include <ql/voltermstructures/interestrate/cap/capfloortermvolsurface.hpp>
 

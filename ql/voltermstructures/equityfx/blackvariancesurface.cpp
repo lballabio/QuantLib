@@ -25,13 +25,14 @@ namespace QuantLib {
 
     BlackVarianceSurface::BlackVarianceSurface(
                                   const Date& referenceDate,
+                                  const Calendar& cal,
                                   const std::vector<Date>& dates,
                                   const std::vector<Real>& strikes,
                                   const Matrix& blackVolMatrix,
                                   const DayCounter& dayCounter,
                                   BlackVarianceSurface::Extrapolation lowerEx,
                                   BlackVarianceSurface::Extrapolation upperEx)
-    : BlackVarianceTermStructure(referenceDate),
+    : BlackVarianceTermStructure(referenceDate, cal),
       dayCounter_(dayCounter), maxDate_(dates.back()), strikes_(strikes),
       lowerExtrapolation_(lowerEx), upperExtrapolation_(upperEx) {
 

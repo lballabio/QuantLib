@@ -91,7 +91,6 @@ namespace QuantLib {
                     new SimpleQuote(vols[i][j])));
             }
         }
-        registerWithMarketData();
         interpolation_ = BilinearInterpolation(
                                     swapLengths_.begin(), swapLengths_.end(),
                                     optionTimes_.begin(), optionTimes_.end(),
@@ -122,7 +121,6 @@ namespace QuantLib {
                     new SimpleQuote(vols[i][j])));
             }
         }
-        registerWithMarketData();
         interpolation_ = BilinearInterpolation(
                                     swapLengths_.begin(), swapLengths_.end(),
                                     optionTimes_.begin(), optionTimes_.end(),
@@ -151,7 +149,6 @@ namespace QuantLib {
                     new SimpleQuote(vols[i][j])));
             }
         }
-        registerWithMarketData();
         interpolation_ = BilinearInterpolation(
                                     swapLengths_.begin(), swapLengths_.end(),
                                     optionTimes_.begin(), optionTimes_.end(),

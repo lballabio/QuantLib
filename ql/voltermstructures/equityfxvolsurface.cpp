@@ -21,9 +21,10 @@
 
 namespace QuantLib {
 
-    EquityFXVolSurface::EquityFXVolSurface(BusinessDayConvention bdc,
+    EquityFXVolSurface::EquityFXVolSurface(const Calendar& cal,
+                                           BusinessDayConvention bdc,
                                            const DayCounter& dc)
-    : BlackVolSurface(bdc, dc) {}
+    : BlackVolSurface(cal, bdc, dc) {}
 
     EquityFXVolSurface::EquityFXVolSurface(const Date& refDate,
                                            const Calendar& cal,

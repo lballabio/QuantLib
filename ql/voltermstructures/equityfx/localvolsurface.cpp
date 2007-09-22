@@ -50,7 +50,8 @@ namespace QuantLib {
                                  const Handle<YieldTermStructure>& riskFreeTS,
                                  const Handle<YieldTermStructure>& dividendTS,
                                  const Handle<Quote>& underlying)
-    : LocalVolTermStructure(blackTS->businessDayConvention(),
+    : LocalVolTermStructure(blackTS->calendar(),
+                            blackTS->businessDayConvention(),
                             blackTS->dayCounter()),
       blackTS_(blackTS), riskFreeTS_(riskFreeTS), dividendTS_(dividendTS),
       underlying_(underlying) {
@@ -66,7 +67,8 @@ namespace QuantLib {
                                  const Handle<YieldTermStructure>& riskFreeTS,
                                  const Handle<YieldTermStructure>& dividendTS,
                                  Real underlying)
-    : LocalVolTermStructure(blackTS->businessDayConvention(),
+    : LocalVolTermStructure(blackTS->calendar(),
+                            blackTS->businessDayConvention(),
                             blackTS->dayCounter()),
       blackTS_(blackTS), riskFreeTS_(riskFreeTS), dividendTS_(dividendTS),
       underlying_(boost::shared_ptr<Quote>(new SimpleQuote(underlying))) {

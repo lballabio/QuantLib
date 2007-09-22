@@ -26,7 +26,7 @@
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/math/matrix.hpp>
-#include <ql/voltermstructures/interestrate/caplet/capletconstantvol.hpp>
+#include <ql/voltermstructures/interestrate/caplet/constantoptionletvol.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/schedule.hpp>
@@ -119,7 +119,7 @@ Leg makeCapFlooredLeg(const Date& startDate,
     Handle<OptionletVolatilityStructure> vol;
     vol = Handle<OptionletVolatilityStructure>(
           boost::shared_ptr<OptionletVolatilityStructure>(new
-            CapletConstantVolatility(volatility, Actual365Fixed())));
+            ConstantOptionletVol(volatility, calendar_, Actual365Fixed())));
 
     boost::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer(vol));
     std::vector<Rate> gearingVector(length_, gearing);

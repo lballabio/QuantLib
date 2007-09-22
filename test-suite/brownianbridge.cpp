@@ -27,6 +27,7 @@
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/yieldtermstructures/flatforward.hpp>
 #include <ql/voltermstructures/equityfx/blackconstantvol.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -208,7 +209,7 @@ void BrownianBridgeTest::testPathGeneration() {
                                new FlatForward(today,0.03,Actual365Fixed())));
     Handle<BlackVolTermStructure> sigma(
                    boost::shared_ptr<BlackVolTermStructure>(
-                          new BlackConstantVol(today,0.20,Actual365Fixed())));
+                          new BlackConstantVol(today, NullCalendar(), 0.20,Actual365Fixed())));
 
     boost::shared_ptr<StochasticProcess1D> process(
                               new BlackScholesMertonProcess(x0, q, r, sigma));

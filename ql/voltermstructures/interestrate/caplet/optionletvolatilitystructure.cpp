@@ -23,9 +23,10 @@
 namespace QuantLib {
 
     OptionletVolatilityStructure::OptionletVolatilityStructure(
+                                                    const Calendar& cal,
                                                     BusinessDayConvention bdc,
                                                     const DayCounter& dc)
-    : VolatilityTermStructure(bdc, dc) {}
+    : VolatilityTermStructure(cal, bdc, dc) {}
 
     OptionletVolatilityStructure::OptionletVolatilityStructure(
                                                     const Date& referenceDate,

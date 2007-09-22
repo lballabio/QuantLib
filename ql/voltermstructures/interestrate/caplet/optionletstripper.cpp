@@ -42,36 +42,40 @@ namespace QuantLib {
         Period indexTenor = index->tenor();
         Period maxCapFloorTenor = surface->optionTenors().back();
 
-        // optionlet tenors and capfloor lengths
+        // optionlet tenors and capFloor lengths
         optionletTenors_.push_back(indexTenor);
-        capfloorLengths_.push_back(optionletTenors_.back()+indexTenor);
-        QL_REQUIRE(maxCapFloorTenor>=capfloorLengths_.back(),
-                   "too short capfloor term vol surface");
-        while (capfloorLengths_.back()+indexTenor<=maxCapFloorTenor) {
-            optionletTenors_.push_back(optionletTenors_.back()+indexTenor);
-            capfloorLengths_.push_back(optionletTenors_.back()+indexTenor);
+        capFloorLengths_.push_back(optionletTenors_.back()+indexTenor);
+        QL_REQUIRE(maxCapFloorTenor>=capFloorLengths_.back(),
+                   "too short (" << maxCapFloorTenor <<
+                   ") capfloor term vol surface");
+        Period nextCapFloorLength = capFloorLengths_.back()+indexTenor;
+        while (nextCapFloorLength<=maxCapFloorTenor) {
+            optionletTenors_.push_back(capFloorLengths_.back());
+            capFloorLengths_.push_back(nextCapFloorLength);
         }
         nOptionletTenors_ = optionletTenors_.size();
 
-        capfloorPrices_ = Matrix(nOptionletTenors_, nStrikes_);
+        capFloorPrices_ = Matrix(nOptionletTenors_, nStrikes_);
         optionletPrices_ = Matrix(nOptionletTenors_, nStrikes_);
-        capfloorVols_ = Matrix(nOptionletTenors_, nStrikes_);
+        capFloorVols_ = Matrix(nOptionletTenors_, nStrikes_);
         optionletVols_ = Matrix(nOptionletTenors_, nStrikes_);
         Real firstGuess = 0.14;
         optionletStDevs_ = Matrix(nOptionletTenors_, nStrikes_, firstGuess);
         atmOptionletRate_ = std::vector<Rate>(nOptionletTenors_);
-        optionletFixingDates_ = std::vector<Date>(nOptionletTenors_);
+        optionletDates_ = std::vector<Date>(nOptionletTenors_);
         optionletPaymentDates_ = std::vector<Date>(nOptionletTenors_);
-        optionletFixingTimes_ = std::vector<Time>(nOptionletTenors_);
+        optionletTimes_ = std::vector<Time>(nOptionletTenors_);
         optionletAccrualPeriods_ = std::vector<Time>(nOptionletTenors_);
-        capfloors_ = CapFloorMatrix(nOptionletTenors_);
+        capFloors_ = CapFloorMatrix(nOptionletTenors_);
 
         if (switchStrikes.size()==1) 
-            switchStrikes_= std::vector<QuantLib::Rate>(nOptionletTenors_, switchStrikes[0]);       
-        if (switchStrikes==std::vector<Rate>())
+            switchStrikes_= std::vector<Rate>(nOptionletTenors_,
+                                              switchStrikes[0]);
+        else if (switchStrikes==std::vector<Rate>())
             switchStrikes_ = std::vector<Rate>(nOptionletTenors_, 0.04); 
-        QL_REQUIRE(nOptionletTenors_==switchStrikes_.size(),
-                   "nOptionletTenors_!=switchStrikes_.size()");
+        else 
+            QL_REQUIRE(nOptionletTenors_==switchStrikes_.size(),
+                       "nOptionletTenors_!=switchStrikes_.size()");
     }
 
     void OptionletStripper::performCalculations() const {
@@ -84,20 +88,20 @@ namespace QuantLib {
             boost::shared_ptr<BlackCapFloorEngine> dummy(new
                                          BlackCapFloorEngine(0.20, dc));
             CapFloor temp = MakeCapFloor(CapFloor::Cap,
-                                         capfloorLengths_[i],
+                                         capFloorLengths_[i],
                                          index_,
                                          0.04, // dummy strike
                                          0*Days,
                                          dummy);
             boost::shared_ptr<FloatingRateCoupon> lFRC =
                                                 temp.lastFloatingRateCoupon();
-            optionletFixingDates_[i] = lFRC->fixingDate();
+            optionletDates_[i] = lFRC->fixingDate();
             optionletPaymentDates_[i] = lFRC->date();
             optionletAccrualPeriods_[i] = lFRC->accrualPeriod();
-            optionletFixingTimes_[i] =
-                dc.yearFraction(referenceDate, optionletFixingDates_[i]);
-            atmOptionletRate_[i] = index_->forecastFixing(optionletFixingDates_[i]);
-            capfloors_[i].resize(nStrikes_);
+            optionletTimes_[i] =
+                dc.yearFraction(referenceDate, optionletDates_[i]);
+            atmOptionletRate_[i] = index_->forecastFixing(optionletDates_[i]);
+            capFloors_[i].resize(nStrikes_);
         }
 
         Spread strikeRange = strikes.back()-strikes.front();
@@ -111,19 +115,19 @@ namespace QuantLib {
                 Option::Type optionletType = capFloorType==CapFloor::Floor ?
                                        Option::Put : Option::Call;
 
-                capfloorVols_[i][j] = surface_->volatility(capfloorLengths_[i],
+                capFloorVols_[i][j] = surface_->volatility(capFloorLengths_[i],
                                                            strikes[j],
                                                            true);
                 boost::shared_ptr<BlackCapFloorEngine> engine(new
-                                BlackCapFloorEngine(capfloorVols_[i][j], dc));
-                capfloors_[i][j] = MakeCapFloor(capFloorType,
-                                                capfloorLengths_[i], index_,
+                                BlackCapFloorEngine(capFloorVols_[i][j], dc));
+                capFloors_[i][j] = MakeCapFloor(capFloorType,
+                                                capFloorLengths_[i], index_,
                                                 strikes[j], 0*Days, engine);
-                capfloorPrices_[i][j] = capfloors_[i][j]->NPV();
-                optionletPrices_[i][j] = capfloorPrices_[i][j] -
+                capFloorPrices_[i][j] = capFloors_[i][j]->NPV();
+                optionletPrices_[i][j] = capFloorPrices_[i][j] -
                                                         previousCapFloorPrice;
-                previousCapFloorPrice = capfloorPrices_[i][j];
-                DiscountFactor d = capfloors_[i][j]->discountCurve()->discount(
+                previousCapFloorPrice = capFloorPrices_[i][j];
+                DiscountFactor d = capFloors_[i][j]->discountCurve()->discount(
                                                         optionletPaymentDates_[i]);
                 DiscountFactor optionletAnnuity=optionletAccrualPeriods_[i]*d;
                 try {
@@ -136,7 +140,7 @@ namespace QuantLib {
                                                   optionletStDevs_[i][j]);
                 } catch (std::exception& e) {
                     QL_FAIL("could not bootstrap the optionlet:"
-                            "\n fixing date:   " << optionletFixingDates_[i] <<
+                            "\n fixing date:   " << optionletDates_[i] <<
                             "\n payment date:  " << optionletPaymentDates_[i] <<
                             "\n type:          " << optionletType <<
                             "\n strike:        " << io::rate(strikes[j]) <<
@@ -146,7 +150,7 @@ namespace QuantLib {
                             "\n error message: " << e.what());
                 }
                 optionletVols_[i][j] = optionletStDevs_[i][j] /
-                                                std::sqrt(optionletFixingTimes_[i]);
+                                                std::sqrt(optionletTimes_[i]);
 
             }
         }

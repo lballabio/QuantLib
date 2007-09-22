@@ -49,7 +49,8 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackVolTermStructure(BusinessDayConvention bdc = Following,
+        BlackVolTermStructure(const Calendar& cal = Calendar(),
+                              BusinessDayConvention bdc = Following,
                               const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
         BlackVolTermStructure(const Date& referenceDate,
@@ -151,7 +152,8 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackVolatilityTermStructure(BusinessDayConvention bdc = Following,
+        BlackVolatilityTermStructure(const Calendar& cal = Calendar(),
+                                     BusinessDayConvention bdc = Following,
                                      const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
         BlackVolatilityTermStructure(const Date& referenceDate,
@@ -160,7 +162,7 @@ namespace QuantLib {
                                      const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
         BlackVolatilityTermStructure(Natural settlementDays,
-                                     const Calendar&,
+                                     const Calendar& cal,
                                      BusinessDayConvention bdc = Following,
                                      const DayCounter& dc = DayCounter());
         //@}
@@ -196,7 +198,8 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackVarianceTermStructure(BusinessDayConvention bdc = Following,
+        BlackVarianceTermStructure(const Calendar& cal = Calendar(),
+                                   BusinessDayConvention bdc = Following,
                                    const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
         BlackVarianceTermStructure(const Date& referenceDate,

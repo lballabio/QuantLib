@@ -27,6 +27,7 @@
 #include <ql/pricingengines/mclongstaffschwartzengine.hpp>
 #include <ql/pricingengines/vanilla/fdamericanengine.hpp>
 #include <ql/pricingengines/vanilla/mcamericanengine.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -157,7 +158,7 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
         for (Integer j=0; j<3; ++j) {
             Handle<BlackVolTermStructure> flatVolTS(
                 boost::shared_ptr<BlackVolTermStructure>(
-                    new BlackConstantVol(settlementDate,
+                    new BlackConstantVol(settlementDate, NullCalendar(),
                                          volatility+0.1*j, dayCounter)));
 
             boost::shared_ptr<StrikedTypePayoff> payoff(
@@ -239,8 +240,9 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
             new FlatForward(settlementDate, dividendYield, dayCounter)));
 
     Handle<BlackVolTermStructure> flatVolTS(
-        boost::shared_ptr<BlackVolTermStructure>(
-            new BlackConstantVol(settlementDate, volatility, dayCounter)));
+        boost::shared_ptr<BlackVolTermStructure>(new
+            BlackConstantVol(settlementDate, NullCalendar(),
+                             volatility, dayCounter)));
 
     boost::shared_ptr<StrikedTypePayoff> payoff(
         new PlainVanillaPayoff(type, strike));

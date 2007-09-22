@@ -23,117 +23,131 @@
 #include <ql/voltermstructures/interestrate/cap/capfloortermvolvector.hpp>
 #include <ql/math/interpolations/cubicspline.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/utilities/dataformatters.hpp>
 
 namespace QuantLib {
 
     // floating reference date, floating market data
-    CapFloorTermVolVector::CapFloorTermVolVector(
+    CapFloorTermVolCurve::CapFloorTermVolCurve(
                         Natural settlementDays,
                         const Calendar& calendar,
                         const std::vector<Period>& optionTenors,
                         const std::vector<Handle<Quote> >& vols,
                         BusinessDayConvention bdc,
                         const DayCounter& dc)
-    : CapFloorVolatilityStructure(settlementDays, calendar, bdc, dc),
+    : CapFloorTermVolatilityStructure(settlementDays, calendar, bdc, dc),
+      nOptionTenors_(optionTenors.size()),
       optionTenors_(optionTenors),
-      optionTimes_(optionTenors.size()),
+      optionDates_(nOptionTenors_),
+      optionTimes_(nOptionTenors_),
       volHandles_(vols),
-      volatilities_(vols.size())
+      vols_(vols.size()) // do not initialize with nOptionTenors_
     {
-        checkInputs(vols.size());
+        checkInputs();
+        initializeOptionDatesAndTimes();
         registerWithMarketData();
-        for (Size i=0; i<volatilities_.size(); ++i)
-            volatilities_[i] = volHandles_[i]->value();
         interpolate();
     }
 
     // fixed reference date, floating market data
-    CapFloorTermVolVector::CapFloorTermVolVector(
+    CapFloorTermVolCurve::CapFloorTermVolCurve(
                             const Date& settlementDate,
                             const Calendar& calendar,
                             const std::vector<Period>& optionTenors,
-                            const std::vector<Handle<Quote> >& volatilities,
+                            const std::vector<Handle<Quote> >& vols,
                             BusinessDayConvention bdc,
                             const DayCounter& dayCounter)
-    : CapFloorVolatilityStructure(settlementDate, calendar, bdc, dayCounter),
+    : CapFloorTermVolatilityStructure(settlementDate, calendar, bdc, dayCounter),
+      nOptionTenors_(optionTenors.size()),
       optionTenors_(optionTenors),
-      optionTimes_(optionTenors.size()),
-      volHandles_(volatilities),
-      volatilities_(volatilities.size())
+      optionDates_(nOptionTenors_),
+      optionTimes_(nOptionTenors_),
+      volHandles_(vols),
+      vols_(vols.size()) // do not initialize with nOptionTenors_
     {
-        checkInputs(volatilities.size());
+        checkInputs();
+        initializeOptionDatesAndTimes();
         registerWithMarketData();
-        for (Size i=0; i<volatilities_.size(); ++i)
-            volatilities_[i] = volHandles_[i]->value();
         interpolate();
     }
 
     // fixed reference date, fixed market data
-    CapFloorTermVolVector::CapFloorTermVolVector(
+    CapFloorTermVolCurve::CapFloorTermVolCurve(
                                 const Date& settlementDate,
                                 const Calendar& calendar,
                                 const std::vector<Period>& optionTenors,
-                                const std::vector<Volatility>& volatilities,
+                                const std::vector<Volatility>& vols,
                                 BusinessDayConvention bdc,
                                 const DayCounter& dayCounter)
-    : CapFloorVolatilityStructure(settlementDate, calendar, bdc, dayCounter),
+    : CapFloorTermVolatilityStructure(settlementDate, calendar, bdc, dayCounter),
+      nOptionTenors_(optionTenors.size()),
       optionTenors_(optionTenors),
-      optionTimes_(optionTenors.size()),
-      volHandles_(volatilities.size()),
-      volatilities_(volatilities.size())
+      optionDates_(nOptionTenors_),
+      optionTimes_(nOptionTenors_),
+      volHandles_(vols.size()), // do not initialize with nOptionTenors_
+      vols_(vols)
     {
-        checkInputs(volatilities.size());
+        checkInputs();
+        initializeOptionDatesAndTimes();
         // fill dummy handles to allow generic handle-based computations later
-        for (Size i=0; i<volatilities.size(); ++i) {
+        for (Size i=0; i<nOptionTenors_; ++i)
             volHandles_[i] = Handle<Quote>(boost::shared_ptr<Quote>(new
-                SimpleQuote(volatilities[i])));
-        }
-        registerWithMarketData();
+                SimpleQuote(vols_[i])));
         interpolate();
     }
 
     // floating reference date, fixed market data
-    CapFloorTermVolVector::CapFloorTermVolVector(
+    CapFloorTermVolCurve::CapFloorTermVolCurve(
                                 Natural settlementDays,
                                 const Calendar& calendar,
                                 const std::vector<Period>& optionTenors,
-                                const std::vector<Volatility>& volatilities,
+                                const std::vector<Volatility>& vols,
                                 BusinessDayConvention bdc,
                                 const DayCounter& dayCounter)
-    : CapFloorVolatilityStructure(settlementDays, calendar, bdc, dayCounter),
+    : CapFloorTermVolatilityStructure(settlementDays, calendar, bdc, dayCounter),
+      nOptionTenors_(optionTenors.size()),
       optionTenors_(optionTenors),
-      optionTimes_(optionTenors.size()),
-      volHandles_(volatilities.size()),
-      volatilities_(volatilities.size())
+      optionDates_(nOptionTenors_),
+      optionTimes_(nOptionTenors_),
+      volHandles_(vols.size()), // do not initialize with nOptionTenors_
+      vols_(vols)
     {
-        checkInputs(volatilities.size());
+        checkInputs();
+        initializeOptionDatesAndTimes();
         // fill dummy handles to allow generic handle-based computations later
-        for (Size i=0; i<volatilities.size(); i++) {
+        for (Size i=0; i<nOptionTenors_; ++i)
             volHandles_[i] = Handle<Quote>(boost::shared_ptr<Quote>(new
-                SimpleQuote(volatilities[i])));
-        }
-        registerWithMarketData();
+                SimpleQuote(vols_[i])));
         interpolate();
     }
 
-    void CapFloorTermVolVector::checkInputs(Size volRows) const {
-        QL_REQUIRE(optionTenors_.size()==volRows,
+    void CapFloorTermVolCurve::checkInputs() const
+    {
+        QL_REQUIRE(!optionTenors_.empty(), "empty option tenor vector");
+        QL_REQUIRE(nOptionTenors_==vols_.size(),
                    "mismatch between number of option tenors (" <<
-                   optionTenors_.size() <<
-                   ") and number of cap volatilities (" << volRows << ")");
-        }
+                   nOptionTenors_ << ") and number of volatilities (" <<
+                   vols_.size() << ")");
+        QL_REQUIRE(optionTenors_[0]>0*Days,
+                   "negative first option tenor: " << optionTenors_[0]);
+        for (Size i=1; i<nOptionTenors_; ++i)
+            QL_REQUIRE(optionTenors_[i]>optionTenors_[i-1],
+                       "non increasing option tenor: " << io::ordinal(i-1) <<
+                       " is " << optionTenors_[i-1] << ", " <<
+                       io::ordinal(i) << " is " << optionTenors_[i]);
+    }
 
-    void CapFloorTermVolVector::registerWithMarketData()
+    void CapFloorTermVolCurve::registerWithMarketData()
     {
         for (Size i=0; i<volHandles_.size(); ++i)
             registerWith(volHandles_[i]);
     }
 
-    void CapFloorTermVolVector::interpolate() const
+    void CapFloorTermVolCurve::interpolate()
     {
         interpolation_ = CubicSpline(optionTimes_.begin(),
                                      optionTimes_.end(),
-                                     volatilities_.begin(),
+                                     vols_.begin(),
                                      CubicSpline::SecondDerivative,
                                      0.0,
                                      CubicSpline::SecondDerivative,
@@ -141,15 +155,34 @@ namespace QuantLib {
                                      false);
     }
 
-    void CapFloorTermVolVector::performCalculations() const {
-
-        for (Size i=0; i<optionTenors_.size(); ++i) {
-            Date endDate = optionDateFromTenor(optionTenors_[i]);
-            optionTimes_[i] = timeFromReference(endDate);
+    void CapFloorTermVolCurve::update()
+    {
+        // recalculate dates if necessary...
+        if (moving_) {
+            Date d = Settings::instance().evaluationDate();
+            if (evaluationDate_ != d) {
+                evaluationDate_ = d;
+                initializeOptionDatesAndTimes();
+            }
         }
+        CapFloorTermVolatilityStructure::update();
+        LazyObject::update();
+    }
 
-        for (Size i=0; i<volatilities_.size(); ++i)
-            volatilities_[i] = volHandles_[i]->value();
+    void CapFloorTermVolCurve::initializeOptionDatesAndTimes()
+    {
+        for (Size i=0; i<nOptionTenors_; ++i) {
+            optionDates_[i] = optionDateFromTenor(optionTenors_[i]);
+            optionTimes_[i] = timeFromReference(optionDates_[i]);
+        }
+    }
+
+    void CapFloorTermVolCurve::performCalculations() const
+    {
+        // check if date recalculation must be called here
+
+        for (Size i=0; i<vols_.size(); ++i)
+            vols_[i] = volHandles_[i]->value();
 
         interpolation_.update();
     }
