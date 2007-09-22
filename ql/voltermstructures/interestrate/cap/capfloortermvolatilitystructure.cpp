@@ -18,23 +18,24 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/voltermstructures/interestrate/cap/capfloorvolatilitystructure.hpp>
+#include <ql/voltermstructures/interestrate/cap/capfloortermvolatilitystructure.hpp>
 
 namespace QuantLib {
 
-    CapFloorVolatilityStructure::CapFloorVolatilityStructure(
+    CapFloorTermVolatilityStructure::CapFloorTermVolatilityStructure(
+                                                    const Calendar& cal,
                                                     BusinessDayConvention bdc,
                                                     const DayCounter& dc)
-    : VolatilityTermStructure(bdc, dc) {}
+    : VolatilityTermStructure(cal, bdc, dc) {}
 
-    CapFloorVolatilityStructure::CapFloorVolatilityStructure(
+    CapFloorTermVolatilityStructure::CapFloorTermVolatilityStructure(
                                                     const Date& refDate,
                                                     const Calendar& cal,
                                                     BusinessDayConvention bdc,
                                                     const DayCounter& dc)
     : VolatilityTermStructure(refDate, cal, bdc, dc) {}
 
-    CapFloorVolatilityStructure::CapFloorVolatilityStructure(
+    CapFloorTermVolatilityStructure::CapFloorTermVolatilityStructure(
                                                     Natural settlementDays,
                                                     const Calendar& cal,
                                                     BusinessDayConvention bdc,

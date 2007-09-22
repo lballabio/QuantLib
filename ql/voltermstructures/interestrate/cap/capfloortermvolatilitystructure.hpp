@@ -33,7 +33,7 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of concrete
         structures which will be derived from this one.
     */
-    class CapFloorVolatilityStructure : public VolatilityTermStructure {
+    class CapFloorTermVolatilityStructure : public VolatilityTermStructure {
       public:
         /*! \name Constructors
             See the TermStructure documentation for issues regarding
@@ -45,27 +45,28 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        CapFloorVolatilityStructure(BusinessDayConvention bdc = Following,
+        CapFloorTermVolatilityStructure(const Calendar& cal = Calendar(),
+                                    BusinessDayConvention bdc = Following,
                                     const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
-        CapFloorVolatilityStructure(const Date& referenceDate,
+        CapFloorTermVolatilityStructure(const Date& referenceDate,
                                     const Calendar& cal = Calendar(),
                                     BusinessDayConvention bdc = Following,
                                     const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
-        CapFloorVolatilityStructure(Natural settlementDays,
+        CapFloorTermVolatilityStructure(Natural settlementDays,
                                     const Calendar&,
                                     BusinessDayConvention bdc = Following,
                                     const DayCounter& dc = DayCounter());
         //@}
-        virtual ~CapFloorVolatilityStructure() {}
+        virtual ~CapFloorTermVolatilityStructure() {}
         //! \name Volatility
         //@{
-        Volatility volatility(const Date& end,
-                              Rate strike,
-                              bool extrapolate = false) const;
         //! returns the volatility for a given cap/floor length and strike rate
         Volatility volatility(const Period& length,
+                              Rate strike,
+                              bool extrapolate = false) const;
+        Volatility volatility(const Date& end,
                               Rate strike,
                               bool extrapolate = false) const;
         //! returns the volatility for a given end time and strike rate
@@ -90,24 +91,7 @@ namespace QuantLib {
     // inline definitions
 
     inline
-    Volatility CapFloorVolatilityStructure::volatility(const Date& end,
-                                                  Rate strike,
-                                                  bool extrapolate) const {
-        Time t = timeFromReference(end);
-        checkRange(t,strike,extrapolate);
-        return volatilityImpl(t,strike);
-    }
-
-    inline
-    Volatility CapFloorVolatilityStructure::volatility(Time t,
-                                                  Rate strike,
-                                                  bool extrapolate) const {
-        checkRange(t,strike,extrapolate);
-        return volatilityImpl(t,strike);
-    }
-
-    inline
-    Volatility CapFloorVolatilityStructure::volatility(const Period& optionT,
+    Volatility CapFloorTermVolatilityStructure::volatility(const Period& optionT,
                                                        Rate strike,
                                                        bool extrap) const {
         Date exerciseDate = optionDateFromTenor(optionT);
@@ -115,9 +99,25 @@ namespace QuantLib {
     }
 
     inline
-    void CapFloorVolatilityStructure::checkRange(Time t,
-                                            Rate k,
-                                            bool extrapolate) const {
+    Volatility CapFloorTermVolatilityStructure::volatility(const Date& end,
+                                                       Rate strike,
+                                                       bool extrap) const {
+        Time t = timeFromReference(end);
+        return volatility(t, strike, extrap);
+    }
+
+    inline
+    Volatility CapFloorTermVolatilityStructure::volatility(Time t,
+                                                       Rate strike,
+                                                       bool extrap) const {
+        checkRange(t, strike, extrap);
+        return volatilityImpl(t, strike);
+    }
+
+    inline
+    void CapFloorTermVolatilityStructure::checkRange(Time t,
+                                                 Rate k,
+                                                 bool extrapolate) const {
         TermStructure::checkRange(t, extrapolate);
         QL_REQUIRE(extrapolate || allowsExtrapolation() ||
                    (k >= minStrike() && k <= maxStrike()),
