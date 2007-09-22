@@ -49,7 +49,8 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackAtmVolCurve(BusinessDayConvention bdc = Following,
+        BlackAtmVolCurve(const Calendar& cal = Calendar(),
+                         BusinessDayConvention bdc = Following,
                          const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
         BlackAtmVolCurve(const Date& referenceDate,
@@ -66,11 +67,17 @@ namespace QuantLib {
         //! \name Black at-the-money spot volatility
         //@{
         //! spot at-the-money volatility
+        Volatility atmVol(const Period& optionTenor,
+                          bool extrapolate = false) const;
+        //! spot at-the-money volatility
         Volatility atmVol(const Date& maturity,
                           bool extrapolate = false) const;
         //! spot at-the-money volatility
         Volatility atmVol(Time maturity,
                           bool extrapolate = false) const;
+        //! spot at-the-money variance
+        Real atmVariance(const Period& optionTenor,
+                         bool extrapolate = false) const;
         //! spot at-the-money variance
         Real atmVariance(const Date& maturity,
                          bool extrapolate = false) const;

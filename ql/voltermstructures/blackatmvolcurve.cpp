@@ -21,9 +21,10 @@
 
 namespace QuantLib {
 
-    BlackAtmVolCurve::BlackAtmVolCurve(BusinessDayConvention bdc,
+    BlackAtmVolCurve::BlackAtmVolCurve(const Calendar& cal,
+                                       BusinessDayConvention bdc,
                                        const DayCounter& dc)
-    : VolatilityTermStructure(bdc, dc) {}
+    : VolatilityTermStructure(cal, bdc, dc) {}
 
     BlackAtmVolCurve::BlackAtmVolCurve(const Date& refDate,
                                        const Calendar& cal,
@@ -37,6 +38,12 @@ namespace QuantLib {
                                        const DayCounter& dc)
     : VolatilityTermStructure(settlDays, cal, bdc, dc) {}
 
+    Volatility BlackAtmVolCurve::atmVol(const Period& optionTenor,
+                                        bool extrapolate) const {
+        Date d = optionDateFromTenor(optionTenor);
+        return atmVol(d, extrapolate);
+    }
+
     Volatility BlackAtmVolCurve::atmVol(const Date& d,
                                         bool extrapolate) const {
         Time t = timeFromReference(d);
@@ -47,6 +54,12 @@ namespace QuantLib {
                                         bool extrapolate) const {
         checkRange(t, extrapolate);
         return atmVolImpl(t);
+    }
+
+    Real BlackAtmVolCurve::atmVariance(const Period& optionTenor,
+                                       bool extrapolate) const {
+        Date d = optionDateFromTenor(optionTenor);
+        return atmVariance(d, extrapolate);
     }
 
     Real BlackAtmVolCurve::atmVariance(const Date& d,

@@ -22,9 +22,10 @@
 
 namespace QuantLib {
 
-    BlackVolSurface::BlackVolSurface(BusinessDayConvention bdc,
+    BlackVolSurface::BlackVolSurface(const Calendar& cal,
+                                     BusinessDayConvention bdc,
                                      const DayCounter& dc)
-    : BlackAtmVolCurve(bdc, dc) {}
+    : BlackAtmVolCurve(cal, bdc, dc) {}
 
     BlackVolSurface::BlackVolSurface(const Date& refDate,
                                      const Calendar& cal,
