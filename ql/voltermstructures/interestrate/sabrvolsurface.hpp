@@ -25,7 +25,8 @@
 #define quantlib_sabr_vol_surface_hpp
 
 #include <ql/voltermstructures/interestratevolsurface.hpp>
-#include <ql/voltermstructures/interestrate/abcdatmvolcurve.hpp>
+#include <ql/voltermstructures/blackatmvolcurve.hpp>
+#include <ql/quote.hpp>
 #include <boost/array.hpp>
 
 namespace QuantLib {
@@ -38,8 +39,8 @@ namespace QuantLib {
       public:
         SabrVolSurface(
                 const boost::shared_ptr<InterestRateIndex>&,
+                const Handle<BlackAtmVolCurve>&,
                 const std::vector<Period>& optionTenors,
-                const Handle<AbcdAtmVolCurve>&,
                 const std::vector<Spread>& atmRateSpreads,
                 const std::vector<std::vector<Handle<Quote> > >& volSpreads);
         //@}
@@ -53,6 +54,7 @@ namespace QuantLib {
         Calendar calendar() const;
         Natural settlementDays() const;
         //@}
+        const Handle<BlackAtmVolCurve>& atmCurve() const;
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
@@ -65,8 +67,8 @@ namespace QuantLib {
         boost::shared_ptr<SmileSection> smileSectionImpl(Time) const;
         //@}
       private:
+        Handle<BlackAtmVolCurve> atmCurve_;
         std::vector<Period> optionTenors_;
-        Handle<AbcdAtmVolCurve> atmCurve_;
         std::vector<Spread> atmRateSpreads_;
         std::vector<std::vector<Handle<Quote> > > volSpreads_;
     };
@@ -97,6 +99,9 @@ namespace QuantLib {
         return atmCurve_->settlementDays();
     }
 
+    inline const Handle<BlackAtmVolCurve>& SabrVolSurface::atmCurve() const {
+        return atmCurve_;
+    }
 }
 
 #endif
