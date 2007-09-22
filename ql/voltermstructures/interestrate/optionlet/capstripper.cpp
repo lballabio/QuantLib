@@ -21,12 +21,12 @@
     \brief caplet variance curve
 */
 
-#include <ql/voltermstructures/interestrate/caplet/capstripper.hpp>
+#include <ql/voltermstructures/interestrate/optionlet/capstripper.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
-#include <ql/voltermstructures/interestrate/cap/capfloortermvolsurface.hpp>
+#include <ql/voltermstructures/interestrate/capfloor/capfloortermvolsurface.hpp>
 #include <ql/indexes/iborindex.hpp>
 
 namespace {

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/voltermstructures/interestrate/caplet/spreadedoptionletvol.hpp>
+#include <ql/voltermstructures/interestrate/optionlet/spreadedoptionletvol.hpp>
 
 namespace QuantLib {
 

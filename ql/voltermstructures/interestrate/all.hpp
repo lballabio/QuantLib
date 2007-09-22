@@ -6,6 +6,6 @@
 #include <ql/voltermstructures/interestrate/abcdcalibration.hpp>
 #include <ql/voltermstructures/interestrate/volcube.hpp>
 
-#include <ql/voltermstructures/interestrate/cap/all.hpp>
-#include <ql/voltermstructures/interestrate/caplet/all.hpp>
+#include <ql/voltermstructures/interestrate/capfloor/all.hpp>
+#include <ql/voltermstructures/interestrate/optionlet/all.hpp>
 #include <ql/voltermstructures/interestrate/swaption/all.hpp>

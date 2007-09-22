@@ -25,7 +25,7 @@
 #ifndef quantlib_optionlet_stripper_adapter_h
 #define quantlib_optionlet_stripper_adapter_h
 
-#include <ql/voltermstructures/interestrate/caplet/optionletvolatilitystructure.hpp>
+#include <ql/voltermstructures/interestrate/optionlet/optionletvolatilitystructure.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 

@@ -27,7 +27,7 @@
 
 #include <ql/processes/lfmprocess.hpp>
 #include <ql/voltermstructures/interestrate/swaption/swaptionvolmatrix.hpp>
-#include <ql/voltermstructures/interestrate/caplet/capletvariancecurve.hpp>
+#include <ql/voltermstructures/interestrate/optionlet/capletvariancecurve.hpp>
 #include <ql/models/model.hpp>
 #include <ql/legacy/libormarketmodels/lfmcovarproxy.hpp>
 

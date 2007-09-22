@@ -23,7 +23,7 @@
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/instruments/capfloor.hpp>
 #include <ql/yieldtermstructures/zerocurve.hpp>
-#include <ql/voltermstructures/interestrate/caplet/capletvariancecurve.hpp>
+#include <ql/voltermstructures/interestrate/optionlet/capletvariancecurve.hpp>
 #include <ql/processes/lfmhullwhiteparam.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 

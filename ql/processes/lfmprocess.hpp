@@ -26,7 +26,7 @@
 
 #include <ql/cashflow.hpp>
 #include <ql/indexes/iborindex.hpp>
-#include <ql/voltermstructures/interestrate/caplet/optionletvolatilitystructure.hpp>
+#include <ql/voltermstructures/interestrate/optionlet/optionletvolatilitystructure.hpp>
 #include <ql/stochasticprocess.hpp>
 #include <ql/processes/lfmcovarparam.hpp>
 

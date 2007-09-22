@@ -20,7 +20,7 @@
 
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/voltermstructures/interestrate/caplet/constantoptionletvol.hpp>
+#include <ql/voltermstructures/interestrate/optionlet/constantoptionletvol.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 
 namespace QuantLib {

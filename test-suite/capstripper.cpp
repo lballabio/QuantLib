@@ -27,10 +27,10 @@
 #include <ql/yieldtermstructures/flatforward.hpp>
 #include <ql/utilities/dataparsers.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/voltermstructures/interestrate/caplet/capstripper.hpp>
+#include <ql/voltermstructures/interestrate/optionlet/capstripper.hpp>
 #include <ql/voltermstructures/interpolatedsmilesection.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
-#include <ql/voltermstructures/interestrate/caplet/spreadedoptionletvol.hpp>
+#include <ql/voltermstructures/interestrate/optionlet/spreadedoptionletvol.hpp>
 
 #include <iostream>
 

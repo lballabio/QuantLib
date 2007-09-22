@@ -28,7 +28,7 @@
 
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/instruments/capfloor.hpp>
-#include <ql/voltermstructures/interestrate/cap/capfloortermvolsurface.hpp>
+#include <ql/voltermstructures/interestrate/capfloor/capfloortermvolsurface.hpp>
 #include <ql/math/matrix.hpp>
 #include <vector>
 

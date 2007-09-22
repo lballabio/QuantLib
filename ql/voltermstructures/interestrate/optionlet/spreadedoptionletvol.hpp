@@ -24,7 +24,7 @@
 #ifndef quantlib_spreaded_caplet_volstructure_h
 #define quantlib_spreaded_caplet_volstructure_h
 
-#include <ql/voltermstructures/interestrate/caplet/optionletvolatilitystructure.hpp>
+#include <ql/voltermstructures/interestrate/optionlet/optionletvolatilitystructure.hpp>
 #include <ql/quote.hpp>
 
 namespace QuantLib {

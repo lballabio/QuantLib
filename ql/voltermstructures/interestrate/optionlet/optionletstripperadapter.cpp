@@ -18,8 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/voltermstructures/interestrate/caplet/optionletstripperadapter.hpp>
-#include <ql/voltermstructures/interestrate/caplet/optionletstripper.hpp>
+#include <ql/voltermstructures/interestrate/optionlet/optionletstripperadapter.hpp>
+#include <ql/voltermstructures/interestrate/optionlet/optionletstripper.hpp>
 
 namespace QuantLib {
 

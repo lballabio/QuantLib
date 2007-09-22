@@ -25,7 +25,7 @@
 #ifndef quantlib_cap_floor_term_vol_surface_hpp
 #define quantlib_cap_floor_term_vol_surface_hpp
 
-#include <ql/voltermstructures/interestrate/cap/capfloortermvolatilitystructure.hpp>
+#include <ql/voltermstructures/interestrate/capfloor/capfloortermvolatilitystructure.hpp>
 #include <ql/math/interpolations/interpolation2d.hpp>
 #include <ql/quote.hpp>
 #include <ql/patterns/lazyobject.hpp>

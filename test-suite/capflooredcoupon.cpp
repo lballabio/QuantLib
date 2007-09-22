@@ -26,7 +26,7 @@
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/math/matrix.hpp>
-#include <ql/voltermstructures/interestrate/caplet/constantoptionletvol.hpp>
+#include <ql/voltermstructures/interestrate/optionlet/constantoptionletvol.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/schedule.hpp>

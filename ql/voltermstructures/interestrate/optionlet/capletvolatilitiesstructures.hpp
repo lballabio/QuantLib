@@ -24,7 +24,7 @@
 #ifndef caplet_volatilities_structures_hpp
 #define caplet_volatilities_structures_hpp
 
-#include <ql/voltermstructures/interestrate/caplet/optionletvolatilitystructure.hpp>
+#include <ql/voltermstructures/interestrate/optionlet/optionletvolatilitystructure.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/math/interpolation.hpp>
 

@@ -27,7 +27,7 @@
 #ifndef quantlib_cap_volatility_vector_hpp
 #define quantlib_cap_volatility_vector_hpp
 
-#include <ql/voltermstructures/interestrate/cap/capfloortermvolatilitystructure.hpp>
+#include <ql/voltermstructures/interestrate/capfloor/capfloortermvolatilitystructure.hpp>
 #include <ql/math/interpolation.hpp>
 #include <ql/quote.hpp>
 #include <ql/patterns/lazyobject.hpp>
