@@ -31,9 +31,9 @@ namespace QuantLib {
     OptionletStripper::OptionletStripper(
                     const boost::shared_ptr<CapFloorTermVolSurface>& surface,
                     const boost::shared_ptr<IborIndex>& index,
-                    const std::vector<Rate>& switchStrikes)
+                    Rate switchStrike)
     : surface_(surface), index_(index), 
-      nStrikes_(surface->strikes().size()), switchStrikes_(switchStrikes)
+      nStrikes_(surface->strikes().size()), switchStrike_(switchStrike)
     {
         registerWith(surface);
         registerWith(index);
@@ -69,14 +69,8 @@ namespace QuantLib {
         optionletAccrualPeriods_ = std::vector<Time>(nOptionletTenors_);
         capFloors_ = CapFloorMatrix(nOptionletTenors_);
 
-        if (switchStrikes.size()==1) 
-            switchStrikes_= std::vector<Rate>(nOptionletTenors_,
-                                              switchStrikes[0]);
-        else if (switchStrikes==std::vector<Rate>())
-            switchStrikes_ = std::vector<Rate>(nOptionletTenors_, 0.04); 
-        else 
-            QL_REQUIRE(nOptionletTenors_==switchStrikes_.size(),
-                       "nOptionletTenors_!=switchStrikes_.size()");
+        if (switchStrike_==Null<Rate>())
+            switchStrike_ = 0.04;
     }
 
     void OptionletStripper::performCalculations() const {
@@ -105,17 +99,16 @@ namespace QuantLib {
             capFloors_[i].resize(nStrikes_);
         }
 
-        Spread strikeRange = strikes.back()-strikes.front();
+        // the switch strike might be the average of atmOptionletRate_
         
         for (Size j=0; j<nStrikes_; ++j) {
+            // using out-of-the-money options
+            CapFloor::Type capFloorType = strikes[j] < switchStrike_ ?
+                                   CapFloor::Floor : CapFloor::Cap;
+            Option::Type optionletType = capFloorType==CapFloor::Floor ?
+                                   Option::Put : Option::Call;
             Real previousCapFloorPrice = 0.0;
             for (Size i=0; i<nOptionletTenors_; ++i) {
-                // using out-of-the-money options
-                CapFloor::Type capFloorType = strikes[j] < switchStrikes_[i] ?
-                                       CapFloor::Floor : CapFloor::Cap;
-                Option::Type optionletType = capFloorType==CapFloor::Floor ?
-                                       Option::Put : Option::Call;
-
                 capFloorVols_[i][j] = surface_->volatility(capFloorLengths_[i],
                                                            strikes[j],
                                                            true);
@@ -152,7 +145,6 @@ namespace QuantLib {
                 }
                 optionletVols_[i][j] = optionletStDevs_[i][j] /
                                                 std::sqrt(optionletTimes_[i]);
-
             }
         }
 
