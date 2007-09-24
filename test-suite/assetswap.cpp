@@ -37,8 +37,9 @@
 #include <ql/time/daycounters/simpledaycounter.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/swapindex.hpp>
+#include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/cashflows/cmscoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/constantoptionletvol.hpp>
@@ -972,7 +973,7 @@ void AssetSwapTest::testZSpread() {
     iborIndex_->addFixing(Date(27,March,2007), 0.0402);
     Real floatingBondImpliedValue1 = floatingBond1->cleanPrice();
     Date floatingBondSettlementDate1= floatingBond1->settlementDate();
-    // standard market conventions: 
+    // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real floatingBondCleanPrice1= floatingBond1->cleanPriceFromZSpread(
         spread_, Actual365Fixed(), compounding_, Semiannual,
@@ -1026,7 +1027,7 @@ void AssetSwapTest::testZSpread() {
     iborIndex_->addFixing(Date(22,March,2007), 0.04013);
     Real floatingBondImpliedValue2 = floatingBond2->cleanPrice();
     Date floatingBondSettlementDate2= floatingBond2->settlementDate();
-    // standard market conventions: 
+    // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real floatingBondCleanPrice2= floatingBond2->cleanPriceFromZSpread(
         spread_, Actual365Fixed(), compounding_, Semiannual,
@@ -1081,7 +1082,7 @@ void AssetSwapTest::testZSpread() {
     swapIndex_->addFixing(Date(18,August,2006), 0.04158);
     Real cmsBondImpliedValue1 = cmsBond1->cleanPrice();
     Date cmsBondSettlementDate1= cmsBond1->settlementDate();
-    // standard market conventions: 
+    // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real cmsBondCleanPrice1= cmsBond1->cleanPriceFromZSpread(spread_,
         Actual365Fixed(), compounding_, Annual,
@@ -1134,7 +1135,7 @@ void AssetSwapTest::testZSpread() {
     swapIndex_->addFixing(Date(04,May,2006), 0.04217);
     Real cmsBondImpliedValue2 = cmsBond2->cleanPrice();
     Date cmsBondSettlementDate2= cmsBond2->settlementDate();
-    // standard market conventions: 
+    // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real cmsBondCleanPrice2= cmsBond2->cleanPriceFromZSpread(spread_,
          Actual365Fixed(), compounding_, Annual,
@@ -1177,7 +1178,7 @@ void AssetSwapTest::testZSpread() {
 
     Real zeroCpnBondImpliedValue1 = zeroCpnBond1->cleanPrice();
     Date zeroCpnBondSettlementDate1= zeroCpnBond1->settlementDate();
-    // standard market conventions: 
+    // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real zeroCpnBondCleanPrice1= zeroCpnBond1->cleanPriceFromZSpread(spread_,
          Actual365Fixed(), compounding_, Annual,
@@ -1255,7 +1256,7 @@ void AssetSwapTest::testZSpread() {
 
 void AssetSwapTest::testGenericBondImplied() {
 
-    BOOST_MESSAGE("Testing generic bond implied value against" 
+    BOOST_MESSAGE("Testing generic bond implied value against"
                   " assetswap fair price with spread=0...");
 
     SavedSettings backup;
@@ -1277,11 +1278,10 @@ void AssetSwapTest::testGenericBondImplied() {
                                 fixedBondMaturityDate1,
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted, true, false);
-    Leg fixedBondLeg1 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
-                                     fixedBondSchedule1,
-                                     std::vector<Rate>(1, 0.04),
-                                     ActualActual(ActualActual::ISDA),
-                                     Following);
+    Leg fixedBondLeg1 = FixedRateLeg(fixedBondSchedule1,
+                                     ActualActual(ActualActual::ISDA))
+        .withNotionals(faceAmount_)
+        .withCouponRates(0.04);
     Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
     fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
@@ -1323,11 +1323,10 @@ void AssetSwapTest::testGenericBondImplied() {
                                 fixedBondMaturityDate2,
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted, true, false);
-    Leg fixedBondLeg2 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
-                                     fixedBondSchedule2,
-                                     std::vector<Rate>(1, 0.05),
-                                     Thirty360(Thirty360::BondBasis),
-                                     Following);
+    Leg fixedBondLeg2 = FixedRateLeg(fixedBondSchedule2,
+                                     Thirty360(Thirty360::BondBasis))
+        .withNotionals(faceAmount_)
+        .withCouponRates(0.05);
     Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
     fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
@@ -1366,17 +1365,12 @@ void AssetSwapTest::testGenericBondImplied() {
                                    Period(Semiannual), bondCalendar,
                                    Unadjusted, Unadjusted,
                                    true, false);
-    Leg floatingBondLeg1 = IborLeg(std::vector<Real>(1, faceAmount_),
-                                   floatingBondSchedule1,
-                                   iborIndex_,
-                                   Actual360(),
-                                   Following,
-                                   std::vector<Natural>(1,fixingDays),
-                                   std::vector<Real>(1,1), 
-                                   std::vector<Spread>(1,0.0056),
-                                   std::vector<Rate>(),
-                                   std::vector<Rate>(),
-                                   inArrears);
+    Leg floatingBondLeg1 = IborLeg(floatingBondSchedule1, iborIndex_)
+        .withNotionals(faceAmount_)
+        .withPaymentDayCounter(Actual360())
+        .withFixingDays(fixingDays)
+        .withSpreads(0.0056)
+        .inArrears(inArrears);
     Date floatingbondRedemption1 = bondCalendar.adjust(floatingBondMaturityDate1,
                                                        Following);
     floatingBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
@@ -1417,17 +1411,13 @@ void AssetSwapTest::testGenericBondImplied() {
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
                                    true, false);
-    Leg floatingBondLeg2 = IborLeg(std::vector<Real>(1, faceAmount_),
-                                   floatingBondSchedule2,
-                                   iborIndex_,
-                                   Actual360(),
-                                   ModifiedFollowing,
-                                   std::vector<Natural>(1,fixingDays),
-                                   std::vector<Real>(1,1), 
-                                   std::vector<Spread>(1,0.0025),
-                                   std::vector<Rate>(),
-                                   std::vector<Rate>(),
-                                   inArrears);
+    Leg floatingBondLeg2 = IborLeg(floatingBondSchedule2, iborIndex_)
+        .withNotionals(faceAmount_)
+        .withPaymentDayCounter(Actual360())
+        .withPaymentAdjustment(ModifiedFollowing)
+        .withFixingDays(fixingDays)
+        .withSpreads(0.0025)
+        .inArrears(inArrears);
     Date floatingbondRedemption2 = bondCalendar.adjust(floatingBondMaturityDate2,
                                                        ModifiedFollowing);
     floatingBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
@@ -1481,17 +1471,13 @@ void AssetSwapTest::testGenericBondImplied() {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               true, false);
-    Leg cmsBondLeg1 = CmsLeg(std::vector<Real>(1, faceAmount_),
-                             cmsBondSchedule1,
-                             swapIndex_,
-                             Thirty360(),
-                             Following,
-                             std::vector<Natural>(1,fixingDays),
-                             std::vector<Real>(1,1.0), 
-                             std::vector<Spread>(1,0.0),
-                             std::vector<Rate>(1,0.055), 
-                             std::vector<Rate>(1,0.025),
-                             inArrears);
+    Leg cmsBondLeg1 = CmsLeg(cmsBondSchedule1, swapIndex_)
+        .withNotionals(faceAmount_)
+        .withPaymentDayCounter(Thirty360())
+        .withFixingDays(fixingDays)
+        .withCaps(0.055)
+        .withFloors(0.025)
+        .inArrears(inArrears);
     Date cmsbondRedemption1 = bondCalendar.adjust(cmsBondMaturityDate1,
                                                   Following);
     cmsBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
@@ -1532,17 +1518,12 @@ void AssetSwapTest::testGenericBondImplied() {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               true, false);
-    Leg cmsBondLeg2 = CmsLeg(std::vector<Real>(1, faceAmount_),
-                             cmsBondSchedule2,
-                             swapIndex_,
-                             Thirty360(),
-                             Following,
-                             std::vector<Natural>(1,fixingDays),
-                             std::vector<Real>(1,0.84), 
-                             std::vector<Spread>(1,0.0),
-                             std::vector<Rate>(), 
-                             std::vector<Rate>(),
-                             inArrears);
+    Leg cmsBondLeg2 = CmsLeg(cmsBondSchedule2, swapIndex_)
+        .withNotionals(faceAmount_)
+        .withPaymentDayCounter(Thirty360())
+        .withFixingDays(fixingDays)
+        .withGearings(0.84)
+        .inArrears(inArrears);
     Date cmsbondRedemption2 = bondCalendar.adjust(cmsBondMaturityDate2,
                                                   Following);
     cmsBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
@@ -1644,7 +1625,7 @@ void AssetSwapTest::testGenericBondImplied() {
 
 void AssetSwapTest::testMASWWithGenericBond() {
 
-    BOOST_MESSAGE("Testing market asset swap vs par asset swap " 
+    BOOST_MESSAGE("Testing market asset swap vs par asset swap "
         "with generic bond...");
 
     SavedSettings backup;
@@ -1668,11 +1649,10 @@ void AssetSwapTest::testMASWWithGenericBond() {
                                 fixedBondMaturityDate1,
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted, true, false);
-    Leg fixedBondLeg1 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
-                                     fixedBondSchedule1,
-                                     std::vector<Rate>(1, 0.04),
-                                     ActualActual(ActualActual::ISDA),
-                                     Following);
+    Leg fixedBondLeg1 = FixedRateLeg(fixedBondSchedule1,
+                                     ActualActual(ActualActual::ISDA))
+        .withNotionals(faceAmount_)
+        .withCouponRates(0.04);
     Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
     fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
@@ -1725,11 +1705,10 @@ void AssetSwapTest::testMASWWithGenericBond() {
                                 fixedBondMaturityDate2,
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted, true, false);
-    Leg fixedBondLeg2 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
-                                     fixedBondSchedule2,
-                                     std::vector<Rate>(1, 0.05),
-                                     Thirty360(Thirty360::BondBasis),
-                                     Following);
+    Leg fixedBondLeg2 = FixedRateLeg(fixedBondSchedule2,
+                                     Thirty360(Thirty360::BondBasis))
+        .withNotionals(faceAmount_)
+        .withCouponRates(0.05);
     Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
     fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
@@ -1778,17 +1757,12 @@ void AssetSwapTest::testMASWWithGenericBond() {
                                    Period(Semiannual), bondCalendar,
                                    Unadjusted, Unadjusted,
                                    true, false);
-    Leg floatingBondLeg1 = IborLeg(std::vector<Real>(1, faceAmount_),
-                                   floatingBondSchedule1,
-                                   iborIndex_,
-                                   Actual360(),
-                                   Following,
-                                   std::vector<Natural>(1,fixingDays),
-                                   std::vector<Real>(1,1), 
-                                   std::vector<Spread>(1,0.0056),
-                                   std::vector<Rate>(),
-                                   std::vector<Rate>(),
-                                   inArrears);
+    Leg floatingBondLeg1 = IborLeg(floatingBondSchedule1, iborIndex_)
+        .withNotionals(faceAmount_)
+        .withPaymentDayCounter(Actual360())
+        .withFixingDays(fixingDays)
+        .withSpreads(0.0056)
+        .inArrears(inArrears);
     Date floatingbondRedemption1 = bondCalendar.adjust(floatingBondMaturityDate1,
                                                        Following);
     floatingBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
@@ -1839,17 +1813,13 @@ void AssetSwapTest::testMASWWithGenericBond() {
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
                                    true, false);
-    Leg floatingBondLeg2 = IborLeg(std::vector<Real>(1, faceAmount_),
-                                   floatingBondSchedule2,
-                                   iborIndex_,
-                                   Actual360(),
-                                   ModifiedFollowing,
-                                   std::vector<Natural>(1,fixingDays),
-                                   std::vector<Real>(1,1), 
-                                   std::vector<Spread>(1,0.0025),
-                                   std::vector<Rate>(),
-                                   std::vector<Rate>(),
-                                   inArrears);
+    Leg floatingBondLeg2 = IborLeg(floatingBondSchedule2, iborIndex_)
+        .withNotionals(faceAmount_)
+        .withPaymentDayCounter(Actual360())
+        .withPaymentAdjustment(ModifiedFollowing)
+        .withFixingDays(fixingDays)
+        .withSpreads(0.0025)
+        .inArrears(inArrears);
     Date floatingbondRedemption2 = bondCalendar.adjust(floatingBondMaturityDate2,
                                                        ModifiedFollowing);
     floatingBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
@@ -1900,17 +1870,13 @@ void AssetSwapTest::testMASWWithGenericBond() {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               true, false);
-    Leg cmsBondLeg1 = CmsLeg(std::vector<Real>(1, faceAmount_),
-                             cmsBondSchedule1,
-                             swapIndex_,
-                             Thirty360(),
-                             Following,
-                             std::vector<Natural>(1,fixingDays),
-                             std::vector<Real>(1,1.0), 
-                             std::vector<Spread>(1,0.0),
-                             std::vector<Rate>(1,0.055), 
-                             std::vector<Rate>(1,0.025),
-                             inArrears);
+    Leg cmsBondLeg1 = CmsLeg(cmsBondSchedule1, swapIndex_)
+        .withNotionals(faceAmount_)
+        .withPaymentDayCounter(Thirty360())
+        .withFixingDays(fixingDays)
+        .withCaps(0.055)
+        .withFloors(0.025)
+        .inArrears(inArrears);
     Date cmsbondRedemption1 = bondCalendar.adjust(cmsBondMaturityDate1,
                                                   Following);
     cmsBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
@@ -1961,17 +1927,12 @@ void AssetSwapTest::testMASWWithGenericBond() {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               true, false);
-    Leg cmsBondLeg2 = CmsLeg(std::vector<Real>(1, faceAmount_),
-                             cmsBondSchedule2,
-                             swapIndex_,
-                             Thirty360(),
-                             Following,
-                             std::vector<Natural>(1,fixingDays),
-                             std::vector<Real>(1,0.84), 
-                             std::vector<Spread>(1,0.0),
-                             std::vector<Rate>(), 
-                             std::vector<Rate>(),
-                             inArrears);
+    Leg cmsBondLeg2 = CmsLeg(cmsBondSchedule2, swapIndex_)
+        .withNotionals(faceAmount_)
+        .withPaymentDayCounter(Thirty360())
+        .withFixingDays(fixingDays)
+        .withGearings(0.84)
+        .inArrears(inArrears);
     Date cmsbondRedemption2 = bondCalendar.adjust(cmsBondMaturityDate2,
                                                   Following);
     cmsBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
@@ -2122,11 +2083,10 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                                 fixedBondMaturityDate1,
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted, true, false);
-    Leg fixedBondLeg1 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
-                                     fixedBondSchedule1,
-                                     std::vector<Rate>(1, 0.04),
-                                     ActualActual(ActualActual::ISDA),
-                                     Following);
+    Leg fixedBondLeg1 = FixedRateLeg(fixedBondSchedule1,
+                                     ActualActual(ActualActual::ISDA))
+        .withNotionals(faceAmount_)
+        .withCouponRates(0.04);
     Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
     fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
@@ -2181,11 +2141,10 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                                 fixedBondMaturityDate2,
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted, true, false);
-    Leg fixedBondLeg2 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
-                                     fixedBondSchedule2,
-                                     std::vector<Rate>(1, 0.05),
-                                     Thirty360(Thirty360::BondBasis),
-                                     Following);
+    Leg fixedBondLeg2 = FixedRateLeg(fixedBondSchedule2,
+                                     Thirty360(Thirty360::BondBasis))
+        .withNotionals(faceAmount_)
+        .withCouponRates(0.05);
     Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
     fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
@@ -2238,17 +2197,12 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                                    Period(Semiannual), bondCalendar,
                                    Unadjusted, Unadjusted,
                                    true, false);
-    Leg floatingBondLeg1 = IborLeg(std::vector<Real>(1, faceAmount_),
-                                   floatingBondSchedule1,
-                                   iborIndex_,
-                                   Actual360(),
-                                   Following,
-                                   std::vector<Natural>(1,fixingDays),
-                                   std::vector<Real>(1,1), 
-                                   std::vector<Spread>(1,0.0056),
-                                   std::vector<Rate>(),
-                                   std::vector<Rate>(),
-                                   inArrears);
+    Leg floatingBondLeg1 = IborLeg(floatingBondSchedule1, iborIndex_)
+        .withNotionals(faceAmount_)
+        .withPaymentDayCounter(Actual360())
+        .withFixingDays(fixingDays)
+        .withSpreads(0.0056)
+        .inArrears(inArrears);
     Date floatingbondRedemption1 = bondCalendar.adjust(floatingBondMaturityDate1,
                                                        Following);
     floatingBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
@@ -2262,7 +2216,7 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     iborIndex_->addFixing(Date(27,March,2007), 0.0402);
     Real floatingBondImpliedValue1 = floatingBond1->cleanPrice();
     Date floatingBondSettlementDate1= floatingBond1->settlementDate();
-    // standard market conventions: 
+    // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real floatingBondCleanPrice1= floatingBond1->cleanPriceFromZSpread(
         spread_, Actual365Fixed(), compounding_, Semiannual,
@@ -2303,17 +2257,13 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
                                    true, false);
-    Leg floatingBondLeg2 = IborLeg(std::vector<Real>(1, faceAmount_),
-                                   floatingBondSchedule2,
-                                   iborIndex_,
-                                   Actual360(),
-                                   ModifiedFollowing,
-                                   std::vector<Natural>(1,fixingDays),
-                                   std::vector<Real>(1,1), 
-                                   std::vector<Spread>(1,0.0025),
-                                   std::vector<Rate>(),
-                                   std::vector<Rate>(),
-                                   inArrears);
+    Leg floatingBondLeg2 = IborLeg(floatingBondSchedule2, iborIndex_)
+        .withNotionals(faceAmount_)
+        .withPaymentDayCounter(Actual360())
+        .withPaymentAdjustment(ModifiedFollowing)
+        .withFixingDays(fixingDays)
+        .withSpreads(0.0025)
+        .inArrears(inArrears);
     Date floatingbondRedemption2 = bondCalendar.adjust(floatingBondMaturityDate2,
                                                        ModifiedFollowing);
     floatingBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
@@ -2327,7 +2277,7 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     iborIndex_->addFixing(Date(22,March,2007), 0.04013);
     Real floatingBondImpliedValue2 = floatingBond2->cleanPrice();
     Date floatingBondSettlementDate2= floatingBond2->settlementDate();
-    // standard market conventions: 
+    // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real floatingBondCleanPrice2= floatingBond2->cleanPriceFromZSpread(
         spread_, Actual365Fixed(), compounding_, Semiannual,
@@ -2369,17 +2319,13 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               true, false);
-    Leg cmsBondLeg1 = CmsLeg(std::vector<Real>(1, faceAmount_),
-                             cmsBondSchedule1,
-                             swapIndex_,
-                             Thirty360(),
-                             Following,
-                             std::vector<Natural>(1,fixingDays),
-                             std::vector<Real>(1,1.0), 
-                             std::vector<Spread>(1,0.0),
-                             std::vector<Rate>(1,0.055), 
-                             std::vector<Rate>(1,0.025),
-                             inArrears);
+    Leg cmsBondLeg1 = CmsLeg(cmsBondSchedule1, swapIndex_)
+        .withNotionals(faceAmount_)
+        .withPaymentDayCounter(Thirty360())
+        .withFixingDays(fixingDays)
+        .withCaps(0.055)
+        .withFloors(0.025)
+        .inArrears(inArrears);
     Date cmsbondRedemption1 = bondCalendar.adjust(cmsBondMaturityDate1,
                                                   Following);
     cmsBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
@@ -2433,17 +2379,12 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               true, false);
-    Leg cmsBondLeg2 = CmsLeg(std::vector<Real>(1, faceAmount_),
-                             cmsBondSchedule2,
-                             swapIndex_,
-                             Thirty360(),
-                             Following,
-                             std::vector<Natural>(1,fixingDays),
-                             std::vector<Real>(1,0.84), 
-                             std::vector<Spread>(1,0.0),
-                             std::vector<Rate>(), 
-                             std::vector<Rate>(),
-                             inArrears);
+    Leg cmsBondLeg2 = CmsLeg(cmsBondSchedule2, swapIndex_)
+        .withNotionals(faceAmount_)
+        .withPaymentDayCounter(Thirty360())
+        .withFixingDays(fixingDays)
+        .withGearings(0.84)
+        .inArrears(inArrears);
     Date cmsbondRedemption2 = bondCalendar.adjust(cmsBondMaturityDate2,
                                                   Following);
     cmsBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
@@ -2457,7 +2398,7 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     swapIndex_->addFixing(Date(04,May,2006), 0.04217);
     Real cmsBondImpliedValue2 = cmsBond2->cleanPrice();
     Date cmsBondSettlementDate2= cmsBond2->settlementDate();
-    // standard market conventions: 
+    // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real cmsBondCleanPrice2= cmsBond2->cleanPriceFromZSpread(spread_,
          Actual365Fixed(), compounding_, Annual,
@@ -2607,11 +2548,10 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                                 fixedBondMaturityDate1,
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted, true, false);
-    Leg fixedBondLeg1 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
-                                     fixedBondSchedule1,
-                                     std::vector<Rate>(1, 0.04),
-                                     ActualActual(ActualActual::ISDA),
-                                     Following);
+    Leg fixedBondLeg1 = FixedRateLeg(fixedBondSchedule1,
+                                     ActualActual(ActualActual::ISDA))
+        .withNotionals(faceAmount_)
+        .withCouponRates(0.04);
     Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
     fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
@@ -2625,7 +2565,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
         DiscountingBondEngine(termStructure_));
     fixedBond1->setPricingEngine(bondEngine);
 
-    // equivalent specialized fixed rate bond 
+    // equivalent specialized fixed rate bond
     boost::shared_ptr<Bond> fixedSpecializedBond1(new
         FixedRateBond(settlementDays, faceAmount_, fixedBondSchedule1,
                       std::vector<Rate>(1, 0.04),
@@ -2640,9 +2580,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     if (error1>tolerance) {
         BOOST_ERROR("wrong clean price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  specialized fixed rate bond's theo clean price: " 
+                    << "\n  specialized fixed rate bond's theo clean price: "
                     << fixedBondTheoValue1
-                    << "\n  generic equivalent bond's theo clean price: " 
+                    << "\n  generic equivalent bond's theo clean price: "
                     << fixedSpecializedBondTheoValue1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error1
@@ -2655,9 +2595,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     if (error2>tolerance) {
         BOOST_ERROR("wrong dirty price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  specialized fixed rate bond's theo dirty price: " 
+                    << "\n  specialized fixed rate bond's theo dirty price: "
                     << fixedBondTheoDirty1
-                    << "\n  generic equivalent bond's theo dirty price: " 
+                    << "\n  generic equivalent bond's theo dirty price: "
                     << fixedSpecializedTheoDirty1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error2
@@ -2672,23 +2612,22 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                                 fixedBondMaturityDate2,
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted, true, false);
-    Leg fixedBondLeg2 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
-                                     fixedBondSchedule2,
-                                     std::vector<Rate>(1, 0.05),
-                                     Thirty360(Thirty360::BondBasis),
-                                     Following);
+    Leg fixedBondLeg2 = FixedRateLeg(fixedBondSchedule2,
+                                     Thirty360(Thirty360::BondBasis))
+        .withNotionals(faceAmount_)
+        .withCouponRates(0.05);
     Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
     fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, fixedbondRedemption2)));
 
-    // generic bond 
+    // generic bond
     boost::shared_ptr<Bond> fixedBond2(new
         Bond(settlementDays, bondCalendar, faceAmount_,
              fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2));
     fixedBond2->setPricingEngine(bondEngine);
 
-    // equivalent specialized fixed rate bond 
+    // equivalent specialized fixed rate bond
     boost::shared_ptr<Bond> fixedSpecializedBond2(new
          FixedRateBond(settlementDays, faceAmount_, fixedBondSchedule2,
                       std::vector<Rate>(1, 0.05),
@@ -2703,9 +2642,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     if (error3>tolerance) {
         BOOST_ERROR("wrong clean price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  specialized fixed rate bond's theo clean price: " 
+                    << "\n  specialized fixed rate bond's theo clean price: "
                     << fixedBondTheoValue2
-                    << "\n  generic equivalent bond's theo clean price: " 
+                    << "\n  generic equivalent bond's theo clean price: "
                     << fixedSpecializedBondTheoValue2
                     << "\n  error:                 " << error3
                     << "\n  tolerance:             " << tolerance);
@@ -2719,9 +2658,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     if (error4>tolerance) {
         BOOST_ERROR("wrong dirty price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  specialized fixed rate bond's dirty clean price: " 
+                    << "\n  specialized fixed rate bond's dirty clean price: "
                     << fixedBondTheoDirty2
-                    << "\n  generic equivalent bond's theo dirty price: " 
+                    << "\n  generic equivalent bond's theo dirty price: "
                     << fixedSpecializedBondTheoDirty2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error4
@@ -2737,17 +2676,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                                    Period(Semiannual), bondCalendar,
                                    Unadjusted, Unadjusted,
                                    true, false);
-    Leg floatingBondLeg1 = IborLeg(std::vector<Real>(1, faceAmount_),
-                                   floatingBondSchedule1,
-                                   iborIndex_,
-                                   Actual360(),
-                                   Following,
-                                   std::vector<Natural>(1,fixingDays),
-                                   std::vector<Real>(1,1), 
-                                   std::vector<Spread>(1,0.0056),
-                                   std::vector<Rate>(),
-                                   std::vector<Rate>(),
-                                   inArrears);
+    Leg floatingBondLeg1 = IborLeg(floatingBondSchedule1, iborIndex_)
+        .withNotionals(faceAmount_)
+        .withPaymentDayCounter(Actual360())
+        .withFixingDays(fixingDays)
+        .withSpreads(0.0056)
+        .inArrears(inArrears);
     Date floatingbondRedemption1 = bondCalendar.adjust(floatingBondMaturityDate1,
                                                        Following);
     floatingBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
@@ -2763,7 +2697,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
            FloatingRateBond(settlementDays, faceAmount_, floatingBondSchedule1,
                             iborIndex_, Actual360(),
                             Following, fixingDays,
-                            std::vector<Real>(1,1), 
+                            std::vector<Real>(1,1),
                             std::vector<Spread>(1,0.0056),
                             std::vector<Rate>(), std::vector<Rate>(),
                             inArrears,
@@ -2781,9 +2715,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     if (error5>tolerance) {
         BOOST_ERROR("wrong clean price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic fixed rate bond's theo clean price: " 
+                    << "\n  generic fixed rate bond's theo clean price: "
                     << floatingBondTheoValue1
-                    << "\n  equivalent specialized bond's theo clean price: " 
+                    << "\n  equivalent specialized bond's theo clean price: "
                     << floatingSpecializedBondTheoValue1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error5
@@ -2798,9 +2732,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     if (error6>tolerance) {
         BOOST_ERROR("wrong dirty price for frn bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic frn bond's dirty clean price: " 
+                    << "\n  generic frn bond's dirty clean price: "
                     << floatingBondTheoDirty1
-                    << "\n  equivalent specialized bond's theo dirty price: " 
+                    << "\n  equivalent specialized bond's theo dirty price: "
                     << floatingSpecializedBondTheoDirty1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error6
@@ -2816,17 +2750,13 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
                                    true, false);
-    Leg floatingBondLeg2 = IborLeg(std::vector<Real>(1, faceAmount_),
-                                   floatingBondSchedule2,
-                                   iborIndex_,
-                                   Actual360(),
-                                   ModifiedFollowing,
-                                   std::vector<Natural>(1,fixingDays),
-                                   std::vector<Real>(1,1), 
-                                   std::vector<Spread>(1,0.0025),
-                                   std::vector<Rate>(),
-                                   std::vector<Rate>(),
-                                   inArrears);
+    Leg floatingBondLeg2 = IborLeg(floatingBondSchedule2, iborIndex_)
+        .withNotionals(faceAmount_)
+        .withPaymentDayCounter(Actual360())
+        .withPaymentAdjustment(ModifiedFollowing)
+        .withFixingDays(fixingDays)
+        .withSpreads(0.0025)
+        .inArrears(inArrears);
     Date floatingbondRedemption2 = bondCalendar.adjust(floatingBondMaturityDate2,
                                                        ModifiedFollowing);
     floatingBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
@@ -2842,7 +2772,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
         FloatingRateBond(settlementDays, faceAmount_, floatingBondSchedule2,
                            iborIndex_, Actual360(),
                            ModifiedFollowing, fixingDays,
-                           std::vector<Real>(1,1), 
+                           std::vector<Real>(1,1),
                            std::vector<Spread>(1,0.0025),
                            std::vector<Rate>(), std::vector<Rate>(),
                            inArrears,
@@ -2861,9 +2791,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     if (error7>tolerance) {
         BOOST_ERROR("wrong clean price for floater bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic floater bond's theo clean price: " 
+                    << "\n  generic floater bond's theo clean price: "
                     << floatingBondTheoValue2
-                    << "\n  equivalent specialized bond's theo clean price: " 
+                    << "\n  equivalent specialized bond's theo clean price: "
                     << floatingSpecializedBondTheoValue2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error7
@@ -2878,9 +2808,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     if (error8>tolerance) {
         BOOST_ERROR("wrong dirty price for floater bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic floater bond's theo dirty price: " 
+                    << "\n  generic floater bond's theo dirty price: "
                     << floatingBondTheoDirty2
-                    << "\n  equivalent specialized  bond's theo dirty price: " 
+                    << "\n  equivalent specialized  bond's theo dirty price: "
                     << floatingSpecializedTheoDirty2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error8
@@ -2897,17 +2827,13 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               true, false);
-    Leg cmsBondLeg1 = CmsLeg(std::vector<Real>(1, faceAmount_),
-                             cmsBondSchedule1,
-                             swapIndex_,
-                             Thirty360(),
-                             Following,
-                             std::vector<Natural>(1,fixingDays),
-                             std::vector<Real>(1,1.0), 
-                             std::vector<Spread>(1,0.0),
-                             std::vector<Rate>(1,0.055), 
-                             std::vector<Rate>(1,0.025),
-                             inArrears);
+    Leg cmsBondLeg1 = CmsLeg(cmsBondSchedule1, swapIndex_)
+        .withNotionals(faceAmount_)
+        .withPaymentDayCounter(Thirty360())
+        .withFixingDays(fixingDays)
+        .withCaps(0.055)
+        .withFloors(0.025)
+        .inArrears(inArrears);
     Date cmsbondRedemption1 = bondCalendar.adjust(cmsBondMaturityDate1,
                                                   Following);
     cmsBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
@@ -2938,9 +2864,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     if (error9>tolerance) {
         BOOST_ERROR("wrong clean price for cms bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic cms bond's theo clean price: " 
+                    << "\n  generic cms bond's theo clean price: "
                     << cmsBondTheoValue1
-                    <<  "\n  equivalent specialized bond's theo clean price: " 
+                    <<  "\n  equivalent specialized bond's theo clean price: "
                     << cmsSpecializedBondTheoValue1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error9
@@ -2953,9 +2879,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     if (error10>tolerance) {
         BOOST_ERROR("wrong dirty price for cms bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n generic cms bond's theo dirty price: " 
+                    << "\n generic cms bond's theo dirty price: "
                     << cmsBondTheoDirty1
-                    << "\n  specialized cms bond's theo dirty price: " 
+                    << "\n  specialized cms bond's theo dirty price: "
                     << cmsSpecializedBondTheoDirty1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error10
@@ -2971,17 +2897,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               true, false);
-    Leg cmsBondLeg2 = CmsLeg(std::vector<Real>(1, faceAmount_),
-                             cmsBondSchedule2,
-                             swapIndex_,
-                             Thirty360(),
-                             Following,
-                             std::vector<Natural>(1,fixingDays),
-                             std::vector<Real>(1,0.84), 
-                             std::vector<Spread>(1,0.0),
-                             std::vector<Rate>(), 
-                             std::vector<Rate>(),
-                             inArrears);
+    Leg cmsBondLeg2 = CmsLeg(cmsBondSchedule2, swapIndex_)
+        .withNotionals(faceAmount_)
+        .withPaymentDayCounter(Thirty360())
+        .withFixingDays(fixingDays)
+        .withGearings(0.84)
+        .inArrears(inArrears);
     Date cmsbondRedemption2 = bondCalendar.adjust(cmsBondMaturityDate2,
                                                   Following);
     cmsBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
@@ -3013,9 +2934,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     if (error11>tolerance) {
         BOOST_ERROR("wrong clean price for cms bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic cms bond's theo clean price: " 
+                    << "\n  generic cms bond's theo clean price: "
                     << cmsBondTheoValue2
-                    << "\n  cms bond's theo clean price: " 
+                    << "\n  cms bond's theo clean price: "
                     << cmsSpecializedBondTheoValue2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error11
@@ -3027,9 +2948,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     if (error12>tolerance) {
         BOOST_ERROR("wrong dirty price for cms bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic cms bond's dirty price: " 
+                    << "\n  generic cms bond's dirty price: "
                     << cmsBondTheoDirty2
-                    << "\n  specialized cms bond's theo dirty price: " 
+                    << "\n  specialized cms bond's theo dirty price: "
                     << cmsSpecializedBondTheoDirty2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error12
@@ -3065,9 +2986,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     if (error13>tolerance) {
         BOOST_ERROR("wrong clean price for zero coupon bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic zero bond's clean price: " 
+                    << "\n  generic zero bond's clean price: "
                     << zeroCpnBondTheoValue1
-                    << "\n  specialized zero bond's clean price: " 
+                    << "\n  specialized zero bond's clean price: "
                     << zeroCpnSpecializedBondTheoValue1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error13
@@ -3081,9 +3002,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     if (error14>tolerance) {
         BOOST_ERROR("wrong dirty price for zero bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic zerocpn bond's dirty price: " 
+                    << "\n  generic zerocpn bond's dirty price: "
                     << zeroCpnBondTheoDirty1
-                    << "\n  specialized zerocpn bond's clean price: " 
+                    << "\n  specialized zerocpn bond's clean price: "
                     << zeroCpnSpecializedBondTheoDirty1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error14
@@ -3119,9 +3040,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     if (error15>tolerance) {
         BOOST_ERROR("wrong clean price for zero coupon bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic zerocpn bond's clean price: "  
-                    << zeroCpnBondTheoValue2 
-                    << "\n  specialized zerocpn bond's clean price: " 
+                    << "\n  generic zerocpn bond's clean price: "
+                    << zeroCpnBondTheoValue2
+                    << "\n  specialized zerocpn bond's clean price: "
                     << zeroCpnSpecializedBondTheoValue2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error15
@@ -3137,9 +3058,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     if (error16>tolerance) {
         BOOST_ERROR("wrong dirty price for zero coupon bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic zerocpn bond's dirty price: " 
+                    << "\n  generic zerocpn bond's dirty price: "
                     << zeroCpnBondTheoDirty2
-                    << "\n  specialized zerocpn bond's dirty price: " 
+                    << "\n  specialized zerocpn bond's dirty price: "
                     << zeroCpnSpecializedBondTheoDirty2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error16
@@ -3174,11 +3095,10 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                 fixedBondMaturityDate1,
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted, true, false);
-    Leg fixedBondLeg1 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
-                                     fixedBondSchedule1,
-                                     std::vector<Rate>(1, 0.04),
-                                     ActualActual(ActualActual::ISDA),
-                                     Following);
+    Leg fixedBondLeg1 = FixedRateLeg(fixedBondSchedule1,
+                                     ActualActual(ActualActual::ISDA))
+        .withNotionals(faceAmount_)
+        .withCouponRates(0.04);
     Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
     fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
@@ -3192,7 +3112,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
         DiscountingBondEngine(termStructure_));
     fixedBond1->setPricingEngine(bondEngine);
 
-    // equivalent specialized fixed rate bond 
+    // equivalent specialized fixed rate bond
     boost::shared_ptr<Bond> fixedSpecializedBond1(new
         FixedRateBond(settlementDays, faceAmount_, fixedBondSchedule1,
                       std::vector<Rate>(1, 0.04),
@@ -3209,7 +3129,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                   iborIndex_->dayCounter(),
                                   parAssetSwap);
     AssetSwap fixedSpecializedBondAssetSwap1(payFixedRate,
-                                         fixedSpecializedBond1, 
+                                         fixedSpecializedBond1,
                                          fixedSpecializedBondPrice1,
                                          iborIndex_, nonnullspread_, termStructure_,
                                          Schedule(),
@@ -3222,9 +3142,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     if (error1>tolerance) {
         BOOST_ERROR("wrong clean price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic  fixed rate bond's  clean price: " 
+                    << "\n  generic  fixed rate bond's  clean price: "
                     << fixedBondAssetSwapPrice1
-                    << "\n  equivalent specialized bond's clean price: " 
+                    << "\n  equivalent specialized bond's clean price: "
                     << fixedSpecializedBondAssetSwapPrice1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error1
@@ -3238,7 +3158,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                             iborIndex_->dayCounter(),
                             parAssetSwap);
     AssetSwap fixedSpecializedBondASW1(payFixedRate,
-                                       fixedSpecializedBond1, 
+                                       fixedSpecializedBond1,
                                        fixedBondMktPrice1,
                                        iborIndex_, spread_, termStructure_,
                                        Schedule(),
@@ -3250,9 +3170,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     if (error2>tolerance) {
         BOOST_ERROR("wrong asw spread  for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic  fixed rate bond's  asw spread: " 
+                    << "\n  generic  fixed rate bond's  asw spread: "
                     << fixedBondASWSpread1
-                    << "\n  equivalent specialized bond's asw spread: " 
+                    << "\n  equivalent specialized bond's asw spread: "
                     << fixedSpecializedBondASWSpread1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error2
@@ -3268,23 +3188,22 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                 fixedBondMaturityDate2,
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted, true, false);
-    Leg fixedBondLeg2 = FixedRateLeg(std::vector<Real>(1, faceAmount_),
-                                     fixedBondSchedule2,
-                                     std::vector<Rate>(1, 0.05),
-                                     Thirty360(Thirty360::BondBasis),
-                                     Following);
+    Leg fixedBondLeg2 = FixedRateLeg(fixedBondSchedule2,
+                                     Thirty360(Thirty360::BondBasis))
+        .withNotionals(faceAmount_)
+        .withCouponRates(0.05);
     Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
     fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, fixedbondRedemption2)));
 
-    // generic bond 
+    // generic bond
     boost::shared_ptr<Bond> fixedBond2(new
         Bond(settlementDays, bondCalendar, faceAmount_,
              fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2));
     fixedBond2->setPricingEngine(bondEngine);
 
-    // equivalent specialized fixed rate bond 
+    // equivalent specialized fixed rate bond
     boost::shared_ptr<Bond> fixedSpecializedBond2(new
          FixedRateBond(settlementDays, faceAmount_, fixedBondSchedule2,
                       std::vector<Rate>(1, 0.05),
@@ -3301,7 +3220,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                   iborIndex_->dayCounter(),
                                   parAssetSwap);
     AssetSwap fixedSpecializedBondAssetSwap2(payFixedRate,
-                                         fixedSpecializedBond2, 
+                                         fixedSpecializedBond2,
                                          fixedSpecializedBondPrice2,
                                          iborIndex_, nonnullspread_, termStructure_,
                                          Schedule(),
@@ -3314,9 +3233,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     if (error3>tolerance) {
         BOOST_ERROR("wrong clean price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic  fixed rate bond's clean price: " 
+                    << "\n  generic  fixed rate bond's clean price: "
                     << fixedBondAssetSwapPrice2
-                    << "\n  equivalent specialized  bond's clean price: " 
+                    << "\n  equivalent specialized  bond's clean price: "
                     << fixedSpecializedBondAssetSwapPrice2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error3
@@ -3330,7 +3249,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                             iborIndex_->dayCounter(),
                             parAssetSwap);
     AssetSwap fixedSpecializedBondASW2(payFixedRate,
-                                       fixedSpecializedBond2, 
+                                       fixedSpecializedBond2,
                                        fixedBondMktPrice2,
                                        iborIndex_, spread_, termStructure_,
                                        Schedule(),
@@ -3342,9 +3261,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     if (error4>tolerance) {
         BOOST_ERROR("wrong asw spread for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic  fixed rate bond's  asw spread: " 
+                    << "\n  generic  fixed rate bond's  asw spread: "
                     << fixedBondASWSpread2
-                    << "\n  equivalent specialized bond's asw spread: " 
+                    << "\n  equivalent specialized bond's asw spread: "
                     << fixedSpecializedBondASWSpread2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error4
@@ -3361,17 +3280,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                    Period(Semiannual), bondCalendar,
                                    Unadjusted, Unadjusted,
                                    true, false);
-    Leg floatingBondLeg1 = IborLeg(std::vector<Real>(1, faceAmount_),
-                                   floatingBondSchedule1,
-                                   iborIndex_,
-                                   Actual360(),
-                                   Following,
-                                   std::vector<Natural>(1,fixingDays),
-                                   std::vector<Real>(1,1), 
-                                   std::vector<Spread>(1,0.0056),
-                                   std::vector<Rate>(),
-                                   std::vector<Rate>(),
-                                   inArrears);
+    Leg floatingBondLeg1 = IborLeg(floatingBondSchedule1, iborIndex_)
+        .withNotionals(faceAmount_)
+        .withPaymentDayCounter(Actual360())
+        .withFixingDays(fixingDays)
+        .withSpreads(0.0056)
+        .inArrears(inArrears);
     Date floatingbondRedemption1 = bondCalendar.adjust(floatingBondMaturityDate1,
                                                        Following);
     floatingBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
@@ -3387,7 +3301,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
            FloatingRateBond(settlementDays, faceAmount_, floatingBondSchedule1,
                             iborIndex_, Actual360(),
                             Following, fixingDays,
-                            std::vector<Real>(1,1), 
+                            std::vector<Real>(1,1),
                             std::vector<Spread>(1,0.0056),
                             std::vector<Rate>(), std::vector<Rate>(),
                             inArrears,
@@ -3406,7 +3320,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                      iborIndex_->dayCounter(),
                                      parAssetSwap);
     AssetSwap floatingSpecializedBondAssetSwap1(payFixedRate,
-                                            floatingSpecializedBond1, 
+                                            floatingSpecializedBond1,
                                             floatingSpecializedBondPrice1,
                                             iborIndex_, nonnullspread_, termStructure_,
                                             Schedule(),
@@ -3419,9 +3333,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     if (error5>tolerance) {
         BOOST_ERROR("wrong clean price for frnbond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic frn rate bond's clean price: " 
+                    << "\n  generic frn rate bond's clean price: "
                     << floatingBondAssetSwapPrice1
-                    << "\n  equivalent specialized  bond's price: " 
+                    << "\n  equivalent specialized  bond's price: "
                     << floatingSpecializedBondAssetSwapPrice1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error5
@@ -3435,7 +3349,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                iborIndex_->dayCounter(),
                                parAssetSwap);
     AssetSwap floatingSpecializedBondASW1(payFixedRate,
-                                          floatingSpecializedBond1, 
+                                          floatingSpecializedBond1,
                                           floatingBondMktPrice1,
                                           iborIndex_, spread_, termStructure_,
                                           Schedule(),
@@ -3447,9 +3361,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     if (error6>tolerance) {
         BOOST_ERROR("wrong asw spread for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic  frn rate bond's  asw spread: " 
+                    << "\n  generic  frn rate bond's  asw spread: "
                     << floatingBondASWSpread1
-                    << "\n  equivalent specialized bond's asw spread: " 
+                    << "\n  equivalent specialized bond's asw spread: "
                     << floatingSpecializedBondASWSpread1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error6
@@ -3464,17 +3378,13 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
                                    true, false);
-    Leg floatingBondLeg2 = IborLeg(std::vector<Real>(1, faceAmount_),
-                                   floatingBondSchedule2,
-                                   iborIndex_,
-                                   Actual360(),
-                                   ModifiedFollowing,
-                                   std::vector<Natural>(1,fixingDays),
-                                   std::vector<Real>(1,1), 
-                                   std::vector<Spread>(1,0.0025),
-                                   std::vector<Rate>(),
-                                   std::vector<Rate>(),
-                                   inArrears);
+    Leg floatingBondLeg2 = IborLeg(floatingBondSchedule2, iborIndex_)
+        .withNotionals(faceAmount_)
+        .withPaymentDayCounter(Actual360())
+        .withPaymentAdjustment(ModifiedFollowing)
+        .withFixingDays(fixingDays)
+        .withSpreads(0.0025)
+        .inArrears(inArrears);
     Date floatingbondRedemption2 = bondCalendar.adjust(floatingBondMaturityDate2,
                                                        ModifiedFollowing);
     floatingBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
@@ -3490,7 +3400,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
         FloatingRateBond(settlementDays, faceAmount_, floatingBondSchedule2,
                            iborIndex_, Actual360(),
                            ModifiedFollowing, fixingDays,
-                           std::vector<Real>(1,1), 
+                           std::vector<Real>(1,1),
                            std::vector<Spread>(1,0.0025),
                            std::vector<Rate>(), std::vector<Rate>(),
                            inArrears,
@@ -3511,7 +3421,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                      iborIndex_->dayCounter(),
                                      parAssetSwap);
     AssetSwap floatingSpecializedBondAssetSwap2(payFixedRate,
-                                            floatingSpecializedBond2, 
+                                            floatingSpecializedBond2,
                                             floatingSpecializedBondPrice2,
                                             iborIndex_, nonnullspread_, termStructure_,
                                             Schedule(),
@@ -3523,9 +3433,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     if (error7>tolerance) {
         BOOST_ERROR("wrong clean price for frnbond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic frn rate bond's clean price: " 
+                    << "\n  generic frn rate bond's clean price: "
                     << floatingBondAssetSwapPrice2
-                    << "\n  equivalent specialized frn  bond's price: " 
+                    << "\n  equivalent specialized frn  bond's price: "
                     << floatingSpecializedBondAssetSwapPrice2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error7
@@ -3539,7 +3449,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                iborIndex_->dayCounter(),
                                parAssetSwap);
     AssetSwap floatingSpecializedBondASW2(payFixedRate,
-                                          floatingSpecializedBond2, 
+                                          floatingSpecializedBond2,
                                           floatingBondMktPrice2,
                                           iborIndex_, spread_, termStructure_,
                                           Schedule(),
@@ -3551,9 +3461,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     if (error8>tolerance) {
         BOOST_ERROR("wrong asw spread for frn bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic  frn rate bond's  asw spread: " 
+                    << "\n  generic  frn rate bond's  asw spread: "
                     << floatingBondASWSpread2
-                    << "\n  equivalent specialized bond's asw spread: " 
+                    << "\n  equivalent specialized bond's asw spread: "
                     << floatingSpecializedBondASWSpread2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error8
@@ -3569,17 +3479,13 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               true, false);
-    Leg cmsBondLeg1 = CmsLeg(std::vector<Real>(1, faceAmount_),
-                             cmsBondSchedule1,
-                             swapIndex_,
-                             Thirty360(),
-                             Following,
-                             std::vector<Natural>(1,fixingDays),
-                             std::vector<Real>(1,1.0), 
-                             std::vector<Spread>(1,0.0),
-                             std::vector<Rate>(1,0.055), 
-                             std::vector<Rate>(1,0.025),
-                             inArrears);
+    Leg cmsBondLeg1 = CmsLeg(cmsBondSchedule1, swapIndex_)
+        .withNotionals(faceAmount_)
+        .withPaymentDayCounter(Thirty360())
+        .withFixingDays(fixingDays)
+        .withCaps(0.055)
+        .withFloors(0.025)
+        .inArrears(inArrears);
     Date cmsbondRedemption1 = bondCalendar.adjust(cmsBondMaturityDate1,
                                                   Following);
     cmsBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
@@ -3610,8 +3516,8 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     AssetSwap cmsBondAssetSwap1(payFixedRate,cmsBond1, cmsBondPrice1,
                                 iborIndex_, nonnullspread_, termStructure_,
                                 Schedule(),iborIndex_->dayCounter(),parAssetSwap);
-    AssetSwap cmsSpecializedBondAssetSwap1(payFixedRate,cmsSpecializedBond1, 
-                                       cmsSpecializedBondPrice1, iborIndex_, 
+    AssetSwap cmsSpecializedBondAssetSwap1(payFixedRate,cmsSpecializedBond1,
+                                       cmsSpecializedBondPrice1, iborIndex_,
                                        nonnullspread_, termStructure_,
                                        Schedule(),iborIndex_->dayCounter(),
                                        parAssetSwap);
@@ -3621,9 +3527,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     if (error9>tolerance) {
         BOOST_ERROR("wrong clean price for cmsbond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic bond's clean price: " 
+                    << "\n  generic bond's clean price: "
                     << cmsBondAssetSwapPrice1
-                    << "\n  equivalent specialized cms rate bond's price: " 
+                    << "\n  equivalent specialized cms rate bond's price: "
                     << cmsSpecializedBondAssetSwapPrice1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error9
@@ -3637,7 +3543,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                           iborIndex_->dayCounter(),
                           parAssetSwap);
     AssetSwap cmsSpecializedBondASW1(payFixedRate,
-                                     cmsSpecializedBond1, 
+                                     cmsSpecializedBond1,
                                      cmsBondMktPrice1,
                                      iborIndex_, spread_, termStructure_,
                                      Schedule(),
@@ -3649,9 +3555,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     if (error10>tolerance) {
         BOOST_ERROR("wrong asw spread for cm bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic cms rate bond's  asw spread: " 
+                    << "\n  generic cms rate bond's  asw spread: "
                     << cmsBondASWSpread1
-                    << "\n  equivalent specialized bond's asw spread: " 
+                    << "\n  equivalent specialized bond's asw spread: "
                     << cmsSpecializedBondASWSpread1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error10
@@ -3667,17 +3573,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               true, false);
-    Leg cmsBondLeg2 = CmsLeg(std::vector<Real>(1, faceAmount_),
-                             cmsBondSchedule2,
-                             swapIndex_,
-                             Thirty360(),
-                             Following,
-                             std::vector<Natural>(1,fixingDays),
-                             std::vector<Real>(1,0.84), 
-                             std::vector<Spread>(1,0.0),
-                             std::vector<Rate>(), 
-                             std::vector<Rate>(),
-                             inArrears);
+    Leg cmsBondLeg2 = CmsLeg(cmsBondSchedule2, swapIndex_)
+        .withNotionals(faceAmount_)
+        .withPaymentDayCounter(Thirty360())
+        .withFixingDays(fixingDays)
+        .withGearings(0.84)
+        .inArrears(inArrears);
     Date cmsbondRedemption2 = bondCalendar.adjust(cmsBondMaturityDate2,
                                                   Following);
     cmsBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
@@ -3707,8 +3608,8 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     AssetSwap cmsBondAssetSwap2(payFixedRate,cmsBond2, cmsBondPrice2,
                                 iborIndex_, nonnullspread_, termStructure_,
                                 Schedule(),iborIndex_->dayCounter(),parAssetSwap);
-    AssetSwap cmsSpecializedBondAssetSwap2(payFixedRate,cmsSpecializedBond2, 
-                                       cmsSpecializedBondPrice2, iborIndex_, 
+    AssetSwap cmsSpecializedBondAssetSwap2(payFixedRate,cmsSpecializedBond2,
+                                       cmsSpecializedBondPrice2, iborIndex_,
                                        nonnullspread_, termStructure_,
                                        Schedule(),iborIndex_->dayCounter(),
                                        parAssetSwap);
@@ -3718,9 +3619,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     if (error11>tolerance) {
         BOOST_ERROR("wrong clean price for cmsbond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic  bond's clean price: " 
+                    << "\n  generic  bond's clean price: "
                     << cmsBondAssetSwapPrice2
-                    << "\n  equivalent specialized cms rate bond's price: " 
+                    << "\n  equivalent specialized cms rate bond's price: "
                     << cmsSpecializedBondAssetSwapPrice2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error11
@@ -3734,7 +3635,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                           iborIndex_->dayCounter(),
                           parAssetSwap);
     AssetSwap cmsSpecializedBondASW2(payFixedRate,
-                                     cmsSpecializedBond2, 
+                                     cmsSpecializedBond2,
                                      cmsBondMktPrice2,
                                      iborIndex_, spread_, termStructure_,
                                      Schedule(),
@@ -3746,9 +3647,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     if (error12>tolerance) {
         BOOST_ERROR("wrong asw spread for cm bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic cms rate bond's  asw spread: " 
+                    << "\n  generic cms rate bond's  asw spread: "
                     << cmsBondASWSpread2
-                    << "\n  equivalent specialized bond's asw spread: " 
+                    << "\n  equivalent specialized bond's asw spread: "
                     << cmsSpecializedBondASWSpread2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error12
@@ -3783,21 +3684,21 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     AssetSwap zeroCpnBondAssetSwap1(payFixedRate,zeroCpnBond1, zeroCpnBondPrice1,
                                 iborIndex_, nonnullspread_, termStructure_,
                                 Schedule(),iborIndex_->dayCounter(),parAssetSwap);
-    AssetSwap zeroCpnSpecializedBondAssetSwap1(payFixedRate,zeroCpnSpecializedBond1, 
-                                           zeroCpnSpecializedBondPrice1, iborIndex_, 
+    AssetSwap zeroCpnSpecializedBondAssetSwap1(payFixedRate,zeroCpnSpecializedBond1,
+                                           zeroCpnSpecializedBondPrice1, iborIndex_,
                                            nonnullspread_, termStructure_,
                                            Schedule(),iborIndex_->dayCounter(),
                                            parAssetSwap);
     Real zeroCpnBondAssetSwapPrice1 = zeroCpnBondAssetSwap1.fairPrice();
-    Real zeroCpnSpecializedBondAssetSwapPrice1 = 
+    Real zeroCpnSpecializedBondAssetSwapPrice1 =
                                zeroCpnSpecializedBondAssetSwap1.fairPrice();
     Real error13 = std::fabs(zeroCpnBondAssetSwapPrice1-zeroCpnSpecializedBondAssetSwapPrice1);
     if (error13>tolerance) {
         BOOST_ERROR("wrong clean price for zerocpn bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic zero cpn bond's clean price: " 
+                    << "\n  generic zero cpn bond's clean price: "
                     << zeroCpnBondAssetSwapPrice1
-                    << "\n  specialized equivalent bond's price: " 
+                    << "\n  specialized equivalent bond's price: "
                     << zeroCpnSpecializedBondAssetSwapPrice1
                     << "\n  error:                 " << error13
                     << "\n  tolerance:             " << tolerance);
@@ -3810,7 +3711,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                           iborIndex_->dayCounter(),
                           parAssetSwap);
     AssetSwap zeroCpnSpecializedBondASW1(payFixedRate,
-                                     zeroCpnSpecializedBond1, 
+                                     zeroCpnSpecializedBond1,
                                      zeroCpnBondMktPrice1,
                                      iborIndex_, spread_, termStructure_,
                                      Schedule(),
@@ -3822,9 +3723,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     if (error14>tolerance) {
         BOOST_ERROR("wrong asw spread for zeroCpn bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic zeroCpn bond's  asw spread: " 
+                    << "\n  generic zeroCpn bond's  asw spread: "
                     << zeroCpnBondASWSpread1
-                    << "\n  equivalent specialized bond's asw spread: " 
+                    << "\n  equivalent specialized bond's asw spread: "
                     << zeroCpnSpecializedBondASWSpread1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error14
@@ -3860,22 +3761,22 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     AssetSwap zeroCpnBondAssetSwap2(payFixedRate,zeroCpnBond2, zeroCpnBondPrice2,
                                     iborIndex_, nonnullspread_, termStructure_,
                                     Schedule(),iborIndex_->dayCounter(),parAssetSwap);
-    AssetSwap zeroCpnSpecializedBondAssetSwap2(payFixedRate,zeroCpnSpecializedBond2, 
-                                           zeroCpnSpecializedBondPrice2, iborIndex_, 
+    AssetSwap zeroCpnSpecializedBondAssetSwap2(payFixedRate,zeroCpnSpecializedBond2,
+                                           zeroCpnSpecializedBondPrice2, iborIndex_,
                                            nonnullspread_, termStructure_,
                                            Schedule(),iborIndex_->dayCounter(),
                                            parAssetSwap);
     Real zeroCpnBondAssetSwapPrice2 = zeroCpnBondAssetSwap2.fairPrice();
-    Real zeroCpnSpecializedBondAssetSwapPrice2 = 
+    Real zeroCpnSpecializedBondAssetSwapPrice2 =
                                zeroCpnSpecializedBondAssetSwap2.fairPrice();
     Real error15 = std::fabs(zeroCpnBondAssetSwapPrice2
                              -zeroCpnSpecializedBondAssetSwapPrice2);
     if (error8>tolerance) {
         BOOST_ERROR("wrong clean price for zerocpn bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic zero cpn bond's clean price: " 
+                    << "\n  generic zero cpn bond's clean price: "
                     << zeroCpnBondAssetSwapPrice2
-                    << "\n  equivalent specialized bond's price: " 
+                    << "\n  equivalent specialized bond's price: "
                     << zeroCpnSpecializedBondAssetSwapPrice2
                     << "\n  error:                 " << error15
                     << "\n  tolerance:             " << tolerance);
@@ -3888,7 +3789,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                           iborIndex_->dayCounter(),
                           parAssetSwap);
     AssetSwap zeroCpnSpecializedBondASW2(payFixedRate,
-                                     zeroCpnSpecializedBond2, 
+                                     zeroCpnSpecializedBond2,
                                      zeroCpnBondMktPrice2,
                                      iborIndex_, spread_, termStructure_,
                                      Schedule(),
@@ -3900,9 +3801,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     if (error16>tolerance) {
         BOOST_ERROR("wrong asw spread for zeroCpn bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  generic zeroCpn bond's  asw spread: " 
+                    << "\n  generic zeroCpn bond's  asw spread: "
                     << zeroCpnBondASWSpread2
-                    << "\n  equivalent specialized bond's asw spread: " 
+                    << "\n  equivalent specialized bond's asw spread: "
                     << zeroCpnSpecializedBondASWSpread2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error16

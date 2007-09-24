@@ -1,7 +1,7 @@
 /*
  Copyright (C) 2006 Giorgio Facchinetti
  Copyright (C) 2006 Mario Pucci
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,6 +19,8 @@
 */
 
 #include <ql/cashflows/cmscoupon.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/cashflows/capflooredcoupon.hpp>
 #include <ql/indexes/swapindex.hpp>
 
 namespace QuantLib {
@@ -26,7 +28,7 @@ namespace QuantLib {
     CmsCoupon::CmsCoupon(
                     const Date& paymentDate,
                     const Real nominal,
-                    const Date& startDate, 
+                    const Date& startDate,
                     const Date& endDate,
                     const Natural fixingDays,
                     const boost::shared_ptr<SwapIndex>& index,
@@ -37,7 +39,7 @@ namespace QuantLib {
                     const DayCounter& dayCounter,
                     bool isInArrears)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
-                         fixingDays, index, gearing, spread, 
+                         fixingDays, index, gearing, spread,
                          refPeriodStart, refPeriodEnd, dayCounter, isInArrears),
       swapIndex_(index){}
 
@@ -49,4 +51,100 @@ namespace QuantLib {
             FloatingRateCoupon::accept(v);
     }
 
+
+
+    CmsLeg::CmsLeg(const Schedule& schedule,
+                   const boost::shared_ptr<SwapIndex>& index)
+    : schedule_(schedule), index_(index),
+      paymentAdjustment_(Following),
+      inArrears_(false), zeroPayments_(false) {}
+
+    CmsLeg& CmsLeg::withNotionals(Real notional) {
+        notionals_ = std::vector<Real>(1,notional);
+        return *this;
+    }
+
+    CmsLeg& CmsLeg::withNotionals(const std::vector<Real>& notionals) {
+        notionals_ = notionals;
+        return *this;
+    }
+
+    CmsLeg& CmsLeg::withPaymentDayCounter(const DayCounter& dayCounter) {
+        paymentDayCounter_ = dayCounter;
+        return *this;
+    }
+
+    CmsLeg& CmsLeg::withPaymentAdjustment(BusinessDayConvention convention) {
+        paymentAdjustment_ = convention;
+        return *this;
+    }
+
+    CmsLeg& CmsLeg::withFixingDays(Natural fixingDays) {
+        fixingDays_ = std::vector<Natural>(1,fixingDays);
+        return *this;
+    }
+
+    CmsLeg& CmsLeg::withFixingDays(const std::vector<Natural>& fixingDays) {
+        fixingDays_ = fixingDays;
+        return *this;
+    }
+
+    CmsLeg& CmsLeg::withGearings(Real gearing) {
+        gearings_ = std::vector<Real>(1,gearing);
+        return *this;
+    }
+
+    CmsLeg& CmsLeg::withGearings(const std::vector<Real>& gearings) {
+        gearings_ = gearings;
+        return *this;
+    }
+
+    CmsLeg& CmsLeg::withSpreads(Spread spread) {
+        spreads_ = std::vector<Spread>(1,spread);
+        return *this;
+    }
+
+    CmsLeg& CmsLeg::withSpreads(const std::vector<Spread>& spreads) {
+        spreads_ = spreads;
+        return *this;
+    }
+
+    CmsLeg& CmsLeg::withCaps(Rate cap) {
+        caps_ = std::vector<Rate>(1,cap);
+        return *this;
+    }
+
+    CmsLeg& CmsLeg::withCaps(const std::vector<Rate>& caps) {
+        caps_ = caps;
+        return *this;
+    }
+
+    CmsLeg& CmsLeg::withFloors(Rate floor) {
+        floors_ = std::vector<Rate>(1,floor);
+        return *this;
+    }
+
+    CmsLeg& CmsLeg::withFloors(const std::vector<Rate>& floors) {
+        floors_ = floors;
+        return *this;
+    }
+
+    CmsLeg& CmsLeg::inArrears(bool flag) {
+        inArrears_ = flag;
+        return *this;
+    }
+
+    CmsLeg& CmsLeg::withZeroPayments(bool flag) {
+        zeroPayments_ = flag;
+        return *this;
+    }
+
+    CmsLeg::operator Leg() const {
+        return FloatingLeg<SwapIndex, CmsCoupon, CappedFlooredCmsCoupon>(
+                         notionals_, schedule_, index_, paymentDayCounter_,
+                         paymentAdjustment_, fixingDays_, gearings_, spreads_,
+                         caps_, floors_, inArrears_, zeroPayments_);
+    }
+
 }
+

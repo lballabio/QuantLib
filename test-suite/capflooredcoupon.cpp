@@ -83,7 +83,9 @@ Leg makeFixedLeg(const Date& startDate,
     Schedule schedule(startDate, endDate, Period(frequency_), calendar_,
                       convention_, convention_, false, false);
     std::vector<Rate> coupons(length, 0.0);
-    return FixedRateLeg(nominals_, schedule, coupons, Thirty360(), Following);
+    return FixedRateLeg(schedule, Thirty360())
+        .withNotionals(nominals_)
+        .withCouponRates(coupons);
 }
 
 Leg makeFloatingLeg(const Date& startDate,
@@ -96,13 +98,13 @@ Leg makeFloatingLeg(const Date& startDate,
                       convention_,convention_,false,false);
     std::vector<Real> gearingVector(length_, gearing);
     std::vector<Spread> spreadVector(length_, spread);
-    Leg floatLeg = IborLeg(nominals_, schedule, index_, index_->dayCounter(),
-                           convention_, std::vector<Natural>(1,fixingDays_),
-                           gearingVector, spreadVector);
-    boost::shared_ptr<IborCouponPricer> fictitiousPricer(new
-        BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
-    setCouponPricer(floatLeg,fictitiousPricer);
-    return floatLeg;
+    return IborLeg(schedule, index_)
+        .withNotionals(nominals_)
+        .withPaymentDayCounter(index_->dayCounter())
+        .withPaymentAdjustment(convention_)
+        .withFixingDays(fixingDays_)
+        .withGearings(gearingVector)
+        .withSpreads(spreadVector);
 }
 
 Leg makeCapFlooredLeg(const Date& startDate,
@@ -125,17 +127,15 @@ Leg makeCapFlooredLeg(const Date& startDate,
     std::vector<Rate> gearingVector(length_, gearing);
     std::vector<Spread> spreadVector(length_, spread);
 
-    Leg iborLeg = IborLeg(nominals_,
-                          schedule,
-                          index_,
-                          index_->dayCounter(),
-                          convention_,
-                          std::vector<Natural>(1,fixingDays_),
-                          gearingVector,
-                          spreadVector,
-                          caps,
-                          floors,
-                          false);
+    Leg iborLeg = IborLeg(schedule, index_)
+        .withNotionals(nominals_)
+        .withPaymentDayCounter(index_->dayCounter())
+        .withPaymentAdjustment(convention_)
+        .withFixingDays(fixingDays_)
+        .withGearings(gearingVector)
+        .withSpreads(spreadVector)
+        .withCaps(caps)
+        .withFloors(floors);
      setCouponPricer(iborLeg, pricer);
      return iborLeg;
 }

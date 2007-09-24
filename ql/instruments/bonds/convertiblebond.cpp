@@ -19,7 +19,8 @@
 */
 
 #include <ql/instruments/bonds/convertiblebond.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
@@ -110,11 +111,10 @@ namespace QuantLib {
                       settlementDays, dayCounter, schedule, redemption) {
 
         // !!!
-        cashflows_ = FixedRateLeg(std::vector<Real>(1, faceAmount_),
-                                  schedule,
-                                  coupons,
-                                  dayCounter,
-                                  schedule.businessDayConvention());
+        cashflows_ = FixedRateLeg(schedule,dayCounter)
+            .withNotionals(faceAmount_)
+            .withCouponRates(coupons)
+            .withPaymentAdjustment(schedule.businessDayConvention());
 
         // redemption
         // !!!
@@ -151,15 +151,12 @@ namespace QuantLib {
                       dividends, callability, creditSpread, issueDate,
                       settlementDays, dayCounter, schedule, redemption) {
 
-        cashflows_ = IborLeg(std::vector<Real>(1, faceAmount_),
-                             schedule,
-                             index,dayCounter,
-                             schedule.businessDayConvention(),
-                             std::vector<Natural>(1,fixingDays),
-                             std::vector<Real>(1, 1.0), spreads);
-        boost::shared_ptr<IborCouponPricer> fictitiousPricer(new
-            BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
-        setCouponPricer(cashflows_,fictitiousPricer);
+        cashflows_ = IborLeg(schedule, index)
+            .withPaymentDayCounter(dayCounter)
+            .withNotionals(faceAmount_)
+            .withPaymentAdjustment(schedule.businessDayConvention())
+            .withFixingDays(fixingDays)
+            .withSpreads(spreads);
 
         redemption *= faceAmount_/100.0;
         cashflows_.push_back(boost::shared_ptr<CashFlow>(

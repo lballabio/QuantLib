@@ -77,17 +77,13 @@ namespace QuantLib {
         std::vector<Spread> spreads(1, spread);
         // -------------------------------------------------
 
-        legs_[1] = IborLeg(nominals,
-                           schedule,
-                           index,
-                           floatingDayCounter,
-                           paymentAdjustment,
-                           std::vector<Natural>(1,fixingDays),
-                           gearings, spreads);
-
-        boost::shared_ptr<IborCouponPricer> fictitiousPricer(new
-            BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
-        setCouponPricer(legs_[1], fictitiousPricer);
+        legs_[1] = IborLeg(schedule, index)
+            .withNotionals(nominals)
+            .withPaymentDayCounter(floatingDayCounter)
+            .withPaymentAdjustment(paymentAdjustment)
+            .withFixingDays(fixingDays)
+            .withGearings(gearings)
+            .withSpreads(spreads);
 
         for (Leg::const_iterator i=legs_[1].begin(); i<legs_[1].end(); ++i)
             registerWith(*i);

@@ -21,6 +21,8 @@
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
 #include <ql/cashflows/digitalcoupon.hpp>
+#include <ql/cashflows/digitalcmscoupon.hpp>
+#include <ql/cashflows/digitaliborcoupon.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/indexes/interestrateindex.hpp>

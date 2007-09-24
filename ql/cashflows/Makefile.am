@@ -11,7 +11,9 @@ this_include_HEADERS = \
     conundrumpricer.hpp \
     coupon.hpp \
     couponpricer.hpp \
+    digitalcmscoupon.hpp \
     digitalcoupon.hpp \
+    digitaliborcoupon.hpp \
     dividend.hpp \
     duration.hpp \
     fixedratecoupon.hpp \
@@ -30,9 +32,12 @@ libCashFlows_la_SOURCES = \
     conundrumpricer.cpp \
     coupon.cpp \
     couponpricer.cpp \
+    digitalcmscoupon.cpp \
     digitalcoupon.cpp \
+    digitaliborcoupon.cpp \
     dividend.cpp \
     duration.cpp \
+    fixedratecoupon.cpp \
     floatingratecoupon.cpp \
     iborcoupon.cpp \
     rangeaccrual.cpp \

@@ -48,23 +48,17 @@ namespace QuantLib {
         BusinessDayConvention convention =
             floatSchedule.businessDayConvention();
 
-        Leg fixedLeg = FixedRateLeg(std::vector<Real>(1,nominal),
-                                    fixedSchedule,
-                                    std::vector<Rate>(1,fixedRate),
-                                    fixedDayCount,
-                                    convention);
+        Leg fixedLeg = FixedRateLeg(fixedSchedule,fixedDayCount)
+            .withNotionals(nominal)
+            .withCouponRates(fixedRate)
+            .withPaymentAdjustment(convention);
 
-        Leg floatingLeg = IborLeg(std::vector<Real>(1,nominal),
-                                  floatSchedule,
-                                  index,
-                                  floatingDayCount,
-                                  convention,
-                                  std::vector<Natural>(1,index->fixingDays()),
-                                  std::vector<Real>(1,1.0),
-                                  std::vector<Spread>(1,spread));
-        boost::shared_ptr<IborCouponPricer> fictitiousPricer(new
-            BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
-        setCouponPricer(floatingLeg, fictitiousPricer);
+        Leg floatingLeg = IborLeg(floatSchedule, index)
+            .withNotionals(nominal)
+            .withPaymentDayCounter(floatingDayCount)
+            .withPaymentAdjustment(convention)
+            .withFixingDays(index->fixingDays())
+            .withSpreads(spread);
 
         Leg::const_iterator i;
         for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)

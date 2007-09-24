@@ -37,11 +37,10 @@ namespace QuantLib {
                                  const Date& issueDate)
     : Bond(settlementDays, schedule.calendar(), faceAmount, schedule.endDate(), issueDate) {
 
-        cashflows_ = FixedRateLeg(std::vector<Real>(1, faceAmount_),
-                                  schedule,
-                                  coupons,
-                                  accrualDayCounter,
-                                  paymentConvention);
+        cashflows_ = FixedRateLeg(schedule,accrualDayCounter)
+            .withNotionals(faceAmount_)
+            .withCouponRates(coupons)
+            .withPaymentAdjustment(paymentConvention);
 
         Date redemptionDate = calendar_.adjust(maturityDate_,
                                                paymentConvention);
@@ -75,11 +74,10 @@ namespace QuantLib {
                           calendar_, accrualConvention, accrualConvention,
                           fromEnd, false, firstDate, nextToLastDate);
 
-        cashflows_ = FixedRateLeg(std::vector<Real>(1, faceAmount_),
-                                  schedule,
-                                  coupons,
-                                  accrualDayCounter,
-                                  paymentConvention);
+        cashflows_ = FixedRateLeg(schedule, accrualDayCounter)
+            .withNotionals(faceAmount_)
+            .withCouponRates(coupons)
+            .withPaymentAdjustment(paymentConvention);
 
         Date redemptionDate = calendar_.adjust(maturityDate_,
                                                paymentConvention);

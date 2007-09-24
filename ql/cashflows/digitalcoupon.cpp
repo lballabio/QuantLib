@@ -34,7 +34,7 @@ namespace QuantLib {
                   Position::Type putPosition,
                   bool isPutATMIncluded,
                   Rate putDigitalPayoff,
-                  const boost::shared_ptr<DigitalReplication>& replication) 
+                  const boost::shared_ptr<DigitalReplication>& replication)
     : FloatingRateCoupon(underlying->date(),
                          underlying->nominal(),
                          underlying->accrualStartDate(),
@@ -205,7 +205,7 @@ namespace QuantLib {
             CappedFlooredCoupon next(underlying_, Null<Rate>(), putStrike_ + putRightEps_);
             CappedFlooredCoupon previous(underlying_, Null<Rate>(), putStrike_ - putLeftEps_);
             putOptionRate *= (next.rate() - previous.rate())
-                           / (putLeftEps_ + putRightEps_);        
+                           / (putLeftEps_ + putRightEps_);
             if (!isPutCashOrNothing_) {
                 // Put
                 CappedFlooredCoupon atStrike(underlying_, Null<Rate>(), putStrike_);
@@ -283,26 +283,6 @@ namespace QuantLib {
         typedef FloatingRateCoupon super;
         Visitor<DigitalCoupon>* v1 =
             dynamic_cast<Visitor<DigitalCoupon>*>(&v);
-        if (v1 != 0)
-            v1->visit(*this);
-        else
-            super::accept(v);
-    }
-
-    void DigitalIborCoupon::accept(AcyclicVisitor& v) {
-        typedef DigitalCoupon super;
-        Visitor<DigitalIborCoupon>* v1 =
-            dynamic_cast<Visitor<DigitalIborCoupon>*>(&v);
-        if (v1 != 0)
-            v1->visit(*this);
-        else
-            super::accept(v);
-    }
-
-    void DigitalCmsCoupon::accept(AcyclicVisitor& v) {
-        typedef DigitalCoupon super;
-        Visitor<DigitalCmsCoupon>* v1 =
-            dynamic_cast<Visitor<DigitalCmsCoupon>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

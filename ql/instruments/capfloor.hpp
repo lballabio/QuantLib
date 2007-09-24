@@ -91,7 +91,7 @@ namespace QuantLib {
         Rate atmRate() const;
         Date startDate() const;
         Date maturityDate() const;
-        boost::shared_ptr<FloatingRateCoupon> CapFloor::lastFloatingRateCoupon() const;
+        boost::shared_ptr<FloatingRateCoupon> lastFloatingRateCoupon() const;
         const Handle<YieldTermStructure>& discountCurve() const {
             return discountCurve_;
         }
@@ -110,7 +110,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> discountCurve_;
         friend void changeCapFloorType(CapFloor&);
         // helper class for implied volatility calculation
-        
+
     };
 
     //! Concrete cap class

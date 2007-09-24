@@ -4,6 +4,7 @@
  Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2007 Cristina Duminuco
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +28,8 @@
 #define quantlib_ibor_coupon_hpp
 
 #include <ql/cashflows/floatingratecoupon.hpp>
+#include <ql/indexes/iborindex.hpp>
+#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 
@@ -38,7 +41,7 @@ namespace QuantLib {
                    const Date& startDate,
                    const Date& endDate,
                    const Natural fixingDays,
-                   const boost::shared_ptr<InterestRateIndex>& index,
+                   const boost::shared_ptr<IborIndex>& index,
                    const Real gearing = 1.0,
                    const Spread spread = 0.0,
                    const Date& refPeriodStart = Date(),
@@ -52,6 +55,42 @@ namespace QuantLib {
         //@{
         virtual void accept(AcyclicVisitor&);
 
+    };
+
+
+    //! helper class building a sequence of capped/floored ibor-rate coupons
+    class IborLeg {
+      public:
+        IborLeg(const Schedule& schedule,
+                const boost::shared_ptr<IborIndex>& index);
+        IborLeg& withNotionals(Real notional);
+        IborLeg& withNotionals(const std::vector<Real>& notionals);
+        IborLeg& withPaymentDayCounter(const DayCounter&);
+        IborLeg& withPaymentAdjustment(BusinessDayConvention);
+        IborLeg& withFixingDays(Natural fixingDays);
+        IborLeg& withFixingDays(const std::vector<Natural>& fixingDays);
+        IborLeg& withGearings(Real gearing);
+        IborLeg& withGearings(const std::vector<Real>& gearings);
+        IborLeg& withSpreads(Spread spread);
+        IborLeg& withSpreads(const std::vector<Spread>& spreads);
+        IborLeg& withCaps(Rate cap);
+        IborLeg& withCaps(const std::vector<Rate>& caps);
+        IborLeg& withFloors(Rate floor);
+        IborLeg& withFloors(const std::vector<Rate>& floors);
+        IborLeg& inArrears(bool flag = true);
+        IborLeg& withZeroPayments(bool flag = true);
+        operator Leg() const;
+      private:
+        Schedule schedule_;
+        boost::shared_ptr<IborIndex> index_;
+        std::vector<Real> notionals_;
+        DayCounter paymentDayCounter_;
+        BusinessDayConvention paymentAdjustment_;
+        std::vector<Natural> fixingDays_;
+        std::vector<Real> gearings_;
+        std::vector<Spread> spreads_;
+        std::vector<Rate> caps_, floors_;
+        bool inArrears_, zeroPayments_;
     };
 
 }

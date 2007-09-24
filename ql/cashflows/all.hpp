@@ -8,7 +8,9 @@
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/cashflows/coupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/cashflows/digitalcmscoupon.hpp>
 #include <ql/cashflows/digitalcoupon.hpp>
+#include <ql/cashflows/digitaliborcoupon.hpp>
 #include <ql/cashflows/dividend.hpp>
 #include <ql/cashflows/duration.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>

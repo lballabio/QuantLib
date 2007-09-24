@@ -103,7 +103,7 @@ namespace QuantLib {
                   const Date& startDate,
                   const Date& endDate,
                   const Natural fixingDays,
-                  const boost::shared_ptr<InterestRateIndex>& index,
+                  const boost::shared_ptr<IborIndex>& index,
                   const Real gearing = 1.0,
                   const Spread spread = 0.0,
                   const Rate cap = Null<Rate>(),

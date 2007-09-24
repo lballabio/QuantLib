@@ -258,8 +258,9 @@ void SwapTest::testInArrears() {
 
 
     std::vector<Rate> coupons(1, oneYear);
-    Leg fixedLeg = FixedRateLeg(nominals, schedule, coupons,
-                                dayCounter, Following);
+    Leg fixedLeg = FixedRateLeg(schedule, dayCounter)
+        .withNotionals(nominals)
+        .withCouponRates(coupons);
 
     std::vector<Real> gearings;
     std::vector<Rate> spreads;
@@ -273,15 +274,13 @@ void SwapTest::testInArrears() {
     boost::shared_ptr<IborCouponPricer> pricer(new
         BlackIborCouponPricer(vol));
 
-    Leg floatingLeg = IborLeg(nominals,
-                              schedule,
-                              index,
-                              dayCounter,
-                              Following,
-                              std::vector<Natural>(1,fixingDays),
-                              gearings, spreads,
-                              std::vector<Rate>(), std::vector<Rate>(),
-                              true);
+    Leg floatingLeg = IborLeg(schedule, index)
+        .withNotionals(nominals)
+        .withPaymentDayCounter(dayCounter)
+        .withFixingDays(fixingDays)
+        .withGearings(gearings)
+        .withSpreads(spreads)
+        .inArrears();
     setCouponPricer(floatingLeg, pricer);
 
     Swap swap(termStructure_,floatingLeg,fixedLeg);

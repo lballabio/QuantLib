@@ -63,18 +63,11 @@ Leg makeLeg(const Date& startDate, Integer length) {
     Date endDate = calendar_.advance(startDate,length*Years,convention_);
     Schedule schedule(startDate, endDate, Period(frequency_), calendar_,
                       convention_, convention_, false, false);
-    Leg floatLeg =IborLeg(nominals_,
-                          schedule,
-                          index_,
-                          index_->dayCounter(),
-                          convention_,
-                          std::vector<Natural>(1,fixingDays_),
-                          std::vector<Real>(),
-                          std::vector<Spread>());
-    boost::shared_ptr<IborCouponPricer>
-                        fictitiousPricer(new BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
-    setCouponPricer(floatLeg,fictitiousPricer);
-    return floatLeg;
+    return IborLeg(schedule, index_)
+        .withNotionals(nominals_)
+        .withPaymentDayCounter(index_->dayCounter())
+        .withPaymentAdjustment(convention_)
+        .withFixingDays(fixingDays_);
 }
 
 boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {

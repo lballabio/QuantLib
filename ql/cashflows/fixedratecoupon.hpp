@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +27,7 @@
 
 #include <ql/cashflows/coupon.hpp>
 #include <ql/time/daycounter.hpp>
+#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 
@@ -64,27 +65,27 @@ namespace QuantLib {
     };
 
 
-    // inline definitions
 
-    inline Real FixedRateCoupon::amount() const {
-        return nominal()*rate_*accrualPeriod();
-    }
+    //! helper class building a sequence of fixed rate coupons
+    class FixedRateLeg {
+      public:
+        FixedRateLeg(const Schedule& schedule,
+                     const DayCounter& paymentDayCounter);
+        FixedRateLeg& withNotionals(Real notional);
+        FixedRateLeg& withNotionals(const std::vector<Real>& notionals);
+        FixedRateLeg& withCouponRates(Rate couponRate);
+        FixedRateLeg& withCouponRates(const std::vector<Rate>& couponRates);
+        FixedRateLeg& withPaymentAdjustment(BusinessDayConvention);
+        FixedRateLeg& withFirstPeriodDayCounter(const DayCounter&);
+        operator Leg() const;
+      private:
+        Schedule schedule_;
+        std::vector<Real> notionals_;
+        std::vector<Rate> couponRates_;
+        DayCounter paymentDayCounter_, firstPeriodDayCounter_;
+        BusinessDayConvention paymentAdjustment_;
+    };
 
-    inline Rate FixedRateCoupon::rate() const {
-        return rate_;
-    }
-
-    inline Real FixedRateCoupon::accruedAmount(const Date& d) const {
-        if (d <= accrualStartDate_ || d > paymentDate_) {
-            return 0.0;
-        } else {
-            return nominal()*rate_*
-                dayCounter_.yearFraction(accrualStartDate_,
-                                         std::min(d,accrualEndDate_),
-                                         refPeriodStart_,
-                                         refPeriodEnd_);
-        }
-    }
 
     inline void FixedRateCoupon::accept(AcyclicVisitor& v) {
         Visitor<FixedRateCoupon>* v1 =

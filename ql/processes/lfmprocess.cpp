@@ -180,24 +180,17 @@ namespace QuantLib {
     Leg
     LiborForwardModelProcess::cashFlows(Real amount) const {
         const Date refDate = index_->termStructure()->referenceDate();
-
-        Leg floatingLeg = IborLeg(
-                   std::vector<Real>(1, amount),
-                   Schedule(refDate,
-                            refDate + Period(index_->tenor().length()*size_,
-                                             index_->tenor().units()),
-                            index_->tenor(), index_->fixingCalendar(),
-                            index_->businessDayConvention(),
-                            index_->businessDayConvention(), false, false),
-                   index_,
-                   index_->dayCounter(),
-                   index_->businessDayConvention(),
-                   std::vector<Natural>(1, index_->fixingDays()));
-        boost::shared_ptr<IborCouponPricer> fictitiousPricer(new
-            BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
-        setCouponPricer(floatingLeg, fictitiousPricer);
-        return floatingLeg;
-
+        Schedule schedule(refDate,
+                          refDate + Period(index_->tenor().length()*size_,
+                                           index_->tenor().units()),
+                          index_->tenor(), index_->fixingCalendar(),
+                          index_->businessDayConvention(),
+                          index_->businessDayConvention(), false, false);
+        return IborLeg(schedule,index_)
+            .withNotionals(amount)
+            .withPaymentDayCounter(index_->dayCounter())
+            .withPaymentAdjustment(index_->businessDayConvention())
+            .withFixingDays(index_->fixingDays());
     }
 
     Size LiborForwardModelProcess::size() const {

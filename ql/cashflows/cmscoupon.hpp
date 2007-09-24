@@ -1,8 +1,7 @@
 /*
  Copyright (C) 2006 Giorgio Facchinetti
  Copyright (C) 2006 Mario Pucci
- Copyright (C) 2006 StatPro Italia srl
-
+ Copyright (C) 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +25,7 @@
 #define quantlib_cms_coupon_hpp
 
 #include <ql/cashflows/floatingratecoupon.hpp>
+#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 
@@ -63,6 +63,42 @@ namespace QuantLib {
         //@}
       private:
         boost::shared_ptr<SwapIndex> swapIndex_;
+    };
+
+
+    //! helper class building a sequence of capped/floored cms-rate coupons
+    class CmsLeg {
+      public:
+        CmsLeg(const Schedule& schedule,
+               const boost::shared_ptr<SwapIndex>& index);
+        CmsLeg& withNotionals(Real notional);
+        CmsLeg& withNotionals(const std::vector<Real>& notionals);
+        CmsLeg& withPaymentDayCounter(const DayCounter&);
+        CmsLeg& withPaymentAdjustment(BusinessDayConvention);
+        CmsLeg& withFixingDays(Natural fixingDays);
+        CmsLeg& withFixingDays(const std::vector<Natural>& fixingDays);
+        CmsLeg& withGearings(Real gearing);
+        CmsLeg& withGearings(const std::vector<Real>& gearings);
+        CmsLeg& withSpreads(Spread spread);
+        CmsLeg& withSpreads(const std::vector<Spread>& spreads);
+        CmsLeg& withCaps(Rate cap);
+        CmsLeg& withCaps(const std::vector<Rate>& caps);
+        CmsLeg& withFloors(Rate floor);
+        CmsLeg& withFloors(const std::vector<Rate>& floors);
+        CmsLeg& inArrears(bool flag = true);
+        CmsLeg& withZeroPayments(bool flag = true);
+        operator Leg() const;
+      private:
+        Schedule schedule_;
+        boost::shared_ptr<SwapIndex> index_;
+        std::vector<Real> notionals_;
+        DayCounter paymentDayCounter_;
+        BusinessDayConvention paymentAdjustment_;
+        std::vector<Natural> fixingDays_;
+        std::vector<Real> gearings_;
+        std::vector<Spread> spreads_;
+        std::vector<Rate> caps_, floors_;
+        bool inArrears_, zeroPayments_;
     };
 
 }

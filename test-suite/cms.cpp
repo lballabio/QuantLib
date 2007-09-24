@@ -609,27 +609,22 @@ void CmsTest::testCmsSwap() {
                 for (Size pricerIndex=0; pricerIndex<pricers.size();
                      pricerIndex++) {
 
-                    Leg cmsLeg = CmsLeg(fixedNominals,
-                                        fixedSchedule,
-                                        index_,
-                                        fixedCmsDayCount_,
-                                        fixedCmsConvention_,
-                                        std::vector<Natural>(1,settlementDays_),
-                                        fractions,
-                                        baseRate,
-                                        caps,
-                                        floors);
+                    Leg cmsLeg = CmsLeg(fixedSchedule, index_)
+                        .withNotionals(fixedNominals)
+                        .withPaymentDayCounter(fixedCmsDayCount_)
+                        .withPaymentAdjustment(fixedCmsConvention_)
+                        .withFixingDays(settlementDays_)
+                        .withGearings(fractions)
+                        .withSpreads(baseRate)
+                        .withCaps(caps)
+                        .withFloors(floors);
                     setCouponPricer(cmsLeg, pricers[pricerIndex]);
 
-                    Leg floatingLeg = IborLeg(floatingNominals,
-                                              floatingSchedule,
-                                              iborIndex_,
-                                              iborIndex_->dayCounter(),
-                                              floatingCmsConvention_,
-                                              std::vector<Natural>(1,settlementDays_));
-                    boost::shared_ptr<IborCouponPricer>
-                      fictitiousPricer(new BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
-                    setCouponPricer(floatingLeg,fictitiousPricer);
+                    Leg floatingLeg = IborLeg(floatingSchedule, iborIndex_)
+                        .withNotionals(floatingNominals)
+                        .withPaymentDayCounter(iborIndex_->dayCounter())
+                        .withPaymentAdjustment(floatingCmsConvention_)
+                        .withFixingDays(settlementDays_);
 
                     boost::shared_ptr<Swap> swap(new
                         Swap(termStructure_, cmsLeg, floatingLeg));

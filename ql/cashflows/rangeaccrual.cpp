@@ -20,10 +20,11 @@
 
 
 #include <ql/cashflows/rangeaccrual.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/time/schedule.hpp>
-#include <ql/indexes/interestrateindex.hpp>
+#include <ql/indexes/iborindex.hpp>
 #include <ql/yieldtermstructure.hpp>
 
 #include <cmath>
@@ -39,7 +40,7 @@ namespace QuantLib {
     RangeAccrualFloatersCoupon::RangeAccrualFloatersCoupon(
                 const Real nominal,
                 const Date& paymentDate,
-                const boost::shared_ptr<InterestRateIndex>& index,
+                const boost::shared_ptr<IborIndex>& index,
                 const Date& startDate,                                  // S
                 const Date& endDate,                                    // T
                 Integer fixingDays,
@@ -60,15 +61,15 @@ namespace QuantLib {
     upperTrigger_(upperTrigger){
 
         QL_REQUIRE(lowerTrigger_<upperTrigger,
-            "RangeAccrualFloatersCoupon::RangeAccrualFloatersCoupon: lowerTrigger_>=upperTrigger");
+                   "lowerTrigger_>=upperTrigger");
         QL_REQUIRE(observationsSchedule_->startDate()==startDate,
-            "RangeAccrualFloatersCoupon::RangeAccrualFloatersCoupon: incompatible start date");
+                   "incompatible start date");
         QL_REQUIRE(observationsSchedule_->endDate()==endDate,
-            "RangeAccrualFloatersCoupon::RangeAccrualFloatersCoupon: incompatible end date");
+                   "incompatible end date");
 
         observationDates_ = observationsSchedule_->dates();
-        observationDates_.pop_back();                           //remove end date
-        observationDates_.erase(observationDates_.begin());     //remove start date
+        observationDates_.pop_back();                       //remove end date
+        observationDates_.erase(observationDates_.begin()); //remove start date
         observationsNo_ = observationDates_.size();
 
         const Handle<YieldTermStructure>& rateCurve = index->termStructure();
@@ -77,7 +78,8 @@ namespace QuantLib {
         startTime_ = dayCounter.yearFraction(referenceDate, startDate);
         endTime_ = dayCounter.yearFraction(referenceDate, endDate);
         for(Size i=0;i<observationsNo_;i++) {
-            observationTimes_.push_back(dayCounter.yearFraction(referenceDate, observationDates_[i]));
+            observationTimes_.push_back(
+                dayCounter.yearFraction(referenceDate, observationDates_[i]));
         }
 
      }
@@ -98,9 +100,9 @@ namespace QuantLib {
     }
 
 
-    //===========================================================================//
-    //                          RangeAccrualPricer                               //
-    //===========================================================================//
+    //=======================================================================//
+    //                        RangeAccrualPricer                             //
+    //=======================================================================//
 
     void RangeAccrualPricer::initialize(const FloatingRateCoupon& coupon){
         coupon_ =  dynamic_cast<const RangeAccrualFloatersCoupon*>(&coupon);
@@ -122,8 +124,10 @@ namespace QuantLib {
         upperTrigger_ = coupon_->upperTrigger();
         observationsNo_ = coupon_->observationsNo();
 
-        const std::vector<Date> &observationDates = coupon_->observationsSchedule()->dates();
-        QL_REQUIRE(observationDates.size()==observationsNo_+2, "incompatible size of initialValues vector");
+        const std::vector<Date> &observationDates =
+            coupon_->observationsSchedule()->dates();
+        QL_REQUIRE(observationDates.size()==observationsNo_+2,
+                   "incompatible size of initialValues vector");
         initialValues_= std::vector<Real>(observationDates.size(),0.);
 
         Calendar calendar = index->fixingCalendar();
@@ -134,20 +138,24 @@ namespace QuantLib {
                                  Days));
         }
 
-      }
+    }
 
     Real RangeAccrualPricer::swapletRate() const {
         return swapletPrice()/(accrualFactor_*discount_);
     }
+
     Real RangeAccrualPricer::capletPrice(Rate effectiveCap) const {
         QL_FAIL("RangeAccrualPricer::capletPrice not implemented");
     }
+
     Rate RangeAccrualPricer::capletRate(Rate effectiveCap) const {
         QL_FAIL("RangeAccrualPricer::capletRate not implemented");
     }
+
     Real RangeAccrualPricer::floorletPrice(Rate effectiveFloor) const {
         QL_FAIL("RangeAccrualPricer::floorletPrice not implemented");
     }
+
     Rate RangeAccrualPricer::floorletRate(Rate effectiveFloor) const {
         QL_FAIL("RangeAccrualPricer::floorletRate not implemented");
     }
@@ -523,4 +531,185 @@ namespace QuantLib {
          return result;
     }
 
+
+
+
+    RangeAccrualLeg::RangeAccrualLeg(
+                            const Schedule& schedule,
+                            const boost::shared_ptr<IborIndex>& index)
+    : schedule_(schedule), index_(index),
+      paymentAdjustment_(Following),
+      observationConvention_(ModifiedFollowing) {}
+
+    RangeAccrualLeg& RangeAccrualLeg::withNotionals(Real notional) {
+        notionals_ = std::vector<Real>(1,notional);
+        return *this;
+    }
+
+    RangeAccrualLeg& RangeAccrualLeg::withNotionals(
+                                         const std::vector<Real>& notionals) {
+        notionals_ = notionals;
+        return *this;
+    }
+
+    RangeAccrualLeg& RangeAccrualLeg::withPaymentDayCounter(
+                                               const DayCounter& dayCounter) {
+        paymentDayCounter_ = dayCounter;
+        return *this;
+    }
+
+    RangeAccrualLeg& RangeAccrualLeg::withPaymentAdjustment(
+                                           BusinessDayConvention convention) {
+        paymentAdjustment_ = convention;
+        return *this;
+    }
+
+    RangeAccrualLeg& RangeAccrualLeg::withFixingDays(Natural fixingDays) {
+        fixingDays_ = std::vector<Natural>(1,fixingDays);
+        return *this;
+    }
+
+    RangeAccrualLeg& RangeAccrualLeg::withFixingDays(
+                                     const std::vector<Natural>& fixingDays) {
+        fixingDays_ = fixingDays;
+        return *this;
+    }
+
+    RangeAccrualLeg& RangeAccrualLeg::withGearings(Real gearing) {
+        gearings_ = std::vector<Real>(1,gearing);
+        return *this;
+    }
+
+    RangeAccrualLeg& RangeAccrualLeg::withGearings(
+                                          const std::vector<Real>& gearings) {
+        gearings_ = gearings;
+        return *this;
+    }
+
+    RangeAccrualLeg& RangeAccrualLeg::withSpreads(Spread spread) {
+        spreads_ = std::vector<Spread>(1,spread);
+        return *this;
+    }
+
+    RangeAccrualLeg& RangeAccrualLeg::withSpreads(
+                                         const std::vector<Spread>& spreads) {
+        spreads_ = spreads;
+        return *this;
+    }
+
+    RangeAccrualLeg& RangeAccrualLeg::withLowerTriggers(Rate trigger) {
+        lowerTriggers_ = std::vector<Rate>(1,trigger);
+        return *this;
+    }
+
+    RangeAccrualLeg& RangeAccrualLeg::withLowerTriggers(
+                                          const std::vector<Rate>& triggers) {
+        lowerTriggers_ = triggers;
+        return *this;
+    }
+
+    RangeAccrualLeg& RangeAccrualLeg::withUpperTriggers(Rate trigger) {
+        upperTriggers_ = std::vector<Rate>(1,trigger);
+        return *this;
+    }
+
+    RangeAccrualLeg& RangeAccrualLeg::withUpperTriggers(
+                                          const std::vector<Rate>& triggers) {
+        upperTriggers_ = triggers;
+        return *this;
+    }
+
+    RangeAccrualLeg& RangeAccrualLeg::withObservationTenor(
+                                                        const Period& tenor) {
+        observationTenor_ = tenor;
+        return *this;
+    }
+
+    RangeAccrualLeg& RangeAccrualLeg::withObservationConvention(
+                                           BusinessDayConvention convention) {
+        observationConvention_ = convention;
+        return *this;
+    }
+
+    RangeAccrualLeg::operator Leg() const {
+
+        QL_REQUIRE(!notionals_.empty(), "no nominal given");
+
+        Size n = schedule_.size()-1;
+        QL_REQUIRE(notionals_.size() <= n,
+                   "too many nominals (" << notionals_.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(fixingDays_.size() <= n,
+                   "too many fixingDays (" << fixingDays_.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(gearings_.size()<=n,
+                   "too many gearings (" << gearings_.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(spreads_.size()<=n,
+                   "too many spreads (" << spreads_.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(lowerTriggers_.size()<=n,
+                   "too many lowerTriggers (" << lowerTriggers_.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(upperTriggers_.size()<=n,
+                   "too many upperTriggers (" << upperTriggers_.size() <<
+                   "), only " << n << " required");
+
+        Leg leg; leg.reserve(n);
+
+        // the following is not always correct
+        Calendar calendar = schedule_.calendar();
+
+        Date refStart, start, refEnd, end;
+        Date paymentDate;
+        std::vector<boost::shared_ptr<Schedule> > observationsSchedules;
+
+        for (Size i=0; i<n; ++i) {
+            refStart = start = schedule_.date(i);
+            refEnd   =   end = schedule_.date(i+1);
+            paymentDate = calendar.adjust(end, paymentAdjustment_);
+            if (i==0   && !schedule_.isRegular(i+1)) {
+                BusinessDayConvention bdc = schedule_.businessDayConvention();
+                refStart = calendar.adjust(end - schedule_.tenor(), bdc);
+            }
+            if (i==n-1 && !schedule_.isRegular(i+1)) {
+                BusinessDayConvention bdc = schedule_.businessDayConvention();
+                refEnd = calendar.adjust(start + schedule_.tenor(), bdc);
+            }
+            if (detail::get(gearings_, i, 1.0) == 0.0) { // fixed coupon
+                leg.push_back(boost::shared_ptr<CashFlow>(new
+                    FixedRateCoupon(detail::get(notionals_, i, Null<Real>()),
+                                    paymentDate,
+                                    detail::get(spreads_, i, 0.0),
+                                    paymentDayCounter_,
+                                    start, end, refStart, refEnd)));
+            } else { // floating coupon
+                    observationsSchedules.push_back(
+                           boost::shared_ptr<Schedule>(
+                                     new Schedule(start, end,
+                                                  observationTenor_, calendar,
+                                                  observationConvention_,
+                                                  observationConvention_,
+                                                  false, false)));
+
+                    leg.push_back(boost::shared_ptr<CashFlow>(new
+                       RangeAccrualFloatersCoupon(
+                            detail::get(notionals_, i, Null<Real>()),
+                            paymentDate,
+                            index_,
+                            start, end,
+                            detail::get(fixingDays_, i, 2),
+                            paymentDayCounter_,
+                            detail::get(gearings_, i, 1.0),
+                            detail::get(spreads_, i, 0.0),
+                            refStart, refEnd,
+                            observationsSchedules.back(),
+                            detail::get(lowerTriggers_, i, Null<Rate>()),
+                            detail::get(upperTriggers_, i, Null<Rate>()))));
+            }
+        }
+        return leg;
+    }
+
 }
+

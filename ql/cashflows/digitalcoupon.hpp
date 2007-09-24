@@ -25,16 +25,16 @@
 #ifndef quantlib_digital_coupon_hpp
 #define quantlib_digital_coupon_hpp
 
-#include <ql/cashflows/iborcoupon.hpp>
-#include <ql/cashflows/cmscoupon.hpp>
+#include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/replication.hpp>
 #include <ql/position.hpp>
+#include <ql/utilities/null.hpp>
 
 namespace QuantLib {
 
-    //! %DigitalCoupon class
-    /*! Implemetation of a floating-rate coupon with digital digital call/put option.
+    //! Digital-payoff coupon
+    /*! Implementation of a floating-rate coupon with digital call/put option.
         Payoffs:
         - Coupon with cash-or-nothing Digital Call
           rate + csi * payoffRate * Heaviside(rate-strike)
@@ -131,7 +131,7 @@ namespace QuantLib {
         void setPricer(
             const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
             // set underlying pricer
-            if(pricer_)
+            if (pricer_)
                 unregisterWith(pricer_);
             pricer_ = pricer;
             QL_REQUIRE(pricer_, "no adequate pricer given");
@@ -169,78 +169,18 @@ namespace QuantLib {
         Real callLeftEps_, callRightEps_;
         //! the left and right gaps applied in payoff replication for puf
         Real putLeftEps_, putRightEps_;
-        //! 
+        //!
         bool hasPutStrike_, hasCallStrike_;
         //! Type of replication
         Replication::Type replicationType_;
 
         //@}
-        private:
+      private:
         Rate callPayoff() const;
         Rate putPayoff() const;
 
     };
 
-    //! Ibor rate coupon with digital digital call/put option
-    class DigitalIborCoupon : public DigitalCoupon {
-    public:
-        DigitalIborCoupon(const boost::shared_ptr<FloatingRateCoupon>& underlying,
-                      Rate callStrike = Null<Rate>(),
-                      Position::Type callPosition = Position::Long,
-                      bool isCallATMIncluded = false,
-                      Rate callDigitalPayoff = Null<Rate>(),
-                      Rate putStrike = Null<Rate>(),
-                      Position::Type putPosition = Position::Long,
-                      bool isPutATMIncluded = false,
-                      Rate putDigitalPayoff = Null<Rate>(),
-                      const boost::shared_ptr<DigitalReplication>& replication =
-                      boost::shared_ptr<DigitalReplication>()):
-            DigitalCoupon(underlying,
-                          callStrike,
-                          callPosition,
-                          isCallATMIncluded,
-                          callDigitalPayoff,
-                          putStrike,
-                          putPosition,
-                          isPutATMIncluded,
-                          putDigitalPayoff,
-                          replication ) {}
-
-        //@}
-        //! \name Visitability
-        //@{
-        virtual void accept(AcyclicVisitor&);
-    };
-
-    //! Swap rate coupon with digital digital call/put option
-    class DigitalCmsCoupon : public DigitalCoupon {
-    public:
-        DigitalCmsCoupon(const boost::shared_ptr<FloatingRateCoupon>& underlying,
-                      Rate callStrike = Null<Rate>(),
-                      Position::Type callPosition = Position::Long,
-                      bool isCallATMIncluded = false,
-                      Rate callDigitalPayoff = Null<Rate>(),
-                      Rate putStrike = Null<Rate>(),
-                      Position::Type putPosition = Position::Long,
-                      bool isPutATMIncluded = false,
-                      Rate putDigitalPayoff = Null<Rate>(),
-                      const boost::shared_ptr<DigitalReplication>& replication =
-                      boost::shared_ptr<DigitalReplication>() ):
-            DigitalCoupon(underlying,
-                          callStrike,
-                          callPosition,
-                          isCallATMIncluded,
-                          callDigitalPayoff,
-                          putStrike,
-                          putPosition,
-                          isPutATMIncluded,
-                          putDigitalPayoff,
-                          replication) {}
-        //@}
-        //! \name Visitability
-        //@{
-        virtual void accept(AcyclicVisitor&);
-    };
 }
 
 #endif

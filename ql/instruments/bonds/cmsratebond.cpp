@@ -20,7 +20,7 @@
 */
 
 #include <ql/instruments/bonds/cmsratebond.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/cashflows/cmscoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/time/schedule.hpp>
@@ -44,15 +44,16 @@ namespace QuantLib {
                            const Date& issueDate)
     : Bond(settlementDays, schedule.calendar(), faceAmount, schedule.endDate(), issueDate) {
 
-        cashflows_ = CmsLeg(std::vector<Real>(1, faceAmount_),
-                            schedule,
-                            index,
-                            paymentDayCounter,
-                            paymentConvention,
-                            std::vector<Natural>(1,fixingDays),
-                            gearings, spreads,
-                            caps, floors,
-                            inArrears);
+        cashflows_ = CmsLeg(schedule, index)
+            .withNotionals(faceAmount_)
+            .withPaymentDayCounter(paymentDayCounter)
+            .withPaymentAdjustment(paymentConvention)
+            .withFixingDays(fixingDays)
+            .withGearings(gearings)
+            .withSpreads(spreads)
+            .withCaps(caps)
+            .withFloors(floors)
+            .inArrears(inArrears);
 
         Date redemptionDate = calendar_.adjust(maturityDate_,
                                                paymentConvention);

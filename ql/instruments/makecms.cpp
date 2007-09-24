@@ -18,14 +18,14 @@
 */
 
 #include <ql/instruments/makecms.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/time/daycounters/actual360.hpp>
+#include <ql/instruments/swap.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
-#include <ql/instruments/swap.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 
 namespace QuantLib {
 
@@ -106,28 +106,22 @@ namespace QuantLib {
                                floatBackward_, floatEndOfMonth_,
                                floatFirstDate_, floatNextToLastDate_);
 
-        Leg cmsLeg = CmsLeg(std::vector<Real>(1, nominal_),
-                            cmsSchedule,
-                            swapIndex_,
-                            cmsDayCount_,
-                            cmsConvention_,
-                            std::vector<Natural>(1,swapIndex_->fixingDays()),
-                            std::vector<Real>(1, cmsGearing_),
-                            std::vector<Spread>(1, cmsSpread_),
-                            std::vector<Rate>(1, cmsCap_),
-                            std::vector<Rate>(1, cmsFloor_));
+        Leg cmsLeg = CmsLeg(cmsSchedule, swapIndex_)
+            .withNotionals(nominal_)
+            .withPaymentDayCounter(cmsDayCount_)
+            .withPaymentAdjustment(cmsConvention_)
+            .withFixingDays(swapIndex_->fixingDays())
+            .withGearings(cmsGearing_)
+            .withSpreads(cmsSpread_)
+            .withCaps(cmsCap_)
+            .withFloors(cmsFloor_);
 
-        Leg floatLeg = IborLeg(std::vector<Real>(1, nominal_),
-                               floatSchedule,
-                               iborIndex_,
-                               floatDayCount_,
-                               floatConvention_,
-                               std::vector<Natural>(1,iborIndex_->fixingDays()),
-                               std::vector<Real>(1, 1.0), // gearing
-                               std::vector<Spread>(1, iborSpread_));
-        boost::shared_ptr<IborCouponPricer> fictitiousPricer(new
-            BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
-        setCouponPricer(floatLeg,fictitiousPricer);
+        Leg floatLeg = IborLeg(floatSchedule, iborIndex_)
+            .withNotionals(nominal_)
+            .withPaymentDayCounter(floatDayCount_)
+            .withPaymentAdjustment(floatConvention_)
+            .withFixingDays(iborIndex_->fixingDays())
+            .withSpreads(iborSpread_);
 
         if (payCms_)
             return boost::shared_ptr<Swap>(new
