@@ -69,7 +69,10 @@ libQuantLib_la_SOURCES = \
     prices.cpp \
     settings.cpp \
 	stochasticprocess.cpp \
-	timegrid.cpp
+	termstructure.cpp \
+	timegrid.cpp \
+	voltermstructure.cpp \
+	yieldtermstructure.cpp
 
 lib_LTLIBRARIES = libQuantLib.la
 libQuantLib_la_LDFLAGS = -release $(PACKAGE_VERSION)

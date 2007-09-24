@@ -9,9 +9,9 @@ AC_CONFIG_HEADERS([ql/config.hpp])
 AM_INIT_AUTOMAKE([foreign])
 
 AC_COPYRIGHT([
-Copyright (C) 2004, 2005 Ferdinando Ametrano
 Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
+Copyright (C) 2004, 2005 Ferdinando Ametrano
 
 This file is part of QuantLib, a free-software/open-source library
 for financial quantitative analysts and developers - http://quantlib.org/
@@ -390,8 +390,8 @@ AC_CONFIG_FILES([
     ql/voltermstructures/Makefile
     ql/voltermstructures/equityfx/Makefile
     ql/voltermstructures/interestrate/Makefile
-    ql/voltermstructures/interestrate/cap/Makefile
-    ql/voltermstructures/interestrate/caplet/Makefile
+    ql/voltermstructures/interestrate/capfloor/Makefile
+    ql/voltermstructures/interestrate/optionlet/Makefile
     ql/voltermstructures/interestrate/swaption/Makefile
     ql/yieldtermstructures/Makefile
     ql/utilities/Makefile

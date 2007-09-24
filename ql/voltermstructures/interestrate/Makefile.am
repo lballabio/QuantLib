@@ -1,4 +1,4 @@
-SUBDIRS = cap caplet swaption
+SUBDIRS = capfloor optionlet swaption
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
@@ -17,8 +17,8 @@ libInterestRateVol_la_SOURCES = \
     volcube.cpp 
 
 libInterestRateVol_la_LIBADD = \
-    cap/libCapVol.la \
-    caplet/libCapletVol.la \
+    capfloor/libCapFloorVol.la \
+    optionlet/libOptionletVol.la \
     swaption/libSwaptionVol.la
 
 noinst_LTLIBRARIES = libInterestRateVol.la
