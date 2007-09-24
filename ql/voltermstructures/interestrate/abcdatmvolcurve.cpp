@@ -96,7 +96,7 @@ namespace QuantLib {
         LazyObject::update();
     }
 
-    void AbcdAtmVolCurve::initializeOptionDatesAndTimes()
+    void AbcdAtmVolCurve::initializeOptionDatesAndTimes() const
     {
         for (Size i=0; i<nOptionTenors_; ++i) {
             optionDates_[i] = optionDateFromTenor(optionTenors_[i]);
