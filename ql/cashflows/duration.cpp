@@ -28,6 +28,12 @@ namespace QuantLib {
     std::ostream& operator<<(std::ostream& out,
                              Duration::Type d) {
         switch (d) {
+          case Duration::Simple:
+            return out << "Simple";
+          case Duration::Macaulay:
+            return out << "Macaulay";
+          case Duration::Modified:
+            return out << "Modified";
           default:
             QL_FAIL("unknown Duration::Type (" << Integer(d) << ")");
         }
