@@ -169,7 +169,7 @@ namespace QuantLib {
         LazyObject::update();
     }
 
-    void CapFloorTermVolCurve::initializeOptionDatesAndTimes()
+    void CapFloorTermVolCurve::initializeOptionDatesAndTimes() const
     {
         for (Size i=0; i<nOptionTenors_; ++i) {
             optionDates_[i] = optionDateFromTenor(optionTenors_[i]);

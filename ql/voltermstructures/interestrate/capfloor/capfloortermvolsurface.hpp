@@ -100,7 +100,7 @@ namespace QuantLib {
                                   Rate strike) const;
       private:
         void checkInputs() const;
-        void initializeOptionDatesAndTimes();
+        void initializeOptionDatesAndTimes() const;
         void registerWithMarketData();
         void interpolate();
         

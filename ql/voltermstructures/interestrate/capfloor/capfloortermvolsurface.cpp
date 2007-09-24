@@ -211,7 +211,6 @@ namespace QuantLib {
     void CapFloorTermVolSurface::performCalculations() const
     {
         // check if date recalculation must be called here
-        initializeOptionDatesAndTimes();
 
         for (Size i=0; i<nOptionTenors_; ++i)
             for (Size j=0; j<nStrikes_; ++j)
