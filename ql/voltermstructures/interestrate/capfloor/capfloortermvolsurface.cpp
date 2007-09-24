@@ -38,7 +38,7 @@ namespace QuantLib {
       nOptionTenors_(optionTenors.size()),
       optionTenors_(optionTenors),
       optionDates_(nOptionTenors_),
-      optionTimes_(nOptionTenors_), 
+      optionTimes_(nOptionTenors_),
       nStrikes_(strikes.size()),
       strikes_(strikes),
       volHandles_(vols),
@@ -53,7 +53,7 @@ namespace QuantLib {
         registerWithMarketData();
         interpolate();
     }
-    
+
     // fixed reference date, floating market data
     CapFloorTermVolSurface::CapFloorTermVolSurface(
                         const Date& settlementDate,
@@ -67,7 +67,7 @@ namespace QuantLib {
       nOptionTenors_(optionTenors.size()),
       optionTenors_(optionTenors),
       optionDates_(nOptionTenors_),
-      optionTimes_(nOptionTenors_), 
+      optionTimes_(nOptionTenors_),
       nStrikes_(strikes.size()),
       strikes_(strikes),
       volHandles_(vols),
@@ -96,7 +96,7 @@ namespace QuantLib {
       nOptionTenors_(optionTenors.size()),
       optionTenors_(optionTenors),
       optionDates_(nOptionTenors_),
-      optionTimes_(nOptionTenors_), 
+      optionTimes_(nOptionTenors_),
       nStrikes_(strikes.size()),
       strikes_(strikes),
       volHandles_(vols.rows()),
@@ -127,7 +127,7 @@ namespace QuantLib {
       nOptionTenors_(optionTenors.size()),
       optionTenors_(optionTenors),
       optionDates_(nOptionTenors_),
-      optionTimes_(nOptionTenors_), 
+      optionTimes_(nOptionTenors_),
       nStrikes_(strikes.size()),
       strikes_(strikes),
       volHandles_(vols.rows()),
@@ -162,7 +162,7 @@ namespace QuantLib {
 
         QL_REQUIRE(nStrikes_==vols_.columns(),
                    "mismatch between strikes(" << strikes_.size() <<
-                   ") and vol columns (" << vols_.columns() << ")"); 
+                   ") and vol columns (" << vols_.columns() << ")");
         for (Size j=1; j<nStrikes_; ++j)
             QL_REQUIRE(strikes_[j-1]<strikes_[j],
                        "non increasing strikes: " << io::ordinal(j-1) <<
@@ -179,11 +179,11 @@ namespace QuantLib {
 
     void CapFloorTermVolSurface::interpolate()
     {
-        interpolation_ = BicubicSpline(strikes_.begin(),  
+        interpolation_ = BicubicSpline(strikes_.begin(),
                                        strikes_.end(),
                                        optionTimes_.begin(),
                                        optionTimes_.end(),
-                                       vols_);    
+                                       vols_);
     }
 
     void CapFloorTermVolSurface::update()
@@ -200,7 +200,7 @@ namespace QuantLib {
         LazyObject::update();
     }
 
-    void CapFloorTermVolSurface::initializeOptionDatesAndTimes()
+    void CapFloorTermVolSurface::initializeOptionDatesAndTimes() const
     {
         for (Size i=0; i<nOptionTenors_; ++i) {
             optionDates_[i] = optionDateFromTenor(optionTenors_[i]);
