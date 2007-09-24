@@ -59,8 +59,9 @@ namespace QuantLib {
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
-      protected:
+        std::vector<Volatility> volatilitySpreads(const Period&) const;
         std::vector<Volatility> volatilitySpreads(const Date&) const;
+      protected:
         boost::array<Real, 4> sabrGuesses(const Date&) const;
         //! \name BlackVolSurface interface
         //@{
@@ -102,6 +103,12 @@ namespace QuantLib {
     inline const Handle<BlackAtmVolCurve>& SabrVolSurface::atmCurve() const {
         return atmCurve_;
     }
+
+    inline std::vector<Volatility>
+    SabrVolSurface::volatilitySpreads(const Period& p) const {
+        return volatilitySpreads(optionDateFromTenor(p));
+    }
+
 }
 
 #endif
