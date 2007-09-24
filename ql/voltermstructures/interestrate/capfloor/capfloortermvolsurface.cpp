@@ -173,7 +173,7 @@ namespace QuantLib {
     void CapFloorTermVolSurface::registerWithMarketData()
     {
         for (Size i=0; i<nOptionTenors_; ++i)
-            for (Size j=0; j<volHandles_[0].size(); ++j)
+            for (Size j=0; j<nStrikes_; ++j)
                 registerWith(volHandles_[i][j]);
     }
 
@@ -211,9 +211,10 @@ namespace QuantLib {
     void CapFloorTermVolSurface::performCalculations() const
     {
         // check if date recalculation must be called here
+        initializeOptionDatesAndTimes();
 
         for (Size i=0; i<nOptionTenors_; ++i)
-            for (Size j=0; j<vols_.columns(); ++j)
+            for (Size j=0; j<nStrikes_; ++j)
                 vols_[i][j] = volHandles_[i][j]->value();
 
         interpolation_.update();
