@@ -742,6 +742,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\cashflows\digitalcmscoupon.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\digitalcmscoupon.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\cashflows\digitalcoupon.cpp"
 				>
 			</File>
@@ -750,11 +758,31 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\cashflows\digitaliborcoupon.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\digitaliborcoupon.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\cashflows\dividend.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\ql\cashflows\dividend.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\duration.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\duration.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\fixedratecoupon.cpp"
 				>
 			</File>
 			<File
