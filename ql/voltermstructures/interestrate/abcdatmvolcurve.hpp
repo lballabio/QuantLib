@@ -113,15 +113,11 @@ namespace QuantLib {
 
     inline
     const std::vector<Date>& AbcdAtmVolCurve::optionDates() const {
-        // what if quotes are not available?
-        calculate();
         return optionDates_;
     }
 
     inline
     const std::vector<Time>& AbcdAtmVolCurve::optionTimes() const {
-        // what if quotes are not available?
-        calculate();
         return optionTimes_;
     }
 
