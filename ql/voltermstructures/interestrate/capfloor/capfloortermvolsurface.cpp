@@ -51,6 +51,9 @@ namespace QuantLib {
                        io::ordinal(i) << " row of vol handles has size " <<
                        volHandles_[i].size() << " instead of " << nStrikes_);
         registerWithMarketData();
+        for (Size i=0; i<vols_.rows(); ++i)
+            for (Size j=0; j<vols_.columns(); ++j)
+                vols_[i][j] = volHandles_[i][j]->value();
         interpolate();
     }
 
@@ -80,6 +83,9 @@ namespace QuantLib {
                        io::ordinal(i) << " row of vol handles has size " <<
                        volHandles_[i].size() << " instead of " << nStrikes_);
         registerWithMarketData();
+        for (Size i=0; i<vols_.rows(); ++i)
+            for (Size j=0; j<vols_.columns(); ++j)
+                vols_[i][j] = volHandles_[i][j]->value();
         interpolate();
     }
 
