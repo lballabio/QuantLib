@@ -212,6 +212,6 @@ namespace QuantLib {
         }
         TermStructure::update();
         LazyObject::update();
-    };
+    }
 
 }
