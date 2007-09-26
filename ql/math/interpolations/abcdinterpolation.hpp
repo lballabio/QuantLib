@@ -100,8 +100,8 @@ namespace QuantLib {
             Real aGuess_, bGuess_, cGuess_, dGuess_;
             bool aIsFixed_, bIsFixed_, cIsFixed_, dIsFixed_;
             bool vegaWeighted_;
-            const boost::shared_ptr<EndCriteria>& endCriteria_;
-            const boost::shared_ptr<OptimizationMethod>& method_;
+            const boost::shared_ptr<EndCriteria> endCriteria_;
+            const boost::shared_ptr<OptimizationMethod> method_;
 
         };
 
