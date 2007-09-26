@@ -25,7 +25,19 @@ namespace QuantLib {
                           Real fixing,
                           bool forceOverwrite) {
         addFixings(&fixingDate, (&fixingDate)+1,
-                   &fixing, forceOverwrite);
+                   &fixing,
+                   forceOverwrite);
+    }
+
+    void Index::addFixings(const TimeSeries<Real>& t,
+                           bool forceOverwrite) {
+        // is there a way of iterating over dates and values
+        // without having to make a copy?
+        std::vector<Date> dates = t.dates();
+        std::vector<Real> values = t.values();
+        addFixings(dates.begin(), dates.end(),
+                   values.begin(),
+                   forceOverwrite);
     }
 
     void Index::clearFixings() {

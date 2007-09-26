@@ -65,6 +65,12 @@ namespace QuantLib {
         void addFixing(const Date& fixingDate,
                        Real fixing,
                        bool forceOverwrite = false);
+        //! stores historical fixings from a TimeSeries
+        /*! the dates in the TimeSeries must be the actual calendar
+            dates of the fixings; no settlement days must be used.
+        */
+        void addFixings(const TimeSeries<Real>& t,
+                        bool forceOverwrite = false);
         //! stores historical fixings at the given dates
         /*! the dates passed as arguments must be the actual calendar
             dates of the fixings; no settlement days must be used.
