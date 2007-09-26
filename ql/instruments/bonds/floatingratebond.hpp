@@ -82,7 +82,8 @@ namespace QuantLib {
                          Real redemption = 100.0,
                          const Date& issueDate = Date(),
                          const Date& stubDate = Date(),
-                         bool fromEnd = true);
+                         bool backward = true,
+                         bool endOfMonth = false);
     };
 
 }

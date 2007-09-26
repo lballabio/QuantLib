@@ -85,14 +85,15 @@ namespace QuantLib {
                            Real redemption,
                            const Date& issueDate,
                            const Date& stubDate,
-                           bool fromEnd)
+                           bool backward,
+                           bool endOfMonth)
     : Bond(settlementDays, calendar, faceAmount, maturityDate, issueDate) {
 
-        Date firstDate = (fromEnd ? Date() : stubDate);
-        Date nextToLastDate = (fromEnd ? stubDate : Date());
+        Date firstDate = (backward ? Date() : stubDate);
+        Date nextToLastDate = (backward ? stubDate : Date());
         Schedule schedule(startDate, maturityDate_, Period(couponFrequency),
                           calendar_, accrualConvention, accrualConvention,
-                          fromEnd, false, firstDate, nextToLastDate);
+                          backward, endOfMonth, firstDate, nextToLastDate);
 
         cashflows_ = IborLeg(schedule, index)
             .withNotionals(faceAmount_)

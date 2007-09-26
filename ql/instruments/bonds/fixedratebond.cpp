@@ -63,16 +63,17 @@ namespace QuantLib {
                                  Real redemption,
                                  const Date& issueDate,
                                  const Date& stubDate,
-                                 bool fromEnd)
+                                 bool backward,
+                                 bool endOfMonth)
     : Bond(settlementDays, calendar, faceAmount, maturityDate, issueDate) {
 
         maturityDate_     = maturityDate;
 
-        Date firstDate = (fromEnd ? Date() : stubDate);
-        Date nextToLastDate = (fromEnd ? stubDate : Date());
+        Date firstDate = (endOfMonth ? Date() : stubDate);
+        Date nextToLastDate = (endOfMonth ? stubDate : Date());
         Schedule schedule(startDate, maturityDate_, tenor,
                           calendar_, accrualConvention, accrualConvention,
-                          fromEnd, false, firstDate, nextToLastDate);
+                          endOfMonth, endOfMonth, firstDate, nextToLastDate);
 
         cashflows_ = FixedRateLeg(schedule, accrualDayCounter)
             .withNotionals(faceAmount_)
