@@ -38,7 +38,6 @@ namespace QuantLib {
         \warning instead of volatility it uses standard deviation,
                  i.e. volatility*sqrt(timeToMaturity)
     */
-    
     Real blackFormula(Option::Type optionType,
                       Real strike,
                       Real forward,
@@ -46,12 +45,10 @@ namespace QuantLib {
                       Real discount = 1.0,
                       Real displacement = 0.0);
 
-
     /*! Black 1976 formula
         \warning instead of volatility it uses standard deviation,
                  i.e. volatility*sqrt(timeToMaturity)
     */
-    
     Real blackFormula(const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                       Real forward,
                       Real stdDev,
@@ -66,13 +63,12 @@ namespace QuantLib {
         (1988) approximation for at-the-money forward option, with the
         extended moneyness approximation by Corrado and Miller (1996)
     */
-
     Real blackFormulaImpliedStdDevApproximation(Option::Type optionType,
-                                         Real strike,
-                                         Real forward,
-                                         Real blackPrice,
-                                         Real discount = 1.0,
-                                         Real displacement = 0.0);
+                                                Real strike,
+                                                Real forward,
+                                                Real blackPrice,
+                                                Real discount = 1.0,
+                                                Real displacement = 0.0);
 
     /*! Approximated Black 1976 implied standard deviation,
         i.e. volatility*sqrt(timeToMaturity).
@@ -81,7 +77,6 @@ namespace QuantLib {
         (1988) approximation for at-the-money forward option, with the
         extended moneyness approximation by Corrado and Miller (1996)
     */
-
     Real blackFormulaImpliedStdDevApproximation(
                         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
@@ -93,7 +88,6 @@ namespace QuantLib {
     /*! Black 1976 implied standard deviation,
         i.e. volatility*sqrt(timeToMaturity)
     */
-
     Real blackFormulaImpliedStdDev(Option::Type optionType,
                                    Real strike,
                                    Real forward,
@@ -106,8 +100,6 @@ namespace QuantLib {
     /*! Black 1976 implied standard deviation,
         i.e. volatility*sqrt(timeToMaturity)
     */
-
-
     Real blackFormulaImpliedStdDev(
                         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
@@ -117,13 +109,13 @@ namespace QuantLib {
                         Real accuracy = 1.0e-6,
                         Real displacement = 0.0);
 
+
     /*! Black 1976 probability of being in the money (in the bond martingale
         measure), i.e. N(d2).
         It is a risk-neutral probability, not the real world one.
         \warning instead of volatility it uses standard deviation,
                  i.e. volatility*sqrt(timeToMaturity)
     */
-
     Real blackFormulaCashItmProbability(Option::Type optionType,
                                         Real strike,
                                         Real forward,
@@ -136,7 +128,6 @@ namespace QuantLib {
         \warning instead of volatility it uses standard deviation,
                  i.e. volatility*sqrt(timeToMaturity)
     */
-   
     Real blackFormulaCashItmProbability(
                         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
@@ -151,7 +142,6 @@ namespace QuantLib {
                  If T is the time to maturity Black vega would be
                  blackStdDevDerivative(strike, forward, stdDev)*sqrt(T)
     */
-
     Real blackFormulaStdDevDerivative(Real strike,
                                       Real forward,
                                       Real stdDev,
@@ -165,18 +155,19 @@ namespace QuantLib {
                  If T is the time to maturity Black vega would be
                  blackStdDevDerivative(strike, forward, stdDev)*sqrt(T)
     */
-     Real blackFormulaStdDevDerivative(
+    Real blackFormulaStdDevDerivative(
                         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real stdDev,
                         Real discount = 1.0,
                         Real displacement = 0.0);
-   
+
+
     /*! Black style formula when forward is normal rather than
         log-normal. This is essentially the model of Bachelier.
 
-        \warning Bachelier model needs absolute volatility, not percentage
-                 volatility. Standard deviation is
+        \warning Bachelier model needs absolute volatility, not
+                 percentage volatility. Standard deviation is
                  absoluteVolatility*sqrt(timeToMaturity)
     */
     Real bachelierBlackFormula(Option::Type optionType,
@@ -188,8 +179,8 @@ namespace QuantLib {
     /*! Black style formula when forward is normal rather than
         log-normal. This is essentially the model of Bachelier.
 
-        \warning Bachelier model needs absolute volatility, not percentage
-                 volatility. Standard deviation is
+        \warning Bachelier model needs absolute volatility, not
+                 percentage volatility. Standard deviation is
                  absoluteVolatility*sqrt(timeToMaturity)
     */
     Real bachelierBlackFormula(

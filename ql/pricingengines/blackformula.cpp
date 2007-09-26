@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2007 Cristina Duminuco
  Copyright (C) 2007 Chiara Fornarola
- Copyright (C) 2003, 2004, 2005, 2006 Ferdinando Ametrano
+ Copyright (C) 2003, 2004, 2005, 2006, 2007 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006 StatPro Italia srl
@@ -26,47 +26,61 @@
 #include <ql/math/solvers1d/newtonsafe.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 
+namespace {
+    void checkParameters(QuantLib::Real strike,
+                         QuantLib::Real forward,
+                         QuantLib::Real displacement)
+    {
+        QL_REQUIRE(strike>=0.0,
+                   "strike (" << strike << ") must be non-negative");
+        QL_REQUIRE(forward>0.0,
+                   "forward (" << forward << ") must be positive");
+        QL_REQUIRE(displacement>=0.0,
+                   "displacement (" << displacement << ") must be non-negative");
+    }
+}
+
 namespace QuantLib {
 
-    
     Real blackFormula(Option::Type optionType,
                       Real strike,
                       Real forward,
                       Real stdDev,
                       Real discount,
-                      Real displacement) {
-        QL_REQUIRE(strike>=0.0,
-                   "strike (" << strike << ") must be non-negative");
-        QL_REQUIRE(forward>0.0,
-                   "forward (" << forward << ") must be positive");
+                      Real displacement)
+    {
+        checkParameters(strike, forward, displacement);
         QL_REQUIRE(stdDev>=0.0,
                    "stdDev (" << stdDev << ") must be non-negative");
-        QL_REQUIRE(discount>0.0, "positive discount required: " <<
-                   discount << " not allowed");
-        QL_REQUIRE(displacement>=0.0,
-                   "displacement (" << displacement << ") must be non-negative");
+        QL_REQUIRE(discount>0.0,
+                   "discount (" << discount << ") must be positive");
+
+        if (stdDev==0.0)
+            return std::max((forward-strike)*optionType, Real(0.0))*discount;
 
         forward = forward + displacement;
         strike = strike + displacement;
-        if (stdDev==0.0)
-            return std::max((forward-strike)*optionType, Real(0.0))*discount;
-        if (strike==0.0) // strike=0 iff displacement=0
+
+        // since displacement is non-negative strike==0 iff displacement==0
+        // so returning forward*discount is OK 
+        if (strike==0.0)
             return (optionType==Option::Call ? forward*discount : 0.0);
+
         Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
         Real d2 = d1 - stdDev;
         CumulativeNormalDistribution phi;
-        Real result = discount * optionType *
-            (forward*phi(optionType*d1) - strike*phi(optionType*d2));
+        Real nd1 = phi(optionType*d1);
+        Real nd2 = phi(optionType*d2);
+        Real result = discount * optionType * (forward*nd1 - strike*nd2);
         QL_ENSURE(result>=0.0,
-                  "negative value (" << result << ") for a " << stdDev <<
-                  " stdDev " << optionType << " option struck at " <<
-                  strike << " on a " << forward << " forward");
+                  "negative value (" << result << ") for " <<
+                  stdDev << " stdDev, " <<
+                  optionType << " option, " <<
+                  strike << " strike , " <<
+                  forward << " forward");
         return result;
     }
 
-
-
-   
     Real blackFormula(const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                       Real forward,
                       Real stdDev,
@@ -76,25 +90,18 @@ namespace QuantLib {
             payoff->strike(), forward, stdDev, discount, displacement);
     }
 
-
-
-
     Real blackFormulaImpliedStdDevApproximation(Option::Type optionType,
                                                 Real strike,
                                                 Real forward,
                                                 Real blackPrice,
                                                 Real discount,
-                                                Real displacement) {
-        QL_REQUIRE(strike>=0.0,
-                "strike (" << strike << ") must be non-negative");
-        QL_REQUIRE(forward>0.0,
-                "forward (" << forward << ") must be positive");
+                                                Real displacement)
+    {
+        checkParameters(strike, forward, displacement);
         QL_REQUIRE(blackPrice>=0.0,
-                "blackPrice (" << blackPrice << ") must be non-negative");
-        QL_REQUIRE(discount>0.0, "positive discount required: " <<
-                   discount << " not allowed");
-        QL_REQUIRE(displacement>=0.0,
-                   "displacement (" << displacement << ") must be non-negative");
+                   "blackPrice (" << blackPrice << ") must be non-negative");
+        QL_REQUIRE(discount>0.0,
+                   "discount (" << discount << ") must be positive");
 
         Real stdDev;
         forward = forward + displacement;
@@ -146,10 +153,7 @@ namespace QuantLib {
           signedForward_(optionType*(forward+displacement)),
           undiscountedBlackPrice_(undiscountedBlackPrice)
         {
-            QL_REQUIRE(strike>=0.0,
-                       "strike (" << strike << ") must be non-negative");
-            QL_REQUIRE(forward>0.0,
-                       "forward (" << forward << ") must be positive");
+            checkParameters(strike, forward, displacement);
             QL_REQUIRE(undiscountedBlackPrice>=0.0,
                        "undiscounted Black price (" <<
                        undiscountedBlackPrice << ") must be non-negative");
@@ -158,7 +162,7 @@ namespace QuantLib {
         Real operator()(Real stdDev) const {
             #if defined(QL_EXTRA_SAFETY_CHECKS)
             QL_REQUIRE(stdDev>=0.0,
-                    "stdDev (" << stdDev << ") must be non-negative");
+                       "stdDev (" << stdDev << ") must be non-negative");
             #endif
             if (stdDev==0.0)
                 return std::max(signedForward_-signedStrike_, Real(0.0))
@@ -189,23 +193,19 @@ namespace QuantLib {
 
    
     Real blackFormulaImpliedStdDev(Option::Type optionType,
-                            Real strike,
-                            Real forward,
-                            Real blackPrice,
-                            Real discount,
-                            Real guess,
-                            Real accuracy,
-                            Real displacement) {
-        QL_REQUIRE(strike>=0.0,
-                "strike (" << strike << ") must be non-negative");
-        QL_REQUIRE(forward>0.0,
-                "forward (" << forward << ") must be positive");
+                                   Real strike,
+                                   Real forward,
+                                   Real blackPrice,
+                                   Real discount,
+                                   Real guess,
+                                   Real accuracy,
+                                   Real displacement)
+    {
+        checkParameters(strike, forward, displacement);
         QL_REQUIRE(blackPrice>=0.0,
-                "blackPrice (" << blackPrice << ") must be non-negative");
-        QL_REQUIRE(discount>0.0, "positive discount required: " <<
-                   discount << " not allowed");
-        QL_REQUIRE(displacement>=0.0,
-                   "displacement (" << displacement << ") must be non-negative");
+                   "blackPrice (" << blackPrice << ") must be non-negative");
+        QL_REQUIRE(discount>0.0,
+                   "discount (" << discount << ") must be positive");
 
         strike = strike + displacement;
         forward = forward + displacement;
@@ -217,7 +217,6 @@ namespace QuantLib {
                        "stdDev guess (" << guess << ") must be non-negative");
         BlackImpliedStdDevHelper f(optionType, strike, forward,
                                    blackPrice/discount);
-        //Brent solver;
         NewtonSafe solver;
         solver.setMaxEvaluations(100);
         Real minSdtDev = 0.0, maxStdDev = 3.0;
@@ -227,7 +226,6 @@ namespace QuantLib {
         return stdDev;
     }
 
- 
     Real blackFormulaImpliedStdDev(
                         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
@@ -240,19 +238,20 @@ namespace QuantLib {
             forward, blackPrice, discount, guess, accuracy, displacement);
     }
 
-
-
     Real blackFormulaCashItmProbability(Option::Type optionType,
                                         Real strike,
                                         Real forward,
                                         Real stdDev,
                                         Real displacement) {
+        checkParameters(strike, forward, displacement);
         if (stdDev==0.0)
             return (forward*optionType > strike*optionType ? 1.0 : 0.0);
+
+        forward = forward + displacement;
+        strike = strike + displacement;
         if (strike==0.0)
             return (optionType==Option::Call ? 1.0 : 0.0);
-        Real d1 = std::log((forward+displacement)/(strike+displacement))/stdDev + 0.5*stdDev;
-        Real d2 = d1 - stdDev;
+        Real d2 = std::log(forward/strike)/stdDev - 0.5*stdDev;
         CumulativeNormalDistribution phi;
         return phi(optionType*d2);
     }
@@ -268,18 +267,17 @@ namespace QuantLib {
     }
 
 
-    Real blackFormulaStdDevDerivative(Rate strike, Rate forward, Real stdDev,
-                                      Real discount, Real displacement) {
-        QL_REQUIRE(strike>=0.0,
-                   "strike (" << strike << ") must be non-negative");
-        QL_REQUIRE(forward>0.0,
-                   "forward (" << forward << ") must be positive");
+    Real blackFormulaStdDevDerivative(Rate strike,
+                                      Rate forward,
+                                      Real stdDev,
+                                      Real discount,
+                                      Real displacement)
+    {
+        checkParameters(strike, forward, displacement);
         QL_REQUIRE(stdDev>=0.0,
                    "stdDev (" << stdDev << ") must be non-negative");
-        QL_REQUIRE(discount>0.0, "positive discount required: " <<
-                   discount << " not allowed");
-        QL_REQUIRE(displacement>=0.0,
-                   "displacement (" << displacement << ") must be non-negative");
+        QL_REQUIRE(discount>0.0,
+                   "discount (" << discount << ") must be positive");
 
         forward = forward + displacement;
         strike = strike + displacement;
@@ -300,26 +298,27 @@ namespace QuantLib {
     }
 
 
-    /* Bachelier model */
     Real bachelierBlackFormula(Option::Type optionType,
                                Real strike,
                                Real forward,
                                Real stdDev,
-                               Real discount) {
+                               Real discount)
+    {
         QL_REQUIRE(stdDev>=0.0,
                    "stdDev (" << stdDev << ") must be non-negative");
-        QL_REQUIRE(discount>0.0, "positive discount required: " <<
-                   discount << " not allowed");
+        QL_REQUIRE(discount>0.0,
+                   "discount (" << discount << ") must be positive");
         Real d = (forward-strike)*optionType, h = d/stdDev;
         if (stdDev==0.0)
             return discount*std::max(d, 0.0);
         CumulativeNormalDistribution phi;
         Real result = discount*stdDev*phi.derivative(h) + d*phi(h);
         QL_ENSURE(result>=0.0,
-                  "negative value (" << result << ") for a " << stdDev <<
-                  " stdDev " << optionType << " option struck at " <<
-                  strike << " on a " << forward << " forward "
-                  "(Bachelier model)");
+                  "negative value (" << result << ") for " <<
+                  stdDev << " stdDev, " <<
+                  optionType << " option, " <<
+                  strike << " strike , " <<
+                  forward << " forward");
         return result;
     }
 
