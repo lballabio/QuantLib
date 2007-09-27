@@ -37,7 +37,6 @@ namespace QuantLib {
       public:
         OptionletStripper2(const Handle<OptionletStripper>& optionletStripper,
                            const Handle<CapFloorTermVolCurve>& atmCapFloorTermVolCurve,
-                           const std::vector<Rate>& atmStrikes,
                            Real alpha = 0.2,
                            Real beta = 0.6,
                            Real nu = 0.02,
@@ -56,24 +55,25 @@ namespace QuantLib {
         //@{
         void performCalculations () const;
         //@}
-        std::vector<double> spreadsVol() const;
-        std::vector<double> atmOptionPrice() const;
-        std::vector<double> mdlOptionletVols(Size i) const; 
+        std::vector<Volatility> spreadsVol() const;
+        std::vector<Rate> atmOptionStrikes() const;
+        std::vector<Real> atmOptionPrices() const;
+        std::vector<Volatility> mdlOptionletVols(Size i) const; 
 
       private:
 
-        std::vector<double> spreadsVolImplied() const;
+        std::vector<Volatility> spreadsVolImplied() const;
 
         class ObjectiveFunction {
           public:
             ObjectiveFunction(const std::vector<boost::shared_ptr<CapFloor> >& caplets,
-                              const std::vector<double>& modVols,
+                              const std::vector<Volatility>& modVols,
                               const DayCounter& dc,
                               Real targetValue);
             Real operator()(Volatility spreadVol) const;
           private:
             std::vector<boost::shared_ptr<CapFloor> > caplets_;
-            std::vector<double> modVols_;
+            std::vector<Volatility> modVols_;
             DayCounter dc_;
             Real targetValue_;
 
@@ -83,11 +83,11 @@ namespace QuantLib {
         const Handle<CapFloorTermVolCurve> atmCapFloorTermVolCurve_;
         DayCounter dc_;
         Size nOptionExpiries_;
-        const std::vector<Rate> atmStrikes_;
+        mutable std::vector<Rate> atmStrikes_;
         mutable std::vector<Real> atmOptionPrice_;
-        mutable std::vector<std::vector<double> > mdlOptionletVols_;
-        mutable std::vector<double> spreadsVolImplied_;
-        mutable std::vector<std::vector<double> > calibratedOptionletVols_;
+        mutable std::vector<std::vector<Volatility> > mdlOptionletVols_;
+        mutable std::vector<Volatility> spreadsVolImplied_;
+        mutable std::vector<std::vector<Volatility> > calibratedOptionletVols_;
         mutable CapFloorMatrix caplets_;
         mutable std::vector<boost::shared_ptr<CapFloor> > caps_;
         Size maxEvaluations_;
