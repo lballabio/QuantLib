@@ -136,10 +136,10 @@ namespace QuantLib {
             std::vector<double> tmp;
             std::vector<boost::shared_ptr<CapFloor> > tmpCaplet;
             for (Size i=0; i<nOptionletExpiries; ++i) {
-                if(optionletExpiriesTimes[i] <= optionExpiriesTimes[optionIndex]){
+                if(i <= caps_[optionIndex]->leg().size()){
                     tmp.push_back(smileSections[i]->volatility(atmStrikes_[optionIndex]));
- /*                   boost::shared_ptr<BlackCapFloorEngine> engine1(new
-                     BlackCapFloorEngine(smileSections[i]->volatility(atmStrikes_[optionIndex]), dc_));*/
+                    //boost::shared_ptr<BlackCapFloorEngine> engine1(new
+                    // BlackCapFloorEngine(smileSections[i]->volatility(atmStrikes_[optionIndex]), dc_));
                     tmpCaplet.push_back(MakeCapFloor(CapFloor::Cap,
                                                 index->tenor(), index,
                                                 strikes[optionIndex], optionletExpiriesTenors[i]-index->tenor(), engine));
@@ -163,7 +163,7 @@ namespace QuantLib {
     std::vector<double> OptionletStripper2::spreadsVolImplied() const {
         
         std::vector<double> result;
-        Volatility guess = 0.0001, minVol = -0.01, maxVol = 0.01;
+        Volatility guess = 0.0001, minVol = -0.1, maxVol = 0.1;
         for (Size optionIndex=0; optionIndex<nOptionExpiries_; ++optionIndex) {  
             ObjectiveFunction f(caplets_[optionIndex], mdlOptionletVols_[optionIndex],
                                 dc_, atmOptionPrice_[optionIndex]);
