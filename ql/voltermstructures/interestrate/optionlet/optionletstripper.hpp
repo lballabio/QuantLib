@@ -62,6 +62,7 @@ namespace QuantLib {
         const std::vector<Date>& optionletPaymentDates() const;
 
         boost::shared_ptr<CapFloorTermVolSurface> surface() const;
+        boost::shared_ptr<IborIndex> index() const;
         //@}
         //! \name LazyObject interface
         //@{

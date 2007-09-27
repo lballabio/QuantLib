@@ -157,4 +157,7 @@ namespace QuantLib {
     boost::shared_ptr<CapFloorTermVolSurface> OptionletStripper::surface() const {
         return surface_;
     }
+    boost::shared_ptr<IborIndex> OptionletStripper::index() const {
+        return index_;
+    }
 }
