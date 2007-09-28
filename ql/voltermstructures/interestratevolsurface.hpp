@@ -25,6 +25,7 @@
 #define quantlib_interest_rate_vol_surface_hpp
 
 #include <ql/voltermstructures/blackvolsurface.hpp>
+#include <ql/voltermstructures/interestratevolsurface.hpp>
 #include <ql/indexes/interestrateindex.hpp>
 
 namespace QuantLib {

@@ -63,15 +63,33 @@ namespace QuantLib {
         std::vector<Volatility> volatilitySpreads(const Date&) const;
       protected:
         boost::array<Real, 4> sabrGuesses(const Date&) const;
+        void updateSabrGuesses(const Date& d, boost::array<Real, 4> newGuesses);
+      public:
         //! \name BlackVolSurface interface
         //@{
         boost::shared_ptr<SmileSection> smileSectionImpl(Time) const;
         //@}
+      protected:
+        //@}
+        //! \name LazyObject interface
+        //@{
+        void performCalculations () const;
+        //@}
       private:
         Handle<BlackAtmVolCurve> atmCurve_;
         std::vector<Period> optionTenors_;
+        std::vector<Time> optionTimes_;
+        std::vector<Date> optionDates_;
         std::vector<Spread> atmRateSpreads_;
         std::vector<std::vector<Handle<Quote> > > volSpreads_;
+        //
+        bool isAlphaFixed_;
+        bool isBetaFixed_;
+        bool isNuFixed_;
+        bool isRhoFixed_;
+        bool vegaWeighted_;
+        // 
+        mutable std::vector<boost::array<Real,4> > sabrGuesses_;
     };
 
     // inline
