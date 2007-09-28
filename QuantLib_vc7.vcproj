@@ -5610,6 +5610,12 @@
 						RelativePath=".\ql\voltermstructures\interestrate\optionlet\optionletstripper.hpp">
 					</File>
 					<File
+						RelativePath=".\ql\voltermstructures\interestrate\optionlet\optionletstripper2.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\voltermstructures\interestrate\optionlet\optionletstripper2.hpp">
+					</File>
+					<File
 						RelativePath=".\ql\voltermstructures\interestrate\optionlet\optionletstripperadapter.cpp">
 					</File>
 					<File
