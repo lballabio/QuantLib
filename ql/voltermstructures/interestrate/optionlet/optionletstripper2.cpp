@@ -60,7 +60,7 @@ namespace QuantLib {
       maxEvaluations_(10000),
       accuracy_(1.e-6),
       alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
-      isAlphaFixed_(isAlphaFixed_), isBetaFixed_(isBetaFixed_), 
+      isAlphaFixed_(isAlphaFixed_), isBetaFixed_(isBetaFixed_),
       isNuFixed_(isNuFixed_), isRhoFixed_(isRhoFixed_),
       vegaWeighted_(vegaWeighted),
       endCriteria_(endCriteria),
@@ -71,12 +71,12 @@ namespace QuantLib {
      }
 
     void OptionletStripper2::performCalculations() const {
-       
+
         // optionletStripper data
         const std::vector<Rate>& strikes = optionletStripper_->strikes();
         const std::vector<Period>& optionletExpiriesTenors = optionletStripper_->optionletTenors();
         const std::vector<Time>& optionletExpiriesTimes = optionletStripper_->optionletTimes();
-        const std::vector<Date>& optionletExpiriesDates = optionletStripper_->optionletDates(); 
+        const std::vector<Date>& optionletExpiriesDates = optionletStripper_->optionletDates();
         const Matrix& optionletVolatilities = optionletStripper_->optionletVolatilities();
         const boost::shared_ptr<IborIndex>& index = optionletStripper_->index();
         Size nOptionletExpiries = optionletExpiriesTenors.size();
@@ -84,13 +84,13 @@ namespace QuantLib {
         // atmCapFloorTermVolCurve data
         const std::vector<Period>& optionExpiriesTenors = atmCapFloorTermVolCurve_->optionTenors();
         const std::vector<Time>& optionExpiriesTimes = atmCapFloorTermVolCurve_->optionTimes();
-        
+
         QL_REQUIRE(nOptionExpiries_==optionletVolatilities.columns(),
                    "nOptionExpiries_(" << nOptionExpiries_ <<
                    ")!=optionletVolatilities.columns() (" << optionletVolatilities.columns()<<")");
         QL_REQUIRE(nOptionletExpiries==optionletVolatilities.rows(),
                    "nOptionletExpiries(" << nOptionletExpiries <<
-                   ")!=optionletVolatilities.rows() (" << optionletVolatilities.rows()<<")");  
+                   ")!=optionletVolatilities.rows() (" << optionletVolatilities.rows()<<")");
 
         std::vector<boost::shared_ptr<SabrInterpolatedSmileSection> > smileSections;
 
@@ -103,7 +103,7 @@ namespace QuantLib {
                 stdDevHandles[j] = Handle<Quote>( boost::shared_ptr<Quote>(new
                     SimpleQuote(optionletVolatilities[i][j]*std::sqrt(optionletExpiriesTimes[i]))));
             }
-            smileSections.push_back( 
+            smileSections.push_back(
                 boost::shared_ptr<SabrInterpolatedSmileSection>(new
                     SabrInterpolatedSmileSection(
                                optionletExpiriesDates[i],
@@ -117,22 +117,22 @@ namespace QuantLib {
                 )
             );
         }
-        
+
         for (Size optionIndex=0; optionIndex<nOptionExpiries_; ++optionIndex) {
-            // atm option price 
+            // atm option price
             Rate dummyStrike = 0.;
             Volatility atmOptionVol = atmCapFloorTermVolCurve_->volatility(optionExpiriesTimes[optionIndex],dummyStrike);
             boost::shared_ptr<BlackCapFloorEngine> engine(new
                                 BlackCapFloorEngine(atmOptionVol, dc_));
             caps_[optionIndex] = MakeCapFloor(CapFloor::Cap,
                                             optionExpiriesTenors[optionIndex], index,
-                                            dummyStrike, 0*Days, engine); 
+                                            dummyStrike, 0*Days, engine);
             atmStrikes_[optionIndex] = caps_[optionIndex]->atmRate();
             caps_[optionIndex] = MakeCapFloor(CapFloor::Cap,
                                             optionExpiriesTenors[optionIndex], index,
-                                            atmStrikes_[optionIndex], 0*Days, engine); 
+                                            atmStrikes_[optionIndex], 0*Days, engine);
             atmOptionPrice_[optionIndex] = caps_[optionIndex]->NPV();
-            
+
             std::vector<Volatility> tmp;
             std::vector<boost::shared_ptr<CapFloor> > tmpCaplet;
             for (Size i=0; i<nOptionletExpiries; ++i) {
@@ -143,7 +143,7 @@ namespace QuantLib {
                     tmpCaplet.push_back(MakeCapFloor(CapFloor::Cap,
                                                 index->tenor(), index,
                                                 atmStrikes_[optionIndex], optionletExpiriesTenors[i]-index->tenor(), engine));
-                    
+
                     //tmp.push_back(tmpCaplet.back()->NPV());
                 }
             }
@@ -158,42 +158,42 @@ namespace QuantLib {
                 tmp.push_back(mdlOptionletVols_[optionIndex][i] + spreadsVolImplied_[optionIndex]);
             }
             calibratedOptionletVols_[optionIndex] = tmp;
-        }     
+        }
     }
 
     std::vector<Volatility> OptionletStripper2::spreadsVolImplied() const {
-        
+
         std::vector<Volatility> result;
         Volatility guess = 0.0001, minVol = -0.1, maxVol = 0.1;
-        for (Size optionIndex=0; optionIndex<nOptionExpiries_; ++optionIndex) {  
+        for (Size optionIndex=0; optionIndex<nOptionExpiries_; ++optionIndex) {
             ObjectiveFunction f(caplets_[optionIndex], mdlOptionletVols_[optionIndex],
                                 dc_, atmOptionPrice_[optionIndex]);
             Brent solver;
             solver.setMaxEvaluations(maxEvaluations_);
             result.push_back(solver.solve(f, accuracy_, guess, minVol, maxVol));
         }
-        return result;      
+        return result;
     }
-        
+
     std::vector<Volatility> OptionletStripper2::spreadsVol() const {
         calculate();
         return spreadsVolImplied_;
-    };
+    }
 
     std::vector<Rate> OptionletStripper2::atmOptionStrikes() const{
         calculate();
         return atmStrikes_;
-    };
+    }
 
     std::vector<Real> OptionletStripper2::atmOptionPrices() const {
         calculate();
         return atmOptionPrice_;
-    };
+    }
 
     std::vector<Volatility> OptionletStripper2::mdlOptionletVols(Size i) const {
         calculate();
         return mdlOptionletVols_[i];
-    };
+    }
 
 //===========================================================================//
 //                 OptionletStripper2::ObjectiveFunction                     //
@@ -207,13 +207,13 @@ namespace QuantLib {
        caplets_(caplets),
        modVols_(modVols),
        dc_(dc),
-       targetValue_(targetValue){ 
-               
+       targetValue_(targetValue){
+
            QL_REQUIRE(caplets_.size() == modVols_.size(),
                    "caplets_.size() (" << caplets_.size()<<
                    ")!=modVols_.size() (" << modVols_.size()<<")");
        }
-        
+
     Real OptionletStripper2::ObjectiveFunction::operator()(Volatility spreadVol) const {
         Real price =0.;
         for (Size i=0; i<caplets_.size(); ++i) {
