@@ -26,6 +26,7 @@
 
 #include <ql/time/date.hpp>
 #include <ql/utilities/null.hpp>
+#include <ql/errors.hpp>
 #include <map>
 #include <vector>
 
@@ -113,7 +114,9 @@ namespace QuantLib {
         //! \name Utilities
         //@{
         const_iterator find(const Date&);
+        //! returns the dates for which historical data exist
         std::vector<Date> dates() const;
+        //! returns the historical data
         std::vector<T> values() const;
         //@}
     };
