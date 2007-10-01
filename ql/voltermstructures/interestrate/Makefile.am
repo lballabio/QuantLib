@@ -8,12 +8,14 @@ this_include_HEADERS = \
     abcd.hpp \
     abcdatmvolcurve.hpp \
     abcdcalibration.hpp \
+    sabrvolsurface.hpp \
     volcube.hpp
 
 libInterestRateVol_la_SOURCES = \
     abcd.cpp \
     abcdatmvolcurve.cpp \
     abcdcalibration.cpp \
+    sabrvolsurface.cpp \
     volcube.cpp 
 
 libInterestRateVol_la_LIBADD = \

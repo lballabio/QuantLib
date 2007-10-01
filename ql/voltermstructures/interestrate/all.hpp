@@ -4,6 +4,7 @@
 #include <ql/voltermstructures/interestrate/abcd.hpp>
 #include <ql/voltermstructures/interestrate/abcdatmvolcurve.hpp>
 #include <ql/voltermstructures/interestrate/abcdcalibration.hpp>
+#include <ql/voltermstructures/interestrate/sabrvolsurface.hpp>
 #include <ql/voltermstructures/interestrate/volcube.hpp>
 
 #include <ql/voltermstructures/interestrate/capfloor/all.hpp>
