@@ -69,8 +69,6 @@ namespace QuantLib {
         optionletAccrualPeriods_ = std::vector<Time>(nOptionletTenors_);
         capFloors_ = CapFloorMatrix(nOptionletTenors_);
 
-        if (switchStrike_==Null<Rate>())
-            switchStrike_ = 0.04;
     }
 
     void OptionletStripper::performCalculations() const {
@@ -79,6 +77,7 @@ namespace QuantLib {
         const std::vector<Rate>& strikes = surface_->strikes();
         const Calendar& cal = index_->fixingCalendar();
         const DayCounter& dc = surface_->dayCounter();
+        Rate averageAtmOptionletRate = 0.0;
         for (Size i=0; i<nOptionletTenors_; ++i) {
             boost::shared_ptr<BlackCapFloorEngine> dummy(new
                                          BlackCapFloorEngine(0.20, dc));
@@ -96,14 +95,18 @@ namespace QuantLib {
             optionletTimes_[i] =
                 dc.yearFraction(referenceDate, optionletDates_[i]);
             atmOptionletRate_[i] = index_->forecastFixing(optionletDates_[i]);
+            averageAtmOptionletRate += atmOptionletRate_[i];
             capFloors_[i].resize(nStrikes_);
         }
 
         // the switch strike might be the average of atmOptionletRate_
+        Rate switchStrike = switchStrike_;
+        if (switchStrike==Null<Rate>())
+            switchStrike = averageAtmOptionletRate / nOptionletTenors_;
         
         for (Size j=0; j<nStrikes_; ++j) {
             // using out-of-the-money options
-            CapFloor::Type capFloorType = strikes[j] < switchStrike_ ?
+            CapFloor::Type capFloorType = strikes[j] < switchStrike ?
                                    CapFloor::Floor : CapFloor::Cap;
             Option::Type optionletType = capFloorType==CapFloor::Floor ?
                                    Option::Put : Option::Call;
