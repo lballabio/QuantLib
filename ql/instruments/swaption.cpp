@@ -30,6 +30,18 @@
 
 namespace QuantLib {
 
+    std::ostream& operator<<(std::ostream& out,
+                             Settlement::Type type) {
+        switch (type) {
+          case Settlement::Physical:
+            return out << "delivery";
+          case Settlement::Cash:
+            return out << "cash";
+          default:
+            QL_FAIL("unknown settlement type");
+        }
+    }
+
     Swaption::Swaption(const boost::shared_ptr<VanillaSwap>& swap,
                        const boost::shared_ptr<Exercise>& exercise,
                        Settlement::Type delivery)

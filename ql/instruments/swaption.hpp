@@ -38,16 +38,8 @@ namespace QuantLib {
         enum Type { Physical, Cash };
     };
 
-    inline std::ostream& operator<<(std::ostream& out, Settlement::Type type) {
-        switch (type) {
-          case Settlement::Physical:
-            return out << "delivery";
-          case Settlement::Cash:
-            return out << "cash";
-          default:
-            QL_FAIL("unknown settlement type");
-        }
-    }
+    std::ostream& operator<<(std::ostream& out,
+                             Settlement::Type type);
 
     //! %Swaption class
     /*! \ingroup instruments
