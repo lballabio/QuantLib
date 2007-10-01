@@ -13,6 +13,7 @@ this_include_HEADERS = \
     interpolatedsmilesection.hpp \
     sabr.hpp \
     sabrinterpolatedsmilesection.hpp \
+    sabrinterpolatedsmilesection2.hpp \
     smilesection.hpp
 
 libVolTermStructures_la_SOURCES = \
@@ -22,6 +23,7 @@ libVolTermStructures_la_SOURCES = \
     interestratevolsurface.cpp \
     sabr.cpp \
     sabrinterpolatedsmilesection.cpp \
+    sabrinterpolatedsmilesection2.cpp \
     smilesection.cpp
 
 libVolTermStructures_la_LIBADD = \
