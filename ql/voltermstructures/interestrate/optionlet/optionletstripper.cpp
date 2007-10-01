@@ -19,6 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/voltermstructures/interestrate/capfloor/capfloortermvolsurface.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/optionletstripper.hpp>
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
@@ -33,7 +34,9 @@ namespace QuantLib {
                     const boost::shared_ptr<IborIndex>& index,
                     Rate switchStrike)
     : surface_(surface), index_(index), 
-      nStrikes_(surface->strikes().size()), switchStrike_(switchStrike)
+      nStrikes_(surface->strikes().size()),
+      floatingSwitchStrike_(switchStrike==Null<Rate>() ? true : false),
+      switchStrike_(switchStrike)
     {
         registerWith(surface);
         registerWith(index);
@@ -68,7 +71,6 @@ namespace QuantLib {
         optionletTimes_ = std::vector<Time>(nOptionletTenors_);
         optionletAccrualPeriods_ = std::vector<Time>(nOptionletTenors_);
         capFloors_ = CapFloorMatrix(nOptionletTenors_);
-
     }
 
     void OptionletStripper::performCalculations() const {
@@ -100,13 +102,12 @@ namespace QuantLib {
         }
 
         // the switch strike might be the average of atmOptionletRate_
-        Rate switchStrike = switchStrike_;
-        if (switchStrike==Null<Rate>())
-            switchStrike = averageAtmOptionletRate / nOptionletTenors_;
+        if (floatingSwitchStrike_)
+            switchStrike_ = averageAtmOptionletRate / nOptionletTenors_;
         
         for (Size j=0; j<nStrikes_; ++j) {
             // using out-of-the-money options
-            CapFloor::Type capFloorType = strikes[j] < switchStrike ?
+            CapFloor::Type capFloorType = strikes[j] < switchStrike_ ?
                                    CapFloor::Floor : CapFloor::Cap;
             Option::Type optionletType = capFloorType==CapFloor::Floor ?
                                    Option::Put : Option::Call;
@@ -157,10 +158,4 @@ namespace QuantLib {
         return surface_->strikes();
     }
 
-    boost::shared_ptr<CapFloorTermVolSurface> OptionletStripper::surface() const {
-        return surface_;
-    }
-    boost::shared_ptr<IborIndex> OptionletStripper::index() const {
-        return index_;
-    }
 }

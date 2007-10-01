@@ -26,16 +26,15 @@
 #ifndef quantlib_optionletstripper_hpp
 #define quantlib_optionletstripper_hpp
 
+#include <ql/voltermstructures/interestrate/capfloor/capfloortermvolsurface.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/instruments/capfloor.hpp>
-#include <ql/voltermstructures/interestrate/capfloor/capfloortermvolsurface.hpp>
 #include <ql/math/matrix.hpp>
 #include <vector>
 
 namespace QuantLib {
     class IborIndex;
     class YieldTermStructure;
-    class CapFloorTermVolSurface;
     class DayCounter;
     class Calendar;
 
@@ -55,11 +54,17 @@ namespace QuantLib {
         const Matrix& optionletVolatilities() const;
         const std::vector<Rate>& strikes() const;
 
+        //const std::vector<Real>& optionletPrices(Size i) const;
+        //const std::vector<Volatility>& optionletVolatilities(Size i) const;
+        const std::vector<Rate>& strikes(Size i) const;
+
         const std::vector<Period>& optionletTenors() const;
         const std::vector<Date>& optionletDates() const;
         const std::vector<Time>& optionletTimes() const;
 
         const std::vector<Date>& optionletPaymentDates() const;
+
+        Rate switchStrike() const;
 
         boost::shared_ptr<CapFloorTermVolSurface> surface() const;
         boost::shared_ptr<IborIndex> index() const;
@@ -84,18 +89,9 @@ namespace QuantLib {
         mutable std::vector<Time> optionletTimes_;
         std::vector<Period> capFloorLengths_;
         mutable CapFloorMatrix capFloors_;
-        Rate switchStrike_;
+        bool floatingSwitchStrike_;
+        mutable Rate switchStrike_;
     };
-
-    inline const Matrix& OptionletStripper::optionletPrices() const {
-        calculate();
-        return optionletPrices_;
-    }
-
-    inline const Matrix& OptionletStripper::optionletVolatilities() const {
-        calculate();
-        return optionletVols_;
-    }
 
     inline const Matrix& OptionletStripper::capFloorPrices() const {
         calculate();
@@ -105,6 +101,48 @@ namespace QuantLib {
     inline const Matrix& OptionletStripper::capFloorVolatilities() const {
         calculate();
         return capFloorVols_;
+    }
+
+    inline
+    const Matrix& OptionletStripper::optionletPrices() const {
+        calculate();
+        return optionletPrices_;
+    }
+
+    inline
+    const Matrix& OptionletStripper::optionletVolatilities() const {
+        calculate();
+        return optionletVols_;
+    }
+
+    //inline
+    //const std::vector<Real>& OptionletStripper::optionletPrices(Size i) const {
+    //    QL_REQUIRE(i<nOptionletTenors_,
+    //               "row index (" << i <<
+    //               ") must be less then number on option tenors (" <<
+    //               nOptionletTenors_ << ")");
+    //    calculate();
+    //    return optionletPrices_.row(i);
+    //}
+
+    //inline
+    //const std::vector<Volatility>&
+    //OptionletStripper::optionletVolatilities(Size i) const {
+    //    QL_REQUIRE(i<nOptionletTenors_,
+    //               "row index (" << i <<
+    //               ") must be less then number on option tenors (" <<
+    //               nOptionletTenors_ << ")");
+    //    calculate();
+    //    return optionletVols_.row(i);
+    //}
+
+    inline
+    const std::vector<Rate>& OptionletStripper::strikes(Size i) const {
+        QL_REQUIRE(i<nOptionletTenors_,
+                   "row index (" << i <<
+                   ") must be less then number on option tenors (" <<
+                   nOptionletTenors_ << ")");
+        return strikes();
     }
 
     inline
@@ -128,6 +166,23 @@ namespace QuantLib {
     const std::vector<Time>& OptionletStripper::optionletTimes() const {
         calculate();
         return optionletTimes_;
+    }
+
+    inline
+    Rate OptionletStripper::switchStrike() const {
+        if (floatingSwitchStrike_)
+            calculate();
+        return switchStrike_;
+    }
+
+    inline
+    boost::shared_ptr<CapFloorTermVolSurface> OptionletStripper::surface() const {
+        return surface_;
+    }
+
+    inline
+    boost::shared_ptr<IborIndex> OptionletStripper::index() const {
+        return index_;
     }
 
 }

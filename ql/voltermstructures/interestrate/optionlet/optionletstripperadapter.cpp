@@ -20,6 +20,7 @@
 
 #include <ql/voltermstructures/interestrate/optionlet/optionletstripperadapter.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/optionletstripper.hpp>
+#include <ql/voltermstructures/interestrate/capfloor/capfloortermvolsurface.hpp>
 
 namespace QuantLib {
 

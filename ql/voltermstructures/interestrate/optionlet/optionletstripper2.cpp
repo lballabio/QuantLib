@@ -24,6 +24,7 @@
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/voltermstructures/interestrate/capfloor/capfloortermvolsurface.hpp>
 
 
 namespace QuantLib {
