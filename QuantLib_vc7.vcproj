@@ -490,15 +490,6 @@
 				RelativePath=".\ql\cashflows\replication.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\cashflows\shortfloatingcoupon.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\cashflows\shortfloatingcoupon.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\cashflows\shortindexedcoupon.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\cashflows\simplecashflow.hpp">
 			</File>
 			<File
@@ -951,12 +942,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\legacy\pricers\mchimalaya.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mcmaxbasket.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mcmaxbasket.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\legacy\pricers\mcpagoda.cpp">
