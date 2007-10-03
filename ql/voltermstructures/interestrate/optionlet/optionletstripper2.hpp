@@ -31,25 +31,10 @@ namespace QuantLib {
 
     class CapFloorTermVolCurve;
 
-    typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapFloorMatrix;
-
     class OptionletStripper2 : public LazyObject {
       public:
         OptionletStripper2(const Handle<OptionletStripper>& optionletStripper,
-                           const Handle<CapFloorTermVolCurve>& atmCapFloorTermVolCurve,
-                           Real alpha = 0.2,
-                           Real beta = 0.6,
-                           Real nu = 0.02,
-                           Real rho = 0.,
-                           bool isAlphaFixed = false,
-                           bool isBetaFixed = true,
-                           bool isNuFixed = false,
-                           bool isRhoFixed = false,
-                           bool vegaWeighted = false,
-                           const boost::shared_ptr<EndCriteria>& endCriteria
-                            = boost::shared_ptr<EndCriteria>(),
-                           const boost::shared_ptr<OptimizationMethod>& method
-                            = boost::shared_ptr<OptimizationMethod>());
+                           const Handle<CapFloorTermVolCurve>& atmCapFloorTermVolCurve);
 
         //! \name LazyObject interface
         //@{
@@ -66,15 +51,13 @@ namespace QuantLib {
 
         class ObjectiveFunction {
           public:
-            ObjectiveFunction(const std::vector<boost::shared_ptr<CapFloor> >& caplets,
-                              const std::vector<Volatility>& modVols,
-                              const DayCounter& dc,
+            ObjectiveFunction(const Handle<OptionletStripper>& optionletStripper,
+                              const boost::shared_ptr<CapFloor>& cap,
                               Real targetValue);
             Real operator()(Volatility spreadVol) const;
           private:
-            std::vector<boost::shared_ptr<CapFloor> > caplets_;
-            std::vector<Volatility> modVols_;
-            DayCounter dc_;
+            const Handle<OptionletStripper> optionletStripper_;
+            boost::shared_ptr<CapFloor> cap_;
             Real targetValue_;
 
         };
@@ -85,19 +68,10 @@ namespace QuantLib {
         Size nOptionExpiries_;
         mutable std::vector<Rate> atmStrikes_;
         mutable std::vector<Real> atmOptionPrice_;
-        mutable std::vector<std::vector<Volatility> > mdlOptionletVols_;
         mutable std::vector<Volatility> spreadsVolImplied_;
-        mutable std::vector<std::vector<Volatility> > calibratedOptionletVols_;
-        mutable CapFloorMatrix caplets_;
         mutable std::vector<boost::shared_ptr<CapFloor> > caps_;
         Size maxEvaluations_;
         Real accuracy_;
-
-        Real alpha_, beta_, nu_, rho_;
-        bool isAlphaFixed_, isBetaFixed_, isNuFixed_, isRhoFixed_;
-        bool vegaWeighted_;
-        boost::shared_ptr<EndCriteria> endCriteria_;
-        boost::shared_ptr<OptimizationMethod> method_;
     };
 
  
