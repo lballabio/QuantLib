@@ -21,7 +21,6 @@
 #include "utilities.hpp"
 #include <ql/legacy/pricers/mcdiscretearithmeticaso.hpp>
 #include <ql/legacy/pricers/mceverest.hpp>
-#include <ql/legacy/pricers/mcmaxbasket.hpp>
 #include <ql/legacy/pricers/mcpagoda.hpp>
 #include <ql/legacy/pricers/mchimalaya.hpp>
 #include <ql/pricingengines/blackformula.hpp>
@@ -251,14 +250,6 @@ void OldPricerTest::testMcMultiFactorPricers() {
     Handle<YieldTermStructure> riskFreeRate(flatRate(today, 0.05, dc));
     Time resTime = 1.0;
 
-    // degenerate portfolio
-    Matrix perfectCorrelation(4,4,1.0);
-    Handle<BlackVolTermStructure> sameVol(flatVol(today, 0.30, dc));
-    Handle<YieldTermStructure> sameDividend(flatRate(today, 0.03, dc));
-
-    std::vector<Handle<BlackVolTermStructure> > sameAssetVols(4, sameVol);
-    std::vector<Handle<YieldTermStructure> > sameAssetDividend(4, sameDividend);
-
     BigNatural seed = 86421;
 
     // McEverest
@@ -267,21 +258,6 @@ void OldPricerTest::testMcMultiFactorPricers() {
                    0.75784944,
                    1.0e-8,
                    "McEverest");
-
-    std::vector<Real> sameAssetValues(4,25.0);
-    Real strike;
-
-    // McMaxBasket
-    std::vector<Real> assetValues(4);
-    assetValues[0] = 100.0;
-    assetValues[1] = 110.0;
-    assetValues[2] =  90.0;
-    assetValues[3] = 105.0;
-    testMcMFPricer(McMaxBasket(assetValues, dividendYields, riskFreeRate,
-                               volatilities, correlation, resTime, seed),
-                   122.87781492,
-                   1.0e-8,
-                   "McMaxBasket");
 
     // McPagoda
     std::vector<Real> portfolio(4);
@@ -304,7 +280,12 @@ void OldPricerTest::testMcMultiFactorPricers() {
                    "McPagoda");
 
     // McHimalaya
-    strike = 101.0;
+    std::vector<Real> assetValues(4);
+    assetValues[0] = 100.0;
+    assetValues[1] = 110.0;
+    assetValues[2] =  90.0;
+    assetValues[3] = 105.0;
+    Real strike = 101.0;
     testMcMFPricer(McHimalaya(assetValues, dividendYields, riskFreeRate,
                               volatilities, correlation, strike,
                               timeIncrements, seed),

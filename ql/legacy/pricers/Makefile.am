@@ -9,7 +9,6 @@ this_include_HEADERS = \
     mcdiscretearithmeticaso.hpp \
     mceverest.hpp \
     mchimalaya.hpp \
-    mcmaxbasket.hpp \
     mcpagoda.hpp \
     mcperformanceoption.hpp \
     mcpricer.hpp \
@@ -21,7 +20,6 @@ libPricers_la_SOURCES = \
     mcdiscretearithmeticaso.cpp \
     mceverest.cpp \
     mchimalaya.cpp \
-    mcmaxbasket.cpp \
     mcpagoda.cpp \
     mcperformanceoption.cpp \
     singleassetoption.cpp

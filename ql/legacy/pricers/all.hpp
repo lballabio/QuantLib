@@ -6,7 +6,6 @@
 #include <ql/legacy/pricers/mcdiscretearithmeticaso.hpp>
 #include <ql/legacy/pricers/mceverest.hpp>
 #include <ql/legacy/pricers/mchimalaya.hpp>
-#include <ql/legacy/pricers/mcmaxbasket.hpp>
 #include <ql/legacy/pricers/mcpagoda.hpp>
 #include <ql/legacy/pricers/mcperformanceoption.hpp>
 #include <ql/legacy/pricers/mcpricer.hpp>
