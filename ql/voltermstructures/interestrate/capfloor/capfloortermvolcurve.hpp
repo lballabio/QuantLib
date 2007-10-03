@@ -20,8 +20,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file capflatvolvector.hpp
-    \brief Cap/floor at-the-money flat volatility vector
+/*! \file capfloortermvolcurve.hpp
+    \brief Cap/floor at-the-money term-volatility curve
 */
 
 #ifndef quantlib_cap_volatility_vector_hpp
@@ -55,7 +55,7 @@ namespace QuantLib {
                              const std::vector<Period>& optionTenors,
                              const std::vector<Handle<Quote> >& vols,
                              BusinessDayConvention bdc = Following,
-                             const DayCounter& dc = Actual365Fixed());        
+                             const DayCounter& dc = Actual365Fixed());
         //! fixed reference date, floating market data
         CapFloorTermVolCurve(const Date& settlementDate,
                              const Calendar& calendar,
@@ -135,7 +135,7 @@ namespace QuantLib {
     }
 
     inline
-    Volatility CapFloorTermVolCurve::volatilityImpl(Time t, 
+    Volatility CapFloorTermVolCurve::volatilityImpl(Time t,
                                                     Rate) const {
         calculate();
         return interpolation_(t, true);

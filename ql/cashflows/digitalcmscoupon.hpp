@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file digitacmscoupon.hpp
+/*! \file digitalcmscoupon.hpp
     \brief Cms-rate coupon with digital call/put option
 */
 

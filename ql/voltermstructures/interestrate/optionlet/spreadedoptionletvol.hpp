@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file spreadedcapletvolstructure.hpp
-    \brief Spreaded caplet volatility
+/*! \file spreadedoptionletvol.hpp
+    \brief Spreaded caplet/floorlet volatility
 */
 
 #ifndef quantlib_spreaded_caplet_volstructure_h
@@ -54,7 +54,7 @@ namespace QuantLib {
 
         Volatility volatilityImpl(Time length,
                                   Rate strike) const;
-        //@} 
+        //@}
 
     private:
         const Handle<OptionletVolatilityStructure> underlyingVolStructure_;

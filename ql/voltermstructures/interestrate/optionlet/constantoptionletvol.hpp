@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file capletconstantvol.hpp
-    \brief Constant caplet volatility
+/*! \file constantoptionletvol.hpp
+    \brief Constant caplet/floorlet volatility
 */
 
 #ifndef quantlib_caplet_constant_volatility_hpp

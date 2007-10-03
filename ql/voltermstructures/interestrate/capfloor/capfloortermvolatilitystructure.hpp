@@ -18,8 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file capfloorvolatilitystructure.hpp
-    \brief cap/floor volatility structure
+/*! \file capfloortermvolatilitystructure.hpp
+    \brief cap/floor term-volatility structure
 */
 
 #ifndef quantlib_capfloor_volatility_structure_hpp
