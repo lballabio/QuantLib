@@ -6147,10 +6147,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\legacy\pricers\core.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\legacy\pricers\discretegeometricaso.cpp"
 					>
 				</File>
@@ -6188,14 +6184,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\legacy\pricers\mchimalaya.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mcmaxbasket.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mcmaxbasket.hpp"
 					>
 				</File>
 				<File
