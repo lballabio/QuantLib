@@ -50,13 +50,7 @@ namespace QuantLib {
         */
         template <class Iterator>
         TimeGrid(Iterator begin, Iterator end)
-        #if defined(QL_FULL_ITERATOR_SUPPORT)
         : mandatoryTimes_(begin, end) {
-        #else
-        {
-            while (begin != end)
-                mandatoryTimes_.push_back(*(begin++));
-        #endif
             std::sort(mandatoryTimes_.begin(),mandatoryTimes_.end());
             // We seem to assume that the grid begins at 0.
             // Let's enforce the assumption for the time being
@@ -86,13 +80,7 @@ namespace QuantLib {
         */
         template <class Iterator>
         TimeGrid(Iterator begin, Iterator end, Size steps)
-        #if defined(QL_FULL_ITERATOR_SUPPORT)
         : mandatoryTimes_(begin, end) {
-        #else
-        {
-            while (begin != end)
-                mandatoryTimes_.push_back(*(begin++));
-        #endif
             std::sort(mandatoryTimes_.begin(),mandatoryTimes_.end());
             // We seem to assume that the grid begins at 0.
             // Let's enforce the assumption for the time being

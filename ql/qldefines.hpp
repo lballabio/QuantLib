@@ -145,52 +145,6 @@
 /*! @} */
 
 
-/*! \defgroup templateMacros Template capabilities
-
-    Some compilers still do not fully implement the template syntax.
-    These macros can be used to select between alternate
-    implementations of blocks of code, namely, one that takes
-    advantage of template programming techniques and a less efficient
-    one which is compatible with all compilers.
-
-    @{
-*/
-
-/*! \def QL_TYPENAME
-
-    In Visual C++ 6,  typename can only be used in template declarations
-    and not in template definitions.
-*/
-#if defined(CHOKES_ON_TYPENAME)
-    #define QL_TYPENAME
-#else
-    #define QL_TYPENAME typename
-#endif
-/*! @} */
-
-
-/*! \defgroup iteratorMacros Iterator support
-
-    Some compilers still define the iterator struct outside the std
-    namespace, only partially implement it, or do not implement it at
-    all.  For the code to be portable these macros should be used
-    instead of the actual functions.
-
-    @{
-*/
-/*! \def QL_FULL_ITERATOR_SUPPORT
-    Some compilers (most notably, Visual C++ 6) still do not fully
-    support iterators in their STL implementation.  This macro can be
-    used to select between alternate implementations of blocks of
-    code, namely, one that takes advantage of full iterator support
-    and a less efficient one which is compatible with all compilers.
-*/
-#if !defined(HAVE_INCOMPLETE_ITERATOR_SUPPORT)
-    #define QL_FULL_ITERATOR_SUPPORT
-#endif
-
-/*! @}  */
-
 /*! @}  */
 
 #endif

@@ -102,7 +102,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     boost::shared_ptr<
-        QL_TYPENAME MCEuropeanHestonEngine<RNG,S>::path_pricer_type>
+        typename MCEuropeanHestonEngine<RNG,S>::path_pricer_type>
     MCEuropeanHestonEngine<RNG,S>::pathPricer() const {
 
         boost::shared_ptr<PlainVanillaPayoff> payoff(
@@ -116,7 +116,7 @@ namespace QuantLib {
         QL_REQUIRE(process, "Heston process required");
 
         return boost::shared_ptr<
-            QL_TYPENAME MCEuropeanHestonEngine<RNG,S>::path_pricer_type>(
+            typename MCEuropeanHestonEngine<RNG,S>::path_pricer_type>(
                    new EuropeanHestonPathPricer(
                                         payoff->optionType(),
                                         payoff->strike(),

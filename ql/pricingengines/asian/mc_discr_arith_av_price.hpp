@@ -130,7 +130,8 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    boost::shared_ptr<QL_TYPENAME MCDiscreteArithmeticAPEngine<RNG,S>::path_pricer_type>
+    boost::shared_ptr<
+            typename MCDiscreteArithmeticAPEngine<RNG,S>::path_pricer_type>
         MCDiscreteArithmeticAPEngine<RNG,S>::pathPricer() const {
 
         boost::shared_ptr<PlainVanillaPayoff> payoff =
@@ -148,7 +149,7 @@ namespace QuantLib {
                                           this->arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
 
-        return boost::shared_ptr<QL_TYPENAME
+        return boost::shared_ptr<typename
             MCDiscreteArithmeticAPEngine<RNG,S>::path_pricer_type>(
             new ArithmeticAPOPathPricer(
               payoff->optionType(),
@@ -158,7 +159,8 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    boost::shared_ptr<QL_TYPENAME MCDiscreteArithmeticAPEngine<RNG,S>::path_pricer_type>
+    boost::shared_ptr<
+            typename MCDiscreteArithmeticAPEngine<RNG,S>::path_pricer_type>
         MCDiscreteArithmeticAPEngine<RNG,S>::controlPathPricer() const {
 
         boost::shared_ptr<PlainVanillaPayoff> payoff =
@@ -179,7 +181,7 @@ namespace QuantLib {
         // for seasoned option the geometric strike might be rescaled
         // to obtain an equivalent arithmetic strike.
         // Any change applied here MUST be applied to the analytic engine too
-        return boost::shared_ptr<QL_TYPENAME
+        return boost::shared_ptr<typename
             MCDiscreteArithmeticAPEngine<RNG,S>::path_pricer_type>(
             new GeometricAPOPathPricer(
               payoff->optionType(),

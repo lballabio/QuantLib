@@ -174,7 +174,7 @@ namespace QuantLib {
     template <class RNG, class S>
     inline
     boost::shared_ptr<
-        QL_TYPENAME MCVarianceSwapEngine<RNG,S>::path_pricer_type>
+        typename MCVarianceSwapEngine<RNG,S>::path_pricer_type>
     MCVarianceSwapEngine<RNG,S>::pathPricer() const {
 
         boost::shared_ptr<GeneralizedBlackScholesProcess> process =
@@ -183,7 +183,7 @@ namespace QuantLib {
         QL_REQUIRE(process, "Black-Scholes process required");
 
         return boost::shared_ptr<
-            QL_TYPENAME MCVarianceSwapEngine<RNG,S>::path_pricer_type>(
+            typename MCVarianceSwapEngine<RNG,S>::path_pricer_type>(
               new FairVariancePathPricer(this->arguments_.stochasticProcess));
     }
 

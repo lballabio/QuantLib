@@ -131,7 +131,8 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    boost::shared_ptr<QL_TYPENAME MCDiscreteGeometricAPEngine<RNG,S>::path_pricer_type>
+    boost::shared_ptr<
+            typename MCDiscreteGeometricAPEngine<RNG,S>::path_pricer_type>
         MCDiscreteGeometricAPEngine<RNG,S>::pathPricer() const {
 
         boost::shared_ptr<PlainVanillaPayoff> payoff =
@@ -149,7 +150,7 @@ namespace QuantLib {
                                           this->arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
 
-        return boost::shared_ptr<QL_TYPENAME
+        return boost::shared_ptr<typename
             MCDiscreteGeometricAPEngine<RNG,S>::path_pricer_type>(
             new GeometricAPOPathPricer(
               payoff->optionType(),

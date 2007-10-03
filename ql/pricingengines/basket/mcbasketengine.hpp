@@ -136,7 +136,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    boost::shared_ptr<QL_TYPENAME MCBasketEngine<RNG,S>::path_pricer_type>
+    boost::shared_ptr<typename MCBasketEngine<RNG,S>::path_pricer_type>
     MCBasketEngine<RNG,S>::pathPricer() const {
 
         boost::shared_ptr<BasketPayoff> payoff =
@@ -153,7 +153,7 @@ namespace QuantLib {
         QL_REQUIRE(process, "Black-Scholes process required");
 
         return boost::shared_ptr<
-                         QL_TYPENAME MCBasketEngine<RNG,S>::path_pricer_type>(
+                         typename MCBasketEngine<RNG,S>::path_pricer_type>(
             new EuropeanMultiPathPricer(
                                         payoff,
                                         process->riskFreeRate()->discount(

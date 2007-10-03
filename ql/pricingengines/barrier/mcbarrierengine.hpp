@@ -182,7 +182,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    boost::shared_ptr<QL_TYPENAME MCBarrierEngine<RNG,S>::path_pricer_type>
+    boost::shared_ptr<typename MCBarrierEngine<RNG,S>::path_pricer_type>
     MCBarrierEngine<RNG,S>::pathPricer() const {
         boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
@@ -201,7 +201,7 @@ namespace QuantLib {
         // do this with template parameters?
         if (isBiased_) {
             return boost::shared_ptr<
-                        QL_TYPENAME MCBarrierEngine<RNG,S>::path_pricer_type>(
+                        typename MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BiasedBarrierPathPricer(
                        arguments_.barrierType,
                        arguments_.barrier,
@@ -213,7 +213,7 @@ namespace QuantLib {
             PseudoRandom::ursg_type sequenceGen(grid.size()-1,
                                                 PseudoRandom::urng_type(5));
             return boost::shared_ptr<
-                        QL_TYPENAME MCBarrierEngine<RNG,S>::path_pricer_type>(
+                        typename MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BarrierPathPricer(
                     arguments_.barrierType,
                     arguments_.barrier,

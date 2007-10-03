@@ -150,7 +150,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    boost::shared_ptr<QL_TYPENAME MCDigitalEngine<RNG,S>::path_pricer_type>
+    boost::shared_ptr<typename MCDigitalEngine<RNG,S>::path_pricer_type>
     MCDigitalEngine<RNG,S>::pathPricer() const {
 
         boost::shared_ptr<CashOrNothingPayoff> payoff =
@@ -173,7 +173,7 @@ namespace QuantLib {
                                             PseudoRandom::urng_type(76));
 
         return boost::shared_ptr<
-                        QL_TYPENAME MCDigitalEngine<RNG,S>::path_pricer_type>(
+                        typename MCDigitalEngine<RNG,S>::path_pricer_type>(
           new DigitalPathPricer(payoff,
                                 exercise,
                                 process->riskFreeRate(),

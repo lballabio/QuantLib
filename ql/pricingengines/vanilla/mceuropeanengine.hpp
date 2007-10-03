@@ -126,7 +126,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    boost::shared_ptr<QL_TYPENAME MCEuropeanEngine<RNG,S>::path_pricer_type>
+    boost::shared_ptr<typename MCEuropeanEngine<RNG,S>::path_pricer_type>
     MCEuropeanEngine<RNG,S>::pathPricer() const {
 
         boost::shared_ptr<PlainVanillaPayoff> payoff =
@@ -140,7 +140,7 @@ namespace QuantLib {
         QL_REQUIRE(process, "Black-Scholes process required");
 
         return boost::shared_ptr<
-                       QL_TYPENAME MCEuropeanEngine<RNG,S>::path_pricer_type>(
+                       typename MCEuropeanEngine<RNG,S>::path_pricer_type>(
           new EuropeanPathPricer(
               payoff->optionType(),
               payoff->strike(),
