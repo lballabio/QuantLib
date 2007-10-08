@@ -30,27 +30,27 @@
 namespace QuantLib {
 
     OptionletStripper::OptionletStripper(
-                    const boost::shared_ptr<CapFloorTermVolSurface>& surface,
-                    const boost::shared_ptr<IborIndex>& index,
-                    Rate switchStrike)
-    : surface_(surface), index_(index), 
-      nStrikes_(surface->strikes().size()),
+            const boost::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
+            const boost::shared_ptr<IborIndex>& index,
+            Rate switchStrike)
+    : termVolSurface_(termVolSurface), index_(index), 
+      nStrikes_(termVolSurface->strikes().size()),
       floatingSwitchStrike_(switchStrike==Null<Rate>() ? true : false),
       switchStrike_(switchStrike)
     {
-        registerWith(surface);
+        registerWith(termVolSurface);
         registerWith(index);
         registerWith(Settings::instance().evaluationDate());
 
         Period indexTenor = index->tenor();
-        Period maxCapFloorTenor = surface->optionTenors().back();
+        Period maxCapFloorTenor = termVolSurface->optionTenors().back();
 
         // optionlet tenors and capFloor lengths
         optionletTenors_.push_back(indexTenor);
         capFloorLengths_.push_back(optionletTenors_.back()+indexTenor);
         QL_REQUIRE(maxCapFloorTenor>=capFloorLengths_.back(),
                    "too short (" << maxCapFloorTenor <<
-                   ") capfloor term vol surface");
+                   ") capfloor term vol termVolSurface");
         Period nextCapFloorLength = capFloorLengths_.back()+indexTenor;
         while (nextCapFloorLength<=maxCapFloorTenor) {
             optionletTenors_.push_back(capFloorLengths_.back());
@@ -75,10 +75,10 @@ namespace QuantLib {
 
     void OptionletStripper::performCalculations() const {
 
-        const Date& referenceDate = surface_->referenceDate();
-        const std::vector<Rate>& strikes = surface_->strikes();
+        const Date& referenceDate = termVolSurface_->referenceDate();
+        const std::vector<Rate>& strikes = termVolSurface_->strikes();
         const Calendar& cal = index_->fixingCalendar();
-        const DayCounter& dc = surface_->dayCounter();
+        const DayCounter& dc = termVolSurface_->dayCounter();
         Rate averageAtmOptionletRate = 0.0;
         for (Size i=0; i<nOptionletTenors_; ++i) {
             boost::shared_ptr<BlackCapFloorEngine> dummy(new
@@ -113,7 +113,7 @@ namespace QuantLib {
                                    Option::Put : Option::Call;
             Real previousCapFloorPrice = 0.0;
             for (Size i=0; i<nOptionletTenors_; ++i) {
-                capFloorVols_[i][j] = surface_->volatility(capFloorLengths_[i],
+                capFloorVols_[i][j] = termVolSurface_->volatility(capFloorLengths_[i],
                                                            strikes[j],
                                                            true);
                 boost::shared_ptr<BlackCapFloorEngine> engine(new
@@ -155,7 +155,7 @@ namespace QuantLib {
     }
     
     const std::vector<Rate>& OptionletStripper::strikes() const {
-        return surface_->strikes();
+        return termVolSurface_->strikes();
     }
 
 }

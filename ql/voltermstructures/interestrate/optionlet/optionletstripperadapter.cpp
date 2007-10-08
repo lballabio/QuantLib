@@ -25,10 +25,10 @@
 namespace QuantLib {
 
     OptionletStripperAdapter::OptionletStripperAdapter(const Handle<OptionletStripper>& optionletStripper)
-    : OptionletVolatilityStructure(optionletStripper->surface()->settlementDays(),
-                                   optionletStripper->surface()->calendar(),
-                                   optionletStripper->surface()->businessDayConvention(),
-                                   optionletStripper->surface()->dayCounter()),
+    : OptionletVolatilityStructure(optionletStripper->termVolSurface()->settlementDays(),
+                                   optionletStripper->termVolSurface()->calendar(),
+                                   optionletStripper->termVolSurface()->businessDayConvention(),
+                                   optionletStripper->termVolSurface()->dayCounter()),
       optionletStripper_(optionletStripper){
 
         registerWith(optionletStripper_);
@@ -65,6 +65,6 @@ namespace QuantLib {
     }
     
     const Date& OptionletStripperAdapter::referenceDate() const {
-        return optionletStripper_->surface()->referenceDate();
+        return optionletStripper_->termVolSurface()->referenceDate();
     }
 }

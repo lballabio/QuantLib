@@ -42,7 +42,7 @@ namespace QuantLib {
 
     class OptionletStripper : public LazyObject {
       public:
-        OptionletStripper(const boost::shared_ptr<CapFloorTermVolSurface>& surface,
+        OptionletStripper(const boost::shared_ptr<CapFloorTermVolSurface>&,
                           const boost::shared_ptr<IborIndex>& index,
                           Rate switchStrikes);
         //! \name Cap Stripper interface
@@ -54,8 +54,8 @@ namespace QuantLib {
         const Matrix& optionletVolatilities() const;
         const std::vector<Rate>& strikes() const;
 
-        //const std::vector<Real>& optionletPrices(Size i) const;
-        //const std::vector<Volatility>& optionletVolatilities(Size i) const;
+        std::vector<Real> optionletPrices(Size i) const;
+        std::vector<Volatility> optionletVolatilities(Size i) const;
         const std::vector<Rate>& strikes(Size i) const;
 
         const std::vector<Period>& optionletTenors() const;
@@ -66,7 +66,7 @@ namespace QuantLib {
 
         Rate switchStrike() const;
 
-        boost::shared_ptr<CapFloorTermVolSurface> surface() const;
+        boost::shared_ptr<CapFloorTermVolSurface> termVolSurface() const;
         boost::shared_ptr<IborIndex> index() const;
         //@}
         //! \name LazyObject interface
@@ -74,7 +74,7 @@ namespace QuantLib {
         void performCalculations () const;
         //@}
       private:
-        const boost::shared_ptr<CapFloorTermVolSurface> surface_;
+        const boost::shared_ptr<CapFloorTermVolSurface> termVolSurface_;
         const boost::shared_ptr<IborIndex> index_;
         Size nStrikes_;
         std::vector<Period> optionletTenors_;
@@ -115,26 +115,28 @@ namespace QuantLib {
         return optionletVols_;
     }
 
-    //inline
-    //const std::vector<Real>& OptionletStripper::optionletPrices(Size i) const {
-    //    QL_REQUIRE(i<nOptionletTenors_,
-    //               "row index (" << i <<
-    //               ") must be less then number on option tenors (" <<
-    //               nOptionletTenors_ << ")");
-    //    calculate();
-    //    return optionletPrices_.row(i);
-    //}
+    inline
+    std::vector<Real> OptionletStripper::optionletPrices(Size i) const {
+        QL_REQUIRE(i<nOptionletTenors_,
+                   "row index (" << i <<
+                   ") must be less then number on option tenors (" <<
+                   nOptionletTenors_ << ")");
+        calculate();
+        return std::vector<Real>(optionletPrices_.row_begin(i),
+                                 optionletPrices_.row_end(i));
+    }
 
-    //inline
-    //const std::vector<Volatility>&
-    //OptionletStripper::optionletVolatilities(Size i) const {
-    //    QL_REQUIRE(i<nOptionletTenors_,
-    //               "row index (" << i <<
-    //               ") must be less then number on option tenors (" <<
-    //               nOptionletTenors_ << ")");
-    //    calculate();
-    //    return optionletVols_.row(i);
-    //}
+    inline
+    std::vector<Volatility>
+    OptionletStripper::optionletVolatilities(Size i) const {
+        QL_REQUIRE(i<nOptionletTenors_,
+                   "row index (" << i <<
+                   ") must be less then number on option tenors (" <<
+                   nOptionletTenors_ << ")");
+        calculate();
+        return std::vector<Volatility>(optionletVols_.row_begin(i),
+                                       optionletVols_.row_end(i));
+    }
 
     inline
     const std::vector<Rate>& OptionletStripper::strikes(Size i) const {
@@ -176,8 +178,9 @@ namespace QuantLib {
     }
 
     inline
-    boost::shared_ptr<CapFloorTermVolSurface> OptionletStripper::surface() const {
-        return surface_;
+    boost::shared_ptr<CapFloorTermVolSurface>
+    OptionletStripper::termVolSurface() const {
+        return termVolSurface_;
     }
 
     inline

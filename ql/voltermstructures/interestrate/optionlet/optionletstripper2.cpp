@@ -40,7 +40,7 @@ namespace QuantLib {
                     const Handle<CapFloorTermVolCurve>& atmCapFloorTermVolCurve)
     : optionletStripper_(optionletStripper),
       atmCapFloorTermVolCurve_(atmCapFloorTermVolCurve), 
-      dc_(optionletStripper_->surface()->dayCounter()),
+      dc_(optionletStripper_->termVolSurface()->dayCounter()),
       nOptionExpiries_(atmCapFloorTermVolCurve->optionTenors().size()),
       atmStrikes_(nOptionExpiries_),
       spreadsVolImplied_(nOptionExpiries_),
