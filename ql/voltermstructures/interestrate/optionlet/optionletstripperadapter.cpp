@@ -55,34 +55,34 @@ namespace QuantLib {
         
     void OptionletStripperAdapter::performCalculations() const {
 
-        const std::vector<Rate>& atmForward = optionletStripper_->atmOptionletRate();
-        const std::vector<Time>& optionletTimes = optionletStripper_->optionletTimes();
+        //const std::vector<Rate>& atmForward = optionletStripper_->atmOptionletRate();
+        //const std::vector<Time>& optionletTimes = optionletStripper_->optionletTimes();
 
         for (Size i=0; i<nInterpolations_; ++i) {
             const std::vector<Rate>& optionletStrikes =
                 optionletStripper_->optionletStrikes(i);
             const std::vector<Volatility>& optionletVolatilities =
                 optionletStripper_->optionletVolatilities(i);
-            strikeInterpolations_[i] =
-                        SABRInterpolation(optionletStrikes.begin(), optionletStrikes.end(),
-                                          optionletVolatilities.begin(),
-                                          optionletTimes[i], atmForward[i],
-                                          0.02,0.5,0.2,0., 
-                                          false, true, false, false
-                                          //alphaGuess_, betaGuess_,
-                                          //nuGuess_, rhoGuess_,
-                                          //isParameterFixed_[0],
-                                          //isParameterFixed_[1],
-                                          //isParameterFixed_[2],
-                                          //isParameterFixed_[3]
-                                          ////,
-                                          //vegaWeightedSmileFit_,
-                                          //endCriteria_,
-                                          //optMethod_
-                                          );
-            //strikeInterpolations_[i] = LinearInterpolation(optionletStrikes.begin(),
-            //                                               optionletStrikes.end(),
-            //                                               optionletVolatilities.begin());
+            //strikeInterpolations_[i] =
+            //            SABRInterpolation(optionletStrikes.begin(), optionletStrikes.end(),
+            //                              optionletVolatilities.begin(),
+            //                              optionletTimes[i], atmForward[i],
+            //                              0.02,0.5,0.2,0., 
+            //                              false, true, false, false
+            //                              //alphaGuess_, betaGuess_,
+            //                              //nuGuess_, rhoGuess_,
+            //                              //isParameterFixed_[0],
+            //                              //isParameterFixed_[1],
+            //                              //isParameterFixed_[2],
+            //                              //isParameterFixed_[3]
+            //                              ////,
+            //                              //vegaWeightedSmileFit_,
+            //                              //endCriteria_,
+            //                              //optMethod_
+            //                              );
+            strikeInterpolations_[i] = LinearInterpolation(optionletStrikes.begin(),
+                                                           optionletStrikes.end(),
+                                                           optionletVolatilities.begin());
         }
     }
 
