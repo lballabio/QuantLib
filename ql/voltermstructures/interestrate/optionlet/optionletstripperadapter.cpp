@@ -21,43 +21,77 @@
 #include <ql/voltermstructures/interestrate/optionlet/optionletstripperadapter.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/optionletstripper.hpp>
 #include <ql/voltermstructures/interestrate/capfloor/capfloortermvolsurface.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/interpolations/sabrinterpolation.hpp>
 
 namespace QuantLib {
 
-    OptionletStripperAdapter::OptionletStripperAdapter(const Handle<OptionletStripper>& optionletStripper)
-    : OptionletVolatilityStructure(optionletStripper->termVolSurface()->settlementDays(),
-                                   optionletStripper->termVolSurface()->calendar(),
-                                   optionletStripper->termVolSurface()->businessDayConvention(),
-                                   optionletStripper->termVolSurface()->dayCounter()),
-      optionletStripper_(optionletStripper){
-
+    OptionletStripperAdapter::OptionletStripperAdapter(
+                const boost::shared_ptr<OptionletStripperBase>& s)
+    : OptionletVolatilityStructure(s->termVolSurface()->settlementDays(),
+                                   s->termVolSurface()->calendar(),
+                                   s->termVolSurface()->businessDayConvention(),
+                                   s->termVolSurface()->dayCounter()),
+      optionletStripper_(s),
+      nInterpolations_(s->optionletTimes().size()),
+      strikeInterpolations_(nInterpolations_) {
         registerWith(optionletStripper_);
     }
 
     Volatility OptionletStripperAdapter::volatilityImpl(Time length,
                                                         Rate strike) const {
         calculate();
-        return interpolation_(strike, length, true);
+
+        std::vector<Volatility> vol(nInterpolations_);
+        for (Size i=0; i<nInterpolations_; ++i)
+            vol[i] = strikeInterpolations_[i].operator()(strike);
+        
+        const std::vector<Time>& optionletTimes = optionletStripper_->optionletTimes();
+        boost::shared_ptr<LinearInterpolation> timeInterpolator(new
+            LinearInterpolation(optionletTimes.begin(), optionletTimes.end(),
+                                vol.begin()));
+        return timeInterpolator->operator()(length, true);
     }
         
     void OptionletStripperAdapter::performCalculations() const {
 
-        const std::vector<Rate>& strikes = optionletStripper_->strikes();
+        const std::vector<Rate>& atmForward = optionletStripper_->atmOptionletRate();
         const std::vector<Time>& optionletTimes = optionletStripper_->optionletTimes();
-        interpolation_ = BilinearInterpolation(
-                                       strikes.begin(),  
-                                       strikes.end(),
-                                       optionletTimes.begin(),
-                                       optionletTimes.end(),
-                                       optionletStripper_->optionletVolatilities());    
+
+        for (Size i=0; i<nInterpolations_; ++i) {
+            const std::vector<Rate>& optionletStrikes =
+                optionletStripper_->optionletStrikes(i);
+            const std::vector<Volatility>& optionletVolatilities =
+                optionletStripper_->optionletVolatilities(i);
+            strikeInterpolations_[i] =
+                        SABRInterpolation(optionletStrikes.begin(), optionletStrikes.end(),
+                                          optionletVolatilities.begin(),
+                                          optionletTimes[i], atmForward[i],
+                                          0.02,0.5,0.2,0., 
+                                          false, true, false, false
+                                          //alphaGuess_, betaGuess_,
+                                          //nuGuess_, rhoGuess_,
+                                          //isParameterFixed_[0],
+                                          //isParameterFixed_[1],
+                                          //isParameterFixed_[2],
+                                          //isParameterFixed_[3]
+                                          ////,
+                                          //vegaWeightedSmileFit_,
+                                          //endCriteria_,
+                                          //optMethod_
+                                          );
+            //strikeInterpolations_[i] = LinearInterpolation(optionletStrikes.begin(),
+            //                                               optionletStrikes.end(),
+            //                                               optionletVolatilities.begin());
+        }
     }
 
     Rate OptionletStripperAdapter::minStrike() const {
-        return optionletStripper_->strikes().front();
+        return optionletStripper_->optionletStrikes(0).front(); //FIX
     }
     
     Rate OptionletStripperAdapter::maxStrike() const {
-        return optionletStripper_->strikes().back();
+        return optionletStripper_->optionletStrikes(0).back(); //FIX
     }
     
     Date OptionletStripperAdapter::maxDate() const {

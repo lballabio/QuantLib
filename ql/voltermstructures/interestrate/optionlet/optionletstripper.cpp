@@ -2,8 +2,7 @@
 
 /*
  Copyright (C) 2007 Ferdinando Ametrano
- Copyright (C) 2007 François du Vignaud
- Copyright (C) 2007 Katiuscia Manzoni
+ Copyright (C) 2007 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,25 +18,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/voltermstructures/interestrate/capfloor/capfloortermvolsurface.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/optionletstripper.hpp>
-#include <ql/instruments/makecapfloor.hpp>
-#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
-#include <ql/pricingengines/blackformula.hpp>
 #include <ql/indexes/iborindex.hpp>
-#include <ql/utilities/dataformatters.hpp>
+
 
 namespace QuantLib {
 
     OptionletStripper::OptionletStripper(
             const boost::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
-            const boost::shared_ptr<IborIndex>& index,
-            Rate switchStrike)
-    : termVolSurface_(termVolSurface), index_(index), 
-      nStrikes_(termVolSurface->strikes().size()),
-      floatingSwitchStrike_(switchStrike==Null<Rate>() ? true : false),
-      switchStrike_(switchStrike)
-    {
+            const boost::shared_ptr<IborIndex>& index)
+    : termVolSurface_(termVolSurface),
+      index_(index),
+      nStrikes_(termVolSurface->strikes().size()){
+        
         registerWith(termVolSurface);
         registerWith(index);
         registerWith(Settings::instance().evaluationDate());
@@ -58,104 +51,64 @@ namespace QuantLib {
             nextCapFloorLength += indexTenor;
         }
         nOptionletTenors_ = optionletTenors_.size();
-
-        capFloorPrices_ = Matrix(nOptionletTenors_, nStrikes_);
-        optionletPrices_ = Matrix(nOptionletTenors_, nStrikes_);
-        capFloorVols_ = Matrix(nOptionletTenors_, nStrikes_);
-        optionletVols_ = Matrix(nOptionletTenors_, nStrikes_);
-        Real firstGuess = 0.14;
-        optionletStDevs_ = Matrix(nOptionletTenors_, nStrikes_, firstGuess);
-        atmOptionletRate_ = std::vector<Rate>(nOptionletTenors_);
+        
+        optionletVolatilities_ = std::vector<std::vector<Volatility> >(nOptionletTenors_, 
+                                                                       std::vector<Volatility>(nStrikes_));
+        optionletStrikes_ = std::vector<std::vector<Rate> >(nOptionletTenors_, termVolSurface->strikes());
         optionletDates_ = std::vector<Date>(nOptionletTenors_);
-        optionletPaymentDates_ = std::vector<Date>(nOptionletTenors_);
         optionletTimes_ = std::vector<Time>(nOptionletTenors_);
+        atmOptionletRate_ = std::vector<Rate>(nOptionletTenors_);
+        optionletPaymentDates_ = std::vector<Date>(nOptionletTenors_);
         optionletAccrualPeriods_ = std::vector<Time>(nOptionletTenors_);
-        capFloors_ = CapFloorMatrix(nOptionletTenors_);
     }
 
-    void OptionletStripper::performCalculations() const {
+    const std::vector<Rate>& OptionletStripper::optionletStrikes(Size i) const{
+        calculate();
+        QL_REQUIRE(i<optionletStrikes_.size(), "i >= optionletStrikes_.size()");
+        return optionletStrikes_[i];
+    }   
 
-        const Date& referenceDate = termVolSurface_->referenceDate();
-        const std::vector<Rate>& strikes = termVolSurface_->strikes();
-        const Calendar& cal = index_->fixingCalendar();
-        const DayCounter& dc = termVolSurface_->dayCounter();
-        Rate averageAtmOptionletRate = 0.0;
-        for (Size i=0; i<nOptionletTenors_; ++i) {
-            boost::shared_ptr<BlackCapFloorEngine> dummy(new
-                                         BlackCapFloorEngine(0.20, dc));
-            CapFloor temp = MakeCapFloor(CapFloor::Cap,
-                                         capFloorLengths_[i],
-                                         index_,
-                                         0.04, // dummy strike
-                                         0*Days,
-                                         dummy);
-            boost::shared_ptr<FloatingRateCoupon> lFRC =
-                                                temp.lastFloatingRateCoupon();
-            optionletDates_[i] = lFRC->fixingDate();
-            optionletPaymentDates_[i] = lFRC->date();
-            optionletAccrualPeriods_[i] = lFRC->accrualPeriod();
-            optionletTimes_[i] =
-                dc.yearFraction(referenceDate, optionletDates_[i]);
-            atmOptionletRate_[i] = index_->forecastFixing(optionletDates_[i]);
-            averageAtmOptionletRate += atmOptionletRate_[i];
-            capFloors_[i].resize(nStrikes_);
-        }
+    const std::vector<Volatility>& OptionletStripper::optionletVolatilities(Size i) const{
+        calculate();
+        QL_REQUIRE(i<optionletVolatilities_.size(), "i >= optionletVolatilities_.size()");
+        return optionletVolatilities_[i];
+    }   
 
-        // the switch strike might be the average of atmOptionletRate_
-        if (floatingSwitchStrike_)
-            switchStrike_ = averageAtmOptionletRate / nOptionletTenors_;
-        
-        for (Size j=0; j<nStrikes_; ++j) {
-            // using out-of-the-money options
-            CapFloor::Type capFloorType = strikes[j] < switchStrike_ ?
-                                   CapFloor::Floor : CapFloor::Cap;
-            Option::Type optionletType = capFloorType==CapFloor::Floor ?
-                                   Option::Put : Option::Call;
-            Real previousCapFloorPrice = 0.0;
-            for (Size i=0; i<nOptionletTenors_; ++i) {
-                capFloorVols_[i][j] = termVolSurface_->volatility(capFloorLengths_[i],
-                                                           strikes[j],
-                                                           true);
-                boost::shared_ptr<BlackCapFloorEngine> engine(new
-                                BlackCapFloorEngine(capFloorVols_[i][j], dc));
-                capFloors_[i][j] = MakeCapFloor(capFloorType,
-                                                capFloorLengths_[i], index_,
-                                                strikes[j], 0*Days, engine);
-                capFloorPrices_[i][j] = capFloors_[i][j]->NPV();
-                optionletPrices_[i][j] = capFloorPrices_[i][j] -
-                                                        previousCapFloorPrice;
-                previousCapFloorPrice = capFloorPrices_[i][j];
-                DiscountFactor d = capFloors_[i][j]->discountCurve()->discount(
-                                                        optionletPaymentDates_[i]);
-                DiscountFactor optionletAnnuity=optionletAccrualPeriods_[i]*d;
-                try {
-                    optionletStDevs_[i][j] =
-                        blackFormulaImpliedStdDev(optionletType,
-                                                  strikes[j],
-                                                  atmOptionletRate_[i],
-                                                  optionletPrices_[i][j],
-                                                  optionletAnnuity,
-                                                  optionletStDevs_[i][j]);
-                } catch (std::exception& e) {
-                    QL_FAIL("could not bootstrap the optionlet:"
-                            "\n fixing date:   " << optionletDates_[i] <<
-                            "\n payment date:  " << optionletPaymentDates_[i] <<
-                            "\n type:          " << optionletType <<
-                            "\n strike:        " << io::rate(strikes[j]) <<
-                            "\n atm:           " << io::rate(atmOptionletRate_[i]) <<
-                            "\n price:         " << optionletPrices_[i][j] <<
-                            "\n annuity:       " << optionletAnnuity <<
-                            "\n error message: " << e.what());
-                }
-                optionletVols_[i][j] = optionletStDevs_[i][j] /
-                                                std::sqrt(optionletTimes_[i]);
-            }
-        }
+    const std::vector<Period>& OptionletStripper::optionletTenors() const {
+        return optionletTenors_;
+    }
 
+    const std::vector<Date>& OptionletStripper::optionletDates() const {
+        calculate();
+        return optionletDates_;
+    }
+      
+    const std::vector<Date>& OptionletStripper::optionletPaymentDates() const {
+        calculate();
+        return optionletPaymentDates_;
+    }  
+
+    const std::vector<Time>& OptionletStripper::optionletTimes() const {
+        calculate();
+        return optionletTimes_;
+    }
+     
+    const std::vector<Time>& OptionletStripper::optionletAccrualPeriods() const {
+        calculate();
+        return optionletAccrualPeriods_;
+    }
+
+    const std::vector<Rate>& OptionletStripper::atmOptionletRate() const {
+        calculate();
+        return atmOptionletRate_;
     }
     
-    const std::vector<Rate>& OptionletStripper::strikes() const {
-        return termVolSurface_->strikes();
+    boost::shared_ptr<CapFloorTermVolSurface>
+    OptionletStripper::termVolSurface() const {
+        return termVolSurface_;
     }
 
+    boost::shared_ptr<IborIndex> OptionletStripper::index() const {
+        return index_;
+    }
 }

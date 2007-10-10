@@ -25,19 +25,16 @@
 #ifndef quantlib_optionlet_stripper_adapter_h
 #define quantlib_optionlet_stripper_adapter_h
 
+#include <ql/voltermstructures/interestrate/optionlet/optionletstripperbase.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/optionletvolatilitystructure.hpp>
-#include <ql/patterns/lazyobject.hpp>
-#include <ql/math/interpolations/bilinearinterpolation.hpp>
+#include <ql/math/interpolation.hpp>
 
 namespace QuantLib {
-
-    class OptionletStripper;
-    class Interpolation2D;
 
     class OptionletStripperAdapter : public OptionletVolatilityStructure,
                                      public LazyObject {
       public:
-        OptionletStripperAdapter(const Handle<OptionletStripper>& optionletStripper);
+          OptionletStripperAdapter(const boost::shared_ptr<OptionletStripperBase>& optionletStripper);
 
         //! \name TermStructure interface
         //@{
@@ -62,8 +59,9 @@ namespace QuantLib {
                                   Rate strike) const;
         //@} 
     private:
-        const Handle<OptionletStripper> optionletStripper_;
-        mutable Interpolation2D interpolation_;
+        const boost::shared_ptr<OptionletStripperBase> optionletStripper_;
+        Size nInterpolations_;
+        mutable std::vector<Interpolation> strikeInterpolations_;
     };
 
     inline void OptionletStripperAdapter::update() {

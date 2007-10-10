@@ -18,62 +18,61 @@
 */
 
 /*! \file optionletstripper2.hpp
-    \brief optionlet (cap/floor) volatility stripper
 */
 
 #ifndef quantlib_optionletstripper2_hpp
 #define quantlib_optionletstripper2_hpp
 
 #include <ql/voltermstructures/interestrate/optionlet/optionletstripper.hpp>
-#include <ql/voltermstructures/sabrinterpolatedsmilesection.hpp>
 
 namespace QuantLib {
 
     class CapFloorTermVolCurve;
+    class OptionletStripper1;
+    class CapFloor;
 
-    class OptionletStripper2 : public LazyObject {
+    class OptionletStripper2 : public OptionletStripper {
       public:
-        OptionletStripper2(const Handle<OptionletStripper>& optionletStripper,
+        // Handle or just shared_ptr ??
+        OptionletStripper2(const boost::shared_ptr<OptionletStripper1>& optionletStripper1,
                            const Handle<CapFloorTermVolCurve>& atmCapFloorTermVolCurve);
+
+        std::vector<Rate> atmCapFloorStrikes() const;
+        std::vector<Real> atmCapFloorPrices() const;
+
+        std::vector<Volatility> spreadsVol() const;
 
         //! \name LazyObject interface
         //@{
         void performCalculations () const;
         //@}
-        std::vector<Volatility> spreadsVol() const;
-        std::vector<Rate> atmOptionStrikes() const;
-        std::vector<Real> atmOptionPrices() const;
-        std::vector<Volatility> mdlOptionletVols(Size i) const; 
-
       private:
-
         std::vector<Volatility> spreadsVolImplied() const;
 
         class ObjectiveFunction {
           public:
-            ObjectiveFunction(const Handle<OptionletStripper>& optionletStripper,
+            ObjectiveFunction(const boost::shared_ptr<OptionletStripper1>& optionletStripper1,
                               const boost::shared_ptr<CapFloor>& cap,
                               Real targetValue);
             Real operator()(Volatility spreadVol) const;
           private:
-            const Handle<OptionletStripper> optionletStripper_;
+            const boost::shared_ptr<OptionletStripper1> optionletStripper1_;
             boost::shared_ptr<CapFloor> cap_;
             Real targetValue_;
 
         };
         
-        const Handle<OptionletStripper> optionletStripper_;
+        const boost::shared_ptr<OptionletStripper1> optionletStripper1_;
         const Handle<CapFloorTermVolCurve> atmCapFloorTermVolCurve_;
         DayCounter dc_;
         Size nOptionExpiries_;
-        mutable std::vector<Rate> atmStrikes_;
-        mutable std::vector<Real> atmOptionPrice_;
+        mutable std::vector<Rate> atmCapFloorStrikes_;
+        mutable std::vector<Real> atmCapFloorPrices_;
         mutable std::vector<Volatility> spreadsVolImplied_;
         mutable std::vector<boost::shared_ptr<CapFloor> > caps_;
         Size maxEvaluations_;
         Real accuracy_;
     };
-
  
 }
 
