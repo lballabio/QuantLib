@@ -28,6 +28,7 @@
 #define quantlib_index_hpp
 
 #include <ql/time/calendar.hpp>
+#include <ql/math/comparison.hpp>
 #include <ql/indexes/indexmanager.hpp>
 
 namespace QuantLib {
@@ -90,11 +91,11 @@ namespace QuantLib {
             while (dBegin != dEnd) {
                 validFixing = isValidFixingDate(*dBegin);
                 Real currentValue = h[*dBegin];
-                missingFixing = (forceOverwrite || currentValue==nullValue);
+                missingFixing= forceOverwrite || close(currentValue,nullValue);
                 if (validFixing) {
                     if (missingFixing)
                         h[*(dBegin++)] = *(vBegin++);
-                    else if (currentValue==*(vBegin)) {
+                    else if (close(currentValue,*(vBegin))) {
                         ++dBegin;
                         ++vBegin;
                     } else {
