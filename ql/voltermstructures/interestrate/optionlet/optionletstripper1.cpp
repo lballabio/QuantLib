@@ -35,6 +35,7 @@ namespace QuantLib {
             Rate switchStrike)
     : OptionletStripper(termVolSurface, index),       
       floatingSwitchStrike_(switchStrike==Null<Rate>() ? true : false),
+      // capFlooMatrixNotInitialized_(true),
       switchStrike_(switchStrike) {
 
         capFloorPrices_ = Matrix(nOptionletTenors_, nStrikes_);
@@ -48,14 +49,12 @@ namespace QuantLib {
 
     void OptionletStripper1::performCalculations() const {
 
+        // update dates
         const Date& referenceDate = termVolSurface_->referenceDate();
-        const std::vector<Rate>& strikes = termVolSurface_->strikes();
-        const Calendar& cal = index_->fixingCalendar();
         const DayCounter& dc = termVolSurface_->dayCounter();
-        Rate averageAtmOptionletRate = 0.0;
+        boost::shared_ptr<BlackCapFloorEngine> dummy(new
+                                     BlackCapFloorEngine(0.20, dc));
         for (Size i=0; i<nOptionletTenors_; ++i) {
-            boost::shared_ptr<BlackCapFloorEngine> dummy(new
-                                         BlackCapFloorEngine(0.20, dc));
             CapFloor temp = MakeCapFloor(CapFloor::Cap,
                                          capFloorLengths_[i],
                                          index_,
@@ -67,17 +66,47 @@ namespace QuantLib {
             optionletDates_[i] = lFRC->fixingDate();
             optionletPaymentDates_[i] = lFRC->date();
             optionletAccrualPeriods_[i] = lFRC->accrualPeriod();
-            optionletTimes_[i] =
-                dc.yearFraction(referenceDate, optionletDates_[i]);
-            atmOptionletRate_[i] = index_->forecastFixing(optionletDates_[i]);
-            averageAtmOptionletRate += atmOptionletRate_[i];
-            capFloors_[i].resize(nStrikes_);
+            optionletTimes_[i] = dc.yearFraction(referenceDate,
+                                                 optionletDates_[i]);
         }
 
-        // the switch strike might be the average of atmOptionletRate_
-        if (floatingSwitchStrike_)
+        if (floatingSwitchStrike_) { // && capFlooMatrixNotInitialized_)
+            Rate averageAtmOptionletRate = 0.0;
+            for (Size i=0; i<nOptionletTenors_; ++i) {
+                atmOptionletRate_[i] = index_->forecastFixing(optionletDates_[i]);
+                averageAtmOptionletRate += atmOptionletRate_[i];
+            }
             switchStrike_ = averageAtmOptionletRate / nOptionletTenors_;
-        
+        }
+
+        // initialize CapFloorMatrix
+        for (Size i=0; i<nOptionletTenors_; ++i)
+            capFloors_[i].resize(nStrikes_);
+
+        //// initialize CapFloorMatrix
+        //if (capFlooMatrixNotInitialized_) {
+        //    for (Size i=0; i<nOptionletTenors_; ++i)
+        //        capFloors_[i].resize(nStrikes_);
+        //    // construction might go here
+        //    for (Size j=0; j<nStrikes_; ++j) {
+        //        // using out-of-the-money options
+        //        CapFloor::Type capFloorType = strikes[j] < switchStrike_ ?
+        //                               CapFloor::Floor : CapFloor::Cap;
+        //        Option::Type optionletType = capFloorType==CapFloor::Floor ?
+        //                               Option::Put : Option::Call;
+        //        for (Size i=0; i<nOptionletTenors_; ++i) {
+        //            // Quote creation
+        //            boost::shared_ptr<BlackCapFloorEngine> engine(new
+        //                            BlackCapFloorEngine(myquote[i][j], dc));
+        //            capFloors_[i][j] = MakeCapFloor(capFloorType,
+        //                                            capFloorLengths_[i], index_,
+        //                                            strikes[j], 0*Days, engine);
+        //        }
+        //    }
+        //    capFlooMatrixNotInitialized_ = true;
+        //}
+
+        const std::vector<Rate>& strikes = termVolSurface_->strikes();
         for (Size j=0; j<nStrikes_; ++j) {
             // using out-of-the-money options
             CapFloor::Type capFloorType = strikes[j] < switchStrike_ ?
@@ -86,9 +115,12 @@ namespace QuantLib {
                                    Option::Put : Option::Call;
             Real previousCapFloorPrice = 0.0;
             for (Size i=0; i<nOptionletTenors_; ++i) {
-                capFloorVols_[i][j] = termVolSurface_->volatility(capFloorLengths_[i],
-                                                           strikes[j],
-                                                           true);
+                capFloorVols_[i][j] = termVolSurface_->volatility(
+                    capFloorLengths_[i], strikes[j], true);
+                // using a Quote would allow to move engine and capFloors_[i][j]
+                // construction out of this inner loop into the outer loop;
+                // fixing capFloorType once (without further update) would even
+                // allow to move them out of the outer loop
                 boost::shared_ptr<BlackCapFloorEngine> engine(new
                                 BlackCapFloorEngine(capFloorVols_[i][j], dc));
                 capFloors_[i][j] = MakeCapFloor(capFloorType,
