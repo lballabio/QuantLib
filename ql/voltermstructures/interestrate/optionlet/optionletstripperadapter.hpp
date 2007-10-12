@@ -28,6 +28,7 @@
 #include <ql/voltermstructures/interestrate/optionlet/optionletstripperbase.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/optionletvolatilitystructure.hpp>
 #include <ql/math/interpolation.hpp>
+#include <ql/math/interpolations/sabrinterpolation.hpp>
 
 namespace QuantLib {
 
@@ -61,7 +62,7 @@ namespace QuantLib {
     private:
         const boost::shared_ptr<OptionletStripperBase> optionletStripper_;
         Size nInterpolations_;
-        mutable std::vector<Interpolation> strikeInterpolations_;
+        mutable std::vector<boost::shared_ptr<Interpolation> > strikeInterpolations_;
     };
 
     inline void OptionletStripperAdapter::update() {

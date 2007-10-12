@@ -25,6 +25,7 @@
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 namespace QuantLib {
@@ -33,9 +34,10 @@ namespace QuantLib {
             const boost::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
             const boost::shared_ptr<IborIndex>& index,
             Rate switchStrike)
-    : OptionletStripper(termVolSurface, index),       
+    : OptionletStripper(termVolSurface, index),   
+      volQuotes_(nOptionletTenors_, nStrikes_),
       floatingSwitchStrike_(switchStrike==Null<Rate>() ? true : false),
-      // capFlooMatrixNotInitialized_(true),
+      capFlooMatrixNotInitialized_(true),
       switchStrike_(switchStrike) {
 
         capFloorPrices_ = Matrix(nOptionletTenors_, nStrikes_);
@@ -79,53 +81,44 @@ namespace QuantLib {
             switchStrike_ = averageAtmOptionletRate / nOptionletTenors_;
         }
 
-        // initialize CapFloorMatrix
-        for (Size i=0; i<nOptionletTenors_; ++i)
-            capFloors_[i].resize(nStrikes_);
-
-        //// initialize CapFloorMatrix
-        //if (capFlooMatrixNotInitialized_) {
-        //    for (Size i=0; i<nOptionletTenors_; ++i)
-        //        capFloors_[i].resize(nStrikes_);
-        //    // construction might go here
-        //    for (Size j=0; j<nStrikes_; ++j) {
-        //        // using out-of-the-money options
-        //        CapFloor::Type capFloorType = strikes[j] < switchStrike_ ?
-        //                               CapFloor::Floor : CapFloor::Cap;
-        //        Option::Type optionletType = capFloorType==CapFloor::Floor ?
-        //                               Option::Put : Option::Call;
-        //        for (Size i=0; i<nOptionletTenors_; ++i) {
-        //            // Quote creation
-        //            boost::shared_ptr<BlackCapFloorEngine> engine(new
-        //                            BlackCapFloorEngine(myquote[i][j], dc));
-        //            capFloors_[i][j] = MakeCapFloor(capFloorType,
-        //                                            capFloorLengths_[i], index_,
-        //                                            strikes[j], 0*Days, engine);
-        //        }
-        //    }
-        //    capFlooMatrixNotInitialized_ = true;
-        //}
-
         const std::vector<Rate>& strikes = termVolSurface_->strikes();
+        // initialize CapFloorMatrix
+        if (capFlooMatrixNotInitialized_) {
+            for (Size i=0; i<nOptionletTenors_; ++i)
+                capFloors_[i].resize(nStrikes_);
+            // construction might go here
+            for (Size j=0; j<nStrikes_; ++j) {
+                // using out-of-the-money options
+                CapFloor::Type capFloorType = strikes[j] < switchStrike_ ?
+                                       CapFloor::Floor : CapFloor::Cap;
+                Option::Type optionletType = capFloorType==CapFloor::Floor ?
+                                       Option::Put : Option::Call;
+                for (Size i=0; i<nOptionletTenors_; ++i) {
+                    volQuotes_[i][j]= boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.10));
+                    boost::shared_ptr<BlackCapFloorEngine> engine(new
+                                    BlackCapFloorEngine(Handle<Quote>(volQuotes_[i][j]), dc));
+                    capFloors_[i][j] = MakeCapFloor(capFloorType,
+                                                    capFloorLengths_[i], index_,
+                                                    strikes[j], 0*Days, engine);
+                }
+            }
+            capFlooMatrixNotInitialized_ = false;
+        }
+        
         for (Size j=0; j<nStrikes_; ++j) {
-            // using out-of-the-money options
+
             CapFloor::Type capFloorType = strikes[j] < switchStrike_ ?
                                    CapFloor::Floor : CapFloor::Cap;
             Option::Type optionletType = capFloorType==CapFloor::Floor ?
                                    Option::Put : Option::Call;
+            
             Real previousCapFloorPrice = 0.0;
             for (Size i=0; i<nOptionletTenors_; ++i) {
+                
                 capFloorVols_[i][j] = termVolSurface_->volatility(
                     capFloorLengths_[i], strikes[j], true);
-                // using a Quote would allow to move engine and capFloors_[i][j]
-                // construction out of this inner loop into the outer loop;
-                // fixing capFloorType once (without further update) would even
-                // allow to move them out of the outer loop
-                boost::shared_ptr<BlackCapFloorEngine> engine(new
-                                BlackCapFloorEngine(capFloorVols_[i][j], dc));
-                capFloors_[i][j] = MakeCapFloor(capFloorType,
-                                                capFloorLengths_[i], index_,
-                                                strikes[j], 0*Days, engine);
+                volQuotes_[i][j]->setValue(capFloorVols_[i][j]);
+
                 capFloorPrices_[i][j] = capFloors_[i][j]->NPV();
                 optionletPrices_[i][j] = capFloorPrices_[i][j] -
                                                         previousCapFloorPrice;

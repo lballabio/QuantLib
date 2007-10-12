@@ -44,7 +44,7 @@ namespace QuantLib {
 
         std::vector<Volatility> vol(nInterpolations_);
         for (Size i=0; i<nInterpolations_; ++i)
-            vol[i] = strikeInterpolations_[i].operator()(strike);
+            vol[i] = strikeInterpolations_[i]->operator()(strike);
         
         const std::vector<Time>& optionletTimes = optionletStripper_->optionletTimes();
         boost::shared_ptr<LinearInterpolation> timeInterpolator(new
@@ -55,15 +55,15 @@ namespace QuantLib {
         
     void OptionletStripperAdapter::performCalculations() const {
 
-        //const std::vector<Rate>& atmForward = optionletStripper_->atmOptionletRate();
-        //const std::vector<Time>& optionletTimes = optionletStripper_->optionletTimes();
+        const std::vector<Rate>& atmForward = optionletStripper_->atmOptionletRate();
+        const std::vector<Time>& optionletTimes = optionletStripper_->optionletTimes();
 
         for (Size i=0; i<nInterpolations_; ++i) {
             const std::vector<Rate>& optionletStrikes =
                 optionletStripper_->optionletStrikes(i);
             const std::vector<Volatility>& optionletVolatilities =
                 optionletStripper_->optionletVolatilities(i);
-            //strikeInterpolations_[i] =
+            //strikeInterpolations_[i] = boost::shared_ptr<SABRInterpolation>(new
             //            SABRInterpolation(optionletStrikes.begin(), optionletStrikes.end(),
             //                              optionletVolatilities.begin(),
             //                              optionletTimes[i], atmForward[i],
@@ -79,10 +79,23 @@ namespace QuantLib {
             //                              //vegaWeightedSmileFit_,
             //                              //endCriteria_,
             //                              //optMethod_
-            //                              );
-            strikeInterpolations_[i] = LinearInterpolation(optionletStrikes.begin(),
-                                                           optionletStrikes.end(),
-                                                           optionletVolatilities.begin());
+            //                              ));
+            strikeInterpolations_[i] = boost::shared_ptr<LinearInterpolation>(new 
+                    LinearInterpolation(optionletStrikes.begin(),
+                                       optionletStrikes.end(),
+                                       optionletVolatilities.begin()));
+
+            //QL_ENSURE(strikeInterpolations_[i]->endCriteria()!=EndCriteria::MaxIterations,
+            //          "section calibration failed: "
+            //          "option time " << optionletTimes[i] <<
+            //          ": " <<
+            //              ", alpha " <<  strikeInterpolations_[i]->alpha()<<
+            //              ", beta "  <<  strikeInterpolations_[i]->beta() <<
+            //              ", nu "    <<  strikeInterpolations_[i]->nu()   <<
+            //              ", rho "   <<  strikeInterpolations_[i]->rho()  <<
+            //              ", error " <<  strikeInterpolations_[i]->interpolationError()
+            //              );
+
         }
     }
 
