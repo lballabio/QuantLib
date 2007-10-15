@@ -10,6 +10,8 @@ this_include_HEADERS = \
     constantoptionletvol.hpp \
     optionletstripperadapter.hpp \
     optionletstripper.hpp \
+    optionletstripperbase.hpp \
+    optionletstripper1.hpp \
     optionletstripper2.hpp \
     optionletvolatilitystructure.hpp \
     spreadedoptionletvol.hpp
@@ -20,6 +22,7 @@ libOptionletVol_la_SOURCES = \
     constantoptionletvol.cpp \
     optionletstripperadapter.cpp \
     optionletstripper.cpp \
+    optionletstripper1.cpp \
     optionletstripper2.cpp \
     optionletvolatilitystructure.cpp \
     spreadedoptionletvol.cpp

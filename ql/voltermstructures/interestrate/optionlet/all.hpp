@@ -7,6 +7,8 @@
 #include <ql/voltermstructures/interestrate/optionlet/constantoptionletvol.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/optionletstripperadapter.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/optionletstripper.hpp>
+#include <ql/voltermstructures/interestrate/optionlet/optionletstripperbase.hpp>
+#include <ql/voltermstructures/interestrate/optionlet/optionletstripper1.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/optionletstripper2.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/optionletvolatilitystructure.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/spreadedoptionletvol.hpp>

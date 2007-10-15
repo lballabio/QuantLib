@@ -120,7 +120,8 @@ int main(int, char* []) {
                 new FlatForward(settlementDate, dividendYield, dayCounter)));
         Handle<BlackVolTermStructure> flatVolTS(
             boost::shared_ptr<BlackVolTermStructure>(
-                new BlackConstantVol(settlementDate, volatility, dayCounter)));
+                                new BlackConstantVol(settlementDate, TARGET(),
+                                                     volatility, dayCounter)));
 
         boost::shared_ptr<StrikedTypePayoff> payoff(
                                         new PlainVanillaPayoff(type, strike));

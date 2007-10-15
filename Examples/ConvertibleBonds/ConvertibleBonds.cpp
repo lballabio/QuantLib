@@ -180,7 +180,8 @@ int main(int, char* []) {
 
         Handle<BlackVolTermStructure> flatVolTS(
             boost::shared_ptr<BlackVolTermStructure>(
-                new BlackConstantVol(settlementDate, volatility, dayCounter)));
+                new BlackConstantVol(settlementDate, calendar,
+                                     volatility, dayCounter)));
 
 
         boost::shared_ptr<StochasticProcess> stochasticProcess(

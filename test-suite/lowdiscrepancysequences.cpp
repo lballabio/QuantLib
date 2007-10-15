@@ -2,7 +2,6 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
- 
  Copyright (C) 2007 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
@@ -153,13 +152,13 @@ namespace
         for (Size i=0; i < maxDim; ++i)
             if (fabs(errorInSds[i] ) > tolerance)
                 BOOST_ERROR("Lattice generator" << nameString <<" returns  a mean of " <<
-                means[i] << " with standard deviation " << errorInSds[i] 
+                means[i] << " with standard deviation " << errorInSds[i]
             << " in dimension " << i);
     }
-}   
+}
 
 
-void LowDiscrepancyTest::testRandomizedLattices() 
+void LowDiscrepancyTest::testRandomizedLattices()
 {
     testRandomizedLatticeRule(LatticeRule::A, "A");
     testRandomizedLatticeRule(LatticeRule::B, "B");
@@ -775,6 +774,14 @@ class SobolFactory {
           case SobolRsg::SobolLevitanLemieux:
             prefix = "SobolLevitanLemieux-initialized ";
             break;
+          case SobolRsg::Kuo:
+            prefix = "Kuo";
+            break;
+          case SobolRsg::Kuo2:
+            prefix = "Kuo2";
+            break;
+          default:
+            QL_FAIL("unknown direction integers");
         }
         return prefix + "Sobol sequences: ";
     }

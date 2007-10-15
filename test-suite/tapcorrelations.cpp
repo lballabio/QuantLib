@@ -22,7 +22,7 @@
 #include <ql/models/marketmodels/historicalcorrelation.hpp>
 #include <ql/math/matrixutilities/tapcorrelations.hpp>
 
-#include <ql/indexes/ibor/euribor.hpp> 
+#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/math/matrix.hpp>
 #include <sstream>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
@@ -38,7 +38,7 @@
 #include <ql/currencies/europe.hpp>
 #include <ql/termstructures/yieldcurves/piecewiseyieldcurve.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/termstructures/yieldcurves/ratehelpers.hpp> 
+#include <ql/termstructures/yieldcurves/ratehelpers.hpp>
 #include <ql/math/statistics/sequencestatistics.hpp>
 
 
@@ -169,7 +169,7 @@ Disposable<Array> triangularAnglesParametrizationGuess(const Matrix& matrix, Siz
         Real sinProduct = 1;
         Size bound = std::min(i,rank-1);
         for (Size j=0; j<bound; j++) {
-            theta[k] = std::acos(safeBounds(pseudoRoot[i][j]/sinProduct)) 
+            theta[k] = std::acos(safeBounds(pseudoRoot[i][j]/sinProduct))
                         * sign(pseudoRoot[i][j+1]);
             sinProduct *= std::sin(theta[k]);
             k++;
@@ -220,23 +220,23 @@ void testCorrelation(const Matrix& target,
 
 
 void testCorrelations(const Matrix& m, Size rank) {
-   
+
     Size nbParameters = Size(Real(rank-1) * (Real(m.rows()) - Real(rank)/2));
     Array initialValues = triangularAnglesParametrizationGuess(m, rank);
     Array initialValuesNewCoordinate = tanArray(initialValues);
-    
+
     BOOST_MESSAGE("Testing triangularAnglesParametrizationUnconstrained");
     testCorrelation(m,
-                    &triangularAnglesParametrizationUnconstrained, 
+                    &triangularAnglesParametrizationUnconstrained,
                     initialValuesNewCoordinate,
                     rank);
 
     BOOST_MESSAGE("Testing triangularAnglesParametrization");
     testCorrelation(m,
-                    &triangularAnglesParametrization, 
+                    &triangularAnglesParametrization,
                     initialValues,
                     rank);
-    
+
     // LMM tests
     nbParameters = (m.rows()*(m.rows()-1))/2;
     initialValues = Array(nbParameters, 0);
@@ -244,13 +244,13 @@ void testCorrelations(const Matrix& m, Size rank) {
 
     BOOST_MESSAGE("Testing lmmTriangularAnglesParametrizationUnconstrained");
     testCorrelation(m,
-                    &lmmTriangularAnglesParametrizationUnconstrained, 
+                    &lmmTriangularAnglesParametrizationUnconstrained,
                     initialValuesNewCoordinate,
                     m.rows());
 
     BOOST_MESSAGE("Testing lmmTriangularAnglesParametrization");
-    testCorrelation(m, 
-                    &lmmTriangularAnglesParametrization, 
+    testCorrelation(m,
+                    &lmmTriangularAnglesParametrization,
                     initialValues,
                     m.rows());
     BOOST_MESSAGE("Testing triangularAnglesParametrizationRankThree");
@@ -262,8 +262,8 @@ void testCorrelations(const Matrix& m, Size rank) {
     initialValues[0] = alpha;
     initialValues[1] = t0;
     initialValues[2] = epsilon;
-    testCorrelation(m, 
-                    &triangularAnglesParametrizationRankThreeVectorial, 
+    testCorrelation(m,
+                    &triangularAnglesParametrizationRankThreeVectorial,
                     initialValues,
                     3);
 }
@@ -278,7 +278,7 @@ void TapCorrelationTest::testCalibration() {
 void TapCorrelationTest::testArticleCalibrationExamples(){
     BOOST_MESSAGE("Testing Triangular Angles Parametrization article examples");
     setup();
-    
+
     testCorrelations(table1, 3);
     BOOST_MESSAGE("Article table1-table2 norm " << frobeniusNorm(table1 - table2));
     BOOST_MESSAGE("Article table1-table3 norm " << frobeniusNorm(table1 - table3));
@@ -304,8 +304,8 @@ void addSwapIndexes(SwapVector& swapIndexes, Period step, Period horizon,
     Handle<YieldTermStructure> dummyYTSHandle;
     Size i = 1;
     for(currentPeriod = step; currentPeriod<=horizon; ++i, currentPeriod = i*step)
-        swapIndexes.push_back(boost::shared_ptr<SwapIndex> 
-                            (new SwapIndex("swap", currentPeriod, 2, 
+        swapIndexes.push_back(boost::shared_ptr<SwapIndex>
+                            (new SwapIndex("swap", currentPeriod, 2,
                                         EURCurrency(), calendar,
                                         fixedLegTenor, bdc,
                                         dayCounter, iborIndex)));
@@ -324,8 +324,8 @@ void addIborIndexes(IborVector& iborIndexes, Period step, Period horizon) {
     Handle<YieldTermStructure> dummyYTSHandle;
     Size i = 1;
     for(currentPeriod = step; currentPeriod<=horizon;++i, currentPeriod = i*step)
-        iborIndexes.push_back(boost::shared_ptr<IborIndex> 
-                            (new IborIndex("ibor", currentPeriod, 2, 
+        iborIndexes.push_back(boost::shared_ptr<IborIndex>
+                            (new IborIndex("ibor", currentPeriod, 2,
                                         EURCurrency(), calendar, bdc, false,
                                         dayCounter, dummyYTSHandle)));
 }
@@ -339,7 +339,7 @@ void addIbors(IborVector& iborIndexes) {
 }
 
 boost::shared_ptr<YieldTermStructure> createTermStructure(const IborVector& iborIndexes,
-                                                          const SwapVector& swapIndexes, 
+                                                          const SwapVector& swapIndexes,
                                                           Natural depositSettlementDays,
                                                           Natural swapSettlementDays,
                                                           const DayCounter& swapDayCounter) {
@@ -347,9 +347,9 @@ boost::shared_ptr<YieldTermStructure> createTermStructure(const IborVector& ibor
         IborVector::const_iterator ibor;
         for(ibor=iborIndexes.begin(); ibor!=iborIndexes.end(); ++ibor) {
             boost::shared_ptr<SimpleQuote> dummyQuote(new SimpleQuote);
-            Handle<Quote> quoteHandle(dummyQuote); 
+            Handle<Quote> quoteHandle(dummyQuote);
             rateHelpers.push_back(boost::shared_ptr<RateHelper> (
-                                new DepositRateHelper(quoteHandle,  
+                                new DepositRateHelper(quoteHandle,
                                                 (*ibor)->tenor(),
                                                 depositSettlementDays,
                                                 (*ibor)->fixingCalendar(),
@@ -375,25 +375,27 @@ boost::shared_ptr<YieldTermStructure> createTermStructure(const IborVector& ibor
     Actual360 dayCounter;
     Date today = Settings::instance().evaluationDate();
     Real yieldCurveAccuracy = 1.0e-12;
-    return boost::shared_ptr<YieldTermStructure> 
+    return boost::shared_ptr<YieldTermStructure>
         (new PiecewiseYieldCurve<ForwardRate, Linear>
         (today, rateHelpers, dayCounter, yieldCurveAccuracy));
 }
 
 void TapCorrelationTest::testHistoricalCorrelation() {
     BOOST_MESSAGE("Testing historical correlations");
+
+    IndexHistoryCleaner indexCleaner;
     IborVector iborIndexes;
     SwapVector swapIndexes;
     TARGET calendar;
     BusinessDayConvention bdc = Following;
     Actual360 dayCounter;
     Handle<YieldTermStructure> dummyYTSHandle;
-    boost::shared_ptr<IborIndex> iborIndex(new IborIndex("toto", Period(6, Months), 2, 
+    boost::shared_ptr<IborIndex> iborIndex(new IborIndex("toto", Period(6, Months), 2,
                                         EURCurrency(), calendar, bdc, false,
                                         dayCounter, dummyYTSHandle));
     addIbors(iborIndexes);
     addSwaps(swapIndexes, iborIndex);
-        
+
     Date endDate = Settings::instance().evaluationDate();
     Date startDate = endDate - Period(1, Years);
     Date currentDate = startDate;
@@ -413,29 +415,29 @@ void TapCorrelationTest::testHistoricalCorrelation() {
     Real yieldCurveAccuracy=1.0e-12;
     Period historicalStep(1, Days);
     Period forwardHorizon(2, Years);
-    boost::shared_ptr<YieldTermStructure> termStructure 
-        = createTermStructure(iborIndexes, swapIndexes, 
-                              depositSettlementDays, swapSettlementDays, 
+    boost::shared_ptr<YieldTermStructure> termStructure
+        = createTermStructure(iborIndexes, swapIndexes,
+                              depositSettlementDays, swapSettlementDays,
                               swapDayCounter);
-    
+
     //Matrix historicalCorrelations1
     //            = computeHistoricalCorrelations1 (
     //               startDate, endDate, historicalStep, calendar,
     //               iborIndex, forwardHorizon, termStructure);
-    Matrix historicalCorrelationsZeroYieldLinear 
+    Matrix historicalCorrelationsZeroYieldLinear
                 = computeHistoricalCorrelationsZeroYieldLinear(
-               startDate, endDate, historicalStep, 
-               calendar, iborIndex, forwardHorizon, 
+               startDate, endDate, historicalStep,
+               calendar, iborIndex, forwardHorizon,
                iborIndexes, swapIndexes,
                depositSettlementDays,
                swapSettlementDays,
                swapDayCounter,
                yieldCurveAccuracy);
-    
-    Matrix historicalCorrelations 
+
+    Matrix historicalCorrelations
                 = computeHistoricalCorrelations<ForwardRate, Linear>(
-               startDate, endDate, historicalStep, 
-               calendar, iborIndex, forwardHorizon, 
+               startDate, endDate, historicalStep,
+               calendar, iborIndex, forwardHorizon,
                iborIndexes, swapIndexes,
                depositSettlementDays,
                swapSettlementDays,
@@ -453,6 +455,6 @@ void TapCorrelationTest::testHistoricalCorrelation() {
     suite->add(BOOST_TEST_CASE(&TapCorrelationTest::testArticleCalibrationExamples));
     suite->add(BOOST_TEST_CASE(&TapCorrelationTest::testCalibration));
     suite->add(BOOST_TEST_CASE(&TapCorrelationTest::testHistoricalCorrelation));
-    
+
     return suite;
 }

@@ -42,19 +42,23 @@ using namespace boost::unit_test_framework;
 
 QL_BEGIN_TEST_LOCALS(BondTest)
 
-Calendar calendar;
-Date today;
-Real faceAmount = 1000000.0;
+struct CommonVars {
+    // common data
+    Calendar calendar;
+    Date today;
+    Real faceAmount;
 
-void setup() {
-    calendar = TARGET();
-    today = calendar.adjust(Date::todaysDate());
-    Settings::instance().evaluationDate() = today;
-}
+    // cleanup
+    SavedSettings backup;
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
+    // setup
+    CommonVars() {
+        calendar = TARGET();
+        today = calendar.adjust(Date::todaysDate());
+        Settings::instance().evaluationDate() = today;
+        faceAmount = 1000000.0;
+    }
+};
 
 QL_END_TEST_LOCALS(BondTest)
 
@@ -63,9 +67,7 @@ void BondTest::testYield() {
 
     BOOST_MESSAGE("Testing consistency of bond price/yield calculation...");
 
-    SavedSettings backup;
-
-    setup();
+    CommonVars vars;
 
     Real tolerance = 1.0e-7;
     Size maxEvaluations = 100;
@@ -89,14 +91,17 @@ void BondTest::testYield() {
           for (Size l=0; l<LENGTH(frequencies); l++) {
             for (Size n=0; n<LENGTH(compounding); n++) {
 
-              Date dated = calendar.advance(today, issueMonths[i], Months);
+              Date dated = vars.calendar.advance(vars.today,
+                                                    issueMonths[i], Months);
               Date issue = dated;
-              Date maturity = calendar.advance(issue, lengths[j], Years);
+              Date maturity = vars.calendar.advance(issue,
+                                                       lengths[j], Years);
 
-              Schedule sch(dated, maturity, Period(frequencies[l]), calendar,
+              Schedule sch(dated, maturity,
+                           Period(frequencies[l]), vars.calendar,
                            accrualConvention, accrualConvention, true, false);
 
-              FixedRateBond bond(settlementDays, faceAmount, sch,
+              FixedRateBond bond(settlementDays, vars.faceAmount, sch,
                                  std::vector<Rate>(1, coupons[k]),
                                  bondDayCount, paymentConvention,
                                  redemption, issue);
@@ -104,16 +109,19 @@ void BondTest::testYield() {
               for (Size m=0; m<LENGTH(yields); m++) {
 
                 Real price = bond.cleanPrice(yields[m],
-                                             bondDayCount, compounding[n], frequencies[l]);
+                                             bondDayCount, compounding[n],
+                                             frequencies[l]);
                 Rate calculated = bond.yield(price,
-                                             bondDayCount, compounding[n], frequencies[l],
+                                             bondDayCount, compounding[n],
+                                             frequencies[l],
                                              Date(),
                                              tolerance, maxEvaluations);
 
                 if (std::fabs(yields[m]-calculated) > tolerance) {
                   // the difference might not matter
                   Real price2 = bond.cleanPrice(calculated,
-                                                bondDayCount, compounding[n], frequencies[l]);
+                                                bondDayCount, compounding[n],
+                                                frequencies[l]);
                   if (std::fabs(price-price2)/price > tolerance) {
                       BOOST_ERROR(
                           "yield recalculation failed:\n"
@@ -144,9 +152,7 @@ void BondTest::testTheoretical() {
 
     BOOST_MESSAGE("Testing theoretical bond price/yield calculation...");
 
-    SavedSettings backup;
-
-    setup();
+    CommonVars vars;
 
     Real tolerance = 1.0e-7;
     Size maxEvaluations = 100;
@@ -166,18 +172,20 @@ void BondTest::testTheoretical() {
       for (Size k=0; k<LENGTH(coupons); k++) {
         for (Size l=0; l<LENGTH(frequencies); l++) {
 
-            Date dated = today;
+            Date dated = vars.today;
             Date issue = dated;
-            Date maturity = calendar.advance(issue, lengths[j], Years);
+            Date maturity = vars.calendar.advance(issue, lengths[j], Years);
 
             boost::shared_ptr<SimpleQuote> rate(new SimpleQuote(0.0));
-            Handle<YieldTermStructure> discountCurve(flatRate(today,rate,
+            Handle<YieldTermStructure> discountCurve(flatRate(vars.today,
+                                                              rate,
                                                               bondDayCount));
 
-            Schedule sch(dated, maturity, Period(frequencies[l]), calendar,
+            Schedule sch(dated, maturity,
+                         Period(frequencies[l]), vars.calendar,
                          accrualConvention, accrualConvention, true,false);
 
-            FixedRateBond bond(settlementDays, faceAmount, sch,
+            FixedRateBond bond(settlementDays, vars.faceAmount, sch,
                                std::vector<Rate>(1, coupons[k]),
                                bondDayCount, paymentConvention,
                                redemption, issue);
@@ -191,7 +199,8 @@ void BondTest::testTheoretical() {
                 rate->setValue(yields[m]);
 
                 Real price = bond.cleanPrice(yields[m],
-                                             bondDayCount, Continuous, frequencies[l]);
+                                             bondDayCount, Continuous,
+                                             frequencies[l]);
                 Real calculatedPrice = bond.cleanPrice();
 
                 if (std::fabs(price-calculatedPrice) > tolerance) {
@@ -235,7 +244,7 @@ void BondTest::testCached() {
     BOOST_MESSAGE(
         "Testing bond price/yield calculation against cached values...");
 
-    SavedSettings backup;
+    CommonVars vars;
 
     // with implicit settlement calculation:
 
@@ -255,7 +264,7 @@ void BondTest::testCached() {
                   Date(31, October, 2006), Period(freq), bondCalendar,
                   Unadjusted, Unadjusted, true, false);
 
-    FixedRateBond bond1(settlementDays, faceAmount, sch1,
+    FixedRateBond bond1(settlementDays, vars.faceAmount, sch1,
                         std::vector<Rate>(1, 0.025),
                         bondDayCount, ModifiedFollowing,
                         100.0, Date(1, November, 2004));
@@ -271,7 +280,7 @@ void BondTest::testCached() {
                   Date(15, November, 2009), Period(freq), bondCalendar,
                   Unadjusted, Unadjusted, true, false);
 
-    FixedRateBond bond2(settlementDays, faceAmount, sch2,
+    FixedRateBond bond2(settlementDays, vars.faceAmount, sch2,
                         std::vector<Rate>(1, 0.035),
                         bondDayCount, ModifiedFollowing,
                         100.0, Date(15, November, 2004));
@@ -402,7 +411,7 @@ void BondTest::testCached() {
                   UnitedStates(UnitedStates::GovernmentBond),
                   Unadjusted, Unadjusted, true, false);
 
-    FixedRateBond bond3(settlementDays, faceAmount, sch3,
+    FixedRateBond bond3(settlementDays, vars.faceAmount, sch3,
                         std::vector<Rate>(1, 0.02875),
                         ActualActual(ActualActual::ISMA),
                         ModifiedFollowing,
@@ -446,7 +455,7 @@ void BondTest::testCachedZero() {
 
     BOOST_MESSAGE("Testing zero-coupon bond prices against cached values...");
 
-    SavedSettings backup;
+    CommonVars vars;
 
     Date today(22,November,2004);
     Settings::instance().evaluationDate() = today;
@@ -461,7 +470,7 @@ void BondTest::testCachedZero() {
 
     ZeroCouponBond bond1(settlementDays,
                          UnitedStates(UnitedStates::GovernmentBond),
-                         faceAmount,
+                         vars.faceAmount,
                          Date(30,November,2008),
                          ModifiedFollowing,
                          100.0, Date(30,November,2004));
@@ -483,7 +492,7 @@ void BondTest::testCachedZero() {
 
     ZeroCouponBond bond2(settlementDays,
                          UnitedStates(UnitedStates::GovernmentBond),
-                         faceAmount,
+                         vars.faceAmount,
                          Date(30,November,2007),
                          ModifiedFollowing,
                          100.0, Date(30,November,2004));
@@ -503,7 +512,7 @@ void BondTest::testCachedZero() {
 
     ZeroCouponBond bond3(settlementDays,
                          UnitedStates(UnitedStates::GovernmentBond),
-                         faceAmount,
+                         vars.faceAmount,
                          Date(30,November,2006),
                          ModifiedFollowing,
                          100.0, Date(30,November,2004));
@@ -527,7 +536,7 @@ void BondTest::testCachedFixed() {
 
     BOOST_MESSAGE("Testing fixed-coupon bond prices against cached values...");
 
-    SavedSettings backup;
+    CommonVars vars;
 
     Date today(22,November,2004);
     Settings::instance().evaluationDate() = today;
@@ -545,11 +554,11 @@ void BondTest::testCachedFixed() {
                  UnitedStates(UnitedStates::GovernmentBond),
                  Unadjusted, Unadjusted, true,false);
 
-    FixedRateBond bond1(settlementDays, faceAmount, sch,
-                          std::vector<Rate>(1, 0.02875),
-                          ActualActual(ActualActual::ISMA),
-                          ModifiedFollowing,
-                          100.0, Date(30,November,2004));
+    FixedRateBond bond1(settlementDays, vars.faceAmount, sch,
+                        std::vector<Rate>(1, 0.02875),
+                        ActualActual(ActualActual::ISMA),
+                        ModifiedFollowing,
+                        100.0, Date(30,November,2004));
 
     boost::shared_ptr<PricingEngine> bondEngine(
                                     new DiscountingBondEngine(discountCurve));
@@ -574,7 +583,7 @@ void BondTest::testCachedFixed() {
     couponRates[2] = 0.03125;
     couponRates[3] = 0.0325;
 
-    FixedRateBond bond2(settlementDays, faceAmount, sch,
+    FixedRateBond bond2(settlementDays, vars.faceAmount, sch,
                           couponRates,
                           ActualActual(ActualActual::ISMA),
                           ModifiedFollowing,
@@ -601,7 +610,7 @@ void BondTest::testCachedFixed() {
                   Unadjusted, Unadjusted, true, false,
                   Date(), Date(30,November,2008));
 
-    FixedRateBond bond3(settlementDays, faceAmount, sch3,
+    FixedRateBond bond3(settlementDays, vars.faceAmount, sch3,
                           couponRates, ActualActual(ActualActual::ISMA),
                           ModifiedFollowing,
                           100.0, Date(30,November,2004));
@@ -625,7 +634,7 @@ void BondTest::testCachedFloating() {
 
     BOOST_MESSAGE("Testing floating-rate bond prices against cached values...");
 
-    SavedSettings backup;
+    CommonVars vars;
 
     Date today(22,November,2004);
     Settings::instance().evaluationDate() = today;
@@ -652,7 +661,7 @@ void BondTest::testCachedFloating() {
                  ModifiedFollowing, ModifiedFollowing,
                  true, false);
 
-    FloatingRateBond bond1(settlementDays, faceAmount, sch,
+    FloatingRateBond bond1(settlementDays, vars.faceAmount, sch,
                            index, ActualActual(ActualActual::ISMA),
                            ModifiedFollowing, fixingDays,
                            std::vector<Real>(), std::vector<Spread>(),
@@ -684,7 +693,7 @@ void BondTest::testCachedFloating() {
 
     // different risk-free and discount curve
 
-    FloatingRateBond bond2(settlementDays, faceAmount, sch,
+    FloatingRateBond bond2(settlementDays, vars.faceAmount, sch,
                            index, ActualActual(ActualActual::ISMA),
                            ModifiedFollowing, fixingDays,
                            std::vector<Rate>(), std::vector<Spread>(),
@@ -721,7 +730,7 @@ void BondTest::testCachedFloating() {
     spreads[2] = 0.0014;
     spreads[3] = 0.0016;
 
-    FloatingRateBond bond3(settlementDays, faceAmount, sch,
+    FloatingRateBond bond3(settlementDays, vars.faceAmount, sch,
                            index, ActualActual(ActualActual::ISMA),
                            ModifiedFollowing, fixingDays,
                            std::vector<Real>(), spreads,

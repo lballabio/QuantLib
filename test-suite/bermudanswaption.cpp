@@ -32,54 +32,69 @@ using namespace boost::unit_test_framework;
 
 QL_BEGIN_TEST_LOCALS(BermudanSwaptionTest)
 
-// global data
-Date today_, settlement_;
-Calendar calendar_;
+struct CommonVars {
+    // global data
+    Date today, settlement;
+    Calendar calendar;
 
-// underlying swap parameters
-Integer startYears_, length_;
-VanillaSwap::Type type_;
-Real nominal_;
-BusinessDayConvention fixedConvention_, floatingConvention_;
-Frequency fixedFrequency_, floatingFrequency_;
-DayCounter fixedDayCount_;
-boost::shared_ptr<IborIndex> index_;
-Natural settlementDays_;
+    // underlying swap parameters
+    Integer startYears, length;
+    VanillaSwap::Type type;
+    Real nominal;
+    BusinessDayConvention fixedConvention, floatingConvention;
+    Frequency fixedFrequency, floatingFrequency;
+    DayCounter fixedDayCount;
+    boost::shared_ptr<IborIndex> index;
+    Natural settlementDays;
 
-RelinkableHandle<YieldTermStructure> termStructure_;
+    RelinkableHandle<YieldTermStructure> termStructure;
 
-// utilities
+    // cleanup
+    SavedSettings backup;
 
-boost::shared_ptr<VanillaSwap> makeSwap(Rate fixedRate) {
-    Date start = calendar_.advance(settlement_,startYears_,Years);
-    Date maturity = calendar_.advance(start,length_,Years);
-    Schedule fixedSchedule(start, maturity, Period(fixedFrequency_), calendar_,
-                           fixedConvention_, fixedConvention_, false, false);
-    Schedule floatSchedule(start, maturity, Period(floatingFrequency_), calendar_,
-                           floatingConvention_, floatingConvention_, false, false);
-    return boost::shared_ptr<VanillaSwap>(
-            new VanillaSwap(type_,nominal_,
-                            fixedSchedule,fixedRate,fixedDayCount_,
-                            floatSchedule,index_,0.0,
-                            index_->dayCounter(),termStructure_));
-}
+    // setup
+    CommonVars() {
+        startYears = 1;
+        length = 5;
+        type = VanillaSwap::Payer;
+        nominal = 1000.0;
+        settlementDays = 2;
+        fixedConvention = Unadjusted;
+        floatingConvention = ModifiedFollowing;
+        fixedFrequency = Annual;
+        floatingFrequency = Semiannual;
+        fixedDayCount = Thirty360();
+        index = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+        calendar = index->fixingCalendar();
+        today = calendar.adjust(Date::todaysDate());
+        settlement = calendar.advance(today,settlementDays,Days);
+    }
 
-void setup() {
-    startYears_ = 1;
-    length_ = 5;
-    type_ = VanillaSwap::Payer;
-    nominal_ = 1000.0;
-    settlementDays_ = 2;
-    fixedConvention_ = Unadjusted;
-    floatingConvention_ = ModifiedFollowing;
-    fixedFrequency_ = Annual;
-    floatingFrequency_ = Semiannual;
-    fixedDayCount_ = Thirty360();
-    index_ = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure_));
-    calendar_ = index_->fixingCalendar();
-    today_ = calendar_.adjust(Date::todaysDate());
-    settlement_ = calendar_.advance(today_,settlementDays_,Days);
-}
+    // utilities
+    boost::shared_ptr<VanillaSwap> makeSwap(Rate fixedRate) {
+        Date start = calendar.advance(settlement, startYears, Years);
+        Date maturity = calendar.advance(start, length, Years);
+        Schedule fixedSchedule(start, maturity,
+                               Period(fixedFrequency),
+                               calendar,
+                               fixedConvention,
+                               fixedConvention,
+                               false, false);
+        Schedule floatSchedule(start, maturity,
+                               Period(floatingFrequency),
+                               calendar,
+                               floatingConvention,
+                               floatingConvention,
+                               false, false);
+        return boost::shared_ptr<VanillaSwap>(
+                      new VanillaSwap(type, nominal,
+                                      fixedSchedule, fixedRate, fixedDayCount,
+                                      floatSchedule, index, 0.0,
+                                      index->dayCounter(),
+                                      termStructure));
+    }
+};
+
 
 QL_END_TEST_LOCALS(BermudanSwaptionTest)
 
@@ -88,27 +103,26 @@ void BermudanSwaptionTest::testCachedValues() {
 
     BOOST_MESSAGE("Testing Bermudan swaption against cached values...");
 
-    SavedSettings backup;
+    CommonVars vars;
 
-    setup();
+    vars.today = Date(15, February, 2002);
 
-    today_ = Date(15, February, 2002);
+    Settings::instance().evaluationDate() = vars.today;
 
-    Settings::instance().evaluationDate() = today_;
-
-    settlement_ = Date(19, February, 2002);
+    vars.settlement = Date(19, February, 2002);
     // flat yield term structure impling 1x5 swap at 5%
-    termStructure_.linkTo(flatRate(settlement_,0.04875825,
-                                   Actual365Fixed()));
+    vars.termStructure.linkTo(flatRate(vars.settlement,
+                                          0.04875825,
+                                          Actual365Fixed()));
 
-    Rate atmRate = makeSwap(0.0)->fairRate();
+    Rate atmRate = vars.makeSwap(0.0)->fairRate();
 
-    boost::shared_ptr<VanillaSwap> itmSwap = makeSwap(0.8*atmRate);
-    boost::shared_ptr<VanillaSwap> atmSwap = makeSwap(atmRate);
-    boost::shared_ptr<VanillaSwap> otmSwap = makeSwap(1.2*atmRate);
+    boost::shared_ptr<VanillaSwap> itmSwap = vars.makeSwap(0.8*atmRate);
+    boost::shared_ptr<VanillaSwap> atmSwap = vars.makeSwap(atmRate);
+    boost::shared_ptr<VanillaSwap> otmSwap = vars.makeSwap(1.2*atmRate);
 
     Real a = 0.048696, sigma = 0.0058904;
-    boost::shared_ptr<ShortRateModel> model(new HullWhite(termStructure_,
+    boost::shared_ptr<ShortRateModel> model(new HullWhite(vars.termStructure,
                                                           a, sigma));
     std::vector<Date> exerciseDates;
     const Leg& leg = atmSwap->fixedLeg();
@@ -150,7 +164,7 @@ void BermudanSwaptionTest::testCachedValues() {
                     << "expected:   " << otmValue);
 
     for (Size j=0; j<exerciseDates.size(); j++)
-        exerciseDates[j] = calendar_.adjust(exerciseDates[j]-10);
+        exerciseDates[j] = vars.calendar.adjust(exerciseDates[j]-10);
     exercise =
         boost::shared_ptr<Exercise>(new BermudanExercise(exerciseDates));
 

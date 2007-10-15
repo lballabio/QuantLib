@@ -42,14 +42,15 @@ namespace QuantLib {
                        const DayCounter& dc)
     : SmileSection(optionDate, dc),
       endCriteria_(endCriteria), method_(method),
-      strikes_(strikes), actualStrikes_(strikes), 
-      stdDevHandles_(stdDevHandles), forward_(forward),
+      strikes_(strikes), stdDevHandles_(stdDevHandles),
+      forward_(forward),
       isRhoFixed_(isRhoFixed), vegaWeighted_(vegaWeighted),
       vols_(stdDevHandles.size()),
       alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
       isAlphaFixed_(isAlphaFixed), isBetaFixed_(isBetaFixed),
-      isNuFixed_(isNuFixed), 
-      evaluationDate_(Settings::instance().evaluationDate()) {
+      isNuFixed_(isNuFixed),
+      evaluationDate_(Settings::instance().evaluationDate()),
+      actualStrikes_(strikes) {
         LazyObject::registerWith(forward_);
         for (Size i=0; i<stdDevHandles_.size(); ++i)
             LazyObject::registerWith(stdDevHandles_[i]);
