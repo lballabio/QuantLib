@@ -460,6 +460,12 @@
 				RelativePath=".\ql\cashflows\dividend.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\cashflows\duration.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\duration.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\cashflows\fixedratecoupon.cpp">
 			</File>
 			<File
@@ -5595,6 +5601,12 @@
 						RelativePath=".\ql\voltermstructures\interestrate\optionlet\optionletstripper.hpp">
 					</File>
 					<File
+						RelativePath=".\ql\voltermstructures\interestrate\optionlet\optionletstripper1.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\voltermstructures\interestrate\optionlet\optionletstripper1.hpp">
+					</File>
+					<File
 						RelativePath=".\ql\voltermstructures\interestrate\optionlet\optionletstripper2.cpp">
 					</File>
 					<File
@@ -5605,6 +5617,9 @@
 					</File>
 					<File
 						RelativePath=".\ql\voltermstructures\interestrate\optionlet\optionletstripperadapter.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\voltermstructures\interestrate\optionlet\optionletstripperbase.hpp">
 					</File>
 					<File
 						RelativePath=".\ql\voltermstructures\interestrate\optionlet\optionletvolatilitystructure.cpp">
