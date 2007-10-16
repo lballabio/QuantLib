@@ -318,6 +318,7 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
        lognormally with a fixed known volatility that stays constant
        throughout time.
     */
+    Calendar calendar = TARGET();
     Date today = Date::todaysDate();
     DayCounter dayCount = Actual365Fixed();
     Handle<Quote> stateVariable(
@@ -330,8 +331,7 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
                                       new FlatForward(today, 0.0, dayCount)));
     Handle<BlackVolTermStructure> volatility(
                           boost::shared_ptr<BlackVolTermStructure>(
-                                     new BlackConstantVol(today, TARGET(),
-                                                          sigma_, dayCount)));
+                               new BlackConstantVol(today, calendar, sigma_, dayCount)));
     boost::shared_ptr<StochasticProcess1D> diffusion(
                    new BlackScholesMertonProcess(stateVariable, dividendYield,
                                                  riskFreeRate, volatility));
