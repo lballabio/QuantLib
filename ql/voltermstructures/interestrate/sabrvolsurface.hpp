@@ -28,6 +28,7 @@
 #include <ql/voltermstructures/blackatmvolcurve.hpp>
 #include <ql/quote.hpp>
 #include <boost/array.hpp>
+#include <ql/voltermstructures/sabrinterpolatedsmilesectionNew.hpp>
 
 namespace QuantLib {
 
@@ -63,8 +64,8 @@ namespace QuantLib {
         std::vector<Volatility> volatilitySpreads(const Date&) const;
       protected:
         boost::array<Real, 4> sabrGuesses(const Date&) const;
-        void updateSabrGuesses(const Date& d, boost::array<Real, 4> newGuesses);
       public:
+        //@}       
         //! \name BlackVolSurface interface
         //@{
         boost::shared_ptr<SmileSection> smileSectionImpl(Time) const;
@@ -74,8 +75,12 @@ namespace QuantLib {
         //! \name LazyObject interface
         //@{
         void performCalculations () const;
+        virtual void update();
         //@}
       private:
+        void registerWithMarketData();
+        void checkInputs() const;
+        void updateSabrGuesses(const Date& d, boost::array<Real, 4> newGuesses) const;
         Handle<BlackAtmVolCurve> atmCurve_;
         std::vector<Period> optionTenors_;
         std::vector<Time> optionTimes_;
@@ -126,7 +131,6 @@ namespace QuantLib {
     SabrVolSurface::volatilitySpreads(const Period& p) const {
         return volatilitySpreads(optionDateFromTenor(p));
     }
-
 }
 
 #endif

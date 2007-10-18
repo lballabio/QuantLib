@@ -3622,6 +3622,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\voltermstructures\sabrinterpolatedsmilesectionNew.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\voltermstructures\smilesection.cpp"
 				>
 			</File>
@@ -6570,6 +6574,10 @@
 		</File>
 		<File
 			RelativePath=".\ql\quote.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\voltermstructures\sabrinterpolatedsmilesectionNew.hpp"
 			>
 		</File>
 		<File

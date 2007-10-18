@@ -23,6 +23,8 @@
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/quotes/simplequote.hpp>
+//
+
 
 namespace QuantLib {
 
@@ -40,23 +42,9 @@ namespace QuantLib {
       atmRateSpreads_(atmRateSpreads),
       volSpreads_(volSpreads) {
 
-        // Checks
-        Size nStrikes = atmRateSpreads_.size();
-        QL_REQUIRE(nStrikes>1, "too few strikes (" << nStrikes << ")");
-        for (Size i=1; i<nStrikes; ++i)
-            QL_REQUIRE(atmRateSpreads_[i-1]<atmRateSpreads_[i],
-                       "non increasing strike spreads: " <<
-                       io::ordinal(i-1) << " is " << atmRateSpreads_[i-1] << ", " <<
-                       io::ordinal(i) << " is " << atmRateSpreads_[i]);
-        for (Size i=0; i<volSpreads_.size(); i++)
-            QL_REQUIRE(atmRateSpreads_.size()==volSpreads_[i].size(),
-                       "mismatch between number of strikes (" << atmRateSpreads_.size() <<
-                       ") and number of columns (" << volSpreads_[i].size() <<
-                       ") in the " << io::ordinal(i) << " row");
+        checkInputs();
 
         // Creation of reference smile sections
-        Size nOptions = optionTenors_.size();
-        Size nAtmRateSpreads = atmRateSpreads_.size();
 
         // Hard coded
         isAlphaFixed_ = false;
@@ -65,9 +53,9 @@ namespace QuantLib {
         isRhoFixed_ = false;
         vegaWeighted_ = true;
 
-        sabrGuesses_.resize(nOptions);
+        sabrGuesses_.resize(optionTenors_.size());
         
-        for (Size i=0; i<nOptions; ++i) {
+        for (Size i=0; i<optionTenors_.size(); ++i) {
                         
             optionDates_[i] = optionDateFromTenor(optionTenors_[i]);
             optionTimes_[i] = timeFromReference(optionDates_[i]);            
@@ -78,26 +66,20 @@ namespace QuantLib {
             sabrGuesses_[i][2] = 0.3;   // rho
             sabrGuesses_[i][3] = 0.0;   // nu
         }
-
-        // Register market data
-        for (Size i=0; i<nOptions; ++i) {
-            for (Size j=0; j<nAtmRateSpreads; ++j) {        
-                registerWith(volSpreads_[i][j]);
-            }
-        }
-
+        registerWithMarketData();
     }
 
     boost::array<Real, 4> SabrVolSurface::sabrGuesses(const Date& d) const {
     
         // the guesses for sabr parameters are assumed to be piecewise constant
+        if (d<=optionDates_[0]) return sabrGuesses_[0]; 
         Size i=0;
-        while( d<=optionDates_[i] && i<optionDates_.size())
-            i++;
+        while( d<optionDates_[i] && i<optionDates_.size()-1)
+            ++i;
         return sabrGuesses_[i];
     }
     
-    void SabrVolSurface::updateSabrGuesses(const Date& d, boost::array<Real, 4> newGuesses) {
+    void SabrVolSurface::updateSabrGuesses(const Date& d, boost::array<Real, 4> newGuesses) const {
 
         Size i=0;
         while( d<=optionDates_[i] && i<optionDates_.size())
@@ -127,64 +109,131 @@ namespace QuantLib {
         return interpolatedVols;
     }
 
-    void SabrVolSurface::performCalculations () const {
     
+    void SabrVolSurface::update() {
+        TermStructure::update();
+        for (Size i=0; i<optionTenors_.size(); ++i) {                        
+            optionDates_[i] = optionDateFromTenor(optionTenors_[i]);
+            optionTimes_[i] = timeFromReference(optionDates_[i]);                          
+        }
+        notifyObservers();
+
     }
+    //void SabrVolSurface::performCalculations () const {
+    //
+    //}
     
+    // OLD
+    //boost::shared_ptr<SmileSection>
+    //SabrVolSurface::smileSectionImpl(Time t) const {
+
+    //    BigInteger n = BigInteger(t*365.0);
+    //    Date d = referenceDate()+n*Days;
+    //    Size s = atmRateSpreads_.size();
+    //    std::vector<Rate> strikes(s);
+    //    std::vector<Volatility> vols(s);
+    //    std::vector<Handle<Quote> > volSpreadsQuotes(s);
+    //    // interpolating on ref smile sections
+    //    std::vector<Volatility> volSpreads = volatilitySpreads(d);
+    //    Rate atmRate = index_->forecastFixing(d);
+    //    Volatility atmVol = atmCurve_->atmVol(d);
+    //    for (Size i=0; i<s; ++i) {
+    //        strikes[i] = atmRate + atmRateSpreads_[i];
+    //        vols[i] = atmVol + volSpreads[i];
+    //    }
+
+    //    // calculate sabr fit
+    //    boost::array<Real, 4> sabrParameters1 = sabrGuesses(d);
+    //    const boost::shared_ptr<SABRInterpolation> sabrInterpolation =
+    //        boost::shared_ptr<SABRInterpolation>(new
+    //            SABRInterpolation(strikes.begin(), strikes.end(),
+    //                              vols.begin(),
+    //                              timeFromReference(d),
+    //                              atmRate,
+    //                              sabrParameters1[0], sabrParameters1[1],
+    //                              sabrParameters1[2], sabrParameters1[3],
+    //                              isAlphaFixed_,
+    //                              isBetaFixed_,
+    //                              isNuFixed_,
+    //                              isRhoFixed_,
+    //                              vegaWeighted_));
+    //    sabrInterpolation->update();
+    //    QL_REQUIRE(sabrInterpolation->interpolationError()<0.01, "Bad interpolation");
+
+    //    std::vector<Real> sabrParameters(4);
+    //    sabrParameters[0] = sabrInterpolation->alpha();
+    //    sabrParameters[1] = sabrInterpolation->beta();
+    //    sabrParameters[2] = sabrInterpolation->nu();
+    //    sabrParameters[3] = sabrInterpolation->rho();
+
+    //    // Store sabr parameters
+    //    boost::array<Real, 4> g;
+    //    g[0] = sabrParameters[0];
+    //    g[1] = sabrParameters[1];
+    //    g[2] = sabrParameters[2];
+    //    g[3] = sabrParameters[3];
+    //    updateSabrGuesses(d, g);
+
+    //    // create the smile section
+    //    boost::shared_ptr<SmileSection> resultOLD(new
+    //        SabrSmileSection(d, atmRate, sabrParameters, dayCounter()));        
+    //    
+    //    return resultOLD;
+    //}
     
     boost::shared_ptr<SmileSection>
     SabrVolSurface::smileSectionImpl(Time t) const {
 
         BigInteger n = BigInteger(t*365.0);
-        Date d = referenceDate()+n*Days;   
-        Size s = atmRateSpreads_.size();
-        std::vector<Rate> strikes(s);
-        std::vector<Volatility> vols(s);
+        Date d = referenceDate()+n*Days;
         // interpolating on ref smile sections
         std::vector<Volatility> volSpreads = volatilitySpreads(d);
-        Rate atmRate = index_->forecastFixing(d);
-        Volatility atmVol = atmCurve_->atmVol(d);
-        for (Size i=0; i<s; ++i) {
-            strikes[i] = atmRate + atmRateSpreads_[i];
-            vols[i] = atmVol + volSpreads[i];
-        }
 
         // calculate sabr fit
         boost::array<Real, 4> sabrParameters1 = sabrGuesses(d);
-        const boost::shared_ptr<SABRInterpolation> sabrInterpolation =
-            boost::shared_ptr<SABRInterpolation>(new
-                SABRInterpolation(strikes.begin(), strikes.end(),
-                                  vols.begin(),
-                                  timeFromReference(d),
-                                  atmRate,
-                                  sabrParameters1[0], sabrParameters1[1],
-                                  sabrParameters1[2], sabrParameters1[3],
-                                  isAlphaFixed_,
-                                  isBetaFixed_,
-                                  isNuFixed_,
-                                  isRhoFixed_,
-                                  vegaWeighted_));
-        sabrInterpolation->update();
-        QL_REQUIRE(sabrInterpolation->interpolationError()<0.01, "Bad interpolation");
 
-        std::vector<Real> sabrParameters(4);
-        sabrParameters[0] = sabrInterpolation->alpha();
-        sabrParameters[1] = sabrInterpolation->beta();
-        sabrParameters[2] = sabrInterpolation->nu();
-        sabrParameters[3] = sabrInterpolation->rho();
+        boost::shared_ptr<SabrInterpolatedSmileSectionNew> tmp(new
+            SabrInterpolatedSmileSectionNew(d, 
+                                            index_->forecastFixing(d), atmRateSpreads_, true,
+                                            atmCurve_->atmVol(d), volSpreads,
+                                            sabrParameters1[0], sabrParameters1[1],
+                                            sabrParameters1[2], sabrParameters1[3],
+                                            isAlphaFixed_, isBetaFixed_,
+                                            isNuFixed_, isRhoFixed_,
+                                            vegaWeighted_/*,
+                                            const boost::shared_ptr<EndCriteria>& endCriteria,
+                                            const boost::shared_ptr<OptimizationMethod>& method,
+                                            const DayCounter& dc*/));
+        
+        // update guess
 
-        // Store sabr parameters
-        //boost::array<Real, 4> g;
-        //g[0] = sabrParameters[0];
-        //g[1] = sabrParameters[1];
-        //g[2] = sabrParameters[2];
-        //g[3] = sabrParameters[3];
-        //updateSabrGuesses(d, g);
+        return tmp;
 
-        // create the smile section
-        boost::shared_ptr<SmileSection> result(new
-            SabrSmileSection(d, atmRate, sabrParameters, dayCounter()));
-        return result;
+    }
+
+    void SabrVolSurface::registerWithMarketData() {
+         
+        for (Size i=0; i<optionTenors_.size(); ++i) {
+            for (Size j=0; j<atmRateSpreads_.size(); ++j) {        
+                registerWith(volSpreads_[i][j]);
+            }
+        }   
+    }
+
+    void SabrVolSurface::checkInputs() const {
+
+        Size nStrikes = atmRateSpreads_.size();
+        QL_REQUIRE(nStrikes>1, "too few strikes (" << nStrikes << ")");
+        for (Size i=1; i<nStrikes; ++i)
+            QL_REQUIRE(atmRateSpreads_[i-1]<atmRateSpreads_[i],
+                       "non increasing strike spreads: " <<
+                       io::ordinal(i-1) << " is " << atmRateSpreads_[i-1] << ", " <<
+                       io::ordinal(i) << " is " << atmRateSpreads_[i]);
+        for (Size i=0; i<volSpreads_.size(); i++)
+            QL_REQUIRE(atmRateSpreads_.size()==volSpreads_[i].size(),
+                       "mismatch between number of strikes (" << atmRateSpreads_.size() <<
+                       ") and number of columns (" << volSpreads_[i].size() <<
+                       ") in the " << io::ordinal(i) << " row");    
     }
 
     void SabrVolSurface::accept(AcyclicVisitor& v) {
