@@ -107,7 +107,8 @@ namespace QuantLib {
             switch (algorithm_) {
               case Sturges: {
                   bins_ = static_cast<Size>(
-                           std::ceil(std::log(data_.size())/std::log(2.0)+1));
+                           std::ceil(std::log(static_cast<Real>(data_.size()))
+                                     /std::log(2.0) + 1));
                   break;
               }
               case FD: {
