@@ -176,9 +176,7 @@ namespace QuantLib {
                        const DayCounter& fixedDayCount,
                        // floating leg
                        const boost::shared_ptr<IborIndex>& index,
-                       const Handle<Quote>& spread =
-                           Handle<Quote>(boost::shared_ptr<Quote>(new
-                                       SimpleQuote(0.0))));
+                       const Handle<Quote>& spread = Handle<Quote>());
         SwapRateHelper(Rate rate,
                        const Period& tenor,
                        Natural settlementDays,
@@ -189,9 +187,7 @@ namespace QuantLib {
                        const DayCounter& fixedDayCount,
                        // floating leg
                        const boost::shared_ptr<IborIndex>& index,
-                       const Handle<Quote>& spread =
-                           Handle<Quote>(boost::shared_ptr<Quote>(new
-                                       SimpleQuote(0.0))));
+                       const Handle<Quote>& spread = Handle<Quote>());
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -201,7 +197,7 @@ namespace QuantLib {
         //@}
         //! \name SwapRateHelper inspectors
         //@{
-        Real spread() const;
+        Spread spread() const;
         boost::shared_ptr<VanillaSwap> swap() const;
         //@}
       protected:

@@ -346,13 +346,14 @@ namespace QuantLib {
                       index_->dayCounter(),
                       termStructureHandle_));
 
-        // use SwapIndex instead
+        // use SwapIndex instead?
         swap_ = MakeVanillaSwap(tenor_, clonedIndex, 0.0)
             .withEffectiveDate(earliestDate_)
             .withFixedLegDayCount(fixedDayCount_)
             .withFixedLegTenor(Period(fixedFrequency_))
             .withFixedLegConvention(fixedConvention_)
-            .withFixedLegTerminationDateConvention(fixedConvention_);
+            .withFixedLegTerminationDateConvention(fixedConvention_)
+            .withFloatingLegSpread(spread());
 
         // Usually...
         latestDate_ = swap_->maturityDate();
@@ -385,20 +386,11 @@ namespace QuantLib {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we didn't register as observers - force calculation
         swap_->recalculate();
-        // weak implementation... to be improved
-        static const Spread basisPoint = 1.0e-4;
-        Real floatingLegNPV = swap_->floatingLegNPV();
-        Real spreadNPV = swap_->floatingLegBPS()/basisPoint*spread_->value();
-        QL_ENSURE(floatingLegNPV*spreadNPV>=0.0,
-                  "ooops... spreadNPV " << spreadNPV <<
-                  " floatNPV " << floatingLegNPV);
-        Real totNPV = - (floatingLegNPV+spreadNPV);
-        Real result = totNPV/(swap_->fixedLegBPS()/basisPoint);
-        return result;
+        return swap_->fairRate();
     }
 
-    Real SwapRateHelper::spread() const {
-        return spread_->value();
+    Spread SwapRateHelper::spread() const {
+        return spread_.empty() ? 0.0 : spread_->value();
     }
 
     boost::shared_ptr<VanillaSwap> SwapRateHelper::swap() const {
