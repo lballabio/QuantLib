@@ -8,6 +8,7 @@ this_include_HEADERS = \
 	discrepancystatistics.hpp \
 	gaussianstatistics.hpp \
 	generalstatistics.hpp \
+	histogram.hpp \
 	incrementalstatistics.hpp \
 	riskstatistics.hpp \
 	sequencestatistics.hpp \
@@ -16,6 +17,7 @@ this_include_HEADERS = \
 libStatistics_la_SOURCES = \
     discrepancystatistics.cpp \
     generalstatistics.cpp \
+    histogram.cpp \
 	incrementalstatistics.cpp
 
 noinst_LTLIBRARIES = libStatistics.la
