@@ -2016,6 +2016,12 @@
 					RelativePath=".\ql\math\statistics\generalstatistics.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\math\statistics\histogram.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\statistics\histogram.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\math\statistics\incrementalstatistics.cpp">
 				</File>
 				<File
