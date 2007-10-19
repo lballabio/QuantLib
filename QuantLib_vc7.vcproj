@@ -5452,6 +5452,12 @@
 				RelativePath=".\ql\voltermstructures\sabrinterpolatedsmilesection2.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\voltermstructures\sabrinterpolatedsmilesectionNew.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\voltermstructures\sabrinterpolatedsmilesectionNew.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\voltermstructures\smilesection.cpp">
 			</File>
 			<File
