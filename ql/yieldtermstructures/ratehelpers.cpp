@@ -388,7 +388,8 @@ namespace QuantLib {
         // weak implementation... to be improved
         static const Spread basisPoint = 1.0e-4;
         Real floatingLegNPV = swap_->floatingLegNPV();
-        Real spreadNPV = swap_->floatingLegBPS()/basisPoint*spread_->value();
+        Spread spread = spread_.empty() ? 0.0 : spread_->value();
+        Real spreadNPV = swap_->floatingLegBPS()/basisPoint*spread;
         Real totNPV = - (floatingLegNPV+spreadNPV);
         Real result = totNPV/(swap_->fixedLegBPS()/basisPoint);
         return result;
