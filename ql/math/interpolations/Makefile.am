@@ -13,7 +13,7 @@ this_include_HEADERS = \
 	forwardflatinterpolation.hpp \
 	interpolation2d.hpp \
 	linearinterpolation.hpp \
-	loglinearinterpolation.hpp \
+	loginterpolation.hpp \
 	multicubicspline.hpp \
 	sabrinterpolation.hpp
 

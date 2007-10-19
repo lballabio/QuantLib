@@ -10,7 +10,7 @@
 #include <ql/math/interpolations/forwardflatinterpolation.hpp>
 #include <ql/math/interpolations/interpolation2d.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/math/interpolations/loglinearinterpolation.hpp>
+#include <ql/math/interpolations/loginterpolation.hpp>
 #include <ql/math/interpolations/multicubicspline.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
 

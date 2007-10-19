@@ -88,8 +88,8 @@ namespace QuantLib {
                 interpolation_ = CubicSpline(
                     this->xBegin_, this->xEnd_,
                     logY_.begin(),
-                    CubicSpline::BoundaryCondition::NotAKnot, 0.0,
-                    CubicSpline::BoundaryCondition::NotAKnot, 0.0,
+                    CubicSpline::NotAKnot, 0.0,
+                    CubicSpline::NotAKnot, 0.0,
                     true);
                 interpolation_.update();
             }
