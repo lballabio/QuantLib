@@ -1785,7 +1785,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\math\interpolations\loglinearinterpolation.hpp"
+					RelativePath=".\ql\math\interpolations\loginterpolation.hpp"
 					>
 				</File>
 				<File

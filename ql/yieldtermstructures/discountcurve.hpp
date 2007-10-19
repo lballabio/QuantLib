@@ -26,7 +26,7 @@
 #define quantlib_discount_curve_hpp
 
 #include <ql/yieldtermstructure.hpp>
-#include <ql/math/interpolations/loglinearinterpolation.hpp>
+#include <ql/math/interpolations/loginterpolation.hpp>
 #include <vector>
 #include <utility>
 
