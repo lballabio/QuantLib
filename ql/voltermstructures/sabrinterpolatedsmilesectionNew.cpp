@@ -31,13 +31,13 @@ namespace QuantLib {
                 bool hasFloatingStrikes,
                 const Handle<Quote>& atmVolatility,
                 const std::vector<Handle<Quote> >& volHandles,
-                Real alpha, Real beta, Real nu, Real rho,    
+                Real alpha, Real beta, Real nu, Real rho,
                 bool isAlphaFixed, bool isBetaFixed,
                 bool isNuFixed, bool isRhoFixed,
                 bool vegaWeighted,
                 const boost::shared_ptr<EndCriteria>& endCriteria,
                 const boost::shared_ptr<OptimizationMethod>& method,
-                const DayCounter& dc) 
+                const DayCounter& dc)
          : SmileSection(optionDate, dc),
            forward_(forward), atmVolatility_(atmVolatility),
            volHandles_(volHandles), strikes_(strikes), actualStrikes_(strikes),
@@ -46,7 +46,7 @@ namespace QuantLib {
            isAlphaFixed_(isAlphaFixed), isBetaFixed_(isBetaFixed),
            isNuFixed_(isNuFixed), isRhoFixed_(isRhoFixed),
            vegaWeighted_(vegaWeighted),
-           endCriteria_(endCriteria), method_(method), 
+           endCriteria_(endCriteria), method_(method),
            evaluationDate_(Settings::instance().evaluationDate()) {
 
             LazyObject::registerWith(forward_);
@@ -62,7 +62,7 @@ namespace QuantLib {
                bool hasFloatingStrikes,
                const Volatility& atmVolatility,
                const std::vector<Volatility>& volHandles,
-               Real alpha, Real beta, Real nu, Real rho,    
+               Real alpha, Real beta, Real nu, Real rho,
                bool isAlphaFixed, bool isBetaFixed,
                bool isNuFixed, bool isRhoFixed,
                bool vegaWeighted,
@@ -78,9 +78,9 @@ namespace QuantLib {
            isAlphaFixed_(isAlphaFixed), isBetaFixed_(isBetaFixed),
            isNuFixed_(isNuFixed), isRhoFixed_(isRhoFixed),
            vegaWeighted_(vegaWeighted),
-           endCriteria_(endCriteria), method_(method), 
+           endCriteria_(endCriteria), method_(method),
            evaluationDate_(Settings::instance().evaluationDate()) {
-            
+
             for (Size i=0; i<volHandles_.size(); ++i)
                 volHandles_[i] = Handle<Quote>(boost::shared_ptr<Quote>(new
                                         SimpleQuote(volHandles[i])));
@@ -90,15 +90,15 @@ namespace QuantLib {
     void SabrInterpolatedSmileSectionNew::createInterpolation() const {
          boost::shared_ptr<SABRInterpolation> tmp(new SABRInterpolation(
                      actualStrikes_.begin(), actualStrikes_.end(), vols_.begin(),
-                     exerciseTime(), forwardValue_, 
+                     exerciseTime(), forwardValue_,
                      alpha_, beta_, nu_, rho_,
                      isAlphaFixed_, isBetaFixed_, isNuFixed_, isRhoFixed_, vegaWeighted_,
                      endCriteria_, method_));
-         swap(tmp, sabrInterpolation_);    
+         swap(tmp, sabrInterpolation_);
     }
 
     void SabrInterpolatedSmileSectionNew::performCalculations() const {
-        forwardValue_ = forward_->value();        
+        forwardValue_ = forward_->value();
         vols_.clear();
         actualStrikes_.clear();
         // we populate the volatilities, skipping the invalid ones
@@ -126,3 +126,4 @@ namespace QuantLib {
     }
 
 }
+

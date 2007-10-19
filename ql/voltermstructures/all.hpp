@@ -9,6 +9,7 @@
 #include <ql/voltermstructures/sabr.hpp>
 #include <ql/voltermstructures/sabrinterpolatedsmilesection.hpp>
 #include <ql/voltermstructures/sabrinterpolatedsmilesection2.hpp>
+#include <ql/voltermstructures/sabrinterpolatedsmilesectionNew.hpp>
 #include <ql/voltermstructures/smilesection.hpp>
 
 #include <ql/voltermstructures/equityfx/all.hpp>

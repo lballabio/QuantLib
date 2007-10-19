@@ -14,6 +14,7 @@ this_include_HEADERS = \
     sabr.hpp \
     sabrinterpolatedsmilesection.hpp \
     sabrinterpolatedsmilesection2.hpp \
+    sabrinterpolatedsmilesectionNew.hpp \
     smilesection.hpp
 
 libVolTermStructures_la_SOURCES = \
@@ -24,6 +25,7 @@ libVolTermStructures_la_SOURCES = \
     sabr.cpp \
     sabrinterpolatedsmilesection.cpp \
     sabrinterpolatedsmilesection2.cpp \
+    sabrinterpolatedsmilesectionNew.cpp \
     smilesection.cpp
 
 libVolTermStructures_la_LIBADD = \
