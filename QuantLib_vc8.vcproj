@@ -1801,6 +1801,10 @@
 				Name="statistics"
 				>
 				<File
+					RelativePath=".\ql\math\statistics\all.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\statistics\convergencestatistics.hpp"
 					>
 				</File>
@@ -1822,6 +1826,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\statistics\generalstatistics.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\statistics\histogram.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\statistics\histogram.hpp"
 					>
 				</File>
 				<File
