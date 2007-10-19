@@ -78,13 +78,14 @@ namespace QuantLib {
         //@}
         //! \name YieldTermStructure interface
         //@{
-        const std::vector<Date>& dates() const;
         Date maxDate() const;
-        const std::vector<Time>& times() const;
         //@}
         //! \name Inspectors
         //@{
-        std::vector<std::pair<Date,Real> > nodes() const;
+        const std::vector<Time>& times() const;
+        const std::vector<Date>& dates() const;
+        const std::vector<Real>& data() const;
+        std::vector<std::pair<Date, Real> > nodes() const;
         //@}
         //! \name Observer interface
         //@{
@@ -109,13 +110,13 @@ namespace QuantLib {
     #ifndef __DOXYGEN__
 
     template <class C, class I>
-    class PiecewiseYieldCurve<C,I>::ObjectiveFunction {
+    class PiecewiseYieldCurve<C, I>::ObjectiveFunction {
       public:
-        ObjectiveFunction(const PiecewiseYieldCurve<C,I>*,
+        ObjectiveFunction(const PiecewiseYieldCurve<C, I>*,
                           const boost::shared_ptr<RateHelper>&, Size segment);
         Real operator()(DiscountFactor discountGuess) const;
       private:
-        const PiecewiseYieldCurve<C,I>* curve_;
+        const PiecewiseYieldCurve<C, I>* curve_;
         boost::shared_ptr<RateHelper> rateHelper_;
         Size segment_;
     };
@@ -125,39 +126,45 @@ namespace QuantLib {
     // inline definitions
 
     template <class C, class I>
-    inline const std::vector<Date>& PiecewiseYieldCurve<C,I>::dates() const {
-        calculate();
-        return this->dates_;
-    }
-
-    template <class C, class I>
-    inline Date PiecewiseYieldCurve<C,I>::maxDate() const {
+    inline Date PiecewiseYieldCurve<C, I>::maxDate() const {
         calculate();
         return this->dates_.back();
     }
 
     template <class C, class I>
-    inline const std::vector<Time>& PiecewiseYieldCurve<C,I>::times() const {
+    inline const std::vector<Time>& PiecewiseYieldCurve<C, I>::times() const {
         calculate();
         return this->times_;
     }
 
     template <class C, class I>
-    inline std::vector<std::pair<Date,Real> >
-    PiecewiseYieldCurve<C,I>::nodes() const {
+    inline const std::vector<Date>& PiecewiseYieldCurve<C, I>::dates() const {
+        calculate();
+        return this->dates_;
+    }
+
+    template <class C, class I>
+    inline const std::vector<Real>& PiecewiseYieldCurve<C,I>::data() const {
+        calculate();
+        return this->data_;
+    }
+
+    template <class C, class I>
+    inline std::vector<std::pair<Date, Real> >
+    PiecewiseYieldCurve<C, I>::nodes() const {
         calculate();
         return base_curve::nodes();
     }
 
     template <class C, class I>
-    inline void PiecewiseYieldCurve<C,I>::update() {
+    inline void PiecewiseYieldCurve<C, I>::update() {
         base_curve::update();
         LazyObject::update();
     }
 
     template <class C, class I>
-    inline DiscountFactor PiecewiseYieldCurve<C,I>::discountImpl(Time t)
-                                                                       const {
+    inline
+    DiscountFactor PiecewiseYieldCurve<C, I>::discountImpl(Time t) const {
         calculate();
         return base_curve::discountImpl(t);
     }
@@ -166,7 +173,7 @@ namespace QuantLib {
     // template definitions
 
     template <class C, class I>
-    PiecewiseYieldCurve<C,I>::PiecewiseYieldCurve(
+    PiecewiseYieldCurve<C, I>::PiecewiseYieldCurve(
                const Date& referenceDate,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
                const DayCounter& dayCounter,
@@ -178,7 +185,7 @@ namespace QuantLib {
     }
 
     template <class C, class I>
-    PiecewiseYieldCurve<C,I>::PiecewiseYieldCurve(
+    PiecewiseYieldCurve<C, I>::PiecewiseYieldCurve(
                Natural settlementDays,
                const Calendar& calendar,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
@@ -191,7 +198,7 @@ namespace QuantLib {
     }
 
     template <class C, class I>
-    void PiecewiseYieldCurve<C,I>::checkInstruments() {
+    void PiecewiseYieldCurve<C, I>::checkInstruments() {
 
         QL_REQUIRE(!instruments_.empty(), "no instrument given");
 
@@ -212,7 +219,7 @@ namespace QuantLib {
     }
 
     template <class C, class I>
-    void PiecewiseYieldCurve<C,I>::performCalculations() const
+    void PiecewiseYieldCurve<C, I>::performCalculations() const
     {
         // check that there is no instruments with invalid quote
         for (Size i=0; i<instruments_.size(); ++i)
@@ -318,14 +325,14 @@ namespace QuantLib {
     #ifndef __DOXYGEN__
 
     template <class C, class I>
-    PiecewiseYieldCurve<C,I>::ObjectiveFunction::ObjectiveFunction(
+    PiecewiseYieldCurve<C, I>::ObjectiveFunction::ObjectiveFunction(
                               const PiecewiseYieldCurve<C,I>* curve,
                               const boost::shared_ptr<RateHelper>& rateHelper,
                               Size segment)
     : curve_(curve), rateHelper_(rateHelper), segment_(segment) {}
 
     template <class C, class I>
-    Real PiecewiseYieldCurve<C,I>::ObjectiveFunction::operator()(Real guess)
+    Real PiecewiseYieldCurve<C, I>::ObjectiveFunction::operator()(Real guess)
                                                                        const {
         C::updateGuess(curve_->data_, guess, segment_);
         curve_->interpolation_.update();
@@ -335,6 +342,5 @@ namespace QuantLib {
     #endif
 
 }
-
 
 #endif
