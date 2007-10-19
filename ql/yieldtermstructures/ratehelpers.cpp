@@ -131,7 +131,10 @@ namespace QuantLib {
     }
 
     void RelativeDateRateHelper::update() {
-        initializeDates();
+        if (evaluationDate_ != Settings::instance().evaluationDate()) {
+            evaluationDate_ = Settings::instance().evaluationDate();
+            initializeDates();
+        }
         RateHelper::update();
     }
 
@@ -349,8 +352,7 @@ namespace QuantLib {
             .withFixedLegDayCount(fixedDayCount_)
             .withFixedLegTenor(Period(fixedFrequency_))
             .withFixedLegConvention(fixedConvention_)
-            .withFixedLegTerminationDateConvention(fixedConvention_)
-            .withFloatingLegSpread(spread());
+            .withFixedLegTerminationDateConvention(fixedConvention_);
 
         // Usually...
         latestDate_ = swap_->maturityDate();
@@ -383,7 +385,13 @@ namespace QuantLib {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we didn't register as observers - force calculation
         swap_->recalculate();
-        return swap_->fairRate();
+        // weak implementation... to be improved
+        static const Spread basisPoint = 1.0e-4;
+        Real floatingLegNPV = swap_->floatingLegNPV();
+        Real spreadNPV = swap_->floatingLegBPS()/basisPoint*spread_->value();
+        Real totNPV = - (floatingLegNPV+spreadNPV);
+        Real result = totNPV/(swap_->fixedLegBPS()/basisPoint);
+        return result;
     }
 
     Spread SwapRateHelper::spread() const {
