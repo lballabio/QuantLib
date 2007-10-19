@@ -33,6 +33,7 @@ class BondTest {
     static void testCachedZero();
     static void testCachedFixed();
     static void testCachedFloating();
+    static void testBrazilianCached();
     static boost::unit_test_framework::test_suite* suite();
 };
 

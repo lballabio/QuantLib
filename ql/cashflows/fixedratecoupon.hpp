@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2007 StatPro Italia srl
+ Copyright (C) 2007 Piter Dias
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +27,7 @@
 #define quantlib_fixed_rate_coupon_hpp
 
 #include <ql/cashflows/coupon.hpp>
+#include <ql/interestrate.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/schedule.hpp>
 
@@ -34,6 +36,8 @@ namespace QuantLib {
     //! %Coupon paying a fixed interest rate
     class FixedRateCoupon : public Coupon {
       public:
+        //! \name constructors
+        //@{
         FixedRateCoupon(Real nominal,
                         const Date& paymentDate,
                         Rate rate,
@@ -44,7 +48,21 @@ namespace QuantLib {
                         const Date& refPeriodEnd = Date())
         : Coupon(nominal, paymentDate, accrualStartDate, accrualEndDate,
                  refPeriodStart, refPeriodEnd),
-          rate_(rate), dayCounter_(dayCounter) {}
+          rate_(InterestRate(rate,dayCounter,Simple)),
+          dayCounter_(dayCounter) {}
+
+        FixedRateCoupon(Real nominal,
+                        const Date& paymentDate,
+                        const InterestRate& interestRate,
+                        const DayCounter& dayCounter,
+                        const Date& accrualStartDate,
+                        const Date& accrualEndDate,
+                        const Date& refPeriodStart = Date(),
+                        const Date& refPeriodEnd = Date())
+        : Coupon(nominal, paymentDate, accrualStartDate, accrualEndDate,
+                 refPeriodStart, refPeriodEnd),
+          rate_(interestRate), dayCounter_(dayCounter) {}
+        //@}
         //! \name CashFlow interface
         //@{
         Real amount() const;
@@ -52,6 +70,7 @@ namespace QuantLib {
         //! \name Coupon interface
         //@{
         Rate rate() const;
+        InterestRate interestRate() const;
         DayCounter dayCounter() const { return dayCounter_; }
         Real accruedAmount(const Date&) const;
         //@}
@@ -60,7 +79,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       private:
-        Rate rate_;
+        InterestRate rate_;
         DayCounter dayCounter_;
     };
 
@@ -71,17 +90,19 @@ namespace QuantLib {
       public:
         FixedRateLeg(const Schedule& schedule,
                      const DayCounter& paymentDayCounter);
-        FixedRateLeg& withNotionals(Real notional);
-        FixedRateLeg& withNotionals(const std::vector<Real>& notionals);
-        FixedRateLeg& withCouponRates(Rate couponRate);
-        FixedRateLeg& withCouponRates(const std::vector<Rate>& couponRates);
+        FixedRateLeg& withNotionals(Real);
+        FixedRateLeg& withNotionals(const std::vector<Real>&);
+        FixedRateLeg& withCouponRates(Rate);
+        FixedRateLeg& withCouponRates(const InterestRate&);
+        FixedRateLeg& withCouponRates(const std::vector<Rate>&);
+        FixedRateLeg& withCouponRates(const std::vector<InterestRate>&);
         FixedRateLeg& withPaymentAdjustment(BusinessDayConvention);
         FixedRateLeg& withFirstPeriodDayCounter(const DayCounter&);
         operator Leg() const;
       private:
         Schedule schedule_;
         std::vector<Real> notionals_;
-        std::vector<Rate> couponRates_;
+        std::vector<InterestRate> couponRates_;
         DayCounter paymentDayCounter_, firstPeriodDayCounter_;
         BusinessDayConvention paymentAdjustment_;
     };
