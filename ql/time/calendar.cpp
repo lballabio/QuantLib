@@ -122,10 +122,7 @@ namespace QuantLib {
                                              bool includeFirst,
                                              bool includeLast) const {
         BigInteger wd = 0;
-        if (from == to) {
-            if (isBusinessDay(from) && (includeFirst || includeLast))
-                wd = 1;
-        } else {
+        if (from != to) {
             if (from < to) {
                 Date d = from;
                 while (d <= to) {
