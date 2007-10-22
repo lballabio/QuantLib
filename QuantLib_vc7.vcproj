@@ -1513,6 +1513,9 @@
 					RelativePath=".\ql\math\interpolations\abcdinterpolation.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\math\interpolations\all.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\math\interpolations\backwardflatinterpolation.hpp">
 				</File>
 				<File
@@ -1540,7 +1543,7 @@
 					RelativePath=".\ql\math\interpolations\linearinterpolation.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\math\interpolations\loglinearinterpolation.hpp">
+					RelativePath=".\ql\math\interpolations\loginterpolation.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\math\interpolations\multicubicspline.hpp">
