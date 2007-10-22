@@ -804,7 +804,7 @@ void BondTest::testBrazilianCached() {
     vars.faceAmount = 1000.0;
 
     // The tolerance is high because Andima truncate yields
-    Real tolerance = 2.0; //1.0e-4;
+    Real tolerance = 1.0e-4;
 
     std::vector<InterestRate> couponRates(1);
     couponRates[0] = InterestRate(0.1,Thirty360(),Compounded,Annual);
