@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Cristina Duminuco
  Copyright (C) 2007 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
@@ -26,6 +27,7 @@
 
 #include <ql/voltermstructures/blackatmvolcurve.hpp>
 #include <ql/math/interpolation.hpp>
+#include <ql/math/interpolations/abcdinterpolation.hpp>
 #include <ql/quote.hpp>
 #include <ql/patterns/lazyobject.hpp>
 
@@ -44,6 +46,13 @@ namespace QuantLib {
                         const std::vector<Handle<Quote> >& vols,
                         BusinessDayConvention bdc = Following,
                         const DayCounter& dc = Actual365Fixed());
+        std::vector<Real> k() const;
+        Real a() const;
+        Real b() const;
+        Real c() const;
+        Real d() const;
+        Real error() const;
+        Real maxError() const;
         //! \name TermStructure interface
         //@{
         virtual Date maxDate() const;
@@ -86,8 +95,7 @@ namespace QuantLib {
         std::vector<Handle<Quote> > volHandles_;
         mutable std::vector<Volatility> vols_;
 
-        // make it not mutable if possible
-        mutable Interpolation interpolation_;
+        boost::shared_ptr<AbcdInterpolation> interpolation_;
     };
 
     // inline
@@ -104,7 +112,7 @@ namespace QuantLib {
 
     inline Volatility AbcdAtmVolCurve::atmVolImpl(Time t) const {
         calculate();
-        return interpolation_(t, true);
+        return interpolation_->operator() (t, true);
     }
 
     inline const std::vector<Period>& AbcdAtmVolCurve::optionTenors() const {
@@ -121,6 +129,33 @@ namespace QuantLib {
         return optionTimes_;
     }
 
+    inline
+    std::vector<Real> AbcdAtmVolCurve::k() const {
+        return interpolation_->k();
+    }
+    
+    inline Real AbcdAtmVolCurve::a() const {
+        return interpolation_->a();
+    }
+
+    inline Real AbcdAtmVolCurve::b() const {
+        return interpolation_->b();
+    }
+
+    inline Real AbcdAtmVolCurve::c() const {
+        return interpolation_->c();
+    }
+
+    inline Real AbcdAtmVolCurve::d() const {
+        return interpolation_->d();
+    }
+
+    inline Real AbcdAtmVolCurve::error() const {
+        return interpolation_->interpolationError();
+    }
+    inline Real AbcdAtmVolCurve::maxError() const {
+        return interpolation_->interpolationMaxError();
+    }
 }
 
 #endif

@@ -24,6 +24,7 @@
 
 
 #include <ql/math/optimization/endcriteria.hpp>
+#include <ql/math/optimization/projectedcostfunction.hpp>
 #include <ql/math/array.hpp>
 #include <boost/shared_ptr.hpp>
 #include <vector>
@@ -36,7 +37,62 @@ namespace QuantLib {
     class ParametersTransformation;
 
     class AbcdCalibration {
+    
+    private:
+
+        class AbcdError : public CostFunction {
+          public:
+            AbcdError(AbcdCalibration* abcd) : abcd_(abcd) {}
+
+            Real value(const Array& x) const {
+                const Array y = abcd_->transformation_->direct(x);
+                abcd_->a_ = y[0];
+                abcd_->b_ = y[1];
+                abcd_->c_ = y[2];
+                abcd_->d_ = y[3];
+                return abcd_->error();
+            }
+            Disposable<Array> values(const Array& x) const {
+                const Array y = abcd_->transformation_->direct(x);
+                abcd_->a_ = y[0];
+                abcd_->b_ = y[1];
+                abcd_->c_ = y[2];
+                abcd_->d_ = y[3];
+                return abcd_->errors();
+            }
+          private:
+            AbcdCalibration* abcd_;
+        };
+
+        class AbcdParametersTransformation :
+              public ParametersTransformation {
+                 mutable Array y_;
+                 const Real eps1_;
+         public:
+
+            AbcdParametersTransformation() : y_(Array(4)),
+                eps1_(.000000001){ }
+
+            Array direct(const Array& x) const {
+                y_[0] = x[0]*x[0] - x[3]*x[3] + eps1_;  // a + d > 0
+                y_[1] = x[1];
+                y_[2] = x[2]*x[2]+ eps1_;               // c > 0
+                y_[3] = x[3]*x[3]+ eps1_;               // d > 0
+                return y_;
+            }
+
+            Array inverse(const Array& x) const {
+                y_[0] = std::sqrt(x[0] + x[3]- eps1_);
+                y_[1] = x[1];
+                y_[2] = std::sqrt(x[2]- eps1_);
+                y_[3] = std::sqrt(x[3]- eps1_);
+                return y_;
+            }
+        };
+
       public:
+
+
         AbcdCalibration() {};
         AbcdCalibration(
              const std::vector<Real>& t,
@@ -76,10 +132,11 @@ namespace QuantLib {
         boost::shared_ptr<ParametersTransformation> transformation_;
 
       private:
+
         // optimization method used for fitting
         mutable EndCriteria::Type abcdEndCriteria_;
         boost::shared_ptr<EndCriteria> endCriteria_;
-        boost::shared_ptr<OptimizationMethod> method_;
+        boost::shared_ptr<OptimizationMethod> optMethod_;
         mutable std::vector<Real> weights_;
         bool vegaWeighted_;
         //! Parameters

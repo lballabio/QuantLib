@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Cristina Duminuco
  Copyright (C) 2007 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
@@ -19,7 +20,6 @@
 
 #include <ql/voltermstructures/interestrate/abcdatmvolcurve.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/math/interpolations/abcdinterpolation.hpp>
 
 namespace QuantLib {
 
@@ -36,11 +36,14 @@ namespace QuantLib {
       optionDates_(nOptionTenors_),
       optionTimes_(nOptionTenors_),
       volHandles_(vols),
-      vols_(vols.size()) // do not initialize with nOptionTenors_
+      vols_(vols.size()),
+      interpolation_(boost::shared_ptr<AbcdInterpolation>()) // do not initialize with nOptionTenors_
     {
         checkInputs();
         initializeOptionDatesAndTimes();
         registerWithMarketData();
+        for (Size i=0; i<vols_.size(); ++i)
+            vols_[i] = volHandles_[i]->value();
         interpolate();
     }
 
@@ -68,9 +71,10 @@ namespace QuantLib {
 
     void AbcdAtmVolCurve::interpolate()
     {
-        interpolation_ = AbcdInterpolation(optionTimes_.begin(),
-                                           optionTimes_.end(),
-                                           vols_.begin());
+        interpolation_ = boost::shared_ptr<AbcdInterpolation>(new
+                            AbcdInterpolation(optionTimes_.begin(),
+                                              optionTimes_.end(),
+                                              vols_.begin()));
     }
 
     void AbcdAtmVolCurve::accept(AcyclicVisitor& v) {
@@ -111,7 +115,7 @@ namespace QuantLib {
         for (Size i=0; i<vols_.size(); ++i)
             vols_[i] = volHandles_[i]->value();
 
-        interpolation_.update();
+        interpolation_->update();
     }
 
 }

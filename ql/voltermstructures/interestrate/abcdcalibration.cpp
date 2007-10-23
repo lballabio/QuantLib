@@ -26,82 +26,24 @@
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/voltermstructures/interestrate/abcd.hpp>
-#include <ql/math/optimization/projectedcostfunction.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-
-namespace {
-
-    using namespace QuantLib;
-
-    class AbcdCostFunction : public CostFunction {
-      public:
-        AbcdCostFunction(AbcdCalibration* abcd)
-        : abcd_(abcd) {}
-
-        Real value(const Array& x) const {
-            const Array y = abcd_->transformation_->direct(x);
-            abcd_->a_ = y[0];
-            abcd_->b_ = y[1];
-            abcd_->c_ = y[2];
-            abcd_->d_ = y[3];
-            return abcd_->error();
-        }
-        Disposable<Array> values(const Array& x) const {
-            const Array y = abcd_->transformation_->direct(x);
-            abcd_->a_ = y[0];
-            abcd_->b_ = y[1];
-            abcd_->c_ = y[2];
-            abcd_->d_ = y[3];
-            return abcd_->errors();
-        }
-      private:
-        AbcdCalibration* abcd_;
-    };
-
-    class AbcdParametersTransformation :
-          public ParametersTransformation {
-             mutable Array y_;
-             const Real eps1_;
-     public:
-
-        AbcdParametersTransformation() : y_(Array(4)),
-            eps1_(.000000001){ }
-
-        Array direct(const Array& x) const {
-            y_[0] = x[0]*x[0] - x[3]*x[3] + eps1_;  // a + d > 0
-            y_[1] = x[1];
-            y_[2] = x[2]*x[2]+ eps1_;               // c > 0
-            y_[3] = x[3]*x[3]+ eps1_;               // d > 0
-            return y_;
-        }
-
-        Array inverse(const Array& x) const {
-            y_[0] = std::sqrt(x[0] + x[3]- eps1_);
-            y_[1] = x[1];
-            y_[2] = std::sqrt(x[2]- eps1_);
-            y_[3] = std::sqrt(x[3]- eps1_);
-            return y_;
-        }
-    };
-
-}
-
+#include <ql/math/interpolations/abcdinterpolation.hpp>
 
 namespace QuantLib {
 
     AbcdCalibration::AbcdCalibration(
                const std::vector<Real>& t,
                const std::vector<Real>& blackVols,
-               Real aGuess, Real bGuess, Real cGuess, Real dGuess,
+               Real a, Real b, Real c, Real d,
                bool aIsFixed, bool bIsFixed, bool cIsFixed, bool dIsFixed,
                bool vegaWeighted,
                const boost::shared_ptr<EndCriteria>& endCriteria,
-               const boost::shared_ptr<OptimizationMethod>& method)
+               const boost::shared_ptr<OptimizationMethod>& optMethod)
     : aIsFixed_(aIsFixed), bIsFixed_(bIsFixed),
       cIsFixed_(cIsFixed), dIsFixed_(dIsFixed),
-      a_(aGuess), b_(bGuess), c_(cGuess), d_(dGuess),
+      a_(a), b_(b), c_(c), d_(d),
       abcdEndCriteria_(EndCriteria::None), endCriteria_(endCriteria),
-      method_(method), weights_(blackVols.size(), 1.0/blackVols.size()),
+      optMethod_(optMethod), weights_(blackVols.size(), 1.0/blackVols.size()),
       vegaWeighted_(vegaWeighted),
       times_(t), blackVols_(blackVols) {
 
@@ -110,8 +52,8 @@ namespace QuantLib {
                        ") and blackVols (" << blackVols.size() << ")");
 
         // if no optimization method or endCriteria is provided, we provide one
-        if (!method_)
-            method_ = boost::shared_ptr<OptimizationMethod>(new
+        if (!optMethod_)
+            optMethod_ = boost::shared_ptr<OptimizationMethod>(new
                 LevenbergMarquardt(1e-8, 1e-8, 1e-8));
             //method_ = boost::shared_ptr<OptimizationMethod>(new
             //    Simplex(0.01));
@@ -140,10 +82,12 @@ namespace QuantLib {
         // there is nothing to optimize
         if (aIsFixed_ && bIsFixed_ && cIsFixed_ && dIsFixed_) {
             abcdEndCriteria_ = EndCriteria::None;
+            //error_ = interpolationError();
+            //maxError_ = interpolationMaxError();
             return;
         } else {
 
-            AbcdCostFunction costFunction(this);
+            AbcdError costFunction(this);
             transformation_ = boost::shared_ptr<ParametersTransformation>(new
                 AbcdParametersTransformation);
 
@@ -169,7 +113,7 @@ namespace QuantLib {
 
             NoConstraint constraint;
             Problem problem(projectedAbcdCostFunction, constraint, projectedGuess);
-            abcdEndCriteria_ = method_->minimize(problem, *endCriteria_);
+            abcdEndCriteria_ = optMethod_->minimize(problem, *endCriteria_);
             Array projectedResult(problem.currentValue());
             Array transfResult(projectedAbcdCostFunction.include(projectedResult));
 
@@ -247,7 +191,5 @@ namespace QuantLib {
     EndCriteria::Type AbcdCalibration::endCriteria() const{
         return abcdEndCriteria_;
     }
-
-
 
 }
