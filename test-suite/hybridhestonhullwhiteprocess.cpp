@@ -1371,9 +1371,10 @@ void HybridHestonHullWhiteProcessTest::testPseudoJointCalibration() {
                            mcHestonEngine);
     mvo.registerWith(hestonModel);
 
-    Real qualityIndex;
-    const Size nrCascadeSteps = 4;
-    for (Size i=0; i<nrCascadeSteps; ++i) {
+    Real qualityIndex = QL_MAX_REAL;
+    Real targetQuality = 5.0;
+    const Size maxCascadeSteps = 6;
+    for (Size i=0; i<maxCascadeSteps && qualityIndex > targetQuality; ++i) {
         // 1. Calibrate Heston Model to match
         //    current Heston Volatility surface
         LevenbergMarquardt lm(1e-8, 1e-8, 1e-8);
@@ -1405,7 +1406,7 @@ void HybridHestonHullWhiteProcessTest::testPseudoJointCalibration() {
         }
     }
 
-    if (qualityIndex > 5.0) {
+    if (qualityIndex > targetQuality) {
         BOOST_ERROR("Failed to calibrate Heston Hull-White Model\n"
                     << "Quality index: " << qualityIndex);
     }
