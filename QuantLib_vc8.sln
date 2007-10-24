@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual C++ Express 2005
+# Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuantLib", "QuantLib_vc8.vcproj", "{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testsuite", "test-suite\testsuite_vc8.vcproj", "{A613045C-34AF-4706-AA3C-730C92524F74}"
@@ -46,6 +46,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DiscreteHedging", "Examples
 	ProjectSection(ProjectDependencies) = postProject
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FittedBondCurve", "Examples\FittedBondCurve\FittedBondCurve_vc8.vcproj", "{4E262A25-90B4-449A-BFC0-95311CADF91D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -135,6 +137,14 @@ Global
 		{C3E22CAD-0CAF-42DC-ADE0-B2FF4F644BCE}.Release CRTDLL|Win32.Build.0 = Release CRTDLL|Win32
 		{C3E22CAD-0CAF-42DC-ADE0-B2FF4F644BCE}.Release|Win32.ActiveCfg = Release|Win32
 		{C3E22CAD-0CAF-42DC-ADE0-B2FF4F644BCE}.Release|Win32.Build.0 = Release|Win32
+		{4E262A25-90B4-449A-BFC0-95311CADF91D}.Debug CRTDLL|Win32.ActiveCfg = Debug CRTDLL|Win32
+		{4E262A25-90B4-449A-BFC0-95311CADF91D}.Debug CRTDLL|Win32.Build.0 = Debug CRTDLL|Win32
+		{4E262A25-90B4-449A-BFC0-95311CADF91D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4E262A25-90B4-449A-BFC0-95311CADF91D}.Debug|Win32.Build.0 = Debug|Win32
+		{4E262A25-90B4-449A-BFC0-95311CADF91D}.Release CRTDLL|Win32.ActiveCfg = Release CRTDLL|Win32
+		{4E262A25-90B4-449A-BFC0-95311CADF91D}.Release CRTDLL|Win32.Build.0 = Release CRTDLL|Win32
+		{4E262A25-90B4-449A-BFC0-95311CADF91D}.Release|Win32.ActiveCfg = Release|Win32
+		{4E262A25-90B4-449A-BFC0-95311CADF91D}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

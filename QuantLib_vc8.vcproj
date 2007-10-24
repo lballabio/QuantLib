@@ -1384,6 +1384,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\math\bernsteinpolynomial.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\math\bernsteinpolynomial.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\math\beta.cpp"
 				>
 				<FileConfiguration
@@ -1435,6 +1443,14 @@
 			</File>
 			<File
 				RelativePath="ql\math\beta.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\math\bspline.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\math\bspline.hpp"
 				>
 			</File>
 			<File
@@ -6408,6 +6424,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\yieldtermstructures\fittedbonddiscountcurve.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\yieldtermstructures\fittedbonddiscountcurve.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\yieldtermstructures\flatforward.hpp"
 				>
 			</File>
@@ -6425,6 +6449,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\yieldtermstructures\impliedtermstructure.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\yieldtermstructures\nonlinearfittingmethods.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\yieldtermstructures\nonlinearfittingmethods.hpp"
 				>
 			</File>
 			<File
