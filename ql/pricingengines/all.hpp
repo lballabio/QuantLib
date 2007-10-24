@@ -22,5 +22,6 @@
 #include <ql/pricingengines/hybrid/all.hpp>
 #include <ql/pricingengines/lookback/all.hpp>
 #include <ql/pricingengines/quanto/all.hpp>
+#include <ql/pricingengines/swap/all.hpp>
 #include <ql/pricingengines/swaption/all.hpp>
 #include <ql/pricingengines/vanilla/all.hpp>

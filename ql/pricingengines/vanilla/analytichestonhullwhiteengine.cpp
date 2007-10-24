@@ -20,7 +20,7 @@
 #include <ql/pricingengines/vanilla/analytichestonhullwhiteengine.hpp>
 
 namespace QuantLib {
- 
+
     AnalyticHestonHullWhiteEngine::AnalyticHestonHullWhiteEngine(
         const boost::shared_ptr<HestonModel> & hestonModel,
         const boost::shared_ptr<HullWhite> & hullWhiteModel,

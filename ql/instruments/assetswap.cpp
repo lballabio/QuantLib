@@ -26,6 +26,7 @@
 #include <ql/instruments/assetswap.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 
 namespace QuantLib {
 
@@ -38,13 +39,14 @@ namespace QuantLib {
                          const Schedule& floatSch,
                          const DayCounter& floatingDayCounter,
                          bool parSwap)
-    : Swap(discountCurve, Leg(), Leg()),
+    : Swap(Leg(), Leg()),
       spread_(spread),
-      bondCleanPrice_(bondCleanPrice) {
+      bondCleanPrice_(bondCleanPrice),
+      discountCurve_(discountCurve) {
 
         Schedule schedule = floatSch;
         if (floatSch.empty()) {
-            Date refDate = discountCurve->referenceDate();
+            Date refDate = discountCurve_->referenceDate();
             schedule = Schedule(bond->settlementDate(refDate),
                                 bond->maturityDate(),
                                 index->tenor(),
@@ -142,42 +144,48 @@ namespace QuantLib {
             payer_[0]=+1.0;
             payer_[1]=-1.0;
         }
+
+        setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                  new DiscountingSwapEngine(discountCurve_)));
     }
 
     void AssetSwap::setupArguments(PricingEngine::arguments* args) const {
+
+        Swap::setupArguments(args);
+
         AssetSwap::arguments* arguments =
             dynamic_cast<AssetSwap::arguments*>(args);
 
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        if (!arguments)  // it's a swap engine...
+            return;
 
         arguments->nominal = nominal_;
+        arguments->settlementDate = discountCurve_->referenceDate();
+
         // reset in case it's not set later
         arguments->currentFloatingCoupon = Null<Real>();
 
-        Date settlement = discountCurve_->referenceDate();
-        DayCounter counter = discountCurve_->dayCounter();
         const Leg& fixedCoupons = bondLeg();
 
-        arguments->fixedResetTimes = arguments->fixedPayTimes =
-            std::vector<Time>(fixedCoupons.size());
+        arguments->fixedResetDates = arguments->fixedPayDates =
+            std::vector<Date>(fixedCoupons.size());
         arguments->fixedCoupons = std::vector<Real>(fixedCoupons.size());
 
         for (Size i=0; i<fixedCoupons.size(); ++i) {
             boost::shared_ptr<FixedRateCoupon> coupon =
                 boost::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
 
-            Time time = counter.yearFraction(settlement, coupon->date());
-            arguments->fixedPayTimes[i] = time;
-            time = counter.yearFraction(settlement,
-                                        coupon->accrualStartDate());
-            arguments->fixedResetTimes[i] = time;
+            arguments->fixedPayDates[i] = coupon->date();
+            arguments->fixedResetDates[i] = coupon->accrualStartDate();
             arguments->fixedCoupons[i] = coupon->amount();
         }
 
         const Leg& floatingCoupons = floatingLeg();
 
-        arguments->floatingResetTimes = arguments->floatingPayTimes =
-            arguments->floatingFixingTimes = arguments->floatingAccrualTimes =
+        arguments->floatingResetDates = arguments->floatingPayDates =
+            arguments->floatingFixingDates =
+            std::vector<Date>(floatingCoupons.size());
+        arguments->floatingAccrualTimes =
             std::vector<Time>(floatingCoupons.size());
         arguments->floatingSpreads =
             std::vector<Spread>(floatingCoupons.size());
@@ -187,58 +195,54 @@ namespace QuantLib {
                 boost::dynamic_pointer_cast<FloatingRateCoupon>(
                                                           floatingCoupons[i]);
 
-            Date resetDate = coupon->accrualStartDate(); // already adjusted
-            Time resetTime = counter.yearFraction(settlement, resetDate);
-            arguments->floatingResetTimes[i] = resetTime;
-            Time paymentTime =
-                counter.yearFraction(settlement, coupon->date());
-            arguments->floatingPayTimes[i] = paymentTime;
-            Time floatingFixingTime =
-                counter.yearFraction(settlement, coupon->fixingDate());
-            arguments->floatingFixingTimes[i] = floatingFixingTime;
+            arguments->floatingResetDates[i] = coupon->accrualStartDate();
+            arguments->floatingPayDates[i] = coupon->date();
+            arguments->floatingFixingDates[i] = coupon->fixingDate();
             arguments->floatingAccrualTimes[i] = coupon->accrualPeriod();
             arguments->floatingSpreads[i] = coupon->spread();
-            if (resetTime < 0.0 && paymentTime >= 0.0)
+            if (coupon->accrualStartDate() < arguments->settlementDate
+                && coupon->date() >= arguments->settlementDate)
                 arguments->currentFloatingCoupon = coupon->amount();
         }
     }
 
     Spread AssetSwap::fairSpread() const {
         calculate();
-        QL_REQUIRE(fairSpread_ != Null<Spread>(), "fairSpread not available");
+        QL_REQUIRE(fairSpread_ != Null<Spread>(), "fair spread not available");
         return fairSpread_;
     }
 
     Real AssetSwap::floatingLegBPS() const {
         calculate();
-        QL_REQUIRE(legBPS_[1] != Null<Real>(), "floatingLegBPS not available");
+        QL_REQUIRE(legBPS_.size() > 1 && legBPS_[1] != Null<Real>(),
+                   "floating-leg BPS not available");
         return legBPS_[1];
     }
 
     Real AssetSwap::fairPrice() const {
         calculate();
-        QL_REQUIRE(fairPrice_ != Null<Real>(), "fairPrice not available");
+        QL_REQUIRE(fairPrice_ != Null<Real>(), "fair price not available");
         return fairPrice_;
     }
     void AssetSwap::setupExpired() const {
         Swap::setupExpired();
-        legBPS_[0] = legBPS_[1] = 0.0;
         fairSpread_ = Null<Spread>();
         fairPrice_= Null<Real>();
     }
 
     void AssetSwap::performCalculations() const {
-        if (engine_) {
-            Instrument::performCalculations();
-        } else {
-            static const Spread basisPoint = 1.0e-4;
-            Swap::performCalculations();
-            fairSpread_ = spread_ - NPV_/(legBPS_[1]/basisPoint);
+        static const Spread basisPoint = 1.0e-4;
 
-            // handle when upfrontDate_ is in the past
-            if (upfrontDate_<discountCurve_->referenceDate())
-                fairPrice_ = Null<Real>();
-            else
+        Swap::performCalculations();
+
+        if (fairSpread_ == Null<Spread>()) {
+            // the engine didn't provide it; calculate from BPS if available
+            if (legBPS_.size() > 1 && legBPS_[1] != Null<Spread>())
+                fairSpread_ = spread_ - NPV_/(legBPS_[1]/basisPoint);
+        }
+
+        if (fairPrice_ == Null<Real>()) {
+            if (upfrontDate_ >= discountCurve_->referenceDate())
                 fairPrice_= bondCleanPrice_ - NPV_/(nominal_/100.0)/
                                 discountCurve_->discount(upfrontDate_);
         }
@@ -248,35 +252,47 @@ namespace QuantLib {
         Instrument::fetchResults(r);
         const AssetSwap::results* results =
             dynamic_cast<const AssetSwap::results*>(r);
-        fairSpread_ = results->fairSpread;
-        fairPrice_= results->fairPrice;
+        if (results) {
+            fairSpread_ = results->fairSpread;
+            fairPrice_= results->fairPrice;
+        } else {
+            fairSpread_ = Null<Spread>();
+            fairPrice_= Null<Real>();
+        }
     }
 
     void AssetSwap::arguments::validate() const {
         QL_REQUIRE(nominal != Null<Real>(),
                    "nominal null or not set");
-        QL_REQUIRE(fixedResetTimes.size() == fixedPayTimes.size(),
-                   "number of fixed start times different from "
-                   "number of fixed payment times");
-        QL_REQUIRE(fixedPayTimes.size() == fixedCoupons.size(),
-                   "number of fixed payment times different from "
+        QL_REQUIRE(fixedResetDates.size() == fixedPayDates.size(),
+                   "number of fixed start dates different from "
+                   "number of fixed payment dates");
+        QL_REQUIRE(fixedPayDates.size() == fixedCoupons.size(),
+                   "number of fixed payment dates different from "
                    "number of fixed coupon amounts");
-        QL_REQUIRE(floatingResetTimes.size() == floatingPayTimes.size(),
-                   "number of floating start times different from "
-                   "number of floating payment times");
-        QL_REQUIRE(floatingFixingTimes.size() == floatingPayTimes.size(),
-                   "number of floating fixing times different from "
-                   "number of floating payment times");
-        QL_REQUIRE(floatingAccrualTimes.size() == floatingPayTimes.size(),
+        QL_REQUIRE(floatingResetDates.size() == floatingPayDates.size(),
+                   "number of floating start dates different from "
+                   "number of floating payment dates");
+        QL_REQUIRE(floatingFixingDates.size() == floatingPayDates.size(),
+                   "number of floating fixing dates different from "
+                   "number of floating payment dates");
+        QL_REQUIRE(floatingAccrualTimes.size() == floatingPayDates.size(),
                    "number of floating accrual times different from "
-                   "number of floating payment times");
-        QL_REQUIRE(floatingSpreads.size() == floatingPayTimes.size(),
+                   "number of floating payment dates");
+        QL_REQUIRE(floatingSpreads.size() == floatingPayDates.size(),
                    "number of floating spreads different from "
-                   "number of floating payment times");
+                   "number of floating payment dates");
         QL_REQUIRE(currentFloatingCoupon != Null<Real>() || // unless...
-                   floatingResetTimes.empty() ||
-                   floatingResetTimes[0] >= 0.0,
+                   floatingResetDates.empty() ||
+                   floatingResetDates[0] >= settlementDate,
                    "current floating coupon null or not set");
     }
 
+    void AssetSwap::results::reset() {
+        Instrument::results::reset();
+        fairSpread = Null<Spread>();
+        fairPrice = Null<Real>();
+    }
+
 }
+

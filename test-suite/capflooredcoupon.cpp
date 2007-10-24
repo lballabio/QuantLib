@@ -25,6 +25,7 @@
 #include <ql/yieldtermstructures/flatforward.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/constantoptionletvol.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
@@ -142,30 +143,40 @@ Leg makeCapFlooredLeg(const Date& startDate,
 
 boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
     Handle<Quote> vol(boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
-    return boost::shared_ptr<PricingEngine>(new BlackCapFloorEngine(vol));
+    return boost::shared_ptr<PricingEngine>(
+                                new BlackCapFloorEngine(termStructure_, vol));
 }
 
 boost::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
                          const Leg& leg,
                          Rate capstrike, Rate floorstrike,
                          Volatility volatility) {
+    boost::shared_ptr<CapFloor> result;
     switch (type) {
       case CapFloor::Cap:
-        return boost::shared_ptr<CapFloor>(
-               new Cap(leg, std::vector<Rate>(1, capstrike),
-                       termStructure_, makeEngine(volatility)));
+            result = boost::shared_ptr<CapFloor>(
+               new Cap(leg,
+                       std::vector<Rate>(1, capstrike),
+                       termStructure_));
+            break;
       case CapFloor::Floor:
-            return boost::shared_ptr<CapFloor>(
-                new Floor(leg, std::vector<Rate>(1, floorstrike),
-                          termStructure_, makeEngine(volatility)));
+            result = boost::shared_ptr<CapFloor>(
+                new Floor(leg,
+                          std::vector<Rate>(1, floorstrike),
+                          termStructure_));
+            break;
       case CapFloor::Collar:
-            return boost::shared_ptr<CapFloor>(
-                new Collar(leg, std::vector<Rate>(1, capstrike),
+            result = boost::shared_ptr<CapFloor>(
+                new Collar(leg,
+                           std::vector<Rate>(1, capstrike),
                            std::vector<Rate>(1, floorstrike),
-                          termStructure_, makeEngine(volatility)));
+                           termStructure_));
+            break;
       default:
         QL_FAIL("unknown cap/floor type");
     }
+    result->setPricingEngine(makeEngine(volatility));
+    return result;
 }
 
 std::string typeToString(CapFloor::Type type) {
@@ -208,8 +219,12 @@ void CapFlooredCouponTest::testLargeRates() {
     Leg collaredLeg =
         makeCapFlooredLeg(startDate_,length_,caps,floors,volatility_);
 
-    Swap vanillaLeg(termStructure_,fixedLeg,floatLeg);
-    Swap collarLeg( termStructure_,fixedLeg,collaredLeg);
+    boost::shared_ptr<PricingEngine> engine(
+                                   new DiscountingSwapEngine(termStructure_));
+    Swap vanillaLeg(fixedLeg,floatLeg);
+    Swap collarLeg(fixedLeg,collaredLeg);
+    vanillaLeg.setPricingEngine(engine);
+    collarLeg.setPricingEngine(engine);
 
     if (std::abs(vanillaLeg.NPV()-collarLeg.NPV())>tolerance) {
         BOOST_MESSAGE("Lenght: " << length_ << " y" << "\n" <<
@@ -257,11 +272,17 @@ void CapFlooredCouponTest::testDecomposition() {
     Leg floatLeg_n =
         makeFloatingLeg(startDate_,length_,gearing_n,spread_n);
     // Swap with null fixed leg and floating leg with gearing=1 and spread=0
-    Swap vanillaLeg(termStructure_,fixedLeg,floatLeg);
+    Swap vanillaLeg(fixedLeg,floatLeg);
     // Swap with null fixed leg and floating leg with positive gearing and spread<>0
-    Swap vanillaLeg_p(termStructure_,fixedLeg,floatLeg_p);
+    Swap vanillaLeg_p(fixedLeg,floatLeg_p);
     // Swap with null fixed leg and floating leg with negative gearing and spread<>0
-    Swap vanillaLeg_n(termStructure_,fixedLeg,floatLeg_n);
+    Swap vanillaLeg_n(fixedLeg,floatLeg_n);
+
+    boost::shared_ptr<PricingEngine> engine(
+                                   new DiscountingSwapEngine(termStructure_));
+    vanillaLeg.setPricingEngine(engine);
+    vanillaLeg_p.setPricingEngine(engine);
+    vanillaLeg_n.setPricingEngine(engine);
 
     /* CAPPED coupon - Decomposition of payoff
        Payoff = Nom * Min(rate,strike) * accrualperiod =
@@ -273,9 +294,11 @@ void CapFlooredCouponTest::testDecomposition() {
     // Case gearing = 1 and spread = 0
     Leg cappedLeg =
         makeCapFlooredLeg(startDate_,length_,caps,floors0,volatility_);
-    Swap capLeg(termStructure_,fixedLeg,cappedLeg);
+    Swap capLeg(fixedLeg,cappedLeg);
+    capLeg.setPricingEngine(engine);
     Cap cap(floatLeg, std::vector<Rate>(1, capstrike),
-            termStructure_, makeEngine(volatility_));
+            termStructure_);
+    cap.setPricingEngine(makeEngine(volatility_));
     npvVanilla = vanillaLeg.NPV();
     npvCappedLeg = capLeg.NPV();
     npvCap = cap.NPV();
@@ -298,9 +321,11 @@ void CapFlooredCouponTest::testDecomposition() {
 
     Leg flooredLeg =
         makeCapFlooredLeg(startDate_,length_,caps0,floors,volatility_);
-    Swap floorLeg(termStructure_,fixedLeg,flooredLeg);
+    Swap floorLeg(fixedLeg,flooredLeg);
+    floorLeg.setPricingEngine(engine);
     Floor floor(floatLeg, std::vector<Rate>(1, floorstrike),
-                termStructure_, makeEngine(volatility_));
+                termStructure_);
+    floor.setPricingEngine(makeEngine(volatility_));
     npvFlooredLeg = floorLeg.NPV();
     npvFloor = floor.NPV();
     error = std::abs(npvFlooredLeg-(npvVanilla + npvFloor));
@@ -320,11 +345,13 @@ void CapFlooredCouponTest::testDecomposition() {
 
     Leg collaredLeg =
         makeCapFlooredLeg(startDate_,length_,caps,floors,volatility_);
-    Swap collarLeg(termStructure_,fixedLeg,collaredLeg);
+    Swap collarLeg(fixedLeg,collaredLeg);
+    collarLeg.setPricingEngine(engine);
     Collar collar(floatLeg,
                   std::vector<Rate>(1, capstrike),
                   std::vector<Rate>(1, floorstrike),
-                  termStructure_, makeEngine(volatility_));
+                  termStructure_);
+    collar.setPricingEngine(makeEngine(volatility_));
     npvCollaredLeg = collarLeg.NPV();
     npvCollar = collar.NPV();
     error = std::abs(npvCollaredLeg -(npvVanilla - npvCollar));
@@ -353,9 +380,11 @@ void CapFlooredCouponTest::testDecomposition() {
     Leg cappedLeg_p =
         makeCapFlooredLeg(startDate_,length_,caps,floors0,
                           volatility_,gearing_p,spread_p);
-    Swap capLeg_p(termStructure_,fixedLeg,cappedLeg_p);
+    Swap capLeg_p(fixedLeg,cappedLeg_p);
+    capLeg_p.setPricingEngine(engine);
     Cap cap_p(floatLeg_p,std::vector<Rate>(1,capstrike),
-             termStructure_, makeEngine(volatility_));
+             termStructure_);
+    cap_p.setPricingEngine(makeEngine(volatility_));
     npvVanilla = vanillaLeg_p.NPV();
     npvCappedLeg = capLeg_p.NPV();
     npvCap = cap_p.NPV();
@@ -377,9 +406,11 @@ void CapFlooredCouponTest::testDecomposition() {
     Leg cappedLeg_n =
         makeCapFlooredLeg(startDate_,length_,caps,floors0,
                           volatility_,gearing_n,spread_n);
-    Swap capLeg_n(termStructure_,fixedLeg,cappedLeg_n);
+    Swap capLeg_n(fixedLeg,cappedLeg_n);
+    capLeg_n.setPricingEngine(engine);
     Floor floor_n(floatLeg,std::vector<Rate>(1,(capstrike-spread_n)/gearing_n),
-             termStructure_, makeEngine(volatility_));
+             termStructure_);
+    floor_n.setPricingEngine(makeEngine(volatility_));
     npvVanilla = vanillaLeg_n.NPV();
     npvCappedLeg = capLeg_n.NPV();
     npvFloor = floor_n.NPV();
@@ -414,9 +445,11 @@ void CapFlooredCouponTest::testDecomposition() {
     Leg flooredLeg_p1 =
         makeCapFlooredLeg(startDate_,length_,caps0,floors,
                           volatility_,gearing_p,spread_p);
-    Swap floorLeg_p1(termStructure_,fixedLeg,flooredLeg_p1);
+    Swap floorLeg_p1(fixedLeg,flooredLeg_p1);
+    floorLeg_p1.setPricingEngine(engine);
     Floor floor_p1(floatLeg_p,std::vector<Rate>(1,floorstrike),
-                termStructure_, makeEngine(volatility_));
+                termStructure_);
+    floor_p1.setPricingEngine(makeEngine(volatility_));
     npvVanilla = vanillaLeg_p.NPV();
     npvFlooredLeg = floorLeg_p1.NPV();
     npvFloor = floor_p1.NPV();
@@ -436,9 +469,11 @@ void CapFlooredCouponTest::testDecomposition() {
     Leg flooredLeg_n =
         makeCapFlooredLeg(startDate_,length_,caps0,floors,
                           volatility_,gearing_n,spread_n);
-    Swap floorLeg_n(termStructure_,fixedLeg,flooredLeg_n);
+    Swap floorLeg_n(fixedLeg,flooredLeg_n);
+    floorLeg_n.setPricingEngine(engine);
     Cap cap_n(floatLeg,std::vector<Rate>(1,(floorstrike-spread_n)/gearing_n),
-             termStructure_, makeEngine(volatility_));
+             termStructure_);
+    cap_n.setPricingEngine(makeEngine(volatility_));
     npvVanilla = vanillaLeg_n.NPV();
     npvFlooredLeg = floorLeg_n.NPV();
     npvCap = cap_n.NPV();
@@ -465,11 +500,13 @@ void CapFlooredCouponTest::testDecomposition() {
     Leg collaredLeg_p =
         makeCapFlooredLeg(startDate_,length_,caps,floors,
                           volatility_,gearing_p,spread_p);
-    Swap collarLeg_p1(termStructure_,fixedLeg,collaredLeg_p);
+    Swap collarLeg_p1(fixedLeg,collaredLeg_p);
+    collarLeg_p1.setPricingEngine(engine);
     Collar collar_p(floatLeg_p,
                     std::vector<Rate>(1,capstrike),
                     std::vector<Rate>(1,floorstrike),
-                    termStructure_, makeEngine(volatility_));
+                    termStructure_);
+    collar_p.setPricingEngine(makeEngine(volatility_));
     npvVanilla = vanillaLeg_p.NPV();
     npvCollaredLeg = collarLeg_p1.NPV();
     npvCollar = collar_p.NPV();
@@ -492,11 +529,13 @@ void CapFlooredCouponTest::testDecomposition() {
     Leg collaredLeg_n =
         makeCapFlooredLeg(startDate_,length_,caps,floors,
                           volatility_,gearing_n,spread_n);
-    Swap collarLeg_n1(termStructure_,fixedLeg,collaredLeg_n);
+    Swap collarLeg_n1(fixedLeg,collaredLeg_n);
+    collarLeg_n1.setPricingEngine(engine);
     Collar collar_n(floatLeg,
                     std::vector<Rate>(1,(floorstrike-spread_n)/gearing_n),
                     std::vector<Rate>(1,(capstrike-spread_n)/gearing_n),
-                    termStructure_, makeEngine(volatility_));
+                    termStructure_);
+    collar_n.setPricingEngine(makeEngine(volatility_));
     npvVanilla = vanillaLeg_n.NPV();
     npvCollaredLeg = collarLeg_n1.NPV();
     npvCollar = collar_n.NPV();

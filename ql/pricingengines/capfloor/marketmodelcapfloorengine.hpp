@@ -35,14 +35,15 @@ namespace QuantLib {
 
         \ingroup capfloorengines
     */
-    class MarketModelCapFloorEngine : public CapFloor::engine,
-                                      public Observer {
+    class MarketModelCapFloorEngine : public CapFloor::engine {
       public:
-        MarketModelCapFloorEngine(const boost::shared_ptr<MarketModelFactory>&);
+        MarketModelCapFloorEngine(
+                             const boost::shared_ptr<MarketModelFactory>&,
+                             const Handle<YieldTermStructure>& discountCurve);
         void calculate() const;
-        void update();
       private:
         boost::shared_ptr<MarketModelFactory> factory_;
+        Handle<YieldTermStructure> discountCurve_;
     };
 
 }

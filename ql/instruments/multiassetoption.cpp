@@ -89,15 +89,7 @@ namespace QuantLib {
         arguments->payoff = payoff_;
         arguments->stochasticProcess = stochasticProcess_;
         arguments->exercise = exercise_;
-
-        Size n = exercise_->dates().size();
-        arguments->stoppingTimes.clear();
-        arguments->stoppingTimes.reserve(n);
-        for (Size i=0; i<n; ++i) {
-            arguments->stoppingTimes.push_back(
-                               stochasticProcess_->time(exercise_->date(i)));
         }
-    }
 
     void MultiAssetOption::fetchResults(const PricingEngine::results* r) const {
         Option::fetchResults(r);

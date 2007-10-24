@@ -39,12 +39,11 @@ namespace QuantLib {
                              const Schedule& floatSchedule,
                              const boost::shared_ptr<IborIndex>& index,
                              Spread spread,
-                             const DayCounter& floatingDayCount,
-                             const Handle<YieldTermStructure>& termStructure)
-    : Swap(termStructure, Leg(), Leg()),
+                             const DayCounter& floatingDayCount)
+    : Swap(Leg(), Leg()),
       type_(type), fixedRate_(fixedRate), spread_(spread),
-      nominal_(nominal)
-    {
+      nominal_(nominal) {
+
         BusinessDayConvention convention =
             floatSchedule.businessDayConvention();
 
@@ -76,61 +75,58 @@ namespace QuantLib {
     }
 
     void VanillaSwap::setupArguments(PricingEngine::arguments* args) const {
+
+        Swap::setupArguments(args);
+
         VanillaSwap::arguments* arguments =
             dynamic_cast<VanillaSwap::arguments*>(args);
 
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        if (!arguments)  // it's a swap engine...
+            return;
 
         arguments->type = type_;
         arguments->nominal = nominal_;
-        // reset in case it's not set later
-        arguments->currentFloatingCoupon = Null<Real>();
-
-        Date settlement = discountCurve_->referenceDate();
-        DayCounter counter = discountCurve_->dayCounter();
 
         const Leg& fixedCoupons = fixedLeg();
 
-        arguments->fixedResetTimes = arguments->fixedPayTimes =
-            std::vector<Time>(fixedCoupons.size());
+        arguments->fixedResetDates = arguments->fixedPayDates =
+            std::vector<Date>(fixedCoupons.size());
         arguments->fixedCoupons = std::vector<Real>(fixedCoupons.size());
 
         for (Size i=0; i<fixedCoupons.size(); ++i) {
             boost::shared_ptr<FixedRateCoupon> coupon =
                 boost::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
-            Time time = counter.yearFraction(settlement, coupon->date());
-            arguments->fixedPayTimes[i] = time;
-            time = counter.yearFraction(settlement,
-                                        coupon->accrualStartDate());
-            arguments->fixedResetTimes[i] = time;
+
+            arguments->fixedPayDates[i] = coupon->date();
+            arguments->fixedResetDates[i] = coupon->accrualStartDate();
             arguments->fixedCoupons[i] = coupon->amount();
         }
 
         const Leg& floatingCoupons = floatingLeg();
 
-        arguments->floatingResetTimes = arguments->floatingPayTimes =
-            arguments->floatingFixingTimes = arguments->floatingAccrualTimes =
+        arguments->floatingResetDates = arguments->floatingPayDates =
+            arguments->floatingFixingDates =
+            std::vector<Date>(floatingCoupons.size());
+        arguments->floatingAccrualTimes =
             std::vector<Time>(floatingCoupons.size());
         arguments->floatingSpreads =
             std::vector<Spread>(floatingCoupons.size());
-
+        arguments->floatingCoupons = std::vector<Real>(floatingCoupons.size());
         for (Size i=0; i<floatingCoupons.size(); ++i) {
             boost::shared_ptr<IborCoupon> coupon =
                 boost::dynamic_pointer_cast<IborCoupon>(floatingCoupons[i]);
 
-            Date resetDate = coupon->accrualStartDate(); // already adjusted
-            Time resetTime = counter.yearFraction(settlement, resetDate);
-            arguments->floatingResetTimes[i] = resetTime;
-            Time paymentTime =
-                counter.yearFraction(settlement, coupon->date());
-            arguments->floatingPayTimes[i] = paymentTime;
-            Time floatingFixingTime =
-                counter.yearFraction(settlement, coupon->fixingDate());
-            arguments->floatingFixingTimes[i] = floatingFixingTime;
+            arguments->floatingResetDates[i] = coupon->accrualStartDate();
+            arguments->floatingPayDates[i] = coupon->date();
+
+            arguments->floatingFixingDates[i] = coupon->fixingDate();
             arguments->floatingAccrualTimes[i] = coupon->accrualPeriod();
             arguments->floatingSpreads[i] = coupon->spread();
-            if (resetTime < 0.0 && paymentTime >= 0.0)
-                arguments->currentFloatingCoupon = coupon->amount();
+            try {
+                arguments->floatingCoupons[i] = coupon->amount();
+            } catch (Error&) {
+                arguments->floatingCoupons[i] = Null<Real>();
+            }
         }
     }
 
@@ -177,49 +173,63 @@ namespace QuantLib {
         fairSpread_ = Null<Spread>();
     }
 
-    void VanillaSwap::performCalculations() const {
-        if (engine_) {
-            Instrument::performCalculations();
+    void VanillaSwap::fetchResults(const PricingEngine::results* r) const {
+        static const Spread basisPoint = 1.0e-4;
+
+        Swap::fetchResults(r);
+
+        const VanillaSwap::results* results =
+            dynamic_cast<const VanillaSwap::results*>(r);
+        if (results) { // might be a swap engine, so no error is thrown
+            fairRate_ = results->fairRate;
+            fairSpread_ = results->fairSpread;
         } else {
-            static const Spread basisPoint = 1.0e-4;
-            Swap::performCalculations();
-            fairRate_ = fixedRate_ - NPV_/(legBPS_[0]/basisPoint);
-            fairSpread_ = spread_ - NPV_/(legBPS_[1]/basisPoint);
+            fairRate_ = Null<Rate>();
+            fairSpread_ = Null<Spread>();
+        }
+
+        if (fairRate_ == Null<Rate>()) {
+            // calculate it from other results
+            if (legBPS_[0] != Null<Real>())
+                fairRate_ = fixedRate_ - NPV_/(legBPS_[0]/basisPoint);
+        }
+        if (fairSpread_ == Null<Spread>()) {
+            // ditto
+            if (legBPS_[1] != Null<Real>())
+                fairSpread_ = spread_ - NPV_/(legBPS_[1]/basisPoint);
         }
     }
 
-    void VanillaSwap::fetchResults(const PricingEngine::results* r) const {
-        Instrument::fetchResults(r);
-        const VanillaSwap::results* results =
-            dynamic_cast<const VanillaSwap::results*>(r);
-        fairRate_ = results->fairRate;
-        fairSpread_ = results->fairSpread;
+    void VanillaSwap::arguments::validate() const {
+        Swap::arguments::validate();
+        QL_REQUIRE(nominal != Null<Real>(), "nominal null or not set");
+        QL_REQUIRE(fixedResetDates.size() == fixedPayDates.size(),
+                   "number of fixed start dates different from "
+                   "number of fixed payment dates");
+        QL_REQUIRE(fixedPayDates.size() == fixedCoupons.size(),
+                   "number of fixed payment dates different from "
+                   "number of fixed coupon amounts");
+        QL_REQUIRE(floatingResetDates.size() == floatingPayDates.size(),
+                   "number of floating start dates different from "
+                   "number of floating payment dates");
+        QL_REQUIRE(floatingFixingDates.size() == floatingPayDates.size(),
+                   "number of floating fixing dates different from "
+                   "number of floating payment dates");
+        QL_REQUIRE(floatingAccrualTimes.size() == floatingPayDates.size(),
+                   "number of floating accrual Times different from "
+                   "number of floating payment dates");
+        QL_REQUIRE(floatingSpreads.size() == floatingPayDates.size(),
+                   "number of floating spreads different from "
+                   "number of floating payment dates");
+        QL_REQUIRE(floatingPayDates.size() == floatingCoupons.size(),
+                   "number of floating payment dates different from "
+                   "number of floating coupon amounts");
     }
 
-    void VanillaSwap::arguments::validate() const {
-        QL_REQUIRE(nominal != Null<Real>(), "nominal null or not set");
-        QL_REQUIRE(fixedResetTimes.size() == fixedPayTimes.size(),
-                   "number of fixed start times different from "
-                   "number of fixed payment times");
-        QL_REQUIRE(fixedPayTimes.size() == fixedCoupons.size(),
-                   "number of fixed payment times different from "
-                   "number of fixed coupon amounts");
-        QL_REQUIRE(floatingResetTimes.size() == floatingPayTimes.size(),
-                   "number of floating start times different from "
-                   "number of floating payment times");
-        QL_REQUIRE(floatingFixingTimes.size() == floatingPayTimes.size(),
-                   "number of floating fixing times different from "
-                   "number of floating payment times");
-        QL_REQUIRE(floatingAccrualTimes.size() == floatingPayTimes.size(),
-                   "number of floating accrual times different from "
-                   "number of floating payment times");
-        QL_REQUIRE(floatingSpreads.size() == floatingPayTimes.size(),
-                   "number of floating spreads different from "
-                   "number of floating payment times");
-        QL_REQUIRE(currentFloatingCoupon != Null<Real>() || // unless...
-                   floatingResetTimes.empty() ||
-                   floatingResetTimes[0] >= 0.0,
-                   "current floating coupon null or not set");
+    void VanillaSwap::results::reset() {
+        Swap::results::reset();
+        fairRate = Null<Rate>();
+        fairSpread = Null<Spread>();
     }
 
 }

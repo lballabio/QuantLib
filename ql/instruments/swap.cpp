@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,47 +26,40 @@
 
 namespace QuantLib {
 
-
-    Swap::Swap(const Handle<YieldTermStructure>& discountCurve,
-               const Leg& firstLeg,
+    Swap::Swap(const Leg& firstLeg,
                const Leg& secondLeg)
-    : discountCurve_(discountCurve), legs_(2), payer_(2),
+    : legs_(2), payer_(2),
       legNPV_(2, 0.0), legBPS_(2, 0.0) {
         legs_[0] = firstLeg;
         legs_[1] = secondLeg;
         payer_[0] = -1.0;
         payer_[1] =  1.0;
-        registerWith(discountCurve_);
-        Leg::iterator i;
-        for (i = legs_[0].begin(); i!= legs_[0].end(); ++i)
+        for (Leg::iterator i = legs_[0].begin(); i!= legs_[0].end(); ++i)
             registerWith(*i);
-        for (i = legs_[1].begin(); i!= legs_[1].end(); ++i)
+        for (Leg::iterator i = legs_[1].begin(); i!= legs_[1].end(); ++i)
             registerWith(*i);
     }
 
-    Swap::Swap(const Handle<YieldTermStructure>& discountCurve,
-               const std::vector<Leg>& legs,
+    Swap::Swap(const std::vector<Leg>& legs,
                const std::vector<bool>& payer)
-    : discountCurve_(discountCurve), legs_(legs), payer_(legs.size(), 1.0),
+    : legs_(legs), payer_(legs.size(), 1.0),
       legNPV_(legs.size(), 0.0), legBPS_(legs.size(), 0.0) {
         QL_REQUIRE(payer.size()==legs_.size(),
                    "size mismatch between payer (" << payer.size() <<
                    ") and legs (" << legs_.size() << ")");
-        registerWith(discountCurve_);
-        Leg::iterator i;
         for (Size j=0; j<legs_.size(); ++j) {
             if (payer[j]) payer_[j]=-1.0;
-            for (i = legs_[j].begin(); i!= legs_[j].end(); ++i)
+            for (Leg::iterator i = legs_[j].begin(); i!= legs_[j].end(); ++i)
                 registerWith(*i);
         }
     }
 
     bool Swap::isExpired() const {
-        Date settlement = discountCurve_->referenceDate();
-        Leg::const_iterator i;
+        Date today = Settings::instance().evaluationDate();
         for (Size j=0; j<legs_.size(); ++j) {
-            for (i = legs_[j].begin(); i!= legs_[j].end(); ++i)
-                if (!(*i)->hasOccurred(settlement))
+            for (Leg::const_iterator i = legs_[j].begin();
+                                     i!= legs_[j].end(); ++i)
+                if (!(*i)->hasOccurred(today))
                     return false;
         }
         return true;
@@ -74,30 +67,41 @@ namespace QuantLib {
 
     void Swap::setupExpired() const {
         Instrument::setupExpired();
-        legBPS_= std::vector<Real>(legs_.size(), 0.0);
-        legNPV_= std::vector<Real>(legs_.size(), 0.0);
+        std::fill(legBPS_.begin(), legBPS_.end(), 0.0);
+        std::fill(legNPV_.begin(), legNPV_.end(), 0.0);
     }
 
-    void Swap::performCalculations() const {
-        QL_REQUIRE(!discountCurve_.empty(),
-                   "no discounting term structure set to Swap");
+    void Swap::setupArguments(PricingEngine::arguments* args) const {
+        Swap::arguments* arguments = dynamic_cast<Swap::arguments*>(args);
+        QL_REQUIRE(arguments != 0, "wrong argument type");
 
-        Date d = discountCurve_->referenceDate();
+        arguments->legs = legs_;
+        arguments->payer = payer_;
+    }
 
-        errorEstimate_ = Null<Real>();
-        NPV_ = 0.0;
-        for (Size j=0; j<legs_.size(); ++j) {
-            //Date settlement = calendar_[j].advance(d, settlementDays_[j], Days);
-            Date settlement = d;
-            legNPV_[j]= payer_[j]*CashFlows::npv(legs_[j],
-                                                 **discountCurve_,
-                                                 settlement);
-            NPV_ += legNPV_[j] ;
-            legBPS_[j] = payer_[j]*CashFlows::bps(legs_[j],
-                                                  **discountCurve_,
-                                                  settlement);
+    void Swap::fetchResults(const PricingEngine::results* r) const {
+        Instrument::fetchResults(r);
+
+        const Swap::results* results = dynamic_cast<const Swap::results*>(r);
+        QL_REQUIRE(results != 0, "wrong result type");
+
+        if (!results->legNPV.empty()) {
+            QL_REQUIRE(results->legNPV.size() == legNPV_.size(),
+                       "wrong number of leg NPV returned");
+            legNPV_ = results->legNPV;
+        } else {
+            std::fill(legNPV_.begin(), legNPV_.end(), Null<Real>());
+        }
+
+        if (!results->legBPS.empty()) {
+            QL_REQUIRE(results->legBPS.size() == legBPS_.size(),
+                       "wrong number of leg BPS returned");
+            legBPS_ = results->legBPS;
+        } else {
+            std::fill(legBPS_.begin(), legBPS_.end(), Null<Real>());
         }
     }
+
 
     Date Swap::startDate() const {
         QL_REQUIRE(!legs_.empty(), "no legs given");
@@ -115,4 +119,17 @@ namespace QuantLib {
         return d;
     }
 
+
+    void Swap::arguments::validate() const {
+        QL_REQUIRE(legs.size() == payer.size(),
+                   "number of legs and multipliers differ");
+    }
+
+    void Swap::results::reset() {
+        Instrument::results::reset();
+        legNPV.clear();
+        legBPS.clear();
+    }
+
 }
+

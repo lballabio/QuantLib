@@ -23,6 +23,21 @@
 
 namespace QuantLib {
 
+    DiscretizedVanillaOption::DiscretizedVanillaOption(
+                                         const VanillaOption::arguments& args,
+                                         const TimeGrid& grid)
+    : arguments_(args) {
+        stoppingTimes_.resize(args.exercise->dates().size());
+        for (Size i=0; i<stoppingTimes_.size(); ++i) {
+            stoppingTimes_[i] =
+                args.stochasticProcess->time(args.exercise->date(i));
+            if (!grid.empty()) {
+                // adjust to the given grid
+                stoppingTimes_[i] = grid.closestTime(stoppingTimes_[i]);
+            }
+        }
+    }
+
     void DiscretizedVanillaOption::reset(Size size) {
         values_ = Array(size, 0.0);
         adjustValues();
@@ -31,20 +46,19 @@ namespace QuantLib {
     void DiscretizedVanillaOption::postAdjustValuesImpl() {
 
         Time now = time();
-        Size i;
         switch (arguments_.exercise->type()) {
           case Exercise::American:
-            if (now <= arguments_.stoppingTimes[1] &&
-                now >= arguments_.stoppingTimes[0])
+            if (now <= stoppingTimes_[1] &&
+                now >= stoppingTimes_[0])
                 applySpecificCondition();
             break;
           case Exercise::European:
-            if (isOnTime(arguments_.stoppingTimes[0]))
+            if (isOnTime(stoppingTimes_[0]))
                 applySpecificCondition();
             break;
           case Exercise::Bermudan:
-            for (i = 0; i<arguments_.stoppingTimes.size(); i++) {
-                if (isOnTime(arguments_.stoppingTimes[i]))
+            for (Size i=0; i<stoppingTimes_.size(); i++) {
+                if (isOnTime(stoppingTimes_[i]))
                     applySpecificCondition();
             }
             break;

@@ -208,14 +208,24 @@ namespace QuantLib {
     };
 
     Real G2::swaption(const Swaption::arguments& arguments,
-                      Real range, Size intervals) const {
+                      Rate fixedRate, Real range, Size intervals) const {
 
-        Time start = arguments.floatingResetTimes[0];
+        Date settlement = termStructure()->referenceDate();
+        DayCounter dayCounter = termStructure()->dayCounter();
+        Time start = dayCounter.yearFraction(settlement,
+                                             arguments.floatingResetDates[0]);
         Real w = (arguments.type==VanillaSwap::Payer ? 1 : -1 );
+
+        std::vector<Time> fixedPayTimes(arguments.fixedPayDates.size());
+        for (Size i=0; i<fixedPayTimes.size(); ++i)
+            fixedPayTimes[i] =
+                dayCounter.yearFraction(settlement,
+                                        arguments.fixedPayDates[i]);
+
         SwaptionPricingFunction function(a(), sigma(), b(), eta(), rho(),
                                          w, start,
-                                         arguments.fixedPayTimes,
-                                         arguments.fixedRate, (*this));
+                                         fixedPayTimes,
+                                         fixedRate, (*this));
 
         Real upper = function.mux() + range*function.sigmax();
         Real lower = function.mux() - range*function.sigmax();

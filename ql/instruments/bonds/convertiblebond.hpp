@@ -193,19 +193,20 @@ namespace QuantLib {
         arguments()
         : conversionRatio(Null<Real>()), settlementDays(Null<Natural>()),
           redemption(Null<Real>()) {}
+
         Real conversionRatio;
         Handle<Quote> creditSpread;
         DividendSchedule dividends;
-        std::vector<Time> dividendTimes;
-        std::vector<Time> callabilityTimes;
+        std::vector<Date> dividendDates;
+        std::vector<Date> callabilityDates;
         std::vector<Callability::Type> callabilityTypes;
         std::vector<Real> callabilityPrices;
         std::vector<Real> callabilityTriggers;
-        std::vector<Time> couponTimes;
+        std::vector<Date> couponDates;
         std::vector<Real> couponAmounts;
-        DayCounter dayCounter;
         Date issueDate;
         Date settlementDate;
+
         Natural settlementDays;
         Real redemption;
         void validate() const;

@@ -32,18 +32,22 @@
 
 namespace QuantLib {
 
-    class HullWhiteCapFloorPricer : public PathPricer<Path> {
-      public:
-        HullWhiteCapFloorPricer(const CapFloor::arguments&,
-                                const boost::shared_ptr<HullWhite>&,
-                                Time forwardMeasureTime);
-        Real operator()(const Path& path) const;
-      private:
-        CapFloor::arguments args_;
-        boost::shared_ptr<HullWhite> model_;
-        Time forwardMeasureTime_;
-        DiscountFactor endDiscount_;
-    };
+    namespace detail {
+
+        class HullWhiteCapFloorPricer : public PathPricer<Path> {
+          public:
+            HullWhiteCapFloorPricer(const CapFloor::arguments&,
+                                    const boost::shared_ptr<HullWhite>&,
+                                    Time forwardMeasureTime);
+            Real operator()(const Path& path) const;
+          private:
+            CapFloor::arguments args_;
+            boost::shared_ptr<HullWhite> model_;
+            Time forwardMeasureTime_;
+            DiscountFactor endDiscount_;
+        };
+
+    }
 
 
     //! Monte Carlo Hull-White engine for cap/floors
@@ -51,8 +55,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MCHullWhiteCapFloorEngine
         : public CapFloor::engine,
-          public McSimulation<SingleVariate,RNG,S>,
-          public Observer {
+          public McSimulation<SingleVariate,RNG,S> {
       private:
         typedef McSimulation<SingleVariate,RNG,S> simulation;
         boost::shared_ptr<HullWhite> model_;
@@ -89,13 +92,11 @@ namespace QuantLib {
                     this->mcModel_->sampleAccumulator().errorEstimate();
         }
 
-        void update() { notifyObservers(); }
-
       protected:
         boost::shared_ptr<path_pricer_type> pathPricer() const {
             Time forwardMeasureTime = arguments_.endTimes.back();
             return boost::shared_ptr<path_pricer_type>(
-                             new HullWhiteCapFloorPricer(arguments_, model_,
+                     new detail::HullWhiteCapFloorPricer(arguments_, model_,
                                                          forwardMeasureTime));
         }
 

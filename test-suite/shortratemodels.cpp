@@ -25,7 +25,8 @@
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 #include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
-#include <ql/pricingengines/swaption/treeswaptionengine.hpp>
+#include <ql/pricingengines/swap/treeswapengine.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/indexmanager.hpp>
 #include <ql/math/optimization/simplex.hpp>
@@ -69,6 +70,9 @@ void ShortRateModelTest::testCachedHullWhite() {
                               { 5, 1, 0.1000 }};
     boost::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
 
+    boost::shared_ptr<PricingEngine> engine(
+                                         new JamshidianSwaptionEngine(model));
+
     std::vector<boost::shared_ptr<CalibrationHelper> > swaptions;
     for (Size i=0; i<LENGTH(data); i++) {
         boost::shared_ptr<Quote> vol(new SimpleQuote(data[i].volatility));
@@ -79,8 +83,7 @@ void ShortRateModelTest::testCachedHullWhite() {
                                                 index,
                                                 Period(1, Years), Thirty360(),
                                                 Actual360(), termStructure));
-        helper->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                                        new JamshidianSwaptionEngine(model)));
+        helper->setPricingEngine(engine);
         swaptions.push_back(helper);
     }
 
@@ -214,8 +217,9 @@ void ShortRateModelTest::testSwaps() {
 
                 VanillaSwap swap(VanillaSwap::Payer, 1000000.0,
                                  fixedSchedule, rates[k], Thirty360(),
-                                 floatSchedule, euribor, 0.0, Actual360(),
-                                 termStructure);
+                                 floatSchedule, euribor, 0.0, Actual360());
+                swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                   new DiscountingSwapEngine(termStructure)));
                 Real expected = swap.NPV();
                 swap.setPricingEngine(engine);
                 Real calculated = swap.NPV();

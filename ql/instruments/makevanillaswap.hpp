@@ -27,9 +27,7 @@
 #define quantlib_makevanillaswap_hpp
 
 #include <ql/instruments/vanillaswap.hpp>
-#include <ql/time/businessdayconvention.hpp>
-#include <ql/time/calendar.hpp>
-#include <ql/time/daycounter.hpp>
+#include <ql/yieldtermstructure.hpp>
 
 namespace QuantLib {
 
@@ -51,8 +49,6 @@ namespace QuantLib {
         MakeVanillaSwap& withType(VanillaSwap::Type type);
         MakeVanillaSwap& withNominal(Real n);
         MakeVanillaSwap& withEffectiveDate(const Date&);
-        MakeVanillaSwap& withDiscountingTermStructure(
-            const Handle<YieldTermStructure>& discountingTermStructure);
 
         MakeVanillaSwap& withFixedLegTenor(const Period& t);
         MakeVanillaSwap& withFixedLegCalendar(const Calendar& cal);
@@ -76,6 +72,9 @@ namespace QuantLib {
         MakeVanillaSwap& withFloatingLegNextToLastDate(const Date& d);
         MakeVanillaSwap& withFloatingLegDayCount(const DayCounter& dc);
         MakeVanillaSwap& withFloatingLegSpread(Spread sp);
+
+        MakeVanillaSwap& withDiscountingTermStructure(
+                  const Handle<YieldTermStructure>& discountingTermStructure);
 
       private:
         Period forwardStart_, swapTenor_;

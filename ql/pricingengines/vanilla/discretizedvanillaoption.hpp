@@ -33,19 +33,20 @@ namespace QuantLib {
 
     class DiscretizedVanillaOption : public DiscretizedAsset {
       public:
-        DiscretizedVanillaOption(const VanillaOption::arguments& args)
-        : arguments_(args) {}
+        DiscretizedVanillaOption(const VanillaOption::arguments&,
+                                 const TimeGrid& grid = TimeGrid());
 
         void reset(Size size);
 
         std::vector<Time> mandatoryTimes() const {
-            return arguments_.stoppingTimes;
+            return stoppingTimes_;
         }
       protected:
         void postAdjustValuesImpl();
       private:
         void applySpecificCondition();
         VanillaOption::arguments arguments_;
+        std::vector<Time> stoppingTimes_;
     };
 
 }

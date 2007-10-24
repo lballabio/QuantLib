@@ -21,6 +21,7 @@
 #include "utilities.hpp"
 #include <ql/instruments/swaption.hpp>
 #include <ql/pricingengines/swaption/treeswaptionengine.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
 #include <ql/cashflows/coupon.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
@@ -86,12 +87,14 @@ struct CommonVars {
                                floatingConvention,
                                floatingConvention,
                                false, false);
-        return boost::shared_ptr<VanillaSwap>(
+        boost::shared_ptr<VanillaSwap> swap(
                       new VanillaSwap(type, nominal,
                                       fixedSchedule, fixedRate, fixedDayCount,
                                       floatSchedule, index, 0.0,
-                                      index->dayCounter(),
-                                      termStructure));
+                                      index->dayCounter()));
+        swap->setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                   new DiscountingSwapEngine(termStructure)));
+        return swap;
     }
 };
 

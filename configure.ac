@@ -380,6 +380,7 @@ AC_CONFIG_FILES([
     ql/pricingengines/hybrid/Makefile
     ql/pricingengines/lookback/Makefile
     ql/pricingengines/quanto/Makefile
+    ql/pricingengines/swap/Makefile
     ql/pricingengines/swaption/Makefile
     ql/pricingengines/vanilla/Makefile
     ql/processes/Makefile

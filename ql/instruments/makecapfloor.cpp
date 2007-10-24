@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,17 +27,11 @@ namespace QuantLib {
                                const Period& tenor,
                                const boost::shared_ptr<IborIndex>& index,
                                Rate strike,
-                               const Period& forwardStart,
-                               const boost::shared_ptr<PricingEngine>& engine)
-    : capFloorType_(capFloorType),
-      strike_(strike),
-      engine_(engine),
-      makeVanillaSwap_(MakeVanillaSwap(tenor, index, 0.0, forwardStart)) {
-          if (forwardStart==0*Days)
-              firstCapletExcluded_=true;
-          else
-              firstCapletExcluded_=false;
-    }
+                               const Period& forwardStart)
+    : capFloorType_(capFloorType), strike_(strike),
+      firstCapletExcluded_(forwardStart==0*Days),
+      discountCurve_(index->termStructure()),
+      makeVanillaSwap_(MakeVanillaSwap(tenor, index, 0.0, forwardStart)) {}
 
     MakeCapFloor::operator CapFloor() const {
         boost::shared_ptr<CapFloor> capfloor = *this;
@@ -53,12 +48,12 @@ namespace QuantLib {
 
         std::vector<Rate> strikeVector(1, strike_);
         if (strike_ == Null<Rate>())
-            strikeVector[0] = CashFlows::atmRate(leg,
-                                                 **swap.discountCurve());
+            strikeVector[0] = CashFlows::atmRate(leg, **discountCurve_);
 
-        return boost::shared_ptr<CapFloor>(new
-            CapFloor(capFloorType_, leg, strikeVector, swap.discountCurve(),
-                                                                    engine_));
+        boost::shared_ptr<CapFloor> capFloor(
+            new CapFloor(capFloorType_, leg, strikeVector, discountCurve_));
+        capFloor->setPricingEngine(engine_);
+        return capFloor;
     }
 
     MakeCapFloor& MakeCapFloor::withNominal(Real n) {
@@ -70,12 +65,6 @@ namespace QuantLib {
                                                   bool firstCapletExcluded) {
         makeVanillaSwap_.withEffectiveDate(effectiveDate);
         firstCapletExcluded_ = firstCapletExcluded;
-        return *this;
-    }
-
-    MakeCapFloor& MakeCapFloor::withDiscountingTermStructure(
-                const Handle<YieldTermStructure>& discountingTS) {
-        makeVanillaSwap_.withDiscountingTermStructure(discountingTS);
         return *this;
     }
 
@@ -139,4 +128,18 @@ namespace QuantLib {
         return *this;
     }
 
+    MakeCapFloor& MakeCapFloor::withDiscountingTermStructure(
+                const Handle<YieldTermStructure>& discountingTS) {
+        makeVanillaSwap_.withDiscountingTermStructure(discountingTS);
+        discountCurve_ = discountingTS;
+        return *this;
+    }
+
+    MakeCapFloor& MakeCapFloor::withPricingEngine(
+                             const boost::shared_ptr<PricingEngine>& engine) {
+        engine_ = engine;
+        return *this;
+    }
+
 }
+

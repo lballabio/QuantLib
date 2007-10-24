@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006 StatPro Italia srl
 
@@ -35,17 +36,21 @@ namespace QuantLib {
 
     //! Black-formula cap/floor engine
     /*! \ingroup capfloorengines */
-    class BlackCapFloorEngine : public CapFloor::engine,
-                                public Observer {
+    class BlackCapFloorEngine : public CapFloor::engine {
       public:
-        BlackCapFloorEngine(Volatility volatility,
+        BlackCapFloorEngine(const Handle<YieldTermStructure>& termStructure,
+                            Volatility vol,
                             const DayCounter& dc = Actual365Fixed());
-        BlackCapFloorEngine(const Handle<Quote>& volatility,
+        BlackCapFloorEngine(const Handle<YieldTermStructure>& termStructure,
+                            const Handle<Quote>& vol,
                             const DayCounter& dc = Actual365Fixed());
-        BlackCapFloorEngine(const Handle<OptionletVolatilityStructure>&);
+        BlackCapFloorEngine(const Handle<YieldTermStructure>& discountCurve,
+                            const Handle<OptionletVolatilityStructure>& vol);
         void calculate() const;
-        void update();
+        Handle<YieldTermStructure> termStructure();
+        Handle<OptionletVolatilityStructure> volatility();
       private:
+        Handle<YieldTermStructure> termStructure_;
         Handle<OptionletVolatilityStructure> volatility_;
         CumulativeNormalDistribution N_;
     };

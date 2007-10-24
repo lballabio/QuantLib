@@ -135,7 +135,9 @@ int main(int, char* []) {
             type, 1000.0,
             fixedSchedule, dummyFixedRate, fixedLegDayCounter,
             floatSchedule, indexSixMonths, 0.0,
-            indexSixMonths->dayCounter(), rhTermStructure));
+            indexSixMonths->dayCounter()));
+        swap->setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                 new DiscountingSwapEngine(rhTermStructure)));
         Rate fixedATMRate = swap->fairRate();
         Rate fixedOTMRate = fixedATMRate * 1.2;
         Rate fixedITMRate = fixedATMRate * 0.8;
@@ -144,17 +146,17 @@ int main(int, char* []) {
             type, 1000.0,
             fixedSchedule, fixedATMRate, fixedLegDayCounter,
             floatSchedule, indexSixMonths, 0.0,
-            indexSixMonths->dayCounter(), rhTermStructure));
+            indexSixMonths->dayCounter()));
         boost::shared_ptr<VanillaSwap> otmSwap(new VanillaSwap(
             type, 1000.0,
             fixedSchedule, fixedOTMRate, fixedLegDayCounter,
             floatSchedule, indexSixMonths, 0.0,
-            indexSixMonths->dayCounter(), rhTermStructure));
+            indexSixMonths->dayCounter()));
         boost::shared_ptr<VanillaSwap> itmSwap(new VanillaSwap(
             type, 1000.0,
             fixedSchedule, fixedITMRate, fixedLegDayCounter,
             floatSchedule, indexSixMonths, 0.0,
-            indexSixMonths->dayCounter(), rhTermStructure));
+            indexSixMonths->dayCounter()));
 
         // defining the swaptions to be used in model calibration
         std::vector<Period> swaptionMaturities;
@@ -230,7 +232,7 @@ int main(int, char* []) {
         std::cout << "Hull-White (numerical) calibration" << std::endl;
         for (i=0; i<swaptions.size(); i++)
             swaptions[i]->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                new TreeSwaptionEngine(modelHW2,grid)));
+                                     new TreeSwaptionEngine(modelHW2, grid)));
 
         calibrateModel(modelHW2, swaptions);
         std::cout << "calibrated to:\n"
@@ -241,7 +243,7 @@ int main(int, char* []) {
         std::cout << "Black-Karasinski (numerical) calibration" << std::endl;
         for (i=0; i<swaptions.size(); i++)
             swaptions[i]->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                new TreeSwaptionEngine(modelBK,grid)));
+                                      new TreeSwaptionEngine(modelBK, grid)));
 
         calibrateModel(modelBK, swaptions);
         std::cout << "calibrated to:\n"
@@ -273,20 +275,20 @@ int main(int, char* []) {
         // Do the pricing for each model
 
         // G2 price the European swaption here, it should switch to bermudan
-        bermudanSwaption.setPricingEngine(boost::shared_ptr<PricingEngine>(new
-            TreeSwaptionEngine(modelG2, 50)));
+        bermudanSwaption.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                        new TreeSwaptionEngine(modelG2, 50)));
         std::cout << "G2:       " << bermudanSwaption.NPV() << std::endl;
 
         bermudanSwaption.setPricingEngine(boost::shared_ptr<PricingEngine>(
            new TreeSwaptionEngine(modelHW, 50)));
         std::cout << "HW:       " << bermudanSwaption.NPV() << std::endl;
 
-        bermudanSwaption.setPricingEngine(boost::shared_ptr<PricingEngine>(new
-            TreeSwaptionEngine(modelHW2, 50)));
+        bermudanSwaption.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                       new TreeSwaptionEngine(modelHW2, 50)));
         std::cout << "HW (num): " << bermudanSwaption.NPV() << std::endl;
 
-        bermudanSwaption.setPricingEngine(boost::shared_ptr<PricingEngine>(new
-            TreeSwaptionEngine(modelBK, 50)));
+        bermudanSwaption.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                        new TreeSwaptionEngine(modelBK, 50)));
         std::cout << "BK:       " << bermudanSwaption.NPV() << std::endl;
 
 

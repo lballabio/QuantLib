@@ -73,7 +73,7 @@ void setFlatVolatilityTermStructure(Volatility flatVolatility){
     strikes.resize(strikes.size());
     for (Size j = 0 ; j < strikes.size(); j++)
         // FLOATING_POINT_EXCEPTION
-        strikes[j] = double(j+1)/100;
+        strikes[j] = Real(j+1)/100;
 
     volatilityQuoteHandle.resize(tenors.size());
     boost::shared_ptr<SimpleQuote>
@@ -155,7 +155,7 @@ void setMarketVolatilityTermStructure(){
     tenors[14]= PeriodParser::parse("25Y");
     tenors[15]= PeriodParser::parse("30Y");
 
-   
+
 }
 
     void initializeSmileSections (
@@ -272,15 +272,17 @@ void CapsStripperTest::highPrecisionTest(){
 
     Handle <OptionletVolatilityStructure> strippedVolatilityStructureHandle(capsStripper);
     boost::shared_ptr<BlackCapFloorEngine> strippedVolatilityBlackCapFloorEngine
-        (new BlackCapFloorEngine(strippedVolatilityStructureHandle));
+        (new BlackCapFloorEngine(rhTermStructure, strippedVolatilityStructureHandle));
     for (Size tenorIndex = 0; tenorIndex < tenors.size() ; tenorIndex++){
         for (Size strikeIndex = 0; strikeIndex < strikes.size() ; strikeIndex ++){
-            boost::shared_ptr<CapFloor> cap = MakeCapFloor(CapFloor::Cap,
-                tenors[tenorIndex], xiborIndex, strikes[strikeIndex],
-                0*Days, strippedVolatilityBlackCapFloorEngine);
+            boost::shared_ptr<CapFloor> cap =
+                MakeCapFloor(CapFloor::Cap,
+                             tenors[tenorIndex], xiborIndex,
+                             strikes[strikeIndex], 0*Days)
+                .withPricingEngine(strippedVolatilityBlackCapFloorEngine);
             Real priceFromStrippedVolatilty = cap->NPV();
             boost::shared_ptr<PricingEngine> blackCapFloorEngineConstantVolatility(
-                new BlackCapFloorEngine(
+                new BlackCapFloorEngine(rhTermStructure,
                     volatilityQuoteHandle[tenorIndex][strikeIndex], dayCounter));
             cap->setPricingEngine(blackCapFloorEngineConstantVolatility);
             Real priceFromConstantVolatilty = cap->NPV();

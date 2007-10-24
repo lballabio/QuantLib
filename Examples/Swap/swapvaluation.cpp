@@ -415,7 +415,7 @@ int main(int, char* []) {
         VanillaSwap spot5YearSwap(swapType, nominal,
             fixedSchedule, fixedRate, fixedLegDayCounter,
             floatSchedule, euriborIndex, spread,
-            floatingLegDayCounter, discountingTermStructure);
+            floatingLegDayCounter);
 
         Date fwdStart = calendar.advance(settlementDate, 1, Years);
         Date fwdMaturity = fwdStart + lenghtInYears*Years;
@@ -432,7 +432,7 @@ int main(int, char* []) {
         VanillaSwap oneYearForward5YearSwap(swapType, nominal,
             fwdFixedSchedule, fixedRate, fixedLegDayCounter,
             fwdFloatSchedule, euriborIndex, spread,
-            floatingLegDayCounter, discountingTermStructure);
+            floatingLegDayCounter);
 
 
         /***************
@@ -472,6 +472,12 @@ int main(int, char* []) {
         Real NPV;
         Rate fairRate;
         Spread fairSpread;
+
+        boost::shared_ptr<PricingEngine> swapEngine(
+                         new DiscountingSwapEngine(discountingTermStructure));
+
+        spot5YearSwap.setPricingEngine(swapEngine);
+        oneYearForward5YearSwap.setPricingEngine(swapEngine);
 
         // Of course, you're not forced to really use different curves
         forecastingTermStructure.linkTo(depoSwapTermStructure);

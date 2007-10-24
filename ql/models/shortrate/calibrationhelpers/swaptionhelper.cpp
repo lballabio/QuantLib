@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,6 +21,7 @@
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
 #include <ql/pricingengines/swaption/discretizedswaption.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/indexes/iborindex.hpp>
@@ -60,21 +62,24 @@ namespace QuantLib {
                                index->businessDayConvention(),
                                false, false);
 
-        exerciseRate_ = VanillaSwap(VanillaSwap::Receiver, 1.0,
-                        fixedSchedule, 0.0, fixedLegDayCounter,
-                        floatSchedule, index, 0.0, floatingLegDayCounter,
-                        termStructure).fairRate();
-        swap_ = boost::shared_ptr<VanillaSwap>(new
-            VanillaSwap(VanillaSwap::Receiver, 1.0,
-                        fixedSchedule, exerciseRate_, fixedLegDayCounter,
-                        floatSchedule, index, 0.0, floatingLegDayCounter,
-                        termStructure));
+        boost::shared_ptr<PricingEngine> swapEngine(
+                                    new DiscountingSwapEngine(termStructure));
+
+        VanillaSwap temp(VanillaSwap::Receiver, 1.0,
+                         fixedSchedule, 0.0, fixedLegDayCounter,
+                         floatSchedule, index, 0.0, floatingLegDayCounter);
+        temp.setPricingEngine(swapEngine);
+        exerciseRate_ = temp.fairRate();
+        swap_ = boost::shared_ptr<VanillaSwap>(
+            new VanillaSwap(VanillaSwap::Receiver, 1.0,
+                            fixedSchedule, exerciseRate_, fixedLegDayCounter,
+                            floatSchedule, index, 0.0, floatingLegDayCounter));
+        swap_->setPricingEngine(swapEngine);
 
         engine_  = boost::shared_ptr<PricingEngine>();
-        boost::shared_ptr<Exercise> exercise(new
-            EuropeanExercise(exerciseDate));
-        swaption_ = boost::shared_ptr<Swaption>(new
-            Swaption(swap_, exercise));
+        boost::shared_ptr<Exercise> exercise(
+                                          new EuropeanExercise(exerciseDate));
+        swaption_ = boost::shared_ptr<Swaption>(new Swaption(swap_, exercise));
         marketValue_ = blackPrice(volatility_->value());
     }
 
@@ -82,7 +87,9 @@ namespace QuantLib {
         Swaption::arguments args;
         swaption_->setupArguments(&args);
         std::vector<Time> swaptionTimes =
-            DiscretizedSwaption(args).mandatoryTimes();
+            DiscretizedSwaption(args,
+                                termStructure_->referenceDate(),
+                                termStructure_->dayCounter()).mandatoryTimes();
         times.insert(times.end(),
                      swaptionTimes.begin(), swaptionTimes.end());
     }
@@ -94,7 +101,8 @@ namespace QuantLib {
 
     Real SwaptionHelper::blackPrice(Volatility sigma) const {
         Handle<Quote> vol(boost::shared_ptr<Quote>(new SimpleQuote(sigma)));
-        boost::shared_ptr<PricingEngine> black(new BlackSwaptionEngine(vol, termStructure_));
+        boost::shared_ptr<PricingEngine> black(new
+                                    BlackSwaptionEngine(termStructure_, vol));
         swaption_->setPricingEngine(black);
         Real value = swaption_->NPV();
         swaption_->setPricingEngine(engine_);

@@ -34,7 +34,7 @@ namespace QuantLib {
             const boost::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
             const boost::shared_ptr<IborIndex>& index,
             Rate switchStrike)
-    : OptionletStripper(termVolSurface, index),   
+    : OptionletStripper(termVolSurface, index),
     volQuotes_(nOptionletTenors_,
                std::vector<boost::shared_ptr<SimpleQuote> >(nStrikes_)),
       floatingSwitchStrike_(switchStrike==Null<Rate>() ? true : false),
@@ -56,14 +56,14 @@ namespace QuantLib {
         const Date& referenceDate = termVolSurface_->referenceDate();
         const DayCounter& dc = termVolSurface_->dayCounter();
         boost::shared_ptr<BlackCapFloorEngine> dummy(new
-                                     BlackCapFloorEngine(0.20, dc));
+                      BlackCapFloorEngine(index_->termStructure(), 0.20, dc));
         for (Size i=0; i<nOptionletTenors_; ++i) {
             CapFloor temp = MakeCapFloor(CapFloor::Cap,
                                          capFloorLengths_[i],
                                          index_,
                                          0.04, // dummy strike
-                                         0*Days,
-                                         dummy);
+                                         0*Days)
+                .withPricingEngine(dummy);
             boost::shared_ptr<FloatingRateCoupon> lFRC =
                                                 temp.lastFloatingRateCoupon();
             optionletDates_[i] = lFRC->fixingDate();
@@ -97,25 +97,28 @@ namespace QuantLib {
                 for (Size i=0; i<nOptionletTenors_; ++i) {
                     volQuotes_[i][j]= boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.10));
                     boost::shared_ptr<BlackCapFloorEngine> engine(new
-                                    BlackCapFloorEngine(Handle<Quote>(volQuotes_[i][j]), dc));
+                        BlackCapFloorEngine(index_->termStructure(),
+                                            Handle<Quote>(volQuotes_[i][j]),
+                                            dc));
                     capFloors_[i][j] = MakeCapFloor(capFloorType,
                                                     capFloorLengths_[i], index_,
-                                                    strikes[j], 0*Days, engine);
+                                                    strikes[j], 0*Days)
+                        .withPricingEngine(engine);
                 }
             }
             capFlooMatrixNotInitialized_ = false;
         }
-        
+
         for (Size j=0; j<nStrikes_; ++j) {
 
             CapFloor::Type capFloorType = strikes[j] < switchStrike_ ?
                                    CapFloor::Floor : CapFloor::Cap;
             Option::Type optionletType = capFloorType==CapFloor::Floor ?
                                    Option::Put : Option::Call;
-            
+
             Real previousCapFloorPrice = 0.0;
             for (Size i=0; i<nOptionletTenors_; ++i) {
-                
+
                 capFloorVols_[i][j] = termVolSurface_->volatility(
                     capFloorLengths_[i], strikes[j], true);
                 volQuotes_[i][j]->setValue(capFloorVols_[i][j]);
@@ -152,7 +155,7 @@ namespace QuantLib {
         }
 
     }
-    
+
     const Matrix& OptionletStripper1::capFloorPrices() const {
         calculate();
         return capFloorPrices_;
@@ -162,7 +165,7 @@ namespace QuantLib {
         calculate();
         return capFloorVols_;
     }
-        
+
     const Matrix& OptionletStripper1::optionletPrices() const {
         calculate();
         return optionletPrices_;

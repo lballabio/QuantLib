@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006 StatPro Italia srl
 
@@ -36,20 +37,19 @@ namespace QuantLib {
         \warning The engine assumes that the exercise date equals the
                  start date of the passed swap.
     */
-    class BlackSwaptionEngine : public Swaption::engine,
-                                public Observer {
+    class BlackSwaptionEngine : public Swaption::engine {
       public:
-        BlackSwaptionEngine(const Handle<Quote>& volatility,
-                            const Handle<YieldTermStructure>& discountCurve);
-        BlackSwaptionEngine(const Handle<SwaptionVolatilityStructure>&,
-                            const Handle<YieldTermStructure>& discountCurve);
+        BlackSwaptionEngine(const Handle<YieldTermStructure>& termStructure,
+                            const Handle<Quote>& vol,
+                            const DayCounter& dc = Actual365Fixed());
+        BlackSwaptionEngine(const Handle<YieldTermStructure>& termStructure,
+                            const Handle<SwaptionVolatilityStructure>& vol);
         void calculate() const;
-        void update();
         Handle<YieldTermStructure> termStructure();
         Handle<SwaptionVolatilityStructure> volatility();
       private:
+        Handle<YieldTermStructure> termStructure_;
         Handle<SwaptionVolatilityStructure> volatility_;
-        Handle<YieldTermStructure> discountCurve_;
     };
 
 }

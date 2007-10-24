@@ -179,11 +179,10 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     test->add(BOOST_TEST_CASE(startTimer));
 
-    
     test->add(AmericanOptionTest::suite());   // FLOATING_POINT_EXCEPTION
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
-    test->add(AssetSwapTest::suite()); // fails whith QL_USE_INDEXED_COUPON
+    test->add(AssetSwapTest::suite()); // fails with QL_USE_INDEXED_COUPON
     test->add(BarrierOptionTest::suite());
     test->add(BasketOptionTest::suite());   // FLOATING_POINT_EXCEPTION
     test->add(BatesModelTest::suite());       // FLOATING_POINT_EXCEPTION
@@ -196,13 +195,13 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CapsStripperTest::suite());   // FLOATING_POINT_EXCEPTION
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
-    test->add(CompoundForwardTest::suite()); // fails whith QL_USE_INDEXED_COUPON
+    test->add(CompoundForwardTest::suite()); // fails with QL_USE_INDEXED_COUPON
     test->add(ConvertibleBondTest::suite());
     test->add(CovarianceTest::suite());
     test->add(CurveStatesTest::suite());
     test->add(DateTest::suite());
     test->add(DayCounterTest::suite());
-    test->add(DigitalCouponTest::suite()); // might fail whith QL_USE_INDEXED_COUPON
+    test->add(DigitalCouponTest::suite()); // might fail with QL_USE_INDEXED_COUPON
     test->add(DigitalOptionTest::suite());  // FLOATING_POINT_EXCEPTION
     test->add(DistributionTest::suite());
     test->add(DividendOptionTest::suite());   // FLOATING_POINT_EXCEPTION
@@ -242,7 +241,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(RngTraitsTest::suite());
     test->add(RoundingTest::suite());
     test->add(SampledCurveTest::suite());
-    test->add(ShortRateModelTest::suite()); // fails whith QL_USE_INDEXED_COUPON
+    test->add(ShortRateModelTest::suite()); // fails with QL_USE_INDEXED_COUPON
     test->add(Solver1DTest::suite());
     test->add(StatisticsTest::suite());
     test->add(SurfaceTest::suite());

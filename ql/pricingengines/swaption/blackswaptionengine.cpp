@@ -1,8 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2006 Cristina Duminuco
+ Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -20,83 +21,104 @@
 */
 
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/voltermstructures/interestrate/swaption/swaptionconstantvol.hpp>
+#include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/cashflows/cashflows.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/yieldtermstructure.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 
-    BlackSwaptionEngine::BlackSwaptionEngine(const Handle<Quote>& volatility,
-                            const Handle<YieldTermStructure>& discountCurve)
-    : volatility_(boost::shared_ptr<SwaptionVolatilityStructure>(new
+    BlackSwaptionEngine::BlackSwaptionEngine(
+                            const Handle<YieldTermStructure>& termStructure,
+                            const Handle<Quote>& volatility,
+                            const DayCounter& dc)
+    : termStructure_(termStructure),
+      volatility_(boost::shared_ptr<SwaptionVolatilityStructure>(new
                   SwaptionConstantVolatility(0, NullCalendar(),
-                                             volatility, Actual365Fixed()))),
-      discountCurve_(discountCurve) {
+                                             volatility, dc))) {
+        registerWith(termStructure_);
         registerWith(volatility_);
-        registerWith(discountCurve_);
     }
 
     BlackSwaptionEngine::BlackSwaptionEngine(
-                        const Handle<SwaptionVolatilityStructure>& volatility,
-                        const Handle<YieldTermStructure>& discountCurve)
-    : volatility_(volatility),
-      discountCurve_(discountCurve) {
+                        const Handle<YieldTermStructure>& termStructure,
+                        const Handle<SwaptionVolatilityStructure>& volatility)
+    : termStructure_(termStructure),
+      volatility_(volatility) {
+        registerWith(termStructure_);
         registerWith(volatility_);
-        registerWith(discountCurve_);
     }
 
-    void BlackSwaptionEngine::update()
-    {
-        notifyObservers();
-    }
-
-
-    void BlackSwaptionEngine::calculate() const
-    {
+    void BlackSwaptionEngine::calculate() const {
         static const Spread basisPoint = 1.0e-4;
-        Time exercise = arguments_.stoppingTimes[0];
-        Time maturity = arguments_.floatingPayTimes.back();
+
+        VanillaSwap swap = *arguments_.swap;
+        swap.setPricingEngine(boost::shared_ptr<PricingEngine>(new
+                                    DiscountingSwapEngine(termStructure_)));
+
+        // Volatilities are calculated for zero-spreaded swaps.
+        // Therefore, the spread on the floating leg is removed
+        // and a corresponding correction is made on the fixed leg.
+        Spread correction = swap.spread() *
+            std::fabs(swap.floatingLegBPS()/swap.fixedLegBPS());
+        Rate strike = swap.fixedRate() - correction;
+        Rate forward = swap.fairRate() - correction;
+
+        Date settlement = termStructure_->referenceDate();
+        Date maturityDate = arguments_.floatingPayDates.back();
+        Date exerciseDate = arguments_.exercise->date(0);
         Real annuity;
         switch(arguments_.settlementType) {
-          case Settlement::Physical :
-            annuity = arguments_.fixedBPS/basisPoint;
-            break;
-          case Settlement::Cash :
-            annuity = arguments_.fixedCashBPS/basisPoint;
-            break;
+          case Settlement::Physical: {
+              annuity = std::fabs(swap.fixedLegBPS())/basisPoint;
+              break;
+          }
+          case Settlement::Cash: {
+              const Leg& fixedLeg = swap.fixedLeg();
+              boost::shared_ptr<FixedRateCoupon> firstCoupon =
+                  boost::dynamic_pointer_cast<FixedRateCoupon>(fixedLeg[0]);
+              DayCounter dayCount = firstCoupon->dayCounter();
+              Real fixedCashBPS =
+                  CashFlows::bps(fixedLeg,
+                                 InterestRate(forward, dayCount, Compounded),
+                                 settlement) ;
+              annuity = fixedCashBPS/basisPoint;
+              break;
+          }
           default:
             QL_FAIL("unknown settlement type");
         }
 
-        // FIXME: not coherent with the way volatility_ would calculate it
-        Time swapLength = maturity-exercise;
+        Time exerciseTime =
+            termStructure_->dayCounter().yearFraction(settlement,
+                                                      exerciseDate);
+        Time maturityTime =
+            termStructure_->dayCounter().yearFraction(settlement,
+                                                      maturityDate);
+        Time swapLength = maturityTime - exerciseTime;
 
-        Volatility vol = volatility_->volatility(exercise,
+        Volatility vol = volatility_->volatility(exerciseTime,
                                                  swapLength,
-                                                 arguments_.fixedRate);
+                                                 strike);
         Option::Type w = (arguments_.type==VanillaSwap::Payer) ?
                                                 Option::Call : Option::Put;
-        Real forecastingDiscount = arguments_.forecastingDiscount;
-        Real discount = discountCurve_->discount(maturity);
-        results_.value = annuity * blackFormula(w, arguments_.fixedRate,
-                                                arguments_.fairRate,
-                                                vol*std::sqrt(exercise))*
-                         discount / forecastingDiscount;
-        Real variance = volatility_->blackVariance(exercise,
+        results_.value = annuity * blackFormula(w, strike, forward,
+                                                vol*std::sqrt(exerciseTime));
+        Real variance = volatility_->blackVariance(exerciseTime,
                                                    swapLength,
-                                                   arguments_.fixedRate);
+                                                   strike);
         Real stdDev = std::sqrt(variance);
-        Rate forward = arguments_.fairRate;
-        Rate strike = arguments_.fixedRate;
-        results_.additionalResults["vega"] = std::sqrt(exercise) *
-            blackFormulaStdDevDerivative(strike, forward, stdDev, annuity)*
-                         discount / forecastingDiscount;
+        results_.additionalResults["vega"] = std::sqrt(exerciseTime) *
+            blackFormulaStdDevDerivative(strike, forward, stdDev, annuity);
     }
 
     Handle<YieldTermStructure> BlackSwaptionEngine::termStructure() {
-        return discountCurve_;
+        return termStructure_;
     }
 
     Handle<SwaptionVolatilityStructure> BlackSwaptionEngine::volatility() {

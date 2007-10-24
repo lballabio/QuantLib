@@ -24,12 +24,13 @@ namespace QuantLib {
 
     class JamshidianSwaptionEngine::rStarFinder {
       public:
-        rStarFinder(const Swaption::arguments &params,
-                    const boost::shared_ptr<OneFactorAffineModel>& model,
+        rStarFinder(const boost::shared_ptr<OneFactorAffineModel>& model,
+                    Real nominal,
+                    Time maturity,
+                    const std::vector<Time>& fixedPayTimes,
                     const std::vector<Real>& amounts)
-        : strike_(params.nominal), maturity_(params.stoppingTimes[0]),
-          times_(params.fixedPayTimes), amounts_(amounts), model_(model) {
-        }
+        : strike_(nominal), maturity_(maturity), times_(fixedPayTimes),
+          amounts_(amounts), model_(model) {}
 
         Real operator()(Rate x) const {
             Real value = strike_;
@@ -44,7 +45,7 @@ namespace QuantLib {
       private:
         Real strike_;
         Time maturity_;
-        const std::vector<Time>& times_;
+        std::vector<Time> times_;
         const std::vector<Real>& amounts_;
         const boost::shared_ptr<OneFactorAffineModel>& model_;
     };
@@ -57,14 +58,34 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "cannot use the Jamshidian decomposition "
                    "on exotic swaptions");
-        Time maturity = arguments_.stoppingTimes[0];
-        // QL_REQUIRE(maturity==arguments_.floatingFixingTimes[0],
-        //            "maturity must be equal to first fixing date");
+
+        Date referenceDate;
+        DayCounter dayCounter;
+
+        boost::shared_ptr<TermStructureConsistentModel> tsmodel =
+            boost::dynamic_pointer_cast<TermStructureConsistentModel>(model_);
+        if (tsmodel) {
+            referenceDate = tsmodel->termStructure()->referenceDate();
+            dayCounter = tsmodel->termStructure()->dayCounter();
+        } else {
+            referenceDate = termStructure_->referenceDate();
+            dayCounter = termStructure_->dayCounter();
+        }
 
         std::vector<Real> amounts(arguments_.fixedCoupons);
         amounts.back() += arguments_.nominal;
 
-        rStarFinder finder(arguments_, model_, amounts);
+        Real maturity = dayCounter.yearFraction(referenceDate,
+                                                arguments_.exercise->date(0));
+
+        std::vector<Time> fixedPayTimes(arguments_.fixedPayDates.size());
+        for (Size i=0; i<fixedPayTimes.size(); i++)
+            fixedPayTimes[i] =
+                dayCounter.yearFraction(referenceDate,
+                                        arguments_.fixedPayDates[i]);
+
+        rStarFinder finder(model_, arguments_.nominal, maturity,
+                           fixedPayTimes, amounts);
         Brent s1d;
         Rate minStrike = -10.0;
         Rate maxStrike = 10.0;
@@ -76,14 +97,18 @@ namespace QuantLib {
         Option::Type w = arguments_.type==VanillaSwap::Payer ?
                                                 Option::Put : Option::Call;
         Size size = arguments_.fixedCoupons.size();
+
         Real value = 0.0;
         for (Size i=0; i<size; i++) {
+            Real fixedPayTime =
+                dayCounter.yearFraction(referenceDate,
+                                        arguments_.fixedPayDates[i]);
             Real strike = model_->discountBond(maturity,
-                                               arguments_.fixedPayTimes[i],
+                                               fixedPayTime,
                                                rStar);
             Real dboValue = model_->discountBondOption(
                                                w, strike, maturity,
-                                               arguments_.fixedPayTimes[i]);
+                                               fixedPayTime);
             value += amounts[i]*dboValue;
         }
         results_.value = value;

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,6 +21,7 @@
 #include <ql/models/shortrate/calibrationhelpers/caphelper.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/discretizedcapfloor.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
@@ -80,13 +82,15 @@ namespace QuantLib {
             .withCouponRates(fixedRate)
             .withPaymentAdjustment(index->businessDayConvention());
 
-        boost::shared_ptr<Swap> swap(
-            new Swap(termStructure, floatingLeg, fixedLeg));
-        Rate fairRate = fixedRate - swap->NPV()/(swap->legBPS(1)/1.0e-4);
-        engine_  = boost::shared_ptr<PricingEngine>();
+        Swap swap(floatingLeg, fixedLeg);
+        swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                   new DiscountingSwapEngine(termStructure)));
+        Rate fairRate = fixedRate - swap.NPV()/(swap.legBPS(1)/1.0e-4);
+        engine_ = boost::shared_ptr<PricingEngine>();
         cap_ = boost::shared_ptr<Cap>(new Cap(floatingLeg,
                                               std::vector<Rate>(1, fairRate),
-                                              termStructure, engine_));
+                                              termStructure));
+        cap_->setPricingEngine(engine_);
         marketValue_ = blackPrice(volatility_->value());
     }
 
@@ -94,7 +98,9 @@ namespace QuantLib {
         CapFloor::arguments args;
         cap_->setupArguments(&args);
         std::vector<Time> capTimes =
-            DiscretizedCapFloor(args).mandatoryTimes();
+            DiscretizedCapFloor(args,
+                                termStructure_->referenceDate(),
+                                termStructure_->dayCounter()).mandatoryTimes();
         times.insert(times.end(),
                      capTimes.begin(), capTimes.end());
     }
@@ -107,7 +113,8 @@ namespace QuantLib {
     Real CapHelper::blackPrice(Volatility sigma) const {
         boost::shared_ptr<Quote> vol(new SimpleQuote(sigma));
         boost::shared_ptr<PricingEngine> black(
-                                 new BlackCapFloorEngine(Handle<Quote>(vol)));
+                                 new BlackCapFloorEngine(termStructure_,
+                                                         Handle<Quote>(vol)));
         cap_->setPricingEngine(black);
         Real value = cap_->NPV();
         cap_->setPricingEngine(engine_);

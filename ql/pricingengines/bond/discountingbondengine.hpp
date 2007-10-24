@@ -25,17 +25,14 @@
 #define quantlib_discounting_bond_engine_hpp
 
 #include <ql/instruments/bond.hpp>
-#include <ql/voltermstructures/interestrate/swaption/swaptionvolstructure.hpp>
 
 namespace QuantLib {
 
-    class DiscountingBondEngine : public Bond::engine,
-                                  public Observer {
+    class DiscountingBondEngine : public Bond::engine {
       public:
         DiscountingBondEngine(const Handle<YieldTermStructure>& discountCurve =
                                                 Handle<YieldTermStructure>());
         void calculate() const;
-        void update();
         Handle<YieldTermStructure> discountCurve() const;
       private:
         Handle<YieldTermStructure> discountCurve_;

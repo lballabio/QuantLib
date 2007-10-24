@@ -79,27 +79,32 @@ namespace QuantLib {
             Rate dummyStrike = 0.;
             Volatility atmOptionVol = atmCapFloorTermVolCurve_->volatility(optionExpiriesTimes[optionIndex],dummyStrike);
             boost::shared_ptr<BlackCapFloorEngine> engine(new
-                                BlackCapFloorEngine(atmOptionVol, dc_));
-            caps_[optionIndex] = MakeCapFloor(CapFloor::Cap,
-                                            optionExpiriesTenors[optionIndex], index_,
-                                            dummyStrike, 0*Days, engine);
+                                BlackCapFloorEngine(index_->termStructure(),
+                                                    atmOptionVol, dc_));
+            caps_[optionIndex] =
+                MakeCapFloor(CapFloor::Cap,
+                             optionExpiriesTenors[optionIndex], index_,
+                             dummyStrike, 0*Days)
+                .withPricingEngine(engine);
             atmCapFloorStrikes_[optionIndex] = caps_[optionIndex]->atmRate();
-            caps_[optionIndex] = MakeCapFloor(CapFloor::Cap,
-                                            optionExpiriesTenors[optionIndex], index_,
-                                            atmCapFloorStrikes_[optionIndex], 0*Days, engine);
+            caps_[optionIndex] =
+                MakeCapFloor(CapFloor::Cap,
+                             optionExpiriesTenors[optionIndex], index_,
+                             atmCapFloorStrikes_[optionIndex], 0*Days)
+                .withPricingEngine(engine);
             atmCapFloorPrices_[optionIndex] = caps_[optionIndex]->NPV();
         }
 
         spreadsVolImplied_ = spreadsVolImplied();
-        
+
         OptionletStripperAdapter adapter(optionletStripper1_);
 
         for (Size optionIndex=0; optionIndex<nOptionExpiries_; ++optionIndex) {
             for (Size i=0; i<optionletVolatilities_.size(); ++i) {
                 if (i<=caps_[optionIndex]->leg().size()) {
-                    Volatility unadjustedVol = adapter.volatility(optionletTimes_[i], atmCapFloorStrikes_[optionIndex]); 
+                    Volatility unadjustedVol = adapter.volatility(optionletTimes_[i], atmCapFloorStrikes_[optionIndex]);
                     Volatility adjustedVol = unadjustedVol + spreadsVolImplied_[optionIndex];
-                    
+
                     // insert adjusted volatility
                     std::vector<Rate>::const_iterator previousNode =
                         std::lower_bound(optionletStrikes_[i].begin(), optionletStrikes_[i].end(),
@@ -118,7 +123,7 @@ namespace QuantLib {
         std::vector<Volatility> result;
         Volatility guess = 0.0001, minVol = -0.1, maxVol = 0.1;
         for (Size optionIndex=0; optionIndex<nOptionExpiries_; ++optionIndex) {
-            ObjectiveFunction f(optionletStripper1_, caps_[optionIndex], 
+            ObjectiveFunction f(optionletStripper1_, caps_[optionIndex],
                                 atmCapFloorPrices_[optionIndex]);
             Brent solver;
             solver.setMaxEvaluations(maxEvaluations_);
@@ -151,22 +156,23 @@ namespace QuantLib {
             const boost::shared_ptr<CapFloor>& cap,
             Real targetValue):
        optionletStripper1_(optionletStripper1),
-       cap_(cap), 
+       cap_(cap),
        targetValue_(targetValue){ }
 
     Real OptionletStripper2::ObjectiveFunction::operator()(Volatility spreadVol) const {
-        
+
         boost::shared_ptr<OptionletVolatilityStructure> adapter(new
             OptionletStripperAdapter(optionletStripper1_));
 
         boost::shared_ptr<SimpleQuote> spreadQuote(new SimpleQuote(spreadVol));
 
-        boost::shared_ptr<OptionletVolatilityStructure> spreadedAdapter(new 
+        boost::shared_ptr<OptionletVolatilityStructure> spreadedAdapter(new
             SpreadedOptionletVol(Handle<OptionletVolatilityStructure>(adapter),
                                  Handle<Quote>(spreadQuote)));
 
         boost::shared_ptr<BlackCapFloorEngine> engine(new
-            BlackCapFloorEngine(Handle<OptionletVolatilityStructure>(spreadedAdapter)));
+            BlackCapFloorEngine(optionletStripper1_->index()->termStructure(),
+                                Handle<OptionletVolatilityStructure>(spreadedAdapter)));
 
         cap_->setPricingEngine(engine);
         return cap_->NPV()-targetValue_;

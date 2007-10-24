@@ -116,22 +116,8 @@ namespace QuantLib {
               new TsiveriotisFernandesLattice<T>(tree,riskFreeRate,maturity,
                                                  timeSteps_,creditSpread,v,q));
 
-        // adjust times to grid
-        TimeGrid grid(maturity, timeSteps_);
-        for (i=0; i<arguments_.couponTimes.size(); i++)
-            arguments_.couponTimes[i] =
-                grid.closestTime(arguments_.couponTimes[i]);
-        for (i=0; i<arguments_.stoppingTimes.size(); i++)
-            arguments_.stoppingTimes[i] =
-                grid.closestTime(arguments_.stoppingTimes[i]);
-        for (i=0; i<arguments_.callabilityTimes.size(); i++)
-            arguments_.callabilityTimes[i] =
-                grid.closestTime(arguments_.callabilityTimes[i]);
-        for (i=0; i<arguments_.dividendTimes.size(); i++)
-            arguments_.dividendTimes[i] =
-                grid.closestTime(arguments_.dividendTimes[i]);
-
-        DiscretizedConvertible convertible(arguments_);
+        DiscretizedConvertible convertible(arguments_,
+                                           TimeGrid(maturity, timeSteps_));
 
         convertible.initialize(lattice, maturity);
         convertible.rollback(0.0);

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -36,12 +37,10 @@ namespace QuantLib {
     class MakeCapFloor {
       public:
         MakeCapFloor(CapFloor::Type capFloorType,
-                     const Period& capFloorTenor, 
+                     const Period& capFloorTenor,
                      const boost::shared_ptr<IborIndex>& index,
                      Rate strike = Null<Rate>(),
-                     const Period& forwardStart = 0*Days,
-                     const boost::shared_ptr<PricingEngine>& engine =
-                         boost::shared_ptr<PricingEngine>());
+                     const Period& forwardStart = 0*Days);
 
         operator CapFloor() const;
         operator boost::shared_ptr<CapFloor>() const ;
@@ -49,8 +48,6 @@ namespace QuantLib {
         MakeCapFloor& withNominal(Real n);
         MakeCapFloor& withEffectiveDate(const Date& effectiveDate,
                                         bool firstCapletExcluded);
-        MakeCapFloor& withDiscountingTermStructure(
-            const Handle<YieldTermStructure>& discountingTermStructure);
 
         MakeCapFloor& withTenor(const Period& t);
         MakeCapFloor& withCalendar(const Calendar& cal);
@@ -61,12 +58,17 @@ namespace QuantLib {
         MakeCapFloor& withFirstDate(const Date& d);
         MakeCapFloor& withNextToLastDate(const Date& d);
         MakeCapFloor& withDayCount(const DayCounter& dc);
-        
+
+        MakeCapFloor& withDiscountingTermStructure(
+                  const Handle<YieldTermStructure>& discountingTermStructure);
+        MakeCapFloor& withPricingEngine(
+                              const boost::shared_ptr<PricingEngine>& engine);
       private:
         CapFloor::Type capFloorType_;
         Rate strike_;
         bool firstCapletExcluded_;
 
+        Handle<YieldTermStructure> discountCurve_;
         boost::shared_ptr<PricingEngine> engine_;
         MakeVanillaSwap makeVanillaSwap_;
     };

@@ -108,12 +108,7 @@ namespace QuantLib {
                                       process->stateVariable(),
                                       flatDividends, flatRiskFree, flatVol));
 
-        // adjust the bermudan exercise times according to the tree steps
         TimeGrid grid(maturity, timeSteps_);
-        for (Size k=0; k<arguments_.stoppingTimes.size(); ++k) {
-            arguments_.stoppingTimes[k] =
-                grid.closestTime(arguments_.stoppingTimes[k]);
-        }
 
         boost::shared_ptr<T> tree(new T(bs, maturity, timeSteps_,
                                         payoff->strike()));
@@ -121,7 +116,7 @@ namespace QuantLib {
         boost::shared_ptr<BlackScholesLattice<T> > lattice(
             new BlackScholesLattice<T>(tree, r, maturity, timeSteps_));
 
-        DiscretizedVanillaOption option(arguments_);
+        DiscretizedVanillaOption option(arguments_, grid);
 
         option.initialize(lattice, maturity);
 

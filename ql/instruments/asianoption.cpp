@@ -27,7 +27,7 @@ namespace QuantLib {
         Average::Type averageType,
         Real runningAccumulator,
         Size pastFixings,
-        std::vector<Date> fixingDates,
+        const std::vector<Date>& fixingDates,
         const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,

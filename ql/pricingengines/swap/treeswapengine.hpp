@@ -18,45 +18,37 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file treeswaptionengine.hpp
-    \brief Numerical lattice engine for swaptions
+/*! \file treeswapengine.hpp
+    \brief Numerical lattice engine for swaps
 */
 
-#ifndef quantlib_tree_swaption_engine_hpp
-#define quantlib_tree_swaption_engine_hpp
+#ifndef quantlib_tree_swap_engine_hpp
+#define quantlib_tree_swap_engine_hpp
 
-#include <ql/instruments/swaption.hpp>
+#include <ql/instruments/vanillaswap.hpp>
 #include <ql/pricingengines/latticeshortratemodelengine.hpp>
 
 namespace QuantLib {
 
-    //! Numerical lattice engine for swaptions
-    /*! \ingroup swaptionengines
-
-        \warning This engine is not guaranteed to work if the
-                 underlying swap has a start date in the past, i.e.,
-                 before today's date. When using this engine, prune
-                 the initial part of the swap so that it starts at
-                 \f$ t \geq 0 \f$.
-
-        \test calculations are checked against cached results
+    //! Numerical lattice engine for simple swaps
+    /*! \test calculations are checked against known good results
     */
-    class TreeSwaptionEngine
-    : public LatticeShortRateModelEngine<Swaption::arguments,
-                                         Swaption::results> {
+    class TreeVanillaSwapEngine
+    : public LatticeShortRateModelEngine<VanillaSwap::arguments,
+                                         VanillaSwap::results> {
       public:
         /*! \name Constructors
             \note the term structure is only needed when the short-rate
                   model cannot provide one itself.
         */
         //@{
-        TreeSwaptionEngine(const boost::shared_ptr<ShortRateModel>&,
-                           Size timeSteps,
-                           const Handle<YieldTermStructure>& termStructure =
+        TreeVanillaSwapEngine(const boost::shared_ptr<ShortRateModel>&,
+                              Size timeSteps,
+                              const Handle<YieldTermStructure>& termStructure =
                                                  Handle<YieldTermStructure>());
-        TreeSwaptionEngine(const boost::shared_ptr<ShortRateModel>&,
-                           const TimeGrid& timeGrid,
-                           const Handle<YieldTermStructure>& termStructure =
+        TreeVanillaSwapEngine(const boost::shared_ptr<ShortRateModel>&,
+                              const TimeGrid& timeGrid,
+                              const Handle<YieldTermStructure>& termStructure =
                                                  Handle<YieldTermStructure>());
         //@}
         void calculate() const;

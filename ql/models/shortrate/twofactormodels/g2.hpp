@@ -79,6 +79,7 @@ namespace QuantLib {
                                 Time bondMaturity) const;
 
         Real swaption(const Swaption::arguments& arguments,
+                      Rate fixedRate,
                       Real range,
                       Size intervals) const;
 

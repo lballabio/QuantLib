@@ -35,11 +35,23 @@ namespace QuantLib {
         : public LatticeShortRateModelEngine<CapFloor::arguments,
                                              CapFloor::results> {
       public:
+        /*! \name Constructors
+            \note the term structure is only needed when the short-rate
+                  model cannot provide one itself.
+        */
+        //@{
         TreeCapFloorEngine(const boost::shared_ptr<ShortRateModel>& model,
-                           Size timeSteps);
+                           Size timeSteps,
+                           const Handle<YieldTermStructure>& termStructure =
+                                                 Handle<YieldTermStructure>());
         TreeCapFloorEngine(const boost::shared_ptr<ShortRateModel>& model,
-                           const TimeGrid& timeGrid);
+                           const TimeGrid& timeGrid,
+                           const Handle<YieldTermStructure>& termStructure =
+                                                 Handle<YieldTermStructure>());
+        //@}
         void calculate() const;
+      private:
+        Handle<YieldTermStructure> termStructure_;
     };
 
 }

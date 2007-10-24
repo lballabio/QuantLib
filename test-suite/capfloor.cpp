@@ -27,6 +27,7 @@
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/marketmodelcapfloorengine.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
 #include <ql/models/marketmodels/correlations/expcorrelations.hpp>
 #include <ql/math/matrix.hpp>
@@ -88,25 +89,31 @@ struct CommonVars {
     boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
         Handle<Quote> vol(boost::shared_ptr<Quote>(
                                                 new SimpleQuote(volatility)));
-        return boost::shared_ptr<PricingEngine>(new BlackCapFloorEngine(vol));
+        return boost::shared_ptr<PricingEngine>(
+                                new BlackCapFloorEngine(termStructure, vol));
     }
 
     boost::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
                                              const Leg& leg,
                                              Rate strike,
                                              Volatility volatility) {
+        boost::shared_ptr<CapFloor> result;
         switch (type) {
           case CapFloor::Cap:
-            return boost::shared_ptr<CapFloor>(
+            result = boost::shared_ptr<CapFloor>(
                 new Cap(leg, std::vector<Rate>(1, strike),
-                        termStructure, makeEngine(volatility)));
+                        termStructure));
+            break;
           case CapFloor::Floor:
-            return boost::shared_ptr<CapFloor>(
+            result = boost::shared_ptr<CapFloor>(
                 new Floor(leg, std::vector<Rate>(1, strike),
-                          termStructure, makeEngine(volatility)));
+                          termStructure));
+            break;
           default:
             QL_FAIL("unknown cap/floor type");
         }
+        result->setPricingEngine(makeEngine(volatility));
+        return result;
     }
 
 };
@@ -275,7 +282,8 @@ void CapFloorTest::testConsistency() {
                                     floor_rates[k],vols[l]);
               Collar collar(leg,std::vector<Rate>(1,cap_rates[j]),
                             std::vector<Rate>(1,floor_rates[k]),
-                            vars.termStructure,vars.makeEngine(vols[l]));
+                            vars.termStructure);
+              collar.setPricingEngine(vars.makeEngine(vols[l]));
 
               if (std::fabs((cap->NPV()-floor->NPV())-collar.NPV()) > 1e-10) {
                   BOOST_FAIL(
@@ -325,7 +333,9 @@ void CapFloorTest::testParity() {
             VanillaSwap swap(VanillaSwap::Payer, vars.nominals[0],
                              schedule, strikes[j], vars.index->dayCounter(),
                              schedule, vars.index, 0.0,
-                             vars.index->dayCounter(), vars.termStructure);
+                             vars.index->dayCounter());
+            swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                              new DiscountingSwapEngine(vars.termStructure)));
             // FLOATING_POINT_EXCEPTION
             if (std::fabs((cap->NPV()-floor->NPV()) - swap.NPV()) > 1.0e-10) {
                 BOOST_FAIL(
@@ -385,8 +395,9 @@ void CapFloorTest::testATMRate() {
                                  schedule, floorATMRate,
                                  vars.index->dayCounter(),
                                  schedule, vars.index, 0.0,
-                                 vars.index->dayCounter(),
-                                 vars.termStructure);
+                                 vars.index->dayCounter());
+                swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                              new DiscountingSwapEngine(vars.termStructure)));
                 Real swapNPV = swap.NPV();
                 if (!checkAbsError(swapNPV, 0, 1.0e-10))
                     BOOST_FAIL(
@@ -528,8 +539,8 @@ void CapFloorTest::testMarketModel() {
                        times, vols,
                        vars.termStructure,
                        displacement));
-    boost::shared_ptr<PricingEngine> lmmEngine(new
-        MarketModelCapFloorEngine(factory));
+    boost::shared_ptr<PricingEngine> lmmEngine(
+                  new MarketModelCapFloorEngine(factory, vars.termStructure));
     cap->setPricingEngine(lmmEngine);
     floor->setPricingEngine(lmmEngine);
 

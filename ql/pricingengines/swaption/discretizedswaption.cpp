@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,166 +19,76 @@
 */
 
 #include <ql/pricingengines/swaption/discretizedswaption.hpp>
+#include <ql/pricingengines/swap/discretizedswap.hpp>
 
 namespace QuantLib {
 
-    DiscretizedSwap::DiscretizedSwap(const VanillaSwap::arguments& args)
-    : arguments_(args) {}
-
-    void DiscretizedSwap::reset(Size size) {
-        values_ = Array(size, 0.0);
-        adjustValues();
-    }
-
-    std::vector<Time> DiscretizedSwap::mandatoryTimes() const {
-        std::vector<Time> times;
-        Time t;
-        Size i;
-        for (i=0; i<arguments_.fixedResetTimes.size(); i++) {
-            t = arguments_.fixedResetTimes[i];
-            if (t >= 0.0)
-                times.push_back(t);
-        }
-        for (i=0; i<arguments_.fixedPayTimes.size(); i++) {
-            t = arguments_.fixedPayTimes[i];
-            if (t >= 0.0)
-                times.push_back(t);
-        }
-        for (i=0; i<arguments_.floatingResetTimes.size(); i++) {
-            t = arguments_.floatingResetTimes[i];
-            if (t >= 0.0)
-                times.push_back(t);
-        }
-        for (i=0; i<arguments_.floatingPayTimes.size(); i++) {
-            t = arguments_.floatingPayTimes[i];
-            if (t >= 0.0)
-                times.push_back(t);
-        }
-        return times;
-    }
-
-    void DiscretizedSwap::preAdjustValuesImpl() {
-        Size i;
-        // floating payments
-        for (i=0; i<arguments_.floatingResetTimes.size(); i++) {
-            Time t = arguments_.floatingResetTimes[i];
-            if (t >= 0.0 && isOnTime(t)) {
-                DiscretizedDiscountBond bond;
-                bond.initialize(method(), arguments_.floatingPayTimes[i]);
-                bond.rollback(time_);
-
-                Real nominal = arguments_.nominal;
-                for (Size j=0; j<values_.size(); j++) {
-                    Real coupon = nominal*(1.0 - bond.values()[j]);
-                    if (arguments_.type==VanillaSwap::Payer)
-                        values_[j] += coupon;
-                    else
-                        values_[j] -= coupon;
-                }
-            }
-        }
-        // fixed payments
-        for (i=0; i<arguments_.fixedResetTimes.size(); i++) {
-            Time t = arguments_.fixedResetTimes[i];
-            if (t >= 0.0 && isOnTime(t)) {
-                DiscretizedDiscountBond bond;
-                bond.initialize(method(),arguments_.fixedPayTimes[i]);
-                bond.rollback(time_);
-
-                Real fixedCoupon = arguments_.fixedCoupons[i];
-                for (Size j=0; j<values_.size(); j++) {
-                    Real coupon = fixedCoupon*bond.values()[j];
-                    if (arguments_.type==VanillaSwap::Payer)
-                        values_[j] -= coupon;
-                    else
-                        values_[j] += coupon;
-                }
-            }
-        }
-    }
-
-    void DiscretizedSwap::postAdjustValuesImpl() {
-        // fixed coupons whose reset time is in the past won't be managed
-        // in preAdjustValues()
-        for (Size i=0; i<arguments_.fixedPayTimes.size(); i++) {
-            Time t = arguments_.fixedPayTimes[i];
-            Time reset = arguments_.fixedResetTimes[i];
-            if (t >= 0.0 && isOnTime(t) && reset < 0.0) {
-                Real fixedCoupon = arguments_.fixedCoupons[i];
-                if (arguments_.type==VanillaSwap::Payer)
-                    values_ -= fixedCoupon;
-                else
-                    values_ += fixedCoupon;
-            }
-        }
-        // the same applies to floating payments whose rate is already fixed
-        if (arguments_.currentFloatingCoupon != Null<Real>()) {
-            for (Size i=0; i<arguments_.floatingPayTimes.size(); i++) {
-                Time t = arguments_.floatingPayTimes[i];
-                Time reset = arguments_.floatingResetTimes[i];
-                if (t >= 0.0 && isOnTime(t) && reset < 0.0) {
-                    if (arguments_.type==VanillaSwap::Payer)
-                        values_ += arguments_.currentFloatingCoupon;
-                    else
-                        values_ -= arguments_.currentFloatingCoupon;
-                }
-            }
-        }
-    }
-
-
     namespace {
 
-        bool withinPreviousWeek(Time t1, Time t2) {
-            static const Time dt = 1.0/52;
-            return t1-dt <= t2 && t2 <= t1;
+        bool withinPreviousWeek(const Date& d1, const Date& d2) {
+            return d2 >= d1-7 && d2 <= d1;
         }
 
-        bool withinNextWeek(Time t1, Time t2) {
-            static const Time dt = 1.0/52;
-            return t1 <= t2 && t2 <= t1+dt;
+        bool withinNextWeek(const Date& d1, const Date& d2) {
+            return d2 >= d1 && d2 <= d1+7;
         }
 
     }
 
-    DiscretizedSwaption::DiscretizedSwaption(const Swaption::arguments& args)
+    DiscretizedSwaption::DiscretizedSwaption(const Swaption::arguments& args,
+                                             const Date& referenceDate,
+                                             const DayCounter& dayCounter)
     : DiscretizedOption(boost::shared_ptr<DiscretizedAsset>(),
                         args.exercise->type(),
-                        args.stoppingTimes),
+                        std::vector<Time>()),
       arguments_(args) {
+
+        exerciseTimes_.resize(arguments_.exercise->dates().size());
+        for (Size i=0; i<exerciseTimes_.size(); ++i)
+            exerciseTimes_[i] =
+                dayCounter.yearFraction(referenceDate,
+                                        arguments_.exercise->date(i));
 
         // Date adjustments can get time vectors out of synch.
         // Here, we try and collapse similar dates which could cause
         // a mispricing.
-        for (Size i=0; i<arguments_.stoppingTimes.size(); i++) {
-            Time exercise = arguments_.stoppingTimes[i];
-            Size j;
-            for (j=0; j<arguments_.fixedPayTimes.size(); j++) {
-                if (withinNextWeek(exercise, arguments_.fixedPayTimes[j])
+        for (Size i=0; i<arguments_.exercise->dates().size(); i++) {
+            Date exerciseDate = arguments_.exercise->date(i);
+            for (Size j=0; j<arguments_.fixedPayDates.size(); j++) {
+                if (withinNextWeek(exerciseDate,
+                                   arguments_.fixedPayDates[j])
                     // coupons in the future are dealt with below
-                    && arguments_.fixedResetTimes[j] < 0.0)
-                    arguments_.fixedPayTimes[j] = exercise;
+                    && arguments_.fixedResetDates[j] < referenceDate)
+                    arguments_.fixedPayDates[j] = exerciseDate;
             }
-            for (j=0; j<arguments_.fixedResetTimes.size(); j++) {
-                if (withinPreviousWeek(exercise,
-                                       arguments_.fixedResetTimes[j]))
-                    arguments_.fixedResetTimes[j] = exercise;
+            for (Size j=0; j<arguments_.fixedResetDates.size(); j++) {
+                if (withinPreviousWeek(exerciseDate,
+                                       arguments_.fixedResetDates[j]))
+                    arguments_.fixedResetDates[j] = exerciseDate;
             }
-            for (j=0; j<arguments_.floatingResetTimes.size(); j++) {
-                if (withinPreviousWeek(exercise,
-                                       arguments_.floatingResetTimes[j]))
-                    arguments_.floatingResetTimes[j] = exercise;
+            for (Size j=0; j<arguments_.floatingResetDates.size(); j++) {
+                if (withinPreviousWeek(exerciseDate,
+                                       arguments_.floatingResetDates[j]))
+                    arguments_.floatingResetDates[j] = exerciseDate;
             }
         }
 
+        Time lastFixedPayment =
+            dayCounter.yearFraction(referenceDate,
+                                    arguments_.fixedPayDates.back());
+        Time lastFloatingPayment =
+            dayCounter.yearFraction(referenceDate,
+                                    arguments_.floatingPayDates.back());
+        lastPayment_ = std::max(lastFixedPayment,lastFloatingPayment);
+
         underlying_ = boost::shared_ptr<DiscretizedAsset>(
-                                             new DiscretizedSwap(arguments_));
+                                            new DiscretizedSwap(arguments_,
+                                                                referenceDate,
+                                                                dayCounter));
     }
 
     void DiscretizedSwaption::reset(Size size) {
-        Time lastFixedPay = arguments_.fixedPayTimes.back();
-        Time lastFloatPay = arguments_.floatingPayTimes.back();
-        underlying_->initialize(method(),std::max(lastFixedPay,lastFloatPay));
+        underlying_->initialize(method(), lastPayment_);
         DiscretizedOption::reset(size);
     }
 

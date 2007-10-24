@@ -27,12 +27,12 @@
 #define quantlib_vanilla_swap_hpp
 
 #include <ql/instruments/swap.hpp>
+#include <ql/time/daycounter.hpp>
 
 namespace QuantLib {
 
     class Schedule;
     class IborIndex;
-    class DayCounter;
 
     //! Plain-vanilla swap
     /*! \ingroup instruments
@@ -59,6 +59,7 @@ namespace QuantLib {
         enum Type { Receiver = -1, Payer = 1 };
         class arguments;
         class results;
+        class engine;
         VanillaSwap(Type type,
                     Real nominal,
                     const Schedule& fixedSchedule,
@@ -67,8 +68,7 @@ namespace QuantLib {
                     const Schedule& floatSchedule,
                     const boost::shared_ptr<IborIndex>& index,
                     Spread spread,
-                    const DayCounter& floatingDayCount,
-                    const Handle<YieldTermStructure>& termStructure);
+                    const DayCounter& floatingDayCount);
         // results
         Real fixedLegBPS() const;
         Real fixedLegNPV() const;
@@ -93,7 +93,6 @@ namespace QuantLib {
         void fetchResults(const PricingEngine::results*) const;
       private:
         void setupExpired() const;
-        void performCalculations() const;
         Type type_;
         Rate fixedRate_;
         Spread spread_;
@@ -105,39 +104,37 @@ namespace QuantLib {
 
 
     //! %Arguments for simple swap calculation
-    class VanillaSwap::arguments : public virtual PricingEngine::arguments {
+    class VanillaSwap::arguments : public Swap::arguments {
       public:
         arguments() : type(Receiver),
-                      nominal(Null<Real>()),
-                      currentFloatingCoupon(Null<Real>()) {}
+                      nominal(Null<Real>()) {}
         Type type;
         Real nominal;
-        std::vector<Time> fixedResetTimes;
-        std::vector<Time> fixedPayTimes;
-        std::vector<Real> fixedCoupons;
+
+        std::vector<Date> fixedResetDates;
+        std::vector<Date> fixedPayDates;
         std::vector<Time> floatingAccrualTimes;
-        std::vector<Time> floatingResetTimes;
-        std::vector<Time> floatingFixingTimes;
-        std::vector<Time> floatingPayTimes;
+        std::vector<Date> floatingResetDates;
+        std::vector<Date> floatingFixingDates;
+        std::vector<Date> floatingPayDates;
+
+        std::vector<Real> fixedCoupons;
         std::vector<Spread> floatingSpreads;
-        Real currentFloatingCoupon;
+        std::vector<Real> floatingCoupons;
         void validate() const;
     };
 
     //! %Results from simple swap calculation
-    class VanillaSwap::results : public Instrument::results {
+    class VanillaSwap::results : public Swap::results {
       public:
-        Real fixedLegBPS;
-        Real floatingLegBPS;
         Rate fairRate;
         Spread fairSpread;
-        void reset() {
-            Instrument::results::reset();
-            fixedLegBPS = floatingLegBPS = Null<Real>();
-            fairRate = Null<Rate>();
-            fairSpread = Null<Spread>();
-        }
+        void reset();
     };
+
+    class VanillaSwap::engine : public GenericEngine<VanillaSwap::arguments,
+                                                     VanillaSwap::results> {};
+
 
     // inline definitions
 

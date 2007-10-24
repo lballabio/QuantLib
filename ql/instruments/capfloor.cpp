@@ -51,7 +51,8 @@ namespace {
 
         vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
         Handle<Quote> h(vol_);
-        engine_ = boost::shared_ptr<PricingEngine>(new BlackCapFloorEngine(h));
+        engine_ = boost::shared_ptr<PricingEngine>(
+                                  new BlackCapFloorEngine(discountCurve_, h));
         cap.setupArguments(engine_->getArguments());
 
         results_ =
@@ -79,12 +80,10 @@ namespace QuantLib {
                  const Leg& floatingLeg,
                  const std::vector<Rate>& capRates,
                  const std::vector<Rate>& floorRates,
-                 const Handle<YieldTermStructure>& discountCurve,
-                 const boost::shared_ptr<PricingEngine>& engine)
+                 const Handle<YieldTermStructure>& discountCurve)
     : type_(type), floatingLeg_(floatingLeg),
       capRates_(capRates), floorRates_(floorRates),
       discountCurve_(discountCurve) {
-        setPricingEngine(engine);
         if (type_ == Cap || type_ == Collar) {
             QL_REQUIRE(!capRates_.empty(), "no cap rates given");
             capRates_.reserve(floatingLeg_.size());
@@ -109,11 +108,9 @@ namespace QuantLib {
                  CapFloor::Type type,
                  const Leg& floatingLeg,
                  const std::vector<Rate>& strikes,
-                 const Handle<YieldTermStructure>& discountCurve,
-                 const boost::shared_ptr<PricingEngine>& engine)
+                 const Handle<YieldTermStructure>& discountCurve)
     : type_(type), floatingLeg_(floatingLeg),
       discountCurve_(discountCurve) {
-        setPricingEngine(engine);
         QL_REQUIRE(!strikes.empty(), "no strikes given");
         if (type_ == Cap) {
             capRates_ = strikes;

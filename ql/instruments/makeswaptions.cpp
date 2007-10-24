@@ -28,33 +28,12 @@ namespace QuantLib {
 
     MakeSwaption::MakeSwaption(const boost::shared_ptr<SwapIndex>& swapIndex,
                              Rate strike,
-                             const Period& optionTenor,
-                             const boost::shared_ptr<PricingEngine>& engine)
+                             const Period& optionTenor)
     : delivery_(Settlement::Physical),
       strike_(strike),
       optionTenor_(optionTenor),
       swapIndex_(swapIndex),
-      swaptionConvention_(ModifiedFollowing),
-      engine_(engine) { }
-
-    void MakeSwaption::create() const {
-        Date evaluationDate = Settings::instance().evaluationDate();
-        Date optionDate = swapIndex_->fixingCalendar().advance(evaluationDate,
-                                                               optionTenor_,
-                                                               swaptionConvention_);
-        exercise_ = boost::shared_ptr<Exercise>(new EuropeanExercise(optionDate));
-        underlyingSwap_ = swapIndex_->underlyingSwap(optionDate);
-
-        if (strike_ == Null<Rate>())
-            strike_ = CashFlows::atmRate(underlyingSwap_->floatingLeg(),
-                                         **underlyingSwap_->discountCurve());
-        underlyingSwap_ = MakeVanillaSwap(swapIndex_->tenor(), swapIndex_->iborIndex(), strike_)
-            .withEffectiveDate(swapIndex_->valueDate(optionDate))
-            .withFixedLegCalendar(swapIndex_->fixingCalendar())
-            .withFixedLegDayCount(swapIndex_->dayCounter())
-            .withFixedLegConvention(swapIndex_->fixedLegConvention())
-            .withFixedLegTerminationDateConvention(swapIndex_->fixedLegConvention());
-    }
+      swaptionConvention_(ModifiedFollowing) {}
 
     MakeSwaption::operator Swaption() const {
         boost::shared_ptr<Swaption> swaption = *this;
@@ -62,12 +41,37 @@ namespace QuantLib {
     }
 
     MakeSwaption::operator boost::shared_ptr<Swaption>() const {
-        create();
-        return boost::shared_ptr<Swaption>(new
-            Swaption(underlyingSwap_, exercise_, delivery_));
+        Date evaluationDate = Settings::instance().evaluationDate();
+        Date optionDate =
+            swapIndex_->fixingCalendar().advance(evaluationDate,
+                                                 optionTenor_,
+                                                 swaptionConvention_);
+        exercise_ = boost::shared_ptr<Exercise>(
+                                            new EuropeanExercise(optionDate));
+        underlyingSwap_ = swapIndex_->underlyingSwap(optionDate);
+
+        if (strike_ == Null<Rate>())
+            strike_ = CashFlows::atmRate(underlyingSwap_->floatingLeg(),
+                                         **swapIndex_->termStructure());
+
+        underlyingSwap_ =
+            MakeVanillaSwap(swapIndex_->tenor(),
+                            swapIndex_->iborIndex(), strike_)
+            .withEffectiveDate(swapIndex_->valueDate(optionDate))
+            .withFixedLegCalendar(swapIndex_->fixingCalendar())
+            .withFixedLegDayCount(swapIndex_->dayCounter())
+            .withFixedLegConvention(swapIndex_->fixedLegConvention())
+            .withFixedLegTerminationDateConvention(
+                                            swapIndex_->fixedLegConvention());
+
+        boost::shared_ptr<Swaption> swaption(
+                         new Swaption(underlyingSwap_, exercise_, delivery_));
+        swaption->setPricingEngine(engine_);
+        return swaption;
     }
 
-    MakeSwaption& MakeSwaption::withSwaptionConvention(BusinessDayConvention bdc) {
+    MakeSwaption& MakeSwaption::withSwaptionConvention(
+                                                  BusinessDayConvention bdc) {
         swaptionConvention_ = bdc;
         return *this;
     }
@@ -77,4 +81,11 @@ namespace QuantLib {
         return *this;
     }
 
+    MakeSwaption& MakeSwaption::withPricingEngine(
+                             const boost::shared_ptr<PricingEngine>& engine) {
+        engine_ = engine;
+        return *this;
+    }
+
 }
+

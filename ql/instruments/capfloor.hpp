@@ -60,13 +60,11 @@ namespace QuantLib {
                  const Leg& floatingLeg,
                  const std::vector<Rate>& capRates,
                  const std::vector<Rate>& floorRates,
-                 const Handle<YieldTermStructure>& discountCurve,
-                 const boost::shared_ptr<PricingEngine>& engine);
+                 const Handle<YieldTermStructure>& discountCurve);
         CapFloor(Type type,
                  const Leg& floatingLeg,
                  const std::vector<Rate>& strikes,
-                 const Handle<YieldTermStructure>& discountCurve,
-                 const boost::shared_ptr<PricingEngine>& engine);
+                 const Handle<YieldTermStructure>& discountCurve);
         //! \name Instrument interface
         //@{
         bool isExpired() const;
@@ -119,11 +117,10 @@ namespace QuantLib {
       public:
         Cap(const Leg& floatingLeg,
             const std::vector<Rate>& exerciseRates,
-            const Handle<YieldTermStructure>& discountCurve,
-            const boost::shared_ptr<PricingEngine>& engine)
+            const Handle<YieldTermStructure>& discountCurve)
         : CapFloor(CapFloor::Cap, floatingLeg,
                    exerciseRates, std::vector<Rate>(),
-                   discountCurve, engine) {}
+                   discountCurve) {}
     };
 
     //! Concrete floor class
@@ -132,11 +129,10 @@ namespace QuantLib {
       public:
         Floor(const Leg& floatingLeg,
               const std::vector<Rate>& exerciseRates,
-              const Handle<YieldTermStructure>& discountCurve,
-              const boost::shared_ptr<PricingEngine>& engine)
+              const Handle<YieldTermStructure>& discountCurve)
         : CapFloor(CapFloor::Floor, floatingLeg,
                    std::vector<Rate>(), exerciseRates,
-                   discountCurve, engine) {}
+                   discountCurve) {}
     };
 
     //! Concrete collar class
@@ -146,10 +142,9 @@ namespace QuantLib {
         Collar(const Leg& floatingLeg,
                const std::vector<Rate>& capRates,
                const std::vector<Rate>& floorRates,
-               const Handle<YieldTermStructure>& discountCurve,
-               const boost::shared_ptr<PricingEngine>& engine)
+               const Handle<YieldTermStructure>& discountCurve)
         : CapFloor(CapFloor::Collar, floatingLeg, capRates, floorRates,
-                   discountCurve, engine) {}
+                   discountCurve) {}
     };
 
 

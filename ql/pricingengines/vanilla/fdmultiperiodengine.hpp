@@ -29,6 +29,7 @@
 #include <ql/methods/finitedifferences/fdtypedefs.hpp>
 #include <ql/instruments/oneassetoption.hpp>
 #include <ql/event.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 
@@ -57,7 +58,12 @@ namespace QuantLib {
                 dynamic_cast<const OneAssetOption::arguments*>(a);
             QL_REQUIRE(args, "incorrect argument type");
             events_.clear();
-            stoppingTimes_ = args->stoppingTimes;
+
+            Size n = args->exercise->dates().size();
+            stoppingTimes_.resize(n);
+            for (Size i=0; i<n; ++i)
+                stoppingTimes_[i] =
+                      args->stochasticProcess->time(args->exercise->date(i));
         };
 
         virtual void calculate(PricingEngine::results*) const;

@@ -36,11 +36,11 @@ namespace QuantLib {
                                                         Swaption::arguments,
                                                         Swaption::results> {
       public:
-        LfmSwaptionEngine(const boost::shared_ptr<LiborForwardModel>& model)
-        : GenericModelEngine<LiborForwardModel,
-                             Swaption::arguments,
-                             Swaption::results>(model) {}
+        LfmSwaptionEngine(const boost::shared_ptr<LiborForwardModel>& model,
+                          const Handle<YieldTermStructure>& discountCurve);
         void calculate() const;
+      private:
+        Handle<YieldTermStructure> discountCurve_;
     };
 
 }

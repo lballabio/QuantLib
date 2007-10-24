@@ -30,6 +30,7 @@
 #include <ql/option.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/yieldtermstructure.hpp>
 
 namespace QuantLib {
 
@@ -85,11 +86,13 @@ namespace QuantLib {
         //@}
         void setupArguments(PricingEngine::arguments*) const;
         //! implied volatility
-        Volatility impliedVolatility(Real price,
-                                     Real accuracy = 1.0e-4,
-                                     Size maxEvaluations = 100,
-                                     Volatility minVol = 1.0e-7,
-                                     Volatility maxVol = 4.0) const;
+        Volatility impliedVolatility(
+                              Real price,
+                              const Handle<YieldTermStructure>& termStructure,
+                              Real accuracy = 1.0e-4,
+                              Size maxEvaluations = 100,
+                              Volatility minVol = 1.0e-7,
+                              Volatility maxVol = 4.0) const;
         Rate atmRate() const;
       private:
         // arguments
@@ -116,18 +119,18 @@ namespace QuantLib {
     class Swaption::arguments : public VanillaSwap::arguments,
                                 public Option::arguments {
       public:
-        arguments() : fairRate(Null<Real>()),
-                      fixedRate(Null<Real>()),
-                      fixedBPS(Null<Real>()),
-                      fixedCashBPS(Null<Real>()),
-                      forecastingDiscount(Null<Real>()),
+        arguments() : //fairRate(Null<Real>()),
+                      //fixedRate(Null<Real>()),
+                      //fixedBPS(Null<Real>()),
+                      //fixedCashBPS(Null<Real>()),
+                      //forecastingDiscount(Null<Real>()),
                       settlementType(Settlement::Physical) {}
-
-        Rate fairRate;
-        Rate fixedRate;
-        Real fixedBPS;
-        Real fixedCashBPS;
-        Real forecastingDiscount;
+        boost::shared_ptr<VanillaSwap> swap;
+        // Rate fairRate;
+        // Rate fixedRate;
+        // Real fixedBPS;
+        // Real fixedCashBPS;
+        // Real forecastingDiscount;
         Settlement::Type settlementType;
         void validate() const;
     };
@@ -135,6 +138,8 @@ namespace QuantLib {
     //! base class for swaption engines
     class Swaption::engine
         : public GenericEngine<Swaption::arguments, Swaption::results> {};
-    }
+
+}
 
 #endif
+

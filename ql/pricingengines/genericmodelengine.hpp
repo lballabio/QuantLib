@@ -34,23 +34,19 @@ namespace QuantLib {
     */
     template<class ModelType, class ArgumentsType, class ResultsType>
     class GenericModelEngine
-        : public GenericEngine<ArgumentsType, ResultsType>,
-          public Observer {
+        : public GenericEngine<ArgumentsType, ResultsType> {
       public:
         GenericModelEngine() {}
         GenericModelEngine(const boost::shared_ptr<ModelType>& model)
         : model_(model) {
-            registerWith(model_);
+            this->registerWith(model_);
         }
         void setModel(const boost::shared_ptr<ModelType>& model) {
-            unregisterWith(model_);
+            this->unregisterWith(model_);
             model_ = model;
             QL_REQUIRE(!model_.isNull(), "no adequate model given");
-            registerWith(model_);
-            update();
-        }
-        virtual void update() {
-            this->notifyObservers();
+            this->registerWith(model_);
+            this->update();
         }
       protected:
         boost::shared_ptr<ModelType> model_;

@@ -28,12 +28,14 @@
 #include <ql/instruments/swaption.hpp>
 
 namespace QuantLib {
+
     class SwapIndex;
     class Swap;
     class Calendar;
     class IborIndex;
     class Period;
     class PricingEngine;
+
     //! helper class
     /*! This class provides a more comfortable way
         to instantiate standard market swaption.
@@ -42,9 +44,7 @@ namespace QuantLib {
       public:
         MakeSwaption(const boost::shared_ptr<SwapIndex>& swapIndex,
                      Rate strike = Null<Rate>(),
-                     const Period& forwardStart = 0*Days,
-                     const boost::shared_ptr<PricingEngine>& engine =
-                         boost::shared_ptr<PricingEngine>());
+                     const Period& forwardStart = 0*Days);
 
         operator Swaption() const;
         operator boost::shared_ptr<Swaption>() const ;
@@ -52,9 +52,10 @@ namespace QuantLib {
         MakeSwaption& withSwaptionConvention(BusinessDayConvention bdc);
         MakeSwaption& withSettlementType(Settlement::Type delivery);
 
-      private:
-        void create() const;
+        MakeSwaption& withPricingEngine(
+                              const boost::shared_ptr<PricingEngine>& engine);
 
+      private:
         Settlement::Type delivery_;
         mutable Rate strike_;
         Period optionTenor_;

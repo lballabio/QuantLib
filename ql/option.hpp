@@ -25,11 +25,12 @@
 #define quantlib_option_hpp
 
 #include <ql/instrument.hpp>
-#include <vector>
 
 namespace QuantLib {
+
     class Payoff;
     class Exercise;
+
     //! base option class
     class Option : public Instrument {
       public:
@@ -55,9 +56,7 @@ namespace QuantLib {
     std::ostream& operator<<(std::ostream&, Option::Type);
 
     //! basic %option %arguments
-    /*! \todo
-        - remove std::vector<Time> stoppingTimes
-        - how to handle strike-less option (asian average strike,
+    /*! \todo how to handle strike-less option (asian average strike,
           forward, etc.)?
     */
     class Option::arguments : public virtual PricingEngine::arguments {
@@ -68,9 +67,6 @@ namespace QuantLib {
         }
         boost::shared_ptr<Payoff> payoff;
         boost::shared_ptr<Exercise> exercise;
-        // shouldn't be here
-        // it should be moved elsewhere
-        std::vector<Time> stoppingTimes;
     };
 
     //! additional %option results

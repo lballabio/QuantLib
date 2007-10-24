@@ -23,6 +23,7 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/instruments/vanillaswap.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/indexes/ibor/jibar.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <iomanip>
@@ -143,8 +144,9 @@ void CompoundForwardTest::testSuppliedRates() {
                           convention, convention, false, false);
         VanillaSwap swap(VanillaSwap::Payer, 100.0,
                          schedule, 0.0, dayCounter,
-                         schedule, index, 0.0, index->dayCounter(),
-                         liborHandle);
+                         schedule, index, 0.0, index->dayCounter());
+        swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                     new DiscountingSwapEngine(liborHandle)));
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
         if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {
@@ -183,8 +185,9 @@ void CompoundForwardTest::testConvertedRates() {
                           convention, convention, false, false);
         VanillaSwap swap(VanillaSwap::Payer, 100.0,
                          schedule, 0.0, dayCounter,
-                         schedule, index, 0.0, index->dayCounter(),
-                         liborHandle);
+                         schedule, index, 0.0, index->dayCounter());
+        swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                     new DiscountingSwapEngine(liborHandle)));
         DayCounter tsdc  = termStructure->dayCounter();
         Rate expectedRate = termStructure->compoundForward(swap.maturityDate(),
                                                            frequency);

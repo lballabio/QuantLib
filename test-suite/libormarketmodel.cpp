@@ -32,6 +32,7 @@
 #include <ql/methods/montecarlo/multipathgenerator.hpp>
 
 #include <ql/pricingengines/swaption/lfmswaptionengine.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/analyticcapfloorengine.hpp>
 
@@ -226,7 +227,8 @@ void LiborMarketModelTest::testCapletPricing() {
 
     boost::shared_ptr<Cap> cap1(
         new Cap(process->cashFlows(),
-                std::vector<Rate>(size, 0.04), termStructure, engine1));
+                std::vector<Rate>(size, 0.04), termStructure));
+    cap1->setPricingEngine(engine1);
 
     const Real expected = 0.015853935178;
     const Real calculated = cap1->NPV();
@@ -316,7 +318,7 @@ void LiborMarketModelTest::testCalibration() {
 
                 swaptionHelper->setPricingEngine(
                      boost::shared_ptr<PricingEngine>(
-                         new LfmSwaptionEngine(model)));
+                                 new LfmSwaptionEngine(model,termStructure)));
 
                 calibrationHelper.push_back(swaptionHelper);
             }
@@ -417,11 +419,12 @@ void LiborMarketModelTest::testSwaptionPricing() {
                                convention, convention, false, false);
 
             Rate swapRate  = 0.0404;
-            boost::shared_ptr<VanillaSwap> forwardSwap(new
-                VanillaSwap(VanillaSwap::Receiver, 1.0,
-                            schedule, swapRate, dayCounter,
-                            schedule, index, 0.0, index->dayCounter(),
-                            index->termStructure()));
+            boost::shared_ptr<VanillaSwap> forwardSwap(
+                new VanillaSwap(VanillaSwap::Receiver, 1.0,
+                                schedule, swapRate, dayCounter,
+                                schedule, index, 0.0, index->dayCounter()));
+            forwardSwap->setPricingEngine(boost::shared_ptr<PricingEngine>(
+                          new DiscountingSwapEngine(index->termStructure())));
 
             // check forward pricing first
             const Real expected = forwardSwap->fairRate();
@@ -433,15 +436,16 @@ void LiborMarketModelTest::testSwaptionPricing() {
                             << "\n    expected:   " << expected);
 
             swapRate = forwardSwap->fairRate();
-            forwardSwap = boost::shared_ptr<VanillaSwap>(new
-                VanillaSwap(VanillaSwap::Receiver, 1.0,
-                            schedule, swapRate, dayCounter,
-                            schedule, index, 0.0, index->dayCounter(),
-                            index->termStructure()));
+            forwardSwap = boost::shared_ptr<VanillaSwap>(
+                new VanillaSwap(VanillaSwap::Receiver, 1.0,
+                                schedule, swapRate, dayCounter,
+                                schedule, index, 0.0, index->dayCounter()));
+            forwardSwap->setPricingEngine(boost::shared_ptr<PricingEngine>(
+                          new DiscountingSwapEngine(index->termStructure())));
 
             if (i == j && i<=size/2) {
                 boost::shared_ptr<PricingEngine> engine(
-                    new LfmSwaptionEngine(liborModel));
+                    new LfmSwaptionEngine(liborModel,index->termStructure()));
                 boost::shared_ptr<Exercise> exercise(
                     new EuropeanExercise(process->fixingDates()[i]));
 

@@ -20,6 +20,7 @@
 */
 
 #include <ql/instruments/makevanillaswap.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/settings.hpp>
 #include <ql/indexes/iborindex.hpp>
@@ -61,10 +62,11 @@ namespace QuantLib {
         if (effectiveDate_ != Date())
             startDate=effectiveDate_;
         else {
-          Natural fixingDays = index_->fixingDays();
-          Date referenceDate = Settings::instance().evaluationDate();
-          Date spotDate = floatCalendar_.advance(referenceDate, fixingDays*Days);
-          startDate = spotDate+forwardStart_;
+            Natural fixingDays = index_->fixingDays();
+            Date referenceDate = Settings::instance().evaluationDate();
+            Date spotDate = floatCalendar_.advance(referenceDate,
+                                                   fixingDays*Days);
+            startDate = spotDate+forwardStart_;
         }
 
         Date terminationDate = startDate+swapTenor_;
@@ -84,17 +86,24 @@ namespace QuantLib {
                                floatFirstDate_, floatNextToLastDate_);
 
         Rate usedFixedRate = fixedRate_;
-        if (fixedRate_ == Null<Rate>())
-            usedFixedRate = VanillaSwap(type_, nominal_,
-                       fixedSchedule, 0.0, fixedDayCount_,
-                       floatSchedule, index_, floatSpread_, floatDayCount_,
-                       discountingTermStructure_).fairRate();
+        if (fixedRate_ == Null<Rate>()) {
+            VanillaSwap temp(type_, nominal_,
+                             fixedSchedule, 0.0, fixedDayCount_,
+                             floatSchedule, index_,
+                             floatSpread_, floatDayCount_);
+            temp.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                       new DiscountingSwapEngine(discountingTermStructure_)));
+            usedFixedRate = temp.fairRate();
+        }
 
-        return boost::shared_ptr<VanillaSwap>(new
-            VanillaSwap(type_, nominal_,
-                   fixedSchedule, usedFixedRate, fixedDayCount_,
-                   floatSchedule, index_, floatSpread_, floatDayCount_,
-                   discountingTermStructure_));
+        boost::shared_ptr<VanillaSwap> swap(
+                 new VanillaSwap(type_, nominal_,
+                                 fixedSchedule, usedFixedRate, fixedDayCount_,
+                                 floatSchedule, index_,
+                                 floatSpread_, floatDayCount_));
+        swap->setPricingEngine(boost::shared_ptr<PricingEngine>(
+                       new DiscountingSwapEngine(discountingTermStructure_)));
+        return swap;
     }
 
     MakeVanillaSwap& MakeVanillaSwap::receiveFixed(bool flag) {

@@ -31,6 +31,7 @@
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
@@ -67,7 +68,7 @@ boost::shared_ptr<Swaption> makeSwaption(
                     Volatility volatility,
                     Settlement::Type settlementType = Settlement::Physical) {
     Handle<Quote> vol(boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
-    boost::shared_ptr<PricingEngine> engine(new BlackSwaptionEngine(vol, termStructure_));
+    boost::shared_ptr<PricingEngine> engine(new BlackSwaptionEngine(termStructure_, vol));
 
     boost::shared_ptr<Swaption> result(new
         Swaption(swap,
@@ -79,7 +80,7 @@ boost::shared_ptr<Swaption> makeSwaption(
 
 boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
     Handle<Quote> h(boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
-    return boost::shared_ptr<PricingEngine>(new BlackSwaptionEngine(h, termStructure_));
+    return boost::shared_ptr<PricingEngine>(new BlackSwaptionEngine(termStructure_, h));
 }
 
 void setup() {
@@ -504,14 +505,14 @@ void SwaptionTest::testCashSettledSwaptions() {
                                     new VanillaSwap(type[0], nominal_,
                                     fixedSchedule_u,strike,Thirty360(),
                                     floatSchedule,index_,0.0,
-                                    index_->dayCounter(),termStructure_));
+                                    index_->dayCounter()));
 
             // Swap with fixed leg conventions: Business Days = Unadjusted, DayCount = Act/365
             boost::shared_ptr<VanillaSwap> swap_u365(
                                     new VanillaSwap(type[0],nominal_,
                                     fixedSchedule_u,strike,Actual365Fixed(),
                                     floatSchedule,index_,0.0,
-                                    index_->dayCounter(),termStructure_));
+                                    index_->dayCounter()));
 
             // Swap with fixed leg conventions: Business Days = Modified Following, DayCount = 30/360
             Schedule fixedSchedule_a(startDate,maturity,Period(fixedFrequency_),
@@ -521,14 +522,22 @@ void SwaptionTest::testCashSettledSwaptions() {
                                     new VanillaSwap(type[0],nominal_,
                                     fixedSchedule_a,strike,Thirty360(),
                                     floatSchedule,index_,0.0,
-                                    index_->dayCounter(),termStructure_));
+                                    index_->dayCounter()));
 
             // Swap with fixed leg conventions: Business Days = Modified Following, DayCount = Act/365
             boost::shared_ptr<VanillaSwap> swap_a365(
                                     new VanillaSwap(type[0],nominal_,
                                     fixedSchedule_a,strike,Actual365Fixed(),
                                     floatSchedule,index_,0.0,
-                                    index_->dayCounter(),termStructure_));
+                                    index_->dayCounter()));
+
+            boost::shared_ptr<PricingEngine> swapEngine(
+                                   new DiscountingSwapEngine(termStructure_));
+
+            swap_u360->setPricingEngine(swapEngine);
+            swap_a360->setPricingEngine(swapEngine);
+            swap_u365->setPricingEngine(swapEngine);
+            swap_a365->setPricingEngine(swapEngine);
 
             const Leg& swapFixedLeg_u360 = swap_u360->fixedLeg();
             const Leg& swapFixedLeg_a360 = swap_a360->fixedLeg();
@@ -837,6 +846,7 @@ void SwaptionTest::testImpliedVolatility() {
                             try {
                                 implVol =
                                 swaption->impliedVolatility(value,
+                                                            termStructure_,
                                                             tolerance,
                                                             maxEvaluations);
                             } catch (std::exception& e) {

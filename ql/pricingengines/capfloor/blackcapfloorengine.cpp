@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006, 2007 StatPro Italia srl
 
@@ -25,32 +26,37 @@
 
 namespace QuantLib {
 
-    BlackCapFloorEngine::BlackCapFloorEngine(Volatility volatility,
-                                             const DayCounter& dc)
-    : volatility_(boost::shared_ptr<OptionletVolatilityStructure>(new
+    BlackCapFloorEngine::BlackCapFloorEngine(
+                              const Handle<YieldTermStructure>& termStructure,
+                              Volatility volatility,
+                              const DayCounter& dc)
+    : termStructure_(termStructure),
+      volatility_(boost::shared_ptr<OptionletVolatilityStructure>(new
                         ConstantOptionletVol(volatility, Calendar(), dc))) {
-        registerWith(volatility_);
-    }
-
-    BlackCapFloorEngine::BlackCapFloorEngine(const Handle<Quote>& volatility,
-                                             const DayCounter& dc)
-    : volatility_(boost::shared_ptr<OptionletVolatilityStructure>(new
-                        ConstantOptionletVol(volatility, Calendar(), dc))) {
+        registerWith(termStructure_);
         registerWith(volatility_);
     }
 
     BlackCapFloorEngine::BlackCapFloorEngine(
-                          const Handle<OptionletVolatilityStructure>& volatility)
-    : volatility_(volatility) {
+                              const Handle<YieldTermStructure>& termStructure,
+                              const Handle<Quote>& volatility,
+                              const DayCounter& dc)
+    : termStructure_(termStructure),
+      volatility_(boost::shared_ptr<OptionletVolatilityStructure>(new
+                        ConstantOptionletVol(volatility, Calendar(), dc))) {
+        registerWith(termStructure_);
         registerWith(volatility_);
     }
 
-    void BlackCapFloorEngine::update() {
-        notifyObservers();
+    BlackCapFloorEngine::BlackCapFloorEngine(
+                       const Handle<YieldTermStructure>& termStructure,
+                       const Handle<OptionletVolatilityStructure>& volatility)
+    : termStructure_(termStructure), volatility_(volatility) {
+        registerWith(termStructure_);
+        registerWith(volatility_);
     }
 
-    void BlackCapFloorEngine::calculate() const
-    {
+    void BlackCapFloorEngine::calculate() const {
         Real value = 0.0;
         Real vega = 0.0;
         std::vector<Real> optionletsPrice;
@@ -131,6 +137,14 @@ namespace QuantLib {
         results_.value = value;
         results_.additionalResults["optionletsPrice"] = optionletsPrice;
         results_.additionalResults["vega"] = vega;
+    }
+
+    Handle<YieldTermStructure> BlackCapFloorEngine::termStructure() {
+        return termStructure_;
+    }
+
+    Handle<OptionletVolatilityStructure> BlackCapFloorEngine::volatility() {
+        return volatility_;
     }
 
 }

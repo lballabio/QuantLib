@@ -106,11 +106,13 @@ namespace QuantLib {
 
            for (Size j = 0 ; j < strikes_.size(); j++) {
                boost::shared_ptr<PricingEngine> blackCapFloorEngine(new
-                   BlackCapFloorEngine(vols_[i][j], volatilityDayCounter_));
+                   BlackCapFloorEngine(index_->termStructure(),
+                                       vols_[i][j], volatilityDayCounter_));
                CapFloor::Type type =
                    (strikes_[j] < dummyAtmRate)? CapFloor::Floor : CapFloor::Cap;
-               marketDataCap_[i][j] = MakeCapFloor(type, tenors_[i],
-                        index_, strikes_[j], 0*Days, blackCapFloorEngine);
+               marketDataCap_[i][j] =
+                   MakeCapFloor(type, tenors_[i], index_, strikes_[j], 0*Days)
+                   .withPricingEngine(blackCapFloorEngine);
                const_cast<CapsStripper*>(this)->registerWith(marketDataCap_[i][j]);
            }
         }
@@ -143,12 +145,15 @@ namespace QuantLib {
                    new InterpolatedQuote(surface, tenorTime, strikes_[j]));
 
                boost::shared_ptr<PricingEngine> blackCapFloorEngine(new
-                   BlackCapFloorEngine(Handle<Quote>(interpolatedQuote), volatilityDayCounter_));
+                   BlackCapFloorEngine(index_->termStructure(),
+                                       Handle<Quote>(interpolatedQuote),
+                                       volatilityDayCounter_));
                CapFloor::Type type =
                    (strikes_[j] < dummyAtmRate)? CapFloor::Floor : CapFloor::Cap;
-               marketDataCap_[i][j] = MakeCapFloor(type, interpolatedTenors[i],
-                        index_, strikes_[j], 0*Days, blackCapFloorEngine);
-
+               marketDataCap_[i][j] =
+                   MakeCapFloor(type, interpolatedTenors[i],
+                                index_, strikes_[j], 0*Days)
+                   .withPricingEngine(blackCapFloorEngine);
            }
         }
         const_cast<CapsStripper*>(this)->registerWith(surface);
@@ -206,7 +211,8 @@ namespace QuantLib {
        Handle<OptionletVolatilityStructure> bilinInterpCapletVolStructureHandle(
            parametrizedCapletVolStructure_);
         boost::shared_ptr<PricingEngine> calibBlackCapFloorEngine(new
-            BlackCapFloorEngine(bilinInterpCapletVolStructureHandle));
+            BlackCapFloorEngine(index_->termStructure(),
+                                bilinInterpCapletVolStructureHandle));
         calibCap_.resize(tenors_.size());
         for (Size i = 0 ; i < tenors_.size(); i++) {
             calibCap_[i].resize(strikes_.size());

@@ -41,7 +41,8 @@ namespace QuantLib {
             const DayCounter& dayCounter,
             const Schedule& schedule,
             Real)
-    : Bond(settlementDays, schedule.calendar(), 100.0, schedule.endDate(), issueDate),
+    : Bond(settlementDays, schedule.calendar(), 100.0,
+           schedule.endDate(), issueDate),
       conversionRatio_(conversionRatio), callability_(callability),
       dividends_(dividends), creditSpread_(creditSpread) {
 
@@ -214,31 +215,21 @@ namespace QuantLib {
                                                           stochasticProcess_);
         QL_REQUIRE(process, "Black-Scholes process required");
 
-        Size i;
         Date settlement = bond_->settlementDate();
-        DayCounter dayCounter = process->riskFreeRate()->dayCounter();
-
-        moreArgs->stoppingTimes = std::vector<Time>(exercise_->dates().size());
-        for (i=0; i<exercise_->dates().size(); i++) {
-            moreArgs->stoppingTimes[i] =
-                dayCounter.yearFraction(settlement, exercise_->date(i));
-        }
 
         Size n = callability_.size();
-        moreArgs->callabilityTimes.clear();
+        moreArgs->callabilityDates.clear();
         moreArgs->callabilityTypes.clear();
         moreArgs->callabilityPrices.clear();
         moreArgs->callabilityTriggers.clear();
-        moreArgs->callabilityTimes.reserve(n);
+        moreArgs->callabilityDates.reserve(n);
         moreArgs->callabilityTypes.reserve(n);
         moreArgs->callabilityPrices.reserve(n);
         moreArgs->callabilityTriggers.reserve(n);
-        for (i=0; i<n; i++) {
+        for (Size i=0; i<n; i++) {
             if (!callability_[i]->hasOccurred(settlement)) {
                 moreArgs->callabilityTypes.push_back(callability_[i]->type());
-                moreArgs->callabilityTimes.push_back(
-                             dayCounter.yearFraction(settlement,
-                                                     callability_[i]->date()));
+                moreArgs->callabilityDates.push_back(callability_[i]->date());
                 moreArgs->callabilityPrices.push_back(
                                             callability_[i]->price().amount());
                 if (callability_[i]->price().type() ==
@@ -256,31 +247,27 @@ namespace QuantLib {
             }
         }
 
-        const Leg& cashflows =
-                                                           bond_->cashflows();
-        moreArgs->couponTimes.clear();
+        const Leg& cashflows = bond_->cashflows();
+
+        moreArgs->couponDates.clear();
         moreArgs->couponAmounts.clear();
-        for (i=0; i<cashflows.size()-1; i++) {
+        for (Size i=0; i<cashflows.size()-1; i++) {
             if (!cashflows[i]->hasOccurred(settlement)) {
-                moreArgs->couponTimes.push_back(
-                    dayCounter.yearFraction(settlement,cashflows[i]->date()));
+                moreArgs->couponDates.push_back(cashflows[i]->date());
                 moreArgs->couponAmounts.push_back(cashflows[i]->amount());
             }
         }
 
         moreArgs->dividends.clear();
-        moreArgs->dividendTimes.clear();
-        for (i=0; i<dividends_.size(); i++) {
+        moreArgs->dividendDates.clear();
+        for (Size i=0; i<dividends_.size(); i++) {
             if (!dividends_[i]->hasOccurred(settlement)) {
                 moreArgs->dividends.push_back(dividends_[i]);
-                moreArgs->dividendTimes.push_back(
-                              dayCounter.yearFraction(settlement,
-                                                      dividends_[i]->date()));
+                moreArgs->dividendDates.push_back(dividends_[i]->date());
             }
         }
 
         moreArgs->creditSpread = creditSpread_;
-        moreArgs->dayCounter = dayCounter_;
         moreArgs->issueDate = issueDate_;
         moreArgs->settlementDate = settlement;
         moreArgs->settlementDays = settlementDays_;
@@ -306,15 +293,15 @@ namespace QuantLib {
 
         QL_REQUIRE(settlementDays != Null<Natural>(), "null settlement days");
 
-        QL_REQUIRE(callabilityTimes.size() == callabilityTypes.size(),
-                   "different number of callability times and types");
-        QL_REQUIRE(callabilityTimes.size() == callabilityPrices.size(),
-                   "different number of callability times and prices");
-        QL_REQUIRE(callabilityTimes.size() == callabilityTriggers.size(),
-                   "different number of callability times and triggers");
+        QL_REQUIRE(callabilityDates.size() == callabilityTypes.size(),
+                   "different number of callability dates and types");
+        QL_REQUIRE(callabilityDates.size() == callabilityPrices.size(),
+                   "different number of callability dates and prices");
+        QL_REQUIRE(callabilityDates.size() == callabilityTriggers.size(),
+                   "different number of callability dates and triggers");
 
-        QL_REQUIRE(couponTimes.size() == couponAmounts.size(),
-                   "different number of coupon times and amounts");
+        QL_REQUIRE(couponDates.size() == couponAmounts.size(),
+                   "different number of coupon dates and amounts");
     }
 
 }

@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,44 +18,38 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file discretizedcapfloor.hpp
-    \brief discretized cap/floor
+/*! \file discretizedswap.hpp
+    \brief Discretized swap class
 */
 
-#ifndef quantlib_pricers_capfloor_pricer_h
-#define quantlib_pricers_capfloor_pricer_h
+#ifndef quantlib_discretized_swap_hpp
+#define quantlib_discretized_swap_hpp
 
-#include <ql/instruments/capfloor.hpp>
+#include <ql/instruments/vanillaswap.hpp>
 #include <ql/discretizedasset.hpp>
 
 namespace QuantLib {
 
-    class DiscretizedCapFloor : public DiscretizedAsset {
+    class DiscretizedSwap : public DiscretizedAsset {
       public:
-        DiscretizedCapFloor(const CapFloor::arguments& args,
-                            const Date& referenceDate,
-                            const DayCounter& dayCounter)
-        : arguments_(args) {}
-
-        void reset(Size size) {
-            values_ = Array(size, 0.0);
-            adjustValues();
-        }
-
-        std::vector<Time> mandatoryTimes() const {
-            std::vector<Time> times = arguments_.startTimes;
-            std::copy(arguments_.endTimes.begin(), arguments_.endTimes.end(),
-                      std::back_inserter(times));
-            return times;
-        }
+        DiscretizedSwap(const VanillaSwap::arguments&,
+                        const Date& referenceDate,
+                        const DayCounter& dayCounter);
+        void reset(Size size);
+        std::vector<Time> mandatoryTimes() const;
       protected:
         void preAdjustValuesImpl();
         void postAdjustValuesImpl();
       private:
-        CapFloor::arguments arguments_;
+        VanillaSwap::arguments arguments_;
+        std::vector<Time> fixedResetTimes_;
+        std::vector<Time> fixedPayTimes_;
+        std::vector<Time> floatingResetTimes_;
+        std::vector<Time> floatingPayTimes_;
     };
 
 }
 
 
 #endif
+

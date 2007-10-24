@@ -19,6 +19,7 @@
 
 #include <ql/instruments/makecms.hpp>
 #include <ql/instruments/swap.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
@@ -123,12 +124,14 @@ namespace QuantLib {
             .withFixingDays(iborIndex_->fixingDays())
             .withSpreads(iborSpread_);
 
+        boost::shared_ptr<Swap> swap;
         if (payCms_)
-            return boost::shared_ptr<Swap>(new
-                Swap(discountingTermStructure_, cmsLeg, floatLeg));
+            swap = boost::shared_ptr<Swap>(new Swap(cmsLeg, floatLeg));
         else
-            return boost::shared_ptr<Swap>(new
-                Swap(discountingTermStructure_, floatLeg, cmsLeg));
+            swap = boost::shared_ptr<Swap>(new Swap(floatLeg, cmsLeg));
+        swap->setPricingEngine(boost::shared_ptr<PricingEngine>(
+                       new DiscountingSwapEngine(discountingTermStructure_)));
+        return swap;
     }
 
     MakeCms& MakeCms::receiveCms(bool flag) {

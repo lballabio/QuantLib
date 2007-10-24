@@ -28,6 +28,7 @@
 #include <ql/instruments/oneassetstrikedoption.hpp>
 #include <ql/instruments/averagetype.hpp>
 #include <ql/time/date.hpp>
+#include <vector>
 
 namespace QuantLib {
 
@@ -62,7 +63,7 @@ namespace QuantLib {
                 Average::Type averageType,
                 Real runningAccumulator,
                 Size pastFixings,
-                std::vector<Date> fixingDates,
+                const std::vector<Date>& fixingDates,
                 const boost::shared_ptr<StochasticProcess>&,
                 const boost::shared_ptr<StrikedTypePayoff>& payoff,
                 const boost::shared_ptr<Exercise>& exercise,

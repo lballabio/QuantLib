@@ -20,6 +20,7 @@
 #include "swap.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/vanillaswap.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/yieldtermstructures/flatforward.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
@@ -65,11 +66,14 @@ boost::shared_ptr<VanillaSwap> makeSwap(Integer length, Rate fixedRate,
     Schedule floatSchedule(settlement_,maturity,Period(floatingFrequency_),
                            calendar_,floatingConvention_,floatingConvention_,
                            false,false);
-    return boost::shared_ptr<VanillaSwap>(new
-        VanillaSwap(type_, nominal_,
-                    fixedSchedule, fixedRate, fixedDayCount_,
-                    floatSchedule, index_, floatingSpread,
-                    index_->dayCounter(), termStructure_));
+    boost::shared_ptr<VanillaSwap> swap(
+        new VanillaSwap(type_, nominal_,
+                        fixedSchedule, fixedRate, fixedDayCount_,
+                        floatSchedule, index_, floatingSpread,
+                        index_->dayCounter()));
+    swap->setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                  new DiscountingSwapEngine(termStructure_)));
+    return swap;
 }
 
 void setup() {
@@ -283,7 +287,9 @@ void SwapTest::testInArrears() {
         .inArrears();
     setCouponPricer(floatingLeg, pricer);
 
-    Swap swap(termStructure_,floatingLeg,fixedLeg);
+    Swap swap(floatingLeg,fixedLeg);
+    swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                  new DiscountingSwapEngine(termStructure_)));
 
     Decimal storedValue = -144813.0;
     Real tolerance = 1.0;

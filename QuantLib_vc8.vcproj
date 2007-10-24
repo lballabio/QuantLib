@@ -5511,6 +5511,38 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="swap"
+				>
+				<File
+					RelativePath=".\ql\pricingengines\swap\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\swap\discountingswapengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\swap\discountingswapengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\swap\discretizedswap.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\swap\discretizedswap.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\swap\treeswapengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\swap\treeswapengine.hpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="quotes"

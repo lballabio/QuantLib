@@ -27,13 +27,11 @@
 namespace QuantLib {
 
     MarketModelCapFloorEngine::MarketModelCapFloorEngine(
-                         const boost::shared_ptr<MarketModelFactory>& factory)
-    : factory_(factory) {
+                         const boost::shared_ptr<MarketModelFactory>& factory,
+                         const Handle<YieldTermStructure>& discountCurve)
+    : factory_(factory), discountCurve_(discountCurve) {
         registerWith(factory_);
-    }
-
-    void MarketModelCapFloorEngine::update() {
-        notifyObservers();
+        registerWith(discountCurve_);
     }
 
     void MarketModelCapFloorEngine::calculate() const {

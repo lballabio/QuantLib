@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,31 +17,26 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticcapfloorengine.hpp
-    \brief Analytic engine for caps/floors
+/*! \file discountingswapengine.hpp
+    \brief discounting swap engine
 */
 
-#ifndef quantlib_pricers_analytical_cap_floor_hpp
-#define quantlib_pricers_analytical_cap_floor_hpp
+#ifndef quantlib_discounting_swap_engine_hpp
+#define quantlib_discounting_swap_engine_hpp
 
-#include <ql/instruments/capfloor.hpp>
-#include <ql/pricingengines/genericmodelengine.hpp>
-#include <ql/models/model.hpp>
+#include <ql/instruments/swap.hpp>
+#include <ql/yieldtermstructure.hpp>
+#include <ql/handle.hpp>
 
 namespace QuantLib {
 
-    //! Analytic engine for cap/floor
-    /*! \ingroup capfloorengines */
-    class AnalyticCapFloorEngine
-        : public GenericModelEngine<AffineModel,
-                                    CapFloor::arguments,
-                                    CapFloor::results > {
+    class DiscountingSwapEngine : public Swap::engine {
       public:
-        AnalyticCapFloorEngine(const boost::shared_ptr<AffineModel>& model)
-        : GenericModelEngine<AffineModel,
-                             CapFloor::arguments,
-                             CapFloor::results >(model) {}
+        DiscountingSwapEngine(const Handle<YieldTermStructure>& discountCurve =
+                                                Handle<YieldTermStructure>());
         void calculate() const;
+      private:
+        Handle<YieldTermStructure> discountCurve_;
     };
 
 }

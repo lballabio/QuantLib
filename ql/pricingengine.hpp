@@ -60,11 +60,13 @@ namespace QuantLib {
         the <tt>calculate()</tt> method.
     */
     template<class ArgumentsType, class ResultsType>
-    class GenericEngine : public PricingEngine {
+    class GenericEngine : public PricingEngine,
+                          public Observer {
       public:
         PricingEngine::arguments* getArguments() const { return &arguments_; }
         const PricingEngine::results* getResults() const { return &results_; }
         void reset() { results_.reset(); }
+        void update() { notifyObservers(); }
       protected:
         mutable ArgumentsType arguments_;
         mutable ResultsType results_;

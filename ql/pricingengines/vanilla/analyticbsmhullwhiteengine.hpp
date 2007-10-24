@@ -49,10 +49,8 @@ namespace QuantLib {
                                     VanillaOption::results> {
       public:
         AnalyticBSMHullWhiteEngine(const Real equityShortRateCorrelation,
-                                   const boost::shared_ptr<HullWhite> & model);
-
+                                   const boost::shared_ptr<HullWhite>& model);
         void calculate() const;
-
       private:
         const Real rho_;
     };

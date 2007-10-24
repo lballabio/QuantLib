@@ -81,6 +81,7 @@ namespace QuantLib {
         Real nominal_;
         Date upfrontDate_;
         Real bondCleanPrice_;
+        Handle<YieldTermStructure> discountCurve_;
         // results
         mutable Rate fairRate_;
         mutable Spread fairSpread_;
@@ -89,35 +90,30 @@ namespace QuantLib {
 
 
     //! %Arguments for asset swap calculation
-    class AssetSwap::arguments : public virtual PricingEngine::arguments {
+    class AssetSwap::arguments : public Swap::arguments {
       public:
         arguments() : nominal(Null<Real>()),
-                      currentFloatingCoupon(Null<Real>()) {}
+                      currentFloatingCoupon(Null<Rate>()) {}
         Real nominal;
-        std::vector<Time> fixedResetTimes;
-        std::vector<Time> fixedPayTimes;
+        Date settlementDate;
+        std::vector<Date> fixedResetDates;
+        std::vector<Date> fixedPayDates;
         std::vector<Real> fixedCoupons;
         std::vector<Time> floatingAccrualTimes;
-        std::vector<Time> floatingResetTimes;
-        std::vector<Time> floatingFixingTimes;
-        std::vector<Time> floatingPayTimes;
+        std::vector<Date> floatingResetDates;
+        std::vector<Date> floatingFixingDates;
+        std::vector<Date> floatingPayDates;
         std::vector<Spread> floatingSpreads;
-        Real currentFloatingCoupon;
+        Rate currentFloatingCoupon;
         void validate() const;
     };
 
     //! %Results from simple swap calculation
-    class AssetSwap::results : public Instrument::results {
+    class AssetSwap::results : public Swap::results {
       public:
-        Real floatingLegBPS;
         Spread fairSpread;
         Real fairPrice;
-        void reset() {
-            Instrument::results::reset();
-            floatingLegBPS = Null<Real>();
-            fairSpread = Null<Spread>();
-            fairPrice = Null<Real>();
-        }
+        void reset();
     };
 
 
@@ -132,7 +128,7 @@ namespace QuantLib {
     }
 
     inline bool AssetSwap::payFixedRate() const {
-        return (payer_[0]==-1.0);
+        return (payer_[0] == -1.0);
     }
 
 }

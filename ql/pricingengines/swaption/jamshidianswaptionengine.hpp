@@ -41,13 +41,22 @@ namespace QuantLib {
                                     Swaption::arguments,
                                     Swaption::results > {
       public:
+        /*! \note the term structure is only needed when the short-rate
+                  model cannot provide one itself.
+        */
         JamshidianSwaptionEngine(
-                         const boost::shared_ptr<OneFactorAffineModel>& model)
+                         const boost::shared_ptr<OneFactorAffineModel>& model,
+                         const Handle<YieldTermStructure>& termStructure =
+                                                 Handle<YieldTermStructure>())
         : GenericModelEngine<OneFactorAffineModel,
                              Swaption::arguments,
-                             Swaption::results>(model) {}
+                             Swaption::results>(model),
+          termStructure_(termStructure) {
+            registerWith(termStructure_);
+        }
         void calculate() const;
       private:
+        Handle<YieldTermStructure> termStructure_;
         class rStarFinder;
         friend class rStarFinder;
     };

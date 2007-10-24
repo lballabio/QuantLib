@@ -20,6 +20,8 @@
 
 #include "cms.hpp"
 #include "utilities.hpp"
+#include <ql/instruments/swap.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
@@ -33,7 +35,6 @@
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/instruments/swap.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -626,9 +627,9 @@ void CmsTest::testCmsSwap() {
                         .withPaymentAdjustment(floatingCmsConvention_)
                         .withFixingDays(settlementDays_);
 
-                    boost::shared_ptr<Swap> swap(new
-                        Swap(termStructure_, cmsLeg, floatingLeg));
-
+                    boost::shared_ptr<Swap> swap(new Swap(cmsLeg, floatingLeg));
+                    swap->setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                  new DiscountingSwapEngine(termStructure_)));
                     Real price = swap->NPV();
                     prices.push_back(price);
                     priceIndex++;

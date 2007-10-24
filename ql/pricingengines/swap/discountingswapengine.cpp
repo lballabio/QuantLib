@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,30 +17,34 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/bond/discountingbondengine.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/cashflows/cashflows.hpp>
 
 namespace QuantLib {
 
-    DiscountingBondEngine::DiscountingBondEngine(
+    DiscountingSwapEngine::DiscountingSwapEngine(
                               const Handle<YieldTermStructure>& discountCurve)
     : discountCurve_(discountCurve) {
         registerWith(discountCurve_);
     }
 
-    Handle<YieldTermStructure> DiscountingBondEngine::discountCurve() const {
-        return discountCurve_;
-    }
-
-    void DiscountingBondEngine::calculate() const {
-        const Leg& cashflows = arguments_.cashflows;
-        const Date& settlementDate = arguments_.settlementDate;
-
-        QL_REQUIRE(!discountCurve().empty(),
+    void DiscountingSwapEngine::calculate() const {
+        QL_REQUIRE(!discountCurve_.empty(),
                    "no discounting term structure set");
-        results_.value = CashFlows::npv(cashflows,
-                                        **discountCurve(),
-                                        settlementDate, settlementDate);
+
+        results_.value = 0.0;
+        results_.errorEstimate = Null<Real>();
+        results_.legNPV.resize(arguments_.legs.size());
+        results_.legBPS.resize(arguments_.legs.size());
+        for (Size i=0; i<arguments_.legs.size(); ++i) {
+            results_.legNPV[i] =
+                arguments_.payer[i] * CashFlows::npv(arguments_.legs[i],
+                                                     **discountCurve_);
+            results_.legBPS[i] =
+                arguments_.payer[i] * CashFlows::bps(arguments_.legs[i],
+                                                     **discountCurve_);
+            results_.value += results_.legNPV[i];
+        }
     }
 
 }

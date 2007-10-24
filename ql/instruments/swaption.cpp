@@ -21,9 +21,7 @@
 */
 
 #include <ql/instruments/swaption.hpp>
-#include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/math/solvers1d/brent.hpp>
-#include <ql/cashflows/cashflows.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
 #include <ql/yieldtermstructure.hpp>
 #include <ql/exercise.hpp>
@@ -51,84 +49,56 @@ namespace QuantLib {
     }
 
     bool Swaption::isExpired() const {
-        return exercise_->dates().back() < swap_->discountCurve()->referenceDate();
+        Date today = Settings::instance().evaluationDate();
+        return exercise_->dates().back() < today;
     }
 
     void Swaption::setupArguments(PricingEngine::arguments* args) const {
 
         swap_->setupArguments(args);
-        
+
         Swaption::arguments* arguments =
             dynamic_cast<Swaption::arguments*>(args);
 
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
-        DayCounter counter = swap_->discountCurve()->dayCounter();
-
-        // volatilities are calculated for zero-spreaded swaps.
-        // Therefore, the spread on the floating leg is removed
-        // and a corresponding correction is made on the fixed leg.
-        Spread correction = swap_->spread() *
-            swap_->floatingLegBPS() / swap_->fixedLegBPS();
-        // the above is the opposite of the needed value since the
-        // two BPSs have opposite sign; hence the + sign below
-        arguments->fixedRate = swap_->fixedRate() + correction;
-        arguments->fairRate = swap_->fairRate() + correction;
-        // this is passed explicitly for precision
-        arguments->fixedBPS = std::fabs(swap_->fixedLegBPS());
+        arguments->swap = swap_;
         arguments->settlementType = settlementType_;
-        Date settlement = swap_->discountCurve()->referenceDate();
-        // only if cash settled
-        if (arguments->settlementType==Settlement::Cash) {
-            const Leg& swapFixedLeg =
-                swap_->fixedLeg();
-            DayCounter dc = (boost::dynamic_pointer_cast<FixedRateCoupon>(
-                swapFixedLeg[0]))->dayCounter();
-            arguments->fixedCashBPS = CashFlows::bps(swapFixedLeg,
-                InterestRate(arguments->fairRate, dc, Compounded),
-                settlement) ;
-        }
         arguments->exercise = exercise_;
-        Size n = exercise_->dates().size();
-        arguments->stoppingTimes.clear();
-        arguments->stoppingTimes.reserve(n);
-        for (Size i=0; i<n; ++i) {
-            Time time = counter.yearFraction(settlement,
-                                             exercise_->dates()[i]);
-            arguments->stoppingTimes.push_back(time);
-        }
-        arguments->forecastingDiscount = 
-            swap_->discountCurve()->discount(arguments->floatingPayTimes.back());
     }
 
     void Swaption::arguments::validate() const {
         VanillaSwap::arguments::validate();
-        QL_REQUIRE(fixedRate != Null<Real>(),
-                   "fixed swap rate null or not set");
-        QL_REQUIRE(fairRate != Null<Real>(),
-                   "fair swap rate null or not set");
-        QL_REQUIRE(fixedBPS != Null<Real>(),
-                   "fixed swap BPS null or not set");
-        QL_REQUIRE(forecastingDiscount != Null<Real>(),
-                   "forecasting discount null or not set");
-        if(settlementType == Settlement::Cash) {
-            QL_REQUIRE(fixedCashBPS != Null<Real>(),
-                       "fixed swap cash BPS null or not set "
-                       "for cash-settled swaption");
-        }
+        QL_REQUIRE(swap, "vanilla swap not set");
+        QL_REQUIRE(exercise, "exercise not set");
+        //QL_REQUIRE(fixedRate != Null<Real>(),
+        //           "fixed swap rate null or not set");
+        //QL_REQUIRE(fairRate != Null<Real>(),
+        //           "fair swap rate null or not set");
+        //QL_REQUIRE(fixedBPS != Null<Real>(),
+        //           "fixed swap BPS null or not set");
+        //QL_REQUIRE(forecastingDiscount != Null<Real>(),
+        //           "forecasting discount null or not set");
+        //if(settlementType == Settlement::Cash) {
+        //    QL_REQUIRE(fixedCashBPS != Null<Real>(),
+        //               "fixed swap cash BPS null or not set "
+        //               "for cash-settled swaption");
+        //}
     }
 
-    Volatility Swaption::impliedVolatility(Real targetValue,
-                                           Real accuracy,
-                                           Size maxEvaluations,
-                                           Volatility minVol,
-                                           Volatility maxVol) const {
+    Volatility Swaption::impliedVolatility(
+                              Real targetValue,
+                              const Handle<YieldTermStructure>& termStructure,
+                              Real accuracy,
+                              Size maxEvaluations,
+                              Volatility minVol,
+                              Volatility maxVol) const {
         calculate();
         QL_REQUIRE(!isExpired(), "instrument expired");
 
         Volatility guess = 0.10; // improve
 
-        ImpliedVolHelper f(*this, swap_->discountCurve(), targetValue);
+        ImpliedVolHelper f(*this, termStructure, targetValue);
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);
@@ -142,7 +112,8 @@ namespace QuantLib {
 
         vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
         Handle<Quote> h(vol_);
-        engine_ = boost::shared_ptr<PricingEngine>(new BlackSwaptionEngine(h, termStructure));
+        engine_ = boost::shared_ptr<PricingEngine>(new
+                                        BlackSwaptionEngine(termStructure, h));
         swaption.setupArguments(engine_->getArguments());
 
         results_ =

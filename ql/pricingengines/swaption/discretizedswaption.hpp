@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,32 +22,23 @@
     \brief Discretized swaption class
 */
 
-#ifndef quantlib_pricers_swaption_pricer_hpp
-#define quantlib_pricers_swaption_pricer_hpp
+#ifndef quantlib_discretized_swaption_hpp
+#define quantlib_discretized_swaption_hpp
 
 #include <ql/instruments/swaption.hpp>
 #include <ql/discretizedasset.hpp>
 
 namespace QuantLib {
 
-    class DiscretizedSwap : public DiscretizedAsset {
-      public:
-        DiscretizedSwap(const VanillaSwap::arguments&);
-        void reset(Size size);
-        std::vector<Time> mandatoryTimes() const;
-      protected:
-        void preAdjustValuesImpl();
-        void postAdjustValuesImpl();
-      private:
-        VanillaSwap::arguments arguments_;
-    };
-
     class DiscretizedSwaption : public DiscretizedOption {
       public:
-        DiscretizedSwaption(const Swaption::arguments&);
+        DiscretizedSwaption(const Swaption::arguments&,
+                            const Date& referenceDate,
+                            const DayCounter& dayCounter);
         void reset(Size size);
       private:
         Swaption::arguments arguments_;
+        Time lastPayment_;
     };
 
 }

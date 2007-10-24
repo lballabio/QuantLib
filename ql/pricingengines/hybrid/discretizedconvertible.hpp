@@ -32,7 +32,8 @@ namespace QuantLib {
 
     class DiscretizedConvertible : public DiscretizedAsset {
       public:
-        DiscretizedConvertible(const ConvertibleBond::option::arguments&);
+        DiscretizedConvertible(const ConvertibleBond::option::arguments&,
+                               const TimeGrid& grid = TimeGrid());
 
         void reset(Size size);
 
@@ -48,8 +49,16 @@ namespace QuantLib {
         Array& dividendValues() { return dividendValues_; }
 
         std::vector<Time> mandatoryTimes() const {
-            return arguments_.stoppingTimes;
+            std::vector<Time> result;
+            std::copy(stoppingTimes_.begin(), stoppingTimes_.end(),
+                      std::back_inserter(result));
+            std::copy(callabilityTimes_.begin(), callabilityTimes_.end(),
+                      std::back_inserter(result));
+            std::copy(couponTimes_.begin(), couponTimes_.end(),
+                      std::back_inserter(result));
+            return result;
         }
+
       protected:
         void postAdjustValuesImpl();
         Array conversionProbability_, spreadAdjustedRate_, dividendValues_;
@@ -60,6 +69,10 @@ namespace QuantLib {
         void applyCallability(Size, bool convertible);
         void addCoupon(Size);
         ConvertibleBond::option::arguments arguments_;
+        std::vector<Time> stoppingTimes_;
+        std::vector<Time> callabilityTimes_;
+        std::vector<Time> couponTimes_;
+        std::vector<Time> dividendTimes_;
     };
 
 }

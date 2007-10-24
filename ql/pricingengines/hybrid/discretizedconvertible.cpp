@@ -25,7 +25,8 @@
 namespace QuantLib {
 
     DiscretizedConvertible::DiscretizedConvertible(
-                               const ConvertibleBond::option::arguments& args)
+                               const ConvertibleBond::option::arguments& args,
+                               const TimeGrid& grid)
     : arguments_(args) {
 
         dividendValues_ = Array(arguments_.dividends.size(), 0.0);
@@ -44,6 +45,45 @@ namespace QuantLib {
                                              arguments_.dividends[i]->date());
             }
         }
+
+        DayCounter dayCounter = process->riskFreeRate()->dayCounter();
+        Date bondSettlement = arguments_.settlementDate;
+
+        stoppingTimes_.resize(arguments_.exercise->dates().size());
+        for (Size i=0; i<stoppingTimes_.size(); ++i)
+            stoppingTimes_[i] =
+                dayCounter.yearFraction(bondSettlement,
+                                        arguments_.exercise->date(i));
+
+        callabilityTimes_.resize(arguments_.callabilityDates.size());
+        for (Size i=0; i<callabilityTimes_.size(); ++i)
+            callabilityTimes_[i] =
+                dayCounter.yearFraction(bondSettlement,
+                                        arguments_.callabilityDates[i]);
+
+        couponTimes_.resize(arguments_.couponDates.size());
+        for (Size i=0; i<couponTimes_.size(); ++i)
+            couponTimes_[i] =
+                dayCounter.yearFraction(bondSettlement,
+                                        arguments_.couponDates[i]);
+
+        dividendTimes_.resize(arguments_.dividendDates.size());
+        for (Size i=0; i<dividendTimes_.size(); ++i)
+            dividendTimes_[i] =
+                dayCounter.yearFraction(bondSettlement,
+                                        arguments_.dividendDates[i]);
+
+        if (!grid.empty()) {
+            // adjust times to grid
+            for (Size i=0; i<stoppingTimes_.size(); i++)
+                stoppingTimes_[i] = grid.closestTime(stoppingTimes_[i]);
+            for (Size i=0; i<couponTimes_.size(); i++)
+                couponTimes_[i] = grid.closestTime(couponTimes_[i]);
+            for (Size i=0; i<callabilityTimes_.size(); i++)
+                callabilityTimes_[i] = grid.closestTime(callabilityTimes_[i]);
+            for (Size i=0; i<dividendTimes_.size(); i++)
+                dividendTimes_[i] = grid.closestTime(dividendTimes_[i]);
+    }
     }
 
     void DiscretizedConvertible::reset(Size size) {
@@ -85,22 +125,19 @@ namespace QuantLib {
 
     void DiscretizedConvertible::postAdjustValuesImpl() {
 
-        Size i;
-
         bool convertible = false;
         switch (arguments_.exercise->type()) {
           case Exercise::American:
-            if (time() <= arguments_.stoppingTimes[1] &&
-                time() >= arguments_.stoppingTimes[0])
+            if (time() <= stoppingTimes_[1] && time() >= stoppingTimes_[0])
                 convertible = true;
             break;
           case Exercise::European:
-            if (isOnTime(arguments_.stoppingTimes[0]))
+            if (isOnTime(stoppingTimes_[0]))
                 convertible = true;
             break;
           case Exercise::Bermudan:
-            for (i = 0; i<arguments_.stoppingTimes.size(); i++) {
-                if (isOnTime(arguments_.stoppingTimes[i]))
+            for (Size i=0; i<stoppingTimes_.size(); ++i) {
+                if (isOnTime(stoppingTimes_[i]))
                     convertible = true;
             }
             break;
@@ -108,13 +145,13 @@ namespace QuantLib {
             QL_FAIL("invalid option type");
         }
 
-        for (i=0; i<arguments_.callabilityTimes.size(); i++) {
-            if (isOnTime(arguments_.callabilityTimes[i]))
+        for (Size i=0; i<callabilityTimes_.size(); i++) {
+            if (isOnTime(callabilityTimes_[i]))
                 applyCallability(i,convertible);
         }
 
-        for (i=0; i<arguments_.couponTimes.size(); i++) {
-            if (isOnTime(arguments_.couponTimes[i]))
+        for (Size i=0; i<couponTimes_.size(); i++) {
+            if (isOnTime(couponTimes_[i]))
                 addCoupon(i);
         }
 
@@ -189,7 +226,7 @@ namespace QuantLib {
         Array grid = method()->grid(t);
         // add back all dividend amounts in the future
         for (Size i=0; i<arguments_.dividends.size(); i++) {
-            Time dividendTime = arguments_.dividendTimes[i];
+            Time dividendTime = dividendTimes_[i];
             if (dividendTime >= t || close(dividendTime,t)) {
                 const boost::shared_ptr<Dividend>& d = arguments_.dividends[i];
                 for (Size j=0; j<grid.size(); j++)
