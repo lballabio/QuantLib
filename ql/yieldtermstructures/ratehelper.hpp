@@ -42,7 +42,7 @@ namespace QuantLib {
         between the algorithms used during bootstrapping and later
         instrument pricing. This is not yet fully enforced in the
         available rate helpers, though - only SwapRateHelper and
-        FixedCouponBondHelper contain their corresponding instrument
+        FixedRateBondHelper contain their corresponding instrument
         for the time being.
     */
     class RateHelper : public Observer, public Observable {

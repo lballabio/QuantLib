@@ -91,7 +91,7 @@ namespace QuantLib {
         FittedBondDiscountCurve(
                  Natural settlementDays,
                  const Calendar& calendar,
-                 const std::vector<boost::shared_ptr<FixedCouponBondHelper> >&
+                 const std::vector<boost::shared_ptr<FixedRateBondHelper> >&
                                                                   instruments,
                  const DayCounter& dayCounter,
                  const boost::shared_ptr<FittingMethod>& fittingMethod,
@@ -102,7 +102,7 @@ namespace QuantLib {
         //! curve reference date fixed for life of curve
         FittedBondDiscountCurve(
                  const Date &referenceDate,
-                 const std::vector<boost::shared_ptr<FixedCouponBondHelper> >&
+                 const std::vector<boost::shared_ptr<FixedRateBondHelper> >&
                                                                   instruments,
                  const DayCounter& dayCounter,
                  const boost::shared_ptr<FittingMethod>& fittingMethod,
@@ -140,7 +140,7 @@ namespace QuantLib {
         // a guess solution may be passed into the constructor to speed calcs
         Array guessSolution_;
         mutable Date maxDate_;
-        std::vector<boost::shared_ptr<FixedCouponBondHelper> > instruments_;
+        std::vector<boost::shared_ptr<FixedRateBondHelper> > instruments_;
         boost::shared_ptr<FittingMethod> fittingMethod_;
     };
 
@@ -210,7 +210,7 @@ namespace QuantLib {
         */
         Array guessSolution_;
         //! the set of instruments used in fitting the discount function
-        std::vector<boost::shared_ptr<FixedCouponBondHelper> > instruments_;
+        std::vector<boost::shared_ptr<FixedRateBondHelper> > instruments_;
         //! base class sets this cost function used in the optimization routine
         boost::shared_ptr<FittingCost> costFunction_;
       private:

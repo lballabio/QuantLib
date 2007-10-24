@@ -34,9 +34,9 @@ namespace QuantLib {
     /*! \warning This class assumes that the reference date
                  does not change between calls of setTermStructure().
     */
-    class FixedCouponBondHelper : public RateHelper {
+    class FixedRateBondHelper : public RateHelper {
       public:
-        FixedCouponBondHelper(const Handle<Quote>& cleanPrice,
+        FixedRateBondHelper(const Handle<Quote>& cleanPrice,
                               Natural settlementDays,
                               const Schedule& schedule,
                               const std::vector<Rate>& coupons,
@@ -47,7 +47,7 @@ namespace QuantLib {
                               const Date& issueDate = Date());
         Real impliedQuote() const;
         void setTermStructure(YieldTermStructure*);
-        boost::shared_ptr<Bond> bond() const;
+        boost::shared_ptr<FixedRateBond> bond() const;
         const DayCounter& dayCounter() const;
         Frequency frequency() const;
       protected:

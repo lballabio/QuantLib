@@ -202,7 +202,7 @@ int main(int, char* []) {
         Natural settlementDays = 0;
         Natural curveSettlementDays = 0;
 
-        std::vector<boost::shared_ptr<FixedCouponBondHelper> > instrumentsA;
+        std::vector<boost::shared_ptr<FixedRateBondHelper> > instrumentsA;
         std::vector<boost::shared_ptr<RateHelper> > instrumentsB;
 
         for (Size j=0; j<LENGTH(lengths); j++) {
@@ -214,8 +214,8 @@ int main(int, char* []) {
             Schedule schedule(dated,maturity, Period(frequency), calendar,
                               accrualConvention,accrualConvention,true,false);
 
-            boost::shared_ptr<FixedCouponBondHelper> helperA(
-                   new FixedCouponBondHelper(quoteHandle[j],
+            boost::shared_ptr<FixedRateBondHelper> helperA(
+                   new FixedRateBondHelper(quoteHandle[j],
                                              settlementDays,
                                              schedule,
                                              std::vector<Rate>(1,coupons[j]),
@@ -225,7 +225,7 @@ int main(int, char* []) {
                                              issue));
 
             boost::shared_ptr<RateHelper> helperB(
-                   new FixedCouponBondHelper(quoteHandle[j],
+                   new FixedRateBondHelper(quoteHandle[j],
                                              settlementDays,
                                              schedule,
                                              std::vector<Rate>(1, coupons[j]),

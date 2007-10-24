@@ -28,7 +28,7 @@ namespace QuantLib {
         void no_deletion(YieldTermStructure*) {}
     }
 
-    FixedCouponBondHelper::FixedCouponBondHelper(
+    FixedRateBondHelper::FixedRateBondHelper(
                                     const Handle<Quote>& cleanPrice,
                                     Natural settlementDays,
                                     const Schedule& schedule,
@@ -47,7 +47,7 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
     }
 
-    void FixedCouponBondHelper::setTermStructure(YieldTermStructure* t) {
+    void FixedRateBondHelper::setTermStructure(YieldTermStructure* t) {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed
         termStructureHandle_.linkTo(
@@ -64,19 +64,19 @@ namespace QuantLib {
         bond_->setPricingEngine(bondEngine);
     }
 
-    boost::shared_ptr<Bond> FixedCouponBondHelper::bond() const {
+    boost::shared_ptr<FixedRateBond> FixedRateBondHelper::bond() const {
         return bond_;
     }
 
-    const DayCounter& FixedCouponBondHelper::dayCounter() const {
+    const DayCounter& FixedRateBondHelper::dayCounter() const {
         return paymentDayCounter_;
     }
 
-    Frequency FixedCouponBondHelper::frequency() const {
+    Frequency FixedRateBondHelper::frequency() const {
         return schedule_.tenor().frequency();
     }
 
-    Real FixedCouponBondHelper::impliedQuote() const {
+    Real FixedRateBondHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we didn't register as observers - force calculation
         bond_->recalculate();

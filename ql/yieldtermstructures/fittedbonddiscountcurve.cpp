@@ -43,7 +43,7 @@ namespace QuantLib {
     FittedBondDiscountCurve::FittedBondDiscountCurve (
                  Natural settlementDays,
                  const Calendar& calendar,
-                 const std::vector<boost::shared_ptr<FixedCouponBondHelper> >&
+                 const std::vector<boost::shared_ptr<FixedRateBondHelper> >&
                                                                   instruments,
                  const DayCounter& dayCounter,
                  const boost::shared_ptr<FittingMethod>& fittingMethod,
@@ -68,7 +68,7 @@ namespace QuantLib {
 
     FittedBondDiscountCurve::FittedBondDiscountCurve (
                  const Date& referenceDate,
-                 const std::vector<boost::shared_ptr<FixedCouponBondHelper> >&
+                 const std::vector<boost::shared_ptr<FixedRateBondHelper> >&
                                                                   instruments,
                  const DayCounter& dayCounter,
                  const boost::shared_ptr<FittingMethod>& fittingMethod,

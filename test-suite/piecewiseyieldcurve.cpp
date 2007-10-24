@@ -216,7 +216,7 @@ void setup() {
                                 bondConvention, bondConvention,
                                 true, false);
         bondHelpers[i] = boost::shared_ptr<RateHelper>(new
-            FixedCouponBondHelper(p,
+            FixedRateBondHelper(p,
                                   bondSettlementDays,
                                   schedules[i],
                                   coupons, bondDayCounter,
