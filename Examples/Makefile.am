@@ -6,6 +6,7 @@ SUBDIRS =  \
     ConvertibleBonds \
     DiscreteHedging \
     EquityOption \
+    FittedBondCurve \
     FRA \
     Replication \
     Repo \

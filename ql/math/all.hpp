@@ -2,7 +2,9 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/math/array.hpp>
+#include <ql/math/bernsteinpolynomial.hpp>
 #include <ql/math/beta.hpp>
+#include <ql/math/bspline.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/curve.hpp>
 #include <ql/math/domain.hpp>

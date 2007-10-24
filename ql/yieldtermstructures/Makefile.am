@@ -10,11 +10,13 @@ this_include_HEADERS = \
     discountcurve.hpp \
     drifttermstructure.hpp \
     extendeddiscountcurve.hpp \
+    fittedbonddiscountcurve.hpp \
     flatforward.hpp \
     forwardcurve.hpp \
     forwardspreadedtermstructure.hpp \
     forwardstructure.hpp \
     impliedtermstructure.hpp \
+    nonlinearfittingmethods.hpp \
     piecewiseyieldcurve.hpp \
     piecewisezerospreadedtermstructure.hpp \
     quantotermstructure.hpp \
@@ -28,6 +30,8 @@ libYieldTermStructures_la_SOURCES = \
     bondhelpers.cpp \
     compoundforward.cpp \
     extendeddiscountcurve.cpp \
+    fittedbonddiscountcurve.cpp \
+    nonlinearfittingmethods.cpp \
     ratehelper.cpp \
     ratehelpers.cpp
 

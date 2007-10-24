@@ -403,6 +403,7 @@ AC_CONFIG_FILES([
     Examples/ConvertibleBonds/Makefile
     Examples/DiscreteHedging/Makefile
     Examples/EquityOption/Makefile
+    Examples/FittedBondCurve/Makefile
     Examples/FRA/Makefile
     Examples/Replication/Makefile
     Examples/Repo/Makefile

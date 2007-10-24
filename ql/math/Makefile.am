@@ -9,7 +9,9 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
 	array.hpp \
+	bernsteinpolynomial.hpp \
 	beta.hpp \
+	bspline.hpp \
 	comparison.hpp \
 	curve.hpp \
 	domain.hpp \
@@ -30,7 +32,9 @@ this_include_HEADERS = \
 	transformedgrid.hpp
 
 libMath_la_SOURCES = \
+	bernsteinpolynomial.cpp \
 	beta.cpp \
+	bspline.cpp \
 	errorfunction.cpp \
 	factorial.cpp \
 	incompletegamma.cpp \

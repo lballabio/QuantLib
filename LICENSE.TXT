@@ -39,7 +39,7 @@ QuantLib is
     Copyright (C) 2006 Silvia Frasson
     Copyright (C) 2006 Richard Gould
     Copyright (C) 2006, 2007 Mark Joshi
-    Copyright (C) 2006 Allen Kuo
+    Copyright (C) 2006, 2007 Allen Kuo
     Copyright (C) 2006 Roland Lichters
     Copyright (C) 2006, 2007 Katiuscia Manzoni
     Copyright (C) 2006, 2007 Mario Pucci

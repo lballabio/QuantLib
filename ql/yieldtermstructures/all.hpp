@@ -7,11 +7,13 @@
 #include <ql/yieldtermstructures/discountcurve.hpp>
 #include <ql/yieldtermstructures/drifttermstructure.hpp>
 #include <ql/yieldtermstructures/extendeddiscountcurve.hpp>
+#include <ql/yieldtermstructures/fittedbonddiscountcurve.hpp>
 #include <ql/yieldtermstructures/flatforward.hpp>
 #include <ql/yieldtermstructures/forwardcurve.hpp>
 #include <ql/yieldtermstructures/forwardspreadedtermstructure.hpp>
 #include <ql/yieldtermstructures/forwardstructure.hpp>
 #include <ql/yieldtermstructures/impliedtermstructure.hpp>
+#include <ql/yieldtermstructures/nonlinearfittingmethods.hpp>
 #include <ql/yieldtermstructures/piecewiseyieldcurve.hpp>
 #include <ql/yieldtermstructures/piecewisezerospreadedtermstructure.hpp>
 #include <ql/yieldtermstructures/quantotermstructure.hpp>

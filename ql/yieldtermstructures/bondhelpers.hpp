@@ -41,11 +41,15 @@ namespace QuantLib {
                               const Schedule& schedule,
                               const std::vector<Rate>& coupons,
                               const DayCounter& paymentDayCounter,
-                              BusinessDayConvention paymentConvention = Following,
+                              BusinessDayConvention paymentConvention =
+                                                                    Following,
                               Real redemption = 100.0,
                               const Date& issueDate = Date());
         Real impliedQuote() const;
         void setTermStructure(YieldTermStructure*);
+        boost::shared_ptr<Bond> bond() const;
+        const DayCounter& dayCounter() const;
+        Frequency frequency() const;
       protected:
         // needed for bond instantiation
         Natural settlementDays_;
@@ -62,5 +66,6 @@ namespace QuantLib {
     };
 
 }
+
 
 #endif

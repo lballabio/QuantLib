@@ -64,6 +64,18 @@ namespace QuantLib {
         bond_->setPricingEngine(bondEngine);
     }
 
+    boost::shared_ptr<Bond> FixedCouponBondHelper::bond() const {
+        return bond_;
+    }
+
+    const DayCounter& FixedCouponBondHelper::dayCounter() const {
+        return paymentDayCounter_;
+    }
+
+    Frequency FixedCouponBondHelper::frequency() const {
+        return schedule_.tenor().frequency();
+    }
+
     Real FixedCouponBondHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we didn't register as observers - force calculation
