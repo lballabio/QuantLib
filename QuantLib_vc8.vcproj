@@ -4304,14 +4304,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\pricingengines\discountengine.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\pricingengines\discountengine.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ql\pricingengines\genericmodelengine.hpp"
 				>
 			</File>
@@ -5368,14 +5360,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\capfloor\discretizedcapfloor.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\pricingengines\capfloor\marketmodelcapfloorengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\pricingengines\capfloor\marketmodelcapfloorengine.hpp"
 					>
 				</File>
 				<File

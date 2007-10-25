@@ -26,7 +26,6 @@
 #include <ql/yieldtermstructures/flatforward.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
-#include <ql/pricingengines/capfloor/marketmodelcapfloorengine.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
 #include <ql/models/marketmodels/correlations/expcorrelations.hpp>
@@ -494,112 +493,6 @@ void CapFloorTest::testImpliedVolatility() {
     }
 }
 
-void CapFloorTest::testMarketModel() {
-
-    BOOST_MESSAGE("Testing cap/floor pricing with market-model engine...");
-
-    CommonVars vars;
-
-    Date cachedToday(14,March,2002),
-         cachedSettlement(18,March,2002);
-    Settings::instance().evaluationDate() = cachedToday;
-    vars.termStructure.linkTo(flatRate(cachedSettlement, 0.05, Actual360()));
-    //Date startDate = vars.calendar.advance(cachedSettlement,1,Months);
-    Date startDate = vars.termStructure->referenceDate();
-    Size term = 20;
-    Leg leg = vars.makeLeg(startDate,term);
-    Real strikeCap = 0.07;
-    Real strikeFloor = 0.03;
-    Real volatility = 0.20;
-    // build & cap&floor instruments
-    boost::shared_ptr<Instrument> cap = vars.makeCapFloor(CapFloor::Cap,leg,
-                                                          strikeCap,
-                                                          volatility);
-    boost::shared_ptr<Instrument> floor = vars.makeCapFloor(CapFloor::Floor,leg,
-                                                            strikeFloor,
-                                                            volatility);
-    // Black cap/floor price
-    Real blackCapNPV = cap->NPV();
-    Real blackFloorNPV = floor->NPV();
-    std::vector<Real> blackCapletsNpv
-        = cap->result<std::vector<Real> >("optionletsPrice");
-    std::vector<Real> blackFloorletsNpv =
-        floor->result<std::vector<Real> >("optionletsPrice");
-
-    // Build market model
-    Real longTermCorrelation = 0.5;
-    Real beta = 0.2;
-    Spread displacement = 0.0;
-    std::vector<Time> times(2);
-    std::vector<Volatility> vols(2);
-    times[0] = 0.0;  vols[0] = volatility;
-    times[1] = 30.0;  vols[1] = volatility;
-    boost::shared_ptr<MarketModelFactory> factory(new
-        FlatVolFactory(longTermCorrelation, beta,
-                       times, vols,
-                       vars.termStructure,
-                       displacement));
-    boost::shared_ptr<PricingEngine> lmmEngine(
-                  new MarketModelCapFloorEngine(factory, vars.termStructure));
-    cap->setPricingEngine(lmmEngine);
-    floor->setPricingEngine(lmmEngine);
-
-    // LMM cap/floor price
-    Real lmmCapNPV = cap->NPV();
-    Real lmmFloorNPV = floor->NPV();
-    std::vector<Real> lmmCapletsNpv =
-        cap->result<std::vector<Real> >("optionletsPrice");
-    std::vector<Real> lmmFloorletsNpv =
-        floor->result<std::vector<Real> >("optionletsPrice");
-    std::vector<Real> capletsError =
-        cap->result<std::vector<Real> >("optionletsError");
-    std::vector<Real> floorletsError =
-        floor->result<std::vector<Real> >("optionletsError");
-    QL_REQUIRE(lmmCapletsNpv.size() == blackCapletsNpv.size(),
-               "lmmCapletsNpv.size() != blackCapletsNpv.size()");
-
-    // check results for optionlets
-    Real errorThreshold = 1;
-    for (Size i=0; i<lmmCapletsNpv.size(); ++i){
-        if (std::fabs(lmmCapletsNpv[i]-blackCapletsNpv[i]) >
-            errorThreshold * capletsError[i])
-            BOOST_FAIL(
-                "failed to reproduce black caplet value: \n"
-                << std::setprecision(12)
-                << "    caplet #: " << i << "\n"
-                << "    calculated: " << lmmCapletsNpv[i] << "\n"
-                << "    stdev:   " << capletsError[i] << "\n"
-                << "    expected:   " << blackCapletsNpv[i] );
-        if (std::fabs(lmmFloorletsNpv[i]-blackFloorletsNpv[i]) >
-            errorThreshold * floorletsError[i])
-            BOOST_FAIL(
-                "failed to reproduce black floorlet value:\n"
-                << std::setprecision(12)
-                << "    floorlet #: " << i << "\n"
-                << "    calculated: " << lmmFloorletsNpv[i] << "\n"
-                 << "    stdev:   " << floorletsError[i] << "\n"
-               << "    expected:   " << blackFloorletsNpv[i]);
-    }
-
-    // check results for options
-    if (std::fabs(lmmCapNPV-blackCapNPV) >
-        errorThreshold * cap->errorEstimate())
-        BOOST_ERROR(
-            "failed to reproduce black cap value:\n"
-            << std::setprecision(12)
-            << "    calculated: " << lmmCapNPV << "\n"
-            << "    stdev:   " << cap->errorEstimate() << "\n"
-            << "    expected:   " << blackCapNPV);
-    if (std::fabs(lmmFloorNPV-blackFloorNPV) >
-        errorThreshold * floor->errorEstimate())
-        BOOST_ERROR(
-            "failed to reproduce black floor value:\n"
-            << std::setprecision(12)
-            << "    calculated: " << lmmFloorNPV << "\n"
-            << "    stdev:   " << floor->errorEstimate() << "\n"
-            << "    expected:   " <<blackFloorNPV);
-}
-
 void CapFloorTest::testCachedValue() {
 
     BOOST_MESSAGE("Testing Black cap/floor price against cached values...");
@@ -651,7 +544,6 @@ test_suite* CapFloorTest::suite() {
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testVega));
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testATMRate));
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testImpliedVolatility));
-    //suite->add(BOOST_TEST_CASE(&CapFloorTest::testMarketModel));
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testCachedValue));
     return suite;
 }

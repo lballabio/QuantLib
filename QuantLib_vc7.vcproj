@@ -5152,12 +5152,6 @@
 					RelativePath=".\ql\pricingengines\capfloor\discretizedcapfloor.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\pricingengines\capfloor\marketmodelcapfloorengine.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\pricingengines\capfloor\marketmodelcapfloorengine.hpp">
-				</File>
-				<File
 					RelativePath=".\ql\pricingengines\capfloor\mchullwhiteengine.cpp">
 				</File>
 				<File

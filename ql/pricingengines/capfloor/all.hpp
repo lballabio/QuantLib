@@ -4,7 +4,6 @@
 #include <ql/pricingengines/capfloor/analyticcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/discretizedcapfloor.hpp>
-#include <ql/pricingengines/capfloor/marketmodelcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/mchullwhiteengine.hpp>
 #include <ql/pricingengines/capfloor/treecapfloorengine.hpp>
 
