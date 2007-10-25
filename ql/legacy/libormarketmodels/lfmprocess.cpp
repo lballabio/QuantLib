@@ -17,12 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/legacy/libormarketmodels/lfmprocess.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/processes/eulerdiscretization.hpp>
-#include <ql/processes/lfmprocess.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/iborcoupon.hpp>

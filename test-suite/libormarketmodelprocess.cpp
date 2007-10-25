@@ -29,7 +29,7 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/constantoptionletvol.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/capletvariancecurve.hpp>
-#include <ql/processes/lfmhullwhiteparam.hpp>
+#include <ql/legacy/libormarketmodels/lfmhullwhiteparam.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

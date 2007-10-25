@@ -28,7 +28,7 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/optionletvolatilitystructure.hpp>
 #include <ql/stochasticprocess.hpp>
-#include <ql/processes/lfmcovarparam.hpp>
+#include <ql/legacy/libormarketmodels/lfmcovarparam.hpp>
 
 namespace QuantLib {
 

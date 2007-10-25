@@ -24,14 +24,12 @@
 #include <ql/instruments/capfloor.hpp>
 #include <ql/yieldtermstructures/zerocurve.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/capletvariancecurve.hpp>
-#include <ql/processes/lfmhullwhiteparam.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 
 #include <ql/math/statistics/generalstatistics.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/methods/montecarlo/multipathgenerator.hpp>
 
-#include <ql/pricingengines/swaption/lfmswaptionengine.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/analyticcapfloorengine.hpp>
@@ -45,6 +43,8 @@
 #include <ql/legacy/libormarketmodels/lmfixedvolmodel.hpp>
 #include <ql/legacy/libormarketmodels/lmextlinexpvolmodel.hpp>
 #include <ql/legacy/libormarketmodels/liborforwardmodel.hpp>
+#include <ql/legacy/libormarketmodels/lfmswaptionengine.hpp>
+#include <ql/legacy/libormarketmodels/lfmhullwhiteparam.hpp>
 
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/schedule.hpp>

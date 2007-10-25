@@ -5,17 +5,15 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     blackswaptionengine.hpp \
+    discretizedswaption.hpp \
     g2swaptionengine.hpp \
     jamshidianswaptionengine.hpp \
-    discretizedswaption.hpp \
-    lfmswaptionengine.hpp \
     treeswaptionengine.hpp
 
 libSwaptionEngines_la_SOURCES = \
     blackswaptionengine.cpp \
-    jamshidianswaptionengine.cpp \
     discretizedswaption.cpp \
-    lfmswaptionengine.cpp \
+    jamshidianswaptionengine.cpp \
     treeswaptionengine.cpp
 
 noinst_LTLIBRARIES = libSwaptionEngines.la

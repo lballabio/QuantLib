@@ -13,9 +13,6 @@ this_include_HEADERS = \
 	hullwhiteprocess.hpp \
 	hybridhestonhullwhiteprocess.hpp \
 	jointstochasticprocess.hpp \
-	lfmcovarparam.hpp \
-	lfmhullwhiteparam.hpp \
-	lfmprocess.hpp \
 	merton76process.hpp \
 	ornsteinuhlenbeckprocess.hpp \
 	squarerootprocess.hpp \
@@ -31,9 +28,6 @@ libProcesses_la_SOURCES = \
 	hullwhiteprocess.cpp \
 	hybridhestonhullwhiteprocess.cpp \
 	jointstochasticprocess.cpp \
-	lfmcovarparam.cpp \
-	lfmhullwhiteparam.cpp \
-	lfmprocess.cpp \
 	merton76process.cpp \
 	ornsteinuhlenbeckprocess.cpp \
 	squarerootprocess.cpp \

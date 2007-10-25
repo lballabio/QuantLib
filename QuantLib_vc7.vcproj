@@ -1037,6 +1037,30 @@
 				<File
 					RelativePath=".\ql\legacy\libormarketmodels\lmvolmodel.hpp">
 				</File>
+			    <File
+				   RelativePath=".\ql\legacy\libormarketmodels\lfmcovarparam.cpp">
+			    </File>
+			    <File
+				   RelativePath=".\ql\legacy\libormarketmodels\lfmcovarparam.hpp">
+			    </File>
+			    <File
+				   RelativePath=".\ql\legacy\libormarketmodels\lfmhullwhiteparam.cpp">
+			    </File>
+			    <File
+				   RelativePath=".\ql\legacy\libormarketmodels\lfmhullwhiteparam.hpp">
+			    </File>
+			    <File
+				   RelativePath=".\ql\legacy\libormarketmodels\lfmprocess.cpp">
+			    </File>
+			    <File
+				   RelativePath=".\ql\legacy\libormarketmodels\lfmprocess.hpp">
+			    </File>
+				<File
+					RelativePath=".\ql\legacy\libormarketmodels\lfmswaptionengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\legacy\libormarketmodels\lfmswaptionengine.hpp">
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -5192,12 +5216,6 @@
 					RelativePath=".\ql\pricingengines\swaption\jamshidianswaptionengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\pricingengines\swaption\lfmswaptionengine.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\pricingengines\swaption\lfmswaptionengine.hpp">
-				</File>
-				<File
 					RelativePath=".\ql\pricingengines\swaption\treeswaptionengine.cpp">
 				</File>
 				<File
@@ -5356,24 +5374,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\processes\jointstochasticprocess.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\processes\lfmcovarparam.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\processes\lfmcovarparam.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\processes\lfmhullwhiteparam.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\processes\lfmhullwhiteparam.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\processes\lfmprocess.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\processes\lfmprocess.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\processes\merton76process.cpp">

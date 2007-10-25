@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/swaption/lfmswaptionengine.hpp>
+#include <ql/legacy/libormarketmodels/lfmswaptionengine.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 

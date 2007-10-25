@@ -19,7 +19,7 @@
 */
 
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
-#include <ql/processes/lfmhullwhiteparam.hpp>
+#include <ql/legacy/libormarketmodels/lfmhullwhiteparam.hpp>
 
 namespace QuantLib {
 

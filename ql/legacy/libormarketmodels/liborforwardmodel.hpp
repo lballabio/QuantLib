@@ -25,7 +25,7 @@
 #ifndef quantlib_libor_forward_model_hpp
 #define quantlib_libor_forward_model_hpp
 
-#include <ql/processes/lfmprocess.hpp>
+#include <ql/legacy/libormarketmodels/lfmprocess.hpp>
 #include <ql/voltermstructures/interestrate/swaption/swaptionvolmatrix.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/capletvariancecurve.hpp>
 #include <ql/models/model.hpp>

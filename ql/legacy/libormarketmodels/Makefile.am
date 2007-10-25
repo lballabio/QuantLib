@@ -4,7 +4,11 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
+	lfmcovarparam.hpp \
 	lfmcovarproxy.hpp \
+	lfmhullwhiteparam.hpp \
+	lfmprocess.hpp \
+	lfmswaptionengine.hpp \
 	liborforwardmodel.hpp \
 	lmconstwrappercorrmodel.hpp \
 	lmconstwrappervolmodel.hpp \
@@ -17,7 +21,11 @@ this_include_HEADERS = \
 	lmvolmodel.hpp
 
 libLiborMarketModels_la_SOURCES = \
+	lfmcovarparam.cpp \
 	lfmcovarproxy.cpp \
+	lfmhullwhiteparam.cpp \
+	lfmprocess.cpp \
+	lfmswaptionengine.cpp \
 	liborforwardmodel.cpp \
 	lmcorrmodel.cpp \
 	lmexpcorrmodel.cpp \

@@ -24,8 +24,8 @@
 #ifndef quantlib_libor_market_hull_white_parameterization_hpp
 #define quantlib_libor_market_hull_white_parameterization_hpp
 
-#include <ql/processes/lfmprocess.hpp>
-#include <ql/processes/lfmcovarparam.hpp>
+#include <ql/legacy/libormarketmodels/lfmprocess.hpp>
+#include <ql/legacy/libormarketmodels/lfmcovarparam.hpp>
 
 namespace QuantLib {
 

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/processes/lfmcovarparam.hpp>
+#include <ql/legacy/libormarketmodels/lfmcovarparam.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
 
 namespace QuantLib {
