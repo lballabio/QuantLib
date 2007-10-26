@@ -31,6 +31,24 @@ namespace QuantLib {
         : args_(args), model_(model), forwardMeasureTime_(forwardMeasureTime) {
             endDiscount_ =
                 model_->termStructure()->discount(forwardMeasureTime_);
+
+            Date referenceDate = model_->termStructure()->referenceDate();
+            DayCounter dayCounter = model_->termStructure()->dayCounter();
+
+            startTimes_.resize(args.startDates.size());
+            for (Size i=0; i<startTimes_.size(); ++i)
+                startTimes_[i] = dayCounter.yearFraction(referenceDate,
+                                                         args.startDates[i]);
+
+            endTimes_.resize(args.endDates.size());
+            for (Size i=0; i<endTimes_.size(); ++i)
+                endTimes_[i] = dayCounter.yearFraction(referenceDate,
+                                                       args.endDates[i]);
+
+            fixingTimes_.resize(args.fixingDates.size());
+            for (Size i=0; i<fixingTimes_.size(); ++i)
+                fixingTimes_[i] = dayCounter.yearFraction(referenceDate,
+                                                          args.fixingDates[i]);
         }
 
         Real HullWhiteCapFloorPricer::operator()(const Path& path) const {
@@ -40,11 +58,11 @@ namespace QuantLib {
             Time Tb = forwardMeasureTime_;
 
             Size pastFixings = 0;
-            for (Size i = 0; i<args_.fixingTimes.size(); i++) {
+            for (Size i = 0; i<fixingTimes_.size(); i++) {
                 Time tau = args_.accrualTimes[i];
-                Time start = args_.startTimes[i],
-                     end = args_.endTimes[i],
-                     fixing = args_.fixingTimes[i];
+                Time start = startTimes_[i],
+                     end = endTimes_[i],
+                     fixing = fixingTimes_[i];
                 if (end <= 0.0) {
                     // the fixing is in the past...
                     pastFixings++;

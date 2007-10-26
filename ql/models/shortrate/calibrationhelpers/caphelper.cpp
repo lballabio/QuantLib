@@ -88,9 +88,7 @@ namespace QuantLib {
         Rate fairRate = fixedRate - swap.NPV()/(swap.legBPS(1)/1.0e-4);
         engine_ = boost::shared_ptr<PricingEngine>();
         cap_ = boost::shared_ptr<Cap>(new Cap(floatingLeg,
-                                              std::vector<Rate>(1, fairRate),
-                                              termStructure));
-        cap_->setPricingEngine(engine_);
+                                              std::vector<Rate>(1, fairRate)));
         marketValue_ = blackPrice(volatility_->value());
     }
 

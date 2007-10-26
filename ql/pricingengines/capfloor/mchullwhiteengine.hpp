@@ -45,6 +45,7 @@ namespace QuantLib {
             boost::shared_ptr<HullWhite> model_;
             Time forwardMeasureTime_;
             DiscountFactor endDiscount_;
+            std::vector<Time> startTimes_, endTimes_, fixingTimes_;
         };
 
     }
@@ -94,28 +95,45 @@ namespace QuantLib {
 
       protected:
         boost::shared_ptr<path_pricer_type> pathPricer() const {
-            Time forwardMeasureTime = arguments_.endTimes.back();
+            Date referenceDate = model_->termStructure()->referenceDate();
+            DayCounter dayCounter = model_->termStructure()->dayCounter();
+            Time forwardMeasureTime =
+                dayCounter.yearFraction(referenceDate,
+                                        arguments_.endDates.back());
             return boost::shared_ptr<path_pricer_type>(
                      new detail::HullWhiteCapFloorPricer(arguments_, model_,
                                                          forwardMeasureTime));
         }
 
         TimeGrid timeGrid() const {
+
+            Date referenceDate = model_->termStructure()->referenceDate();
+            DayCounter dayCounter = model_->termStructure()->dayCounter();
+
             // only add future fixing times...
             std::vector<Time> times;
-            for (Size i=0; i<arguments_.fixingTimes.size(); i++) {
-                if (arguments_.fixingTimes[i] > 0.0)
-                    times.push_back(arguments_.fixingTimes[i]);
+            for (Size i=0; i<arguments_.fixingDates.size(); i++) {
+                if (arguments_.fixingDates[i] > referenceDate)
+                    times.push_back(
+                          dayCounter.yearFraction(referenceDate,
+                                                  arguments_.fixingDates[i]));
             }
             // ...and maturity.
-            times.push_back(arguments_.endTimes.back());
+            times.push_back(
+                        dayCounter.yearFraction(referenceDate,
+                                                arguments_.endDates.back()));
             return TimeGrid(times.begin(), times.end());
         }
 
         boost::shared_ptr<path_generator_type> pathGenerator() const {
 
-            Time forwardMeasureTime = arguments_.endTimes.back();
             Handle<YieldTermStructure> curve = model_->termStructure();
+            Date referenceDate = curve->referenceDate();
+            DayCounter dayCounter = curve->dayCounter();
+
+            Time forwardMeasureTime =
+                dayCounter.yearFraction(referenceDate,
+                                        arguments_.endDates.back());
             Array parameters = model_->params();
             Real a = parameters[0], sigma = parameters[1];
             boost::shared_ptr<HullWhiteForwardProcess> process(

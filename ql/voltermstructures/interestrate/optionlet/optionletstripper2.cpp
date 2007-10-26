@@ -86,7 +86,8 @@ namespace QuantLib {
                              optionExpiriesTenors[optionIndex], index_,
                              dummyStrike, 0*Days)
                 .withPricingEngine(engine);
-            atmCapFloorStrikes_[optionIndex] = caps_[optionIndex]->atmRate();
+            atmCapFloorStrikes_[optionIndex] =
+                caps_[optionIndex]->atmRate(**index_->termStructure());
             caps_[optionIndex] =
                 MakeCapFloor(CapFloor::Cap,
                              optionExpiriesTenors[optionIndex], index_,

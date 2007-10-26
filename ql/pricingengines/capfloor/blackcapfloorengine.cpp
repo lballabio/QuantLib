@@ -61,50 +61,57 @@ namespace QuantLib {
         Real vega = 0.0;
         std::vector<Real> optionletsPrice;
         CapFloor::Type type = arguments_.type;
-        DayCounter volatilityDayCounter = volatility_->dayCounter();
-        for (Size i=0; i<arguments_.startTimes.size(); i++) {
-            Time end = arguments_.endTimes[i],
-                 accrualTime = arguments_.accrualTimes[i],
-                 timeToMaturity = arguments_.fixingTimes[i];
-            if (end > 0.0) {    // discard expired caplets
+        Date today = volatility_->referenceDate();
+        Date settlement = termStructure_->referenceDate();
+
+        for (Size i=0; i<arguments_.startDates.size(); i++) {
+            Date paymentDate = arguments_.endDates[i];
+            Time accrualTime = arguments_.accrualTimes[i];
+            // This is using the yield-curve day counter for
+            // consistency with previous releases. Should it use the
+            // volatility day counter?
+            Time timeToMaturity =
+                termStructure_->dayCounter().yearFraction(
+                                            today, arguments_.fixingDates[i]);
+            if (paymentDate > settlement) { // discard expired caplets
                 Real nominal = arguments_.nominals[i];
                 Real gearing = arguments_.gearings[i];
-                DiscountFactor q = arguments_.discounts[i];
+                DiscountFactor q = termStructure_->discount(paymentDate);
                 Rate forward = arguments_.forwards[i];
                 Real stdDev;
 
                 // include caplets with past fixing date
-                if ((type == CapFloor::Cap) ||
-                    (type == CapFloor::Collar)) {
+                if (type == CapFloor::Cap || type == CapFloor::Collar) {
                     Rate strike = arguments_.capRates[i];
                     // std dev is set to 0 if fixing is at a past date
-                    if (arguments_.fixingTimes[i] > 0) {
-                         stdDev = std::sqrt(volatility_->blackVariance(
-                            arguments_.fixingDates[i], strike));
+                    if (arguments_.fixingDates[i] > today) {
+                        stdDev =
+                             std::sqrt(volatility_->blackVariance(
+                                          arguments_.fixingDates[i], strike));
                     } else {
-                        stdDev = 0;
+                        stdDev = 0.0;
                     }
                     Real caplet = q * accrualTime * nominal * gearing *
                         blackFormula(Option::Call, strike, forward, stdDev);
                     optionletsPrice.push_back(caplet);
                     value += caplet;
-                    // vega is set to 0 if fixinf is at a past date
-                    if (arguments_.fixingTimes[i] > 0) {
+                    // vega is set to 0 if fixing is at a past date
+                    if (arguments_.fixingDates[i] > today) {
                         vega += nominal * gearing * accrualTime * q
                               * blackFormulaStdDevDerivative(strike, forward,
                                                              stdDev)
                               * std::sqrt(timeToMaturity);
                     }
                 }
-                if ((type == CapFloor::Floor) ||
-                    (type == CapFloor::Collar)) {
+                if (type == CapFloor::Floor || type == CapFloor::Collar) {
                     Rate strike = arguments_.floorRates[i];
                     // std dev is set to 0 if fixing is at a past date
-                    if (arguments_.fixingTimes[i] > 0) {
-                        stdDev = std::sqrt(volatility_->blackVariance(
-                            arguments_.fixingDates[i], strike));
+                    if (arguments_.fixingDates[i] > today) {
+                        stdDev =
+                            std::sqrt(volatility_->blackVariance(
+                                          arguments_.fixingDates[i], strike));
                     } else {
-                        stdDev = 0;
+                        stdDev = 0.0;
                     }
                     Real temp = q * accrualTime * nominal * gearing *
                         blackFormula(Option::Put, strike, forward, stdDev);
@@ -112,7 +119,7 @@ namespace QuantLib {
                         value += temp;
                         optionletsPrice.push_back(temp);
                         //vega is set to 0 if fixing is at a past date
-                        if (arguments_.fixingTimes[i] > 0) {
+                        if (arguments_.fixingDates[i] > today) {
                             vega += nominal * gearing * accrualTime * q
                                   * blackFormulaStdDevDerivative(strike,
                                                                  forward,
@@ -123,7 +130,7 @@ namespace QuantLib {
                         // a collar is long a cap and short a floor
                         value -= temp;
                         // vega is set to 0 if fixing is at a past date
-                        if (arguments_.fixingTimes[i] > 0) {
+                        if (arguments_.fixingDates[i] > today) {
                             vega -= nominal * gearing * accrualTime * q
                                   * blackFormulaStdDevDerivative(strike,
                                                                  forward,

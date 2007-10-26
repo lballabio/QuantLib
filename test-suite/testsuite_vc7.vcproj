@@ -828,9 +828,6 @@
 				RelativePath=".\capflooredcoupon.cpp">
 			</File>
 			<File
-				RelativePath=".\capstripper.cpp">
-			</File>
-			<File
 				RelativePath=".\cliquetoption.cpp">
 			</File>
 			<File
@@ -2501,9 +2498,6 @@
 			</File>
 			<File
 				RelativePath=".\capflooredcoupon.hpp">
-			</File>
-			<File
-				RelativePath=".\capstripper.hpp">
 			</File>
 			<File
 				RelativePath=".\cliquetoption.hpp">

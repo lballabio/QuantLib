@@ -37,11 +37,16 @@ namespace QuantLib {
                                     CapFloor::arguments,
                                     CapFloor::results > {
       public:
-        AnalyticCapFloorEngine(const boost::shared_ptr<AffineModel>& model)
-        : GenericModelEngine<AffineModel,
-                             CapFloor::arguments,
-                             CapFloor::results >(model) {}
+        /*! \note the term structure is only needed when the short-rate
+                  model cannot provide one itself.
+        */
+        AnalyticCapFloorEngine(
+                         const boost::shared_ptr<AffineModel>& model,
+                         const Handle<YieldTermStructure>& termStructure =
+                                                 Handle<YieldTermStructure>());
         void calculate() const;
+      private:
+        Handle<YieldTermStructure> termStructure_;
     };
 
 }

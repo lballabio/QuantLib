@@ -118,7 +118,6 @@
 #include "transformedgrid.hpp"
 #include "varianceswaps.hpp"
 #include "volatilitymodels.hpp"
-#include "capstripper.hpp"
 #include "swaptionvolatilitymatrix.hpp"
 // to be deprecated
 #include "old_pricers.hpp"
@@ -192,7 +191,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CalendarTest::suite());
     test->add(CapFloorTest::suite());       // FLOATING_POINT_EXCEPTION
     test->add(CapFlooredCouponTest::suite());
-    test->add(CapsStripperTest::suite());   // FLOATING_POINT_EXCEPTION
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
     test->add(CompoundForwardTest::suite()); // fails with QL_USE_INDEXED_COUPON

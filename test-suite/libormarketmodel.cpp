@@ -219,15 +219,15 @@ void LiborMarketModelTest::testCapletPricing() {
     boost::shared_ptr<AffineModel> model(
                         new LiborForwardModel(process, volaModel, corrModel));
 
-    boost::shared_ptr<AnalyticCapFloorEngine> engine1(
-        new AnalyticCapFloorEngine(model));
-
     const Handle<YieldTermStructure> termStructure =
         process->index()->termStructure();
 
+    boost::shared_ptr<AnalyticCapFloorEngine> engine1(
+                            new AnalyticCapFloorEngine(model, termStructure));
+
     boost::shared_ptr<Cap> cap1(
         new Cap(process->cashFlows(),
-                std::vector<Rate>(size, 0.04), termStructure));
+                std::vector<Rate>(size, 0.04)));
     cap1->setPricingEngine(engine1);
 
     const Real expected = 0.015853935178;
@@ -298,7 +298,7 @@ void LiborMarketModelTest::testCalibration() {
                           index->dayCounter(), true, termStructure, true));
 
         caphelper->setPricingEngine(boost::shared_ptr<PricingEngine>(
-            new AnalyticCapFloorEngine(model)));
+                           new AnalyticCapFloorEngine(model, termStructure)));
 
         calibrationHelper.push_back(caphelper);
 

@@ -6,7 +6,6 @@ this_include_HEADERS = \
     all.hpp \
     capletvariancecurve.hpp \
     capletvolatilitiesstructures.hpp \
-    capstripper.hpp \
     constantoptionletvol.hpp \
     optionletstripperadapter.hpp \
     optionletstripper.hpp \
@@ -18,7 +17,6 @@ this_include_HEADERS = \
 
 libOptionletVol_la_SOURCES = \
     capletvolatilitiesstructures.cpp \
-    capstripper.cpp \
     constantoptionletvol.cpp \
     optionletstripperadapter.cpp \
     optionletstripper.cpp \

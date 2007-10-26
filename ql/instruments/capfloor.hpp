@@ -1,9 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 François du Vignaud
- Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -59,12 +59,10 @@ namespace QuantLib {
         CapFloor(Type type,
                  const Leg& floatingLeg,
                  const std::vector<Rate>& capRates,
-                 const std::vector<Rate>& floorRates,
-                 const Handle<YieldTermStructure>& discountCurve);
+                 const std::vector<Rate>& floorRates);
         CapFloor(Type type,
                  const Leg& floatingLeg,
-                 const std::vector<Rate>& strikes,
-                 const Handle<YieldTermStructure>& discountCurve);
+                 const std::vector<Rate>& strikes);
         //! \name Instrument interface
         //@{
         bool isExpired() const;
@@ -86,29 +84,24 @@ namespace QuantLib {
             return floatingLeg_;
         }
 
-        Rate atmRate() const;
         Date startDate() const;
         Date maturityDate() const;
         boost::shared_ptr<FloatingRateCoupon> lastFloatingRateCoupon() const;
-        const Handle<YieldTermStructure>& discountCurve() const {
-            return discountCurve_;
-        }
         //@}
+        Rate atmRate(const YieldTermStructure&) const;
         //! implied term volatility
-        Volatility impliedVolatility(Real price,
-                                     Real accuracy = 1.0e-4,
-                                     Size maxEvaluations = 100,
-                                     Volatility minVol = 1.0e-7,
-                                     Volatility maxVol = 4.0) const;
+        Volatility impliedVolatility(
+                              Real price,
+                              const Handle<YieldTermStructure>& discountCurve,
+                              Real accuracy = 1.0e-4,
+                              Size maxEvaluations = 100,
+                              Volatility minVol = 1.0e-7,
+                              Volatility maxVol = 4.0) const;
       private:
         Type type_;
         Leg floatingLeg_;
         std::vector<Rate> capRates_;
         std::vector<Rate> floorRates_;
-        Handle<YieldTermStructure> discountCurve_;
-        friend void changeCapFloorType(CapFloor&);
-        // helper class for implied volatility calculation
-
     };
 
     //! Concrete cap class
@@ -116,11 +109,9 @@ namespace QuantLib {
     class Cap : public CapFloor {
       public:
         Cap(const Leg& floatingLeg,
-            const std::vector<Rate>& exerciseRates,
-            const Handle<YieldTermStructure>& discountCurve)
+            const std::vector<Rate>& exerciseRates)
         : CapFloor(CapFloor::Cap, floatingLeg,
-                   exerciseRates, std::vector<Rate>(),
-                   discountCurve) {}
+                   exerciseRates, std::vector<Rate>()) {}
     };
 
     //! Concrete floor class
@@ -128,11 +119,9 @@ namespace QuantLib {
     class Floor : public CapFloor {
       public:
         Floor(const Leg& floatingLeg,
-              const std::vector<Rate>& exerciseRates,
-              const Handle<YieldTermStructure>& discountCurve)
+              const std::vector<Rate>& exerciseRates)
         : CapFloor(CapFloor::Floor, floatingLeg,
-                   std::vector<Rate>(), exerciseRates,
-                   discountCurve) {}
+                   std::vector<Rate>(), exerciseRates) {}
     };
 
     //! Concrete collar class
@@ -141,10 +130,8 @@ namespace QuantLib {
       public:
         Collar(const Leg& floatingLeg,
                const std::vector<Rate>& capRates,
-               const std::vector<Rate>& floorRates,
-               const Handle<YieldTermStructure>& discountCurve)
-        : CapFloor(CapFloor::Collar, floatingLeg, capRates, floorRates,
-                   discountCurve) {}
+               const std::vector<Rate>& floorRates)
+        : CapFloor(CapFloor::Collar, floatingLeg, capRates, floorRates) {}
     };
 
 
@@ -153,17 +140,15 @@ namespace QuantLib {
       public:
         arguments() : type(CapFloor::Type(-1)) {}
         CapFloor::Type type;
-        std::vector<Time> startTimes;
+        std::vector<Date> startDates;
         std::vector<Date> fixingDates;
-        std::vector<Time> fixingTimes;
-        std::vector<Time> endTimes;
+        std::vector<Date> endDates;
         std::vector<Time> accrualTimes;
         std::vector<Rate> capRates;
         std::vector<Rate> floorRates;
         std::vector<Rate> forwards;
         std::vector<Real> gearings;
         std::vector<Real> spreads;
-        std::vector<DiscountFactor> discounts;
         std::vector<Real> nominals;
         void validate() const;
     };

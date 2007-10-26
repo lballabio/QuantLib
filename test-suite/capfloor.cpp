@@ -100,13 +100,11 @@ struct CommonVars {
         switch (type) {
           case CapFloor::Cap:
             result = boost::shared_ptr<CapFloor>(
-                new Cap(leg, std::vector<Rate>(1, strike),
-                        termStructure));
+                new Cap(leg, std::vector<Rate>(1, strike)));
             break;
           case CapFloor::Floor:
             result = boost::shared_ptr<CapFloor>(
-                new Floor(leg, std::vector<Rate>(1, strike),
-                          termStructure));
+                new Floor(leg, std::vector<Rate>(1, strike)));
             break;
           default:
             QL_FAIL("unknown cap/floor type");
@@ -280,8 +278,7 @@ void CapFloorTest::testConsistency() {
                   vars.makeCapFloor(CapFloor::Floor,leg,
                                     floor_rates[k],vols[l]);
               Collar collar(leg,std::vector<Rate>(1,cap_rates[j]),
-                            std::vector<Rate>(1,floor_rates[k]),
-                            vars.termStructure);
+                            std::vector<Rate>(1,floor_rates[k]));
               collar.setPricingEngine(vars.makeEngine(vols[l]));
 
               if (std::fabs((cap->NPV()-floor->NPV())-collar.NPV()) > 1e-10) {
@@ -377,8 +374,8 @@ void CapFloorTest::testATMRate() {
                     vars.makeCapFloor(CapFloor::Cap, leg, strikes[j],vols[k]);
                 boost::shared_ptr<CapFloor> floor =
                     vars.makeCapFloor(CapFloor::Floor, leg, strikes[j],vols[k]);
-                Rate capATMRate = cap->atmRate();
-                Rate floorATMRate = floor->atmRate();
+                Rate capATMRate = cap->atmRate(**vars.termStructure);
+                Rate floorATMRate = floor->atmRate(**vars.termStructure);
                 if (!checkAbsError(floorATMRate, capATMRate, 1.0e-10))
                     BOOST_FAIL(
                       "Cap ATM Rate and floor ATM Rate should be equal :\n"
@@ -453,6 +450,7 @@ void CapFloorTest::testImpliedVolatility() {
                         try {
                             implVol =
                                 capfloor->impliedVolatility(value,
+                                                            vars.termStructure,
                                                             tolerance,
                                                             maxEvaluations);
                         } catch (std::exception& e) {

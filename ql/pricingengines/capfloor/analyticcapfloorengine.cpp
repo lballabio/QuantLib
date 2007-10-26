@@ -21,35 +21,63 @@
 
 namespace QuantLib {
 
+    AnalyticCapFloorEngine::AnalyticCapFloorEngine(
+                              const boost::shared_ptr<AffineModel>& model,
+                              const Handle<YieldTermStructure>& termStructure)
+    : GenericModelEngine<AffineModel,
+                         CapFloor::arguments,
+                         CapFloor::results >(model),
+      termStructure_(termStructure) {
+        registerWith(termStructure_);
+    }
+
+
     void AnalyticCapFloorEngine::calculate() const {
         QL_REQUIRE(model_, "null model");
 
+        Date referenceDate;
+        DayCounter dayCounter;
+
+        boost::shared_ptr<TermStructureConsistentModel> tsmodel =
+            boost::dynamic_pointer_cast<TermStructureConsistentModel>(model_);
+        if (tsmodel) {
+            referenceDate = tsmodel->termStructure()->referenceDate();
+            dayCounter = tsmodel->termStructure()->dayCounter();
+        } else {
+            referenceDate = termStructure_->referenceDate();
+            dayCounter = termStructure_->dayCounter();
+        }
+
         Real value = 0.0;
         CapFloor::Type type = arguments_.type;
-        Size nPeriods = arguments_.endTimes.size();
+        Size nPeriods = arguments_.endDates.size();
 
         for (Size i=0; i<nPeriods; i++) {
 
-            Time fixingTime = arguments_.fixingTimes[i];
-            Time bond = arguments_.endTimes[i];
+            Time fixingTime =
+                dayCounter.yearFraction(referenceDate,
+                                        arguments_.fixingDates[i]);
+            Time paymentTime =
+                dayCounter.yearFraction(referenceDate,
+                                        arguments_.endDates[i]);
 
             #if defined(QL_TODAYS_PAYMENTS)
-            if (bond >= 0.0) {
+            if (paymentTime >= 0.0) {
             #else
-            if (bond > 0.0) {
+            if (paymentTime > 0.0) {
             #endif
                 Time tenor = arguments_.accrualTimes[i];
                 Rate fixing = arguments_.forwards[i];
                 if (fixingTime <= 0.0) {
                     if (type == CapFloor::Cap || type == CapFloor::Collar) {
-                        DiscountFactor discount = model_->discount(bond);
+                        DiscountFactor discount = model_->discount(paymentTime);
                         Rate strike = arguments_.capRates[i];
                         value += discount * arguments_.nominals[i] * tenor
                                * arguments_.gearings[i]
                                * std::max(0.0, fixing - strike);
                     }
                     if (type == CapFloor::Floor || type == CapFloor::Collar) {
-                        DiscountFactor discount = model_->discount(bond);
+                        DiscountFactor discount = model_->discount(paymentTime);
                         Rate strike = arguments_.floorRates[i];
                         Real mult = (type == CapFloor::Floor) ? 1.0 : -1.0;
                         value += discount * arguments_.nominals[i] * tenor
@@ -57,13 +85,15 @@ namespace QuantLib {
                                * std::max(0.0, strike - fixing);
                     }
                 } else {
-                    Time maturity = arguments_.startTimes[i];
+                    Time maturity =
+                        dayCounter.yearFraction(referenceDate,
+                                                arguments_.startDates[i]);
                     if (type == CapFloor::Cap || type == CapFloor::Collar) {
                         Real temp = 1.0+arguments_.capRates[i]*tenor;
                         value += arguments_.nominals[i] *
                             arguments_.gearings[i] * temp *
                             model_->discountBondOption(Option::Put, 1.0/temp,
-                                                       maturity, bond);
+                                                       maturity, paymentTime);
                     }
                     if (type == CapFloor::Floor || type == CapFloor::Collar) {
                         Real temp = 1.0+arguments_.floorRates[i]*tenor;
@@ -71,7 +101,7 @@ namespace QuantLib {
                         value += arguments_.nominals[i] *
                             arguments_.gearings[i] * temp * mult *
                             model_->discountBondOption(Option::Call, 1.0/temp,
-                                                       maturity, bond);
+                                                       maturity, paymentTime);
                     }
                 }
             }

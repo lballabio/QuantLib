@@ -26,9 +26,12 @@
 #include <ql/yieldtermstructure.hpp>
 #include <ql/quotes/simplequote.hpp>
 
-namespace {
-    using namespace QuantLib;
-    class ImpliedVolHelper {
+
+namespace QuantLib {
+
+    namespace {
+
+        class ImpliedVolHelper {
           public:
             ImpliedVolHelper(const CapFloor&,
                              const Handle<YieldTermStructure>&,
@@ -43,47 +46,45 @@ namespace {
             const Instrument::results* results_;
         };
 
-     ImpliedVolHelper::ImpliedVolHelper(
+        ImpliedVolHelper::ImpliedVolHelper(
                               const CapFloor& cap,
                               const Handle<YieldTermStructure>& discountCurve,
                               Real targetValue)
-    : discountCurve_(discountCurve), targetValue_(targetValue) {
+        : discountCurve_(discountCurve), targetValue_(targetValue) {
 
-        vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
-        Handle<Quote> h(vol_);
-        engine_ = boost::shared_ptr<PricingEngine>(
+            vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
+            Handle<Quote> h(vol_);
+            engine_ = boost::shared_ptr<PricingEngine>(
                                   new BlackCapFloorEngine(discountCurve_, h));
-        cap.setupArguments(engine_->getArguments());
+            cap.setupArguments(engine_->getArguments());
 
-        results_ =
-            dynamic_cast<const Instrument::results*>(engine_->getResults());
+            results_ =
+                dynamic_cast<const Instrument::results*>(engine_->getResults());
+        }
+
+        Real ImpliedVolHelper::operator()(Volatility x) const {
+            vol_->setValue(x);
+            engine_->calculate();
+            return results_->value-targetValue_;
+        }
+
+        Real ImpliedVolHelper::derivative(Volatility x) const {
+            vol_->setValue(x);
+            engine_->calculate();
+            return 0.0;
+            //return results_->vega;
+        }
+
     }
 
-    Real ImpliedVolHelper::operator()(Volatility x) const {
-        vol_->setValue(x);
-        engine_->calculate();
-        return results_->value-targetValue_;
-    }
-
-    Real ImpliedVolHelper::derivative(Volatility x) const {
-        vol_->setValue(x);
-        engine_->calculate();
-        return 0.0;
-        //return results_->vega;
-    }
-}
-
-namespace QuantLib {
 
     CapFloor::CapFloor(
                  CapFloor::Type type,
                  const Leg& floatingLeg,
                  const std::vector<Rate>& capRates,
-                 const std::vector<Rate>& floorRates,
-                 const Handle<YieldTermStructure>& discountCurve)
+                 const std::vector<Rate>& floorRates)
     : type_(type), floatingLeg_(floatingLeg),
-      capRates_(capRates), floorRates_(floorRates),
-      discountCurve_(discountCurve) {
+      capRates_(capRates), floorRates_(floorRates) {
         if (type_ == Cap || type_ == Collar) {
             QL_REQUIRE(!capRates_.empty(), "no cap rates given");
             capRates_.reserve(floatingLeg_.size());
@@ -100,17 +101,14 @@ namespace QuantLib {
         for (i = floatingLeg_.begin(); i != floatingLeg_.end(); ++i)
             registerWith(*i);
 
-        registerWith(discountCurve);
         registerWith(Settings::instance().evaluationDate());
     }
 
     CapFloor::CapFloor(
                  CapFloor::Type type,
                  const Leg& floatingLeg,
-                 const std::vector<Rate>& strikes,
-                 const Handle<YieldTermStructure>& discountCurve)
-    : type_(type), floatingLeg_(floatingLeg),
-      discountCurve_(discountCurve) {
+                 const std::vector<Rate>& strikes)
+    : type_(type), floatingLeg_(floatingLeg) {
         QL_REQUIRE(!strikes.empty(), "no strikes given");
         if (type_ == Cap) {
             capRates_ = strikes;
@@ -129,20 +127,19 @@ namespace QuantLib {
         for (i = floatingLeg_.begin(); i != floatingLeg_.end(); ++i)
             registerWith(*i);
 
-        registerWith(discountCurve);
         registerWith(Settings::instance().evaluationDate());
     }
 
-    Rate CapFloor::atmRate() const {
-        return CashFlows::atmRate(floatingLeg_, **discountCurve_);
+    Rate CapFloor::atmRate(const YieldTermStructure& discountCurve) const {
+        return CashFlows::atmRate(floatingLeg_, discountCurve);
     }
 
     bool CapFloor::isExpired() const {
-        Date lastPaymentDate = Date::minDate();
+        Date today = Settings::instance().evaluationDate();
         for (Size i=0; i<floatingLeg_.size(); i++)
-            lastPaymentDate = std::max(lastPaymentDate,
-                                       floatingLeg_[i]->date());
-        return lastPaymentDate < discountCurve_->referenceDate();
+            if (!floatingLeg_[i]->hasOccurred(today))
+                return false;
+        return true;
     }
 
     Date CapFloor::startDate() const {
@@ -153,7 +150,8 @@ namespace QuantLib {
         return CashFlows::maturityDate(floatingLeg_);
     }
 
-    boost::shared_ptr<FloatingRateCoupon> CapFloor::lastFloatingRateCoupon() const {
+    boost::shared_ptr<FloatingRateCoupon>
+    CapFloor::lastFloatingRateCoupon() const {
         boost::shared_ptr<CashFlow> lastCF(floatingLeg_.back());
         boost::shared_ptr<FloatingRateCoupon> lastFloatingCoupon =
             boost::dynamic_pointer_cast<FloatingRateCoupon>(lastCF);
@@ -167,126 +165,109 @@ namespace QuantLib {
 
         Size n = floatingLeg_.size();
 
-        arguments->startTimes.clear();
-        arguments->startTimes.reserve(n);
-
-        arguments->fixingDates.clear();
-        arguments->fixingDates.reserve(n);
-
-        arguments->fixingTimes.clear();
-        arguments->fixingTimes.reserve(n);
-
-        arguments->endTimes.clear();
-        arguments->endTimes.reserve(n);
-
-        arguments->accrualTimes.clear();
-        arguments->accrualTimes.reserve(n);
-
-        arguments->forwards.clear();
-
-        arguments->discounts.clear();
-
-        arguments->nominals.clear();
-        arguments->nominals.reserve(n);
-
-        arguments->gearings.clear();
-        arguments->gearings.reserve(n);
-
-        arguments->capRates.clear();
-        arguments->capRates.reserve(n);
-
-        arguments->floorRates.clear();
-        arguments->floorRates.reserve(n);
-
-        arguments->spreads.clear();
-        arguments->spreads.reserve(n);
+        arguments->startDates.resize(n);
+        arguments->fixingDates.resize(n);
+        arguments->endDates.resize(n);
+        arguments->accrualTimes.resize(n);
+        arguments->forwards.resize(n);
+        arguments->nominals.resize(n);
+        arguments->gearings.resize(n);
+        arguments->capRates.resize(n);
+        arguments->floorRates.resize(n);
+        arguments->spreads.resize(n);
 
         arguments->type = type_;
 
         Date today = Settings::instance().evaluationDate();
-        Date settlement = discountCurve_->referenceDate();
-        DayCounter counter = discountCurve_->dayCounter();
 
         for (Size i=0; i<n; i++) {
             boost::shared_ptr<FloatingRateCoupon> coupon =
-                boost::dynamic_pointer_cast<FloatingRateCoupon>(floatingLeg_[i]);
+                boost::dynamic_pointer_cast<FloatingRateCoupon>(
+                                                             floatingLeg_[i]);
             QL_REQUIRE(coupon, "non-iborCoupon given");
-            Date beginDate = coupon->accrualStartDate();
-            Time time = counter.yearFraction(settlement, beginDate);
-            arguments->startTimes.push_back(time);
-            Date fixingDate = coupon->fixingDate();
-            arguments->fixingDates.push_back(fixingDate);
-            time = counter.yearFraction(today, fixingDate);
-            arguments->fixingTimes.push_back(time);
-            time = counter.yearFraction(settlement, coupon->date());
-            arguments->endTimes.push_back(time);
+            arguments->startDates[i] = coupon->accrualStartDate();
+            arguments->fixingDates[i] = coupon->fixingDate();
+            arguments->endDates[i] = coupon->date();
+
             // this is passed explicitly for precision
-            arguments->accrualTimes.push_back(coupon->accrualPeriod());
-            // this is passed explicitly for precision
-            if (arguments->endTimes.back() >= 0.0) { // but only if needed
-                arguments->forwards.push_back(coupon->adjustedFixing());
-                arguments->discounts.push_back(
-                                  discountCurve_->discount(coupon->date()));
+            arguments->accrualTimes[i] = coupon->accrualPeriod();
+
+            // this is passed explicitly for precision...
+            if (arguments->endDates[i] >= today) { // ...but only if needed
+                arguments->forwards[i] = coupon->adjustedFixing();
             } else {
-                arguments->forwards.push_back(Null<Rate>());
-                arguments->discounts.push_back(Null<DiscountFactor>());
+                arguments->forwards[i] = Null<Rate>();
             }
-            arguments->nominals.push_back(coupon->nominal());
+
+            arguments->nominals[i] = coupon->nominal();
             Spread spread = coupon->spread();
             Real gearing = coupon->gearing();
-            QL_REQUIRE(gearing > 0.0, "positive gearing required");
-            arguments->gearings.push_back(gearing);
-            arguments->spreads.push_back(spread);
+            arguments->gearings[i] = gearing;
+            arguments->spreads[i] = spread;
+
             if (type_ == Cap || type_ == Collar)
-                arguments->capRates.push_back((capRates_[i]-spread)/gearing);
+                arguments->capRates[i] = (capRates_[i]-spread)/gearing;
+            else
+                arguments->capRates[i] = Null<Rate>();
+
             if (type_ == Floor || type_ == Collar)
-                arguments->floorRates.push_back(
-                                             (floorRates_[i]-spread)/gearing);
+                arguments->floorRates[i] = (floorRates_[i]-spread)/gearing;
+            else
+                arguments->floorRates[i] = Null<Rate>();
         }
     }
 
     void CapFloor::arguments::validate() const {
-        QL_REQUIRE(endTimes.size() == startTimes.size(),
-                   "number of start times (" << startTimes.size()
-                   << ") different from that of end times ("
-                   << endTimes.size() << ")");
-        QL_REQUIRE(accrualTimes.size() == startTimes.size(),
-                   "number of start times (" << startTimes.size()
+        QL_REQUIRE(endDates.size() == startDates.size(),
+                   "number of start dates (" << startDates.size()
+                   << ") different from that of end dates ("
+                   << endDates.size() << ")");
+        QL_REQUIRE(accrualTimes.size() == startDates.size(),
+                   "number of start dates (" << startDates.size()
                    << ") different from that of accrual times ("
                    << accrualTimes.size() << ")");
         QL_REQUIRE(type == CapFloor::Floor ||
-                   capRates.size() == startTimes.size(),
-                   "number of start times (" << startTimes.size()
+                   capRates.size() == startDates.size(),
+                   "number of start dates (" << startDates.size()
                    << ") different from that of cap rates ("
                    << capRates.size() << ")");
         QL_REQUIRE(type == CapFloor::Cap ||
-                   floorRates.size() == startTimes.size(),
-                   "number of start times (" << startTimes.size()
+                   floorRates.size() == startDates.size(),
+                   "number of start dates (" << startDates.size()
                    << ") different from that of floor rates ("
                    << floorRates.size() << ")");
-        QL_REQUIRE(gearings.size() == startTimes.size(),
-                   "number of start times (" << startTimes.size()
+        QL_REQUIRE(gearings.size() == startDates.size(),
+                   "number of start dates (" << startDates.size()
                    << ") different from that of gearings ("
-                   << floorRates.size() << ")");
-        QL_REQUIRE(nominals.size() == startTimes.size(),
-                   "number of start times (" << startTimes.size()
+                   << gearings.size() << ")");
+        QL_REQUIRE(spreads.size() == startDates.size(),
+                   "number of start dates (" << startDates.size()
+                   << ") different from that of spreads ("
+                   << spreads.size() << ")");
+        QL_REQUIRE(nominals.size() == startDates.size(),
+                   "number of start dates (" << startDates.size()
                    << ") different from that of nominals ("
                    << nominals.size() << ")");
+        QL_REQUIRE(forwards.size() == startDates.size(),
+                   "number of start dates (" << startDates.size()
+                   << ") different from that of forwards ("
+                   << forwards.size() << ")");
     }
 
-    Volatility CapFloor::impliedVolatility(Real targetValue,
-                                           Real accuracy,
-                                           Size maxEvaluations,
-                                           Volatility minVol,
-                                           Volatility maxVol) const {
+    Volatility CapFloor::impliedVolatility(
+                              Real targetValue,
+                              const Handle<YieldTermStructure>& discountCurve,
+                              Real accuracy,
+                              Size maxEvaluations,
+                              Volatility minVol,
+                              Volatility maxVol) const {
         calculate();
         QL_REQUIRE(!isExpired(), "instrument expired");
 
         Volatility guess = 0.10;   // no way we can get a more accurate one
 
-        ImpliedVolHelper f(*this, discountCurve_, targetValue);
+        ImpliedVolHelper f(*this, discountCurve, targetValue);
         Brent solver;
-        //NewtonSafe solver;
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);
     }

@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,10 +22,38 @@
 
 namespace QuantLib {
 
+    DiscretizedCapFloor::DiscretizedCapFloor(const CapFloor::arguments& args,
+                                             const Date& referenceDate,
+                                             const DayCounter& dayCounter)
+    : arguments_(args) {
+
+        startTimes_.resize(args.startDates.size());
+        for (Size i=0; i<startTimes_.size(); ++i)
+            startTimes_[i] = dayCounter.yearFraction(referenceDate,
+                                                     args.startDates[i]);
+
+        endTimes_.resize(args.endDates.size());
+        for (Size i=0; i<endTimes_.size(); ++i)
+            endTimes_[i] = dayCounter.yearFraction(referenceDate,
+                                                   args.endDates[i]);
+    }
+    
+    void DiscretizedCapFloor::reset(Size size) {
+        values_ = Array(size, 0.0);
+        adjustValues();
+    }
+
+    std::vector<Time> DiscretizedCapFloor::mandatoryTimes() const {
+        std::vector<Time> times = startTimes_;
+        std::copy(endTimes_.begin(), endTimes_.end(),
+                  std::back_inserter(times));
+        return times;
+    }
+
     void DiscretizedCapFloor::preAdjustValuesImpl() {
-        for (Size i=0; i<arguments_.startTimes.size(); i++) {
-            if (isOnTime(arguments_.startTimes[i])) {
-                Time end = arguments_.endTimes[i];
+        for (Size i=0; i<startTimes_.size(); i++) {
+            if (isOnTime(startTimes_[i])) {
+                Time end = endTimes_[i];
                 Time tenor = arguments_.accrualTimes[i];
                 DiscretizedDiscountBond bond;
                 bond.initialize(method(), end);
@@ -58,9 +86,9 @@ namespace QuantLib {
     }
 
     void DiscretizedCapFloor::postAdjustValuesImpl() {
-        for (Size i=0; i<arguments_.endTimes.size(); i++) {
-            if (isOnTime(arguments_.endTimes[i])) {
-                if (arguments_.startTimes[i] < 0.0) {
+        for (Size i=0; i<endTimes_.size(); i++) {
+            if (isOnTime(endTimes_[i])) {
+                if (startTimes_[i] < 0.0) {
                     Real nominal = arguments_.nominals[i];
                     Time accrual = arguments_.accrualTimes[i];
                     Rate fixing = arguments_.forwards[i];

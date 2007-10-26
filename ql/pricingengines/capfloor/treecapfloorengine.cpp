@@ -71,8 +71,12 @@ namespace QuantLib {
             lattice = model_->tree(timeGrid);
         }
 
-        capfloor.initialize(lattice, arguments_.endTimes.back());
-        capfloor.rollback(arguments_.startTimes.front());
+        Time firstTime = dayCounter.yearFraction(referenceDate,
+                                                 arguments_.startDates.front());
+        Time lastTime = dayCounter.yearFraction(referenceDate,
+                                                arguments_.endDates.back());
+        capfloor.initialize(lattice, lastTime);
+        capfloor.rollback(firstTime);
 
         results_.value = capfloor.presentValue();
     }

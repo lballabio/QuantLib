@@ -127,8 +127,8 @@ namespace QuantLib {
                 optionletPrices_[i][j] = capFloorPrices_[i][j] -
                                                         previousCapFloorPrice;
                 previousCapFloorPrice = capFloorPrices_[i][j];
-                DiscountFactor d = capFloors_[i][j]->discountCurve()->discount(
-                                                        optionletPaymentDates_[i]);
+                DiscountFactor d = index_->termStructure()->discount(
+                                                   optionletPaymentDates_[i]);
                 DiscountFactor optionletAnnuity=optionletAccrualPeriods_[i]*d;
                 try {
                     optionletStDevs_[i][j] =

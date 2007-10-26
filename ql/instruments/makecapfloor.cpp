@@ -51,7 +51,7 @@ namespace QuantLib {
             strikeVector[0] = CashFlows::atmRate(leg, **discountCurve_);
 
         boost::shared_ptr<CapFloor> capFloor(
-            new CapFloor(capFloorType_, leg, strikeVector, discountCurve_));
+            new CapFloor(capFloorType_, leg, strikeVector));
         capFloor->setPricingEngine(engine_);
         return capFloor;
     }

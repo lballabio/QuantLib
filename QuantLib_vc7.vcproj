@@ -5629,12 +5629,6 @@
 						RelativePath=".\ql\voltermstructures\interestrate\optionlet\capletvolatilitiesstructures.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\voltermstructures\interestrate\optionlet\capstripper.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\voltermstructures\interestrate\optionlet\capstripper.hpp">
-					</File>
-					<File
 						RelativePath=".\ql\voltermstructures\interestrate\optionlet\constantoptionletvol.cpp">
 					</File>
 					<File

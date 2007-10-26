@@ -3,7 +3,6 @@
 
 #include <ql/voltermstructures/interestrate/optionlet/capletvariancecurve.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/capletvolatilitiesstructures.hpp>
-#include <ql/voltermstructures/interestrate/optionlet/capstripper.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/constantoptionletvol.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/optionletstripperadapter.hpp>
 #include <ql/voltermstructures/interestrate/optionlet/optionletstripper.hpp>
