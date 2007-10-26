@@ -293,12 +293,14 @@ namespace QuantLib {
                 solver.setUpperBound(max);
                 try {
                     this->data_[i] =
+                        //solver.solve(ObjectiveFunction(this, instrument, i),
+                        //             accuracy_, guess, guess*0.01);
                         solver.solve(ObjectiveFunction(this, instrument, i),
-                                     accuracy_, guess, guess*0.01);
+                                     accuracy_, guess, min, max);
                     if (i==1 && C::dummyInitialValue())
                         this->data_[0] = this->data_[1];
                 } catch (std::exception& e) {
-                    QL_FAIL(io::ordinal(iteration) << " iteration: "
+                    QL_FAIL("\n " << io::ordinal(iteration) << " iteration: "
                             "could not bootstrap the " << io::ordinal(i) <<
                             " instrument, maturity " << this->dates_[i] <<
                             "\n error message: " << e.what());
