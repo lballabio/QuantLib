@@ -314,6 +314,7 @@ namespace QuantLib {
             } else if (iteration == 0) {
                 // at least one more iteration is needed
                 // since the first one used Linear interpolation
+                Size skip = C::dummyInitialValue() ? 1 : 0;
                 this->interpolation_ = this->interpolator_.interpolate(
                                             this->times_.begin(),
                                             this->times_.end(),
