@@ -89,7 +89,7 @@ namespace QuantLib {
                     this->xBegin_, this->xEnd_,
                     logY_.begin(),
                     CubicSpline::NotAKnot, 0.0,
-                    CubicSpline::NotAKnot, 0.0,
+                    CubicSpline::SecondDerivative, 0.0,
                     true);
                 interpolation_.update();
             }
