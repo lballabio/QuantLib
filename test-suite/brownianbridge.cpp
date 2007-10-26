@@ -25,8 +25,8 @@
 #include <ql/math/randomnumbers/inversecumulativersg.hpp>
 #include <ql/math/statistics/sequencestatistics.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/yieldtermstructures/flatforward.hpp>
-#include <ql/voltermstructures/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 
 using namespace QuantLib;

@@ -20,8 +20,8 @@
 #include "mclongstaffschwartzengine.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/vanillaoption.hpp>
-#include <ql/yieldtermstructures/flatforward.hpp>
-#include <ql/voltermstructures/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
 #include <ql/pricingengines/mclongstaffschwartzengine.hpp>

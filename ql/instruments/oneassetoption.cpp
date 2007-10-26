@@ -21,7 +21,7 @@
 
 #include <ql/instruments/oneassetoption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/voltermstructures/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/exercise.hpp>
 

@@ -25,7 +25,7 @@
 #include <ql/cashflows/digitalcoupon.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
 #include <ql/settings.hpp>
-#include <ql/voltermstructures/interestrate/optionlet/constantoptionletvol.hpp>
+#include <ql/termstructures/volatility/interestrate/optionlet/constantoptionletvol.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
@@ -516,7 +516,7 @@ void DigitalCouponTest::testCashOrNothing() {
 
     Real gearing = 3.0;
     Real spread = -0.0002;
-                
+
     Real gap = 1e-08; /* very low, in order to compare digital option value
                                      with black formula result */
     boost::shared_ptr<DigitalReplication>

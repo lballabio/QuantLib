@@ -21,18 +21,18 @@
 #include "utilities.hpp"
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/swapindex.hpp>
-#include <ql/yieldtermstructures/zerocurve.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/time/calendars/target.hpp>
-#include <ql/voltermstructures/interpolatedsmilesection.hpp>
+#include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
 
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/voltermstructures/interestrate/swaption/swaptionvolmatrix.hpp>
-#include <ql/voltermstructures/interestrate/swaption/swaptionvolcube2.hpp>
-#include <ql/voltermstructures/interestrate/swaption/swaptionvolcube1.hpp>
+#include <ql/termstructures/volatility/interestrate/swaption/swaptionvolmatrix.hpp>
+#include <ql/termstructures/volatility/interestrate/swaption/swaptionvolcube2.hpp>
+#include <ql/termstructures/volatility/interestrate/swaption/swaptionvolcube1.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/time/schedule.hpp>

@@ -28,7 +28,7 @@
 #include <ql/types.hpp>
 #include <ql/legacy/pricers/mcpricer.hpp>
 #include <ql/yieldtermstructure.hpp>
-#include <ql/voltermstructures/equityfx/blackvoltermstructure.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 
 namespace QuantLib {
 

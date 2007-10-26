@@ -49,7 +49,6 @@
 #include <ql/pricingengines/all.hpp>
 #include <ql/processes/all.hpp>
 #include <ql/quotes/all.hpp>
+#include <ql/termstructures/all.hpp>
 #include <ql/time/all.hpp>
 #include <ql/utilities/all.hpp>
-#include <ql/voltermstructures/all.hpp>
-#include <ql/yieldtermstructures/all.hpp>

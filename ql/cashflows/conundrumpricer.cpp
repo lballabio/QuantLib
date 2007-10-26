@@ -26,7 +26,7 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/solvers1d/newton.hpp>
-#include <ql/voltermstructures/smilesection.hpp>
+#include <ql/termstructures/volatility/smilesection.hpp>
 #include <ql/cashflows/cmscoupon.hpp>
 #include <ql/yieldtermstructure.hpp>
 #include <ql/quotes/simplequote.hpp>

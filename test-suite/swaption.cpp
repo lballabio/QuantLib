@@ -25,7 +25,7 @@
 #include "utilities.hpp"
 #include <ql/instruments/swaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
-#include <ql/yieldtermstructures/flatforward.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/thirty360.hpp>

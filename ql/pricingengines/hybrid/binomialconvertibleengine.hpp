@@ -28,8 +28,8 @@
 #include <ql/methods/lattices/tflattice.hpp>
 #include <ql/pricingengines/hybrid/discretizedconvertible.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/yieldtermstructures/flatforward.hpp>
-#include <ql/voltermstructures/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/instruments/bonds/convertiblebond.hpp>
 
 namespace QuantLib {

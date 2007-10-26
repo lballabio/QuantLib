@@ -20,8 +20,8 @@
 #include "utilities.hpp"
 #include <ql/instruments/payoffs.hpp>
 #include <ql/indexes/indexmanager.hpp>
-#include <ql/yieldtermstructures/flatforward.hpp>
-#include <ql/voltermstructures/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 
 #define CHECK_DOWNCAST(Derived,Description) { \

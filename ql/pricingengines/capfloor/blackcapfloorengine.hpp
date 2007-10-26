@@ -29,7 +29,7 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/instruments/capfloor.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/voltermstructures/interestrate/optionlet/optionletvolatilitystructure.hpp>
+#include <ql/termstructures/volatility/interestrate/optionlet/optionletvolatilitystructure.hpp>
 #include <ql/quote.hpp>
 
 namespace QuantLib {

@@ -28,7 +28,7 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
-#include <ql/voltermstructures/interestrate/swaption/swaptionvolmatrix.hpp>
+#include <ql/termstructures/volatility/interestrate/swaption/swaptionvolmatrix.hpp>
 #include <ql/yieldtermstructure.hpp>
 #include <iostream>
 #include <vector>
@@ -42,11 +42,11 @@ namespace QuantLib {
     struct SwaptionMarketConventions {
         Calendar calendar;
         BusinessDayConvention optionBdc;
-        DayCounter dayCounter; 
+        DayCounter dayCounter;
         void setConventions() {
             calendar = TARGET();
             optionBdc = Following;
-            dayCounter = Actual365Fixed();               
+            dayCounter = Actual365Fixed();
         }
     };
     struct AtmVolatility {
@@ -60,7 +60,7 @@ namespace QuantLib {
             tenors.options[2] = Period(1, Years);
             tenors.options[3] = Period(5, Years);
             tenors.options[4] = Period(10, Years);
-            tenors.options[5] = Period(30, Years);        
+            tenors.options[5] = Period(30, Years);
             tenors.swaps.resize(4);
             tenors.swaps[0] = Period(1, Years);
             tenors.swaps[1] = Period(5, Years);
@@ -141,15 +141,15 @@ namespace QuantLib {
                     volSpreadsHandle[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
                         SimpleQuote(volSpreads[i][j])));
                 }
-            }    
+            }
         };
     };
 
-    
+
  /*   static void setupCubeUtilities() {
         conventions_.calendar = TARGET();
         conventions_.optionBdc = Following;
-        conventions_.dayCounter = Actual365Fixed();        
+        conventions_.dayCounter = Actual365Fixed();
         atm_.setMarketData();
         cube_.setMarketData();
         atmVolMatrix_ = RelinkableHandle<SwaptionVolatilityStructure>(
