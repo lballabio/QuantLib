@@ -37,8 +37,10 @@ namespace QuantLib {
         struct curve {
             typedef InterpolatedDiscountCurve<Interpolator> type;
         };
-        // value at reference
+        // value at reference date
         static DiscountFactor initialValue() { return 1.0; }
+        // true if the initialValue is just a dummy value
+        static bool dummyInitialValue() { return false; }
         // initial guess
         static DiscountFactor initialGuess() { return 0.9; }
         // further guesses
@@ -78,8 +80,10 @@ namespace QuantLib {
         struct curve {
             typedef InterpolatedZeroCurve<Interpolator> type;
         };
-        // (dummy) value at reference
+        // dummy value at reference date
         static Rate initialValue() { return 0.02; }
+        // true if the initialValue is just a dummy value
+        static bool dummyInitialValue() { return true; }
         // initial guess
         static Rate initialGuess() { return 0.02; }
         // further guesses
@@ -121,8 +125,10 @@ namespace QuantLib {
         struct curve {
             typedef InterpolatedForwardCurve<Interpolator> type;
         };
-        // (dummy) value at reference
+        // dummy value at reference date
         static Rate initialValue() { return 0.02; }
+        // true if the initialValue is just a dummy value
+        static bool dummyInitialValue() { return true; }
         // initial guess
         static Rate initialGuess() { return 0.02; }
         // further guesses
