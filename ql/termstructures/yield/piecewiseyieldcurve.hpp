@@ -254,7 +254,12 @@ namespace QuantLib {
             for (Size i=1; i<n+1; ++i) {
                 if (iteration == 0) {
                     // extend interpolation a point at a time
-                    if (I::global) {
+                    if (i==1 && C::dummyInitialValue()) {
+                        this->interpolation_ = BackwardFlat().interpolate(
+                                                    this->times_.begin(),
+                                                    this->times_.begin()+i+1,
+                                                    this->data_.begin());
+                    } else if (I::global) {
                         // use Linear in the first iteration
                         this->interpolation_ = Linear().interpolate(
                                                     this->times_.begin(),
