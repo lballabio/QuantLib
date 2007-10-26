@@ -23,7 +23,7 @@
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/termstructures/volatility/interestrate/swaption/swaptionconstantvol.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionconstantvol.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>

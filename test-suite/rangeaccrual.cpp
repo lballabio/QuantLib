@@ -30,9 +30,9 @@
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/termstructures/volatility/interestrate/swaption/swaptionvolmatrix.hpp>
-#include <ql/termstructures/volatility/interestrate/swaption/swaptionvolcube2.hpp>
-#include <ql/termstructures/volatility/interestrate/swaption/swaptionvolcube1.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionvolcube2.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionvolcube1.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/time/schedule.hpp>

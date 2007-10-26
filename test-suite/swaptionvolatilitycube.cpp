@@ -26,9 +26,9 @@
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/termstructures/volatility/interestrate/swaption/swaptionvolcube2.hpp>
-#include <ql/termstructures/volatility/interestrate/swaption/swaptionvolcube1.hpp>
-#include <ql/termstructures/volatility/interestrate/swaption/spreadedswaptionvol.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionvolcube2.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionvolcube1.hpp>
+#include <ql/termstructures/volatility/swaption/spreadedswaptionvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;

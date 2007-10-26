@@ -388,10 +388,9 @@ AC_CONFIG_FILES([
     ql/termstructures/Makefile
     ql/termstructures/volatility/Makefile
     ql/termstructures/volatility/equityfx/Makefile
-    ql/termstructures/volatility/interestrate/Makefile
-    ql/termstructures/volatility/interestrate/capfloor/Makefile
-    ql/termstructures/volatility/interestrate/optionlet/Makefile
-    ql/termstructures/volatility/interestrate/swaption/Makefile
+    ql/termstructures/volatility/capfloor/Makefile
+    ql/termstructures/volatility/optionlet/Makefile
+    ql/termstructures/volatility/swaption/Makefile
     ql/termstructures/yield/Makefile
     ql/time/Makefile
     ql/time/calendars/Makefile

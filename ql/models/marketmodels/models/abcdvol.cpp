@@ -21,7 +21,7 @@
 
 #include <ql/models/marketmodels/models/abcdvol.hpp>
 #include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
-#include <ql/termstructures/volatility/interestrate/abcd.hpp>
+#include <ql/termstructures/volatility/abcd.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 
 namespace QuantLib {

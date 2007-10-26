@@ -1,11 +1,14 @@
 
-SUBDIRS = equityfx interestrate
+SUBDIRS = equityfx capfloor optionlet swaption
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    abcd.hpp \
+    abcdatmvolcurve.hpp \
+    abcdcalibration.hpp \
     blackatmvolcurve.hpp \
     blackvolsurface.hpp \
     equityfxvolsurface.hpp \
@@ -15,9 +18,14 @@ this_include_HEADERS = \
     sabrinterpolatedsmilesection.hpp \
     sabrinterpolatedsmilesection2.hpp \
     sabrinterpolatedsmilesectionNew.hpp \
-    smilesection.hpp
+    sabrvolsurface.hpp \
+    smilesection.hpp \
+    volcube.hpp
 
 libVolTermStructures_la_SOURCES = \
+    abcd.cpp \
+    abcdatmvolcurve.cpp \
+    abcdcalibration.cpp \
     blackatmvolcurve.cpp \
     blackvolsurface.cpp \
     equityfxvolsurface.cpp \
@@ -26,11 +34,15 @@ libVolTermStructures_la_SOURCES = \
     sabrinterpolatedsmilesection.cpp \
     sabrinterpolatedsmilesection2.cpp \
     sabrinterpolatedsmilesectionNew.cpp \
-    smilesection.cpp
+    sabrvolsurface.cpp \
+    smilesection.cpp \
+    volcube.cpp 
 
 libVolTermStructures_la_LIBADD = \
     equityfx/libEquityFxVol.la \
-    interestrate/libInterestRateVol.la
+    capfloor/libCapFloorVol.la \
+    optionlet/libOptionletVol.la \
+    swaption/libSwaptionVol.la
 
 noinst_LTLIBRARIES = libVolTermStructures.la
 

@@ -25,8 +25,8 @@
 #ifndef quantlib_coupon_pricer_hpp
 #define quantlib_coupon_pricer_hpp
 
-#include <ql/termstructures/volatility/interestrate/optionlet/optionletvolatilitystructure.hpp>
-#include <ql/termstructures/volatility/interestrate/swaption/swaptionvolstructure.hpp>
+#include <ql/termstructures/volatility/optionlet/optionletvolatilitystructure.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionvolstructure.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/option.hpp>
 

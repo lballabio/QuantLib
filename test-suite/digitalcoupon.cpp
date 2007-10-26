@@ -25,7 +25,7 @@
 #include <ql/cashflows/digitalcoupon.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
 #include <ql/settings.hpp>
-#include <ql/termstructures/volatility/interestrate/optionlet/constantoptionletvol.hpp>
+#include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
