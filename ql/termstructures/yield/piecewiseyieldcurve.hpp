@@ -86,6 +86,8 @@ namespace QuantLib {
         const std::vector<Date>& dates() const;
         const std::vector<Real>& data() const;
         std::vector<std::pair<Date, Real> > nodes() const;
+        Size iterations() const;
+        const std::vector<Real>& improvements() const;
         //@}
         //! \name Observer interface
         //@{
@@ -102,6 +104,8 @@ namespace QuantLib {
         // data members
         std::vector<boost::shared_ptr<RateHelper> > instruments_;
         Real accuracy_;
+        mutable Size iterations_;
+        mutable std::vector<Real> improvements_;
     };
 
 
@@ -133,29 +137,35 @@ namespace QuantLib {
 
     template <class C, class I>
     inline const std::vector<Time>& PiecewiseYieldCurve<C, I>::times() const {
-        calculate();
         return this->times_;
     }
 
     template <class C, class I>
     inline const std::vector<Date>& PiecewiseYieldCurve<C, I>::dates() const {
-        calculate();
         return this->dates_;
     }
 
     template <class C, class I>
     inline const std::vector<Real>& PiecewiseYieldCurve<C,I>::data() const {
-        calculate();
         return this->data_;
     }
 
     template <class C, class I>
     inline std::vector<std::pair<Date, Real> >
     PiecewiseYieldCurve<C, I>::nodes() const {
-        calculate();
         return base_curve::nodes();
     }
 
+    template <class C, class I>
+    inline Size PiecewiseYieldCurve<C, I>::iterations() const {
+        return iterations_;
+    }
+
+    template <class C, class I>
+    inline
+    const std::vector<Real>& PiecewiseYieldCurve<C,I>::improvements() const {
+        return improvements_;
+    }
     template <class C, class I>
     inline void PiecewiseYieldCurve<C, I>::update() {
         base_curve::update();
@@ -180,7 +190,7 @@ namespace QuantLib {
                Real accuracy,
                const I& interpolator)
     : base_curve(referenceDate, dayCounter, interpolator),
-      instruments_(instruments), accuracy_(accuracy) {
+      instruments_(instruments), accuracy_(accuracy), iterations_(0) {
         checkInstruments();
     }
 
@@ -201,20 +211,23 @@ namespace QuantLib {
     void PiecewiseYieldCurve<C, I>::checkInstruments() {
 
         QL_REQUIRE(!instruments_.empty(), "no instrument given");
+        Size n = instruments_.size();
 
         // sort rate helpers
-        for (Size i=0; i<instruments_.size(); ++i)
+        for (Size i=0; i<n; ++i)
             instruments_[i]->setTermStructure(this);
         std::sort(instruments_.begin(),instruments_.end(),
                   detail::RateHelperSorter());
+
         // check that there is no instruments with the same maturity
-        for (Size i=1; i<instruments_.size(); ++i) {
+        for (Size i=1; i<n; ++i) {
             Date m1 = instruments_[i-1]->latestDate(),
                  m2 = instruments_[i]->latestDate();
             QL_REQUIRE(m1 != m2,
                        "two instruments have the same maturity ("<< m1 <<")");
         }
-        for (Size i=0; i<instruments_.size(); ++i)
+
+        for (Size i=0; i<n; ++i)
             registerWith(instruments_[i]);
     }
 
@@ -243,13 +256,15 @@ namespace QuantLib {
             this->times_[i+1] = this->timeFromReference(this->dates_[i+1]);
             this->data_[i+1] = this->data_[i];
         }
+
         Brent solver;
         Size maxIterations = 25;
+        improvements_.clear();
         // bootstrapping loop
-        for (Size iteration = 0; ; ++iteration) {
+        for (iterations_ = 0; ; ++iterations_) {
             std::vector<Real> previousData = this->data_;
             for (Size i=1; i<n+1; ++i) {
-                if (iteration == 0) {
+                if (iterations_ == 0) {
                     // extend interpolation a point at a time
                     if (I::global) {
                         // use Linear in the first iteration
@@ -267,7 +282,7 @@ namespace QuantLib {
                 this->interpolation_.update();
                 boost::shared_ptr<RateHelper> instrument = instruments_[i-1];
                 Real guess;
-                if (iteration > 0) {
+                if (iterations_ > 0) {
                     // use perturbed value from previous loop
                     guess = 0.99*this->data_[i];
                 } else if (i > 1) {
@@ -292,7 +307,7 @@ namespace QuantLib {
                     if (i==1 && C::dummyInitialValue())
                         this->data_[0] = this->data_[1];
                 } catch (std::exception& e) {
-                    QL_FAIL("\n " << io::ordinal(iteration) << " iteration: "
+                    QL_FAIL("\n " << io::ordinal(iterations_) << " iteration: "
                             "could not bootstrap the " << io::ordinal(i) <<
                             " instrument, maturity " << this->dates_[i] <<
                             "\n error message: " << e.what());
@@ -303,7 +318,7 @@ namespace QuantLib {
             if (!I::global) {
                 // no need for convergence loop
                 break;
-            } else if (iteration == 0) {
+            } else if (iterations_ == 0) {
                 // at least one more iteration is needed
                 // since the first one used Linear interpolation
                 Size skip = C::dummyInitialValue() ? 1 : 0;
@@ -314,13 +329,15 @@ namespace QuantLib {
                 continue;
             }
 
-            Real improvement = 0.0;
+            improvements_.push_back(0.0);
             for (Size i=1; i<n+1; ++i)
-                improvement += std::abs(this->data_[i]-previousData[i]);
-            if (improvement <= n*accuracy_)  // convergence reached
+                improvements_.back() +=
+                            std::abs(this->data_[i]-previousData[i]);
+            improvements_.back() /= n;
+            if (improvements_.back() <= accuracy_)  // convergence reached
                 break;
 
-            if (iteration > maxIterations)
+            if (iterations_ >= maxIterations)
                 QL_FAIL("convergence not reached after "
                         << maxIterations << " iterations");
         }
