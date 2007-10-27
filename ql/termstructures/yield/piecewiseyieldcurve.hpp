@@ -29,8 +29,6 @@
 #include <ql/termstructures/yield/bootstraptraits.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/math/solvers1d/brent.hpp>
-#include <ql/math/interpolations/backwardflatinterpolation.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
 
 namespace QuantLib {
 
@@ -223,18 +221,17 @@ namespace QuantLib {
     template <class C, class I>
     void PiecewiseYieldCurve<C, I>::performCalculations() const
     {
-        // check that there is no instruments with invalid quote
-        for (Size i=0; i<instruments_.size(); ++i)
-            QL_REQUIRE(instruments_[i]->quoteIsValid(),
-                       "instrument with invalid quote");
-
-        // setup vectors
         Size n = instruments_.size();
         for (Size i=0; i<n; ++i) {
+            // check that all instruments have a valid quote
+            QL_REQUIRE(instruments_[i]->quoteIsValid(),
+                       "instrument with invalid quote");
             // don't try this at home!
             instruments_[i]->setTermStructure(
                                  const_cast<PiecewiseYieldCurve<C,I>*>(this));
         }
+
+        // setup vectors
         this->dates_ = std::vector<Date>(n+1);
         this->times_ = std::vector<Time>(n+1);
         this->data_ = std::vector<Real>(n+1);
@@ -249,17 +246,12 @@ namespace QuantLib {
         Brent solver;
         Size maxIterations = 25;
         // bootstrapping loop
-        for (Size iteration = 0; ; iteration++) {
+        for (Size iteration = 0; ; ++iteration) {
             std::vector<Real> previousData = this->data_;
             for (Size i=1; i<n+1; ++i) {
                 if (iteration == 0) {
                     // extend interpolation a point at a time
-                    if (i==1 && C::dummyInitialValue()) {
-                        this->interpolation_ = BackwardFlat().interpolate(
-                                                    this->times_.begin(),
-                                                    this->times_.begin()+i+1,
-                                                    this->data_.begin());
-                    } else if (I::global) {
+                    if (I::global) {
                         // use Linear in the first iteration
                         this->interpolation_ = Linear().interpolate(
                                                     this->times_.begin(),
