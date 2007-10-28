@@ -38,11 +38,11 @@ namespace QuantLib {
           public:
             LinearInterpolationImpl(const I1& xBegin, const I1& xEnd,
                                     const I2& yBegin)
-            : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin),
+            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
               primitiveConst_(xEnd-xBegin), s_(xEnd-xBegin) {}
             void update() {
                 primitiveConst_[0] = 0.0;
-                for (Size i=1; i<Size(this->xEnd_-this->xBegin_); i++) {
+                for (Size i=1; i<Size(this->xEnd_-this->xBegin_); ++i) {
                     Real dx = this->xBegin_[i]-this->xBegin_[i-1];
                     s_[i-1] = (this->yBegin_[i]-this->yBegin_[i-1])/dx;
                     primitiveConst_[i] = primitiveConst_[i-1]
@@ -79,9 +79,9 @@ namespace QuantLib {
         template <class I1, class I2>
         LinearInterpolation(const I1& xBegin, const I1& xEnd,
                             const I2& yBegin) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(
-                      new detail::LinearInterpolationImpl<I1,I2>(xBegin, xEnd,
-                                                                 yBegin));
+            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+                detail::LinearInterpolationImpl<I1,I2>(xBegin, xEnd,
+                                                       yBegin));
             impl_->update();
         }
     };
@@ -92,7 +92,7 @@ namespace QuantLib {
         template <class I1, class I2>
         Interpolation interpolate(const I1& xBegin, const I1& xEnd,
                                   const I2& yBegin) const {
-            return LinearInterpolation(xBegin,xEnd,yBegin);
+            return LinearInterpolation(xBegin, xEnd, yBegin);
         }
         enum { global = 0 };
     };

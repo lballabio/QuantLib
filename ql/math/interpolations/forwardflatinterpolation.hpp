@@ -37,7 +37,7 @@ namespace QuantLib {
           public:
             ForwardFlatInterpolationImpl(const I1& xBegin, const I1& xEnd,
                                          const I2& yBegin)
-            : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin),
+            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
               primitive_(xEnd-xBegin), n_(xEnd-xBegin) {}
             void update() {
                 primitive_[0] = 0.0;
@@ -78,9 +78,9 @@ namespace QuantLib {
         template <class I1, class I2>
         ForwardFlatInterpolation(const I1& xBegin, const I1& xEnd,
                                  const I2& yBegin) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(
-                new detail::ForwardFlatInterpolationImpl<I1,I2>(xBegin, xEnd,
-                                                                yBegin));
+            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+                detail::ForwardFlatInterpolationImpl<I1,I2>(xBegin, xEnd,
+                                                            yBegin));
             impl_->update();
         }
     };
@@ -91,7 +91,7 @@ namespace QuantLib {
         template <class I1, class I2>
         Interpolation interpolate(const I1& xBegin, const I1& xEnd,
                                   const I2& yBegin) const {
-            return ForwardFlatInterpolation(xBegin,xEnd,yBegin);
+            return ForwardFlatInterpolation(xBegin, xEnd, yBegin);
         }
         enum { global = 0 };
     };
