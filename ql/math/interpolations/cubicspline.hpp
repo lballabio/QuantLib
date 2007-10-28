@@ -1,9 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -35,8 +35,6 @@ namespace QuantLib {
 
     namespace detail {
 
-        template <class I1, class I2> class CubicSplineImpl;
-
         class CoefficientHolder {
           public:
             CoefficientHolder(Size n)
@@ -49,6 +47,8 @@ namespace QuantLib {
             //           c[i]*(x-x[i])^3
             std::vector<Real> primitiveConst_, a_, b_, c_;
         };
+
+        template <class I1, class I2> class CubicSplineImpl;
 
     }
 
@@ -88,10 +88,6 @@ namespace QuantLib {
             */
             Lagrange
         };
-      protected:
-      private:
-        boost::shared_ptr<detail::CoefficientHolder> coeffs_;
-      public:
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
         CubicSpline(const I1& xBegin, const I1& xEnd, const I2& yBegin,
@@ -100,26 +96,22 @@ namespace QuantLib {
                     CubicSpline::BoundaryCondition rightCondition,
                     Real rightConditionValue,
                     bool monotonicityConstraint) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(
-                        new detail::CubicSplineImpl<I1,I2>(
-                                          xBegin, xEnd, yBegin,
-                                          leftCondition, leftConditionValue,
-                                          rightCondition, rightConditionValue,
-                                          monotonicityConstraint));
+            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+                detail::CubicSplineImpl<I1,I2>(xBegin, xEnd, yBegin,
+                                               leftCondition,
+                                               leftConditionValue,
+                                               rightCondition,
+                                               rightConditionValue,
+                                               monotonicityConstraint));
             impl_->update();
-
             coeffs_ =
                 boost::dynamic_pointer_cast<detail::CoefficientHolder>(impl_);
         }
-        const std::vector<Real>& aCoefficients() const {
-            return coeffs_->a_;
-        }
-        const std::vector<Real>& bCoefficients() const {
-            return coeffs_->b_;
-        }
-        const std::vector<Real>& cCoefficients() const {
-            return coeffs_->c_;
-        }
+        const std::vector<Real>& aCoefficients() const { return coeffs_->a_; }
+        const std::vector<Real>& bCoefficients() const { return coeffs_->b_; }
+        const std::vector<Real>& cCoefficients() const { return coeffs_->c_; }
+      private:
+        boost::shared_ptr<detail::CoefficientHolder> coeffs_;
     };
 
 
@@ -211,7 +203,7 @@ namespace QuantLib {
                             CubicSpline::BoundaryCondition rightCondition,
                             Real rightConditionValue,
                             bool monotonicityConstraint)
-            : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin),
+            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
               CoefficientHolder(xEnd-xBegin),
               monotone_(false), constrained_(monotonicityConstraint),
               leftType_(leftCondition), rightType_(rightCondition),
@@ -405,6 +397,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

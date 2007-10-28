@@ -183,7 +183,7 @@ namespace QuantLib {
       public:
         LogCubic(CubicSpline::BoundaryCondition leftCondition = CubicSpline::NotAKnot,
                  Real leftConditionValue = 0.0,
-                 CubicSpline::BoundaryCondition rightCondition = CubicSpline::NotAKnot,
+                 CubicSpline::BoundaryCondition rightCondition = CubicSpline::SecondDerivative,
                  Real rightConditionValue = 0.0,
                  bool monotonicityConstraint = true)
         : leftCondition_(leftCondition), leftValue_(leftConditionValue),

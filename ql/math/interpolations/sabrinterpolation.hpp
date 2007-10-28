@@ -1,10 +1,10 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2007 Marco Bianchetti
  Copyright (C) 2007 François du Vignaud
  Copyright (C) 2007 Giorgio Facchinetti
- Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Mario Pucci
  Copyright (C) 2006 StatPro Italia srl
 
@@ -44,20 +44,18 @@ namespace QuantLib {
 
     namespace detail {
         
-        template <class I1, class I2> class SABRInterpolationImpl;
-
-        class SABRCoefficientHolder {
+        class SABRCoeffHolder {
           public:
-            SABRCoefficientHolder(Time t,
-                                  const Real& forward,
-                                  Real alpha,
-                                  Real beta,
-                                  Real nu,
-                                  Real rho,
-                                  bool alphaIsFixed,
-                                  bool betaIsFixed,
-                                  bool nuIsFixed,
-                                  bool rhoIsFixed)
+            SABRCoeffHolder(Time t,
+                            const Real& forward,
+                            Real alpha,
+                            Real beta,
+                            Real nu,
+                            Real rho,
+                            bool alphaIsFixed,
+                            bool betaIsFixed,
+                            bool nuIsFixed,
+                            bool rhoIsFixed)
             : t_(t), forward_(forward),
               alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
               alphaIsFixed_(false),
@@ -85,7 +83,7 @@ namespace QuantLib {
                 else rho_ = 0.0;
                 validateSabrParameters(alpha_, beta_, nu_, rho_);
             }
-            virtual ~SABRCoefficientHolder() {}
+            virtual ~SABRCoeffHolder() {}
 
             /*! Option expiry */
             Real t_;
@@ -100,180 +98,10 @@ namespace QuantLib {
             EndCriteria::Type SABREndCriteria_;
         };
 
-    }
-
-    //! %SABR smile interpolation between discrete volatility points.
-    class SABRInterpolation : public Interpolation {
-      public:
-        template <class I1, class I2>
-        SABRInterpolation(const I1& xBegin,  // x = strikes
-                          const I1& xEnd,
-                          const I2& yBegin,  // y = volatilities
-                          Time t,            // option expiry
-                          const Real& forward,
-                          Real alpha,
-                          Real beta,
-                          Real nu,
-                          Real rho,
-                          bool alphaIsFixed,
-                          bool betaIsFixed,
-                          bool nuIsFixed,
-                          bool rhoIsFixed,
-                          bool vegaWeighted = false,
-                          const boost::shared_ptr<EndCriteria>& endCriteria
-                                  = boost::shared_ptr<EndCriteria>(),
-                          const boost::shared_ptr<OptimizationMethod>& optMethod
-                                  = boost::shared_ptr<OptimizationMethod>()) {
-
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
-                detail::SABRInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
-                                                     t, forward,
-                                                     alpha, beta, nu, rho,
-                                                     alphaIsFixed, betaIsFixed,
-                                                     nuIsFixed, rhoIsFixed,
-                                                     vegaWeighted,
-                                                     endCriteria,
-                                                     optMethod));
-            coeffs_ =
-                boost::dynamic_pointer_cast<detail::SABRCoefficientHolder>(
-                                                                       impl_);
-        }
-        Real expiry()  const { return coeffs_->t_; }
-        Real forward() const { return coeffs_->forward_; }
-        Real alpha()   const { return coeffs_->alpha_; }
-        Real beta()    const { return coeffs_->beta_; }
-        Real nu()      const { return coeffs_->nu_; }
-        Real rho()     const { return coeffs_->rho_; }
-        Real interpolationError() const { return coeffs_->error_; }
-        Real interpolationMaxError() const { return coeffs_->maxError_; }
-        const std::vector<Real>& interpolationWeights() const {
-            return coeffs_->weights_; }
-        EndCriteria::Type endCriteria(){ return coeffs_->SABREndCriteria_; }
-
-      private:
-        boost::shared_ptr<detail::SABRCoefficientHolder> coeffs_;
-    };
-
-    //! %SABR interpolation factory
-    class SABR {
-      public:
-        SABR(Time t, Real forward,
-             Real alpha, Real beta, Real nu, Real rho,
-             bool alphaIsFixed, bool betaIsFixed,
-             bool nuIsFixed, bool rhoIsFixed,
-             bool vegaWeighted = false,
-             const boost::shared_ptr<EndCriteria> endCriteria
-                = boost::shared_ptr<EndCriteria>(),
-             const boost::shared_ptr<OptimizationMethod> optMethod
-                = boost::shared_ptr<OptimizationMethod>())
-        : t_(t), forward_(forward),
-          alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
-          alphaIsFixed_(alphaIsFixed), betaIsFixed_(betaIsFixed),
-          nuIsFixed_(nuIsFixed), rhoIsFixed_(rhoIsFixed),
-          vegaWeighted_(vegaWeighted),
-          endCriteria_(endCriteria),
-          optMethod_(optMethod) {}
-        SABR() {};
-
-        template <class I1, class I2>
-        Interpolation interpolate(const I1& xBegin, const I1& xEnd,
-                                  const I2& yBegin) const {
-            return SABRInterpolation(xBegin, xEnd, yBegin,
-                                     t_,  forward_,
-                                     alpha_, beta_, nu_, rho_,
-                                     alphaIsFixed_, betaIsFixed_,
-                                     nuIsFixed_, rhoIsFixed_,
-                                     vegaWeighted_, endCriteria_, optMethod_);
-        }
-        enum { global = 1 };
-      private:
-        Time t_;
-        Real forward_;
-        Real alpha_, beta_, nu_, rho_;
-        bool alphaIsFixed_, betaIsFixed_, nuIsFixed_, rhoIsFixed_;
-        bool vegaWeighted_;
-        const boost::shared_ptr<EndCriteria> endCriteria_;
-        const boost::shared_ptr<OptimizationMethod> optMethod_;
-    };
-
-
-    namespace detail {
-
         template <class I1, class I2>
         class SABRInterpolationImpl : public Interpolation::templateImpl<I1,I2>,
-                                      public SABRCoefficientHolder {
-          private:
-
-            class SabrParametersTransformation :
-                  public ParametersTransformation {
-                     mutable Array y_;
-                     const Real eps1_, eps2_, dilationFactor_ ;
-             public:
-
-                SabrParametersTransformation() : y_(Array(4)),
-                    eps1_(.0000001),
-                    eps2_(.9999),
-                    dilationFactor_(0.001){
-                }
-
-                Array direct(const Array& x) const {
-                    y_[0] = x[0]*x[0] + eps1_;                      
-                    //y_[1] = std::atan(dilationFactor_*x[1])/M_PI + 0.5;
-                    y_[1] = std::exp(-(x[1]*x[1]));
-                    y_[2] = x[2]*x[2] + eps1_;
-                    y_[3] = eps2_ * std::sin(x[3]);
-                    return y_;
-                }
-
-                Array inverse(const Array& x) const {
-                    y_[0] = std::sqrt(x[0] - eps1_);
-                    //y_[1] = std::tan(M_PI*(x[1] - 0.5))/dilationFactor_;
-                    y_[1] = std::sqrt(-std::log(x[1]));
-                    y_[2] = std::sqrt(x[2] - eps1_);
-                    y_[3] = std::asin(x[3]/eps2_);
-                     
-                    return y_;
-                }
-            };
-
-
-            class SABRError : public CostFunction {
-              public:
-                SABRError(SABRInterpolationImpl* sabr)
-                : sabr_(sabr) {}
-
-                Real value(const Array& x) const {
-                    const Array y = sabr_->transformation_->direct(x);
-                    sabr_->alpha_ = y[0];
-                    sabr_->beta_  = y[1];
-                    sabr_->nu_    = y[2];
-                    sabr_->rho_   = y[3];
-                    return sabr_->interpolationSquaredError();
-                }
-
-                Disposable<Array> values(const Array& x) const{
-                    const Array y = sabr_->transformation_->direct(x);
-                    sabr_->alpha_ = y[0];
-                    sabr_->beta_  = y[1];
-                    sabr_->nu_    = y[2];
-                    sabr_->rho_   = y[3];
-                    return sabr_->interpolationErrors(x);
-                }
-
-              private:
-                SABRInterpolationImpl* sabr_;
-            };
-
-            // optimization method used for fitting
-            boost::shared_ptr<EndCriteria> endCriteria_;
-            boost::shared_ptr<OptimizationMethod> optMethod_;
-            const Real& forward_;
-            bool vegaWeighted_;
-            boost::shared_ptr<ParametersTransformation> transformation_;
-            NoConstraint constraint_;
-
+                                      public SABRCoeffHolder {
           public:         
-
             SABRInterpolationImpl(
                 const I1& xBegin, const I1& xEnd,
                 const I2& yBegin,
@@ -288,9 +116,8 @@ namespace QuantLib {
                 const boost::shared_ptr<EndCriteria>& endCriteria,
                 const boost::shared_ptr<OptimizationMethod>& optMethod)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
-              SABRCoefficientHolder(t, forward, alpha, beta, nu, rho,
-                                    alphaIsFixed, betaIsFixed,
-                                    nuIsFixed, rhoIsFixed),
+              SABRCoeffHolder(t, forward, alpha, beta, nu, rho,
+                              alphaIsFixed,betaIsFixed,nuIsFixed,rhoIsFixed),
               endCriteria_(endCriteria), optMethod_(optMethod),
               forward_(forward),
               vegaWeighted_(vegaWeighted)
@@ -441,9 +268,168 @@ namespace QuantLib {
                 }
                 return maxError;
             }
+          private:
+            class SabrParametersTransformation :
+                  public ParametersTransformation {
+                     mutable Array y_;
+                     const Real eps1_, eps2_, dilationFactor_ ;
+             public:
+                SabrParametersTransformation() : y_(Array(4)),
+                    eps1_(.0000001),
+                    eps2_(.9999),
+                    dilationFactor_(0.001){
+                }
+
+                Array direct(const Array& x) const {
+                    y_[0] = x[0]*x[0] + eps1_;                      
+                    //y_[1] = std::atan(dilationFactor_*x[1])/M_PI + 0.5;
+                    y_[1] = std::exp(-(x[1]*x[1]));
+                    y_[2] = x[2]*x[2] + eps1_;
+                    y_[3] = eps2_ * std::sin(x[3]);
+                    return y_;
+                }
+
+                Array inverse(const Array& x) const {
+                    y_[0] = std::sqrt(x[0] - eps1_);
+                    //y_[1] = std::tan(M_PI*(x[1] - 0.5))/dilationFactor_;
+                    y_[1] = std::sqrt(-std::log(x[1]));
+                    y_[2] = std::sqrt(x[2] - eps1_);
+                    y_[3] = std::asin(x[3]/eps2_);
+                     
+                    return y_;
+                }
+            };
+
+            class SABRError : public CostFunction {
+              public:
+                SABRError(SABRInterpolationImpl* sabr)
+                : sabr_(sabr) {}
+
+                Real value(const Array& x) const {
+                    const Array y = sabr_->transformation_->direct(x);
+                    sabr_->alpha_ = y[0];
+                    sabr_->beta_  = y[1];
+                    sabr_->nu_    = y[2];
+                    sabr_->rho_   = y[3];
+                    return sabr_->interpolationSquaredError();
+                }
+
+                Disposable<Array> values(const Array& x) const{
+                    const Array y = sabr_->transformation_->direct(x);
+                    sabr_->alpha_ = y[0];
+                    sabr_->beta_  = y[1];
+                    sabr_->nu_    = y[2];
+                    sabr_->rho_   = y[3];
+                    return sabr_->interpolationErrors(x);
+                }
+
+              private:
+                SABRInterpolationImpl* sabr_;
+            };
+            boost::shared_ptr<EndCriteria> endCriteria_;
+            boost::shared_ptr<OptimizationMethod> optMethod_;
+            const Real& forward_;
+            bool vegaWeighted_;
+            boost::shared_ptr<ParametersTransformation> transformation_;
+            NoConstraint constraint_;
+
         };
 
     }
+
+    //! %SABR smile interpolation between discrete volatility points.
+    class SABRInterpolation : public Interpolation {
+      public:
+        template <class I1, class I2>
+        SABRInterpolation(const I1& xBegin,  // x = strikes
+                          const I1& xEnd,
+                          const I2& yBegin,  // y = volatilities
+                          Time t,            // option expiry
+                          const Real& forward,
+                          Real alpha,
+                          Real beta,
+                          Real nu,
+                          Real rho,
+                          bool alphaIsFixed,
+                          bool betaIsFixed,
+                          bool nuIsFixed,
+                          bool rhoIsFixed,
+                          bool vegaWeighted = false,
+                          const boost::shared_ptr<EndCriteria>& endCriteria
+                                  = boost::shared_ptr<EndCriteria>(),
+                          const boost::shared_ptr<OptimizationMethod>& optMethod
+                                  = boost::shared_ptr<OptimizationMethod>()) {
+
+            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+                detail::SABRInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
+                                                     t, forward,
+                                                     alpha, beta, nu, rho,
+                                                     alphaIsFixed, betaIsFixed,
+                                                     nuIsFixed, rhoIsFixed,
+                                                     vegaWeighted,
+                                                     endCriteria,
+                                                     optMethod));
+            coeffs_ =
+                boost::dynamic_pointer_cast<detail::SABRCoeffHolder>(
+                                                                       impl_);
+        }
+        Real expiry()  const { return coeffs_->t_; }
+        Real forward() const { return coeffs_->forward_; }
+        Real alpha()   const { return coeffs_->alpha_; }
+        Real beta()    const { return coeffs_->beta_; }
+        Real nu()      const { return coeffs_->nu_; }
+        Real rho()     const { return coeffs_->rho_; }
+        Real interpolationError() const { return coeffs_->error_; }
+        Real interpolationMaxError() const { return coeffs_->maxError_; }
+        const std::vector<Real>& interpolationWeights() const {
+            return coeffs_->weights_; }
+        EndCriteria::Type endCriteria(){ return coeffs_->SABREndCriteria_; }
+
+      private:
+        boost::shared_ptr<detail::SABRCoeffHolder> coeffs_;
+    };
+
+    //! %SABR interpolation factory
+    class SABR {
+      public:
+        SABR(Time t, Real forward,
+             Real alpha, Real beta, Real nu, Real rho,
+             bool alphaIsFixed, bool betaIsFixed,
+             bool nuIsFixed, bool rhoIsFixed,
+             bool vegaWeighted = false,
+             const boost::shared_ptr<EndCriteria> endCriteria
+                = boost::shared_ptr<EndCriteria>(),
+             const boost::shared_ptr<OptimizationMethod> optMethod
+                = boost::shared_ptr<OptimizationMethod>())
+        : t_(t), forward_(forward),
+          alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
+          alphaIsFixed_(alphaIsFixed), betaIsFixed_(betaIsFixed),
+          nuIsFixed_(nuIsFixed), rhoIsFixed_(rhoIsFixed),
+          vegaWeighted_(vegaWeighted),
+          endCriteria_(endCriteria),
+          optMethod_(optMethod) {}
+        //SABR() {};
+
+        template <class I1, class I2>
+        Interpolation interpolate(const I1& xBegin, const I1& xEnd,
+                                  const I2& yBegin) const {
+            return SABRInterpolation(xBegin, xEnd, yBegin,
+                                     t_,  forward_,
+                                     alpha_, beta_, nu_, rho_,
+                                     alphaIsFixed_, betaIsFixed_,
+                                     nuIsFixed_, rhoIsFixed_,
+                                     vegaWeighted_, endCriteria_, optMethod_);
+        }
+        enum { global = 1 };
+      private:
+        Time t_;
+        Real forward_;
+        Real alpha_, beta_, nu_, rho_;
+        bool alphaIsFixed_, betaIsFixed_, nuIsFixed_, rhoIsFixed_;
+        bool vegaWeighted_;
+        const boost::shared_ptr<EndCriteria> endCriteria_;
+        const boost::shared_ptr<OptimizationMethod> optMethod_;
+    };
 
 }
 
