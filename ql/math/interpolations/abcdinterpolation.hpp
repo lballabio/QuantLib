@@ -199,7 +199,7 @@ namespace QuantLib {
     //! %Abcd interpolation factory and traits
     class Abcd {
       public:
-        Abcd(Real a, Real b, Real c, Real c,
+        Abcd(Real a, Real b, Real c, Real d,
              bool aIsFixed, bool bIsFixed,
              bool cIsFixed, bool dIsFixed,
              bool vegaWeighted = false,
