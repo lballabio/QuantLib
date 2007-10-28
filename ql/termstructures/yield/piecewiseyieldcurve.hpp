@@ -203,7 +203,7 @@ namespace QuantLib {
                Real accuracy,
                const I& interpolator)
     : base_curve(settlementDays, calendar, dayCounter, interpolator),
-      instruments_(instruments), accuracy_(accuracy) {
+      instruments_(instruments), accuracy_(accuracy), iterations_(0) {
         checkInstruments();
     }
 
