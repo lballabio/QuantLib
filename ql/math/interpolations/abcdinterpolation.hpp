@@ -196,6 +196,42 @@ namespace QuantLib {
         boost::shared_ptr<detail::AbcdCoeffHolder> coeffs_;
     };
 
+    //! %Abcd interpolation factory and traits
+    class Abcd {
+      public:
+        Abcd(Real a, Real b, Real c, Real c,
+             bool aIsFixed, bool bIsFixed,
+             bool cIsFixed, bool dIsFixed,
+             bool vegaWeighted = false,
+             const boost::shared_ptr<EndCriteria> endCriteria
+                = boost::shared_ptr<EndCriteria>(),
+             const boost::shared_ptr<OptimizationMethod> optMethod
+                = boost::shared_ptr<OptimizationMethod>())
+        : a_(a), b_(b), c_(c), d_(d),
+          aIsFixed_(aIsFixed), bIsFixed_(bIsFixed),
+          cIsFixed_(cIsFixed), dIsFixed_(dIsFixed),
+          vegaWeighted_(vegaWeighted),
+          endCriteria_(endCriteria),
+          optMethod_(optMethod) {}
+        template <class I1, class I2>
+        Interpolation interpolate(const I1& xBegin, const I1& xEnd,
+                                  const I2& yBegin) const {
+            return AbcdInterpolation(xBegin, xEnd, yBegin,
+                                     a_, b_, c_, d_,
+                                     aIsFixed_, bIsFixed_,
+                                     cIsFixed_, dIsFixed_,
+                                     vegaWeighted_,
+                                     endCriteria_, optMethod_);
+        }
+        enum { global = 1 };
+      private:
+        Real a_, b_, c_, d_;
+        bool aIsFixed_, bIsFixed_, cIsFixed_, dIsFixed_;
+        bool vegaWeighted_;
+        const boost::shared_ptr<EndCriteria> endCriteria_;
+        const boost::shared_ptr<OptimizationMethod> optMethod_;
+    };
+
 }
 
 #endif

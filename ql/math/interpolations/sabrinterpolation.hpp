@@ -389,7 +389,7 @@ namespace QuantLib {
         boost::shared_ptr<detail::SABRCoeffHolder> coeffs_;
     };
 
-    //! %SABR interpolation factory
+    //! %SABR interpolation factory and traits
     class SABR {
       public:
         SABR(Time t, Real forward,
@@ -408,8 +408,6 @@ namespace QuantLib {
           vegaWeighted_(vegaWeighted),
           endCriteria_(endCriteria),
           optMethod_(optMethod) {}
-        //SABR() {};
-
         template <class I1, class I2>
         Interpolation interpolate(const I1& xBegin, const I1& xEnd,
                                   const I2& yBegin) const {
@@ -418,7 +416,8 @@ namespace QuantLib {
                                      alpha_, beta_, nu_, rho_,
                                      alphaIsFixed_, betaIsFixed_,
                                      nuIsFixed_, rhoIsFixed_,
-                                     vegaWeighted_, endCriteria_, optMethod_);
+                                     vegaWeighted_,
+                                     endCriteria_, optMethod_);
         }
         enum { global = 1 };
       private:
