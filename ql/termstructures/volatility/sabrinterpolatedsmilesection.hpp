@@ -62,8 +62,8 @@ namespace QuantLib {
         Real beta() const;
         Real nu() const;
         Real rho() const;
-        Real interpolationError() const;
-        Real interpolationMaxError() const;
+        Real rmsError() const;
+        Real maxError() const;
         EndCriteria::Type endCriteria() const;
         Real minStrike () const;
         Real maxStrike () const;
@@ -115,14 +115,14 @@ namespace QuantLib {
         return sabrInterpolation_->rho();
     }
 
-    inline Real SabrInterpolatedSmileSection::interpolationError() const {
+    inline Real SabrInterpolatedSmileSection::rmsError() const {
         calculate();
-        return sabrInterpolation_->interpolationError();
+        return sabrInterpolation_->rmsError();
     }
 
-    inline Real SabrInterpolatedSmileSection::interpolationMaxError() const {
+    inline Real SabrInterpolatedSmileSection::maxError() const {
         calculate();
-        return sabrInterpolation_->interpolationMaxError();
+        return sabrInterpolation_->maxError();
     }
 
     inline EndCriteria::Type SabrInterpolatedSmileSection::endCriteria() const {

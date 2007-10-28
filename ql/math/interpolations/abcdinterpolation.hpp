@@ -27,7 +27,7 @@
 #define quantlib_abcd_interpolation_hpp
 
 #include <ql/math/interpolation.hpp>
-//#include <ql/termstructures/volatility/abcd.hpp>
+#include <ql/termstructures/volatility/abcd.hpp>
 #include <ql/termstructures/volatility/abcdcalibration.hpp>
 
 namespace QuantLib {
@@ -67,7 +67,7 @@ namespace QuantLib {
                     dIsFixed_ = dIsFixed;
                 else d_ = 0.17;
             
-               //validateAbcdParameters(a, b, c, d);
+               validateAbcdParameters(a, b, c, d);
             }
             virtual ~AbcdCoeffHolder() {}
             Real a_, b_, c_, d_;
@@ -189,8 +189,8 @@ namespace QuantLib {
         Real c() const { return coeffs_->c_; }
         Real d() const { return coeffs_->d_; }
         std::vector<Real> k() const { return coeffs_->k_; }
-        Real interpolationError() const { return coeffs_->error_; }
-        Real interpolationMaxError() const { return coeffs_->maxError_; }
+        Real rmsError() const { return coeffs_->error_; }
+        Real maxError() const { return coeffs_->maxError_; }
         EndCriteria::Type endCriteria(){ return coeffs_->abcdEndCriteria_; }
       private:
         boost::shared_ptr<detail::AbcdCoeffHolder> coeffs_;
@@ -204,9 +204,9 @@ namespace QuantLib {
              bool cIsFixed, bool dIsFixed,
              bool vegaWeighted = false,
              const boost::shared_ptr<EndCriteria> endCriteria
-                = boost::shared_ptr<EndCriteria>(),
+                 = boost::shared_ptr<EndCriteria>(),
              const boost::shared_ptr<OptimizationMethod> optMethod
-                = boost::shared_ptr<OptimizationMethod>())
+                 = boost::shared_ptr<OptimizationMethod>())
         : a_(a), b_(b), c_(c), d_(d),
           aIsFixed_(aIsFixed), bIsFixed_(bIsFixed),
           cIsFixed_(cIsFixed), dIsFixed_(dIsFixed),

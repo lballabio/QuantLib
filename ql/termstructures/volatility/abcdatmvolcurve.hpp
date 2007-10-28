@@ -51,7 +51,7 @@ namespace QuantLib {
         Real b() const;
         Real c() const;
         Real d() const;
-        Real error() const;
+        Real rmsError() const;
         Real maxError() const;
         //! \name TermStructure interface
         //@{
@@ -150,11 +150,11 @@ namespace QuantLib {
         return interpolation_->d();
     }
 
-    inline Real AbcdAtmVolCurve::error() const {
-        return interpolation_->interpolationError();
+    inline Real AbcdAtmVolCurve::rmsError() const {
+        return interpolation_->rmsError();
     }
     inline Real AbcdAtmVolCurve::maxError() const {
-        return interpolation_->interpolationMaxError();
+        return interpolation_->maxError();
     }
 }
 

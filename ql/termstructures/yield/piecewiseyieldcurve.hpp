@@ -268,7 +268,8 @@ namespace QuantLib {
                     // extend interpolation a point at a time
                     if (I::global) {
                         // use Linear in the first iteration
-                        this->interpolation_ = Linear().interpolate(
+                        this->interpolation_ =
+                            Linear().interpolate(
                                                     this->times_.begin(),
                                                     this->times_.begin()+i+1,
                                                     this->data_.begin());

@@ -48,7 +48,7 @@ namespace QuantLib {
             std::vector<Real> primitiveConst_, a_, b_, c_;
         };
 
-        template <class I1, class I2> class CubicSplineImpl;
+        template <class I1, class I2> class CubicSplineInterpolationImpl;
 
     }
 
@@ -65,14 +65,14 @@ namespace QuantLib {
         is already monotonic, the Hyman filter leaves it unchanged.
 
         See R. L. Dougherty, A. Edelman, and J. M. Hyman,
-        "Nonnegativity-, Monotonicity-, or Convexity-Preserving Cubic and
+        "Nonnegativity-, Monotonicity-, or Convexity-Preserving CubicSpline and
         Quintic Hermite Interpolation"
         Mathematics Of Computation, v. 52, n. 186, April 1989, pp. 471-494.
 
         \test the correctness of the returned values is tested by
               reproducing results available in literature.
     */
-    class CubicSpline : public Interpolation {
+    class CubicSplineInterpolation : public Interpolation {
       public:
         enum BoundaryCondition {
             //! Make second(-last) point an inactive knot
@@ -90,14 +90,14 @@ namespace QuantLib {
         };
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
-        CubicSpline(const I1& xBegin, const I1& xEnd, const I2& yBegin,
-                    CubicSpline::BoundaryCondition leftCondition,
+        CubicSplineInterpolation(const I1& xBegin, const I1& xEnd, const I2& yBegin,
+                    CubicSplineInterpolation::BoundaryCondition leftCondition,
                     Real leftConditionValue,
-                    CubicSpline::BoundaryCondition rightCondition,
+                    CubicSplineInterpolation::BoundaryCondition rightCondition,
                     Real rightConditionValue,
                     bool monotonicityConstraint) {
             impl_ = boost::shared_ptr<Interpolation::Impl>(new
-                detail::CubicSplineImpl<I1,I2>(xBegin, xEnd, yBegin,
+                detail::CubicSplineInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
                                                leftCondition,
                                                leftConditionValue,
                                                rightCondition,
@@ -106,6 +106,9 @@ namespace QuantLib {
             impl_->update();
             coeffs_ =
                 boost::dynamic_pointer_cast<detail::CoefficientHolder>(impl_);
+        }
+        const std::vector<Real>& primitiveConstants() const {
+            return coeffs_->primitiveConst_;
         }
         const std::vector<Real>& aCoefficients() const { return coeffs_->a_; }
         const std::vector<Real>& bCoefficients() const { return coeffs_->b_; }
@@ -118,75 +121,73 @@ namespace QuantLib {
     // convenience classes
 
     //! %Cubic spline with monotonicity constraint
-    class MonotonicCubicSpline : public CubicSpline {
+    class MonotonicCubicSpline : public CubicSplineInterpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
         MonotonicCubicSpline(const I1& xBegin, const I1& xEnd,
                              const I2& yBegin,
-                             CubicSpline::BoundaryCondition leftCondition,
+                             CubicSplineInterpolation::BoundaryCondition leftCondition,
                              Real leftConditionValue,
-                             CubicSpline::BoundaryCondition rightCondition,
+                             CubicSplineInterpolation::BoundaryCondition rightCondition,
                              Real rightConditionValue)
-        : CubicSpline(xBegin,xEnd,yBegin,
+        : CubicSplineInterpolation(xBegin,xEnd,yBegin,
                       leftCondition,leftConditionValue,
                       rightCondition,rightConditionValue,
                       true) {}
     };
 
     //! %Cubic spline with null second derivative at end points
-    class NaturalCubicSpline : public CubicSpline {
+    class NaturalCubicSpline : public CubicSplineInterpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
         NaturalCubicSpline(const I1& xBegin, const I1& xEnd,
                            const I2& yBegin)
-        : CubicSpline(xBegin,xEnd,yBegin,
+        : CubicSplineInterpolation(xBegin,xEnd,yBegin,
                       SecondDerivative, 0.0,
                       SecondDerivative, 0.0,
                       false) {}
     };
 
     //! Natural cubic spline with monotonicity constraint
-    class NaturalMonotonicCubicSpline : public CubicSpline {
+    class NaturalMonotonicCubicSpline : public CubicSplineInterpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
         NaturalMonotonicCubicSpline(const I1& xBegin, const I1& xEnd,
                                     const I2& yBegin)
-        : CubicSpline(xBegin,xEnd,yBegin,
+        : CubicSplineInterpolation(xBegin,xEnd,yBegin,
                       SecondDerivative, 0.0,
                       SecondDerivative, 0.0,
                       true) {}
     };
 
-    //! %cubic-spline interpolation factory and traits
-    class Cubic {
+    //! %Cubic spline interpolation factory and traits
+    class CubicSpline {
       public:
-        Cubic(CubicSpline::BoundaryCondition leftCondition
-                                              = CubicSpline::SecondDerivative,
-              Real leftConditionValue = 0.0,
-              CubicSpline::BoundaryCondition rightCondition
-                                              = CubicSpline::SecondDerivative,
-              Real rightConditionValue = 0.0,
-              bool monotonicityConstraint = false)
-        : leftCondition_(leftCondition), leftValue_(leftConditionValue),
-          rightCondition_(rightCondition), rightValue_(rightConditionValue),
+        CubicSpline(CubicSplineInterpolation::BoundaryCondition leftCondition
+                        = CubicSplineInterpolation::SecondDerivative,
+                    Real leftConditionValue = 0.0,
+                    CubicSplineInterpolation::BoundaryCondition rightCondition
+                        = CubicSplineInterpolation::SecondDerivative,
+                    Real rightConditionValue = 0.0,
+                    bool monotonicityConstraint = false)
+        : leftType_(leftCondition), rightType_(rightCondition),
+          leftValue_(leftConditionValue), rightValue_(rightConditionValue),
           monotone_(monotonicityConstraint) {}
         template <class I1, class I2>
         Interpolation interpolate(const I1& xBegin, const I1& xEnd,
                                   const I2& yBegin) const {
-            return CubicSpline(xBegin,xEnd,yBegin,
-                               leftCondition_,leftValue_,
-                               rightCondition_,rightValue_,
-                               monotone_);
+            return CubicSplineInterpolation(xBegin, xEnd, yBegin,
+                                            leftType_,leftValue_,
+                                            rightType_,rightValue_,
+                                            monotone_);
         }
         enum { global = 1 };
       private:
-        CubicSpline::BoundaryCondition leftCondition_;
-        Real leftValue_;
-        CubicSpline::BoundaryCondition rightCondition_;
-        Real rightValue_;
+        CubicSplineInterpolation::BoundaryCondition leftType_, rightType_;
+        Real leftValue_, rightValue_;
         bool monotone_;
     };
 
@@ -194,13 +195,13 @@ namespace QuantLib {
     namespace detail {
 
         template <class I1, class I2>
-        class CubicSplineImpl : public Interpolation::templateImpl<I1,I2>,
+        class CubicSplineInterpolationImpl : public Interpolation::templateImpl<I1,I2>,
                                 public CoefficientHolder {
           public:
-            CubicSplineImpl(const I1& xBegin, const I1& xEnd, const I2& yBegin,
-                            CubicSpline::BoundaryCondition leftCondition,
+            CubicSplineInterpolationImpl(const I1& xBegin, const I1& xEnd, const I2& yBegin,
+                            CubicSplineInterpolation::BoundaryCondition leftCondition,
                             Real leftConditionValue,
-                            CubicSpline::BoundaryCondition rightCondition,
+                            CubicSplineInterpolation::BoundaryCondition rightCondition,
                             Real rightConditionValue,
                             bool monotonicityConstraint)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
@@ -231,23 +232,23 @@ namespace QuantLib {
 
                 // left condition
                 switch (leftType_) {
-                  case CubicSpline::NotAKnot:
+                  case CubicSplineInterpolation::NotAKnot:
                     // ignoring end condition value
                     L.setFirstRow(dx[1]*(dx[1]+dx[0]),
                                   (dx[0]+dx[1])*(dx[0]+dx[1]));
                     tmp[0] = S[0]*dx[1]*(2.0*dx[1]+3.0*dx[0]) +
                              S[1]*dx[0]*dx[0];
                     break;
-                  case CubicSpline::FirstDerivative:
+                  case CubicSplineInterpolation::FirstDerivative:
                     L.setFirstRow(1.0, 0.0);
                     tmp[0] = leftValue_;
                     break;
-                  case CubicSpline::SecondDerivative:
+                  case CubicSplineInterpolation::SecondDerivative:
                     L.setFirstRow(2.0, 1.0);
                     tmp[0] = 3.0*S[0] - leftValue_*dx[0]/2.0;
                     break;
-                  case CubicSpline::Periodic:
-                  case CubicSpline::Lagrange:
+                  case CubicSplineInterpolation::Periodic:
+                  case CubicSplineInterpolation::Lagrange:
                     // ignoring end condition value
                     QL_FAIL("this end condition is not implemented yet");
                   default:
@@ -256,23 +257,23 @@ namespace QuantLib {
 
                 // right condition
                 switch (rightType_) {
-                  case CubicSpline::NotAKnot:
+                  case CubicSplineInterpolation::NotAKnot:
                     // ignoring end condition value
                     L.setLastRow(-(dx[n_-2]+dx[n_-3])*(dx[n_-2]+dx[n_-3]),
                                  -dx[n_-3]*(dx[n_-3]+dx[n_-2]));
                     tmp[n_-1] = -S[n_-3]*dx[n_-2]*dx[n_-2] -
                                  S[n_-2]*dx[n_-3]*(3.0*dx[n_-2]+2.0*dx[n_-3]);
                     break;
-                  case CubicSpline::FirstDerivative:
+                  case CubicSplineInterpolation::FirstDerivative:
                     L.setLastRow(0.0, 1.0);
                     tmp[n_-1] = rightValue_;
                     break;
-                  case CubicSpline::SecondDerivative:
+                  case CubicSplineInterpolation::SecondDerivative:
                     L.setLastRow(1.0, 2.0);
                     tmp[n_-1] = 3.0*S[n_-2] + rightValue_*dx[n_-2]/2.0;
                     break;
-                  case CubicSpline::Periodic:
-                  case CubicSpline::Lagrange:
+                  case CubicSplineInterpolation::Periodic:
+                  case CubicSplineInterpolation::Lagrange:
                     // ignoring end condition value
                     QL_FAIL("this end condition is not implemented yet");
                   default:
@@ -390,7 +391,7 @@ namespace QuantLib {
             }
           private:
             bool monotone_, constrained_;
-            CubicSpline::BoundaryCondition leftType_, rightType_;
+            CubicSplineInterpolation::BoundaryCondition leftType_, rightType_;
             Real leftValue_, rightValue_;
         };
 

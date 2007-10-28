@@ -33,7 +33,7 @@
 
 namespace QuantLib {
 
-    template<class Interpolator = Linear>
+    template<class Interpolator>
     class InterpolatedSmileSection : public SmileSection,
                                      public LazyObject {
       public:

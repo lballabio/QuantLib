@@ -145,12 +145,12 @@ namespace QuantLib {
 
     void CapFloorTermVolCurve::interpolate()
     {
-        interpolation_ = CubicSpline(optionTimes_.begin(),
+        interpolation_ = CubicSplineInterpolation(optionTimes_.begin(),
                                      optionTimes_.end(),
                                      vols_.begin(),
-                                     CubicSpline::SecondDerivative,
+                                     CubicSplineInterpolation::SecondDerivative,
                                      0.0,
-                                     CubicSpline::SecondDerivative,
+                                     CubicSplineInterpolation::SecondDerivative,
                                      0.0,
                                      false);
     }

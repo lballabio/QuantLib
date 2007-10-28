@@ -379,8 +379,8 @@ namespace QuantLib {
         Real beta()    const { return coeffs_->beta_; }
         Real nu()      const { return coeffs_->nu_; }
         Real rho()     const { return coeffs_->rho_; }
-        Real interpolationError() const { return coeffs_->error_; }
-        Real interpolationMaxError() const { return coeffs_->maxError_; }
+        Real rmsError() const { return coeffs_->error_; }
+        Real maxError() const { return coeffs_->maxError_; }
         const std::vector<Real>& interpolationWeights() const {
             return coeffs_->weights_; }
         EndCriteria::Type endCriteria(){ return coeffs_->SABREndCriteria_; }
@@ -398,9 +398,9 @@ namespace QuantLib {
              bool nuIsFixed, bool rhoIsFixed,
              bool vegaWeighted = false,
              const boost::shared_ptr<EndCriteria> endCriteria
-                = boost::shared_ptr<EndCriteria>(),
+                 = boost::shared_ptr<EndCriteria>(),
              const boost::shared_ptr<OptimizationMethod> optMethod
-                = boost::shared_ptr<OptimizationMethod>())
+                 = boost::shared_ptr<OptimizationMethod>())
         : t_(t), forward_(forward),
           alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
           alphaIsFixed_(alphaIsFixed), betaIsFixed_(betaIsFixed),

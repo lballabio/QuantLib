@@ -166,16 +166,16 @@ namespace QuantLib {
                                           optMethod_));
                 sabrInterpolation->update();
 
-                Real interpolationError =
-                    sabrInterpolation->interpolationError();
-                alphas     [j][k]=sabrInterpolation->alpha();
-                betas      [j][k]=sabrInterpolation->beta();
-                nus        [j][k]=sabrInterpolation->nu();
-                rhos       [j][k]=sabrInterpolation->rho();
-                forwards   [j][k]=atmForward;
-                errors     [j][k]=interpolationError;
-                maxErrors  [j][k]=sabrInterpolation->interpolationMaxError();
-                endCriteria[j][k]=sabrInterpolation->endCriteria();
+                Real rmsError = sabrInterpolation->rmsError();
+                Real maxError = sabrInterpolation->maxError();
+                alphas     [j][k] = sabrInterpolation->alpha();
+                betas      [j][k] = sabrInterpolation->beta();
+                nus        [j][k] = sabrInterpolation->nu();
+                rhos       [j][k] = sabrInterpolation->rho();
+                forwards   [j][k] = atmForward;
+                errors     [j][k] = rmsError;
+                maxErrors  [j][k] = maxError;
+                endCriteria[j][k] = sabrInterpolation->endCriteria();
 
                 QL_ENSURE(endCriteria[j][k]!=EndCriteria::MaxIterations,
                           "global swaptions calibration failed: "
@@ -265,15 +265,14 @@ namespace QuantLib {
                                       optMethod_));
 
             sabrInterpolation->update();
-            Real interpolationError =
-                sabrInterpolation->interpolationError();
+            Real interpolationError = sabrInterpolation->rmsError();
             calibrationResult[0]=sabrInterpolation->alpha();
             calibrationResult[1]=sabrInterpolation->beta();
             calibrationResult[2]=sabrInterpolation->nu();
             calibrationResult[3]=sabrInterpolation->rho();
             calibrationResult[4]=atmForward;
             calibrationResult[5]=interpolationError;
-            calibrationResult[6]=sabrInterpolation->interpolationMaxError();
+            calibrationResult[6]=sabrInterpolation->maxError();
             calibrationResult[7]=sabrInterpolation->endCriteria();
 
             QL_ENSURE(calibrationResult[7]!=EndCriteria::MaxIterations,

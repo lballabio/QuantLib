@@ -413,8 +413,8 @@ void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
     setup();
 
     testCurveConsistency(ZeroYield(),
-                         Cubic(CubicSpline::SecondDerivative,0.0,
-                               CubicSpline::SecondDerivative,0.0,
+                         CubicSpline(CubicSplineInterpolation::SecondDerivative,0.0,
+                               CubicSplineInterpolation::SecondDerivative,0.0,
                                true));
 }
 
@@ -455,8 +455,8 @@ void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
     setup();
 
     testCurveConsistency(ForwardRate(),
-                         Cubic(CubicSpline::SecondDerivative,0.0,
-                               CubicSpline::SecondDerivative,0.0,
+                         CubicSpline(CubicSplineInterpolation::SecondDerivative,0.0,
+                               CubicSplineInterpolation::SecondDerivative,0.0,
                                true));
 }
 

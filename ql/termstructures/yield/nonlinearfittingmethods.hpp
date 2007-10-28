@@ -71,7 +71,7 @@ namespace QuantLib {
     };
 
 
-    //! Cubic B-splines fitting method
+    //! CubicSpline B-splines fitting method
     /*! Fits a discount function to a set of cubic B-splines
         \f$ N_{i,3}(t) \f$, i.e.,
         \f[
