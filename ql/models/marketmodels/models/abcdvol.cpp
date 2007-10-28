@@ -67,7 +67,7 @@ namespace QuantLib {
                    "number of factors (" << numberOfFactors <<
                    ") must be greater than zero");
 
-        Abcd abcd(a, b, c, d);
+        AbcdFunction abcd(a, b, c, d);
         Real covar;
         Time effStartTime, effStopTime;
         Real correlation;

@@ -27,10 +27,8 @@
 #define quantlib_abcd_interpolation_hpp
 
 #include <ql/math/interpolation.hpp>
-#include <ql/termstructures/volatility/abcd.hpp>
+//#include <ql/termstructures/volatility/abcd.hpp>
 #include <ql/termstructures/volatility/abcdcalibration.hpp>
-
-
 
 namespace QuantLib {
 
@@ -39,18 +37,16 @@ namespace QuantLib {
 
     namespace detail {
 
-        template <class I1, class I2> class AbcdInterpolationImpl;
-
-        class AbcdCoefficientHolder {
+        class AbcdCoeffHolder {
           public:
-            AbcdCoefficientHolder(Real a,
-                                  Real b,
-                                  Real c,
-                                  Real d,
-                                  bool aIsFixed,
-                                  bool bIsFixed,
-                                  bool cIsFixed,
-                                  bool dIsFixed)
+            AbcdCoeffHolder(Real a,
+                            Real b,
+                            Real c,
+                            Real d,
+                            bool aIsFixed,
+                            bool bIsFixed,
+                            bool cIsFixed,
+                            bool dIsFixed)
             : a_(a), b_(b), c_(c), d_(d),
               aIsFixed_(false), bIsFixed_(false),
               cIsFixed_(false), dIsFixed_(false),
@@ -58,23 +54,101 @@ namespace QuantLib {
               error_(Null<Real>()),
               maxError_(Null<Real>()),
               abcdEndCriteria_(EndCriteria::None) { 
+                if (a_ != Null<Real>())
+                    aIsFixed_ = aIsFixed;
+                else a_ = -0.06;
+                if (b_ != Null<Real>())
+                    bIsFixed_ = bIsFixed;
+                else b_ = 0.17;
+                if (c_ != Null<Real>())
+                    cIsFixed_ = cIsFixed;
+                else c_ = 0.54;
+                if (d_ != Null<Real>())
+                    dIsFixed_ = dIsFixed;
+                else d_ = 0.17;
             
-                // Checks?
+               //validateAbcdParameters(a, b, c, d);
             }
-            virtual ~AbcdCoefficientHolder() {}
-
-            /*! Abcd parameters */
+            virtual ~AbcdCoeffHolder() {}
             Real a_, b_, c_, d_;
-            /*! Abcd interpolation settings */
             bool aIsFixed_, bIsFixed_, cIsFixed_, dIsFixed_;
             std::vector<Real> k_;
-            /*! Abcd interpolation results */
             Real error_, maxError_;
             EndCriteria::Type abcdEndCriteria_;
         };
+
+        template <class I1, class I2>
+        class AbcdInterpolationImpl : public Interpolation::templateImpl<I1,I2>,
+                                      public AbcdCoeffHolder {        
+          public:
+            AbcdInterpolationImpl(
+                const I1& xBegin, const I1& xEnd,
+                const I2& yBegin,
+                Real a, Real b, Real c, Real d,
+                bool aIsFixed,
+                bool bIsFixed,
+                bool cIsFixed,
+                bool dIsFixed,
+                bool vegaWeighted,
+                const boost::shared_ptr<EndCriteria>& endCriteria,
+                const boost::shared_ptr<OptimizationMethod>& optMethod)
+            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
+              AbcdCoeffHolder(a, b, c, d,
+                              aIsFixed, bIsFixed, cIsFixed, dIsFixed),
+              endCriteria_(endCriteria), optMethod_(optMethod),
+              vegaWeighted_(vegaWeighted) { }
+            
+            void update() {
+                std::vector<Real>::const_iterator x = this->xBegin_;
+                std::vector<Real>::const_iterator y = this->yBegin_;
+                std::vector<Real> times, blackVols;
+                for ( ; x!=this->xEnd_; ++x, ++y) {
+                    times.push_back(*x);
+                    blackVols.push_back(*y);
+                }
+                abcdCalibrator_ = boost::shared_ptr<AbcdCalibration>(
+                    new AbcdCalibration(times, blackVols,
+                                        a_, b_, c_, d_,
+                                        aIsFixed_, bIsFixed_,
+                                        cIsFixed_, dIsFixed_,
+                                        vegaWeighted_,
+                                        endCriteria_,
+                                        optMethod_));
+                abcdCalibrator_->compute();
+                a_ = abcdCalibrator_->a();
+                b_ = abcdCalibrator_->b();
+                c_ = abcdCalibrator_->c();
+                d_ = abcdCalibrator_->d();
+                k_ = abcdCalibrator_->k(times, blackVols);
+                error_ = abcdCalibrator_->error();
+                maxError_ = abcdCalibrator_->maxError();
+                abcdEndCriteria_ = abcdCalibrator_->endCriteria();
+            }
+            Real value(Real x) const {
+                QL_REQUIRE(x>=0.0, "time must be non negative: " <<
+                                   x << " not allowed");
+                return abcdCalibrator_->value(x);
+            }
+            Real primitive(Real) const {
+                QL_FAIL("Abcd primitive not implemented");
+            }
+            Real derivative(Real) const {
+                QL_FAIL("Abcd derivative not implemented");
+            }
+            Real secondDerivative(Real) const {
+                QL_FAIL("Abcd secondDerivative not implemented");
+            }
+          private:
+            const boost::shared_ptr<EndCriteria> endCriteria_;
+            const boost::shared_ptr<OptimizationMethod> optMethod_;
+            bool vegaWeighted_;
+            boost::shared_ptr<AbcdCalibration> abcdCalibrator_;
+
+        };
+
     }
 
-    //! %Abcd interpolation between discrete volatility points.
+    //! %Abcd interpolation between discrete points.
     class AbcdInterpolation : public Interpolation {
       public:
         /*! Constructor */
@@ -106,8 +180,7 @@ namespace QuantLib {
                                                      optMethod));
             impl_->update();
             coeffs_ =
-                boost::dynamic_pointer_cast<detail::AbcdCoefficientHolder>(
-                                                                       impl_);
+                boost::dynamic_pointer_cast<detail::AbcdCoeffHolder>(impl_);
         }
         //! \name Inspectors
         //@{
@@ -119,84 +192,9 @@ namespace QuantLib {
         Real interpolationError() const { return coeffs_->error_; }
         Real interpolationMaxError() const { return coeffs_->maxError_; }
         EndCriteria::Type endCriteria(){ return coeffs_->abcdEndCriteria_; }
-    private:
-        boost::shared_ptr<detail::AbcdCoefficientHolder> coeffs_;
+      private:
+        boost::shared_ptr<detail::AbcdCoeffHolder> coeffs_;
     };
-
-    namespace detail {
-
-        template <class I1, class I2>
-        class AbcdInterpolationImpl : public Interpolation::templateImpl<I1,I2>,
-                                      public AbcdCoefficientHolder {        
-
-        private:
-            // optimization method used for fitting
-            const boost::shared_ptr<EndCriteria> endCriteria_;
-            const boost::shared_ptr<OptimizationMethod> optMethod_;
-            bool vegaWeighted_;
-            boost::shared_ptr<AbcdCalibration> abcdCalibrator_;
-
-        public:
-
-            AbcdInterpolationImpl(
-                const I1& xBegin, const I1& xEnd,
-                const I2& yBegin,
-                Real a, Real b, Real c, Real d,
-                bool aIsFixed,
-                bool bIsFixed,
-                bool cIsFixed,
-                bool dIsFixed,
-                bool vegaWeighted,
-                const boost::shared_ptr<EndCriteria>& endCriteria,
-                const boost::shared_ptr<OptimizationMethod>& optMethod)
-            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
-              AbcdCoefficientHolder(a, b, c, d, aIsFixed, bIsFixed, cIsFixed, dIsFixed),
-              endCriteria_(endCriteria), optMethod_(optMethod),
-              vegaWeighted_(vegaWeighted) { }
-            
-            void update() {
-                std::vector<Real>::const_iterator x = this->xBegin_;
-                std::vector<Real>::const_iterator y = this->yBegin_;
-                std::vector<Real> times, blackVols;
-                for ( ; x!=this->xEnd_; ++x, ++y) {
-                    times.push_back(*x);
-                    blackVols.push_back(*y);
-                }
-                abcdCalibrator_ = boost::shared_ptr<AbcdCalibration>(new
-                                AbcdCalibration(times, blackVols,
-                                                a_, b_, c_, d_,
-                                                aIsFixed_, bIsFixed_,
-                                                cIsFixed_, dIsFixed_,
-                                                vegaWeighted_,
-                                                endCriteria_,
-                                                optMethod_));
-                abcdCalibrator_->compute();
-                a_ = abcdCalibrator_->a();
-                b_ = abcdCalibrator_->b();
-                c_ = abcdCalibrator_->c();
-                d_ = abcdCalibrator_->d();
-                k_ = abcdCalibrator_->k(times,blackVols);
-                error_ = abcdCalibrator_->error();
-                maxError_ = abcdCalibrator_->maxError();
-                abcdEndCriteria_ = abcdCalibrator_->endCriteria();
-            }
-            Real value(Real x) const {
-                QL_REQUIRE(x>=0.0, "time must be non negative: " <<
-                                   x << " not allowed");
-                return abcdCalibrator_->value(x);
-            }
-            Real primitive(Real) const {
-                QL_FAIL("Abcd primitive not implemented");
-            }
-            Real derivative(Real) const {
-                QL_FAIL("Abcd derivative not implemented");
-            }
-            Real secondDerivative(Real) const {
-                QL_FAIL("Abcd secondDerivative not implemented");
-            }
-        };
-    }
-
 
 }
 

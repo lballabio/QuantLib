@@ -44,7 +44,7 @@ namespace QuantLib {
             "resetIndex (" << resetIndex <<
             ") must be less than rateTimes.size()-1 (" <<
             rateTimes_.size()-1 << ")");
-        Abcd abcd(a,b,c,d);
+        AbcdFunction abcd(a,b,c,d);
         for (Size i=0; i<=resetIndex; ++i) {
             Time startTime = (i==0 ? 0.0 : rateTimes_[i-1]);
             variances_[i] = abcd.variance(startTime,

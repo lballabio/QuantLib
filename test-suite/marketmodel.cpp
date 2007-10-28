@@ -2030,7 +2030,7 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
     const Size N = 10;
     const Real precision = 1e-04;
 
-    boost::shared_ptr<Abcd> instVol(new Abcd(a,b,c,d));
+    boost::shared_ptr<AbcdFunction> instVol(new AbcdFunction(a,b,c,d));
     SegmentIntegral SI(20000);
     for (Size i=0; i<N; i++) {
         Time T1 = 0.5*(1+i);     // expiry of forward 1: after T1 AbcdVol = 0
@@ -2095,7 +2095,7 @@ void MarketModelTest::testAbcdVolatilityCompare() {
 
     boost::shared_ptr<LmVolatilityModel> lmAbcd(
         new LmExtLinearExponentialVolModel(rateTimes,b,c,d,a));
-    boost::shared_ptr<Abcd> abcd(new Abcd(a,b,c,d));
+    boost::shared_ptr<AbcdFunction> abcd(new AbcdFunction(a,b,c,d));
     for (i1=0; i1<rateTimes.size(); i1++ ) {
         for (i2=0; i2<rateTimes.size(); i2++ ) {
             Time T = 0.;
@@ -2147,7 +2147,7 @@ void MarketModelTest::testAbcdVolatilityFit() {
         "\nd:     " << d0 << " ---> " << d1 <<
         "\nerror: " << error0 << " ---> " << error1);
 
-    Abcd abcd(a1, b1, c1, d1);
+    AbcdFunction abcd(a1, b1, c1, d1);
     std::vector<Real> k = instVol.k(std::vector<Time>(rateTimes.begin(), rateTimes.end()-1), blackVols);
     Real tol = 3.0e-4;
     for (Size i=0; i<blackVols.size(); i++) {

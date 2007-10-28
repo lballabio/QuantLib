@@ -76,7 +76,7 @@ void testSeveral(const T& I) {
                NormalDistribution(), -10.0, 10.0, 1.0);
     testSingle(I, "f(x) = Abcd2(x)",
                AbcdSquared(0.07, 0.07, 0.5, 0.1, 8.0, 10.0), 5.0, 6.0,
-               Abcd(0.07, 0.07, 0.5, 0.1).covariance(5.0, 6.0, 8.0, 10.0));
+               AbcdFunction(0.07, 0.07, 0.5, 0.1).covariance(5.0, 6.0, 8.0, 10.0));
 
 }
 

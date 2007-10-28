@@ -27,25 +27,22 @@
 
 namespace QuantLib {
     
-
-    //! %Abcd functional form for instantaneous volatility
-    /*! \f[ f(T-t) = [ a + b(T-t) ] e^{-c(T-t)} + d \f] following Rebonato's notation. */
     inline void validateAbcdParameters(Real a, Real b, Real c, Real d) {
         QL_REQUIRE(a+d>=0,
-                   "a+d (" << a << ", " << d <<") must be non negative");
+                   "a (" << a << ") + d (" << d << ") must be non negative");
         QL_REQUIRE(c>=0,
                    "c (" << c << ") must be non negative");
         QL_REQUIRE(d>=0,
                    "d (" << d << ") must be non negative");
     }
 
-
-
-    //! %Abcd
-    class Abcd : public std::unary_function<Real, Real> {
+    //! %Abcd functional form for instantaneous volatility
+    /*! \f[ f(T-t) = [ a + b(T-t) ] e^{-c(T-t)} + d \f]
+        following Rebonato's notation. */
+    class AbcdFunction : public std::unary_function<Real, Real> {
 
       public:
-        Abcd(Real a=-0.06, Real b=0.17, Real c=0.54, Real d=0.17);
+        AbcdFunction(Real a=-0.06, Real b=0.17, Real c=0.54, Real d=0.17);
 
         //! volatility function value at time u: \f[ f(u) \f]
         Real operator()(Time u) const;
@@ -72,11 +69,11 @@ namespace QuantLib {
 
         Real covariance(Time t1, Time t2, Time T, Time S) const;
 
-         /*! volatility in [tMin,tMax] of T-fixing rate:
+         /*! average volatility in [tMin,tMax] of T-fixing rate:
             \f[ \sqrt{ \int_{tMin}^{tMax} f^2(T-u)du }\f] */
         Real volatility(Time T, Time tMax, Time tMin) const;
 
-        /*! variance in [tMin,tMax] of T-fixing rate:
+        /*! variance between tMin and tMax of T-fixing rate:
             \f[ \int_{tMin}^{tMax} f^2(T-u)du \f] */
         Real variance(Time T, Time tMax, Time tMin) const;
         
@@ -120,12 +117,12 @@ namespace QuantLib {
         Real operator()(Time t) const;
       
       private:
-        boost::shared_ptr<Abcd> abcd_;
+        boost::shared_ptr<AbcdFunction> abcd_;
         Time T_, S_;
     };
 
     inline Real abcdBlackVolatility(Time u, Real a, Real b, Real c, Real d) {
-        Abcd model(a,b,c,d);
+        AbcdFunction model(a,b,c,d);
         return model.volatility(0.,u,u);
     }
 }
