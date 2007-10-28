@@ -172,7 +172,7 @@ namespace QuantLib {
                     CubicSplineInterpolation::BoundaryCondition rightCondition
                         = CubicSplineInterpolation::SecondDerivative,
                     Real rightConditionValue = 0.0,
-                    bool monotonicityConstraint = false)
+                    bool monotonicityConstraint = true)
         : leftType_(leftCondition), rightType_(rightCondition),
           leftValue_(leftConditionValue), rightValue_(rightConditionValue),
           monotone_(monotonicityConstraint) {}
