@@ -28,7 +28,7 @@
 
 #include <ql/stochasticprocess.hpp>
 #include <ql/processes/eulerdiscretization.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 #include <ql/quote.hpp>

@@ -28,7 +28,7 @@
 #define quantlib_digital_mc_engine_hpp
 
 #include <ql/exercise.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 #include <ql/methods/montecarlo/mctraits.hpp>
 #include <ql/pricingengines/vanilla/mcvanillaengine.hpp>

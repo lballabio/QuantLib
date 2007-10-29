@@ -29,7 +29,7 @@
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <iostream>
 #include <vector>
 

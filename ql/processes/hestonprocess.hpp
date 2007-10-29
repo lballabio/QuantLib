@@ -25,7 +25,7 @@
 #define quantlib_heston_process_hpp
 
 #include <ql/stochasticprocess.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/quote.hpp>
 
 namespace QuantLib {

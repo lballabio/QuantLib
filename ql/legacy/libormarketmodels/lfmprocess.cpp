@@ -26,7 +26,7 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
 

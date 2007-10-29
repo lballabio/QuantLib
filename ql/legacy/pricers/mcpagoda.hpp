@@ -25,7 +25,7 @@
 #define quantlib_pagoda_pricer_h
 
 #include <ql/legacy/pricers/mcpricer.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 
 

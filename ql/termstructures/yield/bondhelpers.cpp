@@ -18,7 +18,7 @@
 */
 
 #include <ql/termstructures/yield/bondhelpers.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/settings.hpp>
 

@@ -25,7 +25,7 @@
 #ifndef quantlib_optionlet_volatility_structure_hpp
 #define quantlib_optionlet_volatility_structure_hpp
 
-#include <ql/voltermstructure.hpp>
+#include <ql/termstructures/voltermstructure.hpp>
 
 namespace QuantLib {
 

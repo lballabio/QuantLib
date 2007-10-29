@@ -25,7 +25,7 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/indexes/iborindex.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 #include <cmath>
 #include <iostream>

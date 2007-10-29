@@ -22,7 +22,7 @@
 #include <ql/instruments/swap.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/coupon.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
 

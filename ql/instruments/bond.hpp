@@ -34,7 +34,7 @@
 #include <ql/time/daycounter.hpp>
 #include <ql/types.hpp>
 #include <ql/handle.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <vector>
 
 namespace QuantLib {

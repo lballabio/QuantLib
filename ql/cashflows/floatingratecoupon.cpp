@@ -25,7 +25,7 @@
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/cashflows/couponpricer.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
 

@@ -25,7 +25,7 @@
 #define quantlib_discounting_swap_engine_hpp
 
 #include <ql/instruments/swap.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/handle.hpp>
 
 namespace QuantLib {

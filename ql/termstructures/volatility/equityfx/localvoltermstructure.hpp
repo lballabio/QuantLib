@@ -25,7 +25,7 @@
 #ifndef quantlib_local_vol_term_structures_hpp
 #define quantlib_local_vol_term_structures_hpp
 
-#include <ql/voltermstructure.hpp>
+#include <ql/termstructures/voltermstructure.hpp>
 #include <ql/patterns/visitor.hpp>
 
 namespace QuantLib {

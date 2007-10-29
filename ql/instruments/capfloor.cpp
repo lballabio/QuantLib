@@ -23,7 +23,7 @@
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/cashflows/cashflows.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/quotes/simplequote.hpp>
 
 

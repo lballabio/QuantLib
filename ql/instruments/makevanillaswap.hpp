@@ -27,7 +27,7 @@
 #define quantlib_makevanillaswap_hpp
 
 #include <ql/instruments/vanillaswap.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
 

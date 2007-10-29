@@ -26,7 +26,7 @@
 
 
 #include <ql/quote.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
     class PricingEngine;

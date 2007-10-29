@@ -26,7 +26,7 @@
 #define quantlib_flat_forward_curve_hpp
 
 #include <ql/patterns/lazyobject.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {

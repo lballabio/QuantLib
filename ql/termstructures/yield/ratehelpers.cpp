@@ -26,7 +26,7 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/currency.hpp>
 #include <ql/indexes/iborindex.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
 

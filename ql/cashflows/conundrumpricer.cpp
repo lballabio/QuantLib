@@ -28,7 +28,7 @@
 #include <ql/math/solvers1d/newton.hpp>
 #include <ql/termstructures/volatility/smilesection.hpp>
 #include <ql/cashflows/cmscoupon.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/indexes/interestrateindex.hpp>

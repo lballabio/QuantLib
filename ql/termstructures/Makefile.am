@@ -5,9 +5,13 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
-	all.hpp
+	all.hpp \
+	voltermstructure.hpp \
+	yieldtermstructure.hpp
 
-libTermStructures_la_SOURCES =
+libTermStructures_la_SOURCES = \
+	voltermstructure.cpp \
+	yieldtermstructure.cpp
 
 libTermStructures_la_LIBADD = \
     yield/libYieldTermStructures.la \

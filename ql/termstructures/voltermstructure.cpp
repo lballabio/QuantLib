@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/voltermstructure.hpp>
+#include <ql/termstructures/voltermstructure.hpp>
 
 namespace QuantLib {
 

@@ -19,7 +19,7 @@
 
 #include <ql/termstructures/volatility/equityfx/localvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {

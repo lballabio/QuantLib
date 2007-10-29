@@ -51,9 +51,7 @@ this_include_HEADERS = \
 	timegrid.hpp \
 	timeseries.hpp \
 	types.hpp \
-	volatilitymodel.hpp \
-	voltermstructure.hpp \
-	yieldtermstructure.hpp
+	volatilitymodel.hpp
 
 libQuantLib_la_SOURCES = \
     currency.cpp \
@@ -69,9 +67,7 @@ libQuantLib_la_SOURCES = \
     settings.cpp \
 	stochasticprocess.cpp \
 	termstructure.cpp \
-	timegrid.cpp \
-	voltermstructure.cpp \
-	yieldtermstructure.cpp
+	timegrid.cpp
 
 lib_LTLIBRARIES = libQuantLib.la
 libQuantLib_la_LDFLAGS = -release $(PACKAGE_VERSION)
