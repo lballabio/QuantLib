@@ -38,7 +38,8 @@ namespace QuantLib {
         class CoefficientHolder {
           public:
             CoefficientHolder(Size n)
-            : n_(n), primitiveConst_(n-1), a_(n-1), b_(n-1), c_(n-1) {}
+            : n_(n), primitiveConst_(n-1), a_(n-1), b_(n-1), c_(n-1),
+              monotonicityAdjustments_(n-1) {}
             virtual ~CoefficientHolder() {}
             Size n_;
             // P[i](x) = y[i] +
@@ -46,6 +47,7 @@ namespace QuantLib {
             //           b[i]*(x-x[i])^2 +
             //           c[i]*(x-x[i])^3
             std::vector<Real> primitiveConst_, a_, b_, c_;
+            std::vector<bool> monotonicityAdjustments_;
         };
 
         template <class I1, class I2> class CubicSplineInterpolationImpl;
@@ -113,6 +115,9 @@ namespace QuantLib {
         const std::vector<Real>& aCoefficients() const { return coeffs_->a_; }
         const std::vector<Real>& bCoefficients() const { return coeffs_->b_; }
         const std::vector<Real>& cCoefficients() const { return coeffs_->c_; }
+        const std::vector<bool>& monotonicityAdjustments() const {
+            return coeffs_->monotonicityAdjustments_;
+        }
       private:
         boost::shared_ptr<detail::CoefficientHolder> coeffs_;
     };
@@ -206,7 +211,7 @@ namespace QuantLib {
                             bool monotonicityConstraint)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
               CoefficientHolder(xEnd-xBegin),
-              monotone_(false), constrained_(monotonicityConstraint),
+              constrained_(monotonicityConstraint),
               leftType_(leftCondition), rightType_(rightCondition),
               leftValue_(leftConditionValue),
               rightValue_(rightConditionValue) {}
@@ -283,6 +288,8 @@ namespace QuantLib {
                 // solve the system
                 tmp = L.solveFor(tmp);
 
+                std::fill(monotonicityAdjustments_.begin(),
+                          monotonicityAdjustments_.end(), false);
                 if (constrained_) {
                     Real correction;
                     Real pm, pu, pd, M;
@@ -297,7 +304,7 @@ namespace QuantLib {
                             }
                             if (correction!=tmp[i]) {
                                 tmp[i] = correction;
-                                monotone_ = true;
+                                monotonicityAdjustments_[i] = true;
                             }
                         } else if (i==n_-1) {
                             if (tmp[i]*S[n_-2]>0.0) {
@@ -309,7 +316,7 @@ namespace QuantLib {
                             }
                             if (correction!=tmp[i]) {
                                 tmp[i] = correction;
-                                monotone_ = true;
+                                monotonicityAdjustments_[i] = true;
                             }
                         } else {
                             pm=(S[i-1]*dx[i]+S[i]*dx[i-1])/
@@ -346,7 +353,7 @@ namespace QuantLib {
                             }
                             if (correction!=tmp[i]) {
                                 tmp[i] = correction;
-                                monotone_ = true;
+                                monotonicityAdjustments_[i] = true;
                             }
                         }
                     }
@@ -390,7 +397,7 @@ namespace QuantLib {
                 return 2.0*b_[j] + 6.0*c_[j]*dx;
             }
           private:
-            bool monotone_, constrained_;
+            bool constrained_;
             CubicSplineInterpolation::BoundaryCondition leftType_, rightType_;
             Real leftValue_, rightValue_;
         };
