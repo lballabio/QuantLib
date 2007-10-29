@@ -39,7 +39,7 @@ namespace QuantLib {
           public:
             CoefficientHolder(Size n)
             : n_(n), primitiveConst_(n-1), a_(n-1), b_(n-1), c_(n-1),
-              monotonicityAdjustments_(n-1) {}
+              monotonicityAdjustments_(n) {}
             virtual ~CoefficientHolder() {}
             Size n_;
             // P[i](x) = y[i] +
@@ -225,7 +225,7 @@ namespace QuantLib {
                 Size i=0;
                 dx[i] = this->xBegin_[i+1] - this->xBegin_[i];
                 S[i] = (this->yBegin_[i+1] - this->yBegin_[i])/dx[i];
-                for (i=1; i<n_-1; i++) {
+                for (i=1; i<n_-1; ++i) {
                     dx[i] = this->xBegin_[i+1] - this->xBegin_[i];
                     S[i] = (this->yBegin_[i+1] - this->yBegin_[i])/dx[i];
 
@@ -293,7 +293,7 @@ namespace QuantLib {
                 if (constrained_) {
                     Real correction;
                     Real pm, pu, pd, M;
-                    for (i=0; i<n_; i++) {
+                    for (i=0; i<n_; ++i) {
                         if (i==0) {
                             if (tmp[i]*S[0]>0.0) {
                                 correction = tmp[i]/std::fabs(tmp[i]) *
@@ -359,14 +359,14 @@ namespace QuantLib {
                     }
                 }
 
-                for (i=0; i<n_-1; i++) {
+                for (i=0; i<n_-1; ++i) {
                     a_[i] = tmp[i];
                     b_[i] = (3.0*S[i] - tmp[i+1] - 2.0*tmp[i])/dx[i];
                     c_[i] = (tmp[i+1] + tmp[i] - 2.0*S[i])/(dx[i]*dx[i]);
                 }
 
                 primitiveConst_[0] = 0.0;
-                for (i=1; i<n_-1; i++) {
+                for (i=1; i<n_-1; ++i) {
                     primitiveConst_[i] = primitiveConst_[i-1]
                         + dx[i-1] *
                         (this->yBegin_[i-1] + dx[i-1] *
