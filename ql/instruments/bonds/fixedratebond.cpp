@@ -73,7 +73,7 @@ namespace QuantLib {
         Date nextToLastDate = (endOfMonth ? stubDate : Date());
         Schedule schedule(startDate, maturityDate_, tenor,
                           calendar_, accrualConvention, accrualConvention,
-                          endOfMonth, endOfMonth, firstDate, nextToLastDate);
+                          backward, endOfMonth, firstDate, nextToLastDate);
 
         cashflows_ = FixedRateLeg(schedule, accrualDayCounter)
             .withNotionals(faceAmount_)
