@@ -93,16 +93,18 @@ namespace QuantLib {
         marketVolCube_ = Cube(optionDates_, swapTenors_,
                               optionTimes_, swapLengths_, nStrikes_);
         Rate atmForward;
-        Volatility vol;
-        for (Size i=0; i<nStrikes_; i++)
-            for (Size j=0; j<nOptionTenors_; j++)
-                for (Size k=0; k<nSwapTenors_; k++) {
-                    atmForward = atmStrike(optionDates_[j], swapTenors_[k]);
-                    vol = volSpreads_[j*nSwapTenors_+k][i]->value() +
-                        atmVol_->volatility(optionDates_[j], swapTenors_[k],
-                                                               atmForward);
+        Volatility atmVol, vol;
+        for (Size j=0; j<nOptionTenors_; ++j) {
+            for (Size k=0; k<nSwapTenors_; ++k) {
+                atmForward = atmStrike(optionDates_[j], swapTenors_[k]);
+                atmVol = atmVol_->volatility(optionDates_[j], swapTenors_[k],
+                                                              atmForward);
+                for (Size i=0; i<nStrikes_; ++i) {
+                    vol = atmVol + volSpreads_[j*nSwapTenors_+k][i]->value();
                     marketVolCube_.setElement(i, j, k, vol);
                 }
+            }
+        }
         marketVolCube_.updateInterpolators();
 
         sparseParameters_ = sabrCalibration(marketVolCube_);
