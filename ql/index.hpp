@@ -37,7 +37,7 @@ namespace QuantLib {
     /*!
     \warning this class performs no check that the provided/requested fixings
              are for dates in the past, i.e. for dates less than or equal to
-             the EvaluationDate. It is up to the client code to take care
+             the evaluation date. It is up to the client code to take care
              of possible inconsistencies due to "seeing in the future"
     */
     class Index : public Observable {
@@ -50,9 +50,9 @@ namespace QuantLib {
         */
         virtual std::string name() const = 0;
         //! returns the calendar defining valid fixing dates
-        const Calendar& fixingCalendar() const;
+        virtual Calendar fixingCalendar() const = 0;
         //! returns TRUE if the fixing date is a valid one
-        bool isValidFixingDate(const Date& fixingDate) const;
+        virtual bool isValidFixingDate(const Date& fixingDate) const = 0;
         //! returns the fixing at the given date
         /*! the date passed as arguments must be the actual calendar
             date of the fixing; no settlement days must be used.
@@ -63,9 +63,9 @@ namespace QuantLib {
         /*! the date passed as arguments must be the actual calendar
             date of the fixing; no settlement days must be used.
         */
-        void addFixing(const Date& fixingDate,
-                       Real fixing,
-                       bool forceOverwrite = false);
+        virtual void addFixing(const Date& fixingDate,
+                               Real fixing,
+                               bool forceOverwrite = false);
         //! stores historical fixings from a TimeSeries
         /*! the dates in the TimeSeries must be the actual calendar
             dates of the fixings; no settlement days must be used.
@@ -122,13 +122,7 @@ namespace QuantLib {
         }
         //! clears all stored historical fixings
         void clearFixings();
-      protected:
-        Calendar fixingCalendar_;
     };
-
-    inline const Calendar& Index::fixingCalendar() const {
-        return fixingCalendar_;
-    }
 
 }
 

@@ -52,6 +52,8 @@ namespace QuantLib {
         //! \name Index interface
         //@{
         std::string name() const;
+        Calendar fixingCalendar() const;
+        bool isValidFixingDate(const Date& fixingDate) const;
         Rate fixing(const Date& fixingDate,
                     bool forecastTodaysFixing = false) const;
         //@}
@@ -84,6 +86,7 @@ namespace QuantLib {
         std::string familyName_;
         Period tenor_;
         Natural fixingDays_;
+        Calendar fixingCalendar_;
         Currency currency_;
         DayCounter dayCounter_;
     };

@@ -44,8 +44,4 @@ namespace QuantLib {
         IndexManager::instance().clearHistory(name());
     }
 
-    bool Index::isValidFixingDate(const Date& fixingDate) const {
-        return fixingCalendar().isBusinessDay(fixingDate);
-    }
-
 }

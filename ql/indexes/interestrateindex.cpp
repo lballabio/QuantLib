@@ -32,8 +32,8 @@ namespace QuantLib {
                                          const Calendar& fixingCalendar,
                                          const DayCounter& dayCounter)
     : familyName_(familyName), tenor_(tenor), fixingDays_(fixingDays),
-      currency_(currency), dayCounter_(dayCounter) {
-        fixingCalendar_ = fixingCalendar;
+      fixingCalendar_(fixingCalendar), currency_(currency),
+      dayCounter_(dayCounter) {
         registerWith(Settings::instance().evaluationDate());
         registerWith(IndexManager::instance().notifier(name()));
     }
@@ -45,6 +45,14 @@ namespace QuantLib {
         return out.str();
     }
 
+    Calendar InterestRateIndex::fixingCalendar() const {
+        return fixingCalendar_;
+    }
+
+    bool InterestRateIndex::isValidFixingDate(const Date& fixingDate) const {
+        return fixingCalendar().isBusinessDay(fixingDate);
+    }
+
     Rate InterestRateIndex::fixing(const Date& fixingDate,
                                    bool forecastTodaysFixing) const {
         QL_REQUIRE(isValidFixingDate(fixingDate),
@@ -53,7 +61,7 @@ namespace QuantLib {
         bool enforceTodaysHistoricFixings =
             Settings::instance().enforcesTodaysHistoricFixings();
         if (fixingDate < today ||
-            ((fixingDate == today) && enforceTodaysHistoricFixings && !forecastTodaysFixing)) {
+            (fixingDate == today && enforceTodaysHistoricFixings && !forecastTodaysFixing)) {
             // must have been fixed
             Rate pastFixing =
                 IndexManager::instance().getHistory(name())[fixingDate];
