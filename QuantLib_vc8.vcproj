@@ -4109,6 +4109,22 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="inflation"
+				>
+				<File
+					RelativePath=".\ql\termstructures\inflation\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\inflation\interpolatedyoyinflationcurve.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\inflation\interpolatedzeroinflationcurve.hpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="utilities"
