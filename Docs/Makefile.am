@@ -40,10 +40,10 @@ docs-dist: docs-pdf-dist docs-html-dist docs-man-dist
 
 docs-html: .time-stamp-html
 .time-stamp-html: .time-stamp
-	cp print.css html
-	cp images/*.jpg html
-	cp images/*.png html
-	cp images/*.ico html
+	cp -f print.css html
+	cp -f images/*.jpg html
+	cp -f images/*.png html
+	cp -f images/*.ico html
 	touch .time-stamp-html
 
 docs-html-dist: docs-html
@@ -63,9 +63,9 @@ docs-online: .time-stamp-online
 	       quantlib.doxy > .quantlib.doxy
 	$(DOXYGEN) .quantlib.doxy
 	rm .quantlib.doxy
-	cp images/*.jpg html-online
-	cp images/*.png html-online
-	cp images/*.ico html-online
+	cp -f images/*.jpg html-online
+	cp -f images/*.png html-online
+	cp -f images/*.ico html-online
 	touch .time-stamp-online
 
 docs-pdf: .time-stamp-pdf
@@ -124,9 +124,9 @@ docs-clean:
 
 tex-files: .time-stamp-tex
 .time-stamp-tex: .time-stamp
-	cp qlintro.tex latex
-	cp images/*.eps latex
-	cp images/*.pdf latex
+	cp -f qlintro.tex latex
+	cp -f images/*.eps latex
+	cp -f images/*.pdf latex
 	mv latex/refman.tex .refman.tex
 	$(SED) -e "/Page Index/d" \
            -e "/input{pages}/d" \

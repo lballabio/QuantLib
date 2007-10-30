@@ -46,7 +46,7 @@ namespace QuantLib {
         fitting methods from the latter.
 
         <b> Example: </b>
-        \link fittedbondcurve.cpp
+        \link FittedBondCurve.cpp
         compares various bond discount curve fitting methodologies
         \endlink
 

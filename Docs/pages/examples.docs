@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000-2006 StatPro Italia srl
+ Copyright (C) 2000-2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,6 +31,11 @@
 /*! \example EquityOption.cpp
     This example evaluates European, American and Bermudan options
     using different methods
+ */
+
+/*! \example FittedBondCurve.cpp
+    This example fits a discount curve over a set of bonds with a
+    number of methods.
  */
 
 /*! \example FRA.cpp

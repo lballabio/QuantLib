@@ -1,4 +1,4 @@
-# Doxyfile 1.5.2
+# Doxyfile 1.5.4
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -19,20 +19,23 @@ STRIP_FROM_PATH        = ql_basepath
 STRIP_FROM_INC_PATH    = ql_basepath
 SHORT_NAMES            = NO
 JAVADOC_AUTOBRIEF      = NO
+QT_AUTOBRIEF           = NO
 MULTILINE_CPP_IS_BRIEF = NO
 DETAILS_AT_TOP         = YES
 INHERIT_DOCS           = YES
 SEPARATE_MEMBER_PAGES  = NO
 TAB_SIZE               = 4
-ALIASES                = "warning=\xrefitem caveats \"Warning\" \"Caveats\"" \
-                         "test=\xrefitem test \"Tests\" \"Test Suite\"" \
-                         "bug=\xrefitem bug \"Bug\" \"Known Bugs\""
+ALIASES                = "warning=\xrefitem caveats \"Warning\" \"Caveats\" " \
+                         "test=\xrefitem test \"Tests\" \"Test Suite\" " \
+                         "bug=\xrefitem bug \"Bug\" \"Known Bugs\" "
 OPTIMIZE_OUTPUT_FOR_C  = NO
 OPTIMIZE_OUTPUT_JAVA   = NO
 BUILTIN_STL_SUPPORT    = YES
 CPP_CLI_SUPPORT        = NO
+SIP_SUPPORT            = NO
 DISTRIBUTE_GROUP_DOC   = NO
 SUBGROUPING            = YES
+TYPEDEF_HIDES_STRUCT   = NO
 #---------------------------------------------------------------------------
 # Build related configuration options
 #---------------------------------------------------------------------------
@@ -41,6 +44,7 @@ EXTRACT_PRIVATE        = NO
 EXTRACT_STATIC         = NO
 EXTRACT_LOCAL_CLASSES  = NO
 EXTRACT_LOCAL_METHODS  = NO
+EXTRACT_ANON_NSPACES   = NO
 HIDE_UNDOC_MEMBERS     = NO
 HIDE_UNDOC_CLASSES     = YES
 HIDE_FRIEND_COMPOUNDS  = NO
@@ -70,7 +74,7 @@ WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = NO
 WARN_IF_DOC_ERROR      = YES
 WARN_NO_PARAMDOC       = NO
-WARN_FORMAT            = "$file:$line: $text"
+WARN_FORMAT            = "$file:$line: $text "
 WARN_LOGFILE           = 
 #---------------------------------------------------------------------------
 # configuration options related to the input files
@@ -127,6 +131,7 @@ HTML_FOOTER            = quantlibfooter.html
 HTML_STYLESHEET        = quantlib.css
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = NO
+HTML_DYNAMIC_SECTIONS  = NO
 CHM_FILE               = ../QuantLib-docs-ql_version.chm
 HHC_LOCATION           = hhc.exe
 GENERATE_CHI           = NO
@@ -240,6 +245,7 @@ DOT_IMAGE_FORMAT       = png
 DOT_PATH               = 
 DOTFILE_DIRS           = 
 DOT_GRAPH_MAX_NODES    = 20
+MAX_DOT_GRAPH_DEPTH    = 2
 DOT_TRANSPARENT        = NO
 DOT_MULTI_TARGETS      = NO
 GENERATE_LEGEND        = YES
