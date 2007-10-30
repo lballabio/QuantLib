@@ -98,53 +98,6 @@ namespace QuantLib {
     }
 
 
-    std::pair<Date,Date> InflationTermStructure::calculatePeriod(
-                                                      const Date &ref) const {
-
-        Date pStart, pEnd;
-        // now get the start of the period
-        switch ( frequency() ) {
-          case QuantLib::Annual:
-            pStart = Date( Day(1), Month(1), ref.year() );
-            pEnd = Date( Day(31), Month(12), ref.year() );
-            break;
-          case QuantLib::Semiannual:
-            if ( ref.month() <= 6 ) {
-                pStart = Date( Day(1), Month(1), ref.year() );
-                pEnd = Date( Day(30), Month(6), ref.year() );
-            } else {
-                pStart = Date( Day(1), Month(7), ref.year() );
-                pEnd = Date( Day(31), Month(12), ref.year() );
-            };
-            break;
-          case QuantLib::Quarterly:
-            if ( ref.month() <= 3 ) {
-                pStart = Date( Day(1), Month(1), ref.year() );
-                pEnd = Date( Day(31), Month(3), ref.year() );
-            } else if ( ref.month() <= 6 ) {
-                pStart = Date( Day(1), Month(4), ref.year() );
-                pEnd = Date( Day(30), Month(6), ref.year() );
-            } else if ( ref.month() <= 9 ) {
-                pStart = Date( Day(1), Month(7), ref.year() );
-                pEnd = Date( Day(31), Month(9), ref.year() );
-            } else {
-                pStart = Date( Day(1), Month(10), ref.year() );
-                pEnd = Date( Day(31), Month(12), ref.year() );
-            };
-            break;
-          case QuantLib::Monthly:
-            pStart = Date( Day(1), ref.month(), ref.year() );
-            pEnd = Date::endOfMonth(ref);
-            break;
-          default:
-            QL_REQUIRE(false, "Frequency not handled: " << frequency());
-            break;
-        };
-
-        return std::make_pair(pStart,pEnd);
-    }
-
-
 
     ZeroInflationTermStructure::ZeroInflationTermStructure(
                                     const DayCounter& dayCounter,
@@ -229,6 +182,42 @@ namespace QuantLib {
                                             bool extrapolate) const {
         InflationTermStructure::checkRange(t, extrapolate);
         return yoyRateImpl(t);
+    }
+
+
+
+    std::pair<Date,Date> inflationPeriod(const Date& d,
+                                         Frequency frequency) {
+
+        Month month = d.month();
+        Year year = d.year();
+
+        Month startMonth, endMonth;
+        switch (frequency) {
+          case Annual:
+            startMonth = January;
+            endMonth = December;
+            break;
+          case Semiannual:
+            startMonth = Month((month-1)/6 + 1);
+            endMonth = Month(startMonth + 5);
+            break;
+          case Quarterly:
+            startMonth = Month((month-1)/3 + 1);
+            endMonth = Month(startMonth + 2);
+            break;
+          case Monthly:
+            startMonth = endMonth = month;
+            break;
+          default:
+            QL_FAIL("Frequency not handled: " << frequency);
+            break;
+        };
+
+        Date startDate = Date(1, startMonth, year);
+        Date endDate = Date::endOfMonth(Date(1, endMonth, year));
+
+        return std::make_pair(startDate,endDate);
     }
 
 }

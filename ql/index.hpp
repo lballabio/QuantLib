@@ -34,11 +34,12 @@
 namespace QuantLib {
 
     //! purely virtual base class for indexes
-    /*!
-    \warning this class performs no check that the provided/requested fixings
-             are for dates in the past, i.e. for dates less than or equal to
-             the evaluation date. It is up to the client code to take care
-             of possible inconsistencies due to "seeing in the future"
+    /*! \warning this class performs no check that the
+                 provided/requested fixings are for dates in the past,
+                 i.e. for dates less than or equal to the evaluation
+                 date. It is up to the client code to take care of
+                 possible inconsistencies due to "seeing in the
+                 future"
     */
     class Index : public Observable {
       public:

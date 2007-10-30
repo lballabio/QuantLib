@@ -95,9 +95,6 @@ namespace QuantLib {
                         bool extrapolate) const;
         void checkRange(Time t,
                         bool extrapolate) const;
-
-        // utility function giving period limits for any date
-        virtual std::pair<Date,Date> calculatePeriod(const Date &) const;
     };
 
 
@@ -190,6 +187,11 @@ namespace QuantLib {
         //! to be defined in derived classes
         virtual Rate yoyRateImpl(Time time) const = 0;
     };
+
+
+    //! utility function giving the inflation period for a given date
+    std::pair<Date,Date> inflationPeriod(const Date &,
+                                         Frequency);
 
 }
 
