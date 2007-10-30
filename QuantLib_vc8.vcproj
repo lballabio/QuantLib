@@ -904,11 +904,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\indexes\inflationindex.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\indexes\inflationindex.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\indexes\interestrateindex.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\ql\indexes\interestrateindex.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\indexes\region.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\indexes\region.hpp"
 				>
 			</File>
 			<File
@@ -1048,6 +1064,22 @@
 				</File>
 				<File
 					RelativePath=".\ql\indexes\swap\eurliborswapfixifr.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="inflation"
+				>
+				<File
+					RelativePath=".\ql\indexes\inflation\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\indexes\inflation\euhicp.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\indexes\inflation\ukrpi.hpp"
 					>
 				</File>
 			</Filter>
