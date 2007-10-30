@@ -46,6 +46,7 @@ QuantLib is
     Copyright (C) 2006 François du Vignaud
 
     Copyright (C) 2007 Affine Group Limited
+    Copyright (C) 2007 Chris Kenyon
     Copyright (C) 2007 Gang Liang
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
