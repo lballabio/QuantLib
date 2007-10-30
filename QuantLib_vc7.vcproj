@@ -5447,6 +5447,12 @@
 				RelativePath=".\ql\termstructures\all.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\termstructures\inflationtermstructure.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\inflationtermstructure.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\termstructures\voltermstructure.cpp">
 			</File>
 			<File
@@ -5843,6 +5849,19 @@
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\yield\zeroyieldstructure.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="inflation"
+				Filter="">
+				<File
+					RelativePath=".\ql\termstructures\inflation\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\inflation\interpolatedyoyinflationcurve.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\inflation\interpolatedzeroinflationcurve.hpp">
 				</File>
 			</Filter>
 		</Filter>
