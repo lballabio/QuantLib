@@ -3583,150 +3583,30 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="voltermstructures"
+			Name="termstructures"
 			>
 			<File
-				RelativePath=".\ql\termstructures\volatility\all.hpp"
+				RelativePath=".\ql\termstructures\all.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\termstructures\volatility\blackatmvolcurve.cpp"
+				RelativePath=".\ql\termstructures\voltermstructure.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\termstructures\volatility\blackatmvolcurve.hpp"
+				RelativePath=".\ql\termstructures\voltermstructure.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\termstructures\volatility\blackvolsurface.cpp"
+				RelativePath=".\ql\termstructures\yieldtermstructure.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\termstructures\volatility\blackvolsurface.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\volatility\equityfxvolsurface.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\volatility\equityfxvolsurface.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\volatility\interestratevolsurface.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\volatility\interestratevolsurface.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\volatility\interpolatedsmilesection.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\volatility\sabr.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\volatility\sabr.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\volatility\sabrinterpolatedsmilesection.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\volatility\sabrinterpolatedsmilesection.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\volatility\sabrinterpolatedsmilesection2.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\volatility\sabrinterpolatedsmilesection2.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\volatility\sabrinterpolatedsmilesectionNew.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\volatility\smilesection.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\volatility\smilesection.hpp"
+				RelativePath=".\ql\termstructures\yieldtermstructure.hpp"
 				>
 			</File>
 			<Filter
-				Name="equityfx"
-				>
-				<File
-					RelativePath=".\ql\termstructures\volatility\equityfx\all.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\equityfx\blackconstantvol.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\equityfx\blackvariancecurve.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\equityfx\blackvariancecurve.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\equityfx\blackvariancesurface.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\equityfx\blackvariancesurface.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\equityfx\blackvoltermstructure.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\equityfx\blackvoltermstructure.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\equityfx\impliedvoltermstructure.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\equityfx\localconstantvol.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\equityfx\localvolcurve.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\equityfx\localvolsurface.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\equityfx\localvolsurface.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\equityfx\localvoltermstructure.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\equityfx\localvoltermstructure.hpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="interestrate"
+				Name="volatility"
 				>
 				<File
 					RelativePath=".\ql\termstructures\volatility\abcd.cpp"
@@ -3757,11 +3637,83 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\volatility\blackatmvolcurve.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\blackatmvolcurve.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\blackvolsurface.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\blackvolsurface.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\equityfxvolsurface.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\equityfxvolsurface.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\interestratevolsurface.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\interestratevolsurface.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\interpolatedsmilesection.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\sabr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\sabr.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\sabrinterpolatedsmilesection.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\sabrinterpolatedsmilesection.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\sabrinterpolatedsmilesection2.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\sabrinterpolatedsmilesection2.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\sabrinterpolatedsmilesectionNew.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\volatility\sabrvolsurface.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\volatility\sabrvolsurface.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\smilesection.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\smilesection.hpp"
 					>
 				</File>
 				<File
@@ -3772,6 +3724,102 @@
 					RelativePath=".\ql\termstructures\volatility\volcube.hpp"
 					>
 				</File>
+				<Filter
+					Name="capfloor"
+					>
+					<File
+						RelativePath=".\ql\termstructures\volatility\capfloor\all.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\capfloor\capfloortermvolatilitystructure.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\capfloor\capfloortermvolatilitystructure.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\capfloor\capfloortermvolcurve.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\capfloor\capfloortermvolcurve.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\capfloor\capfloortermvolsurface.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\capfloor\capfloortermvolsurface.hpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="equityfx"
+					>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\all.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\blackconstantvol.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\blackvariancecurve.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\blackvariancecurve.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\blackvariancesurface.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\blackvariancesurface.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\blackvoltermstructure.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\blackvoltermstructure.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\impliedvoltermstructure.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\localconstantvol.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\localvolcurve.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\localvolsurface.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\localvolsurface.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\localvoltermstructure.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\localvoltermstructure.hpp"
+						>
+					</File>
+				</Filter>
 				<Filter
 					Name="optionlet"
 					>
@@ -3849,38 +3897,6 @@
 					</File>
 					<File
 						RelativePath=".\ql\termstructures\volatility\optionlet\spreadedoptionletvol.hpp"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="capfloor"
-					>
-					<File
-						RelativePath=".\ql\termstructures\volatility\capfloor\all.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatility\capfloor\capfloortermvolatilitystructure.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatility\capfloor\capfloortermvolatilitystructure.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatility\capfloor\capfloortermvolcurve.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatility\capfloor\capfloortermvolcurve.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatility\capfloor\capfloortermvolsurface.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatility\capfloor\capfloortermvolsurface.hpp"
 						>
 					</File>
 				</Filter>
@@ -3972,6 +3988,126 @@
 						>
 					</File>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="yield"
+				>
+				<File
+					RelativePath=".\ql\termstructures\yield\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\bondhelpers.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\bondhelpers.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\bootstraptraits.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\compoundforward.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\compoundforward.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\discountcurve.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\drifttermstructure.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\extendeddiscountcurve.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\extendeddiscountcurve.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\fittedbonddiscountcurve.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\fittedbonddiscountcurve.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\flatforward.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\forwardcurve.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\forwardspreadedtermstructure.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\forwardstructure.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\impliedtermstructure.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\nonlinearfittingmethods.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\nonlinearfittingmethods.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\piecewiseyieldcurve.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\piecewisezerospreadedtermstructure.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\quantotermstructure.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\ratehelper.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\ratehelper.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\ratehelpers.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\ratehelpers.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\zerocurve.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\zerospreadedtermstructure.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\zeroyieldstructure.hpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -6243,11 +6379,43 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\legacy\libormarketmodels\lfmcovarparam.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\legacy\libormarketmodels\lfmcovarparam.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\legacy\libormarketmodels\lfmcovarproxy.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\legacy\libormarketmodels\lfmcovarproxy.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\legacy\libormarketmodels\lfmhullwhiteparam.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\legacy\libormarketmodels\lfmhullwhiteparam.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\legacy\libormarketmodels\lfmprocess.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\legacy\libormarketmodels\lfmprocess.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\legacy\libormarketmodels\lfmswaptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\legacy\libormarketmodels\lfmswaptionengine.hpp"
 					>
 				</File>
 				<File
@@ -6322,159 +6490,7 @@
 					RelativePath=".\ql\legacy\libormarketmodels\lmvolmodel.hpp"
 					>
 				</File>
-			    <File
-				   RelativePath=".\ql\legacy\libormarketmodels\lfmcovarparam.cpp"
-				   >
-			    </File>
-			    <File
-				   RelativePath=".\ql\legacy\libormarketmodels\lfmcovarparam.hpp"
-				   >
-			    </File>
-			    <File
-				   RelativePath=".\ql\legacy\libormarketmodels\lfmhullwhiteparam.cpp"
-				   >
-			    </File>
-			    <File
-				   RelativePath=".\ql\legacy\libormarketmodels\lfmhullwhiteparam.hpp"
-				   >
-			    </File>
-			    <File
-				   RelativePath=".\ql\legacy\libormarketmodels\lfmprocess.cpp"
-				   >
-			    </File>
-			    <File
-				   RelativePath=".\ql\legacy\libormarketmodels\lfmprocess.hpp"
-				   >
-			    </File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\lfmswaptionengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\lfmswaptionengine.hpp"
-					>
-				</File>
 			</Filter>
-		</Filter>
-		<Filter
-			Name="yieldtermstructure"
-			>
-			<File
-				RelativePath=".\ql\termstructures\yield\all.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\bondhelpers.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\bondhelpers.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\bootstraptraits.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\compoundforward.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\compoundforward.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\discountcurve.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\drifttermstructure.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\extendeddiscountcurve.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\extendeddiscountcurve.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\fittedbonddiscountcurve.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\fittedbonddiscountcurve.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\flatforward.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\forwardcurve.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\forwardspreadedtermstructure.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\forwardstructure.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\impliedtermstructure.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\nonlinearfittingmethods.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\nonlinearfittingmethods.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\piecewiseyieldcurve.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\piecewisezerospreadedtermstructure.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\quantotermstructure.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\ratehelper.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\ratehelper.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\ratehelpers.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\ratehelpers.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\zerocurve.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\zerospreadedtermstructure.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\yield\zeroyieldstructure.hpp"
-				>
-			</File>
 		</Filter>
 		<File
 			RelativePath=".\ql\auto_link.hpp"
@@ -6678,22 +6694,6 @@
 		</File>
 		<File
 			RelativePath=".\ql\volatilitymodel.hpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ql\voltermstructure.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ql\voltermstructure.hpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ql\yieldtermstructure.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ql\yieldtermstructure.hpp"
 			>
 		</File>
 	</Files>
