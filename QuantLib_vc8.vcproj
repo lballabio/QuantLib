@@ -1216,6 +1216,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\instruments\inflationswap.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\inflationswap.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\instruments\lookbackoption.cpp"
 				>
 			</File>
@@ -1357,6 +1365,22 @@
 			</File>
 			<File
 				RelativePath=".\ql\instruments\varianceswap.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\yyiis.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\yyiis.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\zciis.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\zciis.hpp"
 				>
 			</File>
 			<Filter
