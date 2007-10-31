@@ -552,10 +552,22 @@
 				RelativePath=".\ql\indexes\indexmanager.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\indexes\inflationindex.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\indexes\inflationindex.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\indexes\interestrateindex.cpp">
 			</File>
 			<File
 				RelativePath=".\ql\indexes\interestrateindex.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\indexes\region.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\indexes\region.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\indexes\swapindex.cpp">
@@ -662,6 +674,19 @@
 				</File>
 				<File
 					RelativePath=".\ql\indexes\swap\eurliborswapfixifr.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="inflation"
+				Filter="">
+				<File
+					RelativePath=".\ql\indexes\inflation\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\indexes\inflation\euhicp.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\indexes\inflation\ukrpi.hpp">
 				</File>
 			</Filter>
 		</Filter>
@@ -871,6 +896,18 @@
 			</File>
 			<File
 				RelativePath=".\ql\instruments\varianceswap.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\instruments\yyiis.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\instruments\yyiis.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\instruments\zciis.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\instruments\zciis.hpp">
 			</File>
 			<Filter
 				Name="bonds"
