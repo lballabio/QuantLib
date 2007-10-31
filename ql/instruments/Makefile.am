@@ -23,6 +23,7 @@ this_include_HEADERS = \
     forward.hpp \
     forwardrateagreement.hpp \
     forwardvanillaoption.hpp \
+    inflationswap.hpp \
     lookbackoption.hpp \
     makecapfloor.hpp \
     makecms.hpp \
@@ -40,7 +41,9 @@ this_include_HEADERS = \
     swaption.hpp \
     vanillaoption.hpp \
     vanillaswap.hpp \
-    varianceswap.hpp
+    varianceswap.hpp \
+    yyiis.hpp \
+    zciis.hpp
 
 libInstruments_la_SOURCES = \
     asianoption.cpp \
@@ -57,6 +60,7 @@ libInstruments_la_SOURCES = \
     forward.cpp \
     forwardrateagreement.cpp \
     forwardvanillaoption.cpp \
+    inflationswap.cpp \
     lookbackoption.cpp \
     makecapfloor.cpp \
     makecms.cpp \
@@ -74,7 +78,9 @@ libInstruments_la_SOURCES = \
     swaption.cpp \
     vanillaoption.cpp \
     vanillaswap.cpp \
-    varianceswap.cpp
+    varianceswap.cpp \
+    yyiis.cpp \
+    zciis.cpp
 
 libInstruments_la_LIBADD = \
     bonds/libBonds.la

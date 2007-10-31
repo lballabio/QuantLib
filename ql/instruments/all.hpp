@@ -18,6 +18,7 @@
 #include <ql/instruments/forward.hpp>
 #include <ql/instruments/forwardrateagreement.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
+#include <ql/instruments/inflationswap.hpp>
 #include <ql/instruments/lookbackoption.hpp>
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/instruments/makecms.hpp>
@@ -36,5 +37,7 @@
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/instruments/varianceswap.hpp>
+#include <ql/instruments/yyiis.hpp>
+#include <ql/instruments/zciis.hpp>
 
 #include <ql/instruments/bonds/all.hpp>
