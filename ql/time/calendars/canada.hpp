@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,7 +30,7 @@
 namespace QuantLib {
 
     //! Canadian calendar
-    /*! Holidays:
+    /*! Banking holidays:
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
@@ -41,7 +42,24 @@ namespace QuantLib {
         <li>Provincial Holiday, first Monday of August</li>
         <li>Labour Day, first Monday of September</li>
         <li>Thanksgiving Day, second Monday of October</li>
-        <li>Remembrance Day, November 11th</li>
+        <li>Remembrance Day, November 11th (possibly moved to Monday)</li>
+        <li>Christmas, December 25th (possibly moved to Monday or Tuesday)</li>
+        <li>Boxing Day, December 26th (possibly moved to Monday or
+            Tuesday)</li>
+        </ul>
+
+        Holidays for the Toronto stock exchange (TSX):
+        <ul>
+        <li>Saturdays</li>
+        <li>Sundays</li>
+        <li>New Year's Day, January 1st (possibly moved to Monday)</li>
+        <li>Good Friday</li>
+        <li>Easter Monday</li>
+        <li>Victoria Day, The Monday on or preceding 24 May</li>
+        <li>Canada Day, July 1st (possibly moved to Monday)</li>
+        <li>Provincial Holiday, first Monday of August</li>
+        <li>Labour Day, first Monday of September</li>
+        <li>Thanksgiving Day, second Monday of October</li>
         <li>Christmas, December 25th (possibly moved to Monday or Tuesday)</li>
         <li>Boxing Day, December 26th (possibly moved to Monday or
             Tuesday)</li>
@@ -51,13 +69,21 @@ namespace QuantLib {
     */
     class Canada : public Calendar {
       private:
-        class Impl : public Calendar::WesternImpl {
+        class SettlementImpl : public Calendar::WesternImpl {
           public:
             std::string name() const { return "Canada"; }
             bool isBusinessDay(const Date&) const;
         };
+        class TsxImpl : public Calendar::WesternImpl {
+          public:
+            std::string name() const { return "TSX"; }
+            bool isBusinessDay(const Date&) const;
+        };
       public:
-        Canada();
+        enum Market { Settlement,       //!< generic settlement calendar
+                      TSX               //!< Toronto stock exchange calendar
+        };
+        Canada(Market market = Settlement);
     };
 
 }
