@@ -43,16 +43,22 @@ namespace QuantLib {
         AbcdAtmVolCurve(Natural settlementDays,
                         const Calendar& cal,
                         const std::vector<Period>& optionTenors,
-                        const std::vector<Handle<Quote> >& vols,
+                        const std::vector<Handle<Quote> >& volsHandles,
+                        const std::vector<bool> inclusionInInterpolationFlag 
+                            = std::vector<bool>(1,true),
                         BusinessDayConvention bdc = Following,
                         const DayCounter& dc = Actual365Fixed());
+        //! Returns k adjustment factors for option tenors used in interpolation
         std::vector<Real> k() const;
+        //! Returns k adjustment factor at time t
+        Real k(Time t) const;
         Real a() const;
         Real b() const;
         Real c() const;
         Real d() const;
         Real rmsError() const;
         Real maxError() const;
+        EndCriteria::Type endCriteria() const;
         //! \name TermStructure interface
         //@{
         virtual Date maxDate() const;
@@ -65,6 +71,7 @@ namespace QuantLib {
         //! \name some inspectors
         //@{
         const std::vector<Period>& optionTenors() const;
+        const std::vector<Period>& optionTenorsInInterpolation() const;
         const std::vector<Date>& optionDates() const;
         const std::vector<Time>& optionTimes() const;
         //@}
@@ -75,26 +82,32 @@ namespace QuantLib {
       protected:
         //! \name BlackAtmVolCurve interface
         //@{
-        //! spot at-the-money variance calculation
+        //! spot at-the-money variance calculation (k adjusted)
         virtual Real atmVarianceImpl(Time t) const;
-        //! spot at-the-money volatility calculation
+        //! spot at-the-money volatility calculation (k adjusted)
         virtual Volatility atmVolImpl(Time t) const;
         //@}
       private:
         void checkInputs() const;
         void initializeOptionDatesAndTimes() const;
+        void initializeVolatilities();
         void registerWithMarketData();
         void interpolate();
 
         Size nOptionTenors_;
         std::vector<Period> optionTenors_;
+        mutable std::vector<Period> actualOptionTenors_;
         mutable std::vector<Date> optionDates_;
         mutable std::vector<Time> optionTimes_;
+        mutable std::vector<Time> actualOptionTimes_;
         Date evaluationDate_;
 
         std::vector<Handle<Quote> > volHandles_;
         mutable std::vector<Volatility> vols_;
+        mutable std::vector<Volatility> actualVols_;
 
+        mutable std::vector<bool> inclusionInInterpolation_;
+        
         boost::shared_ptr<AbcdInterpolation> interpolation_;
     };
 
@@ -112,13 +125,17 @@ namespace QuantLib {
 
     inline Volatility AbcdAtmVolCurve::atmVolImpl(Time t) const {
         calculate();
-        return interpolation_->operator() (t, true);
+        return k(t) * interpolation_->operator() (t, true);
     }
 
     inline const std::vector<Period>& AbcdAtmVolCurve::optionTenors() const {
          return optionTenors_;
     }
 
+    inline const std::vector<Period>& AbcdAtmVolCurve::optionTenorsInInterpolation() const {
+        return actualOptionTenors_;
+    }
+    
     inline
     const std::vector<Date>& AbcdAtmVolCurve::optionDates() const {
         return optionDates_;
@@ -134,6 +151,11 @@ namespace QuantLib {
         return interpolation_->k();
     }
     
+    inline
+    Real AbcdAtmVolCurve::k(Time t) const {
+        return interpolation_->k(t,actualOptionTimes_.begin(),actualOptionTimes_.end());
+    }
+
     inline Real AbcdAtmVolCurve::a() const {
         return interpolation_->a();
     }

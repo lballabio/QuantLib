@@ -24,23 +24,29 @@
 namespace QuantLib {
 
     // floating reference date, floating market data
-    AbcdAtmVolCurve::AbcdAtmVolCurve(Natural settlDays,
-                                     const Calendar& cal,
-                                     const std::vector<Period>& optionTenors,
-                                     const std::vector<Handle<Quote> >& vols,
-                                     BusinessDayConvention bdc,
-                                     const DayCounter& dc)
+    AbcdAtmVolCurve::AbcdAtmVolCurve(
+            Natural settlDays,
+            const Calendar& cal,
+            const std::vector<Period>& optionTenors,
+            const std::vector<Handle<Quote> >& volsHandles,
+            const std::vector<bool> inclusionInInterpolationFlag,
+            BusinessDayConvention bdc,
+            const DayCounter& dc)
     : BlackAtmVolCurve(settlDays, cal, bdc, dc),
       nOptionTenors_(optionTenors.size()),
       optionTenors_(optionTenors),
       optionDates_(nOptionTenors_),
       optionTimes_(nOptionTenors_),
-      volHandles_(vols),
-      vols_(vols.size()),
+      actualOptionTimes_(nOptionTenors_),
+      volHandles_(volsHandles),
+      vols_(volsHandles.size()),
+      actualVols_(volsHandles.size()),
+      inclusionInInterpolation_(inclusionInInterpolationFlag),
       interpolation_(boost::shared_ptr<AbcdInterpolation>()) // do not initialize with nOptionTenors_
     {
         checkInputs();
         initializeOptionDatesAndTimes();
+        initializeVolatilities();
         registerWithMarketData();
         for (Size i=0; i<vols_.size(); ++i)
             vols_[i] = volHandles_[i]->value();
@@ -61,6 +67,15 @@ namespace QuantLib {
                        "non increasing option tenor: " << io::ordinal(i-1) <<
                        " is " << optionTenors_[i-1] << ", " <<
                        io::ordinal(i) << " is " << optionTenors_[i]);
+        if (inclusionInInterpolation_.size()==1) {
+            inclusionInInterpolation_.resize(nOptionTenors_);
+            for(Size j=1; j<nOptionTenors_;++j)
+                inclusionInInterpolation_[j] = inclusionInInterpolation_[0];
+        } else
+            QL_REQUIRE(nOptionTenors_==inclusionInInterpolation_.size(),
+                       "mismatch between number of option tenors (" <<
+                       nOptionTenors_ << ") and number of inclusion's flags (" <<
+                       inclusionInInterpolation_.size() << ")");
     }
 
     void AbcdAtmVolCurve::registerWithMarketData()
@@ -72,9 +87,9 @@ namespace QuantLib {
     void AbcdAtmVolCurve::interpolate()
     {
         interpolation_ = boost::shared_ptr<AbcdInterpolation>(new
-                            AbcdInterpolation(optionTimes_.begin(),
-                                              optionTimes_.end(),
-                                              vols_.begin()));
+                            AbcdInterpolation(actualOptionTimes_.begin(),
+                                              actualOptionTimes_.end(),
+                                              actualVols_.begin()));
     }
 
     void AbcdAtmVolCurve::accept(AcyclicVisitor& v) {
@@ -102,19 +117,40 @@ namespace QuantLib {
 
     void AbcdAtmVolCurve::initializeOptionDatesAndTimes() const
     {
+        // the input time data
         for (Size i=0; i<nOptionTenors_; ++i) {
             optionDates_[i] = optionDateFromTenor(optionTenors_[i]);
             optionTimes_[i] = timeFromReference(optionDates_[i]);
+        }
+        // the time data used for interpolation
+        actualOptionTimes_.clear();
+        for (Size i=0; i<nOptionTenors_; ++i) {
+            if(inclusionInInterpolation_[i]==true) {
+               actualOptionTimes_.push_back(optionTimes_[i]); 
+               actualOptionTenors_.push_back(optionTenors_[i]); 
+            }
+        }
+    }
+
+    void AbcdAtmVolCurve::initializeVolatilities() {
+
+        actualVols_.clear();
+        for (Size i=0; i<nOptionTenors_; ++i) {
+            vols_[i] = volHandles_[i]->value();    
+            if(inclusionInInterpolation_[i]==true)
+               actualVols_.push_back(vols_[i]); 
         }
     }
 
     void AbcdAtmVolCurve::performCalculations() const
     {
         // check if date recalculation must be called here
-
-        for (Size i=0; i<vols_.size(); ++i)
+        actualVols_.clear();
+        for (Size i=0; i<vols_.size(); ++i) {
             vols_[i] = volHandles_[i]->value();
-
+            if(inclusionInInterpolation_[i]==true)
+               actualVols_.push_back(vols_[i]); 
+        }
         interpolation_->update();
     }
 

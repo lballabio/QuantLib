@@ -27,6 +27,7 @@
 #define quantlib_abcd_interpolation_hpp
 
 #include <ql/math/interpolation.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/termstructures/volatility/abcd.hpp>
 #include <ql/termstructures/volatility/abcdcalibration.hpp>
 
@@ -138,6 +139,11 @@ namespace QuantLib {
             Real secondDerivative(Real) const {
                 QL_FAIL("Abcd secondDerivative not implemented");
             }
+            Real k(Time t) const {
+                LinearInterpolation li(this->xBegin_, this->xEnd_, this->yBegin_);
+                return li(t);
+            }
+
           private:
             const boost::shared_ptr<EndCriteria> endCriteria_;
             const boost::shared_ptr<OptimizationMethod> optMethod_;
@@ -192,6 +198,11 @@ namespace QuantLib {
         Real rmsError() const { return coeffs_->error_; }
         Real maxError() const { return coeffs_->maxError_; }
         EndCriteria::Type endCriteria(){ return coeffs_->abcdEndCriteria_; }
+        template <class I1>
+        Real k(Time t, const I1& xBegin, const I1& xEnd) const {
+            LinearInterpolation li(xBegin, xEnd, (coeffs_->k_).begin());
+            return li(t);
+        }
       private:
         boost::shared_ptr<detail::AbcdCoeffHolder> coeffs_;
     };
