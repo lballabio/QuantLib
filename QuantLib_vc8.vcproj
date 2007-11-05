@@ -4065,27 +4065,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\termstructures\yield\compoundforward.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\yield\compoundforward.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\termstructures\yield\discountcurve.hpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\yield\drifttermstructure.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\yield\extendeddiscountcurve.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\yield\extendeddiscountcurve.hpp"
 					>
 				</File>
 				<File
@@ -6560,6 +6544,30 @@
 				</File>
 				<File
 					RelativePath=".\ql\legacy\libormarketmodels\lmvolmodel.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="termstructures"
+				>
+				<File
+					RelativePath=".\ql\legacy\termstructures\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\legacy\termstructures\compoundforward.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\legacy\termstructures\compoundforward.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\legacy\termstructures\extendeddiscountcurve.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\legacy\termstructures\extendeddiscountcurve.hpp"
 					>
 				</File>
 			</Filter>
