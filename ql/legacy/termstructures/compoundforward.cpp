@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/yield/compoundforward.hpp>
-#include <ql/termstructures/yield/extendeddiscountcurve.hpp>
+#include <ql/legacy/termstructures/compoundforward.hpp>
+#include <ql/legacy/termstructures/extendeddiscountcurve.hpp>
 
 namespace QuantLib {
 

@@ -19,7 +19,7 @@
 
 #include "compoundforward.hpp"
 #include "utilities.hpp"
-#include <ql/termstructures/yield/compoundforward.hpp>
+#include <ql/legacy/termstructures/compoundforward.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/instruments/vanillaswap.hpp>

@@ -3,10 +3,8 @@
 
 #include <ql/termstructures/yield/bondhelpers.hpp>
 #include <ql/termstructures/yield/bootstraptraits.hpp>
-#include <ql/termstructures/yield/compoundforward.hpp>
 #include <ql/termstructures/yield/discountcurve.hpp>
 #include <ql/termstructures/yield/drifttermstructure.hpp>
-#include <ql/termstructures/yield/extendeddiscountcurve.hpp>
 #include <ql/termstructures/yield/fittedbonddiscountcurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/forwardcurve.hpp>

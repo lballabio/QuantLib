@@ -193,7 +193,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CapFlooredCouponTest::suite());
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
-    test->add(CompoundForwardTest::suite()); // fails with QL_USE_INDEXED_COUPON
     test->add(ConvertibleBondTest::suite());
     test->add(CovarianceTest::suite());
     test->add(CurveStatesTest::suite());
@@ -256,7 +255,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(VarianceSwapTest::suite());
     test->add(VolatilityModelsTest::suite());
 
-     //tests for deprecated (or generally old-style) classes
+     //tests for deprecated classes
+    test->add(CompoundForwardTest::suite()); // fails with QL_USE_INDEXED_COUPON
     test->add(LiborMarketModelTest::suite());
     test->add(LiborMarketModelProcessTest::suite());
     test->add(OldPricerTest::suite());                               // FLOATING_POINT_EXCEPTION

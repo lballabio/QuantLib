@@ -6,10 +6,8 @@ this_include_HEADERS = \
     all.hpp \
     bondhelpers.hpp \
     bootstraptraits.hpp \
-    compoundforward.hpp \
     discountcurve.hpp \
     drifttermstructure.hpp \
-    extendeddiscountcurve.hpp \
     fittedbonddiscountcurve.hpp \
     flatforward.hpp \
     forwardcurve.hpp \
@@ -28,8 +26,6 @@ this_include_HEADERS = \
 
 libYieldTermStructures_la_SOURCES = \
     bondhelpers.cpp \
-    compoundforward.cpp \
-    extendeddiscountcurve.cpp \
     fittedbonddiscountcurve.cpp \
     nonlinearfittingmethods.cpp \
     ratehelper.cpp \

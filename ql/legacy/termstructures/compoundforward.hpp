@@ -25,7 +25,7 @@
 #define quantlib_compoundforward_curve_hpp
 
 #include <ql/termstructures/yield/forwardstructure.hpp>
-#include <ql/termstructures/yield/extendeddiscountcurve.hpp>
+#include <ql/legacy/termstructures/extendeddiscountcurve.hpp>
 
 namespace QuantLib {
 

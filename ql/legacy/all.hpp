@@ -4,3 +4,4 @@
 
 #include <ql/legacy/libormarketmodels/all.hpp>
 #include <ql/legacy/pricers/all.hpp>
+#include <ql/legacy/termstructures/all.hpp>
