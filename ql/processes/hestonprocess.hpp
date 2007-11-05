@@ -45,16 +45,15 @@ namespace QuantLib {
     */
     class HestonProcess : public StochasticProcess {
       public:
-        enum Discretization { PartialTruncation, FullTruncation, 
+        enum Discretization { PartialTruncation, FullTruncation,
                               Reflection, ExactVariance };
 
         HestonProcess(const Handle<YieldTermStructure>& riskFreeRate,
                       const Handle<YieldTermStructure>& dividendYield,
                       const Handle<Quote>& s0,
-                      double v0, double kappa, 
-                      double theta, double sigma, double rho,
+                      Real v0, Real kappa,
+                      Real theta, Real sigma, Real rho,
                       Discretization d = FullTruncation);
-
 
         Size size() const;
         Disposable<Array> initialValues() const;
@@ -64,27 +63,24 @@ namespace QuantLib {
         Disposable<Array> evolve(Time t0, const Array& x0,
                                  Time dt, const Array& dw) const;
 
-        const RelinkableHandle<Quote>& v0()    const;
-        const RelinkableHandle<Quote>& rho()   const;
-        const RelinkableHandle<Quote>& kappa() const;
-        const RelinkableHandle<Quote>& theta() const;
-        const RelinkableHandle<Quote>& sigma() const;
+        Real v0()    const { return v0_; }
+        Real rho()   const { return rho_; }
+        Real kappa() const { return kappa_; }
+        Real theta() const { return theta_; }
+        Real sigma() const { return sigma_; }
 
-        const Handle<Quote>& s0()    const;
+        const Handle<Quote>& s0() const;
         const Handle<YieldTermStructure>& dividendYield() const;
         const Handle<YieldTermStructure>& riskFreeRate() const;
 
-        void update();
         Time time(const Date&) const;
       private:
         Handle<YieldTermStructure> riskFreeRate_, dividendYield_;
         Handle<Quote> s0_;
-        RelinkableHandle<Quote> v0_, kappa_, theta_, sigma_, rho_;
-
-        const Discretization discretization_;
-
-        Real s0v_, v0v_, kappav_, thetav_, sigmav_, rhov_, sqrhov_;
+        Real v0_, kappa_, theta_, sigma_, rho_;
+        Discretization discretization_;
     };
+
 }
 
 

@@ -768,6 +768,7 @@ void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
 
 
 namespace {
+
     // Multi vanilla option instrument allows to price sevaral
     // vanilla options using one Monte-Carlo simulation run.
     // Needed here to measure the calibration missmatch of all
@@ -1258,7 +1259,8 @@ void HybridHestonHullWhiteProcessTest::testPseudoJointCalibration() {
 
     Calendar calendar = TARGET();
     DayCounter dc = Actual365Fixed();
-    const Date today = Date::todaysDate();
+    const Date today = Date::todaysDate()+1;
+    Settings::instance().evaluationDate() = today;
 
     Handle<Quote> spot(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
@@ -1284,8 +1286,6 @@ void HybridHestonHullWhiteProcessTest::testPseudoJointCalibration() {
                       dc.yearFraction(today, today+Period(11, Years)));
 
     const Real corr = -0.3;
-    const boost::shared_ptr<JointStochasticProcess> jointProcess(
-        new HybridHestonHullWhiteProcess(hestonProcess, hwProcess, corr, 5));
 
     std::vector<Period> optionMaturities;
     optionMaturities.push_back(Period(1, Years));
@@ -1364,13 +1364,6 @@ void HybridHestonHullWhiteProcessTest::testPseudoJointCalibration() {
         (*iter)->setPricingEngine(engine);
     }
 
-    boost::shared_ptr<MCEuropeanMultiEngine<PseudoRandom> > mcHestonEngine(
-        new MCMultiEuropeanHestonEngine<PseudoRandom >(
-             1, Null<Size>(), true, true, 1, 0.1, Null<Size>(), 123));
-    MultiVanillaOption mvo(jointProcess, payoffs, exercises,
-                           mcHestonEngine);
-    mvo.registerWith(hestonModel);
-
     Real qualityIndex = QL_MAX_REAL;
     Real targetQuality = 5.0;
     const Size maxCascadeSteps = 6;
@@ -1380,8 +1373,22 @@ void HybridHestonHullWhiteProcessTest::testPseudoJointCalibration() {
         LevenbergMarquardt lm(1e-8, 1e-8, 1e-8);
         hestonModel->calibrate(hestonOptions, lm,
                                EndCriteria(400, 100, 1.0e-8, 1.0e-8, 1.0e-8));
+        boost::shared_ptr<HestonProcess> calibratedProcess =
+            hestonModel->process();
 
-         // 2. Calculate NPVs under the full model
+        // 2. Calculate NPVs under the full model
+
+        boost::shared_ptr<JointStochasticProcess> jointProcess(
+                        new HybridHestonHullWhiteProcess(calibratedProcess,
+                                                         hwProcess, corr, 5));
+
+        boost::shared_ptr<MCEuropeanMultiEngine<PseudoRandom> > mcHestonEngine(
+            new MCMultiEuropeanHestonEngine<PseudoRandom >(
+                     1, Null<Size>(), true, true, 1, 0.1, Null<Size>(), 123));
+
+        MultiVanillaOption mvo(jointProcess, payoffs, exercises,
+                               mcHestonEngine);
+
         const std::vector<Real> npvs = mvo.NPVs();
 
         // 3. calculate vola implied vols

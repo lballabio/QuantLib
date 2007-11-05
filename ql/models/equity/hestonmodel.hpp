@@ -41,7 +41,7 @@ namespace QuantLib {
     */
     class HestonModel : public CalibratedModel {
       public:
-        HestonModel(const boost::shared_ptr<HestonProcess> & process);
+        HestonModel(const boost::shared_ptr<HestonProcess>& process);
 
         // variance mean version level
         Real theta() const { return arguments_[0](0.0); }
@@ -54,11 +54,13 @@ namespace QuantLib {
         // spot variance
         Real v0()    const { return arguments_[4](0.0); }
 
+        // underlying process
+        boost::shared_ptr<HestonProcess> process() const { return process_; }
+
         class VolatilityConstraint;
       protected:
         void generateArguments();
-
-        RelinkableHandle<Quote> v0_, kappa_, theta_, sigma_, rho_;
+        boost::shared_ptr<HestonProcess> process_;
     };
 
 }

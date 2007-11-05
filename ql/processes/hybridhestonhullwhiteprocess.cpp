@@ -25,14 +25,14 @@
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/processes/hybridhestonhullwhiteprocess.hpp>
 
-
 namespace QuantLib {
+
     namespace {
+
         static std::vector<boost::shared_ptr<StochasticProcess> >
         buildProcessList(
           const boost::shared_ptr<HestonProcess> & hestonProcess,
-          const boost::shared_ptr<HullWhiteForwardProcess> & hullWhiteProcess)
-        {
+          const boost::shared_ptr<HullWhiteForwardProcess> & hullWhiteProcess) {
 
             std::vector<boost::shared_ptr<StochasticProcess> > retVal;
 
@@ -44,15 +44,16 @@ namespace QuantLib {
                 new HestonProcess(rf,
                                   hestonProcess->dividendYield(),
                                   hestonProcess->s0(),
-                                  hestonProcess->v0()->value(),
-                                  hestonProcess->kappa()->value(),
-                                  hestonProcess->theta()->value(),
-                                  hestonProcess->sigma()->value(),
-                                  hestonProcess->rho()->value())));
+                                  hestonProcess->v0(),
+                                  hestonProcess->kappa(),
+                                  hestonProcess->theta(),
+                                  hestonProcess->sigma(),
+                                  hestonProcess->rho())));
             retVal.push_back(hullWhiteProcess);
 
             return retVal;
         }
+
     }
 
     HybridHestonHullWhiteProcess::HybridHestonHullWhiteProcess(
@@ -68,8 +69,7 @@ namespace QuantLib {
       corrEquityShortRate_(corrEquityShortRate),
 
       T_(hullWhiteProcess->getForwardMeasureTime()),
-      endDiscount_(hestonProcess->riskFreeRate()->discount(T_)) {
-    }
+      endDiscount_(hestonProcess->riskFreeRate()->discount(T_)) {}
 
 
     void HybridHestonHullWhiteProcess::preEvolve(Time t0, const Array& x0,
@@ -186,11 +186,11 @@ namespace QuantLib {
             new HestonProcess(cvProcess->riskFreeRate(),
                               hestonProcess->dividendYield(),
                               hestonProcess->s0(),
-                              hestonProcess->v0()->value(),
-                              hestonProcess->kappa()->value(),
-                              hestonProcess->theta()->value(),
-                              hestonProcess->sigma()->value(),
-                              hestonProcess->rho()->value()));
+                              hestonProcess->v0(),
+                              hestonProcess->kappa(),
+                              hestonProcess->theta(),
+                              hestonProcess->sigma(),
+                              hestonProcess->rho()));
 
         endDiscount_ = hestonProcess->riskFreeRate()->discount(T_);
 

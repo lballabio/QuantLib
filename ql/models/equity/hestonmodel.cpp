@@ -41,30 +41,31 @@ namespace QuantLib {
     };
 
     HestonModel::HestonModel(const boost::shared_ptr<HestonProcess> & process)
-    : CalibratedModel(5),
-      v0_   (process->v0()),
-      kappa_(process->kappa()),
-      theta_(process->theta()),
-      sigma_(process->sigma()),
-      rho_  (process->rho()) {
-        arguments_[0] = ConstantParameter(process->theta()->value(),
+    : CalibratedModel(5), process_(process) {
+        arguments_[0] = ConstantParameter(process->theta(),
                                           PositiveConstraint());
-        arguments_[1] = ConstantParameter(process->kappa()->value(),
+        arguments_[1] = ConstantParameter(process->kappa(),
                                           PositiveConstraint());
-        arguments_[2] = ConstantParameter(process->sigma()->value(),
+        arguments_[2] = ConstantParameter(process->sigma(),
                                           PositiveConstraint());
-        arguments_[3] = ConstantParameter(process->rho()->value(),
+        arguments_[3] = ConstantParameter(process->rho(),
                                           BoundaryConstraint(-1.0, 1.0));
-        arguments_[4] = ConstantParameter(process->v0()->value(),
+        arguments_[4] = ConstantParameter(process->v0(),
                                           PositiveConstraint());
+        generateArguments();
+
+        registerWith(process_->riskFreeRate());
+        registerWith(process_->dividendYield());
+        registerWith(process_->s0());
     }
 
     void HestonModel::generateArguments() {
-        v0_.linkTo   (boost::shared_ptr<Quote>(new SimpleQuote(v0())));
-        kappa_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(kappa())));
-        theta_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(theta())));
-        sigma_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(sigma())));
-        rho_.linkTo  (boost::shared_ptr<Quote>(new SimpleQuote(rho())));
+        process_.reset(new HestonProcess(process_->riskFreeRate(),
+                                         process_->dividendYield(),
+                                         process_->s0(),
+                                         v0(), kappa(), theta(),
+                                         sigma(), rho()));
     }
+
 }
 

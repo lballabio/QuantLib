@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -46,14 +46,15 @@ namespace QuantLib {
         virtual DiscountFactor discount(Time t) const = 0;
 
         virtual Real discountBond(Time now,
-                                    Time maturity,
-                                    Array factors) const = 0;
+                                  Time maturity,
+                                  Array factors) const = 0;
 
         virtual Real discountBondOption(Option::Type type,
                                         Real strike,
                                         Time maturity,
                                         Time bondMaturity) const = 0;
     };
+
 
     //! Term-structure consistent model class
     /*! This is a base class for models that can reprice exactly
@@ -72,6 +73,7 @@ namespace QuantLib {
       private:
         Handle<YieldTermStructure> termStructure_;
     };
+
 
     //! Calibrated model class
     class CalibratedModel : public Observer, public virtual Observable {
@@ -93,9 +95,10 @@ namespace QuantLib {
                    const EndCriteria& endCriteria,
                    const Constraint& constraint = Constraint(),
                    const std::vector<Real>& weights = std::vector<Real>());
+
         Real value(const Array& params,
-                const std::vector<boost::shared_ptr<CalibrationHelper> >& instruments);
-      // Inspectors
+                   const std::vector<boost::shared_ptr<CalibrationHelper> >&);
+
         const boost::shared_ptr<Constraint>& constraint() const;
         //! returns end criteria result
         EndCriteria::Type endCriteria();
@@ -116,7 +119,6 @@ namespace QuantLib {
         //! Calibration cost function class
         class CalibrationFunction;
         friend class CalibrationFunction;
-
     };
 
     //! Abstract short-rate model class

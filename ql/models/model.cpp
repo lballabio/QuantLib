@@ -100,8 +100,10 @@ namespace QuantLib {
         Array result(prob.currentValue());
         setParams(result);
         Array shortRateProblemValues_ = prob.values(result);
+
+        notifyObservers();
     }
-    // Inspectors
+
     EndCriteria::Type CalibratedModel::endCriteria() {
         return shortRateEndCriteria_;
     }
@@ -129,8 +131,8 @@ namespace QuantLib {
 
     void CalibratedModel::setParams(const Array& params) {
         Array::const_iterator p = params.begin();
-        for (Size i=0; i<arguments_.size(); i++) {
-            for (Size j=0; j<arguments_[i].size(); j++, p++) {
+        for (Size i=0; i<arguments_.size(); ++i) {
+            for (Size j=0; j<arguments_[i].size(); ++j, ++p) {
                 QL_REQUIRE(p!=params.end(),"parameter array too small");
                 arguments_[i].setParam(j, *p);
             }
