@@ -129,8 +129,8 @@ namespace QuantLib {
         // calculate sabr fit
         boost::array<Real, 4> sabrParameters1 = sabrGuesses(d);
 
-        boost::shared_ptr<SabrInterpolatedSmileSectionNew> tmp(new
-            SabrInterpolatedSmileSectionNew(d, 
+        boost::shared_ptr<SabrInterpolatedSmileSection> tmp(new
+            SabrInterpolatedSmileSection(d, 
                                             index_->forecastFixing(d), atmRateSpreads_, true,
                                             atmCurve_->atmVol(d), volSpreads,
                                             sabrParameters1[0], sabrParameters1[1],

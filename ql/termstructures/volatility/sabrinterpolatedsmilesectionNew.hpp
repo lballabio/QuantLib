@@ -33,13 +33,13 @@ Copyright (C) 2006 François du Vignaud
 namespace QuantLib {
 
     class Quote;
-    class SabrInterpolatedSmileSectionNew : public SmileSection,
+    class SabrInterpolatedSmileSection : public SmileSection,
                                             public LazyObject {
       public:
         //! \name Constructors
         //@{
         //! all market data are quotes
-        SabrInterpolatedSmileSectionNew(
+        SabrInterpolatedSmileSection(
                            const Date& optionDate,
                            const Handle<Quote>& forward,
                            const std::vector<Rate>& strikes,
@@ -57,7 +57,7 @@ namespace QuantLib {
                            const DayCounter& dc = Actual365Fixed()
                            );
         //! no quotes
-        SabrInterpolatedSmileSectionNew(
+        SabrInterpolatedSmileSection(
                            const Date& optionDate,
                            const Rate& forward,
                            const std::vector<Rate>& strikes,
@@ -129,63 +129,63 @@ namespace QuantLib {
 
     };
 
-    inline void SabrInterpolatedSmileSectionNew::update() {
+    inline void SabrInterpolatedSmileSection::update() {
         LazyObject::update();
         SmileSection::update();
     }
 
-    inline Real SabrInterpolatedSmileSectionNew::volatilityImpl(Rate strike) const {
+    inline Real SabrInterpolatedSmileSection::volatilityImpl(Rate strike) const {
         calculate();
         return (*sabrInterpolation_)(strike, true);
     }
 
-    inline Real SabrInterpolatedSmileSectionNew::alpha() const {
+    inline Real SabrInterpolatedSmileSection::alpha() const {
         calculate();
         return sabrInterpolation_->alpha();
     }
 
-    inline Real SabrInterpolatedSmileSectionNew::beta() const {
+    inline Real SabrInterpolatedSmileSection::beta() const {
         calculate();
         return sabrInterpolation_->beta();
     }
 
-    inline Real SabrInterpolatedSmileSectionNew::nu() const {
+    inline Real SabrInterpolatedSmileSection::nu() const {
         calculate();
         return sabrInterpolation_->nu();
     }
 
-    inline Real SabrInterpolatedSmileSectionNew::rho() const {
+    inline Real SabrInterpolatedSmileSection::rho() const {
         calculate();
         return sabrInterpolation_->rho();
     }
 
-    inline Real SabrInterpolatedSmileSectionNew::rmsError() const {
+    inline Real SabrInterpolatedSmileSection::rmsError() const {
         calculate();
         return sabrInterpolation_->rmsError();
     }
 
-    inline Real SabrInterpolatedSmileSectionNew::maxError() const {
+    inline Real SabrInterpolatedSmileSection::maxError() const {
         calculate();
         return sabrInterpolation_->maxError();
     }
 
-    inline EndCriteria::Type SabrInterpolatedSmileSectionNew::endCriteria() const {
+    inline EndCriteria::Type SabrInterpolatedSmileSection::endCriteria() const {
         calculate();
         return sabrInterpolation_->endCriteria();
     }
 
-    inline Real SabrInterpolatedSmileSectionNew::minStrike() const {
+    inline Real SabrInterpolatedSmileSection::minStrike() const {
         calculate();
         return actualStrikes_.front();
 
     }
 
-    inline Real SabrInterpolatedSmileSectionNew::maxStrike() const {
+    inline Real SabrInterpolatedSmileSection::maxStrike() const {
         calculate();
         return actualStrikes_.back();
     }
 
-    inline Real SabrInterpolatedSmileSectionNew::atmLevel() const {
+    inline Real SabrInterpolatedSmileSection::atmLevel() const {
         calculate();
         return forwardValue_;
     }

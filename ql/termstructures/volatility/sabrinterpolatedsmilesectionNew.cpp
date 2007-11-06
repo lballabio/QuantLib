@@ -24,7 +24,7 @@ Copyright (C) 2006 François du Vignaud
 
 namespace QuantLib {
 
-    SabrInterpolatedSmileSectionNew::SabrInterpolatedSmileSectionNew(
+    SabrInterpolatedSmileSection::SabrInterpolatedSmileSection(
                 const Date& optionDate,
                 const Handle<Quote>& forward,
                 const std::vector<Rate>& strikes,
@@ -55,7 +55,7 @@ namespace QuantLib {
                 LazyObject::registerWith(volHandles_[i]);
     }
 
-    SabrInterpolatedSmileSectionNew::SabrInterpolatedSmileSectionNew(
+    SabrInterpolatedSmileSection::SabrInterpolatedSmileSection(
                const Date& optionDate,
                const Rate& forward,
                const std::vector<Rate>& strikes,
@@ -87,7 +87,7 @@ namespace QuantLib {
 
     }
 
-    void SabrInterpolatedSmileSectionNew::createInterpolation() const {
+    void SabrInterpolatedSmileSection::createInterpolation() const {
          boost::shared_ptr<SABRInterpolation> tmp(new SABRInterpolation(
                      actualStrikes_.begin(), actualStrikes_.end(), vols_.begin(),
                      exerciseTime(), forwardValue_,
@@ -97,7 +97,7 @@ namespace QuantLib {
          swap(tmp, sabrInterpolation_);
     }
 
-    void SabrInterpolatedSmileSectionNew::performCalculations() const {
+    void SabrInterpolatedSmileSection::performCalculations() const {
         forwardValue_ = forward_->value();
         vols_.clear();
         actualStrikes_.clear();
@@ -119,7 +119,7 @@ namespace QuantLib {
         sabrInterpolation_->update();
     }
 
-    Real SabrInterpolatedSmileSectionNew::varianceImpl(Real strike) const {
+    Real SabrInterpolatedSmileSection::varianceImpl(Real strike) const {
         calculate();
         Real v = (*sabrInterpolation_)(strike, true);
         return v*v*exerciseTime();

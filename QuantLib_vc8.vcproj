@@ -3737,23 +3737,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\termstructures\volatility\sabrinterpolatedsmilesection.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\sabrinterpolatedsmilesection.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\sabrinterpolatedsmilesection2.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\sabrinterpolatedsmilesection2.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\termstructures\volatility\sabrinterpolatedsmilesectionNew.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\sabrinterpolatedsmilesectionNew.hpp"
 					>
 				</File>
 				<File
