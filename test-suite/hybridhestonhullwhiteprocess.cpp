@@ -1259,7 +1259,7 @@ void HybridHestonHullWhiteProcessTest::testPseudoJointCalibration() {
 
     Calendar calendar = TARGET();
     DayCounter dc = Actual365Fixed();
-    const Date today = Date::todaysDate()+1;
+    const Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
 
     Handle<Quote> spot(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
