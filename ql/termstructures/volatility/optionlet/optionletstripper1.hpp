@@ -40,7 +40,8 @@ namespace QuantLib {
       public:
         OptionletStripper1(const boost::shared_ptr<CapFloorTermVolSurface>&,
                            const boost::shared_ptr<IborIndex>& index,
-                           Rate switchStrikes);
+                           Rate switchStrikes,
+                           Real accuracy = 1.0e-6);
 
         const Matrix& capFloorPrices() const;
         const Matrix& capFloorVolatilities() const;
@@ -61,6 +62,7 @@ namespace QuantLib {
         bool floatingSwitchStrike_;
         mutable bool capFlooMatrixNotInitialized_;
         mutable Rate switchStrike_;
+        Real accuracy_;
     };
 
 }

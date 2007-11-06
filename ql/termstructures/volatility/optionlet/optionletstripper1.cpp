@@ -33,13 +33,15 @@ namespace QuantLib {
     OptionletStripper1::OptionletStripper1(
             const boost::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
             const boost::shared_ptr<IborIndex>& index,
-            Rate switchStrike)
+            Rate switchStrike,
+            Real accuracy)
     : OptionletStripper(termVolSurface, index),
     volQuotes_(nOptionletTenors_,
                std::vector<boost::shared_ptr<SimpleQuote> >(nStrikes_)),
       floatingSwitchStrike_(switchStrike==Null<Rate>() ? true : false),
       capFlooMatrixNotInitialized_(true),
-      switchStrike_(switchStrike) {
+      switchStrike_(switchStrike),
+      accuracy_(accuracy){
 
         capFloorPrices_ = Matrix(nOptionletTenors_, nStrikes_);
         optionletPrices_ = Matrix(nOptionletTenors_, nStrikes_);
@@ -137,7 +139,8 @@ namespace QuantLib {
                                                   atmOptionletRate_[i],
                                                   optionletPrices_[i][j],
                                                   optionletAnnuity,
-                                                  optionletStDevs_[i][j]);
+                                                  optionletStDevs_[i][j],
+                                                  accuracy_);
                 } catch (std::exception& e) {
                     QL_FAIL("could not bootstrap the optionlet:"
                             "\n fixing date:   " << optionletDates_[i] <<
