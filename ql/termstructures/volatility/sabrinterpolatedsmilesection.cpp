@@ -18,7 +18,7 @@ Copyright (C) 2006 François du Vignaud
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatility/sabrinterpolatedsmilesectionNew.hpp>
+#include <ql/termstructures/volatility/sabrinterpolatedsmilesection.hpp>
 #include <ql/settings.hpp>
 #include <ql/quotes/simplequote.hpp>
 

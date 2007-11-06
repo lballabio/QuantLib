@@ -28,7 +28,7 @@
 #include <ql/termstructures/volatility/blackatmvolcurve.hpp>
 #include <ql/quote.hpp>
 #include <boost/array.hpp>
-#include <ql/termstructures/volatility/sabrinterpolatedsmilesectionNew.hpp>
+#include <ql/termstructures/volatility/sabrinterpolatedsmilesection.hpp>
 
 namespace QuantLib {
 

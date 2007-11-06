@@ -22,8 +22,8 @@ Copyright (C) 2006 François du Vignaud
     \brief Interpolated smile section class
 */
 
-#ifndef quantlib_sabr_interpolated_smile_section_new_hpp
-#define quantlib_sabr_interpolated_smile_section_new_hpp
+#ifndef quantlib_sabr_interpolated_smile_section_hpp
+#define quantlib_sabr_interpolated_smile_section_hpp
 
 #include <ql/handle.hpp>
 #include <ql/patterns/lazyobject.hpp>
@@ -34,7 +34,7 @@ namespace QuantLib {
 
     class Quote;
     class SabrInterpolatedSmileSection : public SmileSection,
-                                            public LazyObject {
+                                         public LazyObject {
       public:
         //! \name Constructors
         //@{
