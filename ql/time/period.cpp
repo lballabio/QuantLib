@@ -238,101 +238,55 @@ namespace QuantLib {
     }
 
 
-    bool operator<(const Period& p1, const Period& p2) {
-        if (p1.length()==0) return (p2.length()>0);
-        if (p2.length()==0) return (p1.length()<0);
+    namespace {
 
-        switch (p1.units()) {
-          case Days:
-            switch (p2.units()) {
+        std::pair<Integer,Integer> daysMinMax(const Period& p) {
+            switch (p.units()) {
               case Days:
-                return (p1.length() < p2.length());
+                return std::make_pair(p.length(), p.length());
               case Weeks:
-                return (p1.length() < p2.length() * 7);
+                return std::make_pair(7*p.length(), 7*p.length());
               case Months:
-                if (p1.length() < p2.length() * 28)
-                    return true;
-                else
-                    QL_FAIL("undecidable comparison between "
-                             << p1 << " and " << p2);
+                return std::make_pair(28*p.length(), 31*p.length());
               case Years:
-                return (p1.length() < p2.length() * 365);
+                return std::make_pair(365*p.length(), 366*p.length());
               default:
-                QL_FAIL("unknown units");
+                QL_FAIL("Unknown units");
             }
-          case Weeks:
-            switch (p2.units()) {
-              case Days:
-                return (p1.length() * 7 < p2.length());
-              case Weeks:
-                return (p1.length() < p2.length());
-              case Months:
-                if (p1.length() * 7 < p2.length() * 28)
-                    return true;
-                else
-                    QL_FAIL("undecidable comparison between "
-                             << p1 << " and " << p2);
-              case Years:
-                if (p1.length() * 7 < p2.length() * 365)
-                    return true;
-                else
-                    QL_FAIL("undecidable comparison between "
-                             << p1 << " and " << p2);
-              default:
-                QL_FAIL("unknown units");
-            }
-          case Months:
-            switch (p2.units()) {
-              case Days:
-                // Sup[days in p1.length() months] < days in p2
-                if (p1.length() * 31 < p2.length())
-                    return true;
-                // almost 28 days in p1 and less than 28 days in p2
-                else if ((p1.length()!=0) && p2.length()< 28)
-                    return false;
-                else
-                    QL_FAIL("undecidable comparison between "
-                             << p1 << " and " << p2);
-              case Weeks:
-                if (p1.length()* 31 < p2.length()  * 7)
-                    return true;
-                else
-                    QL_FAIL("undecidable comparison between "
-                             << p1 << " and " << p2);
-              case Months:
-                return (p1.length() < p2.length());
-              case Years:
-                return (p1.length() < p2.length() * 12);
-              default:
-                QL_FAIL("unknown units");
-            }
-          case Years:
-            switch (p2.units()) {
-              case Days:
-                if (p1.length() * 366 < p2.length())
-                    return true;
-                // almost 365 days in p1 and less than 365 days in p2
-                else if ((p1.length()!=0) && p2.length()< 365)
-                    return false;
-                else
-                    QL_FAIL("undecidable comparison between "
-                             << p1 << " and " << p2);
-              case Weeks:
-                if (p1.length() * 366 < p2.length() * 7)
-                    return true;
-                else
-                    QL_FAIL("undecidable comparison between "
-                             << p1 << " and " << p2);
-              case Months:
-                return (p1.length() * 12 < p2.length());
-              case Years:
-                return (p1.length() < p2.length());
-              default:
-                QL_FAIL("unknown units");
-            }
-          default:
-            QL_FAIL("unknown units");
         }
+
+    }
+
+    bool operator<(const Period& p1, const Period& p2) {
+
+        // special cases
+        if (p1.length() == 0)
+            return p2.length() > 0;
+        if (p2.length() == 0)
+            return p1.length() < 0;
+
+        // exact comparisons
+        if (p1.units() == p2.units())
+            return p1.length() < p2.length();
+        if (p1.units() == Months && p2.units() == Years)
+            return p1.length() < 12*p2.length();
+        if (p1.units() == Years && p2.units() == Months)
+            return 12*p1.length() < p2.length();
+        if (p1.units() == Days && p2.units() == Weeks)
+            return p1.length() < 7*p2.length();
+        if (p1.units() == Weeks && p2.units() == Days)
+            return 7*p1.length() < p2.length();
+
+        // inexact comparisons (handled by converting to days and using limits)
+        std::pair<Integer, Integer> p1lim = daysMinMax(p1);
+        std::pair<Integer, Integer> p2lim = daysMinMax(p2);
+
+        if (p1lim.second < p2lim.first)
+            return true;
+        else if (p1lim.first > p2lim.second)
+            return false;
+        else
+            QL_FAIL("undecidable comparison between " << p1 << " and " << p2);
     }
 
 
