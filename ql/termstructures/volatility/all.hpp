@@ -11,8 +11,6 @@
 #include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
 #include <ql/termstructures/volatility/sabrinterpolatedsmilesection.hpp>
-#include <ql/termstructures/volatility/sabrinterpolatedsmilesection2.hpp>
-#include <ql/termstructures/volatility/sabrinterpolatedsmilesectionNew.hpp>
 #include <ql/termstructures/volatility/sabrvolsurface.hpp>
 #include <ql/termstructures/volatility/smilesection.hpp>
 #include <ql/termstructures/volatility/volcube.hpp>
