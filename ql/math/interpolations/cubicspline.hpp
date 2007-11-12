@@ -1,9 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
+ Copyright (C) 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -180,20 +180,20 @@ namespace QuantLib {
                     bool monotonicityConstraint = true)
         : leftType_(leftCondition), rightType_(rightCondition),
           leftValue_(leftConditionValue), rightValue_(rightConditionValue),
-          monotone_(monotonicityConstraint) {}
+          monotonic_(monotonicityConstraint) {}
         template <class I1, class I2>
         Interpolation interpolate(const I1& xBegin, const I1& xEnd,
                                   const I2& yBegin) const {
             return CubicSplineInterpolation(xBegin, xEnd, yBegin,
                                             leftType_,leftValue_,
                                             rightType_,rightValue_,
-                                            monotone_);
+                                            monotonic_);
         }
         enum { global = 1 };
       private:
         CubicSplineInterpolation::BoundaryCondition leftType_, rightType_;
         Real leftValue_, rightValue_;
-        bool monotone_;
+        bool monotonic_;
     };
 
 

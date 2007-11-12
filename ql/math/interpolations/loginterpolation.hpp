@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,14 +33,19 @@ namespace QuantLib {
 
     namespace detail {
 
-        template <class I1, class I2>
-        class LogLinearInterpolationImpl
+        template <class I1, class I2, class Interpolator>
+        class LogInterpolationImpl
             : public Interpolation::templateImpl<I1,I2> {
           public:
-            LogLinearInterpolationImpl(const I1& xBegin, const I1& xEnd,
-                                       const I2& yBegin)
+            LogInterpolationImpl(const I1& xBegin, const I1& xEnd,
+                                 const I2& yBegin,
+                                 const Interpolator& factory = Interpolator())
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
-              logY_(xEnd-xBegin) {}
+              logY_(xEnd-xBegin) {
+                interpolation_ = factory.interpolate(this->xBegin_,
+                                                     this->xEnd_,
+                                                     logY_.begin());
+            }
             void update() {
                 for (Size i=0; i<logY_.size(); ++i) {
                     QL_REQUIRE(this->yBegin_[i]>0.0,
@@ -48,9 +53,6 @@ namespace QuantLib {
                                << ") at index " << i);
                     logY_[i] = std::log(this->yBegin_[i]);
                 }
-                interpolation_ = LinearInterpolation(this->xBegin_,
-                                                     this->xEnd_,
-                                                     logY_.begin());
                 interpolation_.update();
             }
             Real value(Real x) const {
@@ -70,73 +72,18 @@ namespace QuantLib {
             Interpolation interpolation_;
         };
 
-        template <class I1, class I2>
-        class LogCubicInterpolationImpl
-            : public Interpolation::templateImpl<I1,I2> {
-          public:
-            LogCubicInterpolationImpl(
-                    const I1& xBegin, const I1& xEnd,
-                    const I2& yBegin,
-                    CubicSplineInterpolation::BoundaryCondition leftCondition,
-                    Real leftConditionValue,
-                    CubicSplineInterpolation::BoundaryCondition rightCondition,
-                    Real rightConditionValue,
-                    bool monotonicityConstraint)
-            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
-              logY_(xEnd-xBegin), constrained_(monotonicityConstraint),
-              leftType_(leftCondition), rightType_(rightCondition),
-              leftValue_(leftConditionValue),
-              rightValue_(rightConditionValue) {}
-            void update() {
-                for (Size i=0; i<logY_.size(); ++i) {
-                    QL_REQUIRE(this->yBegin_[i]>0.0,
-                               "invalid value (" << this->yBegin_[i]
-                               << ") at index " << i);
-                    logY_[i] = std::log(this->yBegin_[i]);
-                }
-                interpolation_ = CubicSplineInterpolation(
-                                                    this->xBegin_, this->xEnd_,
-                                                    logY_.begin(),
-                                                    leftType_, leftValue_,
-                                                    rightType_, rightValue_,
-                                                    constrained_);
-                interpolation_.update();
-            }
-            Real value(Real x) const {
-                return std::exp(interpolation_(x, true));
-            }
-            Real primitive(Real) const {
-                QL_FAIL("LogCubic primitive not implemented");
-            }
-            Real derivative(Real) const {
-                QL_FAIL("LogCubic derivative not implemented");
-            }
-            Real secondDerivative(Real) const {
-                QL_FAIL("LogCubic secondDerivative not implemented");
-            }
-          private:
-            std::vector<Real> logY_;
-            Interpolation interpolation_;
-            bool constrained_;
-            CubicSplineInterpolation::BoundaryCondition leftType_, rightType_;
-            Real leftValue_, rightValue_;
-        };
-
     }
 
     //! %log-linear interpolation between discrete points
-    /*! \todo - merge with LogCubicInterpolation
-              - implement primitive, derivative, and secondDerivative functions.
-    */
     class LogLinearInterpolation : public Interpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
         LogLinearInterpolation(const I1& xBegin, const I1& xEnd,
                                const I2& yBegin) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
-                detail::LogLinearInterpolationImpl<I1,I2>(xBegin, xEnd,
-                                                          yBegin));
+            impl_ = boost::shared_ptr<Interpolation::Impl>(
+                new detail::LogInterpolationImpl<I1,I2,Linear>(
+                                                       xBegin, xEnd, yBegin));
             impl_->update();
         }
     };
@@ -157,17 +104,18 @@ namespace QuantLib {
                     CubicSplineInterpolation::BoundaryCondition rightCondition,
                     Real rightConditionValue,
                     bool monotonicityConstraint) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
-                detail::LogCubicInterpolationImpl<I1,I2>(xBegin, xEnd,
-                                                         yBegin,
-                                                         leftCondition,
-                                                         leftConditionValue,
-                                                         rightCondition,
-                                                         rightConditionValue,
-                                                         monotonicityConstraint));
+            impl_ = boost::shared_ptr<Interpolation::Impl>(
+                new detail::LogInterpolationImpl<I1,I2,CubicSpline>(
+                                        xBegin, xEnd, yBegin,
+                                        CubicSpline(leftCondition,
+                                                    leftConditionValue,
+                                                    rightCondition,
+                                                    rightConditionValue,
+                                                    monotonicityConstraint)));
             impl_->update();
         }
     };
+
 
     //! log-linear interpolation factory and traits
     class LogLinear {
@@ -179,6 +127,7 @@ namespace QuantLib {
         }
         enum { global = 0 };
     };
+
 
     //! log-cubic interpolation factory and traits
     class LogCubic {
@@ -192,20 +141,20 @@ namespace QuantLib {
                  bool monotonicityConstraint = true)
         : lefType_(leftCondition), rightType_(rightCondition),
           leftValue_(leftConditionValue), rightValue_(rightConditionValue),
-          monotone_(monotonicityConstraint) {}
+          monotonic_(monotonicityConstraint) {}
         template <class I1, class I2>
         Interpolation interpolate(const I1& xBegin, const I1& xEnd,
                                   const I2& yBegin) const {
             return LogCubicInterpolation(xBegin, xEnd, yBegin,
                                          lefType_,leftValue_,
                                          rightType_, rightValue_,
-                                         monotone_);
+                                         monotonic_);
         }
         enum { global = 1 };
       private:
         CubicSplineInterpolation::BoundaryCondition lefType_, rightType_;
         Real leftValue_, rightValue_;
-        bool monotone_;
+        bool monotonic_;
     };
 
 }
