@@ -1368,19 +1368,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\instruments\yyiis.cpp"
+				RelativePath=".\ql\instruments\yearonyearinflationswap.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\instruments\yyiis.hpp"
+				RelativePath=".\ql\instruments\yearonyearinflationswap.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\instruments\zciis.cpp"
+				RelativePath=".\ql\instruments\zerocouponinflationswap.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\instruments\zciis.hpp"
+				RelativePath=".\ql\instruments\zerocouponinflationswap.hpp"
 				>
 			</File>
 			<Filter

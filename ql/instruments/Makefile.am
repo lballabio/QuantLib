@@ -42,8 +42,8 @@ this_include_HEADERS = \
     vanillaoption.hpp \
     vanillaswap.hpp \
     varianceswap.hpp \
-    yyiis.hpp \
-    zciis.hpp
+    yearonyearinflationswap.hpp \
+    zerocouponinflationswap.hpp
 
 libInstruments_la_SOURCES = \
     asianoption.cpp \
@@ -79,8 +79,8 @@ libInstruments_la_SOURCES = \
     vanillaoption.cpp \
     vanillaswap.cpp \
     varianceswap.cpp \
-    yyiis.cpp \
-    zciis.cpp
+    yearonyearinflationswap.cpp \
+    zerocouponinflationswap.cpp
 
 libInstruments_la_LIBADD = \
     bonds/libBonds.la

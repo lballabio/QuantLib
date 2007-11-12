@@ -37,7 +37,7 @@
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/instruments/varianceswap.hpp>
-#include <ql/instruments/yyiis.hpp>
-#include <ql/instruments/zciis.hpp>
+#include <ql/instruments/yearonyearinflationswap.hpp>
+#include <ql/instruments/zerocouponinflationswap.hpp>
 
 #include <ql/instruments/bonds/all.hpp>
