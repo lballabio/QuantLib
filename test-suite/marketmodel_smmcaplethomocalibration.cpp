@@ -551,7 +551,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
 
 
 
-void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction() 
+void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
 {
 
     BOOST_MESSAGE("Testing max homogeneity periodic caplet calibration "
@@ -567,7 +567,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
     EvolutionDescription evolution(rateTimes_);
 
     std::vector<Time> bigRateTimes(numberBigRates+1);
-    
+
     for (Size i=0; i <= numberBigRates; ++i)
         bigRateTimes[i] = rateTimes_[i*period+offset];
 
@@ -589,11 +589,11 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
             PiecewiseConstantAbcdVariance(a_, b_, c_, d_,
                                           i, bigRateTimes));
     }
-  
+
     VolatilityInterpolationSpecifierabcd varianceInterpolator(period, offset, swapVariances, // these should be associated with the long rates
-                                                                   rateTimes_ // these should be associated with the shorter rates       
+                                                                   rateTimes_ // these should be associated with the shorter rates
                                                                    );
-    
+
 
     // create calibrator
     Real caplet0Swaption1Priority = 1.0;
@@ -615,7 +615,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
      Real deformationSize;
      Real totalSwaptionError;
      std::vector<Real>  finalScales;  //scalings used for matching
-     Size iterationsDone; // number of  period iteratations done 
+     Size iterationsDone; // number of  period iteratations done
      Real errorImprovement; // improvement in error for last iteration
      Matrix modelSwaptionVolsMatrix;
 
@@ -625,9 +625,9 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
         BOOST_MESSAGE("toleranceUnperiodic:    " << io::rate(toleranceUnperiodic));
         BOOST_MESSAGE("max1dIterations: " << max1dIterations);
         BOOST_MESSAGE("tolerance1d:     " << io::rate(tolerance1d));
-    
+
        }
-    
+
        Integer failures = capletSwaptionPeriodicCalibration(
         evolution,
         corr,
@@ -635,25 +635,25 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
         capletVols_,
         cs,
         displacement_,
-        caplet0Swaption1Priority, 
+        caplet0Swaption1Priority,
         numberOfFactors_,
-        period, 
+        period,
         max1dIterations,
         tolerance1d,
         maxUnperiodicIterations,
-        toleranceUnperiodic, 
-        maxPeriodIterations, 
-        periodTolerance, 
+        toleranceUnperiodic,
+        maxPeriodIterations,
+        periodTolerance,
         deformationSize,
         totalSwaptionError, // ?
         swapPseudoRoots,  // the thing we really want the pseudo root for each time step
         finalScales,  //scalings used for matching
-        iterationsDone, // number of  period iteratations done 
+        iterationsDone, // number of  period iteratations done
         errorImprovement, // improvement in error for last iteration
         modelSwaptionVolsMatrix // the swaption vols calibrated to at each step of the iteration
         );
-   
-  
+
+
     boost::shared_ptr<MarketModel> smm(new
         PseudoRootFacade(swapPseudoRoots,
                          rateTimes_,
@@ -669,7 +669,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
     for (Size i=0; i<numberOfRates; ++i) {
         capletVols[i] = std::sqrt(capletTotCovariance[i][i]/rateTimes_[i]);
     }
- 
+
     Real error;
     Real capletTolerance = 1e-4; // i.e. 1 bp
 
@@ -692,10 +692,10 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
     boost::shared_ptr<MarketModel> adaptedFlmm(new FwdPeriodAdapter(flmm,period,offset,adaptedDisplacements));
 
      boost::shared_ptr<MarketModel> adaptedsmm(new FwdToCotSwapAdapter(adaptedFlmm));
-  
+
       // check perfect swaption fit
     Real  swapTolerance = 2e-5;
-      
+
     Matrix swapTerminalCovariance(adaptedsmm->totalCovariance(adaptedsmm->numberOfSteps()-1));
 
     for (Size i=0; i<numberBigRates; ++i) {
@@ -703,7 +703,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
         Real cov = swapTerminalCovariance[i][i];
         Time time = adaptedsmm->evolution().rateTimes()[i];
         Volatility swaptionVol =  sqrt(swapTerminalCovariance[i][i]/time);
-  
+
         error = std::fabs(swaptionVol-expSwaptionVol);
         if (error>swapTolerance)
             BOOST_ERROR("\n failed to reproduce "
@@ -714,7 +714,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
                        "\n tolerance: " << swapTolerance);
     }
 
-    
+
 
 
 
@@ -821,11 +821,11 @@ void MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder() {
 test_suite* MarketModelSmmCapletHomoCalibrationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("SMM Caplet homogeneous calibration test");
 
-    
+
     suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletHomoCalibrationTest::testFunction));
     suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction));
-    
-	// FLOATING_POINT_EXCEPTION
+
+    // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder));
 
     return suite;

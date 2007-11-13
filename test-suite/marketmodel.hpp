@@ -28,7 +28,7 @@
 
 class MarketModelTest {
   public:
-	static void testPeriodAdapter();
+    static void testPeriodAdapter();
     static void testAllMultiStepProducts();
     static void testOneStepForwardsAndOptionlets();
     static void testOneStepNormalForwardsAndOptionlets();
