@@ -35,6 +35,16 @@ namespace QuantLib {
         return DotProduct(diff, diff);
     }
 
+    Disposable<Array> LeastSquareFunction::values(const Array& x) const {
+        // size of target and function to fit vectors
+        Array target(lsp_.size()), fct2fit(lsp_.size());
+        // compute its values
+        lsp_.targetAndValue(x, target, fct2fit);
+        // do the difference
+        Array diff = target - fct2fit;
+        return diff*diff;
+    }
+
     void LeastSquareFunction::gradient(Array& grad_f,
                                        const Array& x) const {
         // size of target and function to fit vectors
@@ -91,8 +101,8 @@ namespace QuantLib {
         Problem P(lsf, c_, initialValue_);
 
         // minimize
-        EndCriteria ec(maxIterations_, 
-            std::min(static_cast<Size>(maxIterations_/2), static_cast<Size>(100)), 
+        EndCriteria ec(maxIterations_,
+            std::min(static_cast<Size>(maxIterations_/2), static_cast<Size>(100)),
             eps, eps, eps);
         exitFlag_ = om_->minimize(P, ec);
 
