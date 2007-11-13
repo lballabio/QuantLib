@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/yyiis.hpp>
+#include <ql/instruments/yearonyearinflationswap.hpp>
 #include <ql/time/schedule.hpp>
 
 namespace QuantLib {
