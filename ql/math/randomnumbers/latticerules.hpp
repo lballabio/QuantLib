@@ -1,4 +1,3 @@
-
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
@@ -20,7 +19,7 @@
 */
 
 /*! \file latticerules.hpp
-  Cools, Kuo, Nuyens (SIAM J. Sci. Comp., 2006)   
+  Cools, Kuo, Nuyens (SIAM J. Sci. Comp., 2006)
 */
 
 #ifndef quantlib_lattice_rules_hpp
