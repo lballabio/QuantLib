@@ -1,9 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -39,7 +39,7 @@ namespace QuantLib {
             actually on Sunday, or to Friday if on Saturday)</li>
         <li>Martin Luther King's birthday, third Monday in January</li>
         <li>Presidents' Day (a.k.a. Washington's birthday),
-		    third Monday in February</li>
+            third Monday in February</li>
         <li>Memorial Day, last Monday in May</li>
         <li>Independence Day, July 4th (moved to Monday if Sunday or
             Friday if Saturday)</li>
@@ -61,7 +61,7 @@ namespace QuantLib {
         <li>Martin Luther King's birthday, third Monday in January (since
             1998)</li>
         <li>Presidents' Day (a.k.a. Washington's birthday),
-		    third Monday in February</li>
+            third Monday in February</li>
         <li>Good Friday</li>
         <li>Memorial Day, last Monday in May</li>
         <li>Independence Day, July 4th (moved to Monday if Sunday or
@@ -85,7 +85,7 @@ namespace QuantLib {
             actually on Sunday)</li>
         <li>Martin Luther King's birthday, third Monday in January</li>
         <li>Presidents' Day (a.k.a. Washington's birthday),
-		    third Monday in February</li>
+            third Monday in February</li>
         <li>Good Friday</li>
         <li>Memorial Day, last Monday in May</li>
         <li>Independence Day, July 4th (moved to Monday if Sunday or

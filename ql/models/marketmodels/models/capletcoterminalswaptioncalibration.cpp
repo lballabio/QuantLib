@@ -36,7 +36,7 @@ namespace QuantLib {
                             Spread displacement,
                             const std::vector<Real>& alpha,
                             bool lowestRoot,
-			                bool useFullApprox)
+                            bool useFullApprox)
     : CTSMMCapletCalibration(evolution, corr, displacedSwapVariances,
                              mktCapletVols, cs, displacement),
       alpha_(alpha), lowestRoot_(lowestRoot),
@@ -287,7 +287,7 @@ namespace QuantLib {
                b[i]=0.0;
             }
             else
-            {    
+            {
                 a[i]=root;
                 b[i]=std::sqrt(mult);
             }
@@ -330,7 +330,7 @@ namespace QuantLib {
     }
 
     Natural CTSMMCapletOriginalCalibration::calibrationImpl_(
-                                Natural numberOfFactors, 
+                                Natural numberOfFactors,
                                 Natural ,
                                 Real ) {
 
@@ -339,8 +339,8 @@ namespace QuantLib {
                                    displacedSwapVariances_,
                                    // not mktCapletVols_ but...
                                    usedCapletVols_,
-                                   *cs_, 
-                                   displacement_, 
+                                   *cs_,
+                                   displacement_,
 
                                    alpha_,
                                    lowestRoot_,

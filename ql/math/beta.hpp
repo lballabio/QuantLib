@@ -29,7 +29,7 @@
 namespace QuantLib {
 
     inline Real betaFunction(Real z, Real w) {
-	return std::exp(GammaFunction().logValue(z) +
+    return std::exp(GammaFunction().logValue(z) +
                     GammaFunction().logValue(w) -
                     GammaFunction().logValue(z+w));
     }

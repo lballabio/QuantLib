@@ -38,7 +38,7 @@ namespace QuantLib {
             Spread displacement,
             const std::vector<Real>& alpha,
             bool lowestRoot,
-			bool useFullApprox);
+            bool useFullApprox);
         // actual calibration function
         static Natural calibrationFunction(
                             const EvolutionDescription& evolution,
@@ -52,7 +52,7 @@ namespace QuantLib {
 
                             const std::vector<Real>& alpha,
                             bool lowestRoot,
-							bool useFullApprox,
+                            bool useFullApprox,
 
                             Size numberOfFactors,
                             //Size maxIterations,
@@ -60,7 +60,7 @@ namespace QuantLib {
 
                             std::vector<Matrix>& swapCovariancePseudoRoots);
       private:
-        Natural calibrationImpl_(Natural numberOfFactors, 
+        Natural calibrationImpl_(Natural numberOfFactors,
                                  Natural ,
                                  Real );
         // input

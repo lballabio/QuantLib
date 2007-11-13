@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -115,29 +115,29 @@ namespace QuantLib {
         down_ = (ermqdt - pu_ * up_) / (1.0 - pu_);
 
     }
-  
-	Real Joshi4::computeUpProb(Real k, Real dj) const {
-		Real alpha = dj/(sqrt(8.0));
-		Real alpha2 = alpha*alpha;
-		Real alpha3 = alpha*alpha2;
-		Real alpha5 = alpha3*alpha2;
-		Real alpha7 = alpha5*alpha2;
-		Real beta = -0.375*alpha-alpha3;
-		Real gamma = (5.0/6.0)*alpha5 + (13.0/12.0)*alpha3
-			+(25.0/128.0)*alpha;
-		Real delta = -0.1025 *alpha- 0.9285 *alpha3
-			-1.43 *alpha5 -0.5 *alpha7;
-		Real p =0.5;
-		Real rootk= sqrt(k);
-		p+= alpha/rootk;
-		p+= beta /(k*rootk);
-		p+= gamma/(k*k*rootk);
-		// delete next line to get results for j three tree
-		p+= delta/(k*k*k*rootk);
-		return p;
-	}
 
-	Joshi4::Joshi4(const boost::shared_ptr<StochasticProcess1D>& process,
+    Real Joshi4::computeUpProb(Real k, Real dj) const {
+        Real alpha = dj/(sqrt(8.0));
+        Real alpha2 = alpha*alpha;
+        Real alpha3 = alpha*alpha2;
+        Real alpha5 = alpha3*alpha2;
+        Real alpha7 = alpha5*alpha2;
+        Real beta = -0.375*alpha-alpha3;
+        Real gamma = (5.0/6.0)*alpha5 + (13.0/12.0)*alpha3
+            +(25.0/128.0)*alpha;
+        Real delta = -0.1025 *alpha- 0.9285 *alpha3
+            -1.43 *alpha5 -0.5 *alpha7;
+        Real p =0.5;
+        Real rootk= sqrt(k);
+        p+= alpha/rootk;
+        p+= beta /(k*rootk);
+        p+= gamma/(k*k*rootk);
+        // delete next line to get results for j three tree
+        p+= delta/(k*k*k*rootk);
+        return p;
+    }
+
+    Joshi4::Joshi4(const boost::shared_ptr<StochasticProcess1D>& process,
                    Time end, Size steps, Real strike)
     : BinomialTree<Joshi4>(process, end, (steps%2 ? steps : steps+1)) {
 

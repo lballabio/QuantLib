@@ -102,8 +102,8 @@ namespace QuantLib {
         Rate riskFreeRate = process->riskFreeRate()->
             zeroRate(exDate, rfdc, Continuous, NoFrequency);
         Rate nu = riskFreeRate - dividendRate - 0.5*vola*vola;
-		
-		Real s = process->stateVariable()->value();
+
+        Real s = process->stateVariable()->value();
         Real muG = pastWeight * runningLog +
             futureWeight * std::log(s) + nu*timeSum/N;
         Real forwardPrice = std::exp(muG + variance / 2.0);
@@ -117,10 +117,10 @@ namespace QuantLib {
         results_.value = black.value();
         results_.delta = futureWeight*black.delta(forwardPrice)*forwardPrice/s;
         results_.gamma = forwardPrice*futureWeight/(s*s)
-				*(  black.gamma(forwardPrice)*futureWeight*forwardPrice
-				  - pastWeight*black.delta(forwardPrice) );
+                *(  black.gamma(forwardPrice)*futureWeight*forwardPrice
+                  - pastWeight*black.delta(forwardPrice) );
 
-		Real Nx_1, nx_1;
+        Real Nx_1, nx_1;
         CumulativeNormalDistribution CND;
         NormalDistribution ND;
         if (sigG > QL_EPSILON) {
@@ -139,11 +139,11 @@ namespace QuantLib {
                                               (dmuG_dsig + sigG * dsigG_dsig);
 
         Time tRho = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
-									  arguments_.exercise->lastDate());
-   		results_.rho = black.rho(tRho)*timeSum/(N*tRho) 
+                                      arguments_.exercise->lastDate());
+        results_.rho = black.rho(tRho)*timeSum/(N*tRho)
                       - (tRho-timeSum/N)*results_.value;
 
-		Time tDiv = divdc.yearFraction(
+        Time tDiv = divdc.yearFraction(
                            process->dividendYield()->referenceDate(),
                            arguments_.exercise->lastDate());
 
@@ -154,7 +154,7 @@ namespace QuantLib {
         results_.theta = blackScholesTheta(process,
                                            results_.value,
                                            results_.delta,
-										   results_.gamma);
+                                           results_.gamma);
     }
 }
 

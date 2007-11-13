@@ -34,14 +34,14 @@ namespace QuantLib {
     class SwapForwardMappings {
       public:
 
-		//! compute annuity of arbitrary swap-rate
-		static Real annuity(const CurveState& cs,
+        //! compute annuity of arbitrary swap-rate
+        static Real annuity(const CurveState& cs,
                             Size startIndex,
                             Size endIndex,
                             Size numeraireIndex);
 
-		//! compute derivative of swap-rate to underlying forward rate
-		static Real swapDerivative(const CurveState& cs, 
+        //! compute derivative of swap-rate to underlying forward rate
+        static Real swapDerivative(const CurveState& cs,
                                    Size startIndex,
                                    Size endIndex,
                                    Size forwardIndex);

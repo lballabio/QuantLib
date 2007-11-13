@@ -50,15 +50,15 @@ namespace QuantLib {
         SegmentIntegral(Size intervals);
       protected:
         virtual Real integrate(const boost::function<Real (Real)>& f,
-			                   Real a,
-                               Real b) const; 
+                               Real a,
+                               Real b) const;
       private:
         Size intervals_;
     };
 
 
     // inline and template definitions
-    
+
     inline Real
     SegmentIntegral::integrate(const boost::function<Real (Real)>& f,
                                Real a,

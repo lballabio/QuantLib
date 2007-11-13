@@ -25,7 +25,7 @@ namespace QuantLib
     quadratic::quadratic(Real a, Real b, Real c) : a_(a), b_(b), c_(c) {}
 
     Real quadratic::turningPoint() const {
-    	return -b_/(2.0*a_);
+        return -b_/(2.0*a_);
     }
 
     Real quadratic::valueAtTurningPoint() const {

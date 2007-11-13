@@ -29,18 +29,18 @@
 
 namespace QuantLib
 {
-    class quadratic 
-	{
+    class quadratic
+    {
       public:
-    	quadratic(Real a, Real b, Real c);
-    	Real turningPoint() const;
-    	Real valueAtTurningPoint() const;
-    	Real operator()(Real x) const;
-    	Real discriminant() const;
+        quadratic(Real a, Real b, Real c);
+        Real turningPoint() const;
+        Real valueAtTurningPoint() const;
+        Real operator()(Real x) const;
+        Real discriminant() const;
         // return false if roots not real, and give turning point instead
         bool roots(Real& x, Real& y) const;
       private:
-    	Real a_, b_, c_;
+        Real a_, b_, c_;
 
     };
 }
