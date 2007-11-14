@@ -69,7 +69,11 @@ namespace QuantLib {
                                                                   instruments,
                const DayCounter& dayCounter,
                Real accuracy = 1.0e-12,
-               const Interpolator& i = Interpolator());
+               const Interpolator& i = Interpolator())
+        : base_curve(referenceDate, dayCounter, i),
+          instruments_(instruments), accuracy_(accuracy) {
+            bootstrap_.setup(this);
+		}
         PiecewiseYieldCurve(
                Natural settlementDays,
                const Calendar& calendar,
@@ -77,7 +81,11 @@ namespace QuantLib {
                                                                   instruments,
                const DayCounter& dayCounter,
                Real accuracy = 1.0e-12,
-               const Interpolator& i = Interpolator());
+               const Interpolator& i = Interpolator())
+        : base_curve(settlementDays, calendar, dayCounter, i),
+          instruments_(instruments), accuracy_(accuracy) {
+            bootstrap_.setup(this);
+		}
         //@}
         //! \name YieldTermStructure interface
         //@{
@@ -105,14 +113,14 @@ namespace QuantLib {
         // the curve data. They might be passed the data instead, but
         // it would increase the complexity---which is quite high
         // enough already.
-          friend class Bootstrap<PiecewiseYieldCurve<Traits,Interpolator,
-                                                     Bootstrap>,
-                                 Traits, Interpolator>;
-          friend class Bootstrap<PiecewiseYieldCurve<Traits,Interpolator,
-                                                     Bootstrap>,
-                                 Traits, Interpolator>::ObjectiveFunction;
-          Bootstrap<PiecewiseYieldCurve<Traits,Interpolator,Bootstrap>,
-                    Traits, Interpolator> bootstrap_;
+        friend class Bootstrap<PiecewiseYieldCurve<Traits,Interpolator,
+                                                   Bootstrap>,
+                               Traits, Interpolator>;
+        friend class BootstrapError<PiecewiseYieldCurve<Traits,Interpolator,
+                                                        Bootstrap>,
+                                    Traits, Interpolator>;
+        Bootstrap<PiecewiseYieldCurve<Traits,Interpolator,Bootstrap>,
+                  Traits, Interpolator> bootstrap_;
     };
 
 
@@ -164,31 +172,6 @@ namespace QuantLib {
 
 
     // template definitions
-
-    template <class C, class I, template <class,class,class> class B>
-    PiecewiseYieldCurve<C,I,B>::PiecewiseYieldCurve(
-                const Date& referenceDate,
-                const std::vector<boost::shared_ptr<typename C::helper> >&
-                                                                  instruments,
-                const DayCounter& dayCounter,
-                Real accuracy,
-                const I& interpolator)
-    : base_curve(referenceDate, dayCounter, interpolator),
-      instruments_(instruments), accuracy_(accuracy),
-      bootstrap_(this) {}
-
-    template <class C, class I, template <class,class,class> class B>
-    PiecewiseYieldCurve<C,I,B>::PiecewiseYieldCurve(
-                Natural settlementDays,
-                const Calendar& calendar,
-                const std::vector<boost::shared_ptr<typename C::helper> >&
-                                                                  instruments,
-                const DayCounter& dayCounter,
-                Real accuracy,
-                const I& interpolator)
-    : base_curve(settlementDays, calendar, dayCounter, interpolator),
-      instruments_(instruments), accuracy_(accuracy),
-      bootstrap_(this) {}
 
     template <class C, class I, template <class,class,class> class B>
     void PiecewiseYieldCurve<C,I,B>::performCalculations() const {

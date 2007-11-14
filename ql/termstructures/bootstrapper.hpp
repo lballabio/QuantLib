@@ -36,25 +36,36 @@ namespace QuantLib {
     template <class Curve, class Traits, class Interpolator>
     class IterativeBootstrap {
       public:
-        IterativeBootstrap(Curve * const ts);
-        void checkInstruments();
+        IterativeBootstrap();
+        void setup(Curve* ts);
         void calculate() const;
-
-        class ObjectiveFunction;
       private:
-        Curve * const ts_;
+        Curve* ts_;
+    };
+
+    template <class Curve, class Traits, class Interpolator>
+    class BootstrapError {
+      public:
+        BootstrapError(
+                 const Curve* curve,
+                 const boost::shared_ptr<typename Traits::helper>& instrument,
+                 Size segment);
+        Real operator()(Rate guess) const;
+      private:
+        const Curve* curve_;
+        const boost::shared_ptr<typename Traits::helper> helper_;
+        const Size segment_;
     };
 
 
     template <class Curve, class Traits, class Interpolator>
-    IterativeBootstrap<Curve, Traits, Interpolator>::IterativeBootstrap(
-                                                             Curve * const ts)
-    : ts_(ts) {
-        checkInstruments();
-    }
+    IterativeBootstrap<Curve, Traits, Interpolator>::IterativeBootstrap()
+    : ts_(0) {}
 
     template <class Curve, class Traits, class Interpolator>
-    void IterativeBootstrap<Curve, Traits, Interpolator>::checkInstruments() {
+    void IterativeBootstrap<Curve, Traits, Interpolator>::setup(Curve* ts) {
+
+        ts_ = ts;
 
         Size n = ts_->instruments_.size();
         QL_REQUIRE(n+1 > Interpolator::requiredPoints,
@@ -155,9 +166,10 @@ namespace QuantLib {
                     guess = (min+max)/2.0;
 
                 try {
+					BootstrapError<Curve,Traits,Interpolator> error(
+						                                 ts_, instrument, i);
                     ts_->data_[i] =
-                        solver.solve(ObjectiveFunction(ts_, instrument, i),
-                                     ts_->accuracy_, guess, min, max);
+                        solver.solve(error, ts_->accuracy_, guess, min, max);
                     if (i==1 && Traits::dummyInitialValue())
                         ts_->data_[0] = ts_->data_[1];
                 } catch (std::exception &e) {
@@ -195,24 +207,10 @@ namespace QuantLib {
     }
 
 
-    template <class Curve, class Traits, class Interpolator>
-    class IterativeBootstrap<Curve, Traits, Interpolator>::ObjectiveFunction {
-      public:
-        ObjectiveFunction(
-                 const Curve* curve,
-                 const boost::shared_ptr<typename Traits::helper>& instrument,
-                 Size segment);
-        Real operator()(Rate guess) const;
-      private:
-        const Curve* curve_;
-        const boost::shared_ptr<typename Traits::helper> helper_;
-        const Size segment_;
-    };
 
 
     template <class Curve, class Traits, class Interpolator>
-    IterativeBootstrap<Curve, Traits, Interpolator>
-    ::ObjectiveFunction::ObjectiveFunction(
+    BootstrapError<Curve, Traits, Interpolator>::BootstrapError(
                      const Curve* curve,
                      const boost::shared_ptr<typename Traits::helper>& helper,
                      Size segment)
@@ -220,8 +218,8 @@ namespace QuantLib {
 
 
     template <class Curve, class Traits, class Interpolator>
-    Real IterativeBootstrap<Curve, Traits, Interpolator>
-    ::ObjectiveFunction::operator()(Real guess) const {
+    Real BootstrapError<Curve, Traits, Interpolator>::operator()(Real guess)
+                                                                      const {
         Traits::updateGuess(curve_->data_, guess, segment_);
         curve_->interpolation_.update();
         return helper_->quoteError();
