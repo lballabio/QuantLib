@@ -166,8 +166,8 @@ namespace QuantLib {
                     guess = (min+max)/2.0;
 
                 try {
-					BootstrapError<Curve,Traits,Interpolator> error(
-						                                 ts_, instrument, i);
+                    BootstrapError<Curve,Traits,Interpolator> error(
+                                                         ts_, instrument, i);
                     ts_->data_[i] =
                         solver.solve(error, ts_->accuracy_, guess, min, max);
                     if (i==1 && Traits::dummyInitialValue())

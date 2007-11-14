@@ -73,7 +73,7 @@ namespace QuantLib {
         : base_curve(referenceDate, dayCounter, i),
           instruments_(instruments), accuracy_(accuracy) {
             bootstrap_.setup(this);
-		}
+        }
         PiecewiseYieldCurve(
                Natural settlementDays,
                const Calendar& calendar,
@@ -85,7 +85,7 @@ namespace QuantLib {
         : base_curve(settlementDays, calendar, dayCounter, i),
           instruments_(instruments), accuracy_(accuracy) {
             bootstrap_.setup(this);
-		}
+        }
         //@}
         //! \name YieldTermStructure interface
         //@{
