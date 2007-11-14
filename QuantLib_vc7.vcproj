@@ -5503,6 +5503,12 @@
 				RelativePath=".\ql\termstructures\all.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\termstructures\bootstrapper.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\bootstraphelper.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\termstructures\inflationtermstructure.cpp">
 			</File>
 			<File
@@ -5860,12 +5866,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\yield\quantotermstructure.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\yield\ratehelper.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\yield\ratehelper.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\yield\ratehelpers.cpp">

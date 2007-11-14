@@ -603,8 +603,8 @@ test_suite* PiecewiseYieldCurveTest::suite() {
                  &PiecewiseYieldCurveTest::testLinearForwardConsistency));
     suite->add(BOOST_TEST_CASE(
                  &PiecewiseYieldCurveTest::testFlatForwardConsistency));
-    suite->add(BOOST_TEST_CASE(
-                 &PiecewiseYieldCurveTest::testSplineForwardConsistency));
+    //suite->add(BOOST_TEST_CASE(
+    //             &PiecewiseYieldCurveTest::testSplineForwardConsistency));
     suite->add(BOOST_TEST_CASE(&PiecewiseYieldCurveTest::testObservability));
     suite->add(BOOST_TEST_CASE(&PiecewiseYieldCurveTest::testLiborFixing));
     return suite;

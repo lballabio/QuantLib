@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2007 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,45 +18,43 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file ratehelper.hpp
-    \brief RateHelper base class, used for bootstrapping
+/*! \file bootstraphelper.hpp
+    \brief base helper class used for bootstrapping
 */
 
-#ifndef quantlib_ratehelper_hpp
-#define quantlib_ratehelper_hpp
+#ifndef quantlib_bootstrap_helper_hpp
+#define quantlib_bootstrap_helper_hpp
 
 #include <ql/quote.hpp>
 #include <ql/time/date.hpp>
 #include <ql/handle.hpp>
 #include <ql/patterns/observable.hpp>
+#include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {
 
-    class YieldTermStructure;
-
-    //! Base helper class for yield-curve bootstrapping
+    //! Base helper class for bootstrapping
     /*! This class provides an abstraction for the instruments used to
         bootstrap a term structure.
-        It is advised that a rate helper for an instrument contains an
-        instance of the actual instrument class to ensure consistancy
-        between the algorithms used during bootstrapping and later
-        instrument pricing. This is not yet fully enforced in the
-        available rate helpers, though - only SwapRateHelper and
-        FixedRateBondHelper contain their corresponding instrument
-        for the time being.
+
+        It is advised that a bootstrap helper for an instrument
+        contains an instance of the actual instrument class to ensure
+        consistancy between the algorithms used during bootstrapping
+        and later instrument pricing. This is not yet fully enforced
+        in the available rate helpers.
     */
-    class RateHelper : public Observer, public Observable {
+    template <class TS>
+    class BootstrapHelper : public Observer, public Observable {
       public:
-        RateHelper(const Handle<Quote>& quote);
-        RateHelper(Real quote);
-        virtual ~RateHelper() {}
-        //! \name RateHelper interface
+        BootstrapHelper(const Handle<Quote>& quote);
+        BootstrapHelper(Real quote);
+        virtual ~BootstrapHelper() {}
+        //! \name BootstrapHelper interface
         //@{
         Real quoteError() const;
         Real quoteValue() const;
         bool quoteIsValid() const;
         virtual Real impliedQuote() const = 0;
-        virtual DiscountFactor discountGuess() const;
         //! sets the term structure to be used for pricing
         /*! \warning Being a pointer and not a shared_ptr, the term
                      structure is not guaranteed to remain allocated
@@ -67,7 +65,7 @@ namespace QuantLib {
                      constructors, setting the term structure to
                      <b>this</b>, i.e., the one being constructed.
         */
-        virtual void setTermStructure(YieldTermStructure*);
+        virtual void setTermStructure(TS*);
         //! earliest relevant date
         /*! The earliest date at which discounts are needed by the
             helper in order to provide a quote.
@@ -87,22 +85,73 @@ namespace QuantLib {
         //@}
       protected:
         Handle<Quote> quote_;
-        YieldTermStructure* termStructure_;
+        TS* termStructure_;
         Date earliestDate_, latestDate_;
     };
 
-    // helper class
+
+    template <class TS>
+    BootstrapHelper<TS>::BootstrapHelper(const Handle<Quote>& quote)
+    : quote_(quote), termStructure_(0) {
+        registerWith(quote_);
+    }
+
+    template <class TS>
+    BootstrapHelper<TS>::BootstrapHelper(Real quote)
+    : quote_(Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(quote)))),
+      termStructure_(0) {}
+
+    template <class TS>
+    Real BootstrapHelper<TS>::quoteError() const {
+        return quote_->value()-impliedQuote();
+    }
+
+    template <class TS>
+    Real BootstrapHelper<TS>::quoteValue() const {
+        return quote_->value();
+    }
+
+    template <class TS>
+    bool BootstrapHelper<TS>::quoteIsValid() const {
+        return quote_->isValid();
+    }
+
+    template <class TS>
+    void BootstrapHelper<TS>::setTermStructure(TS* t) {
+        QL_REQUIRE(t != 0, "null term structure given");
+        termStructure_ = t;
+    }
+
+    template <class TS>
+    Date BootstrapHelper<TS>::earliestDate() const {
+        return earliestDate_;
+    }
+
+    template <class TS>
+    Date BootstrapHelper<TS>::latestDate() const {
+        return latestDate_;
+    }
+
+    template <class TS>
+    void BootstrapHelper<TS>::update() {
+        notifyObservers();
+    }
+
+
     namespace detail {
 
-        class RateHelperSorter {
+        class BootstrapHelperSorter {
           public:
-            bool operator()(const boost::shared_ptr<RateHelper>& h1,
-                            const boost::shared_ptr<RateHelper>& h2) const {
+            template <class Helper>
+            bool operator()(
+                    const boost::shared_ptr<Helper>& h1,
+                    const boost::shared_ptr<Helper>& h2) const {
                 return (h1->latestDate() < h2->latestDate());
             }
         };
 
     }
+
 }
 
 #endif

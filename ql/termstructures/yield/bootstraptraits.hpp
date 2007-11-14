@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2007 StatPro Italia srl
+ Copyright (C) 2007 Chris Kenyon
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -37,8 +38,16 @@ namespace QuantLib {
         struct curve {
             typedef InterpolatedDiscountCurve<Interpolator> type;
         };
+        // helper class
+        typedef BootstrapHelper<YieldTermStructure> helper;
+        // start of curve data
+        static Date initialDate(const YieldTermStructure* c) {
+            return c->referenceDate();
+        }
         // value at reference date
-        static DiscountFactor initialValue() { return 1.0; }
+        static DiscountFactor initialValue(const YieldTermStructure*) {
+            return 1.0;
+        }
         // true if the initialValue is just a dummy value
         static bool dummyInitialValue() { return false; }
         // initial guess
@@ -70,6 +79,8 @@ namespace QuantLib {
                                 Size i) {
             data[i] = discount;
         }
+        // upper bound for convergence loop
+        static Size maxIterations() { return 25; }
     };
 
 
@@ -80,8 +91,14 @@ namespace QuantLib {
         struct curve {
             typedef InterpolatedZeroCurve<Interpolator> type;
         };
+        // helper class
+        typedef BootstrapHelper<YieldTermStructure> helper;
+        // start of curve data
+        static Date initialDate(const YieldTermStructure* c) {
+            return c->referenceDate();
+        }
         // dummy value at reference date
-        static Rate initialValue() { return 0.02; }
+        static Rate initialValue(const YieldTermStructure*) { return 0.02; }
         // true if the initialValue is just a dummy value
         static bool dummyInitialValue() { return true; }
         // initial guess
@@ -115,6 +132,8 @@ namespace QuantLib {
             if (i == 1)
                 data[0] = rate; // first point is updated as well
         }
+        // upper bound for convergence loop
+        static Size maxIterations() { return 25; }
     };
 
 
@@ -125,8 +144,14 @@ namespace QuantLib {
         struct curve {
             typedef InterpolatedForwardCurve<Interpolator> type;
         };
+        // helper class
+        typedef BootstrapHelper<YieldTermStructure> helper;
+        // start of curve data
+        static Date initialDate(const YieldTermStructure* c) {
+            return c->referenceDate();
+        }
         // dummy value at reference date
-        static Rate initialValue() { return 0.02; }
+        static Rate initialValue(const YieldTermStructure*) { return 0.02; }
         // true if the initialValue is just a dummy value
         static bool dummyInitialValue() { return true; }
         // initial guess
@@ -160,6 +185,8 @@ namespace QuantLib {
             if (i == 1)
                 data[0] = forward; // first point is updated as well
         }
+        // upper bound for convergence loop
+        static Size maxIterations() { return 25; }
     };
 
 }

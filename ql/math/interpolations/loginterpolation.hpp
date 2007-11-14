@@ -126,6 +126,7 @@ namespace QuantLib {
             return LogLinearInterpolation(xBegin, xEnd, yBegin);
         }
         enum { global = 0 };
+        enum { requiredPoints = 2 };
     };
 
 
@@ -151,6 +152,7 @@ namespace QuantLib {
                                          monotonic_);
         }
         enum { global = 1 };
+        enum { requiredPoints = 3 };
       private:
         CubicSplineInterpolation::BoundaryCondition lefType_, rightType_;
         Real leftValue_, rightValue_;

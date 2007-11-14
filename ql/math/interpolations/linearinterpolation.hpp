@@ -95,6 +95,7 @@ namespace QuantLib {
             return LinearInterpolation(xBegin, xEnd, yBegin);
         }
         enum { global = 0 };
+        enum { requiredPoints = 2 };
     };
 
 }

@@ -3646,6 +3646,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\termstructures\bootstrapper.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\bootstraphelper.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\termstructures\voltermstructure.cpp"
 				>
 			</File>
@@ -4106,14 +4114,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\yield\quantotermstructure.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\yield\ratehelper.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\yield\ratehelper.hpp"
 					>
 				</File>
 				<File

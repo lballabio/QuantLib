@@ -25,13 +25,16 @@
 #ifndef quantlib_ratehelpers_hpp
 #define quantlib_ratehelpers_hpp
 
-#include <ql/termstructures/yield/ratehelper.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {
+
+    typedef BootstrapHelper<YieldTermStructure> RateHelper;
 
     //! Rate helper for bootstrapping over interest-rate futures prices
     /*! \todo implement/refactor constructors with:
@@ -64,7 +67,6 @@ namespace QuantLib {
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
-        DiscountFactor discountGuess() const;
         //@}
         //! \name FuturesRateHelper inspectors
         //@{
@@ -115,7 +117,6 @@ namespace QuantLib {
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
-        DiscountFactor discountGuess() const;
         void setTermStructure(YieldTermStructure*);
         //@}
       private:
@@ -151,7 +152,6 @@ namespace QuantLib {
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
-        DiscountFactor discountGuess() const;
         void setTermStructure(YieldTermStructure*);
         //@}
       private:
@@ -191,8 +191,6 @@ namespace QuantLib {
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
-        // implementing discountGuess() is not worthwhile,
-        // and may not avoid the root-finding process
         void setTermStructure(YieldTermStructure*);
         //@}
         //! \name SwapRateHelper inspectors

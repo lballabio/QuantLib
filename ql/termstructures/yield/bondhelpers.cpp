@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Toyin Akin
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -37,7 +38,8 @@ namespace QuantLib {
                                     BusinessDayConvention paymentConvention,
                                     Real redemption,
                                     const Date& issueDate)
-    : RateHelper(cleanPrice), settlementDays_(settlementDays),
+    : BootstrapHelper<YieldTermStructure>(cleanPrice),
+      settlementDays_(settlementDays),
       schedule_(schedule), coupons_(coupons),
       paymentDayCounter_(paymentDayCounter),
       paymentConvention_(paymentConvention),
@@ -53,7 +55,7 @@ namespace QuantLib {
         termStructureHandle_.linkTo(
                  boost::shared_ptr<YieldTermStructure>(t,no_deletion), false);
 
-        RateHelper::setTermStructure(t);
+        BootstrapHelper<YieldTermStructure>::setTermStructure(t);
 
         bond_ = boost::shared_ptr<FixedRateBond>(new
             FixedRateBond(settlementDays_, 100.0, schedule_,

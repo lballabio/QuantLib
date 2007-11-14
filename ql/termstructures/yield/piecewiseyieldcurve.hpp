@@ -1,8 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007 Chris Kenyon
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,10 +26,9 @@
 #ifndef quantlib_piecewise_yield_curve_hpp
 #define quantlib_piecewise_yield_curve_hpp
 
-#include <ql/termstructures/yield/ratehelper.hpp>
+#include <ql/termstructures/bootstrapper.hpp>
 #include <ql/termstructures/yield/bootstraptraits.hpp>
 #include <ql/patterns/lazyobject.hpp>
-#include <ql/math/solvers1d/brent.hpp>
 
 namespace QuantLib {
 
@@ -53,7 +53,8 @@ namespace QuantLib {
           checking them against the original inputs.
         - the observability of the term structure is tested.
     */
-    template <class Traits, class Interpolator>
+    template <class Traits, class Interpolator,
+              template <class,class,class> class Bootstrap = IterativeBootstrap>
     class PiecewiseYieldCurve
         : public Traits::template curve<Interpolator>::type,
           public LazyObject {
@@ -64,14 +65,16 @@ namespace QuantLib {
         //@{
         PiecewiseYieldCurve(
                const Date& referenceDate,
-               const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+               const std::vector<boost::shared_ptr<typename Traits::helper> >&
+                                                                  instruments,
                const DayCounter& dayCounter,
                Real accuracy = 1.0e-12,
                const Interpolator& i = Interpolator());
         PiecewiseYieldCurve(
                Natural settlementDays,
                const Calendar& calendar,
-               const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+               const std::vector<boost::shared_ptr<typename Traits::helper> >&
+                                                                  instruments,
                const DayCounter& dayCounter,
                Real accuracy = 1.0e-12,
                const Interpolator& i = Interpolator());
@@ -86,95 +89,75 @@ namespace QuantLib {
         const std::vector<Date>& dates() const;
         const std::vector<Real>& data() const;
         std::vector<std::pair<Date, Real> > nodes() const;
-        Size iterations() const;
-        const std::vector<Real>& improvements() const;
         //@}
         //! \name Observer interface
         //@{
         void update();
         //@}
       private:
-        // helper classes for bootstrapping
-        class ObjectiveFunction;
-        friend class ObjectiveFunction;
         // methods
-        void checkInstruments();
         void performCalculations() const;
         DiscountFactor discountImpl(Time) const;
         // data members
-        std::vector<boost::shared_ptr<RateHelper> > instruments_;
+        std::vector<boost::shared_ptr<typename Traits::helper> > instruments_;
         Real accuracy_;
-        mutable Size iterations_;
-        mutable std::vector<Real> improvements_;
+        // bootstrapper classes are declared as friend to manipulate
+        // the curve data. They might be passed the data instead, but
+        // it would increase the complexity---which is quite high
+        // enough already.
+          friend class Bootstrap<PiecewiseYieldCurve<Traits,Interpolator,
+                                                     Bootstrap>,
+                                 Traits, Interpolator>;
+          friend class Bootstrap<PiecewiseYieldCurve<Traits,Interpolator,
+                                                     Bootstrap>,
+                                 Traits, Interpolator>::ObjectiveFunction;
+          Bootstrap<PiecewiseYieldCurve<Traits,Interpolator,Bootstrap>,
+                    Traits, Interpolator> bootstrap_;
     };
 
-
-    // objective function for solver
-
-    #ifndef __DOXYGEN__
-
-    template <class C, class I>
-    class PiecewiseYieldCurve<C, I>::ObjectiveFunction {
-      public:
-        ObjectiveFunction(const PiecewiseYieldCurve<C, I>*,
-                          const boost::shared_ptr<RateHelper>&, Size segment);
-        Real operator()(DiscountFactor discountGuess) const;
-      private:
-        const PiecewiseYieldCurve<C, I>* curve_;
-        boost::shared_ptr<RateHelper> rateHelper_;
-        Size segment_;
-    };
-
-    #endif
 
     // inline definitions
 
-    template <class C, class I>
-    inline Date PiecewiseYieldCurve<C, I>::maxDate() const {
+    template <class C, class I, template <class,class,class> class B>
+    inline Date PiecewiseYieldCurve<C,I,B>::maxDate() const {
         calculate();
         return this->dates_.back();
     }
 
-    template <class C, class I>
-    inline const std::vector<Time>& PiecewiseYieldCurve<C, I>::times() const {
+    template <class C, class I, template <class,class,class> class B>
+    inline const std::vector<Time>& PiecewiseYieldCurve<C,I,B>::times() const {
+        calculate();
         return this->times_;
     }
 
-    template <class C, class I>
-    inline const std::vector<Date>& PiecewiseYieldCurve<C, I>::dates() const {
+    template <class C, class I, template <class,class,class> class B>
+    inline const std::vector<Date>& PiecewiseYieldCurve<C,I,B>::dates() const {
+        calculate();
         return this->dates_;
     }
 
-    template <class C, class I>
-    inline const std::vector<Real>& PiecewiseYieldCurve<C,I>::data() const {
+    template <class C, class I, template <class,class,class> class B>
+    inline const std::vector<Real>& PiecewiseYieldCurve<C,I,B>::data() const {
+        calculate();
         return this->data_;
     }
 
-    template <class C, class I>
+    template <class C, class I, template <class,class,class> class B>
     inline std::vector<std::pair<Date, Real> >
-    PiecewiseYieldCurve<C, I>::nodes() const {
+    PiecewiseYieldCurve<C,I,B>::nodes() const {
+        calculate();
         return base_curve::nodes();
     }
 
-    template <class C, class I>
-    inline Size PiecewiseYieldCurve<C, I>::iterations() const {
-        return iterations_;
-    }
-
-    template <class C, class I>
-    inline
-    const std::vector<Real>& PiecewiseYieldCurve<C,I>::improvements() const {
-        return improvements_;
-    }
-    template <class C, class I>
-    inline void PiecewiseYieldCurve<C, I>::update() {
+    template <class C, class I, template <class,class,class> class B>
+    inline void PiecewiseYieldCurve<C,I,B>::update() {
         base_curve::update();
         LazyObject::update();
     }
 
-    template <class C, class I>
-    inline
-    DiscountFactor PiecewiseYieldCurve<C, I>::discountImpl(Time t) const {
+    template <class C, class I, template <class,class,class> class B>
+    inline DiscountFactor PiecewiseYieldCurve<C,I,B>::discountImpl(Time t)
+                                                                       const {
         calculate();
         return base_curve::discountImpl(t);
     }
@@ -182,186 +165,36 @@ namespace QuantLib {
 
     // template definitions
 
-    template <class C, class I>
-    PiecewiseYieldCurve<C, I>::PiecewiseYieldCurve(
-               const Date& referenceDate,
-               const std::vector<boost::shared_ptr<RateHelper> >& instruments,
-               const DayCounter& dayCounter,
-               Real accuracy,
-               const I& interpolator)
+    template <class C, class I, template <class,class,class> class B>
+    PiecewiseYieldCurve<C,I,B>::PiecewiseYieldCurve(
+                const Date& referenceDate,
+                const std::vector<boost::shared_ptr<typename C::helper> >&
+                                                                  instruments,
+                const DayCounter& dayCounter,
+                Real accuracy,
+                const I& interpolator)
     : base_curve(referenceDate, dayCounter, interpolator),
-      instruments_(instruments), accuracy_(accuracy), iterations_(0) {
-        checkInstruments();
-    }
+      instruments_(instruments), accuracy_(accuracy),
+      bootstrap_(this) {}
 
-    template <class C, class I>
-    PiecewiseYieldCurve<C, I>::PiecewiseYieldCurve(
-               Natural settlementDays,
-               const Calendar& calendar,
-               const std::vector<boost::shared_ptr<RateHelper> >& instruments,
-               const DayCounter& dayCounter,
-               Real accuracy,
-               const I& interpolator)
+    template <class C, class I, template <class,class,class> class B>
+    PiecewiseYieldCurve<C,I,B>::PiecewiseYieldCurve(
+                Natural settlementDays,
+                const Calendar& calendar,
+                const std::vector<boost::shared_ptr<typename C::helper> >&
+                                                                  instruments,
+                const DayCounter& dayCounter,
+                Real accuracy,
+                const I& interpolator)
     : base_curve(settlementDays, calendar, dayCounter, interpolator),
-      instruments_(instruments), accuracy_(accuracy), iterations_(0) {
-        checkInstruments();
+      instruments_(instruments), accuracy_(accuracy),
+      bootstrap_(this) {}
+
+    template <class C, class I, template <class,class,class> class B>
+    void PiecewiseYieldCurve<C,I,B>::performCalculations() const {
+        // just delegate to the bootstrapper
+        bootstrap_.calculate();
     }
-
-    template <class C, class I>
-    void PiecewiseYieldCurve<C, I>::checkInstruments() {
-
-        QL_REQUIRE(!instruments_.empty(), "no instrument given");
-        Size n = instruments_.size();
-
-        // sort rate helpers
-        for (Size i=0; i<n; ++i)
-            instruments_[i]->setTermStructure(this);
-        std::sort(instruments_.begin(),instruments_.end(),
-                  detail::RateHelperSorter());
-
-        // check that there is no instruments with the same maturity
-        for (Size i=1; i<n; ++i) {
-            Date m1 = instruments_[i-1]->latestDate(),
-                 m2 = instruments_[i]->latestDate();
-            QL_REQUIRE(m1 != m2,
-                       "two instruments have the same maturity ("<< m1 <<")");
-        }
-
-        for (Size i=0; i<n; ++i)
-            registerWith(instruments_[i]);
-    }
-
-    template <class C, class I>
-    void PiecewiseYieldCurve<C, I>::performCalculations() const
-    {
-        Size n = instruments_.size();
-        for (Size i=0; i<n; ++i) {
-            // check that all instruments have a valid quote
-            QL_REQUIRE(instruments_[i]->quoteIsValid(),
-                       "instrument with invalid quote");
-            // don't try this at home!
-            instruments_[i]->setTermStructure(
-                                 const_cast<PiecewiseYieldCurve<C,I>*>(this));
-        }
-
-        // setup vectors
-        this->dates_ = std::vector<Date>(n+1);
-        this->times_ = std::vector<Time>(n+1);
-        this->data_ = std::vector<Real>(n+1);
-        this->dates_[0] = this->referenceDate();
-        this->times_[0] = 0.0;
-        this->data_[0] = C::initialValue();
-        for (Size i=0; i<n; ++i) {
-            this->dates_[i+1] = instruments_[i]->latestDate();
-            this->times_[i+1] = this->timeFromReference(this->dates_[i+1]);
-            this->data_[i+1] = this->data_[i];
-        }
-
-        Brent solver;
-        Size maxIterations = 25;
-        improvements_.clear();
-        // bootstrapping loop
-        for (iterations_ = 0; ; ++iterations_) {
-            std::vector<Real> previousData = this->data_;
-            for (Size i=1; i<n+1; ++i) {
-                if (iterations_ == 0) {
-                    // extend interpolation a point at a time
-                    if (I::global) {
-                        // use Linear in the first iteration
-                        this->interpolation_ =
-                            Linear().interpolate(
-                                                    this->times_.begin(),
-                                                    this->times_.begin()+i+1,
-                                                    this->data_.begin());
-                    } else {
-                        this->interpolation_ = this->interpolator_.interpolate(
-                                                    this->times_.begin(),
-                                                    this->times_.begin()+i+1,
-                                                    this->data_.begin());
-                    }
-                }
-                this->interpolation_.update();
-                boost::shared_ptr<RateHelper> instrument = instruments_[i-1];
-                Real guess;
-                if (iterations_ > 0) {
-                    // use perturbed value from previous loop
-                    guess = 0.99*this->data_[i];
-                } else if (i > 1) {
-                    // extrapolate
-                    guess = C::guess(this,this->dates_[i]);
-                } else {
-                    guess = C::initialGuess();
-                }
-                // bracket
-                Real min = C::minValueAfter(i, this->data_);
-                Real max = C::maxValueAfter(i, this->data_);
-                if (guess <= min || guess >= max)
-                    guess = (min+max)/2.0;
-                solver.setLowerBound(min);
-                solver.setUpperBound(max);
-                try {
-                    this->data_[i] =
-                        //solver.solve(ObjectiveFunction(this, instrument, i),
-                        //             accuracy_, guess, guess*0.01);
-                        solver.solve(ObjectiveFunction(this, instrument, i),
-                                     accuracy_, guess, min, max);
-                    if (i==1 && C::dummyInitialValue())
-                        this->data_[0] = this->data_[1];
-                } catch (std::exception& e) {
-                    QL_FAIL("\n " << io::ordinal(iterations_) << " iteration: "
-                            "could not bootstrap the " << io::ordinal(i) <<
-                            " instrument, maturity " << this->dates_[i] <<
-                            "\n error message: " << e.what());
-                }
-            }
-
-            // check exit conditions
-            if (!I::global) {
-                // no need for convergence loop
-                break;
-            } else if (iterations_ == 0) {
-                // at least one more iteration is needed
-                // since the first one used Linear interpolation
-                Size skip = C::dummyInitialValue() ? 1 : 0;
-                this->interpolation_ = this->interpolator_.interpolate(
-                                            this->times_.begin(),
-                                            this->times_.end(),
-                                            this->data_.begin());
-                continue;
-            }
-
-            improvements_.push_back(0.0);
-            for (Size i=1; i<n+1; ++i)
-                improvements_.back() +=
-                            std::abs(this->data_[i]-previousData[i]);
-            improvements_.back() /= n;
-            if (improvements_.back() <= accuracy_)  // convergence reached
-                break;
-
-            if (iterations_ >= maxIterations)
-                QL_FAIL("convergence not reached after "
-                        << maxIterations << " iterations");
-        }
-    }
-
-    #ifndef __DOXYGEN__
-
-    template <class C, class I>
-    PiecewiseYieldCurve<C, I>::ObjectiveFunction::ObjectiveFunction(
-                              const PiecewiseYieldCurve<C,I>* curve,
-                              const boost::shared_ptr<RateHelper>& rateHelper,
-                              Size segment)
-    : curve_(curve), rateHelper_(rateHelper), segment_(segment) {}
-
-    template <class C, class I>
-    Real PiecewiseYieldCurve<C, I>::ObjectiveFunction::operator()(Real guess)
-                                                                       const {
-        C::updateGuess(curve_->data_, guess, segment_);
-        curve_->interpolation_.update();
-        return rateHelper_->quoteError();
-    }
-
-    #endif
 
 }
 

@@ -18,7 +18,6 @@ this_include_HEADERS = \
     piecewiseyieldcurve.hpp \
     piecewisezerospreadedtermstructure.hpp \
     quantotermstructure.hpp \
-    ratehelper.hpp \
     ratehelpers.hpp \
     zerocurve.hpp \
     zerospreadedtermstructure.hpp \
@@ -28,7 +27,6 @@ libYieldTermStructures_la_SOURCES = \
     bondhelpers.cpp \
     fittedbonddiscountcurve.cpp \
     nonlinearfittingmethods.cpp \
-    ratehelper.cpp \
     ratehelpers.cpp
 
 noinst_LTLIBRARIES = libYieldTermStructures.la

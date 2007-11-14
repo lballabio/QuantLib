@@ -119,7 +119,7 @@ namespace QuantLib {
             instruments_[i]->setTermStructure(this);
 
         std::sort(instruments_.begin(),instruments_.end(),
-                  detail::RateHelperSorter());
+                  detail::BootstrapHelperSorter());
 
         for (Size i=0; i<instruments_.size(); ++i)
             registerWith(instruments_[i]);

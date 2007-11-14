@@ -190,6 +190,7 @@ namespace QuantLib {
                                             monotonic_);
         }
         enum { global = 1 };
+        enum { requiredPoints = 3 };
       private:
         CubicSplineInterpolation::BoundaryCondition leftType_, rightType_;
         Real leftValue_, rightValue_;
