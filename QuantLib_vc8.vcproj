@@ -3654,11 +3654,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\termstructures\bootstraphelper.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\termstructures\bootstrapper.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\termstructures\bootstraphelper.hpp"
+				RelativePath=".\ql\termstructures\inflationtermstructure.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\inflationtermstructure.hpp"
 				>
 			</File>
 			<File
