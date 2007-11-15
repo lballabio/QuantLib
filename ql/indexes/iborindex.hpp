@@ -27,7 +27,7 @@
 
 // Include file is needed so that handle knows that yieldtermstructure
 // is an observable
-#include <ql/termstructures/yieldtermstructure.hpp> 
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/indexes/interestrateindex.hpp>
 
 namespace QuantLib {
@@ -48,7 +48,6 @@ namespace QuantLib {
                                     Handle<YieldTermStructure>());
         //! \name InterestRateIndex interface
         //@{
-        Rate forecastFixing(const Date& fixingDate) const;
         Handle<YieldTermStructure> termStructure() const;
         //@}
         //! \name Inspectors
@@ -61,6 +60,7 @@ namespace QuantLib {
         Date maturityDate(const Date& valueDate) const;
         // @}
       protected:
+        Rate forecastFixing(const Date& fixingDate) const;
         BusinessDayConvention convention_;
         Handle<YieldTermStructure> termStructure_;
         bool endOfMonth_;

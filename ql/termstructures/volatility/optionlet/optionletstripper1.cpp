@@ -78,7 +78,7 @@ namespace QuantLib {
         if (floatingSwitchStrike_) { // && capFlooMatrixNotInitialized_)
             Rate averageAtmOptionletRate = 0.0;
             for (Size i=0; i<nOptionletTenors_; ++i) {
-                atmOptionletRate_[i] = index_->forecastFixing(optionletDates_[i]);
+                atmOptionletRate_[i] = index_->fixing(optionletDates_[i],true);
                 averageAtmOptionletRate += atmOptionletRate_[i];
             }
             switchStrike_ = averageAtmOptionletRate / nOptionletTenors_;

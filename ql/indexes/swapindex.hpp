@@ -46,7 +46,6 @@ namespace QuantLib {
         //! \name InterestRateIndex interface
         //@{
         Handle<YieldTermStructure> termStructure() const;
-        Rate forecastFixing(const Date& fixingDate) const;
         Date maturityDate(const Date& valueDate) const;
         //@}
         //! \name Inspectors
@@ -62,6 +61,7 @@ namespace QuantLib {
                                                 const Date& fixingDate) const;
         //@}
       protected:
+        Rate forecastFixing(const Date& fixingDate) const;
         Period tenor_;
         boost::shared_ptr<IborIndex> iborIndex_;
         Period fixedLegTenor_;

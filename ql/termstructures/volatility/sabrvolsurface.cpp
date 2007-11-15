@@ -70,7 +70,7 @@ namespace QuantLib {
     boost::array<Real, 4> SabrVolSurface::sabrGuesses(const Date& d) const {
 
         // the guesses for sabr parameters are assumed to be piecewise constant
-        if (d<=optionDates_[0]) return sabrGuesses_[0]; 
+        if (d<=optionDates_[0]) return sabrGuesses_[0];
         Size i=0;
         while( d<optionDates_[i] && i<optionDates_.size()-1)
             ++i;
@@ -110,9 +110,9 @@ namespace QuantLib {
 
     void SabrVolSurface::update() {
         TermStructure::update();
-        for (Size i=0; i<optionTenors_.size(); ++i) {                        
+        for (Size i=0; i<optionTenors_.size(); ++i) {
             optionDates_[i] = optionDateFromTenor(optionTenors_[i]);
-            optionTimes_[i] = timeFromReference(optionDates_[i]);                          
+            optionTimes_[i] = timeFromReference(optionDates_[i]);
         }
         notifyObservers();
 
@@ -130,8 +130,8 @@ namespace QuantLib {
         boost::array<Real, 4> sabrParameters1 = sabrGuesses(d);
 
         boost::shared_ptr<SabrInterpolatedSmileSection> tmp(new
-            SabrInterpolatedSmileSection(d, 
-                                            index_->forecastFixing(d), atmRateSpreads_, true,
+            SabrInterpolatedSmileSection(d,
+                                         index_->fixing(d,true), atmRateSpreads_, true,
                                             atmCurve_->atmVol(d), volSpreads,
                                             sabrParameters1[0], sabrParameters1[1],
                                             sabrParameters1[2], sabrParameters1[3],
@@ -141,7 +141,7 @@ namespace QuantLib {
                                             const boost::shared_ptr<EndCriteria>& endCriteria,
                                             const boost::shared_ptr<OptimizationMethod>& method,
                                             const DayCounter& dc*/));
-        
+
         // update guess
 
         return tmp;
@@ -149,12 +149,12 @@ namespace QuantLib {
     }
 
     void SabrVolSurface::registerWithMarketData() {
-         
+
         for (Size i=0; i<optionTenors_.size(); ++i) {
-            for (Size j=0; j<atmRateSpreads_.size(); ++j) {        
+            for (Size j=0; j<atmRateSpreads_.size(); ++j) {
                 registerWith(volSpreads_[i][j]);
             }
-        }   
+        }
     }
 
     void SabrVolSurface::checkInputs() const {
@@ -170,7 +170,7 @@ namespace QuantLib {
             QL_REQUIRE(atmRateSpreads_.size()==volSpreads_[i].size(),
                        "mismatch between number of strikes (" << atmRateSpreads_.size() <<
                        ") and number of columns (" << volSpreads_[i].size() <<
-                       ") in the " << io::ordinal(i) << " row");    
+                       ") in the " << io::ordinal(i) << " row");
     }
 
     void SabrVolSurface::accept(AcyclicVisitor& v) {

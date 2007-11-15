@@ -136,10 +136,10 @@ namespace QuantLib {
 
         Rate fixing(const Date& fixingDate,
                     bool forecastTodaysFixing = false) const;
-        Rate forecastFixing(const Date &fixingDate) const;
 
         Handle<ZeroInflationTermStructure> zeroInflationTermStructure() const;
       private:
+        Rate forecastFixing(const Date& fixingDate) const;
         Handle<ZeroInflationTermStructure> zeroInflation_;
     };
 
@@ -163,11 +163,11 @@ namespace QuantLib {
 
         Rate fixing(const Date& fixingDate,
                     bool forecastTodaysFixing = false) const;
-        Rate forecastFixing(const Date& fixingDate) const;
 
         bool ratio() const;
         Handle<YoYInflationTermStructure> yoyInflationTermStructure() const;
       private:
+        Rate forecastFixing(const Date& fixingDate) const;
         bool ratio_;
         Handle<YoYInflationTermStructure> yoyInflation_;
     };
