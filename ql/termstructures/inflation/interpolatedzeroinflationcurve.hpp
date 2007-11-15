@@ -24,12 +24,14 @@
 #ifndef quantlib_interpolated_zeroinflationcurve_hpp
 #define quantlib_interpolated_zeroinflationcurve_hpp
 
+#include <ql/termstructures/inflationtermstructure.hpp>
+
 namespace QuantLib {
 
     //! Inflation term structure based on the interpolation of zero rates.
     /*! \ingroup inflationtermstructures */
     template<class Interpolator>
-    class InterpolatedZeroInflationCurve: public ZeroInflationTermStructure {
+    class InterpolatedZeroInflationCurve : public ZeroInflationTermStructure {
       public:
         InterpolatedZeroInflationCurve(const Date& referenceDate,
                                        const Calendar& calendar,

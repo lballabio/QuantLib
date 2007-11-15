@@ -25,6 +25,8 @@
 #ifndef quantlib_interpolated_yoy_inflationcurve_hpp
 #define quantlib_interpolated_yoy_inflationcurve_hpp
 
+#include <ql/termstructures/inflationtermstructure.hpp>
+
 namespace QuantLib {
 
     //! Inflation term structure based on interpolated year-on-year rates

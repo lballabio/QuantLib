@@ -5890,10 +5890,22 @@
 					RelativePath=".\ql\termstructures\inflation\all.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\inflation\inflationhelpers.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\inflation\inflationhelpers.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\inflation\interpolatedyoyinflationcurve.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\inflation\interpolatedzeroinflationcurve.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\inflation\piecewiseyoyinflationcurve.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\inflation\piecewisezeroinflationcurve.hpp">
 				</File>
 			</Filter>
 		</Filter>

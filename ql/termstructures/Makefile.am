@@ -18,6 +18,7 @@ libTermStructures_la_SOURCES = \
 	yieldtermstructure.cpp
 
 libTermStructures_la_LIBADD = \
+    inflation/libInflationTermStructures.la \
     yield/libYieldTermStructures.la \
     volatility/libVolTermStructures.la
 
