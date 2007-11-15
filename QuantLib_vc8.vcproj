@@ -939,6 +939,10 @@
 				Name="ibor"
 				>
 				<File
+					RelativePath=".\ql\indexes\ibor\all.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\indexes\ibor\audlibor.hpp"
 					>
 				</File>
@@ -1018,6 +1022,10 @@
 			<Filter
 				Name="swap"
 				>
+				<File
+					RelativePath=".\ql\indexes\swap\all.hpp"
+					>
+				</File>
 				<File
 					RelativePath=".\ql\indexes\swap\euriborswapfixa.cpp"
 					>

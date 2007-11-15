@@ -34,7 +34,7 @@ namespace QuantLib {
                 EURCurrency(),
                 TARGET(),
                 1*Years, // fixedLegTenor
-                ModifiedFollowing, // fixedLegConvention
+                Unadjusted, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
                 tenor > 1*Years ?
                     boost::shared_ptr<IborIndex>(new Euribor6M(h)) :
