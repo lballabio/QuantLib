@@ -99,7 +99,7 @@ void ShortRateModelTest::testCachedHullWhite() {
 
     // Check and print out results
     #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedA = 0.0484570, cachedSigma = 0.00591646;
+    Real cachedA = 0.0484533, cachedSigma = 0.00591641;
     #else
     Real cachedA = 0.0484956, cachedSigma = 0.00591734;
     #endif

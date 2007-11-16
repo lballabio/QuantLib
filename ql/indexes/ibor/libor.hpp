@@ -55,7 +55,7 @@ namespace QuantLib {
         Date maturityDate(const Date& valueDate) const;
         // @}
       private:
-        Calendar joinBusinessDays_, joinHolidays_;
+        Calendar jointCalendar_;
     };
 
 }

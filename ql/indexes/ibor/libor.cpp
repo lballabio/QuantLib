@@ -71,12 +71,9 @@ namespace QuantLib {
                 UnitedKingdom(UnitedKingdom::Exchange),
                 liborConvention(tenor), liborEOM(tenor),
                 dayCounter, h),
-      joinBusinessDays_(JointCalendar(UnitedKingdom(UnitedKingdom::Exchange),
-                                      financialCenterCalendar,
-                                      JoinBusinessDays)),
-      joinHolidays_(JointCalendar(UnitedKingdom(UnitedKingdom::Exchange),
-                                  financialCenterCalendar,
-                                  JoinHolidays)) {}
+      jointCalendar_(JointCalendar(UnitedKingdom(UnitedKingdom::Exchange),
+                                   financialCenterCalendar,
+                                   JoinHolidays)) {}
 
     Date Libor::valueDate(const Date& fixingDate) const {
 
@@ -91,11 +88,11 @@ namespace QuantLib {
         // of the currency concerned, the next following day which is a
         // business day in both centres shall be the Value Date.
         Date d = fixingCalendar().advance(fixingDate, fixingDays_, Days);
-        return joinBusinessDays_.adjust(d);
+        return jointCalendar_.adjust(d);
     }
 
     Date Libor::maturityDate(const Date& valueDate) const {
-        if (endOfMonth() && joinHolidays_.isEndOfMonth(valueDate)) {
+        if (endOfMonth() && jointCalendar_.isEndOfMonth(valueDate)) {
             // Where a deposit is made on the final business day of a
             // particular calendar month, the maturity of the deposit shall
             // be on the final business day of the month in which it matures
@@ -106,9 +103,9 @@ namespace QuantLib {
             // not the 28th of March.
             Date d = valueDate + tenor_;
             Date last = Date::endOfMonth(d);
-            return joinHolidays_.adjust(last, Preceding);
+            return jointCalendar_.adjust(last, Preceding);
         } else {
-            return joinHolidays_.advance(valueDate, tenor_, convention_);
+            return jointCalendar_.advance(valueDate, tenor_, convention_);
         }
     }
 
