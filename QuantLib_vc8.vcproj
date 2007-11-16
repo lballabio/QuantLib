@@ -888,6 +888,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\indexes\bmaindex.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\indexes\bmaindex.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\indexes\iborindex.cpp"
 				>
 			</File>
