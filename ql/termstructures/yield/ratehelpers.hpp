@@ -34,6 +34,7 @@
 
 namespace QuantLib {
 
+	class SwapIndex;
     typedef BootstrapHelper<YieldTermStructure> RateHelper;
 
     //! Rate helper for bootstrapping over interest-rate futures prices
@@ -167,6 +168,9 @@ namespace QuantLib {
     class SwapRateHelper : public RelativeDateRateHelper {
       public:
         SwapRateHelper(const Handle<Quote>& rate,
+                       const boost::shared_ptr<SwapIndex>& swapIndex,
+                       const Handle<Quote>& spread = Handle<Quote>());
+        SwapRateHelper(const Handle<Quote>& rate,
                        const Period& tenor,
                        Natural settlementDays,
                        const Calendar& calendar,
@@ -175,7 +179,7 @@ namespace QuantLib {
                        BusinessDayConvention fixedConvention,
                        const DayCounter& fixedDayCount,
                        // floating leg
-                       const boost::shared_ptr<IborIndex>& index,
+                       const boost::shared_ptr<IborIndex>& iborIndex,
                        const Handle<Quote>& spread = Handle<Quote>());
         SwapRateHelper(Rate rate,
                        const Period& tenor,
@@ -186,7 +190,7 @@ namespace QuantLib {
                        BusinessDayConvention fixedConvention,
                        const DayCounter& fixedDayCount,
                        // floating leg
-                       const boost::shared_ptr<IborIndex>& index,
+                       const boost::shared_ptr<IborIndex>& iborIndex,
                        const Handle<Quote>& spread = Handle<Quote>());
         //! \name RateHelper interface
         //@{
@@ -206,7 +210,7 @@ namespace QuantLib {
         BusinessDayConvention fixedConvention_;
         Frequency fixedFrequency_;
         DayCounter fixedDayCount_;
-        boost::shared_ptr<IborIndex> index_;
+        boost::shared_ptr<IborIndex> iborIndex_;
         boost::shared_ptr<VanillaSwap> swap_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
         Handle<Quote> spread_;

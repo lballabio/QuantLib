@@ -25,7 +25,7 @@
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/currency.hpp>
-#include <ql/indexes/iborindex.hpp>
+#include <ql/indexes/swapindex.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
@@ -34,14 +34,13 @@ namespace QuantLib {
         void no_deletion(YieldTermStructure*) {}
     }
 
-    FuturesRateHelper::FuturesRateHelper(
-                                     const Handle<Quote>& price,
-                                     const Date& immDate,
-                                     Size nMonths,
-                                     const Calendar& calendar,
-                                     BusinessDayConvention convention,
-                                     const DayCounter& dayCounter,
-                                     const Handle<Quote>& convexityAdjustment)
+    FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
+										 const Date& immDate,
+										 Size nMonths,
+										 const Calendar& calendar,
+										 BusinessDayConvention convention,
+										 const DayCounter& dayCounter,
+										 const Handle<Quote>& convexityAdjustment)
     : RateHelper(price),
       convAdj_(convexityAdjustment) {
         QL_REQUIRE(IMM::isIMMdate(immDate, false),
@@ -127,7 +126,8 @@ namespace QuantLib {
         RateHelper::update();
     }
 
-    DepositRateHelper::DepositRateHelper(const Handle<Quote>& rate,
+
+	DepositRateHelper::DepositRateHelper(const Handle<Quote>& rate,
                                          const Period& tenor,
                                          Natural settlementDays,
                                          const Calendar& calendar,
@@ -257,21 +257,39 @@ namespace QuantLib {
 
 
     SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
+                                   const boost::shared_ptr<SwapIndex>& swapIndex,
+                                   const Handle<Quote>& spread)
+    : RelativeDateRateHelper(rate),
+      tenor_(swapIndex->tenor()),
+	  settlementDays_(swapIndex->fixingDays()),
+      calendar_(swapIndex->fixingCalendar()),
+	  fixedConvention_(swapIndex->fixedLegConvention()),
+      fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
+      fixedDayCount_(swapIndex->dayCounter()),
+      iborIndex_(swapIndex->iborIndex()),
+	  spread_(spread) {
+        registerWith(iborIndex_);
+        registerWith(spread_);
+        initializeDates();
+    }
+
+    SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
                                    const Period& tenor,
                                    Natural settlementDays,
                                    const Calendar& calendar,
                                    Frequency fixedFrequency,
                                    BusinessDayConvention fixedConvention,
                                    const DayCounter& fixedDayCount,
-                                   const boost::shared_ptr<IborIndex>& index,
+                                   const boost::shared_ptr<IborIndex>& iborIndex,
                                    const Handle<Quote>& spread)
     : RelativeDateRateHelper(rate),
       tenor_(tenor), settlementDays_(settlementDays),
       calendar_(calendar), fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
-      index_(index), spread_(spread) {
-        registerWith(index_);
+      iborIndex_(iborIndex),
+	  spread_(spread) {
+        registerWith(iborIndex_);
         registerWith(spread_);
         initializeDates();
     }
@@ -283,15 +301,16 @@ namespace QuantLib {
                                    Frequency fixedFrequency,
                                    BusinessDayConvention fixedConvention,
                                    const DayCounter& fixedDayCount,
-                                   const boost::shared_ptr<IborIndex>& index,
+                                   const boost::shared_ptr<IborIndex>& iborIndex,
                                    const Handle<Quote>& spread)
     : RelativeDateRateHelper(rate),
       tenor_(tenor), settlementDays_(settlementDays),
       calendar_(calendar), fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
-      index_(index), spread_(spread) {
-        registerWith(index_);
+      iborIndex_(iborIndex),
+	  spread_(spread) {
+        registerWith(iborIndex_);
         registerWith(spread_);
         initializeDates();
     }
@@ -303,19 +322,19 @@ namespace QuantLib {
                                           settlementDays_, Days);
 
         // dummy Libor index with curve/swap arguments
-        boost::shared_ptr<IborIndex> clonedIndex(new
-            IborIndex(index_->familyName(),
-                      index_->tenor(),
-                      index_->fixingDays(),
-                      index_->currency(),
-                      index_->fixingCalendar(),
-                      index_->businessDayConvention(),
-                      index_->endOfMonth(),
-                      index_->dayCounter(),
+        boost::shared_ptr<IborIndex> clonedIborIndex(new
+            IborIndex(iborIndex_->familyName(),
+                      iborIndex_->tenor(),
+                      iborIndex_->fixingDays(),
+                      iborIndex_->currency(),
+                      iborIndex_->fixingCalendar(),
+                      iborIndex_->businessDayConvention(),
+                      iborIndex_->endOfMonth(),
+                      iborIndex_->dayCounter(),
                       termStructureHandle_));
 
         // use SwapIndex instead?
-        swap_ = MakeVanillaSwap(tenor_, clonedIndex, 0.0)
+        swap_ = MakeVanillaSwap(tenor_, clonedIborIndex, 0.0)
             .withEffectiveDate(earliestDate_)
             .withFixedLegDayCount(fixedDayCount_)
             .withFixedLegTenor(Period(fixedFrequency_))
@@ -333,9 +352,9 @@ namespace QuantLib {
         Date fixingValueDate = calendar_.advance(lastFloating->fixingDate(),
                                                  settlementDays_,Days);
         Date endValueDate = calendar_.advance(fixingValueDate,
-                                              index_->tenor(),
-                                              index_->businessDayConvention(),
-                                              index_->endOfMonth());
+                                              iborIndex_->tenor(),
+                                              iborIndex_->businessDayConvention(),
+                                              iborIndex_->endOfMonth());
         latestDate_ = std::max(latestDate_,endValueDate);
         #endif
     }
