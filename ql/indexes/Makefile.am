@@ -6,6 +6,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    bmaindex.hpp \
     iborindex.hpp \
     indexmanager.hpp \
     inflationindex.hpp \
@@ -14,6 +15,7 @@ this_include_HEADERS = \
     swapindex.hpp
 
 libIndexes_la_SOURCES = \
+    bmaindex.cpp \
     iborindex.cpp \
     indexmanager.cpp \
     inflationindex.cpp \
