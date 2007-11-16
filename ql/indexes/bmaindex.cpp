@@ -67,6 +67,12 @@ namespace QuantLib {
         return termStructure_;
     }
 
+    Date BMAIndex::maturityDate(const Date& valueDate) const {
+        Date fixingDate = fixingCalendar_.advance(valueDate,-1,Days);
+        Date nextWednesday = previousWednesday(fixingDate+7);
+        return fixingCalendar_.advance(nextWednesday,1,Days);
+    }
+
     Schedule BMAIndex::fixingSchedule(const Date& start, const Date& end) {
         return MakeSchedule(previousWednesday(start),
                             previousWednesday(end),
@@ -78,8 +84,7 @@ namespace QuantLib {
         QL_REQUIRE(!termStructure_.empty(),
                    "no forecasting term structure set to " << name());
         Date start = fixingCalendar_.advance(fixingDate,1,Days);
-        Date nextWednesday = previousWednesday(fixingDate+7);
-        Date end = fixingCalendar_.advance(nextWednesday,1,Days);
+        Date end = maturityDate(start);
         return termStructure_->forwardRate(start, end,
                                            dayCounter_,
                                            Simple);

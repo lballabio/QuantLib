@@ -51,6 +51,7 @@ namespace QuantLib {
         //! \name InterestRateIndex interface
         //@{
         Handle<YieldTermStructure> termStructure() const;
+        Date maturityDate(const Date& valueDate) const;
         //@}
         //! \name Date calculations
         //@{
