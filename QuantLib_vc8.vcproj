@@ -636,6 +636,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\cashflows\averagebmacoupon.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\averagebmacoupon.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\cashflows\capflooredcoupon.cpp"
 				>
 			</File>
@@ -4243,6 +4251,10 @@
 			</File>
 			<File
 				RelativePath=".\ql\utilities\tracing.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\utilities\vectors.hpp"
 				>
 			</File>
 		</Filter>
