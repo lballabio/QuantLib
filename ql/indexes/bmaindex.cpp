@@ -60,7 +60,8 @@ namespace QuantLib {
             if (fixingCalendar_.isBusinessDay(d))
                 return false;
         }
-        return true;
+        // also, the fixing date itself must be a business day
+        return fixingCalendar_.isBusinessDay(fixingDate);
     }
 
     Handle<YieldTermStructure> BMAIndex::termStructure() const {
@@ -77,7 +78,7 @@ namespace QuantLib {
         return MakeSchedule(previousWednesday(start),
                             previousWednesday(end),
                             1 * Weeks,
-                            UnitedStates(), Following).forwards();
+                            fixingCalendar_, Following).forwards();
     }
 
     Rate BMAIndex::forecastFixing(const Date& fixingDate) const {
