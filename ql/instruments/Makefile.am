@@ -11,6 +11,7 @@ this_include_HEADERS = \
     averagetype.hpp \
     barrieroption.hpp \
     basketoption.hpp \
+    bmaswap.hpp \
     bond.hpp \
     callabilityschedule.hpp \
     capfloor.hpp \
@@ -50,6 +51,7 @@ libInstruments_la_SOURCES = \
     assetswap.cpp \
     barrieroption.cpp \
     basketoption.cpp \
+    bmaswap.cpp \
     bond.cpp \
     capfloor.cpp \
     cliquetoption.cpp \
