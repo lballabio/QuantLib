@@ -43,8 +43,7 @@ namespace QuantLib {
       index_(index), dayCounter_(dayCounter),
       fixingDays_(fixingDays==Null<Size>() ? index->fixingDays() : fixingDays),
       gearing_(gearing), spread_(spread),
-      isInArrears_(isInArrears)
-    {
+      isInArrears_(isInArrears) {
         QL_REQUIRE(gearing_!=0, "Null gearing not allowed");
 
         if (dayCounter_.empty())
@@ -57,12 +56,17 @@ namespace QuantLib {
 
     void FloatingRateCoupon::setPricer(
                 const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
-            if (pricer_)
-                unregisterWith(pricer_);
-            pricer_ = pricer;
-            QL_REQUIRE(pricer_, "no adequate pricer given");
-            registerWith(pricer_);
-            update();
+        if (pricer_)
+            unregisterWith(pricer_);
+        pricer_ = pricer;
+        QL_REQUIRE(pricer_, "no adequate pricer given");
+        registerWith(pricer_);
+        update();
+    }
+
+    boost::shared_ptr<FloatingRateCouponPricer>
+    FloatingRateCoupon::pricer() const {
+        return pricer_;
     }
 
     Real FloatingRateCoupon::amount() const {
@@ -124,8 +128,12 @@ namespace QuantLib {
         return pricer_->swapletRate();
     }
 
-    Rate FloatingRateCoupon::adjustedFixing() const{
+    Rate FloatingRateCoupon::adjustedFixing() const {
         return (rate()-spread())/gearing();
+    }
+
+    bool FloatingRateCoupon::isInArrears() const {
+        return isInArrears_;
     }
 
     Rate FloatingRateCoupon::convexityAdjustmentImpl(Rate f) const {

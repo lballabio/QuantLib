@@ -1,12 +1,12 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004 StatPro Italia srl
  Copyright (C) 2006, 2007 Cristina Duminuco
  Copyright (C) 2006, 2007 Giorgio Facchinetti
  Copyright (C) 2006 Mario Pucci
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004 StatPro Italia srl
+ Copyright (C) 2007 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,6 +33,7 @@
 #include <ql/cashflows/replication.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/utilities/null.hpp>
+#include <ql/utilities/vectors.hpp>
 #include <ql/position.hpp>
 
 namespace QuantLib {
@@ -41,19 +42,6 @@ namespace QuantLib {
     class IborIndex;
 
     namespace detail {
-
-        template <class T, class U>
-        T get(const std::vector<T>& v,
-              Size i,
-              U defaultValue) {
-            if (v.empty()) {
-                return defaultValue;
-            } else if (i < v.size()) {
-                return v[i];
-            } else {
-                return v.back();
-            }
-        }
 
         Rate effectiveFixedRate(const std::vector<Spread>& spreads,
                                 const std::vector<Rate>& caps,

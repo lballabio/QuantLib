@@ -70,7 +70,6 @@ namespace QuantLib {
         const Currency& currency() const;
         const DayCounter& dayCounter() const;
         virtual Handle<YieldTermStructure> termStructure() const = 0;
-        virtual Date maturityDate(const Date& valueDate) const = 0;
         //@}
         /*! \name Date calculations
 
@@ -80,6 +79,7 @@ namespace QuantLib {
             @{
         */
         virtual Date valueDate(const Date& fixingDate) const;
+        virtual Date maturityDate(const Date& valueDate) const = 0;
         // @}
       protected:
         virtual Rate forecastFixing(const Date& fixingDate) const = 0;

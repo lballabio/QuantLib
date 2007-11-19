@@ -1,12 +1,12 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Giorgio Facchinetti
- Copyright (C) 2006, 2007 Cristina Duminuco
- Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004 StatPro Italia srl
  Copyright (C) 2003 Nicolas Di Césaré
+ Copyright (C) 2006, 2007 Cristina Duminuco
+ Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2007 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -55,11 +55,12 @@ namespace QuantLib {
                            const Date& refPeriodEnd = Date(),
                            const DayCounter& dayCounter = DayCounter(),
                            bool isInArrears = false);
-        virtual ~FloatingRateCoupon() {}
+
         //! \name CashFlow interface
         //@{
         Real amount() const;
         //@}
+
         //! \name Coupon interface
         //@{
         Rate rate() const;
@@ -67,6 +68,7 @@ namespace QuantLib {
         DayCounter dayCounter() const;
         Real accruedAmount(const Date&) const; //Attenzione
         //@}
+
         //! \name Inspectors
         //@{
         //! floating index
@@ -80,27 +82,27 @@ namespace QuantLib {
         //! spread paid over the fixing of the underlying index
         Spread spread() const;
         //! fixing of the underlying index
-        Rate indexFixing() const;
+        virtual Rate indexFixing() const;
         //! convexity adjustment
-        Rate convexityAdjustment() const;
+        virtual Rate convexityAdjustment() const;
         //! convexity-adjusted fixing
-        Rate adjustedFixing() const;
-
-        bool isInArrears() const {return isInArrears_;};
+        virtual Rate adjustedFixing() const;
+        //! whether or not the coupon fixes in arrears
+        bool isInArrears() const;
         //@}
+
         //! \name Observer interface
         //@{
         void update();
         //@}
+
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
-        //@}
-        void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>& pricer);
-        boost::shared_ptr<FloatingRateCouponPricer> pricer() const{
-            return pricer_;
-        }
+
+        void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>&);
+        boost::shared_ptr<FloatingRateCouponPricer> pricer() const;
       protected:
         //! convexity adjustment for the given index fixing
         Rate convexityAdjustmentImpl(Rate fixing) const;
