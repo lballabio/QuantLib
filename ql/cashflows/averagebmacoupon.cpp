@@ -56,7 +56,7 @@ namespace QuantLib {
                 }
                 avgBMA /= (endDate - startDate);
 
-                return avgBMA;
+                return coupon_->gearing()*avgBMA + coupon_->spread();
             }
 
             Real swapletPrice() const {
