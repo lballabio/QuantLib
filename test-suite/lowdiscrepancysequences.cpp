@@ -124,7 +124,13 @@ namespace
             z,
             N);
 
-        RandomizedLDS<LatticeRsg, RandomSequenceGenerator<MersenneTwisterUniformRng> > rldsg(latticeGenerator);
+		unsigned long seed = 12345678UL;
+		MersenneTwisterUniformRng rng( seed);
+
+		RandomSequenceGenerator<MersenneTwisterUniformRng> rsg(maxDim,
+																rng);
+
+        RandomizedLDS<LatticeRsg, RandomSequenceGenerator<MersenneTwisterUniformRng> > rldsg(latticeGenerator,rsg);
 
         SequenceStatistics outerStats(maxDim);
 
@@ -152,8 +158,8 @@ namespace
         for (Size i=0; i < maxDim; ++i)
             if (fabs(errorInSds[i] ) > tolerance)
                 BOOST_ERROR("Lattice generator" << nameString <<" returns  a mean of " <<
-                means[i] << " with standard deviation " << errorInSds[i]
-            << " in dimension " << i);
+                means[i] << " with error equal to  " << errorInSds[i]
+            << " standard deviations in dimension " << i);
     }
 }
 
