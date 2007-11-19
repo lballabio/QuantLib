@@ -51,9 +51,6 @@ namespace QuantLib {
         - the correctness of the returned value is tested by checking
           it against a known good value.
     */
-
-    class IborCouponPricer;
-
     class VanillaSwap : public Swap {
       public:
         enum Type { Receiver = -1, Payer = 1 };
