@@ -540,6 +540,12 @@
 				RelativePath=".\ql\indexes\all.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\indexes\bmaindex.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\indexes\bmaindex.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\indexes\iborindex.cpp">
 			</File>
 			<File
@@ -5503,10 +5509,10 @@
 				RelativePath=".\ql\termstructures\all.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\termstructures\bootstrapper.hpp">
+				RelativePath=".\ql\termstructures\bootstraphelper.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\termstructures\bootstraphelper.hpp">
+				RelativePath=".\ql\termstructures\bootstrapper.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\termstructures\inflationtermstructure.cpp">
