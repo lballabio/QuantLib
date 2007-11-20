@@ -1152,6 +1152,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\instruments\bmaswap.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\bmaswap.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\instruments\bond.cpp"
 				>
 			</File>
