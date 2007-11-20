@@ -35,6 +35,7 @@ namespace QuantLib {
         <li>Saturdays</li>
         <li>Sundays</li>
         <li>New Year's Day, January 1st (possibly moved to Monday)</li>
+        <li>Family Day, third Monday of February (since 2008)</li>
         <li>Good Friday</li>
         <li>Easter Monday</li>
         <li>Victoria Day, The Monday on or preceding 24 May</li>
@@ -53,6 +54,7 @@ namespace QuantLib {
         <li>Saturdays</li>
         <li>Sundays</li>
         <li>New Year's Day, January 1st (possibly moved to Monday)</li>
+        <li>Family Day, third Monday of February (since 2008)</li>
         <li>Good Friday</li>
         <li>Easter Monday</li>
         <li>Victoria Day, The Monday on or preceding 24 May</li>

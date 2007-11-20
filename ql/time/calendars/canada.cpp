@@ -49,6 +49,9 @@ namespace QuantLib {
         if (isWeekend(w)
             // New Year's Day (possibly moved to Monday)
             || ((d == 1 || (d == 2 && w == Monday)) && m == January)
+            // Family Day (third Monday in February, since 2008)
+            || ((d >= 15 && d <= 21) && w == Monday && m == February
+                && y >= 2008)
             // Good Friday
             || (dd == em-3)
             // Easter Monday
@@ -86,6 +89,9 @@ namespace QuantLib {
         if (isWeekend(w)
             // New Year's Day (possibly moved to Monday)
             || ((d == 1 || (d == 2 && w == Monday)) && m == January)
+            // Family Day (third Monday in February, since 2008)
+            || ((d >= 15 && d <= 21) && w == Monday && m == February
+                && y >= 2008)
             // Good Friday
             || (dd == em-3)
             // Easter Monday
