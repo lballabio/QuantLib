@@ -27,6 +27,7 @@
 #include <ql/termstructures/yield/bondhelpers.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/math/array.hpp>
+#include <ql/utilities/clone.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -94,7 +95,7 @@ namespace QuantLib {
                  const std::vector<boost::shared_ptr<FixedRateBondHelper> >&
                                                                   instruments,
                  const DayCounter& dayCounter,
-                 const boost::shared_ptr<FittingMethod>& fittingMethod,
+                 const FittingMethod& fittingMethod,
                  Real accuracy = 1.0e-10,
                  Size maxEvaluations = 10000,
                  const Array& guess = Array(),
@@ -105,7 +106,7 @@ namespace QuantLib {
                  const std::vector<boost::shared_ptr<FixedRateBondHelper> >&
                                                                   instruments,
                  const DayCounter& dayCounter,
-                 const boost::shared_ptr<FittingMethod>& fittingMethod,
+                 const FittingMethod& fittingMethod,
                  Real accuracy = 1.0e-10,
                  Size maxEvaluations = 10000,
                  const Array &guess = Array(),
@@ -128,7 +129,7 @@ namespace QuantLib {
         //@}
 
       private:
-        void checkInstruments();
+        void setup();
         void performCalculations() const;
         DiscountFactor discountImpl(Time) const;
         // target accuracy level to be used in the optimization routine
@@ -141,7 +142,7 @@ namespace QuantLib {
         Array guessSolution_;
         mutable Date maxDate_;
         std::vector<boost::shared_ptr<FixedRateBondHelper> > instruments_;
-        boost::shared_ptr<FittingMethod> fittingMethod_;
+        Clone<FittingMethod> fittingMethod_;
     };
 
 
@@ -183,9 +184,11 @@ namespace QuantLib {
         //! output array of results of optimization problem
         Array solution() const;
         //! final number of iterations used in the optimization problem
-        Real numberOfIterations() const;
+        Integer numberOfIterations() const;
         //! final value of cost function after optimization
         Real minimumCostValue() const;
+        //! clone of the current object
+        virtual std::auto_ptr<FittingMethod> clone() const = 0;
       protected:
         //! constructor
         FittingMethod(bool constrainAtZero = true);
@@ -209,8 +212,6 @@ namespace QuantLib {
             the discount curve, in an attempt to speed up calculations.
         */
         Array guessSolution_;
-        //! the set of instruments used in fitting the discount function
-        std::vector<boost::shared_ptr<FixedRateBondHelper> > instruments_;
         //! base class sets this cost function used in the optimization routine
         boost::shared_ptr<FittingCost> costFunction_;
       private:
@@ -220,7 +221,7 @@ namespace QuantLib {
         Array weights_;
         // total number of iterations used in the optimization routine
         // (possibly including gradient evaluations)
-        Real numberOfIterations_;
+        Integer numberOfIterations_;
         // final value for the minimized cost function
         Real costValue_;
     };

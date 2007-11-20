@@ -55,98 +55,16 @@ namespace QuantLib {
 }
 #endif
 
-
-void printOutput(boost::shared_ptr<FittedBondDiscountCurve> curve,
-                 bool printDiagnostics) {
-
+void printOutput(const boost::shared_ptr<FittedBondDiscountCurve>& curve) {
     cout << "reference date : "
          << curve->referenceDate()
-         << endl;
-    cout << "rms YTM error (bps) : n/a"
-        //<< setprecision(3)
-        //<< showpoint
-        //<< 10000* curve->rmsYieldError(printDiagnostics)
          << endl;
     cout << "number of iterations : "
          << curve->fitResults().numberOfIterations()
          << endl
          << endl;
-
 }
 
-
-/*Rate FittedBondDiscountCurve::rmsYieldError() {
-
-    // Warning: calculate() does not reassociate instruments with this
-    // instance of a curve (in case they get set to another term structure
-    // and do not change). Changes to those instruments, however, will
-    // prompt reassociation to this curve instance.
-
-    calculate();
-
-    Real squaredError = 0.;
-    Date today  = referenceDate();
-
-    if (printDiagnostics) {
-        std::cout << std::setw(4)  << "bond";
-        std::cout << std::setw(6)  << "mat";
-        std::cout << std::setw(13) << "actual";
-        std::cout << std::setw(8)  << "theory";
-        std::cout << std::setw (7) << "diff"
-                  << std::endl;
-    }
-
-
-    for (Size i=0; i<numberOfBonds_;++i) {
-
-        boost::shared_ptr<FixedRateBond> bond = instruments_[i]->bond();
-        Date settle = bond->settlementDate(today);
-        DayCounter bondDayCount = bond->dayCounter();
-        Time mat = bondDayCount.yearFraction(today, bond->maturityDate());
-        Real cleanPrice = instruments_[i]->referenceQuote();
-        Rate actualYield = bond->yield(cleanPrice,
-                                       Compounded,
-                                       settle);
-
-        Rate theoreticalYield = bond->yield(Compounded);
-
-        squaredError = squaredError + (theoreticalYield - actualYield) *
-            (theoreticalYield - actualYield);
-
-        if (printDiagnostics) {
-            std::cout << std::setw(4)
-                      << i
-                      << " "
-                      << std::showpoint
-                      << std::setprecision(2)
-                      << std::setw(6)
-                      << mat
-                      << "  YTM: "
-                      << std::setw(6)
-                      << std::fixed
-                      << 100*actualYield
-                      << std::setw(8)
-                      << 100.*theoreticalYield
-                      << std::setw(7)
-                      << 100.*(actualYield - theoreticalYield)
-                      << std::endl;
-        }
-
-    }
-
-
-    if (printDiagnostics) {
-        std::cout << resetiosflags (std::ios::showpoint|std::ios::fixed);
-        std::cout << std::setprecision (6);
-        std::cout << "minimum Value: "
-                  << minimumCostValue()
-                  << std::endl;
-    }
-
-    squaredError =squaredError/numberOfBonds_;
-    return std::sqrt(squaredError);
-}
-*/
 
 int main(int, char* []) {
 
@@ -238,7 +156,6 @@ int main(int, char* []) {
         }
 
 
-        bool printDiagnostics = false;
         bool constrainAtZero = true;
         Real tolerance = 1.0e-10;
         Size max = 5000;
@@ -250,57 +167,52 @@ int main(int, char* []) {
                                                           bondDayCount));
 
 
-        boost::shared_ptr<ExponentialSplinesFitting>
-        exponentialSplinesFittingMethod(
-                              new ExponentialSplinesFitting(constrainAtZero));
+        ExponentialSplinesFitting exponentialSplines(constrainAtZero);
 
         boost::shared_ptr<FittedBondDiscountCurve> ts1 (
                   new FittedBondDiscountCurve(curveSettlementDays,
                                               calendar,
                                               instrumentsA,
                                               bondDayCount,
-                                              exponentialSplinesFittingMethod,
+                                              exponentialSplines,
                                               tolerance,
                                               max));
 
         cout << "(a) exponential splines "
              << endl;
-        printOutput(ts1,printDiagnostics);
+        printOutput(ts1);
 
 
-        boost::shared_ptr<SimplePolynomialFitting>
-        SimplePolynomialFittingMethod(
-                             new SimplePolynomialFitting(3, constrainAtZero));
+        SimplePolynomialFitting simplePolynomial(3, constrainAtZero);
 
         boost::shared_ptr<FittedBondDiscountCurve> ts2 (
                     new FittedBondDiscountCurve(curveSettlementDays,
                                                 calendar,
                                                 instrumentsA,
                                                 bondDayCount,
-                                                SimplePolynomialFittingMethod,
+                                                simplePolynomial,
                                                 tolerance,
                                                 max));
 
         cout << "(b) simple polynomial"
              << endl;
-        printOutput(ts2,printDiagnostics);
+        printOutput(ts2);
 
 
-        boost::shared_ptr<NelsonSiegelFitting>
-        NelsonSiegelFittingMethod(new NelsonSiegelFitting);
+        NelsonSiegelFitting nelsonSiegel;
 
         boost::shared_ptr<FittedBondDiscountCurve> ts3 (
                         new FittedBondDiscountCurve(curveSettlementDays,
                                                     calendar,
                                                     instrumentsA,
                                                     bondDayCount,
-                                                    NelsonSiegelFittingMethod,
+                                                    nelsonSiegel,
                                                     tolerance,
                                                     max));
 
         cout << "(c) Nelson Siegel"
              << endl;
-        printOutput(ts3,printDiagnostics);
+        printOutput(ts3);
 
 
         // a cubic bspline curve with 11 knot points, implies
@@ -314,22 +226,20 @@ int main(int, char* []) {
             knotVector.push_back(knots[i]);
         }
 
-        boost::shared_ptr<CubicBSplinesFitting>
-        CubicBSplinesFittingMethod(new CubicBSplinesFitting(knotVector,
-                                                            constrainAtZero));
+        CubicBSplinesFitting cubicBSplines(knotVector, constrainAtZero);
 
         boost::shared_ptr<FittedBondDiscountCurve> ts4 (
                        new FittedBondDiscountCurve(curveSettlementDays,
                                                    calendar,
                                                    instrumentsA,
                                                    bondDayCount,
-                                                   CubicBSplinesFittingMethod,
+                                                   cubicBSplines,
                                                    tolerance,
                                                    max));
 
         cout << "(d) cubic B-splines"
              << endl;
-        printOutput(ts4,printDiagnostics);
+        printOutput(ts4);
 
 
         cout << "Output par rates for each curve. In this case, "
@@ -390,19 +300,19 @@ int main(int, char* []) {
 
         cout << "(a) exponential splines"
              << endl;
-        printOutput(ts1,printDiagnostics);
+        printOutput(ts1);
 
         cout << "(b) simple polynomial"
              << endl;
-        printOutput(ts2,printDiagnostics);
+        printOutput(ts2);
 
         cout << "(c) Nelson Siegel"
              << endl;
-        printOutput(ts3,printDiagnostics);
+        printOutput(ts3);
 
         cout << "(d) cubic B-splines"
              << endl;
-        printOutput(ts4,printDiagnostics);
+        printOutput(ts4);
 
         cout << endl
              << endl;
@@ -473,13 +383,13 @@ int main(int, char* []) {
                                               calendar,
                                               instrumentsA,
                                               bondDayCount,
-                                              exponentialSplinesFittingMethod,
+                                              exponentialSplines,
                                               tolerance,
                                               max));
 
         cout << "(a) exponential splines"
              << endl;
-        printOutput(ts11,printDiagnostics);
+        printOutput(ts11);
 
 
         boost::shared_ptr<FittedBondDiscountCurve> ts22 (
@@ -487,13 +397,13 @@ int main(int, char* []) {
                                                 calendar,
                                                 instrumentsA,
                                                 bondDayCount,
-                                                SimplePolynomialFittingMethod,
+                                                simplePolynomial,
                                                 tolerance,
                                                 max));
 
         cout << "(b) simple polynomial"
              << endl;
-        printOutput(ts22,printDiagnostics);
+        printOutput(ts22);
 
 
         boost::shared_ptr<FittedBondDiscountCurve> ts33 (
@@ -501,13 +411,13 @@ int main(int, char* []) {
                                                     calendar,
                                                     instrumentsA,
                                                     bondDayCount,
-                                                    NelsonSiegelFittingMethod,
+                                                    nelsonSiegel,
                                                     tolerance,
                                                     max));
 
         cout << "(c) Nelson Siegel"
              << endl;
-        printOutput(ts33,printDiagnostics);
+        printOutput(ts33);
 
 
         boost::shared_ptr<FittedBondDiscountCurve> ts44 (
@@ -515,13 +425,13 @@ int main(int, char* []) {
                                                    calendar,
                                                    instrumentsA,
                                                    bondDayCount,
-                                                   CubicBSplinesFittingMethod,
+                                                   cubicBSplines,
                                                    tolerance,
                                                    max));
 
         cout << "(d) cubic B-splines"
              << endl;
-        printOutput(ts44,printDiagnostics);
+        printOutput(ts44);
 
 
         cout << "tenor   coupon  bstrap  (a)     (b)     (c)     (d)"

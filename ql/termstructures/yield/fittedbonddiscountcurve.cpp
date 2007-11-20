@@ -39,14 +39,13 @@ namespace QuantLib {
     };
 
 
-
     FittedBondDiscountCurve::FittedBondDiscountCurve (
                  Natural settlementDays,
                  const Calendar& calendar,
                  const std::vector<boost::shared_ptr<FixedRateBondHelper> >&
                                                                   instruments,
                  const DayCounter& dayCounter,
-                 const boost::shared_ptr<FittingMethod>& fittingMethod,
+                 const FittingMethod& fittingMethod,
                  Real accuracy,
                  Size maxEvaluations,
                  const Array& guess,
@@ -60,9 +59,7 @@ namespace QuantLib {
       fittingMethod_(fittingMethod) {
 
         fittingMethod_->curve_ = this;
-        fittingMethod_->instruments_ = instruments;
-
-        checkInstruments();
+        setup();
     }
 
 
@@ -71,7 +68,7 @@ namespace QuantLib {
                  const std::vector<boost::shared_ptr<FixedRateBondHelper> >&
                                                                   instruments,
                  const DayCounter& dayCounter,
-                 const boost::shared_ptr<FittingMethod>& fittingMethod,
+                 const FittingMethod& fittingMethod,
                  Real accuracy,
                  Size maxEvaluations,
                  const Array& guess,
@@ -85,9 +82,7 @@ namespace QuantLib {
       fittingMethod_(fittingMethod) {
 
         fittingMethod_->curve_ = this;
-        fittingMethod_->instruments_ = instruments;
-
-        checkInstruments();
+        setup();
     }
 
 
@@ -111,34 +106,23 @@ namespace QuantLib {
         LazyObject::update();
     }
 
-    void FittedBondDiscountCurve::checkInstruments() {
-
-        QL_REQUIRE(!instruments_.empty(), "no instruments given");
-
-        for (Size i=0; i<instruments_.size(); ++i)
-            instruments_[i]->setTermStructure(this);
-
-        std::sort(instruments_.begin(),instruments_.end(),
-                  detail::BootstrapHelperSorter());
-
+    void FittedBondDiscountCurve::setup() {
         for (Size i=0; i<instruments_.size(); ++i)
             registerWith(instruments_[i]);
     }
 
     void FittedBondDiscountCurve::performCalculations() const {
 
+        QL_REQUIRE(!instruments_.empty(), "no instruments given");
+
         // double check bond quotes still valid and/or instruments not expired
         for (Size i=0; i<instruments_.size(); ++i) {
             QL_REQUIRE(instruments_[i]->quoteIsValid(),
                        "instrument with invalid quote");
-            boost::shared_ptr<Bond> bond = instruments_[i]->bond();
-            QL_REQUIRE(!bond->isExpired(), "expired bond instrument");
-        }
-
-        // associate bonds to this curve
-        for (Size i=0; i<instruments_.size(); ++i) {
             instruments_[i]->setTermStructure(
                                   const_cast<FittedBondDiscountCurve*>(this));
+            boost::shared_ptr<Bond> bond = instruments_[i]->bond();
+            QL_REQUIRE(!bond->isExpired(), "expired bond instrument");
         }
 
         maxDate_ = Date::minDate();
@@ -159,11 +143,9 @@ namespace QuantLib {
 
 
     FittedBondDiscountCurve::FittingMethod::FittingMethod(bool constrainAtZero)
-    : constrainAtZero_(constrainAtZero) {
-        costFunction_ = boost::shared_ptr<FittingCost>(new FittingCost(this));
-    }
+    : constrainAtZero_(constrainAtZero) {}
 
-    Real FittedBondDiscountCurve::FittingMethod::numberOfIterations() const {
+    Integer FittedBondDiscountCurve::FittingMethod::numberOfIterations() const {
         return numberOfIterations_;
     }
 
@@ -177,24 +159,24 @@ namespace QuantLib {
 
     void FittedBondDiscountCurve::FittingMethod::init() {
 
-        Array tempWeights(instruments_.size(), 0.0);
+        Array tempWeights(curve_->instruments_.size(), 0.0);
         Date today  = curve_->referenceDate();
         Real squaredSum = 0.0;
 
-        for (Size k=0; k<instruments_.size(); ++k) {
-            boost::shared_ptr<Bond> bond = instruments_[k]->bond();
+        for (Size k=0; k<curve_->instruments_.size(); ++k) {
+            boost::shared_ptr<Bond> bond = curve_->instruments_[k]->bond();
 
             Leg leg = bond->cashflows();
-            Real cleanPrice = instruments_[k]->quoteValue();
+            Real cleanPrice = curve_->instruments_[k]->quoteValue();
             Rate ytm = bond->yield(cleanPrice,
-                                   instruments_[k]->dayCounter(),
+                                   curve_->instruments_[k]->dayCounter(),
                                    Compounded,
-                                   instruments_[k]->frequency(),
+                                   curve_->instruments_[k]->frequency(),
                                    today);
             InterestRate r(ytm,
-                           instruments_[k]->dayCounter(),
+                           curve_->instruments_[k]->dayCounter(),
                            Compounded,
-                           instruments_[k]->frequency());
+                           curve_->instruments_[k]->frequency());
 
             Date settlement = bond->settlementDate(today);
             Time duration =
@@ -205,11 +187,12 @@ namespace QuantLib {
         weights_ = tempWeights/std::sqrt(squaredSum);
 
         // set cost function related below
+        costFunction_ = boost::shared_ptr<FittingCost>(new FittingCost(this));
         costFunction_->refDate_  = curve_->referenceDate();
         costFunction_->startingCashFlowIndex_.clear();
 
-        for (Size i=0; i<instruments_.size(); ++i) {
-            boost::shared_ptr<Bond> bond = instruments_[i]->bond();
+        for (Size i=0; i<curve_->instruments_.size(); ++i) {
+            boost::shared_ptr<Bond> bond = curve_->instruments_[i]->bond();
             Date settlementDate = bond->settlementDate(today);
             Leg cf = bond->cashflows();
             for (Size k=0; k<cf.size(); ++k) {
@@ -268,7 +251,7 @@ namespace QuantLib {
         // speed optimization by setting some of the below in the constructor
         // rather than here
 
-        Size numberOfBonds = fittingMethod_->instruments_.size();
+        Size numberOfBonds = fittingMethod_->curve_->instruments_.size();
         Date today  = fittingMethod_->curve_->referenceDate();
 
         Array trialDirtyPrice(numberOfBonds,0.);
@@ -276,14 +259,15 @@ namespace QuantLib {
 
         for (Size i=0; i<numberOfBonds;++i) {
             boost::shared_ptr<Bond> bond =
-                fittingMethod_->instruments_[i]->bond();
-            Real quotedPrice = fittingMethod_->instruments_[i]->quoteValue();
+                fittingMethod_->curve_->instruments_[i]->bond();
+            Real quotedPrice =
+                fittingMethod_->curve_->instruments_[i]->quoteValue();
 
             Date settlement = bond->settlementDate(today);
             Real dirtyPrice = quotedPrice + bond->accruedAmount(settlement);
 
             DayCounter bondDayCount =
-                fittingMethod_->instruments_[i]->dayCounter();
+                fittingMethod_->curve_->instruments_[i]->dayCounter();
             Leg cf = bond->cashflows();
 
             // loop over cashFlows: P_j = sum( cf_i * d(t_i))

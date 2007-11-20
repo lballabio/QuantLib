@@ -45,6 +45,7 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         ExponentialSplinesFitting(bool constrainAtZero = true);
+        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
       private:
         Size size() const;
         DiscountFactor discountFunction(const Array& x, Time t) const;
@@ -65,6 +66,7 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         NelsonSiegelFitting();
+        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
       private:
         Size size() const;
         DiscountFactor discountFunction(const Array& x, Time t) const;
@@ -97,6 +99,7 @@ namespace QuantLib {
                              bool constrainAtZero = true);
         //! cubic B-spline basis functions
         Real basisFunction(Integer i, Time t) const;
+        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
       private:
         Size size() const;
         DiscountFactor discountFunction(const Array& x, Time t) const;
@@ -122,6 +125,7 @@ namespace QuantLib {
       public:
         SimplePolynomialFitting(Natural degree,
                                 bool constrainAtZero = true);
+        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
       private:
         Size size() const;
         DiscountFactor discountFunction(const Array& x, Time t) const;
