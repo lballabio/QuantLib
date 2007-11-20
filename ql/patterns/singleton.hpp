@@ -66,6 +66,9 @@ namespace QuantLib {
     // template definitions
 
     template <class T>
+    #if defined(QL_PATCH_MSVC) && defined(_MANAGED)
+	inline  // this seems to be required when CLR support is enabled
+	#endif
     T& Singleton<T>::instance() {
         static std::map<Integer, boost::shared_ptr<T> > instances_;
         #if defined(QL_ENABLE_SESSIONS)
