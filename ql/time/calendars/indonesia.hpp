@@ -30,7 +30,7 @@ namespace QuantLib {
 
     //! %Indonesian calendars
     /*! Holidays for the Jakarta stock exchange
-        (data from <http://www.jsx.co.id/trading.asp?cmd=menu3>):
+        (data from <http://www.jsx.co.id/>):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>

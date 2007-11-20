@@ -19,13 +19,20 @@
 */
 
 #include <ql/time/calendars/hongkong.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
-    HongKong::HongKong(Market) {
+    HongKong::HongKong(Market m) {
         // all calendar instances share the same implementation instance
         static boost::shared_ptr<Calendar::Impl> impl(new HongKong::HkexImpl);
-        impl_ = impl;
+        switch (m) {
+          case HKEx:
+            impl_ = impl;
+            break;
+          default:
+            QL_FAIL("unknown market");
+        }
     }
 
     bool HongKong::HkexImpl::isBusinessDay(const Date& date) const {
@@ -112,6 +119,22 @@ namespace QuantLib {
                 || (d == 26 && m == September)
                 // Chung Yeung festival
                 || (d == 19 && m == October))
+            return false;
+        }
+
+        if (y == 2008) {
+            if (// Lunar New Year
+                ((d >= 7 && d <= 9) && m == February)
+                // Ching Ming Festival
+                || (d == 4 && m == April)
+                // Buddha's birthday
+                || (d == 12 && m == May)
+                // Tuen NG festival
+                || (d == 9 && m == June)
+                // Mid-autumn festival
+                || (d == 15 && m == September)
+                // Chung Yeung festival
+                || (d == 7 && m == October))
             return false;
         }
 

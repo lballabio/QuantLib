@@ -56,7 +56,7 @@ namespace QuantLib {
         <li>Chung Yeung Festival</li>
         </ul>
 
-        Data from http://www.hkex.com.hk
+        Data from <http://www.hkex.com.hk>
 
         \ingroup calendars
     */

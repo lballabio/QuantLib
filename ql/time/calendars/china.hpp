@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004 FIMAT Group
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,32 +34,33 @@ namespace QuantLib {
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
-        <li>New Year's day, January 1st</li>
+        <li>New Year's day, January 1st (possibly followed by one or
+            two more holidays)</li>
         <li>Labour Day, first week in May</li>
         <li>National Day, one week from October 1st</li>
         </ul>
 
         Other holidays for which no rule is given:
         <ul>
-        <li>Lunar New Year (data available for 2004 only)</li>
-        <li>Spring Festival</li>
-        <li>Last day of Lunar Year</li>
+        <li>Chinese New Year (data available for 2004-2007 only)</li>
         </ul>
+
+        Data from <http://www.sse.com.cn/sseportal/en_us/ps/home.shtml>
 
         \ingroup calendars
     */
     class China : public Calendar {
       private:
-        class Impl : public Calendar::Impl {
+        class SseImpl : public Calendar::Impl {
           public:
-            std::string name() const { return "China"; }
+            std::string name() const { return "Shanghai stock exchange"; }
             bool isWeekend(Weekday) const;
             bool isBusinessDay(const Date&) const;
-            //! expressed relative to first day of year
-            static Day springFestival(Year y);
         };
       public:
-        China();
+        enum Market { SSE    //!< Shanghai stock exchange
+        };
+        China(Market m = SSE);
     };
 
 }
