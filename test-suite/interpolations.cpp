@@ -28,7 +28,6 @@
 #include <ql/math/interpolations/forwardflatinterpolation.hpp>
 #include <ql/math/interpolations/cubicspline.hpp>
 #include <ql/math/interpolations/multicubicspline.hpp>
-#include <ql/math/interpolations/haganwestinterpolation.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/functional.hpp>
