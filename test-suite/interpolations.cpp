@@ -2,8 +2,8 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2005, 2006 StatPro Italia srl
- Copyright (C) 2007, 2007 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,17 +21,18 @@
 
 #include "interpolations.hpp"
 #include "utilities.hpp"
+#include <ql/utilities/dataformatters.hpp>
 #include <ql/utilities/null.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/math/interpolations/forwardflatinterpolation.hpp>
 #include <ql/math/interpolations/cubicspline.hpp>
 #include <ql/math/interpolations/multicubicspline.hpp>
+#include <ql/math/interpolations/haganwestinterpolation.hpp>
+#include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
-#include <ql/utilities/dataformatters.hpp>
-#include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 
 using namespace QuantLib;
@@ -892,7 +893,6 @@ void InterpolationTest::testAsFunctor() {
         QL_FAIL("failed to throw exception when trying to extrapolate");
     }
 
-
     // case 2: enable extrapolation
     f.enableExtrapolation();
     y2 = std::vector<Real>(N);
@@ -1152,10 +1152,11 @@ void InterpolationTest::testSabrInterpolation(){
 
     BOOST_MESSAGE("Testing Sabr interpolation...");
 
+    // Test SABR function against input volatilities
     Real tolerance = 2.0e-13;
     std::vector<Real> strikes(31);
     std::vector<Real> volatilities(31);
-
+    // input strikes
     strikes[0] = 0.03 ; strikes[1] = 0.032 ; strikes[2] = 0.034 ;
     strikes[3] = 0.036 ; strikes[4] = 0.038 ; strikes[5] = 0.04 ;
     strikes[6] = 0.042 ; strikes[7] = 0.044 ; strikes[8] = 0.046 ;
@@ -1167,7 +1168,7 @@ void InterpolationTest::testSabrInterpolation(){
     strikes[24] = 0.078 ; strikes[25] = 0.08 ; strikes[26] = 0.082 ;
     strikes[27] = 0.084 ; strikes[28] = 0.086 ; strikes[29] = 0.088;
     strikes[30] = 0.09;
-
+    // input volatilities
     volatilities[0] = 1.16725837321531 ; volatilities[1] = 1.15226075991385 ; volatilities[2] = 1.13829711098834 ;
     volatilities[3] = 1.12524190877505 ; volatilities[4] = 1.11299079244474 ; volatilities[5] = 1.10145609357162 ;
     volatilities[6] = 1.09056348513411 ; volatilities[7] = 1.08024942745106 ; volatilities[8] = 1.07045919457758 ;
@@ -1179,15 +1180,15 @@ void InterpolationTest::testSabrInterpolation(){
     volatilities[24] = 0.958983602256592 ; volatilities[25] = 0.953860388001395 ; volatilities[26] = 0.948882997029509 ;
     volatilities[27] = 0.944043915545469 ; volatilities[28] = 0.939336183299237 ; volatilities[29] = 0.934753341079515 ;
     volatilities[30] = 0.930289384251337;
-
+    
     Time expiry = 1.0;
     Real forward = 0.039;
-
+    // input SABR coefficients (corresponding to the vols above)
     Real initialAlpha = 0.3;
     Real initialBeta = 0.6;
     Real initialNu = 0.02;
     Real initialRho = 0.01;
-
+    // calculate SABR vols and compare with input vols
     for(Size i=0; i< strikes.size(); i++){
         Real calculatedVol = sabrVolatility(strikes[i], forward, expiry,
                                             initialAlpha, initialBeta,
@@ -1200,6 +1201,8 @@ void InterpolationTest::testSabrInterpolation(){
             << "\n    error:      " << std::fabs(calculatedVol-volatilities[i]));
     }
 
+    // Test SABR calibration against input parameters
+    // Initial null guesses (uses default values)
     Real alphaGuess = Null<Real>();
     Real betaGuess = Null<Real>();
     Real nuGuess = Null<Real>();
@@ -1212,14 +1215,14 @@ void InterpolationTest::testSabrInterpolation(){
     const bool isRhoFixed[]= {true, false};
 
     Real calibrationTolerance = 5.0e-8;
-
+    // initialize optimization methods
     std::vector<boost::shared_ptr<OptimizationMethod> > methods_;
     methods_.push_back( boost::shared_ptr<OptimizationMethod>(new Simplex(0.01)));
     methods_.push_back( boost::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8)));
-
+    // Initialize end criteria
     boost::shared_ptr<EndCriteria> endCriteria(new
                   EndCriteria(100000, 100, 1e-8, 1e-8, 1e-8));
-
+    // Test looping over all possibilities
     for (Size j=0; j<methods_.size(); ++j) {
       for (Size i=0; i<LENGTH(vegaWeighted); ++i) {
         for (Size k_a=0; k_a<LENGTH(isAlphaFixed); ++k_a) {
@@ -1235,6 +1238,7 @@ void InterpolationTest::testSabrInterpolation(){
                                                     endCriteria, methods_[j]);
                 sabrInterpolation.update();
 
+                // Recover SABR calibration parameters
                 bool failed = false;
                 Real calibratedAlpha = sabrInterpolation.alpha();
                 Real calibratedBeta = sabrInterpolation.beta();
@@ -1242,6 +1246,7 @@ void InterpolationTest::testSabrInterpolation(){
                 Real calibratedRho = sabrInterpolation.rho();
                 Real error;
 
+                // compare results: alpha
                 error = std::fabs(initialAlpha-calibratedAlpha);
                 if (error > calibrationTolerance) {
                     BOOST_ERROR("\nfailed to calibrate alpha Sabr parameter:" <<
@@ -1250,7 +1255,7 @@ void InterpolationTest::testSabrInterpolation(){
                                 "\n    error:           " << error);
                     failed = true;
                 }
-
+                // Beta
                 error = std::fabs(initialBeta-calibratedBeta);
                 if (error > calibrationTolerance) {
                     BOOST_ERROR("\nfailed to calibrate beta Sabr parameter:" <<
@@ -1259,7 +1264,7 @@ void InterpolationTest::testSabrInterpolation(){
                                 "\n    error:           " << error);
                     failed = true;
                 }
-
+                // Nu
                 error = std::fabs(initialNu-calibratedNu);
                 if (error > calibrationTolerance) {
                     BOOST_ERROR("\nfailed to calibrate nu Sabr parameter:" <<
@@ -1268,7 +1273,7 @@ void InterpolationTest::testSabrInterpolation(){
                                 "\n    error:           " << error);
                     failed = true;
                 }
-
+                // Rho
                 error = std::fabs(initialRho-calibratedRho);
                 if (error > calibrationTolerance) {
                     BOOST_ERROR("\nfailed to calibrate rho Sabr parameter:" <<
@@ -1294,7 +1299,6 @@ void InterpolationTest::testSabrInterpolation(){
     }
 
 }
-
 
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
