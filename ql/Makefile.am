@@ -115,15 +115,15 @@ quantlib.hpp: Makefile.am
 install-data-hook:
 	$(SED) -e "s,HAVE_CONFIG_H,QL_HAVE_CONFIG_H," \
            -e "s,/\* install-hook \*/,#define QL_HAVE_CONFIG_H," \
-           $(DESTDIR)/$(this_includedir)/qldefines.hpp > .qldefines.hpp
-	$(INSTALL_DATA) .qldefines.hpp $(DESTDIR)/$(this_includedir)/qldefines.hpp
+           $(DESTDIR)$(this_includedir)/qldefines.hpp > .qldefines.hpp
+	$(INSTALL_DATA) .qldefines.hpp $(DESTDIR)$(this_includedir)/qldefines.hpp
 	rm .qldefines.hpp
 	$(SED) -e "s,PACKAGE,QL_PACKAGE," \
            -e "s,STDC,QL_STDC," \
            -e "s, HAVE, QL_HAVE," \
            -e "s, VERSION, QL_AC_VERSION," \
-           $(DESTDIR)/$(this_includedir)/config.hpp > .config.hpp
-	$(INSTALL_DATA) .config.hpp $(DESTDIR)/$(this_includedir)/config.hpp
+           $(DESTDIR)$(this_includedir)/config.hpp > .config.hpp
+	$(INSTALL_DATA) .config.hpp $(DESTDIR)$(this_includedir)/config.hpp
 	rm .config.hpp
 depend:
 	makedepend $(INCLUDES) -- $(CFLAGS) -- $(SOURCES)
@@ -131,8 +131,8 @@ depend:
 if ENABLE_STATIC
 
 install-exec-hook:
-	mv $(DESTDIR)/$(libdir)/libQuantLib.a $(DESTDIR)/$(libdir)/libQuantLib-$(PACKAGE_VERSION).a
-	$(LN_S) libQuantLib-$(PACKAGE_VERSION).a $(DESTDIR)/$(libdir)/libQuantLib.a
+	mv $(DESTDIR)$(libdir)/libQuantLib.a $(DESTDIR)$(libdir)/libQuantLib-$(PACKAGE_VERSION).a
+	$(LN_S) libQuantLib-$(PACKAGE_VERSION).a $(DESTDIR)$(libdir)/libQuantLib.a
 endif
 
 
