@@ -5892,6 +5892,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\time\dategenerationrule.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\time\dategenerationrule.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\time\daycounter.hpp"
 				>
 			</File>
