@@ -169,10 +169,10 @@ namespace QuantLib {
       public:
         SwapRateHelper(const Handle<Quote>& rate,
                        const boost::shared_ptr<SwapIndex>& swapIndex,
-                       const Handle<Quote>& spread = Handle<Quote>());
+                       const Handle<Quote>& spread = Handle<Quote>(),
+                       const Period& fwdStart = 0*Days);
         SwapRateHelper(const Handle<Quote>& rate,
                        const Period& tenor,
-                       Natural settlementDays,
                        const Calendar& calendar,
                        // fixed leg
                        Frequency fixedFrequency,
@@ -180,10 +180,10 @@ namespace QuantLib {
                        const DayCounter& fixedDayCount,
                        // floating leg
                        const boost::shared_ptr<IborIndex>& iborIndex,
-                       const Handle<Quote>& spread = Handle<Quote>());
+                       const Handle<Quote>& spread = Handle<Quote>(),
+                       const Period& fwdStart = 0*Days);
         SwapRateHelper(Rate rate,
                        const Period& tenor,
-                       Natural settlementDays,
                        const Calendar& calendar,
                        // fixed leg
                        Frequency fixedFrequency,
@@ -191,7 +191,8 @@ namespace QuantLib {
                        const DayCounter& fixedDayCount,
                        // floating leg
                        const boost::shared_ptr<IborIndex>& iborIndex,
-                       const Handle<Quote>& spread = Handle<Quote>());
+                       const Handle<Quote>& spread = Handle<Quote>(),
+                       const Period& fwdStart = 0*Days);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -205,7 +206,6 @@ namespace QuantLib {
       protected:
         void initializeDates();
         Period tenor_;
-        Natural settlementDays_;
         Calendar calendar_;
         BusinessDayConvention fixedConvention_;
         Frequency fixedFrequency_;
@@ -214,6 +214,7 @@ namespace QuantLib {
         boost::shared_ptr<VanillaSwap> swap_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
         Handle<Quote> spread_;
+        Period fwdStart_;
     };
 
 }

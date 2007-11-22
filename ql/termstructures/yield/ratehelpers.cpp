@@ -258,16 +258,16 @@ namespace QuantLib {
 
     SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
                                    const boost::shared_ptr<SwapIndex>& swapIndex,
-                                   const Handle<Quote>& spread)
+                                   const Handle<Quote>& spread,
+                                   const Period& fwdStart)
     : RelativeDateRateHelper(rate),
       tenor_(swapIndex->tenor()),
-	  settlementDays_(swapIndex->fixingDays()),
       calendar_(swapIndex->fixingCalendar()),
 	  fixedConvention_(swapIndex->fixedLegConvention()),
       fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
       fixedDayCount_(swapIndex->dayCounter()),
       iborIndex_(swapIndex->iborIndex()),
-	  spread_(spread) {
+	  spread_(spread), fwdStart_(fwdStart) {
         registerWith(iborIndex_);
         registerWith(spread_);
         initializeDates();
@@ -275,20 +275,20 @@ namespace QuantLib {
 
     SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
                                    const Period& tenor,
-                                   Natural settlementDays,
                                    const Calendar& calendar,
                                    Frequency fixedFrequency,
                                    BusinessDayConvention fixedConvention,
                                    const DayCounter& fixedDayCount,
                                    const boost::shared_ptr<IborIndex>& iborIndex,
-                                   const Handle<Quote>& spread)
+                                   const Handle<Quote>& spread,
+                                   const Period& fwdStart)
     : RelativeDateRateHelper(rate),
-      tenor_(tenor), settlementDays_(settlementDays),
+      tenor_(tenor),
       calendar_(calendar), fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
       iborIndex_(iborIndex),
-	  spread_(spread) {
+	  spread_(spread), fwdStart_(fwdStart) {
         registerWith(iborIndex_);
         registerWith(spread_);
         initializeDates();
@@ -296,20 +296,20 @@ namespace QuantLib {
 
     SwapRateHelper::SwapRateHelper(Rate rate,
                                    const Period& tenor,
-                                   Natural settlementDays,
                                    const Calendar& calendar,
                                    Frequency fixedFrequency,
                                    BusinessDayConvention fixedConvention,
                                    const DayCounter& fixedDayCount,
                                    const boost::shared_ptr<IborIndex>& iborIndex,
-                                   const Handle<Quote>& spread)
+                                   const Handle<Quote>& spread,
+                                   const Period& fwdStart)
     : RelativeDateRateHelper(rate),
-      tenor_(tenor), settlementDays_(settlementDays),
+      tenor_(tenor),
       calendar_(calendar), fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
       iborIndex_(iborIndex),
-	  spread_(spread) {
+	  spread_(spread), fwdStart_(fwdStart) {
         registerWith(iborIndex_);
         registerWith(spread_);
         initializeDates();
@@ -317,11 +317,7 @@ namespace QuantLib {
 
     void SwapRateHelper::initializeDates() {
 
-        // why not using index_->fixingDays instead of settlementDays_
-        earliestDate_ = calendar_.advance(evaluationDate_,
-                                          settlementDays_, Days);
-
-        // dummy Libor index with curve/swap arguments
+        // dummy ibor index with curve/swap arguments
         boost::shared_ptr<IborIndex> clonedIborIndex(new
             IborIndex(iborIndex_->familyName(),
                       iborIndex_->tenor(),
@@ -333,13 +329,15 @@ namespace QuantLib {
                       iborIndex_->dayCounter(),
                       termStructureHandle_));
 
-        // use SwapIndex instead?
-        swap_ = MakeVanillaSwap(tenor_, clonedIborIndex, 0.0)
-            .withEffectiveDate(earliestDate_)
+        // do not pass the spread here, as it might be a Quote
+        // i.e. it can dinamically change
+        swap_ = MakeVanillaSwap(tenor_, clonedIborIndex, 0.0, fwdStart_)
             .withFixedLegDayCount(fixedDayCount_)
             .withFixedLegTenor(Period(fixedFrequency_))
             .withFixedLegConvention(fixedConvention_)
             .withFixedLegTerminationDateConvention(fixedConvention_);
+
+        earliestDate_ = swap_->startDate();
 
         // Usually...
         latestDate_ = swap_->maturityDate();

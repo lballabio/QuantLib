@@ -186,11 +186,11 @@ void setup() {
     }
     for (Size i=0; i<swaps; i++) {
         Handle<Quote> r(rates[i+deposits]);
-        instruments[i+deposits] = boost::shared_ptr<RateHelper>(
-                new SwapRateHelper(r, swapData[i].n*swapData[i].units,
-                                   settlementDays, calendar,
-                                   fixedLegFrequency, fixedLegConvention,
-                                   fixedLegDayCounter, euribor));
+        instruments[i+deposits] = boost::shared_ptr<RateHelper>(new
+            SwapRateHelper(r, swapData[i].n*swapData[i].units,
+                           calendar,
+                           fixedLegFrequency, fixedLegConvention,
+                           fixedLegDayCounter, euribor));
     }
     Euribor3M euribor3m;
     for (Size i=0; i<fras; i++) {
@@ -510,11 +510,11 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
 
     for (Size i=0; i<swaps; i++) {
         Handle<Quote> r(rates[i+deposits]);
-        swapHelpers[i] = boost::shared_ptr<RateHelper>(
-                new SwapRateHelper(r, Period(swapData[i].n, swapData[i].units),
-                                   settlementDays, calendar,
-                                   fixedLegFrequency, fixedLegConvention,
-                                   fixedLegDayCounter, euribor6m));
+        swapHelpers[i] = boost::shared_ptr<RateHelper>(new
+            SwapRateHelper(r, Period(swapData[i].n, swapData[i].units),
+                           calendar,
+                           fixedLegFrequency, fixedLegConvention,
+                           fixedLegDayCounter, euribor6m));
     }
 
     termStructure = boost::shared_ptr<YieldTermStructure>(

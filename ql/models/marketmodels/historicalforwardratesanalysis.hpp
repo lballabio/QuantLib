@@ -100,7 +100,6 @@ namespace QuantLib {
             rateHelpers.push_back(boost::shared_ptr<RateHelper> (new
                 SwapRateHelper(quoteHandle,
                                (*swap)->tenor(),
-                               (*swap)->fixingDays(),
                                (*swap)->fixingCalendar(),
                                (*swap)->fixedLegTenor().frequency(),
                                (*swap)->fixedLegConvention(),
