@@ -18,26 +18,69 @@
 */
 
 #include <ql/instruments/dividendvanillaoption.hpp>
+#include <ql/instruments/impliedvolatility.hpp>
+#include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/fddividendamericanengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/exercise.hpp>
+#include <boost/scoped_ptr.hpp>
 
 namespace QuantLib {
 
     DividendVanillaOption::DividendVanillaOption(
-        const boost::shared_ptr<StochasticProcess>& process,
-        const boost::shared_ptr<StrikedTypePayoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise,
-        const std::vector<Date>& dividendDates,
-        const std::vector<Real>& dividends,
-        const boost::shared_ptr<PricingEngine>& engine)
-    : VanillaOption(process, payoff, exercise, engine),
-      cashFlow_(DividendVector(dividendDates, dividends)) {
+                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                           const boost::shared_ptr<Exercise>& exercise,
+                           const std::vector<Date>& dividendDates,
+                           const std::vector<Real>& dividends)
+    : OneAssetOption(payoff, exercise),
+      cashFlow_(DividendVector(dividendDates, dividends)) {}
+
+
+    Volatility DividendVanillaOption::impliedVolatility(
+             Real targetValue,
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Real accuracy,
+             Size maxEvaluations,
+             Volatility minVol,
+             Volatility maxVol) const {
+
+        QL_REQUIRE(!isExpired(), "option expired");
+
+        boost::shared_ptr<SimpleQuote> volQuote(new SimpleQuote);
+
+        boost::shared_ptr<GeneralizedBlackScholesProcess> newProcess =
+            ImpliedVolatilityHelper::clone(process, volQuote);
+
+        // engines are built-in for the time being
+        boost::scoped_ptr<PricingEngine> engine;
+        switch (exercise_->type()) {
+          case Exercise::European:
+            engine.reset(new AnalyticDividendEuropeanEngine(newProcess));
+            break;
+          case Exercise::American:
+            engine.reset(new FDDividendAmericanEngine(newProcess));
+            break;
+          case Exercise::Bermudan:
+            QL_FAIL("engine not available for Bermudan option with dividends");
+            break;
+          default:
+            QL_FAIL("unknown exercise type");
+        }
+
+        return ImpliedVolatilityHelper::calculate(*this,
+                                                  *engine,
+                                                  *volQuote,
+                                                  targetValue,
+                                                  accuracy,
+                                                  maxEvaluations,
+                                                  minVol, maxVol);
     }
+
 
     void DividendVanillaOption::setupArguments(
                                        PricingEngine::arguments* args) const {
-        VanillaOption::setupArguments(args);
+        OneAssetOption::setupArguments(args);
 
         DividendVanillaOption::arguments* arguments =
             dynamic_cast<DividendVanillaOption::arguments*>(args);
@@ -48,7 +91,7 @@ namespace QuantLib {
 
 
     void DividendVanillaOption::arguments::validate() const {
-        VanillaOption::arguments::validate();
+        OneAssetOption::arguments::validate();
 
         Date exerciseDate = exercise->lastDate();
 

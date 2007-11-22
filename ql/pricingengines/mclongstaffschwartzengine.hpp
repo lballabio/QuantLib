@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Klaus Spanderen
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -53,6 +54,7 @@ namespace QuantLib {
             path_generator_type;
 
         MCLongstaffSchwartzEngine(
+            const boost::shared_ptr<StochasticProcess>& process,
             Size timeSteps,
             Size timeStepsPerYear,
             bool brownianBridge,
@@ -74,6 +76,7 @@ namespace QuantLib {
         boost::shared_ptr<path_pricer_type> pathPricer() const;
         boost::shared_ptr<path_generator_type> pathGenerator() const;
 
+        boost::shared_ptr<StochasticProcess> process_;
         const Size timeSteps_;
         const Size timeStepsPerYear_;
         const bool brownianBridge_;
@@ -89,8 +92,9 @@ namespace QuantLib {
 
     template <class GenericEngine, template <class> class MC,
               class RNG, class S>
-    inline
-    MCLongstaffSchwartzEngine<GenericEngine,MC,RNG,S>::MCLongstaffSchwartzEngine(
+    inline MCLongstaffSchwartzEngine<GenericEngine,MC,RNG,S>::
+    MCLongstaffSchwartzEngine(
+            const boost::shared_ptr<StochasticProcess>& process,
             Size timeSteps,
             Size timeStepsPerYear,
             bool brownianBridge,
@@ -102,6 +106,7 @@ namespace QuantLib {
             BigNatural seed,
             Size nCalibrationSamples)
     : McSimulation<MC,RNG,S> (antitheticVariate, controlVariate),
+      process_            (process),
       timeSteps_          (timeSteps),
       timeStepsPerYear_   (timeStepsPerYear),
       brownianBridge_     (brownianBridge),
@@ -111,6 +116,13 @@ namespace QuantLib {
       seed_               (seed),
       nCalibrationSamples_( (nCalibrationSamples == Null<Size>())
                             ? 2048 : nCalibrationSamples) {
+        QL_REQUIRE(timeSteps>0,
+                   "timeSteps must be positive, " << timeSteps <<
+                   " not allowed");
+        QL_REQUIRE(timeStepsPerYear>0,
+                   "timeStepsPerYear must be positive, " << timeStepsPerYear <<
+                   " not allowed");
+        this->registerWith(process_);
     }
 
     template <class GenericEngine, template <class> class MC,
@@ -153,7 +165,7 @@ namespace QuantLib {
     TimeGrid MCLongstaffSchwartzEngine<GenericEngine,MC,RNG,S>::timeGrid()
         const {
         Date lastExerciseDate = this->arguments_.exercise->lastDate();
-        Time t = this->arguments_.stochasticProcess->time(lastExerciseDate);
+        Time t = process_->time(lastExerciseDate);
         if (this->timeSteps_ != Null<Size>()) {
             return TimeGrid(t, this->timeSteps_);
         } else if (this->timeStepsPerYear_ != Null<Size>()) {
@@ -171,12 +183,12 @@ namespace QuantLib {
     MCLongstaffSchwartzEngine<GenericEngine,MC,RNG,S>::path_generator_type>
     MCLongstaffSchwartzEngine<GenericEngine,MC,RNG,S>::pathGenerator() const {
 
-        Size dimensions = this->arguments_.stochasticProcess->factors();
+        Size dimensions = process_->factors();
         TimeGrid grid = this->timeGrid();
         typename RNG::rsg_type generator =
             RNG::make_sequence_generator(dimensions*(grid.size()-1),seed_);
         return boost::shared_ptr<path_generator_type>(
-                   new path_generator_type(this->arguments_.stochasticProcess,
+                   new path_generator_type(process_,
                                            grid, generator, brownianBridge_));
     }
 

@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2005, 2006 Theo Boafo
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,28 +25,24 @@
 namespace QuantLib {
 
     DiscretizedConvertible::DiscretizedConvertible(
-                               const ConvertibleBond::option::arguments& args,
-                               const TimeGrid& grid)
-    : arguments_(args) {
+             const ConvertibleBond::option::arguments& args,
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const TimeGrid& grid)
+    : arguments_(args), process_(process) {
 
         dividendValues_ = Array(arguments_.dividends.size(), 0.0);
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-
-        Date settlementDate = process->riskFreeRate()->referenceDate();
+        Date settlementDate = process_->riskFreeRate()->referenceDate();
         for (Size i=0; i<arguments_.dividends.size(); i++) {
             if (arguments_.dividends[i]->date() >= settlementDate) {
                 dividendValues_[i] =
                     arguments_.dividends[i]->amount() *
-                    process->riskFreeRate()->discount(
+                    process_->riskFreeRate()->discount(
                                              arguments_.dividends[i]->date());
             }
         }
 
-        DayCounter dayCounter = process->riskFreeRate()->dayCounter();
+        DayCounter dayCounter = process_->riskFreeRate()->dayCounter();
         Date bondSettlement = arguments_.settlementDate;
 
         stoppingTimes_.resize(arguments_.exercise->dates().size());
@@ -83,7 +79,7 @@ namespace QuantLib {
                 callabilityTimes_[i] = grid.closestTime(callabilityTimes_[i]);
             for (Size i=0; i<dividendTimes_.size(); i++)
                 dividendTimes_[i] = grid.closestTime(dividendTimes_[i]);
-    }
+        }
     }
 
     void DiscretizedConvertible::reset(Size size) {
@@ -97,12 +93,7 @@ namespace QuantLib {
         conversionProbability_ = Array(size, 0.0);
         spreadAdjustedRate_ = Array(size, 0.0);
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-
-        DayCounter rfdc  = process->riskFreeRate()->dayCounter();
+        DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
 
         // this takes care of convertibility and conversion probabilities
         adjustValues();
@@ -112,8 +103,8 @@ namespace QuantLib {
         Date exercise = arguments_.exercise->lastDate();
 
         Rate riskFreeRate =
-            process->riskFreeRate()->zeroRate(exercise, rfdc,
-                                              Continuous, NoFrequency);
+            process_->riskFreeRate()->zeroRate(exercise, rfdc,
+                                               Continuous, NoFrequency);
 
         // Calculate blended discount rate to be used on roll back.
         for (Size j=0; j<values_.size(); j++) {

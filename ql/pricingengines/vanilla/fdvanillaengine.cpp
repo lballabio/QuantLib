@@ -41,10 +41,6 @@ namespace QuantLib {
         const OneAssetOption::arguments * args =
             dynamic_cast<const OneAssetOption::arguments *>(a);
         QL_REQUIRE(args, "incorrect argument type");
-        process_ =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                     args->stochasticProcess);
-        QL_REQUIRE(process_, "Black-Scholes process required");
         exerciseDate_ = args->exercise->lastDate();
         payoff_ = args->payoff;
         requiredGridValue_ =
@@ -52,6 +48,7 @@ namespace QuantLib {
     }
 
     void FDVanillaEngine::setGridLimits(Real center, Time t) const {
+        QL_REQUIRE(center > 0.0, "negative or null underlying given");
         center_ = center;
         Size newGridPoints = safeGridPoints(gridPoints_, t);
         if (newGridPoints > intrinsicValues_.size()) {

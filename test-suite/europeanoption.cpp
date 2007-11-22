@@ -76,6 +76,18 @@ enum EngineType { Analytic,
                   Integral,
                   PseudoMonteCarlo, QuasiMonteCarlo };
 
+boost::shared_ptr<GeneralizedBlackScholesProcess>
+makeProcess(const boost::shared_ptr<Quote>& u,
+            const boost::shared_ptr<YieldTermStructure>& q,
+            const boost::shared_ptr<YieldTermStructure>& r,
+            const boost::shared_ptr<BlackVolTermStructure>& vol) {
+    return boost::shared_ptr<BlackScholesMertonProcess>(
+           new BlackScholesMertonProcess(Handle<Quote>(u),
+                                         Handle<YieldTermStructure>(q),
+                                         Handle<YieldTermStructure>(r),
+                                         Handle<BlackVolTermStructure>(vol)));
+}
+
 boost::shared_ptr<VanillaOption>
 makeOption(const boost::shared_ptr<StrikedTypePayoff>& payoff,
            const boost::shared_ptr<Exercise>& exercise,
@@ -87,68 +99,74 @@ makeOption(const boost::shared_ptr<StrikedTypePayoff>& payoff,
            Size binomialSteps,
            Size samples) {
 
+    boost::shared_ptr<GeneralizedBlackScholesProcess> stochProcess =
+        makeProcess(u,q,r,vol);
+
     boost::shared_ptr<PricingEngine> engine;
     switch (engineType) {
       case Analytic:
-        engine = boost::shared_ptr<PricingEngine>(new AnalyticEuropeanEngine);
+        engine = boost::shared_ptr<PricingEngine>(
+                                    new AnalyticEuropeanEngine(stochProcess));
         break;
       case JR:
         engine = boost::shared_ptr<PricingEngine>(
-                new BinomialVanillaEngine<JarrowRudd>(binomialSteps));
+                        new BinomialVanillaEngine<JarrowRudd>(stochProcess,
+                                                              binomialSteps));
         break;
       case CRR:
         engine = boost::shared_ptr<PricingEngine>(
-                new BinomialVanillaEngine<CoxRossRubinstein>(binomialSteps));
+                 new BinomialVanillaEngine<CoxRossRubinstein>(stochProcess,
+                                                              binomialSteps));
       case EQP:
         engine = boost::shared_ptr<PricingEngine>(
-                new BinomialVanillaEngine<AdditiveEQPBinomialTree>(
+           new BinomialVanillaEngine<AdditiveEQPBinomialTree>(stochProcess,
                                                               binomialSteps));
         break;
       case TGEO:
         engine = boost::shared_ptr<PricingEngine>(
-                new BinomialVanillaEngine<Trigeorgis>(binomialSteps));
+                        new BinomialVanillaEngine<Trigeorgis>(stochProcess,
+                                                              binomialSteps));
         break;
       case TIAN:
         engine = boost::shared_ptr<PricingEngine>(
-                new BinomialVanillaEngine<Tian>(binomialSteps));
+                new BinomialVanillaEngine<Tian>(stochProcess, binomialSteps));
         break;
       case LR:
         engine = boost::shared_ptr<PricingEngine>(
-                new BinomialVanillaEngine<LeisenReimer>(binomialSteps));
+                      new BinomialVanillaEngine<LeisenReimer>(stochProcess,
+                                                              binomialSteps));
         break;
       case JOSHI:
         engine = boost::shared_ptr<PricingEngine>(
-                new BinomialVanillaEngine<Joshi4>(binomialSteps));
+              new BinomialVanillaEngine<Joshi4>(stochProcess, binomialSteps));
         break;
       case FiniteDifferences:
         engine = boost::shared_ptr<PricingEngine>(
-                new FDEuropeanEngine(binomialSteps,samples));
+                    new FDEuropeanEngine(stochProcess,binomialSteps,samples));
         break;
       case Integral:
           engine = boost::shared_ptr<PricingEngine>(
-                new IntegralEngine());
+                                            new IntegralEngine(stochProcess));
           break;
       case PseudoMonteCarlo:
-        engine = MakeMCEuropeanEngine<PseudoRandom>().withSteps(1)
-                                                     .withSamples(samples)
-                                                     .withSeed(42);
+        engine = MakeMCEuropeanEngine<PseudoRandom>(stochProcess)
+            .withSteps(1)
+            .withSamples(samples)
+            .withSeed(42);
         break;
       case QuasiMonteCarlo:
-        engine = MakeMCEuropeanEngine<LowDiscrepancy>().withSteps(1)
-                                                       .withSamples(samples);
+        engine = MakeMCEuropeanEngine<LowDiscrepancy>(stochProcess)
+            .withSteps(1)
+            .withSamples(samples);
         break;
       default:
         QL_FAIL("unknown engine type");
     }
 
-    boost::shared_ptr<StochasticProcess> stochProcess(
-           new BlackScholesMertonProcess(Handle<Quote>(u),
-                                         Handle<YieldTermStructure>(q),
-                                         Handle<YieldTermStructure>(r),
-                                         Handle<BlackVolTermStructure>(vol)));
-
-    return boost::shared_ptr<VanillaOption>(
-                  new EuropeanOption(stochProcess, payoff, exercise, engine));
+    boost::shared_ptr<VanillaOption> option(
+                                        new EuropeanOption(payoff, exercise));
+    option->setPricingEngine(engine);
+    return option;
 }
 
 std::string engineTypeToString(EngineType type) {
@@ -259,7 +277,6 @@ void EuropeanOptionTest::testValues() {
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
-    boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -273,13 +290,16 @@ void EuropeanOptionTest::testValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<StochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
+        boost::shared_ptr<PricingEngine> engine(
+                                    new AnalyticEuropeanEngine(stochProcess));
 
-        EuropeanOption option(stochProcess, payoff, exercise, engine);
+        EuropeanOption option(payoff, exercise);
+        option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
         Real error = std::fabs(calculated-values[i].result);
@@ -339,12 +359,13 @@ void EuropeanOptionTest::testGreekValues() {
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
-    boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
-    boost::shared_ptr<StochasticProcess> stochProcess(new
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
         BlackScholesMertonProcess(Handle<Quote>(spot),
                                   Handle<YieldTermStructure>(qTS),
                                   Handle<YieldTermStructure>(rTS),
                                   Handle<BlackVolTermStructure>(volTS)));
+    boost::shared_ptr<PricingEngine> engine(
+                                    new AnalyticEuropeanEngine(stochProcess));
 
     boost::shared_ptr<StrikedTypePayoff> payoff;
     Date exDate;
@@ -363,8 +384,9 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
-        stochProcess, payoff, exercise, engine));
+    option = boost::shared_ptr<VanillaOption>(
+                                        new EuropeanOption(payoff, exercise));
+    option->setPricingEngine(engine);
     calculated = option->delta();
     Real error = std::fabs(calculated-values[i].result);
     Real tolerance = 1e-4;
@@ -383,8 +405,9 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
-        stochProcess, payoff, exercise, engine));
+    option = boost::shared_ptr<VanillaOption>(
+                                        new EuropeanOption(payoff, exercise));
+    option->setPricingEngine(engine);
     calculated = option->delta();
     error = std::fabs(calculated-values[i].result);
     if (error>tolerance)
@@ -402,8 +425,9 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
-        stochProcess, payoff, exercise, engine));
+    option = boost::shared_ptr<VanillaOption>(
+                                        new EuropeanOption(payoff, exercise));
+    option->setPricingEngine(engine);
     calculated = option->elasticity();
     error = std::fabs(calculated-values[i].result);
     if (error>tolerance)
@@ -422,8 +446,9 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
-        stochProcess, payoff, exercise, engine));
+    option = boost::shared_ptr<VanillaOption>(
+                                        new EuropeanOption(payoff, exercise));
+    option->setPricingEngine(engine);
     calculated = option->gamma();
     error = std::fabs(calculated-values[i].result);
     if (error>tolerance)
@@ -441,8 +466,9 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
-        stochProcess, payoff, exercise, engine));
+    option = boost::shared_ptr<VanillaOption>(
+                                        new EuropeanOption(payoff, exercise));
+    option->setPricingEngine(engine);
     calculated = option->gamma();
     error = std::fabs(calculated-values[i].result);
     if (error>tolerance)
@@ -461,8 +487,9 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
-        stochProcess, payoff, exercise, engine));
+    option = boost::shared_ptr<VanillaOption>(
+                                        new EuropeanOption(payoff, exercise));
+    option->setPricingEngine(engine);
     calculated = option->vega();
     error = std::fabs(calculated-values[i].result);
     if (error>tolerance)
@@ -481,8 +508,9 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
-        stochProcess, payoff, exercise, engine));
+    option = boost::shared_ptr<VanillaOption>(
+                                        new EuropeanOption(payoff, exercise));
+    option->setPricingEngine(engine);
     calculated = option->vega();
     error = std::fabs(calculated-values[i].result);
     if (error>tolerance)
@@ -501,8 +529,9 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
-        stochProcess, payoff, exercise, engine));
+    option = boost::shared_ptr<VanillaOption>(
+                                        new EuropeanOption(payoff, exercise));
+    option->setPricingEngine(engine);
     calculated = option->theta();
     error = std::fabs(calculated-values[i].result);
     if (error>tolerance)
@@ -521,8 +550,9 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
-        stochProcess, payoff, exercise, engine));
+    option = boost::shared_ptr<VanillaOption>(
+                                        new EuropeanOption(payoff, exercise));
+    option->setPricingEngine(engine);
     calculated = option->thetaPerDay();
     error = std::fabs(calculated-values[i].result);
     if (error>tolerance)
@@ -541,8 +571,9 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
-        stochProcess, payoff, exercise, engine));
+    option = boost::shared_ptr<VanillaOption>(
+                                        new EuropeanOption(payoff, exercise));
+    option->setPricingEngine(engine);
     calculated = option->rho();
     error = std::fabs(calculated-values[i].result);
     if (error>tolerance)
@@ -561,8 +592,9 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
-        stochProcess, payoff, exercise, engine));
+    option = boost::shared_ptr<VanillaOption>(
+                                        new EuropeanOption(payoff, exercise));
+    option->setPricingEngine(engine);
     calculated = option->dividendRho();
     error = std::fabs(calculated-values[i].result);
     if (error>tolerance)
@@ -631,11 +663,13 @@ void EuropeanOptionTest::testGreeks() {
                     GapPayoff(types[i], strikes[j], 100.0));
               }
 
-              boost::shared_ptr<StochasticProcess> stochProcess(
+              boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
                             new BlackScholesMertonProcess(Handle<Quote>(spot),
                                                           qTS, rTS, volTS));
-
-              EuropeanOption option(stochProcess, payoff, exercise);
+              boost::shared_ptr<PricingEngine> engine(
+                                    new AnalyticEuropeanEngine(stochProcess));
+              EuropeanOption option(payoff, exercise);
+              option.setPricingEngine(engine);
 
               for (Size l=0; l<LENGTH(underlyings); l++) {
                 for (Size m=0; m<LENGTH(qRates); m++) {
@@ -775,6 +809,9 @@ void EuropeanOptionTest::testImpliedVol() {
               makeOption(payoff, exercise, spot, qTS, rTS, volTS,
                          Analytic, Null<Size>(), Null<Size>());
 
+          boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+              makeProcess(spot, qTS, rTS,volTS);
+
           for (Size l=0; l<LENGTH(underlyings); l++) {
             for (Size m=0; m<LENGTH(qRates); m++) {
               for (Size n=0; n<LENGTH(rRates); n++) {
@@ -800,6 +837,7 @@ void EuropeanOptionTest::testImpliedVol() {
                       }
                       try {
                           implVol = option->impliedVolatility(value,
+                                                              process,
                                                               tolerance,
                                                               maxEvaluations);
                       } catch (std::exception& e) {
@@ -885,16 +923,19 @@ void EuropeanOptionTest::testImpliedVolContainment() {
     boost::shared_ptr<StrikedTypePayoff> payoff(
                                  new PlainVanillaPayoff(Option::Call, 100.0));
 
-    boost::shared_ptr<StochasticProcess> process(
+    boost::shared_ptr<BlackScholesMertonProcess> process(
                   new BlackScholesMertonProcess(underlying, qTS, rTS, volTS));
-
+    boost::shared_ptr<PricingEngine> engine(
+                                        new AnalyticEuropeanEngine(process));
     // link to the same stochastic process, which shouldn't be changed
     // by calling methods of either option
 
     boost::shared_ptr<VanillaOption> option1(
-                               new EuropeanOption(process, payoff, exercise));
+                                        new EuropeanOption(payoff, exercise));
+    option1->setPricingEngine(engine);
     boost::shared_ptr<VanillaOption> option2(
-                               new EuropeanOption(process, payoff, exercise));
+                                        new EuropeanOption(payoff, exercise));
+    option2->setPricingEngine(engine);
 
     // test
 
@@ -903,7 +944,8 @@ void EuropeanOptionTest::testImpliedVolContainment() {
     Flag f;
     f.registerWith(option2);
 
-    option1->impliedVolatility(refValue*1.5, tolerance, maxEvaluations);
+    option1->impliedVolatility(refValue*1.5, process,
+                               tolerance, maxEvaluations);
 
     if (f.isUp())
         BOOST_ERROR("implied volatility calculation triggered a change "
@@ -1252,8 +1294,14 @@ void EuropeanOptionTest::testPriceCurve() {
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+            BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
     boost::shared_ptr<PricingEngine>
-        engine(new FDEuropeanEngine(timeSteps, gridPoints));
+        engine(new FDEuropeanEngine(stochProcess, timeSteps, gridPoints));
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -1268,13 +1316,8 @@ void EuropeanOptionTest::testPriceCurve() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<StochasticProcess> stochProcess(new
-            BlackScholesMertonProcess(Handle<Quote>(spot),
-                                      Handle<YieldTermStructure>(qTS),
-                                      Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS)));
-
-        EuropeanOption option(stochProcess, payoff, exercise, engine);
+        EuropeanOption option(payoff, exercise);
+        option.setPricingEngine(engine);
         SampledCurve price_curve = option.result<SampledCurve>("priceCurve");
         if (price_curve.empty()) {
             REPORT_FAILURE("no price curve", payoff, exercise, values[i].s,
@@ -1295,9 +1338,12 @@ void EuropeanOptionTest::testPriceCurve() {
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
+            boost::shared_ptr<PricingEngine>
+                engine1(new FDEuropeanEngine(stochProcess,
+                                             timeSteps, gridPoints));
 
-            EuropeanOption option1(stochProcess, payoff, exercise, engine);
-            Real calculated = option1.NPV();
+            option.setPricingEngine(engine1);
+            Real calculated = option.NPV();
             Real error = std::fabs(calculated-price_curve.value(i));
             Real tolerance = 1e-3;
             if (error>tolerance) {

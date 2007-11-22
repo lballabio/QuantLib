@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -95,14 +95,14 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
-    boost::shared_ptr<StochasticProcess> stochProcess(new
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
         BlackScholesMertonProcess(Handle<Quote>(spot),
                                   Handle<YieldTermStructure>(qTS),
                                   Handle<YieldTermStructure>(rTS),
                                   Handle<BlackVolTermStructure>(volTS)));
 
     boost::shared_ptr<PricingEngine> engine(new
-        AnalyticContinuousGeometricAveragePriceAsianEngine);
+            AnalyticContinuousGeometricAveragePriceAsianEngine(stochProcess));
 
     Average::Type averageType = Average::Geometric;
     Option::Type type = Option::Put;
@@ -117,8 +117,8 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
 
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
-    ContinuousAveragingAsianOption option(averageType, stochProcess, payoff,
-                                          exercise, engine);
+    ContinuousAveragingAsianOption option(averageType, payoff, exercise);
+    option.setPricingEngine(engine);
 
     Real calculated = option.NPV();
     Real expected = 4.6922;
@@ -138,12 +138,13 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
         fixingDates[i] = today + i;
     }
     boost::shared_ptr<PricingEngine> engine2(new
-        AnalyticDiscreteGeometricAveragePriceAsianEngine);
+              AnalyticDiscreteGeometricAveragePriceAsianEngine(stochProcess));
     DiscreteAveragingAsianOption option2(averageType,
                                          runningAccumulator, pastFixings,
                                          fixingDates,
-                                         stochProcess, payoff,
-                                         exercise, engine2);
+                                         payoff,
+                                         exercise);
+    option2.setPricingEngine(engine2);
 
     calculated = option2.NPV();
     tolerance = 3.0e-3;
@@ -192,7 +193,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-    boost::shared_ptr<StochasticProcess> process(
+    boost::shared_ptr<BlackScholesMertonProcess> process(
          new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
     for (Size i=0; i<LENGTH(types); i++) {
@@ -206,11 +207,12 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
                                 new PlainVanillaPayoff(types[i], strikes[j]));
 
             boost::shared_ptr<PricingEngine> engine(new
-                AnalyticContinuousGeometricAveragePriceAsianEngine);
+                 AnalyticContinuousGeometricAveragePriceAsianEngine(process));
 
             ContinuousAveragingAsianOption option(Average::Geometric,
-                                                  process, payoff,
-                                                  maturity, engine);
+                                                  payoff, maturity);
+            option.setPricingEngine(engine);
+
             Size pastFixings = Null<Size>();
             Real runningAverage = Null<Real>();
 
@@ -332,14 +334,14 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
-    boost::shared_ptr<StochasticProcess> stochProcess(new
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
         BlackScholesMertonProcess(Handle<Quote>(spot),
                                   Handle<YieldTermStructure>(qTS),
                                   Handle<YieldTermStructure>(rTS),
                                   Handle<BlackVolTermStructure>(volTS)));
 
-    boost::shared_ptr<PricingEngine> engine(new
-        AnalyticDiscreteGeometricAveragePriceAsianEngine);
+    boost::shared_ptr<PricingEngine> engine(
+          new AnalyticDiscreteGeometricAveragePriceAsianEngine(stochProcess));
 
     Average::Type averageType = Average::Geometric;
     Real runningAccumulator = 1.0;
@@ -361,8 +363,8 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
 
     DiscreteAveragingAsianOption option(averageType, runningAccumulator,
                                         pastFixings, fixingDates,
-                                        stochProcess, payoff,
-                                        exercise, engine);
+                                        payoff, exercise);
+    option.setPricingEngine(engine);
 
     Real calculated = option.NPV();
     Real expected = 5.3425606635;
@@ -395,7 +397,7 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
-    boost::shared_ptr<StochasticProcess> stochProcess(new
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
         BlackScholesMertonProcess(Handle<Quote>(spot),
                                   Handle<YieldTermStructure>(qTS),
                                   Handle<YieldTermStructure>(rTS),
@@ -403,16 +405,10 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
 
     Real tolerance = 4.0e-3;
 
-    boost::shared_ptr<PricingEngine> engine;
-    engine =
-        MakeMCDiscreteGeometricAPEngine<LowDiscrepancy>().withStepsPerYear(1)
-                                                         .withSamples(8191);
-/*
-        MakeMCDiscreteGeometricAPEngine<PseudoRandom>().withStepsPerYear(1)
-                                                       .withTolerance(tolerance/4.0)
-                                                       .withAntitheticVariate()
-                                                       .withSeed(42);
-*/
+    boost::shared_ptr<PricingEngine> engine =
+        MakeMCDiscreteGeometricAPEngine<LowDiscrepancy>(stochProcess)
+        .withStepsPerYear(1)
+        .withSamples(8191);
 
     Average::Type averageType = Average::Geometric;
     Real runningAccumulator = 1.0;
@@ -434,14 +430,16 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
 
     DiscreteAveragingAsianOption option(averageType, runningAccumulator,
                                         pastFixings, fixingDates,
-                                        stochProcess, payoff,
-                                        exercise, engine);
+                                        payoff, exercise);
+    option.setPricingEngine(engine);
 
     Real calculated = option.NPV();
-    boost::shared_ptr<PricingEngine> engine2(new
-        AnalyticDiscreteGeometricAveragePriceAsianEngine);
+
+    boost::shared_ptr<PricingEngine> engine2(
+          new AnalyticDiscreteGeometricAveragePriceAsianEngine(stochProcess));
     option.setPricingEngine(engine2);
-    Real expected = option.NPV(); //5.3425606635;
+    Real expected = option.NPV();
+
     if (std::fabs(calculated-expected) > tolerance) {
         REPORT_FAILURE("value", averageType, runningAccumulator, pastFixings,
                        fixingDates, payoff, exercise, spot->value(),
@@ -555,19 +553,6 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
 
 
 
-    boost::shared_ptr<PricingEngine> engine;
-    engine =
-/*
-        MakeMCDiscreteArithmeticAPEngine<PseudoRandom>().withStepsPerYear(1)
-                                                        .withTolerance(tolerance/4.0)
-                                                        .withControlVariate()
-                                                        .withAntitheticVariate()
-                                                        .withSeed(42);
-*/
-        MakeMCDiscreteArithmeticAPEngine<LowDiscrepancy>().withStepsPerYear(1)
-                                                          .withSamples(2047)
-                                                          .withControlVariate();
-
     Average::Type averageType = Average::Arithmetic;
     Real runningSum = 0.0;
     Size pastFixings = 0;
@@ -593,16 +578,23 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
         rRate->setValue(cases4[l].riskFreeRate);
         vol  ->setValue(cases4[l].volatility);
 
-        boost::shared_ptr<StochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
 
+
+        boost::shared_ptr<PricingEngine> engine =
+            MakeMCDiscreteArithmeticAPEngine<LowDiscrepancy>(stochProcess)
+            .withStepsPerYear(1)
+            .withSamples(2047)
+            .withControlVariate();
+
         DiscreteAveragingAsianOption option(averageType, runningSum,
                                             pastFixings, fixingDates,
-                                            stochProcess, payoff,
-                                            exercise, engine);
+                                            payoff, exercise);
+        option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
         Real expected = cases4[l].result;
@@ -651,7 +643,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-    boost::shared_ptr<StochasticProcess> process(
+    boost::shared_ptr<BlackScholesMertonProcess> process(
          new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
     for (Size i=0; i<LENGTH(types); i++) {
@@ -674,13 +666,13 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
                 fixingDates.push_back(d);
 
 
-            boost::shared_ptr<PricingEngine> engine(new
-                AnalyticDiscreteGeometricAveragePriceAsianEngine);
+            boost::shared_ptr<PricingEngine> engine(
+               new AnalyticDiscreteGeometricAveragePriceAsianEngine(process));
 
             DiscreteAveragingAsianOption option(Average::Geometric,
                                                 runningAverage, pastFixings,
-                                                fixingDates, process, payoff,
-                                                maturity, engine);
+                                                fixingDates, payoff, maturity);
+            option.setPricingEngine(engine);
 
             for (Size l=0; l<LENGTH(underlyings); l++) {
               for (Size m=0; m<LENGTH(qRates); m++) {

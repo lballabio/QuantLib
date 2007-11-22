@@ -21,19 +21,19 @@
     \brief analytic Black-Scholes engines including stochastic interest rates
 */
 
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analyticbsmhullwhiteengine.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 
 namespace QuantLib {
 
     namespace {
+
         class ShiftedBlackVolTermStructure : public BlackVolTermStructure {
           public:
             ShiftedBlackVolTermStructure(
                 Real varianceOffset,
-                const Handle<BlackVolTermStructure> & volTS) 
+                const Handle<BlackVolTermStructure> & volTS)
                 : BlackVolTermStructure(volTS->referenceDate(),
                                         volTS->calendar(),
                                         Following,
@@ -61,43 +61,42 @@ namespace QuantLib {
     }
 
     AnalyticBSMHullWhiteEngine::AnalyticBSMHullWhiteEngine(
-                                  const Real equityShortRateCorrelation,
-                                  const boost::shared_ptr<HullWhite> & model)
+             Real equityShortRateCorrelation,
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const boost::shared_ptr<HullWhite> & model)
     : GenericModelEngine<HullWhite,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
-      rho_(equityShortRateCorrelation) {
+      rho_(equityShortRateCorrelation), process_(process) {
+        registerWith(process_);
     }
 
     void AnalyticBSMHullWhiteEngine::calculate() const {
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-
+        QL_REQUIRE(process_->x0() > 0.0, "negative or null underlying given");
 
         const boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         const boost::shared_ptr<Exercise> exercise = arguments_.exercise;
-        
-        Time t = process->riskFreeRate()->dayCounter().yearFraction(
-           process->riskFreeRate()->referenceDate(), exercise->lastDate());
+
+        Time t = process_->riskFreeRate()->dayCounter().yearFraction(
+                                    process_->riskFreeRate()->referenceDate(),
+                                    exercise->lastDate());
 
         const Real a = model_->params()[0];
         const Real sigma = model_->params()[1];
-        const Real eta = 
-            process->blackVolatility()->blackVol(exercise->lastDate(),
-                                                 payoff->strike());
-        
+        const Real eta =
+            process_->blackVolatility()->blackVol(exercise->lastDate(),
+                                                  payoff->strike());
+
         Real varianceOffset;
         if (a*t > std::pow(QL_EPSILON, 0.25)) {
             const Real v = sigma*sigma/(a*a)
                 *(t + 2/a*std::exp(-a*t) - 1/(2*a)*std::exp(-2*a*t) - 3/(2*a));
             const Real mu = 2*rho_*sigma*eta/a*(t-1/a*(1-std::exp(-a*t)));
-            
+
             varianceOffset = v + mu;
         }
         else {
@@ -110,19 +109,21 @@ namespace QuantLib {
 
         Handle<BlackVolTermStructure> volTS(
              boost::shared_ptr<BlackVolTermStructure>(
-                new ShiftedBlackVolTermStructure(varianceOffset,
-                                                 process->blackVolatility())));
+              new ShiftedBlackVolTermStructure(varianceOffset,
+                                               process_->blackVolatility())));
 
-        const boost::shared_ptr<GeneralizedBlackScholesProcess> adjProcess(
-                new GeneralizedBlackScholesProcess(process->stateVariable(),
-                                                   process->dividendYield(),
-                                                   process->riskFreeRate(),
+        boost::shared_ptr<GeneralizedBlackScholesProcess> adjProcess(
+                new GeneralizedBlackScholesProcess(process_->stateVariable(),
+                                                   process_->dividendYield(),
+                                                   process_->riskFreeRate(),
                                                    volTS));
 
-        const boost::shared_ptr<AnalyticEuropeanEngine> bsmEngine(
-                                            new AnalyticEuropeanEngine());
+        boost::shared_ptr<AnalyticEuropeanEngine> bsmEngine(
+                                      new AnalyticEuropeanEngine(adjProcess));
 
-        VanillaOption(adjProcess, payoff, exercise, bsmEngine).NPV();
+        VanillaOption(payoff, exercise).setupArguments(
+                                                   bsmEngine->getArguments());
+        bsmEngine->calculate();
 
         results_ = *dynamic_cast<const OneAssetOption::results*>(
                                                     bsmEngine->getResults());

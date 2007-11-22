@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004, 2005 Klaus Spanderen
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -65,8 +66,7 @@ namespace QuantLib {
       kappa_(model->kappa()), theta_(model->theta()),
       sigma_(model->sigma()), v0_(model->v0()),
       term_(term),
-      x_(std::log(boost::dynamic_pointer_cast<HestonProcess>
-                  (arg_.stochasticProcess)->s0()->value())),
+      x_(std::log(model->process()->s0()->value())),
       sx_(std::log(boost::dynamic_pointer_cast<StrikedTypePayoff>
                    (arg_.payoff)->strike())),
       dd_(x_-std::log(ratio)),
@@ -74,8 +74,7 @@ namespace QuantLib {
       rsigma_(model->rho()*sigma_),
       t0_(kappa_ - ((j_== 1)? model->rho()*sigma_ : 0)),
       b_(0), g_km1_(0),
-      engine_(engine) {
-    }
+      engine_(engine) {}
 
     Real AnalyticHestonEngine::Fj_Helper::operator()(Real phi) const {
         const Real rpsig(rsigma_*phi);
@@ -137,8 +136,8 @@ namespace QuantLib {
 
 
     AnalyticHestonEngine::AnalyticHestonEngine(
-        const boost::shared_ptr<HestonModel> & model,
-        Size integrationOrder)
+                              const boost::shared_ptr<HestonModel>& model,
+                              Size integrationOrder)
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
@@ -160,10 +159,7 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-        // Heston process
-        boost::shared_ptr<HestonProcess> process =
-            boost::dynamic_pointer_cast<HestonProcess>(
-                                                arguments_.stochasticProcess);
+        const boost::shared_ptr<HestonProcess>& process = model_->process();
 
         const Rate riskFreeDiscount = process->riskFreeRate()->discount(
                                             arguments_.exercise->lastDate());
@@ -172,13 +168,14 @@ namespace QuantLib {
         const Real ratio = riskFreeDiscount/dividendDiscount;
 
         const Real spotPrice = process->s0()->value();
+        QL_REQUIRE(spotPrice > 0.0, "negative or null underlying given");
         const Real strikePrice = payoff->strike();
         const Real term = process->time(arguments_.exercise->lastDate());
 
-        const Real p1 = gaussLaguerre(
-            Fj_Helper(arguments_, model_, this, term, ratio, 1))/M_PI;
-        const Real p2 = gaussLaguerre(
-            Fj_Helper(arguments_, model_, this, term, ratio, 2))/M_PI;
+        const Real p1 = gaussLaguerre(Fj_Helper(arguments_, model_,
+                                                this, term, ratio, 1))/M_PI;
+        const Real p2 = gaussLaguerre(Fj_Helper(arguments_, model_,
+                                                this, term, ratio, 2))/M_PI;
 
         switch (payoff->optionType()) {
           case Option::Call:

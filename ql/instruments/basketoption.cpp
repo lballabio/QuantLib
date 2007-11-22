@@ -25,23 +25,9 @@
 namespace QuantLib {
 
     BasketOption::BasketOption(
-        const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<BasketPayoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise,
-        const boost::shared_ptr<PricingEngine>& engine)
-    : MultiAssetOption(process, payoff, exercise, engine) {}
-
-    void BasketOption::setupArguments(PricingEngine::arguments* args) const {
-        MultiAssetOption::setupArguments(args);
-
-        BasketOption::arguments* arguments =
-            dynamic_cast<BasketOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
-    }
-
-    void BasketOption::arguments::validate() const {
-        MultiAssetOption::arguments::validate();
-    }
+        const boost::shared_ptr<Exercise>& exercise)
+    : MultiAssetOption(payoff, exercise) {}
 
 }
 

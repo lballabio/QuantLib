@@ -26,33 +26,39 @@
 #ifndef quantlib_barrier_option_hpp
 #define quantlib_barrier_option_hpp
 
-#include <ql/instruments/oneassetstrikedoption.hpp>
+#include <ql/instruments/oneassetoption.hpp>
+#include <ql/instruments/barriertype.hpp>
+#include <ql/instruments/payoffs.hpp>
 
 namespace QuantLib {
 
-    //! Placeholder for enumerated barrier types
-    struct Barrier {
-        enum Type { DownIn, UpIn, DownOut, UpOut };
-    };
+    class GeneralizedBlackScholesProcess;
 
     //! %Barrier option on a single asset.
     /*! The analytic pricing engine will be used if none if passed.
 
         \ingroup instruments
     */
-    class BarrierOption : public OneAssetStrikedOption {
+    class BarrierOption : public OneAssetOption {
       public:
         class arguments;
         class engine;
         BarrierOption(Barrier::Type barrierType,
                       Real barrier,
                       Real rebate,
-                      const boost::shared_ptr<StochasticProcess>&,
                       const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                      const boost::shared_ptr<Exercise>& exercise,
-                      const boost::shared_ptr<PricingEngine>& engine =
-                          boost::shared_ptr<PricingEngine>());
+                      const boost::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const;
+        /*! \warning see VanillaOption for notes on implied-volatility
+                     calculation.
+        */
+        Volatility impliedVolatility(
+             Real price,
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Real accuracy = 1.0e-4,
+             Size maxEvaluations = 100,
+             Volatility minVol = 1.0e-7,
+             Volatility maxVol = 4.0) const;
       protected:
         // arguments
         Barrier::Type barrierType_;
@@ -61,8 +67,9 @@ namespace QuantLib {
     };
 
     //! %Arguments for barrier option calculation
-    class BarrierOption::arguments : public OneAssetStrikedOption::arguments {
+    class BarrierOption::arguments : public OneAssetOption::arguments {
       public:
+        arguments();
         Barrier::Type barrierType;
         Real barrier;
         Real rebate;
@@ -72,9 +79,11 @@ namespace QuantLib {
     //! %Barrier-option %engine base class
     class BarrierOption::engine
         : public GenericEngine<BarrierOption::arguments,
-                               BarrierOption::results> {};
+                               BarrierOption::results> {
+      protected:
+        bool triggered(Real underlying) const;
+    };
 
 }
-
 
 #endif

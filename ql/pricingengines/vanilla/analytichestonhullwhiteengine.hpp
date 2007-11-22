@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Klaus Spanderen
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -46,7 +47,7 @@ namespace QuantLib {
 
         References:
 
-        Karel in't Hout, Joris Bierkens, Antoine von der Ploeg, 
+        Karel in't Hout, Joris Bierkens, Antoine von der Ploeg,
         Joe in't Panhuis, A Semi closed-from analytic pricing formula for
         call options in a hybrid Heston-Hull-White Model.
 
@@ -58,24 +59,24 @@ namespace QuantLib {
 
         \test the correctness of the returned value is tested by
               reproducing results available in web/literature, testing
-              against QuantLib's analytic Heston and 
+              against QuantLib's analytic Heston and
               Black-Scholes-Merton Hull-White engine
     */
     class AnalyticHestonHullWhiteEngine : public AnalyticHestonEngine {
       public:
         AnalyticHestonHullWhiteEngine(
-            const boost::shared_ptr<HestonModel> & hestonModel,
-            const boost::shared_ptr<HullWhite> & hullWhiteModel,
-            Size integrationOrder = 64);
+                        const boost::shared_ptr<HestonModel>& hestonModel,
+                        const boost::shared_ptr<HullWhite>& hullWhiteModel,
+                        Size integrationOrder = 64);
 
         void update();
-        void calculate() const; 
+        void calculate() const;
 
       protected:
         std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
 
       private:
-        const boost::shared_ptr<HullWhite> hullWhiteModel_;
+        boost::shared_ptr<HullWhite> hullWhiteModel_;
 
         mutable Real m_;
         mutable Real a_, sigma_;

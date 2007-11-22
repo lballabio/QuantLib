@@ -45,9 +45,11 @@ namespace QuantLib {
     */
     class FDVanillaEngine {
       public:
-        FDVanillaEngine(Size timeSteps, Size gridPoints,
-                        bool timeDependent = false)
-        : timeSteps_(timeSteps), gridPoints_(gridPoints),
+        FDVanillaEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size timeSteps, Size gridPoints,
+             bool timeDependent = false)
+        : process_(process), timeSteps_(timeSteps), gridPoints_(gridPoints),
           timeDependent_(timeDependent),
           intrinsicValues_(gridPoints), BCs_(2) {}
         virtual ~FDVanillaEngine() {}
@@ -62,12 +64,10 @@ namespace QuantLib {
         virtual void initializeBoundaryConditions() const;
         virtual void initializeOperator() const;
         virtual Time getResidualTime() const;
-        // removed - replace with getProcess()->time(d) const
-        //        virtual Time getYearFraction(const Date &d) const;
         // data
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size timeSteps_, gridPoints_;
         bool timeDependent_;
-        mutable boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         mutable Real requiredGridValue_;
         mutable Date exerciseDate_;
         mutable boost::shared_ptr<Payoff> payoff_;
@@ -89,16 +89,21 @@ namespace QuantLib {
 
     template <typename base, typename engine>
     class FDEngineAdapter : public base, public engine {
-    public:
-        FDEngineAdapter(Size timeSteps=100, Size gridPoints=100,
-                         bool timeDependent = false)
-            : base(timeSteps, gridPoints,timeDependent) {};
-    private:
+      public:
+        FDEngineAdapter(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size timeSteps=100, Size gridPoints=100,
+             bool timeDependent = false)
+        : base(process, timeSteps, gridPoints,timeDependent) {
+            this->registerWith(process);
+        }
+      private:
         void calculate() const {
             base::setupArguments(&(this->arguments_));
             base::calculate(&(this->results_));
         }
     };
+
 }
 
 #endif

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,7 +19,6 @@
 */
 
 #include <ql/pricingengines/vanilla/integralengine.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/integrals/segmentintegral.hpp>
 #include <ql/exercise.hpp>
 
@@ -47,6 +47,12 @@ namespace QuantLib {
         };
     }
 
+    IntegralEngine::IntegralEngine(
+              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+    : process_(process) {
+        registerWith(process_);
+    }
+
     void IntegralEngine::calculate() const {
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
@@ -56,29 +62,26 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-
         Real variance =
-            process->blackVolatility()->blackVariance(
+            process_->blackVolatility()->blackVariance(
                            arguments_.exercise->lastDate(), payoff->strike());
 
         DiscountFactor dividendDiscount =
-            process->dividendYield()->discount(arguments_.exercise->lastDate());
+            process_->dividendYield()->discount(
+                                             arguments_.exercise->lastDate());
         DiscountFactor riskFreeDiscount =
-            process->riskFreeRate()->discount(arguments_.exercise->lastDate());
+            process_->riskFreeRate()->discount(arguments_.exercise->lastDate());
         Rate drift = std::log(dividendDiscount/riskFreeDiscount)-0.5*variance;
 
         Integrand f(arguments_.payoff,
-                    process->stateVariable()->value(),
+                    process_->stateVariable()->value(),
                     drift, variance);
         SegmentIntegral integrator(5000);
 
         Real infinity = 10.0*std::sqrt(variance);
         results_.value =
-            process->riskFreeRate()->discount(arguments_.exercise->lastDate()) /
+            process_->riskFreeRate()->discount(
+                                            arguments_.exercise->lastDate()) /
             std::sqrt(2.0*M_PI*variance) *
             integrator(f, drift-infinity, drift+infinity);
     }

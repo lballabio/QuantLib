@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +26,7 @@
 #define quantlib_barone_adesi_whaley_engine_hpp
 
 #include <ql/instruments/vanillaoption.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
@@ -37,6 +39,8 @@ namespace QuantLib {
     class BaroneAdesiWhaleyApproximationEngine
         : public VanillaOption::engine {
       public:
+        BaroneAdesiWhaleyApproximationEngine(
+                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
         static Real criticalPrice(
             const boost::shared_ptr<StrikedTypePayoff>& payoff,
             DiscountFactor riskFreeDiscount,
@@ -44,6 +48,8 @@ namespace QuantLib {
             Real variance,
             Real tolerance = 1e-6);
         void calculate() const;
+      private:
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };
 
 }

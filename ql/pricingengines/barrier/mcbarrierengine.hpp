@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2003, 2004 Neil Firth
  Copyright (C) 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -64,16 +64,21 @@ namespace QuantLib {
         typedef typename McSimulation<SingleVariate,RNG,S>::stats_type
             stats_type;
         // constructor
-        MCBarrierEngine(Size maxTimeStepsPerYear,
-                        bool brownianBridge,
-                        bool antitheticVariate,
-                        bool controlVariate,
-                        Size requiredSamples,
-                        Real requiredTolerance,
-                        Size maxSamples,
-                        bool isBiased,
-                        BigNatural seed);
+        MCBarrierEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size maxTimeStepsPerYear,
+             bool brownianBridge,
+             bool antitheticVariate,
+             bool controlVariate,
+             Size requiredSamples,
+             Real requiredTolerance,
+             Size maxSamples,
+             bool isBiased,
+             BigNatural seed);
         void calculate() const {
+            Real spot = process_->x0();
+            QL_REQUIRE(spot >= 0.0, "negative or null underlying given");
+            QL_REQUIRE(!triggered(spot), "barrier touched");
             McSimulation<SingleVariate,RNG,S>::calculate(requiredTolerance_,
                                                          requiredSamples_,
                                                          maxSamples_);
@@ -86,20 +91,17 @@ namespace QuantLib {
         // McSimulation implementation
         TimeGrid timeGrid() const;
         boost::shared_ptr<path_generator_type> pathGenerator() const {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-                boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-            QL_REQUIRE(process, "Black-Scholes process required");
             TimeGrid grid = timeGrid();
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(grid.size()-1,seed_);
             return boost::shared_ptr<path_generator_type>(
-                         new path_generator_type(process,
+                         new path_generator_type(process_,
                                                  grid, gen, brownianBridge_));
         }
         boost::shared_ptr<path_pricer_type> pathPricer() const;
         // Real controlVariateValue() const;
         // data members
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size maxTimeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
@@ -153,27 +155,30 @@ namespace QuantLib {
     // template definitions
 
     template <class RNG, class S>
-    inline MCBarrierEngine<RNG,S>::MCBarrierEngine(Size maxTimeStepsPerYear,
-                                                   bool brownianBridge,
-                                                   bool antitheticVariate,
-                                                   bool controlVariate,
-                                                   Size requiredSamples,
-                                                   Real requiredTolerance,
-                                                   Size maxSamples,
-                                                   bool isBiased,
-                                                   BigNatural seed)
+    inline MCBarrierEngine<RNG,S>::MCBarrierEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size maxTimeStepsPerYear,
+             bool brownianBridge,
+             bool antitheticVariate,
+             bool controlVariate,
+             Size requiredSamples,
+             Real requiredTolerance,
+             Size maxSamples,
+             bool isBiased,
+             BigNatural seed)
     : McSimulation<SingleVariate,RNG,S>(antitheticVariate, controlVariate),
-      maxTimeStepsPerYear_(maxTimeStepsPerYear),
+      process_(process), maxTimeStepsPerYear_(maxTimeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
       isBiased_(isBiased),
-      brownianBridge_(brownianBridge), seed_(seed) {}
+      brownianBridge_(brownianBridge), seed_(seed) {
+        registerWith(process_);
+    }
 
     template <class RNG, class S>
     inline TimeGrid MCBarrierEngine<RNG,S>::timeGrid() const {
 
-        Time residualTime = arguments_.stochasticProcess->time(
-                                             arguments_.exercise->lastDate());
+        Time residualTime = process_->time(arguments_.exercise->lastDate());
         return TimeGrid(residualTime,
                         Size(std::max<Real>(residualTime*maxTimeStepsPerYear_,
                                             1.0)));
@@ -188,15 +193,10 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-
         TimeGrid grid = timeGrid();
         std::vector<DiscountFactor> discounts(grid.size());
         for (Size i=0; i<grid.size(); i++)
-            discounts[i] = process->riskFreeRate()->discount(grid[i]);
+            discounts[i] = process_->riskFreeRate()->discount(grid[i]);
 
         // do this with template parameters?
         if (isBiased_) {
@@ -221,7 +221,7 @@ namespace QuantLib {
                     payoff->optionType(),
                     payoff->strike(),
                     discounts,
-                    process,
+                    process_,
                     sequenceGen));
         }
     }

@@ -23,54 +23,48 @@
 namespace QuantLib {
 
     QuantoForwardVanillaOption::QuantoForwardVanillaOption(
-                   const Handle<YieldTermStructure>& foreignRiskFreeTS,
-                   const Handle<BlackVolTermStructure>& exchRateVolTS,
-                   const Handle<Quote>& correlation,
-                   Real moneyness,
-                   Date resetDate,
-                   const boost::shared_ptr<StochasticProcess>& process,
-                   const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                   const boost::shared_ptr<Exercise>& exercise,
-                   const boost::shared_ptr<PricingEngine>& engine)
-    : QuantoVanillaOption(foreignRiskFreeTS, exchRateVolTS, correlation,
-                          process, payoff, exercise, engine),
-      moneyness_(moneyness), resetDate_(resetDate) {
-        QL_REQUIRE(engine, "null engine or wrong engine type");
+                           Real moneyness,
+                           const Date& resetDate,
+                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                           const boost::shared_ptr<Exercise>& exercise)
+    : ForwardVanillaOption(moneyness, resetDate, payoff, exercise) {}
+
+    Real QuantoForwardVanillaOption::qvega() const {
+        calculate();
+        QL_REQUIRE(qvega_ != Null<Real>(),
+                   "exchange rate vega calculation failed");
+        return qvega_;
     }
 
-    void QuantoForwardVanillaOption::setupArguments(
-                                       PricingEngine::arguments* args) const {
-        VanillaOption::setupArguments(args);
-        QuantoForwardVanillaOption::arguments* arguments =
-            dynamic_cast<QuantoForwardVanillaOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0,
-                   "pricing engine does not supply needed arguments");
-
-        arguments->foreignRiskFreeTS = foreignRiskFreeTS_;
-        arguments->exchRateVolTS = exchRateVolTS_;
-        QL_REQUIRE(!correlation_.empty(), "null correlation given");
-        arguments->correlation = correlation_->value();
-
-        arguments->moneyness = moneyness_;
-        arguments->resetDate = resetDate_;
+    Real QuantoForwardVanillaOption::qrho() const {
+        calculate();
+        QL_REQUIRE(qrho_ != Null<Real>(),
+                   "foreign interest rate rho calculation failed");
+        return qrho_;
     }
 
-    void QuantoForwardVanillaOption::performCalculations() const {
+    Real QuantoForwardVanillaOption::qlambda() const {
+        calculate();
+        QL_REQUIRE(qlambda_ != Null<Real>(),
+                   "quanto correlation sensitivity calculation failed");
+        return qlambda_;
+    }
 
-        /* we must set the arguments of the underlying engine
-           (which cannot be done by QuantoEngine.) */
-        typedef QuantoEngine<ForwardVanillaOption::arguments,
-                             ForwardVanillaOption::results> engine_type;
-        boost::shared_ptr<engine_type> qengine =
-            boost::dynamic_pointer_cast<engine_type>(engine_);
-        QL_REQUIRE(qengine, "wrong engine given");
-        ForwardVanillaOption::arguments* args = qengine->underlyingArgs();
-        VanillaOption::setupArguments(args);
-        args->moneyness = moneyness_;
-        args->resetDate = resetDate_;
+    void QuantoForwardVanillaOption::setupExpired() const {
+        ForwardVanillaOption::setupExpired();
+        qvega_ = qrho_ = qlambda_ = 0.0;
+    }
 
-        // now go on with the show as originally scheduled
-        QuantoVanillaOption::performCalculations();
+    void QuantoForwardVanillaOption::fetchResults(
+                                      const PricingEngine::results* r) const {
+        ForwardVanillaOption::fetchResults(r);
+        const QuantoForwardVanillaOption::results* quantoResults =
+            dynamic_cast<const QuantoForwardVanillaOption::results*>(r);
+        QL_ENSURE(quantoResults != 0,
+                  "no quanto results returned from pricing engine");
+        qrho_    = quantoResults->qrho;
+        qvega_   = quantoResults->qvega;
+        qlambda_ = quantoResults->qlambda;
     }
 
 }

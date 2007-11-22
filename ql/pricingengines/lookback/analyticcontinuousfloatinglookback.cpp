@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Warren Chou
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,10 +19,16 @@
 */
 
 #include <ql/pricingengines/lookback/analyticcontinuousfloatinglookback.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/exercise.hpp>
 
 namespace QuantLib {
+
+    AnalyticContinuousFloatingLookbackEngine::
+    AnalyticContinuousFloatingLookbackEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+    : process_(process) {
+        registerWith(process_);
+    }
 
     void AnalyticContinuousFloatingLookbackEngine::calculate() const {
 
@@ -29,10 +36,7 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<FloatingTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "Non-floating payoff given");
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
+        QL_REQUIRE(process_->x0() > 0.0, "negative or null underlying");
 
         switch (payoff->optionType()) {
           case Option::Call:
@@ -47,20 +51,15 @@ namespace QuantLib {
     }
 
     Real AnalyticContinuousFloatingLookbackEngine::underlying() const {
-        return arguments_.stochasticProcess->initialValues()[0];
+        return process_->x0();
     }
 
     Time AnalyticContinuousFloatingLookbackEngine::residualTime() const {
-        return arguments_.stochasticProcess->time(
-                                             arguments_.exercise->lastDate());
+        return process_->time(arguments_.exercise->lastDate());
     }
 
     Volatility AnalyticContinuousFloatingLookbackEngine::volatility() const {
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-        return process->blackVolatility()->blackVol(residualTime(), minmax());
+        return process_->blackVolatility()->blackVol(residualTime(), minmax());
     }
 
     Real AnalyticContinuousFloatingLookbackEngine::stdDeviation() const {
@@ -68,39 +67,23 @@ namespace QuantLib {
     }
 
     Rate AnalyticContinuousFloatingLookbackEngine::riskFreeRate() const {
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-        return process->riskFreeRate()->zeroRate(residualTime(), Continuous,
-                                                 NoFrequency);
+        return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
+                                                  NoFrequency);
     }
 
     DiscountFactor AnalyticContinuousFloatingLookbackEngine::riskFreeDiscount()
                                  const {
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-        return process->riskFreeRate()->discount(residualTime());
+        return process_->riskFreeRate()->discount(residualTime());
     }
 
     Rate AnalyticContinuousFloatingLookbackEngine::dividendYield() const {
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-        return process->dividendYield()->zeroRate(residualTime(),
-                                                  Continuous, NoFrequency);
+        return process_->dividendYield()->zeroRate(residualTime(),
+                                                   Continuous, NoFrequency);
     }
 
     DiscountFactor AnalyticContinuousFloatingLookbackEngine::dividendDiscount()
                                  const {
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-        return process->dividendYield()->discount(residualTime());
+        return process_->dividendYield()->discount(residualTime());
     }
 
     Real AnalyticContinuousFloatingLookbackEngine::minmax() const {

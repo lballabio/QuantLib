@@ -21,10 +21,11 @@
 #include <ql/pricingengines/vanilla/fdmultiperiodengine.hpp>
 
 namespace QuantLib {
-    FDMultiPeriodEngine::
-    FDMultiPeriodEngine(Size gridPoints, Size timeSteps,
-                        bool timeDependent)
-    : FDVanillaEngine(gridPoints, timeSteps, timeDependent),
+
+    FDMultiPeriodEngine::FDMultiPeriodEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size gridPoints, Size timeSteps, bool timeDependent)
+    : FDVanillaEngine(process, gridPoints, timeSteps, timeDependent),
       timeStepPerPeriod_(timeSteps) {}
 
     void FDMultiPeriodEngine::calculate(PricingEngine::results* r) const {
@@ -41,7 +42,7 @@ namespace QuantLib {
 
         Real dateTolerance = 1e-6;
 
-        if (dateNumber > 0){
+        if (dateNumber > 0) {
             QL_REQUIRE(getDividendTime(0) >= 0,
                        "first date (" << getDividendTime(0)
                        << ") cannot be negative");
@@ -89,7 +90,7 @@ namespace QuantLib {
             executeIntermediateStep(dateNumber - 1);
 
         Integer j = lastIndex;
-        do{
+        do {
             if (j == Integer(dateNumber) - 1)
                 beginDate = getResidualTime();
             else

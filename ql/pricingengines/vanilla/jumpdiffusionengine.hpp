@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +26,7 @@
 #define quantlib_jumpdiffusionengine_h
 
 #include <ql/instruments/vanillaoption.hpp>
+#include <ql/processes/merton76process.hpp>
 
 namespace QuantLib {
 
@@ -39,18 +41,15 @@ namespace QuantLib {
     */
     class JumpDiffusionEngine : public VanillaOption::engine {
       public:
-        JumpDiffusionEngine(const boost::shared_ptr<VanillaOption::engine>&,
+        JumpDiffusionEngine(const boost::shared_ptr<Merton76Process>&,
                             Real relativeAccuracy_ = 1e-4,
                             Size maxIterations = 100);
         void calculate() const;
       private:
-        boost::shared_ptr<VanillaOption::engine> baseEngine_;
+        boost::shared_ptr<Merton76Process> process_;
         Real relativeAccuracy_;
         Size maxIterations_;
     };
-
-
-
 
 }
 

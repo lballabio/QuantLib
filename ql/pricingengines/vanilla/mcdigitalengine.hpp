@@ -1,10 +1,10 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 Neil Firth
  Copyright (C) 2002, 2003 Ferdinando Ametrano
  Copyright (C) 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003 Neil Firth
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -68,15 +68,17 @@ namespace QuantLib {
         typedef typename MCVanillaEngine<SingleVariate,RNG,S>::stats_type
             stats_type;
         // constructor
-        MCDigitalEngine(Size timeSteps,
-                        Size timeStepsPerYear,
-                        bool brownianBridge,
-                        bool antitheticVariate,
-                        bool controlVariate,
-                        Size requiredSamples,
-                        Real requiredTolerance,
-                        Size maxSamples,
-                        BigNatural seed);
+        MCDigitalEngine(
+                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
+                    Size timeSteps,
+                    Size timeStepsPerYear,
+                    bool brownianBridge,
+                    bool antitheticVariate,
+                    bool controlVariate,
+                    Size requiredSamples,
+                    Real requiredTolerance,
+                    Size maxSamples,
+                    BigNatural seed);
       protected:
         // McSimulation implementation
         boost::shared_ptr<path_pricer_type> pathPricer() const;
@@ -86,7 +88,8 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCDigitalEngine {
       public:
-        MakeMCDigitalEngine();
+        MakeMCDigitalEngine(
+                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
         // named parameters
         MakeMCDigitalEngine& withSteps(Size steps);
         MakeMCDigitalEngine& withStepsPerYear(Size steps);
@@ -100,6 +103,7 @@ namespace QuantLib {
         // conversion to pricing engine
         operator boost::shared_ptr<PricingEngine>() const;
       private:
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         bool antithetic_, controlVariate_;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
@@ -129,16 +133,19 @@ namespace QuantLib {
     // template definitions
 
     template<class RNG, class S>
-    MCDigitalEngine<RNG,S>::MCDigitalEngine(Size timeSteps,
-                                            Size timeStepsPerYear,
-                                            bool brownianBridge,
-                                            bool antitheticVariate,
-                                            bool controlVariate,
-                                            Size requiredSamples,
-                                            Real requiredTolerance,
-                                            Size maxSamples,
-                                            BigNatural seed)
-    : MCVanillaEngine<SingleVariate,RNG,S>(timeSteps,
+    MCDigitalEngine<RNG,S>::MCDigitalEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size timeSteps,
+             Size timeStepsPerYear,
+             bool brownianBridge,
+             bool antitheticVariate,
+             bool controlVariate,
+             Size requiredSamples,
+             Real requiredTolerance,
+             Size maxSamples,
+             BigNatural seed)
+    : MCVanillaEngine<SingleVariate,RNG,S>(process,
+                                           timeSteps,
                                            timeStepsPerYear,
                                            brownianBridge,
                                            antitheticVariate,
@@ -165,7 +172,7 @@ namespace QuantLib {
 
         boost::shared_ptr<GeneralizedBlackScholesProcess> process =
             boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                          this->arguments_.stochasticProcess);
+                                                              this->process_);
         QL_REQUIRE(process, "Black-Scholes process required");
 
         TimeGrid grid = this->timeGrid();
@@ -183,8 +190,9 @@ namespace QuantLib {
 
 
     template <class RNG, class S>
-    inline MakeMCDigitalEngine<RNG,S>::MakeMCDigitalEngine()
-    : antithetic_(false), controlVariate_(false),
+    inline MakeMCDigitalEngine<RNG,S>::MakeMCDigitalEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+    : process_(process), antithetic_(false), controlVariate_(false),
       steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
       samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()), brownianBridge_(false), seed_(0) {}
@@ -268,7 +276,8 @@ namespace QuantLib {
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified");
         return boost::shared_ptr<PricingEngine>(new
-            MCDigitalEngine<RNG,S>(steps_,
+            MCDigitalEngine<RNG,S>(process_,
+                                   steps_,
                                    stepsPerYear_,
                                    brownianBridge_,
                                    antithetic_,

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -282,7 +283,7 @@ void JumpDiffusionTest::testMerton76() {
     boost::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> jumpVol(new SimpleQuote(0.0));
 
-    boost::shared_ptr<StochasticProcess> stochProcess(
+    boost::shared_ptr<Merton76Process> stochProcess(
            new Merton76Process(Handle<Quote>(spot),
                                Handle<YieldTermStructure>(qTS),
                                Handle<YieldTermStructure>(rTS),
@@ -290,11 +291,8 @@ void JumpDiffusionTest::testMerton76() {
                                Handle<Quote>(jumpIntensity),
                                Handle<Quote>(meanLogJump),
                                Handle<Quote>(jumpVol)));
-
-    boost::shared_ptr<VanillaOption::engine> baseEngine(
-                                                  new AnalyticEuropeanEngine);
     boost::shared_ptr<PricingEngine> engine(
-                                         new JumpDiffusionEngine(baseEngine));
+                                       new JumpDiffusionEngine(stochProcess));
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -330,7 +328,8 @@ void JumpDiffusionTest::testMerton76() {
         QL_REQUIRE(volError<1e-13,
                    volError << " mismatch");
 
-        EuropeanOption option(stochProcess, payoff, exercise, engine);
+        EuropeanOption option(payoff, exercise);
+        option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
         Real error = std::fabs(calculated-values[i].result);
@@ -390,7 +389,7 @@ void JumpDiffusionTest::testGreeks() {
     boost::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> jumpVol(new SimpleQuote(0.0));
 
-    boost::shared_ptr<StochasticProcess> stochProcess(
+    boost::shared_ptr<Merton76Process> stochProcess(
           new Merton76Process(Handle<Quote>(spot), qTS, rTS, volTS,
                               Handle<Quote>(jumpIntensity),
                               Handle<Quote>(meanLogJump),
@@ -398,12 +397,11 @@ void JumpDiffusionTest::testGreeks() {
 
     boost::shared_ptr<StrikedTypePayoff> payoff;
 
-    boost::shared_ptr<VanillaOption::engine> baseEngine(
-                                                  new AnalyticEuropeanEngine);
-    // The jumpdiffusionengine greeks are very sensitive to the convergence level.
-    // A tolerance of 1.0e-08 is usually sufficient to get reasonable results
+    // The jumpdiffusionengine greeks are very sensitive to the
+    // convergence level.  A tolerance of 1.0e-08 is usually
+    // sufficient to get reasonable results
     boost::shared_ptr<PricingEngine> engine(
-                                         new JumpDiffusionEngine(baseEngine,1e-08));
+                                 new JumpDiffusionEngine(stochProcess,1e-08));
 
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(strikes); j++) {
@@ -432,7 +430,8 @@ void JumpDiffusionTest::testGreeks() {
                   payoff = boost::shared_ptr<StrikedTypePayoff>(new
                     GapPayoff(types[i], strikes[j], 100.0));
               }
-              EuropeanOption option(stochProcess, payoff, exercise, engine);
+              EuropeanOption option(payoff, exercise);
+              option.setPricingEngine(engine);
 
               for (Size l=0; l<LENGTH(underlyings); l++) {
                 Real u = underlyings[l];

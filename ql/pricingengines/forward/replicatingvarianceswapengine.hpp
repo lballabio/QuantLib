@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Warren Chou
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -45,9 +46,7 @@ namespace QuantLib {
         ReplicatingVarianceSwapEngine(
                  const Real dk = 5.0,
                  const StrikesType& callStrikes = StrikesType(),
-                 const StrikesType& putStrikes = StrikesType(),
-                 const boost::shared_ptr<PricingEngine>& engine =
-                             boost::shared_ptr<PricingEngine>());
+                 const StrikesType& putStrikes = StrikesType());
         void calculate() const;
       protected:
         // helper methods
@@ -63,7 +62,6 @@ namespace QuantLib {
         const Real dk_;
         const StrikesType callStrikes_;
         const StrikesType putStrikes_;
-        boost::shared_ptr<PricingEngine> optionEngine_;
     };
 
 
@@ -72,10 +70,8 @@ namespace QuantLib {
     inline ReplicatingVarianceSwapEngine::ReplicatingVarianceSwapEngine(
                 const Real dk,
                 const StrikesType& callStrikes,
-                const StrikesType& putStrikes,
-                const boost::shared_ptr<PricingEngine>& engine)
-    : dk_(dk), callStrikes_(callStrikes), putStrikes_(putStrikes),
-      optionEngine_(engine) {
+                const StrikesType& putStrikes)
+    : dk_(dk), callStrikes_(callStrikes), putStrikes_(putStrikes) {
 
         QL_REQUIRE(!callStrikes.empty() && !putStrikes.empty(),
                    "no strike(s) given");
@@ -84,9 +80,6 @@ namespace QuantLib {
         QL_REQUIRE(*std::min_element(callStrikes.begin(), callStrikes.end())==
                    *std::max_element(putStrikes.begin(), putStrikes.end()),
                    "min call and max put strikes differ");
-        if (!engine)
-            optionEngine_ = boost::shared_ptr<PricingEngine>(
-                                                  new AnalyticEuropeanEngine);
     }
 
 
@@ -150,6 +143,8 @@ namespace QuantLib {
 
         boost::shared_ptr<Exercise> exercise(
                                new EuropeanExercise(arguments_.maturityDate));
+        boost::shared_ptr<PricingEngine> optionEngine(
+                    new AnalyticEuropeanEngine(arguments_.stochasticProcess));
         Real optionsValue = 0.0;
 
         for (results_.iterator=results_.optionWeights.begin();
@@ -157,10 +152,8 @@ namespace QuantLib {
              results_.iterator++) {
             boost::shared_ptr<StrikedTypePayoff> payoff =
                 results_.iterator->first;
-            EuropeanOption option(arguments_.stochasticProcess,
-                                  payoff,
-                                  exercise);
-            option.setPricingEngine(optionEngine_);
+            EuropeanOption option(payoff, exercise);
+            option.setPricingEngine(optionEngine);
             Real weight = results_.iterator->second;
             optionsValue += option.NPV() * weight;
         }

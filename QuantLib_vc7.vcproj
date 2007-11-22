@@ -850,12 +850,6 @@
 				RelativePath=".\ql\instruments\oneassetoption.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\instruments\oneassetstrikedoption.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\instruments\oneassetstrikedoption.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\instruments\payoffs.cpp">
 			</File>
 			<File

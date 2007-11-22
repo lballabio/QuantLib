@@ -32,30 +32,25 @@ namespace QuantLib {
 
     //! Quanto version of a forward vanilla option
     /*! \ingroup instruments */
-    class QuantoForwardVanillaOption : public QuantoVanillaOption {
+    class QuantoForwardVanillaOption : public ForwardVanillaOption {
       public:
-        typedef QuantoOptionArguments<ForwardVanillaOption::arguments>
-                                                                 arguments;
-        typedef QuantoOptionResults<ForwardVanillaOption::results>
-                                                                 results;
-        typedef QuantoEngine<ForwardVanillaOption::arguments,
-                             ForwardVanillaOption::results> engine;
-        QuantoForwardVanillaOption(
-                           const Handle<YieldTermStructure>& foreignRiskFreeTS,
-                           const Handle<BlackVolTermStructure>& exchRateVolTS,
-                           const Handle<Quote>& correlation,
-                           Real moneyness,
-                           Date resetDate,
-                           const boost::shared_ptr<StochasticProcess>&,
-                           const boost::shared_ptr<StrikedTypePayoff>&,
-                           const boost::shared_ptr<Exercise>&,
-                           const boost::shared_ptr<PricingEngine>& engine);
-        void setupArguments(PricingEngine::arguments*) const;
+        typedef ForwardVanillaOption::arguments arguments;
+        typedef QuantoOptionResults<ForwardVanillaOption::results> results;
+        QuantoForwardVanillaOption(Real moneyness,
+                                   const Date& resetDate,
+                                   const boost::shared_ptr<StrikedTypePayoff>&,
+                                   const boost::shared_ptr<Exercise>&);
+        //! \name greeks
+        //@{
+        Real qvega() const;
+        Real qrho() const;
+        Real qlambda() const;
+        //@}
+        void fetchResults(const PricingEngine::results*) const;
       private:
-        void performCalculations() const;
-        // arguments
-        Real moneyness_;
-        Date resetDate_;
+        void setupExpired() const;
+        // results
+        mutable Real qvega_, qrho_, qlambda_;
     };
 
 }

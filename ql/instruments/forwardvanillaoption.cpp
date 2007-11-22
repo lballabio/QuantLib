@@ -23,18 +23,16 @@
 namespace QuantLib {
 
     ForwardVanillaOption::ForwardVanillaOption(
-        Real moneyness,
-        Date resetDate,
-        const boost::shared_ptr<StochasticProcess>& process,
-        const boost::shared_ptr<StrikedTypePayoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise,
-        const boost::shared_ptr<PricingEngine>& engine)
-    : VanillaOption(process, payoff, exercise, engine),
+                           Real moneyness,
+                           const Date& resetDate,
+                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                           const boost::shared_ptr<Exercise>& exercise)
+    : OneAssetOption(payoff, exercise),
       moneyness_(moneyness), resetDate_(resetDate) {}
 
     void ForwardVanillaOption::setupArguments(
                                        PricingEngine::arguments* args) const {
-        VanillaOption::setupArguments(args);
+        OneAssetOption::setupArguments(args);
         ForwardVanillaOption::arguments* arguments =
             dynamic_cast<ForwardVanillaOption::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong argument type");
@@ -46,7 +44,7 @@ namespace QuantLib {
 
     void ForwardVanillaOption::fetchResults(
                                       const PricingEngine::results* r) const {
-        VanillaOption::fetchResults(r);
+        OneAssetOption::fetchResults(r);
         const ForwardVanillaOption::results* results =
             dynamic_cast<const ForwardVanillaOption::results*>(r);
         QL_ENSURE(results != 0,

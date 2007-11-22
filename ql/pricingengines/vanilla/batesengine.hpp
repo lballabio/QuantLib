@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Klaus Spanderen
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -104,7 +105,7 @@ namespace QuantLib {
     */
     class BatesEngine : public AnalyticHestonEngine {
       public:
-        BatesEngine(const boost::shared_ptr<BatesModel> & model,
+        BatesEngine(const boost::shared_ptr<BatesModel>& model,
                     Size integrationOrder = 64);
 
       protected:
@@ -114,7 +115,7 @@ namespace QuantLib {
 
     class BatesDetJumpEngine : public BatesEngine {
       public:
-        BatesDetJumpEngine(const boost::shared_ptr<BatesDetJumpModel> & model,
+        BatesDetJumpEngine(const boost::shared_ptr<BatesDetJumpModel>& model,
                            Size integrationOrder = 64);
 
       protected:
@@ -125,7 +126,7 @@ namespace QuantLib {
     class BatesDoubleExpEngine : public AnalyticHestonEngine {
       public:
         BatesDoubleExpEngine(
-            const boost::shared_ptr<BatesDoubleExpModel> & model,
+            const boost::shared_ptr<BatesDoubleExpModel>& model,
             Size integrationOrder = 64);
 
       protected:
@@ -136,7 +137,7 @@ namespace QuantLib {
     class BatesDoubleExpDetJumpEngine : public BatesDoubleExpEngine {
       public:
         BatesDoubleExpDetJumpEngine(
-            const boost::shared_ptr<BatesDoubleExpDetJumpModel> & model,
+            const boost::shared_ptr<BatesDoubleExpDetJumpModel>& model,
             Size integrationOrder = 64);
 
       protected:

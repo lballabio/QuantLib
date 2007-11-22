@@ -1,9 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2003 Neil Firth
- Copyright (C) 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2007 StatPro Italia srl
+ Copyright (C) 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -225,19 +225,23 @@ void BarrierOptionTest::testHaugValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        boost::shared_ptr<StochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
 
+        boost::shared_ptr<PricingEngine> engine(
+                                     new AnalyticBarrierEngine(stochProcess));
+
         BarrierOption barrierOption(
                 values[i].barrierType,
                 values[i].barrier,
                 values[i].rebate,
-                stochProcess,
                 payoff,
                 exercise);
+        barrierOption.setPricingEngine(engine);
+
         Real calculated = barrierOption.NPV();
         Real expected = values[i].result;
         Real error = std::fabs(calculated-expected);
@@ -294,8 +298,6 @@ void BarrierOptionTest::testBabsiriValues() {
     boost::shared_ptr<BlackVolTermStructure> volTS =
         flatVol(today, volatility, dc);
 
-    boost::shared_ptr<PricingEngine> engine(new AnalyticBarrierEngine);
-
     Date exDate = today+360;
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
@@ -305,21 +307,24 @@ void BarrierOptionTest::testBabsiriValues() {
         boost::shared_ptr<StrikedTypePayoff> callPayoff(new
             PlainVanillaPayoff(Option::Call, values[i].strike));
 
-        boost::shared_ptr<StochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(underlying),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
+
+
+        boost::shared_ptr<PricingEngine> engine(
+                                     new AnalyticBarrierEngine(stochProcess));
 
         // analytic
         BarrierOption barrierCallOption(
                 values[i].type,
                 values[i].barrier,
                 rebate,
-                stochProcess,
                 callPayoff,
-                exercise,
-                engine);
+                exercise);
+        barrierCallOption.setPricingEngine(engine);
         Real calculated = barrierCallOption.NPV();
         Real expected = values[i].callValue;
         Real error = std::fabs(calculated-expected);
@@ -343,7 +348,8 @@ void BarrierOptionTest::testBabsiriValues() {
         long seed = 5;
 
         boost::shared_ptr<PricingEngine> mcEngine(new
-            MCBarrierEngine<LowDiscrepancy>(timeSteps, brownianBridge,
+            MCBarrierEngine<LowDiscrepancy>(stochProcess,
+                                            timeSteps, brownianBridge,
                                             antitheticVariate, controlVariate,
                                             requiredSamples, requiredTolerance,
                                             maxSamples, isBiased, seed));
@@ -400,8 +406,6 @@ void BarrierOptionTest::testBeagleholeValues() {
         flatVol(today, volatility, dc);
 
 
-    boost::shared_ptr<PricingEngine> engine(new AnalyticBarrierEngine);
-
     Date exDate = today+360;
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
@@ -411,21 +415,23 @@ void BarrierOptionTest::testBeagleholeValues() {
         boost::shared_ptr<StrikedTypePayoff> callPayoff(new
             PlainVanillaPayoff(Option::Call, values[i].strike));
 
-        boost::shared_ptr<StochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(underlying),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
 
-        // analytic
+
+        boost::shared_ptr<PricingEngine> engine(
+                                     new AnalyticBarrierEngine(stochProcess));
+
         BarrierOption barrierCallOption(
                 values[i].type,
                 values[i].barrier,
                 rebate,
-                stochProcess,
                 callPayoff,
-                exercise,
-                engine);
+                exercise);
+        barrierCallOption.setPricingEngine(engine);
         Real calculated = barrierCallOption.NPV();
         Real expected = values[i].callValue;
         Real maxErrorAllowed = 1.0e-3;
@@ -448,10 +454,13 @@ void BarrierOptionTest::testBeagleholeValues() {
         bool isBiased = false;
         long seed = 10;
         boost::shared_ptr<PricingEngine> mcEngine(
-            new MCBarrierEngine<LowDiscrepancy>(timeSteps, brownianBridge,
-                                            antitheticVariate, controlVariate,
-                                            requiredSamples, requiredTolerance,
-                                            maxSamples, isBiased, seed));
+            new MCBarrierEngine<LowDiscrepancy>(stochProcess,
+                                                timeSteps, brownianBridge,
+                                                antitheticVariate,
+                                                controlVariate,
+                                                requiredSamples,
+                                                requiredTolerance,
+                                                maxSamples, isBiased, seed));
 
         barrierCallOption.setPricingEngine(mcEngine);
         calculated = barrierCallOption.NPV();

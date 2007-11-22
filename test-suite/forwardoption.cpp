@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -96,17 +96,14 @@ void ForwardOptionTest::testValues() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
-    boost::shared_ptr<VanillaOption::engine> underlyingEngine(
-                                                  new AnalyticEuropeanEngine);
-    boost::shared_ptr<PricingEngine> engine(
-                 new ForwardEngine<VanillaOption::arguments,
-                                   VanillaOption::results>(underlyingEngine));
-
-    boost::shared_ptr<StochasticProcess> stochProcess(
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
          new BlackScholesMertonProcess(Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
+
+    boost::shared_ptr<PricingEngine> engine(
+              new ForwardVanillaEngine<AnalyticEuropeanEngine>(stochProcess));
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -122,7 +119,8 @@ void ForwardOptionTest::testValues() {
         vol  ->setValue(values[i].v);
 
         ForwardVanillaOption option(values[i].moneyness, reset,
-                                    stochProcess, payoff, exercise, engine);
+                                    payoff, exercise);
+        option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
         Real error = std::fabs(calculated-values[i].result);
@@ -164,17 +162,15 @@ void ForwardOptionTest::testPerformanceValues() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
-    boost::shared_ptr<VanillaOption::engine> underlyingEngine(
-                                                  new AnalyticEuropeanEngine);
-    boost::shared_ptr<PricingEngine> engine(
-      new ForwardPerformanceEngine<VanillaOption::arguments,
-                                   VanillaOption::results>(underlyingEngine));
-
-    boost::shared_ptr<StochasticProcess> stochProcess(
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
          new BlackScholesMertonProcess(Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
+
+    boost::shared_ptr<PricingEngine> engine(
+        new ForwardPerformanceVanillaEngine<AnalyticEuropeanEngine>(
+                                                               stochProcess));
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -190,7 +186,8 @@ void ForwardOptionTest::testPerformanceValues() {
         vol  ->setValue(values[i].v);
 
         ForwardVanillaOption option(values[i].moneyness, reset,
-                                    stochProcess, payoff, exercise, engine);
+                                    payoff, exercise);
+        option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
         Real error = std::fabs(calculated-values[i].result);
@@ -209,7 +206,7 @@ void ForwardOptionTest::testPerformanceValues() {
 
 QL_BEGIN_TEST_LOCALS(ForwardOptionTest)
 
-template <class Engine>
+template <template <class> class Engine>
 void testForwardGreeks() {
 
     std::map<std::string,Real> calculated, expected, tolerance;
@@ -241,12 +238,11 @@ void testForwardGreeks() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-    boost::shared_ptr<StochasticProcess> stochProcess(
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
          new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
-    boost::shared_ptr<VanillaOption::engine> underlyingEngine(
-                                                  new AnalyticEuropeanEngine);
-    boost::shared_ptr<PricingEngine> engine(new Engine(underlyingEngine));
+    boost::shared_ptr<PricingEngine> engine(
+                            new Engine<AnalyticEuropeanEngine>(stochProcess));
 
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(moneyness); j++) {
@@ -262,8 +258,8 @@ void testForwardGreeks() {
                                        new PlainVanillaPayoff(types[i], 0.0));
 
             ForwardVanillaOption option(moneyness[j], reset,
-                                        stochProcess, payoff,
-                                        exercise, engine);
+                                        payoff, exercise);
+            option.setPricingEngine(engine);
 
             for (Size l=0; l<LENGTH(underlyings); l++) {
               for (Size m=0; m<LENGTH(qRates); m++) {
@@ -371,8 +367,7 @@ void ForwardOptionTest::testGreeks() {
 
     SavedSettings backup;
 
-    testForwardGreeks<ForwardEngine<VanillaOption::arguments,
-                                    VanillaOption::results> >();
+    testForwardGreeks<ForwardVanillaEngine>();
 }
 
 
@@ -382,8 +377,7 @@ void ForwardOptionTest::testPerformanceGreeks() {
 
     SavedSettings backup;
 
-    testForwardGreeks<ForwardPerformanceEngine<VanillaOption::arguments,
-                                               VanillaOption::results> >();
+    testForwardGreeks<ForwardPerformanceVanillaEngine>();
 }
 
 

@@ -1,9 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Warren Chou
  Copyright (C) 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2007 StatPro Italia srl
+ Copyright (C) 2006 Warren Chou
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -137,7 +137,7 @@ void LookbackOptionTest::testAnalyticContinuousFloatingLookback() {
         boost::shared_ptr<FloatingTypePayoff> payoff(
                                       new FloatingTypePayoff(values[i].type));
 
-        boost::shared_ptr<StochasticProcess> stochProcess(
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
                             new BlackScholesMertonProcess(
                                        Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
@@ -145,13 +145,12 @@ void LookbackOptionTest::testAnalyticContinuousFloatingLookback() {
                                        Handle<BlackVolTermStructure>(volTS)));
 
         boost::shared_ptr<PricingEngine> engine(
-                                new AnalyticContinuousFloatingLookbackEngine);
+                  new AnalyticContinuousFloatingLookbackEngine(stochProcess));
 
         ContinuousFloatingLookbackOption option(values[i].minmax,
-                                                stochProcess,
                                                 payoff,
-                                                exercise,
-                                                engine);
+                                                exercise);
+        option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
         Real expected = values[i].result;
@@ -238,7 +237,7 @@ void LookbackOptionTest::testAnalyticContinuousFixedLookback() {
         boost::shared_ptr<StrikedTypePayoff> payoff(
                      new PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        boost::shared_ptr<StochasticProcess> stochProcess(
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
                             new BlackScholesMertonProcess(
                                        Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
@@ -246,13 +245,12 @@ void LookbackOptionTest::testAnalyticContinuousFixedLookback() {
                                        Handle<BlackVolTermStructure>(volTS)));
 
         boost::shared_ptr<PricingEngine> engine(
-                                   new AnalyticContinuousFixedLookbackEngine);
+                     new AnalyticContinuousFixedLookbackEngine(stochProcess));
 
         ContinuousFixedLookbackOption option(values[i].minmax,
-                                             stochProcess,
                                              payoff,
-                                             exercise,
-                                             engine);
+                                             exercise);
+        option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
         Real expected = values[i].result;

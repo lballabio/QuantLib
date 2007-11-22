@@ -24,11 +24,9 @@ namespace QuantLib {
 
     ContinuousFloatingLookbackOption::ContinuousFloatingLookbackOption(
         Real minmax,
-        const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<TypePayoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise,
-        const boost::shared_ptr<PricingEngine>& engine)
-    : OneAssetOption(process, payoff, exercise, engine),
+        const boost::shared_ptr<Exercise>& exercise)
+    : OneAssetOption(payoff, exercise),
       minmax_(minmax) {}
 
     void ContinuousFloatingLookbackOption::setupArguments(
@@ -39,7 +37,6 @@ namespace QuantLib {
         ContinuousFloatingLookbackOption::arguments* moreArgs =
             dynamic_cast<ContinuousFloatingLookbackOption::arguments*>(args);
         QL_REQUIRE(moreArgs != 0, "wrong argument type");
-        moreArgs->payoff = payoff_;
         moreArgs->minmax = minmax_;
     }
 
@@ -49,23 +46,21 @@ namespace QuantLib {
 
         QL_REQUIRE(minmax != Null<Real>(), "null prior extremum");
         QL_REQUIRE(minmax >= 0.0, "nonnegative prior extremum required: "
-               << minmax << " not allowed");
+                   << minmax << " not allowed");
     }
 
 
     ContinuousFixedLookbackOption::ContinuousFixedLookbackOption(
         Real minmax,
-        const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise,
-        const boost::shared_ptr<PricingEngine>& engine)
-    : OneAssetStrikedOption(process, payoff, exercise, engine),
+        const boost::shared_ptr<Exercise>& exercise)
+    : OneAssetOption(payoff, exercise),
       minmax_(minmax) {}
 
     void ContinuousFixedLookbackOption::setupArguments(
                                        PricingEngine::arguments* args) const {
 
-        OneAssetStrikedOption::setupArguments(args);
+        OneAssetOption::setupArguments(args);
 
         ContinuousFixedLookbackOption::arguments* moreArgs =
             dynamic_cast<ContinuousFixedLookbackOption::arguments*>(args);
@@ -75,11 +70,11 @@ namespace QuantLib {
 
     void ContinuousFixedLookbackOption::arguments::validate() const {
 
-        OneAssetStrikedOption::arguments::validate();
+        OneAssetOption::arguments::validate();
 
         QL_REQUIRE(minmax != Null<Real>(), "null prior extremum");
         QL_REQUIRE(minmax >= 0.0, "nonnegative prior extremum required: "
-               << minmax << " not allowed");
+                   << minmax << " not allowed");
     }
 
 }

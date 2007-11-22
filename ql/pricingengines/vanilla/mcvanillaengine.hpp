@@ -32,7 +32,7 @@ namespace QuantLib {
 
     //! Pricing engine for vanilla options using Monte Carlo simulation
     /*! \ingroup vanillaengines */
-    template <template <class> class MC, class RNG, 
+    template <template <class> class MC, class RNG,
               class S = Statistics, class Inst = VanillaOption>
     class MCVanillaEngine : public Inst::engine,
                             public McSimulation<MC,RNG,S> {
@@ -53,10 +53,11 @@ namespace QuantLib {
             path_pricer_type;
         typedef typename McSimulation<MC,RNG,S>::stats_type
             stats_type;
-        typedef typename McSimulation<MC,RNG,S>::result_type 
+        typedef typename McSimulation<MC,RNG,S>::result_type
             result_type;
         // constructor
-        MCVanillaEngine(Size timeSteps,
+        MCVanillaEngine(const boost::shared_ptr<StochasticProcess>&,
+                        Size timeSteps,
                         Size timeStepsPerYear,
                         bool brownianBridge,
                         bool antitheticVariate,
@@ -69,16 +70,17 @@ namespace QuantLib {
         TimeGrid timeGrid() const;
         boost::shared_ptr<path_generator_type> pathGenerator() const {
 
-            Size dimensions = this->arguments_.stochasticProcess->factors();
+            Size dimensions = process_->factors();
             TimeGrid grid = this->timeGrid();
             typename RNG::rsg_type generator =
                 RNG::make_sequence_generator(dimensions*(grid.size()-1),seed_);
             return boost::shared_ptr<path_generator_type>(
-                   new path_generator_type(this->arguments_.stochasticProcess,
-                                           grid, generator, brownianBridge_));
+                   new path_generator_type(process_, grid,
+                                           generator, brownianBridge_));
         }
         result_type controlVariateValue() const;
         // data members
+        boost::shared_ptr<StochasticProcess> process_;
         Size timeSteps_, timeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
@@ -90,23 +92,34 @@ namespace QuantLib {
     // template definitions
 
     template <template <class> class MC, class RNG, class S, class Inst>
-    inline MCVanillaEngine<MC,RNG,S,Inst>::MCVanillaEngine(Size timeSteps,
-                                                      Size timeStepsPerYear,
-                                                      bool brownianBridge,
-                                                      bool antitheticVariate,
-                                                      bool controlVariate,
-                                                      Size requiredSamples,
-                                                      Real requiredTolerance,
-                                                      Size maxSamples,
-                                                      BigNatural seed)
+    inline MCVanillaEngine<MC,RNG,S,Inst>::MCVanillaEngine(
+                          const boost::shared_ptr<StochasticProcess>& process,
+                          Size timeSteps,
+                          Size timeStepsPerYear,
+                          bool brownianBridge,
+                          bool antitheticVariate,
+                          bool controlVariate,
+                          Size requiredSamples,
+                          Real requiredTolerance,
+                          Size maxSamples,
+                          BigNatural seed)
     : McSimulation<MC,RNG,S>(antitheticVariate, controlVariate),
-      timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear),
+      process_(process), timeSteps_(timeSteps),
+      timeStepsPerYear_(timeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
-      brownianBridge_(brownianBridge), seed_(seed) {}
+      brownianBridge_(brownianBridge), seed_(seed) {
+        QL_REQUIRE(timeSteps>0,
+                   "timeSteps must be positive, " << timeSteps <<
+                   " not allowed");
+        QL_REQUIRE(timeStepsPerYear>0,
+                   "timeStepsPerYear must be positive, " << timeStepsPerYear <<
+                   " not allowed");
+        this->registerWith(process_);
+    }
 
     template <template <class> class MC, class RNG, class S, class Inst>
-    inline typename MCVanillaEngine<MC,RNG,S,Inst>::result_type 
+    inline typename MCVanillaEngine<MC,RNG,S,Inst>::result_type
     MCVanillaEngine<MC,RNG,S,Inst>::controlVariateValue() const {
 
         boost::shared_ptr<PricingEngine> controlPE =
@@ -127,7 +140,7 @@ namespace QuantLib {
         const typename Inst::results* controlResults =
                 dynamic_cast<const typename Inst::results*>(
                                                      controlPE->getResults());
-        QL_REQUIRE(controlResults, 
+        QL_REQUIRE(controlResults,
                    "engine returns an inconsistent result type");
 
         return result_type(controlResults->value);
@@ -137,7 +150,7 @@ namespace QuantLib {
     template <template <class> class MC, class RNG, class S, class Inst>
     inline TimeGrid MCVanillaEngine<MC,RNG,S,Inst>::timeGrid() const {
         Date lastExerciseDate = this->arguments_.exercise->lastDate();
-        Time t = this->arguments_.stochasticProcess->time(lastExerciseDate);
+        Time t = process_->time(lastExerciseDate);
         if (this->timeSteps_ != Null<Size>()) {
             return TimeGrid(t, this->timeSteps_);
         } else if (this->timeStepsPerYear_ != Null<Size>()) {

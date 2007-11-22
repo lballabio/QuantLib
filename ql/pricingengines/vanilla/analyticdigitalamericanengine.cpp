@@ -1,8 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2003 Neil Firth
+ Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,37 +22,39 @@
 #include <ql/pricingengines/vanilla/analyticdigitalamericanengine.hpp>
 #include <ql/pricingengines/americanpayoffathit.hpp>
 #include <ql/pricingengines/americanpayoffatexpiry.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/exercise.hpp>
 
 namespace QuantLib {
 
-    void AnalyticDigitalAmericanEngine::calculate() const {
+    AnalyticDigitalAmericanEngine::AnalyticDigitalAmericanEngine(
+              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+    : process_(process) {
+        registerWith(process_);
+    }
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
+    void AnalyticDigitalAmericanEngine::calculate() const {
 
         boost::shared_ptr<AmericanExercise> ex =
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "non-American exercise given");
         QL_REQUIRE(ex->dates()[0] <=
-                   process->blackVolatility()->referenceDate(),
+                   process_->blackVolatility()->referenceDate(),
                    "American option with window exercise not handled yet");
 
         boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-        Real spot = process->stateVariable()->value();
+        Real spot = process_->stateVariable()->value();
+        QL_REQUIRE(spot > 0.0, "negative or null underlying given");
+
         Real variance =
-            process->blackVolatility()->blackVariance(ex->lastDate(),
-                                                 payoff->strike());
+            process_->blackVolatility()->blackVariance(ex->lastDate(),
+                                                       payoff->strike());
         Rate dividendDiscount =
-            process->dividendYield()->discount(ex->lastDate());
+            process_->dividendYield()->discount(ex->lastDate());
         Rate riskFreeDiscount =
-            process->riskFreeRate()->discount(ex->lastDate());
+            process_->riskFreeRate()->discount(ex->lastDate());
 
         if(ex->payoffAtExpiry()) {
             AmericanPayoffAtExpiry pricer(spot, riskFreeDiscount,
@@ -64,9 +67,10 @@ namespace QuantLib {
             results_.delta = pricer.delta();
             results_.gamma = pricer.gamma();
 
-            DayCounter rfdc = process->riskFreeRate()->dayCounter();
-            Time t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
-                                       arguments_.exercise->lastDate());
+            DayCounter rfdc = process_->riskFreeRate()->dayCounter();
+            Time t = rfdc.yearFraction(
+                                    process_->riskFreeRate()->referenceDate(),
+                                    arguments_.exercise->lastDate());
             results_.rho = pricer.rho(t);
         }
     }

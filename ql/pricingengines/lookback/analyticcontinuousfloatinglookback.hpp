@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Warren Chou
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +26,7 @@
 #define quantlib_analytic_continuous_floating_lookback_engine_hpp
 
 #include <ql/instruments/lookbackoption.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 
 namespace QuantLib {
@@ -40,8 +42,11 @@ namespace QuantLib {
     class AnalyticContinuousFloatingLookbackEngine
         : public ContinuousFloatingLookbackOption::engine {
       public:
+        AnalyticContinuousFloatingLookbackEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
         void calculate() const;
       private:
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         CumulativeNormalDistribution f_;
         // helper methods
         Real underlying() const;

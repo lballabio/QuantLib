@@ -25,7 +25,8 @@
 #ifndef quantlib_asian_option_hpp
 #define quantlib_asian_option_hpp
 
-#include <ql/instruments/oneassetstrikedoption.hpp>
+#include <ql/instruments/oneassetoption.hpp>
+#include <ql/instruments/payoffs.hpp>
 #include <ql/instruments/averagetype.hpp>
 #include <ql/time/date.hpp>
 #include <vector>
@@ -37,17 +38,14 @@ namespace QuantLib {
 
         \ingroup instruments
     */
-    class ContinuousAveragingAsianOption : public OneAssetStrikedOption {
+    class ContinuousAveragingAsianOption : public OneAssetOption {
       public:
         class arguments;
         class engine;
         ContinuousAveragingAsianOption(
                 Average::Type averageType,
-                const boost::shared_ptr<StochasticProcess>&,
                 const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                const boost::shared_ptr<Exercise>& exercise,
-                const boost::shared_ptr<PricingEngine>& engine =
-                                           boost::shared_ptr<PricingEngine>());
+                const boost::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const;
       protected:
         Average::Type averageType_;
@@ -55,7 +53,7 @@ namespace QuantLib {
 
     //! Discrete-averaging Asian option
     /*! \ingroup instruments */
-    class DiscreteAveragingAsianOption : public OneAssetStrikedOption {
+    class DiscreteAveragingAsianOption : public OneAssetOption {
       public:
         class arguments;
         class engine;
@@ -64,11 +62,8 @@ namespace QuantLib {
                 Real runningAccumulator,
                 Size pastFixings,
                 const std::vector<Date>& fixingDates,
-                const boost::shared_ptr<StochasticProcess>&,
                 const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                const boost::shared_ptr<Exercise>& exercise,
-                const boost::shared_ptr<PricingEngine>& engine =
-                                           boost::shared_ptr<PricingEngine>());
+                const boost::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const;
       protected:
         Average::Type averageType_;
@@ -79,7 +74,7 @@ namespace QuantLib {
 
     //! Extra %arguments for single-asset discrete-average Asian option
     class DiscreteAveragingAsianOption::arguments
-        : public OneAssetStrikedOption::arguments {
+        : public OneAssetOption::arguments {
       public:
         arguments() : averageType(Average::Type(-1)),
                       runningAccumulator(Null<Real>()),
@@ -93,7 +88,7 @@ namespace QuantLib {
 
     //! Extra %arguments for single-asset continuous-average Asian option
     class ContinuousAveragingAsianOption::arguments
-        : public OneAssetStrikedOption::arguments {
+        : public OneAssetOption::arguments {
       public:
         arguments() : averageType(Average::Type(-1)) {}
         void validate() const;

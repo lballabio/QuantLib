@@ -1,7 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004, 2007 StatPro Italia srl
+ Copyright (C) 2003, 2004 Neil Firth
+ Copyright (C) 2003, 2004, 2007 Ferdinando Ametrano
+ Copyright (C) 2003, 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,27 +19,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file europeanoption.hpp
-    \brief European option on a single asset
-*/
-
-#ifndef quantlib_european_option_hpp
-#define quantlib_european_option_hpp
-
-#include <ql/instruments/vanillaoption.hpp>
+#include <ql/instruments/averagetype.hpp>
+#include <ql/types.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
-    //! European option on a single asset
-    /*! \ingroup instruments */
-    class EuropeanOption : public VanillaOption {
-      public:
-        EuropeanOption(const boost::shared_ptr<StrikedTypePayoff>&,
-                       const boost::shared_ptr<Exercise>&);
-    };
+    std::ostream& operator<<(std::ostream& out,
+                             Average::Type type) {
+        switch (type) {
+          case Average::Arithmetic:
+            return out << "Arithmetic";
+          case Average::Geometric:
+            return out << "Geometric";
+          default:
+            QL_FAIL("unknown Average::Type (" << Integer(type) << ")");
+        }
+    }
 
 }
-
-
-#endif
-

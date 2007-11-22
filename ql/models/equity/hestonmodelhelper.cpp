@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Klaus Spanderen
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -49,13 +50,8 @@ namespace QuantLib {
         boost::shared_ptr<Exercise> exercise(
                                          new EuropeanExercise(exerciseDate_));
 
-        Handle<Quote> uly  (boost::shared_ptr<Quote>(new SimpleQuote(s0_)));
-        boost::shared_ptr<StochasticProcess> dummyProcess(
-                      new HestonProcess(riskFreeRate, dividendYield,
-                                        uly, 1.0, 0.1, 1.0, 0.3, 0.0));
-
         option_ = boost::shared_ptr<VanillaOption>(
-                           new VanillaOption(dummyProcess, payoff, exercise));
+                           new VanillaOption(payoff, exercise));
 
         marketValue_ = blackPrice(volatility->value());
     }

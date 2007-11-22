@@ -36,13 +36,14 @@ namespace QuantLib {
               fractional dividends
     */
     class FDDividendEngineBase : public FDMultiPeriodEngine {
-    public:
-        FDDividendEngineBase(Size timeSteps = 100,
-                             Size gridPoints = 100,
-                             bool timeDependent = false)
-            : FDMultiPeriodEngine(timeSteps, gridPoints,
-                                  timeDependent) {}
-    protected:
+      public:
+        FDDividendEngineBase(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size timeSteps = 100,
+             Size gridPoints = 100,
+             bool timeDependent = false)
+        : FDMultiPeriodEngine(process, timeSteps, gridPoints, timeDependent) {}
+      protected:
         virtual void setupArguments(const PricingEngine::arguments*) const;
         void setGridLimits() const = 0;
         void executeIntermediateStep(Size step) const = 0;
@@ -76,18 +77,18 @@ namespace QuantLib {
     */
     class FDDividendEngineMerton73 : public FDDividendEngineBase {
       public:
-        FDDividendEngineMerton73(Size timeSteps = 100,
-                         Size gridPoints = 100,
-                         bool timeDependent = false)
-        : FDDividendEngineBase(timeSteps, gridPoints,
-                               timeDependent) {}
+        FDDividendEngineMerton73(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size timeSteps = 100,
+             Size gridPoints = 100,
+             bool timeDependent = false)
+        : FDDividendEngineBase(process, timeSteps, gridPoints, timeDependent) {}
       private:
         void setGridLimits() const;
         void executeIntermediateStep(Size step) const;
     };
 
-    //! Finite-differences pricing engine for dividend options using
-    // shifted dividends
+    //! Finite-differences engine for dividend options using shifted dividends
     /*! \ingroup vanillaengines */
     /* This engine uses the same algorithm that was used in quantlib
        in versions 0.3.11 and earlier.  It produces results that
@@ -95,14 +96,14 @@ namespace QuantLib {
 
        \todo Review literature to see whether this is described
     */
-
     class FDDividendEngineShiftScale : public FDDividendEngineBase {
       public:
-        FDDividendEngineShiftScale(Size timeSteps = 100,
-                         Size gridPoints = 100,
-                         bool timeDependent = false)
-        : FDDividendEngineBase(timeSteps, gridPoints,
-                               timeDependent) {}
+        FDDividendEngineShiftScale(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size timeSteps = 100,
+             Size gridPoints = 100,
+             bool timeDependent = false)
+        : FDDividendEngineBase(process, timeSteps, gridPoints, timeDependent) {}
       private:
         void setGridLimits() const;
         void executeIntermediateStep(Size step) const;

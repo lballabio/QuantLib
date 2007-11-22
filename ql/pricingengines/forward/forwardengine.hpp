@@ -19,13 +19,14 @@
 */
 
 /*! \file forwardengine.hpp
-    \brief Forward (strike-resetting) option engine
+    \brief Forward (strike-resetting) vanilla-option engine
 */
 
 #ifndef quantlib_forward_engine_hpp
 #define quantlib_forward_engine_hpp
 
-#include <ql/pricingengine.hpp>
+#include <ql/instruments/forwardvanillaoption.hpp>
+#include <ql/instruments/vanillaoption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/volatility/equityfx/impliedvoltermstructure.hpp>
 #include <ql/termstructures/yield/impliedtermstructure.hpp>
@@ -34,19 +35,7 @@
 
 namespace QuantLib {
 
-    //! %Arguments for forward (strike-resetting) option calculation
-    template <class ArgumentsType>
-    class ForwardOptionArguments : public ArgumentsType {
-      public:
-        ForwardOptionArguments() : moneyness(Null<Real>()),
-                                   resetDate(Null<Date>()) {}
-        void validate() const;
-        Real moneyness;
-        Date resetDate;
-    };
-
-
-    //! %Forward-engine base class
+    //! %Forward engine for vanilla options
     /*! \ingroup forwardengines
 
         \test
@@ -55,21 +44,21 @@ namespace QuantLib {
         - the correctness of the returned greeks is tested by
           reproducing numerical derivatives.
     */
-    template <class ArgumentsType, class ResultsType>
-    class ForwardEngine
-        : public GenericEngine<ForwardOptionArguments<ArgumentsType>,
-                               ResultsType> {
+    template <class Engine>
+    class ForwardVanillaEngine
+        : public GenericEngine<ForwardOptionArguments<VanillaOption::arguments>,
+                               VanillaOption::results> {
       public:
-        ForwardEngine(const boost::shared_ptr<GenericEngine<ArgumentsType,
-                                                            ResultsType> >&);
-        void setOriginalArguments() const;
+        ForwardVanillaEngine(
+                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
         void calculate() const;
-        void getOriginalResults() const;
       protected:
-        boost::shared_ptr<GenericEngine<ArgumentsType,
-                                        ResultsType> > originalEngine_;
-        ArgumentsType* originalArguments_;
-        const ResultsType* originalResults_;
+        void setup() const;
+        void getOriginalResults() const;
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        mutable boost::shared_ptr<Engine> originalEngine_;
+        mutable VanillaOption::arguments* originalArguments_;
+        mutable const VanillaOption::results* originalResults_;
     };
 
 
@@ -90,50 +79,39 @@ namespace QuantLib {
     }
 
 
-    template<class ArgumentsType, class ResultsType>
-    ForwardEngine<ArgumentsType, ResultsType>::ForwardEngine(
-        const boost::shared_ptr<GenericEngine<ArgumentsType, ResultsType> >&
-            originalEngine)
-    : originalEngine_(originalEngine) {
-        QL_REQUIRE(originalEngine_, "null engine");
-        originalResults_ =
-            dynamic_cast<const ResultsType*>(originalEngine_->getResults());
-        originalArguments_ =
-            dynamic_cast<ArgumentsType*>(originalEngine_->getArguments());
+    template <class Engine>
+    ForwardVanillaEngine<Engine>::ForwardVanillaEngine(
+        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+    : process_(process) {
+        registerWith(process_);
     }
 
 
-    template<class ArgumentsType, class ResultsType>
-    void ForwardEngine<ArgumentsType, ResultsType>::setOriginalArguments()
-                                                                        const {
+    template <class Engine>
+    void ForwardVanillaEngine<Engine>::setup() const {
 
         boost::shared_ptr<StrikedTypePayoff> argumentsPayoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(
                 this->arguments_.payoff);
         QL_REQUIRE(argumentsPayoff, "wrong payoff given");
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                this->arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-
         boost::shared_ptr<StrikedTypePayoff> payoff(
                    new PlainVanillaPayoff(argumentsPayoff->optionType(),
                                           this->arguments_.moneyness *
-                                          process->stateVariable()->value()));
-        originalArguments_->payoff = payoff;
+                                          process_->x0()));
 
         // maybe the forward value is "better", in some fashion
         // the right level is needed in order to interpolate
         // the vol
-        Handle<Quote> spot = process->stateVariable();
+        Handle<Quote> spot = process_->stateVariable();
+        QL_REQUIRE(spot->value() >= 0.0, "negative or null underlting given");
         Handle<YieldTermStructure> dividendYield(
             boost::shared_ptr<YieldTermStructure>(
-               new ImpliedTermStructure(process->dividendYield(),
+               new ImpliedTermStructure(process_->dividendYield(),
                                         this->arguments_.resetDate)));
         Handle<YieldTermStructure> riskFreeRate(
             boost::shared_ptr<YieldTermStructure>(
-               new ImpliedTermStructure(process->riskFreeRate(),
+               new ImpliedTermStructure(process_->riskFreeRate(),
                                         this->arguments_.resetDate)));
         // The following approach is ok if the vol is at most
         // time dependant. It is plain wrong if it is asset dependant.
@@ -142,41 +120,47 @@ namespace QuantLib {
         // implies an unrealistic time-decreasing smile)
         Handle<BlackVolTermStructure> blackVolatility(
             boost::shared_ptr<BlackVolTermStructure>(
-                new ImpliedVolTermStructure(process->blackVolatility(),
+                new ImpliedVolTermStructure(process_->blackVolatility(),
                                             this->arguments_.resetDate)));
 
-        originalArguments_->stochasticProcess =
-            boost::shared_ptr<StochasticProcess>(
+        boost::shared_ptr<GeneralizedBlackScholesProcess> fwdProcess(
                        new GeneralizedBlackScholesProcess(spot, dividendYield,
                                                           riskFreeRate,
                                                           blackVolatility));
 
+        originalEngine_ = boost::shared_ptr<Engine>(new Engine(fwdProcess));
+
+        originalArguments_ =
+            dynamic_cast<VanillaOption::arguments*>(
+                                             originalEngine_->getArguments());
+        QL_REQUIRE(originalArguments_, "wrong engine type");
+        originalResults_ =
+            dynamic_cast<const VanillaOption::results*>(
+                                               originalEngine_->getResults());
+        QL_REQUIRE(originalResults_, "wrong engine type");
+
+        originalArguments_->payoff = payoff;
         originalArguments_->exercise = this->arguments_.exercise;
 
         originalArguments_->validate();
     }
 
-    template<class ArgumentsType, class ResultsType>
-    void ForwardEngine<ArgumentsType, ResultsType>::calculate() const {
-        originalEngine_->reset();
-        setOriginalArguments();
+    template <class Engine>
+    void ForwardVanillaEngine<Engine>::calculate() const {
+        setup();
         originalEngine_->calculate();
         getOriginalResults();
     }
 
-    template<class ArgumentsType, class ResultsType>
-    void ForwardEngine<ArgumentsType, ResultsType>::getOriginalResults()
-                                                                      const {
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                this->arguments_.stochasticProcess);
+    template <class Engine>
+    void ForwardVanillaEngine<Engine>::getOriginalResults() const {
 
-        DayCounter rfdc = process->riskFreeRate()->dayCounter();
-        DayCounter divdc = process->dividendYield()->dayCounter();
+        DayCounter rfdc = process_->riskFreeRate()->dayCounter();
+        DayCounter divdc = process_->dividendYield()->dayCounter();
         Time resetTime = rfdc.yearFraction(
-                                     process->riskFreeRate()->referenceDate(),
+                                     process_->riskFreeRate()->referenceDate(),
                                      this->arguments_.resetDate);
-        DiscountFactor discQ = process->dividendYield()->discount(
+        DiscountFactor discQ = process_->dividendYield()->discount(
                                                   this->arguments_.resetDate);
 
         this->results_.value = discQ * originalResults_->value;
@@ -184,7 +168,7 @@ namespace QuantLib {
         this->results_.delta = discQ * (originalResults_->delta +
             this->arguments_.moneyness * originalResults_->strikeSensitivity);
         this->results_.gamma = 0.0;
-        this->results_.theta = process->dividendYield()->
+        this->results_.theta = process_->dividendYield()->
             zeroRate(this->arguments_.resetDate, divdc, Continuous, NoFrequency)
             * this->results_.value;
         this->results_.vega  = discQ * originalResults_->vega;

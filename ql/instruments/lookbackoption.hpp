@@ -25,7 +25,8 @@
 #ifndef quantlib_lookback_option_hpp
 #define quantlib_lookback_option_hpp
 
-#include <ql/instruments/oneassetstrikedoption.hpp>
+#include <ql/instruments/oneassetoption.hpp>
+#include <ql/instruments/payoffs.hpp>
 
 namespace QuantLib {
 
@@ -37,11 +38,8 @@ namespace QuantLib {
         class engine;
         ContinuousFloatingLookbackOption(
                           Real currentMinmax,
-                          const boost::shared_ptr<StochasticProcess>& process,
                           const boost::shared_ptr<TypePayoff>& payoff,
-                          const boost::shared_ptr<Exercise>& exercise,
-                          const boost::shared_ptr<PricingEngine>& engine =
-                                          boost::shared_ptr<PricingEngine>());
+                          const boost::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const;
       protected:
         // arguments
@@ -50,17 +48,14 @@ namespace QuantLib {
 
     //! Continuous-fixed lookback option
     /*! \ingroup instruments */
-    class ContinuousFixedLookbackOption : public OneAssetStrikedOption {
+    class ContinuousFixedLookbackOption : public OneAssetOption {
       public:
         class arguments;
         class engine;
         ContinuousFixedLookbackOption(
                           Real currentMinmax,
-                          const boost::shared_ptr<StochasticProcess>& process,
                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                          const boost::shared_ptr<Exercise>& exercise,
-                          const boost::shared_ptr<PricingEngine>& engine =
-                                          boost::shared_ptr<PricingEngine>());
+                          const boost::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const;
       protected:
         // arguments
@@ -77,7 +72,7 @@ namespace QuantLib {
 
     //! %Arguments for continuous fixed lookback option calculation
     class ContinuousFixedLookbackOption::arguments
-        : public OneAssetStrikedOption::arguments {
+        : public OneAssetOption::arguments {
       public:
         Real minmax;
         void validate() const;

@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2007 StatPro Italia srl
  Copyright (C) 2007 Affine Group Limited
 
  This file is part of QuantLib, a free-software/open-source library
@@ -53,10 +53,18 @@ namespace QuantLib {
     template <class T>
     class BinomialVanillaEngine : public VanillaOption::engine {
       public:
-        BinomialVanillaEngine(Size timeSteps)
-        : timeSteps_(timeSteps) {}
+        BinomialVanillaEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size timeSteps)
+        : process_(process), timeSteps_(timeSteps) {
+            QL_REQUIRE(timeSteps>0,
+                       "timeSteps must be positive, " << timeSteps <<
+                       " not allowed");
+            registerWith(process_);
+        }
         void calculate() const;
       private:
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size timeSteps_;
     };
 
@@ -66,25 +74,21 @@ namespace QuantLib {
     template <class T>
     void BinomialVanillaEngine<T>::calculate() const {
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                          this->arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
+        DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
+        DayCounter divdc = process_->dividendYield()->dayCounter();
+        DayCounter voldc = process_->blackVolatility()->dayCounter();
+        Calendar volcal = process_->blackVolatility()->calendar();
 
-        DayCounter rfdc  = process->riskFreeRate()->dayCounter();
-        DayCounter divdc = process->dividendYield()->dayCounter();
-        DayCounter voldc = process->blackVolatility()->dayCounter();
-        Calendar volcal = process->blackVolatility()->calendar();
-
-        Real s0 = process->stateVariable()->value();
-        Volatility v = process->blackVolatility()->blackVol(
+        Real s0 = process_->stateVariable()->value();
+        QL_REQUIRE(s0 > 0.0, "negative or null underlying given");
+        Volatility v = process_->blackVolatility()->blackVol(
             arguments_.exercise->lastDate(), s0);
         Date maturityDate = arguments_.exercise->lastDate();
-        Rate r = process->riskFreeRate()->zeroRate(maturityDate,
+        Rate r = process_->riskFreeRate()->zeroRate(maturityDate,
             rfdc, Continuous, NoFrequency);
-        Rate q = process->dividendYield()->zeroRate(maturityDate,
+        Rate q = process_->dividendYield()->zeroRate(maturityDate,
             divdc, Continuous, NoFrequency);
-        Date referenceDate = process->riskFreeRate()->referenceDate();
+        Date referenceDate = process_->riskFreeRate()->referenceDate();
 
         // binomial trees with constant coefficient
         Handle<YieldTermStructure> flatRiskFree(
@@ -105,7 +109,7 @@ namespace QuantLib {
 
         boost::shared_ptr<StochasticProcess1D> bs(
                          new GeneralizedBlackScholesProcess(
-                                      process->stateVariable(),
+                                      process_->stateVariable(),
                                       flatDividends, flatRiskFree, flatVol));
 
         TimeGrid grid(maturity, timeSteps_);
@@ -116,7 +120,7 @@ namespace QuantLib {
         boost::shared_ptr<BlackScholesLattice<T> > lattice(
             new BlackScholesLattice<T>(tree, r, maturity, timeSteps_));
 
-        DiscretizedVanillaOption option(arguments_, grid);
+        DiscretizedVanillaOption option(arguments_, *process_, grid);
 
         option.initialize(lattice, maturity);
 
@@ -151,7 +155,7 @@ namespace QuantLib {
         results_.value = p0;
         results_.delta = delta0;
         results_.gamma = 2.0*(delta1-delta0)/(s2-s0);    //d(delta)/ds
-        results_.theta = blackScholesTheta(process,
+        results_.theta = blackScholesTheta(process_,
                                            results_.value,
                                            results_.delta,
                                            results_.gamma);

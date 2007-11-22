@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004 Neil Firth
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,7 +22,6 @@
 #include <ql/pricingengines/vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/exercise.hpp>
 
@@ -31,6 +31,13 @@ namespace QuantLib {
         Journal of Derivatives Winter 1999
         Ju, N.
     */
+
+
+    JuQuadraticApproximationEngine::JuQuadraticApproximationEngine(
+              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+    : process_(process) {
+        registerWith(process_);
+    }
 
     void JuQuadraticApproximationEngine::calculate() const {
 
@@ -47,20 +54,17 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-
-        Real variance = process->blackVolatility()->blackVariance(
+        Real variance = process_->blackVolatility()->blackVariance(
             ex->lastDate(), payoff->strike());
-        DiscountFactor dividendDiscount = process->dividendYield()->discount(
+        DiscountFactor dividendDiscount = process_->dividendYield()->discount(
             ex->lastDate());
-        DiscountFactor riskFreeDiscount = process->riskFreeRate()->discount(
+        DiscountFactor riskFreeDiscount = process_->riskFreeRate()->discount(
             ex->lastDate());
-        Real spot = process->stateVariable()->value();
+        Real spot = process_->stateVariable()->value();
+        QL_REQUIRE(spot > 0.0, "negative or null underlying given");
         Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
-        BlackCalculator black(payoff, forwardPrice, std::sqrt(variance), riskFreeDiscount);
+        BlackCalculator black(payoff, forwardPrice,
+                              std::sqrt(variance), riskFreeDiscount);
 
         if (dividendDiscount>=1.0 && payoff->optionType()==Option::Call) {
             // early exercise never optimal
@@ -70,18 +74,19 @@ namespace QuantLib {
             results_.elasticity   = black.elasticity(spot);
             results_.gamma        = black.gamma(spot);
 
-            DayCounter rfdc  = process->riskFreeRate()->dayCounter();
-            DayCounter divdc = process->dividendYield()->dayCounter();
-            DayCounter voldc = process->blackVolatility()->dayCounter();
-            Time t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
-                                       arguments_.exercise->lastDate());
+            DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
+            DayCounter divdc = process_->dividendYield()->dayCounter();
+            DayCounter voldc = process_->blackVolatility()->dayCounter();
+            Time t =
+                rfdc.yearFraction(process_->riskFreeRate()->referenceDate(),
+                                  arguments_.exercise->lastDate());
             results_.rho = black.rho(t);
 
-            t = divdc.yearFraction(process->dividendYield()->referenceDate(),
+            t = divdc.yearFraction(process_->dividendYield()->referenceDate(),
                                    arguments_.exercise->lastDate());
             results_.dividendRho = black.dividendRho(t);
 
-            t = voldc.yearFraction(process->blackVolatility()->referenceDate(),
+            t = voldc.yearFraction(process_->blackVolatility()->referenceDate(),
                                    arguments_.exercise->lastDate());
             results_.vega        = black.vega(t);
             results_.theta       = black.theta(spot, t);

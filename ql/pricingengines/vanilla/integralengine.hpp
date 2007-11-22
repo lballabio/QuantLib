@@ -26,7 +26,8 @@
 #ifndef quantlib_integral_engine_hpp
 #define quantlib_integral_engine_hpp
 
-#include <ql/instruments/oneassetstrikedoption.hpp>
+#include <ql/instruments/vanillaoption.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
@@ -35,9 +36,13 @@ namespace QuantLib {
 
         \ingroup vanillaengines
     */
-    class IntegralEngine : public OneAssetStrikedOption::engine {
+    class IntegralEngine : public VanillaOption::engine {
       public:
+        IntegralEngine(
+                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
         void calculate() const;
+      private:
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };
 
 }

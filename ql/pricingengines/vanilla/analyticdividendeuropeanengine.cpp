@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,10 +19,15 @@
 
 #include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/exercise.hpp>
 
 namespace QuantLib {
+
+    AnalyticDividendEuropeanEngine::AnalyticDividendEuropeanEngine(
+              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+    : process_(process) {
+        registerWith(process_);
+    }
 
     void AnalyticDividendEuropeanEngine::calculate() const {
 
@@ -33,29 +38,28 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-
-        Date settlementDate = process->riskFreeRate()->referenceDate();
+        Date settlementDate = process_->riskFreeRate()->referenceDate();
         Real riskless = 0.0;
         Size i;
         for (i=0; i<arguments_.cashFlow.size(); i++)
             if (arguments_.cashFlow[i]->date() >= settlementDate)
                 riskless += arguments_.cashFlow[i]->amount() *
-                    process->riskFreeRate()
-                    ->discount(arguments_.cashFlow[i]->date());
-        Real spot = process->stateVariable()->value() - riskless;
+                    process_->riskFreeRate()->discount(
+                                              arguments_.cashFlow[i]->date());
+
+        Real spot = process_->stateVariable()->value() - riskless;
+        QL_REQUIRE(spot > 0.0,
+                   "negative or null underlying after subtracting dividends");
 
         DiscountFactor dividendDiscount =
-            process->dividendYield()->discount(arguments_.exercise->lastDate());
+            process_->dividendYield()->discount(
+                                             arguments_.exercise->lastDate());
         DiscountFactor riskFreeDiscount =
-            process->riskFreeRate()->discount(arguments_.exercise->lastDate());
+            process_->riskFreeRate()->discount(arguments_.exercise->lastDate());
         Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
 
         Real variance =
-            process->blackVolatility()->blackVariance(
+            process_->blackVolatility()->blackVariance(
                                               arguments_.exercise->lastDate(),
                                               payoff->strike());
 
@@ -66,11 +70,11 @@ namespace QuantLib {
         results_.delta = black.delta(spot);
         results_.gamma = black.gamma(spot);
 
-        DayCounter rfdc  = process->riskFreeRate()->dayCounter();
-        DayCounter voldc = process->blackVolatility()->dayCounter();
+        DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
+        DayCounter voldc = process_->blackVolatility()->dayCounter();
         Time t = voldc.yearFraction(
-                                  process->blackVolatility()->referenceDate(),
-                                  arguments_.exercise->lastDate());
+                                 process_->blackVolatility()->referenceDate(),
+                                 arguments_.exercise->lastDate());
         results_.vega = black.vega(t);
 
         Real delta_theta = 0.0, delta_rho = 0.0;
@@ -78,14 +82,14 @@ namespace QuantLib {
             Date d = arguments_.cashFlow[i]->date();
             if (d >= settlementDate) {
                 delta_theta -= arguments_.cashFlow[i]->amount() *
-                  process->riskFreeRate()->zeroRate(d,rfdc,Continuous,Annual)*
-                  process->riskFreeRate()->discount(d);
-                Time t = process->time(d);
+                  process_->riskFreeRate()->zeroRate(d,rfdc,Continuous,Annual)*
+                  process_->riskFreeRate()->discount(d);
+                Time t = process_->time(d);
                 delta_rho += arguments_.cashFlow[i]->amount() * t *
-                             process->riskFreeRate()->discount(t);
+                             process_->riskFreeRate()->discount(t);
             }
         }
-        t = process->time(arguments_.exercise->lastDate());
+        t = process_->time(arguments_.exercise->lastDate());
         try {
             results_.theta = black.theta(spot, t) +
                              delta_theta * black.delta(spot);

@@ -1,10 +1,11 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 Neil Firth
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2002, 2003 Ferdinando Ametrano
  Copyright (C) 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003 Neil Firth
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,6 +29,7 @@
 #define quantlib_analytic_barrier_engine_hpp
 
 #include <ql/instruments/barrieroption.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 
 namespace QuantLib {
@@ -45,8 +47,11 @@ namespace QuantLib {
     */
     class AnalyticBarrierEngine : public BarrierOption::engine {
       public:
+        AnalyticBarrierEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
         void calculate() const;
       private:
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         CumulativeNormalDistribution f_;
         // helper methods
         Real underlying() const;

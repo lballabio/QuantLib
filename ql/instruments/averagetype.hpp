@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2003, 2004, 2007 Ferdinando Ametrano
  Copyright (C) 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -25,12 +25,18 @@
 #ifndef quantlib_average_type_hpp
 #define quantlib_average_type_hpp
 
+#include <ql/qldefines.hpp>
+#include <ostream>
+
 namespace QuantLib {
 
-    //! placeholder for enumerated averaging types
+    //! Placeholder for enumerated averaging types
     struct Average {
         enum Type { Arithmetic, Geometric };
     };
+
+    std::ostream& operator<<(std::ostream& out,
+                             Average::Type type);
 
 }
 

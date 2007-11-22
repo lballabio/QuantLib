@@ -26,14 +26,14 @@
 namespace QuantLib {
 
     HestonHullWhitePathPricer::HestonHullWhitePathPricer(
-        Time exerciseTime,
-        const boost::shared_ptr<Payoff> & payoff,
-        const boost::shared_ptr<JointStochasticProcess> & process)
+              Time exerciseTime,
+              const boost::shared_ptr<Payoff> & payoff,
+              const boost::shared_ptr<HybridHestonHullWhiteProcess> & process)
     : exerciseTime_(exerciseTime),
       payoff_(payoff),
-      process_(process) {          
+      process_(process) {
     }
- 
+
     Real HestonHullWhitePathPricer::operator()(const MultiPath& path) const {
         QL_REQUIRE(path.pathSize() > 0, "the path cannot be empty");
 
@@ -47,14 +47,14 @@ namespace QuantLib {
     }
 
     HestonHullWhiteCVPathPricer::HestonHullWhiteCVPathPricer(
-                    DiscountFactor discountFactor,
-                    const boost::shared_ptr<Payoff> & payoff,
-                    const boost::shared_ptr<JointStochasticProcess> & process)
+              DiscountFactor discountFactor,
+              const boost::shared_ptr<Payoff> & payoff,
+              const boost::shared_ptr<HybridHestonHullWhiteProcess> & process)
     : df_(discountFactor),
       payoff_(payoff),
-      process_(process) {          
+      process_(process) {
     }
- 
+
     Real HestonHullWhiteCVPathPricer::operator()(const MultiPath& path) const {
         QL_REQUIRE(path.pathSize() > 0, "the path cannot be empty");
 

@@ -31,6 +31,7 @@
 #include <ql/math/array.hpp>
 
 namespace QuantLib {
+
     class BasketPayoff : public Payoff {
       private:
         boost::shared_ptr<Payoff> basePayoff_;
@@ -93,23 +94,10 @@ namespace QuantLib {
     */
     class BasketOption : public MultiAssetOption {
       public:
-        class arguments;
         class engine;
-        BasketOption(const boost::shared_ptr<StochasticProcess>&,
-                     const boost::shared_ptr<BasketPayoff>&,
-                     const boost::shared_ptr<Exercise>&,
-                     const boost::shared_ptr<PricingEngine>& engine =
-                                          boost::shared_ptr<PricingEngine>());
-        void setupArguments(PricingEngine::arguments*) const;
+        BasketOption(const boost::shared_ptr<BasketPayoff>&,
+                     const boost::shared_ptr<Exercise>&);
     };
-
-    //! %Arguments for basket option calculation
-    class BasketOption::arguments : public MultiAssetOption::arguments {
-      public:
-        arguments() {}
-        void validate() const;
-    };
-
 
     //! %Basket-option %engine base class
     class BasketOption::engine

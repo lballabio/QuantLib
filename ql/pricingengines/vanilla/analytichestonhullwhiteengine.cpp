@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Klaus Spanderen
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,9 +23,9 @@
 namespace QuantLib {
 
     AnalyticHestonHullWhiteEngine::AnalyticHestonHullWhiteEngine(
-        const boost::shared_ptr<HestonModel> & hestonModel,
-        const boost::shared_ptr<HullWhite> & hullWhiteModel,
-        Size integrationOrder)
+                        const boost::shared_ptr<HestonModel>& hestonModel,
+                        const boost::shared_ptr<HullWhite>& hullWhiteModel,
+                        Size integrationOrder)
     : AnalyticHestonEngine(hestonModel, integrationOrder),
       hullWhiteModel_(hullWhiteModel) {
 
@@ -40,14 +41,8 @@ namespace QuantLib {
     }
 
     void AnalyticHestonHullWhiteEngine::calculate() const {
-        // do some pre calculation
-        boost::shared_ptr<HestonProcess> process =
-            boost::dynamic_pointer_cast<HestonProcess>(
-                                                arguments_.stochasticProcess);
 
-        QL_REQUIRE(process, "A Heston process is required");
-
-        const Real t = process->time(arguments_.exercise->lastDate());
+        const Real t = model_->process()->time(arguments_.exercise->lastDate());
         if (a_*t > std::pow(QL_EPSILON, 0.25)) {
             m_ = sigma_*sigma_/(2*a_*a_)
                 *(t+2/a_*std::exp(-a_*t)-1/(2*a_)*std::exp(-2*a_*t)-3/(2*a_));

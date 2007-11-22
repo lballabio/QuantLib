@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Joseph Wang
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -39,10 +40,14 @@ namespace QuantLib {
     class FDEuropeanEngine : public OneAssetOption::engine,
                              public FDVanillaEngine {
       public:
-        FDEuropeanEngine(Size timeSteps=100, Size gridPoints=100,
-                         bool timeDependent = false)
-        : FDVanillaEngine(timeSteps, gridPoints, timeDependent),
-        prices_(gridPoints){}
+        FDEuropeanEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size timeSteps=100, Size gridPoints=100,
+             bool timeDependent = false)
+        : FDVanillaEngine(process, timeSteps, gridPoints, timeDependent),
+          prices_(gridPoints) {
+            registerWith(process);
+        }
       private:
         mutable SampledCurve prices_;
         void calculate() const;

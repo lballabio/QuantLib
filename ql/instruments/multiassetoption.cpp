@@ -27,13 +27,9 @@
 namespace QuantLib {
 
     MultiAssetOption::MultiAssetOption(
-        const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<Payoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise,
-        const boost::shared_ptr<PricingEngine>& engine)
-    : Option(payoff, exercise, engine), stochasticProcess_(process) {
-        registerWith(stochasticProcess_);
-    }
+        const boost::shared_ptr<Exercise>& exercise)
+    : Option(payoff, exercise) {}
 
     bool MultiAssetOption::isExpired() const {
         return exercise_->lastDate() < Settings::instance().evaluationDate();
@@ -87,9 +83,8 @@ namespace QuantLib {
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
         arguments->payoff = payoff_;
-        arguments->stochasticProcess = stochasticProcess_;
         arguments->exercise = exercise_;
-        }
+    }
 
     void MultiAssetOption::fetchResults(const PricingEngine::results* r) const {
         Option::fetchResults(r);
@@ -102,14 +97,6 @@ namespace QuantLib {
         vega_           = results->vega;
         rho_            = results->rho;
         dividendRho_    = results->dividendRho;
-    }
-
-
-    void MultiAssetOption::arguments::validate() const {
-
-        Option::arguments::validate();
-
-        QL_REQUIRE(stochasticProcess, "no process given");
     }
 
 }

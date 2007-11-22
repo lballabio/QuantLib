@@ -19,7 +19,7 @@
 */
 
 #include <ql/pricingengines/vanilla/jumpdiffusionengine.hpp>
-#include <ql/processes/merton76process.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/math/distributions/poissondistribution.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
@@ -29,67 +29,63 @@
 namespace QuantLib {
 
     JumpDiffusionEngine::JumpDiffusionEngine(
-        const boost::shared_ptr<VanillaOption::engine>& baseEngine,
+        const boost::shared_ptr<Merton76Process>& process,
         Real relativeAccuracy,
         Size maxIterations)
-    : baseEngine_(baseEngine), relativeAccuracy_(relativeAccuracy),
+    : process_(process), relativeAccuracy_(relativeAccuracy),
       maxIterations_(maxIterations) {
-        QL_REQUIRE(baseEngine_, "null base engine");
+        registerWith(process_);
     }
 
 
     void JumpDiffusionEngine::calculate() const {
 
-        boost::shared_ptr<Merton76Process> jdProcess =
-            boost::dynamic_pointer_cast<Merton76Process>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(jdProcess, "not a jump diffusion process");
-
-        Real jumpSquareVol = jdProcess->logJumpVolatility()->value()
-            * jdProcess->logJumpVolatility()->value();
-        Real muPlusHalfSquareVol = jdProcess->logMeanJump()->value()
+        Real jumpSquareVol = process_->logJumpVolatility()->value()
+            * process_->logJumpVolatility()->value();
+        Real muPlusHalfSquareVol = process_->logMeanJump()->value()
             + 0.5*jumpSquareVol;
         // mean jump size
         Real k = std::exp(muPlusHalfSquareVol) - 1.0;
-        Real lambda = (k+1.0) * jdProcess->jumpIntensity()->value();
+        Real lambda = (k+1.0) * process_->jumpIntensity()->value();
 
         // dummy strike
-        Real variance = jdProcess->blackVolatility()->blackVariance(
+        Real variance = process_->blackVolatility()->blackVariance(
                                         arguments_.exercise->lastDate(), 1.0);
-        DayCounter voldc = jdProcess->blackVolatility()->dayCounter();
-        Calendar volcal = jdProcess->blackVolatility()->calendar();
-        Date volRefDate = jdProcess->blackVolatility()->referenceDate();
+        DayCounter voldc = process_->blackVolatility()->dayCounter();
+        Calendar volcal = process_->blackVolatility()->calendar();
+        Date volRefDate = process_->blackVolatility()->referenceDate();
         Time t = voldc.yearFraction(volRefDate,
                                     arguments_.exercise->lastDate());
-        Rate riskFreeRate = -std::log(jdProcess->riskFreeRate()->discount(
+        Rate riskFreeRate = -std::log(process_->riskFreeRate()->discount(
                                           arguments_.exercise->lastDate()))/t;
-        Date rateRefDate = jdProcess->riskFreeRate()->referenceDate();
+        Date rateRefDate = process_->riskFreeRate()->referenceDate();
 
         PoissonDistribution p(lambda*t);
 
-        baseEngine_->reset();
+        Handle<Quote> stateVariable = process_->stateVariable();
+        Handle<YieldTermStructure> dividendTS = process_->dividendYield();
+        RelinkableHandle<YieldTermStructure> riskFreeTS(
+                                                   *process_->riskFreeRate());
+        RelinkableHandle<BlackVolTermStructure> volTS(
+                                                *process_->blackVolatility());
+
+        boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
+                 new GeneralizedBlackScholesProcess(stateVariable, dividendTS,
+                                                    riskFreeTS, volTS));
+
+        AnalyticEuropeanEngine baseEngine(bsProcess);
 
         VanillaOption::arguments* baseArguments =
-            dynamic_cast<VanillaOption::arguments*>(
-                                                 baseEngine_->getArguments());
+            dynamic_cast<VanillaOption::arguments*>(baseEngine.getArguments());
 
         baseArguments->payoff   = arguments_.payoff;
         baseArguments->exercise = arguments_.exercise;
-        Handle<Quote> stateVariable = jdProcess->stateVariable();
-        Handle<YieldTermStructure> dividendTS = jdProcess->dividendYield();
-        RelinkableHandle<YieldTermStructure> riskFreeTS(
-                                                *(jdProcess->riskFreeRate()));
-        RelinkableHandle<BlackVolTermStructure> volTS(
-                                             *(jdProcess->blackVolatility()));
-        baseArguments->stochasticProcess =
-            boost::shared_ptr<StochasticProcess>(
-                 new GeneralizedBlackScholesProcess(stateVariable, dividendTS,
-                                                    riskFreeTS, volTS));
+
         baseArguments->validate();
 
         const VanillaOption::results* baseResults =
             dynamic_cast<const VanillaOption::results*>(
-                                                   baseEngine_->getResults());
+                                                     baseEngine.getResults());
 
         results_.value       = 0.0;
         results_.delta       = 0.0;
@@ -110,7 +106,7 @@ namespace QuantLib {
 
             // constant vol/rate assumption. It should be relaxed
             v = std::sqrt((variance + i*jumpSquareVol)/t);
-            r = riskFreeRate - jdProcess->jumpIntensity()->value()*k
+            r = riskFreeRate - process_->jumpIntensity()->value()*k
                 + i*muPlusHalfSquareVol/t;
             riskFreeTS.linkTo(boost::shared_ptr<YieldTermStructure>(new
                 FlatForward(rateRefDate, r, voldc)));
@@ -118,7 +114,7 @@ namespace QuantLib {
                 BlackConstantVol(rateRefDate, volcal, v, voldc)));
 
             baseArguments->validate();
-            baseEngine_->calculate();
+            baseEngine.calculate();
 
             weight = p(Size(i));
             results_.value       += weight * baseResults->value;

@@ -49,17 +49,19 @@ namespace QuantLib {
         : public MCLongstaffSchwartzEngine<VanillaOption::engine,
                                            SingleVariate,RNG,S>{
       public:
-        MCAmericanEngine(Size timeSteps,
-                         Size timeStepsPerYear,
-                         bool antitheticVariate,
-                         bool controlVariate,
-                         Size requiredSamples,
-                         Real requiredTolerance,
-                         Size maxSamples,
-                         BigNatural seed,
-                         Size polynomOrder,
-                         LsmBasisSystem::PolynomType polynomType,
-                         Size nCalibrationSamples = Null<Size>());
+        MCAmericanEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size timeSteps,
+             Size timeStepsPerYear,
+             bool antitheticVariate,
+             bool controlVariate,
+             Size requiredSamples,
+             Real requiredTolerance,
+             Size maxSamples,
+             BigNatural seed,
+             Size polynomOrder,
+             LsmBasisSystem::PolynomType polynomType,
+             Size nCalibrationSamples = Null<Size>());
 
       protected:
         boost::shared_ptr<LongstaffSchwartzPathPricer<Path> >
@@ -98,7 +100,8 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCAmericanEngine {
       public:
-        MakeMCAmericanEngine();
+        MakeMCAmericanEngine(
+                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
         // named parameters
         MakeMCAmericanEngine& withSteps(Size steps);
         MakeMCAmericanEngine& withStepsPerYear(Size steps);
@@ -115,6 +118,7 @@ namespace QuantLib {
         // conversion to pricing engine
         operator boost::shared_ptr<PricingEngine>() const;
       private:
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         bool antithetic_, controlVariate_;
         Size steps_, stepsPerYear_;
         Size samples_, maxSamples_, calibrationSamples_;
@@ -126,6 +130,7 @@ namespace QuantLib {
 
     template <class RNG, class S> inline
     MCAmericanEngine<RNG,S>::MCAmericanEngine(
+        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
         Size timeSteps, Size timeStepsPerYear,
         bool antitheticVariate, bool controlVariate,
         Size requiredSamples, Real requiredTolerance,
@@ -134,22 +139,21 @@ namespace QuantLib {
         Size nCalibrationSamples)
     : MCLongstaffSchwartzEngine<VanillaOption::engine,
                                 SingleVariate,RNG,S>(
-        timeSteps, timeStepsPerYear,
-        false, antitheticVariate,
-        controlVariate, requiredSamples,
-        requiredTolerance, maxSamples,
-        seed, nCalibrationSamples),
+                                         process, timeSteps, timeStepsPerYear,
+                                         false, antitheticVariate,
+                                         controlVariate, requiredSamples,
+                                         requiredTolerance, maxSamples,
+                                         seed, nCalibrationSamples),
       polynomOrder_(polynomOrder),
-      polynomType_(polynomType) {
-    }
+      polynomType_(polynomType) {}
 
     template <class RNG, class S>
     inline boost::shared_ptr<LongstaffSchwartzPathPricer<Path> >
     MCAmericanEngine<RNG,S>::lsmPathPricer() const {
         boost::shared_ptr<GeneralizedBlackScholesProcess> process =
             boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                this->arguments_.stochasticProcess);
-        QL_REQUIRE(process, "generialzed Black-Scholes proces s required");
+                                                              this->process_);
+        QL_REQUIRE(process, "generalized Black-Scholes process required");
 
         boost::shared_ptr<EarlyExercise> exercise =
             boost::dynamic_pointer_cast<EarlyExercise>(
@@ -179,7 +183,7 @@ namespace QuantLib {
 
         boost::shared_ptr<GeneralizedBlackScholesProcess> process =
             boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                this->arguments_.stochasticProcess);
+                                                              this->process_);
         QL_REQUIRE(process, "generalized Black-Scholes process required");
 
         return boost::shared_ptr<PathPricer<Path> >(
@@ -193,7 +197,13 @@ namespace QuantLib {
     template <class RNG, class S>
     inline boost::shared_ptr<PricingEngine>
     MCAmericanEngine<RNG,S>::controlPricingEngine() const {
-        return boost::shared_ptr<PricingEngine>(new AnalyticEuropeanEngine());
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+                                                              this->process_);
+        QL_REQUIRE(process, "generalized Black-Scholes process required");
+
+        return boost::shared_ptr<PricingEngine>(
+                                         new AnalyticEuropeanEngine(process));
     }
 
     template <class RNG, class S>
@@ -221,8 +231,9 @@ namespace QuantLib {
     }
 
     template <class RNG, class S>
-    inline MakeMCAmericanEngine<RNG,S>::MakeMCAmericanEngine()
-    : antithetic_(false), controlVariate_(false),
+    inline MakeMCAmericanEngine<RNG,S>::MakeMCAmericanEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+    : process_(process), antithetic_(false), controlVariate_(false),
       steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
       samples_(Null<Size>()), maxSamples_(Null<Size>()),
       calibrationSamples_(2048),
@@ -325,7 +336,8 @@ namespace QuantLib {
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified");
         return boost::shared_ptr<PricingEngine>(new
-            MCAmericanEngine<RNG, S>(steps_,
+            MCAmericanEngine<RNG, S>(process_,
+                                     steps_,
                                      stepsPerYear_,
                                      antithetic_,
                                      controlVariate_,

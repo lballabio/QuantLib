@@ -35,12 +35,15 @@ namespace QuantLib {
 
     class FDMultiPeriodEngine : public FDVanillaEngine {
       protected:
-        FDMultiPeriodEngine(Size gridPoints=100, Size timeSteps=100,
-                            bool timeDependent = false);
+        FDMultiPeriodEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size gridPoints = 100, Size timeSteps = 100,
+             bool timeDependent = false);
         mutable std::vector<boost::shared_ptr<Event> > events_;
         mutable std::vector<Time> stoppingTimes_;
         Size timeStepPerPeriod_;
         mutable SampledCurve prices_;
+
         virtual void setupArguments(
                const PricingEngine::arguments* args,
                const std::vector<boost::shared_ptr<Event> >& schedule) const {
@@ -51,7 +54,8 @@ namespace QuantLib {
             stoppingTimes_.reserve(n);
             for (Size i=0; i<n; ++i)
                 stoppingTimes_.push_back(process_->time(events_[i]->date()));
-        };
+        }
+
         virtual void setupArguments(const PricingEngine::arguments* a) const {
             FDVanillaEngine::setupArguments(a);
             const OneAssetOption::arguments *args =
@@ -63,8 +67,8 @@ namespace QuantLib {
             stoppingTimes_.resize(n);
             for (Size i=0; i<n; ++i)
                 stoppingTimes_[i] =
-                      args->stochasticProcess->time(args->exercise->date(i));
-        };
+                      process_->time(args->exercise->date(i));
+        }
 
         virtual void calculate(PricingEngine::results*) const;
         mutable boost::shared_ptr<StandardStepCondition > stepCondition_;

@@ -19,19 +19,17 @@
 */
 
 #include <ql/instruments/bonds/convertiblebond.hpp>
+#include <ql/instruments/payoffs.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/exercise.hpp>
 
 namespace QuantLib {
 
     ConvertibleBond::ConvertibleBond(
-            const boost::shared_ptr<StochasticProcess>& process,
             const boost::shared_ptr<Exercise>&,
-            const boost::shared_ptr<PricingEngine>& engine,
             Real conversionRatio,
             const DividendSchedule& dividends,
             const CallabilitySchedule& callability,
@@ -46,9 +44,6 @@ namespace QuantLib {
       conversionRatio_(conversionRatio), callability_(callability),
       dividends_(dividends), creditSpread_(creditSpread) {
 
-        setPricingEngine(engine);
-
-        registerWith(process);
         registerWith(creditSpread);
     }
 
@@ -60,9 +55,7 @@ namespace QuantLib {
 
 
     ConvertibleZeroCouponBond::ConvertibleZeroCouponBond(
-                          const boost::shared_ptr<StochasticProcess>& process,
                           const boost::shared_ptr<Exercise>& exercise,
-                          const boost::shared_ptr<PricingEngine>& engine,
                           Real conversionRatio,
                           const DividendSchedule& dividends,
                           const CallabilitySchedule& callability,
@@ -72,9 +65,9 @@ namespace QuantLib {
                           const DayCounter& dayCounter,
                           const Schedule& schedule,
                           Real redemption)
-    : ConvertibleBond(process, exercise, engine, conversionRatio,
-                      dividends, callability, creditSpread, issueDate,
-                      settlementDays, dayCounter, schedule, redemption) {
+    : ConvertibleBond(exercise, conversionRatio, dividends, callability,
+                      creditSpread, issueDate, settlementDays, dayCounter,
+                      schedule, redemption) {
 
         cashflows_ = Leg();
 
@@ -85,18 +78,15 @@ namespace QuantLib {
             SimpleCashFlow(redemption, maturityDate_)));
 
         option_ = boost::shared_ptr<option>(
-                           new option(this, process, exercise, engine,
-                                      conversionRatio, dividends, callability,
-                                      creditSpread, cashflows_, dayCounter,
-                                      schedule, issueDate, settlementDays,
-                                      redemption));
+                           new option(this, exercise, conversionRatio,
+                                      dividends, callability, creditSpread,
+                                      cashflows_, dayCounter, schedule,
+                                      issueDate, settlementDays, redemption));
     }
 
 
     ConvertibleFixedCouponBond::ConvertibleFixedCouponBond(
-                          const boost::shared_ptr<StochasticProcess>& process,
                           const boost::shared_ptr<Exercise>& exercise,
-                          const boost::shared_ptr<PricingEngine>& engine,
                           Real conversionRatio,
                           const DividendSchedule& dividends,
                           const CallabilitySchedule& callability,
@@ -107,9 +97,9 @@ namespace QuantLib {
                           const DayCounter& dayCounter,
                           const Schedule& schedule,
                           Real redemption)
-    : ConvertibleBond(process, exercise, engine, conversionRatio,
-                      dividends, callability, creditSpread, issueDate,
-                      settlementDays, dayCounter, schedule, redemption) {
+    : ConvertibleBond(exercise, conversionRatio, dividends, callability,
+                      creditSpread, issueDate, settlementDays, dayCounter,
+                      schedule, redemption) {
 
         // !!!
         cashflows_ = FixedRateLeg(schedule,dayCounter)
@@ -124,18 +114,15 @@ namespace QuantLib {
             SimpleCashFlow(redemption, maturityDate_)));
 
         option_ = boost::shared_ptr<option>(
-                           new option(this, process, exercise, engine,
-                                      conversionRatio, dividends, callability,
-                                      creditSpread, cashflows_, dayCounter,
-                                      schedule, issueDate, settlementDays,
-                                      redemption));
+                           new option(this, exercise, conversionRatio,
+                                      dividends, callability, creditSpread,
+                                      cashflows_, dayCounter, schedule,
+                                      issueDate, settlementDays, redemption));
     }
 
 
     ConvertibleFloatingRateBond::ConvertibleFloatingRateBond(
-                          const boost::shared_ptr<StochasticProcess>& process,
                           const boost::shared_ptr<Exercise>& exercise,
-                          const boost::shared_ptr<PricingEngine>& engine,
                           Real conversionRatio,
                           const DividendSchedule& dividends,
                           const CallabilitySchedule& callability,
@@ -148,9 +135,9 @@ namespace QuantLib {
                           const DayCounter& dayCounter,
                           const Schedule& schedule,
                           Real redemption)
-    : ConvertibleBond(process, exercise, engine, conversionRatio,
-                      dividends, callability, creditSpread, issueDate,
-                      settlementDays, dayCounter, schedule, redemption) {
+    : ConvertibleBond(exercise, conversionRatio, dividends, callability,
+                      creditSpread, issueDate, settlementDays, dayCounter,
+                      schedule, redemption) {
 
         cashflows_ = IborLeg(schedule, index)
             .withPaymentDayCounter(dayCounter)
@@ -164,19 +151,16 @@ namespace QuantLib {
                               new SimpleCashFlow(redemption, maturityDate_)));
 
         option_ = boost::shared_ptr<option>(
-                           new option(this, process, exercise, engine,
-                                      conversionRatio, dividends, callability,
-                                      creditSpread, cashflows_, dayCounter,
-                                      schedule, issueDate, settlementDays,
-                                      redemption));
+                           new option(this, exercise, conversionRatio,
+                                      dividends, callability, creditSpread,
+                                      cashflows_, dayCounter, schedule,
+                                      issueDate, settlementDays, redemption));
     }
 
     ConvertibleBond::option::option(
             const ConvertibleBond* bond,
-            const boost::shared_ptr<StochasticProcess>& process,
             const boost::shared_ptr<Exercise>& exercise,
-            const boost::shared_ptr<PricingEngine>& engine,
-            Real  conversionRatio,
+            Real conversionRatio,
             const DividendSchedule& dividends,
             const CallabilitySchedule& callability,
             const Handle<Quote>& creditSpread,
@@ -186,11 +170,11 @@ namespace QuantLib {
             const Date& issueDate,
             Natural settlementDays,
             Real redemption)
-    : OneAssetStrikedOption(process, boost::shared_ptr<StrikedTypePayoff>(new
+    : OneAssetOption(boost::shared_ptr<StrikedTypePayoff>(new
           PlainVanillaPayoff(Option::Call,
                              bond->faceAmount()/100.0
                              *redemption/conversionRatio)),
-                            exercise, engine),
+                            exercise),
       bond_(bond), conversionRatio_(conversionRatio),
       callability_(callability), dividends_(dividends),
       creditSpread_(creditSpread), cashflows_(cashflows),
@@ -202,18 +186,13 @@ namespace QuantLib {
     void ConvertibleBond::option::setupArguments(
                                        PricingEngine::arguments* args) const {
 
-        OneAssetStrikedOption::setupArguments(args);
+        OneAssetOption::setupArguments(args);
 
         ConvertibleBond::option::arguments* moreArgs =
             dynamic_cast<ConvertibleBond::option::arguments*>(args);
         QL_REQUIRE(moreArgs != 0, "wrong argument type");
 
         moreArgs->conversionRatio = conversionRatio_;
-
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                          stochasticProcess_);
-        QL_REQUIRE(process, "Black-Scholes process required");
 
         Date settlement = bond_->settlementDate();
 
@@ -277,7 +256,7 @@ namespace QuantLib {
 
     void ConvertibleBond::option::arguments::validate() const {
 
-        OneAssetStrikedOption::arguments::validate();
+        OneAssetOption::arguments::validate();
 
         QL_REQUIRE(conversionRatio != Null<Real>(), "null conversion ratio");
         QL_REQUIRE(conversionRatio > 0.0,

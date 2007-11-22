@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +27,7 @@
 #define quantlib_analytic_european_engine_hpp
 
 #include <ql/instruments/vanillaoption.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
@@ -59,7 +60,11 @@ namespace QuantLib {
     */
     class AnalyticEuropeanEngine : public VanillaOption::engine {
       public:
+        AnalyticEuropeanEngine(
+                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
         void calculate() const;
+      private:
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };
 
 }

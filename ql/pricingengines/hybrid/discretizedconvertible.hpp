@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2005, 2006 Theo Boafo
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,13 +27,16 @@
 
 #include <ql/discretizedasset.hpp>
 #include <ql/instruments/bonds/convertiblebond.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
     class DiscretizedConvertible : public DiscretizedAsset {
       public:
-        DiscretizedConvertible(const ConvertibleBond::option::arguments&,
-                               const TimeGrid& grid = TimeGrid());
+        DiscretizedConvertible(
+             const ConvertibleBond::option::arguments&,
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const TimeGrid& grid = TimeGrid());
 
         void reset(Size size);
 
@@ -69,6 +72,7 @@ namespace QuantLib {
         void applyCallability(Size, bool convertible);
         void addCoupon(Size);
         ConvertibleBond::option::arguments arguments_;
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         std::vector<Time> stoppingTimes_;
         std::vector<Time> callabilityTimes_;
         std::vector<Time> couponTimes_;

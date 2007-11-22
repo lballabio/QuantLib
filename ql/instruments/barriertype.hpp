@@ -1,7 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004, 2007 StatPro Italia srl
+ Copyright (C) 2003, 2004 Neil Firth
+ Copyright (C) 2003, 2004, 2007 Ferdinando Ametrano
+ Copyright (C) 2003, 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,27 +19,26 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file europeanoption.hpp
-    \brief European option on a single asset
+/*! \file barriertype.hpp
+    \brief Barrier type
 */
 
-#ifndef quantlib_european_option_hpp
-#define quantlib_european_option_hpp
+#ifndef quantlib_barrier_type_hpp
+#define quantlib_barrier_type_hpp
 
-#include <ql/instruments/vanillaoption.hpp>
+#include <ql/qldefines.hpp>
+#include <ostream>
 
 namespace QuantLib {
 
-    //! European option on a single asset
-    /*! \ingroup instruments */
-    class EuropeanOption : public VanillaOption {
-      public:
-        EuropeanOption(const boost::shared_ptr<StrikedTypePayoff>&,
-                       const boost::shared_ptr<Exercise>&);
+    //! Placeholder for enumerated barrier types
+    struct Barrier {
+        enum Type { DownIn, UpIn, DownOut, UpOut };
     };
+
+    std::ostream& operator<<(std::ostream& out,
+                             Barrier::Type type);
 
 }
 
-
 #endif
-

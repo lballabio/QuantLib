@@ -1,8 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -51,14 +52,16 @@ namespace QuantLib {
         typedef typename MCDiscreteAveragingAsianEngine<RNG,S>::stats_type
             stats_type;
         // constructor
-        MCDiscreteGeometricAPEngine(Size maxTimeStepPerYear,
-                                    bool brownianBridge,
-                                    bool antitheticVariate,
-                                    bool controlVariate,
-                                    Size requiredSamples,
-                                    Real requiredTolerance,
-                                    Size maxSamples,
-                                    BigNatural seed);
+        MCDiscreteGeometricAPEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size maxTimeStepPerYear,
+             bool brownianBridge,
+             bool antitheticVariate,
+             bool controlVariate,
+             Size requiredSamples,
+             Real requiredTolerance,
+             Size maxSamples,
+             BigNatural seed);
       protected:
         boost::shared_ptr<path_pricer_type> pathPricer() const;
     };
@@ -110,15 +113,17 @@ namespace QuantLib {
     template <class RNG, class S>
     inline
     MCDiscreteGeometricAPEngine<RNG,S>::MCDiscreteGeometricAPEngine(
-                                                    Size maxTimeStepPerYear,
-                                                    bool brownianBridge,
-                                                    bool antitheticVariate,
-                                                    bool controlVariate,
-                                                    Size requiredSamples,
-                                                    Real requiredTolerance,
-                                                    Size maxSamples,
-                                                    BigNatural seed)
-    : MCDiscreteAveragingAsianEngine<RNG,S>(maxTimeStepPerYear,
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size maxTimeStepPerYear,
+             bool brownianBridge,
+             bool antitheticVariate,
+             bool controlVariate,
+             Size requiredSamples,
+             Real requiredTolerance,
+             Size maxSamples,
+             BigNatural seed)
+    : MCDiscreteAveragingAsianEngine<RNG,S>(process,
+                                            maxTimeStepPerYear,
                                             brownianBridge,
                                             antitheticVariate,
                                             controlVariate,
@@ -145,24 +150,21 @@ namespace QuantLib {
                 this->arguments_.exercise);
         QL_REQUIRE(exercise, "wrong exercise given");
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                          this->arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-
         return boost::shared_ptr<typename
             MCDiscreteGeometricAPEngine<RNG,S>::path_pricer_type>(
             new GeometricAPOPathPricer(
               payoff->optionType(),
               payoff->strike(),
-              process->riskFreeRate()->discount(this->timeGrid().back())));
+              this->process_->riskFreeRate()->discount(
+                                                   this->timeGrid().back())));
     }
 
 
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCDiscreteGeometricAPEngine {
       public:
-        MakeMCDiscreteGeometricAPEngine();
+        MakeMCDiscreteGeometricAPEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
         // named parameters
         MakeMCDiscreteGeometricAPEngine& withStepsPerYear(Size maxSteps);
         MakeMCDiscreteGeometricAPEngine& withBrownianBridge(bool b = true);
@@ -175,6 +177,7 @@ namespace QuantLib {
         // conversion to pricing engine
         operator boost::shared_ptr<PricingEngine>() const;
       private:
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         bool antithetic_, controlVariate_;
         Size steps_, samples_, maxSamples_;
         Real tolerance_;
@@ -183,8 +186,10 @@ namespace QuantLib {
     };
 
     template <class RNG, class S>
-    inline MakeMCDiscreteGeometricAPEngine<RNG,S>::MakeMCDiscreteGeometricAPEngine()
-    : antithetic_(false), controlVariate_(false),
+    inline
+    MakeMCDiscreteGeometricAPEngine<RNG,S>::MakeMCDiscreteGeometricAPEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+    : process_(process), antithetic_(false), controlVariate_(false),
       steps_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()), brownianBridge_(true), seed_(0) {}
 
@@ -258,15 +263,14 @@ namespace QuantLib {
         QL_REQUIRE(steps_ != Null<Size>(),
                    "max number of steps per year not given");
         return boost::shared_ptr<PricingEngine>(new
-            MCDiscreteGeometricAPEngine<RNG,S>(steps_,
+            MCDiscreteGeometricAPEngine<RNG,S>(process_,
+                                               steps_,
                                                brownianBridge_,
                                                antithetic_, controlVariate_,
                                                samples_, tolerance_,
                                                maxSamples_,
                                                seed_));
     }
-
-
 
 }
 

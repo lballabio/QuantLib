@@ -24,11 +24,10 @@
 #ifndef quantlib_analytic_bsm_hull_white_engine_hpp
 #define quantlib_analytic_bsm_hull_white_engine_hpp
 
-#include <ql/qldefines.hpp>
-
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
@@ -48,12 +47,17 @@ namespace QuantLib {
                                     VanillaOption::arguments,
                                     VanillaOption::results> {
       public:
-        AnalyticBSMHullWhiteEngine(const Real equityShortRateCorrelation,
-                                   const boost::shared_ptr<HullWhite>& model);
+        AnalyticBSMHullWhiteEngine(
+                     Real equityShortRateCorrelation,
+                     const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
+                     const boost::shared_ptr<HullWhite>&);
         void calculate() const;
       private:
-        const Real rho_;
+        Real rho_;
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };
+
 }
+
 
 #endif

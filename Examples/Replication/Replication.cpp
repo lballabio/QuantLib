@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*!
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -112,12 +112,18 @@ int main(int, char* []) {
         boost::shared_ptr<StrikedTypePayoff> payoff(
                                         new PlainVanillaPayoff(type, strike));
 
-        boost::shared_ptr<StochasticProcess> stochasticProcess(
+        boost::shared_ptr<BlackScholesProcess> bsProcess(
                             new BlackScholesProcess(Handle<Quote>(underlying),
                                                     flatRate, flatVol));
 
+        boost::shared_ptr<PricingEngine> barrierEngine(
+                                        new AnalyticBarrierEngine(bsProcess));
+        boost::shared_ptr<PricingEngine> europeanEngine(
+                                       new AnalyticEuropeanEngine(bsProcess));
+
         BarrierOption referenceOption(barrierType, barrier, rebate,
-                                      stochasticProcess, payoff, exercise);
+                                      payoff, exercise);
+        referenceOption.setPricingEngine(barrierEngine);
 
         Real referenceValue = referenceOption.NPV();
 
@@ -134,7 +140,8 @@ int main(int, char* []) {
         // Final payoff first (the same for all portfolios):
         // as shown in Joshi, a put struck at K...
         boost::shared_ptr<Instrument> put1(
-                     new EuropeanOption(stochasticProcess, payoff, exercise));
+                                        new EuropeanOption(payoff, exercise));
+        put1->setPricingEngine(europeanEngine);
         portfolio1.add(put1);
         portfolio2.add(put1);
         portfolio3.add(put1);
@@ -142,7 +149,8 @@ int main(int, char* []) {
         boost::shared_ptr<StrikedTypePayoff> digitalPayoff(
                           new CashOrNothingPayoff(Option::Put, barrier, 1.0));
         boost::shared_ptr<Instrument> digitalPut(
-              new EuropeanOption(stochasticProcess, digitalPayoff, exercise));
+                                 new EuropeanOption(digitalPayoff, exercise));
+        digitalPut->setPricingEngine(europeanEngine);
         portfolio1.subtract(digitalPut, strike-barrier);
         portfolio2.subtract(digitalPut, strike-barrier);
         portfolio3.subtract(digitalPut, strike-barrier);
@@ -150,7 +158,8 @@ int main(int, char* []) {
         boost::shared_ptr<StrikedTypePayoff> lowerPayoff(
                                 new PlainVanillaPayoff(Option::Put, barrier));
         boost::shared_ptr<Instrument> put2(
-                new EuropeanOption(stochasticProcess, lowerPayoff, exercise));
+                                   new EuropeanOption(lowerPayoff, exercise));
+        put2->setPricingEngine(europeanEngine);
         portfolio1.subtract(put2);
         portfolio2.subtract(put2);
         portfolio3.subtract(put2);
@@ -167,8 +176,8 @@ int main(int, char* []) {
             boost::shared_ptr<StrikedTypePayoff> innerPayoff(
                                 new PlainVanillaPayoff(Option::Put, barrier));
             boost::shared_ptr<Instrument> putn(
-                              new EuropeanOption(stochasticProcess,
-                                                 innerPayoff, innerExercise));
+                              new EuropeanOption(innerPayoff, innerExercise));
+            putn->setPricingEngine(europeanEngine);
             // ...second, we evaluate the current portfolio and the
             // latest put at (B,t)...
             Date killDate = today + (i-1)*Months;
@@ -206,8 +215,8 @@ int main(int, char* []) {
             boost::shared_ptr<StrikedTypePayoff> innerPayoff(
                                 new PlainVanillaPayoff(Option::Put, barrier));
             boost::shared_ptr<Instrument> putn(
-                              new EuropeanOption(stochasticProcess,
-                                                 innerPayoff, innerExercise));
+                              new EuropeanOption(innerPayoff, innerExercise));
+            putn->setPricingEngine(europeanEngine);
             Date killDate = today + (i-2)*Weeks;
             Settings::instance().evaluationDate() = killDate;
             underlying->setValue(barrier);
@@ -237,8 +246,8 @@ int main(int, char* []) {
             boost::shared_ptr<StrikedTypePayoff> innerPayoff(
                                 new PlainVanillaPayoff(Option::Put, barrier));
             boost::shared_ptr<Instrument> putn(
-                              new EuropeanOption(stochasticProcess,
-                                                 innerPayoff, innerExercise));
+                              new EuropeanOption(innerPayoff, innerExercise));
+            putn->setPricingEngine(europeanEngine);
             Date killDate = today + (i-1)*Weeks;
             Settings::instance().evaluationDate() = killDate;
             underlying->setValue(barrier);

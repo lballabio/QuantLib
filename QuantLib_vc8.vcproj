@@ -1132,6 +1132,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\instruments\averagetype.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\instruments\averagetype.hpp"
 				>
 			</File>
@@ -1141,6 +1145,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\instruments\barrieroption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\barriertype.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\barriertype.hpp"
 				>
 			</File>
 			<File
@@ -1248,6 +1260,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\instruments\impliedvolatility.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\impliedvolatility.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\instruments\inflationswap.cpp"
 				>
 			</File>
@@ -1309,14 +1329,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\instruments\oneassetoption.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\instruments\oneassetstrikedoption.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\instruments\oneassetstrikedoption.hpp"
 				>
 			</File>
 			<File

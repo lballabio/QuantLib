@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004 Neil Firth
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +26,7 @@
 #define quantlib_stulz_engine_hpp
 
 #include <ql/instruments/basketoption.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
@@ -41,7 +43,15 @@ namespace QuantLib {
     */
     class StulzEngine : public BasketOption::engine {
       public:
+        StulzEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process1,
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process2,
+            Real correlation);
         void calculate() const;
+      private:
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process1_;
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process2_;
+        Real rho_;
     };
 
 }

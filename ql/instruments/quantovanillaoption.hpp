@@ -25,41 +25,43 @@
 #ifndef quantlib_quanto_vanilla_option_hpp
 #define quantlib_quanto_vanilla_option_hpp
 
-#include <ql/instruments/vanillaoption.hpp>
-#include <ql/pricingengines/quanto/quantoengine.hpp>
+#include <ql/instruments/oneassetoption.hpp>
+#include <ql/instruments/payoffs.hpp>
 
 namespace QuantLib {
 
+    //! %Results from quanto option calculation
+    template<class ResultsType>
+    class QuantoOptionResults : public ResultsType {
+      public:
+        QuantoOptionResults() { reset() ;}
+        void reset() {
+            ResultsType::reset();
+            qvega = qrho = qlambda = Null<Real>();
+        }
+        Real qvega;
+        Real qrho;
+        Real qlambda;
+    };
+
     //! quanto version of a vanilla option
     /*! \ingroup instruments */
-    class QuantoVanillaOption : public VanillaOption {
+    class QuantoVanillaOption : public OneAssetOption {
       public:
-        typedef QuantoOptionArguments<VanillaOption::arguments> arguments;
-        typedef QuantoOptionResults<VanillaOption::results> results;
-        typedef QuantoEngine<VanillaOption::arguments,
-                             VanillaOption::results> engine;
-        QuantoVanillaOption(
-                      const Handle<YieldTermStructure>& foreignRiskFreeTS,
-                      const Handle<BlackVolTermStructure>& exchRateVolTS,
-                      const Handle<Quote>& correlation,
-                      const boost::shared_ptr<StochasticProcess>&,
-                      const boost::shared_ptr<StrikedTypePayoff>&,
-                      const boost::shared_ptr<Exercise>&,
-                      const boost::shared_ptr<PricingEngine>&);
+        typedef OneAssetOption::arguments arguments;
+        typedef QuantoOptionResults<OneAssetOption::results> results;
+        typedef GenericEngine<arguments, results> engine;
+        QuantoVanillaOption(const boost::shared_ptr<StrikedTypePayoff>&,
+                            const boost::shared_ptr<Exercise>&);
         //! \name greeks
         //@{
         Real qvega() const;
         Real qrho() const;
         Real qlambda() const;
         //@}
-        void setupArguments(PricingEngine::arguments*) const;
         void fetchResults(const PricingEngine::results*) const;
-      protected:
+      private:
         void setupExpired() const;
-        // arguments
-        Handle<YieldTermStructure> foreignRiskFreeTS_;
-        Handle<BlackVolTermStructure> exchRateVolTS_;
-        Handle<Quote> correlation_;
         // results
         mutable Real qvega_, qrho_, qlambda_;
     };

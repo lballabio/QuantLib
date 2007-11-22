@@ -164,16 +164,17 @@ void DigitalCouponTest::testAssetOrNothing() {
                         boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
                         boost::shared_ptr<BlackVolTermStructure>
                             volTS = flatVol(today_, capletVol, Actual360());
-                        boost::shared_ptr<PricingEngine>
-                            engine(new AnalyticEuropeanEngine);
                         boost::shared_ptr<StrikedTypePayoff>
                             callPayoff(new AssetOrNothingPayoff(Option::Call,effStrike));
-                        boost::shared_ptr<StochasticProcess> stochProcess(new
+                        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
                             BlackScholesMertonProcess(Handle<Quote>(fwd),
                                               Handle<YieldTermStructure>(qTS),
                                               Handle<YieldTermStructure>(termStructure_),
                                               Handle<BlackVolTermStructure>(volTS)));
-                        VanillaOption callOpt(stochProcess, callPayoff, exercise, engine);
+                        boost::shared_ptr<PricingEngine>
+                            engine(new AnalyticEuropeanEngine(stochProcess));
+                        VanillaOption callOpt(callPayoff, exercise);
+                        callOpt.setPricingEngine(engine);
                         Real callVO = nominal_ * gearing
                                                * accrualPeriod * callOpt.NPV()
                                                * discount / discountAtFixing
@@ -228,15 +229,16 @@ void DigitalCouponTest::testAssetOrNothing() {
                         boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
                         boost::shared_ptr<BlackVolTermStructure>
                             volTS = flatVol(today_, capletVol, Actual360());
-                        boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
-                        boost::shared_ptr<StochasticProcess> stochProcess(new
+                        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
                             BlackScholesMertonProcess(Handle<Quote>(fwd),
                                               Handle<YieldTermStructure>(qTS),
                                               Handle<YieldTermStructure>(termStructure_),
                                               Handle<BlackVolTermStructure>(volTS)));
                         boost::shared_ptr<StrikedTypePayoff>
                             putPayoff(new AssetOrNothingPayoff(Option::Put, effStrike));
-                        VanillaOption putOpt(stochProcess, putPayoff, exercise, engine);
+                        boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine(stochProcess));
+                        VanillaOption putOpt(putPayoff, exercise);
+                        putOpt.setPricingEngine(engine);
                         Real putVO  = nominal_ * gearing
                                                * accrualPeriod * putOpt.NPV()
                                                * discount / discountAtFixing
@@ -587,15 +589,16 @@ void DigitalCouponTest::testCashOrNothing() {
                 boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
                 boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today_, capletVol,
                                                                          Actual360());
-                boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
                 boost::shared_ptr<StrikedTypePayoff> callPayoff(new CashOrNothingPayoff(
                                                         Option::Call, effStrike, cashRate));
-                boost::shared_ptr<StochasticProcess> stochProcess(new
+                boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
                 BlackScholesMertonProcess(Handle<Quote>(fwd),
                                           Handle<YieldTermStructure>(qTS),
                                           Handle<YieldTermStructure>(termStructure_),
                                           Handle<BlackVolTermStructure>(volTS)));
-                VanillaOption callOpt(stochProcess, callPayoff, exercise, engine);
+                boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine(stochProcess));
+                VanillaOption callOpt(callPayoff, exercise);
+                callOpt.setPricingEngine(engine);
                 Real callVO = nominal_ * accrualPeriod * callOpt.NPV()
                                        * discount / discountAtFixing;
                 error = std::abs(nd2Price - callVO);
@@ -639,7 +642,8 @@ void DigitalCouponTest::testCashOrNothing() {
                 // Check digital option price vs N(d2) price using Vanilla Option class
                 boost::shared_ptr<StrikedTypePayoff> putPayoff(new CashOrNothingPayoff(
                                                         Option::Put, effStrike, cashRate));
-                VanillaOption putOpt(stochProcess, putPayoff, exercise, engine);
+                VanillaOption putOpt(putPayoff, exercise);
+                putOpt.setPricingEngine(engine);
                 Real putVO  = nominal_ * accrualPeriod * putOpt.NPV()
                                        * discount / discountAtFixing;
                 error = std::abs(nd2Price - putVO);

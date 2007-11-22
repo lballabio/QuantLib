@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,6 +25,13 @@
 
 namespace QuantLib {
 
+    AnalyticContinuousGeometricAveragePriceAsianEngine::
+    AnalyticContinuousGeometricAveragePriceAsianEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+    : process_(process) {
+        registerWith(process_);
+    }
+
     void AnalyticContinuousGeometricAveragePriceAsianEngine::calculate()
                                                                        const {
         QL_REQUIRE(arguments_.averageType == Average::Geometric,
@@ -37,35 +45,31 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-
         Volatility volatility =
-            process->blackVolatility()->blackVol(exercise, payoff->strike());
+            process_->blackVolatility()->blackVol(exercise, payoff->strike());
         Real variance =
-            process->blackVolatility()->blackVariance(exercise,
-                                                      payoff->strike());
+            process_->blackVolatility()->blackVariance(exercise,
+                                                       payoff->strike());
         DiscountFactor riskFreeDiscount =
-            process->riskFreeRate()->discount(exercise);
+            process_->riskFreeRate()->discount(exercise);
 
-        DayCounter rfdc  = process->riskFreeRate()->dayCounter();
-        DayCounter divdc = process->dividendYield()->dayCounter();
-        DayCounter voldc = process->blackVolatility()->dayCounter();
+        DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
+        DayCounter divdc = process_->dividendYield()->dayCounter();
+        DayCounter voldc = process_->blackVolatility()->dayCounter();
 
         Spread dividendYield = 0.5 * (
-            process->riskFreeRate()->zeroRate(exercise, rfdc,
-                                              Continuous, NoFrequency) +
-            process->dividendYield()->zeroRate(exercise, divdc,
+            process_->riskFreeRate()->zeroRate(exercise, rfdc,
                                                Continuous, NoFrequency) +
+            process_->dividendYield()->zeroRate(exercise, divdc,
+                                                Continuous, NoFrequency) +
             volatility*volatility/6.0);
 
         Time t_q = divdc.yearFraction(
-            process->dividendYield()->referenceDate(), exercise);
+            process_->dividendYield()->referenceDate(), exercise);
         DiscountFactor dividendDiscount = std::exp(-dividendYield*t_q);
 
-        Real spot = process->stateVariable()->value();
+        Real spot = process_->stateVariable()->value();
+        QL_REQUIRE(spot > 0.0, "negative or null underlying");
         Real forward = spot * dividendDiscount / riskFreeDiscount;
 
         BlackCalculator black(payoff, forward, std::sqrt(variance/3.0),
@@ -77,12 +81,12 @@ namespace QuantLib {
 
         results_.dividendRho = black.dividendRho(t_q)/2.0;
 
-        Time t_r = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
+        Time t_r = rfdc.yearFraction(process_->riskFreeRate()->referenceDate(),
                                      arguments_.exercise->lastDate());
         results_.rho = black.rho(t_r) + 0.5 * black.dividendRho(t_q);
 
         Time t_v = voldc.yearFraction(
-            process->blackVolatility()->referenceDate(),
+            process_->blackVolatility()->referenceDate(),
             arguments_.exercise->lastDate());
         results_.vega = black.vega(t_v)/std::sqrt(3.0) +
                         black.dividendRho(t_q)*volatility/6.0;

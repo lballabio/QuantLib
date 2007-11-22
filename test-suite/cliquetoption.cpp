@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -64,13 +64,13 @@ void CliquetOptionTest::testValues() {
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.30));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
-    boost::shared_ptr<PricingEngine> engine(new AnalyticCliquetEngine);
 
-    boost::shared_ptr<StochasticProcess> process(
+    boost::shared_ptr<BlackScholesMertonProcess> process(
          new BlackScholesMertonProcess(Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
+    boost::shared_ptr<PricingEngine> engine(new AnalyticCliquetEngine(process));
 
     std::vector<Date> reset;
     reset.push_back(today + 90);
@@ -83,7 +83,8 @@ void CliquetOptionTest::testValues() {
     boost::shared_ptr<EuropeanExercise> exercise(
                                               new EuropeanExercise(maturity));
 
-    CliquetOption option(process, payoff, exercise, reset, engine);
+    CliquetOption option(payoff, exercise, reset);
+    option.setPricingEngine(engine);
 
     Real calculated = option.NPV();
     Real expected = 4.4064; // Haug, p.37
@@ -134,7 +135,7 @@ void testOptionGreeks() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-    boost::shared_ptr<StochasticProcess> process(
+    boost::shared_ptr<BlackScholesMertonProcess> process(
          new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
     for (Size i=0; i<LENGTH(types); i++) {
@@ -154,9 +155,10 @@ void testOptionGreeks() {
                  d += Period(frequencies[kk]))
                 reset.push_back(d);
 
-            boost::shared_ptr<PricingEngine> engine(new T);
+            boost::shared_ptr<PricingEngine> engine(new T(process));
 
-            CliquetOption option(process, payoff, maturity, reset, engine);
+            CliquetOption option(payoff, maturity, reset);
+            option.setPricingEngine(engine);
 
             for (Size l=0; l<LENGTH(underlyings); l++) {
               for (Size m=0; m<LENGTH(qRates); m++) {

@@ -26,7 +26,7 @@
 #define quantlib_convertible_bond_hpp
 
 #include <ql/instruments/bond.hpp>
-#include <ql/instruments/oneassetstrikedoption.hpp>
+#include <ql/instruments/oneassetoption.hpp>
 #include <ql/instruments/dividendschedule.hpp>
 #include <ql/instruments/callabilityschedule.hpp>
 #include <ql/time/schedule.hpp>
@@ -36,6 +36,7 @@ namespace QuantLib {
 
     class IborIndex;
     class PricingEngine;
+
     //! %callability leaving to the holder the possibility to convert
     class SoftCallability : public Callability {
       public:
@@ -46,6 +47,7 @@ namespace QuantLib {
         Real trigger_;
     };
 
+
     //! base class for convertible bonds
     class ConvertibleBond : public Bond {
       public:
@@ -55,9 +57,7 @@ namespace QuantLib {
         const CallabilitySchedule& callability() const { return callability_; }
         const Handle<Quote>& creditSpread() const { return creditSpread_; }
       protected:
-        ConvertibleBond(const boost::shared_ptr<StochasticProcess>& process,
-                        const boost::shared_ptr<Exercise>& exercise,
-                        const boost::shared_ptr<PricingEngine>& engine,
+        ConvertibleBond(const boost::shared_ptr<Exercise>& exercise,
                         Real conversionRatio,
                         const DividendSchedule& dividends,
                         const CallabilitySchedule& callability,
@@ -85,9 +85,7 @@ namespace QuantLib {
     class ConvertibleZeroCouponBond : public ConvertibleBond {
       public:
         ConvertibleZeroCouponBond(
-                    const boost::shared_ptr<StochasticProcess>& process,
                     const boost::shared_ptr<Exercise>& exercise,
-                    const boost::shared_ptr<PricingEngine>& engine,
                     Real conversionRatio,
                     const DividendSchedule& dividends,
                     const CallabilitySchedule& callability,
@@ -109,9 +107,7 @@ namespace QuantLib {
     class ConvertibleFixedCouponBond : public ConvertibleBond {
       public:
         ConvertibleFixedCouponBond(
-                const boost::shared_ptr<StochasticProcess>& process,
                 const boost::shared_ptr<Exercise>& exercise,
-                const boost::shared_ptr<PricingEngine>& engine,
                 Real conversionRatio,
                 const DividendSchedule& dividends,
                 const CallabilitySchedule& callability,
@@ -134,9 +130,7 @@ namespace QuantLib {
     class ConvertibleFloatingRateBond : public ConvertibleBond {
       public:
         ConvertibleFloatingRateBond(
-                const boost::shared_ptr<StochasticProcess>& process,
                 const boost::shared_ptr<Exercise>& exercise,
-                const boost::shared_ptr<PricingEngine>& engine,
                 Real conversionRatio,
                 const DividendSchedule& dividends,
                 const CallabilitySchedule& callability,
@@ -152,14 +146,12 @@ namespace QuantLib {
     };
 
 
-    class ConvertibleBond::option : public OneAssetStrikedOption {
+    class ConvertibleBond::option : public OneAssetOption {
       public:
         class arguments;
         class engine;
         option(const ConvertibleBond* bond,
-               const boost::shared_ptr<StochasticProcess>& process,
                const boost::shared_ptr<Exercise>& exercise,
-               const boost::shared_ptr<PricingEngine>& engine,
                Real conversionRatio,
                const DividendSchedule& dividends,
                const CallabilitySchedule& callability,
@@ -188,7 +180,7 @@ namespace QuantLib {
 
 
     class ConvertibleBond::option::arguments
-        : public OneAssetStrikedOption::arguments {
+        : public OneAssetOption::arguments {
       public:
         arguments()
         : conversionRatio(Null<Real>()), settlementDays(Null<Natural>()),

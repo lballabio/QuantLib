@@ -151,7 +151,14 @@ namespace QuantLib {
       timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
-      brownianBridge_(brownianBridge), seed_(seed) {}
+      brownianBridge_(brownianBridge), seed_(seed) {
+        QL_REQUIRE(timeSteps>0,
+                   "timeSteps must be positive, " << timeSteps <<
+                   " not allowed");
+        QL_REQUIRE(timeStepsPerYear>0,
+                   "timeStepsPerYear must be positive, " << timeStepsPerYear <<
+                   " not allowed");
+    }
 
 
     template <class RNG, class S>

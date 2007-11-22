@@ -268,7 +268,7 @@ void HestonModelTest::testAnalyticVsBlack() {
     boost::shared_ptr<HestonProcess> process(new HestonProcess(
                    riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
 
-    VanillaOption option(process, payoff, exercise);
+    VanillaOption option(payoff, exercise);
     // FLOATING_POINT_EXCEPTION
     boost::shared_ptr<PricingEngine> engine(new AnalyticHestonEngine(
               boost::shared_ptr<HestonModel>(new HestonModel(process)), 144));
@@ -319,7 +319,7 @@ void HestonModelTest::testAnalyticVsCached() {
     boost::shared_ptr<HestonProcess> process(new HestonProcess(
                    riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
 
-    VanillaOption option(process, payoff, exercise);
+    VanillaOption option(payoff, exercise);
 
     boost::shared_ptr<AnalyticHestonEngine> engine(new AnalyticHestonEngine(
                boost::shared_ptr<HestonModel>(new HestonModel(process)), 64));
@@ -362,7 +362,7 @@ void HestonModelTest::testAnalyticVsCached() {
         boost::shared_ptr<HestonProcess> process(new HestonProcess(
                    riskFreeTS, dividendTS, s0, 0.09, 1.2, 0.08, 1.8, -0.45));
 
-        VanillaOption option(process, payoff, exercise);
+        VanillaOption option(payoff, exercise);
 
         boost::shared_ptr<PricingEngine> engine(new AnalyticHestonEngine(
                    boost::shared_ptr<HestonModel>(new HestonModel(process))));
@@ -412,10 +412,10 @@ void HestonModelTest::testMcVsCached() {
     boost::shared_ptr<HestonProcess> process(new HestonProcess(
                    riskFreeTS, dividendTS, s0, 0.3, 1.16, 0.2, 0.8, 0.8));
 
-    VanillaOption option(process, payoff, exercise);
+    VanillaOption option(payoff, exercise);
 
     boost::shared_ptr<PricingEngine> engine;
-    engine = MakeMCEuropeanHestonEngine<PseudoRandom>()
+    engine = MakeMCEuropeanHestonEngine<PseudoRandom>(process)
         .withStepsPerYear(91)
         .withAntitheticVariate()
         .withSamples(50000)
@@ -474,15 +474,16 @@ void HestonModelTest::testKahlJaeckelCase() {
                    riskFreeTS, dividendTS, s0, 0.16, 1.0, 0.16, 2.0, -0.8,
                    HestonProcess::ExactVariance));
 
-    VanillaOption option(process, payoff, exercise);
+    VanillaOption option(payoff, exercise);
 
     const Real tolerance = 0.1;
 
-    boost::shared_ptr<PricingEngine> engine
-        = MakeMCEuropeanHestonEngine<PseudoRandom>().withSteps(10)
-                                                    .withAntitheticVariate()
-                                                    .withTolerance(tolerance)
-                                                    .withSeed(1234);
+    boost::shared_ptr<PricingEngine> engine =
+        MakeMCEuropeanHestonEngine<PseudoRandom>(process)
+        .withSteps(10)
+        .withAntitheticVariate()
+        .withTolerance(tolerance)
+        .withSeed(1234);
 
     option.setPricingEngine(engine);
 
@@ -540,10 +541,10 @@ void HestonModelTest::testEngines() {
                 boost::shared_ptr<HestonProcess> process(new HestonProcess(
                     riskFreeTS, dividendTS, q, v0, kappa, theta, sigma, rho));
 
-                VanillaOption option(process, payoff, exercise);
+                VanillaOption option(payoff, exercise);
 
-                boost::shared_ptr<PricingEngine> engine1;
-                engine1 = MakeMCEuropeanHestonEngine<PseudoRandom>()
+                boost::shared_ptr<PricingEngine> engine1 =
+                    MakeMCEuropeanHestonEngine<PseudoRandom>(process)
                     .withStepsPerYear(1825)
                     .withAntitheticVariate()
                     .withSamples(20000)

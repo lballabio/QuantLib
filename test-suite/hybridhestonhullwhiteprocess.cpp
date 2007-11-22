@@ -85,7 +85,7 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine() {
     boost::shared_ptr<HullWhite> hullWhiteModel(
         new HullWhite(Handle<YieldTermStructure>(rTS), 0.00883, 0.00526));
 
-    boost::shared_ptr<StochasticProcess> stochProcess(
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
                       new BlackScholesMertonProcess(spot, qTS, rTS, volTS));
 
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(maturity));
@@ -94,7 +94,7 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine() {
     boost::shared_ptr<StrikedTypePayoff> payoff(new
                                       PlainVanillaPayoff(Option::Call, fwd));
 
-    EuropeanOption option(stochProcess, payoff, exercise);
+    EuropeanOption option(payoff, exercise);
 
     const Real tol = 1e-8;
     const Real corr[] = {-0.75, -0.25, 0.0, 0.25, 0.75 };
@@ -103,7 +103,8 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine() {
 
     for (Size i=0; i < LENGTH(corr); ++i) {
         boost::shared_ptr<PricingEngine> bsmhwEngine(
-                    new AnalyticBSMHullWhiteEngine(corr[i], hullWhiteModel));
+                         new AnalyticBSMHullWhiteEngine(corr[i], stochProcess,
+                                                        hullWhiteModel));
 
         option.setPricingEngine(bsmhwEngine);
         const Real npv = option.NPV();
@@ -111,12 +112,16 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine() {
         const Handle<BlackVolTermStructure> compVolTS(
                                         flatVol(today, expectedVol[i], dc));
 
-        EuropeanOption comp(
-            boost::shared_ptr<StochasticProcess>(
-                new BlackScholesMertonProcess(spot, qTS, rTS, compVolTS)),
-            payoff, exercise);
+        boost::shared_ptr<BlackScholesMertonProcess> bsProcess(
+                    new BlackScholesMertonProcess(spot, qTS, rTS, compVolTS));
+        boost::shared_ptr<PricingEngine> bsEngine(
+                                       new AnalyticEuropeanEngine(bsProcess));
 
-        const Volatility impliedVol=comp.impliedVolatility(npv, 1e-10, 100);
+        EuropeanOption comp(payoff, exercise);
+        comp.setPricingEngine(bsEngine);
+
+        Volatility impliedVol =
+            comp.impliedVolatility(npv, bsProcess, 1e-10, 100);
 
         if (std::fabs(impliedVol - expectedVol[i]) > tol) {
             BOOST_FAIL("Failed to reproduce implied volatility"
@@ -185,7 +190,7 @@ void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
     const Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
-    boost::shared_ptr<StochasticProcess> bsmProcess(
+    boost::shared_ptr<BlackScholesMertonProcess> bsmProcess(
                       new BlackScholesMertonProcess(spot, qTS, rTS, volTS));
 
     boost::shared_ptr<HestonProcess> hestonProcess(
@@ -199,7 +204,7 @@ void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
         new HullWhite(Handle<YieldTermStructure>(rTS), 0.01, 0.01));
 
     boost::shared_ptr<PricingEngine> bsmhwEngine(
-                       new AnalyticBSMHullWhiteEngine(0.0, hullWhiteModel));
+             new AnalyticBSMHullWhiteEngine(0.0, bsmProcess, hullWhiteModel));
 
     boost::shared_ptr<PricingEngine> hestonHwEngine(
           new AnalyticHestonHullWhiteEngine(hestonModel, hullWhiteModel, 192));
@@ -225,13 +230,13 @@ void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
                 boost::shared_ptr<StrikedTypePayoff> payoff(new
                                           PlainVanillaPayoff(types[i], fwd));
 
-                const Real calculated
-                    = EuropeanOption(bsmProcess, payoff,
-                                     exercise, bsmhwEngine).NPV();
+                EuropeanOption option(payoff, exercise);
 
-                const Real expected
-                    = EuropeanOption(hestonProcess, payoff,
-                                     exercise, hestonHwEngine).NPV();
+                option.setPricingEngine(bsmhwEngine);
+                const Real calculated = option.NPV();
+
+                option.setPricingEngine(hestonHwEngine);
+                const Real expected = option.NPV();
 
                 if (std::fabs(calculated-expected) > calculated*tol &&
                     std::fabs(calculated-expected) > tol) {
@@ -412,7 +417,7 @@ void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
     const Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
-    const boost::shared_ptr<StochasticProcess> bsmProcess(
+    const boost::shared_ptr<BlackScholesMertonProcess> bsmProcess(
               new BlackScholesMertonProcess(s0, qTS, rTS, volTS));
     const boost::shared_ptr<HestonProcess> hestonProcess(
              new HestonProcess(rTS, qTS, s0, 0.0625, 0.5, 0.0625, 1e-5, 0));
@@ -426,18 +431,20 @@ void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
 
     for (Size i=0; i < LENGTH(corr); ++i) {
         for (Size j=0; j < LENGTH(strike); ++j) {
-            const boost::shared_ptr<JointStochasticProcess> jointProcess(
+            boost::shared_ptr<HybridHestonHullWhiteProcess> jointProcess(
                 new HybridHestonHullWhiteProcess(hestonProcess,
                                                  hwProcess, corr[i], 5));
 
-            const boost::shared_ptr<StrikedTypePayoff> payoff(
+            boost::shared_ptr<StrikedTypePayoff> payoff(
                                new PlainVanillaPayoff(Option::Put, strike[j]));
-            const boost::shared_ptr<Exercise> exercise(
+            boost::shared_ptr<Exercise> exercise(
                                new EuropeanExercise(maturity));
 
-            VanillaOption optionHestonHW(jointProcess, payoff, exercise,
+            VanillaOption optionHestonHW(payoff, exercise);
+            optionHestonHW.setPricingEngine(
                 boost::shared_ptr<PricingEngine>(
                     new MCHestonHullWhiteEngine<PseudoRandom>(
+                                          jointProcess,
                                           5, Null<Size>(), true, true, 1,
                                           tol, Null<Size>(), 42)));
 
@@ -445,9 +452,11 @@ void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
                         new HullWhite(Handle<YieldTermStructure>(rTS),
                                       hwProcess->a(), hwProcess->sigma()));
 
-            VanillaOption optionBsmHW(bsmProcess, payoff, exercise,
+            VanillaOption optionBsmHW(payoff, exercise);
+            optionBsmHW.setPricingEngine(
                 boost::shared_ptr<PricingEngine>(
-                          new AnalyticBSMHullWhiteEngine(corr[i], hwModel)));
+                           new AnalyticBSMHullWhiteEngine(corr[i], bsmProcess,
+                                                          hwModel)));
 
             const Real calculated = optionHestonHW.NPV();
             const Real error      = optionHestonHW.errorEstimate();
@@ -510,26 +519,29 @@ void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
 
     for (Size i=0; i < LENGTH(corr); ++i) {
         for (Size j=0; j < LENGTH(strike); ++j) {
-            const boost::shared_ptr<JointStochasticProcess> jointProcess(
+            boost::shared_ptr<HybridHestonHullWhiteProcess> jointProcess(
                 new HybridHestonHullWhiteProcess(hestonProcess,
                                                  hwProcess, corr[i], 5));
 
-            const boost::shared_ptr<StrikedTypePayoff> payoff(
+            boost::shared_ptr<StrikedTypePayoff> payoff(
                                new PlainVanillaPayoff(Option::Put, strike[j]));
-            const boost::shared_ptr<Exercise> exercise(
+            boost::shared_ptr<Exercise> exercise(
                                new EuropeanExercise(maturity));
 
-            VanillaOption optionHestonHW(jointProcess, payoff, exercise,
+            VanillaOption optionHestonHW(payoff, exercise);
+            optionHestonHW.setPricingEngine(
                 boost::shared_ptr<PricingEngine>(
                     new MCHestonHullWhiteEngine<PseudoRandom>(
+                                          jointProcess,
                                           10, Null<Size>(), true, false, 1,
                                           tol, Null<Size>(), 42)));
 
-            VanillaOption optionPureHeston(hestonProcess, payoff, exercise,
+            VanillaOption optionPureHeston(payoff, exercise);
+            optionPureHeston.setPricingEngine(
                 boost::shared_ptr<PricingEngine>(
                     new AnalyticHestonEngine(
                           boost::shared_ptr<HestonModel>(
-                                           new HestonModel(hestonProcess)))) );
+                                           new HestonModel(hestonProcess)))));
 
             Real calculated = optionHestonHW.NPV();
             Real error      = optionHestonHW.errorEstimate();
@@ -550,6 +562,7 @@ void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
             optionHestonHW.setPricingEngine(
                 boost::shared_ptr<PricingEngine>(
                     new MCHestonHullWhiteEngine<PseudoRandom>(
+                           jointProcess,
                            2, Null<Size>(), true, true, 1,
                            tol, Null<Size>(), 42)));
 
@@ -620,22 +633,25 @@ void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
 
     for (Size i=0; i < LENGTH(types); ++i) {
         for (Size j=0; j < LENGTH(strike); ++j) {
-            const boost::shared_ptr<JointStochasticProcess> jointProcess(
+            boost::shared_ptr<HybridHestonHullWhiteProcess> jointProcess(
                 new HybridHestonHullWhiteProcess(hestonProcess,
                                                  hwFwdProcess, 0.0, 5));
 
-            const boost::shared_ptr<StrikedTypePayoff> payoff(
+            boost::shared_ptr<StrikedTypePayoff> payoff(
                                new PlainVanillaPayoff(types[i], strike[j]));
-            const boost::shared_ptr<Exercise> exercise(
+            boost::shared_ptr<Exercise> exercise(
                                new EuropeanExercise(maturity));
 
-            VanillaOption optionHestonHW(jointProcess, payoff, exercise,
+            VanillaOption optionHestonHW(payoff, exercise);
+            optionHestonHW.setPricingEngine(
                 boost::shared_ptr<PricingEngine>(
                     new MCHestonHullWhiteEngine<PseudoRandom>(
+                                          jointProcess,
                                           4, Null<Size>(), true, true, 1,
                                           tol, Null<Size>(), 42)));
 
-            VanillaOption optionPureHeston(hestonProcess, payoff, exercise,
+            VanillaOption optionPureHeston(payoff, exercise);
+            optionPureHeston.setPricingEngine(
                 boost::shared_ptr<PricingEngine>(
                     new AnalyticHestonHullWhiteEngine(hestonModel,
                                                       hullWhiteModel)));
@@ -780,11 +796,8 @@ namespace {
       public:
         class engine;
         MultiVanillaOption(
-            const boost::shared_ptr<StochasticProcess> & process,
             const std::vector<boost::shared_ptr<StrikedTypePayoff> > & payoffs,
-            const std::vector<boost::shared_ptr<Exercise> > & exercises,
-            const boost::shared_ptr<PricingEngine>& engine =
-                                 boost::shared_ptr<PricingEngine>());
+            const std::vector<boost::shared_ptr<Exercise> > & exercises);
 
         void setupArguments(PricingEngine::arguments* args) const;
         void fetchResults(const PricingEngine::results* results) const;
@@ -796,7 +809,6 @@ namespace {
         class results;
 
       protected:
-        const boost::shared_ptr<StochasticProcess>       stochasticProcess_;
         const std::vector<boost::shared_ptr<StrikedTypePayoff> >  payoffs_;
         const std::vector<boost::shared_ptr<Exercise> >           exercises_;
 
@@ -811,7 +823,6 @@ namespace {
         void validate() const;
 
         boost::shared_ptr<Exercise> exercise;
-        boost::shared_ptr<StochasticProcess> stochasticProcess;
         std::vector<boost::shared_ptr<VanillaOption::arguments> > optionArgs;
     };
 
@@ -829,19 +840,12 @@ namespace {
                              MultiVanillaOption::results> {};
 
     MultiVanillaOption::MultiVanillaOption(
-         const boost::shared_ptr<StochasticProcess> & process,
          const std::vector<boost::shared_ptr<StrikedTypePayoff> > & payoffs,
-         const std::vector<boost::shared_ptr<Exercise> > & exercises,
-         const boost::shared_ptr<PricingEngine>& engine)
-    : stochasticProcess_(process),
-      payoffs_(payoffs),
+         const std::vector<boost::shared_ptr<Exercise> > & exercises)
+    : payoffs_(payoffs),
       exercises_(exercises) {
         QL_REQUIRE(payoffs_.size() == exercises_.size(),
                    "number of payoffs and exercises must match");
-
-        if (engine) {
-            setPricingEngine(engine);
-        }
     }
 
     void MultiVanillaOption::setupArguments(
@@ -850,18 +854,6 @@ namespace {
             dynamic_cast<MultiVanillaOption::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
-        arguments->stochasticProcess  = stochasticProcess_;
-        const boost::shared_ptr<JointStochasticProcess> jointProcess =
-            boost::dynamic_pointer_cast<JointStochasticProcess>(
-                                                           stochasticProcess_);
-
-        boost::shared_ptr<StochasticProcess> optionProcess;
-        if (jointProcess) {
-            optionProcess = jointProcess->constituents()[0];
-        }
-        else {
-            optionProcess = stochasticProcess_;
-        }
         arguments->optionArgs.resize(payoffs_.size());
 
         for (Size i=0; i < payoffs_.size(); ++i) {
@@ -871,7 +863,6 @@ namespace {
 
             arguments->optionArgs[i]->payoff   = payoffs_[i];
             arguments->optionArgs[i]->exercise = exercises_[i];
-            arguments->optionArgs[i]->stochasticProcess = optionProcess;
         }
         arguments->exercise = exercises_.back();
     }
@@ -955,8 +946,8 @@ namespace {
 
             const boost::shared_ptr<Exercise> exercise = (*iter)->exercise;
 
-            const VanillaOption option((*iter)->stochasticProcess,
-                                       payoff, exercise, engine_);
+            VanillaOption option(payoff, exercise);
+            option.setPricingEngine(engine_);
 
             const Size i = iter - optionArgs.begin();
 
@@ -1059,7 +1050,8 @@ namespace {
         typedef typename base_type::stats_type stats_type;
         typedef typename base_type::result_type result_type;
 
-        MCEuropeanMultiEngine(Size timeSteps,
+        MCEuropeanMultiEngine(const boost::shared_ptr<JointStochasticProcess>&,
+                              Size timeSteps,
                               Size timeStepsPerYear,
                               bool antitheticVariate,
                               bool controlVariate,
@@ -1084,14 +1076,16 @@ namespace {
         typedef typename base_type::stats_type stats_type;
         typedef typename base_type::result_type result_type;
 
-        MCMultiEuropeanHestonEngine(Size timeSteps,
-                                    Size timeStepsPerYear,
-                                    bool antitheticVariate,
-                                    bool controlVariate,
-                                    Size requiredSamples,
-                                    Real requiredTolerance,
-                                    Size maxSamples,
-                                    BigNatural seed);
+        MCMultiEuropeanHestonEngine(
+                             const boost::shared_ptr<JointStochasticProcess>&,
+                             Size timeSteps,
+                             Size timeStepsPerYear,
+                             bool antitheticVariate,
+                             bool controlVariate,
+                             Size requiredSamples,
+                             Real requiredTolerance,
+                             Size maxSamples,
+                             BigNatural seed);
 
       protected:
         boost::shared_ptr<path_pricer_type> controlPathPricer() const;
@@ -1102,6 +1096,7 @@ namespace {
 
     template<class RNG,class S>
     inline MCEuropeanMultiEngine<RNG,S>::MCEuropeanMultiEngine(
+        const boost::shared_ptr<JointStochasticProcess>& process,
         Size timeSteps,
         Size timeStepsPerYear,
         bool antitheticVariate,
@@ -1110,11 +1105,10 @@ namespace {
         Real requiredTolerance,
         Size maxSamples,
         BigNatural seed)
-        : base_type(timeSteps, timeStepsPerYear,
-                      false,antitheticVariate,
-                      controlVariate, requiredSamples,
-                      requiredTolerance, maxSamples, seed) {
-    }
+    : base_type(process, timeSteps, timeStepsPerYear,
+                false,antitheticVariate,
+                controlVariate, requiredSamples,
+                requiredTolerance, maxSamples, seed) {}
 
 
     template <class RNG,class S>
@@ -1138,15 +1132,9 @@ namespace {
             const std::vector<Date> & dates = (*iter)->exercise->dates();
             for (std::vector<Date>::const_iterator iter = dates.begin();
                  iter != dates.end(); ++iter) {
-                tmpTimes.push_back(
-                          this->arguments_.stochasticProcess->time(*iter));
+                tmpTimes.push_back(this->process_->time(*iter));
             }
         }
-
-        // add libor fixing dates as mandatory dates
-        boost::shared_ptr<JointStochasticProcess> process =
-            boost::dynamic_pointer_cast<JointStochasticProcess>(
-                this->arguments_.stochasticProcess);
 
         return TimeGrid(tmpTimes.begin(), tmpTimes.end());
     }
@@ -1156,7 +1144,7 @@ namespace {
     MCEuropeanMultiEngine<RNG,S>::pathPricer() const {
        boost::shared_ptr<JointStochasticProcess> process =
             boost::dynamic_pointer_cast<JointStochasticProcess>(
-                this->arguments_.stochasticProcess);
+                                                              this->process_);
 
        QL_REQUIRE(process, "joint stochastic process required");
 
@@ -1167,6 +1155,7 @@ namespace {
 
     template<class RNG,class S>
     inline MCMultiEuropeanHestonEngine<RNG,S>::MCMultiEuropeanHestonEngine(
+        const boost::shared_ptr<JointStochasticProcess>& process,
         Size timeSteps,
         Size timeStepsPerYear,
         bool antitheticVariate,
@@ -1175,11 +1164,10 @@ namespace {
         Real requiredTolerance,
         Size maxSamples,
         BigNatural seed)
-        : base_type(timeSteps, timeStepsPerYear,
-                    antitheticVariate, controlVariate,
-                    requiredSamples, requiredTolerance,
-                    maxSamples, seed) {
-    }
+    : base_type(process, timeSteps, timeStepsPerYear,
+                antitheticVariate, controlVariate,
+                requiredSamples, requiredTolerance,
+                maxSamples, seed) {}
 
     template <class RNG, class S> inline
     boost::shared_ptr<
@@ -1187,7 +1175,7 @@ namespace {
     MCMultiEuropeanHestonEngine<RNG,S>::controlPathPricer() const {
         boost::shared_ptr<JointStochasticProcess> process =
             boost::dynamic_pointer_cast<JointStochasticProcess>(
-                this->arguments_.stochasticProcess);
+                                                              this->process_);
 
        QL_REQUIRE(process, "joint stochastic process required");
 
@@ -1210,7 +1198,7 @@ namespace {
     MCMultiEuropeanHestonEngine<RNG,S>::controlPricingEngine() const {
         boost::shared_ptr<JointStochasticProcess> process =
             boost::dynamic_pointer_cast<JointStochasticProcess>(
-                this->arguments_.stochasticProcess);
+                                                              this->process_);
 
        QL_REQUIRE(process, "joint stochastic process required");
 
@@ -1270,7 +1258,7 @@ void HybridHestonHullWhiteProcessTest::testPseudoJointCalibration() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
     const Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
-    const boost::shared_ptr<StochasticProcess> bsmProcess(
+    const boost::shared_ptr<BlackScholesMertonProcess> bsmProcess(
                new BlackScholesMertonProcess(spot, qTS, rTS, volTS));
 
     const boost::shared_ptr<HestonProcess> hestonProcess(
@@ -1309,7 +1297,10 @@ void HybridHestonHullWhiteProcessTest::testPseudoJointCalibration() {
                       hwProcess->a(), hwProcess->sigma()));
 
     boost::shared_ptr<PricingEngine> bsmhwEngine(
-                        new AnalyticBSMHullWhiteEngine(corr, hullWhiteModel));
+            new AnalyticBSMHullWhiteEngine(corr, bsmProcess, hullWhiteModel));
+
+    boost::shared_ptr<PricingEngine> bsmEngine(
+                                      new AnalyticEuropeanEngine(bsmProcess));
 
     for (Size i=0; i < optionMaturities.size(); ++i) {
         for (Size j=0; j < LENGTH(strikes); ++j) {
@@ -1333,17 +1324,18 @@ void HybridHestonHullWhiteProcessTest::testPseudoJointCalibration() {
             payoffs.push_back(boost::shared_ptr<StrikedTypePayoff>(
                           new PlainVanillaPayoff(Option::Call, strikes[j])));
 
-            const Real npv =
-                EuropeanOption(bsmProcess, payoffs.back(),
-                               exercises.back(), bsmhwEngine).NPV();
+            EuropeanOption option(payoffs.back(), exercises.back());
+            option.setPricingEngine(bsmhwEngine);
+            Real npv = option.NPV();
             myNPVs.push_back(npv);
 
             bsmOptions.push_back(boost::shared_ptr<EuropeanOption>(
-                new EuropeanOption(bsmProcess,
-                                   payoffs.back(),exercises.back())));
+                new EuropeanOption(payoffs.back(),exercises.back())));
+            bsmOptions.back()->setPricingEngine(bsmEngine);
 
             impliedVols.push_back(
-                bsmOptions.back()->impliedVolatility(npv, 1e-10, 100));
+                bsmOptions.back()->impliedVolatility(npv, bsmProcess,
+                                                     1e-10, 100));
 
             hestonVols.push_back(RelinkableHandle<Quote>(
               boost::shared_ptr<Quote>(new SimpleQuote(impliedVols.back()))));
@@ -1384,10 +1376,11 @@ void HybridHestonHullWhiteProcessTest::testPseudoJointCalibration() {
 
         boost::shared_ptr<MCEuropeanMultiEngine<PseudoRandom> > mcHestonEngine(
             new MCMultiEuropeanHestonEngine<PseudoRandom >(
-                     1, Null<Size>(), true, true, 1, 0.1, Null<Size>(), 123));
+                                      jointProcess, 1, Null<Size>(),
+                                      true, true, 1, 0.1, Null<Size>(), 123));
 
-        MultiVanillaOption mvo(jointProcess, payoffs, exercises,
-                               mcHestonEngine);
+        MultiVanillaOption mvo(payoffs, exercises);
+        mvo.setPricingEngine(mcHestonEngine);
 
         const std::vector<Real> npvs = mvo.NPVs();
 
@@ -1396,7 +1389,9 @@ void HybridHestonHullWhiteProcessTest::testPseudoJointCalibration() {
 
         Real sse = 0.0;
         for (Size i=0; i < npvs.size(); ++i) {
-            diffVols[i] = bsmOptions[i]->impliedVolatility(npvs[i], 1e-10)
+            diffVols[i] = bsmOptions[i]->impliedVolatility(npvs[i],
+                                                           bsmProcess,
+                                                           1e-10)
                          - impliedVols[i];
 
             sse += (npvs[i] - myNPVs[i])*(npvs[i] - myNPVs[i]);

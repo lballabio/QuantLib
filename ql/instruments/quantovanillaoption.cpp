@@ -23,21 +23,9 @@
 namespace QuantLib {
 
     QuantoVanillaOption::QuantoVanillaOption(
-                   const Handle<YieldTermStructure>& foreignRiskFreeTS,
-                   const Handle<BlackVolTermStructure>& exchRateVolTS,
-                   const Handle<Quote>& correlation,
-                   const boost::shared_ptr<StochasticProcess>& process,
                    const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                   const boost::shared_ptr<Exercise>& exercise,
-                   const boost::shared_ptr<PricingEngine>& engine)
-    : VanillaOption(process, payoff, exercise, engine),
-      foreignRiskFreeTS_(foreignRiskFreeTS),
-      exchRateVolTS_(exchRateVolTS), correlation_(correlation) {
-        QL_REQUIRE(engine, "null engine or wrong engine type");
-        registerWith(foreignRiskFreeTS_);
-        registerWith(exchRateVolTS_);
-        registerWith(correlation_);
-    }
+                   const boost::shared_ptr<Exercise>& exercise)
+    : OneAssetOption(payoff, exercise) {}
 
     Real QuantoVanillaOption::qvega() const {
         calculate();
@@ -61,36 +49,20 @@ namespace QuantLib {
     }
 
     void QuantoVanillaOption::setupExpired() const {
-        VanillaOption::setupExpired();
+        OneAssetOption::setupExpired();
         qvega_ = qrho_ = qlambda_ = 0.0;
-    }
-
-    void QuantoVanillaOption::setupArguments(
-                                       PricingEngine::arguments* args) const {
-        VanillaOption::setupArguments(args);
-        QuantoVanillaOption::arguments* arguments =
-            dynamic_cast<QuantoVanillaOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
-
-        arguments->foreignRiskFreeTS = foreignRiskFreeTS_;
-
-        arguments->exchRateVolTS = exchRateVolTS_;
-
-        QL_REQUIRE(!correlation_.empty(), "null correlation given");
-        arguments->correlation = correlation_->value();
-
     }
 
     void QuantoVanillaOption::fetchResults(
                                       const PricingEngine::results* r) const {
-        VanillaOption::fetchResults(r);
+        OneAssetOption::fetchResults(r);
         const QuantoVanillaOption::results* quantoResults =
             dynamic_cast<const QuantoVanillaOption::results*>(r);
         QL_ENSURE(quantoResults != 0,
                   "no quanto results returned from pricing engine");
-        qrho_        = quantoResults->qrho;
-        qvega_       = quantoResults->qvega;
-        qlambda_     = quantoResults->qlambda;
+        qrho_    = quantoResults->qrho;
+        qvega_   = quantoResults->qvega;
+        qlambda_ = quantoResults->qlambda;
     }
 
 }

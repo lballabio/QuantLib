@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2004 Neil Firth
  Copyright (C) 2006 Klaus Spanderen
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -47,7 +48,8 @@ namespace QuantLib {
         : public MCLongstaffSchwartzEngine<BasketOption::engine,
                                            MultiVariate,RNG> {
       public:
-        MCAmericanBasketEngine(Size timeSteps,
+        MCAmericanBasketEngine(const boost::shared_ptr<StochasticProcessArray>&,
+                               Size timeSteps,
                                Size timeStepsPerYear,
                                bool brownianBridge,
                                bool antitheticVariate,
@@ -57,13 +59,6 @@ namespace QuantLib {
                                Size maxSamples,
                                BigNatural seed,
                                Size nCalibrationSamples = Null<Size>());
-
-        // old constructor
-        MCAmericanBasketEngine(Size requiredSamples,
-                               Size timeSteps,
-                               BigNatural seed = 0,
-                               bool antitheticSampling = false);
-
       protected:
         boost::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> >
             lsmPathPricer() const;
@@ -96,18 +91,20 @@ namespace QuantLib {
 
     template <class RNG> inline
     MCAmericanBasketEngine<RNG>::MCAmericanBasketEngine(
-                                           Size timeSteps,
-                                           Size timeStepsPerYear,
-                                           bool brownianBridge,
-                                           bool antitheticVariate,
-                                           bool controlVariate,
-                                           Size requiredSamples,
-                                           Real requiredTolerance,
-                                           Size maxSamples,
-                                           BigNatural seed,
-                                           Size nCalibrationSamples)
+                   const boost::shared_ptr<StochasticProcessArray>& processes,
+                   Size timeSteps,
+                   Size timeStepsPerYear,
+                   bool brownianBridge,
+                   bool antitheticVariate,
+                   bool controlVariate,
+                   Size requiredSamples,
+                   Real requiredTolerance,
+                   Size maxSamples,
+                   BigNatural seed,
+                   Size nCalibrationSamples)
         : MCLongstaffSchwartzEngine<BasketOption::engine,
-                                    MultiVariate,RNG>(timeSteps,
+                                    MultiVariate,RNG>(processes,
+                                                      timeSteps,
                                                       timeStepsPerYear,
                                                       brownianBridge,
                                                       antitheticVariate,
@@ -116,27 +113,7 @@ namespace QuantLib {
                                                       requiredTolerance,
                                                       maxSamples,
                                                       seed,
-                                                      nCalibrationSamples) {
-    }
-
-    template <class RNG> inline
-    MCAmericanBasketEngine<RNG>::MCAmericanBasketEngine(
-                                                    Size requiredSamples,
-                                                    Size timeSteps,
-                                                    BigNatural seed,
-                                                    bool antitheticSampling)
-    : MCLongstaffSchwartzEngine<BasketOption::engine,
-                                MultiVariate,RNG>(timeSteps,
-                                                  Null<Size>(),
-                                                  false,
-                                                  antitheticSampling,
-                                                  false,
-                                                  requiredSamples,
-                                                  Null<Real>(),
-                                                  Null<Size>(),
-                                                  seed,
-                                                  requiredSamples/4) {
-    }
+                                                      nCalibrationSamples) {}
 
     template <class RNG>
     inline boost::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> >
@@ -144,14 +121,14 @@ namespace QuantLib {
 
         boost::shared_ptr<StochasticProcessArray> processArray =
             boost::dynamic_pointer_cast<StochasticProcessArray>(
-                this->arguments_.stochasticProcess);
+                                                              this->process_);
         QL_REQUIRE(processArray && processArray->size()>0,
                    "Stochastic process array required");
 
         boost::shared_ptr<GeneralizedBlackScholesProcess> process =
             boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                processArray->process(0));
-        QL_REQUIRE(process, "generailized Black-Scholes proces required");
+        QL_REQUIRE(process, "generalized Black-Scholes process required");
 
         boost::shared_ptr<EarlyExercise> exercise =
             boost::dynamic_pointer_cast<EarlyExercise>(
@@ -168,8 +145,7 @@ namespace QuantLib {
              new LongstaffSchwartzPathPricer<MultiPath>(
                      this->timeGrid(),
                      earlyExercisePathPricer,
-                     *(process->riskFreeRate()))
-             );
+                     *(process->riskFreeRate())));
     }
 
 }

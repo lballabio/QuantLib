@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +26,7 @@
 #define quantlib_analytic_continuous_geometric_average_price_asian_engine_hpp
 
 #include <ql/instruments/asianoption.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
@@ -47,7 +49,11 @@ namespace QuantLib {
     class AnalyticContinuousGeometricAveragePriceAsianEngine
         : public ContinuousAveragingAsianOption::engine {
       public:
+        AnalyticContinuousGeometricAveragePriceAsianEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
         void calculate() const;
+      private:
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };
 
 }

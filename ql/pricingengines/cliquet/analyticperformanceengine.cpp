@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,10 +19,15 @@
 
 #include <ql/pricingengines/cliquet/analyticperformanceengine.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/exercise.hpp>
 
 namespace QuantLib {
+
+    AnalyticPerformanceEngine::AnalyticPerformanceEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+    : process_(process) {
+        registerWith(process_);
+    }
 
     void AnalyticPerformanceEngine::calculate() const {
 
@@ -43,15 +48,11 @@ namespace QuantLib {
                                                            arguments_.payoff);
         QL_REQUIRE(moneyness, "wrong payoff given");
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-
         std::vector<Date> resetDates = arguments_.resetDates;
         resetDates.push_back(arguments_.exercise->lastDate());
 
-        Real underlying = process->stateVariable()->value();
+        Real underlying = process_->stateVariable()->value();
+        QL_REQUIRE(underlying > 0.0, "negative or null underlying");
 
         boost::shared_ptr<StrikedTypePayoff> payoff(
                         new PlainVanillaPayoff(moneyness->optionType(), 1.0));
@@ -65,35 +66,36 @@ namespace QuantLib {
         for (Size i = 1; i < resetDates.size(); i++) {
 
             DiscountFactor discount =
-                process->riskFreeRate()->discount(resetDates[i-1]);
+                process_->riskFreeRate()->discount(resetDates[i-1]);
             DiscountFactor rDiscount =
-                process->riskFreeRate()->discount(resetDates[i]) /
-                process->riskFreeRate()->discount(resetDates[i-1]);
+                process_->riskFreeRate()->discount(resetDates[i]) /
+                process_->riskFreeRate()->discount(resetDates[i-1]);
             DiscountFactor qDiscount =
-                process->dividendYield()->discount(resetDates[i]) /
-                process->dividendYield()->discount(resetDates[i-1]);
+                process_->dividendYield()->discount(resetDates[i]) /
+                process_->dividendYield()->discount(resetDates[i-1]);
             Real forward = (1.0/moneyness->strike())*qDiscount/rDiscount;
             Real variance =
-                process->blackVolatility()->blackForwardVariance(
+                process_->blackVolatility()->blackForwardVariance(
                                         resetDates[i-1],resetDates[i],
                                         underlying * moneyness->strike());
 
             BlackCalculator black(payoff, forward, std::sqrt(variance), rDiscount);
 
-            DayCounter rfdc  = process->riskFreeRate()->dayCounter();
-            DayCounter divdc = process->dividendYield()->dayCounter();
-            DayCounter voldc = process->blackVolatility()->dayCounter();
+            DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
+            DayCounter divdc = process_->dividendYield()->dayCounter();
+            DayCounter voldc = process_->blackVolatility()->dayCounter();
 
             results_.value += discount * moneyness->strike() * black.value();
             results_.delta += 0.0;
             results_.gamma += 0.0;
-            results_.theta += process->riskFreeRate()->forwardRate(
+            results_.theta += process_->riskFreeRate()->forwardRate(
                 resetDates[i-1], resetDates[i], rfdc, Continuous, NoFrequency) *
                 discount * moneyness->strike() * black.value();
 
             Time dt = rfdc.yearFraction(resetDates[i-1],resetDates[i]);
-            Time t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
-                                       resetDates[i-1]);
+            Time t = rfdc.yearFraction(
+                                  process_->riskFreeRate()->referenceDate(),
+                                  resetDates[i-1]);
             results_.rho += discount * moneyness->strike() *
                 (black.rho(dt) - t * black.value());
 

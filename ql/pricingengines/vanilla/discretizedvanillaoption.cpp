@@ -25,12 +25,13 @@ namespace QuantLib {
 
     DiscretizedVanillaOption::DiscretizedVanillaOption(
                                          const VanillaOption::arguments& args,
+                                         const StochasticProcess& process,
                                          const TimeGrid& grid)
     : arguments_(args) {
         stoppingTimes_.resize(args.exercise->dates().size());
         for (Size i=0; i<stoppingTimes_.size(); ++i) {
             stoppingTimes_[i] =
-                args.stochasticProcess->time(args.exercise->date(i));
+                process.time(args.exercise->date(i));
             if (!grid.empty()) {
                 // adjust to the given grid
                 stoppingTimes_[i] = grid.closestTime(stoppingTimes_[i]);

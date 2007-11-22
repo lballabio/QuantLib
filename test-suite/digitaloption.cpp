@@ -4,6 +4,7 @@
  Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2003 Neil Firth
  Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2007 StatPro Italia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -90,7 +91,6 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
-    boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -105,13 +105,16 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<StochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
+        boost::shared_ptr<PricingEngine> engine(
+                                    new AnalyticEuropeanEngine(stochProcess));
 
-        VanillaOption opt(stochProcess, payoff, exercise, engine);
+        VanillaOption opt(payoff, exercise);
+        opt.setPricingEngine(engine);
 
         Real calculated = opt.NPV();
         Real error = std::fabs(calculated-values[i].result);
@@ -143,7 +146,6 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
-    boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -158,13 +160,16 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<StochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
+        boost::shared_ptr<PricingEngine> engine(
+                                    new AnalyticEuropeanEngine(stochProcess));
 
-        VanillaOption opt(stochProcess, payoff, exercise, engine);
+        VanillaOption opt(payoff, exercise);
+        opt.setPricingEngine(engine);
 
         Real calculated = opt.NPV();
         Real error = std::fabs(calculated-values[i].result);
@@ -196,7 +201,6 @@ void DigitalOptionTest::testGapEuropeanValues() {
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
-    boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -211,13 +215,16 @@ void DigitalOptionTest::testGapEuropeanValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<StochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
+        boost::shared_ptr<PricingEngine> engine(
+                                    new AnalyticEuropeanEngine(stochProcess));
 
-        VanillaOption opt(stochProcess, payoff, exercise, engine);
+        VanillaOption opt(payoff, exercise);
+        opt.setPricingEngine(engine);
 
         Real calculated = opt.NPV();
         Real error = std::fabs(calculated-values[i].result);
@@ -261,7 +268,6 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
-    boost::shared_ptr<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -277,14 +283,16 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<StochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
+        boost::shared_ptr<PricingEngine> engine(
+                             new AnalyticDigitalAmericanEngine(stochProcess));
 
-        VanillaOption opt(stochProcess, payoff, amExercise,
-                          engine);
+        VanillaOption opt(payoff, amExercise);
+        opt.setPricingEngine(engine);
 
         Real calculated = opt.NPV();
         Real error = std::fabs(calculated-values[i].result);
@@ -326,7 +334,6 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
-    boost::shared_ptr<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -342,14 +349,16 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<StochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
+        boost::shared_ptr<PricingEngine> engine(
+                             new AnalyticDigitalAmericanEngine(stochProcess));
 
-        VanillaOption opt(stochProcess, payoff, amExercise,
-                          engine);
+        VanillaOption opt(payoff, amExercise);
+        opt.setPricingEngine(engine);
 
         Real calculated = opt.NPV();
         Real error = std::fabs(calculated-values[i].result);
@@ -386,7 +395,6 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
-    boost::shared_ptr<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -403,14 +411,16 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<StochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
+        boost::shared_ptr<PricingEngine> engine(
+                             new AnalyticDigitalAmericanEngine(stochProcess));
 
-        VanillaOption opt(stochProcess, payoff, amExercise,
-                          engine);
+        VanillaOption opt(payoff, amExercise);
+        opt.setPricingEngine(engine);
 
         Real calculated = opt.NPV();
         Real error = std::fabs(calculated-values[i].result);
@@ -453,7 +463,6 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
-    boost::shared_ptr<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -470,14 +479,16 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<StochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
+        boost::shared_ptr<PricingEngine> engine(
+                             new AnalyticDigitalAmericanEngine(stochProcess));
 
-        VanillaOption opt(stochProcess, payoff, amExercise,
-                          engine);
+        VanillaOption opt(payoff, amExercise);
+        opt.setPricingEngine(engine);
 
         Real calculated = opt.NPV();
         Real error = std::fabs(calculated-values[i].result);
@@ -532,10 +543,15 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
                                                                 false));
     boost::shared_ptr<Exercise> exercises[] = { exercise, amExercise };
 
-    boost::shared_ptr<PricingEngine> euroEngine(new AnalyticEuropeanEngine());
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
+                            new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                                          qTS, rTS, volTS));
+
+    boost::shared_ptr<PricingEngine> euroEngine(
+                                    new AnalyticEuropeanEngine(stochProcess));
 
     boost::shared_ptr<PricingEngine> amEngine(
-                                         new AnalyticDigitalAmericanEngine());
+                             new AnalyticDigitalAmericanEngine(stochProcess));
 
     boost::shared_ptr<PricingEngine> engines[] = { euroEngine, amEngine };
 
@@ -546,11 +562,8 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
                             new CashOrNothingPayoff(types[i1],
                                                     strikes[i6], cashPayoff));
 
-          boost::shared_ptr<StochasticProcess> stochProcess(
-                            new BlackScholesMertonProcess(Handle<Quote>(spot),
-                                                          qTS, rTS, volTS));
-
-          VanillaOption opt(stochProcess, payoff, exercises[j], engines[j]);
+          VanillaOption opt(payoff, exercises[j]);
+          opt.setPricingEngine(engines[j]);
 
           for (Size i2=0; i2<LENGTH(underlyings); i2++) {
             for (Size i4=0; i4<LENGTH(qRates); i4++) {
@@ -698,24 +711,23 @@ void DigitalOptionTest::testMCCashAtHit() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<StochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
 
         Size requiredSamples = Size(std::pow(2.0, 14)-1);
-        boost::shared_ptr<PricingEngine> mcldEngine;
-        mcldEngine =
-            MakeMCDigitalEngine<LowDiscrepancy>()
+        boost::shared_ptr<PricingEngine> mcldEngine =
+            MakeMCDigitalEngine<LowDiscrepancy>(stochProcess)
             .withStepsPerYear(timeStepsPerYear)
             .withBrownianBridge()
             .withSamples(requiredSamples)
             .withMaxSamples(maxSamples)
             .withSeed(seed);
 
-        VanillaOption opt(stochProcess, payoff, amExercise,
-                          mcldEngine);
+        VanillaOption opt(payoff, amExercise);
+        opt.setPricingEngine(mcldEngine);
 
         Real calculated = opt.NPV();
         Real error = std::fabs(calculated-values[i].result);

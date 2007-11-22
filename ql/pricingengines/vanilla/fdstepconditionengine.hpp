@@ -35,10 +35,11 @@ namespace QuantLib {
     /*! \ingroup vanillaengines */
     class FDStepConditionEngine :  public FDVanillaEngine {
       public:
-        FDStepConditionEngine(Size timeSteps, Size gridPoints,
-                              bool timeDependent = false)
-        : FDVanillaEngine(timeSteps, gridPoints,
-                          timeDependent),
+        FDStepConditionEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size timeSteps, Size gridPoints,
+             bool timeDependent = false)
+        : FDVanillaEngine(process, timeSteps, gridPoints, timeDependent),
           controlBCs_(2), controlPrices_(gridPoints) {}
       protected:
         mutable boost::shared_ptr<StandardStepCondition> stepCondition_;

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Klaus Spanderen
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -82,10 +83,10 @@ void BatesModelTest::testAnalyticVsBlack() {
     const Real sigma = 1.0e-4;
     const Real rho = 0.0;
 
+    VanillaOption option(payoff, exercise);
+
     boost::shared_ptr<HestonProcess> process(new HestonProcess(
         riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
-
-    VanillaOption option(process, payoff, exercise);
 
     boost::shared_ptr<PricingEngine> engine(new BatesEngine(
         boost::shared_ptr<BatesModel>(
@@ -201,11 +202,11 @@ void BatesModelTest::testAnalyticVsJumpDiffusion() {
     boost::shared_ptr<PricingEngine> batesEngine(new BatesEngine(
         boost::shared_ptr<BatesModel>(
             new BatesModel(process,
-                                 jumpIntensity->value(),
-                                 meanLogJump->value(),
-                                 jumpVol->value())), 160));
+                           jumpIntensity->value(),
+                           meanLogJump->value(),
+                           jumpVol->value())), 160));
 
-    boost::shared_ptr<StochasticProcess> stochProcess(
+    boost::shared_ptr<Merton76Process> stochProcess(
         new Merton76Process(s0,
                             dividendTS,
                             riskFreeTS,
@@ -214,21 +215,20 @@ void BatesModelTest::testAnalyticVsJumpDiffusion() {
                             Handle<Quote>(meanLogJump),
                             Handle<Quote>(jumpVol)));
 
-    boost::shared_ptr<VanillaOption::engine> baseEngine(
-        new AnalyticEuropeanEngine);
     boost::shared_ptr<PricingEngine> mertonEngine(
-        new JumpDiffusionEngine(baseEngine, 1e-10, 1000));
+        new JumpDiffusionEngine(stochProcess, 1e-10, 1000));
 
     for (Integer i=1; i<48; ++i) {
         Date exerciseDate = settlementDate + i*Months;
         boost::shared_ptr<Exercise> exercise(
             new EuropeanExercise(exerciseDate));
-        VanillaOption batesOption(process, payoff, exercise, batesEngine);
+        VanillaOption batesOption(payoff, exercise);
+        batesOption.setPricingEngine(batesEngine);
         // FLOATING_POINT_EXCEPTION
         Real calculated = batesOption.NPV();
 
-        EuropeanOption mertonOption(stochProcess, payoff,
-                                    exercise, mertonEngine);
+        EuropeanOption mertonOption(payoff, exercise);
+        mertonOption.setPricingEngine(mertonEngine);
         Real expected = mertonOption.NPV();
 
         Real tolerance = 2e-8;

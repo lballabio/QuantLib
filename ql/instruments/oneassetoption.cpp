@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -20,22 +20,15 @@
 */
 
 #include <ql/instruments/oneassetoption.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
-#include <ql/math/solvers1d/brent.hpp>
+#include <ql/settings.hpp>
 #include <ql/exercise.hpp>
 
 namespace QuantLib {
 
     OneAssetOption::OneAssetOption(
-        const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<Payoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise,
-        const boost::shared_ptr<PricingEngine>& engine)
-    : Option(payoff, exercise, engine),
-      stochasticProcess_(process) {
-        registerWith(stochasticProcess_);
-    }
+        const boost::shared_ptr<Exercise>& exercise)
+    : Option(payoff, exercise) {}
 
     bool OneAssetOption::isExpired() const {
         return exercise_->lastDate() < Settings::instance().evaluationDate();
@@ -96,6 +89,13 @@ namespace QuantLib {
         return dividendRho_;
     }
 
+    Real OneAssetOption::strikeSensitivity() const {
+        calculate();
+        QL_REQUIRE(strikeSensitivity_ != Null<Real>(),
+                   "strike sensitivity not provided");
+        return strikeSensitivity_;
+    }
+
     Real OneAssetOption::itmCashProbability() const {
         calculate();
         QL_REQUIRE(itmCashProbability_ != Null<Real>(),
@@ -103,37 +103,12 @@ namespace QuantLib {
         return itmCashProbability_;
     }
 
-    Volatility OneAssetOption::impliedVolatility(Real targetValue,
-                                                 Real accuracy,
-                                                 Size maxEvaluations,
-                                                 Volatility minVol,
-                                                 Volatility maxVol) const {
-        calculate();
-        QL_REQUIRE(!isExpired(), "option expired");
-
-        Volatility guess = (minVol+maxVol)/2.0;
-        ImpliedVolHelper f(engine_,targetValue);
-        Brent solver;
-        solver.setMaxEvaluations(maxEvaluations);
-        Volatility result = solver.solve(f, accuracy, guess, minVol, maxVol);
-        return result;
-    }
-
     void OneAssetOption::setupExpired() const {
         Option::setupExpired();
         delta_ = deltaForward_ = elasticity_ = gamma_ = theta_ =
             thetaPerDay_ = vega_ = rho_ = dividendRho_ =
-            itmCashProbability_ = 0.0;
+            strikeSensitivity_ = itmCashProbability_ = 0.0;
     }
-
-    void OneAssetOption::setupArguments(PricingEngine::arguments* args) const {
-        OneAssetOption::arguments* arguments =
-            dynamic_cast<OneAssetOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
-
-        arguments->stochasticProcess = stochasticProcess_;
-        arguments->exercise = exercise_;
-        }
 
     void OneAssetOption::fetchResults(const PricingEngine::results* r) const {
         Option::fetchResults(r);
@@ -169,67 +144,8 @@ namespace QuantLib {
         deltaForward_       = moreResults->deltaForward;
         elasticity_         = moreResults->elasticity;
         thetaPerDay_        = moreResults->thetaPerDay;
+        strikeSensitivity_  = moreResults->strikeSensitivity;
         itmCashProbability_ = moreResults->itmCashProbability;
-    }
-
-
-    void OneAssetOption::arguments::validate() const {
-        Option::arguments::validate();
-        // we assume the underlying value to be the first state variable
-        QL_REQUIRE(stochasticProcess->initialValues()[0] > 0.0,
-                   "negative or zero underlying given");
-    }
-
-
-    OneAssetOption::ImpliedVolHelper::ImpliedVolHelper(
-                               const boost::shared_ptr<PricingEngine>& engine,
-                               Real targetValue)
-    : engine_(engine), targetValue_(targetValue) {
-        OneAssetOption::arguments* arguments_ =
-            dynamic_cast<OneAssetOption::arguments*>(engine_->getArguments());
-        QL_REQUIRE(arguments_ != 0,
-                   "pricing engine does not supply needed arguments");
-        // make a new stochastic process in order not to modify the given one.
-        // stateVariable, dividendTS and riskFreeTS can be copied since
-        // they won't be modified.
-        // Here the requirement for a Black-Scholes process is hard-coded.
-        // Making it work for a generic process would need some reflection
-        // technique (which is possible, but requires some thought, hence
-        // its postponement.)
-        boost::shared_ptr<GeneralizedBlackScholesProcess> originalProcess =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                               arguments_->stochasticProcess);
-        QL_REQUIRE(originalProcess, "Black-Scholes process required");
-        Handle<Quote> stateVariable = originalProcess->stateVariable();
-        Handle<YieldTermStructure> dividendYield =
-            originalProcess->dividendYield();
-        Handle<YieldTermStructure> riskFreeRate =
-            originalProcess->riskFreeRate();
-
-        const Handle<BlackVolTermStructure>& blackVol =
-            originalProcess->blackVolatility();
-        vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
-        Handle<BlackVolTermStructure> volatility(
-            boost::shared_ptr<BlackVolTermStructure>(new
-                BlackConstantVol(blackVol->referenceDate(),
-                                 blackVol->calendar(),
-                                 Handle<Quote>(vol_),
-                                 blackVol->dayCounter())));
-
-        boost::shared_ptr<StochasticProcess> process(
-               new GeneralizedBlackScholesProcess(stateVariable, dividendYield,
-                                                  riskFreeRate, volatility));
-        arguments_->stochasticProcess = process;
-        results_ =
-            dynamic_cast<const Instrument::results*>(engine_->getResults());
-        QL_REQUIRE(results_ != 0,
-                   "pricing engine does not supply needed results");
-    }
-
-    Real OneAssetOption::ImpliedVolHelper::operator()(Volatility x) const {
-        vol_->setValue(x);
-        engine_->calculate();
-        return results_->value-targetValue_;
     }
 
 }

@@ -10,6 +10,7 @@ this_include_HEADERS = \
     assetswap.hpp \
     averagetype.hpp \
     barrieroption.hpp \
+    barriertype.hpp \
     basketoption.hpp \
     bmaswap.hpp \
     bond.hpp \
@@ -24,6 +25,7 @@ this_include_HEADERS = \
     forward.hpp \
     forwardrateagreement.hpp \
     forwardvanillaoption.hpp \
+    impliedvolatility.hpp \
     inflationswap.hpp \
     lookbackoption.hpp \
     makecapfloor.hpp \
@@ -32,7 +34,6 @@ this_include_HEADERS = \
     makevanillaswap.hpp \
     multiassetoption.hpp \
     oneassetoption.hpp \
-    oneassetstrikedoption.hpp \
     payoffs.hpp \
     quantoforwardvanillaoption.hpp \
     quantovanillaoption.hpp \
@@ -49,7 +50,9 @@ this_include_HEADERS = \
 libInstruments_la_SOURCES = \
     asianoption.cpp \
     assetswap.cpp \
+    averagetype.cpp \
     barrieroption.cpp \
+    barriertype.cpp \
     basketoption.cpp \
     bmaswap.cpp \
     bond.cpp \
@@ -62,6 +65,7 @@ libInstruments_la_SOURCES = \
     forward.cpp \
     forwardrateagreement.cpp \
     forwardvanillaoption.cpp \
+    impliedvolatility.cpp \
     inflationswap.cpp \
     lookbackoption.cpp \
     makecapfloor.cpp \
@@ -70,7 +74,6 @@ libInstruments_la_SOURCES = \
     makevanillaswap.cpp \
     multiassetoption.cpp \
     oneassetoption.cpp \
-    oneassetstrikedoption.cpp \
     payoffs.cpp \
     quantoforwardvanillaoption.cpp \
     quantovanillaoption.cpp \

@@ -25,26 +25,33 @@
 #ifndef quantlib_forward_vanilla_option_hpp
 #define quantlib_forward_vanilla_option_hpp
 
-#include <ql/instruments/vanillaoption.hpp>
-#include <ql/pricingengines/forward/forwardengine.hpp>
+#include <ql/instruments/oneassetoption.hpp>
+#include <ql/instruments/payoffs.hpp>
+#include <ql/time/date.hpp>
 
 namespace QuantLib {
 
+    //! %Arguments for forward (strike-resetting) option calculation
+    template <class ArgumentsType>
+    class ForwardOptionArguments : public ArgumentsType {
+      public:
+        ForwardOptionArguments() : moneyness(Null<Real>()),
+                                   resetDate(Null<Date>()) {}
+        void validate() const;
+        Real moneyness;
+        Date resetDate;
+    };
+
     //! %Forward version of a vanilla option
     /*! \ingroup instruments */
-    class ForwardVanillaOption : public VanillaOption {
+    class ForwardVanillaOption : public OneAssetOption {
       public:
-        typedef ForwardOptionArguments<VanillaOption::arguments> arguments;
-        typedef VanillaOption::results results;
-        typedef ForwardEngine<VanillaOption::arguments,
-                              VanillaOption::results> engine;
-        ForwardVanillaOption(
-            Real moneyness,
-            Date resetDate,
-            const boost::shared_ptr<StochasticProcess>& stochProc,
-            const boost::shared_ptr<StrikedTypePayoff>& payoff,
-            const boost::shared_ptr<Exercise>& exercise,
-            const boost::shared_ptr<PricingEngine>& engine);
+        typedef ForwardOptionArguments<OneAssetOption::arguments> arguments;
+        typedef OneAssetOption::results results;
+        ForwardVanillaOption(Real moneyness,
+                             const Date& resetDate,
+                             const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                             const boost::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const;
         void fetchResults(const PricingEngine::results*) const;
       private:

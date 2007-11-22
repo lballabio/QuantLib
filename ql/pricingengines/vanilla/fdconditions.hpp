@@ -31,38 +31,43 @@
 
 namespace QuantLib {
 
-  template <typename baseEngine>
-  class FDAmericanCondition : public baseEngine {
-  public:
-      FDAmericanCondition(Size timeSteps=100, Size gridPoints=100,
-                          bool timeDependent = false)
-          : baseEngine(timeSteps, gridPoints, timeDependent) {}
-  protected:
-    void initializeStepCondition() const {
-      baseEngine::stepCondition_ = boost::shared_ptr<StandardStepCondition>(
-             new AmericanCondition(baseEngine::intrinsicValues_.values()));
-    }
-  };
+    template <typename baseEngine>
+    class FDAmericanCondition : public baseEngine {
+      public:
+        FDAmericanCondition(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size timeSteps = 100, Size gridPoints = 100,
+             bool timeDependent = false)
+        : baseEngine(process, timeSteps, gridPoints, timeDependent) {}
+      protected:
+        void initializeStepCondition() const {
+            baseEngine::stepCondition_ =
+                boost::shared_ptr<StandardStepCondition>(
+                  new AmericanCondition(baseEngine::intrinsicValues_.values()));
+        }
+    };
 
-  template <typename baseEngine>
-  class FDShoutCondition : public baseEngine {
-  public:
-      FDShoutCondition(Size timeSteps=100, Size gridPoints=100,
-                       bool timeDependent = false)
-          : baseEngine(timeSteps, gridPoints, timeDependent) {}
-  protected:
-    void initializeStepCondition() const {
-        Time residualTime = baseEngine::getResidualTime();
-        Rate riskFreeRate = baseEngine::process_->riskFreeRate()
-            ->zeroRate(residualTime, Continuous);
+    template <typename baseEngine>
+    class FDShoutCondition : public baseEngine {
+      public:
+        FDShoutCondition(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size timeSteps = 100, Size gridPoints = 100,
+             bool timeDependent = false)
+        : baseEngine(process, timeSteps, gridPoints, timeDependent) {}
+      protected:
+        void initializeStepCondition() const {
+            Time residualTime = baseEngine::getResidualTime();
+            Rate riskFreeRate = baseEngine::process_->riskFreeRate()
+                ->zeroRate(residualTime, Continuous);
 
-        baseEngine::stepCondition_ = boost::shared_ptr<StandardStepCondition>(
-             new ShoutCondition(baseEngine::intrinsicValues_.values(),
-                                residualTime,
-                                riskFreeRate));
-    }
-  };
-
+            baseEngine::stepCondition_ =
+                boost::shared_ptr<StandardStepCondition>(
+                     new ShoutCondition(baseEngine::intrinsicValues_.values(),
+                                        residualTime,
+                                        riskFreeRate));
+        }
+    };
 
 }
 

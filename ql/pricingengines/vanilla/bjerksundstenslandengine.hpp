@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +26,7 @@
 #define quantlib_bjerkland_stensland_engine_hpp
 
 #include <ql/instruments/vanillaoption.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
@@ -37,7 +39,11 @@ namespace QuantLib {
     class BjerksundStenslandApproximationEngine
         : public VanillaOption::engine {
       public:
+        BjerksundStenslandApproximationEngine(
+                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
         void calculate() const;
+      private:
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };
 
 }

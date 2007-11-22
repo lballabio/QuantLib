@@ -50,14 +50,16 @@ namespace QuantLib {
         typedef typename McSimulation<SingleVariate,RNG,S>::stats_type
             stats_type;
         // constructor
-        MCDiscreteAveragingAsianEngine(Size maxTimeStepsPerYear,
-                                       bool brownianBridge,
-                                       bool antitheticVariate,
-                                       bool controlVariate,
-                                       Size requiredSamples,
-                                       Real requiredTolerance,
-                                       Size maxSamples,
-                                       BigNatural seed);
+        MCDiscreteAveragingAsianEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size maxTimeStepsPerYear,
+             bool brownianBridge,
+             bool antitheticVariate,
+             bool controlVariate,
+             Size requiredSamples,
+             Real requiredTolerance,
+             Size maxSamples,
+             BigNatural seed);
         void calculate() const {
             McSimulation<SingleVariate,RNG,S>::calculate(requiredTolerance_,
                                                          requiredSamples_,
@@ -72,19 +74,16 @@ namespace QuantLib {
         TimeGrid timeGrid() const;
         boost::shared_ptr<path_generator_type> pathGenerator() const {
 
-            boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-                boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-            QL_REQUIRE(process, "Black-Scholes process required");
             TimeGrid grid = this->timeGrid();
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(grid.size()-1,seed_);
             return boost::shared_ptr<path_generator_type>(
-                         new path_generator_type(process,
-                                                 grid, gen, brownianBridge_));
+                         new path_generator_type(process_, grid,
+                                                 gen, brownianBridge_));
         }
         Real controlVariateValue() const;
         // data members
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size maxTimeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
@@ -98,30 +97,28 @@ namespace QuantLib {
     template<class RNG, class S>
     inline
     MCDiscreteAveragingAsianEngine<RNG,S>::MCDiscreteAveragingAsianEngine(
-                                                    Size maxTimeStepsPerYear,
-                                                    bool brownianBridge,
-                                                    bool antitheticVariate,
-                                                    bool controlVariate,
-                                                    Size requiredSamples,
-                                                    Real requiredTolerance,
-                                                    Size maxSamples,
-                                                    BigNatural seed)
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size maxTimeStepsPerYear,
+             bool brownianBridge,
+             bool antitheticVariate,
+             bool controlVariate,
+             Size requiredSamples,
+             Real requiredTolerance,
+             Size maxSamples,
+             BigNatural seed)
     : McSimulation<SingleVariate,RNG,S>(antitheticVariate, controlVariate),
-      maxTimeStepsPerYear_(maxTimeStepsPerYear),
+      process_(process), maxTimeStepsPerYear_(maxTimeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
-      brownianBridge_(brownianBridge), seed_(seed) {}
+      brownianBridge_(brownianBridge), seed_(seed) {
+        registerWith(process_);
+    }
 
     template <class RNG, class S>
     inline TimeGrid MCDiscreteAveragingAsianEngine<RNG,S>::timeGrid() const {
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-
-        Date referenceDate = process->riskFreeRate()->referenceDate();
-        DayCounter voldc = process->blackVolatility()->dayCounter();
+        Date referenceDate = process_->riskFreeRate()->referenceDate();
+        DayCounter voldc = process_->blackVolatility()->dayCounter();
         std::vector<Time> fixingTimes;
         Size i;
         for (i=0; i<arguments_.fixingDates.size(); i++) {

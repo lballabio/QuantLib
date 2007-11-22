@@ -39,13 +39,9 @@ namespace QuantLib {
                     Call = 1
         };
         Option(const boost::shared_ptr<Payoff>& payoff,
-               const boost::shared_ptr<Exercise>& exercise,
-               const boost::shared_ptr<PricingEngine>& engine =
-                                          boost::shared_ptr<PricingEngine>())
-        : payoff_(payoff), exercise_(exercise) {
-            if (engine)
-                setPricingEngine(engine);
-        }
+               const boost::shared_ptr<Exercise>& exercise)
+        : payoff_(payoff), exercise_(exercise) {}
+        void setupArguments(PricingEngine::arguments*) const;
       protected:
         // arguments
         boost::shared_ptr<Payoff> payoff_;
@@ -64,6 +60,7 @@ namespace QuantLib {
         arguments() {}
         void validate() const {
             QL_REQUIRE(payoff, "no payoff given");
+            QL_REQUIRE(exercise, "no exercise given");
         }
         boost::shared_ptr<Payoff> payoff;
         boost::shared_ptr<Exercise> exercise;
@@ -95,6 +92,15 @@ namespace QuantLib {
 
 
     // inline definitions
+
+    inline void Option::setupArguments(PricingEngine::arguments* args) const {
+        Option::arguments* arguments =
+            dynamic_cast<Option::arguments*>(args);
+        QL_REQUIRE(arguments != 0, "wrong argument type");
+
+        arguments->payoff = payoff_;
+        arguments->exercise = exercise_;
+    }
 
     inline std::ostream& operator<<(std::ostream& out, Option::Type type) {
         switch (type) {

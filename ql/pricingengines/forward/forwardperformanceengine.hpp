@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,19 +19,17 @@
 */
 
 /*! \file forwardperformanceengine.hpp
-    \brief Forward (strike-resetting) performance option engines
+    \brief Forward (strike-resetting) performance vanilla-option engine
 */
 
 #ifndef quantlib_forward_performance_engine_hpp
 #define quantlib_forward_performance_engine_hpp
 
 #include <ql/pricingengines/forward/forwardengine.hpp>
-#include <ql/stochasticprocess.hpp>
 
 namespace QuantLib {
-    class StochasticProcess;
-    
-    //! %Forward performance engine
+
+    //! %Forward performance engine for vanilla options
     /*! \ingroup forwardengines
 
         \test
@@ -39,57 +38,49 @@ namespace QuantLib {
         - the correctness of the returned greeks is tested by
           reproducing numerical derivatives.
     */
-    template<class ArgumentsType, class ResultsType>
-    class ForwardPerformanceEngine
-        : public ForwardEngine<ArgumentsType, ResultsType> {
+    template <class Engine>
+    class ForwardPerformanceVanillaEngine
+        : public ForwardVanillaEngine<Engine> {
       public:
-        ForwardPerformanceEngine(
-          const boost::shared_ptr<GenericEngine<ArgumentsType,ResultsType> >&);
+        ForwardPerformanceVanillaEngine(
+                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
         void calculate() const;
+      protected:
         void getOriginalResults() const;
     };
 
 
     // template definitions
 
-    template<class ArgumentsType, class ResultsType>
-    ForwardPerformanceEngine<ArgumentsType, ResultsType>::
-    ForwardPerformanceEngine(
-        const boost::shared_ptr<GenericEngine<ArgumentsType, ResultsType> >&
-            originalEngine)
-    : ForwardEngine<ArgumentsType, ResultsType>(originalEngine) {}
+    template <class Engine>
+    ForwardPerformanceVanillaEngine<Engine>::ForwardPerformanceVanillaEngine(
+        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+    : ForwardVanillaEngine<Engine>(process) {}
 
-    template<class ArgumentsType, class ResultsType>
-    void ForwardPerformanceEngine<ArgumentsType, ResultsType>::calculate()
-                                                                       const {
-        this->setOriginalArguments();
+    template <class Engine>
+    void ForwardPerformanceVanillaEngine<Engine>::calculate() const {
+        this->setup();
         this->originalEngine_->calculate();
         getOriginalResults();
     }
 
-    template<class ArgumentsType, class ResultsType>
-    void ForwardPerformanceEngine<ArgumentsType, ResultsType>::
-    getOriginalResults() const {
+    template <class Engine>
+    void ForwardPerformanceVanillaEngine<Engine>::getOriginalResults() const {
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                          this->arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-
-        DayCounter rfdc = process->riskFreeRate()->dayCounter();
+        DayCounter rfdc = this->process_->riskFreeRate()->dayCounter();
         Time resetTime = rfdc.yearFraction(
-            process->riskFreeRate()->referenceDate(),
+            this->process_->riskFreeRate()->referenceDate(),
             this->arguments_.resetDate);
-        DiscountFactor discR = process->riskFreeRate()->discount(
-                                    this->arguments_.resetDate);
+        DiscountFactor discR = this->process_->riskFreeRate()->discount(
+                                                  this->arguments_.resetDate);
         // it's a performance option
-        discR /= process->stateVariable()->value();
+        discR /= this->process_->stateVariable()->value();
 
         Real temp = this->originalResults_->value;
         this->results_.value = discR * temp;
         this->results_.delta = 0.0;
         this->results_.gamma = 0.0;
-        this->results_.theta = process->riskFreeRate()->
+        this->results_.theta = this->process_->riskFreeRate()->
             zeroRate(this->arguments_.resetDate, rfdc, Continuous, NoFrequency)
             * this->results_.value;
         this->results_.vega = discR * this->originalResults_->vega;

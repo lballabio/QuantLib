@@ -48,7 +48,8 @@ namespace QuantLib {
     };
 
     /*! \relates Frequency */
-    std::ostream& operator<<(std::ostream& out, Frequency f);
+    std::ostream& operator<<(std::ostream& out,
+                             Frequency f);
 
 }
 

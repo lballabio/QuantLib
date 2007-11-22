@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2005 Gary Kennedy
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,12 +22,18 @@
 #include <ql/pricingengines/asian/analytic_discr_geom_av_price.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/greeks.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/exercise.hpp>
 #include <numeric>
 
 namespace QuantLib {
+
+    AnalyticDiscreteGeometricAveragePriceAsianEngine::
+    AnalyticDiscreteGeometricAveragePriceAsianEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+    : process_(process) {
+        registerWith(process_);
+    }
 
     void AnalyticDiscreteGeometricAveragePriceAsianEngine::calculate() const {
 
@@ -56,15 +63,10 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-
-        Date referenceDate = process->riskFreeRate()->referenceDate();
-        DayCounter rfdc  = process->riskFreeRate()->dayCounter();
-        DayCounter divdc = process->dividendYield()->dayCounter();
-        DayCounter voldc = process->blackVolatility()->dayCounter();
+        Date referenceDate = process_->riskFreeRate()->referenceDate();
+        DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
+        DayCounter divdc = process_->dividendYield()->dayCounter();
+        DayCounter voldc = process_->blackVolatility()->dayCounter();
         std::vector<Time> fixingTimes;
         Size i;
         for (i=0; i<arguments_.fixingDates.size(); i++) {
@@ -85,7 +87,7 @@ namespace QuantLib {
         Time timeSum = std::accumulate(fixingTimes.begin(),
                                        fixingTimes.end(), 0.0);
 
-        Volatility vola = process->blackVolatility()->blackVol(
+        Volatility vola = process_->blackVolatility()->blackVol(
                                               arguments_.exercise->lastDate(),
                                               payoff->strike());
         Real temp = 0.0;
@@ -97,18 +99,20 @@ namespace QuantLib {
         Real dmuG_dsig = -(vola * timeSum)/N;
 
         Date exDate = arguments_.exercise->lastDate();
-        Rate dividendRate = process->dividendYield()->
+        Rate dividendRate = process_->dividendYield()->
             zeroRate(exDate, divdc, Continuous, NoFrequency);
-        Rate riskFreeRate = process->riskFreeRate()->
+        Rate riskFreeRate = process_->riskFreeRate()->
             zeroRate(exDate, rfdc, Continuous, NoFrequency);
         Rate nu = riskFreeRate - dividendRate - 0.5*vola*vola;
 
-        Real s = process->stateVariable()->value();
+        Real s = process_->stateVariable()->value();
+        QL_REQUIRE(s > 0.0, "positive underlying value required");
+
         Real muG = pastWeight * runningLog +
             futureWeight * std::log(s) + nu*timeSum/N;
         Real forwardPrice = std::exp(muG + variance / 2.0);
 
-        DiscountFactor riskFreeDiscount = process->riskFreeRate()->discount(
+        DiscountFactor riskFreeDiscount = process_->riskFreeRate()->discount(
                                              arguments_.exercise->lastDate());
 
         BlackCalculator black(payoff, forwardPrice, std::sqrt(variance),
@@ -138,20 +142,20 @@ namespace QuantLib {
             results_.vega -= riskFreeDiscount * forwardPrice *
                                               (dmuG_dsig + sigG * dsigG_dsig);
 
-        Time tRho = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
+        Time tRho = rfdc.yearFraction(process_->riskFreeRate()->referenceDate(),
                                       arguments_.exercise->lastDate());
         results_.rho = black.rho(tRho)*timeSum/(N*tRho)
                       - (tRho-timeSum/N)*results_.value;
 
         Time tDiv = divdc.yearFraction(
-                           process->dividendYield()->referenceDate(),
+                           process_->dividendYield()->referenceDate(),
                            arguments_.exercise->lastDate());
 
         results_.dividendRho = black.dividendRho(tDiv)*timeSum/(N*tDiv);
 
         results_.strikeSensitivity = black.strikeSensitivity();
 
-        results_.theta = blackScholesTheta(process,
+        results_.theta = blackScholesTheta(process_,
                                            results_.value,
                                            results_.delta,
                                            results_.gamma);

@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2007 StatPro Italia srl
  Copyright (C) 2005 Joseph Wang
 
  This file is part of QuantLib, a free-software/open-source library
@@ -134,8 +134,6 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
-    boost::shared_ptr<PricingEngine> engine(
-                                    new BaroneAdesiWhaleyApproximationEngine);
 
     Real tolerance = 3.0e-3;
 
@@ -153,14 +151,17 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<StochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
 
-        VanillaOption option(stochProcess, payoff, exercise,
-                             engine);
+        boost::shared_ptr<PricingEngine> engine(
+                      new BaroneAdesiWhaleyApproximationEngine(stochProcess));
+
+        VanillaOption option(payoff, exercise);
+        option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
         Real error = std::fabs(calculated-values[i].result);
@@ -196,8 +197,6 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
-    boost::shared_ptr<PricingEngine> engine(
-                                   new BjerksundStenslandApproximationEngine);
 
     Real tolerance = 1.0e-4;
 
@@ -215,14 +214,17 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<StochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
 
-        VanillaOption option(stochProcess, payoff, exercise,
-                             engine);
+        boost::shared_ptr<PricingEngine> engine(
+                     new BjerksundStenslandApproximationEngine(stochProcess));
+
+        VanillaOption option(payoff, exercise);
+        option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
         Real error = std::fabs(calculated-values[i].result);
@@ -326,8 +328,6 @@ void AmericanOptionTest::testJuValues() {
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
-    boost::shared_ptr<PricingEngine> engine(
-                                    new JuQuadraticApproximationEngine);
 
     Real tolerance = 1.0e-3;
 
@@ -345,14 +345,17 @@ void AmericanOptionTest::testJuValues() {
         rRate->setValue(juValues[i].r);
         vol  ->setValue(juValues[i].v);
 
-        boost::shared_ptr<StochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
 
-        VanillaOption option(stochProcess, payoff, exercise,
-                             engine);
+        boost::shared_ptr<PricingEngine> engine(
+                            new JuQuadraticApproximationEngine(stochProcess));
+
+        VanillaOption option(payoff, exercise);
+        option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
         Real error = std::fabs(calculated-juValues[i].result);
@@ -379,7 +382,6 @@ void AmericanOptionTest::testFdValues() {
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
-    boost::shared_ptr<PricingEngine> engine(new FDAmericanEngine(100,100));
 
     Real tolerance = 8.0e-2;
 
@@ -398,14 +400,17 @@ void AmericanOptionTest::testFdValues() {
         rRate->setValue(juValues[i].r);
         vol  ->setValue(juValues[i].v);
 
-        boost::shared_ptr<StochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
 
-        VanillaOption option(stochProcess, payoff, exercise,
-                             engine);
+        boost::shared_ptr<PricingEngine> engine(
+                                 new FDAmericanEngine(stochProcess, 100,100));
+
+        VanillaOption option(payoff, exercise);
+        option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
         Real error = std::fabs(calculated-juValues[i].result);
@@ -422,7 +427,7 @@ void AmericanOptionTest::testFdValues() {
 QL_BEGIN_TEST_LOCALS(AmericanOptionTest)
 
 template <class Engine>
-void testFdGreeks(const Engine&) {
+void testFdGreeks() {
 
     SavedSettings backup;
 
@@ -461,12 +466,14 @@ void testFdGreeks(const Engine&) {
                                          new AmericanExercise(today, exDate));
               boost::shared_ptr<StrikedTypePayoff> payoff(
                                 new PlainVanillaPayoff(types[i], strikes[j]));
-              boost::shared_ptr<StochasticProcess> stochProcess(
+              boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
                             new BlackScholesMertonProcess(Handle<Quote>(spot),
                                                           qTS, rTS, volTS));
-              boost::shared_ptr<PricingEngine> engine(new Engine);
 
-              VanillaOption option(stochProcess, payoff, exercise, engine);
+              boost::shared_ptr<PricingEngine> engine(new Engine(stochProcess));
+
+              VanillaOption option(payoff, exercise);
+              option.setPricingEngine(engine);
 
               for (Size l=0; l<LENGTH(underlyings); l++) {
                 for (Size m=0; m<LENGTH(qRates); m++) {
@@ -540,12 +547,12 @@ QL_END_TEST_LOCALS(AmericanOptionTest)
 
 void AmericanOptionTest::testFdAmericanGreeks() {
     BOOST_MESSAGE("Testing finite-differences American option greeks...");
-    testFdGreeks(FDAmericanEngine());
+    testFdGreeks<FDAmericanEngine>();
 }
 
 void AmericanOptionTest::testFdShoutGreeks() {
     BOOST_MESSAGE("Testing finite-differences shout option greeks...");
-    testFdGreeks(FDShoutEngine());
+    testFdGreeks<FDShoutEngine>();
 }
 
 test_suite* AmericanOptionTest::suite() {

@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,6 +34,7 @@ namespace QuantLib {
     class DiscretizedVanillaOption : public DiscretizedAsset {
       public:
         DiscretizedVanillaOption(const VanillaOption::arguments&,
+                                 const StochasticProcess& process,
                                  const TimeGrid& grid = TimeGrid());
 
         void reset(Size size);

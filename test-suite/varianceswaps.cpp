@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Warren Chou
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -194,14 +195,10 @@ void VarianceSwapTest::testReplicatingVarianceSwap() {
                                        Handle<BlackVolTermStructure>(volTS)));
 
 
-        boost::shared_ptr<PricingEngine> optionEngine (
-                                                  new AnalyticEuropeanEngine);
-
         boost::shared_ptr<PricingEngine> engine(
                              new ReplicatingVarianceSwapEngine(5.0,
                                                                callStrikes,
-                                                               putStrikes,
-                                                               optionEngine));
+                                                               putStrikes));
 
         VarianceSwap varianceSwap(values[i].type,
                                   values[i].varStrike,

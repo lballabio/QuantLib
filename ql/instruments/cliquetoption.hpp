@@ -24,13 +24,14 @@
 #ifndef ql_cliquet_option_hpp
 #define ql_cliquet_option_hpp
 
-#include <ql/instruments/oneassetstrikedoption.hpp>
+#include <ql/instruments/oneassetoption.hpp>
+#include <ql/instruments/payoffs.hpp>
+#include <ql/time/date.hpp>
 #include <vector>
 
 namespace QuantLib {
 
     class EuropeanExercise;
-    class Date;
 
     //! cliquet (Ratchet) option
     /*! A cliquet option, also known as Ratchet option, is a series of
@@ -44,16 +45,13 @@ namespace QuantLib {
 
         \ingroup instruments
     */
-    class CliquetOption : public OneAssetStrikedOption {
+    class CliquetOption : public OneAssetOption {
       public:
         class arguments;
         class engine;
-        CliquetOption(const boost::shared_ptr<StochasticProcess>&,
-                      const boost::shared_ptr<PercentageStrikePayoff>&,
+        CliquetOption(const boost::shared_ptr<PercentageStrikePayoff>&,
                       const boost::shared_ptr<EuropeanExercise>& maturity,
-                      const std::vector<Date>& resetDates,
-                      const boost::shared_ptr<PricingEngine>& engine =
-                          boost::shared_ptr<PricingEngine>());
+                      const std::vector<Date>& resetDates);
         void setupArguments(PricingEngine::arguments*) const;
       private:
         std::vector<Date> resetDates_;
@@ -61,7 +59,7 @@ namespace QuantLib {
 
     //! %Arguments for cliquet option calculation
     // should inherit from a strikeless version of VanillaOption::arguments
-    class CliquetOption::arguments : public OneAssetStrikedOption::arguments {
+    class CliquetOption::arguments : public OneAssetOption::arguments {
       public:
         arguments() : accruedCoupon(Null<Real>()),
                       lastFixing(Null<Real>()),

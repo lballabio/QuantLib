@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004 Neil Firth
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +26,7 @@
 #define quantlib_ju_quadratic_engine_hpp
 
 #include <ql/instruments/vanillaoption.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
@@ -50,7 +52,11 @@ namespace QuantLib {
     class JuQuadraticApproximationEngine
         : public VanillaOption::engine {
       public:
+        JuQuadraticApproximationEngine(
+                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
         void calculate() const;
+      private:
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };
 
 }

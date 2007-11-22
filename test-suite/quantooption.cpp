@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -149,17 +149,15 @@ void QuantoOptionTest::testValues() {
     Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
-    boost::shared_ptr<VanillaOption::engine> underlyingEngine(
-                                                  new AnalyticEuropeanEngine);
-    boost::shared_ptr<PricingEngine> engine(
-                  new QuantoEngine<VanillaOption::arguments,
-                                   VanillaOption::results>(underlyingEngine));
-
-    boost::shared_ptr<StochasticProcess> stochProcess(
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
          new BlackScholesMertonProcess(Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
+    boost::shared_ptr<PricingEngine> engine(
+        new QuantoEngine<VanillaOption, AnalyticEuropeanEngine>(
+                                                 stochProcess, fxrTS, fxVolTS,
+                                                 Handle<Quote>(correlation)));
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -177,9 +175,8 @@ void QuantoOptionTest::testValues() {
         fxVol->setValue(values[i].fxv);
         correlation->setValue(values[i].corr);
 
-        QuantoVanillaOption option(fxrTS, fxVolTS,
-                                   Handle<Quote>(correlation),
-                                   stochProcess, payoff, exercise, engine);
+        QuantoVanillaOption option(payoff, exercise);
+        option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
         Real error = std::fabs(calculated-values[i].result);
@@ -239,14 +236,13 @@ void QuantoOptionTest::testGreeks() {
     Handle<BlackVolTermStructure> fxVolTS(flatVol(fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
-    boost::shared_ptr<StochasticProcess> stochProcess(
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
          new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
-    boost::shared_ptr<VanillaOption::engine> underlyingEngine(
-                                                  new AnalyticEuropeanEngine);
     boost::shared_ptr<PricingEngine> engine(
-                  new QuantoEngine<VanillaOption::arguments,
-                                   VanillaOption::results>(underlyingEngine));
+        new QuantoEngine<VanillaOption,AnalyticEuropeanEngine>(
+                                                  stochProcess,fxrTS, fxVolTS,
+                                                  Handle<Quote>(correlation)));
 
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(strikes); j++) {
@@ -258,9 +254,8 @@ void QuantoOptionTest::testGreeks() {
           boost::shared_ptr<StrikedTypePayoff> payoff(
                                 new PlainVanillaPayoff(types[i], strikes[j]));
 
-          QuantoVanillaOption option(fxrTS, fxVolTS,
-                                     Handle<Quote>(correlation),
-                                     stochProcess, payoff, exercise, engine);
+          QuantoVanillaOption option(payoff, exercise);
+          option.setPricingEngine(engine);
 
           for (Size l=0; l<LENGTH(underlyings); l++) {
             for (Size m=0; m<LENGTH(qRates); m++) {
@@ -435,25 +430,21 @@ void QuantoOptionTest::testForwardValues() {
     Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
-    boost::shared_ptr<VanillaOption::engine> underlyingEngine(
-                                                  new AnalyticEuropeanEngine);
-    boost::shared_ptr<ForwardVanillaOption::engine> forwardEngine(
-                 new ForwardEngine<VanillaOption::arguments,
-                                   VanillaOption::results>(underlyingEngine));
-    boost::shared_ptr<PricingEngine> engine(
-              new QuantoEngine<ForwardVanillaOption::arguments,
-                               ForwardVanillaOption::results>(forwardEngine));
-
-    boost::shared_ptr<StochasticProcess> stochProcess(
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
          new BlackScholesMertonProcess(Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
 
+    boost::shared_ptr<PricingEngine> engine(
+        new QuantoEngine<ForwardVanillaOption,
+                         ForwardVanillaEngine<AnalyticEuropeanEngine> >(
+                                                 stochProcess, fxrTS, fxVolTS,
+                                                 Handle<Quote>(correlation)));
+
     for (Size i=0; i<LENGTH(values); i++) {
 
         boost::shared_ptr<StrikedTypePayoff> payoff(
-//                               new PercentageStrikePayoff(values[i].type, values[i].moneyness));
                                  new PlainVanillaPayoff(values[i].type, 0.0));
         Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
@@ -468,11 +459,9 @@ void QuantoOptionTest::testForwardValues() {
         fxVol->setValue(values[i].fxv);
         correlation->setValue(values[i].corr);
 
-        QuantoForwardVanillaOption option(fxrTS, fxVolTS,
-                                          Handle<Quote>(correlation),
-                                          values[i].moneyness, reset,
-                                          stochProcess, payoff, exercise,
-                                          engine);
+        QuantoForwardVanillaOption option(values[i].moneyness, reset,
+                                          payoff, exercise);
+        option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
         Real error = std::fabs(calculated-values[i].result);
@@ -534,17 +523,14 @@ void QuantoOptionTest::testForwardGreeks() {
     Handle<BlackVolTermStructure> fxVolTS(flatVol(fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
-    boost::shared_ptr<StochasticProcess> stochProcess(
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
          new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
-    boost::shared_ptr<VanillaOption::engine> underlyingEngine(
-                                                  new AnalyticEuropeanEngine);
-    boost::shared_ptr<ForwardVanillaOption::engine> forwardEngine(
-                 new ForwardEngine<VanillaOption::arguments,
-                                   VanillaOption::results>(underlyingEngine));
     boost::shared_ptr<PricingEngine> engine(
-              new QuantoEngine<ForwardVanillaOption::arguments,
-                               ForwardVanillaOption::results>(forwardEngine));
+        new QuantoEngine<ForwardVanillaOption,
+                         ForwardVanillaEngine<AnalyticEuropeanEngine> >(
+                                                 stochProcess, fxrTS, fxVolTS,
+                                                 Handle<Quote>(correlation)));
 
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(moneyness); j++) {
@@ -559,11 +545,9 @@ void QuantoOptionTest::testForwardGreeks() {
             boost::shared_ptr<StrikedTypePayoff> payoff(
                                        new PlainVanillaPayoff(types[i], 0.0));
 
-            QuantoForwardVanillaOption option(fxrTS, fxVolTS,
-                                              Handle<Quote>(correlation),
-                                              moneyness[j], reset,
-                                              stochProcess, payoff,
-                                              exercise, engine);
+            QuantoForwardVanillaOption option(moneyness[j], reset,
+                                              payoff, exercise);
+            option.setPricingEngine(engine);
 
             for (Size l=0; l<LENGTH(underlyings); l++) {
               for (Size m=0; m<LENGTH(qRates); m++) {
@@ -740,20 +724,17 @@ void QuantoOptionTest::testForwardPerformanceValues() {
     Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
-    boost::shared_ptr<VanillaOption::engine> underlyingEngine(
-                                                  new AnalyticEuropeanEngine);
-    boost::shared_ptr<ForwardVanillaOption::engine> forwardPerformanceEngine(
-                 new ForwardPerformanceEngine<VanillaOption::arguments,
-                                              VanillaOption::results>(underlyingEngine));
-    boost::shared_ptr<PricingEngine> engine(
-              new QuantoEngine<ForwardVanillaOption::arguments,
-                               ForwardVanillaOption::results>(forwardPerformanceEngine));
-
-    boost::shared_ptr<StochasticProcess> stochProcess(
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
          new BlackScholesMertonProcess(Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
+
+    boost::shared_ptr<PricingEngine> engine(
+        new QuantoEngine<ForwardVanillaOption,
+                         ForwardPerformanceVanillaEngine<AnalyticEuropeanEngine> >(
+                                                 stochProcess, fxrTS, fxVolTS,
+                                                 Handle<Quote>(correlation)));
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -773,11 +754,9 @@ void QuantoOptionTest::testForwardPerformanceValues() {
         fxVol->setValue(values[i].fxv);
         correlation->setValue(values[i].corr);
 
-        QuantoForwardVanillaOption option(fxrTS, fxVolTS,
-                                          Handle<Quote>(correlation),
-                                          values[i].moneyness, reset,
-                                          stochProcess, payoff, exercise,
-                                          engine);
+        QuantoForwardVanillaOption option(values[i].moneyness, reset,
+                                          payoff, exercise);
+        option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
         Real error = std::fabs(calculated-values[i].result);

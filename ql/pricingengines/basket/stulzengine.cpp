@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2004 Neil Firth
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,8 +22,6 @@
 #include <ql/pricingengines/basket/stulzengine.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/processes/stochasticprocessarray.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/exercise.hpp>
@@ -100,25 +99,19 @@ namespace QuantLib {
         }
     }
 
+    StulzEngine::StulzEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process1,
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process2,
+            Real correlation)
+    : process1_(process1), process2_(process2), rho_(correlation) {
+        registerWith(process1_);
+        registerWith(process2_);
+    }
+
     void StulzEngine::calculate() const {
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
-
-        QL_REQUIRE(arguments_.stochasticProcess->size() == 2,
-                   "not a basket of two stocks");
-        boost::shared_ptr<StochasticProcessArray> processes =
-            boost::dynamic_pointer_cast<StochasticProcessArray>(
-                                           arguments_.stochasticProcess);
-        QL_REQUIRE(processes, "Stochastic-process array required");
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process1 =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                       processes->process(0));
-        QL_REQUIRE(process1, "Black-Scholes processes required");
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process2 =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                       processes->process(1));
-        QL_REQUIRE(process2, "Black-Scholes processes required");
 
         boost::shared_ptr<EuropeanExercise> exercise =
             boost::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
@@ -140,25 +133,23 @@ namespace QuantLib {
 
         Real strike = payoff->strike();
 
-        Real variance1 = process1->blackVolatility()->blackVariance(
+        Real variance1 = process1_->blackVolatility()->blackVariance(
                                                 exercise->lastDate(), strike);
-        Real variance2 = process2->blackVolatility()->blackVariance(
+        Real variance2 = process2_->blackVolatility()->blackVariance(
                                                 exercise->lastDate(), strike);
-
-        Real rho = processes->correlation()[1][0];
 
         DiscountFactor riskFreeDiscount =
-            process1->riskFreeRate()->discount(exercise->lastDate());
+            process1_->riskFreeRate()->discount(exercise->lastDate());
 
         // cannot handle non zero dividends, so don't believe this...
         DiscountFactor dividendDiscount1 =
-            process1->dividendYield()->discount(exercise->lastDate());
+            process1_->dividendYield()->discount(exercise->lastDate());
         DiscountFactor dividendDiscount2 =
-            process2->dividendYield()->discount(exercise->lastDate());
+            process2_->dividendYield()->discount(exercise->lastDate());
 
-        Real forward1 = process1->stateVariable()->value() *
+        Real forward1 = process1_->stateVariable()->value() *
             dividendDiscount1 / riskFreeDiscount;
-        Real forward2 = process2->stateVariable()->value() *
+        Real forward2 = process2_->stateVariable()->value() *
             dividendDiscount2 / riskFreeDiscount;
 
         if (max_basket) {
@@ -169,7 +160,7 @@ namespace QuantLib {
                     euroTwoAssetMaxBasketCall(forward1, forward2, strike,
                                               riskFreeDiscount,
                                               variance1, variance2,
-                                              rho);
+                                              rho_);
 
                 break;
               // euro put on a two asset max basket
@@ -177,10 +168,10 @@ namespace QuantLib {
                 results_.value = strike * riskFreeDiscount -
                     euroTwoAssetMaxBasketCall(forward1, forward2, 0.0,
                                               riskFreeDiscount,
-                                              variance1, variance2, rho) +
+                                              variance1, variance2, rho_) +
                     euroTwoAssetMaxBasketCall(forward1, forward2, strike,
                                               riskFreeDiscount,
-                                              variance1, variance2, rho);
+                                              variance1, variance2, rho_);
                 break;
               default:
                 QL_FAIL("unknown option type");
@@ -193,17 +184,17 @@ namespace QuantLib {
                     euroTwoAssetMinBasketCall(forward1, forward2, strike,
                                               riskFreeDiscount,
                                               variance1, variance2,
-                                              rho);
+                                              rho_);
                 break;
               // euro put on a two asset min basket
               case Option::Put:
                 results_.value = strike * riskFreeDiscount -
                     euroTwoAssetMinBasketCall(forward1, forward2, 0.0,
                                               riskFreeDiscount,
-                                              variance1, variance2, rho) +
+                                              variance1, variance2, rho_) +
                     euroTwoAssetMinBasketCall(forward1, forward2, strike,
                                               riskFreeDiscount,
-                                              variance1, variance2, rho);
+                                              variance1, variance2, rho_);
                 break;
               default:
                 QL_FAIL("unknown option type");

@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 Neil Firth
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2004 Neil Firth
  Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -29,18 +29,16 @@
 #include <ql/option.hpp>
 
 namespace QuantLib {
-    class StochasticProcess;
+
     //! Base class for options on multiple assets
     class MultiAssetOption : public Option {
       public:
-        MultiAssetOption(const boost::shared_ptr<StochasticProcess>&,
-                         const boost::shared_ptr<Payoff>&,
-                         const boost::shared_ptr<Exercise>&,
-                         const boost::shared_ptr<PricingEngine>& engine =
-                                           boost::shared_ptr<PricingEngine>());
+        class engine;
+        class results;
+        MultiAssetOption(const boost::shared_ptr<Payoff>&,
+                         const boost::shared_ptr<Exercise>&);
         //! \name Instrument interface
         //@{
-        class arguments;
         class results;
         bool isExpired() const;
         //@}
@@ -60,16 +58,6 @@ namespace QuantLib {
         // results
         mutable Real delta_,  gamma_, theta_,
             vega_, rho_, dividendRho_;
-        // arguments
-        boost::shared_ptr<StochasticProcess> stochasticProcess_;
-    };
-
-    //! %Arguments for multi-asset option calculation
-    class MultiAssetOption::arguments : public Option::arguments {
-      public:
-        arguments() {}
-        void validate() const;
-        boost::shared_ptr<StochasticProcess> stochasticProcess;
     };
 
     //! %Results from multi-asset option calculation
@@ -81,6 +69,10 @@ namespace QuantLib {
             Greeks::reset();
         }
     };
+
+    class MultiAssetOption::engine :
+        public GenericEngine<MultiAssetOption::arguments,
+                             MultiAssetOption::results> {};
 
 }
 

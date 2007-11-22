@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004 Neil Firth
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -49,7 +50,8 @@ namespace QuantLib {
         typedef typename McSimulation<MultiVariate,RNG,S>::stats_type
             stats_type;
         // constructor
-        MCBasketEngine(Size maxTimeStepsPerYear,
+        MCBasketEngine(const boost::shared_ptr<StochasticProcessArray>&,
+                       Size maxTimeStepsPerYear,
                        bool brownianBridge,
                        bool antitheticVariate,
                        bool controlVariate,
@@ -76,19 +78,20 @@ namespace QuantLib {
                                                           arguments_.payoff);
             QL_REQUIRE(payoff, "non-basket payoff given");
 
-            Size numAssets = arguments_.stochasticProcess->size();
+            Size numAssets = processes_->size();
 
             TimeGrid grid = timeGrid();
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(numAssets*(grid.size()-1),seed_);
 
             return boost::shared_ptr<path_generator_type>(
-                         new path_generator_type(arguments_.stochasticProcess,
+                         new path_generator_type(processes_,
                                                  grid, gen, brownianBridge_));
         }
         boost::shared_ptr<path_pricer_type> pathPricer() const;
         // Real controlVariateValue() const;
         // data members
+        boost::shared_ptr<StochasticProcessArray> processes_;
         Size maxTimeStepsPerYear_;
         Size requiredSamples_;
         Size maxSamples_;
@@ -111,24 +114,28 @@ namespace QuantLib {
     // template definitions
 
     template<class RNG, class S>
-    inline MCBasketEngine<RNG,S>::MCBasketEngine(Size maxTimeStepsPerYear,
-                                                 bool brownianBridge,
-                                                 bool antitheticVariate,
-                                                 bool controlVariate,
-                                                 Size requiredSamples,
-                                                 Real requiredTolerance,
-                                                 Size maxSamples,
-                                                 BigNatural seed)
+    inline MCBasketEngine<RNG,S>::MCBasketEngine(
+                   const boost::shared_ptr<StochasticProcessArray>& processes,
+                   Size maxTimeStepsPerYear,
+                   bool brownianBridge,
+                   bool antitheticVariate,
+                   bool controlVariate,
+                   Size requiredSamples,
+                   Real requiredTolerance,
+                   Size maxSamples,
+                   BigNatural seed)
     : McSimulation<MultiVariate,RNG,S>(antitheticVariate, controlVariate),
-      maxTimeStepsPerYear_(maxTimeStepsPerYear),
+      processes_(processes), maxTimeStepsPerYear_(maxTimeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
-      brownianBridge_(brownianBridge), seed_(seed) {}
+      brownianBridge_(brownianBridge), seed_(seed) {
+        registerWith(processes_);
+    }
 
     template <class RNG, class S>
     inline TimeGrid MCBasketEngine<RNG,S>::timeGrid() const {
 
-        Time residualTime = this->arguments_.stochasticProcess->time(
+        Time residualTime = processes_->time(
                                        this->arguments_.exercise->lastDate());
 
         return TimeGrid(residualTime, maxTimeStepsPerYear_);
@@ -143,13 +150,9 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-basket payoff given");
 
-        boost::shared_ptr<StochasticProcessArray> processes =
-            boost::dynamic_pointer_cast<StochasticProcessArray>(
-                                           arguments_.stochasticProcess);
-        QL_REQUIRE(processes, "stochastic-process array required");
         boost::shared_ptr<GeneralizedBlackScholesProcess> process =
             boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                       processes->process(0));
+                                                      processes_->process(0));
         QL_REQUIRE(process, "Black-Scholes process required");
 
         return boost::shared_ptr<
@@ -157,7 +160,7 @@ namespace QuantLib {
             new EuropeanMultiPathPricer(
                                         payoff,
                                         process->riskFreeRate()->discount(
-                                                                          arguments_.exercise->lastDate())));
+                                           arguments_.exercise->lastDate())));
     }
 
     /*

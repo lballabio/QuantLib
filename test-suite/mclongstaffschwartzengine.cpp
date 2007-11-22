@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Klaus Spanderen
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -68,18 +69,21 @@ class MCAmericanMaxEngine
    : public MCLongstaffSchwartzEngine<VanillaOption::engine,
                                       MultiVariate,RNG>{
   public:
-    MCAmericanMaxEngine(Size timeSteps,
-                        Size timeStepsPerYear,
-                        bool brownianbridge,
-                        bool antitheticVariate,
-                        bool controlVariate,
-                        Size requiredSamples,
-                        Real requiredTolerance,
-                        Size maxSamples,
-                        BigNatural seed,
-                        Size nCalibrationSamples = Null<Size>())
+    MCAmericanMaxEngine(
+                   const boost::shared_ptr<StochasticProcessArray>& processes,
+                   Size timeSteps,
+                   Size timeStepsPerYear,
+                   bool brownianbridge,
+                   bool antitheticVariate,
+                   bool controlVariate,
+                   Size requiredSamples,
+                   Real requiredTolerance,
+                   Size maxSamples,
+                   BigNatural seed,
+                   Size nCalibrationSamples = Null<Size>())
     : MCLongstaffSchwartzEngine<VanillaOption::engine,
-                                MultiVariate,RNG>(timeSteps,
+                                MultiVariate,RNG>(processes,
+                                                  timeSteps,
                                                   timeStepsPerYear,
                                                   brownianbridge,
                                                   antitheticVariate,
@@ -94,8 +98,7 @@ class MCAmericanMaxEngine
     boost::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> >
           lsmPathPricer() const {
        boost::shared_ptr<StochasticProcessArray> processArray =
-           boost::dynamic_pointer_cast<StochasticProcessArray>(
-                this->arguments_.stochasticProcess);
+           boost::dynamic_pointer_cast<StochasticProcessArray>(this->process_);
        QL_REQUIRE(processArray && processArray->size() > 0,
                   "Stochastic process array required");
 
@@ -172,11 +175,10 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
                                       underlyingH, flatDividendTS,
                                       flatTermStructure, flatVolTS));
 
-            VanillaOption americanOption(stochasticProcess, payoff,
-                                         americanExercise);
+            VanillaOption americanOption(payoff, americanExercise);
 
             boost::shared_ptr<PricingEngine> mcengine =
-                MakeMCAmericanEngine<PseudoRandom>()
+                MakeMCAmericanEngine<PseudoRandom>(stochasticProcess)
                   .withSteps(75)
                   .withAntitheticVariate()
                   .withTolerance(0.02)
@@ -191,7 +193,7 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
             const Real errorEstimate = americanOption.errorEstimate();
 
             americanOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                              new FDAmericanEngine(401, 200)));
+                          new FDAmericanEngine(stochasticProcess, 401, 200)));
             const Real expected = americanOption.NPV();
 
             if (std::fabs(calculated - expected) > 2.34*errorEstimate) {
@@ -264,10 +266,10 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
 
     boost::shared_ptr<StochasticProcessArray> process(
         new StochasticProcessArray(v, corr));
-    VanillaOption americanMaxOption(process, payoff, americanExercise);
+    VanillaOption americanMaxOption(payoff, americanExercise);
 
     boost::shared_ptr<PricingEngine> mcengine(
-        new MCAmericanMaxEngine<PseudoRandom>(25, Null<Size>(), false,
+        new MCAmericanMaxEngine<PseudoRandom>(process, 25, Null<Size>(), false,
                                               true, false, 4096,
                                               Null<Real>(), Null<Size>(),
                                               42, 1024));
@@ -284,7 +286,7 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
         const Real errorEstimate = americanMaxOption.errorEstimate();
         if (std::fabs(calculated - expected[i]) > 2.34*errorEstimate) {
                 BOOST_ERROR("Failed to reproduce american option prices"
-                            << "\n    expected: " << expected
+                            << "\n    expected: " << expected[i]
                             << "\n    calculated:   " << calculated
                             << " +/- " << errorEstimate);
         }

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Klaus Spanderen
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -41,7 +42,8 @@ namespace QuantLib {
       public:
         typedef typename MCVanillaEngine<MultiVariate,RNG,S>::path_pricer_type
             path_pricer_type;
-        MCEuropeanHestonEngine(Size timeSteps,
+        MCEuropeanHestonEngine(const boost::shared_ptr<HestonProcess>&,
+                               Size timeSteps,
                                Size timeStepsPerYear,
                                bool antitheticVariate,
                                Size requiredSamples,
@@ -56,7 +58,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCEuropeanHestonEngine {
       public:
-        MakeMCEuropeanHestonEngine();
+        MakeMCEuropeanHestonEngine(const boost::shared_ptr<HestonProcess>&);
         // named parameters
         MakeMCEuropeanHestonEngine& withSteps(Size steps);
         MakeMCEuropeanHestonEngine& withStepsPerYear(Size steps);
@@ -68,6 +70,7 @@ namespace QuantLib {
         // conversion to pricing engine
         operator boost::shared_ptr<PricingEngine>() const;
       private:
+        boost::shared_ptr<HestonProcess> process_;
         bool antithetic_;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
@@ -91,10 +94,11 @@ namespace QuantLib {
 
     template <class RNG, class S>
     MCEuropeanHestonEngine<RNG, S>::MCEuropeanHestonEngine(
+                const boost::shared_ptr<HestonProcess>& process,
                 Size timeSteps, Size timeStepsPerYear, bool antitheticVariate,
                 Size requiredSamples, Real requiredTolerance,
                 Size maxSamples, BigNatural seed)
-    : MCVanillaEngine<MultiVariate,RNG,S>(timeSteps, timeStepsPerYear,
+    : MCVanillaEngine<MultiVariate,RNG,S>(process, timeSteps, timeStepsPerYear,
                                           false, antitheticVariate, false,
                                           requiredSamples, requiredTolerance,
                                           maxSamples, seed) {}
@@ -111,8 +115,7 @@ namespace QuantLib {
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         boost::shared_ptr<HestonProcess> process =
-            boost::dynamic_pointer_cast<HestonProcess>(
-                                          this->arguments_.stochasticProcess);
+            boost::dynamic_pointer_cast<HestonProcess>(this->process_);
         QL_REQUIRE(process, "Heston process required");
 
         return boost::shared_ptr<
@@ -127,8 +130,9 @@ namespace QuantLib {
 
 
     template <class RNG, class S>
-    inline MakeMCEuropeanHestonEngine<RNG,S>::MakeMCEuropeanHestonEngine()
-    : antithetic_(false),
+    inline MakeMCEuropeanHestonEngine<RNG,S>::MakeMCEuropeanHestonEngine(
+                              const boost::shared_ptr<HestonProcess>& process)
+    : process_(process), antithetic_(false),
       steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
       samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()), seed_(0) {}
@@ -200,7 +204,8 @@ namespace QuantLib {
         QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
                    "number of steps not given");
         return boost::shared_ptr<PricingEngine>(
-                 new MCEuropeanHestonEngine<RNG,S>(steps_,
+                 new MCEuropeanHestonEngine<RNG,S>(process_,
+                                                   steps_,
                                                    stepsPerYear_,
                                                    antithetic_,
                                                    samples_, tolerance_,

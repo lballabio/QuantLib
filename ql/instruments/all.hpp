@@ -5,6 +5,7 @@
 #include <ql/instruments/assetswap.hpp>
 #include <ql/instruments/averagetype.hpp>
 #include <ql/instruments/barrieroption.hpp>
+#include <ql/instruments/barriertype.hpp>
 #include <ql/instruments/basketoption.hpp>
 #include <ql/instruments/bmaswap.hpp>
 #include <ql/instruments/bond.hpp>
@@ -19,6 +20,7 @@
 #include <ql/instruments/forward.hpp>
 #include <ql/instruments/forwardrateagreement.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
+#include <ql/instruments/impliedvolatility.hpp>
 #include <ql/instruments/inflationswap.hpp>
 #include <ql/instruments/lookbackoption.hpp>
 #include <ql/instruments/makecapfloor.hpp>
@@ -27,7 +29,6 @@
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/instruments/multiassetoption.hpp>
 #include <ql/instruments/oneassetoption.hpp>
-#include <ql/instruments/oneassetstrikedoption.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/instruments/quantoforwardvanillaoption.hpp>
 #include <ql/instruments/quantovanillaoption.hpp>

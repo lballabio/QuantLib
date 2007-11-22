@@ -28,11 +28,9 @@ namespace QuantLib {
         Real runningAccumulator,
         Size pastFixings,
         const std::vector<Date>& fixingDates,
-        const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise,
-        const boost::shared_ptr<PricingEngine>& engine)
-    : OneAssetStrikedOption(process, payoff, exercise, engine),
+        const boost::shared_ptr<Exercise>& exercise)
+    : OneAssetOption(payoff, exercise),
       averageType_(averageType), runningAccumulator_(runningAccumulator),
       pastFixings_(pastFixings), fixingDates_(fixingDates) {
         std::sort(fixingDates_.begin(), fixingDates_.end());
@@ -41,7 +39,7 @@ namespace QuantLib {
     void DiscreteAveragingAsianOption::setupArguments(
                                        PricingEngine::arguments* args) const {
 
-        OneAssetStrikedOption::setupArguments(args);
+        OneAssetOption::setupArguments(args);
 
         DiscreteAveragingAsianOption::arguments* moreArgs =
             dynamic_cast<DiscreteAveragingAsianOption::arguments*>(args);
@@ -54,7 +52,7 @@ namespace QuantLib {
 
     void DiscreteAveragingAsianOption::arguments::validate() const {
 
-        OneAssetStrikedOption::arguments::validate();
+        OneAssetOption::arguments::validate();
 
         QL_REQUIRE(Integer(averageType) != -1, "unspecified average type");
         QL_REQUIRE(pastFixings != Null<Size>(), "null past-fixing number");
@@ -82,17 +80,15 @@ namespace QuantLib {
 
     ContinuousAveragingAsianOption::ContinuousAveragingAsianOption(
         Average::Type averageType,
-        const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise,
-        const boost::shared_ptr<PricingEngine>& engine)
-    : OneAssetStrikedOption(process, payoff, exercise, engine),
+        const boost::shared_ptr<Exercise>& exercise)
+    : OneAssetOption(payoff, exercise),
       averageType_(averageType) {}
 
     void ContinuousAveragingAsianOption::setupArguments(
                                        PricingEngine::arguments* args) const {
 
-        OneAssetStrikedOption::setupArguments(args);
+        OneAssetOption::setupArguments(args);
 
         ContinuousAveragingAsianOption::arguments* moreArgs =
             dynamic_cast<ContinuousAveragingAsianOption::arguments*>(args);
@@ -102,7 +98,7 @@ namespace QuantLib {
 
     void ContinuousAveragingAsianOption::arguments::validate() const {
 
-        OneAssetStrikedOption::arguments::validate();
+        OneAssetOption::arguments::validate();
 
         QL_REQUIRE(Integer(averageType) != -1, "unspecified average type");
     }

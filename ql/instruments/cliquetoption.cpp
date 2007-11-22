@@ -22,18 +22,15 @@
 
 namespace QuantLib {
 
-
     CliquetOption::CliquetOption(
-                   const boost::shared_ptr<StochasticProcess>& process,
                    const boost::shared_ptr<PercentageStrikePayoff>& payoff,
                    const boost::shared_ptr<EuropeanExercise>& maturity,
-                   const std::vector<Date>& resetDates,
-                   const boost::shared_ptr<PricingEngine>& engine)
-    : OneAssetStrikedOption(process,payoff,maturity,engine),
+                   const std::vector<Date>& resetDates)
+    : OneAssetOption(payoff,maturity),
       resetDates_(resetDates) {}
 
     void CliquetOption::setupArguments(PricingEngine::arguments* args) const {
-        OneAssetStrikedOption::setupArguments(args);
+        OneAssetOption::setupArguments(args);
         // set accrued coupon, last fixing, caps, floors
         CliquetOption::arguments* moreArgs =
             dynamic_cast<CliquetOption::arguments*>(args);
@@ -43,7 +40,7 @@ namespace QuantLib {
     }
 
     void CliquetOption::arguments::validate() const {
-        OneAssetStrikedOption::arguments::validate();
+        OneAssetOption::arguments::validate();
 
         boost::shared_ptr<PercentageStrikePayoff> moneyness =
             boost::dynamic_pointer_cast<PercentageStrikePayoff>(payoff);
@@ -63,7 +60,7 @@ namespace QuantLib {
                    "negative global floor");
         QL_REQUIRE(!resetDates.empty(),
                    "no reset dates given");
-        for (Size i = 0; i < resetDates.size(); i++) {
+        for (Size i=0; i<resetDates.size(); ++i) {
             QL_REQUIRE(exercise->lastDate() > resetDates[i],
                        "reset date greater or equal to maturity");
             QL_REQUIRE(i == 0 || resetDates[i] > resetDates[i-1],

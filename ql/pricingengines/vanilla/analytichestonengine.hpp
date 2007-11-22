@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004, 2005 Klaus Spanderen
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -58,7 +59,7 @@ namespace QuantLib {
                                     VanillaOption::arguments,
                                     VanillaOption::results> {
       public:
-        AnalyticHestonEngine(const boost::shared_ptr<HestonModel> & model,
+        AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
                              Size integrationOrder = 64);
         void calculate() const;
         // call back for extended stochastic volatility
@@ -66,7 +67,7 @@ namespace QuantLib {
 
       protected:
         virtual std::complex<Real>
-            addOnTerm(Real phi, Time t, Size j) const;
+        addOnTerm(Real phi, Time t, Size j) const;
 
       private:
         GaussLaguerreIntegration gaussLaguerre;

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +25,7 @@
 #define quantlib_analytic_performance_engine_hpp
 
 #include <ql/instruments/cliquetoption.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
@@ -36,7 +37,11 @@ namespace QuantLib {
     */
     class AnalyticPerformanceEngine : public CliquetOption::engine {
       public:
+        AnalyticPerformanceEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
         void calculate() const;
+      private:
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };
 
 }
