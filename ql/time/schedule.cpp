@@ -55,6 +55,7 @@ namespace QuantLib {
         // sanity checks
         QL_REQUIRE(effectiveDate != Date(), "null effective date");
         QL_REQUIRE(terminationDate != Date(), "null termination date");
+        QL_REQUIRE(tenor.units()>=0, "negative tenor (" << tenor << ")");
         QL_REQUIRE(effectiveDate < terminationDate,
                    "effective date (" << effectiveDate
                    << ") later than or equal to termination date ("
