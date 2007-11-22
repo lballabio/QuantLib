@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2006 Richard Gould
+ Copyright (C) 2007 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -93,7 +94,7 @@ namespace QuantLib {
       public:
         typedef Sample<std::vector<Real> > sample_type;
         enum DirectionIntegers {
-            Unit, Jaeckel, SobolLevitan, SobolLevitanLemieux, Kuo, Kuo2, Kuo3 };
+            Unit, Jaeckel, SobolLevitan, SobolLevitanLemieux, JoeKuoD6, Kuo, Kuo2, Kuo3 };
         /*! \pre dimensionality must be <= PPMT_MAX_DIM */
         SobolRsg(Size dimensionality,
                  unsigned long seed = 0,

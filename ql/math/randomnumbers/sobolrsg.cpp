@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2006 Richard Gould
+ Copyright (C) 2007 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28289,6 +28290,3611 @@ namespace QuantLib {
 				dim4586Kuo3Init
 			};
 
+			const unsigned long	dim1JoeKuoD6Init[]	=	{	1	};										
+			const unsigned long	dim2JoeKuoD6Init[]	=	{	1	,	3	};								
+			const unsigned long	dim3JoeKuoD6Init[]	=	{	1	,	3	,	1	};						
+			const unsigned long	dim4JoeKuoD6Init[]	=	{	1	,	1	,	1	};						
+			const unsigned long	dim5JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	};				
+			const unsigned long	dim6JoeKuoD6Init[]	=	{	1	,	3	,	5	,	13	};				
+			const unsigned long	dim7JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	17	};		
+			const unsigned long	dim8JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	5	};		
+			const unsigned long	dim9JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	19	};		
+			const unsigned long	dim10JoeKuoD6Init[]	=	{	1	,	1	,	5	,	1	,	1	};		
+			const unsigned long	dim11JoeKuoD6Init[]	=	{	1	,	1	,	1	,	3	,	11	};		
+			const unsigned long	dim12JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	31	};		
+			const unsigned long	dim13JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	7	,	49	};
+			const unsigned long	dim14JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	21	,	21	};
+			const unsigned long	dim15JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	27	,	49	};
+			const unsigned long	dim16JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	7	,	5	};		
+			const unsigned long	dim17JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	13	,	25	};		
+			const unsigned long	dim18JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	19	,	61	};		
+			const unsigned long	dim19JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	23	,	15	,	103	};
+			const unsigned long	dim20JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	13	,	15	,	69	};
+			const unsigned long	dim21JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	7	,	35	,	63	};
+			const unsigned long	dim22JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	1	,	25	,	53	};
+			const unsigned long	dim23JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	9	,	35	,	107	};
+			const unsigned long	dim24JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	27	,	61	,	31	};
+			const unsigned long	dim25JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	19	,	41	,	61	};
+			const unsigned long	dim26JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	3	,	13	,	69	};
+			const unsigned long	dim27JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	1	,	19	,	1	};
+			const unsigned long	dim28JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	13	,	19	,	59	};
+			const unsigned long	dim29JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	25	,	29	,	41	};
+			const unsigned long	dim30JoeKuoD6Init[]	=	{	1	,	3	,	5	,	13	,	23	,	1	,	55	};
+			const unsigned long	dim31JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	13	,	59	,	17	};
+			const unsigned long	dim32JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	5	,	53	,	69	};		
+			const unsigned long	dim33JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	23	,	33	,	13	};		
+			const unsigned long	dim34JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	1	,	61	,	123	};		
+			const unsigned long	dim35JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	13	,	61	,	49	};		
+			const unsigned long	dim36JoeKuoD6Init[]	=	{	1	,	3	,	3	,	5	,	3	,	55	,	33	};		
+			const unsigned long	dim37JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	31	,	13	,	49	,	245	};
+			const unsigned long	dim38JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	31	,	59	,	63	,	97	};
+			const unsigned long	dim39JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	11	,	11	,	77	,	249	};
+			const unsigned long	dim40JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	27	,	43	,	71	,	9	};
+			const unsigned long	dim41JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	21	,	11	,	81	,	45	};
+			const unsigned long	dim42JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	25	,	31	,	65	,	79	};
+			const unsigned long	dim43JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	19	,	11	,	3	,	205	};
+			const unsigned long	dim44JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	19	,	21	,	29	,	157	};
+			const unsigned long	dim45JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	1	,	33	,	89	,	185	};
+			const unsigned long	dim46JoeKuoD6Init[]	=	{	1	,	3	,	3	,	3	,	15	,	9	,	79	,	71	};
+			const unsigned long	dim47JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	15	,	39	,	119	,	27	};
+			const unsigned long	dim48JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	11	,	31	,	97	,	225	};		
+			const unsigned long	dim49JoeKuoD6Init[]	=	{	1	,	1	,	1	,	3	,	23	,	43	,	57	,	177	};		
+			const unsigned long	dim50JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	17	,	17	,	37	,	71	};		
+			const unsigned long	dim51JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	27	,	63	,	123	,	213	};		
+			const unsigned long	dim52JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	11	,	43	,	53	,	133	};		
+			const unsigned long	dim53JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	29	,	17	,	47	,	173	,	479	};
+			const unsigned long	dim54JoeKuoD6Init[]	=	{	1	,	3	,	3	,	11	,	3	,	1	,	109	,	9	,	69	};
+			const unsigned long	dim55JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	17	,	39	,	23	,	5	,	343	};
+			const unsigned long	dim56JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	25	,	15	,	31	,	103	,	499	};
+			const unsigned long	dim57JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	11	,	17	,	63	,	105	,	183	};
+			const unsigned long	dim58JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	9	,	29	,	97	,	231	,	363	};
+			const unsigned long	dim59JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	19	,	45	,	41	,	7	,	383	};
+			const unsigned long	dim60JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	31	,	19	,	83	,	137	,	221	};
+			const unsigned long	dim61JoeKuoD6Init[]	=	{	1	,	1	,	1	,	3	,	23	,	15	,	111	,	223	,	83	};
+			const unsigned long	dim62JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	31	,	15	,	55	,	25	,	161	};
+			const unsigned long	dim63JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	25	,	47	,	39	,	87	,	257	};
+			const unsigned long	dim64JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	21	,	53	,	125	,	249	,	293	};
+			const unsigned long	dim65JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	11	,	7	,	57	,	79	,	323	};
+			const unsigned long	dim66JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	17	,	13	,	81	,	3	,	131	};
+			const unsigned long	dim67JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	23	,	7	,	65	,	251	,	475	};
+			const unsigned long	dim68JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	9	,	43	,	3	,	149	,	11	};
+			const unsigned long	dim69JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	31	,	13	,	13	,	255	,	487	};
+			const unsigned long	dim70JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	5	,	63	,	89	,	91	,	127	};
+			const unsigned long	dim71JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	1	,	19	,	123	,	127	,	237	};
+			const unsigned long	dim72JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	23	,	31	,	37	,	243	,	289	};
+			const unsigned long	dim73JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	17	,	53	,	117	,	183	,	491	};
+			const unsigned long	dim74JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	1	,	13	,	13	,	209	,	345	};
+			const unsigned long	dim75JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	1	,	57	,	115	,	7	,	33	};
+			const unsigned long	dim76JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	7	,	43	,	81	,	207	,	175	};
+			const unsigned long	dim77JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	15	,	27	,	63	,	255	,	49	};
+			const unsigned long	dim78JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	27	,	61	,	105	,	171	,	305	};
+			const unsigned long	dim79JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	1	,	3	,	57	,	249	,	149	};
+			const unsigned long	dim80JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	5	,	57	,	15	,	13	,	159	};
+			const unsigned long	dim81JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	7	,	11	,	105	,	141	,	225	};
+			const unsigned long	dim82JoeKuoD6Init[]	=	{	1	,	3	,	3	,	5	,	27	,	59	,	121	,	101	,	271	};
+			const unsigned long	dim83JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	11	,	49	,	51	,	59	,	115	};
+			const unsigned long	dim84JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	23	,	45	,	125	,	71	,	419	};
+			const unsigned long	dim85JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	23	,	5	,	105	,	109	,	75	};
+			const unsigned long	dim86JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	7	,	11	,	67	,	121	,	453	};
+			const unsigned long	dim87JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	9	,	13	,	31	,	27	,	449	};
+			const unsigned long	dim88JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	19	,	39	,	39	,	89	,	15	};
+			const unsigned long	dim89JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	1	,	33	,	73	,	145	,	379	};
+			const unsigned long	dim90JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	15	,	43	,	29	,	13	,	483	};
+			const unsigned long	dim91JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	19	,	27	,	85	,	131	,	431	};
+			const unsigned long	dim92JoeKuoD6Init[]	=	{	1	,	3	,	3	,	3	,	5	,	35	,	23	,	195	,	349	};
+			const unsigned long	dim93JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	9	,	27	,	39	,	59	,	297	};
+			const unsigned long	dim94JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	11	,	17	,	13	,	241	,	157	};
+			const unsigned long	dim95JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	25	,	57	,	33	,	189	,	213	};
+			const unsigned long	dim96JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	9	,	55	,	73	,	83	,	217	};		
+			const unsigned long	dim97JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	19	,	27	,	23	,	113	,	249	};		
+			const unsigned long	dim98JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	23	,	43	,	3	,	253	,	479	};		
+			const unsigned long	dim99JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	11	,	5	,	45	,	117	,	217	};		
+			const unsigned long	dim100JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	29	,	37	,	33	,	123	,	147	};		
+			const unsigned long	dim101JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	5	,	5	,	37	,	227	,	223	,	459	};
+			const unsigned long	dim102JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	5	,	39	,	63	,	255	,	135	,	487	};
+			const unsigned long	dim103JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	9	,	7	,	87	,	249	,	217	,	599	};
+			const unsigned long	dim104JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	9	,	47	,	7	,	225	,	363	,	247	};
+			const unsigned long	dim105JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	19	,	13	,	9	,	67	,	9	,	737	};
+			const unsigned long	dim106JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	19	,	59	,	7	,	41	,	319	,	677	};
+			const unsigned long	dim107JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	31	,	63	,	15	,	43	,	207	,	789	};
+			const unsigned long	dim108JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	13	,	39	,	3	,	47	,	497	,	169	};
+			const unsigned long	dim109JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	21	,	17	,	97	,	19	,	415	,	905	};
+			const unsigned long	dim110JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	3	,	31	,	71	,	111	,	165	,	127	};
+			const unsigned long	dim111JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	1	,	61	,	83	,	119	,	203	,	847	};
+			const unsigned long	dim112JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	9	,	61	,	19	,	97	,	47	,	35	};
+			const unsigned long	dim113JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	15	,	29	,	63	,	95	,	417	,	469	};
+			const unsigned long	dim114JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	25	,	9	,	71	,	57	,	213	,	385	};
+			const unsigned long	dim115JoeKuoD6Init[]	=	{	1	,	3	,	5	,	13	,	31	,	47	,	101	,	57	,	39	,	341	};
+			const unsigned long	dim116JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	31	,	57	,	125	,	173	,	365	,	551	};
+			const unsigned long	dim117JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	13	,	57	,	67	,	157	,	451	,	707	};
+			const unsigned long	dim118JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	21	,	13	,	105	,	89	,	429	,	965	};
+			const unsigned long	dim119JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	17	,	51	,	45	,	119	,	157	,	141	};
+			const unsigned long	dim120JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	13	,	45	,	91	,	9	,	129	,	741	};
+			const unsigned long	dim121JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	23	,	57	,	67	,	141	,	151	,	571	};
+			const unsigned long	dim122JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	17	,	47	,	93	,	107	,	375	,	157	};
+			const unsigned long	dim123JoeKuoD6Init[]	=	{	1	,	3	,	3	,	5	,	11	,	21	,	43	,	51	,	169	,	915	};
+			const unsigned long	dim124JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	15	,	55	,	101	,	67	,	455	,	625	};
+			const unsigned long	dim125JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	1	,	23	,	29	,	47	,	345	,	595	};
+			const unsigned long	dim126JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	5	,	49	,	29	,	155	,	323	,	589	};
+			const unsigned long	dim127JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	5	,	41	,	127	,	61	,	261	,	717	};
+			const unsigned long	dim128JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	17	,	23	,	117	,	67	,	129	,	1009	};
+			const unsigned long	dim129JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	11	,	39	,	21	,	207	,	123	,	305	};
+			const unsigned long	dim130JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	29	,	3	,	95	,	47	,	231	,	73	};
+			const unsigned long	dim131JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	1	,	29	,	117	,	21	,	441	,	259	};
+			const unsigned long	dim132JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	21	,	39	,	125	,	211	,	439	,	723	};
+			const unsigned long	dim133JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	17	,	63	,	115	,	89	,	49	,	773	};
+			const unsigned long	dim134JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	11	,	33	,	101	,	107	,	63	,	73	};
+			const unsigned long	dim135JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	13	,	57	,	63	,	135	,	437	,	177	};
+			const unsigned long	dim136JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	27	,	63	,	93	,	47	,	417	,	483	};
+			const unsigned long	dim137JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	23	,	29	,	1	,	191	,	49	,	23	};
+			const unsigned long	dim138JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	25	,	55	,	9	,	101	,	219	,	607	};
+			const unsigned long	dim139JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	7	,	19	,	51	,	251	,	393	,	307	};
+			const unsigned long	dim140JoeKuoD6Init[]	=	{	1	,	3	,	3	,	3	,	25	,	55	,	17	,	75	,	337	,	3	};
+			const unsigned long	dim141JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	25	,	17	,	65	,	45	,	479	,	413	};
+			const unsigned long	dim142JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	27	,	49	,	99	,	161	,	213	,	727	};
+			const unsigned long	dim143JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	23	,	5	,	43	,	41	,	251	,	857	};
+			const unsigned long	dim144JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	11	,	61	,	39	,	87	,	383	,	835	};
+			const unsigned long	dim145JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	13	,	7	,	29	,	7	,	505	,	923	};
+			const unsigned long	dim146JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	5	,	31	,	47	,	157	,	445	,	501	};
+			const unsigned long	dim147JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	1	,	43	,	9	,	147	,	115	,	605	};
+			const unsigned long	dim148JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	5	,	1	,	119	,	211	,	455	,	1001	};
+			const unsigned long	dim149JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	13	,	19	,	3	,	243	,	75	,	843	};
+			const unsigned long	dim150JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	1	,	19	,	91	,	249	,	357	,	589	};
+			const unsigned long	dim151JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	1	,	25	,	109	,	197	,	279	,	411	};
+			const unsigned long	dim152JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	23	,	57	,	59	,	135	,	191	,	75	};
+			const unsigned long	dim153JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	29	,	21	,	39	,	253	,	383	,	349	};
+			const unsigned long	dim154JoeKuoD6Init[]	=	{	1	,	3	,	3	,	5	,	19	,	45	,	61	,	151	,	199	,	981	};
+			const unsigned long	dim155JoeKuoD6Init[]	=	{	1	,	3	,	5	,	13	,	9	,	61	,	107	,	141	,	141	,	1	};
+			const unsigned long	dim156JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	27	,	25	,	85	,	105	,	309	,	979	};
+			const unsigned long	dim157JoeKuoD6Init[]	=	{	1	,	3	,	3	,	11	,	19	,	7	,	115	,	223	,	349	,	43	};
+			const unsigned long	dim158JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	21	,	39	,	123	,	21	,	275	,	927	};
+			const unsigned long	dim159JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	15	,	41	,	47	,	243	,	303	,	437	};
+			const unsigned long	dim160JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	7	,	3	,	15	,	99	,	409	,	719	};		
+			const unsigned long	dim161JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	27	,	49	,	113	,	123	,	113	,	67	,	469	};
+			const unsigned long	dim162JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	3	,	23	,	87	,	169	,	119	,	483	,	199	};
+			const unsigned long	dim163JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	7	,	17	,	109	,	229	,	179	,	213	,	741	};
+			const unsigned long	dim164JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	11	,	17	,	25	,	135	,	403	,	557	,	1433	};
+			const unsigned long	dim165JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	1	,	61	,	67	,	215	,	189	,	945	,	1243	};
+			const unsigned long	dim166JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	17	,	33	,	9	,	221	,	429	,	217	,	1679	};
+			const unsigned long	dim167JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	27	,	3	,	15	,	93	,	93	,	865	,	1049	};
+			const unsigned long	dim168JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	25	,	41	,	121	,	35	,	373	,	379	,	1547	};
+			const unsigned long	dim169JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	11	,	35	,	45	,	205	,	241	,	9	,	59	};
+			const unsigned long	dim170JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	3	,	51	,	7	,	177	,	53	,	975	,	89	};
+			const unsigned long	dim171JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	27	,	1	,	113	,	231	,	299	,	759	,	861	};
+			const unsigned long	dim172JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	25	,	29	,	5	,	255	,	139	,	891	,	2031	};
+			const unsigned long	dim173JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	13	,	9	,	109	,	193	,	419	,	95	,	17	};
+			const unsigned long	dim174JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	3	,	7	,	29	,	41	,	135	,	839	,	867	};
+			const unsigned long	dim175JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	25	,	49	,	123	,	217	,	113	,	909	,	215	};
+			const unsigned long	dim176JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	23	,	15	,	43	,	133	,	217	,	327	,	901	};
+			const unsigned long	dim177JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	13	,	53	,	63	,	123	,	477	,	711	,	1387	};
+			const unsigned long	dim178JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	7	,	29	,	75	,	119	,	181	,	957	,	247	};
+			const unsigned long	dim179JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	27	,	25	,	109	,	151	,	267	,	99	,	1461	};
+			const unsigned long	dim180JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	5	,	5	,	53	,	145	,	11	,	725	,	1501	};
+			const unsigned long	dim181JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	9	,	43	,	71	,	229	,	157	,	607	,	1835	};
+			const unsigned long	dim182JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	25	,	1	,	5	,	27	,	471	,	349	,	127	};
+			const unsigned long	dim183JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	23	,	37	,	9	,	221	,	269	,	897	,	1685	};
+			const unsigned long	dim184JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	31	,	29	,	51	,	19	,	311	,	553	,	1969	};
+			const unsigned long	dim185JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	5	,	55	,	17	,	39	,	475	,	671	,	1529	};
+			const unsigned long	dim186JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	1	,	35	,	47	,	27	,	437	,	395	,	1635	};
+			const unsigned long	dim187JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	13	,	23	,	43	,	135	,	327	,	139	,	389	};
+			const unsigned long	dim188JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	9	,	25	,	91	,	25	,	429	,	219	,	513	};
+			const unsigned long	dim189JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	13	,	29	,	119	,	201	,	277	,	157	,	2043	};
+			const unsigned long	dim190JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	29	,	57	,	13	,	17	,	167	,	739	,	1031	};
+			const unsigned long	dim191JoeKuoD6Init[]	=	{	1	,	3	,	3	,	5	,	29	,	21	,	95	,	27	,	255	,	679	,	1531	};
+			const unsigned long	dim192JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	9	,	5	,	21	,	71	,	61	,	961	,	1201	};
+			const unsigned long	dim193JoeKuoD6Init[]	=	{	1	,	3	,	5	,	13	,	15	,	57	,	33	,	93	,	459	,	867	,	223	};
+			const unsigned long	dim194JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	17	,	43	,	127	,	191	,	67	,	177	,	1073	};
+			const unsigned long	dim195JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	23	,	7	,	21	,	199	,	75	,	293	,	1611	};
+			const unsigned long	dim196JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	15	,	39	,	21	,	149	,	65	,	741	,	319	};
+			const unsigned long	dim197JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	23	,	13	,	101	,	89	,	277	,	519	,	711	};
+			const unsigned long	dim198JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	19	,	27	,	85	,	203	,	441	,	97	,	1895	};
+			const unsigned long	dim199JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	29	,	25	,	21	,	155	,	11	,	191	,	197	};
+			const unsigned long	dim200JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	27	,	11	,	81	,	101	,	457	,	675	,	1687	};
+			const unsigned long	dim201JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	25	,	5	,	65	,	193	,	41	,	567	,	781	};
+			const unsigned long	dim202JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	11	,	15	,	113	,	77	,	411	,	695	,	1111	};
+			const unsigned long	dim203JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	11	,	53	,	119	,	171	,	55	,	297	,	509	};
+			const unsigned long	dim204JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	11	,	39	,	113	,	139	,	165	,	347	,	595	};
+			const unsigned long	dim205JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	9	,	17	,	101	,	13	,	81	,	325	,	1733	};
+			const unsigned long	dim206JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	21	,	43	,	115	,	9	,	113	,	907	,	645	};
+			const unsigned long	dim207JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	9	,	25	,	117	,	197	,	159	,	471	,	475	};
+			const unsigned long	dim208JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	11	,	21	,	57	,	207	,	485	,	613	,	1661	};
+			const unsigned long	dim209JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	27	,	55	,	49	,	223	,	89	,	85	,	1523	};
+			const unsigned long	dim210JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	19	,	41	,	45	,	51	,	447	,	299	,	1355	};
+			const unsigned long	dim211JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	1	,	35	,	119	,	135	,	427	,	93	,	1311	};
+			const unsigned long	dim212JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	31	,	39	,	121	,	145	,	129	,	903	,	333	};
+			const unsigned long	dim213JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	29	,	7	,	9	,	11	,	395	,	119	,	873	};
+			const unsigned long	dim214JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	27	,	29	,	5	,	117	,	469	,	31	,	1811	};
+			const unsigned long	dim215JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	21	,	25	,	71	,	15	,	89	,	1021	,	679	};
+			const unsigned long	dim216JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	21	,	39	,	51	,	111	,	327	,	809	,	845	};
+			const unsigned long	dim217JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	3	,	33	,	79	,	17	,	183	,	599	,	1859	};
+			const unsigned long	dim218JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	31	,	9	,	1	,	5	,	353	,	395	,	833	};
+			const unsigned long	dim219JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	3	,	53	,	81	,	133	,	155	,	355	,	1559	};
+			const unsigned long	dim220JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	31	,	13	,	89	,	195	,	357	,	769	,	889	};
+			const unsigned long	dim221JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	9	,	21	,	77	,	31	,	269	,	857	,	923	};
+			const unsigned long	dim222JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	11	,	27	,	61	,	185	,	329	,	685	,	325	};
+			const unsigned long	dim223JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	11	,	31	,	71	,	79	,	293	,	29	,	17	};
+			const unsigned long	dim224JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	7	,	41	,	65	,	167	,	67	,	153	,	1305	};
+			const unsigned long	dim225JoeKuoD6Init[]	=	{	1	,	3	,	3	,	5	,	23	,	45	,	109	,	205	,	191	,	649	,	749	};
+			const unsigned long	dim226JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	17	,	1	,	73	,	211	,	19	,	797	,	1009	};
+			const unsigned long	dim227JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	23	,	15	,	117	,	213	,	183	,	477	,	1301	};
+			const unsigned long	dim228JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	23	,	35	,	55	,	151	,	267	,	883	,	1479	};
+			const unsigned long	dim229JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	5	,	43	,	77	,	11	,	149	,	297	,	329	};
+			const unsigned long	dim230JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	3	,	41	,	55	,	123	,	219	,	499	,	377	};
+			const unsigned long	dim231JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	27	,	7	,	113	,	141	,	173	,	379	,	1087	};
+			const unsigned long	dim232JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	7	,	25	,	45	,	49	,	415	,	329	,	483	};
+			const unsigned long	dim233JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	7	,	15	,	75	,	191	,	305	,	757	,	813	};
+			const unsigned long	dim234JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	31	,	15	,	21	,	247	,	29	,	297	,	1015	};
+			const unsigned long	dim235JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	3	,	41	,	69	,	235	,	431	,	515	,	1889	};
+			const unsigned long	dim236JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	31	,	5	,	69	,	193	,	229	,	439	,	1043	};
+			const unsigned long	dim237JoeKuoD6Init[]	=	{	1	,	3	,	5	,	13	,	31	,	33	,	45	,	159	,	477	,	707	,	1605	};
+			const unsigned long	dim238JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	23	,	49	,	107	,	223	,	7	,	429	,	2047	};
+			const unsigned long	dim239JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	31	,	17	,	117	,	133	,	331	,	97	,	833	};
+			const unsigned long	dim240JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	7	,	31	,	103	,	5	,	299	,	601	,	981	};
+			const unsigned long	dim241JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	15	,	57	,	87	,	39	,	217	,	155	,	361	};
+			const unsigned long	dim242JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	29	,	19	,	125	,	131	,	37	,	635	,	1429	};
+			const unsigned long	dim243JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	29	,	3	,	59	,	107	,	341	,	809	,	101	};
+			const unsigned long	dim244JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	9	,	37	,	113	,	225	,	139	,	165	,	393	};
+			const unsigned long	dim245JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	27	,	21	,	35	,	255	,	189	,	45	,	103	};
+			const unsigned long	dim246JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	7	,	59	,	39	,	87	,	319	,	723	,	955	};
+			const unsigned long	dim247JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	9	,	23	,	83	,	47	,	413	,	445	,	787	};
+			const unsigned long	dim248JoeKuoD6Init[]	=	{	1	,	3	,	3	,	3	,	9	,	27	,	113	,	135	,	279	,	915	,	1221	};
+			const unsigned long	dim249JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	3	,	49	,	99	,	67	,	11	,	1017	,	891	};
+			const unsigned long	dim250JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	31	,	41	,	9	,	205	,	39	,	993	,	105	};
+			const unsigned long	dim251JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	11	,	45	,	67	,	123	,	303	,	87	,	1943	};
+			const unsigned long	dim252JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	1	,	51	,	101	,	253	,	499	,	879	,	833	};
+			const unsigned long	dim253JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	19	,	51	,	97	,	13	,	499	,	231	,	829	};
+			const unsigned long	dim254JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	25	,	49	,	29	,	165	,	43	,	95	,	779	};
+			const unsigned long	dim255JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	13	,	63	,	1	,	133	,	207	,	349	,	221	};
+			const unsigned long	dim256JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	23	,	37	,	51	,	123	,	399	,	295	,	1057	};
+			const unsigned long	dim257JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	11	,	43	,	97	,	163	,	477	,	777	,	1217	};
+			const unsigned long	dim258JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	3	,	33	,	65	,	191	,	25	,	993	,	291	};
+			const unsigned long	dim259JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	25	,	55	,	101	,	231	,	219	,	215	,	517	};
+			const unsigned long	dim260JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	17	,	31	,	87	,	1	,	475	,	371	,	771	};
+			const unsigned long	dim261JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	3	,	25	,	35	,	255	,	211	,	67	,	447	};
+			const unsigned long	dim262JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	9	,	33	,	103	,	17	,	369	,	455	,	265	};
+			const unsigned long	dim263JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	29	,	61	,	61	,	207	,	345	,	87	,	1035	};
+			const unsigned long	dim264JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	19	,	21	,	117	,	49	,	191	,	133	,	1889	};
+			const unsigned long	dim265JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	5	,	37	,	63	,	229	,	53	,	891	,	1939	};
+			const unsigned long	dim266JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	1	,	43	,	7	,	1	,	427	,	155	,	1587	};
+			const unsigned long	dim267JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	15	,	33	,	33	,	233	,	481	,	709	,	905	};
+			const unsigned long	dim268JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	7	,	11	,	125	,	77	,	39	,	55	,	1745	};
+			const unsigned long	dim269JoeKuoD6Init[]	=	{	1	,	3	,	3	,	3	,	7	,	49	,	35	,	123	,	267	,	229	,	1873	};
+			const unsigned long	dim270JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	17	,	11	,	35	,	217	,	215	,	577	,	1467	};
+			const unsigned long	dim271JoeKuoD6Init[]	=	{	1	,	3	,	3	,	5	,	7	,	11	,	51	,	27	,	277	,	113	,	767	};
+			const unsigned long	dim272JoeKuoD6Init[]	=	{	1	,	3	,	3	,	3	,	17	,	1	,	61	,	151	,	227	,	841	,	1421	};
+			const unsigned long	dim273JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	7	,	29	,	95	,	219	,	407	,	257	,	417	};
+			const unsigned long	dim274JoeKuoD6Init[]	=	{	1	,	3	,	5	,	13	,	5	,	39	,	63	,	67	,	467	,	99	,	457	};
+			const unsigned long	dim275JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	15	,	19	,	107	,	217	,	371	,	411	,	867	};
+			const unsigned long	dim276JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	13	,	1	,	101	,	81	,	69	,	371	,	415	};
+			const unsigned long	dim277JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	5	,	31	,	103	,	125	,	147	,	85	,	1357	};
+			const unsigned long	dim278JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	25	,	61	,	9	,	83	,	371	,	691	,	1189	};
+			const unsigned long	dim279JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	3	,	9	,	1	,	123	,	333	,	741	,	961	};
+			const unsigned long	dim280JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	7	,	37	,	73	,	39	,	101	,	1005	,	1361	};
+			const unsigned long	dim281JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	11	,	51	,	29	,	159	,	361	,	685	,	1643	};
+			const unsigned long	dim282JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	17	,	51	,	79	,	143	,	373	,	425	,	703	};
+			const unsigned long	dim283JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	17	,	21	,	63	,	97	,	335	,	591	,	1697	};
+			const unsigned long	dim284JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	1	,	57	,	21	,	253	,	199	,	661	,	77	};
+			const unsigned long	dim285JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	27	,	13	,	101	,	247	,	497	,	535	,	273	};
+			const unsigned long	dim286JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	25	,	5	,	83	,	27	,	107	,	549	,	1885	};
+			const unsigned long	dim287JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	29	,	45	,	107	,	159	,	59	,	303	,	1941	};
+			const unsigned long	dim288JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	5	,	43	,	85	,	89	,	151	,	39	,	221	};
+			const unsigned long	dim289JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	5	,	47	,	65	,	205	,	141	,	777	,	1873	};
+			const unsigned long	dim290JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	25	,	41	,	121	,	133	,	41	,	171	,	521	};
+			const unsigned long	dim291JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	19	,	25	,	15	,	161	,	339	,	155	,	413	};
+			const unsigned long	dim292JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	7	,	1	,	67	,	23	,	453	,	625	,	1375	};
+			const unsigned long	dim293JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	5	,	9	,	87	,	89	,	209	,	361	,	1711	};
+			const unsigned long	dim294JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	21	,	39	,	87	,	21	,	23	,	727	,	15	};
+			const unsigned long	dim295JoeKuoD6Init[]	=	{	1	,	3	,	5	,	13	,	15	,	15	,	9	,	247	,	73	,	9	,	319	};
+			const unsigned long	dim296JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	29	,	21	,	13	,	121	,	359	,	679	,	1659	};
+			const unsigned long	dim297JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	19	,	63	,	79	,	99	,	107	,	13	,	137	};
+			const unsigned long	dim298JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	1	,	43	,	117	,	79	,	305	,	285	,	1151	};
+			const unsigned long	dim299JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	23	,	9	,	53	,	105	,	205	,	121	,	1451	};
+			const unsigned long	dim300JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	3	,	63	,	99	,	71	,	495	,	233	,	1633	};
+			const unsigned long	dim301JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	17	,	5	,	99	,	211	,	409	,	911	,	1743	};
+			const unsigned long	dim302JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	1	,	61	,	81	,	107	,	493	,	625	,	847	};
+			const unsigned long	dim303JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	15	,	29	,	13	,	57	,	305	,	409	,	1267	};
+			const unsigned long	dim304JoeKuoD6Init[]	=	{	1	,	3	,	5	,	13	,	11	,	3	,	121	,	253	,	161	,	891	,	1463	};
+			const unsigned long	dim305JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	23	,	1	,	125	,	7	,	273	,	221	,	2001	};
+			const unsigned long	dim306JoeKuoD6Init[]	=	{	1	,	3	,	3	,	5	,	3	,	49	,	115	,	205	,	11	,	45	,	1563	};
+			const unsigned long	dim307JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	21	,	59	,	81	,	191	,	31	,	485	,	743	};
+			const unsigned long	dim308JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	9	,	9	,	21	,	77	,	487	,	615	,	423	};
+			const unsigned long	dim309JoeKuoD6Init[]	=	{	1	,	1	,	1	,	3	,	27	,	43	,	53	,	53	,	345	,	605	,	949	};
+			const unsigned long	dim310JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	31	,	49	,	97	,	39	,	279	,	597	,	189	};
+			const unsigned long	dim311JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	17	,	23	,	87	,	89	,	457	,	103	,	1969	};
+			const unsigned long	dim312JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	21	,	45	,	19	,	127	,	49	,	231	,	273	};
+			const unsigned long	dim313JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	13	,	15	,	127	,	83	,	185	,	553	,	537	};
+			const unsigned long	dim314JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	19	,	45	,	77	,	123	,	471	,	731	,	605	};
+			const unsigned long	dim315JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	11	,	25	,	123	,	25	,	51	,	501	,	2025	};
+			const unsigned long	dim316JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	15	,	17	,	67	,	173	,	93	,	217	,	1507	};
+			const unsigned long	dim317JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	29	,	7	,	29	,	211	,	369	,	983	,	1331	};
+			const unsigned long	dim318JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	17	,	63	,	1	,	9	,	493	,	1009	,	1275	};
+			const unsigned long	dim319JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	31	,	37	,	51	,	255	,	253	,	387	,	591	};
+			const unsigned long	dim320JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	11	,	25	,	41	,	245	,	215	,	329	,	1877	};
+			const unsigned long	dim321JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	17	,	21	,	115	,	63	,	31	,	435	,	39	};
+			const unsigned long	dim322JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	1	,	17	,	95	,	139	,	505	,	365	,	825	};
+			const unsigned long	dim323JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	13	,	31	,	105	,	167	,	203	,	337	,	813	};
+			const unsigned long	dim324JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	3	,	7	,	111	,	91	,	491	,	93	,	1473	};
+			const unsigned long	dim325JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	29	,	55	,	103	,	193	,	219	,	693	,	1241	};
+			const unsigned long	dim326JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	27	,	7	,	37	,	135	,	455	,	87	,	257	};
+			const unsigned long	dim327JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	23	,	19	,	23	,	33	,	417	,	263	,	1693	};
+			const unsigned long	dim328JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	29	,	39	,	127	,	221	,	305	,	717	,	989	};
+			const unsigned long	dim329JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	27	,	21	,	49	,	51	,	355	,	241	,	1853	};
+			const unsigned long	dim330JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	21	,	3	,	51	,	137	,	257	,	431	,	1641	};
+			const unsigned long	dim331JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	25	,	3	,	69	,	111	,	163	,	955	,	459	};
+			const unsigned long	dim332JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	5	,	43	,	111	,	53	,	463	,	177	,	605	};
+			const unsigned long	dim333JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	23	,	11	,	79	,	105	,	419	,	645	,	423	};
+			const unsigned long	dim334JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	15	,	5	,	105	,	31	,	117	,	961	,	325	};
+			const unsigned long	dim335JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	21	,	55	,	81	,	199	,	231	,	973	,	373	};
+			const unsigned long	dim336JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	23	,	17	,	71	,	63	,	59	,	719	,	405	};		
+			const unsigned long	dim337JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	9	,	37	,	45	,	205	,	267	,	261	,	1173	,	3681	};
+			const unsigned long	dim338JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	1	,	53	,	91	,	207	,	487	,	593	,	1397	,	1255	};
+			const unsigned long	dim339JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	17	,	3	,	111	,	145	,	237	,	667	,	1199	,	3793	};
+			const unsigned long	dim340JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	15	,	59	,	69	,	223	,	509	,	211	,	1431	,	2455	};
+			const unsigned long	dim341JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	27	,	47	,	75	,	123	,	455	,	553	,	1153	,	1675	};
+			const unsigned long	dim342JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	17	,	3	,	85	,	103	,	205	,	443	,	1093	,	4083	};
+			const unsigned long	dim343JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	13	,	63	,	13	,	103	,	223	,	473	,	1125	,	1565	};
+			const unsigned long	dim344JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	21	,	55	,	21	,	39	,	385	,	809	,	457	,	1991	};
+			const unsigned long	dim345JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	29	,	57	,	81	,	1	,	165	,	181	,	57	,	1463	};
+			const unsigned long	dim346JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	21	,	29	,	59	,	127	,	393	,	981	,	577	,	2707	};
+			const unsigned long	dim347JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	17	,	47	,	123	,	149	,	273	,	825	,	1843	,	479	};
+			const unsigned long	dim348JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	1	,	33	,	91	,	251	,	371	,	655	,	383	,	3123	};
+			const unsigned long	dim349JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	3	,	55	,	15	,	195	,	345	,	1017	,	385	,	1869	};
+			const unsigned long	dim350JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	15	,	25	,	25	,	67	,	223	,	935	,	905	,	923	};
+			const unsigned long	dim351JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	29	,	5	,	23	,	81	,	227	,	175	,	1025	,	355	};
+			const unsigned long	dim352JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	25	,	27	,	43	,	85	,	401	,	955	,	989	,	3117	};
+			const unsigned long	dim353JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	27	,	31	,	27	,	235	,	99	,	539	,	1093	,	2821	};
+			const unsigned long	dim354JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	13	,	19	,	45	,	231	,	203	,	489	,	1929	,	3615	};
+			const unsigned long	dim355JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	3	,	15	,	3	,	191	,	181	,	463	,	1247	,	2229	};
+			const unsigned long	dim356JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	1	,	37	,	1	,	59	,	29	,	283	,	679	,	429	};
+			const unsigned long	dim357JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	17	,	25	,	5	,	113	,	191	,	505	,	365	,	3943	};
+			const unsigned long	dim358JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	13	,	31	,	95	,	141	,	29	,	353	,	661	,	3637	};
+			const unsigned long	dim359JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	5	,	53	,	19	,	9	,	81	,	497	,	1915	,	2997	};
+			const unsigned long	dim360JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	5	,	13	,	35	,	163	,	293	,	309	,	503	,	2387	};
+			const unsigned long	dim361JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	11	,	25	,	127	,	27	,	435	,	247	,	1485	,	3917	};
+			const unsigned long	dim362JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	21	,	7	,	15	,	213	,	355	,	209	,	1107	,	1317	};
+			const unsigned long	dim363JoeKuoD6Init[]	=	{	1	,	3	,	3	,	11	,	25	,	29	,	73	,	203	,	445	,	849	,	291	,	1567	};
+			const unsigned long	dim364JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	15	,	31	,	5	,	15	,	19	,	345	,	635	,	1815	};
+			const unsigned long	dim365JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	19	,	21	,	15	,	95	,	111	,	167	,	1051	,	479	};
+			const unsigned long	dim366JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	15	,	61	,	125	,	237	,	11	,	789	,	1681	,	437	};
+			const unsigned long	dim367JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	21	,	23	,	105	,	145	,	145	,	453	,	917	,	1727	};
+			const unsigned long	dim368JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	9	,	37	,	27	,	91	,	199	,	561	,	1705	,	3849	};
+			const unsigned long	dim369JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	11	,	53	,	1	,	21	,	63	,	879	,	629	,	3219	};
+			const unsigned long	dim370JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	3	,	5	,	121	,	17	,	511	,	809	,	627	,	2627	};
+			const unsigned long	dim371JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	27	,	21	,	115	,	117	,	193	,	185	,	1855	,	2473	};
+			const unsigned long	dim372JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	11	,	37	,	79	,	123	,	391	,	715	,	573	,	699	};
+			const unsigned long	dim373JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	5	,	35	,	105	,	5	,	55	,	347	,	1217	,	3483	};
+			const unsigned long	dim374JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	19	,	59	,	21	,	221	,	329	,	873	,	943	,	3679	};
+			const unsigned long	dim375JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	21	,	57	,	119	,	33	,	111	,	581	,	1133	,	131	};
+			const unsigned long	dim376JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	13	,	31	,	67	,	205	,	211	,	143	,	1117	,	4067	};
+			const unsigned long	dim377JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	9	,	53	,	71	,	251	,	41	,	875	,	691	,	3681	};
+			const unsigned long	dim378JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	23	,	55	,	57	,	29	,	123	,	453	,	523	,	3237	};
+			const unsigned long	dim379JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	15	,	19	,	91	,	105	,	221	,	1005	,	169	,	461	};
+			const unsigned long	dim380JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	7	,	61	,	49	,	41	,	337	,	739	,	699	,	2379	};
+			const unsigned long	dim381JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	21	,	31	,	103	,	247	,	87	,	537	,	757	,	785	};
+			const unsigned long	dim382JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	7	,	49	,	127	,	149	,	277	,	87	,	475	,	127	};
+			const unsigned long	dim383JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	5	,	25	,	95	,	229	,	389	,	121	,	95	,	2787	};
+			const unsigned long	dim384JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	9	,	27	,	29	,	23	,	419	,	371	,	127	,	961	};
+			const unsigned long	dim385JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	25	,	19	,	123	,	35	,	41	,	785	,	605	,	711	};
+			const unsigned long	dim386JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	1	,	13	,	69	,	161	,	449	,	225	,	1795	,	2083	};
+			const unsigned long	dim387JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	21	,	1	,	19	,	211	,	191	,	697	,	89	,	177	};
+			const unsigned long	dim388JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	19	,	29	,	49	,	151	,	365	,	541	,	1681	,	1943	};
+			const unsigned long	dim389JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	9	,	5	,	75	,	109	,	243	,	769	,	755	,	2733	};
+			const unsigned long	dim390JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	11	,	41	,	7	,	87	,	363	,	893	,	1799	,	1303	};
+			const unsigned long	dim391JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	11	,	5	,	19	,	101	,	41	,	401	,	1863	,	965	};
+			const unsigned long	dim392JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	13	,	15	,	71	,	249	,	511	,	625	,	1101	,	2615	};
+			const unsigned long	dim393JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	31	,	35	,	85	,	107	,	383	,	201	,	1163	,	981	};
+			const unsigned long	dim394JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	21	,	13	,	33	,	9	,	243	,	93	,	461	,	741	};
+			const unsigned long	dim395JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	1	,	55	,	85	,	179	,	321	,	163	,	1807	,	339	};
+			const unsigned long	dim396JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	29	,	7	,	57	,	133	,	245	,	87	,	917	,	109	};
+			const unsigned long	dim397JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	11	,	13	,	93	,	81	,	361	,	343	,	647	,	1113	};
+			const unsigned long	dim398JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	23	,	57	,	117	,	105	,	221	,	697	,	1159	,	1307	};
+			const unsigned long	dim399JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	27	,	55	,	15	,	235	,	279	,	941	,	655	,	3975	};
+			const unsigned long	dim400JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	27	,	47	,	45	,	41	,	361	,	135	,	379	,	2121	};
+			const unsigned long	dim401JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	19	,	51	,	31	,	39	,	187	,	573	,	273	,	383	};
+			const unsigned long	dim402JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	9	,	47	,	107	,	29	,	435	,	989	,	1315	,	2815	};
+			const unsigned long	dim403JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	21	,	31	,	7	,	41	,	45	,	115	,	1639	,	1861	};
+			const unsigned long	dim404JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	1	,	21	,	57	,	233	,	51	,	149	,	1251	,	1809	};
+			const unsigned long	dim405JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	1	,	53	,	111	,	35	,	447	,	657	,	1557	,	349	};
+			const unsigned long	dim406JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	25	,	33	,	39	,	209	,	127	,	913	,	659	,	177	};
+			const unsigned long	dim407JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	13	,	53	,	25	,	191	,	373	,	997	,	1413	,	2859	};
+			const unsigned long	dim408JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	31	,	51	,	17	,	253	,	149	,	719	,	1681	,	2713	};
+			const unsigned long	dim409JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	23	,	49	,	9	,	211	,	381	,	321	,	2033	,	361	};
+			const unsigned long	dim410JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	31	,	3	,	121	,	21	,	465	,	417	,	1023	,	3921	};
+			const unsigned long	dim411JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	17	,	49	,	101	,	37	,	429	,	877	,	505	,	821	};
+			const unsigned long	dim412JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	23	,	59	,	33	,	127	,	43	,	987	,	1065	,	2675	};
+			const unsigned long	dim413JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	7	,	19	,	45	,	157	,	475	,	53	,	1223	,	523	};
+			const unsigned long	dim414JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	23	,	61	,	31	,	133	,	85	,	623	,	871	,	965	};
+			const unsigned long	dim415JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	3	,	17	,	21	,	197	,	377	,	819	,	661	,	1803	};
+			const unsigned long	dim416JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	11	,	37	,	1	,	135	,	509	,	927	,	23	,	1657	};
+			const unsigned long	dim417JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	15	,	57	,	55	,	179	,	317	,	31	,	611	,	4057	};
+			const unsigned long	dim418JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	29	,	57	,	93	,	105	,	103	,	157	,	701	,	249	};
+			const unsigned long	dim419JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	27	,	41	,	23	,	213	,	363	,	911	,	85	,	2733	};
+			const unsigned long	dim420JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	15	,	15	,	93	,	203	,	61	,	759	,	1735	,	459	};
+			const unsigned long	dim421JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	1	,	59	,	27	,	203	,	165	,	87	,	835	,	3647	};
+			const unsigned long	dim422JoeKuoD6Init[]	=	{	1	,	3	,	3	,	5	,	25	,	57	,	43	,	209	,	71	,	35	,	1985	,	1521	};
+			const unsigned long	dim423JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	15	,	19	,	49	,	103	,	195	,	17	,	2041	,	1267	};
+			const unsigned long	dim424JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	5	,	19	,	91	,	131	,	157	,	625	,	1851	,	3691	};
+			const unsigned long	dim425JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	9	,	47	,	3	,	195	,	25	,	1003	,	533	,	833	};
+			const unsigned long	dim426JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	21	,	33	,	27	,	193	,	65	,	545	,	261	,	3095	};
+			const unsigned long	dim427JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	7	,	39	,	35	,	9	,	387	,	241	,	1015	,	1557	};
+			const unsigned long	dim428JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	13	,	29	,	43	,	101	,	457	,	363	,	115	,	915	};
+			const unsigned long	dim429JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	17	,	57	,	79	,	11	,	155	,	39	,	215	,	157	};
+			const unsigned long	dim430JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	23	,	33	,	69	,	189	,	59	,	823	,	1941	,	423	};
+			const unsigned long	dim431JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	9	,	39	,	79	,	43	,	431	,	227	,	163	,	2653	};
+			const unsigned long	dim432JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	5	,	63	,	55	,	141	,	207	,	349	,	1873	,	773	};
+			const unsigned long	dim433JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	21	,	59	,	89	,	111	,	53	,	217	,	1897	,	1619	};
+			const unsigned long	dim434JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	7	,	27	,	127	,	247	,	183	,	925	,	989	,	1059	};
+			const unsigned long	dim435JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	21	,	47	,	39	,	71	,	343	,	285	,	1053	,	3007	};
+			const unsigned long	dim436JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	1	,	7	,	27	,	109	,	19	,	325	,	157	,	2779	};
+			const unsigned long	dim437JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	23	,	27	,	63	,	115	,	415	,	1005	,	1159	,	3699	};
+			const unsigned long	dim438JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	27	,	27	,	5	,	245	,	95	,	1021	,	641	,	3875	};
+			const unsigned long	dim439JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	5	,	9	,	53	,	183	,	379	,	251	,	1747	,	969	};
+			const unsigned long	dim440JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	7	,	23	,	53	,	195	,	353	,	225	,	1871	,	2131	};
+			const unsigned long	dim441JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	21	,	5	,	25	,	253	,	59	,	821	,	1699	,	1911	};
+			const unsigned long	dim442JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	9	,	53	,	121	,	155	,	281	,	969	,	1943	,	2291	};
+			const unsigned long	dim443JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	27	,	25	,	65	,	111	,	295	,	213	,	81	,	415	};
+			const unsigned long	dim444JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	29	,	51	,	39	,	201	,	133	,	987	,	243	,	3369	};
+			const unsigned long	dim445JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	27	,	5	,	57	,	205	,	395	,	813	,	125	,	1293	};
+			const unsigned long	dim446JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	15	,	19	,	57	,	11	,	151	,	405	,	2013	,	2607	};
+			const unsigned long	dim447JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	9	,	53	,	17	,	25	,	7	,	483	,	525	,	967	};
+			const unsigned long	dim448JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	11	,	31	,	111	,	253	,	439	,	689	,	919	,	3563	};
+			const unsigned long	dim449JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	13	,	59	,	123	,	69	,	339	,	17	,	297	,	2511	};
+			const unsigned long	dim450JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	13	,	1	,	85	,	113	,	45	,	107	,	565	,	795	};
+			const unsigned long	dim451JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	15	,	5	,	109	,	163	,	73	,	103	,	195	,	639	};
+			const unsigned long	dim452JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	21	,	11	,	93	,	23	,	217	,	275	,	139	,	1159	};
+			const unsigned long	dim453JoeKuoD6Init[]	=	{	1	,	1	,	1	,	3	,	31	,	63	,	73	,	61	,	63	,	923	,	1237	,	3887	};
+			const unsigned long	dim454JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	27	,	45	,	5	,	93	,	3	,	303	,	357	,	2973	};
+			const unsigned long	dim455JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	7	,	51	,	41	,	27	,	83	,	357	,	1679	,	2015	};
+			const unsigned long	dim456JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	9	,	53	,	1	,	193	,	343	,	59	,	451	,	1579	};
+			const unsigned long	dim457JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	9	,	37	,	37	,	131	,	207	,	29	,	2027	,	733	};
+			const unsigned long	dim458JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	3	,	61	,	51	,	221	,	71	,	659	,	1955	,	1289	};
+			const unsigned long	dim459JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	5	,	19	,	3	,	205	,	319	,	155	,	325	,	2643	};
+			const unsigned long	dim460JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	3	,	15	,	1	,	247	,	323	,	143	,	37	,	2069	};
+			const unsigned long	dim461JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	23	,	43	,	35	,	59	,	285	,	779	,	605	,	1739	};
+			const unsigned long	dim462JoeKuoD6Init[]	=	{	1	,	3	,	3	,	5	,	29	,	31	,	57	,	225	,	417	,	521	,	1337	,	3051	};
+			const unsigned long	dim463JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	23	,	57	,	41	,	165	,	437	,	669	,	1087	,	1275	};
+			const unsigned long	dim464JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	1	,	51	,	25	,	233	,	449	,	503	,	1237	,	1303	};
+			const unsigned long	dim465JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	9	,	45	,	79	,	149	,	229	,	991	,	1725	,	395	};
+			const unsigned long	dim466JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	31	,	37	,	13	,	117	,	19	,	939	,	1347	,	2251	};
+			const unsigned long	dim467JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	1	,	29	,	25	,	251	,	493	,	793	,	649	,	1197	};
+			const unsigned long	dim468JoeKuoD6Init[]	=	{	1	,	3	,	3	,	11	,	5	,	53	,	49	,	33	,	37	,	937	,	497	,	361	};
+			const unsigned long	dim469JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	5	,	57	,	19	,	141	,	115	,	371	,	1341	,	3335	};
+			const unsigned long	dim470JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	23	,	47	,	77	,	31	,	225	,	589	,	551	,	2625	};
+			const unsigned long	dim471JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	25	,	37	,	29	,	213	,	283	,	207	,	385	,	2019	};
+			const unsigned long	dim472JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	5	,	17	,	21	,	37	,	167	,	49	,	1595	,	1647	};
+			const unsigned long	dim473JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	29	,	15	,	79	,	203	,	329	,	627	,	1799	,	895	};
+			const unsigned long	dim474JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	23	,	53	,	69	,	45	,	271	,	661	,	1437	,	2429	};
+			const unsigned long	dim475JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	21	,	7	,	115	,	233	,	267	,	873	,	2023	,	3431	};
+			const unsigned long	dim476JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	7	,	63	,	7	,	125	,	129	,	815	,	771	,	1233	};
+			const unsigned long	dim477JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	5	,	29	,	121	,	203	,	373	,	137	,	1181	,	3773	};
+			const unsigned long	dim478JoeKuoD6Init[]	=	{	1	,	1	,	5	,	1	,	15	,	47	,	25	,	137	,	329	,	531	,	1957	,	1933	};
+			const unsigned long	dim479JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	23	,	37	,	67	,	123	,	181	,	567	,	893	,	2307	};
+			const unsigned long	dim480JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	5	,	23	,	41	,	227	,	9	,	213	,	821	,	1689	};		
+			const unsigned long	dim481JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	29	,	33	,	23	,	241	,	199	,	753	,	1759	,	833	,	5261	};
+			const unsigned long	dim482JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	31	,	7	,	61	,	225	,	209	,	117	,	1983	,	395	,	3583	};
+			const unsigned long	dim483JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	27	,	49	,	7	,	125	,	365	,	513	,	1001	,	283	,	627	};
+			const unsigned long	dim484JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	7	,	53	,	99	,	123	,	493	,	481	,	173	,	1483	,	805	};
+			const unsigned long	dim485JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	15	,	1	,	57	,	19	,	391	,	847	,	1641	,	3497	,	2807	};
+			const unsigned long	dim486JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	19	,	49	,	77	,	139	,	275	,	115	,	1401	,	2541	,	7239	};
+			const unsigned long	dim487JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	11	,	13	,	13	,	211	,	119	,	317	,	271	,	1867	,	4299	};
+			const unsigned long	dim488JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	15	,	37	,	121	,	197	,	485	,	605	,	1025	,	3235	,	6205	};
+			const unsigned long	dim489JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	25	,	39	,	31	,	3	,	465	,	33	,	625	,	1069	,	6043	};
+			const unsigned long	dim490JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	7	,	37	,	115	,	169	,	27	,	967	,	505	,	1493	,	4333	};
+			const unsigned long	dim491JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	1	,	51	,	19	,	117	,	365	,	587	,	1597	,	279	,	99	};
+			const unsigned long	dim492JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	15	,	57	,	89	,	153	,	495	,	535	,	775	,	4063	,	6049	};
+			const unsigned long	dim493JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	9	,	7	,	111	,	43	,	225	,	677	,	1379	,	481	,	5003	};
+			const unsigned long	dim494JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	11	,	47	,	63	,	37	,	41	,	833	,	467	,	3795	,	5643	};
+			const unsigned long	dim495JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	25	,	49	,	21	,	91	,	191	,	579	,	507	,	3001	,	6549	};
+			const unsigned long	dim496JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	25	,	17	,	17	,	153	,	467	,	359	,	1523	,	3175	,	7307	};
+			const unsigned long	dim497JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	29	,	57	,	51	,	145	,	71	,	515	,	495	,	1091	,	7911	};
+			const unsigned long	dim498JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	31	,	31	,	53	,	149	,	303	,	969	,	383	,	939	,	2659	};
+			const unsigned long	dim499JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	1	,	21	,	15	,	145	,	9	,	199	,	695	,	2967	,	1179	};
+			const unsigned long	dim500JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	23	,	33	,	89	,	23	,	387	,	591	,	1543	,	3941	,	7021	};
+			const unsigned long	dim501JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	27	,	17	,	25	,	71	,	43	,	761	,	803	,	833	,	1023	};
+			const unsigned long	dim502JoeKuoD6Init[]	=	{	1	,	1	,	1	,	3	,	11	,	25	,	3	,	171	,	377	,	843	,	1147	,	1469	,	1773	};
+			const unsigned long	dim503JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	1	,	13	,	65	,	197	,	381	,	683	,	895	,	2181	,	1973	};
+			const unsigned long	dim504JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	19	,	25	,	109	,	49	,	451	,	277	,	1417	,	2965	,	7677	};
+			const unsigned long	dim505JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	25	,	51	,	115	,	43	,	175	,	317	,	953	,	81	,	2533	};
+			const unsigned long	dim506JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	27	,	57	,	5	,	181	,	489	,	369	,	1339	,	3643	,	7911	};
+			const unsigned long	dim507JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	21	,	11	,	87	,	81	,	85	,	5	,	867	,	3541	,	3071	};
+			const unsigned long	dim508JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	19	,	37	,	111	,	43	,	27	,	549	,	367	,	3021	,	6563	};
+			const unsigned long	dim509JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	3	,	63	,	83	,	107	,	327	,	599	,	425	,	3941	,	4319	};
+			const unsigned long	dim510JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	5	,	37	,	127	,	169	,	117	,	987	,	1821	,	997	,	63	};
+			const unsigned long	dim511JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	17	,	41	,	103	,	129	,	449	,	373	,	733	,	55	,	5987	};
+			const unsigned long	dim512JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	13	,	61	,	15	,	117	,	249	,	149	,	885	,	3723	,	5525	};
+			const unsigned long	dim513JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	7	,	3	,	39	,	47	,	367	,	355	,	1943	,	1035	,	2367	};
+			const unsigned long	dim514JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	19	,	49	,	21	,	239	,	403	,	921	,	693	,	2123	,	7387	};
+			const unsigned long	dim515JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	23	,	45	,	13	,	81	,	105	,	91	,	1173	,	3059	,	5969	};
+			const unsigned long	dim516JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	1	,	31	,	73	,	253	,	395	,	941	,	1949	,	455	,	453	};
+			const unsigned long	dim517JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	27	,	57	,	115	,	17	,	269	,	819	,	145	,	1219	,	6471	};
+			const unsigned long	dim518JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	29	,	19	,	9	,	67	,	501	,	87	,	883	,	1985	,	4859	};
+			const unsigned long	dim519JoeKuoD6Init[]	=	{	1	,	1	,	1	,	3	,	29	,	3	,	55	,	107	,	79	,	941	,	1437	,	3607	,	6221	};
+			const unsigned long	dim520JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	9	,	63	,	59	,	113	,	319	,	825	,	641	,	491	,	4015	};
+			const unsigned long	dim521JoeKuoD6Init[]	=	{	1	,	1	,	1	,	3	,	21	,	59	,	55	,	107	,	215	,	167	,	315	,	81	,	3491	};
+			const unsigned long	dim522JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	15	,	7	,	71	,	145	,	481	,	843	,	1437	,	3809	,	7729	};
+			const unsigned long	dim523JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	23	,	59	,	65	,	45	,	397	,	117	,	325	,	2933	,	541	};
+			const unsigned long	dim524JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	15	,	47	,	77	,	35	,	143	,	327	,	965	,	3409	,	1817	};
+			const unsigned long	dim525JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	31	,	7	,	31	,	57	,	331	,	615	,	645	,	605	,	2185	};
+			const unsigned long	dim526JoeKuoD6Init[]	=	{	1	,	1	,	5	,	1	,	15	,	53	,	109	,	135	,	259	,	591	,	1419	,	3349	,	5541	};
+			const unsigned long	dim527JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	21	,	23	,	87	,	115	,	211	,	737	,	1433	,	3247	,	6899	};
+			const unsigned long	dim528JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	23	,	5	,	43	,	43	,	253	,	753	,	1305	,	2179	,	1375	};
+			const unsigned long	dim529JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	21	,	49	,	127	,	129	,	229	,	415	,	1593	,	2315	,	3273	};
+			const unsigned long	dim530JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	15	,	61	,	97	,	101	,	199	,	651	,	1421	,	2471	,	6109	};
+			const unsigned long	dim531JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	13	,	27	,	19	,	243	,	185	,	707	,	559	,	1687	,	981	};
+			const unsigned long	dim532JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	5	,	9	,	101	,	55	,	39	,	811	,	1491	,	3725	,	6691	};
+			const unsigned long	dim533JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	27	,	33	,	41	,	61	,	271	,	695	,	1563	,	547	,	1569	};
+			const unsigned long	dim534JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	29	,	21	,	9	,	83	,	131	,	287	,	1505	,	2711	,	1617	};
+			const unsigned long	dim535JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	29	,	57	,	19	,	99	,	303	,	609	,	1397	,	3241	,	3463	};
+			const unsigned long	dim536JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	13	,	33	,	45	,	101	,	195	,	615	,	2017	,	2473	,	1251	};
+			const unsigned long	dim537JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	31	,	7	,	121	,	67	,	275	,	153	,	1189	,	2343	,	5593	};
+			const unsigned long	dim538JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	19	,	37	,	79	,	207	,	473	,	927	,	915	,	1971	,	8033	};
+			const unsigned long	dim539JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	7	,	55	,	123	,	163	,	47	,	599	,	209	,	2235	,	7643	};
+			const unsigned long	dim540JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	31	,	3	,	31	,	69	,	61	,	257	,	11	,	845	,	2659	};
+			const unsigned long	dim541JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	27	,	15	,	73	,	237	,	79	,	517	,	1905	,	1595	,	6337	};
+			const unsigned long	dim542JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	11	,	19	,	95	,	213	,	321	,	303	,	1957	,	2291	,	5991	};
+			const unsigned long	dim543JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	15	,	17	,	85	,	45	,	143	,	425	,	55	,	3595	,	685	};
+			const unsigned long	dim544JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	25	,	5	,	25	,	203	,	353	,	537	,	1921	,	1885	,	1157	};
+			const unsigned long	dim545JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	29	,	23	,	117	,	141	,	257	,	81	,	25	,	3237	,	7223	};
+			const unsigned long	dim546JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	27	,	23	,	47	,	29	,	143	,	341	,	1855	,	3973	,	5977	};
+			const unsigned long	dim547JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	7	,	45	,	11	,	95	,	135	,	261	,	1475	,	3723	,	6999	};
+			const unsigned long	dim548JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	19	,	39	,	89	,	93	,	187	,	1011	,	1319	,	67	,	399	};
+			const unsigned long	dim549JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	17	,	1	,	91	,	69	,	405	,	815	,	225	,	2469	,	6287	};
+			const unsigned long	dim550JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	3	,	19	,	41	,	37	,	125	,	221	,	1011	,	3603	,	4881	};
+			const unsigned long	dim551JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	15	,	13	,	45	,	235	,	141	,	17	,	1991	,	2581	,	4965	};
+			const unsigned long	dim552JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	5	,	41	,	117	,	143	,	261	,	717	,	111	,	395	,	4381	};
+			const unsigned long	dim553JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	15	,	47	,	117	,	197	,	147	,	117	,	295	,	2005	,	4081	};
+			const unsigned long	dim554JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	29	,	61	,	93	,	245	,	59	,	119	,	1121	,	2549	,	6471	};
+			const unsigned long	dim555JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	13	,	43	,	93	,	133	,	313	,	923	,	295	,	1239	,	6355	};
+			const unsigned long	dim556JoeKuoD6Init[]	=	{	1	,	3	,	3	,	11	,	5	,	47	,	99	,	115	,	107	,	585	,	671	,	2077	,	7005	};
+			const unsigned long	dim557JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	13	,	31	,	79	,	253	,	245	,	597	,	1071	,	2273	,	2481	};
+			const unsigned long	dim558JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	25	,	3	,	39	,	47	,	201	,	187	,	419	,	3881	,	4031	};
+			const unsigned long	dim559JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	17	,	47	,	119	,	243	,	217	,	321	,	727	,	3227	,	6041	};
+			const unsigned long	dim560JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	9	,	3	,	85	,	121	,	161	,	663	,	2035	,	4073	,	7401	};
+			const unsigned long	dim561JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	11	,	45	,	51	,	99	,	431	,	307	,	157	,	2941	,	1645	};
+			const unsigned long	dim562JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	7	,	43	,	77	,	19	,	169	,	535	,	1797	,	2907	,	531	};
+			const unsigned long	dim563JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	19	,	11	,	45	,	51	,	169	,	175	,	995	,	2231	,	147	};
+			const unsigned long	dim564JoeKuoD6Init[]	=	{	1	,	1	,	5	,	1	,	3	,	25	,	123	,	11	,	387	,	757	,	1067	,	1359	,	2227	};
+			const unsigned long	dim565JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	13	,	41	,	45	,	135	,	49	,	391	,	1551	,	1729	,	4799	};
+			const unsigned long	dim566JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	3	,	11	,	109	,	59	,	217	,	507	,	47	,	1609	,	7145	};
+			const unsigned long	dim567JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	13	,	35	,	7	,	213	,	495	,	811	,	1403	,	3423	,	8139	};
+			const unsigned long	dim568JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	3	,	55	,	107	,	47	,	337	,	305	,	1869	,	943	,	7533	};
+			const unsigned long	dim569JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	15	,	51	,	9	,	209	,	477	,	173	,	1921	,	3295	,	4283	};
+			const unsigned long	dim570JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	17	,	31	,	111	,	73	,	143	,	773	,	1499	,	651	,	6659	};
+			const unsigned long	dim571JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	17	,	5	,	1	,	95	,	347	,	613	,	49	,	7	,	2373	};
+			const unsigned long	dim572JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	5	,	21	,	33	,	227	,	375	,	635	,	149	,	1585	,	6159	};
+			const unsigned long	dim573JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	25	,	7	,	121	,	185	,	129	,	1021	,	167	,	873	,	949	};
+			const unsigned long	dim574JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	29	,	23	,	25	,	219	,	203	,	651	,	629	,	155	,	5385	};
+			const unsigned long	dim575JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	25	,	1	,	91	,	213	,	87	,	807	,	599	,	2527	,	6971	};
+			const unsigned long	dim576JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	19	,	13	,	91	,	11	,	73	,	617	,	1721	,	1803	,	3005	};
+			const unsigned long	dim577JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	25	,	33	,	19	,	167	,	195	,	861	,	1209	,	1887	,	3165	};
+			const unsigned long	dim578JoeKuoD6Init[]	=	{	1	,	1	,	5	,	1	,	5	,	21	,	57	,	253	,	325	,	907	,	1237	,	1037	,	3639	};
+			const unsigned long	dim579JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	5	,	17	,	35	,	65	,	193	,	57	,	1045	,	2117	,	7433	};
+			const unsigned long	dim580JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	3	,	23	,	89	,	157	,	379	,	831	,	479	,	3285	,	5107	};
+			const unsigned long	dim581JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	5	,	35	,	57	,	107	,	465	,	81	,	387	,	1035	,	7231	};
+			const unsigned long	dim582JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	13	,	25	,	23	,	39	,	439	,	89	,	1651	,	781	,	6167	};
+			const unsigned long	dim583JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	19	,	33	,	103	,	139	,	259	,	201	,	1569	,	3453	,	5143	};
+			const unsigned long	dim584JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	5	,	51	,	33	,	199	,	509	,	593	,	1671	,	243	,	3455	};
+			const unsigned long	dim585JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	31	,	15	,	81	,	173	,	357	,	447	,	595	,	1177	,	2435	};
+			const unsigned long	dim586JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	9	,	35	,	53	,	111	,	277	,	143	,	1837	,	385	,	7057	};
+			const unsigned long	dim587JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	7	,	25	,	115	,	117	,	1	,	97	,	51	,	3459	,	3057	};
+			const unsigned long	dim588JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	11	,	63	,	85	,	69	,	1	,	943	,	279	,	4091	,	7753	};
+			const unsigned long	dim589JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	7	,	59	,	19	,	17	,	435	,	779	,	1049	,	2125	,	3295	};
+			const unsigned long	dim590JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	29	,	45	,	95	,	37	,	179	,	463	,	1503	,	417	,	1959	};
+			const unsigned long	dim591JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	21	,	27	,	27	,	53	,	359	,	781	,	1387	,	997	,	2123	};
+			const unsigned long	dim592JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	17	,	39	,	103	,	175	,	131	,	973	,	1055	,	2935	,	5671	};
+			const unsigned long	dim593JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	7	,	41	,	55	,	133	,	223	,	1019	,	1341	,	2559	,	4225	};
+			const unsigned long	dim594JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	13	,	7	,	85	,	101	,	161	,	461	,	227	,	2073	,	6483	};
+			const unsigned long	dim595JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	11	,	27	,	67	,	125	,	287	,	229	,	1945	,	2461	,	7111	};
+			const unsigned long	dim596JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	23	,	59	,	39	,	137	,	421	,	245	,	955	,	1941	,	3743	};
+			const unsigned long	dim597JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	19	,	55	,	45	,	93	,	101	,	777	,	729	,	867	,	7123	};
+			const unsigned long	dim598JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	21	,	27	,	49	,	125	,	245	,	271	,	1643	,	3995	,	1845	};
+			const unsigned long	dim599JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	21	,	63	,	113	,	157	,	123	,	347	,	333	,	2445	,	3401	};
+			const unsigned long	dim600JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	25	,	7	,	113	,	13	,	167	,	935	,	329	,	3483	,	4237	};
+			const unsigned long	dim601JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	25	,	43	,	101	,	115	,	439	,	633	,	2001	,	283	,	4415	};
+			const unsigned long	dim602JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	7	,	39	,	41	,	201	,	423	,	351	,	563	,	653	,	6769	};
+			const unsigned long	dim603JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	3	,	55	,	29	,	75	,	17	,	283	,	837	,	1303	,	7917	};
+			const unsigned long	dim604JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	9	,	17	,	47	,	39	,	399	,	645	,	575	,	805	,	5751	};
+			const unsigned long	dim605JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	7	,	9	,	99	,	239	,	503	,	995	,	1265	,	1651	,	2095	};
+			const unsigned long	dim606JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	17	,	13	,	107	,	165	,	341	,	337	,	51	,	1619	,	7801	};
+			const unsigned long	dim607JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	19	,	55	,	73	,	105	,	97	,	557	,	1701	,	799	,	5591	};
+			const unsigned long	dim608JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	15	,	21	,	35	,	39	,	215	,	357	,	171	,	161	,	4527	};
+			const unsigned long	dim609JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	19	,	7	,	27	,	153	,	399	,	415	,	2031	,	627	,	8169	};
+			const unsigned long	dim610JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	27	,	37	,	21	,	217	,	413	,	787	,	1637	,	1199	,	1735	};
+			const unsigned long	dim611JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	25	,	21	,	95	,	13	,	159	,	195	,	1493	,	1395	,	7453	};
+			const unsigned long	dim612JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	3	,	17	,	47	,	95	,	327	,	493	,	1501	,	2857	,	7215	};
+			const unsigned long	dim613JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	19	,	25	,	67	,	89	,	243	,	913	,	815	,	2471	,	6537	};
+			const unsigned long	dim614JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	29	,	53	,	13	,	21	,	131	,	893	,	1113	,	525	,	6723	};
+			const unsigned long	dim615JoeKuoD6Init[]	=	{	1	,	1	,	5	,	1	,	25	,	45	,	97	,	167	,	465	,	65	,	1923	,	3971	,	6365	};
+			const unsigned long	dim616JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	3	,	7	,	113	,	85	,	371	,	143	,	201	,	1023	,	2827	};
+			const unsigned long	dim617JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	5	,	31	,	5	,	37	,	57	,	203	,	241	,	2473	,	593	};
+			const unsigned long	dim618JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	25	,	59	,	87	,	207	,	227	,	103	,	491	,	1299	,	4173	};
+			const unsigned long	dim619JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	15	,	61	,	75	,	171	,	421	,	651	,	375	,	511	,	2723	};
+			const unsigned long	dim620JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	9	,	19	,	55	,	5	,	365	,	7	,	1401	,	3049	,	6669	};
+			const unsigned long	dim621JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	31	,	37	,	97	,	105	,	343	,	999	,	1641	,	1951	,	1395	};
+			const unsigned long	dim622JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	5	,	13	,	83	,	189	,	395	,	335	,	1767	,	887	,	3431	};
+			const unsigned long	dim623JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	17	,	45	,	71	,	227	,	171	,	831	,	617	,	1203	,	6477	};
+			const unsigned long	dim624JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	15	,	49	,	91	,	61	,	155	,	951	,	1031	,	1153	,	5201	};
+			const unsigned long	dim625JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	23	,	51	,	75	,	89	,	359	,	257	,	1695	,	1739	,	5439	};
+			const unsigned long	dim626JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	9	,	47	,	31	,	225	,	191	,	787	,	355	,	2013	,	5897	};
+			const unsigned long	dim627JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	7	,	41	,	91	,	83	,	9	,	643	,	1589	,	3491	,	135	};
+			const unsigned long	dim628JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	5	,	29	,	29	,	249	,	181	,	641	,	17	,	3187	,	6767	};
+			const unsigned long	dim629JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	25	,	17	,	91	,	187	,	61	,	305	,	199	,	2397	,	2287	};
+			const unsigned long	dim630JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	25	,	45	,	85	,	35	,	361	,	353	,	631	,	1113	,	135	};
+			const unsigned long	dim631JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	13	,	11	,	107	,	67	,	127	,	523	,	1129	,	81	,	7627	};
+			const unsigned long	dim632JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	17	,	43	,	89	,	225	,	45	,	597	,	1683	,	943	,	3801	};
+			const unsigned long	dim633JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	31	,	47	,	37	,	31	,	269	,	731	,	1817	,	3977	,	7107	};
+			const unsigned long	dim634JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	21	,	37	,	93	,	219	,	117	,	369	,	561	,	4031	,	365	};
+			const unsigned long	dim635JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	31	,	21	,	65	,	237	,	157	,	775	,	843	,	1725	,	583	};
+			const unsigned long	dim636JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	11	,	31	,	15	,	217	,	377	,	395	,	1633	,	3841	,	4417	};
+			const unsigned long	dim637JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	23	,	23	,	93	,	109	,	265	,	379	,	1341	,	1857	,	5567	};
+			const unsigned long	dim638JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	13	,	37	,	109	,	121	,	7	,	157	,	1639	,	483	,	1433	};
+			const unsigned long	dim639JoeKuoD6Init[]	=	{	1	,	1	,	1	,	3	,	5	,	37	,	29	,	107	,	77	,	771	,	1631	,	3051	,	8097	};
+			const unsigned long	dim640JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	27	,	5	,	59	,	89	,	401	,	223	,	1013	,	1089	,	3407	};
+			const unsigned long	dim641JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	11	,	47	,	113	,	237	,	69	,	833	,	845	,	179	,	3687	};
+			const unsigned long	dim642JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	19	,	43	,	117	,	223	,	373	,	145	,	463	,	1719	,	3621	};
+			const unsigned long	dim643JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	5	,	53	,	5	,	53	,	385	,	723	,	809	,	1785	,	6495	};
+			const unsigned long	dim644JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	3	,	63	,	125	,	63	,	275	,	575	,	1461	,	821	,	5607	};
+			const unsigned long	dim645JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	17	,	33	,	71	,	145	,	215	,	741	,	1843	,	1987	,	4263	};
+			const unsigned long	dim646JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	31	,	63	,	29	,	233	,	441	,	447	,	853	,	3937	,	4747	};
+			const unsigned long	dim647JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	21	,	35	,	15	,	221	,	63	,	481	,	403	,	2795	,	5533	};
+			const unsigned long	dim648JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	1	,	47	,	123	,	129	,	365	,	23	,	1975	,	1179	,	7957	};
+			const unsigned long	dim649JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	11	,	23	,	119	,	229	,	141	,	687	,	1639	,	2105	,	319	};
+			const unsigned long	dim650JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	17	,	49	,	3	,	113	,	297	,	727	,	1135	,	2657	,	187	};
+			const unsigned long	dim651JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	5	,	31	,	83	,	173	,	159	,	389	,	1373	,	3049	,	827	};
+			const unsigned long	dim652JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	27	,	51	,	107	,	97	,	119	,	831	,	247	,	2613	,	7125	};
+			const unsigned long	dim653JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	23	,	53	,	35	,	181	,	81	,	213	,	1135	,	2901	,	1555	};
+			const unsigned long	dim654JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	9	,	45	,	25	,	137	,	399	,	345	,	339	,	1869	,	3469	};
+			const unsigned long	dim655JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	25	,	49	,	71	,	139	,	473	,	883	,	677	,	1229	,	6661	};
+			const unsigned long	dim656JoeKuoD6Init[]	=	{	1	,	3	,	5	,	13	,	1	,	55	,	31	,	67	,	321	,	221	,	1425	,	1335	,	3805	};
+			const unsigned long	dim657JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	7	,	31	,	53	,	169	,	67	,	509	,	1155	,	1739	,	615	};
+			const unsigned long	dim658JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	1	,	13	,	49	,	39	,	263	,	215	,	767	,	2881	,	1517	};
+			const unsigned long	dim659JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	27	,	41	,	15	,	5	,	203	,	539	,	463	,	1983	,	1949	};
+			const unsigned long	dim660JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	21	,	3	,	101	,	225	,	255	,	805	,	1035	,	813	,	8125	};
+			const unsigned long	dim661JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	17	,	59	,	55	,	107	,	117	,	489	,	541	,	689	,	581	};
+			const unsigned long	dim662JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	17	,	57	,	75	,	135	,	295	,	11	,	1415	,	1843	,	7079	};
+			const unsigned long	dim663JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	17	,	49	,	49	,	91	,	227	,	295	,	1501	,	3723	,	5879	};
+			const unsigned long	dim664JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	27	,	17	,	63	,	127	,	503	,	869	,	53	,	627	,	5085	};
+			const unsigned long	dim665JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	25	,	25	,	1	,	83	,	461	,	1019	,	1737	,	1901	,	2611	};
+			const unsigned long	dim666JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	23	,	59	,	59	,	235	,	33	,	747	,	1141	,	2429	,	3833	};
+			const unsigned long	dim667JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	29	,	55	,	85	,	179	,	385	,	645	,	1009	,	1193	,	5643	};
+			const unsigned long	dim668JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	29	,	11	,	77	,	147	,	453	,	655	,	469	,	2727	,	6205	};
+			const unsigned long	dim669JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	5	,	13	,	103	,	115	,	445	,	87	,	1803	,	601	,	5159	};
+			const unsigned long	dim670JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	1	,	37	,	55	,	129	,	5	,	387	,	51	,	3585	,	6771	};
+			const unsigned long	dim671JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	15	,	15	,	21	,	13	,	67	,	391	,	1745	,	1137	,	7039	};
+			const unsigned long	dim672JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	25	,	1	,	83	,	135	,	275	,	11	,	339	,	269	,	6121	};
+			const unsigned long	dim673JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	27	,	11	,	109	,	15	,	499	,	489	,	615	,	1713	,	7713	};
+			const unsigned long	dim674JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	25	,	53	,	1	,	169	,	275	,	623	,	411	,	195	,	6331	};
+			const unsigned long	dim675JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	3	,	5	,	73	,	97	,	407	,	687	,	311	,	2141	,	6687	};
+			const unsigned long	dim676JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	27	,	43	,	123	,	143	,	99	,	963	,	2029	,	3759	,	1483	};
+			const unsigned long	dim677JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	5	,	43	,	11	,	51	,	423	,	111	,	875	,	3605	,	4023	};
+			const unsigned long	dim678JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	25	,	11	,	89	,	21	,	425	,	585	,	1983	,	3481	,	7329	};
+			const unsigned long	dim679JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	1	,	5	,	107	,	29	,	285	,	929	,	663	,	319	,	3139	};
+			const unsigned long	dim680JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	7	,	37	,	21	,	51	,	385	,	539	,	59	,	1595	,	9	};
+			const unsigned long	dim681JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	9	,	21	,	87	,	149	,	21	,	211	,	787	,	351	,	5597	};
+			const unsigned long	dim682JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	1	,	41	,	21	,	65	,	7	,	83	,	693	,	1905	,	5935	};
+			const unsigned long	dim683JoeKuoD6Init[]	=	{	1	,	3	,	3	,	11	,	17	,	3	,	55	,	205	,	461	,	897	,	273	,	2849	,	1685	};
+			const unsigned long	dim684JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	23	,	15	,	121	,	129	,	387	,	967	,	1131	,	3451	,	3545	};
+			const unsigned long	dim685JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	5	,	29	,	59	,	69	,	27	,	699	,	1639	,	2137	,	6305	};
+			const unsigned long	dim686JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	23	,	23	,	69	,	205	,	399	,	661	,	1187	,	1639	,	5099	};
+			const unsigned long	dim687JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	31	,	17	,	37	,	173	,	371	,	649	,	449	,	243	,	3665	};
+			const unsigned long	dim688JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	21	,	5	,	51	,	105	,	173	,	699	,	475	,	3489	,	7411	};
+			const unsigned long	dim689JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	17	,	41	,	55	,	131	,	359	,	461	,	1885	,	4045	,	3615	};
+			const unsigned long	dim690JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	27	,	33	,	79	,	127	,	227	,	293	,	607	,	1713	,	167	};
+			const unsigned long	dim691JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	5	,	9	,	13	,	59	,	425	,	319	,	1813	,	2905	,	4647	};
+			const unsigned long	dim692JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	13	,	59	,	69	,	95	,	379	,	119	,	1175	,	1853	,	7573	};
+			const unsigned long	dim693JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	3	,	47	,	51	,	203	,	395	,	623	,	13	,	3369	,	663	};
+			const unsigned long	dim694JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	3	,	39	,	107	,	203	,	125	,	627	,	1817	,	1101	,	935	};
+			const unsigned long	dim695JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	7	,	31	,	71	,	141	,	507	,	101	,	913	,	567	,	753	};
+			const unsigned long	dim696JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	1	,	25	,	81	,	211	,	79	,	277	,	1445	,	783	,	5	};
+			const unsigned long	dim697JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	7	,	9	,	63	,	87	,	335	,	413	,	1595	,	2313	,	5883	};
+			const unsigned long	dim698JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	21	,	61	,	87	,	119	,	155	,	259	,	1629	,	2565	,	5975	};
+			const unsigned long	dim699JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	29	,	59	,	57	,	205	,	65	,	779	,	1433	,	2845	,	1311	};
+			const unsigned long	dim700JoeKuoD6Init[]	=	{	1	,	3	,	3	,	3	,	29	,	59	,	1	,	125	,	493	,	25	,	315	,	1171	,	4837	};
+			const unsigned long	dim701JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	1	,	47	,	119	,	141	,	95	,	87	,	1497	,	3613	,	5009	};
+			const unsigned long	dim702JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	7	,	19	,	61	,	233	,	321	,	585	,	547	,	179	,	6787	};
+			const unsigned long	dim703JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	15	,	29	,	51	,	177	,	189	,	435	,	89	,	2507	,	4975	};
+			const unsigned long	dim704JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	19	,	49	,	125	,	145	,	329	,	975	,	717	,	161	,	1099	};
+			const unsigned long	dim705JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	1	,	21	,	81	,	63	,	263	,	597	,	1713	,	1759	,	1745	};
+			const unsigned long	dim706JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	17	,	61	,	19	,	119	,	229	,	25	,	1759	,	343	,	7925	};
+			const unsigned long	dim707JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	27	,	49	,	51	,	149	,	453	,	717	,	1791	,	2529	,	331	};
+			const unsigned long	dim708JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	11	,	15	,	125	,	237	,	291	,	111	,	1051	,	3739	,	3805	};
+			const unsigned long	dim709JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	7	,	63	,	49	,	73	,	53	,	429	,	1167	,	2019	,	911	};
+			const unsigned long	dim710JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	29	,	17	,	3	,	193	,	243	,	29	,	2007	,	1881	,	7143	};
+			const unsigned long	dim711JoeKuoD6Init[]	=	{	1	,	3	,	3	,	3	,	5	,	19	,	127	,	149	,	57	,	601	,	1263	,	1909	,	3835	};
+			const unsigned long	dim712JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	25	,	43	,	21	,	115	,	193	,	735	,	571	,	401	,	1573	};
+			const unsigned long	dim713JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	25	,	41	,	53	,	165	,	5	,	575	,	1381	,	995	,	5851	};
+			const unsigned long	dim714JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	21	,	43	,	25	,	125	,	49	,	207	,	345	,	2981	,	709	};
+			const unsigned long	dim715JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	29	,	37	,	89	,	145	,	123	,	771	,	631	,	3259	,	1431	};
+			const unsigned long	dim716JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	1	,	37	,	67	,	243	,	335	,	913	,	1927	,	3027	,	6059	};
+			const unsigned long	dim717JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	11	,	31	,	61	,	59	,	511	,	543	,	1747	,	3329	,	599	};
+			const unsigned long	dim718JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	17	,	31	,	9	,	143	,	381	,	713	,	135	,	1037	,	5981	};
+			const unsigned long	dim719JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	25	,	7	,	79	,	3	,	403	,	979	,	1021	,	457	,	999	};
+			const unsigned long	dim720JoeKuoD6Init[]	=	{	1	,	3	,	3	,	11	,	3	,	19	,	127	,	135	,	255	,	645	,	437	,	3793	,	5809	};
+			const unsigned long	dim721JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	5	,	59	,	69	,	135	,	307	,	769	,	307	,	3225	,	2869	};
+			const unsigned long	dim722JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	9	,	33	,	121	,	41	,	245	,	1009	,	2039	,	925	,	3341	};
+			const unsigned long	dim723JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	19	,	23	,	55	,	155	,	389	,	817	,	475	,	1005	,	1971	};
+			const unsigned long	dim724JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	11	,	17	,	7	,	113	,	249	,	241	,	1149	,	2359	,	8037	};
+			const unsigned long	dim725JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	23	,	59	,	115	,	5	,	503	,	221	,	485	,	3857	,	4399	};
+			const unsigned long	dim726JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	5	,	53	,	119	,	107	,	103	,	99	,	1313	,	623	,	3073	};
+			const unsigned long	dim727JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	7	,	21	,	85	,	47	,	345	,	355	,	607	,	2213	,	2489	};
+			const unsigned long	dim728JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	7	,	51	,	43	,	53	,	281	,	311	,	1221	,	3919	,	4821	};
+			const unsigned long	dim729JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	21	,	15	,	105	,	251	,	367	,	311	,	1247	,	2357	,	5411	};
+			const unsigned long	dim730JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	17	,	21	,	1	,	213	,	505	,	97	,	603	,	4057	,	6853	};
+			const unsigned long	dim731JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	21	,	3	,	105	,	61	,	5	,	39	,	461	,	351	,	4379	};
+			const unsigned long	dim732JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	15	,	39	,	87	,	21	,	393	,	525	,	1699	,	2427	,	211	};
+			const unsigned long	dim733JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	21	,	25	,	53	,	175	,	387	,	83	,	1155	,	1225	,	5681	};
+			const unsigned long	dim734JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	7	,	49	,	43	,	127	,	257	,	499	,	79	,	33	,	2843	};
+			const unsigned long	dim735JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	21	,	17	,	89	,	175	,	161	,	371	,	389	,	2289	,	7751	};
+			const unsigned long	dim736JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	19	,	23	,	65	,	5	,	149	,	563	,	1237	,	3445	,	6817	};
+			const unsigned long	dim737JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	23	,	21	,	65	,	11	,	329	,	323	,	551	,	3859	,	749	};
+			const unsigned long	dim738JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	13	,	23	,	11	,	169	,	203	,	349	,	1733	,	2537	,	3777	};
+			const unsigned long	dim739JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	5	,	19	,	47	,	81	,	215	,	677	,	1861	,	2703	,	6373	};
+			const unsigned long	dim740JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	11	,	5	,	19	,	151	,	215	,	695	,	1347	,	1359	,	1979	};
+			const unsigned long	dim741JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	1	,	59	,	11	,	185	,	379	,	247	,	1885	,	1819	,	637	};
+			const unsigned long	dim742JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	21	,	3	,	53	,	161	,	49	,	697	,	113	,	3561	,	95	};
+			const unsigned long	dim743JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	29	,	15	,	85	,	123	,	415	,	41	,	703	,	1501	,	6939	};
+			const unsigned long	dim744JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	7	,	37	,	75	,	185	,	115	,	423	,	625	,	3557	,	7851	};
+			const unsigned long	dim745JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	11	,	35	,	119	,	131	,	331	,	197	,	1939	,	1951	,	7957	};
+			const unsigned long	dim746JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	9	,	43	,	93	,	11	,	97	,	483	,	131	,	1095	,	601	};
+			const unsigned long	dim747JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	11	,	43	,	49	,	205	,	393	,	921	,	625	,	359	,	3997	};
+			const unsigned long	dim748JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	31	,	21	,	27	,	231	,	159	,	67	,	1127	,	2153	,	6291	};
+			const unsigned long	dim749JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	13	,	15	,	45	,	85	,	155	,	763	,	1341	,	9	,	6229	};
+			const unsigned long	dim750JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	9	,	21	,	47	,	67	,	207	,	385	,	401	,	1665	,	7849	};
+			const unsigned long	dim751JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	13	,	59	,	89	,	163	,	19	,	997	,	2021	,	3301	,	2945	};
+			const unsigned long	dim752JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	17	,	9	,	33	,	117	,	33	,	701	,	73	,	2955	,	1781	};
+			const unsigned long	dim753JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	3	,	11	,	81	,	209	,	131	,	247	,	1927	,	3997	,	1709	};
+			const unsigned long	dim754JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	21	,	47	,	85	,	163	,	247	,	273	,	545	,	3477	,	4565	};
+			const unsigned long	dim755JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	3	,	5	,	55	,	171	,	501	,	149	,	121	,	2317	,	2023	};
+			const unsigned long	dim756JoeKuoD6Init[]	=	{	1	,	1	,	5	,	1	,	25	,	31	,	25	,	171	,	471	,	149	,	49	,	3059	,	7871	};
+			const unsigned long	dim757JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	3	,	39	,	91	,	75	,	183	,	115	,	869	,	4005	,	1443	};
+			const unsigned long	dim758JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	31	,	37	,	3	,	23	,	443	,	177	,	219	,	1683	,	7063	};
+			const unsigned long	dim759JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	17	,	51	,	111	,	157	,	455	,	415	,	1171	,	531	,	7289	};
+			const unsigned long	dim760JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	3	,	45	,	103	,	185	,	63	,	299	,	1471	,	3579	,	3751	};
+			const unsigned long	dim761JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	25	,	45	,	91	,	145	,	285	,	525	,	1675	,	665	,	883	};
+			const unsigned long	dim762JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	23	,	23	,	33	,	47	,	271	,	65	,	1009	,	2363	,	7231	};
+			const unsigned long	dim763JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	25	,	3	,	13	,	105	,	105	,	649	,	531	,	535	,	6019	};
+			const unsigned long	dim764JoeKuoD6Init[]	=	{	1	,	3	,	3	,	5	,	9	,	1	,	9	,	15	,	131	,	793	,	1841	,	2249	,	5775	};
+			const unsigned long	dim765JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	27	,	35	,	125	,	249	,	125	,	973	,	233	,	229	,	8165	};
+			const unsigned long	dim766JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	19	,	1	,	39	,	239	,	159	,	627	,	601	,	1537	,	7473	};
+			const unsigned long	dim767JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	1	,	45	,	99	,	149	,	205	,	277	,	1701	,	121	,	1577	};
+			const unsigned long	dim768JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	9	,	43	,	7	,	139	,	331	,	995	,	647	,	2707	,	4493	};
+			const unsigned long	dim769JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	19	,	31	,	67	,	213	,	355	,	85	,	1829	,	2897	,	6799	};
+			const unsigned long	dim770JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	29	,	51	,	49	,	209	,	257	,	913	,	811	,	895	,	8051	};
+			const unsigned long	dim771JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	31	,	33	,	19	,	37	,	297	,	473	,	1987	,	3433	,	1981	};
+			const unsigned long	dim772JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	1	,	3	,	127	,	183	,	241	,	941	,	973	,	577	,	6891	};
+			const unsigned long	dim773JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	31	,	21	,	125	,	193	,	23	,	731	,	493	,	3173	,	4381	};
+			const unsigned long	dim774JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	23	,	31	,	65	,	59	,	63	,	285	,	1191	,	3005	,	2211	};
+			const unsigned long	dim775JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	13	,	11	,	121	,	153	,	199	,	359	,	1159	,	363	,	3477	};
+			const unsigned long	dim776JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	29	,	27	,	105	,	215	,	143	,	365	,	369	,	3341	,	5017	};
+			const unsigned long	dim777JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	23	,	43	,	119	,	89	,	307	,	607	,	1087	,	287	,	7305	};
+			const unsigned long	dim778JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	19	,	9	,	115	,	133	,	387	,	717	,	687	,	3447	,	201	};
+			const unsigned long	dim779JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	23	,	7	,	81	,	77	,	483	,	725	,	1499	,	1565	,	8073	};
+			const unsigned long	dim780JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	23	,	25	,	119	,	247	,	195	,	205	,	1851	,	2463	,	6827	};
+			const unsigned long	dim781JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	17	,	51	,	11	,	233	,	115	,	719	,	1333	,	3829	,	4941	};
+			const unsigned long	dim782JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	25	,	17	,	103	,	241	,	133	,	237	,	1375	,	4005	,	7853	};
+			const unsigned long	dim783JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	19	,	31	,	115	,	193	,	305	,	1	,	1167	,	325	,	985	};
+			const unsigned long	dim784JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	13	,	11	,	33	,	27	,	453	,	941	,	293	,	2819	,	3247	};
+			const unsigned long	dim785JoeKuoD6Init[]	=	{	1	,	3	,	3	,	3	,	11	,	27	,	37	,	95	,	371	,	441	,	1347	,	13	,	4219	};
+			const unsigned long	dim786JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	31	,	39	,	17	,	63	,	323	,	1013	,	479	,	4077	,	313	};
+			const unsigned long	dim787JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	3	,	59	,	121	,	19	,	43	,	351	,	285	,	2239	,	8117	};
+			const unsigned long	dim788JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	7	,	7	,	13	,	31	,	403	,	925	,	789	,	275	,	6959	};
+			const unsigned long	dim789JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	3	,	11	,	89	,	195	,	393	,	301	,	517	,	1675	,	963	};
+			const unsigned long	dim790JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	17	,	63	,	79	,	17	,	127	,	119	,	1127	,	2121	,	7545	};
+			const unsigned long	dim791JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	29	,	15	,	97	,	183	,	157	,	319	,	1047	,	895	,	7297	};
+			const unsigned long	dim792JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	25	,	37	,	101	,	233	,	275	,	705	,	1147	,	1511	,	231	};
+			const unsigned long	dim793JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	3	,	63	,	45	,	219	,	315	,	905	,	9	,	3105	,	785	};
+			const unsigned long	dim794JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	17	,	27	,	89	,	15	,	337	,	981	,	403	,	1609	,	349	};
+			const unsigned long	dim795JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	27	,	21	,	39	,	209	,	461	,	211	,	71	,	1413	,	1185	};
+			const unsigned long	dim796JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	11	,	9	,	19	,	229	,	403	,	323	,	1651	,	475	,	1207	};
+			const unsigned long	dim797JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	31	,	13	,	39	,	9	,	365	,	857	,	1715	,	3831	,	2467	};
+			const unsigned long	dim798JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	31	,	41	,	25	,	101	,	297	,	143	,	345	,	2097	,	1679	};
+			const unsigned long	dim799JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	27	,	61	,	77	,	107	,	291	,	265	,	759	,	933	,	2529	};
+			const unsigned long	dim800JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	15	,	51	,	31	,	191	,	39	,	469	,	1711	,	1215	,	7603	};
+			const unsigned long	dim801JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	19	,	27	,	121	,	235	,	475	,	11	,	1193	,	543	,	5689	};
+			const unsigned long	dim802JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	19	,	1	,	97	,	85	,	393	,	971	,	1915	,	3487	,	7569	};
+			const unsigned long	dim803JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	21	,	25	,	81	,	197	,	9	,	403	,	1305	,	2977	,	6261	};
+			const unsigned long	dim804JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	5	,	3	,	5	,	91	,	133	,	957	,	437	,	3821	,	4395	};
+			const unsigned long	dim805JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	23	,	47	,	85	,	139	,	511	,	389	,	461	,	2967	,	7305	};
+			const unsigned long	dim806JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	13	,	3	,	33	,	171	,	391	,	109	,	197	,	2097	,	5357	};
+			const unsigned long	dim807JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	31	,	61	,	7	,	61	,	175	,	455	,	1867	,	2829	,	197	};
+			const unsigned long	dim808JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	21	,	33	,	119	,	97	,	297	,	69	,	1503	,	2887	,	3785	};
+			const unsigned long	dim809JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	1	,	63	,	105	,	53	,	443	,	775	,	1855	,	2635	,	4453	};
+			const unsigned long	dim810JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	1	,	13	,	99	,	227	,	421	,	739	,	583	,	4011	,	2095	};
+			const unsigned long	dim811JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	7	,	21	,	125	,	45	,	411	,	621	,	137	,	259	,	3401	};
+			const unsigned long	dim812JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	9	,	15	,	47	,	213	,	71	,	725	,	2015	,	3119	,	3295	};
+			const unsigned long	dim813JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	21	,	63	,	83	,	63	,	29	,	969	,	119	,	3535	,	989	};
+			const unsigned long	dim814JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	13	,	15	,	71	,	83	,	209	,	191	,	1049	,	3423	,	5829	};
+			const unsigned long	dim815JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	27	,	7	,	65	,	107	,	387	,	853	,	919	,	1257	,	719	};
+			const unsigned long	dim816JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	29	,	63	,	115	,	91	,	181	,	217	,	1097	,	1023	,	3641	};
+			const unsigned long	dim817JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	7	,	57	,	37	,	209	,	99	,	959	,	693	,	1573	,	3407	};
+			const unsigned long	dim818JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	9	,	51	,	51	,	127	,	153	,	977	,	1565	,	1329	,	4603	};
+			const unsigned long	dim819JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	9	,	57	,	7	,	225	,	139	,	515	,	1355	,	191	,	659	};
+			const unsigned long	dim820JoeKuoD6Init[]	=	{	1	,	3	,	3	,	3	,	7	,	45	,	85	,	231	,	153	,	93	,	371	,	2753	,	5331	};
+			const unsigned long	dim821JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	1	,	9	,	45	,	29	,	131	,	203	,	31	,	1219	,	1635	};
+			const unsigned long	dim822JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	5	,	13	,	115	,	51	,	471	,	987	,	1937	,	3921	,	7885	};
+			const unsigned long	dim823JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	1	,	23	,	49	,	183	,	495	,	427	,	1397	,	3383	,	3459	};
+			const unsigned long	dim824JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	23	,	39	,	3	,	205	,	447	,	603	,	1213	,	667	,	1039	};
+			const unsigned long	dim825JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	7	,	63	,	27	,	169	,	403	,	775	,	241	,	3951	,	3411	};
+			const unsigned long	dim826JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	7	,	1	,	63	,	185	,	197	,	813	,	1757	,	2687	,	7289	};
+			const unsigned long	dim827JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	21	,	21	,	97	,	73	,	73	,	147	,	1905	,	2391	,	3743	};
+			const unsigned long	dim828JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	29	,	45	,	27	,	93	,	71	,	749	,	337	,	7	,	3959	};
+			const unsigned long	dim829JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	25	,	13	,	61	,	131	,	183	,	409	,	1547	,	1261	,	5541	};
+			const unsigned long	dim830JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	9	,	13	,	13	,	115	,	87	,	587	,	1561	,	1845	,	2383	};
+			const unsigned long	dim831JoeKuoD6Init[]	=	{	1	,	3	,	3	,	3	,	13	,	19	,	99	,	75	,	435	,	815	,	251	,	1639	,	2157	};
+			const unsigned long	dim832JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	19	,	61	,	49	,	237	,	325	,	429	,	1019	,	2649	,	6671	};
+			const unsigned long	dim833JoeKuoD6Init[]	=	{	1	,	3	,	3	,	11	,	1	,	59	,	71	,	143	,	37	,	445	,	1289	,	2089	,	5693	};
+			const unsigned long	dim834JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	13	,	13	,	119	,	83	,	111	,	497	,	739	,	863	,	2009	};
+			const unsigned long	dim835JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	3	,	21	,	89	,	27	,	171	,	121	,	1453	,	3273	,	2891	};
+			const unsigned long	dim836JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	29	,	19	,	79	,	77	,	343	,	969	,	1759	,	1921	,	4189	};
+			const unsigned long	dim837JoeKuoD6Init[]	=	{	1	,	1	,	1	,	3	,	21	,	55	,	99	,	49	,	435	,	697	,	559	,	3475	,	6905	};
+			const unsigned long	dim838JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	9	,	37	,	83	,	79	,	171	,	935	,	751	,	3293	,	299	};
+			const unsigned long	dim839JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	13	,	45	,	35	,	159	,	283	,	451	,	495	,	3239	,	4429	};
+			const unsigned long	dim840JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	13	,	43	,	107	,	189	,	475	,	679	,	1843	,	33	,	6895	};
+			const unsigned long	dim841JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	17	,	13	,	107	,	245	,	415	,	531	,	265	,	3165	,	3189	};
+			const unsigned long	dim842JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	31	,	29	,	103	,	233	,	31	,	445	,	649	,	3377	,	3207	};
+			const unsigned long	dim843JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	19	,	3	,	1	,	75	,	423	,	445	,	1351	,	2889	,	5785	};
+			const unsigned long	dim844JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	21	,	19	,	113	,	35	,	173	,	871	,	275	,	1901	,	6725	};
+			const unsigned long	dim845JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	27	,	45	,	41	,	93	,	463	,	209	,	1721	,	1863	,	7893	};
+			const unsigned long	dim846JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	25	,	63	,	17	,	171	,	403	,	645	,	1669	,	1663	,	4335	};
+			const unsigned long	dim847JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	17	,	15	,	103	,	5	,	375	,	7	,	1117	,	3851	,	651	};
+			const unsigned long	dim848JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	29	,	43	,	13	,	241	,	403	,	349	,	685	,	987	,	4177	};
+			const unsigned long	dim849JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	31	,	37	,	111	,	91	,	391	,	513	,	1701	,	2861	,	4713	};
+			const unsigned long	dim850JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	23	,	59	,	125	,	117	,	375	,	461	,	1697	,	1283	,	7395	};
+			const unsigned long	dim851JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	21	,	35	,	101	,	131	,	129	,	757	,	199	,	1881	,	737	};
+			const unsigned long	dim852JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	31	,	15	,	121	,	143	,	67	,	593	,	1143	,	3761	,	3441	};
+			const unsigned long	dim853JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	11	,	43	,	7	,	159	,	25	,	725	,	1169	,	1757	,	3499	};
+			const unsigned long	dim854JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	5	,	55	,	77	,	85	,	309	,	113	,	1419	,	1255	,	4777	};
+			const unsigned long	dim855JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	19	,	41	,	75	,	163	,	51	,	511	,	1785	,	4033	,	7791	};
+			const unsigned long	dim856JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	29	,	45	,	81	,	189	,	401	,	71	,	1597	,	3671	,	2133	};
+			const unsigned long	dim857JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	3	,	17	,	119	,	55	,	217	,	485	,	1217	,	1475	,	5791	};
+			const unsigned long	dim858JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	21	,	61	,	71	,	175	,	205	,	413	,	1645	,	2375	,	89	};
+			const unsigned long	dim859JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	25	,	35	,	23	,	49	,	395	,	675	,	341	,	959	,	4665	};
+			const unsigned long	dim860JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	21	,	37	,	99	,	151	,	197	,	145	,	2043	,	755	,	2523	};
+			const unsigned long	dim861JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	1	,	61	,	75	,	131	,	65	,	891	,	349	,	2767	,	3855	};
+			const unsigned long	dim862JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	29	,	57	,	61	,	79	,	303	,	997	,	1053	,	1973	,	1547	};
+			const unsigned long	dim863JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	19	,	9	,	57	,	197	,	253	,	597	,	1971	,	1831	,	8097	};
+			const unsigned long	dim864JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	3	,	13	,	29	,	169	,	25	,	957	,	1575	,	2955	,	3549	};
+			const unsigned long	dim865JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	17	,	37	,	79	,	91	,	11	,	687	,	1511	,	1065	,	1539	};
+			const unsigned long	dim866JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	1	,	59	,	1	,	49	,	23	,	73	,	881	,	1661	,	3841	};
+			const unsigned long	dim867JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	13	,	57	,	111	,	67	,	511	,	833	,	1095	,	15	,	569	};
+			const unsigned long	dim868JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	17	,	33	,	1	,	161	,	311	,	29	,	685	,	729	,	5981	};
+			const unsigned long	dim869JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	7	,	13	,	49	,	55	,	251	,	825	,	709	,	445	,	7439	};
+			const unsigned long	dim870JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	13	,	55	,	101	,	89	,	239	,	907	,	1559	,	1421	,	87	};
+			const unsigned long	dim871JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	23	,	27	,	41	,	189	,	35	,	155	,	683	,	2491	,	7495	};
+			const unsigned long	dim872JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	5	,	47	,	39	,	161	,	279	,	945	,	365	,	15	,	4643	};
+			const unsigned long	dim873JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	21	,	7	,	125	,	195	,	23	,	635	,	1949	,	2237	,	1885	};
+			const unsigned long	dim874JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	13	,	25	,	105	,	145	,	203	,	701	,	1525	,	1391	,	1637	};
+			const unsigned long	dim875JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	7	,	43	,	13	,	39	,	301	,	507	,	405	,	2333	,	2405	};
+			const unsigned long	dim876JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	25	,	19	,	31	,	67	,	81	,	781	,	1541	,	3743	,	2787	};
+			const unsigned long	dim877JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	15	,	7	,	87	,	129	,	151	,	225	,	655	,	1569	,	5299	};
+			const unsigned long	dim878JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	3	,	33	,	97	,	255	,	9	,	667	,	787	,	3557	,	5273	};
+			const unsigned long	dim879JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	1	,	7	,	13	,	31	,	31	,	1021	,	1863	,	2897	,	6389	};
+			const unsigned long	dim880JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	13	,	29	,	93	,	27	,	229	,	599	,	521	,	1631	,	3683	};
+			const unsigned long	dim881JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	11	,	27	,	43	,	95	,	149	,	159	,	495	,	2711	,	2189	};
+			const unsigned long	dim882JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	11	,	51	,	43	,	121	,	299	,	73	,	1991	,	561	,	6781	};
+			const unsigned long	dim883JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	7	,	61	,	125	,	13	,	415	,	11	,	15	,	2463	,	385	};
+			const unsigned long	dim884JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	27	,	23	,	1	,	47	,	149	,	371	,	1599	,	341	,	1595	};
+			const unsigned long	dim885JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	3	,	39	,	65	,	5	,	33	,	713	,	399	,	2935	,	3825	};
+			const unsigned long	dim886JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	17	,	39	,	3	,	235	,	227	,	231	,	323	,	2869	,	4747	};
+			const unsigned long	dim887JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	13	,	11	,	41	,	155	,	393	,	701	,	909	,	2999	,	5053	};
+			const unsigned long	dim888JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	5	,	41	,	105	,	13	,	123	,	429	,	1455	,	2501	,	1065	};
+			const unsigned long	dim889JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	17	,	21	,	95	,	141	,	305	,	951	,	1305	,	3639	,	3797	};
+			const unsigned long	dim890JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	7	,	59	,	29	,	129	,	265	,	889	,	993	,	1411	,	2069	};
+			const unsigned long	dim891JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	3	,	51	,	9	,	35	,	355	,	131	,	1307	,	1547	,	701	};
+			const unsigned long	dim892JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	17	,	57	,	113	,	197	,	483	,	831	,	1741	,	3897	,	3649	};
+			const unsigned long	dim893JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	1	,	33	,	7	,	243	,	95	,	905	,	1933	,	2123	,	7381	};
+			const unsigned long	dim894JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	5	,	37	,	1	,	235	,	77	,	375	,	1231	,	1029	,	1839	};
+			const unsigned long	dim895JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	31	,	11	,	103	,	245	,	373	,	103	,	25	,	1283	,	6155	};
+			const unsigned long	dim896JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	25	,	25	,	51	,	159	,	381	,	97	,	799	,	565	,	5165	};
+			const unsigned long	dim897JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	25	,	21	,	109	,	3	,	253	,	459	,	623	,	2817	,	7815	};
+			const unsigned long	dim898JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	23	,	5	,	127	,	157	,	187	,	187	,	1383	,	2777	,	2413	};
+			const unsigned long	dim899JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	29	,	47	,	97	,	197	,	215	,	725	,	445	,	2111	,	1701	};
+			const unsigned long	dim900JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	27	,	25	,	105	,	59	,	333	,	79	,	1099	,	3695	,	5725	};
+			const unsigned long	dim901JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	11	,	15	,	127	,	151	,	163	,	967	,	665	,	733	,	509	};
+			const unsigned long	dim902JoeKuoD6Init[]	=	{	1	,	3	,	3	,	3	,	15	,	5	,	51	,	17	,	409	,	679	,	229	,	1037	,	353	};
+			const unsigned long	dim903JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	7	,	9	,	17	,	115	,	205	,	105	,	597	,	2913	,	1941	};
+			const unsigned long	dim904JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	31	,	1	,	99	,	213	,	33	,	319	,	617	,	1493	,	7287	};
+			const unsigned long	dim905JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	21	,	31	,	115	,	43	,	309	,	217	,	1	,	3363	,	6673	};
+			const unsigned long	dim906JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	11	,	29	,	125	,	75	,	209	,	217	,	1749	,	1565	,	4431	};
+			const unsigned long	dim907JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	5	,	37	,	103	,	237	,	19	,	763	,	915	,	753	,	7479	};
+			const unsigned long	dim908JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	11	,	59	,	9	,	133	,	455	,	683	,	251	,	963	,	3743	};
+			const unsigned long	dim909JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	7	,	41	,	97	,	185	,	117	,	367	,	2045	,	3013	,	6249	};
+			const unsigned long	dim910JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	29	,	51	,	53	,	147	,	379	,	769	,	865	,	2273	,	1755	};
+			const unsigned long	dim911JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	13	,	61	,	125	,	153	,	297	,	385	,	1981	,	2221	,	4209	};
+			const unsigned long	dim912JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	7	,	33	,	41	,	43	,	201	,	819	,	129	,	757	,	4087	};
+			const unsigned long	dim913JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	31	,	15	,	19	,	15	,	197	,	921	,	1967	,	491	,	4911	};
+			const unsigned long	dim914JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	21	,	25	,	119	,	123	,	255	,	155	,	1765	,	2895	,	4201	};
+			const unsigned long	dim915JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	1	,	63	,	57	,	193	,	327	,	455	,	1729	,	1259	,	7483	};
+			const unsigned long	dim916JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	5	,	19	,	71	,	255	,	257	,	477	,	1799	,	3855	,	955	};
+			const unsigned long	dim917JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	29	,	27	,	7	,	151	,	327	,	311	,	235	,	3599	,	6165	};
+			const unsigned long	dim918JoeKuoD6Init[]	=	{	1	,	3	,	3	,	3	,	7	,	29	,	113	,	87	,	339	,	271	,	1141	,	1111	,	7971	};
+			const unsigned long	dim919JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	23	,	51	,	57	,	233	,	179	,	397	,	1059	,	123	,	697	};
+			const unsigned long	dim920JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	17	,	11	,	15	,	189	,	437	,	449	,	1533	,	2209	,	1849	};
+			const unsigned long	dim921JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	9	,	19	,	53	,	165	,	279	,	875	,	1223	,	1585	,	6647	};
+			const unsigned long	dim922JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	5	,	49	,	119	,	31	,	273	,	919	,	413	,	1531	,	6233	};
+			const unsigned long	dim923JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	1	,	19	,	27	,	213	,	413	,	271	,	223	,	299	,	5635	};
+			const unsigned long	dim924JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	11	,	55	,	25	,	43	,	147	,	53	,	95	,	1849	,	7701	};
+			const unsigned long	dim925JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	17	,	35	,	9	,	3	,	117	,	729	,	21	,	3379	,	5963	};
+			const unsigned long	dim926JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	23	,	25	,	45	,	103	,	181	,	677	,	1155	,	205	,	1967	};
+			const unsigned long	dim927JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	19	,	53	,	41	,	243	,	97	,	199	,	407	,	3299	,	5309	};
+			const unsigned long	dim928JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	27	,	27	,	59	,	153	,	501	,	855	,	1235	,	2295	,	5535	};
+			const unsigned long	dim929JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	11	,	37	,	1	,	179	,	289	,	895	,	511	,	697	,	5067	};
+			const unsigned long	dim930JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	25	,	27	,	33	,	37	,	351	,	351	,	813	,	2239	,	1561	};
+			const unsigned long	dim931JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	25	,	51	,	79	,	65	,	427	,	293	,	1031	,	685	,	533	};
+			const unsigned long	dim932JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	21	,	21	,	77	,	31	,	299	,	643	,	161	,	2991	,	7911	};
+			const unsigned long	dim933JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	7	,	61	,	99	,	19	,	43	,	35	,	687	,	1449	,	5211	};
+			const unsigned long	dim934JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	5	,	59	,	101	,	175	,	149	,	799	,	439	,	19	,	7565	};
+			const unsigned long	dim935JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	31	,	13	,	75	,	227	,	337	,	207	,	609	,	2119	,	3539	};
+			const unsigned long	dim936JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	3	,	59	,	1	,	139	,	425	,	583	,	263	,	2687	,	4445	};
+			const unsigned long	dim937JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	21	,	31	,	55	,	117	,	377	,	469	,	1907	,	3091	,	3221	};
+			const unsigned long	dim938JoeKuoD6Init[]	=	{	1	,	1	,	5	,	1	,	7	,	63	,	89	,	197	,	271	,	425	,	1493	,	2337	,	6397	};
+			const unsigned long	dim939JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	9	,	35	,	17	,	237	,	215	,	211	,	523	,	3095	,	1771	};
+			const unsigned long	dim940JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	19	,	23	,	119	,	31	,	331	,	533	,	71	,	319	,	7567	};
+			const unsigned long	dim941JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	1	,	33	,	41	,	9	,	421	,	789	,	1305	,	3775	,	6545	};
+			const unsigned long	dim942JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	17	,	9	,	47	,	237	,	227	,	859	,	113	,	429	,	5399	};
+			const unsigned long	dim943JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	25	,	29	,	15	,	1	,	73	,	1015	,	2023	,	367	,	1523	};
+			const unsigned long	dim944JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	19	,	31	,	121	,	243	,	411	,	717	,	671	,	1329	,	2669	};
+			const unsigned long	dim945JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	27	,	41	,	23	,	13	,	353	,	533	,	1627	,	1625	,	3705	};
+			const unsigned long	dim946JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	31	,	41	,	17	,	3	,	163	,	207	,	407	,	1475	,	5911	};
+			const unsigned long	dim947JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	3	,	19	,	87	,	199	,	77	,	207	,	1957	,	1691	,	5045	};
+			const unsigned long	dim948JoeKuoD6Init[]	=	{	1	,	1	,	1	,	3	,	19	,	57	,	107	,	37	,	419	,	943	,	133	,	519	,	4391	};
+			const unsigned long	dim949JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	7	,	5	,	85	,	1	,	265	,	801	,	2025	,	2655	,	4635	};
+			const unsigned long	dim950JoeKuoD6Init[]	=	{	1	,	3	,	3	,	3	,	7	,	13	,	15	,	155	,	283	,	97	,	1311	,	607	,	2879	};
+			const unsigned long	dim951JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	21	,	31	,	3	,	237	,	323	,	749	,	1879	,	611	,	6763	};
+			const unsigned long	dim952JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	19	,	51	,	25	,	39	,	7	,	973	,	837	,	105	,	1987	};
+			const unsigned long	dim953JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	9	,	63	,	39	,	233	,	391	,	93	,	1741	,	425	,	901	};
+			const unsigned long	dim954JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	13	,	23	,	95	,	195	,	263	,	71	,	255	,	1839	,	4301	};
+			const unsigned long	dim955JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	29	,	35	,	123	,	145	,	377	,	1021	,	1361	,	2319	,	1487	};
+			const unsigned long	dim956JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	9	,	27	,	61	,	85	,	81	,	371	,	1803	,	3683	,	4771	};
+			const unsigned long	dim957JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	9	,	35	,	51	,	137	,	3	,	721	,	1269	,	2667	,	7293	};
+			const unsigned long	dim958JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	3	,	53	,	121	,	227	,	55	,	937	,	1623	,	2691	,	2353	};
+			const unsigned long	dim959JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	7	,	53	,	53	,	121	,	299	,	633	,	263	,	3651	,	3187	};
+			const unsigned long	dim960JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	31	,	59	,	73	,	5	,	475	,	763	,	115	,	2263	,	2475	};
+			const unsigned long	dim961JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	13	,	15	,	49	,	227	,	285	,	41	,	1817	,	2573	,	4991	};
+			const unsigned long	dim962JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	17	,	7	,	29	,	93	,	253	,	527	,	657	,	1859	,	763	};
+			const unsigned long	dim963JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	9	,	11	,	75	,	47	,	469	,	119	,	1505	,	3807	,	2769	};
+			const unsigned long	dim964JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	1	,	37	,	65	,	135	,	345	,	307	,	305	,	1167	,	1767	};
+			const unsigned long	dim965JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	5	,	33	,	9	,	245	,	271	,	123	,	1865	,	2215	,	2791	};
+			const unsigned long	dim966JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	9	,	23	,	3	,	21	,	149	,	923	,	1335	,	1015	,	45	};
+			const unsigned long	dim967JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	11	,	3	,	65	,	219	,	233	,	353	,	771	,	3961	,	1515	};
+			const unsigned long	dim968JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	15	,	41	,	87	,	141	,	19	,	905	,	449	,	3727	,	1875	};
+			const unsigned long	dim969JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	11	,	15	,	53	,	151	,	243	,	279	,	1695	,	2317	,	6661	};
+			const unsigned long	dim970JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	19	,	51	,	31	,	157	,	79	,	399	,	465	,	661	,	1029	};
+			const unsigned long	dim971JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	5	,	41	,	3	,	33	,	157	,	385	,	1943	,	1851	,	3121	};
+			const unsigned long	dim972JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	25	,	59	,	105	,	191	,	151	,	285	,	801	,	201	,	6871	};
+			const unsigned long	dim973JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	27	,	35	,	17	,	195	,	387	,	907	,	1905	,	2177	,	2597	};
+			const unsigned long	dim974JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	31	,	43	,	71	,	185	,	469	,	809	,	541	,	571	,	107	};
+			const unsigned long	dim975JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	5	,	15	,	55	,	211	,	305	,	645	,	1317	,	2751	,	603	};
+			const unsigned long	dim976JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	19	,	59	,	45	,	147	,	165	,	223	,	259	,	1205	,	431	};
+			const unsigned long	dim977JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	5	,	53	,	115	,	57	,	203	,	151	,	1039	,	871	,	3881	};
+			const unsigned long	dim978JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	1	,	29	,	115	,	249	,	79	,	957	,	143	,	3425	,	5769	};
+			const unsigned long	dim979JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	15	,	15	,	117	,	181	,	363	,	17	,	1871	,	1049	,	2997	};
+			const unsigned long	dim980JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	23	,	11	,	77	,	123	,	149	,	1019	,	93	,	3637	,	6975	};
+			const unsigned long	dim981JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	5	,	51	,	77	,	89	,	121	,	155	,	1839	,	1301	,	2771	};
+			const unsigned long	dim982JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	7	,	39	,	33	,	69	,	169	,	535	,	1699	,	2117	,	3233	};
+			const unsigned long	dim983JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	3	,	59	,	81	,	113	,	261	,	627	,	79	,	227	,	7623	};
+			const unsigned long	dim984JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	13	,	57	,	121	,	41	,	11	,	111	,	1055	,	3313	,	3371	};
+			const unsigned long	dim985JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	13	,	9	,	47	,	197	,	303	,	987	,	1125	,	2461	,	5007	};
+			const unsigned long	dim986JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	1	,	59	,	109	,	49	,	453	,	673	,	2017	,	205	,	4673	};
+			const unsigned long	dim987JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	19	,	43	,	95	,	247	,	475	,	193	,	1513	,	885	,	5391	};
+			const unsigned long	dim988JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	29	,	57	,	77	,	101	,	433	,	537	,	1681	,	2463	,	6623	};
+			const unsigned long	dim989JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	3	,	61	,	29	,	53	,	29	,	673	,	1037	,	3877	,	7421	};
+			const unsigned long	dim990JoeKuoD6Init[]	=	{	1	,	3	,	3	,	11	,	5	,	59	,	61	,	91	,	13	,	949	,	1093	,	1291	,	7395	};
+			const unsigned long	dim991JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	21	,	27	,	49	,	37	,	429	,	877	,	1247	,	2375	,	737	};
+			const unsigned long	dim992JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	25	,	19	,	75	,	187	,	239	,	971	,	859	,	2519	,	7323	};
+			const unsigned long	dim993JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	25	,	19	,	11	,	223	,	75	,	801	,	313	,	2875	,	6857	};
+			const unsigned long	dim994JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	13	,	63	,	49	,	125	,	65	,	1005	,	1757	,	3685	,	4385	};
+			const unsigned long	dim995JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	5	,	41	,	95	,	231	,	505	,	907	,	751	,	3207	,	4115	};
+			const unsigned long	dim996JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	31	,	7	,	29	,	51	,	449	,	151	,	1821	,	3317	,	931	};
+			const unsigned long	dim997JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	19	,	11	,	19	,	47	,	111	,	637	,	37	,	3707	,	2599	};
+			const unsigned long	dim998JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	23	,	27	,	65	,	217	,	491	,	129	,	1715	,	2479	,	2015	};
+			const unsigned long	dim999JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	5	,	51	,	43	,	253	,	495	,	105	,	1183	,	3409	,	1469	};
+			const unsigned long	dim1000JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	21	,	5	,	87	,	67	,	481	,	405	,	1967	,	2837	,	5161	};
+			const unsigned long	dim1001JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	29	,	25	,	15	,	211	,	233	,	301	,	1037	,	3853	,	7115	};
+			const unsigned long	dim1002JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	3	,	15	,	85	,	81	,	141	,	395	,	845	,	17	,	7485	};
+			const unsigned long	dim1003JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	21	,	37	,	39	,	93	,	461	,	615	,	1725	,	1745	,	5137	};
+			const unsigned long	dim1004JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	1	,	21	,	21	,	207	,	271	,	447	,	1415	,	2507	,	3291	};
+			const unsigned long	dim1005JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	23	,	3	,	115	,	191	,	257	,	1015	,	463	,	1501	,	7439	};
+			const unsigned long	dim1006JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	3	,	53	,	101	,	221	,	9	,	225	,	1799	,	1701	,	5669	};
+			const unsigned long	dim1007JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	17	,	27	,	7	,	115	,	67	,	645	,	1283	,	75	,	1881	};
+			const unsigned long	dim1008JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	7	,	39	,	75	,	85	,	127	,	379	,	1509	,	2215	,	5697	};
+			const unsigned long	dim1009JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	19	,	31	,	11	,	67	,	263	,	877	,	337	,	1655	,	1855	};
+			const unsigned long	dim1010JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	11	,	47	,	125	,	89	,	235	,	331	,	159	,	685	,	999	};
+			const unsigned long	dim1011JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	23	,	39	,	59	,	69	,	221	,	291	,	725	,	2831	,	4743	};
+			const unsigned long	dim1012JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	1	,	43	,	127	,	235	,	143	,	329	,	1823	,	21	,	73	};
+			const unsigned long	dim1013JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	27	,	23	,	33	,	29	,	493	,	775	,	1873	,	1005	,	2869	};
+			const unsigned long	dim1014JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	3	,	31	,	63	,	249	,	353	,	849	,	5	,	2787	,	4759	};
+			const unsigned long	dim1015JoeKuoD6Init[]	=	{	1	,	3	,	3	,	11	,	15	,	15	,	73	,	159	,	433	,	35	,	1203	,	2541	,	6713	};
+			const unsigned long	dim1016JoeKuoD6Init[]	=	{	1	,	1	,	5	,	1	,	13	,	17	,	107	,	101	,	411	,	861	,	1075	,	2161	,	3923	};
+			const unsigned long	dim1017JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	29	,	29	,	55	,	205	,	235	,	685	,	1445	,	2413	,	6837	};
+			const unsigned long	dim1018JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	13	,	1	,	125	,	37	,	331	,	33	,	47	,	2761	,	3449	};
+			const unsigned long	dim1019JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	17	,	21	,	21	,	93	,	145	,	423	,	1057	,	997	,	6117	};
+			const unsigned long	dim1020JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	25	,	47	,	13	,	159	,	41	,	907	,	1543	,	1919	,	5547	};
+			const unsigned long	dim1021JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	29	,	53	,	83	,	45	,	133	,	453	,	183	,	2939	,	4945	};
+			const unsigned long	dim1022JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	9	,	7	,	89	,	71	,	315	,	983	,	1471	,	2475	,	7077	};
+			const unsigned long	dim1023JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	31	,	21	,	55	,	37	,	337	,	63	,	299	,	2415	,	153	};
+			const unsigned long	dim1024JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	27	,	59	,	85	,	109	,	405	,	337	,	393	,	2291	,	5423	};
+			const unsigned long	dim1025JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	5	,	31	,	33	,	43	,	141	,	9	,	1271	,	1749	,	6281	};
+			const unsigned long	dim1026JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	23	,	35	,	25	,	17	,	49	,	119	,	883	,	2907	,	3573	};
+			const unsigned long	dim1027JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	25	,	61	,	89	,	15	,	315	,	1015	,	563	,	1895	,	4123	};
+			const unsigned long	dim1028JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	15	,	53	,	61	,	225	,	381	,	217	,	163	,	4005	,	7269	};
+			const unsigned long	dim1029JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	1	,	59	,	13	,	201	,	53	,	629	,	1917	,	3105	,	3047	};
+			const unsigned long	dim1030JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	19	,	45	,	71	,	11	,	15	,	365	,	1223	,	3861	,	5005	};
+			const unsigned long	dim1031JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	15	,	15	,	31	,	245	,	105	,	609	,	1051	,	1911	,	7531	};
+			const unsigned long	dim1032JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	27	,	5	,	79	,	31	,	201	,	347	,	1295	,	2589	,	5179	};
+			const unsigned long	dim1033JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	31	,	23	,	65	,	203	,	359	,	591	,	1459	,	1941	,	2307	};
+			const unsigned long	dim1034JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	3	,	55	,	79	,	179	,	147	,	223	,	1011	,	1437	,	3715	};
+			const unsigned long	dim1035JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	23	,	19	,	57	,	241	,	363	,	729	,	1647	,	2395	,	3237	};
+			const unsigned long	dim1036JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	7	,	63	,	115	,	53	,	485	,	965	,	551	,	3945	,	1535	};
+			const unsigned long	dim1037JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	5	,	61	,	33	,	213	,	451	,	363	,	95	,	1185	,	3633	};
+			const unsigned long	dim1038JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	17	,	49	,	39	,	159	,	327	,	1021	,	289	,	3375	,	8055	};
+			const unsigned long	dim1039JoeKuoD6Init[]	=	{	1	,	3	,	3	,	5	,	11	,	1	,	73	,	3	,	121	,	561	,	209	,	1913	,	4549	};
+			const unsigned long	dim1040JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	23	,	39	,	101	,	231	,	317	,	397	,	693	,	1579	,	3585	};
+			const unsigned long	dim1041JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	1	,	5	,	81	,	209	,	373	,	689	,	259	,	3167	,	1665	};
+			const unsigned long	dim1042JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	21	,	19	,	83	,	201	,	7	,	573	,	1563	,	1649	,	5827	};
+			const unsigned long	dim1043JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	31	,	35	,	53	,	149	,	185	,	925	,	701	,	3727	,	4425	};
+			const unsigned long	dim1044JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	19	,	11	,	67	,	47	,	19	,	789	,	1855	,	293	,	7569	};
+			const unsigned long	dim1045JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	25	,	55	,	25	,	187	,	405	,	1013	,	493	,	1645	,	6753	};
+			const unsigned long	dim1046JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	13	,	23	,	35	,	219	,	247	,	723	,	1079	,	1523	,	7383	};
+			const unsigned long	dim1047JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	5	,	1	,	27	,	151	,	61	,	889	,	1911	,	3859	,	4661	};
+			const unsigned long	dim1048JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	15	,	59	,	57	,	157	,	333	,	367	,	245	,	3043	,	1683	};
+			const unsigned long	dim1049JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	15	,	53	,	107	,	81	,	287	,	637	,	557	,	315	,	4361	};
+			const unsigned long	dim1050JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	11	,	21	,	35	,	59	,	429	,	459	,	1439	,	639	,	6907	};
+			const unsigned long	dim1051JoeKuoD6Init[]	=	{	1	,	3	,	3	,	11	,	13	,	51	,	101	,	121	,	437	,	9	,	889	,	1907	,	5217	};
+			const unsigned long	dim1052JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	7	,	5	,	99	,	161	,	207	,	237	,	1547	,	403	,	2269	};
+			const unsigned long	dim1053JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	23	,	17	,	43	,	113	,	119	,	213	,	977	,	1197	,	1039	};
+			const unsigned long	dim1054JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	25	,	51	,	79	,	5	,	355	,	279	,	875	,	1947	,	1261	};
+			const unsigned long	dim1055JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	5	,	15	,	85	,	137	,	361	,	509	,	959	,	3227	,	3755	};
+			const unsigned long	dim1056JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	29	,	31	,	45	,	139	,	143	,	891	,	877	,	2195	,	4405	};
+			const unsigned long	dim1057JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	17	,	7	,	81	,	19	,	469	,	713	,	57	,	3559	,	4925	};
+			const unsigned long	dim1058JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	13	,	43	,	69	,	77	,	225	,	497	,	1263	,	1153	,	7375	};
+			const unsigned long	dim1059JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	15	,	19	,	67	,	75	,	207	,	851	,	1827	,	3523	,	2159	};
+			const unsigned long	dim1060JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	25	,	63	,	71	,	157	,	509	,	219	,	1529	,	2513	,	1697	};
+			const unsigned long	dim1061JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	9	,	9	,	13	,	147	,	363	,	561	,	1707	,	2991	,	1671	};
+			const unsigned long	dim1062JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	13	,	55	,	77	,	27	,	427	,	277	,	725	,	2861	,	4841	};
+			const unsigned long	dim1063JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	25	,	55	,	21	,	135	,	221	,	965	,	1723	,	2097	,	1277	};
+			const unsigned long	dim1064JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	1	,	11	,	45	,	179	,	503	,	283	,	1075	,	1283	,	7603	};
+			const unsigned long	dim1065JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	1	,	39	,	61	,	107	,	183	,	817	,	1577	,	1143	,	783	};
+			const unsigned long	dim1066JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	9	,	59	,	51	,	89	,	397	,	705	,	1081	,	3053	,	4001	};
+			const unsigned long	dim1067JoeKuoD6Init[]	=	{	1	,	3	,	3	,	11	,	25	,	53	,	3	,	125	,	419	,	827	,	1907	,	903	,	3169	};
+			const unsigned long	dim1068JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	1	,	3	,	119	,	153	,	353	,	315	,	1555	,	1273	,	6605	};
+			const unsigned long	dim1069JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	13	,	39	,	117	,	59	,	225	,	735	,	1297	,	1281	,	8049	};
+			const unsigned long	dim1070JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	27	,	53	,	57	,	95	,	303	,	803	,	343	,	4021	,	5047	};
+			const unsigned long	dim1071JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	25	,	1	,	91	,	107	,	181	,	839	,	1691	,	3859	,	2363	};
+			const unsigned long	dim1072JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	19	,	45	,	23	,	37	,	345	,	675	,	5	,	3731	,	2961	};
+			const unsigned long	dim1073JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	13	,	47	,	19	,	43	,	221	,	1007	,	1021	,	2967	,	6931	};
+			const unsigned long	dim1074JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	27	,	21	,	19	,	57	,	59	,	485	,	967	,	983	,	4989	};
+			const unsigned long	dim1075JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	11	,	23	,	1	,	221	,	223	,	535	,	155	,	2805	,	661	};
+			const unsigned long	dim1076JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	3	,	49	,	127	,	75	,	215	,	517	,	1391	,	589	,	493	};
+			const unsigned long	dim1077JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	23	,	29	,	79	,	171	,	319	,	811	,	191	,	1131	,	7689	};
+			const unsigned long	dim1078JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	21	,	9	,	23	,	21	,	171	,	631	,	299	,	2295	,	5691	};
+			const unsigned long	dim1079JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	17	,	59	,	47	,	205	,	39	,	407	,	1107	,	1323	,	6769	};
+			const unsigned long	dim1080JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	9	,	33	,	117	,	249	,	167	,	631	,	717	,	3901	,	6125	};
+			const unsigned long	dim1081JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	31	,	11	,	75	,	125	,	417	,	803	,	1117	,	1609	,	3263	};
+			const unsigned long	dim1082JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	15	,	33	,	35	,	205	,	477	,	939	,	1891	,	2579	,	2035	};
+			const unsigned long	dim1083JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	5	,	21	,	5	,	221	,	105	,	103	,	587	,	2111	,	5891	};
+			const unsigned long	dim1084JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	3	,	45	,	91	,	113	,	311	,	617	,	1629	,	1677	,	2349	};
+			const unsigned long	dim1085JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	27	,	17	,	69	,	11	,	75	,	545	,	1245	,	785	,	645	};
+			const unsigned long	dim1086JoeKuoD6Init[]	=	{	1	,	3	,	3	,	5	,	23	,	13	,	87	,	193	,	407	,	445	,	1299	,	81	,	2679	};
+			const unsigned long	dim1087JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	17	,	43	,	13	,	233	,	255	,	51	,	1277	,	965	,	1615	};
+			const unsigned long	dim1088JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	31	,	49	,	21	,	61	,	269	,	265	,	25	,	3141	,	7687	};
+			const unsigned long	dim1089JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	27	,	39	,	65	,	69	,	453	,	203	,	461	,	1585	,	5681	};
+			const unsigned long	dim1090JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	23	,	19	,	63	,	97	,	339	,	83	,	671	,	433	,	5285	};
+			const unsigned long	dim1091JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	9	,	3	,	119	,	157	,	385	,	847	,	1159	,	1389	,	5833	};
+			const unsigned long	dim1092JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	31	,	51	,	39	,	247	,	71	,	815	,	1807	,	1973	,	1841	};
+			const unsigned long	dim1093JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	31	,	39	,	121	,	75	,	343	,	25	,	59	,	575	,	3503	};
+			const unsigned long	dim1094JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	23	,	17	,	35	,	33	,	437	,	1001	,	1941	,	351	,	2949	};
+			const unsigned long	dim1095JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	9	,	51	,	125	,	3	,	279	,	373	,	157	,	1537	,	5547	};
+			const unsigned long	dim1096JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	11	,	23	,	63	,	91	,	139	,	911	,	463	,	1831	,	7325	};
+			const unsigned long	dim1097JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	9	,	11	,	33	,	125	,	471	,	583	,	881	,	2533	,	7173	};
+			const unsigned long	dim1098JoeKuoD6Init[]	=	{	1	,	1	,	5	,	1	,	15	,	41	,	53	,	77	,	43	,	237	,	787	,	3299	,	5131	};
+			const unsigned long	dim1099JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	17	,	19	,	115	,	145	,	231	,	555	,	1279	,	605	,	2977	};
+			const unsigned long	dim1100JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	21	,	47	,	61	,	171	,	337	,	441	,	1961	,	2815	,	4565	};
+			const unsigned long	dim1101JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	25	,	25	,	3	,	199	,	85	,	129	,	1853	,	3293	,	71	};
+			const unsigned long	dim1102JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	25	,	25	,	113	,	9	,	453	,	353	,	1955	,	1443	,	7027	};
+			const unsigned long	dim1103JoeKuoD6Init[]	=	{	1	,	3	,	3	,	11	,	9	,	35	,	89	,	149	,	335	,	485	,	37	,	1519	,	7341	};
+			const unsigned long	dim1104JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	27	,	1	,	119	,	175	,	181	,	353	,	1667	,	2023	,	3239	};		
+			const unsigned long	dim1105JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	27	,	11	,	39	,	255	,	283	,	101	,	603	,	541	,	2429	};		
+			const unsigned long	dim1106JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	27	,	51	,	87	,	187	,	183	,	1013	,	1207	,	3431	,	3321	};		
+			const unsigned long	dim1107JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	5	,	15	,	107	,	171	,	139	,	919	,	235	,	3047	,	3401	};		
+			const unsigned long	dim1108JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	17	,	49	,	35	,	37	,	59	,	61	,	227	,	3175	,	4093	};		
+			const unsigned long	dim1109JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	23	,	51	,	43	,	143	,	389	,	559	,	349	,	1933	,	6149	};		
+			const unsigned long	dim1110JoeKuoD6Init[]	=	{	1	,	3	,	5	,	13	,	9	,	19	,	111	,	233	,	373	,	883	,	1653	,	1591	,	2971	};		
+			const unsigned long	dim1111JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	7	,	63	,	95	,	29	,	173	,	175	,	355	,	877	,	5819	,	15873	};
+			const unsigned long	dim1112JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	1	,	63	,	23	,	73	,	469	,	893	,	773	,	3647	,	1191	,	8731	};
+			const unsigned long	dim1113JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	17	,	9	,	85	,	137	,	53	,	793	,	439	,	2097	,	4257	,	8439	};
+			const unsigned long	dim1114JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	3	,	57	,	83	,	83	,	123	,	399	,	1659	,	2621	,	3355	,	255	};
+			const unsigned long	dim1115JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	9	,	55	,	21	,	55	,	391	,	765	,	2023	,	1211	,	1265	,	5391	};
+			const unsigned long	dim1116JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	31	,	63	,	43	,	153	,	423	,	969	,	931	,	531	,	1635	,	4695	};
+			const unsigned long	dim1117JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	19	,	11	,	115	,	213	,	473	,	13	,	853	,	3771	,	7841	,	1249	};
+			const unsigned long	dim1118JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	31	,	51	,	121	,	97	,	483	,	511	,	299	,	3307	,	3363	,	12639	};
+			const unsigned long	dim1119JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	31	,	31	,	89	,	221	,	451	,	253	,	1371	,	2457	,	573	,	4359	};
+			const unsigned long	dim1120JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	5	,	21	,	59	,	151	,	275	,	937	,	1603	,	3337	,	3157	,	15289	};
+			const unsigned long	dim1121JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	19	,	11	,	27	,	5	,	405	,	899	,	1315	,	3299	,	945	,	1421	};
+			const unsigned long	dim1122JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	31	,	55	,	85	,	49	,	303	,	859	,	469	,	723	,	2221	,	4099	};
+			const unsigned long	dim1123JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	31	,	27	,	57	,	37	,	493	,	883	,	1781	,	2915	,	6435	,	6905	};
+			const unsigned long	dim1124JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	21	,	49	,	111	,	69	,	221	,	845	,	219	,	1257	,	7909	,	15225	};
+			const unsigned long	dim1125JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	3	,	1	,	89	,	143	,	359	,	717	,	327	,	1063	,	3845	,	8963	};
+			const unsigned long	dim1126JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	31	,	3	,	5	,	79	,	241	,	877	,	309	,	3735	,	1409	,	11947	};
+			const unsigned long	dim1127JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	13	,	63	,	89	,	69	,	417	,	809	,	1251	,	3213	,	1107	,	9143	};
+			const unsigned long	dim1128JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	21	,	3	,	17	,	231	,	273	,	545	,	1385	,	1367	,	5491	,	7497	};
+			const unsigned long	dim1129JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	31	,	35	,	117	,	31	,	173	,	711	,	555	,	1551	,	443	,	10469	};
+			const unsigned long	dim1130JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	3	,	61	,	55	,	31	,	321	,	517	,	47	,	1379	,	4329	,	2305	};
+			const unsigned long	dim1131JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	15	,	13	,	23	,	153	,	209	,	115	,	913	,	2013	,	841	,	2015	};
+			const unsigned long	dim1132JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	15	,	43	,	31	,	103	,	55	,	489	,	1003	,	2723	,	2613	,	15743	};
+			const unsigned long	dim1133JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	31	,	45	,	21	,	37	,	453	,	99	,	1047	,	235	,	1133	,	11199	};
+			const unsigned long	dim1134JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	13	,	25	,	109	,	129	,	25	,	291	,	445	,	2775	,	1011	,	4645	};
+			const unsigned long	dim1135JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	9	,	45	,	7	,	161	,	217	,	645	,	421	,	3429	,	2941	,	5319	};
+			const unsigned long	dim1136JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	13	,	57	,	13	,	63	,	89	,	739	,	1989	,	1679	,	2031	,	265	};
+			const unsigned long	dim1137JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	21	,	63	,	117	,	21	,	345	,	19	,	1357	,	611	,	6591	,	8075	};
+			const unsigned long	dim1138JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	29	,	37	,	37	,	219	,	81	,	143	,	1505	,	2921	,	1497	,	4359	};
+			const unsigned long	dim1139JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	25	,	23	,	39	,	145	,	121	,	877	,	1491	,	2687	,	865	,	3417	};
+			const unsigned long	dim1140JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	25	,	7	,	45	,	143	,	61	,	591	,	455	,	3039	,	4147	,	1695	};
+			const unsigned long	dim1141JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	27	,	7	,	61	,	139	,	509	,	843	,	1175	,	3787	,	4695	,	13851	};
+			const unsigned long	dim1142JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	15	,	19	,	73	,	109	,	263	,	791	,	455	,	3503	,	1203	,	4993	};
+			const unsigned long	dim1143JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	21	,	59	,	51	,	101	,	407	,	25	,	355	,	2817	,	3323	,	14641	};
+			const unsigned long	dim1144JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	3	,	45	,	73	,	241	,	511	,	763	,	189	,	2913	,	489	,	10441	};
+			const unsigned long	dim1145JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	15	,	9	,	113	,	103	,	375	,	773	,	621	,	3035	,	4359	,	13259	};
+			const unsigned long	dim1146JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	17	,	13	,	81	,	207	,	493	,	737	,	427	,	2895	,	539	,	4125	};
+			const unsigned long	dim1147JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	9	,	5	,	89	,	209	,	175	,	105	,	293	,	3337	,	7235	,	6481	};
+			const unsigned long	dim1148JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	5	,	19	,	3	,	245	,	25	,	733	,	885	,	3747	,	3997	,	7945	};
+			const unsigned long	dim1149JoeKuoD6Init[]	=	{	1	,	3	,	3	,	11	,	13	,	7	,	29	,	169	,	239	,	205	,	1399	,	1447	,	5211	,	11789	};
+			const unsigned long	dim1150JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	7	,	19	,	65	,	23	,	183	,	547	,	671	,	2873	,	5101	,	4187	};
+			const unsigned long	dim1151JoeKuoD6Init[]	=	{	1	,	3	,	5	,	13	,	15	,	35	,	119	,	75	,	53	,	773	,	1769	,	1945	,	7781	,	11349	};
+			const unsigned long	dim1152JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	31	,	37	,	39	,	55	,	333	,	567	,	1095	,	3707	,	4265	,	117	};
+			const unsigned long	dim1153JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	1	,	61	,	9	,	7	,	253	,	737	,	1441	,	2591	,	2807	,	13685	};
+			const unsigned long	dim1154JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	21	,	41	,	81	,	61	,	497	,	827	,	783	,	3799	,	4803	,	141	};
+			const unsigned long	dim1155JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	11	,	15	,	3	,	165	,	401	,	747	,	1961	,	3265	,	8123	,	2151	};
+			const unsigned long	dim1156JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	21	,	39	,	47	,	135	,	61	,	803	,	1447	,	1763	,	2033	,	12907	};
+			const unsigned long	dim1157JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	25	,	21	,	15	,	233	,	493	,	115	,	921	,	2047	,	3715	,	9089	};
+			const unsigned long	dim1158JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	11	,	17	,	43	,	49	,	249	,	873	,	771	,	47	,	5357	,	12459	};
+			const unsigned long	dim1159JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	31	,	39	,	85	,	97	,	241	,	529	,	65	,	1995	,	2411	,	761	};
+			const unsigned long	dim1160JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	3	,	1	,	63	,	229	,	11	,	733	,	901	,	63	,	3585	,	10273	};
+			const unsigned long	dim1161JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	23	,	39	,	123	,	187	,	27	,	893	,	1127	,	2781	,	5977	,	13797	};
+			const unsigned long	dim1162JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	15	,	35	,	97	,	29	,	345	,	447	,	897	,	793	,	5155	,	15939	};
+			const unsigned long	dim1163JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	1	,	15	,	19	,	189	,	183	,	137	,	1059	,	2135	,	6891	,	10319	};
+			const unsigned long	dim1164JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	29	,	27	,	83	,	111	,	113	,	225	,	1527	,	1071	,	635	,	3471	};
+			const unsigned long	dim1165JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	27	,	9	,	43	,	19	,	409	,	579	,	1983	,	811	,	5477	,	559	};
+			const unsigned long	dim1166JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	1	,	39	,	121	,	249	,	355	,	677	,	899	,	729	,	2611	,	9463	};
+			const unsigned long	dim1167JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	31	,	43	,	47	,	157	,	309	,	529	,	787	,	1935	,	5679	,	1553	};
+			const unsigned long	dim1168JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	19	,	53	,	63	,	71	,	371	,	455	,	1943	,	477	,	6227	,	1033	};
+			const unsigned long	dim1169JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	9	,	55	,	45	,	247	,	189	,	57	,	1573	,	591	,	2831	,	14273	};
+			const unsigned long	dim1170JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	3	,	37	,	33	,	219	,	13	,	163	,	763	,	3921	,	7617	,	15439	};
+			const unsigned long	dim1171JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	21	,	41	,	85	,	151	,	117	,	587	,	1513	,	17	,	7695	,	4135	};
+			const unsigned long	dim1172JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	21	,	51	,	107	,	209	,	107	,	459	,	243	,	3043	,	473	,	1357	};
+			const unsigned long	dim1173JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	5	,	49	,	87	,	203	,	261	,	935	,	765	,	2879	,	7677	,	607	};
+			const unsigned long	dim1174JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	25	,	31	,	7	,	53	,	391	,	569	,	187	,	2761	,	1369	,	8871	};
+			const unsigned long	dim1175JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	9	,	25	,	31	,	59	,	485	,	253	,	381	,	1239	,	4797	,	4691	};
+			const unsigned long	dim1176JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	13	,	17	,	35	,	97	,	339	,	47	,	1053	,	293	,	8103	,	8489	};
+			const unsigned long	dim1177JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	13	,	7	,	43	,	33	,	187	,	135	,	277	,	1011	,	297	,	8443	};
+			const unsigned long	dim1178JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	13	,	45	,	125	,	185	,	369	,	643	,	791	,	119	,	7205	,	6785	};
+			const unsigned long	dim1179JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	15	,	39	,	89	,	33	,	47	,	801	,	1451	,	2583	,	445	,	14029	};
+			const unsigned long	dim1180JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	27	,	53	,	113	,	159	,	395	,	835	,	655	,	3503	,	3733	,	1547	};
+			const unsigned long	dim1181JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	29	,	61	,	43	,	181	,	127	,	839	,	755	,	579	,	6805	,	4591	};
+			const unsigned long	dim1182JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	29	,	63	,	71	,	145	,	149	,	571	,	1129	,	2503	,	5761	,	6251	};
+			const unsigned long	dim1183JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	7	,	21	,	73	,	101	,	29	,	517	,	235	,	195	,	3561	,	15347	};
+			const unsigned long	dim1184JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	11	,	11	,	109	,	81	,	483	,	183	,	753	,	1635	,	3763	,	8141	};
+			const unsigned long	dim1185JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	21	,	35	,	111	,	251	,	255	,	605	,	1613	,	283	,	3035	,	11681	};
+			const unsigned long	dim1186JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	29	,	49	,	43	,	255	,	217	,	791	,	1281	,	2327	,	5115	,	10261	};
+			const unsigned long	dim1187JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	19	,	23	,	93	,	105	,	69	,	429	,	1729	,	3547	,	217	,	15075	};
+			const unsigned long	dim1188JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	7	,	21	,	13	,	81	,	395	,	997	,	399	,	3925	,	7277	,	1733	};
+			const unsigned long	dim1189JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	11	,	51	,	65	,	29	,	489	,	489	,	1639	,	3949	,	6271	,	2015	};
+			const unsigned long	dim1190JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	15	,	39	,	23	,	67	,	121	,	617	,	1689	,	1887	,	3485	,	7913	};
+			const unsigned long	dim1191JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	25	,	23	,	81	,	59	,	87	,	457	,	937	,	3229	,	2731	,	5003	};
+			const unsigned long	dim1192JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	29	,	41	,	21	,	67	,	475	,	127	,	1113	,	1693	,	3705	,	1051	};
+			const unsigned long	dim1193JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	13	,	7	,	33	,	95	,	123	,	65	,	2039	,	1011	,	5175	,	10459	};
+			const unsigned long	dim1194JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	29	,	53	,	113	,	57	,	323	,	309	,	501	,	3971	,	5999	,	16335	};
+			const unsigned long	dim1195JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	29	,	9	,	17	,	49	,	173	,	473	,	555	,	3753	,	7471	,	10099	};
+			const unsigned long	dim1196JoeKuoD6Init[]	=	{	1	,	3	,	3	,	3	,	23	,	3	,	101	,	199	,	351	,	435	,	1919	,	1175	,	8037	,	2259	};
+			const unsigned long	dim1197JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	29	,	27	,	23	,	61	,	197	,	883	,	153	,	683	,	2109	,	14991	};
+			const unsigned long	dim1198JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	15	,	21	,	23	,	9	,	341	,	391	,	1537	,	3483	,	4641	,	12489	};
+			const unsigned long	dim1199JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	1	,	9	,	3	,	7	,	485	,	377	,	597	,	2277	,	7811	,	1303	};
+			const unsigned long	dim1200JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	13	,	23	,	13	,	1	,	353	,	517	,	1787	,	2095	,	3095	,	4999	};
+			const unsigned long	dim1201JoeKuoD6Init[]	=	{	1	,	3	,	5	,	13	,	17	,	13	,	55	,	165	,	487	,	387	,	839	,	2867	,	3939	,	7945	};
+			const unsigned long	dim1202JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	15	,	25	,	103	,	225	,	275	,	571	,	441	,	567	,	4759	,	12965	};
+			const unsigned long	dim1203JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	19	,	31	,	121	,	109	,	89	,	315	,	1517	,	187	,	1645	,	2331	};
+			const unsigned long	dim1204JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	17	,	49	,	87	,	241	,	491	,	99	,	1559	,	843	,	5627	,	2383	};
+			const unsigned long	dim1205JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	21	,	55	,	69	,	27	,	461	,	663	,	1609	,	4059	,	4097	,	2299	};
+			const unsigned long	dim1206JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	1	,	27	,	35	,	63	,	125	,	293	,	721	,	1433	,	4813	,	15439	};
+			const unsigned long	dim1207JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	19	,	13	,	65	,	55	,	101	,	981	,	989	,	3501	,	8125	,	8849	};
+			const unsigned long	dim1208JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	25	,	45	,	23	,	157	,	165	,	581	,	1613	,	3721	,	7569	,	9347	};
+			const unsigned long	dim1209JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	29	,	47	,	51	,	43	,	221	,	809	,	469	,	2089	,	2721	,	3799	};
+			const unsigned long	dim1210JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	11	,	63	,	107	,	33	,	433	,	381	,	819	,	739	,	7861	,	12219	};
+			const unsigned long	dim1211JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	29	,	27	,	105	,	219	,	227	,	851	,	1287	,	1825	,	1861	,	8171	};
+			const unsigned long	dim1212JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	1	,	31	,	77	,	183	,	81	,	781	,	541	,	1663	,	3	,	12533	};
+			const unsigned long	dim1213JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	7	,	59	,	107	,	49	,	147	,	625	,	593	,	729	,	4335	,	12651	};
+			const unsigned long	dim1214JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	25	,	45	,	55	,	117	,	247	,	499	,	1403	,	3321	,	6769	,	15183	};
+			const unsigned long	dim1215JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	15	,	51	,	41	,	111	,	297	,	283	,	1943	,	2741	,	5087	,	12203	};
+			const unsigned long	dim1216JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	19	,	37	,	59	,	149	,	481	,	211	,	69	,	1253	,	8019	,	10607	};
+			const unsigned long	dim1217JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	21	,	61	,	103	,	93	,	75	,	91	,	1695	,	3683	,	679	,	14789	};
+			const unsigned long	dim1218JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	27	,	19	,	101	,	215	,	165	,	887	,	1647	,	4033	,	7709	,	15581	};
+			const unsigned long	dim1219JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	17	,	9	,	15	,	231	,	335	,	227	,	661	,	2505	,	6525	,	15019	};
+			const unsigned long	dim1220JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	15	,	63	,	81	,	221	,	117	,	893	,	875	,	485	,	7323	,	11105	};
+			const unsigned long	dim1221JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	7	,	57	,	115	,	159	,	457	,	235	,	1245	,	973	,	7801	,	4753	};
+			const unsigned long	dim1222JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	7	,	21	,	3	,	49	,	455	,	733	,	323	,	261	,	7809	,	4699	};
+			const unsigned long	dim1223JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	17	,	31	,	15	,	105	,	81	,	901	,	1107	,	2161	,	6631	,	14523	};
+			const unsigned long	dim1224JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	21	,	51	,	125	,	227	,	321	,	665	,	13	,	3203	,	6117	,	15401	};
+			const unsigned long	dim1225JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	23	,	23	,	27	,	31	,	489	,	625	,	1973	,	2005	,	7097	,	11557	};
+			const unsigned long	dim1226JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	27	,	37	,	41	,	79	,	373	,	207	,	1399	,	2629	,	953	,	8649	};
+			const unsigned long	dim1227JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	27	,	15	,	73	,	37	,	277	,	301	,	207	,	2283	,	2787	,	8475	};
+			const unsigned long	dim1228JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	7	,	47	,	3	,	169	,	201	,	573	,	1953	,	915	,	4509	,	7767	};
+			const unsigned long	dim1229JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	21	,	21	,	97	,	69	,	501	,	491	,	1471	,	657	,	5661	,	2315	};
+			const unsigned long	dim1230JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	21	,	17	,	127	,	207	,	255	,	357	,	59	,	1035	,	4497	,	7397	};
+			const unsigned long	dim1231JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	17	,	55	,	71	,	35	,	85	,	5	,	507	,	1445	,	2201	,	14137	};
+			const unsigned long	dim1232JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	23	,	11	,	21	,	67	,	347	,	845	,	443	,	2461	,	2767	,	1603	};
+			const unsigned long	dim1233JoeKuoD6Init[]	=	{	1	,	3	,	3	,	11	,	25	,	11	,	97	,	225	,	301	,	111	,	1163	,	1783	,	7879	,	15191	};
+			const unsigned long	dim1234JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	29	,	55	,	9	,	137	,	233	,	51	,	1957	,	3807	,	2631	,	2255	};
+			const unsigned long	dim1235JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	19	,	41	,	83	,	121	,	283	,	839	,	179	,	3307	,	4679	,	1163	};
+			const unsigned long	dim1236JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	17	,	1	,	11	,	47	,	295	,	189	,	1863	,	1145	,	367	,	41	};
+			const unsigned long	dim1237JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	7	,	29	,	85	,	169	,	479	,	27	,	1681	,	917	,	3983	,	5041	};
+			const unsigned long	dim1238JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	13	,	29	,	39	,	131	,	491	,	361	,	565	,	271	,	6255	,	10815	};
+			const unsigned long	dim1239JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	5	,	63	,	23	,	201	,	377	,	593	,	825	,	339	,	1065	,	8989	};
+			const unsigned long	dim1240JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	19	,	33	,	103	,	187	,	327	,	85	,	55	,	2561	,	6833	,	3889	};
+			const unsigned long	dim1241JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	5	,	7	,	85	,	103	,	463	,	279	,	47	,	2479	,	2149	,	1421	};
+			const unsigned long	dim1242JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	17	,	31	,	61	,	247	,	59	,	869	,	1513	,	2405	,	2129	,	15647	};
+			const unsigned long	dim1243JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	7	,	31	,	99	,	63	,	289	,	123	,	617	,	3263	,	6445	,	14101	};
+			const unsigned long	dim1244JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	13	,	23	,	107	,	73	,	19	,	595	,	1623	,	1583	,	15	,	10907	};
+			const unsigned long	dim1245JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	19	,	33	,	113	,	45	,	435	,	99	,	1909	,	3317	,	1733	,	3629	};
+			const unsigned long	dim1246JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	3	,	9	,	107	,	59	,	69	,	781	,	1861	,	393	,	7143	,	4465	};
+			const unsigned long	dim1247JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	23	,	49	,	3	,	173	,	483	,	353	,	783	,	717	,	2903	,	11101	};
+			const unsigned long	dim1248JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	27	,	25	,	105	,	47	,	387	,	103	,	323	,	455	,	1607	,	3673	};
+			const unsigned long	dim1249JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	19	,	49	,	59	,	159	,	5	,	595	,	75	,	1963	,	313	,	5593	};
+			const unsigned long	dim1250JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	27	,	35	,	51	,	135	,	347	,	375	,	493	,	589	,	507	,	4661	};
+			const unsigned long	dim1251JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	5	,	59	,	103	,	249	,	473	,	503	,	1401	,	3219	,	4337	,	3607	};
+			const unsigned long	dim1252JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	29	,	15	,	123	,	165	,	55	,	515	,	1009	,	3231	,	3567	,	7871	};
+			const unsigned long	dim1253JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	5	,	11	,	45	,	87	,	67	,	359	,	43	,	457	,	6483	,	5165	};
+			const unsigned long	dim1254JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	13	,	55	,	85	,	51	,	127	,	937	,	1505	,	1445	,	889	,	789	};
+			const unsigned long	dim1255JoeKuoD6Init[]	=	{	1	,	1	,	5	,	1	,	31	,	27	,	5	,	225	,	209	,	291	,	1047	,	3417	,	2899	,	9691	};
+			const unsigned long	dim1256JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	23	,	9	,	83	,	201	,	511	,	805	,	1341	,	2791	,	4803	,	13523	};
+			const unsigned long	dim1257JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	29	,	29	,	31	,	239	,	175	,	1005	,	1443	,	2543	,	6235	,	15409	};
+			const unsigned long	dim1258JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	31	,	7	,	17	,	195	,	15	,	65	,	1297	,	2707	,	3097	,	2281	};
+			const unsigned long	dim1259JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	25	,	43	,	57	,	219	,	419	,	9	,	1121	,	593	,	4403	,	147	};
+			const unsigned long	dim1260JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	5	,	31	,	27	,	43	,	343	,	95	,	1917	,	2425	,	4939	,	2937	};
+			const unsigned long	dim1261JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	31	,	35	,	19	,	151	,	339	,	411	,	77	,	3881	,	7401	,	927	};
+			const unsigned long	dim1262JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	3	,	61	,	37	,	135	,	159	,	81	,	157	,	2945	,	6371	,	3583	};
+			const unsigned long	dim1263JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	15	,	27	,	113	,	213	,	127	,	141	,	1431	,	2163	,	2527	,	4027	};
+			const unsigned long	dim1264JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	1	,	39	,	103	,	187	,	395	,	283	,	907	,	3977	,	5901	,	6043	};
+			const unsigned long	dim1265JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	31	,	47	,	45	,	95	,	53	,	165	,	357	,	3893	,	1555	,	2263	};
+			const unsigned long	dim1266JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	1	,	57	,	39	,	39	,	365	,	193	,	887	,	815	,	7309	,	15089	};
+			const unsigned long	dim1267JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	25	,	61	,	21	,	139	,	241	,	167	,	843	,	299	,	7737	,	4625	};
+			const unsigned long	dim1268JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	29	,	49	,	115	,	55	,	185	,	157	,	515	,	1985	,	5891	,	11189	};
+			const unsigned long	dim1269JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	1	,	9	,	41	,	227	,	267	,	581	,	5	,	2677	,	1231	,	6989	};
+			const unsigned long	dim1270JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	13	,	57	,	33	,	211	,	333	,	277	,	1387	,	2673	,	5923	,	15623	};
+			const unsigned long	dim1271JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	5	,	57	,	123	,	93	,	387	,	975	,	251	,	677	,	2843	,	2237	};
+			const unsigned long	dim1272JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	5	,	15	,	19	,	241	,	171	,	713	,	1761	,	3363	,	2707	,	7629	};
+			const unsigned long	dim1273JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	13	,	25	,	125	,	233	,	377	,	1005	,	1591	,	1327	,	7661	,	15701	};
+			const unsigned long	dim1274JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	23	,	39	,	77	,	121	,	255	,	105	,	1739	,	3511	,	2369	,	2209	};
+			const unsigned long	dim1275JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	5	,	23	,	11	,	29	,	501	,	753	,	1317	,	1927	,	2127	,	7753	};
+			const unsigned long	dim1276JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	31	,	25	,	45	,	197	,	483	,	787	,	721	,	2227	,	4237	,	1985	};
+			const unsigned long	dim1277JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	1	,	53	,	51	,	235	,	255	,	517	,	1389	,	2381	,	7845	,	8707	};
+			const unsigned long	dim1278JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	27	,	9	,	19	,	251	,	29	,	211	,	1665	,	1181	,	983	,	16139	};
+			const unsigned long	dim1279JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	21	,	35	,	39	,	47	,	445	,	685	,	773	,	3563	,	3339	,	14855	};
+			const unsigned long	dim1280JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	29	,	61	,	89	,	203	,	239	,	11	,	1407	,	1529	,	3581	,	11443	};
+			const unsigned long	dim1281JoeKuoD6Init[]	=	{	1	,	3	,	3	,	5	,	19	,	21	,	3	,	253	,	437	,	755	,	1409	,	1449	,	623	,	10533	};
+			const unsigned long	dim1282JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	13	,	25	,	65	,	123	,	273	,	611	,	1305	,	2751	,	5123	,	1515	};
+			const unsigned long	dim1283JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	13	,	63	,	79	,	139	,	253	,	917	,	19	,	1129	,	7801	,	14215	};
+			const unsigned long	dim1284JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	5	,	21	,	29	,	179	,	79	,	803	,	1163	,	2481	,	3537	,	11015	};
+			const unsigned long	dim1285JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	9	,	51	,	35	,	241	,	473	,	291	,	147	,	3021	,	2147	,	4437	};
+			const unsigned long	dim1286JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	7	,	19	,	81	,	215	,	205	,	19	,	1713	,	1347	,	7519	,	9851	};
+			const unsigned long	dim1287JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	9	,	49	,	35	,	219	,	73	,	479	,	559	,	1619	,	7891	,	1221	};
+			const unsigned long	dim1288JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	9	,	39	,	17	,	67	,	139	,	287	,	703	,	3797	,	4263	,	10847	};
+			const unsigned long	dim1289JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	23	,	23	,	17	,	221	,	185	,	209	,	1827	,	3117	,	8183	,	15405	};
+			const unsigned long	dim1290JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	9	,	9	,	95	,	1	,	225	,	727	,	1577	,	3947	,	7995	,	2587	};
+			const unsigned long	dim1291JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	5	,	29	,	89	,	193	,	427	,	1009	,	1123	,	717	,	3191	,	14381	};
+			const unsigned long	dim1292JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	7	,	53	,	57	,	147	,	511	,	887	,	501	,	431	,	7537	,	363	};
+			const unsigned long	dim1293JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	3	,	21	,	127	,	157	,	45	,	773	,	1973	,	2577	,	6057	,	8153	};
+			const unsigned long	dim1294JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	31	,	63	,	23	,	47	,	365	,	369	,	97	,	1627	,	831	,	12769	};
+			const unsigned long	dim1295JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	5	,	61	,	53	,	131	,	447	,	281	,	1115	,	2523	,	3789	,	11581	};
+			const unsigned long	dim1296JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	19	,	39	,	95	,	243	,	95	,	601	,	1385	,	2523	,	2973	,	2759	};
+			const unsigned long	dim1297JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	25	,	15	,	19	,	133	,	1	,	197	,	1259	,	2501	,	2513	,	9417	};
+			const unsigned long	dim1298JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	13	,	49	,	47	,	61	,	167	,	971	,	835	,	2259	,	3747	,	13077	};
+			const unsigned long	dim1299JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	17	,	35	,	33	,	223	,	173	,	691	,	855	,	2743	,	5383	,	2017	};
+			const unsigned long	dim1300JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	11	,	35	,	19	,	255	,	201	,	801	,	1921	,	2511	,	2497	,	13317	};
+			const unsigned long	dim1301JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	17	,	1	,	47	,	187	,	63	,	641	,	1395	,	1591	,	6145	,	4549	};
+			const unsigned long	dim1302JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	11	,	35	,	55	,	167	,	75	,	801	,	257	,	2531	,	1821	,	11325	};
+			const unsigned long	dim1303JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	21	,	27	,	117	,	131	,	167	,	461	,	1459	,	1	,	4847	,	4347	};
+			const unsigned long	dim1304JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	7	,	19	,	103	,	233	,	509	,	397	,	1147	,	1325	,	6173	,	9643	};
+			const unsigned long	dim1305JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	31	,	37	,	51	,	43	,	173	,	575	,	7	,	3595	,	5865	,	7539	};
+			const unsigned long	dim1306JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	17	,	63	,	109	,	29	,	325	,	57	,	889	,	1197	,	7839	,	13931	};
+			const unsigned long	dim1307JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	3	,	19	,	105	,	251	,	447	,	451	,	925	,	1857	,	4343	,	14273	};
+			const unsigned long	dim1308JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	27	,	29	,	97	,	113	,	155	,	591	,	1435	,	2175	,	4197	,	10661	};
+			const unsigned long	dim1309JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	9	,	11	,	33	,	107	,	187	,	463	,	1479	,	1127	,	6699	,	2183	};
+			const unsigned long	dim1310JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	5	,	15	,	73	,	231	,	73	,	161	,	525	,	2265	,	619	,	8085	};
+			const unsigned long	dim1311JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	1	,	43	,	7	,	137	,	163	,	953	,	775	,	3839	,	7377	,	12321	};
+			const unsigned long	dim1312JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	27	,	57	,	11	,	131	,	407	,	41	,	173	,	2595	,	5179	,	1455	};
+			const unsigned long	dim1313JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	31	,	9	,	93	,	233	,	61	,	149	,	1973	,	3493	,	5535	,	9595	};
+			const unsigned long	dim1314JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	1	,	37	,	13	,	71	,	451	,	645	,	51	,	3663	,	1917	,	10641	};
+			const unsigned long	dim1315JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	13	,	53	,	111	,	71	,	61	,	539	,	319	,	1951	,	6763	,	751	};
+			const unsigned long	dim1316JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	27	,	27	,	53	,	189	,	39	,	29	,	1645	,	235	,	7643	,	15621	};
+			const unsigned long	dim1317JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	13	,	13	,	115	,	125	,	109	,	377	,	463	,	3819	,	7397	,	5205	};
+			const unsigned long	dim1318JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	29	,	59	,	61	,	145	,	187	,	875	,	1571	,	4035	,	2861	,	10897	};
+			const unsigned long	dim1319JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	11	,	5	,	9	,	19	,	477	,	201	,	1061	,	1483	,	7597	,	7161	};
+			const unsigned long	dim1320JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	17	,	35	,	55	,	211	,	285	,	161	,	385	,	4093	,	3685	,	3635	};
+			const unsigned long	dim1321JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	19	,	43	,	95	,	253	,	453	,	829	,	857	,	3913	,	4949	,	9057	};
+			const unsigned long	dim1322JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	3	,	45	,	57	,	185	,	7	,	457	,	1805	,	3947	,	1515	,	4863	};
+			const unsigned long	dim1323JoeKuoD6Init[]	=	{	1	,	1	,	5	,	1	,	9	,	27	,	75	,	243	,	401	,	593	,	1669	,	3315	,	3023	,	14677	};
+			const unsigned long	dim1324JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	29	,	57	,	37	,	11	,	153	,	255	,	1039	,	2067	,	2033	,	7927	};
+			const unsigned long	dim1325JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	27	,	63	,	23	,	73	,	355	,	913	,	327	,	43	,	2095	,	433	};
+			const unsigned long	dim1326JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	13	,	1	,	61	,	193	,	73	,	465	,	1483	,	1359	,	7459	,	6855	};
+			const unsigned long	dim1327JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	15	,	39	,	85	,	165	,	285	,	713	,	1455	,	403	,	7723	,	6595	};
+			const unsigned long	dim1328JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	11	,	39	,	67	,	43	,	47	,	85	,	1831	,	1387	,	1423	,	12473	};
+			const unsigned long	dim1329JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	23	,	11	,	49	,	195	,	207	,	403	,	1761	,	3633	,	8069	,	12455	};
+			const unsigned long	dim1330JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	19	,	11	,	27	,	131	,	123	,	685	,	931	,	2433	,	7133	,	1997	};
+			const unsigned long	dim1331JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	27	,	3	,	69	,	77	,	227	,	227	,	213	,	1277	,	6597	,	8343	};
+			const unsigned long	dim1332JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	13	,	61	,	69	,	63	,	59	,	949	,	2019	,	2723	,	451	,	9641	};
+			const unsigned long	dim1333JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	19	,	29	,	75	,	149	,	481	,	583	,	861	,	1353	,	7525	,	115	};
+			const unsigned long	dim1334JoeKuoD6Init[]	=	{	1	,	3	,	5	,	13	,	19	,	3	,	27	,	155	,	81	,	907	,	683	,	1997	,	189	,	12139	};
+			const unsigned long	dim1335JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	19	,	1	,	61	,	97	,	433	,	289	,	1191	,	2347	,	5533	,	14327	};
+			const unsigned long	dim1336JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	13	,	9	,	7	,	91	,	49	,	75	,	1839	,	415	,	795	,	9127	};
+			const unsigned long	dim1337JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	13	,	11	,	123	,	31	,	261	,	159	,	681	,	231	,	117	,	14923	};
+			const unsigned long	dim1338JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	21	,	35	,	93	,	17	,	251	,	229	,	553	,	3413	,	7717	,	891	};
+			const unsigned long	dim1339JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	7	,	47	,	85	,	155	,	63	,	785	,	939	,	3135	,	3319	,	1997	};
+			const unsigned long	dim1340JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	21	,	19	,	7	,	69	,	505	,	327	,	1015	,	1821	,	2583	,	15031	};
+			const unsigned long	dim1341JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	3	,	55	,	87	,	111	,	499	,	845	,	375	,	2735	,	6895	,	291	};
+			const unsigned long	dim1342JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	15	,	5	,	51	,	105	,	369	,	91	,	945	,	3633	,	7847	,	13811	};
+			const unsigned long	dim1343JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	21	,	57	,	79	,	213	,	225	,	71	,	881	,	391	,	4329	,	2481	};
+			const unsigned long	dim1344JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	19	,	49	,	39	,	193	,	271	,	463	,	1009	,	137	,	3751	,	8439	};
+			const unsigned long	dim1345JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	17	,	37	,	51	,	211	,	103	,	929	,	1323	,	1175	,	5465	,	12229	};
+			const unsigned long	dim1346JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	21	,	9	,	123	,	221	,	201	,	769	,	723	,	2627	,	2367	,	13169	};
+			const unsigned long	dim1347JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	31	,	23	,	93	,	103	,	257	,	263	,	1771	,	801	,	4735	,	13557	};
+			const unsigned long	dim1348JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	21	,	29	,	67	,	225	,	367	,	909	,	1333	,	655	,	7691	,	1251	};
+			const unsigned long	dim1349JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	19	,	11	,	75	,	175	,	383	,	121	,	1917	,	2371	,	4191	,	16111	};
+			const unsigned long	dim1350JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	17	,	5	,	103	,	53	,	173	,	981	,	1185	,	3071	,	179	,	9197	};
+			const unsigned long	dim1351JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	5	,	41	,	25	,	219	,	211	,	291	,	1735	,	397	,	6317	,	11209	};
+			const unsigned long	dim1352JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	5	,	1	,	11	,	125	,	405	,	583	,	773	,	1711	,	757	,	5187	};
+			const unsigned long	dim1353JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	1	,	45	,	127	,	11	,	157	,	255	,	1167	,	3315	,	5059	,	8219	};
+			const unsigned long	dim1354JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	15	,	55	,	49	,	81	,	451	,	887	,	309	,	2321	,	5759	,	4673	};
+			const unsigned long	dim1355JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	29	,	51	,	15	,	113	,	245	,	77	,	109	,	2813	,	225	,	5479	};
+			const unsigned long	dim1356JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	13	,	43	,	5	,	99	,	89	,	559	,	903	,	1003	,	5401	,	1839	};
+			const unsigned long	dim1357JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	25	,	11	,	3	,	225	,	341	,	439	,	521	,	545	,	5529	,	5365	};
+			const unsigned long	dim1358JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	13	,	41	,	41	,	183	,	319	,	593	,	1961	,	2211	,	7155	,	1683	};
+			const unsigned long	dim1359JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	9	,	27	,	115	,	119	,	289	,	935	,	1173	,	1783	,	7151	,	7157	};
+			const unsigned long	dim1360JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	17	,	33	,	31	,	109	,	245	,	785	,	1563	,	999	,	7989	,	3493	};
+			const unsigned long	dim1361JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	9	,	3	,	85	,	91	,	21	,	831	,	1669	,	1857	,	1737	,	12513	};
+			const unsigned long	dim1362JoeKuoD6Init[]	=	{	1	,	3	,	3	,	5	,	17	,	51	,	37	,	175	,	325	,	581	,	1809	,	2669	,	6179	,	2187	};
+			const unsigned long	dim1363JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	9	,	39	,	53	,	87	,	47	,	677	,	1081	,	171	,	4885	,	2311	};
+			const unsigned long	dim1364JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	29	,	3	,	79	,	13	,	433	,	891	,	131	,	3559	,	797	,	3405	};
+			const unsigned long	dim1365JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	25	,	5	,	73	,	189	,	251	,	927	,	2001	,	3179	,	859	,	15931	};
+			const unsigned long	dim1366JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	15	,	61	,	67	,	149	,	99	,	795	,	53	,	2417	,	4943	,	7367	};
+			const unsigned long	dim1367JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	25	,	61	,	79	,	145	,	283	,	161	,	887	,	137	,	6027	,	12585	};
+			const unsigned long	dim1368JoeKuoD6Init[]	=	{	1	,	3	,	3	,	3	,	31	,	5	,	117	,	33	,	21	,	883	,	117	,	1609	,	7219	,	2511	};
+			const unsigned long	dim1369JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	1	,	59	,	29	,	177	,	419	,	287	,	973	,	3649	,	3333	,	9779	};
+			const unsigned long	dim1370JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	11	,	51	,	11	,	125	,	237	,	305	,	37	,	3137	,	7645	,	6317	};
+			const unsigned long	dim1371JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	29	,	39	,	127	,	43	,	113	,	437	,	1501	,	13	,	1915	,	7561	};
+			const unsigned long	dim1372JoeKuoD6Init[]	=	{	1	,	3	,	5	,	13	,	9	,	55	,	7	,	209	,	381	,	725	,	1867	,	637	,	6335	,	6057	};
+			const unsigned long	dim1373JoeKuoD6Init[]	=	{	1	,	3	,	3	,	5	,	1	,	57	,	57	,	45	,	247	,	23	,	1663	,	489	,	2503	,	9033	};
+			const unsigned long	dim1374JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	23	,	7	,	57	,	157	,	291	,	523	,	313	,	2501	,	1197	,	3353	};
+			const unsigned long	dim1375JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	31	,	13	,	35	,	253	,	349	,	393	,	1531	,	159	,	5311	,	9225	};
+			const unsigned long	dim1376JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	1	,	47	,	75	,	187	,	41	,	713	,	1933	,	2139	,	2211	,	7425	};
+			const unsigned long	dim1377JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	7	,	21	,	67	,	27	,	303	,	617	,	1943	,	3173	,	3081	,	10977	};
+			const unsigned long	dim1378JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	27	,	57	,	103	,	65	,	195	,	267	,	1347	,	3831	,	5335	,	435	};
+			const unsigned long	dim1379JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	11	,	35	,	83	,	21	,	273	,	227	,	1523	,	3565	,	7221	,	3105	};
+			const unsigned long	dim1380JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	7	,	29	,	123	,	207	,	63	,	535	,	1355	,	2751	,	4791	,	10285	};
+			const unsigned long	dim1381JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	3	,	19	,	79	,	91	,	481	,	205	,	1741	,	319	,	4651	,	12631	};
+			const unsigned long	dim1382JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	25	,	61	,	39	,	181	,	377	,	243	,	593	,	1383	,	1427	,	11865	};
+			const unsigned long	dim1383JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	13	,	13	,	97	,	27	,	335	,	973	,	1857	,	425	,	2729	,	12013	};
+			const unsigned long	dim1384JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	23	,	57	,	99	,	37	,	117	,	337	,	751	,	2471	,	1105	,	1415	};
+			const unsigned long	dim1385JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	17	,	33	,	117	,	87	,	211	,	899	,	825	,	1043	,	4273	,	9093	};
+			const unsigned long	dim1386JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	11	,	7	,	81	,	251	,	421	,	643	,	1931	,	1205	,	1033	,	8741	};
+			const unsigned long	dim1387JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	17	,	27	,	113	,	43	,	63	,	819	,	503	,	1427	,	5787	,	1133	};
+			const unsigned long	dim1388JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	7	,	31	,	85	,	123	,	17	,	243	,	749	,	1447	,	6045	,	729	};
+			const unsigned long	dim1389JoeKuoD6Init[]	=	{	1	,	1	,	1	,	3	,	19	,	15	,	97	,	49	,	101	,	37	,	1123	,	1565	,	6957	,	1209	};
+			const unsigned long	dim1390JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	1	,	39	,	23	,	47	,	387	,	727	,	81	,	4023	,	7635	,	8691	};
+			const unsigned long	dim1391JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	19	,	27	,	71	,	37	,	281	,	981	,	1777	,	1751	,	7387	,	8391	};
+			const unsigned long	dim1392JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	21	,	55	,	55	,	35	,	205	,	277	,	1573	,	327	,	7643	,	4901	};
+			const unsigned long	dim1393JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	15	,	45	,	91	,	157	,	339	,	489	,	1871	,	2841	,	6839	,	4067	};
+			const unsigned long	dim1394JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	11	,	13	,	57	,	193	,	499	,	729	,	603	,	2235	,	6323	,	16307	};
+			const unsigned long	dim1395JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	13	,	41	,	127	,	117	,	115	,	159	,	1335	,	1473	,	6509	,	8165	};
+			const unsigned long	dim1396JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	29	,	39	,	57	,	161	,	71	,	97	,	1201	,	649	,	5863	,	4765	};
+			const unsigned long	dim1397JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	21	,	3	,	3	,	129	,	421	,	575	,	1693	,	337	,	7313	,	4801	};
+			const unsigned long	dim1398JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	27	,	51	,	105	,	91	,	51	,	683	,	795	,	603	,	7759	,	251	};
+			const unsigned long	dim1399JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	9	,	45	,	55	,	199	,	83	,	575	,	521	,	2169	,	5741	,	1579	};
+			const unsigned long	dim1400JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	13	,	47	,	125	,	227	,	45	,	355	,	127	,	1841	,	727	,	8555	};
+			const unsigned long	dim1401JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	27	,	9	,	57	,	133	,	393	,	315	,	1411	,	453	,	3787	,	7651	};
+			const unsigned long	dim1402JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	11	,	35	,	77	,	15	,	223	,	1009	,	291	,	2645	,	4585	,	5839	};
+			const unsigned long	dim1403JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	7	,	61	,	89	,	55	,	399	,	651	,	1847	,	1901	,	1887	,	5841	};
+			const unsigned long	dim1404JoeKuoD6Init[]	=	{	1	,	3	,	3	,	3	,	17	,	29	,	41	,	19	,	353	,	475	,	1193	,	949	,	3351	,	5073	};
+			const unsigned long	dim1405JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	29	,	45	,	37	,	39	,	343	,	661	,	1405	,	229	,	493	,	471	};
+			const unsigned long	dim1406JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	25	,	27	,	37	,	33	,	33	,	139	,	1537	,	1125	,	4331	,	253	};
+			const unsigned long	dim1407JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	19	,	31	,	111	,	243	,	201	,	563	,	1913	,	2153	,	749	,	3521	};
+			const unsigned long	dim1408JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	9	,	41	,	19	,	163	,	185	,	435	,	1997	,	3383	,	1721	,	11137	};
+			const unsigned long	dim1409JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	25	,	1	,	67	,	231	,	11	,	197	,	1431	,	1697	,	3337	,	8791	};
+			const unsigned long	dim1410JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	13	,	59	,	11	,	199	,	243	,	105	,	751	,	811	,	345	,	8183	};
+			const unsigned long	dim1411JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	29	,	35	,	123	,	187	,	411	,	523	,	989	,	2545	,	4969	,	14489	};
+			const unsigned long	dim1412JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	29	,	23	,	51	,	83	,	335	,	769	,	171	,	1631	,	1651	,	10549	};
+			const unsigned long	dim1413JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	13	,	29	,	57	,	167	,	113	,	703	,	1027	,	163	,	1327	,	5649	};
+			const unsigned long	dim1414JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	1	,	47	,	101	,	251	,	377	,	421	,	1825	,	3153	,	3425	,	10447	};
+			const unsigned long	dim1415JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	11	,	49	,	17	,	215	,	261	,	899	,	811	,	3451	,	3955	,	791	};
+			const unsigned long	dim1416JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	19	,	23	,	41	,	239	,	203	,	321	,	993	,	1201	,	5073	,	8329	};
+			const unsigned long	dim1417JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	23	,	55	,	81	,	227	,	379	,	571	,	1869	,	2159	,	8181	,	12901	};
+			const unsigned long	dim1418JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	31	,	55	,	13	,	57	,	413	,	927	,	873	,	3649	,	7167	,	3985	};
+			const unsigned long	dim1419JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	9	,	49	,	7	,	41	,	461	,	959	,	1477	,	4037	,	1119	,	3525	};
+			const unsigned long	dim1420JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	9	,	31	,	67	,	245	,	57	,	395	,	1035	,	3005	,	4211	,	7155	};
+			const unsigned long	dim1421JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	5	,	59	,	55	,	7	,	97	,	707	,	1755	,	1921	,	6239	,	233	};
+			const unsigned long	dim1422JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	11	,	11	,	47	,	195	,	197	,	37	,	501	,	2013	,	6579	,	15115	};
+			const unsigned long	dim1423JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	23	,	61	,	27	,	199	,	41	,	479	,	871	,	2365	,	1589	,	13	};
+			const unsigned long	dim1424JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	11	,	9	,	1	,	225	,	295	,	403	,	1065	,	3039	,	6025	,	963	};
+			const unsigned long	dim1425JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	9	,	61	,	29	,	253	,	371	,	527	,	1697	,	571	,	2865	,	15967	};
+			const unsigned long	dim1426JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	13	,	33	,	55	,	67	,	441	,	451	,	379	,	1365	,	2111	,	6169	};
+			const unsigned long	dim1427JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	23	,	39	,	127	,	43	,	205	,	391	,	1463	,	2227	,	6877	,	11483	};
+			const unsigned long	dim1428JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	31	,	41	,	5	,	65	,	245	,	405	,	633	,	1379	,	4111	,	13129	};
+			const unsigned long	dim1429JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	1	,	3	,	57	,	179	,	23	,	615	,	761	,	2339	,	8191	,	1995	};
+			const unsigned long	dim1430JoeKuoD6Init[]	=	{	1	,	3	,	3	,	5	,	11	,	53	,	67	,	119	,	169	,	313	,	873	,	531	,	63	,	10827	};
+			const unsigned long	dim1431JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	31	,	3	,	53	,	139	,	33	,	639	,	855	,	43	,	7895	,	495	};
+			const unsigned long	dim1432JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	15	,	15	,	13	,	237	,	427	,	257	,	1973	,	2287	,	7597	,	13397	};
+			const unsigned long	dim1433JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	31	,	5	,	29	,	97	,	99	,	1003	,	333	,	773	,	4457	,	8629	};
+			const unsigned long	dim1434JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	11	,	55	,	59	,	201	,	25	,	559	,	1647	,	485	,	7041	,	4965	};
+			const unsigned long	dim1435JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	7	,	37	,	117	,	159	,	319	,	431	,	341	,	2497	,	755	,	5363	};
+			const unsigned long	dim1436JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	25	,	29	,	99	,	61	,	5	,	643	,	1605	,	2273	,	3189	,	5505	};
+			const unsigned long	dim1437JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	29	,	47	,	79	,	177	,	473	,	361	,	1337	,	1199	,	2395	,	1079	};
+			const unsigned long	dim1438JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	7	,	31	,	101	,	189	,	223	,	719	,	1815	,	1383	,	7233	,	11693	};
+			const unsigned long	dim1439JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	29	,	39	,	109	,	211	,	485	,	659	,	683	,	3331	,	4277	,	809	};
+			const unsigned long	dim1440JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	23	,	49	,	37	,	163	,	127	,	389	,	367	,	2223	,	1175	,	12717	};
+			const unsigned long	dim1441JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	27	,	27	,	51	,	57	,	115	,	941	,	243	,	2741	,	245	,	341	};
+			const unsigned long	dim1442JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	15	,	33	,	113	,	3	,	267	,	343	,	563	,	1769	,	4095	,	11557	};
+			const unsigned long	dim1443JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	13	,	11	,	105	,	161	,	145	,	125	,	1509	,	1459	,	843	,	4553	};
+			const unsigned long	dim1444JoeKuoD6Init[]	=	{	1	,	1	,	1	,	3	,	11	,	7	,	67	,	205	,	335	,	595	,	1553	,	2319	,	6565	,	14473	};
+			const unsigned long	dim1445JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	23	,	13	,	119	,	117	,	263	,	463	,	1919	,	2089	,	2809	,	9957	};
+			const unsigned long	dim1446JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	27	,	41	,	5	,	155	,	31	,	261	,	1383	,	1271	,	2557	,	6041	};
+			const unsigned long	dim1447JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	13	,	43	,	89	,	45	,	443	,	13	,	465	,	703	,	3405	,	6471	};
+			const unsigned long	dim1448JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	31	,	49	,	49	,	57	,	97	,	987	,	187	,	141	,	7537	,	11021	};
+			const unsigned long	dim1449JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	29	,	43	,	103	,	89	,	113	,	729	,	1523	,	2893	,	1143	,	9049	};
+			const unsigned long	dim1450JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	29	,	49	,	43	,	255	,	371	,	903	,	661	,	3355	,	5981	,	861	};
+			const unsigned long	dim1451JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	29	,	13	,	75	,	5	,	239	,	983	,	733	,	2949	,	4635	,	6789	};
+			const unsigned long	dim1452JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	17	,	51	,	17	,	49	,	349	,	73	,	111	,	897	,	2757	,	9817	};
+			const unsigned long	dim1453JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	17	,	31	,	73	,	125	,	207	,	951	,	681	,	3685	,	893	,	13725	};
+			const unsigned long	dim1454JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	29	,	13	,	51	,	181	,	27	,	807	,	59	,	3781	,	263	,	13865	};
+			const unsigned long	dim1455JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	15	,	29	,	55	,	159	,	341	,	365	,	1101	,	3139	,	4795	,	4305	};
+			const unsigned long	dim1456JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	19	,	35	,	99	,	251	,	241	,	115	,	1197	,	1167	,	4663	,	5523	};
+			const unsigned long	dim1457JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	13	,	43	,	59	,	251	,	455	,	601	,	891	,	2279	,	3447	,	7787	};
+			const unsigned long	dim1458JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	31	,	17	,	97	,	27	,	373	,	183	,	7	,	1729	,	4513	,	9763	};
+			const unsigned long	dim1459JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	29	,	15	,	57	,	75	,	211	,	551	,	141	,	811	,	27	,	15107	};
+			const unsigned long	dim1460JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	31	,	9	,	57	,	73	,	431	,	375	,	1269	,	2589	,	1567	,	9293	};
+			const unsigned long	dim1461JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	21	,	13	,	41	,	211	,	301	,	177	,	1667	,	3957	,	6261	,	3275	};
+			const unsigned long	dim1462JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	15	,	3	,	33	,	101	,	119	,	345	,	1853	,	2807	,	337	,	10163	};
+			const unsigned long	dim1463JoeKuoD6Init[]	=	{	1	,	3	,	3	,	5	,	27	,	61	,	11	,	161	,	25	,	159	,	1775	,	3039	,	3807	,	9373	};
+			const unsigned long	dim1464JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	19	,	35	,	15	,	191	,	87	,	735	,	1079	,	2373	,	7087	,	7505	};
+			const unsigned long	dim1465JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	29	,	37	,	43	,	25	,	161	,	925	,	259	,	3281	,	2643	,	2359	};
+			const unsigned long	dim1466JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	3	,	21	,	13	,	169	,	17	,	637	,	1711	,	1877	,	6081	,	5115	};
+			const unsigned long	dim1467JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	25	,	5	,	125	,	103	,	277	,	533	,	1485	,	3263	,	4899	,	11851	};
+			const unsigned long	dim1468JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	23	,	13	,	61	,	59	,	405	,	73	,	817	,	3831	,	5059	,	7671	};
+			const unsigned long	dim1469JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	1	,	53	,	113	,	135	,	481	,	861	,	1041	,	931	,	2973	,	7957	};
+			const unsigned long	dim1470JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	9	,	9	,	123	,	175	,	65	,	447	,	1709	,	4083	,	6089	,	7869	};
+			const unsigned long	dim1471JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	5	,	11	,	43	,	59	,	439	,	539	,	283	,	3221	,	2631	,	13025	};
+			const unsigned long	dim1472JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	27	,	1	,	93	,	51	,	361	,	441	,	2005	,	127	,	6763	,	12699	};
+			const unsigned long	dim1473JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	27	,	29	,	49	,	49	,	115	,	167	,	445	,	2811	,	1809	,	11141	};
+			const unsigned long	dim1474JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	1	,	57	,	69	,	49	,	197	,	459	,	1613	,	2891	,	4437	,	1621	};
+			const unsigned long	dim1475JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	25	,	51	,	33	,	47	,	115	,	349	,	1373	,	1985	,	5339	,	4331	};
+			const unsigned long	dim1476JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	21	,	55	,	113	,	183	,	91	,	955	,	835	,	2277	,	5989	,	1383	};
+			const unsigned long	dim1477JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	1	,	11	,	113	,	121	,	207	,	897	,	125	,	393	,	6281	,	15003	};
+			const unsigned long	dim1478JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	13	,	37	,	89	,	169	,	437	,	787	,	1253	,	2835	,	4923	,	15271	};
+			const unsigned long	dim1479JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	23	,	37	,	65	,	135	,	271	,	381	,	551	,	3819	,	5683	,	3689	};
+			const unsigned long	dim1480JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	27	,	29	,	61	,	147	,	347	,	745	,	1793	,	611	,	7415	,	4927	};
+			const unsigned long	dim1481JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	23	,	59	,	35	,	5	,	179	,	247	,	1265	,	2503	,	1705	,	10011	};
+			const unsigned long	dim1482JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	11	,	19	,	57	,	175	,	93	,	777	,	353	,	371	,	6655	,	10271	};
+			const unsigned long	dim1483JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	15	,	51	,	29	,	213	,	113	,	143	,	2011	,	2223	,	2099	,	4103	};
+			const unsigned long	dim1484JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	19	,	31	,	75	,	99	,	89	,	219	,	2019	,	1739	,	3813	,	5619	};
+			const unsigned long	dim1485JoeKuoD6Init[]	=	{	1	,	1	,	3	,	7	,	27	,	53	,	69	,	215	,	299	,	401	,	719	,	3123	,	3463	,	13967	};
+			const unsigned long	dim1486JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	29	,	63	,	5	,	247	,	21	,	651	,	879	,	3033	,	117	,	11511	};
+			const unsigned long	dim1487JoeKuoD6Init[]	=	{	1	,	1	,	5	,	1	,	5	,	47	,	63	,	45	,	145	,	905	,	885	,	2367	,	6721	,	3869	};
+			const unsigned long	dim1488JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	25	,	13	,	117	,	17	,	367	,	425	,	367	,	2863	,	3087	,	9115	};
+			const unsigned long	dim1489JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	1	,	31	,	13	,	65	,	255	,	873	,	831	,	3439	,	7459	,	7713	};
+			const unsigned long	dim1490JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	19	,	53	,	93	,	33	,	505	,	1007	,	1331	,	2317	,	2817	,	2549	};
+			const unsigned long	dim1491JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	9	,	1	,	67	,	109	,	397	,	831	,	1371	,	3277	,	151	,	6523	};
+			const unsigned long	dim1492JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	25	,	11	,	35	,	233	,	231	,	89	,	1029	,	1053	,	6579	,	455	};
+			const unsigned long	dim1493JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	11	,	7	,	117	,	203	,	125	,	863	,	1927	,	2081	,	1229	,	6373	};
+			const unsigned long	dim1494JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	23	,	53	,	27	,	207	,	189	,	287	,	635	,	3483	,	4551	,	15085	};
+			const unsigned long	dim1495JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	23	,	45	,	99	,	177	,	59	,	835	,	1123	,	3397	,	4237	,	11895	};
+			const unsigned long	dim1496JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	31	,	59	,	37	,	7	,	387	,	849	,	1857	,	3469	,	3663	,	1465	};
+			const unsigned long	dim1497JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	13	,	7	,	73	,	211	,	83	,	831	,	1069	,	3103	,	2355	,	8817	};
+			const unsigned long	dim1498JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	1	,	7	,	63	,	195	,	69	,	945	,	39	,	1417	,	879	,	9223	};
+			const unsigned long	dim1499JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	3	,	53	,	111	,	41	,	29	,	597	,	1667	,	3903	,	7401	,	6939	};
+			const unsigned long	dim1500JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	9	,	35	,	55	,	61	,	509	,	729	,	25	,	2357	,	3607	,	2215	};
+			const unsigned long	dim1501JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	19	,	49	,	47	,	241	,	79	,	363	,	1987	,	3269	,	5161	,	1379	};
+			const unsigned long	dim1502JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	1	,	33	,	21	,	249	,	321	,	281	,	2025	,	425	,	4955	,	5799	};
+			const unsigned long	dim1503JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	19	,	21	,	93	,	69	,	487	,	619	,	839	,	1359	,	3219	,	8303	};
+			const unsigned long	dim1504JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	27	,	33	,	3	,	55	,	149	,	361	,	887	,	1341	,	1219	,	4769	};
+			const unsigned long	dim1505JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	5	,	13	,	65	,	53	,	181	,	923	,	1643	,	3853	,	3067	,	4281	};
+			const unsigned long	dim1506JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	13	,	5	,	23	,	27	,	211	,	377	,	1421	,	3085	,	509	,	509	};
+			const unsigned long	dim1507JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	21	,	13	,	3	,	193	,	19	,	497	,	1989	,	885	,	1157	,	7213	};
+			const unsigned long	dim1508JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	1	,	5	,	105	,	57	,	245	,	25	,	153	,	795	,	3781	,	11735	};
+			const unsigned long	dim1509JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	5	,	7	,	87	,	63	,	81	,	491	,	971	,	805	,	2349	,	15627	};
+			const unsigned long	dim1510JoeKuoD6Init[]	=	{	1	,	1	,	5	,	1	,	27	,	41	,	31	,	165	,	383	,	85	,	1713	,	2427	,	5329	,	15169	};
+			const unsigned long	dim1511JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	9	,	47	,	75	,	51	,	329	,	651	,	481	,	2469	,	1761	,	1367	};
+			const unsigned long	dim1512JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	13	,	51	,	89	,	163	,	431	,	117	,	1909	,	2685	,	7197	,	1537	};
+			const unsigned long	dim1513JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	29	,	47	,	19	,	231	,	35	,	597	,	997	,	105	,	7701	,	899	};
+			const unsigned long	dim1514JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	5	,	19	,	63	,	87	,	49	,	685	,	525	,	3709	,	4461	,	15697	};
+			const unsigned long	dim1515JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	31	,	63	,	65	,	91	,	169	,	857	,	1143	,	2831	,	7307	,	11755	};
+			const unsigned long	dim1516JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	27	,	61	,	105	,	191	,	325	,	71	,	1155	,	2291	,	8023	,	1281	};
+			const unsigned long	dim1517JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	21	,	45	,	45	,	19	,	453	,	527	,	75	,	3489	,	3011	,	12687	};
+			const unsigned long	dim1518JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	23	,	15	,	27	,	105	,	335	,	549	,	737	,	3671	,	5071	,	10957	};
+			const unsigned long	dim1519JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	9	,	13	,	121	,	169	,	87	,	871	,	917	,	3071	,	7817	,	14493	};
+			const unsigned long	dim1520JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	3	,	1	,	63	,	195	,	67	,	123	,	175	,	3779	,	2681	,	15967	};
+			const unsigned long	dim1521JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	11	,	31	,	111	,	147	,	203	,	205	,	1591	,	3003	,	631	,	15567	};
+			const unsigned long	dim1522JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	23	,	11	,	43	,	117	,	37	,	413	,	1657	,	4061	,	5491	,	10329	};
+			const unsigned long	dim1523JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	31	,	35	,	107	,	105	,	107	,	117	,	2041	,	1415	,	2153	,	9063	};
+			const unsigned long	dim1524JoeKuoD6Init[]	=	{	1	,	3	,	5	,	13	,	9	,	35	,	77	,	1	,	343	,	341	,	1841	,	2963	,	1105	,	4103	};
+			const unsigned long	dim1525JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	25	,	21	,	45	,	63	,	429	,	843	,	585	,	741	,	6641	,	6327	};
+			const unsigned long	dim1526JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	19	,	23	,	3	,	63	,	273	,	1009	,	131	,	3541	,	3769	,	13045	};
+			const unsigned long	dim1527JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	11	,	41	,	127	,	139	,	105	,	15	,	1311	,	2995	,	3151	,	12913	};
+			const unsigned long	dim1528JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	1	,	37	,	71	,	55	,	17	,	155	,	397	,	121	,	2917	,	3943	};
+			const unsigned long	dim1529JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	5	,	1	,	23	,	29	,	233	,	947	,	893	,	269	,	6487	,	13831	};
+			const unsigned long	dim1530JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	7	,	17	,	63	,	177	,	153	,	595	,	1217	,	2225	,	5973	,	15853	};
+			const unsigned long	dim1531JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	19	,	9	,	45	,	197	,	285	,	85	,	1533	,	673	,	5969	,	501	};
+			const unsigned long	dim1532JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	15	,	23	,	123	,	151	,	49	,	583	,	385	,	3671	,	3617	,	16285	};
+			const unsigned long	dim1533JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	11	,	55	,	111	,	57	,	51	,	249	,	13	,	1929	,	4711	,	9847	};
+			const unsigned long	dim1534JoeKuoD6Init[]	=	{	1	,	1	,	1	,	3	,	17	,	13	,	101	,	117	,	433	,	327	,	151	,	2137	,	4885	,	12775	};
+			const unsigned long	dim1535JoeKuoD6Init[]	=	{	1	,	3	,	3	,	11	,	13	,	39	,	113	,	35	,	99	,	985	,	765	,	1239	,	1311	,	4591	};
+			const unsigned long	dim1536JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	11	,	31	,	41	,	205	,	339	,	773	,	1291	,	1665	,	4345	,	4139	};
+			const unsigned long	dim1537JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	27	,	41	,	27	,	139	,	109	,	555	,	691	,	2263	,	5321	,	12865	};
+			const unsigned long	dim1538JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	23	,	13	,	41	,	73	,	253	,	481	,	1345	,	3339	,	1121	,	665	};
+			const unsigned long	dim1539JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	23	,	57	,	109	,	161	,	35	,	911	,	411	,	3117	,	5997	,	6843	};
+			const unsigned long	dim1540JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	3	,	39	,	97	,	85	,	399	,	733	,	43	,	2437	,	2755	,	10693	};
+			const unsigned long	dim1541JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	15	,	47	,	121	,	157	,	379	,	805	,	1483	,	4013	,	79	,	10943	};
+			const unsigned long	dim1542JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	23	,	51	,	39	,	61	,	157	,	139	,	273	,	2385	,	2451	,	12437	};
+			const unsigned long	dim1543JoeKuoD6Init[]	=	{	1	,	1	,	5	,	1	,	21	,	7	,	77	,	197	,	469	,	391	,	1665	,	1241	,	1847	,	14129	};
+			const unsigned long	dim1544JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	27	,	23	,	83	,	245	,	319	,	247	,	1345	,	1229	,	1119	,	5749	};
+			const unsigned long	dim1545JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	31	,	63	,	121	,	245	,	371	,	359	,	1929	,	817	,	2603	,	5135	};
+			const unsigned long	dim1546JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	21	,	17	,	15	,	11	,	425	,	115	,	1773	,	1491	,	2295	,	11883	};
+			const unsigned long	dim1547JoeKuoD6Init[]	=	{	1	,	1	,	5	,	1	,	7	,	21	,	91	,	203	,	435	,	119	,	819	,	707	,	3567	,	517	};
+			const unsigned long	dim1548JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	7	,	7	,	101	,	41	,	475	,	539	,	1059	,	2245	,	6731	,	6635	};
+			const unsigned long	dim1549JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	11	,	25	,	91	,	89	,	193	,	463	,	1667	,	661	,	801	,	7087	};
+			const unsigned long	dim1550JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	1	,	43	,	17	,	97	,	129	,	843	,	1319	,	723	,	2725	,	10743	};
+			const unsigned long	dim1551JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	19	,	27	,	119	,	113	,	85	,	385	,	1841	,	2821	,	2867	,	6199	};
+			const unsigned long	dim1552JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	23	,	27	,	95	,	175	,	99	,	839	,	1039	,	735	,	6355	,	1651	};
+			const unsigned long	dim1553JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	11	,	13	,	71	,	91	,	7	,	959	,	979	,	2571	,	117	,	11479	};
+			const unsigned long	dim1554JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	21	,	45	,	113	,	205	,	107	,	881	,	2039	,	3181	,	4125	,	13801	};
+			const unsigned long	dim1555JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	3	,	63	,	123	,	53	,	427	,	469	,	685	,	3685	,	1019	,	7069	};
+			const unsigned long	dim1556JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	31	,	33	,	39	,	155	,	19	,	975	,	659	,	11	,	6873	,	10105	};
+			const unsigned long	dim1557JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	31	,	33	,	91	,	3	,	207	,	63	,	559	,	3745	,	637	,	6869	};
+			const unsigned long	dim1558JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	1	,	11	,	41	,	51	,	439	,	273	,	1977	,	2987	,	5265	,	11779	};
+			const unsigned long	dim1559JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	13	,	63	,	111	,	125	,	65	,	1003	,	2045	,	1823	,	6799	,	2847	};
+			const unsigned long	dim1560JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	11	,	9	,	59	,	187	,	431	,	773	,	1817	,	2891	,	2927	,	1145	};
+			const unsigned long	dim1561JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	25	,	19	,	101	,	231	,	371	,	857	,	261	,	1901	,	2165	,	7275	};
+			const unsigned long	dim1562JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	31	,	57	,	125	,	77	,	447	,	417	,	1503	,	3003	,	7229	,	14275	};
+			const unsigned long	dim1563JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	23	,	63	,	17	,	251	,	237	,	755	,	641	,	1875	,	1537	,	2465	};
+			const unsigned long	dim1564JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	25	,	59	,	45	,	97	,	173	,	179	,	421	,	1269	,	2933	,	337	};
+			const unsigned long	dim1565JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	15	,	25	,	81	,	191	,	475	,	723	,	107	,	277	,	681	,	15147	};
+			const unsigned long	dim1566JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	3	,	17	,	65	,	39	,	281	,	831	,	85	,	1445	,	4779	,	5559	};
+			const unsigned long	dim1567JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	21	,	1	,	7	,	5	,	141	,	65	,	745	,	1389	,	1935	,	9317	};
+			const unsigned long	dim1568JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	27	,	31	,	33	,	27	,	185	,	625	,	1723	,	3499	,	6225	,	7993	};
+			const unsigned long	dim1569JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	5	,	51	,	19	,	27	,	301	,	845	,	949	,	1963	,	7201	,	5399	};
+			const unsigned long	dim1570JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	1	,	59	,	113	,	87	,	237	,	83	,	815	,	161	,	1685	,	1155	};
+			const unsigned long	dim1571JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	3	,	47	,	105	,	77	,	343	,	997	,	647	,	3051	,	4877	,	11519	};
+			const unsigned long	dim1572JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	15	,	13	,	123	,	253	,	343	,	701	,	1231	,	3997	,	3203	,	7411	};
+			const unsigned long	dim1573JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	21	,	53	,	103	,	49	,	511	,	535	,	1159	,	747	,	4859	,	2733	};
+			const unsigned long	dim1574JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	19	,	13	,	113	,	93	,	61	,	1007	,	219	,	3817	,	4819	,	9959	};
+			const unsigned long	dim1575JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	1	,	57	,	45	,	167	,	209	,	757	,	1861	,	1863	,	3495	,	4295	};
+			const unsigned long	dim1576JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	25	,	53	,	63	,	187	,	27	,	663	,	1697	,	2477	,	1685	,	6609	};
+			const unsigned long	dim1577JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	19	,	51	,	91	,	125	,	275	,	737	,	61	,	685	,	5739	,	12795	};
+			const unsigned long	dim1578JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	1	,	63	,	21	,	253	,	247	,	399	,	1207	,	3357	,	1029	,	4719	};
+			const unsigned long	dim1579JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	21	,	1	,	45	,	223	,	511	,	963	,	1099	,	2913	,	7385	,	13903	};
+			const unsigned long	dim1580JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	1	,	33	,	123	,	81	,	431	,	947	,	1821	,	3763	,	1679	,	2391	};
+			const unsigned long	dim1581JoeKuoD6Init[]	=	{	1	,	1	,	5	,	1	,	9	,	9	,	9	,	55	,	425	,	539	,	221	,	409	,	4967	,	8239	};
+			const unsigned long	dim1582JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	19	,	5	,	97	,	77	,	95	,	955	,	705	,	3627	,	3743	,	8687	};
+			const unsigned long	dim1583JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	27	,	51	,	37	,	177	,	109	,	343	,	35	,	1361	,	1557	,	13487	};
+			const unsigned long	dim1584JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	19	,	25	,	93	,	155	,	421	,	765	,	1529	,	2685	,	2729	,	4763	};
+			const unsigned long	dim1585JoeKuoD6Init[]	=	{	1	,	3	,	3	,	11	,	7	,	21	,	99	,	179	,	205	,	473	,	1435	,	711	,	6975	,	10497	};
+			const unsigned long	dim1586JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	1	,	55	,	29	,	113	,	201	,	123	,	201	,	2749	,	75	,	5839	};
+			const unsigned long	dim1587JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	13	,	9	,	19	,	55	,	57	,	99	,	811	,	3143	,	5143	,	5149	};
+			const unsigned long	dim1588JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	5	,	49	,	89	,	229	,	351	,	93	,	951	,	3587	,	6819	,	119	};
+			const unsigned long	dim1589JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	17	,	1	,	95	,	129	,	79	,	165	,	209	,	2859	,	4269	,	7613	};
+			const unsigned long	dim1590JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	3	,	1	,	115	,	215	,	215	,	449	,	1365	,	3429	,	5711	,	10053	};
+			const unsigned long	dim1591JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	17	,	59	,	11	,	121	,	229	,	37	,	781	,	421	,	145	,	1359	};
+			const unsigned long	dim1592JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	31	,	31	,	73	,	255	,	451	,	337	,	617	,	3169	,	7275	,	4783	};
+			const unsigned long	dim1593JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	3	,	31	,	17	,	163	,	243	,	695	,	1073	,	2625	,	6237	,	4011	};
+			const unsigned long	dim1594JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	27	,	17	,	45	,	167	,	363	,	741	,	1873	,	3699	,	7577	,	7389	};
+			const unsigned long	dim1595JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	5	,	61	,	43	,	99	,	175	,	645	,	1351	,	1405	,	2443	,	15481	};
+			const unsigned long	dim1596JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	7	,	19	,	11	,	27	,	481	,	271	,	881	,	143	,	1087	,	7443	};
+			const unsigned long	dim1597JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	11	,	59	,	47	,	165	,	421	,	211	,	451	,	3957	,	1715	,	5045	};
+			const unsigned long	dim1598JoeKuoD6Init[]	=	{	1	,	1	,	1	,	3	,	1	,	55	,	121	,	71	,	483	,	79	,	61	,	3107	,	6367	,	8787	};
+			const unsigned long	dim1599JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	5	,	35	,	7	,	197	,	269	,	437	,	1529	,	1757	,	8165	,	10897	};
+			const unsigned long	dim1600JoeKuoD6Init[]	=	{	1	,	1	,	3	,	13	,	25	,	41	,	121	,	115	,	177	,	435	,	839	,	2701	,	2813	,	5055	};
+			const unsigned long	dim1601JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	5	,	57	,	17	,	99	,	31	,	415	,	1391	,	3077	,	4317	,	12963	};
+			const unsigned long	dim1602JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	31	,	45	,	95	,	97	,	43	,	601	,	2033	,	2967	,	3985	,	10845	};
+			const unsigned long	dim1603JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	19	,	55	,	99	,	125	,	391	,	339	,	1277	,	2669	,	359	,	3983	};
+			const unsigned long	dim1604JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	11	,	47	,	79	,	197	,	157	,	959	,	777	,	133	,	337	,	14891	};
+			const unsigned long	dim1605JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	9	,	3	,	95	,	77	,	217	,	399	,	1269	,	2505	,	1055	,	5483	};
+			const unsigned long	dim1606JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	27	,	5	,	3	,	109	,	481	,	169	,	1787	,	725	,	2827	,	13599	};
+			const unsigned long	dim1607JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	7	,	11	,	127	,	119	,	141	,	999	,	295	,	2727	,	7329	,	11371	};
+			const unsigned long	dim1608JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	31	,	17	,	105	,	139	,	287	,	333	,	1149	,	3373	,	5165	,	9555	};
+			const unsigned long	dim1609JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	5	,	13	,	53	,	25	,	125	,	953	,	511	,	3695	,	7935	,	10901	};
+			const unsigned long	dim1610JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	5	,	37	,	73	,	29	,	471	,	423	,	2025	,	3759	,	4271	,	9589	};
+			const unsigned long	dim1611JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	9	,	35	,	105	,	207	,	245	,	935	,	801	,	2115	,	7935	,	11439	};
+			const unsigned long	dim1612JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	23	,	39	,	67	,	187	,	333	,	823	,	1015	,	1463	,	6445	,	5079	};
+			const unsigned long	dim1613JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	15	,	43	,	41	,	243	,	493	,	703	,	3	,	3585	,	6775	,	2169	};
+			const unsigned long	dim1614JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	7	,	53	,	29	,	225	,	399	,	885	,	1051	,	665	,	1447	,	5913	};
+			const unsigned long	dim1615JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	3	,	19	,	47	,	219	,	203	,	903	,	1399	,	1793	,	5949	,	4311	};
+			const unsigned long	dim1616JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	9	,	9	,	117	,	207	,	107	,	651	,	1155	,	2047	,	7489	,	5959	};
+			const unsigned long	dim1617JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	31	,	59	,	105	,	73	,	251	,	209	,	515	,	3467	,	721	,	13423	};
+			const unsigned long	dim1618JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	13	,	45	,	75	,	171	,	61	,	249	,	1641	,	289	,	201	,	6185	};
+			const unsigned long	dim1619JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	13	,	37	,	91	,	225	,	241	,	899	,	1471	,	3553	,	6741	,	11623	};
+			const unsigned long	dim1620JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	19	,	61	,	79	,	81	,	75	,	343	,	145	,	3975	,	4807	,	4887	};
+			const unsigned long	dim1621JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	17	,	15	,	29	,	1	,	331	,	649	,	1455	,	2365	,	6309	,	6701	};
+			const unsigned long	dim1622JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	15	,	19	,	37	,	5	,	417	,	933	,	269	,	2391	,	8063	,	14231	};
+			const unsigned long	dim1623JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	17	,	49	,	21	,	41	,	127	,	507	,	1927	,	1971	,	7057	,	12047	};
+			const unsigned long	dim1624JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	31	,	53	,	33	,	225	,	105	,	907	,	775	,	3699	,	439	,	10087	};
+			const unsigned long	dim1625JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	23	,	5	,	3	,	19	,	387	,	811	,	865	,	2817	,	3757	,	12849	};
+			const unsigned long	dim1626JoeKuoD6Init[]	=	{	1	,	3	,	5	,	3	,	3	,	23	,	51	,	239	,	489	,	667	,	301	,	3879	,	4141	,	1131	};
+			const unsigned long	dim1627JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	21	,	59	,	115	,	89	,	235	,	1009	,	1371	,	2141	,	2489	,	763	};
+			const unsigned long	dim1628JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	5	,	7	,	75	,	83	,	491	,	233	,	1027	,	1421	,	5111	,	445	};
+			const unsigned long	dim1629JoeKuoD6Init[]	=	{	1	,	3	,	3	,	3	,	19	,	27	,	1	,	181	,	193	,	949	,	69	,	2689	,	3421	,	13921	};
+			const unsigned long	dim1630JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	9	,	35	,	109	,	203	,	123	,	217	,	225	,	3355	,	2331	,	11853	};
+			const unsigned long	dim1631JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	1	,	55	,	41	,	225	,	425	,	801	,	353	,	2851	,	4403	,	7885	};
+			const unsigned long	dim1632JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	19	,	47	,	83	,	17	,	91	,	875	,	1739	,	971	,	8157	,	11047	};
+			const unsigned long	dim1633JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	29	,	47	,	123	,	209	,	183	,	473	,	1019	,	537	,	1035	,	4473	};
+			const unsigned long	dim1634JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	25	,	9	,	5	,	115	,	297	,	411	,	563	,	883	,	3509	,	1637	};
+			const unsigned long	dim1635JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	3	,	17	,	55	,	31	,	123	,	931	,	1239	,	2137	,	3673	,	10325	};
+			const unsigned long	dim1636JoeKuoD6Init[]	=	{	1	,	1	,	5	,	1	,	31	,	49	,	35	,	51	,	223	,	65	,	925	,	2133	,	3849	,	2243	};
+			const unsigned long	dim1637JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	1	,	27	,	73	,	111	,	237	,	877	,	13	,	3147	,	7115	,	13467	};
+			const unsigned long	dim1638JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	9	,	53	,	123	,	189	,	459	,	383	,	1259	,	297	,	3307	,	3305	};
+			const unsigned long	dim1639JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	27	,	45	,	65	,	175	,	417	,	377	,	195	,	1419	,	1013	,	8419	};
+			const unsigned long	dim1640JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	29	,	13	,	19	,	37	,	339	,	515	,	981	,	335	,	3965	,	7577	};
+			const unsigned long	dim1641JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	27	,	37	,	85	,	217	,	463	,	173	,	1723	,	493	,	6847	,	12253	};
+			const unsigned long	dim1642JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	19	,	35	,	53	,	123	,	365	,	771	,	961	,	2545	,	3191	,	7891	};
+			const unsigned long	dim1643JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	27	,	47	,	81	,	243	,	89	,	79	,	13	,	1733	,	965	,	39	};
+			const unsigned long	dim1644JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	21	,	1	,	57	,	137	,	211	,	491	,	1071	,	2425	,	5225	,	16141	};
+			const unsigned long	dim1645JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	5	,	23	,	57	,	117	,	45	,	373	,	831	,	3047	,	5829	,	3205	};
+			const unsigned long	dim1646JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	3	,	59	,	17	,	171	,	263	,	723	,	535	,	3791	,	4969	,	4325	};
+			const unsigned long	dim1647JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	19	,	5	,	75	,	169	,	231	,	25	,	1925	,	161	,	8051	,	13051	};
+			const unsigned long	dim1648JoeKuoD6Init[]	=	{	1	,	1	,	1	,	9	,	29	,	5	,	5	,	197	,	135	,	713	,	1895	,	533	,	6703	,	9307	};
+			const unsigned long	dim1649JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	1	,	47	,	69	,	247	,	49	,	15	,	1533	,	3051	,	8097	,	4881	};
+			const unsigned long	dim1650JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	21	,	29	,	81	,	147	,	123	,	983	,	1925	,	3959	,	3803	,	13461	};
+			const unsigned long	dim1651JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	25	,	59	,	99	,	253	,	85	,	37	,	1821	,	93	,	1813	,	6001	};
+			const unsigned long	dim1652JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	7	,	53	,	69	,	129	,	273	,	5	,	837	,	441	,	7573	,	1803	};
+			const unsigned long	dim1653JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	25	,	13	,	125	,	113	,	405	,	41	,	1151	,	3659	,	3947	,	12983	};
+			const unsigned long	dim1654JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	19	,	1	,	63	,	223	,	343	,	523	,	1857	,	1273	,	5251	,	13665	};
+			const unsigned long	dim1655JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	3	,	39	,	45	,	161	,	483	,	421	,	159	,	3257	,	7749	,	4481	};
+			const unsigned long	dim1656JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	13	,	53	,	25	,	213	,	179	,	753	,	1195	,	343	,	5803	,	15289	};
+			const unsigned long	dim1657JoeKuoD6Init[]	=	{	1	,	1	,	3	,	3	,	21	,	41	,	67	,	149	,	225	,	103	,	1567	,	2681	,	3731	,	9779	};
+			const unsigned long	dim1658JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	1	,	25	,	9	,	185	,	373	,	851	,	1245	,	1635	,	2255	,	8411	};
+			const unsigned long	dim1659JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	1	,	39	,	99	,	193	,	115	,	763	,	1079	,	1923	,	6111	,	2327	};
+			const unsigned long	dim1660JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	29	,	51	,	73	,	91	,	427	,	959	,	1321	,	3105	,	5093	,	8935	};
+			const unsigned long	dim1661JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	3	,	37	,	19	,	187	,	341	,	907	,	119	,	2177	,	7459	,	14047	};
+			const unsigned long	dim1662JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	29	,	39	,	95	,	29	,	17	,	833	,	1657	,	2867	,	4945	,	6435	};
+			const unsigned long	dim1663JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	15	,	51	,	123	,	201	,	161	,	239	,	1937	,	627	,	7529	,	15029	};
+			const unsigned long	dim1664JoeKuoD6Init[]	=	{	1	,	1	,	1	,	1	,	11	,	57	,	95	,	155	,	459	,	157	,	477	,	1751	,	4569	,	13395	};
+			const unsigned long	dim1665JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	13	,	51	,	1	,	33	,	47	,	781	,	1527	,	2471	,	7245	,	8565	};
+			const unsigned long	dim1666JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	1	,	51	,	81	,	113	,	317	,	323	,	1255	,	2387	,	6913	,	2587	};
+			const unsigned long	dim1667JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	25	,	9	,	73	,	163	,	31	,	367	,	477	,	3427	,	7957	,	12235	};
+			const unsigned long	dim1668JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	19	,	31	,	31	,	93	,	307	,	371	,	961	,	3967	,	4205	,	12459	};
+			const unsigned long	dim1669JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	7	,	13	,	29	,	75	,	31	,	583	,	923	,	2993	,	5707	,	715	};
+			const unsigned long	dim1670JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	21	,	1	,	103	,	171	,	469	,	373	,	415	,	3031	,	1411	,	14589	};
+			const unsigned long	dim1671JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	17	,	11	,	57	,	89	,	441	,	709	,	1339	,	47	,	759	,	8273	};
+			const unsigned long	dim1672JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	13	,	61	,	73	,	31	,	503	,	619	,	371	,	3533	,	4173	,	5011	};
+			const unsigned long	dim1673JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	23	,	1	,	79	,	7	,	363	,	919	,	495	,	15	,	2595	,	2691	};
+			const unsigned long	dim1674JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	25	,	5	,	57	,	241	,	23	,	907	,	43	,	2895	,	3697	,	11003	};
+			const unsigned long	dim1675JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	3	,	7	,	57	,	133	,	491	,	365	,	1793	,	3765	,	3623	,	11377	};
+			const unsigned long	dim1676JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	7	,	37	,	101	,	133	,	29	,	689	,	1997	,	3011	,	2321	,	3139	};
+			const unsigned long	dim1677JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	17	,	21	,	119	,	253	,	323	,	469	,	1959	,	537	,	675	,	4933	};
+			const unsigned long	dim1678JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	19	,	19	,	29	,	7	,	451	,	111	,	1743	,	379	,	5223	,	3477	};
+			const unsigned long	dim1679JoeKuoD6Init[]	=	{	1	,	1	,	5	,	15	,	31	,	35	,	71	,	217	,	185	,	599	,	1233	,	2079	,	7127	,	4785	};
+			const unsigned long	dim1680JoeKuoD6Init[]	=	{	1	,	1	,	7	,	11	,	1	,	33	,	41	,	239	,	429	,	987	,	1453	,	81	,	705	,	6347	};
+			const unsigned long	dim1681JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	29	,	49	,	107	,	217	,	295	,	797	,	563	,	1917	,	537	,	4355	};
+			const unsigned long	dim1682JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	17	,	49	,	27	,	67	,	5	,	239	,	53	,	1759	,	3235	,	1321	};
+			const unsigned long	dim1683JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	11	,	33	,	85	,	47	,	285	,	669	,	341	,	3011	,	287	,	9693	};
+			const unsigned long	dim1684JoeKuoD6Init[]	=	{	1	,	3	,	7	,	7	,	19	,	57	,	99	,	97	,	249	,	567	,	1709	,	2053	,	7603	,	4011	};
+			const unsigned long	dim1685JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	3	,	55	,	105	,	245	,	167	,	785	,	1409	,	3395	,	6503	,	14809	};
+			const unsigned long	dim1686JoeKuoD6Init[]	=	{	1	,	3	,	5	,	13	,	9	,	63	,	91	,	49	,	125	,	123	,	861	,	1327	,	5517	,	3319	};
+			const unsigned long	dim1687JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	3	,	63	,	101	,	167	,	403	,	43	,	1767	,	1365	,	4577	,	15423	};
+			const unsigned long	dim1688JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	3	,	31	,	81	,	189	,	273	,	935	,	1195	,	3075	,	4703	,	7855	};
+			const unsigned long	dim1689JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	11	,	21	,	57	,	69	,	405	,	865	,	281	,	3813	,	2543	,	4281	};
+			const unsigned long	dim1690JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	19	,	49	,	117	,	21	,	507	,	481	,	1961	,	2893	,	6627	,	13545	};
+			const unsigned long	dim1691JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	7	,	41	,	57	,	39	,	233	,	85	,	35	,	539	,	8009	,	7223	};
+			const unsigned long	dim1692JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	17	,	51	,	47	,	219	,	319	,	141	,	1993	,	1473	,	2403	,	13697	};
+			const unsigned long	dim1693JoeKuoD6Init[]	=	{	1	,	1	,	5	,	1	,	5	,	61	,	69	,	251	,	499	,	813	,	123	,	925	,	2093	,	3253	};
+			const unsigned long	dim1694JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	23	,	19	,	97	,	19	,	345	,	127	,	1571	,	27	,	2915	,	1497	};
+			const unsigned long	dim1695JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	25	,	23	,	41	,	41	,	75	,	571	,	527	,	517	,	7057	,	2737	};
+			const unsigned long	dim1696JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	1	,	59	,	27	,	177	,	253	,	21	,	2023	,	3393	,	3195	,	879	};
+			const unsigned long	dim1697JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	7	,	37	,	1	,	185	,	381	,	211	,	2033	,	1415	,	3275	,	15281	};
+			const unsigned long	dim1698JoeKuoD6Init[]	=	{	1	,	1	,	1	,	15	,	3	,	49	,	101	,	89	,	495	,	683	,	1945	,	3017	,	5209	,	9879	};
+			const unsigned long	dim1699JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	17	,	63	,	55	,	243	,	215	,	289	,	1119	,	4087	,	3513	,	2961	};
+			const unsigned long	dim1700JoeKuoD6Init[]	=	{	1	,	1	,	7	,	13	,	11	,	49	,	17	,	103	,	151	,	725	,	1433	,	967	,	4127	,	14955	};
+			const unsigned long	dim1701JoeKuoD6Init[]	=	{	1	,	3	,	5	,	9	,	11	,	5	,	69	,	179	,	163	,	565	,	245	,	2013	,	699	,	7109	};
+			const unsigned long	dim1702JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	29	,	23	,	39	,	93	,	211	,	1017	,	1677	,	3883	,	6157	,	11339	};
+			const unsigned long	dim1703JoeKuoD6Init[]	=	{	1	,	1	,	7	,	9	,	7	,	15	,	27	,	109	,	449	,	165	,	1785	,	1945	,	2095	,	14831	};
+			const unsigned long	dim1704JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	17	,	43	,	71	,	49	,	9	,	305	,	561	,	2309	,	6409	,	2097	};
+			const unsigned long	dim1705JoeKuoD6Init[]	=	{	1	,	1	,	7	,	5	,	9	,	63	,	77	,	149	,	119	,	727	,	1781	,	3429	,	141	,	13329	};
+			const unsigned long	dim1706JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	23	,	27	,	111	,	193	,	97	,	727	,	425	,	2665	,	2217	,	7463	};
+			const unsigned long	dim1707JoeKuoD6Init[]	=	{	1	,	3	,	3	,	5	,	15	,	45	,	85	,	237	,	207	,	759	,	1007	,	2545	,	7897	,	10953	};
+			const unsigned long	dim1708JoeKuoD6Init[]	=	{	1	,	1	,	1	,	3	,	7	,	47	,	81	,	57	,	369	,	777	,	155	,	1341	,	6679	,	5877	};
+			const unsigned long	dim1709JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	9	,	31	,	47	,	135	,	31	,	275	,	1779	,	2537	,	2157	,	7347	};
+			const unsigned long	dim1710JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	23	,	51	,	59	,	107	,	43	,	639	,	1893	,	1713	,	2409	,	6301	};
+			const unsigned long	dim1711JoeKuoD6Init[]	=	{	1	,	3	,	5	,	13	,	9	,	13	,	13	,	231	,	419	,	373	,	1071	,	2903	,	3565	,	15075	};
+			const unsigned long	dim1712JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	1	,	3	,	33	,	123	,	53	,	273	,	731	,	2049	,	4617	,	12341	};
+			const unsigned long	dim1713JoeKuoD6Init[]	=	{	1	,	3	,	1	,	1	,	17	,	49	,	75	,	141	,	499	,	863	,	635	,	2967	,	3483	,	5087	};
+			const unsigned long	dim1714JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	17	,	7	,	33	,	247	,	143	,	73	,	551	,	65	,	1261	,	10177	};
+			const unsigned long	dim1715JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	11	,	13	,	123	,	137	,	29	,	175	,	1353	,	627	,	1223	,	191	};
+			const unsigned long	dim1716JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	29	,	23	,	89	,	183	,	427	,	629	,	1747	,	141	,	95	,	8319	};
+			const unsigned long	dim1717JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	17	,	45	,	53	,	95	,	433	,	523	,	1175	,	1227	,	6893	,	2081	};
+			const unsigned long	dim1718JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	29	,	21	,	107	,	117	,	407	,	937	,	301	,	1443	,	6841	,	5673	};
+			const unsigned long	dim1719JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	15	,	13	,	81	,	213	,	259	,	619	,	375	,	1777	,	455	,	8185	};
+			const unsigned long	dim1720JoeKuoD6Init[]	=	{	1	,	1	,	5	,	7	,	13	,	25	,	113	,	175	,	31	,	265	,	1901	,	1779	,	1787	,	14551	};
+			const unsigned long	dim1721JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	17	,	59	,	41	,	183	,	405	,	477	,	133	,	3993	,	7217	,	9373	};
+			const unsigned long	dim1722JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	7	,	27	,	85	,	133	,	165	,	1023	,	443	,	2549	,	1923	,	6561	};
+			const unsigned long	dim1723JoeKuoD6Init[]	=	{	1	,	3	,	7	,	3	,	15	,	51	,	11	,	167	,	321	,	37	,	1299	,	1953	,	5365	,	8423	};
+			const unsigned long	dim1724JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	7	,	45	,	41	,	219	,	149	,	355	,	1975	,	1711	,	1643	,	13669	};
+			const unsigned long	dim1725JoeKuoD6Init[]	=	{	1	,	1	,	7	,	7	,	11	,	9	,	105	,	221	,	275	,	845	,	1651	,	483	,	7463	,	7729	};
+			const unsigned long	dim1726JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	7	,	29	,	81	,	141	,	503	,	321	,	2039	,	405	,	7503	,	3751	};
+			const unsigned long	dim1727JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	21	,	31	,	19	,	71	,	299	,	301	,	1101	,	2821	,	6005	,	5361	};
+			const unsigned long	dim1728JoeKuoD6Init[]	=	{	1	,	1	,	7	,	15	,	11	,	61	,	37	,	67	,	151	,	175	,	1815	,	2779	,	5507	,	153	};
+			const unsigned long	dim1729JoeKuoD6Init[]	=	{	1	,	1	,	5	,	11	,	9	,	41	,	83	,	225	,	109	,	23	,	563	,	1021	,	3523	,	14027	};
+			const unsigned long	dim1730JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	3	,	19	,	33	,	251	,	337	,	925	,	1309	,	1895	,	4113	,	14017	};
+			const unsigned long	dim1731JoeKuoD6Init[]	=	{	1	,	3	,	7	,	9	,	15	,	57	,	15	,	121	,	311	,	929	,	1697	,	1877	,	803	,	3361	};
+			const unsigned long	dim1732JoeKuoD6Init[]	=	{	1	,	3	,	5	,	1	,	11	,	29	,	19	,	173	,	497	,	879	,	249	,	3111	,	4227	,	14681	};
+			const unsigned long	dim1733JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	13	,	41	,	51	,	99	,	137	,	867	,	1207	,	3343	,	613	,	15047	};
+			const unsigned long	dim1734JoeKuoD6Init[]	=	{	1	,	3	,	3	,	15	,	11	,	41	,	57	,	7	,	203	,	569	,	669	,	3185	,	1233	,	527	};
+			const unsigned long	dim1735JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	27	,	45	,	83	,	49	,	335	,	747	,	1075	,	2639	,	3057	,	4137	};
+			const unsigned long	dim1736JoeKuoD6Init[]	=	{	1	,	3	,	7	,	15	,	3	,	11	,	9	,	177	,	153	,	401	,	61	,	3689	,	3853	,	15605	};
+			const unsigned long	dim1737JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	27	,	13	,	79	,	51	,	213	,	465	,	1917	,	3353	,	3553	,	14853	};
+			const unsigned long	dim1738JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	25	,	27	,	67	,	253	,	29	,	635	,	239	,	679	,	3653	,	15435	};
+			const unsigned long	dim1739JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	23	,	9	,	77	,	167	,	373	,	295	,	1423	,	1895	,	1541	,	14563	};
+			const unsigned long	dim1740JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	9	,	37	,	117	,	223	,	109	,	969	,	149	,	1611	,	3511	,	11357	};
+			const unsigned long	dim1741JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	19	,	61	,	105	,	137	,	113	,	443	,	359	,	1705	,	6893	,	11371	};
+			const unsigned long	dim1742JoeKuoD6Init[]	=	{	1	,	3	,	1	,	13	,	21	,	11	,	65	,	3	,	275	,	311	,	1157	,	87	,	4841	,	2995	};
+			const unsigned long	dim1743JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	17	,	41	,	15	,	203	,	249	,	353	,	861	,	2519	,	537	,	15203	};
+			const unsigned long	dim1744JoeKuoD6Init[]	=	{	1	,	3	,	3	,	13	,	29	,	7	,	87	,	121	,	69	,	733	,	1035	,	2731	,	8079	,	7243	};
+			const unsigned long	dim1745JoeKuoD6Init[]	=	{	1	,	1	,	1	,	3	,	13	,	3	,	109	,	47	,	161	,	313	,	1641	,	2621	,	7629	,	13713	};
+			const unsigned long	dim1746JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	5	,	5	,	85	,	99	,	463	,	1005	,	89	,	1209	,	8013	,	14393	};
+			const unsigned long	dim1747JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	27	,	1	,	127	,	185	,	193	,	275	,	891	,	763	,	3775	,	2569	};
+			const unsigned long	dim1748JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	7	,	43	,	123	,	3	,	131	,	441	,	771	,	3413	,	6641	,	2363	};
+			const unsigned long	dim1749JoeKuoD6Init[]	=	{	1	,	3	,	3	,	9	,	21	,	39	,	81	,	243	,	179	,	765	,	181	,	417	,	8027	,	1025	};
+			const unsigned long	dim1750JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	11	,	37	,	23	,	167	,	257	,	103	,	305	,	1097	,	6099	,	11321	};
+			const unsigned long	dim1751JoeKuoD6Init[]	=	{	1	,	3	,	1	,	7	,	27	,	29	,	71	,	207	,	83	,	367	,	1575	,	3171	,	759	,	10981	};
+			const unsigned long	dim1752JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	23	,	29	,	93	,	89	,	41	,	577	,	1657	,	415	,	655	,	2501	};
+			const unsigned long	dim1753JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	27	,	39	,	111	,	139	,	425	,	513	,	1341	,	2059	,	2187	,	6047	};
+			const unsigned long	dim1754JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	25	,	55	,	63	,	193	,	183	,	429	,	611	,	2119	,	2495	,	15361	};
+			const unsigned long	dim1755JoeKuoD6Init[]	=	{	1	,	1	,	1	,	3	,	9	,	31	,	15	,	185	,	139	,	603	,	1159	,	2065	,	1159	,	14869	};
+			const unsigned long	dim1756JoeKuoD6Init[]	=	{	1	,	1	,	3	,	5	,	21	,	5	,	117	,	191	,	357	,	61	,	1517	,	2075	,	2041	,	14485	};
+			const unsigned long	dim1757JoeKuoD6Init[]	=	{	1	,	1	,	3	,	15	,	21	,	59	,	13	,	67	,	393	,	809	,	1539	,	3631	,	5437	,	7787	};
+			const unsigned long	dim1758JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	23	,	19	,	53	,	237	,	123	,	123	,	351	,	1797	,	3415	,	4721	};
+			const unsigned long	dim1759JoeKuoD6Init[]	=	{	1	,	1	,	3	,	1	,	13	,	39	,	75	,	41	,	425	,	557	,	985	,	1485	,	7613	,	11109	};
+			const unsigned long	dim1760JoeKuoD6Init[]	=	{	1	,	3	,	1	,	11	,	25	,	29	,	23	,	117	,	411	,	721	,	21	,	1707	,	7685	,	11979	};
+			const unsigned long	dim1761JoeKuoD6Init[]	=	{	1	,	3	,	1	,	5	,	25	,	55	,	1	,	221	,	339	,	705	,	641	,	515	,	5883	,	10709	};
+			const unsigned long	dim1762JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	13	,	63	,	69	,	121	,	371	,	643	,	597	,	1977	,	1295	,	10941	};
+			const unsigned long	dim1763JoeKuoD6Init[]	=	{	1	,	3	,	5	,	5	,	21	,	49	,	91	,	37	,	53	,	549	,	905	,	1707	,	7371	,	7539	};
+			const unsigned long	dim1764JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	9	,	43	,	45	,	205	,	49	,	1001	,	1617	,	2307	,	3359	,	5871	};
+			const unsigned long	dim1765JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	7	,	43	,	73	,	129	,	381	,	97	,	529	,	607	,	2505	,	5171	};
+			const unsigned long	dim1766JoeKuoD6Init[]	=	{	1	,	1	,	5	,	9	,	3	,	31	,	81	,	63	,	185	,	443	,	1215	,	3123	,	7973	,	8457	};
+			const unsigned long	dim1767JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	13	,	31	,	59	,	141	,	93	,	509	,	149	,	3039	,	6011	,	11489	};
+			const unsigned long	dim1768JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	17	,	13	,	93	,	221	,	23	,	325	,	415	,	829	,	7611	,	2183	};
+			const unsigned long	dim1769JoeKuoD6Init[]	=	{	1	,	3	,	3	,	3	,	13	,	55	,	47	,	77	,	375	,	41	,	1821	,	2599	,	843	,	13411	};
+			const unsigned long	dim1770JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	17	,	15	,	101	,	225	,	47	,	217	,	137	,	2637	,	895	,	10679	};
+			const unsigned long	dim1771JoeKuoD6Init[]	=	{	1	,	1	,	7	,	3	,	27	,	37	,	123	,	173	,	83	,	119	,	599	,	17	,	89	,	15621	};
+			const unsigned long	dim1772JoeKuoD6Init[]	=	{	1	,	3	,	7	,	11	,	25	,	41	,	105	,	43	,	247	,	841	,	1331	,	2323	,	3499	,	5443	};
+			const unsigned long	dim1773JoeKuoD6Init[]	=	{	1	,	1	,	1	,	7	,	23	,	49	,	101	,	179	,	233	,	463	,	443	,	2825	,	3431	,	12585	};
+			const unsigned long	dim1774JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	31	,	49	,	115	,	173	,	193	,	615	,	663	,	2167	,	5655	,	15331	};
+			const unsigned long	dim1775JoeKuoD6Init[]	=	{	1	,	3	,	7	,	1	,	1	,	55	,	73	,	145	,	345	,	475	,	871	,	3809	,	5329	,	15785	};
+			const unsigned long	dim1776JoeKuoD6Init[]	=	{	1	,	1	,	1	,	3	,	7	,	7	,	45	,	3	,	9	,	753	,	703	,	3381	,	4831	,	5145	};
+			const unsigned long	dim1777JoeKuoD6Init[]	=	{	1	,	3	,	1	,	15	,	21	,	51	,	93	,	181	,	275	,	127	,	1743	,	509	,	2231	,	13423	};
+			const unsigned long	dim1778JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	31	,	29	,	33	,	49	,	495	,	645	,	49	,	3139	,	5281	,	12193	};
+			const unsigned long	dim1779JoeKuoD6Init[]	=	{	1	,	3	,	3	,	3	,	3	,	49	,	41	,	31	,	101	,	681	,	1331	,	1001	,	6679	,	4525	};
+			const unsigned long	dim1780JoeKuoD6Init[]	=	{	1	,	3	,	5	,	11	,	7	,	51	,	49	,	197	,	43	,	419	,	965	,	3105	,	1325	,	3137	};
+			const unsigned long	dim1781JoeKuoD6Init[]	=	{	1	,	1	,	5	,	3	,	15	,	31	,	73	,	147	,	1	,	471	,	1569	,	3647	,	7251	,	6261	};
+			const unsigned long	dim1782JoeKuoD6Init[]	=	{	1	,	3	,	3	,	1	,	5	,	43	,	41	,	215	,	161	,	521	,	1349	,	1627	,	1177	,	11719	};
+			const unsigned long	dim1783JoeKuoD6Init[]	=	{	1	,	1	,	3	,	11	,	31	,	5	,	125	,	79	,	199	,	581	,	1153	,	2937	,	7875	,	16361	};
+			const unsigned long	dim1784JoeKuoD6Init[]	=	{	1	,	1	,	5	,	1	,	1	,	31	,	7	,	7	,	475	,	807	,	1249	,	811	,	6865	,	13897	};
+			const unsigned long	dim1785JoeKuoD6Init[]	=	{	1	,	3	,	1	,	9	,	5	,	7	,	11	,	203	,	215	,	669	,	1963	,	1255	,	4785	,	11215	};
+			const unsigned long	dim1786JoeKuoD6Init[]	=	{	1	,	1	,	5	,	13	,	19	,	57	,	89	,	133	,	287	,	469	,	191	,	3177	,	1425	,	14149	};
+			const unsigned long	dim1787JoeKuoD6Init[]	=	{	1	,	3	,	5	,	15	,	9	,	9	,	13	,	229	,	477	,	261	,	1015	,	1669	,	7685	,	3337	};
+			const unsigned long	dim1788JoeKuoD6Init[]	=	{	1	,	1	,	1	,	13	,	21	,	7	,	117	,	35	,	233	,	347	,	1347	,	2171	,	2419	,	11555	};
+			const unsigned long	dim1789JoeKuoD6Init[]	=	{	1	,	3	,	7	,	5	,	17	,	55	,	37	,	243	,	159	,	605	,	1079	,	111	,	3149	,	3973	};
+			const unsigned long	dim1790JoeKuoD6Init[]	=	{	1	,	3	,	5	,	7	,	29	,	29	,	111	,	49	,	445	,	241	,	875	,	3895	,	3915	,	6337	};
+			const unsigned long	dim1791JoeKuoD6Init[]	=	{	1	,	3	,	1	,	3	,	13	,	7	,	21	,	185	,	121	,	319	,	1391	,	1303	,	3123	,	7699	};
+			const unsigned long	dim1792JoeKuoD6Init[]	=	{	1	,	1	,	5	,	5	,	3	,	9	,	69	,	205	,	423	,	189	,	687	,	1453	,	2427	,	11231	};
+			const unsigned long	dim1793JoeKuoD6Init[]	=	{	1	,	3	,	3	,	7	,	5	,	31	,	91	,	235	,	287	,	185	,	1439	,	2011	,	7429	,	4313	};
+			const unsigned long	dim1794JoeKuoD6Init[]	=	{	1	,	1	,	7	,	1	,	3	,	57	,	11	,	11	,	377	,	699	,	883	,	221	,	4849	,	11373	};
+			const unsigned long	dim1795JoeKuoD6Init[]	=	{	1	,	1	,	1	,	11	,	3	,	15	,	51	,	79	,	83	,	915	,	1429	,	811	,	2651	,	829	};
+			const unsigned long	dim1796JoeKuoD6Init[]	=	{	1	,	1	,	1	,	5	,	21	,	17	,	5	,	227	,	379	,	383	,	745	,	2761	,	323	,	753	};
+			const unsigned long	dim1797JoeKuoD6Init[]	=	{	1	,	1	,	3	,	9	,	11	,	33	,	123	,	59	,	241	,	829	,	879	,	3339	,	5315	,	10777	};
+			const unsigned long	dim1798JoeKuoD6Init[]	=	{	1	,	3	,	7	,	13	,	25	,	27	,	117	,	5	,	11	,	793	,	243	,	2571	,	369	,	1371	};
+			const unsigned long	dim1799JoeKuoD6Init[]	=	{	1	,	1	,	1	,	3	,	21	,	31	,	95	,	217	,	175	,	837	,	583	,	1149	,	8073	,	12751	};
+
+
+			const unsigned long * const JoeKuoD6initializers[1798]
+			=
+			{
+				dim2JoeKuoD6Init,
+				dim3JoeKuoD6Init,
+				dim4JoeKuoD6Init,
+				dim5JoeKuoD6Init,
+				dim6JoeKuoD6Init,
+				dim7JoeKuoD6Init,
+				dim8JoeKuoD6Init,
+				dim9JoeKuoD6Init,
+				dim10JoeKuoD6Init,
+				dim11JoeKuoD6Init,
+				dim12JoeKuoD6Init,
+				dim13JoeKuoD6Init,
+				dim14JoeKuoD6Init,
+				dim15JoeKuoD6Init,
+				dim16JoeKuoD6Init,
+				dim17JoeKuoD6Init,
+				dim18JoeKuoD6Init,
+				dim19JoeKuoD6Init,
+				dim20JoeKuoD6Init,
+				dim21JoeKuoD6Init,
+				dim22JoeKuoD6Init,
+				dim23JoeKuoD6Init,
+				dim24JoeKuoD6Init,
+				dim25JoeKuoD6Init,
+				dim26JoeKuoD6Init,
+				dim27JoeKuoD6Init,
+				dim28JoeKuoD6Init,
+				dim29JoeKuoD6Init,
+				dim30JoeKuoD6Init,
+				dim31JoeKuoD6Init,
+				dim32JoeKuoD6Init,
+				dim33JoeKuoD6Init,
+				dim34JoeKuoD6Init,
+				dim35JoeKuoD6Init,
+				dim36JoeKuoD6Init,
+				dim37JoeKuoD6Init,
+				dim38JoeKuoD6Init,
+				dim39JoeKuoD6Init,
+				dim40JoeKuoD6Init,
+				dim41JoeKuoD6Init,
+				dim42JoeKuoD6Init,
+				dim43JoeKuoD6Init,
+				dim44JoeKuoD6Init,
+				dim45JoeKuoD6Init,
+				dim46JoeKuoD6Init,
+				dim47JoeKuoD6Init,
+				dim48JoeKuoD6Init,
+				dim49JoeKuoD6Init,
+				dim50JoeKuoD6Init,
+				dim51JoeKuoD6Init,
+				dim52JoeKuoD6Init,
+				dim53JoeKuoD6Init,
+				dim54JoeKuoD6Init,
+				dim55JoeKuoD6Init,
+				dim56JoeKuoD6Init,
+				dim57JoeKuoD6Init,
+				dim58JoeKuoD6Init,
+				dim59JoeKuoD6Init,
+				dim60JoeKuoD6Init,
+				dim61JoeKuoD6Init,
+				dim62JoeKuoD6Init,
+				dim63JoeKuoD6Init,
+				dim64JoeKuoD6Init,
+				dim65JoeKuoD6Init,
+				dim66JoeKuoD6Init,
+				dim67JoeKuoD6Init,
+				dim68JoeKuoD6Init,
+				dim69JoeKuoD6Init,
+				dim70JoeKuoD6Init,
+				dim71JoeKuoD6Init,
+				dim72JoeKuoD6Init,
+				dim73JoeKuoD6Init,
+				dim74JoeKuoD6Init,
+				dim75JoeKuoD6Init,
+				dim76JoeKuoD6Init,
+				dim77JoeKuoD6Init,
+				dim78JoeKuoD6Init,
+				dim79JoeKuoD6Init,
+				dim80JoeKuoD6Init,
+				dim81JoeKuoD6Init,
+				dim82JoeKuoD6Init,
+				dim83JoeKuoD6Init,
+				dim84JoeKuoD6Init,
+				dim85JoeKuoD6Init,
+				dim86JoeKuoD6Init,
+				dim87JoeKuoD6Init,
+				dim88JoeKuoD6Init,
+				dim89JoeKuoD6Init,
+				dim90JoeKuoD6Init,
+				dim91JoeKuoD6Init,
+				dim92JoeKuoD6Init,
+				dim93JoeKuoD6Init,
+				dim94JoeKuoD6Init,
+				dim95JoeKuoD6Init,
+				dim96JoeKuoD6Init,
+				dim97JoeKuoD6Init,
+				dim98JoeKuoD6Init,
+				dim99JoeKuoD6Init,
+				dim100JoeKuoD6Init,
+				dim101JoeKuoD6Init,
+				dim102JoeKuoD6Init,
+				dim103JoeKuoD6Init,
+				dim104JoeKuoD6Init,
+				dim105JoeKuoD6Init,
+				dim106JoeKuoD6Init,
+				dim107JoeKuoD6Init,
+				dim108JoeKuoD6Init,
+				dim109JoeKuoD6Init,
+				dim110JoeKuoD6Init,
+				dim111JoeKuoD6Init,
+				dim112JoeKuoD6Init,
+				dim113JoeKuoD6Init,
+				dim114JoeKuoD6Init,
+				dim115JoeKuoD6Init,
+				dim116JoeKuoD6Init,
+				dim117JoeKuoD6Init,
+				dim118JoeKuoD6Init,
+				dim119JoeKuoD6Init,
+				dim120JoeKuoD6Init,
+				dim121JoeKuoD6Init,
+				dim122JoeKuoD6Init,
+				dim123JoeKuoD6Init,
+				dim124JoeKuoD6Init,
+				dim125JoeKuoD6Init,
+				dim126JoeKuoD6Init,
+				dim127JoeKuoD6Init,
+				dim128JoeKuoD6Init,
+				dim129JoeKuoD6Init,
+				dim130JoeKuoD6Init,
+				dim131JoeKuoD6Init,
+				dim132JoeKuoD6Init,
+				dim133JoeKuoD6Init,
+				dim134JoeKuoD6Init,
+				dim135JoeKuoD6Init,
+				dim136JoeKuoD6Init,
+				dim137JoeKuoD6Init,
+				dim138JoeKuoD6Init,
+				dim139JoeKuoD6Init,
+				dim140JoeKuoD6Init,
+				dim141JoeKuoD6Init,
+				dim142JoeKuoD6Init,
+				dim143JoeKuoD6Init,
+				dim144JoeKuoD6Init,
+				dim145JoeKuoD6Init,
+				dim146JoeKuoD6Init,
+				dim147JoeKuoD6Init,
+				dim148JoeKuoD6Init,
+				dim149JoeKuoD6Init,
+				dim150JoeKuoD6Init,
+				dim151JoeKuoD6Init,
+				dim152JoeKuoD6Init,
+				dim153JoeKuoD6Init,
+				dim154JoeKuoD6Init,
+				dim155JoeKuoD6Init,
+				dim156JoeKuoD6Init,
+				dim157JoeKuoD6Init,
+				dim158JoeKuoD6Init,
+				dim159JoeKuoD6Init,
+				dim160JoeKuoD6Init,
+				dim161JoeKuoD6Init,
+				dim162JoeKuoD6Init,
+				dim163JoeKuoD6Init,
+				dim164JoeKuoD6Init,
+				dim165JoeKuoD6Init,
+				dim166JoeKuoD6Init,
+				dim167JoeKuoD6Init,
+				dim168JoeKuoD6Init,
+				dim169JoeKuoD6Init,
+				dim170JoeKuoD6Init,
+				dim171JoeKuoD6Init,
+				dim172JoeKuoD6Init,
+				dim173JoeKuoD6Init,
+				dim174JoeKuoD6Init,
+				dim175JoeKuoD6Init,
+				dim176JoeKuoD6Init,
+				dim177JoeKuoD6Init,
+				dim178JoeKuoD6Init,
+				dim179JoeKuoD6Init,
+				dim180JoeKuoD6Init,
+				dim181JoeKuoD6Init,
+				dim182JoeKuoD6Init,
+				dim183JoeKuoD6Init,
+				dim184JoeKuoD6Init,
+				dim185JoeKuoD6Init,
+				dim186JoeKuoD6Init,
+				dim187JoeKuoD6Init,
+				dim188JoeKuoD6Init,
+				dim189JoeKuoD6Init,
+				dim190JoeKuoD6Init,
+				dim191JoeKuoD6Init,
+				dim192JoeKuoD6Init,
+				dim193JoeKuoD6Init,
+				dim194JoeKuoD6Init,
+				dim195JoeKuoD6Init,
+				dim196JoeKuoD6Init,
+				dim197JoeKuoD6Init,
+				dim198JoeKuoD6Init,
+				dim199JoeKuoD6Init,
+				dim200JoeKuoD6Init,
+				dim201JoeKuoD6Init,
+				dim202JoeKuoD6Init,
+				dim203JoeKuoD6Init,
+				dim204JoeKuoD6Init,
+				dim205JoeKuoD6Init,
+				dim206JoeKuoD6Init,
+				dim207JoeKuoD6Init,
+				dim208JoeKuoD6Init,
+				dim209JoeKuoD6Init,
+				dim210JoeKuoD6Init,
+				dim211JoeKuoD6Init,
+				dim212JoeKuoD6Init,
+				dim213JoeKuoD6Init,
+				dim214JoeKuoD6Init,
+				dim215JoeKuoD6Init,
+				dim216JoeKuoD6Init,
+				dim217JoeKuoD6Init,
+				dim218JoeKuoD6Init,
+				dim219JoeKuoD6Init,
+				dim220JoeKuoD6Init,
+				dim221JoeKuoD6Init,
+				dim222JoeKuoD6Init,
+				dim223JoeKuoD6Init,
+				dim224JoeKuoD6Init,
+				dim225JoeKuoD6Init,
+				dim226JoeKuoD6Init,
+				dim227JoeKuoD6Init,
+				dim228JoeKuoD6Init,
+				dim229JoeKuoD6Init,
+				dim230JoeKuoD6Init,
+				dim231JoeKuoD6Init,
+				dim232JoeKuoD6Init,
+				dim233JoeKuoD6Init,
+				dim234JoeKuoD6Init,
+				dim235JoeKuoD6Init,
+				dim236JoeKuoD6Init,
+				dim237JoeKuoD6Init,
+				dim238JoeKuoD6Init,
+				dim239JoeKuoD6Init,
+				dim240JoeKuoD6Init,
+				dim241JoeKuoD6Init,
+				dim242JoeKuoD6Init,
+				dim243JoeKuoD6Init,
+				dim244JoeKuoD6Init,
+				dim245JoeKuoD6Init,
+				dim246JoeKuoD6Init,
+				dim247JoeKuoD6Init,
+				dim248JoeKuoD6Init,
+				dim249JoeKuoD6Init,
+				dim250JoeKuoD6Init,
+				dim251JoeKuoD6Init,
+				dim252JoeKuoD6Init,
+				dim253JoeKuoD6Init,
+				dim254JoeKuoD6Init,
+				dim255JoeKuoD6Init,
+				dim256JoeKuoD6Init,
+				dim257JoeKuoD6Init,
+				dim258JoeKuoD6Init,
+				dim259JoeKuoD6Init,
+				dim260JoeKuoD6Init,
+				dim261JoeKuoD6Init,
+				dim262JoeKuoD6Init,
+				dim263JoeKuoD6Init,
+				dim264JoeKuoD6Init,
+				dim265JoeKuoD6Init,
+				dim266JoeKuoD6Init,
+				dim267JoeKuoD6Init,
+				dim268JoeKuoD6Init,
+				dim269JoeKuoD6Init,
+				dim270JoeKuoD6Init,
+				dim271JoeKuoD6Init,
+				dim272JoeKuoD6Init,
+				dim273JoeKuoD6Init,
+				dim274JoeKuoD6Init,
+				dim275JoeKuoD6Init,
+				dim276JoeKuoD6Init,
+				dim277JoeKuoD6Init,
+				dim278JoeKuoD6Init,
+				dim279JoeKuoD6Init,
+				dim280JoeKuoD6Init,
+				dim281JoeKuoD6Init,
+				dim282JoeKuoD6Init,
+				dim283JoeKuoD6Init,
+				dim284JoeKuoD6Init,
+				dim285JoeKuoD6Init,
+				dim286JoeKuoD6Init,
+				dim287JoeKuoD6Init,
+				dim288JoeKuoD6Init,
+				dim289JoeKuoD6Init,
+				dim290JoeKuoD6Init,
+				dim291JoeKuoD6Init,
+				dim292JoeKuoD6Init,
+				dim293JoeKuoD6Init,
+				dim294JoeKuoD6Init,
+				dim295JoeKuoD6Init,
+				dim296JoeKuoD6Init,
+				dim297JoeKuoD6Init,
+				dim298JoeKuoD6Init,
+				dim299JoeKuoD6Init,
+				dim300JoeKuoD6Init,
+				dim301JoeKuoD6Init,
+				dim302JoeKuoD6Init,
+				dim303JoeKuoD6Init,
+				dim304JoeKuoD6Init,
+				dim305JoeKuoD6Init,
+				dim306JoeKuoD6Init,
+				dim307JoeKuoD6Init,
+				dim308JoeKuoD6Init,
+				dim309JoeKuoD6Init,
+				dim310JoeKuoD6Init,
+				dim311JoeKuoD6Init,
+				dim312JoeKuoD6Init,
+				dim313JoeKuoD6Init,
+				dim314JoeKuoD6Init,
+				dim315JoeKuoD6Init,
+				dim316JoeKuoD6Init,
+				dim317JoeKuoD6Init,
+				dim318JoeKuoD6Init,
+				dim319JoeKuoD6Init,
+				dim320JoeKuoD6Init,
+				dim321JoeKuoD6Init,
+				dim322JoeKuoD6Init,
+				dim323JoeKuoD6Init,
+				dim324JoeKuoD6Init,
+				dim325JoeKuoD6Init,
+				dim326JoeKuoD6Init,
+				dim327JoeKuoD6Init,
+				dim328JoeKuoD6Init,
+				dim329JoeKuoD6Init,
+				dim330JoeKuoD6Init,
+				dim331JoeKuoD6Init,
+				dim332JoeKuoD6Init,
+				dim333JoeKuoD6Init,
+				dim334JoeKuoD6Init,
+				dim335JoeKuoD6Init,
+				dim336JoeKuoD6Init,
+				dim337JoeKuoD6Init,
+				dim338JoeKuoD6Init,
+				dim339JoeKuoD6Init,
+				dim340JoeKuoD6Init,
+				dim341JoeKuoD6Init,
+				dim342JoeKuoD6Init,
+				dim343JoeKuoD6Init,
+				dim344JoeKuoD6Init,
+				dim345JoeKuoD6Init,
+				dim346JoeKuoD6Init,
+				dim347JoeKuoD6Init,
+				dim348JoeKuoD6Init,
+				dim349JoeKuoD6Init,
+				dim350JoeKuoD6Init,
+				dim351JoeKuoD6Init,
+				dim352JoeKuoD6Init,
+				dim353JoeKuoD6Init,
+				dim354JoeKuoD6Init,
+				dim355JoeKuoD6Init,
+				dim356JoeKuoD6Init,
+				dim357JoeKuoD6Init,
+				dim358JoeKuoD6Init,
+				dim359JoeKuoD6Init,
+				dim360JoeKuoD6Init,
+				dim361JoeKuoD6Init,
+				dim362JoeKuoD6Init,
+				dim363JoeKuoD6Init,
+				dim364JoeKuoD6Init,
+				dim365JoeKuoD6Init,
+				dim366JoeKuoD6Init,
+				dim367JoeKuoD6Init,
+				dim368JoeKuoD6Init,
+				dim369JoeKuoD6Init,
+				dim370JoeKuoD6Init,
+				dim371JoeKuoD6Init,
+				dim372JoeKuoD6Init,
+				dim373JoeKuoD6Init,
+				dim374JoeKuoD6Init,
+				dim375JoeKuoD6Init,
+				dim376JoeKuoD6Init,
+				dim377JoeKuoD6Init,
+				dim378JoeKuoD6Init,
+				dim379JoeKuoD6Init,
+				dim380JoeKuoD6Init,
+				dim381JoeKuoD6Init,
+				dim382JoeKuoD6Init,
+				dim383JoeKuoD6Init,
+				dim384JoeKuoD6Init,
+				dim385JoeKuoD6Init,
+				dim386JoeKuoD6Init,
+				dim387JoeKuoD6Init,
+				dim388JoeKuoD6Init,
+				dim389JoeKuoD6Init,
+				dim390JoeKuoD6Init,
+				dim391JoeKuoD6Init,
+				dim392JoeKuoD6Init,
+				dim393JoeKuoD6Init,
+				dim394JoeKuoD6Init,
+				dim395JoeKuoD6Init,
+				dim396JoeKuoD6Init,
+				dim397JoeKuoD6Init,
+				dim398JoeKuoD6Init,
+				dim399JoeKuoD6Init,
+				dim400JoeKuoD6Init,
+				dim401JoeKuoD6Init,
+				dim402JoeKuoD6Init,
+				dim403JoeKuoD6Init,
+				dim404JoeKuoD6Init,
+				dim405JoeKuoD6Init,
+				dim406JoeKuoD6Init,
+				dim407JoeKuoD6Init,
+				dim408JoeKuoD6Init,
+				dim409JoeKuoD6Init,
+				dim410JoeKuoD6Init,
+				dim411JoeKuoD6Init,
+				dim412JoeKuoD6Init,
+				dim413JoeKuoD6Init,
+				dim414JoeKuoD6Init,
+				dim415JoeKuoD6Init,
+				dim416JoeKuoD6Init,
+				dim417JoeKuoD6Init,
+				dim418JoeKuoD6Init,
+				dim419JoeKuoD6Init,
+				dim420JoeKuoD6Init,
+				dim421JoeKuoD6Init,
+				dim422JoeKuoD6Init,
+				dim423JoeKuoD6Init,
+				dim424JoeKuoD6Init,
+				dim425JoeKuoD6Init,
+				dim426JoeKuoD6Init,
+				dim427JoeKuoD6Init,
+				dim428JoeKuoD6Init,
+				dim429JoeKuoD6Init,
+				dim430JoeKuoD6Init,
+				dim431JoeKuoD6Init,
+				dim432JoeKuoD6Init,
+				dim433JoeKuoD6Init,
+				dim434JoeKuoD6Init,
+				dim435JoeKuoD6Init,
+				dim436JoeKuoD6Init,
+				dim437JoeKuoD6Init,
+				dim438JoeKuoD6Init,
+				dim439JoeKuoD6Init,
+				dim440JoeKuoD6Init,
+				dim441JoeKuoD6Init,
+				dim442JoeKuoD6Init,
+				dim443JoeKuoD6Init,
+				dim444JoeKuoD6Init,
+				dim445JoeKuoD6Init,
+				dim446JoeKuoD6Init,
+				dim447JoeKuoD6Init,
+				dim448JoeKuoD6Init,
+				dim449JoeKuoD6Init,
+				dim450JoeKuoD6Init,
+				dim451JoeKuoD6Init,
+				dim452JoeKuoD6Init,
+				dim453JoeKuoD6Init,
+				dim454JoeKuoD6Init,
+				dim455JoeKuoD6Init,
+				dim456JoeKuoD6Init,
+				dim457JoeKuoD6Init,
+				dim458JoeKuoD6Init,
+				dim459JoeKuoD6Init,
+				dim460JoeKuoD6Init,
+				dim461JoeKuoD6Init,
+				dim462JoeKuoD6Init,
+				dim463JoeKuoD6Init,
+				dim464JoeKuoD6Init,
+				dim465JoeKuoD6Init,
+				dim466JoeKuoD6Init,
+				dim467JoeKuoD6Init,
+				dim468JoeKuoD6Init,
+				dim469JoeKuoD6Init,
+				dim470JoeKuoD6Init,
+				dim471JoeKuoD6Init,
+				dim472JoeKuoD6Init,
+				dim473JoeKuoD6Init,
+				dim474JoeKuoD6Init,
+				dim475JoeKuoD6Init,
+				dim476JoeKuoD6Init,
+				dim477JoeKuoD6Init,
+				dim478JoeKuoD6Init,
+				dim479JoeKuoD6Init,
+				dim480JoeKuoD6Init,
+				dim481JoeKuoD6Init,
+				dim482JoeKuoD6Init,
+				dim483JoeKuoD6Init,
+				dim484JoeKuoD6Init,
+				dim485JoeKuoD6Init,
+				dim486JoeKuoD6Init,
+				dim487JoeKuoD6Init,
+				dim488JoeKuoD6Init,
+				dim489JoeKuoD6Init,
+				dim490JoeKuoD6Init,
+				dim491JoeKuoD6Init,
+				dim492JoeKuoD6Init,
+				dim493JoeKuoD6Init,
+				dim494JoeKuoD6Init,
+				dim495JoeKuoD6Init,
+				dim496JoeKuoD6Init,
+				dim497JoeKuoD6Init,
+				dim498JoeKuoD6Init,
+				dim499JoeKuoD6Init,
+				dim500JoeKuoD6Init,
+				dim501JoeKuoD6Init,
+				dim502JoeKuoD6Init,
+				dim503JoeKuoD6Init,
+				dim504JoeKuoD6Init,
+				dim505JoeKuoD6Init,
+				dim506JoeKuoD6Init,
+				dim507JoeKuoD6Init,
+				dim508JoeKuoD6Init,
+				dim509JoeKuoD6Init,
+				dim510JoeKuoD6Init,
+				dim511JoeKuoD6Init,
+				dim512JoeKuoD6Init,
+				dim513JoeKuoD6Init,
+				dim514JoeKuoD6Init,
+				dim515JoeKuoD6Init,
+				dim516JoeKuoD6Init,
+				dim517JoeKuoD6Init,
+				dim518JoeKuoD6Init,
+				dim519JoeKuoD6Init,
+				dim520JoeKuoD6Init,
+				dim521JoeKuoD6Init,
+				dim522JoeKuoD6Init,
+				dim523JoeKuoD6Init,
+				dim524JoeKuoD6Init,
+				dim525JoeKuoD6Init,
+				dim526JoeKuoD6Init,
+				dim527JoeKuoD6Init,
+				dim528JoeKuoD6Init,
+				dim529JoeKuoD6Init,
+				dim530JoeKuoD6Init,
+				dim531JoeKuoD6Init,
+				dim532JoeKuoD6Init,
+				dim533JoeKuoD6Init,
+				dim534JoeKuoD6Init,
+				dim535JoeKuoD6Init,
+				dim536JoeKuoD6Init,
+				dim537JoeKuoD6Init,
+				dim538JoeKuoD6Init,
+				dim539JoeKuoD6Init,
+				dim540JoeKuoD6Init,
+				dim541JoeKuoD6Init,
+				dim542JoeKuoD6Init,
+				dim543JoeKuoD6Init,
+				dim544JoeKuoD6Init,
+				dim545JoeKuoD6Init,
+				dim546JoeKuoD6Init,
+				dim547JoeKuoD6Init,
+				dim548JoeKuoD6Init,
+				dim549JoeKuoD6Init,
+				dim550JoeKuoD6Init,
+				dim551JoeKuoD6Init,
+				dim552JoeKuoD6Init,
+				dim553JoeKuoD6Init,
+				dim554JoeKuoD6Init,
+				dim555JoeKuoD6Init,
+				dim556JoeKuoD6Init,
+				dim557JoeKuoD6Init,
+				dim558JoeKuoD6Init,
+				dim559JoeKuoD6Init,
+				dim560JoeKuoD6Init,
+				dim561JoeKuoD6Init,
+				dim562JoeKuoD6Init,
+				dim563JoeKuoD6Init,
+				dim564JoeKuoD6Init,
+				dim565JoeKuoD6Init,
+				dim566JoeKuoD6Init,
+				dim567JoeKuoD6Init,
+				dim568JoeKuoD6Init,
+				dim569JoeKuoD6Init,
+				dim570JoeKuoD6Init,
+				dim571JoeKuoD6Init,
+				dim572JoeKuoD6Init,
+				dim573JoeKuoD6Init,
+				dim574JoeKuoD6Init,
+				dim575JoeKuoD6Init,
+				dim576JoeKuoD6Init,
+				dim577JoeKuoD6Init,
+				dim578JoeKuoD6Init,
+				dim579JoeKuoD6Init,
+				dim580JoeKuoD6Init,
+				dim581JoeKuoD6Init,
+				dim582JoeKuoD6Init,
+				dim583JoeKuoD6Init,
+				dim584JoeKuoD6Init,
+				dim585JoeKuoD6Init,
+				dim586JoeKuoD6Init,
+				dim587JoeKuoD6Init,
+				dim588JoeKuoD6Init,
+				dim589JoeKuoD6Init,
+				dim590JoeKuoD6Init,
+				dim591JoeKuoD6Init,
+				dim592JoeKuoD6Init,
+				dim593JoeKuoD6Init,
+				dim594JoeKuoD6Init,
+				dim595JoeKuoD6Init,
+				dim596JoeKuoD6Init,
+				dim597JoeKuoD6Init,
+				dim598JoeKuoD6Init,
+				dim599JoeKuoD6Init,
+				dim600JoeKuoD6Init,
+				dim601JoeKuoD6Init,
+				dim602JoeKuoD6Init,
+				dim603JoeKuoD6Init,
+				dim604JoeKuoD6Init,
+				dim605JoeKuoD6Init,
+				dim606JoeKuoD6Init,
+				dim607JoeKuoD6Init,
+				dim608JoeKuoD6Init,
+				dim609JoeKuoD6Init,
+				dim610JoeKuoD6Init,
+				dim611JoeKuoD6Init,
+				dim612JoeKuoD6Init,
+				dim613JoeKuoD6Init,
+				dim614JoeKuoD6Init,
+				dim615JoeKuoD6Init,
+				dim616JoeKuoD6Init,
+				dim617JoeKuoD6Init,
+				dim618JoeKuoD6Init,
+				dim619JoeKuoD6Init,
+				dim620JoeKuoD6Init,
+				dim621JoeKuoD6Init,
+				dim622JoeKuoD6Init,
+				dim623JoeKuoD6Init,
+				dim624JoeKuoD6Init,
+				dim625JoeKuoD6Init,
+				dim626JoeKuoD6Init,
+				dim627JoeKuoD6Init,
+				dim628JoeKuoD6Init,
+				dim629JoeKuoD6Init,
+				dim630JoeKuoD6Init,
+				dim631JoeKuoD6Init,
+				dim632JoeKuoD6Init,
+				dim633JoeKuoD6Init,
+				dim634JoeKuoD6Init,
+				dim635JoeKuoD6Init,
+				dim636JoeKuoD6Init,
+				dim637JoeKuoD6Init,
+				dim638JoeKuoD6Init,
+				dim639JoeKuoD6Init,
+				dim640JoeKuoD6Init,
+				dim641JoeKuoD6Init,
+				dim642JoeKuoD6Init,
+				dim643JoeKuoD6Init,
+				dim644JoeKuoD6Init,
+				dim645JoeKuoD6Init,
+				dim646JoeKuoD6Init,
+				dim647JoeKuoD6Init,
+				dim648JoeKuoD6Init,
+				dim649JoeKuoD6Init,
+				dim650JoeKuoD6Init,
+				dim651JoeKuoD6Init,
+				dim652JoeKuoD6Init,
+				dim653JoeKuoD6Init,
+				dim654JoeKuoD6Init,
+				dim655JoeKuoD6Init,
+				dim656JoeKuoD6Init,
+				dim657JoeKuoD6Init,
+				dim658JoeKuoD6Init,
+				dim659JoeKuoD6Init,
+				dim660JoeKuoD6Init,
+				dim661JoeKuoD6Init,
+				dim662JoeKuoD6Init,
+				dim663JoeKuoD6Init,
+				dim664JoeKuoD6Init,
+				dim665JoeKuoD6Init,
+				dim666JoeKuoD6Init,
+				dim667JoeKuoD6Init,
+				dim668JoeKuoD6Init,
+				dim669JoeKuoD6Init,
+				dim670JoeKuoD6Init,
+				dim671JoeKuoD6Init,
+				dim672JoeKuoD6Init,
+				dim673JoeKuoD6Init,
+				dim674JoeKuoD6Init,
+				dim675JoeKuoD6Init,
+				dim676JoeKuoD6Init,
+				dim677JoeKuoD6Init,
+				dim678JoeKuoD6Init,
+				dim679JoeKuoD6Init,
+				dim680JoeKuoD6Init,
+				dim681JoeKuoD6Init,
+				dim682JoeKuoD6Init,
+				dim683JoeKuoD6Init,
+				dim684JoeKuoD6Init,
+				dim685JoeKuoD6Init,
+				dim686JoeKuoD6Init,
+				dim687JoeKuoD6Init,
+				dim688JoeKuoD6Init,
+				dim689JoeKuoD6Init,
+				dim690JoeKuoD6Init,
+				dim691JoeKuoD6Init,
+				dim692JoeKuoD6Init,
+				dim693JoeKuoD6Init,
+				dim694JoeKuoD6Init,
+				dim695JoeKuoD6Init,
+				dim696JoeKuoD6Init,
+				dim697JoeKuoD6Init,
+				dim698JoeKuoD6Init,
+				dim699JoeKuoD6Init,
+				dim700JoeKuoD6Init,
+				dim701JoeKuoD6Init,
+				dim702JoeKuoD6Init,
+				dim703JoeKuoD6Init,
+				dim704JoeKuoD6Init,
+				dim705JoeKuoD6Init,
+				dim706JoeKuoD6Init,
+				dim707JoeKuoD6Init,
+				dim708JoeKuoD6Init,
+				dim709JoeKuoD6Init,
+				dim710JoeKuoD6Init,
+				dim711JoeKuoD6Init,
+				dim712JoeKuoD6Init,
+				dim713JoeKuoD6Init,
+				dim714JoeKuoD6Init,
+				dim715JoeKuoD6Init,
+				dim716JoeKuoD6Init,
+				dim717JoeKuoD6Init,
+				dim718JoeKuoD6Init,
+				dim719JoeKuoD6Init,
+				dim720JoeKuoD6Init,
+				dim721JoeKuoD6Init,
+				dim722JoeKuoD6Init,
+				dim723JoeKuoD6Init,
+				dim724JoeKuoD6Init,
+				dim725JoeKuoD6Init,
+				dim726JoeKuoD6Init,
+				dim727JoeKuoD6Init,
+				dim728JoeKuoD6Init,
+				dim729JoeKuoD6Init,
+				dim730JoeKuoD6Init,
+				dim731JoeKuoD6Init,
+				dim732JoeKuoD6Init,
+				dim733JoeKuoD6Init,
+				dim734JoeKuoD6Init,
+				dim735JoeKuoD6Init,
+				dim736JoeKuoD6Init,
+				dim737JoeKuoD6Init,
+				dim738JoeKuoD6Init,
+				dim739JoeKuoD6Init,
+				dim740JoeKuoD6Init,
+				dim741JoeKuoD6Init,
+				dim742JoeKuoD6Init,
+				dim743JoeKuoD6Init,
+				dim744JoeKuoD6Init,
+				dim745JoeKuoD6Init,
+				dim746JoeKuoD6Init,
+				dim747JoeKuoD6Init,
+				dim748JoeKuoD6Init,
+				dim749JoeKuoD6Init,
+				dim750JoeKuoD6Init,
+				dim751JoeKuoD6Init,
+				dim752JoeKuoD6Init,
+				dim753JoeKuoD6Init,
+				dim754JoeKuoD6Init,
+				dim755JoeKuoD6Init,
+				dim756JoeKuoD6Init,
+				dim757JoeKuoD6Init,
+				dim758JoeKuoD6Init,
+				dim759JoeKuoD6Init,
+				dim760JoeKuoD6Init,
+				dim761JoeKuoD6Init,
+				dim762JoeKuoD6Init,
+				dim763JoeKuoD6Init,
+				dim764JoeKuoD6Init,
+				dim765JoeKuoD6Init,
+				dim766JoeKuoD6Init,
+				dim767JoeKuoD6Init,
+				dim768JoeKuoD6Init,
+				dim769JoeKuoD6Init,
+				dim770JoeKuoD6Init,
+				dim771JoeKuoD6Init,
+				dim772JoeKuoD6Init,
+				dim773JoeKuoD6Init,
+				dim774JoeKuoD6Init,
+				dim775JoeKuoD6Init,
+				dim776JoeKuoD6Init,
+				dim777JoeKuoD6Init,
+				dim778JoeKuoD6Init,
+				dim779JoeKuoD6Init,
+				dim780JoeKuoD6Init,
+				dim781JoeKuoD6Init,
+				dim782JoeKuoD6Init,
+				dim783JoeKuoD6Init,
+				dim784JoeKuoD6Init,
+				dim785JoeKuoD6Init,
+				dim786JoeKuoD6Init,
+				dim787JoeKuoD6Init,
+				dim788JoeKuoD6Init,
+				dim789JoeKuoD6Init,
+				dim790JoeKuoD6Init,
+				dim791JoeKuoD6Init,
+				dim792JoeKuoD6Init,
+				dim793JoeKuoD6Init,
+				dim794JoeKuoD6Init,
+				dim795JoeKuoD6Init,
+				dim796JoeKuoD6Init,
+				dim797JoeKuoD6Init,
+				dim798JoeKuoD6Init,
+				dim799JoeKuoD6Init,
+				dim800JoeKuoD6Init,
+				dim801JoeKuoD6Init,
+				dim802JoeKuoD6Init,
+				dim803JoeKuoD6Init,
+				dim804JoeKuoD6Init,
+				dim805JoeKuoD6Init,
+				dim806JoeKuoD6Init,
+				dim807JoeKuoD6Init,
+				dim808JoeKuoD6Init,
+				dim809JoeKuoD6Init,
+				dim810JoeKuoD6Init,
+				dim811JoeKuoD6Init,
+				dim812JoeKuoD6Init,
+				dim813JoeKuoD6Init,
+				dim814JoeKuoD6Init,
+				dim815JoeKuoD6Init,
+				dim816JoeKuoD6Init,
+				dim817JoeKuoD6Init,
+				dim818JoeKuoD6Init,
+				dim819JoeKuoD6Init,
+				dim820JoeKuoD6Init,
+				dim821JoeKuoD6Init,
+				dim822JoeKuoD6Init,
+				dim823JoeKuoD6Init,
+				dim824JoeKuoD6Init,
+				dim825JoeKuoD6Init,
+				dim826JoeKuoD6Init,
+				dim827JoeKuoD6Init,
+				dim828JoeKuoD6Init,
+				dim829JoeKuoD6Init,
+				dim830JoeKuoD6Init,
+				dim831JoeKuoD6Init,
+				dim832JoeKuoD6Init,
+				dim833JoeKuoD6Init,
+				dim834JoeKuoD6Init,
+				dim835JoeKuoD6Init,
+				dim836JoeKuoD6Init,
+				dim837JoeKuoD6Init,
+				dim838JoeKuoD6Init,
+				dim839JoeKuoD6Init,
+				dim840JoeKuoD6Init,
+				dim841JoeKuoD6Init,
+				dim842JoeKuoD6Init,
+				dim843JoeKuoD6Init,
+				dim844JoeKuoD6Init,
+				dim845JoeKuoD6Init,
+				dim846JoeKuoD6Init,
+				dim847JoeKuoD6Init,
+				dim848JoeKuoD6Init,
+				dim849JoeKuoD6Init,
+				dim850JoeKuoD6Init,
+				dim851JoeKuoD6Init,
+				dim852JoeKuoD6Init,
+				dim853JoeKuoD6Init,
+				dim854JoeKuoD6Init,
+				dim855JoeKuoD6Init,
+				dim856JoeKuoD6Init,
+				dim857JoeKuoD6Init,
+				dim858JoeKuoD6Init,
+				dim859JoeKuoD6Init,
+				dim860JoeKuoD6Init,
+				dim861JoeKuoD6Init,
+				dim862JoeKuoD6Init,
+				dim863JoeKuoD6Init,
+				dim864JoeKuoD6Init,
+				dim865JoeKuoD6Init,
+				dim866JoeKuoD6Init,
+				dim867JoeKuoD6Init,
+				dim868JoeKuoD6Init,
+				dim869JoeKuoD6Init,
+				dim870JoeKuoD6Init,
+				dim871JoeKuoD6Init,
+				dim872JoeKuoD6Init,
+				dim873JoeKuoD6Init,
+				dim874JoeKuoD6Init,
+				dim875JoeKuoD6Init,
+				dim876JoeKuoD6Init,
+				dim877JoeKuoD6Init,
+				dim878JoeKuoD6Init,
+				dim879JoeKuoD6Init,
+				dim880JoeKuoD6Init,
+				dim881JoeKuoD6Init,
+				dim882JoeKuoD6Init,
+				dim883JoeKuoD6Init,
+				dim884JoeKuoD6Init,
+				dim885JoeKuoD6Init,
+				dim886JoeKuoD6Init,
+				dim887JoeKuoD6Init,
+				dim888JoeKuoD6Init,
+				dim889JoeKuoD6Init,
+				dim890JoeKuoD6Init,
+				dim891JoeKuoD6Init,
+				dim892JoeKuoD6Init,
+				dim893JoeKuoD6Init,
+				dim894JoeKuoD6Init,
+				dim895JoeKuoD6Init,
+				dim896JoeKuoD6Init,
+				dim897JoeKuoD6Init,
+				dim898JoeKuoD6Init,
+				dim899JoeKuoD6Init,
+				dim900JoeKuoD6Init,
+				dim901JoeKuoD6Init,
+				dim902JoeKuoD6Init,
+				dim903JoeKuoD6Init,
+				dim904JoeKuoD6Init,
+				dim905JoeKuoD6Init,
+				dim906JoeKuoD6Init,
+				dim907JoeKuoD6Init,
+				dim908JoeKuoD6Init,
+				dim909JoeKuoD6Init,
+				dim910JoeKuoD6Init,
+				dim911JoeKuoD6Init,
+				dim912JoeKuoD6Init,
+				dim913JoeKuoD6Init,
+				dim914JoeKuoD6Init,
+				dim915JoeKuoD6Init,
+				dim916JoeKuoD6Init,
+				dim917JoeKuoD6Init,
+				dim918JoeKuoD6Init,
+				dim919JoeKuoD6Init,
+				dim920JoeKuoD6Init,
+				dim921JoeKuoD6Init,
+				dim922JoeKuoD6Init,
+				dim923JoeKuoD6Init,
+				dim924JoeKuoD6Init,
+				dim925JoeKuoD6Init,
+				dim926JoeKuoD6Init,
+				dim927JoeKuoD6Init,
+				dim928JoeKuoD6Init,
+				dim929JoeKuoD6Init,
+				dim930JoeKuoD6Init,
+				dim931JoeKuoD6Init,
+				dim932JoeKuoD6Init,
+				dim933JoeKuoD6Init,
+				dim934JoeKuoD6Init,
+				dim935JoeKuoD6Init,
+				dim936JoeKuoD6Init,
+				dim937JoeKuoD6Init,
+				dim938JoeKuoD6Init,
+				dim939JoeKuoD6Init,
+				dim940JoeKuoD6Init,
+				dim941JoeKuoD6Init,
+				dim942JoeKuoD6Init,
+				dim943JoeKuoD6Init,
+				dim944JoeKuoD6Init,
+				dim945JoeKuoD6Init,
+				dim946JoeKuoD6Init,
+				dim947JoeKuoD6Init,
+				dim948JoeKuoD6Init,
+				dim949JoeKuoD6Init,
+				dim950JoeKuoD6Init,
+				dim951JoeKuoD6Init,
+				dim952JoeKuoD6Init,
+				dim953JoeKuoD6Init,
+				dim954JoeKuoD6Init,
+				dim955JoeKuoD6Init,
+				dim956JoeKuoD6Init,
+				dim957JoeKuoD6Init,
+				dim958JoeKuoD6Init,
+				dim959JoeKuoD6Init,
+				dim960JoeKuoD6Init,
+				dim961JoeKuoD6Init,
+				dim962JoeKuoD6Init,
+				dim963JoeKuoD6Init,
+				dim964JoeKuoD6Init,
+				dim965JoeKuoD6Init,
+				dim966JoeKuoD6Init,
+				dim967JoeKuoD6Init,
+				dim968JoeKuoD6Init,
+				dim969JoeKuoD6Init,
+				dim970JoeKuoD6Init,
+				dim971JoeKuoD6Init,
+				dim972JoeKuoD6Init,
+				dim973JoeKuoD6Init,
+				dim974JoeKuoD6Init,
+				dim975JoeKuoD6Init,
+				dim976JoeKuoD6Init,
+				dim977JoeKuoD6Init,
+				dim978JoeKuoD6Init,
+				dim979JoeKuoD6Init,
+				dim980JoeKuoD6Init,
+				dim981JoeKuoD6Init,
+				dim982JoeKuoD6Init,
+				dim983JoeKuoD6Init,
+				dim984JoeKuoD6Init,
+				dim985JoeKuoD6Init,
+				dim986JoeKuoD6Init,
+				dim987JoeKuoD6Init,
+				dim988JoeKuoD6Init,
+				dim989JoeKuoD6Init,
+				dim990JoeKuoD6Init,
+				dim991JoeKuoD6Init,
+				dim992JoeKuoD6Init,
+				dim993JoeKuoD6Init,
+				dim994JoeKuoD6Init,
+				dim995JoeKuoD6Init,
+				dim996JoeKuoD6Init,
+				dim997JoeKuoD6Init,
+				dim998JoeKuoD6Init,
+				dim999JoeKuoD6Init,
+				dim1000JoeKuoD6Init,
+				dim1001JoeKuoD6Init,
+				dim1002JoeKuoD6Init,
+				dim1003JoeKuoD6Init,
+				dim1004JoeKuoD6Init,
+				dim1005JoeKuoD6Init,
+				dim1006JoeKuoD6Init,
+				dim1007JoeKuoD6Init,
+				dim1008JoeKuoD6Init,
+				dim1009JoeKuoD6Init,
+				dim1010JoeKuoD6Init,
+				dim1011JoeKuoD6Init,
+				dim1012JoeKuoD6Init,
+				dim1013JoeKuoD6Init,
+				dim1014JoeKuoD6Init,
+				dim1015JoeKuoD6Init,
+				dim1016JoeKuoD6Init,
+				dim1017JoeKuoD6Init,
+				dim1018JoeKuoD6Init,
+				dim1019JoeKuoD6Init,
+				dim1020JoeKuoD6Init,
+				dim1021JoeKuoD6Init,
+				dim1022JoeKuoD6Init,
+				dim1023JoeKuoD6Init,
+				dim1024JoeKuoD6Init,
+				dim1025JoeKuoD6Init,
+				dim1026JoeKuoD6Init,
+				dim1027JoeKuoD6Init,
+				dim1028JoeKuoD6Init,
+				dim1029JoeKuoD6Init,
+				dim1030JoeKuoD6Init,
+				dim1031JoeKuoD6Init,
+				dim1032JoeKuoD6Init,
+				dim1033JoeKuoD6Init,
+				dim1034JoeKuoD6Init,
+				dim1035JoeKuoD6Init,
+				dim1036JoeKuoD6Init,
+				dim1037JoeKuoD6Init,
+				dim1038JoeKuoD6Init,
+				dim1039JoeKuoD6Init,
+				dim1040JoeKuoD6Init,
+				dim1041JoeKuoD6Init,
+				dim1042JoeKuoD6Init,
+				dim1043JoeKuoD6Init,
+				dim1044JoeKuoD6Init,
+				dim1045JoeKuoD6Init,
+				dim1046JoeKuoD6Init,
+				dim1047JoeKuoD6Init,
+				dim1048JoeKuoD6Init,
+				dim1049JoeKuoD6Init,
+				dim1050JoeKuoD6Init,
+				dim1051JoeKuoD6Init,
+				dim1052JoeKuoD6Init,
+				dim1053JoeKuoD6Init,
+				dim1054JoeKuoD6Init,
+				dim1055JoeKuoD6Init,
+				dim1056JoeKuoD6Init,
+				dim1057JoeKuoD6Init,
+				dim1058JoeKuoD6Init,
+				dim1059JoeKuoD6Init,
+				dim1060JoeKuoD6Init,
+				dim1061JoeKuoD6Init,
+				dim1062JoeKuoD6Init,
+				dim1063JoeKuoD6Init,
+				dim1064JoeKuoD6Init,
+				dim1065JoeKuoD6Init,
+				dim1066JoeKuoD6Init,
+				dim1067JoeKuoD6Init,
+				dim1068JoeKuoD6Init,
+				dim1069JoeKuoD6Init,
+				dim1070JoeKuoD6Init,
+				dim1071JoeKuoD6Init,
+				dim1072JoeKuoD6Init,
+				dim1073JoeKuoD6Init,
+				dim1074JoeKuoD6Init,
+				dim1075JoeKuoD6Init,
+				dim1076JoeKuoD6Init,
+				dim1077JoeKuoD6Init,
+				dim1078JoeKuoD6Init,
+				dim1079JoeKuoD6Init,
+				dim1080JoeKuoD6Init,
+				dim1081JoeKuoD6Init,
+				dim1082JoeKuoD6Init,
+				dim1083JoeKuoD6Init,
+				dim1084JoeKuoD6Init,
+				dim1085JoeKuoD6Init,
+				dim1086JoeKuoD6Init,
+				dim1087JoeKuoD6Init,
+				dim1088JoeKuoD6Init,
+				dim1089JoeKuoD6Init,
+				dim1090JoeKuoD6Init,
+				dim1091JoeKuoD6Init,
+				dim1092JoeKuoD6Init,
+				dim1093JoeKuoD6Init,
+				dim1094JoeKuoD6Init,
+				dim1095JoeKuoD6Init,
+				dim1096JoeKuoD6Init,
+				dim1097JoeKuoD6Init,
+				dim1098JoeKuoD6Init,
+				dim1099JoeKuoD6Init,
+				dim1100JoeKuoD6Init,
+				dim1101JoeKuoD6Init,
+				dim1102JoeKuoD6Init,
+				dim1103JoeKuoD6Init,
+				dim1104JoeKuoD6Init,
+				dim1105JoeKuoD6Init,
+				dim1106JoeKuoD6Init,
+				dim1107JoeKuoD6Init,
+				dim1108JoeKuoD6Init,
+				dim1109JoeKuoD6Init,
+				dim1110JoeKuoD6Init,
+				dim1111JoeKuoD6Init,
+				dim1112JoeKuoD6Init,
+				dim1113JoeKuoD6Init,
+				dim1114JoeKuoD6Init,
+				dim1115JoeKuoD6Init,
+				dim1116JoeKuoD6Init,
+				dim1117JoeKuoD6Init,
+				dim1118JoeKuoD6Init,
+				dim1119JoeKuoD6Init,
+				dim1120JoeKuoD6Init,
+				dim1121JoeKuoD6Init,
+				dim1122JoeKuoD6Init,
+				dim1123JoeKuoD6Init,
+				dim1124JoeKuoD6Init,
+				dim1125JoeKuoD6Init,
+				dim1126JoeKuoD6Init,
+				dim1127JoeKuoD6Init,
+				dim1128JoeKuoD6Init,
+				dim1129JoeKuoD6Init,
+				dim1130JoeKuoD6Init,
+				dim1131JoeKuoD6Init,
+				dim1132JoeKuoD6Init,
+				dim1133JoeKuoD6Init,
+				dim1134JoeKuoD6Init,
+				dim1135JoeKuoD6Init,
+				dim1136JoeKuoD6Init,
+				dim1137JoeKuoD6Init,
+				dim1138JoeKuoD6Init,
+				dim1139JoeKuoD6Init,
+				dim1140JoeKuoD6Init,
+				dim1141JoeKuoD6Init,
+				dim1142JoeKuoD6Init,
+				dim1143JoeKuoD6Init,
+				dim1144JoeKuoD6Init,
+				dim1145JoeKuoD6Init,
+				dim1146JoeKuoD6Init,
+				dim1147JoeKuoD6Init,
+				dim1148JoeKuoD6Init,
+				dim1149JoeKuoD6Init,
+				dim1150JoeKuoD6Init,
+				dim1151JoeKuoD6Init,
+				dim1152JoeKuoD6Init,
+				dim1153JoeKuoD6Init,
+				dim1154JoeKuoD6Init,
+				dim1155JoeKuoD6Init,
+				dim1156JoeKuoD6Init,
+				dim1157JoeKuoD6Init,
+				dim1158JoeKuoD6Init,
+				dim1159JoeKuoD6Init,
+				dim1160JoeKuoD6Init,
+				dim1161JoeKuoD6Init,
+				dim1162JoeKuoD6Init,
+				dim1163JoeKuoD6Init,
+				dim1164JoeKuoD6Init,
+				dim1165JoeKuoD6Init,
+				dim1166JoeKuoD6Init,
+				dim1167JoeKuoD6Init,
+				dim1168JoeKuoD6Init,
+				dim1169JoeKuoD6Init,
+				dim1170JoeKuoD6Init,
+				dim1171JoeKuoD6Init,
+				dim1172JoeKuoD6Init,
+				dim1173JoeKuoD6Init,
+				dim1174JoeKuoD6Init,
+				dim1175JoeKuoD6Init,
+				dim1176JoeKuoD6Init,
+				dim1177JoeKuoD6Init,
+				dim1178JoeKuoD6Init,
+				dim1179JoeKuoD6Init,
+				dim1180JoeKuoD6Init,
+				dim1181JoeKuoD6Init,
+				dim1182JoeKuoD6Init,
+				dim1183JoeKuoD6Init,
+				dim1184JoeKuoD6Init,
+				dim1185JoeKuoD6Init,
+				dim1186JoeKuoD6Init,
+				dim1187JoeKuoD6Init,
+				dim1188JoeKuoD6Init,
+				dim1189JoeKuoD6Init,
+				dim1190JoeKuoD6Init,
+				dim1191JoeKuoD6Init,
+				dim1192JoeKuoD6Init,
+				dim1193JoeKuoD6Init,
+				dim1194JoeKuoD6Init,
+				dim1195JoeKuoD6Init,
+				dim1196JoeKuoD6Init,
+				dim1197JoeKuoD6Init,
+				dim1198JoeKuoD6Init,
+				dim1199JoeKuoD6Init,
+				dim1200JoeKuoD6Init,
+				dim1201JoeKuoD6Init,
+				dim1202JoeKuoD6Init,
+				dim1203JoeKuoD6Init,
+				dim1204JoeKuoD6Init,
+				dim1205JoeKuoD6Init,
+				dim1206JoeKuoD6Init,
+				dim1207JoeKuoD6Init,
+				dim1208JoeKuoD6Init,
+				dim1209JoeKuoD6Init,
+				dim1210JoeKuoD6Init,
+				dim1211JoeKuoD6Init,
+				dim1212JoeKuoD6Init,
+				dim1213JoeKuoD6Init,
+				dim1214JoeKuoD6Init,
+				dim1215JoeKuoD6Init,
+				dim1216JoeKuoD6Init,
+				dim1217JoeKuoD6Init,
+				dim1218JoeKuoD6Init,
+				dim1219JoeKuoD6Init,
+				dim1220JoeKuoD6Init,
+				dim1221JoeKuoD6Init,
+				dim1222JoeKuoD6Init,
+				dim1223JoeKuoD6Init,
+				dim1224JoeKuoD6Init,
+				dim1225JoeKuoD6Init,
+				dim1226JoeKuoD6Init,
+				dim1227JoeKuoD6Init,
+				dim1228JoeKuoD6Init,
+				dim1229JoeKuoD6Init,
+				dim1230JoeKuoD6Init,
+				dim1231JoeKuoD6Init,
+				dim1232JoeKuoD6Init,
+				dim1233JoeKuoD6Init,
+				dim1234JoeKuoD6Init,
+				dim1235JoeKuoD6Init,
+				dim1236JoeKuoD6Init,
+				dim1237JoeKuoD6Init,
+				dim1238JoeKuoD6Init,
+				dim1239JoeKuoD6Init,
+				dim1240JoeKuoD6Init,
+				dim1241JoeKuoD6Init,
+				dim1242JoeKuoD6Init,
+				dim1243JoeKuoD6Init,
+				dim1244JoeKuoD6Init,
+				dim1245JoeKuoD6Init,
+				dim1246JoeKuoD6Init,
+				dim1247JoeKuoD6Init,
+				dim1248JoeKuoD6Init,
+				dim1249JoeKuoD6Init,
+				dim1250JoeKuoD6Init,
+				dim1251JoeKuoD6Init,
+				dim1252JoeKuoD6Init,
+				dim1253JoeKuoD6Init,
+				dim1254JoeKuoD6Init,
+				dim1255JoeKuoD6Init,
+				dim1256JoeKuoD6Init,
+				dim1257JoeKuoD6Init,
+				dim1258JoeKuoD6Init,
+				dim1259JoeKuoD6Init,
+				dim1260JoeKuoD6Init,
+				dim1261JoeKuoD6Init,
+				dim1262JoeKuoD6Init,
+				dim1263JoeKuoD6Init,
+				dim1264JoeKuoD6Init,
+				dim1265JoeKuoD6Init,
+				dim1266JoeKuoD6Init,
+				dim1267JoeKuoD6Init,
+				dim1268JoeKuoD6Init,
+				dim1269JoeKuoD6Init,
+				dim1270JoeKuoD6Init,
+				dim1271JoeKuoD6Init,
+				dim1272JoeKuoD6Init,
+				dim1273JoeKuoD6Init,
+				dim1274JoeKuoD6Init,
+				dim1275JoeKuoD6Init,
+				dim1276JoeKuoD6Init,
+				dim1277JoeKuoD6Init,
+				dim1278JoeKuoD6Init,
+				dim1279JoeKuoD6Init,
+				dim1280JoeKuoD6Init,
+				dim1281JoeKuoD6Init,
+				dim1282JoeKuoD6Init,
+				dim1283JoeKuoD6Init,
+				dim1284JoeKuoD6Init,
+				dim1285JoeKuoD6Init,
+				dim1286JoeKuoD6Init,
+				dim1287JoeKuoD6Init,
+				dim1288JoeKuoD6Init,
+				dim1289JoeKuoD6Init,
+				dim1290JoeKuoD6Init,
+				dim1291JoeKuoD6Init,
+				dim1292JoeKuoD6Init,
+				dim1293JoeKuoD6Init,
+				dim1294JoeKuoD6Init,
+				dim1295JoeKuoD6Init,
+				dim1296JoeKuoD6Init,
+				dim1297JoeKuoD6Init,
+				dim1298JoeKuoD6Init,
+				dim1299JoeKuoD6Init,
+				dim1300JoeKuoD6Init,
+				dim1301JoeKuoD6Init,
+				dim1302JoeKuoD6Init,
+				dim1303JoeKuoD6Init,
+				dim1304JoeKuoD6Init,
+				dim1305JoeKuoD6Init,
+				dim1306JoeKuoD6Init,
+				dim1307JoeKuoD6Init,
+				dim1308JoeKuoD6Init,
+				dim1309JoeKuoD6Init,
+				dim1310JoeKuoD6Init,
+				dim1311JoeKuoD6Init,
+				dim1312JoeKuoD6Init,
+				dim1313JoeKuoD6Init,
+				dim1314JoeKuoD6Init,
+				dim1315JoeKuoD6Init,
+				dim1316JoeKuoD6Init,
+				dim1317JoeKuoD6Init,
+				dim1318JoeKuoD6Init,
+				dim1319JoeKuoD6Init,
+				dim1320JoeKuoD6Init,
+				dim1321JoeKuoD6Init,
+				dim1322JoeKuoD6Init,
+				dim1323JoeKuoD6Init,
+				dim1324JoeKuoD6Init,
+				dim1325JoeKuoD6Init,
+				dim1326JoeKuoD6Init,
+				dim1327JoeKuoD6Init,
+				dim1328JoeKuoD6Init,
+				dim1329JoeKuoD6Init,
+				dim1330JoeKuoD6Init,
+				dim1331JoeKuoD6Init,
+				dim1332JoeKuoD6Init,
+				dim1333JoeKuoD6Init,
+				dim1334JoeKuoD6Init,
+				dim1335JoeKuoD6Init,
+				dim1336JoeKuoD6Init,
+				dim1337JoeKuoD6Init,
+				dim1338JoeKuoD6Init,
+				dim1339JoeKuoD6Init,
+				dim1340JoeKuoD6Init,
+				dim1341JoeKuoD6Init,
+				dim1342JoeKuoD6Init,
+				dim1343JoeKuoD6Init,
+				dim1344JoeKuoD6Init,
+				dim1345JoeKuoD6Init,
+				dim1346JoeKuoD6Init,
+				dim1347JoeKuoD6Init,
+				dim1348JoeKuoD6Init,
+				dim1349JoeKuoD6Init,
+				dim1350JoeKuoD6Init,
+				dim1351JoeKuoD6Init,
+				dim1352JoeKuoD6Init,
+				dim1353JoeKuoD6Init,
+				dim1354JoeKuoD6Init,
+				dim1355JoeKuoD6Init,
+				dim1356JoeKuoD6Init,
+				dim1357JoeKuoD6Init,
+				dim1358JoeKuoD6Init,
+				dim1359JoeKuoD6Init,
+				dim1360JoeKuoD6Init,
+				dim1361JoeKuoD6Init,
+				dim1362JoeKuoD6Init,
+				dim1363JoeKuoD6Init,
+				dim1364JoeKuoD6Init,
+				dim1365JoeKuoD6Init,
+				dim1366JoeKuoD6Init,
+				dim1367JoeKuoD6Init,
+				dim1368JoeKuoD6Init,
+				dim1369JoeKuoD6Init,
+				dim1370JoeKuoD6Init,
+				dim1371JoeKuoD6Init,
+				dim1372JoeKuoD6Init,
+				dim1373JoeKuoD6Init,
+				dim1374JoeKuoD6Init,
+				dim1375JoeKuoD6Init,
+				dim1376JoeKuoD6Init,
+				dim1377JoeKuoD6Init,
+				dim1378JoeKuoD6Init,
+				dim1379JoeKuoD6Init,
+				dim1380JoeKuoD6Init,
+				dim1381JoeKuoD6Init,
+				dim1382JoeKuoD6Init,
+				dim1383JoeKuoD6Init,
+				dim1384JoeKuoD6Init,
+				dim1385JoeKuoD6Init,
+				dim1386JoeKuoD6Init,
+				dim1387JoeKuoD6Init,
+				dim1388JoeKuoD6Init,
+				dim1389JoeKuoD6Init,
+				dim1390JoeKuoD6Init,
+				dim1391JoeKuoD6Init,
+				dim1392JoeKuoD6Init,
+				dim1393JoeKuoD6Init,
+				dim1394JoeKuoD6Init,
+				dim1395JoeKuoD6Init,
+				dim1396JoeKuoD6Init,
+				dim1397JoeKuoD6Init,
+				dim1398JoeKuoD6Init,
+				dim1399JoeKuoD6Init,
+				dim1400JoeKuoD6Init,
+				dim1401JoeKuoD6Init,
+				dim1402JoeKuoD6Init,
+				dim1403JoeKuoD6Init,
+				dim1404JoeKuoD6Init,
+				dim1405JoeKuoD6Init,
+				dim1406JoeKuoD6Init,
+				dim1407JoeKuoD6Init,
+				dim1408JoeKuoD6Init,
+				dim1409JoeKuoD6Init,
+				dim1410JoeKuoD6Init,
+				dim1411JoeKuoD6Init,
+				dim1412JoeKuoD6Init,
+				dim1413JoeKuoD6Init,
+				dim1414JoeKuoD6Init,
+				dim1415JoeKuoD6Init,
+				dim1416JoeKuoD6Init,
+				dim1417JoeKuoD6Init,
+				dim1418JoeKuoD6Init,
+				dim1419JoeKuoD6Init,
+				dim1420JoeKuoD6Init,
+				dim1421JoeKuoD6Init,
+				dim1422JoeKuoD6Init,
+				dim1423JoeKuoD6Init,
+				dim1424JoeKuoD6Init,
+				dim1425JoeKuoD6Init,
+				dim1426JoeKuoD6Init,
+				dim1427JoeKuoD6Init,
+				dim1428JoeKuoD6Init,
+				dim1429JoeKuoD6Init,
+				dim1430JoeKuoD6Init,
+				dim1431JoeKuoD6Init,
+				dim1432JoeKuoD6Init,
+				dim1433JoeKuoD6Init,
+				dim1434JoeKuoD6Init,
+				dim1435JoeKuoD6Init,
+				dim1436JoeKuoD6Init,
+				dim1437JoeKuoD6Init,
+				dim1438JoeKuoD6Init,
+				dim1439JoeKuoD6Init,
+				dim1440JoeKuoD6Init,
+				dim1441JoeKuoD6Init,
+				dim1442JoeKuoD6Init,
+				dim1443JoeKuoD6Init,
+				dim1444JoeKuoD6Init,
+				dim1445JoeKuoD6Init,
+				dim1446JoeKuoD6Init,
+				dim1447JoeKuoD6Init,
+				dim1448JoeKuoD6Init,
+				dim1449JoeKuoD6Init,
+				dim1450JoeKuoD6Init,
+				dim1451JoeKuoD6Init,
+				dim1452JoeKuoD6Init,
+				dim1453JoeKuoD6Init,
+				dim1454JoeKuoD6Init,
+				dim1455JoeKuoD6Init,
+				dim1456JoeKuoD6Init,
+				dim1457JoeKuoD6Init,
+				dim1458JoeKuoD6Init,
+				dim1459JoeKuoD6Init,
+				dim1460JoeKuoD6Init,
+				dim1461JoeKuoD6Init,
+				dim1462JoeKuoD6Init,
+				dim1463JoeKuoD6Init,
+				dim1464JoeKuoD6Init,
+				dim1465JoeKuoD6Init,
+				dim1466JoeKuoD6Init,
+				dim1467JoeKuoD6Init,
+				dim1468JoeKuoD6Init,
+				dim1469JoeKuoD6Init,
+				dim1470JoeKuoD6Init,
+				dim1471JoeKuoD6Init,
+				dim1472JoeKuoD6Init,
+				dim1473JoeKuoD6Init,
+				dim1474JoeKuoD6Init,
+				dim1475JoeKuoD6Init,
+				dim1476JoeKuoD6Init,
+				dim1477JoeKuoD6Init,
+				dim1478JoeKuoD6Init,
+				dim1479JoeKuoD6Init,
+				dim1480JoeKuoD6Init,
+				dim1481JoeKuoD6Init,
+				dim1482JoeKuoD6Init,
+				dim1483JoeKuoD6Init,
+				dim1484JoeKuoD6Init,
+				dim1485JoeKuoD6Init,
+				dim1486JoeKuoD6Init,
+				dim1487JoeKuoD6Init,
+				dim1488JoeKuoD6Init,
+				dim1489JoeKuoD6Init,
+				dim1490JoeKuoD6Init,
+				dim1491JoeKuoD6Init,
+				dim1492JoeKuoD6Init,
+				dim1493JoeKuoD6Init,
+				dim1494JoeKuoD6Init,
+				dim1495JoeKuoD6Init,
+				dim1496JoeKuoD6Init,
+				dim1497JoeKuoD6Init,
+				dim1498JoeKuoD6Init,
+				dim1499JoeKuoD6Init,
+				dim1500JoeKuoD6Init,
+				dim1501JoeKuoD6Init,
+				dim1502JoeKuoD6Init,
+				dim1503JoeKuoD6Init,
+				dim1504JoeKuoD6Init,
+				dim1505JoeKuoD6Init,
+				dim1506JoeKuoD6Init,
+				dim1507JoeKuoD6Init,
+				dim1508JoeKuoD6Init,
+				dim1509JoeKuoD6Init,
+				dim1510JoeKuoD6Init,
+				dim1511JoeKuoD6Init,
+				dim1512JoeKuoD6Init,
+				dim1513JoeKuoD6Init,
+				dim1514JoeKuoD6Init,
+				dim1515JoeKuoD6Init,
+				dim1516JoeKuoD6Init,
+				dim1517JoeKuoD6Init,
+				dim1518JoeKuoD6Init,
+				dim1519JoeKuoD6Init,
+				dim1520JoeKuoD6Init,
+				dim1521JoeKuoD6Init,
+				dim1522JoeKuoD6Init,
+				dim1523JoeKuoD6Init,
+				dim1524JoeKuoD6Init,
+				dim1525JoeKuoD6Init,
+				dim1526JoeKuoD6Init,
+				dim1527JoeKuoD6Init,
+				dim1528JoeKuoD6Init,
+				dim1529JoeKuoD6Init,
+				dim1530JoeKuoD6Init,
+				dim1531JoeKuoD6Init,
+				dim1532JoeKuoD6Init,
+				dim1533JoeKuoD6Init,
+				dim1534JoeKuoD6Init,
+				dim1535JoeKuoD6Init,
+				dim1536JoeKuoD6Init,
+				dim1537JoeKuoD6Init,
+				dim1538JoeKuoD6Init,
+				dim1539JoeKuoD6Init,
+				dim1540JoeKuoD6Init,
+				dim1541JoeKuoD6Init,
+				dim1542JoeKuoD6Init,
+				dim1543JoeKuoD6Init,
+				dim1544JoeKuoD6Init,
+				dim1545JoeKuoD6Init,
+				dim1546JoeKuoD6Init,
+				dim1547JoeKuoD6Init,
+				dim1548JoeKuoD6Init,
+				dim1549JoeKuoD6Init,
+				dim1550JoeKuoD6Init,
+				dim1551JoeKuoD6Init,
+				dim1552JoeKuoD6Init,
+				dim1553JoeKuoD6Init,
+				dim1554JoeKuoD6Init,
+				dim1555JoeKuoD6Init,
+				dim1556JoeKuoD6Init,
+				dim1557JoeKuoD6Init,
+				dim1558JoeKuoD6Init,
+				dim1559JoeKuoD6Init,
+				dim1560JoeKuoD6Init,
+				dim1561JoeKuoD6Init,
+				dim1562JoeKuoD6Init,
+				dim1563JoeKuoD6Init,
+				dim1564JoeKuoD6Init,
+				dim1565JoeKuoD6Init,
+				dim1566JoeKuoD6Init,
+				dim1567JoeKuoD6Init,
+				dim1568JoeKuoD6Init,
+				dim1569JoeKuoD6Init,
+				dim1570JoeKuoD6Init,
+				dim1571JoeKuoD6Init,
+				dim1572JoeKuoD6Init,
+				dim1573JoeKuoD6Init,
+				dim1574JoeKuoD6Init,
+				dim1575JoeKuoD6Init,
+				dim1576JoeKuoD6Init,
+				dim1577JoeKuoD6Init,
+				dim1578JoeKuoD6Init,
+				dim1579JoeKuoD6Init,
+				dim1580JoeKuoD6Init,
+				dim1581JoeKuoD6Init,
+				dim1582JoeKuoD6Init,
+				dim1583JoeKuoD6Init,
+				dim1584JoeKuoD6Init,
+				dim1585JoeKuoD6Init,
+				dim1586JoeKuoD6Init,
+				dim1587JoeKuoD6Init,
+				dim1588JoeKuoD6Init,
+				dim1589JoeKuoD6Init,
+				dim1590JoeKuoD6Init,
+				dim1591JoeKuoD6Init,
+				dim1592JoeKuoD6Init,
+				dim1593JoeKuoD6Init,
+				dim1594JoeKuoD6Init,
+				dim1595JoeKuoD6Init,
+				dim1596JoeKuoD6Init,
+				dim1597JoeKuoD6Init,
+				dim1598JoeKuoD6Init,
+				dim1599JoeKuoD6Init,
+				dim1600JoeKuoD6Init,
+				dim1601JoeKuoD6Init,
+				dim1602JoeKuoD6Init,
+				dim1603JoeKuoD6Init,
+				dim1604JoeKuoD6Init,
+				dim1605JoeKuoD6Init,
+				dim1606JoeKuoD6Init,
+				dim1607JoeKuoD6Init,
+				dim1608JoeKuoD6Init,
+				dim1609JoeKuoD6Init,
+				dim1610JoeKuoD6Init,
+				dim1611JoeKuoD6Init,
+				dim1612JoeKuoD6Init,
+				dim1613JoeKuoD6Init,
+				dim1614JoeKuoD6Init,
+				dim1615JoeKuoD6Init,
+				dim1616JoeKuoD6Init,
+				dim1617JoeKuoD6Init,
+				dim1618JoeKuoD6Init,
+				dim1619JoeKuoD6Init,
+				dim1620JoeKuoD6Init,
+				dim1621JoeKuoD6Init,
+				dim1622JoeKuoD6Init,
+				dim1623JoeKuoD6Init,
+				dim1624JoeKuoD6Init,
+				dim1625JoeKuoD6Init,
+				dim1626JoeKuoD6Init,
+				dim1627JoeKuoD6Init,
+				dim1628JoeKuoD6Init,
+				dim1629JoeKuoD6Init,
+				dim1630JoeKuoD6Init,
+				dim1631JoeKuoD6Init,
+				dim1632JoeKuoD6Init,
+				dim1633JoeKuoD6Init,
+				dim1634JoeKuoD6Init,
+				dim1635JoeKuoD6Init,
+				dim1636JoeKuoD6Init,
+				dim1637JoeKuoD6Init,
+				dim1638JoeKuoD6Init,
+				dim1639JoeKuoD6Init,
+				dim1640JoeKuoD6Init,
+				dim1641JoeKuoD6Init,
+				dim1642JoeKuoD6Init,
+				dim1643JoeKuoD6Init,
+				dim1644JoeKuoD6Init,
+				dim1645JoeKuoD6Init,
+				dim1646JoeKuoD6Init,
+				dim1647JoeKuoD6Init,
+				dim1648JoeKuoD6Init,
+				dim1649JoeKuoD6Init,
+				dim1650JoeKuoD6Init,
+				dim1651JoeKuoD6Init,
+				dim1652JoeKuoD6Init,
+				dim1653JoeKuoD6Init,
+				dim1654JoeKuoD6Init,
+				dim1655JoeKuoD6Init,
+				dim1656JoeKuoD6Init,
+				dim1657JoeKuoD6Init,
+				dim1658JoeKuoD6Init,
+				dim1659JoeKuoD6Init,
+				dim1660JoeKuoD6Init,
+				dim1661JoeKuoD6Init,
+				dim1662JoeKuoD6Init,
+				dim1663JoeKuoD6Init,
+				dim1664JoeKuoD6Init,
+				dim1665JoeKuoD6Init,
+				dim1666JoeKuoD6Init,
+				dim1667JoeKuoD6Init,
+				dim1668JoeKuoD6Init,
+				dim1669JoeKuoD6Init,
+				dim1670JoeKuoD6Init,
+				dim1671JoeKuoD6Init,
+				dim1672JoeKuoD6Init,
+				dim1673JoeKuoD6Init,
+				dim1674JoeKuoD6Init,
+				dim1675JoeKuoD6Init,
+				dim1676JoeKuoD6Init,
+				dim1677JoeKuoD6Init,
+				dim1678JoeKuoD6Init,
+				dim1679JoeKuoD6Init,
+				dim1680JoeKuoD6Init,
+				dim1681JoeKuoD6Init,
+				dim1682JoeKuoD6Init,
+				dim1683JoeKuoD6Init,
+				dim1684JoeKuoD6Init,
+				dim1685JoeKuoD6Init,
+				dim1686JoeKuoD6Init,
+				dim1687JoeKuoD6Init,
+				dim1688JoeKuoD6Init,
+				dim1689JoeKuoD6Init,
+				dim1690JoeKuoD6Init,
+				dim1691JoeKuoD6Init,
+				dim1692JoeKuoD6Init,
+				dim1693JoeKuoD6Init,
+				dim1694JoeKuoD6Init,
+				dim1695JoeKuoD6Init,
+				dim1696JoeKuoD6Init,
+				dim1697JoeKuoD6Init,
+				dim1698JoeKuoD6Init,
+				dim1699JoeKuoD6Init,
+				dim1700JoeKuoD6Init,
+				dim1701JoeKuoD6Init,
+				dim1702JoeKuoD6Init,
+				dim1703JoeKuoD6Init,
+				dim1704JoeKuoD6Init,
+				dim1705JoeKuoD6Init,
+				dim1706JoeKuoD6Init,
+				dim1707JoeKuoD6Init,
+				dim1708JoeKuoD6Init,
+				dim1709JoeKuoD6Init,
+				dim1710JoeKuoD6Init,
+				dim1711JoeKuoD6Init,
+				dim1712JoeKuoD6Init,
+				dim1713JoeKuoD6Init,
+				dim1714JoeKuoD6Init,
+				dim1715JoeKuoD6Init,
+				dim1716JoeKuoD6Init,
+				dim1717JoeKuoD6Init,
+				dim1718JoeKuoD6Init,
+				dim1719JoeKuoD6Init,
+				dim1720JoeKuoD6Init,
+				dim1721JoeKuoD6Init,
+				dim1722JoeKuoD6Init,
+				dim1723JoeKuoD6Init,
+				dim1724JoeKuoD6Init,
+				dim1725JoeKuoD6Init,
+				dim1726JoeKuoD6Init,
+				dim1727JoeKuoD6Init,
+				dim1728JoeKuoD6Init,
+				dim1729JoeKuoD6Init,
+				dim1730JoeKuoD6Init,
+				dim1731JoeKuoD6Init,
+				dim1732JoeKuoD6Init,
+				dim1733JoeKuoD6Init,
+				dim1734JoeKuoD6Init,
+				dim1735JoeKuoD6Init,
+				dim1736JoeKuoD6Init,
+				dim1737JoeKuoD6Init,
+				dim1738JoeKuoD6Init,
+				dim1739JoeKuoD6Init,
+				dim1740JoeKuoD6Init,
+				dim1741JoeKuoD6Init,
+				dim1742JoeKuoD6Init,
+				dim1743JoeKuoD6Init,
+				dim1744JoeKuoD6Init,
+				dim1745JoeKuoD6Init,
+				dim1746JoeKuoD6Init,
+				dim1747JoeKuoD6Init,
+				dim1748JoeKuoD6Init,
+				dim1749JoeKuoD6Init,
+				dim1750JoeKuoD6Init,
+				dim1751JoeKuoD6Init,
+				dim1752JoeKuoD6Init,
+				dim1753JoeKuoD6Init,
+				dim1754JoeKuoD6Init,
+				dim1755JoeKuoD6Init,
+				dim1756JoeKuoD6Init,
+				dim1757JoeKuoD6Init,
+				dim1758JoeKuoD6Init,
+				dim1759JoeKuoD6Init,
+				dim1760JoeKuoD6Init,
+				dim1761JoeKuoD6Init,
+				dim1762JoeKuoD6Init,
+				dim1763JoeKuoD6Init,
+				dim1764JoeKuoD6Init,
+				dim1765JoeKuoD6Init,
+				dim1766JoeKuoD6Init,
+				dim1767JoeKuoD6Init,
+				dim1768JoeKuoD6Init,
+				dim1769JoeKuoD6Init,
+				dim1770JoeKuoD6Init,
+				dim1771JoeKuoD6Init,
+				dim1772JoeKuoD6Init,
+				dim1773JoeKuoD6Init,
+				dim1774JoeKuoD6Init,
+				dim1775JoeKuoD6Init,
+				dim1776JoeKuoD6Init,
+				dim1777JoeKuoD6Init,
+				dim1778JoeKuoD6Init,
+				dim1779JoeKuoD6Init,
+				dim1780JoeKuoD6Init,
+				dim1781JoeKuoD6Init,
+				dim1782JoeKuoD6Init,
+				dim1783JoeKuoD6Init,
+				dim1784JoeKuoD6Init,
+				dim1785JoeKuoD6Init,
+				dim1786JoeKuoD6Init,
+				dim1787JoeKuoD6Init,
+				dim1788JoeKuoD6Init,
+				dim1789JoeKuoD6Init,
+				dim1790JoeKuoD6Init,
+				dim1791JoeKuoD6Init,
+				dim1792JoeKuoD6Init,
+				dim1793JoeKuoD6Init,
+				dim1794JoeKuoD6Init,
+				dim1795JoeKuoD6Init,
+				dim1796JoeKuoD6Init,
+				dim1797JoeKuoD6Init,
+				dim1798JoeKuoD6Init,
+				dim1799JoeKuoD6Init
+			};
+
+
 
     }
 
@@ -28427,6 +32033,22 @@ namespace QuantLib {
                     }
                 }
                 break;
+            case JoeKuoD6:
+                // maxTabulated=1798
+                maxTabulated = sizeof(JoeKuoD6initializers)/sizeof(unsigned long *)+1;
+                for (k=1; k<std::min(dimensionality_, maxTabulated); k++) {
+                    j = 0;
+                    // 0UL marks coefficients' end for a given dimension
+                    while (Linitializers[k-1][j] != 0UL) {
+                        directionIntegers_[k][j] = Linitializers[k-1][j];
+                        directionIntegers_[k][j] <<= (bits_-j-1);
+                        j++;
+                    }
+                }
+                break;
+
+
+
             case Kuo:
                 // maxTabulated=4925
                 maxTabulated = sizeof(Kuoinitializers)/sizeof(unsigned long *)+1;
