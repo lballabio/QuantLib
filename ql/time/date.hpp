@@ -156,14 +156,18 @@ namespace QuantLib {
 
             see http://www.cpearson.com/excel/DateTimeWS.htm
         */
-        static Date nextWeekday(const Date& d, Weekday);
+        static Date nextWeekday(const Date& d,
+                                Weekday w);
         //! n-th given weekday in the given month and year
         /*! E.g., the 4th Thursday of March, 1998 was March 26th,
             1998.
 
             see http://www.cpearson.com/excel/DateTimeWS.htm
         */
-        static Date nthWeekday(Size n, Weekday, Month m, Year y);
+        static Date nthWeekday(Size n,
+                               Weekday w,
+                               Month m,
+                               Year y);
         //@}
       private:
         BigInteger serialNumber_;
