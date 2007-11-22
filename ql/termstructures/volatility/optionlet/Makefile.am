@@ -7,23 +7,23 @@ this_include_HEADERS = \
     capletvariancecurve.hpp \
     capletvolatilitiesstructures.hpp \
     constantoptionletvol.hpp \
-    optionletstripperadapter.hpp \
     optionletstripper.hpp \
-    optionletstripperbase.hpp \
     optionletstripper1.hpp \
     optionletstripper2.hpp \
     optionletvolatilitystructure.hpp \
-    spreadedoptionletvol.hpp
+    spreadedoptionletvol.hpp \
+    strippedoptionletadapter.hpp \
+    strippedoptionletbase.hpp
 
 libOptionletVol_la_SOURCES = \
     capletvolatilitiesstructures.cpp \
     constantoptionletvol.cpp \
-    optionletstripperadapter.cpp \
     optionletstripper.cpp \
     optionletstripper1.cpp \
     optionletstripper2.cpp \
     optionletvolatilitystructure.cpp \
-    spreadedoptionletvol.cpp
+    spreadedoptionletvol.cpp \
+    strippedoptionletadapter.cpp
 
 noinst_LTLIBRARIES = libOptionletVol.la
 

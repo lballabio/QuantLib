@@ -18,24 +18,24 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file OptionletStripperAdapter.hpp
-    \brief Optionlet Stripper Adapter
+/*! \file strippedoptionletadapter.hpp
+    \brief StrippedOptionlet Adapter
 */
 
-#ifndef quantlib_optionlet_stripper_adapter_h
-#define quantlib_optionlet_stripper_adapter_h
+#ifndef quantlib_stripped_optionlet_adapter_h
+#define quantlib_stripped_optionlet_adapter_h
 
-#include <ql/termstructures/volatility/optionlet/optionletstripperbase.hpp>
+#include <ql/termstructures/volatility/optionlet/strippedoptionletbase.hpp>
 #include <ql/termstructures/volatility/optionlet/optionletvolatilitystructure.hpp>
 #include <ql/math/interpolation.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
 
 namespace QuantLib {
 
-    class OptionletStripperAdapter : public OptionletVolatilityStructure,
+    class StrippedOptionletAdapter : public OptionletVolatilityStructure,
                                      public LazyObject {
       public:
-          OptionletStripperAdapter(const boost::shared_ptr<OptionletStripperBase>& optionletStripper);
+          StrippedOptionletAdapter(const boost::shared_ptr<StrippedOptionletBase>& optionletStripper);
 
         //! \name TermStructure interface
         //@{
@@ -60,12 +60,12 @@ namespace QuantLib {
                                   Rate strike) const;
         //@} 
     private:
-        const boost::shared_ptr<OptionletStripperBase> optionletStripper_;
+        const boost::shared_ptr<StrippedOptionletBase> optionletStripper_;
         Size nInterpolations_;
         mutable std::vector<boost::shared_ptr<Interpolation> > strikeInterpolations_;
     };
 
-    inline void OptionletStripperAdapter::update() {
+    inline void StrippedOptionletAdapter::update() {
         TermStructure::update();
         LazyObject::update();
     }

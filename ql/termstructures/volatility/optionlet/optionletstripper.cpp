@@ -103,6 +103,27 @@ namespace QuantLib {
         return atmOptionletRate_;
     }
     
+
+    DayCounter OptionletStripper::dayCounter() const {
+        return termVolSurface_->dayCounter();
+    }
+
+    Calendar OptionletStripper::calendar() const {
+        return termVolSurface_->calendar();
+    }
+
+    Natural OptionletStripper::settlementDays() const {
+        return termVolSurface_->settlementDays();
+    }
+
+    BusinessDayConvention OptionletStripper::businessDayConvention() const {
+        return termVolSurface_->businessDayConvention();
+    }
+
+    const Date& OptionletStripper::referenceDate() const {
+        return termVolSurface_->referenceDate();
+    }
+
     boost::shared_ptr<CapFloorTermVolSurface>
     OptionletStripper::termVolSurface() const {
         return termVolSurface_;

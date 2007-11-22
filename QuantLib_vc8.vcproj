@@ -3964,18 +3964,6 @@
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatility\optionlet\optionletstripperadapter.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatility\optionlet\optionletstripperadapter.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatility\optionlet\optionletstripperbase.hpp"
-						>
-					</File>
-					<File
 						RelativePath=".\ql\termstructures\volatility\optionlet\optionletvolatilitystructure.cpp"
 						>
 					</File>
@@ -3989,6 +3977,18 @@
 					</File>
 					<File
 						RelativePath=".\ql\termstructures\volatility\optionlet\spreadedoptionletvol.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\optionlet\strippedoptionletadapter.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\optionlet\strippedoptionletadapter.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\optionlet\strippedoptionletbase.hpp"
 						>
 					</File>
 				</Filter>

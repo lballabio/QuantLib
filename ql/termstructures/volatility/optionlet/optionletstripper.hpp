@@ -24,18 +24,18 @@
 #ifndef quantlib_optionletstripper_hpp
 #define quantlib_optionletstripper_hpp
 
-#include <ql/termstructures/volatility/optionlet/optionletstripperbase.hpp>
+#include <ql/termstructures/volatility/optionlet/strippedoptionletbase.hpp>
 
 namespace QuantLib {
 
     class IborIndex;
 
-    class OptionletStripper : public OptionletStripperBase {
+    class OptionletStripper : public StrippedOptionletBase {
       public:
         OptionletStripper(const boost::shared_ptr<CapFloorTermVolSurface>&,
                           const boost::shared_ptr<IborIndex>& index);
 
-        //! \name OptionletStripperBase interface
+        //! \name StrippedOptionletBase interface
         //@{
         const std::vector<Rate>& optionletStrikes(Size i) const;
         const std::vector<Volatility>& optionletVolatilities(Size i) const;
@@ -45,9 +45,14 @@ namespace QuantLib {
 
         const std::vector<Rate>& atmOptionletRate() const;
 
-        boost::shared_ptr<CapFloorTermVolSurface> termVolSurface() const;
+        DayCounter dayCounter() const;
+        Calendar calendar() const;
+        Natural settlementDays() const;
+        BusinessDayConvention businessDayConvention() const;
+        const Date& referenceDate() const;
         //@}
 
+        boost::shared_ptr<CapFloorTermVolSurface> termVolSurface() const;
         const std::vector<Period>& optionletTenors() const;
         boost::shared_ptr<IborIndex> index() const;
         const std::vector<Date>& optionletPaymentDates() const;
@@ -72,8 +77,6 @@ namespace QuantLib {
         std::vector<Period> capFloorLengths_;
 
     };
-
-
 
 }
 

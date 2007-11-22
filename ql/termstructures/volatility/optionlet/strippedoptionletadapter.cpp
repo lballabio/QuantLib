@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatility/optionlet/optionletstripperadapter.hpp>
+#include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
 #include <ql/termstructures/volatility/optionlet/optionletstripper.hpp>
 #include <ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
@@ -26,19 +26,19 @@
 
 namespace QuantLib {
 
-    OptionletStripperAdapter::OptionletStripperAdapter(
-                const boost::shared_ptr<OptionletStripperBase>& s)
-    : OptionletVolatilityStructure(s->termVolSurface()->settlementDays(),
-                                   s->termVolSurface()->calendar(),
-                                   s->termVolSurface()->businessDayConvention(),
-                                   s->termVolSurface()->dayCounter()),
+    StrippedOptionletAdapter::StrippedOptionletAdapter(
+                const boost::shared_ptr<StrippedOptionletBase>& s)
+    : OptionletVolatilityStructure(s->settlementDays(),
+                                   s->calendar(),
+                                   s->businessDayConvention(),
+                                   s->dayCounter()),
       optionletStripper_(s),
       nInterpolations_(s->optionletTimes().size()),
       strikeInterpolations_(nInterpolations_) {
         registerWith(optionletStripper_);
     }
 
-    Volatility OptionletStripperAdapter::volatilityImpl(Time length,
+    Volatility StrippedOptionletAdapter::volatilityImpl(Time length,
                                                         Rate strike) const {
         calculate();
 
@@ -53,7 +53,7 @@ namespace QuantLib {
         return timeInterpolator->operator()(length, true);
     }
         
-    void OptionletStripperAdapter::performCalculations() const {
+    void StrippedOptionletAdapter::performCalculations() const {
 
         const std::vector<Rate>& atmForward = optionletStripper_->atmOptionletRate();
         const std::vector<Time>& optionletTimes = optionletStripper_->optionletTimes();
@@ -99,19 +99,19 @@ namespace QuantLib {
         }
     }
 
-    Rate OptionletStripperAdapter::minStrike() const {
+    Rate StrippedOptionletAdapter::minStrike() const {
         return optionletStripper_->optionletStrikes(0).front(); //FIX
     }
     
-    Rate OptionletStripperAdapter::maxStrike() const {
+    Rate StrippedOptionletAdapter::maxStrike() const {
         return optionletStripper_->optionletStrikes(0).back(); //FIX
     }
     
-    Date OptionletStripperAdapter::maxDate() const {
+    Date StrippedOptionletAdapter::maxDate() const {
         return optionletStripper_->optionletDates().back();
     }
     
-    const Date& OptionletStripperAdapter::referenceDate() const {
-        return optionletStripper_->termVolSurface()->referenceDate();
+    const Date& StrippedOptionletAdapter::referenceDate() const {
+        return optionletStripper_->referenceDate();
     }
 }

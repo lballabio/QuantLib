@@ -19,7 +19,7 @@
 
 #include <ql/termstructures/volatility/optionlet/optionletstripper2.hpp>
 #include <ql/termstructures/volatility/optionlet/optionletstripper1.hpp>
-#include <ql/termstructures/volatility/optionlet/optionletstripperadapter.hpp>
+#include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
 #include <ql/termstructures/volatility/optionlet/spreadedoptionletvol.hpp>
 #include <ql/termstructures/volatility/capfloor/capfloortermvolcurve.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -98,7 +98,7 @@ namespace QuantLib {
 
         spreadsVolImplied_ = spreadsVolImplied();
 
-        OptionletStripperAdapter adapter(optionletStripper1_);
+        StrippedOptionletAdapter adapter(optionletStripper1_);
 
         for (Size optionIndex=0; optionIndex<nOptionExpiries_; ++optionIndex) {
             for (Size i=0; i<optionletVolatilities_.size(); ++i) {
@@ -163,7 +163,7 @@ namespace QuantLib {
     Real OptionletStripper2::ObjectiveFunction::operator()(Volatility spreadVol) const {
 
         boost::shared_ptr<OptionletVolatilityStructure> adapter(new
-            OptionletStripperAdapter(optionletStripper1_));
+            StrippedOptionletAdapter(optionletStripper1_));
 
         boost::shared_ptr<SimpleQuote> spreadQuote(new SimpleQuote(spreadVol));
 
