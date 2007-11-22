@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatility/abcdatmvolcurve.hpp>
+#include <ql/experimental/abcdatmvolcurve.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 namespace QuantLib {

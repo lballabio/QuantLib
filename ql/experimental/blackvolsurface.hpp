@@ -25,7 +25,7 @@
 #ifndef quantlib_black_vol_surface_hpp
 #define quantlib_black_vol_surface_hpp
 
-#include <ql/termstructures/volatility/blackatmvolcurve.hpp>
+#include <ql/experimental/blackatmvolcurve.hpp>
 
 namespace QuantLib {
 

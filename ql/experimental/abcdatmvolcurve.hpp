@@ -25,7 +25,7 @@
 #ifndef quantlib_abcd_atm_vol_curve_hpp
 #define quantlib_abcd_atm_vol_curve_hpp
 
-#include <ql/termstructures/volatility/blackatmvolcurve.hpp>
+#include <ql/experimental/blackatmvolcurve.hpp>
 #include <ql/math/interpolation.hpp>
 #include <ql/math/interpolations/abcdinterpolation.hpp>
 #include <ql/quote.hpp>

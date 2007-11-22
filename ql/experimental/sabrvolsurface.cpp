@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatility/sabrvolsurface.hpp>
+#include <ql/experimental/sabrvolsurface.hpp>
 #include <ql/termstructures/volatility/smilesection.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>

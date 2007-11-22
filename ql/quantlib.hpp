@@ -37,6 +37,7 @@
 
 #include <ql/cashflows/all.hpp>
 #include <ql/currencies/all.hpp>
+#include <ql/experimental/all.hpp>
 #include <ql/indexes/all.hpp>
 #include <ql/instruments/all.hpp>
 #include <ql/legacy/all.hpp>

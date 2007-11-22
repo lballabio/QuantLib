@@ -24,8 +24,8 @@
 #ifndef quantlib_sabr_vol_surface_hpp
 #define quantlib_sabr_vol_surface_hpp
 
-#include <ql/termstructures/volatility/interestratevolsurface.hpp>
-#include <ql/termstructures/volatility/blackatmvolcurve.hpp>
+#include <ql/experimental/interestratevolsurface.hpp>
+#include <ql/experimental/blackatmvolcurve.hpp>
 #include <ql/quote.hpp>
 #include <boost/array.hpp>
 #include <ql/termstructures/volatility/sabrinterpolatedsmilesection.hpp>

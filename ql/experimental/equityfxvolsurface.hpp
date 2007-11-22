@@ -25,7 +25,7 @@
 #ifndef quantlib_equity_fx_vol_surface_hpp
 #define quantlib_equity_fx_vol_surface_hpp
 
-#include <ql/termstructures/volatility/blackvolsurface.hpp>
+#include <ql/experimental/blackvolsurface.hpp>
 
 namespace QuantLib {
 

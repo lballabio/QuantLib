@@ -2,6 +2,7 @@
 SUBDIRS = \
     cashflows \
     currencies \
+    experimental \
     indexes \
     instruments \
     legacy \
@@ -75,6 +76,7 @@ libQuantLib_la_LDFLAGS = -release $(PACKAGE_VERSION)
 libQuantLib_la_LIBADD = \
     cashflows/libCashFlows.la \
     currencies/libCurrencies.la \
+    experimental/libExperimental.la \
     indexes/libIndexes.la \
     instruments/libInstruments.la \
     legacy/libLegacy.la \

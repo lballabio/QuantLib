@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatility/equityfxvolsurface.hpp>
+#include <ql/experimental/equityfxvolsurface.hpp>
 
 namespace QuantLib {
 

@@ -7,32 +7,18 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     abcd.hpp \
-    abcdatmvolcurve.hpp \
     abcdcalibration.hpp \
-    blackatmvolcurve.hpp \
-    blackvolsurface.hpp \
-    equityfxvolsurface.hpp \
-    interestratevolsurface.hpp \
     interpolatedsmilesection.hpp \
     sabr.hpp \
     sabrinterpolatedsmilesection.hpp \
-    sabrvolsurface.hpp \
-    smilesection.hpp \
-    volcube.hpp
+    smilesection.hpp
 
 libVolTermStructures_la_SOURCES = \
     abcd.cpp \
-    abcdatmvolcurve.cpp \
     abcdcalibration.cpp \
-    blackatmvolcurve.cpp \
-    blackvolsurface.cpp \
-    equityfxvolsurface.cpp \
-    interestratevolsurface.cpp \
     sabr.cpp \
     sabrinterpolatedsmilesection.cpp \
-    sabrvolsurface.cpp \
-    smilesection.cpp \
-    volcube.cpp 
+    smilesection.cpp
 
 libVolTermStructures_la_LIBADD = \
     equityfx/libEquityFxVol.la \

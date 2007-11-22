@@ -2,18 +2,11 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/termstructures/volatility/abcd.hpp>
-#include <ql/termstructures/volatility/abcdatmvolcurve.hpp>
 #include <ql/termstructures/volatility/abcdcalibration.hpp>
-#include <ql/termstructures/volatility/blackatmvolcurve.hpp>
-#include <ql/termstructures/volatility/blackvolsurface.hpp>
-#include <ql/termstructures/volatility/equityfxvolsurface.hpp>
-#include <ql/termstructures/volatility/interestratevolsurface.hpp>
 #include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
 #include <ql/termstructures/volatility/sabrinterpolatedsmilesection.hpp>
-#include <ql/termstructures/volatility/sabrvolsurface.hpp>
 #include <ql/termstructures/volatility/smilesection.hpp>
-#include <ql/termstructures/volatility/volcube.hpp>
 
 #include <ql/termstructures/volatility/equityfx/all.hpp>
 #include <ql/termstructures/volatility/capfloor/all.hpp>
