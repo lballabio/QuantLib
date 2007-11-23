@@ -97,9 +97,9 @@ namespace QuantLib {
     }
 
 
-    MakeCapFloor& MakeCapFloor::withForward(bool flag) {
-        makeVanillaSwap_.withFixedLegForward(flag);
-        makeVanillaSwap_.withFloatingLegForward(flag);
+    MakeCapFloor& MakeCapFloor::withRule(DateGeneration::Rule r) {
+        makeVanillaSwap_.withFixedLegRule(r);
+        makeVanillaSwap_.withFloatingLegRule(r);
         return *this;
     }
 

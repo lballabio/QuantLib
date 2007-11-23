@@ -25,7 +25,6 @@
 #define quantlib_makecms_hpp
 
 #include <ql/cashflows/cmscoupon.hpp>
-//#include <ql/instruments/swap.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/businessdayconvention.hpp>
 
@@ -58,7 +57,7 @@ namespace QuantLib {
         MakeCms& withCmsLegCalendar(const Calendar& cal);
         MakeCms& withCmsLegConvention(BusinessDayConvention bdc);
         MakeCms& withCmsLegTerminationDateConvention(BusinessDayConvention bdc);
-        MakeCms& withCmsLegForward(bool flag = true);
+        MakeCms& withCmsLegRule(DateGeneration::Rule r);
         MakeCms& withCmsLegEndOfMonth(bool flag = true);
         MakeCms& withCmsLegFirstDate(const Date& d);
         MakeCms& withCmsLegNextToLastDate(const Date& d);
@@ -68,7 +67,7 @@ namespace QuantLib {
         MakeCms& withFloatingLegCalendar(const Calendar& cal);
         MakeCms& withFloatingLegConvention(BusinessDayConvention bdc);
         MakeCms& withFloatingLegTerminationDateConvention(BusinessDayConvention bdc);
-        MakeCms& withFloatingLegForward(bool flag = true);
+        MakeCms& withFloatingLegRule(DateGeneration::Rule r);
         MakeCms& withFloatingLegEndOfMonth(bool flag = true);
         MakeCms& withFloatingLegFirstDate(const Date& d);
         MakeCms& withFloatingLegNextToLastDate(const Date& d);
@@ -95,7 +94,7 @@ namespace QuantLib {
         Period cmsTenor_, floatTenor_;
         BusinessDayConvention cmsConvention_, cmsTerminationDateConvention_;
         BusinessDayConvention floatConvention_, floatTerminationDateConvention_;
-        bool cmsBackward_, floatBackward_;
+        DateGeneration::Rule cmsRule_, floatRule_;
         bool cmsEndOfMonth_, floatEndOfMonth_;
         Date cmsFirstDate_, cmsNextToLastDate_;
         Date floatFirstDate_, floatNextToLastDate_;

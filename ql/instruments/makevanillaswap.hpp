@@ -27,6 +27,7 @@
 #define quantlib_makevanillaswap_hpp
 
 #include <ql/instruments/vanillaswap.hpp>
+#include <ql/time/dategenerationrule.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
@@ -55,7 +56,7 @@ namespace QuantLib {
         MakeVanillaSwap& withFixedLegConvention(BusinessDayConvention bdc);
         MakeVanillaSwap& withFixedLegTerminationDateConvention(
                                                    BusinessDayConvention bdc);
-        MakeVanillaSwap& withFixedLegForward(bool flag = true);
+        MakeVanillaSwap& withFixedLegRule(DateGeneration::Rule r);
         MakeVanillaSwap& withFixedLegEndOfMonth(bool flag = true);
         MakeVanillaSwap& withFixedLegFirstDate(const Date& d);
         MakeVanillaSwap& withFixedLegNextToLastDate(const Date& d);
@@ -66,7 +67,7 @@ namespace QuantLib {
         MakeVanillaSwap& withFloatingLegConvention(BusinessDayConvention bdc);
         MakeVanillaSwap& withFloatingLegTerminationDateConvention(
                                                    BusinessDayConvention bdc);
-        MakeVanillaSwap& withFloatingLegForward(bool flag = true);
+        MakeVanillaSwap& withFloatingLegRule(DateGeneration::Rule r);
         MakeVanillaSwap& withFloatingLegEndOfMonth(bool flag = true);
         MakeVanillaSwap& withFloatingLegFirstDate(const Date& d);
         MakeVanillaSwap& withFloatingLegNextToLastDate(const Date& d);
@@ -90,7 +91,7 @@ namespace QuantLib {
         Period fixedTenor_, floatTenor_;
         BusinessDayConvention fixedConvention_, fixedTerminationDateConvention_;
         BusinessDayConvention floatConvention_, floatTerminationDateConvention_;
-        bool fixedBackward_, floatBackward_;
+        DateGeneration::Rule fixedRule_, floatRule_;
         bool fixedEndOfMonth_, floatEndOfMonth_;
         Date fixedFirstDate_, fixedNextToLastDate_;
         Date floatFirstDate_, floatNextToLastDate_;

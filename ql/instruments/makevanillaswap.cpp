@@ -44,7 +44,7 @@ namespace QuantLib {
       fixedTerminationDateConvention_(ModifiedFollowing),
       floatConvention_(ModifiedFollowing),
       floatTerminationDateConvention_(ModifiedFollowing),
-      fixedBackward_(true), floatBackward_(true),
+      fixedRule_(DateGeneration::Backward), floatRule_(DateGeneration::Backward),
       fixedEndOfMonth_(false), floatEndOfMonth_(false),
       fixedFirstDate_(Date()), fixedNextToLastDate_(Date()),
       floatFirstDate_(Date()), floatNextToLastDate_(Date()),
@@ -75,16 +75,14 @@ namespace QuantLib {
                                fixedTenor_, fixedCalendar_,
                                fixedConvention_,
                                fixedTerminationDateConvention_,
-                               fixedBackward_ ? DateGeneration::Backward : DateGeneration::Forward,
-                               fixedEndOfMonth_,
+                               fixedRule_, fixedEndOfMonth_,
                                fixedFirstDate_, fixedNextToLastDate_);
 
         Schedule floatSchedule(startDate, terminationDate,
                                floatTenor_, floatCalendar_,
                                floatConvention_,
                                floatTerminationDateConvention_,
-                               floatBackward_ ? DateGeneration::Backward : DateGeneration::Forward,
-                               floatEndOfMonth_,
+                               floatRule_ , floatEndOfMonth_,
                                floatFirstDate_, floatNextToLastDate_);
 
         Rate usedFixedRate = fixedRate_;
@@ -158,8 +156,8 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeVanillaSwap& MakeVanillaSwap::withFixedLegForward(bool flag) {
-        fixedBackward_ = !flag;
+    MakeVanillaSwap& MakeVanillaSwap::withFixedLegRule(DateGeneration::Rule r) {
+        fixedRule_ = r;
         return *this;
     }
 
@@ -208,8 +206,8 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeVanillaSwap& MakeVanillaSwap::withFloatingLegForward(bool flag) {
-        floatBackward_ = !flag;
+    MakeVanillaSwap& MakeVanillaSwap::withFloatingLegRule(DateGeneration::Rule r) {
+        floatRule_ = r;
         return *this;
     }
 

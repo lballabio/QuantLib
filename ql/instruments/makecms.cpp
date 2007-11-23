@@ -53,7 +53,7 @@ namespace QuantLib {
       cmsTerminationDateConvention_(ModifiedFollowing),
       floatConvention_(ModifiedFollowing),
       floatTerminationDateConvention_(ModifiedFollowing),
-      cmsBackward_(true), floatBackward_(true),
+      cmsRule_(DateGeneration::Backward), floatRule_(DateGeneration::Backward),
       cmsEndOfMonth_(false), floatEndOfMonth_(false),
       cmsFirstDate_(Date()), cmsNextToLastDate_(Date()),
       floatFirstDate_(Date()), floatNextToLastDate_(Date()),
@@ -97,16 +97,14 @@ namespace QuantLib {
                              cmsTenor_, cmsCalendar_,
                              cmsConvention_,
                              cmsTerminationDateConvention_,
-                             cmsBackward_ ? DateGeneration::Backward : DateGeneration::Forward,
-                             cmsEndOfMonth_,
+                             cmsRule_, cmsEndOfMonth_,
                              cmsFirstDate_, cmsNextToLastDate_);
 
         Schedule floatSchedule(startDate, terminationDate,
                                floatTenor_, floatCalendar_,
                                floatConvention_,
                                floatTerminationDateConvention_,
-                               floatBackward_ ? DateGeneration::Backward : DateGeneration::Forward,
-                               floatEndOfMonth_,
+                               floatRule_ , floatEndOfMonth_,
                                floatFirstDate_, floatNextToLastDate_);
 
         Leg cmsLeg = CmsLeg(cmsSchedule, swapIndex_)
@@ -181,8 +179,8 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeCms& MakeCms::withCmsLegForward(bool flag) {
-        cmsBackward_ = !flag;
+    MakeCms& MakeCms::withCmsLegRule(DateGeneration::Rule r) {
+        cmsRule_ = r;
         return *this;
     }
 
@@ -231,8 +229,8 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeCms& MakeCms::withFloatingLegForward(bool flag) {
-        floatBackward_ = !flag;
+    MakeCms& MakeCms::withFloatingLegRule(DateGeneration::Rule r) {
+        floatRule_ = r;
         return *this;
     }
 
