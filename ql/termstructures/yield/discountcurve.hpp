@@ -27,6 +27,7 @@
 
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/math/interpolations/loginterpolation.hpp>
+#include <ql/math/comparison.hpp>
 #include <vector>
 #include <utility>
 
@@ -173,6 +174,9 @@ namespace QuantLib {
                        << dates_[i-1] << ")");
             QL_REQUIRE(data_[i] > 0.0, "negative discount");
             times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
+            QL_REQUIRE(!close(times_[i],times_[i-1]),
+                       "two dates correspond to the same time "
+                       "under this curve's day count convention");
         }
 
         interpolation_ = interpolator_.interpolate(times_.begin(),

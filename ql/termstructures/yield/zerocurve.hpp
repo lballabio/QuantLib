@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +26,7 @@
 
 #include <ql/termstructures/yield/zeroyieldstructure.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/comparison.hpp>
 #include <vector>
 #include <utility>
 
@@ -160,6 +161,9 @@ namespace QuantLib {
             QL_REQUIRE(data_[i] >= 0.0, "negative yield");
             #endif
             times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
+            QL_REQUIRE(!close(times_[i],times_[i-1]),
+                       "two dates correspond to the same time "
+                       "under this curve's day count convention");
         }
 
         interpolation_ = interpolator_.interpolate(times_.begin(),

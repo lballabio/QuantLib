@@ -25,6 +25,7 @@
 #define quantlib_interpolated_zeroinflationcurve_hpp
 
 #include <ql/termstructures/inflationtermstructure.hpp>
+#include <ql/math/comparison.hpp>
 
 namespace QuantLib {
 
@@ -131,6 +132,9 @@ namespace QuantLib {
 
             // this can be negative
             times_[i] = timeFromReference(dates_[i]);
+            QL_REQUIRE(!close(times_[i],times_[i-1]),
+                       "two dates correspond to the same time "
+                       "under this curve's day count convention");
         }
 
         interpolation_ = interpolator_.interpolate(times_.begin(),

@@ -26,6 +26,7 @@
 #define quantlib_interpolated_yoy_inflationcurve_hpp
 
 #include <ql/termstructures/inflationtermstructure.hpp>
+#include <ql/math/comparison.hpp>
 
 namespace QuantLib {
 
@@ -135,6 +136,9 @@ namespace QuantLib {
             QL_REQUIRE(data_[i] > -1.0, "year-on-year inflation data < -100 %");
 
             times_[i] = timeFromReference(dates_[i]);  // this can be negative
+            QL_REQUIRE(!close(times_[i],times_[i-1]),
+                       "two dates correspond to the same time "
+                       "under this curve's day count convention");
         }
 
         interpolation_ = interpolator_.interpolate(times_.begin(),
