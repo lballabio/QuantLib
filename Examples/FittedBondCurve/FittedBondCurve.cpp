@@ -129,8 +129,9 @@ int main(int, char* []) {
             Date issue = origToday;
             Date maturity = calendar.advance(issue, lengths[j], Years);
 
-            Schedule schedule(dated,maturity, Period(frequency), calendar,
-                              accrualConvention,accrualConvention,true,false);
+            Schedule schedule(dated, maturity, Period(frequency), calendar,
+                              accrualConvention, accrualConvention,
+                              DateGeneration::Backward, false);
 
             boost::shared_ptr<FixedRateBondHelper> helperA(
                    new FixedRateBondHelper(quoteHandle[j],

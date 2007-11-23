@@ -120,7 +120,8 @@ int main(int, char* []) {
         Schedule bondSchedule(bondDatedDate, bondMaturityDate,
                               Period(bondCouponFrequency),
                               bondCalendar,bondBusinessDayConvention,
-                              bondBusinessDayConvention,true,false);
+                              bondBusinessDayConvention,
+                              DateGeneration::Backward,false);
         boost::shared_ptr<FixedRateBond> bond(
                        new FixedRateBond(bondSettlementDays,
                                          faceAmount,

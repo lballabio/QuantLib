@@ -84,8 +84,10 @@ int main(int, char* []) {
 
         Frequency frequency = Annual;
 
-        Schedule schedule(issueDate,exerciseDate,Period(frequency),calendar,
-                          convention, convention, true, false);
+        Schedule schedule(issueDate, exerciseDate,
+                          Period(frequency), calendar,
+                          convention, convention,
+                          DateGeneration::Backward, false);
 
         DividendSchedule dividends;
         CallabilitySchedule callability;

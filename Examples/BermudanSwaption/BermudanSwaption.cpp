@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*!
- Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -126,10 +126,10 @@ int main(int, char* []) {
                                          floatingLegConvention);
         Schedule fixedSchedule(startDate,maturity,Period(fixedLegFrequency),
                                calendar,fixedLegConvention,fixedLegConvention,
-                               false,false);
+                               DateGeneration::Forward,false);
         Schedule floatSchedule(startDate,maturity,Period(floatingLegFrequency),
                                calendar,floatingLegConvention,floatingLegConvention,
-                               false,false);
+                               DateGeneration::Forward,false);
 
         boost::shared_ptr<VanillaSwap> swap(new VanillaSwap(
             type, 1000.0,

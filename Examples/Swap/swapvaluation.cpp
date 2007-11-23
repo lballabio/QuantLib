@@ -401,12 +401,12 @@ int main(int, char* []) {
                                Period(fixedLegFrequency),
                                calendar, fixedLegConvention,
                                fixedLegConvention,
-                               false, false);
+                               DateGeneration::Forward, false);
         Schedule floatSchedule(settlementDate, maturity,
                                Period(floatingLegFrequency),
                                calendar, floatingLegConvention,
                                floatingLegConvention,
-                               false, false);
+                               DateGeneration::Forward, false);
         VanillaSwap spot5YearSwap(swapType, nominal,
             fixedSchedule, fixedRate, fixedLegDayCounter,
             floatSchedule, euriborIndex, spread,
@@ -418,12 +418,12 @@ int main(int, char* []) {
                                   Period(fixedLegFrequency),
                                   calendar, fixedLegConvention,
                                   fixedLegConvention,
-                                  false, false);
+                                  DateGeneration::Forward, false);
         Schedule fwdFloatSchedule(fwdStart, fwdMaturity,
                                   Period(floatingLegFrequency),
                                   calendar, floatingLegConvention,
                                   floatingLegConvention,
-                                  false, false);
+                                  DateGeneration::Forward, false);
         VanillaSwap oneYearForward5YearSwap(swapType, nominal,
             fwdFixedSchedule, fixedRate, fixedLegDayCounter,
             fwdFloatSchedule, euriborIndex, spread,
