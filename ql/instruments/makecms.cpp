@@ -97,14 +97,16 @@ namespace QuantLib {
                              cmsTenor_, cmsCalendar_,
                              cmsConvention_,
                              cmsTerminationDateConvention_,
-                             cmsBackward_, cmsEndOfMonth_,
+                             cmsBackward_ ? DateGeneration::Backward : DateGeneration::Forward,
+                             cmsEndOfMonth_,
                              cmsFirstDate_, cmsNextToLastDate_);
 
         Schedule floatSchedule(startDate, terminationDate,
                                floatTenor_, floatCalendar_,
                                floatConvention_,
                                floatTerminationDateConvention_,
-                               floatBackward_, floatEndOfMonth_,
+                               floatBackward_ ? DateGeneration::Backward : DateGeneration::Forward,
+                               floatEndOfMonth_,
                                floatFirstDate_, floatNextToLastDate_);
 
         Leg cmsLeg = CmsLeg(cmsSchedule, swapIndex_)

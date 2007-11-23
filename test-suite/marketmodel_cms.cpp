@@ -87,7 +87,7 @@ void setup() {
     //startDate = todaysDate + 5*Years;
     endDate = todaysDate + 10*Years;
     Schedule dates(todaysDate, endDate, Period(Semiannual),
-                   calendar, Following, Following, true, false);
+                   calendar, Following, Following, DateGeneration::Backward, false);
     rateTimes = std::vector<Time>(dates.size()-1);
 
     accruals = std::vector<Real>(rateTimes.size()-1);

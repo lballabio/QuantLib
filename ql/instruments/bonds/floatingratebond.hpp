@@ -26,6 +26,7 @@
 #define quantlib_floating_rate_bond_hpp
 
 #include <ql/instruments/bond.hpp>
+#include <ql/time/dategenerationrule.hpp>
 
 namespace QuantLib {
 
@@ -82,7 +83,7 @@ namespace QuantLib {
                          Real redemption = 100.0,
                          const Date& issueDate = Date(),
                          const Date& stubDate = Date(),
-                         bool backward = true,
+                         DateGeneration::Rule rule = DateGeneration::Backward,
                          bool endOfMonth = false);
     };
 

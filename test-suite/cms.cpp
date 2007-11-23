@@ -599,12 +599,12 @@ void CmsTest::testCmsSwap() {
                                        Period(fixedCmsFrequency_),
                                        calendar_,fixedCmsConvention_,
                                        fixedLegConvention_,
-                                       false,false);
+                                       DateGeneration::Forward, false);
                 Schedule floatingSchedule(startDate,maturityDate,
                                           Period(floatingCmsFrequency_),
                                           calendar_,floatingCmsConvention_,
                                           fixedLegConvention_,
-                                          false,false);
+                                          DateGeneration::Forward, false);
 
                 std::vector<Real> prices;
                 for (Size pricerIndex=0; pricerIndex<pricers.size();

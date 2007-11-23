@@ -75,14 +75,16 @@ namespace QuantLib {
                                fixedTenor_, fixedCalendar_,
                                fixedConvention_,
                                fixedTerminationDateConvention_,
-                               fixedBackward_, fixedEndOfMonth_,
+                               fixedBackward_ ? DateGeneration::Backward : DateGeneration::Forward,
+                               fixedEndOfMonth_,
                                fixedFirstDate_, fixedNextToLastDate_);
 
         Schedule floatSchedule(startDate, terminationDate,
                                floatTenor_, floatCalendar_,
                                floatConvention_,
                                floatTerminationDateConvention_,
-                               floatBackward_, floatEndOfMonth_,
+                               floatBackward_ ? DateGeneration::Backward : DateGeneration::Forward,
+                               floatEndOfMonth_,
                                floatFirstDate_, floatNextToLastDate_);
 
         Rate usedFixedRate = fixedRate_;

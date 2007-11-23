@@ -185,7 +185,8 @@ namespace QuantLib {
                                            index_->tenor().units()),
                           index_->tenor(), index_->fixingCalendar(),
                           index_->businessDayConvention(),
-                          index_->businessDayConvention(), false, false);
+                          index_->businessDayConvention(),
+                          DateGeneration::Forward, false);
         return IborLeg(schedule,index_)
             .withNotionals(amount)
             .withPaymentDayCounter(index_->dayCounter())

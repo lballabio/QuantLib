@@ -53,7 +53,7 @@ namespace QuantLib {
                                 index->fixingCalendar(),
                                 index->businessDayConvention(),
                                 index->businessDayConvention(),
-                                true,
+                                DateGeneration::Backward,
                                 index->endOfMonth());
         }
 

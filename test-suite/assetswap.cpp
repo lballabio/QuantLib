@@ -133,7 +133,8 @@ void AssetSwapTest::testImpliedValue() {
     Schedule fixedBondSchedule1(Date(4,January,2005),
                                 Date(4,January,2037),
                                 Period(Annual), bondCalendar,
-                                Unadjusted, Unadjusted, true, false);
+                                Unadjusted, Unadjusted,
+                                DateGeneration::Backward, false);
     boost::shared_ptr<Bond> fixedBond1(
                          new FixedRateBond(settlementDays, vars.faceAmount,
                                            fixedBondSchedule1,
@@ -174,7 +175,8 @@ void AssetSwapTest::testImpliedValue() {
     Schedule fixedBondSchedule2(Date(5,February,2005),
                                 Date(5,February,2019),
                                 Period(Annual), bondCalendar,
-                                Unadjusted, Unadjusted, true, false);
+                                Unadjusted, Unadjusted,
+                                DateGeneration::Backward, false);
     boost::shared_ptr<Bond> fixedBond2(
                          new FixedRateBond(settlementDays, vars.faceAmount,
                                            fixedBondSchedule2,
@@ -213,7 +215,7 @@ void AssetSwapTest::testImpliedValue() {
                                    Date(29,September,2013),
                                    Period(Semiannual), bondCalendar,
                                    Unadjusted, Unadjusted,
-                                   true, false);
+                                   DateGeneration::Backward, false);
 
     boost::shared_ptr<Bond> floatingBond1(
                       new FloatingRateBond(settlementDays, vars.faceAmount,
@@ -260,7 +262,7 @@ void AssetSwapTest::testImpliedValue() {
                                    Date(24,September,2018),
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
-                                   true, false);
+                                   DateGeneration::Backward, false);
     boost::shared_ptr<Bond> floatingBond2(
                       new FloatingRateBond(settlementDays, vars.faceAmount,
                                            floatingBondSchedule2,
@@ -322,7 +324,7 @@ void AssetSwapTest::testImpliedValue() {
                               Date(22,August,2020),
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
-                              true, false);
+                              DateGeneration::Backward, false);
     boost::shared_ptr<Bond> cmsBond1(
                           new CmsRateBond(settlementDays, vars.faceAmount,
                                           cmsBondSchedule1,
@@ -367,7 +369,7 @@ void AssetSwapTest::testImpliedValue() {
                               Date(06,May,2015),
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
-                              true, false);
+                              DateGeneration::Backward, false);
     boost::shared_ptr<Bond> cmsBond2(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
                     vars.swapIndex, Thirty360(),
@@ -491,7 +493,8 @@ void AssetSwapTest::testMarketASWSpread() {
     Schedule fixedBondSchedule1(Date(4,January,2005),
                                 Date(4,January,2037),
                                 Period(Annual), bondCalendar,
-                                Unadjusted, Unadjusted, true, false);
+                                Unadjusted, Unadjusted,
+                                DateGeneration::Backward, false);
     boost::shared_ptr<Bond> fixedBond1(new
         FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule1,
                       std::vector<Rate>(1, 0.04),
@@ -544,7 +547,8 @@ void AssetSwapTest::testMarketASWSpread() {
     Schedule fixedBondSchedule2(Date(5,February,2005),
                                 Date(5,February,2019),
                                 Period(Annual), bondCalendar,
-                                Unadjusted, Unadjusted, true, false);
+                                Unadjusted, Unadjusted,
+                                DateGeneration::Backward, false);
     boost::shared_ptr<Bond> fixedBond2(new
         FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule2,
                       std::vector<Rate>(1, 0.05),
@@ -594,7 +598,7 @@ void AssetSwapTest::testMarketASWSpread() {
                                    Date(29,September,2013),
                                    Period(Semiannual), bondCalendar,
                                    Unadjusted, Unadjusted,
-                                   true, false);
+                                   DateGeneration::Backward, false);
 
     boost::shared_ptr<Bond> floatingBond1(new
         FloatingRateBond(settlementDays, vars.faceAmount,
@@ -655,7 +659,7 @@ void AssetSwapTest::testMarketASWSpread() {
                                    Date(24,September,2018),
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
-                                   true, false);
+                                   DateGeneration::Backward, false);
     boost::shared_ptr<Bond> floatingBond2(new
         FloatingRateBond(settlementDays, vars.faceAmount,
                          floatingBondSchedule2,
@@ -715,7 +719,7 @@ void AssetSwapTest::testMarketASWSpread() {
                               Date(22,August,2020),
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
-                              true, false);
+                              DateGeneration::Backward, false);
     boost::shared_ptr<Bond> cmsBond1(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule1,
                     vars.swapIndex, Thirty360(),
@@ -770,7 +774,7 @@ void AssetSwapTest::testMarketASWSpread() {
                               Date(06,May,2015),
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
-                              true, false);
+                              DateGeneration::Backward, false);
     boost::shared_ptr<Bond> cmsBond2(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
                     vars.swapIndex, Thirty360(),
@@ -931,7 +935,8 @@ void AssetSwapTest::testZSpread() {
     Schedule fixedBondSchedule1(Date(4,January,2005),
                                 Date(4,January,2037),
                                 Period(Annual), bondCalendar,
-                                Unadjusted, Unadjusted, true, false);
+                                Unadjusted, Unadjusted,
+                                DateGeneration::Backward, false);
     boost::shared_ptr<Bond> fixedBond1(new
         FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule1,
                       std::vector<Rate>(1, 0.04),
@@ -984,7 +989,8 @@ void AssetSwapTest::testZSpread() {
     Schedule fixedBondSchedule2(Date(5,February,2005),
                                 Date(5,February,2019),
                                 Period(Annual), bondCalendar,
-                                Unadjusted, Unadjusted, true, false);
+                                Unadjusted, Unadjusted,
+                                DateGeneration::Backward, false);
     boost::shared_ptr<Bond> fixedBond2(new
         FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule2,
                       std::vector<Rate>(1, 0.05),
@@ -1035,7 +1041,7 @@ void AssetSwapTest::testZSpread() {
                                    Date(29,September,2013),
                                    Period(Semiannual), bondCalendar,
                                    Unadjusted, Unadjusted,
-                                   true, false);
+                                   DateGeneration::Backward, false);
 
     boost::shared_ptr<Bond> floatingBond1(new
         FloatingRateBond(settlementDays, vars.faceAmount,
@@ -1093,7 +1099,7 @@ void AssetSwapTest::testZSpread() {
                                    Date(24,September,2018),
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
-                                   true, false);
+                                   DateGeneration::Backward, false);
     boost::shared_ptr<Bond> floatingBond2(new
         FloatingRateBond(settlementDays, vars.faceAmount,
                          floatingBondSchedule2,
@@ -1151,7 +1157,7 @@ void AssetSwapTest::testZSpread() {
                               Date(22,August,2020),
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
-                              true, false);
+                              DateGeneration::Backward, false);
     boost::shared_ptr<Bond> cmsBond1(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule1,
                     vars.swapIndex, Thirty360(),
@@ -1204,7 +1210,7 @@ void AssetSwapTest::testZSpread() {
                               Date(06,May,2015),
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
-                              true, false);
+                              DateGeneration::Backward, false);
     boost::shared_ptr<Bond> cmsBond2(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
                     vars.swapIndex, Thirty360(),
@@ -1372,7 +1378,8 @@ void AssetSwapTest::testGenericBondImplied() {
     Schedule fixedBondSchedule1(fixedBondStartDate1,
                                 fixedBondMaturityDate1,
                                 Period(Annual), bondCalendar,
-                                Unadjusted, Unadjusted, true, false);
+                                Unadjusted, Unadjusted,
+                                DateGeneration::Backward, false);
     Leg fixedBondLeg1 = FixedRateLeg(fixedBondSchedule1,
                                      ActualActual(ActualActual::ISDA))
         .withNotionals(vars.faceAmount)
@@ -1418,7 +1425,8 @@ void AssetSwapTest::testGenericBondImplied() {
     Schedule fixedBondSchedule2(fixedBondStartDate2,
                                 fixedBondMaturityDate2,
                                 Period(Annual), bondCalendar,
-                                Unadjusted, Unadjusted, true, false);
+                                Unadjusted, Unadjusted,
+                                DateGeneration::Backward, false);
     Leg fixedBondLeg2 = FixedRateLeg(fixedBondSchedule2,
                                      Thirty360(Thirty360::BondBasis))
         .withNotionals(vars.faceAmount)
@@ -1461,7 +1469,7 @@ void AssetSwapTest::testGenericBondImplied() {
                                    floatingBondMaturityDate1,
                                    Period(Semiannual), bondCalendar,
                                    Unadjusted, Unadjusted,
-                                   true, false);
+                                   DateGeneration::Backward, false);
     Leg floatingBondLeg1 = IborLeg(floatingBondSchedule1, vars.iborIndex)
         .withNotionals(vars.faceAmount)
         .withPaymentDayCounter(Actual360())
@@ -1510,7 +1518,7 @@ void AssetSwapTest::testGenericBondImplied() {
                                    floatingBondMaturityDate2,
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
-                                   true, false);
+                                   DateGeneration::Backward, false);
     Leg floatingBondLeg2 = IborLeg(floatingBondSchedule2, vars.iborIndex)
         .withNotionals(vars.faceAmount)
         .withPaymentDayCounter(Actual360())
@@ -1575,7 +1583,7 @@ void AssetSwapTest::testGenericBondImplied() {
                               cmsBondMaturityDate1,
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
-                              true, false);
+                              DateGeneration::Backward, false);
     Leg cmsBondLeg1 = CmsLeg(cmsBondSchedule1, vars.swapIndex)
         .withNotionals(vars.faceAmount)
         .withPaymentDayCounter(Thirty360())
@@ -1623,7 +1631,7 @@ void AssetSwapTest::testGenericBondImplied() {
                               cmsBondMaturityDate2,
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
-                              true, false);
+                              DateGeneration::Backward, false);
     Leg cmsBondLeg2 = CmsLeg(cmsBondSchedule2, vars.swapIndex)
         .withNotionals(vars.faceAmount)
         .withPaymentDayCounter(Thirty360())
@@ -1757,7 +1765,8 @@ void AssetSwapTest::testMASWWithGenericBond() {
     Schedule fixedBondSchedule1(fixedBondStartDate1,
                                 fixedBondMaturityDate1,
                                 Period(Annual), bondCalendar,
-                                Unadjusted, Unadjusted, true, false);
+                                Unadjusted, Unadjusted,
+                                DateGeneration::Backward, false);
     Leg fixedBondLeg1 = FixedRateLeg(fixedBondSchedule1,
                                      ActualActual(ActualActual::ISDA))
         .withNotionals(vars.faceAmount)
@@ -1818,7 +1827,8 @@ void AssetSwapTest::testMASWWithGenericBond() {
     Schedule fixedBondSchedule2(fixedBondStartDate2,
                                 fixedBondMaturityDate2,
                                 Period(Annual), bondCalendar,
-                                Unadjusted, Unadjusted, true, false);
+                                Unadjusted, Unadjusted,
+                                DateGeneration::Backward, false);
     Leg fixedBondLeg2 = FixedRateLeg(fixedBondSchedule2,
                                      Thirty360(Thirty360::BondBasis))
         .withNotionals(vars.faceAmount)
@@ -1875,7 +1885,7 @@ void AssetSwapTest::testMASWWithGenericBond() {
                                    floatingBondMaturityDate1,
                                    Period(Semiannual), bondCalendar,
                                    Unadjusted, Unadjusted,
-                                   true, false);
+                                   DateGeneration::Backward, false);
     Leg floatingBondLeg1 = IborLeg(floatingBondSchedule1, vars.iborIndex)
         .withNotionals(vars.faceAmount)
         .withPaymentDayCounter(Actual360())
@@ -1941,7 +1951,7 @@ void AssetSwapTest::testMASWWithGenericBond() {
                                    floatingBondMaturityDate2,
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
-                                   true, false);
+                                   DateGeneration::Backward, false);
     Leg floatingBondLeg2 = IborLeg(floatingBondSchedule2, vars.iborIndex)
         .withNotionals(vars.faceAmount)
         .withPaymentDayCounter(Actual360())
@@ -2008,7 +2018,7 @@ void AssetSwapTest::testMASWWithGenericBond() {
                               cmsBondMaturityDate1,
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
-                              true, false);
+                              DateGeneration::Backward, false);
     Leg cmsBondLeg1 = CmsLeg(cmsBondSchedule1, vars.swapIndex)
         .withNotionals(vars.faceAmount)
         .withPaymentDayCounter(Thirty360())
@@ -2070,7 +2080,7 @@ void AssetSwapTest::testMASWWithGenericBond() {
                               cmsBondMaturityDate2,
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
-                              true, false);
+                              DateGeneration::Backward, false);
     Leg cmsBondLeg2 = CmsLeg(cmsBondSchedule2, vars.swapIndex)
         .withNotionals(vars.faceAmount)
         .withPaymentDayCounter(Thirty360())
@@ -2241,7 +2251,8 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Schedule fixedBondSchedule1(fixedBondStartDate1,
                                 fixedBondMaturityDate1,
                                 Period(Annual), bondCalendar,
-                                Unadjusted, Unadjusted, true, false);
+                                Unadjusted, Unadjusted,
+                                DateGeneration::Backward, false);
     Leg fixedBondLeg1 = FixedRateLeg(fixedBondSchedule1,
                                      ActualActual(ActualActual::ISDA))
         .withNotionals(vars.faceAmount)
@@ -2302,7 +2313,8 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Schedule fixedBondSchedule2(fixedBondStartDate2,
                                 fixedBondMaturityDate2,
                                 Period(Annual), bondCalendar,
-                                Unadjusted, Unadjusted, true, false);
+                                Unadjusted, Unadjusted,
+                                DateGeneration::Backward, false);
     Leg fixedBondLeg2 = FixedRateLeg(fixedBondSchedule2,
                                      Thirty360(Thirty360::BondBasis))
         .withNotionals(vars.faceAmount)
@@ -2361,7 +2373,7 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                                    floatingBondMaturityDate1,
                                    Period(Semiannual), bondCalendar,
                                    Unadjusted, Unadjusted,
-                                   true, false);
+                                   DateGeneration::Backward, false);
     Leg floatingBondLeg1 = IborLeg(floatingBondSchedule1, vars.iborIndex)
         .withNotionals(vars.faceAmount)
         .withPaymentDayCounter(Actual360())
@@ -2424,7 +2436,7 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                                    floatingBondMaturityDate2,
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
-                                   true, false);
+                                   DateGeneration::Backward, false);
     Leg floatingBondLeg2 = IborLeg(floatingBondSchedule2, vars.iborIndex)
         .withNotionals(vars.faceAmount)
         .withPaymentDayCounter(Actual360())
@@ -2489,7 +2501,7 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                               cmsBondMaturityDate1,
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
-                              true, false);
+                              DateGeneration::Backward, false);
     Leg cmsBondLeg1 = CmsLeg(cmsBondSchedule1, vars.swapIndex)
         .withNotionals(vars.faceAmount)
         .withPaymentDayCounter(Thirty360())
@@ -2549,7 +2561,7 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                               cmsBondMaturityDate2,
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
-                              true, false);
+                              DateGeneration::Backward, false);
     Leg cmsBondLeg2 = CmsLeg(cmsBondSchedule2, vars.swapIndex)
         .withNotionals(vars.faceAmount)
         .withPaymentDayCounter(Thirty360())
@@ -2728,7 +2740,8 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     Schedule fixedBondSchedule1(fixedBondStartDate1,
                                 fixedBondMaturityDate1,
                                 Period(Annual), bondCalendar,
-                                Unadjusted, Unadjusted, true, false);
+                                Unadjusted, Unadjusted,
+                                DateGeneration::Backward, false);
     Leg fixedBondLeg1 = FixedRateLeg(fixedBondSchedule1,
                                      ActualActual(ActualActual::ISDA))
         .withNotionals(vars.faceAmount)
@@ -2792,7 +2805,8 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     Schedule fixedBondSchedule2(fixedBondStartDate2,
                                 fixedBondMaturityDate2,
                                 Period(Annual), bondCalendar,
-                                Unadjusted, Unadjusted, true, false);
+                                Unadjusted, Unadjusted,
+                                DateGeneration::Backward, false);
     Leg fixedBondLeg2 = FixedRateLeg(fixedBondSchedule2,
                                      Thirty360(Thirty360::BondBasis))
         .withNotionals(vars.faceAmount)
@@ -2856,7 +2870,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                                    floatingBondMaturityDate1,
                                    Period(Semiannual), bondCalendar,
                                    Unadjusted, Unadjusted,
-                                   true, false);
+                                   DateGeneration::Backward, false);
     Leg floatingBondLeg1 = IborLeg(floatingBondSchedule1, vars.iborIndex)
         .withNotionals(vars.faceAmount)
         .withPaymentDayCounter(Actual360())
@@ -2934,7 +2948,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                                    floatingBondMaturityDate2,
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
-                                   true, false);
+                                   DateGeneration::Backward, false);
     Leg floatingBondLeg2 = IborLeg(floatingBondSchedule2, vars.iborIndex)
         .withNotionals(vars.faceAmount)
         .withPaymentDayCounter(Actual360())
@@ -3016,7 +3030,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                               cmsBondMaturityDate1,
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
-                              true, false);
+                              DateGeneration::Backward, false);
     Leg cmsBondLeg1 = CmsLeg(cmsBondSchedule1, vars.swapIndex)
         .withNotionals(vars.faceAmount)
         .withPaymentDayCounter(Thirty360())
@@ -3086,7 +3100,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                               cmsBondMaturityDate2,
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
-                              true, false);
+                              DateGeneration::Backward, false);
     Leg cmsBondLeg2 = CmsLeg(cmsBondSchedule2, vars.swapIndex)
         .withNotionals(vars.faceAmount)
         .withPaymentDayCounter(Thirty360())
@@ -3291,7 +3305,8 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     Schedule fixedBondSchedule1(fixedBondStartDate1,
                                 fixedBondMaturityDate1,
                                 Period(Annual), bondCalendar,
-                                Unadjusted, Unadjusted, true, false);
+                                Unadjusted, Unadjusted,
+                                DateGeneration::Backward, false);
     Leg fixedBondLeg1 = FixedRateLeg(fixedBondSchedule1,
                                      ActualActual(ActualActual::ISDA))
         .withNotionals(vars.faceAmount)
@@ -3392,7 +3407,8 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     Schedule fixedBondSchedule2(fixedBondStartDate2,
                                 fixedBondMaturityDate2,
                                 Period(Annual), bondCalendar,
-                                Unadjusted, Unadjusted, true, false);
+                                Unadjusted, Unadjusted,
+                                DateGeneration::Backward, false);
     Leg fixedBondLeg2 = FixedRateLeg(fixedBondSchedule2,
                                      Thirty360(Thirty360::BondBasis))
         .withNotionals(vars.faceAmount)
@@ -3492,7 +3508,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                    floatingBondMaturityDate1,
                                    Period(Semiannual), bondCalendar,
                                    Unadjusted, Unadjusted,
-                                   true, false);
+                                   DateGeneration::Backward, false);
     Leg floatingBondLeg1 = IborLeg(floatingBondSchedule1, vars.iborIndex)
         .withNotionals(vars.faceAmount)
         .withPaymentDayCounter(Actual360())
@@ -3602,7 +3618,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                    floatingBondMaturityDate2,
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
-                                   true, false);
+                                   DateGeneration::Backward, false);
     Leg floatingBondLeg2 = IborLeg(floatingBondSchedule2, vars.iborIndex)
         .withNotionals(vars.faceAmount)
         .withPaymentDayCounter(Actual360())
@@ -3716,7 +3732,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                               cmsBondMaturityDate1,
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
-                              true, false);
+                              DateGeneration::Backward, false);
     Leg cmsBondLeg1 = CmsLeg(cmsBondSchedule1, vars.swapIndex)
         .withNotionals(vars.faceAmount)
         .withPaymentDayCounter(Thirty360())
@@ -3819,7 +3835,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                               cmsBondMaturityDate2,
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
-                              true, false);
+                              DateGeneration::Backward, false);
     Leg cmsBondLeg2 = CmsLeg(cmsBondSchedule2, vars.swapIndex)
         .withNotionals(vars.faceAmount)
         .withPaymentDayCounter(Thirty360())

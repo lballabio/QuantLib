@@ -104,7 +104,7 @@ void BondTest::testYield() {
 
               Schedule sch(dated, maturity,
                            Period(frequencies[l]), vars.calendar,
-                           accrualConvention, accrualConvention, true, false);
+                           accrualConvention, accrualConvention, DateGeneration::Backward, false);
 
               FixedRateBond bond(settlementDays, vars.faceAmount, sch,
                                  std::vector<Rate>(1, coupons[k]),
@@ -188,7 +188,8 @@ void BondTest::testTheoretical() {
 
             Schedule sch(dated, maturity,
                          Period(frequencies[l]), vars.calendar,
-                         accrualConvention, accrualConvention, true,false);
+                         accrualConvention, accrualConvention,
+                         DateGeneration::Backward, false);
 
             FixedRateBond bond(settlementDays, vars.faceAmount, sch,
                                std::vector<Rate>(1, coupons[k]),
@@ -267,7 +268,7 @@ void BondTest::testCached() {
     Frequency freq = Semiannual;
     Schedule sch1(Date(31, October, 2004),
                   Date(31, October, 2006), Period(freq), bondCalendar,
-                  Unadjusted, Unadjusted, true, false);
+                  Unadjusted, Unadjusted, DateGeneration::Backward, false);
 
     FixedRateBond bond1(settlementDays, vars.faceAmount, sch1,
                         std::vector<Rate>(1, 0.025),
@@ -283,7 +284,7 @@ void BondTest::testCached() {
 
     Schedule sch2(Date(15, November, 2004),
                   Date(15, November, 2009), Period(freq), bondCalendar,
-                  Unadjusted, Unadjusted, true, false);
+                  Unadjusted, Unadjusted, DateGeneration::Backward, false);
 
     FixedRateBond bond2(settlementDays, vars.faceAmount, sch2,
                         std::vector<Rate>(1, 0.035),
@@ -414,7 +415,7 @@ void BondTest::testCached() {
     Schedule sch3(Date(30,November,2004),
                   Date(30,November,2006), Period(freq),
                   UnitedStates(UnitedStates::GovernmentBond),
-                  Unadjusted, Unadjusted, true, false);
+                  Unadjusted, Unadjusted, DateGeneration::Backward, false);
 
     FixedRateBond bond3(settlementDays, vars.faceAmount, sch3,
                         std::vector<Rate>(1, 0.02875),
@@ -557,7 +558,7 @@ void BondTest::testCachedFixed() {
     Schedule sch(Date(30,November,2004),
                  Date(30,November,2008), Period(Semiannual),
                  UnitedStates(UnitedStates::GovernmentBond),
-                 Unadjusted, Unadjusted, true,false);
+                 Unadjusted, Unadjusted, DateGeneration::Backward, false);
 
     FixedRateBond bond1(settlementDays, vars.faceAmount, sch,
                         std::vector<Rate>(1, 0.02875),
@@ -612,7 +613,7 @@ void BondTest::testCachedFixed() {
     Schedule sch3(Date(30,November,2004),
                   Date(30,March,2009), Period(Semiannual),
                   UnitedStates(UnitedStates::GovernmentBond),
-                  Unadjusted, Unadjusted, true, false,
+                  Unadjusted, Unadjusted, DateGeneration::Backward, false,
                   Date(), Date(30,November,2008));
 
     FixedRateBond bond3(settlementDays, vars.faceAmount, sch3,
@@ -664,7 +665,7 @@ void BondTest::testCachedFloating() {
                  Period(Semiannual),
                  UnitedStates(UnitedStates::GovernmentBond),
                  ModifiedFollowing, ModifiedFollowing,
-                 true, false);
+                 DateGeneration::Backward, false);
 
     FloatingRateBond bond1(settlementDays, vars.faceAmount, sch,
                            index, ActualActual(ActualActual::ISMA),
@@ -819,7 +820,8 @@ void BondTest::testBrazilianCached() {
         Schedule schedule(Date(1,January,2007),
                           maturityDates[bondIndex], Period(Semiannual),
                           Brazil(Brazil::Settlement),
-                          Unadjusted, Unadjusted, true,false);
+                          Unadjusted, Unadjusted,
+                          DateGeneration::Backward, false);
 
         // fixed coupons
         Leg cashflows =

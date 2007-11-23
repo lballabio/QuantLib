@@ -56,11 +56,11 @@ namespace QuantLib {
         Schedule fixedSchedule(startDate, endDate, fixedLegTenor, calendar,
                                index->businessDayConvention(),
                                index->businessDayConvention(),
-                               false, false);
+                               DateGeneration::Forward, false);
         Schedule floatSchedule(startDate, endDate, index->tenor(), calendar,
                                index->businessDayConvention(),
                                index->businessDayConvention(),
-                               false, false);
+                               DateGeneration::Forward, false);
 
         boost::shared_ptr<PricingEngine> swapEngine(
                                     new DiscountingSwapEngine(termStructure));

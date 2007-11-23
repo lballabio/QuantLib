@@ -141,7 +141,8 @@ void CompoundForwardTest::testSuppliedRates() {
                                          swapData[i].n,swapData[i].units,
                                          convention);
         Schedule schedule(settlement, maturity, Period(frequency), calendar,
-                          convention, convention, false, false);
+                          convention, convention,
+                          DateGeneration::Forward, false);
         VanillaSwap swap(VanillaSwap::Payer, 100.0,
                          schedule, 0.0, dayCounter,
                          schedule, index, 0.0, index->dayCounter());
@@ -182,7 +183,8 @@ void CompoundForwardTest::testConvertedRates() {
                                          swapData[i].n,swapData[i].units,
                                          convention);
         Schedule schedule(settlement, maturity, Period(frequency), calendar,
-                          convention, convention, false, false);
+                          convention, convention,
+                          DateGeneration::Forward, false);
         VanillaSwap swap(VanillaSwap::Payer, 100.0,
                          schedule, 0.0, dayCounter,
                          schedule, index, 0.0, index->dayCounter());

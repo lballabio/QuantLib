@@ -67,7 +67,8 @@ namespace QuantLib {
         Schedule floatSchedule(startDate, maturity,
                                index->tenor(), index->fixingCalendar(),
                                index->businessDayConvention(),
-                               index->businessDayConvention(), false, false);
+                               index->businessDayConvention(),
+                               DateGeneration::Forward, false);
         Leg floatingLeg = IborLeg(floatSchedule, index)
             .withNotionals(nominals)
             .withPaymentAdjustment(index->businessDayConvention())
@@ -76,7 +77,7 @@ namespace QuantLib {
         Schedule fixedSchedule(startDate, maturity, Period(fixedLegFrequency),
                                index->fixingCalendar(),
                                Unadjusted, Unadjusted,
-                               false, false);
+                               DateGeneration::Forward, false);
         Leg fixedLeg = FixedRateLeg(fixedSchedule,fixedLegDayCounter)
             .withNotionals(nominals)
             .withCouponRates(fixedRate)

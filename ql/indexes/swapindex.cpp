@@ -71,7 +71,7 @@ namespace QuantLib {
 
         return Schedule(start, end, fixedLegTenor_, fixingCalendar(),
                         fixedLegConvention_, fixedLegConvention_,
-                        false, false);
+                        DateGeneration::Forward, false);
     }
 
     Date SwapIndex::maturityDate(const Date& valueDate) const {

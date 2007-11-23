@@ -1462,7 +1462,7 @@ void setup() {
                                 Period(observationsFrequency_),
                                 calendar_,observationsConvention_,
                                 observationsConvention_,
-                                false,false));
+                                DateGeneration::Forward, false));
     // Range accrual pricers properties
     byCallSpread_ = std::vector<bool>();
     byCallSpread_.push_back(true);

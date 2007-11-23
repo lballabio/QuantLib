@@ -129,7 +129,7 @@ void ConvertibleBondTest::testBond() {
 
     Schedule schedule = MakeSchedule(issueDate_, maturityDate_,
                                      Period(Once), calendar_,
-                                     Following).backwards();
+                                     Following).rule(DateGeneration::Backward);
 
     ConvertibleZeroCouponBond euZero(euExercise, conversionRatio_,
                                      no_dividends, no_callability,
@@ -176,7 +176,7 @@ void ConvertibleBondTest::testBond() {
 
     schedule = MakeSchedule(issueDate_, maturityDate_,
                             Period(frequency_), calendar_,
-                            Following).backwards();
+                            Following).rule(DateGeneration::Backward);
 
     ConvertibleFixedCouponBond euFixed(euExercise, conversionRatio_,
                                        no_dividends, no_callability,
@@ -245,7 +245,7 @@ void ConvertibleBondTest::testBond() {
         BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
 
     Schedule floatSchedule(issueDate_, maturityDate_, Period(frequency_),
-                           calendar_, Following, Following, true, false);
+                           calendar_, Following, Following, DateGeneration::Backward, false);
 
     FloatingRateBond floating(settlementDays_, faceAmount_, floatSchedule,
                               index, dayCounter_, Following, fixingDays,
@@ -307,7 +307,7 @@ void ConvertibleBondTest::testOption() {
 
     Schedule schedule = MakeSchedule(issueDate_, maturityDate_,
                                      Period(Once), calendar_,
-                                     Following).backwards();
+                                     Following).rule(DateGeneration::Backward);
 
     ConvertibleZeroCouponBond euZero(euExercise, conversionRatio_,
                                      no_dividends, no_callability,

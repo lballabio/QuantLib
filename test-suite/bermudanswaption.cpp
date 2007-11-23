@@ -80,13 +80,13 @@ struct CommonVars {
                                calendar,
                                fixedConvention,
                                fixedConvention,
-                               false, false);
+                               DateGeneration::Forward, false);
         Schedule floatSchedule(start, maturity,
                                Period(floatingFrequency),
                                calendar,
                                floatingConvention,
                                floatingConvention,
-                               false, false);
+                               DateGeneration::Forward, false);
         boost::shared_ptr<VanillaSwap> swap(
                       new VanillaSwap(type, nominal,
                                       fixedSchedule, fixedRate, fixedDayCount,

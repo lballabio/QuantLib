@@ -77,7 +77,8 @@ struct CommonVars {
     Leg makeLeg(const Date& startDate, Integer length) {
         Date endDate = calendar.advance(startDate,length*Years,convention);
         Schedule schedule(startDate, endDate, Period(frequency), calendar,
-                          convention, convention, false, false);
+                          convention, convention,
+                          DateGeneration::Forward, false);
         return IborLeg(schedule, index)
             .withNotionals(nominals)
             .withPaymentDayCounter(index->dayCounter())
@@ -325,7 +326,8 @@ void CapFloorTest::testParity() {
                                               vars.convention);
             Schedule schedule(startDate,maturity,
                               Period(vars.frequency),vars.calendar,
-                              vars.convention,vars.convention,false,false);
+                              vars.convention,vars.convention,
+                              DateGeneration::Forward,false);
             VanillaSwap swap(VanillaSwap::Payer, vars.nominals[0],
                              schedule, strikes[j], vars.index->dayCounter(),
                              schedule, vars.index, 0.0,
@@ -366,7 +368,8 @@ void CapFloorTest::testATMRate() {
                                   vars.convention);
         Schedule schedule(startDate,maturity,
                           Period(vars.frequency),vars.calendar,
-                          vars.convention,vars.convention,false,false);
+                          vars.convention,vars.convention,
+                          DateGeneration::Forward,false);
 
         for (Size j=0; j<LENGTH(strikes); j++) {
             for (Size k=0; k<LENGTH(vols); k++) {

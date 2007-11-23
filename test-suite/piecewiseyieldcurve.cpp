@@ -214,7 +214,7 @@ void setup() {
                                 Period(bondData[i].frequency),
                                 calendar,
                                 bondConvention, bondConvention,
-                                true, false);
+                                DateGeneration::Backward, false);
         bondHelpers[i] = boost::shared_ptr<RateHelper>(new
             FixedRateBondHelper(p,
                                   bondSettlementDays,

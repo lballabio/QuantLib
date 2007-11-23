@@ -64,17 +64,34 @@ namespace QuantLib {
                                  Real redemption,
                                  const Date& issueDate,
                                  const Date& stubDate,
-                                 bool backward,
+                                 DateGeneration::Rule rule,
                                  bool endOfMonth)
     : Bond(settlementDays, calendar, faceAmount, maturityDate, issueDate) {
 
         maturityDate_     = maturityDate;
 
-        Date firstDate = (backward ? Date() : stubDate);
-        Date nextToLastDate = (backward ? stubDate : Date());
+        Date firstDate, nextToLastDate;
+        switch (rule) {
+          case DateGeneration::Backward:
+            firstDate = Date();
+            nextToLastDate = stubDate;
+            break;
+          case DateGeneration::Forward:
+            firstDate = stubDate;
+            nextToLastDate = Date();
+            break;
+          case DateGeneration::Zero:
+          case DateGeneration::ThirdWednesday:
+            QL_FAIL("stub date (" << stubDate << ") not allowed with " <<
+                    rule << " DateGeneration::Rule");
+          default:
+            QL_FAIL("unknown DateGeneration::Rule (" << Integer(rule) << ")");
+        }
+
         Schedule schedule(startDate, maturityDate_, tenor,
                           calendar_, accrualConvention, accrualConvention,
-                          backward, endOfMonth, firstDate, nextToLastDate);
+                          rule, endOfMonth,
+                          firstDate, nextToLastDate);
 
         cashflows_ = FixedRateLeg(schedule, accrualDayCounter)
             .withNotionals(faceAmount_)

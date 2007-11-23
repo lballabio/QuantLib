@@ -82,7 +82,7 @@ Leg makeFixedLeg(const Date& startDate,
 
     Date endDate = calendar_.advance(startDate, length, Years, convention_);
     Schedule schedule(startDate, endDate, Period(frequency_), calendar_,
-                      convention_, convention_, false, false);
+                      convention_, convention_, DateGeneration::Forward, false);
     std::vector<Rate> coupons(length, 0.0);
     return FixedRateLeg(schedule, Thirty360())
         .withNotionals(nominals_)
@@ -96,7 +96,7 @@ Leg makeFloatingLeg(const Date& startDate,
 
     Date endDate = calendar_.advance(startDate,length,Years,convention_);
     Schedule schedule(startDate,endDate,Period(frequency_),calendar_,
-                      convention_,convention_,false,false);
+                      convention_,convention_, DateGeneration::Forward, false);
     std::vector<Real> gearingVector(length_, gearing);
     std::vector<Spread> spreadVector(length_, spread);
     return IborLeg(schedule, index_)
@@ -118,7 +118,7 @@ Leg makeCapFlooredLeg(const Date& startDate,
 
     Date endDate = calendar_.advance(startDate,length,Years,convention_);
     Schedule schedule(startDate,endDate,Period(frequency_),calendar_,
-                      convention_,convention_,false,false);
+                      convention_,convention_, DateGeneration::Forward, false);
     Handle<OptionletVolatilityStructure> vol;
     vol = Handle<OptionletVolatilityStructure>(
           boost::shared_ptr<OptionletVolatilityStructure>(new

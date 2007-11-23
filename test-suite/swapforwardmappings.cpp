@@ -74,7 +74,7 @@ MarketModelData::MarketModelData(){
         Date todaysDate = Settings::instance().evaluationDate();
         Date endDate = todaysDate + 10*Years;
         Schedule dates(todaysDate, endDate, Period(Semiannual),
-                       calendar, Following, Following, true, false);
+                       calendar, Following, Following, DateGeneration::Backward, false);
         nbRates_ = dates.size()-2;
         rateTimes_ = std::vector<Time>(nbRates_+1);
         //paymentTimes_ = std::vector<Time>(rateTimes_.size()-1);

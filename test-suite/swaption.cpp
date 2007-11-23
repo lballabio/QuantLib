@@ -497,10 +497,11 @@ void SwaptionTest::testCashSettledSwaptions() {
             Date maturity = calendar_.advance(startDate,lengths[j],floatingConvention_);
             Schedule floatSchedule(startDate, maturity, floatingTenor_,
                                    calendar_,floatingConvention_,floatingConvention_,
-                                   false, false);
+                                   DateGeneration::Forward, false);
             // Swap with fixed leg conventions: Business Days = Unadjusted, DayCount = 30/360
-            Schedule fixedSchedule_u(startDate,maturity,Period(fixedFrequency_),
-                                     calendar_,Unadjusted,Unadjusted,false,true);
+            Schedule fixedSchedule_u(startDate, maturity, Period(fixedFrequency_),
+                                     calendar_, Unadjusted, Unadjusted,
+                                     DateGeneration::Forward, true);
             boost::shared_ptr<VanillaSwap> swap_u360(
                                     new VanillaSwap(type[0], nominal_,
                                     fixedSchedule_u,strike,Thirty360(),
@@ -517,7 +518,7 @@ void SwaptionTest::testCashSettledSwaptions() {
             // Swap with fixed leg conventions: Business Days = Modified Following, DayCount = 30/360
             Schedule fixedSchedule_a(startDate,maturity,Period(fixedFrequency_),
                                      calendar_,ModifiedFollowing,ModifiedFollowing,
-                                     false,true);
+                                     DateGeneration::Forward, true);
             boost::shared_ptr<VanillaSwap> swap_a360(
                                     new VanillaSwap(type[0],nominal_,
                                     fixedSchedule_a,strike,Thirty360(),

@@ -99,7 +99,7 @@ void setup() {
     //startDate = todaysDate + 5*Years;
     endDate_ = todaysDate_ + 66*Months;
     Schedule dates(todaysDate_, endDate_, Period(Semiannual),
-                   calendar_, Following, Following, true, false);
+                   calendar_, Following, Following, DateGeneration::Backward, false);
     rateTimes_ = std::vector<Time>(dates.size()-1);
     accruals_ = std::vector<Real>(rateTimes_.size()-1);
     dayCounter_ = SimpleDayCounter();

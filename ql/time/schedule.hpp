@@ -29,6 +29,7 @@
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/utilities/null.hpp>
 #include <ql/time/period.hpp>
+#include <ql/time/dategenerationrule.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
@@ -45,7 +46,7 @@ namespace QuantLib {
                  const Calendar& calendar,
                  BusinessDayConvention convention,
                  BusinessDayConvention terminationDateConvention,
-                 bool backward,
+                 DateGeneration::Rule rule,
                  bool endOfMonth,
                  const Date& firstDate = Date(),
                  const Date& nextToLastDate = Date());
@@ -70,7 +71,7 @@ namespace QuantLib {
         const Period& tenor() const;
         BusinessDayConvention businessDayConvention() const;
         BusinessDayConvention terminationDateBusinessDayConvention() const;
-        bool backward() const;
+        DateGeneration::Rule rule() const;
         bool endOfMonth() const;
         //@}
         //! \name Iterators
@@ -85,7 +86,8 @@ namespace QuantLib {
         Period tenor_;
         Calendar calendar_;
         BusinessDayConvention convention_, terminationDateConvention_;
-        bool backward_, endOfMonth_;
+        DateGeneration::Rule rule_;
+        bool endOfMonth_;
         Date firstDate_, nextToLastDate_;
         bool finalIsRegular_;
         std::vector<Date> dates_;
@@ -105,32 +107,18 @@ namespace QuantLib {
                      const Calendar& calendar,
                      BusinessDayConvention convention);
         MakeSchedule& terminationDateConvention(BusinessDayConvention conv);
-        MakeSchedule& backwards(bool flag=true);
-        MakeSchedule& forwards(bool flag=true);
+        MakeSchedule& rule(DateGeneration::Rule);
         MakeSchedule& endOfMonth(bool flag=true);
         MakeSchedule& withFirstDate(const Date& d);
         MakeSchedule& withNextToLastDate(const Date& d);
-        operator Schedule() const {
-            Date firstDate, nextToLastDate;
-            if (stubDate_!=Date()) {
-                if (backward_) {
-                    firstDate = firstDate_;
-                    nextToLastDate = stubDate_;
-                } else {
-                    firstDate = stubDate_;
-                    nextToLastDate = nextToLastDate_;
-                }
-            }
-            return Schedule(effectiveDate_, terminationDate_, tenor_,
-                calendar_, convention_, terminationDateConvention_,
-                backward_, endOfMonth_, firstDate, nextToLastDate);
-            }
+        operator Schedule() const;
       private:
         Calendar calendar_;
         Date effectiveDate_, terminationDate_;
         Period tenor_;
         BusinessDayConvention convention_, terminationDateConvention_;
-        bool backward_, endOfMonth_;
+        DateGeneration::Rule rule_;
+        bool endOfMonth_;
         Date stubDate_, firstDate_, nextToLastDate_;
     };
 
@@ -181,9 +169,9 @@ namespace QuantLib {
         return terminationDateConvention_;
     }
 
-    inline bool Schedule::backward() const {
+    inline DateGeneration::Rule Schedule::rule() const {
         QL_REQUIRE(fullInterface_, "full interface not available");
-        return backward_;
+        return rule_;
     }
 
     inline bool Schedule::endOfMonth() const {

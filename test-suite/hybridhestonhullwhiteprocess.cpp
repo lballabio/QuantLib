@@ -707,7 +707,8 @@ void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
 
     Schedule schedule(today, today + Period(maturity, Years),
                       Period(1, Years), TARGET(),
-                      Following, Following, false, false);
+                      Following, Following,
+                      DateGeneration::Forward, false);
 
     std::vector<Time> times(maturity+1);
     std::transform(schedule.begin(), schedule.end(), times.begin(),
