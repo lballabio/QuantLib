@@ -348,7 +348,7 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<FloatingRateCoupon>(
                                                  swap_->floatingLeg().back());
         Date fixingValueDate = calendar_.advance(lastFloating->fixingDate(),
-                                                 settlementDays_,Days);
+                                                 iborIndex_->fixingDays(),Days);
         Date endValueDate = calendar_.advance(fixingValueDate,
                                               iborIndex_->tenor(),
                                               iborIndex_->businessDayConvention(),
