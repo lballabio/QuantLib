@@ -268,32 +268,27 @@ int main(int, char* []) {
         boost::shared_ptr<IborIndex> swFloatingLegIndex(new Euribor6M);
 
         boost::shared_ptr<RateHelper> s2y(new SwapRateHelper(
-            Handle<Quote>(s2yRate),
-            2*Years, fixingDays,
+            Handle<Quote>(s2yRate), 2*Years,
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
             swFloatingLegIndex));
         boost::shared_ptr<RateHelper> s3y(new SwapRateHelper(
-            Handle<Quote>(s3yRate),
-            3*Years, fixingDays,
+            Handle<Quote>(s3yRate), 3*Years,
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
             swFloatingLegIndex));
         boost::shared_ptr<RateHelper> s5y(new SwapRateHelper(
-            Handle<Quote>(s5yRate),
-            5*Years, fixingDays,
+            Handle<Quote>(s5yRate), 5*Years,
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
             swFloatingLegIndex));
         boost::shared_ptr<RateHelper> s10y(new SwapRateHelper(
-            Handle<Quote>(s10yRate),
-            10*Years, fixingDays,
+            Handle<Quote>(s10yRate), 10*Years,
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
             swFloatingLegIndex));
         boost::shared_ptr<RateHelper> s15y(new SwapRateHelper(
-            Handle<Quote>(s15yRate),
-            15*Years, fixingDays,
+            Handle<Quote>(s15yRate), 15*Years,
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
             swFloatingLegIndex));
