@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file bmacoupon.hpp
+/*! \file averagebmacoupon.hpp
     \brief coupon paying a weighted average of BMA-index fixings
 */
 

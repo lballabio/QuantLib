@@ -98,11 +98,11 @@ namespace QuantLib {
         bool interpolated() const;
         Frequency frequency() const;
         /*! The availability lag describes when the index is
-            <it>available</it>, not how it is used.  Specifically the
+            <i>available</i>, not how it is used.  Specifically the
             fixing for, say, January, may only be available in April
             but the index will always return the index value
             applicable for January as its January fixing (independent
-            of the lag in availablity).
+            of the lag in availability).
         */
         Period availabilityLag() const;
         Currency currency() const;

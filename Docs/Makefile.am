@@ -35,8 +35,8 @@ dist-hook:
 	      $(srcdir)/images/*.jpg $(srcdir)/images/*.png \
 	      $(srcdir)/images/*.pdf $(srcdir)/images/*.ico $(distdir)/images
 
-docs-all: docs-html docs-ps docs-pdf docs-man
-docs-dist: docs-pdf-dist docs-html-dist docs-man-dist
+docs-all: docs-html docs-man
+docs-dist: docs-html-dist docs-man-dist
 
 docs-html: .time-stamp-html
 .time-stamp-html: .time-stamp

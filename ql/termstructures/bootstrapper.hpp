@@ -216,7 +216,7 @@ namespace QuantLib {
                      Size segment)
     : curve_(curve), helper_(helper), segment_(segment) {}
 
-
+    #ifndef __DOXYGEN__
     template <class Curve, class Traits, class Interpolator>
     Real BootstrapError<Curve, Traits, Interpolator>::operator()(Real guess)
                                                                       const {
@@ -224,6 +224,7 @@ namespace QuantLib {
         curve_->interpolation_.update();
         return helper_->quoteError();
     }
+    #endif
 
 }
 
