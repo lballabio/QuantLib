@@ -49,7 +49,7 @@ namespace QuantLib {
             const std::vector<boost::function1<Real, ArgumentType> > & v);
 
         const Array& a() const   { return a_;  }
-        const Array& err() const { return err_;}
+        const Array& error() const { return err_;}
 
       private:
         Array a_;

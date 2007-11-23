@@ -65,15 +65,15 @@ void LinearLeastSquaresRegressionTest::testRegression() {
         LinearLeastSquaresRegression<> m(x, y, v);
 
         for (i=0; i<v.size(); ++i) {
-            if (m.err()[i] > tolerance) {
+            if (m.error()[i] > tolerance) {
                 BOOST_ERROR("Failed to reproduce linear regression coef."
-                            << "\n    error:     " << m.err()[i]
+                            << "\n    error:     " << m.error()[i]
                             << "\n    tolerance: " << tolerance);
             }
-            if (std::fabs(m.a()[i]-a[i]) > 3*m.err()[i]) {
+            if (std::fabs(m.a()[i]-a[i]) > 3*m.error()[i]) {
                 BOOST_ERROR("Failed to reproduce linear regression coef."
                             << "\n    calculated: " << m.a()[i]
-                            << "\n    error:      " << m.err()[i]
+                            << "\n    error:      " << m.error()[i]
                             << "\n    expected:   " << a[i]);
             }
         }
@@ -81,9 +81,10 @@ void LinearLeastSquaresRegressionTest::testRegression() {
         m = LinearLeastSquaresRegression<>(x, y, w);
 
         const Real ma[] = {m.a()[0], m.a()[1], m.a()[2]+m.a()[4],m.a()[3]};
-        const Real err[] = {m.err()[0], m.err()[1],
-                            std::sqrt( m.err()[2]*m.err()[2]
-                                      +m.err()[4]*m.err()[4]), m.err()[3]};
+        const Real err[] = {m.error()[0], m.error()[1],
+                            std::sqrt( m.error()[2]*m.error()[2]
+                                      +m.error()[4]*m.error()[4]),
+                            m.error()[3]};
         for (i=0; i<v.size(); ++i) {
             if (std::fabs(ma[i] - a[i]) > 3*err[i]) {
                 BOOST_ERROR("Failed to reproduce linear regression coef."
