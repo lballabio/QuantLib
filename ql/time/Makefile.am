@@ -9,6 +9,7 @@ this_include_HEADERS = \
     businessdayconvention.hpp \
     calendar.hpp \
     date.hpp \
+    dategenerationrule.hpp \
 	daycounter.hpp \
     frequency.hpp \
     imm.hpp \
@@ -21,6 +22,7 @@ libTime_la_SOURCES = \
     businessdayconvention.cpp \
     calendar.cpp \
     date.cpp \
+    dategenerationrule.cpp \
     frequency.cpp \
     imm.cpp \
     period.cpp \
