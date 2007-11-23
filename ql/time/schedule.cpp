@@ -273,14 +273,24 @@ namespace QuantLib {
       rule_(DateGeneration::Backward), endOfMonth_(false),
       stubDate_(Date()), firstDate_(Date()), nextToLastDate_(Date()) {}
 
-    MakeSchedule& MakeSchedule::terminationDateConvention(
+    MakeSchedule& MakeSchedule::withTerminationDateConvention(
                                                 BusinessDayConvention conv) {
         terminationDateConvention_ = conv;
         return *this;
     }
 
-    MakeSchedule& MakeSchedule::rule(DateGeneration::Rule r) {
+    MakeSchedule& MakeSchedule::withRule(DateGeneration::Rule r) {
         rule_ = r;
+        return *this;
+    }
+
+    MakeSchedule& MakeSchedule::forwards() {
+        rule_ = DateGeneration::Forward;
+        return *this;
+    }
+
+    MakeSchedule& MakeSchedule::backwards() {
+        rule_ = DateGeneration::Backward;
         return *this;
     }
 

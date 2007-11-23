@@ -78,7 +78,7 @@ namespace QuantLib {
         return MakeSchedule(previousWednesday(start),
                             previousWednesday(end),
                             1 * Weeks,
-                            fixingCalendar_, Following).rule(DateGeneration::Forward);
+                            fixingCalendar_, Following).forwards();
     }
 
     Rate BMAIndex::forecastFixing(const Date& fixingDate) const {

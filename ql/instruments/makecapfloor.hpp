@@ -53,7 +53,8 @@ namespace QuantLib {
         MakeCapFloor& withCalendar(const Calendar& cal);
         MakeCapFloor& withConvention(BusinessDayConvention bdc);
         MakeCapFloor& withTerminationDateConvention(BusinessDayConvention bdc);
-        MakeCapFloor& withRule(DateGeneration::Rule r);
+        MakeCapFloor& withRule(DateGeneration::Rule r =
+                                                     DateGeneration::Forward);
         MakeCapFloor& withEndOfMonth(bool flag = true);
         MakeCapFloor& withFirstDate(const Date& d);
         MakeCapFloor& withNextToLastDate(const Date& d);

@@ -106,8 +106,10 @@ namespace QuantLib {
                      const Period& tenor,
                      const Calendar& calendar,
                      BusinessDayConvention convention);
-        MakeSchedule& terminationDateConvention(BusinessDayConvention conv);
-        MakeSchedule& rule(DateGeneration::Rule);
+        MakeSchedule& withTerminationDateConvention(BusinessDayConvention);
+        MakeSchedule& withRule(DateGeneration::Rule);
+        MakeSchedule& forwards();
+        MakeSchedule& backwards();
         MakeSchedule& endOfMonth(bool flag=true);
         MakeSchedule& withFirstDate(const Date& d);
         MakeSchedule& withNextToLastDate(const Date& d);

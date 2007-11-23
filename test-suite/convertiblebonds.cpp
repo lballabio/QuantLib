@@ -129,7 +129,7 @@ void ConvertibleBondTest::testBond() {
 
     Schedule schedule = MakeSchedule(issueDate_, maturityDate_,
                                      Period(Once), calendar_,
-                                     Following).rule(DateGeneration::Backward);
+                                     Following).backwards();
 
     ConvertibleZeroCouponBond euZero(euExercise, conversionRatio_,
                                      no_dividends, no_callability,
@@ -176,7 +176,7 @@ void ConvertibleBondTest::testBond() {
 
     schedule = MakeSchedule(issueDate_, maturityDate_,
                             Period(frequency_), calendar_,
-                            Following).rule(DateGeneration::Backward);
+                            Following).backwards();
 
     ConvertibleFixedCouponBond euFixed(euExercise, conversionRatio_,
                                        no_dividends, no_callability,
@@ -307,7 +307,7 @@ void ConvertibleBondTest::testOption() {
 
     Schedule schedule = MakeSchedule(issueDate_, maturityDate_,
                                      Period(Once), calendar_,
-                                     Following).rule(DateGeneration::Backward);
+                                     Following).backwards();
 
     ConvertibleZeroCouponBond euZero(euExercise, conversionRatio_,
                                      no_dividends, no_callability,
