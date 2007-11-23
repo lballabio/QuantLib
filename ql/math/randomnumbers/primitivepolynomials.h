@@ -46,7 +46,7 @@
  * After all, you can always recompile with more, should you need it.
  */
 
-/*	PPMT : Primitive Polynomials Modulo Two
+/*  PPMT : Primitive Polynomials Modulo Two
  *
  *
  * The encoding is as follows:

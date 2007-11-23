@@ -34,7 +34,7 @@
 
 namespace QuantLib {
 
-	class SwapIndex;
+    class SwapIndex;
     typedef BootstrapHelper<YieldTermStructure> RateHelper;
 
     //! Rate helper for bootstrapping over interest-rate futures prices

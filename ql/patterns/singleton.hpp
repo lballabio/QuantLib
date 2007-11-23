@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004, 2005 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -67,8 +67,8 @@ namespace QuantLib {
 
     template <class T>
     #if defined(QL_PATCH_MSVC) && defined(_MANAGED)
-	inline  // this seems to be required when CLR support is enabled
-	#endif
+    inline  // this seems to be required when CLR support is enabled
+    #endif
     T& Singleton<T>::instance() {
         static std::map<Integer, boost::shared_ptr<T> > instances_;
         #if defined(QL_ENABLE_SESSIONS)

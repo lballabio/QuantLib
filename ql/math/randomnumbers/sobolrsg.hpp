@@ -84,17 +84,18 @@ namespace QuantLib {
         Methods in Financial Engineering," by P. Glasserman, 2004,
         Springer, section 5.2.3
 
-		The Joe--Kuo numbers and the Kuo numbers are due to Stephen Joe
-		and Frances Kuo. 
+        The Joe--Kuo numbers and the Kuo numbers are due to Stephen Joe
+        and Frances Kuo.
 
-		S. Joe and F. Y. Kuo, Constructing Sobol sequences with better 
-		two-dimensional projections, preprint Nov 22 2007
+        S. Joe and F. Y. Kuo, Constructing Sobol sequences with better
+        two-dimensional projections, preprint Nov 22 2007
 
-		See http://web.maths.unsw.edu.au/~fkuo/sobol/ for more information.
+        See http://web.maths.unsw.edu.au/~fkuo/sobol/ for more information.
 
-		Note that the Kuo numbers were generated to work with a different ordering of 
-		primitive polynomials for the first 40 or so dimensions which is why we
-		have the Alternative Primitive Polynomials. 
+        Note that the Kuo numbers were generated to work with a
+        different ordering of primitive polynomials for the first 40
+        or so dimensions which is why we have the Alternative
+        Primitive Polynomials.
 
         \test
         - the correctness of the returned values is tested by
@@ -106,9 +107,9 @@ namespace QuantLib {
       public:
         typedef Sample<std::vector<Real> > sample_type;
         enum DirectionIntegers {
-            Unit, Jaeckel, SobolLevitan, SobolLevitanLemieux, 
-			JoeKuoD5, JoeKuoD6, JoeKuoD7, 
-			Kuo, Kuo2, Kuo3 };
+            Unit, Jaeckel, SobolLevitan, SobolLevitanLemieux,
+            JoeKuoD5, JoeKuoD6, JoeKuoD7,
+            Kuo, Kuo2, Kuo3 };
         /*! \pre dimensionality must be <= PPMT_MAX_DIM */
         SobolRsg(Size dimensionality,
                  unsigned long seed = 0,

@@ -124,11 +124,11 @@ namespace
             z,
             N);
 
-		unsigned long seed = 12345678UL;
-		MersenneTwisterUniformRng rng( seed);
+        unsigned long seed = 12345678UL;
+        MersenneTwisterUniformRng rng( seed);
 
-		RandomSequenceGenerator<MersenneTwisterUniformRng> rsg(maxDim,
-																rng);
+        RandomSequenceGenerator<MersenneTwisterUniformRng> rsg(maxDim,
+                                                               rng);
 
         RandomizedLDS<LatticeRsg, RandomSequenceGenerator<MersenneTwisterUniformRng> > rldsg(latticeGenerator,rsg);
 

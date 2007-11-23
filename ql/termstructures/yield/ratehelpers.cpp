@@ -35,12 +35,12 @@ namespace QuantLib {
     }
 
     FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
-										 const Date& immDate,
-										 Size nMonths,
-										 const Calendar& calendar,
-										 BusinessDayConvention convention,
-										 const DayCounter& dayCounter,
-										 const Handle<Quote>& convexityAdjustment)
+                                         const Date& immDate,
+                                         Size nMonths,
+                                         const Calendar& calendar,
+                                         BusinessDayConvention convention,
+                                         const DayCounter& dayCounter,
+                                         const Handle<Quote>& convexityAdjustment)
     : RateHelper(price),
       convAdj_(convexityAdjustment) {
         QL_REQUIRE(IMM::isIMMdate(immDate, false),
@@ -127,7 +127,7 @@ namespace QuantLib {
     }
 
 
-	DepositRateHelper::DepositRateHelper(const Handle<Quote>& rate,
+    DepositRateHelper::DepositRateHelper(const Handle<Quote>& rate,
                                          const Period& tenor,
                                          Natural settlementDays,
                                          const Calendar& calendar,
@@ -263,11 +263,11 @@ namespace QuantLib {
     : RelativeDateRateHelper(rate),
       tenor_(swapIndex->tenor()),
       calendar_(swapIndex->fixingCalendar()),
-	  fixedConvention_(swapIndex->fixedLegConvention()),
+      fixedConvention_(swapIndex->fixedLegConvention()),
       fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
       fixedDayCount_(swapIndex->dayCounter()),
       iborIndex_(swapIndex->iborIndex()),
-	  spread_(spread), fwdStart_(fwdStart) {
+      spread_(spread), fwdStart_(fwdStart) {
         registerWith(iborIndex_);
         registerWith(spread_);
         initializeDates();
@@ -288,7 +288,7 @@ namespace QuantLib {
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
       iborIndex_(iborIndex),
-	  spread_(spread), fwdStart_(fwdStart) {
+      spread_(spread), fwdStart_(fwdStart) {
         registerWith(iborIndex_);
         registerWith(spread_);
         initializeDates();
@@ -309,7 +309,7 @@ namespace QuantLib {
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
       iborIndex_(iborIndex),
-	  spread_(spread), fwdStart_(fwdStart) {
+      spread_(spread), fwdStart_(fwdStart) {
         registerWith(iborIndex_);
         registerWith(spread_);
         initializeDates();
