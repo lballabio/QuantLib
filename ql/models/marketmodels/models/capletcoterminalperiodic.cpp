@@ -46,20 +46,20 @@ namespace QuantLib
         const std::vector<Volatility>& capletVols,
         const boost::shared_ptr<CurveState>& cs,
         const Spread displacement,
-        Real caplet0Swaption1Priority, 
+        Real caplet0Swaption1Priority,
         Size numberOfFactors,
-        Size period, 
+        Size period,
         Size max1dIterations,
         Real tolerance1d,
         Size maxUnperiodicIterations,
-        Real toleranceUnperiodic, 
-        Size maxPeriodIterations, 
-        Real periodTolerance, 
+        Real toleranceUnperiodic,
+        Size maxPeriodIterations,
+        Real periodTolerance,
         Real& deformationSize,
         Real& totalSwaptionError, // ?
         std::vector<Matrix>& swapCovariancePseudoRoots,  // the thing we really want the pseudo root for each time step
         std::vector<Real> & finalScales,  //scalings used for matching
-        Size& iterationsDone, // number of  period iteratations done 
+        Size& iterationsDone, // number of  period iteratations done
         Real& errorImprovement, // improvement in error for last iteration
         Matrix& modelSwaptionVolsMatrix // the swaption vols calibrated to at each step of the iteration
         )
@@ -90,20 +90,18 @@ namespace QuantLib
 
 
         std::vector<Real> marketSwaptionVols(numberBigRates);
-        for (Size i=0; i < numberBigRates; ++i)
-        {
-            Real swaptionTotVariance=0.0;
-            marketSwaptionVols[i] =displacedSwapVariances.originalVariances()[i]->totalVolatility(i);
+        for (Size i=0; i < numberBigRates; ++i) {
+            marketSwaptionVols[i] =
+                displacedSwapVariances.originalVariances()[i]->totalVolatility(i);
         }
 
         std::vector<Real> modelSwaptionVols(numberBigRates);
 
         Real periodSwaptionRmsError;
 
-        iterationsDone =0;
-        bool success=false;
+        iterationsDone = 0;
 
-        Real previousError = 1.0E10; // very large number
+        Real previousError = 1.0e+10; // very large number
 
 
         modelSwaptionVolsMatrix =Matrix(maxPeriodIterations,numberBigRates,0.0);

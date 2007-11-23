@@ -94,8 +94,6 @@ namespace QuantLib {
                 // using out-of-the-money options
                 CapFloor::Type capFloorType = strikes[j] < switchStrike_ ?
                                        CapFloor::Floor : CapFloor::Cap;
-                Option::Type optionletType = capFloorType==CapFloor::Floor ?
-                                       Option::Put : Option::Call;
                 for (Size i=0; i<nOptionletTenors_; ++i) {
                     volQuotes_[i][j]= boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.10));
                     boost::shared_ptr<BlackCapFloorEngine> engine(new

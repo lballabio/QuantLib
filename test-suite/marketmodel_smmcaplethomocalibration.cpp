@@ -628,7 +628,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
 
        }
 
-       Integer failures = capletSwaptionPeriodicCalibration(
+       /*Integer failures =*/ capletSwaptionPeriodicCalibration(
         evolution,
         corr,
         varianceInterpolator,
@@ -700,7 +700,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
 
     for (Size i=0; i<numberBigRates; ++i) {
         Volatility expSwaptionVol = swapVariances[i].totalVolatility(i);
-        Real cov = swapTerminalCovariance[i][i];
+        // Real cov = swapTerminalCovariance[i][i];
         Time time = adaptedsmm->evolution().rateTimes()[i];
         Volatility swaptionVol =  sqrt(swapTerminalCovariance[i][i]/time);
 
