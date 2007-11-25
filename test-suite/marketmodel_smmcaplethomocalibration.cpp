@@ -76,7 +76,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(MarketModelTest_smm)
+QL_BEGIN_TEST_LOCALS(MarketModelTest_smmcaplethomocalibration)
 
 #define BEGIN(x) (x+0)
 #define END(x) (x+LENGTH(x))
@@ -410,7 +410,7 @@ boost::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
     }
 }
 
-QL_END_TEST_LOCALS(MarketModelTest_smm)
+QL_END_TEST_LOCALS(MarketModelTest_smmcaplethomocalibration)
 
 
 
