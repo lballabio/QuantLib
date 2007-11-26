@@ -31,7 +31,7 @@
 namespace QuantLib {
 
     //! Bond Market Association index
-    /*! The BMA index is the short term tax exempt reference index of
+    /*! The BMA index is the short-term tax-exempt reference index of
         the Bond Market Association.  It has tenor one week, is fixed
         weekly on Wednesdays and is applied with a one-day's fixing
         gap from Thursdays on for one week.  It is the tax-exempt
