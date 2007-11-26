@@ -614,7 +614,7 @@ const Real dim010DiscrJackel_Sobol[] = {
     1.57e-004, 1.12e-004, 6.39e-005
 };
 const Real dim010DiscrSobLev_Sobol[] = {
-    7.41e-004, 5.10e-004, 3.28e-004, 2.21e-004,
+    7.01e-004, 5.10e-004, 3.28e-004, 2.21e-004,
     1.57e-004, 1.08e-004, 6.38e-005
 };
 const Real dim010DiscrMersenneTwis[] = {
@@ -662,7 +662,7 @@ const Real dim030DiscrJackel_Sobol[] = {
     2.09e-007, 1.55e-007, 1.07e-007
 };
 const Real dim030DiscrSobLev_Sobol[] = {
-    6.13e-007, 6.06e-007, 3.81e-007, 2.71e-007,
+    1.03e-006, 6.06e-007, 3.81e-007, 2.71e-007,
     2.68e-007, 1.73e-007, 1.21e-007
 };
 const Real dim030DiscrMersenneTwis[] = {
@@ -686,11 +686,11 @@ const Real dim050DiscrJackel_Sobol[] = {
     1.48e-010, 1.15e-010, 8.41e-011
 };
 const Real dim050DiscrSobLev_Sobol[] = {
-    2.55e-010, 2.52e-010, 1.61e-010, 1.54e-010,
+    3.11e-010, 2.52e-010, 1.61e-010, 1.54e-010,
     1.11e-010, 8.60e-011, 1.17e-010
 };
 const Real dim050DiscrSobLem_Sobol[] = {
-    2.83e-010, 6.84e-010, 3.68e-010, 2.20e-010,
+    4.57e-010, 6.84e-010, 3.68e-010, 2.20e-010,
     1.81e-010, 1.14e-010, 8.31e-011
 };
 const Real dim050DiscrMersenneTwis[] = {
@@ -714,7 +714,7 @@ const Real dim100DiscrJackel_Sobol[] = {
     4.04e-019, 2.44e-019, 4.86e-019
 };
 const Real dim100DiscrSobLev_Sobol[] = {
-    9.30e-019, 2.65e-018, 1.45e-018, 7.28e-019,
+    1.17e-018, 2.65e-018, 1.45e-018, 7.28e-019,
     6.33e-019, 3.36e-019, 3.43e-019
 };
 const Real dim100DiscrSobLem_Sobol[] = {
