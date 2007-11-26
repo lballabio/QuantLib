@@ -18,7 +18,7 @@
 */
 
 /*! \file hybridhestonhullwhiteprocess.hpp
-    \brief hybrid equity (heston model) 
+    \brief hybrid equity (heston model)
            with stochastic interest rates (hull white model)
 */
 
@@ -54,8 +54,8 @@ namespace QuantLib {
                                      const Array& y0) const;
 
         DiscountFactor numeraire(Time t, const Array& x) const;
-        bool correlationIsStateDependend() const;
-        Disposable<Matrix> crossModelCorrelation(Time t0, 
+        bool correlationIsStateDependent() const;
+        Disposable<Matrix> crossModelCorrelation(Time t0,
                                                  const Array& x0) const;
 
         void update();

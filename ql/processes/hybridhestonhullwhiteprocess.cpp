@@ -165,7 +165,7 @@ namespace QuantLib {
         return retVal;
     }
 
-    bool HybridHestonHullWhiteProcess::correlationIsStateDependend() const {
+    bool HybridHestonHullWhiteProcess::correlationIsStateDependent() const {
         return false;
     }
 
@@ -196,6 +196,6 @@ namespace QuantLib {
 
         this->JointStochasticProcess::update();
     }
-}
 
+}
 

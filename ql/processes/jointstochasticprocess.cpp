@@ -39,9 +39,9 @@ namespace QuantLib {
             registerWith(*iter);
         }
 
-        vsize_.reserve   (l_.size());
-        vfactors_.reserve(l_.size());
-        
+        vsize_.reserve   (l_.size()+1);
+        vfactors_.reserve(l_.size()+1);
+
         for (const_iterator iter = l_.begin(); iter != l_.end(); ++iter) {
             vsize_.push_back(size_);
             size_ += (*iter)->size();
@@ -50,10 +50,12 @@ namespace QuantLib {
             modelFactors_ += (*iter)->factors();
         }
 
+        vsize_.push_back(size_);
+        vfactors_.push_back(modelFactors_);
+
         if (factors_ == Null<Size>()) {
             factors_ = modelFactors_;
-        }
-        else {
+        } else {
             QL_REQUIRE(factors_ <= size_, "too many factors given");
         }
     }
@@ -61,73 +63,85 @@ namespace QuantLib {
     Size JointStochasticProcess::size() const {
         return size_;
     }
+
     Size JointStochasticProcess::factors() const {
         return factors_;
+    }
+
+    Disposable<Array> JointStochasticProcess::slice(const Array& x,
+                                                    Size i) const {
+        // cut out the ith process' variables
+        Size n = vsize_[i+1]-vsize_[i];
+        Array y(n);
+        std::copy(x.begin()+vsize_[i], x.begin()+vsize_[i+1], y.begin());
+        return y;
     }
 
     Disposable<Array> JointStochasticProcess::initialValues() const {
         Array retVal(size());
 
         for (const_iterator iter = l_.begin(); iter != l_.end(); ++iter) {
-            const Array pInitValues = (*iter)->initialValues();
+            const Array& pInitValues = (*iter)->initialValues();
 
-            std::copy(pInitValues.begin(), pInitValues.end(), 
+            std::copy(pInitValues.begin(), pInitValues.end(),
                       retVal.begin()+vsize_[iter - l_.begin()]);
         }
 
         return retVal;
     }
 
-    
+
     Disposable<Array> JointStochasticProcess::drift(Time t,
                                                     const Array& x) const {
         Array retVal(size());
 
-        for (const_iterator iter = l_.begin(); iter != l_.end(); ++iter) {
-            const Array pDrift = (*iter)->drift(t, x);
-            
-            std::copy(pDrift.begin(), pDrift.end(), 
-                      retVal.begin()+vsize_[iter - l_.begin()]);
+        for (Size i=0; i < l_.size(); ++i) {
+
+            const Array& pDrift = l_[i]->drift(t, slice(x,i));
+
+            std::copy(pDrift.begin(), pDrift.end(),
+                      retVal.begin()+vsize_[i]);
         }
 
         return retVal;
     }
 
-    Disposable<Array> JointStochasticProcess::expectation(Time t0, 
+    Disposable<Array> JointStochasticProcess::expectation(Time t0,
                                                           const Array& x0,
                                                           Time dt) const {
         Array retVal(size());
 
-        for (const_iterator iter = l_.begin(); iter != l_.end(); ++iter) {
-            const Array pExpectation = (*iter)->expectation(t0, x0, dt);
-            
-            std::copy(pExpectation.begin(), pExpectation.end(), 
-                      retVal.begin()+ vsize_[iter - l_.begin()]);
+        for (Size i=0; i < l_.size(); ++i) {
+
+            const Array& pExpectation = l_[i]->expectation(t0, slice(x0,i), dt);
+
+            std::copy(pExpectation.begin(), pExpectation.end(),
+                      retVal.begin()+ vsize_[i]);
         }
 
         return retVal;
     }
-    
-   
+
+
     Disposable<Matrix> JointStochasticProcess::diffusion(
                                                Time t, const Array& x) const {
         // might need some improvement in the future
         const Time dt = 0.001;
         return pseudoSqrt(covariance(t, x, dt)/dt);
-    }    
+    }
 
 
-    Disposable<Matrix> JointStochasticProcess::covariance(Time t0, 
+    Disposable<Matrix> JointStochasticProcess::covariance(Time t0,
                                                           const Array& x0,
                                                           Time dt) const {
 
         // get the model intrinsic covariance matrix
         Matrix retVal(size(), size(), 0.0);
-        
-        for (const_iterator iter = l_.begin(); iter != l_.end(); ++iter) {
 
-            const Size vs = vsize_[iter - l_.begin()];
-            const Matrix pCov = (*iter)->covariance(t0, x0, dt);
+        for (Size j=0; j < l_.size(); ++j) {
+
+            const Size vs = vsize_[j];
+            const Matrix& pCov = l_[j]->covariance(t0, slice(x0,j), dt);
 
             for (Size i=0; i < pCov.rows(); ++i) {
                 std::copy(pCov.row_begin(i), pCov.row_end(i),
@@ -136,37 +150,37 @@ namespace QuantLib {
         }
 
         // add the cross model covariance matrix
-        const Array volatility = Sqrt(retVal.diagonal());
+        const Array& volatility = Sqrt(retVal.diagonal());
         Matrix crossModelCovar = this->crossModelCorrelation(t0, x0);
 
         for (Size i=0; i < size(); ++i) {
             for (Size j=0; j < size(); ++j) {
-                crossModelCovar[i][j]*=volatility[i]*volatility[j];
+                crossModelCovar[i][j] *= volatility[i]*volatility[j];
             }
         }
 
-        retVal+=crossModelCovar;
+        retVal += crossModelCovar;
 
         return retVal;
     }
 
 
-    Disposable<Matrix> JointStochasticProcess::stdDeviation(Time t0, 
+    Disposable<Matrix> JointStochasticProcess::stdDeviation(Time t0,
                                                             const Array& x0,
                                                             Time dt) const {
         return pseudoSqrt(covariance(t0, x0, dt));
     }
 
 
-    Disposable<Array> JointStochasticProcess::apply(const Array& x0, 
+    Disposable<Array> JointStochasticProcess::apply(const Array& x0,
                                                     const Array& dx) const {
         Array retVal(size());
 
-        for (const_iterator iter = l_.begin(); iter != l_.end(); ++iter) {
-            const Array pApply = (*iter)->apply(x0, dx);
-            
-            std::copy(pApply.begin(), pApply.end(), 
-                      retVal.begin()+vsize_[iter - l_.begin()]);
+        for (Size i=0; i < l_.size(); ++i) {
+            const Array& pApply = l_[i]->apply(slice(x0,i), slice(dx,i));
+
+            std::copy(pApply.begin(), pApply.end(),
+                      retVal.begin()+vsize_[i]);
         }
 
         return retVal;
@@ -176,11 +190,11 @@ namespace QuantLib {
         Time t0, const Array& x0, Time dt, const Array& dw) const {
         Array dv(modelFactors_);
 
-        if (   correlationIsStateDependend() 
+        if (   correlationIsStateDependent()
             || correlationCache_.count(t0) == 0) {
             Matrix cov  = covariance(t0, x0, dt);
 
-            const Array sqrtDiag = Sqrt(cov.diagonal());
+            const Array& sqrtDiag = Sqrt(cov.diagonal());
             for (Size i=0; i < cov.rows(); ++i) {
                 for (Size j=i; j < cov.columns(); ++j) {
                     const Real div = sqrtDiag[i]*sqrtDiag[j];
@@ -191,15 +205,15 @@ namespace QuantLib {
 
             Matrix diff(size(), modelFactors_, 0.0);
 
-            for (const_iterator iter = l_.begin(); iter != l_.end(); ++iter) {
-                const Size vs = vsize_   [iter - l_.begin()];
-                const Size vf = vfactors_[iter - l_.begin()];
+            for (Size j = 0; j < l_.size(); ++j) {
+                const Size vs = vsize_   [j];
+                const Size vf = vfactors_[j];
 
-                Matrix stdDev = (*iter)->stdDeviation(t0, x0, dt);
-                
+                Matrix stdDev = l_[j]->stdDeviation(t0, slice(x0,j), dt);
+
                 for (Size i=0; i < stdDev.rows(); ++i) {
                     const Volatility vol = std::sqrt(
-                        std::inner_product(stdDev.row_begin(i), 
+                        std::inner_product(stdDev.row_begin(i),
                                            stdDev.row_end(i),
                                            stdDev.row_begin(i), 0.0));
                     if (vol > 0.0) {
@@ -208,7 +222,7 @@ namespace QuantLib {
                                        std::bind2nd(std::divides<Real>(),
                                                     vol));
                     }
-                    else {           
+                    else {
                         // keep the svd happy
                         std::fill(stdDev.row_begin(i), stdDev.row_end(i),
                                   100*i*QL_EPSILON);
@@ -240,7 +254,7 @@ namespace QuantLib {
                 // fill the rest with zero's.
                 Matrix tmp = Matrix(cov.rows(), factors_, 0.0);
                 for (Size i=0; i < cov.rows(); ++i) {
-                    std::copy(rs.row_begin(i), rs.row_end(i), 
+                    std::copy(rs.row_begin(i), rs.row_end(i),
                               tmp.row_begin(i));
                 }
                 rs = tmp;
@@ -248,18 +262,18 @@ namespace QuantLib {
 
             const Matrix m = transpose(diff) * rs;
 
-            if (!correlationIsStateDependend()) {
+            if (!correlationIsStateDependent()) {
                 correlationCache_[t0] = m;
             }
             dv = m*dw;
         }
         else {
-            if (!correlationIsStateDependend()) {
+            if (!correlationIsStateDependent()) {
                 dv = correlationCache_[t0] * dw;
             }
         }
 
-        this->preEvolve(t0, x0, dt, dv);        
+        this->preEvolve(t0, x0, dt, dv);
 
 
         Array retVal(size());
@@ -267,8 +281,8 @@ namespace QuantLib {
             const Size i = iter - l_.begin();
 
             Array dz((*iter)->factors());
-            std::copy(dv.begin()+vfactors_[i], 
-                      dv.begin()+vfactors_[i] + (*iter)->factors(), 
+            std::copy(dv.begin()+vfactors_[i],
+                      dv.begin()+vfactors_[i] + (*iter)->factors(),
                       dz.begin());
             Array x((*iter)->size());
             std::copy(x0.begin()+vsize_[i],
@@ -281,7 +295,7 @@ namespace QuantLib {
         return this->postEvolve(t0, x0, dt, dv, retVal);
     }
 
-    const std::vector<boost::shared_ptr<StochasticProcess> > & 
+    const std::vector<boost::shared_ptr<StochasticProcess> > &
                           JointStochasticProcess::constituents() const {
         return l_;
     }

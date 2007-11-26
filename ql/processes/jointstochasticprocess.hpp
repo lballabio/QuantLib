@@ -24,11 +24,10 @@
 #ifndef quantlib_joint_stochastic_process_hpp
 #define quantlib_joint_stochastic_process_hpp
 
-#include <map>
-#include <vector>
-
 #include <ql/utilities/null.hpp>
 #include <ql/stochasticprocess.hpp>
+#include <vector>
+#include <map>
 
 namespace QuantLib {
 
@@ -61,21 +60,22 @@ namespace QuantLib {
                                              const Array& y0) const = 0;
 
         virtual DiscountFactor numeraire(Time t, const Array& x) const = 0;
-        virtual bool correlationIsStateDependend() const = 0;
+        virtual bool correlationIsStateDependent() const = 0;
         virtual Disposable<Matrix> crossModelCorrelation(
                                 Time t0, const Array& x0) const = 0;
 
-        const std::vector<boost::shared_ptr<StochasticProcess> > & 
+        const std::vector<boost::shared_ptr<StochasticProcess> > &
                                                        constituents() const;
 
         void update();
-        Time time(const Date& date) const;        
+        Time time(const Date& date) const;
 
       protected:
         std::vector<boost::shared_ptr<StochasticProcess> > l_;
-  
+        Disposable<Array> slice(const Array& x, Size i) const;
+
       private:
-        typedef 
+        typedef
             std::vector<boost::shared_ptr<StochasticProcess> >::const_iterator
             const_iterator;
 
@@ -84,7 +84,7 @@ namespace QuantLib {
 
         Size size_, factors_, modelFactors_;
         std::vector<Size> vsize_, vfactors_;
-        
+
         mutable std::map<Time, Matrix> correlationCache_;
     };
 
