@@ -247,7 +247,7 @@ namespace QuantLib {
             }
 
             Matrix rs = rankReducedSqrt(cov, factors_, 1.0,
-                                        SalvagingAlgorithm::None);
+                                        SalvagingAlgorithm::Spectral);
 
             if (rs.columns() < factors_) {
                 // less eigenvalues than expected factors.
