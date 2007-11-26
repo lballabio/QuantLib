@@ -36,8 +36,10 @@ namespace QuantLib {
                 const std::vector<Date>& fixingDates = coupon_->fixingDates();
                 const boost::shared_ptr<InterestRateIndex>& index =
                     coupon_->index();
-                Date startDate = coupon_->accrualStartDate(),
-                     endDate = coupon_->accrualEndDate();
+
+                Natural cutoffDays = 1; // to be verified
+                Date startDate = coupon_->accrualStartDate() - cutoffDays,
+                     endDate = coupon_->accrualEndDate() - cutoffDays;
 
                 Rate avgBMA = 0.0;
                 for (Size i=0; i<fixingDates.size() - 1; ++i) {
