@@ -49,9 +49,8 @@ namespace QuantLib {
         }
          
         Period result = parseOnePeriod(subStrings[0]);
-        for(Size i=1; i<subStrings.size(); i++){
+        for (Size i=1; i<subStrings.size(); ++i)
             result += parseOnePeriod(subStrings[i]);
-        }
         return result;
     }
 
