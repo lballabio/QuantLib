@@ -106,16 +106,24 @@ public:
         vega_ = black.vega(maturity_);
 
         std::cout << std::endl;
-        std::cout <<
-            "        |        | P&L  \t|  P&L    | Derman&Kamal | P&L"
-            "      \t| P&L" << std::endl;
 
-        std::cout <<
-            "samples | trades | Mean \t| Std Dev | Formula      |"
-            " skewness \t| kurt." << std::endl;
+        std::cout << std::setw(8) << " " << " | "
+                  << std::setw(8) << " " << " | "
+                  << std::setw(8) << "P&L" << " | "
+                  << std::setw(8) << "P&L" << " | "
+                  << std::setw(12) << "Derman&Kamal" << " | "
+                  << std::setw(8) << "P&L" << " | "
+                  << std::setw(8) << "P&L" << std::endl;
 
-        std::cout << "---------------------------------"
-            "----------------------------------------------" << std::endl;
+        std::cout << std::setw(8) << "samples" << " | "
+                  << std::setw(8) << "trades" << " | "
+                  << std::setw(8) << "mean" << " | "
+                  << std::setw(8) << "std.dev." << " | "
+                  << std::setw(12) << "formula" << " | "
+                  << std::setw(8) << "skewness" << " | "
+                  << std::setw(8) << "kurtosis" << std::endl;
+
+        std::cout << std::string(78, '-') << std::endl;
     }
 
     // the actual replication error computation
@@ -383,11 +391,11 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
 
 
     std::cout << std::fixed
-              << nSamples << "\t| "
-              << nTimeSteps << "\t | "
-              << std::setprecision(3) << PLMean << " \t| "
-              << std::setprecision(2) << PLStDev << " \t  | "
-              << std::setprecision(2) << theorStD << " \t | "
-              << std::setprecision(2) << PLSkew << " \t| "
-              << std::setprecision(2) << PLKurt << std::endl;
+              << std::setw(8) << nSamples << " | "
+              << std::setw(8) << nTimeSteps << " | "
+              << std::setw(8) << std::setprecision(3) << PLMean << " | "
+              << std::setw(8) << std::setprecision(2) << PLStDev << " | "
+              << std::setw(12) << std::setprecision(2) << theorStD << " | "
+              << std::setw(8) << std::setprecision(2) << PLSkew << " | "
+              << std::setw(8) << std::setprecision(2) << PLKurt << std::endl;
 }

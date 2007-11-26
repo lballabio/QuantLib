@@ -55,7 +55,9 @@ namespace QuantLib {
 }
 #endif
 
-void printOutput(const boost::shared_ptr<FittedBondDiscountCurve>& curve) {
+void printOutput(const std::string& tag,
+                 const boost::shared_ptr<FittedBondDiscountCurve>& curve) {
+    cout << tag << endl;
     cout << "reference date : "
          << curve->referenceDate()
          << endl;
@@ -179,9 +181,7 @@ int main(int, char* []) {
                                               tolerance,
                                               max));
 
-        cout << "(a) exponential splines "
-             << endl;
-        printOutput(ts1);
+        printOutput("(a) exponential splines", ts1);
 
 
         SimplePolynomialFitting simplePolynomial(3, constrainAtZero);
@@ -195,9 +195,7 @@ int main(int, char* []) {
                                                 tolerance,
                                                 max));
 
-        cout << "(b) simple polynomial"
-             << endl;
-        printOutput(ts2);
+        printOutput("(b) simple polynomial", ts2);
 
 
         NelsonSiegelFitting nelsonSiegel;
@@ -211,9 +209,7 @@ int main(int, char* []) {
                                                     tolerance,
                                                     max));
 
-        cout << "(c) Nelson Siegel"
-             << endl;
-        printOutput(ts3);
+        printOutput("(c) Nelson Siegel", ts3);
 
 
         // a cubic bspline curve with 11 knot points, implies
@@ -238,9 +234,7 @@ int main(int, char* []) {
                                                    tolerance,
                                                    max));
 
-        cout << "(d) cubic B-splines"
-             << endl;
-        printOutput(ts4);
+        printOutput("(d) cubic B-splines", ts4);
 
 
         cout << "Output par rates for each curve. In this case, "
@@ -249,8 +243,13 @@ int main(int, char* []) {
              << endl
              << endl;
 
-        cout << "tenor   coupon  bstrap  (a)     (b)     (c)     (d)"
-             << endl;
+        cout << setw(6) << "tenor" << " | "
+             << setw(6) << "coupon" << " | "
+             << setw(6) << "bstrap" << " | "
+             << setw(6) << "(a)" << " | "
+             << setw(6) << "(b)" << " | "
+             << setw(6) << "(c)" << " | "
+             << setw(6) << "(d)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -270,20 +269,24 @@ int main(int, char* []) {
 
             Real tenor=bondDayCount.yearFraction(today,cfs[cfSize-1]->date());
 
-            cout << setprecision(3)
-                 << tenor
-                 << "\t" << 100.*coupons[i]
-                // piecewise bootstrap
-                 << "\t" << 100.*ts0->parRate(keyDates,Annual,false)
-                // exponential splines
-                 << "\t" << 100.*ts1->parRate(keyDates,Annual,false)
-                // simple polynomial
-                 << "\t" << 100.*ts2->parRate(keyDates,Annual,false)
-                // nelson siegel
-                 << "\t" << 100.*ts3->parRate(keyDates,Annual,false)
-                // cubic bsplines
-                 << "\t" << 100.*ts4->parRate(keyDates,Annual,false)
-                 << endl;
+            cout << setw(6) << fixed << setprecision(3) << tenor << " | "
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*coupons[i] << " | "
+                 // piecewise bootstrap
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*ts0->parRate(keyDates,Annual,false) << " | "
+                 // exponential splines
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*ts1->parRate(keyDates,Annual,false) << " | "
+                 // simple polynomial
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*ts2->parRate(keyDates,Annual,false) << " | "
+                 // nelson siegel
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*ts3->parRate(keyDates,Annual,false) << " | "
+                 // cubic bsplines
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*ts4->parRate(keyDates,Annual,false) << endl;
         }
 
         cout << endl << endl << endl;
@@ -299,28 +302,25 @@ int main(int, char* []) {
         today = calendar.advance(today,23,Months,convention);
         Settings::instance().evaluationDate() = today;
 
-        cout << "(a) exponential splines"
-             << endl;
-        printOutput(ts1);
+        printOutput("(a) exponential splines", ts1);
 
-        cout << "(b) simple polynomial"
-             << endl;
-        printOutput(ts2);
+        printOutput("(b) simple polynomial", ts2);
 
-        cout << "(c) Nelson Siegel"
-             << endl;
-        printOutput(ts3);
+        printOutput("(c) Nelson Siegel", ts3);
 
-        cout << "(d) cubic B-splines"
-             << endl;
-        printOutput(ts4);
+        printOutput("(d) cubic B-splines", ts4);
 
         cout << endl
              << endl;
 
 
-        cout << "tenor   coupon  bstrap  (a)     (b)     (c)     (d)"
-             << endl;
+        cout << setw(6) << "tenor" << " | "
+             << setw(6) << "coupon" << " | "
+             << setw(6) << "bstrap" << " | "
+             << setw(6) << "(a)" << " | "
+             << setw(6) << "(b)" << " | "
+             << setw(6) << "(c)" << " | "
+             << setw(6) << "(d)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -341,20 +341,24 @@ int main(int, char* []) {
             Real tenor =
                 bondDayCount.yearFraction(today,cfs[cfSize-1]->date());
 
-            cout << setw(4) << setprecision(3)
-                 << tenor
-                 << "\t" << 100.*coupons[i]
-                // piecewise bootstrap
-                 << "\t" << 100.*ts0->parRate(keyDates,Annual,false)
-                // exponential splines
-                 << "\t" << 100.*ts1->parRate(keyDates,Annual,false)
-                // simple polynomial
-                 << "\t" << 100.*ts2->parRate(keyDates,Annual,false)
-                // nelson siegel
-                 << "\t" << 100.*ts3->parRate(keyDates,Annual,false)
-                // cubic bsplines
-                 << "\t" << 100.*ts4->parRate(keyDates,Annual,false)
-                 << endl;
+            cout << setw(6) << fixed << setprecision(3) << tenor << " | "
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*coupons[i] << " | "
+                 // piecewise bootstrap
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*ts0->parRate(keyDates,Annual,false) << " | "
+                 // exponential splines
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*ts1->parRate(keyDates,Annual,false) << " | "
+                 // simple polynomial
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*ts2->parRate(keyDates,Annual,false) << " | "
+                 // nelson siegel
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*ts3->parRate(keyDates,Annual,false) << " | "
+                 // cubic bsplines
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*ts4->parRate(keyDates,Annual,false) << endl;
         }
 
         cout << endl << endl << endl;
@@ -388,9 +392,7 @@ int main(int, char* []) {
                                               tolerance,
                                               max));
 
-        cout << "(a) exponential splines"
-             << endl;
-        printOutput(ts11);
+        printOutput("(a) exponential splines", ts11);
 
 
         boost::shared_ptr<FittedBondDiscountCurve> ts22 (
@@ -402,9 +404,7 @@ int main(int, char* []) {
                                                 tolerance,
                                                 max));
 
-        cout << "(b) simple polynomial"
-             << endl;
-        printOutput(ts22);
+        printOutput("(b) simple polynomial", ts22);
 
 
         boost::shared_ptr<FittedBondDiscountCurve> ts33 (
@@ -416,9 +416,7 @@ int main(int, char* []) {
                                                     tolerance,
                                                     max));
 
-        cout << "(c) Nelson Siegel"
-             << endl;
-        printOutput(ts33);
+        printOutput("(c) Nelson Siegel", ts33);
 
 
         boost::shared_ptr<FittedBondDiscountCurve> ts44 (
@@ -430,13 +428,16 @@ int main(int, char* []) {
                                                    tolerance,
                                                    max));
 
-        cout << "(d) cubic B-splines"
-             << endl;
-        printOutput(ts44);
+        printOutput("(d) cubic B-splines", ts44);
 
 
-        cout << "tenor   coupon  bstrap  (a)     (b)     (c)     (d)"
-             << endl;
+        cout << setw(6) << "tenor" << " | "
+             << setw(6) << "coupon" << " | "
+             << setw(6) << "bstrap" << " | "
+             << setw(6) << "(a)" << " | "
+             << setw(6) << "(b)" << " | "
+             << setw(6) << "(c)" << " | "
+             << setw(6) << "(d)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -457,21 +458,24 @@ int main(int, char* []) {
             Real tenor =
                 bondDayCount.yearFraction(today,cfs[cfSize-1]->date());
 
-            cout << setprecision(3)
-                 << tenor
-                 << "\t" << 100.*coupons[i+1] // added one here
-                // piecewise bootstrap
-                 << "\t" << 100.*ts00->parRate(keyDates,Annual,false)
-                // exponential splines
-                 << "\t" << 100.*ts11->parRate(keyDates,Annual,false)
-                // simple polynomial
-                 << "\t" << 100.*ts22->parRate(keyDates,Annual,false)
-                // nelson siegel
-                 << "\t" << 100.*ts33->parRate(keyDates,Annual,false)
-                // cubic bsplines
-                 << "\t" << 100.*ts44->parRate(keyDates,Annual,false)
-                 << endl;
-
+            cout << setw(6) << fixed << setprecision(3) << tenor << " | "
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*coupons[i+1] << " | "
+                 // piecewise bootstrap
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*ts00->parRate(keyDates,Annual,false) << " | "
+                 // exponential splines
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*ts11->parRate(keyDates,Annual,false) << " | "
+                 // simple polynomial
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*ts22->parRate(keyDates,Annual,false) << " | "
+                 // nelson siegel
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*ts33->parRate(keyDates,Annual,false) << " | "
+                 // cubic bsplines
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*ts44->parRate(keyDates,Annual,false) << endl;
         }
 
 
@@ -508,8 +512,13 @@ int main(int, char* []) {
         }
 
 
-        cout << "tenor   coupon  bstrap  (a)     (b)     (c)     (d)"
-             << endl;
+        cout << setw(6) << "tenor" << " | "
+             << setw(6) << "coupon" << " | "
+             << setw(6) << "bstrap" << " | "
+             << setw(6) << "(a)" << " | "
+             << setw(6) << "(b)" << " | "
+             << setw(6) << "(c)" << " | "
+             << setw(6) << "(d)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -530,20 +539,24 @@ int main(int, char* []) {
             Real tenor =
                 bondDayCount.yearFraction(today,cfs[cfSize-1]->date());
 
-            cout << tenor
-                 << setprecision(3)
-                 << "\t" << 100.*coupons[i+1] // added one here
-                // piecewise bootstrap
-                 << "\t" << 100.*ts00->parRate(keyDates,Annual,false)
-                // exponential splines
-                 << "\t" << 100.*ts11->parRate(keyDates,Annual,false)
-                // simple polynomial
-                 << "\t" << 100.*ts22->parRate(keyDates,Annual,false)
-                // nelson siegel
-                 << "\t" << 100.*ts33->parRate(keyDates,Annual,false)
-                // cubic bsplines
-                 << "\t" << 100.*ts44->parRate(keyDates,Annual,false)
-                 << endl;
+            cout << setw(6) << fixed << setprecision(3) << tenor << " | "
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*coupons[i+1] << " | "
+                 // piecewise bootstrap
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*ts00->parRate(keyDates,Annual,false) << " | "
+                 // exponential splines
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*ts11->parRate(keyDates,Annual,false) << " | "
+                 // simple polynomial
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*ts22->parRate(keyDates,Annual,false) << " | "
+                 // nelson siegel
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*ts33->parRate(keyDates,Annual,false) << " | "
+                 // cubic bsplines
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*ts44->parRate(keyDates,Annual,false) << endl;
         }
 
 
