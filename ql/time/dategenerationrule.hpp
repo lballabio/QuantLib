@@ -29,7 +29,7 @@
 
 namespace QuantLib {
 
-    //! Date Generation Rule
+    //! Date-generation rule
     /*! These conventions specify the rule used to generate dates in a
         Schedule.
 
@@ -49,7 +49,7 @@ namespace QuantLib {
         };
     };
 
-    /*! \relates BusinessDayConvention */
+    /*! \relates DateGeneration */
     std::ostream& operator<<(std::ostream&,
                              DateGeneration::Rule);
 
