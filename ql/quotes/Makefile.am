@@ -7,6 +7,7 @@ this_include_HEADERS = \
     compositequote.hpp \
     derivedquote.hpp \
     eurodollarfuturesquote.hpp \
+    forwardswapquote.hpp \
     forwardvaluequote.hpp \
     futuresconvadjustmentquote.hpp \
     impliedstddevquote.hpp \
@@ -14,6 +15,7 @@ this_include_HEADERS = \
 
 libQuotes_la_SOURCES = \
     eurodollarfuturesquote.cpp \
+    forwardswapquote.cpp \
     forwardvaluequote.cpp \
     futuresconvadjustmentquote.cpp \
     impliedstddevquote.cpp
