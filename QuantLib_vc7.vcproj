@@ -591,6 +591,9 @@
 				Name="ibor"
 				Filter="">
 				<File
+					RelativePath=".\ql\indexes\ibor\all.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\indexes\ibor\audlibor.hpp">
 				</File>
 				<File
@@ -651,6 +654,9 @@
 			<Filter
 				Name="swap"
 				Filter="">
+				<File
+					RelativePath=".\ql\indexes\swap\all.hpp">
+				</File>
 				<File
 					RelativePath=".\ql\indexes\swap\euriborswapfixa.cpp">
 				</File>
@@ -721,6 +727,9 @@
 				RelativePath=".\ql\instruments\assetswap.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\instruments\averagetype.cpp">
+			</File>
+			<File
 				RelativePath=".\ql\instruments\averagetype.hpp">
 			</File>
 			<File
@@ -728,6 +737,12 @@
 			</File>
 			<File
 				RelativePath=".\ql\instruments\barrieroption.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\instruments\barriertype.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\instruments\barriertype.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\instruments\basketoption.cpp">
@@ -806,6 +821,12 @@
 			</File>
 			<File
 				RelativePath=".\ql\instruments\forwardvanillaoption.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\instruments\inflationswap.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\instruments\inflationswap.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\instruments\lookbackoption.cpp">
@@ -924,6 +945,9 @@
 			<Filter
 				Name="bonds"
 				Filter="">
+				<File
+					RelativePath=".\ql\instruments\bonds\all.hpp">
+				</File>
 				<File
 					RelativePath=".\ql\instruments\bonds\cmsratebond.cpp">
 				</File>
@@ -1141,9 +1165,6 @@
 				RelativePath="ql\math\array.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\math\backwardflatinterpolation.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\math\bernsteinpolynomial.cpp">
 			</File>
 			<File
@@ -1220,9 +1241,6 @@
 			</File>
 			<File
 				RelativePath="ql\math\comparison.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\math\complexarray.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\math\curve.hpp">
@@ -1355,9 +1373,6 @@
 			</File>
 			<File
 				RelativePath="ql\math\factorial.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\math\fastfouriertransform.hpp">
 			</File>
 			<File
 				RelativePath="ql\math\functional.hpp">
@@ -1536,6 +1551,9 @@
 			<Filter
 				Name="distributions"
 				Filter="">
+				<File
+					RelativePath=".\ql\math\distributions\all.hpp">
+				</File>
 				<File
 					RelativePath=".\ql\math\distributions\binomialdistribution.hpp">
 				</File>
@@ -2105,6 +2123,9 @@
 				Name="statistics"
 				Filter="">
 				<File
+					RelativePath=".\ql\math\statistics\all.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\math\statistics\convergencestatistics.hpp">
 				</File>
 				<File
@@ -2148,6 +2169,9 @@
 		<Filter
 			Name="methods"
 			Filter="">
+			<File
+				RelativePath=".\ql\methods\all.hpp">
+			</File>
 			<Filter
 				Name="finitedifferences"
 				Filter="">
@@ -2491,9 +2515,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\methods\montecarlo\mctraits.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\mctypedefs.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\methods\montecarlo\montecarlomodel.hpp">
@@ -2889,9 +2910,6 @@
 							RelativePath=".\ql\models\marketmodels\products\onestep\all.hpp">
 						</File>
 						<File
-							RelativePath=".\ql\models\marketmodels\products\onestep\onestepcaplets.hpp">
-						</File>
-						<File
 							RelativePath=".\ql\models\marketmodels\products\onestep\onestepcoinitialswaps.cpp">
 						</File>
 						<File
@@ -2999,6 +3017,9 @@
 				<Filter
 					Name="evolvers"
 					Filter="">
+					<File
+						RelativePath=".\ql\models\marketmodels\evolvers\all.hpp">
+					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\evolvers\lognormalcmswapratepc.cpp">
 					</File>
@@ -3250,6 +3271,9 @@
 					Name="curvestates"
 					Filter="">
 					<File
+						RelativePath=".\ql\models\marketmodels\curvestates\all.hpp">
+					</File>
+					<File
 						RelativePath=".\ql\models\marketmodels\curvestates\cmswapcurvestate.cpp">
 					</File>
 					<File
@@ -3271,6 +3295,9 @@
 				<Filter
 					Name="driftcomputation"
 					Filter="">
+					<File
+						RelativePath=".\ql\models\marketmodels\driftcomputation\all.hpp">
+					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\driftcomputation\cmsmmdriftcalculator.cpp">
 					</File>
@@ -4013,9 +4040,6 @@
 				RelativePath=".\ql\patterns\all.hpp">
 			</File>
 			<File
-				RelativePath="ql\patterns\bridge.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\patterns\composite.hpp">
 			</File>
 			<File
@@ -4135,6 +4159,12 @@
 			</File>
 			<File
 				RelativePath=".\ql\pricingengines\greeks.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\instruments\impliedvolatility.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\instruments\impliedvolatility.hpp">
 			</File>
 			<File
 				RelativePath="ql\pricingengines\latticeshortratemodelengine.hpp">
@@ -5207,9 +5237,6 @@
 					RelativePath=".\ql\pricingengines\vanilla\mceuropeanhestonengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\pricingengines\vanilla\mchestonengine.hpp">
-				</File>
-				<File
 					RelativePath=".\ql\pricingengines\vanilla\mchestonhullwhiteengine.cpp">
 				</File>
 				<File
@@ -5348,6 +5375,9 @@
 				Name="bond"
 				Filter="">
 				<File
+					RelativePath=".\ql\pricingengines\bond\all.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\bond\discountingbondengine.cpp">
 				</File>
 				<File
@@ -5391,9 +5421,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\processes\blackscholesprocess.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\processes\defaultable.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\processes\eulerdiscretization.cpp">
@@ -5548,12 +5575,6 @@
 					RelativePath=".\ql\termstructures\volatility\abcd.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\termstructures\volatility\abcdatmvolcurve.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\abcdatmvolcurve.hpp">
-				</File>
-				<File
 					RelativePath=".\ql\termstructures\volatility\abcdcalibration.cpp">
 				</File>
 				<File
@@ -5561,30 +5582,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\volatility\all.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\blackatmvolcurve.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\blackatmvolcurve.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\blackvolsurface.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\blackvolsurface.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\equityfxvolsurface.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\equityfxvolsurface.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\interestratevolsurface.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\interestratevolsurface.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\volatility\interpolatedsmilesection.hpp">
@@ -5602,22 +5599,10 @@
 					RelativePath=".\ql\termstructures\volatility\sabrinterpolatedsmilesection.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\termstructures\volatility\sabrvolsurface.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\sabrvolsurface.hpp">
-				</File>
-				<File
 					RelativePath=".\ql\termstructures\volatility\smilesection.cpp">
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\volatility\smilesection.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\volcube.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\volatility\volcube.hpp">
 				</File>
 				<Filter
 					Name="capflor"
@@ -5733,15 +5718,6 @@
 						RelativePath=".\ql\termstructures\volatility\optionlet\optionletstripper2.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatility\optionlet\optionletstripperadapter.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatility\optionlet\optionletstripperadapter.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatility\optionlet\optionletstripperbase.hpp">
-					</File>
-					<File
 						RelativePath=".\ql\termstructures\volatility\optionlet\optionletvolatilitystructure.cpp">
 					</File>
 					<File
@@ -5752,6 +5728,15 @@
 					</File>
 					<File
 						RelativePath=".\ql\termstructures\volatility\optionlet\spreadedoptionletvol.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\optionlet\strippedoptionletadapter.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\optionlet\strippedoptionletadapter.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\optionlet\strippedoptionletbase.hpp">
 					</File>
 				</Filter>
 				<Filter
@@ -6052,6 +6037,12 @@
 			</File>
 			<File
 				RelativePath=".\ql\time\date.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\time\dategenerationrule.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\time\dategenerationrule.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\time\daycounter.hpp">
@@ -6645,6 +6636,235 @@
 				RelativePath=".\ql\utilities\vectors.hpp">
 			</File>
 		</Filter>
+		<Filter
+			Name="experimental"
+			Filter="">
+			<File
+				RelativePath=".\ql\experimental\abcdatmvolcurve.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\experimental\abcdatmvolcurve.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\experimental\all.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\experimental\blackatmvolcurve.cpp">
+				<FileConfiguration
+					Name="Debug CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\experimental\blackatmvolcurve.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\experimental\blackvolsurface.cpp">
+				<FileConfiguration
+					Name="Debug CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\experimental\blackvolsurface.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\experimental\equityfxvolsurface.cpp">
+				<FileConfiguration
+					Name="Debug CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\experimental\equityfxvolsurface.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\experimental\interestratevolsurface.cpp">
+				<FileConfiguration
+					Name="Debug CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\experimental\interestratevolsurface.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\experimental\sabrvolsurface.cpp">
+				<FileConfiguration
+					Name="Debug CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\experimental\sabrvolsurface.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\experimental\volcube.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\experimental\volcube.hpp">
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\ql\auto_link.hpp">
 		</File>
@@ -6662,9 +6882,6 @@
 		</File>
 		<File
 			RelativePath=".\ql\config.msvc.hpp">
-		</File>
-		<File
-			RelativePath=".\ql\config.mwcw.hpp">
 		</File>
 		<File
 			RelativePath=".\ql\currency.cpp">

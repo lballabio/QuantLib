@@ -2473,6 +2473,9 @@
 				RelativePath="asianoptions.hpp">
 			</File>
 			<File
+				RelativePath=".\assetswap.hpp">
+			</File>
+			<File
 				RelativePath="barrieroption.hpp">
 			</File>
 			<File
@@ -2630,9 +2633,6 @@
 			</File>
 			<File
 				RelativePath=".\period.hpp">
-			</File>
-			<File
-				RelativePath=".\piecewiseflatforward.hpp">
 			</File>
 			<File
 				RelativePath=".\piecewiseyieldcurve.hpp">
