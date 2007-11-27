@@ -355,6 +355,10 @@
 		<Filter
 			Name="methods"
 			>
+			<File
+				RelativePath=".\ql\methods\all.hpp"
+				>
+			</File>
 			<Filter
 				Name="montecarlo"
 				>
@@ -368,10 +372,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\methods\montecarlo\brownianbridge.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\core.hpp"
 					>
 				</File>
 				<File
@@ -404,10 +404,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\methods\montecarlo\mctraits.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\mctypedefs.hpp"
 					>
 				</File>
 				<File
@@ -480,10 +476,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\methods\finitedifferences\bsmtermoperator.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\core.hpp"
 					>
 				</File>
 				<File
@@ -592,10 +584,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\methods\lattices\bsmlattice.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\methods\lattices\core.hpp"
 					>
 				</File>
 				<File
@@ -727,10 +715,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\cashflows\conundrumpricer.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\cashflows\core.hpp"
 				>
 			</File>
 			<File
@@ -1431,6 +1415,10 @@
 				Name="bonds"
 				>
 				<File
+					RelativePath=".\ql\instruments\bonds\all.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\instruments\bonds\cmsratebond.cpp"
 					>
 				</File>
@@ -1558,14 +1546,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\math\complexarray.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\math\core.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\math\curve.hpp"
 				>
 			</File>
@@ -1679,10 +1659,6 @@
 			</File>
 			<File
 				RelativePath="ql\math\factorial.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\math\fastfouriertransform.hpp"
 				>
 			</File>
 			<File
@@ -1865,6 +1841,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\interpolations\all.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\interpolations\backwardflatinterpolation.hpp"
 					>
 				</File>
@@ -1977,6 +1957,10 @@
 				Name="distributions"
 				>
 				<File
+					RelativePath=".\ql\math\distributions\all.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\distributions\binomialdistribution.hpp"
 					>
 				</File>
@@ -2020,6 +2004,10 @@
 			<Filter
 				Name="integrals"
 				>
+				<File
+					RelativePath=".\ql\math\integrals\all.hpp"
+					>
+				</File>
 				<File
 					RelativePath=".\ql\math\integrals\gaussianorthogonalpolynomial.cpp"
 					>
@@ -2489,6 +2477,30 @@
 		<Filter
 			Name="models"
 			>
+			<File
+				RelativePath=".\ql\models\all.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\models\calibrationhelper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\models\calibrationhelper.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\models\model.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\models\model.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\models\parameter.hpp"
+				>
+			</File>
 			<Filter
 				Name="marketmodels"
 				>
@@ -2711,6 +2723,10 @@
 				<Filter
 					Name="evolvers"
 					>
+					<File
+						RelativePath=".\ql\models\marketmodels\evolvers\all.hpp"
+						>
+					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\evolvers\lognormalcmswapratepc.cpp"
 						>
@@ -3112,6 +3128,10 @@
 					Name="correlations"
 					>
 					<File
+						RelativePath=".\ql\models\marketmodels\correlations\all.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\models\marketmodels\correlations\cotswapfromfwdcorrelation.cpp"
 						>
 					</File>
@@ -3493,31 +3513,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\models\calibrationhelper.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\calibrationhelper.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\model.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\model.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\models\shortrate\onefactormodel.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\models\shortrate\onefactormodel.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\shortrate\parameter.hpp"
 					>
 				</File>
 				<File
@@ -4461,10 +4461,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\pricingengines\blackscholescalculator.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\pricingengines\core.hpp"
 				>
 			</File>
 			<File
@@ -5479,10 +5475,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\pricingengines\vanilla\mchestonengine.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\pricingengines\vanilla\mchestonhullwhiteengine.cpp"
 					>
 				</File>
@@ -5658,6 +5650,10 @@
 			<Filter
 				Name="bond"
 				>
+				<File
+					RelativePath=".\ql\pricingengines\bond\all.hpp"
+					>
+				</File>
 				<File
 					RelativePath=".\ql\pricingengines\bond\discountingbondengine.cpp"
 					>
@@ -6933,10 +6929,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\ql\config.mwcw.hpp"
-			>
-		</File>
-		<File
 			RelativePath=".\ql\currency.cpp"
 			>
 		</File>
@@ -7058,10 +7050,6 @@
 		</File>
 		<File
 			RelativePath=".\ql\quote.hpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ql\termstructures\volatility\sabrinterpolatedsmilesectionNew.hpp"
 			>
 		</File>
 		<File
