@@ -5514,6 +5514,12 @@
 				RelativePath=".\ql\quotes\eurodollarfuturesquote.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\quotes\forwardswapquote.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\quotes\forwardswapquote.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\quotes\forwardvaluequote.cpp">
 			</File>
 			<File
