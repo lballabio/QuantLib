@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2007 Roland Lichters
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,6 +24,8 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/imm.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
+#include <ql/instruments/bmaswap.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/currency.hpp>
 #include <ql/indexes/swapindex.hpp>
@@ -388,4 +391,86 @@ namespace QuantLib {
         return swap_;
     }
 
+
+    BMASwapRateHelper::BMASwapRateHelper(
+                          const Handle<Quote>& liborFraction,
+                          const Period& tenor,
+                          Natural settlementDays,
+                          const Calendar& calendar,
+                          // bma leg
+                          const Period& bmaPeriod,
+                          BusinessDayConvention bmaConvention,
+                          const DayCounter& bmaDayCount,
+                          const boost::shared_ptr<BMAIndex>& bmaIndex,
+                          // libor leg
+                          const boost::shared_ptr<IborIndex>& index)
+    : RelativeDateRateHelper(liborFraction),
+      tenor_(tenor), settlementDays_(settlementDays),
+      calendar_(calendar),
+      bmaPeriod_(bmaPeriod),
+      bmaConvention_(bmaConvention),
+      bmaDayCount_(bmaDayCount),
+      bmaIndex_(bmaIndex),
+      index_(index) {
+        registerWith(index_);
+        registerWith(bmaIndex_);
+        initializeDates();
+    }
+
+    void BMASwapRateHelper::initializeDates() {
+        earliestDate_ = calendar_.adjust(evaluationDate_ + settlementDays_*Days,
+                                         bmaConvention_);
+
+        Date maturity = calendar_.adjust(earliestDate_ + tenor_,
+                                         bmaConvention_);
+
+        // dummy BMA index with curve/swap arguments
+        boost::shared_ptr<BMAIndex> clonedIndex(
+                                          new BMAIndex(termStructureHandle_));
+
+        Schedule bmaSchedule = MakeSchedule(earliestDate_,
+                                            maturity,
+                                            bmaPeriod_,
+                                            calendar_,
+                                            bmaConvention_).backwards();
+
+        Schedule liborSchedule =
+            MakeSchedule(earliestDate_,
+                         maturity,
+                         index_->tenor(),
+                         index_->fixingCalendar(),
+                         index_->businessDayConvention()).backwards();
+
+        swap_ = boost::shared_ptr<BMASwap>(new BMASwap(BMASwap::Payer, 100.0,
+                                                       liborSchedule,
+                                                       0.75, // arbitrary
+                                                       0.0,
+                                                       index_,
+                                                       index_->dayCounter(),
+                                                       bmaSchedule,
+                                                       clonedIndex,
+                                                       bmaDayCount_));
+        swap_->setPricingEngine(boost::shared_ptr<PricingEngine>(
+                         new DiscountingSwapEngine(index_->termStructure())));
+
+        latestDate_ = calendar_.adjust(swap_->maturityDate(), Following);
+    }
+
+    void BMASwapRateHelper::setTermStructure(YieldTermStructure* t) {
+        // do not set the relinkable handle as an observer -
+        // force recalculation when needed
+        termStructureHandle_.linkTo(
+                         boost::shared_ptr<YieldTermStructure>(t,no_deletion),
+                         false);
+        RelativeDateRateHelper::setTermStructure(t);
+    }
+
+    Real BMASwapRateHelper::impliedQuote() const {
+        QL_REQUIRE(termStructure_ != 0, "term structure not set");
+        // we didn't register as observers - force calculation
+        swap_->recalculate();
+        return swap_->fairLiborFraction();
+    }
+
 }
+
