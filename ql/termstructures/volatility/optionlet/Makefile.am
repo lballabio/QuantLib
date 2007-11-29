@@ -12,6 +12,7 @@ this_include_HEADERS = \
     optionletstripper2.hpp \
     optionletvolatilitystructure.hpp \
     spreadedoptionletvol.hpp \
+    strippedoptionlet.hpp \
     strippedoptionletadapter.hpp \
     strippedoptionletbase.hpp
 
@@ -23,6 +24,7 @@ libOptionletVol_la_SOURCES = \
     optionletstripper2.cpp \
     optionletvolatilitystructure.cpp \
     spreadedoptionletvol.cpp \
+    strippedoptionlet.cpp \
     strippedoptionletadapter.cpp
 
 noinst_LTLIBRARIES = libOptionletVol.la
