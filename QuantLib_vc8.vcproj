@@ -3936,6 +3936,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\termstructures\volatility\optionlet\strippedoptionlet.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\optionlet\strippedoptionlet.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\termstructures\volatility\optionlet\strippedoptionletadapter.cpp"
 						>
 					</File>

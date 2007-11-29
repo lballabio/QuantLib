@@ -38,14 +38,12 @@ namespace QuantLib {
 
         virtual const std::vector<Date>& optionletDates() const = 0;
         virtual const std::vector<Time>& optionletTimes() const = 0;
-        virtual const std::vector<Rate>& atmOptionletRate() const = 0;
 
         virtual DayCounter dayCounter() const = 0;
         virtual Calendar calendar() const = 0;
         virtual Natural settlementDays() const = 0;
         virtual BusinessDayConvention businessDayConvention() const = 0;
         virtual const Date& referenceDate() const = 0;
-        //virtual boost::shared_ptr<CapFloorTermVolSurface> termVolSurface() const = 0;
     };
 }
 
