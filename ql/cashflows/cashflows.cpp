@@ -44,7 +44,7 @@ namespace QuantLib {
 
         const Spread basisPoint_ = 1.0e-4;
 
-        class irrFinder : public std::unary_function<Rate,Real> {
+        class irrFinder : public std::unary_function<Rate, Real> {
           public:
             irrFinder(const Leg& cashflows,
                       Real marketPrice,
@@ -57,7 +57,7 @@ namespace QuantLib {
               frequency_(frequency), settlementDate_(settlementDate) {}
             Real operator()(Rate guess) const {
                 InterestRate y(guess, dayCounter_, compounding_, frequency_);
-                Real NPV = CashFlows::npv(cashflows_,y,settlementDate_);
+                Real NPV = CashFlows::npv(cashflows_, y, settlementDate_);
                 return marketPrice_ - NPV;
             }
           private:
@@ -174,7 +174,7 @@ namespace QuantLib {
                        "compounded rate required");
             QL_REQUIRE(N >= 1, "unsupported frequency");
 
-            return (1+y/N)*modifiedDuration(cashflows,rate,settlementDate);
+            return (1+y/N) * modifiedDuration(cashflows, rate, settlementDate);
         }
 
     }
@@ -280,7 +280,7 @@ namespace QuantLib {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
         FlatForward flatRate(settlementDate, irr.rate(), irr.dayCounter(),
-                                 irr.compounding(), irr.frequency());
+                             irr.compounding(), irr.frequency());
         return npv(cashflows, flatRate, settlementDate, settlementDate);
     }
 
@@ -308,7 +308,7 @@ namespace QuantLib {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
         FlatForward flatRate(settlementDate, irr.rate(), irr.dayCounter(),
-                                 irr.compounding(), irr.frequency());
+                             irr.compounding(), irr.frequency());
         return bps(cashflows, flatRate, settlementDate, settlementDate);
     }
 
@@ -342,7 +342,7 @@ namespace QuantLib {
             }
         }
         QL_REQUIRE(signChanges > 0,
-                  "the given cash flows cannot result in the given market "
+                   "the given cash flows cannot result in the given market "
                    "price due to their sign");
 
         /* The following is commented out due to the lack of a QL_WARN macro
@@ -381,11 +381,11 @@ namespace QuantLib {
 
         switch (type) {
           case Duration::Simple:
-            return simpleDuration(cashflows,rate,settlementDate);
+            return simpleDuration(cashflows, rate, settlementDate);
           case Duration::Modified:
-            return modifiedDuration(cashflows,rate,settlementDate);
+            return modifiedDuration(cashflows, rate, settlementDate);
           case Duration::Macaulay:
-            return macaulayDuration(cashflows,rate,settlementDate);
+            return macaulayDuration(cashflows, rate, settlementDate);
           default:
             QL_FAIL("unknown duration type");
         }
@@ -447,7 +447,7 @@ namespace QuantLib {
                                   npvDate, exDividendDays);
         if (npv==Null<Real>())
             npv = CashFlows::npv(cashFlows, discountCurve, settlementDate,
-                                  npvDate, exDividendDays);
+                                 npvDate, exDividendDays);
         return basisPoint_*npv/bps;
     }
 
