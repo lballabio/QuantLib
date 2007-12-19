@@ -25,7 +25,7 @@
 #define quantlib_interest_rate_hpp
 
 #include <ql/compounding.hpp>
-#include <ql/time/daycounter.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 
 namespace QuantLib {
 
@@ -45,8 +45,8 @@ namespace QuantLib {
         InterestRate();
         //! Standard constructor
         InterestRate(Rate r,
-                     const DayCounter& dc,
-                     Compounding comp,
+                     const DayCounter& dc = Actual365Fixed(),
+                     Compounding comp = Continuous,
                      Frequency freq = Annual);
         //@}
         //! \name conversions
