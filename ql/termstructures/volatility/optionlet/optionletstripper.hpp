@@ -43,7 +43,7 @@ namespace QuantLib {
         const std::vector<Date>& optionletDates() const;
         const std::vector<Time>& optionletTimes() const;
 
-        const std::vector<Rate>& atmOptionletRate() const;
+        const std::vector<Rate>& atmOptionletRates() const;
 
         DayCounter dayCounter() const;
         Calendar calendar() const;

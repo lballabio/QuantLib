@@ -35,8 +35,6 @@ namespace QuantLib {
          asian option, with european exercise.  The formula is from
          "Asian Option", E. Levy (1997) in "Exotic Options: The State
          of the Art", edited by L. Clewlow, C. Strickland, pag65-97
-
-         \todo add analytical greeks
     */
     class DiscreteGeometricASO : public SingleAssetOption    {
       public:

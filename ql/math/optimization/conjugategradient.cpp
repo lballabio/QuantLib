@@ -1,10 +1,10 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
  /*
+ Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
  Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Marco Bianchetti
- Copyright (C) 2007 Francois Du Vignaud
- Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
+ Copyright (C) 2007 François du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/

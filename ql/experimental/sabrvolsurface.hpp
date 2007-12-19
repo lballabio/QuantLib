@@ -27,8 +27,8 @@
 #include <ql/experimental/interestratevolsurface.hpp>
 #include <ql/experimental/blackatmvolcurve.hpp>
 #include <ql/quote.hpp>
-#include <boost/array.hpp>
 #include <ql/termstructures/volatility/sabrinterpolatedsmilesection.hpp>
+#include <boost/array.hpp>
 
 namespace QuantLib {
 
@@ -65,7 +65,7 @@ namespace QuantLib {
       protected:
         boost::array<Real, 4> sabrGuesses(const Date&) const;
       public:
-        //@}       
+        //@}
         //! \name BlackVolSurface interface
         //@{
         boost::shared_ptr<SmileSection> smileSectionImpl(Time) const;
@@ -93,7 +93,7 @@ namespace QuantLib {
         bool isNuFixed_;
         bool isRhoFixed_;
         bool vegaWeighted_;
-        // 
+        //
         mutable std::vector<boost::array<Real,4> > sabrGuesses_;
     };
 

@@ -23,8 +23,8 @@
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/forwardforwardmappings.hpp>
 #include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
-#include <set>
 #include <ql/utilities/dataformatters.hpp>
+#include <set>
 
 namespace QuantLib {
 

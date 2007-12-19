@@ -202,7 +202,7 @@ namespace QuantLib {
                          paymentAdjustment_, fixingDays_, gearings_, spreads_,
                          caps_, floors_, inArrears_, zeroPayments_);
 
-        if (caps_.empty() && floors_.empty())
+        if (caps_.empty() && floors_.empty() && !inArrears_)
             setCouponPricer(cashflows,
                             boost::shared_ptr<FloatingRateCouponPricer>(
                                                   new BlackIborCouponPricer));

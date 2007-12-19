@@ -36,8 +36,8 @@ namespace QuantLib {
             Rate switchStrike,
             Real accuracy)
     : OptionletStripper(termVolSurface, index),
-    volQuotes_(nOptionletTenors_,
-               std::vector<boost::shared_ptr<SimpleQuote> >(nStrikes_)),
+      volQuotes_(nOptionletTenors_,
+                 std::vector<boost::shared_ptr<SimpleQuote> >(nStrikes_)),
       floatingSwitchStrike_(switchStrike==Null<Rate>() ? true : false),
       capFlooMatrixNotInitialized_(true),
       switchStrike_(switchStrike),

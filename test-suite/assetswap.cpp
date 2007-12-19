@@ -116,7 +116,7 @@ QL_END_TEST_LOCALS(AssetSwapTest)
 void AssetSwapTest::testImpliedValue() {
 
     BOOST_MESSAGE("Testing bond implied value against asset-swap fair price"
-                  " with spread=0...");
+                  " with null spread...");
 
     CommonVars vars;
 
@@ -918,9 +918,8 @@ void AssetSwapTest::testMarketASWSpread() {
 
 void AssetSwapTest::testZSpread() {
 
-    BOOST_MESSAGE(
-    "Testing clean and dirty price with Zspread=0 return bond's theo prices..."
-    );
+    BOOST_MESSAGE("Testing clean and dirty price with null Z-spread "
+                  "against theoretical prices...");
 
     CommonVars vars;
 
@@ -1360,7 +1359,7 @@ void AssetSwapTest::testZSpread() {
 void AssetSwapTest::testGenericBondImplied() {
 
     BOOST_MESSAGE("Testing generic bond implied value against"
-                  " assetswap fair price with spread=0...");
+                  " asset-swap fair price with null spread...");
 
     CommonVars vars;
 
@@ -1744,8 +1743,8 @@ void AssetSwapTest::testGenericBondImplied() {
 
 void AssetSwapTest::testMASWWithGenericBond() {
 
-    BOOST_MESSAGE("Testing market asset swap vs par asset swap "
-        "with generic bond...");
+    BOOST_MESSAGE("Testing market asset swap against par asset swap "
+                  "with generic bond...");
 
     CommonVars vars;
 
@@ -2233,8 +2232,8 @@ void AssetSwapTest::testMASWWithGenericBond() {
 
 void AssetSwapTest::testZSpreadWithGenericBond() {
 
-    BOOST_MESSAGE("Testing clean and dirty price with Zspread=0 return "
-                  "generic bond's theo prices...");
+    BOOST_MESSAGE("Testing clean and dirty price with null Z-spread "
+                  "against theoretical prices...");
 
     CommonVars vars;
 
@@ -2721,10 +2720,8 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
 
 void AssetSwapTest::testSpecializedBondVsGenericBond() {
 
-    BOOST_MESSAGE(
-    "Testing theo clean and dirty prices for specialized bond are equal to"
-    " theo clean and dirty prices for equivalent generic bond..."
-        );
+    BOOST_MESSAGE("Testing clean and dirty prices for specialized bond against"
+                  " equivalent generic bond...");
 
     CommonVars vars;
 
@@ -3284,10 +3281,8 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
 
 void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
 
-    BOOST_MESSAGE(
-    "Testing assetswap prices and spreads for specialized bond are equal to"
-    " theo clean, dirty prices and asw spreads for equivalent generic bond..."
-        );
+    BOOST_MESSAGE("Testing asset-swap prices and spreads for specialized bond"
+                  " against equivalent generic bond...");
 
     CommonVars vars;
 

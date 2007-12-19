@@ -22,11 +22,14 @@
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/termstructures/yield/bondhelpers.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/ibor/usdlibor.hpp>
+#include <ql/indexes/bmaindex.hpp>
 #include <ql/indexes/indexmanager.hpp>
 #include <ql/instruments/forwardrateagreement.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
@@ -37,6 +40,7 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <iomanip>
 
 using namespace QuantLib;
@@ -102,6 +106,20 @@ BondDatum bondData[] = {
     { 10, Years, 11, Semiannual, 3.75, 104.070 }
 };
 
+Datum bmaData[] = {
+    {  1, Years, 67.56 },
+    {  2, Years, 68.00 },
+    {  3, Years, 68.25 },
+    {  4, Years, 68.50 },
+    {  5, Years, 68.81 },
+    {  7, Years, 69.50 },
+    { 10, Years, 70.44 },
+    { 15, Years, 71.69 },
+    { 20, Years, 72.69 },
+    { 30, Years, 73.81 }
+};
+
+
 // test-global variables
 
 Calendar calendar;
@@ -114,11 +132,14 @@ Natural bondSettlementDays;
 DayCounter bondDayCounter;
 BusinessDayConvention bondConvention;
 Real bondRedemption;
+Frequency bmaFrequency;
+BusinessDayConvention bmaConvention;
+DayCounter bmaDayCounter;
 
-Size deposits, fras, swaps, bonds;
-std::vector<boost::shared_ptr<SimpleQuote> > rates, fraRates, prices;
+Size deposits, fras, swaps, bonds, bmas;
+std::vector<boost::shared_ptr<SimpleQuote> > rates, fraRates, prices, fractions;
 std::vector<boost::shared_ptr<RateHelper> > instruments, fraHelpers,
-                                            bondHelpers;
+                                            bondHelpers, bmaHelpers;
 std::vector<Schedule> schedules;
 boost::shared_ptr<YieldTermStructure> termStructure;
 
@@ -137,16 +158,21 @@ void setup() {
     bondDayCounter = ActualActual();
     bondConvention = Following;
     bondRedemption = 100.0;
+    bmaFrequency = Quarterly;
+    bmaConvention = Following;
+    bmaDayCounter = ActualActual();
 
     deposits = LENGTH(depositData);
     fras = LENGTH(fraData);
     swaps = LENGTH(swapData);
     bonds = LENGTH(bondData);
+    bmas = LENGTH(bmaData);
 
     // market elements
     rates = std::vector<boost::shared_ptr<SimpleQuote> >(deposits+swaps);
     fraRates = std::vector<boost::shared_ptr<SimpleQuote> >(fras);
     prices = std::vector<boost::shared_ptr<SimpleQuote> >(bonds);
+    fractions = std::vector<boost::shared_ptr<SimpleQuote> >(bmas);
     for (Size i=0; i<deposits; i++) {
         rates[i] = boost::shared_ptr<SimpleQuote>(
                                     new SimpleQuote(depositData[i].rate/100));
@@ -163,26 +189,28 @@ void setup() {
         prices[i] = boost::shared_ptr<SimpleQuote>(
                                           new SimpleQuote(bondData[i].price));
     }
+    for (Size i=0; i<bmas; i++) {
+        fractions[i] = boost::shared_ptr<SimpleQuote>(
+                                        new SimpleQuote(bmaData[i].rate/100));
+    }
 
     // rate helpers
-    instruments =
-        std::vector<boost::shared_ptr<RateHelper> >(deposits+swaps);
-    fraHelpers =
-        std::vector<boost::shared_ptr<RateHelper> >(fras);
-    bondHelpers =
-        std::vector<boost::shared_ptr<RateHelper> >(bonds);
+    instruments = std::vector<boost::shared_ptr<RateHelper> >(deposits+swaps);
+    fraHelpers = std::vector<boost::shared_ptr<RateHelper> >(fras);
+    bondHelpers = std::vector<boost::shared_ptr<RateHelper> >(bonds);
     schedules = std::vector<Schedule>(bonds);
+    bmaHelpers = std::vector<boost::shared_ptr<RateHelper> >(bmas);
 
-    boost::shared_ptr<IborIndex> euribor(new Euribor6M);
+    boost::shared_ptr<IborIndex> euribor6m(new Euribor6M);
     for (Size i=0; i<deposits; i++) {
         Handle<Quote> r(rates[i]);
         instruments[i] = boost::shared_ptr<RateHelper>(
               new DepositRateHelper(r, depositData[i].n*depositData[i].units,
                                     settlementDays, calendar,
-                                    euribor->businessDayConvention(),
-                                    euribor->endOfMonth(),
-                                    euribor->fixingDays(),
-                                    euribor->dayCounter()));
+                                    euribor6m->businessDayConvention(),
+                                    euribor6m->endOfMonth(),
+                                    euribor6m->fixingDays(),
+                                    euribor6m->dayCounter()));
     }
     for (Size i=0; i<swaps; i++) {
         Handle<Quote> r(rates[i+deposits]);
@@ -190,8 +218,9 @@ void setup() {
             SwapRateHelper(r, swapData[i].n*swapData[i].units,
                            calendar,
                            fixedLegFrequency, fixedLegConvention,
-                           fixedLegDayCounter, euribor));
+                           fixedLegDayCounter, euribor6m));
     }
+
     Euribor3M euribor3m;
     for (Size i=0; i<fras; i++) {
         Handle<Quote> r(fraRates[i]);
@@ -204,6 +233,7 @@ void setup() {
                                 euribor3m.fixingDays(),
                                 euribor3m.dayCounter()));
     }
+
     for (Size i=0; i<bonds; i++) {
         Handle<Quote> p(prices[i]);
         Date maturity =
@@ -344,7 +374,81 @@ void testCurveConsistency(const T&, const I& interpolator) {
                        << io::rate(expectedRate));
         }
     }
+}
 
+
+template <class T, class I>
+void testBMACurveConsistency(const T&, const I& interpolator) {
+
+    Handle<YieldTermStructure> riskFreeCurve(
+        boost::shared_ptr<YieldTermStructure>(
+                             new FlatForward(settlement, 0.04, Actual360())));
+
+    boost::shared_ptr<BMAIndex> bmaIndex(new BMAIndex);
+    boost::shared_ptr<IborIndex> liborIndex(
+                                        new USDLibor(6*Months,riskFreeCurve));
+    for (Size i=0; i<bmas; ++i) {
+        Handle<Quote> f(fractions[i]);
+        bmaHelpers[i] = boost::shared_ptr<RateHelper>(
+                      new BMASwapRateHelper(f, bmaData[i].n*bmaData[i].units,
+                                            settlementDays, calendar,
+                                            Period(bmaFrequency),
+                                            bmaConvention,
+                                            bmaDayCounter,
+                                            bmaIndex,
+                                            liborIndex));
+    }
+
+    Weekday w = today.weekday();
+    Date lastWednesday = (w >= 4) ? today - (w - 4) : today + (4 - w - 7);
+    Date lastFixing = bmaIndex->fixingCalendar().adjust(lastWednesday);
+    bmaIndex->addFixing(lastFixing, 0.03);
+
+    termStructure = boost::shared_ptr<YieldTermStructure>(
+                          new PiecewiseYieldCurve<T,I>(settlement,bmaHelpers,
+                                                       Actual360(), 1.0e-12,
+                                                       interpolator));
+
+    RelinkableHandle<YieldTermStructure> curveHandle;
+    curveHandle.linkTo(termStructure);
+
+    // check BMA swaps
+    boost::shared_ptr<BMAIndex> bma(new BMAIndex(curveHandle));
+    boost::shared_ptr<IborIndex> libor6m(new USDLibor(6*Months,riskFreeCurve));
+    for (Size i=0; i<bmas; i++) {
+        Period tenor = bmaData[i].n*bmaData[i].units;
+
+        Schedule bmaSchedule = MakeSchedule(settlement, settlement+tenor,
+                                            Period(bmaFrequency),
+                                            bma->fixingCalendar(),
+                                            bmaConvention).backwards();
+        Schedule liborSchedule = MakeSchedule(settlement, settlement+tenor,
+                                              libor6m->tenor(),
+                                              libor6m->fixingCalendar(),
+                                              libor6m->businessDayConvention())
+                                 .endOfMonth(libor6m->endOfMonth())
+                                 .backwards();
+
+
+        BMASwap swap(BMASwap::Payer, 100.0,
+                     liborSchedule, 0.75, 0.0, libor6m, libor6m->dayCounter(),
+                     bmaSchedule, bma, bmaDayCounter);
+        swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                        new DiscountingSwapEngine(libor6m->termStructure())));
+
+        Real expectedFraction = bmaData[i].rate/100,
+             estimatedFraction = swap.fairLiborFraction();
+        Real tolerance = 2.0e-6;
+        Real error = std::fabs(expectedFraction-estimatedFraction);
+        if (error > tolerance) {
+            BOOST_ERROR(bmaData[i].n << " year(s) BMA swap:\n"
+                        << std::setprecision(8)
+                        << "\n estimated libor fraction: " << estimatedFraction
+                        << "\n expected libor fraction:  " << expectedFraction
+                        << "\n error:          " << error
+                        << "\n tolerance:      " << tolerance);
+        }
+    }
 }
 
 QL_END_TEST_LOCALS(PiecewiseYieldCurveTest)
@@ -361,6 +465,7 @@ void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
     setup();
 
     testCurveConsistency(Discount(), LogLinear());
+    testBMACurveConsistency(Discount(), LogLinear());
 }
 
 void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
@@ -374,6 +479,7 @@ void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
     setup();
 
     testCurveConsistency(Discount(), Linear());
+    testBMACurveConsistency(Discount(), Linear());
 }
 
 void PiecewiseYieldCurveTest::testLogLinearZeroConsistency() {
@@ -387,6 +493,7 @@ void PiecewiseYieldCurveTest::testLogLinearZeroConsistency() {
     setup();
 
     testCurveConsistency(ZeroYield(), LogLinear());
+    testBMACurveConsistency(ZeroYield(), LogLinear());
 }
 
 void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
@@ -400,6 +507,7 @@ void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
     setup();
 
     testCurveConsistency(ZeroYield(), Linear());
+    testBMACurveConsistency(ZeroYield(), Linear());
 }
 
 void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
@@ -412,8 +520,14 @@ void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
 
     setup();
 
-    testCurveConsistency(ZeroYield(),
-                         CubicSpline(CubicSplineInterpolation::SecondDerivative,0.0,
+    testCurveConsistency(
+                   ZeroYield(),
+                   CubicSpline(CubicSplineInterpolation::SecondDerivative,0.0,
+                               CubicSplineInterpolation::SecondDerivative,0.0,
+                               true));
+    testBMACurveConsistency(
+                   ZeroYield(),
+                   CubicSpline(CubicSplineInterpolation::SecondDerivative,0.0,
                                CubicSplineInterpolation::SecondDerivative,0.0,
                                true));
 }
@@ -429,6 +543,7 @@ void PiecewiseYieldCurveTest::testLinearForwardConsistency() {
     setup();
 
     testCurveConsistency(ForwardRate(), Linear());
+    testBMACurveConsistency(ForwardRate(), Linear());
 }
 
 void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
@@ -442,6 +557,7 @@ void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
     setup();
 
     testCurveConsistency(ForwardRate(), BackwardFlat());
+    testBMACurveConsistency(ForwardRate(), BackwardFlat());
 }
 
 void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
@@ -454,8 +570,14 @@ void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
 
     setup();
 
-    testCurveConsistency(ForwardRate(),
-                         CubicSpline(CubicSplineInterpolation::SecondDerivative,0.0,
+    testCurveConsistency(
+                   ForwardRate(),
+                   CubicSpline(CubicSplineInterpolation::SecondDerivative,0.0,
+                               CubicSplineInterpolation::SecondDerivative,0.0,
+                               true));
+    testBMACurveConsistency(
+                   ForwardRate(),
+                   CubicSpline(CubicSplineInterpolation::SecondDerivative,0.0,
                                CubicSplineInterpolation::SecondDerivative,0.0,
                                true));
 }

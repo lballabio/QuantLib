@@ -34,6 +34,10 @@ namespace QuantLib {
                 return date + (4 - w - 7) * Days;
         }
 
+        Date nextWednesday(const Date& date) {
+            return previousWednesday(date+7);
+        }
+
     }
 
 
@@ -43,7 +47,7 @@ namespace QuantLib {
                         1,
                         USDCurrency(),
                         UnitedStates(UnitedStates::NYSE),
-                        ActualActual(ActualActual::ISMA)),
+                        ActualActual(ActualActual::ISDA)),
       termStructure_(h) {
         registerWith (h);
     }
@@ -76,7 +80,7 @@ namespace QuantLib {
 
     Schedule BMAIndex::fixingSchedule(const Date& start, const Date& end) {
         return MakeSchedule(previousWednesday(start),
-                            previousWednesday(end),
+                            nextWednesday(end),
                             1 * Weeks,
                             fixingCalendar_, Following).forwards();
     }

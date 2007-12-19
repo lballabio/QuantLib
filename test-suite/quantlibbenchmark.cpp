@@ -62,11 +62,9 @@
    for example) also #define _MSC_VER
 */
 #ifdef BOOST_MSVC
-#  define BOOST_LIB_DIAGNOSTIC
 #  define BOOST_LIB_NAME boost_unit_test_framework
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME
-#  undef BOOST_LIB_DIAGNOSTIC
 #endif
 
 #include "americanoption.hpp"

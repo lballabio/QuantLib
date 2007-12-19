@@ -171,6 +171,19 @@
 // see the corresponding pragmas in the 7.1 section
 #  pragma warning(disable: 4267)
 #  pragma warning(disable: 4224)
+//#elif (_MSC_VER == 1500)
+//// move inside here configs specific to VC++ 9 (2008)
+//#  ifndef _SCL_SECURE_NO_DEPRECATE
+//#    define _SCL_SECURE_NO_DEPRECATE
+//#  endif
+//#  ifndef _CRT_SECURE_NO_DEPRECATE
+//#    define _CRT_SECURE_NO_DEPRECATE
+//#  endif
+//#  define QL_PATCH_MSVC90
+//#  define QL_WORKING_BOOST_STREAMS
+//// see the corresponding pragmas in the 7.1 section
+//#  pragma warning(disable: 4267)
+//#  pragma warning(disable: 4224)
 #else
 #  error "unknown Microsoft compiler"
 #endif

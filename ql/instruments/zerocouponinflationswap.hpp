@@ -29,10 +29,15 @@
 namespace QuantLib {
 
     //! Zero-coupon inflation-indexed swap
-    /*! A ZCIIS pays a fixed rate and receives the inflation rate at
-        date \f$ d2 \f$ relative to inflation at date \f$ d1 \f$,
-        where \f$ d1 \f$ is a lag period before start date and \f$ d2 \f$
-        is a lag period before maturity.
+    /*! Quoted as a fixed rate \f$ K \f$.  At start:
+        \f[
+        P_n(0,T) N [(1+K)^{T}-1] =
+        P_n(0,T) N \left[ \frac{I(T)}{I(0)} -1 \right]
+        \f]
+        where \f$ T \f$ is the maturity time, \f$ P_n(0,t) \f$ is the
+        nominal discount factor at time \f$ t \f$, \f$ N \f$ is the
+        notional, and \f$ I(t) \f$ is the inflation index value at
+        time \f$ t \f$.
     */
     class ZeroCouponInflationSwap : public InflationSwap {
       public:
@@ -54,11 +59,13 @@ namespace QuantLib {
 
         //! \name InflationSwap interface
         //@{
+        //! the rate \f$ \tilde{K} \f$ such that NPV = 0.
         Rate fairRate() const;
         //@}
 
         //! \name Inspectors
         //@{
+        //! \f$ K \f$ in the above formula.
         Rate fixedRate() const;
         //@}
 

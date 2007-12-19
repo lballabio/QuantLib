@@ -24,14 +24,14 @@
 #ifndef quantlib_replication_hpp
 #define quantlib_replication_hpp
 
-#include <ostream>
 #include <ql/types.hpp>
+#include <ostream>
 
 namespace QuantLib {
 
     //! Digital option replication strategy
     /*! Specification of replication strategies used to price
-        the embedded digital option in a digital coupon.        
+        the embedded digital option in a digital coupon.
     */
     struct Replication {
         enum Type { Sub, Central, Super };
@@ -43,7 +43,7 @@ namespace QuantLib {
 
     class DigitalReplication {
     public:
-        DigitalReplication(Replication::Type t = Replication::Central, 
+        DigitalReplication(Replication::Type t = Replication::Central,
                            Real gap = 1e-4);
         Replication::Type replicationType() const { return replicationType_;};
         Real gap() const { return gap_;};

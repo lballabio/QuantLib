@@ -47,7 +47,7 @@ namespace QuantLib {
         <li>Corpus Christi</li>
         </ul>
 
-        Holidays for the stock exchange
+        Holidays for the Bovespa stock exchange
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
@@ -60,11 +60,12 @@ namespace QuantLib {
         <li>Nossa Sra. Aparecida Day, October 12th</li>
         <li>All Souls Day, November 2nd</li>
         <li>Republic Day, November 15th</li>
-        <li>Black Consciousness Day, November 20th (since 2004)</li>
+        <li>Black Consciousness Day, November 20th (since 2007)</li>
         <li>Christmas, December 25th</li>
         <li>Passion of Christ</li>
         <li>Carnival</li>
         <li>Corpus Christi</li>
+        <li>the last business day of the year</li>
         </ul>
 
         \ingroup calendars

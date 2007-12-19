@@ -54,7 +54,7 @@ namespace QuantLib {
                                 index->businessDayConvention(),
                                 index->businessDayConvention(),
                                 DateGeneration::Backward,
-                                index->endOfMonth());
+                                false);
         }
 
         // what if this date is not a business day??
@@ -249,7 +249,7 @@ namespace QuantLib {
     }
 
     void AssetSwap::fetchResults(const PricingEngine::results* r) const {
-        Instrument::fetchResults(r);
+        Swap::fetchResults(r);
         const AssetSwap::results* results =
             dynamic_cast<const AssetSwap::results*>(r);
         if (results) {
@@ -289,7 +289,7 @@ namespace QuantLib {
     }
 
     void AssetSwap::results::reset() {
-        Instrument::results::reset();
+        Swap::results::reset();
         fairSpread = Null<Spread>();
         fairPrice = Null<Real>();
     }

@@ -114,8 +114,8 @@ namespace
         Size N = 1024;
         Size numberBatches = 32;
 
-        BOOST_MESSAGE("Testing randomized lattice sequences, " << nameString << " up to "
-            "dimension " << maxDim << "...");
+        BOOST_MESSAGE("Testing randomized lattice sequences (" << nameString
+                      << ") up to dimension " << maxDim << "...");
 
         std::vector<Real> z;
 
@@ -785,6 +785,9 @@ class SobolFactory {
             break;
           case SobolRsg::Kuo2:
             prefix = "Kuo2";
+            break;
+          case SobolRsg::Kuo3:
+            prefix = "Kuo3";
             break;
           default:
             QL_FAIL("unknown direction integers");

@@ -124,19 +124,21 @@ namespace QuantLib {
         BigInteger wd = 0;
         if (from != to) {
             if (from < to) {
-                Date d = from;
-                while (d <= to) {
+                // the last one is treated separately to avoid
+                // incrementing Date::maxDate()
+                for (Date d = from; d < to; ++d) {
                     if (isBusinessDay(d))
                         ++wd;
-                    ++d;
                 }
+                if (isBusinessDay(to))
+                    ++wd;
             } else if (from > to) {
-                Date d = to;
-                while (d <= from) {
+                for (Date d = to; d < from; ++d) {
                     if (isBusinessDay(d))
                         ++wd;
-                    ++d;
                 }
+                if (isBusinessDay(from))
+                    ++wd;
             }
 
             if (isBusinessDay(from) && !includeFirst)

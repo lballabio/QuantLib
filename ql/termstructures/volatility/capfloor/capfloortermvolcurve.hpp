@@ -31,6 +31,7 @@
 #include <ql/math/interpolation.hpp>
 #include <ql/quote.hpp>
 #include <ql/patterns/lazyobject.hpp>
+#include <boost/noncopyable.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -40,14 +41,10 @@ namespace QuantLib {
         cap by interpolating a volatility vector whose elements are
         the market volatilities of a set of caps/floors with given
         length.
-
-        \todo either add correct copy behavior or inhibit copy. Right
-              now, a copied instance would end up with its own copy of
-              the length vector but an interpolation pointing to the
-              original ones.
     */
     class CapFloorTermVolCurve : public CapFloorTermVolatilityStructure,
-                                  public LazyObject  {
+                                 public LazyObject,
+                                 public boost::noncopyable {
       public:
         //! floating reference date, floating market data
         CapFloorTermVolCurve(Natural settlementDays,

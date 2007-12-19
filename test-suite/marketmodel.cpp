@@ -1091,7 +1091,7 @@ void MarketModelTest::testAllMultiStepProducts() {
 
 void MarketModelTest::testPeriodAdapter() {
 
-    BOOST_MESSAGE("Testing period adaption routines in LIBOR market model ");
+    BOOST_MESSAGE("Testing period-adaptation routines in LIBOR market model ");
 
     std::string testDescription = "test period adapter ";
 

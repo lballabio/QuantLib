@@ -26,15 +26,16 @@
 #define quantlib_eurliborswapfixa_hpp
 
 #include <ql/indexes/swapindex.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
 
     //! %EurliborSwapFixA index base class
     /*! EurliborSwapFixA indexes fixed by ISDA in cooperation with
-        Reuters and Intercapital Brokers at 10:00 AM London. 
+        Reuters and Intercapital Brokers at 10:00 AM London.
         Reuters page ISDAFIX2 or EURSFIXLA=.
         Further info can be found at: <http://www.isda.org/fix/isdafix.html>.
-        
+
         \warning The 1Y swap's floating leg is based on Euribor3M; the
                  floating legs of longer swaps are based on Euribor6M
     */

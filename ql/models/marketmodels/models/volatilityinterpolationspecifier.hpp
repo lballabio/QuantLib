@@ -17,7 +17,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! abstract base class 
+/*! abstract base class
 implementation specifies how to decide volatility structure for additional
 synthetic rates which are interleaved
 
@@ -29,8 +29,8 @@ synthetic rates which are interleaved
 
 
 #include <ql/models/marketmodels/models/piecewiseconstantvariance.hpp>
-#include <boost/shared_ptr.hpp>
 #include <ql/types.hpp>
+#include <boost/shared_ptr.hpp>
 #include <vector>
 
 

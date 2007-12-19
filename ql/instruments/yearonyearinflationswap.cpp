@@ -22,7 +22,6 @@
 
 namespace QuantLib {
 
-
     YearOnYearInflationSwap::YearOnYearInflationSwap(
                    const Date& start,
                    const Date& maturity,
@@ -95,8 +94,7 @@ namespace QuantLib {
     void YearOnYearInflationSwap::performCalculations() const {
         // Rates for instruments always look at earlier values paid later.
         Real nom = 0.0;
-        Real inf1 = 0.0;
-        Real inf2 = 0.0;
+        Real infl = 0.0;
         Real frac;
 
         Date referenceDate = yieldTS_->referenceDate();
@@ -116,17 +114,15 @@ namespace QuantLib {
                 }
 
                 nom += frac * yieldTS_->discount(couponPayDate);
-                inf1 += frac * inflationTS_->yoyRate(
-                             calendar().adjust(couponPayDate - lag(), bdc_));
-                inf2 += frac * inflationTS_->yoyRate(
+                infl += frac * inflationTS_->yoyRate(
                              calendar().adjust(couponPayDate - lag(), bdc_)) *
                     yieldTS_->discount(couponPayDate);
             }
         }
 
-        NPV_ = nom*fixedRate_ - inf1;
+        NPV_ = nom*fixedRate_ - infl;
         errorEstimate_ = 0.0;
-        fairRate_ = inf2/nom;
+        fairRate_ = infl/nom;
     }
 
 }

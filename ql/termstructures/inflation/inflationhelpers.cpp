@@ -125,13 +125,17 @@ namespace QuantLib {
                                                  y->nominalTermStructure(),
                                                  inflationTS));
         // now known
-        earliestDate_ = yyiis_->paymentDates()[0] - lag_;
+        earliestDate_ = yyiis_->paymentDates().front() - lag_;
         // Note that this can imply inflation _before_ the reference
         // date. This is correct, given that inflation is only
         // available with a lag.  However, maturity is always after
         // the reference date so the discount factor and NPV will
         // always be sensible.
-        latestDate_ = maturity_ - lag_;
+        Date lastPayment = yyiis_->paymentDates().back(),
+             lastFixing = calendar_.adjust(lastPayment - lag_,
+                                           paymentConvention_);
+        
+        latestDate_ = std::max(maturity_ - lag_, lastFixing);
     }
 
 }

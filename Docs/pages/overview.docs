@@ -49,11 +49,6 @@
     - Day count conventions: Actual360, Actual365Fixed, ActualActual (Bond,
       ISDA, AFB), 30/360 (US, European, Italian), 1/1.
 
-    To do:
-    - Differentiate more calendars depending on exchange besides country.
-    - enable business day calculation in addition to calendar days calculation
-      in DayCounter::daycount(). See DayTypeEnum in FpML.
-
 
 
 
@@ -94,27 +89,10 @@
 	- Schur decomposition.
 	- Spectral rank-reduced square root, spectral pseudo-square root.
 
-    To do:
-    - Periodic and Lagrange end conditions for cubic spline.
-    - Implement convexity-preserving filter for cubic spline.
-    - Log-linear interpolator primitive, first and second derivative functions.
-    - Revise end conditions for bicubic and N-dimensional spline.
-    - Trivariate and multi-variate distribution, see Genz, A. (1992)
-      `Numerical Computation of the Multivariate Normal Probabilities',
-      J. Comput. Graph. Stat. 1, pp. 141-150.
-    - Hypersphere decomposition, Higham algorithm for pseudo-square root.
-    - interface with GALib (genetic algorithm)
-    - Add COOOL algorithms
-    - Histogram class
-
 
     <strong>1-dimensional solvers</strong>
     - Bisection, false position, Newton, bounded Newton, Ridder, secant,
       Brent.
-
-    To do:
-    - Clean up the interface so that it is clear whether the accuracy is
-      specified for x or f(x).
 
 
 
@@ -158,23 +136,6 @@
       \f$ D_{-} \f$, \f$ D_{+}D_{-} \f$.
     - Shout, Bermudan and American exercises.
 
-    To do:
-    - Richardson extrapolation
-    - Introduce variable theta schemes.
-    - Introduce multi time-level schemes.
-    - Enable different solvers (SOR, etc.)
-    - Extend to time-dependant parameters.
-    - Extend to local volatility.
-    - Two-dimension schemes.
-    - Improve boundary conditions.
-    - Use DiscretisedAsset instead of array?
-    - Use TimeGrid
-    - Use assetGrid
-    - Handle barrier specification
-    - Handle variable asset step size
-    - Check (and improve) vega, rho, dividendRho greeks, solving
-      their own equations
-
 
 
 
@@ -184,13 +145,6 @@
     - Trinomial (interest-rate) tree.
     - Discretized asset.
     - Richardson extrapolation
-
-    To do:
-    - Merge finite differences with the lattice framework. Use same rollback
-      scheme.
-    - Trinomial trees
-    - Implied trinomial trees
-    - Calculate binomial tree greeks
 
 
 
@@ -203,18 +157,6 @@
       samples.
     - Antithetic variance-reduction technique.
     - Control variate technique.
-
-    To do:
-    - Greeks calculation.
-    - Allow easier selection between Incremental/BrownianBridge path
-      generation.
-    - Review Monte Carlo engine for american options.
-    - Review multi-factor Monte Carlo simulation.
-    - Predictor-corrector scheme.
-    - Add Milstein scheme.
-    - Add Martingale control variate.
-    - Batch samples as N=n_batches*batch_size, and exploit it for randomized
-      low discrepancy sequences (RQMC)
 
 
 
@@ -254,18 +196,6 @@
       tree based engine.
     - Swaption pricing engines: analytic Black model, analytic affine models
       (Jamshidian), tree based engine.
-
-    To do:
-    - Add the trigger level Touch/NoTouch specification for American-style
-      digitals.
-    - More vanilla engines: Roll-Geske-Whaley American Call, Geske-Johnson
-      American Put, finite differences, Edgeworth expansion binomial tree,
-      etc.
-    - Merge NesQuant SJD engine (http://www.nielses.dk/quantlib/nesquant/)
-    - Continuous geometric average-strike.
-    - Ensure all path-dependent options allow for evaluation with collected
-      past observations.
-    - Define dividendRho for discrete dividends.
 
 
 
@@ -320,10 +250,6 @@
     - Spreaded term structures.
     - Forward-date implied term structure.
 
-    To do:
-    - Future convexity adjustment
-    - End of year effect
-
 
 
     <strong>Volatility</strong>
@@ -336,9 +262,6 @@
     - Interface for equity local volatility term structures: constant,
       time-dependant curve, time-asset level surface (Gatheral's formula).
 
-      To do:
-    - Fix implementation of Gatheral's formula for local volatility.
-
 
 
 
@@ -350,27 +273,16 @@
 
 
 
-    <strong>Credit derivatives</strong>
-
-    To do:
-    - everything.
-
-
-
     <strong>Test suite</strong>
 
     Implemented by means of the Boost unit-test framework.
-    More than 270 automated tests.
+    More than 300 automated tests.
     \htmlonly
     A semi-automatically-generated list is available <a href="test.html">here</a>.
     \endhtmlonly
     \latexonly
     A semi-automatically-generated list is available in chapter~\ref{test}.
     \endlatexonly
-
-	To do:
-    - Add covariance/correlation test for SequenceStatistics.
-	- Increase coverage.
 
 
 
@@ -393,18 +305,12 @@
     - Null types.
     - User-configurable flag to disable usage of deprecated classes.
 
-    To do:
-    - Implement currency as per OMG definition
-
 
 
 
     <strong>Documentation</strong>
     - Documentation automatically generated with Doxygen (html, PDF, ps,
       WinHelp, man pages)
-
-    To do:
-    - Add a "Getting started" page to the site
 
 
 */

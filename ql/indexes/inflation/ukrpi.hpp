@@ -42,7 +42,7 @@ namespace QuantLib {
                              revised,
                              interpolated,
                              frequency,
-                             Period(3, Months),
+                             Period(2, Months),
                              GBPCurrency(),
                              ts) {}
     };
@@ -62,7 +62,7 @@ namespace QuantLib {
                             interpolated,
                             false,
                             frequency,
-                            Period(3, Months),
+                            Period(2, Months),
                             GBPCurrency(),
                             ts) {}
     };
@@ -82,7 +82,7 @@ namespace QuantLib {
                             interpolated,
                             true,
                             frequency,
-                            Period(3, Months),
+                            Period(2, Months),
                             GBPCurrency(),
                             ts) {}
     };

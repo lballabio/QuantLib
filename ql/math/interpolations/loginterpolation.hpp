@@ -89,9 +89,6 @@ namespace QuantLib {
     };
 
     //! %log-cubic interpolation between discrete points
-    /*! \todo - merge with LogLinearInterpolation
-              - implement primitive, derivative, and secondDerivative functions.
-    */
     class LogCubicInterpolation : public Interpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */

@@ -724,7 +724,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
 
 void MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder() {
 
-    BOOST_MESSAGE("Testing SphereCylinder optimization...");
+    BOOST_MESSAGE("Testing sphere-cylinder optimization...");
 
     {
         Real R =1.0;

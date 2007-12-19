@@ -52,9 +52,6 @@ namespace QuantLib {
     std::ostream& operator<<(std::ostream&, Option::Type);
 
     //! basic %option %arguments
-    /*! \todo how to handle strike-less option (asian average strike,
-          forward, etc.)?
-    */
     class Option::arguments : public virtual PricingEngine::arguments {
       public:
         arguments() {}

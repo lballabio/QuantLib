@@ -26,6 +26,7 @@
 
 #include <ql/index.hpp>
 #include <ql/indexes/region.hpp>
+#include <ql/termstructures/inflationtermstructure.hpp>
 #include <ql/currency.hpp>
 #include <ql/handle.hpp>
 

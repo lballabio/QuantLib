@@ -17,31 +17,29 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
-
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
-#include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp> 
-#include <ql/models/marketmodels/models/piecewiseconstantvariance.hpp> 
+#include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
+#include <ql/models/marketmodels/models/piecewiseconstantvariance.hpp>
 
 namespace QuantLib {
 
-    Disposable<std::vector<Volatility> > rateVolDifferences(
+    std::vector<Volatility> rateVolDifferences(
                                            const MarketModel& marketModel1,
                                            const MarketModel& marketModel2) {
         QL_ENSURE(marketModel1.initialRates() == marketModel2.initialRates(),
                   "initialRates do not match");
-        const EvolutionDescription& evolutionDescription1 
+        const EvolutionDescription& evolutionDescription1
                                            = marketModel1.evolution();
-        const EvolutionDescription& evolutionDescription2 
+        const EvolutionDescription& evolutionDescription2
                                            = marketModel2.evolution();
         QL_ENSURE(evolutionDescription1.evolutionTimes()
                   == evolutionDescription2.evolutionTimes(),
                   "Evolution times do not match");
-        
-        const Matrix& totalCovariance1 
+
+        const Matrix& totalCovariance1
             = marketModel1.totalCovariance(marketModel1.numberOfSteps()-1);
-        const Matrix& totalCovariance2 
+        const Matrix& totalCovariance2
             = marketModel2.totalCovariance(marketModel2.numberOfSteps()-1);
         const std::vector<Time>& maturities =
             evolutionDescription1.evolutionTimes();
@@ -52,11 +50,11 @@ namespace QuantLib {
             result[i] = std::sqrt(diff/maturities[i]);
         }
         return result;
-    }       
+    }
 
-    Disposable<std::vector<Spread> > rateInstVolDifferences(
+    std::vector<Spread> rateInstVolDifferences(
                                            const MarketModel& marketModel1,
-                                           const MarketModel& marketModel2, 
+                                           const MarketModel& marketModel2,
                                            Size index) {
         QL_ENSURE(marketModel1.initialRates() == marketModel2.initialRates(),
                   "initialRates do not match");
@@ -67,10 +65,10 @@ namespace QuantLib {
         QL_ENSURE(evolutionDescription1.evolutionTimes()
                   == evolutionDescription2.evolutionTimes(),
                   "Evolution times do not match");
-        QL_ENSURE(index<evolutionDescription1.numberOfSteps(), 
+        QL_ENSURE(index<evolutionDescription1.numberOfSteps(),
             "the index given is greater than the number of steps");
 
-        const std::vector<Time>& evolutionTimes 
+        const std::vector<Time>& evolutionTimes
             = evolutionDescription1.evolutionTimes();
         std::vector<Spread> result(evolutionTimes.size());
 
@@ -87,11 +85,11 @@ namespace QuantLib {
         return result;
     }
 
-    Disposable<std::vector<Matrix> > coterminalSwapPseudoRoots(
+    std::vector<Matrix> coterminalSwapPseudoRoots(
         const PiecewiseConstantCorrelation& piecewiseConstantCorrelation,
-        const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >& 
-                                        piecewiseConstantVariances) {
-            QL_ENSURE(piecewiseConstantCorrelation.times() 
+        const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >&
+                                                 piecewiseConstantVariances) {
+            QL_ENSURE(piecewiseConstantCorrelation.times()
                 == piecewiseConstantVariances.front()->rateTimes(),
                 "correlations and volatilities intertave");
             std::vector<Matrix> peudoRoots;
@@ -106,10 +104,10 @@ namespace QuantLib {
                     Real volatility
                       = piecewiseConstantVariances[j]->volatility(i)*sqrtTau;
                     std::transform(correlations.row_begin(j),
-                                   correlations.row_end(j), 
+                                   correlations.row_end(j),
                                    pseudoRoot.row_begin(j),
                                    std::bind2nd(std::multiplies<Real>(),
-                                                            volatility));   
+                                                            volatility));
                 }
                 peudoRoots.push_back(pseudoRoot);
             }

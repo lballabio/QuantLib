@@ -5694,12 +5694,6 @@
 						RelativePath=".\ql\termstructures\volatility\optionlet\capletvariancecurve.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatility\optionlet\capletvolatilitiesstructures.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatility\optionlet\capletvolatilitiesstructures.hpp">
-					</File>
-					<File
 						RelativePath=".\ql\termstructures\volatility\optionlet\constantoptionletvol.cpp">
 					</File>
 					<File

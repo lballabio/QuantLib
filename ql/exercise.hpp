@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -82,9 +82,6 @@ namespace QuantLib {
 
     //! Bermudan exercise
     /*! A Bermudan option can only be exercised at a set of fixed dates.
-
-        \todo it would be nice to have a way for making a Bermudan with
-              one exercise date equivalent to an European
     */
     class BermudanExercise : public EarlyExercise {
       public:

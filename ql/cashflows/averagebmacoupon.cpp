@@ -26,6 +26,8 @@ namespace QuantLib {
 
     namespace {
 
+        Integer bmaCutoffDays = 0; // to be verified
+
         class AverageBMACouponPricer : public FloatingRateCouponPricer {
           public:
             void initialize(const FloatingRateCoupon& coupon) {
@@ -37,26 +39,42 @@ namespace QuantLib {
                 const boost::shared_ptr<InterestRateIndex>& index =
                     coupon_->index();
 
-                Natural cutoffDays = 1; // to be verified
+                Natural cutoffDays = 0; // to be verified
                 Date startDate = coupon_->accrualStartDate() - cutoffDays,
-                     endDate = coupon_->accrualEndDate() - cutoffDays;
+                     endDate = coupon_->accrualEndDate() - cutoffDays,
+                     d1 = startDate,
+                     d2 = startDate;
+
+                QL_REQUIRE (fixingDates.size() > 0, "fixing date list empty");
+                QL_REQUIRE (index->valueDate(fixingDates.front()) <= startDate,
+                            "first fixing date valid after period start");
+                QL_REQUIRE (index->valueDate(fixingDates.back()) >= endDate,
+                            "last fixing date valid before period end");
 
                 Rate avgBMA = 0.0;
+                Integer days = 0;
                 for (Size i=0; i<fixingDates.size() - 1; ++i) {
                     Date valueDate = index->valueDate(fixingDates[i]);
                     Date nextValueDate = index->valueDate(fixingDates[i+1]);
 
-                    if (valueDate > endDate)
+                    if (fixingDates[i] >= endDate || valueDate >= endDate)
                         break;
-                    if (nextValueDate <= startDate)
+                    if (fixingDates[i+1] < startDate
+                        || nextValueDate <= startDate)
                         continue;
 
-                    Date d1 = std::max(valueDate, startDate);
-                    Date d2 = std::min(nextValueDate, endDate);
+                    d2 = std::min(nextValueDate, endDate);
 
                     avgBMA += index->fixing(fixingDates[i]) * (d2 - d1);
+
+                    days += d2 - d1;
+                    d1 = d2;
                 }
                 avgBMA /= (endDate - startDate);
+
+                QL_ENSURE(days == endDate - startDate,
+                          "averaging days " << days << " differ from "
+                          "interest days " << (endDate - startDate));
 
                 return coupon_->gearing()*avgBMA + coupon_->spread();
             }
@@ -95,7 +113,12 @@ namespace QuantLib {
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          index->fixingDays(), index, gearing, spread,
                          refPeriodStart, refPeriodEnd, dayCounter, false),
-      fixingSchedule_(index->fixingSchedule(startDate,endDate)) {
+      fixingSchedule_(index->fixingSchedule(
+          index->fixingCalendar().advance(
+                           startDate,
+                           -(Integer(index->fixingDays())+bmaCutoffDays)*Days,
+                           Preceding),
+          endDate)) {
         setPricer(boost::shared_ptr<FloatingRateCouponPricer>(
                                                  new AverageBMACouponPricer));
     }
@@ -137,8 +160,7 @@ namespace QuantLib {
 
     AverageBMALeg::AverageBMALeg(const Schedule& schedule,
                                  const boost::shared_ptr<BMAIndex>& index)
-    : schedule_(schedule), index_(index),
-      paymentAdjustment_(Following) {}
+    : schedule_(schedule), index_(index), paymentAdjustment_(Following) {}
 
     AverageBMALeg& AverageBMALeg::withNotionals(Real notional) {
         notionals_ = std::vector<Real>(1,notional);

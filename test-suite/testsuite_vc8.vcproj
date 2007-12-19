@@ -1207,6 +1207,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\inflation.cpp"
+				>
+			</File>
+			<File
 				RelativePath="instruments.cpp"
 				>
 				<FileConfiguration
@@ -2319,6 +2323,10 @@
 			</File>
 			<File
 				RelativePath=".\hybridhestonhullwhiteprocess.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\inflation.hpp"
 				>
 			</File>
 			<File

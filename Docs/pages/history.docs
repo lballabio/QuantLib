@@ -18,7 +18,94 @@
 
 /*! \page history Version history
 
-    <strong>Release 0.8.1 - June 2007</strong>
+    <strong>Release 0.9.0 - December 2007</strong>
+
+    PORTABILITY
+    - Fixes for MSYS and Cygwin build.
+    - Fixes for VC++ build with CLR support enabled.
+    - Dropped MetroWerks CodeWarrior support.
+
+    CALENDARS
+    - Fix for business-days calculation (thanks to Piter Dias.)
+    - Updated Hong Kong's holidays for 2008 and China's for 2007.
+    - Added new holiday to Canadian calendars (thanks to Matt Knox.)
+    - Fixed joint-calendar specification (thanks to Jay Walters.)
+    - Split Canadian calendar into settlement and TSX (thanks to Matt Knox.)
+    - Added Brazilian exchange calendar (thanks to Richard Gomes.)
+    - Fixes for the Brazilian calendars (thanks to Piter Dias.)
+
+    CASH FLOWS
+    - Added average-BMA coupon (thanks to Roland Lichters.)
+    - Fixed-rate coupons can now accept an InterestRate instance (thanks
+      to Piter Dias.)
+    - implemented cash-flow vector builders as helper classes to ease
+      skipping default parameters and single/multiple inputs.
+
+    DATES
+    - Extended date range up to year 2199.
+    - Fixed period comparison (thanks to Chris Kenyon.)
+    - Fixed short date formatting (thanks to Robert Lopez.)
+    - Enhanced period algebra.
+
+    INDEXES
+    - Added BMA index (thanks to Roland Lichters.)
+    - Added inflation indexes (thanks to Chris Kenyon.)
+    - Added historical interest-rate index analysis.
+
+    INSTRUMENTS
+    - Added BMA swaps (thanks to Roland Lichters.)
+    - Added year-on-year and zero-coupon inflation swaps (thanks to
+      Chris Kenyon.)
+    - Fixed stub-date management and backward date generation for
+      fixed-rate bonds (thanks to Toyin Akin.)
+    - Added clean/dirty bond-price calculation from Z-spread.
+
+    LATTICES
+    - Fixed Tsiveriotis-Fernandes tree initialization (thanks to John Maiden.)
+
+    MATH
+    - Added multi-dimensional cost function for least-square problems
+      (thanks to Guillaume Pealat.)
+    - Added histogram class (thanks to Gang Liang.)
+    - Added log-cubic interpolation.
+    - Fixed conjugate-gradient bug.
+    - Fixed nested Levenberg-Marquardt bug.
+
+    PRICING ENGINES
+    - Refactored option engines (the underlying stochastic process is now
+      passed to the pricing engine.)
+    - Refactored bond, cap/floor, swap, and swaption engines (the discount
+      curve is now passed to the pricing engine.)
+    - Added Heston/Hull-White analytic and Monte Carlo engines for
+      vanilla options.
+    - Fixed bug in blackFormulaCashItmProbability in case of non null
+      displacement.
+
+    PROCESSES
+    - Added hybrid Heston/Hull-White process.
+    - Fixed joint-process bug.
+
+    QUOTES
+    - Added forward-swap quote.
+
+    RANDOM NUMBERS
+    - Fixed ordering of primitive polynomials for Sobol/Levitan and
+      Sobol/Levitan/Lemieux methods.
+    - Added JoeKuoD5, JoeKuoD6 and JoeKuoD7 direction integers for
+      Sobol generator.
+    - Added Kuo, Kuo2 and Kuo3 direction integers for Sobol generator.
+    - Added class to generate low-discrepancy sequences using a lattice rule.
+
+    TERM STRUCTURES
+    - Added discount curve fitted on bond prices (thanks to Allen Kuo.)
+    - Added BMA-swap rate helper (thanks to Roland Lichters.)
+    - Made SwapRateHelper forward-start enabled.
+    - Added universal term-structure bootstrapper (thanks to Chris Kenyon.)
+    - Added abstract inflation term structures (thanks to Chris Kenyon.)
+    - Added piecewise inflation curves (thanks to Chris Kenyon.)
+
+
+    <strong>Release 0.8.1 - June 4th, 2007</strong>
 
     PORTABILITY
     - Version 0.8.1 adds support for Boost 1.34 on Linux systems. If
@@ -29,11 +116,11 @@
     <strong>Release 0.8.0 - May 30th, 2007</strong>
 
     PORTABILITY
-    - Version 0.8.0 is the last QuantLib release to support the
+    - Version 0.8.0 is the last %QuantLib release to support the
       Metrowerks CodeWarrior compiler (which was discountinued by
       Metrowerks.)  If you use such compiler and want support to
       continue, you can volunteer for maintaining the necessary
-      patches: contact the QuantLib developers for information.
+      patches: contact the %QuantLib developers for information.
 
     SOURCE TREE
     - Files and folders in the source tree have been reorganized
@@ -92,7 +179,7 @@
       Microsoft Visual C++ 6.0 are no longer supported.  If you use
       one of these compilers and want support to continue, you can
       volunteer for maintaining the necessary patches: contact the
-      QuantLib developers for information.
+      %QuantLib developers for information.
 
     CALENDARS
     - Added 2007 holidays for Hong Kong, India, Singapore, and Taiwan
@@ -131,10 +218,10 @@
     <strong>Release 0.3.14 - November 6th, 2006</strong>
 
     PORTABILITY
-    - Version 0.3.14 is the last QuantLib release to support the Borland
+    - Version 0.3.14 is the last %QuantLib release to support the Borland
       free compiler 5.5 and Microsoft Visual C++ 6.0. If you use one
       of these compilers and want support to continue, you can volunteer
-      for maintaining the necessary patches: contact the QuantLib
+      for maintaining the necessary patches: contact the %QuantLib
       developers for information.
 
     LIBOR MARKET MODEL
@@ -522,10 +609,10 @@
 
     <center>IMPORTANT</center>
 
-    QuantLib now depends on the Boost library (www.boost.org).
+    %QuantLib now depends on the Boost library (www.boost.org).
 
     You will need a working Boost installation in order to compile and
-    use QuantLib. Instructions for installing Boost from sources are
+    use %QuantLib. Instructions for installing Boost from sources are
     available at <http://www.boost.org/more/getting_started.html>.
     Pre-packaged binaries might be available from other sources.
     Google is your friend (or Debian, or Fink...)
@@ -569,7 +656,7 @@
 
     <strong>Release 0.3.6 - April 15th, 2004</strong>
 
-    Bug-fix release for QuantLib 0.3.5. A bug was removed where calls
+    Bug-fix release for %QuantLib 0.3.5. A bug was removed where calls
     to impliedVolatility() would break the state of the option and of
     all options sharing the same stochastic process.
 
@@ -577,12 +664,12 @@
     <strong>Release 0.3.5 - March 31th, 2004</strong>
 
     BOOST SUPPORT
-    - When available, QuantLib 0.3.5 now uses parts of the Boost
+    - When available, %QuantLib 0.3.5 now uses parts of the Boost
       library.  The presence of Boost is detected automatically under
       Unix/Linux systems; on Windows systems, it must be enabled by
       uncommenting the relevant line in ql/userconfig.hpp.
 
-    - In the next QuantLib release, the presence of the Boost library
+    - In the next %QuantLib release, the presence of the Boost library
       will be mandatory.
 
     MONTE CARLO FRAMEWORK
@@ -846,7 +933,7 @@
     - added discrete time forward methods
     - added DiscountCurve (loglinear interpolated) and CompoundForward term
       structures
-    - ForwardSpreadedTermStructure moved under QuantLib::TermStructures
+    - ForwardSpreadedTermStructure moved under %QuantLib::TermStructures
       namespace
 
     FIXED INCOME
@@ -929,8 +1016,8 @@
           algorithm
         - Introduced class representing stochastic processes
         - added isExpired() to Instrument interface
-        - added functions folder and namespace for QuantLibXL and any other
-          function-like interface to QuantLib
+        - added functions folder and namespace for %QuantLibXL and any other
+          function-like interface to %QuantLib
         - Handle is now castable to an Handle of a compatible type
         - added downsideVariance to the Statistics class
         - kustosis() and skewness() now handles the case of stddev == 0 and/or
@@ -1009,7 +1096,7 @@
         - added info on "Win32 OnTheEdgeRelease" and  "Win32 OnTheEdgeDebug"
           MS VC++ configurations
         - additional information on how to create a MS VC++ project based on
-          QuantLib
+          %QuantLib
 
     <strong>Release 0.2.0 - September 18th, 2001</strong>
 

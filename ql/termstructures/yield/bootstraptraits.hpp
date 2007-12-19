@@ -28,6 +28,7 @@
 #include <ql/termstructures/yield/discountcurve.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yield/forwardcurve.hpp>
+#include <ql/termstructures/bootstraphelper.hpp>
 
 namespace QuantLib {
 

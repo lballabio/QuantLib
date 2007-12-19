@@ -5,7 +5,6 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     capletvariancecurve.hpp \
-    capletvolatilitiesstructures.hpp \
     constantoptionletvol.hpp \
     optionletstripper.hpp \
     optionletstripper1.hpp \
@@ -17,7 +16,6 @@ this_include_HEADERS = \
     strippedoptionletbase.hpp
 
 libOptionletVol_la_SOURCES = \
-    capletvolatilitiesstructures.cpp \
     constantoptionletvol.cpp \
     optionletstripper.cpp \
     optionletstripper1.cpp \

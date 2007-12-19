@@ -27,6 +27,7 @@ SEPARATE_MEMBER_PAGES  = NO
 TAB_SIZE               = 4
 ALIASES                = "warning=\xrefitem caveats \"Warning\" \"Caveats\" " \
                          "test=\xrefitem test \"Tests\" \"Test Suite\" " \
+                         "todo=\xrefitem todo \"Possible enhancements\" \"Possible Enhancements\" " \
                          "bug=\xrefitem bug \"Bug\" \"Known Bugs\" "
 OPTIMIZE_OUTPUT_FOR_C  = NO
 OPTIMIZE_OUTPUT_JAVA   = NO

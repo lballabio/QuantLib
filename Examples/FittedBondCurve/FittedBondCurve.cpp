@@ -25,9 +25,7 @@
     results generated from the bootstrap fitting method.
 */
 
-#define BOOST_LIB_DIAGNOSTIC
-#  include <ql/quantlib.hpp>
-#undef BOOST_LIB_DIAGNOSTIC
+#include <ql/quantlib.hpp>
 
 #ifdef BOOST_MSVC
 /* Uncomment the following lines to unmask floating-point
@@ -487,7 +485,7 @@ int main(int, char* []) {
              << endl
              << endl;
 
-        for (Size k=0; k<LENGTH(lengths); k++) {
+        for (Size k=0; k<LENGTH(lengths)-1; k++) {
 
             std::vector<boost::shared_ptr<CashFlow> > leg =
                 instrumentsA[k]->bond()->cashflows();
@@ -507,8 +505,8 @@ int main(int, char* []) {
 
             const Real BpsChange = 5.;
             // dP = -dur*P * dY
-            Real deltaP = - dur*cleanPrice[k]*(BpsChange/10000.);
-            quote[k]->setValue(cleanPrice[k] + deltaP);
+            Real deltaP = - dur*cleanPrice[k+1]*(BpsChange/10000.);
+            quote[k+1]->setValue(cleanPrice[k+1] + deltaP);
         }
 
 
@@ -584,9 +582,4 @@ int main(int, char* []) {
     }
 
 }
-
-
-
-
-
 

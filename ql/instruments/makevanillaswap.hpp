@@ -79,7 +79,7 @@ namespace QuantLib {
 
       private:
         Period forwardStart_, swapTenor_;
-        boost::shared_ptr<IborIndex> index_;
+        boost::shared_ptr<IborIndex> iborIndex_;
         Rate fixedRate_;
 
         Date effectiveDate_;

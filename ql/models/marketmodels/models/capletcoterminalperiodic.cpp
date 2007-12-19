@@ -26,12 +26,12 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
-#include <boost/shared_ptr.hpp>
-#include <vector>
 #include <ql/models/marketmodels/models/pseudorootfacade.hpp>
 #include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
 #include <ql/models/marketmodels/models/fwdperiodadapter.hpp>
 #include <ql/models/marketmodels/models/fwdtocotswapadapter.hpp>
+#include <boost/shared_ptr.hpp>
+#include <vector>
 
 namespace QuantLib
 {

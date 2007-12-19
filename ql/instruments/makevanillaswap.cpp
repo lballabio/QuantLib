@@ -33,7 +33,7 @@ namespace QuantLib {
                                      Rate fixedRate,
                                      const Period& forwardStart)
     : forwardStart_(forwardStart), swapTenor_(swapTenor),
-      index_(index), fixedRate_(fixedRate),
+      iborIndex_(index), fixedRate_(fixedRate),
       effectiveDate_(Date()),
       fixedCalendar_(index->fixingCalendar()),
       floatCalendar_(index->fixingCalendar()),
@@ -49,7 +49,8 @@ namespace QuantLib {
       fixedFirstDate_(Date()), fixedNextToLastDate_(Date()),
       floatFirstDate_(Date()), floatNextToLastDate_(Date()),
       floatSpread_(0.0),
-      fixedDayCount_(Thirty360()), floatDayCount_(index->dayCounter()) {}
+      fixedDayCount_(Thirty360(Thirty360::BondBasis)),
+      floatDayCount_(index->dayCounter()) {}
 
     MakeVanillaSwap::operator VanillaSwap() const {
         boost::shared_ptr<VanillaSwap> swap = *this;
@@ -62,7 +63,7 @@ namespace QuantLib {
         if (effectiveDate_ != Date())
             startDate=effectiveDate_;
         else {
-            Natural fixingDays = index_->fixingDays();
+            Natural fixingDays = iborIndex_->fixingDays();
             Date referenceDate = Settings::instance().evaluationDate();
             Date spotDate = floatCalendar_.advance(referenceDate,
                                                    fixingDays*Days);
@@ -87,9 +88,12 @@ namespace QuantLib {
 
         Rate usedFixedRate = fixedRate_;
         if (fixedRate_ == Null<Rate>()) {
+            QL_REQUIRE(!iborIndex_->termStructure().empty(),
+                       "no forecasting term structure set to " <<
+                       iborIndex_->name());
             VanillaSwap temp(type_, nominal_,
                              fixedSchedule, 0.0, fixedDayCount_,
-                             floatSchedule, index_,
+                             floatSchedule, iborIndex_,
                              floatSpread_, floatDayCount_);
             temp.setPricingEngine(boost::shared_ptr<PricingEngine>(
                        new DiscountingSwapEngine(discountingTermStructure_)));
@@ -99,7 +103,7 @@ namespace QuantLib {
         boost::shared_ptr<VanillaSwap> swap(
                  new VanillaSwap(type_, nominal_,
                                  fixedSchedule, usedFixedRate, fixedDayCount_,
-                                 floatSchedule, index_,
+                                 floatSchedule, iborIndex_,
                                  floatSpread_, floatDayCount_));
         swap->setPricingEngine(boost::shared_ptr<PricingEngine>(
                        new DiscountingSwapEngine(discountingTermStructure_)));

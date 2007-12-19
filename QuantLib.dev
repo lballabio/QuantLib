@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=1181
+UnitCount=1179
 Type=2
 Ver=1
 ObjFiles=
@@ -9608,9 +9608,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit957]
-FileName=ql\termstructures\volatility\optionlet\capletvolatilitiesstructures.cpp
+FileName=ql\types.hpp
 CompileCpp=1
-Folder=termstructures/volatility/optionlet
+Folder=QuantLib
 Compile=1
 Link=1
 Priority=1000
@@ -9618,9 +9618,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit958]
-FileName=ql\termstructures\volatility\optionlet\capletvolatilitiesstructures.hpp
+FileName=ql\userconfig.hpp
 CompileCpp=1
-Folder=termstructures/volatility/optionlet
+Folder=QuantLib
 Compile=1
 Link=1
 Priority=1000
@@ -11829,26 +11829,6 @@ BuildCmd=
 
 [Unit1179]
 FileName=ql\timeseries.hpp
-CompileCpp=1
-Folder=QuantLib
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit1180]
-FileName=ql\types.hpp
-CompileCpp=1
-Folder=QuantLib
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit1181]
-FileName=ql\userconfig.hpp
 CompileCpp=1
 Folder=QuantLib
 Compile=1

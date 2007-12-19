@@ -26,12 +26,10 @@
    for example) also #define _MSC_VER
 */
 #ifdef BOOST_MSVC
-#  define BOOST_LIB_DIAGNOSTIC
 #  include <ql/auto_link.hpp>
 #  define BOOST_LIB_NAME boost_unit_test_framework
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME
-#  undef BOOST_LIB_DIAGNOSTIC
 
 /* uncomment the following lines to unmask floating-point exceptions.
    See http://www.wilmott.com/messageview.cfm?catid=10&threadid=9481
@@ -72,6 +70,7 @@
 #include "gaussianquadratures.hpp"
 #include "hestonmodel.hpp"
 #include "hybridhestonhullwhiteprocess.hpp"
+#include "inflation.hpp"
 #include "instruments.hpp"
 #include "integrals.hpp"
 #include "interestrates.hpp"
@@ -209,6 +208,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(GaussianQuadraturesTest::suite());
     test->add(HestonModelTest::suite());        // FLOATING_POINT_EXCEPTION
     test->add(HybridHestonHullWhiteProcessTest::suite());   // FLOATING_POINT_EXCEPTION
+    test->add(InflationTest::suite());
     test->add(InstrumentTest::suite());
     test->add(IntegralTest::suite());
     test->add(InterestRateTest::suite());

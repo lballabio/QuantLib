@@ -44,7 +44,7 @@ namespace QuantLib {
 
         std::vector<Volatility> vol(nInterpolations_);
         for (Size i=0; i<nInterpolations_; ++i)
-            vol[i] = strikeInterpolations_[i]->operator()(strike);
+            vol[i] = strikeInterpolations_[i]->operator()(strike, true);
 
         const std::vector<Time>& optionletTimes = optionletStripper_->optionletTimes();
         boost::shared_ptr<LinearInterpolation> timeInterpolator(new

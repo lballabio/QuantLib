@@ -65,7 +65,7 @@ QL_END_TEST_LOCALS(DigitalCouponTest)
 
 void DigitalCouponTest::testAssetOrNothing() {
 
-    BOOST_MESSAGE("Testing European asset-or-nothing digital coupon ...");
+    BOOST_MESSAGE("Testing European asset-or-nothing digital coupon...");
 
     /*  Call Payoff = (aL+b)Heaviside(aL+b-X) =  a Max[L-X'] + (b+aX')Heaviside(L-X')
         Value Call = aF N(d1') + bN(d2')
@@ -262,7 +262,8 @@ void DigitalCouponTest::testAssetOrNothing() {
 
 void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
 
-    BOOST_MESSAGE("Testing European deep in-the-money asset-or-nothing digital coupon ...");
+    BOOST_MESSAGE("Testing European deep in-the-money asset-or-nothing "
+                  "digital coupon...");
 
     SavedSettings backup;
 
@@ -383,7 +384,8 @@ void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
 
 void DigitalCouponTest::testAssetOrNothingDeepOutTheMoney() {
 
-    BOOST_MESSAGE("Testing European deep out-the-money asset-or-nothing digital coupon ...");
+    BOOST_MESSAGE("Testing European deep out-the-money asset-or-nothing "
+                  "digital coupon...");
 
     SavedSettings backup;
 
@@ -500,7 +502,7 @@ void DigitalCouponTest::testAssetOrNothingDeepOutTheMoney() {
 
 void DigitalCouponTest::testCashOrNothing() {
 
-    BOOST_MESSAGE("Testing European cash-or-nothing digital coupon ...");
+    BOOST_MESSAGE("Testing European cash-or-nothing digital coupon...");
 
     /*  Call Payoff = R Heaviside(aL+b-X)
         Value Call = R N(d2')
@@ -663,7 +665,8 @@ void DigitalCouponTest::testCashOrNothing() {
 
 void DigitalCouponTest::testCashOrNothingDeepInTheMoney() {
 
-    BOOST_MESSAGE("Testing European deep in-the-money cash-or-nothing digital coupon ...");
+    BOOST_MESSAGE("Testing European deep in-the-money cash-or-nothing "
+                  "digital coupon...");
 
     SavedSettings backup;
 
@@ -781,7 +784,8 @@ void DigitalCouponTest::testCashOrNothingDeepInTheMoney() {
 
 void DigitalCouponTest::testCashOrNothingDeepOutTheMoney() {
 
-    BOOST_MESSAGE("Testing European deep out-the-money cash-or-nothing digital coupon ...");
+    BOOST_MESSAGE("Testing European deep out-the-money cash-or-nothing "
+                  "digital coupon...");
 
     SavedSettings backup;
 
@@ -900,7 +904,7 @@ void DigitalCouponTest::testCashOrNothingDeepOutTheMoney() {
 
 void DigitalCouponTest::testCallPutParity() {
 
-    BOOST_MESSAGE("Testing call/put parity for European digital coupon ...");
+    BOOST_MESSAGE("Testing call/put parity for European digital coupon...");
 
     SavedSettings backup;
 
@@ -1010,7 +1014,7 @@ void DigitalCouponTest::testCallPutParity() {
 
 void DigitalCouponTest::testReplicationType() {
 
-    BOOST_MESSAGE("Testing replication type for European digital coupon ...");
+    BOOST_MESSAGE("Testing replication type for European digital coupon...");
 
     SavedSettings backup;
 

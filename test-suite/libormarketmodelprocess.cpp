@@ -151,7 +151,7 @@ void LiborMarketModelProcessTest::testInitialisation() {
 }
 
 void LiborMarketModelProcessTest::testLambdaBootstrapping() {
-    BOOST_MESSAGE("Testing caplet-LMM lambda bootstrapping...");
+    BOOST_MESSAGE("Testing caplet LMM lambda bootstrapping...");
 
     SavedSettings backup;
 
@@ -197,7 +197,7 @@ void LiborMarketModelProcessTest::testLambdaBootstrapping() {
 }
 
 void LiborMarketModelProcessTest::testMonteCarloCapletPricing() {
-    BOOST_MESSAGE("Testing caplet-LMM Monte-Carlo caplet pricing...");
+    BOOST_MESSAGE("Testing caplet LMM Monte-Carlo caplet pricing...");
 
     SavedSettings backup;
 

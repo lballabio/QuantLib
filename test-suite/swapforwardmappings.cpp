@@ -158,7 +158,7 @@ QL_END_TEST_LOCALS(SwapForwardMappingsTest)
 void SwapForwardMappingsTest::testForwardSwapJacobians()
 {
     {
-        BOOST_MESSAGE("Testing forward-rate coinitial-swap jacobian...");
+        BOOST_MESSAGE("Testing forward-rate coinitial-swap Jacobian...");
         MarketModelData marketData;
         const std::vector<Time>& rateTimes = marketData.rateTimes();
         const std::vector<Rate>& forwards = marketData.forwards();
@@ -210,7 +210,7 @@ void SwapForwardMappingsTest::testForwardSwapJacobians()
 
     {
 
-        BOOST_MESSAGE("Testing forward-rate cm-swap jacobian...");
+        BOOST_MESSAGE("Testing forward-rate cm-swap Jacobian...");
         MarketModelData marketData;
         const std::vector<Time>& rateTimes = marketData.rateTimes();
         const std::vector<Rate>& forwards = marketData.forwards();
@@ -344,10 +344,10 @@ void SwapForwardMappingsTest::testForwardCoterminalMappings() {
 
 test_suite* SwapForwardMappingsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("swap-forward mappings tests");
-      
+
     suite->add(BOOST_TEST_CASE(
                     &SwapForwardMappingsTest::testForwardSwapJacobians));
- 
+
     suite->add(BOOST_TEST_CASE(
                     &SwapForwardMappingsTest::testForwardCoterminalMappings));
     return suite;

@@ -26,13 +26,16 @@
 
 #include <ql/methods/finitedifferences/pde.hpp>
 #include <ql/models/shortrate/onefactormodel.hpp>
+#include <ql/stochasticprocess.hpp>
 
 namespace QuantLib {
+
     class PdeShortRate : public PdeSecondOrderParabolic {
-    public:
-        typedef boost::shared_ptr<OneFactorModel::ShortRateDynamics> argument_type;
+      public:
+        typedef boost::shared_ptr<OneFactorModel::ShortRateDynamics>
+                                                                argument_type;
         typedef TransformedGrid grid_type;
-        PdeShortRate(const argument_type& d) : dynamics_(d) {};
+        PdeShortRate(const argument_type& d) : dynamics_(d) {}
         virtual Real diffusion(Time t, Real x) const {
             return dynamics_->process()->diffusion(t, x);
         }
@@ -42,9 +45,10 @@ namespace QuantLib {
         virtual Real discount(Time t, Real x) const {
             return dynamics_->shortRate(t,x);
         }
-    private:
+      private:
         const argument_type dynamics_;
     };
+
 }
 
 

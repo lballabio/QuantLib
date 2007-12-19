@@ -98,7 +98,8 @@ namespace QuantLib {
             }
             return std::max(a - b, 0.0)* coupon_->accrualPeriod()*discount_;
         } else {
-            QL_REQUIRE(!capletVolatility().empty(),"missing caplet volatility");
+            QL_REQUIRE(!capletVolatility().empty(),
+                       "missing optionlet volatility");
             // not yet determined, use Black model
             Rate fixing =
                  blackFormula(
@@ -121,7 +122,8 @@ namespace QuantLib {
             adjustement = 0.0;
         } else {
             // see Hull, 4th ed., page 550
-            QL_REQUIRE(!capletVolatility().empty(),"missing caplet volatility");
+            QL_REQUIRE(!capletVolatility().empty(),
+                       "missing optionlet volatility");
             Date d1 = coupon_->fixingDate(),
                  referenceDate = capletVolatility()->referenceDate();
             if (d1 <= referenceDate) {

@@ -64,7 +64,7 @@ namespace QuantLib {
         optionletPaymentDates_ = optionletStripper1_->optionletPaymentDates();
         optionletAccrualPeriods_ = optionletStripper1_->optionletAccrualPeriods();
         optionletTimes_ = optionletStripper1_->optionletTimes();
-        atmOptionletRate_ = optionletStripper1_->atmOptionletRate();
+        atmOptionletRate_ = optionletStripper1_->atmOptionletRates();
         for (Size i=0; i<optionletTimes_.size(); ++i) {
             optionletStrikes_[i] = optionletStripper1_->optionletStrikes(i);
             optionletVolatilities_[i] = optionletStripper1_->optionletVolatilities(i);

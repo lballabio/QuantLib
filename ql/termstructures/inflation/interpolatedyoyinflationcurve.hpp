@@ -26,6 +26,7 @@
 #define quantlib_interpolated_yoy_inflationcurve_hpp
 
 #include <ql/termstructures/inflationtermstructure.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/comparison.hpp>
 
 namespace QuantLib {

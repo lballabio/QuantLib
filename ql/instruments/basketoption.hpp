@@ -88,10 +88,7 @@ namespace QuantLib {
 
 
     //! Basket option on a number of assets
-    /*! \ingroup instruments
-
-        \todo Replace with STL algorithms
-    */
+    /*! \ingroup instruments */
     class BasketOption : public MultiAssetOption {
       public:
         class engine;

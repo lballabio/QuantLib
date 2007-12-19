@@ -106,7 +106,7 @@ namespace QuantLib {
             // Republic Day
             || (d == 15 && m == November)
             // Black Consciousness Day
-            || (d == 20 && m == November && y >= 2004)
+            || (d == 20 && m == November && y >= 2007)
             // Christmas
             || (d == 25 && m == December)
             // Passion of Christ
@@ -115,6 +115,8 @@ namespace QuantLib {
             || (dd == em-49 || dd == em-48)
             // Corpus Christi
             || (dd == em+59)
+            // last business day of the year
+            || (m == December && (d == 31 || (d >= 29 && w == Friday)))
             )
             return false;
         return true;

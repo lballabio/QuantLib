@@ -22,24 +22,24 @@
 #define quantlib_market_model_differences_hpp
 
 #include <ql/types.hpp>
-#include <vector>
 #include <boost/shared_ptr.hpp>
+#include <vector>
 
 namespace QuantLib {
     class MarketModel;
     class PiecewiseConstantCorrelation;
     class PiecewiseConstantVariance;
 
-    Disposable<std::vector<Volatility> > rateVolDifferences(
+    std::vector<Volatility> rateVolDifferences(
                                            const MarketModel& marketModel1,
-                                           const MarketModel& marketModel2);       
+                                           const MarketModel& marketModel2);
 
-    Disposable<std::vector<Spread> > rateInstVolDifferences(
+    std::vector<Spread> rateInstVolDifferences(
                                            const MarketModel& marketModel1,
-                                           const MarketModel& marketModel2, 
+                                           const MarketModel& marketModel2,
                                            Size index);
-    
-    Disposable<std::vector<Real> > coterminalSwapPseudoRoots(
+
+    std::vector<Real> coterminalSwapPseudoRoots(
             const PiecewiseConstantCorrelation&,
             const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >&,
             const std::vector<Time>&);

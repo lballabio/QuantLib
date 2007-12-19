@@ -18,12 +18,12 @@
 */
 
 #ifndef volatility_interpolation_specifier_abcd_hpp
-#define  volatility_interpolation_specifier_abcd_hpp
+#define volatility_interpolation_specifier_abcd_hpp
 
 #include <ql/models/marketmodels/models/volatilityinterpolationspecifier.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantabcdvariance.hpp>
-#include <boost/shared_ptr.hpp>
 #include <ql/types.hpp>
+#include <boost/shared_ptr.hpp>
 #include <vector>
 
 

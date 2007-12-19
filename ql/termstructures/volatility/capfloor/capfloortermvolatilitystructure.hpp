@@ -116,8 +116,8 @@ namespace QuantLib {
 
     inline
     void CapFloorTermVolatilityStructure::checkRange(Time t,
-                                                 Rate k,
-                                                 bool extrapolate) const {
+                                                     Rate k,
+                                                     bool extrapolate) const {
         TermStructure::checkRange(t, extrapolate);
         QL_REQUIRE(extrapolate || allowsExtrapolation() ||
                    (k >= minStrike() && k <= maxStrike()),

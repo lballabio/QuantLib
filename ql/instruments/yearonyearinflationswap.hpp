@@ -29,11 +29,23 @@
 namespace QuantLib {
 
     //! Year-on-year inflation-indexed swap
-    /*! \note The allowAmbiguousPayments parameter is to allow for
+    /*! Quoted as a fixed rate \f$ K \f$.  At start:
+        \f[
+        \sum_{i=1}^{M} P_n(0,t_i) N K =
+        \sum_{i=1}^{M} P_n(0,t_i) N \left[ \frac{I(t_i)}{I(t_i-1)} - 1 \right]
+        \f]
+        where \f$ t_M \f$ is the maturity time, \f$ P_n(0,t) \f$ is the
+        nominal discount factor at time \f$ t \f$, \f$ N \f$ is the
+        notional, and \f$ I(t) \f$ is the inflation index value at
+        time \f$ t \f$.
+
+        \note The allowAmbiguousPayments parameter is to allow for
               payment arithmetic being ambiguous.  If the maturity is
-              in, say, 30.01 years according to the daycounter and
-              roll rules does this mean that there is a payment in
-              0.01 years?.
+              in, say, 30.01 years according to the day-counter and
+              roll rules, does this mean that there is a payment in
+              0.01 years? If allowAmbiguousPayments is false, the
+              ambiguousPaymentPeriod parameter sets the period within
+              which the answer is no.
     */
     class YearOnYearInflationSwap : public InflationSwap {
       public:
@@ -57,11 +69,13 @@ namespace QuantLib {
 
         //! \name InflationSwap interface
         //@{
+        //! the rate \f$ \tilde{K} \f$ such that NPV = 0.
         Rate fairRate() const;
         //@}
 
         //! \name Inspectors
         //@{
+        //! \f$ K \f$ in the above formula.
         Rate fixedRate() const;
         std::vector<Date> paymentDates() const;
         //@}

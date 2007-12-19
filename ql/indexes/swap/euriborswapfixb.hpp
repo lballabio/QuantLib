@@ -26,6 +26,7 @@
 #define quantlib_euriborswapfixb_hpp
 
 #include <ql/indexes/swapindex.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
 

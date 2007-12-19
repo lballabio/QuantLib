@@ -17,25 +17,25 @@ This program is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! 
+/*!
 implementation specifies how to decide volatility structure for additional
 synthetic rates which are interleaved
 
-here we work with abcd curves and interpolate the a, b, c and d 
+here we work with abcd curves and interpolate the a, b, c and d
 
 */
 
 #include <ql/models/marketmodels/models/volatilityinterpolationspecifierabcd.hpp>
-#include <boost/shared_ptr.hpp>
 #include <ql/types.hpp>
-#include <vector>
 #include <ql/errors.hpp>
+#include <boost/shared_ptr.hpp>
+#include <vector>
 
 namespace QuantLib
-{    
+{
 
-    VolatilityInterpolationSpecifierabcd::VolatilityInterpolationSpecifierabcd(Size period, 
-        Size offset, 
+    VolatilityInterpolationSpecifierabcd::VolatilityInterpolationSpecifierabcd(Size period,
+        Size offset,
         const std::vector< PiecewiseConstantAbcdVariance>& originalVariances, // these should be associated with the long rates
         const std::vector<Time>& timesForSmallRates, // these should be associated with the shorter rates
         Real lastCapletVol_
@@ -47,7 +47,7 @@ namespace QuantLib
         originalVariances_(originalVariances.size()),
         originalABCDVariances_(originalVariances),
         originalABCDVariancesScaled_(originalVariances),
-        lastCapletVol_(lastCapletVol_),                                                                    
+        lastCapletVol_(lastCapletVol_),
         timesForSmallRates_(timesForSmallRates),
         scalingFactors_(originalVariances.size(),1.0),
         noBigRates_(originalVariances.size()),
@@ -140,7 +140,7 @@ namespace QuantLib
 
         // three cases:
         //before offset,
-        // between offset and last big rate, 
+        // between offset and last big rate,
         // and after last big rate
 
         // before offset
@@ -183,8 +183,8 @@ namespace QuantLib
             for (Size i=offset_+(noBigRates_-1)*period_; i < noSmallRates_; ++i)
                 interpolatedVariances_[i] = boost::shared_ptr<PiecewiseConstantVariance>(
                                                                          new PiecewiseConstantAbcdVariance(a,b,c,d,i,timesForSmallRates_));
-       
-            // very last rate is special as we must match the caplet vol 
+
+            // very last rate is special as we must match the caplet vol
              Real vol = interpolatedVariances_[noSmallRates_-1]->totalVolatility(noSmallRates_-1);
 
              Real scale = lastCapletVol_/vol;
@@ -193,7 +193,7 @@ namespace QuantLib
              d*=scale;
              interpolatedVariances_[noSmallRates_-1] = boost::shared_ptr<PiecewiseConstantVariance>(
                                                                          new PiecewiseConstantAbcdVariance(a,b,c,d,noSmallRates_-1,timesForSmallRates_));
-       
+
        }
     }
 

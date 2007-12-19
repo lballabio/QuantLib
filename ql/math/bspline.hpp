@@ -54,8 +54,6 @@ namespace QuantLib {
                        N_{i+1,p-1}(x) \frac{(x_{i+p} - x)}{(x_{i+p} - x_{i+1})}
         \end{array}
         \f]
-
-        \todo tests
     */
     class BSpline {
       public:

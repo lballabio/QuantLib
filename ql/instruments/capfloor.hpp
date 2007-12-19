@@ -88,7 +88,7 @@ namespace QuantLib {
         Date maturityDate() const;
         boost::shared_ptr<FloatingRateCoupon> lastFloatingRateCoupon() const;
         //@}
-        Rate atmRate(const YieldTermStructure&) const;
+        Rate atmRate(const YieldTermStructure& discountCurve) const;
         //! implied term volatility
         Volatility impliedVolatility(
                               Real price,

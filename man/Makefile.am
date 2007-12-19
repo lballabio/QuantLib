@@ -10,6 +10,7 @@ dist_man_MANS += BermudanSwaption.1 \
                  ConvertibleBonds.1 \
                  DiscreteHedging.1 \
                  EquityOption.1 \
+                 FittedBondCurve.1 \
                  FRA.1 \
                  SwapValuation.1 \
                  Replication.1 \
@@ -21,6 +22,7 @@ EXTRA_DIST += BermudanSwaption.1 \
               ConvertibleBonds.1 \
               DiscreteHedging.1 \
               EquityOption.1 \
+              FittedBondCurve.1 \
               FRA.1 \
               SwapValuation.1 \
               Replication.1 \

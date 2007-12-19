@@ -49,8 +49,6 @@ namespace QuantLib {
 
             This should be the only place in the code that is affected
             directly by QL_TODAYS_PAYMENT
-
-            \todo make QL_TODAYS_PAYMENT dynamically configurable?
         */
         bool hasOccurred(const Date &d,
                          #if defined(QL_TODAYS_PAYMENTS)

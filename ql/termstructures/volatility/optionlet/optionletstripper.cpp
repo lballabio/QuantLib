@@ -98,7 +98,7 @@ namespace QuantLib {
         return optionletAccrualPeriods_;
     }
 
-    const std::vector<Rate>& OptionletStripper::atmOptionletRate() const {
+    const std::vector<Rate>& OptionletStripper::atmOptionletRates() const {
         calculate();
         return atmOptionletRate_;
     }

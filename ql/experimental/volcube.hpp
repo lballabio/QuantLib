@@ -18,7 +18,7 @@
 */
 
 /*! \file volcube.hpp
-    \brief Interest rate (caplet/swaption) volatility cube
+    \brief Interest rate (optionlet/swaption) volatility cube
 */
 
 #ifndef quantlib_volatility_cube_h

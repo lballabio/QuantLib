@@ -33,6 +33,7 @@ QL_TESTS = \
 	gaussianquadratures.hpp gaussianquadratures.cpp \
 	hestonmodel.hpp hestonmodel.cpp \
 	hybridhestonhullwhiteprocess.hpp hybridhestonhullwhiteprocess.cpp \
+	inflation.hpp inflation.cpp \
 	instruments.hpp instruments.cpp \
 	integrals.hpp integrals.cpp \
 	interestrates.hpp interestrates.cpp \

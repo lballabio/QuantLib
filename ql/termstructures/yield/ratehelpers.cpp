@@ -157,8 +157,8 @@ namespace QuantLib {
     : RelativeDateRateHelper(rate), settlementDays_(settlementDays) {
         index_ = boost::shared_ptr<IborIndex>(new
             IborIndex("dummy", tenor, fixingDays,
-                       Currency(), calendar, convention,
-                       endOfMonth, dayCounter, termStructureHandle_));
+                      Currency(), calendar, convention,
+                      endOfMonth, dayCounter, termStructureHandle_));
         initializeDates();
     }
 
@@ -232,7 +232,7 @@ namespace QuantLib {
 
     Real FraRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
-        return index_->fixing(fixingDate_,true);
+        return index_->fixing(fixingDate_, true);
     }
 
     void FraRateHelper::setTermStructure(YieldTermStructure* t) {
@@ -253,9 +253,7 @@ namespace QuantLib {
                                index_->businessDayConvention(),
                                index_->endOfMonth());
         latestDate_ = index_->maturityDate(earliestDate_);
-        // why not using index_->fixingDate
-        fixingDate_ = index_->fixingCalendar().advance(earliestDate_,
-            -static_cast<Integer>(index_->fixingDays()), Days);
+        fixingDate_ = index_->fixingDate(earliestDate_);
     }
 
 
@@ -356,7 +354,7 @@ namespace QuantLib {
                                               iborIndex_->tenor(),
                                               iborIndex_->businessDayConvention(),
                                               iborIndex_->endOfMonth());
-        latestDate_ = std::max(latestDate_,endValueDate);
+        latestDate_ = std::max(latestDate_, endValueDate);
         #endif
     }
 
@@ -391,6 +389,9 @@ namespace QuantLib {
         return swap_;
     }
 
+    const Period& SwapRateHelper::forwardStart() const {
+        return fwdStart_;
+    }
 
     BMASwapRateHelper::BMASwapRateHelper(
                           const Handle<Quote>& liborFraction,
@@ -418,11 +419,11 @@ namespace QuantLib {
     }
 
     void BMASwapRateHelper::initializeDates() {
-        earliestDate_ = calendar_.adjust(evaluationDate_ + settlementDays_*Days,
-                                         bmaConvention_);
+        earliestDate_ = calendar_.advance(evaluationDate_,
+                                          settlementDays_*Days,
+                                          Following);
 
-        Date maturity = calendar_.adjust(earliestDate_ + tenor_,
-                                         bmaConvention_);
+        Date maturity = earliestDate_ + tenor_;
 
         // dummy BMA index with curve/swap arguments
         boost::shared_ptr<BMAIndex> clonedIndex(
@@ -439,7 +440,9 @@ namespace QuantLib {
                          maturity,
                          index_->tenor(),
                          index_->fixingCalendar(),
-                         index_->businessDayConvention()).backwards();
+                         index_->businessDayConvention())
+            .endOfMonth(index_->endOfMonth())
+            .backwards();
 
         swap_ = boost::shared_ptr<BMASwap>(new BMASwap(BMASwap::Payer, 100.0,
                                                        liborSchedule,
@@ -453,7 +456,13 @@ namespace QuantLib {
         swap_->setPricingEngine(boost::shared_ptr<PricingEngine>(
                          new DiscountingSwapEngine(index_->termStructure())));
 
-        latestDate_ = calendar_.adjust(swap_->maturityDate(), Following);
+        Date d = calendar_.adjust(swap_->maturityDate(), Following);
+        Weekday w = d.weekday();
+        Date nextWednesday = (w >= 4) ?
+            d + (11 - w) * Days :
+            d + (4 - w) * Days;
+        latestDate_ = clonedIndex->valueDate(
+                         clonedIndex->fixingCalendar().adjust(nextWednesday));
     }
 
     void BMASwapRateHelper::setTermStructure(YieldTermStructure* t) {

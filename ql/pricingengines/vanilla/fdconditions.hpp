@@ -27,6 +27,7 @@
 #include <ql/methods/finitedifferences/fdtypedefs.hpp>
 #include <ql/methods/finitedifferences/americancondition.hpp>
 #include <ql/methods/finitedifferences/shoutcondition.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/interestrate.hpp>
 
 namespace QuantLib {

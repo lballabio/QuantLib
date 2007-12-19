@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -63,7 +63,7 @@ QL_END_TEST_LOCALS(HybridHestonHullWhiteProcessTest)
 
 void HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine() {
     BOOST_MESSAGE("Testing European option pricing for a BSM process"
-                  " with one factor Hull-White Model...");
+                  " with one factor Hull-White model...");
 
     SavedSettings backup;
 
@@ -157,8 +157,8 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine() {
 }
 
 void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
-    BOOST_MESSAGE("Testing Comparing European option pricing for a BSM process"
-                  " with one factor Hull-White Model...");
+    BOOST_MESSAGE("Comparing European option pricing for a BSM process"
+                  " with one factor Hull-White model...");
 
     SavedSettings backup;
 
@@ -255,11 +255,11 @@ void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
 }
 
 void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
-    BOOST_MESSAGE("Testing Monte-Carlo Zero Bond Pricing...");
+    BOOST_MESSAGE("Testing Monte Carlo zero-bond pricing...");
 
     SavedSettings backup;
 
-    DayCounter dc = Actual360();
+    DayCounter dc = Actual365Fixed();
     const Date today = Date::todaysDate();
 
     // construct a strange yield curve to check drifts and discounting
@@ -358,7 +358,7 @@ void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
         Real error = zeroStat[j].errorEstimate();
         Real expected = ts->discount(t);
 
-        if (std::fabs(calculated - expected) > 3*error) {
+        if (std::fabs(calculated - expected) > 5*error) {
             BOOST_ERROR("Failed to reproduce expected zero bond prices"
                         << "\n   t:          " << t
                         << "\n   calculated: " << calculated
@@ -372,7 +372,7 @@ void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
         error = optionStat[j].errorEstimate();
         expected = hwModel->discountBondOption(Option::Call, strike, t, T);
 
-        if (std::fabs(calculated - expected) > 3*error) {
+        if (std::fabs(calculated - expected) > 5*error) {
             BOOST_ERROR("Failed to reproduce expected zero bond option prices"
                         << "\n   t:          " << t
                         << "\n   T:          " << T
@@ -384,7 +384,7 @@ void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
 }
 
 void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
-    BOOST_MESSAGE("Testing Monte-Carlo Vanilla Option Pricing...");
+    BOOST_MESSAGE("Testing Monte Carlo vanilla-option Pricing...");
 
     SavedSettings backup;
 
@@ -462,7 +462,7 @@ void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
             const Real error      = optionHestonHW.errorEstimate();
             const Real expected   = optionBsmHW.NPV();
 
-            if (std::fabs(calculated - expected) > 3*error) {
+            if (std::fabs(calculated - expected) > 5*error) {
                 BOOST_ERROR("Failed to reproduce BSM-HW vanilla prices"
                         << "\n   corr:       " << corr[i]
                         << "\n   strike:     " << strike[j]
@@ -476,7 +476,7 @@ void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
 
 
 void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
-    BOOST_MESSAGE("Testing Monte-Carlo Heston Option Pricing...");
+    BOOST_MESSAGE("Testing Monte Carlo Heston option pricing...");
 
     SavedSettings backup;
 
@@ -547,7 +547,7 @@ void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
             Real error      = optionHestonHW.errorEstimate();
             Real expected   = optionPureHeston.NPV();
 
-            if (std::fabs(calculated - expected) > 3*error) {
+            if (std::fabs(calculated - expected) > 5*error) {
                 BOOST_ERROR("Failed to reproduce heston vanilla prices"
                         << "\n   corr:       " << corr[i]
                         << "\n   strike:     " << strike[j]
@@ -586,7 +586,7 @@ void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
 
 
 void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
-    BOOST_MESSAGE("Testing analytic Heston Hull White Option Pricing...");
+    BOOST_MESSAGE("Testing analytic Heston/Hull-White option pricing...");
 
     SavedSettings backup;
 
@@ -660,7 +660,7 @@ void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
             Real error      = optionHestonHW.errorEstimate();
             Real expected   = optionPureHeston.NPV();
 
-            if (std::fabs(calculated - expected) > 3*error) {
+            if (std::fabs(calculated - expected) > 5*error) {
                 BOOST_ERROR("Failed to reproduce heston vanilla prices"
                         << "\n   strike:     " << strike[j]
                         << "\n   calculated: " << calculated
@@ -774,7 +774,7 @@ void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
     const Real calculated = stat.mean();
     const Real error = stat.errorEstimate();
 
-    if (std::fabs(expected - calculated) > 3*error) {
+    if (std::fabs(expected - calculated) > 5*error) {
         BOOST_ERROR("Failed to reproduce auto-callable equity structure price"
                     << "\n   calculated: " << calculated
                     << "\n   error:      " << error
@@ -1241,8 +1241,9 @@ namespace {
 }
 
 void HybridHestonHullWhiteProcessTest::testPseudoJointCalibration() {
-    BOOST_MESSAGE("Testing Joint Calibration of an Heston Equity Process"
-                  "incl. Stochastic Interest Rates via a Hull-White Model...");
+    BOOST_MESSAGE("Testing the joint calibration of a Heston equity process"
+                  " including stochastic interest rates via"
+                  " a Hull-White model...");
 
     SavedSettings backup;
 
@@ -1358,7 +1359,7 @@ void HybridHestonHullWhiteProcessTest::testPseudoJointCalibration() {
     }
 
     Real qualityIndex = QL_MAX_REAL;
-    Real targetQuality = 5.0;
+    Real targetQuality = 10.0;
     const Size maxCascadeSteps = 6;
     for (Size i=0; i<maxCascadeSteps && qualityIndex > targetQuality; ++i) {
         // 1. Calibrate Heston Model to match

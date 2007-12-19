@@ -51,11 +51,8 @@ namespace QuantLib {
 
     boost::shared_ptr<VanillaSwap> SwapIndex::underlyingSwap(
                                                const Date& fixingDate) const {
-        QL_REQUIRE(iborIndex_, "no index set");
-        QL_REQUIRE(!iborIndex_->termStructure().empty(),
-                   "no forecasting term structure set to " <<
-                   iborIndex_->name());
-        return MakeVanillaSwap(tenor_, iborIndex_, 0.0)
+        Rate fixedRate = 0.0;
+        return MakeVanillaSwap(tenor_, iborIndex_, fixedRate)
             .withEffectiveDate(valueDate(fixingDate))
             .withFixedLegCalendar(fixingCalendar())
             .withFixedLegDayCount(dayCounter_)

@@ -1,10 +1,10 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2007 Marco Bianchetti
- Copyright (C) 2007 Francois Du Vignaud
- Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2007 François du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,9 +23,9 @@
 /* The implementation of the algorithm was highly inspired by
  * "Numerical Recipes in C", 2nd edition, Press, Teukolsky, Vetterling,
  * Flannery, chapter 10.
- * Modified may 2007: end criteria set on x instead on fx, 
- * inspired by bad behaviour found with test function fx=x*x+x+1, 
- * xStart = -100, lambda = 1.0, ftol = 1.e-16 
+ * Modified may 2007: end criteria set on x instead on fx,
+ * inspired by bad behaviour found with test function fx=x*x+x+1,
+ * xStart = -100, lambda = 1.0, ftol = 1.e-16
  * (it reports x=0 as the minimum!)
  * and by GSL implementation, v. 1.9 (http://www.gnu.org/software/gsl/)
  */
@@ -33,10 +33,14 @@
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/math/optimization/constraint.hpp>
 
+#if !defined(__GNUC__) || __GNUC__ > 3 || __GNUC_MINOR__ > 4
+#define QL_ARRAY_EXPRESSIONS
+#endif
+
 namespace QuantLib {
 
     namespace {
-    // Computes the size of the simplex 
+    // Computes the size of the simplex
         Real computeSimplexSize (const std::vector<Array>& vertices) {
             Array center(vertices.front().size(),0);
             for (Size i=0; i<vertices.size(); ++i)
@@ -60,14 +64,25 @@ namespace QuantLib {
             Size dimensions = values_.size() - 1;
             Real factor1 = (1.0 - factor)/dimensions;
             Real factor2 = factor1 - factor;
+            #if defined(QL_ARRAY_EXPRESSIONS)
             pTry = sum_*factor1 - vertices_[iHighest]*factor2;
+            #else
+            // composite expressions fail to compile with gcc 3.4 on windows
+            pTry = sum_*factor1;
+            pTry -= vertices_[iHighest]*factor2;
+            #endif
             factor *= 0.5;
         } while (!P.constraint().test(pTry));
         factor *= 2.0;
         Real vTry = P.value(pTry);
         if (vTry < values_[iHighest]) {
             values_[iHighest] = vTry;
+            #if defined(QL_ARRAY_EXPRESSIONS)
             sum_ += pTry - vertices_[iHighest];
+            #else
+            sum_ += pTry;
+            sum_ -= vertices_[iHighest];
+            #endif
             vertices_[iHighest] = pTry;
         }
         return vTry;
@@ -77,16 +92,16 @@ namespace QuantLib {
 
     EndCriteria::Type Simplex::minimize(Problem& P,
                                         const EndCriteria& endCriteria) {
-        // set up of the problem        
+        // set up of the problem
         //Real ftol = endCriteria.functionEpsilon();    // end criteria on f(x) (see Numerical Recipes in C++, p.410)
         Real xtol = endCriteria.rootEpsilon();          // end criteria on x (see GSL v. 1.9, http://www.gnu.org/software/gsl/)
-        Size maxStationaryStateIterations_ 
+        Size maxStationaryStateIterations_
             = endCriteria.maxStationaryStateIterations();
         EndCriteria::Type ecType = EndCriteria::None;
         P.reset();
         Array x_ = P.currentValue();
         Integer iterationNumber_=0;
- 
+
         // Initialize vertices of the simplex
         bool end = false;
         Size n = x_.size(), i;
@@ -135,14 +150,14 @@ namespace QuantLib {
             //Real rtol = 2.0*std::fabs(high - low)/
             //    (std::fabs(high) + std::fabs(low) + QL_EPSILON);
             //++iterationNumber_;
-            //if (rtol < ftol ||      
+            //if (rtol < ftol ||
             //    endCriteria.checkMaxIterations(iterationNumber_, ecType)) {
             // GSL exit strategy on x (see GSL v. 1.9, http://www.gnu.org/software/gsl
             Real simplexSize = computeSimplexSize(vertices_);
             ++iterationNumber_;
-            if (simplexSize < xtol ||      
+            if (simplexSize < xtol ||
                 endCriteria.checkMaxIterations(iterationNumber_, ecType)) {
-                endCriteria.checkStationaryPoint(0.0, 0.0, 
+                endCriteria.checkStationaryPoint(0.0, 0.0,
                     maxStationaryStateIterations_, ecType);
                 endCriteria.checkMaxIterations(iterationNumber_, ecType);
                 x_ = vertices_[iLowest];
@@ -165,8 +180,13 @@ namespace QuantLib {
                     if (vTry >= vSave) {
                         for (Size i=0; i<=n; i++) {
                             if (i!=iLowest) {
+                                #if defined(QL_ARRAY_EXPRESSIONS)
                                 vertices_[i] =
                                     0.5*(vertices_[i] + vertices_[iLowest]);
+                                #else
+                                vertices_[i] += vertices_[iLowest];
+                                vertices_[i] *= 0.5;
+                                #endif
                                 values_[i] = P.value(vertices_[i]);
                             }
                         }

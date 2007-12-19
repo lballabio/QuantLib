@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2007 Marco Bianchetti
- Copyright (C) 2007 Francois du Vignaud
+ Copyright (C) 2007 François du Vignaud
  Copyright (C) 2007 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
@@ -243,7 +243,9 @@ void OptimizersTest::test() {
         Array initialValues = problem.currentValue();
         // Loop over optimizers
         for (Size j=0; j<(optimizationMethods_[i]).size(); ++j) {
-            BOOST_MESSAGE("Optimizer: " << optimizationMethods_[i][j].name);
+            #ifdef VERBOSE
+                BOOST_MESSAGE("  Optimizer: " << optimizationMethods_[i][j].name);
+            #endif
             Real rootEpsilon = endCriterias_[i]->rootEpsilon();
             Size endCriteriaTests = 1;
            // Loop over rootEpsilon
@@ -267,18 +269,17 @@ void OptimizersTest::test() {
                         endCriteriaResult==EndCriteria::MaxIterations ||
                         endCriteriaResult==EndCriteria::Unknown)
                 #endif
-                        BOOST_MESSAGE(
-                        "    function evaluations:  " << problem.functionEvaluation()  << "\n"
-                        << "    gradient evaluations:  " << problem.gradientEvaluation()  << "\n"
-                        << "    x expected:    " << xMinExpected_[i] << "\n"
-                        << "    x calculated:  " << std::setprecision(9) << xMinCalculated << "\n"
-                        << "    x difference:  " <<  xMinExpected_[i]- xMinCalculated << "\n"
-                        << "    rootEpsilon:   " << std::setprecision(9) << endCriteria.rootEpsilon() << "\n"
-                        << "    y expected:    " << yMinExpected_[i] << "\n"
-                        << "    y calculated:  " << std::setprecision(9) << yMinCalculated << "\n"
-                        << "    y difference:  " <<  yMinExpected_[i]- yMinCalculated << "\n"
-                        << "    functionEpsilon:   " << std::setprecision(9) << endCriteria.functionEpsilon() << "\n"
-                        << "    endCriteriaResult:  " << endCriteriaResult << "\n");
+                BOOST_MESSAGE("\n    function evaluations: " << problem.functionEvaluation()  <<
+                              "\n    gradient evaluations: " << problem.gradientEvaluation() <<
+                              "\n    x expected:           " << xMinExpected_[i] <<
+                              "\n    x calculated:         " << std::setprecision(9) << xMinCalculated <<
+                              "\n    x difference:         " <<  xMinExpected_[i]- xMinCalculated <<
+                              "\n    rootEpsilon:          " << std::setprecision(9) << endCriteria.rootEpsilon() <<
+                              "\n    y expected:           " << yMinExpected_[i] <<
+                              "\n    y calculated:         " << std::setprecision(9) << yMinCalculated <<
+                              "\n    y difference:         " <<  yMinExpected_[i]- yMinCalculated <<
+                              "\n    functionEpsilon:      " << std::setprecision(9) << endCriteria.functionEpsilon() <<
+                              "\n    endCriteriaResult:    " << endCriteriaResult);
             }
         }
     }

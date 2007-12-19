@@ -31,6 +31,7 @@
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/instruments/bonds/convertiblebond.hpp>
+#include <ql/instruments/payoffs.hpp>
 
 namespace QuantLib {
 

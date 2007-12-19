@@ -206,6 +206,7 @@ namespace QuantLib {
         //@{
         Spread spread() const;
         boost::shared_ptr<VanillaSwap> swap() const;
+        const Period& forwardStart() const;
         //@}
       protected:
         void initializeDates();

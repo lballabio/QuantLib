@@ -83,7 +83,6 @@ namespace QuantLib {
         Real bondCleanPrice_;
         Handle<YieldTermStructure> discountCurve_;
         // results
-        mutable Rate fairRate_;
         mutable Spread fairSpread_;
         mutable Real fairPrice_;
     };

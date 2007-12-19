@@ -28,6 +28,7 @@
 #include <ql/instruments/varianceswap.hpp>
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 

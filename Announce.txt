@@ -2,16 +2,13 @@
 QuantLib is a cross-platform, free/open-source quantitative finance C++
 library for modeling, pricing, trading, and risk management in real-life.
 
-Version 0.8.1 has been released and is available for download at
+Version 0.9.0 has been released and is available for download at
 <http://quantlib.org/download.shtml>.
-
-Version 0.8.1 adds support for Boost 1.34 on Linux systems. If you are
-using version 0.8.0 on Windows systems, you do not need this upgrade.
 
 Please log any problems you have with this release in the SourceForge
 bug tracker at
 <http://sourceforge.net/tracker/?group_id=12740&atid=112740>
-specifying that you're using QuantLib 0.8.1.
+specifying that you're using QuantLib 0.9.0.
 
         The QuantLib group
 

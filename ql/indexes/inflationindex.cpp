@@ -130,18 +130,8 @@ namespace QuantLib {
         std::pair<Date,Date> lim = inflationPeriod(todayMinusLag, frequency_);
         todayMinusLag = lim.second + 1;
 
-        // you are OK to the end of the period that the availability
-        // put you into
-
-        if (!forecastTodaysFixing)
-            QL_REQUIRE(todayMinusLag > fixingDate,
-                       "Fixing date " << fixingDate << " not at least "
-                       << availabilityLag_ <<
-                       " (i.e. availabilityLag) before evaluation date  "
-                       << "(adjusted for index frequency), "
-                       << today);
-
-        if (todayMinusLag > fixingDate) {
+        if (fixingDate < todayMinusLag
+            || (fixingDate == todayMinusLag && !forecastTodaysFixing)) {
             Real pastFixing =
                 IndexManager::instance().getHistory(name())[fixingDate];
             QL_REQUIRE(pastFixing != Null<Real>(),
@@ -212,19 +202,9 @@ namespace QuantLib {
         Date todayMinusLag = today - availabilityLag_;
         std::pair<Date,Date> lim = inflationPeriod(todayMinusLag, frequency_);
         todayMinusLag = lim.second + 1;
-        // you are OK to the end of the period that the availability
-        // put you into N.B. should really use frequency here,
-        // implicit assumption that each period is one month
 
-        if (!forecastTodaysFixing)
-            QL_REQUIRE(todayMinusLag > fixingDate,
-                       "Fixing date " << fixingDate << " not at least "
-                       << availabilityLag_
-                       << "  (i.e. availabilityLag) before evaluation date "
-                       << "(adjusted for index frequency), "
-                       << today);
-
-        if (todayMinusLag > fixingDate) {
+        if (fixingDate < todayMinusLag
+            || (fixingDate == todayMinusLag && !forecastTodaysFixing)) {
             if (ratio_) {
                 Rate pastFixing =
                     IndexManager::instance().getHistory(name())[fixingDate];

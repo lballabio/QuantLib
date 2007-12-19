@@ -240,7 +240,7 @@ void LiborMarketModelTest::testCapletPricing() {
 }
 
 void LiborMarketModelTest::testCalibration() {
-    BOOST_MESSAGE("Testing calibration of a Libor Forward Model...");
+    BOOST_MESSAGE("Testing calibration of a Libor forward model...");
 
     SavedSettings backup;
 

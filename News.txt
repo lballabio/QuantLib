@@ -1,6 +1,95 @@
 
 PORTABILITY
 
-- Version 0.8.1 adds support for Boost 1.34 on Linux systems. If you
-  are using version 0.8.0 on Windows systems, you do not need this
-  upgrade.
+- Fixes for MSYS and Cygwin build.
+- Fixes for VC++ build with CLR support enabled.
+- Dropped MetroWerks CodeWarrior support.
+
+CALENDARS
+
+- Fix for business-days calculation (thanks to Piter Dias.)
+- Updated Hong Kong's holidays for 2008 and China's for 2007.
+- Added new holiday to Canadian calendars (thanks to Matt Knox.)
+- Fixed joint-calendar specification (thanks to Jay Walters.)
+- Split Canadian calendar into settlement and TSX (thanks to Matt Knox.)
+- Added Brazilian exchange calendar (thanks to Richard Gomes.)
+- Fixes for the Brazilian calendars (thanks to Piter Dias.)
+
+CASH FLOWS
+
+- Added average-BMA coupon (thanks to Roland Lichters.)
+- Fixed-rate coupons can now accept an InterestRate instance (thanks
+  to Piter Dias.)
+- implemented cash-flow vector builders as helper classes to ease
+  skipping default parameters and single/multiple inputs.
+
+DATES
+
+- Extended date range up to year 2199.
+- Fixed period comparison (thanks to Chris Kenyon.)
+- Fixed short date formatting (thanks to Robert Lopez.)
+- Enhanced period algebra.
+
+INDEXES
+
+- Added BMA index (thanks to Roland Lichters.)
+- Added inflation indexes (thanks to Chris Kenyon.)
+- Added historical interest-rate index analysis.
+
+INSTRUMENTS
+
+- Added BMA swaps (thanks to Roland Lichters.)
+- Added year-on-year and zero-coupon inflation swaps (thanks to Chris Kenyon.)
+- Fixed stub-date management and backward date generation for
+  fixed-rate bonds (thanks to Toyin Akin.)
+- Added clean/dirty bond-price calculation from Z-spread.
+
+LATTICES
+
+- Fixed Tsiveriotis-Fernandes tree initialization (thanks to John Maiden.)
+
+MATH
+
+- Added multi-dimensional cost function for least-square problems
+  (thanks to Guillaume Pealat.)
+- Added histogram class (thanks to Gang Liang.)
+- Added log-cubic interpolation.
+- Fixed conjugate-gradient bug.
+- Fixed nested Levenberg-Marquardt bug.
+
+PRICING ENGINES
+
+- Refactored option engines (the underlying stochastic process is now
+  passed to the pricing engine.)
+- Refactored bond, cap/floor, swap, and swaption engines (the discount
+  curve is now passed to the pricing engine.)
+- Added Heston/Hull-White analytic and Monte Carlo engines for vanilla options.
+- Fixed bug in blackFormulaCashItmProbability in case of non null
+  displacement.
+
+PROCESSES
+
+- Added hybrid Heston/Hull-White process.
+- Fixed joint-process bug.
+
+QUOTES
+
+- Added forward-swap quote.
+
+RANDOM NUMBERS
+
+- Fixed ordering of primitive polynomials for Sobol/Levitan and
+  Sobol/Levitan/Lemieux methods.
+- Added JoeKuoD5, JoeKuoD6 and JoeKuoD7 direction integers for Sobol generator.
+- Added Kuo, Kuo2 and Kuo3 direction integers for Sobol generator.
+- Added class to generate low-discrepancy sequences using a lattice rule.
+
+TERM STRUCTURES
+
+- Added discount curve fitted on bond prices (thanks to Allen Kuo.)
+- Added BMA-swap rate helper (thanks to Roland Lichters.)
+- Made SwapRateHelper forward-start enabled.
+- Added universal term-structure bootstrapper (thanks to Chris Kenyon.)
+- Added abstract inflation term structures (thanks to Chris Kenyon.)
+- Added piecewise inflation curves (thanks to Chris Kenyon.)
+

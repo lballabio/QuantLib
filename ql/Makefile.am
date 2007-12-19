@@ -134,7 +134,7 @@ if ENABLE_STATIC
 
 install-exec-hook:
 	mv $(DESTDIR)$(libdir)/libQuantLib.a $(DESTDIR)$(libdir)/libQuantLib-$(PACKAGE_VERSION).a
-	$(LN_S) libQuantLib-$(PACKAGE_VERSION).a $(DESTDIR)$(libdir)/libQuantLib.a
+	cd $(DESTDIR)$(libdir) && $(LN_S) libQuantLib-$(PACKAGE_VERSION).a libQuantLib.a
 endif
 
 

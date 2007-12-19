@@ -30,9 +30,12 @@
 namespace QuantLib {
 
     //! Abstract base class for inflation swaps.
-    /*! Inflation swaps need two term structures:
-        - nominal
-        - inflation (either zero-coupon or year-on-year)
+    /*! Inflation swaps need two term structures: a yield curve, and
+        an inflation term structure (either zero-based, i.e., the rate
+        \f$ r(t) \f$ equals \f$ I(t)/I(t_0) - 1 \f$ where \f$ I \f$ if
+        the index and \f$ t_0 \f$ is the base time, or year-on-year,
+        i.e., \f$ r(t) = I(t)/I(t_p) - 1 \f$ where the previous time
+        \f$ t_p \f$ is defined as \f$ t \f$ minus one year.)
 
         \ingroup instruments
     */

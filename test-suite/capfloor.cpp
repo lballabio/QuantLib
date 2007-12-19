@@ -352,7 +352,7 @@ void CapFloorTest::testParity() {
 
 void CapFloorTest::testATMRate() {
 
-    BOOST_MESSAGE("Testing ATM rate...");
+    BOOST_MESSAGE("Testing cap/floor ATM rate...");
 
     CommonVars vars;
 
