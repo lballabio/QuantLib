@@ -21,21 +21,22 @@
 #include <ql/termstructures/volatility/optionlet/optionletstripper.hpp>
 #include <ql/indexes/iborindex.hpp>
 
+using std::vector;
 
 namespace QuantLib {
 
     OptionletStripper::OptionletStripper(
             const boost::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
-            const boost::shared_ptr<IborIndex>& index)
+            const boost::shared_ptr<IborIndex>& iborIndex)
     : termVolSurface_(termVolSurface),
-      index_(index),
+      iborIndex_(iborIndex),
       nStrikes_(termVolSurface->strikes().size()){
         
         registerWith(termVolSurface);
-        registerWith(index);
+        registerWith(iborIndex_);
         registerWith(Settings::instance().evaluationDate());
 
-        Period indexTenor = index->tenor();
+        Period indexTenor = iborIndex_->tenor();
         Period maxCapFloorTenor = termVolSurface->optionTenors().back();
 
         // optionlet tenors and capFloor lengths
@@ -52,53 +53,63 @@ namespace QuantLib {
         }
         nOptionletTenors_ = optionletTenors_.size();
         
-        optionletVolatilities_ = std::vector<std::vector<Volatility> >(nOptionletTenors_, 
-                                                                       std::vector<Volatility>(nStrikes_));
-        optionletStrikes_ = std::vector<std::vector<Rate> >(nOptionletTenors_, termVolSurface->strikes());
-        optionletDates_ = std::vector<Date>(nOptionletTenors_);
-        optionletTimes_ = std::vector<Time>(nOptionletTenors_);
-        atmOptionletRate_ = std::vector<Rate>(nOptionletTenors_);
-        optionletPaymentDates_ = std::vector<Date>(nOptionletTenors_);
-        optionletAccrualPeriods_ = std::vector<Time>(nOptionletTenors_);
+        optionletVolatilities_ =
+            vector<vector<Volatility> >(nOptionletTenors_, 
+                                        vector<Volatility>(nStrikes_));
+        optionletStrikes_ = vector<vector<Rate> >(nOptionletTenors_,
+                                                  termVolSurface->strikes());
+        optionletDates_ = vector<Date>(nOptionletTenors_);
+        optionletTimes_ = vector<Time>(nOptionletTenors_);
+        atmOptionletRate_ = vector<Rate>(nOptionletTenors_);
+        optionletPaymentDates_ = vector<Date>(nOptionletTenors_);
+        optionletAccrualPeriods_ = vector<Time>(nOptionletTenors_);
     }
 
-    const std::vector<Rate>& OptionletStripper::optionletStrikes(Size i) const{
+    const vector<Rate>& OptionletStripper::optionletStrikes(Size i) const {
         calculate();
-        QL_REQUIRE(i<optionletStrikes_.size(), "i >= optionletStrikes_.size()");
+        QL_REQUIRE(i<optionletStrikes_.size(),
+                   "index (" << i <<
+                   ") must be less than optionletStrikes size (" <<
+                   optionletStrikes_.size() << ")");
+        return optionletStrikes_[i];
         return optionletStrikes_[i];
     }   
 
-    const std::vector<Volatility>& OptionletStripper::optionletVolatilities(Size i) const{
+    const vector<Volatility>&
+    OptionletStripper::optionletVolatilities(Size i) const {
         calculate();
-        QL_REQUIRE(i<optionletVolatilities_.size(), "i >= optionletVolatilities_.size()");
+        QL_REQUIRE(i<optionletVolatilities_.size(),
+                   "index (" << i <<
+                   ") must be less than optionletVolatilities size (" <<
+                   optionletVolatilities_.size() << ")");
         return optionletVolatilities_[i];
     }   
 
-    const std::vector<Period>& OptionletStripper::optionletTenors() const {
+    const vector<Period>& OptionletStripper::optionletFixingTenors() const {
         return optionletTenors_;
     }
 
-    const std::vector<Date>& OptionletStripper::optionletDates() const {
+    const vector<Date>& OptionletStripper::optionletFixingDates() const {
         calculate();
         return optionletDates_;
     }
       
-    const std::vector<Date>& OptionletStripper::optionletPaymentDates() const {
-        calculate();
-        return optionletPaymentDates_;
-    }  
-
-    const std::vector<Time>& OptionletStripper::optionletTimes() const {
+    const vector<Time>& OptionletStripper::optionletFixingTimes() const {
         calculate();
         return optionletTimes_;
     }
      
-    const std::vector<Time>& OptionletStripper::optionletAccrualPeriods() const {
+    const vector<Date>& OptionletStripper::optionletPaymentDates() const {
+        calculate();
+        return optionletPaymentDates_;
+    }  
+
+    const vector<Time>& OptionletStripper::optionletAccrualPeriods() const {
         calculate();
         return optionletAccrualPeriods_;
     }
 
-    const std::vector<Rate>& OptionletStripper::atmOptionletRates() const {
+    const vector<Rate>& OptionletStripper::atmOptionletRates() const {
         calculate();
         return atmOptionletRate_;
     }
@@ -129,7 +140,7 @@ namespace QuantLib {
         return termVolSurface_;
     }
 
-    boost::shared_ptr<IborIndex> OptionletStripper::index() const {
-        return index_;
+    boost::shared_ptr<IborIndex> OptionletStripper::iborIndex() const {
+        return iborIndex_;
     }
 }

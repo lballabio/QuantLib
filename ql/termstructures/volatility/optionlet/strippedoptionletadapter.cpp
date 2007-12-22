@@ -33,7 +33,7 @@ namespace QuantLib {
                                    s->businessDayConvention(),
                                    s->dayCounter()),
       optionletStripper_(s),
-      nInterpolations_(s->optionletTimes().size()),
+      nInterpolations_(s->optionletFixingTimes().size()),
       strikeInterpolations_(nInterpolations_) {
         registerWith(optionletStripper_);
     }
@@ -46,7 +46,8 @@ namespace QuantLib {
         for (Size i=0; i<nInterpolations_; ++i)
             vol[i] = strikeInterpolations_[i]->operator()(strike, true);
 
-        const std::vector<Time>& optionletTimes = optionletStripper_->optionletTimes();
+        const std::vector<Time>& optionletTimes =
+                                    optionletStripper_->optionletFixingTimes();
         boost::shared_ptr<LinearInterpolation> timeInterpolator(new
             LinearInterpolation(optionletTimes.begin(), optionletTimes.end(),
                                 vol.begin()));
@@ -108,7 +109,7 @@ namespace QuantLib {
     }
 
     Date StrippedOptionletAdapter::maxDate() const {
-        return optionletStripper_->optionletDates().back();
+        return optionletStripper_->optionletFixingDates().back();
     }
 
     const Date& StrippedOptionletAdapter::referenceDate() const {

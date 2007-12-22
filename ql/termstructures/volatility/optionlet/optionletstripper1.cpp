@@ -28,16 +28,18 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
+using boost::shared_ptr;
+
 namespace QuantLib {
 
     OptionletStripper1::OptionletStripper1(
-            const boost::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
-            const boost::shared_ptr<IborIndex>& index,
+            const shared_ptr<CapFloorTermVolSurface>& termVolSurface,
+            const shared_ptr<IborIndex>& index,
             Rate switchStrike,
             Real accuracy)
     : OptionletStripper(termVolSurface, index),
       volQuotes_(nOptionletTenors_,
-                 std::vector<boost::shared_ptr<SimpleQuote> >(nStrikes_)),
+                 std::vector<shared_ptr<SimpleQuote> >(nStrikes_)),
       floatingSwitchStrike_(switchStrike==Null<Rate>() ? true : false),
       capFlooMatrixNotInitialized_(true),
       switchStrike_(switchStrike),
@@ -57,16 +59,16 @@ namespace QuantLib {
         // update dates
         const Date& referenceDate = termVolSurface_->referenceDate();
         const DayCounter& dc = termVolSurface_->dayCounter();
-        boost::shared_ptr<BlackCapFloorEngine> dummy(new
-                      BlackCapFloorEngine(index_->termStructure(), 0.20, dc));
+        shared_ptr<BlackCapFloorEngine> dummy(new
+                      BlackCapFloorEngine(iborIndex_->termStructure(), 0.20, dc));
         for (Size i=0; i<nOptionletTenors_; ++i) {
             CapFloor temp = MakeCapFloor(CapFloor::Cap,
                                          capFloorLengths_[i],
-                                         index_,
+                                         iborIndex_,
                                          0.04, // dummy strike
                                          0*Days)
                 .withPricingEngine(dummy);
-            boost::shared_ptr<FloatingRateCoupon> lFRC =
+            shared_ptr<FloatingRateCoupon> lFRC =
                                                 temp.lastFloatingRateCoupon();
             optionletDates_[i] = lFRC->fixingDate();
             optionletPaymentDates_[i] = lFRC->date();
@@ -75,10 +77,10 @@ namespace QuantLib {
                                                  optionletDates_[i]);
         }
 
-        if (floatingSwitchStrike_) { // && capFlooMatrixNotInitialized_)
+        if (floatingSwitchStrike_ && capFlooMatrixNotInitialized_) {
             Rate averageAtmOptionletRate = 0.0;
             for (Size i=0; i<nOptionletTenors_; ++i) {
-                atmOptionletRate_[i] = index_->fixing(optionletDates_[i],true);
+                atmOptionletRate_[i] = iborIndex_->fixing(optionletDates_[i]);
                 averageAtmOptionletRate += atmOptionletRate_[i];
             }
             switchStrike_ = averageAtmOptionletRate / nOptionletTenors_;
@@ -95,13 +97,14 @@ namespace QuantLib {
                 CapFloor::Type capFloorType = strikes[j] < switchStrike_ ?
                                        CapFloor::Floor : CapFloor::Cap;
                 for (Size i=0; i<nOptionletTenors_; ++i) {
-                    volQuotes_[i][j]= boost::shared_ptr<SimpleQuote>(new SimpleQuote());
-                    boost::shared_ptr<BlackCapFloorEngine> engine(new
-                        BlackCapFloorEngine(index_->termStructure(),
+                    volQuotes_[i][j] = shared_ptr<SimpleQuote>(new
+                                                                SimpleQuote());
+                    shared_ptr<BlackCapFloorEngine> engine(new
+                        BlackCapFloorEngine(iborIndex_->termStructure(),
                                             Handle<Quote>(volQuotes_[i][j]),
                                             dc));
                     capFloors_[i][j] = MakeCapFloor(capFloorType,
-                                                    capFloorLengths_[i], index_,
+                                                    capFloorLengths_[i], iborIndex_,
                                                     strikes[j], 0*Days)
                         .withPricingEngine(engine);
                 }
@@ -111,9 +114,7 @@ namespace QuantLib {
 
         for (Size j=0; j<nStrikes_; ++j) {
 
-            CapFloor::Type capFloorType = strikes[j] < switchStrike_ ?
-                                   CapFloor::Floor : CapFloor::Cap;
-            Option::Type optionletType = capFloorType==CapFloor::Floor ?
+            Option::Type optionletType = strikes[j] < switchStrike_ ?
                                    Option::Put : Option::Call;
 
             Real previousCapFloorPrice = 0.0;
@@ -127,7 +128,7 @@ namespace QuantLib {
                 optionletPrices_[i][j] = capFloorPrices_[i][j] -
                                                         previousCapFloorPrice;
                 previousCapFloorPrice = capFloorPrices_[i][j];
-                DiscountFactor d = index_->termStructure()->discount(
+                DiscountFactor d = iborIndex_->termStructure()->discount(
                                                    optionletPaymentDates_[i]);
                 DiscountFactor optionletAnnuity=optionletAccrualPeriods_[i]*d;
                 try {

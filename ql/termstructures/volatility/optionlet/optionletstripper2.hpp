@@ -31,11 +31,17 @@ namespace QuantLib {
     class OptionletStripper1;
     class CapFloor;
 
+    /*! Helper class to extend an OptionletStripper1 object stripping
+        additional optionlet (i.e. caplet/floorlet) volatilities (a.k.a.
+        forward-forward volatilities) from the (cap/floor) At-The-Money
+        term volatilities of a CapFloorTermVolCurve.
+    */
     class OptionletStripper2 : public OptionletStripper {
       public:
         // Handle or just shared_ptr ??
-        OptionletStripper2(const boost::shared_ptr<OptionletStripper1>& optionletStripper1,
-                           const Handle<CapFloorTermVolCurve>& atmCapFloorTermVolCurve);
+        OptionletStripper2(
+            const boost::shared_ptr<OptionletStripper1>& optionletStripper1,
+            const Handle<CapFloorTermVolCurve>& atmCapFloorTermVolCurve);
 
         std::vector<Rate> atmCapFloorStrikes() const;
         std::vector<Real> atmCapFloorPrices() const;
@@ -51,18 +57,18 @@ namespace QuantLib {
 
         class ObjectiveFunction {
           public:
-            ObjectiveFunction(const boost::shared_ptr<OptionletStripper1>& optionletStripper1,
-                              const boost::shared_ptr<CapFloor>& cap,
+            ObjectiveFunction(const boost::shared_ptr<OptionletStripper1>&,
+                              const boost::shared_ptr<CapFloor>&,
                               Real targetValue);
             Real operator()(Volatility spreadVol) const;
           private:
-            const boost::shared_ptr<OptionletStripper1> optionletStripper1_;
+            const boost::shared_ptr<OptionletStripper1> stripper1_;
             boost::shared_ptr<CapFloor> cap_;
             Real targetValue_;
 
         };
         
-        const boost::shared_ptr<OptionletStripper1> optionletStripper1_;
+        const boost::shared_ptr<OptionletStripper1> stripper1_;
         const Handle<CapFloorTermVolCurve> atmCapFloorTermVolCurve_;
         DayCounter dc_;
         Size nOptionExpiries_;

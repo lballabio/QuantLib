@@ -32,10 +32,14 @@
 
 namespace QuantLib {
 
+    /*! Adapter class for turning a StrippedOptionletBase object into an
+        OptionletVolatilityStructure.
+    */
     class StrippedOptionletAdapter : public OptionletVolatilityStructure,
                                      public LazyObject {
       public:
-          StrippedOptionletAdapter(const boost::shared_ptr<StrippedOptionletBase>& optionletStripper);
+          StrippedOptionletAdapter(
+                              const boost::shared_ptr<StrippedOptionletBase>&);
 
         //! \name TermStructure interface
         //@{

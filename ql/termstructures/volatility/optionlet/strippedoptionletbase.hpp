@@ -26,18 +26,28 @@
 #define quantlib_strippedoptionletbase_hpp
 
 #include <ql/patterns/lazyobject.hpp>
-#include <ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp>
+#include <ql/time/businessdayconvention.hpp>
+#include <ql/types.hpp>
 #include <vector>
 
 namespace QuantLib {
 
+    class Date;
+    class Calendar;
+    class DayCounter;
+
+    /*! Abstract base class interface for a (time indexed) vector of (strike
+        indexed) optionlet (i.e. caplet/floorlet) volatilities.
+    */
     class StrippedOptionletBase : public LazyObject {
       public:
         virtual const std::vector<Rate>& optionletStrikes(Size i) const = 0;
         virtual const std::vector<Volatility>& optionletVolatilities(Size i) const = 0;
 
-        virtual const std::vector<Date>& optionletDates() const = 0;
-        virtual const std::vector<Time>& optionletTimes() const = 0;
+        virtual const std::vector<Date>& optionletFixingDates() const = 0;
+        virtual const std::vector<Time>& optionletFixingTimes() const = 0;
+
+        virtual const std::vector<Rate>& atmOptionletRates() const = 0;
 
         virtual DayCounter dayCounter() const = 0;
         virtual Calendar calendar() const = 0;

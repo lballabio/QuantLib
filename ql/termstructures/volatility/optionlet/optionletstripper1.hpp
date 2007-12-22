@@ -21,7 +21,7 @@
 */
 
 /*! \file optionletstripper.hpp
-    \brief optionlet (cap/floor) volatility stripper
+    \brief optionlet (caplet/floorlet) volatility stripper
 */
 
 #ifndef quantlib_optionletstripper1_hpp
@@ -36,11 +36,15 @@ namespace QuantLib {
 
     typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapFloorMatrix;
 
+    /*! Helper class to strip optionlet (i.e. caplet/floorlet) volatilities
+        (a.k.a. forward-forward volatilities) from the (cap/floor) term
+        volatilities of a CapFloorTermVolSurface.
+    */
     class OptionletStripper1 : public OptionletStripper {
       public:
         OptionletStripper1(const boost::shared_ptr<CapFloorTermVolSurface>&,
                            const boost::shared_ptr<IborIndex>& index,
-                           Rate switchStrikes,
+                           Rate switchStrikes = Null<Rate>(),
                            Real accuracy = 1.0e-6);
 
         const Matrix& capFloorPrices() const;

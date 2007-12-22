@@ -24,23 +24,26 @@
 #define quantlib_strippedoptionlet_hpp
 
 #include <ql/termstructures/volatility/optionlet/strippedoptionletbase.hpp>
-//#include <ql/termstructures/volatility/optionlet/strippedoptionletbase.hpp>
+#include <ql/indexes/iborindex.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 
-    class IborIndex;
-
+    /*! Helper class to wrap in a StrippedOptionletBase object a matrix of
+        exogenously calculated optionlet (i.e. caplet/floorlet) volatilities
+        (a.k.a. forward-forward volatilities).
+    */
     class StrippedOptionlet : public StrippedOptionletBase {
       public:
         StrippedOptionlet(const Date& referenceDate,
                           const Calendar& calendar,
                           Natural settlementDays,
                           BusinessDayConvention businessDayConvention,
-                          const DayCounter& dc,
                           const boost::shared_ptr<IborIndex>& index,
                           const std::vector<Period>& optionletTenors,
                           const std::vector<Rate>& strikes,
-                          const std::vector<std::vector<Handle<Quote> > >&
+                          const std::vector<std::vector<Handle<Quote> > >&,
+                          const DayCounter& dc = Actual365Fixed()
                           );
 
         //! \name StrippedOptionletBase interface
@@ -48,8 +51,10 @@ namespace QuantLib {
         const std::vector<Rate>& optionletStrikes(Size i) const;
         const std::vector<Volatility>& optionletVolatilities(Size i) const;
 
-        const std::vector<Date>& optionletDates() const;
-        const std::vector<Time>& optionletTimes() const;
+        const std::vector<Date>& optionletFixingDates() const;
+        const std::vector<Time>& optionletFixingTimes() const;
+
+        const std::vector<Rate>& atmOptionletRates() const;
 
         DayCounter dayCounter() const;
         Calendar calendar() const;
@@ -60,32 +65,28 @@ namespace QuantLib {
 
         const std::vector<Period>& optionletTenors() const;
 
-      protected:
-        
+      private:
         void checkInputs() const;
         void registerWithMarketData();
+        void performCalculations() const;
 
-        const Date referenceDate_;
-        const Calendar calendar_;
+        Date referenceDate_;
+        Calendar calendar_;
         Natural settlementDays_;
         BusinessDayConvention businessDayConvention_;
-        const DayCounter dc_;
-        const boost::shared_ptr<IborIndex> index_;
+        DayCounter dc_;
+        boost::shared_ptr<IborIndex> index_;
 
-        Size nStrikes_; 
-        Size nOptionletTenors_;
-
-        mutable std::vector<std::vector<Rate> > optionletStrikes_;
-        mutable std::vector<std::vector<Volatility> > optionletVolatilities_;
-
-        mutable std::vector<Time> optionletTimes_;
-        mutable std::vector<Date> optionletDates_;
         std::vector<Period> optionletTenors_;
+        Size nOptionletTenors_;
+        std::vector<Date> optionletDates_;
+        std::vector<Time> optionletTimes_;
+        mutable std::vector<Rate> optionletAtmRates_;
+        std::vector<std::vector<Rate> > optionletStrikes_;
+        Size nStrikes_; 
 
-      private:
-        void performCalculations() const;
-        const std::vector<std::vector<Handle<Quote> > > optionletVolQuotes_;
-
+        std::vector<std::vector<Handle<Quote> > > optionletVolQuotes_;
+        mutable std::vector<std::vector<Volatility> > optionletVolatilities_;
     };
 
 }
