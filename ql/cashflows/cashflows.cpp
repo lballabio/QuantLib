@@ -128,7 +128,7 @@ namespace QuantLib {
             Real P = 0.0;
             Real dPdy = 0.0;
             Rate y = Rate(rate);
-            Integer N = rate.frequency();
+            Natural N = rate.frequency();
 
             for (Size i=0; i<cashflows.size(); ++i) {
                 if (!cashflows[i]->hasOccurred(settlementDate)) {
@@ -168,7 +168,7 @@ namespace QuantLib {
                               Date settlementDate) {
 
             Rate y = Rate(rate);
-            Integer N = rate.frequency();
+            Natural N = rate.frequency();
 
             QL_REQUIRE(rate.compounding() == Compounded,
                        "compounded rate required");
@@ -256,7 +256,7 @@ namespace QuantLib {
                         const YieldTermStructure& discountCurve,
                         const Date& settlementDate,
                         const Date& npvDate,
-                        Integer exDividendDays) {
+                        Natural exDividendDays) {
         Date d = settlementDate != Date() ?
                  settlementDate :
                  discountCurve.referenceDate();
@@ -276,27 +276,28 @@ namespace QuantLib {
 
     Real CashFlows::npv(const Leg& cashflows,
                         const InterestRate& irr,
-                        Date settlementDate) {
-        if (settlementDate == Date())
-            settlementDate = Settings::instance().evaluationDate();
-        FlatForward flatRate(settlementDate, irr.rate(), irr.dayCounter(),
+                        const Date& settlDate) {
+        Date refDate = settlDate;
+        if (refDate == Date())
+            refDate = Settings::instance().evaluationDate();
+
+        FlatForward flatRate(refDate, irr.rate(), irr.dayCounter(),
                              irr.compounding(), irr.frequency());
-        return npv(cashflows, flatRate, settlementDate, settlementDate);
+        return npv(cashflows, flatRate, refDate, refDate);
     }
 
     Real CashFlows::bps(const Leg& cashflows,
                         const YieldTermStructure& discountCurve,
-                        const Date& settlementDate,
+                        const Date& settlDate,
                         const Date& npvDate,
-                        Integer exDividendDays) {
-
-        Date d = settlementDate;
-        if (d==Date())
-            d = discountCurve.referenceDate();
+                        Natural exDividendDays) {
+        Date refDate = settlDate;
+        if (refDate == Date())
+            refDate = Settings::instance().evaluationDate();
 
         BPSCalculator calc(discountCurve, npvDate);
         for (Size i=0; i<cashflows.size(); ++i) {
-            if (!cashflows[i]->hasOccurred(d+exDividendDays))
+            if (!cashflows[i]->hasOccurred(refDate+exDividendDays))
                 cashflows[i]->accept(calc);
         }
         return basisPoint_*calc.result();
@@ -304,12 +305,13 @@ namespace QuantLib {
 
     Real CashFlows::bps(const Leg& cashflows,
                         const InterestRate& irr,
-                        Date settlementDate) {
-        if (settlementDate == Date())
-            settlementDate = Settings::instance().evaluationDate();
-        FlatForward flatRate(settlementDate, irr.rate(), irr.dayCounter(),
+                        const Date& settlDate) {
+        Date refDate = settlDate;
+        if (refDate == Date())
+            refDate = Settings::instance().evaluationDate();
+        FlatForward flatRate(refDate, irr.rate(), irr.dayCounter(),
                              irr.compounding(), irr.frequency());
-        return bps(cashflows, flatRate, settlementDate, settlementDate);
+        return bps(cashflows, flatRate, refDate, refDate);
     }
 
     Rate CashFlows::irr(const Leg& cashflows,
@@ -317,13 +319,14 @@ namespace QuantLib {
                         const DayCounter& dayCounter,
                         Compounding compounding,
                         Frequency frequency,
-                        Date settlementDate,
+                        const Date& settlDate,
                         Real tolerance,
                         Size maxIterations,
                         Rate guess) {
 
-        if (settlementDate == Date())
-            settlementDate = Settings::instance().evaluationDate();
+        Date refDate = settlDate;
+        if (refDate == Date())
+            refDate = Settings::instance().evaluationDate();
 
         // depending on the sign of the market price, check that cash
         // flows of the opposite sign have been specified (otherwise
@@ -332,7 +335,7 @@ namespace QuantLib {
         Integer lastSign = sign(-marketPrice),
                 signChanges = 0;
         for (Size i = 0; i < cashflows.size(); ++i) {
-            if (!cashflows[i]->hasOccurred(settlementDate)) {
+            if (!cashflows[i]->hasOccurred(refDate)) {
                 Integer thisSign = sign(cashflows[i]->amount());
                 if (lastSign * thisSign < 0) // sign change
                     signChanges++;
@@ -367,25 +370,26 @@ namespace QuantLib {
         Brent solver;
         solver.setMaxEvaluations(maxIterations);
         return solver.solve(irrFinder(cashflows, marketPrice, dayCounter,
-                                      compounding, frequency, settlementDate),
+                                      compounding, frequency, refDate),
                             tolerance, guess, guess/10.0);
     }
 
     Time CashFlows::duration(const Leg& cashflows,
                              const InterestRate& rate,
                              Duration::Type type,
-                             Date settlementDate) {
+                             const Date& settlDate) {
 
-        if (settlementDate == Date())
-            settlementDate = Settings::instance().evaluationDate();
+        Date refDate = settlDate;
+        if (refDate == Date())
+            refDate = Settings::instance().evaluationDate();
 
         switch (type) {
           case Duration::Simple:
-            return simpleDuration(cashflows, rate, settlementDate);
+            return simpleDuration(cashflows, rate, refDate);
           case Duration::Modified:
-            return modifiedDuration(cashflows, rate, settlementDate);
+            return modifiedDuration(cashflows, rate, refDate);
           case Duration::Macaulay:
-            return macaulayDuration(cashflows, rate, settlementDate);
+            return macaulayDuration(cashflows, rate, refDate);
           default:
             QL_FAIL("unknown duration type");
         }
@@ -393,21 +397,21 @@ namespace QuantLib {
 
     Real CashFlows::convexity(const Leg& cashflows,
                               const InterestRate& rate,
-                              Date settlementDate) {
-
-        if (settlementDate == Date())
-            settlementDate = Settings::instance().evaluationDate();
+                              const Date& settlDate) {
+        Date refDate = settlDate;
+        if (refDate == Date())
+            refDate = Settings::instance().evaluationDate();
 
         DayCounter dayCounter = rate.dayCounter();
 
         Real P = 0.0;
         Real d2Pdy2 = 0.0;
         Rate y = Rate(rate);
-        Integer N = rate.frequency();
+        Natural N = rate.frequency();
 
         for (Size i=0; i<cashflows.size(); ++i) {
-            if (!cashflows[i]->hasOccurred(settlementDate)) {
-                Time t = dayCounter.yearFraction(settlementDate,
+            if (!cashflows[i]->hasOccurred(refDate)) {
+                Time t = dayCounter.yearFraction(refDate,
                                                  cashflows[i]->date());
                 Real c = cashflows[i]->amount();
                 DiscountFactor B = rate.discountFactor(t);
@@ -441,7 +445,7 @@ namespace QuantLib {
                             const YieldTermStructure& discountCurve,
                             const Date& settlementDate,
                             const Date& npvDate,
-                            Integer exDividendDays,
+                            Natural exDividendDays,
                             Real npv) {
         Real bps = CashFlows::bps(cashFlows, discountCurve, settlementDate,
                                   npvDate, exDividendDays);

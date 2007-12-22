@@ -64,7 +64,7 @@ namespace QuantLib {
                         const YieldTermStructure& discountCurve,
                         const Date& settlementDate = Date(),
                         const Date& npvDate = Date(),
-                        Integer exDividendDays = 0);
+                        Natural exDividendDays = 0);
         //! NPV of the cash flows.
         /*! The NPV is the sum of the cash flows, each discounted
             according to the given constant interest rate.  The result
@@ -73,7 +73,7 @@ namespace QuantLib {
         */
         static Real npv(const Leg& leg,
                         const InterestRate&,
-                        Date settlementDate = Date());
+                        const Date& settlementDate = Date());
 
         //! Basis-point sensitivity of the cash flows.
         /*! The result is the change in NPV due to a uniform
@@ -85,7 +85,7 @@ namespace QuantLib {
                         const YieldTermStructure& discountCurve,
                         const Date& settlementDate = Date(),
                         const Date& npvDate = Date(),
-                        Integer exDividendDays = 0);
+                        Natural exDividendDays = 0);
         //! Basis-point sensitivity of the cash flows.
         /*! The result is the change in NPV due to a uniform
             1-basis-point change in the rate paid by the cash
@@ -96,7 +96,7 @@ namespace QuantLib {
         */
         static Real bps(const Leg& leg,
                         const InterestRate&,
-                        Date settlementDate = Date());
+                        const Date& settlementDate = Date());
 
         //! At-the-money rate of the cash flows.
         /*! The result is the fixed rate for which a fixed rate cash flow
@@ -108,7 +108,7 @@ namespace QuantLib {
                             const YieldTermStructure& discountCurve,
                             const Date& settlementDate = Date(),
                             const Date& npvDate = Date(),
-                            Integer exDividendDays = 0,
+                            Natural exDividendDays = 0,
                             Real npv = Null<Real>());
 
         //! Internal rate of return.
@@ -122,7 +122,7 @@ namespace QuantLib {
                         const DayCounter& dayCounter,
                         Compounding compounding,
                         Frequency frequency = NoFrequency,
-                        Date settlementDate = Date(),
+                        const Date& settlementDate = Date(),
                         Real tolerance = 1.0e-10,
                         Size maxIterations = 10000,
                         Rate guess = 0.05);
@@ -154,7 +154,7 @@ namespace QuantLib {
         static Time duration(const Leg& leg,
                              const InterestRate& y,
                              Duration::Type type = Duration::Modified,
-                             Date settlementDate = Date());
+                             const Date& settlementDate = Date());
 
         //! Cash-flow convexity
         /*! The convexity of a string of cash flows is defined as
@@ -166,7 +166,7 @@ namespace QuantLib {
         */
         static Real convexity(const Leg& leg,
                               const InterestRate& y,
-                              Date settlementDate = Date());
+                              const Date& settlementDate = Date());
     };
 
 }
