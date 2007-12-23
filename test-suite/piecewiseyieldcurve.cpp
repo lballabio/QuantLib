@@ -391,7 +391,8 @@ void testBMACurveConsistency(const T&, const I& interpolator) {
         Handle<Quote> f(fractions[i]);
         bmaHelpers[i] = boost::shared_ptr<RateHelper>(
                       new BMASwapRateHelper(f, bmaData[i].n*bmaData[i].units,
-                                            settlementDays, calendar,
+                                            settlementDays,
+                                            bmaIndex->fixingCalendar(),
                                             Period(bmaFrequency),
                                             bmaConvention,
                                             bmaDayCounter,
@@ -438,7 +439,7 @@ void testBMACurveConsistency(const T&, const I& interpolator) {
 
         Real expectedFraction = bmaData[i].rate/100,
              estimatedFraction = swap.fairLiborFraction();
-        Real tolerance = 2.0e-6;
+        Real tolerance = 1.0e-9;
         Real error = std::fabs(expectedFraction-estimatedFraction);
         if (error > tolerance) {
             BOOST_ERROR(bmaData[i].n << " year(s) BMA swap:\n"
