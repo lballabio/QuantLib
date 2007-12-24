@@ -75,10 +75,12 @@ namespace QuantLib {
                       const DayCounter& dc = DayCounter());
         //@}
         virtual ~TermStructure() {}
-        //! \name Dates
+        //! \name Dates and Time
         //@{
         //! the day counter used for date/time conversion
         virtual DayCounter dayCounter() const;
+        //! date/time conversion
+        Time timeFromReference(const Date& date) const;
         //! the latest date for which the curve can return values
         virtual Date maxDate() const = 0;
         //! the latest time for which the curve can return values
@@ -95,8 +97,6 @@ namespace QuantLib {
         void update();
         //@}
       protected:
-        //! date/time conversion
-        Time timeFromReference(const Date& date) const;
         //! date-range check
         void checkRange(const Date&,
                         bool extrapolate) const;
