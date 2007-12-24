@@ -63,7 +63,7 @@ namespace QuantLib {
                     Rate fixedRate,
                     const DayCounter& fixedDayCount,
                     const Schedule& floatSchedule,
-                    const boost::shared_ptr<IborIndex>& index,
+                    const boost::shared_ptr<IborIndex>& iborIndex,
                     Spread spread,
                     const DayCounter& floatingDayCount);
         // results
@@ -76,6 +76,7 @@ namespace QuantLib {
         Spread fairSpread() const;
         // inspectors
         Rate fixedRate() const;
+        const boost::shared_ptr<IborIndex>& iborIndex() const;
         Spread spread() const;
         Real nominal() const;
         Type type() const;
@@ -92,6 +93,7 @@ namespace QuantLib {
         void setupExpired() const;
         Type type_;
         Rate fixedRate_;
+        boost::shared_ptr<IborIndex> iborIndex_;
         Spread spread_;
         Real nominal_;
         // results
@@ -138,6 +140,11 @@ namespace QuantLib {
     inline Rate VanillaSwap::fixedRate() const {
         return fixedRate_;
     }
+
+    inline const boost::shared_ptr<IborIndex>& VanillaSwap::iborIndex() const {
+        return iborIndex_;
+    }
+
 
     inline Spread VanillaSwap::spread() const {
         return spread_;

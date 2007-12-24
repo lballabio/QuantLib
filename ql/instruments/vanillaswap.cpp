@@ -37,11 +37,12 @@ namespace QuantLib {
                              Rate fixedRate,
                              const DayCounter& fixedDayCount,
                              const Schedule& floatSchedule,
-                             const boost::shared_ptr<IborIndex>& index,
+                             const boost::shared_ptr<IborIndex>& iborIndex,
                              Spread spread,
                              const DayCounter& floatingDayCount)
     : Swap(Leg(), Leg()),
-      type_(type), fixedRate_(fixedRate), spread_(spread),
+      type_(type), fixedRate_(fixedRate),
+      iborIndex_(iborIndex), spread_(spread),
       nominal_(nominal) {
 
         BusinessDayConvention convention =
@@ -52,11 +53,11 @@ namespace QuantLib {
             .withCouponRates(fixedRate)
             .withPaymentAdjustment(convention);
 
-        Leg floatingLeg = IborLeg(floatSchedule, index)
+        Leg floatingLeg = IborLeg(floatSchedule, iborIndex)
             .withNotionals(nominal)
             .withPaymentDayCounter(floatingDayCount)
             .withPaymentAdjustment(convention)
-            .withFixingDays(index->fixingDays())
+            .withFixingDays(iborIndex->fixingDays())
             .withSpreads(spread);
 
         Leg::const_iterator i;
