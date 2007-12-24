@@ -39,7 +39,7 @@ namespace QuantLib {
     class MakeVanillaSwap {
       public:
         MakeVanillaSwap(const Period& swapTenor,
-                        const boost::shared_ptr<IborIndex>& index,
+                        const boost::shared_ptr<IborIndex>& iborIndex,
                         Rate fixedRate = Null<Rate>(),
                         const Period& forwardStart = 0*Days);
 
@@ -76,15 +76,14 @@ namespace QuantLib {
 
         MakeVanillaSwap& withDiscountingTermStructure(
                   const Handle<YieldTermStructure>& discountingTermStructure);
-
       private:
-        Period forwardStart_, swapTenor_;
+        Period swapTenor_;
         boost::shared_ptr<IborIndex> iborIndex_;
         Rate fixedRate_;
+        Period forwardStart_;
 
         Date effectiveDate_;
         Calendar fixedCalendar_, floatCalendar_;
-        Handle<YieldTermStructure> discountingTermStructure_;
 
         VanillaSwap::Type type_;
         Real nominal_;
@@ -97,6 +96,8 @@ namespace QuantLib {
         Date floatFirstDate_, floatNextToLastDate_;
         Spread floatSpread_;
         DayCounter fixedDayCount_, floatDayCount_;
+
+        boost::shared_ptr<PricingEngine> engine_;
     };
 
 }

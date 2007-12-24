@@ -32,25 +32,25 @@ namespace QuantLib {
                                      const boost::shared_ptr<IborIndex>& index,
                                      Rate fixedRate,
                                      const Period& forwardStart)
-    : forwardStart_(forwardStart), swapTenor_(swapTenor),
-      iborIndex_(index), fixedRate_(fixedRate),
+    : swapTenor_(swapTenor), iborIndex_(index),
+      fixedRate_(fixedRate), forwardStart_(forwardStart),
       effectiveDate_(Date()),
       fixedCalendar_(index->fixingCalendar()),
       floatCalendar_(index->fixingCalendar()),
-      discountingTermStructure_(index->termStructure()),
       type_(VanillaSwap::Payer), nominal_(1.0),
       fixedTenor_(Period(1, Years)), floatTenor_(index->tenor()),
       fixedConvention_(ModifiedFollowing),
       fixedTerminationDateConvention_(ModifiedFollowing),
-      floatConvention_(ModifiedFollowing),
-      floatTerminationDateConvention_(ModifiedFollowing),
+      floatConvention_(index->businessDayConvention()),
+      floatTerminationDateConvention_(index->businessDayConvention()),
       fixedRule_(DateGeneration::Backward), floatRule_(DateGeneration::Backward),
       fixedEndOfMonth_(false), floatEndOfMonth_(false),
       fixedFirstDate_(Date()), fixedNextToLastDate_(Date()),
       floatFirstDate_(Date()), floatNextToLastDate_(Date()),
       floatSpread_(0.0),
       fixedDayCount_(Thirty360(Thirty360::BondBasis)),
-      floatDayCount_(index->dayCounter()) {}
+      floatDayCount_(index->dayCounter()),
+      engine_(new DiscountingSwapEngine(index->termStructure())) {}
 
     MakeVanillaSwap::operator VanillaSwap() const {
         boost::shared_ptr<VanillaSwap> swap = *this;
@@ -61,7 +61,7 @@ namespace QuantLib {
 
         Date startDate;
         if (effectiveDate_ != Date())
-            startDate=effectiveDate_;
+            startDate = effectiveDate_;
         else {
             Natural fixingDays = iborIndex_->fixingDays();
             Date referenceDate = Settings::instance().evaluationDate();
@@ -95,18 +95,18 @@ namespace QuantLib {
                              fixedSchedule, 0.0, fixedDayCount_,
                              floatSchedule, iborIndex_,
                              floatSpread_, floatDayCount_);
-            temp.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                       new DiscountingSwapEngine(discountingTermStructure_)));
+            // ATM on the forecasting curve
+            temp.setPricingEngine(boost::shared_ptr<PricingEngine>(new
+                            DiscountingSwapEngine(iborIndex_->termStructure())));
             usedFixedRate = temp.fairRate();
         }
 
-        boost::shared_ptr<VanillaSwap> swap(
-                 new VanillaSwap(type_, nominal_,
-                                 fixedSchedule, usedFixedRate, fixedDayCount_,
-                                 floatSchedule, iborIndex_,
-                                 floatSpread_, floatDayCount_));
-        swap->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                       new DiscountingSwapEngine(discountingTermStructure_)));
+        boost::shared_ptr<VanillaSwap> swap(new
+                    VanillaSwap(type_, nominal_,
+                                fixedSchedule, usedFixedRate, fixedDayCount_,
+                                floatSchedule, iborIndex_,
+                                floatSpread_, floatDayCount_));
+        swap->setPricingEngine(engine_);
         return swap;
     }
 
@@ -133,7 +133,8 @@ namespace QuantLib {
 
     MakeVanillaSwap& MakeVanillaSwap::withDiscountingTermStructure(
                 const Handle<YieldTermStructure>& discountingTermStructure) {
-        discountingTermStructure_ = discountingTermStructure;
+        engine_ = boost::shared_ptr<PricingEngine>(new
+                            DiscountingSwapEngine(discountingTermStructure));
         return *this;
     }
 
