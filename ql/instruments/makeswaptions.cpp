@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
@@ -27,12 +28,13 @@
 namespace QuantLib {
 
     MakeSwaption::MakeSwaption(const boost::shared_ptr<SwapIndex>& swapIndex,
-                             Rate strike,
-                             const Period& optionTenor)
-    : delivery_(Settlement::Physical),
-      strike_(strike),
+                               const Period& optionTenor,
+                               Rate strike)
+    : swapIndex_(swapIndex),
       optionTenor_(optionTenor),
-      swapIndex_(swapIndex),
+      strike_(strike),
+      delivery_(Settlement::Physical),
+      // please check!! It might be Following
       swaptionConvention_(ModifiedFollowing) {}
 
     MakeSwaption::operator Swaption() const {
@@ -46,38 +48,40 @@ namespace QuantLib {
             swapIndex_->fixingCalendar().advance(evaluationDate,
                                                  optionTenor_,
                                                  swaptionConvention_);
-        exercise_ = boost::shared_ptr<Exercise>(
-                                            new EuropeanExercise(optionDate));
+        exercise_ = boost::shared_ptr<Exercise>(new
+            EuropeanExercise(optionDate));
         underlyingSwap_ = swapIndex_->underlyingSwap(optionDate);
 
+        Rate usedStrike = strike_;
         if (strike_ == Null<Rate>())
-            strike_ = CashFlows::atmRate(underlyingSwap_->floatingLeg(),
-                                         **swapIndex_->termStructure());
+            // ATM on the forecasting curve
+            usedStrike = CashFlows::atmRate(underlyingSwap_->floatingLeg(),
+                                            **swapIndex_->termStructure());
 
+        BusinessDayConvention bdc = swapIndex_->fixedLegConvention();
         underlyingSwap_ =
             MakeVanillaSwap(swapIndex_->tenor(),
-                            swapIndex_->iborIndex(), strike_)
+                            swapIndex_->iborIndex(), usedStrike)
             .withEffectiveDate(swapIndex_->valueDate(optionDate))
             .withFixedLegCalendar(swapIndex_->fixingCalendar())
             .withFixedLegDayCount(swapIndex_->dayCounter())
-            .withFixedLegConvention(swapIndex_->fixedLegConvention())
-            .withFixedLegTerminationDateConvention(
-                                            swapIndex_->fixedLegConvention());
+            .withFixedLegConvention(bdc)
+            .withFixedLegTerminationDateConvention(bdc);
 
-        boost::shared_ptr<Swaption> swaption(
-                         new Swaption(underlyingSwap_, exercise_, delivery_));
+        boost::shared_ptr<Swaption> swaption(new
+            Swaption(underlyingSwap_, exercise_, delivery_));
         swaption->setPricingEngine(engine_);
         return swaption;
     }
 
-    MakeSwaption& MakeSwaption::withSwaptionConvention(
-                                                  BusinessDayConvention bdc) {
-        swaptionConvention_ = bdc;
+    MakeSwaption& MakeSwaption::withSettlementType(Settlement::Type delivery) {
+        delivery_ = delivery;
         return *this;
     }
 
-    MakeSwaption& MakeSwaption::withSettlementType(Settlement::Type delivery) {
-        delivery_ = delivery;
+    MakeSwaption&
+    MakeSwaption::withSwaptionConvention(BusinessDayConvention bdc) {
+        swaptionConvention_ = bdc;
         return *this;
     }
 
@@ -88,4 +92,3 @@ namespace QuantLib {
     }
 
 }
-

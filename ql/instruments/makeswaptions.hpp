@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
@@ -43,28 +44,27 @@ namespace QuantLib {
     class MakeSwaption {
       public:
         MakeSwaption(const boost::shared_ptr<SwapIndex>& swapIndex,
-                     Rate strike = Null<Rate>(),
-                     const Period& forwardStart = 0*Days);
+                     const Period& optionTenor,
+                     Rate strike = Null<Rate>());
 
         operator Swaption() const;
         operator boost::shared_ptr<Swaption>() const ;
 
-        MakeSwaption& withSwaptionConvention(BusinessDayConvention bdc);
         MakeSwaption& withSettlementType(Settlement::Type delivery);
+        MakeSwaption& withSwaptionConvention(BusinessDayConvention bdc);
 
         MakeSwaption& withPricingEngine(
                               const boost::shared_ptr<PricingEngine>& engine);
-
       private:
-        Settlement::Type delivery_;
-        mutable Rate strike_;
-        Period optionTenor_;
         boost::shared_ptr<SwapIndex> swapIndex_;
+        Period optionTenor_;
+        Rate strike_;
+        mutable boost::shared_ptr<VanillaSwap> underlyingSwap_;
+        mutable boost::shared_ptr<Exercise> exercise_;
+        Settlement::Type delivery_;
         BusinessDayConvention swaptionConvention_;
 
         boost::shared_ptr<PricingEngine> engine_;
-        mutable boost::shared_ptr<Exercise> exercise_;
-        mutable boost::shared_ptr<VanillaSwap> underlyingSwap_;
     };
 
 }
