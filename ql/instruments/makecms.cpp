@@ -32,47 +32,34 @@ namespace QuantLib {
 
     MakeCms::MakeCms(const Period& swapTenor,
                      const boost::shared_ptr<SwapIndex>& swapIndex,
+                     const boost::shared_ptr<IborIndex>& iborIndex,
                      Spread iborSpread,
                      const Period& forwardStart)
     : swapTenor_(swapTenor), swapIndex_(swapIndex),
-      iborSpread_(iborSpread),
+      iborIndex_(iborIndex), iborSpread_(iborSpread),
       forwardStart_(forwardStart),
 
       cmsSpread_(0.0), cmsGearing_(1.0),
-      cmsCap_(2.0), cmsFloor_(0.0),
+      cmsCap_(2.0), cmsFloor_(Null<Real>()),
 
       effectiveDate_(Date()),
       cmsCalendar_(swapIndex->fixingCalendar()),
-      floatCalendar_(swapIndex->iborIndex()->fixingCalendar()),
-
-      discountingTermStructure_(swapIndex->termStructure()),
-
-      payCms_(true), nominal_(1000000.0),
-      cmsTenor_(3*Months), floatTenor_(3*Months),
+      floatCalendar_(iborIndex->fixingCalendar()),
+      payCms_(true), nominal_(1.0),
+      cmsTenor_(3*Months), floatTenor_(iborIndex->tenor()),
       cmsConvention_(ModifiedFollowing),
       cmsTerminationDateConvention_(ModifiedFollowing),
-      floatConvention_(ModifiedFollowing),
-      floatTerminationDateConvention_(ModifiedFollowing),
+      floatConvention_(iborIndex->businessDayConvention()),
+      floatTerminationDateConvention_(iborIndex->businessDayConvention()),
       cmsRule_(DateGeneration::Backward), floatRule_(DateGeneration::Backward),
       cmsEndOfMonth_(false), floatEndOfMonth_(false),
       cmsFirstDate_(Date()), cmsNextToLastDate_(Date()),
       floatFirstDate_(Date()), floatNextToLastDate_(Date()),
       cmsDayCount_(Actual360()),
-      floatDayCount_(swapIndex->iborIndex()->dayCounter())
-    {
-        boost::shared_ptr<IborIndex> baseIndex = swapIndex->iborIndex();
-        // FIXME use a familyName-based index factory
-        iborIndex_ = boost::shared_ptr<IborIndex>(new
-            IborIndex(baseIndex->familyName(),
-                      floatTenor_,
-                      baseIndex->fixingDays(),
-                      baseIndex->currency(),
-                      baseIndex->fixingCalendar(),
-                      baseIndex->businessDayConvention(),
-                      baseIndex->endOfMonth(),
-                      baseIndex->dayCounter(),
-                      baseIndex->termStructure()));
-      }
+      floatDayCount_(iborIndex->dayCounter()),
+      // arbitrary choice:
+      //engine_(new DiscountingSwapEngine(iborIndex->termStructure())),
+      engine_(new DiscountingSwapEngine(swapIndex->termStructure())) {}
 
     MakeCms::operator Swap() const {
         boost::shared_ptr<Swap> swap = *this;
@@ -83,12 +70,13 @@ namespace QuantLib {
 
         Date startDate;
         if (effectiveDate_ != Date())
-            startDate=effectiveDate_;
+            startDate = effectiveDate_;
         else {
-          Natural fixingDays = swapIndex_->fixingDays();
-          Date referenceDate = Settings::instance().evaluationDate();
-          Date spotDate = floatCalendar_.advance(referenceDate, fixingDays*Days);
-          startDate = spotDate+forwardStart_;
+            Natural fixingDays = iborIndex_->fixingDays();
+            Date referenceDate = Settings::instance().evaluationDate();
+            Date spotDate = floatCalendar_.advance(referenceDate,
+                                                   fixingDays*Days);
+            startDate = spotDate+forwardStart_;
         }
 
         Date terminationDate = startDate+swapTenor_;
@@ -116,21 +104,43 @@ namespace QuantLib {
             .withSpreads(cmsSpread_)
             .withCaps(cmsCap_)
             .withFloors(cmsFloor_);
+        QuantLib::setCouponPricer(cmsLeg, couponPricer_);
+
+        Rate usedSpread = iborSpread_;
+        if (iborSpread_ == Null<Spread>()) {
+            QL_REQUIRE(!iborIndex_->termStructure().empty(),
+                       "no forecasting term structure set to " <<
+                       iborIndex_->name());
+            QL_REQUIRE(!swapIndex_->termStructure().empty(),
+                       "no forecasting term structure set to " <<
+                       swapIndex_->name());
+            Leg floatLeg = IborLeg(floatSchedule, iborIndex_)
+                .withNotionals(nominal_)
+                .withPaymentDayCounter(floatDayCount_)
+                .withPaymentAdjustment(floatConvention_)
+                .withFixingDays(iborIndex_->fixingDays());
+
+            Swap temp(cmsLeg, floatLeg);
+            temp.setPricingEngine(engine_);
+
+            Real npv = temp.legNPV(0)+temp.legNPV(1);
+
+            usedSpread = -npv/temp.legBPS(1)*1e-4;
+        }
 
         Leg floatLeg = IborLeg(floatSchedule, iborIndex_)
             .withNotionals(nominal_)
             .withPaymentDayCounter(floatDayCount_)
             .withPaymentAdjustment(floatConvention_)
             .withFixingDays(iborIndex_->fixingDays())
-            .withSpreads(iborSpread_);
+            .withSpreads(usedSpread);
 
         boost::shared_ptr<Swap> swap;
         if (payCms_)
             swap = boost::shared_ptr<Swap>(new Swap(cmsLeg, floatLeg));
         else
             swap = boost::shared_ptr<Swap>(new Swap(floatLeg, cmsLeg));
-        swap->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                       new DiscountingSwapEngine(discountingTermStructure_)));
+        swap->setPricingEngine(engine_);
         return swap;
     }
 
@@ -152,7 +162,14 @@ namespace QuantLib {
 
     MakeCms& MakeCms::withDiscountingTermStructure(
                 const Handle<YieldTermStructure>& discountingTermStructure) {
-        discountingTermStructure_ = discountingTermStructure;
+        engine_ = boost::shared_ptr<PricingEngine>(new
+                            DiscountingSwapEngine(discountingTermStructure));
+        return *this;
+    }
+
+    MakeCms& MakeCms::withCmsCouponPricer(
+                    const boost::shared_ptr<CmsCouponPricer>& couponPricer) {
+        couponPricer_ = couponPricer;
         return *this;
     }
 

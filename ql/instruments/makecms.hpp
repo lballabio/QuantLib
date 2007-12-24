@@ -25,13 +25,11 @@
 #define quantlib_makecms_hpp
 
 #include <ql/cashflows/cmscoupon.hpp>
-#include <ql/time/calendar.hpp>
-#include <ql/time/businessdayconvention.hpp>
+#include <ql/cashflows/couponpricer.hpp>
+#include <ql/pricingengine.hpp>
 
 namespace QuantLib {
-    class SwapIndex;
     class Swap;
-    class Calendar;
     class IborIndex;
     //! helper class
     /*! This class provides a more comfortable way
@@ -41,7 +39,8 @@ namespace QuantLib {
       public:
         MakeCms(const Period& swapTenor,
                 const boost::shared_ptr<SwapIndex>& swapIndex,
-                Spread iborSpread,
+                const boost::shared_ptr<IborIndex>& iborIndex,
+                Spread iborSpread = Null<Spread>(),
                 const Period& forwardStart = 0*Days);
 
         operator Swap() const;
@@ -50,8 +49,6 @@ namespace QuantLib {
         MakeCms& receiveCms(bool flag = true);
         MakeCms& withNominal(Real n);
         MakeCms& withEffectiveDate(const Date&);
-        MakeCms& withDiscountingTermStructure(
-            const Handle<YieldTermStructure>& discountingTermStructure);
 
         MakeCms& withCmsLegTenor(const Period& t);
         MakeCms& withCmsLegCalendar(const Calendar& cal);
@@ -73,11 +70,16 @@ namespace QuantLib {
         MakeCms& withFloatingLegNextToLastDate(const Date& d);
         MakeCms& withFloatingLegDayCount(const DayCounter& dc);
 
+        MakeCms& withDiscountingTermStructure(
+            const Handle<YieldTermStructure>& discountingTermStructure);
+        MakeCms& withCmsCouponPricer(
+            const boost::shared_ptr<CmsCouponPricer>& couponPricer);
+
       private:
         Period swapTenor_;
         boost::shared_ptr<SwapIndex> swapIndex_;
+        boost::shared_ptr<IborIndex> iborIndex_;
         Spread iborSpread_;
-
         Period forwardStart_;
 
         Spread cmsSpread_;
@@ -86,8 +88,6 @@ namespace QuantLib {
 
         Date effectiveDate_;
         Calendar cmsCalendar_, floatCalendar_;
-        Handle<YieldTermStructure> discountingTermStructure_;
-        boost::shared_ptr<IborIndex> iborIndex_;
 
         bool payCms_;
         Real nominal_;
@@ -99,6 +99,9 @@ namespace QuantLib {
         Date cmsFirstDate_, cmsNextToLastDate_;
         Date floatFirstDate_, floatNextToLastDate_;
         DayCounter cmsDayCount_, floatDayCount_;
+
+        boost::shared_ptr<PricingEngine> engine_;
+        boost::shared_ptr<CmsCouponPricer> couponPricer_;
     };
 
 }
