@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2007 Ferdinando Ametrano
  Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -25,13 +25,12 @@ namespace QuantLib {
 
     MakeCapFloor::MakeCapFloor(CapFloor::Type capFloorType,
                                const Period& tenor,
-                               const boost::shared_ptr<IborIndex>& index,
+                               const boost::shared_ptr<IborIndex>& iborIndex,
                                Rate strike,
                                const Period& forwardStart)
     : capFloorType_(capFloorType), strike_(strike),
       firstCapletExcluded_(forwardStart==0*Days),
-      discountCurve_(index->termStructure()),
-      makeVanillaSwap_(MakeVanillaSwap(tenor, index, 0.0, forwardStart)) {}
+      makeVanillaSwap_(MakeVanillaSwap(tenor, iborIndex, 0.0, forwardStart)) {}
 
     MakeCapFloor::operator CapFloor() const {
         boost::shared_ptr<CapFloor> capfloor = *this;
@@ -47,11 +46,14 @@ namespace QuantLib {
             leg.erase(leg.begin());
 
         std::vector<Rate> strikeVector(1, strike_);
-        if (strike_ == Null<Rate>())
-            strikeVector[0] = CashFlows::atmRate(leg, **discountCurve_);
+        if (strike_ == Null<Rate>()) {
+            // ATM on the forecasting curve
+            Handle<YieldTermStructure> fc = swap.iborIndex()->termStructure();
+            strikeVector[0] = CashFlows::atmRate(leg, **fc);
+        }
 
-        boost::shared_ptr<CapFloor> capFloor(
-            new CapFloor(capFloorType_, leg, strikeVector));
+        boost::shared_ptr<CapFloor> capFloor(new
+            CapFloor(capFloorType_, leg, strikeVector));
         capFloor->setPricingEngine(engine_);
         return capFloor;
     }
@@ -125,13 +127,6 @@ namespace QuantLib {
     MakeCapFloor& MakeCapFloor::withDayCount(const DayCounter& dc) {
         makeVanillaSwap_.withFixedLegDayCount(dc);
         makeVanillaSwap_.withFloatingLegDayCount(dc);
-        return *this;
-    }
-
-    MakeCapFloor& MakeCapFloor::withDiscountingTermStructure(
-                const Handle<YieldTermStructure>& discountingTS) {
-        makeVanillaSwap_.withDiscountingTermStructure(discountingTS);
-        discountCurve_ = discountingTS;
         return *this;
     }
 
