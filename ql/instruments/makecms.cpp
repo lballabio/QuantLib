@@ -104,7 +104,8 @@ namespace QuantLib {
             .withSpreads(cmsSpread_)
             .withCaps(cmsCap_)
             .withFloors(cmsFloor_);
-        QuantLib::setCouponPricer(cmsLeg, couponPricer_);
+        if (couponPricer_)
+            setCouponPricer(cmsLeg, couponPricer_);
 
         Rate usedSpread = iborSpread_;
         if (iborSpread_ == Null<Spread>()) {
@@ -114,6 +115,8 @@ namespace QuantLib {
             QL_REQUIRE(!swapIndex_->termStructure().empty(),
                        "no forecasting term structure set to " <<
                        swapIndex_->name());
+            QL_REQUIRE(couponPricer_,
+                       "no CmsCouponPricer set (yet)");
             Leg floatLeg = IborLeg(floatSchedule, iborIndex_)
                 .withNotionals(nominal_)
                 .withPaymentDayCounter(floatDayCount_)
