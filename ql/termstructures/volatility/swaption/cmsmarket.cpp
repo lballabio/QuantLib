@@ -25,6 +25,7 @@
 #include <ql/termstructures/volatility/swaption/swaptionvolcube1.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/indexes/swapindex.hpp>
+#include <ql/indexes/iborindex.hpp>
 #include <ql/instruments/swap.hpp>
 
 namespace QuantLib {
@@ -37,6 +38,7 @@ namespace QuantLib {
     CmsMarket::CmsMarket(
         const std::vector<Period>& expiries,
         const std::vector< boost::shared_ptr<SwapIndex> >& swapIndices,
+        const boost::shared_ptr<IborIndex>& iborIndex,
         const std::vector<std::vector<Handle<Quote> > >& bidAskSpreads,
         const std::vector< boost::shared_ptr<CmsCouponPricer> >& pricers,
         const Handle<YieldTermStructure>& yieldTermStructure):
@@ -45,6 +47,7 @@ namespace QuantLib {
     swapFloatingLegsBps_(expiries.size(), swapIndices.size()),
     pricers_(pricers),
     swapIndices_(swapIndices),
+    iborIndex_(iborIndex),
     bidAskSpreads_(bidAskSpreads),
     yieldTermStructure_(yieldTermStructure) {
 
@@ -82,7 +85,7 @@ namespace QuantLib {
             std::vector< boost::shared_ptr<Swap> > swapTmp;
             for (Size j=0; j<nSwapTenors_ ; j++) {
                 swapTmp.push_back(
-                    MakeCms(expiries_[i], swapIndices_[j], 0.,
+                    MakeCms(expiries_[i], swapIndices_[j], iborIndex_, 0.,
                         Period()).operator boost::shared_ptr<Swap>()
                );
             }
@@ -178,7 +181,7 @@ namespace QuantLib {
                 Period tenorOfForwardCms =
                     Period(expiries_[i].length()-startingCmsTenor.length(),expiries_[i].units());
                 forwardSwapTmp.push_back(
-                     MakeCms(tenorOfForwardCms, swapIndices_[j], 0.,
+                     MakeCms(tenorOfForwardCms, swapIndices_[j], iborIndex_, 0.,
                         startingCmsTenor).operator boost::shared_ptr<Swap>()
                      );
             }

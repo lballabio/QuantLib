@@ -32,6 +32,7 @@ namespace QuantLib {
     class CmsCouponPricer;
     class Swap;
     class SwapIndex;
+    class IborIndex;
     class YieldTermStructure;
 
     //! set of CMS quotes
@@ -41,6 +42,7 @@ namespace QuantLib {
         CmsMarket(
             const std::vector<Period>& expiries,
             const std::vector< boost::shared_ptr<SwapIndex> >& swapIndices,
+            const boost::shared_ptr<IborIndex>& iborIndex,
             const std::vector<std::vector<Handle<Quote> > >& bidAskSpreads,
             const std::vector< boost::shared_ptr<CmsCouponPricer> >& pricers,
             const Handle<YieldTermStructure>& yieldTermStructure);
@@ -123,6 +125,7 @@ namespace QuantLib {
         mutable Matrix meanReversions_;
         std::vector< boost::shared_ptr<CmsCouponPricer> > pricers_;
         std::vector< boost::shared_ptr<SwapIndex> > swapIndices_;
+        boost::shared_ptr<IborIndex> iborIndex_;
         const std::vector<std::vector<Handle<Quote> > > bidAskSpreads_;
         std::vector< std::vector< boost::shared_ptr<Swap> > > swaps_;
         std::vector< std::vector< boost::shared_ptr<Swap> > > forwardSwaps_;
