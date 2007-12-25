@@ -24,22 +24,19 @@
 #ifndef quantlib_cms_market_calibration_h
 #define quantlib_cms_market_calibration_h
 
-#include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
 #include <ql/math/optimization/endcriteria.hpp> 
+#include <ql/math/matrix.hpp> 
+#include <ql/math/array.hpp> 
+#include <ql/handle.hpp> 
 
 namespace QuantLib {
     
+    class SwaptionVolatilityStructure;
     class CmsMarket;
-    class CmsCouponPricer;
-    class Swap;
-    class SwapIndex;
     class OptimizationMethod;
-    class YieldTermStructure;
 
     class CmsMarketCalibration {
-
       public:
-
         enum CalibrationType {OnSpread, OnPrice, OnForwardCmsPrice };
 
         CmsMarketCalibration(
