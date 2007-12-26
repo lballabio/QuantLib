@@ -254,9 +254,9 @@ namespace QuantLib {
 
     bool Schedule::isRegular(Size i) const {
         QL_REQUIRE(fullInterface_, "full interface not available");
-        QL_REQUIRE(i<=isRegular_.size(),
-                   "i (" << i << ") must be less than or equal to "
-                   << isRegular_.size());
+        QL_REQUIRE(i<=isRegular_.size() && i>0,
+                   "index (" << i << ") must be in [1, " <<
+                   isRegular_.size() <<"]");
         return isRegular_[i-1];
     }
 
