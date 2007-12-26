@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Marco Bianchetti
  Copyright (C) 2006, 2007 Giorgio Facchinetti
 
@@ -19,314 +20,239 @@
 */
 
 #include <ql/termstructures/volatility/swaption/cmsmarket.hpp>
+#include <ql/cashflows/cashflows.hpp>
 #include <ql/instruments/makecms.hpp>
-#include <ql/cashflows/conundrumpricer.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/termstructures/volatility/swaption/swaptionvolcube1.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/indexes/swapindex.hpp>
-#include <ql/indexes/iborindex.hpp>
 #include <ql/instruments/swap.hpp>
+
+using std::vector;
+using boost::shared_ptr;
 
 namespace QuantLib {
     
-           
-    //===========================================================================//
-    //                                CmsMarket                                  //
-    //===========================================================================//
-
     CmsMarket::CmsMarket(
-        const std::vector<Period>& expiries,
-        const std::vector< boost::shared_ptr<SwapIndex> >& swapIndices,
-        const boost::shared_ptr<IborIndex>& iborIndex,
-        const std::vector<std::vector<Handle<Quote> > >& bidAskSpreads,
-        const std::vector< boost::shared_ptr<CmsCouponPricer> >& pricers,
-        const Handle<YieldTermStructure>& yieldTermStructure):
-    expiries_(expiries),
-    swapFloatingLegsPrices_(expiries.size(), swapIndices.size()),
-    swapFloatingLegsBps_(expiries.size(), swapIndices.size()),
-    pricers_(pricers),
-    swapIndices_(swapIndices),
-    iborIndex_(iborIndex),
-    bidAskSpreads_(bidAskSpreads),
-    yieldTermStructure_(yieldTermStructure) {
+        const vector<Period>& swapLengths,
+        const vector<shared_ptr<SwapIndex> >& swapIndexes,
+        const shared_ptr<IborIndex>& iborIndex,
+        const vector<vector<Handle<Quote> > >& bidAskSpreads,
+        const vector<shared_ptr<ConundrumPricer> >& pricers,
+        const Handle<YieldTermStructure>& discountingTS)
+    : swapLengths_(swapLengths),
+      iborIndex_(iborIndex),
+      swapIndexes_(swapIndexes),
+      bidAskSpreads_(bidAskSpreads),
+      pricers_(pricers),
+      discTS_(discountingTS),
 
-        nExercise_ = expiries_.size();
-        nSwapTenors_ = swapIndices_.size();
-        swapTenors_.reserve(nSwapTenors_);
-        for (Size j=0; j<nSwapTenors_ ; ++j)
-            swapTenors_.push_back(swapIndices_[j]->tenor());
+      nExercise_(swapLengths_.size()),
+      nSwapIndexes_(swapIndexes_.size()),
+      swapTenors_(nSwapIndexes_),
 
-        QL_REQUIRE(2*nSwapTenors_==bidAskSpreads[0].size(),
-                   "2*nSwapTenors_!=bidAskSpreads columns()");
+      spotFloatLegNPV_(nExercise_, nSwapIndexes_),
+      spotFloatLegBPS_(nExercise_, nSwapIndexes_),
+
+      mktBidSpreads_(nExercise_, nSwapIndexes_),
+      mktAskSpreads_(nExercise_, nSwapIndexes_),
+
+      mktSpreads_(nExercise_, nSwapIndexes_),
+      mdlSpreads_(nExercise_, nSwapIndexes_),
+      errSpreads_(nExercise_, nSwapIndexes_),
+
+      mktSpotCmsLegNPV_(nExercise_, nSwapIndexes_),
+      mdlSpotCmsLegNPV_(nExercise_, nSwapIndexes_),
+      errSpotCmsLegNPV_(nExercise_, nSwapIndexes_),
+
+      mktFwdCmsLegNPV_(nExercise_, nSwapIndexes_),
+      mdlFwdCmsLegNPV_(nExercise_, nSwapIndexes_),
+      errFwdCmsLegNPV_(nExercise_, nSwapIndexes_),
+
+      spotSwaps_(nExercise_, vector<shared_ptr<Swap> >(nSwapIndexes_)),
+      fwdSwaps_(nExercise_, vector<shared_ptr<Swap> >(nSwapIndexes_))
+    {
+        QL_REQUIRE(2*nSwapIndexes_==bidAskSpreads[0].size(),
+                   "2*nSwapIndexes_!=bidAskSpreads columns()");
         QL_REQUIRE(nExercise_==bidAskSpreads.size(),
                    "nExercise_==bidAskSpreads rows()");
 
-        bids_ = Matrix(nExercise_, nSwapTenors_, 0.);
-        asks_ = Matrix(nExercise_, nSwapTenors_, 0.);
-        mids_ = Matrix(nExercise_, nSwapTenors_, 0.);
-        modelCmsSpreads_ = Matrix(nExercise_, nSwapTenors_, 0.);
-        spreadErrors_ = Matrix(nExercise_, nSwapTenors_, 0.);
-
-        prices_= Matrix(nExercise_, nSwapTenors_, 0.);
-        marketBidCmsLegValues_ = Matrix(nExercise_, nSwapTenors_, 0.);
-        marketAskCmsLegValues_ = Matrix(nExercise_, nSwapTenors_, 0.);
-        marketMidCmsLegValues_ = Matrix(nExercise_, nSwapTenors_, 0.);
-        modelCmsLegValues_ = Matrix(nExercise_, nSwapTenors_, 0.);
-        priceErrors_ = Matrix(nExercise_, nSwapTenors_, 0.);
-
-        marketBidForwardCmsLegValues_ = Matrix(nExercise_, nSwapTenors_, 0.);
-        marketAskForwardCmsLegValues_ = Matrix(nExercise_, nSwapTenors_, 0.);
-        marketMidForwardCmsLegValues_ = Matrix(nExercise_, nSwapTenors_, 0.);
-        modelForwardCmsLegValues_ = Matrix(nExercise_, nSwapTenors_, 0.);
-        forwardPriceErrors_ = Matrix(nExercise_, nSwapTenors_, 0.);
-        meanReversions_ = Matrix(nExercise_, nSwapTenors_, 0.);
-        for (Size i=0; i<nExercise_; i++) {
-            std::vector< boost::shared_ptr<Swap> > swapTmp;
-            for (Size j=0; j<nSwapTenors_ ; j++) {
-                swapTmp.push_back(
-                    MakeCms(expiries_[i], swapIndices_[j], iborIndex_, 0.,
-                        Period()).operator boost::shared_ptr<Swap>()
-               );
-            }
-            swaps_.push_back(swapTmp);
-        }
-        registerWithMarketData();
-        createForwardStartingCms();
-        performCalculations();
-     }
-
-
-    void CmsMarket::registerWithMarketData() {
-        // register with Market Cms Spread
-        for (Size i=0; i<nExercise_; i++) {
-            for (Size j=0; j<nSwapTenors_ ; j++) {
+        for (Size j=0; j<nSwapIndexes_; ++j) {
+            swapTenors_[j] = swapIndexes_[j]->tenor();
+            // pricers
+            registerWith(pricers_[j]);
+            for (Size i=0; i<nExercise_; ++i) {
+                // market Spread
                 registerWith(bidAskSpreads_[i][j*2]);
                 registerWith(bidAskSpreads_[i][j*2+1]);
             }
         }
-        // register with pricers
-        for (Size j=0; j<nSwapTenors_ ; j++) {
-            registerWith(pricers_[j]);
+
+        Period start(0, Years);
+        for (Size i=0; i<nExercise_; ++i) {
+            if (i>0) start = swapLengths_[i-1];
+            for (Size j=0; j<nSwapIndexes_; ++j) {
+                // never evaluate the spot swap, only its ibor floating leg
+                spotSwaps_[i][j] = MakeCms(swapLengths_[i],
+                                           swapIndexes_[j],
+                                           iborIndex_, 0.0,
+                                           Period())
+                                   .operator shared_ptr<Swap>();
+                fwdSwaps_[i][j]  = MakeCms(swapLengths_[i]-start,
+                                           swapIndexes_[j],
+                                           iborIndex_, 0.0,
+                                           start)
+                                   .withCmsCouponPricer(pricers_[j])
+                                   .withDiscountingTermStructure(discTS_)
+                                   .operator shared_ptr<Swap>();
+            }
         }
-        // register with yieldTermStructure
-        registerWith(yieldTermStructure_);
-    }
+        // probably useless
+        performCalculations();
+     }
 
-    void CmsMarket::performCalculations() const{
-        Size cmsIndex = 0;
-        Size floatIndex = 1;
+    void CmsMarket::performCalculations() const {
+        for (Size j=0; j<nSwapIndexes_; ++j) {
+          Real mktPrevPart = 0.0, mdlPrevPart = 0.0;
+          for (Size i=0; i<nExercise_; ++i) {
 
-        for (Size i = 0; i< nExercise_;++i)
-            for (Size j = 0; j< nSwapTenors_;++j){
+            // **** market
 
-                bids_[i][j] = bidAskSpreads_[i][j*2]->value();
-                asks_[i][j] = bidAskSpreads_[i][j*2+1]->value();
-                mids_[i][j] = (bids_[i][j]+asks_[i][j])/2;
+            mktBidSpreads_[i][j] = bidAskSpreads_[i][j*2]->value();
+            mktAskSpreads_[i][j] = bidAskSpreads_[i][j*2+1]->value();
+            mktSpreads_[i][j] = (mktBidSpreads_[i][j]+mktAskSpreads_[i][j])/2;
 
-                const boost::shared_ptr<ConundrumPricer> pricer =
-                    boost::dynamic_pointer_cast<ConundrumPricer>(pricers_[j]);
-                meanReversions_[i][j] = pricer->meanReversion();
+            const Leg& spotFloatLeg = spotSwaps_[i][j]->leg(1);
+            spotFloatLegNPV_[i][j] = CashFlows::npv(spotFloatLeg, **discTS_);
+            spotFloatLegBPS_[i][j] = CashFlows::bps(spotFloatLeg, **discTS_);
 
-                setCouponPricer(swaps_[i][j]->leg(cmsIndex), pricer);
-                setCouponPricer(forwardSwaps_[i][j]->leg(cmsIndex), pricer);
+            // imply the spot CMS leg NPV from the spot ibor floating leg NPV
+            mktSpotCmsLegNPV_[i][j] = -(spotFloatLegNPV_[i][j] +
+                                spotFloatLegBPS_[i][j]*mktSpreads_[i][j]/1e-4);
+            // fwd CMS legs can be computed as differences between spot legs
+            mktFwdCmsLegNPV_[i][j] = mktSpotCmsLegNPV_[i][j] - mktPrevPart;
+            mktPrevPart = mktSpotCmsLegNPV_[i][j];
 
-                swapFloatingLegsBps_[i][j] = swaps_[i][j]->legBPS(floatIndex);
-                swapFloatingLegsPrices_[i][j] = swaps_[i][j]->legNPV(floatIndex);
-                // Price errors valuation
-                Real floatingLegValueWithoutSpread = swaps_[i][j]->legNPV(floatIndex);
-                Real PV01 = swapFloatingLegsBps_[i][j];
-                marketBidCmsLegValues_[i][j] = -(floatingLegValueWithoutSpread + PV01*bids_[i][j]*10000);
-                marketAskCmsLegValues_[i][j] = -(floatingLegValueWithoutSpread + PV01*asks_[i][j]*10000);
-                marketMidCmsLegValues_[i][j] = -(floatingLegValueWithoutSpread + PV01*mids_[i][j]*10000);
+            // **** model
 
-                // ForwardPrice errors valuation
-                if(i==0){
-                    marketBidForwardCmsLegValues_[i][j] =
-                        -(swapFloatingLegsPrices_[i][j] + swaps_[i][j]->legBPS(1)*bids_[i][j]*10000);
-                    marketAskForwardCmsLegValues_[i][j] =
-                        -(swapFloatingLegsPrices_[i][j] + swaps_[i][j]->legBPS(1)*asks_[i][j]*10000);
-                    marketMidForwardCmsLegValues_[i][j] =
-                        -(swapFloatingLegsPrices_[i][j] + swaps_[i][j]->legBPS(1)*mids_[i][j]*10000);
-                }
-                else{
-                    marketBidForwardCmsLegValues_[i][j] =
-                        -((swaps_[i][j]->legNPV(1) + swaps_[i][j]->legBPS(1)*bids_[i][j]*10000)-
-                        (swaps_[i-1][j]->legNPV(1) + swaps_[i-1][j]->legBPS(1)*bids_[i-1][j]*10000));
-                    marketAskForwardCmsLegValues_[i][j] =
-                        -((swaps_[i][j]->legNPV(1) + swaps_[i][j]->legBPS(1)*asks_[i][j]*10000)-
-                        (swaps_[i-1][j]->legNPV(1) + swaps_[i-1][j]->legBPS(1)*asks_[i-1][j]*10000));
-                    marketMidForwardCmsLegValues_[i][j] =
-                        -((swaps_[i][j]->legNPV(1) + swaps_[i][j]->legBPS(1)*mids_[i][j]*10000)-
-                        (swaps_[i-1][j]->legNPV(1) + swaps_[i-1][j]->legBPS(1)*mids_[i-1][j]*10000));
-                }
-            }
-        priceForwardStartingCms();
-        priceSpotFromForwardStartingCms();
-    }
+            // calculate the forward swap (the time consuming part)
+            mdlFwdCmsLegNPV_[i][j] = fwdSwaps_[i][j]->legNPV(0);
+            errFwdCmsLegNPV_[i][j] = mdlFwdCmsLegNPV_[i][j] -
+                                                mktFwdCmsLegNPV_[i][j];
 
-    void CmsMarket::createForwardStartingCms(){
-        for (Size i=0; i<nExercise_; i++) {
-            Period startingCmsTenor;
-            if(i==0){
-                startingCmsTenor = Period(0,Years);
-            }
-            else{
-                startingCmsTenor = expiries_[i-1];
-            }
-            std::vector< boost::shared_ptr<Swap> > forwardSwapTmp;
-            for (Size j=0; j<nSwapTenors_ ; j++) {
-                QL_REQUIRE(expiries_[i].units()==startingCmsTenor.units(),
-                    "CmsMarket::createForwardStartingCms: Attenzione");
-                Period tenorOfForwardCms =
-                    Period(expiries_[i].length()-startingCmsTenor.length(),expiries_[i].units());
-                forwardSwapTmp.push_back(
-                     MakeCms(tenorOfForwardCms, swapIndices_[j], iborIndex_, 0.,
-                        startingCmsTenor).operator boost::shared_ptr<Swap>()
-                     );
-            }
-            forwardSwaps_.push_back(forwardSwapTmp);
+            // spot CMS legs can be computed as incremental sum of forward legs
+            mdlSpotCmsLegNPV_[i][j] = mdlPrevPart + mdlFwdCmsLegNPV_[i][j];
+            mdlPrevPart = mdlSpotCmsLegNPV_[i][j];
+            errSpotCmsLegNPV_[i][j] = mdlSpotCmsLegNPV_[i][j] -
+                                                mktSpotCmsLegNPV_[i][j];
+           
+            // equilibriums spread over ibor leg
+            Real npv = spotFloatLegNPV_[i][j] + mdlSpotCmsLegNPV_[i][j];
+            mdlSpreads_[i][j] = - npv/spotFloatLegBPS_[i][j]*1e-4;
+            errSpreads_[i][j] = mdlSpreads_[i][j] - mktSpreads_[i][j];
+          }
         }
     }
 
-    void CmsMarket::reprice(const Handle<SwaptionVolatilityStructure>& volStructure,
-                             Real meanReversion){
-        Handle<Quote> meanReversionQuote = Handle<Quote>(boost::shared_ptr<Quote>(new
-                SimpleQuote(meanReversion)));
-        for (Size j=0; j<nSwapTenors_ ; j++) {
+    void CmsMarket::reprice(const Handle<SwaptionVolatilityStructure>& v,
+                            Real meanReversion) {
+        Handle<Quote> meanReversionQuote(shared_ptr<Quote>(new
+                                                SimpleQuote(meanReversion)));
+        for (Size j=0; j<nSwapIndexes_; ++j) {
+            // ??
             // set new volatility structure and new mean reversion
-            pricers_[j]->setSwaptionVolatility(volStructure);
-            const boost::shared_ptr<ConundrumPricer> pricer =
-                boost::dynamic_pointer_cast<ConundrumPricer>(pricers_[j]);
-            pricer->setMeanReversion(meanReversionQuote);
+            pricers_[j]->setSwaptionVolatility(v);
+            pricers_[j]->setMeanReversion(meanReversionQuote);
         }
-
-      priceForwardStartingCms();
+        performCalculations();
     }
 
-    void CmsMarket::priceForwardStartingCms() const {
-          for (Size i=0; i<nExercise_; i++) {
-            for (Size j=0; j<nSwapTenors_ ; j++) {
-                Real modelForwardCmsLegValue = forwardSwaps_[i][j]->legNPV(0);
-                modelForwardCmsLegValues_[i][j] = modelForwardCmsLegValue;
-                forwardPriceErrors_[i][j]= modelForwardCmsLegValue
-                                            - marketMidForwardCmsLegValues_[i][j];
+    Real CmsMarket::weightedFwdNpvError(const Matrix& w) {
+        performCalculations();
+        return weightedMean(errFwdCmsLegNPV_, w);
+    }
+
+    Real CmsMarket::weightedSpotNpvError(const Matrix& w) {
+        performCalculations();
+        return weightedMean(errSpotCmsLegNPV_, w);
+    }
+
+    Real CmsMarket::weightedSpreadError(const Matrix& w) {
+        performCalculations();
+        return weightedMean(errSpreads_, w);
+    }
+
+    // array of errors to be used by Levenberg-Marquardt optimization
+
+    Disposable<Array> CmsMarket::weightedFwdNpvErrors(const Matrix& w) {
+        performCalculations();
+        return weightedMeans(errFwdCmsLegNPV_, w);
+    }
+
+    Disposable<Array> CmsMarket::weightedSpotNpvErrors(const Matrix& w) {
+        performCalculations();
+        return weightedMeans(errSpotCmsLegNPV_, w);
+    }
+
+    Disposable<Array> CmsMarket::weightedSpreadErrors(const Matrix& w) {
+        performCalculations();
+        return weightedMeans(errSpreads_, w);
+    }
+
+    Real CmsMarket::weightedMean(const Matrix& var,
+                                 const Matrix& w) {
+        Real mean = 0.0;
+        for (Size i=0; i<nExercise_; ++i) {
+            for (Size j=0; j<nSwapIndexes_; ++j) {
+                mean += w[i][j]*var[i][j]*var[i][j];
             }
         }
-    }
-
-    void CmsMarket::priceSpotFromForwardStartingCms() const {
-          for (Size i=0; i<nExercise_; i++) {
-            for (Size j=0; j<nSwapTenors_ ; j++) {
-                modelCmsLegValues_[i][j] = modelForwardCmsLegValues_[i][j];
-                if (i>0)
-                    modelCmsLegValues_[i][j] += modelCmsLegValues_[i-1][j];
-                priceErrors_[i][j] = modelCmsLegValues_[i][j]
-                                     - marketMidCmsLegValues_[i][j];
-
-                // Spread errors valuation
-                prices_[i][j]= swapFloatingLegsPrices_[i][j]+ modelCmsLegValues_[i][j];
-                Real PV01 = swapFloatingLegsBps_[i][j];
-                modelCmsSpreads_[i][j] = -(prices_[i][j]/PV01)/10000;
-
-                spreadErrors_[i][j] = modelCmsSpreads_[i][j]-mids_[i][j];
-            }
-        }
-    }
-
-
-    Real CmsMarket::weightedError(const Matrix& weights){
-        priceSpotFromForwardStartingCms();
-        return weightedMean(spreadErrors_,weights);
-    }
-
-    Real CmsMarket::weightedPriceError(const Matrix& weights){
-        priceSpotFromForwardStartingCms();
-        return weightedMean(priceErrors_,weights);
-    }
-
-    Real CmsMarket::weightedForwardPriceError(const Matrix& weights){
-        return weightedMean(forwardPriceErrors_,weights);
-    }
-
-    // return an array of errors to be used for Levenberg-Marquardt optimization.
-
-    Disposable<Array> CmsMarket::weightedErrors(const Matrix& weights){
-        priceSpotFromForwardStartingCms();
-        return weightedMeans(spreadErrors_,weights);
-    }
-
-    Disposable<Array> CmsMarket::weightedPriceErrors(const Matrix& weights){
-        priceSpotFromForwardStartingCms();
-        return weightedMeans(priceErrors_,weights);
-    }
-
-    Disposable<Array> CmsMarket::weightedForwardPriceErrors(
-                                                        const Matrix& weights){
-        return weightedMeans(forwardPriceErrors_,weights);
-    }
-
-    Real CmsMarket::weightedMean(const Matrix& var, const Matrix& weights){
-        Real mean=0.;
-        for(Size i=0;i<nExercise_;i++){
-            for(Size j=0;j<nSwapTenors_;j++){
-                mean += weights[i][j]*var[i][j]*var[i][j];
-            }
-        }
-        mean=std::sqrt(mean/(nExercise_*nSwapTenors_));
+        mean = std::sqrt(mean/(nExercise_*nSwapIndexes_));
         return mean;
     }
 
     Disposable<Array> CmsMarket::weightedMeans(const Matrix& var,
-                                                       const Matrix& weights){
-        Array  weightedVars(nExercise_*nSwapTenors_);
-        for(Size i=0; i<nExercise_; i++) {
-            for(Size j=0; j<nSwapTenors_; j++) {
-                weightedVars[i*nSwapTenors_+j] = std::sqrt(weights[i][j])*var[i][j];
+                                               const Matrix& w) {
+        Array weightedVars(nExercise_*nSwapIndexes_);
+        for (Size i=0; i<nExercise_; ++i) {
+            for (Size j=0; j<nSwapIndexes_; ++j) {
+                weightedVars[i*nSwapIndexes_+j] = std::sqrt(w[i][j])*var[i][j];
             }
         }
         return weightedVars;
     }
 
-    Matrix CmsMarket::browse() const{
+    Matrix CmsMarket::browse() const {
         calculate();
-        Matrix result(nExercise_*nSwapTenors_,19,0.);
-            for(Size j=0;j<nSwapTenors_;j++){
-                for(Size i=0;i<nExercise_;i++){
-                result[j*nSwapTenors_+i][0]= swapTenors_[j].length();
-                result[j*nSwapTenors_+i][1]= expiries_[i].length();
+        //Matrix result(nExercise_*nSwapIndexes_, 15);
+        Matrix result(nExercise_*nSwapIndexes_, 14);
+            for (Size j=0; j<nSwapIndexes_; ++j) {
+                for (Size i=0; i<nExercise_; ++i) {
+                result[j*nSwapIndexes_+i][0] = swapTenors_[j].length();
+                result[j*nSwapIndexes_+i][1] = swapLengths_[i].length();
 
                 // Spreads
-                result[j*nSwapTenors_+i][2]= bids_[i][j]*10000;
-                result[j*nSwapTenors_+i][3]= asks_[i][j]*10000;
-                result[j*nSwapTenors_+i][4]= mids_[i][j]*10000;
-                result[j*nSwapTenors_+i][5]= modelCmsSpreads_[i][j]*10000;
-                result[j*nSwapTenors_+i][6]= spreadErrors_[i][j]*10000;
-                if(modelCmsSpreads_[i][j]>asks_[i][j]){
-                    result[j*nSwapTenors_+i][7]= (modelCmsSpreads_[i][j]-asks_[i][j])*10000;
-                }
-                else if(modelCmsSpreads_[i][j]<bids_[i][j]){
-                    result[j*nSwapTenors_+i][7]= (bids_[i][j]-modelCmsSpreads_[i][j])*10000;
-                }
-                else{ result[j*nSwapTenors_+i][7]= 0.; }
+                result[j*nSwapIndexes_+i][2] = mktBidSpreads_[i][j]*10000;
+                result[j*nSwapIndexes_+i][3] = mktAskSpreads_[i][j]*10000;
+                result[j*nSwapIndexes_+i][4] = mktSpreads_[i][j]*10000;
+                result[j*nSwapIndexes_+i][5] = mdlSpreads_[i][j]*10000;
+                result[j*nSwapIndexes_+i][6] = errSpreads_[i][j]*10000;
+                if (mdlSpreads_[i][j]>mktAskSpreads_[i][j])
+                    result[j*nSwapIndexes_+i][7] = (mdlSpreads_[i][j] - 
+                                                mktAskSpreads_[i][j])*10000;
+                else if (mdlSpreads_[i][j]<mktBidSpreads_[i][j])
+                    result[j*nSwapIndexes_+i][7] = (mktBidSpreads_[i][j] -
+                                                mdlSpreads_[i][j])*10000;
+                else
+                    result[j*nSwapIndexes_+i][7] = 0.0;
 
-                // Prices of cms
-                result[j*nSwapTenors_+i][8]= marketBidCmsLegValues_[i][j];
-                result[j*nSwapTenors_+i][9]= marketAskCmsLegValues_[i][j];
-                result[j*nSwapTenors_+i][10]= marketMidCmsLegValues_[i][j];
-                result[j*nSwapTenors_+i][11]= modelCmsLegValues_[i][j];
-                result[j*nSwapTenors_+i][12]= priceErrors_[i][j];
+                // spot CMS Leg NPVs
+                result[j*nSwapIndexes_+i][ 8] = mktSpotCmsLegNPV_[i][j];
+                result[j*nSwapIndexes_+i][ 9] = mdlSpotCmsLegNPV_[i][j];
+                result[j*nSwapIndexes_+i][10] = errSpotCmsLegNPV_[i][j];
 
-                // Prices of forward cms
-                result[j*nSwapTenors_+i][13]= marketBidForwardCmsLegValues_[i][j];
-                result[j*nSwapTenors_+i][14]= marketAskForwardCmsLegValues_[i][j];
-                result[j*nSwapTenors_+i][15]= marketMidForwardCmsLegValues_[i][j];
-                result[j*nSwapTenors_+i][16]= modelForwardCmsLegValues_[i][j];
-                result[j*nSwapTenors_+i][17]= forwardPriceErrors_[i][j];
-
-                // mean reversions
-                result[j*nSwapTenors_+i][18]= meanReversions_[i][j];
-
+                // forward CMS Leg NPVs
+                result[j*nSwapIndexes_+i][11] = mktFwdCmsLegNPV_[i][j];
+                result[j*nSwapIndexes_+i][12] = mdlFwdCmsLegNPV_[i][j];
+                result[j*nSwapIndexes_+i][13] = errFwdCmsLegNPV_[i][j];
             }
         }
         return result;

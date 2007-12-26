@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Marco Bianchetti
  Copyright (C) 2006, 2007 Giorgio Facchinetti
 
@@ -25,7 +26,9 @@
 #ifndef quantlib_cms_market_h
 #define quantlib_cms_market_h
 
-#include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
+#include <ql/cashflows/conundrumpricer.hpp>
+#include <ql/math/matrix.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 
@@ -38,98 +41,77 @@ namespace QuantLib {
     //! set of CMS quotes
     class CmsMarket: public LazyObject{
       public:
-
         CmsMarket(
-            const std::vector<Period>& expiries,
-            const std::vector< boost::shared_ptr<SwapIndex> >& swapIndices,
+            const std::vector<Period>& swapLengths,
+            const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
             const boost::shared_ptr<IborIndex>& iborIndex,
             const std::vector<std::vector<Handle<Quote> > >& bidAskSpreads,
-            const std::vector< boost::shared_ptr<CmsCouponPricer> >& pricers,
-            const Handle<YieldTermStructure>& yieldTermStructure);
-
+            const std::vector<boost::shared_ptr<ConundrumPricer> >& pricers,
+            const Handle<YieldTermStructure>& discountingTS);
         //! \name LazyObject interface
         //@{
         void update() { LazyObject::update();}
         //@}
-
-        // call during calibration procedure
+        // called during calibration procedure
         void reprice(const Handle<SwaptionVolatilityStructure>& volStructure,
                      Real meanReversion);
-
-        //inspectors ...
-        const std::vector<Period>& swapTenors() const {return swapTenors_;}
-        Matrix meanReversions(){return meanReversions_;};
-        Matrix impliedCmsSpreads(){return modelCmsSpreads_;};
-        Matrix spreadErrors(){return spreadErrors_;};
+        // inspectors ...
+        const std::vector<Period>& swapTenors() const { return swapTenors_;}
+        const Matrix& impliedCmsSpreads() { return mdlSpreads_; }
+        const Matrix& spreadErrors() { return errSpreads_; }
         Matrix browse() const;
 
-        //cms market calibration methods (they haven't Lazyness behaviour)
-        Real weightedError(const Matrix& weights);
-        Real weightedPriceError(const Matrix& weights);
-        Real weightedForwardPriceError(const Matrix& weights);
-        Disposable<Array> weightedErrors(const Matrix& weights);
-        Disposable<Array> weightedPriceErrors(const Matrix& weights);
-        Disposable<Array> weightedForwardPriceErrors(const Matrix& weights);
+        // cms market calibration methods (they haven't Lazy behaviour)
+        Real weightedSpreadError(const Matrix& weights);
+        Real weightedSpotNpvError(const Matrix& weights);
+        Real weightedFwdNpvError(const Matrix& weights);
+        Disposable<Array> weightedSpreadErrors(const Matrix& weights);
+        Disposable<Array> weightedSpotNpvErrors(const Matrix& weights);
+        Disposable<Array> weightedFwdNpvErrors(const Matrix& weights);
 
       private:
         void performCalculations() const;
-        void registerWithMarketData();
-        void createForwardStartingCms();
-        void priceForwardStartingCms() const;
-        void priceSpotFromForwardStartingCms() const;
-        Real weightedMean(const Matrix& var, const Matrix& weights);
-        Disposable<Array> weightedMeans(const Matrix& var, const Matrix& weights);
+        Real weightedMean(const Matrix& var,
+                          const Matrix& weights);
+        Disposable<Array> weightedMeans(const Matrix& var,
+                                        const Matrix& weights);
 
-        std::vector<Period> expiries_;
-        std::vector<Period> swapTenors_;
-        Size nExercise_;
-        Size nSwapTenors_;
-
-        // market bid spreads
-        mutable Matrix bids_;
-        // market ask spreads
-        mutable Matrix asks_;
-        // market mid spreads
-        mutable Matrix mids_;
-        // Implied spreads to model prices
-        mutable Matrix modelCmsSpreads_;
-        // Differences between implied and mid spreads
-        mutable Matrix spreadErrors_;
-
-        // prices of constant maturity swaps with spread = 0
-        mutable Matrix prices_;
-        // market prices of Cms Leg corrisponding to bid spreads
-        mutable Matrix marketBidCmsLegValues_;
-        // market prices of Cms Leg corrisponding to ask spreads
-        mutable Matrix marketAskCmsLegValues_;
-        // market prices of Cms Leg corrisponding to mid spreads
-        mutable Matrix marketMidCmsLegValues_;
-        // model prices of Cms Leg corrisponding to mid spreads
-        mutable Matrix modelCmsLegValues_;
-        // Differences between modelCmsLegValue and marketMidCmsLegValue_
-        mutable Matrix priceErrors_;
-
-        mutable Matrix swapFloatingLegsPrices_,swapFloatingLegsBps_;
-
-        // market prices of Forward Cms Leg corrisponding to bid spreads
-        mutable Matrix marketBidForwardCmsLegValues_;
-        // market prices of Forward Cms Leg corrisponding to ask spreads
-        mutable Matrix marketAskForwardCmsLegValues_;
-        // market prices of Forward Cms Leg corrisponding to mid spreads
-        mutable Matrix marketMidForwardCmsLegValues_;
-        // model prices of Forward Cms Leg corrisponding to mid spreads
-        mutable Matrix modelForwardCmsLegValues_;
-        // Differences between modelForwardCmsLegValues and marketMidCmsLegValues
-        mutable Matrix forwardPriceErrors_;
-
-        mutable Matrix meanReversions_;
-        std::vector< boost::shared_ptr<CmsCouponPricer> > pricers_;
-        std::vector< boost::shared_ptr<SwapIndex> > swapIndices_;
+        std::vector<Period> swapLengths_;
+        std::vector<boost::shared_ptr<SwapIndex> > swapIndexes_;
         boost::shared_ptr<IborIndex> iborIndex_;
-        const std::vector<std::vector<Handle<Quote> > > bidAskSpreads_;
-        std::vector< std::vector< boost::shared_ptr<Swap> > > swaps_;
-        std::vector< std::vector< boost::shared_ptr<Swap> > > forwardSwaps_;
-        Handle<YieldTermStructure> yieldTermStructure_;
+        std::vector<std::vector<Handle<Quote> > > bidAskSpreads_;
+        std::vector<boost::shared_ptr<ConundrumPricer> > pricers_;
+        Handle<YieldTermStructure> discTS_;
+
+        Size nExercise_;
+        Size nSwapIndexes_;
+        std::vector<Period> swapTenors_;
+        mutable Matrix spotFloatLegNPV_, spotFloatLegBPS_;
+
+        // market spreads
+        mutable Matrix mktBidSpreads_, mktAskSpreads_, mktSpreads_;
+        // model (mid) spreads
+        mutable Matrix mdlSpreads_;
+        // differences between market and model mid spreads
+        mutable Matrix errSpreads_;
+
+        // market mid prices of spot starting Cms Leg
+        mutable Matrix mktSpotCmsLegNPV_;
+        // model mid prices of spot starting Cms Leg
+        mutable Matrix mdlSpotCmsLegNPV_;
+        // Differences between mdlSpotCmsLegNPV_ and mktSpotCmsLegNPV_
+        mutable Matrix errSpotCmsLegNPV_;
+
+        // market mid prices of forward starting Cms Leg
+        mutable Matrix mktFwdCmsLegNPV_;
+        // model mid prices of forward starting Cms Leg
+        mutable Matrix mdlFwdCmsLegNPV_;
+        // Differences between mdlFwdCmsLegNPV_ and mktFwdCmsLegNPV_
+        mutable Matrix errFwdCmsLegNPV_;
+
+        std::vector<std::vector<boost::shared_ptr<Swap> > > spotSwaps_;
+        std::vector<std::vector<boost::shared_ptr<Swap> > > fwdSwaps_;
+
      };
 
 }
