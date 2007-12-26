@@ -29,27 +29,27 @@ namespace QuantLib {
     std::ostream& operator<<(std::ostream& out, Frequency f) {
         switch (f) {
           case NoFrequency:
-            return out << "no-frequency";
+            return out << "No-Frequency";
           case Once:
-            return out << "once";
+            return out << "Once";
           case Annual:
-            return out << "annual";
+            return out << "Annual";
           case Semiannual:
-            return out << "semiannual";
+            return out << "Semiannual";
           case EveryFourthMonth:
-            return out << "every-fourth-month";
+            return out << "Every-Fourth-Month";
           case Quarterly:
-            return out << "quarterly";
+            return out << "Quarterly";
           case Bimonthly:
-            return out << "bimonthly";
+            return out << "Bimonthly";
           case Monthly:
-            return out << "monthly";
+            return out << "Monthly";
           case Biweekly:
-            return out << "biweekly";
+            return out << "Biweekly";
           case Weekly:
-            return out << "weekly";
+            return out << "Weekly";
           case Daily:
-            return out << "daily";
+            return out << "Daily";
           default:
             QL_FAIL("unknown frequency (" << Integer(f) << ")");
         }
