@@ -1,8 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Mario Pucci
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2006 Giorgio Facchinetti
+ Copyright (C) 2006 Mario Pucci
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,7 +24,7 @@
 #include <ql/instruments/swap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
-#include <ql/indexes/swapindex.hpp>
+#include <ql/indexes/swap/euriborswapfixa.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
@@ -35,344 +36,217 @@
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <ql/instruments/makecms.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+using boost::shared_ptr;
 
 QL_BEGIN_TEST_LOCALS(CmsTest)
 
-
-//******************************************************************************************//
-//******************************************************************************************//
-
-// General settings
-Date referenceDate_, today_, settlement_;
-Calendar calendar_;
-
-// Volatility Stuctures
-std::vector<Handle<SwaptionVolatilityStructure> > swaptionVolatilityStructures_;
-Handle<SwaptionVolatilityStructure> atmVol_;
-Handle<SwaptionVolatilityStructure> flatSwaptionVolatilityCube1_;
-Handle<SwaptionVolatilityStructure> flatSwaptionVolatilityCube2_;
-Handle<SwaptionVolatilityStructure> swaptionVolatilityCubeBySabr_;
-
-std::vector<Period> atmOptionTenors_, optionTenors_;
-std::vector<Period> atmSwapTenors_, swapTenors_;
-std::vector<Spread> strikeSpreads_;
-
-Matrix atmVolMatrix_, volSpreadsMatrix_;
-std::vector<std::vector<Handle<Quote> > > volSpreads_;
-
-DayCounter dayCounter_;
-BusinessDayConvention optionBDC_;
-Natural swapSettlementDays_;
-bool vegaWeightedSmileFit_;
-
-// Cms Schedules conventions
-Frequency fixedCmsFrequency_, floatingCmsFrequency_;
-BusinessDayConvention fixedCmsConvention_, floatingCmsConvention_;
-
-// Cms valuation
-std::vector<GFunctionFactory::ModelOfYieldCurve> modelOfYieldCurves_;
-Rate infiniteCap_, infiniteFloor_;
-Real gearing_;
-Spread spread_;
-Date startDate_;
-Date paymentDate_;
-Date endDate_;
-Natural settlementDays_;
-DayCounter fixedCmsDayCount_;
-
-// Term Structure
 RelinkableHandle<YieldTermStructure> termStructure_;
 
-// indices and index conventions
-Frequency fixedLegFrequency_;
-BusinessDayConvention fixedLegConvention_;
-DayCounter fixedLegDayCounter_;
-boost::shared_ptr<IborIndex> iborIndex_;
-boost::shared_ptr<SwapIndex> swapIndexBase_;
-Time shortTenor_;
-boost::shared_ptr<IborIndex> iborIndexShortTenor_;
-boost::shared_ptr<SwapIndex> index_;
+shared_ptr<IborIndex> iborIndex_;
 
-//test parameters
-Real rateTolerance_;
-Real priceTolerance_;
+Handle<SwaptionVolatilityStructure> atmVol_;
+Handle<SwaptionVolatilityStructure> SabrVolCube1_;
+Handle<SwaptionVolatilityStructure> SabrVolCube2_;
 
-
-//******************************************************************************************//
-//******************************************************************************************//
+std::vector<GFunctionFactory::ModelOfYieldCurve> yieldCurveModels_;
+std::vector<shared_ptr<CmsCouponPricer> > numericalPricers_;
+std::vector<shared_ptr<CmsCouponPricer> > analyticPricers_;
 
 void setup() {
 
-    //General Settings
-    calendar_ = TARGET();
-    today_ = calendar_.adjust(Date::todaysDate());
-    Settings::instance().evaluationDate() = today_;
-    settlement_ = calendar_.advance(today_,settlementDays_,Days);
-    termStructure_.linkTo(flatRate(settlement_, 0.05, Actual365Fixed()));
-    referenceDate_ = termStructure_->referenceDate();
+    Calendar calendar = TARGET();
 
+    Date referenceDate = calendar.adjust(Date::todaysDate());
+    Settings::instance().evaluationDate() = referenceDate;
 
-    // ATM swaptionvol matrix
-    optionBDC_ = Following;
-
-    atmOptionTenors_ = std::vector<Period>();
-    atmOptionTenors_.push_back(Period(1, Months));
-    atmOptionTenors_.push_back(Period(6, Months));
-    atmOptionTenors_.push_back(Period(1, Years));
-    atmOptionTenors_.push_back(Period(5, Years));
-    atmOptionTenors_.push_back(Period(10, Years));
-    atmOptionTenors_.push_back(Period(30, Years));
-
-    atmSwapTenors_ = std::vector<Period>();
-    atmSwapTenors_.push_back(Period(1, Years));
-    atmSwapTenors_.push_back(Period(5, Years));
-    atmSwapTenors_.push_back(Period(10, Years));
-    atmSwapTenors_.push_back(Period(30, Years));
-
-    atmVolMatrix_ = Matrix(atmOptionTenors_.size(), atmSwapTenors_.size());
-    atmVolMatrix_[0][0]=0.1300; atmVolMatrix_[0][1]=0.1560; atmVolMatrix_[0][2]=0.1390; atmVolMatrix_[0][3]=0.1220;
-    atmVolMatrix_[1][0]=0.1440; atmVolMatrix_[1][1]=0.1580; atmVolMatrix_[1][2]=0.1460; atmVolMatrix_[1][3]=0.1260;
-    atmVolMatrix_[2][0]=0.1600; atmVolMatrix_[2][1]=0.1590; atmVolMatrix_[2][2]=0.1470; atmVolMatrix_[2][3]=0.1290;
-    atmVolMatrix_[3][0]=0.1640; atmVolMatrix_[3][1]=0.1470; atmVolMatrix_[3][2]=0.1370; atmVolMatrix_[3][3]=0.1220;
-    atmVolMatrix_[4][0]=0.1400; atmVolMatrix_[4][1]=0.1300; atmVolMatrix_[4][2]=0.1250; atmVolMatrix_[4][3]=0.1100;
-    atmVolMatrix_[5][0]=0.1130; atmVolMatrix_[5][1]=0.1090; atmVolMatrix_[5][2]=0.1070; atmVolMatrix_[5][3]=0.0930;
-
-    Size nRowsAtmVols = atmVolMatrix_.rows();
-    Size nColsAtmVols = atmVolMatrix_.columns();
-
-
-    //swaptionvolcube
-    optionTenors_ = std::vector<Period>();
-    optionTenors_.push_back(Period(1, Years));
-    optionTenors_.push_back(Period(10, Years));
-    optionTenors_.push_back(Period(30, Years));
-
-    swapTenors_ = std::vector<Period>();
-    swapTenors_.push_back(Period(2, Years));
-    swapTenors_.push_back(Period(10, Years));
-    swapTenors_.push_back(Period(30, Years));
-
-    strikeSpreads_ = std::vector<Rate>();
-    strikeSpreads_.push_back(-0.020);
-    strikeSpreads_.push_back(-0.005);
-    strikeSpreads_.push_back(+0.000);
-    strikeSpreads_.push_back(+0.005);
-    strikeSpreads_.push_back(+0.020);
-
-    Size nRows = optionTenors_.size()*swapTenors_.size();
-    Size nCols = strikeSpreads_.size();
-    volSpreadsMatrix_ = Matrix(nRows, nCols);
-    volSpreadsMatrix_[0][0]=0.0599; volSpreadsMatrix_[0][1]=0.0049;
-    volSpreadsMatrix_[0][2]=0.0000;
-    volSpreadsMatrix_[0][3]=-0.0001; volSpreadsMatrix_[0][4]=0.0127;
-
-    volSpreadsMatrix_[1][0]=0.0729; volSpreadsMatrix_[1][1]=0.0086;
-    volSpreadsMatrix_[1][2]=0.0000;
-    volSpreadsMatrix_[1][3]=-0.0024; volSpreadsMatrix_[1][4]=0.0098;
-
-    volSpreadsMatrix_[2][0]=0.0738; volSpreadsMatrix_[2][1]=0.0102;
-    volSpreadsMatrix_[2][2]=0.0000;
-    volSpreadsMatrix_[2][3]=-0.0039; volSpreadsMatrix_[2][4]=0.0065;
-
-    volSpreadsMatrix_[3][0]=0.0465; volSpreadsMatrix_[3][1]=0.0063;
-    volSpreadsMatrix_[3][2]=0.0000;
-    volSpreadsMatrix_[3][3]=-0.0032; volSpreadsMatrix_[3][4]=-0.0010;
-
-    volSpreadsMatrix_[4][0]=0.0558; volSpreadsMatrix_[4][1]=0.0084;
-    volSpreadsMatrix_[4][2]=0.0000;
-    volSpreadsMatrix_[4][3]=-0.0050; volSpreadsMatrix_[4][4]=-0.0057;
-
-    volSpreadsMatrix_[5][0]=0.0576; volSpreadsMatrix_[5][1]=0.0083;
-    volSpreadsMatrix_[5][2]=0.0000;
-    volSpreadsMatrix_[5][3]=-0.0043; volSpreadsMatrix_[5][4]=-0.0014;
-
-    volSpreadsMatrix_[6][0]=0.0437; volSpreadsMatrix_[6][1]=0.0059;
-    volSpreadsMatrix_[6][2]=0.0000;
-    volSpreadsMatrix_[6][3]=-0.0030; volSpreadsMatrix_[6][4]=-0.0006;
-
-    volSpreadsMatrix_[7][0]=0.0533; volSpreadsMatrix_[7][1]=0.0078;
-    volSpreadsMatrix_[7][2]=0.0000;
-    volSpreadsMatrix_[7][3]=-0.0045; volSpreadsMatrix_[7][4]=-0.0046;
-
-    volSpreadsMatrix_[8][0]=0.0545; volSpreadsMatrix_[8][1]=0.0079;
-    volSpreadsMatrix_[8][2]=0.0000;
-    volSpreadsMatrix_[8][3]=-0.0042; volSpreadsMatrix_[8][4]=-0.0020;
-
-
-    swapSettlementDays_ = 2;
-    fixedLegFrequency_ = Annual;
-    fixedLegConvention_ = Unadjusted;
-    fixedLegDayCounter_ = Thirty360();
-    termStructure_.linkTo(flatRate(referenceDate_, 0.05, Actual365Fixed()));
-    iborIndex_ = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure_));
-    shortTenor_ = 2;
-    iborIndexShortTenor_ = boost::shared_ptr<IborIndex>(new
-        Euribor3M(termStructure_));
-    swapIndexBase_ = boost::shared_ptr<SwapIndex>(new
-        SwapIndex("EurliborSwapFixA",
-                  10*Years,
-                  swapSettlementDays_,
-                  iborIndex_->currency(),
-                  calendar_,
-                  Period(fixedLegFrequency_),
-                  fixedLegConvention_,
-                  iborIndex_->dayCounter(),
-                  iborIndex_));
-
-    vegaWeightedSmileFit_=false;
+    termStructure_.linkTo(flatRate(referenceDate, 0.05, Actual365Fixed()));
 
     // ATM Volatility structure
-    std::vector<std::vector<Handle<Quote> > > atmVolsHandle_;
-    atmVolsHandle_ = std::vector<std::vector<Handle<Quote> > >(nRowsAtmVols);
-    Size i;
-    for (i=0; i<nRowsAtmVols; i++){
-        atmVolsHandle_[i] = std::vector<Handle<Quote> >(nColsAtmVols);
-        for (Size j=0; j<nColsAtmVols; j++) {
-            atmVolsHandle_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
-                SimpleQuote(atmVolMatrix_[i][j])));
-        }
-    }
+    std::vector<Period> atmOptionTenors;
+    atmOptionTenors.push_back(Period(1, Months));
+    atmOptionTenors.push_back(Period(6, Months));
+    atmOptionTenors.push_back(Period(1, Years));
+    atmOptionTenors.push_back(Period(5, Years));
+    atmOptionTenors.push_back(Period(10, Years));
+    atmOptionTenors.push_back(Period(30, Years));
 
-    dayCounter_ = Actual365Fixed();
+    std::vector<Period> atmSwapTenors;
+    atmSwapTenors.push_back(Period(1, Years));
+    atmSwapTenors.push_back(Period(5, Years));
+    atmSwapTenors.push_back(Period(10, Years));
+    atmSwapTenors.push_back(Period(30, Years));
+
+    Matrix atmVolMatrix(atmOptionTenors.size(), atmSwapTenors.size());
+    atmVolMatrix[0][0]=0.1300; atmVolMatrix[0][1]=0.1560; atmVolMatrix[0][2]=0.1390; atmVolMatrix[0][3]=0.1220;
+    atmVolMatrix[1][0]=0.1440; atmVolMatrix[1][1]=0.1580; atmVolMatrix[1][2]=0.1460; atmVolMatrix[1][3]=0.1260;
+    atmVolMatrix[2][0]=0.1600; atmVolMatrix[2][1]=0.1590; atmVolMatrix[2][2]=0.1470; atmVolMatrix[2][3]=0.1290;
+    atmVolMatrix[3][0]=0.1640; atmVolMatrix[3][1]=0.1470; atmVolMatrix[3][2]=0.1370; atmVolMatrix[3][3]=0.1220;
+    atmVolMatrix[4][0]=0.1400; atmVolMatrix[4][1]=0.1300; atmVolMatrix[4][2]=0.1250; atmVolMatrix[4][3]=0.1100;
+    atmVolMatrix[5][0]=0.1130; atmVolMatrix[5][1]=0.1090; atmVolMatrix[5][2]=0.1070; atmVolMatrix[5][3]=0.0930;
 
     atmVol_ = Handle<SwaptionVolatilityStructure>(
-        boost::shared_ptr<SwaptionVolatilityStructure>(new
-            SwaptionVolatilityMatrix(calendar_,
-                                     atmOptionTenors_,
-                                     atmSwapTenors_,
-                                     atmVolsHandle_,
-                                     dayCounter_,
-                                     optionBDC_)));
+        shared_ptr<SwaptionVolatilityStructure>(new
+            SwaptionVolatilityMatrix(calendar,
+                                     atmOptionTenors,
+                                     atmSwapTenors,
+                                     atmVolMatrix,
+                                     Actual365Fixed(),
+                                     Following)));
 
+    // Vol cubes
+    std::vector<Period> optionTenors;
+    optionTenors.push_back(Period(1, Years));
+    optionTenors.push_back(Period(10, Years));
+    optionTenors.push_back(Period(30, Years));
 
-    // Volatility Cube without smile
-    std::vector<std::vector<Handle<Quote> > > parametersGuess(optionTenors_.size()*swapTenors_.size());
-    for (i=0; i<optionTenors_.size()*swapTenors_.size(); i++) {
-        parametersGuess[i] = std::vector<Handle<Quote> >(4);
-        parametersGuess[i][0] =
-            Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.2)));
-        parametersGuess[i][1] =
-            Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.5)));
-        parametersGuess[i][2] =
-            Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.4)));
-        parametersGuess[i][3] =
-            Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
+    std::vector<Period> swapTenors;
+    swapTenors.push_back(Period(2, Years));
+    swapTenors.push_back(Period(10, Years));
+    swapTenors.push_back(Period(30, Years));
+
+    std::vector<Spread> strikeSpreads;
+    strikeSpreads.push_back(-0.020);
+    strikeSpreads.push_back(-0.005);
+    strikeSpreads.push_back(+0.000);
+    strikeSpreads.push_back(+0.005);
+    strikeSpreads.push_back(+0.020);
+
+    Size nRows = optionTenors.size()*swapTenors.size();
+    Size nCols = strikeSpreads.size();
+    Matrix volSpreadsMatrix(nRows, nCols);
+    volSpreadsMatrix[0][0] =  0.0599;
+    volSpreadsMatrix[0][1] =  0.0049;
+    volSpreadsMatrix[0][2] =  0.0000;
+    volSpreadsMatrix[0][3] = -0.0001;
+    volSpreadsMatrix[0][4] =  0.0127;
+
+    volSpreadsMatrix[1][0] =  0.0729;
+    volSpreadsMatrix[1][1] =  0.0086;
+    volSpreadsMatrix[1][2] =  0.0000;
+    volSpreadsMatrix[1][3] = -0.0024;
+    volSpreadsMatrix[1][4] =  0.0098;
+
+    volSpreadsMatrix[2][0] =  0.0738;
+    volSpreadsMatrix[2][1] =  0.0102;
+    volSpreadsMatrix[2][2] =  0.0000;
+    volSpreadsMatrix[2][3] = -0.0039;
+    volSpreadsMatrix[2][4] =  0.0065;
+
+    volSpreadsMatrix[3][0] =  0.0465;
+    volSpreadsMatrix[3][1] =  0.0063;
+    volSpreadsMatrix[3][2] =  0.0000;
+    volSpreadsMatrix[3][3] = -0.0032;
+    volSpreadsMatrix[3][4] = -0.0010;
+
+    volSpreadsMatrix[4][0] =  0.0558;
+    volSpreadsMatrix[4][1] =  0.0084;
+    volSpreadsMatrix[4][2] =  0.0000;
+    volSpreadsMatrix[4][3] = -0.0050;
+    volSpreadsMatrix[4][4] = -0.0057;
+
+    volSpreadsMatrix[5][0] =  0.0576;
+    volSpreadsMatrix[5][1] =  0.0083;
+    volSpreadsMatrix[5][2] =  0.0000;
+    volSpreadsMatrix[5][3] = -0.0043;
+    volSpreadsMatrix[5][4] = -0.0014;
+
+    volSpreadsMatrix[6][0] =  0.0437;
+    volSpreadsMatrix[6][1] =  0.0059;
+    volSpreadsMatrix[6][2] =  0.0000;
+    volSpreadsMatrix[6][3] = -0.0030;
+    volSpreadsMatrix[6][4] = -0.0006;
+
+    volSpreadsMatrix[7][0] =  0.0533;
+    volSpreadsMatrix[7][1] =  0.0078;
+    volSpreadsMatrix[7][2] =  0.0000;
+    volSpreadsMatrix[7][3] = -0.0045;
+    volSpreadsMatrix[7][4] = -0.0046;
+
+    volSpreadsMatrix[8][0] =  0.0545;
+    volSpreadsMatrix[8][1] =  0.0079;
+    volSpreadsMatrix[8][2] =  0.0000;
+    volSpreadsMatrix[8][3] = -0.0042;
+    volSpreadsMatrix[8][4] = -0.0020;
+
+    std::vector<std::vector<Handle<Quote> > > volSpreads(nRows);
+    for (Size i=0; i<nRows; ++i){
+        volSpreads[i] = std::vector<Handle<Quote> >(nCols);
+        for (Size j=0; j<nCols; ++j) {
+            volSpreads[i][j] = Handle<Quote>(shared_ptr<Quote>(new
+                SimpleQuote(volSpreadsMatrix[i][j])));
+        }
+    }
+
+    iborIndex_ = shared_ptr<IborIndex>(new Euribor6M(termStructure_));
+    shared_ptr<SwapIndex> swapIndexBase(new
+        EuriborSwapFixA(10*Years, termStructure_));
+
+    bool vegaWeightedSmileFit = false;
+
+    SabrVolCube2_ = Handle<SwaptionVolatilityStructure>(
+        shared_ptr<SwaptionVolCube2>(new
+            SwaptionVolCube2(atmVol_,
+                             optionTenors,
+                             swapTenors,
+                             strikeSpreads,
+                             volSpreads,
+                             swapIndexBase,
+                             vegaWeightedSmileFit)));
+    SabrVolCube2_->enableExtrapolation();
+
+    std::vector<std::vector<Handle<Quote> > > guess(nRows);
+    for (Size i=0; i<nRows; ++i) {
+        guess[i] = std::vector<Handle<Quote> >(4);
+        guess[i][0] = Handle<Quote>(shared_ptr<Quote>(new SimpleQuote(0.2)));
+        guess[i][1] = Handle<Quote>(shared_ptr<Quote>(new SimpleQuote(0.5)));
+        guess[i][2] = Handle<Quote>(shared_ptr<Quote>(new SimpleQuote(0.4)));
+        guess[i][3] = Handle<Quote>(shared_ptr<Quote>(new SimpleQuote(0.0)));
     }
     std::vector<bool> isParameterFixed(4, false);
-    isParameterFixed[1]=true;
+    isParameterFixed[1] = true;
 
-    std::vector<std::vector<Handle<Quote> > > nullVolSpreads(nRows);
-    for (i=0; i<optionTenors_.size()*swapTenors_.size(); i++){
-        nullVolSpreads[i] = std::vector<Handle<Quote> >(nCols);
-        for (Size j=0; j<strikeSpreads_.size(); j++) {
-            nullVolSpreads[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
-                SimpleQuote(0.)));
-        }
+    // FIXME
+    bool isAtmCalibrated = false;
+
+    SabrVolCube1_ = Handle<SwaptionVolatilityStructure>(
+        shared_ptr<SwaptionVolCube1>(new
+            SwaptionVolCube1(atmVol_,
+                             optionTenors,
+                             swapTenors,
+                             strikeSpreads,
+                             volSpreads,
+                             swapIndexBase,
+                             vegaWeightedSmileFit,
+                             guess,
+                             isParameterFixed,
+                             isAtmCalibrated)));
+    SabrVolCube1_->enableExtrapolation();
+
+    yieldCurveModels_.clear();
+    yieldCurveModels_.push_back(GFunctionFactory::Standard);
+    yieldCurveModels_.push_back(GFunctionFactory::ExactYield);
+    yieldCurveModels_.push_back(GFunctionFactory::ParallelShifts);
+    yieldCurveModels_.push_back(GFunctionFactory::NonParallelShifts);
+
+    Handle<Quote> zeroMeanRev(shared_ptr<Quote>(new SimpleQuote(0.0)));
+
+    numericalPricers_.clear();
+    analyticPricers_.clear();
+    Size m = yieldCurveModels_.size();
+    for (Size j=0; j<m; ++j) {
+        numericalPricers_.push_back(shared_ptr<CmsCouponPricer>(new
+            ConundrumPricerByNumericalIntegration(atmVol_,
+                                                  yieldCurveModels_[j],
+                                                  zeroMeanRev)));
+        analyticPricers_.push_back(shared_ptr<CmsCouponPricer>(new
+            ConundrumPricerByBlack(atmVol_,
+                                   yieldCurveModels_[j],
+                                   zeroMeanRev)));
     }
-
-    boost::shared_ptr<SwaptionVolCube1>
-    flatSwaptionVolatilityCube1(new SwaptionVolCube1(
-        atmVol_,
-        optionTenors_,
-        swapTenors_,
-        strikeSpreads_,
-        nullVolSpreads,
-        swapIndexBase_,
-        vegaWeightedSmileFit_,
-        parametersGuess,
-        isParameterFixed,
-        false));
-    flatSwaptionVolatilityCube1_ = Handle<SwaptionVolatilityStructure>(
-        boost::shared_ptr<SwaptionVolatilityStructure>(flatSwaptionVolatilityCube1));
-    flatSwaptionVolatilityCube1_->enableExtrapolation();
-
-    boost::shared_ptr<SwaptionVolCube2>
-    flatSwaptionVolatilityCube2(new SwaptionVolCube2(atmVol_,
-                                           optionTenors_,
-                                           swapTenors_,
-                                           strikeSpreads_,
-                                           nullVolSpreads,
-                                           swapIndexBase_,
-                                           vegaWeightedSmileFit_));
-    flatSwaptionVolatilityCube2_ = Handle<SwaptionVolatilityStructure>(
-        boost::shared_ptr<SwaptionVolatilityStructure>(flatSwaptionVolatilityCube2));
-    flatSwaptionVolatilityCube2_->enableExtrapolation();
-
-
-    // Volatility Cube with smile
-    volSpreads_ = std::vector<std::vector<Handle<Quote> > >(nRows);
-    for (i=0; i<optionTenors_.size()*swapTenors_.size(); i++){
-        volSpreads_[i] = std::vector<Handle<Quote> >(nCols);
-        for (Size j=0; j<strikeSpreads_.size(); j++) {
-            volSpreads_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
-                SimpleQuote(volSpreadsMatrix_[i][j])));
-        }
-    }
-
-    boost::shared_ptr<SwaptionVolCube1>
-    swaptionVolatilityCubeBySabr(new SwaptionVolCube1(
-        atmVol_,
-        optionTenors_,
-        swapTenors_,
-        strikeSpreads_,
-        volSpreads_,
-        swapIndexBase_,
-        vegaWeightedSmileFit_,
-        parametersGuess,
-        isParameterFixed,
-        false));
-    swaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
-        boost::shared_ptr<SwaptionVolatilityStructure>(swaptionVolatilityCubeBySabr));
-    swaptionVolatilityCubeBySabr_->enableExtrapolation();
-
-    swaptionVolatilityStructures_ = std::vector<Handle<SwaptionVolatilityStructure> >();
-    swaptionVolatilityStructures_.push_back(atmVol_);
-    //swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCube1_);
-    swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCube2_);
-    swaptionVolatilityStructures_.push_back(swaptionVolatilityCubeBySabr_);
-
-    modelOfYieldCurves_ = std::vector<GFunctionFactory::ModelOfYieldCurve>();
-    modelOfYieldCurves_.push_back(GFunctionFactory::Standard);
-    modelOfYieldCurves_.push_back(GFunctionFactory::ExactYield);
-    modelOfYieldCurves_.push_back(GFunctionFactory::ParallelShifts);
-    modelOfYieldCurves_.push_back(GFunctionFactory::NonParallelShifts);
-
-    // Cms Schedules conventions
-    fixedCmsConvention_ = Unadjusted;
-    floatingCmsConvention_ = ModifiedFollowing;
-    fixedCmsFrequency_ = Semiannual;
-    floatingCmsFrequency_ = Semiannual;
-    fixedCmsDayCount_ = Thirty360();
-
-    // Cms valuation
-    infiniteCap_ = 100.0;
-    infiniteFloor_ = 0.0;
-    gearing_ = 1.0;
-    spread_ = 0.0;
-
-    startDate_ = (referenceDate_+2*3600);
-    paymentDate_ = (startDate_+365);
-    endDate_ = (paymentDate_);
-    settlementDays_ = 2;
-
-    index_ = boost::shared_ptr<SwapIndex>(new
-        SwapIndex("EurliborSwapFixA",
-                10*Years,
-                swapSettlementDays_,
-                iborIndex_->currency(),
-                calendar_,
-                Period(fixedLegFrequency_),
-                fixedLegConvention_,
-                iborIndex_->dayCounter(),
-                iborIndex_)
-    );
-
-    //test parameters
-    rateTolerance_ = 2.0e-4;
-    priceTolerance_ = 2.0e-4;
 
 }
 
@@ -381,265 +255,215 @@ QL_END_TEST_LOCALS(CmsTest)
 
 void CmsTest::testFairRate()  {
 
-    BOOST_MESSAGE(
-            "Testing fair-rate calculation for constant-maturity coupons...");
+    BOOST_MESSAGE("Testing Pricer equivalence when vol is flat (coupon)...");
 
     SavedSettings backup;
 
     setup();
 
-    Handle<Quote> nullMeanReversionQuote =
-                    Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
-    for(Size h=0; h<modelOfYieldCurves_.size(); h++) {
-
-        boost::shared_ptr<CmsCouponPricer> numericalPricer(new
-            ConundrumPricerByNumericalIntegration(atmVol_,
-                                                  modelOfYieldCurves_[h],
-                                                  nullMeanReversionQuote,
-                                                  0., 1.));
-        boost::shared_ptr<CmsCouponPricer> analyticPricer(new
-            ConundrumPricerByBlack(atmVol_,
-                                   modelOfYieldCurves_[h],
-                                   nullMeanReversionQuote));
-
-        //Coupons
-        CappedFlooredCmsCoupon coupon1(
-            paymentDate_,1, startDate_, endDate_, settlementDays_,
-            index_, gearing_, spread_,
-            infiniteCap_, infiniteFloor_,
-            startDate_, endDate_,
-            iborIndex_->dayCounter());
-        coupon1.setPricer(numericalPricer);
-
-        CappedFlooredCmsCoupon coupon2(
-            paymentDate_,1, startDate_, endDate_, settlementDays_,
-            index_, gearing_, spread_,
-            infiniteCap_, infiniteFloor_,
-            startDate_, endDate_,
-            iborIndex_->dayCounter());
-        coupon2.setPricer(analyticPricer);
-
-        //Computation
-        const double rate1 = coupon1.rate();
-        const double rate2 = coupon2.rate();
-        const double difference =  rate2-rate1;
-
-        if (std::fabs(difference) > rateTolerance_) {
-            BOOST_ERROR("\n" <<
-                        "startDate:\t" << startDate_ << "\n"
-                        "rate1:\t" << io::rate(rate1) << "\n"
-                        "rate2:\t" << io::rate(rate2) << "\n"
-                        "difference:\t" << io::rate(difference) << "\n"
-                        "tolerance: \t" << io::rate(rateTolerance_));
-        }
-    }
-}
-
-void CmsTest::testParity() {
-
-    BOOST_MESSAGE("Testing put-call parity for constant-maturity coupons...");
-
-    SavedSettings backup;
-
-    setup();
-
-    Handle<Quote> nullMeanReversionQuote =
-                    Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
-
-    int priceIndex = 1;
-    for (Size volStructureIndex = 0;
-         volStructureIndex < swaptionVolatilityStructures_.size();
-         volStructureIndex++) {
-
-        for(Size modelOfYieldCurveIndex=0;
-            modelOfYieldCurveIndex<modelOfYieldCurves_.size();
-            modelOfYieldCurveIndex++) {
-
-            std::vector<boost::shared_ptr<CmsCouponPricer> > pricers;
-            {
-                boost::shared_ptr<CmsCouponPricer> analyticPricer(
-                    new ConundrumPricerByBlack(swaptionVolatilityStructures_[volStructureIndex],
-                                               modelOfYieldCurves_[modelOfYieldCurveIndex],
-                                               nullMeanReversionQuote));
-                pricers.push_back(analyticPricer);
-
-                boost::shared_ptr<CmsCouponPricer> numericalPricer(
-                    new ConundrumPricerByNumericalIntegration(
-                                                swaptionVolatilityStructures_[volStructureIndex],
-                                                modelOfYieldCurves_[modelOfYieldCurveIndex],
-                                                nullMeanReversionQuote,
-                                                0, 1));
-                pricers.push_back(numericalPricer);
-            }
-
-            for (Size pricerIndex=0; pricerIndex < pricers.size();
-                 pricerIndex++) {
-
-                CappedFlooredCmsCoupon swaplet(paymentDate_, 1,
-                                  startDate_, endDate_, settlementDays_,
-                                  index_, gearing_, spread_,
-                                  infiniteCap_, infiniteFloor_,
-                                  startDate_, endDate_,
+    shared_ptr<SwapIndex> swapIndex(new SwapIndex("EuriborSwapFixA",
+                                                  10*Years,
+                                                  iborIndex_->fixingDays(),
+                                                  iborIndex_->currency(),
+                                                  iborIndex_->fixingCalendar(),
+                                                  1*Years,
+                                                  Unadjusted,
+                                                  iborIndex_->dayCounter(),//??
+                                                  iborIndex_));
+    // FIXME
+    //shared_ptr<SwapIndex> swapIndex(new
+    //    EuriborSwapFixA(10*Years, iborIndex_->termStructure()));
+    Date startDate = termStructure_->referenceDate() + 20*Years;
+    Date paymentDate = startDate + 1*Years;
+    Date endDate = paymentDate;
+    Real nominal = 1.0;
+    Rate infiniteCap= 100.0;;
+    Rate infiniteFloor = 0.0;
+    Real gearing = 1.0;
+    Spread spread = 0.0;
+    CappedFlooredCmsCoupon coupon(paymentDate, nominal,
+                                  startDate, endDate,
+                                  swapIndex->fixingDays(), swapIndex,
+                                  gearing, spread,
+                                  infiniteCap, infiniteFloor,
+                                  startDate, endDate,
                                   iborIndex_->dayCounter());
-                swaplet.setPricer(pricers[pricerIndex]);
-                Real strike = .02;
+    for (Size j=0; j<yieldCurveModels_.size(); ++j) {
+        numericalPricers_[j]->setSwaptionVolatility(atmVol_);
+        coupon.setPricer(numericalPricers_[j]);
+        Rate rate0 = coupon.rate();
 
-                for (Size strikeIndex = 0; strikeIndex < 10; strikeIndex++) {
+        analyticPricers_[j]->setSwaptionVolatility(atmVol_);
+        coupon.setPricer(analyticPricers_[j]);
+        Rate rate1 = coupon.rate();
 
-                    strike += .005;
-                    CappedFlooredCmsCoupon caplet(paymentDate_, 1,
-                                     startDate_, endDate_, settlementDays_,
-                                     index_, gearing_, spread_,
-                                     strike, infiniteFloor_,
-                                     startDate_, endDate_,
-                                     iborIndex_->dayCounter());
-                    caplet.setPricer(pricers[pricerIndex]);
-
-                    CappedFlooredCmsCoupon floorlet(paymentDate_, 1,
-                                       startDate_, endDate_, settlementDays_,
-                                       index_, gearing_, spread_,
-                                       infiniteCap_, strike,
-                                       startDate_, endDate_,
-                                       iborIndex_->dayCounter());
-                    floorlet.setPricer(pricers[pricerIndex]);
-
-                    //Computation
-                    const double price1 = swaplet.price(termStructure_)
-                        + swaplet.accrualPeriod()*strike*
-                          termStructure_->discount(paymentDate_);
-                    const double price2 = floorlet.price(termStructure_)
-                        + caplet.price(termStructure_);
-
-                    priceIndex++;
-
-                    const double difference =  price1-price2;
-
-                    if (std::fabs(difference) > priceTolerance_) {
-                            BOOST_ERROR("\n" <<
-                                "startDate:\t" << startDate_ << "\n"
-                                "strike:\t" << strike << "\n"
-                                "price1:\t" << io::rate(price1) << "\n"
-                                "price2:\t" << io::rate(price2) << "\n"
-                                "difference:\t" << io::rate(difference) << "\n"
-                                "tolerance: \t" << io::rate(priceTolerance_));
-                    }
-                }
-            }
-        }
+        Spread difference =  std::fabs(rate1-rate0);
+        Spread tol = 2.0e-4;
+        if (difference > tol)
+            BOOST_FAIL("\nCoupon payment date: " << paymentDate <<
+                       "\nCoupon start date:   " << startDate <<
+                       "\nCoupon floor:        " << io::rate(infiniteFloor) <<
+                       "\nCoupon gearing:      " << io::rate(gearing) <<
+                       "\nCoupon swap index:   " << swapIndex->name() <<
+                       "\nCoupon spread:       " << io::rate(spread) <<
+                       "\nCoupon cap:          " << io::rate(infiniteCap) <<
+                       "\nCoupon DayCounter:   " << iborIndex_->dayCounter()<<
+                       "\nYieldCurve Model:    " << yieldCurveModels_[j] <<
+                       "\nNumerical Pricer:    " << io::rate(rate0) <<
+                       "\nAnalytic Pricer:     " << io::rate(rate1) <<
+                       "\ndifference:          " << io::rate(difference) <<
+                       "\ntolerance:           " << io::rate(tol));
     }
 }
-
 
 void CmsTest::testCmsSwap() {
 
-    BOOST_MESSAGE("Testing constant-maturity swaps...");
+    BOOST_MESSAGE("Testing Pricer equivalence when vol is flat (swaps)...");
 
     SavedSettings backup;
 
     setup();
 
-    swaptionVolatilityStructures_.clear();
-    swaptionVolatilityStructures_.push_back(atmVol_);
-    //swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCube1_);
-    swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCube2_);
-
+    shared_ptr<SwapIndex> swapIndex(new SwapIndex("EuriborSwapFixA",
+                                                  10*Years,
+                                                  iborIndex_->fixingDays(),
+                                                  iborIndex_->currency(),
+                                                  iborIndex_->fixingCalendar(),
+                                                  1*Years,
+                                                  Unadjusted,
+                                                  iborIndex_->dayCounter(),//??
+                                                  iborIndex_));
+    // FIXME
+    //shared_ptr<SwapIndex> swapIndex(new
+    //    EuriborSwapFixA(10*Years, iborIndex_->termStructure()));
+    Spread spread = 0.0;
     std::vector<Size> swapLengths;
     swapLengths.push_back(1);
     swapLengths.push_back(5);
     swapLengths.push_back(6);
     swapLengths.push_back(10);
+    Size n = swapLengths.size();
+    std::vector<shared_ptr<Swap> > cms(n);
+    for (Size i=0; i<n; ++i)
+        // no cap, floor
+        // no gearing, spread
+        cms[i] = MakeCms(Period(swapLengths[i], Years),
+                         swapIndex,
+                         iborIndex_, spread,
+                         10*Days);
 
-    int priceIndex = 1;
-    Handle<Quote> nullMeanReversionQuote =
-        Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
+    for (Size j=0; j<yieldCurveModels_.size(); ++j) {
+        numericalPricers_[j]->setSwaptionVolatility(atmVol_);
+        analyticPricers_[j]->setSwaptionVolatility(atmVol_);
+        for (Size sl=0; sl<n; ++sl) {
+            setCouponPricer(cms[sl]->leg(0), numericalPricers_[j]);
+            Real priceNum = cms[sl]->NPV();
+            setCouponPricer(cms[sl]->leg(0), analyticPricers_[j]);
+            Real priceAn = cms[sl]->NPV();
 
-    for (Size swapLengthIndex = 0; swapLengthIndex<swapLengths.size();
-        swapLengthIndex++) {
+            Real difference =  std::fabs(priceNum-priceAn);
+            Real tol = 1.0e-4;
+            if (difference > tol)
+                BOOST_FAIL("\nLength in Years:  " << swapLengths[sl] <<
+                           //"\nfloor:            " << io::rate(infiniteFloor) <<
+                           //"\ngearing:          " << io::rate(gearing) <<
+                           "\nswap index:       " << swapIndex->name() <<
+                           "\nibor index:       " << iborIndex_->name() <<
+                           "\nspread:           " << io::rate(spread) <<
+                           //"\ncap:              " << io::rate(infiniteCap) <<
+                           "\nYieldCurve Model: " << yieldCurveModels_[j] <<
+                           "\nNumerical Pricer: " << io::rate(priceNum) <<
+                           "\nAnalytic Pricer:  " << io::rate(priceAn) <<
+                           "\ndifference:       " << io::rate(difference) <<
+                           "\ntolerance:        " << io::rate(tol));
+        }
+    }
 
-        const int n = swapLengths[swapLengthIndex];
+}
 
-        std::vector<Real> meanReversions(n, 0);
-        std::vector<Real> fixedNominals(n, 1);
-        std::vector<Real> floatingNominals(n, 1);
-        std::vector<Real> caps(n, infiniteCap_);
-        std::vector<Real> floors(n, infiniteFloor_);
-        std::vector<Real> fractions(n, gearing_);
-        std::vector<Spread> baseRate(n, 0.0);
+void CmsTest::testParity() {
 
-        for (Size volStructureIndex = 0;
-             volStructureIndex < swaptionVolatilityStructures_.size();
-             volStructureIndex++) {
+    BOOST_MESSAGE("Testing put-call parity for capped-floored CMS coupons...");
 
-            for (Size modelOfYieldCurveIndex=0;
-                 modelOfYieldCurveIndex<modelOfYieldCurves_.size();
-                 modelOfYieldCurveIndex++) {
+    SavedSettings backup;
 
-                std::vector<boost::shared_ptr<CmsCouponPricer> > pricers;
-                boost::shared_ptr<CmsCouponPricer> analyticPricer(
-                    new ConundrumPricerByBlack(
-                                    swaptionVolatilityStructures_[volStructureIndex],
-                                    modelOfYieldCurves_[modelOfYieldCurveIndex],
-                                    nullMeanReversionQuote));
-                pricers.push_back(analyticPricer);
+    setup();
 
-                boost::shared_ptr<CmsCouponPricer> numericalPricer(
-                    new ConundrumPricerByNumericalIntegration(
-                                swaptionVolatilityStructures_[volStructureIndex],
-                                modelOfYieldCurves_[modelOfYieldCurveIndex],
-                                nullMeanReversionQuote,
-                                0, 1));
-                pricers.push_back(numericalPricer);
+    std::vector<Handle<SwaptionVolatilityStructure> > swaptionVols;
+    swaptionVols.push_back(atmVol_);
+    swaptionVols.push_back(SabrVolCube1_);
+    swaptionVols.push_back(SabrVolCube2_);
 
-                Date startDate = today_;
-                startDate += Period(10, Days);
-                Date maturityDate = startDate;
-                maturityDate += Period(n, Years);
-
-                Schedule fixedSchedule(startDate,maturityDate,
-                                       Period(fixedCmsFrequency_),
-                                       calendar_,fixedCmsConvention_,
-                                       fixedLegConvention_,
-                                       DateGeneration::Forward, false);
-                Schedule floatingSchedule(startDate,maturityDate,
-                                          Period(floatingCmsFrequency_),
-                                          calendar_,floatingCmsConvention_,
-                                          fixedLegConvention_,
-                                          DateGeneration::Forward, false);
-
-                std::vector<Real> prices;
-                for (Size pricerIndex=0; pricerIndex<pricers.size();
-                     pricerIndex++) {
-
-                    Leg cmsLeg = CmsLeg(fixedSchedule, index_)
-                        .withNotionals(fixedNominals)
-                        .withPaymentDayCounter(fixedCmsDayCount_)
-                        .withPaymentAdjustment(fixedCmsConvention_)
-                        .withFixingDays(settlementDays_)
-                        .withGearings(fractions)
-                        .withSpreads(baseRate)
-                        .withCaps(caps)
-                        .withFloors(floors);
-                    setCouponPricer(cmsLeg, pricers[pricerIndex]);
-
-                    Leg floatingLeg = IborLeg(floatingSchedule, iborIndex_)
-                        .withNotionals(floatingNominals)
-                        .withPaymentDayCounter(iborIndex_->dayCounter())
-                        .withPaymentAdjustment(floatingCmsConvention_)
-                        .withFixingDays(settlementDays_);
-
-                    boost::shared_ptr<Swap> swap(new Swap(cmsLeg, floatingLeg));
-                    swap->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                                  new DiscountingSwapEngine(termStructure_)));
-                    Real price = swap->NPV();
-                    prices.push_back(price);
-                    priceIndex++;
-                }
-
-                const double difference =  prices[0]-prices[1];
-                if (std::fabs(difference) > priceTolerance_) {
-                    BOOST_ERROR("\n" <<
-                                "difference:\t" << io::rate(difference) << "\n"
-                                "tolerance: \t" << io::rate(priceTolerance_));
+    shared_ptr<SwapIndex> swapIndex(new
+        EuriborSwapFixA(10*Years, iborIndex_->termStructure()));
+    Date startDate = termStructure_->referenceDate() + 20*Years;
+    Date paymentDate = startDate + 1*Years;
+    Date endDate = paymentDate;
+    Real nominal = 1.0;
+    Rate infiniteCap= 100.0;;
+    Rate infiniteFloor = 0.0;
+    Real gearing = 1.0;
+    Spread spread = 0.0;
+    DiscountFactor discount = termStructure_->discount(paymentDate);
+    CappedFlooredCmsCoupon swaplet(paymentDate, nominal,
+                                   startDate, endDate,
+                                   swapIndex->fixingDays(),
+                                   swapIndex,
+                                   gearing, spread,
+                                   infiniteCap, infiniteFloor,
+                                   startDate, endDate,
+                                   iborIndex_->dayCounter());
+    for (Rate strike = .02; strike<.12; strike+=0.05) {
+        CappedFlooredCmsCoupon   caplet(paymentDate, nominal,
+                                        startDate, endDate,
+                                        swapIndex->fixingDays(),
+                                        swapIndex,
+                                        gearing, spread,
+                                        strike, infiniteFloor,
+                                        startDate, endDate,
+                                        iborIndex_->dayCounter());
+        CappedFlooredCmsCoupon floorlet(paymentDate, nominal,
+                                        startDate, endDate,
+                                        swapIndex->fixingDays(),
+                                        swapIndex,
+                                        gearing, spread,
+                                        infiniteCap, strike,
+                                        startDate, endDate,
+                                        iborIndex_->dayCounter());
+                
+        for (Size i=0; i<swaptionVols.size(); ++i) {
+            for (Size j=0; j<yieldCurveModels_.size(); ++j) {
+                numericalPricers_[j]->setSwaptionVolatility(swaptionVols[i]);
+                analyticPricers_[j]->setSwaptionVolatility(swaptionVols[i]);
+                std::vector<shared_ptr<CmsCouponPricer> > pricers(2);
+                pricers[0] = numericalPricers_[j];
+                pricers[1] = analyticPricers_[j];
+                for (Size k=0; k<pricers.size(); ++k) {
+                    swaplet.setPricer(pricers[k]);
+                    caplet.setPricer(pricers[k]);
+                    floorlet.setPricer(pricers[k]);
+                    Real swapletPrice = swaplet.price(termStructure_) +
+                                  swaplet.accrualPeriod() * strike * discount;
+                    Real capletPrice = caplet.price(termStructure_);
+                    Real floorletPrice = floorlet.price(termStructure_);
+                    Real difference = std::fabs(capletPrice + floorletPrice -
+                                                swapletPrice);
+                    Real tol = 2.0e-5;
+                    if (difference > tol)
+                        BOOST_FAIL("\nCoupon payment date: " << paymentDate <<
+                                   "\nCoupon start date:   " << startDate <<
+                                   "\nCoupon gearing:      " << io::rate(gearing) <<
+                                   "\nCoupon swap index:   " << swapIndex->name() <<
+                                   "\nCoupon spread:       " << io::rate(spread) <<
+                                   "\nstrike:              " << io::rate(strike) <<
+                                   "\nCoupon DayCounter:   " << iborIndex_->dayCounter() <<
+                                   "\nYieldCurve Model:    " << yieldCurveModels_[j] <<
+                                   (k==0 ? "\nNumerical Pricer" : "\nAnalytic Pricer") <<
+                                   "\nSwaplet price:       " << io::rate(swapletPrice) <<
+                                   "\nCaplet price:        " << io::rate(capletPrice) <<
+                                   "\nFloorlet price:      " << io::rate(floorletPrice) <<
+                                   "\ndifference:          " << io::rate(difference) <<
+                                   "\ntolerance:           " << io::rate(tol));
                 }
             }
         }
@@ -649,8 +473,7 @@ void CmsTest::testCmsSwap() {
 test_suite* CmsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Cms tests");
     suite->add(BOOST_TEST_CASE(&CmsTest::testFairRate));
-    suite->add(BOOST_TEST_CASE(&CmsTest::testParity));
     suite->add(BOOST_TEST_CASE(&CmsTest::testCmsSwap));
+    suite->add(BOOST_TEST_CASE(&CmsTest::testParity));
     return suite;
 }
-
