@@ -53,7 +53,7 @@ namespace QuantLib {
         MakeCms& withCmsLegTenor(const Period& t);
         MakeCms& withCmsLegCalendar(const Calendar& cal);
         MakeCms& withCmsLegConvention(BusinessDayConvention bdc);
-        MakeCms& withCmsLegTerminationDateConvention(BusinessDayConvention bdc);
+        MakeCms& withCmsLegTerminationDateConvention(BusinessDayConvention);
         MakeCms& withCmsLegRule(DateGeneration::Rule r);
         MakeCms& withCmsLegEndOfMonth(bool flag = true);
         MakeCms& withCmsLegFirstDate(const Date& d);
@@ -63,7 +63,8 @@ namespace QuantLib {
         MakeCms& withFloatingLegTenor(const Period& t);
         MakeCms& withFloatingLegCalendar(const Calendar& cal);
         MakeCms& withFloatingLegConvention(BusinessDayConvention bdc);
-        MakeCms& withFloatingLegTerminationDateConvention(BusinessDayConvention bdc);
+        MakeCms& withFloatingLegTerminationDateConvention(
+                                                    BusinessDayConvention bdc);
         MakeCms& withFloatingLegRule(DateGeneration::Rule r);
         MakeCms& withFloatingLegEndOfMonth(bool flag = true);
         MakeCms& withFloatingLegFirstDate(const Date& d);
