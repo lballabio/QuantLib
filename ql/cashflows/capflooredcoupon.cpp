@@ -72,11 +72,11 @@ namespace QuantLib {
 
     void CappedFlooredCoupon::setPricer(
                  const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
-            if(pricer_)
+            if (pricer_)
                 unregisterWith(pricer_);
             pricer_ = pricer;
-            QL_REQUIRE(pricer_, "no adequate pricer given");
-            registerWith(pricer_);
+            if (pricer_)
+                registerWith(pricer_);
             update();
             underlying_->setPricer(pricer);
         }

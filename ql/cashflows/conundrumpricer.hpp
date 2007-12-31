@@ -176,6 +176,21 @@ namespace QuantLib {
 
     };
 
+    inline std::ostream& operator<<(std::ostream& out,
+                                    GFunctionFactory::ModelOfYieldCurve type) {
+        switch (type) {
+          case GFunctionFactory::Standard:
+            return out << "Standard";
+          case GFunctionFactory::ExactYield:
+            return out << "ExactYield";
+          case GFunctionFactory::ParallelShifts:
+            return out << "ParallelShifts";
+          case GFunctionFactory::NonParallelShifts:
+            return out << "NonParallelShifts";
+          default:
+            QL_FAIL("unknown option type");
+        }
+    }
 
     //! CMS-coupon pricer
     /*! Base class for the pricing of a CMS coupon via static replication
@@ -195,7 +210,6 @@ namespace QuantLib {
         void setMeanReversion(const Handle<Quote>& meanReversion) {
             unregisterWith(meanReversion_);
             meanReversion_ = meanReversion;
-            QL_REQUIRE(!meanReversion_.empty(), "no adequate meanReversion given");
             registerWith(meanReversion_);
             update();
         };

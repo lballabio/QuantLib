@@ -59,8 +59,8 @@ namespace QuantLib {
         if (pricer_)
             unregisterWith(pricer_);
         pricer_ = pricer;
-        QL_REQUIRE(pricer_, "no adequate pricer given");
-        registerWith(pricer_);
+        if (pricer_)
+            registerWith(pricer_);
         update();
     }
 

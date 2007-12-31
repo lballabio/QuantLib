@@ -59,17 +59,18 @@ namespace QuantLib {
     //! base pricer for capped/floored Ibor coupons
     class IborCouponPricer : public FloatingRateCouponPricer {
       public:
-        IborCouponPricer(const Handle<OptionletVolatilityStructure>& capletVol)
-        : capletVol_(capletVol) { registerWith(capletVol_); }
+        IborCouponPricer(const Handle<OptionletVolatilityStructure>& v =
+                                          Handle<OptionletVolatilityStructure>())
+        : capletVol_(v) { registerWith(capletVol_); }
 
         Handle<OptionletVolatilityStructure> capletVolatility() const{
             return capletVol_;
         }
         void setCapletVolatility(
-                         const Handle<OptionletVolatilityStructure>& capletVol) {
+                            const Handle<OptionletVolatilityStructure>& v =
+                                    Handle<OptionletVolatilityStructure>()) {
             unregisterWith(capletVol_);
-            capletVol_ = capletVol;
-            QL_REQUIRE(!capletVol_.empty(), "no adequate capletVol given");
+            capletVol_ = v;
             registerWith(capletVol_);
             update();
         }
@@ -80,10 +81,9 @@ namespace QuantLib {
     //! Black-formula pricer for capped/floored Ibor coupons
     class BlackIborCouponPricer : public IborCouponPricer {
       public:
-        BlackIborCouponPricer(
-                          const Handle<OptionletVolatilityStructure>& capletVol =
-                                          Handle<OptionletVolatilityStructure>())
-        : IborCouponPricer(capletVol) {};
+        BlackIborCouponPricer(const Handle<OptionletVolatilityStructure>& v =
+                                        Handle<OptionletVolatilityStructure>())
+        : IborCouponPricer(v) {};
         virtual void initialize(const FloatingRateCoupon& coupon);
         /* */
         Real swapletPrice() const;
@@ -110,17 +110,18 @@ namespace QuantLib {
     //! base pricer for vanilla CMS coupons
     class CmsCouponPricer : public FloatingRateCouponPricer {
       public:
-        CmsCouponPricer(const Handle<SwaptionVolatilityStructure>& swaptionVol)
-        : swaptionVol_(swaptionVol) { registerWith(swaptionVol_); }
+        CmsCouponPricer(const Handle<SwaptionVolatilityStructure>& v =
+                                        Handle<SwaptionVolatilityStructure>())
+        : swaptionVol_(v) { registerWith(swaptionVol_); }
 
         Handle<SwaptionVolatilityStructure> swaptionVolatility() const{
             return swaptionVol_;
         }
         void setSwaptionVolatility(
-                     const Handle<SwaptionVolatilityStructure>& swaptionVol) {
+                            const Handle<SwaptionVolatilityStructure>& v=
+                                    Handle<SwaptionVolatilityStructure>()) {
             unregisterWith(swaptionVol_);
-            swaptionVol_ = swaptionVol;
-            QL_REQUIRE(!swaptionVol_.empty(), "no adequate swaptionVol given");
+            swaptionVol_ = v;
             registerWith(swaptionVol_);
             update();
         }
@@ -136,6 +137,5 @@ namespace QuantLib {
             const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >&);
 
 }
-
 
 #endif

@@ -35,7 +35,7 @@ namespace QuantLib {
 //===========================================================================//
 
     void BlackIborCouponPricer::initialize(const FloatingRateCoupon& coupon) {
-        coupon_ =  dynamic_cast<const IborCoupon*>(&coupon);
+        coupon_ = dynamic_cast<const IborCoupon*>(&coupon);
         gearing_ = coupon_->gearing();
         spread_ = coupon_->spread();
         Date paymentDate = coupon_->date();
@@ -44,7 +44,7 @@ namespace QuantLib {
 
         Date today = Settings::instance().evaluationDate();
 
-        if(paymentDate > today)
+        if (paymentDate > today)
             discount_ = rateCurve->discount(paymentDate);
         else
             discount_ = 1.0;
@@ -56,7 +56,7 @@ namespace QuantLib {
         // past or future fixing is managed in InterestRateIndex::fixing()
 
         Real swapletPrice =
-           adjustedFixing()* coupon_->accrualPeriod()* discount_;
+           adjustedFixing()* coupon_->accrualPeriod() * discount_;
         return gearing_ * swapletPrice + spreadLegValue_;
     }
 
@@ -101,14 +101,14 @@ namespace QuantLib {
             QL_REQUIRE(!capletVolatility().empty(),
                        "missing optionlet volatility");
             // not yet determined, use Black model
-            Rate fixing =
-                 blackFormula(
-                       optionType,
-                       effStrike,
-                       adjustedFixing(),
-                       std::sqrt(capletVolatility()->blackVariance(fixingDate,
-                                                                   effStrike)));
-            return fixing* coupon_->accrualPeriod()*discount_; ;
+            Real variance =
+                std::sqrt(capletVolatility()->blackVariance(fixingDate,
+                                                            effStrike));
+            Rate fixing = blackFormula(optionType,
+                                       effStrike,
+                                       adjustedFixing(),
+                                       variance);
+            return fixing * coupon_->accrualPeriod() * discount_;
         }
     }
 
@@ -266,4 +266,3 @@ namespace QuantLib {
     }
 
 }
-
