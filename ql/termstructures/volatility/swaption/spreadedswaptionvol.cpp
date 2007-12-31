@@ -18,7 +18,7 @@
 */
 
 #include <ql/termstructures/volatility/swaption/spreadedswaptionvol.hpp>
-#include <ql/termstructures/volatility/smilesection.hpp>
+#include <ql/termstructures/volatility/spreadedsmilesection.hpp>
 
 namespace QuantLib {
 

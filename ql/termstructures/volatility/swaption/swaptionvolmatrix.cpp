@@ -23,7 +23,7 @@
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
-#include <ql/termstructures/volatility/smilesection.hpp>
+#include <ql/termstructures/volatility/flatsmilesection.hpp>
 #include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {

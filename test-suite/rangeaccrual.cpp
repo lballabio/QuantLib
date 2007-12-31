@@ -25,6 +25,7 @@
 #include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
+#include <ql/termstructures/volatility/flatsmilesection.hpp>
 
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
