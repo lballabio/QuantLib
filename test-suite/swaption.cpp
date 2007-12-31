@@ -618,11 +618,11 @@ void SwaptionTest::testCashSettledSwaptions() {
             // Swaptions: underlying swap fixed leg conventions: unadjusted, 30/360
             // Physical settled swaption
             boost::shared_ptr<Swaption> swaption_p_u360 =
-                                        makeSwaption(swap_u360,maturity,0.20);
+                                        makeSwaption(swap_u360,exerciseDate,0.20);
             Real value_p_u360 = swaption_p_u360->NPV();
             // Cash settled swaption
             boost::shared_ptr<Swaption> swaption_c_u360 =
-                                        makeSwaption(swap_u360,maturity,0.20,
+                                        makeSwaption(swap_u360,exerciseDate,0.20,
                                         Settlement::Cash);
             Real value_c_u360 = swaption_c_u360->NPV();
             // the NPV's ratio must be equal to annuities ratio
@@ -632,11 +632,11 @@ void SwaptionTest::testCashSettledSwaptions() {
             // Swaptions: underlying swap fixed leg conventions: modified following, act/365
             // Physical settled swaption
             boost::shared_ptr<Swaption> swaption_p_a365 =
-                                        makeSwaption(swap_a365,maturity,0.20);
+                                        makeSwaption(swap_a365,exerciseDate,0.20);
             Real value_p_a365 = swaption_p_a365->NPV();
             // Cash settled swaption
             boost::shared_ptr<Swaption> swaption_c_a365 =
-                                        makeSwaption(swap_a365,maturity,0.20,
+                                        makeSwaption(swap_a365,exerciseDate,0.20,
                                         Settlement::Cash);
             Real value_c_a365 = swaption_c_a365->NPV();
             // the NPV's ratio must be equal to annuities ratio
@@ -646,11 +646,11 @@ void SwaptionTest::testCashSettledSwaptions() {
             // Swaptions: underlying swap fixed leg conventions: modified following, 30/360
             // Physical settled swaption
             boost::shared_ptr<Swaption> swaption_p_a360 =
-                                        makeSwaption(swap_a360,maturity,0.20);
+                                        makeSwaption(swap_a360,exerciseDate,0.20);
             Real value_p_a360 = swaption_p_a360->NPV();
             // Cash settled swaption
             boost::shared_ptr<Swaption> swaption_c_a360 =
-                                        makeSwaption(swap_a360,maturity,0.20,
+                                        makeSwaption(swap_a360,exerciseDate,0.20,
                                         Settlement::Cash);
             Real value_c_a360 = swaption_c_a360->NPV();
             // the NPV's ratio must be equal to annuities ratio
@@ -660,11 +660,11 @@ void SwaptionTest::testCashSettledSwaptions() {
             // Swaptions: underlying swap fixed leg conventions: unadjusted, act/365
             // Physical settled swaption
             boost::shared_ptr<Swaption> swaption_p_u365 =
-                                        makeSwaption(swap_u365,maturity,0.20);
+                                        makeSwaption(swap_u365,exerciseDate,0.20);
             Real value_p_u365 = swaption_p_u365->NPV();
             // Cash settled swaption
             boost::shared_ptr<Swaption> swaption_c_u365 =
-                                        makeSwaption(swap_u365,maturity,0.20,
+                                        makeSwaption(swap_u365,exerciseDate,0.20,
                                         Settlement::Cash);
             Real value_c_u365 = swaption_c_u365->NPV();
             // the NPV's ratio must be equal to annuities ratio
@@ -838,7 +838,7 @@ void SwaptionTest::testImpliedVolatility() {
                     for (Size h=0; h<LENGTH(types); h++) {
                         for (Size u=0; u<LENGTH(vols); u++) {
                             boost::shared_ptr<Swaption> swaption =
-                                makeSwaption(swap, maturity, vols[u],
+                                makeSwaption(swap, exerciseDate, vols[u],
                                              types[h]);
                             // Black price
                             // FLOATING_POINT_EXCEPTION
