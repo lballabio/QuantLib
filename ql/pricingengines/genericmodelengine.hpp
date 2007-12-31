@@ -42,10 +42,11 @@ namespace QuantLib {
             this->registerWith(model_);
         }
         void setModel(const boost::shared_ptr<ModelType>& model) {
-            this->unregisterWith(model_);
+            if (model_)
+                this->unregisterWith(model_);
             model_ = model;
-            QL_REQUIRE(!model_.isNull(), "no adequate model given");
-            this->registerWith(model_);
+            if (model_)
+                this->registerWith(model_);
             this->update();
         }
       protected:
