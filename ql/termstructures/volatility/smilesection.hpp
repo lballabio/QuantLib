@@ -39,15 +39,17 @@ namespace QuantLib {
     /*! This abstract class provides volatility smile section interface */
     class SmileSection : public virtual Observable, public Observer {
       public:
+        friend SpreadedSmileSection;
         SmileSection(const Date& d,
                      const DayCounter& dc = DayCounter(),
                      const Date& referenceDate = Date());
         SmileSection(Time exerciseTime,
                      const DayCounter& dc = DayCounter());
         SmileSection() {}
-        virtual void update();
+
         virtual ~SmileSection() {}
 
+        virtual void update();
         virtual Real minStrike() const = 0;
         virtual Real maxStrike() const = 0;
         Real variance(Rate strike = Null<Rate>()) const;
@@ -57,9 +59,8 @@ namespace QuantLib {
         Time exerciseTime() const { return exerciseTime_; }
         const DayCounter& dayCounter() const { return dc_; }
         void initializeExerciseTime() const;
-        friend class SpreadedSmileSection;
       protected:
-        virtual Real varianceImpl(Rate strike) const = 0;
+        Real varianceImpl(Rate strike) const;
         virtual Volatility volatilityImpl(Rate strike) const = 0;
       private:
         bool isFloating_;
@@ -81,32 +82,10 @@ namespace QuantLib {
         return volatilityImpl(strike);
     }
 
-    class FlatSmileSection : public SmileSection {
-      public:
-        FlatSmileSection(const Date& d,
-                         Volatility vol,
-                         const DayCounter& dc,
-                         const Date& referenceDate = Date(),
-                         Real atmLevel = Null<Rate>())
-        : SmileSection(d, dc, referenceDate),
-          vol_(vol),
-          atmLevel_(atmLevel){}
-
-        FlatSmileSection(Time exerciseTime,
-                         Volatility vol,
-                         const DayCounter& dc = Actual365Fixed())
-        : SmileSection(exerciseTime, dc), vol_(vol) {}
-
-        Real minStrike () const { return 0.0; }
-        Real maxStrike () const { return QL_MAX_REAL; }
-        Real atmLevel() const { return atmLevel_; }
-      protected:
-        Real varianceImpl(Rate) const { return vol_*vol_* exerciseTime(); }
-        Volatility volatilityImpl(Rate) const { return vol_; }
-      private:
-        Volatility vol_;
-        Real atmLevel_;
-    };
+    inline Real SmileSection::varianceImpl(Rate strike) const {
+        Volatility v = volatilityImpl(strike);
+        return v*v*exerciseTime();
+    }
 
     class SabrSmileSection : public SmileSection {
       public:
@@ -125,38 +104,6 @@ namespace QuantLib {
         Volatility volatilityImpl(Rate strike) const;
       private:
         Real alpha_, beta_, nu_, rho_, forward_;
-    };
-
-    class SpreadedSmileSection : public SmileSection {
-      public:
-        SpreadedSmileSection(const boost::shared_ptr<SmileSection>& underlyingSection,
-                             const Handle<Quote>& spread)
-        : underlyingSection_(underlyingSection), spread_(spread) {
-            registerWith(underlyingSection_);
-            registerWith(spread_);
-        }
-
-        void update(){ notifyObservers(); }
-
-        Real minStrike() const { return underlyingSection_->minStrike(); }
-        Real maxStrike() const { return underlyingSection_->maxStrike(); }
-
-        const Date& exerciseDate() const { return underlyingSection_->exerciseDate(); }
-        Time exerciseTime() const { return underlyingSection_->exerciseTime(); }
-        const DayCounter& dayCounter() const { return underlyingSection_->dayCounter(); }
-
-        Real atmLevel() const { return underlyingSection_->atmLevel(); }
-      protected:
-        Real varianceImpl(Rate strike) const {
-            Volatility vol = volatilityImpl(strike);
-            return vol*vol*exerciseTime();
-        }
-        Volatility volatilityImpl(Rate strike) const {
-            return underlyingSection_->volatilityImpl(strike)+spread_->value();
-        }
-      private:
-        const boost::shared_ptr<SmileSection> underlyingSection_;
-        const Handle<Quote> spread_;
     };
 
 }
