@@ -3745,6 +3745,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\volatility\flatsmilesection.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\flatsmilesection.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\volatility\interpolatedsmilesection.hpp"
 					>
 				</File>
@@ -3770,6 +3778,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\volatility\smilesection.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\spreadedsmilesection.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\spreadedsmilesection.hpp"
 					>
 				</File>
 				<Filter
