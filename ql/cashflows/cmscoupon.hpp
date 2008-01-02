@@ -50,13 +50,12 @@ namespace QuantLib {
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false);
-
         //! \name Inspectors
         //@{
         const boost::shared_ptr<SwapIndex>& swapIndex() const {
             return swapIndex_;
-        } //da eliminare dovrebbere convergere nel metodo index di float
-
+        }
+        //@}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
@@ -70,7 +69,7 @@ namespace QuantLib {
     class CmsLeg {
       public:
         CmsLeg(const Schedule& schedule,
-               const boost::shared_ptr<SwapIndex>& index);
+               const boost::shared_ptr<SwapIndex>& swapIndex);
         CmsLeg& withNotionals(Real notional);
         CmsLeg& withNotionals(const std::vector<Real>& notionals);
         CmsLeg& withPaymentDayCounter(const DayCounter&);
@@ -90,7 +89,7 @@ namespace QuantLib {
         operator Leg() const;
       private:
         Schedule schedule_;
-        boost::shared_ptr<SwapIndex> index_;
+        boost::shared_ptr<SwapIndex> swapIndex_;
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
         BusinessDayConvention paymentAdjustment_;
