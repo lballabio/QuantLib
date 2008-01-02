@@ -48,13 +48,20 @@ namespace QuantLib {
                    const Date& refPeriodEnd = Date(),
                    const DayCounter& dayCounter = DayCounter(),
                    bool isInArrears = false);
-        virtual ~IborCoupon() {}
+        //! \name Inspectors
+        //@{
+        const boost::shared_ptr<IborIndex>& iborIndex() const {
+            return iborIndex_;
+        }
         //! Implemented in order to manage the case of par coupon
         Rate indexFixing() const;
+        //@}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
-
+        //@}
+      private:
+        boost::shared_ptr<IborIndex> iborIndex_;
     };
 
 

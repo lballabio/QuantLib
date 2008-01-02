@@ -27,17 +27,23 @@
 
 namespace QuantLib {
 
-    IborCoupon::IborCoupon(const Date& paymentDate, const Real nominal,
-                           const Date& startDate, const Date& endDate,
+    IborCoupon::IborCoupon(const Date& paymentDate,
+                           const Real nominal,
+                           const Date& startDate,
+                           const Date& endDate,
                            const Natural fixingDays,
-                           const boost::shared_ptr<IborIndex>& index,
-                           const Real gearing, const Spread spread,
-                           const Date& refPeriodStart, const Date& refPeriodEnd,
+                           const boost::shared_ptr<IborIndex>& iborIndex,
+                           const Real gearing,
+                           const Spread spread,
+                           const Date& refPeriodStart,
+                           const Date& refPeriodEnd,
                            const DayCounter& dayCounter,
                            bool isInArrears)
-    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
-                         index, gearing, spread, refPeriodStart, refPeriodEnd,
-                         dayCounter, isInArrears) {}
+    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
+                         fixingDays, iborIndex, gearing, spread,
+                         refPeriodStart, refPeriodEnd,
+                         dayCounter, isInArrears),
+      iborIndex_(iborIndex) {}
 
     Rate IborCoupon::indexFixing() const {
 
