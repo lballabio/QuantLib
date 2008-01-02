@@ -34,7 +34,6 @@ namespace QuantLib {
       volatility_(boost::shared_ptr<OptionletVolatilityStructure>(new
                         ConstantOptionletVol(volatility, Calendar(), dc))) {
         registerWith(termStructure_);
-        registerWith(volatility_);
     }
 
     BlackCapFloorEngine::BlackCapFloorEngine(
