@@ -71,8 +71,6 @@ namespace QuantLib {
                     bool isInArrears,
                     bool isZero) {
 
-        QL_REQUIRE(!nominals.empty(), "no nominal given");
-
         Size n = schedule.size()-1;
         QL_REQUIRE(nominals.size() <= n,
                    "too many nominals (" << nominals.size() <<
@@ -115,7 +113,7 @@ namespace QuantLib {
             }
             if (detail::get(gearings, i, 1.0) == 0.0) { // fixed coupon
                 leg.push_back(boost::shared_ptr<CashFlow>(new
-                    FixedRateCoupon(detail::get(nominals, i, Null<Real>()),
+                    FixedRateCoupon(detail::get(nominals, i, 1.0),
                                     paymentDate,
                                     detail::effectiveFixedRate(spreads,caps,
                                                                floors,i),
@@ -125,7 +123,7 @@ namespace QuantLib {
                 if (detail::noOption(caps, floors, i))
                     leg.push_back(boost::shared_ptr<CashFlow>(new
                         FloatingCouponType(paymentDate,
-                                   detail::get(nominals, i, Null<Real>()),
+                                   detail::get(nominals, i, 1.0),
                                    start, end,
                                    detail::get(fixingDays, i, 2), index,
                                    detail::get(gearings, i, 1.0),
@@ -136,7 +134,7 @@ namespace QuantLib {
                     leg.push_back(boost::shared_ptr<CashFlow>(new
                         CappedFlooredCouponType(
                                        paymentDate,
-                                       detail::get(nominals, i, Null<Real>()),
+                                       detail::get(nominals, i, 1.0),
                                        start, end,
                                        detail::get(fixingDays, i, 2), index,
                                        detail::get(gearings, i, 1.0),
@@ -174,8 +172,6 @@ namespace QuantLib {
                    bool isPutATMIncluded,
                    const std::vector<Rate>& putDigitalPayoffs,
                    const boost::shared_ptr<DigitalReplication>& replication) {
-
-        QL_REQUIRE(!nominals.empty(), "no nominal given");
 
         Size n = schedule.size()-1;
         QL_REQUIRE(nominals.size() <= n,
@@ -216,7 +212,7 @@ namespace QuantLib {
             }
             if (detail::get(gearings, i, 1.0) == 0.0) { // fixed coupon
                 leg.push_back(boost::shared_ptr<CashFlow>(new
-                    FixedRateCoupon(detail::get(nominals, i, Null<Real>()),
+                    FixedRateCoupon(detail::get(nominals, i, 1.0),
                                     paymentDate,
                                     detail::get(spreads, i, 1.0),
                                     paymentDayCounter,
@@ -225,7 +221,7 @@ namespace QuantLib {
                 boost::shared_ptr<FloatingCouponType> underlying =
                     (boost::shared_ptr<FloatingCouponType>)(new
                         FloatingCouponType(paymentDate,
-                                       detail::get(nominals, i, Null<Real>()),
+                                       detail::get(nominals, i, 1.0),
                                        start, end,
                                        detail::get(fixingDays, i, 2), index,
                                        detail::get(gearings, i, 1.0),
