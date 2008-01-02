@@ -45,9 +45,9 @@ namespace QuantLib {
         CashFlows(const CashFlows&);
       public:
         static Leg::const_iterator lastCashFlow(const Leg& leg,
-                                                const Date& refDate = Date());
+                                                Date refDate = Date());
         static Leg::const_iterator nextCashFlow(const Leg& leg,
-                                                const Date& refDate = Date());
+                                                Date refDate = Date());
         static Rate previousCouponRate(const Leg& leg,
                                        const Date& refDate = Date());
         static Rate currentCouponRate(const Leg& leg,
@@ -62,7 +62,7 @@ namespace QuantLib {
         */
         static Real npv(const Leg& leg,
                         const YieldTermStructure& discountCurve,
-                        const Date& settlementDate = Date(),
+                        Date settlementDate = Date(),
                         const Date& npvDate = Date(),
                         Natural exDividendDays = 0);
         //! NPV of the cash flows.
@@ -73,7 +73,7 @@ namespace QuantLib {
         */
         static Real npv(const Leg& leg,
                         const InterestRate&,
-                        const Date& settlementDate = Date());
+                        Date settlementDate = Date());
 
         //! Basis-point sensitivity of the cash flows.
         /*! The result is the change in NPV due to a uniform
@@ -83,7 +83,7 @@ namespace QuantLib {
         */
         static Real bps(const Leg& leg,
                         const YieldTermStructure& discountCurve,
-                        const Date& settlementDate = Date(),
+                        Date settlementDate = Date(),
                         const Date& npvDate = Date(),
                         Natural exDividendDays = 0);
         //! Basis-point sensitivity of the cash flows.
@@ -96,7 +96,7 @@ namespace QuantLib {
         */
         static Real bps(const Leg& leg,
                         const InterestRate&,
-                        const Date& settlementDate = Date());
+                        Date settlementDate = Date());
 
         //! At-the-money rate of the cash flows.
         /*! The result is the fixed rate for which a fixed rate cash flow
@@ -122,7 +122,7 @@ namespace QuantLib {
                         const DayCounter& dayCounter,
                         Compounding compounding,
                         Frequency frequency = NoFrequency,
-                        const Date& settlementDate = Date(),
+                        Date settlementDate = Date(),
                         Real tolerance = 1.0e-10,
                         Size maxIterations = 10000,
                         Rate guess = 0.05);
@@ -154,7 +154,7 @@ namespace QuantLib {
         static Time duration(const Leg& leg,
                              const InterestRate& y,
                              Duration::Type type = Duration::Modified,
-                             const Date& settlementDate = Date());
+                             Date settlementDate = Date());
 
         //! Cash-flow convexity
         /*! The convexity of a string of cash flows is defined as
@@ -166,10 +166,9 @@ namespace QuantLib {
         */
         static Real convexity(const Leg& leg,
                               const InterestRate& y,
-                              const Date& settlementDate = Date());
+                              Date settlementDate = Date());
     };
 
 }
-
 
 #endif

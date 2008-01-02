@@ -96,7 +96,7 @@ namespace QuantLib {
 
         Real simpleDuration(const Leg& cashflows,
                             const InterestRate& rate,
-                            Date settlementDate) {
+                            const Date& settlementDate) {
 
             Real P = 0.0;
             Real tP = 0.0;
@@ -123,7 +123,7 @@ namespace QuantLib {
 
         Real modifiedDuration(const Leg& cashflows,
                               const InterestRate& rate,
-                              Date settlementDate) {
+                              const Date& settlementDate) {
 
             Real P = 0.0;
             Real dPdy = 0.0;
@@ -165,7 +165,7 @@ namespace QuantLib {
 
         Real macaulayDuration(const Leg& cashflows,
                               const InterestRate& rate,
-                              Date settlementDate) {
+                              const Date& settlementDate) {
 
             Rate y = Rate(rate);
             Natural N = rate.frequency();
@@ -180,31 +180,30 @@ namespace QuantLib {
     }
 
     Leg::const_iterator CashFlows::lastCashFlow(const Leg& leg,
-                                                const Date& refDate) {
-        Date d = (refDate==Date() ?
-                  Settings::instance().evaluationDate() :
-                  refDate);
+                                                Date refDate) {
+        if (refDate==Date())
+            refDate = Settings::instance().evaluationDate();
 
-        if ( ! (*leg.begin())->hasOccurred(d) )
+        if ( ! (*leg.begin())->hasOccurred(refDate) )
             return leg.end();
 
         Leg::const_iterator i;
         for (i = leg.begin()+1; i<leg.end(); ++i) {
-            if ( ! (*i)->hasOccurred(d) )
+            if ( ! (*i)->hasOccurred(refDate) )
                 return --i;
         }
         return leg.end();
     }
 
     Leg::const_iterator CashFlows::nextCashFlow(const Leg& leg,
-                                                const Date& refDate) {
-        Date d = (refDate==Date() ?
-                  Settings::instance().evaluationDate() :
-                  refDate);
+                                                Date refDate) {
+        if (refDate==Date())
+            refDate = Settings::instance().evaluationDate();
+
         Leg::const_iterator i;
         for (i = leg.begin(); i<leg.end(); ++i) {
             // the first coupon paying after d is the one we're after
-            if ( ! (*i)->hasOccurred(d) )
+            if ( ! (*i)->hasOccurred(refDate) )
                 //return boost::dynamic_pointer_cast<Coupon>(leg[i]);
                 return i;
         }
@@ -254,16 +253,15 @@ namespace QuantLib {
 
     Real CashFlows::npv(const Leg& cashflows,
                         const YieldTermStructure& discountCurve,
-                        const Date& settlementDate,
+                        Date settlementDate,
                         const Date& npvDate,
                         Natural exDividendDays) {
-        Date d = settlementDate != Date() ?
-                 settlementDate :
-                 discountCurve.referenceDate();
+        if (settlementDate==Date())
+            settlementDate = discountCurve.referenceDate();
 
         Real totalNPV = 0.0;
         for (Size i=0; i<cashflows.size(); ++i) {
-            if (!cashflows[i]->hasOccurred(d+exDividendDays))
+            if (!cashflows[i]->hasOccurred(settlementDate+exDividendDays))
                 totalNPV += cashflows[i]->amount() *
                             discountCurve.discount(cashflows[i]->date());
         }
@@ -276,28 +274,26 @@ namespace QuantLib {
 
     Real CashFlows::npv(const Leg& cashflows,
                         const InterestRate& irr,
-                        const Date& settlDate) {
-        Date refDate = settlDate;
-        if (refDate == Date())
-            refDate = Settings::instance().evaluationDate();
+                        Date settlementDate) {
+        if (settlementDate==Date())
+            settlementDate = Settings::instance().evaluationDate();
 
-        FlatForward flatRate(refDate, irr.rate(), irr.dayCounter(),
+        FlatForward flatRate(settlementDate, irr.rate(), irr.dayCounter(),
                              irr.compounding(), irr.frequency());
-        return npv(cashflows, flatRate, refDate, refDate);
+        return npv(cashflows, flatRate, settlementDate, settlementDate);
     }
 
     Real CashFlows::bps(const Leg& cashflows,
                         const YieldTermStructure& discountCurve,
-                        const Date& settlDate,
+                        Date settlementDate,
                         const Date& npvDate,
                         Natural exDividendDays) {
-        Date refDate = settlDate;
-        if (refDate == Date())
-            refDate = Settings::instance().evaluationDate();
+        if (settlementDate==Date())
+            settlementDate = discountCurve.referenceDate();
 
         BPSCalculator calc(discountCurve, npvDate);
         for (Size i=0; i<cashflows.size(); ++i) {
-            if (!cashflows[i]->hasOccurred(refDate+exDividendDays))
+            if (!cashflows[i]->hasOccurred(settlementDate+exDividendDays))
                 cashflows[i]->accept(calc);
         }
         return basisPoint_*calc.result();
@@ -305,13 +301,27 @@ namespace QuantLib {
 
     Real CashFlows::bps(const Leg& cashflows,
                         const InterestRate& irr,
-                        const Date& settlDate) {
-        Date refDate = settlDate;
-        if (refDate == Date())
-            refDate = Settings::instance().evaluationDate();
-        FlatForward flatRate(refDate, irr.rate(), irr.dayCounter(),
+                        Date settlementDate) {
+        if (settlementDate==Date())
+            settlementDate = Settings::instance().evaluationDate();
+
+        FlatForward flatRate(settlementDate, irr.rate(), irr.dayCounter(),
                              irr.compounding(), irr.frequency());
-        return bps(cashflows, flatRate, refDate, refDate);
+        return bps(cashflows, flatRate, settlementDate, settlementDate);
+    }
+
+    Rate CashFlows::atmRate(const Leg& cashFlows,
+                            const YieldTermStructure& discountCurve,
+                            const Date& settlementDate,
+                            const Date& npvDate,
+                            Natural exDividendDays,
+                            Real npv) {
+        Real bps = CashFlows::bps(cashFlows, discountCurve, settlementDate,
+                                  npvDate, exDividendDays);
+        if (npv==Null<Real>())
+            npv = CashFlows::npv(cashFlows, discountCurve, settlementDate,
+                                 npvDate, exDividendDays);
+        return basisPoint_*npv/bps;
     }
 
     Rate CashFlows::irr(const Leg& cashflows,
@@ -319,14 +329,13 @@ namespace QuantLib {
                         const DayCounter& dayCounter,
                         Compounding compounding,
                         Frequency frequency,
-                        const Date& settlDate,
+                        Date settlementDate,
                         Real tolerance,
                         Size maxIterations,
                         Rate guess) {
 
-        Date refDate = settlDate;
-        if (refDate == Date())
-            refDate = Settings::instance().evaluationDate();
+        if (settlementDate==Date())
+            settlementDate = Settings::instance().evaluationDate();
 
         // depending on the sign of the market price, check that cash
         // flows of the opposite sign have been specified (otherwise
@@ -335,7 +344,7 @@ namespace QuantLib {
         Integer lastSign = sign(-marketPrice),
                 signChanges = 0;
         for (Size i = 0; i < cashflows.size(); ++i) {
-            if (!cashflows[i]->hasOccurred(refDate)) {
+            if (!cashflows[i]->hasOccurred(settlementDate)) {
                 Integer thisSign = sign(cashflows[i]->amount());
                 if (lastSign * thisSign < 0) // sign change
                     signChanges++;
@@ -370,26 +379,24 @@ namespace QuantLib {
         Brent solver;
         solver.setMaxEvaluations(maxIterations);
         return solver.solve(irrFinder(cashflows, marketPrice, dayCounter,
-                                      compounding, frequency, refDate),
+                                      compounding, frequency, settlementDate),
                             tolerance, guess, guess/10.0);
     }
 
     Time CashFlows::duration(const Leg& cashflows,
                              const InterestRate& rate,
                              Duration::Type type,
-                             const Date& settlDate) {
-
-        Date refDate = settlDate;
-        if (refDate == Date())
-            refDate = Settings::instance().evaluationDate();
+                             Date settlementDate) {
+        if (settlementDate==Date())
+            settlementDate = Settings::instance().evaluationDate();
 
         switch (type) {
           case Duration::Simple:
-            return simpleDuration(cashflows, rate, refDate);
+            return simpleDuration(cashflows, rate, settlementDate);
           case Duration::Modified:
-            return modifiedDuration(cashflows, rate, refDate);
+            return modifiedDuration(cashflows, rate, settlementDate);
           case Duration::Macaulay:
-            return macaulayDuration(cashflows, rate, refDate);
+            return macaulayDuration(cashflows, rate, settlementDate);
           default:
             QL_FAIL("unknown duration type");
         }
@@ -397,10 +404,9 @@ namespace QuantLib {
 
     Real CashFlows::convexity(const Leg& cashflows,
                               const InterestRate& rate,
-                              const Date& settlDate) {
-        Date refDate = settlDate;
-        if (refDate == Date())
-            refDate = Settings::instance().evaluationDate();
+                              Date settlementDate) {
+        if (settlementDate==Date())
+            settlementDate = Settings::instance().evaluationDate();
 
         DayCounter dayCounter = rate.dayCounter();
 
@@ -410,8 +416,8 @@ namespace QuantLib {
         Natural N = rate.frequency();
 
         for (Size i=0; i<cashflows.size(); ++i) {
-            if (!cashflows[i]->hasOccurred(refDate)) {
-                Time t = dayCounter.yearFraction(refDate,
+            if (!cashflows[i]->hasOccurred(settlementDate)) {
+                Time t = dayCounter.yearFraction(settlementDate,
                                                  cashflows[i]->date());
                 Real c = cashflows[i]->amount();
                 DiscountFactor B = rate.discountFactor(t);
@@ -439,20 +445,6 @@ namespace QuantLib {
             return 0.0;
 
         return d2Pdy2/P;
-    }
-
-    Rate CashFlows::atmRate(const Leg& cashFlows,
-                            const YieldTermStructure& discountCurve,
-                            const Date& settlementDate,
-                            const Date& npvDate,
-                            Natural exDividendDays,
-                            Real npv) {
-        Real bps = CashFlows::bps(cashFlows, discountCurve, settlementDate,
-                                  npvDate, exDividendDays);
-        if (npv==Null<Real>())
-            npv = CashFlows::npv(cashFlows, discountCurve, settlementDate,
-                                 npvDate, exDividendDays);
-        return basisPoint_*npv/bps;
     }
 
 }
