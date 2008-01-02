@@ -34,6 +34,17 @@
 namespace QuantLib {
 
     BlackSwaptionEngine::BlackSwaptionEngine(
+                              const Handle<YieldTermStructure>& termStructure,
+                              Volatility volatility,
+                              const DayCounter& dc)
+    : termStructure_(termStructure),
+      volatility_(boost::shared_ptr<SwaptionConstantVolatility>(new
+                SwaptionConstantVolatility(0, NullCalendar(),
+                                           volatility, dc))) {
+        registerWith(termStructure_);
+    }
+
+    BlackSwaptionEngine::BlackSwaptionEngine(
                             const Handle<YieldTermStructure>& termStructure,
                             const Handle<Quote>& volatility,
                             const DayCounter& dc)

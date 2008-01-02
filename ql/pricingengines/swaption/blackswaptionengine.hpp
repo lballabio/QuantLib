@@ -40,6 +40,9 @@ namespace QuantLib {
     class BlackSwaptionEngine : public Swaption::engine {
       public:
         BlackSwaptionEngine(const Handle<YieldTermStructure>& termStructure,
+                            Volatility vol,
+                            const DayCounter& dc = Actual365Fixed());
+        BlackSwaptionEngine(const Handle<YieldTermStructure>& termStructure,
                             const Handle<Quote>& vol,
                             const DayCounter& dc = Actual365Fixed());
         BlackSwaptionEngine(const Handle<YieldTermStructure>& termStructure,
