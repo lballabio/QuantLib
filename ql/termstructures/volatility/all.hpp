@@ -3,10 +3,12 @@
 
 #include <ql/termstructures/volatility/abcd.hpp>
 #include <ql/termstructures/volatility/abcdcalibration.hpp>
+#include <ql/termstructures/volatility/flatsmilesection.hpp>
 #include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
 #include <ql/termstructures/volatility/sabrinterpolatedsmilesection.hpp>
 #include <ql/termstructures/volatility/smilesection.hpp>
+#include <ql/termstructures/volatility/spreadedsmilesection.hpp>
 
 #include <ql/termstructures/volatility/equityfx/all.hpp>
 #include <ql/termstructures/volatility/capfloor/all.hpp>

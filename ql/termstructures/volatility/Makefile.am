@@ -8,17 +8,21 @@ this_include_HEADERS = \
     all.hpp \
     abcd.hpp \
     abcdcalibration.hpp \
+    flatsmilesection.hpp \
     interpolatedsmilesection.hpp \
     sabr.hpp \
     sabrinterpolatedsmilesection.hpp \
-    smilesection.hpp
+    smilesection.hpp \
+    spreadedsmilesection.hpp
 
 libVolTermStructures_la_SOURCES = \
     abcd.cpp \
     abcdcalibration.cpp \
+    flatsmilesection.cpp \
     sabr.cpp \
     sabrinterpolatedsmilesection.cpp \
-    smilesection.cpp
+    smilesection.cpp \
+    spreadedsmilesection.cpp
 
 libVolTermStructures_la_LIBADD = \
     equityfx/libEquityFxVol.la \

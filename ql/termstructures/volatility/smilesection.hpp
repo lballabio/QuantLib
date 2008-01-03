@@ -39,7 +39,7 @@ namespace QuantLib {
     /*! This abstract class provides volatility smile section interface */
     class SmileSection : public virtual Observable, public Observer {
       public:
-        friend SpreadedSmileSection;
+        friend class SpreadedSmileSection;
         SmileSection(const Date& d,
                      const DayCounter& dc = DayCounter(),
                      const Date& referenceDate = Date());
