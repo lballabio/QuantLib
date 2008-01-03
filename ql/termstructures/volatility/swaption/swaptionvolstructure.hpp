@@ -151,8 +151,6 @@ namespace QuantLib {
                         const Period& swapTenor,
                         Rate strike,
                         bool extrapolate) const;
-      private:
-        BusinessDayConvention bdc_;
     };
 
 
