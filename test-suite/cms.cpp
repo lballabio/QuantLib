@@ -255,7 +255,7 @@ QL_END_TEST_LOCALS(CmsTest)
 
 void CmsTest::testFairRate()  {
 
-    BOOST_MESSAGE("Testing Pricer equivalence when vol is flat (coupon)...");
+    BOOST_MESSAGE("Testing Hagan Pricer flat vol equivalence (coupon)...");
 
     SavedSettings backup;
 
@@ -318,7 +318,7 @@ void CmsTest::testFairRate()  {
 
 void CmsTest::testCmsSwap() {
 
-    BOOST_MESSAGE("Testing Pricer equivalence when vol is flat (swaps)...");
+    BOOST_MESSAGE("Testing Hagan Pricer flat vol equivalence (swaps)...");
 
     SavedSettings backup;
 
