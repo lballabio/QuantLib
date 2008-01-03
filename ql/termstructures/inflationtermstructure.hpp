@@ -69,8 +69,6 @@ namespace QuantLib {
         virtual Date baseDate() const = 0;
         //@}
 
-        virtual Date maxDate() const = 0;
-
       protected:
         Handle<YieldTermStructure> nominalTermStructure_;
 
