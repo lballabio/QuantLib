@@ -136,18 +136,18 @@ void makeCoherenceTest(
           Date thisOptionDate = vol->optionDates()[i];
           Period thisSwapTenor = atm_.tenors.swaps[j];
 
-          std::pair<Time, Time> p = vol->convertDates(
-              thisOptionDate, thisSwapTenor);
-          if ((p.first !=vol->optionTimes()[i]) ||
-              (p.second!=vol->swapLengths()[j]))
+          Time pfirst = vol->timeFromReference(thisOptionDate);
+          Time psecond = vol->convertSwapTenor(thisOptionDate, thisSwapTenor);
+          if ((pfirst !=vol->optionTimes()[i]) ||
+              (psecond!=vol->swapLengths()[j]))
               BOOST_FAIL("\nconvertDates failure for " <<
                          description << ":"
                          "\n       option date  = " << thisOptionDate <<
                          "\n       option tenor = " << thisOptionTenor <<
-                         "\nactual option time  = " << p.first <<
+                         "\nactual option time  = " << pfirst <<
                          "\n  exp. option time  = " << vol->optionTimes()[i] <<
                          "\n        swap tenor  = " << thisSwapTenor <<
-                         "\n actual swap length = " << p.second <<
+                         "\n actual swap length = " << psecond <<
                          "\n   exp. swap length = " << vol->swapLengths()[j]);
 
 

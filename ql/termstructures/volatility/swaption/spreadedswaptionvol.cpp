@@ -85,11 +85,11 @@ namespace QuantLib {
         return underlyingVolStructure_->businessDayConvention();
     }
 
-    std::pair<Time,Time>
-    SpreadedSwaptionVolatilityStructure::convertDates(
+    Time SpreadedSwaptionVolatilityStructure::convertSwapTenor(
                                             const Date& optionDate,
                                             const Period& swapTenor) const {
-        return underlyingVolStructure_->convertDates(optionDate, swapTenor);
+        return underlyingVolStructure_->convertSwapTenor(optionDate,
+                                                         swapTenor);
     }
 
     DayCounter SpreadedSwaptionVolatilityStructure::dayCounter() const {

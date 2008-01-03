@@ -114,10 +114,10 @@ namespace QuantLib {
         //! \name Other inspectors
         //@{
         //! returns the lower indexes of surrounding volatility matrix corners
-        std::pair<Size,Size> locate(const Date& optionDates,
+        std::pair<Size,Size> locate(const Date& optionDate,
                                     const Period& swapTenor) const {
-            std::pair<Time,Time> times = convertDates(optionDates,swapTenor);
-            return locate(times.first, times.second);
+            return locate(timeFromReference(optionDate),
+                          convertSwapTenor(optionDate, swapTenor));
         }
         //! returns the lower indexes of surrounding volatility matrix corners
         std::pair<Size,Size> locate(Time optionTime,
@@ -167,24 +167,28 @@ namespace QuantLib {
         return 5.0; //FIXME
     }
 
-    inline Volatility SwaptionVolatilityMatrix::volatilityImpl(
-                                Time optionTime, Time swapLength, Rate) const {
+    inline Volatility SwaptionVolatilityMatrix::volatilityImpl(Time optionTime,
+                                                               Time swapLength,
+                                                               Rate) const {
         calculate();
         return interpolation_(swapLength, optionTime, true);
     }
 
-    inline Volatility SwaptionVolatilityMatrix::volatilityImpl(
-                                          const Date& optionDate,
-                                          const Period& swapTenor, Rate) const {
-        const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
-        return volatilityImpl(p.first, p.second,true);
+    inline Volatility
+    SwaptionVolatilityMatrix::volatilityImpl(const Date& optionDate,
+                                             const Period& swapTenor,
+                                             Rate strike) const {
+        return volatilityImpl(timeFromReference(optionDate),
+                              convertSwapTenor(optionDate, swapTenor),
+                              strike);
     }
 
-    inline Volatility SwaptionVolatilityMatrix::volatilityImpl(
-                                          const Period& optionTenor,
-                                          const Period& swapTenor, Rate) const {
+    inline Volatility
+    SwaptionVolatilityMatrix::volatilityImpl(const Period& optionTenor,
+                                             const Period& swapTenor,
+                                             Rate strike) const {
         Date optionDate = optionDateFromTenor(optionTenor);
-        return volatilityImpl(optionDate, swapTenor,true);
+        return volatilityImpl(optionDate, swapTenor, strike);
     }
 
 }

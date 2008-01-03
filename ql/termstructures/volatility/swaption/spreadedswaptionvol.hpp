@@ -54,9 +54,8 @@ namespace QuantLib {
         Time maxSwapLength() const;
         BusinessDayConvention businessDayConvention() const;
 
-        std::pair<Time,Time> convertDates(const Date& optionDate,
-                                          const Period& swapTenor) const;
-
+        Time convertSwapTenor(const Date& optionDate,
+                              const Period& swapTenor) const;
 
         Volatility volatilityImpl(Time optionTime,
                                   Time swapLength,

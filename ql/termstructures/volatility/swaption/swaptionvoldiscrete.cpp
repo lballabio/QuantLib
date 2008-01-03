@@ -183,15 +183,13 @@ namespace QuantLib {
         }
     }
 
-    std::pair<Time,Time>
-    SwaptionVolatilityDiscrete::convertDates(const Date& optionDate,
-                                             const Period& swapTenor) const {
-        Time optionTime = timeFromReference(optionDate);
+    Time SwaptionVolatilityDiscrete::convertSwapTenor(
+                                            const Date& optionDate,
+                                            const Period& swapTenor) const {
         Date startDate = referenceDate(); // for consistency
         // Date startDate = optionDates_[0]; // for consistency
         Date endDate = startDate + swapTenor;
-        Time swapLength = dayCounter().yearFraction(startDate, endDate);
-        return std::make_pair(optionTime, swapLength);
+        return dayCounter().yearFraction(startDate, endDate);
     }
 
     void SwaptionVolatilityDiscrete::performCalculations() const {

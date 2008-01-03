@@ -408,9 +408,8 @@ namespace QuantLib {
     std::vector<Real> SwaptionVolCube1::spreadVolInterpolation(
         const Date& atmOptionDate, const Period& atmSwapTenor) const {
 
-        const std::pair<Time, Time> p =
-            convertDates(atmOptionDate, atmSwapTenor);
-        Time atmOptionTime = p.first, atmTimeLength = p.second;
+        Time atmOptionTime = timeFromReference(atmOptionDate);
+        Time atmTimeLength = convertSwapTenor(atmOptionDate, atmSwapTenor);
 
         std::vector<Real> result;
         const std::vector<Time>& optionTimes(sparseParameters_.optionTimes());
@@ -423,8 +422,8 @@ namespace QuantLib {
                                           swapLengthsPreviousNode;
 
         optionTimesPreviousNode = std::lower_bound(optionTimes.begin(),
-                                                optionTimes.end(),
-                                                atmOptionTime);
+                                                   optionTimes.end(),
+                                                   atmOptionTime);
         Size optionTimesPreviousIndex
             = optionTimesPreviousNode - optionTimes.begin();
         if (optionTimesPreviousIndex >0)

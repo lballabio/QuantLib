@@ -99,6 +99,7 @@ namespace QuantLib {
                                                  const Date& optionDate,
                                                  const Period& swapTenor,
                                                  bool extrap = false) const;
+
         //! returns the volatility for a given option tenor and swap tenor
         Volatility volatility(const Period& optionTenor,
                               const Period& swapTenor,
@@ -122,10 +123,9 @@ namespace QuantLib {
         //! the largest swapLength for which the term structure can return vols
         virtual Time maxSwapLength() const;
         //@}
-        //! implements the conversion between dates and times
-        virtual std::pair<Time,Time> convertDates(const Date& optionDate,
-                                                  const Period& swapTenor) const;
-
+        //! implements the conversion between swap tenor and time
+        virtual Time convertSwapTenor(const Date& optionDate,
+                                      const Period& swapTenor) const;
       protected:
         //! return smile section
         virtual boost::shared_ptr<SmileSection> smileSectionImpl(
@@ -135,8 +135,8 @@ namespace QuantLib {
         virtual boost::shared_ptr<SmileSection> smileSectionImpl(
                                                  const Date& optionDate,
                                                  const Period& swapTenor) const {
-            const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
-            return smileSectionImpl(p.first, p.second);
+            return smileSectionImpl(timeFromReference(optionDate),
+                                    convertSwapTenor(optionDate, swapTenor));
         }
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time optionTime,
@@ -145,8 +145,9 @@ namespace QuantLib {
         virtual Volatility volatilityImpl(const Date& optionDate,
                                           const Period& swapTenor,
                                           Rate strike) const {
-            const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
-            return volatilityImpl(p.first, p.second, strike);
+            return volatilityImpl(timeFromReference(optionDate),
+                                  convertSwapTenor(optionDate, swapTenor),
+                                  strike);
         }
         void checkSwapTenor(const Period& swapTenor,
                             bool extrapolate) const;
@@ -199,8 +200,7 @@ namespace QuantLib {
                                                      bool extrapolate) const {
         Volatility vol =
             volatility(optionDate, swapTenor, strike, extrapolate);
-        const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
-        return vol*vol*p.first;
+        return vol*vol*timeFromReference(optionDate);
     }
 
     inline boost::shared_ptr<SmileSection>
@@ -230,8 +230,7 @@ namespace QuantLib {
         Date optionDate = optionDateFromTenor(optionTenor);
         Volatility vol =
             volatility(optionDate, swapTenor, strike, extrapolate);
-        const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
-        return vol*vol*p.first;
+        return vol*vol*timeFromReference(optionDate);
     }
 
     inline boost::shared_ptr<SmileSection>

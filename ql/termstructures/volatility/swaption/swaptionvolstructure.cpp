@@ -50,15 +50,12 @@ namespace QuantLib {
         return timeFromReference(d);
     }
 
-    std::pair<Time,Time>
-    SwaptionVolatilityStructure::convertDates(const Date& optionDate,
-                                              const Period& swapTenor) const {
-        Date end = optionDate + swapTenor;
+    Time SwaptionVolatilityStructure::convertSwapTenor(const Date& optionDate,
+                                                       const Period& p) const {
+        Date end = optionDate + p;
         QL_REQUIRE(end>optionDate,
-                   "negative swap tenor (" << swapTenor << ") given");
-        Time optionTime = timeFromReference(optionDate);
-        Time timeLength = dayCounter().yearFraction(optionDate, end);
-        return std::make_pair(optionTime, timeLength);
+                   "negative swap tenor (" << p << ") given");
+        return dayCounter().yearFraction(optionDate, end);
     }
 
     void SwaptionVolatilityStructure::checkSwapTenor(const Period& swapTenor,

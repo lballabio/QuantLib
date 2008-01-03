@@ -78,18 +78,19 @@ namespace QuantLib {
         Rate atmForward = atmStrike(optionDate, swapTenor);
         Volatility atmVol = atmVol_->volatility(optionDate, swapTenor,
                                                       atmForward);
-        std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
-        Real exerciseTimeSqrt = std::sqrt(p.first);
+        Time optionTime = timeFromReference(optionDate);
+        Time swapLength = convertSwapTenor(optionDate, swapTenor);
+        Real exerciseTimeSqrt = std::sqrt(optionTime);
         std::vector<Real> strikes, stdDevs;
         strikes.reserve(nStrikes_);
         stdDevs.reserve(nStrikes_);
         for (Size i=0; i<nStrikes_; ++i) {
             strikes.push_back(atmForward + strikeSpreads_[i]);
             stdDevs.push_back(exerciseTimeSqrt*(
-                atmVol + volSpreadsInterpolator_[i](p.second, p.first)));
+                atmVol + volSpreadsInterpolator_[i](swapLength, optionTime)));
         }
         return boost::shared_ptr<SmileSection>(new
-            InterpolatedSmileSection<Linear>(p.first,
+            InterpolatedSmileSection<Linear>(optionTime,
                                              strikes,
                                              stdDevs,
                                              atmVol));

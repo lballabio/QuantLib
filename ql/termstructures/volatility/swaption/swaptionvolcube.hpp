@@ -75,9 +75,10 @@ namespace QuantLib {
       protected:
         //! \name SwaptionVolatilityStructure interface
         //@{
-        std::pair<Time,Time> convertDates(const Date& optionDate,
-                                          const Period& swapTenor) const {
-            return atmVol_->convertDates(optionDate, swapTenor);
+        //! implements the conversion between swap tenor and time
+        Time convertSwapTenor(const Date& optionDate,
+                              const Period& swapTenor) const {
+            return atmVol_->convertSwapTenor(optionDate, swapTenor);
         }
         void registerWithVolatilitySpread();
 
