@@ -52,10 +52,13 @@ namespace QuantLib {
                          const Calendar&,
                          const Handle<Quote>& volatility,
                          const DayCounter& dayCounter);
-        //! \name LocalVolTermStructure interface
+        //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const { return dayCounter_; }
         Date maxDate() const { return Date::maxDate(); }
+        //@}
+        //! \name VolatilityTermStructure interface
+        //@{
         Real minStrike() const { return QL_MIN_REAL; }
         Real maxStrike() const { return QL_MAX_REAL; }
         //@}

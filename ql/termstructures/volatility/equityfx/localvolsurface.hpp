@@ -52,11 +52,14 @@ namespace QuantLib {
                         const Handle<YieldTermStructure>& riskFreeTS,
                         const Handle<YieldTermStructure>& dividendTS,
                         Real underlying);
-        //! \name LocalVolTermStructure interface
+        //! \name TermStructure interface
         //@{
         const Date& referenceDate() const;
         DayCounter dayCounter() const;
         Date maxDate() const;
+        //@}
+        //! \name VolatilityTermStructure interface
+        //@{
         Real minStrike() const;
         Real maxStrike() const;
         //@}

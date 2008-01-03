@@ -39,7 +39,7 @@ namespace QuantLib {
           blackVarianceCurve_(curve) {
             registerWith(blackVarianceCurve_);
         }
-        //! \name LocalVolTermStructure interface
+        //! \name TermStructure interface
         //@{
         const Date& referenceDate() const {
             return blackVarianceCurve_->referenceDate();
@@ -50,6 +50,9 @@ namespace QuantLib {
         Date maxDate() const {
             return blackVarianceCurve_->maxDate();
         }
+        //@}
+        //! \name VolatilityTermStructure interface
+        //@{
         Real minStrike() const {
             return QL_MIN_REAL;
         }
