@@ -98,7 +98,7 @@ namespace QuantLib {
         //@}
       protected:
         //! date-range check
-        void checkRange(const Date&,
+        void checkRange(const Date& d,
                         bool extrapolate) const;
         //! time-range check
         void checkRange(Time t,
@@ -131,12 +131,7 @@ namespace QuantLib {
     }
 
     inline Time TermStructure::timeFromReference(const Date& d) const {
-        return dayCounter().yearFraction(referenceDate(),d);
-    }
-
-    inline void TermStructure::checkRange(const Date& d,
-                                          bool extrapolate) const {
-        checkRange(timeFromReference(d), extrapolate);
+        return dayCounter().yearFraction(referenceDate(), d);
     }
 
 }

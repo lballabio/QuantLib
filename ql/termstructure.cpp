@@ -63,6 +63,16 @@ namespace QuantLib {
         notifyObservers();
     }
 
+    void TermStructure::checkRange(const Date& d,
+                                   bool extrapolate) const {
+        QL_REQUIRE(d >= referenceDate(),
+                   "date (" << d << ") before reference date (" <<
+                   referenceDate() << ")");
+        QL_REQUIRE(extrapolate || allowsExtrapolation() || d <= maxDate(),
+                   "date (" << d << ") is past max curve date ("
+                            << maxDate() << ")");
+    }
+
     void TermStructure::checkRange(Time t,
                                    bool extrapolate) const {
         QL_REQUIRE(t >= 0.0,
