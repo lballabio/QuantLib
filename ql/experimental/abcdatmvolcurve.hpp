@@ -26,12 +26,12 @@
 #define quantlib_abcd_atm_vol_curve_hpp
 
 #include <ql/experimental/blackatmvolcurve.hpp>
-#include <ql/math/interpolation.hpp>
-#include <ql/math/interpolations/abcdinterpolation.hpp>
-#include <ql/quote.hpp>
 #include <ql/patterns/lazyobject.hpp>
+#include <ql/math/interpolations/abcdinterpolation.hpp>
 
 namespace QuantLib {
+
+    class Quote;
 
     //! Abcd-interpolated at-the-money (no-smile) volatility curve
     /*! blah blah
@@ -45,7 +45,7 @@ namespace QuantLib {
                         const std::vector<Period>& optionTenors,
                         const std::vector<Handle<Quote> >& volsHandles,
                         const std::vector<bool> inclusionInInterpolationFlag 
-                            = std::vector<bool>(1,true),
+                            = std::vector<bool>(1, true),
                         BusinessDayConvention bdc = Following,
                         const DayCounter& dc = Actual365Fixed());
         //! Returns k adjustment factors for option tenors used in interpolation

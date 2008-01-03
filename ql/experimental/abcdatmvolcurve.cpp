@@ -20,6 +20,7 @@
 
 #include <ql/experimental/abcdatmvolcurve.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 
