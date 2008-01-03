@@ -55,6 +55,11 @@ namespace QuantLib {
         Calendar calendar() const;
         Natural settlementDays() const;
         //@}
+        //! \name VolatilityTermStructure interface
+        //@{
+        Real minStrike() const;
+        Real maxStrike() const;
+        //@}
         const Handle<BlackAtmVolCurve>& atmCurve() const;
         //! \name Visitability
         //@{
@@ -121,6 +126,14 @@ namespace QuantLib {
 
     inline Natural SabrVolSurface::settlementDays() const {
         return atmCurve_->settlementDays();
+    }
+
+    inline Real SabrVolSurface::minStrike() const {
+        return QL_MIN_REAL;
+    }
+
+    inline Real SabrVolSurface::maxStrike() const {
+        return QL_MAX_REAL;
     }
 
     inline const Handle<BlackAtmVolCurve>& SabrVolSurface::atmCurve() const {

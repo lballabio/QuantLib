@@ -46,7 +46,7 @@ namespace QuantLib {
         Date maxDate() const;
         const Date& referenceDate() const;
         //@}
-        //! \name OptionletVolatilityStructure interface
+        //! \name VolatilityTermStructure interface
         //@{
         Rate minStrike() const;
         Rate maxStrike() const;

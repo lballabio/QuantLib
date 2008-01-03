@@ -41,15 +41,17 @@ namespace QuantLib {
     Volatility LocalVolTermStructure::localVol(const Date& d,
                                                Real underlyingLevel,
                                                bool extrapolate) const {
+        checkRange(d, extrapolate);
+        checkStrike(underlyingLevel, extrapolate);
         Time t = timeFromReference(d);
-        checkRange(t,underlyingLevel,extrapolate);
         return localVolImpl(t, underlyingLevel);
     }
 
     Volatility LocalVolTermStructure::localVol(Time t,
                                                Real underlyingLevel,
                                                bool extrapolate) const {
-        checkRange(t,underlyingLevel,extrapolate);
+        checkRange(t, extrapolate);
+        checkStrike(underlyingLevel, extrapolate);
         return localVolImpl(t, underlyingLevel);
     }
 
@@ -60,16 +62,6 @@ namespace QuantLib {
             v1->visit(*this);
         else
             QL_FAIL("not a local-volatility term structure visitor");
-    }
-
-    void LocalVolTermStructure::checkRange(Time t,
-                                           Real k,
-                                           bool extrapolate) const {
-        TermStructure::checkRange(t, extrapolate);
-        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
-                   (k >= minStrike() && k <= maxStrike()),
-                   "strike (" << k << ") is outside the curve domain ["
-                   << minStrike() << "," << maxStrike() << "]");
     }
 
 }

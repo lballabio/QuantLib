@@ -46,7 +46,7 @@ namespace QuantLib {
         Calendar calendar() const;
         Natural settlementDays() const;
         //@}
-        //! \name OptionletVolatilityStructure interface
+        //! \name VolatilityTermStructure interface
         //@{
         Rate minStrike() const;
         Rate maxStrike() const;

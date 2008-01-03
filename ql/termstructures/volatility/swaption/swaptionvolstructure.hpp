@@ -116,10 +116,6 @@ namespace QuantLib {
         virtual const Period& maxSwapTenor() const = 0;
         //! the largest swapLength for which the term structure can return vols
         virtual Time maxSwapLength() const;
-        //! the minimum strike for which the term structure can return vols
-        virtual Rate minStrike() const = 0;
-        //! the maximum strike for which the term structure can return vols
-        virtual Rate maxStrike() const = 0;
         //@}
         //! implements the conversion between dates and times
         virtual std::pair<Time,Time> convertDates(const Date& optionDate,
@@ -147,10 +143,14 @@ namespace QuantLib {
             const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
             return volatilityImpl(p.first, p.second, strike);
         }
-        void checkRange(Time, Time, Rate strike, bool extrapolate) const;
+        void checkRange(Time,
+                        Time,
+                        Rate strike,
+                        bool extrapolate) const;
         void checkRange(const Date& optionDate,
                         const Period& swapTenor,
-                        Rate strike, bool extrapolate) const;
+                        Rate strike,
+                        bool extrapolate) const;
       private:
         BusinessDayConvention bdc_;
     };
@@ -236,19 +236,19 @@ namespace QuantLib {
         return smileSection(optionDate, swapTenor);
     }
 
-    inline void SwaptionVolatilityStructure::checkRange(
-             Time optionTime, Time swapLength, Rate k, bool extrapolate) const {
+    inline
+    void SwaptionVolatilityStructure::checkRange(Time optionTime,
+                                                 Time swapLength,
+                                                 Rate k,
+                                                 bool extrapolate) const {
         TermStructure::checkRange(optionTime, extrapolate);
+        checkStrike(k, extrapolate);
         QL_REQUIRE(swapLength >= 0.0,
                    "negative swapLength (" << swapLength << ") given");
         QL_REQUIRE(extrapolate || allowsExtrapolation() ||
                    swapLength <= maxSwapLength(),
                    "swapLength (" << swapLength << ") is past max curve swapLength ("
                    << maxSwapLength() << ")");
-        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
-                   (k >= minStrike() && k <= maxStrike()),
-                   "strike (" << k << ") is outside the curve domain ["
-                   << minStrike() << "," << maxStrike()<< "]");
     }
 
 }

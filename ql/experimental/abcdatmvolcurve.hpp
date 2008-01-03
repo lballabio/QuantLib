@@ -63,6 +63,11 @@ namespace QuantLib {
         //@{
         virtual Date maxDate() const;
         //@}
+        //! \name VolatilityTermStructure interface
+        //@{
+        Real minStrike() const;
+        Real maxStrike() const;
+        //@}
         //! \name LazyObject interface
         //@{
         void update();
@@ -116,6 +121,14 @@ namespace QuantLib {
     inline Date AbcdAtmVolCurve::maxDate() const {
         calculate();
         return optionDateFromTenor(optionTenors_.back());
+    }
+
+    inline Real AbcdAtmVolCurve::minStrike() const {
+        return QL_MIN_REAL;
+    }
+
+    inline Real AbcdAtmVolCurve::maxStrike() const {
+        return QL_MAX_REAL;
     }
 
     inline Real AbcdAtmVolCurve::atmVarianceImpl(Time t) const {

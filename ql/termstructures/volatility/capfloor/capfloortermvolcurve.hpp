@@ -78,7 +78,7 @@ namespace QuantLib {
         //@{
         Date maxDate() const;
         //@}
-        //! \name CapFloorTermVolatilityStructure interface
+        //! \name VolatilityTermStructure interface
         //@{
         Real minStrike() const;
         Real maxStrike() const;

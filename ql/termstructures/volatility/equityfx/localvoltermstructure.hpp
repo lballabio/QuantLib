@@ -71,13 +71,6 @@ namespace QuantLib {
                             Real underlyingLevel,
                             bool extrapolate = false) const;
         //@}
-        //! \name Limits
-        //@{
-        //! the minimum strike for which the term structure can return vols
-        virtual Real minStrike() const = 0;
-        //! the maximum strike for which the term structure can return vols
-        virtual Real maxStrike() const = 0;
-        //@}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
@@ -94,8 +87,6 @@ namespace QuantLib {
         //! local vol calculation
         virtual Volatility localVolImpl(Time t, Real strike) const = 0;
         //@}
-      private:
-        void checkRange(Time, Real strike, bool extrapolate) const;
     };
 
 }

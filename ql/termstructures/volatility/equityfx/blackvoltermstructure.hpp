@@ -103,13 +103,6 @@ namespace QuantLib {
                                   Real strike,
                                   bool extrapolate = false) const;
         //@}
-        //! \name Limits
-        //@{
-        //! the minimum strike for which the term structure can return vols
-        virtual Real minStrike() const = 0;
-        //! the maximum strike for which the term structure can return vols
-        virtual Real maxStrike() const = 0;
-        //@}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
@@ -130,7 +123,6 @@ namespace QuantLib {
         //@}
       private:
         static const Time dT;
-        void checkRange(Time, Real strike, bool extrapolate) const;
     };
 
     //! Black-volatility term structure
@@ -220,7 +212,7 @@ namespace QuantLib {
         /*! Returns the volatility for the given strike and date calculating it
             from the variance.
         */
-        Volatility blackVolImpl(Time maturity,
+        Volatility blackVolImpl(Time t,
                                 Real strike) const;
     };
 
@@ -228,34 +220,38 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Volatility BlackVolTermStructure::blackVol(const Date& maturity,
+    inline Volatility BlackVolTermStructure::blackVol(const Date& d,
                                                       Real strike,
                                                       bool extrapolate) const {
-        Time t = timeFromReference(maturity);
-        checkRange(t, strike, extrapolate);
+        checkRange(d, extrapolate);
+        checkStrike(strike, extrapolate);
+        Time t = timeFromReference(d);
         return blackVolImpl(t, strike);
     }
 
-    inline Volatility BlackVolTermStructure::blackVol(Time maturity,
+    inline Volatility BlackVolTermStructure::blackVol(Time t,
                                                       Real strike,
                                                       bool extrapolate) const {
-        checkRange(maturity, strike, extrapolate);
-        return blackVolImpl(maturity, strike);
+        checkRange(t, extrapolate);
+        checkStrike(strike, extrapolate);
+        return blackVolImpl(t, strike);
     }
 
-    inline Real BlackVolTermStructure::blackVariance(const Date& maturity,
+    inline Real BlackVolTermStructure::blackVariance(const Date& d,
                                                      Real strike,
                                                      bool extrapolate) const {
-        Time t = timeFromReference(maturity);
-        checkRange(t,strike,extrapolate);
+        checkRange(d, extrapolate);
+        checkStrike(strike, extrapolate);
+        Time t = timeFromReference(d);
         return blackVarianceImpl(t, strike);
     }
 
-    inline Real BlackVolTermStructure::blackVariance(Time maturity,
+    inline Real BlackVolTermStructure::blackVariance(Time t,
                                                      Real strike,
                                                      bool extrapolate) const {
-        checkRange(maturity, strike, extrapolate);
-        return blackVarianceImpl(maturity, strike);
+        checkRange(t, extrapolate);
+        checkStrike(strike, extrapolate);
+        return blackVarianceImpl(t, strike);
     }
 
     inline void BlackVolTermStructure::accept(AcyclicVisitor& v) {
@@ -267,21 +263,11 @@ namespace QuantLib {
             QL_FAIL("not a Black-volatility term structure visitor");
     }
 
-    inline void BlackVolTermStructure::checkRange(Time t,
-                                                  Real k,
-                                                  bool extrapolate) const {
-        TermStructure::checkRange(t, extrapolate);
-        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
-                   (k >= minStrike() && k <= maxStrike()),
-                   "strike (" << k << ") is outside the curve domain ["
-                   << minStrike() << "," << maxStrike()<< "]");
-    }
-
     inline
-    Real BlackVolatilityTermStructure::blackVarianceImpl(Time maturity,
+    Real BlackVolatilityTermStructure::blackVarianceImpl(Time t,
                                                          Real strike) const {
-        Volatility vol = blackVolImpl(maturity, strike);
-        return vol*vol*maturity;
+        Volatility vol = blackVolImpl(t, strike);
+        return vol*vol*t;
     }
 
     inline void BlackVolatilityTermStructure::accept(AcyclicVisitor& v) {
@@ -294,9 +280,9 @@ namespace QuantLib {
     }
 
     inline
-    Volatility BlackVarianceTermStructure ::blackVolImpl(Time maturity,
+    Volatility BlackVarianceTermStructure ::blackVolImpl(Time t,
                                                          Real strike) const {
-        Time nonZeroMaturity = (maturity==0.0 ? 0.00001 : maturity);
+        Time nonZeroMaturity = (t==0.0 ? 0.00001 : t);
         Real var = blackVarianceImpl(nonZeroMaturity, strike);
         return std::sqrt(var/nonZeroMaturity);
     }

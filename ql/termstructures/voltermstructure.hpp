@@ -62,8 +62,16 @@ namespace QuantLib {
         virtual ~VolatilityTermStructure() {}
         //! the business day convention used in tenor to date conversion
         BusinessDayConvention businessDayConvention() const;
-        //! tenor to date conversion
+        //! period/date conversion
         Date optionDateFromTenor(const Period&) const;
+        //! the minimum strike for which the term structure can return vols
+        virtual Rate minStrike() const = 0;
+        //! the maximum strike for which the term structure can return vols
+        virtual Rate maxStrike() const = 0;
+      protected:
+        //! strike-range check
+        void checkStrike(Rate strike,
+                         bool extrapolate) const;
       private:
         BusinessDayConvention bdc_;
     };
@@ -81,7 +89,6 @@ namespace QuantLib {
                                   p,
                                   businessDayConvention());
     }
-
 }
 
 #endif

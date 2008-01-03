@@ -59,13 +59,13 @@ namespace QuantLib {
         //@{
         Date maxDate() const;
         //@}
-        //! \name OptionletVolatilityStructure interface
+        //! \name VolatilityTermStructure interface
         //@{
         Real minStrike() const;
         Real maxStrike() const;
+        //@}
       protected:
         Volatility volatilityImpl(Time t, Rate) const;
-        //@}
       private:
         Handle<Quote> volatility_;
     };

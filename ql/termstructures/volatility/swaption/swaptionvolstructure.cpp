@@ -63,21 +63,18 @@ namespace QuantLib {
         return std::make_pair(optionTime, timeLength);
     }
 
-    void SwaptionVolatilityStructure::checkRange(
-             const Date& optionDate, const Period& swapTenor,
-             Rate k, bool extrapolate) const {
-        TermStructure::checkRange(timeFromReference(optionDate),
-                                  extrapolate);
+    void SwaptionVolatilityStructure::checkRange(const Date& optionDate,
+                                                 const Period& swapTenor,
+                                                 Rate k,
+                                                 bool extrapolate) const {
+        TermStructure::checkRange(optionDate, extrapolate);
+        checkStrike(k, extrapolate);
         QL_REQUIRE(swapTenor.length() > 0,
                    "negative swap tenor (" << swapTenor << ") given");
         QL_REQUIRE(extrapolate || allowsExtrapolation() ||
                    swapTenor <= maxSwapTenor(),
                    "swap tenor (" << swapTenor << ") is past max tenor ("
                    << maxSwapTenor() << ")");
-        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
-                   (k >= minStrike() && k <= maxStrike()),
-                   "strike (" << k << ") is outside the curve domain ["
-                   << minStrike() << "," << maxStrike()<< "]");
     }
 
 }

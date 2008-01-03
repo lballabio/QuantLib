@@ -44,19 +44,25 @@ namespace QuantLib {
                                                       const Date& date2,
                                                       Real strike,
                                                       bool extrapolate) const {
+        // (redundant) date-based checks
         QL_REQUIRE(date1 <= date2,
                    date1 << " later than " << date2);
+        checkRange(date2, extrapolate);
+
+        // using the time implementation
         Time time1 = timeFromReference(date1);
         Time time2 = timeFromReference(date2);
         return blackForwardVol(time1, time2, strike, extrapolate);
     }
 
-    Volatility BlackVolTermStructure::blackForwardVol(Time time1, Time time2,
+    Volatility BlackVolTermStructure::blackForwardVol(Time time1,
+                                                      Time time2,
                                                       Real strike,
                                                       bool extrapolate) const {
         QL_REQUIRE(time1 <= time2,
                    time1 << " later than " << time2);
-        checkRange(time2,strike,extrapolate);
+        checkRange(time2, extrapolate);
+        checkStrike(strike, extrapolate);
         if (time2==time1) {
             if (time1==0.0) {
                 Time epsilon = 1.0e-5;
@@ -84,20 +90,25 @@ namespace QuantLib {
                                                      Real strike,
                                                      bool extrapolate)
                                                                       const {
+        // (redundant) date-based checks
         QL_REQUIRE(date1 <= date2,
                    date1 << " later than " << date2);
+        checkRange(date2, extrapolate);
+
+        // using the time implementation
         Time time1 = timeFromReference(date1);
         Time time2 = timeFromReference(date2);
         return blackForwardVariance(time1, time2, strike, extrapolate);
     }
 
-
-    Real BlackVolTermStructure::blackForwardVariance(Time time1, Time time2,
+    Real BlackVolTermStructure::blackForwardVariance(Time time1,
+                                                     Time time2,
                                                      Real strike,
                                                      bool extrapolate) const {
         QL_REQUIRE(time1 <= time2,
                    time1 << " later than " << time2);
-        checkRange(time2, strike, extrapolate);
+        checkRange(time2, extrapolate);
+        checkStrike(strike, extrapolate);
         Real v1 = blackVarianceImpl(time1, strike);
         Real v2 = blackVarianceImpl(time2, strike);
         QL_ENSURE(v2 >= v1,

@@ -87,19 +87,10 @@ namespace QuantLib {
                            Rate strike,
                            bool extrapolate = false) const;
         //@}
-        //! \name Limits
-        //@{
-        //! the minimum strike for which the term structure can return vols
-        virtual Real minStrike() const = 0;
-        //! the maximum strike for which the term structure can return vols
-        virtual Real maxStrike() const = 0;
-        //@}
       protected:
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time length,
                                           Rate strike) const = 0;
-      private:
-        void checkRange(Time, Rate strike, bool extrapolate) const;
     };
 
 
@@ -109,17 +100,19 @@ namespace QuantLib {
     OptionletVolatilityStructure::volatility(const Date& start,
                                              Rate strike,
                                              bool extrapolate) const {
+        checkRange(start, extrapolate);
+        checkStrike(strike, extrapolate);
         Time t = timeFromReference(start);
-        checkRange(t, strike, extrapolate);
-        return volatilityImpl(t,strike);
+        return volatilityImpl(t, strike);
     }
 
     inline Volatility
     OptionletVolatilityStructure::volatility(Time t,
                                              Rate strike,
                                              bool extrapolate) const {
-        checkRange(t, strike, extrapolate);
-        return volatilityImpl(t,strike);
+        checkRange(t, extrapolate);
+        checkStrike(strike, extrapolate);
+        return volatilityImpl(t, strike);
     }
 
     inline Volatility
@@ -133,9 +126,10 @@ namespace QuantLib {
     inline Volatility
     OptionletVolatilityStructure::blackVariance(const Date& start,
                                                 Rate strike,
-                                                bool extrap) const {
+                                                bool extrapolate) const {
+        checkRange(start, extrapolate);
+        checkStrike(strike, extrapolate);
         Time t = timeFromReference(start);
-        checkRange(t, strike, extrap);
         Volatility vol = volatilityImpl(t, strike);
         return vol*vol*t;
     }
@@ -143,8 +137,9 @@ namespace QuantLib {
     inline Volatility
     OptionletVolatilityStructure::blackVariance(Time t,
                                                 Rate strike,
-                                                bool extrap) const {
-        checkRange(t, strike, extrap);
+                                                bool extrapolate) const {
+        checkRange(t, extrapolate);
+        checkStrike(strike, extrapolate);
         Volatility vol = volatilityImpl(t, strike);
         return vol*vol*t;
     }
@@ -155,17 +150,6 @@ namespace QuantLib {
                                                 bool extrap) const {
         Date exerciseDate = optionDateFromTenor(optionT);
         return blackVariance(exerciseDate, strike, extrap);
-    }
-
-    inline void
-    OptionletVolatilityStructure::checkRange(Time t,
-                                             Rate k,
-                                             bool extrapolate) const {
-        TermStructure::checkRange(t, extrapolate);
-        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
-                   (k >= minStrike() && k <= maxStrike()),
-                   "strike (" << k << ") is outside the curve domain ["
-                   << minStrike() << "," << maxStrike()<< "]");
     }
 
 }
