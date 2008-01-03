@@ -77,8 +77,11 @@ namespace QuantLib {
                            bool extrapolate = false) const;
         //! returns the smile for a given option time and swapLength
         boost::shared_ptr<SmileSection> smileSection(Time optionTime,
-                                                     Time swapLength) const{
-            return smileSectionImpl(optionTime,swapLength);
+                                                     Time swapLength,
+                                                     bool extr = false) const {
+            checkRange(optionTime, extr);
+            checkSwapTenor(swapLength, extr);
+            return smileSectionImpl(optionTime, swapLength);
         };
 
         //! returns the volatility for a given option date and swap tenor
@@ -94,7 +97,8 @@ namespace QuantLib {
         //! returns the smile for a given option date and swap tenor
         boost::shared_ptr<SmileSection> smileSection(
                                                  const Date& optionDate,
-                                                 const Period& swapTenor) const;
+                                                 const Period& swapTenor,
+                                                 bool extrap = false) const;
         //! returns the volatility for a given option tenor and swap tenor
         Volatility volatility(const Period& optionTenor,
                               const Period& swapTenor,
@@ -108,7 +112,8 @@ namespace QuantLib {
         //! returns the smile for a given option tenor and swap tenor
         boost::shared_ptr<SmileSection> smileSection(
                                             const Period& optionTenor,
-                                            const Period& swapTenor) const;
+                                            const Period& swapTenor,
+                                            bool extrapolate = false) const;
         //@}
         //! \name Limits
         //@{
@@ -143,17 +148,11 @@ namespace QuantLib {
             const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
             return volatilityImpl(p.first, p.second, strike);
         }
-        void checkRange(Time,
-                        Time,
-                        Rate strike,
-                        bool extrapolate) const;
-        void checkRange(const Date& optionDate,
-                        const Period& swapTenor,
-                        Rate strike,
-                        bool extrapolate) const;
+        void checkSwapTenor(const Period& swapTenor,
+                            bool extrapolate) const;
+        void checkSwapTenor(Time swapLength,
+                            bool extrapolate) const;
     };
-
-
 
     // inline definitions
 
@@ -163,17 +162,20 @@ namespace QuantLib {
                                                      Time swapLength,
                                                      Rate strike,
                                                      bool extrapolate) const {
-        checkRange(optionTime, swapLength, strike, extrapolate);
+        checkRange(optionTime, extrapolate);
+        checkStrike(strike, extrapolate);
+        checkSwapTenor(swapLength, extrapolate);
         return volatilityImpl(optionTime, swapLength, strike);
     }
-
 
     inline Real SwaptionVolatilityStructure::blackVariance(
                                                      Time optionTime,
                                                      Time swapLength,
                                                      Rate strike,
                                                      bool extrapolate) const {
-        checkRange(optionTime, swapLength, strike, extrapolate);
+        checkRange(optionTime, extrapolate);
+        checkStrike(strike, extrapolate);
+        checkSwapTenor(swapLength, extrapolate);
         Volatility vol = volatilityImpl(optionTime, swapLength, strike);
         return vol*vol*optionTime;
     }
@@ -184,7 +186,9 @@ namespace QuantLib {
                                                      const Period& swapTenor,
                                                      Rate strike,
                                                      bool extrapolate) const {
-        checkRange(optionDate, swapTenor, strike, extrapolate);
+        checkRange(optionDate, extrapolate);
+        checkStrike(strike, extrapolate);
+        checkSwapTenor(swapTenor, extrapolate);
         return volatilityImpl(optionDate, swapTenor, strike);
     }
 
@@ -198,11 +202,14 @@ namespace QuantLib {
         const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
         return vol*vol*p.first;
     }
+
     inline boost::shared_ptr<SmileSection>
-        SwaptionVolatilityStructure::smileSection(
-                                                 const Date& optionDate,
-                                                 const Period& swapTenor) const {
-           return smileSectionImpl(optionDate, swapTenor);
+    SwaptionVolatilityStructure::smileSection(const Date& optionDate,
+                                              const Period& swapTenor,
+                                              bool extrapolate) const {
+        checkRange(optionDate, extrapolate);
+        checkSwapTenor(swapTenor, extrapolate);
+        return smileSectionImpl(optionDate, swapTenor);
     }
 
     // Volatility, variance and smile (Tenor - Tenor - Rate)
@@ -229,24 +236,10 @@ namespace QuantLib {
 
     inline boost::shared_ptr<SmileSection>
     SwaptionVolatilityStructure::smileSection(const Period& optionTenor,
-                                              const Period& swapTenor) const {
+                                              const Period& swapTenor,
+                                              bool extrapolate) const {
         Date optionDate = optionDateFromTenor(optionTenor);
-        return smileSection(optionDate, swapTenor);
-    }
-
-    inline
-    void SwaptionVolatilityStructure::checkRange(Time optionTime,
-                                                 Time swapLength,
-                                                 Rate k,
-                                                 bool extrapolate) const {
-        TermStructure::checkRange(optionTime, extrapolate);
-        checkStrike(k, extrapolate);
-        QL_REQUIRE(swapLength >= 0.0,
-                   "negative swapLength (" << swapLength << ") given");
-        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
-                   swapLength <= maxSwapLength(),
-                   "swapLength (" << swapLength << ") is past max curve swapLength ("
-                   << maxSwapLength() << ")");
+        return smileSection(optionDate, swapTenor, extrapolate);
     }
 
 }

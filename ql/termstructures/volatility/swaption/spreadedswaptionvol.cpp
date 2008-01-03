@@ -49,7 +49,7 @@ namespace QuantLib {
                                             Time optionTime,
                                             Time swapLength) const {
         boost::shared_ptr<SmileSection> underlyingSmile =
-            underlyingVolStructure_->smileSection(optionTime, swapLength);
+            underlyingVolStructure_->smileSection(optionTime,swapLength,true);
         return boost::shared_ptr<SmileSection>(new
             SpreadedSmileSection(underlyingSmile, spread_));
     }
@@ -59,7 +59,7 @@ namespace QuantLib {
                                         const Date& optionDate,
                                         const Period& swapTenor) const {
         boost::shared_ptr<SmileSection> underlyingSmile =
-            underlyingVolStructure_->smileSection(optionDate,swapTenor);
+            underlyingVolStructure_->smileSection(optionDate,swapTenor,true);
         return boost::shared_ptr<SmileSection>(new
             SpreadedSmileSection(underlyingSmile, spread_));
     }

@@ -46,10 +46,8 @@ namespace QuantLib {
 
 
     Time SwaptionVolatilityStructure::maxSwapLength() const {
-        //Date d = referenceDate()+maxSwapTenor();
         Date d = optionDateFromTenor(maxSwapTenor());
-        Time t = timeFromReference(d);
-        return t;
+        return timeFromReference(d);
     }
 
     std::pair<Time,Time>
@@ -63,18 +61,24 @@ namespace QuantLib {
         return std::make_pair(optionTime, timeLength);
     }
 
-    void SwaptionVolatilityStructure::checkRange(const Date& optionDate,
-                                                 const Period& swapTenor,
-                                                 Rate k,
-                                                 bool extrapolate) const {
-        TermStructure::checkRange(optionDate, extrapolate);
-        checkStrike(k, extrapolate);
+    void SwaptionVolatilityStructure::checkSwapTenor(const Period& swapTenor,
+                                                     bool extrapolate) const {
         QL_REQUIRE(swapTenor.length() > 0,
-                   "negative swap tenor (" << swapTenor << ") given");
+                   "non-positive swap tenor (" << swapTenor << ") given");
         QL_REQUIRE(extrapolate || allowsExtrapolation() ||
                    swapTenor <= maxSwapTenor(),
                    "swap tenor (" << swapTenor << ") is past max tenor ("
                    << maxSwapTenor() << ")");
+    }
+
+    void SwaptionVolatilityStructure::checkSwapTenor(Time swapLength,
+                                                     bool extrapolate) const {
+        QL_REQUIRE(swapLength > 0,
+                   "non-positive swap length (" << swapLength << ") given");
+        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
+                   swapLength <= maxSwapLength(),
+                   "swap tenor (" << swapLength << ") is past max tenor ("
+                   << maxSwapLength() << ")");
     }
 
 }

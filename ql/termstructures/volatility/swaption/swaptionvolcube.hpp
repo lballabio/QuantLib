@@ -112,7 +112,7 @@ namespace QuantLib {
                                                     const Date& optionDate,
                                                     const Period& swapTenor,
                                                     Rate strike) const {
-            return smileSection(optionDate, swapTenor)->volatility(strike);
+        return smileSection(optionDate, swapTenor, true)->volatility(strike);
     }
 
 }

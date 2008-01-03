@@ -68,12 +68,12 @@ namespace QuantLib {
             optionInterpolator_(optionTime)));
         Rounding rounder(0);
         Period swapTenor(static_cast<Integer>(rounder(swapLength/12.0)), Months);
-        return smileSection(optionDate, swapTenor);
+        return smileSectionImpl(optionDate, swapTenor);
     }
 
     boost::shared_ptr<SmileSection>
     SwaptionVolCube2::smileSectionImpl(const Date& optionDate,
-                                   const Period& swapTenor) const {
+                                       const Period& swapTenor) const {
         calculate();
         Rate atmForward = atmStrike(optionDate, swapTenor);
         Volatility atmVol = atmVol_->volatility(optionDate, swapTenor,
@@ -90,8 +90,8 @@ namespace QuantLib {
         }
         return boost::shared_ptr<SmileSection>(new
             InterpolatedSmileSection<Linear>(p.first,
-                                                                 strikes,
-                                                                 stdDevs,
-                                                                 atmVol));
+                                             strikes,
+                                             stdDevs,
+                                             atmVol));
     }
 }
