@@ -51,10 +51,13 @@ namespace QuantLib {
                            const std::vector<Volatility>& blackVolCurve,
                            const DayCounter& dayCounter,
                            bool forceMonotoneVariance = true);
-        //! \name BlackVolTermStructure interface
+        //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const { return dayCounter_; }
         Date maxDate() const;
+        //@}
+        //! \name VolatilityTermStructure interface
+        //@{
         Real minStrike() const;
         Real maxStrike() const;
         //@}

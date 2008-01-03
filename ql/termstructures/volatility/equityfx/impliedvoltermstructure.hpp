@@ -41,13 +41,15 @@ namespace QuantLib {
     */
     class ImpliedVolTermStructure : public BlackVarianceTermStructure {
       public:
-        ImpliedVolTermStructure(
-                              const Handle<BlackVolTermStructure>& originalTS,
-                              const Date& referenceDate);
-        //! \name BlackVolTermStructure interface
+        ImpliedVolTermStructure(const Handle<BlackVolTermStructure>& origTS,
+                                const Date& referenceDate);
+        //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const { return originalTS_->dayCounter(); }
         Date maxDate() const;
+        //@}
+        //! \name VolatilityTermStructure interface
+        //@{
         Real minStrike() const;
         Real maxStrike() const;
         //@}

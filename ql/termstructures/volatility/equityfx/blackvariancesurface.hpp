@@ -58,12 +58,15 @@ namespace QuantLib {
                                 InterpolatorDefaultExtrapolation,
                              Extrapolation upperExtrapolation =
                                 InterpolatorDefaultExtrapolation);
-        //! \name BlackVolTermStructure interface
+        //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const { return dayCounter_; }
         Date maxDate() const {
             return maxDate_;
         }
+        //@}
+        //! \name VolatilityTermStructure interface
+        //@{
         Real minStrike() const {
             return strikes_.front();
         }
