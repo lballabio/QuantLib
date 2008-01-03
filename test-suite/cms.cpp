@@ -52,7 +52,7 @@ Handle<SwaptionVolatilityStructure> atmVol_;
 Handle<SwaptionVolatilityStructure> SabrVolCube1_;
 Handle<SwaptionVolatilityStructure> SabrVolCube2_;
 
-std::vector<GFunctionFactory::ModelOfYieldCurve> yieldCurveModels_;
+std::vector<GFunctionFactory::YieldCurveModel> yieldCurveModels_;
 std::vector<shared_ptr<CmsCouponPricer> > numericalPricers_;
 std::vector<shared_ptr<CmsCouponPricer> > analyticPricers_;
 
@@ -239,11 +239,11 @@ void setup() {
     Size m = yieldCurveModels_.size();
     for (Size j=0; j<m; ++j) {
         numericalPricers_.push_back(shared_ptr<CmsCouponPricer>(new
-            ConundrumPricerByNumericalIntegration(atmVol_,
+            NumericHaganPricer(atmVol_,
                                                   yieldCurveModels_[j],
                                                   zeroMeanRev)));
         analyticPricers_.push_back(shared_ptr<CmsCouponPricer>(new
-            ConundrumPricerByBlack(atmVol_,
+            AnalyticHaganPricer(atmVol_,
                                    yieldCurveModels_[j],
                                    zeroMeanRev)));
     }

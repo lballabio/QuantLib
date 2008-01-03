@@ -104,7 +104,7 @@ struct CommonVars {
         Handle<Quote> meanReversionQuote(
                              boost::shared_ptr<Quote>(new SimpleQuote(0.01)));
         cmspricer = boost::shared_ptr<CmsCouponPricer>(
-                       new ConundrumPricerByBlack(swaptionVolatilityStructure,
+                       new AnalyticHaganPricer(swaptionVolatilityStructure,
                                                   GFunctionFactory::Standard,
                                                   meanReversionQuote));
     }

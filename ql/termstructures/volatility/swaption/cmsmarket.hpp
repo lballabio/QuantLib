@@ -46,7 +46,7 @@ namespace QuantLib {
             const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
             const boost::shared_ptr<IborIndex>& iborIndex,
             const std::vector<std::vector<Handle<Quote> > >& bidAskSpreads,
-            const std::vector<boost::shared_ptr<ConundrumPricer> >& pricers,
+            const std::vector<boost::shared_ptr<HaganPricer> >& pricers,
             const Handle<YieldTermStructure>& discountingTS);
         //! \name LazyObject interface
         //@{
@@ -80,7 +80,7 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<SwapIndex> > swapIndexes_;
         boost::shared_ptr<IborIndex> iborIndex_;
         std::vector<std::vector<Handle<Quote> > > bidAskSpreads_;
-        std::vector<boost::shared_ptr<ConundrumPricer> > pricers_;
+        std::vector<boost::shared_ptr<HaganPricer> > pricers_;
         Handle<YieldTermStructure> discTS_;
 
         Size nExercise_;

@@ -36,7 +36,7 @@ namespace QuantLib {
         const vector<shared_ptr<SwapIndex> >& swapIndexes,
         const shared_ptr<IborIndex>& iborIndex,
         const vector<vector<Handle<Quote> > >& bidAskSpreads,
-        const vector<shared_ptr<ConundrumPricer> >& pricers,
+        const vector<shared_ptr<HaganPricer> >& pricers,
         const Handle<YieldTermStructure>& discountingTS)
     : swapLengths_(swapLengths),
       iborIndex_(iborIndex),

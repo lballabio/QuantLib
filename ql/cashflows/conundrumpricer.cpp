@@ -63,11 +63,11 @@ namespace QuantLib {
 
 
 //===========================================================================//
-//                             ConundrumPricer                               //
+//                             HaganPricer                               //
 //===========================================================================//
-    ConundrumPricer::ConundrumPricer(
+    HaganPricer::HaganPricer(
                 const Handle<SwaptionVolatilityStructure>& swaptionVol,
-                GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+                GFunctionFactory::YieldCurveModel modelOfYieldCurve,
                 const Handle<Quote>& meanReversion)
     : CmsCouponPricer(swaptionVol),
       modelOfYieldCurve_(modelOfYieldCurve),
@@ -76,7 +76,7 @@ namespace QuantLib {
           registerWith(meanReversion_);
     }
 
-    void ConundrumPricer::initialize(const FloatingRateCoupon& coupon){
+    void HaganPricer::initialize(const FloatingRateCoupon& coupon){
         coupon_ =  dynamic_cast<const CmsCoupon*>(&coupon);
         gearing_ = coupon_->gearing();
         spread_ = coupon_->spread();
@@ -140,13 +140,13 @@ namespace QuantLib {
          }
     }
 
-    Real ConundrumPricer::meanReversion() const { return meanReversion_->value();}
+    Real HaganPricer::meanReversion() const { return meanReversion_->value();}
 
-    Rate ConundrumPricer::swapletRate() const {
+    Rate HaganPricer::swapletRate() const {
         return swapletPrice()/(coupon_->accrualPeriod()*discount_);
     }
 
-    Real ConundrumPricer::capletPrice(Rate effectiveCap) const {
+    Real HaganPricer::capletPrice(Rate effectiveCap) const {
         // caplet is equivalent to call option on fixing
         Date today = Settings::instance().evaluationDate();
         if (fixingDate_ <= today) {
@@ -166,11 +166,11 @@ namespace QuantLib {
         }
     }
 
-    Rate ConundrumPricer::capletRate(Rate effectiveCap) const {
+    Rate HaganPricer::capletRate(Rate effectiveCap) const {
         return capletPrice(effectiveCap)/(coupon_->accrualPeriod()*discount_);
     }
 
-    Real ConundrumPricer::floorletPrice(Rate effectiveFloor) const {
+    Real HaganPricer::floorletPrice(Rate effectiveFloor) const {
         // floorlet is equivalent to put option on fixing
         Date today = Settings::instance().evaluationDate();
         if (fixingDate_ <= today) {
@@ -190,12 +190,12 @@ namespace QuantLib {
         }
     }
 
-    Rate ConundrumPricer::floorletRate(Rate effectiveFloor) const {
+    Rate HaganPricer::floorletRate(Rate effectiveFloor) const {
         return floorletPrice(effectiveFloor)/(coupon_->accrualPeriod()*discount_);
     }
 
 //===========================================================================//
-//                  ConundrumPricerByNumericalIntegration                    //
+//                  NumericHaganPricer                    //
 //===========================================================================//
 
     namespace {
@@ -237,14 +237,14 @@ namespace QuantLib {
 
     }
 
-    ConundrumPricerByNumericalIntegration::ConundrumPricerByNumericalIntegration(
+    NumericHaganPricer::NumericHaganPricer(
         const Handle<SwaptionVolatilityStructure>& swaptionVol,
-        GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+        GFunctionFactory::YieldCurveModel modelOfYieldCurve,
         const Handle<Quote>& meanReversion,
         Real lowerLimit,
         Real upperLimit,
         Real precision)
-    : ConundrumPricer(swaptionVol, modelOfYieldCurve, meanReversion),
+    : HaganPricer(swaptionVol, modelOfYieldCurve, meanReversion),
        upperLimit_(upperLimit),
        lowerLimit_(lowerLimit),
        requiredStdDeviations_(8),
@@ -253,7 +253,7 @@ namespace QuantLib {
 
     }
 
-    Real ConundrumPricerByNumericalIntegration::integrate(Real a,
+    Real NumericHaganPricer::integrate(Real a,
         Real b, const ConundrumIntegrand& integrand) const {
             double result =.0;
             //double abserr =.0;
@@ -305,7 +305,7 @@ namespace QuantLib {
             return result;
     }
 
-    Real ConundrumPricerByNumericalIntegration::optionletPrice(
+    Real NumericHaganPricer::optionletPrice(
                                 Option::Type optionType, Real strike) const {
 
         boost::shared_ptr<ConundrumIntegrand> integrand(new
@@ -337,7 +337,7 @@ namespace QuantLib {
             ((1 + dFdK) * swaptionPrice + optionType*integralValue);
     }
 
-    Real ConundrumPricerByNumericalIntegration::swapletPrice() const {
+    Real NumericHaganPricer::swapletPrice() const {
 
         Date today = Settings::instance().evaluationDate();
         if (fixingDate_ <= today) {
@@ -354,7 +354,7 @@ namespace QuantLib {
         }
     }
 
-    Real ConundrumPricerByNumericalIntegration::refineIntegration(Real integralValue,
+    Real NumericHaganPricer::refineIntegration(Real integralValue,
                                                 const ConundrumIntegrand& integrand) const {
         Real percDiff = 1000.;
         while(std::fabs(percDiff) < refiningIntegrationTolerance_){
@@ -368,7 +368,7 @@ namespace QuantLib {
         return integralValue;
     }
 
-    Real ConundrumPricerByNumericalIntegration::resetUpperLimit(
+    Real NumericHaganPricer::resetUpperLimit(
                         Real stdDeviationsForUpperLimit) const {
         //return 1.0;
         Real variance =
@@ -382,7 +382,7 @@ namespace QuantLib {
 //                              ConundrumIntegrand                           //
 //===========================================================================//
 
-    ConundrumPricerByNumericalIntegration::ConundrumIntegrand::ConundrumIntegrand(
+    NumericHaganPricer::ConundrumIntegrand::ConundrumIntegrand(
         const boost::shared_ptr<VanillaOptionPricer>& o,
         const boost::shared_ptr<YieldTermStructure>&,
         const boost::shared_ptr<GFunction>& gFunction,
@@ -397,43 +397,43 @@ namespace QuantLib {
       optionType_(optionType),
       gFunction_(gFunction) {}
 
-    void ConundrumPricerByNumericalIntegration::ConundrumIntegrand::setStrike(Real strike) {
+    void NumericHaganPricer::ConundrumIntegrand::setStrike(Real strike) {
         strike_ = strike;
     }
 
-    Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::strike() const {
+    Real NumericHaganPricer::ConundrumIntegrand::strike() const {
         return strike_;
     }
 
-    Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::annuity() const {
+    Real NumericHaganPricer::ConundrumIntegrand::annuity() const {
         return annuity_;
     }
 
-    Date ConundrumPricerByNumericalIntegration::ConundrumIntegrand::fixingDate() const {
+    Date NumericHaganPricer::ConundrumIntegrand::fixingDate() const {
         return fixingDate_;
     }
 
-    Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::functionF (const Real x) const {
+    Real NumericHaganPricer::ConundrumIntegrand::functionF (const Real x) const {
         const Real Gx = gFunction_->operator()(x);
         const Real GR = gFunction_->operator()(forwardValue_);
         return (x - strike_) * (Gx/GR - 1.0);
     }
 
-    Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::firstDerivativeOfF (const Real x) const {
+    Real NumericHaganPricer::ConundrumIntegrand::firstDerivativeOfF (const Real x) const {
         const Real Gx = gFunction_->operator()(x);
         const Real GR = gFunction_->operator()(forwardValue_) ;
         const Real G1 = gFunction_->firstDerivative(x);
         return (Gx/GR - 1.0) + G1/GR * (x - strike_);
     }
 
-    Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::secondDerivativeOfF (const Real x) const {
+    Real NumericHaganPricer::ConundrumIntegrand::secondDerivativeOfF (const Real x) const {
         const Real GR = gFunction_->operator()(forwardValue_) ;
         const Real G1 = gFunction_->firstDerivative(x);
         const Real G2 = gFunction_->secondDerivative(x);
         return 2.0 * G1/GR + (x - strike_) * G2/GR;
     }
 
-    Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::operator()(Real x) const {
+    Real NumericHaganPricer::ConundrumIntegrand::operator()(Real x) const {
         const Real option = (*vanillaOptionPricer_)(x, optionType_, annuity_);
         return option * secondDerivativeOfF(x);
     }
@@ -441,18 +441,18 @@ namespace QuantLib {
 
 
 //===========================================================================//
-//                          ConundrumPricerByBlack                           //
+//                          AnalyticHaganPricer                           //
 //===========================================================================//
 
-    ConundrumPricerByBlack::ConundrumPricerByBlack(
+    AnalyticHaganPricer::AnalyticHaganPricer(
         const Handle<SwaptionVolatilityStructure>& swaptionVol,
-        GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+        GFunctionFactory::YieldCurveModel modelOfYieldCurve,
         const Handle<Quote>& meanReversion)
-    : ConundrumPricer(swaptionVol, modelOfYieldCurve, meanReversion)
+    : HaganPricer(swaptionVol, modelOfYieldCurve, meanReversion)
       { }
 
     //Hagan, 3.5b, 3.5c
-    Real ConundrumPricerByBlack::optionletPrice(Option::Type optionType,
+    Real AnalyticHaganPricer::optionletPrice(Option::Type optionType,
                                                   Real strike) const {
         Real variance = swaptionVolatility()->blackVariance(fixingDate_,
                                                            swapTenor_,
@@ -482,7 +482,7 @@ namespace QuantLib {
     }
 
     //Hagan 3.4c
-    Real ConundrumPricerByBlack::swapletPrice() const {
+    Real AnalyticHaganPricer::swapletPrice() const {
 
         Date today = Settings::instance().evaluationDate();
         if (fixingDate_ <= today) {

@@ -70,10 +70,10 @@ namespace QuantLib {
 
     class GFunctionFactory {
       public:
-        enum ModelOfYieldCurve { Standard,
-                                 ExactYield,
-                                 ParallelShifts,
-                                 NonParallelShifts
+        enum YieldCurveModel { Standard,
+                               ExactYield,
+                               ParallelShifts,
+                               NonParallelShifts
         };
         static boost::shared_ptr<GFunction>
         newGFunctionStandard(Size q,
@@ -177,7 +177,7 @@ namespace QuantLib {
     };
 
     inline std::ostream& operator<<(std::ostream& out,
-                                    GFunctionFactory::ModelOfYieldCurve type) {
+                                    GFunctionFactory::YieldCurveModel type) {
         switch (type) {
           case GFunctionFactory::Standard:
             return out << "Standard";
@@ -196,7 +196,7 @@ namespace QuantLib {
     /*! Base class for the pricing of a CMS coupon via static replication
         as in Hagan's "Conundrums..." article
     */
-    class ConundrumPricer: public CmsCouponPricer {
+    class HaganPricer: public CmsCouponPricer {
       public:
         /* */
         virtual Real swapletPrice() const = 0;
@@ -214,9 +214,9 @@ namespace QuantLib {
             update();
         };
       protected:
-        ConundrumPricer(
+        HaganPricer(
                 const Handle<SwaptionVolatilityStructure>& swaptionVol,
-                GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+                GFunctionFactory::YieldCurveModel modelOfYieldCurve,
                 const Handle<Quote>& meanReversion);
         void initialize(const FloatingRateCoupon& coupon);
 
@@ -224,7 +224,7 @@ namespace QuantLib {
                                     Real strike) const = 0;
 
         boost::shared_ptr<YieldTermStructure> rateCurve_;
-        GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve_;
+        GFunctionFactory::YieldCurveModel modelOfYieldCurve_;
         boost::shared_ptr<GFunction> gFunction_;
         const CmsCoupon* coupon_;
         Date paymentDate_, fixingDate_;
@@ -246,11 +246,11 @@ namespace QuantLib {
         "Conundrums..." article via numerical integration based on
         prices of vanilla swaptions
     */
-    class ConundrumPricerByNumericalIntegration : public ConundrumPricer {
+    class NumericHaganPricer : public HaganPricer {
       public:
-        ConundrumPricerByNumericalIntegration(
+        NumericHaganPricer(
             const Handle<SwaptionVolatilityStructure>& swaptionVol,
-            GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+            GFunctionFactory::YieldCurveModel modelOfYieldCurve,
             const Handle<Quote>& meanReversion,
             Rate lowerLimit = 0.0,
             Rate upperLimit = 1.0,
@@ -267,7 +267,7 @@ namespace QuantLib {
         };
 
         class ConundrumIntegrand : public Function {
-            friend class ConundrumPricerByNumericalIntegration;
+            friend class NumericHaganPricer;
           public:
             ConundrumIntegrand(
                        const boost::shared_ptr<VanillaOptionPricer>& o,
@@ -312,11 +312,11 @@ namespace QuantLib {
     };
 
     //! CMS-coupon pricer
-    class ConundrumPricerByBlack : public ConundrumPricer {
+    class AnalyticHaganPricer : public HaganPricer {
       public:
-        ConundrumPricerByBlack(
+        AnalyticHaganPricer(
             const Handle<SwaptionVolatilityStructure>& swaptionVol,
-            GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+            GFunctionFactory::YieldCurveModel modelOfYieldCurve,
             const Handle<Quote>& meanReversion);
       protected:
         Real optionletPrice(Option::Type optionType,
