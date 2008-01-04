@@ -28,9 +28,11 @@
 #include <ql/math/matrix.hpp>
 
 namespace QuantLib {
+
     class Interpolation2D;
     class EndCriteria;
     class OptimizationMethod;
+
     class SwaptionVolCube1 : public SwaptionVolatilityCube {
         class Cube {
           public:
@@ -100,10 +102,10 @@ namespace QuantLib {
             Real maxErrorTolerance = Null<Real>(),
             const boost::shared_ptr<OptimizationMethod>& optMethod
                 = boost::shared_ptr<OptimizationMethod>());
-        ////! \name LazyObject interface
-        ////@{
+        //! \name LazyObject interface
+        //@{
         void performCalculations() const;
-        ////@}
+        //@}
         //! \name SwaptionVolatilityCube interface
         //@{
         boost::shared_ptr<SmileSection> smileSectionImpl(

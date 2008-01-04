@@ -18,9 +18,11 @@
 */
 
 #include <ql/termstructures/volatility/swaption/swaptionvolcube1.hpp>
-#include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
+#include <ql/termstructures/volatility/smilesection.hpp>
 #include <ql/math/interpolations/flatextrapolation2d.hpp>
+#include <ql/math/interpolations/sabrinterpolation.hpp>
+#include <ql/quote.hpp>
 
 #ifndef SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL
     #define SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL 15.0e-4
@@ -424,14 +426,14 @@ namespace QuantLib {
         optionTimesPreviousNode = std::lower_bound(optionTimes.begin(),
                                                    optionTimes.end(),
                                                    atmOptionTime);
-        Size optionTimesPreviousIndex
-            = optionTimesPreviousNode - optionTimes.begin();
+        Size optionTimesPreviousIndex =
+            optionTimesPreviousNode - optionTimes.begin();
         if (optionTimesPreviousIndex >0)
             optionTimesPreviousIndex --;
 
         swapLengthsPreviousNode = std::lower_bound(swapLengths.begin(),
-                                               swapLengths.end(),
-                                               atmTimeLength);
+                                                   swapLengths.end(),
+                                                   atmTimeLength);
         Size swapLengthsPreviousIndex = swapLengthsPreviousNode - swapLengths.begin();
         if (swapLengthsPreviousIndex >0)
             swapLengthsPreviousIndex --;
@@ -472,7 +474,7 @@ namespace QuantLib {
         swapTenorNodes[0] = swapTenors[swapLengthsPreviousIndex];
         swapTenorNodes[1] = swapTenors[swapLengthsPreviousIndex+1];
 
-        const Rate atmForward = atmStrike(atmOptionDate, atmSwapTenor);
+        Rate atmForward = atmStrike(atmOptionDate, atmSwapTenor);
 
         Matrix atmForwards(2, 2, 0.0);
         Matrix atmVols(2, 2, 0.0);
@@ -520,8 +522,7 @@ namespace QuantLib {
            localInterpolator.setLayer(0, spreadVols);
            localInterpolator.updateInterpolators();
 
-           result.push_back(
-                        localInterpolator(atmOptionTime, atmTimeLength)[0]);
+           result.push_back(localInterpolator(atmOptionTime, atmTimeLength)[0]);
         }
         return result;
     }
