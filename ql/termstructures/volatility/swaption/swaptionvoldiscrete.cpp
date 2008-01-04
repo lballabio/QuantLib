@@ -183,21 +183,11 @@ namespace QuantLib {
         }
     }
 
-    Time SwaptionVolatilityDiscrete::convertSwapTenor(
-                                            const Date& optionDate,
-                                            const Period& swapTenor) const {
-        Date startDate = referenceDate(); // for consistency
-        // Date startDate = optionDates_[0]; // for consistency
-        Date endDate = startDate + swapTenor;
-        return dayCounter().yearFraction(startDate, endDate);
-    }
-
     void SwaptionVolatilityDiscrete::performCalculations() const {
          // check if date recalculation could be avoided here
          if (moving_)
             initializeOptionDatesAndTimes();
     }
-
 
     void SwaptionVolatilityDiscrete::update() {
         // recalculate dates if necessary...

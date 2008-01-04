@@ -33,7 +33,7 @@ namespace QuantLib {
       spread_(spread) {
           registerWith(underlyingVolStructure_);
           registerWith(spread_);
-          enableExtrapolation(underlyingVolStructure->allowsExtrapolation());
+          //enableExtrapolation(underlyingVolStructure->allowsExtrapolation());
     }
 
     Volatility SpreadedSwaptionVolatilityStructure::volatilityImpl(
@@ -83,13 +83,6 @@ namespace QuantLib {
     BusinessDayConvention
     SpreadedSwaptionVolatilityStructure::businessDayConvention() const {
         return underlyingVolStructure_->businessDayConvention();
-    }
-
-    Time SpreadedSwaptionVolatilityStructure::convertSwapTenor(
-                                            const Date& optionDate,
-                                            const Period& swapTenor) const {
-        return underlyingVolStructure_->convertSwapTenor(optionDate,
-                                                         swapTenor);
     }
 
     DayCounter SpreadedSwaptionVolatilityStructure::dayCounter() const {

@@ -137,7 +137,7 @@ void makeCoherenceTest(
           Period thisSwapTenor = atm_.tenors.swaps[j];
 
           Time pfirst = vol->timeFromReference(thisOptionDate);
-          Time psecond = vol->convertSwapTenor(thisOptionDate, thisSwapTenor);
+          Time psecond = vol->convertSwapTenor(thisSwapTenor);
           if ((pfirst !=vol->optionTimes()[i]) ||
               (psecond!=vol->swapLengths()[j]))
               BOOST_FAIL("\nconvertDates failure for " <<

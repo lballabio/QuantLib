@@ -56,9 +56,6 @@ namespace QuantLib {
         const std::vector<Time>& optionTimes() const;
         const std::vector<Period>& swapTenors() const;
         const std::vector<Time>& swapLengths() const;
-        //! implements the conversion between swap tenor and time
-        Time convertSwapTenor(const Date& optionDates,
-                              const Period& swapTenor) const;
         //@}
         //! \name LazyObject interface
         //@{

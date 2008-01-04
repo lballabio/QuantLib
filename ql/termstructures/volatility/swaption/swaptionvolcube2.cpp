@@ -79,7 +79,7 @@ namespace QuantLib {
         Volatility atmVol = atmVol_->volatility(optionDate, swapTenor,
                                                       atmForward);
         Time optionTime = timeFromReference(optionDate);
-        Time swapLength = convertSwapTenor(optionDate, swapTenor);
+        Time swapLength = convertSwapTenor(swapTenor);
         Real exerciseTimeSqrt = std::sqrt(optionTime);
         std::vector<Real> strikes, stdDevs;
         strikes.reserve(nStrikes_);
