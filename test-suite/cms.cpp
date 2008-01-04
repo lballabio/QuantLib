@@ -277,8 +277,8 @@ void CmsTest::testFairRate()  {
     Date paymentDate = startDate + 1*Years;
     Date endDate = paymentDate;
     Real nominal = 1.0;
-    Rate infiniteCap = 100.0;
-    Rate infiniteFloor = 0.0;
+    Rate infiniteCap = Null<Real>();
+    Rate infiniteFloor = Null<Real>();
     Real gearing = 1.0;
     Spread spread = 0.0;
     CappedFlooredCmsCoupon coupon(paymentDate, nominal,
@@ -400,8 +400,8 @@ void CmsTest::testParity() {
     Date paymentDate = startDate + 1*Years;
     Date endDate = paymentDate;
     Real nominal = 1.0;
-    Rate infiniteCap = 100.0;
-    Rate infiniteFloor = 0.0;
+    Rate infiniteCap = Null<Real>();
+    Rate infiniteFloor = Null<Real>();
     Real gearing = 1.0;
     Spread spread = 0.0;
     DiscountFactor discount = termStructure_->discount(paymentDate);
