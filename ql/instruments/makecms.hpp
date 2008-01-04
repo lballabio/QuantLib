@@ -29,9 +29,11 @@
 #include <ql/pricingengine.hpp>
 
 namespace QuantLib {
+
     class Swap;
     class IborIndex;
-    //! helper class
+
+    //! helper class for instantiating CMS
     /*! This class provides a more comfortable way
         to instantiate standard market constant maturity swap.
     */
@@ -40,7 +42,12 @@ namespace QuantLib {
         MakeCms(const Period& swapTenor,
                 const boost::shared_ptr<SwapIndex>& swapIndex,
                 const boost::shared_ptr<IborIndex>& iborIndex,
-                Spread iborSpread = Null<Spread>(),
+                Spread iborSpread = 0.0,
+                const Period& forwardStart = 0*Days);
+
+        MakeCms(const Period& swapTenor,
+                const boost::shared_ptr<SwapIndex>& swapIndex,
+                Spread iborSpread = 0.0,
                 const Period& forwardStart = 0*Days);
 
         operator Swap() const;
@@ -71,6 +78,8 @@ namespace QuantLib {
         MakeCms& withFloatingLegNextToLastDate(const Date& d);
         MakeCms& withFloatingLegDayCount(const DayCounter& dc);
 
+        MakeCms& withAtmSpread(bool flag = true);
+
         MakeCms& withDiscountingTermStructure(
             const Handle<YieldTermStructure>& discountingTermStructure);
         MakeCms& withCmsCouponPricer(
@@ -81,6 +90,7 @@ namespace QuantLib {
         boost::shared_ptr<SwapIndex> swapIndex_;
         boost::shared_ptr<IborIndex> iborIndex_;
         Spread iborSpread_;
+        bool useAtmSpread_;
         Period forwardStart_;
 
         Spread cmsSpread_;

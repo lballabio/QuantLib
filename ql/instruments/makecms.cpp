@@ -37,7 +37,7 @@ namespace QuantLib {
                      const Period& forwardStart)
     : swapTenor_(swapTenor), swapIndex_(swapIndex),
       iborIndex_(iborIndex), iborSpread_(iborSpread),
-      forwardStart_(forwardStart),
+      useAtmSpread_(false), forwardStart_(forwardStart),
 
       cmsSpread_(0.0), cmsGearing_(1.0),
       cmsCap_(2.0), cmsFloor_(Null<Real>()),
@@ -60,6 +60,36 @@ namespace QuantLib {
       // arbitrary choice:
       //engine_(new DiscountingSwapEngine(iborIndex->termStructure())),
       engine_(new DiscountingSwapEngine(swapIndex->termStructure())) {}
+
+
+    MakeCms::MakeCms(const Period& swapTenor,
+                     const boost::shared_ptr<SwapIndex>& swapIndex,
+                     Spread iborSpread,
+                     const Period& forwardStart)
+    : swapTenor_(swapTenor), swapIndex_(swapIndex),
+      iborIndex_(swapIndex->iborIndex()), iborSpread_(iborSpread),
+      useAtmSpread_(false), forwardStart_(forwardStart),
+
+      cmsSpread_(0.0), cmsGearing_(1.0),
+      cmsCap_(2.0), cmsFloor_(Null<Real>()),
+
+      effectiveDate_(Date()),
+      cmsCalendar_(swapIndex->fixingCalendar()),
+      floatCalendar_(iborIndex_->fixingCalendar()),
+      payCms_(true), nominal_(1.0),
+      cmsTenor_(3*Months), floatTenor_(iborIndex_->tenor()),
+      cmsConvention_(ModifiedFollowing),
+      cmsTerminationDateConvention_(ModifiedFollowing),
+      floatConvention_(iborIndex_->businessDayConvention()),
+      floatTerminationDateConvention_(iborIndex_->businessDayConvention()),
+      cmsRule_(DateGeneration::Backward), floatRule_(DateGeneration::Backward),
+      cmsEndOfMonth_(false), floatEndOfMonth_(false),
+      cmsFirstDate_(Date()), cmsNextToLastDate_(Date()),
+      floatFirstDate_(Date()), floatNextToLastDate_(Date()),
+      cmsDayCount_(Actual360()),
+      floatDayCount_(iborIndex_->dayCounter()),
+      engine_(new DiscountingSwapEngine(swapIndex->termStructure())) {}
+
 
     MakeCms::operator Swap() const {
         boost::shared_ptr<Swap> swap = *this;
@@ -108,7 +138,7 @@ namespace QuantLib {
             setCouponPricer(cmsLeg, couponPricer_);
 
         Rate usedSpread = iborSpread_;
-        if (iborSpread_ == Null<Spread>()) {
+        if (useAtmSpread_) {
             QL_REQUIRE(!iborIndex_->termStructure().empty(),
                        "no forecasting term structure set to " <<
                        iborIndex_->name());
@@ -129,6 +159,9 @@ namespace QuantLib {
             Real npv = temp.legNPV(0)+temp.legNPV(1);
 
             usedSpread = -npv/temp.legBPS(1)*1e-4;
+        } else {
+            QL_REQUIRE(usedSpread != Null<Spread>(),
+                       "null spread set");
         }
 
         Leg floatLeg = IborLeg(floatSchedule, iborIndex_)
@@ -274,6 +307,11 @@ namespace QuantLib {
     MakeCms&
     MakeCms::withFloatingLegDayCount(const DayCounter& dc) {
         floatDayCount_ = dc;
+        return *this;
+    }
+
+    MakeCms& MakeCms::withAtmSpread(bool flag) {
+        useAtmSpread_ = flag;
         return *this;
     }
 
