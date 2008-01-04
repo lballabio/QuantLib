@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2007 Klaus Spanderen
+ Copyright (C) 2007, 2008 Klaus Spanderen
  Copyright (C) 2007 Neil Firth
 
  This file is part of QuantLib, a free-software/open-source library
@@ -25,6 +25,7 @@
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/matrixutilities/svd.hpp>
 #include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -218,7 +219,7 @@ void MatricesTest::testSVD() {
 
 void MatricesTest::testInverse() {
 
-    BOOST_MESSAGE("Testing inverse calculation...");
+    BOOST_MESSAGE("Testing LU inverse calculation...");
 
     setup();
 
@@ -241,6 +242,59 @@ void MatricesTest::testInverse() {
                        << norm(I1-I) << ")");
     }
 }
+#include <iostream>
+void MatricesTest::testDeterminant() {
+
+    BOOST_MESSAGE("Testing LU determinat calculation");
+
+    setup();
+    Real tol = 1e-10;
+
+    Matrix testMatrices[] = {M1, M2, M5, M6, I};
+    // expected results calculated with octave
+    Real expected[] = { 0.044, -0.012, 5.0, 5.7621e-11, 1.0};
+
+    for (Size i=0; i < LENGTH(testMatrices); ++i) {
+        const Real calculated = det(testMatrices[i]);
+        if (std::fabs(expected[i] - calculated) > tol)
+            BOOST_FAIL("determinant calculation failed "
+                       << "\n matrix     :\n" << testMatrices[i]
+                       << "\n calculated : " << calculated
+                       << "\n expected   : " << expected[i]);
+    }
+
+    MersenneTwisterUniformRng rng(1234);
+    for (Size i=0; i < 100; ++i) {
+        Matrix m(3,3, 0.0);
+        for (Matrix::iterator iter = m.begin(); iter != m.end(); ++iter)
+            *iter = rng.next().value;
+
+        if (!(i%3)) {
+            // every third matrix is a singular matrix
+            const Size row(3*rng.next().value);
+            std::fill(m.row_begin(row), m.row_end(row), 0.0);
+        }
+
+        const Real& a=m[0][0];
+        const Real& b=m[0][1];
+        const Real& c=m[0][2];
+        const Real& d=m[1][0];
+        const Real& e=m[1][1];
+        const Real& f=m[1][2];
+        const Real& g=m[2][0];
+        const Real& h=m[2][1];
+        const Real& i=m[2][2];
+        
+        const Real expected = a*e*i+b*f*g+c*d*h-(g*e*c+h*f*a+i*d*b);
+        const Real calculated = det(m);
+
+        if (std::fabs(expected-calculated) > tol)
+            BOOST_FAIL("determinant calculation failed "
+                       << "\n matrix     :\n" << m
+                       << "\n calculated : " << calculated
+                       << "\n expected   : " << expected);
+    }
+}
 
 test_suite* MatricesTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Matrix tests");
@@ -249,6 +303,7 @@ test_suite* MatricesTest::suite() {
     suite->add(BOOST_TEST_CASE(&MatricesTest::testSVD));
     suite->add(BOOST_TEST_CASE(&MatricesTest::testInverse));
     suite->add(BOOST_TEST_CASE(&MatricesTest::testHighamSqrt));
+    suite->add(BOOST_TEST_CASE(&MatricesTest::testDeterminant));
     return suite;
 }
 

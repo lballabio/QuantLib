@@ -176,6 +176,9 @@ namespace QuantLib {
     /*! \relates Matrix */
     Disposable<Matrix> inverse(const Matrix& m);
 
+    /*! \relates Matrix */
+    Real det(const Matrix& m);
+
     // inline definitions
 
     inline Matrix::Matrix()

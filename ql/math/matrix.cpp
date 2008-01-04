@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Klaus Spanderen
+ Copyright (C) 2007, 2008 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -69,8 +69,36 @@ namespace QuantLib {
         return retVal;
 
         #else
-        QL_FAIL("this version of gcc does not support the Boost uBlas library");
+        QL_FAIL("this version of gcc does not support "
+                "the Boost uBlas library");
         #endif
     }
 
+    Real det(const Matrix& m) {        
+        #if defined(QL_MATRIX_BLAS)
+        QL_REQUIRE(m.rows() == m.columns(), "matrix is not square");
+
+        boost::numeric::ublas::matrix<Real> a(m.rows(), m.columns());
+        std::copy(m.begin(), m.end(), a.data().begin());
+
+
+        // lu decomposition
+        boost::numeric::ublas::permutation_matrix<Size> pert(m.rows());
+        const Size singular = lu_factorize(a, pert);
+
+        Real retVal = 1.0;
+
+        for (Size i=0; i < m.rows(); ++i) {
+            if (pert[i] != i)
+                retVal *= -a(i,i);
+            else
+                retVal *=  a(i,i);
+        }
+        return retVal;
+
+        #else
+        QL_FAIL("this version of gcc does not support "
+                "the Boost uBlas library");
+        #endif
+    }
 }
