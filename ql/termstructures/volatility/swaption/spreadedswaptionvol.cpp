@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
@@ -19,90 +20,46 @@
 
 #include <ql/termstructures/volatility/swaption/spreadedswaptionvol.hpp>
 #include <ql/termstructures/volatility/spreadedsmilesection.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 
-    SpreadedSwaptionVolatilityStructure::SpreadedSwaptionVolatilityStructure(
-            const Handle<SwaptionVolatilityStructure>& underlyingVolStructure,
-            const Handle<Quote>& spread)
-    : SwaptionVolatilityStructure(underlyingVolStructure->settlementDays(),
-                                  underlyingVolStructure->calendar(),
-                                  underlyingVolStructure->dayCounter(),
-                                  underlyingVolStructure->businessDayConvention()),
-      underlyingVolStructure_(underlyingVolStructure),
-      spread_(spread) {
-          registerWith(underlyingVolStructure_);
+    SpreadedSwaptionVol::SpreadedSwaptionVol(
+                            const Handle<SwaptionVolatilityStructure>& baseVol,
+                            const Handle<Quote>& spread)
+    : SwaptionVolatilityStructure(), baseVol_(baseVol), spread_(spread) {
+          registerWith(baseVol_);
           registerWith(spread_);
-          //enableExtrapolation(underlyingVolStructure->allowsExtrapolation());
-    }
-
-    Volatility SpreadedSwaptionVolatilityStructure::volatilityImpl(
-                                                    Time optionTime,
-                                                    Time swapLength,
-                                                    Rate strike) const {
-        return underlyingVolStructure_
-            ->volatility(optionTime, swapLength, strike)+spread_->value();
     }
 
     boost::shared_ptr<SmileSection>
-        SpreadedSwaptionVolatilityStructure::smileSectionImpl(
-                                            Time optionTime,
-                                            Time swapLength) const {
-        boost::shared_ptr<SmileSection> underlyingSmile =
-            underlyingVolStructure_->smileSection(optionTime,swapLength,true);
+    SpreadedSwaptionVol::smileSectionImpl(const Date& d,
+                                          const Period& swapTenor) const {
+        boost::shared_ptr<SmileSection> baseSmile =
+            baseVol_->smileSection(d, swapTenor, true);
         return boost::shared_ptr<SmileSection>(new
-            SpreadedSmileSection(underlyingSmile, spread_));
+            SpreadedSmileSection(baseSmile, spread_));
     }
 
     boost::shared_ptr<SmileSection>
-        SpreadedSwaptionVolatilityStructure::smileSectionImpl(
-                                        const Date& optionDate,
-                                        const Period& swapTenor) const {
-        boost::shared_ptr<SmileSection> underlyingSmile =
-            underlyingVolStructure_->smileSection(optionDate,swapTenor,true);
+    SpreadedSwaptionVol::smileSectionImpl(Time optionTime,
+                                          Time swapLength) const {
+        boost::shared_ptr<SmileSection> baseSmile =
+            baseVol_->smileSection(optionTime, swapLength, true);
         return boost::shared_ptr<SmileSection>(new
-            SpreadedSmileSection(underlyingSmile, spread_));
+            SpreadedSmileSection(baseSmile, spread_));
     }
 
-    const Period& SpreadedSwaptionVolatilityStructure::maxSwapTenor() const {
-        return underlyingVolStructure_->maxSwapTenor();
+    Volatility SpreadedSwaptionVol::volatilityImpl(const Date& d,
+                                                   const Period& p,
+                                                   Rate strike) const {
+        return baseVol_->volatility(d, p, strike, true) + spread_->value();
     }
 
-    Rate SpreadedSwaptionVolatilityStructure::minStrike() const {
-        return underlyingVolStructure_->minStrike();
-    }
-
-    Rate SpreadedSwaptionVolatilityStructure::maxStrike() const {
-        return underlyingVolStructure_->maxStrike();
-    }
-
-    BusinessDayConvention
-    SpreadedSwaptionVolatilityStructure::businessDayConvention() const {
-        return underlyingVolStructure_->businessDayConvention();
-    }
-
-    DayCounter SpreadedSwaptionVolatilityStructure::dayCounter() const {
-        return underlyingVolStructure_->dayCounter();
-    }
-
-    Date SpreadedSwaptionVolatilityStructure::maxDate() const {
-        return underlyingVolStructure_->maxDate();
-    }
-
-    Time SpreadedSwaptionVolatilityStructure::maxTime() const {
-        return underlyingVolStructure_->maxTime();
-    }
-
-    const Date& SpreadedSwaptionVolatilityStructure::referenceDate() const {
-        return underlyingVolStructure_->referenceDate();
-    }
-
-    Calendar SpreadedSwaptionVolatilityStructure::calendar() const {
-        return underlyingVolStructure_->calendar();
-    }
-
-    Natural SpreadedSwaptionVolatilityStructure::settlementDays() const {
-        return underlyingVolStructure_->settlementDays();
+    Volatility SpreadedSwaptionVol::volatilityImpl(Time t,
+                                                   Time l,
+                                                   Rate strike) const {
+        return baseVol_->volatility(t, l, strike, true) + spread_->value();
     }
 
 }

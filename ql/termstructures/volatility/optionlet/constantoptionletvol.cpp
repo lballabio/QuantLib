@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2004, 2005, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -25,66 +26,56 @@ namespace QuantLib {
 
     // floating reference date, floating market data
     ConstantOptionletVol::ConstantOptionletVol(Natural settlementDays,
-                                               const Handle<Quote>& volatility,
+                                               const Handle<Quote>& vol,
+                                               const DayCounter& dc,
                                                const Calendar& cal,
-                                               BusinessDayConvention bdc,
-                                               const DayCounter& dc)
+                                               BusinessDayConvention bdc)
     : OptionletVolatilityStructure(settlementDays, cal, bdc, dc),
-      volatility_(volatility) {
+      volatility_(vol) {
         registerWith(volatility_);
     }
 
     // fixed reference date, floating market data
     ConstantOptionletVol::ConstantOptionletVol(const Date& referenceDate,
-                                               const Handle<Quote>& volatility,
+                                               const Handle<Quote>& vol,
+                                               const DayCounter& dc,
                                                const Calendar& cal,
-                                               BusinessDayConvention bdc,
-                                               const DayCounter& dc)
+                                               BusinessDayConvention bdc)
     : OptionletVolatilityStructure(referenceDate, cal, bdc, dc),
-      volatility_(volatility) {
+      volatility_(vol) {
         registerWith(volatility_);
     }
 
     // floating reference date, fixed market data
     ConstantOptionletVol::ConstantOptionletVol(Natural settlementDays,
-                                               Volatility volatility,
+                                               Volatility vol,
+                                               const DayCounter& dc,
                                                const Calendar& cal,
-                                               BusinessDayConvention bdc,
-                                               const DayCounter& dc)
+                                               BusinessDayConvention bdc)
     : OptionletVolatilityStructure(settlementDays, cal, bdc, dc),
-      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))) {}
+      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(vol))) {}
 
     // fixed reference date, fixed market data
     ConstantOptionletVol::ConstantOptionletVol(const Date& referenceDate,
-                                               Volatility volatility,
+                                               Volatility vol,
+                                               const DayCounter& dc,
                                                const Calendar& cal,
-                                               BusinessDayConvention bdc,
-                                               const DayCounter& dc)
+                                               BusinessDayConvention bdc)
     : OptionletVolatilityStructure(referenceDate, cal, bdc, dc),
-      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))) {}
+      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(vol))) {}
 
     boost::shared_ptr<SmileSection>
-    ConstantOptionletVol::smileSectionImpl(const Date& optionDate) const {
+    ConstantOptionletVol::smileSectionImpl(const Date& d) const {
         Volatility atmVol = volatility_->value();
         return boost::shared_ptr<SmileSection>(new
-            FlatSmileSection(optionDate,
-                             atmVol,
-                             dayCounter(),
-                             referenceDate()));
+            FlatSmileSection(d, atmVol, dayCounter(), referenceDate()));
     }
 
     boost::shared_ptr<SmileSection>
     ConstantOptionletVol::smileSectionImpl(Time optionTime) const {
         Volatility atmVol = volatility_->value();
         return boost::shared_ptr<SmileSection>(new
-            FlatSmileSection(optionTime,
-                             atmVol,
-                             dayCounter()));
-    }
-
-    Volatility ConstantOptionletVol::volatilityImpl(const Date&,
-                                                    Rate) const {
-        return volatility_->value();
+            FlatSmileSection(optionTime, atmVol, dayCounter()));
     }
 
     Volatility ConstantOptionletVol::volatilityImpl(Time,

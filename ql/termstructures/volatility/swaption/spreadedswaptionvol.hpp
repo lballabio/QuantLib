@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
@@ -25,17 +26,15 @@
 #define quantlib_spreaded_swaption_volstructure_h
 
 #include <ql/termstructures/volatility/swaption/swaptionvolstructure.hpp>
-#include <ql/quote.hpp>
 
 namespace QuantLib {
 
-    class SpreadedSwaptionVolatilityStructure : public SwaptionVolatilityStructure {
-      public:
-        SpreadedSwaptionVolatilityStructure(
-            const Handle<SwaptionVolatilityStructure>& underlyingVolStructure,
-            const Handle<Quote>& spread);
+    class Quote;
 
-      protected:
+    class SpreadedSwaptionVol : public SwaptionVolatilityStructure {
+      public:
+        SpreadedSwaptionVol(const Handle<SwaptionVolatilityStructure>&,
+                            const Handle<Quote>& spread);
         // All virtual methods of base classes must be forwarded
         //! \name TermStructure interface
         //@{
@@ -46,32 +45,71 @@ namespace QuantLib {
         Calendar calendar() const;
         Natural settlementDays() const;
         //@}
+        //! \name VolatilityTermStructure interface
+        //@{
+        Rate minStrike() const;
+        Rate maxStrike() const;
+        //@}
         //! \name SwaptionVolatilityStructure interface
         //@{
         const Period& maxSwapTenor() const;
-        Rate minStrike() const;
-        Rate maxStrike() const;
-        BusinessDayConvention businessDayConvention() const;
-
-        Volatility volatilityImpl(Time optionTime,
-                                  Time swapLength,
-                                  Rate strike) const;
-
+        //@}
+      protected:
+        //! \name SwaptionVolatilityStructure interface
+        //@{
+        boost::shared_ptr<SmileSection> smileSectionImpl(
+                                        const Date& optionDate,
+                                        const Period& swapTenor) const;
         boost::shared_ptr<SmileSection> smileSectionImpl(
                                         Time optionTime,
                                         Time swapLength) const;
-
-        virtual boost::shared_ptr<SmileSection> smileSectionImpl(
-                                        const Date& optionDate,
-                                        const Period& swapTenor) const;
-
+        Volatility volatilityImpl(const Date& optionDate,
+                                  const Period& swapTenor,
+                                  Rate strike) const;
+        Volatility volatilityImpl(Time optionTime,
+                                  Time swapLength,
+                                  Rate strike) const;
         //@}
-
-    private:
-        const Handle<SwaptionVolatilityStructure> underlyingVolStructure_;
+      private:
+        const Handle<SwaptionVolatilityStructure> baseVol_;
         const Handle<Quote> spread_;
-
     };
+
+    inline DayCounter SpreadedSwaptionVol::dayCounter() const {
+        return baseVol_->dayCounter();
+    }
+
+    inline Date SpreadedSwaptionVol::maxDate() const {
+        return baseVol_->maxDate();
+    }
+
+    inline Time SpreadedSwaptionVol::maxTime() const {
+        return baseVol_->maxTime();
+    }
+
+    inline const Date& SpreadedSwaptionVol::referenceDate() const {
+        return baseVol_->referenceDate();
+    }
+
+    inline Calendar SpreadedSwaptionVol::calendar() const {
+        return baseVol_->calendar();
+    }
+
+    inline Natural SpreadedSwaptionVol::settlementDays() const {
+        return baseVol_->settlementDays();
+    }
+
+    inline Rate SpreadedSwaptionVol::minStrike() const {
+        return baseVol_->minStrike();
+    }
+
+    inline Rate SpreadedSwaptionVol::maxStrike() const {
+        return baseVol_->maxStrike();
+    }
+
+    inline const Period& SpreadedSwaptionVol::maxSwapTenor() const {
+        return baseVol_->maxSwapTenor();
+    }
 
 }
 

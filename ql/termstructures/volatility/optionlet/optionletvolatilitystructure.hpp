@@ -101,7 +101,7 @@ namespace QuantLib {
                                                      bool extr = false) const;
         //@}
       protected:
-        boost::shared_ptr<SmileSection> smileSectionImpl(
+        virtual boost::shared_ptr<SmileSection> smileSectionImpl(
                                                 const Date& optionDate) const;
         //! implements the actual smile calculation in derived classes
         virtual boost::shared_ptr<SmileSection> smileSectionImpl(

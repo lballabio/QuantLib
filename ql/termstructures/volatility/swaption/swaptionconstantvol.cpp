@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -23,60 +24,74 @@
 
 namespace QuantLib {
 
-    SwaptionConstantVolatility::SwaptionConstantVolatility(
-                                              const Date& referenceDate,
-                                              Volatility volatility,
-                                              const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(referenceDate),
-      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))),
-      dayCounter_(dayCounter), maxSwapTenor_(100*Years) {}
-
-    SwaptionConstantVolatility::SwaptionConstantVolatility(
-                                              const Date& referenceDate,
-                                              const Handle<Quote>& volatility,
-                                              const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(referenceDate), volatility_(volatility),
-      dayCounter_(dayCounter), maxSwapTenor_(100*Years) {
+    // floating reference date, floating market data
+    ConstantSwaptionVol::ConstantSwaptionVol(Natural settlementDays,
+                                             const Handle<Quote>& vol,
+                                             const DayCounter& dc,
+                                             const Calendar& cal,
+                                             BusinessDayConvention bdc)
+    : SwaptionVolatilityStructure(settlementDays, cal, dc, bdc),
+      volatility_(vol), maxSwapTenor_(100*Years) {
         registerWith(volatility_);
     }
 
-    SwaptionConstantVolatility::SwaptionConstantVolatility(
-                                              Natural settlementDays,
-                                              const Calendar& calendar,
-                                              Volatility volatility,
-                                              const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(settlementDays, calendar),
-      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))),
-      dayCounter_(dayCounter), maxSwapTenor_(100*Years) {}
-
-    SwaptionConstantVolatility::SwaptionConstantVolatility(
-                                              Natural settlementDays,
-                                              const Calendar& calendar,
-                                              const Handle<Quote>& volatility,
-                                              const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(settlementDays, calendar),
-      volatility_(volatility), dayCounter_(dayCounter),
-      maxSwapTenor_(100*Years) {
+    // fixed reference date, floating market data
+    ConstantSwaptionVol::ConstantSwaptionVol(const Date& referenceDate,
+                                             const Handle<Quote>& vol,
+                                             const DayCounter& dc,
+                                             const Calendar& cal,
+                                             BusinessDayConvention bdc)
+    : SwaptionVolatilityStructure(referenceDate, cal, dc, bdc),
+      volatility_(vol), maxSwapTenor_(100*Years) {
         registerWith(volatility_);
     }
 
-    Volatility SwaptionConstantVolatility::volatilityImpl(const Date&,
-                                                          const Period&,
-                                                          Rate) const {
-        return volatility_->value();
-    }
+    // floating reference date, fixed market data
+    ConstantSwaptionVol::ConstantSwaptionVol(Natural settlementDays,
+                                             Volatility vol,
+                                             const DayCounter& dc,
+                                             const Calendar& cal,
+                                             BusinessDayConvention bdc)
+    : SwaptionVolatilityStructure(settlementDays, cal, dc, bdc),
+      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(vol))),
+      maxSwapTenor_(100*Years) {}
 
-    Volatility SwaptionConstantVolatility::volatilityImpl(
-                                                     Time, Time, Rate) const {
-        return volatility_->value();
+    // fixed reference date, fixed market data
+    ConstantSwaptionVol::ConstantSwaptionVol(const Date& referenceDate,
+                                             Volatility vol,
+                                             const DayCounter& dc,
+                                             const Calendar& cal,
+                                             BusinessDayConvention bdc)
+    : SwaptionVolatilityStructure(referenceDate, cal, dc, bdc),
+      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(vol))),
+      maxSwapTenor_(100*Years) {}
+
+    boost::shared_ptr<SmileSection>
+    ConstantSwaptionVol::smileSectionImpl(const Date& d,
+                                          const Period&) const {
+        Volatility atmVol = volatility_->value();
+        return boost::shared_ptr<SmileSection>(new
+            FlatSmileSection(d, atmVol, dayCounter(), referenceDate()));
     }
 
     boost::shared_ptr<SmileSection>
-    SwaptionConstantVolatility::smileSectionImpl(Time optionTime,
-                                                 Time) const {
+    ConstantSwaptionVol::smileSectionImpl(Time optionTime,
+                                          Time) const {
         Volatility atmVol = volatility_->value();
         return boost::shared_ptr<SmileSection>(new
-            FlatSmileSection(optionTime, atmVol));
+            FlatSmileSection(optionTime, atmVol, dayCounter()));
+    }
+
+    Volatility ConstantSwaptionVol::volatilityImpl(const Date&,
+                                                   const Period&,
+                                                   Rate) const {
+        return volatility_->value();
+    }
+
+    Volatility ConstantSwaptionVol::volatilityImpl(Time,
+                                                   Time,
+                                                   Rate) const {
+        return volatility_->value();
     }
 
 }

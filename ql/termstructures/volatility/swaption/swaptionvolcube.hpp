@@ -51,18 +51,18 @@ namespace QuantLib {
         Time maxTime() const { return atmVol_->maxTime(); }
         const Date& referenceDate() const { return atmVol_->referenceDate();}
         Calendar calendar() const { return atmVol_->calendar(); }
-
-        //! \name SwaptionVolatilityStructure interface
+        Natural settlementDays() const { return atmVol_->settlementDays(); }
+        //! \name VolatilityTermStructure interface
         //@{
-        const Period& maxSwapTenor() const { return atmVol_->maxSwapTenor(); }
         Rate minStrike() const { return 0.0; }
         Rate maxStrike() const { return 1.0; }
         //@}
+        //! \name SwaptionVolatilityStructure interface
+        //@{
+        const Period& maxSwapTenor() const { return atmVol_->maxSwapTenor(); }
+        //@}
         //! \name Other inspectors
         //@{
-        //virtual boost::shared_ptr<SmileSection> smileSectionImpl(
-        //                                          Time optionTime,
-        //                                          Time swapLength) const = 0;
         Rate atmStrike(const Date& optionDate,
                        const Period& swapTenor) const;
         Rate atmStrike(const Period& optionTenor,
@@ -72,17 +72,13 @@ namespace QuantLib {
         }
         //@}
       protected:
-        //! \name SwaptionVolatilityStructure interface
-        //@{
         void registerWithVolatilitySpread();
-
         Volatility volatilityImpl(Time optionTime,
                                   Time swapLength,
                                   Rate strike) const;
         Volatility volatilityImpl(const Date& optionDate,
                                   const Period& swapTenor,
                                   Rate strike) const;
-        //@}
         Handle<SwaptionVolatilityStructure> atmVol_;
         Size nStrikes_;
         std::vector<Spread> strikeSpreads_;
@@ -99,15 +95,14 @@ namespace QuantLib {
                                                         Time optionTime,
                                                         Time swapLength,
                                                         Rate strike) const {
-            return smileSectionImpl(optionTime,
-                                    swapLength)->volatility(strike);
+        return smileSectionImpl(optionTime, swapLength)->volatility(strike);
     }
 
     inline Volatility SwaptionVolatilityCube::volatilityImpl(
                                                     const Date& optionDate,
                                                     const Period& swapTenor,
                                                     Rate strike) const {
-        return smileSection(optionDate, swapTenor, true)->volatility(strike);
+        return smileSectionImpl(optionDate, swapTenor)->volatility(strike);
     }
 
 }

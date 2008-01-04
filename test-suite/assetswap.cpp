@@ -98,15 +98,15 @@ struct CommonVars {
         pricer = boost::shared_ptr<IborCouponPricer>(
                                                    new BlackIborCouponPricer);
         Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure(
-            boost::shared_ptr<SwaptionVolatilityStructure>(
-                           new SwaptionConstantVolatility(today,0.2,
-                                                          Actual365Fixed())));
+            boost::shared_ptr<SwaptionVolatilityStructure>(new
+                ConstantSwaptionVol(today, 0.2, Actual365Fixed(),
+                                    NullCalendar(), Following)));
         Handle<Quote> meanReversionQuote(
                              boost::shared_ptr<Quote>(new SimpleQuote(0.01)));
-        cmspricer = boost::shared_ptr<CmsCouponPricer>(
-                       new AnalyticHaganPricer(swaptionVolatilityStructure,
-                                                  GFunctionFactory::Standard,
-                                                  meanReversionQuote));
+        cmspricer = boost::shared_ptr<CmsCouponPricer>(new
+            AnalyticHaganPricer(swaptionVolatilityStructure,
+                                GFunctionFactory::Standard,
+                                meanReversionQuote));
     }
 };
 

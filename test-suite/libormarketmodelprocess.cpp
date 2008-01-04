@@ -121,9 +121,9 @@ void LiborMarketModelProcessTest::testInitialisation() {
     boost::shared_ptr<OptionletVolatilityStructure> capletVol(new
         ConstantOptionletVol(termStructure->referenceDate(),
                              0.2,
+                             termStructure->dayCounter(),
                              termStructure->calendar(),
-                             Following,
-                             termStructure->dayCounter()));
+                             Following));
 
     Calendar calendar = index->fixingCalendar();
 

@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2004, 2005, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -36,27 +37,27 @@ namespace QuantLib {
         //! floating reference date, floating market data
         ConstantOptionletVol(Natural settlementDays,
                              const Handle<Quote>& volatility,
+                             const DayCounter& dc,
                              const Calendar& cal,
-                             BusinessDayConvention bdc = Following,
-                             const DayCounter& dc = Actual365Fixed());
+                             BusinessDayConvention bdc = Following);
         //! fixed reference date, floating market data
         ConstantOptionletVol(const Date& referenceDate,
                              const Handle<Quote>& volatility,
+                             const DayCounter& dc,
                              const Calendar& cal,
-                             BusinessDayConvention bdc = Following,
-                             const DayCounter& dc = Actual365Fixed());
+                             BusinessDayConvention bdc = Following);
         //! floating reference date, fixed market data
         ConstantOptionletVol(Natural settlementDays,
                              Volatility volatility,
+                             const DayCounter& dc,
                              const Calendar& cal,
-                             BusinessDayConvention bdc = Following,
-                             const DayCounter& dc = Actual365Fixed());
+                             BusinessDayConvention bdc = Following);
         //! fixed reference date, fixed market data
         ConstantOptionletVol(const Date& referenceDate,
                              Volatility volatility,
+                             const DayCounter& dc,
                              const Calendar& cal,
-                             BusinessDayConvention bdc = Following,
-                             const DayCounter& dc = Actual365Fixed());
+                             BusinessDayConvention bdc = Following);
         //! \name TermStructure interface
         //@{
         Date maxDate() const;
@@ -67,12 +68,10 @@ namespace QuantLib {
         Real maxStrike() const;
         //@}
       protected:
-        boost::shared_ptr<SmileSection> smileSectionImpl(const Date&) const;
-        boost::shared_ptr<SmileSection> smileSectionImpl(Time optionT) const;
-        Volatility volatilityImpl(const Date& optionDate,
-                                  Rate strike) const;
-        Volatility volatilityImpl(Time optionTime,
-                                  Rate strike) const;
+        boost::shared_ptr<SmileSection> smileSectionImpl(const Date& d) const;
+        boost::shared_ptr<SmileSection> smileSectionImpl(Time) const;
+        Volatility volatilityImpl(Time,
+                                  Rate) const;
       private:
         Handle<Quote> volatility_;
     };

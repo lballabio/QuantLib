@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
@@ -32,10 +33,8 @@ namespace QuantLib {
 
     class SpreadedOptionletVol : public OptionletVolatilityStructure {
       public:
-        SpreadedOptionletVol(
-            const Handle<OptionletVolatilityStructure>& underlyingVolStructure,
-            const Handle<Quote>& spread);
-      protected:
+        SpreadedOptionletVol(const Handle<OptionletVolatilityStructure>&,
+                             const Handle<Quote>& spread);
         // All virtual methods of base classes must be forwarded
         //! \name TermStructure interface
         //@{
@@ -50,22 +49,51 @@ namespace QuantLib {
         //@{
         Rate minStrike() const;
         Rate maxStrike() const;
-        BusinessDayConvention businessDayConvention() const;
         //@}
+      protected:
         //! \name OptionletVolatilityStructure interface
         //@{
-        boost::shared_ptr<SmileSection> smileSectionImpl(const Date&) const;
+        boost::shared_ptr<SmileSection> smileSectionImpl(const Date& d) const;
         boost::shared_ptr<SmileSection> smileSectionImpl(Time optionT) const;
-        Volatility volatilityImpl(const Date& optionDate,
-                                  Rate strike) const;
         Volatility volatilityImpl(Time optionTime,
                                   Rate strike) const;
         //@}
-
-    private:
-        const Handle<OptionletVolatilityStructure> underlyingVolStructure_;
+      private:
+        const Handle<OptionletVolatilityStructure> baseVol_;
         const Handle<Quote> spread_;
     };
+
+    inline DayCounter SpreadedOptionletVol::dayCounter() const {
+        return baseVol_->dayCounter();
+    }
+    
+    inline Date SpreadedOptionletVol::maxDate() const {
+        return baseVol_->maxDate();
+    }
+
+    inline Time SpreadedOptionletVol::maxTime() const {
+        return baseVol_->maxTime();
+    }
+        
+    inline const Date& SpreadedOptionletVol::referenceDate() const {
+        return baseVol_->referenceDate();
+    }
+        
+    inline Calendar SpreadedOptionletVol::calendar() const {
+        return baseVol_->calendar();
+    }
+        
+    inline Natural SpreadedOptionletVol::settlementDays() const {
+        return baseVol_->settlementDays();
+    }
+
+    inline Rate SpreadedOptionletVol::minStrike() const {
+        return baseVol_->minStrike();
+    }
+    
+    inline Rate SpreadedOptionletVol::maxStrike() const {
+        return baseVol_->maxStrike();
+    }
 
 }
 
