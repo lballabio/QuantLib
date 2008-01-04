@@ -26,9 +26,13 @@
 
 #include <ql/termstructures/volatility/optionlet/optionletvolatilitystructure.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
+#include <ql/termstructures/volatility/flatsmilesection.hpp>
 
 namespace QuantLib {
 
+    /*! \deprecated use the StrippedOptionletAdapter of a
+                    StrippedOptionlet instance
+    */
     class CapletVarianceCurve : public OptionletVolatilityStructure {
       public:
         CapletVarianceCurve(const Date& referenceDate,
@@ -42,13 +46,10 @@ namespace QuantLib {
         //@}
         Real minStrike() const;
         Real maxStrike() const;
-        //template <class Interpolator>
-        //void setInterpolation(const Interpolator& i = Interpolator()) {
-        //    blackCurve_.setInterpolation(i);
-        //    notifyObservers();
-        //}
       protected:
-        Volatility volatilityImpl(Time t, Rate) const;
+        boost::shared_ptr<SmileSection> smileSectionImpl(Time t) const;
+        Volatility volatilityImpl(Time t,
+                                  Rate) const;
       private:
         BlackVarianceCurve blackCurve_;
     };
@@ -75,6 +76,16 @@ namespace QuantLib {
 
     inline Real CapletVarianceCurve::maxStrike() const {
         return blackCurve_.maxStrike();
+    }
+
+    inline boost::shared_ptr<SmileSection>
+    CapletVarianceCurve::smileSectionImpl(Time t) const {
+        // dummy strike
+        Volatility atmVol = blackCurve_.blackVol(t, 0.05, true);
+        return boost::shared_ptr<SmileSection>(new
+            FlatSmileSection(t,
+                             atmVol,
+                             dayCounter()));
     }
 
     inline

@@ -28,21 +28,21 @@ using std::vector;
 namespace QuantLib {
 
     StrippedOptionlet::StrippedOptionlet(
-                const Date& referenceDate,
-                const Calendar& calendar,
-                Natural settlementDays,
-                BusinessDayConvention businessDayConvention,
-                const boost::shared_ptr<IborIndex>& index,
-                const vector<Period>& optionletTenors,
-                const vector<Rate>& strikes,
-                const vector<vector<Handle<Quote> > >& optionletVols,
-                const DayCounter& dc)
+                        const Date& referenceDate,
+                        Natural settlementDays,
+                        const boost::shared_ptr<IborIndex>& iborIndex,
+                        const vector<Period>& optionletTenors,
+                        const vector<Rate>& strikes,
+                        const vector<vector<Handle<Quote> > >& v,
+                        const Calendar& calendar,
+                        BusinessDayConvention bdc,
+                        const DayCounter& dc)
     : referenceDate_(referenceDate),
       calendar_(calendar),
       settlementDays_(settlementDays),
-      businessDayConvention_(businessDayConvention),
+      businessDayConvention_(bdc),
       dc_(dc),
-      index_(index),
+      iborIndex_(iborIndex),
       optionletTenors_(optionletTenors),
       nOptionletTenors_(optionletTenors.size()),
       optionletDates_(nOptionletTenors_),
@@ -50,7 +50,7 @@ namespace QuantLib {
       optionletAtmRates_(nOptionletTenors_),
       optionletStrikes_(nOptionletTenors_, strikes),
       nStrikes_(strikes.size()),
-      optionletVolQuotes_(optionletVols),
+      optionletVolQuotes_(v),
       optionletVolatilities_(nOptionletTenors_, vector<Volatility>(nStrikes_))
     {
         checkInputs();
@@ -139,7 +139,7 @@ namespace QuantLib {
     const vector<Time>& StrippedOptionlet::atmOptionletRates() const {
         calculate();
         for (Size i=0; i<nOptionletTenors_; ++i)
-            optionletAtmRates_[i] = index_->fixing(optionletDates_[i], true);
+            optionletAtmRates_[i] = iborIndex_->fixing(optionletDates_[i], true);
         return optionletAtmRates_;
     }
 

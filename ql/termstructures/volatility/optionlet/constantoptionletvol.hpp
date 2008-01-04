@@ -25,36 +25,38 @@
 #define quantlib_caplet_constant_volatility_hpp
 
 #include <ql/termstructures/volatility/optionlet/optionletvolatilitystructure.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/time/calendars/nullcalendar.hpp>
 
 namespace QuantLib {
+
+    class Quote;
 
     //! Constant caplet volatility, no time-strike dependence
     class ConstantOptionletVol : public OptionletVolatilityStructure {
       public:
         //! floating reference date, floating market data
-        ConstantOptionletVol(const Handle<Quote>& volatility,
+        ConstantOptionletVol(Natural settlementDays,
+                             const Handle<Quote>& volatility,
                              const Calendar& cal,
-                             const DayCounter& dayCounter = Actual365Fixed(),
-                             BusinessDayConvention bdc = Following);
+                             BusinessDayConvention bdc = Following,
+                             const DayCounter& dc = Actual365Fixed());
         //! fixed reference date, floating market data
         ConstantOptionletVol(const Date& referenceDate,
                              const Handle<Quote>& volatility,
                              const Calendar& cal,
-                             const DayCounter& dayCounter = Actual365Fixed(),
-                             BusinessDayConvention bdc = Following);
+                             BusinessDayConvention bdc = Following,
+                             const DayCounter& dc = Actual365Fixed());
         //! floating reference date, fixed market data
-        ConstantOptionletVol(Volatility volatility,
+        ConstantOptionletVol(Natural settlementDays,
+                             Volatility volatility,
                              const Calendar& cal,
-                             const DayCounter& dayCounter = Actual365Fixed(),
-                             BusinessDayConvention bdc = Following);
+                             BusinessDayConvention bdc = Following,
+                             const DayCounter& dc = Actual365Fixed());
         //! fixed reference date, fixed market data
         ConstantOptionletVol(const Date& referenceDate,
                              Volatility volatility,
                              const Calendar& cal,
-                             const DayCounter& dayCounter = Actual365Fixed(),
-                             BusinessDayConvention bdc = Following);
+                             BusinessDayConvention bdc = Following,
+                             const DayCounter& dc = Actual365Fixed());
         //! \name TermStructure interface
         //@{
         Date maxDate() const;
@@ -65,7 +67,12 @@ namespace QuantLib {
         Real maxStrike() const;
         //@}
       protected:
-        Volatility volatilityImpl(Time t, Rate) const;
+        boost::shared_ptr<SmileSection> smileSectionImpl(const Date&) const;
+        boost::shared_ptr<SmileSection> smileSectionImpl(Time optionT) const;
+        Volatility volatilityImpl(const Date& optionDate,
+                                  Rate strike) const;
+        Volatility volatilityImpl(Time optionTime,
+                                  Rate strike) const;
       private:
         Handle<Quote> volatility_;
     };
@@ -83,11 +90,6 @@ namespace QuantLib {
 
     inline Real ConstantOptionletVol::maxStrike() const {
         return QL_MAX_REAL;
-    }
-
-    inline Volatility ConstantOptionletVol::volatilityImpl(Time,
-                                                           Rate) const {
-        return volatility_->value();
     }
 
 }

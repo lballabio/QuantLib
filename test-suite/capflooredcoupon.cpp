@@ -119,10 +119,10 @@ Leg makeCapFlooredLeg(const Date& startDate,
     Date endDate = calendar_.advance(startDate,length,Years,convention_);
     Schedule schedule(startDate,endDate,Period(frequency_),calendar_,
                       convention_,convention_, DateGeneration::Forward, false);
-    Handle<OptionletVolatilityStructure> vol;
-    vol = Handle<OptionletVolatilityStructure>(
-          boost::shared_ptr<OptionletVolatilityStructure>(new
-            ConstantOptionletVol(volatility, calendar_, Actual365Fixed())));
+    Handle<OptionletVolatilityStructure> vol(
+        boost::shared_ptr<OptionletVolatilityStructure>(new
+            ConstantOptionletVol(0, volatility, calendar_, Following,
+                                                           Actual365Fixed())));
 
     boost::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer(vol));
     std::vector<Rate> gearingVector(length_, gearing);

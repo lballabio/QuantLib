@@ -29,6 +29,8 @@
 
 namespace QuantLib {
 
+    class SmileSection;
+
     //! Optionlet (caplet/floorlet) volatility structure
     /*! This class is purely abstract and defines the interface of
         concrete structures which will be derived from this one.
@@ -62,94 +64,150 @@ namespace QuantLib {
         virtual ~OptionletVolatilityStructure() {}
         //! \name Volatility and Variance
         //@{
-        //! returns the volatility for a given exercise date and strike rate
-        Volatility volatility(const Date& exerciseDate,
-                              Rate strike,
-                              bool extrapolate = false) const;
         //! returns the volatility for a given option tenor and strike rate
         Volatility volatility(const Period& optionTenor,
                               Rate strike,
                               bool extrapolate = false) const;
-        //! returns the volatility for a given exercise time and strike rate
-        Volatility volatility(Time t,
+        //! returns the volatility for a given option date and strike rate
+        Volatility volatility(const Date& optionDate,
                               Rate strike,
                               bool extrapolate = false) const;
-        //! returns the Black variance for a given exercise date and strike rate
-        Real blackVariance(const Date& exerciseDate,
-                           Rate strike,
-                           bool extrapolate = false) const;
+        //! returns the volatility for a given option time and strike rate
+        Volatility volatility(Time optionTime,
+                              Rate strike,
+                              bool extrapolate = false) const;
+
         //! returns the Black variance for a given option tenor and strike rate
         Volatility blackVariance(const Period& optionTenor,
                                  Rate strike,
                                  bool extrapolate = false) const;
-        //! returns the Black variance for a given start time and strike rate
-        Real blackVariance(Time t,
+        //! returns the Black variance for a given option date and strike rate
+        Real blackVariance(const Date& optionDate,
                            Rate strike,
                            bool extrapolate = false) const;
+        //! returns the Black variance for a given option time and strike rate
+        Real blackVariance(Time optionTime,
+                           Rate strike,
+                           bool extrapolate = false) const;
+
+        //! returns the smile for a given option tenor
+        boost::shared_ptr<SmileSection> smileSection(const Period&,
+                                                     bool extr = false) const;
+        //! returns the smile for a given option date
+        boost::shared_ptr<SmileSection> smileSection(const Date& optionDate,
+                                                     bool extr = false) const;
+        //! returns the smile for a given option time
+        boost::shared_ptr<SmileSection> smileSection(Time optionTime,
+                                                     bool extr = false) const;
         //@}
       protected:
+        boost::shared_ptr<SmileSection> smileSectionImpl(
+                                                const Date& optionDate) const;
+        //! implements the actual smile calculation in derived classes
+        virtual boost::shared_ptr<SmileSection> smileSectionImpl(
+                                                    Time optionTime) const = 0;
+        Volatility volatilityImpl(const Date& optionDate,
+                                  Rate strike) const;
         //! implements the actual volatility calculation in derived classes
-        virtual Volatility volatilityImpl(Time length,
+        virtual Volatility volatilityImpl(Time optionTime,
                                           Rate strike) const = 0;
     };
 
-
     // inline definitions
 
-    inline Volatility
-    OptionletVolatilityStructure::volatility(const Date& start,
-                                             Rate strike,
-                                             bool extrapolate) const {
-        checkRange(start, extrapolate);
-        checkStrike(strike, extrapolate);
-        Time t = timeFromReference(start);
-        return volatilityImpl(t, strike);
-    }
-
-    inline Volatility
-    OptionletVolatilityStructure::volatility(Time t,
-                                             Rate strike,
-                                             bool extrapolate) const {
-        checkRange(t, extrapolate);
-        checkStrike(strike, extrapolate);
-        return volatilityImpl(t, strike);
-    }
-
+    // Period-based methods convert Period to Date and then
+    // use the equivalent Date-based methods
     inline Volatility
     OptionletVolatilityStructure::volatility(const Period& optionTenor,
                                              Rate strike,
                                              bool extrapolate) const {
-        Date exerciseDate = optionDateFromTenor(optionTenor);
-        return volatility(exerciseDate, strike, extrapolate);
+        Date optionDate = optionDateFromTenor(optionTenor);
+        checkRange(optionDate, extrapolate);
+        checkStrike(strike, extrapolate);
+        //Time t = timeFromReference(start);
+        //return volatilityImpl(t, strike);
+        return volatility(optionDate, strike, extrapolate);
     }
 
-    inline Volatility
-    OptionletVolatilityStructure::blackVariance(const Date& start,
+    inline Real
+    OptionletVolatilityStructure::blackVariance(const Period& optionTenor,
                                                 Rate strike,
                                                 bool extrapolate) const {
-        checkRange(start, extrapolate);
-        checkStrike(strike, extrapolate);
-        Time t = timeFromReference(start);
-        Volatility vol = volatilityImpl(t, strike);
-        return vol*vol*t;
+        Date optionDate = optionDateFromTenor(optionTenor);
+        return blackVariance(optionDate, strike, extrapolate);
     }
 
-    inline Volatility
-    OptionletVolatilityStructure::blackVariance(Time t,
+    inline boost::shared_ptr<SmileSection>
+    OptionletVolatilityStructure::smileSection(const Period& optionTenor,
+                                               bool extrapolate) const {
+        Date optionDate = optionDateFromTenor(optionTenor);
+        return smileSection(optionDate, extrapolate);
+    }
+
+    // blackVariance methods rely on volatility methods
+    inline Real
+    OptionletVolatilityStructure::blackVariance(const Date& optionDate,
                                                 Rate strike,
                                                 bool extrapolate) const {
-        checkRange(t, extrapolate);
+        Volatility v = volatility(optionDate, strike, extrapolate);
+        Time t = timeFromReference(optionDate);
+        return v*v*t;
+    }
+
+    inline Real
+    OptionletVolatilityStructure::blackVariance(Time optionTime,
+                                                Rate strike,
+                                                bool extrapolate) const {
+        Volatility v = volatility(optionTime, strike, extrapolate);
+        return v*v*optionTime;
+    }
+
+    // relying on xxxImpl methods
+
+    inline Volatility
+    OptionletVolatilityStructure::volatility(const Date& optionDate,
+                                             Rate strike,
+                                             bool extrapolate) const {
+        checkRange(optionDate, extrapolate);
         checkStrike(strike, extrapolate);
-        Volatility vol = volatilityImpl(t, strike);
-        return vol*vol*t;
+        return volatilityImpl(optionDate, strike);
     }
 
     inline Volatility
-    OptionletVolatilityStructure::blackVariance(const Period& optionT,
-                                                Rate strike,
-                                                bool extrap) const {
-        Date exerciseDate = optionDateFromTenor(optionT);
-        return blackVariance(exerciseDate, strike, extrap);
+    OptionletVolatilityStructure::volatility(Time optionTime,
+                                             Rate strike,
+                                             bool extrapolate) const {
+        checkRange(optionTime, extrapolate);
+        checkStrike(strike, extrapolate);
+        return volatilityImpl(optionTime, strike);
+    }
+
+    inline boost::shared_ptr<SmileSection>
+    OptionletVolatilityStructure::smileSection(const Date& optionDate,
+                                               bool extrapolate) const {
+        checkRange(optionDate, extrapolate);
+        return smileSectionImpl(optionDate);
+    }
+
+    inline boost::shared_ptr<SmileSection>
+    OptionletVolatilityStructure::smileSection(Time optionTime,
+                                               bool extrapolate) const {
+        checkRange(optionTime, extrapolate);
+        return smileSectionImpl(optionTime);
+    };
+
+    // default implementation of Date-based xxxImpl methods
+    // relying on the equivalent Time-based methods
+
+    inline boost::shared_ptr<SmileSection>
+    OptionletVolatilityStructure::smileSectionImpl(const Date& optionDate) const {
+        return smileSectionImpl(timeFromReference(optionDate));
+    }
+
+    inline Volatility
+    OptionletVolatilityStructure::volatilityImpl(const Date& optionDate,
+                                                 Rate strike) const {
+        return volatilityImpl(timeFromReference(optionDate), strike);
     }
 
 }

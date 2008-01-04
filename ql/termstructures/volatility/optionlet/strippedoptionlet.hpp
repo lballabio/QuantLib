@@ -36,15 +36,14 @@ namespace QuantLib {
     class StrippedOptionlet : public StrippedOptionletBase {
       public:
         StrippedOptionlet(const Date& referenceDate,
-                          const Calendar& calendar,
                           Natural settlementDays,
-                          BusinessDayConvention businessDayConvention,
-                          const boost::shared_ptr<IborIndex>& index,
+                          const boost::shared_ptr<IborIndex>& iborIndex,
                           const std::vector<Period>& optionletTenors,
                           const std::vector<Rate>& strikes,
                           const std::vector<std::vector<Handle<Quote> > >&,
-                          const DayCounter& dc = Actual365Fixed()
-                          );
+                          const Calendar& calendar,
+                          BusinessDayConvention bdc = Following,
+                          const DayCounter& dc = Actual365Fixed());
 
         //! \name StrippedOptionletBase interface
         //@{
@@ -75,7 +74,7 @@ namespace QuantLib {
         Natural settlementDays_;
         BusinessDayConvention businessDayConvention_;
         DayCounter dc_;
-        boost::shared_ptr<IborIndex> index_;
+        boost::shared_ptr<IborIndex> iborIndex_;
 
         std::vector<Period> optionletTenors_;
         Size nOptionletTenors_;

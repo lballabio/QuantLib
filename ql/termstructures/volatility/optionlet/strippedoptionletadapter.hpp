@@ -60,6 +60,8 @@ namespace QuantLib {
       protected:
         //! \name OptionletVolatilityStructure interface
         //@{
+        boost::shared_ptr<SmileSection> smileSectionImpl(
+                                                Time optionTime) const;
         Volatility volatilityImpl(Time length,
                                   Rate strike) const;
         //@} 

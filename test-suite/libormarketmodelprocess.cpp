@@ -122,6 +122,7 @@ void LiborMarketModelProcessTest::testInitialisation() {
         ConstantOptionletVol(termStructure->referenceDate(),
                              0.2,
                              termStructure->calendar(),
+                             Following,
                              termStructure->dayCounter()));
 
     Calendar calendar = index->fixingCalendar();

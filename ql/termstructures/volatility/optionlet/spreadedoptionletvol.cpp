@@ -18,6 +18,8 @@
 */
 
 #include <ql/termstructures/volatility/optionlet/spreadedoptionletvol.hpp>
+#include <ql/termstructures/volatility/spreadedsmilesection.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 
@@ -32,13 +34,35 @@ namespace QuantLib {
       spread_(spread) {
           registerWith(underlyingVolStructure_);
           registerWith(spread_);
-          enableExtrapolation(underlyingVol->allowsExtrapolation());
+          //enableExtrapolation(underlyingVol->allowsExtrapolation());
     }
 
-    Volatility SpreadedOptionletVol::volatilityImpl(Time length,
+    Volatility SpreadedOptionletVol::volatilityImpl(const Date& optionDate,
                                                     Rate strike) const {
-        return underlyingVolStructure_->volatility(length, strike)
-                                                        +spread_->value();
+        return underlyingVolStructure_->volatility(optionDate,
+                                                   strike)+spread_->value();
+    }
+
+    Volatility SpreadedOptionletVol::volatilityImpl(Time optionTime,
+                                                    Rate strike) const {
+        return underlyingVolStructure_->volatility(optionTime,
+                                                   strike)+spread_->value();
+    }
+
+    boost::shared_ptr<SmileSection>
+    SpreadedOptionletVol::smileSectionImpl(const Date& optionDate) const {
+        boost::shared_ptr<SmileSection> underlyingSmile =
+            underlyingVolStructure_->smileSection(optionDate);
+        return boost::shared_ptr<SmileSection>(new
+            SpreadedSmileSection(underlyingSmile, spread_));
+    }
+
+    boost::shared_ptr<SmileSection>
+    SpreadedOptionletVol::smileSectionImpl(Time optionTime) const {
+        boost::shared_ptr<SmileSection> underlyingSmile =
+            underlyingVolStructure_->smileSection(optionTime);
+        return boost::shared_ptr<SmileSection>(new
+            SpreadedSmileSection(underlyingSmile, spread_));
     }
 
     Rate SpreadedOptionletVol::minStrike() const {
@@ -47,6 +71,11 @@ namespace QuantLib {
     
     Rate SpreadedOptionletVol::maxStrike() const {
         return underlyingVolStructure_->maxStrike();
+    }
+
+    BusinessDayConvention
+    SpreadedOptionletVol::businessDayConvention() const {
+        return underlyingVolStructure_->businessDayConvention();
     }
 
     DayCounter SpreadedOptionletVol::dayCounter() const {

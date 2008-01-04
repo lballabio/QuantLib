@@ -38,6 +38,11 @@ namespace QuantLib {
         registerWith(optionletStripper_);
     }
 
+    boost::shared_ptr<SmileSection>
+    StrippedOptionletAdapter::smileSectionImpl(Time length) const {
+        QL_FAIL("Not implemented yet");
+    }
+
     Volatility StrippedOptionletAdapter::volatilityImpl(Time length,
                                                         Rate strike) const {
         calculate();

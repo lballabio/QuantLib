@@ -32,7 +32,9 @@ namespace QuantLib {
                               const DayCounter& dc)
     : termStructure_(termStructure),
       volatility_(boost::shared_ptr<OptionletVolatilityStructure>(new
-                        ConstantOptionletVol(volatility, Calendar(), dc))) {
+                        ConstantOptionletVol(0, volatility,
+                                             NullCalendar(), Following,
+                                             dc))) {
         registerWith(termStructure_);
     }
 
@@ -42,7 +44,9 @@ namespace QuantLib {
                               const DayCounter& dc)
     : termStructure_(termStructure),
       volatility_(boost::shared_ptr<OptionletVolatilityStructure>(new
-                        ConstantOptionletVol(volatility, Calendar(), dc))) {
+                        ConstantOptionletVol(0, volatility,
+                                             NullCalendar(), Following,
+                                             dc))) {
         registerWith(termStructure_);
         registerWith(volatility_);
     }

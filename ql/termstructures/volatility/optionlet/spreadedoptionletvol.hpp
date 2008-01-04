@@ -25,16 +25,16 @@
 #define quantlib_spreaded_caplet_volstructure_h
 
 #include <ql/termstructures/volatility/optionlet/optionletvolatilitystructure.hpp>
-#include <ql/quote.hpp>
 
 namespace QuantLib {
+
+    class Quote;
 
     class SpreadedOptionletVol : public OptionletVolatilityStructure {
       public:
         SpreadedOptionletVol(
             const Handle<OptionletVolatilityStructure>& underlyingVolStructure,
             const Handle<Quote>& spread);
-
       protected:
         // All virtual methods of base classes must be forwarded
         //! \name TermStructure interface
@@ -51,15 +51,20 @@ namespace QuantLib {
         Rate minStrike() const;
         Rate maxStrike() const;
         BusinessDayConvention businessDayConvention() const;
-
-        Volatility volatilityImpl(Time length,
+        //@}
+        //! \name OptionletVolatilityStructure interface
+        //@{
+        boost::shared_ptr<SmileSection> smileSectionImpl(const Date&) const;
+        boost::shared_ptr<SmileSection> smileSectionImpl(Time optionT) const;
+        Volatility volatilityImpl(const Date& optionDate,
+                                  Rate strike) const;
+        Volatility volatilityImpl(Time optionTime,
                                   Rate strike) const;
         //@}
 
     private:
         const Handle<OptionletVolatilityStructure> underlyingVolStructure_;
         const Handle<Quote> spread_;
-
     };
 
 }
