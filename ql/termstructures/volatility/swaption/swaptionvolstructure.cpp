@@ -57,7 +57,7 @@ namespace QuantLib {
         Date start = referenceDate(); // for consistency
         Date end = start + p;
         QL_REQUIRE(end>start,
-                   "negative swap tenor (" << p << ") given");
+                   "non-positive swap tenor (" << p << ") given");
         return dayCounter().yearFraction(start, end);
     }
 
