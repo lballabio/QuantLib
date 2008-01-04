@@ -194,7 +194,7 @@ namespace QuantLib {
                                                bool extrapolate) const {
         checkRange(optionTime, extrapolate);
         return smileSectionImpl(optionTime);
-    };
+    }
 
     // default implementation of Date-based xxxImpl methods
     // relying on the equivalent Time-based methods
