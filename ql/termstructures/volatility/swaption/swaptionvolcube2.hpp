@@ -39,10 +39,10 @@ namespace QuantLib {
             const std::vector<std::vector<Handle<Quote> > >& volSpreads,
             const boost::shared_ptr<SwapIndex>& swapIndexBase,
             bool vegaWeightedSmileFit);
-        ////! \name LazyObject interface
-        ////@{
+        //! \name LazyObject interface
+        //@{
         void performCalculations() const;
-        ////@}
+        //@}
         //! \name SwaptionVolatilityCube inspectors
         //@{
         const Matrix& volSpreads(Size i) const { return volSpreadsMatrix_[i]; }
