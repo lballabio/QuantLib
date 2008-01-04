@@ -56,7 +56,6 @@ namespace QuantLib {
         //! \name SwaptionConstantVolatility interface
         //@{
         const Period& maxSwapTenor() const;
-        Time maxSwapLength() const;
         Real minStrike() const;
         Real maxStrike() const;
       protected:
@@ -76,10 +75,6 @@ namespace QuantLib {
 
     inline const Period& SwaptionConstantVolatility::maxSwapTenor() const {
         return maxSwapTenor_;
-    }
-
-    inline Time SwaptionConstantVolatility::maxSwapLength() const {
-        return QL_MAX_REAL;
     }
 
     inline Real SwaptionConstantVolatility::minStrike() const {

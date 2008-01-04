@@ -76,10 +76,6 @@ namespace QuantLib {
         return underlyingVolStructure_->maxStrike();
     }
 
-    Time SpreadedSwaptionVolatilityStructure::maxSwapLength() const {
-        return underlyingVolStructure_->maxSwapLength();
-    }
-
     BusinessDayConvention
     SpreadedSwaptionVolatilityStructure::businessDayConvention() const {
         return underlyingVolStructure_->businessDayConvention();

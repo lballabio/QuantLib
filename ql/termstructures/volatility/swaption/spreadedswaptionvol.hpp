@@ -51,7 +51,6 @@ namespace QuantLib {
         const Period& maxSwapTenor() const;
         Rate minStrike() const;
         Rate maxStrike() const;
-        Time maxSwapLength() const;
         BusinessDayConvention businessDayConvention() const;
 
         Volatility volatilityImpl(Time optionTime,

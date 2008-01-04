@@ -45,11 +45,6 @@ namespace QuantLib {
     : VolatilityTermStructure(settlementDays, calendar, bdc, dc) {}
 
 
-    Time SwaptionVolatilityStructure::maxSwapLength() const {
-        Date d = optionDateFromTenor(maxSwapTenor());
-        return timeFromReference(d);
-    }
-
     Time SwaptionVolatilityStructure::convertSwapTenor(//const Date& d,
                                                        const Period& p) const {
         // in SwaptionVolatilityStructure it was

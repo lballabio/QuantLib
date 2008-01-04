@@ -115,7 +115,7 @@ namespace QuantLib {
         //! the largest length for which the term structure can return vols
         virtual const Period& maxSwapTenor() const = 0;
         //! the largest swapLength for which the term structure can return vols
-        virtual Time maxSwapLength() const;
+        Time maxSwapLength() const;
         //@}
         //! implements the conversion between swap tenor and time
         Time convertSwapTenor(//const Date& optionDate,
@@ -247,6 +247,10 @@ namespace QuantLib {
         return volatilityImpl(timeFromReference(optionDate),
                               convertSwapTenor(swapTenor),
                               strike);
+    }
+
+    inline Time SwaptionVolatilityStructure::maxSwapLength() const {
+        return convertSwapTenor(maxSwapTenor());
     }
 
 }
