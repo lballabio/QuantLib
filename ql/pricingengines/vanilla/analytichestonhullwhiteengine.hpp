@@ -32,11 +32,11 @@
 namespace QuantLib {
 
     //! Analytic Heston engine incl. stochastic interest rates
-    /*! this class prices a european options under the following processes
+    /*! This class is pricing a european options under the following processes
 
         \f[
         \begin{array}{rcl}
-        dS(t, S)  &=& (r-d-\lambda m) S dt +\sqrt{v} S dW_1 + (e^J - 1) S dN \\
+        dS(t, S)  &=& (r-d) S dt +\sqrt{v} S dW_1 \\
         dv(t, S)  &=& \kappa (\theta - v) dt + \sigma \sqrt{v} dW_2 \\
         dr(t)     &=& (\theta(t) - a r) dt + \eta dW_3 \\
         dW_1 dW_2 &=& \rho dt \\
