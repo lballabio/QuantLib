@@ -33,8 +33,8 @@ namespace QuantLib {
     class SmileSection;
 
     //! %Swaption-volatility structure
-    /*! This class is purely abstract and defines the interface of concrete
-        swaption volatility structures which will be derived from this one.
+    /*! This abstract class defines the interface of concrete swaption
+        volatility structures which will be derived from this one.
     */
     class SwaptionVolatilityStructure : public VolatilityTermStructure {
       public:
@@ -118,10 +118,8 @@ namespace QuantLib {
         Time maxSwapLength() const;
         //@}
         //! implements the conversion between swap tenor and time
-        Time convertSwapTenor(//const Date& optionDate,
-                              const Period& swapTenor) const;
+        Time convertSwapTenor(const Period& swapTenor) const;
       protected:
-        // overloaded (at least) in SwaptionVolCube2
         virtual boost::shared_ptr<SmileSection> smileSectionImpl(
                                                 const Date& optionDate,
                                                 const Period& swapTenor) const;

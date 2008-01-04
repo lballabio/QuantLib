@@ -73,7 +73,7 @@ namespace QuantLib {
 
     void SwaptionVolatilityStructure::checkSwapTenor(Time swapLength,
                                                      bool extrapolate) const {
-        QL_REQUIRE(swapLength > 0,
+        QL_REQUIRE(swapLength > 0.0,
                    "non-positive swap length (" << swapLength << ") given");
         QL_REQUIRE(extrapolate || allowsExtrapolation() ||
                    swapLength <= maxSwapLength(),
