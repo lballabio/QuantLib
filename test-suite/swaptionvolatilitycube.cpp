@@ -99,17 +99,17 @@ void makeVolSpreadsTest(const SwaptionVolatilityCube& volCube,
               Volatility expVolSpread = cube_.volSpreads[i*cube_.tenors.swaps.size()+j][k];
               Volatility error = std::abs(expVolSpread-spread);
               if (error>tolerance)
-                  BOOST_ERROR("\nrecovery of smile vol spreads failed:"
-                              "\n    option tenor = " << cube_.tenors.options[i] <<
-                              "\n      swap tenor = " << cube_.tenors.swaps[j] <<
-                              "\n      atm strike = " << io::rate(atmStrike) <<
-                              "\n   strike spread = " << io::rate(cube_.strikeSpreads[k]) <<
-                              "\n         atm vol = " << io::volatility(atmVol) <<
-                              "\n      smiled vol = " << io::volatility(vol) <<
-                              "\n      vol spread = " << io::volatility(spread) <<
-                              "\n exp. vol spread = " << io::volatility(expVolSpread) <<
-                              "\n           error = " << io::volatility(error) <<
-                              "\n       tolerance = " << tolerance);
+                  BOOST_FAIL("\nrecovery of smile vol spreads failed:"
+                             "\n    option tenor = " << cube_.tenors.options[i] <<
+                             "\n      swap tenor = " << cube_.tenors.swaps[j] <<
+                             "\n      atm strike = " << io::rate(atmStrike) <<
+                             "\n   strike spread = " << io::rate(cube_.strikeSpreads[k]) <<
+                             "\n         atm vol = " << io::volatility(atmVol) <<
+                             "\n      smiled vol = " << io::volatility(vol) <<
+                             "\n      vol spread = " << io::volatility(spread) <<
+                             "\n exp. vol spread = " << io::volatility(expVolSpread) <<
+                             "\n           error = " << io::volatility(error) <<
+                             "\n       tolerance = " << tolerance);
           }
       }
     }
