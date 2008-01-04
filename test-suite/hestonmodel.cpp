@@ -445,7 +445,7 @@ void HestonModelTest::testMcVsCached() {
 
 void HestonModelTest::testKahlJaeckelCase() {
     BOOST_MESSAGE(
-          "Testing Monte Carlo Heston engine for the Kahl-Jäckel example...");
+          "Testing Monte Carlo Heston engine for the Kahl-Jaeckel example...");
 
     /* Example taken from Wilmott mag (Sept. 2005).
        "Not-so-complex logarithms in the Heston model",
