@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Klaus Spanderen
+ Copyright (C) 2007, 2008 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -85,7 +85,19 @@ namespace QuantLib {
         Size size_, factors_, modelFactors_;
         std::vector<Size> vsize_, vfactors_;
 
-        mutable std::map<Time, Matrix> correlationCache_;
+        struct CachingKey {
+            CachingKey(const Time t0, const Time dt)
+                : t0_(t0), dt_(dt) {}
+
+            bool operator<(const CachingKey& key) const {
+                return   t0_ < key.t0_ 
+                    || ( t0_ == key.t0_ && dt_ < key.dt_); 
+            }
+            Time t0_;
+            Time dt_;
+        };
+
+        mutable std::map<CachingKey, Matrix> correlationCache_;
     };
 
 }

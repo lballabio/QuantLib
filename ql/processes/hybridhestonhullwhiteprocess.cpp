@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Klaus Spanderen
+ Copyright (C) 2007, 2008 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,23 +32,11 @@ namespace QuantLib {
         static std::vector<boost::shared_ptr<StochasticProcess> >
         buildProcessList(
           const boost::shared_ptr<HestonProcess> & hestonProcess,
-          const boost::shared_ptr<HullWhiteForwardProcess> & hullWhiteProcess) {
-
+          const boost::shared_ptr<HullWhiteForwardProcess> & hullWhiteProcess)
+        {
             std::vector<boost::shared_ptr<StochasticProcess> > retVal;
 
             retVal.push_back(hestonProcess);
-
-            // copy of the risk free term structure for the control variate
-            Handle<YieldTermStructure> rf(*(hestonProcess->riskFreeRate()));
-            retVal.push_back(boost::shared_ptr<HestonProcess>(
-                new HestonProcess(rf,
-                                  hestonProcess->dividendYield(),
-                                  hestonProcess->s0(),
-                                  hestonProcess->v0(),
-                                  hestonProcess->kappa(),
-                                  hestonProcess->theta(),
-                                  hestonProcess->sigma(),
-                                  hestonProcess->rho())));
             retVal.push_back(hullWhiteProcess);
 
             return retVal;
@@ -60,16 +48,23 @@ namespace QuantLib {
         const boost::shared_ptr<HestonProcess> & hestonProcess,
         const boost::shared_ptr<HullWhiteForwardProcess> & hullWhiteProcess,
         Real corrEquityShortRate,
-        Size factors)
+        Size factors,
+        bool controlVariateProcess)
     : JointStochasticProcess(buildProcessList(hestonProcess, hullWhiteProcess),
                              factors),
       hullWhiteModel_(new HullWhite(hestonProcess->riskFreeRate(),
                                     hullWhiteProcess->a(),
                                     hullWhiteProcess->sigma())),
       corrEquityShortRate_(corrEquityShortRate),
+      controlVariateProcess_(controlVariateProcess),
 
       T_(hullWhiteProcess->getForwardMeasureTime()),
-      endDiscount_(hestonProcess->riskFreeRate()->discount(T_)) {}
+      endDiscount_(hestonProcess->riskFreeRate()->discount(T_)) {
+
+        QL_REQUIRE(  corrEquityShortRate*corrEquityShortRate
+                    +hestonProcess->rho()*hestonProcess->rho() <= 1.0,
+                    "correlation matrix has negativ eigenvalues");
+    }
 
 
     void HybridHestonHullWhiteProcess::preEvolve(Time t0, const Array& x0,
@@ -80,31 +75,16 @@ namespace QuantLib {
     HybridHestonHullWhiteProcess::postEvolve(Time t0, const Array& x0,
                                              Time dt, const Array& dw,
                                              const Array& y0) const {
-        Array dv(2), x(2);
-
-        // random number from the original heston process
-        dv[0] = dw[0]; dv[1] = dw[1];
-
-        // state from the control variate process
-        x[0] = x0[2]; x[1] = x0[3];
-
-        // control variate process
-        boost::shared_ptr<HestonProcess> hestonProcess
-            = boost::dynamic_pointer_cast<HestonProcess>(l_[1]);
-
-        // evolve the control variate
-        const Array y = hestonProcess->evolve(t0, x, dt, dv);
-
-        // write back results to the full hybrid process
-        Array retVal(y0);
-        retVal[2] = y[0]; retVal[3] = y[1];
-
-        boost::shared_ptr<HullWhiteForwardProcess> hullWhiteProcess
-            = boost::dynamic_pointer_cast<HullWhiteForwardProcess>(l_[2]);
-
         // recalculate equity process to reduce discretization
         // errors within the pure heston equity process
-        const Rate r         = x0[4];
+        Array retVal(y0);
+        
+        const boost::shared_ptr<HestonProcess> 
+                                         hestonProcess(this->hestonProcess());
+        const boost::shared_ptr<HullWhiteForwardProcess> 
+                                   hullWhiteProcess(this->hullWhiteProcess());
+        
+        const Rate r         = x0[2];
         const Real a         = hullWhiteProcess->a();
         const Real sigma     = hullWhiteProcess->sigma();
         const Real rho       = corrEquityShortRate_;
@@ -138,17 +118,29 @@ namespace QuantLib {
                  - 1/(2*a)*(  std::exp(-a*(T-t))
                             - 2*std::exp(-a*(T-s)) + std::exp(-a*(T+t-2*s))));
 
-        const Real mu = m1 + m2 + m3 + m4 + m5;
-
         const Real v1 = sigma*sigma/(a*a)
             *(dt - 2/a*(1-std::exp(-a*(t-s)))
               + 1/(2*a)*(1-std::exp(-2*a*(t-s))));
 
         const Real v2 = eta*eta*(t-s);
 
-        const Real vol = std::sqrt(v1)*dw[4] + std::sqrt(v2)*dw[0];
+        if (!controlVariateProcess_) {
+            const Real mu = m1 + m2 + m3 + m4 + m5;
+            const Real vol = std::sqrt(v1)*dw[2] + std::sqrt(v2)*dw[0];
 
-        retVal[0] = x0[0]*std::exp(mu + vol);
+            retVal[0] = x0[0]*std::exp(mu + vol);
+        }
+        else {
+            const Real mu = m1 + m3 + m4 + m5;
+
+            // now recover the uncorrelated random number
+            const Real run = (dw[2]-rho*dw[0])/std::sqrt(1-rho*rho);
+            const Real vol = std::sqrt(v1)*run + std::sqrt(v2)*dw[0];
+
+            retVal[0] = x0[0]*std::exp(mu + vol);
+            retVal[2] = hullWhiteProcess->evolve(t0, r, dt, run);
+        }
+        
 
         return retVal;
     }
@@ -157,10 +149,10 @@ namespace QuantLib {
     HybridHestonHullWhiteProcess::crossModelCorrelation(
         Time t0, const Array& x0) const {
 
-        const Size size = 5;
+        const Size size = 3;
         Matrix retVal(size, size, 0.0);
 
-        retVal[0][4] = retVal[4][0] = corrEquityShortRate_;
+        retVal[0][2] = retVal[2][0] = corrEquityShortRate_;
 
         return retVal;
     }
@@ -169,33 +161,33 @@ namespace QuantLib {
         return false;
     }
 
+    boost::shared_ptr<HestonProcess> 
+    HybridHestonHullWhiteProcess::hestonProcess() const {
+        return boost::dynamic_pointer_cast<HestonProcess>(l_[0]);
+    }
+
+    boost::shared_ptr<HullWhiteForwardProcess> 
+    HybridHestonHullWhiteProcess::hullWhiteProcess() const {
+        return boost::dynamic_pointer_cast<HullWhiteForwardProcess>(l_[1]);
+    }
+
     DiscountFactor
     HybridHestonHullWhiteProcess::numeraire(Time t, const Array& x) const {
 
-        return hullWhiteModel_->discountBond(t, T_, x[4]) / endDiscount_;
+        return hullWhiteModel_->discountBond(t, T_, x[2]) / endDiscount_;
+    }
+
+    Real HybridHestonHullWhiteProcess::correlation() const {
+        return corrEquityShortRate_;
     }
 
     void HybridHestonHullWhiteProcess::update() {
-        boost::shared_ptr<HestonProcess> hestonProcess
-            = boost::dynamic_pointer_cast<HestonProcess>(l_[0]);
-
-        boost::shared_ptr<HestonProcess> cvProcess
-            = boost::dynamic_pointer_cast<HestonProcess>(l_[1]);
-
-        l_[1] = boost::shared_ptr<HestonProcess>(
-            new HestonProcess(cvProcess->riskFreeRate(),
-                              hestonProcess->dividendYield(),
-                              hestonProcess->s0(),
-                              hestonProcess->v0(),
-                              hestonProcess->kappa(),
-                              hestonProcess->theta(),
-                              hestonProcess->sigma(),
-                              hestonProcess->rho()));
+        const boost::shared_ptr<HestonProcess> hestonProcess(
+                         boost::dynamic_pointer_cast<HestonProcess>(l_[0]));
 
         endDiscount_ = hestonProcess->riskFreeRate()->discount(T_);
 
         this->JointStochasticProcess::update();
     }
-
 }
 

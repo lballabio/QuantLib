@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Klaus Spanderen
+ Copyright (C) 2007, 2008 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -45,7 +45,8 @@ namespace QuantLib {
           const boost::shared_ptr<HestonProcess> & hestonProcess,
           const boost::shared_ptr<HullWhiteForwardProcess> & hullWhiteProcess,
           Real corrEquityShortRate,
-          Size factors);
+          Size factors,
+          bool controlVariateProcess = false);
 
         void preEvolve(Time t0, const Array& x0,
                        Time dt, const Array& dw) const;
@@ -58,13 +59,19 @@ namespace QuantLib {
         Disposable<Matrix> crossModelCorrelation(Time t0,
                                                  const Array& x0) const;
 
-        void update();
+        boost::shared_ptr<HestonProcess> hestonProcess() const;
+        boost::shared_ptr<HullWhiteForwardProcess> hullWhiteProcess() const;
 
-      private:
+        void update();
+        Real correlation() const;
+
+      protected:
         //model is used to calculate P(t,T)
         const boost::shared_ptr<HullWhite> hullWhiteModel_;
 
         const Real corrEquityShortRate_;
+        const bool controlVariateProcess_;
+
         const Time T_;
         DiscountFactor endDiscount_;
     };

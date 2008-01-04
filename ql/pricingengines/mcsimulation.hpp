@@ -77,6 +77,10 @@ namespace QuantLib {
         virtual boost::shared_ptr<path_pricer_type> controlPathPricer() const {
             return boost::shared_ptr<path_pricer_type>();
         }
+        virtual boost::shared_ptr<path_generator_type> 
+        controlPathGenerator() const {
+            return boost::shared_ptr<path_generator_type>();
+        }
         virtual boost::shared_ptr<PricingEngine> controlPricingEngine() const {
             return boost::shared_ptr<PricingEngine>();
         }
@@ -174,12 +178,15 @@ namespace QuantLib {
                        "engine does not provide "
                        "control-variation path pricer");
 
+            boost::shared_ptr<path_generator_type> controlPG = 
+                this->controlPathGenerator();
+
             this->mcModel_ =
                 boost::shared_ptr<MonteCarloModel<MC,RNG,S> >(
                     new MonteCarloModel<MC,RNG,S>(
                            pathGenerator(), this->pathPricer(), stats_type(),
                            this->antitheticVariate_, controlPP,
-                           controlVariateValue));
+                           controlVariateValue, controlPG));
         } else {
             this->mcModel_ =
                 boost::shared_ptr<MonteCarloModel<MC,RNG,S> >(

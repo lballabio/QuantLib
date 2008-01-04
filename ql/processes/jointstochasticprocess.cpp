@@ -191,7 +191,7 @@ namespace QuantLib {
         Array dv(modelFactors_);
 
         if (   correlationIsStateDependent()
-            || correlationCache_.count(t0) == 0) {
+            || correlationCache_.count(CachingKey(t0, dt)) == 0) {
             Matrix cov  = covariance(t0, x0, dt);
 
             const Array& sqrtDiag = Sqrt(cov.diagonal());
@@ -263,13 +263,13 @@ namespace QuantLib {
             const Matrix m = transpose(diff) * rs;
 
             if (!correlationIsStateDependent()) {
-                correlationCache_[t0] = m;
+                correlationCache_[CachingKey(t0,dt)] = m;
             }
             dv = m*dw;
         }
         else {
             if (!correlationIsStateDependent()) {
-                dv = correlationCache_[t0] * dw;
+                dv = correlationCache_[CachingKey(t0,dt)] * dw;
             }
         }
 

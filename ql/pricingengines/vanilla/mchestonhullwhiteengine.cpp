@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Klaus Spanderen
+ Copyright (C) 2007, 2008 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,23 +42,9 @@ namespace QuantLib {
             states[j] = path[j][path.pathSize()-1];
         }
 
-        return (*payoff_)(states[0])
-            / process_->numeraire(exerciseTime_, states);
-    }
-
-    HestonHullWhiteCVPathPricer::HestonHullWhiteCVPathPricer(
-              DiscountFactor discountFactor,
-              const boost::shared_ptr<Payoff> & payoff,
-              const boost::shared_ptr<HybridHestonHullWhiteProcess> & process)
-    : df_(discountFactor),
-      payoff_(payoff),
-      process_(process) {
-    }
-
-    Real HestonHullWhiteCVPathPricer::operator()(const MultiPath& path) const {
-        QL_REQUIRE(path.pathSize() > 0, "the path cannot be empty");
-
-        return (*payoff_)(path[2][path.pathSize()-1])*df_;
+        const DiscountFactor df(
+                             1.0/process_->numeraire(exerciseTime_, states));
+        return (*payoff_)(states[0])*df;
     }
 }
 

@@ -65,11 +65,14 @@ namespace QuantLib {
                   bool antitheticVariate,
                   const boost::shared_ptr<path_pricer_type>& cvPathPricer
                         = boost::shared_ptr<path_pricer_type>(),
-                  result_type cvOptionValue = result_type())
+                  result_type cvOptionValue = result_type(),
+                  const boost::shared_ptr<path_generator_type>& cvPathGenerator
+                        = boost::shared_ptr<path_generator_type>())
         : pathGenerator_(pathGenerator), pathPricer_(pathPricer),
           sampleAccumulator_(sampleAccumulator),
           isAntitheticVariate_(antitheticVariate),
-          cvPathPricer_(cvPathPricer), cvOptionValue_(cvOptionValue) {
+          cvPathPricer_(cvPathPricer), cvOptionValue_(cvOptionValue),
+          cvPathGenerator_(cvPathGenerator) {
             if (!cvPathPricer_)
                 isControlVariate_ = false;
             else
@@ -85,8 +88,8 @@ namespace QuantLib {
         boost::shared_ptr<path_pricer_type> cvPathPricer_;
         result_type cvOptionValue_;
         bool isControlVariate_;
+        boost::shared_ptr<path_generator_type> cvPathGenerator_;
     };
-
 
     // inline definitions
     template <template <class> class MC, class RNG, class S>
@@ -97,13 +100,25 @@ namespace QuantLib {
             result_type price = (*pathPricer_)(path.value);
 
             if (isControlVariate_)
-                price += cvOptionValue_-(*cvPathPricer_)(path.value);
+                if (!cvPathGenerator_) {
+                    price += cvOptionValue_-(*cvPathPricer_)(path.value);
+                }
+                else {
+                    sample_type cvPath = cvPathGenerator_->next();
+                    price += cvOptionValue_-(*cvPathPricer_)(cvPath.value);
+                }
 
             if (isAntitheticVariate_) {
                 path = pathGenerator_->antithetic();
                 result_type price2 = (*pathPricer_)(path.value);
                 if (isControlVariate_)
-                    price2 += cvOptionValue_-(*cvPathPricer_)(path.value);
+                    if (!cvPathGenerator_)
+                        price2 += cvOptionValue_-(*cvPathPricer_)(path.value);
+                    else {
+                        sample_type cvPath = cvPathGenerator_->antithetic();
+                        price2 += cvOptionValue_-(*cvPathPricer_)(cvPath.value);
+                    }
+
                 sampleAccumulator_.add((price+price2)/2.0, path.weight);
             } else {
                 sampleAccumulator_.add(price, path.weight);
