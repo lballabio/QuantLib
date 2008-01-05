@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2006 François du Vignaud
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2008 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,14 +27,14 @@
 #define quantlib_swaption_volatility_matrix_hpp
 
 #include <ql/termstructures/volatility/swaption/swaptionvoldiscrete.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/math/interpolations/interpolation2d.hpp>
 #include <ql/math/matrix.hpp>
-#include <ql/math/interpolations/bilinearinterpolation.hpp>
-#include <ql/quote.hpp>
 #include <boost/noncopyable.hpp>
 #include <vector>
 
 namespace QuantLib {
+
+    class Quote;
 
     //! At-the-money swaption-volatility matrix
     /*! This class provides the at-the-money volatility for a given
@@ -57,7 +57,7 @@ namespace QuantLib {
                     const std::vector<Period>& optionTenors,
                     const std::vector<Period>& swapTenors,
                     const std::vector<std::vector<Handle<Quote> > >& vols,
-                    const DayCounter& dayCounter = Actual365Fixed(),
+                    const DayCounter& dayCounter,
                     BusinessDayConvention bdc = Following);
         //! fixed reference date, floating market data
         SwaptionVolatilityMatrix(
@@ -66,7 +66,7 @@ namespace QuantLib {
                     const std::vector<Period>& optionTenors,
                     const std::vector<Period>& swapTenors,
                     const std::vector<std::vector<Handle<Quote> > >& vols,
-                    const DayCounter& dayCounter = Actual365Fixed(),
+                    const DayCounter& dayCounter,
                     BusinessDayConvention bdc = Following);
         //! floating reference date, fixed market data
         SwaptionVolatilityMatrix(
@@ -74,7 +74,7 @@ namespace QuantLib {
                     const std::vector<Period>& optionTenors,
                     const std::vector<Period>& swapTenors,
                     const Matrix& volatilities,
-                    const DayCounter& dayCounter = Actual365Fixed(),
+                    const DayCounter& dayCounter,
                     BusinessDayConvention bdc = Following);
         //! fixed reference date, fixed market data
         SwaptionVolatilityMatrix(
@@ -83,7 +83,7 @@ namespace QuantLib {
                     const std::vector<Period>& optionTenors,
                     const std::vector<Period>& swapTenors,
                     const Matrix& volatilities,
-                    const DayCounter& dayCounter = Actual365Fixed(),
+                    const DayCounter& dayCounter,
                     BusinessDayConvention bdc = Following);
         // fixed reference date and fixed market data, option dates
         SwaptionVolatilityMatrix(const Date& referenceDate,
@@ -91,24 +91,22 @@ namespace QuantLib {
                                  const std::vector<Period>& swapTenors,
                                  const Matrix& volatilities,
                                  const DayCounter& dayCounter);
-
-        //! \name TermStructure interface
-        //@{
-        Date maxDate() const;
-        //@}
         //! \name LazyObject interface
         //@{
         void performCalculations() const;
         //@}
+        //! \name TermStructure interface
+        //@{
+        Date maxDate() const;
+        //@}
+        //! \name VolatilityTermStructure interface
+        //@{
+        Rate minStrike() const;
+        Rate maxStrike() const;
+        //@}
         //! \name SwaptionVolatilityStructure interface
         //@{
         const Period& maxSwapTenor() const;
-        Rate minStrike() const;
-        Rate maxStrike() const;
-
-        //! return trivial smile section
-        boost::shared_ptr<SmileSection> smileSectionImpl(Time optionTime,
-                                                         Time swapLength) const;
         //@}
         //! \name Other inspectors
         //@{
@@ -125,24 +123,24 @@ namespace QuantLib {
                                   interpolation_.locateX(swapLength));
         }
         //@}
-    private:
-        void checkInputs(Size volRows,
-                         Size volsColumns) const;
-        void registerWithMarketData();
-        Volatility volatilityImpl(Time optionTime,
-                                  Time swapLength,
-                                  Rate strike) const;
+      protected:
+        //! return trivial smile section
+        boost::shared_ptr<SmileSection> smileSectionImpl(Time optionTime,
+                                                         Time swapLength) const;
         Volatility volatilityImpl(const Date& optionDates,
                                   const Period& swapTenor,
                                   Rate strike) const;
-        Volatility volatilityImpl(const Period& optionTenor,
-                                  const Period& swapTenor,
+        Volatility volatilityImpl(Time optionTime,
+                                  Time swapLength,
                                   Rate strike) const;
+      private:
+        void checkInputs(Size volRows,
+                         Size volsColumns) const;
+        void registerWithMarketData();
         std::vector<std::vector<Handle<Quote> > > volHandles_;
         mutable Matrix volatilities_;
         Interpolation2D interpolation_;
     };
-
 
     // inline definitions
 
@@ -150,23 +148,16 @@ namespace QuantLib {
         return optionDates_.back();
     }
 
-    inline const Period& SwaptionVolatilityMatrix::maxSwapTenor() const {
-        return swapTenors_.back();
-    }
-
     inline Rate SwaptionVolatilityMatrix::minStrike() const {
-        return -5.0; //FIXME
+        return QL_MIN_REAL;
     }
 
     inline Rate SwaptionVolatilityMatrix::maxStrike() const {
-        return 5.0; //FIXME
+        return QL_MAX_REAL;
     }
 
-    inline Volatility SwaptionVolatilityMatrix::volatilityImpl(Time optionTime,
-                                                               Time swapLength,
-                                                               Rate) const {
-        calculate();
-        return interpolation_(swapLength, optionTime, true);
+    inline const Period& SwaptionVolatilityMatrix::maxSwapTenor() const {
+        return swapTenors_.back();
     }
 
     inline Volatility
@@ -178,12 +169,11 @@ namespace QuantLib {
                               strike);
     }
 
-    inline Volatility
-    SwaptionVolatilityMatrix::volatilityImpl(const Period& optionTenor,
-                                             const Period& swapTenor,
-                                             Rate strike) const {
-        Date optionDate = optionDateFromTenor(optionTenor);
-        return volatilityImpl(optionDate, swapTenor, strike);
+    inline Volatility SwaptionVolatilityMatrix::volatilityImpl(Time optionTime,
+                                                               Time swapLength,
+                                                               Rate) const {
+        calculate();
+        return interpolation_(swapLength, optionTime, true);
     }
 
 }

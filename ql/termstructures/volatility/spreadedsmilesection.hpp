@@ -25,8 +25,11 @@
 #define quantlib_spreaded_smile_section_hpp
 
 #include <ql/termstructures/volatility/smilesection.hpp>
+#include <ql/handle.hpp>
 
 namespace QuantLib {
+
+    class Quote;
 
     class SpreadedSmileSection : public SmileSection {
       public:
@@ -74,10 +77,6 @@ namespace QuantLib {
 
     inline const DayCounter& SpreadedSmileSection::dayCounter() const {
         return underlyingSection_->dayCounter();
-    }
-
-    inline Volatility SpreadedSmileSection::volatilityImpl(Rate k) const {
-        return underlyingSection_->volatilityImpl(k) + spread_->value();
     }
 
 }

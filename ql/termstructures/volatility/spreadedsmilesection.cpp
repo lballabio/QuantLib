@@ -18,6 +18,7 @@
 */
 
 #include <ql/termstructures/volatility/spreadedsmilesection.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 
@@ -27,6 +28,10 @@ namespace QuantLib {
     : underlyingSection_(underlyingSection), spread_(spread) {
             registerWith(underlyingSection_);
             registerWith(spread_);
+    }
+
+    Volatility SpreadedSmileSection::volatilityImpl(Rate k) const {
+        return underlyingSection_->volatilityImpl(k) + spread_->value();
     }
 
 }

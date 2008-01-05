@@ -28,7 +28,6 @@
 #include <ql/time/date.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/utilities/null.hpp>
-#include <ql/quote.hpp>
 #include <vector>
 
 namespace QuantLib {

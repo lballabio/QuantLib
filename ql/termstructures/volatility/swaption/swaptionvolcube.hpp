@@ -26,10 +26,12 @@
 
 #include <ql/termstructures/volatility/swaption/swaptionvoldiscrete.hpp>
 #include <ql/termstructures/volatility/smilesection.hpp>
-#include <ql/quote.hpp>
 
 namespace QuantLib {
+
     class SwapIndex;
+    class Quote;
+
     //! swaption-volatility cube
     /*! \warning this class is not finalized and its interface might
                  change in subsequent releases.

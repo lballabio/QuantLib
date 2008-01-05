@@ -34,12 +34,12 @@ namespace QuantLib {
       public:
         FlatSmileSection(const Date& d,
                          Volatility vol,
-                         const DayCounter& dc = Actual365Fixed(),
+                         const DayCounter& dc,
                          const Date& referenceDate = Date(),
                          Real atmLevel = Null<Rate>());
         FlatSmileSection(Time exerciseTime,
                          Volatility vol,
-                         const DayCounter& dc = Actual365Fixed(),
+                         const DayCounter& dc,
                          Real atmLevel = Null<Rate>());
         //! \name SmileSection interface
         //@{
