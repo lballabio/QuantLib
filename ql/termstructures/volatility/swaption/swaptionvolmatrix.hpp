@@ -124,12 +124,12 @@ namespace QuantLib {
         }
         //@}
       protected:
-        //! return trivial smile section
-        boost::shared_ptr<SmileSection> smileSectionImpl(Time optionTime,
-                                                         Time swapLength) const;
-        Volatility volatilityImpl(const Date& optionDates,
-                                  const Period& swapTenor,
-                                  Rate strike) const;
+        // defining the following method would break CMS test suite
+        // to be further investigated
+        //boost::shared_ptr<SmileSection> smileSectionImpl(const Date&,
+        //                                                 const Period&) const;
+        boost::shared_ptr<SmileSection> smileSectionImpl(Time,
+                                                         Time) const;
         Volatility volatilityImpl(Time optionTime,
                                   Time swapLength,
                                   Rate strike) const;
@@ -158,15 +158,6 @@ namespace QuantLib {
 
     inline const Period& SwaptionVolatilityMatrix::maxSwapTenor() const {
         return swapTenors_.back();
-    }
-
-    inline Volatility
-    SwaptionVolatilityMatrix::volatilityImpl(const Date& optionDate,
-                                             const Period& swapTenor,
-                                             Rate strike) const {
-        return volatilityImpl(timeFromReference(optionDate),
-                              convertSwapTenor(swapTenor),
-                              strike);
     }
 
     inline Volatility SwaptionVolatilityMatrix::volatilityImpl(Time optionTime,

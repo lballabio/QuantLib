@@ -181,6 +181,17 @@ namespace QuantLib {
                 volatilities_[i][j] = volHandles_[i][j]->value();
     }
 
+    //boost::shared_ptr<SmileSection>
+    //SwaptionVolatilityMatrix::smileSectionImpl(const Date& d,
+    //                                           const Period& swapTenor) const {
+    //    Time optionTime = timeFromReference(d);
+    //    Time swapLength = convertSwapTenor(swapTenor);
+    //    // dummy strike
+    //    Volatility atmVol = volatilityImpl(optionTime, swapLength, 0.05);
+    //    return boost::shared_ptr<SmileSection>(new
+    //        FlatSmileSection(d, atmVol, dayCounter(), referenceDate()));
+    //}
+
     boost::shared_ptr<SmileSection>
     SwaptionVolatilityMatrix::smileSectionImpl(Time optionTime,
                                                Time swapLength) const {
