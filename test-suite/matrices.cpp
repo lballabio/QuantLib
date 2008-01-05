@@ -271,7 +271,7 @@ void MatricesTest::testDeterminant() {
 
         if (!(i%3)) {
             // every third matrix is a singular matrix
-            const Size row(3*rng.next().value);
+            Size row = Size(3*rng.next().value);
             std::fill(m.row_begin(row), m.row_end(row), 0.0);
         }
 

@@ -1530,7 +1530,7 @@ void HybridHestonHullWhiteProcessTest::testJointCalibration() {
 
             sse += (npvs[i] - myNPVs[i])*(npvs[i] - myNPVs[i]);
             }
-            catch (Error& e) {
+            catch (Error&) {
                 diffVols[i]=0.0;
             }
         }
