@@ -31,10 +31,10 @@ namespace QuantLib {
 
     class Quote;
 
-    class SpreadedSwaptionVol : public SwaptionVolatilityStructure {
+    class SpreadedSwaptionVolatility : public SwaptionVolatilityStructure {
       public:
-        SpreadedSwaptionVol(const Handle<SwaptionVolatilityStructure>&,
-                            const Handle<Quote>& spread);
+        SpreadedSwaptionVolatility(const Handle<SwaptionVolatilityStructure>&,
+                                   const Handle<Quote>& spread);
         // All virtual methods of base classes must be forwarded
         //! \name TermStructure interface
         //@{
@@ -75,39 +75,39 @@ namespace QuantLib {
         const Handle<Quote> spread_;
     };
 
-    inline DayCounter SpreadedSwaptionVol::dayCounter() const {
+    inline DayCounter SpreadedSwaptionVolatility::dayCounter() const {
         return baseVol_->dayCounter();
     }
 
-    inline Date SpreadedSwaptionVol::maxDate() const {
+    inline Date SpreadedSwaptionVolatility::maxDate() const {
         return baseVol_->maxDate();
     }
 
-    inline Time SpreadedSwaptionVol::maxTime() const {
+    inline Time SpreadedSwaptionVolatility::maxTime() const {
         return baseVol_->maxTime();
     }
 
-    inline const Date& SpreadedSwaptionVol::referenceDate() const {
+    inline const Date& SpreadedSwaptionVolatility::referenceDate() const {
         return baseVol_->referenceDate();
     }
 
-    inline Calendar SpreadedSwaptionVol::calendar() const {
+    inline Calendar SpreadedSwaptionVolatility::calendar() const {
         return baseVol_->calendar();
     }
 
-    inline Natural SpreadedSwaptionVol::settlementDays() const {
+    inline Natural SpreadedSwaptionVolatility::settlementDays() const {
         return baseVol_->settlementDays();
     }
 
-    inline Rate SpreadedSwaptionVol::minStrike() const {
+    inline Rate SpreadedSwaptionVolatility::minStrike() const {
         return baseVol_->minStrike();
     }
 
-    inline Rate SpreadedSwaptionVol::maxStrike() const {
+    inline Rate SpreadedSwaptionVolatility::maxStrike() const {
         return baseVol_->maxStrike();
     }
 
-    inline const Period& SpreadedSwaptionVol::maxSwapTenor() const {
+    inline const Period& SpreadedSwaptionVolatility::maxSwapTenor() const {
         return baseVol_->maxSwapTenor();
     }
 

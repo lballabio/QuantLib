@@ -39,8 +39,8 @@ namespace QuantLib {
                               const DayCounter& dc)
     : termStructure_(termStructure),
       volatility_(boost::shared_ptr<SwaptionVolatilityStructure>(new
-          ConstantSwaptionVol(0, volatility, dc,
-                              NullCalendar(), Following))) {
+          ConstantSwaptionVolatility(0, volatility, dc,
+                                     NullCalendar(), Following))) {
         registerWith(termStructure_);
     }
 
@@ -50,8 +50,8 @@ namespace QuantLib {
                             const DayCounter& dc)
     : termStructure_(termStructure),
       volatility_(boost::shared_ptr<SwaptionVolatilityStructure>(new
-          ConstantSwaptionVol(0, volatility, dc,
-                              NullCalendar(), Following))) {
+          ConstantSwaptionVolatility(0, volatility, dc,
+                                     NullCalendar(), Following))) {
         registerWith(termStructure_);
         registerWith(volatility_);
     }

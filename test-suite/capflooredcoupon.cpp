@@ -121,7 +121,7 @@ Leg makeCapFlooredLeg(const Date& startDate,
                       convention_,convention_, DateGeneration::Forward, false);
     Handle<OptionletVolatilityStructure> vol(
         boost::shared_ptr<OptionletVolatilityStructure>(new
-            ConstantOptionletVol(0, volatility,
+            ConstantOptionletVolatility(0, volatility,
                                  Actual365Fixed(), calendar_, Following)));
 
     boost::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer(vol));

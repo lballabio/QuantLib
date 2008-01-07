@@ -31,10 +31,11 @@ namespace QuantLib {
 
     class Quote;
 
-    class SpreadedOptionletVol : public OptionletVolatilityStructure {
+    class SpreadedOptionletVolatility : public OptionletVolatilityStructure {
       public:
-        SpreadedOptionletVol(const Handle<OptionletVolatilityStructure>&,
-                             const Handle<Quote>& spread);
+        SpreadedOptionletVolatility(
+                                    const Handle<OptionletVolatilityStructure>&,
+                                    const Handle<Quote>& spread);
         // All virtual methods of base classes must be forwarded
         //! \name TermStructure interface
         //@{
@@ -63,35 +64,35 @@ namespace QuantLib {
         const Handle<Quote> spread_;
     };
 
-    inline DayCounter SpreadedOptionletVol::dayCounter() const {
+    inline DayCounter SpreadedOptionletVolatility::dayCounter() const {
         return baseVol_->dayCounter();
     }
     
-    inline Date SpreadedOptionletVol::maxDate() const {
+    inline Date SpreadedOptionletVolatility::maxDate() const {
         return baseVol_->maxDate();
     }
 
-    inline Time SpreadedOptionletVol::maxTime() const {
+    inline Time SpreadedOptionletVolatility::maxTime() const {
         return baseVol_->maxTime();
     }
         
-    inline const Date& SpreadedOptionletVol::referenceDate() const {
+    inline const Date& SpreadedOptionletVolatility::referenceDate() const {
         return baseVol_->referenceDate();
     }
         
-    inline Calendar SpreadedOptionletVol::calendar() const {
+    inline Calendar SpreadedOptionletVolatility::calendar() const {
         return baseVol_->calendar();
     }
         
-    inline Natural SpreadedOptionletVol::settlementDays() const {
+    inline Natural SpreadedOptionletVolatility::settlementDays() const {
         return baseVol_->settlementDays();
     }
 
-    inline Rate SpreadedOptionletVol::minStrike() const {
+    inline Rate SpreadedOptionletVolatility::minStrike() const {
         return baseVol_->minStrike();
     }
     
-    inline Rate SpreadedOptionletVol::maxStrike() const {
+    inline Rate SpreadedOptionletVolatility::maxStrike() const {
         return baseVol_->maxStrike();
     }
 

@@ -25,72 +25,76 @@
 namespace QuantLib {
 
     // floating reference date, floating market data
-    ConstantSwaptionVol::ConstantSwaptionVol(Natural settlementDays,
-                                             const Handle<Quote>& vol,
-                                             const DayCounter& dc,
-                                             const Calendar& cal,
-                                             BusinessDayConvention bdc)
+    ConstantSwaptionVolatility::ConstantSwaptionVolatility(
+                                                    Natural settlementDays,
+                                                    const Handle<Quote>& vol,
+                                                    const DayCounter& dc,
+                                                    const Calendar& cal,
+                                                    BusinessDayConvention bdc)
     : SwaptionVolatilityStructure(settlementDays, cal, dc, bdc),
       volatility_(vol), maxSwapTenor_(100*Years) {
         registerWith(volatility_);
     }
 
     // fixed reference date, floating market data
-    ConstantSwaptionVol::ConstantSwaptionVol(const Date& referenceDate,
-                                             const Handle<Quote>& vol,
-                                             const DayCounter& dc,
-                                             const Calendar& cal,
-                                             BusinessDayConvention bdc)
+    ConstantSwaptionVolatility::ConstantSwaptionVolatility(
+                                                    const Date& referenceDate,
+                                                    const Handle<Quote>& vol,
+                                                    const DayCounter& dc,
+                                                    const Calendar& cal,
+                                                    BusinessDayConvention bdc)
     : SwaptionVolatilityStructure(referenceDate, cal, dc, bdc),
       volatility_(vol), maxSwapTenor_(100*Years) {
         registerWith(volatility_);
     }
 
     // floating reference date, fixed market data
-    ConstantSwaptionVol::ConstantSwaptionVol(Natural settlementDays,
-                                             Volatility vol,
-                                             const DayCounter& dc,
-                                             const Calendar& cal,
-                                             BusinessDayConvention bdc)
+    ConstantSwaptionVolatility::ConstantSwaptionVolatility(
+                                                    Natural settlementDays,
+                                                    Volatility vol,
+                                                    const DayCounter& dc,
+                                                    const Calendar& cal,
+                                                    BusinessDayConvention bdc)
     : SwaptionVolatilityStructure(settlementDays, cal, dc, bdc),
       volatility_(boost::shared_ptr<Quote>(new SimpleQuote(vol))),
       maxSwapTenor_(100*Years) {}
 
     // fixed reference date, fixed market data
-    ConstantSwaptionVol::ConstantSwaptionVol(const Date& referenceDate,
-                                             Volatility vol,
-                                             const DayCounter& dc,
-                                             const Calendar& cal,
-                                             BusinessDayConvention bdc)
+    ConstantSwaptionVolatility::ConstantSwaptionVolatility(
+                                                    const Date& referenceDate,
+                                                    Volatility vol,
+                                                    const DayCounter& dc,
+                                                    const Calendar& cal,
+                                                    BusinessDayConvention bdc)
     : SwaptionVolatilityStructure(referenceDate, cal, dc, bdc),
       volatility_(boost::shared_ptr<Quote>(new SimpleQuote(vol))),
       maxSwapTenor_(100*Years) {}
 
     boost::shared_ptr<SmileSection>
-    ConstantSwaptionVol::smileSectionImpl(const Date& d,
-                                          const Period&) const {
+    ConstantSwaptionVolatility::smileSectionImpl(const Date& d,
+                                                 const Period&) const {
         Volatility atmVol = volatility_->value();
         return boost::shared_ptr<SmileSection>(new
             FlatSmileSection(d, atmVol, dayCounter(), referenceDate()));
     }
 
     boost::shared_ptr<SmileSection>
-    ConstantSwaptionVol::smileSectionImpl(Time optionTime,
-                                          Time) const {
+    ConstantSwaptionVolatility::smileSectionImpl(Time optionTime,
+                                                 Time) const {
         Volatility atmVol = volatility_->value();
         return boost::shared_ptr<SmileSection>(new
             FlatSmileSection(optionTime, atmVol, dayCounter()));
     }
 
-    Volatility ConstantSwaptionVol::volatilityImpl(const Date&,
-                                                   const Period&,
-                                                   Rate) const {
+    Volatility ConstantSwaptionVolatility::volatilityImpl(const Date&,
+                                                          const Period&,
+                                                          Rate) const {
         return volatility_->value();
     }
 
-    Volatility ConstantSwaptionVol::volatilityImpl(Time,
-                                                   Time,
-                                                   Rate) const {
+    Volatility ConstantSwaptionVolatility::volatilityImpl(Time,
+                                                          Time,
+                                                          Rate) const {
         return volatility_->value();
     }
 

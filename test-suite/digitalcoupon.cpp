@@ -93,7 +93,7 @@ void DigitalCouponTest::testAssetOrNothing() {
             Volatility capletVol = vols[i];
             RelinkableHandle<OptionletVolatilityStructure> vol;
             vol.linkTo(boost::shared_ptr<OptionletVolatilityStructure>(new
-                ConstantOptionletVol(today_, capletVol, Actual360(), calendar_, Following)));
+                ConstantOptionletVolatility(today_, capletVol, Actual360(), calendar_, Following)));
         for (Size j=0; j<LENGTH(strikes); j++) {
             Rate strike = strikes[j];
             for (Size k=9; k<10; k++) {
@@ -276,7 +276,7 @@ void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
     Volatility capletVolatility = 0.0001;
     RelinkableHandle<OptionletVolatilityStructure> volatility;
     volatility.linkTo(boost::shared_ptr<OptionletVolatilityStructure>(new
-        ConstantOptionletVol(today_, capletVolatility, Actual360(),
+        ConstantOptionletVolatility(today_, capletVolatility, Actual360(),
                              calendar_, Following)));
     Real gap = 1e-4;
     boost::shared_ptr<DigitalReplication>
@@ -398,7 +398,7 @@ void DigitalCouponTest::testAssetOrNothingDeepOutTheMoney() {
     Volatility capletVolatility = 0.0001;
     RelinkableHandle<OptionletVolatilityStructure> volatility;
     volatility.linkTo(boost::shared_ptr<OptionletVolatilityStructure>(new
-                        ConstantOptionletVol(today_, capletVolatility,
+                        ConstantOptionletVolatility(today_, capletVolatility,
                                              Actual360(),
                                              calendar_, Following)));
     Real gap = 1e-4;
@@ -534,7 +534,7 @@ void DigitalCouponTest::testCashOrNothing() {
             Volatility capletVol = vols[i];
             RelinkableHandle<OptionletVolatilityStructure> vol;
             vol.linkTo(boost::shared_ptr<OptionletVolatilityStructure>(new
-                            ConstantOptionletVol(today_, capletVol,
+                            ConstantOptionletVolatility(today_, capletVol,
                                                  Actual360(), calendar_,
                                                  Following)));
         for (Size j = 0; j< LENGTH(strikes); j++) {
@@ -683,7 +683,7 @@ void DigitalCouponTest::testCashOrNothingDeepInTheMoney() {
     Volatility capletVolatility = 0.0001;
     RelinkableHandle<OptionletVolatilityStructure> volatility;
     volatility.linkTo(boost::shared_ptr<OptionletVolatilityStructure>(new
-                    ConstantOptionletVol(today_, capletVolatility,
+                    ConstantOptionletVolatility(today_, capletVolatility,
                                          Actual360(), calendar_,
                                          Following)));
 
@@ -804,7 +804,7 @@ void DigitalCouponTest::testCashOrNothingDeepOutTheMoney() {
     Volatility capletVolatility = 0.0001;
     RelinkableHandle<OptionletVolatilityStructure> volatility;
     volatility.linkTo(boost::shared_ptr<OptionletVolatilityStructure>(new
-                    ConstantOptionletVol(today_, capletVolatility,
+                    ConstantOptionletVolatility(today_, capletVolatility,
                                          Actual360(), calendar_,
                                          Following)));
 
@@ -933,7 +933,7 @@ void DigitalCouponTest::testCallPutParity() {
             Volatility capletVolatility = vols[i];
             RelinkableHandle<OptionletVolatilityStructure> volatility;
             volatility.linkTo(boost::shared_ptr<OptionletVolatilityStructure>(new
-                    ConstantOptionletVol(today_, capletVolatility,
+                    ConstantOptionletVolatility(today_, capletVolatility,
                                          Actual360(), calendar_,
                                          Following)));
         for (Size j = 0; j< LENGTH(strikes); j++) {
@@ -1049,7 +1049,7 @@ void DigitalCouponTest::testReplicationType() {
             Volatility capletVolatility = vols[i];
             RelinkableHandle<OptionletVolatilityStructure> volatility;
             volatility.linkTo(boost::shared_ptr<OptionletVolatilityStructure>(new
-                    ConstantOptionletVol(today_, capletVolatility,
+                    ConstantOptionletVolatility(today_, capletVolatility,
                                          Actual360(), calendar_,
                                          Following)));
         for (Size j = 0; j< LENGTH(strikes); j++) {

@@ -24,7 +24,7 @@
 
 namespace QuantLib {
 
-    SpreadedOptionletVol::SpreadedOptionletVol(
+    SpreadedOptionletVolatility::SpreadedOptionletVolatility(
                         const Handle<OptionletVolatilityStructure>& baseVol,
                         const Handle<Quote>& spread)
     : OptionletVolatilityStructure(), baseVol_(baseVol), spread_(spread) {
@@ -33,7 +33,7 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<SmileSection>
-    SpreadedOptionletVol::smileSectionImpl(const Date& d) const {
+    SpreadedOptionletVolatility::smileSectionImpl(const Date& d) const {
         boost::shared_ptr<SmileSection> baseSmile =
             baseVol_->smileSection(d, true);
         return boost::shared_ptr<SmileSection>(new
@@ -41,16 +41,16 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<SmileSection>
-    SpreadedOptionletVol::smileSectionImpl(Time optionTime) const {
+    SpreadedOptionletVolatility::smileSectionImpl(Time optionTime) const {
         boost::shared_ptr<SmileSection> baseSmile =
             baseVol_->smileSection(optionTime, true);
         return boost::shared_ptr<SmileSection>(new
             SpreadedSmileSection(baseSmile, spread_));
     }
 
-    Volatility SpreadedOptionletVol::volatilityImpl(Time t,
-                                                    Rate strike) const {
-        return baseVol_->volatility(t, strike, true) + spread_->value();
+    Volatility SpreadedOptionletVolatility::volatilityImpl(Time t,
+                                                           Rate s) const {
+        return baseVol_->volatility(t, s, true) + spread_->value();
     }
 
 }

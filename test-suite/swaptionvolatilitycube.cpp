@@ -283,7 +283,7 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
     boost::shared_ptr<SimpleQuote> spread (new SimpleQuote(0.0001));
     Handle<Quote> spreadHandle(spread);
     boost::shared_ptr<SwaptionVolatilityStructure> spreadedVolCube(new
-        SpreadedSwaptionVol(volCube, spreadHandle));
+        SpreadedSwaptionVolatility(volCube, spreadHandle));
     std::vector<Real> strikes;
     for (Size k=1; k<100; k++)
         strikes.push_back(k*.01);

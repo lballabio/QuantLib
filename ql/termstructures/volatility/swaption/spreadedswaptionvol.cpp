@@ -24,7 +24,7 @@
 
 namespace QuantLib {
 
-    SpreadedSwaptionVol::SpreadedSwaptionVol(
+    SpreadedSwaptionVolatility::SpreadedSwaptionVolatility(
                             const Handle<SwaptionVolatilityStructure>& baseVol,
                             const Handle<Quote>& spread)
     : SwaptionVolatilityStructure(), baseVol_(baseVol), spread_(spread) {
@@ -33,32 +33,32 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<SmileSection>
-    SpreadedSwaptionVol::smileSectionImpl(const Date& d,
-                                          const Period& swapTenor) const {
+    SpreadedSwaptionVolatility::smileSectionImpl(const Date& d,
+                                                 const Period& swapT) const {
         boost::shared_ptr<SmileSection> baseSmile =
-            baseVol_->smileSection(d, swapTenor, true);
+            baseVol_->smileSection(d, swapT, true);
         return boost::shared_ptr<SmileSection>(new
             SpreadedSmileSection(baseSmile, spread_));
     }
 
     boost::shared_ptr<SmileSection>
-    SpreadedSwaptionVol::smileSectionImpl(Time optionTime,
-                                          Time swapLength) const {
+    SpreadedSwaptionVolatility::smileSectionImpl(Time optionTime,
+                                                 Time swapLength) const {
         boost::shared_ptr<SmileSection> baseSmile =
             baseVol_->smileSection(optionTime, swapLength, true);
         return boost::shared_ptr<SmileSection>(new
             SpreadedSmileSection(baseSmile, spread_));
     }
 
-    Volatility SpreadedSwaptionVol::volatilityImpl(const Date& d,
-                                                   const Period& p,
-                                                   Rate strike) const {
+    Volatility SpreadedSwaptionVolatility::volatilityImpl(const Date& d,
+                                                          const Period& p,
+                                                          Rate strike) const {
         return baseVol_->volatility(d, p, strike, true) + spread_->value();
     }
 
-    Volatility SpreadedSwaptionVol::volatilityImpl(Time t,
-                                                   Time l,
-                                                   Rate strike) const {
+    Volatility SpreadedSwaptionVolatility::volatilityImpl(Time t,
+                                                          Time l,
+                                                          Rate strike) const {
         return baseVol_->volatility(t, l, strike, true) + spread_->value();
     }
 

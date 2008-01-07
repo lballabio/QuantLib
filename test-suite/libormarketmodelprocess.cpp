@@ -119,7 +119,7 @@ void LiborMarketModelProcessTest::testInitialisation() {
 
     boost::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
     boost::shared_ptr<OptionletVolatilityStructure> capletVol(new
-        ConstantOptionletVol(termStructure->referenceDate(),
+        ConstantOptionletVolatility(termStructure->referenceDate(),
                              0.2,
                              termStructure->dayCounter(),
                              termStructure->calendar(),

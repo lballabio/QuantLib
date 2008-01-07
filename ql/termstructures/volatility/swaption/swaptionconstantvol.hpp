@@ -33,32 +33,32 @@ namespace QuantLib {
     class Quote;
 
     //! Constant swaption volatility, no time-strike dependence
-    class ConstantSwaptionVol : public SwaptionVolatilityStructure {
+    class ConstantSwaptionVolatility : public SwaptionVolatilityStructure {
       public:
         //! floating reference date, floating market data
-        ConstantSwaptionVol(Natural settlementDays,
-                            const Handle<Quote>& volatility,
-                            const DayCounter& dc,
-                            const Calendar& cal,
-                            BusinessDayConvention bdc = Following);
+        ConstantSwaptionVolatility(Natural settlementDays,
+                                   const Handle<Quote>& volatility,
+                                   const DayCounter& dc,
+                                   const Calendar& cal,
+                                   BusinessDayConvention bdc = Following);
         //! fixed reference date, floating market data
-        ConstantSwaptionVol(const Date& referenceDate,
-                            const Handle<Quote>& volatility,
-                            const DayCounter& dc,
-                            const Calendar& cal,
-                            BusinessDayConvention bdc = Following);
+        ConstantSwaptionVolatility(const Date& referenceDate,
+                                   const Handle<Quote>& volatility,
+                                   const DayCounter& dc,
+                                   const Calendar& cal,
+                                   BusinessDayConvention bdc = Following);
         //! floating reference date, fixed market data
-        ConstantSwaptionVol(Natural settlementDays,
-                            Volatility volatility,
-                            const DayCounter& dc,
-                            const Calendar& cal,
-                            BusinessDayConvention bdc = Following);
+        ConstantSwaptionVolatility(Natural settlementDays,
+                                   Volatility volatility,
+                                   const DayCounter& dc,
+                                   const Calendar& cal,
+                                   BusinessDayConvention bdc = Following);
         //! fixed reference date, fixed market data
-        ConstantSwaptionVol(const Date& referenceDate,
-                            Volatility volatility,
-                            const DayCounter& dc,
-                            const Calendar& cal,
-                            BusinessDayConvention bdc = Following);
+        ConstantSwaptionVolatility(const Date& referenceDate,
+                                   Volatility volatility,
+                                   const DayCounter& dc,
+                                   const Calendar& cal,
+                                   BusinessDayConvention bdc = Following);
         //! \name TermStructure interface
         //@{
         Date maxDate() const;
@@ -91,19 +91,19 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Date ConstantSwaptionVol::maxDate() const {
+    inline Date ConstantSwaptionVolatility::maxDate() const {
         return Date::maxDate();
     }
 
-    inline Real ConstantSwaptionVol::minStrike() const {
+    inline Real ConstantSwaptionVolatility::minStrike() const {
         return QL_MIN_REAL;
     }
 
-    inline Real ConstantSwaptionVol::maxStrike() const {
+    inline Real ConstantSwaptionVolatility::maxStrike() const {
         return QL_MAX_REAL;
     }
 
-    inline const Period& ConstantSwaptionVol::maxSwapTenor() const {
+    inline const Period& ConstantSwaptionVolatility::maxSwapTenor() const {
         return maxSwapTenor_;
     }
 

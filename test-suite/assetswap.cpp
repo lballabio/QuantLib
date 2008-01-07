@@ -99,7 +99,7 @@ struct CommonVars {
                                                    new BlackIborCouponPricer);
         Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure(
             boost::shared_ptr<SwaptionVolatilityStructure>(new
-                ConstantSwaptionVol(today, 0.2, Actual365Fixed(),
+                ConstantSwaptionVolatility(today, 0.2, Actual365Fixed(),
                                     NullCalendar(), Following)));
         Handle<Quote> meanReversionQuote(
                              boost::shared_ptr<Quote>(new SimpleQuote(0.01)));

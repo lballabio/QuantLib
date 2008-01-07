@@ -32,32 +32,32 @@ namespace QuantLib {
     class Quote;
 
     //! Constant caplet volatility, no time-strike dependence
-    class ConstantOptionletVol : public OptionletVolatilityStructure {
+    class ConstantOptionletVolatility : public OptionletVolatilityStructure {
       public:
         //! floating reference date, floating market data
-        ConstantOptionletVol(Natural settlementDays,
-                             const Handle<Quote>& volatility,
-                             const DayCounter& dc,
-                             const Calendar& cal,
-                             BusinessDayConvention bdc = Following);
+        ConstantOptionletVolatility(Natural settlementDays,
+                                    const Handle<Quote>& volatility,
+                                    const DayCounter& dc,
+                                    const Calendar& cal,
+                                    BusinessDayConvention bdc = Following);
         //! fixed reference date, floating market data
-        ConstantOptionletVol(const Date& referenceDate,
-                             const Handle<Quote>& volatility,
-                             const DayCounter& dc,
-                             const Calendar& cal,
-                             BusinessDayConvention bdc = Following);
+        ConstantOptionletVolatility(const Date& referenceDate,
+                                    const Handle<Quote>& volatility,
+                                    const DayCounter& dc,
+                                    const Calendar& cal,
+                                    BusinessDayConvention bdc = Following);
         //! floating reference date, fixed market data
-        ConstantOptionletVol(Natural settlementDays,
-                             Volatility volatility,
-                             const DayCounter& dc,
-                             const Calendar& cal,
-                             BusinessDayConvention bdc = Following);
+        ConstantOptionletVolatility(Natural settlementDays,
+                                    Volatility volatility,
+                                    const DayCounter& dc,
+                                    const Calendar& cal,
+                                    BusinessDayConvention bdc = Following);
         //! fixed reference date, fixed market data
-        ConstantOptionletVol(const Date& referenceDate,
-                             Volatility volatility,
-                             const DayCounter& dc,
-                             const Calendar& cal,
-                             BusinessDayConvention bdc = Following);
+        ConstantOptionletVolatility(const Date& referenceDate,
+                                    Volatility volatility,
+                                    const DayCounter& dc,
+                                    const Calendar& cal,
+                                    BusinessDayConvention bdc = Following);
         //! \name TermStructure interface
         //@{
         Date maxDate() const;
@@ -79,15 +79,15 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Date ConstantOptionletVol::maxDate() const {
+    inline Date ConstantOptionletVolatility::maxDate() const {
         return Date::maxDate();
     }
 
-    inline Real ConstantOptionletVol::minStrike() const {
+    inline Real ConstantOptionletVolatility::minStrike() const {
         return QL_MIN_REAL;
     }
 
-    inline Real ConstantOptionletVol::maxStrike() const {
+    inline Real ConstantOptionletVolatility::maxStrike() const {
         return QL_MAX_REAL;
     }
 

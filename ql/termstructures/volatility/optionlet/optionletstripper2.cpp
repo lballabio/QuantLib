@@ -170,7 +170,7 @@ namespace QuantLib {
         boost::shared_ptr<SimpleQuote> spreadQuote(new SimpleQuote(s));
 
         boost::shared_ptr<OptionletVolatilityStructure> spreadedAdapter(new
-            SpreadedOptionletVol(Handle<OptionletVolatilityStructure>(adapter),
+            SpreadedOptionletVolatility(Handle<OptionletVolatilityStructure>(adapter),
                                  Handle<Quote>(spreadQuote)));
 
         boost::shared_ptr<BlackCapFloorEngine> engine(new
