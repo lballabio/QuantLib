@@ -1717,6 +1717,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\optionletstripper.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\pathgenerator.cpp"
 				>
 			</File>
@@ -2419,6 +2423,10 @@
 			</File>
 			<File
 				RelativePath=".\optimizers.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\optionletstripper.hpp"
 				>
 			</File>
 			<File

@@ -93,6 +93,7 @@
 #include "money.hpp"
 #include "operators.hpp"
 #include "optimizers.hpp"
+#include "optionletstripper.hpp"
 #include "pathgenerator.hpp"
 #include "period.hpp"
 #include "piecewiseyieldcurve.hpp"
@@ -229,6 +230,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MoneyTest::suite());
     test->add(OperatorTest::suite());                             // FLOATING_POINT_EXCEPTION
     test->add(OptimizersTest::suite());
+    test->add(OptionletStripperTest::suite());
     test->add(PathGeneratorTest::suite());                          // FLOATING_POINT_EXCEPTION
     test->add(PeriodTest::suite());
     test->add(PiecewiseYieldCurveTest::suite());
