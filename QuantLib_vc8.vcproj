@@ -3819,6 +3819,14 @@
 						RelativePath=".\ql\termstructures\volatility\capfloor\capfloortermvolsurface.hpp"
 						>
 					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\capfloor\constantcapfloortermvol.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\capfloor\constantcapfloortermvol.hpp"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="equityfx"
