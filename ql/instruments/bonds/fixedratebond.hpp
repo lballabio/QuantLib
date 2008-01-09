@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
  Copyright (C) 2005 StatPro Italia srl
@@ -65,6 +65,11 @@ namespace QuantLib {
                       const Date& stubDate = Date(),
                       DateGeneration::Rule rule = DateGeneration::Backward,
                       bool endOfMonth = false);
+        Frequency frequency() const { return frequency_; }
+        const DayCounter& dayCounter() const { return dayCounter_; }
+      protected:
+        Frequency frequency_;
+        DayCounter dayCounter_;
     };
 
 }

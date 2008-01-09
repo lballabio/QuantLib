@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
  Copyright (C) 2005, 2006, 2007 StatPro Italia srl
@@ -36,9 +36,11 @@ namespace QuantLib {
                                  Real redemption,
                                  const Date& issueDate)
     : Bond(settlementDays, schedule.calendar(), faceAmount,
-           schedule.endDate(), issueDate) {
+           schedule.endDate(), issueDate),
+      frequency_(schedule.tenor().frequency()),
+      dayCounter_(accrualDayCounter) {
 
-        cashflows_ = FixedRateLeg(schedule,accrualDayCounter)
+        cashflows_ = FixedRateLeg(schedule, accrualDayCounter)
             .withNotionals(faceAmount_)
             .withCouponRates(coupons)
             .withPaymentAdjustment(paymentConvention);
@@ -66,7 +68,9 @@ namespace QuantLib {
                                  const Date& stubDate,
                                  DateGeneration::Rule rule,
                                  bool endOfMonth)
-    : Bond(settlementDays, calendar, faceAmount, maturityDate, issueDate) {
+    : Bond(settlementDays, calendar, faceAmount, maturityDate, issueDate),
+      frequency_(tenor.frequency()),
+      dayCounter_(accrualDayCounter) {
 
         maturityDate_     = maturityDate;
 
