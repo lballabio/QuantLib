@@ -5,12 +5,14 @@ this_include_HEADERS = \
     all.hpp \
     capfloortermvolatilitystructure.hpp \
     capfloortermvolcurve.hpp \
-    capfloortermvolsurface.hpp
+    capfloortermvolsurface.hpp \
+    constantcapfloortermvol.hpp
 
 libCapFloorVol_la_SOURCES = \
     capfloortermvolatilitystructure.cpp \
     capfloortermvolcurve.cpp \
-    capfloortermvolsurface.cpp
+    capfloortermvolsurface.cpp \
+    constantcapfloortermvol.cpp
 
 noinst_LTLIBRARIES = libCapFloorVol.la
 
