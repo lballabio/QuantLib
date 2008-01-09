@@ -169,14 +169,14 @@ namespace QuantLib {
             Leg leg = bond->cashflows();
             Real cleanPrice = curve_->instruments_[k]->quoteValue();
             Rate ytm = bond->yield(cleanPrice,
-                                   curve_->instruments_[k]->dayCounter(),
+                                   curve_->instruments_[k]->bond()->dayCounter(),
                                    Compounded,
-                                   curve_->instruments_[k]->frequency(),
+                                   curve_->instruments_[k]->bond()->frequency(),
                                    today);
             InterestRate r(ytm,
-                           curve_->instruments_[k]->dayCounter(),
+                           curve_->instruments_[k]->bond()->dayCounter(),
                            Compounded,
-                           curve_->instruments_[k]->frequency());
+                           curve_->instruments_[k]->bond()->frequency());
 
             Date settlement = bond->settlementDate(today);
             Time duration =
@@ -267,7 +267,7 @@ namespace QuantLib {
             Real dirtyPrice = quotedPrice + bond->accruedAmount(settlement);
 
             DayCounter bondDayCount =
-                fittingMethod_->curve_->instruments_[i]->dayCounter();
+                fittingMethod_->curve_->instruments_[i]->bond()->dayCounter();
             Leg cf = bond->cashflows();
 
             // loop over cashFlows: P_j = sum( cf_i * d(t_i))

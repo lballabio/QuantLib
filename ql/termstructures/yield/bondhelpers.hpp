@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2005 Toyin Akin
  Copyright (C) 2007 StatPro Italia srl
 
@@ -27,7 +28,6 @@
 
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/instruments/bonds/fixedratebond.hpp>
-#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 
@@ -38,35 +38,29 @@ namespace QuantLib {
     class FixedRateBondHelper : public BootstrapHelper<YieldTermStructure> {
       public:
         FixedRateBondHelper(const Handle<Quote>& cleanPrice,
-                              Natural settlementDays,
-                              const Schedule& schedule,
-                              const std::vector<Rate>& coupons,
-                              const DayCounter& paymentDayCounter,
-                              BusinessDayConvention paymentConvention =
-                                                                    Following,
-                              Real redemption = 100.0,
-                              const Date& issueDate = Date());
+                            Natural settlementDays,
+                            const Schedule& schedule,
+                            const std::vector<Rate>& coupons,
+                            const DayCounter& dayCounter,
+                            BusinessDayConvention paymentConv = Following,
+                            Real redemption = 100.0,
+                            const Date& issueDate = Date());
+        FixedRateBondHelper(const Handle<Quote>& cleanPrice,
+                            const boost::shared_ptr<FixedRateBond>& bond);
+        //! \name BootstrapHelper interface
+        //@{
         Real impliedQuote() const;
         void setTermStructure(YieldTermStructure*);
+        //@}
+        //! \name additional inspectors
+        //@{
         boost::shared_ptr<FixedRateBond> bond() const;
-        const DayCounter& dayCounter() const;
-        Frequency frequency() const;
+        //@}
       protected:
-        // needed for bond instantiation
-        Natural settlementDays_;
-        Schedule schedule_;
-        std::vector<Rate> coupons_;
-        DayCounter paymentDayCounter_;
-        BusinessDayConvention paymentConvention_;
-        Real redemption_;
-        Date issueDate_;
-        // other
-        //Date settlement_, latestDate_;
         boost::shared_ptr<FixedRateBond> bond_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
 
 }
-
 
 #endif
