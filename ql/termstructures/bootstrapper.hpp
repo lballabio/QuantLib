@@ -195,8 +195,8 @@ namespace QuantLib {
             // exit conditions
             Real improvement = 0.0;
             for (Size i=1; i<n+1; ++i)
-                improvement += std::fabs(ts_->data_[i]-previousData[i]);
-            improvement /= n;
+                improvement=std::max(improvement,
+                                     std::fabs(ts_->data_[i]-previousData[i]));
             if (improvement <= ts_->accuracy_)  // convergence reached
                 break;
 
