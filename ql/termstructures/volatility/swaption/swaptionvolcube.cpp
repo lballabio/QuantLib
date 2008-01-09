@@ -45,6 +45,7 @@ namespace QuantLib {
       swapIndexBase_(swapIndexBase),
       vegaWeightedSmileFit_(vegaWeightedSmileFit)
     {
+        QL_REQUIRE(!atmVol.empty(), "atm vol handle not linked to anything");
 
         QL_REQUIRE(nStrikes_>1, "too few strikes (" << nStrikes_ << ")");
         for (Size i=1; i<nStrikes_; ++i)
