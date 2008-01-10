@@ -27,18 +27,16 @@
 #ifndef quantlib_ratehelpers_hpp
 #define quantlib_ratehelpers_hpp
 
-#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/instruments/bmaswap.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
-#include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {
 
     class SwapIndex;
-    class BMAIndex;
+    class Quote;
 
     typedef BootstrapHelper<YieldTermStructure> RateHelper;
 

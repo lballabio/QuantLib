@@ -21,16 +21,12 @@
 */
 
 #include <ql/termstructures/yield/ratehelpers.hpp>
-#include <ql/cashflows/iborcoupon.hpp>
-#include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/imm.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
-#include <ql/instruments/bmaswap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/quotes/simplequote.hpp>
+#include <ql/quote.hpp>
 #include <ql/currency.hpp>
 #include <ql/indexes/swapindex.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
 
 using boost::shared_ptr;
 
