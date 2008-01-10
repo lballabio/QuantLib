@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2007 Roland Lichters
 
  This file is part of QuantLib, a free-software/open-source library
@@ -42,10 +43,6 @@ namespace QuantLib {
     typedef BootstrapHelper<YieldTermStructure> RateHelper;
 
     //! Rate helper for bootstrapping over interest-rate futures prices
-    /*! \todo implement/refactor constructors with:
-              Index instead of (nMonths, calendar, convention, dayCounter),
-              IMM code
-    */
     class FuturesRateHelper : public RateHelper {
       public:
         FuturesRateHelper(const Handle<Quote>& price,
@@ -54,20 +51,21 @@ namespace QuantLib {
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           const DayCounter& dayCounter,
-                          const Handle<Quote>& convexityAdjustment);
-        FuturesRateHelper(const Handle<Quote>& price,
-                          const Date& immDate,
-                          Size nMonths,
-                          const Calendar& calendar,
-                          BusinessDayConvention convention,
-                          const DayCounter& dayCounter,
-                          Rate convexityAdjustment = 0.0);
+                          const Handle<Quote>& convexityAdjustment = Handle<Quote>());
         FuturesRateHelper(Real price,
                           const Date& immDate,
                           Size nMonths,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           const DayCounter& dayCounter,
+                          Rate convexityAdjustment = 0.0);
+        FuturesRateHelper(const Handle<Quote>& price,
+                          const Date& immDate,
+                          const boost::shared_ptr<IborIndex>& iborIndex,
+                          const Handle<Quote>& convexityAdjustment = Handle<Quote>());
+        FuturesRateHelper(Real price,
+                          const Date& immDate,
+                          const boost::shared_ptr<IborIndex>& iborIndex,
                           Rate convexityAdjustment = 0.0);
         //! \name RateHelper interface
         //@{
@@ -119,6 +117,10 @@ namespace QuantLib {
                           bool endOfMonth,
                           Natural fixingDays,
                           const DayCounter& dayCounter);
+        DepositRateHelper(const Handle<Quote>& rate,
+                          const boost::shared_ptr<IborIndex>& iborIndex);
+        DepositRateHelper(Rate rate,
+                          const boost::shared_ptr<IborIndex>& iborIndex);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -128,7 +130,7 @@ namespace QuantLib {
         void initializeDates();
         Date fixingDate_;
         Natural settlementDays_;
-        boost::shared_ptr<IborIndex> index_;
+        boost::shared_ptr<IborIndex> iborIndex_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
 
@@ -154,6 +156,12 @@ namespace QuantLib {
                       bool endOfMonth,
                       Natural fixingDays,
                       const DayCounter& dayCounter);
+        FraRateHelper(const Handle<Quote>& rate,
+                      Natural monthsToStart,
+                      const boost::shared_ptr<IborIndex>& iborIndex);
+        FraRateHelper(Rate rate,
+                      Natural monthsToStart,
+                      const boost::shared_ptr<IborIndex>& iborIndex);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -164,11 +172,12 @@ namespace QuantLib {
         Date fixingDate_;
         Natural monthsToStart_;
         Natural settlementDays_;
-        boost::shared_ptr<IborIndex> index_;
+        boost::shared_ptr<IborIndex> iborIndex_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
 
     //! Rate helper for bootstrapping over swap rates
+    /*! \todo use input SwapIndex to create the swap */
     class SwapRateHelper : public RelativeDateRateHelper {
       public:
         SwapRateHelper(const Handle<Quote>& rate,
@@ -195,6 +204,10 @@ namespace QuantLib {
                        const DayCounter& fixedDayCount,
                        // floating leg
                        const boost::shared_ptr<IborIndex>& iborIndex,
+                       const Handle<Quote>& spread = Handle<Quote>(),
+                       const Period& fwdStart = 0*Days);
+        SwapRateHelper(Rate rate,
+                       const boost::shared_ptr<SwapIndex>& swapIndex,
                        const Handle<Quote>& spread = Handle<Quote>(),
                        const Period& fwdStart = 0*Days);
         //! \name RateHelper interface
@@ -250,7 +263,7 @@ namespace QuantLib {
         BusinessDayConvention bmaConvention_;
         DayCounter bmaDayCount_;
         boost::shared_ptr<BMAIndex> bmaIndex_;
-        boost::shared_ptr<IborIndex> index_;
+        boost::shared_ptr<IborIndex> iborIndex_;
 
         boost::shared_ptr<BMASwap> swap_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;

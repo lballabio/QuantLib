@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2007 Roland Lichters
 
  This file is part of QuantLib, a free-software/open-source library
@@ -31,6 +32,8 @@
 #include <ql/indexes/swapindex.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
+using boost::shared_ptr;
+
 namespace QuantLib {
 
     namespace {
@@ -43,35 +46,15 @@ namespace QuantLib {
                                          const Calendar& calendar,
                                          BusinessDayConvention convention,
                                          const DayCounter& dayCounter,
-                                         const Handle<Quote>& convexityAdjustment)
-    : RateHelper(price),
-      convAdj_(convexityAdjustment) {
+                                         const Handle<Quote>& convAdj)
+    : RateHelper(price), convAdj_(convAdj) {
         QL_REQUIRE(IMM::isIMMdate(immDate, false),
-                   immDate << "is not a valid IMM date");
+                   immDate << " is not a valid IMM date");
         earliestDate_ = immDate;
-        latestDate_ =
-            calendar.advance(earliestDate_, nMonths, Months, convention);
+        latestDate_ = calendar.advance(immDate, nMonths, Months, convention);
         yearFraction_ = dayCounter.yearFraction(earliestDate_, latestDate_);
-        registerWith(convexityAdjustment);
-    }
 
-    FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
-                                         const Date& immDate,
-                                         Size nMonths,
-                                         const Calendar& calendar,
-                                         BusinessDayConvention convention,
-                                         const DayCounter& dayCounter,
-                                         Rate convexityAdjustment)
-    : RateHelper(price),
-      convAdj_(Handle<Quote>(boost::shared_ptr<Quote>(new
-                                            SimpleQuote(convexityAdjustment))))
-    {
-        QL_REQUIRE(IMM::isIMMdate(immDate, false),
-                   immDate << "is not a valid IMM date");
-        earliestDate_ = immDate;
-        latestDate_ =
-            calendar.advance(earliestDate_, nMonths, Months, convention);
-        yearFraction_ = dayCounter.yearFraction(earliestDate_, latestDate_);
+        registerWith(convAdj_);
     }
 
     FuturesRateHelper::FuturesRateHelper(Real price,
@@ -80,24 +63,52 @@ namespace QuantLib {
                                          const Calendar& calendar,
                                          BusinessDayConvention convention,
                                          const DayCounter& dayCounter,
-                                         Rate convexityAdjustment)
+                                         Rate convAdj)
     : RateHelper(price),
-      convAdj_(Handle<Quote>(boost::shared_ptr<Quote>(new
-                                            SimpleQuote(convexityAdjustment))))
+      convAdj_(Handle<Quote>(shared_ptr<Quote>(new SimpleQuote(convAdj))))
     {
         QL_REQUIRE(IMM::isIMMdate(immDate, false),
                    immDate << "is not a valid IMM date");
         earliestDate_ = immDate;
-        latestDate_ =
-            calendar.advance(earliestDate_, nMonths, Months, convention);
+        latestDate_ = calendar.advance(immDate, nMonths, Months, convention);
         yearFraction_ = dayCounter.yearFraction(earliestDate_, latestDate_);
+    }
+
+    FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
+                                         const Date& immDate,
+                                         const shared_ptr<IborIndex>& i,
+                                         const Handle<Quote>& convAdj)
+    : RateHelper(price), convAdj_(convAdj) {
+        QL_REQUIRE(IMM::isIMMdate(immDate, false),
+                   immDate << "is not a valid IMM date");
+        earliestDate_ = immDate;
+        const Calendar& cal = i->fixingCalendar();
+        latestDate_=cal.advance(immDate,i->tenor(),i->businessDayConvention());
+        yearFraction_=i->dayCounter().yearFraction(earliestDate_, latestDate_);
+
+        registerWith(convAdj);
+    }
+
+    FuturesRateHelper::FuturesRateHelper(Real price,
+                                         const Date& immDate,
+                                         const shared_ptr<IborIndex>& i,
+                                         Rate convAdj)
+    : RateHelper(price),
+      convAdj_(Handle<Quote>(shared_ptr<Quote>(new SimpleQuote(convAdj))))
+    {
+        QL_REQUIRE(IMM::isIMMdate(immDate, false),
+                   immDate << "is not a valid IMM date");
+        earliestDate_ = immDate;
+        const Calendar& cal = i->fixingCalendar();
+        latestDate_=cal.advance(immDate,i->tenor(),i->businessDayConvention());
+        yearFraction_=i->dayCounter().yearFraction(earliestDate_, latestDate_);
     }
 
     Real FuturesRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         Rate forwardRate = (termStructure_->discount(earliestDate_) /
             termStructure_->discount(latestDate_)-1.0)/yearFraction_;
-        Rate convAdj = convAdj_->value();
+        Rate convAdj = convAdj_.empty() ? 0.0 : convAdj_->value();
         QL_ENSURE(convAdj >= 0.0,
                   "Negative (" << convAdj <<
                   ") futures convexity adjustment");
@@ -106,7 +117,7 @@ namespace QuantLib {
     }
 
     Real FuturesRateHelper::convexityAdjustment() const {
-        return convAdj_->value();
+        return convAdj_.empty() ? 0.0 : convAdj_->value();
     }
 
     RelativeDateRateHelper::RelativeDateRateHelper(const Handle<Quote>& quote)
@@ -139,8 +150,9 @@ namespace QuantLib {
                                          Natural fixingDays,
                                          const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate), settlementDays_(settlementDays) {
-        index_ = boost::shared_ptr<IborIndex>(new
-            IborIndex("dummy", tenor, fixingDays,
+        iborIndex_ = shared_ptr<IborIndex>(new
+            IborIndex("no-fix", // never take fixing into account
+                      tenor, fixingDays,
                       Currency(), calendar, convention,
                       endOfMonth, dayCounter, termStructureHandle_));
         initializeDates();
@@ -155,34 +167,54 @@ namespace QuantLib {
                                          Natural fixingDays,
                                          const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate), settlementDays_(settlementDays) {
-        index_ = boost::shared_ptr<IborIndex>(new
-            IborIndex("dummy", tenor, fixingDays,
+        iborIndex_ = shared_ptr<IborIndex>(new
+            IborIndex("no-fix", // never take fixing into account
+                      tenor, fixingDays,
                       Currency(), calendar, convention,
                       endOfMonth, dayCounter, termStructureHandle_));
         initializeDates();
     }
 
+    DepositRateHelper::DepositRateHelper(const Handle<Quote>& rate,
+                                         const shared_ptr<IborIndex>& i)
+    : RelativeDateRateHelper(rate), settlementDays_(i->fixingDays()) {
+        iborIndex_ = shared_ptr<IborIndex>(new
+            IborIndex("no-fix", // never take fixing into account
+                      i->tenor(), i->fixingDays(), Currency(),
+                      i->fixingCalendar(), i->businessDayConvention(),
+                      i->endOfMonth(), i->dayCounter(), termStructureHandle_));
+        initializeDates();
+    }
+
+    DepositRateHelper::DepositRateHelper(Rate rate,
+                                         const shared_ptr<IborIndex>& i)
+    : RelativeDateRateHelper(rate), settlementDays_(i->fixingDays()) {
+        iborIndex_ = shared_ptr<IborIndex>(new
+            IborIndex("no-fix", // never take fixing into account
+                      i->tenor(), i->fixingDays(), Currency(),
+                      i->fixingCalendar(), i->businessDayConvention(),
+                      i->endOfMonth(), i->dayCounter(), termStructureHandle_));
+        initializeDates();
+    }
+
     Real DepositRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
-        return index_->fixing(fixingDate_, true);
+        return iborIndex_->fixing(fixingDate_, true);
     }
 
     void DepositRateHelper::setTermStructure(YieldTermStructure* t) {
         // no need to register---the index is not lazy
         termStructureHandle_.linkTo(
-                         boost::shared_ptr<YieldTermStructure>(t,no_deletion),
+                         shared_ptr<YieldTermStructure>(t,no_deletion),
                          false);
         RelativeDateRateHelper::setTermStructure(t);
     }
 
     void DepositRateHelper::initializeDates() {
-        // why not using index_->fixingDays instead of settlementDays_
-        earliestDate_ = index_->fixingCalendar().advance(
-            evaluationDate_, settlementDays_, Days);
-        latestDate_ = index_->maturityDate(earliestDate_);
-        // why not using index_->fixingDate
-        fixingDate_ = index_->fixingCalendar().advance(earliestDate_,
-            -static_cast<Integer>(index_->fixingDays()), Days);
+        earliestDate_ = iborIndex_->fixingCalendar().advance(
+            evaluationDate_, iborIndex_->fixingDays()*Days);
+        latestDate_ = iborIndex_->maturityDate(earliestDate_);
+        fixingDate_ = iborIndex_->fixingDate(earliestDate_);
     }
 
 
@@ -199,8 +231,8 @@ namespace QuantLib {
       settlementDays_(settlementDays) {
         QL_REQUIRE(monthsToEnd>monthsToStart,
                    "monthsToEnd must be grater than monthsToStart");
-        index_ = boost::shared_ptr<IborIndex>(new
-            IborIndex("dummy",
+        iborIndex_ = shared_ptr<IborIndex>(new
+            IborIndex("no-fix", // never take fixing into account
                       (monthsToEnd-monthsToStart)*Months,
                       fixingDays,
                       Currency(), calendar, convention,
@@ -221,8 +253,8 @@ namespace QuantLib {
       settlementDays_(settlementDays) {
         QL_REQUIRE(monthsToEnd>monthsToStart,
                    "monthsToEnd must be grater than monthsToStart");
-        index_ = boost::shared_ptr<IborIndex>(new
-            IborIndex("dummy",
+        iborIndex_ = shared_ptr<IborIndex>(new
+            IborIndex("no-fix", // never take fixing into account
                       (monthsToEnd-monthsToStart)*Months,
                       fixingDays,
                       Currency(), calendar, convention,
@@ -230,35 +262,60 @@ namespace QuantLib {
         initializeDates();
     }
 
+    FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
+                                 Natural monthsToStart,
+                                 const shared_ptr<IborIndex>& i)
+    : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart),
+      settlementDays_(i->fixingDays()) {
+        iborIndex_ = shared_ptr<IborIndex>(new
+            IborIndex("no-fix", // never take fixing into account
+                      i->tenor(), i->fixingDays(), Currency(),
+                      i->fixingCalendar(), i->businessDayConvention(),
+                      i->endOfMonth(), i->dayCounter(), termStructureHandle_));
+        initializeDates();
+    }
+
+    FraRateHelper::FraRateHelper(Rate rate,
+                                 Natural monthsToStart,
+                                 const shared_ptr<IborIndex>& i)
+    : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart),
+      settlementDays_(i->fixingDays()) {
+        iborIndex_ = shared_ptr<IborIndex>(new
+            IborIndex("no-fix", // never take fixing into account
+                      i->tenor(), i->fixingDays(), Currency(),
+                      i->fixingCalendar(), i->businessDayConvention(),
+                      i->endOfMonth(), i->dayCounter(), termStructureHandle_));
+        initializeDates();
+    }
+
     Real FraRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
-        return index_->fixing(fixingDate_, true);
+        return iborIndex_->fixing(fixingDate_, true);
     }
 
     void FraRateHelper::setTermStructure(YieldTermStructure* t) {
         // no need to register---the index is not lazy
         termStructureHandle_.linkTo(
-                         boost::shared_ptr<YieldTermStructure>(t,no_deletion),
+                         shared_ptr<YieldTermStructure>(t,no_deletion),
                          false);
         RelativeDateRateHelper::setTermStructure(t);
     }
 
     void FraRateHelper::initializeDates() {
-        // why not using index_->fixingDays instead of settlementDays_
-        Date settlement = index_->fixingCalendar().advance(evaluationDate_,
-                                                           settlementDays_,
-                                                           Days);
-        earliestDate_ = index_->fixingCalendar().advance(
-                               settlement, monthsToStart_, Months,
-                               index_->businessDayConvention(),
-                               index_->endOfMonth());
-        latestDate_ = index_->maturityDate(earliestDate_);
-        fixingDate_ = index_->fixingDate(earliestDate_);
+        Date settlement = iborIndex_->fixingCalendar().advance(
+            evaluationDate_, iborIndex_->fixingDays()*Days);
+        earliestDate_ = iborIndex_->fixingCalendar().advance(
+                               settlement,
+                               monthsToStart_*Months,
+                               iborIndex_->businessDayConvention(),
+                               iborIndex_->endOfMonth());
+        latestDate_ = iborIndex_->maturityDate(earliestDate_);
+        fixingDate_ = iborIndex_->fixingDate(earliestDate_);
     }
 
 
     SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
-                                   const boost::shared_ptr<SwapIndex>& swapIndex,
+                                   const shared_ptr<SwapIndex>& swapIndex,
                                    const Handle<Quote>& spread,
                                    const Period& fwdStart)
     : RelativeDateRateHelper(rate),
@@ -280,12 +337,13 @@ namespace QuantLib {
                                    Frequency fixedFrequency,
                                    BusinessDayConvention fixedConvention,
                                    const DayCounter& fixedDayCount,
-                                   const boost::shared_ptr<IborIndex>& iborIndex,
+                                   const shared_ptr<IborIndex>& iborIndex,
                                    const Handle<Quote>& spread,
                                    const Period& fwdStart)
     : RelativeDateRateHelper(rate),
       tenor_(tenor),
-      calendar_(calendar), fixedConvention_(fixedConvention),
+      calendar_(calendar),
+      fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
       iborIndex_(iborIndex),
@@ -301,12 +359,13 @@ namespace QuantLib {
                                    Frequency fixedFrequency,
                                    BusinessDayConvention fixedConvention,
                                    const DayCounter& fixedDayCount,
-                                   const boost::shared_ptr<IborIndex>& iborIndex,
+                                   const shared_ptr<IborIndex>& iborIndex,
                                    const Handle<Quote>& spread,
                                    const Period& fwdStart)
     : RelativeDateRateHelper(rate),
       tenor_(tenor),
-      calendar_(calendar), fixedConvention_(fixedConvention),
+      calendar_(calendar),
+      fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
       iborIndex_(iborIndex),
@@ -316,11 +375,28 @@ namespace QuantLib {
         initializeDates();
     }
 
+    SwapRateHelper::SwapRateHelper(Rate rate,
+                                   const shared_ptr<SwapIndex>& swapIndex,
+                                   const Handle<Quote>& spread,
+                                   const Period& fwdStart)
+    : RelativeDateRateHelper(rate),
+      tenor_(swapIndex->tenor()),
+      calendar_(swapIndex->fixingCalendar()),
+      fixedConvention_(swapIndex->fixedLegConvention()),
+      fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
+      fixedDayCount_(swapIndex->dayCounter()),
+      iborIndex_(swapIndex->iborIndex()),
+      spread_(spread), fwdStart_(fwdStart) {
+        registerWith(iborIndex_);               // take fixing into account
+        registerWith(spread_);
+        initializeDates();
+    }
+
     void SwapRateHelper::initializeDates() {
 
         // dummy ibor index with curve/swap arguments
-        boost::shared_ptr<IborIndex> clonedIborIndex(new
-            IborIndex(iborIndex_->familyName(),
+        shared_ptr<IborIndex> clonedIborIndex(new
+            IborIndex(iborIndex_->familyName(),  // take fixing into account
                       iborIndex_->tenor(),
                       iborIndex_->fixingDays(),
                       iborIndex_->currency(),
@@ -345,11 +421,11 @@ namespace QuantLib {
         // ...but due to adjustments, the last floating coupon might
         // need a later date for fixing
         #ifdef QL_USE_INDEXED_COUPON
-        boost::shared_ptr<FloatingRateCoupon> lastFloating =
+        shared_ptr<FloatingRateCoupon> lastFloating =
             boost::dynamic_pointer_cast<FloatingRateCoupon>(
                                                  swap_->floatingLeg().back());
         Date fixingValueDate = calendar_.advance(lastFloating->fixingDate(),
-                                                 iborIndex_->fixingDays(),Days);
+                                                 iborIndex_->fixingDays()*Days);
         Date endValueDate = calendar_.advance(fixingValueDate,
                                               iborIndex_->tenor(),
                                               iborIndex_->businessDayConvention(),
@@ -362,7 +438,7 @@ namespace QuantLib {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed
         termStructureHandle_.linkTo(
-                         boost::shared_ptr<YieldTermStructure>(t,no_deletion),
+                         shared_ptr<YieldTermStructure>(t,no_deletion),
                          false);
         RelativeDateRateHelper::setTermStructure(t);
     }
@@ -385,7 +461,7 @@ namespace QuantLib {
         return spread_.empty() ? 0.0 : spread_->value();
     }
 
-    boost::shared_ptr<VanillaSwap> SwapRateHelper::swap() const {
+    shared_ptr<VanillaSwap> SwapRateHelper::swap() const {
         return swap_;
     }
 
@@ -402,9 +478,9 @@ namespace QuantLib {
                           const Period& bmaPeriod,
                           BusinessDayConvention bmaConvention,
                           const DayCounter& bmaDayCount,
-                          const boost::shared_ptr<BMAIndex>& bmaIndex,
+                          const shared_ptr<BMAIndex>& bmaIndex,
                           // libor leg
-                          const boost::shared_ptr<IborIndex>& index)
+                          const shared_ptr<IborIndex>& index)
     : RelativeDateRateHelper(liborFraction),
       tenor_(tenor), settlementDays_(settlementDays),
       calendar_(calendar),
@@ -412,8 +488,8 @@ namespace QuantLib {
       bmaConvention_(bmaConvention),
       bmaDayCount_(bmaDayCount),
       bmaIndex_(bmaIndex),
-      index_(index) {
-        registerWith(index_);
+      iborIndex_(index) {
+        registerWith(iborIndex_);
         registerWith(bmaIndex_);
         initializeDates();
     }
@@ -426,7 +502,7 @@ namespace QuantLib {
         Date maturity = earliestDate_ + tenor_;
 
         // dummy BMA index with curve/swap arguments
-        boost::shared_ptr<BMAIndex> clonedIndex(
+        shared_ptr<BMAIndex> clonedIndex(
                                           new BMAIndex(termStructureHandle_));
 
         Schedule bmaSchedule = MakeSchedule(earliestDate_,
@@ -438,23 +514,23 @@ namespace QuantLib {
         Schedule liborSchedule =
             MakeSchedule(earliestDate_,
                          maturity,
-                         index_->tenor(),
-                         index_->fixingCalendar(),
-                         index_->businessDayConvention())
-            .endOfMonth(index_->endOfMonth())
+                         iborIndex_->tenor(),
+                         iborIndex_->fixingCalendar(),
+                         iborIndex_->businessDayConvention())
+            .endOfMonth(iborIndex_->endOfMonth())
             .backwards();
 
-        swap_ = boost::shared_ptr<BMASwap>(new BMASwap(BMASwap::Payer, 100.0,
-                                                       liborSchedule,
-                                                       0.75, // arbitrary
-                                                       0.0,
-                                                       index_,
-                                                       index_->dayCounter(),
-                                                       bmaSchedule,
-                                                       clonedIndex,
-                                                       bmaDayCount_));
-        swap_->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                         new DiscountingSwapEngine(index_->termStructure())));
+        swap_ = shared_ptr<BMASwap>(new BMASwap(BMASwap::Payer, 100.0,
+                                                liborSchedule,
+                                                0.75, // arbitrary
+                                                0.0,
+                                                iborIndex_,
+                                                iborIndex_->dayCounter(),
+                                                bmaSchedule,
+                                                clonedIndex,
+                                                bmaDayCount_));
+        swap_->setPricingEngine(shared_ptr<PricingEngine>(new
+            DiscountingSwapEngine(iborIndex_->termStructure())));
 
         Date d = calendar_.adjust(swap_->maturityDate(), Following);
         Weekday w = d.weekday();
@@ -469,7 +545,7 @@ namespace QuantLib {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed
         termStructureHandle_.linkTo(
-                         boost::shared_ptr<YieldTermStructure>(t,no_deletion),
+                         shared_ptr<YieldTermStructure>(t,no_deletion),
                          false);
         RelativeDateRateHelper::setTermStructure(t);
     }
