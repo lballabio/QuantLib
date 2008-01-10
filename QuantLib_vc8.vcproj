@@ -1003,6 +1003,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\indexes\ibor\seklibor.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\indexes\ibor\tibor.hpp"
 					>
 				</File>
