@@ -26,7 +26,6 @@
 #define quantlib_dkk_libor_hpp
 
 #include <ql/indexes/ibor/libor.hpp>
-#include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/calendars/denmark.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/currencies/europe.hpp>
@@ -42,13 +41,14 @@ namespace QuantLib {
       public:
         DKKLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>(),
-                 Natural settlementDays = 2)
-        : Libor("DKKLibor", tenor, settlementDays, DKKCurrency(),
-                Denmark(), Actual360(), h) {}
+                                    Handle<YieldTermStructure>())
+        : Libor("DKKLibor", tenor,
+                settlementDays,
+                DKKCurrency(),
+                Denmark(),
+                Actual360(), h) {}
     };
 
 }
-
 
 #endif

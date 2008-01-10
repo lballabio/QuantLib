@@ -59,7 +59,9 @@ namespace QuantLib {
 
     EURLibor::EURLibor(const Period& tenor,
                        const Handle<YieldTermStructure>& h)
-    : IborIndex("EURLibor", tenor, 2, EURCurrency(),
+    : IborIndex("EURLibor", tenor,
+                2,
+                EURCurrency(),
                 // http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1412 :
                 // JoinBusinessDays is the fixing calendar for
                 // all indexes but o/n
@@ -68,7 +70,11 @@ namespace QuantLib {
                               JoinBusinessDays),
                 eurliborConvention(tenor), eurliborEOM(tenor),
                 Actual360(), h),
-      target_(TARGET()) {}
+      target_(TARGET()) {
+        QL_REQUIRE(tenor.units()!=Days,
+                   "for daily tenors (" << tenor <<
+                   ") dedicated DailyTenor constructor must be used");
+    }
 
     Date EURLibor::valueDate(const Date& fixingDate) const {
 
@@ -85,13 +91,20 @@ namespace QuantLib {
         // http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1412 :
         // In the case of EUR only, maturity dates will be based on days in
         // which the Target system is open.
-        if (endOfMonth() && target_.isEndOfMonth(valueDate)) {
-            Date d = valueDate + tenor_;
-            Date last = Date::endOfMonth(d);
-            return target_.adjust(last, Preceding);
-        } else {
-            return target_.advance(valueDate, tenor_, convention_);
-        }
+        return target_.advance(valueDate, tenor_, convention_, endOfMonth());
     }
+
+    DailyTenorEURLibor::DailyTenorEURLibor(Natural settlementDays,
+                                           const Handle<YieldTermStructure>& h)
+    : IborIndex("EURLibor", 1*Days,
+                settlementDays,
+                EURCurrency(),
+                // http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1412 :
+                // no o/n or s/n fixings (as the case may be) will take place
+                // when the principal centre of the currency concerned is
+                // closed but London is open on the fixing day.
+                TARGET(),
+                eurliborConvention(1*Days), eurliborEOM(1*Days),
+                Actual360(), h) {}
 
 }

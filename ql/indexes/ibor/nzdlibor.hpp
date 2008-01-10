@@ -26,7 +26,6 @@
 #define quantlib_nzd_libor_hpp
 
 #include <ql/indexes/ibor/libor.hpp>
-#include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/calendars/newzealand.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/currencies/oceania.hpp>
@@ -42,13 +41,14 @@ namespace QuantLib {
       public:
         NZDLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>(),
-                 Natural settlementDays = 2)
-        : Libor("NZDLibor", tenor, settlementDays, NZDCurrency(),
-                NewZealand(), Actual360(), h) {}
+                                    Handle<YieldTermStructure>())
+        : Libor("NZDLibor", tenor,
+                2,
+                NZDCurrency(),
+                NewZealand(),
+                Actual360(), h) {}
     };
 
 }
-
 
 #endif

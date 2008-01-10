@@ -22,6 +22,7 @@
 #include <ql/indexes/ibor/libor.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
+#include <ql/currencies/europe.hpp>
 
 namespace QuantLib {
 
@@ -73,7 +74,13 @@ namespace QuantLib {
                 dayCounter, h),
       jointCalendar_(JointCalendar(UnitedKingdom(UnitedKingdom::Exchange),
                                    financialCenterCalendar,
-                                   JoinHolidays)) {}
+                                   JoinHolidays)) {
+        QL_REQUIRE(tenor.units()!=Days,
+                   "for daily tenors (" << tenor <<
+                   ") dedicated DailyTenor constructor must be used");
+        QL_REQUIRE(currency!=EURCurrency(),
+                   "for EUR Libor dedicated EurLibor constructor must be used");
+    }
 
     Date Libor::valueDate(const Date& fixingDate) const {
 
@@ -92,21 +99,37 @@ namespace QuantLib {
     }
 
     Date Libor::maturityDate(const Date& valueDate) const {
-        if (endOfMonth() && jointCalendar_.isEndOfMonth(valueDate)) {
-            // Where a deposit is made on the final business day of a
-            // particular calendar month, the maturity of the deposit shall
-            // be on the final business day of the month in which it matures
-            // (not the corresponding date in the month of maturity). Or in
-            // other words, in line with market convention, BBA LIBOR rates
-            // are dealt on an end-end basis. For instance a one month
-            // deposit for value 28th February would mature on 31st March,
-            // not the 28th of March.
-            Date d = valueDate + tenor_;
-            Date last = Date::endOfMonth(d);
-            return jointCalendar_.adjust(last, Preceding);
-        } else {
-            return jointCalendar_.advance(valueDate, tenor_, convention_);
-        }
+        // Where a deposit is made on the final business day of a
+        // particular calendar month, the maturity of the deposit shall
+        // be on the final business day of the month in which it matures
+        // (not the corresponding date in the month of maturity). Or in
+        // other words, in line with market convention, BBA LIBOR rates
+        // are dealt on an end-end basis. For instance a one month
+        // deposit for value 28th February would mature on 31st March,
+        // not the 28th of March.
+        return jointCalendar_.advance(valueDate, tenor_, convention_,
+                                                         endOfMonth());
+    }
+
+    DailyTenorLibor::DailyTenorLibor(
+                 const std::string& familyName,
+                 Natural settlementDays,
+                 const Currency& currency,
+                 const Calendar& financialCenterCalendar,
+                 const DayCounter& dayCounter,
+                 const Handle<YieldTermStructure>& h)
+    : IborIndex(familyName, 1*Days, settlementDays, currency,
+                // http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1412 :
+                // no o/n or s/n fixings (as the case may be) will take place
+                // when the principal centre of the currency concerned is
+                // closed but London is open on the fixing day.
+                JointCalendar(UnitedKingdom(UnitedKingdom::Exchange),
+                              financialCenterCalendar,
+                              JoinHolidays),
+                liborConvention(1*Days), liborEOM(1*Days),
+                dayCounter, h) {
+        QL_REQUIRE(currency!=EURCurrency(),
+                   "for EUR Libor dedicated EurLibor constructor must be used");
     }
 
 }

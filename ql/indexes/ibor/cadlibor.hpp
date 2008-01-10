@@ -26,7 +26,6 @@
 #define quantlib_cad_libor_hpp
 
 #include <ql/indexes/ibor/libor.hpp>
-#include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/calendars/canada.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/currencies/america.hpp>
@@ -45,13 +44,26 @@ namespace QuantLib {
       public:
         CADLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>(),
-                 Natural settlementDays = 2)
-        : Libor("CADLibor", tenor, settlementDays, CADCurrency(),
-                Canada(), Actual360(), h) {}
+                                    Handle<YieldTermStructure>())
+        : Libor("CADLibor", tenor,
+                2,
+                CADCurrency(),
+                Canada(),
+                Actual360(), h) {}
+    };
+
+    //! Overnight %CAD %Libor index
+    class CADLiborON : public DailyTenorLibor {
+      public:
+        CADLiborON(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : DailyTenorLibor("CADLibor",
+                          0,
+                          CADCurrency(),
+                          Canada(),
+                          Actual360(), h) {}
     };
 
 }
-
 
 #endif

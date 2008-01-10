@@ -26,7 +26,6 @@
 #define quantlib_usd_libor_hpp
 
 #include <ql/indexes/ibor/libor.hpp>
-#include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/currencies/america.hpp>
@@ -42,13 +41,25 @@ namespace QuantLib {
       public:
         USDLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>(),
-                 Natural settlementDays = 2)
-        : Libor("USDLibor", tenor, settlementDays, USDCurrency(),
-                UnitedStates(UnitedStates::NYSE), Actual360(), h) {}
+                                    Handle<YieldTermStructure>())
+        : Libor("USDLibor", tenor,
+                2,
+                USDCurrency(),
+                UnitedStates(UnitedStates::NYSE),
+                Actual360(), h) {}
     };
 
+    //! Overnight %USD %Libor index
+    class USDLiborON : public DailyTenorLibor {
+      public:
+        USDLiborON(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : DailyTenorLibor("USDLibor",
+                          0,
+                          USDCurrency(),
+                          UnitedStates(UnitedStates::NYSE),
+                          Actual360(), h) {}
+    };
 }
-
 
 #endif

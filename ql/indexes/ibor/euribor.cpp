@@ -31,7 +31,6 @@ namespace QuantLib {
         BusinessDayConvention euriborConvention(const Period& p) {
             switch (p.units()) {
               case Days:
-                QL_FAIL("daily-tenor Euribors are not yet supported");
               case Weeks:
                 return Following;
               case Months:
@@ -60,17 +59,40 @@ namespace QuantLib {
     Euribor::Euribor(const Period& tenor,
                      const Handle<YieldTermStructure>& h)
     : IborIndex("Euribor", tenor,
-                2, // settlementDays
+                2, // settlement days
                 EURCurrency(), TARGET(),
                 euriborConvention(tenor), euriborEOM(tenor),
-                Actual360(), h) {}
+                Actual360(), h) {
+        QL_REQUIRE(tenor.units()!=Days,
+                   "for daily tenors (" << tenor <<
+                   ") dedicated DailyTenor constructor must be used");
+    }
 
     Euribor365::Euribor365(const Period& tenor,
                            const Handle<YieldTermStructure>& h)
     : IborIndex("Euribor365", tenor,
-                2, // settlementDays
+                2, // settlement days
                 EURCurrency(), TARGET(),
                 euriborConvention(tenor), euriborEOM(tenor),
-                Actual365Fixed(), h) {}
+                Actual365Fixed(), h) {
+        QL_REQUIRE(tenor.units()!=Days,
+                   "for daily tenors (" << tenor <<
+                   ") dedicated DailyTenor constructor must be used");
+    }
 
+    DailyTenorEuribor::DailyTenorEuribor(Natural settlementDays,
+                                         const Handle<YieldTermStructure>& h)
+    : IborIndex("Euribor", 1*Days,
+                settlementDays,
+                EURCurrency(), TARGET(),
+                euriborConvention(1*Days), euriborEOM(1*Days),
+                Actual360(), h) {}
+
+    DailyTenorEuribor365::DailyTenorEuribor365(Natural settlementDays,
+                                               const Handle<YieldTermStructure>& h)
+    : IborIndex("Euribor365", 1*Days,
+                settlementDays,
+                EURCurrency(), TARGET(),
+                euriborConvention(1*Days), euriborEOM(1*Days),
+                Actual365Fixed(), h) {}
 }

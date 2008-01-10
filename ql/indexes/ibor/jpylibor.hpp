@@ -45,10 +45,12 @@ namespace QuantLib {
       public:
         JPYLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>(),
-                 Natural settlementDays = 2)
-        : Libor("JPYLibor", tenor, settlementDays, JPYCurrency(),
-                Japan(), Actual360(), h) {}
+                                    Handle<YieldTermStructure>())
+        : Libor("JPYLibor", tenor,
+                2,
+                JPYCurrency(),
+                Japan(),
+                Actual360(), h) {}
     };
 
 }

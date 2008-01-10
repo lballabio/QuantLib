@@ -26,7 +26,6 @@
 #define quantlib_chf_libor_hpp
 
 #include <ql/indexes/ibor/libor.hpp>
-#include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/calendars/switzerland.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/currencies/europe.hpp>
@@ -45,13 +44,14 @@ namespace QuantLib {
       public:
         CHFLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>(),
-                 Natural settlementDays = 2)
-        : Libor("CHFLibor", tenor, settlementDays, CHFCurrency(),
-                Switzerland(), Actual360(), h) {}
+                                    Handle<YieldTermStructure>())
+        : Libor("CHFLibor", tenor,
+                settlementDays,
+                CHFCurrency(),
+                Switzerland(),
+                Actual360(), h) {}
     };
 
 }
-
 
 #endif

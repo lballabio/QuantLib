@@ -26,7 +26,6 @@
 #define quantlib_aud_libor_hpp
 
 #include <ql/indexes/ibor/libor.hpp>
-#include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/calendars/australia.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/currencies/oceania.hpp>
@@ -42,13 +41,14 @@ namespace QuantLib {
       public:
         AUDLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
-                                     Handle<YieldTermStructure>(),
-                 Natural settlementDays = 2)
-        : Libor("AUDLibor", tenor, settlementDays, AUDCurrency(),
-                Australia(), Actual360(), h) {}
+                                     Handle<YieldTermStructure>())
+        : Libor("AUDLibor", tenor,
+                2,
+                AUDCurrency(),
+                Australia(),
+                Actual360(), h) {}
     };
 
 }
-
 
 #endif

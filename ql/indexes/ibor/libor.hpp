@@ -30,12 +30,10 @@
 
 namespace QuantLib {
 
-    //! base class for all BBA LIBOR indexes but the EUR ones
+    //! base class for all BBA LIBOR indexes but the EUR, O/N, and S/N ones
     /*! LIBOR fixed by BBA.
 
         See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
-
-        \warning This is not a valid base class for the O/N, S/N index
     */
     class Libor : public IborIndex {
       public:
@@ -45,7 +43,8 @@ namespace QuantLib {
               const Currency& currency,
               const Calendar& financialCenterCalendar,
               const DayCounter& dayCounter,
-              const Handle<YieldTermStructure>& h);
+              const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>());
         /*! \name Date calculations
 
             see http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1412
@@ -56,6 +55,22 @@ namespace QuantLib {
         // @}
       private:
         Calendar jointCalendar_;
+    };
+
+    //! base class for O/N-S/N BBA LIBOR indexes but the EUR ones
+    /*! One day deposit LIBOR fixed by BBA.
+
+        See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
+    */
+    class DailyTenorLibor : public IborIndex {
+      public:
+        DailyTenorLibor(const std::string& familyName,
+                        Natural settlementDays,
+                        const Currency& currency,
+                        const Calendar& financialCenterCalendar,
+                        const DayCounter& dayCounter,
+                        const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>());
     };
 
 }

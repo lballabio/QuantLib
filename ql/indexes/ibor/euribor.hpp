@@ -44,7 +44,6 @@ namespace QuantLib {
                                     Handle<YieldTermStructure>());
     };
 
-
     //! Actual/365 %Euribor index
     /*! Euribor rate adjusted for the mismatch between the actual/360
         convention used for Euribor and the actual/365 convention
@@ -55,6 +54,33 @@ namespace QuantLib {
         Euribor365(const Period& tenor,
                    const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
+    };
+
+
+    //! Daily tenor %Euribor index
+    /*! Euribor rate fixed by the ECB.
+
+        \warning This is the rate fixed by the ECB. Use EurLibor
+                 if you're interested in the London fixing by BBA.
+    */
+    class DailyTenorEuribor : public IborIndex {
+      public:
+        DailyTenorEuribor(Natural settlementDays,
+                          const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>());
+    };
+
+
+    //! Daily tenor Actual/365 %Euribor index
+    /*! Euribor rate adjusted for the mismatch between the actual/360
+        convention used for Euribor and the actual/365 convention
+        previously used by a few pre-EUR currencies.
+    */
+    class DailyTenorEuribor365 : public IborIndex {
+      public:
+        DailyTenorEuribor365(Natural settlementDays,
+                             const Handle<YieldTermStructure>& h =
+                                       Handle<YieldTermStructure>());
     };
 
 
@@ -300,6 +326,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

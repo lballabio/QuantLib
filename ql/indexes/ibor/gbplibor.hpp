@@ -42,12 +42,25 @@ namespace QuantLib {
         GBPLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Libor("GBPLibor", tenor, 0, GBPCurrency(),
+        : Libor("GBPLibor", tenor,
+                0,
+                GBPCurrency(),
                 UnitedKingdom(UnitedKingdom::Exchange),
                 Actual365Fixed(), h) {}
     };
 
-}
+    //! Overnight %GBP %Libor index
+    class GBPLiborON : public DailyTenorLibor {
+      public:
+        GBPLiborON(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : DailyTenorLibor("GBPLibor",
+                          0,
+                          GBPCurrency(),
+                          UnitedKingdom(UnitedKingdom::Exchange),
+                          Actual365Fixed(), h) {}
+    };
 
+}
 
 #endif
