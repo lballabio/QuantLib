@@ -149,7 +149,7 @@ namespace QuantLib {
                                          bool endOfMonth,
                                          Natural fixingDays,
                                          const DayCounter& dayCounter)
-    : RelativeDateRateHelper(rate), settlementDays_(settlementDays) {
+    : RelativeDateRateHelper(rate) {
         iborIndex_ = shared_ptr<IborIndex>(new
             IborIndex("no-fix", // never take fixing into account
                       tenor, fixingDays,
@@ -166,7 +166,7 @@ namespace QuantLib {
                                          bool endOfMonth,
                                          Natural fixingDays,
                                          const DayCounter& dayCounter)
-    : RelativeDateRateHelper(rate), settlementDays_(settlementDays) {
+    : RelativeDateRateHelper(rate) {
         iborIndex_ = shared_ptr<IborIndex>(new
             IborIndex("no-fix", // never take fixing into account
                       tenor, fixingDays,
@@ -177,7 +177,7 @@ namespace QuantLib {
 
     DepositRateHelper::DepositRateHelper(const Handle<Quote>& rate,
                                          const shared_ptr<IborIndex>& i)
-    : RelativeDateRateHelper(rate), settlementDays_(i->fixingDays()) {
+    : RelativeDateRateHelper(rate) {
         iborIndex_ = shared_ptr<IborIndex>(new
             IborIndex("no-fix", // never take fixing into account
                       i->tenor(), i->fixingDays(), Currency(),
@@ -188,7 +188,7 @@ namespace QuantLib {
 
     DepositRateHelper::DepositRateHelper(Rate rate,
                                          const shared_ptr<IborIndex>& i)
-    : RelativeDateRateHelper(rate), settlementDays_(i->fixingDays()) {
+    : RelativeDateRateHelper(rate) {
         iborIndex_ = shared_ptr<IborIndex>(new
             IborIndex("no-fix", // never take fixing into account
                       i->tenor(), i->fixingDays(), Currency(),
@@ -227,8 +227,7 @@ namespace QuantLib {
                                  bool endOfMonth,
                                  Natural fixingDays,
                                  const DayCounter& dayCounter)
-    : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart),
-      settlementDays_(settlementDays) {
+    : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart) {
         QL_REQUIRE(monthsToEnd>monthsToStart,
                    "monthsToEnd must be grater than monthsToStart");
         iborIndex_ = shared_ptr<IborIndex>(new
@@ -249,8 +248,7 @@ namespace QuantLib {
                                  bool endOfMonth,
                                  Natural fixingDays,
                                  const DayCounter& dayCounter)
-    : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart),
-      settlementDays_(settlementDays) {
+    : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart) {
         QL_REQUIRE(monthsToEnd>monthsToStart,
                    "monthsToEnd must be grater than monthsToStart");
         iborIndex_ = shared_ptr<IborIndex>(new
@@ -265,8 +263,7 @@ namespace QuantLib {
     FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
                                  Natural monthsToStart,
                                  const shared_ptr<IborIndex>& i)
-    : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart),
-      settlementDays_(i->fixingDays()) {
+    : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart) {
         iborIndex_ = shared_ptr<IborIndex>(new
             IborIndex("no-fix", // never take fixing into account
                       i->tenor(), i->fixingDays(), Currency(),
@@ -278,8 +275,7 @@ namespace QuantLib {
     FraRateHelper::FraRateHelper(Rate rate,
                                  Natural monthsToStart,
                                  const shared_ptr<IborIndex>& i)
-    : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart),
-      settlementDays_(i->fixingDays()) {
+    : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart) {
         iborIndex_ = shared_ptr<IborIndex>(new
             IborIndex("no-fix", // never take fixing into account
                       i->tenor(), i->fixingDays(), Currency(),

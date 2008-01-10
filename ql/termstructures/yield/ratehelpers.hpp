@@ -42,7 +42,7 @@ namespace QuantLib {
 
     typedef BootstrapHelper<YieldTermStructure> RateHelper;
 
-    //! Rate helper for bootstrapping over interest-rate futures prices
+    //! Rate helper for bootstrapping over IborIndex futures prices
     class FuturesRateHelper : public RateHelper {
       public:
         FuturesRateHelper(const Handle<Quote>& price,
@@ -129,7 +129,6 @@ namespace QuantLib {
       private:
         void initializeDates();
         Date fixingDate_;
-        Natural settlementDays_;
         boost::shared_ptr<IborIndex> iborIndex_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
@@ -171,7 +170,6 @@ namespace QuantLib {
         void initializeDates();
         Date fixingDate_;
         Natural monthsToStart_;
-        Natural settlementDays_;
         boost::shared_ptr<IborIndex> iborIndex_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
@@ -247,7 +245,7 @@ namespace QuantLib {
                           BusinessDayConvention bmaConvention,
                           const DayCounter& bmaDayCount,
                           const boost::shared_ptr<BMAIndex>& bmaIndex,
-                          // libor leg
+                          // ibor leg
                           const boost::shared_ptr<IborIndex>& index);
         //! \name RateHelper interface
         //@{
