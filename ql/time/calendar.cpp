@@ -101,19 +101,18 @@ namespace QuantLib {
         } else {
             Date d1 = d + n*unit;
 
-            if (endOfMonth && (unit==Months || unit==Years)
-                           && isEndOfMonth(d)) {
+            // we are sure the unit is Months or Years
+            if (endOfMonth && isEndOfMonth(d))
                 return Calendar::endOfMonth(d1);
-            }
 
             return adjust(d1, c);
         }
     }
 
     Date Calendar::advance(const Date & d,
-                                  const Period & p,
-                                  BusinessDayConvention c,
-                                  bool endOfMonth) const {
+                           const Period & p,
+                           BusinessDayConvention c,
+                           bool endOfMonth) const {
         return advance(d, p.length(), p.units(), c, endOfMonth);
     }
 
