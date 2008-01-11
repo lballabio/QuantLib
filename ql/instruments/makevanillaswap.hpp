@@ -50,6 +50,8 @@ namespace QuantLib {
         MakeVanillaSwap& withType(VanillaSwap::Type type);
         MakeVanillaSwap& withNominal(Real n);
         MakeVanillaSwap& withEffectiveDate(const Date&);
+        MakeVanillaSwap& withTerminationDate(const Date&);
+        MakeVanillaSwap& withRule(DateGeneration::Rule r);
 
         MakeVanillaSwap& withFixedLegTenor(const Period& t);
         MakeVanillaSwap& withFixedLegCalendar(const Calendar& cal);
@@ -82,7 +84,7 @@ namespace QuantLib {
         Rate fixedRate_;
         Period forwardStart_;
 
-        Date effectiveDate_;
+        Date effectiveDate_, terminationDate_;
         Calendar fixedCalendar_, floatCalendar_;
 
         VanillaSwap::Type type_;

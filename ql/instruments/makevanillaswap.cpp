@@ -70,16 +70,20 @@ namespace QuantLib {
             startDate = spotDate+forwardStart_;
         }
 
-        Date terminationDate = startDate+swapTenor_;
+        Date endDate;
+        if (terminationDate_ != Date())
+            endDate = terminationDate_;
+        else
+            endDate = startDate+swapTenor_;
 
-        Schedule fixedSchedule(startDate, terminationDate,
+        Schedule fixedSchedule(startDate, endDate,
                                fixedTenor_, fixedCalendar_,
                                fixedConvention_,
                                fixedTerminationDateConvention_,
                                fixedRule_, fixedEndOfMonth_,
                                fixedFirstDate_, fixedNextToLastDate_);
 
-        Schedule floatSchedule(startDate, terminationDate,
+        Schedule floatSchedule(startDate, endDate,
                                floatTenor_, floatCalendar_,
                                floatConvention_,
                                floatTerminationDateConvention_,
@@ -128,6 +132,18 @@ namespace QuantLib {
     MakeVanillaSwap&
     MakeVanillaSwap::withEffectiveDate(const Date& effectiveDate) {
         effectiveDate_ = effectiveDate;
+        return *this;
+    }
+
+    MakeVanillaSwap&
+    MakeVanillaSwap::withTerminationDate(const Date& terminationDate) {
+        terminationDate_ = terminationDate;
+        return *this;
+    }
+
+    MakeVanillaSwap& MakeVanillaSwap::withRule(DateGeneration::Rule r) {
+        fixedRule_ = r;
+        floatRule_ = r;
         return *this;
     }
 
