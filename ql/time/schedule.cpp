@@ -60,7 +60,7 @@ namespace QuantLib {
                    << ") later than or equal to termination date ("
                    << terminationDate << ")");
 
-        if (tenor.units()==0)
+        if (tenor.length()==0)
             rule_ = DateGeneration::Zero;
         else
             QL_REQUIRE(tenor.units()>0,
