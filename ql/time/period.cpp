@@ -91,25 +91,26 @@ namespace QuantLib {
     }
 
     void Period::normalize() {
-        switch (units_) {
-          case Days:
-            if (!(length_%7)) {
-                length_/=7;
-                units_ = Weeks;
+        if (length_!=0)
+            switch (units_) {
+              case Days:
+                if (!(length_%7)) {
+                    length_/=7;
+                    units_ = Weeks;
+                }
+                break;
+              case Months:
+                if (!(length_%12)) {
+                    length_/=12;
+                    units_ = Years;
+                }
+                break;
+              case Weeks:
+              case Years:
+                break;
+              default:
+                QL_FAIL("unknown time unit (" << Integer(units_));
             }
-            break;
-          case Months:
-            if (!(length_%12)) {
-                length_/=12;
-                units_ = Years;
-            }
-            break;
-          case Weeks:
-          case Years:
-            break;
-          default:
-            QL_FAIL("unknown time unit (" << Integer(units_));
-        }
     }
 
     Period& Period::operator+=(const Period& p) {
