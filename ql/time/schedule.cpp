@@ -63,7 +63,7 @@ namespace QuantLib {
         if (tenor.length()==0)
             rule_ = DateGeneration::Zero;
         else
-            QL_REQUIRE(tenor.units()>0,
+            QL_REQUIRE(tenor.length()>0,
                        "non positive tenor (" << tenor << ") not allowed");
 
 
