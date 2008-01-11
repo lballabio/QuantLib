@@ -204,13 +204,12 @@ void setup() {
     boost::shared_ptr<IborIndex> euribor6m(new Euribor6M);
     for (Size i=0; i<deposits; i++) {
         Handle<Quote> r(rates[i]);
-        instruments[i] = boost::shared_ptr<RateHelper>(
-              new DepositRateHelper(r, depositData[i].n*depositData[i].units,
-                                    settlementDays, calendar,
-                                    euribor6m->businessDayConvention(),
-                                    euribor6m->endOfMonth(),
-                                    euribor6m->fixingDays(),
-                                    euribor6m->dayCounter()));
+        instruments[i] = boost::shared_ptr<RateHelper>(new
+            DepositRateHelper(r, depositData[i].n*depositData[i].units,
+                              euribor6m->fixingDays(), calendar,
+                              euribor6m->businessDayConvention(),
+                              euribor6m->endOfMonth(),
+                              euribor6m->dayCounter()));
     }
     for (Size i=0; i<swaps; i++) {
         Handle<Quote> r(rates[i+deposits]);
@@ -230,7 +229,6 @@ void setup() {
                                 euribor3m.fixingCalendar(),
                                 euribor3m.businessDayConvention(),
                                 euribor3m.endOfMonth(),
-                                euribor3m.fixingDays(),
                                 euribor3m.dayCounter()));
     }
 
@@ -247,11 +245,11 @@ void setup() {
                                 DateGeneration::Backward, false);
         bondHelpers[i] = boost::shared_ptr<RateHelper>(new
             FixedRateBondHelper(p,
-                                  bondSettlementDays,
-                                  schedules[i],
-                                  coupons, bondDayCounter,
-                                  bondConvention,
-                                  bondRedemption, issue));
+                                bondSettlementDays,
+                                bondRedemption, schedules[i],
+                                coupons, bondDayCounter,
+                                bondConvention,
+                                bondRedemption, issue));
     }
 }
 

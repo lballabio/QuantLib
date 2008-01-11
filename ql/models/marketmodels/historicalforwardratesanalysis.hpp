@@ -86,7 +86,6 @@ namespace QuantLib {
                                   (*ibor)->fixingCalendar(),
                                   (*ibor)->businessDayConvention(),
                                   (*ibor)->endOfMonth(),
-                                  (*ibor)->fixingDays(),
                                   (*ibor)->dayCounter())));
         }
 

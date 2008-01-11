@@ -81,12 +81,12 @@ struct CommonVars {
 
         std::vector<boost::shared_ptr<RateHelper> > instruments(deposits+swaps);
         for (Size i=0; i<deposits; i++) {
-            instruments[i] = boost::shared_ptr<RateHelper>(
-                 new DepositRateHelper(depositData[i].rate/100,
-                                       depositData[i].n*depositData[i].units,
-                                       settlementDays, calendar,
-                                       ModifiedFollowing, true,
-                                       settlementDays, Actual360()));
+            instruments[i] = boost::shared_ptr<RateHelper>(new
+                DepositRateHelper(depositData[i].rate/100,
+                                  depositData[i].n*depositData[i].units,
+                                  settlementDays, calendar,
+                                  ModifiedFollowing, true,
+                                  Actual360()));
         }
         boost::shared_ptr<IborIndex> index(new IborIndex("dummy",
                                                          6*Months,

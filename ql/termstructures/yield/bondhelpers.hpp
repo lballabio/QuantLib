@@ -39,6 +39,7 @@ namespace QuantLib {
       public:
         FixedRateBondHelper(const Handle<Quote>& cleanPrice,
                             Natural settlementDays,
+                            Real faceAmount,
                             const Schedule& schedule,
                             const std::vector<Rate>& coupons,
                             const DayCounter& dayCounter,

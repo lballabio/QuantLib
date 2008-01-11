@@ -33,6 +33,7 @@ namespace QuantLib {
     FixedRateBondHelper::FixedRateBondHelper(
                                     const Handle<Quote>& cleanPrice,
                                     Natural settlementDays,
+                                    Real faceAmount,
                                     const Schedule& schedule,
                                     const std::vector<Rate>& coupons,
                                     const DayCounter& dayCounter,
@@ -42,7 +43,7 @@ namespace QuantLib {
     : BootstrapHelper<YieldTermStructure>(cleanPrice) {
 
         bond_ = boost::shared_ptr<FixedRateBond>(new
-            FixedRateBond(settlementDays, 100.0, schedule,
+            FixedRateBond(settlementDays, faceAmount, schedule,
                           coupons, dayCounter, paymentConvention,
                           redemption, issueDate));
 

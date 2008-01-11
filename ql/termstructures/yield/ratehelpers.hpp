@@ -48,6 +48,7 @@ namespace QuantLib {
                           Size nMonths,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
+                          bool endOfMonth,
                           const DayCounter& dayCounter,
                           const Handle<Quote>& convexityAdjustment = Handle<Quote>());
         FuturesRateHelper(Real price,
@@ -55,6 +56,7 @@ namespace QuantLib {
                           Size nMonths,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
+                          bool endOfMonth,
                           const DayCounter& dayCounter,
                           Rate convexityAdjustment = 0.0);
         FuturesRateHelper(const Handle<Quote>& price,
@@ -101,19 +103,17 @@ namespace QuantLib {
       public:
         DepositRateHelper(const Handle<Quote>& rate,
                           const Period& tenor,
-                          Natural settlementDays,
+                          Natural fixingDays,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           bool endOfMonth,
-                          Natural fixingDays,
                           const DayCounter& dayCounter);
         DepositRateHelper(Rate rate,
                           const Period& tenor,
-                          Natural settlementDays,
+                          Natural fixingDays,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           bool endOfMonth,
-                          Natural fixingDays,
                           const DayCounter& dayCounter);
         DepositRateHelper(const Handle<Quote>& rate,
                           const boost::shared_ptr<IborIndex>& iborIndex);
@@ -138,20 +138,18 @@ namespace QuantLib {
         FraRateHelper(const Handle<Quote>& rate,
                       Natural monthsToStart,
                       Natural monthsToEnd,
-                      Natural settlementDays,
+                      Natural fixingDays,
                       const Calendar& calendar,
                       BusinessDayConvention convention,
                       bool endOfMonth,
-                      Natural fixingDays,
                       const DayCounter& dayCounter);
         FraRateHelper(Rate rate,
                       Natural monthsToStart,
                       Natural monthsToEnd,
-                      Natural settlementDays,
+                      Natural fixingDays,
                       const Calendar& calendar,
                       BusinessDayConvention convention,
                       bool endOfMonth,
-                      Natural fixingDays,
                       const DayCounter& dayCounter);
         FraRateHelper(const Handle<Quote>& rate,
                       Natural monthsToStart,

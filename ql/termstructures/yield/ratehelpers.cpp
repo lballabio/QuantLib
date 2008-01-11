@@ -41,13 +41,15 @@ namespace QuantLib {
                                          Size nMonths,
                                          const Calendar& calendar,
                                          BusinessDayConvention convention,
+                                         bool endOfMonth,
                                          const DayCounter& dayCounter,
                                          const Handle<Quote>& convAdj)
     : RateHelper(price), convAdj_(convAdj) {
         QL_REQUIRE(IMM::isIMMdate(immDate, false),
                    immDate << " is not a valid IMM date");
         earliestDate_ = immDate;
-        latestDate_ = calendar.advance(immDate, nMonths, Months, convention);
+        latestDate_ = calendar.advance(immDate, nMonths*Months, convention,
+                                                                endOfMonth);
         yearFraction_ = dayCounter.yearFraction(earliestDate_, latestDate_);
 
         registerWith(convAdj_);
@@ -58,6 +60,7 @@ namespace QuantLib {
                                          Size nMonths,
                                          const Calendar& calendar,
                                          BusinessDayConvention convention,
+                                         bool endOfMonth,
                                          const DayCounter& dayCounter,
                                          Rate convAdj)
     : RateHelper(price),
@@ -66,7 +69,8 @@ namespace QuantLib {
         QL_REQUIRE(IMM::isIMMdate(immDate, false),
                    immDate << "is not a valid IMM date");
         earliestDate_ = immDate;
-        latestDate_ = calendar.advance(immDate, nMonths, Months, convention);
+        latestDate_ = calendar.advance(immDate, nMonths*Months, convention,
+                                                                endOfMonth);
         yearFraction_ = dayCounter.yearFraction(earliestDate_, latestDate_);
     }
 
@@ -139,11 +143,10 @@ namespace QuantLib {
 
     DepositRateHelper::DepositRateHelper(const Handle<Quote>& rate,
                                          const Period& tenor,
-                                         Natural settlementDays,
+                                         Natural fixingDays,
                                          const Calendar& calendar,
                                          BusinessDayConvention convention,
                                          bool endOfMonth,
-                                         Natural fixingDays,
                                          const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate) {
         iborIndex_ = shared_ptr<IborIndex>(new
@@ -156,11 +159,10 @@ namespace QuantLib {
 
     DepositRateHelper::DepositRateHelper(Rate rate,
                                          const Period& tenor,
-                                         Natural settlementDays,
+                                         Natural fixingDays,
                                          const Calendar& calendar,
                                          BusinessDayConvention convention,
                                          bool endOfMonth,
-                                         Natural fixingDays,
                                          const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate) {
         iborIndex_ = shared_ptr<IborIndex>(new
@@ -217,11 +219,10 @@ namespace QuantLib {
     FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
                                  Natural monthsToStart,
                                  Natural monthsToEnd,
-                                 Natural settlementDays,
+                                 Natural fixingDays,
                                  const Calendar& calendar,
                                  BusinessDayConvention convention,
                                  bool endOfMonth,
-                                 Natural fixingDays,
                                  const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart) {
         QL_REQUIRE(monthsToEnd>monthsToStart,
@@ -238,11 +239,10 @@ namespace QuantLib {
     FraRateHelper::FraRateHelper(Rate rate,
                                  Natural monthsToStart,
                                  Natural monthsToEnd,
-                                 Natural settlementDays,
+                                 Natural fixingDays,
                                  const Calendar& calendar,
                                  BusinessDayConvention convention,
                                  bool endOfMonth,
-                                 Natural fixingDays,
                                  const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart) {
         QL_REQUIRE(monthsToEnd>monthsToStart,
