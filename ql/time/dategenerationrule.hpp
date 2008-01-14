@@ -45,7 +45,7 @@ namespace QuantLib {
                                 and termination date. */
             ThirdWednesday /*!< All dates but effective date and termination
                                 date are taken to be on the third wednesday
-                                of their month*/
+                                of their month (with forward calculation)*/
         };
     };
 

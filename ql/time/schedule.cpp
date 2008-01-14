@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2007 Ferdinando Ametrano
+ Copyright (C) 2006, 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -19,6 +19,7 @@
 */
 
 #include <ql/time/schedule.hpp>
+#include <ql/time/imm.hpp>
 #include <ql/settings.hpp>
 
 namespace QuantLib {
@@ -71,13 +72,19 @@ namespace QuantLib {
             switch (rule_) {
               case DateGeneration::Backward:
               case DateGeneration::Forward:
-                QL_REQUIRE(firstDate > effectiveDate && firstDate < terminationDate,
-                           "first date (" << firstDate
-                           << ") out of range [effective date (" << effectiveDate
-                           << "), termination date (" << terminationDate << ")]");
+                QL_REQUIRE(firstDate > effectiveDate &&
+                           firstDate < terminationDate,
+                           "first date (" << firstDate <<
+                           ") out of [effective (" << effectiveDate <<
+                           "), termination (" << terminationDate <<
+                           ")] date range");
+                break;
+              case DateGeneration::ThirdWednesday:
+                  QL_REQUIRE(IMM::isIMMdate(firstDate, false),
+                             "first date (" << firstDate <<
+                             ") is not an IMM date");
                 break;
               case DateGeneration::Zero:
-              case DateGeneration::ThirdWednesday:
                 QL_FAIL("first date incompatible with " << rule_ <<
                         " date generation rule");
               default:
@@ -88,13 +95,18 @@ namespace QuantLib {
             switch (rule_) {
               case DateGeneration::Backward:
               case DateGeneration::Forward:
-                QL_REQUIRE(nextToLastDate > effectiveDate && nextToLastDate < terminationDate,
-                           "next to last date (" << nextToLastDate
-                           << ") out of range [effective date (" << effectiveDate
-                           << "), termination date (" << terminationDate << ")]");
+                QL_REQUIRE(nextToLastDate > effectiveDate &&
+                           nextToLastDate < terminationDate,
+                           "next to last date (" << nextToLastDate <<
+                           ") out of [effective (" << effectiveDate <<
+                           "), termination (" << terminationDate <<
+                           ")] date range");
                 break;
-              case DateGeneration::Zero:
               case DateGeneration::ThirdWednesday:
+                  QL_REQUIRE(IMM::isIMMdate(nextToLastDate, false),
+                             "first date (" << firstDate <<
+                             ") is not an IMM date");
+              case DateGeneration::Zero:
                 QL_FAIL("next to last date incompatible with " << rule_ <<
                         " date generation rule");
               default:
@@ -116,11 +128,6 @@ namespace QuantLib {
             isRegular_.push_back(true);
             break;
 
-          case DateGeneration::ThirdWednesday:
-            QL_REQUIRE(!endOfMonth,
-                       "endOfMonth convention incompatible with " << rule_ <<
-                        " date generation rule");
-          // fall through
           case DateGeneration::Backward:
 
             dates_.push_back(terminationDate);
@@ -163,6 +170,11 @@ namespace QuantLib {
             }
             break;
 
+          case DateGeneration::ThirdWednesday:
+            QL_REQUIRE(!endOfMonth,
+                       "endOfMonth convention incompatible with " << rule_ <<
+                       " date generation rule");
+          // fall through
           case DateGeneration::Forward:
 
             dates_.push_back(effectiveDate);
@@ -271,7 +283,7 @@ namespace QuantLib {
       tenor_(tenor),
       convention_(convention), terminationDateConvention_(convention),
       rule_(DateGeneration::Backward), endOfMonth_(false),
-      stubDate_(Date()), firstDate_(Date()), nextToLastDate_(Date()) {}
+      firstDate_(Date()), nextToLastDate_(Date()) {}
 
     MakeSchedule& MakeSchedule::withTerminationDateConvention(
                                                 BusinessDayConvention conv) {
@@ -310,26 +322,9 @@ namespace QuantLib {
     }
 
     MakeSchedule::operator Schedule() const {
-        Date firstDate, nextToLastDate;
-        if (stubDate_!=Date()) {
-            switch (rule_) {
-              case DateGeneration::Zero:
-              case DateGeneration::ThirdWednesday:
-              case DateGeneration::Backward:
-                firstDate = firstDate_;
-                nextToLastDate = stubDate_;
-                break;
-              case DateGeneration::Forward:
-                firstDate = stubDate_;
-                nextToLastDate = nextToLastDate_;
-                break;
-              default:
-                QL_FAIL("unknown DateGeneration::Rule (" << Integer(rule_) << ")");
-            }
-        }
         return Schedule(effectiveDate_, terminationDate_, tenor_, calendar_,
                         convention_, terminationDateConvention_,
-                        rule_, endOfMonth_, firstDate, nextToLastDate);
+                        rule_, endOfMonth_, firstDate_, nextToLastDate_);
     }
 
 }

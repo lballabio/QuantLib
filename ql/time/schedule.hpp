@@ -121,7 +121,7 @@ namespace QuantLib {
         BusinessDayConvention convention_, terminationDateConvention_;
         DateGeneration::Rule rule_;
         bool endOfMonth_;
-        Date stubDate_, firstDate_, nextToLastDate_;
+        Date firstDate_, nextToLastDate_;
     };
 
 
