@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2007 Chiara Fornarola
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
@@ -169,13 +169,24 @@ namespace QuantLib {
         bool isExpired() const;
         //@}
 
-        //! current coupon at a given date
-        /*! The default bond settlement is used if no date is given. */
-        Real currentCoupon(Date d = Date()) const;
+        /*! Expected next coupon: depending on (the bond and) the given date
+            the coupon can be historic, deterministic or expected in a
+            stochastic sense. When the bond settlement date is used the coupon
+            is the already-fixed not-yet-paid one.
 
-        //! previous coupon already paid at a given date
-        /*! The default bond settlement is used if no date is given. */
-        Real previousCoupon(Date d = Date()) const;
+            The current bond settlement is used if no date is given.
+        */
+        virtual Rate nextCoupon(Date d = Date()) const;
+
+        //! Previous coupon already paid at a given date
+        /*! Expected previous coupon: depending on (the bond and) the given
+            date the coupon can be historic, deterministic or expected in a
+            stochastic sense. When the bond settlement date is used the coupon
+            is the last paid one.
+
+            The current bond settlement is used if no date is given.
+        */
+        Rate previousCoupon(Date d = Date()) const;
         //@}
 
       protected:

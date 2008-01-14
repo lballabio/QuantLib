@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2007 Chiara Fornarola
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
@@ -29,6 +29,9 @@
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/settings.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
+
+using boost::shared_ptr;
+using boost::dynamic_pointer_cast;
 
 namespace QuantLib {
 
@@ -63,8 +66,8 @@ namespace QuantLib {
                     if (i > 0) {
                         lastDate = cashflows[i-1]->date();
                     } else {
-                        boost::shared_ptr<Coupon> coupon =
-                            boost::dynamic_pointer_cast<Coupon>(cashflows[i]);
+                        shared_ptr<Coupon> coupon =
+                            dynamic_pointer_cast<Coupon>(cashflows[i]);
                         if (coupon)
                             lastDate = coupon->accrualStartDate();
                         else
@@ -80,7 +83,7 @@ namespace QuantLib {
                 price += amount * discount;
             }
 
-            const boost::shared_ptr<CashFlow>& redemption = cashflows.back();
+            const shared_ptr<CashFlow>& redemption = cashflows.back();
             if (!redemption->hasOccurred(settlement)) {
                 Date redemptionDate = redemption->date();
                 Real amount = redemption->amount();
@@ -146,7 +149,7 @@ namespace QuantLib {
             QL_REQUIRE(freq != NoFrequency && freq != Once,
                        "invalid frequency:" << freq);
 
-            Handle<Quote> zSpreadQuoteHandle(boost::shared_ptr<Quote>(new
+            Handle<Quote> zSpreadQuoteHandle(shared_ptr<Quote>(new
                 SimpleQuote(zSpread)));
 
             ZeroSpreadedTermStructure spreadedCurve(discountCurve,
@@ -309,8 +312,8 @@ namespace QuantLib {
              settlement = settlementDate();
          QL_REQUIRE(engine_, "null pricing engine");
 
-         boost::shared_ptr<DiscountingBondEngine> bondEngine =
-             boost::dynamic_pointer_cast<DiscountingBondEngine>(engine_);
+         shared_ptr<DiscountingBondEngine> bondEngine =
+             dynamic_pointer_cast<DiscountingBondEngine>(engine_);
          QL_REQUIRE(bondEngine, "engine not compatible with calculation");
 
          return dirtyPriceFromZSpreadFunction(faceAmount_, cashflows_,
@@ -319,34 +322,57 @@ namespace QuantLib {
     }
 
     Real Bond::accruedAmount(Date settlement) const {
-        if (settlement == Date())
+        if (settlement==Date())
             settlement = settlementDate();
 
-        for (Size i = 0; i<cashflows_.size(); ++i) {
-            // the first coupon paying after d is the one we're after
-            if (!cashflows_[i]->hasOccurred(settlement)) {
-                boost::shared_ptr<Coupon> coupon =
-                    boost::dynamic_pointer_cast<Coupon>(cashflows_[i]);
-                if (coupon)
-                    // !!!
-                    return coupon->accruedAmount(settlement)/faceAmount_*100.0;
-                else
-                    return 0.0;
+        Leg::const_iterator cf = CashFlows::nextCashFlow(cashflows_, settlement);
+        if (cf==cashflows_.end()) return 0.0;
+
+        Date paymentDate = (*cf)->date();
+        bool firstCouponFound = false;
+        Real nominal;
+        Time accrualPeriod;
+        DayCounter dc;
+        Rate result = 0.0;
+        for (; cf<cashflows_.end() && (*cf)->date()==paymentDate; ++cf) {
+            shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+            if (cp) {
+                if (firstCouponFound) {
+                    QL_REQUIRE(nominal       == cp->nominal() &&
+                               accrualPeriod == cp->accrualPeriod() &&
+                               dc            == cp->dayCounter(),
+                               "cannot aggregate accrued amount of two "
+                               "different coupons on " << paymentDate);
+                } else {
+                    firstCouponFound = true;
+                    nominal = cp->nominal();
+                    accrualPeriod = cp->accrualPeriod();
+                    dc = cp->dayCounter();
+                }
+                result += cp->accruedAmount(settlement);
             }
         }
-        return 0.0;
+        // accruedAmount cannot throw, must return zero
+        // for bond algebra to work
+        //QL_ENSURE(firstCouponFound,
+        //          "next cashflow (" << paymentDate << ") is not a coupon");
+        return result/faceAmount_*100.0;
     }
 
     bool Bond::isExpired() const {
         return cashflows_.back()->hasOccurred(settlementDate());
     }
 
-    Real Bond::previousCoupon(Date settlement) const {
+    Rate Bond::previousCoupon(Date settlement) const {
+        if (settlement == Date())
+            settlement = settlementDate();
         return CashFlows::previousCouponRate(cashflows_, settlement);
     }
 
-    Real Bond::currentCoupon(Date settlement) const {
-        return CashFlows::currentCouponRate(cashflows_, settlement);
+    Rate Bond::nextCoupon(Date settlement) const {
+        if (settlement == Date())
+            settlement = settlementDate();
+        return CashFlows::nextCouponRate(cashflows_, settlement);
     }
 
     void Bond::setupArguments(PricingEngine::arguments* args) const {

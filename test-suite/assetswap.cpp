@@ -280,7 +280,7 @@ void AssetSwapTest::testImpliedValue() {
     setCouponPricer(floatingBond2->cashflows(), vars.pricer);
     vars.iborIndex->addFixing(Date(22,March,2007), 0.04013);
     Real currentCoupon=0.04013+0.0025;
-    Real floatingCurrentCoupon= floatingBond2->currentCoupon();
+    Real floatingCurrentCoupon= floatingBond2->nextCoupon();
     Real error4= std::fabs(floatingCurrentCoupon-currentCoupon);
     if (error4>tolerance) {
         BOOST_ERROR("wrong current coupon is returned for floater bond:"
@@ -1538,7 +1538,7 @@ void AssetSwapTest::testGenericBondImplied() {
     setCouponPricer(floatingBond2->cashflows(), vars.pricer);
     vars.iborIndex->addFixing(Date(22,March,2007), 0.04013);
     Real currentCoupon=0.04013+0.0025;
-    Real floatingCurrentCoupon= floatingBond2->currentCoupon();
+    Real floatingCurrentCoupon= floatingBond2->nextCoupon();
     Real error4= std::fabs(floatingCurrentCoupon-currentCoupon);
     if (error4>tolerance) {
         BOOST_ERROR("wrong current coupon is returned for floater bond:"

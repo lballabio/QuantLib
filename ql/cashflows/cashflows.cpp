@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2005, 2006 StatPro Italia srl
  Copyright (C) 2005 Charles Whitmore
 
@@ -25,11 +25,47 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 
+using boost::shared_ptr;
+using boost::dynamic_pointer_cast;
+
 namespace QuantLib {
 
     namespace {
 
         // utility functions
+
+        Rate couponRate(const Leg& leg,
+                        Leg::const_iterator cf) {
+            if (cf==leg.end()) return 0.0;
+
+            Date paymentDate = (*cf)->date();
+            bool firstCouponFound = false;
+            Real nominal;
+            Time accrualPeriod;
+            DayCounter dc;
+            Rate result = 0.0;
+            for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
+                shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+                if (cp) {
+                    if (firstCouponFound) {
+                        QL_REQUIRE(nominal       == cp->nominal() &&
+                                   accrualPeriod == cp->accrualPeriod() &&
+                                   dc            == cp->dayCounter(),
+                                   "cannot aggregate two different coupons on "
+                                   << paymentDate);
+                    } else {
+                        firstCouponFound = true;
+                        nominal = cp->nominal();
+                        accrualPeriod = cp->accrualPeriod();
+                        dc = cp->dayCounter();
+                    }
+                    result += cp->rate();
+                }
+            }
+            QL_ENSURE(firstCouponFound,
+                      "next cashflow (" << paymentDate << ") is not a coupon");
+            return result;
+        }
 
         template <class T>
         Integer sign(T x) {
@@ -179,20 +215,17 @@ namespace QuantLib {
 
     }
 
-    Leg::const_iterator CashFlows::lastCashFlow(const Leg& leg,
-                                                Date refDate) {
+    Leg::const_iterator CashFlows::previousCashFlow(const Leg& leg,
+                                                    Date refDate) {
         if (refDate==Date())
             refDate = Settings::instance().evaluationDate();
 
         if ( ! (*leg.begin())->hasOccurred(refDate) )
             return leg.end();
 
-        Leg::const_iterator i;
-        for (i = leg.begin()+1; i<leg.end(); ++i) {
-            if ( ! (*i)->hasOccurred(refDate) )
-                return --i;
-        }
-        return leg.end();
+        Leg::const_iterator i = nextCashFlow(leg, refDate);
+        Date beforeLastPaymentDate = (*--i)->date()-1;
+        return nextCashFlow(leg, beforeLastPaymentDate);
     }
 
     Leg::const_iterator CashFlows::nextCashFlow(const Leg& leg,
@@ -204,7 +237,6 @@ namespace QuantLib {
         for (i = leg.begin(); i<leg.end(); ++i) {
             // the first coupon paying after d is the one we're after
             if ( ! (*i)->hasOccurred(refDate) )
-                //return boost::dynamic_pointer_cast<Coupon>(leg[i]);
                 return i;
         }
         return leg.end();
@@ -212,28 +244,20 @@ namespace QuantLib {
 
     Rate CashFlows::previousCouponRate(const Leg& leg,
                                        const Date& refDate) {
-        Leg::const_iterator cf = lastCashFlow(leg, refDate);
-        if (cf==leg.end()) return 0.0;
-
-        boost::shared_ptr<Coupon> cp=boost::dynamic_pointer_cast<Coupon>(*cf);
-        if (cp) return cp->rate();
-        else    return 0.0;
+        Leg::const_iterator cf = previousCashFlow(leg, refDate);
+        return couponRate(leg, cf);
     }
 
-    Rate CashFlows::currentCouponRate(const Leg& leg,
-                                      const Date& refDate) {
+    Rate CashFlows::nextCouponRate(const Leg& leg,
+                                   const Date& refDate) {
         Leg::const_iterator cf = nextCashFlow(leg, refDate);
-        if (cf==leg.end()) return 0.0;
-
-        boost::shared_ptr<Coupon> cp=boost::dynamic_pointer_cast<Coupon>(*cf);
-        if (cp) return cp->rate();
-        else    return 0.0;
+        return couponRate(leg, cf);
     }
 
     Date CashFlows::startDate(const Leg& cashflows) {
         Date d = Date::maxDate();
         for (Size i=0; i<cashflows.size(); ++i) {
-            boost::shared_ptr<Coupon> c =
+            shared_ptr<Coupon> c =
                 boost::dynamic_pointer_cast<Coupon>(cashflows[i]);
             if (c)
                 d = std::min(d, c->accrualStartDate());
