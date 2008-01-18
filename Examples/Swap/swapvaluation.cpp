@@ -163,100 +163,100 @@ int main(int, char* []) {
             Handle<Quote>(d1wRate),
             1*Weeks, fixingDays,
             calendar, ModifiedFollowing,
-            true, fixingDays, depositDayCounter));
+            true, depositDayCounter));
         boost::shared_ptr<RateHelper> d1m(new DepositRateHelper(
             Handle<Quote>(d1mRate),
             1*Months, fixingDays,
             calendar, ModifiedFollowing,
-            true, fixingDays, depositDayCounter));
+            true, depositDayCounter));
         boost::shared_ptr<RateHelper> d3m(new DepositRateHelper(
             Handle<Quote>(d3mRate),
             3*Months, fixingDays,
             calendar, ModifiedFollowing,
-            true, fixingDays, depositDayCounter));
+            true, depositDayCounter));
         boost::shared_ptr<RateHelper> d6m(new DepositRateHelper(
             Handle<Quote>(d6mRate),
             6*Months, fixingDays,
             calendar, ModifiedFollowing,
-            true, fixingDays, depositDayCounter));
+            true, depositDayCounter));
         boost::shared_ptr<RateHelper> d9m(new DepositRateHelper(
             Handle<Quote>(d9mRate),
             9*Months, fixingDays,
             calendar, ModifiedFollowing,
-            true, fixingDays, depositDayCounter));
+            true, depositDayCounter));
         boost::shared_ptr<RateHelper> d1y(new DepositRateHelper(
             Handle<Quote>(d1yRate),
             1*Years, fixingDays,
             calendar, ModifiedFollowing,
-            true, fixingDays, depositDayCounter));
+            true, depositDayCounter));
 
 
         // setup FRAs
         boost::shared_ptr<RateHelper> fra3x6(new FraRateHelper(
             Handle<Quote>(fra3x6Rate),
             3, 6, fixingDays, calendar, ModifiedFollowing,
-            true, fixingDays, depositDayCounter));
+            true, depositDayCounter));
         boost::shared_ptr<RateHelper> fra6x9(new FraRateHelper(
             Handle<Quote>(fra6x9Rate),
             6, 9, fixingDays, calendar, ModifiedFollowing,
-            true, fixingDays, depositDayCounter));
+            true, depositDayCounter));
         boost::shared_ptr<RateHelper> fra6x12(new FraRateHelper(
             Handle<Quote>(fra6x12Rate),
             6, 12, fixingDays, calendar, ModifiedFollowing,
-            true, fixingDays, depositDayCounter));
+            true, depositDayCounter));
 
 
         // setup futures
-        Rate convexityAdjustment = 0.0;
+        // Rate convexityAdjustment = 0.0;
         Integer futMonths = 3;
         Date imm = IMM::nextDate(settlementDate);
         boost::shared_ptr<RateHelper> fut1(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
-            depositDayCounter, convexityAdjustment));
+            true, depositDayCounter));
         imm = IMM::nextDate(imm+1);
         boost::shared_ptr<RateHelper> fut2(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
-            depositDayCounter, convexityAdjustment));
+            true, depositDayCounter));
         imm = IMM::nextDate(imm+1);
         boost::shared_ptr<RateHelper> fut3(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
-            depositDayCounter, convexityAdjustment));
+            true, depositDayCounter));
         imm = IMM::nextDate(imm+1);
         boost::shared_ptr<RateHelper> fut4(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
-            depositDayCounter, convexityAdjustment));
+            true, depositDayCounter));
         imm = IMM::nextDate(imm+1);
         boost::shared_ptr<RateHelper> fut5(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
-            depositDayCounter, convexityAdjustment));
+            true, depositDayCounter));
         imm = IMM::nextDate(imm+1);
         boost::shared_ptr<RateHelper> fut6(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
-            depositDayCounter, convexityAdjustment));
+            true, depositDayCounter));
         imm = IMM::nextDate(imm+1);
         boost::shared_ptr<RateHelper> fut7(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
-            depositDayCounter, convexityAdjustment));
+            true, depositDayCounter));
         imm = IMM::nextDate(imm+1);
         boost::shared_ptr<RateHelper> fut8(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
-            depositDayCounter, convexityAdjustment));
+            true, depositDayCounter));
 
 
         // setup swaps

@@ -43,7 +43,7 @@ namespace QuantLib {
                  const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Libor("DKKLibor", tenor,
-                settlementDays,
+                2,
                 DKKCurrency(),
                 Denmark(),
                 Actual360(), h) {}

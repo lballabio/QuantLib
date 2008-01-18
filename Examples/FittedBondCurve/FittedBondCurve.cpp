@@ -134,8 +134,9 @@ int main(int, char* []) {
                               DateGeneration::Backward, false);
 
             boost::shared_ptr<FixedRateBondHelper> helperA(
-                   new FixedRateBondHelper(quoteHandle[j],
+                     new FixedRateBondHelper(quoteHandle[j],
                                              settlementDays,
+                                             100.0,
                                              schedule,
                                              std::vector<Rate>(1,coupons[j]),
                                              bondDayCount,
@@ -144,8 +145,9 @@ int main(int, char* []) {
                                              issue));
 
             boost::shared_ptr<RateHelper> helperB(
-                   new FixedRateBondHelper(quoteHandle[j],
+                     new FixedRateBondHelper(quoteHandle[j],
                                              settlementDays,
+                                             100.0,
                                              schedule,
                                              std::vector<Rate>(1, coupons[j]),
                                              bondDayCount,
@@ -491,16 +493,16 @@ int main(int, char* []) {
                 instrumentsA[k]->bond()->cashflows();
 
             Real quotePrice = instrumentsA[k]->quoteValue();
-            Rate ytm =
-                instrumentsA[k]->bond()->yield(quotePrice,
-                                               instrumentsA[k]->dayCounter(),
-                                               Compounded,
-                                               instrumentsA[k]->frequency(),
-                                               today);
+            Rate ytm = instrumentsA[k]->bond()->yield(
+                                        quotePrice,
+                                        instrumentsA[k]->bond()->dayCounter(),
+                                        Compounded,
+                                        instrumentsA[k]->bond()->frequency(),
+                                        today);
             InterestRate r(ytm,
-                           instrumentsA[k]->dayCounter(),
+                           instrumentsA[k]->bond()->dayCounter(),
                            Compounded,
-                           instrumentsA[k]->frequency());
+                           instrumentsA[k]->bond()->frequency());
             Time dur = CashFlows::duration(leg, r, Duration::Modified, today);
 
             const Real BpsChange = 5.;

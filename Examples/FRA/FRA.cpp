@@ -132,32 +132,27 @@ int main(int, char* []) {
         boost::shared_ptr<RateHelper> fra1x4(
                            new FraRateHelper(h1x4, 1, 4,
                                              fixingDays, calendar, convention,
-                                             endOfMonth, fixingDays,
-                                             fraDayCounter));
+                                             endOfMonth, fraDayCounter));
 
         boost::shared_ptr<RateHelper> fra2x5(
                            new FraRateHelper(h2x5, 2, 5,
                                              fixingDays, calendar, convention,
-                                             endOfMonth, fixingDays,
-                                             fraDayCounter));
+                                             endOfMonth, fraDayCounter));
 
         boost::shared_ptr<RateHelper> fra3x6(
                            new FraRateHelper(h3x6, 3, 6,
                                              fixingDays, calendar, convention,
-                                             endOfMonth, fixingDays,
-                                             fraDayCounter));
+                                             endOfMonth, fraDayCounter));
 
         boost::shared_ptr<RateHelper> fra6x9(
                            new FraRateHelper(h6x9, 6, 9,
                                              fixingDays, calendar, convention,
-                                             endOfMonth, fixingDays,
-                                             fraDayCounter));
+                                             endOfMonth, fraDayCounter));
 
         boost::shared_ptr<RateHelper> fra9x12(
                            new FraRateHelper(h9x12, 9, 12,
                                              fixingDays, calendar, convention,
-                                             endOfMonth, fixingDays,
-                                             fraDayCounter));
+                                             endOfMonth, fraDayCounter));
 
 
         /*********************
