@@ -18,7 +18,7 @@ Icon=
 ExeOutput=.\lib
 ObjectOutput=.\build\mingw
 OverrideOutput=1
-OverrideOutputName=libQuantLib-mgw-0_9_0.a
+OverrideOutputName=libQuantLib-mgw-0_9_5.a
 HostApplication=
 Folders=cashflows,currencies,experimental,indexes,indexes/ibor,indexes/inflation,indexes/swap,instruments,instruments/bonds,legacy,legacy/libormarketmodels,legacy/pricers,legacy/termstructures,math,math/distributions,math/integrals,math/interpolations,math/matrixutilities,math/optimization,math/randomnumbers,math/solvers1d,math/statistics,methods,methods/finitedifferences,methods/lattices,methods/montecarlo,models,models/equity,models/marketmodels,models/marketmodels/browniangenerators,models/marketmodels/callability,models/marketmodels/correlations,models/marketmodels/curvestates,models/marketmodels/driftcomputation,models/marketmodels/evolvers,models/marketmodels/models,models/marketmodels/products,models/marketmodels/products/multistep,models/marketmodels/products/onestep,models/shortrate,models/shortrate/calibrationhelpers,models/shortrate/onefactormodels,models/shortrate/twofactormodels,models/volatility,patterns,pricingengines,pricingengines/asian,pricingengines/barrier,pricingengines/basket,pricingengines/bond,pricingengines/capfloor,pricingengines/cliquet,pricingengines/forward,pricingengines/hybrid,pricingengines/lookback,pricingengines/quanto,pricingengines/swap,pricingengines/swaption,pricingengines/vanilla,processes,quotes,termstructures,termstructures/inflation,termstructures/volatility,termstructures/volatility/capfloor,termstructures/volatility/equityfx,termstructures/volatility/optionlet,termstructures/volatility/swaption,termstructures/yield,time,time/calendars,time/daycounters,utilities
 CommandLine=
@@ -8671,9 +8671,9 @@ BuildCmd=
 
 [VersionInfo]
 Major=0
-Minor=1
-Release=1
-Build=1
+Minor=9
+Release=5
+Build=0
 LanguageID=1033
 CharsetID=1252
 CompanyName=
@@ -8682,9 +8682,9 @@ FileDescription=Developed using the Dev-C++ IDE
 InternalName=
 LegalCopyright=
 LegalTrademarks=
-OriginalFilename=libQuantLib-mgw-0_9_0.a
+OriginalFilename=libQuantLib-mgw-0_9_5.a
 ProductName=QuantLib
-ProductVersion=0.1
+ProductVersion=0.9.5
 AutoIncBuildNr=0
 
 [Unit865]
