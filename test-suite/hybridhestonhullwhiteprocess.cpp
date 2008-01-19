@@ -24,6 +24,7 @@
 #include <ql/time/calendars/target.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/instruments/europeanoption.hpp>
+#include <ql/instruments/impliedvolatility.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/hybridhestonhullwhiteprocess.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
@@ -447,7 +448,7 @@ void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
                 boost::shared_ptr<PricingEngine>(
                     new MCHestonHullWhiteEngine<PseudoRandom>(
                                           jointProcess,
-                                          5, Null<Size>(), true, true, 1,
+                                          10, Null<Size>(), true, true, 1,
                                           tol, Null<Size>(), 42)));
 
             const boost::shared_ptr<HullWhite> hwModel(
@@ -629,11 +630,11 @@ void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
 
     const boost::shared_ptr<HullWhiteForwardProcess> hwFwdProcess(
               new HullWhiteForwardProcess(rTS, 0.01, 0.01));
-    hwFwdProcess->setForwardMeasureTime(dc.yearFraction(today, maturity));
+    hwFwdProcess->setForwardMeasureTime(dc.yearFraction(today, maturity)+5);
     const boost::shared_ptr<HullWhite> hullWhiteModel(new HullWhite(
                                rTS, hwFwdProcess->a(), hwFwdProcess->sigma()));
 
-    const Real tol = 0.3;
+    const Real tol = 0.1;
     const Real strike[] = { 80, 90, 100, 110, 120 };
     const Option::Type types[] = { Option::Put, Option::Call };
 
@@ -701,7 +702,8 @@ void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
 
     const boost::shared_ptr<HestonProcess> hestonProcess(
-            new HestonProcess(rTS, qTS, spot, 0.0625, 1.0, 0.0625, 1e-4, 0.0));
+            new HestonProcess(rTS, qTS, spot, 0.0625, 1.0, 
+                              0.240*0.24, 1e-4, 0.0));
     // FLOATING_POINT_EXCEPTION
     const boost::shared_ptr<HullWhiteForwardProcess> hwProcess(
             new HullWhiteForwardProcess(rTS, 0.00883, 0.00526));
@@ -741,7 +743,7 @@ void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
     GeneralStatistics stat;
 
     Real antitheticPayoff=0;
-    const Size nrTrails = 5000;
+    const Size nrTrails = 40000;
     for (Size i=0; i < nrTrails; ++i) {
         const bool antithetic = (i%2)==0 ? false : true;
 
@@ -807,15 +809,16 @@ void HybridHestonHullWhiteProcessTest::testDiscretizationError() {
     for (Size i=0; i <= 31; ++i) {
         dates.push_back(today+Period(i, Years));
         // FLOATING_POINT_EXCEPTION
-        rates.push_back(0.01 + 0.02*std::exp(std::sin(double(i))));
-        divRates.push_back(0.02 + 0.01*std::exp(std::sin(double(i))));
+        rates.push_back(0.01 + 0.0*std::exp(std::sin(double(i))));
+        divRates.push_back(0.02 + 0.0*std::exp(std::sin(double(i))));
         times.push_back(dc.yearFraction(today, dates.back()));
     }
 
     const Date maturity = today + Period(10, Years);
+    const Volatility v = 0.25;
 
     const Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100)));
-    const boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
+    const boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(v));
     const Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
     const Handle<YieldTermStructure> rTS(
        boost::shared_ptr<YieldTermStructure>(new ZeroCurve(dates, rates, dc)));
@@ -827,14 +830,14 @@ void HybridHestonHullWhiteProcessTest::testDiscretizationError() {
                           new BlackScholesMertonProcess(s0, qTS, rTS, volTS));
 
     const boost::shared_ptr<HestonProcess> hestonProcess(
-           new HestonProcess(rTS, qTS, s0, 0.0625, 5, 0.0625, 1e-4, 0.0));
+           new HestonProcess(rTS, qTS, s0, v*v, 5, v*v, 1e-6, 0.0));
 
     const boost::shared_ptr<HullWhiteForwardProcess> hwProcess(
               new HullWhiteForwardProcess(rTS, 0.01, 0.01));
-    hwProcess->setForwardMeasureTime(30);
+    hwProcess->setForwardMeasureTime(10.1472222222222222);
 
-    const Real tol = 0.25;
-    const Real corr[] = { 0.0, 0.5, -0.25 };
+    const Real tol = 0.1;
+    const Real corr[] = { -0.85, 0.0, 0.5, -0.25 };
     const Real strike[] = { 100, 50, 125 };
 
     for (Size i=0; i < LENGTH(corr); ++i) {
@@ -863,14 +866,14 @@ void HybridHestonHullWhiteProcessTest::testDiscretizationError() {
                 boost::shared_ptr<PricingEngine>(
                     new MCHestonHullWhiteEngine<PseudoRandom>(
                                           jointProcess,
-                                          20, Null<Size>(), false, true, 1,
+                                          5, Null<Size>(), true, false, 1,
                                           tol, Null<Size>(), 42)));
 
             Real calculated = optionHestonHW.NPV();
             Real error      = optionHestonHW.errorEstimate();
 
-            if (   std::fabs(calculated - expected) > 3*error 
-                && std::fabs(calculated - expected) > 1e-5){
+            if ((   std::fabs(calculated - expected) > 3*error 
+                    && std::fabs(calculated - expected) > 1e-5)) { 
                 BOOST_ERROR("Failed to reproduce heston vanilla prices"
                         << "\n   corr:       " << corr[i]
                         << "\n   strike:     " << strike[j]
@@ -905,6 +908,7 @@ namespace {
 
         bool isExpired() const;
         const std::vector<Real> & NPVs() const;
+        const std::vector<Real> & errorEstimates() const;
 
         class arguments;
         class results;
@@ -1014,6 +1018,11 @@ namespace {
         NPV();
         Array t = Array(errorEstimate_)/Array(value_);
         return value_;
+    }
+
+    const std::vector<Real> & MultiVanillaOption::errorEstimates() const {
+        NPV();
+        return errorEstimate_;
     }
 
     class MultiVanillaOptionEngine : public MultiVanillaOption::engine {
@@ -1372,9 +1381,9 @@ void HybridHestonHullWhiteProcessTest::testJointCalibration() {
     Settings::instance().evaluationDate() = today;
 
     Handle<Quote> spot(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
-    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.043));
     Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.04));
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.034));
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
     const Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
@@ -1383,19 +1392,19 @@ void HybridHestonHullWhiteProcessTest::testJointCalibration() {
                new BlackScholesMertonProcess(spot, qTS, rTS, volTS));
 
     const boost::shared_ptr<HestonProcess> hestonProcess(
-                          new HestonProcess(rTS, qTS, spot, 0.0825,
-                                            1.0, 0.0625, 0.1, 0.0));
+                          new HestonProcess(rTS, qTS, spot, 0.24*0.24,
+                                            2.5, 0.23*0.23, 0.667, -0.8));
     const boost::shared_ptr<HestonModel> hestonModel(
                           new HestonModel(hestonProcess));
 
     // FLOATING_POINT_EXCEPTION
     const boost::shared_ptr<HullWhiteForwardProcess> hwProcess(
-                          new HullWhiteForwardProcess(rTS, 0.012, 0.01));
+                          new HullWhiteForwardProcess(rTS, 0.00883, 0.00526));
     hwProcess->setForwardMeasureTime(
                       dc.yearFraction(today, today+Period(11, Years)));
 
-    const Real corr = 0.4;
-    const CorrelationAndKappaConstraint corrConstraint(2.0, corr);
+    const Real corr = 0.5;
+    const CorrelationAndKappaConstraint corrConstraint(2.6, corr);
 
     std::vector<Period> optionMaturities;
     optionMaturities.push_back(Period(1, Years));
@@ -1417,8 +1426,12 @@ void HybridHestonHullWhiteProcessTest::testJointCalibration() {
         new HullWhite(Handle<YieldTermStructure>(rTS),
                       hwProcess->a(), hwProcess->sigma()));
 
+    boost::shared_ptr<PricingEngine> hestonEngine(
+                                  new AnalyticHestonEngine(hestonModel, 192));
+
     boost::shared_ptr<PricingEngine> bsmhwEngine(
             new AnalyticBSMHullWhiteEngine(corr, bsmProcess, hullWhiteModel));
+
 
     boost::shared_ptr<PricingEngine> bsmEngine(
                                       new AnalyticEuropeanEngine(bsmProcess));
@@ -1469,7 +1482,7 @@ void HybridHestonHullWhiteProcessTest::testJointCalibration() {
 
     // cascade joint calibration
     boost::shared_ptr<PricingEngine> engine(
-        new AnalyticHestonHullWhiteEngine(hestonModel, hullWhiteModel, 192));
+        new AnalyticHestonHullWhiteEngine(hestonModel,hullWhiteModel, 192));
 
     for (std::vector<boost::shared_ptr<CalibrationHelper> >::const_iterator
            iter = hestonOptions.begin(); iter != hestonOptions.end(); ++iter) {
@@ -1477,8 +1490,8 @@ void HybridHestonHullWhiteProcessTest::testJointCalibration() {
     }
 
     Real qualityIndex = QL_MAX_REAL;
-    Real targetQuality =10;
-    const Size maxCascadeSteps = 10;
+    Real targetQuality = 5;
+    const Size maxCascadeSteps = 100;
     for (Size i=0; i<maxCascadeSteps && qualityIndex > targetQuality; ++i) {
         // 1. Calibrate Heston Model to match
         //    current Heston Volatility surface
@@ -1493,9 +1506,10 @@ void HybridHestonHullWhiteProcessTest::testJointCalibration() {
             Simplex sm(0.05);
             hestonModel->calibrate(hestonOptions, sm,
                                    EndCriteria(400, 100, 
-                                               1.0e-3, 1.0e-3, 1.0e-3),
+                                               1.0e-4, 1.0e-4, 1.0e-4),
                                    corrConstraint);
         }
+
         boost::shared_ptr<HestonProcess> calibratedProcess =
             hestonModel->process();
 
@@ -1510,7 +1524,7 @@ void HybridHestonHullWhiteProcessTest::testJointCalibration() {
                    PseudoRandom, GeneralStatistics >(
                        jointProcess, 
                        40, Null<Size>(),
-                       false, true, 1, 0.05, Null<Size>(), 123));
+                       false, true, 1, 0.02, Null<Size>(), 123));
 
         MultiVanillaOption mvo(payoffs, exercises);
         mvo.setPricingEngine(mcHestonEngine);
@@ -1542,7 +1556,7 @@ void HybridHestonHullWhiteProcessTest::testJointCalibration() {
             const Volatility currVol = hestonVols[i].currentLink()->value();
 
             hestonVols[i].linkTo(boost::shared_ptr<Quote>(
-                  new SimpleQuote(std::max(currVol - diffVols[i], 0.0011))));
+                new SimpleQuote(std::max(currVol - diffVols[i], 0.001))));
         }
     }
 
@@ -1552,9 +1566,9 @@ void HybridHestonHullWhiteProcessTest::testJointCalibration() {
     }
 }
 
+
 test_suite* HybridHestonHullWhiteProcessTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Hybrid Heston-HullWhite tests");
-
     // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine));
@@ -1574,15 +1588,13 @@ test_suite* HybridHestonHullWhiteProcessTest::suite() {
       &HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing));
     suite->add(BOOST_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testCallableEquityPricing));
+    suite->add(BOOST_TEST_CASE(
+        &HybridHestonHullWhiteProcessTest::testDiscretizationError));
     // FLOATING_POINT_EXCEPTION
-
     //runs through but takes far too long
     //suite->add(BOOST_TEST_CASE(
     //          &HybridHestonHullWhiteProcessTest::testJointCalibration));
-
-    suite->add(BOOST_TEST_CASE(
-        &HybridHestonHullWhiteProcessTest::testDiscretizationError));
-
+    
     return suite;
 }
 
