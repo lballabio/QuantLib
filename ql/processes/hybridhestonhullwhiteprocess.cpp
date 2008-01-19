@@ -63,7 +63,7 @@ namespace QuantLib {
 
         QL_REQUIRE(  corrEquityShortRate*corrEquityShortRate
                     +hestonProcess->rho()*hestonProcess->rho() <= 1.0,
-                    "correlation matrix has negativ eigenvalues");
+                    "correlation matrix has negative eigenvalues");
     }
 
 
@@ -101,33 +101,34 @@ namespace QuantLib {
             = std::log(  hestonProcess->riskFreeRate()->discount(t)
                        / hestonProcess->riskFreeRate()->discount(s));
 
+        const Real eaT=std::exp(-a*T);
+        const Real eat=std::exp(-a*t);
+        const Real eas=std::exp(-a*s);
+        const Real iat=1.0/eat;
+        const Real ias=1.0/eas;
+
         const Real m1 = -(dy+0.5*eta*eta)*dt - df;
 
-        const Real m2 = -rho*sigma*eta/a*(dt-1/a*(  std::exp(-a*(T-t))
-                                                  - std::exp(-a*(T-s))));
+        const Real m2 = -rho*sigma*eta/a*(dt-1/a*eaT*(iat-ias));
 
         const Real m3 = (r - hullWhiteProcess->alpha(s))
                        *hullWhiteProcess->B(s,t);
 
         const Real m4 = sigma*sigma/(2*a*a)
-            *(dt + 2/a*(std::exp(-a*t)-std::exp(-a*s))
-              - 1/(2*a)*(std::exp(-2*a*t)-std::exp(-2*a*s)));
+            *(dt + 2/a*(eat-eas) - 1/(2*a)*(eat*eat-eas*eas));
 
         const Real m5 = -sigma*sigma/(a*a)
-            *(dt - 1/a*(1-std::exp(-a*(t-s)))
-                 - 1/(2*a)*(  std::exp(-a*(T-t))
-                            - 2*std::exp(-a*(T-s)) + std::exp(-a*(T+t-2*s))));
+            *(dt - 1/a*(1-eat*ias) - 1/(2*a)*eaT*(iat-2*ias+eat*ias*ias));
 
         const Real v1 = sigma*sigma/(a*a)
-            *(dt - 2/a*(1-std::exp(-a*(t-s)))
-              + 1/(2*a)*(1-std::exp(-2*a*(t-s))));
+            *(dt - 2/a*(1-eat*ias)
+              + 1/(2*a)*(1-eat*eat*ias*ias));
+        const Real v2 = eta*eta*dt;
 
-        const Real v2 = eta*eta*(t-s);
-
+        // todo: better discretization here
         if (!controlVariateProcess_) {
-            const Real mu = m1 + m2 + m3 + m4 + m5;
             const Real vol = std::sqrt(v1)*dw[2] + std::sqrt(v2)*dw[0];
-
+            const Real mu = m1 + m2 + m3 + m4 + m5;
             retVal[0] = x0[0]*std::exp(mu + vol);
         }
         else {
