@@ -639,6 +639,9 @@
 					RelativePath=".\ql\indexes\ibor\nzdlibor.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\indexes\ibor\seklibor.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\indexes\ibor\tibor.hpp">
 				</File>
 				<File
@@ -5590,6 +5593,12 @@
 					RelativePath=".\ql\termstructures\volatility\all.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\volatility\flatsmilesection.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\flatsmilesection.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\volatility\interpolatedsmilesection.hpp">
 				</File>
 				<File
@@ -5609,6 +5618,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\volatility\smilesection.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\spreadedsmilesection.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\spreadedsmilesection.hpp">
 				</File>
 				<Filter
 					Name="capflor"
