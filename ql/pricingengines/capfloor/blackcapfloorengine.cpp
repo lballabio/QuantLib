@@ -65,7 +65,7 @@ namespace QuantLib {
         Date today = volatility_->referenceDate();
         Date settlement = termStructure_->referenceDate();
 
-        for (Size i=0; i<arguments_.startDates.size(); i++) {
+        for (Size i=0; i<arguments_.startDates.size(); ++i) {
             Date paymentDate = arguments_.endDates[i];
             Time accrualTime = arguments_.accrualTimes[i];
             // This is using the yield-curve day counter for

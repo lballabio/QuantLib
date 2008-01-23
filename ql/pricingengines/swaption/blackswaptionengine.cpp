@@ -21,14 +21,13 @@
 */
 
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
-#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionconstantvol.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/cashflows.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
-#include <ql/time/calendars/nullcalendar.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/exercise.hpp>
 
 namespace QuantLib {

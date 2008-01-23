@@ -26,13 +26,12 @@
 #ifndef quantlib_pricers_black_capfloor_hpp
 #define quantlib_pricers_black_capfloor_hpp
 
-#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/instruments/capfloor.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/termstructures/volatility/optionlet/optionletvolatilitystructure.hpp>
-#include <ql/quote.hpp>
 
 namespace QuantLib {
+
+    class Quote;
 
     //! Black-formula cap/floor engine
     /*! \ingroup capfloorengines */
@@ -52,7 +51,6 @@ namespace QuantLib {
       private:
         Handle<YieldTermStructure> termStructure_;
         Handle<OptionletVolatilityStructure> volatility_;
-        CumulativeNormalDistribution N_;
     };
 
 }

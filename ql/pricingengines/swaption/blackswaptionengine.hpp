@@ -31,6 +31,8 @@
 
 namespace QuantLib {
 
+    class Quote;
+
     //! Black-formula swaption engine
     /*! \ingroup swaptionengines
 
@@ -45,7 +47,7 @@ namespace QuantLib {
         BlackSwaptionEngine(const Handle<YieldTermStructure>& termStructure,
                             const Handle<Quote>& vol,
                             const DayCounter& dc = Actual365Fixed());
-        BlackSwaptionEngine(const Handle<YieldTermStructure>& termStructure,
+        BlackSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
                             const Handle<SwaptionVolatilityStructure>& vol);
         void calculate() const;
         Handle<YieldTermStructure> termStructure();
