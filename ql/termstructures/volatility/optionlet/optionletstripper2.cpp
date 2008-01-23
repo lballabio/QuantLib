@@ -97,7 +97,7 @@ namespace QuantLib {
         Volatility unadjustedVol, adjustedVol;
         for (Size j=0; j<nOptionExpiries_; ++j) {
             for (Size i=0; i<optionletVolatilities_.size(); ++i) {
-                if (i<=caps_[j]->leg().size()) {
+                if (i<=caps_[j]->floatingLeg().size()) {
                     unadjustedVol = adapter.volatility(optionletTimes_[i],
                                                        atmCapFloorStrikes_[j]);
                     adjustedVol = unadjustedVol + spreadsVolImplied_[j];
