@@ -22,10 +22,9 @@
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
 #include <ql/pricingengines/swaption/discretizedswaption.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/cashflows/floatingratecoupon.hpp>
-#include <ql/instruments/payoffs.hpp>
-#include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/indexes/iborindex.hpp>
 
 namespace QuantLib {
 

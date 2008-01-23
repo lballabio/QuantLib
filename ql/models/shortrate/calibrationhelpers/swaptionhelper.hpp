@@ -26,9 +26,10 @@
 
 #include <ql/models/calibrationhelper.hpp>
 #include <ql/instruments/swaption.hpp>
-#include <ql/cashflows/iborcoupon.hpp>
 
 namespace QuantLib {
+
+    class Iborindex;
 
     //! calibration helper for ATM swaption
     class SwaptionHelper : public CalibrationHelper {
@@ -52,6 +53,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

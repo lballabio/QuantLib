@@ -26,9 +26,10 @@
 
 #include <ql/models/calibrationhelper.hpp>
 #include <ql/instruments/capfloor.hpp>
-#include <ql/indexes/iborindex.hpp>
 
 namespace QuantLib {
+
+    class Iborindex;
 
     //! calibration helper for ATM cap
     class CapHelper : public CalibrationHelper {
@@ -42,18 +43,13 @@ namespace QuantLib {
                   bool includeFirstSwaplet,
                   const Handle<YieldTermStructure>& termStructure,
                   bool calibrateVolatility = false);
-
         virtual void addTimesTo(std::list<Time>& times) const;
-
         virtual Real modelValue() const;
-
         virtual Real blackPrice(Volatility volatility) const;
-
       private:
         boost::shared_ptr<Cap> cap_;
     };
 
 }
-
 
 #endif

@@ -22,12 +22,9 @@
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/discretizedcapfloor.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/cashflows/cashflows.hpp>
-#include <ql/cashflows/couponpricer.hpp>
 #include <ql/time/schedule.hpp>
-#include <ql/instruments/swap.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
 
 namespace QuantLib {
 
