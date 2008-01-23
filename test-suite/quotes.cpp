@@ -175,10 +175,10 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
     Real expectedImpliedStdev =
         blackFormulaImpliedStdDev(optionType, strike,
                                   forwardQuote->value(), price,
-                                  1.0, guess, 1.0e-6);
+                                  1.0, 0.0, guess, 1.0e-6);
     if (std::fabs(impliedStdev-expectedImpliedStdev) > 1.0e-15)
-        BOOST_FAIL("impliedStdevQuote yields " << impliedStdev << "\n"
-                << "expected result is " << expectedImpliedStdev);
+        BOOST_FAIL("\nimpliedStdevQuote yields :" << impliedStdev <<
+                   "\nexpected result is       :" << expectedImpliedStdev);
     // then we test the observer/observable chain
     boost::shared_ptr<Quote> quote = impliedStdevQuote;
     f.registerWith(quote);

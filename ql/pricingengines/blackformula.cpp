@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2007 Cristina Duminuco
  Copyright (C) 2007 Chiara Fornarola
- Copyright (C) 2003, 2004, 2005, 2006, 2007 Ferdinando Ametrano
+ Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006 StatPro Italia srl
@@ -197,9 +197,10 @@ namespace QuantLib {
                                    Real forward,
                                    Real blackPrice,
                                    Real discount,
+                                   Real displacement,
                                    Real guess,
                                    Real accuracy,
-                                   Real displacement)
+                                   Natural maxIterations)
     {
         checkParameters(strike, forward, displacement);
         QL_REQUIRE(blackPrice>=0.0,
@@ -218,7 +219,7 @@ namespace QuantLib {
         BlackImpliedStdDevHelper f(optionType, strike, forward,
                                    blackPrice/discount);
         NewtonSafe solver;
-        solver.setMaxEvaluations(100);
+        solver.setMaxEvaluations(maxIterations);
         Real minSdtDev = 0.0, maxStdDev = 3.0;
         Real stdDev = solver.solve(f, accuracy, guess, minSdtDev, maxStdDev);
         QL_ENSURE(stdDev>=0.0,
@@ -231,11 +232,12 @@ namespace QuantLib {
                         Real forward,
                         Real blackPrice,
                         Real discount,
+                        Real displacement,
                         Real guess,
                         Real accuracy,
-                        Real displacement) {
+                        Natural maxIterations) {
         return blackFormulaImpliedStdDev(payoff->optionType(), payoff->strike(),
-            forward, blackPrice, discount, guess, accuracy, displacement);
+            forward, blackPrice, discount, displacement, guess, accuracy, maxIterations);
     }
 
     Real blackFormulaCashItmProbability(Option::Type optionType,

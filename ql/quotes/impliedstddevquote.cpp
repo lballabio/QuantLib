@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2007 Ferdinando Ametrano
+ Copyright (C) 2006, 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2006 François du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
@@ -28,9 +28,11 @@ namespace QuantLib {
                                            const Handle<Quote>& price,
                                            Real strike,
                                            Real guess,
-                                           Real accuracy)
+                                           Real accuracy,
+                                           Natural maxIter)
     : impliedStdev_(guess), optionType_(optionType), strike_(strike),
-      accuracy_(accuracy), forward_(forward), price_(price) {
+      accuracy_(accuracy), maxIter_(maxIter),
+      forward_(forward), price_(price) {
         registerWith(forward_);
         registerWith(price_);
     }
@@ -46,14 +48,16 @@ namespace QuantLib {
     }
 
     void ImpliedStdDevQuote::performCalculations() const {
-        static const Real discount_ = 1.0;
+        static const Real discount = 1.0;
+        static const Real displacement = 0.0;
         Real blackPrice = price_->value();
         try {
-            impliedStdev_ =
-                blackFormulaImpliedStdDev(optionType_, strike_,
-                                          forward_->value(), blackPrice,
-                                          discount_, impliedStdev_,
-                                          accuracy_);
+            impliedStdev_ = blackFormulaImpliedStdDev(optionType_, strike_,
+                                                      forward_->value(),
+                                                      blackPrice,
+                                                      discount, displacement,
+                                                      impliedStdev_,
+                                                      accuracy_, maxIter_);
         } catch(QuantLib::Error&) {
             impliedStdev_ = 0.0;
         }

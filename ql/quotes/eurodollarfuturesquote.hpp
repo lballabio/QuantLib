@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2008 Ferdinando Ametrano
  Copyright (C) 2006 François du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
@@ -40,7 +40,8 @@ namespace QuantLib {
                                             const Handle<Quote>& putPrice,
                                             Real strike,
                                             Real guess = .15,
-                                            Real accuracy = 1.0e-6);
+                                            Real accuracy = 1.0e-6,
+                                            Natural maxIter = 100);
         //! \name Quote interface
         //@{
         Real value() const;
@@ -51,6 +52,7 @@ namespace QuantLib {
         mutable Real impliedStdev_;
         Real strike_;
         Real accuracy_;
+        Natural maxIter_;
         Handle<Quote> forward_;
         Handle<Quote> callPrice_;
         Handle<Quote> putPrice_;

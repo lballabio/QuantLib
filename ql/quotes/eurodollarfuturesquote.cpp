@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2008 Ferdinando Ametrano
  Copyright (C) 2006 François du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
@@ -29,9 +29,10 @@ namespace QuantLib {
                                 const Handle<Quote>& putPrice,
                                 Real strike,
                                 Real guess,
-                                Real accuracy)
+                                Real accuracy,
+                                Natural maxIter)
     : impliedStdev_(guess), strike_(100.0-strike),
-      accuracy_(accuracy), forward_(forward),
+      accuracy_(accuracy), maxIter_(maxIter), forward_(forward),
       callPrice_(callPrice), putPrice_(putPrice) {
         registerWith(forward_);
         registerWith(callPrice_);
@@ -54,18 +55,21 @@ namespace QuantLib {
     }
 
     void EurodollarFuturesImpliedStdDevQuote::performCalculations() const {
-        static const Real discount_ = 1.0;
+        static const Real discount = 1.0;
+        static const Real displacement = 0.0;
         Real forwardValue = 100.0-forward_->value();
         if (strike_>forwardValue) {
             impliedStdev_ =
                 blackFormulaImpliedStdDev(Option::Call, strike_,
                                           forwardValue, putPrice_->value(),
-                                          discount_, impliedStdev_, accuracy_);
+                                          discount, displacement,
+                                          impliedStdev_, accuracy_, maxIter_);
         } else {
             impliedStdev_ =
                 blackFormulaImpliedStdDev(Option::Put, strike_,
                                           forwardValue, callPrice_->value(),
-                                          discount_, impliedStdev_, accuracy_);
+                                          discount, displacement,
+                                          impliedStdev_, accuracy_, maxIter_);
         }
     }
 }

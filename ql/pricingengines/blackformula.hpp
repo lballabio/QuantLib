@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2007 Cristina Duminuco
  Copyright (C) 2007 Chiara Fornarola
- Copyright (C) 2003, 2004, 2005, 2006 Ferdinando Ametrano
+ Copyright (C) 2003, 2004, 2005, 2006, 2008 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006 StatPro Italia srl
@@ -93,9 +93,10 @@ namespace QuantLib {
                                    Real forward,
                                    Real blackPrice,
                                    Real discount = 1.0,
+                                   Real displacement = 0.0,
                                    Real guess = Null<Real>(),
                                    Real accuracy = 1.0e-6,
-                                   Real displacement = 0.0);
+                                   Natural maxIterations = 100);
 
     /*! Black 1976 implied standard deviation,
         i.e. volatility*sqrt(timeToMaturity)
@@ -105,9 +106,10 @@ namespace QuantLib {
                         Real forward,
                         Real blackPrice,
                         Real discount = 1.0,
+                        Real displacement = 0.0,
                         Real guess = Null<Real>(),
                         Real accuracy = 1.0e-6,
-                        Real displacement = 0.0);
+                        Natural maxIterations = 100);
 
 
     /*! Black 1976 probability of being in the money (in the bond martingale

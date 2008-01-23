@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2007 François du Vignaud
  Copyright (C) 2007 Katiuscia Manzoni
  Copyright (C) 2007 Giorgio Facchinetti
@@ -36,14 +36,15 @@ namespace QuantLib {
             const shared_ptr<CapFloorTermVolSurface>& termVolSurface,
             const shared_ptr<IborIndex>& index,
             Rate switchStrike,
-            Real accuracy)
+            Real accuracy,
+            Natural maxIter)
     : OptionletStripper(termVolSurface, index),
       volQuotes_(nOptionletTenors_,
                  std::vector<shared_ptr<SimpleQuote> >(nStrikes_)),
       floatingSwitchStrike_(switchStrike==Null<Rate>() ? true : false),
       capFlooMatrixNotInitialized_(true),
       switchStrike_(switchStrike),
-      accuracy_(accuracy){
+      accuracy_(accuracy), maxIter_(maxIter) {
 
         capFloorPrices_ = Matrix(nOptionletTenors_, nStrikes_);
         optionletPrices_ = Matrix(nOptionletTenors_, nStrikes_);
@@ -137,9 +138,9 @@ namespace QuantLib {
                                                   strikes[j],
                                                   atmOptionletRate_[i],
                                                   optionletPrices_[i][j],
-                                                  optionletAnnuity,
+                                                  optionletAnnuity, 0.0,
                                                   optionletStDevs_[i][j],
-                                                  accuracy_);
+                                                  accuracy_, maxIter_);
                 } catch (std::exception& e) {
                     QL_FAIL("could not bootstrap the optionlet:"
                             "\n fixing date:   " << optionletDates_[i] <<

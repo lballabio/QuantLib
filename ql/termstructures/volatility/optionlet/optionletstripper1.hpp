@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2007 François du Vignaud
  Copyright (C) 2007 Katiuscia Manzoni
  Copyright (C) 2007 Giorgio Facchinetti
@@ -45,7 +45,8 @@ namespace QuantLib {
         OptionletStripper1(const boost::shared_ptr<CapFloorTermVolSurface>&,
                            const boost::shared_ptr<IborIndex>& index,
                            Rate switchStrikes = Null<Rate>(),
-                           Real accuracy = 1.0e-6);
+                           Real accuracy = 1.0e-6,
+                           Natural maxIter = 100);
 
         const Matrix& capFloorPrices() const;
         const Matrix& capFloorVolatilities() const;
@@ -67,6 +68,7 @@ namespace QuantLib {
         mutable bool capFlooMatrixNotInitialized_;
         mutable Rate switchStrike_;
         Real accuracy_;
+        Natural maxIter_;
     };
 
 }
