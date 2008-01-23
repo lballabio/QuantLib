@@ -48,7 +48,7 @@
 
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/schedule.hpp>
-#include <ql/quote/simplequote.hpp>
+#include <ql/quotes/simplequote.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
