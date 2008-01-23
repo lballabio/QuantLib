@@ -71,18 +71,9 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         Type type() const { return type_; }
-        const Leg& leg() const {
-            return floatingLeg_;
-        }
-        const std::vector<Rate>& capRates() const {
-            return capRates_;
-        }
-        const std::vector<Rate>& floorRates() const {
-            return floorRates_;
-        }
-        const Leg& floatingLeg() const {
-            return floatingLeg_;
-        }
+        const std::vector<Rate>& capRates() const { return capRates_; }
+        const std::vector<Rate>& floorRates() const { return floorRates_; }
+        const Leg& floatingLeg() const { return floatingLeg_; }
 
         Date startDate() const;
         Date maturityDate() const;
@@ -93,8 +84,9 @@ namespace QuantLib {
         Volatility impliedVolatility(
                               Real price,
                               const Handle<YieldTermStructure>& discountCurve,
+                              Volatility guess,
                               Real accuracy = 1.0e-4,
-                              Size maxEvaluations = 100,
+                              Natural maxEvaluations = 100,
                               Volatility minVol = 1.0e-7,
                               Volatility maxVol = 4.0) const;
       private:

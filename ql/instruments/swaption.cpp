@@ -21,22 +21,62 @@
 */
 
 #include <ql/instruments/swaption.hpp>
-#include <ql/math/solvers1d/brent.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/math/solvers1d/brent.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/exercise.hpp>
 
 namespace QuantLib {
 
+    namespace {
+
+        class ImpliedVolHelper {
+          public:
+            ImpliedVolHelper(const Swaption&,
+                             const Handle<YieldTermStructure>& discountCurve,
+                             Real targetValue);
+            Real operator()(Volatility x) const;
+          private:
+            boost::shared_ptr<PricingEngine> engine_;
+            Handle<YieldTermStructure> discountCurve_;
+            Real targetValue_;
+            boost::shared_ptr<SimpleQuote> vol_;
+            const Instrument::results* results_;
+        };
+
+        ImpliedVolHelper::ImpliedVolHelper(
+                              const Swaption& swaption,
+                              const Handle<YieldTermStructure>& discountCurve,
+                              Real targetValue)
+        : discountCurve_(discountCurve), targetValue_(targetValue) {
+
+            vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
+            Handle<Quote> h(vol_);
+            engine_ = boost::shared_ptr<PricingEngine>(new
+                                    BlackSwaptionEngine(discountCurve_, h));
+            swaption.setupArguments(engine_->getArguments());
+
+            results_ =
+                dynamic_cast<const Instrument::results*>(engine_->getResults());
+        }
+
+        Real ImpliedVolHelper::operator()(Volatility x) const {
+            vol_->setValue(x);
+            engine_->calculate();
+            return results_->value-targetValue_;
+        }
+
+    }
+
     std::ostream& operator<<(std::ostream& out,
-                             Settlement::Type type) {
-        switch (type) {
+                             Settlement::Type t) {
+        switch (t) {
           case Settlement::Physical:
-            return out << "delivery";
+            return out << "Delivery";
           case Settlement::Cash:
-            return out << "cash";
+            return out << "Cash";
           default:
-            QL_FAIL("unknown settlement type");
+            QL_FAIL("unknown Settlement::Type(" << Integer(t) << ")");
         }
     }
 
@@ -86,47 +126,26 @@ namespace QuantLib {
         //}
     }
 
+    Rate Swaption::atmRate() const {
+        return swap_->fairRate();
+    }
+
     Volatility Swaption::impliedVolatility(
                               Real targetValue,
-                              const Handle<YieldTermStructure>& termStructure,
+                              const Handle<YieldTermStructure>& discountCurve,
+                              Volatility guess,
                               Real accuracy,
-                              Size maxEvaluations,
+                              Natural maxEvaluations,
                               Volatility minVol,
                               Volatility maxVol) const {
         calculate();
         QL_REQUIRE(!isExpired(), "instrument expired");
 
-        Volatility guess = 0.10; // improve
 
-        ImpliedVolHelper f(*this, termStructure, targetValue);
+        ImpliedVolHelper f(*this, discountCurve, targetValue);
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);
     }
 
-    Swaption::ImpliedVolHelper::ImpliedVolHelper(
-                              const Swaption& swaption,
-                              const Handle<YieldTermStructure>& termStructure,
-                              Real targetValue)
-    : termStructure_(termStructure), targetValue_(targetValue) {
-
-        vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
-        Handle<Quote> h(vol_);
-        engine_ = boost::shared_ptr<PricingEngine>(new
-                                        BlackSwaptionEngine(termStructure, h));
-        swaption.setupArguments(engine_->getArguments());
-
-        results_ =
-            dynamic_cast<const Instrument::results*>(engine_->getResults());
-    }
-
-    Real Swaption::ImpliedVolHelper::operator()(Volatility x) const {
-        vol_->setValue(x);
-        engine_->calculate();
-        return results_->value-targetValue_;
-    }
-
-    Rate Swaption::atmRate() const{
-        return swap_->fairRate();
-    }
 }

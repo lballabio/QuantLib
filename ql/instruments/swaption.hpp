@@ -29,7 +29,6 @@
 
 #include <ql/option.hpp>
 #include <ql/instruments/vanillaswap.hpp>
-#include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
@@ -68,13 +67,13 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
-        // constructors
         Swaption(const boost::shared_ptr<VanillaSwap>& swap,
                  const boost::shared_ptr<Exercise>& exercise,
                  Settlement::Type delivery = Settlement::Physical);
         //! \name Instrument interface
         //@{
         bool isExpired() const;
+        void setupArguments(PricingEngine::arguments*) const;
         //@}
         //! \name Inspectors
         //@{
@@ -84,35 +83,21 @@ namespace QuantLib {
             return swap_;
         }
         //@}
-        void setupArguments(PricingEngine::arguments*) const;
+        Rate atmRate() const;
         //! implied volatility
         Volatility impliedVolatility(
                               Real price,
-                              const Handle<YieldTermStructure>& termStructure,
+                              const Handle<YieldTermStructure>& discountCurve,
+                              Volatility guess,
                               Real accuracy = 1.0e-4,
-                              Size maxEvaluations = 100,
+                              Natural maxEvaluations = 100,
                               Volatility minVol = 1.0e-7,
                               Volatility maxVol = 4.0) const;
-        Rate atmRate() const;
       private:
         // arguments
         boost::shared_ptr<VanillaSwap> swap_;
         //Handle<YieldTermStructure> termStructure_;
         Settlement::Type settlementType_;
-        // helper class for implied volatility calculation
-        class ImpliedVolHelper {
-          public:
-            ImpliedVolHelper(const Swaption&,
-                             const Handle<YieldTermStructure>&,
-                             Real targetValue);
-            Real operator()(Volatility x) const;
-          private:
-            boost::shared_ptr<PricingEngine> engine_;
-            Handle<YieldTermStructure> termStructure_;
-            Real targetValue_;
-            boost::shared_ptr<SimpleQuote> vol_;
-            const Instrument::results* results_;
-        };
     };
 
     //! %Arguments for swaption calculation
@@ -142,4 +127,3 @@ namespace QuantLib {
 }
 
 #endif
-

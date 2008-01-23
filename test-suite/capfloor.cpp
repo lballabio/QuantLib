@@ -454,6 +454,7 @@ void CapFloorTest::testImpliedVolatility() {
                             implVol =
                                 capfloor->impliedVolatility(value,
                                                             vars.termStructure,
+                                                            0.10,
                                                             tolerance,
                                                             maxEvaluations);
                         } catch (std::exception& e) {

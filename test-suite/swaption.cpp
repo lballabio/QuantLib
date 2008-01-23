@@ -848,6 +848,7 @@ void SwaptionTest::testImpliedVolatility() {
                                 implVol =
                                 swaption->impliedVolatility(value,
                                                             termStructure_,
+                                                            0.10,
                                                             tolerance,
                                                             maxEvaluations);
                             } catch (std::exception& e) {

@@ -20,12 +20,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/instruments/capfloor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/math/solvers1d/brent.hpp>
-#include <ql/cashflows/cashflows.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/quotes/simplequote.hpp>
-
+#include <ql/cashflows/cashflows.hpp>
 
 namespace QuantLib {
 
@@ -34,10 +33,9 @@ namespace QuantLib {
         class ImpliedVolHelper {
           public:
             ImpliedVolHelper(const CapFloor&,
-                             const Handle<YieldTermStructure>&,
+                             const Handle<YieldTermStructure>& discountCurve,
                              Real targetValue);
             Real operator()(Volatility x) const;
-            Real derivative(Volatility x) const;
           private:
             boost::shared_ptr<PricingEngine> engine_;
             Handle<YieldTermStructure> discountCurve_;
@@ -54,8 +52,8 @@ namespace QuantLib {
 
             vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
             Handle<Quote> h(vol_);
-            engine_ = boost::shared_ptr<PricingEngine>(
-                                  new BlackCapFloorEngine(discountCurve_, h));
+            engine_ = boost::shared_ptr<PricingEngine>(new
+                                    BlackCapFloorEngine(discountCurve_, h));
             cap.setupArguments(engine_->getArguments());
 
             results_ =
@@ -68,21 +66,27 @@ namespace QuantLib {
             return results_->value-targetValue_;
         }
 
-        Real ImpliedVolHelper::derivative(Volatility x) const {
-            vol_->setValue(x);
-            engine_->calculate();
-            return 0.0;
-            //return results_->vega;
-        }
-
     }
 
 
-    CapFloor::CapFloor(
-                 CapFloor::Type type,
-                 const Leg& floatingLeg,
-                 const std::vector<Rate>& capRates,
-                 const std::vector<Rate>& floorRates)
+    std::ostream& operator<<(std::ostream& out,
+                             CapFloor::Type t) {
+        switch (t) {
+          case CapFloor::Cap:
+            return out << "Cap";
+          case CapFloor::Floor:
+            return out << "Floor";
+          case CapFloor::Collar:
+            return out << "Collar";
+          default:
+            QL_FAIL("unknown CapFloor::Type (" << Integer(t) << ")");
+        }
+    }
+
+    CapFloor::CapFloor(CapFloor::Type type,
+                       const Leg& floatingLeg,
+                       const std::vector<Rate>& capRates,
+                       const std::vector<Rate>& floorRates)
     : type_(type), floatingLeg_(floatingLeg),
       capRates_(capRates), floorRates_(floorRates) {
         if (type_ == Cap || type_ == Collar) {
@@ -104,10 +108,9 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
     }
 
-    CapFloor::CapFloor(
-                 CapFloor::Type type,
-                 const Leg& floatingLeg,
-                 const std::vector<Rate>& strikes)
+    CapFloor::CapFloor(CapFloor::Type type,
+                       const Leg& floatingLeg,
+                       const std::vector<Rate>& strikes)
     : type_(type), floatingLeg_(floatingLeg) {
         QL_REQUIRE(!strikes.empty(), "no strikes given");
         if (type_ == Cap) {
@@ -128,10 +131,6 @@ namespace QuantLib {
             registerWith(*i);
 
         registerWith(Settings::instance().evaluationDate());
-    }
-
-    Rate CapFloor::atmRate(const YieldTermStructure& discountCurve) const {
-        return CashFlows::atmRate(floatingLeg_, discountCurve);
     }
 
     bool CapFloor::isExpired() const {
@@ -254,38 +253,25 @@ namespace QuantLib {
                    << forwards.size() << ")");
     }
 
+    Rate CapFloor::atmRate(const YieldTermStructure& discountCurve) const {
+        return CashFlows::atmRate(floatingLeg_, discountCurve);
+    }
+
     Volatility CapFloor::impliedVolatility(
                               Real targetValue,
                               const Handle<YieldTermStructure>& discountCurve,
+                              Volatility guess,
                               Real accuracy,
-                              Size maxEvaluations,
+                              Natural maxEvaluations,
                               Volatility minVol,
                               Volatility maxVol) const {
         calculate();
         QL_REQUIRE(!isExpired(), "instrument expired");
 
-        Volatility guess = 0.10;   // no way we can get a more accurate one
-
         ImpliedVolHelper f(*this, discountCurve, targetValue);
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);
-    }
-
-
-
-
-    std::ostream& operator<<(std::ostream& out, CapFloor::Type t) {
-        switch (t) {
-          case CapFloor::Cap:
-            return out << "Cap";
-          case CapFloor::Floor:
-            return out << "Floor";
-          case CapFloor::Collar:
-            return out << "Collar";
-          default:
-            QL_FAIL("unknown CapFloor::Type (" << Integer(t) << ")");
-        }
     }
 
 }
