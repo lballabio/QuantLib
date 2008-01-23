@@ -63,7 +63,7 @@ namespace QuantLib {
                                SimpleQuote& volQuote,
                                Real targetValue,
                                Real accuracy,
-                               Size maxEvaluations,
+                               Natural maxEvaluations,
                                Volatility minVol,
                                Volatility maxVol) {
 
@@ -101,5 +101,3 @@ namespace QuantLib {
     }
                                
 }
-
-
