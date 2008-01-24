@@ -46,6 +46,7 @@ namespace QuantLib {
 
         virtual const std::vector<Date>& optionletFixingDates() const = 0;
         virtual const std::vector<Time>& optionletFixingTimes() const = 0;
+        virtual Size optionletMaturities() const = 0;
 
         virtual const std::vector<Rate>& atmOptionletRates() const = 0;
 
@@ -53,7 +54,6 @@ namespace QuantLib {
         virtual Calendar calendar() const = 0;
         virtual Natural settlementDays() const = 0;
         virtual BusinessDayConvention businessDayConvention() const = 0;
-        virtual const Date& referenceDate() const = 0;
     };
 }
 

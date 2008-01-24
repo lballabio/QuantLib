@@ -30,7 +30,7 @@ namespace QuantLib {
             const boost::shared_ptr<IborIndex>& iborIndex)
     : termVolSurface_(termVolSurface),
       iborIndex_(iborIndex),
-      nStrikes_(termVolSurface->strikes().size()){
+      nStrikes_(termVolSurface->strikes().size()) {
         
         registerWith(termVolSurface);
         registerWith(iborIndex_);
@@ -99,6 +99,10 @@ namespace QuantLib {
         return optionletTimes_;
     }
      
+    Size OptionletStripper::optionletMaturities() const {
+        return optionletTenors_.size();
+    }
+
     const vector<Date>& OptionletStripper::optionletPaymentDates() const {
         calculate();
         return optionletPaymentDates_;
@@ -129,10 +133,6 @@ namespace QuantLib {
 
     BusinessDayConvention OptionletStripper::businessDayConvention() const {
         return termVolSurface_->businessDayConvention();
-    }
-
-    const Date& OptionletStripper::referenceDate() const {
-        return termVolSurface_->referenceDate();
     }
 
     boost::shared_ptr<CapFloorTermVolSurface>

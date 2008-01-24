@@ -44,7 +44,6 @@ namespace QuantLib {
         //! \name TermStructure interface
         //@{
         Date maxDate() const;
-        const Date& referenceDate() const;
         //@}
         //! \name VolatilityTermStructure interface
         //@{

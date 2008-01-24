@@ -33,7 +33,7 @@ namespace QuantLib {
                                    s->businessDayConvention(),
                                    s->dayCounter()),
       optionletStripper_(s),
-      nInterpolations_(s->optionletFixingTimes().size()),
+      nInterpolations_(s->optionletMaturities()),
       strikeInterpolations_(nInterpolations_) {
         registerWith(optionletStripper_);
     }
@@ -117,7 +117,4 @@ namespace QuantLib {
         return optionletStripper_->optionletFixingDates().back();
     }
 
-    const Date& StrippedOptionletAdapter::referenceDate() const {
-        return optionletStripper_->referenceDate();
-    }
 }

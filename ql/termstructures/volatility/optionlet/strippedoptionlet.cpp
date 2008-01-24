@@ -28,7 +28,6 @@ using std::vector;
 namespace QuantLib {
 
     StrippedOptionlet::StrippedOptionlet(
-                        const Date& referenceDate,
                         Natural settlementDays,
                         const boost::shared_ptr<IborIndex>& iborIndex,
                         const vector<Period>& optionletTenors,
@@ -37,8 +36,7 @@ namespace QuantLib {
                         const Calendar& calendar,
                         BusinessDayConvention bdc,
                         const DayCounter& dc)
-    : referenceDate_(referenceDate),
-      calendar_(calendar),
+    : calendar_(calendar),
       settlementDays_(settlementDays),
       businessDayConvention_(bdc),
       dc_(dc),
@@ -57,15 +55,13 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
         registerWithMarketData();
 
-        CapFloorTermVolSurface tmp(referenceDate_, calendar_, optionletTenors_,
+        CapFloorTermVolSurface tmp(settlementDays_, calendar_, optionletTenors_,
                                    optionletStrikes_[0], optionletVolQuotes_, 
                                    businessDayConvention_, dc_);
         
         for (Size i=0; i<nOptionletTenors_; ++i) {
             optionletDates_[i] = tmp.optionDateFromTenor(optionletTenors_[i]);
-            //optionletTimes_[i] = tmp.timeFromReference(optionletDates_[i]);
-            optionletTimes_[i] = dc_.yearFraction(referenceDate_,
-                                                  optionletDates_[i]);
+            optionletTimes_[i] = tmp.timeFromReference(optionletDates_[i]);
         }
 
     }
@@ -136,6 +132,10 @@ namespace QuantLib {
         return optionletTimes_;
     }
 
+    Size StrippedOptionlet::optionletMaturities() const {
+        return nOptionletTenors_;
+    }
+
     const vector<Time>& StrippedOptionlet::atmOptionletRates() const {
         calculate();
         for (Size i=0; i<nOptionletTenors_; ++i)
@@ -157,10 +157,6 @@ namespace QuantLib {
 
     BusinessDayConvention StrippedOptionlet::businessDayConvention() const {
         return businessDayConvention_;
-    }
-
-    const Date& StrippedOptionlet::referenceDate() const {
-        return referenceDate_;
     }
 
 }

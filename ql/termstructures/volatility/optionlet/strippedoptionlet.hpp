@@ -35,8 +35,7 @@ namespace QuantLib {
     */
     class StrippedOptionlet : public StrippedOptionletBase {
       public:
-        StrippedOptionlet(const Date& referenceDate,
-                          Natural settlementDays,
+        StrippedOptionlet(Natural settlementDays,
                           const boost::shared_ptr<IborIndex>& iborIndex,
                           const std::vector<Period>& optionletTenors,
                           const std::vector<Rate>& strikes,
@@ -52,6 +51,7 @@ namespace QuantLib {
 
         const std::vector<Date>& optionletFixingDates() const;
         const std::vector<Time>& optionletFixingTimes() const;
+        Size optionletMaturities() const;
 
         const std::vector<Rate>& atmOptionletRates() const;
 
@@ -59,7 +59,6 @@ namespace QuantLib {
         Calendar calendar() const;
         Natural settlementDays() const;
         BusinessDayConvention businessDayConvention() const;
-        const Date& referenceDate() const;
         //@}
 
         const std::vector<Period>& optionletTenors() const;
@@ -69,7 +68,6 @@ namespace QuantLib {
         void registerWithMarketData();
         void performCalculations() const;
 
-        Date referenceDate_;
         Calendar calendar_;
         Natural settlementDays_;
         BusinessDayConvention businessDayConvention_;

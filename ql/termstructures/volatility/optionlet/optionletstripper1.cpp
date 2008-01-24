@@ -142,15 +142,14 @@ namespace QuantLib {
                                                   optionletStDevs_[i][j],
                                                   accuracy_, maxIter_);
                 } catch (std::exception& e) {
-                    QL_FAIL("could not bootstrap the optionlet:"
-                            "\n fixing date:   " << optionletDates_[i] <<
-                            "\n payment date:  " << optionletPaymentDates_[i] <<
-                            "\n type:          " << optionletType <<
-                            "\n strike:        " << io::rate(strikes[j]) <<
-                            "\n atm:           " << io::rate(atmOptionletRate_[i]) <<
-                            "\n price:         " << optionletPrices_[i][j] <<
-                            "\n annuity:       " << optionletAnnuity <<
-                            "\n error message: " << e.what());
+                    QL_FAIL("could not bootstrap optionlet:"
+                            "\n type:    " << optionletType <<
+                            "\n strike:  " << io::rate(strikes[j]) <<
+                            "\n atm:     " << io::rate(atmOptionletRate_[i]) <<
+                            "\n price:   " << optionletPrices_[i][j] <<
+                            "\n annuity: " << optionletAnnuity <<
+                            "\n expiry:  " << optionletDates_[i] <<
+                            "\n error:   " << e.what());
                 }
                 optionletVolatilities_[i][j] = optionletStDevs_[i][j] /
                                                 std::sqrt(optionletTimes_[i]);
