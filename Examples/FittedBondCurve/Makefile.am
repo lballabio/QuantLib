@@ -19,7 +19,7 @@ EXTRA_DIST = \
 
 .PHONY: examples check-examples
 
-examples: FittedBondCurve
+examples: FittedBondCurve$(EXEEXT)
 
 check-examples: examples
 	./FittedBondCurve$(EXEEXT)

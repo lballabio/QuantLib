@@ -19,7 +19,7 @@ EXTRA_DIST = \
 
 .PHONY: examples check-examples
 
-examples: FRA
+examples: FRA$(EXEEXT)
 
 check-examples: examples
 	./FRA$(EXEEXT)

@@ -19,7 +19,7 @@ EXTRA_DIST = \
 
 .PHONY: examples check-examples
 
-examples: EquityOption
+examples: EquityOption$(EXEEXT)
 
 check-examples: examples
 	./EquityOption$(EXEEXT)

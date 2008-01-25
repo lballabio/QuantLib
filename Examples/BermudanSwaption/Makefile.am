@@ -19,7 +19,7 @@ EXTRA_DIST = \
 
 .PHONY: examples check-examples
 
-examples: BermudanSwaption
+examples: BermudanSwaption$(EXEEXT)
 
 check-examples: examples
 	./BermudanSwaption$(EXEEXT)

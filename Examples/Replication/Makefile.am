@@ -19,7 +19,7 @@ EXTRA_DIST = \
 
 .PHONY: examples check-examples
 
-examples: Replication
+examples: Replication$(EXEEXT)
 
 check-examples: examples
 	./Replication$(EXEEXT)

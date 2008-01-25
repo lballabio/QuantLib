@@ -19,7 +19,7 @@ EXTRA_DIST = \
 
 .PHONY: examples check-examples
 
-examples: ConvertibleBonds
+examples: ConvertibleBonds$(EXEEXT)
 
 check-examples: examples
 	./ConvertibleBonds$(EXEEXT)

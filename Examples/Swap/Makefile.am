@@ -19,7 +19,7 @@ EXTRA_DIST = \
 
 .PHONY: examples check-examples
 
-examples: SwapValuation
+examples: SwapValuation$(EXEEXT)
 
 check-examples: examples
 	./SwapValuation$(EXEEXT)

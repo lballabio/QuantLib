@@ -19,7 +19,7 @@ EXTRA_DIST = \
 
 .PHONY: examples check-examples
 
-examples: Repo
+examples: Repo$(EXEEXT)
 
 check-examples: examples
 	./Repo$(EXEEXT)

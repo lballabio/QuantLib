@@ -19,7 +19,7 @@ EXTRA_DIST = \
 
 .PHONY: examples check-examples
 
-examples: DiscreteHedging
+examples: DiscreteHedging$(EXEEXT)
 
 check-examples: examples
 	./DiscreteHedging$(EXEEXT)
