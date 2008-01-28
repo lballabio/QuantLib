@@ -38,7 +38,6 @@ namespace QuantLib {
         }
     }
 
-    //! utility fuction for weightes sum of NPVs 
     Real aggregateNPV(const vector<shared_ptr<Instrument> >& instruments,
                       const vector<Real>& quant) {
         Size n = instruments.size();
@@ -48,8 +47,8 @@ namespace QuantLib {
                 npv += instruments[k]->NPV();
         } else {
             QL_REQUIRE(quant.size()==n,
-                       "mismatch between instruments (" << n <<
-                       ") and quantities (" << quant.size() << ") dimensions");
+                       "dimension mismatch between instruments (" << n <<
+                       ") and quantities (" << quant.size() << ")");
             for (Size k=0; k<n; ++k)
                 npv += quant[k] * instruments[k]->NPV();
         }
@@ -96,7 +95,7 @@ namespace QuantLib {
                         quotes[i]->setValue(quoteValues[i]-shift);
                 Real npv2 = aggregateNPV(instruments, quantities);
                 result.first = (npv-npv2)/(2.0*shift);
-                result.second = (npv-2.0*referenceNpv+npv2)/shift;
+                result.second = (npv-2.0*referenceNpv+npv2)/(shift*shift);
                 }
                 break;
               default:
