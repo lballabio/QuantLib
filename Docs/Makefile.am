@@ -56,13 +56,16 @@ docs-online: .time-stamp-online
 .time-stamp-online: $(DOXYGEN_CONFIG) $(DOXYGEN_CUSTOM) $(DOXYGEN_INPUT)
 	$(SED) -e "s/quantlibheader\.html/quantlibheaderonline\.html/" \
            -e "s/GENERATE_HTML          = NO/GENERATE_HTML          = YES/" \
+           -e "s/INCLUDE_GRAPH          = YES/INCLUDE_GRAPH          = NO/" \
            -e "s/SEARCHENGINE           = NO/SEARCHENGINE           = YES/" \
            -e "s/HTML_OUTPUT            = html/HTML_OUTPUT            = html-online/" \
            -e "s|ql_basepath|${BASEPATH}/|" \
            -e "s|ql_version|$(VERSION)|" \
 	       quantlib.doxy > .quantlib.doxy
 	$(DOXYGEN) .quantlib.doxy
-	rm .quantlib.doxy
+	rm -f .quantlib.doxy
+	rm -f html-online/*8hpp.html
+	rm -f html-online/*.md5
 	cp -f images/*.jpg html-online
 	cp -f images/*.png html-online
 	cp -f images/*.ico html-online
