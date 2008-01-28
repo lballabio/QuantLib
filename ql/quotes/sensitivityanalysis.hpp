@@ -46,7 +46,7 @@ namespace QuantLib {
     std::ostream& operator<<(std::ostream&,
                              SensitivityAnalysis);
 
-    //! utility fuction for weighted sum of NPVs 
+    //! utility fuction for weighted sum of NPVs
     Real aggregateNPV(const std::vector<boost::shared_ptr<Instrument> >&,
                       const std::vector<Real>& quantities);
 
