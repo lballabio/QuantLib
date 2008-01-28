@@ -25,7 +25,8 @@
 
 namespace QuantLib {
 
-    std::ostream& operator<<(std::ostream& out, BusinessDayConvention b) {
+    std::ostream& operator<<(std::ostream& out,
+                             BusinessDayConvention b) {
         switch (b) {
           case Following:
             return out << "Following";
