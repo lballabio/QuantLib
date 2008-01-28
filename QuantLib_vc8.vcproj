@@ -5780,6 +5780,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\quotes\sensitivityanalysis.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\quotes\sensitivityanalysis.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\quotes\simplequote.hpp"
 				>
 			</File>
