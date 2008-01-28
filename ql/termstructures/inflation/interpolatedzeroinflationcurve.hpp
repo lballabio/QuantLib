@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Chris Kenyon
+ Copyright (C) 2007, 2008 Chris Kenyon
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -113,7 +113,7 @@ namespace QuantLib {
         // i.e. referenceDate - lag, at least must be in the relevant
         // period
         std::pair<Date,Date> lim =
-            this->calculatePeriod(yTS->referenceDate() - this->lag());
+            inflationPeriod(yTS->referenceDate() - this->lag(), frequency);
         QL_REQUIRE(lim.first <= dates_[0] && dates_[0] <= lim.second,
                    "first data date is not in base period, date: " << dates_[0]
                    << " not within [" << lim.first << "," << lim.second << "]");
