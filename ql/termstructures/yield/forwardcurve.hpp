@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -157,7 +157,7 @@ namespace QuantLib {
                                             const std::vector<Rate>& forwards,
                                             const DayCounter& dayCounter,
                                             const T& interpolator)
-    : ForwardRateStructure(dates[0], Calendar(), dayCounter),
+    : ForwardRateStructure(dates.front(), Calendar(), dayCounter),
       dates_(dates), data_(forwards), interpolator_(interpolator) {
 
         QL_REQUIRE(dates_.size()>1, "too few dates");
