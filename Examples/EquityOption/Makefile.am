@@ -3,10 +3,10 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 if AUTO_EXAMPLES
 bin_PROGRAMS = EquityOption
-TESTS = EquityOption
+TESTS = EquityOption$(EXEEXT)
 else
 EXTRA_PROGRAMS = EquityOption
-CLEANFILES = EquityOption
+CLEANFILES = EquityOption$(EXEEXT)
 endif
 EquityOption_SOURCES = EquityOption.cpp
 EquityOption_LDADD = ../../ql/libQuantLib.la

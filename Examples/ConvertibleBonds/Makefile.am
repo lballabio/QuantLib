@@ -3,10 +3,10 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 if AUTO_EXAMPLES
 bin_PROGRAMS = ConvertibleBonds
-TESTS = ConvertibleBonds
+TESTS = ConvertibleBonds$(EXEEXT)
 else
 EXTRA_PROGRAMS = ConvertibleBonds
-CLEANFILES = ConvertibleBonds
+CLEANFILES = ConvertibleBonds$(EXEEXT)
 endif
 ConvertibleBonds_SOURCES = ConvertibleBonds.cpp
 ConvertibleBonds_LDADD = ../../ql/libQuantLib.la

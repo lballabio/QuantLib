@@ -3,10 +3,10 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 if AUTO_EXAMPLES
 bin_PROGRAMS = SwapValuation
-TESTS = SwapValuation
+TESTS = SwapValuation$(EXEEXT)
 else
 EXTRA_PROGRAMS = SwapValuation
-CLEANFILES = SwapValuation
+CLEANFILES = SwapValuation$(EXEEXT)
 endif
 SwapValuation_SOURCES = swapvaluation.cpp
 SwapValuation_LDADD = ../../ql/libQuantLib.la

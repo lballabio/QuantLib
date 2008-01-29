@@ -3,10 +3,10 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 if AUTO_EXAMPLES
 bin_PROGRAMS = Repo
-TESTS = Repo
+TESTS = Repo$(EXEEXT)
 else
 EXTRA_PROGRAMS = Repo
-CLEANFILES = Repo
+CLEANFILES = Repo$(EXEEXT)
 endif
 Repo_SOURCES = Repo.cpp
 Repo_LDADD = ../../ql/libQuantLib.la

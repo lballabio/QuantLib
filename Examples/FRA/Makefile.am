@@ -3,10 +3,10 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 if AUTO_EXAMPLES
 bin_PROGRAMS = FRA
-TESTS = FRA
+TESTS = FRA$(EXEEXT)
 else
 EXTRA_PROGRAMS = FRA
-CLEANFILES = FRA
+CLEANFILES = FRA$(EXEEXT)
 endif
 FRA_SOURCES = FRA.cpp
 FRA_LDADD = ../../ql/libQuantLib.la

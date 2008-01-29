@@ -143,7 +143,7 @@ bin_PROGRAMS = quantlib-test-suite quantlib-benchmark
 else
 bin_PROGRAMS = quantlib-test-suite
 EXTRA_PROGRAMS = quantlib-benchmark
-CLEANFILES = quantlib-benchmark
+CLEANFILES = quantlib-benchmark$(EXEEXT)
 endif
 
 quantlib_test_suite_SOURCES = ${QL_TESTS}
@@ -154,11 +154,11 @@ quantlib_benchmark_SOURCES = ${QL_BENCHMARKS}
 quantlib_benchmark_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la
 quantlib_benchmark_LDFLAGS = -l${BOOST_UNIT_TEST_LIB}
 
-TESTS = quantlib-test-suite
+TESTS = quantlib-test-suite$(EXEEXT)
 TESTS_ENVIRONMENT = BOOST_TEST_LOG_LEVEL=message
 
 .PHONY: benchmark
-benchmark: quantlib-benchmark
+benchmark: quantlib-benchmark$(EXEEXT)
 	BOOST_TEST_LOG_LEVEL=message ./quantlib-benchmark$(EXEEXT)
 
 EXTRA_DIST = \
