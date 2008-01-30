@@ -75,7 +75,22 @@ namespace QuantLib {
                               const Period& swapTenor,
                               Rate strike,
                               bool extrapolate = false) const;
-        //! returns the volatility for a given option time and swapLength
+        //! returns the volatility for a given option time and swap tenor
+        Volatility volatility(Time optionTime,
+                              const Period& swapTenor,
+                              Rate strike,
+                              bool extrapolate = false) const;
+        //! returns the volatility for a given option tenor and swap length
+        Volatility volatility(const Period& optionTenor,
+                              Time swapLength,
+                              Rate strike,
+                              bool extrapolate = false) const;
+        //! returns the volatility for a given option date and swap length
+        Volatility volatility(const Date& optionDate,
+                              Time swapLength,
+                              Rate strike,
+                              bool extrapolate = false) const;
+        //! returns the volatility for a given option time and swap length
         Volatility volatility(Time optionTime,
                               Time swapLength,
                               Rate strike,
@@ -91,7 +106,22 @@ namespace QuantLib {
                            const Period& swapTenor,
                            Rate strike,
                            bool extrapolate = false) const;
-        //! returns the Black variance for a given option time and swapLength
+        //! returns the Black variance for a given option time and swap tenor
+        Real blackVariance(Time optionTime,
+                           const Period& swapTenor,
+                           Rate strike,
+                           bool extrapolate = false) const;
+        //! returns the Black variance for a given option tenor and swap length
+        Real blackVariance(const Period& optionTenor,
+                           Time swapLength,
+                           Rate strike,
+                           bool extrapolate = false) const;
+        //! returns the Black variance for a given option date and swap length
+        Real blackVariance(const Date& optionDate,
+                           Time swapLength,
+                           Rate strike,
+                           bool extrapolate = false) const;
+        //! returns the Black variance for a given option time and swap length
         Real blackVariance(Time optionTime,
                            Time swapLength,
                            Rate strike,
@@ -105,7 +135,19 @@ namespace QuantLib {
         boost::shared_ptr<SmileSection> smileSection(const Date& optionDate,
                                                      const Period& swapTenor,
                                                      bool extr = false) const;
-        //! returns the smile for a given option time and swapLength
+        //! returns the smile for a given option time and swap tenor
+        boost::shared_ptr<SmileSection> smileSection(Time optionTime,
+                                                     const Period& swapTenor,
+                                                     bool extr = false) const;
+        //! returns the smile for a given option tenor and swap length
+        boost::shared_ptr<SmileSection> smileSection(const Period& optionTenor,
+                                                     Time swapLength,
+                                                     bool extr = false) const;
+        //! returns the smile for a given option date and swap length
+        boost::shared_ptr<SmileSection> smileSection(const Date& optionDate,
+                                                     Time swapLength,
+                                                     bool extr = false) const;
+        //! returns the smile for a given option time and swap length
         boost::shared_ptr<SmileSection> smileSection(Time optionTime,
                                                      Time swapLength,
                                                      bool extr = false) const;
@@ -143,8 +185,8 @@ namespace QuantLib {
 
     // inline definitions
 
-    // 1. Period-based methods convert Period to Date and then
-    //    use the equivalent Date-based methods
+    // 1. methods with Period-denominated exercise convert Period to Date and then
+    //    use the equivalent Date-denominated exercise methods
     inline Volatility
     SwaptionVolatilityStructure::volatility(const Period& optionTenor,
                                             const Period& swapTenor,
@@ -154,6 +196,15 @@ namespace QuantLib {
         return volatility(optionDate, swapTenor, strike, extrapolate);
     }
 
+    inline Volatility
+    SwaptionVolatilityStructure::volatility(const Period& optionTenor,
+                                            Time swapLength,
+                                            Rate strike,
+                                            bool extrapolate) const {
+        Date optionDate = optionDateFromTenor(optionTenor);
+        return volatility(optionDate, swapLength, strike, extrapolate);
+    }
+
     inline
     Real SwaptionVolatilityStructure::blackVariance(const Period& optionTenor,
                                                     const Period& swapTenor,
@@ -161,6 +212,15 @@ namespace QuantLib {
                                                     bool extrapolate) const {
         Date optionDate = optionDateFromTenor(optionTenor);
         return blackVariance(optionDate, swapTenor, strike, extrapolate);
+    }
+
+    inline
+    Real SwaptionVolatilityStructure::blackVariance(const Period& optionTenor,
+                                                    Time swapLength,
+                                                    Rate strike,
+                                                    bool extrapolate) const {
+        Date optionDate = optionDateFromTenor(optionTenor);
+        return blackVariance(optionDate, swapLength, strike, extrapolate);
     }
 
     inline boost::shared_ptr<SmileSection>
@@ -178,8 +238,27 @@ namespace QuantLib {
                                                     Rate strike,
                                                     bool extrapolate) const {
         Volatility v = volatility(optionDate, swapTenor, strike, extrapolate);
-        Time t = timeFromReference(optionDate);
-        return v*v*t;
+        Time optionTime = timeFromReference(optionDate);
+        return v*v*optionTime;
+    }
+
+    inline
+    Real SwaptionVolatilityStructure::blackVariance(Time optionTime,
+                                                    const Period& swapTenor,
+                                                    Rate strike,
+                                                    bool extrapolate) const {
+        Volatility v = volatility(optionTime, swapTenor, strike, extrapolate);
+        return v*v*optionTime;
+    }
+
+    inline
+    Real SwaptionVolatilityStructure::blackVariance(const Date& optionDate,
+                                                    Time swapLength,
+                                                    Rate strike,
+                                                    bool extrapolate) const {
+        Volatility v = volatility(optionDate, swapLength, strike, extrapolate);
+        Time optionTime = timeFromReference(optionDate);
+        return v*v*optionTime;
     }
 
     inline
@@ -201,6 +280,30 @@ namespace QuantLib {
         checkRange(optionDate, extrapolate);
         checkStrike(strike, extrapolate);
         return volatilityImpl(optionDate, swapTenor, strike);
+    }
+
+    inline Volatility
+    SwaptionVolatilityStructure::volatility(const Date& optionDate,
+                                            Time swapLength,
+                                            Rate strike,
+                                            bool extrapolate) const {
+        checkSwapTenor(swapLength, extrapolate);
+        checkRange(optionDate, extrapolate);
+        checkStrike(strike, extrapolate);
+        Time optionTime = timeFromReference(optionDate);
+        return volatilityImpl(optionTime, swapLength, strike);
+    }
+
+    inline Volatility
+    SwaptionVolatilityStructure::volatility(Time optionTime,
+                                            const Period& swapTenor,
+                                            Rate strike,
+                                            bool extrapolate) const {
+        checkSwapTenor(swapTenor, extrapolate);
+        checkRange(optionTime, extrapolate);
+        checkStrike(strike, extrapolate);
+        Time length = swapLength(swapTenor);
+        return volatilityImpl(optionTime, length, strike);
     }
 
     inline Volatility
