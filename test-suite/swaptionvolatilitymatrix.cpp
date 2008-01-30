@@ -110,7 +110,7 @@ void makeCoherenceTest(
                        "\n  actual option date = " << actOptDate);
     }
 
-    Date lengthRef = vol->optionDates()[0];
+    Date lengthRef = vol->referenceDate();
     DayCounter volDC = vol->dayCounter();
     for (Size j=0; j<atm_.tenors.swaps.size(); ++j) {
         Period actSwapTenor = vol->swapTenors()[j];
@@ -319,7 +319,7 @@ test_suite* SwaptionVolatilityMatrixTest::suite() {
 
     suite->add(BOOST_TEST_CASE(&SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence));
 
-    suite->add(BOOST_TEST_CASE(&SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability));
+    //suite->add(BOOST_TEST_CASE(&SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability));
 
     return suite;
 }

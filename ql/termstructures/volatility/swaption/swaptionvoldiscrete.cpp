@@ -142,15 +142,16 @@ namespace QuantLib {
 
     void SwaptionVolatilityDiscrete::checkSwapTenors() const {
         Date startDate = referenceDate();
-        /* better than an any option date, for coherence between swaption atm vol matrix
-           and swaption vol cube:
-           otherwise, if both swaption atm vol matrix and swaption vol cube are created
-           and they have different first option date, the swap tenors of the structures may
-           differ
+        /* while using the reference data is arbitrary it is better than using
+           any option date, at least for coherence between swaption atm vol
+           matrix and any swaption vol cube built on the top of the matrix.
+           Otherwise, if they differ on option dates their swap tenors would
+           differ too.
         */
-        // Date startDate = optionDates_[0]; // as good as any
+        // Date startDate = optionDates_[0];
         Date endDate = startDate + swapTenors_[0];
-        QL_REQUIRE(endDate>startDate, "first swap tenor is negative ("  << swapTenors_[0] << ")");
+        QL_REQUIRE(endDate>startDate,
+                   "first swap tenor is negative ("  << swapTenors_[0] << ")");
         for (Size i=1; i<nSwapTenors_; ++i) {
             QL_REQUIRE((startDate+swapTenors_[i])>endDate,
                        "non increasing swap tenor: " << io::ordinal(i-1) <<
