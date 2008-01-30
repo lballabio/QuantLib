@@ -142,7 +142,7 @@ namespace QuantLib {
 
     void SwaptionVolatilityDiscrete::checkSwapTenors() const {
         Date startDate = referenceDate();
-        /* while using the reference data is arbitrary it is better than using
+        /* while using the reference date is arbitrary it is better than using
            any option date, at least for coherence between swaption atm vol
            matrix and any swaption vol cube built on the top of the matrix.
            Otherwise, if they differ on option dates their swap tenors would

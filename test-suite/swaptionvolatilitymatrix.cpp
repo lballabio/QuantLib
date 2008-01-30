@@ -319,7 +319,7 @@ test_suite* SwaptionVolatilityMatrixTest::suite() {
 
     suite->add(BOOST_TEST_CASE(&SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence));
 
-    //suite->add(BOOST_TEST_CASE(&SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability));
+    suite->add(BOOST_TEST_CASE(&SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability));
 
     return suite;
 }
