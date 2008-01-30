@@ -63,12 +63,6 @@ namespace QuantLib {
         void performCalculations() const;
         //@}
       protected:
-        void checkOptionTenors() const;
-        void checkOptionDates() const;
-        void checkSwapTenors() const;
-        void initializeOptionTimes() const;
-        void initializeOptionDatesAndTimes() const;
-
         Size nOptionTenors_;
         std::vector<Period> optionTenors_;
         mutable std::vector<Date> optionDates_;
@@ -80,6 +74,13 @@ namespace QuantLib {
         std::vector<Period> swapTenors_;
         mutable std::vector<Time> swapLengths_;
         Date evaluationDate_;
+      private:
+        void checkOptionTenors() const;
+        void checkOptionDates() const;
+        void checkSwapTenors() const;
+        void initializeOptionDatesAndTimes() const;
+        void initializeOptionTimes() const;
+        void initializeSwapLengths() const;
     };
 
     // inline

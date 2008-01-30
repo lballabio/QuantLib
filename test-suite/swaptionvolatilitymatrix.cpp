@@ -129,46 +129,64 @@ void makeCoherenceTest(
     }
 
     Real tolerance = 1.0e-16;
-    for (Size i=0; i<atm_.tenors.options.size(); ++i) {
-      for (Size j=0; j<atm_.tenors.swaps.size(); j++) {
-
-          Period thisOptionTenor=  atm_.tenors.options[i];
-          Date thisOptionDate = vol->optionDates()[i];
-          Period thisSwapTenor = atm_.tenors.swaps[j];
-
-          Time pfirst = vol->timeFromReference(thisOptionDate);
-          Time psecond = vol->convertSwapTenor(thisSwapTenor);
-          if ((pfirst !=vol->optionTimes()[i]) ||
-              (psecond!=vol->swapLengths()[j]))
-              BOOST_FAIL("\nconvertDates failure for " <<
+    for (Size j=0; j<atm_.tenors.swaps.size(); j++) {
+      Period thisSwapTenor = atm_.tenors.swaps[j];
+      Time swapLength = vol->convertSwapTenor(thisSwapTenor);
+      if (swapLength!=vol->swapLengths()[j])
+          BOOST_FAIL("\nconvertSwapTenor failure for " <<
+                     description << ":"
+                     "\n        swap tenor : " << thisSwapTenor <<
+                     "\n actual swap length: " << swapLength <<
+                     "\n   exp. swap length: " << vol->swapLengths()[j]);
+      for (Size i=0; i<atm_.tenors.options.size(); ++i) {
+          Period thisOptionTenor =  atm_.tenors.options[i];
+          Date optionDate = vol->optionDateFromTenor(thisOptionTenor);
+          if (optionDate!=vol->optionDates()[i])
+              BOOST_FAIL("\noptionDateFromTenor failure for " <<
                          description << ":"
-                         "\n       option date  = " << thisOptionDate <<
-                         "\n       option tenor = " << thisOptionTenor <<
-                         "\nactual option time  = " << pfirst <<
-                         "\n  exp. option time  = " << vol->optionTimes()[i] <<
-                         "\n        swap tenor  = " << thisSwapTenor <<
-                         "\n actual swap length = " << psecond <<
-                         "\n   exp. swap length = " << vol->swapLengths()[j]);
+                         "\n       option tenor: " << thisOptionTenor <<
+                         "\nactual option date : " << optionDate <<
+                         "\n  exp. option date : " << vol->optionTimes()[i]);
 
-
+          Time optionTime = vol->timeFromReference(optionDate);
+          if (optionTime!=vol->optionTimes()[i])
+              BOOST_FAIL("\ntimeFromReference failure for " <<
+                         description << ":"
+                         "\n       option tenor: " << thisOptionTenor <<
+                         "\n       option date : " << optionDate <<
+                         "\nactual option time : " << optionTime <<
+                         "\n  exp. option time : " << vol->optionTimes()[i]);
 
           Volatility error, actVol, expVol = atm_.vols[i][j];
 
-          actVol = vol->volatility(
-              thisOptionDate, thisSwapTenor, 0.05, true);
+          actVol = vol->volatility(optionTime, swapLength, 0.05, true);
           error = std::abs(expVol-actVol);
           if (error>tolerance)
               BOOST_FAIL("\nrecovery of atm vols failed for " <<
                          description << ":"
-                         "\noption date = " << thisOptionDate <<
-                         "\nswap length = " << thisSwapTenor <<
-                         "\n   exp. vol = " << io::volatility(expVol) <<
-                         "\n actual vol = " << io::volatility(actVol) <<
-                         "\n      error = " << io::volatility(error) <<
-                         "\n  tolerance = " << tolerance);
+                         "\noption tenor: " << thisOptionTenor <<
+                         "\noption time : " << optionTime <<
+                         "\n  swap tenor: " << thisSwapTenor <<
+                         "\n swap length: " << swapLength <<
+                         "\n   exp. vol: " << io::volatility(expVol) <<
+                         "\n actual vol: " << io::volatility(actVol) <<
+                         "\n      error: " << io::volatility(error) <<
+                         "\n  tolerance: " << tolerance);
 
-          actVol = vol->volatility(
-              thisOptionTenor, thisSwapTenor, 0.05, true);
+          actVol = vol->volatility(optionDate, thisSwapTenor, 0.05, true);
+          error = std::abs(expVol-actVol);
+          if (error>tolerance)
+              BOOST_FAIL("\nrecovery of atm vols failed for " <<
+                         description << ":"
+                         "\noption tenor: " << thisOptionTenor <<
+                         "\noption date : " << optionDate <<
+                         "\n  swap tenor: " << thisSwapTenor <<
+                         "\n   exp. vol: " << io::volatility(expVol) <<
+                         "\n actual vol: " << io::volatility(actVol) <<
+                         "\n      error: " << io::volatility(error) <<
+                         "\n  tolerance: " << tolerance);
+
+          actVol = vol->volatility(thisOptionTenor, thisSwapTenor, 0.05, true);
           error = std::abs(expVol-actVol);
           if (error>tolerance)
               BOOST_FAIL("\nrecovery of atm vols failed for " <<
@@ -182,9 +200,6 @@ void makeCoherenceTest(
 
       }
     }
-
-
-
 
 }
 

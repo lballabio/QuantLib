@@ -45,6 +45,7 @@ namespace QuantLib {
         initializeOptionDatesAndTimes();
 
         checkSwapTenors();
+        initializeSwapLengths();
 
         optionInterpolator_= LinearInterpolation(optionTimes_.begin(),
                                                  optionTimes_.end(),
@@ -57,12 +58,12 @@ namespace QuantLib {
     }
 
     SwaptionVolatilityDiscrete::SwaptionVolatilityDiscrete(
-        const std::vector<Period>& optionTenors,
-        const std::vector<Period>& swapTenors,
-        const Date& referenceDate,
-        const Calendar& cal,
-        const DayCounter& dc,
-        BusinessDayConvention bdc)
+                                    const std::vector<Period>& optionTenors,
+                                    const std::vector<Period>& swapTenors,
+                                    const Date& referenceDate,
+                                    const Calendar& cal,
+                                    const DayCounter& dc,
+                                    BusinessDayConvention bdc)
     : SwaptionVolatilityStructure(referenceDate, cal, dc, bdc),
       nOptionTenors_(optionTenors.size()),
       optionTenors_(optionTenors),
@@ -77,6 +78,7 @@ namespace QuantLib {
         initializeOptionDatesAndTimes();
 
         checkSwapTenors();
+        initializeSwapLengths();
 
         optionInterpolator_= LinearInterpolation(optionTimes_.begin(),
                                                  optionTimes_.end(),
@@ -86,12 +88,12 @@ namespace QuantLib {
     }
 
     SwaptionVolatilityDiscrete::SwaptionVolatilityDiscrete(
-        const std::vector<Date>& optionDates,
-        const std::vector<Period>& swapTenors,
-        const Date& referenceDate,
-        const Calendar& cal,
-        const DayCounter& dc,
-        BusinessDayConvention bdc)
+                                        const std::vector<Date>& optionDates,
+                                        const std::vector<Period>& swapTenors,
+                                        const Date& referenceDate,
+                                        const Calendar& cal,
+                                        const DayCounter& dc,
+                                        BusinessDayConvention bdc)
     : SwaptionVolatilityStructure(referenceDate, cal, dc, bdc),
       nOptionTenors_(optionDates.size()),
       optionTenors_(nOptionTenors_),
@@ -106,6 +108,7 @@ namespace QuantLib {
         initializeOptionTimes();
 
         checkSwapTenors();
+        initializeSwapLengths();
 
         optionInterpolator_= LinearInterpolation(optionTimes_.begin(),
                                                  optionTimes_.end(),
@@ -115,9 +118,10 @@ namespace QuantLib {
     }
 
     void SwaptionVolatilityDiscrete::checkOptionDates() const {
-        QL_REQUIRE(optionDates_[0]>=referenceDate(),
+        QL_REQUIRE(optionDates_[0]>referenceDate(),
                    "first option date (" << optionDates_[0] <<
-                   ") is after reference date (" << referenceDate() << ")");
+                   ") must be greater than reference date (" <<
+                   referenceDate() << ")");
         for (Size i=1; i<nOptionTenors_; ++i) {
             QL_REQUIRE(optionDates_[i]>optionDates_[i-1],
                        "non increasing option dates: " << io::ordinal(i-1) <<
@@ -127,39 +131,25 @@ namespace QuantLib {
     }
 
     void SwaptionVolatilityDiscrete::checkOptionTenors() const {
-        Date rollingExDate = optionDateFromTenor(optionTenors_[0]);
-        QL_REQUIRE(rollingExDate>=referenceDate(),
-                   "first option tenor is negative ("
-                   << optionTenors_[0] << ")");
-        for (Size i=1; i<nOptionTenors_; ++i) {
-            QL_REQUIRE(optionDateFromTenor(optionTenors_[i])>rollingExDate,
+        QL_REQUIRE(optionTenors_[0]>0*Days,
+                   "first option tenor is negative (" <<
+                   optionTenors_[0] << ")");
+        for (Size i=1; i<nOptionTenors_; ++i)
+            QL_REQUIRE(optionTenors_[i]>optionTenors_[i-1],
                        "non increasing option tenor: " << io::ordinal(i-1) <<
                        " is " << optionTenors_[i-1] << ", " << io::ordinal(i) <<
                        " is " << optionTenors_[i]);
-            rollingExDate = optionDateFromTenor(optionTenors_[i]);
-        }
     }
 
     void SwaptionVolatilityDiscrete::checkSwapTenors() const {
-        Date startDate = referenceDate();
-        /* while using the reference date is arbitrary it is better than using
-           any option date, at least for coherence between swaption atm vol
-           matrix and any swaption vol cube built on the top of the matrix.
-           Otherwise, if they differ on option dates their swap tenors would
-           differ too.
-        */
-        // Date startDate = optionDates_[0];
-        Date endDate = startDate + swapTenors_[0];
-        QL_REQUIRE(endDate>startDate,
-                   "first swap tenor is negative ("  << swapTenors_[0] << ")");
-        for (Size i=1; i<nSwapTenors_; ++i) {
-            QL_REQUIRE((startDate+swapTenors_[i])>endDate,
+        QL_REQUIRE(swapTenors_[0]>0*Days,
+                   "first swap tenor is negative (" <<
+                   swapTenors_[0] << ")");
+        for (Size i=1; i<nSwapTenors_; ++i)
+            QL_REQUIRE(swapTenors_[i]>swapTenors_[i-1],
                        "non increasing swap tenor: " << io::ordinal(i-1) <<
                        " is " << swapTenors_[i-1] << ", " << io::ordinal(i) <<
                        " is " << swapTenors_[i]);
-            Date endDate = startDate + swapTenors_[i];
-        }
-
     }
 
     void SwaptionVolatilityDiscrete::initializeOptionDatesAndTimes() const {
@@ -174,20 +164,19 @@ namespace QuantLib {
     void SwaptionVolatilityDiscrete::initializeOptionTimes() const {
         for (Size i=0; i<nOptionTenors_; ++i)
             optionTimes_[i] = timeFromReference(optionDates_[i]);
-            //optionTimes_[i] = dayCounter().yearFraction(referenceDate(), optionDates_[i]);
+    }
 
-        Date startDate = referenceDate();
-        //Date startDate = optionDates_[0]; // as good as any
-        for (Size i=0; i<nSwapTenors_; ++i) {
-            Date endDate = startDate + swapTenors_[i];
-            swapLengths_[i] = dayCounter().yearFraction(startDate, endDate);
-        }
+    void SwaptionVolatilityDiscrete::initializeSwapLengths() const {
+        for (Size i=0; i<nSwapTenors_; ++i) 
+            swapLengths_[i] = convertSwapTenor(swapTenors_[i]);
     }
 
     void SwaptionVolatilityDiscrete::performCalculations() const {
-         // check if date recalculation could be avoided here
-         if (moving_)
+        // check if date recalculation could be avoided here
+        if (moving_) {
             initializeOptionDatesAndTimes();
+            initializeSwapLengths();
+        }
     }
 
     void SwaptionVolatilityDiscrete::update() {
@@ -197,6 +186,7 @@ namespace QuantLib {
             if (evaluationDate_ != d) {
                 evaluationDate_ = d;
                 initializeOptionDatesAndTimes();
+                initializeSwapLengths();
             }
         }
         TermStructure::update();
