@@ -45,16 +45,11 @@ namespace QuantLib {
     : VolatilityTermStructure(settlementDays, calendar, bdc, dc) {}
 
 
-    Time SwaptionVolatilityStructure::convertSwapTenor(//const Date& d,
-                                                       const Period& p) const {
-        // in SwaptionVolatilityStructure it was
-        // Date start = d;
-        // while in SwaptionVolatilityDiscrete it was
-        // Date start = referenceDate();  // for consistency
-        // and the following line was commented out:
-        // Date start = optionDates_[0]; // for consistency
-
-        Date start = referenceDate(); // for consistency
+    Time SwaptionVolatilityStructure::convertSwapTenor(const Period& p) const {
+        /* while using the reference date is arbitrary it is coherent between
+           different swaption structures defined on the same reference date.
+        */
+        Date start = referenceDate();
         Date end = start + p;
         QL_REQUIRE(end>start,
                    "non-positive swap tenor (" << p << ") given");
