@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004, 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
  Copyright (C) 2004 Decillion Pty(Ltd)
 
  This file is part of QuantLib, a free-software/open-source library
@@ -20,6 +20,7 @@
 
 #include <ql/currencies/exchangeratemanager.hpp>
 #include <ql/currencies/europe.hpp>
+#include <ql/currencies/america.hpp>
 #include <ql/settings.hpp>
 
 namespace QuantLib {
@@ -123,6 +124,10 @@ namespace QuantLib {
             Date(1,January,2005), Date::maxDate());
         add(ExchangeRate(RONCurrency(), ROLCurrency(), 10000.0),
             Date(1,July,2005), Date::maxDate());
+        add(ExchangeRate(PENCurrency(), PEICurrency(), 1000000.0),
+            Date(1,July,1991), Date::maxDate());
+        add(ExchangeRate(PEICurrency(), PEHCurrency(), 1000.0),
+            Date(1,February,1985), Date::maxDate());
     }
 
     ExchangeRate ExchangeRateManager::directLookup(const Currency& source,

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004, 2005 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -136,6 +136,66 @@ namespace QuantLib {
                                                    Rounding(),
                                                    "%3% %1$.2f"));
             data_ = mxnData;
+        }
+    };
+
+    //! Peruvian nuevo sol
+    /*! The ISO three-letter code is PEN; the numeric code is 604.
+        It is divided in 100 centimos.
+
+        \ingroup currencies
+    */
+    class PENCurrency : public Currency {
+      public:
+        PENCurrency() {
+            static boost::shared_ptr<Data> penData(
+                                    new Data("Peruvian nuevo sol", "PEN", 604,
+                                             "S/.", "", 100,
+                                             Rounding(),
+                                             "%3% %1$.2f"));
+            data_ = penData;
+        }
+    };
+
+    //! Peruvian inti
+    /*! The ISO three-letter code was PEI.
+        It was divided in 100 centimos. A numeric code is not available;
+        as per ISO 3166-1, we assign 998 as a user-defined code.
+
+        Obsoleted by the nuevo sol since July 1991.
+
+        \ingroup currencies
+    */
+    class PEICurrency : public Currency {
+      public:
+        PEICurrency() {
+            static boost::shared_ptr<Data> peiData(
+                                    new Data("Peruvian inti", "PEI", 998,
+                                             "I/.", "", 100,
+                                             Rounding(),
+                                             "%3% %1$.2f"));
+            data_ = peiData;
+        }
+    };
+
+    //! Peruvian sol
+    /*! The ISO three-letter code was PEH. A numeric code is not available;
+        as per ISO 3166-1, we assign 999 as a user-defined code.
+        It was divided in 100 centavos.
+
+        Obsoleted by the inti since February 1985.
+
+        \ingroup currencies
+    */
+    class PEHCurrency : public Currency {
+      public:
+        PEHCurrency() {
+            static boost::shared_ptr<Data> pehData(
+                                    new Data("Peruvian sol", "PEH", 999,
+                                             "S./", "", 100,
+                                             Rounding(),
+                                             "%3% %1$.2f"));
+            data_ = pehData;
         }
     };
 
