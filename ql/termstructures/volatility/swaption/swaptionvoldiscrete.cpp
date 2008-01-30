@@ -168,7 +168,7 @@ namespace QuantLib {
 
     void SwaptionVolatilityDiscrete::initializeSwapLengths() const {
         for (Size i=0; i<nSwapTenors_; ++i) 
-            swapLengths_[i] = convertSwapTenor(swapTenors_[i]);
+            swapLengths_[i] = swapLength(swapTenors_[i]);
     }
 
     void SwaptionVolatilityDiscrete::performCalculations() const {

@@ -114,7 +114,7 @@ namespace QuantLib {
         std::pair<Size,Size> locate(const Date& optionDate,
                                     const Period& swapTenor) const {
             return locate(timeFromReference(optionDate),
-                          convertSwapTenor(swapTenor));
+                          swapLength(swapTenor));
         }
         //! returns the lower indexes of surrounding volatility matrix corners
         std::pair<Size,Size> locate(Time optionTime,

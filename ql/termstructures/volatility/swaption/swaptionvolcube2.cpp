@@ -84,11 +84,11 @@ namespace QuantLib {
         std::vector<Real> strikes, stdDevs;
         strikes.reserve(nStrikes_);
         stdDevs.reserve(nStrikes_);
-        Time swapLength = convertSwapTenor(swapTenor);
+        Time length = swapLength(swapTenor);
         for (Size i=0; i<nStrikes_; ++i) {
             strikes.push_back(atmForward + strikeSpreads_[i]);
             stdDevs.push_back(exerciseTimeSqrt*(
-                atmVol + volSpreadsInterpolator_[i](swapLength, optionTime)));
+                atmVol + volSpreadsInterpolator_[i](length, optionTime)));
         }
         return boost::shared_ptr<SmileSection>(new
             InterpolatedSmileSection<Linear>(optionTime,

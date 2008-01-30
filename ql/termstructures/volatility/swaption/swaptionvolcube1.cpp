@@ -410,7 +410,7 @@ namespace QuantLib {
         const Date& atmOptionDate, const Period& atmSwapTenor) const {
 
         Time atmOptionTime = timeFromReference(atmOptionDate);
-        Time atmTimeLength = convertSwapTenor(atmSwapTenor);
+        Time atmTimeLength = swapLength(atmSwapTenor);
 
         std::vector<Real> result;
         const std::vector<Time>& optionTimes(sparseParameters_.optionTimes());

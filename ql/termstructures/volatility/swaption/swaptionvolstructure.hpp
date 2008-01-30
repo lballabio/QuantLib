@@ -117,8 +117,11 @@ namespace QuantLib {
         //! the largest swapLength for which the term structure can return vols
         Time maxSwapLength() const;
         //@}
-        //! implements the conversion between swap tenor and time
-        Time convertSwapTenor(const Period& swapTenor) const;
+        //! implements the conversion between swap tenor and swap (time) length
+        Time swapLength(const Period& swapTenor) const;
+        //! implements the conversion between swap dates and swap (time) length
+        Time swapLength(const Date& start,
+                        const Date& end) const;
       protected:
         virtual boost::shared_ptr<SmileSection> smileSectionImpl(
                                                 const Date& optionDate,
@@ -235,7 +238,7 @@ namespace QuantLib {
     SwaptionVolatilityStructure::smileSectionImpl(const Date& optionDate,
                                                   const Period& swapT) const {
         return smileSectionImpl(timeFromReference(optionDate),
-                                convertSwapTenor(swapT));
+                                swapLength(swapT));
     }
 
     inline Volatility
@@ -243,12 +246,12 @@ namespace QuantLib {
                                                 const Period& swapTenor,
                                                 Rate strike) const {
         return volatilityImpl(timeFromReference(optionDate),
-                              convertSwapTenor(swapTenor),
+                              swapLength(swapTenor),
                               strike);
     }
 
     inline Time SwaptionVolatilityStructure::maxSwapLength() const {
-        return convertSwapTenor(maxSwapTenor());
+        return swapLength(maxSwapTenor());
     }
 
 }

@@ -20,7 +20,7 @@
 */
 
 #include <ql/termstructures/volatility/swaption/swaptionvolstructure.hpp>
-#include <ql/time/period.hpp>
+#include <ql/math/rounding.hpp>
 
 namespace QuantLib {
 
@@ -45,15 +45,25 @@ namespace QuantLib {
     : VolatilityTermStructure(settlementDays, calendar, bdc, dc) {}
 
 
-    Time SwaptionVolatilityStructure::convertSwapTenor(const Period& p) const {
+    Time SwaptionVolatilityStructure::swapLength(const Period& p) const {
+        QL_REQUIRE(p.length()>0,
+                   "non-positive swap tenor (" << p << ") given");
         /* while using the reference date is arbitrary it is coherent between
            different swaption structures defined on the same reference date.
         */
         Date start = referenceDate();
         Date end = start + p;
-        QL_REQUIRE(end>start,
-                   "non-positive swap tenor (" << p << ") given");
-        return dayCounter().yearFraction(start, end);
+        return swapLength(start, end);
+    }
+
+    Time SwaptionVolatilityStructure::swapLength(const Date& start,
+                                                 const Date& end) const {
+        QL_REQUIRE(end>start, "swap end date (" << end <<
+                   ") must be greater than start (" << start << ")");
+        Time result = (end-start)/365.25*24.0; // half a month unit
+        result = ClosestRounding(0)(result);
+        result /= 24.0; // year unit
+        return result;
     }
 
     void SwaptionVolatilityStructure::checkSwapTenor(const Period& swapTenor,
