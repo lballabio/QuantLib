@@ -55,7 +55,7 @@ namespace QuantLib {
             length_ = 1;
             break;
           default:
-            QL_FAIL("unknown frequency (" << Integer(f));
+            QL_FAIL("unknown frequency (" << Integer(f) << ")");
         }
     }
 
@@ -86,7 +86,7 @@ namespace QuantLib {
                        "cannot instantiate a Frequency from " << *this);
             return Daily;
           default:
-            QL_FAIL("unknown time unit (" << Integer(units_));
+            QL_FAIL("unknown time unit (" << Integer(units_) << ")");
         }
     }
 
@@ -109,7 +109,7 @@ namespace QuantLib {
               case Years:
                 break;
               default:
-                QL_FAIL("unknown time unit (" << Integer(units_));
+                QL_FAIL("unknown time unit (" << Integer(units_) << ")");
             }
     }
 
@@ -137,7 +137,7 @@ namespace QuantLib {
                                " and " << p);
                     break;
                   default:
-                    QL_FAIL("unknown units");
+                    QL_FAIL("unknown time unit (" << Integer(p.units()) << ")");
                 }
                 break;
 
@@ -153,7 +153,7 @@ namespace QuantLib {
                                " and " << p);
                     break;
                   default:
-                    QL_FAIL("unknown units");
+                    QL_FAIL("unknown time unit (" << Integer(p.units()) << ")");
                 }
                 break;
 
@@ -170,7 +170,7 @@ namespace QuantLib {
                                " and " << p);
                     break;
                   default:
-                    QL_FAIL("unknown units");
+                    QL_FAIL("unknown time unit (" << Integer(p.units()) << ")");
                 }
                 break;
 
@@ -186,12 +186,12 @@ namespace QuantLib {
                                " and " << p);
                     break;
                   default:
-                    QL_FAIL("unknown units");
+                    QL_FAIL("unknown time unit (" << Integer(p.units()) << ")");
                 }
                 break;
 
               default:
-                QL_FAIL("unknown units");
+                QL_FAIL("unknown time unit (" << Integer(units_) << ")");
             }
         }
 
@@ -252,10 +252,78 @@ namespace QuantLib {
               case Years:
                 return std::make_pair(365*p.length(), 366*p.length());
               default:
-                QL_FAIL("Unknown units");
+                QL_FAIL("unknown time unit (" << Integer(p.units()) << ")");
             }
         }
 
+    }
+
+    Real years(const Period& p) {
+        if (p.length()==0) return 0.0;
+
+        switch (p.units()) {
+          case Days:
+            QL_FAIL("cannot convert Days into Years");
+          case Weeks:
+            QL_FAIL("cannot convert Weeks into Years");
+          case Months:
+              return p.length()/12.0;
+          case Years:
+              return p.length();
+          default:
+            QL_FAIL("unknown time unit (" << Integer(p.units()) << ")");
+        }
+    }
+
+    Real months(const Period& p) {
+        if (p.length()==0) return 0.0;
+
+        switch (p.units()) {
+          case Days:
+            QL_FAIL("cannot convert Days into Months");
+          case Weeks:
+            QL_FAIL("cannot convert Weeks into Months");
+          case Months:
+              return p.length();
+          case Years:
+              return p.length()*12.0;
+          default:
+            QL_FAIL("unknown time unit (" << Integer(p.units()) << ")");
+        }
+    }
+
+    Real weeks(const Period& p) {
+        if (p.length()==0) return 0.0;
+
+        switch (p.units()) {
+          case Days:
+              return p.length()/7.0;
+          case Weeks:
+              return p.length();
+          case Months:
+            QL_FAIL("cannot convert Months into Weeks");
+          case Years:
+            QL_FAIL("cannot convert Years into Weeks");
+          default:
+            QL_FAIL("unknown time unit (" << Integer(p.units()) << ")");
+        }
+    }
+
+    Real days(const Period& p) {
+        if (p.length()==0) return 0.0;
+
+        switch (p.units()) {
+          case Days:
+              return p.length();
+          case Weeks:
+              return p.length()*7.0;
+          case Months:
+            QL_FAIL("cannot convert Months into Days");
+          case Years:
+            QL_FAIL("cannot convert Years into Days");
+          default:
+            QL_FAIL("unknown time unit (" << Integer(p.units()) << ")");
+        }
     }
 
     bool operator<(const Period& p1, const Period& p2) {
@@ -345,7 +413,7 @@ namespace QuantLib {
               case Years:
                 return out << n << (n == 1 ? " year" : " years");
               default:
-                QL_FAIL("unknown time unit");
+                QL_FAIL("unknown time unit (" << Integer(holder.p.units()) << ")");
             }
         }
 
@@ -379,7 +447,7 @@ namespace QuantLib {
               case Years:
                 return out << n << "Y";
               default:
-                QL_FAIL("unknown time unit");
+                QL_FAIL("unknown time unit (" << Integer(holder.p.units()) << ")");
             }
         }
 

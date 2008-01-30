@@ -61,6 +61,15 @@ namespace QuantLib {
     };
 
     /*! \relates Period */
+    Real years(const Period&);
+    /*! \relates Period */
+    Real months(const Period&);
+    /*! \relates Period */
+    Real weeks(const Period&);
+    /*! \relates Period */
+    Real days(const Period&);
+
+    /*! \relates Period */
     template <typename T> Period operator*(T n, TimeUnit units);
     /*! \relates Period */
     template <typename T> Period operator*(TimeUnit units, T n);
