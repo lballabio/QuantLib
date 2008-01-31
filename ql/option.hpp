@@ -42,6 +42,8 @@ namespace QuantLib {
                const boost::shared_ptr<Exercise>& exercise)
         : payoff_(payoff), exercise_(exercise) {}
         void setupArguments(PricingEngine::arguments*) const;
+        boost::shared_ptr<Payoff> payoff() { return payoff_; }
+        boost::shared_ptr<Exercise> exercise() { return exercise_; };
       protected:
         // arguments
         boost::shared_ptr<Payoff> payoff_;
