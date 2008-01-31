@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2007 Cristina Duminuco
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2008 Ferdinando Ametrano
  Copyright (C) 2006 François du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
@@ -23,6 +23,10 @@
 #include "swaptionvolstructuresutilities.hpp"
 #include "utilities.hpp"
 #include <ql/utilities/dataformatters.hpp>
+#include <ql/indexes/swap/euriborswapfixa.hpp>
+#include <ql/instruments/makeswaption.hpp>
+#include <ql/pricingengines/swaption/blackswaptionengine.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <string>
 
 using namespace QuantLib;
@@ -50,6 +54,9 @@ void setup() {
                                      atm_.volsHandle,
                                      conventions_.dayCounter,
                                      conventions_.optionBdc)));
+    termStructure_.linkTo(
+        boost::shared_ptr<YieldTermStructure>(new
+            FlatForward(0, conventions_.calendar, 0.05, Actual365Fixed())));
 }
 
 void makeObservabilityTest(
@@ -103,7 +110,7 @@ void makeCoherenceTest(
                        description << ":"
                        "\n       option tenor: " << atm_.tenors.options[i] <<
                        "\nactual option date : " << optionDate <<
-                       "\n  exp. option date : " << vol->optionTimes()[i]);
+                       "\n  exp. option date : " << vol->optionDates()[i]);
         Time optionTime = vol->timeFromReference(optionDate);
         if (optionTime!=vol->optionTimes()[i])
             BOOST_FAIL("\ntimeFromReference failure for " <<
@@ -114,6 +121,10 @@ void makeCoherenceTest(
                        "\n  exp. option time : " << vol->optionTimes()[i]);
     }
 
+    boost::shared_ptr<BlackSwaptionEngine> engine(new
+        BlackSwaptionEngine(termStructure_,
+                            Handle<SwaptionVolatilityStructure>(vol)));
+
     for (Size j=0; j<atm_.tenors.swaps.size(); j++) {
       Time swapLength = vol->swapLength(atm_.tenors.swaps[j]);
       if (swapLength!=years(atm_.tenors.swaps[j]))
@@ -122,6 +133,10 @@ void makeCoherenceTest(
                      "\n        swap tenor : " << atm_.tenors.swaps[j] <<
                      "\n actual swap length: " << swapLength <<
                      "\n   exp. swap length: " << years(atm_.tenors.swaps[j]));
+
+      boost::shared_ptr<SwapIndex> swapIndex(new
+          EuriborSwapFixA(atm_.tenors.swaps[j], termStructure_)); 
+
       for (Size i=0; i<atm_.tenors.options.size(); ++i) {
           Real error, tolerance = 1.0e-16;
           Volatility actVol, expVol = atm_.vols[i][j];
@@ -167,6 +182,43 @@ void makeCoherenceTest(
                          "\n      error: " << io::volatility(error) <<
                          "\n  tolerance: " << tolerance);
 
+          // ATM swaption
+          Swaption swaption = MakeSwaption(swapIndex, atm_.tenors.options[i])
+                              .withPricingEngine(engine);
+
+          Date exerciseDate = swaption.exercise()->dates().front();
+          if (exerciseDate!=vol->optionDates()[i])
+              BOOST_FAIL("\noptionDateFromTenor mismatch for " <<
+                         description << ":"
+                         "\n       option tenor: " << atm_.tenors.options[i] <<
+                         "\nactual option date : " << exerciseDate <<
+                         "\n  exp. option date : " << vol->optionDates()[i]);
+
+          Date start = swaption.underlyingSwap()->startDate();
+          Date end = swaption.underlyingSwap()->maturityDate();
+          Time swapLength2 = vol->swapLength(start, end);
+          if (swapLength2!=swapLength)
+              BOOST_FAIL("\nswapLength failure for " <<
+                         description << ":"
+                         "\n        swap tenor : " << atm_.tenors.swaps[j] <<
+                         "\n actual swap length: " << swapLength2 <<
+                         "\n   exp. swap length: " << swapLength);
+
+          //Real npv = swaption.NPV();
+          //actVol = swaption.impliedVolatility(npv, termStructure_, expVol*0.98, 1e-6);
+          //error = std::abs(expVol-actVol);
+          //Real tolerance2 = 0.000001;
+          //if (error>tolerance2)
+          //    BOOST_FAIL("\nrecovery of atm vols through BlackSwaptionEngine failed for " <<
+          //               description << ":"
+          //               "\noption tenor: " << atm_.tenors.options[i] <<
+          //               "\noption time : " << optionTime <<
+          //               "\n  swap tenor: " << atm_.tenors.swaps[j] <<
+          //               "\n swap length: " << swapLength <<
+          //               "\n   exp. vol: " << io::volatility(expVol) <<
+          //               "\n actual vol: " << io::volatility(actVol) <<
+          //               "\n      error: " << io::volatility(error) <<
+          //               "\n  tolerance: " << tolerance2);
       }
     }
 
