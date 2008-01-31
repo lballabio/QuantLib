@@ -22,6 +22,7 @@
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/indexes/swapindex.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/exercise.hpp>
 #include <ql/settings.hpp>
 
@@ -34,8 +35,7 @@ namespace QuantLib {
       optionTenor_(optionTenor),
       strike_(strike),
       delivery_(Settlement::Physical),
-      // please check!! It might be Following
-      swaptionConvention_(ModifiedFollowing) {}
+      swaptionConvention_(Following) {}
 
     MakeSwaption::operator Swaption() const {
         boost::shared_ptr<Swaption> swaption = *this;
@@ -50,13 +50,19 @@ namespace QuantLib {
                                                  swaptionConvention_);
         exercise_ = boost::shared_ptr<Exercise>(new
             EuropeanExercise(optionDate));
-        underlyingSwap_ = swapIndex_->underlyingSwap(optionDate);
 
         Rate usedStrike = strike_;
-        if (strike_ == Null<Rate>())
+        if (strike_ == Null<Rate>()) {
             // ATM on the forecasting curve
-            usedStrike = CashFlows::atmRate(underlyingSwap_->floatingLeg(),
-                                            **swapIndex_->termStructure());
+            QL_REQUIRE(!swapIndex_->termStructure().empty(),
+                       "no forecasting term structure set to " <<
+                       swapIndex_->name());
+            boost::shared_ptr<VanillaSwap> temp =
+                swapIndex_->underlyingSwap(optionDate);
+            temp->setPricingEngine(boost::shared_ptr<PricingEngine>(new
+                        DiscountingSwapEngine(swapIndex_->termStructure())));
+            usedStrike = temp->fairRate();
+        }
 
         BusinessDayConvention bdc = swapIndex_->fixedLegConvention();
         underlyingSwap_ =

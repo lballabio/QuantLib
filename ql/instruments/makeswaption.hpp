@@ -59,12 +59,11 @@ namespace QuantLib {
         boost::shared_ptr<SwapIndex> swapIndex_;
         Period optionTenor_;
         Rate strike_;
-        mutable boost::shared_ptr<VanillaSwap> underlyingSwap_;
-        mutable boost::shared_ptr<Exercise> exercise_;
         Settlement::Type delivery_;
         BusinessDayConvention swaptionConvention_;
-
         boost::shared_ptr<PricingEngine> engine_;
+        mutable boost::shared_ptr<Exercise> exercise_;
+        mutable boost::shared_ptr<VanillaSwap> underlyingSwap_;
     };
 
 }

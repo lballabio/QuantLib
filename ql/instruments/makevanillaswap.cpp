@@ -101,7 +101,7 @@ namespace QuantLib {
                              floatSpread_, floatDayCount_);
             // ATM on the forecasting curve
             temp.setPricingEngine(boost::shared_ptr<PricingEngine>(new
-                            DiscountingSwapEngine(iborIndex_->termStructure())));
+                        DiscountingSwapEngine(iborIndex_->termStructure())));
             usedFixedRate = temp.fairRate();
         }
 
