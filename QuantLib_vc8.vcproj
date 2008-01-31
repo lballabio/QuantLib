@@ -1288,11 +1288,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\instruments\makeswaptions.cpp"
+				RelativePath=".\ql\instruments\makeswaption.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\instruments\makeswaptions.hpp"
+				RelativePath=".\ql\instruments\makeswaption.hpp"
 				>
 			</File>
 			<File

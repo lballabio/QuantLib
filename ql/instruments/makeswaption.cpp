@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/makeswaptions.hpp>
+#include <ql/instruments/makeswaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/indexes/swapindex.hpp>
