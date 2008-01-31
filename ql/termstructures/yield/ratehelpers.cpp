@@ -27,6 +27,9 @@
 #include <ql/quote.hpp>
 #include <ql/currency.hpp>
 #include <ql/indexes/swapindex.hpp>
+#ifdef QL_USE_INDEXED_COUPON
+    #include <ql/cashflows/floatingratecoupon.hpp>
+#endif
 
 using boost::shared_ptr;
 
