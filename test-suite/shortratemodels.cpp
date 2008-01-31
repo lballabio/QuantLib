@@ -100,9 +100,9 @@ void ShortRateModelTest::testCachedHullWhite() {
 
     // Check and print out results
     #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedA = 0.0484533, cachedSigma = 0.00591641;
+    Real cachedA = 0.0488199, cachedSigma = 0.00593579;
     #else
-    Real cachedA = 0.0484956, cachedSigma = 0.00591734;
+    Real cachedA = 0.0488565, cachedSigma = 0.00593662;
     #endif
     Real tolerance = 1.0e-6;
     Array xMinCalculated = model->params();

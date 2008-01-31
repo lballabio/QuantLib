@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2006 Cristina Duminuco
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006, 2007 StatPro Italia srl
@@ -67,21 +67,19 @@ namespace QuantLib {
     void BlackSwaptionEngine::calculate() const {
         static const Spread basisPoint = 1.0e-4;
 
+        // the part of the swap preceding the exercise date should be truncated
         VanillaSwap swap = *arguments_.swap;
         swap.setPricingEngine(boost::shared_ptr<PricingEngine>(new
                                     DiscountingSwapEngine(termStructure_)));
 
-        // Volatilities are calculated for zero-spreaded swaps.
-        // Therefore, the spread on the floating leg is removed
-        // and a corresponding correction is made on the fixed leg.
+        // Volatilities are quoted for zero-spreaded swaps.
+        // Therefore, any spread on the floating leg must be removed
+        // with a corresponding correction on the fixed leg.
         Spread correction = swap.spread() *
             std::fabs(swap.floatingLegBPS()/swap.fixedLegBPS());
         Rate strike = swap.fixedRate() - correction;
         Rate forward = swap.fairRate() - correction;
 
-        Date settlement = termStructure_->referenceDate();
-        Date maturityDate = arguments_.floatingPayDates.back();
-        Date exerciseDate = arguments_.exercise->date(0);
         Real annuity;
         switch(arguments_.settlementType) {
           case Settlement::Physical: {
@@ -96,7 +94,7 @@ namespace QuantLib {
               Real fixedCashBPS =
                   CashFlows::bps(fixedLeg,
                                  InterestRate(forward, dayCount, Compounded),
-                                 settlement) ;
+                                 termStructure_->referenceDate()) ;
               annuity = fixedCashBPS/basisPoint;
               break;
           }
@@ -104,25 +102,22 @@ namespace QuantLib {
             QL_FAIL("unknown settlement type");
         }
 
-        Time exerciseTime =
-            termStructure_->dayCounter().yearFraction(settlement,
-                                                      exerciseDate);
-        Time maturityTime =
-            termStructure_->dayCounter().yearFraction(settlement,
-                                                      maturityDate);
-        Time swapLength = maturityTime - exerciseTime;
+        Date exerciseDate = arguments_.exercise->date(0);
 
-        Volatility vol = volatility_->volatility(exerciseTime,
-                                                 swapLength,
-                                                 strike);
-        Option::Type w = (arguments_.type==VanillaSwap::Payer) ?
-                                                Option::Call : Option::Put;
-        results_.value = annuity * blackFormula(w, strike, forward,
-                                                vol*std::sqrt(exerciseTime));
-        Real variance = volatility_->blackVariance(exerciseTime,
+        // the swap length calculation might be improved using the value date
+        // of the exercise date
+        Time swapLength =  volatility_->swapLength(exerciseDate,
+                                                   arguments_.floatingPayDates.back());
+
+        Real variance = volatility_->blackVariance(exerciseDate,
                                                    swapLength,
                                                    strike);
         Real stdDev = std::sqrt(variance);
+        Option::Type w = (arguments_.type==VanillaSwap::Payer) ?
+                                                Option::Call : Option::Put;
+        results_.value = blackFormula(w, strike, forward, stdDev, annuity);
+
+        Time exerciseTime = volatility_->timeFromReference(exerciseDate);
         results_.additionalResults["vega"] = std::sqrt(exerciseTime) *
             blackFormulaStdDevDerivative(strike, forward, stdDev, annuity);
     }

@@ -378,9 +378,9 @@ void SwaptionTest::testCachedValue() {
     boost::shared_ptr<Swaption> swaption = makeSwaption(swap, exerciseDate,
                                                         0.20);
     #ifndef QL_USE_INDEXED_COUPON
-    Real cachedNPV = 0.036388448721;
+    Real cachedNPV = 0.036418158579;
     #else
-    Real cachedNPV = 0.036391718924;
+    Real cachedNPV = 0.036421429684;
     #endif
 
     // FLOATING_POINT_EXCEPTION

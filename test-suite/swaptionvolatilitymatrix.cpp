@@ -204,21 +204,21 @@ void makeCoherenceTest(
                          "\n actual swap length: " << swapLength2 <<
                          "\n   exp. swap length: " << swapLength);
 
-          //Real npv = swaption.NPV();
-          //actVol = swaption.impliedVolatility(npv, termStructure_, expVol*0.98, 1e-6);
-          //error = std::abs(expVol-actVol);
-          //Real tolerance2 = 0.000001;
-          //if (error>tolerance2)
-          //    BOOST_FAIL("\nrecovery of atm vols through BlackSwaptionEngine failed for " <<
-          //               description << ":"
-          //               "\noption tenor: " << atm_.tenors.options[i] <<
-          //               "\noption time : " << optionTime <<
-          //               "\n  swap tenor: " << atm_.tenors.swaps[j] <<
-          //               "\n swap length: " << swapLength <<
-          //               "\n   exp. vol: " << io::volatility(expVol) <<
-          //               "\n actual vol: " << io::volatility(actVol) <<
-          //               "\n      error: " << io::volatility(error) <<
-          //               "\n  tolerance: " << tolerance2);
+          Real npv = swaption.NPV();
+          actVol = swaption.impliedVolatility(npv, termStructure_, expVol*0.98, 1e-6);
+          error = std::abs(expVol-actVol);
+          Real tolerance2 = 0.000001;
+          if (error>tolerance2)
+              BOOST_FAIL("\nrecovery of atm vols through BlackSwaptionEngine failed for " <<
+                         description << ":"
+                         "\noption tenor: " << atm_.tenors.options[i] <<
+                         "\noption time : " << optionTime <<
+                         "\n  swap tenor: " << atm_.tenors.swaps[j] <<
+                         "\n swap length: " << swapLength <<
+                         "\n   exp. vol: " << io::volatility(expVol) <<
+                         "\n actual vol: " << io::volatility(actVol) <<
+                         "\n      error: " << io::volatility(error) <<
+                         "\n  tolerance: " << tolerance2);
       }
     }
 
