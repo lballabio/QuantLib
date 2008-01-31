@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Cristina Duminuco
+ Copyright (C) 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -40,139 +41,147 @@ using namespace boost::unit_test_framework;
 
 QL_BEGIN_TEST_LOCALS(CapFlooredCouponTest)
 
-// global data
+struct CommonVars {
+    // global data
+    Date today, settlement, startDate;
+    Calendar calendar;
+    Real nominal;
+    std::vector<Real> nominals;
+    BusinessDayConvention convention;
+    Frequency frequency;
+    boost::shared_ptr<IborIndex> index;
+    Natural settlementDays, fixingDays;
+    RelinkableHandle<YieldTermStructure> termStructure;
+    std::vector<Rate> caps;
+    std::vector<Rate> floors;
+    Integer length;
+    Volatility volatility;
 
-Date today_, settlement_, startDate_;
-Calendar calendar_;
-Real nominal_;
-std::vector<Real> nominals_;
-BusinessDayConvention convention_;
-Frequency frequency_;
-boost::shared_ptr<IborIndex> index_;
-Natural settlementDays_, fixingDays_;
-RelinkableHandle<YieldTermStructure> termStructure_;
-std::vector<Rate> caps_;
-std::vector<Rate> floors_;
-Integer length_;
-Volatility volatility_;
+    // cleanup
+    SavedSettings backup;
 
-void setup() {
-    length_ = 20;           //years
-    volatility_ = 0.20;
-    nominal_ = 100.;
-    nominals_ = std::vector<Real>(length_,nominal_);
-    frequency_ = Annual;
-    index_ = boost::shared_ptr<IborIndex>(new Euribor1Y(termStructure_));
-    calendar_ = index_->fixingCalendar();
-    convention_ = ModifiedFollowing;
-    today_ = calendar_.adjust(Date::todaysDate());
-    Settings::instance().evaluationDate() = today_;
-    settlementDays_ = 2;
-    fixingDays_ = 2;
-    settlement_ = calendar_.advance(today_,settlementDays_,Days);
-    startDate_ = settlement_;
-    termStructure_.linkTo(flatRate(settlement_,0.05,
-                                   ActualActual(ActualActual::ISDA)));
-}
+    // setup
+    CommonVars() {
+        length = 20;           //years
+        volatility = 0.20;
+        nominal = 100.;
+        nominals = std::vector<Real>(length,nominal);
+        frequency = Annual;
+        index = boost::shared_ptr<IborIndex>(new Euribor1Y(termStructure));
+        calendar = index->fixingCalendar();
+        convention = ModifiedFollowing;
+        today = calendar.adjust(Date::todaysDate());
+        Settings::instance().evaluationDate() = today;
+        settlementDays = 2;
+        fixingDays = 2;
+        settlement = calendar.advance(today,settlementDays,Days);
+        startDate = settlement;
+        termStructure.linkTo(flatRate(settlement,0.05,
+                                      ActualActual(ActualActual::ISDA)));
+    }
 
-// utilities
+    // utilities
+    Leg makeFixedLeg(const Date& startDate,
+                     Integer length) {
 
-Leg makeFixedLeg(const Date& startDate,
-                                                       Integer length) {
+        Date endDate = calendar.advance(startDate, length, Years, convention);
+        Schedule schedule(startDate, endDate, Period(frequency), calendar,
+                          convention, convention,
+                          DateGeneration::Forward, false);
+        std::vector<Rate> coupons(length, 0.0);
+        return FixedRateLeg(schedule, Thirty360())
+            .withNotionals(nominals)
+            .withCouponRates(coupons);
+    }
 
-    Date endDate = calendar_.advance(startDate, length, Years, convention_);
-    Schedule schedule(startDate, endDate, Period(frequency_), calendar_,
-                      convention_, convention_, DateGeneration::Forward, false);
-    std::vector<Rate> coupons(length, 0.0);
-    return FixedRateLeg(schedule, Thirty360())
-        .withNotionals(nominals_)
-        .withCouponRates(coupons);
-}
+    Leg makeFloatingLeg(const Date& startDate,
+                        Integer length,
+                        const Rate gearing = 1.0,
+                        const Rate spread = 0.0) {
 
-Leg makeFloatingLeg(const Date& startDate,
-                                                          Integer length,
-                                                          const Rate gearing = 1.0,
-                                                          const Rate spread = 0.0) {
+        Date endDate = calendar.advance(startDate,length,Years,convention);
+        Schedule schedule(startDate,endDate,Period(frequency),calendar,
+                          convention,convention,DateGeneration::Forward,false);
+        std::vector<Real> gearingVector(length, gearing);
+        std::vector<Spread> spreadVector(length, spread);
+        return IborLeg(schedule, index)
+            .withNotionals(nominals)
+            .withPaymentDayCounter(index->dayCounter())
+            .withPaymentAdjustment(convention)
+            .withFixingDays(fixingDays)
+            .withGearings(gearingVector)
+            .withSpreads(spreadVector);
+    }
 
-    Date endDate = calendar_.advance(startDate,length,Years,convention_);
-    Schedule schedule(startDate,endDate,Period(frequency_),calendar_,
-                      convention_,convention_, DateGeneration::Forward, false);
-    std::vector<Real> gearingVector(length_, gearing);
-    std::vector<Spread> spreadVector(length_, spread);
-    return IborLeg(schedule, index_)
-        .withNotionals(nominals_)
-        .withPaymentDayCounter(index_->dayCounter())
-        .withPaymentAdjustment(convention_)
-        .withFixingDays(fixingDays_)
-        .withGearings(gearingVector)
-        .withSpreads(spreadVector);
-}
+    Leg makeCapFlooredLeg(const Date& startDate,
+                          Integer length,
+                          const std::vector<Rate> caps,
+                          const std::vector<Rate> floors,
+                          Volatility volatility,
+                          const Rate gearing = 1.0,
+                          const Rate spread = 0.0) {
 
-Leg makeCapFlooredLeg(const Date& startDate,
-                      Integer length,
-                      const std::vector<Rate> caps,
-                      const std::vector<Rate> floors,
-                      Volatility volatility,
-                      const Rate gearing = 1.0,
-                      const Rate spread = 0.0) {
+        Date endDate = calendar.advance(startDate,length,Years,convention);
+        Schedule schedule(startDate,endDate,Period(frequency),calendar,
+                          convention,convention,DateGeneration::Forward,false);
+        Handle<OptionletVolatilityStructure> vol(
+            boost::shared_ptr<OptionletVolatilityStructure>(new
+                ConstantOptionletVolatility(0, volatility,
+                                            Actual365Fixed(),
+                                            calendar, Following)));
 
-    Date endDate = calendar_.advance(startDate,length,Years,convention_);
-    Schedule schedule(startDate,endDate,Period(frequency_),calendar_,
-                      convention_,convention_, DateGeneration::Forward, false);
-    Handle<OptionletVolatilityStructure> vol(
-        boost::shared_ptr<OptionletVolatilityStructure>(new
-            ConstantOptionletVolatility(0, volatility,
-                                 Actual365Fixed(), calendar_, Following)));
+        boost::shared_ptr<IborCouponPricer> pricer(
+                                              new BlackIborCouponPricer(vol));
+        std::vector<Rate> gearingVector(length, gearing);
+        std::vector<Spread> spreadVector(length, spread);
 
-    boost::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer(vol));
-    std::vector<Rate> gearingVector(length_, gearing);
-    std::vector<Spread> spreadVector(length_, spread);
+        Leg iborLeg = IborLeg(schedule, index)
+            .withNotionals(nominals)
+            .withPaymentDayCounter(index->dayCounter())
+            .withPaymentAdjustment(convention)
+            .withFixingDays(fixingDays)
+            .withGearings(gearingVector)
+            .withSpreads(spreadVector)
+            .withCaps(caps)
+            .withFloors(floors);
+        setCouponPricer(iborLeg, pricer);
+        return iborLeg;
+    }
 
-    Leg iborLeg = IborLeg(schedule, index_)
-        .withNotionals(nominals_)
-        .withPaymentDayCounter(index_->dayCounter())
-        .withPaymentAdjustment(convention_)
-        .withFixingDays(fixingDays_)
-        .withGearings(gearingVector)
-        .withSpreads(spreadVector)
-        .withCaps(caps)
-        .withFloors(floors);
-     setCouponPricer(iborLeg, pricer);
-     return iborLeg;
-}
+    boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
+        Handle<Quote> vol(boost::shared_ptr<Quote>(
+                                                new SimpleQuote(volatility)));
+        return boost::shared_ptr<PricingEngine>(
+                                 new BlackCapFloorEngine(termStructure, vol));
+    }
 
-boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
-    Handle<Quote> vol(boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
-    return boost::shared_ptr<PricingEngine>(
-                                new BlackCapFloorEngine(termStructure_, vol));
-}
-
-boost::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
-                                         const Leg& leg,
-                                         Rate capStrike, Rate floorStrike,
-                                         Volatility volatility) {
-    boost::shared_ptr<CapFloor> result;
-    switch (type) {
-      case CapFloor::Cap:
-        result = boost::shared_ptr<CapFloor>(
+    boost::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
+                                             const Leg& leg,
+                                             Rate capStrike, Rate floorStrike,
+                                             Volatility volatility) {
+        boost::shared_ptr<CapFloor> result;
+        switch (type) {
+          case CapFloor::Cap:
+            result = boost::shared_ptr<CapFloor>(
                                new Cap(leg, std::vector<Rate>(1, capStrike)));
-        break;
-      case CapFloor::Floor:
-        result = boost::shared_ptr<CapFloor>(
+            break;
+          case CapFloor::Floor:
+            result = boost::shared_ptr<CapFloor>(
                            new Floor(leg, std::vector<Rate>(1, floorStrike)));
-        break;
-      case CapFloor::Collar:
-        result = boost::shared_ptr<CapFloor>(
+            break;
+          case CapFloor::Collar:
+            result = boost::shared_ptr<CapFloor>(
                                new Collar(leg,
                                           std::vector<Rate>(1, capStrike),
                                           std::vector<Rate>(1, floorStrike)));
-        break;
-      default:
-        QL_FAIL("unknown cap/floor type");
+            break;
+          default:
+            QL_FAIL("unknown cap/floor type");
+        }
+        result->setPricingEngine(makeEngine(volatility));
+        return result;
     }
-    result->setPricingEngine(makeEngine(volatility));
-    return result;
-}
+};
 
 std::string typeToString(CapFloor::Type type) {
     switch (type) {
@@ -193,43 +202,43 @@ void CapFlooredCouponTest::testLargeRates() {
 
     BOOST_MESSAGE("Testing degenerate collared coupon...");
 
-    SavedSettings backup;
-
-    setup();
+    CommonVars vars;
 
     /* A vanilla floating leg and a capped floating leg with strike
        equal to 100 and floor equal to 0 must have (about) the same NPV
        (depending on variance: option expiry and volatility)
     */
 
-    std::vector<Rate> caps(length_,100.0);
-    std::vector<Rate> floors(length_,0.0);
+    std::vector<Rate> caps(vars.length,100.0);
+    std::vector<Rate> floors(vars.length,0.0);
     Real tolerance = 1e-10;
 
     // fixed leg with zero rate
     Leg fixedLeg =
-        makeFixedLeg(startDate_,length_);
+        vars.makeFixedLeg(vars.startDate,vars.length);
     Leg floatLeg =
-        makeFloatingLeg(startDate_,length_);
+        vars.makeFloatingLeg(vars.startDate,vars.length);
     Leg collaredLeg =
-        makeCapFlooredLeg(startDate_,length_,caps,floors,volatility_);
+        vars.makeCapFlooredLeg(vars.startDate,vars.length,
+                               caps,floors,vars.volatility);
 
     boost::shared_ptr<PricingEngine> engine(
-                                   new DiscountingSwapEngine(termStructure_));
+                               new DiscountingSwapEngine(vars.termStructure));
     Swap vanillaLeg(fixedLeg,floatLeg);
     Swap collarLeg(fixedLeg,collaredLeg);
     vanillaLeg.setPricingEngine(engine);
     collarLeg.setPricingEngine(engine);
 
     if (std::abs(vanillaLeg.NPV()-collarLeg.NPV())>tolerance) {
-        BOOST_MESSAGE("Lenght: " << length_ << " y" << "\n" <<
-            "Volatility: " << volatility_*100 << "%\n" <<
-            "Notional: " << nominal_ << "\n" <<
-            "Vanilla floating leg NPV: " << vanillaLeg.NPV()
-            << "\n" <<
-            "Collared floating leg NPV (strikes 0 and 100): " << collarLeg.NPV()
-            << "\n" <<
-            "Diff: " << std::abs(vanillaLeg.NPV()-collarLeg.NPV()));
+        BOOST_MESSAGE("Lenght: " << vars.length << " y" << "\n" <<
+                      "Volatility: " << vars.volatility*100 << "%\n" <<
+                      "Notional: " << vars.nominal << "\n" <<
+                      "Vanilla floating leg NPV: " << vanillaLeg.NPV()
+                      << "\n" <<
+                      "Collared floating leg NPV (strikes 0 and 100): "
+                      << collarLeg.NPV()
+                      << "\n" <<
+                      "Diff: " << std::abs(vanillaLeg.NPV()-collarLeg.NPV()));
    }
 }
 
@@ -237,18 +246,16 @@ void CapFlooredCouponTest::testDecomposition() {
 
     BOOST_MESSAGE("Testing collared coupon against its decomposition...");
 
-    SavedSettings backup;
-
-    setup();
+    CommonVars vars;
 
     Real tolerance = 1e-12;
     Real npvVanilla,npvCappedLeg,npvFlooredLeg,npvCollaredLeg,npvCap,npvFloor,npvCollar;
     Real error;
     Rate floorstrike = 0.05;
     Rate capstrike = 0.10;
-    std::vector<Rate> caps(length_,capstrike);
+    std::vector<Rate> caps(vars.length,capstrike);
     std::vector<Rate> caps0 = std::vector<Rate>();
-    std::vector<Rate> floors(length_,floorstrike);
+    std::vector<Rate> floors(vars.length,floorstrike);
     std::vector<Rate> floors0 = std::vector<Rate>();
     Rate gearing_p = Rate(0.5);
     Spread spread_p = Spread(0.002);
@@ -256,16 +263,16 @@ void CapFlooredCouponTest::testDecomposition() {
     Spread spread_n = Spread(0.12);
     // fixed leg with zero rate
     Leg fixedLeg  =
-        makeFixedLeg(startDate_,length_);
+        vars.makeFixedLeg(vars.startDate,vars.length);
     // floating leg with gearing=1 and spread=0
     Leg floatLeg  =
-        makeFloatingLeg(startDate_,length_);
+        vars.makeFloatingLeg(vars.startDate,vars.length);
     // floating leg with positive gearing (gearing_p) and spread<>0
     Leg floatLeg_p =
-        makeFloatingLeg(startDate_,length_,gearing_p,spread_p);
+        vars.makeFloatingLeg(vars.startDate,vars.length,gearing_p,spread_p);
     // floating leg with negative gearing (gearing_n) and spread<>0
     Leg floatLeg_n =
-        makeFloatingLeg(startDate_,length_,gearing_n,spread_n);
+        vars.makeFloatingLeg(vars.startDate,vars.length,gearing_n,spread_n);
     // Swap with null fixed leg and floating leg with gearing=1 and spread=0
     Swap vanillaLeg(fixedLeg,floatLeg);
     // Swap with null fixed leg and floating leg with positive gearing and spread<>0
@@ -274,7 +281,7 @@ void CapFlooredCouponTest::testDecomposition() {
     Swap vanillaLeg_n(fixedLeg,floatLeg_n);
 
     boost::shared_ptr<PricingEngine> engine(
-                                   new DiscountingSwapEngine(termStructure_));
+                               new DiscountingSwapEngine(vars.termStructure));
     vanillaLeg.setPricingEngine(engine);
     vanillaLeg_p.setPricingEngine(engine);
     vanillaLeg_n.setPricingEngine(engine);
@@ -288,11 +295,12 @@ void CapFlooredCouponTest::testDecomposition() {
 
     // Case gearing = 1 and spread = 0
     Leg cappedLeg =
-        makeCapFlooredLeg(startDate_,length_,caps,floors0,volatility_);
+        vars.makeCapFlooredLeg(vars.startDate,vars.length,
+                               caps,floors0,vars.volatility);
     Swap capLeg(fixedLeg,cappedLeg);
     capLeg.setPricingEngine(engine);
     Cap cap(floatLeg, std::vector<Rate>(1, capstrike));
-    cap.setPricingEngine(makeEngine(volatility_));
+    cap.setPricingEngine(vars.makeEngine(vars.volatility));
     npvVanilla = vanillaLeg.NPV();
     npvCappedLeg = capLeg.NPV();
     npvCap = cap.NPV();
@@ -314,11 +322,12 @@ void CapFlooredCouponTest::testDecomposition() {
     */
 
     Leg flooredLeg =
-        makeCapFlooredLeg(startDate_,length_,caps0,floors,volatility_);
+        vars.makeCapFlooredLeg(vars.startDate,vars.length,
+                               caps0,floors,vars.volatility);
     Swap floorLeg(fixedLeg,flooredLeg);
     floorLeg.setPricingEngine(engine);
     Floor floor(floatLeg, std::vector<Rate>(1, floorstrike));
-    floor.setPricingEngine(makeEngine(volatility_));
+    floor.setPricingEngine(vars.makeEngine(vars.volatility));
     npvFlooredLeg = floorLeg.NPV();
     npvFloor = floor.NPV();
     error = std::abs(npvFlooredLeg-(npvVanilla + npvFloor));
@@ -337,13 +346,14 @@ void CapFlooredCouponTest::testDecomposition() {
     */
 
     Leg collaredLeg =
-        makeCapFlooredLeg(startDate_,length_,caps,floors,volatility_);
+        vars.makeCapFlooredLeg(vars.startDate,vars.length,
+                               caps,floors,vars.volatility);
     Swap collarLeg(fixedLeg,collaredLeg);
     collarLeg.setPricingEngine(engine);
     Collar collar(floatLeg,
                   std::vector<Rate>(1, capstrike),
                   std::vector<Rate>(1, floorstrike));
-    collar.setPricingEngine(makeEngine(volatility_));
+    collar.setPricingEngine(vars.makeEngine(vars.volatility));
     npvCollaredLeg = collarLeg.NPV();
     npvCollar = collar.NPV();
     error = std::abs(npvCollaredLeg -(npvVanilla - npvCollar));
@@ -370,12 +380,12 @@ void CapFlooredCouponTest::testDecomposition() {
 
     // Positive gearing
     Leg cappedLeg_p =
-        makeCapFlooredLeg(startDate_,length_,caps,floors0,
-                          volatility_,gearing_p,spread_p);
+        vars.makeCapFlooredLeg(vars.startDate,vars.length,caps,floors0,
+                               vars.volatility,gearing_p,spread_p);
     Swap capLeg_p(fixedLeg,cappedLeg_p);
     capLeg_p.setPricingEngine(engine);
     Cap cap_p(floatLeg_p,std::vector<Rate>(1,capstrike));
-    cap_p.setPricingEngine(makeEngine(volatility_));
+    cap_p.setPricingEngine(vars.makeEngine(vars.volatility));
     npvVanilla = vanillaLeg_p.NPV();
     npvCappedLeg = capLeg_p.NPV();
     npvCap = cap_p.NPV();
@@ -395,12 +405,12 @@ void CapFlooredCouponTest::testDecomposition() {
 
     // Negative gearing
     Leg cappedLeg_n =
-        makeCapFlooredLeg(startDate_,length_,caps,floors0,
-                          volatility_,gearing_n,spread_n);
+        vars.makeCapFlooredLeg(vars.startDate,vars.length,caps,floors0,
+                               vars.volatility,gearing_n,spread_n);
     Swap capLeg_n(fixedLeg,cappedLeg_n);
     capLeg_n.setPricingEngine(engine);
     Floor floor_n(floatLeg,std::vector<Rate>(1,(capstrike-spread_n)/gearing_n));
-    floor_n.setPricingEngine(makeEngine(volatility_));
+    floor_n.setPricingEngine(vars.makeEngine(vars.volatility));
     npvVanilla = vanillaLeg_n.NPV();
     npvCappedLeg = capLeg_n.NPV();
     npvFloor = floor_n.NPV();
@@ -433,12 +443,12 @@ void CapFlooredCouponTest::testDecomposition() {
 
     // Positive gearing
     Leg flooredLeg_p1 =
-        makeCapFlooredLeg(startDate_,length_,caps0,floors,
-                          volatility_,gearing_p,spread_p);
+        vars.makeCapFlooredLeg(vars.startDate,vars.length,caps0,floors,
+                               vars.volatility,gearing_p,spread_p);
     Swap floorLeg_p1(fixedLeg,flooredLeg_p1);
     floorLeg_p1.setPricingEngine(engine);
     Floor floor_p1(floatLeg_p,std::vector<Rate>(1,floorstrike));
-    floor_p1.setPricingEngine(makeEngine(volatility_));
+    floor_p1.setPricingEngine(vars.makeEngine(vars.volatility));
     npvVanilla = vanillaLeg_p.NPV();
     npvFlooredLeg = floorLeg_p1.NPV();
     npvFloor = floor_p1.NPV();
@@ -456,12 +466,12 @@ void CapFlooredCouponTest::testDecomposition() {
     }
     // Negative gearing
     Leg flooredLeg_n =
-        makeCapFlooredLeg(startDate_,length_,caps0,floors,
-                          volatility_,gearing_n,spread_n);
+        vars.makeCapFlooredLeg(vars.startDate,vars.length,caps0,floors,
+                               vars.volatility,gearing_n,spread_n);
     Swap floorLeg_n(fixedLeg,flooredLeg_n);
     floorLeg_n.setPricingEngine(engine);
     Cap cap_n(floatLeg,std::vector<Rate>(1,(floorstrike-spread_n)/gearing_n));
-    cap_n.setPricingEngine(makeEngine(volatility_));
+    cap_n.setPricingEngine(vars.makeEngine(vars.volatility));
     npvVanilla = vanillaLeg_n.NPV();
     npvFlooredLeg = floorLeg_n.NPV();
     npvCap = cap_n.NPV();
@@ -486,14 +496,14 @@ void CapFlooredCouponTest::testDecomposition() {
     */
     // Positive gearing
     Leg collaredLeg_p =
-        makeCapFlooredLeg(startDate_,length_,caps,floors,
-                          volatility_,gearing_p,spread_p);
+        vars.makeCapFlooredLeg(vars.startDate,vars.length,caps,floors,
+                               vars.volatility,gearing_p,spread_p);
     Swap collarLeg_p1(fixedLeg,collaredLeg_p);
     collarLeg_p1.setPricingEngine(engine);
     Collar collar_p(floatLeg_p,
                     std::vector<Rate>(1,capstrike),
                     std::vector<Rate>(1,floorstrike));
-    collar_p.setPricingEngine(makeEngine(volatility_));
+    collar_p.setPricingEngine(vars.makeEngine(vars.volatility));
     npvVanilla = vanillaLeg_p.NPV();
     npvCollaredLeg = collarLeg_p1.NPV();
     npvCollar = collar_p.NPV();
@@ -514,14 +524,14 @@ void CapFlooredCouponTest::testDecomposition() {
     }
     // Negative gearing
     Leg collaredLeg_n =
-        makeCapFlooredLeg(startDate_,length_,caps,floors,
-                          volatility_,gearing_n,spread_n);
+        vars.makeCapFlooredLeg(vars.startDate,vars.length,caps,floors,
+                               vars.volatility,gearing_n,spread_n);
     Swap collarLeg_n1(fixedLeg,collaredLeg_n);
     collarLeg_n1.setPricingEngine(engine);
     Collar collar_n(floatLeg,
                     std::vector<Rate>(1,(floorstrike-spread_n)/gearing_n),
                     std::vector<Rate>(1,(capstrike-spread_n)/gearing_n));
-    collar_n.setPricingEngine(makeEngine(volatility_));
+    collar_n.setPricingEngine(vars.makeEngine(vars.volatility));
     npvVanilla = vanillaLeg_n.NPV();
     npvCollaredLeg = collarLeg_n1.NPV();
     npvCollar = collar_n.NPV();

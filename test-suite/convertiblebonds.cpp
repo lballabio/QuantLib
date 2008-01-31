@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006, 2008 StatPro Italia srl
  Copyright (C) 2007 Ferdinando Ametrano
- Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -43,56 +43,63 @@ using namespace boost::unit_test_framework;
 
 QL_BEGIN_TEST_LOCALS(ConvertibleBondTest)
 
-Date today_, issueDate_, maturityDate_;
-Calendar calendar_;
-DayCounter dayCounter_;
-Frequency frequency_;
-Natural settlementDays_;
+struct CommonVars {
+    // global data
+    Date today, issueDate, maturityDate;
+    Calendar calendar;
+    DayCounter dayCounter;
+    Frequency frequency;
+    Natural settlementDays;
 
-RelinkableHandle<Quote> underlying_;
-RelinkableHandle<YieldTermStructure> dividendYield_, riskFreeRate_;
-RelinkableHandle<BlackVolTermStructure> volatility_;
-boost::shared_ptr<BlackScholesMertonProcess> process_;
+    RelinkableHandle<Quote> underlying;
+    RelinkableHandle<YieldTermStructure> dividendYield, riskFreeRate;
+    RelinkableHandle<BlackVolTermStructure> volatility;
+    boost::shared_ptr<BlackScholesMertonProcess> process;
 
-RelinkableHandle<Quote> creditSpread_;
+    RelinkableHandle<Quote> creditSpread;
 
-CallabilitySchedule no_callability;
-DividendSchedule no_dividends;
+    CallabilitySchedule no_callability;
+    DividendSchedule no_dividends;
 
-Real faceAmount_, redemption_, conversionRatio_;
+    Real faceAmount, redemption, conversionRatio;
 
-void setup() {
-    calendar_ = TARGET();
+    // cleanup
+    SavedSettings backup;
 
-    today_ = calendar_.adjust(Date::todaysDate());
-    Settings::instance().evaluationDate() = today_;
+    // setup
+    CommonVars() {
+        calendar = TARGET();
 
-    dayCounter_ = Actual360();
-    frequency_ = Annual;
-    settlementDays_ = 3;
+        today = calendar.adjust(Date::todaysDate());
+        Settings::instance().evaluationDate() = today;
 
-    issueDate_ = calendar_.advance(today_,2,Days);
-    maturityDate_ = calendar_.advance(issueDate_, 10, Years);
-    // reset to avoid inconsistencies as the schedule is backwards
-    issueDate_ = calendar_.advance(maturityDate_, -10, Years);
+        dayCounter = Actual360();
+        frequency = Annual;
+        settlementDays = 3;
 
-    underlying_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(50.0)));
-    dividendYield_.linkTo(flatRate(today_, 0.02, dayCounter_));
-    riskFreeRate_.linkTo(flatRate(today_, 0.05, dayCounter_));
-    volatility_.linkTo(flatVol(today_, 0.15, dayCounter_));
+        issueDate = calendar.advance(today,2,Days);
+        maturityDate = calendar.advance(issueDate, 10, Years);
+        // reset to avoid inconsistencies as the schedule is backwards
+        issueDate = calendar.advance(maturityDate, -10, Years);
 
-    process_ = boost::shared_ptr<BlackScholesMertonProcess>(
-                    new BlackScholesMertonProcess(underlying_, dividendYield_,
-                                                  riskFreeRate_, volatility_));
+        underlying.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(50.0)));
+        dividendYield.linkTo(flatRate(today, 0.02, dayCounter));
+        riskFreeRate.linkTo(flatRate(today, 0.05, dayCounter));
+        volatility.linkTo(flatVol(today, 0.15, dayCounter));
 
-    creditSpread_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(0.005)));
+        process = boost::shared_ptr<BlackScholesMertonProcess>(
+                    new BlackScholesMertonProcess(underlying, dividendYield,
+                                                  riskFreeRate, volatility));
 
-    // it fails with 1000000
-    //faceAmount_ = 1000000.0;
-    faceAmount_ = 100.0;
-    redemption_ = 100.0;
-    conversionRatio_ = redemption_/underlying_->value();
-}
+        creditSpread.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(0.005)));
+
+        // it fails with 1000000
+        // faceAmount = 1000000.0;
+        faceAmount = 100.0;
+        redemption = 100.0;
+        conversionRatio = redemption/underlying->value();
+    }
+};
 
 QL_END_TEST_LOCALS(ConvertibleBondTest)
 
@@ -105,54 +112,57 @@ void ConvertibleBondTest::testBond() {
     BOOST_MESSAGE(
        "Testing out-of-the-money convertible bonds against vanilla bonds...");
 
-    SavedSettings backup;
+    CommonVars vars;
 
-    setup();
-
-    conversionRatio_ = 1.0e-16;
+    vars.conversionRatio = 1.0e-16;
 
     boost::shared_ptr<Exercise> euExercise(
-                                         new EuropeanExercise(maturityDate_));
+                                     new EuropeanExercise(vars.maturityDate));
     boost::shared_ptr<Exercise> amExercise(
-                                         new AmericanExercise(issueDate_,
-                                                              maturityDate_));
+                                     new AmericanExercise(vars.issueDate,
+                                                          vars.maturityDate));
 
     Size timeSteps = 1001;
     boost::shared_ptr<PricingEngine> engine(
-        new BinomialConvertibleEngine<CoxRossRubinstein>(process_,timeSteps));
+        new BinomialConvertibleEngine<CoxRossRubinstein>(vars.process,
+                                                         timeSteps));
 
     Handle<YieldTermStructure> discountCurve(
          boost::shared_ptr<YieldTermStructure>(
-             new ForwardSpreadedTermStructure(riskFreeRate_, creditSpread_)));
+             new ForwardSpreadedTermStructure(vars.riskFreeRate,
+                                              vars.creditSpread)));
 
     // zero-coupon
 
-    Schedule schedule = MakeSchedule(issueDate_, maturityDate_,
-                                     Period(Once), calendar_,
+    Schedule schedule = MakeSchedule(vars.issueDate, vars.maturityDate,
+                                     Period(Once), vars.calendar,
                                      Following).backwards();
 
-    ConvertibleZeroCouponBond euZero(euExercise, conversionRatio_,
-                                     no_dividends, no_callability,
-                                     creditSpread_,
-                                     issueDate_, settlementDays_,
-                                     dayCounter_, schedule, redemption_);
+    ConvertibleZeroCouponBond euZero(euExercise, vars.conversionRatio,
+                                     vars.no_dividends, vars.no_callability,
+                                     vars.creditSpread,
+                                     vars.issueDate, vars.settlementDays,
+                                     vars.dayCounter, schedule,
+                                     vars.redemption);
     euZero.setPricingEngine(engine);
 
-    ConvertibleZeroCouponBond amZero(amExercise, conversionRatio_,
-                                     no_dividends, no_callability,
-                                     creditSpread_,
-                                     issueDate_, settlementDays_,
-                                     dayCounter_, schedule, redemption_);
+    ConvertibleZeroCouponBond amZero(amExercise, vars.conversionRatio,
+                                     vars.no_dividends, vars.no_callability,
+                                     vars.creditSpread,
+                                     vars.issueDate, vars.settlementDays,
+                                     vars.dayCounter, schedule,
+                                     vars.redemption);
     amZero.setPricingEngine(engine);
 
-    ZeroCouponBond zero(settlementDays_, calendar_, 100.0, maturityDate_,
-                        Following, redemption_, issueDate_);
+    ZeroCouponBond zero(vars.settlementDays, vars.calendar,
+                        100.0, vars.maturityDate,
+                        Following, vars.redemption, vars.issueDate);
 
     boost::shared_ptr<PricingEngine> bondEngine(
                                     new DiscountingBondEngine(discountCurve));
     zero.setPricingEngine(bondEngine);
 
-    Real tolerance = 1.0e-2 * (faceAmount_/100.0);
+    Real tolerance = 1.0e-2 * (vars.faceAmount/100.0);
 
     Real error = std::fabs(euZero.NPV()-zero.NPV());
     if (error > tolerance) {
@@ -174,33 +184,33 @@ void ConvertibleBondTest::testBond() {
 
     std::vector<Rate> coupons(1, 0.05);
 
-    schedule = MakeSchedule(issueDate_, maturityDate_,
-                            Period(frequency_), calendar_,
+    schedule = MakeSchedule(vars.issueDate, vars.maturityDate,
+                            Period(vars.frequency), vars.calendar,
                             Following).backwards();
 
-    ConvertibleFixedCouponBond euFixed(euExercise, conversionRatio_,
-                                       no_dividends, no_callability,
-                                       creditSpread_,
-                                       issueDate_, settlementDays_,
-                                       coupons, dayCounter_,
-                                       schedule, redemption_);
+    ConvertibleFixedCouponBond euFixed(euExercise, vars.conversionRatio,
+                                       vars.no_dividends, vars.no_callability,
+                                       vars.creditSpread,
+                                       vars.issueDate, vars.settlementDays,
+                                       coupons, vars.dayCounter,
+                                       schedule, vars.redemption);
     euFixed.setPricingEngine(engine);
 
-    ConvertibleFixedCouponBond amFixed(amExercise, conversionRatio_,
-                                       no_dividends, no_callability,
-                                       creditSpread_,
-                                       issueDate_, settlementDays_,
-                                       coupons, dayCounter_,
-                                       schedule, redemption_);
+    ConvertibleFixedCouponBond amFixed(amExercise, vars.conversionRatio,
+                                       vars.no_dividends, vars.no_callability,
+                                       vars.creditSpread,
+                                       vars.issueDate, vars.settlementDays,
+                                       coupons, vars.dayCounter,
+                                       schedule, vars.redemption);
     amFixed.setPricingEngine(engine);
 
-    FixedRateBond fixed(settlementDays_, faceAmount_, schedule,
-                        coupons, dayCounter_, Following,
-                        redemption_, issueDate_);
+    FixedRateBond fixed(vars.settlementDays, vars.faceAmount, schedule,
+                        coupons, vars.dayCounter, Following,
+                        vars.redemption, vars.issueDate);
 
     fixed.setPricingEngine(bondEngine);
 
-    tolerance = 2.0e-2 * (faceAmount_/100.0);
+    tolerance = 2.0e-2 * (vars.faceAmount/100.0);
 
     error = std::fabs(euFixed.NPV()-fixed.NPV());
     if (error > tolerance) {
@@ -225,39 +235,43 @@ void ConvertibleBondTest::testBond() {
     std::vector<Real> gearings(1, 1.0);
     std::vector<Rate> spreads;
 
-    ConvertibleFloatingRateBond euFloating(euExercise, conversionRatio_,
-                                           no_dividends, no_callability,
-                                           creditSpread_,
-                                           issueDate_, settlementDays_,
+    ConvertibleFloatingRateBond euFloating(euExercise, vars.conversionRatio,
+                                           vars.no_dividends, vars.no_callability,
+                                           vars.creditSpread,
+                                           vars.issueDate, vars.settlementDays,
                                            index, fixingDays, spreads,
-                                           dayCounter_, schedule, redemption_);
+                                           vars.dayCounter, schedule,
+                                           vars.redemption);
     euFloating.setPricingEngine(engine);
 
-    ConvertibleFloatingRateBond amFloating(amExercise, conversionRatio_,
-                                           no_dividends, no_callability,
-                                           creditSpread_,
-                                           issueDate_, settlementDays_,
+    ConvertibleFloatingRateBond amFloating(amExercise, vars.conversionRatio,
+                                           vars.no_dividends, vars.no_callability,
+                                           vars.creditSpread,
+                                           vars.issueDate, vars.settlementDays,
                                            index, fixingDays, spreads,
-                                           dayCounter_, schedule, redemption_);
+                                           vars.dayCounter, schedule,
+                                           vars.redemption);
     amFloating.setPricingEngine(engine);
 
     boost::shared_ptr<IborCouponPricer> pricer(new
         BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
 
-    Schedule floatSchedule(issueDate_, maturityDate_, Period(frequency_),
-                           calendar_, Following, Following, DateGeneration::Backward, false);
+    Schedule floatSchedule(vars.issueDate, vars.maturityDate,
+                           Period(vars.frequency),
+                           vars.calendar, Following, Following,
+                           DateGeneration::Backward, false);
 
-    FloatingRateBond floating(settlementDays_, faceAmount_, floatSchedule,
-                              index, dayCounter_, Following, fixingDays,
+    FloatingRateBond floating(vars.settlementDays, vars.faceAmount, floatSchedule,
+                              index, vars.dayCounter, Following, fixingDays,
                               gearings, spreads,
                               std::vector<Rate>(), std::vector<Rate>(),
                               false,
-                              redemption_, issueDate_);
+                              vars.redemption, vars.issueDate);
 
     floating.setPricingEngine(bondEngine);
     setCouponPricer(floating.cashflows(),pricer);
 
-    tolerance = 2.0e-2 * (faceAmount_/100.0);
+    tolerance = 2.0e-2 * (vars.faceAmount/100.0);
 
     error = std::fabs(euFloating.NPV()-floating.NPV());
     if (error > tolerance) {
@@ -284,46 +298,47 @@ void ConvertibleBondTest::testOption() {
     BOOST_MESSAGE(
        "Testing zero-coupon convertible bonds against vanilla option...");
 
-    SavedSettings backup;
-
-    setup();
+    CommonVars vars;
 
     boost::shared_ptr<Exercise> euExercise(new
-                                    EuropeanExercise(maturityDate_));
+                                    EuropeanExercise(vars.maturityDate));
 
-    settlementDays_ = 0;
+    vars.settlementDays = 0;
 
     Size timeSteps = 1001;
     boost::shared_ptr<PricingEngine> engine(
-        new BinomialConvertibleEngine<CoxRossRubinstein>(process_,timeSteps));
+        new BinomialConvertibleEngine<CoxRossRubinstein>(vars.process,
+                                                         timeSteps));
     boost::shared_ptr<PricingEngine> vanillaEngine(
-            new BinomialVanillaEngine<CoxRossRubinstein>(process_,timeSteps));
+            new BinomialVanillaEngine<CoxRossRubinstein>(vars.process,
+                                                         timeSteps));
 
-    creditSpread_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
+    vars.creditSpread.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
 
-    Real conversionStrike = redemption_/conversionRatio_;
+    Real conversionStrike = vars.redemption/vars.conversionRatio;
     boost::shared_ptr<StrikedTypePayoff> payoff(
                       new PlainVanillaPayoff(Option::Call, conversionStrike));
 
-    Schedule schedule = MakeSchedule(issueDate_, maturityDate_,
-                                     Period(Once), calendar_,
+    Schedule schedule = MakeSchedule(vars.issueDate, vars.maturityDate,
+                                     Period(Once), vars.calendar,
                                      Following).backwards();
 
-    ConvertibleZeroCouponBond euZero(euExercise, conversionRatio_,
-                                     no_dividends, no_callability,
-                                     creditSpread_,
-                                     issueDate_, settlementDays_,
-                                     dayCounter_, schedule, redemption_);
+    ConvertibleZeroCouponBond euZero(euExercise, vars.conversionRatio,
+                                     vars.no_dividends, vars.no_callability,
+                                     vars.creditSpread,
+                                     vars.issueDate, vars.settlementDays,
+                                     vars.dayCounter, schedule,
+                                     vars.redemption);
     euZero.setPricingEngine(engine);
 
     VanillaOption euOption(payoff, euExercise);
     euOption.setPricingEngine(vanillaEngine);
 
-    Real tolerance = 5.0e-2 * (faceAmount_/100.0);
+    Real tolerance = 5.0e-2 * (vars.faceAmount/100.0);
 
-    Real expected = faceAmount_/100.0 *
-        (redemption_ * riskFreeRate_->discount(maturityDate_)
-         + conversionRatio_* euOption.NPV());
+    Real expected = vars.faceAmount/100.0 *
+        (vars.redemption * vars.riskFreeRate->discount(vars.maturityDate)
+         + vars.conversionRatio* euOption.NPV());
     Real error = std::fabs(euZero.NPV()-expected);
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce plain-option price:"

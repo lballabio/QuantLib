@@ -63,59 +63,65 @@ Datum swapData[] = {
     { 30, Years, 5.96 }
 };
 
-// test-global variables
+struct CommonVars {
+    // test-global variables
 
-Calendar calendar;
-Natural settlementDays;
-Date today, settlement;
-BusinessDayConvention convention;
-DayCounter dayCounter;
-Frequency frequency;
+    Calendar calendar;
+    Natural settlementDays;
+    Date today, settlement;
+    BusinessDayConvention convention;
+    DayCounter dayCounter;
+    Frequency frequency;
 
-Size deposits, swaps;
-std::vector<Rate> rates;
-std::vector<Date> dates;
-boost::shared_ptr<CompoundForward> termStructure;
+    Size deposits, swaps;
+    std::vector<Rate> rates;
+    std::vector<Date> dates;
+    boost::shared_ptr<CompoundForward> termStructure;
 
-void setup() {
+    // cleanup
+    SavedSettings backup;
 
-    // data
-    calendar = SouthAfrica();
-    settlementDays = 0;
-    today = calendar.adjust(Date::todaysDate());
-    Settings::instance().evaluationDate() = today;
-    settlement = calendar.advance(today,settlementDays,Days);
-    convention = ModifiedFollowing;
-    dayCounter = Actual365Fixed();
-    frequency = Semiannual;
+    // setup
+    CommonVars() {
 
-    deposits = LENGTH(depositData);
-    swaps = LENGTH(swapData);
+        // data
+        calendar = SouthAfrica();
+        settlementDays = 0;
+        today = calendar.adjust(Date::todaysDate());
+        Settings::instance().evaluationDate() = today;
+        settlement = calendar.advance(today,settlementDays,Days);
+        convention = ModifiedFollowing;
+        dayCounter = Actual365Fixed();
+        frequency = Semiannual;
 
-    // market elements
-    rates = std::vector<Rate>(deposits+swaps);
-    dates = std::vector<Date>(deposits+swaps);
-    Size i;
-    for (i=0; i<deposits; i++) {
-        rates[i] = depositData[i].rate/100;
-        dates[i] = calendar.advance(settlement,
-                                    Period(depositData[i].n,
-                                           depositData[i].units),
-                                    convention);
-    }
-    for (i=0; i<swaps; i++) {
-        rates[i+deposits] = swapData[i].rate/100;
-        dates[i+deposits] = calendar.advance(settlement,
-                                             Period(swapData[i].n,
-                                                    swapData[i].units),
-                                             convention);
-    }
+        deposits = LENGTH(depositData);
+        swaps = LENGTH(swapData);
 
-    termStructure = boost::shared_ptr<CompoundForward>(
+        // market elements
+        rates = std::vector<Rate>(deposits+swaps);
+        dates = std::vector<Date>(deposits+swaps);
+        Size i;
+        for (i=0; i<deposits; i++) {
+            rates[i] = depositData[i].rate/100;
+            dates[i] = calendar.advance(settlement,
+                                        Period(depositData[i].n,
+                                               depositData[i].units),
+                                        convention);
+        }
+        for (i=0; i<swaps; i++) {
+            rates[i+deposits] = swapData[i].rate/100;
+            dates[i+deposits] = calendar.advance(settlement,
+                                                 Period(swapData[i].n,
+                                                        swapData[i].units),
+                                                 convention);
+        }
+
+        termStructure = boost::shared_ptr<CompoundForward>(
                              new CompoundForward(settlement,dates,rates,
                                                  calendar,convention,
                                                  frequency,dayCounter));
-}
+    }
+};
 
 QL_END_TEST_LOCALS(CompoundForwardTest)
 
@@ -125,26 +131,25 @@ void CompoundForwardTest::testSuppliedRates() {
     BOOST_MESSAGE("Testing consistency of compound-forward curve "
                   "with supplied rates...");
 
-    SavedSettings backup;
-
-    setup();
+    CommonVars vars;
 
     Handle<YieldTermStructure> liborHandle =
-        Handle<YieldTermStructure>(termStructure);
+        Handle<YieldTermStructure>(vars.termStructure);
 
     Size i;
     // check swaps against original
-    boost::shared_ptr<IborIndex> index(new Jibar(Period(frequency),
-                                             liborHandle));
-    for (i=0; i<swaps; i++) {
-        Date maturity = calendar.advance(settlement,
-                                         swapData[i].n,swapData[i].units,
-                                         convention);
-        Schedule schedule(settlement, maturity, Period(frequency), calendar,
-                          convention, convention,
+    boost::shared_ptr<IborIndex> index(new Jibar(Period(vars.frequency),
+                                                 liborHandle));
+    for (i=0; i<vars.swaps; i++) {
+        Date maturity = vars.calendar.advance(vars.settlement,
+                                              swapData[i].n,swapData[i].units,
+                                              vars.convention);
+        Schedule schedule(vars.settlement, maturity,
+                          Period(vars.frequency), vars.calendar,
+                          vars.convention, vars.convention,
                           DateGeneration::Forward, false);
         VanillaSwap swap(VanillaSwap::Payer, 100.0,
-                         schedule, 0.0, dayCounter,
+                         schedule, 0.0, vars.dayCounter,
                          schedule, index, 0.0, index->dayCounter());
         swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
                                      new DiscountingSwapEngine(liborHandle)));
@@ -166,33 +171,33 @@ void CompoundForwardTest::testConvertedRates() {
     BOOST_MESSAGE("Testing consistency of compound-forward curve "
                   "with converted rates...");
 
-    SavedSettings backup;
-
-    setup();
+    CommonVars vars;
 
     Handle<YieldTermStructure> liborHandle =
-        Handle<YieldTermStructure>(termStructure);
+        Handle<YieldTermStructure>(vars.termStructure);
 
     Size i;
-    frequency = Quarterly;
+    vars.frequency = Quarterly;
     // check swaps against quarterly rates
-    boost::shared_ptr<IborIndex> index(new Jibar(Period(frequency),
-                                             liborHandle));
-    for (i=0; i<swaps; i++) {
-        Date maturity = calendar.advance(settlement,
-                                         swapData[i].n,swapData[i].units,
-                                         convention);
-        Schedule schedule(settlement, maturity, Period(frequency), calendar,
-                          convention, convention,
+    boost::shared_ptr<IborIndex> index(new Jibar(Period(vars.frequency),
+                                                 liborHandle));
+    for (i=0; i<vars.swaps; i++) {
+        Date maturity = vars.calendar.advance(vars.settlement,
+                                              swapData[i].n,swapData[i].units,
+                                              vars.convention);
+        Schedule schedule(vars.settlement, maturity,
+                          Period(vars.frequency), vars.calendar,
+                          vars.convention, vars.convention,
                           DateGeneration::Forward, false);
         VanillaSwap swap(VanillaSwap::Payer, 100.0,
-                         schedule, 0.0, dayCounter,
+                         schedule, 0.0, vars.dayCounter,
                          schedule, index, 0.0, index->dayCounter());
         swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
                                      new DiscountingSwapEngine(liborHandle)));
-        DayCounter tsdc  = termStructure->dayCounter();
-        Rate expectedRate = termStructure->compoundForward(swap.maturityDate(),
-                                                           frequency);
+        DayCounter tsdc  = vars.termStructure->dayCounter();
+        Rate expectedRate =
+            vars.termStructure->compoundForward(swap.maturityDate(),
+                                                vars.frequency);
         Rate estimatedRate = swap.fairRate();
         if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {
             BOOST_FAIL(swapData[i].n << " year(s) swap:\n"
