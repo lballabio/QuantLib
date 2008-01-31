@@ -162,7 +162,7 @@ void AssetSwapTest::testImpliedValue() {
     if (error1>tolerance) {
         BOOST_ERROR("wrong zero spread asset swap price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  bond's clean price:      " << fixedBondPrice1
+                    << "\n  bond's clean price:    " << fixedBondPrice1
                     << "\n  asset swap fair price: " << fixedBondAssetSwapPrice1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error1
@@ -201,7 +201,7 @@ void AssetSwapTest::testImpliedValue() {
     if (error2>tolerance) {
         BOOST_ERROR("wrong zero spread asset swap price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  bond's clean price:      " << fixedBondPrice2
+                    << "\n  bond's clean price:    " << fixedBondPrice2
                     << "\n  asset swap fair price: " << fixedBondAssetSwapPrice2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error2
@@ -247,9 +247,8 @@ void AssetSwapTest::testImpliedValue() {
     if (error3>tolerance) {
         BOOST_ERROR("wrong zero spread asset swap price for floater:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  bond's clean price:      " << floatingBondPrice1
-                    << "\n  asset swap fair price: "
-                    << floatingBondAssetSwapPrice1
+                    << "\n  bond's clean price:    " << floatingBondPrice1
+                    << "\n  asset swap fair price: " << floatingBondAssetSwapPrice1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error3
                     << "\n  tolerance:             " << tolerance);
@@ -308,10 +307,8 @@ void AssetSwapTest::testImpliedValue() {
     if (error5>tolerance) {
         BOOST_ERROR("wrong zero spread asset swap price for floater:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  bond's clean price:      "
-                    << floatingBondPrice2
-                    << "\n  asset swap fair price: "
-                    << floatingBondAssetSwapPrice2
+                    << "\n  bond's clean price:    " << floatingBondPrice2
+                    << "\n  asset swap fair price: " << floatingBondAssetSwapPrice2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error5
                     << "\n  tolerance:             " << tolerance);
@@ -355,7 +352,7 @@ void AssetSwapTest::testImpliedValue() {
     if (error6>tolerance) {
         BOOST_ERROR("wrong zero spread asset swap price for cms bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  bond's clean price:      " << cmsBondPrice1
+                    << "\n  bond's clean price:    " << cmsBondPrice1
                     << "\n  asset swap fair price: " << cmsBondAssetSwapPrice1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error6
@@ -397,7 +394,7 @@ void AssetSwapTest::testImpliedValue() {
     if (error7>tolerance) {
         BOOST_ERROR("wrong zero spread asset swap price for cms bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  bond's clean price:      " << cmsBondPrice2
+                    << "\n  bond's clean price:    " << cmsBondPrice2
                     << "\n  asset swap fair price: " << cmsBondAssetSwapPrice2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error7
@@ -429,9 +426,8 @@ void AssetSwapTest::testImpliedValue() {
     if (error8>tolerance) {
         BOOST_ERROR("wrong zero spread asset swap price for zero cpn bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  bond's clean price:      " << zeroCpnBondPrice1
-                    << "\n  asset swap fair price: "
-                    << zeroCpnBondAssetSwapPrice1
+                    << "\n  bond's clean price:    " << zeroCpnBondPrice1
+                    << "\n  asset swap fair price: " << zeroCpnBondAssetSwapPrice1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error8
                     << "\n  tolerance:             " << tolerance);
@@ -463,11 +459,10 @@ void AssetSwapTest::testImpliedValue() {
         BOOST_ERROR("wrong zero spread asset swap price for zero cpn bond:"
                     << QL_FIXED << std::setprecision(4)
                     << "\n  bond's clean price:      " << zeroCpnBondPrice2
-                    << "\n  asset swap fair price: "
-                    << zeroCpnBondAssetSwapPrice2
+                    << "\n  asset swap fair price:   " << zeroCpnBondAssetSwapPrice2
                     << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error9
-                    << "\n  tolerance:             " << tolerance);
+                    << "\n  error:                   " << error9
+                    << "\n  tolerance:               " << tolerance);
     }
 }
 
@@ -532,13 +527,11 @@ void AssetSwapTest::testMarketASWSpread() {
     if (error1>tolerance) {
         BOOST_ERROR("wrong asset swap spreads for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: "
-                    << fixedBondMktAssetSwapSpread1
-                    << "\n  par asset swap spread: "
-                    << fixedBondParAssetSwapSpread1
+                    << "\n  market ASW spread: " << io::rate(fixedBondMktAssetSwapSpread1)
+                    << "\n  par ASW spread:    " << io::rate(fixedBondParAssetSwapSpread1)
                     << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error1
-                    << "\n  tolerance:             " << tolerance);
+                    << "\n  error:             " << error1
+                    << "\n  tolerance:         " << tolerance);
     }
 
     // Fixed Underlying bond (Isin: IT0006527060 IBRD 5 02/05/19)
@@ -582,13 +575,11 @@ void AssetSwapTest::testMarketASWSpread() {
     if (error2>tolerance) {
         BOOST_ERROR("wrong asset swap spreads for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: "
-                    << fixedBondMktAssetSwapSpread2
-                    << "\n  par asset swap spread: "
-                    << fixedBondParAssetSwapSpread2
+                    << "\n  market ASW spread: " << io::rate(fixedBondMktAssetSwapSpread2)
+                    << "\n  par ASW spread:    " << io::rate(fixedBondParAssetSwapSpread2)
                     << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error2
-                    << "\n  tolerance:             " << tolerance);
+                    << "\n  error:             " << error2
+                    << "\n  tolerance:         " << tolerance);
     }
 
     // FRN Underlying bond (Isin: IT0003543847 ISPIM 0 09/29/13)
@@ -643,13 +634,11 @@ void AssetSwapTest::testMarketASWSpread() {
     if (error3>tolerance) {
         BOOST_ERROR("wrong asset swap spreads for floating bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: "
-                    << floatingBondMktAssetSwapSpread1
-                    << "\n  par asset swap spread: "
-                    << floatingBondParAssetSwapSpread1
+                    << "\n  market ASW spread: " << io::rate(floatingBondMktAssetSwapSpread1)
+                    << "\n  par ASW spread:    " << io::rate(floatingBondParAssetSwapSpread1)
                     << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error3
-                    << "\n  tolerance:             " << tolerance);
+                    << "\n  error:             " << error3
+                    << "\n  tolerance:         " << tolerance);
     }
 
     // FRN Underlying bond (Isin: XS0090566539 COE 0 09/24/18)
@@ -703,13 +692,11 @@ void AssetSwapTest::testMarketASWSpread() {
     if (error4>tolerance) {
         BOOST_ERROR("wrong asset swap spreads for floating bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: "
-                    << floatingBondMktAssetSwapSpread2
-                    << "\n  par asset swap spread: "
-                    << floatingBondParAssetSwapSpread2
+                    << "\n  market ASW spread: " << io::rate(floatingBondMktAssetSwapSpread2)
+                    << "\n  par ASW spread:    " << io::rate(floatingBondParAssetSwapSpread2)
                     << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error4
-                    << "\n  tolerance:             " << tolerance);
+                    << "\n  error:             " << error4
+                    << "\n  tolerance:         " << tolerance);
     }
 
     // CMS Underlying bond (Isin: XS0228052402 CRDIT 0 8/22/20)
@@ -758,13 +745,11 @@ void AssetSwapTest::testMarketASWSpread() {
     if (error5>tolerance) {
         BOOST_ERROR("wrong asset swap spreads for cms bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: "
-                    << cmsBondMktAssetSwapSpread1
-                    << "\n  par asset swap spread: "
-                    << cmsBondParAssetSwapSpread1
+                    << "\n  market ASW spread: " << io::rate(cmsBondMktAssetSwapSpread1)
+                    << "\n  par ASW spread:    " << io::rate(cmsBondParAssetSwapSpread1)
                     << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error5
-                    << "\n  tolerance:             " << tolerance);
+                    << "\n  error:             " << error5
+                    << "\n  tolerance:         " << tolerance);
     }
 
      // CMS Underlying bond (Isin: XS0218766664 ISPIM 0 5/6/15)
@@ -813,13 +798,11 @@ void AssetSwapTest::testMarketASWSpread() {
     if (error6>tolerance) {
         BOOST_ERROR("wrong asset swap spreads for cms bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: "
-                    << cmsBondMktAssetSwapSpread2
-                    << "\n  par asset swap spread: "
-                    << cmsBondParAssetSwapSpread2
+                    << "\n  market ASW spread: " << io::rate(cmsBondMktAssetSwapSpread2)
+                    << "\n  par ASW spread:    " << io::rate(cmsBondParAssetSwapSpread2)
                     << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error6
-                    << "\n  tolerance:             " << tolerance);
+                    << "\n  error:             " << error6
+                    << "\n  tolerance:         " << tolerance);
     }
 
     // Zero Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
@@ -858,13 +841,11 @@ void AssetSwapTest::testMarketASWSpread() {
     if (error7>tolerance) {
         BOOST_ERROR("wrong asset swap spreads for zero cpn bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: "
-                    << zeroCpnBondMktAssetSwapSpread1
-                    << "\n  par asset swap spread: "
-                    << zeroCpnBondParAssetSwapSpread1
+                    << "\n  market ASW spread: " << io::rate(zeroCpnBondMktAssetSwapSpread1)
+                    << "\n  par ASW spread:    " << io::rate(zeroCpnBondParAssetSwapSpread1)
                     << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error7
-                    << "\n  tolerance:             " << tolerance);
+                    << "\n  error:             " << error7
+                    << "\n  tolerance:         " << tolerance);
     }
 
     // Zero Coupon bond (Isin: IT0001200390 ISPIM 0 02/17/28)
@@ -905,13 +886,11 @@ void AssetSwapTest::testMarketASWSpread() {
     if (error8>tolerance) {
         BOOST_ERROR("wrong asset swap spreads for zero cpn bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: "
-                    << zeroCpnBondMktAssetSwapSpread2
-                    << "\n  par asset swap spread: "
-                    << zeroCpnBondParAssetSwapSpread2
+                    << "\n  market ASW spread: " << io::rate(zeroCpnBondMktAssetSwapSpread2)
+                    << "\n  par ASW spread:    " << io::rate(zeroCpnBondParAssetSwapSpread2)
                     << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error8
-                    << "\n  tolerance:             " << tolerance);
+                    << "\n  error:             " << error8
+                    << "\n  tolerance:         " << tolerance);
     }
 }
 
@@ -1410,7 +1389,7 @@ void AssetSwapTest::testGenericBondImplied() {
     if (error1>tolerance) {
         BOOST_ERROR("wrong zero spread asset swap price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  bond's clean price:      " << fixedBondPrice1
+                    << "\n  bond's clean price:    " << fixedBondPrice1
                     << "\n  asset swap fair price: " << fixedBondAssetSwapPrice1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error1
@@ -1453,7 +1432,7 @@ void AssetSwapTest::testGenericBondImplied() {
     if (error2>tolerance) {
         BOOST_ERROR("wrong zero spread asset swap price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  bond's clean price:      " << fixedBondPrice2
+                    << "\n  bond's clean price:    " << fixedBondPrice2
                     << "\n  asset swap fair price: " << fixedBondAssetSwapPrice2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error2
@@ -1501,7 +1480,7 @@ void AssetSwapTest::testGenericBondImplied() {
     if (error3>tolerance) {
         BOOST_ERROR("wrong zero spread asset swap price for floater:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  bond's clean price:      " << floatingBondPrice1
+                    << "\n  bond's clean price:    " << floatingBondPrice1
                     << "\n  asset swap fair price: " <<
                     floatingBondAssetSwapPrice1
                     << QL_SCIENTIFIC << std::setprecision(2)
@@ -1566,7 +1545,7 @@ void AssetSwapTest::testGenericBondImplied() {
     if (error5>tolerance) {
         BOOST_ERROR("wrong zero spread asset swap price for floater:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  bond's clean price:      " << floatingBondPrice2
+                    << "\n  bond's clean price:    " << floatingBondPrice2
                     << "\n  asset swap fair price: " <<
                     floatingBondAssetSwapPrice2
                     << QL_SCIENTIFIC << std::setprecision(2)
@@ -1615,7 +1594,7 @@ void AssetSwapTest::testGenericBondImplied() {
     if (error6>tolerance) {
         BOOST_ERROR("wrong zero spread asset swap price for cms bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  bond's clean price:      " << cmsBondPrice1
+                    << "\n  bond's clean price:    " << cmsBondPrice1
                     << "\n  asset swap fair price: " << cmsBondAssetSwapPrice1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error6
@@ -1662,7 +1641,7 @@ void AssetSwapTest::testGenericBondImplied() {
     if (error7>tolerance) {
         BOOST_ERROR("wrong zero spread asset swap price for cms bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  bond's clean price:      " << cmsBondPrice2
+                    << "\n  bond's clean price:    " << cmsBondPrice2
                     << "\n  asset swap fair price: " << cmsBondAssetSwapPrice2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error7
@@ -1696,9 +1675,8 @@ void AssetSwapTest::testGenericBondImplied() {
     if (error8>tolerance) {
         BOOST_ERROR("wrong zero spread asset swap price for zero cpn bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  bond's clean price:      " << zeroCpnBondPrice1
-                    << "\n  asset swap fair price: " <<
-                    zeroCpnBondAssetSwapPrice1
+                    << "\n  bond's clean price:    " << zeroCpnBondPrice1
+                    << "\n  asset swap fair price: " << zeroCpnBondAssetSwapPrice1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error8
                     << "\n  tolerance:             " << tolerance);
@@ -1731,9 +1709,8 @@ void AssetSwapTest::testGenericBondImplied() {
     if (error9>tolerance) {
         BOOST_ERROR("wrong zero spread asset swap price for zero cpn bond:"
                     << QL_FIXED << std::setprecision(4)
-                    << "\n  bond's clean price:      " << zeroCpnBondPrice2
-                    << "\n  asset swap fair price: " <<
-                    zeroCpnBondAssetSwapPrice2
+                    << "\n  bond's clean price:    " << zeroCpnBondPrice2
+                    << "\n  asset swap fair price: " << zeroCpnBondAssetSwapPrice2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error9
                     << "\n  tolerance:             " << tolerance);
@@ -1806,17 +1783,14 @@ void AssetSwapTest::testMASWWithGenericBond() {
         std::fabs(fixedBondMktAssetSwapSpread1-
                   100*fixedBondParAssetSwapSpread1/fixedBondMktFullPrice1);
 
-    if (error1>tolerance) {
-        BOOST_ERROR("wrong asset swap spreads for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: " <<
-                    fixedBondMktAssetSwapSpread1
-                    << "\n  par asset swap spread: " <<
-                    fixedBondParAssetSwapSpread1
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error1
-                    << "\n  tolerance:             " << tolerance);
-    }
+    if (error1>tolerance)
+        BOOST_ERROR("wrong asset swap spreads for fixed bond:" <<
+                    QL_FIXED << std::setprecision(4) <<
+                    "\n  market asset swap spread: " << io::rate(fixedBondMktAssetSwapSpread1) <<
+                    "\n  par asset swap spread:    " << io::rate(fixedBondParAssetSwapSpread1) <<
+                    QL_SCIENTIFIC << std::setprecision(2) <<
+                    "\n  error:                    " << error1 <<
+                    "\n  tolerance:                " << tolerance);
 
     // Fixed Underlying bond (Isin: IT0006527060 IBRD 5 02/05/19)
     // maturity occurs on a business day
@@ -1863,17 +1837,14 @@ void AssetSwapTest::testMASWWithGenericBond() {
         std::fabs(fixedBondMktAssetSwapSpread2-
                   100*fixedBondParAssetSwapSpread2/fixedBondMktFullPrice2);
 
-    if (error2>tolerance) {
-        BOOST_ERROR("wrong asset swap spreads for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: " <<
-                    fixedBondMktAssetSwapSpread2
-                    << "\n  par asset swap spread: " <<
-                    fixedBondParAssetSwapSpread2
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error2
-                    << "\n  tolerance:             " << tolerance);
-    }
+    if (error2>tolerance)
+        BOOST_ERROR("wrong asset swap spreads for fixed bond:" <<
+                    QL_FIXED << std::setprecision(4) <<
+                    "\n  market asset swap spread: " << io::rate(fixedBondMktAssetSwapSpread2) <<
+                    "\n  par asset swap spread:    " << io::rate(fixedBondParAssetSwapSpread2) <<
+                    QL_SCIENTIFIC << std::setprecision(2) <<
+                    "\n  error:                    " << error2 <<
+                    "\n  tolerance:                " << tolerance);
 
     // FRN Underlying bond (Isin: IT0003543847 ISPIM 0 09/29/13)
     // maturity doesn't occur on a business day
@@ -1929,17 +1900,14 @@ void AssetSwapTest::testMASWWithGenericBond() {
         std::fabs(floatingBondMktAssetSwapSpread1-
                   100*floatingBondParAssetSwapSpread1/floatingBondMktFullPrice1);
 
-    if (error3>tolerance) {
-        BOOST_ERROR("wrong asset swap spreads for floating bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: " <<
-                    floatingBondMktAssetSwapSpread1
-                    << "\n  par asset swap spread: " <<
-                    floatingBondParAssetSwapSpread1
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error3
-                    << "\n  tolerance:             " << tolerance);
-    }
+    if (error3>tolerance)
+        BOOST_ERROR("wrong asset swap spreads for floating bond:" <<
+                    QL_FIXED << std::setprecision(4) <<
+                    "\n  market asset swap spread: " << io::rate(floatingBondMktAssetSwapSpread1) <<
+                    "\n  par asset swap spread:    " << io::rate(floatingBondParAssetSwapSpread1) <<
+                    QL_SCIENTIFIC << std::setprecision(2) <<
+                    "\n  error:                    " << error3 <<
+                    "\n  tolerance:                " << tolerance);
 
     // FRN Underlying bond (Isin: XS0090566539 COE 0 09/24/18)
     // maturity occurs on a business day
@@ -1996,17 +1964,14 @@ void AssetSwapTest::testMASWWithGenericBond() {
         std::fabs(floatingBondMktAssetSwapSpread2-
                   100*floatingBondParAssetSwapSpread2/floatingBondMktFullPrice2);
 
-    if (error4>tolerance) {
-        BOOST_ERROR("wrong asset swap spreads for floating bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: " <<
-                    floatingBondMktAssetSwapSpread2
-                    << "\n  par asset swap spread: " <<
-                    floatingBondParAssetSwapSpread2
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error4
-                    << "\n  tolerance:             " << tolerance);
-    }
+    if (error4>tolerance)
+        BOOST_ERROR("wrong asset swap spreads for floating bond:" <<
+                    QL_FIXED << std::setprecision(4) <<
+                    "\n  market asset swap spread: " << io::rate(floatingBondMktAssetSwapSpread2) <<
+                    "\n  par asset swap spread:    " << io::rate(floatingBondParAssetSwapSpread2) <<
+                    QL_SCIENTIFIC << std::setprecision(2) <<
+                    "\n  error:                    " << error4 <<
+                    "\n  tolerance:                " << tolerance);
 
     // CMS Underlying bond (Isin: XS0228052402 CRDIT 0 8/22/20)
     // maturity doesn't occur on a business day
@@ -2058,17 +2023,14 @@ void AssetSwapTest::testMASWWithGenericBond() {
         std::fabs(cmsBondMktAssetSwapSpread1-
                   100*cmsBondParAssetSwapSpread1/cmsBondMktFullPrice1);
 
-    if (error5>tolerance) {
-        BOOST_ERROR("wrong asset swap spreads for cms bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: " <<
-                    cmsBondMktAssetSwapSpread1
-                    << "\n  par asset swap spread: " <<
-                    cmsBondParAssetSwapSpread1
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error5
-                    << "\n  tolerance:             " << tolerance);
-    }
+    if (error5>tolerance)
+        BOOST_ERROR("wrong asset swap spreads for cms bond:" <<
+                    QL_FIXED << std::setprecision(4) <<
+                    "\n  market asset swap spread: " << io::rate(cmsBondMktAssetSwapSpread1) <<
+                    "\n  par asset swap spread:    " << io::rate(cmsBondParAssetSwapSpread1) <<
+                    QL_SCIENTIFIC << std::setprecision(2) <<
+                    "\n  error:                    " << error5 <<
+                    "\n  tolerance:                " << tolerance);
 
      // CMS Underlying bond (Isin: XS0218766664 ISPIM 0 5/6/15)
      // maturity occurs on a business day
@@ -2119,17 +2081,14 @@ void AssetSwapTest::testMASWWithGenericBond() {
         std::fabs(cmsBondMktAssetSwapSpread2-
                   100*cmsBondParAssetSwapSpread2/cmsBondMktFullPrice2);
 
-    if (error6>tolerance) {
-        BOOST_ERROR("wrong asset swap spreads for cms bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: " <<
-                    cmsBondMktAssetSwapSpread2
-                    << "\n  par asset swap spread: " <<
-                    cmsBondParAssetSwapSpread2
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error6
-                    << "\n  tolerance:             " << tolerance);
-    }
+    if (error6>tolerance)
+        BOOST_ERROR("wrong asset swap spreads for cms bond:" <<
+                    QL_FIXED << std::setprecision(4) <<
+                    "\n  market asset swap spread: " << io::rate(cmsBondMktAssetSwapSpread2) <<
+                    "\n  par asset swap spread:    " << io::rate(cmsBondParAssetSwapSpread2) <<
+                    QL_SCIENTIFIC << std::setprecision(2) <<
+                    "\n  error:                    " << error6 <<
+                    "\n  tolerance:                " << tolerance);
 
     // Zero Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
     // maturity doesn't occur on a business day
@@ -2167,17 +2126,14 @@ void AssetSwapTest::testMASWWithGenericBond() {
         std::fabs(zeroCpnBondMktAssetSwapSpread1-
                   100*zeroCpnBondParAssetSwapSpread1/zeroCpnBondMktFullPrice1);
 
-    if (error7>tolerance) {
-        BOOST_ERROR("wrong asset swap spreads for zero cpn bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: " <<
-                    zeroCpnBondMktAssetSwapSpread1
-                    << "\n  par asset swap spread: " <<
-                    zeroCpnBondParAssetSwapSpread1
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error7
-                    << "\n  tolerance:             " << tolerance);
-    }
+    if (error7>tolerance)
+        BOOST_ERROR("wrong asset swap spreads for zero cpn bond:" <<
+                    QL_FIXED << std::setprecision(4) <<
+                    "\n  market asset swap spread: " << io::rate(zeroCpnBondMktAssetSwapSpread1) <<
+                    "\n  par asset swap spread:    " << io::rate(zeroCpnBondParAssetSwapSpread1) <<
+                    QL_SCIENTIFIC << std::setprecision(2) <<
+                    "\n  error:                    " << error7 <<
+                    "\n  tolerance:                " << tolerance);
 
     // Zero Coupon bond (Isin: IT0001200390 ISPIM 0 02/17/28)
     // maturity occurs on a business day
@@ -2216,17 +2172,14 @@ void AssetSwapTest::testMASWWithGenericBond() {
         std::fabs(zeroCpnBondMktAssetSwapSpread2-
                   100*zeroCpnBondParAssetSwapSpread2/zeroCpnBondMktFullPrice2);
 
-    if (error8>tolerance) {
-        BOOST_ERROR("wrong asset swap spreads for zero cpn bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: " <<
-                    zeroCpnBondMktAssetSwapSpread2
-                    << "\n  par asset swap spread: " <<
-                    zeroCpnBondParAssetSwapSpread2
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error8
-                    << "\n  tolerance:             " << tolerance);
-    }
+    if (error8>tolerance)
+        BOOST_ERROR("wrong asset swap spreads for zero cpn bond:" <<
+                    QL_FIXED << std::setprecision(4) <<
+                    "\n  market asset swap spread: " << io::rate(zeroCpnBondMktAssetSwapSpread2) <<
+                    "\n  par asset swap spread:    " << io::rate(zeroCpnBondParAssetSwapSpread2) <<
+                    QL_SCIENTIFIC << std::setprecision(2) <<
+                    "\n  error:                    " << error8 <<
+                    "\n  tolerance:                " << tolerance);
 }
 
 
