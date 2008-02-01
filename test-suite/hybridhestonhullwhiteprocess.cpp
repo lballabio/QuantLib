@@ -53,17 +53,6 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-
-QL_BEGIN_TEST_LOCALS(HybridHestonHullWhiteProcessTest)
-
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
-QL_END_TEST_LOCALS(HybridHestonHullWhiteProcessTest)
-
-
-
 void HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine() {
     BOOST_MESSAGE("Testing European option pricing for a BSM process"
                   " with one factor Hull-White Model...");
@@ -465,10 +454,10 @@ void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
             const Real error      = optionHestonHW.errorEstimate();
             const Real expected   = optionBsmHW.NPV();
 
-            if (   (corr[i] == 0.0 
+            if (   (corr[i] == 0.0
                     && (   std::fabs(calculated - expected) > 1e-3
                         || error > 1e-3))
-                || ( corr[i] != 0.0 
+                || ( corr[i] != 0.0
                      && std::fabs(calculated - expected) > 3*error)) {
                 BOOST_ERROR("Failed to reproduce BSM-HW vanilla prices"
                         << "\n   corr:       " << corr[i]
@@ -552,7 +541,7 @@ void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
                                           20, Null<Size>(), true, false, 1,
                                           tol, Null<Size>(), 42)));
 
-            
+
             Real calculated = optionHestonHW.NPV();
             Real error      = optionHestonHW.errorEstimate();
 
@@ -573,7 +562,7 @@ void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
                            jointProcess,
                            2, Null<Size>(), true, true, 1,
                            tol, Null<Size>(), 42)));
-           
+
             calculated = optionHestonHW.NPV();
             error      = optionHestonHW.errorEstimate();
 
@@ -702,7 +691,7 @@ void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
 
     const boost::shared_ptr<HestonProcess> hestonProcess(
-            new HestonProcess(rTS, qTS, spot, 0.0625, 1.0, 
+            new HestonProcess(rTS, qTS, spot, 0.0625, 1.0,
                               0.240*0.24, 1e-4, 0.0));
     // FLOATING_POINT_EXCEPTION
     const boost::shared_ptr<HullWhiteForwardProcess> hwProcess(
@@ -872,8 +861,8 @@ void HybridHestonHullWhiteProcessTest::testDiscretizationError() {
             Real calculated = optionHestonHW.NPV();
             Real error      = optionHestonHW.errorEstimate();
 
-            if ((   std::fabs(calculated - expected) > 3*error 
-                    && std::fabs(calculated - expected) > 1e-5)) { 
+            if ((   std::fabs(calculated - expected) > 3*error
+                    && std::fabs(calculated - expected) > 1e-5)) {
                 BOOST_ERROR("Failed to reproduce heston vanilla prices"
                         << "\n   corr:       " << corr[i]
                         << "\n   strike:     " << strike[j]
@@ -1354,7 +1343,7 @@ namespace {
                 const Real kappa = params[1];
                 const Real corr  = params[3];
 
-                return    (kappa < maxKappa_) 
+                return    (kappa < maxKappa_)
                        && (std::fabs(corr) <= maxEquityShortRateCorr_);
             }
           private:
@@ -1364,7 +1353,7 @@ namespace {
       public:
         CorrelationAndKappaConstraint(Real maxKappa, Real equityShortRateCorr)
         : Constraint(boost::shared_ptr<Constraint::Impl>(
-            new CorrelationAndKappaConstraint::Impl(maxKappa, 
+            new CorrelationAndKappaConstraint::Impl(maxKappa,
                                                     equityShortRateCorr))) { }
     };
 }
@@ -1498,14 +1487,14 @@ void HybridHestonHullWhiteProcessTest::testJointCalibration() {
         if (i == 0) {
             LevenbergMarquardt lm(1e-8, 1e-8, 1e-8);
             hestonModel->calibrate(hestonOptions, lm,
-                                   EndCriteria(400, 100, 
+                                   EndCriteria(400, 100,
                                                1.0e-8, 1.0e-8, 1.0e-8),
                                    corrConstraint);
         }
         else {
             Simplex sm(0.05);
             hestonModel->calibrate(hestonOptions, sm,
-                                   EndCriteria(400, 100, 
+                                   EndCriteria(400, 100,
                                                1.0e-4, 1.0e-4, 1.0e-4),
                                    corrConstraint);
         }
@@ -1518,11 +1507,11 @@ void HybridHestonHullWhiteProcessTest::testJointCalibration() {
                         new HybridHestonHullWhiteProcess(calibratedProcess,
                                                          hwProcess, corr, 3));
 
-        boost::shared_ptr<MCEuropeanMultiEngine<PseudoRandom, 
+        boost::shared_ptr<MCEuropeanMultiEngine<PseudoRandom,
             GeneralStatistics> > mcHestonEngine(
                 new MCMultiEuropeanHestonEngine<
                    PseudoRandom, GeneralStatistics >(
-                       jointProcess, 
+                       jointProcess,
                        40, Null<Size>(),
                        false, true, 1, 0.02, Null<Size>(), 123));
 
@@ -1594,7 +1583,7 @@ test_suite* HybridHestonHullWhiteProcessTest::suite() {
     //runs through but takes far too long
     //suite->add(BOOST_TEST_CASE(
     //          &HybridHestonHullWhiteProcessTest::testJointCalibration));
-    
+
     return suite;
 }
 

@@ -1179,7 +1179,7 @@ void InterpolationTest::testSabrInterpolation(){
     volatilities[24] = 0.958983602256592 ; volatilities[25] = 0.953860388001395 ; volatilities[26] = 0.948882997029509 ;
     volatilities[27] = 0.944043915545469 ; volatilities[28] = 0.939336183299237 ; volatilities[29] = 0.934753341079515 ;
     volatilities[30] = 0.930289384251337;
-    
+
     Time expiry = 1.0;
     Real forward = 0.039;
     // input SABR coefficients (corresponding to the vols above)
@@ -1225,13 +1225,13 @@ void InterpolationTest::testSabrInterpolation(){
     for (Size j=0; j<methods_.size(); ++j) {
       for (Size i=0; i<LENGTH(vegaWeighted); ++i) {
         for (Size k_a=0; k_a<LENGTH(isAlphaFixed); ++k_a) {
-          for (Size k_b=0; k_b<LENGTH(isBetaFixed); ++k_b) {            
+          for (Size k_b=0; k_b<LENGTH(isBetaFixed); ++k_b) {
             for (Size k_n=0; k_n<LENGTH(isNuFixed); ++k_n) {
               for (Size k_r=0; k_r<LENGTH(isRhoFixed); ++k_r) {
                 SABRInterpolation sabrInterpolation(strikes.begin(), strikes.end(),
                                                     volatilities.begin(), expiry, forward,
                                                     alphaGuess, betaGuess, nuGuess, rhoGuess,
-                                                    isAlphaFixed[k_a], isBetaFixed[k_b], 
+                                                    isAlphaFixed[k_a], isBetaFixed[k_b],
                                                     isNuFixed[k_n], isRhoFixed[k_r],
                                                     vegaWeighted[i],
                                                     endCriteria, methods_[j]);
@@ -1301,7 +1301,7 @@ void InterpolationTest::testSabrInterpolation(){
 
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
-    
+
     suite->add(BOOST_TEST_CASE(&InterpolationTest::testSplineOnGenericValues));
     suite->add(BOOST_TEST_CASE(
                         &InterpolationTest::testSimmetricEndConditions));
