@@ -444,7 +444,6 @@ void SwaptionTest::testVega() {
                                     "\n  option type:     " << swaption->type() <<
                                     "\n  swap tenor:      " << lengths[j] <<
                                     "\n  strike:          " << io::rate(strikes[t]) <<
-                                    "\n  atm rate:        " << io::rate(swaption->atmRate()) <<
                                     "\n  settlement:      " << types[h] <<
                                     "\n  nominal:         " << swaption->underlyingSwap()->nominal() <<
                                     "\n  npv:             " << swaptionNPV <<

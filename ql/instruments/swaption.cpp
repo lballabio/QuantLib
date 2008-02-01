@@ -111,23 +111,6 @@ namespace QuantLib {
         VanillaSwap::arguments::validate();
         QL_REQUIRE(swap, "vanilla swap not set");
         QL_REQUIRE(exercise, "exercise not set");
-        //QL_REQUIRE(fixedRate != Null<Real>(),
-        //           "fixed swap rate null or not set");
-        //QL_REQUIRE(fairRate != Null<Real>(),
-        //           "fair swap rate null or not set");
-        //QL_REQUIRE(fixedBPS != Null<Real>(),
-        //           "fixed swap BPS null or not set");
-        //QL_REQUIRE(forecastingDiscount != Null<Real>(),
-        //           "forecasting discount null or not set");
-        //if(settlementType == Settlement::Cash) {
-        //    QL_REQUIRE(fixedCashBPS != Null<Real>(),
-        //               "fixed swap cash BPS null or not set "
-        //               "for cash-settled swaption");
-        //}
-    }
-
-    Rate Swaption::atmRate() const {
-        return swap_->fairRate();
     }
 
     Volatility Swaption::impliedVolatility(

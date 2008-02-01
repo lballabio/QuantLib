@@ -83,7 +83,6 @@ namespace QuantLib {
             return swap_;
         }
         //@}
-        Rate atmRate() const;
         //! implied volatility
         Volatility impliedVolatility(
                               Real price,
@@ -104,18 +103,8 @@ namespace QuantLib {
     class Swaption::arguments : public VanillaSwap::arguments,
                                 public Option::arguments {
       public:
-        arguments() : //fairRate(Null<Real>()),
-                      //fixedRate(Null<Real>()),
-                      //fixedBPS(Null<Real>()),
-                      //fixedCashBPS(Null<Real>()),
-                      //forecastingDiscount(Null<Real>()),
-                      settlementType(Settlement::Physical) {}
+        arguments() : settlementType(Settlement::Physical) {}
         boost::shared_ptr<VanillaSwap> swap;
-        // Rate fairRate;
-        // Rate fixedRate;
-        // Real fixedBPS;
-        // Real fixedCashBPS;
-        // Real forecastingDiscount;
         Settlement::Type settlementType;
         void validate() const;
     };
