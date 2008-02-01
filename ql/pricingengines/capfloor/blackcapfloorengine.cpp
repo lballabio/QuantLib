@@ -67,77 +67,57 @@ namespace QuantLib {
 
         for (Size i=0; i<arguments_.startDates.size(); ++i) {
             Date paymentDate = arguments_.endDates[i];
-            Time accrualTime = arguments_.accrualTimes[i];
-            // This is using the yield-curve day counter for
-            // consistency with previous releases. Should it use the
-            // volatility day counter?
-            Time timeToMaturity =
-                termStructure_->dayCounter().yearFraction(
-                                            today, arguments_.fixingDates[i]);
             if (paymentDate > settlement) { // discard expired caplets
-                Real nominal = arguments_.nominals[i];
-                Real gearing = arguments_.gearings[i];
-                DiscountFactor q = termStructure_->discount(paymentDate);
+                DiscountFactor d = arguments_.nominals[i] *
+                                   arguments_.gearings[i] *
+                                   termStructure_->discount(paymentDate) *
+                                   arguments_.accrualTimes[i];
+
                 Rate forward = arguments_.forwards[i];
-                Real stdDev;
+
+                Date fixingDate = arguments_.fixingDates[i];
+                Time sqrtTime = 0.0;
+                if (fixingDate > today)
+                    sqrtTime = std::sqrt(volatility_->timeFromReference(fixingDate));
+
+                Real stdDev = 0.0;
 
                 // include caplets with past fixing date
                 if (type == CapFloor::Cap || type == CapFloor::Collar) {
                     Rate strike = arguments_.capRates[i];
                     // std dev is set to 0 if fixing is at a past date
-                    if (arguments_.fixingDates[i] > today) {
-                        stdDev =
-                             std::sqrt(volatility_->blackVariance(
-                                          arguments_.fixingDates[i], strike));
-                    } else {
-                        stdDev = 0.0;
-                    }
-                    Real caplet = q * accrualTime * nominal * gearing *
-                        blackFormula(Option::Call, strike, forward, stdDev);
+                    if (sqrtTime>0.0)
+                        stdDev = std::sqrt(
+                            volatility_->blackVariance(fixingDate, strike));
+                    Real caplet =
+                        blackFormula(Option::Call, strike, forward, stdDev, d);
                     optionletsPrice.push_back(caplet);
                     value += caplet;
-                    // vega is set to 0 if fixing is at a past date
-                    if (arguments_.fixingDates[i] > today) {
-                        vega += nominal * gearing * accrualTime * q
-                              * blackFormulaStdDevDerivative(strike, forward,
-                                                             stdDev)
-                              * std::sqrt(timeToMaturity);
-                    }
+                    if (sqrtTime>0.0)
+                        vega += blackFormulaStdDevDerivative(
+                            strike, forward, stdDev, d) * sqrtTime;
                 }
                 if (type == CapFloor::Floor || type == CapFloor::Collar) {
                     Rate strike = arguments_.floorRates[i];
                     // std dev is set to 0 if fixing is at a past date
-                    if (arguments_.fixingDates[i] > today) {
-                        stdDev =
-                            std::sqrt(volatility_->blackVariance(
-                                          arguments_.fixingDates[i], strike));
-                    } else {
-                        stdDev = 0.0;
-                    }
-                    Real temp = q * accrualTime * nominal * gearing *
-                        blackFormula(Option::Put, strike, forward, stdDev);
+                    if (sqrtTime>0.0)
+                        stdDev = std::sqrt(
+                            volatility_->blackVariance(fixingDate, strike));
+                    Real floorlet =
+                        blackFormula(Option::Put, strike, forward, stdDev, d);
                     if (type == CapFloor::Floor) {
-                        value += temp;
-                        optionletsPrice.push_back(temp);
-                        //vega is set to 0 if fixing is at a past date
-                        if (arguments_.fixingDates[i] > today) {
-                            vega += nominal * gearing * accrualTime * q
-                                  * blackFormulaStdDevDerivative(strike,
-                                                                 forward,
-                                                                 stdDev)
-                                  * std::sqrt(timeToMaturity);
-                        }
+                        value += floorlet;
+                        optionletsPrice.push_back(floorlet);
+                        if (sqrtTime>0.0)
+                            vega += blackFormulaStdDevDerivative(
+                                strike, forward, stdDev, d) * sqrtTime;
                     } else {
                         // a collar is long a cap and short a floor
-                        value -= temp;
-                        // vega is set to 0 if fixing is at a past date
-                        if (arguments_.fixingDates[i] > today) {
-                            vega -= nominal * gearing * accrualTime * q
-                                  * blackFormulaStdDevDerivative(strike,
-                                                                 forward,
-                                                                 stdDev)
-                                  * std::sqrt(timeToMaturity);
-                        }
+                        value -= floorlet;
+                        optionletsPrice[optionletsPrice.size()-1] -= floorlet;
+                        if (sqrtTime>0.0)
+                            vega += blackFormulaStdDevDerivative(
+                                strike, forward, stdDev, d) * sqrtTime;
                     }
                 }
             }
