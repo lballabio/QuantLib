@@ -8,5 +8,6 @@
 #include <ql/quotes/forwardvaluequote.hpp>
 #include <ql/quotes/futuresconvadjustmentquote.hpp>
 #include <ql/quotes/impliedstddevquote.hpp>
+#include <ql/quotes/sensitivityanalysis.hpp>
 #include <ql/quotes/simplequote.hpp>
 
