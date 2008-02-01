@@ -91,11 +91,11 @@ namespace QuantLib {
               boost::shared_ptr<FixedRateCoupon> firstCoupon =
                   boost::dynamic_pointer_cast<FixedRateCoupon>(fixedLeg[0]);
               DayCounter dayCount = firstCoupon->dayCounter();
-              Real fixedCashBPS =
+              Real fixedLegCashBPS =
                   CashFlows::bps(fixedLeg,
                                  InterestRate(forward, dayCount, Compounded),
                                  termStructure_->referenceDate()) ;
-              annuity = fixedCashBPS/basisPoint;
+              annuity = std::fabs(fixedLegCashBPS/basisPoint);
               break;
           }
           default:
