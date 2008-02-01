@@ -135,7 +135,7 @@ namespace QuantLib {
 
     bool CapFloor::isExpired() const {
         Date today = Settings::instance().evaluationDate();
-        for (Size i=0; i<floatingLeg_.size(); i++)
+        for (Size i=0; i<floatingLeg_.size(); ++i)
             if (!floatingLeg_[i]->hasOccurred(today))
                 return false;
         return true;
@@ -179,11 +179,11 @@ namespace QuantLib {
 
         Date today = Settings::instance().evaluationDate();
 
-        for (Size i=0; i<n; i++) {
+        for (Size i=0; i<n; ++i) {
             boost::shared_ptr<FloatingRateCoupon> coupon =
                 boost::dynamic_pointer_cast<FloatingRateCoupon>(
                                                              floatingLeg_[i]);
-            QL_REQUIRE(coupon, "non-iborCoupon given");
+            QL_REQUIRE(coupon, "non-FloatingRateCoupon given");
             arguments->startDates[i] = coupon->accrualStartDate();
             arguments->fixingDates[i] = coupon->fixingDate();
             arguments->endDates[i] = coupon->date();

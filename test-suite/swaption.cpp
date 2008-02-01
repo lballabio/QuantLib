@@ -408,8 +408,6 @@ void SwaptionTest::testVega() {
         Date startDate = calendar_.advance(exerciseDate,
                                            settlementDays_*Days);
         for (Size j=0; j<LENGTH(lengths); j++) {
-            //Date maturity = calendar_.advance(startDate, lengths[j],
-            //                                  floatingConvention_);
             for (Size t=0; t<LENGTH(strikes); t++) {
                 for (Size h=0; h<LENGTH(type); h++) {
                     boost::shared_ptr<VanillaSwap> swap =
