@@ -60,12 +60,15 @@ namespace QuantLib {
     void BlackCapFloorEngine::calculate() const {
         Real value = 0.0;
         Real vega = 0.0;
-        std::vector<Real> optionletsPrice;
+        Size optionlets = arguments_.startDates.size();
+        std::vector<Real> values(optionlets, 0.0);
+        std::vector<Real> vegas(optionlets, 0.0);
+        std::vector<Real> stdDevs(optionlets, 0.0);
         CapFloor::Type type = arguments_.type;
         Date today = volatility_->referenceDate();
         Date settlement = termStructure_->referenceDate();
 
-        for (Size i=0; i<arguments_.startDates.size(); ++i) {
+        for (Size i=0; i<optionlets; ++i) {
             Date paymentDate = arguments_.endDates[i];
             if (paymentDate > settlement) { // discard expired caplets
                 DiscountFactor d = arguments_.nominals[i] *
@@ -78,53 +81,53 @@ namespace QuantLib {
                 Date fixingDate = arguments_.fixingDates[i];
                 Time sqrtTime = 0.0;
                 if (fixingDate > today)
-                    sqrtTime = std::sqrt(volatility_->timeFromReference(fixingDate));
+                    sqrtTime = std::sqrt(
+                        volatility_->timeFromReference(fixingDate));
 
-                Real stdDev = 0.0;
-
-                // include caplets with past fixing date
                 if (type == CapFloor::Cap || type == CapFloor::Collar) {
                     Rate strike = arguments_.capRates[i];
-                    // std dev is set to 0 if fixing is at a past date
-                    if (sqrtTime>0.0)
-                        stdDev = std::sqrt(
+                    if (sqrtTime>0.0) {
+                        stdDevs[i] = std::sqrt(
                             volatility_->blackVariance(fixingDate, strike));
-                    Real caplet =
-                        blackFormula(Option::Call, strike, forward, stdDev, d);
-                    optionletsPrice.push_back(caplet);
-                    value += caplet;
-                    if (sqrtTime>0.0)
-                        vega += blackFormulaStdDevDerivative(
-                            strike, forward, stdDev, d) * sqrtTime;
+                        vegas[i] = blackFormulaStdDevDerivative(
+                            strike, forward, stdDevs[i], d) * sqrtTime;
+                    }
+                    // include caplets with past fixing date
+                    values[i] = blackFormula(Option::Call, strike,
+                                             forward, stdDevs[i], d);
                 }
                 if (type == CapFloor::Floor || type == CapFloor::Collar) {
                     Rate strike = arguments_.floorRates[i];
-                    // std dev is set to 0 if fixing is at a past date
-                    if (sqrtTime>0.0)
-                        stdDev = std::sqrt(
+                    Real floorletVega = 0.0;
+                    if (sqrtTime>0.0) {
+                        stdDevs[i] = std::sqrt(
                             volatility_->blackVariance(fixingDate, strike));
-                    Real floorlet =
-                        blackFormula(Option::Put, strike, forward, stdDev, d);
+                        floorletVega = blackFormulaStdDevDerivative(
+                            strike, forward, stdDevs[i], d) * sqrtTime;
+                    }
+                    Real floorlet = blackFormula(Option::Put, strike,
+                                                 forward, stdDevs[i], d);
                     if (type == CapFloor::Floor) {
-                        value += floorlet;
-                        optionletsPrice.push_back(floorlet);
-                        if (sqrtTime>0.0)
-                            vega += blackFormulaStdDevDerivative(
-                                strike, forward, stdDev, d) * sqrtTime;
+                        values[i] = floorlet;
+                        vegas[i] = floorletVega;
                     } else {
                         // a collar is long a cap and short a floor
-                        value -= floorlet;
-                        optionletsPrice[optionletsPrice.size()-1] -= floorlet;
-                        if (sqrtTime>0.0)
-                            vega += blackFormulaStdDevDerivative(
-                                strike, forward, stdDev, d) * sqrtTime;
+                        values[i] -= floorlet;
+                        vegas[i] -= floorletVega;
                     }
                 }
+                value += values[i];
+                vega += vegas[i];
             }
         }
         results_.value = value;
-        results_.additionalResults["optionletsPrice"] = optionletsPrice;
         results_.additionalResults["vega"] = vega;
+
+        results_.additionalResults["optionletsPrice"] = values;
+        results_.additionalResults["optionletsVega"] = vegas;
+        results_.additionalResults["optionletsAtmForward"] = arguments_.forwards;
+        if (type != CapFloor::Collar)
+            results_.additionalResults["optionletsStdDev"] = stdDevs;
     }
 
     Handle<YieldTermStructure> BlackCapFloorEngine::termStructure() {
