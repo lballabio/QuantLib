@@ -22,7 +22,8 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/coupon.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/math/solvers1d/brent.hpp>
+//#include <ql/math/solvers1d/brent.hpp>
+#include <ql/math/solvers1d/newtonsafe.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 
 using boost::shared_ptr;
@@ -78,11 +79,86 @@ namespace QuantLib {
                 return -1;
         }
 
-        const Spread basisPoint_ = 1.0e-4;
 
-        class irrFinder : public std::unary_function<Rate, Real> {
+        Real simpleDuration(const Leg& cashflows,
+                            const InterestRate& y,
+                            const Date& settlementDate) {
+            Real P = 0.0;
+            Real dPdy = 0.0;
+            const DayCounter& dc = y.dayCounter();
+            for (Size i=0; i<cashflows.size(); ++i) {
+                if (!cashflows[i]->hasOccurred(settlementDate)) {
+                    Time t = dc.yearFraction(settlementDate,
+                                             cashflows[i]->date());
+                    Real c = cashflows[i]->amount();
+                    DiscountFactor B = y.discountFactor(t);
+                    P += c * B;
+                    dPdy += t * c * B;
+                }
+            }
+            if (P == 0.0) // no cashflows
+                return 0.0;
+            return dPdy/P;
+        }
+
+        Real modifiedDuration(const Leg& cashflows,
+                              const InterestRate& y,
+                              const Date& settlementDate) {
+            Real P = 0.0;
+            Real dPdy = 0.0;
+            Rate r = y.rate();
+            Natural N = y.frequency();
+            const DayCounter& dc = y.dayCounter();
+            for (Size i=0; i<cashflows.size(); ++i) {
+                if (!cashflows[i]->hasOccurred(settlementDate)) {
+                    Time t = dc.yearFraction(settlementDate,
+                                             cashflows[i]->date());
+                    Real c = cashflows[i]->amount();
+                    DiscountFactor B = y.discountFactor(t);
+
+                    P += c * B;
+                    switch (y.compounding()) {
+                      case Simple:
+                        dPdy -= c * B*B * t;
+                        break;
+                      case Compounded:
+                        dPdy -= c * t * B/(1+r/N);
+                        break;
+                      case Continuous:
+                        dPdy -= c * B * t;
+                        break;
+                      case SimpleThenCompounded:
+                        if (t<=1.0/N)
+                            dPdy -= c * B*B * t;
+                        else
+                            dPdy -= c * t * B/(1+r/N);
+                        break;
+                      default:
+                        QL_FAIL("unknown compounding convention (" <<
+                                Integer(y.compounding()) << ")");
+                    }
+                }
+            }
+
+            if (P == 0.0) // no cashflows
+                return 0.0;
+            return -dPdy/P; // reverse derivative sign
+        }
+
+        Real macaulayDuration(const Leg& cashflows,
+                              const InterestRate& y,
+                              const Date& settlementDate) {
+
+            QL_REQUIRE(y.compounding() == Compounded,
+                       "compounded rate required");
+
+            return (1.0+y.rate()/y.frequency()) *
+                modifiedDuration(cashflows, y, settlementDate);
+        }
+
+        class IrrFinder : public std::unary_function<Rate, Real> {
           public:
-            irrFinder(const Leg& cashflows,
+            IrrFinder(const Leg& cashflows,
                       Real marketPrice,
                       const DayCounter& dayCounter,
                       Compounding compounding,
@@ -91,10 +167,14 @@ namespace QuantLib {
             : cashflows_(cashflows), marketPrice_(marketPrice),
               dayCounter_(dayCounter), compounding_(compounding),
               frequency_(frequency), settlementDate_(settlementDate) {}
-            Real operator()(Rate guess) const {
-                InterestRate y(guess, dayCounter_, compounding_, frequency_);
+            Real operator()(Rate x) const {
+                InterestRate y(x, dayCounter_, compounding_, frequency_);
                 Real NPV = CashFlows::npv(cashflows_, y, settlementDate_);
                 return marketPrice_ - NPV;
+            }
+            Real derivative(Rate x) const {
+                InterestRate y(x, dayCounter_, compounding_, frequency_);
+                return modifiedDuration(cashflows_, y, settlementDate_);
             }
           private:
             const Leg& cashflows_;
@@ -130,89 +210,7 @@ namespace QuantLib {
             Real result_;
         };
 
-        Real simpleDuration(const Leg& cashflows,
-                            const InterestRate& rate,
-                            const Date& settlementDate) {
-
-            Real P = 0.0;
-            Real tP = 0.0;
-
-            for (Size i=0; i<cashflows.size(); ++i) {
-                if (!cashflows[i]->hasOccurred(settlementDate)) {
-                    Time t =
-                        rate.dayCounter().yearFraction(settlementDate,
-                                                       cashflows[i]->date());
-                    Real c = cashflows[i]->amount();
-                    DiscountFactor B = rate.discountFactor(t);
-
-                    P += c * B;
-                    tP += t * c * B;
-                }
-            }
-
-            if (P == 0.0)
-                // no cashflows
-                return 0.0;
-
-            return tP/P;
-        }
-
-        Real modifiedDuration(const Leg& cashflows,
-                              const InterestRate& rate,
-                              const Date& settlementDate) {
-
-            Real P = 0.0;
-            Real dPdy = 0.0;
-            Rate y = Rate(rate);
-            Natural N = rate.frequency();
-
-            for (Size i=0; i<cashflows.size(); ++i) {
-                if (!cashflows[i]->hasOccurred(settlementDate)) {
-                    Time t =
-                        rate.dayCounter().yearFraction(settlementDate,
-                                                       cashflows[i]->date());
-                    Real c = cashflows[i]->amount();
-                    DiscountFactor B = rate.discountFactor(t);
-
-                    P += c * B;
-                    switch (rate.compounding()) {
-                      case Simple:
-                        dPdy -= c * B*B*t;
-                        break;
-                      case Compounded:
-                        dPdy -= c * B*t/(1+y/N);
-                        break;
-                      case Continuous:
-                        dPdy -= c * B*t;
-                        break;
-                      case SimpleThenCompounded:
-                      default:
-                        QL_FAIL("unsupported compounding type");
-                    }
-                }
-            }
-
-            if (P == 0.0)
-                // no cashflows
-                return 0.0;
-
-            return -dPdy/P;
-        }
-
-        Real macaulayDuration(const Leg& cashflows,
-                              const InterestRate& rate,
-                              const Date& settlementDate) {
-
-            Rate y = Rate(rate);
-            Natural N = rate.frequency();
-
-            QL_REQUIRE(rate.compounding() == Compounded,
-                       "compounded rate required");
-            QL_REQUIRE(N >= 1, "unsupported frequency");
-
-            return (1+y/N) * modifiedDuration(cashflows, rate, settlementDate);
-        }
-
+        const Spread basisPoint_ = 1.0e-4;
     }
 
     Leg::const_iterator CashFlows::previousCashFlow(const Leg& leg,
@@ -354,7 +352,7 @@ namespace QuantLib {
                         Compounding compounding,
                         Frequency frequency,
                         Date settlementDate,
-                        Real tolerance,
+                        Real accuracy,
                         Size maxIterations,
                         Rate guess) {
 
@@ -400,11 +398,12 @@ namespace QuantLib {
         };
         */
 
-        Brent solver;
+        //Brent solver;
+        NewtonSafe solver;
         solver.setMaxEvaluations(maxIterations);
-        return solver.solve(irrFinder(cashflows, marketPrice, dayCounter,
+        return solver.solve(IrrFinder(cashflows, marketPrice, dayCounter,
                                       compounding, frequency, settlementDate),
-                            tolerance, guess, guess/10.0);
+                            accuracy, guess, guess/10.0);
     }
 
     Time CashFlows::duration(const Leg& cashflows,
@@ -427,39 +426,43 @@ namespace QuantLib {
     }
 
     Real CashFlows::convexity(const Leg& cashflows,
-                              const InterestRate& rate,
+                              const InterestRate& y,
                               Date settlementDate) {
         if (settlementDate==Date())
             settlementDate = Settings::instance().evaluationDate();
 
-        DayCounter dayCounter = rate.dayCounter();
+        const DayCounter& dc = y.dayCounter();
 
         Real P = 0.0;
         Real d2Pdy2 = 0.0;
-        Rate y = Rate(rate);
-        Natural N = rate.frequency();
-
+        Rate r = y.rate();
+        Natural N = y.frequency();
         for (Size i=0; i<cashflows.size(); ++i) {
             if (!cashflows[i]->hasOccurred(settlementDate)) {
-                Time t = dayCounter.yearFraction(settlementDate,
-                                                 cashflows[i]->date());
+                Time t = dc.yearFraction(settlementDate,
+                                         cashflows[i]->date());
                 Real c = cashflows[i]->amount();
-                DiscountFactor B = rate.discountFactor(t);
-
+                DiscountFactor B = y.discountFactor(t);
                 P += c * B;
-                switch (rate.compounding()) {
+                switch (y.compounding()) {
                   case Simple:
                     d2Pdy2 += c * 2.0*B*B*B*t*t;
                     break;
                   case Compounded:
-                    d2Pdy2 += c * B*t*(N*t+1)/(N*(1+y/N)*(1+y/N));
+                    d2Pdy2 += c * B*t*(N*t+1)/(N*(1+r/N)*(1+r/N));
                     break;
                   case Continuous:
                     d2Pdy2 += c * B*t*t;
                     break;
                   case SimpleThenCompounded:
+                    if (t<=1.0/N)
+                        d2Pdy2 += c * 2.0*B*B*B*t*t;
+                    else
+                        d2Pdy2 += c * B*t*(N*t+1)/(N*(1+r/N)*(1+r/N));
+                    break;
                   default:
-                    QL_FAIL("unsupported compounding type");
+                    QL_FAIL("unknown compounding convention (" <<
+                            Integer(y.compounding()) << ")");
                 }
             }
         }

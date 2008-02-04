@@ -123,8 +123,8 @@ namespace QuantLib {
                         Compounding compounding,
                         Frequency frequency = NoFrequency,
                         Date settlementDate = Date(),
-                        Real tolerance = 1.0e-10,
-                        Size maxIterations = 10000,
+                        Real accuracy = 1.0e-10,
+                        Size maxIterations = 100,
                         Rate guess = 0.05);
 
         //! Cash-flow duration.
