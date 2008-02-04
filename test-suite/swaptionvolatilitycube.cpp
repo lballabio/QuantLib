@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2006 Cristina Duminuco
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2008 Ferdinando Ametrano
  Copyright (C) 2006 Katiuscia Manzoni
 
  This file is part of QuantLib, a free-software/open-source library
@@ -22,9 +22,7 @@
 #include "swaptionvolatilitycube.hpp"
 #include "swaptionvolstructuresutilities.hpp"
 #include "utilities.hpp"
-#include <ql/time/daycounters/thirty360.hpp>
-#include <ql/indexes/ibor/euribor.hpp>
-#include <ql/indexes/swapindex.hpp>
+#include <ql/indexes/swap/euriborswapfixa.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolcube2.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolcube1.hpp>
@@ -38,22 +36,14 @@ QL_BEGIN_TEST_LOCALS(SwaptionVolatilityCubeTest)
 
 // global data
 
-Date referenceDate_;
 SwaptionMarketConventions conventions_;
 AtmVolatility atm_;
 RelinkableHandle<SwaptionVolatilityStructure> atmVolMatrix_;
 VolatilityCube cube_;
 
-Natural swapSettlementDays_;
-Frequency fixedLegFrequency_;
-BusinessDayConvention fixedLegConvention_;
-DayCounter fixedLegDayCounter_;
 RelinkableHandle<YieldTermStructure> termStructure_;
-boost::shared_ptr<IborIndex> iborIndex_;
-boost::shared_ptr<SwapIndex> swapIndexBase_;
-Time shortTenor_;
-boost::shared_ptr<IborIndex> iborIndexShortTenor_;
 
+boost::shared_ptr<SwapIndex> swapIndexBase_, shortSwapIndexBase_;
 bool vegaWeightedSmileFit_;
 
 // utilities
@@ -118,10 +108,6 @@ void makeVolSpreadsTest(const SwaptionVolatilityCube& volCube,
 
 void setup() {
 
-    referenceDate_ = Settings::instance().evaluationDate();
-    //referenceDate_ = Date(6, September, 2006);
-    Settings::instance().evaluationDate() = referenceDate_;
-
     conventions_.setConventions();
 
     // ATM swaptionvolmatrix
@@ -139,25 +125,13 @@ void setup() {
     // Swaptionvolcube
     cube_.setMarketData();
 
-    swapSettlementDays_ = 2;
-    fixedLegFrequency_ = Annual;
-    fixedLegConvention_ = Unadjusted;
-    fixedLegDayCounter_ = Thirty360();
-    termStructure_.linkTo(flatRate(referenceDate_, 0.05, Actual365Fixed()));
-    iborIndex_ = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure_));
-    shortTenor_ = 2;
-    iborIndexShortTenor_ = boost::shared_ptr<IborIndex>(new
-        Euribor3M(termStructure_));
+    termStructure_.linkTo(flatRate(0.05, Actual365Fixed()));
+
     swapIndexBase_ = boost::shared_ptr<SwapIndex>(new
-        SwapIndex("EurliborSwapFixA",
-                  10*Years,
-                  swapSettlementDays_,
-                  iborIndex_->currency(),
-                  conventions_.calendar,
-                  Period(fixedLegFrequency_),
-                  fixedLegConvention_,
-                  iborIndex_->dayCounter(),
-                  iborIndex_));
+        EuriborSwapFixA(2*Years, termStructure_));
+    shortSwapIndexBase_ = boost::shared_ptr<SwapIndex>(new
+        EuriborSwapFixA(1*Years, termStructure_));
+
 
     vegaWeightedSmileFit_=false;
 }
@@ -179,6 +153,7 @@ void SwaptionVolatilityCubeTest::testAtmVols() {
                              cube_.strikeSpreads,
                              cube_.volSpreadsHandle,
                              swapIndexBase_,
+                             shortSwapIndexBase_,
                              vegaWeightedSmileFit_);
 
     Real tolerance = 1.0e-16;
@@ -199,6 +174,7 @@ void SwaptionVolatilityCubeTest::testSmile() {
                              cube_.strikeSpreads,
                              cube_.volSpreadsHandle,
                              swapIndexBase_,
+                             shortSwapIndexBase_,
                              vegaWeightedSmileFit_);
 
     Real tolerance = 1.0e-16;
@@ -234,6 +210,7 @@ void SwaptionVolatilityCubeTest::testSabrVols() {
                              cube_.strikeSpreads,
                              cube_.volSpreadsHandle,
                              swapIndexBase_,
+                             shortSwapIndexBase_,
                              vegaWeightedSmileFit_,
                              parametersGuess,
                              isParameterFixed,
@@ -275,6 +252,7 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
                          cube_.strikeSpreads,
                          cube_.volSpreadsHandle,
                          swapIndexBase_,
+                         shortSwapIndexBase_,
                          vegaWeightedSmileFit_,
                          parametersGuess,
                          isParameterFixed,
@@ -365,6 +343,7 @@ void SwaptionVolatilityCubeTest::testObservability() {
                                                                 cube_.strikeSpreads,
                                                                 cube_.volSpreadsHandle,
                                                                 swapIndexBase_,
+                                                                shortSwapIndexBase_,
                                                                 vegaWeightedSmileFit_,
                                                                 parametersGuess,
                                                                 isParameterFixed,
@@ -381,6 +360,7 @@ void SwaptionVolatilityCubeTest::testObservability() {
                                                                 cube_.strikeSpreads,
                                                                 cube_.volSpreadsHandle,
                                                                 swapIndexBase_,
+                                                                shortSwapIndexBase_,
                                                                 vegaWeightedSmileFit_,
                                                                 parametersGuess,
                                                                 isParameterFixed,
@@ -419,6 +399,7 @@ void SwaptionVolatilityCubeTest::testObservability() {
                                                                 cube_.strikeSpreads,
                                                                 cube_.volSpreadsHandle,
                                                                 swapIndexBase_,
+                                                                shortSwapIndexBase_,
                                                                 vegaWeightedSmileFit_));
     Settings::instance().evaluationDate() =
         conventions_.calendar.advance(referenceDate, Period(1, Days), conventions_.optionBdc);
@@ -430,6 +411,7 @@ void SwaptionVolatilityCubeTest::testObservability() {
                                                                 cube_.strikeSpreads,
                                                                 cube_.volSpreadsHandle,
                                                                 swapIndexBase_,
+                                                                shortSwapIndexBase_,
                                                                 vegaWeightedSmileFit_));
 
     for (Size i=0;i<cube_.tenors.options.size(); i++ ) {

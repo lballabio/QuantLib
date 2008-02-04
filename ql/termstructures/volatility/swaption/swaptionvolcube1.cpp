@@ -43,6 +43,7 @@ namespace QuantLib {
                 const std::vector<Spread>& strikeSpreads,
                 const std::vector<std::vector<Handle<Quote> > >& volSpreads,
                 const boost::shared_ptr<SwapIndex>& swapIndexBase,
+                const boost::shared_ptr<SwapIndex>& shortSwapIndexBase,
                 bool vegaWeightedSmileFit,
                 const std::vector<std::vector<Handle<Quote> > >& parametersGuess,
                 const std::vector<bool>& isParameterFixed,
@@ -52,12 +53,13 @@ namespace QuantLib {
                 const boost::shared_ptr<OptimizationMethod>& optMethod)
     : SwaptionVolatilityCube(atmVolStructure, optionTenors, swapTenors,
                              strikeSpreads, volSpreads, swapIndexBase,
+                             shortSwapIndexBase,
                              vegaWeightedSmileFit),
       parametersGuessQuotes_(parametersGuess),
       isParameterFixed_(isParameterFixed), isAtmCalibrated_(isAtmCalibrated),
       endCriteria_(endCriteria), optMethod_(optMethod)
     {
-        if(maxErrorTolerance != Null<Rate>()){
+        if (maxErrorTolerance != Null<Rate>()) {
             maxErrorTolerance_ = maxErrorTolerance;
         } else{
             maxErrorTolerance_ = SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL;

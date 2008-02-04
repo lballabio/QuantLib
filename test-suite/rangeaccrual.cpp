@@ -19,8 +19,8 @@
 
 #include "rangeaccrual.hpp"
 #include "utilities.hpp"
+#include <ql/indexes/swap/euriborswapfixa.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
-#include <ql/indexes/swapindex.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -93,9 +93,7 @@ BusinessDayConvention fixedLegConvention_;
 DayCounter fixedLegDayCounter_;
 boost::shared_ptr<IborIndex> iborIndex_;
 boost::shared_ptr<SwapIndex> swapIndexBase_;
-Time shortTenor_;
-boost::shared_ptr<IborIndex> iborIndexShortTenor_;
-boost::shared_ptr<SwapIndex> index_;
+boost::shared_ptr<SwapIndex> shortSwapIndexBase_;
 
 // Range accrual pricers properties
 std::vector<bool> byCallSpread_;
@@ -261,21 +259,13 @@ void createVolatilityStructures() {
     fixedLegFrequency_ = Annual;
     fixedLegConvention_ = Unadjusted;
     fixedLegDayCounter_ = Thirty360();
-    shortTenor_ = 2;
-    iborIndexShortTenor_ = boost::shared_ptr<IborIndex>(new
-        Euribor3M(termStructure_));
-    swapIndexBase_ = boost::shared_ptr<SwapIndex>(new
-        SwapIndex("EurliborSwapFixA",
-                  10*Years,
-                  swapSettlementDays_,
-                  iborIndex_->currency(),
-                  calendar_,
-                  Period(fixedLegFrequency_),
-                  fixedLegConvention_,
-                  iborIndex_->dayCounter(),
-                  iborIndex_));
+    boost::shared_ptr<SwapIndex> swapIndexBase_(new
+        EuriborSwapFixA(2*Years, termStructure_));
 
-    vegaWeightedSmileFit_=false;
+    boost::shared_ptr<SwapIndex> shortSwapIndexBase_(new
+        EuriborSwapFixA(1*Years, termStructure_));
+
+    vegaWeightedSmileFit_ = false;
 
     // ATM Volatility structure
     std::vector<std::vector<Handle<Quote> > > atmVolsHandle_;
@@ -334,6 +324,7 @@ void createVolatilityStructures() {
         strikeSpreads_,
         nullVolSpreads,
         swapIndexBase_,
+        shortSwapIndexBase_,
         vegaWeightedSmileFit_,
         parametersGuess,
         isParameterFixed,
@@ -349,6 +340,7 @@ void createVolatilityStructures() {
                                            strikeSpreads_,
                                            nullVolSpreads,
                                            swapIndexBase_,
+                                           shortSwapIndexBase_,
                                            vegaWeightedSmileFit_));
     flatSwaptionVolatilityCube2_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(flatSwaptionVolatilityCube2));
@@ -373,6 +365,7 @@ void createVolatilityStructures() {
         strikeSpreads_,
         volSpreads_,
         swapIndexBase_,
+        shortSwapIndexBase_,
         vegaWeightedSmileFit_,
         parametersGuess,
         isParameterFixed,

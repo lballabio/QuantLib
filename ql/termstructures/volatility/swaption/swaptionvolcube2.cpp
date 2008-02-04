@@ -32,9 +32,11 @@ namespace QuantLib {
         const std::vector<Spread>& strikeSpreads,
         const std::vector<std::vector<Handle<Quote> > >& volSpreads,
         const boost::shared_ptr<SwapIndex>& swapIndexBase,
+        const boost::shared_ptr<SwapIndex>& shortSwapIndexBase,
         bool vegaWeightedSmileFit)
     : SwaptionVolatilityCube(atmVolStructure, optionTenors, swapTenors,
                              strikeSpreads, volSpreads, swapIndexBase,
+                             shortSwapIndexBase,
                              vegaWeightedSmileFit),
       volSpreadsInterpolator_(nStrikes_),
       volSpreadsMatrix_(nStrikes_, Matrix(optionTenors.size(), swapTenors.size(), 0.0)) {

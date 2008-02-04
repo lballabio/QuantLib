@@ -188,8 +188,10 @@ struct CommonVars {
         }
 
         iborIndex = shared_ptr<IborIndex>(new Euribor6M(termStructure));
-        shared_ptr<SwapIndex> swapIndexBase(
-                                new EuriborSwapFixA(10*Years, termStructure));
+        shared_ptr<SwapIndex> swapIndexBase(new
+            EuriborSwapFixA(10*Years, termStructure));
+        shared_ptr<SwapIndex> shortSwapIndexBase(new
+            EuriborSwapFixA(2*Years, termStructure));
 
         bool vegaWeightedSmileFit = false;
 
@@ -201,6 +203,7 @@ struct CommonVars {
                                  strikeSpreads,
                                  volSpreads,
                                  swapIndexBase,
+                                 shortSwapIndexBase,
                                  vegaWeightedSmileFit)));
         SabrVolCube2->enableExtrapolation();
 
@@ -226,6 +229,7 @@ struct CommonVars {
                                  strikeSpreads,
                                  volSpreads,
                                  swapIndexBase,
+                                 shortSwapIndexBase,
                                  vegaWeightedSmileFit,
                                  guess,
                                  isParameterFixed,
