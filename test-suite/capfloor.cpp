@@ -419,15 +419,15 @@ void CapFloorTest::testImpliedVolatility() {
     CommonVars vars;
 
     Size maxEvaluations = 100;
-    Real tolerance = 1.0e-6;
+    Real tolerance = 1.0e-8;
 
     CapFloor::Type types[] = { CapFloor::Cap, CapFloor::Floor };
     Rate strikes[] = { 0.02, 0.03, 0.04 };
     Integer lengths[] = { 1, 5, 10 };
 
     // test data
-    Rate rRates[] = { 0.02, 0.03, 0.04 };
-    Volatility vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
+    Rate rRates[] = { 0.02, 0.03, 0.04, 0.05, 0.06, 0.07 };
+    Volatility vols[] = { 0.01, 0.05, 0.10, 0.20, 0.30, 0.70, 0.90 };
 
     for (Size k=0; k<LENGTH(lengths); k++) {
         Leg leg = vars.makeLeg(vars.settlement, lengths[k]);
@@ -449,7 +449,6 @@ void CapFloorTest::testImpliedVolatility() {
 
                         Real value = capfloor->NPV();
                         Volatility implVol = 0.0;
-
                         try {
                             implVol =
                                 capfloor->impliedVolatility(value,
@@ -458,12 +457,14 @@ void CapFloorTest::testImpliedVolatility() {
                                                             tolerance,
                                                             maxEvaluations);
                         } catch (std::exception& e) {
-                            BOOST_FAIL(typeToString(types[i]) <<
-                                "\n  strike:     " << io::rate(strikes[j]) <<
-                                "\n  risk-free:  " << io::rate(r) <<
-                                "\n  length:     " << lengths[k] << "Y" <<
-                                "\n  volatility: " << io::volatility(v) <<
-                                "\n" << e.what());
+                            BOOST_FAIL("implied vol failure: " <<
+                                       typeToString(types[i]) <<
+                                       "\n  strike:     " << io::rate(strikes[j]) <<
+                                       "\n  risk-free:  " << io::rate(r) <<
+                                       "\n  length:     " << lengths[k] << "Y" <<
+                                       "\n  volatility: " << io::volatility(v) <<
+                                       "\n  price:      " << value <<
+                                       "\n" << e.what());
                         }
                         if (std::fabs(implVol-v) > tolerance) {
                             // the difference might not matter
@@ -471,21 +472,15 @@ void CapFloorTest::testImpliedVolatility() {
                                                     vars.makeEngine(implVol));
                             Real value2 = capfloor->NPV();
                             if (std::fabs(value-value2) > tolerance) {
-                                BOOST_FAIL(
-                                    typeToString(types[i]) << ":\n"
-                                    << "    strike:           "
-                                    << strikes[j] << "\n"
-                                    << "    risk-free rate:   "
-                                    << io::rate(r) << "\n"
-                                    << "    length:         "
-                                    << lengths[k] << " years\n\n"
-                                    << "    original volatility: "
-                                    << io::volatility(v) << "\n"
-                                    << "    price:               "
-                                    << value << "\n"
-                                    << "    implied volatility:  "
-                                    << io::volatility(implVol) << "\n"
-                                    << "    corresponding price: " << value2);
+                            BOOST_FAIL("implied vol failure: " <<
+                                       typeToString(types[i]) <<
+                                       "\n  strike:        " << io::rate(strikes[j]) <<
+                                       "\n  risk-free:     " << io::rate(r) <<
+                                       "\n  length:        " << lengths[k] << "Y" <<
+                                       "\n  volatility:    " << io::volatility(v) <<
+                                       "\n  price:         " << value <<
+                                       "\n  implied vol:   " << io::volatility(implVol) <<
+                                       "\n  implied price: " << value2);
                             }
                         }
                     }

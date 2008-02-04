@@ -798,8 +798,8 @@ void SwaptionTest::testImpliedVolatility() {
 
     Settlement::Type types[] = { Settlement::Physical, Settlement::Cash };
     // test data
-    Rate strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
-    Volatility vols[] = { 0.05, 0.10, 0.20, 0.30, 0.70 };
+    Rate strikes[] = { 0.02, 0.03, 0.04, 0.05, 0.06, 0.07 };
+    Volatility vols[] = { 0.01, 0.05, 0.10, 0.20, 0.30, 0.70, 0.90 };
 
     for (Size i=0; i<LENGTH(exercises); i++) {
         for (Size j=0; j<LENGTH(lengths); j++) {

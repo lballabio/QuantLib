@@ -22,7 +22,8 @@
 
 #include <ql/instruments/swaption.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
-#include <ql/math/solvers1d/brent.hpp>
+//#include <ql/math/solvers1d/brent.hpp>
+#include <ql/math/solvers1d/newtonsafe.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/exercise.hpp>
 
@@ -36,6 +37,7 @@ namespace QuantLib {
                              const Handle<YieldTermStructure>& discountCurve,
                              Real targetValue);
             Real operator()(Volatility x) const;
+            Real derivative(Volatility x) const;
           private:
             boost::shared_ptr<PricingEngine> engine_;
             Handle<YieldTermStructure> discountCurve_;
@@ -50,7 +52,7 @@ namespace QuantLib {
                               Real targetValue)
         : discountCurve_(discountCurve), targetValue_(targetValue) {
 
-            vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
+            vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(-1.0));
             Handle<Quote> h(vol_);
             engine_ = boost::shared_ptr<PricingEngine>(new
                                     BlackSwaptionEngine(discountCurve_, h));
@@ -61,11 +63,24 @@ namespace QuantLib {
         }
 
         Real ImpliedVolHelper::operator()(Volatility x) const {
-            vol_->setValue(x);
-            engine_->calculate();
+            if (x!=vol_->value()) {
+                vol_->setValue(x);
+                engine_->calculate();
+            }
             return results_->value-targetValue_;
         }
 
+        Real ImpliedVolHelper::derivative(Volatility x) const {
+            if (x!=vol_->value()) {
+                vol_->setValue(x);
+                engine_->calculate();
+            }
+            std::map<std::string,boost::any>::const_iterator vega_ =
+                results_->additionalResults.find("vega");
+            QL_REQUIRE(vega_ != results_->additionalResults.end(),
+                       "vega not provided");
+            return boost::any_cast<Real>(vega_->second);
+        }
     }
 
     std::ostream& operator<<(std::ostream& out,
@@ -124,9 +139,9 @@ namespace QuantLib {
         calculate();
         QL_REQUIRE(!isExpired(), "instrument expired");
 
-
         ImpliedVolHelper f(*this, discountCurve, targetValue);
-        Brent solver;
+        //Brent solver;
+        NewtonSafe solver;
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);
     }
