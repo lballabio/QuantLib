@@ -52,7 +52,7 @@ namespace QuantLib {
                               Real targetValue)
         : discountCurve_(discountCurve), targetValue_(targetValue) {
 
-            vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
+            vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(-1.0));
             Handle<Quote> h(vol_);
             engine_ = boost::shared_ptr<PricingEngine>(new
                                     BlackCapFloorEngine(discountCurve_, h));
