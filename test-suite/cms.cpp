@@ -87,22 +87,22 @@ namespace {
             atmSwapTenors.push_back(Period(10, Years));
             atmSwapTenors.push_back(Period(30, Years));
 
-            Matrix atmVolMatrix(atmOptionTenors.size(), atmSwapTenors.size());
-            atmVolMatrix[0][0]=0.1300; atmVolMatrix[0][1]=0.1560; atmVolMatrix[0][2]=0.1390; atmVolMatrix[0][3]=0.1220;
-            atmVolMatrix[1][0]=0.1440; atmVolMatrix[1][1]=0.1580; atmVolMatrix[1][2]=0.1460; atmVolMatrix[1][3]=0.1260;
-            atmVolMatrix[2][0]=0.1600; atmVolMatrix[2][1]=0.1590; atmVolMatrix[2][2]=0.1470; atmVolMatrix[2][3]=0.1290;
-            atmVolMatrix[3][0]=0.1640; atmVolMatrix[3][1]=0.1470; atmVolMatrix[3][2]=0.1370; atmVolMatrix[3][3]=0.1220;
-            atmVolMatrix[4][0]=0.1400; atmVolMatrix[4][1]=0.1300; atmVolMatrix[4][2]=0.1250; atmVolMatrix[4][3]=0.1100;
-            atmVolMatrix[5][0]=0.1130; atmVolMatrix[5][1]=0.1090; atmVolMatrix[5][2]=0.1070; atmVolMatrix[5][3]=0.0930;
+            Matrix m(atmOptionTenors.size(), atmSwapTenors.size());
+            m[0][0]=0.1300; m[0][1]=0.1560; m[0][2]=0.1390; m[0][3]=0.1220;
+            m[1][0]=0.1440; m[1][1]=0.1580; m[1][2]=0.1460; m[1][3]=0.1260;
+            m[2][0]=0.1600; m[2][1]=0.1590; m[2][2]=0.1470; m[2][3]=0.1290;
+            m[3][0]=0.1640; m[3][1]=0.1470; m[3][2]=0.1370; m[3][3]=0.1220;
+            m[4][0]=0.1400; m[4][1]=0.1300; m[4][2]=0.1250; m[4][3]=0.1100;
+            m[5][0]=0.1130; m[5][1]=0.1090; m[5][2]=0.1070; m[5][3]=0.0930;
 
             atmVol = Handle<SwaptionVolatilityStructure>(
                 shared_ptr<SwaptionVolatilityStructure>(new
                     SwaptionVolatilityMatrix(calendar,
+                                             Following,
                                              atmOptionTenors,
                                              atmSwapTenors,
-                                             atmVolMatrix,
-                                             Actual365Fixed(),
-                                             Following)));
+                                             m,
+                                             Actual365Fixed())));
 
             // Vol cubes
             std::vector<Period> optionTenors;
@@ -251,15 +251,12 @@ namespace {
 
             numericalPricers.clear();
             analyticPricers.clear();
-            Size m = yieldCurveModels.size();
-            for (Size j=0; j<m; ++j) {
+            for (Size j=0; j<yieldCurveModels.size(); ++j) {
                 numericalPricers.push_back(shared_ptr<CmsCouponPricer>(new
-                    NumericHaganPricer(atmVol,
-                                       yieldCurveModels[j],
+                    NumericHaganPricer(atmVol, yieldCurveModels[j],
                                        zeroMeanRev)));
                 analyticPricers.push_back(shared_ptr<CmsCouponPricer>(new
-                    AnalyticHaganPricer(atmVol,
-                                        yieldCurveModels[j],
+                    AnalyticHaganPricer(atmVol, yieldCurveModels[j],
                                         zeroMeanRev)));
             }
         }

@@ -28,23 +28,21 @@ namespace QuantLib {
 
     BlackCapFloorEngine::BlackCapFloorEngine(
                               const Handle<YieldTermStructure>& termStructure,
-                              Volatility volatility,
+                              Volatility v,
                               const DayCounter& dc)
     : termStructure_(termStructure),
       volatility_(boost::shared_ptr<OptionletVolatilityStructure>(new
-          ConstantOptionletVolatility(0, volatility, dc,
-                                      NullCalendar(), Following))) {
+          ConstantOptionletVolatility(0, NullCalendar(), Following, v, dc))) {
         registerWith(termStructure_);
     }
 
     BlackCapFloorEngine::BlackCapFloorEngine(
                               const Handle<YieldTermStructure>& termStructure,
-                              const Handle<Quote>& volatility,
+                              const Handle<Quote>& v,
                               const DayCounter& dc)
     : termStructure_(termStructure),
       volatility_(boost::shared_ptr<OptionletVolatilityStructure>(new
-          ConstantOptionletVolatility(0, volatility, dc,
-                                      NullCalendar(), Following))) {
+          ConstantOptionletVolatility(0, NullCalendar(), Following, v, dc))) {
         registerWith(termStructure_);
         registerWith(volatility_);
     }

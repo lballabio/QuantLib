@@ -59,7 +59,7 @@ namespace QuantLib {
                                 const std::vector<Date>& dates,
                                 const std::vector<Volatility>& capletVolCurve,
                                 const DayCounter& dayCounter)
-    : OptionletVolatilityStructure(referenceDate),
+    : OptionletVolatilityStructure(referenceDate, Calendar(), Following),
       blackCurve_(referenceDate, dates, capletVolCurve, dayCounter, false) {}
 
     inline DayCounter CapletVarianceCurve::dayCounter() const {

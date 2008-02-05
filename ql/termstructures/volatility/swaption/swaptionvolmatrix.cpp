@@ -32,12 +32,12 @@ namespace QuantLib {
     // floating reference date, floating market data
     SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
                     const Calendar& cal,
+                    BusinessDayConvention bdc,
                     const std::vector<Period>& optionT,
                     const std::vector<Period>& swapT,
                     const std::vector<std::vector<Handle<Quote> > >& vols,
-                    const DayCounter& dc,
-                    BusinessDayConvention bdc)
-    : SwaptionVolatilityDiscrete(optionT, swapT, 0, cal, dc, bdc),
+                    const DayCounter& dc)
+    : SwaptionVolatilityDiscrete(optionT, swapT, 0, cal, bdc, dc),
       volHandles_(vols),
       volatilities_(vols.size(), vols.front().size()) {
         checkInputs(volatilities_.rows(), volatilities_.columns());
@@ -52,12 +52,12 @@ namespace QuantLib {
     SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
                     const Date& refDate,
                     const Calendar& cal,
+                    BusinessDayConvention bdc,
                     const std::vector<Period>& optionT,
                     const std::vector<Period>& swapT,
                     const std::vector<std::vector<Handle<Quote> > >& vols,
-                    const DayCounter& dc,
-                    BusinessDayConvention bdc)
-    : SwaptionVolatilityDiscrete(optionT, swapT, refDate, cal, dc, bdc),
+                    const DayCounter& dc)
+    : SwaptionVolatilityDiscrete(optionT, swapT, refDate, cal, bdc, dc),
       volHandles_(vols),
       volatilities_(vols.size(), vols.front().size()) {
         checkInputs(volatilities_.rows(), volatilities_.columns());
@@ -71,12 +71,12 @@ namespace QuantLib {
     // floating reference date, fixed market data
     SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
                         const Calendar& cal,
+                        BusinessDayConvention bdc,
                         const std::vector<Period>& optionT,
                         const std::vector<Period>& swapT,
                         const Matrix& vols,
-                        const DayCounter& dc,
-                        BusinessDayConvention bdc)
-    : SwaptionVolatilityDiscrete(optionT, swapT, 0, cal, dc, bdc),
+                        const DayCounter& dc)
+    : SwaptionVolatilityDiscrete(optionT, swapT, 0, cal, bdc, dc),
       volHandles_(vols.rows()),
       volatilities_(vols.rows(), vols.columns()) {
 
@@ -100,12 +100,12 @@ namespace QuantLib {
     SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
                         const Date& refDate,
                         const Calendar& cal,
+                        BusinessDayConvention bdc,
                         const std::vector<Period>& optionT,
                         const std::vector<Period>& swapT,
                         const Matrix& vols,
-                        const DayCounter& dc,
-                        BusinessDayConvention bdc)
-    : SwaptionVolatilityDiscrete(optionT, swapT, refDate, cal, dc, bdc),
+                        const DayCounter& dc)
+    : SwaptionVolatilityDiscrete(optionT, swapT, refDate, cal, bdc, dc),
       volHandles_(vols.rows()),
       volatilities_(vols.rows(), vols.columns()) {
 
@@ -132,7 +132,7 @@ namespace QuantLib {
                     const std::vector<Period>& swapT,
                     const Matrix& vols,
                     const DayCounter& dc)
-    : SwaptionVolatilityDiscrete(optionDates, swapT, today, Calendar(), dc),
+    : SwaptionVolatilityDiscrete(optionDates, swapT, today, Calendar(), Following, dc),
       volHandles_(vols.rows()),
       volatilities_(vols.rows(), vols.columns()) {
 

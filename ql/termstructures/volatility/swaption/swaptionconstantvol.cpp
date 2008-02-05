@@ -27,11 +27,11 @@ namespace QuantLib {
     // floating reference date, floating market data
     ConstantSwaptionVolatility::ConstantSwaptionVolatility(
                                                     Natural settlementDays,
-                                                    const Handle<Quote>& vol,
-                                                    const DayCounter& dc,
                                                     const Calendar& cal,
-                                                    BusinessDayConvention bdc)
-    : SwaptionVolatilityStructure(settlementDays, cal, dc, bdc),
+                                                    BusinessDayConvention bdc,
+                                                    const Handle<Quote>& vol,
+                                                    const DayCounter& dc)
+    : SwaptionVolatilityStructure(settlementDays, cal, bdc, dc),
       volatility_(vol), maxSwapTenor_(100*Years) {
         registerWith(volatility_);
     }
@@ -39,11 +39,11 @@ namespace QuantLib {
     // fixed reference date, floating market data
     ConstantSwaptionVolatility::ConstantSwaptionVolatility(
                                                     const Date& referenceDate,
-                                                    const Handle<Quote>& vol,
-                                                    const DayCounter& dc,
                                                     const Calendar& cal,
-                                                    BusinessDayConvention bdc)
-    : SwaptionVolatilityStructure(referenceDate, cal, dc, bdc),
+                                                    BusinessDayConvention bdc,
+                                                    const Handle<Quote>& vol,
+                                                    const DayCounter& dc)
+    : SwaptionVolatilityStructure(referenceDate, cal, bdc, dc),
       volatility_(vol), maxSwapTenor_(100*Years) {
         registerWith(volatility_);
     }
@@ -51,22 +51,22 @@ namespace QuantLib {
     // floating reference date, fixed market data
     ConstantSwaptionVolatility::ConstantSwaptionVolatility(
                                                     Natural settlementDays,
-                                                    Volatility vol,
-                                                    const DayCounter& dc,
                                                     const Calendar& cal,
-                                                    BusinessDayConvention bdc)
-    : SwaptionVolatilityStructure(settlementDays, cal, dc, bdc),
+                                                    BusinessDayConvention bdc,
+                                                    Volatility vol,
+                                                    const DayCounter& dc)
+    : SwaptionVolatilityStructure(settlementDays, cal, bdc, dc),
       volatility_(boost::shared_ptr<Quote>(new SimpleQuote(vol))),
       maxSwapTenor_(100*Years) {}
 
     // fixed reference date, fixed market data
     ConstantSwaptionVolatility::ConstantSwaptionVolatility(
                                                     const Date& referenceDate,
-                                                    Volatility vol,
-                                                    const DayCounter& dc,
                                                     const Calendar& cal,
-                                                    BusinessDayConvention bdc)
-    : SwaptionVolatilityStructure(referenceDate, cal, dc, bdc),
+                                                    BusinessDayConvention bdc,
+                                                    Volatility vol,
+                                                    const DayCounter& dc)
+    : SwaptionVolatilityStructure(referenceDate, cal, bdc, dc),
       volatility_(boost::shared_ptr<Quote>(new SimpleQuote(vol))),
       maxSwapTenor_(100*Years) {}
 

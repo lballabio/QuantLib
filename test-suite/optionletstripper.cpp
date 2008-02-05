@@ -81,13 +81,9 @@ namespace {
         Volatility flatVol = .18;
         termV_ = Matrix(optionTenors_.size(), strikes_.size(), flatVol);
         flatTermVolSurface_ = boost::shared_ptr<CapFloorTermVolSurface>(new
-            CapFloorTermVolSurface(0,
-                                   calendar_,
-                                   optionTenors_,
-                                   strikes_,
-                                   termV_,
-                                   Following,
-                                   dayCounter_));
+            CapFloorTermVolSurface(0, calendar_, Following,
+                                   optionTenors_, strikes_,
+                                   termV_, dayCounter_));
     }
 
 
@@ -148,13 +144,9 @@ namespace {
         termV_[15][0]=0.2;   termV_[15][1]=0.187; termV_[15][2]=0.176; termV_[15][3]=0.167; termV_[15][4]=0.16;  termV_[15][5]=0.148; termV_[15][6]=0.14;  termV_[15][7]=0.135; termV_[15][8]=0.131; termV_[15][9]=0.132; termV_[15][10]=0.135; termV_[15][11]=0.139; termV_[15][12]=0.146;
 
         capFloorVolSurface_ = boost::shared_ptr<CapFloorTermVolSurface>(new
-            CapFloorTermVolSurface(0,
-                                   calendar_,
-                                   optionTenors_,
-                                   strikes_,
-                                   termV_,
-                                   Following,
-                                   dayCounter_));
+            CapFloorTermVolSurface(0, calendar_, Following,
+                                   optionTenors_, strikes_,
+                                   termV_, dayCounter_));
     }
 
 }

@@ -27,7 +27,10 @@ namespace QuantLib {
     SpreadedOptionletVolatility::SpreadedOptionletVolatility(
                         const Handle<OptionletVolatilityStructure>& baseVol,
                         const Handle<Quote>& spread)
-    : OptionletVolatilityStructure(), baseVol_(baseVol), spread_(spread) {
+    : OptionletVolatilityStructure(baseVol->calendar(),
+                                   baseVol->businessDayConvention(),
+                                   baseVol->dayCounter()),
+      baseVol_(baseVol), spread_(spread) {
           registerWith(baseVol_);
           registerWith(spread_);
     }

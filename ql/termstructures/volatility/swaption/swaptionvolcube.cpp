@@ -35,8 +35,8 @@ namespace QuantLib {
         bool vegaWeightedSmileFit)
     : SwaptionVolatilityDiscrete(optionTenors, swapTenors, 0,
                                  atmVol->calendar(),
-                                 atmVol->dayCounter(),
-                                 atmVol->businessDayConvention()),
+                                 atmVol->businessDayConvention(),
+                                 atmVol->dayCounter()),
       atmVol_(atmVol),
       nStrikes_(strikeSpreads.size()),
       strikeSpreads_(strikeSpreads),

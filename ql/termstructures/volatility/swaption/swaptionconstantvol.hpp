@@ -37,28 +37,28 @@ namespace QuantLib {
       public:
         //! floating reference date, floating market data
         ConstantSwaptionVolatility(Natural settlementDays,
-                                   const Handle<Quote>& volatility,
-                                   const DayCounter& dc,
                                    const Calendar& cal,
-                                   BusinessDayConvention bdc = Following);
+                                   BusinessDayConvention bdc,
+                                   const Handle<Quote>& volatility,
+                                   const DayCounter& dc);
         //! fixed reference date, floating market data
         ConstantSwaptionVolatility(const Date& referenceDate,
-                                   const Handle<Quote>& volatility,
-                                   const DayCounter& dc,
                                    const Calendar& cal,
-                                   BusinessDayConvention bdc = Following);
+                                   BusinessDayConvention bdc,
+                                   const Handle<Quote>& volatility,
+                                   const DayCounter& dc);
         //! floating reference date, fixed market data
         ConstantSwaptionVolatility(Natural settlementDays,
-                                   Volatility volatility,
-                                   const DayCounter& dc,
                                    const Calendar& cal,
-                                   BusinessDayConvention bdc = Following);
+                                   BusinessDayConvention bdc,
+                                   Volatility volatility,
+                                   const DayCounter& dc);
         //! fixed reference date, fixed market data
         ConstantSwaptionVolatility(const Date& referenceDate,
-                                   Volatility volatility,
-                                   const DayCounter& dc,
                                    const Calendar& cal,
-                                   BusinessDayConvention bdc = Following);
+                                   BusinessDayConvention bdc,
+                                   Volatility volatility,
+                                   const DayCounter& dc);
         //! \name TermStructure interface
         //@{
         Date maxDate() const;

@@ -25,10 +25,10 @@ namespace QuantLib {
     // floating reference date, floating market data
     ConstantCapFloorTermVolatility::ConstantCapFloorTermVolatility(
                                                     Natural settlementDays,
-                                                    const Handle<Quote>& vol,
-                                                    const DayCounter& dc,
                                                     const Calendar& cal,
-                                                    BusinessDayConvention bdc)
+                                                    BusinessDayConvention bdc,
+                                                    const Handle<Quote>& vol,
+                                                    const DayCounter& dc)
     : CapFloorTermVolatilityStructure(settlementDays, cal, bdc, dc),
       volatility_(vol) {
         registerWith(volatility_);
@@ -37,10 +37,10 @@ namespace QuantLib {
     // fixed reference date, floating market data
     ConstantCapFloorTermVolatility::ConstantCapFloorTermVolatility(
                                                     const Date& referenceDate,
-                                                    const Handle<Quote>& vol,
-                                                    const DayCounter& dc,
                                                     const Calendar& cal,
-                                                    BusinessDayConvention bdc)
+                                                    BusinessDayConvention bdc,
+                                                    const Handle<Quote>& vol,
+                                                    const DayCounter& dc)
     : CapFloorTermVolatilityStructure(referenceDate, cal, bdc, dc),
       volatility_(vol) {
         registerWith(volatility_);
@@ -49,20 +49,20 @@ namespace QuantLib {
     // floating reference date, fixed market data
     ConstantCapFloorTermVolatility::ConstantCapFloorTermVolatility(
                                                     Natural settlementDays,
-                                                    Volatility vol,
-                                                    const DayCounter& dc,
                                                     const Calendar& cal,
-                                                    BusinessDayConvention bdc)
+                                                    BusinessDayConvention bdc,
+                                                    Volatility vol,
+                                                    const DayCounter& dc)
     : CapFloorTermVolatilityStructure(settlementDays, cal, bdc, dc),
       volatility_(boost::shared_ptr<Quote>(new SimpleQuote(vol))) {}
 
     // fixed reference date, fixed market data
     ConstantCapFloorTermVolatility::ConstantCapFloorTermVolatility(
                                                     const Date& referenceDate,
-                                                    Volatility vol,
-                                                    const DayCounter& dc,
                                                     const Calendar& cal,
-                                                    BusinessDayConvention bdc)
+                                                    BusinessDayConvention bdc,
+                                                    Volatility vol,
+                                                    const DayCounter& dc)
     : CapFloorTermVolatilityStructure(referenceDate, cal, bdc, dc),
       volatility_(boost::shared_ptr<Quote>(new SimpleQuote(vol))) {}
 

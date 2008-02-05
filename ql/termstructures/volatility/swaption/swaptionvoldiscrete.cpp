@@ -29,9 +29,9 @@ namespace QuantLib {
                                     const std::vector<Period>& swapTenors,
                                     Natural settlementDays,
                                     const Calendar& cal,
-                                    const DayCounter& dc,
-                                    BusinessDayConvention bdc)
-    : SwaptionVolatilityStructure(settlementDays, cal, dc, bdc),
+                                    BusinessDayConvention bdc,
+                                    const DayCounter& dc)
+    : SwaptionVolatilityStructure(settlementDays, cal, bdc, dc),
       nOptionTenors_(optionTenors.size()),
       optionTenors_(optionTenors),
       optionDates_(nOptionTenors_),
@@ -62,9 +62,9 @@ namespace QuantLib {
                                     const std::vector<Period>& swapTenors,
                                     const Date& referenceDate,
                                     const Calendar& cal,
-                                    const DayCounter& dc,
-                                    BusinessDayConvention bdc)
-    : SwaptionVolatilityStructure(referenceDate, cal, dc, bdc),
+                                    BusinessDayConvention bdc,
+                                    const DayCounter& dc)
+    : SwaptionVolatilityStructure(referenceDate, cal, bdc, dc),
       nOptionTenors_(optionTenors.size()),
       optionTenors_(optionTenors),
       optionDates_(nOptionTenors_),
@@ -92,9 +92,9 @@ namespace QuantLib {
                                         const std::vector<Period>& swapTenors,
                                         const Date& referenceDate,
                                         const Calendar& cal,
-                                        const DayCounter& dc,
-                                        BusinessDayConvention bdc)
-    : SwaptionVolatilityStructure(referenceDate, cal, dc, bdc),
+                                        BusinessDayConvention bdc,
+                                        const DayCounter& dc)
+    : SwaptionVolatilityStructure(referenceDate, cal, bdc, dc),
       nOptionTenors_(optionDates.size()),
       optionTenors_(nOptionTenors_),
       optionDates_(optionDates),

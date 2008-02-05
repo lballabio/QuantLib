@@ -48,19 +48,19 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        SwaptionVolatilityStructure(const Calendar& calendar = Calendar(),
-                                    const DayCounter& dc = DayCounter(),
-                                    BusinessDayConvention bdc = Following);
+        SwaptionVolatilityStructure(const Calendar& calendar,
+                                    BusinessDayConvention bdc,
+                                    const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
         SwaptionVolatilityStructure(const Date& referenceDate,
-                                    const Calendar& calendar = Calendar(),
-                                    const DayCounter& dc = DayCounter(),
-                                    BusinessDayConvention bdc = Following);
+                                    const Calendar& calendar,
+                                    BusinessDayConvention bdc,
+                                    const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
         SwaptionVolatilityStructure(Natural settlementDays,
                                     const Calendar&,
-                                    const DayCounter& dc = DayCounter(),
-                                    BusinessDayConvention bdc = Following);
+                                    BusinessDayConvention bdc,
+                                    const DayCounter& dc = DayCounter());
         //@}
         virtual ~SwaptionVolatilityStructure() {}
         //! \name Volatility, variance and smile

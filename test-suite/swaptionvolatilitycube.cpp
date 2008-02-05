@@ -116,12 +116,11 @@ namespace {
         atmVolMatrix_ = RelinkableHandle<SwaptionVolatilityStructure>(
             boost::shared_ptr<SwaptionVolatilityStructure>(new
                 SwaptionVolatilityMatrix(conventions_.calendar,
+                                         conventions_.optionBdc,
                                          atm_.tenors.options,
                                          atm_.tenors.swaps,
                                          atm_.volsHandle,
-                                         conventions_.dayCounter,
-                                         conventions_.optionBdc)));
-
+                                         conventions_.dayCounter)));
         // Swaptionvolcube
         cube_.setMarketData();
 

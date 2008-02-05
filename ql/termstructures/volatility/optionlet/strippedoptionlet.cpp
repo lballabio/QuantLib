@@ -29,12 +29,12 @@ namespace QuantLib {
 
     StrippedOptionlet::StrippedOptionlet(
                         Natural settlementDays,
+                        const Calendar& calendar,
+                        BusinessDayConvention bdc,
                         const boost::shared_ptr<IborIndex>& iborIndex,
                         const vector<Period>& optionletTenors,
                         const vector<Rate>& strikes,
                         const vector<vector<Handle<Quote> > >& v,
-                        const Calendar& calendar,
-                        BusinessDayConvention bdc,
                         const DayCounter& dc)
     : calendar_(calendar),
       settlementDays_(settlementDays),
@@ -55,9 +55,10 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
         registerWithMarketData();
 
-        CapFloorTermVolSurface tmp(settlementDays_, calendar_, optionletTenors_,
-                                   optionletStrikes_[0], optionletVolQuotes_, 
-                                   businessDayConvention_, dc_);
+        CapFloorTermVolSurface tmp(settlementDays_,
+                                   calendar_, businessDayConvention_,
+                                   optionletTenors_, optionletStrikes_[0],
+                                   optionletVolQuotes_, dc_);
         
         for (Size i=0; i<nOptionletTenors_; ++i) {
             optionletDates_[i] = tmp.optionDateFromTenor(optionletTenors_[i]);

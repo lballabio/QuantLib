@@ -45,34 +45,34 @@ namespace QuantLib {
         //! floating reference date, floating market data
         CapFloorTermVolSurface(Natural settlementDays,
                                const Calendar& calendar,
+                               BusinessDayConvention bdc,
                                const std::vector<Period>& optionTenors,
                                const std::vector<Rate>& strikes,
                                const std::vector<std::vector<Handle<Quote> > >&,
-                               BusinessDayConvention bdc = Following,
                                const DayCounter& dc = Actual365Fixed());
         //! fixed reference date, floating market data
         CapFloorTermVolSurface(const Date& settlementDate,
                                const Calendar& calendar,
+                               BusinessDayConvention bdc,
                                const std::vector<Period>& optionTenors,
                                const std::vector<Rate>& strikes,
                                const std::vector<std::vector<Handle<Quote> > >&,
-                               BusinessDayConvention bdc = Following,
                                const DayCounter& dc = Actual365Fixed());
         //! fixed reference date, fixed market data
         CapFloorTermVolSurface(const Date& settlementDate,
                                const Calendar& calendar,
+                               BusinessDayConvention bdc,
                                const std::vector<Period>& optionTenors,
                                const std::vector<Rate>& strikes,
                                const Matrix& volatilities,
-                               BusinessDayConvention bdc = Following,
                                const DayCounter& dc = Actual365Fixed());
         //! floating reference date, fixed market data
         CapFloorTermVolSurface(Natural settlementDays,
                                const Calendar& calendar,
+                               BusinessDayConvention bdc,
                                const std::vector<Period>& optionTenors,
                                const std::vector<Rate>& strikes,
                                const Matrix& volatilities,
-                               BusinessDayConvention bdc = Following,
                                const DayCounter& dc = Actual365Fixed());
         //! \name TermStructure interface
         //@{

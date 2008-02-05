@@ -54,37 +54,37 @@ namespace QuantLib {
         //! floating reference date, floating market data
         SwaptionVolatilityMatrix(
                     const Calendar& calendar,
+                    BusinessDayConvention bdc,
                     const std::vector<Period>& optionTenors,
                     const std::vector<Period>& swapTenors,
                     const std::vector<std::vector<Handle<Quote> > >& vols,
-                    const DayCounter& dayCounter,
-                    BusinessDayConvention bdc = Following);
+                    const DayCounter& dayCounter);
         //! fixed reference date, floating market data
         SwaptionVolatilityMatrix(
                     const Date& referenceDate,
                     const Calendar& calendar,
+                    BusinessDayConvention bdc,
                     const std::vector<Period>& optionTenors,
                     const std::vector<Period>& swapTenors,
                     const std::vector<std::vector<Handle<Quote> > >& vols,
-                    const DayCounter& dayCounter,
-                    BusinessDayConvention bdc = Following);
+                    const DayCounter& dayCounter);
         //! floating reference date, fixed market data
         SwaptionVolatilityMatrix(
                     const Calendar& calendar,
+                    BusinessDayConvention bdc,
                     const std::vector<Period>& optionTenors,
                     const std::vector<Period>& swapTenors,
                     const Matrix& volatilities,
-                    const DayCounter& dayCounter,
-                    BusinessDayConvention bdc = Following);
+                    const DayCounter& dayCounter);
         //! fixed reference date, fixed market data
         SwaptionVolatilityMatrix(
                     const Date& referenceDate,
                     const Calendar& calendar,
+                    BusinessDayConvention bdc,
                     const std::vector<Period>& optionTenors,
                     const std::vector<Period>& swapTenors,
                     const Matrix& volatilities,
-                    const DayCounter& dayCounter,
-                    BusinessDayConvention bdc = Following);
+                    const DayCounter& dayCounter);
         // fixed reference date and fixed market data, option dates
         SwaptionVolatilityMatrix(const Date& referenceDate,
                                  const std::vector<Date>& optionDates,

@@ -49,30 +49,30 @@ namespace QuantLib {
         //! floating reference date, floating market data
         CapFloorTermVolCurve(Natural settlementDays,
                              const Calendar& calendar,
+                             BusinessDayConvention bdc,
                              const std::vector<Period>& optionTenors,
                              const std::vector<Handle<Quote> >& vols,
-                             BusinessDayConvention bdc = Following,
                              const DayCounter& dc = Actual365Fixed());
         //! fixed reference date, floating market data
         CapFloorTermVolCurve(const Date& settlementDate,
                              const Calendar& calendar,
+                             BusinessDayConvention bdc,
                              const std::vector<Period>& optionTenors,
                              const std::vector<Handle<Quote> >& vols,
-                             BusinessDayConvention bdc = Following,
                              const DayCounter& dc = Actual365Fixed());
         //! fixed reference date, fixed market data
         CapFloorTermVolCurve(const Date& settlementDate,
                              const Calendar& calendar,
+                             BusinessDayConvention bdc,
                              const std::vector<Period>& optionTenors,
                              const std::vector<Volatility>& vols,
-                             BusinessDayConvention bdc = Following,
                              const DayCounter& dc = Actual365Fixed());
         //! floating reference date, fixed market data
         CapFloorTermVolCurve(Natural settlementDays,
                              const Calendar& calendar,
+                             BusinessDayConvention bdc,
                              const std::vector<Period>& optionTenors,
                              const std::vector<Volatility>& vols,
-                             BusinessDayConvention bdc = Following,
                              const DayCounter& dc = Actual365Fixed());
         //! \name TermStructure interface
         //@{

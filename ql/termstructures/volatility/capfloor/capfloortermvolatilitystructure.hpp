@@ -45,18 +45,18 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        CapFloorTermVolatilityStructure(const Calendar& cal = Calendar(),
-                                        BusinessDayConvention bdc = Following,
+        CapFloorTermVolatilityStructure(const Calendar& cal,
+                                        BusinessDayConvention bdc,
                                         const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
         CapFloorTermVolatilityStructure(const Date& referenceDate,
-                                        const Calendar& cal = Calendar(),
-                                        BusinessDayConvention bdc = Following,
+                                        const Calendar& cal,
+                                        BusinessDayConvention bdc,
                                         const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
         CapFloorTermVolatilityStructure(Natural settlementDays,
                                         const Calendar&,
-                                        BusinessDayConvention bdc = Following,
+                                        BusinessDayConvention bdc,
                                         const DayCounter& dc = DayCounter());
         //@}
         virtual ~CapFloorTermVolatilityStructure() {}

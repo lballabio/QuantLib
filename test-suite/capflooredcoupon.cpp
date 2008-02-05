@@ -129,12 +129,11 @@ namespace {
                               DateGeneration::Forward,false);
             Handle<OptionletVolatilityStructure> vol(
                 boost::shared_ptr<OptionletVolatilityStructure>(new
-                    ConstantOptionletVolatility(0, volatility,
-                                                Actual365Fixed(),
-                                                calendar, Following)));
+                    ConstantOptionletVolatility(0, calendar, Following,
+                                                volatility,Actual365Fixed())));
 
-            boost::shared_ptr<IborCouponPricer> pricer(
-                                              new BlackIborCouponPricer(vol));
+            boost::shared_ptr<IborCouponPricer> pricer(new
+                BlackIborCouponPricer(vol));
             std::vector<Rate> gearingVector(length, gearing);
             std::vector<Spread> spreadVector(length, spread);
 

@@ -46,17 +46,17 @@ namespace QuantLib {
                      by overriding the referenceDate() method.
         */
         VolatilityTermStructure(const Calendar& cal,
-                                BusinessDayConvention bdc = Following,
+                                BusinessDayConvention bdc,
                                 const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
         VolatilityTermStructure(const Date& referenceDate,
                                 const Calendar& cal,
-                                BusinessDayConvention bdc = Following,
+                                BusinessDayConvention bdc,
                                 const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
         VolatilityTermStructure(Natural settlementDays,
                                 const Calendar& cal,
-                                BusinessDayConvention bdc = Following,
+                                BusinessDayConvention bdc,
                                 const DayCounter& dc = DayCounter());
         //@}
         virtual ~VolatilityTermStructure() {}

@@ -31,9 +31,9 @@ namespace QuantLib {
     CapFloorTermVolCurve::CapFloorTermVolCurve(
                         Natural settlementDays,
                         const Calendar& calendar,
+                        BusinessDayConvention bdc,
                         const std::vector<Period>& optionTenors,
                         const std::vector<Handle<Quote> >& vols,
-                        BusinessDayConvention bdc,
                         const DayCounter& dc)
     : CapFloorTermVolatilityStructure(settlementDays, calendar, bdc, dc),
       nOptionTenors_(optionTenors.size()),
@@ -53,9 +53,9 @@ namespace QuantLib {
     CapFloorTermVolCurve::CapFloorTermVolCurve(
                             const Date& settlementDate,
                             const Calendar& calendar,
+                            BusinessDayConvention bdc,
                             const std::vector<Period>& optionTenors,
                             const std::vector<Handle<Quote> >& vols,
-                            BusinessDayConvention bdc,
                             const DayCounter& dayCounter)
     : CapFloorTermVolatilityStructure(settlementDate, calendar, bdc, dayCounter),
       nOptionTenors_(optionTenors.size()),
@@ -75,9 +75,9 @@ namespace QuantLib {
     CapFloorTermVolCurve::CapFloorTermVolCurve(
                                 const Date& settlementDate,
                                 const Calendar& calendar,
+                                BusinessDayConvention bdc,
                                 const std::vector<Period>& optionTenors,
                                 const std::vector<Volatility>& vols,
-                                BusinessDayConvention bdc,
                                 const DayCounter& dayCounter)
     : CapFloorTermVolatilityStructure(settlementDate, calendar, bdc, dayCounter),
       nOptionTenors_(optionTenors.size()),
@@ -100,9 +100,9 @@ namespace QuantLib {
     CapFloorTermVolCurve::CapFloorTermVolCurve(
                                 Natural settlementDays,
                                 const Calendar& calendar,
+                                BusinessDayConvention bdc,
                                 const std::vector<Period>& optionTenors,
                                 const std::vector<Volatility>& vols,
-                                BusinessDayConvention bdc,
                                 const DayCounter& dayCounter)
     : CapFloorTermVolatilityStructure(settlementDays, calendar, bdc, dayCounter),
       nOptionTenors_(optionTenors.size()),

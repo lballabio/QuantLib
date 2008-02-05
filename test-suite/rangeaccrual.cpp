@@ -278,12 +278,11 @@ namespace {
         atmVol_ = Handle<SwaptionVolatilityStructure>(
             boost::shared_ptr<SwaptionVolatilityStructure>(new
                 SwaptionVolatilityMatrix(calendar_,
+                                         optionBDC_,
                                          atmOptionTenors_,
                                          atmSwapTenors_,
                                          atmVolsHandle_,
-                                         dayCounter_,
-                                         optionBDC_)));
-
+                                         dayCounter_)));
 
         // Volatility Cube without smile
         std::vector<std::vector<Handle<Quote> > > parametersGuess(optionTenors_.size()*swapTenors_.size());

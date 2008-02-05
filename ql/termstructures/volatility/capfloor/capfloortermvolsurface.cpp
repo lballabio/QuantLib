@@ -29,10 +29,10 @@ namespace QuantLib {
     CapFloorTermVolSurface::CapFloorTermVolSurface(
                         Natural settlementDays,
                         const Calendar& calendar,
+                        BusinessDayConvention bdc,
                         const std::vector<Period>& optionTenors,
                         const std::vector<Rate>& strikes,
                         const std::vector<std::vector<Handle<Quote> > >& vols,
-                        BusinessDayConvention bdc,
                         const DayCounter& dc)
     : CapFloorTermVolatilityStructure(settlementDays, calendar, bdc, dc),
       nOptionTenors_(optionTenors.size()),
@@ -61,10 +61,10 @@ namespace QuantLib {
     CapFloorTermVolSurface::CapFloorTermVolSurface(
                         const Date& settlementDate,
                         const Calendar& calendar,
+                        BusinessDayConvention bdc,
                         const std::vector<Period>& optionTenors,
                         const std::vector<Rate>& strikes,
                         const std::vector<std::vector<Handle<Quote> > >& vols,
-                        BusinessDayConvention bdc,
                         const DayCounter& dc)
     : CapFloorTermVolatilityStructure(settlementDate, calendar, bdc, dc),
       nOptionTenors_(optionTenors.size()),
@@ -93,10 +93,10 @@ namespace QuantLib {
     CapFloorTermVolSurface::CapFloorTermVolSurface(
                         const Date& settlementDate,
                         const Calendar& calendar,
+                        BusinessDayConvention bdc,
                         const std::vector<Period>& optionTenors,
                         const std::vector<Rate>& strikes,
                         const Matrix& vols,
-                        BusinessDayConvention bdc,
                         const DayCounter& dc)
     : CapFloorTermVolatilityStructure(settlementDate, calendar, bdc, dc),
       nOptionTenors_(optionTenors.size()),
@@ -124,10 +124,10 @@ namespace QuantLib {
     CapFloorTermVolSurface::CapFloorTermVolSurface(
                         Natural settlementDays,
                         const Calendar& calendar,
+                        BusinessDayConvention bdc,
                         const std::vector<Period>& optionTenors,
                         const std::vector<Rate>& strikes,
                         const Matrix& vols,
-                        BusinessDayConvention bdc,
                         const DayCounter& dc)
     : CapFloorTermVolatilityStructure(settlementDays, calendar, bdc, dc),
       nOptionTenors_(optionTenors.size()),

@@ -276,8 +276,8 @@ void SwapTest::testInArrears() {
     Volatility capletVolatility = 0.22;
     Handle<OptionletVolatilityStructure> vol(
         boost::shared_ptr<OptionletVolatilityStructure>(new
-            ConstantOptionletVolatility(today_, capletVolatility, dayCounter,
-                                 NullCalendar(), Following)));
+            ConstantOptionletVolatility(today_, NullCalendar(), Following,
+                                        capletVolatility, dayCounter)));
     boost::shared_ptr<IborCouponPricer> pricer(new
         BlackIborCouponPricer(vol));
 

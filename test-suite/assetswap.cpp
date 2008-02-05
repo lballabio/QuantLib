@@ -95,14 +95,14 @@ namespace {
             Date today(24,April,2007);
             Settings::instance().evaluationDate() = today;
             termStructure.linkTo(flatRate(today, 0.05, Actual365Fixed()));
-            pricer = boost::shared_ptr<IborCouponPricer>(
-                                                   new BlackIborCouponPricer);
+            pricer = boost::shared_ptr<IborCouponPricer>(new
+                                                        BlackIborCouponPricer);
             Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure(
                 boost::shared_ptr<SwaptionVolatilityStructure>(new
-                    ConstantSwaptionVolatility(today, 0.2, Actual365Fixed(),
-                                               NullCalendar(), Following)));
-            Handle<Quote> meanReversionQuote(
-                             boost::shared_ptr<Quote>(new SimpleQuote(0.01)));
+                    ConstantSwaptionVolatility(today, NullCalendar(),Following,
+                                               0.2, Actual365Fixed())));
+            Handle<Quote> meanReversionQuote(boost::shared_ptr<Quote>(new
+                SimpleQuote(0.01)));
             cmspricer = boost::shared_ptr<CmsCouponPricer>(new
                 AnalyticHaganPricer(swaptionVolatilityStructure,
                                     GFunctionFactory::Standard,
