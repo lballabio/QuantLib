@@ -61,18 +61,18 @@ namespace QuantLib {
                      for the whole life of the rate helper. It is
                      responsibility of the programmer to ensure that
                      the pointer remains valid. It is advised that
-                     rate helpers be used only in term structure
-                     constructors, setting the term structure to
-                     <b>this</b>, i.e., the one being constructed.
+                     this method is called only inside the term
+                     structure being bootstrapped, setting the pointer
+                     to <b>this</b>, i.e., the term structure itself.
         */
         virtual void setTermStructure(TS*);
         //! earliest relevant date
-        /*! The earliest date at which discounts are needed by the
+        /*! The earliest date at which data are needed by the
             helper in order to provide a quote.
         */
         virtual Date earliestDate() const;
         //! latest relevant date
-        /*! The latest date at which discounts are needed by the
+        /*! The latest date at which data are needed by the
             helper in order to provide a quote. It does not
             necessarily equal the maturity of the underlying
             instrument.
