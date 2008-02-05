@@ -32,35 +32,35 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(SwaptionVolatilityCubeTest)
+namespace {
 
-// global data
+    // TODO: use CommonVars
+    // global data
 
-SwaptionMarketConventions conventions_;
-AtmVolatility atm_;
-RelinkableHandle<SwaptionVolatilityStructure> atmVolMatrix_;
-VolatilityCube cube_;
+    SwaptionMarketConventions conventions_;
+    AtmVolatility atm_;
+    RelinkableHandle<SwaptionVolatilityStructure> atmVolMatrix_;
+    VolatilityCube cube_;
 
-RelinkableHandle<YieldTermStructure> termStructure_;
+    RelinkableHandle<YieldTermStructure> termStructure_;
 
-boost::shared_ptr<SwapIndex> swapIndexBase_, shortSwapIndexBase_;
-bool vegaWeightedSmileFit_;
+    boost::shared_ptr<SwapIndex> swapIndexBase_, shortSwapIndexBase_;
+    bool vegaWeightedSmileFit_;
 
-// utilities
+    // utilities
 
+    void makeAtmVolTest(const SwaptionVolatilityCube& volCube,
+                        Real tolerance) {
 
-void makeAtmVolTest(const SwaptionVolatilityCube& volCube,
-                    Real tolerance) {
-
-    for (Size i=0; i<atm_.tenors.options.size(); i++) {
-      for (Size j=0; j<atm_.tenors.swaps.size(); j++) {
-          Rate strike = volCube.atmStrike(atm_.tenors.options[i], atm_.tenors.swaps[j]);
-          Volatility expVol = atmVolMatrix_->volatility(
+        for (Size i=0; i<atm_.tenors.options.size(); i++) {
+          for (Size j=0; j<atm_.tenors.swaps.size(); j++) {
+            Rate strike = volCube.atmStrike(atm_.tenors.options[i], atm_.tenors.swaps[j]);
+            Volatility expVol = atmVolMatrix_->volatility(
               atm_.tenors.options[i], atm_.tenors.swaps[j], strike, true);
-          Volatility actVol = volCube.volatility(
+            Volatility actVol = volCube.volatility(
               atm_.tenors.options[i], atm_.tenors.swaps[j], strike, true);
-          Volatility error = std::abs(expVol-actVol);
-          if (error>tolerance)
+            Volatility error = std::abs(expVol-actVol);
+            if (error>tolerance)
               BOOST_ERROR("\nrecovery of atm vols failed:"
                           "\nexpiry time = " << atm_.tenors.options[i] <<
                           "\nswap length = " << atm_.tenors.swaps[j] <<
@@ -69,17 +69,17 @@ void makeAtmVolTest(const SwaptionVolatilityCube& volCube,
                           "\n actual vol = " << io::volatility(actVol) <<
                           "\n      error = " << io::volatility(error) <<
                           "\n  tolerance = " << tolerance);
-      }
+          }
+        }
+
     }
 
-}
+    void makeVolSpreadsTest(const SwaptionVolatilityCube& volCube,
+                            Real tolerance) {
 
-void makeVolSpreadsTest(const SwaptionVolatilityCube& volCube,
-                        Real tolerance) {
-
-    for (Size i=0; i<cube_.tenors.options.size(); i++) {
-      for (Size j=0; j<cube_.tenors.swaps.size(); j++) {
-          for (Size k=0; k<cube_.strikeSpreads.size(); k++) {
+        for (Size i=0; i<cube_.tenors.options.size(); i++) {
+          for (Size j=0; j<cube_.tenors.swaps.size(); j++) {
+            for (Size k=0; k<cube_.strikeSpreads.size(); k++) {
               Rate atmStrike = volCube.atmStrike(cube_.tenors.options[i], cube_.tenors.swaps[j]);
               Volatility atmVol = atmVolMatrix_->volatility(
                   cube_.tenors.options[i], cube_.tenors.swaps[j], atmStrike, true);
@@ -100,43 +100,42 @@ void makeVolSpreadsTest(const SwaptionVolatilityCube& volCube,
                              "\n exp. vol spread = " << io::volatility(expVolSpread) <<
                              "\n           error = " << io::volatility(error) <<
                              "\n       tolerance = " << tolerance);
+            }
           }
-      }
+        }
+
+    }
+
+    void setup() {
+
+        conventions_.setConventions();
+
+        // ATM swaptionvolmatrix
+        atm_.setMarketData();
+
+        atmVolMatrix_ = RelinkableHandle<SwaptionVolatilityStructure>(
+            boost::shared_ptr<SwaptionVolatilityStructure>(new
+                SwaptionVolatilityMatrix(conventions_.calendar,
+                                         atm_.tenors.options,
+                                         atm_.tenors.swaps,
+                                         atm_.volsHandle,
+                                         conventions_.dayCounter,
+                                         conventions_.optionBdc)));
+
+        // Swaptionvolcube
+        cube_.setMarketData();
+
+        termStructure_.linkTo(flatRate(0.05, Actual365Fixed()));
+
+        swapIndexBase_ = boost::shared_ptr<SwapIndex>(new
+            EuriborSwapFixA(2*Years, termStructure_));
+        shortSwapIndexBase_ = boost::shared_ptr<SwapIndex>(new
+            EuriborSwapFixA(1*Years, termStructure_));
+
+        vegaWeightedSmileFit_=false;
     }
 
 }
-
-void setup() {
-
-    conventions_.setConventions();
-
-    // ATM swaptionvolmatrix
-    atm_.setMarketData();
-
-    atmVolMatrix_ = RelinkableHandle<SwaptionVolatilityStructure>(
-        boost::shared_ptr<SwaptionVolatilityStructure>(new
-            SwaptionVolatilityMatrix(conventions_.calendar,
-                                     atm_.tenors.options,
-                                     atm_.tenors.swaps,
-                                     atm_.volsHandle,
-                                     conventions_.dayCounter,
-                                     conventions_.optionBdc)));
-
-    // Swaptionvolcube
-    cube_.setMarketData();
-
-    termStructure_.linkTo(flatRate(0.05, Actual365Fixed()));
-
-    swapIndexBase_ = boost::shared_ptr<SwapIndex>(new
-        EuriborSwapFixA(2*Years, termStructure_));
-    shortSwapIndexBase_ = boost::shared_ptr<SwapIndex>(new
-        EuriborSwapFixA(1*Years, termStructure_));
-
-
-    vegaWeightedSmileFit_=false;
-}
-
-QL_END_TEST_LOCALS(SwaptionVolatilityCubeTest)
 
 
 void SwaptionVolatilityCubeTest::testAtmVols() {

@@ -85,79 +85,79 @@ using namespace boost::unit_test_framework;
         << "    tolerance:        " << tolerance);
 
 
-QL_BEGIN_TEST_LOCALS(BasketOptionTest)
+namespace {
 
-enum BasketType { MinBasket, MaxBasket };
+    enum BasketType { MinBasket, MaxBasket };
 
-std::string basketTypeToString(BasketType basketType) {
-    switch (basketType) {
-      case MinBasket:
-        return "MinBasket";
-      case MaxBasket:
-        return "MaxBasket";
+    std::string basketTypeToString(BasketType basketType) {
+        switch (basketType) {
+          case MinBasket:
+            return "MinBasket";
+          case MaxBasket:
+            return "MaxBasket";
+        }
+        QL_FAIL("unknown basket option type");
     }
-    QL_FAIL("unknown basket option type");
-}
 
-boost::shared_ptr<BasketPayoff> basketTypeToPayoff(
+    boost::shared_ptr<BasketPayoff> basketTypeToPayoff(
                                          BasketType basketType,
                                          const boost::shared_ptr<Payoff> &p) {
-    switch (basketType) {
-      case MinBasket:
-        return boost::shared_ptr<BasketPayoff>(new MinBasketPayoff(p));
-      case MaxBasket:
-        return boost::shared_ptr<BasketPayoff>(new MaxBasketPayoff(p));
+        switch (basketType) {
+          case MinBasket:
+            return boost::shared_ptr<BasketPayoff>(new MinBasketPayoff(p));
+          case MaxBasket:
+            return boost::shared_ptr<BasketPayoff>(new MaxBasketPayoff(p));
+        }
+        QL_FAIL("unknown basket option type");
     }
-    QL_FAIL("unknown basket option type");
+
+    struct BasketOptionOneData {
+        Option::Type type;
+        Real strike;
+        Real s;        // spot
+        Rate q;        // dividend
+        Rate r;        // risk-free rate
+        Time t;        // time to maturity
+        Volatility v;  // volatility
+        Real result;   // expected result
+        Real tol;      // tolerance
+    };
+
+    struct BasketOptionTwoData {
+        BasketType basketType;
+        Option::Type type;
+        Real strike;
+        Real s1;
+        Real s2;
+        Rate q1;
+        Rate q2;
+        Rate r;
+        Time t; // years
+        Volatility v1;
+        Volatility v2;
+        Real rho;
+        Real result;
+        Real tol;
+    };
+
+    struct BasketOptionThreeData {
+        BasketType basketType;
+        Option::Type type;
+        Real strike;
+        Real s1;
+        Real s2;
+        Real s3;
+        Rate r;
+        Time t; // months
+        Volatility v1;
+        Volatility v2;
+        Volatility v3;
+        Real rho;
+        Real euroValue;
+        Real amValue;
+    };
+
 }
-
-struct BasketOptionOneData {
-    Option::Type type;
-    Real strike;
-    Real s;        // spot
-    Rate q;        // dividend
-    Rate r;        // risk-free rate
-    Time t;        // time to maturity
-    Volatility v;  // volatility
-    Real result;   // expected result
-    Real tol;      // tolerance
-};
-
-struct BasketOptionTwoData {
-    BasketType basketType;
-    Option::Type type;
-    Real strike;
-    Real s1;
-    Real s2;
-    Rate q1;
-    Rate q2;
-    Rate r;
-    Time t; // years
-    Volatility v1;
-    Volatility v2;
-    Real rho;
-    Real result;
-    Real tol;
-};
-
-struct BasketOptionThreeData {
-    BasketType basketType;
-    Option::Type type;
-    Real strike;
-    Real s1;
-    Real s2;
-    Real s3;
-    Rate r;
-    Time t; // months
-    Volatility v1;
-    Volatility v2;
-    Volatility v3;
-    Real rho;
-    Real euroValue;
-    Real amValue;
-};
-
-QL_END_TEST_LOCALS(BasketOptionTest)
 
 
 void BasketOptionTest::testEuroTwoValues() {

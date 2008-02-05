@@ -41,67 +41,68 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(ConvertibleBondTest)
+namespace {
 
-struct CommonVars {
-    // global data
-    Date today, issueDate, maturityDate;
-    Calendar calendar;
-    DayCounter dayCounter;
-    Frequency frequency;
-    Natural settlementDays;
+    struct CommonVars {
+        // global data
+        Date today, issueDate, maturityDate;
+        Calendar calendar;
+        DayCounter dayCounter;
+        Frequency frequency;
+        Natural settlementDays;
 
-    RelinkableHandle<Quote> underlying;
-    RelinkableHandle<YieldTermStructure> dividendYield, riskFreeRate;
-    RelinkableHandle<BlackVolTermStructure> volatility;
-    boost::shared_ptr<BlackScholesMertonProcess> process;
+        RelinkableHandle<Quote> underlying;
+        RelinkableHandle<YieldTermStructure> dividendYield, riskFreeRate;
+        RelinkableHandle<BlackVolTermStructure> volatility;
+        boost::shared_ptr<BlackScholesMertonProcess> process;
 
-    RelinkableHandle<Quote> creditSpread;
+        RelinkableHandle<Quote> creditSpread;
 
-    CallabilitySchedule no_callability;
-    DividendSchedule no_dividends;
+        CallabilitySchedule no_callability;
+        DividendSchedule no_dividends;
 
-    Real faceAmount, redemption, conversionRatio;
+        Real faceAmount, redemption, conversionRatio;
 
-    // cleanup
-    SavedSettings backup;
+        // cleanup
+        SavedSettings backup;
 
-    // setup
-    CommonVars() {
-        calendar = TARGET();
+        // setup
+        CommonVars() {
+            calendar = TARGET();
 
-        today = calendar.adjust(Date::todaysDate());
-        Settings::instance().evaluationDate() = today;
+            today = calendar.adjust(Date::todaysDate());
+            Settings::instance().evaluationDate() = today;
 
-        dayCounter = Actual360();
-        frequency = Annual;
-        settlementDays = 3;
+            dayCounter = Actual360();
+            frequency = Annual;
+            settlementDays = 3;
 
-        issueDate = calendar.advance(today,2,Days);
-        maturityDate = calendar.advance(issueDate, 10, Years);
-        // reset to avoid inconsistencies as the schedule is backwards
-        issueDate = calendar.advance(maturityDate, -10, Years);
+            issueDate = calendar.advance(today,2,Days);
+            maturityDate = calendar.advance(issueDate, 10, Years);
+            // reset to avoid inconsistencies as the schedule is backwards
+            issueDate = calendar.advance(maturityDate, -10, Years);
 
-        underlying.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(50.0)));
-        dividendYield.linkTo(flatRate(today, 0.02, dayCounter));
-        riskFreeRate.linkTo(flatRate(today, 0.05, dayCounter));
-        volatility.linkTo(flatVol(today, 0.15, dayCounter));
+            underlying.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(50.0)));
+            dividendYield.linkTo(flatRate(today, 0.02, dayCounter));
+            riskFreeRate.linkTo(flatRate(today, 0.05, dayCounter));
+            volatility.linkTo(flatVol(today, 0.15, dayCounter));
 
-        process = boost::shared_ptr<BlackScholesMertonProcess>(
+            process = boost::shared_ptr<BlackScholesMertonProcess>(
                     new BlackScholesMertonProcess(underlying, dividendYield,
                                                   riskFreeRate, volatility));
 
-        creditSpread.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(0.005)));
+            creditSpread.linkTo(
+                            boost::shared_ptr<Quote>(new SimpleQuote(0.005)));
 
-        // it fails with 1000000
-        // faceAmount = 1000000.0;
-        faceAmount = 100.0;
-        redemption = 100.0;
-        conversionRatio = redemption/underlying->value();
-    }
-};
+            // it fails with 1000000
+            // faceAmount = 1000000.0;
+            faceAmount = 100.0;
+            redemption = 100.0;
+            conversionRatio = redemption/underlying->value();
+        }
+    };
 
-QL_END_TEST_LOCALS(ConvertibleBondTest)
+}
 
 
 void ConvertibleBondTest::testBond() {

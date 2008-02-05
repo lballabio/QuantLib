@@ -37,85 +37,86 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(TermStructureTest)
+namespace {
 
-struct Datum {
-    Integer n;
-    TimeUnit units;
-    Rate rate;
-};
+    struct Datum {
+        Integer n;
+        TimeUnit units;
+        Rate rate;
+    };
 
-struct CommonVars {
-    // common data
-    Calendar calendar;
-    Natural settlementDays;
-    boost::shared_ptr<YieldTermStructure> termStructure;
-    boost::shared_ptr<YieldTermStructure> dummyTermStructure;
+    struct CommonVars {
+        // common data
+        Calendar calendar;
+        Natural settlementDays;
+        boost::shared_ptr<YieldTermStructure> termStructure;
+        boost::shared_ptr<YieldTermStructure> dummyTermStructure;
 
-    // cleanup
-    SavedSettings backup;
+        // cleanup
+        SavedSettings backup;
 
-    // setup
-    CommonVars() {
-        calendar = TARGET();
-        settlementDays = 2;
-        Date today = calendar.adjust(Date::todaysDate());
-        Settings::instance().evaluationDate() = today;
-        Date settlement = calendar.advance(today,settlementDays,Days);
-        Datum depositData[] = {
-            { 1, Months, 4.581 },
-            { 2, Months, 4.573 },
-            { 3, Months, 4.557 },
-            { 6, Months, 4.496 },
-            { 9, Months, 4.490 }
-        };
-        Datum swapData[] = {
-            {  1, Years, 4.54 },
-            {  5, Years, 4.99 },
-            { 10, Years, 5.47 },
-            { 20, Years, 5.89 },
-            { 30, Years, 5.96 }
-        };
-        Size deposits = LENGTH(depositData),
-             swaps = LENGTH(swapData);
+        // setup
+        CommonVars() {
+            calendar = TARGET();
+            settlementDays = 2;
+            Date today = calendar.adjust(Date::todaysDate());
+            Settings::instance().evaluationDate() = today;
+            Date settlement = calendar.advance(today,settlementDays,Days);
+            Datum depositData[] = {
+                { 1, Months, 4.581 },
+                { 2, Months, 4.573 },
+                { 3, Months, 4.557 },
+                { 6, Months, 4.496 },
+                { 9, Months, 4.490 }
+            };
+            Datum swapData[] = {
+                {  1, Years, 4.54 },
+                {  5, Years, 4.99 },
+                { 10, Years, 5.47 },
+                { 20, Years, 5.89 },
+                { 30, Years, 5.96 }
+            };
+            Size deposits = LENGTH(depositData),
+                swaps = LENGTH(swapData);
 
-        std::vector<boost::shared_ptr<RateHelper> > instruments(deposits+swaps);
-        for (Size i=0; i<deposits; i++) {
-            instruments[i] = boost::shared_ptr<RateHelper>(new
-                DepositRateHelper(depositData[i].rate/100,
-                                  depositData[i].n*depositData[i].units,
-                                  settlementDays, calendar,
-                                  ModifiedFollowing, true,
-                                  Actual360()));
-        }
-        boost::shared_ptr<IborIndex> index(new IborIndex("dummy",
-                                                         6*Months,
-                                                         settlementDays,
-                                                         Currency(),
-                                                         calendar,
-                                                         ModifiedFollowing,
-                                                         false,
-                                                         Actual360()));
-        for (Size i=0; i<swaps; i++) {
-            instruments[i+deposits] = boost::shared_ptr<RateHelper>(new
-                SwapRateHelper(swapData[i].rate/100,
-                               swapData[i].n*swapData[i].units,
-                               calendar,
-                               Annual, Unadjusted, Thirty360(),
-                               index));
-        }
-        termStructure = boost::shared_ptr<YieldTermStructure>(
+            std::vector<boost::shared_ptr<RateHelper> > instruments(
+                                                              deposits+swaps);
+            for (Size i=0; i<deposits; i++) {
+                instruments[i] = boost::shared_ptr<RateHelper>(new
+                    DepositRateHelper(depositData[i].rate/100,
+                                      depositData[i].n*depositData[i].units,
+                                      settlementDays, calendar,
+                                      ModifiedFollowing, true,
+                                      Actual360()));
+            }
+            boost::shared_ptr<IborIndex> index(new IborIndex("dummy",
+                                                             6*Months,
+                                                             settlementDays,
+                                                             Currency(),
+                                                             calendar,
+                                                             ModifiedFollowing,
+                                                             false,
+                                                             Actual360()));
+            for (Size i=0; i<swaps; i++) {
+                instruments[i+deposits] = boost::shared_ptr<RateHelper>(new
+                    SwapRateHelper(swapData[i].rate/100,
+                                   swapData[i].n*swapData[i].units,
+                                   calendar,
+                                   Annual, Unadjusted, Thirty360(),
+                                   index));
+            }
+            termStructure = boost::shared_ptr<YieldTermStructure>(
                     new PiecewiseYieldCurve<Discount,LogLinear>(settlement,
                                                                 instruments,
                                                                 Actual360()));
-        dummyTermStructure = boost::shared_ptr<YieldTermStructure>(
+            dummyTermStructure = boost::shared_ptr<YieldTermStructure>(
                     new PiecewiseYieldCurve<Discount,LogLinear>(settlement,
                                                                 instruments,
                                                                 Actual360()));
-    }
-};
+        }
+    };
 
-QL_END_TEST_LOCALS(TermStructureTest)
+}
 
 
 void TermStructureTest::testReferenceChange() {

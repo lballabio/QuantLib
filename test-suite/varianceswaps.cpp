@@ -53,43 +53,43 @@ using namespace boost::unit_test_framework;
         << "    tolerance:        " << tolerance);
 
 
-QL_BEGIN_TEST_LOCALS(VarianceSwapTest)
+namespace {
 
-struct MCVarianceSwapData {
-    Position::Type type;
-    Real varStrike;
-    Real nominal;
-    Real s;         // spot
-    Rate q;         // dividend
-    Rate r;         // risk-free rate
-    Time t1;        // intermediate time
-    Time t;         // time to maturity
-    Volatility v1;  // volatility at t1
-    Volatility v;   // volatility at t
-    Real result;    // result
-    Real tol;       // tolerance
-};
+    struct MCVarianceSwapData {
+        Position::Type type;
+        Real varStrike;
+        Real nominal;
+        Real s;         // spot
+        Rate q;         // dividend
+        Rate r;         // risk-free rate
+        Time t1;        // intermediate time
+        Time t;         // time to maturity
+        Volatility v1;  // volatility at t1
+        Volatility v;   // volatility at t
+        Real result;    // result
+        Real tol;       // tolerance
+    };
 
-struct ReplicatingVarianceSwapData {
-    Position::Type type;
-    Real varStrike;
-    Real nominal;
-    Real s;         // spot
-    Rate q;         // dividend
-    Rate r;         // risk-free rate
-    Time t;         // time to maturity
-    Volatility v;   // volatility at t
-    Real result;    // result
-    Real tol;       // tolerance
-};
+    struct ReplicatingVarianceSwapData {
+        Position::Type type;
+        Real varStrike;
+        Real nominal;
+        Real s;         // spot
+        Rate q;         // dividend
+        Rate r;         // risk-free rate
+        Time t;         // time to maturity
+        Volatility v;   // volatility at t
+        Real result;    // result
+        Real tol;       // tolerance
+    };
 
-struct Datum {
-    Option::Type type;
-    Real strike;
-    Volatility v;
-};
+    struct Datum {
+        Option::Type type;
+        Real strike;
+        Volatility v;
+    };
 
-QL_END_TEST_LOCALS(VarianceSwapTest)
+}
 
 
 void VarianceSwapTest::testReplicatingVarianceSwap() {

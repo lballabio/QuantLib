@@ -31,11 +31,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(OperatorTest)
+namespace {
 
 Real average = 0.0, sigma = 1.0;
 
-QL_END_TEST_LOCALS(OperatorTest)
+}
 
 
 void OperatorTest::testConsistency() {

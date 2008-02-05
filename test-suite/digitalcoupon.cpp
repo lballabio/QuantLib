@@ -36,38 +36,39 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(DigitalCouponTest)
+namespace {
 
-struct CommonVars {
-    // global data
-    Date today, settlement;
-    Real nominal;
-    Calendar calendar;
-    boost::shared_ptr<IborIndex> index;
-    Natural fixingDays;
-    RelinkableHandle<YieldTermStructure> termStructure;
-    Real optionTolerance;
-    Real blackTolerance;
+    struct CommonVars {
+        // global data
+        Date today, settlement;
+        Real nominal;
+        Calendar calendar;
+        boost::shared_ptr<IborIndex> index;
+        Natural fixingDays;
+        RelinkableHandle<YieldTermStructure> termStructure;
+        Real optionTolerance;
+        Real blackTolerance;
 
-    // cleanup
-    SavedSettings backup;
+        // cleanup
+        SavedSettings backup;
 
-    // setup
-    CommonVars() {
-        fixingDays = 2;
-        nominal = 1000000.0;
-        index = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure));
-        calendar = index->fixingCalendar();
-        today = calendar.adjust(Date::todaysDate());
-        Settings::instance().evaluationDate() = today;
-        settlement = calendar.advance(today,fixingDays,Days);
-        termStructure.linkTo(flatRate(settlement,0.05,Actual365Fixed()));
-        optionTolerance = 1.e-04;
-        blackTolerance = 1e-10;
-    }
-};
+        // setup
+        CommonVars() {
+            fixingDays = 2;
+            nominal = 1000000.0;
+            index = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+            calendar = index->fixingCalendar();
+            today = calendar.adjust(Date::todaysDate());
+            Settings::instance().evaluationDate() = today;
+            settlement = calendar.advance(today,fixingDays,Days);
+            termStructure.linkTo(flatRate(settlement,0.05,Actual365Fixed()));
+            optionTolerance = 1.e-04;
+            blackTolerance = 1e-10;
+        }
+    };
 
-QL_END_TEST_LOCALS(DigitalCouponTest)
+}
+
 
 void DigitalCouponTest::testAssetOrNothing() {
 

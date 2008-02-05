@@ -27,94 +27,94 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(GaussianQuadraturesTest)
+namespace {
 
-Real tolerance = 1.0e-4;
+    Real tolerance = 1.0e-4;
 
-template <class T, class F>
-void testSingle(const T& I, const std::string& tag,
-                const F& f, Real expected) {
-    Real calculated = I(f);
-    if (std::fabs(calculated-expected) > tolerance) {
-        BOOST_ERROR("integrating" << tag << "\n"
-                    << "    calculated: " << calculated << "\n"
-                    << "    expected:   " << expected);
-    }
-}
-
-// test functions
-
-Real inv_exp(Real x) {
-    return std::exp(-x);
-}
-
-Real x_inv_exp(Real x) {
-    return x*std::exp(-x);
-}
-
-Real x_normaldistribution(Real x) {
-    return x*NormalDistribution()(x);
-}
-
-Real x_x_normaldistribution(Real x) {
-    return x*x*NormalDistribution()(x);
-}
-
-Real inv_cosh(Real x) {
-    return 1/std::cosh(x);
-}
-
-Real x_inv_cosh(Real x) {
-    return x/std::cosh(x);
-}
-
-template <class T>
-void testSingleJacobi(const T& I) {
-    testSingle(I, "f(x) = 1",
-               constant<Real,Real>(1.0), 2.0);
-    testSingle(I, "f(x) = x",
-               identity<Real>(),         0.0);
-    testSingle(I, "f(x) = x^2",
-               square<Real>(),           2/3.);
-    testSingle(I, "f(x) = sin(x)",
-               std::ptr_fun<Real,Real>(std::sin), 0.0);
-    testSingle(I, "f(x) = cos(x)",
-               std::ptr_fun<Real,Real>(std::cos),
-               std::sin(1.0)-std::sin(-1.0));
-    testSingle(I, "f(x) = Gaussian(x)",
-               NormalDistribution(),
-               CumulativeNormalDistribution()(1.0)
-               -CumulativeNormalDistribution()(-1.0));
-}
-
-template <class T>
-void testSingleLaguerre(const T& I) {
-    testSingle(I, "f(x) = exp(-x)",
-               std::ptr_fun<Real,Real>(inv_exp), 1.0);
-    testSingle(I, "f(x) = x*exp(-x)",
-               std::ptr_fun<Real,Real>(x_inv_exp), 1.0);
-    testSingle(I, "f(x) = Gaussian(x)",
-               NormalDistribution(), 0.5);
-}
-
-template <class F>
-void testSingleTabulated(const F& f, const std::string& tag,
-                         Real expected, Real tolerance) {
-    const Size order[] = { 6, 7, 12, 20 };
-    TabulatedGaussLegendre quad;
-    for (Size i=0; i<LENGTH(order); i++) {
-        quad.order(order[i]);
-        Real realised = quad(f);
-        if (std::fabs(realised-expected) > tolerance) {
-            BOOST_ERROR(" integrating " << tag << "\n"
-                        << "    order " << order[i] << "\n"
-                        << "    realised: " << realised << "\n"
-                        << "    expected: " << expected);
+    template <class T, class F>
+    void testSingle(const T& I, const std::string& tag,
+                    const F& f, Real expected) {
+        Real calculated = I(f);
+        if (std::fabs(calculated-expected) > tolerance) {
+            BOOST_ERROR("integrating" << tag << "\n"
+                        << "    calculated: " << calculated << "\n"
+                        << "    expected:   " << expected);
         }
     }
-}
 
-QL_END_TEST_LOCALS(GaussianQuadraturesTest)
+    // test functions
+
+    Real inv_exp(Real x) {
+        return std::exp(-x);
+    }
+
+    Real x_inv_exp(Real x) {
+        return x*std::exp(-x);
+    }
+
+    Real x_normaldistribution(Real x) {
+        return x*NormalDistribution()(x);
+    }
+
+    Real x_x_normaldistribution(Real x) {
+        return x*x*NormalDistribution()(x);
+    }
+
+    Real inv_cosh(Real x) {
+        return 1/std::cosh(x);
+    }
+
+    Real x_inv_cosh(Real x) {
+        return x/std::cosh(x);
+    }
+
+    template <class T>
+    void testSingleJacobi(const T& I) {
+        testSingle(I, "f(x) = 1",
+                   constant<Real,Real>(1.0), 2.0);
+        testSingle(I, "f(x) = x",
+                   identity<Real>(),         0.0);
+        testSingle(I, "f(x) = x^2",
+                   square<Real>(),           2/3.);
+        testSingle(I, "f(x) = sin(x)",
+                   std::ptr_fun<Real,Real>(std::sin), 0.0);
+        testSingle(I, "f(x) = cos(x)",
+                   std::ptr_fun<Real,Real>(std::cos),
+                   std::sin(1.0)-std::sin(-1.0));
+        testSingle(I, "f(x) = Gaussian(x)",
+                   NormalDistribution(),
+                   CumulativeNormalDistribution()(1.0)
+                   -CumulativeNormalDistribution()(-1.0));
+    }
+
+    template <class T>
+    void testSingleLaguerre(const T& I) {
+        testSingle(I, "f(x) = exp(-x)",
+                   std::ptr_fun<Real,Real>(inv_exp), 1.0);
+        testSingle(I, "f(x) = x*exp(-x)",
+                   std::ptr_fun<Real,Real>(x_inv_exp), 1.0);
+        testSingle(I, "f(x) = Gaussian(x)",
+                   NormalDistribution(), 0.5);
+    }
+
+    template <class F>
+    void testSingleTabulated(const F& f, const std::string& tag,
+                             Real expected, Real tolerance) {
+        const Size order[] = { 6, 7, 12, 20 };
+        TabulatedGaussLegendre quad;
+        for (Size i=0; i<LENGTH(order); i++) {
+            quad.order(order[i]);
+            Real realised = quad(f);
+            if (std::fabs(realised-expected) > tolerance) {
+                BOOST_ERROR(" integrating " << tag << "\n"
+                            << "    order " << order[i] << "\n"
+                            << "    realised: " << realised << "\n"
+                            << "    expected: " << expected);
+            }
+        }
+    }
+
+}
 
 
 void GaussianQuadraturesTest::testJacobi() {

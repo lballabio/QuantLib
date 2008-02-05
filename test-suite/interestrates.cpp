@@ -29,20 +29,20 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(InterestRateTest)
+namespace {
 
-struct InterestRateData {
-    Rate r;
-    Compounding comp;
-    Frequency freq;
-    Time t;
-    Compounding comp2;
-    Frequency freq2;
-    Rate expected;
-    Size precision;
-};
+    struct InterestRateData {
+        Rate r;
+        Compounding comp;
+        Frequency freq;
+        Time t;
+        Compounding comp2;
+        Frequency freq2;
+        Rate expected;
+        Size precision;
+    };
 
-QL_END_TEST_LOCALS(InterestRateTest)
+}
 
 
 void InterestRateTest::testConversions() {

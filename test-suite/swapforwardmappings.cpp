@@ -45,30 +45,30 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(SwapForwardMappingsTest)
-
 #define BEGIN(x) (x+0)
 #define END(x) (x+LENGTH(x))
 
-class MarketModelData{
-  public:
-    MarketModelData();
-    const std::vector<Time>& rateTimes(){return rateTimes_;}
-    const std::vector<Rate>& forwards(){return forwards_;}
-    const std::vector<Volatility>& volatilities(){return volatilities_;}
-    const std::vector<Rate>& displacements(){return displacements_;}
-    const std::vector<DiscountFactor>& discountFactors(){return discountFactors_;}
-    const Size nbRates(){return nbRates_;}
-  private:
-    std::vector<Time> rateTimes_, accruals_;
-    std::vector<Rate> forwards_;
-    std::vector<Spread> displacements_;
-    std::vector<Volatility> volatilities_;
-    std::vector<DiscountFactor> discountFactors_;
-    Size nbRates_;
-};
+namespace {
 
-MarketModelData::MarketModelData(){
+    class MarketModelData{
+      public:
+        MarketModelData();
+        const std::vector<Time>& rateTimes(){return rateTimes_;}
+        const std::vector<Rate>& forwards(){return forwards_;}
+        const std::vector<Volatility>& volatilities(){return volatilities_;}
+        const std::vector<Rate>& displacements(){return displacements_;}
+        const std::vector<DiscountFactor>& discountFactors(){return discountFactors_;}
+        const Size nbRates(){return nbRates_;}
+      private:
+        std::vector<Time> rateTimes_, accruals_;
+        std::vector<Rate> forwards_;
+        std::vector<Spread> displacements_;
+        std::vector<Volatility> volatilities_;
+        std::vector<DiscountFactor> discountFactors_;
+        Size nbRates_;
+    };
+
+    MarketModelData::MarketModelData(){
          // Times
         Calendar calendar = NullCalendar();
         Date todaysDate = Settings::instance().evaluationDate();
@@ -116,44 +116,45 @@ MarketModelData::MarketModelData(){
         volatilities_ = std::vector<Volatility>(nbRates_);
         for (Size i = 0; i < volatilities_.size(); ++i)
             volatilities_[i] =   mktVols[i];//.0;
-}
+    }
 
-const boost::shared_ptr<SequenceStatistics> simulate(
-        const std::vector<Real> todaysDiscounts,
-        const boost::shared_ptr<MarketModelEvolver>& evolver,
-        const MarketModelMultiProduct& product)
-{
-    Size paths_;
+    const boost::shared_ptr<SequenceStatistics> simulate(
+            const std::vector<Real> todaysDiscounts,
+            const boost::shared_ptr<MarketModelEvolver>& evolver,
+            const MarketModelMultiProduct& product)
+    {
+        Size paths_;
 #ifdef _DEBUG
-    paths_ = 1; // 127;// //
+        paths_ = 1; // 127;// //
 #else
-    paths_ = 32767; //262144-1; // //; // 2^15-1
+        paths_ = 32767; //262144-1; // //; // 2^15-1
 #endif
 
-    Size initialNumeraire = evolver->numeraires().front();
-    Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
+        Size initialNumeraire = evolver->numeraires().front();
+        Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 
-    AccountingEngine engine(evolver, product, initialNumeraireValue);
-    boost::shared_ptr<SequenceStatistics> stats(new
-        SequenceStatistics(product.numberOfProducts()));
-    engine.multiplePathValues(*stats, paths_);
-    return stats;
-}
-
-MultiStepCoterminalSwaptions makeMultiStepCoterminalSwaptions(
-    const std::vector<Time>& rateTimes, Real strike ){
-    std::vector<Time> paymentTimes(rateTimes.begin(), rateTimes.end()-1);
-    std::vector<boost::shared_ptr<StrikedTypePayoff> > payoffs(paymentTimes.size());
-    for (Size i = 0; i < payoffs.size(); ++i){
-        payoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
-            PlainVanillaPayoff(Option::Call, strike));
+        AccountingEngine engine(evolver, product, initialNumeraireValue);
+        boost::shared_ptr<SequenceStatistics> stats(new
+            SequenceStatistics(product.numberOfProducts()));
+        engine.multiplePathValues(*stats, paths_);
+        return stats;
     }
-    return MultiStepCoterminalSwaptions (rateTimes,
-                                            paymentTimes, payoffs);
+
+    MultiStepCoterminalSwaptions makeMultiStepCoterminalSwaptions(
+        const std::vector<Time>& rateTimes, Real strike ){
+        std::vector<Time> paymentTimes(rateTimes.begin(), rateTimes.end()-1);
+        std::vector<boost::shared_ptr<StrikedTypePayoff> > payoffs(paymentTimes.size());
+        for (Size i = 0; i < payoffs.size(); ++i){
+            payoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
+                PlainVanillaPayoff(Option::Call, strike));
+        }
+        return MultiStepCoterminalSwaptions (rateTimes,
+                                             paymentTimes, payoffs);
+
+    }
 
 }
 
-QL_END_TEST_LOCALS(SwapForwardMappingsTest)
 
 void SwapForwardMappingsTest::testForwardSwapJacobians()
 {

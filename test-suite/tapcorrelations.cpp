@@ -50,8 +50,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-//QL_BEGIN_TEST_LOCALS(TapCorrelationTest)
-//QL_END_TEST_LOCALS(TapCorrelationTest)
+namespace {
 
     Matrix M2;
     Matrix M3;
@@ -120,26 +119,27 @@ using namespace boost::unit_test_framework;
 
     }
 
-Real sign(Real x) {
-    return x>0?1:-1;
-}
+    Real sign(Real x) {
+        return x>0?1:-1;
+    }
 
-Real safeBounds(Real x){
-    const Real eps=1e-16;
-    if(std::fabs(x) < 1-eps)
-        return x;
-    else
-        return sign(x)*(1-eps);
-}
+    Real safeBounds(Real x){
+        const Real eps=1e-16;
+        if(std::fabs(x) < 1-eps)
+            return x;
+        else
+            return sign(x)*(1-eps);
+    }
 
-Real frobeniusNorm(const Matrix& m){
-    Real result = 0.0;
-    for (Size i=0; i<m.rows(); i++)
-        for (Size j=0; j<m.rows(); j++)
-            result += m[i][j]*m[i][j];
-    return result;
-}
+    Real frobeniusNorm(const Matrix& m){
+        Real result = 0.0;
+        for (Size i=0; i<m.rows(); i++)
+            for (Size j=0; j<m.rows(); j++)
+                result += m[i][j]*m[i][j];
+        return result;
+    }
 
+}
 
 void TapCorrelationTest::testRank3Values() {
     BOOST_MESSAGE("Testing Rank 3 Triangular Angles Parametrization values against article");
@@ -159,30 +159,33 @@ void TapCorrelationTest::testRank3Values() {
                 QL_FAIL("unable to compute the values given in Rapisarda article");
 }
 
+namespace {
 
-Disposable<Array> triangularAnglesParametrizationGuess(const Matrix& matrix, Size rank) {
-    Matrix pseudoRoot = CholeskyDecomposition(matrix, true);
-    Size nbParameters = Size(Real(rank-1) * (Real(matrix.rows()) - Real(rank)/2));
-    Array theta(nbParameters);
-    Size k = 0;
-    for (Size i=1; i<pseudoRoot.rows(); i++) {
-        Real sinProduct = 1;
-        Size bound = std::min(i,rank-1);
-        for (Size j=0; j<bound; j++) {
-            theta[k] = std::acos(safeBounds(pseudoRoot[i][j]/sinProduct))
-                        * sign(pseudoRoot[i][j+1]);
-            sinProduct *= std::sin(theta[k]);
-            k++;
+    Disposable<Array> triangularAnglesParametrizationGuess(const Matrix& matrix, Size rank) {
+        Matrix pseudoRoot = CholeskyDecomposition(matrix, true);
+        Size nbParameters = Size(Real(rank-1) * (Real(matrix.rows()) - Real(rank)/2));
+        Array theta(nbParameters);
+        Size k = 0;
+        for (Size i=1; i<pseudoRoot.rows(); i++) {
+            Real sinProduct = 1;
+            Size bound = std::min(i,rank-1);
+            for (Size j=0; j<bound; j++) {
+                theta[k] = std::acos(safeBounds(pseudoRoot[i][j]/sinProduct))
+                    * sign(pseudoRoot[i][j+1]);
+                sinProduct *= std::sin(theta[k]);
+                k++;
+            }
         }
+        return theta;
     }
-    return theta;
-}
 
-Disposable<Array> tanArray(const Array& v) {
-    Array result(v.size());
-    for(Size i = 0; i<result.size(); ++i)
-        result[i] = std::tan(M_PI*.5 - v[i]);
-    return result;
+    Disposable<Array> tanArray(const Array& v) {
+        Array result(v.size());
+        for(Size i = 0; i<result.size(); ++i)
+            result[i] = std::tan(M_PI*.5 - v[i]);
+        return result;
+    }
+
 }
 
 void testCorrelation(const Matrix& target,
@@ -290,59 +293,60 @@ void TapCorrelationTest::testArticleCalibrationExamples(){
     BOOST_MESSAGE(correlations);*/
 }
 
+namespace {
 
-typedef std::vector<boost::shared_ptr<IborIndex> > IborVector;
-typedef std::vector<boost::shared_ptr<SwapIndex> > SwapVector;
+    typedef std::vector<boost::shared_ptr<IborIndex> > IborVector;
+    typedef std::vector<boost::shared_ptr<SwapIndex> > SwapVector;
 
-void addSwapIndexes(SwapVector& swapIndexes, Period step, Period horizon,
-             const boost::shared_ptr<IborIndex> &iborIndex) {
-    Period fixedLegTenor(6, Months);
-    BusinessDayConvention bdc = Following;
-    Actual360 dayCounter;
-    TARGET calendar;
-    Period currentPeriod;
-    Handle<YieldTermStructure> dummyYTSHandle;
-    Size i = 1;
-    for(currentPeriod = step; currentPeriod<=horizon; ++i, currentPeriod = i*step)
-        swapIndexes.push_back(boost::shared_ptr<SwapIndex>
+    void addSwapIndexes(SwapVector& swapIndexes, Period step, Period horizon,
+                        const boost::shared_ptr<IborIndex> &iborIndex) {
+        Period fixedLegTenor(6, Months);
+        BusinessDayConvention bdc = Following;
+        Actual360 dayCounter;
+        TARGET calendar;
+        Period currentPeriod;
+        Handle<YieldTermStructure> dummyYTSHandle;
+        Size i = 1;
+        for(currentPeriod = step; currentPeriod<=horizon; ++i, currentPeriod = i*step)
+            swapIndexes.push_back(boost::shared_ptr<SwapIndex>
                             (new SwapIndex("swap", currentPeriod, 2,
                                         EURCurrency(), calendar,
                                         fixedLegTenor, bdc,
                                         dayCounter, iborIndex)));
-}
+    }
 
-void addSwaps(SwapVector& swapIndexes,
-              const boost::shared_ptr<IborIndex> &iborIndex) {
-   addSwapIndexes(swapIndexes, Period(5, Years), Period(30, Years), iborIndex);
-}
+    void addSwaps(SwapVector& swapIndexes,
+                  const boost::shared_ptr<IborIndex> &iborIndex) {
+        addSwapIndexes(swapIndexes, Period(5, Years), Period(30, Years), iborIndex);
+    }
 
-void addIborIndexes(IborVector& iborIndexes, Period step, Period horizon) {
-    BusinessDayConvention bdc = Following;
-    Actual360 dayCounter;
-    TARGET calendar;
-    Period currentPeriod;
-    Handle<YieldTermStructure> dummyYTSHandle;
-    Size i = 1;
-    for(currentPeriod = step; currentPeriod<=horizon;++i, currentPeriod = i*step)
-        iborIndexes.push_back(boost::shared_ptr<IborIndex>
-                            (new IborIndex("ibor", currentPeriod, 2,
-                                        EURCurrency(), calendar, bdc, false,
-                                        dayCounter, dummyYTSHandle)));
-}
+    void addIborIndexes(IborVector& iborIndexes, Period step, Period horizon) {
+        BusinessDayConvention bdc = Following;
+        Actual360 dayCounter;
+        TARGET calendar;
+        Period currentPeriod;
+        Handle<YieldTermStructure> dummyYTSHandle;
+        Size i = 1;
+        for(currentPeriod = step; currentPeriod<=horizon;++i, currentPeriod = i*step)
+            iborIndexes.push_back(boost::shared_ptr<IborIndex>
+                                  (new IborIndex("ibor", currentPeriod, 2,
+                                                 EURCurrency(), calendar, bdc, false,
+                                                 dayCounter, dummyYTSHandle)));
+    }
 
-void addIbors(IborVector& iborIndexes) {
-   addIborIndexes(iborIndexes, Period(1,Days), Period(1,Days));
-   addIborIndexes(iborIndexes, Period(1,Weeks), Period(3,Weeks));
-   addIborIndexes(iborIndexes, Period(1,Months), Period(6,Months));
-   addIborIndexes(iborIndexes, Period(9,Months), Period(9,Months));
-   addIborIndexes(iborIndexes, Period(12,Months), Period(12,Months));
-}
+    void addIbors(IborVector& iborIndexes) {
+        addIborIndexes(iborIndexes, Period(1,Days), Period(1,Days));
+        addIborIndexes(iborIndexes, Period(1,Weeks), Period(3,Weeks));
+        addIborIndexes(iborIndexes, Period(1,Months), Period(6,Months));
+        addIborIndexes(iborIndexes, Period(9,Months), Period(9,Months));
+        addIborIndexes(iborIndexes, Period(12,Months), Period(12,Months));
+    }
 
-boost::shared_ptr<YieldTermStructure> createTermStructure(const IborVector& iborIndexes,
-                                                          const SwapVector& swapIndexes,
-                                                          Natural depositSettlementDays,
-                                                          Natural swapSettlementDays,
-                                                          const DayCounter& swapDayCounter) {
+    boost::shared_ptr<YieldTermStructure> createTermStructure(const IborVector& iborIndexes,
+                                                              const SwapVector& swapIndexes,
+                                                              Natural depositSettlementDays,
+                                                              Natural swapSettlementDays,
+                                                              const DayCounter& swapDayCounter) {
         std::vector<boost::shared_ptr<RateHelper> > rateHelpers;
         IborVector::const_iterator ibor;
         for(ibor=iborIndexes.begin(); ibor!=iborIndexes.end(); ++ibor) {
@@ -372,13 +376,16 @@ boost::shared_ptr<YieldTermStructure> createTermStructure(const IborVector& ibor
                                             swapDayCounter,
                                             (*swap)->iborIndex())));
         }
-    Actual360 dayCounter;
-    Date today = Settings::instance().evaluationDate();
-    Real yieldCurveAccuracy = 1.0e-12;
-    return boost::shared_ptr<YieldTermStructure>
-        (new PiecewiseYieldCurve<ForwardRate, Linear>
-        (today, rateHelpers, dayCounter, yieldCurveAccuracy));
+        Actual360 dayCounter;
+        Date today = Settings::instance().evaluationDate();
+        Real yieldCurveAccuracy = 1.0e-12;
+        return boost::shared_ptr<YieldTermStructure>
+            (new PiecewiseYieldCurve<ForwardRate, Linear>
+             (today, rateHelpers, dayCounter, yieldCurveAccuracy));
+    }
+
 }
+
 
 void TapCorrelationTest::testHistoricalCorrelation() {
     BOOST_MESSAGE("Testing historical correlations");
@@ -448,7 +455,7 @@ void TapCorrelationTest::testHistoricalCorrelation() {
 
 
 // --- Call the desired tests
-    test_suite* TapCorrelationTest::suite() {
+test_suite* TapCorrelationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("SMM Caplet calibration test");
 
     suite->add(BOOST_TEST_CASE(&TapCorrelationTest::testRank3Values));

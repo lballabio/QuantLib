@@ -33,23 +33,23 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(OldPricerTest)
+namespace {
 
-struct BatchData {
-    Option::Type type;
-    Real underlying;
-    Real strike;
-    Rate dividendYield;
-    Rate riskFreeRate;
-    Time first;
-    Time length;
-    Size fixings;
-    Volatility volatility;
-    bool controlVariate;
-    Real result;
-};
+    struct BatchData {
+        Option::Type type;
+        Real underlying;
+        Real strike;
+        Rate dividendYield;
+        Rate riskFreeRate;
+        Time first;
+        Time length;
+        Size fixings;
+        Volatility volatility;
+        bool controlVariate;
+        Real result;
+    };
 
-QL_END_TEST_LOCALS(OldPricerTest)
+}
 
 
 void OldPricerTest::testMcSingleFactorPricers() {
@@ -177,37 +177,38 @@ void OldPricerTest::testMcSingleFactorPricers() {
 
 }
 
-QL_BEGIN_TEST_LOCALS(OldPricerTest)
+namespace {
 
-template <class P>
-void testMcMFPricer(const P& pricer, Real storedValue,
-                    Real tolerance, const std::string& name) {
+    template <class P>
+    void testMcMFPricer(const P& pricer, Real storedValue,
+                        Real tolerance, const std::string& name) {
 
-    // cannot be too low, or one cannot compare numbers when
-    // switching to a new default generator
-    Size fixedSamples = 1023;
-    Real minimumTol = 1.0e-2;
+        // cannot be too low, or one cannot compare numbers when
+        // switching to a new default generator
+        Size fixedSamples = 1023;
+        Real minimumTol = 1.0e-2;
 
-    Real value = pricer.valueWithSamples(fixedSamples);
-    if (std::fabs(value-storedValue) > tolerance)
-        BOOST_FAIL(name << ":\n"
-                   << std::setprecision(10)
-                   << "    calculated value: " << value << "\n"
-                   << "    expected:         " << storedValue);
+        Real value = pricer.valueWithSamples(fixedSamples);
+        if (std::fabs(value-storedValue) > tolerance)
+            BOOST_FAIL(name << ":\n"
+                       << std::setprecision(10)
+                       << "    calculated value: " << value << "\n"
+                       << "    expected:         " << storedValue);
 
-    tolerance = pricer.errorEstimate()/value;
-    tolerance = std::min<Real>(tolerance/2.0, minimumTol);
-    value = pricer.value(tolerance);
-    Real accuracy = pricer.errorEstimate()/value;
-    if (accuracy > tolerance)
-        BOOST_FAIL(name << ":\n"
-                   << std::setprecision(10)
-                   << "    reached accuracy: " << accuracy << "\n"
-                   << "    expected:         " << tolerance);
+        tolerance = pricer.errorEstimate()/value;
+        tolerance = std::min<Real>(tolerance/2.0, minimumTol);
+        value = pricer.value(tolerance);
+        Real accuracy = pricer.errorEstimate()/value;
+        if (accuracy > tolerance)
+            BOOST_FAIL(name << ":\n"
+                       << std::setprecision(10)
+                       << "    reached accuracy: " << accuracy << "\n"
+                       << "    expected:         " << tolerance);
+
+    }
 
 }
 
-QL_END_TEST_LOCALS(OldPricerTest)
 
 void OldPricerTest::testMcMultiFactorPricers() {
 

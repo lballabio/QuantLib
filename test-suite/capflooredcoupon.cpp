@@ -39,164 +39,169 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(CapFlooredCouponTest)
+namespace {
 
-struct CommonVars {
-    // global data
-    Date today, settlement, startDate;
-    Calendar calendar;
-    Real nominal;
-    std::vector<Real> nominals;
-    BusinessDayConvention convention;
-    Frequency frequency;
-    boost::shared_ptr<IborIndex> index;
-    Natural settlementDays, fixingDays;
-    RelinkableHandle<YieldTermStructure> termStructure;
-    std::vector<Rate> caps;
-    std::vector<Rate> floors;
-    Integer length;
-    Volatility volatility;
+    struct CommonVars {
+        // global data
+        Date today, settlement, startDate;
+        Calendar calendar;
+        Real nominal;
+        std::vector<Real> nominals;
+        BusinessDayConvention convention;
+        Frequency frequency;
+        boost::shared_ptr<IborIndex> index;
+        Natural settlementDays, fixingDays;
+        RelinkableHandle<YieldTermStructure> termStructure;
+        std::vector<Rate> caps;
+        std::vector<Rate> floors;
+        Integer length;
+        Volatility volatility;
 
-    // cleanup
-    SavedSettings backup;
+        // cleanup
+        SavedSettings backup;
 
-    // setup
-    CommonVars() {
-        length = 20;           //years
-        volatility = 0.20;
-        nominal = 100.;
-        nominals = std::vector<Real>(length,nominal);
-        frequency = Annual;
-        index = boost::shared_ptr<IborIndex>(new Euribor1Y(termStructure));
-        calendar = index->fixingCalendar();
-        convention = ModifiedFollowing;
-        today = calendar.adjust(Date::todaysDate());
-        Settings::instance().evaluationDate() = today;
-        settlementDays = 2;
-        fixingDays = 2;
-        settlement = calendar.advance(today,settlementDays,Days);
-        startDate = settlement;
-        termStructure.linkTo(flatRate(settlement,0.05,
-                                      ActualActual(ActualActual::ISDA)));
-    }
+        // setup
+        CommonVars() {
+            length = 20;           //years
+            volatility = 0.20;
+            nominal = 100.;
+            nominals = std::vector<Real>(length,nominal);
+            frequency = Annual;
+            index = boost::shared_ptr<IborIndex>(new Euribor1Y(termStructure));
+            calendar = index->fixingCalendar();
+            convention = ModifiedFollowing;
+            today = calendar.adjust(Date::todaysDate());
+            Settings::instance().evaluationDate() = today;
+            settlementDays = 2;
+            fixingDays = 2;
+            settlement = calendar.advance(today,settlementDays,Days);
+            startDate = settlement;
+            termStructure.linkTo(flatRate(settlement,0.05,
+                                          ActualActual(ActualActual::ISDA)));
+        }
 
-    // utilities
-    Leg makeFixedLeg(const Date& startDate,
-                     Integer length) {
+        // utilities
+        Leg makeFixedLeg(const Date& startDate,
+                         Integer length) {
 
-        Date endDate = calendar.advance(startDate, length, Years, convention);
-        Schedule schedule(startDate, endDate, Period(frequency), calendar,
-                          convention, convention,
-                          DateGeneration::Forward, false);
-        std::vector<Rate> coupons(length, 0.0);
-        return FixedRateLeg(schedule, Thirty360())
-            .withNotionals(nominals)
-            .withCouponRates(coupons);
-    }
+            Date endDate = calendar.advance(startDate, length, Years,
+                                            convention);
+            Schedule schedule(startDate, endDate, Period(frequency), calendar,
+                              convention, convention,
+                              DateGeneration::Forward, false);
+            std::vector<Rate> coupons(length, 0.0);
+            return FixedRateLeg(schedule, Thirty360())
+                .withNotionals(nominals)
+                .withCouponRates(coupons);
+        }
 
-    Leg makeFloatingLeg(const Date& startDate,
-                        Integer length,
-                        const Rate gearing = 1.0,
-                        const Rate spread = 0.0) {
+        Leg makeFloatingLeg(const Date& startDate,
+                            Integer length,
+                            const Rate gearing = 1.0,
+                            const Rate spread = 0.0) {
 
-        Date endDate = calendar.advance(startDate,length,Years,convention);
-        Schedule schedule(startDate,endDate,Period(frequency),calendar,
-                          convention,convention,DateGeneration::Forward,false);
-        std::vector<Real> gearingVector(length, gearing);
-        std::vector<Spread> spreadVector(length, spread);
-        return IborLeg(schedule, index)
-            .withNotionals(nominals)
-            .withPaymentDayCounter(index->dayCounter())
-            .withPaymentAdjustment(convention)
-            .withFixingDays(fixingDays)
-            .withGearings(gearingVector)
-            .withSpreads(spreadVector);
-    }
+            Date endDate = calendar.advance(startDate,length,Years,convention);
+            Schedule schedule(startDate,endDate,Period(frequency),calendar,
+                              convention,convention,
+                              DateGeneration::Forward,false);
+            std::vector<Real> gearingVector(length, gearing);
+            std::vector<Spread> spreadVector(length, spread);
+            return IborLeg(schedule, index)
+                .withNotionals(nominals)
+                .withPaymentDayCounter(index->dayCounter())
+                .withPaymentAdjustment(convention)
+                .withFixingDays(fixingDays)
+                .withGearings(gearingVector)
+                .withSpreads(spreadVector);
+        }
 
-    Leg makeCapFlooredLeg(const Date& startDate,
-                          Integer length,
-                          const std::vector<Rate> caps,
-                          const std::vector<Rate> floors,
-                          Volatility volatility,
-                          const Rate gearing = 1.0,
-                          const Rate spread = 0.0) {
+        Leg makeCapFlooredLeg(const Date& startDate,
+                              Integer length,
+                              const std::vector<Rate> caps,
+                              const std::vector<Rate> floors,
+                              Volatility volatility,
+                              const Rate gearing = 1.0,
+                              const Rate spread = 0.0) {
 
-        Date endDate = calendar.advance(startDate,length,Years,convention);
-        Schedule schedule(startDate,endDate,Period(frequency),calendar,
-                          convention,convention,DateGeneration::Forward,false);
-        Handle<OptionletVolatilityStructure> vol(
-            boost::shared_ptr<OptionletVolatilityStructure>(new
-                ConstantOptionletVolatility(0, volatility,
-                                            Actual365Fixed(),
-                                            calendar, Following)));
+            Date endDate = calendar.advance(startDate,length,Years,convention);
+            Schedule schedule(startDate,endDate,Period(frequency),calendar,
+                              convention,convention,
+                              DateGeneration::Forward,false);
+            Handle<OptionletVolatilityStructure> vol(
+                boost::shared_ptr<OptionletVolatilityStructure>(new
+                    ConstantOptionletVolatility(0, volatility,
+                                                Actual365Fixed(),
+                                                calendar, Following)));
 
-        boost::shared_ptr<IborCouponPricer> pricer(
+            boost::shared_ptr<IborCouponPricer> pricer(
                                               new BlackIborCouponPricer(vol));
-        std::vector<Rate> gearingVector(length, gearing);
-        std::vector<Spread> spreadVector(length, spread);
+            std::vector<Rate> gearingVector(length, gearing);
+            std::vector<Spread> spreadVector(length, spread);
 
-        Leg iborLeg = IborLeg(schedule, index)
-            .withNotionals(nominals)
-            .withPaymentDayCounter(index->dayCounter())
-            .withPaymentAdjustment(convention)
-            .withFixingDays(fixingDays)
-            .withGearings(gearingVector)
-            .withSpreads(spreadVector)
-            .withCaps(caps)
-            .withFloors(floors);
-        setCouponPricer(iborLeg, pricer);
-        return iborLeg;
-    }
+            Leg iborLeg = IborLeg(schedule, index)
+                .withNotionals(nominals)
+                .withPaymentDayCounter(index->dayCounter())
+                .withPaymentAdjustment(convention)
+                .withFixingDays(fixingDays)
+                .withGearings(gearingVector)
+                .withSpreads(spreadVector)
+                .withCaps(caps)
+                .withFloors(floors);
+            setCouponPricer(iborLeg, pricer);
+            return iborLeg;
+        }
 
-    boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
-        Handle<Quote> vol(boost::shared_ptr<Quote>(
+        boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
+            Handle<Quote> vol(boost::shared_ptr<Quote>(
                                                 new SimpleQuote(volatility)));
-        return boost::shared_ptr<PricingEngine>(
+            return boost::shared_ptr<PricingEngine>(
                                  new BlackCapFloorEngine(termStructure, vol));
-    }
+        }
 
-    boost::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
-                                             const Leg& leg,
-                                             Rate capStrike, Rate floorStrike,
-                                             Volatility volatility) {
-        boost::shared_ptr<CapFloor> result;
-        switch (type) {
-          case CapFloor::Cap:
-            result = boost::shared_ptr<CapFloor>(
+        boost::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
+                                                 const Leg& leg,
+                                                 Rate capStrike,
+                                                 Rate floorStrike,
+                                                 Volatility volatility) {
+            boost::shared_ptr<CapFloor> result;
+            switch (type) {
+              case CapFloor::Cap:
+                result = boost::shared_ptr<CapFloor>(
                                new Cap(leg, std::vector<Rate>(1, capStrike)));
-            break;
-          case CapFloor::Floor:
-            result = boost::shared_ptr<CapFloor>(
+                break;
+              case CapFloor::Floor:
+                result = boost::shared_ptr<CapFloor>(
                            new Floor(leg, std::vector<Rate>(1, floorStrike)));
-            break;
-          case CapFloor::Collar:
-            result = boost::shared_ptr<CapFloor>(
+                break;
+              case CapFloor::Collar:
+                result = boost::shared_ptr<CapFloor>(
                                new Collar(leg,
                                           std::vector<Rate>(1, capStrike),
                                           std::vector<Rate>(1, floorStrike)));
-            break;
+                break;
+              default:
+                QL_FAIL("unknown cap/floor type");
+            }
+            result->setPricingEngine(makeEngine(volatility));
+            return result;
+        }
+    };
+
+    std::string typeToString(CapFloor::Type type) {
+        switch (type) {
+          case CapFloor::Cap:
+            return "cap";
+          case CapFloor::Floor:
+            return "floor";
+          case CapFloor::Collar:
+            return "collar";
           default:
             QL_FAIL("unknown cap/floor type");
         }
-        result->setPricingEngine(makeEngine(volatility));
-        return result;
     }
-};
 
-std::string typeToString(CapFloor::Type type) {
-    switch (type) {
-      case CapFloor::Cap:
-        return "cap";
-      case CapFloor::Floor:
-        return "floor";
-      case CapFloor::Collar:
-        return "collar";
-      default:
-        QL_FAIL("unknown cap/floor type");
-    }
 }
 
-QL_END_TEST_LOCALS(CapFlooredCouponTest)
 
 void CapFlooredCouponTest::testLargeRates() {
 

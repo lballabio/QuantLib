@@ -54,21 +54,21 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
-QL_BEGIN_TEST_LOCALS(DigitalOptionTest)
+namespace {
 
-struct DigitalOptionData {
-    Option::Type type;
-    Real strike;
-    Real s;        // spot
-    Rate q;        // dividend
-    Rate r;        // risk-free rate
-    Time t;        // time to maturity
-    Volatility v;  // volatility
-    Real result;   // expected result
-    Real tol;      // tolerance
-};
+    struct DigitalOptionData {
+        Option::Type type;
+        Real strike;
+        Real s;        // spot
+        Rate q;        // dividend
+        Rate r;        // risk-free rate
+        Time t;        // time to maturity
+        Volatility v;  // volatility
+        Real result;   // expected result
+        Real tol;      // tolerance
+    };
 
-QL_END_TEST_LOCALS(DigitalOptionTest)
+}
 
 
 void DigitalOptionTest::testCashOrNothingEuropeanValues() {

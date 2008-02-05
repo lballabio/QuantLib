@@ -37,71 +37,76 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(SwaptionTest)
+namespace {
 
-// global data
+    // TODO: use CommonVars
+    // global data
 
-Period exercises[] = { 1*Years, 2*Years, 3*Years, 5*Years, 7*Years, 10*Years };
-Period lengths[] = { 1*Years, 2*Years, 3*Years, 5*Years, 7*Years, 10*Years, 15*Years, 20*Years };
-VanillaSwap::Type type[] = { VanillaSwap::Receiver, VanillaSwap::Payer };
+    Period exercises[] = { 1*Years, 2*Years, 3*Years, 5*Years, 7*Years, 10*Years };
+    Period lengths[] = { 1*Years, 2*Years, 3*Years, 5*Years, 7*Years, 10*Years, 15*Years, 20*Years };
+    VanillaSwap::Type type[] = { VanillaSwap::Receiver, VanillaSwap::Payer };
 
-Date today_, settlement_;
-Real nominal_;
-Calendar calendar_;
+    Date today_, settlement_;
+    Real nominal_;
+    Calendar calendar_;
 
-BusinessDayConvention fixedConvention_;
-Frequency fixedFrequency_;
-DayCounter fixedDayCount_;
+    BusinessDayConvention fixedConvention_;
+    Frequency fixedFrequency_;
+    DayCounter fixedDayCount_;
 
-BusinessDayConvention floatingConvention_;
-Period floatingTenor_;
-boost::shared_ptr<IborIndex> index_;
+    BusinessDayConvention floatingConvention_;
+    Period floatingTenor_;
+    boost::shared_ptr<IborIndex> index_;
 
-Natural settlementDays_;
-RelinkableHandle<YieldTermStructure> termStructure_;
+    Natural settlementDays_;
+    RelinkableHandle<YieldTermStructure> termStructure_;
 
-// utilities
+    // utilities
 
-boost::shared_ptr<Swaption> makeSwaption(
+    boost::shared_ptr<Swaption> makeSwaption(
                     const boost::shared_ptr<VanillaSwap>& swap,
                     const Date& exercise,
                     Volatility volatility,
                     Settlement::Type settlementType = Settlement::Physical) {
-    Handle<Quote> vol(boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
-    boost::shared_ptr<PricingEngine> engine(new BlackSwaptionEngine(termStructure_, vol));
+        Handle<Quote> vol(boost::shared_ptr<Quote>(
+                                                new SimpleQuote(volatility)));
+        boost::shared_ptr<PricingEngine> engine(
+                                new BlackSwaptionEngine(termStructure_, vol));
 
-    boost::shared_ptr<Swaption> result(new
-        Swaption(swap,
-                 boost::shared_ptr<Exercise>(new EuropeanExercise(exercise)),
-                 settlementType));
-    result->setPricingEngine(engine);
-    return result;
+        boost::shared_ptr<Swaption> result(new
+            Swaption(swap,
+                     boost::shared_ptr<Exercise>(
+                                              new EuropeanExercise(exercise)),
+                     settlementType));
+        result->setPricingEngine(engine);
+        return result;
+    }
+
+    boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
+        Handle<Quote> h(boost::shared_ptr<Quote>(
+                                                new SimpleQuote(volatility)));
+        return boost::shared_ptr<PricingEngine>(
+                                  new BlackSwaptionEngine(termStructure_, h));
+    }
+
+    void setup() {
+        settlementDays_ = 2;
+        nominal_ = 1000000.0;
+        fixedConvention_ = Unadjusted;
+        fixedFrequency_ = Annual;
+        fixedDayCount_ = Thirty360();
+
+        index_ = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure_));
+        floatingConvention_ = index_->businessDayConvention();
+        floatingTenor_ = index_->tenor();
+        calendar_ = index_->fixingCalendar();
+        today_ = calendar_.adjust(Date::todaysDate());
+        Settings::instance().evaluationDate() = today_;
+        settlement_ = calendar_.advance(today_,settlementDays_,Days);
+        termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
+    }
+
 }
-
-boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
-    Handle<Quote> h(boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
-    return boost::shared_ptr<PricingEngine>(new BlackSwaptionEngine(termStructure_, h));
-}
-
-void setup() {
-    settlementDays_ = 2;
-    nominal_ = 1000000.0;
-    fixedConvention_ = Unadjusted;
-    fixedFrequency_ = Annual;
-    fixedDayCount_ = Thirty360();
-
-    index_ = boost::shared_ptr<IborIndex>(new
-        Euribor6M(termStructure_));
-    floatingConvention_ = index_->businessDayConvention();
-    floatingTenor_ = index_->tenor();
-    calendar_ = index_->fixingCalendar();
-    today_ = calendar_.adjust(Date::todaysDate());
-    Settings::instance().evaluationDate() = today_;
-    settlement_ = calendar_.advance(today_,settlementDays_,Days);
-    termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
-}
-
-QL_END_TEST_LOCALS(SwaptionTest)
 
 
 void SwaptionTest::testStrikeDependency() {

@@ -33,93 +33,93 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(MCLongstaffSchwartzEngineTest)
+namespace {
 
-class AmericanMaxPathPricer : public EarlyExercisePathPricer<MultiPath>  {
-  public:
-    AmericanMaxPathPricer(const boost::shared_ptr<Payoff>& payoff)
-    : payoff_(payoff) {
-    }
-
-    StateType state(const MultiPath& path, Size t) const {
-        Array tmp(path.assetNumber());
-        for (Size i=0; i<path.assetNumber(); ++i) {
-            tmp[i]=path[i][t];
+    class AmericanMaxPathPricer : public EarlyExercisePathPricer<MultiPath>  {
+      public:
+        AmericanMaxPathPricer(const boost::shared_ptr<Payoff>& payoff)
+        : payoff_(payoff) {
         }
 
-        return tmp;
-    }
+        StateType state(const MultiPath& path, Size t) const {
+            Array tmp(path.assetNumber());
+            for (Size i=0; i<path.assetNumber(); ++i) {
+                tmp[i]=path[i][t];
+            }
 
-    Real operator()(const MultiPath& path, Size t) const {
-        const Array tmp = state(path, t);
-        return (*payoff_)(*std::max_element(tmp.begin(), tmp.end()));
-    }
+            return tmp;
+        }
 
-    std::vector<boost::function1<Real, StateType> > basisSystem() const {
-        return LsmBasisSystem::multiPathBasisSystem(2, 2,
-                                                    LsmBasisSystem::Monomial);
-    }
+        Real operator()(const MultiPath& path, Size t) const {
+            const Array tmp = state(path, t);
+            return (*payoff_)(*std::max_element(tmp.begin(), tmp.end()));
+        }
 
-  protected:
-    const boost::shared_ptr<Payoff> payoff_;
-};
+        std::vector<boost::function1<Real, StateType> > basisSystem() const {
+            return LsmBasisSystem::multiPathBasisSystem(2, 2,
+                                                        LsmBasisSystem::Monomial);
+        }
 
-template <class RNG>
-class MCAmericanMaxEngine
-   : public MCLongstaffSchwartzEngine<VanillaOption::engine,
-                                      MultiVariate,RNG>{
-  public:
-    MCAmericanMaxEngine(
-                   const boost::shared_ptr<StochasticProcessArray>& processes,
-                   Size timeSteps,
-                   Size timeStepsPerYear,
-                   bool brownianbridge,
-                   bool antitheticVariate,
-                   bool controlVariate,
-                   Size requiredSamples,
-                   Real requiredTolerance,
-                   Size maxSamples,
-                   BigNatural seed,
-                   Size nCalibrationSamples = Null<Size>())
-    : MCLongstaffSchwartzEngine<VanillaOption::engine,
-                                MultiVariate,RNG>(processes,
-                                                  timeSteps,
-                                                  timeStepsPerYear,
-                                                  brownianbridge,
-                                                  antitheticVariate,
-                                                  controlVariate,
-                                                  requiredSamples,
-                                                  requiredTolerance,
-                                                  maxSamples,
-                                                  seed, nCalibrationSamples)
-    { }
+      protected:
+        const boost::shared_ptr<Payoff> payoff_;
+    };
 
-  protected:
-    boost::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> >
-          lsmPathPricer() const {
-       boost::shared_ptr<StochasticProcessArray> processArray =
-           boost::dynamic_pointer_cast<StochasticProcessArray>(this->process_);
-       QL_REQUIRE(processArray && processArray->size() > 0,
-                  "Stochastic process array required");
+    template <class RNG>
+    class MCAmericanMaxEngine
+        : public MCLongstaffSchwartzEngine<VanillaOption::engine,
+                                           MultiVariate,RNG>{
+      public:
+        MCAmericanMaxEngine(
+                            const boost::shared_ptr<StochasticProcessArray>& processes,
+                            Size timeSteps,
+                            Size timeStepsPerYear,
+                            bool brownianbridge,
+                            bool antitheticVariate,
+                            bool controlVariate,
+                            Size requiredSamples,
+                            Real requiredTolerance,
+                            Size maxSamples,
+                            BigNatural seed,
+                            Size nCalibrationSamples = Null<Size>())
+        : MCLongstaffSchwartzEngine<VanillaOption::engine,
+                                    MultiVariate,RNG>(processes,
+                                                      timeSteps,
+                                                      timeStepsPerYear,
+                                                      brownianbridge,
+                                                      antitheticVariate,
+                                                      controlVariate,
+                                                      requiredSamples,
+                                                      requiredTolerance,
+                                                      maxSamples,
+                                                      seed, nCalibrationSamples)
+        { }
 
-       boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-           boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-               processArray->process(0));
-       QL_REQUIRE(process, "generalized Black-Scholes proces required");
+      protected:
+        boost::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> >
+        lsmPathPricer() const {
+            boost::shared_ptr<StochasticProcessArray> processArray =
+            boost::dynamic_pointer_cast<StochasticProcessArray>(this->process_);
+            QL_REQUIRE(processArray && processArray->size() > 0,
+                       "Stochastic process array required");
 
-       boost::shared_ptr<AmericanMaxPathPricer> earlyExercisePathPricer(
-           new AmericanMaxPathPricer(this->arguments_.payoff));
+            boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+                boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+                                                    processArray->process(0));
+            QL_REQUIRE(process, "generalized Black-Scholes proces required");
 
-       return boost::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> > (
-           new LongstaffSchwartzPathPricer<MultiPath>(
-               this->timeGrid(),
-               earlyExercisePathPricer,
-               process->riskFreeRate().currentLink()));
-    }
-};
+            boost::shared_ptr<AmericanMaxPathPricer> earlyExercisePathPricer(
+                          new AmericanMaxPathPricer(this->arguments_.payoff));
 
+            return boost::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> > (
+                new LongstaffSchwartzPathPricer<MultiPath>(
+                    this->timeGrid(),
+                    earlyExercisePathPricer,
+                    process->riskFreeRate().currentLink()));
+        }
+    };
 
-QL_END_TEST_LOCALS(MCLongstaffSchwartzEngineTest)
+}
+
 
 void MCLongstaffSchwartzEngineTest::testAmericanOption() {
     BOOST_MESSAGE("Testing Monte-Carlo pricing of American options...");

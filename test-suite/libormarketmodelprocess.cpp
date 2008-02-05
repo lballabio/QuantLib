@@ -34,78 +34,78 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(LiborMarketModelProcessTest)
+namespace {
 
-Size len = 10;
+    Size len = 10;
 
-boost::shared_ptr<IborIndex> makeIndex() {
-    DayCounter dayCounter = Actual360();
-    std::vector<Date> dates;
-    std::vector<Rate> rates;
-    dates.push_back(Date(4,September,2005));
-    dates.push_back(Date(4,September,2018));
-    rates.push_back(0.01);
-    rates.push_back(0.08);
+    boost::shared_ptr<IborIndex> makeIndex() {
+        DayCounter dayCounter = Actual360();
+        std::vector<Date> dates;
+        std::vector<Rate> rates;
+        dates.push_back(Date(4,September,2005));
+        dates.push_back(Date(4,September,2018));
+        rates.push_back(0.01);
+        rates.push_back(0.08);
 
-    RelinkableHandle<YieldTermStructure> termStructure(
+        RelinkableHandle<YieldTermStructure> termStructure(
                       boost::shared_ptr<YieldTermStructure>(
                                       new ZeroCurve(dates,rates,dayCounter)));
 
-    boost::shared_ptr<IborIndex> index(new Euribor1Y(termStructure));
+        boost::shared_ptr<IborIndex> index(new Euribor1Y(termStructure));
 
-    Date todaysDate = index->fixingCalendar().adjust(Date(4,September,2005));
-    Settings::instance().evaluationDate() = todaysDate;
+        Date todaysDate =
+            index->fixingCalendar().adjust(Date(4,September,2005));
+        Settings::instance().evaluationDate() = todaysDate;
 
-    dates[0] = index->fixingCalendar().advance(todaysDate,
-                                               index->fixingDays(), Days);
+        dates[0] = index->fixingCalendar().advance(todaysDate,
+                                                   index->fixingDays(), Days);
 
-    termStructure.linkTo(boost::shared_ptr<YieldTermStructure>(new
-        ZeroCurve(dates, rates, dayCounter)));
+        termStructure.linkTo(boost::shared_ptr<YieldTermStructure>(
+                                    new ZeroCurve(dates, rates, dayCounter)));
 
-    return index;
-}
-
-
-boost::shared_ptr<CapletVarianceCurve>
-makeCapVolCurve(const Date& todaysDate) {
-    Volatility vols[] = {14.40, 17.15, 16.81, 16.64, 16.17,
-                         15.78, 15.40, 15.21, 14.86, 14.54};
-
-    std::vector<Date> dates;
-    std::vector<Volatility> capletVols;
-    boost::shared_ptr<LiborForwardModelProcess> process(
-        new LiborForwardModelProcess(len+1, makeIndex()));
-
-    for (Size i=0; i < len; ++i) {
-        capletVols.push_back(vols[i]/100);
-        dates.push_back(process->fixingDates()[i+1]);
+        return index;
     }
 
-    return boost::shared_ptr<CapletVarianceCurve>(
+    boost::shared_ptr<CapletVarianceCurve>
+    makeCapVolCurve(const Date& todaysDate) {
+        Volatility vols[] = {14.40, 17.15, 16.81, 16.64, 16.17,
+                             15.78, 15.40, 15.21, 14.86, 14.54};
+
+        std::vector<Date> dates;
+        std::vector<Volatility> capletVols;
+        boost::shared_ptr<LiborForwardModelProcess> process(
+                            new LiborForwardModelProcess(len+1, makeIndex()));
+
+        for (Size i=0; i < len; ++i) {
+            capletVols.push_back(vols[i]/100);
+            dates.push_back(process->fixingDates()[i+1]);
+        }
+
+        return boost::shared_ptr<CapletVarianceCurve>(
                          new CapletVarianceCurve(todaysDate, dates,
                                                  capletVols, ActualActual()));
+    }
+
+    boost::shared_ptr<LiborForwardModelProcess>
+    makeProcess(const Matrix& volaComp = Matrix()) {
+        Size factors = (volaComp.empty() ? 1 : volaComp.columns());
+
+        boost::shared_ptr<IborIndex> index = makeIndex();
+        boost::shared_ptr<LiborForwardModelProcess> process(
+                                    new LiborForwardModelProcess(len, index));
+
+        boost::shared_ptr<LfmCovarianceParameterization> fct(
+                new LfmHullWhiteParameterization(
+                    process,
+                    makeCapVolCurve(Settings::instance().evaluationDate()),
+                    volaComp * transpose(volaComp), factors));
+
+        process->setCovarParam(fct);
+
+        return process;
+    }
+
 }
-
-boost::shared_ptr<LiborForwardModelProcess>
-makeProcess(const Matrix& volaComp = Matrix()) {
-    Size factors = (volaComp.empty() ? 1 : volaComp.columns());
-
-    boost::shared_ptr<IborIndex> index = makeIndex();
-    boost::shared_ptr<LiborForwardModelProcess> process(
-        new LiborForwardModelProcess(len, index));
-
-    boost::shared_ptr<LfmCovarianceParameterization> fct(
-        new LfmHullWhiteParameterization(
-            process,
-            makeCapVolCurve(Settings::instance().evaluationDate()),
-            volaComp * transpose(volaComp), factors));
-
-    process->setCovarParam(fct);
-
-    return process;
-}
-
-QL_END_TEST_LOCALS(LiborMarketModelProcessTest)
 
 
 void LiborMarketModelProcessTest::testInitialisation() {

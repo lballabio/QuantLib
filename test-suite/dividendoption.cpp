@@ -670,105 +670,106 @@ void DividendOptionTest::testFdEuropeanValues() {
 }
 
 
-QL_BEGIN_TEST_LOCALS(DividendOptionTest)
+namespace {
 
-template <class Engine>
-void testFdGreeks(const Date& today,
-                  const boost::shared_ptr<Exercise>& exercise) {
+    template <class Engine>
+    void testFdGreeks(const Date& today,
+                      const boost::shared_ptr<Exercise>& exercise) {
 
-    std::map<std::string,Real> calculated, expected, tolerance;
-    tolerance["delta"] = 5.0e-3;
-    tolerance["gamma"] = 7.0e-3;
-    // tolerance["theta"] = 1.0e-2;
+        std::map<std::string,Real> calculated, expected, tolerance;
+        tolerance["delta"] = 5.0e-3;
+        tolerance["gamma"] = 7.0e-3;
+        // tolerance["theta"] = 1.0e-2;
 
-    Option::Type types[] = { Option::Call, Option::Put };
-    Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
-    Real underlyings[] = { 100.0 };
-    Rate qRates[] = { 0.00, 0.10, 0.20 };
-    Rate rRates[] = { 0.01, 0.05, 0.15 };
-    Volatility vols[] = { 0.05, 0.20, 0.50 };
+        Option::Type types[] = { Option::Call, Option::Put };
+        Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
+        Real underlyings[] = { 100.0 };
+        Rate qRates[] = { 0.00, 0.10, 0.20 };
+        Rate rRates[] = { 0.01, 0.05, 0.15 };
+        Volatility vols[] = { 0.05, 0.20, 0.50 };
 
-    DayCounter dc = Actual360();
+        DayCounter dc = Actual360();
 
-    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
+        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+        Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
+        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+        Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
+        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+        Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-    for (Size i=0; i<LENGTH(types); i++) {
-        for (Size j=0; j<LENGTH(strikes); j++) {
+        for (Size i=0; i<LENGTH(types); i++) {
+            for (Size j=0; j<LENGTH(strikes); j++) {
 
-            std::vector<Date> dividendDates;
-            std::vector<Real> dividends;
-            for (Date d = today + 3*Months;
-                      d < exercise->lastDate();
-                      d += 6*Months) {
-                dividendDates.push_back(d);
-                dividends.push_back(5.0);
-            }
+                std::vector<Date> dividendDates;
+                std::vector<Real> dividends;
+                for (Date d = today + 3*Months;
+                     d < exercise->lastDate();
+                     d += 6*Months) {
+                    dividendDates.push_back(d);
+                    dividends.push_back(5.0);
+                }
 
-            boost::shared_ptr<StrikedTypePayoff> payoff(
+                boost::shared_ptr<StrikedTypePayoff> payoff(
                                 new PlainVanillaPayoff(types[i], strikes[j]));
 
-            boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
+                boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
                             new BlackScholesMertonProcess(Handle<Quote>(spot),
                                                           qTS, rTS, volTS));
 
-            boost::shared_ptr<PricingEngine> engine(new Engine(stochProcess));
-            DividendVanillaOption option(payoff, exercise,
-                                         dividendDates, dividends);
-            option.setPricingEngine(engine);
+                boost::shared_ptr<PricingEngine> engine(
+                                                    new Engine(stochProcess));
+                DividendVanillaOption option(payoff, exercise,
+                                             dividendDates, dividends);
+                option.setPricingEngine(engine);
 
-            for (Size l=0; l<LENGTH(underlyings); l++) {
-             for (Size m=0; m<LENGTH(qRates); m++) {
-                for (Size n=0; n<LENGTH(rRates); n++) {
-                  for (Size p=0; p<LENGTH(vols); p++) {
-                    Real u = underlyings[l];
-                    Rate q = qRates[m],
-                         r = rRates[n];
-                    Volatility v = vols[p];
-                    spot->setValue(u);
-                    qRate->setValue(q);
-                    rRate->setValue(r);
-                    vol->setValue(v);
-
-                    // FLOATING_POINT_EXCEPTION
-                    Real value = option.NPV();
-                    calculated["delta"]  = option.delta();
-                    calculated["gamma"]  = option.gamma();
-                    // calculated["theta"]  = option.theta();
-
-                    if (value > spot->value()*1.0e-5) {
-                        // perturb spot and get delta and gamma
-                        Real du = u*1.0e-4;
-                        spot->setValue(u+du);
-                        Real value_p = option.NPV(),
-                             delta_p = option.delta();
-                        spot->setValue(u-du);
-                        Real value_m = option.NPV(),
-                             delta_m = option.delta();
+                for (Size l=0; l<LENGTH(underlyings); l++) {
+                  for (Size m=0; m<LENGTH(qRates); m++) {
+                    for (Size n=0; n<LENGTH(rRates); n++) {
+                      for (Size p=0; p<LENGTH(vols); p++) {
+                        Real u = underlyings[l];
+                        Rate q = qRates[m],
+                             r = rRates[n];
+                        Volatility v = vols[p];
                         spot->setValue(u);
-                        expected["delta"] = (value_p - value_m)/(2*du);
-                        expected["gamma"] = (delta_p - delta_m)/(2*du);
+                        qRate->setValue(q);
+                        rRate->setValue(r);
+                        vol->setValue(v);
 
-                        // perturb date and get theta
-                        /*
-                        Time dT = dc.yearFraction(today-1, today+1);
-                        Settings::instance().evaluationDate() = today-1;
-                        value_m = option.NPV();
-                        Settings::instance().evaluationDate() = today+1;
-                        value_p = option.NPV();
-                        Settings::instance().evaluationDate() = today;
-                        expected["theta"] = (value_p - value_m)/dT;
-                        */
+                        // FLOATING_POINT_EXCEPTION
+                        Real value = option.NPV();
+                        calculated["delta"]  = option.delta();
+                        calculated["gamma"]  = option.gamma();
+                        // calculated["theta"]  = option.theta();
 
-                        // compare
-                        std::map<std::string,Real>::iterator it;
-                        for (it = calculated.begin();
-                             it != calculated.end(); ++it) {
+                        if (value > spot->value()*1.0e-5) {
+                          // perturb spot and get delta and gamma
+                          Real du = u*1.0e-4;
+                          spot->setValue(u+du);
+                          Real value_p = option.NPV(),
+                               delta_p = option.delta();
+                          spot->setValue(u-du);
+                          Real value_m = option.NPV(),
+                               delta_m = option.delta();
+                          spot->setValue(u);
+                          expected["delta"] = (value_p - value_m)/(2*du);
+                          expected["gamma"] = (delta_p - delta_m)/(2*du);
+
+                          // perturb date and get theta
+                          /*
+                            Time dT = dc.yearFraction(today-1, today+1);
+                            Settings::instance().evaluationDate() = today-1;
+                            value_m = option.NPV();
+                            Settings::instance().evaluationDate() = today+1;
+                            value_p = option.NPV();
+                            Settings::instance().evaluationDate() = today;
+                            expected["theta"] = (value_p - value_m)/dT;
+                          */
+
+                          // compare
+                          std::map<std::string,Real>::iterator it;
+                          for (it = calculated.begin();
+                               it != calculated.end(); ++it) {
                             std::string greek = it->first;
                             Real expct = expected  [greek],
                                  calcl = calculated[greek],
@@ -779,17 +780,17 @@ void testFdGreeks(const Date& today,
                                                u, q, r, today, v,
                                                expct, calcl, error, tol);
                             }
+                          }
                         }
+                      }
                     }
                   }
                 }
-             }
             }
         }
     }
-}
 
-QL_END_TEST_LOCALS(DividendOptionTest)
+}
 
 
 void DividendOptionTest::testFdEuropeanGreeks() {
@@ -829,62 +830,62 @@ void DividendOptionTest::testFdAmericanGreeks() {
 }
 
 
-QL_BEGIN_TEST_LOCALS(DividendOptionTest)
+namespace {
 
-template <class Engine>
-void testFdDegenerate(const Date& today,
-                      const boost::shared_ptr<Exercise>& exercise) {
+    template <class Engine>
+    void testFdDegenerate(const Date& today,
+                          const boost::shared_ptr<Exercise>& exercise) {
 
-    DayCounter dc = Actual360();
-    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(54.625));
-    Handle<YieldTermStructure> rTS(flatRate(0.052706, dc));
-    Handle<YieldTermStructure> qTS(flatRate(0.0, dc));
-    Handle<BlackVolTermStructure> volTS(flatVol(0.282922, dc));
+        DayCounter dc = Actual360();
+        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(54.625));
+        Handle<YieldTermStructure> rTS(flatRate(0.052706, dc));
+        Handle<YieldTermStructure> qTS(flatRate(0.0, dc));
+        Handle<BlackVolTermStructure> volTS(flatVol(0.282922, dc));
 
-    boost::shared_ptr<BlackScholesMertonProcess> process(
+        boost::shared_ptr<BlackScholesMertonProcess> process(
                             new BlackScholesMertonProcess(Handle<Quote>(spot),
                                                           qTS, rTS, volTS));
 
-    Size timeSteps = 40;
-    Size gridPoints = 300;
+        Size timeSteps = 40;
+        Size gridPoints = 300;
 
-    boost::shared_ptr<PricingEngine> engine(
+        boost::shared_ptr<PricingEngine> engine(
                                     new Engine(process,timeSteps,gridPoints));
 
-    boost::shared_ptr<StrikedTypePayoff> payoff(
+        boost::shared_ptr<StrikedTypePayoff> payoff(
                                   new PlainVanillaPayoff(Option::Call, 55.0));
 
-    Real tolerance = 3.0e-3;
+        Real tolerance = 3.0e-3;
 
-    std::vector<Rate> dividends;
-    std::vector<Date> dividendDates;
+        std::vector<Rate> dividends;
+        std::vector<Date> dividendDates;
 
-    DividendVanillaOption option1(payoff, exercise,
-                                  dividendDates, dividends);
-    option1.setPricingEngine(engine);
+        DividendVanillaOption option1(payoff, exercise,
+                                      dividendDates, dividends);
+        option1.setPricingEngine(engine);
 
-    // FLOATING_POINT_EXCEPTION
-    Real refValue = option1.NPV();
+        // FLOATING_POINT_EXCEPTION
+        Real refValue = option1.NPV();
 
-    for (Size i=0; i<=6; i++) {
+        for (Size i=0; i<=6; i++) {
 
-        dividends.push_back(0.0);
-        dividendDates.push_back(today+i);
+            dividends.push_back(0.0);
+            dividendDates.push_back(today+i);
 
-        DividendVanillaOption option(payoff, exercise,
-                                     dividendDates, dividends);
-        option.setPricingEngine(engine);
-        Real value = option.NPV();
+            DividendVanillaOption option(payoff, exercise,
+                                         dividendDates, dividends);
+            option.setPricingEngine(engine);
+            Real value = option.NPV();
 
-        if (std::fabs(refValue-value) > tolerance)
-            BOOST_FAIL("NPV changed by null dividend :\n"
-                       << "    previous value: " << value << "\n"
-                       << "    current value:  " << refValue << "\n"
-                       << "    change:         " << value-refValue);
+            if (std::fabs(refValue-value) > tolerance)
+                BOOST_FAIL("NPV changed by null dividend :\n"
+                           << "    previous value: " << value << "\n"
+                           << "    current value:  " << refValue << "\n"
+                           << "    change:         " << value-refValue);
+        }
     }
-}
 
-QL_END_TEST_LOCALS(DividendOptionTest)
+}
 
 
 void DividendOptionTest::testFdEuropeanDegenerate() {

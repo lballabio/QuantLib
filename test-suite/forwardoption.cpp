@@ -52,22 +52,22 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
-QL_BEGIN_TEST_LOCALS(ForwardOptionTest)
+namespace {
 
-struct ForwardOptionData {
-    Option::Type type;
-    Real moneyness;
-    Real s;          // spot
-    Rate q;          // dividend
-    Rate r;          // risk-free rate
-    Time start;      // time to reset
-    Time t;          // time to maturity
-    Volatility v;    // volatility
-    Real result;     // expected result
-    Real tol;        // tolerance
-};
+    struct ForwardOptionData {
+        Option::Type type;
+        Real moneyness;
+        Real s;          // spot
+        Rate q;          // dividend
+        Rate r;          // risk-free rate
+        Time start;      // time to reset
+        Time t;          // time to maturity
+        Volatility v;    // volatility
+        Real result;     // expected result
+        Real tol;        // tolerance
+    };
 
-QL_END_TEST_LOCALS(ForwardOptionTest)
+}
 
 
 void ForwardOptionTest::testValues() {
@@ -204,86 +204,87 @@ void ForwardOptionTest::testPerformanceValues() {
 }
 
 
-QL_BEGIN_TEST_LOCALS(ForwardOptionTest)
+namespace {
 
-template <template <class> class Engine>
-void testForwardGreeks() {
+    template <template <class> class Engine>
+    void testForwardGreeks() {
 
-    std::map<std::string,Real> calculated, expected, tolerance;
-    tolerance["delta"]   = 1.0e-5;
-    tolerance["gamma"]   = 1.0e-5;
-    tolerance["theta"]   = 1.0e-5;
-    tolerance["rho"]     = 1.0e-5;
-    tolerance["divRho"]  = 1.0e-5;
-    tolerance["vega"]    = 1.0e-5;
+        std::map<std::string,Real> calculated, expected, tolerance;
+        tolerance["delta"]   = 1.0e-5;
+        tolerance["gamma"]   = 1.0e-5;
+        tolerance["theta"]   = 1.0e-5;
+        tolerance["rho"]     = 1.0e-5;
+        tolerance["divRho"]  = 1.0e-5;
+        tolerance["vega"]    = 1.0e-5;
 
-    Option::Type types[] = { Option::Call, Option::Put };
-    Real moneyness[] = { 0.9, 1.0, 1.1 };
-    Real underlyings[] = { 100.0 };
-    Rate qRates[] = { 0.04, 0.05, 0.06 };
-    Rate rRates[] = { 0.01, 0.05, 0.15 };
-    Integer lengths[] = { 1, 2 };
-    Integer startMonths[] = { 6, 9 };
-    Volatility vols[] = { 0.11, 0.50, 1.20 };
+        Option::Type types[] = { Option::Call, Option::Put };
+        Real moneyness[] = { 0.9, 1.0, 1.1 };
+        Real underlyings[] = { 100.0 };
+        Rate qRates[] = { 0.04, 0.05, 0.06 };
+        Rate rRates[] = { 0.01, 0.05, 0.15 };
+        Integer lengths[] = { 1, 2 };
+        Integer startMonths[] = { 6, 9 };
+        Volatility vols[] = { 0.11, 0.50, 1.20 };
 
-    DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
-    Settings::instance().evaluationDate() = today;
+        DayCounter dc = Actual360();
+        Date today = Date::todaysDate();
+        Settings::instance().evaluationDate() = today;
 
-    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
+        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+        Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
+        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+        Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
+        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+        Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
-         new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
+          new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
-    boost::shared_ptr<PricingEngine> engine(
+        boost::shared_ptr<PricingEngine> engine(
                             new Engine<AnalyticEuropeanEngine>(stochProcess));
 
-    for (Size i=0; i<LENGTH(types); i++) {
-      for (Size j=0; j<LENGTH(moneyness); j++) {
-        for (Size k=0; k<LENGTH(lengths); k++) {
-          for (Size h=0; h<LENGTH(startMonths); h++) {
+        for (Size i=0; i<LENGTH(types); i++) {
+          for (Size j=0; j<LENGTH(moneyness); j++) {
+            for (Size k=0; k<LENGTH(lengths); k++) {
+              for (Size h=0; h<LENGTH(startMonths); h++) {
 
-            Date exDate = today + lengths[k]*Years;
-            boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+                Date exDate = today + lengths[k]*Years;
+                boost::shared_ptr<Exercise> exercise(
+                                                new EuropeanExercise(exDate));
 
-            Date reset = today + startMonths[h]*Months;
+                Date reset = today + startMonths[h]*Months;
 
-            boost::shared_ptr<StrikedTypePayoff> payoff(
+                boost::shared_ptr<StrikedTypePayoff> payoff(
                                        new PlainVanillaPayoff(types[i], 0.0));
 
-            ForwardVanillaOption option(moneyness[j], reset,
-                                        payoff, exercise);
-            option.setPricingEngine(engine);
+                ForwardVanillaOption option(moneyness[j], reset,
+                                            payoff, exercise);
+                option.setPricingEngine(engine);
 
-            for (Size l=0; l<LENGTH(underlyings); l++) {
-              for (Size m=0; m<LENGTH(qRates); m++) {
-                for (Size n=0; n<LENGTH(rRates); n++) {
-                  for (Size p=0; p<LENGTH(vols); p++) {
+                for (Size l=0; l<LENGTH(underlyings); l++) {
+                  for (Size m=0; m<LENGTH(qRates); m++) {
+                    for (Size n=0; n<LENGTH(rRates); n++) {
+                      for (Size p=0; p<LENGTH(vols); p++) {
 
-                      Real u = underlyings[l];
-                      Rate q = qRates[m],
-                           r = rRates[n];
-                      Volatility v = vols[p];
-                      spot->setValue(u);
-                      qRate->setValue(q);
-                      rRate->setValue(r);
-                      vol->setValue(v);
+                        Real u = underlyings[l];
+                        Rate q = qRates[m],
+                             r = rRates[n];
+                        Volatility v = vols[p];
+                        spot->setValue(u);
+                        qRate->setValue(q);
+                        rRate->setValue(r);
+                        vol->setValue(v);
 
-                      Real value = option.NPV();
-                      calculated["delta"]   = option.delta();
-                      calculated["gamma"]   = option.gamma();
-                      calculated["theta"]   = option.theta();
-                      calculated["rho"]     = option.rho();
-                      calculated["divRho"]  = option.dividendRho();
-                      calculated["vega"]    = option.vega();
+                        Real value = option.NPV();
+                        calculated["delta"]   = option.delta();
+                        calculated["gamma"]   = option.gamma();
+                        calculated["theta"]   = option.theta();
+                        calculated["rho"]     = option.rho();
+                        calculated["divRho"]  = option.dividendRho();
+                        calculated["vega"]    = option.vega();
 
-                      if (value > spot->value()*1.0e-5) {
+                        if (value > spot->value()*1.0e-5) {
                           // perturb spot and get delta and gamma
                           Real du = u*1.0e-4;
                           spot->setValue(u+du);
@@ -347,18 +348,18 @@ void testForwardGreeks() {
                                                  expct, calcl, error, tol);
                               }
                           }
+                        }
                       }
+                    }
                   }
                 }
               }
             }
           }
         }
-      }
     }
-}
 
-QL_END_TEST_LOCALS(ForwardOptionTest)
+}
 
 
 void ForwardOptionTest::testGreeks() {

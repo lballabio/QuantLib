@@ -53,62 +53,64 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(LiborMarketModelTest)
+namespace {
 
-boost::shared_ptr<IborIndex> makeIndex(std::vector<Date> dates,
-                                   std::vector<Rate> rates) {
-    DayCounter dayCounter = Actual360();
+    boost::shared_ptr<IborIndex> makeIndex(std::vector<Date> dates,
+                                           std::vector<Rate> rates) {
+        DayCounter dayCounter = Actual360();
 
-    RelinkableHandle<YieldTermStructure> termStructure;
+        RelinkableHandle<YieldTermStructure> termStructure;
 
-    boost::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
+        boost::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
 
-    Date todaysDate = index->fixingCalendar().adjust(Date(4,September,2005));
-    Settings::instance().evaluationDate() = todaysDate;
+        Date todaysDate =
+            index->fixingCalendar().adjust(Date(4,September,2005));
+        Settings::instance().evaluationDate() = todaysDate;
 
-    dates[0] = index->fixingCalendar().advance(todaysDate,
-                                               index->fixingDays(), Days);
+        dates[0] = index->fixingCalendar().advance(todaysDate,
+                                                   index->fixingDays(), Days);
 
-    termStructure.linkTo(boost::shared_ptr<YieldTermStructure>(new
-        ZeroCurve(dates, rates, dayCounter)));
-
-    return index;
-}
-
-
-boost::shared_ptr<IborIndex> makeIndex() {
-    std::vector<Date> dates;
-    std::vector<Rate> rates;
-    dates.push_back(Date(4,September,2005));
-    dates.push_back(Date(4,September,2018));
-    rates.push_back(0.039);
-    rates.push_back(0.041);
-
-    return makeIndex(dates, rates);
-}
-
-
-boost::shared_ptr<OptionletVolatilityStructure>
-makeCapVolCurve(const Date& todaysDate) {
-    Volatility vols[] = {14.40, 17.15, 16.81, 16.64, 16.17,
-                         15.78, 15.40, 15.21, 14.86};
-
-    std::vector<Date> dates;
-    std::vector<Volatility> capletVols;
-    boost::shared_ptr<LiborForwardModelProcess> process(
-        new LiborForwardModelProcess(10, makeIndex()));
-
-    for (Size i=0; i < 9; ++i) {
-        capletVols.push_back(vols[i]/100);
-        dates.push_back(process->fixingDates()[i+1]);
+        termStructure.linkTo(boost::shared_ptr<YieldTermStructure>(
+                                    new ZeroCurve(dates, rates, dayCounter)));
+        
+        return index;
     }
 
-    return boost::shared_ptr<CapletVarianceCurve>(
+
+    boost::shared_ptr<IborIndex> makeIndex() {
+        std::vector<Date> dates;
+        std::vector<Rate> rates;
+        dates.push_back(Date(4,September,2005));
+        dates.push_back(Date(4,September,2018));
+        rates.push_back(0.039);
+        rates.push_back(0.041);
+
+        return makeIndex(dates, rates);
+    }
+
+
+    boost::shared_ptr<OptionletVolatilityStructure>
+    makeCapVolCurve(const Date& todaysDate) {
+        Volatility vols[] = {14.40, 17.15, 16.81, 16.64, 16.17,
+                             15.78, 15.40, 15.21, 14.86};
+
+        std::vector<Date> dates;
+        std::vector<Volatility> capletVols;
+        boost::shared_ptr<LiborForwardModelProcess> process(
+                               new LiborForwardModelProcess(10, makeIndex()));
+
+        for (Size i=0; i < 9; ++i) {
+            capletVols.push_back(vols[i]/100);
+            dates.push_back(process->fixingDates()[i+1]);
+        }
+
+        return boost::shared_ptr<CapletVarianceCurve>(
                          new CapletVarianceCurve(todaysDate, dates,
                                                  capletVols, Actual360()));
+    }
+
 }
 
-QL_END_TEST_LOCALS(LiborMarketModelTest)
 
 void LiborMarketModelTest::testSimpleCovarianceModels() {
     BOOST_MESSAGE("Testing simple covariance models...");

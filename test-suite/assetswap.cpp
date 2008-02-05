@@ -56,61 +56,61 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(AssetSwapTest)
+namespace {
 
-struct CommonVars {
-    // common data
-    boost::shared_ptr<IborIndex> iborIndex;
-    boost::shared_ptr<SwapIndex> swapIndex;
-    boost::shared_ptr<IborCouponPricer> pricer;
-    boost::shared_ptr<CmsCouponPricer> cmspricer;
-    Spread spread;
-    Spread nonnullspread;
-    Real faceAmount;
-    Compounding compounding;
-    RelinkableHandle<YieldTermStructure> termStructure;
+    struct CommonVars {
+        // common data
+        boost::shared_ptr<IborIndex> iborIndex;
+        boost::shared_ptr<SwapIndex> swapIndex;
+        boost::shared_ptr<IborCouponPricer> pricer;
+        boost::shared_ptr<CmsCouponPricer> cmspricer;
+        Spread spread;
+        Spread nonnullspread;
+        Real faceAmount;
+        Compounding compounding;
+        RelinkableHandle<YieldTermStructure> termStructure;
 
-    // clean-up
-    SavedSettings backup;
-    IndexHistoryCleaner indexCleaner;
+        // clean-up
+        SavedSettings backup;
+        IndexHistoryCleaner indexCleaner;
 
-    // initial setup
-    CommonVars() {
-        Natural swapSettlementDays = 2;
-        faceAmount = 100.0;
-        BusinessDayConvention fixedConvention = Unadjusted;
-        compounding = Continuous;
-        Frequency fixedFrequency = Annual;
-        Frequency floatingFrequency = Semiannual;
-        iborIndex = boost::shared_ptr<IborIndex>(
+        // initial setup
+        CommonVars() {
+            Natural swapSettlementDays = 2;
+            faceAmount = 100.0;
+            BusinessDayConvention fixedConvention = Unadjusted;
+            compounding = Continuous;
+            Frequency fixedFrequency = Annual;
+            Frequency floatingFrequency = Semiannual;
+            iborIndex = boost::shared_ptr<IborIndex>(
                      new Euribor(Period(floatingFrequency), termStructure));
-        Calendar calendar = iborIndex->fixingCalendar();
-        swapIndex= boost::shared_ptr<SwapIndex>(
+            Calendar calendar = iborIndex->fixingCalendar();
+            swapIndex= boost::shared_ptr<SwapIndex>(
                 new SwapIndex("EuriborSwapFixA", 10*Years, swapSettlementDays,
                               iborIndex->currency(), calendar,
                               Period(fixedFrequency), fixedConvention,
                               iborIndex->dayCounter(), iborIndex));
-        spread = 0.0;
-        nonnullspread = 0.003;
-        Date today(24,April,2007);
-        Settings::instance().evaluationDate() = today;
-        termStructure.linkTo(flatRate(today, 0.05, Actual365Fixed()));
-        pricer = boost::shared_ptr<IborCouponPricer>(
+            spread = 0.0;
+            nonnullspread = 0.003;
+            Date today(24,April,2007);
+            Settings::instance().evaluationDate() = today;
+            termStructure.linkTo(flatRate(today, 0.05, Actual365Fixed()));
+            pricer = boost::shared_ptr<IborCouponPricer>(
                                                    new BlackIborCouponPricer);
-        Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure(
-            boost::shared_ptr<SwaptionVolatilityStructure>(new
-                ConstantSwaptionVolatility(today, 0.2, Actual365Fixed(),
-                                    NullCalendar(), Following)));
-        Handle<Quote> meanReversionQuote(
+            Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure(
+                boost::shared_ptr<SwaptionVolatilityStructure>(new
+                    ConstantSwaptionVolatility(today, 0.2, Actual365Fixed(),
+                                               NullCalendar(), Following)));
+            Handle<Quote> meanReversionQuote(
                              boost::shared_ptr<Quote>(new SimpleQuote(0.01)));
-        cmspricer = boost::shared_ptr<CmsCouponPricer>(new
-            AnalyticHaganPricer(swaptionVolatilityStructure,
-                                GFunctionFactory::Standard,
-                                meanReversionQuote));
-    }
-};
+            cmspricer = boost::shared_ptr<CmsCouponPricer>(new
+                AnalyticHaganPricer(swaptionVolatilityStructure,
+                                    GFunctionFactory::Standard,
+                                    meanReversionQuote));
+        }
+    };
 
-QL_END_TEST_LOCALS(AssetSwapTest)
+}
 
 
 void AssetSwapTest::testImpliedValue() {

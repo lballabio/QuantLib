@@ -32,112 +32,113 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(PathGeneratorTest)
+namespace {
 
-void testSingle(const boost::shared_ptr<StochasticProcess1D>& process,
-                const std::string& tag, bool brownianBridge,
-                Real expected, Real antithetic) {
-    typedef PseudoRandom::rsg_type rsg_type;
-    typedef PathGenerator<rsg_type>::sample_type sample_type;
+    void testSingle(const boost::shared_ptr<StochasticProcess1D>& process,
+                    const std::string& tag, bool brownianBridge,
+                    Real expected, Real antithetic) {
+        typedef PseudoRandom::rsg_type rsg_type;
+        typedef PathGenerator<rsg_type>::sample_type sample_type;
 
-    BigNatural seed = 42;
-    Time length = 10;
-    Size timeSteps = 12;
-    rsg_type rsg = PseudoRandom::make_sequence_generator(timeSteps, seed);
-    PathGenerator<rsg_type> generator(process, length, timeSteps,
-                                      rsg, brownianBridge);
-    Size i;
-    for (i=0; i<100; i++)
-        generator.next();
+        BigNatural seed = 42;
+        Time length = 10;
+        Size timeSteps = 12;
+        rsg_type rsg = PseudoRandom::make_sequence_generator(timeSteps, seed);
+        PathGenerator<rsg_type> generator(process, length, timeSteps,
+                                          rsg, brownianBridge);
+        Size i;
+        for (i=0; i<100; i++)
+            generator.next();
 
-    sample_type sample = generator.next();
-    Real calculated = sample.value.back();
-    Real error = std::fabs(calculated-expected);
-    Real tolerance = 2.0e-8;
-    if (error > tolerance) {
-        BOOST_ERROR("using " << tag << " process "
-                    << (brownianBridge ? "with " : "without ")
-                    << "brownian bridge:\n"
-                    << std::setprecision(13)
-                    << "    calculated: " << calculated << "\n"
-                    << "    expected:   " << expected << "\n"
-                    << "    error:      " << error << "\n"
-                    << "    tolerance:  " << tolerance);
-    }
-
-    sample = generator.antithetic();
-    calculated = sample.value.back();
-    error = std::fabs(calculated-antithetic);
-    tolerance = 2.0e-7;
-    if (error > tolerance) {
-        BOOST_ERROR("using " << tag << " process "
-                    << (brownianBridge ? "with " : "without ")
-                    << "brownian bridge:\n"
-                    << "antithetic sample:\n"
-                    << std::setprecision(13)
-                    << "    calculated: " << calculated << "\n"
-                    << "    expected:   " << antithetic << "\n"
-                    << "    error:      " << error << "\n"
-                    << "    tolerance:  " << tolerance);
-    }
-
-}
-
-void testMultiple(const boost::shared_ptr<StochasticProcess>& process,
-                  const std::string& tag, Real expected[], Real antithetic[]) {
-    typedef PseudoRandom::rsg_type rsg_type;
-    typedef MultiPathGenerator<rsg_type>::sample_type sample_type;
-
-    BigNatural seed = 42;
-    Time length = 10;
-    Size timeSteps = 12;
-    Size assets = process->size();
-    rsg_type rsg = PseudoRandom::make_sequence_generator(timeSteps*assets,
-                                                         seed);
-    MultiPathGenerator<rsg_type> generator(process,
-                                           TimeGrid(length, timeSteps),
-                                           rsg, false);
-    Size i, j;
-    for (i=0; i<100; i++)
-        generator.next();
-
-    sample_type sample = generator.next();
-    Array calculated(assets);
-    Real error, tolerance = 2.0e-7;
-    for (j=0; j<assets; j++)
-        calculated[j] = sample.value[j].back();
-    for (j=0; j<assets; j++) {
-        error = std::fabs(calculated[j]-expected[j]);
+        sample_type sample = generator.next();
+        Real calculated = sample.value.back();
+        Real error = std::fabs(calculated-expected);
+        Real tolerance = 2.0e-8;
         if (error > tolerance) {
             BOOST_ERROR("using " << tag << " process "
-                        << "(" << io::ordinal(j+1) << " asset:)\n"
+                        << (brownianBridge ? "with " : "without ")
+                        << "brownian bridge:\n"
                         << std::setprecision(13)
-                        << "    calculated: " << calculated[j] << "\n"
-                        << "    expected:   " << expected[j] << "\n"
+                        << "    calculated: " << calculated << "\n"
+                        << "    expected:   " << expected << "\n"
                         << "    error:      " << error << "\n"
                         << "    tolerance:  " << tolerance);
         }
-    }
 
-    sample = generator.antithetic();
-    for (j=0; j<assets; j++)
-        calculated[j] = sample.value[j].back();
-    for (j=0; j<assets; j++) {
-        error = std::fabs(calculated[j]-antithetic[j]);
+        sample = generator.antithetic();
+        calculated = sample.value.back();
+        error = std::fabs(calculated-antithetic);
+        tolerance = 2.0e-7;
         if (error > tolerance) {
             BOOST_ERROR("using " << tag << " process "
-                        << "(" << io::ordinal(j+1) << " asset:)\n"
+                        << (brownianBridge ? "with " : "without ")
+                        << "brownian bridge:\n"
                         << "antithetic sample:\n"
                         << std::setprecision(13)
-                        << "    calculated: " << calculated[j] << "\n"
-                        << "    expected:   " << antithetic[j] << "\n"
+                        << "    calculated: " << calculated << "\n"
+                        << "    expected:   " << antithetic << "\n"
                         << "    error:      " << error << "\n"
                         << "    tolerance:  " << tolerance);
         }
-    }
-}
 
-QL_END_TEST_LOCALS(PathGeneratorTest)
+    }
+
+    void testMultiple(const boost::shared_ptr<StochasticProcess>& process,
+                      const std::string& tag,
+                      Real expected[], Real antithetic[]) {
+        typedef PseudoRandom::rsg_type rsg_type;
+        typedef MultiPathGenerator<rsg_type>::sample_type sample_type;
+
+        BigNatural seed = 42;
+        Time length = 10;
+        Size timeSteps = 12;
+        Size assets = process->size();
+        rsg_type rsg = PseudoRandom::make_sequence_generator(timeSteps*assets,
+                                                             seed);
+        MultiPathGenerator<rsg_type> generator(process,
+                                               TimeGrid(length, timeSteps),
+                                               rsg, false);
+        Size i, j;
+        for (i=0; i<100; i++)
+            generator.next();
+
+        sample_type sample = generator.next();
+        Array calculated(assets);
+        Real error, tolerance = 2.0e-7;
+        for (j=0; j<assets; j++)
+            calculated[j] = sample.value[j].back();
+        for (j=0; j<assets; j++) {
+            error = std::fabs(calculated[j]-expected[j]);
+            if (error > tolerance) {
+                BOOST_ERROR("using " << tag << " process "
+                            << "(" << io::ordinal(j+1) << " asset:)\n"
+                            << std::setprecision(13)
+                            << "    calculated: " << calculated[j] << "\n"
+                            << "    expected:   " << expected[j] << "\n"
+                            << "    error:      " << error << "\n"
+                            << "    tolerance:  " << tolerance);
+            }
+        }
+
+        sample = generator.antithetic();
+        for (j=0; j<assets; j++)
+            calculated[j] = sample.value[j].back();
+        for (j=0; j<assets; j++) {
+            error = std::fabs(calculated[j]-antithetic[j]);
+            if (error > tolerance) {
+                BOOST_ERROR("using " << tag << " process "
+                            << "(" << io::ordinal(j+1) << " asset:)\n"
+                            << "antithetic sample:\n"
+                            << std::setprecision(13)
+                            << "    calculated: " << calculated[j] << "\n"
+                            << "    expected:   " << antithetic[j] << "\n"
+                            << "    error:      " << error << "\n"
+                            << "    tolerance:  " << tolerance);
+            }
+        }
+    }
+
+}
 
 
 void PathGeneratorTest::testPathGenerator() {

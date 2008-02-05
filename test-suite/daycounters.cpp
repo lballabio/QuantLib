@@ -31,32 +31,32 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(DayCounterTest)
+namespace {
 
-struct SingleCase {
-    SingleCase(ActualActual::Convention convention,
-               const Date& start,
-               const Date& end,
-               const Date& refStart,
-               const Date& refEnd,
-               Time result)
-    : convention(convention), start(start), end(end),
-      refStart(refStart), refEnd(refEnd), result(result) {}
-    SingleCase(ActualActual::Convention convention,
-               const Date& start,
-               const Date& end,
-               Time result)
-    : convention(convention), start(start), end(end),
-      refStart(Date()), refEnd(Date()), result(result) {}
-    ActualActual::Convention convention;
-    Date start;
-    Date end;
-    Date refStart;
-    Date refEnd;
-    Time result;
-};
+    struct SingleCase {
+        SingleCase(ActualActual::Convention convention,
+                   const Date& start,
+                   const Date& end,
+                   const Date& refStart,
+                   const Date& refEnd,
+                   Time result)
+        : convention(convention), start(start), end(end),
+          refStart(refStart), refEnd(refEnd), result(result) {}
+        SingleCase(ActualActual::Convention convention,
+                   const Date& start,
+                   const Date& end,
+                   Time result)
+        : convention(convention), start(start), end(end),
+          refStart(Date()), refEnd(Date()), result(result) {}
+        ActualActual::Convention convention;
+        Date start;
+        Date end;
+        Date refStart;
+        Date refEnd;
+        Time result;
+    };
 
-QL_END_TEST_LOCALS(DayCounterTest)
+}
 
 
 void DayCounterTest::testActualActual() {

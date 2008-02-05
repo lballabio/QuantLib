@@ -45,27 +45,27 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(BondTest)
+namespace {
 
-struct CommonVars {
-    // common data
-    Calendar calendar;
-    Date today;
-    Real faceAmount;
+    struct CommonVars {
+        // common data
+        Calendar calendar;
+        Date today;
+        Real faceAmount;
 
-    // cleanup
-    SavedSettings backup;
+        // cleanup
+        SavedSettings backup;
 
-    // setup
-    CommonVars() {
-        calendar = TARGET();
-        today = calendar.adjust(Date::todaysDate());
-        Settings::instance().evaluationDate() = today;
-        faceAmount = 1000000.0;
-    }
-};
+        // setup
+        CommonVars() {
+            calendar = TARGET();
+            today = calendar.adjust(Date::todaysDate());
+            Settings::instance().evaluationDate() = today;
+            faceAmount = 1000000.0;
+        }
+    };
 
-QL_END_TEST_LOCALS(BondTest)
+}
 
 
 void BondTest::testYield() {

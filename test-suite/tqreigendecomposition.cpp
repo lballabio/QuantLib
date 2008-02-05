@@ -24,11 +24,12 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(TqrEigenDecompositionTest)
+namespace {
 
-Real tolerance = 1.0e-10;
+    Real tolerance = 1.0e-10;
 
-QL_END_TEST_LOCALS(TqrEigenDecompositionTest)
+}
+
 
 void TqrEigenDecompositionTest::testEigenValueDecomposition() {
     BOOST_MESSAGE("Testing TQR eigenvalue decomposition...");

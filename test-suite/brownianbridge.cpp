@@ -32,31 +32,32 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(BrownianBridgeTest)
+namespace {
 
-template <class ForwardIterator1, class ForwardIterator2>
-Real maxDiff(ForwardIterator1 begin1, ForwardIterator1 end1,
-             ForwardIterator2 begin2) {
-    Real diff = 0.0;
-    while (begin1 != end1) {
-        diff = std::max(diff, std::fabs(*begin1 - *begin2));
-        ++begin1; ++begin2;
+    template <class ForwardIterator1, class ForwardIterator2>
+    Real maxDiff(ForwardIterator1 begin1, ForwardIterator1 end1,
+                 ForwardIterator2 begin2) {
+        Real diff = 0.0;
+        while (begin1 != end1) {
+            diff = std::max(diff, std::fabs(*begin1 - *begin2));
+            ++begin1; ++begin2;
+        }
+        return diff;
     }
-    return diff;
+
+    template <class ForwardIterator1, class ForwardIterator2>
+    Real maxRelDiff(ForwardIterator1 begin1, ForwardIterator1 end1,
+                    ForwardIterator2 begin2) {
+        Real diff = 0.0;
+        while (begin1 != end1) {
+            diff = std::max(diff, std::fabs((*begin1 - *begin2)/(*begin2)));
+            ++begin1; ++begin2;
+        }
+        return diff;
+    }
+
 }
 
-template <class ForwardIterator1, class ForwardIterator2>
-Real maxRelDiff(ForwardIterator1 begin1, ForwardIterator1 end1,
-                ForwardIterator2 begin2) {
-    Real diff = 0.0;
-    while (begin1 != end1) {
-        diff = std::max(diff, std::fabs((*begin1 - *begin2)/(*begin2)));
-        ++begin1; ++begin2;
-    }
-    return diff;
-}
-
-QL_END_TEST_LOCALS(BrownianBridgeTest)
 
 void BrownianBridgeTest::testVariates() {
     BOOST_MESSAGE("Testing Brownian-bridge variates...");

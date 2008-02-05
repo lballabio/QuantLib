@@ -27,17 +27,17 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(CovarianceTest)
+namespace {
 
-Real norm(const Matrix& m) {
-    Real sum = 0.0;
-    for (Size i=0; i<m.rows(); i++)
-        for (Size j=0; j<m.columns(); j++)
-            sum += m[i][j]*m[i][j];
-    return std::sqrt(sum);
+    Real norm(const Matrix& m) {
+        Real sum = 0.0;
+        for (Size i=0; i<m.rows(); i++)
+            for (Size j=0; j<m.columns(); j++)
+                sum += m[i][j]*m[i][j];
+        return std::sqrt(sum);
+    }
+
 }
-
-QL_END_TEST_LOCALS(CovarianceTest)
 
 
 void CovarianceTest::testRankReduction() {

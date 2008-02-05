@@ -41,15 +41,15 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(ShortRateModelTest)
+namespace {
 
-struct CalibrationData {
-    Integer start;
-    Integer length;
-    Volatility volatility;
-};
+    struct CalibrationData {
+        Integer start;
+        Integer length;
+        Volatility volatility;
+    };
 
-QL_END_TEST_LOCALS(ShortRateModelTest)
+}
 
 
 void ShortRateModelTest::testCachedHullWhite() {

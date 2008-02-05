@@ -38,19 +38,20 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(BatesModelTest)
+namespace {
 
     Real getCalibrationError(
                std::vector<boost::shared_ptr<CalibrationHelper> > & options) {
-    Real sse = 0;
-    for (Size i = 0; i < options.size(); ++i) {
-        const Real diff = options[i]->calibrationError()*100.0;
-        sse += diff*diff;
+        Real sse = 0;
+        for (Size i = 0; i < options.size(); ++i) {
+            const Real diff = options[i]->calibrationError()*100.0;
+            sse += diff*diff;
+        }
+        return sse;
     }
-    return sse;
+
 }
 
-QL_END_TEST_LOCALS(BatesModelTest)
 
 void BatesModelTest::testAnalyticVsBlack() {
 

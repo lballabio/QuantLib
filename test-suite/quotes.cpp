@@ -33,17 +33,17 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(QuoteTest)
+namespace {
 
-Real add10(Real x) { return x+10; }
-Real mul10(Real x) { return x*10; }
-Real sub10(Real x) { return x-10; }
+    Real add10(Real x) { return x+10; }
+    Real mul10(Real x) { return x*10; }
+    Real sub10(Real x) { return x-10; }
 
-Real add(Real x, Real y) { return x+y; }
-Real mul(Real x, Real y) { return x*y; }
-Real sub(Real x, Real y) { return x-y; }
+    Real add(Real x, Real y) { return x+y; }
+    Real mul(Real x, Real y) { return x*y; }
+    Real sub(Real x, Real y) { return x-y; }
 
-QL_END_TEST_LOCALS(QuoteTest)
+}
 
 
 void QuoteTest::testObservable() {

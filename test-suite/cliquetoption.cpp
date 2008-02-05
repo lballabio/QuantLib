@@ -99,90 +99,91 @@ void CliquetOptionTest::testValues() {
 }
 
 
-QL_BEGIN_TEST_LOCALS(CliquetOptionTest)
+namespace {
 
-template <class T>
-void testOptionGreeks() {
+    template <class T>
+    void testOptionGreeks() {
 
-    SavedSettings backup;
+        SavedSettings backup;
 
-    std::map<std::string,Real> calculated, expected, tolerance;
-    tolerance["delta"]  = 1.0e-5;
-    tolerance["gamma"]  = 1.0e-5;
-    tolerance["theta"]  = 1.0e-5;
-    tolerance["rho"]    = 1.0e-5;
-    tolerance["divRho"] = 1.0e-5;
-    tolerance["vega"]   = 1.0e-5;
+        std::map<std::string,Real> calculated, expected, tolerance;
+        tolerance["delta"]  = 1.0e-5;
+        tolerance["gamma"]  = 1.0e-5;
+        tolerance["theta"]  = 1.0e-5;
+        tolerance["rho"]    = 1.0e-5;
+        tolerance["divRho"] = 1.0e-5;
+        tolerance["vega"]   = 1.0e-5;
 
-    Option::Type types[] = { Option::Call, Option::Put };
-    Real moneyness[] = { 0.9, 1.0, 1.1 };
-    Real underlyings[] = { 100.0 };
-    Rate qRates[] = { 0.04, 0.05, 0.06 };
-    Rate rRates[] = { 0.01, 0.05, 0.15 };
-    Integer lengths[] = { 1, 2 };
-    Frequency frequencies[] = { Semiannual, Quarterly };
-    Volatility vols[] = { 0.11, 0.50, 1.20 };
+        Option::Type types[] = { Option::Call, Option::Put };
+        Real moneyness[] = { 0.9, 1.0, 1.1 };
+        Real underlyings[] = { 100.0 };
+        Rate qRates[] = { 0.04, 0.05, 0.06 };
+        Rate rRates[] = { 0.01, 0.05, 0.15 };
+        Integer lengths[] = { 1, 2 };
+        Frequency frequencies[] = { Semiannual, Quarterly };
+        Volatility vols[] = { 0.11, 0.50, 1.20 };
 
-    DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
-    Settings::instance().evaluationDate() = today;
+        DayCounter dc = Actual360();
+        Date today = Date::todaysDate();
+        Settings::instance().evaluationDate() = today;
 
-    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
+        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+        Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
+        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+        Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
+        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+        Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-    boost::shared_ptr<BlackScholesMertonProcess> process(
-         new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+        boost::shared_ptr<BlackScholesMertonProcess> process(
+                            new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                                          qTS, rTS, volTS));
 
-    for (Size i=0; i<LENGTH(types); i++) {
-      for (Size j=0; j<LENGTH(moneyness); j++) {
-        for (Size k=0; k<LENGTH(lengths); k++) {
-          for (Size kk=0; kk<LENGTH(frequencies); kk++) {
+        for (Size i=0; i<LENGTH(types); i++) {
+          for (Size j=0; j<LENGTH(moneyness); j++) {
+            for (Size k=0; k<LENGTH(lengths); k++) {
+              for (Size kk=0; kk<LENGTH(frequencies); kk++) {
 
-            boost::shared_ptr<EuropeanExercise> maturity(
+                boost::shared_ptr<EuropeanExercise> maturity(
                               new EuropeanExercise(today + lengths[k]*Years));
 
-            boost::shared_ptr<PercentageStrikePayoff> payoff(
+                boost::shared_ptr<PercentageStrikePayoff> payoff(
                           new PercentageStrikePayoff(types[i], moneyness[j]));
 
-            std::vector<Date> reset;
-            for (Date d = today + Period(frequencies[kk]);
-                 d < maturity->lastDate();
-                 d += Period(frequencies[kk]))
-                reset.push_back(d);
+                std::vector<Date> reset;
+                for (Date d = today + Period(frequencies[kk]);
+                     d < maturity->lastDate();
+                     d += Period(frequencies[kk]))
+                    reset.push_back(d);
 
-            boost::shared_ptr<PricingEngine> engine(new T(process));
+                boost::shared_ptr<PricingEngine> engine(new T(process));
 
-            CliquetOption option(payoff, maturity, reset);
-            option.setPricingEngine(engine);
+                CliquetOption option(payoff, maturity, reset);
+                option.setPricingEngine(engine);
 
-            for (Size l=0; l<LENGTH(underlyings); l++) {
-              for (Size m=0; m<LENGTH(qRates); m++) {
-                for (Size n=0; n<LENGTH(rRates); n++) {
-                  for (Size p=0; p<LENGTH(vols); p++) {
+                for (Size l=0; l<LENGTH(underlyings); l++) {
+                  for (Size m=0; m<LENGTH(qRates); m++) {
+                    for (Size n=0; n<LENGTH(rRates); n++) {
+                      for (Size p=0; p<LENGTH(vols); p++) {
 
-                      Real u = underlyings[l];
-                      Rate q = qRates[m],
-                           r = rRates[n];
-                      Volatility v = vols[p];
-                      spot->setValue(u);
-                      qRate->setValue(q);
-                      rRate->setValue(r);
-                      vol->setValue(v);
+                        Real u = underlyings[l];
+                        Rate q = qRates[m],
+                             r = rRates[n];
+                        Volatility v = vols[p];
+                        spot->setValue(u);
+                        qRate->setValue(q);
+                        rRate->setValue(r);
+                        vol->setValue(v);
 
-                      Real value = option.NPV();
-                      calculated["delta"]  = option.delta();
-                      calculated["gamma"]  = option.gamma();
-                      calculated["theta"]  = option.theta();
-                      calculated["rho"]    = option.rho();
-                      calculated["divRho"] = option.dividendRho();
-                      calculated["vega"]   = option.vega();
+                        Real value = option.NPV();
+                        calculated["delta"]  = option.delta();
+                        calculated["gamma"]  = option.gamma();
+                        calculated["theta"]  = option.theta();
+                        calculated["rho"]    = option.rho();
+                        calculated["divRho"] = option.dividendRho();
+                        calculated["vega"]   = option.vega();
 
-                      if (value > spot->value()*1.0e-5) {
+                        if (value > spot->value()*1.0e-5) {
                           // perturb spot and get delta and gamma
                           Real du = u*1.0e-4;
                           spot->setValue(u+du);
@@ -245,18 +246,18 @@ void testOptionGreeks() {
                                                  expct, calcl, error, tol);
                               }
                           }
+                        }
                       }
+                    }
                   }
                 }
               }
             }
           }
         }
-      }
     }
-}
 
-QL_END_TEST_LOCALS(CliquetOptionTest)
+}
 
 
 void CliquetOptionTest::testGreeks() {

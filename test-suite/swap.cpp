@@ -39,62 +39,64 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(SwapTest)
+namespace {
 
-// global data
+    // TODO: use CommonVars
+    // global data
 
-Date today_, settlement_;
-VanillaSwap::Type type_;
-Real nominal_;
-Calendar calendar_;
-BusinessDayConvention fixedConvention_, floatingConvention_;
-Frequency fixedFrequency_, floatingFrequency_;
-DayCounter fixedDayCount_;
-boost::shared_ptr<IborIndex> index_;
-Natural settlementDays_;
-RelinkableHandle<YieldTermStructure> termStructure_;
+    Date today_, settlement_;
+    VanillaSwap::Type type_;
+    Real nominal_;
+    Calendar calendar_;
+    BusinessDayConvention fixedConvention_, floatingConvention_;
+    Frequency fixedFrequency_, floatingFrequency_;
+    DayCounter fixedDayCount_;
+    boost::shared_ptr<IborIndex> index_;
+    Natural settlementDays_;
+    RelinkableHandle<YieldTermStructure> termStructure_;
 
-// utilities
+    // utilities
 
-boost::shared_ptr<VanillaSwap> makeSwap(Integer length, Rate fixedRate,
-                                        Spread floatingSpread) {
-    Date maturity = calendar_.advance(settlement_,length,Years,
-                                      floatingConvention_);
-    Schedule fixedSchedule(settlement_,maturity,Period(fixedFrequency_),
-                           calendar_,fixedConvention_,fixedConvention_,
-                           DateGeneration::Forward,false);
-    Schedule floatSchedule(settlement_,maturity,Period(floatingFrequency_),
-                           calendar_,floatingConvention_,floatingConvention_,
-                           DateGeneration::Forward,false);
-    boost::shared_ptr<VanillaSwap> swap(
-        new VanillaSwap(type_, nominal_,
-                        fixedSchedule, fixedRate, fixedDayCount_,
-                        floatSchedule, index_, floatingSpread,
-                        index_->dayCounter()));
-    swap->setPricingEngine(boost::shared_ptr<PricingEngine>(
+    boost::shared_ptr<VanillaSwap> makeSwap(Integer length, Rate fixedRate,
+                                            Spread floatingSpread) {
+        Date maturity = calendar_.advance(settlement_,length,Years,
+                                          floatingConvention_);
+        Schedule fixedSchedule(settlement_,maturity,Period(fixedFrequency_),
+                               calendar_,fixedConvention_,fixedConvention_,
+                               DateGeneration::Forward,false);
+        Schedule floatSchedule(settlement_,maturity,Period(floatingFrequency_),
+                               calendar_,floatingConvention_,
+                               floatingConvention_,
+                               DateGeneration::Forward,false);
+        boost::shared_ptr<VanillaSwap> swap(
+            new VanillaSwap(type_, nominal_,
+                            fixedSchedule, fixedRate, fixedDayCount_,
+                            floatSchedule, index_, floatingSpread,
+                            index_->dayCounter()));
+        swap->setPricingEngine(boost::shared_ptr<PricingEngine>(
                                   new DiscountingSwapEngine(termStructure_)));
-    return swap;
-}
+        return swap;
+    }
 
-void setup() {
-    type_ = VanillaSwap::Payer;
-    settlementDays_ = 2;
-    nominal_ = 100.0;
-    fixedConvention_ = Unadjusted;
-    floatingConvention_ = ModifiedFollowing;
-    fixedFrequency_ = Annual;
-    floatingFrequency_ = Semiannual;
-    fixedDayCount_ = Thirty360();
-    index_ = boost::shared_ptr<IborIndex>(new
-        Euribor(Period(floatingFrequency_), termStructure_));
-    calendar_ = index_->fixingCalendar();
-    today_ = calendar_.adjust(Date::todaysDate());
-    Settings::instance().evaluationDate() = today_;
-    settlement_ = calendar_.advance(today_,settlementDays_,Days);
-    termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
-}
+    void setup() {
+        type_ = VanillaSwap::Payer;
+        settlementDays_ = 2;
+        nominal_ = 100.0;
+        fixedConvention_ = Unadjusted;
+        floatingConvention_ = ModifiedFollowing;
+        fixedFrequency_ = Annual;
+        floatingFrequency_ = Semiannual;
+        fixedDayCount_ = Thirty360();
+        index_ = boost::shared_ptr<IborIndex>(new
+            Euribor(Period(floatingFrequency_), termStructure_));
+        calendar_ = index_->fixingCalendar();
+        today_ = calendar_.adjust(Date::todaysDate());
+        Settings::instance().evaluationDate() = today_;
+        settlement_ = calendar_.advance(today_,settlementDays_,Days);
+        termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
+    }
 
-QL_END_TEST_LOCALS(SwapTest)
+}
 
 
 void SwapTest::testFairRate() {

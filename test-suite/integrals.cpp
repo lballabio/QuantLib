@@ -30,57 +30,44 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(IntegralTest)
+namespace {
 
-Real tolerance = 1.0e-6;
-bool verbose = true;
+    Real tolerance = 1.0e-6;
+    bool verbose = true;
 
-template <class T>
-void testSingle(const T& I, const std::string& tag,
-                const boost::function<Real (Real)>& f,
-                Real xMin, Real xMax, Real expected) {
-    Real calculated = I(f,xMin,xMax);
-    if (std::fabs(calculated-expected) > tolerance) {
-        BOOST_FAIL(std::setprecision(10)
-                   << "integrating " << tag
-                   << "    calculated: " << calculated
-                   << "    expected:   " << expected);
+    template <class T>
+    void testSingle(const T& I, const std::string& tag,
+                    const boost::function<Real (Real)>& f,
+                    Real xMin, Real xMax, Real expected) {
+        Real calculated = I(f,xMin,xMax);
+        if (std::fabs(calculated-expected) > tolerance) {
+            BOOST_FAIL(std::setprecision(10)
+                       << "integrating " << tag
+                       << "    calculated: " << calculated
+                       << "    expected:   " << expected);
+        }
     }
-    // this will be uncommented later...
-    /*else {
-        if (verbose)
-            BOOST_MESSAGE("integrating " << tag
-                            << "    calculated: " << calculated
-                            << "    expected: " << expected
-                            << "    nb of evaluations: " << I.numberOfEvaluations()
-                            << "    precision: " << std::setprecision(3)
-                            << std::fabs(calculated- expected));
-    }*/
 
-
-}
-
-template <class T>
-void testSeveral(const T& I) {
-    testSingle(I, "f(x) = 1",
-               constant<Real,Real>(1.0), 0.0, 1.0, 1.0);
-    testSingle(I, "f(x) = x",
-               identity<Real>(),           0.0, 1.0, 0.5);
-    testSingle(I, "f(x) = x^2",
-               square<Real>(),             0.0, 1.0, 1.0/3.0);
-    testSingle(I, "f(x) = sin(x)",
-               std::ptr_fun<Real,Real>(std::sin), 0.0, M_PI, 2.0);
-    testSingle(I, "f(x) = cos(x)",
-               std::ptr_fun<Real,Real>(std::cos), 0.0, M_PI, 0.0);
-    testSingle(I, "f(x) = Gaussian(x)",
-               NormalDistribution(), -10.0, 10.0, 1.0);
-    testSingle(I, "f(x) = Abcd2(x)",
-               AbcdSquared(0.07, 0.07, 0.5, 0.1, 8.0, 10.0), 5.0, 6.0,
-               AbcdFunction(0.07, 0.07, 0.5, 0.1).covariance(5.0, 6.0, 8.0, 10.0));
+    template <class T>
+    void testSeveral(const T& I) {
+        testSingle(I, "f(x) = 1",
+                   constant<Real,Real>(1.0), 0.0, 1.0, 1.0);
+        testSingle(I, "f(x) = x",
+                   identity<Real>(),           0.0, 1.0, 0.5);
+        testSingle(I, "f(x) = x^2",
+                   square<Real>(),             0.0, 1.0, 1.0/3.0);
+        testSingle(I, "f(x) = sin(x)",
+                   std::ptr_fun<Real,Real>(std::sin), 0.0, M_PI, 2.0);
+        testSingle(I, "f(x) = cos(x)",
+                   std::ptr_fun<Real,Real>(std::cos), 0.0, M_PI, 0.0);
+        testSingle(I, "f(x) = Gaussian(x)",
+                   NormalDistribution(), -10.0, 10.0, 1.0);
+        testSingle(I, "f(x) = Abcd2(x)",
+                   AbcdSquared(0.07, 0.07, 0.5, 0.1, 8.0, 10.0), 5.0, 6.0,
+                   AbcdFunction(0.07, 0.07, 0.5, 0.1).covariance(5.0, 6.0, 8.0, 10.0));
+    }
 
 }
-
-QL_END_TEST_LOCALS(IntegralTest)
 
 
 void IntegralTest::testSegment() {
