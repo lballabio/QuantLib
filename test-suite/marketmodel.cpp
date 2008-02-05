@@ -96,7 +96,6 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-    // TODO: use CommonVars
     Date todaysDate, startDate, endDate;
     std::vector<Time> rateTimes, paymentTimes;
     std::vector<Real> accruals;
@@ -450,7 +449,7 @@ namespace {
             BOOST_ERROR("mismatch between the size of the result and the \
                                                             number of results");
         Size currentResultIndex = 0;
-        
+
         std::vector<Real> stdDevs;
         std::vector<SubProductExpectedValues>::const_iterator subProductExpectedValue;
         for (subProductExpectedValue = subProductExpectedValues.begin();
@@ -499,7 +498,7 @@ namespace {
         std::vector<Real> results = stats.mean();
         std::vector<Real> errors = stats.errorEstimate();
         std::vector<Real> stdDevs(todaysForwards.size());
-        
+
         Size N = todaysForwards.size();
         std::vector<Rate> expectedForwards(N), expectedCaplets(N);
         std::vector<Real> forwardStdDevs(N), capletStdDev(N);
@@ -526,7 +525,7 @@ namespace {
             else if (capletStdDev[i]<minError)
                 minError = capletStdDev[i];
         }
-        
+
         Real errorThreshold = 2.50;
         if ( printReport_ || minError > 0.0 || maxError < 0.0 ||
              minError <-errorThreshold || maxError > errorThreshold) {
@@ -567,7 +566,7 @@ namespace {
         std::vector<Real> results = stats.mean();
         std::vector<Real> errors = stats.errorEstimate();
         std::vector<Real> stdDevs(todaysForwards.size());
-        
+
         Size N = todaysForwards.size();
         std::vector<Rate> expectedForwards(N), expectedCaplets(N);
         std::vector<Real> forwardStdDevs(N), capletStdDev(N);

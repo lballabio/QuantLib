@@ -73,7 +73,6 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-    // TODO: use CommonVars
     Date todaysDate_, startDate_, endDate_;
     std::vector<Time> rateTimes_;
     std::vector<Real> accruals_;

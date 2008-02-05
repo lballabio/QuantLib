@@ -34,138 +34,149 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-    // TODO: use CommonVars
-    Calendar calendar_;
-    DayCounter dayCounter_;
+    struct CommonVars{
+        // global data
+        Calendar calendar;
+        DayCounter dayCounter;
 
-    RelinkableHandle<YieldTermStructure> yieldTermStructure_;
+        RelinkableHandle<YieldTermStructure> yieldTermStructure;
 
-    std::vector<Rate> strikes_;
-    std::vector<Period> optionTenors_;
-    Matrix termV_;
+        std::vector<Rate> strikes;
+        std::vector<Period> optionTenors;
+        Matrix termV;
 
-    boost::shared_ptr<CapFloorTermVolSurface> capFloorVolSurface_;
-    boost::shared_ptr<CapFloorTermVolSurface> flatTermVolSurface_;
+        boost::shared_ptr<CapFloorTermVolSurface> capFloorVolSurface;
+        boost::shared_ptr<CapFloorTermVolSurface> flatTermVolSurface;
 
-    Real accuracy_ = 1.0e-6;
-    Real tolerance_ = 1.0e-5;
+        Real accuracy;
+        Real tolerance;
 
-    void setTermStructure(){
+        // cleanup
+        SavedSettings backup;
 
-        calendar_ = TARGET();
-        Date today = calendar_.adjust(Date::todaysDate());
-        Settings::instance().evaluationDate() = today;
+        CommonVars() {
+            accuracy = 1.0e-6;
+            tolerance = 1.0e-5;
+        }
 
-        dayCounter_ = Actual365Fixed();
+        void setTermStructure() {
 
-        Rate flatFwdRate = 0.04;
-        yieldTermStructure_.linkTo(boost::shared_ptr<FlatForward>(new
-            FlatForward(0,
-                        calendar_,
-                        flatFwdRate,
-                        dayCounter_)));
-    }
+            calendar = TARGET();
+            Date today = calendar.adjust(Date::todaysDate());
+            Settings::instance().evaluationDate() = today;
 
-    void setFlatTermVolSurface() {
+            dayCounter = Actual365Fixed();
 
-        setTermStructure();
+            Rate flatFwdRate = 0.04;
+            yieldTermStructure.linkTo(
+                boost::shared_ptr<FlatForward>(new FlatForward(0,
+                                                               calendar,
+                                                               flatFwdRate,
+                                                               dayCounter)));
+        }
 
-        optionTenors_.resize(10);
-        for (Size i = 0; i < optionTenors_.size(); ++i)
-            optionTenors_[i] = Period(i + 1, Years);
+        void setFlatTermVolSurface() {
 
-        strikes_.resize(10);
-        for (Size j = 0; j < strikes_.size(); ++j)
-            strikes_[j] = Real(j + 1) / 100.0;
+            setTermStructure();
 
-        Volatility flatVol = .18;
-        termV_ = Matrix(optionTenors_.size(), strikes_.size(), flatVol);
-        flatTermVolSurface_ = boost::shared_ptr<CapFloorTermVolSurface>(new
-            CapFloorTermVolSurface(0, calendar_, Following,
-                                   optionTenors_, strikes_,
-                                   termV_, dayCounter_));
-    }
+            optionTenors.resize(10);
+            for (Size i = 0; i < optionTenors.size(); ++i)
+                optionTenors[i] = Period(i + 1, Years);
+
+            strikes.resize(10);
+            for (Size j = 0; j < strikes.size(); ++j)
+                strikes[j] = Real(j + 1) / 100.0;
+
+            Volatility flatVol = .18;
+            termV = Matrix(optionTenors.size(), strikes.size(), flatVol);
+            flatTermVolSurface = boost::shared_ptr<CapFloorTermVolSurface>(new
+                CapFloorTermVolSurface(0, calendar, Following,
+                                       optionTenors, strikes,
+                                       termV, dayCounter));
+        }
 
 
-    void setCapFloorTermVolSurface() {
+        void setCapFloorTermVolSurface() {
 
-        setTermStructure();
+            setTermStructure();
 
-        //cap volatility smile matrix
-        optionTenors_ = std::vector<Period>();
-        optionTenors_.push_back(Period(1, Years));
-        optionTenors_.push_back(Period(18, Months));
-        optionTenors_.push_back(Period(2, Years));
-        optionTenors_.push_back(Period(3, Years));
-        optionTenors_.push_back(Period(4, Years));
-        optionTenors_.push_back(Period(5, Years));
-        optionTenors_.push_back(Period(6, Years));
-        optionTenors_.push_back(Period(7, Years));
-        optionTenors_.push_back(Period(8, Years));
-        optionTenors_.push_back(Period(9, Years));
-        optionTenors_.push_back(Period(10, Years));
-        optionTenors_.push_back(Period(12, Years));
-        optionTenors_.push_back(Period(15, Years));
-        optionTenors_.push_back(Period(20, Years));
-        optionTenors_.push_back(Period(25, Years));
-        optionTenors_.push_back(Period(30, Years));
+            //cap volatility smile matrix
+            optionTenors = std::vector<Period>();
+            optionTenors.push_back(Period(1, Years));
+            optionTenors.push_back(Period(18, Months));
+            optionTenors.push_back(Period(2, Years));
+            optionTenors.push_back(Period(3, Years));
+            optionTenors.push_back(Period(4, Years));
+            optionTenors.push_back(Period(5, Years));
+            optionTenors.push_back(Period(6, Years));
+            optionTenors.push_back(Period(7, Years));
+            optionTenors.push_back(Period(8, Years));
+            optionTenors.push_back(Period(9, Years));
+            optionTenors.push_back(Period(10, Years));
+            optionTenors.push_back(Period(12, Years));
+            optionTenors.push_back(Period(15, Years));
+            optionTenors.push_back(Period(20, Years));
+            optionTenors.push_back(Period(25, Years));
+            optionTenors.push_back(Period(30, Years));
 
-        strikes_ = std::vector<Rate>();
-        strikes_.push_back(0.015);
-        strikes_.push_back(0.0175);
-        strikes_.push_back(0.02);
-        strikes_.push_back(0.0225);
-        strikes_.push_back(0.025);
-        strikes_.push_back(0.03);
-        strikes_.push_back(0.035);
-        strikes_.push_back(0.04);
-        strikes_.push_back(0.05);
-        strikes_.push_back(0.06);
-        strikes_.push_back(0.07);
-        strikes_.push_back(0.08);
-        strikes_.push_back(0.1);
+            strikes = std::vector<Rate>();
+            strikes.push_back(0.015);
+            strikes.push_back(0.0175);
+            strikes.push_back(0.02);
+            strikes.push_back(0.0225);
+            strikes.push_back(0.025);
+            strikes.push_back(0.03);
+            strikes.push_back(0.035);
+            strikes.push_back(0.04);
+            strikes.push_back(0.05);
+            strikes.push_back(0.06);
+            strikes.push_back(0.07);
+            strikes.push_back(0.08);
+            strikes.push_back(0.1);
 
-        termV_ = Matrix(optionTenors_.size(), strikes_.size());
-        termV_[0][0]=0.287;  termV_[0][1]=0.274;  termV_[0][2]=0.256;  termV_[0][3]=0.245;  termV_[0][4]=0.227;  termV_[0][5]=0.148;  termV_[0][6]=0.096;  termV_[0][7]=0.09;   termV_[0][8]=0.11;   termV_[0][9]=0.139;  termV_[0][10]=0.166;  termV_[0][11]=0.19;   termV_[0][12]=0.214;
-        termV_[1][0]=0.303;  termV_[1][1]=0.258;  termV_[1][2]=0.22;   termV_[1][3]=0.203;  termV_[1][4]=0.19;   termV_[1][5]=0.153;  termV_[1][6]=0.126;  termV_[1][7]=0.118;  termV_[1][8]=0.147;  termV_[1][9]=0.165;  termV_[1][10]=0.18;   termV_[1][11]=0.192;  termV_[1][12]=0.212;
-        termV_[2][0]=0.303;  termV_[2][1]=0.257;  termV_[2][2]=0.216;  termV_[2][3]=0.196;  termV_[2][4]=0.182;  termV_[2][5]=0.154;  termV_[2][6]=0.134;  termV_[2][7]=0.127;  termV_[2][8]=0.149;  termV_[2][9]=0.166;  termV_[2][10]=0.18;   termV_[2][11]=0.192;  termV_[2][12]=0.212;
-        termV_[3][0]=0.305;  termV_[3][1]=0.266;  termV_[3][2]=0.226;  termV_[3][3]=0.203;  termV_[3][4]=0.19;   termV_[3][5]=0.167;  termV_[3][6]=0.151;  termV_[3][7]=0.144;  termV_[3][8]=0.16;   termV_[3][9]=0.172;  termV_[3][10]=0.183;  termV_[3][11]=0.193;  termV_[3][12]=0.209;
-        termV_[4][0]=0.294;  termV_[4][1]=0.261;  termV_[4][2]=0.216;  termV_[4][3]=0.201;  termV_[4][4]=0.19;   termV_[4][5]=0.171;  termV_[4][6]=0.158;  termV_[4][7]=0.151;  termV_[4][8]=0.163;  termV_[4][9]=0.172;  termV_[4][10]=0.181;  termV_[4][11]=0.188;  termV_[4][12]=0.201;
-        termV_[5][0]=0.276;  termV_[5][1]=0.248;  termV_[5][2]=0.212;  termV_[5][3]=0.199;  termV_[5][4]=0.189;  termV_[5][5]=0.172;  termV_[5][6]=0.16;   termV_[5][7]=0.155;  termV_[5][8]=0.162;  termV_[5][9]=0.17;   termV_[5][10]=0.177;  termV_[5][11]=0.183;  termV_[5][12]=0.195;
-        termV_[6][0]=0.26;   termV_[6][1]=0.237;  termV_[6][2]=0.21;   termV_[6][3]=0.198;  termV_[6][4]=0.188;  termV_[6][5]=0.172;  termV_[6][6]=0.161;  termV_[6][7]=0.156;  termV_[6][8]=0.161;  termV_[6][9]=0.167;  termV_[6][10]=0.173;  termV_[6][11]=0.179;  termV_[6][12]=0.19;
-        termV_[7][0]=0.25;   termV_[7][1]=0.231;  termV_[7][2]=0.208;  termV_[7][3]=0.196;  termV_[7][4]=0.187;  termV_[7][5]=0.172;  termV_[7][6]=0.162;  termV_[7][7]=0.156;  termV_[7][8]=0.16;   termV_[7][9]=0.165;  termV_[7][10]=0.17;   termV_[7][11]=0.175;  termV_[7][12]=0.185;
-        termV_[8][0]=0.244;  termV_[8][1]=0.226;  termV_[8][2]=0.206;  termV_[8][3]=0.195;  termV_[8][4]=0.186;  termV_[8][5]=0.171;  termV_[8][6]=0.161;  termV_[8][7]=0.156;  termV_[8][8]=0.158;  termV_[8][9]=0.162;  termV_[8][10]=0.166;  termV_[8][11]=0.171;  termV_[8][12]=0.18;
-        termV_[9][0]=0.239;  termV_[9][1]=0.222;  termV_[9][2]=0.204;  termV_[9][3]=0.193;  termV_[9][4]=0.185;  termV_[9][5]=0.17;   termV_[9][6]=0.16;   termV_[9][7]=0.155;  termV_[9][8]=0.156;  termV_[9][9]=0.159;  termV_[9][10]=0.163;  termV_[9][11]=0.168;  termV_[9][12]=0.177;
-        termV_[10][0]=0.235; termV_[10][1]=0.219; termV_[10][2]=0.202; termV_[10][3]=0.192; termV_[10][4]=0.183; termV_[10][5]=0.169; termV_[10][6]=0.159; termV_[10][7]=0.154; termV_[10][8]=0.154; termV_[10][9]=0.156; termV_[10][10]=0.16;  termV_[10][11]=0.164; termV_[10][12]=0.173;
-        termV_[11][0]=0.227; termV_[11][1]=0.212; termV_[11][2]=0.197; termV_[11][3]=0.187; termV_[11][4]=0.179; termV_[11][5]=0.166; termV_[11][6]=0.156; termV_[11][7]=0.151; termV_[11][8]=0.149; termV_[11][9]=0.15;  termV_[11][10]=0.153; termV_[11][11]=0.157; termV_[11][12]=0.165;
-        termV_[12][0]=0.22;  termV_[12][1]=0.206; termV_[12][2]=0.192; termV_[12][3]=0.183; termV_[12][4]=0.175; termV_[12][5]=0.162; termV_[12][6]=0.153; termV_[12][7]=0.147; termV_[12][8]=0.144; termV_[12][9]=0.144; termV_[12][10]=0.147; termV_[12][11]=0.151; termV_[12][12]=0.158;
-        termV_[13][0]=0.211; termV_[13][1]=0.197; termV_[13][2]=0.185; termV_[13][3]=0.176; termV_[13][4]=0.168; termV_[13][5]=0.156; termV_[13][6]=0.147; termV_[13][7]=0.142; termV_[13][8]=0.138; termV_[13][9]=0.138; termV_[13][10]=0.14;  termV_[13][11]=0.144; termV_[13][12]=0.151;
-        termV_[14][0]=0.204; termV_[14][1]=0.192; termV_[14][2]=0.18;  termV_[14][3]=0.171; termV_[14][4]=0.164; termV_[14][5]=0.152; termV_[14][6]=0.143; termV_[14][7]=0.138; termV_[14][8]=0.134; termV_[14][9]=0.134; termV_[14][10]=0.137; termV_[14][11]=0.14;  termV_[14][12]=0.148;
-        termV_[15][0]=0.2;   termV_[15][1]=0.187; termV_[15][2]=0.176; termV_[15][3]=0.167; termV_[15][4]=0.16;  termV_[15][5]=0.148; termV_[15][6]=0.14;  termV_[15][7]=0.135; termV_[15][8]=0.131; termV_[15][9]=0.132; termV_[15][10]=0.135; termV_[15][11]=0.139; termV_[15][12]=0.146;
+            termV = Matrix(optionTenors.size(), strikes.size());
+            termV[0][0]=0.287;  termV[0][1]=0.274;  termV[0][2]=0.256;  termV[0][3]=0.245;  termV[0][4]=0.227;  termV[0][5]=0.148;  termV[0][6]=0.096;  termV[0][7]=0.09;   termV[0][8]=0.11;   termV[0][9]=0.139;  termV[0][10]=0.166;  termV[0][11]=0.19;   termV[0][12]=0.214;
+            termV[1][0]=0.303;  termV[1][1]=0.258;  termV[1][2]=0.22;   termV[1][3]=0.203;  termV[1][4]=0.19;   termV[1][5]=0.153;  termV[1][6]=0.126;  termV[1][7]=0.118;  termV[1][8]=0.147;  termV[1][9]=0.165;  termV[1][10]=0.18;   termV[1][11]=0.192;  termV[1][12]=0.212;
+            termV[2][0]=0.303;  termV[2][1]=0.257;  termV[2][2]=0.216;  termV[2][3]=0.196;  termV[2][4]=0.182;  termV[2][5]=0.154;  termV[2][6]=0.134;  termV[2][7]=0.127;  termV[2][8]=0.149;  termV[2][9]=0.166;  termV[2][10]=0.18;   termV[2][11]=0.192;  termV[2][12]=0.212;
+            termV[3][0]=0.305;  termV[3][1]=0.266;  termV[3][2]=0.226;  termV[3][3]=0.203;  termV[3][4]=0.19;   termV[3][5]=0.167;  termV[3][6]=0.151;  termV[3][7]=0.144;  termV[3][8]=0.16;   termV[3][9]=0.172;  termV[3][10]=0.183;  termV[3][11]=0.193;  termV[3][12]=0.209;
+            termV[4][0]=0.294;  termV[4][1]=0.261;  termV[4][2]=0.216;  termV[4][3]=0.201;  termV[4][4]=0.19;   termV[4][5]=0.171;  termV[4][6]=0.158;  termV[4][7]=0.151;  termV[4][8]=0.163;  termV[4][9]=0.172;  termV[4][10]=0.181;  termV[4][11]=0.188;  termV[4][12]=0.201;
+            termV[5][0]=0.276;  termV[5][1]=0.248;  termV[5][2]=0.212;  termV[5][3]=0.199;  termV[5][4]=0.189;  termV[5][5]=0.172;  termV[5][6]=0.16;   termV[5][7]=0.155;  termV[5][8]=0.162;  termV[5][9]=0.17;   termV[5][10]=0.177;  termV[5][11]=0.183;  termV[5][12]=0.195;
+            termV[6][0]=0.26;   termV[6][1]=0.237;  termV[6][2]=0.21;   termV[6][3]=0.198;  termV[6][4]=0.188;  termV[6][5]=0.172;  termV[6][6]=0.161;  termV[6][7]=0.156;  termV[6][8]=0.161;  termV[6][9]=0.167;  termV[6][10]=0.173;  termV[6][11]=0.179;  termV[6][12]=0.19;
+            termV[7][0]=0.25;   termV[7][1]=0.231;  termV[7][2]=0.208;  termV[7][3]=0.196;  termV[7][4]=0.187;  termV[7][5]=0.172;  termV[7][6]=0.162;  termV[7][7]=0.156;  termV[7][8]=0.16;   termV[7][9]=0.165;  termV[7][10]=0.17;   termV[7][11]=0.175;  termV[7][12]=0.185;
+            termV[8][0]=0.244;  termV[8][1]=0.226;  termV[8][2]=0.206;  termV[8][3]=0.195;  termV[8][4]=0.186;  termV[8][5]=0.171;  termV[8][6]=0.161;  termV[8][7]=0.156;  termV[8][8]=0.158;  termV[8][9]=0.162;  termV[8][10]=0.166;  termV[8][11]=0.171;  termV[8][12]=0.18;
+            termV[9][0]=0.239;  termV[9][1]=0.222;  termV[9][2]=0.204;  termV[9][3]=0.193;  termV[9][4]=0.185;  termV[9][5]=0.17;   termV[9][6]=0.16;   termV[9][7]=0.155;  termV[9][8]=0.156;  termV[9][9]=0.159;  termV[9][10]=0.163;  termV[9][11]=0.168;  termV[9][12]=0.177;
+            termV[10][0]=0.235; termV[10][1]=0.219; termV[10][2]=0.202; termV[10][3]=0.192; termV[10][4]=0.183; termV[10][5]=0.169; termV[10][6]=0.159; termV[10][7]=0.154; termV[10][8]=0.154; termV[10][9]=0.156; termV[10][10]=0.16;  termV[10][11]=0.164; termV[10][12]=0.173;
+            termV[11][0]=0.227; termV[11][1]=0.212; termV[11][2]=0.197; termV[11][3]=0.187; termV[11][4]=0.179; termV[11][5]=0.166; termV[11][6]=0.156; termV[11][7]=0.151; termV[11][8]=0.149; termV[11][9]=0.15;  termV[11][10]=0.153; termV[11][11]=0.157; termV[11][12]=0.165;
+            termV[12][0]=0.22;  termV[12][1]=0.206; termV[12][2]=0.192; termV[12][3]=0.183; termV[12][4]=0.175; termV[12][5]=0.162; termV[12][6]=0.153; termV[12][7]=0.147; termV[12][8]=0.144; termV[12][9]=0.144; termV[12][10]=0.147; termV[12][11]=0.151; termV[12][12]=0.158;
+            termV[13][0]=0.211; termV[13][1]=0.197; termV[13][2]=0.185; termV[13][3]=0.176; termV[13][4]=0.168; termV[13][5]=0.156; termV[13][6]=0.147; termV[13][7]=0.142; termV[13][8]=0.138; termV[13][9]=0.138; termV[13][10]=0.14;  termV[13][11]=0.144; termV[13][12]=0.151;
+            termV[14][0]=0.204; termV[14][1]=0.192; termV[14][2]=0.18;  termV[14][3]=0.171; termV[14][4]=0.164; termV[14][5]=0.152; termV[14][6]=0.143; termV[14][7]=0.138; termV[14][8]=0.134; termV[14][9]=0.134; termV[14][10]=0.137; termV[14][11]=0.14;  termV[14][12]=0.148;
+            termV[15][0]=0.2;   termV[15][1]=0.187; termV[15][2]=0.176; termV[15][3]=0.167; termV[15][4]=0.16;  termV[15][5]=0.148; termV[15][6]=0.14;  termV[15][7]=0.135; termV[15][8]=0.131; termV[15][9]=0.132; termV[15][10]=0.135; termV[15][11]=0.139; termV[15][12]=0.146;
 
-        capFloorVolSurface_ = boost::shared_ptr<CapFloorTermVolSurface>(new
-            CapFloorTermVolSurface(0, calendar_, Following,
-                                   optionTenors_, strikes_,
-                                   termV_, dayCounter_));
-    }
+            capFloorVolSurface = boost::shared_ptr<CapFloorTermVolSurface>(new
+                CapFloorTermVolSurface(0, calendar, Following,
+                                       optionTenors, strikes,
+                                       termV, dayCounter));
+        }
+    };
 
 }
 
-
 void OptionletStripperTest::testFlatTermVolatilityStripping() {
 
-  BOOST_MESSAGE("Test forward/forward vol stripping from flat term vol surface");
+    BOOST_MESSAGE(
+          "Test forward/forward vol stripping from flat term vol surface...");
 
-    SavedSettings backup;
-    setFlatTermVolSurface();
+    CommonVars vars;
+    vars.setFlatTermVolSurface();
 
-    boost::shared_ptr<IborIndex> iborIndex(new Euribor6M(yieldTermStructure_));
+    boost::shared_ptr<IborIndex> iborIndex(
+                                      new Euribor6M(vars.yieldTermStructure));
 
     boost::shared_ptr<OptionletStripper> optionletStripper1(new
-        OptionletStripper1(flatTermVolSurface_,
+        OptionletStripper1(vars.flatTermVolSurface,
                            iborIndex,
                            Null<Rate>(),
-                           accuracy_));
+                           vars.accuracy));
 
     boost::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter(new
         StrippedOptionletAdapter(optionletStripper1));
@@ -175,36 +186,36 @@ void OptionletStripperTest::testFlatTermVolatilityStripping() {
     vol->enableExtrapolation();
 
     boost::shared_ptr<BlackCapFloorEngine> strippedVolEngine(new
-        BlackCapFloorEngine(yieldTermStructure_,
+        BlackCapFloorEngine(vars.yieldTermStructure,
                             vol));
 
     boost::shared_ptr<CapFloor> cap;
-    for (Size tenorIndex=0; tenorIndex<optionTenors_.size(); ++tenorIndex) {
-        for (Size strikeIndex=0; strikeIndex<strikes_.size(); ++strikeIndex) {
+    for (Size tenorIndex=0; tenorIndex<vars.optionTenors.size(); ++tenorIndex) {
+        for (Size strikeIndex=0; strikeIndex<vars.strikes.size(); ++strikeIndex) {
             cap = MakeCapFloor(CapFloor::Cap,
-                               optionTenors_[tenorIndex],
+                               vars.optionTenors[tenorIndex],
                                iborIndex,
-                               strikes_[strikeIndex],
+                               vars.strikes[strikeIndex],
                                0*Days)
                   .withPricingEngine(strippedVolEngine);
 
             Real priceFromStrippedVolatility = cap->NPV();
 
             boost::shared_ptr<PricingEngine> blackCapFloorEngineConstantVolatility(new
-                BlackCapFloorEngine(yieldTermStructure_,
-                                    termV_[tenorIndex][strikeIndex]));
+                BlackCapFloorEngine(vars.yieldTermStructure,
+                                    vars.termV[tenorIndex][strikeIndex]));
 
             cap->setPricingEngine(blackCapFloorEngineConstantVolatility);
             Real priceFromConstantVolatility = cap->NPV();
 
             Real error = std::fabs(priceFromStrippedVolatility - priceFromConstantVolatility);
-            if (error>tolerance_)
-                BOOST_FAIL("\noption tenor:       " << optionTenors_[tenorIndex] <<
-                           "\nstrike:             " << io::rate(strikes_[strikeIndex]) <<
+            if (error>vars.tolerance)
+                BOOST_FAIL("\noption tenor:       " << vars.optionTenors[tenorIndex] <<
+                           "\nstrike:             " << io::rate(vars.strikes[strikeIndex]) <<
                            "\nstripped vol price: " << io::rate(priceFromStrippedVolatility) <<
                            "\nconstant vol price: " << io::rate(priceFromConstantVolatility) <<
                            "\nerror:              " << io::rate(error) <<
-                           "\ntolerance:          " << io::rate(tolerance_));
+                           "\ntolerance:          " << io::rate(vars.tolerance));
             }
     }
 
@@ -213,18 +224,20 @@ void OptionletStripperTest::testFlatTermVolatilityStripping() {
 
 void OptionletStripperTest::testTermVolatilityStripping() {
 
-  BOOST_MESSAGE("Test forward/forward vol stripping from non-flat term vol surface");
+    BOOST_MESSAGE(
+      "Test forward/forward vol stripping from non-flat term vol surface...");
 
-    SavedSettings backup;
-    setCapFloorTermVolSurface();
+    CommonVars vars;
+    vars.setCapFloorTermVolSurface();
 
-    boost::shared_ptr<IborIndex> iborIndex(new Euribor6M(yieldTermStructure_));
+    boost::shared_ptr<IborIndex> iborIndex(
+                                      new Euribor6M(vars.yieldTermStructure));
 
     boost::shared_ptr<OptionletStripper> optionletStripper1(new
-        OptionletStripper1(capFloorVolSurface_,
+        OptionletStripper1(vars.capFloorVolSurface,
                            iborIndex,
                            Null<Rate>(),
-                           accuracy_));
+                           vars.accuracy));
 
     boost::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter =
         boost::shared_ptr<StrippedOptionletAdapter>(new
@@ -235,36 +248,36 @@ void OptionletStripperTest::testTermVolatilityStripping() {
     vol->enableExtrapolation();
 
     boost::shared_ptr<BlackCapFloorEngine> strippedVolEngine(new
-        BlackCapFloorEngine(yieldTermStructure_,
+        BlackCapFloorEngine(vars.yieldTermStructure,
                             vol));
 
     boost::shared_ptr<CapFloor> cap;
-    for (Size tenorIndex=0; tenorIndex<optionTenors_.size(); ++tenorIndex) {
-        for (Size strikeIndex=0; strikeIndex<strikes_.size(); ++strikeIndex) {
+    for (Size tenorIndex=0; tenorIndex<vars.optionTenors.size(); ++tenorIndex) {
+        for (Size strikeIndex=0; strikeIndex<vars.strikes.size(); ++strikeIndex) {
             cap = MakeCapFloor(CapFloor::Cap,
-                               optionTenors_[tenorIndex],
+                               vars.optionTenors[tenorIndex],
                                iborIndex,
-                               strikes_[strikeIndex],
+                               vars.strikes[strikeIndex],
                                0*Days)
                   .withPricingEngine(strippedVolEngine);
 
             Real priceFromStrippedVolatility = cap->NPV();
 
             boost::shared_ptr<PricingEngine> blackCapFloorEngineConstantVolatility(new
-                BlackCapFloorEngine(yieldTermStructure_,
-                                    termV_[tenorIndex][strikeIndex]));
+                BlackCapFloorEngine(vars.yieldTermStructure,
+                                    vars.termV[tenorIndex][strikeIndex]));
 
             cap->setPricingEngine(blackCapFloorEngineConstantVolatility);
             Real priceFromConstantVolatility = cap->NPV();
 
             Real error = std::fabs(priceFromStrippedVolatility - priceFromConstantVolatility);
-            if (error>tolerance_)
-                BOOST_FAIL("\noption tenor:       " << optionTenors_[tenorIndex] <<
-                           "\nstrike:             " << io::rate(strikes_[strikeIndex]) <<
+            if (error>vars.tolerance)
+                BOOST_FAIL("\noption tenor:       " << vars.optionTenors[tenorIndex] <<
+                           "\nstrike:             " << io::rate(vars.strikes[strikeIndex]) <<
                            "\nstripped vol price: " << io::rate(priceFromStrippedVolatility) <<
                            "\nconstant vol price: " << io::rate(priceFromConstantVolatility) <<
                            "\nerror:              " << io::rate(error) <<
-                           "\ntolerance:          " << io::rate(tolerance_));
+                           "\ntolerance:          " << io::rate(vars.tolerance));
             }
     }
     BOOST_MESSAGE("Done");
