@@ -35,7 +35,7 @@ namespace QuantLib {
       optionTenor_(optionTenor),
       strike_(strike),
       delivery_(Settlement::Physical),
-      swaptionConvention_(Following) {}
+      swaptionConvention_(ModifiedFollowing) {}
 
     MakeSwaption::operator Swaption() const {
         boost::shared_ptr<Swaption> swaption = *this;
