@@ -164,13 +164,13 @@ namespace QuantLib {
         for (Size i=1; i<nStrikes; ++i)
             QL_REQUIRE(atmRateSpreads_[i-1]<atmRateSpreads_[i],
                        "non increasing strike spreads: " <<
-                       io::ordinal(i-1) << " is " << atmRateSpreads_[i-1] << ", " <<
-                       io::ordinal(i) << " is " << atmRateSpreads_[i]);
+                       io::ordinal(i) << " is " << atmRateSpreads_[i-1] << ", " <<
+                       io::ordinal(i+1) << " is " << atmRateSpreads_[i]);
         for (Size i=0; i<volSpreads_.size(); i++)
             QL_REQUIRE(atmRateSpreads_.size()==volSpreads_[i].size(),
                        "mismatch between number of strikes (" << atmRateSpreads_.size() <<
                        ") and number of columns (" << volSpreads_[i].size() <<
-                       ") in the " << io::ordinal(i) << " row");
+                       ") in the " << io::ordinal(i+1) << " row");
     }
 
     void SabrVolSurface::accept(AcyclicVisitor& v) {

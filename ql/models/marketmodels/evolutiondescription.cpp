@@ -122,7 +122,7 @@ namespace QuantLib {
         const std::vector<Time>& rateTimes = evolution.rateTimes();
         for (Size i=0; i<n-1; i++)
             QL_REQUIRE(rateTimes[numeraires[i]] >= evolutionTimes[i],
-                       io::ordinal(i) << " step, evolution time " <<
+                       io::ordinal(i+1) << " step, evolution time " <<
                        evolutionTimes[i] << ": the numeraire (" << numeraires[i] <<
                        "), corresponding to rate time " <<
                        rateTimes[numeraires[i]] << ", is expired");

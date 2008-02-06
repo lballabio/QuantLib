@@ -512,20 +512,18 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
         Volatility swaptionVol = std::sqrt(swapTerminalCovariance[i][i]/rateTimes_[i]);
         error = std::fabs(swaptionVol-expSwaptionVol);
         if (error>swapTolerance)
-            BOOST_ERROR("\n failed to reproduce "
-                       << io::ordinal(i) << " swaption vol:"
-                       "\n expected:  " << io::rate(expSwaptionVol) <<
-                       "\n realized:  " << io::rate(swaptionVol) <<
-                       "\n error:     " << error <<
-                       "\n tolerance: " << swapTolerance);
+            BOOST_ERROR("failed to reproduce " << io::ordinal(i+1) << " swaption vol:"
+                        "\n expected:  " << io::rate(expSwaptionVol) <<
+                        "\n realized:  " << io::rate(swaptionVol) <<
+                        "\n error:     " << error <<
+                        "\n tolerance: " << swapTolerance);
     }
 
     // check caplet fit
     for (Size i=0; i<numberOfRates; ++i) {
         error = std::fabs(capletVols[i]-capletVols_[i]);
         if (error>capletTolerance)
-            BOOST_ERROR("\n failed to reproduce "
-                        << io::ordinal(i) << " caplet vol:"
+            BOOST_ERROR("failed to reproduce " << io::ordinal(i+1) << " caplet vol:"
                         "\n expected:         " << io::rate(capletVols_[i]) <<
                         "\n realized:         " << io::rate(capletVols[i]) <<
                         "\n percentage error: " << error/capletVols_[i] <<
@@ -677,8 +675,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
     for (Size i=0; i<numberOfRates; ++i) {
         error = std::fabs(capletVols[i]-capletVols_[i]);
         if (error>capletTolerance)
-            BOOST_ERROR("\n failed to reproduce "
-                        << io::ordinal(i) << " caplet vol:"
+            BOOST_ERROR("failed to reproduce " << io::ordinal(i+1) << " caplet vol:"
                         "\n expected:         " << io::rate(capletVols_[i]) <<
                         "\n realized:         " << io::rate(capletVols[i]) <<
                         "\n percentage error: " << error/capletVols_[i] <<
@@ -706,12 +703,11 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
 
         error = std::fabs(swaptionVol-expSwaptionVol);
         if (error>swapTolerance)
-            BOOST_ERROR("\n failed to reproduce "
-                       << io::ordinal(i) << " swaption vol:"
-                       "\n expected:  " << io::rate(expSwaptionVol) <<
-                       "\n realized:  " << io::rate(swaptionVol) <<
-                       "\n error:     " << error <<
-                       "\n tolerance: " << swapTolerance);
+            BOOST_ERROR("failed to reproduce " << io::ordinal(i) << " swaption vol:"
+                        "\n expected:  " << io::rate(expSwaptionVol) <<
+                        "\n realized:  " << io::rate(swaptionVol) <<
+                        "\n error:     " << error <<
+                        "\n tolerance: " << swapTolerance);
     }
 
 

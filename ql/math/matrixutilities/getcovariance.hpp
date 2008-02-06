@@ -74,7 +74,7 @@ namespace QuantLib {
             }
             QL_REQUIRE(std::fabs(corr[i][i]-1.0) <= tolerance,
                        "invalid correlation matrix, "
-                       << "diagonal element of the " << io::ordinal(i)
+                       << "diagonal element of the " << io::ordinal(i+1)
                        << " row is " << corr[i][i] << " instead of 1.0");
             covariance[i][i] = (*iIt) * (*iIt);
         }

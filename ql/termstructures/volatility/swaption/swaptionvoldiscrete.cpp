@@ -124,8 +124,8 @@ namespace QuantLib {
                    referenceDate() << ")");
         for (Size i=1; i<nOptionTenors_; ++i) {
             QL_REQUIRE(optionDates_[i]>optionDates_[i-1],
-                       "non increasing option dates: " << io::ordinal(i-1) <<
-                       " is " << optionDates_[i-1] << ", " << io::ordinal(i) <<
+                       "non increasing option dates: " << io::ordinal(i) <<
+                       " is " << optionDates_[i-1] << ", " << io::ordinal(i+1) <<
                        " is " << optionDates_[i]);
         }
     }
@@ -136,8 +136,8 @@ namespace QuantLib {
                    optionTenors_[0] << ")");
         for (Size i=1; i<nOptionTenors_; ++i)
             QL_REQUIRE(optionTenors_[i]>optionTenors_[i-1],
-                       "non increasing option tenor: " << io::ordinal(i-1) <<
-                       " is " << optionTenors_[i-1] << ", " << io::ordinal(i) <<
+                       "non increasing option tenor: " << io::ordinal(i) <<
+                       " is " << optionTenors_[i-1] << ", " << io::ordinal(i+1) <<
                        " is " << optionTenors_[i]);
     }
 
@@ -147,8 +147,8 @@ namespace QuantLib {
                    swapTenors_[0] << ")");
         for (Size i=1; i<nSwapTenors_; ++i)
             QL_REQUIRE(swapTenors_[i]>swapTenors_[i-1],
-                       "non increasing swap tenor: " << io::ordinal(i-1) <<
-                       " is " << swapTenors_[i-1] << ", " << io::ordinal(i) <<
+                       "non increasing swap tenor: " << io::ordinal(i) <<
+                       " is " << swapTenors_[i-1] << ", " << io::ordinal(i+1) <<
                        " is " << swapTenors_[i]);
     }
 

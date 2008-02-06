@@ -346,12 +346,10 @@ namespace {
                  estimatedPrice = bond.cleanPrice();
             Real tolerance = 1.0e-9;
             if (std::fabs(expectedPrice-estimatedPrice) > tolerance) {
-                BOOST_ERROR(io::ordinal(i) << " bond:\n"
-                            << std::setprecision(8)
-                            << "    estimated price: "
-                            << estimatedPrice << "\n"
-                            << "    expected price:  "
-                            << expectedPrice);
+                BOOST_ERROR(io::ordinal(i+1) << " bond failure:" <<
+                            std::setprecision(8) <<
+                            "\n  estimated price: " << estimatedPrice <<
+                            "\n  expected price:  " << expectedPrice);
             }
         }
 
@@ -381,12 +379,10 @@ namespace {
                  estimatedRate = fra.forwardRate();
             Real tolerance = 1.0e-9;
             if (std::fabs(expectedRate-estimatedRate) > tolerance) {
-                BOOST_ERROR(io::ordinal(i) << " FRA:\n"
-                            << std::setprecision(8)
-                            << "    estimated rate: "
-                            << io::rate(estimatedRate) << "\n"
-                            << "    expected rate:  "
-                            << io::rate(expectedRate));
+                BOOST_ERROR(io::ordinal(i+1) << " FRA failure:" <<
+                            std::setprecision(8) <<
+                            "\n  estimated rate: " << io::rate(estimatedRate) <<
+                            "\n  expected rate:  " << io::rate(expectedRate));
             }
         }
     }

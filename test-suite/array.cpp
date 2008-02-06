@@ -56,9 +56,9 @@ void ArrayTest::testConstruction() {
                     << "\n    required:  " << size
                     << "\n    resulting: " << a3.size());
     Size i;
-    for (i=0; i<size; i++) {
+    for (i=0; i<size; ++i) {
         if (a3[i] != value)
-            BOOST_ERROR(io::ordinal(i) << " element not with required value"
+            BOOST_ERROR(io::ordinal(i+1) << " element not with required value"
                         << "\n    required:  " << value
                         << "\n    resulting: " << a3[i]);
     }
@@ -72,7 +72,7 @@ void ArrayTest::testConstruction() {
                     << "\n    resulting: " << a4.size());
     for (i=0; i<size; i++) {
         if (a4[i] != value + i*increment)
-            BOOST_ERROR(io::ordinal(i) << " element not with required value"
+            BOOST_ERROR(io::ordinal(i+1) << " element not with required value"
                         << "\n    required:  " << value + i*increment
                         << "\n    resulting: " << a4[i]);
     }
@@ -91,7 +91,7 @@ void ArrayTest::testConstruction() {
                     << "\n    copy:      " << a6.size());
     for (i=0; i<a3.size(); i++) {
         if (a6[i] != a3[i])
-            BOOST_ERROR(io::ordinal(i) << " element of copy "
+            BOOST_ERROR(io::ordinal(i+1) << " element of copy "
                         "not with same value as original"
                         << "\n    original:  " << a3[i]
                         << "\n    copy:      " << a6[i]);
@@ -107,7 +107,7 @@ void ArrayTest::testConstruction() {
                     << "\n    current size of target:  " << temp2.size());
     for (i=0; i<size; i++) {
         if (temp2[i] != value)
-            BOOST_ERROR(io::ordinal(i) << " element of disposable "
+            BOOST_ERROR(io::ordinal(i+1) << " element of disposable "
                         "not moved correctly"
                         << "\n    required:  " << value
                         << "\n    resulting: " << temp2[i]);
@@ -122,7 +122,7 @@ void ArrayTest::testConstruction() {
                     << "\n    current size of target:  " << a7.size());
     for (i=0; i<size; i++) {
         if (a7[i] != value)
-            BOOST_ERROR(io::ordinal(i) << " element not moved correctly"
+            BOOST_ERROR(io::ordinal(i+1) << " element not moved correctly"
                         << "\n    required:  " << value
                         << "\n    resulting: " << a7[i]);
     }
@@ -136,7 +136,7 @@ void ArrayTest::testConstruction() {
                     << "\n    copy:      " << a8.size());
     for (i=0; i<a7.size(); i++) {
         if (a8[i] != a7[i])
-            BOOST_ERROR(io::ordinal(i) << " element of copy "
+            BOOST_ERROR(io::ordinal(i+1) << " element of copy "
                         "not with same value as original"
                         << "\n    original:  " << a7[i]
                         << "\n    copy:      " << a8[i]);
@@ -154,7 +154,7 @@ void ArrayTest::testConstruction() {
                     << "\n    current size of target:  " << a9.size());
     for (i=0; i<size; i++) {
         if (a9[i] != value)
-            BOOST_ERROR(io::ordinal(i) << " element not moved correctly"
+            BOOST_ERROR(io::ordinal(i+1) << " element not moved correctly"
                         << "\n    required:  " << value
                         << "\n    resulting: " << a9[i]);
     }

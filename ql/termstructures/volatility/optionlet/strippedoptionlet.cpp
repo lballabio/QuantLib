@@ -78,18 +78,18 @@ namespace QuantLib {
                    "negative first option tenor: " << optionletTenors_[0]);
         for (Size i=1; i<nOptionletTenors_; ++i)
             QL_REQUIRE(optionletTenors_[i]>optionletTenors_[i-1],
-                       "non increasing option tenor: " << io::ordinal(i-1) <<
+                       "non increasing option tenor: " << io::ordinal(i) <<
                        " is " << optionletTenors_[i-1] << ", " <<
-                       io::ordinal(i) << " is " << optionletTenors_[i]);
+                       io::ordinal(i+1) << " is " << optionletTenors_[i]);
 
         QL_REQUIRE(nStrikes_==optionletVolQuotes_[0].size(),
                    "mismatch between strikes(" << optionletStrikes_[0].size() <<
                    ") and vol columns (" << optionletVolQuotes_[0].size() << ")");
         for (Size j=1; j<nStrikes_; ++j)
             QL_REQUIRE(optionletStrikes_[0][j-1]<optionletStrikes_[0][j],
-                       "non increasing strikes: " << io::ordinal(j-1) <<
+                       "non increasing strikes: " << io::ordinal(j) <<
                        " is " << io::rate(optionletStrikes_[0][j-1]) << ", " <<
-                       io::ordinal(j) << " is " << io::rate(optionletStrikes_[0][j]));
+                       io::ordinal(j+1) << " is " << io::rate(optionletStrikes_[0][j]));
     }
 
     void StrippedOptionlet::registerWithMarketData()

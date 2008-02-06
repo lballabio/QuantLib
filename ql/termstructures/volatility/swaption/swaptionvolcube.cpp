@@ -53,8 +53,8 @@ namespace QuantLib {
         for (Size i=1; i<nStrikes_; ++i)
             QL_REQUIRE(strikeSpreads_[i-1]<strikeSpreads_[i],
                        "non increasing strike spreads: " <<
-                       io::ordinal(i-1) << " is " << strikeSpreads_[i-1] << ", " <<
-                       io::ordinal(i) << " is " << strikeSpreads_[i]);
+                       io::ordinal(i) << " is " << strikeSpreads_[i-1] << ", " <<
+                       io::ordinal(i+1) << " is " << strikeSpreads_[i]);
 
         QL_REQUIRE(!volSpreads_.empty(), "empty vol spreads matrix");
 
@@ -67,7 +67,7 @@ namespace QuantLib {
             QL_REQUIRE(nStrikes_==volSpreads_[i].size(),
                        "mismatch between number of strikes (" << nStrikes_ <<
                        ") and number of columns (" << volSpreads_[i].size() <<
-                       ") in the " << io::ordinal(i) << " row");
+                       ") in the " << io::ordinal(i+1) << " row");
 
         registerWith(atmVol_);
         atmVol_->enableExtrapolation();

@@ -40,7 +40,7 @@ namespace QuantLib {
             fwdModel_->displacements();
         for (Size i = 1; i<displacements.size(); ++i) {
             QL_REQUIRE(displacements[i]==displacements[0],
-                       io::ordinal(i) << " displacement (" <<
+                       io::ordinal(i+1) << " displacement (" <<
                        displacements[i] << ") not equal to the previous ones"
                        " (" << displacements[0] << ")");
         }
@@ -54,7 +54,7 @@ namespace QuantLib {
              i<rateTimes.size() && rateTimes[i]<=evolutionTimes.back(); ++i) {
             QL_REQUIRE(std::find(evolutionTimes.begin(), evolutionTimes.end(),
                                  rateTimes[i])!=evolutionTimes.end(),
-                                 "skipping " << io::ordinal(i) << " rate time");
+                                 "skipping " << io::ordinal(i+1) << " rate time");
         }
 
         LMMCurveState cs(rateTimes);

@@ -1222,36 +1222,20 @@ void MarketModelTest::testPeriodAdapter() {
     Real swaptionTolerance = 4;
 
 
-    for (Size i=0; i < numberBigRates; ++i)
-    {
-
-        if (fabs(capletErrorsInSds[i]) > capletTolerance)
-        {
-
-            BOOST_MESSAGE(
-                "Caplet number " << io::ordinal(i)
-                << ", approx price "  << approxCapletPrices[i]
-            << ", \t simulation price " << results[i]
-            << ", \t error in sds " << capletErrorsInSds[i]
-                <<  "\n");
-
-            BOOST_ERROR("test failed");
+    for (Size i=0; i < numberBigRates; ++i) {
+        if (fabs(capletErrorsInSds[i]) > capletTolerance) {
+            BOOST_FAIL(io::ordinal(i+1) << "caplet , approx price " <<
+                       approxCapletPrices[i] <<
+                       ", \t simulation price " << results[i] <<
+                       ", \t error in sds " << capletErrorsInSds[i]);
         }
     }
-    for (Size i=0; i < numberBigRates; ++i)
-    {
-
-        if (fabs(swaptionErrorsInSds[i]) > swaptionTolerance)
-        {
-
-            BOOST_MESSAGE(
-                    "Swaption number " << io::ordinal(i)
-                << ", approx price "  << approxSwaptionPrices[i]
-                << ", \t simulation price " << results[i+numberBigRates]
-                << ", \t error in sds " << swaptionErrorsInSds[i]
-                <<  "\n");
-
-            BOOST_ERROR("test failed");
+    for (Size i=0; i < numberBigRates; ++i) {
+        if (fabs(swaptionErrorsInSds[i]) > swaptionTolerance) {
+            BOOST_FAIL(io::ordinal(i+1) << "swaption, approx price " <<
+                       approxSwaptionPrices[i] <<
+                       ", \t simulation price " << results[i+numberBigRates] <<
+                       ", \t error in sds " << swaptionErrorsInSds[i]);
         }
     }
 }
@@ -2194,7 +2178,7 @@ void MarketModelTest::testDriftCalculator() {
         std::vector<Rate> displacements = marketModel->displacements();
         for (Size j=0; j<numberOfSteps; ++j) {     // loop over steps
             const Matrix& A = marketModel->pseudoRoot(j);
-            //BOOST_MESSAGE(io::ordinal(j) << " pseudoroot:\n" << A);
+            //BOOST_MESSAGE(io::ordinal(j+1) << " pseudoroot:\n" << A);
             Size inf = std::max(0,static_cast<Integer>(alive[j]));
             for (Size h=inf; h<numeraires.size(); ++h) {     // loop over numeraires
                 LMMDriftCalculator driftcalculator(A, displacements, rateTaus,
@@ -2206,14 +2190,14 @@ void MarketModelTest::testDriftCalculator() {
                     Real error = std::abs(driftsReduced[i]-drifts[i]);
                     if (error>tolerance)
                         BOOST_ERROR("MarketModel: " <<
-                        marketModelTypeToString(marketModels[k])
-                        << ", " << io::ordinal(j) << " step, "
-                        << ", " << io::ordinal(h) << " numeraire, "
-                        << ", " << io::ordinal(i) << " drift, "
-                        << "\ndrift        =" << drifts[i]
-                    << "\ndriftReduced =" << driftsReduced[i]
-                    << "\n       error =" << error
-                        << "\n   tolerance =" << tolerance);
+                                    marketModelTypeToString(marketModels[k]) <<
+                                    ", " << io::ordinal(j+1) << " step, " <<
+                                    ", " << io::ordinal(h+1) << " numeraire, " <<
+                                    ", " << io::ordinal(i+1) << " drift, " <<
+                                    "\ndrift        =" << drifts[i] <<
+                                    "\ndriftReduced =" << driftsReduced[i] <<
+                                    "\n       error =" << error <<
+                                    "\n   tolerance =" << tolerance);
                 }
             }
         }
@@ -2235,10 +2219,10 @@ void MarketModelTest::testIsInSubset() {
     std::vector<bool> result = isInSubset(set, subset);
     if (printReport_) {
         for (Size i=0; i<dim; i++) {
-            BOOST_MESSAGE("\n" << io::ordinal(i) << ":" <<
-                " set[" << i << "] =  " << set[i] <<
-                ", subset[" << i << "] =  " << subset[i] <<
-                ", result[" << i << "] =  " << result[i]);
+            BOOST_MESSAGE(io::ordinal(i+1) << ":" <<
+                          " set[" << i << "] =  " << set[i] <<
+                          ", subset[" << i << "] =  " << subset[i] <<
+                          ", result[" << i << "] =  " << result[i]);
         }
     }
 }

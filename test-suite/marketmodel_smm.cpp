@@ -416,8 +416,7 @@ namespace {
         if (maxError > errorThreshold) {
             BOOST_MESSAGE(config);
             for (Size i=1; i<=N; ++i) {
-                BOOST_MESSAGE(
-                              io::ordinal(i) << " Swaption: "
+                BOOST_MESSAGE(io::ordinal(i) << " Swaption: "
                               << io::rate(results[2*N-i])
                               << " +- " << io::rate(errors[2*N-i])
                               << "; expected: " << io::rate(expectedSwaptions[N-i])

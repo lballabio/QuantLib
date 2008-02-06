@@ -48,7 +48,7 @@ namespace QuantLib {
         initializeOptionDatesAndTimes();
         for (Size i=0; i<nOptionTenors_; ++i)
             QL_REQUIRE(volHandles_[i].size()==nStrikes_,
-                       io::ordinal(i) << " row of vol handles has size " <<
+                       io::ordinal(i+1) << " row of vol handles has size " <<
                        volHandles_[i].size() << " instead of " << nStrikes_);
         registerWithMarketData();
         for (Size i=0; i<vols_.rows(); ++i)
@@ -80,7 +80,7 @@ namespace QuantLib {
         initializeOptionDatesAndTimes();
         for (Size i=0; i<nOptionTenors_; ++i)
             QL_REQUIRE(volHandles_[i].size()==nStrikes_,
-                       io::ordinal(i) << " row of vol handles has size " <<
+                       io::ordinal(i+1) << " row of vol handles has size " <<
                        volHandles_[i].size() << " instead of " << nStrikes_);
         registerWithMarketData();
         for (Size i=0; i<vols_.rows(); ++i)
@@ -162,18 +162,18 @@ namespace QuantLib {
                    "negative first option tenor: " << optionTenors_[0]);
         for (Size i=1; i<nOptionTenors_; ++i)
             QL_REQUIRE(optionTenors_[i]>optionTenors_[i-1],
-                       "non increasing option tenor: " << io::ordinal(i-1) <<
+                       "non increasing option tenor: " << io::ordinal(i) <<
                        " is " << optionTenors_[i-1] << ", " <<
-                       io::ordinal(i) << " is " << optionTenors_[i]);
+                       io::ordinal(i+1) << " is " << optionTenors_[i]);
 
         QL_REQUIRE(nStrikes_==vols_.columns(),
                    "mismatch between strikes(" << strikes_.size() <<
                    ") and vol columns (" << vols_.columns() << ")");
         for (Size j=1; j<nStrikes_; ++j)
             QL_REQUIRE(strikes_[j-1]<strikes_[j],
-                       "non increasing strikes: " << io::ordinal(j-1) <<
+                       "non increasing strikes: " << io::ordinal(j) <<
                        " is " << io::rate(strikes_[j-1]) << ", " <<
-                       io::ordinal(j) << " is " << io::rate(strikes_[j]));
+                       io::ordinal(j+1) << " is " << io::rate(strikes_[j]));
     }
 
     void CapFloorTermVolSurface::registerWithMarketData()

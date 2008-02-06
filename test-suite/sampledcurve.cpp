@@ -70,11 +70,10 @@ void SampledCurveTest::testConstruction() {
         Real value = curve.value(i);
         Real expected = f2(grid);
         if (std::fabs(value - expected) > tolerance) {
-            BOOST_ERROR("sample curve regriding failed"
-                        << "\n    at " << io::ordinal(i+1) << " point "
-                        << "(x = " << grid << ")"
-                        << "\n    grid value: " << value
-                        << "\n    expected:   " << expected);
+            BOOST_ERROR("sample curve regriding failed" <<
+                        "\n    at " << io::ordinal(i+1) << " point " << "(x = " << grid << ")" <<
+                        "\n    grid value: " << value <<
+                        "\n    expected:   " << expected);
         }
     }
 }

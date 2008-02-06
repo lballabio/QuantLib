@@ -97,7 +97,7 @@ namespace QuantLib {
 
         for (Size i = 0; i < cashFlow.size(); i++) {
             QL_REQUIRE(cashFlow[i]->date() <= exerciseDate,
-                       "the " << io::ordinal(i) << " dividend date ("
+                       "the " << io::ordinal(i+1) << " dividend date ("
                        << cashFlow[i]->date()
                        << ") is later than the exercise date ("
                        << exerciseDate << ")");

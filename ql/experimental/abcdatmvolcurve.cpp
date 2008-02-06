@@ -65,9 +65,9 @@ namespace QuantLib {
                    "negative first option tenor: " << optionTenors_[0]);
         for (Size i=1; i<nOptionTenors_; ++i)
             QL_REQUIRE(optionTenors_[i]>optionTenors_[i-1],
-                       "non increasing option tenor: " << io::ordinal(i-1) <<
+                       "non increasing option tenor: " << io::ordinal(i) <<
                        " is " << optionTenors_[i-1] << ", " <<
-                       io::ordinal(i) << " is " << optionTenors_[i]);
+                       io::ordinal(i+1) << " is " << optionTenors_[i]);
         if (inclusionInInterpolation_.size()==1) {
             inclusionInInterpolation_.resize(nOptionTenors_);
             for(Size j=1; j<nOptionTenors_;++j)
