@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2006, 2007 StatPro Italia srl
- Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
+ Copyright (C) 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2007 Chris Kenyon
 
  This file is part of QuantLib, a free-software/open-source library
@@ -75,9 +75,7 @@ namespace QuantLib {
         : base_curve(referenceDate, dayCounter, i),
           instruments_(instruments),
           turnOfYearEffect_(turnOfYearEffect), accuracy_(accuracy) {
-            Date ref = base_curve::referenceDate();
-            Date turnOfYear = Date(31, December, ref.year());
-            turnOfYear_ = base_curve::timeFromReference(turnOfYear);
+            setTurnOfYear();
             registerWith(turnOfYearEffect_);
             bootstrap_.setup(this);
         }
@@ -93,9 +91,7 @@ namespace QuantLib {
         : base_curve(settlementDays, calendar, dayCounter, i),
           instruments_(instruments),
           turnOfYearEffect_(turnOfYearEffect), accuracy_(accuracy) {
-            Date ref = base_curve::referenceDate();
-            Date turnOfYear = Date(31, December, ref.year());
-            turnOfYear_ = base_curve::timeFromReference(turnOfYear);
+            setTurnOfYear();
             registerWith(turnOfYearEffect_);
             bootstrap_.setup(this);
         }
@@ -119,10 +115,12 @@ namespace QuantLib {
         // methods
         void performCalculations() const;
         DiscountFactor discountImpl(Time) const;
+        void setTurnOfYear();
         // data members
         std::vector<boost::shared_ptr<typename Traits::helper> > instruments_;
         Handle<Quote> turnOfYearEffect_;
         Real accuracy_;
+        Date latestReference_;
         Time turnOfYear_;
         // bootstrapper classes are declared as friend to manipulate
         // the curve data. They might be passed the data instead, but
@@ -176,6 +174,8 @@ namespace QuantLib {
     inline void PiecewiseYieldCurve<C,I,B>::update() {
         base_curve::update();
         LazyObject::update();
+        if (base_curve::referenceDate() != latestReference_)
+            setTurnOfYear();
     }
 
     template <class C, class I, template <class,class,class> class B>
@@ -190,6 +190,14 @@ namespace QuantLib {
         }
 
         return base_curve::discountImpl(t);
+    }
+
+    template <class C, class I, template <class,class,class> class B>
+    inline void PiecewiseYieldCurve<C,I,B>::setTurnOfYear() {
+        Date referenceDate = base_curve::referenceDate();
+        Date turnOfYear = Date(31, December, referenceDate.year());
+        turnOfYear_ = base_curve::timeFromReference(turnOfYear);
+        latestReference_ = referenceDate;
     }
 
 
