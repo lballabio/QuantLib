@@ -41,60 +41,63 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-    // TODO: use CommonVars
-    // global data
+    struct CommonVars {
+        // global data
+        Date today, settlement;
+        VanillaSwap::Type type;
+        Real nominal;
+        Calendar calendar;
+        BusinessDayConvention fixedConvention, floatingConvention;
+        Frequency fixedFrequency, floatingFrequency;
+        DayCounter fixedDayCount;
+        boost::shared_ptr<IborIndex> index;
+        Natural settlementDays;
+        RelinkableHandle<YieldTermStructure> termStructure;
 
-    Date today_, settlement_;
-    VanillaSwap::Type type_;
-    Real nominal_;
-    Calendar calendar_;
-    BusinessDayConvention fixedConvention_, floatingConvention_;
-    Frequency fixedFrequency_, floatingFrequency_;
-    DayCounter fixedDayCount_;
-    boost::shared_ptr<IborIndex> index_;
-    Natural settlementDays_;
-    RelinkableHandle<YieldTermStructure> termStructure_;
+        // cleanup
+        SavedSettings backup;
+        
+        // utilities
+        boost::shared_ptr<VanillaSwap> makeSwap(Integer length, Rate fixedRate,
+                                                Spread floatingSpread) {
+            Date maturity = calendar.advance(settlement,length,Years,
+                                             floatingConvention);
+            Schedule fixedSchedule(settlement,maturity,Period(fixedFrequency),
+                                   calendar,fixedConvention,fixedConvention,
+                                   DateGeneration::Forward,false);
+            Schedule floatSchedule(settlement,maturity,
+                                   Period(floatingFrequency),
+                                   calendar,floatingConvention,
+                                   floatingConvention,
+                                   DateGeneration::Forward,false);
+            boost::shared_ptr<VanillaSwap> swap(
+                new VanillaSwap(type, nominal,
+                                fixedSchedule, fixedRate, fixedDayCount,
+                                floatSchedule, index, floatingSpread,
+                                index->dayCounter()));
+            swap->setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                  new DiscountingSwapEngine(termStructure)));
+            return swap;
+        }
 
-    // utilities
-
-    boost::shared_ptr<VanillaSwap> makeSwap(Integer length, Rate fixedRate,
-                                            Spread floatingSpread) {
-        Date maturity = calendar_.advance(settlement_,length,Years,
-                                          floatingConvention_);
-        Schedule fixedSchedule(settlement_,maturity,Period(fixedFrequency_),
-                               calendar_,fixedConvention_,fixedConvention_,
-                               DateGeneration::Forward,false);
-        Schedule floatSchedule(settlement_,maturity,Period(floatingFrequency_),
-                               calendar_,floatingConvention_,
-                               floatingConvention_,
-                               DateGeneration::Forward,false);
-        boost::shared_ptr<VanillaSwap> swap(
-            new VanillaSwap(type_, nominal_,
-                            fixedSchedule, fixedRate, fixedDayCount_,
-                            floatSchedule, index_, floatingSpread,
-                            index_->dayCounter()));
-        swap->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                                  new DiscountingSwapEngine(termStructure_)));
-        return swap;
-    }
-
-    void setup() {
-        type_ = VanillaSwap::Payer;
-        settlementDays_ = 2;
-        nominal_ = 100.0;
-        fixedConvention_ = Unadjusted;
-        floatingConvention_ = ModifiedFollowing;
-        fixedFrequency_ = Annual;
-        floatingFrequency_ = Semiannual;
-        fixedDayCount_ = Thirty360();
-        index_ = boost::shared_ptr<IborIndex>(new
-            Euribor(Period(floatingFrequency_), termStructure_));
-        calendar_ = index_->fixingCalendar();
-        today_ = calendar_.adjust(Date::todaysDate());
-        Settings::instance().evaluationDate() = today_;
-        settlement_ = calendar_.advance(today_,settlementDays_,Days);
-        termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
-    }
+        CommonVars() {
+            type = VanillaSwap::Payer;
+            settlementDays = 2;
+            nominal = 100.0;
+            fixedConvention = Unadjusted;
+            floatingConvention = ModifiedFollowing;
+            fixedFrequency = Annual;
+            floatingFrequency = Semiannual;
+            fixedDayCount = Thirty360();
+            index = boost::shared_ptr<IborIndex>(new
+                Euribor(Period(floatingFrequency), termStructure));
+            calendar = index->fixingCalendar();
+            today = calendar.adjust(Date::todaysDate());
+            Settings::instance().evaluationDate() = today;
+            settlement = calendar.advance(today,settlementDays,Days);
+            termStructure.linkTo(flatRate(settlement,0.05,Actual365Fixed()));
+        }
+    };
 
 }
 
@@ -103,9 +106,7 @@ void SwapTest::testFairRate() {
 
     BOOST_MESSAGE("Testing vanilla-swap calculation of fair fixed rate...");
 
-    SavedSettings backup;
-
-    setup();
+    CommonVars vars;
 
     Integer lengths[] = { 1, 2, 5, 10, 20 };
     Spread spreads[] = { -0.001, -0.01, 0.0, 0.01, 0.001 };
@@ -114,8 +115,8 @@ void SwapTest::testFairRate() {
         for (Size j=0; j<LENGTH(spreads); j++) {
 
             boost::shared_ptr<VanillaSwap> swap =
-                makeSwap(lengths[i],0.0,spreads[j]);
-            swap = makeSwap(lengths[i],swap->fairRate(),spreads[j]);
+                vars.makeSwap(lengths[i],0.0,spreads[j]);
+            swap = vars.makeSwap(lengths[i],swap->fairRate(),spreads[j]);
             if (std::fabs(swap->NPV()) > 1.0e-10) {
                 BOOST_ERROR("recalculating with implied rate:\n"
                             << std::setprecision(2)
@@ -133,9 +134,7 @@ void SwapTest::testFairSpread() {
     BOOST_MESSAGE("Testing vanilla-swap calculation of "
                   "fair floating spread...");
 
-    SavedSettings backup;
-
-    setup();
+    CommonVars vars;
 
     Integer lengths[] = { 1, 2, 5, 10, 20 };
     Rate rates[] = { 0.04, 0.05, 0.06, 0.07 };
@@ -144,8 +143,8 @@ void SwapTest::testFairSpread() {
         for (Size j=0; j<LENGTH(rates); j++) {
 
             boost::shared_ptr<VanillaSwap> swap =
-                makeSwap(lengths[i],rates[j],0.0);
-            swap = makeSwap(lengths[i],rates[j],swap->fairSpread());
+                vars.makeSwap(lengths[i],rates[j],0.0);
+            swap = vars.makeSwap(lengths[i],rates[j],swap->fairSpread());
             if (std::fabs(swap->NPV()) > 1.0e-10) {
                 BOOST_ERROR("recalculating with implied spread:\n"
                             << std::setprecision(2)
@@ -161,9 +160,7 @@ void SwapTest::testRateDependency() {
 
     BOOST_MESSAGE("Testing vanilla-swap dependency on fixed rate...");
 
-    SavedSettings backup;
-
-    setup();
+    CommonVars vars;
 
     Integer lengths[] = { 1, 2, 5, 10, 20 };
     Spread spreads[] = { -0.001, -0.01, 0.0, 0.01, 0.001 };
@@ -175,7 +172,7 @@ void SwapTest::testRateDependency() {
             std::vector<Real> swap_values;
             for (Size k=0; k<LENGTH(rates); k++) {
                 boost::shared_ptr<VanillaSwap> swap =
-                    makeSwap(lengths[i],rates[k],spreads[j]);
+                    vars.makeSwap(lengths[i],rates[k],spreads[j]);
                 swap_values.push_back(swap->NPV());
             }
             // and check that they go the right way
@@ -200,9 +197,7 @@ void SwapTest::testSpreadDependency() {
 
     BOOST_MESSAGE("Testing vanilla-swap dependency on floating spread...");
 
-    SavedSettings backup;
-
-    setup();
+    CommonVars vars;
 
     Integer lengths[] = { 1, 2, 5, 10, 20 };
     Rate rates[] = { 0.04, 0.05, 0.06, 0.07 };
@@ -214,7 +209,7 @@ void SwapTest::testSpreadDependency() {
             std::vector<Real> swap_values;
             for (Size k=0; k<LENGTH(spreads); k++) {
                 boost::shared_ptr<VanillaSwap> swap =
-                    makeSwap(lengths[i],rates[j],spreads[k]);
+                    vars.makeSwap(lengths[i],rates[j],spreads[k]);
                 swap_values.push_back(swap->NPV());
             }
             // and check that they go the right way
@@ -239,18 +234,16 @@ void SwapTest::testInArrears() {
 
     BOOST_MESSAGE("Testing in-arrears swap calculation...");
 
-    SavedSettings backup;
-
-    setup();
+    CommonVars vars;
 
     /* See Hull, 4th ed., page 550
        Note: the calculation in the book is wrong (work out the
        adjustment and you'll get 0.05 + 0.000115 T1)
     */
 
-    Date maturity = today_ + 5*Years;
+    Date maturity = vars.today + 5*Years;
     Calendar calendar = NullCalendar();
-    Schedule schedule(today_, maturity,Period(Annual),calendar,
+    Schedule schedule(vars.today, maturity,Period(Annual),calendar,
                       Following,Following,
                       DateGeneration::Forward,false);
     DayCounter dayCounter = SimpleDayCounter();
@@ -258,10 +251,10 @@ void SwapTest::testInArrears() {
     boost::shared_ptr<IborIndex> index(new IborIndex("dummy", 1*Years, 0,
                                              EURCurrency(), calendar,
                                              Following, false, dayCounter,
-                                             termStructure_));
+                                             vars.termStructure));
     Rate oneYear = 0.05;
     Rate r = std::log(1.0+oneYear);
-    termStructure_.linkTo(flatRate(today_,r,dayCounter));
+    vars.termStructure.linkTo(flatRate(vars.today,r,dayCounter));
 
 
     std::vector<Rate> coupons(1, oneYear);
@@ -276,7 +269,7 @@ void SwapTest::testInArrears() {
     Volatility capletVolatility = 0.22;
     Handle<OptionletVolatilityStructure> vol(
         boost::shared_ptr<OptionletVolatilityStructure>(new
-            ConstantOptionletVolatility(today_, NullCalendar(), Following,
+            ConstantOptionletVolatility(vars.today, NullCalendar(), Following,
                                         capletVolatility, dayCounter)));
     boost::shared_ptr<IborCouponPricer> pricer(new
         BlackIborCouponPricer(vol));
@@ -292,7 +285,7 @@ void SwapTest::testInArrears() {
 
     Swap swap(floatingLeg,fixedLeg);
     swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                                  new DiscountingSwapEngine(termStructure_)));
+                              new DiscountingSwapEngine(vars.termStructure)));
 
     Decimal storedValue = -144813.0;
     Real tolerance = 1.0;
@@ -307,16 +300,15 @@ void SwapTest::testCachedValue() {
 
     BOOST_MESSAGE("Testing vanilla-swap calculation against cached value...");
 
-    SavedSettings backup;
+    CommonVars vars;
 
-    setup();
+    vars.today = Date(17,June,2002);
+    Settings::instance().evaluationDate() = vars.today;
+    vars.settlement =
+        vars.calendar.advance(vars.today,vars.settlementDays,Days);
+    vars.termStructure.linkTo(flatRate(vars.settlement,0.05,Actual365Fixed()));
 
-    today_ = Date(17,June,2002);
-    Settings::instance().evaluationDate() = today_;
-    settlement_ = calendar_.advance(today_,settlementDays_,Days);
-    termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
-
-    boost::shared_ptr<VanillaSwap> swap = makeSwap(10, 0.06, 0.001);
+    boost::shared_ptr<VanillaSwap> swap = vars.makeSwap(10, 0.06, 0.001);
     #ifndef QL_USE_INDEXED_COUPON
     Real cachedNPV   = -5.872863313209;
     #else
