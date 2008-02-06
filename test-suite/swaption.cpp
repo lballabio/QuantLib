@@ -39,72 +39,77 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-    // TODO: use CommonVars
-    // global data
-
-    Period exercises[] = { 1*Years, 2*Years, 3*Years, 5*Years, 7*Years, 10*Years };
-    Period lengths[] = { 1*Years, 2*Years, 3*Years, 5*Years, 7*Years, 10*Years, 15*Years, 20*Years };
+    Period exercises[] = { 1*Years, 2*Years, 3*Years,
+                           5*Years, 7*Years, 10*Years };
+    Period lengths[] = { 1*Years, 2*Years, 3*Years,
+                         5*Years, 7*Years, 10*Years,
+                         15*Years, 20*Years };
     VanillaSwap::Type type[] = { VanillaSwap::Receiver, VanillaSwap::Payer };
 
-    Date today_, settlement_;
-    Real nominal_;
-    Calendar calendar_;
+    struct CommonVars {
+        // global data
+        Date today, settlement;
+        Real nominal;
+        Calendar calendar;
 
-    BusinessDayConvention fixedConvention_;
-    Frequency fixedFrequency_;
-    DayCounter fixedDayCount_;
+        BusinessDayConvention fixedConvention;
+        Frequency fixedFrequency;
+        DayCounter fixedDayCount;
 
-    BusinessDayConvention floatingConvention_;
-    Period floatingTenor_;
-    boost::shared_ptr<IborIndex> index_;
+        BusinessDayConvention floatingConvention;
+        Period floatingTenor;
+        boost::shared_ptr<IborIndex> index;
 
-    Natural settlementDays_;
-    RelinkableHandle<YieldTermStructure> termStructure_;
+        Natural settlementDays;
+        RelinkableHandle<YieldTermStructure> termStructure;
 
-    // utilities
+        // cleanup
+        SavedSettings backup;
 
-    boost::shared_ptr<Swaption> makeSwaption(
+        // utilities
+        boost::shared_ptr<Swaption> makeSwaption(
                     const boost::shared_ptr<VanillaSwap>& swap,
                     const Date& exercise,
                     Volatility volatility,
                     Settlement::Type settlementType = Settlement::Physical) {
-        Handle<Quote> vol(boost::shared_ptr<Quote>(
+            Handle<Quote> vol(boost::shared_ptr<Quote>(
                                                 new SimpleQuote(volatility)));
-        boost::shared_ptr<PricingEngine> engine(
-                                new BlackSwaptionEngine(termStructure_, vol));
+            boost::shared_ptr<PricingEngine> engine(
+                                new BlackSwaptionEngine(termStructure, vol));
 
-        boost::shared_ptr<Swaption> result(new
-            Swaption(swap,
-                     boost::shared_ptr<Exercise>(
+            boost::shared_ptr<Swaption> result(new
+                Swaption(swap,
+                         boost::shared_ptr<Exercise>(
                                               new EuropeanExercise(exercise)),
-                     settlementType));
-        result->setPricingEngine(engine);
-        return result;
-    }
+                         settlementType));
+            result->setPricingEngine(engine);
+            return result;
+        }
 
-    boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
-        Handle<Quote> h(boost::shared_ptr<Quote>(
+        boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
+            Handle<Quote> h(boost::shared_ptr<Quote>(
                                                 new SimpleQuote(volatility)));
-        return boost::shared_ptr<PricingEngine>(
-                                  new BlackSwaptionEngine(termStructure_, h));
-    }
+            return boost::shared_ptr<PricingEngine>(
+                                  new BlackSwaptionEngine(termStructure, h));
+        }
 
-    void setup() {
-        settlementDays_ = 2;
-        nominal_ = 1000000.0;
-        fixedConvention_ = Unadjusted;
-        fixedFrequency_ = Annual;
-        fixedDayCount_ = Thirty360();
+        CommonVars() {
+            settlementDays = 2;
+            nominal = 1000000.0;
+            fixedConvention = Unadjusted;
+            fixedFrequency = Annual;
+            fixedDayCount = Thirty360();
 
-        index_ = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure_));
-        floatingConvention_ = index_->businessDayConvention();
-        floatingTenor_ = index_->tenor();
-        calendar_ = index_->fixingCalendar();
-        today_ = calendar_.adjust(Date::todaysDate());
-        Settings::instance().evaluationDate() = today_;
-        settlement_ = calendar_.advance(today_,settlementDays_,Days);
-        termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
-    }
+            index = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+            floatingConvention = index->businessDayConvention();
+            floatingTenor = index->tenor();
+            calendar = index->fixingCalendar();
+            today = calendar.adjust(Date::todaysDate());
+            Settings::instance().evaluationDate() = today;
+            settlement = calendar.advance(today,settlementDays,Days);
+            termStructure.linkTo(flatRate(settlement,0.05,Actual365Fixed()));
+        }
+    };
 
 }
 
@@ -113,34 +118,35 @@ void SwaptionTest::testStrikeDependency() {
 
     BOOST_MESSAGE("Testing swaption dependency on strike...");
 
-    SavedSettings backup;
-
-    setup();
+    CommonVars vars;
 
     Rate strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
 
     for (Size i=0; i<LENGTH(exercises); i++) {
         for (Size j=0; j<LENGTH(lengths); j++) {
             for (Size k=0; k<LENGTH(type); k++) {
-                Date exerciseDate = calendar_.advance(today_, exercises[i]);
-                Date startDate = calendar_.advance(exerciseDate,
-                                                   settlementDays_,Days);
+                Date exerciseDate = vars.calendar.advance(vars.today,
+                                                          exercises[i]);
+                Date startDate =
+                    vars.calendar.advance(exerciseDate,
+                                          vars.settlementDays,Days);
                 // store the results for different rates...
                 std::vector<Real> values;
                 std::vector<Real> values_cash;
                 Volatility vol = 0.20;
                 for (Size l=0; l<LENGTH(strikes); l++) {
                     boost::shared_ptr<VanillaSwap> swap =
-                        MakeVanillaSwap(lengths[j], index_, strikes[l])
+                        MakeVanillaSwap(lengths[j], vars.index, strikes[l])
                                 .withEffectiveDate(startDate)
                                 .withFloatingLegSpread(0.0)
                                 .withType(type[k]);
                     boost::shared_ptr<Swaption> swaption =
-                        makeSwaption(swap,exerciseDate,vol);
+                        vars.makeSwaption(swap,exerciseDate,vol);
                     // FLOATING_POINT_EXCEPTION
                     values.push_back(swaption->NPV());
                     boost::shared_ptr<Swaption> swaption_cash =
-                        makeSwaption(swap,exerciseDate,vol,Settlement::Cash);
+                        vars.makeSwaption(swap,exerciseDate,vol,
+                                          Settlement::Cash);
                     values_cash.push_back(swaption_cash->NPV());
                 }
                 // and check that they go the right way
@@ -212,33 +218,34 @@ void SwaptionTest::testSpreadDependency() {
 
     BOOST_MESSAGE("Testing swaption dependency on spread...");
 
-    SavedSettings backup;
-
-    setup();
+    CommonVars vars;
 
     Spread spreads[] = { -0.002, -0.001, 0.0, 0.001, 0.002 };
 
     for (Size i=0; i<LENGTH(exercises); i++) {
         for (Size j=0; j<LENGTH(lengths); j++) {
             for (Size k=0; k<LENGTH(type); k++) {
-                Date exerciseDate = calendar_.advance(today_, exercises[i]);
-                Date startDate = calendar_.advance(exerciseDate,
-                                                   settlementDays_,Days);
+                Date exerciseDate = vars.calendar.advance(vars.today,
+                                                          exercises[i]);
+                Date startDate =
+                    vars.calendar.advance(exerciseDate,
+                                          vars.settlementDays,Days);
                 // store the results for different rates...
                 std::vector<Real> values;
                 std::vector<Real> values_cash;
                 for (Size l=0; l<LENGTH(spreads); l++) {
                     boost::shared_ptr<VanillaSwap> swap =
-                        MakeVanillaSwap(lengths[j], index_, 0.06)
+                        MakeVanillaSwap(lengths[j], vars.index, 0.06)
                                 .withEffectiveDate(startDate)
                                 .withFloatingLegSpread(spreads[l])
                                 .withType(type[k]);
                     boost::shared_ptr<Swaption> swaption =
-                        makeSwaption(swap,exerciseDate,0.20);
+                        vars.makeSwaption(swap,exerciseDate,0.20);
                     // FLOATING_POINT_EXCEPTION
                     values.push_back(swaption->NPV());
                     boost::shared_ptr<Swaption> swaption_cash =
-                        makeSwaption(swap,exerciseDate,0.20,Settlement::Cash);
+                        vars.makeSwaption(swap,exerciseDate,0.20,
+                                          Settlement::Cash);
                     values_cash.push_back(swaption_cash->NPV());
                 }
                 // and check that they go the right way
@@ -302,21 +309,21 @@ void SwaptionTest::testSpreadTreatment() {
 
     BOOST_MESSAGE("Testing swaption treatment of spread...");
 
-    SavedSettings backup;
-
-    setup();
+    CommonVars vars;
 
     Spread spreads[] = { -0.002, -0.001, 0.0, 0.001, 0.002 };
 
     for (Size i=0; i<LENGTH(exercises); i++) {
         for (Size j=0; j<LENGTH(lengths); j++) {
             for (Size k=0; k<LENGTH(type); k++) {
-                Date exerciseDate = calendar_.advance(today_, exercises[i]);
-                Date startDate = calendar_.advance(exerciseDate,
-                                                   settlementDays_,Days);
+                Date exerciseDate = vars.calendar.advance(vars.today,
+                                                          exercises[i]);
+                Date startDate =
+                    vars.calendar.advance(exerciseDate,
+                                          vars.settlementDays,Days);
                 for (Size l=0; l<LENGTH(spreads); l++) {
                     boost::shared_ptr<VanillaSwap> swap =
-                        MakeVanillaSwap(lengths[j], index_, 0.06)
+                        MakeVanillaSwap(lengths[j], vars.index, 0.06)
                                 .withEffectiveDate(startDate)
                                 .withFloatingLegSpread(spreads[l])
                                 .withType(type[k]);
@@ -325,20 +332,20 @@ void SwaptionTest::testSpreadTreatment() {
                                         swap->floatingLegBPS() /
                                         swap->fixedLegBPS();
                     boost::shared_ptr<VanillaSwap> equivalentSwap =
-                        MakeVanillaSwap(lengths[j], index_, 0.06+correction)
+                        MakeVanillaSwap(lengths[j], vars.index, 0.06+correction)
                                 .withEffectiveDate(startDate)
                                 .withFloatingLegSpread(0.0)
                                 .withType(type[k]);
                     boost::shared_ptr<Swaption> swaption1 =
-                        makeSwaption(swap,exerciseDate,0.20);
+                        vars.makeSwaption(swap,exerciseDate,0.20);
                     boost::shared_ptr<Swaption> swaption2 =
-                        makeSwaption(equivalentSwap,exerciseDate,0.20);
+                        vars.makeSwaption(equivalentSwap,exerciseDate,0.20);
                     boost::shared_ptr<Swaption> swaption1_cash =
-                        makeSwaption(swap,exerciseDate,0.20,
-                                     Settlement::Cash);
+                        vars.makeSwaption(swap,exerciseDate,0.20,
+                                          Settlement::Cash);
                     boost::shared_ptr<Swaption> swaption2_cash =
-                        makeSwaption(equivalentSwap,exerciseDate,0.20,
-                                     Settlement::Cash);
+                        vars.makeSwaption(equivalentSwap,exerciseDate,0.20,
+                                          Settlement::Cash);
                     if (std::fabs(swaption1->NPV()-swaption2->NPV()) > 1.0e-6)
                         BOOST_ERROR("wrong spread treatment:" <<
                             "\nexercise: " << exerciseDate <<
@@ -367,21 +374,21 @@ void SwaptionTest::testCachedValue() {
 
     BOOST_MESSAGE("Testing swaption value against cached value...");
 
-    SavedSettings backup;
+    CommonVars vars;
 
-    setup();
-
-    today_ = Date(13, March, 2002);
-    settlement_ = Date(15, March, 2002);
-    Settings::instance().evaluationDate() = today_;
-    termStructure_.linkTo(flatRate(settlement_, 0.05, Actual365Fixed()));
-    Date exerciseDate = calendar_.advance(settlement_, 5*Years);
-    Date startDate = calendar_.advance(exerciseDate, settlementDays_, Days);
+    vars.today = Date(13, March, 2002);
+    vars.settlement = Date(15, March, 2002);
+    Settings::instance().evaluationDate() = vars.today;
+    vars.termStructure.linkTo(flatRate(vars.settlement, 0.05, Actual365Fixed()));
+    Date exerciseDate = vars.calendar.advance(vars.settlement, 5*Years);
+    Date startDate = vars.calendar.advance(exerciseDate,
+                                           vars.settlementDays, Days);
     boost::shared_ptr<VanillaSwap> swap =
-        MakeVanillaSwap(10*Years, index_, 0.06).withEffectiveDate(startDate);
+        MakeVanillaSwap(10*Years, vars.index, 0.06)
+        .withEffectiveDate(startDate);
 
-    boost::shared_ptr<Swaption> swaption = makeSwaption(swap, exerciseDate,
-                                                        0.20);
+    boost::shared_ptr<Swaption> swaption =
+        vars.makeSwaption(swap, exerciseDate, 0.20);
     #ifndef QL_USE_INDEXED_COUPON
     Real cachedNPV = 0.036418158579;
     #else
@@ -400,34 +407,35 @@ void SwaptionTest::testVega() {
 
     BOOST_MESSAGE("Testing swaption vega...");
 
-    SavedSettings backup;
-
-    setup();
+    CommonVars vars;
 
     Settlement::Type types[] = { Settlement::Physical, Settlement::Cash };
     Rate strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
     Volatility vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
     Volatility shift = 1e-8;
     for (Size i=0; i<LENGTH(exercises); i++) {
-        Date exerciseDate = calendar_.advance(today_, exercises[i]);
-        Date startDate = calendar_.advance(exerciseDate,
-                                           settlementDays_*Days);
+        Date exerciseDate = vars.calendar.advance(vars.today, exercises[i]);
+        Date startDate = vars.calendar.advance(exerciseDate,
+                                           vars.settlementDays*Days);
         for (Size j=0; j<LENGTH(lengths); j++) {
             for (Size t=0; t<LENGTH(strikes); t++) {
                 for (Size h=0; h<LENGTH(type); h++) {
                     boost::shared_ptr<VanillaSwap> swap =
-                        MakeVanillaSwap(lengths[j], index_, strikes[t])
+                        MakeVanillaSwap(lengths[j], vars.index, strikes[t])
                                 .withEffectiveDate(startDate)
                                 .withFloatingLegSpread(0.0)
                                 .withType(type[h]);
                     for (Size u=0; u<LENGTH(vols); u++) {
                         boost::shared_ptr<Swaption> swaption =
-                            makeSwaption(swap, exerciseDate, vols[u], types[h]);
+                            vars.makeSwaption(swap, exerciseDate,
+                                              vols[u], types[h]);
                         // FLOATING_POINT_EXCEPTION
                         boost::shared_ptr<Swaption> swaption1 =
-                            makeSwaption(swap, exerciseDate, vols[u]-shift, types[h]);
+                            vars.makeSwaption(swap, exerciseDate,
+                                              vols[u]-shift, types[h]);
                         boost::shared_ptr<Swaption> swaption2 =
-                            makeSwaption(swap, exerciseDate, vols[u]+shift, types[h]);
+                            vars.makeSwaption(swap, exerciseDate,
+                                              vols[u]+shift, types[h]);
 
                         Real swaptionNPV = swaption->NPV();
                         Real numericalVegaPerPoint =
@@ -468,57 +476,62 @@ void SwaptionTest::testCashSettledSwaptions() {
 
     BOOST_MESSAGE("Testing cash settled swaptions modified annuity...");
 
-    SavedSettings backup;
-
-    setup();
+    CommonVars vars;
 
     Rate strike = 0.05;
 
     for (Size i=0; i<LENGTH(exercises); i++) {
         for (Size j=0; j<LENGTH(lengths); j++) {
 
-            Date exerciseDate = calendar_.advance(today_,exercises[i]);
-            Date startDate = calendar_.advance(exerciseDate,settlementDays_,Days);
-            Date maturity = calendar_.advance(startDate,lengths[j],floatingConvention_);
-            Schedule floatSchedule(startDate, maturity, floatingTenor_,
-                                   calendar_,floatingConvention_,floatingConvention_,
+            Date exerciseDate = vars.calendar.advance(vars.today,exercises[i]);
+            Date startDate = vars.calendar.advance(exerciseDate,
+                                                   vars.settlementDays,Days);
+            Date maturity =
+                vars.calendar.advance(startDate,lengths[j],
+                                      vars.floatingConvention);
+            Schedule floatSchedule(startDate, maturity, vars.floatingTenor,
+                                   vars.calendar,vars.floatingConvention,
+                                   vars.floatingConvention,
                                    DateGeneration::Forward, false);
             // Swap with fixed leg conventions: Business Days = Unadjusted, DayCount = 30/360
-            Schedule fixedSchedule_u(startDate, maturity, Period(fixedFrequency_),
-                                     calendar_, Unadjusted, Unadjusted,
+            Schedule fixedSchedule_u(startDate, maturity,
+                                     Period(vars.fixedFrequency),
+                                     vars.calendar, Unadjusted, Unadjusted,
                                      DateGeneration::Forward, true);
             boost::shared_ptr<VanillaSwap> swap_u360(
-                                    new VanillaSwap(type[0], nominal_,
-                                    fixedSchedule_u,strike,Thirty360(),
-                                    floatSchedule,index_,0.0,
-                                    index_->dayCounter()));
+                new VanillaSwap(type[0], vars.nominal,
+                                fixedSchedule_u,strike,Thirty360(),
+                                floatSchedule,vars.index,0.0,
+                                vars.index->dayCounter()));
 
             // Swap with fixed leg conventions: Business Days = Unadjusted, DayCount = Act/365
             boost::shared_ptr<VanillaSwap> swap_u365(
-                                    new VanillaSwap(type[0],nominal_,
-                                    fixedSchedule_u,strike,Actual365Fixed(),
-                                    floatSchedule,index_,0.0,
-                                    index_->dayCounter()));
+                new VanillaSwap(type[0],vars.nominal,
+                                fixedSchedule_u,strike,Actual365Fixed(),
+                                floatSchedule,vars.index,0.0,
+                                vars.index->dayCounter()));
 
             // Swap with fixed leg conventions: Business Days = Modified Following, DayCount = 30/360
-            Schedule fixedSchedule_a(startDate,maturity,Period(fixedFrequency_),
-                                     calendar_,ModifiedFollowing,ModifiedFollowing,
+            Schedule fixedSchedule_a(startDate,maturity,
+                                     Period(vars.fixedFrequency),
+                                     vars.calendar,ModifiedFollowing,
+                                     ModifiedFollowing,
                                      DateGeneration::Forward, true);
             boost::shared_ptr<VanillaSwap> swap_a360(
-                                    new VanillaSwap(type[0],nominal_,
-                                    fixedSchedule_a,strike,Thirty360(),
-                                    floatSchedule,index_,0.0,
-                                    index_->dayCounter()));
+                new VanillaSwap(type[0],vars.nominal,
+                                fixedSchedule_a,strike,Thirty360(),
+                                floatSchedule,vars.index,0.0,
+                                vars.index->dayCounter()));
 
             // Swap with fixed leg conventions: Business Days = Modified Following, DayCount = Act/365
             boost::shared_ptr<VanillaSwap> swap_a365(
-                                    new VanillaSwap(type[0],nominal_,
-                                    fixedSchedule_a,strike,Actual365Fixed(),
-                                    floatSchedule,index_,0.0,
-                                    index_->dayCounter()));
+                new VanillaSwap(type[0],vars.nominal,
+                                fixedSchedule_a,strike,Actual365Fixed(),
+                                floatSchedule,vars.index,0.0,
+                                vars.index->dayCounter()));
 
             boost::shared_ptr<PricingEngine> swapEngine(
-                                   new DiscountingSwapEngine(termStructure_));
+                               new DiscountingSwapEngine(vars.termStructure));
 
             swap_u360->setPricingEngine(swapEngine);
             swap_a360->setPricingEngine(swapEngine);
@@ -534,22 +547,24 @@ void SwaptionTest::testCashSettledSwaptions() {
             // FLOATING_POINT_EXCEPTION
             Handle<YieldTermStructure> termStructure_u360(
                 boost::shared_ptr<YieldTermStructure>(
-                    new FlatForward(settlement_,swap_u360->fairRate(),
-                                    Thirty360(),Compounded,fixedFrequency_)));
+                    new FlatForward(vars.settlement,swap_u360->fairRate(),
+                                    Thirty360(),Compounded,
+                                    vars.fixedFrequency)));
             Handle<YieldTermStructure> termStructure_a360(
                 boost::shared_ptr<YieldTermStructure>(
-                    new FlatForward(settlement_,swap_a360->fairRate(),
-                                    Thirty360(),Compounded,fixedFrequency_)));
+                    new FlatForward(vars.settlement,swap_a360->fairRate(),
+                                    Thirty360(),Compounded,
+                                    vars.fixedFrequency)));
             Handle<YieldTermStructure> termStructure_u365(
                 boost::shared_ptr<YieldTermStructure>(
-                    new FlatForward(settlement_,swap_u365->fairRate(),
+                    new FlatForward(vars.settlement,swap_u365->fairRate(),
                                     Actual365Fixed(),Compounded,
-                                    fixedFrequency_)));
+                                    vars.fixedFrequency)));
             Handle<YieldTermStructure> termStructure_a365(
                 boost::shared_ptr<YieldTermStructure>(
-                    new FlatForward(settlement_,swap_a365->fairRate(),
+                    new FlatForward(vars.settlement,swap_a365->fairRate(),
                                     Actual365Fixed(),Compounded,
-                                    fixedFrequency_)));
+                                    vars.fixedFrequency)));
 
             // Annuity calculated by swap method fixedLegBPS().
             // Fixed leg conventions: Unadjusted, 30/360
@@ -600,57 +615,65 @@ void SwaptionTest::testCashSettledSwaptions() {
                                     swapFixedLeg_a365[i]->date());
             }
 
-            // Swaptions: underlying swap fixed leg conventions: unadjusted, 30/360
+            // Swaptions: underlying swap fixed leg conventions:
+            // unadjusted, 30/360
+
             // Physical settled swaption
             boost::shared_ptr<Swaption> swaption_p_u360 =
-                                        makeSwaption(swap_u360,exerciseDate,0.20);
+                vars.makeSwaption(swap_u360,exerciseDate,0.20);
             Real value_p_u360 = swaption_p_u360->NPV();
             // Cash settled swaption
             boost::shared_ptr<Swaption> swaption_c_u360 =
-                                        makeSwaption(swap_u360,exerciseDate,0.20,
-                                        Settlement::Cash);
+                vars.makeSwaption(swap_u360,exerciseDate,0.20,
+                                  Settlement::Cash);
             Real value_c_u360 = swaption_c_u360->NPV();
             // the NPV's ratio must be equal to annuities ratio
             Real npv_ratio_u360 = value_c_u360 / value_p_u360;
             Real annuity_ratio_u360 = cashannuity_u360 / annuity_u360;
 
-            // Swaptions: underlying swap fixed leg conventions: modified following, act/365
+            // Swaptions: underlying swap fixed leg conventions:
+            // modified following, act/365
+
             // Physical settled swaption
             boost::shared_ptr<Swaption> swaption_p_a365 =
-                                        makeSwaption(swap_a365,exerciseDate,0.20);
+                vars.makeSwaption(swap_a365,exerciseDate,0.20);
             Real value_p_a365 = swaption_p_a365->NPV();
             // Cash settled swaption
             boost::shared_ptr<Swaption> swaption_c_a365 =
-                                        makeSwaption(swap_a365,exerciseDate,0.20,
-                                        Settlement::Cash);
+                vars.makeSwaption(swap_a365,exerciseDate,0.20,
+                                  Settlement::Cash);
             Real value_c_a365 = swaption_c_a365->NPV();
             // the NPV's ratio must be equal to annuities ratio
             Real npv_ratio_a365 = value_c_a365 / value_p_a365;
             Real annuity_ratio_a365 =  cashannuity_a365 / annuity_a365;
 
-            // Swaptions: underlying swap fixed leg conventions: modified following, 30/360
+            // Swaptions: underlying swap fixed leg conventions:
+            // modified following, 30/360
+
             // Physical settled swaption
             boost::shared_ptr<Swaption> swaption_p_a360 =
-                                        makeSwaption(swap_a360,exerciseDate,0.20);
+                vars.makeSwaption(swap_a360,exerciseDate,0.20);
             Real value_p_a360 = swaption_p_a360->NPV();
             // Cash settled swaption
             boost::shared_ptr<Swaption> swaption_c_a360 =
-                                        makeSwaption(swap_a360,exerciseDate,0.20,
-                                        Settlement::Cash);
+                vars.makeSwaption(swap_a360,exerciseDate,0.20,
+                                  Settlement::Cash);
             Real value_c_a360 = swaption_c_a360->NPV();
             // the NPV's ratio must be equal to annuities ratio
             Real npv_ratio_a360 = value_c_a360 / value_p_a360;
             Real annuity_ratio_a360 =  cashannuity_a360 / annuity_a360;
 
-            // Swaptions: underlying swap fixed leg conventions: unadjusted, act/365
+            // Swaptions: underlying swap fixed leg conventions:
+            // unadjusted, act/365
+
             // Physical settled swaption
             boost::shared_ptr<Swaption> swaption_p_u365 =
-                                        makeSwaption(swap_u365,exerciseDate,0.20);
+                vars.makeSwaption(swap_u365,exerciseDate,0.20);
             Real value_p_u365 = swaption_p_u365->NPV();
             // Cash settled swaption
             boost::shared_ptr<Swaption> swaption_c_u365 =
-                                        makeSwaption(swap_u365,exerciseDate,0.20,
-                                        Settlement::Cash);
+                vars.makeSwaption(swap_u365,exerciseDate,0.20,
+                                  Settlement::Cash);
             Real value_c_u365 = swaption_c_u365->NPV();
             // the NPV's ratio must be equal to annuities ratio
             Real npv_ratio_u365 = value_c_u365 / value_p_u365;
@@ -664,9 +687,9 @@ void SwaptionTest::testCashSettledSwaptions() {
                             exercises[i].units() << "y x " << lengths[j].units() << "y" <<
                             " (underlying swap fixed leg Unadjusted, 30/360)" << "\n" <<
                             "    Today           : " <<
-                            today_ << "\n" <<
+                            vars.today << "\n" <<
                             "    Settlement date : " <<
-                            settlement_ << "\n" <<
+                            vars.settlement << "\n" <<
                             "    Exercise date   : " <<
                             exerciseDate << "\n"   <<
                             "    Swap start date : " <<
@@ -696,9 +719,9 @@ void SwaptionTest::testCashSettledSwaptions() {
                             exercises[i].units() << "y x " << lengths[j].units() << "y" <<
                             " (underlying swap fixed leg Modified Following, act/365" << "\n" <<
                             "    Today           : " <<
-                            today_ << "\n" <<
+                            vars.today << "\n" <<
                             "    Settlement date : " <<
-                            settlement_ << "\n" <<
+                            vars.settlement << "\n" <<
                             "    Exercise date   : " <<
                             exerciseDate <<  "\n"  <<
                             "    Swap start date : " <<
@@ -728,9 +751,9 @@ void SwaptionTest::testCashSettledSwaptions() {
                             exercises[i].units() << "y x " << lengths[j].units() << "y" <<
                             " (underlying swap fixed leg Unadjusted, 30/360)" << "\n" <<
                             "    Today           : " <<
-                            today_ << "\n" <<
+                            vars.today << "\n" <<
                             "    Settlement date : " <<
-                            settlement_ << "\n" <<
+                            vars.settlement << "\n" <<
                             "    Exercise date   : " <<
                             exerciseDate << "\n"   <<
                             "    Swap start date : " <<
@@ -760,9 +783,9 @@ void SwaptionTest::testCashSettledSwaptions() {
                             exercises[i].units() << "y x " << lengths[j].units() << "y" <<
                             " (underlying swap fixed leg Unadjusted, act/365)" << "\n" <<
                             "    Today           : " <<
-                            today_ << "\n" <<
+                            vars.today << "\n" <<
                             "    Settlement date : " <<
-                            settlement_ << "\n" <<
+                            vars.settlement << "\n" <<
                             "    Exercise date   : " <<
                             exerciseDate << "\n"   <<
                             "    Swap start date : " <<
@@ -794,9 +817,7 @@ void SwaptionTest::testImpliedVolatility() {
 
     BOOST_MESSAGE("Testing implied volatility for swaptions...");
 
-    SavedSettings backup;
-
-    setup();
+    CommonVars vars;
 
     Size maxEvaluations = 100;
     Real tolerance = 1.0e-08;
@@ -808,23 +829,23 @@ void SwaptionTest::testImpliedVolatility() {
 
     for (Size i=0; i<LENGTH(exercises); i++) {
         for (Size j=0; j<LENGTH(lengths); j++) {
-            Date exerciseDate = calendar_.advance(today_,exercises[i]);
-            Date startDate = calendar_.advance(exerciseDate, settlementDays_,
-                                               Days);
-            Date maturity = calendar_.advance(startDate, lengths[j],
-                                              floatingConvention_);
+            Date exerciseDate = vars.calendar.advance(vars.today,exercises[i]);
+            Date startDate = vars.calendar.advance(exerciseDate,
+                                                   vars.settlementDays, Days);
+            Date maturity = vars.calendar.advance(startDate, lengths[j],
+                                                  vars.floatingConvention);
             for (Size t=0; t<LENGTH(strikes); t++) {
                 for (Size k=0; k<LENGTH(type); k++) {
                     boost::shared_ptr<VanillaSwap> swap =
-                        MakeVanillaSwap(lengths[j], index_, strikes[t])
+                        MakeVanillaSwap(lengths[j], vars.index, strikes[t])
                                 .withEffectiveDate(startDate)
                                 .withFloatingLegSpread(0.0)
                                 .withType(type[k]);
                     for (Size h=0; h<LENGTH(types); h++) {
                         for (Size u=0; u<LENGTH(vols); u++) {
                             boost::shared_ptr<Swaption> swaption =
-                                makeSwaption(swap, exerciseDate, vols[u],
-                                             types[h]);
+                                vars.makeSwaption(swap, exerciseDate,
+                                                  vols[u], types[h]);
                             // Black price
                             // FLOATING_POINT_EXCEPTION
                             Real value = swaption->NPV();
@@ -832,7 +853,7 @@ void SwaptionTest::testImpliedVolatility() {
                             try {
                                 implVol =
                                   swaption->impliedVolatility(value,
-                                                              termStructure_,
+                                                              vars.termStructure,
                                                               0.10,
                                                               tolerance,
                                                               maxEvaluations);
@@ -848,7 +869,7 @@ void SwaptionTest::testImpliedVolatility() {
                             }
                             if (std::fabs(implVol-vols[u]) > tolerance) {
                                 // the difference might not matter
-                                swaption->setPricingEngine(makeEngine(implVol));
+                                swaption->setPricingEngine(vars.makeEngine(implVol));
                                 Real value2 = swaption->NPV();
                                 if (std::fabs(value-value2) > tolerance) {
                                     BOOST_ERROR("implied vol failure: " <<
