@@ -68,8 +68,9 @@ namespace QuantLib {
         ts_ = ts;
 
         Size n = ts_->instruments_.size();
-        QL_REQUIRE(n+1 > Interpolator::requiredPoints,
-                   "not enough instruments given: " << n);
+        QL_REQUIRE(n >= Interpolator::requiredPoints,
+                   "not enough instruments: " << n << " provided, " <<
+                   Interpolator::requiredPoints << " required");
 
         for (Size i=0; i<n; ++i){
             ts_->registerWith(ts_->instruments_[i]);
@@ -82,8 +83,8 @@ namespace QuantLib {
 
         Size n = ts_->instruments_.size();
 
-        // sort rate helpers
-        std::sort(ts_->instruments_.begin(),ts_->instruments_.end(),
+        // ensure rate helpers are sorted
+        std::sort(ts_->instruments_.begin(), ts_->instruments_.end(),
                   detail::BootstrapHelperSorter());
 
         // check that there is no instruments with the same maturity
@@ -97,7 +98,9 @@ namespace QuantLib {
         // check that there is no instruments with invalid quote
         for (Size i=0; i<n; ++i)
             QL_REQUIRE(ts_->instruments_[i]->quoteIsValid(),
-                       io::ordinal(i+1) << " instrument has an invalid quote");
+                       io::ordinal(i+1) << " instrument (maturity: " <<
+                       ts_->instruments_[i]->latestDate() <<
+                       ") has an invalid quote");
 
         // setup instruments
         for (Size i=0; i<n; ++i) {
