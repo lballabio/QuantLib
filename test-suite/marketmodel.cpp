@@ -1224,19 +1224,21 @@ void MarketModelTest::testPeriodAdapter() {
 
     for (Size i=0; i < numberBigRates; ++i) {
         if (fabs(capletErrorsInSds[i]) > capletTolerance) {
-            BOOST_FAIL(io::ordinal(i+1) << "caplet , approx price " <<
-                       approxCapletPrices[i] <<
-                       ", \t simulation price " << results[i] <<
-                       ", \t error in sds " << capletErrorsInSds[i]);
+            BOOST_MESSAGE(io::ordinal(i+1) << "caplet , approx price " <<
+                          approxCapletPrices[i] <<
+                          ", \t simulation price " << results[i] <<
+                          ", \t error in sds " << capletErrorsInSds[i]);
         }
+        BOOST_ERROR("test failed");
     }
     for (Size i=0; i < numberBigRates; ++i) {
         if (fabs(swaptionErrorsInSds[i]) > swaptionTolerance) {
-            BOOST_FAIL(io::ordinal(i+1) << "swaption, approx price " <<
-                       approxSwaptionPrices[i] <<
-                       ", \t simulation price " << results[i+numberBigRates] <<
-                       ", \t error in sds " << swaptionErrorsInSds[i]);
+            BOOST_MESSAGE(io::ordinal(i+1) << "swaption, approx price " <<
+                          approxSwaptionPrices[i] <<
+                          ", \t simulation price " << results[i+numberBigRates] <<
+                          ", \t error in sds " << swaptionErrorsInSds[i]);
         }
+        BOOST_ERROR("test failed");
     }
 }
 void MarketModelTest::testCallableSwapNaif() {
