@@ -97,7 +97,7 @@ namespace {
                                                              ModifiedFollowing,
                                                              false,
                                                              Actual360()));
-            for (Size i=0; i<swaps; i++) {
+            for (Size i=0; i<swaps; ++i) {
                 instruments[i+deposits] = boost::shared_ptr<RateHelper>(new
                     SwapRateHelper(swapData[i].rate/100,
                                    swapData[i].n*swapData[i].units,
@@ -105,14 +105,12 @@ namespace {
                                    Annual, Unadjusted, Thirty360(),
                                    index));
             }
-            termStructure = boost::shared_ptr<YieldTermStructure>(
-                    new PiecewiseYieldCurve<Discount,LogLinear>(settlement,
-                                                                instruments,
-                                                                Actual360()));
-            dummyTermStructure = boost::shared_ptr<YieldTermStructure>(
-                    new PiecewiseYieldCurve<Discount,LogLinear>(settlement,
-                                                                instruments,
-                                                                Actual360()));
+            termStructure = boost::shared_ptr<YieldTermStructure>(new
+                PiecewiseYieldCurve<Discount,LogLinear>(settlement,
+                                                        instruments, Actual360()));
+            dummyTermStructure = boost::shared_ptr<YieldTermStructure>(new
+                PiecewiseYieldCurve<Discount,LogLinear>(settlement,
+                                                        instruments, Actual360()));
         }
     };
 
