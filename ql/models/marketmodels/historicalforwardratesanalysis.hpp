@@ -128,6 +128,7 @@ namespace QuantLib {
                                                      cal,
                                                      rateHelpers,
                                                      yieldCurveDayCounter,
+                                                     Handle<Quote>(),
                                                      yieldCurveAccuracy,
                                                      i);
 

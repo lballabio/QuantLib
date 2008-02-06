@@ -29,6 +29,7 @@
 #include <ql/termstructures/bootstrapper.hpp>
 #include <ql/termstructures/yield/bootstraptraits.hpp>
 #include <ql/patterns/lazyobject.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 
@@ -68,10 +69,16 @@ namespace QuantLib {
                const std::vector<boost::shared_ptr<typename Traits::helper> >&
                                                                   instruments,
                const DayCounter& dayCounter,
+               const Handle<Quote>& turnOfYearEffect = Handle<Quote>(),
                Real accuracy = 1.0e-12,
                const Interpolator& i = Interpolator())
         : base_curve(referenceDate, dayCounter, i),
-          instruments_(instruments), accuracy_(accuracy) {
+          instruments_(instruments),
+          turnOfYearEffect_(turnOfYearEffect), accuracy_(accuracy) {
+            Date ref = base_curve::referenceDate();
+            Date turnOfYear = Date(31, December, ref.year());
+            turnOfYear_ = base_curve::timeFromReference(turnOfYear);
+            registerWith(turnOfYearEffect_);
             bootstrap_.setup(this);
         }
         PiecewiseYieldCurve(
@@ -80,10 +87,16 @@ namespace QuantLib {
                const std::vector<boost::shared_ptr<typename Traits::helper> >&
                                                                   instruments,
                const DayCounter& dayCounter,
+               const Handle<Quote>& turnOfYearEffect = Handle<Quote>(),
                Real accuracy = 1.0e-12,
                const Interpolator& i = Interpolator())
         : base_curve(settlementDays, calendar, dayCounter, i),
-          instruments_(instruments), accuracy_(accuracy) {
+          instruments_(instruments),
+          turnOfYearEffect_(turnOfYearEffect), accuracy_(accuracy) {
+            Date ref = base_curve::referenceDate();
+            Date turnOfYear = Date(31, December, ref.year());
+            turnOfYear_ = base_curve::timeFromReference(turnOfYear);
+            registerWith(turnOfYearEffect_);
             bootstrap_.setup(this);
         }
         //@}
@@ -108,7 +121,9 @@ namespace QuantLib {
         DiscountFactor discountImpl(Time) const;
         // data members
         std::vector<boost::shared_ptr<typename Traits::helper> > instruments_;
+        Handle<Quote> turnOfYearEffect_;
         Real accuracy_;
+        Time turnOfYear_;
         // bootstrapper classes are declared as friend to manipulate
         // the curve data. They might be passed the data instead, but
         // it would increase the complexity---which is quite high
@@ -164,9 +179,16 @@ namespace QuantLib {
     }
 
     template <class C, class I, template <class,class,class> class B>
-    inline DiscountFactor PiecewiseYieldCurve<C,I,B>::discountImpl(Time t)
-                                                                       const {
+    inline
+    DiscountFactor PiecewiseYieldCurve<C,I,B>::discountImpl(Time t) const {
         calculate();
+
+        if ((!turnOfYearEffect_.empty()) && t>turnOfYear_) {
+            QL_REQUIRE(turnOfYearEffect_->isValid(),
+                       "invalid turnOfYearEffect quote");
+            return turnOfYearEffect_->value() * base_curve::discountImpl(t);
+        }
+
         return base_curve::discountImpl(t);
     }
 

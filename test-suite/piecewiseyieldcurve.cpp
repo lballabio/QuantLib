@@ -266,11 +266,10 @@ namespace {
     void testCurveConsistency(const T&, const I& interpolator,
                               CommonVars& vars) {
 
-        vars.termStructure = boost::shared_ptr<YieldTermStructure>(
-                          new PiecewiseYieldCurve<T,I>(vars.settlement,
-                                                       vars.instruments,
-                                                       Actual360(), 1.0e-12,
-                                                       interpolator));
+        vars.termStructure = boost::shared_ptr<YieldTermStructure>(new
+            PiecewiseYieldCurve<T,I>(vars.settlement, vars.instruments,
+                                     Actual360(), Handle<Quote>(), 1.0e-12,
+                                     interpolator));
 
         RelinkableHandle<YieldTermStructure> curveHandle;
         curveHandle.linkTo(vars.termStructure);
@@ -319,11 +318,10 @@ namespace {
         }
 
         // check bonds
-        vars.termStructure = boost::shared_ptr<YieldTermStructure>(
-                          new PiecewiseYieldCurve<T,I>(vars.settlement,
-                                                       vars.bondHelpers,
-                                                       Actual360(), 1.0e-12,
-                                                       interpolator));
+        vars.termStructure = boost::shared_ptr<YieldTermStructure>(new
+            PiecewiseYieldCurve<T,I>(vars.settlement, vars.bondHelpers,
+                                     Actual360(), Handle<Quote>(), 1.0e-12,
+                                     interpolator));
         curveHandle.linkTo(vars.termStructure);
 
         for (Size i=0; i<vars.bonds; i++) {
@@ -358,11 +356,10 @@ namespace {
         }
 
         // check FRA
-        vars.termStructure = boost::shared_ptr<YieldTermStructure>(
-                          new PiecewiseYieldCurve<T,I>(vars.settlement,
-                                                       vars.fraHelpers,
-                                                       Actual360(), 1.0e-12,
-                                                       interpolator));
+        vars.termStructure = boost::shared_ptr<YieldTermStructure>(new
+            PiecewiseYieldCurve<T,I>(vars.settlement, vars.fraHelpers,
+                                     Actual360(), Handle<Quote>(), 1.0e-12,
+                                     interpolator));
         curveHandle.linkTo(vars.termStructure);
 
         boost::shared_ptr<IborIndex> euribor3m(new Euribor3M(curveHandle));
@@ -425,11 +422,10 @@ namespace {
         Date lastFixing = bmaIndex->fixingCalendar().adjust(lastWednesday);
         bmaIndex->addFixing(lastFixing, 0.03);
 
-        vars.termStructure = boost::shared_ptr<YieldTermStructure>(
-                          new PiecewiseYieldCurve<T,I>(vars.settlement,
-                                                       vars.bmaHelpers,
-                                                       Actual360(), 1.0e-12,
-                                                       interpolator));
+        vars.termStructure = boost::shared_ptr<YieldTermStructure>(new
+            PiecewiseYieldCurve<T,I>(vars.settlement, vars.bmaHelpers,
+                                     Actual360(), Handle<Quote>(), 1.0e-12,
+                                     interpolator));
 
         RelinkableHandle<YieldTermStructure> curveHandle;
         curveHandle.linkTo(vars.termStructure);
@@ -643,10 +639,10 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
                            vars.fixedLegDayCounter, euribor6m));
     }
 
-    vars.termStructure = boost::shared_ptr<YieldTermStructure>(
-           new PiecewiseYieldCurve<Discount,LogLinear>(vars.settlement,
-                                                       swapHelpers,
-                                                       Actual360(), 1.0e-12));
+    vars.termStructure = boost::shared_ptr<YieldTermStructure>(new
+        PiecewiseYieldCurve<Discount,LogLinear>(vars.settlement,
+                                                swapHelpers,
+                                                Actual360()));
 
     Handle<YieldTermStructure> curveHandle =
         Handle<YieldTermStructure>(vars.termStructure);
