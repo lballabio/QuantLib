@@ -22,6 +22,7 @@
 #include <ql/math/optimization/costfunction.hpp>
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/utilities/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -118,11 +119,12 @@ namespace QuantLib {
         // double check bond quotes still valid and/or instruments not expired
         for (Size i=0; i<instruments_.size(); ++i) {
             QL_REQUIRE(instruments_[i]->quoteIsValid(),
-                       "instrument with invalid quote");
+                       io::ordinal(i) << " instrument has an invalid quote");
             instruments_[i]->setTermStructure(
                                   const_cast<FittedBondDiscountCurve*>(this));
             boost::shared_ptr<Bond> bond = instruments_[i]->bond();
-            QL_REQUIRE(!bond->isExpired(), "expired bond instrument");
+            QL_REQUIRE(!bond->isExpired(),
+                       io::ordinal(i) << " bond is expired");
         }
 
         maxDate_ = Date::minDate();

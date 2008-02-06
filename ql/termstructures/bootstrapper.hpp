@@ -97,7 +97,7 @@ namespace QuantLib {
         // check that there is no instruments with invalid quote
         for (Size i=0; i<n; ++i)
             QL_REQUIRE(ts_->instruments_[i]->quoteIsValid(),
-                       "instrument with invalid quote");
+                       io::ordinal(i) << " instrument has an invalid quote");
 
         // setup instruments
         for (Size i=0; i<n; ++i) {
