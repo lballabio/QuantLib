@@ -124,11 +124,11 @@ namespace QuantLib {
         Brent solver;
         Size maxIterations = Traits::maxIterations();
 
-        for (Size iteration = 0; ; ++iteration) {
+        for (Size iteration=0; ; ++iteration) {
             std::vector<Rate> previousData = ts_->data_;
 
             for (Size i=1; i<n+1; ++i) {
-                if (iteration == 0)   {
+                if (iteration==0) {
                     // extend interpolation a point at a time
                     if (Interpolator::global) {
                         // use Linear in the first iteration
@@ -149,10 +149,10 @@ namespace QuantLib {
                 boost::shared_ptr<typename Traits::helper> instrument =
                     ts_->instruments_[i-1];
                 Rate guess;
-                if (iteration > 0) {
+                if (iteration>0) {
                     // use perturbed value from previous loop
                     guess = 0.99 * ts_->data_[i];
-                } else if (i == 1) {
+                } else if (i==1) {
                     guess = Traits::initialGuess();
                 } else {
                     // most traits extrapolate
@@ -162,14 +162,14 @@ namespace QuantLib {
                 // bracket
                 Real min = Traits::minValueAfter(i, ts_->data_);
                 Real max = Traits::maxValueAfter(i, ts_->data_);
-                if (guess <= min || guess >= max)
+                if (guess<=min || guess>=max)
                     guess = (min+max)/2.0;
 
                 try {
                     BootstrapError<Curve,Traits,Interpolator> error(
                                                          ts_, instrument, i);
-                    ts_->data_[i] =
-                        solver.solve(error, ts_->accuracy_, guess, min, max);
+                    ts_->data_[i] = solver.solve(error, ts_->accuracy_,
+                                                 guess, min, max);
                     if (i==1 && Traits::dummyInitialValue())
                         ts_->data_[0] = ts_->data_[1];
                 } catch (std::exception &e) {
@@ -185,10 +185,10 @@ namespace QuantLib {
             } else if (iteration == 0) {
                 // at least one more iteration is needed
                 // since the first one used Linear interpolation
-                ts_->interpolation_ = ts_->interpolator_.interpolate(
-                                                          ts_->times_.begin(),
-                                                          ts_->times_.end(),
-                                                          ts_->data_.begin());
+                ts_->interpolation_ =
+                    ts_->interpolator_.interpolate(ts_->times_.begin(),
+                                                   ts_->times_.end(),
+                                                   ts_->data_.begin());
                 continue;
             }
 
@@ -197,12 +197,12 @@ namespace QuantLib {
             for (Size i=1; i<n+1; ++i)
                 improvement=std::max(improvement,
                                      std::fabs(ts_->data_[i]-previousData[i]));
-            if (improvement <= ts_->accuracy_)  // convergence reached
+            if (improvement<=ts_->accuracy_)  // convergence reached
                 break;
 
             if (iteration+1 >= maxIterations)
-                QL_FAIL("convergence not reached after "
-                        << iteration+1 << " iterations");
+                QL_FAIL("convergence not reached after " <<
+                        iteration+1 << " iterations");
         }
     }
 

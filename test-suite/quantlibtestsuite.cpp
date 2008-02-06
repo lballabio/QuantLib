@@ -178,9 +178,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     test->add(BOOST_TEST_CASE(startTimer));
 
-    test->add(PiecewiseYieldCurveTest::suite());
-    test->add(TermStructureTest::suite());
- 
     test->add(AmericanOptionTest::suite());   // FLOATING_POINT_EXCEPTION
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
