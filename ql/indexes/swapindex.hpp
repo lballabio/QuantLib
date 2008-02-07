@@ -53,7 +53,6 @@ namespace QuantLib {
         Period fixedLegTenor() const { return fixedLegTenor_; }
         BusinessDayConvention fixedLegConvention() const;
         boost::shared_ptr<IborIndex> iborIndex() const;
-        Schedule fixedRateSchedule(const Date& fixingDate) const;
         /*! \warning Relinking the term structure underlying the index will
                      not have effect on the returned swap.
         */

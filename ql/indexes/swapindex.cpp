@@ -61,19 +61,9 @@ namespace QuantLib {
             .withFixedLegTerminationDateConvention(fixedLegConvention_);
     }
 
-    Schedule SwapIndex::fixedRateSchedule(const Date& fixingDate) const {
-
-        Date start = fixingCalendar().advance(fixingDate, fixingDays_, Days);
-        Date end = fixingCalendar().advance(start, tenor_);
-
-        return Schedule(start, end, fixedLegTenor_, fixingCalendar(),
-                        fixedLegConvention_, fixedLegConvention_,
-                        DateGeneration::Forward, false);
-    }
-
     Date SwapIndex::maturityDate(const Date& valueDate) const {
-        return fixingCalendar().advance(valueDate, tenor_, Unadjusted, false);
+        Date fixDate = fixingDate(valueDate);
+        return underlyingSwap(fixDate)->maturityDate();
     }
 
 }
-
