@@ -104,8 +104,8 @@ namespace QuantLib {
             annuity_ = (swap->floatingLegBPS()/bp);
 
             Size q = swapIndex->fixedLegTenor().frequency();
-            Schedule schedule = swapIndex->fixedRateSchedule(fixingDate_);
-            DayCounter dc = swapIndex->dayCounter();
+            const Schedule& schedule = swap->fixedSchedule();
+            const DayCounter& dc = swapIndex->dayCounter();
             //const DayCounter dc = coupon.dayCounter();
             Time startTime = dc.yearFraction(rateCurve_->referenceDate(),
                                              swap->startDate());
@@ -567,26 +567,25 @@ namespace QuantLib {
         const boost::shared_ptr<VanillaSwap>& swap =
             swapIndex->underlyingSwap(coupon.fixingDate());
 
-        const Leg fixedLeg(swap->fixedLeg());
-        const Schedule schedule =
-            swapIndex->fixedRateSchedule(coupon.fixingDate());
+        const Schedule& schedule = swap->fixedSchedule();
         Handle<YieldTermStructure> rateCurve = swapIndex->termStructure();
 
-        const DayCounter dc = swapIndex->dayCounter();
-        //const DayCounter dc = coupon.dayCounter();
+        const DayCounter& dc = swapIndex->dayCounter();
 
         Real swapStartTime = dc.yearFraction(rateCurve->referenceDate(),
                                              schedule.startDate());
         Real swapFirstPaymentTime = dc.yearFraction(rateCurve->referenceDate(),
                                                     schedule.date(1));
 
-        const Real paymentTime = dc.yearFraction(rateCurve->referenceDate(),
+        Real paymentTime = dc.yearFraction(rateCurve->referenceDate(),
                                                  coupon.date());
 
         delta_ = (paymentTime-swapStartTime) / (swapFirstPaymentTime-swapStartTime);
 
-        accruals_.reserve(fixedLeg.size());
-        for(Size i=0; i<fixedLeg.size(); i++) {
+        const Leg& fixedLeg(swap->fixedLeg());
+        Size n = fixedLeg.size();
+        accruals_.reserve(n);
+        for (Size i=0; i<n; ++i) {
             boost::shared_ptr<Coupon> coupon =
                 boost::dynamic_pointer_cast<Coupon>(fixedLeg[i]);
             accruals_.push_back(coupon->accrualPeriod());
@@ -670,26 +669,25 @@ namespace QuantLib {
 
         objectiveFunction_ = boost::shared_ptr<ObjectiveFunction>(new ObjectiveFunction(*this, swapRateValue_));
 
-        const Leg fixedLeg(swap->fixedLeg());
-        const Schedule schedule =
-            swapIndex->fixedRateSchedule(coupon.fixingDate());
+        const Schedule& schedule = swap->fixedSchedule();
         Handle<YieldTermStructure> rateCurve = swapIndex->termStructure();
-        const DayCounter dc = swapIndex->dayCounter();
-        //const DayCounter dc = coupon.dayCounter();
+        const DayCounter& dc = swapIndex->dayCounter();
 
         swapStartTime_ = dc.yearFraction(rateCurve->referenceDate(),
                                          schedule.startDate());
         discountAtStart_ = rateCurve->discount(schedule.startDate());
 
-        const Real paymentTime = dc.yearFraction(rateCurve->referenceDate(),
+        Real paymentTime = dc.yearFraction(rateCurve->referenceDate(),
                                                  coupon.date());
 
         shapedPaymentTime_ = shapeOfShift(paymentTime);
 
-        accruals_.reserve(fixedLeg.size());
-        shapedSwapPaymentTimes_.reserve(fixedLeg.size());
-        swapPaymentDiscounts_.reserve(fixedLeg.size());
-        for(Size i=0; i<fixedLeg.size(); i++) {
+        const Leg& fixedLeg(swap->fixedLeg());
+        Size n = fixedLeg.size();
+        accruals_.reserve(n);
+        shapedSwapPaymentTimes_.reserve(n);
+        swapPaymentDiscounts_.reserve(n);
+        for(Size i=0; i<n; ++i) {
             boost::shared_ptr<Coupon> coupon =
                 boost::dynamic_pointer_cast<Coupon>(fixedLeg[i]);
             accruals_.push_back(coupon->accrualPeriod());
