@@ -65,6 +65,11 @@ namespace QuantLib {
                                BusinessDayConvention bdc = Following,
                                const DayCounter& dc = DayCounter());
         //@}
+        //! \name VolatilityTermStructure interface
+        //@{
+        //! period/date conversion
+        Date optionDateFromTenor(const Period&) const;
+        //@}
         const boost::shared_ptr<InterestRateIndex>& index() const;
         //! \name Visitability
         //@{

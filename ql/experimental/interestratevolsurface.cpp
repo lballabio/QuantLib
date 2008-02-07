@@ -44,6 +44,14 @@ namespace QuantLib {
                             const DayCounter& dc)
     : BlackVolSurface(settlDays, cal, bdc, dc), index_(index) {}
 
+    Date InterestRateVolSurface::optionDateFromTenor(const Period& p) const {
+        boost::shared_ptr<InterestRateIndex> i = index();
+        Date refDate = i->fixingCalendar().adjust(referenceDate(), Following);
+        Date settlement = i->valueDate(refDate);
+        Date start = settlement+p;
+        return i->fixingDate(start);
+    }
+
     void InterestRateVolSurface::accept(AcyclicVisitor& v) {
         Visitor<InterestRateVolSurface>* v1 =
             dynamic_cast<Visitor<InterestRateVolSurface>*>(&v);
