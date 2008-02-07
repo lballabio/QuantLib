@@ -348,9 +348,10 @@ test_suite* SwapForwardMappingsTest::suite() {
 
     suite->add(BOOST_TEST_CASE(
                     &SwapForwardMappingsTest::testForwardSwapJacobians));
-
+    #if !defined(QL_NO_UBLAS_SUPPORT)
     suite->add(BOOST_TEST_CASE(
                     &SwapForwardMappingsTest::testForwardCoterminalMappings));
+    #endif
     return suite;
 }
 

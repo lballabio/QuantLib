@@ -66,6 +66,24 @@ AC_DEFUN([QL_CHECK_BOOST_VERSION],
     ])
 ])
 
+# QL_CHECK_BOOST_UBLAS
+# --------------------
+# Check whether the Boost headers are available
+AC_DEFUN([QL_CHECK_BOOST_UBLAS],
+[AC_MSG_CHECKING([for Boost::uBLAS support])
+ AC_TRY_COMPILE(
+    [@%:@include <boost/numeric/ublas/vector_proxy.hpp>
+     @%:@include <boost/numeric/ublas/triangular.hpp>
+     @%:@include <boost/numeric/ublas/lu.hpp>],
+    [],
+    [AC_MSG_RESULT([yes])],
+    [AC_MSG_RESULT([no])
+     AC_MSG_WARN([Some functionality will be disabled.])
+     AC_DEFINE([QL_NO_UBLAS_SUPPORT],[],
+               [Define this if your compiler does not support Boost::uBLAS.])
+    ])
+])
+
 # QL_CHECK_BOOST_UNIT_TEST
 # ------------------------
 # Check whether the Boost unit-test framework is available
@@ -121,8 +139,8 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
      AC_MSG_RESULT([no])
      AC_SUBST([BOOST_UNIT_TEST_LIB],[""])
      AC_SUBST([BOOST_UNIT_TEST_MAIN_CXXFLAGS],[""])
-     AC_MSG_WARN([Boost unit-test framework not found])
-     AC_MSG_WARN([The test suite will be disabled])
+     AC_MSG_WARN([Boost unit-test framework not found.])
+     AC_MSG_WARN([The test suite will be disabled.])
  else
      AC_MSG_RESULT([yes])
      AC_SUBST([BOOST_UNIT_TEST_LIB],[$boost_lib])
@@ -153,6 +171,7 @@ AC_DEFUN([QL_CHECK_BOOST_TEST_STREAM],
 AC_DEFUN([QL_CHECK_BOOST],
 [AC_REQUIRE([QL_CHECK_BOOST_DEVEL])
  AC_REQUIRE([QL_CHECK_BOOST_VERSION])
+ AC_REQUIRE([QL_CHECK_BOOST_UBLAS])
  AC_REQUIRE([QL_CHECK_BOOST_UNIT_TEST])
  AC_REQUIRE([QL_CHECK_BOOST_TEST_STREAM])
 ])

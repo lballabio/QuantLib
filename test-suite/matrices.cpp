@@ -301,9 +301,11 @@ test_suite* MatricesTest::suite() {
     suite->add(BOOST_TEST_CASE(&MatricesTest::testEigenvectors));
     suite->add(BOOST_TEST_CASE(&MatricesTest::testSqrt));
     suite->add(BOOST_TEST_CASE(&MatricesTest::testSVD));
-    suite->add(BOOST_TEST_CASE(&MatricesTest::testInverse));
     suite->add(BOOST_TEST_CASE(&MatricesTest::testHighamSqrt));
+    #if !defined(QL_NO_UBLAS_SUPPORT)
+    suite->add(BOOST_TEST_CASE(&MatricesTest::testInverse));
     suite->add(BOOST_TEST_CASE(&MatricesTest::testDeterminant));
+    #endif
     return suite;
 }
 

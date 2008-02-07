@@ -26,15 +26,13 @@
 #pragma warning(push)
 #pragma warning(disable:4180)
 #endif
-#if !defined(__GNUC__) || __GNUC__ > 3 || __GNUC_MINOR__ > 4
-#define QL_MATRIX_BLAS
-#endif
 
-#if defined(QL_MATRIX_BLAS)
+#if !defined(QL_NO_UBLAS_SUPPORT)
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/triangular.hpp>
 #include <boost/numeric/ublas/lu.hpp>
 #endif
+
 #if defined(QL_PATCH_MSVC71) || defined(QL_PATCH_MSVC80)
 #pragma warning(pop)
 #endif
@@ -42,7 +40,7 @@
 namespace QuantLib {
 
     Disposable<Matrix> inverse(const Matrix& m) {
-        #if defined(QL_MATRIX_BLAS)
+        #if !defined(QL_NO_UBLAS_SUPPORT)
 
         QL_REQUIRE(m.rows() == m.columns(), "matrix is not square");
 
@@ -70,12 +68,12 @@ namespace QuantLib {
 
         #else
         QL_FAIL("this version of gcc does not support "
-                "the Boost uBlas library");
+                "the Boost uBLAS library");
         #endif
     }
 
-    Real det(const Matrix& m) {        
-        #if defined(QL_MATRIX_BLAS)
+    Real det(const Matrix& m) {
+        #if !defined(QL_NO_UBLAS_SUPPORT)
         QL_REQUIRE(m.rows() == m.columns(), "matrix is not square");
 
         boost::numeric::ublas::matrix<Real> a(m.rows(), m.columns());
@@ -98,7 +96,7 @@ namespace QuantLib {
 
         #else
         QL_FAIL("this version of gcc does not support "
-                "the Boost uBlas library");
+                "the Boost uBLAS library");
         #endif
     }
 }
