@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2008 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
 
@@ -28,6 +28,7 @@
 
 #include <ql/instruments/swap.hpp>
 #include <ql/time/daycounter.hpp>
+#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 
@@ -75,27 +76,27 @@ namespace QuantLib {
         Real floatingLegNPV() const;
         Spread fairSpread() const;
         // inspectors
+        Type type() const;
+        Real nominal() const;
+        const Schedule& fixedSchedule() const { return fixedSchedule_; }
         Rate fixedRate() const;
+        const Schedule& floatSchedule() const { return floatSchedule_; }
         const boost::shared_ptr<IborIndex>& iborIndex() const;
         Spread spread() const;
-        Real nominal() const;
-        Type type() const;
-        const Leg& fixedLeg() const {
-            return legs_[0];
-        }
-        const Leg& floatingLeg() const {
-            return legs_[1];
-        }
+        const Leg& fixedLeg() const { return legs_[0]; }
+        const Leg& floatingLeg() const { return legs_[1]; }
         // other
         void setupArguments(PricingEngine::arguments* args) const;
         void fetchResults(const PricingEngine::results*) const;
       private:
         void setupExpired() const;
         Type type_;
+        Real nominal_;
+        Schedule fixedSchedule_;
         Rate fixedRate_;
+        Schedule floatSchedule_;
         boost::shared_ptr<IborIndex> iborIndex_;
         Spread spread_;
-        Real nominal_;
         // results
         mutable Rate fairRate_;
         mutable Spread fairSpread_;

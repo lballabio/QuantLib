@@ -26,7 +26,6 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/indexes/iborindex.hpp>
-#include <ql/time/schedule.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
@@ -40,10 +39,9 @@ namespace QuantLib {
                              const boost::shared_ptr<IborIndex>& iborIndex,
                              Spread spread,
                              const DayCounter& floatingDayCount)
-    : Swap(Leg(), Leg()),
-      type_(type), fixedRate_(fixedRate),
-      iborIndex_(iborIndex), spread_(spread),
-      nominal_(nominal) {
+    : Swap(Leg(), Leg()), type_(type), nominal_(nominal),
+      fixedSchedule_(fixedSchedule), fixedRate_(fixedRate),
+      floatSchedule_(floatSchedule), iborIndex_(iborIndex), spread_(spread) {
 
         BusinessDayConvention convention =
             floatSchedule.businessDayConvention();
