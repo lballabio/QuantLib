@@ -2231,8 +2231,6 @@ void MarketModelTest::testIsInSubset() {
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
 
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testPeriodAdapter));
-/*
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepForwardsAndOptionlets));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepNormalForwardsAndOptionlets));
 
@@ -2252,8 +2250,10 @@ test_suite* MarketModelTest::suite() {
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
 
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testPeriodAdapter));
+
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testDriftCalculator));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testIsInSubset));
-*/
+
     return suite;
 }
