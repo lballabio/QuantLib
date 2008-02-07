@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
@@ -39,11 +40,10 @@ namespace QuantLib {
                           const Calendar& calendar,
                           BusinessDayConvention bdc,
                           const boost::shared_ptr<IborIndex>& iborIndex,
-                          const std::vector<Period>& optionletTenors,
+                          const std::vector<Date>& optionletDates,
                           const std::vector<Rate>& strikes,
                           const std::vector<std::vector<Handle<Quote> > >&,
                           const DayCounter& dc = Actual365Fixed());
-
         //! \name StrippedOptionletBase interface
         //@{
         const std::vector<Rate>& optionletStrikes(Size i) const;
@@ -60,9 +60,6 @@ namespace QuantLib {
         Natural settlementDays() const;
         BusinessDayConvention businessDayConvention() const;
         //@}
-
-        const std::vector<Period>& optionletTenors() const;
-
       private:
         void checkInputs() const;
         void registerWithMarketData();
@@ -74,8 +71,7 @@ namespace QuantLib {
         DayCounter dc_;
         boost::shared_ptr<IborIndex> iborIndex_;
 
-        std::vector<Period> optionletTenors_;
-        Size nOptionletTenors_;
+        Size nOptionletDates_;
         std::vector<Date> optionletDates_;
         std::vector<Time> optionletTimes_;
         mutable std::vector<Rate> optionletAtmRates_;
