@@ -73,7 +73,7 @@ namespace QuantLib {
         <li>Christmas, December 25th (moved to Monday if Sunday or Friday
             if Saturday)</li>
         <li>Special historic closings (see
-            http://www.nyse.com/about/1022221392381.html )</li>
+            http://www.nyse.com/pdfs/closings.pdf)</li>
         </ul>
 
         Holidays for the government bond market (data from

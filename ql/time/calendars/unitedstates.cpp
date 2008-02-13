@@ -119,10 +119,12 @@ namespace QuantLib {
         if (y >= 1998) {
             if (// Martin Luther King's birthday (third Monday in January)
                 ((d >= 15 && d <= 21) && w == Monday && m == January)
-                // Reagan's funeral
+                // President Reagan's funeral
                 || (y == 2004 && m == June && d == 11)
                 // September 11, 2001
                 || (y == 2001 && m == September && (11 <= d && d <= 14))
+                // President Ford's funeral
+                || (y == 2007 && m == January && d == 2)
                 ) return false;
         } else if (y <= 1980) {
             if (// Presidential election days
