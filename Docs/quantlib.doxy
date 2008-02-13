@@ -1,4 +1,4 @@
-# Doxyfile 1.5.4
+# Doxyfile 1.5.5
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -31,6 +31,8 @@ ALIASES                = "warning=\xrefitem caveats \"Warning\" \"Caveats\" " \
                          "bug=\xrefitem bug \"Bug\" \"Known Bugs\" "
 OPTIMIZE_OUTPUT_FOR_C  = NO
 OPTIMIZE_OUTPUT_JAVA   = NO
+OPTIMIZE_FOR_FORTRAN   = NO
+OPTIMIZE_OUTPUT_VHDL   = NO
 BUILTIN_STL_SUPPORT    = YES
 CPP_CLI_SUPPORT        = NO
 SIP_SUPPORT            = NO
@@ -57,6 +59,7 @@ SHOW_INCLUDE_FILES     = YES
 INLINE_INFO            = NO
 SORT_MEMBER_DOCS       = NO
 SORT_BRIEF_DOCS        = NO
+SORT_GROUP_NAMES       = NO
 SORT_BY_SCOPE_NAME     = NO
 GENERATE_TODOLIST      = YES
 GENERATE_TESTLIST      = YES
@@ -132,6 +135,9 @@ HTML_FOOTER            = quantlibfooter.html
 HTML_STYLESHEET        = quantlib.css
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = NO
+GENERATE_DOCSET        = NO
+DOCSET_FEEDNAME        = "Doxygen generated docs"
+DOCSET_BUNDLE_ID       = org.doxygen.Project
 HTML_DYNAMIC_SECTIONS  = NO
 CHM_FILE               = ../QuantLib-docs-ql_version.chm
 HHC_LOCATION           = hhc.exe

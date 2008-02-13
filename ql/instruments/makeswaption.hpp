@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file makeswaptions.hpp
+/*! \file makeswaption.hpp
     \brief Helper class to instantiate standard market swaption.
 */
 
