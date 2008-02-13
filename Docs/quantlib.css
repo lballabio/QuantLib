@@ -173,7 +173,7 @@ DIV.qindex {
 	padding: 2px;
 	line-height: 140%;
 }
-DIV.nav {
+DIV.navpath {
 	width: 100%;
 	background-color: #e8eef2;
 	border: 1px solid #84b0c7;
@@ -439,9 +439,10 @@ HR { height: 1px;
 
 /* Style for detailed member documentation */
 .memtemplate {
-  font-size: 80%;
-  color: #606060;
-  font-weight: normal;
+	font-size: 80%;
+	color: #606060;
+	font-weight: normal;
+	margin-left: 3px;
 } 
 .memnav { 
   background-color: #e8eef2;
