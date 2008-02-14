@@ -475,7 +475,7 @@ namespace QuantLib {
                           const DayCounter& bmaDayCount,
                           const shared_ptr<BMAIndex>& bmaIndex,
                           // libor leg
-                          const shared_ptr<IborIndex>& index)
+                          const shared_ptr<IborIndex>& iborIndex)
     : RelativeDateRateHelper(liborFraction),
       tenor_(tenor), settlementDays_(settlementDays),
       calendar_(calendar),
@@ -483,7 +483,7 @@ namespace QuantLib {
       bmaConvention_(bmaConvention),
       bmaDayCount_(bmaDayCount),
       bmaIndex_(bmaIndex),
-      iborIndex_(index) {
+      iborIndex_(iborIndex) {
         registerWith(iborIndex_);
         registerWith(bmaIndex_);
         initializeDates();
@@ -497,8 +497,7 @@ namespace QuantLib {
         Date maturity = earliestDate_ + tenor_;
 
         // dummy BMA index with curve/swap arguments
-        shared_ptr<BMAIndex> clonedIndex(
-                                          new BMAIndex(termStructureHandle_));
+        shared_ptr<BMAIndex> clonedIndex(new BMAIndex(termStructureHandle_));
 
         Schedule bmaSchedule = MakeSchedule(earliestDate_,
                                             maturity,
@@ -553,4 +552,3 @@ namespace QuantLib {
     }
 
 }
-
