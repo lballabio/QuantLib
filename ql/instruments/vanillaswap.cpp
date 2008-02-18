@@ -38,25 +38,26 @@ namespace QuantLib {
                              const Schedule& floatSchedule,
                              const boost::shared_ptr<IborIndex>& iborIndex,
                              Spread spread,
-                             const DayCounter& floatingDayCount)
+                             const DayCounter& floatingDayCount,
+                             BusinessDayConvention paymentConvention)
     : Swap(Leg(), Leg()), type_(type), nominal_(nominal),
       fixedSchedule_(fixedSchedule), fixedRate_(fixedRate),
-      floatSchedule_(floatSchedule), iborIndex_(iborIndex), spread_(spread) {
+      fixedDayCount_(fixedDayCount),
+      floatingSchedule_(floatSchedule), iborIndex_(iborIndex), spread_(spread),
+      floatingDayCount_(floatingDayCount),
+      paymentConvention_(paymentConvention) {
 
-        BusinessDayConvention convention =
-            floatSchedule.businessDayConvention();
+        Leg fixedLeg = FixedRateLeg(fixedSchedule_, fixedDayCount_)
+            .withNotionals(nominal_)
+            .withCouponRates(fixedRate_)
+            .withPaymentAdjustment(paymentConvention_);
 
-        Leg fixedLeg = FixedRateLeg(fixedSchedule,fixedDayCount)
-            .withNotionals(nominal)
-            .withCouponRates(fixedRate)
-            .withPaymentAdjustment(convention);
-
-        Leg floatingLeg = IborLeg(floatSchedule, iborIndex)
-            .withNotionals(nominal)
-            .withPaymentDayCounter(floatingDayCount)
-            .withPaymentAdjustment(convention)
-            .withFixingDays(iborIndex->fixingDays())
-            .withSpreads(spread);
+        Leg floatingLeg = IborLeg(floatingSchedule_, iborIndex_)
+            .withNotionals(nominal_)
+            .withPaymentDayCounter(floatingDayCount_)
+            .withPaymentAdjustment(paymentConvention_)
+            //.withFixingDays(iborIndex->fixingDays())
+            .withSpreads(spread_);
 
         Leg::const_iterator i;
         for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
@@ -65,11 +66,11 @@ namespace QuantLib {
         legs_[0] = fixedLeg;
         legs_[1] = floatingLeg;
         if (type_==Payer) {
-            payer_[0]=-1.0;
-            payer_[1]=+1.0;
+            payer_[0] = -1.0;
+            payer_[1] = +1.0;
         } else {
-            payer_[0]=+1.0;
-            payer_[1]=-1.0;
+            payer_[0] = +1.0;
+            payer_[1] = -1.0;
         }
     }
 

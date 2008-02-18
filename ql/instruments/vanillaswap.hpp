@@ -66,7 +66,8 @@ namespace QuantLib {
                     const Schedule& floatSchedule,
                     const boost::shared_ptr<IborIndex>& iborIndex,
                     Spread spread,
-                    const DayCounter& floatingDayCount);
+                    const DayCounter& floatingDayCount,
+                    BusinessDayConvention paymentConvention = Following);
         // results
         Real fixedLegBPS() const;
         Real fixedLegNPV() const;
@@ -78,13 +79,20 @@ namespace QuantLib {
         // inspectors
         Type type() const;
         Real nominal() const;
-        const Schedule& fixedSchedule() const { return fixedSchedule_; }
+
+        const Schedule& fixedSchedule() const;
         Rate fixedRate() const;
-        const Schedule& floatSchedule() const { return floatSchedule_; }
+        const DayCounter& fixedDayCount() const;
+
+        const Schedule& floatingSchedule() const;
         const boost::shared_ptr<IborIndex>& iborIndex() const;
         Spread spread() const;
-        const Leg& fixedLeg() const { return legs_[0]; }
-        const Leg& floatingLeg() const { return legs_[1]; }
+        const DayCounter& floatingDayCount() const;
+
+        BusinessDayConvention paymentConvention() const;
+
+        const Leg& fixedLeg() const;
+        const Leg& floatingLeg() const;
         // other
         void setupArguments(PricingEngine::arguments* args) const;
         void fetchResults(const PricingEngine::results*) const;
@@ -94,9 +102,12 @@ namespace QuantLib {
         Real nominal_;
         Schedule fixedSchedule_;
         Rate fixedRate_;
-        Schedule floatSchedule_;
+        DayCounter fixedDayCount_;
+        Schedule floatingSchedule_;
         boost::shared_ptr<IborIndex> iborIndex_;
         Spread spread_;
+        DayCounter floatingDayCount_;
+        BusinessDayConvention paymentConvention_;
         // results
         mutable Rate fairRate_;
         mutable Spread fairSpread_;
@@ -138,25 +149,52 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Rate VanillaSwap::fixedRate() const {
-        return fixedRate_;
-    }
-
-    inline const boost::shared_ptr<IborIndex>& VanillaSwap::iborIndex() const {
-        return iborIndex_;
-    }
-
-
-    inline Spread VanillaSwap::spread() const {
-        return spread_;
+    inline VanillaSwap::Type VanillaSwap::type() const {
+        return type_;
     }
 
     inline Real VanillaSwap::nominal() const {
         return nominal_;
     }
 
-    inline VanillaSwap::Type VanillaSwap::type() const {
-        return type_;
+    inline const Schedule& VanillaSwap::fixedSchedule() const {
+        return fixedSchedule_;
+    }
+
+    inline Rate VanillaSwap::fixedRate() const {
+        return fixedRate_;
+    }
+
+    inline const DayCounter& VanillaSwap::fixedDayCount() const {
+        return fixedDayCount_;
+    }
+
+    inline const Schedule& VanillaSwap::floatingSchedule() const {
+        return floatingSchedule_;
+    }
+
+    inline const boost::shared_ptr<IborIndex>& VanillaSwap::iborIndex() const {
+        return iborIndex_;
+    }
+
+    inline Spread VanillaSwap::spread() const {
+        return spread_;
+    }
+
+    inline const DayCounter& VanillaSwap::floatingDayCount() const {
+        return floatingDayCount_;
+    }
+
+    inline BusinessDayConvention VanillaSwap::paymentConvention() const {
+        return paymentConvention_;
+    }
+
+    inline const Leg& VanillaSwap::fixedLeg() const {
+        return legs_[0];
+    }
+
+    inline const Leg& VanillaSwap::floatingLeg() const {
+        return legs_[1];
     }
 
     inline std::ostream& operator<<(std::ostream& out,
