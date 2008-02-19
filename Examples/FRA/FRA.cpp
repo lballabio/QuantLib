@@ -178,7 +178,8 @@ int main(int, char* []) {
         boost::shared_ptr<YieldTermStructure> fraTermStructure(
                      new PiecewiseYieldCurve<Discount,LogLinear>(
                                          settlementDate, fraInstruments,
-                                         termStructureDayCounter, tolerance));
+                                         termStructureDayCounter,
+                                         Handle<Quote>(), tolerance));
 
 
         // Term structures used for pricing/discounting

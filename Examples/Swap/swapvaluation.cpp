@@ -320,7 +320,8 @@ int main(int, char* []) {
         boost::shared_ptr<YieldTermStructure> depoSwapTermStructure(
             new PiecewiseYieldCurve<Discount,LogLinear>(
                                           settlementDate, depoSwapInstruments,
-                                          termStructureDayCounter, tolerance));
+                                          termStructureDayCounter,
+                                          Handle<Quote>(), tolerance));
 
 
         // A depo-futures-swap curve
@@ -342,7 +343,8 @@ int main(int, char* []) {
         boost::shared_ptr<YieldTermStructure> depoFutSwapTermStructure(
             new PiecewiseYieldCurve<Discount,LogLinear>(
                                        settlementDate, depoFutSwapInstruments,
-                                       termStructureDayCounter, tolerance));
+                                       termStructureDayCounter,
+                                       Handle<Quote>(), tolerance));
 
 
         // A depo-FRA-swap curve
@@ -361,7 +363,8 @@ int main(int, char* []) {
         boost::shared_ptr<YieldTermStructure> depoFRASwapTermStructure(
             new PiecewiseYieldCurve<Discount,LogLinear>(
                                        settlementDate, depoFRASwapInstruments,
-                                       termStructureDayCounter, tolerance));
+                                       termStructureDayCounter,
+                                       Handle<Quote>(), tolerance));
 
 
         // Term structures that will be used for pricing:
