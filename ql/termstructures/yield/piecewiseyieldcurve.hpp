@@ -186,7 +186,10 @@ namespace QuantLib {
         if ((!turnOfYearEffect_.empty()) && t>turnOfYear_) {
             QL_REQUIRE(turnOfYearEffect_->isValid(),
                        "invalid turnOfYearEffect quote");
-            return turnOfYearEffect_->value() * base_curve::discountImpl(t);
+            DiscountFactor turnOfYearEffect = turnOfYearEffect_->value();
+            QL_REQUIRE(turnOfYearEffect > 0.0 && turnOfYearEffect <= 1.0,
+                       "invalid turnOfYearEffect value: " << turnOfYearEffect);
+            return turnOfYearEffect * base_curve::discountImpl(t);
         }
 
         return base_curve::discountImpl(t);
