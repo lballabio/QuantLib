@@ -3702,6 +3702,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\termstructures\defaulttermstructure.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\defaulttermstructure.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\termstructures\inflationtermstructure.cpp"
 				>
 			</File>
@@ -4190,6 +4198,30 @@
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\inflation\piecewisezeroinflationcurve.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="credit"
+				>
+				<File
+					RelativePath=".\ql\termstructures\credit\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\defaultdensitystructure.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\defaultdensitystructure.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\hazardratestructure.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\hazardratestructure.hpp"
 					>
 				</File>
 			</Filter>
