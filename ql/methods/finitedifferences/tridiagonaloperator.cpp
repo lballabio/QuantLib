@@ -23,7 +23,7 @@
 namespace QuantLib {
 
     TridiagonalOperator::TridiagonalOperator(Size size) {
-        if (size>=3) {
+        if (size>=2) {
             diagonal_      = Array(size);
             lowerDiagonal_ = Array(size-1);
             upperDiagonal_ = Array(size-1);
@@ -33,7 +33,7 @@ namespace QuantLib {
             upperDiagonal_ = Array(0);
         } else {
             QL_FAIL("invalid size (" << size << ") for tridiagonal operator "
-                    "(must be null or >= 3)");
+                    "(must be null or >= 2)");
         }
     }
 
