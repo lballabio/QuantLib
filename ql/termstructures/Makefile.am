@@ -1,5 +1,5 @@
 
-SUBDIRS = inflation volatility yield
+SUBDIRS = credit inflation volatility yield
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
@@ -8,16 +8,19 @@ this_include_HEADERS = \
 	all.hpp \
 	bootstraphelper.hpp \
 	bootstrapper.hpp \
+	defaulttermstructure.hpp \
 	inflationtermstructure.hpp \
 	voltermstructure.hpp \
 	yieldtermstructure.hpp
 
 libTermStructures_la_SOURCES = \
+	defaulttermstructure.cpp \
 	inflationtermstructure.cpp \
 	voltermstructure.cpp \
 	yieldtermstructure.cpp
 
 libTermStructures_la_LIBADD = \
+    credit/libDefaultTermStructures.la \
     inflation/libInflationTermStructures.la \
     yield/libYieldTermStructures.la \
     volatility/libVolTermStructures.la

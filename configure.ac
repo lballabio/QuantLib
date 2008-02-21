@@ -389,6 +389,7 @@ AC_CONFIG_FILES([
     ql/processes/Makefile
     ql/quotes/Makefile
     ql/termstructures/Makefile
+    ql/termstructures/credit/Makefile
     ql/termstructures/inflation/Makefile
     ql/termstructures/volatility/Makefile
     ql/termstructures/volatility/equityfx/Makefile
