@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2007 Chris Kenyon
  Copyright (C) 2007 StatPro Italia srl
 
@@ -40,6 +41,7 @@ namespace QuantLib {
         void setup(Curve* ts);
         void calculate() const;
       private:
+        mutable bool validCurve_;
         Curve* ts_;
     };
 
@@ -60,7 +62,7 @@ namespace QuantLib {
 
     template <class Curve, class Traits, class Interpolator>
     IterativeBootstrap<Curve, Traits, Interpolator>::IterativeBootstrap()
-    : ts_(0) {}
+    : validCurve_(false), ts_(0) {}
 
     template <class Curve, class Traits, class Interpolator>
     void IterativeBootstrap<Curve, Traits, Interpolator>::setup(Curve* ts) {
@@ -110,18 +112,26 @@ namespace QuantLib {
             ts_->instruments_[i]->setTermStructure(const_cast<Curve*>(ts_));
         }
 
+        // calculate dates and times
         ts_->dates_ = std::vector<Date>(n+1);
         ts_->times_ = std::vector<Time>(n+1);
-        ts_->data_ = std::vector<Rate>(n+1);
-
         ts_->dates_[0] = Traits::initialDate(ts_);
         ts_->times_[0] = ts_->timeFromReference(ts_->dates_[0]);
-        ts_->data_[0] = Traits::initialValue(ts_);
-
         for (Size i=0; i<n; ++i) {
             ts_->dates_[i+1] = ts_->instruments_[i]->latestDate();
             ts_->times_[i+1] = ts_->timeFromReference(ts_->dates_[i+1]);
-            ts_->data_[i+1] = Traits::initialGuess();
+        }
+
+        // set initial guess only if the current curve cannot be used as guess
+        if (validCurve_)
+            QL_ENSURE(ts_->data_.size() == n+1,
+                      "dimension mismatch: expected " << n+1 <<
+                      ", actual " << ts_->data_.size());
+        else {
+            ts_->data_ = std::vector<Rate>(n+1);
+            ts_->data_[0] = Traits::initialValue(ts_);
+            for (Size i=0; i<n; ++i)
+                ts_->data_[i+1] = Traits::initialGuess();
         }
 
         Brent solver;
@@ -129,30 +139,37 @@ namespace QuantLib {
 
         for (Size iteration=0; ; ++iteration) {
             std::vector<Rate> previousData = ts_->data_;
-
+            // restart from the previous interpolation
+            if (validCurve_) {
+                ts_->interpolation_ = ts_->interpolator_.interpolate(
+                                                      ts_->times_.begin(),
+                                                      ts_->times_.end(),
+                                                      ts_->data_.begin());
+            }
             for (Size i=1; i<n+1; ++i) {
-                if (iteration==0) {
+                if (!validCurve_ && iteration == 0) {
                     // extend interpolation a point at a time
-                    if (Interpolator::global) {
-                        // use Linear in the first iteration
-                        ts_->interpolation_ =  Linear().interpolate(
+                    try {
+                        ts_->interpolation_ = ts_->interpolator_.interpolate(
                                                       ts_->times_.begin(),
                                                       ts_->times_.begin()+i+1,
                                                       ts_->data_.begin());
-                    } else {
-                        ts_->interpolation_ = ts_->interpolator_.interpolate(
+                    } catch(...) {
+                        // use Linear if the interpolation is not usable yet
+                        ts_->interpolation_ = Linear().interpolate(
                                                       ts_->times_.begin(),
                                                       ts_->times_.begin()+i+1,
                                                       ts_->data_.begin());
                     }
                 }
                 // required because we just changed the data
+                // is it really required?
                 ts_->interpolation_.update();
 
                 boost::shared_ptr<typename Traits::helper> instrument =
                     ts_->instruments_[i-1];
                 Rate guess;
-                if (iteration>0) {
+                if (validCurve_ || iteration>0) {
                     // use perturbed value from previous loop
                     guess = 0.99 * ts_->data_[i];
                 } else if (i==1) {
@@ -173,9 +190,11 @@ namespace QuantLib {
                                                          ts_, instrument, i);
                     ts_->data_[i] = solver.solve(error, ts_->accuracy_,
                                                  guess, min, max);
+                    // the dummy initial value should be discarded
                     if (i==1 && Traits::dummyInitialValue())
                         ts_->data_[0] = ts_->data_[1];
                 } catch (std::exception &e) {
+                    validCurve_ = false;
                     QL_FAIL(io::ordinal(iteration+1) << " iteration: "
                             "could not bootstrap the " << io::ordinal(i) <<
                             " instrument, maturity " << ts_->dates_[i] <<
@@ -183,9 +202,9 @@ namespace QuantLib {
                 }
             }
 
-            if (!Interpolator::global) {
+            if (!Interpolator::global)
                 break;      // no need for convergence loop
-            } else if (iteration == 0) {
+            else if (!validCurve_ && iteration == 0) {
                 // at least one more iteration is needed
                 // since the first one used Linear interpolation
                 ts_->interpolation_ =
@@ -207,6 +226,7 @@ namespace QuantLib {
                 QL_FAIL("convergence not reached after " <<
                         iteration+1 << " iterations");
         }
+        validCurve_ = true;
     }
 
 
