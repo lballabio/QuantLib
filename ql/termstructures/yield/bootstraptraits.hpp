@@ -52,7 +52,7 @@ namespace QuantLib {
         // true if the initialValue is just a dummy value
         static bool dummyInitialValue() { return false; }
         // initial guess
-        static DiscountFactor initialGuess() { return 0.9; }
+        static DiscountFactor initialGuess() { return 1.0/(1.0 + 0.05*0.25); }
         // further guesses
         static DiscountFactor guess(const YieldTermStructure* c,
                                     const Date& d) {
