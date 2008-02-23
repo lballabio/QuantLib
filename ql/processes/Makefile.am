@@ -4,6 +4,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
+	batesprocess.hpp \
 	blackscholesprocess.hpp \
 	eulerdiscretization.hpp \
 	forwardmeasureprocess.hpp \
@@ -19,6 +20,7 @@ this_include_HEADERS = \
 	stochasticprocessarray.hpp
 
 libProcesses_la_SOURCES = \
+	batesprocess.cpp \
 	blackscholesprocess.cpp \
 	eulerdiscretization.cpp \
 	forwardmeasureprocess.cpp \

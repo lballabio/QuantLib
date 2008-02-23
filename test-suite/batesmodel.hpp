@@ -28,7 +28,8 @@
 class BatesModelTest {
   public:
     static void testAnalyticVsBlack();
-    static void testAnalyticVsJumpDiffusion();
+    static void testAnalyticAndMcVsJumpDiffusion();
+    static void testAnalyticVsMCPricing();
     static void testDAXCalibration();
     static boost::unit_test_framework::test_suite* suite();
 };
