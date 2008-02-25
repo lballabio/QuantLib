@@ -4326,11 +4326,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\processes\batesprocess.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\processes\batesprocess.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\processes\blackscholesprocess.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\ql\processes\blackscholesprocess.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\processes\defaultable.hpp"
 				>
 			</File>
 			<File
