@@ -130,8 +130,6 @@ namespace QuantLib {
         else {
             ts_->data_ = std::vector<Rate>(n+1);
             ts_->data_[0] = Traits::initialValue(ts_);
-            for (Size i=0; i<n; ++i)
-                ts_->data_[i+1] = Traits::initialGuess();
         }
 
         Brent solver;
@@ -147,31 +145,15 @@ namespace QuantLib {
                                                       ts_->data_.begin());
             }
             for (Size i=1; i<n+1; ++i) {
-                if (!validCurve_ && iteration == 0) {
-                    // extend interpolation a point at a time
-                    try {
-                        ts_->interpolation_ = ts_->interpolator_.interpolate(
-                                                      ts_->times_.begin(),
-                                                      ts_->times_.begin()+i+1,
-                                                      ts_->data_.begin());
-                    } catch(...) {
-                        // use Linear if the interpolation is not usable yet
-                        ts_->interpolation_ = Linear().interpolate(
-                                                      ts_->times_.begin(),
-                                                      ts_->times_.begin()+i+1,
-                                                      ts_->data_.begin());
-                    }
-                }
-                // required because we just changed the data
-                // is it really required?
-                ts_->interpolation_.update();
 
+                // calculate guess before extending interpolation
+                // to ensure that any extrapolation is performed
+                // using the curve bootstrapped so far and no more
                 boost::shared_ptr<typename Traits::helper> instrument =
                     ts_->instruments_[i-1];
                 Rate guess;
                 if (validCurve_ || iteration>0) {
-                    // use perturbed value from previous loop
-                    guess = 0.99 * ts_->data_[i];
+                    guess = ts_->data_[i];
                 } else if (i==1) {
                     guess = Traits::initialGuess();
                 } else {
@@ -185,14 +167,32 @@ namespace QuantLib {
                 if (guess<=min || guess>=max)
                     guess = (min+max)/2.0;
 
+                if (!validCurve_ && iteration == 0) {
+                    // extend interpolation a point at a time
+                    try {
+                        ts_->interpolation_ = ts_->interpolator_.interpolate(
+                                                      ts_->times_.begin(),
+                                                      ts_->times_.begin()+i+1,
+                                                      ts_->data_.begin());
+                    } catch(...) {
+                        // if the target interpolation is not usable yet
+                        ts_->interpolation_ = Linear().interpolate(
+                                                      ts_->times_.begin(),
+                                                      ts_->times_.begin()+i+1,
+                                                      ts_->data_.begin());
+                    }
+                }
+                // required because we just changed the data
+                // is it really required?
+                ts_->interpolation_.update();
+
                 try {
                     BootstrapError<Curve,Traits,Interpolator> error(
                                                          ts_, instrument, i);
-                    ts_->data_[i] = solver.solve(error, ts_->accuracy_,
-                                                 guess, min, max);
-                    // the dummy initial value should be discarded
-                    if (i==1 && Traits::dummyInitialValue())
-                        ts_->data_[0] = ts_->data_[1];
+                    Real r = solver.solve(error,ts_->accuracy_,guess,min,max);
+                    // redundant assignment (as it has been already performed
+                    // by BootstrapError in solve procedure), but safe
+                    ts_->data_[i] = r;
                 } catch (std::exception &e) {
                     validCurve_ = false;
                     QL_FAIL(io::ordinal(iteration+1) << " iteration: "
@@ -205,12 +205,12 @@ namespace QuantLib {
             if (!Interpolator::global)
                 break;      // no need for convergence loop
             else if (!validCurve_ && iteration == 0) {
-                // at least one more iteration is needed
-                // since the first one used Linear interpolation
+                // ensure the target interpolation is used
                 ts_->interpolation_ =
                     ts_->interpolator_.interpolate(ts_->times_.begin(),
                                                    ts_->times_.end(),
                                                    ts_->data_.begin());
+                // at least one more iteration is needed to check convergence
                 continue;
             }
 
@@ -222,9 +222,11 @@ namespace QuantLib {
             if (improvement<=ts_->accuracy_)  // convergence reached
                 break;
 
-            if (iteration+1 >= maxIterations)
-                QL_FAIL("convergence not reached after " <<
-                        iteration+1 << " iterations");
+            QL_REQUIRE(iteration+1 < maxIterations,
+                       "convergence not reached after " <<
+                       iteration+1 << " iterations; last improvement " <<
+                       improvement << ", required accuracy " <<
+                       ts_->accuracy_);
         }
         validCurve_ = true;
     }

@@ -472,6 +472,25 @@ namespace {
 }
 
 
+void PiecewiseYieldCurveTest::testLogCubicDiscountConsistency() {
+
+    BOOST_MESSAGE(
+        "Testing consistency of piecewise-log-cubic discount curve...");
+
+    CommonVars vars;
+
+    testCurveConsistency(Discount(),
+        LogCubic(CubicSplineInterpolation::SecondDerivative,0.0,
+                 CubicSplineInterpolation::SecondDerivative,0.0,
+                 true),
+        vars);
+    testBMACurveConsistency(Discount(),
+        LogCubic(CubicSplineInterpolation::SecondDerivative,0.0,
+                 CubicSplineInterpolation::SecondDerivative,0.0,
+                 true),
+        vars);
+}
+
 void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
 
     BOOST_MESSAGE(
@@ -519,7 +538,7 @@ void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
 void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
 
     BOOST_MESSAGE(
-        "Testing consistency of piecewise-spline zero-yield curve...");
+        "Testing consistency of piecewise-cubic zero-yield curve...");
 
     CommonVars vars;
 
@@ -562,7 +581,7 @@ void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
 void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
 
     BOOST_MESSAGE(
-        "Testing consistency of piecewise-spline forward-rate curve...");
+        "Testing consistency of piecewise-cubic forward-rate curve...");
 
     CommonVars vars;
 
@@ -707,9 +726,12 @@ test_suite* PiecewiseYieldCurveTest::suite() {
 
     test_suite* suite = BOOST_TEST_SUITE("Piecewise yield curve tests");
     suite->add(BOOST_TEST_CASE(
+                 &PiecewiseYieldCurveTest::testLogCubicDiscountConsistency));
+    suite->add(BOOST_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLogLinearDiscountConsistency));
     suite->add(BOOST_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLinearDiscountConsistency));
+
     #if !defined(QL_USE_INDEXED_COUPON)
     suite->add(BOOST_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLogLinearZeroConsistency));
@@ -718,12 +740,14 @@ test_suite* PiecewiseYieldCurveTest::suite() {
                  &PiecewiseYieldCurveTest::testLinearZeroConsistency));
     suite->add(BOOST_TEST_CASE(
                  &PiecewiseYieldCurveTest::testSplineZeroConsistency));
+
     suite->add(BOOST_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLinearForwardConsistency));
     suite->add(BOOST_TEST_CASE(
                  &PiecewiseYieldCurveTest::testFlatForwardConsistency));
     //suite->add(BOOST_TEST_CASE(
     //             &PiecewiseYieldCurveTest::testSplineForwardConsistency));
+
     suite->add(BOOST_TEST_CASE(&PiecewiseYieldCurveTest::testObservability));
     suite->add(BOOST_TEST_CASE(&PiecewiseYieldCurveTest::testLiborFixing));
     return suite;

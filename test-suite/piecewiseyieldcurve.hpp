@@ -27,14 +27,18 @@
 
 class PiecewiseYieldCurveTest {
   public:
+    static void testLogCubicDiscountConsistency();
     static void testLogLinearDiscountConsistency();
     static void testLinearDiscountConsistency();
+
     static void testLogLinearZeroConsistency();
     static void testLinearZeroConsistency();
     static void testSplineZeroConsistency();
+
     static void testLinearForwardConsistency();
     static void testFlatForwardConsistency();
     static void testSplineForwardConsistency();
+
     static void testObservability();
     static void testLiborFixing();
     static boost::unit_test_framework::test_suite* suite();
