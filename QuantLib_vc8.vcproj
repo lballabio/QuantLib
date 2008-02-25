@@ -4217,11 +4217,27 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\credit\flathazardrate.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\flathazardrate.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\credit\hazardratestructure.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\credit\hazardratestructure.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\interpolateddefaultdensitycurve.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\interpolatedhazardratecurve.hpp"
 					>
 				</File>
 			</Filter>
