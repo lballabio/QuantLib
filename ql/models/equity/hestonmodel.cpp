@@ -22,7 +22,7 @@
 
 namespace QuantLib {
 
-    class HestonModel::VolatilityConstraint : public Constraint {
+    class HestonModel::FellerConstraint : public Constraint {
       private:
         class Impl : public Constraint::Impl {
           public:
@@ -35,9 +35,9 @@ namespace QuantLib {
             }
         };
       public:
-        VolatilityConstraint()
+        FellerConstraint()
         : Constraint(boost::shared_ptr<Constraint::Impl>(
-                                           new VolatilityConstraint::Impl)) {}
+                                           new FellerConstraint::Impl)) {}
     };
 
     HestonModel::HestonModel(const boost::shared_ptr<HestonProcess> & process)

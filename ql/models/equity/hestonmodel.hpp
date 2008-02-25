@@ -57,7 +57,7 @@ namespace QuantLib {
         // underlying process
         boost::shared_ptr<HestonProcess> process() const { return process_; }
 
-        class VolatilityConstraint;
+        class FellerConstraint;
       protected:
         void generateArguments();
         boost::shared_ptr<HestonProcess> process_;
