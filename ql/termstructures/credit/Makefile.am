@@ -5,10 +5,14 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     defaultdensitystructure.hpp \
-    hazardratestructure.hpp
+    flathazardrate.hpp \
+    hazardratestructure.hpp \
+    interpolateddefaultdensitycurve.hpp \
+    interpolatedhazardratecurve.hpp
 
 libDefaultTermStructures_la_SOURCES = \
     defaultdensitystructure.cpp \
+    flathazardrate.cpp \
     hazardratestructure.cpp
 
 noinst_LTLIBRARIES = libDefaultTermStructures.la

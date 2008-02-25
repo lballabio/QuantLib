@@ -2,5 +2,8 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/termstructures/credit/defaultdensitystructure.hpp>
+#include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/termstructures/credit/hazardratestructure.hpp>
+#include <ql/termstructures/credit/interpolateddefaultdensitycurve.hpp>
+#include <ql/termstructures/credit/interpolatedhazardratecurve.hpp>
 
