@@ -156,11 +156,11 @@ namespace QuantLib {
     };
 
     //! Natural cubic spline with monotonicity constraint
-    class NaturalMonotonicCubicSpline : public CubicSplineInterpolation {
+    class MonotonicNaturalCubicSpline : public CubicSplineInterpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
-        NaturalMonotonicCubicSpline(const I1& xBegin, const I1& xEnd,
+        MonotonicNaturalCubicSpline(const I1& xBegin, const I1& xEnd,
                                     const I2& yBegin)
         : CubicSplineInterpolation(xBegin,xEnd,yBegin,
                       SecondDerivative, 0.0,
@@ -190,7 +190,7 @@ namespace QuantLib {
                                             monotonic_);
         }
         enum { global = 1 };
-        enum { requiredPoints = 3 };
+        enum { requiredPoints = 2 };
       private:
         CubicSplineInterpolation::BoundaryCondition leftType_, rightType_;
         Real leftValue_, rightValue_;

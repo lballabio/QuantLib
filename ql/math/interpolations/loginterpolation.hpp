@@ -113,6 +113,34 @@ namespace QuantLib {
         }
     };
 
+    // convenience classes
+
+    //! %LogCubic spline with null second derivative at end points
+    class NaturalLogCubic : public LogCubicInterpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        NaturalLogCubic(const I1& xBegin, const I1& xEnd,
+                        const I2& yBegin)
+        : LogCubicInterpolation(xBegin,xEnd,yBegin,
+                      CubicSplineInterpolation::SecondDerivative, 0.0,
+                      CubicSplineInterpolation::SecondDerivative, 0.0,
+                      false) {}
+    };
+
+    //! Natural LogCubic spline with monotonicity constraint
+    class MonotonicNaturalLogCubic : public LogCubicInterpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        MonotonicNaturalLogCubic(const I1& xBegin, const I1& xEnd,
+                                 const I2& yBegin)
+        : LogCubicInterpolation(xBegin,xEnd,yBegin,
+                      CubicSplineInterpolation::SecondDerivative, 0.0,
+                      CubicSplineInterpolation::SecondDerivative, 0.0,
+                      true) {}
+    };
+
 
     //! log-linear interpolation factory and traits
     class LogLinear {
@@ -149,7 +177,7 @@ namespace QuantLib {
                                          monotonic_);
         }
         enum { global = 1 };
-        enum { requiredPoints = 3 };
+        enum { requiredPoints = 2 };
       private:
         CubicSplineInterpolation::BoundaryCondition lefType_, rightType_;
         Real leftValue_, rightValue_;
