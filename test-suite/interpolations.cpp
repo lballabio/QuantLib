@@ -398,7 +398,7 @@ void InterpolationTest::testSplineOnRPN15AValues() {
 
 
     // MC natural spline values
-    f = NaturalMonotonicCubicSpline(BEGIN(RPN15A_x), END(RPN15A_x),
+    f = MonotonicNaturalCubicSpline(BEGIN(RPN15A_x), END(RPN15A_x),
                                     BEGIN(RPN15A_y));
     f.update();
     checkValues("MC natural spline", f,
