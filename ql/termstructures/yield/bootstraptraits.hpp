@@ -32,6 +32,10 @@
 
 namespace QuantLib {
 
+    namespace {
+        const Rate avgRate = 0.05;
+    }
+
     //! Discount-curve traits
     struct Discount {
         // interpolated curve type
@@ -52,7 +56,7 @@ namespace QuantLib {
         // true if the initialValue is just a dummy value
         static bool dummyInitialValue() { return false; }
         // initial guess
-        static DiscountFactor initialGuess() { return 1.0/(1.0 + 0.05*0.25); }
+        static DiscountFactor initialGuess() { return 1.0/(1.0+avgRate*0.25); }
         // further guesses
         static DiscountFactor guess(const YieldTermStructure* c,
                                     const Date& d) {
@@ -81,7 +85,7 @@ namespace QuantLib {
             data[i] = discount;
         }
         // upper bound for convergence loop
-        static Size maxIterations() { return 25; }
+        static Size maxIterations() { return 300; }
     };
 
 
@@ -99,11 +103,11 @@ namespace QuantLib {
             return c->referenceDate();
         }
         // dummy value at reference date
-        static Rate initialValue(const YieldTermStructure*) { return 0.02; }
+        static Rate initialValue(const YieldTermStructure*) { return avgRate; }
         // true if the initialValue is just a dummy value
         static bool dummyInitialValue() { return true; }
         // initial guess
-        static Rate initialGuess() { return 0.02; }
+        static Rate initialGuess() { return avgRate; }
         // further guesses
         static Rate guess(const YieldTermStructure* c,
                           const Date& d) {
@@ -134,7 +138,7 @@ namespace QuantLib {
                 data[0] = rate; // first point is updated as well
         }
         // upper bound for convergence loop
-        static Size maxIterations() { return 25; }
+        static Size maxIterations() { return 30; }
     };
 
 
@@ -152,11 +156,11 @@ namespace QuantLib {
             return c->referenceDate();
         }
         // dummy value at reference date
-        static Rate initialValue(const YieldTermStructure*) { return 0.02; }
+        static Rate initialValue(const YieldTermStructure*) { return avgRate; }
         // true if the initialValue is just a dummy value
         static bool dummyInitialValue() { return true; }
         // initial guess
-        static Rate initialGuess() { return 0.02; }
+        static Rate initialGuess() { return avgRate; }
         // further guesses
         static Rate guess(const YieldTermStructure* c,
                           const Date& d) {
@@ -187,10 +191,9 @@ namespace QuantLib {
                 data[0] = forward; // first point is updated as well
         }
         // upper bound for convergence loop
-        static Size maxIterations() { return 25; }
+        static Size maxIterations() { return 30; }
     };
 
 }
-
 
 #endif
