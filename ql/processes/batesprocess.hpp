@@ -26,6 +26,7 @@
 #define quantlib_bates_process_hpp
 
 #include <ql/processes/hestonprocess.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 
 
 namespace QuantLib {
@@ -66,6 +67,7 @@ namespace QuantLib {
         Real delta()  const;
       private:
         const Real lambda_, delta_, nu_, m_;
+        const CumulativeNormalDistribution cumNormalDist_;
     };
 }
 

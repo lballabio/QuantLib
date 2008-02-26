@@ -45,7 +45,7 @@ namespace QuantLib {
     Disposable<Array> BatesProcess::evolve(Time t0, const Array& x0,
                                            Time dt, const Array& dw) const {
 
-        Real p = CumulativeNormalDistribution()(dw[2]);
+        Real p = cumNormalDist_(dw[2]);
         if (p<0.0)
             p = 0.0;
         else if (p >= 1.0)
