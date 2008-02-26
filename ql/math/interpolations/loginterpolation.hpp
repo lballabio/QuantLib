@@ -159,6 +159,7 @@ namespace QuantLib {
     class LogCubic {
       public:
         LogCubic(CubicSplineInterpolation::BoundaryCondition leftCondition
+                    //= CubicSplineInterpolation::NotAKnot,
                     = CubicSplineInterpolation::SecondDerivative,
                  Real leftConditionValue = 0.0,
                  CubicSplineInterpolation::BoundaryCondition rightCondition
