@@ -2,9 +2,9 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/termstructures/bootstraphelper.hpp>
-#include <ql/termstructures/bootstrapper.hpp>
 #include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
+#include <ql/termstructures/iterativebootstrap.hpp>
 #include <ql/termstructures/voltermstructure.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 

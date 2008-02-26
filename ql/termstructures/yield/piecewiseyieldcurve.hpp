@@ -26,7 +26,7 @@
 #ifndef quantlib_piecewise_yield_curve_hpp
 #define quantlib_piecewise_yield_curve_hpp
 
-#include <ql/termstructures/bootstrapper.hpp>
+#include <ql/termstructures/iterativebootstrap.hpp>
 #include <ql/termstructures/yield/bootstraptraits.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/quote.hpp>

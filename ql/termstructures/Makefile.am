@@ -7,9 +7,9 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
 	bootstraphelper.hpp \
-	bootstrapper.hpp \
 	defaulttermstructure.hpp \
 	inflationtermstructure.hpp \
+	iterativebootstrap.hpp \
 	voltermstructure.hpp \
 	yieldtermstructure.hpp
 

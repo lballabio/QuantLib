@@ -26,7 +26,7 @@
 #define quantlib_piecewise_zero_inflation_curve_hpp
 
 #include <ql/termstructures/inflation/interpolatedzeroinflationcurve.hpp>
-#include <ql/termstructures/bootstrapper.hpp>
+#include <ql/termstructures/iterativebootstrap.hpp>
 #include <ql/patterns/lazyobject.hpp>
 
 namespace QuantLib {

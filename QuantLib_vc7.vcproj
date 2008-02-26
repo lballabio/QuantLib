@@ -5560,7 +5560,7 @@
 				RelativePath=".\ql\termstructures\bootstraphelper.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\termstructures\bootstrapper.hpp">
+				RelativePath=".\ql\termstructures\iterativebootstrap.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\termstructures\inflationtermstructure.cpp">
