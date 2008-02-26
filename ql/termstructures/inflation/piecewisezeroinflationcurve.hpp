@@ -75,6 +75,8 @@ namespace QuantLib {
           public LazyObject {
       private:
         typedef InterpolatedZeroInflationCurve<Interpolator> base_curve;
+        typedef PiecewiseZeroInflationCurve<Interpolator,Bootstrap,Traits>
+                                                                   this_curve;
       public:
         typedef Traits traits_type;
         typedef Interpolator interpolator_type;
@@ -122,15 +124,9 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<typename Traits::helper> > instruments_;
         Real accuracy_;
 
-        friend class Bootstrap<PiecewiseZeroInflationCurve<Interpolator,
-                                                           Bootstrap,
-                                                           Traits> >;
-        friend class BootstrapError<PiecewiseZeroInflationCurve<Interpolator,
-                                                                Bootstrap,
-                                                                Traits> >;
-        Bootstrap<PiecewiseZeroInflationCurve<Interpolator,
-                                              Bootstrap,
-                                              Traits> > bootstrap_;
+        friend class Bootstrap<this_curve>;
+        friend class BootstrapError<this_curve>;
+        Bootstrap<this_curve> bootstrap_;
     };
 
 

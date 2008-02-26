@@ -61,6 +61,7 @@ namespace QuantLib {
           public LazyObject {
       private:
         typedef typename Traits::template curve<Interpolator>::type base_curve;
+        typedef PiecewiseYieldCurve<Traits,Interpolator,Bootstrap> this_curve;
       public:
         typedef Traits traits_type;
         typedef Interpolator interpolator_type;
@@ -124,19 +125,14 @@ namespace QuantLib {
         Real accuracy_;
         Date latestReference_;
         Time turnOfYear_;
+
         // bootstrapper classes are declared as friend to manipulate
         // the curve data. They might be passed the data instead, but
-        // it would increase the complexity---which is quite high
-        // enough already.
-        friend class Bootstrap<PiecewiseYieldCurve<Traits,
-                                                   Interpolator,
-                                                   Bootstrap> >;
-        friend class BootstrapError<PiecewiseYieldCurve<Traits,
-                                                        Interpolator,
-                                                        Bootstrap> >;
-        Bootstrap<PiecewiseYieldCurve<Traits,
-                                      Interpolator,
-                                      Bootstrap> > bootstrap_;
+        // it would increase the complexity---which is high enough
+        // already.
+        friend class Bootstrap<this_curve>;
+        friend class BootstrapError<this_curve>;
+        Bootstrap<this_curve> bootstrap_;
     };
 
 

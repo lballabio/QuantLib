@@ -75,6 +75,8 @@ namespace QuantLib {
         public LazyObject {
       private:
         typedef InterpolatedYoYInflationCurve<Interpolator> base_curve;
+        typedef PiecewiseYoYInflationCurve<Interpolator,Bootstrap,Traits>
+                                                                   this_curve;
       public:
         typedef Traits traits_type;
         typedef Interpolator interpolator_type;
@@ -122,15 +124,9 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<typename Traits::helper> > instruments_;
         Real accuracy_;
 
-        friend class Bootstrap<PiecewiseYoYInflationCurve<Interpolator,
-                                                          Bootstrap,
-                                                          Traits> >;
-        friend class BootstrapError<PiecewiseYoYInflationCurve<Interpolator,
-                                                               Bootstrap,
-                                                               Traits> >;
-        Bootstrap<PiecewiseYoYInflationCurve<Interpolator,
-                                             Bootstrap,
-                                             Traits> > bootstrap_;
+        friend class Bootstrap<this_curve>;
+        friend class BootstrapError<this_curve>;
+        Bootstrap<this_curve> bootstrap_;
     };
 
 
