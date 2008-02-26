@@ -19,14 +19,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file bootstrapper.hpp
+/*! \file iterativebootstrap.hpp
     \brief universal piecewise-term-structure boostrapper.
 */
 
-#ifndef quantlib_bootstrapper_hpp
-#define quantlib_bootstrapper_hpp
+#ifndef quantlib_iterative_bootstrap_hpp
+#define quantlib_iterative_bootstrap_hpp
 
 #include <ql/termstructures/bootstraphelper.hpp>
+#include <ql/termstructures/bootstraperror.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -45,20 +46,8 @@ namespace QuantLib {
         Curve* ts_;
     };
 
-    template <class Curve, class Traits, class Interpolator>
-    class BootstrapError {
-      public:
-        BootstrapError(
-                 const Curve* curve,
-                 const boost::shared_ptr<typename Traits::helper>& instrument,
-                 Size segment);
-        Real operator()(Rate guess) const;
-      private:
-        const Curve* curve_;
-        const boost::shared_ptr<typename Traits::helper> helper_;
-        const Size segment_;
-    };
 
+    // template definitions
 
     template <class Curve, class Traits, class Interpolator>
     IterativeBootstrap<Curve, Traits, Interpolator>::IterativeBootstrap()
@@ -187,8 +176,7 @@ namespace QuantLib {
                 ts_->interpolation_.update();
 
                 try {
-                    BootstrapError<Curve,Traits,Interpolator> error(
-                                                         ts_, instrument, i);
+                    BootstrapError<Curve,Traits> error(ts_, instrument, i);
                     Real r = solver.solve(error,ts_->accuracy_,guess,min,max);
                     // redundant assignment (as it has been already performed
                     // by BootstrapError in solve procedure), but safe
@@ -230,26 +218,6 @@ namespace QuantLib {
         }
         validCurve_ = true;
     }
-
-
-
-
-    template <class Curve, class Traits, class Interpolator>
-    BootstrapError<Curve, Traits, Interpolator>::BootstrapError(
-                     const Curve* curve,
-                     const boost::shared_ptr<typename Traits::helper>& helper,
-                     Size segment)
-    : curve_(curve), helper_(helper), segment_(segment) {}
-
-    #ifndef __DOXYGEN__
-    template <class Curve, class Traits, class Interpolator>
-    Real BootstrapError<Curve, Traits, Interpolator>::operator()(Real guess)
-                                                                      const {
-        Traits::updateGuess(curve_->data_, guess, segment_);
-        curve_->interpolation_.update();
-        return helper_->quoteError();
-    }
-    #endif
 
 }
 

@@ -131,7 +131,7 @@ namespace QuantLib {
                                Traits, Interpolator>;
         friend class BootstrapError<PiecewiseYieldCurve<Traits,Interpolator,
                                                         Bootstrap>,
-                                    Traits, Interpolator>;
+                                    Traits>;
         Bootstrap<PiecewiseYieldCurve<Traits,Interpolator,Bootstrap>,
                   Traits, Interpolator> bootstrap_;
     };

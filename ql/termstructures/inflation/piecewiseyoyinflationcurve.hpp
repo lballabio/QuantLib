@@ -123,7 +123,7 @@ namespace QuantLib {
             Traits, Interpolator>;
         friend class BootstrapError<
             PiecewiseYoYInflationCurve<Interpolator, Bootstrap, Traits>,
-            Traits, Interpolator>;
+            Traits>;
         Bootstrap<PiecewiseYoYInflationCurve<Interpolator, Bootstrap,Traits>,
                   Traits, Interpolator> bootstrap_;
     };
