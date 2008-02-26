@@ -35,8 +35,10 @@
 namespace QuantLib {
 
     //! Universal piecewise-term-structure boostrapper.
-    template <class Curve, class Traits, class Interpolator>
+    template <class Curve>
     class IterativeBootstrap {
+        typedef typename Curve::traits_type Traits;
+        typedef typename Curve::interpolator_type Interpolator;
       public:
         IterativeBootstrap();
         void setup(Curve* ts);
@@ -49,12 +51,12 @@ namespace QuantLib {
 
     // template definitions
 
-    template <class Curve, class Traits, class Interpolator>
-    IterativeBootstrap<Curve, Traits, Interpolator>::IterativeBootstrap()
+    template <class Curve>
+    IterativeBootstrap<Curve>::IterativeBootstrap()
     : validCurve_(false), ts_(0) {}
 
-    template <class Curve, class Traits, class Interpolator>
-    void IterativeBootstrap<Curve, Traits, Interpolator>::setup(Curve* ts) {
+    template <class Curve>
+    void IterativeBootstrap<Curve>::setup(Curve* ts) {
 
         ts_ = ts;
 
@@ -69,8 +71,8 @@ namespace QuantLib {
     }
 
 
-    template <class Curve, class Traits, class Interpolator>
-    void IterativeBootstrap<Curve, Traits, Interpolator>::calculate() const {
+    template <class Curve>
+    void IterativeBootstrap<Curve>::calculate() const {
 
         Size n = ts_->instruments_.size();
 
@@ -176,7 +178,7 @@ namespace QuantLib {
                 ts_->interpolation_.update();
 
                 try {
-                    BootstrapError<Curve,Traits> error(ts_, instrument, i);
+                    BootstrapError<Curve> error(ts_, instrument, i);
                     Real r = solver.solve(error,ts_->accuracy_,guess,min,max);
                     // redundant assignment (as it has been already performed
                     // by BootstrapError in solve procedure), but safe

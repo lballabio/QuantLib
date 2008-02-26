@@ -55,13 +55,15 @@ namespace QuantLib {
         - the observability of the term structure is tested.
     */
     template <class Traits, class Interpolator,
-              template <class,class,class> class Bootstrap = IterativeBootstrap>
+              template <class> class Bootstrap = IterativeBootstrap>
     class PiecewiseYieldCurve
         : public Traits::template curve<Interpolator>::type,
           public LazyObject {
       private:
         typedef typename Traits::template curve<Interpolator>::type base_curve;
       public:
+        typedef Traits traits_type;
+        typedef Interpolator interpolator_type;
         //! \name Constructors
         //@{
         PiecewiseYieldCurve(
@@ -126,51 +128,52 @@ namespace QuantLib {
         // the curve data. They might be passed the data instead, but
         // it would increase the complexity---which is quite high
         // enough already.
-        friend class Bootstrap<PiecewiseYieldCurve<Traits,Interpolator,
-                                                   Bootstrap>,
-                               Traits, Interpolator>;
-        friend class BootstrapError<PiecewiseYieldCurve<Traits,Interpolator,
-                                                        Bootstrap>,
-                                    Traits>;
-        Bootstrap<PiecewiseYieldCurve<Traits,Interpolator,Bootstrap>,
-                  Traits, Interpolator> bootstrap_;
+        friend class Bootstrap<PiecewiseYieldCurve<Traits,
+                                                   Interpolator,
+                                                   Bootstrap> >;
+        friend class BootstrapError<PiecewiseYieldCurve<Traits,
+                                                        Interpolator,
+                                                        Bootstrap> >;
+        Bootstrap<PiecewiseYieldCurve<Traits,
+                                      Interpolator,
+                                      Bootstrap> > bootstrap_;
     };
 
 
     // inline definitions
 
-    template <class C, class I, template <class,class,class> class B>
+    template <class C, class I, template <class> class B>
     inline Date PiecewiseYieldCurve<C,I,B>::maxDate() const {
         calculate();
         return this->dates_.back();
     }
 
-    template <class C, class I, template <class,class,class> class B>
+    template <class C, class I, template <class> class B>
     inline const std::vector<Time>& PiecewiseYieldCurve<C,I,B>::times() const {
         calculate();
         return this->times_;
     }
 
-    template <class C, class I, template <class,class,class> class B>
+    template <class C, class I, template <class> class B>
     inline const std::vector<Date>& PiecewiseYieldCurve<C,I,B>::dates() const {
         calculate();
         return this->dates_;
     }
 
-    template <class C, class I, template <class,class,class> class B>
+    template <class C, class I, template <class> class B>
     inline const std::vector<Real>& PiecewiseYieldCurve<C,I,B>::data() const {
         calculate();
         return this->data_;
     }
 
-    template <class C, class I, template <class,class,class> class B>
+    template <class C, class I, template <class> class B>
     inline std::vector<std::pair<Date, Real> >
     PiecewiseYieldCurve<C,I,B>::nodes() const {
         calculate();
         return base_curve::nodes();
     }
 
-    template <class C, class I, template <class,class,class> class B>
+    template <class C, class I, template <class> class B>
     inline void PiecewiseYieldCurve<C,I,B>::update() {
         base_curve::update();
         LazyObject::update();
@@ -178,7 +181,7 @@ namespace QuantLib {
             setTurnOfYear();
     }
 
-    template <class C, class I, template <class,class,class> class B>
+    template <class C, class I, template <class> class B>
     inline
     DiscountFactor PiecewiseYieldCurve<C,I,B>::discountImpl(Time t) const {
         calculate();
@@ -195,7 +198,7 @@ namespace QuantLib {
         return base_curve::discountImpl(t);
     }
 
-    template <class C, class I, template <class,class,class> class B>
+    template <class C, class I, template <class> class B>
     inline void PiecewiseYieldCurve<C,I,B>::setTurnOfYear() {
         Date referenceDate = base_curve::referenceDate();
         Date turnOfYear = Date(31, December, referenceDate.year());
@@ -206,7 +209,7 @@ namespace QuantLib {
 
     // template definitions
 
-    template <class C, class I, template <class,class,class> class B>
+    template <class C, class I, template <class> class B>
     void PiecewiseYieldCurve<C,I,B>::performCalculations() const {
         // just delegate to the bootstrapper
         bootstrap_.calculate();

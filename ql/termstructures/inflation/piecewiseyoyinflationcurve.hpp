@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2007 Chris Kenyon
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -68,7 +68,7 @@ namespace QuantLib {
 
     //! Piecewise year-on-year inflation term structure
     template <class Interpolator,
-              template <class,class,class> class Bootstrap = IterativeBootstrap,
+              template <class> class Bootstrap = IterativeBootstrap,
               class Traits = YoYInflationTraits>
     class PiecewiseYoYInflationCurve:
         public InterpolatedYoYInflationCurve<Interpolator>,
@@ -76,6 +76,10 @@ namespace QuantLib {
       private:
         typedef InterpolatedYoYInflationCurve<Interpolator> base_curve;
       public:
+        typedef Traits traits_type;
+        typedef Interpolator interpolator_type;
+        //! \name Constructors
+        //@{
         PiecewiseYoYInflationCurve(
                const Date& referenceDate,
                const Calendar& calendar,
@@ -94,7 +98,7 @@ namespace QuantLib {
           instruments_(instruments), accuracy_(accuracy) {
             bootstrap_.setup(this);
         }
-
+        //@}
         //! \name Inflation interface
         //@{
         Date baseDate() const;
@@ -118,62 +122,63 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<typename Traits::helper> > instruments_;
         Real accuracy_;
 
-        friend class Bootstrap<
-            PiecewiseYoYInflationCurve<Interpolator, Bootstrap, Traits>,
-            Traits, Interpolator>;
-        friend class BootstrapError<
-            PiecewiseYoYInflationCurve<Interpolator, Bootstrap, Traits>,
-            Traits>;
-        Bootstrap<PiecewiseYoYInflationCurve<Interpolator, Bootstrap,Traits>,
-                  Traits, Interpolator> bootstrap_;
+        friend class Bootstrap<PiecewiseYoYInflationCurve<Interpolator,
+                                                          Bootstrap,
+                                                          Traits> >;
+        friend class BootstrapError<PiecewiseYoYInflationCurve<Interpolator,
+                                                               Bootstrap,
+                                                               Traits> >;
+        Bootstrap<PiecewiseYoYInflationCurve<Interpolator,
+                                             Bootstrap,
+                                             Traits> > bootstrap_;
     };
 
 
     // inline and template definitions
 
-    template <class I, template <class, class, class> class B, class T>
+    template <class I, template <class> class B, class T>
     inline Date PiecewiseYoYInflationCurve<I,B,T>::baseDate() const {
         this->calculate();
         return base_curve::baseDate();
     }
 
-    template <class I, template <class, class, class> class B, class T>
+    template <class I, template <class> class B, class T>
     inline Date PiecewiseYoYInflationCurve<I,B,T>::maxDate() const {
         this->calculate();
         return base_curve::maxDate();
     }
 
-    template <class I, template <class, class, class> class B, class T>
+    template <class I, template <class> class B, class T>
     const std::vector<Time>& PiecewiseYoYInflationCurve<I,B,T>::times() const {
         calculate();
         return base_curve::times();
     }
 
-    template <class I, template <class, class, class> class B, class T>
+    template <class I, template <class> class B, class T>
     const std::vector<Date>& PiecewiseYoYInflationCurve<I,B,T>::dates() const {
         calculate();
         return base_curve::dates();
     }
 
-    template <class I, template <class, class, class> class B, class T>
+    template <class I, template <class> class B, class T>
     const std::vector<Real>& PiecewiseYoYInflationCurve<I,B,T>::data() const {
         calculate();
         return base_curve::data();
     }
 
-    template <class I, template <class, class, class> class B, class T>
+    template <class I, template <class> class B, class T>
     std::vector<std::pair<Date, Real> >
     PiecewiseYoYInflationCurve<I,B,T>::nodes() const {
         calculate();
         return base_curve::nodes();
     }
 
-    template <class I, template <class, class, class> class B, class T>
+    template <class I, template <class> class B, class T>
     void PiecewiseYoYInflationCurve<I,B,T>::performCalculations() const {
         bootstrap_.calculate();
     }
 
-    template <class I, template <class, class, class> class B, class T>
+    template <class I, template <class> class B, class T>
     void PiecewiseYoYInflationCurve<I,B,T>::update() {
         base_curve::update();
         LazyObject::update();
