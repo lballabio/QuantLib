@@ -66,11 +66,11 @@ namespace QuantLib {
         // this stores the address of the method to integrate (so that
         // we don't have to insert its full expression inside the
         // integral below--it's long enough already)
-        Real (DefaultProbabilityTermStructure::*f)(Time,bool) const =
-            &DefaultProbabilityTermStructure::defaultDensity;
+        Real (DefaultDensityStructure::*f)(Time) const =
+            &DefaultDensityStructure::defaultDensityImpl;
         // the Gauss-Chebyshev quadratures integrate over [-1,1],
         // hence the remapping (and the Jacobian term t/2)
-        Probability P = 1.0 - integral(remap(bind(f,this,_1,true), t)) * t/2.0;
+        Probability P = 1.0 - integral(remap(bind(f,this,_1), t)) * t/2.0;
         QL_ENSURE(P >= 0.0, "negative survival probability");
         return P;
     }

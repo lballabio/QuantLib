@@ -67,11 +67,11 @@ namespace QuantLib {
         // this stores the address of the method to integrate (so that
         // we don't have to insert its full expression inside the
         // integral below--it's long enough already)
-        Real (DefaultProbabilityTermStructure::*f)(Time,bool) const =
-            &DefaultProbabilityTermStructure::hazardRate;
+        Real (HazardRateStructure::*f)(Time) const =
+            &HazardRateStructure::hazardRateImpl;
         // the Gauss-Chebyshev quadratures integrate over [-1,1],
         // hence the remapping (and the Jacobian term t/2)
-        return std::exp(-integral(remap(bind(f,this,_1,true), t)) * t/2.0);
+        return std::exp(-integral(remap(bind(f,this,_1), t)) * t/2.0);
     }
 
     Real HazardRateStructure::defaultDensityImpl(Time t) const {
