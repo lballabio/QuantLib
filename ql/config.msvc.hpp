@@ -154,7 +154,7 @@
 // for some reason, Koenig lookup emits a warning
 #  pragma warning(disable: 4675)
 // also, sending a size_t to an output stream causes a warning.
-// we disable it and rely on other computers to catch genuine problems.
+// we disable it and rely on other compilers to catch genuine problems.
 #  pragma warning(disable: 4267)
 // same for Boost.Function using a supposedly non-standard extension
 #  pragma warning(disable: 4224)
@@ -171,6 +171,8 @@
 // see the corresponding pragmas in the 7.1 section
 #  pragma warning(disable: 4267)
 #  pragma warning(disable: 4224)
+// non-ASCII characters
+#  pragma warning(disable: 4819)
 //#elif (_MSC_VER == 1500)
 //// move inside here configs specific to VC++ 9 (2008)
 //#  ifndef _SCL_SECURE_NO_DEPRECATE
