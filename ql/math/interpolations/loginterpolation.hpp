@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
- Copyright (C) 2004, 2007 StatPro Italia srl
+ Copyright (C) 2004, 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -150,8 +150,8 @@ namespace QuantLib {
                                   const I2& yBegin) const {
             return LogLinearInterpolation(xBegin, xEnd, yBegin);
         }
-        enum { global = 0 };
-        enum { requiredPoints = 2 };
+        static const bool global = false;
+        static const Size requiredPoints = 2;
     };
 
 
@@ -177,8 +177,8 @@ namespace QuantLib {
                                          rightType_, rightValue_,
                                          monotonic_);
         }
-        enum { global = 1 };
-        enum { requiredPoints = 2 };
+        static const bool global = true;
+        static const Size requiredPoints = 2;
       private:
         CubicSplineInterpolation::BoundaryCondition lefType_, rightType_;
         Real leftValue_, rightValue_;

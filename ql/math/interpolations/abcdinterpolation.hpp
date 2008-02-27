@@ -54,7 +54,7 @@ namespace QuantLib {
               k_(std::vector<Real>()),
               error_(Null<Real>()),
               maxError_(Null<Real>()),
-              abcdEndCriteria_(EndCriteria::None) { 
+              abcdEndCriteria_(EndCriteria::None) {
                 if (a_ != Null<Real>())
                     aIsFixed_ = aIsFixed;
                 else a_ = -0.06;
@@ -67,7 +67,7 @@ namespace QuantLib {
                 if (d_ != Null<Real>())
                     dIsFixed_ = dIsFixed;
                 else d_ = 0.17;
-            
+
                validateAbcdParameters(a, b, c, d);
             }
             virtual ~AbcdCoeffHolder() {}
@@ -80,7 +80,7 @@ namespace QuantLib {
 
         template <class I1, class I2>
         class AbcdInterpolationImpl : public Interpolation::templateImpl<I1,I2>,
-                                      public AbcdCoeffHolder {        
+                                      public AbcdCoeffHolder {
           public:
             AbcdInterpolationImpl(
                 const I1& xBegin, const I1& xEnd,
@@ -98,7 +98,7 @@ namespace QuantLib {
                               aIsFixed, bIsFixed, cIsFixed, dIsFixed),
               endCriteria_(endCriteria), optMethod_(optMethod),
               vegaWeighted_(vegaWeighted) { }
-            
+
             void update() {
                 std::vector<Real>::const_iterator x = this->xBegin_;
                 std::vector<Real>::const_iterator y = this->yBegin_;
@@ -234,7 +234,7 @@ namespace QuantLib {
                                      vegaWeighted_,
                                      endCriteria_, optMethod_);
         }
-        enum { global = 1 };
+        static const bool global = true;
       private:
         Real a_, b_, c_, d_;
         bool aIsFixed_, bIsFixed_, cIsFixed_, dIsFixed_;

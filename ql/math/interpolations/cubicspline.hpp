@@ -189,8 +189,8 @@ namespace QuantLib {
                                             rightType_,rightValue_,
                                             monotonic_);
         }
-        enum { global = 1 };
-        enum { requiredPoints = 2 };
+        static const bool global = true;
+        static const Size requiredPoints = 2;
       private:
         CubicSplineInterpolation::BoundaryCondition leftType_, rightType_;
         Real leftValue_, rightValue_;

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -95,8 +95,8 @@ namespace QuantLib {
                                   const I2& yBegin) const {
             return BackwardFlatInterpolation(xBegin, xEnd, yBegin);
         }
-        enum { global = 0 };
-        enum { requiredPoints = 2 };
+        static const bool global = false;
+        static const Size requiredPoints = 2;
     };
 
 }

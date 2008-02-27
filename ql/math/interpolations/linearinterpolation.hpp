@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -94,8 +94,8 @@ namespace QuantLib {
                                   const I2& yBegin) const {
             return LinearInterpolation(xBegin, xEnd, yBegin);
         }
-        enum { global = 0 };
-        enum { requiredPoints = 2 };
+        static const bool global = false;
+        static const Size requiredPoints = 2;
     };
 
 }

@@ -43,7 +43,7 @@
 namespace QuantLib {
 
     namespace detail {
-        
+
         class SABRCoeffHolder {
           public:
             SABRCoeffHolder(Time t,
@@ -101,7 +101,7 @@ namespace QuantLib {
         template <class I1, class I2>
         class SABRInterpolationImpl : public Interpolation::templateImpl<I1,I2>,
                                       public SABRCoeffHolder {
-          public:         
+          public:
             SABRInterpolationImpl(
                 const I1& xBegin, const I1& xEnd,
                 const I2& yBegin,
@@ -167,7 +167,7 @@ namespace QuantLib {
                     maxError_ = interpolationMaxError();
                     SABREndCriteria_ = EndCriteria::None;
                     return;
-                
+
                 } else {
 
                     SABRError costFunction(this);
@@ -281,7 +281,7 @@ namespace QuantLib {
                 }
 
                 Array direct(const Array& x) const {
-                    y_[0] = x[0]*x[0] + eps1_;                      
+                    y_[0] = x[0]*x[0] + eps1_;
                     //y_[1] = std::atan(dilationFactor_*x[1])/M_PI + 0.5;
                     y_[1] = std::exp(-(x[1]*x[1]));
                     y_[2] = x[2]*x[2] + eps1_;
@@ -295,7 +295,7 @@ namespace QuantLib {
                     y_[1] = std::sqrt(-std::log(x[1]));
                     y_[2] = std::sqrt(x[2] - eps1_);
                     y_[3] = std::asin(x[3]/eps2_);
-                     
+
                     return y_;
                 }
             };
@@ -419,7 +419,7 @@ namespace QuantLib {
                                      vegaWeighted_,
                                      endCriteria_, optMethod_);
         }
-        enum { global = 1 };
+        static const bool global = true;
       private:
         Time t_;
         Real forward_;
