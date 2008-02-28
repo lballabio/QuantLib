@@ -58,8 +58,6 @@ namespace QuantLib {
             for (i=0; i<blackVolMatrix.rows(); i++) {
                 variances_[i][j] = times_[j] *
                     blackVolMatrix[i][j-1]*blackVolMatrix[i][j-1];
-                QL_REQUIRE(variances_[i][j]>=variances_[i][j-1],
-                           "variance must be non-decreasing");
             }
         }
         // default: bilinear interpolation
