@@ -39,9 +39,7 @@ namespace QuantLib {
                          const Schedule& floatSch,
                          const DayCounter& floatingDayCounter,
                          bool parSwap)
-    : Swap(Leg(), Leg()),
-      spread_(spread),
-      bondCleanPrice_(bondCleanPrice),
+    : Swap(2), spread_(spread), bondCleanPrice_(bondCleanPrice),
       discountCurve_(discountCurve) {
 
         Schedule schedule = floatSch;

@@ -36,9 +36,8 @@ namespace QuantLib {
                      const Schedule& bmaSchedule,
                      const boost::shared_ptr<BMAIndex>& bmaIndex,
                      const DayCounter& bmaDayCount)
-    : Swap(Leg(), Leg()),
-      type_(type), nominal_(nominal), liborFraction_(liborFraction),
-      liborSpread_(liborSpread)  {
+    : Swap(2), type_(type), nominal_(nominal),
+      liborFraction_(liborFraction), liborSpread_(liborSpread)  {
 
         BusinessDayConvention convention =
             liborSchedule.businessDayConvention();

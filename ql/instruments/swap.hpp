@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2006 Ferdinando Ametrano
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,6 +42,8 @@ namespace QuantLib {
         class arguments;
         class results;
         class engine;
+        //! \name Constructors
+        //@{
         /*! The cash flows belonging to the first leg are paid;
             the ones belonging to the second leg are received.
         */
@@ -50,6 +52,7 @@ namespace QuantLib {
         /*! Multi leg constructor. */
         Swap(const std::vector<Leg>& legs,
              const std::vector<bool>& payer);
+        //@}
         //! \name Instrument interface
         //@{
         bool isExpired() const;
@@ -76,8 +79,17 @@ namespace QuantLib {
         }
         //@}
       protected:
-        // methods
+        //! \name Constructors
+        //@{
+        /*! This constructor can be used by derived classes that will
+            build their legs themselves.
+        */
+        Swap(Size legs);
+        //@}
+        //! \name Instrument interface
+        //@{
         void setupExpired() const;
+        //@}
         // data members
         std::vector<Leg> legs_;
         std::vector<Real> payer_;

@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2007 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -53,6 +53,11 @@ namespace QuantLib {
                 registerWith(*i);
         }
     }
+
+    Swap::Swap(Size legs)
+    : legs_(legs), payer_(legs),
+      legNPV_(legs, 0.0), legBPS_(legs, 0.0) {}
+
 
     bool Swap::isExpired() const {
         Date today = Settings::instance().evaluationDate();

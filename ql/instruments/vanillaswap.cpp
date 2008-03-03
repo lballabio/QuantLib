@@ -40,7 +40,7 @@ namespace QuantLib {
                              Spread spread,
                              const DayCounter& floatingDayCount,
                              BusinessDayConvention paymentConvention)
-    : Swap(Leg(), Leg()), type_(type), nominal_(nominal),
+    : Swap(2), type_(type), nominal_(nominal),
       fixedSchedule_(fixedSchedule), fixedRate_(fixedRate),
       fixedDayCount_(fixedDayCount),
       floatingSchedule_(floatSchedule), iborIndex_(iborIndex), spread_(spread),
