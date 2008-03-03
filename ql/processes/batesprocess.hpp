@@ -18,7 +18,7 @@
 */
 
 /*! \file batesprocess.hpp
-    \brief Bates stochastic process, Heston process plus compound Poisson 
+    \brief Bates stochastic process, Heston process plus compound Poisson
     process plus log-normal jump diffusion size
 */
 
@@ -38,7 +38,7 @@ namespace QuantLib {
         \begin{array}{rcl}
         dS(t, S)  &=& (r-d-\lambda m) S dt +\sqrt{v} S dW_1 + (e^J - 1) S dN \\
         dv(t, S)  &=& \kappa (\theta - v) dt + \sigma \sqrt{v} dW_2 \\
-        dW_1 dW_2 &=& \rho dt
+        dW_1 dW_2 &=& \rho dt \\
         \omega(J) &=& \frac{1}{\sqrt{2\pi \delta^2}}
                       \exp\left[-\frac{(J-\nu)^2}{2\delta^2}\right]
         \end{array}
@@ -54,7 +54,7 @@ namespace QuantLib {
                      Real v0, Real kappa,
                      Real theta, Real sigma, Real rho,
                      Real lambda, Real nu, Real delta,
-                     HestonProcess::Discretization d 
+                     HestonProcess::Discretization d
                          = HestonProcess::FullTruncation);
 
         Size factors() const;
