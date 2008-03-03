@@ -36,19 +36,20 @@ namespace QuantLib {
                         const vector<Rate>& strikes,
                         const vector<vector<Handle<Quote> > >& v,
                         const DayCounter& dc)
-    : settlementDays_(settlementDays),
-      calendar_(calendar),
+    : calendar_(calendar),
+      settlementDays_(settlementDays),
       businessDayConvention_(bdc),
+      dc_(dc),
       iborIndex_(iborIndex),
       nOptionletDates_(optionletDates.size()),
       optionletDates_(optionletDates),
       optionletTimes_(nOptionletDates_),
       optionletAtmRates_(nOptionletDates_),
-      nStrikes_(strikes.size()),
       optionletStrikes_(nOptionletDates_, strikes),
+      nStrikes_(strikes.size()),
       optionletVolQuotes_(v),
-      optionletVolatilities_(nOptionletDates_, vector<Volatility>(nStrikes_)),
-      dc_(dc)
+      optionletVolatilities_(nOptionletDates_, vector<Volatility>(nStrikes_))
+      
     {
         checkInputs();
         registerWith(Settings::instance().evaluationDate());
@@ -56,7 +57,7 @@ namespace QuantLib {
 
         Date refDate = calendar.advance(Settings::instance().evaluationDate(),
                                         settlementDays, Days);
-        
+
         for (Size i=0; i<nOptionletDates_; ++i)
             optionletTimes_[i] = dc_.yearFraction(refDate, optionletDates_[i]);
     }
@@ -105,7 +106,7 @@ namespace QuantLib {
                    ") must be less than optionletStrikes size (" <<
                    optionletStrikes_.size() << ")");
         return optionletStrikes_[i];
-    }   
+    }
 
     const vector<Volatility>&
     StrippedOptionlet::optionletVolatilities(Size i) const{
@@ -115,13 +116,13 @@ namespace QuantLib {
                    ") must be less than optionletVolatilities size (" <<
                    optionletVolatilities_.size() << ")");
         return optionletVolatilities_[i];
-    }   
+    }
 
     const vector<Date>& StrippedOptionlet::optionletFixingDates() const {
         calculate();
         return optionletDates_;
     }
-      
+
     const vector<Time>& StrippedOptionlet::optionletFixingTimes() const {
         calculate();
         return optionletTimes_;

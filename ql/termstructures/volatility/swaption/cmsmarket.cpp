@@ -30,7 +30,7 @@ using std::vector;
 using boost::shared_ptr;
 
 namespace QuantLib {
-    
+
     CmsMarket::CmsMarket(
         const vector<Period>& swapLengths,
         const vector<shared_ptr<SwapIndex> >& swapIndexes,
@@ -39,8 +39,8 @@ namespace QuantLib {
         const vector<shared_ptr<HaganPricer> >& pricers,
         const Handle<YieldTermStructure>& discountingTS)
     : swapLengths_(swapLengths),
-      iborIndex_(iborIndex),
       swapIndexes_(swapIndexes),
+      iborIndex_(iborIndex),
       bidAskSpreads_(bidAskSpreads),
       pricers_(pricers),
       discTS_(discountingTS),
@@ -143,7 +143,7 @@ namespace QuantLib {
             mdlPrevPart = mdlSpotCmsLegNPV_[i][j];
             errSpotCmsLegNPV_[i][j] = mdlSpotCmsLegNPV_[i][j] -
                                                 mktSpotCmsLegNPV_[i][j];
-           
+
             // equilibriums spread over ibor leg
             Real npv = spotFloatLegNPV_[i][j] + mdlSpotCmsLegNPV_[i][j];
             mdlSpreads_[i][j] = - npv/spotFloatLegBPS_[i][j]*1e-4;
@@ -236,7 +236,7 @@ namespace QuantLib {
                 result[j*nSwapIndexes_+i][5] = mdlSpreads_[i][j]*10000;
                 result[j*nSwapIndexes_+i][6] = errSpreads_[i][j]*10000;
                 if (mdlSpreads_[i][j]>mktAskSpreads_[i][j])
-                    result[j*nSwapIndexes_+i][7] = (mdlSpreads_[i][j] - 
+                    result[j*nSwapIndexes_+i][7] = (mdlSpreads_[i][j] -
                                                 mktAskSpreads_[i][j])*10000;
                 else if (mdlSpreads_[i][j]<mktBidSpreads_[i][j])
                     result[j*nSwapIndexes_+i][7] = (mktBidSpreads_[i][j] -

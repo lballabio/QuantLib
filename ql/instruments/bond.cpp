@@ -330,8 +330,8 @@ namespace QuantLib {
 
         Date paymentDate = (*cf)->date();
         bool firstCouponFound = false;
-        Real nominal;
-        Time accrualPeriod;
+        Real nominal = Null<Real>();
+        Time accrualPeriod = Null<Time>();
         DayCounter dc;
         Rate result = 0.0;
         for (; cf<cashflows_.end() && (*cf)->date()==paymentDate; ++cf) {
