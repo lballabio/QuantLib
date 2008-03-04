@@ -47,7 +47,7 @@ namespace QuantLib {
             || (dd == em)
             // Holy Trinity Day
             || (dd == em+49)
-            // Workers’ Solidarity Days
+            // Workers' Solidarity Days
             || ((d == 1 || d == 2 || (d == 3 && w == Monday)) && m == May)
             // Victory Day
             || ((d == 9 || ((d == 10 || d == 11) && w == Monday)) && m == May)
