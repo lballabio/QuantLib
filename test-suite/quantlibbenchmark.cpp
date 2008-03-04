@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Klaus Spanderen
+ Copyright (C) 2006, 2008 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,7 +26,8 @@
  performance in mflops.
 
  The number of floating point operations of a given test case was measured
- using the perfex library, http://user.it.uu.se/~mikpe/linux/perfctr.
+ using the perfex library, http://user.it.uu.se/~mikpe/linux/perfctr
+ and PAPI, http://icl.cs.utk.edu/papi
 
  Example results: 1. Pentium4 Dual@2.8Ghz: 423.8 mflops
                   2. Pentium4@3.0Ghz     : 266.3 mflops
@@ -58,6 +59,10 @@
 #include <list>
 #include <string>
 
+/* PAPI code
+#include <papi.h>
+*/
+
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
 */
@@ -72,13 +77,15 @@
 #include "barrieroption.hpp"
 #include "basketoption.hpp"
 #include "batesmodel.hpp"
+#include "convertiblebonds.hpp"
 #include "digitaloption.hpp"
 #include "dividendoption.hpp"
 #include "europeanoption.hpp"
 #include "hestonmodel.hpp"
+#include "interpolations.hpp"
 #include "jumpdiffusion.hpp"
-#include "libormarketmodel.hpp"
-#include "libormarketmodelprocess.hpp"
+#include "marketmodel_smm.hpp"
+#include "marketmodel_cms.hpp"
 #include "lowdiscrepancysequences.hpp"
 #include "quantooption.hpp"
 #include "riskstats.hpp"
@@ -117,12 +124,27 @@ namespace {
     std::list<double> runTimes;
     std::list<Benchmark> bm;
 
+    /* PAPI code
+    float real_time, proc_time, mflops;
+    long_long flpins;
+    */
+
     void startTimer() {
         t.restart();
+
+        /* PAPI code
+        PAPI_flips(&real_time, &proc_time, &flpins, &mflops);
+        */
     }
 
     void stopTimer() {
         runTimes.push_back(t.elapsed());
+
+        /* PAPI code
+        PAPI_flips(&real_time, &proc_time, &flpins, &mflops);
+        printf("Real_time: %f Proc_time: %f Total mflpins: %f MFLOPS %f\n", 
+               real_time, proc_time, flpins/1e6, mflops);
+        */
     }
 
     void printResults() {
@@ -134,9 +156,9 @@ namespace {
         #endif
 
         std::cout << std::endl
-                  << std::string(52,'-') << std::endl;
+                  << std::string(56,'-') << std::endl;
         std::cout << header << std::endl;
-        std::cout << std::string(52,'-')
+        std::cout << std::string(56,'-')
                   << std::endl << std::endl;
 
         double sum=0;
@@ -146,7 +168,7 @@ namespace {
         while (iterT != runTimes.end()) {
             const double mflopsPerSec = iterBM->getMflops()/(*iterT);
             std::cout << iterBM->getName()
-                      << std::string(40-iterBM->getName().length(),' ') << ":"
+                      << std::string(42-iterBM->getName().length(),' ') << ":"
                       << std::fixed << std::setw(6) << std::setprecision(1)
                       << mflopsPerSec
                       << " mflops" << std::endl;
@@ -155,8 +177,8 @@ namespace {
             iterT++;
             iterBM++;
         }
-        std::cout << std::string(52,'-') << std::endl
-                  << "QuantLib Benchmark Index                :"
+        std::cout << std::string(56,'-') << std::endl
+                  << "QuantLib Benchmark Index                  :"
                   << std::fixed << std::setw(6) << std::setprecision(1)
                   << sum/runTimes.size()
                   << " mflops" << std::endl;
@@ -172,59 +194,63 @@ namespace QuantLib {
 test_suite* init_unit_test_suite(int, char*[]) {
 
     bm.push_back(Benchmark("AmericanOption::FdAmericanGreeks",
-        &AmericanOptionTest::testFdAmericanGreeks, 518.4));
+        &AmericanOptionTest::testFdAmericanGreeks, 518.31));
     bm.push_back(Benchmark("AmericanOption::FdShoutGreeks",
-        &AmericanOptionTest::testFdShoutGreeks, 546.0));
+        &AmericanOptionTest::testFdShoutGreeks, 545.93));
     bm.push_back(Benchmark("AsianOption::MCArithmeticAveragePrice",
-        &AsianOptionTest::testMCDiscreteArithmeticAveragePrice, 4301.1));
+        &AsianOptionTest::testMCDiscreteArithmeticAveragePrice, 4368.05));
     bm.push_back(Benchmark("BarrierOption::BabsiriValues",
-        &BarrierOptionTest::testBabsiriValues, 944.5));
+        &BarrierOptionTest::testBabsiriValues, 967.4));
     bm.push_back(Benchmark("BasketOption::EuroTwoValues",
-        &BasketOptionTest::testEuroTwoValues, 392.9));
+        &BasketOptionTest::testEuroTwoValues, 397.32));
     bm.push_back(Benchmark("BasketOption::TavellaValues",
-        &BasketOptionTest::testTavellaValues, 520.2));
+        &BasketOptionTest::testTavellaValues, 1030.41));
     bm.push_back(Benchmark("BasketOption::OddSamples",
-        &BasketOptionTest::testOddSamples, 749.1));
+        &BasketOptionTest::testOddSamples, 755.34));
     bm.push_back(Benchmark("BatesModel::DAXCalibration",
-        &BatesModelTest::testDAXCalibration, 2527.7));
+        &BatesModelTest::testDAXCalibration, 2545.07));
+    bm.push_back(Benchmark("ConvertibleBondTest::testBond",
+        &ConvertibleBondTest::testBond, 159.85));
     bm.push_back(Benchmark("DigitalOption::MCCashAtHit",
-        &DigitalOptionTest::testMCCashAtHit,1033.5));
+        &DigitalOptionTest::testMCCashAtHit,1054.19));
     bm.push_back(Benchmark("DividendOption::FdEuropeanValues",
-        &DividendOptionTest::testFdEuropeanValues, 992.0));
+        &DividendOptionTest::testFdEuropeanValues, 992.12));
     bm.push_back(Benchmark("DividendOption::FdEuropeanGreeks",
-        &DividendOptionTest::testFdEuropeanGreeks, 949.6));
+        &DividendOptionTest::testFdEuropeanGreeks, 949.52));
     bm.push_back(Benchmark("DividendOption::FdAmericanGreeks",
-        &DividendOptionTest::testFdAmericanGreeks, 1113.8));
+        &DividendOptionTest::testFdAmericanGreeks, 1113.74));
     bm.push_back(Benchmark("EuropeanOption::FdMcEngines",
-        &EuropeanOptionTest::testMcEngines, 2285.9));
+        &EuropeanOptionTest::testMcEngines, 2316.09));
     bm.push_back(Benchmark("EuropeanOption::ImpliedVol",
-        &EuropeanOptionTest::testImpliedVol, 137.5));
+        &EuropeanOptionTest::testImpliedVol, 130.47));
     bm.push_back(Benchmark("EuropeanOption::FdEngines",
-        &EuropeanOptionTest::testFdEngines, 148.52));
+        &EuropeanOptionTest::testFdEngines, 148.43));
     bm.push_back(Benchmark("EuropeanOption::PriceCurve",
-        &EuropeanOptionTest::testPriceCurve, 414.8));
+        &EuropeanOptionTest::testPriceCurve, 414.76));
     bm.push_back(Benchmark("HestonModel::DAXCalibration",
-        &HestonModelTest::testDAXCalibration, 730.7));
+        &HestonModelTest::testDAXCalibration, 744.41));
     bm.push_back(Benchmark("HestonModel::McVsCached",
-        &HestonModelTest::testMcVsCached, 1447.9));
+        &HestonModelTest::testMcVsCached, 1326.30));
+    bm.push_back(Benchmark("InterpolationTest::testSabrInterpolation",
+        &InterpolationTest::testSabrInterpolation, 2266.06));
     bm.push_back(Benchmark("JumpDiffusion::Greeks",
-        &JumpDiffusionTest::testGreeks, 77.3));
-    bm.push_back(Benchmark("LiborMarketModel::SwaptionPricing",
-        &LiborMarketModelTest::testSwaptionPricing, 4608.9));
-    bm.push_back(Benchmark("LiborMarketModel::Calibration",
-        &LiborMarketModelTest::testCalibration, 832.54));
-    bm.push_back(Benchmark("LiborMarketModelProcess::CapletPricing",
-        &LiborMarketModelProcessTest::testMonteCarloCapletPricing, 4608.9));
+        &JumpDiffusionTest::testGreeks, 301.98));
+    bm.push_back(Benchmark("MarketModelCmsTest::testCmSwapsSwaptions",
+        &MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions,
+        11486.28));
+    bm.push_back(Benchmark("MarketModelSmmTest::testMultiSmmSwaptions",
+        &MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions,
+        11231.11));
     bm.push_back(Benchmark("OldPricer::McMultiFactorPricers",
-        &OldPricerTest::testMcMultiFactorPricers, 443.4));
+        &OldPricerTest::testMcMultiFactorPricers, 435.52));
     bm.push_back(Benchmark("QuantoOption::ForwardGreeks",
-        &QuantoOptionTest::testForwardGreeks, 89.1));
+        &QuantoOptionTest::testForwardGreeks, 89.36));
     bm.push_back(Benchmark("RandomNumber::MersenneTwisterDescrepancy",
-        &LowDiscrepancyTest::testMersenneTwisterDiscrepancy, 952.1));
+        &LowDiscrepancyTest::testMersenneTwisterDiscrepancy, 951.98));
     bm.push_back(Benchmark("RiskStatistics::Results",
-        &RiskStatisticsTest::testResults, 300.4));
+        &RiskStatisticsTest::testResults, 300.28));
     bm.push_back(Benchmark("ShortRateModel::Swaps",
-        &ShortRateModelTest::testSwaps, 450.7));
+        &ShortRateModelTest::testSwaps, 445.91));
 
     test_suite* test = BOOST_TEST_SUITE("QuantLib benchmark suite");
 
@@ -239,4 +265,3 @@ test_suite* init_unit_test_suite(int, char*[]) {
 
     return test;
 }
-

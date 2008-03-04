@@ -94,14 +94,16 @@ QL_BENCHMARKS = \
 	barrieroption.hpp barrieroption.cpp \
 	basketoption.hpp basketoption.cpp \
 	batesmodel.hpp batesmodel.cpp \
+	convertiblebonds.hpp convertiblebonds.cpp \
 	digitaloption.hpp digitaloption.cpp \
 	dividendoption.hpp dividendoption.cpp \
 	europeanoption.hpp europeanoption.cpp \
 	hestonmodel.hpp hestonmodel.cpp \
+	interpolations.hpp interpolations.cpp \
 	jumpdiffusion.hpp jumpdiffusion.cpp \
-	libormarketmodel.hpp libormarketmodel.cpp \
-	libormarketmodelprocess.hpp libormarketmodelprocess.cpp \
 	lowdiscrepancysequences.hpp lowdiscrepancysequences.cpp \
+	marketmodel_cms.hpp marketmodel_cms.cpp \
+	marketmodel_smm.hpp marketmodel_smm.cpp \
 	quantooption.hpp quantooption.cpp \
 	riskstats.hpp riskstats.cpp \
 	shortratemodels.hpp shortratemodels.cpp \
