@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2006 Warren Chou
- Copyright (C) 2007 Warren Chou
+ Copyright (C) 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -39,17 +39,13 @@ namespace QuantLib {
     */
     class VarianceSwap : public Instrument {
       public:
-        typedef std::vector<std::pair<boost::shared_ptr<
-            StrikedTypePayoff>, Real> > WeightsType;
         class arguments;
         class results;
         class engine;
         VarianceSwap(Position::Type position,
                      Real strike,
                      Real notional,
-                     const boost::shared_ptr<StochasticProcess>& process,
-                     const Date& maturityDate,
-                     const boost::shared_ptr<PricingEngine>& engine);
+                     const Date& maturityDate);
         //! \name Instrument interface
         //@{
         bool isExpired() const;
@@ -60,27 +56,22 @@ namespace QuantLib {
         Real strike() const;
         Position::Type position() const;
         Date maturityDate() const;
-        Date settlementDate() const;
         Real notional() const;
         // results
-        Real fairVariance() const;
-        std::vector<std::pair<Real, Real> > optionWeights(Option::Type) const;
+        Real variance() const;
         //@}
         // other
         void setupArguments(PricingEngine::arguments* args) const;
         void fetchResults(const PricingEngine::results*) const;
       protected:
         void setupExpired() const;
-        void performCalculations() const;
         // data members
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Position::Type position_;
         Real strike_;
         Real notional_;
         Date maturityDate_;
         // results
-        mutable WeightsType optionWeights_;
-        mutable Real fairVariance_;
+        mutable Real variance_;
     };
 
 
@@ -89,7 +80,6 @@ namespace QuantLib {
       public:
         arguments() : strike(Null<Real>()), notional(Null<Real>()) {}
         void validate() const;
-        boost::shared_ptr<GeneralizedBlackScholesProcess> stochasticProcess;
         Position::Type position;
         Real strike;
         Real notional;
@@ -100,13 +90,10 @@ namespace QuantLib {
     //! %Results from variance-swap calculation
     class VarianceSwap::results : public Instrument::results {
       public:
-        Real fairVariance;
-        WeightsType optionWeights;
-        WeightsType::const_iterator iterator;
+        Real variance;
         void reset() {
             Instrument::results::reset();
-            fairVariance = Null<Real>();
-            optionWeights = WeightsType();
+            variance = Null<Real>();
         }
     };
 
@@ -120,10 +107,6 @@ namespace QuantLib {
 
     inline Date VarianceSwap::maturityDate() const {
         return maturityDate_;
-    }
-
-    inline Date VarianceSwap::settlementDate() const {
-        return process_->riskFreeRate()->referenceDate();
     }
 
     inline Real VarianceSwap::strike() const {

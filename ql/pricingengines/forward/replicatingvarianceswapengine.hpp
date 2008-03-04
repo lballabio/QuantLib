@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2006 Warren Chou
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,42 +38,49 @@ namespace QuantLib {
 
         \ingroup forwardengines
 
-        \test returned fair variances verified against results from literature
+        \test returned variances verified against results from literature
     */
     class ReplicatingVarianceSwapEngine : public VarianceSwap::engine {
       public:
-        typedef std::vector<Real> StrikesType;
+        typedef std::vector<std::pair<
+                   boost::shared_ptr<StrikedTypePayoff>, Real> > weights_type;
         // constructor
         ReplicatingVarianceSwapEngine(
-                 const Real dk = 5.0,
-                 const StrikesType& callStrikes = StrikesType(),
-                 const StrikesType& putStrikes = StrikesType());
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Real dk = 5.0,
+             const std::vector<Real>& callStrikes = std::vector<Real>(),
+             const std::vector<Real>& putStrikes = std::vector<Real>());
         void calculate() const;
       protected:
         // helper methods
-        void computeOptionWeights(const StrikesType&,
-                                  const Option::Type) const;
+        void computeOptionWeights(const std::vector<Real>&,
+                                  const Option::Type,
+                                  weights_type& optionWeights) const;
         Real computeLogPayoff(const Real, const Real) const;
-        Real computeReplicatingPortfolio() const;
+        Real computeReplicatingPortfolio(
+                                     const weights_type& optionWeights) const;
         Rate riskFreeRate() const;
         DiscountFactor riskFreeDiscount() const;
         Real underlying() const;
         Time residualTime() const;
       private:
-        const Real dk_;
-        const StrikesType callStrikes_;
-        const StrikesType putStrikes_;
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        Real dk_;
+        std::vector<Real> callStrikes_, putStrikes_;
     };
 
 
     // inline definitions
 
     inline ReplicatingVarianceSwapEngine::ReplicatingVarianceSwapEngine(
-                const Real dk,
-                const StrikesType& callStrikes,
-                const StrikesType& putStrikes)
-    : dk_(dk), callStrikes_(callStrikes), putStrikes_(putStrikes) {
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Real dk,
+             const std::vector<Real>& callStrikes,
+             const std::vector<Real>& putStrikes)
+    : process_(process), dk_(dk),
+      callStrikes_(callStrikes), putStrikes_(putStrikes) {
 
+        QL_REQUIRE(process_, "no process given");
         QL_REQUIRE(!callStrikes.empty() && !putStrikes.empty(),
                    "no strike(s) given");
         QL_REQUIRE(*std::min_element(putStrikes.begin(),putStrikes.end())>0.0,
@@ -85,10 +92,13 @@ namespace QuantLib {
 
 
     inline void ReplicatingVarianceSwapEngine::computeOptionWeights(
-                            const StrikesType& availStrikes,
-                            const Option::Type type) const {
-        if (availStrikes.empty()) return;
-        StrikesType strikes = availStrikes;
+                                    const std::vector<Real>& availStrikes,
+                                    const Option::Type type,
+                                    weights_type& optionWeights) const {
+        if (availStrikes.empty())
+            return;
+
+        std::vector<Real> strikes = availStrikes;
 
         // add end-strike for piecewise approximation
         switch (type) {
@@ -105,14 +115,18 @@ namespace QuantLib {
         }
 
         // remove duplicate strikes
-        StrikesType::iterator last =
+        std::vector<Real>::iterator last =
             std::unique(strikes.begin(), strikes.end());
         strikes.erase(last, strikes.end());
 
         // compute weights
         Real f = strikes.front();
         Real slope, prevSlope = 0.0;
-        for (StrikesType::const_iterator k=strikes.begin();
+
+
+
+
+        for (std::vector<Real>::const_iterator k=strikes.begin();
              // added end-strike discarded
              k<strikes.end()-1;
              k++) {
@@ -122,9 +136,9 @@ namespace QuantLib {
             boost::shared_ptr<StrikedTypePayoff> payoff(
                                             new PlainVanillaPayoff(type, *k));
             if ( k == strikes.begin() )
-                results_.optionWeights.push_back(std::make_pair(payoff,slope));
+                optionWeights.push_back(std::make_pair(payoff,slope));
             else
-                results_.optionWeights.push_back(
+                optionWeights.push_back(
                                    std::make_pair(payoff, slope - prevSlope));
             prevSlope = slope;
         }
@@ -140,26 +154,25 @@ namespace QuantLib {
 
 
     inline
-    Real ReplicatingVarianceSwapEngine::computeReplicatingPortfolio() const {
+    Real ReplicatingVarianceSwapEngine::computeReplicatingPortfolio(
+                                    const weights_type& optionWeights) const {
 
         boost::shared_ptr<Exercise> exercise(
                                new EuropeanExercise(arguments_.maturityDate));
         boost::shared_ptr<PricingEngine> optionEngine(
-                    new AnalyticEuropeanEngine(arguments_.stochasticProcess));
+                                        new AnalyticEuropeanEngine(process_));
         Real optionsValue = 0.0;
 
-        for (results_.iterator=results_.optionWeights.begin();
-             results_.iterator<results_.optionWeights.end();
-             results_.iterator++) {
-            boost::shared_ptr<StrikedTypePayoff> payoff =
-                results_.iterator->first;
+        for (weights_type::const_iterator i = optionWeights.begin();
+             i < optionWeights.end(); ++i) {
+            boost::shared_ptr<StrikedTypePayoff> payoff = i->first;
             EuropeanOption option(payoff, exercise);
             option.setPricingEngine(optionEngine);
-            Real weight = results_.iterator->second;
+            Real weight = i->second;
             optionsValue += option.NPV() * weight;
         }
 
-        Real f = results_.optionWeights.front().first->strike();
+        Real f = optionWeights.front().first->strike();
         return 2.0 * riskFreeRate() -
             2.0/residualTime() *
             (((underlying()/riskFreeDiscount() - f)/f) +
@@ -168,42 +181,53 @@ namespace QuantLib {
     }
 
 
-     // calculate fair variance via replicating portfolio
+     // calculate variance via replicating portfolio
     inline void ReplicatingVarianceSwapEngine::calculate() const {
-        computeOptionWeights(callStrikes_, Option::Call);
-        computeOptionWeights(putStrikes_, Option::Put);
+        weights_type optionWeigths;
+        computeOptionWeights(callStrikes_, Option::Call, optionWeigths);
+        computeOptionWeights(putStrikes_, Option::Put, optionWeigths);
 
-        results_.fairVariance = computeReplicatingPortfolio();
+        results_.variance = computeReplicatingPortfolio(optionWeigths);
+
+        DiscountFactor riskFreeDiscount =
+            process_->riskFreeRate()->discount(arguments_.maturityDate);
+        Real multiplier;
+        switch (arguments_.position) {
+          case Position::Long:
+            multiplier = 1.0;
+            break;
+          case Position::Short:
+            multiplier = -1.0;
+            break;
+          default:
+            QL_FAIL("Unknown position");
+        }
+        results_.value = multiplier * riskFreeDiscount * arguments_.notional *
+            (results_.variance - arguments_.strike);
+
+        results_.additionalResults["optionWeights"] = optionWeigths;
     }
 
 
     inline Real ReplicatingVarianceSwapEngine::underlying() const {
-        return arguments_.stochasticProcess->stateVariable()->value();
+        return process_->x0();
     }
 
 
     inline Time ReplicatingVarianceSwapEngine::residualTime() const {
-        return arguments_.stochasticProcess->time(arguments_.maturityDate);
+        return process_->time(arguments_.maturityDate);
     }
 
 
     inline Rate ReplicatingVarianceSwapEngine::riskFreeRate() const {
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-        return process->riskFreeRate()->zeroRate(residualTime(), Continuous,
-                                                 NoFrequency, true);
+        return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
+                                                  NoFrequency, true);
     }
 
 
     inline
     DiscountFactor ReplicatingVarianceSwapEngine::riskFreeDiscount() const {
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-        return process->riskFreeRate()->discount(residualTime());
+        return process_->riskFreeRate()->discount(residualTime());
     }
 
 }

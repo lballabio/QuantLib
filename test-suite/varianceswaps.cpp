@@ -196,18 +196,17 @@ void VarianceSwapTest::testReplicatingVarianceSwap() {
 
 
         boost::shared_ptr<PricingEngine> engine(
-                             new ReplicatingVarianceSwapEngine(5.0,
-                                                               callStrikes,
-                                                               putStrikes));
+                          new ReplicatingVarianceSwapEngine(stochProcess, 5.0,
+                                                            callStrikes,
+                                                            putStrikes));
 
         VarianceSwap varianceSwap(values[i].type,
                                   values[i].varStrike,
                                   values[i].nominal,
-                                  stochProcess,
-                                  exDate,
-                                  engine);
+                                  exDate);
+        varianceSwap.setPricingEngine(engine);
 
-        Real calculated = varianceSwap.fairVariance();
+        Real calculated = varianceSwap.variance();
         Real expected = values[i].result;
         Real error = std::fabs(calculated-expected);
         if (error>values[i].tol)
@@ -275,18 +274,18 @@ void VarianceSwapTest::testMCVarianceSwap() {
 
         boost::shared_ptr<PricingEngine> engine;
         engine =
-            MakeMCVarianceSwapEngine<PseudoRandom>().withStepsPerYear(250)
-                                                    .withSamples(1023)
-                                                    .withSeed(42);
+            MakeMCVarianceSwapEngine<PseudoRandom>(stochProcess)
+            .withStepsPerYear(250)
+            .withSamples(1023)
+            .withSeed(42);
 
         VarianceSwap varianceSwap(values[i].type,
                                   values[i].varStrike,
                                   values[i].nominal,
-                                  stochProcess,
-                                  exDate,
-                                  engine);
+                                  exDate);
+        varianceSwap.setPricingEngine(engine);
 
-        Real calculated = varianceSwap.fairVariance();
+        Real calculated = varianceSwap.variance();
         Real expected = values[i].result;
         Real error = std::fabs(calculated-expected);
         if (error>values[i].tol)

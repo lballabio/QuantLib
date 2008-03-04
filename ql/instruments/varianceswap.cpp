@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2006 Warren Chou
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,64 +26,19 @@ namespace QuantLib {
                           Position::Type position,
                           Real strike,
                           Real notional,
-                          const boost::shared_ptr<StochasticProcess>& process,
-                          const Date& maturityDate,
-                          const boost::shared_ptr<PricingEngine>& engine)
+                          const Date& maturityDate)
     : position_(position), strike_(strike), notional_(notional),
-      maturityDate_(maturityDate) {
-        process_ =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-        QL_REQUIRE(process_, "Black-Scholes process required");
+      maturityDate_(maturityDate) {}
 
-        setPricingEngine(engine);
-    }
-
-    void VarianceSwap::performCalculations() const {
-        DiscountFactor riskFreeDiscount =
-            process_->riskFreeRate()->discount(maturityDate_);
-        Instrument::performCalculations();
-        errorEstimate_ = Null<Real>();
-        Real multiplier;
-        switch (position_) {
-          case Position::Long:
-            multiplier = 1.0;
-            break;
-          case Position::Short:
-            multiplier = -1.0;
-            break;
-          default:
-            QL_FAIL("Unknown position");
-        }
-        NPV_ = multiplier * riskFreeDiscount * notional_ *
-            (fairVariance_ - strike_);
-    }
-
-    Real VarianceSwap::fairVariance() const {
+    Real VarianceSwap::variance() const {
         calculate();
-        QL_REQUIRE(fairVariance_ != Null<Real>(), "result not available");
-        return fairVariance_;
-    }
-
-    std::vector<std::pair<Real, Real> >
-    VarianceSwap::optionWeights(Option::Type type) const {
-        calculate();
-        QL_REQUIRE(optionWeights_ != WeightsType(), "result not available");
-        std::vector<std::pair<Real, Real> > w;
-        for (WeightsType::const_iterator i=optionWeights_.begin();
-             i<optionWeights_.end();
-             i++) {
-            boost::shared_ptr<StrikedTypePayoff> payoff = i->first;
-            if (payoff->optionType() == type)
-                w.push_back(std::make_pair(payoff->strike(), i->second));
-        }
-        return w;
+        QL_REQUIRE(variance_ != Null<Real>(), "result not available");
+        return variance_;
     }
 
     void VarianceSwap::setupExpired() const {
         Instrument::setupExpired();
-        fairVariance_ = Null<Real>();
-        optionWeights_.clear();
+        variance_ = Null<Real>();
     }
 
     void VarianceSwap::setupArguments(PricingEngine::arguments* args) const {
@@ -91,7 +46,6 @@ namespace QuantLib {
             dynamic_cast<VarianceSwap::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
-        arguments->stochasticProcess = process_;
         arguments->position = position_;
         arguments->strike = strike_;
         arguments->notional = notional_;
@@ -102,15 +56,10 @@ namespace QuantLib {
         Instrument::fetchResults(r);
         const VarianceSwap::results* results =
             dynamic_cast<const VarianceSwap::results*>(r);
-        fairVariance_ = results->fairVariance;
-        optionWeights_ = results->optionWeights;
+        variance_ = results->variance;
     }
 
     void VarianceSwap::arguments::validate() const {
-        QL_REQUIRE(!stochasticProcess->stateVariable().empty(),
-                   "no underlying given");
-        QL_REQUIRE(stochasticProcess->stateVariable()->value() > 0.0,
-                   "negative or zero underlying given");
         QL_REQUIRE(strike != Null<Real>(), "no strike given");
         QL_REQUIRE(strike > 0.0, "negative or null strike given");
         QL_REQUIRE(notional != Null<Real>(), "no notional given");

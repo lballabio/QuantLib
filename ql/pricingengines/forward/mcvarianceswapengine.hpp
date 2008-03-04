@@ -56,24 +56,47 @@ namespace QuantLib {
         typedef typename McSimulation<SingleVariate,RNG,S>::stats_type
             stats_type;
         // constructor
-        MCVarianceSwapEngine(Size timeSteps,
-                             Size timeStepsPerYear,
-                             bool brownianBridge,
-                             bool antitheticVariate,
-                             Size requiredSamples,
-                             Real requiredTolerance,
-                             Size maxSamples,
-                             BigNatural seed);
-        // calculate fair variance via Monte Carlo
+        MCVarianceSwapEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size timeSteps,
+             Size timeStepsPerYear,
+             bool brownianBridge,
+             bool antitheticVariate,
+             Size requiredSamples,
+             Real requiredTolerance,
+             Size maxSamples,
+             BigNatural seed);
+        // calculate variance via Monte Carlo
         void calculate() const {
             McSimulation<SingleVariate,RNG,S>::calculate(requiredTolerance_,
                                                          requiredSamples_,
                                                          maxSamples_);
-            results_.fairVariance =
+            results_.variance =
                      this->mcModel_->sampleAccumulator().mean();
-            if (RNG::allowsErrorEstimate)
-            results_.errorEstimate =
-                this->mcModel_->sampleAccumulator().errorEstimate();
+
+            DiscountFactor riskFreeDiscount =
+                process_->riskFreeRate()->discount(arguments_.maturityDate);
+            Real multiplier;
+            switch (arguments_.position) {
+              case Position::Long:
+                multiplier = 1.0;
+                break;
+              case Position::Short:
+                multiplier = -1.0;
+                break;
+              default:
+                QL_FAIL("Unknown position");
+            }
+            multiplier *= riskFreeDiscount * arguments_.notional;
+
+            results_.value =
+                multiplier * (results_.variance - arguments_.strike);
+
+            if (RNG::allowsErrorEstimate) {
+                Real varianceError =
+                    this->mcModel_->sampleAccumulator().errorEstimate();
+                results_.errorEstimate = multiplier * varianceError;
+            }
         }
       protected:
         // McSimulation implementation
@@ -82,17 +105,18 @@ namespace QuantLib {
 
         boost::shared_ptr<path_generator_type> pathGenerator() const {
 
-            Size dimensions = arguments_.stochasticProcess->factors();
+            Size dimensions = process_->factors();
 
             TimeGrid grid = timeGrid();
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(dimensions*(grid.size()-1),seed_);
 
             return boost::shared_ptr<path_generator_type>(
-                         new path_generator_type(arguments_.stochasticProcess,
-                                                 grid, gen, brownianBridge_));
+                         new path_generator_type(process_, grid, gen,
+                                                 brownianBridge_));
         }
         // data members
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size timeSteps_, timeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
@@ -105,7 +129,8 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCVarianceSwapEngine {
       public:
-        MakeMCVarianceSwapEngine();
+        MakeMCVarianceSwapEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
         // named parameters
         MakeMCVarianceSwapEngine& withSteps(Size steps);
         MakeMCVarianceSwapEngine& withStepsPerYear(Size steps);
@@ -118,6 +143,7 @@ namespace QuantLib {
         // conversion to pricing engine
         operator boost::shared_ptr<PricingEngine>() const;
       private:
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         bool antithetic_;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
@@ -125,9 +151,9 @@ namespace QuantLib {
         BigNatural seed_;
     };
 
-    class FairVariancePathPricer : public PathPricer<Path> {
+    class VariancePathPricer : public PathPricer<Path> {
       public:
-        FairVariancePathPricer(
+        VariancePathPricer(
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
         : process_(process) {}
         Real operator()(const Path& path) const;
@@ -139,15 +165,18 @@ namespace QuantLib {
 
     template<class RNG, class S>
     inline
-    MCVarianceSwapEngine<RNG,S>::MCVarianceSwapEngine(Size timeSteps,
-                                                      Size timeStepsPerYear,
-                                                      bool brownianBridge,
-                                                      bool antitheticVariate,
-                                                      Size requiredSamples,
-                                                      Real requiredTolerance,
-                                                      Size maxSamples,
-                                                      BigNatural seed)
+    MCVarianceSwapEngine<RNG,S>::MCVarianceSwapEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size timeSteps,
+             Size timeStepsPerYear,
+             bool brownianBridge,
+             bool antitheticVariate,
+             Size requiredSamples,
+             Real requiredTolerance,
+             Size maxSamples,
+             BigNatural seed)
     : McSimulation<SingleVariate,RNG,S>(antitheticVariate, false),
+      process_(process),
       timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
@@ -164,8 +193,7 @@ namespace QuantLib {
     template <class RNG, class S>
     inline TimeGrid MCVarianceSwapEngine<RNG,S>::timeGrid() const {
 
-        Time t = this->arguments_.stochasticProcess->time(
-                                               this->arguments_.maturityDate);
+        Time t = this->process_->time(this->arguments_.maturityDate);
 
         if (timeSteps_ != Null<Size>()) {
             return TimeGrid(t, this->timeSteps_);
@@ -184,20 +212,17 @@ namespace QuantLib {
         typename MCVarianceSwapEngine<RNG,S>::path_pricer_type>
     MCVarianceSwapEngine<RNG,S>::pathPricer() const {
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                this->arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-
         return boost::shared_ptr<
             typename MCVarianceSwapEngine<RNG,S>::path_pricer_type>(
-              new FairVariancePathPricer(this->arguments_.stochasticProcess));
+                                            new VariancePathPricer(process_));
     }
 
 
     template <class RNG, class S>
-    inline MakeMCVarianceSwapEngine<RNG,S>::MakeMCVarianceSwapEngine()
-    : antithetic_(false), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+    inline MakeMCVarianceSwapEngine<RNG,S>::MakeMCVarianceSwapEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+    : process_(process), antithetic_(false),
+      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
       samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()), brownianBridge_(false), seed_(0) {}
 
@@ -271,14 +296,15 @@ namespace QuantLib {
                    "number of steps not given");
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified");
-        return boost::shared_ptr<PricingEngine>(new
-            MCVarianceSwapEngine<RNG,S>(steps_,
-                                        stepsPerYear_,
-                                        brownianBridge_,
-                                        antithetic_,
-                                        samples_, tolerance_,
-                                        maxSamples_,
-                                        seed_));
+        return boost::shared_ptr<PricingEngine>(
+                         new MCVarianceSwapEngine<RNG,S>(process_,
+                                                         steps_,
+                                                         stepsPerYear_,
+                                                         brownianBridge_,
+                                                         antithetic_,
+                                                         samples_, tolerance_,
+                                                         maxSamples_,
+                                                         seed_));
     }
 
 
@@ -303,7 +329,7 @@ namespace QuantLib {
     }
 
 
-    inline Real FairVariancePathPricer::operator()(const Path& path) const {
+    inline Real VariancePathPricer::operator()(const Path& path) const {
         QL_REQUIRE(path.length() > 0, "the path cannot be empty");
         Time t0 = path.timeGrid().front();
         Time t = path.timeGrid().back();
