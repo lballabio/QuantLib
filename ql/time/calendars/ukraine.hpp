@@ -39,7 +39,7 @@ namespace QuantLib {
         <li>International Women's Day, March 8th</li>
         <li>Easter Monday</li>
         <li>Holy Trinity Day, 50 days after Easter</li>
-        <li>International Workers’ Solidarity Days, May 1st and 2nd</li>
+        <li>International Workers' Solidarity Days, May 1st and 2nd</li>
         <li>Victory Day, May 9th</li>
         <li>Constitution Day, June 28th</li>
         <li>Independence Day, August 24th</li>
