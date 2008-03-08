@@ -29,23 +29,27 @@
  using the perfex library, http://user.it.uu.se/~mikpe/linux/perfctr
  and PAPI, http://icl.cs.utk.edu/papi
 
- Example results: 1. Pentium4 Dual@2.8Ghz: 423.8 mflops
-                  2. Pentium4@3.0Ghz     : 266.3 mflops
-                  3. PentiumIII@1.1Ghz   : 146.2 mflops
-                  4. Alpha 2xEV68@833Mhz : 184.6 mflops
-                  5. Strong ARM@206Mhz   :   1.4 mflops
+ Example results: 1. Core2 Quad@2.4Ghz   :1186.3 mflops
+                  2. Pentium4 Dual@2.8Ghz: 423.8 mflops
+                  3. Pentium4@3.0Ghz     : 266.3 mflops
+                  4. PentiumIII@1.1Ghz   : 146.2 mflops
+                  5. Alpha 2xEV68@833Mhz : 184.6 mflops
+                  6. Strong ARM@206Mhz   :   1.4 mflops
 
  Remarks: OS: Linux, static libs
-  1. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
+  1. gcc-4.2.1, -O3 -ffast-math
                 -mfpmath=sse,387 -msse2 -funroll-all-loops
-                slightly modified QL version, to enable multi threading.
+                slightly modified QL version to enable multi threading.
   2. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
                 -mfpmath=sse,387 -msse2 -funroll-all-loops
-  3. gcc-4.1.1, -O3 -march=pentium3 -ffast-math
+                slightly modified QL version to enable multi threading.
+  3. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
+                -mfpmath=sse,387 -msse2 -funroll-all-loops
+  4. gcc-4.1.1, -O3 -march=pentium3 -ffast-math
                 -mfpmath=sse,387 -msse -funroll-all-loops
-  4. gcc-3.3.5, -O3 -mcpu=e67 -funroll-all-loops
-                slightly modified QL version, to enable multi threading.
-  5. gcc-3.4.3, -O2 -g on a Zaurus PDA
+  5. gcc-3.3.5, -O3 -mcpu=e67 -funroll-all-loops
+                slightly modified QL version to enable multi threading.
+  6. gcc-3.4.3, -O2 -g on a Zaurus PDA
 
   This benchmark is derived from quantlibtestsuite.cpp. Please see the
   copyrights therein.
