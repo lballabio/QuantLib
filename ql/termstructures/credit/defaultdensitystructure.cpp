@@ -36,7 +36,8 @@ namespace QuantLib {
             remapper(const F& f, Time T) : f(f), T(T) {}
             // This remaps [-1,1] to [0,T]. No differential included.
             Real operator()(Real x) const {
-                return f((x+1.0)*T/2.0);
+                const Real arg = (x+1.0)*T/2.0;
+                return f(arg);
             }
         };
 
