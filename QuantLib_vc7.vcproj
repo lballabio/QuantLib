@@ -5420,10 +5420,19 @@
 				RelativePath=".\ql\processes\all.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\processes\batesprocess.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\processes\batesprocess.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\processes\blackscholesprocess.cpp">
 			</File>
 			<File
 				RelativePath=".\ql\processes\blackscholesprocess.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\processes\defaultable.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\processes\eulerdiscretization.cpp">
@@ -5560,13 +5569,13 @@
 				RelativePath=".\ql\termstructures\bootstraphelper.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\termstructures\iterativebootstrap.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\termstructures\inflationtermstructure.cpp">
 			</File>
 			<File
 				RelativePath=".\ql\termstructures\inflationtermstructure.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\iterativebootstrap.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\termstructures\voltermstructure.cpp">
