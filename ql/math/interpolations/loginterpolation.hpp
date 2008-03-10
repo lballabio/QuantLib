@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2002, 2003, 2008 Ferdinando Ametrano
  Copyright (C) 2004, 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -27,6 +27,7 @@
 
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/interpolations/cubicspline.hpp>
+#include <ql/math/interpolations/constrainedcubicspline.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 namespace QuantLib {
@@ -59,13 +60,14 @@ namespace QuantLib {
                 return std::exp(interpolation_(x, true));
             }
             Real primitive(Real) const {
-                QL_FAIL("LogLinear primitive not implemented");
+                QL_FAIL("LogInterpolation primitive not implemented");
             }
-            Real derivative(Real) const {
-                QL_FAIL("LogLinear derivative not implemented");
+            Real derivative(Real x) const {
+                return value(x)*interpolation_.derivative(x, true);
             }
-            Real secondDerivative(Real) const {
-                QL_FAIL("LogLinear secondDerivative not implemented");
+            Real secondDerivative(Real x) const {
+                return derivative(x)*interpolation_.derivative(x, true) +
+                            value(x)*interpolation_.secondDerivative(x, true);
             }
           private:
             std::vector<Real> logY_;
@@ -109,6 +111,21 @@ namespace QuantLib {
                                                     rightCondition,
                                                     rightConditionValue,
                                                     monotonicityConstraint)));
+            impl_->update();
+        }
+    };
+
+    //! %log-ConstrainedCubic interpolation between discrete points
+    class ConstrainedLogCubicInterpolation : public Interpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        ConstrainedLogCubicInterpolation(
+                    const I1& xBegin, const I1& xEnd,
+                    const I2& yBegin) {
+            impl_ = boost::shared_ptr<Interpolation::Impl>(
+                new detail::LogInterpolationImpl<I1,I2,ConstrainedCubicSpline>(
+                                        xBegin, xEnd, yBegin));
             impl_->update();
         }
     };
@@ -183,6 +200,18 @@ namespace QuantLib {
         CubicSplineInterpolation::BoundaryCondition lefType_, rightType_;
         Real leftValue_, rightValue_;
         bool monotonic_;
+    };
+
+    //! Constrained log-cubic interpolation factory and traits
+    class ConstrainedLogCubic {
+      public:
+        template <class I1, class I2>
+        Interpolation interpolate(const I1& xBegin, const I1& xEnd,
+                                  const I2& yBegin) const {
+            return ConstrainedLogCubicInterpolation(xBegin, xEnd, yBegin);
+        }
+        static const bool global = true;
+        static const Size requiredPoints = 2;
     };
 
 }
