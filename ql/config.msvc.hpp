@@ -171,8 +171,9 @@
 // see the corresponding pragmas in the 7.1 section
 #  pragma warning(disable: 4267)
 #  pragma warning(disable: 4224)
-// non-ASCII characters
-#  pragma warning(disable: 4819)
+// non-ASCII characters - Disabling this warning here is ineffective
+// and the change has been made instead under project properties
+//#  pragma warning(disable: 4819)
 //#elif (_MSC_VER == 1500)
 //// move inside here configs specific to VC++ 9 (2008)
 //#  ifndef _SCL_SECURE_NO_DEPRECATE
