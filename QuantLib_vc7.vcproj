@@ -5432,9 +5432,6 @@
 				RelativePath=".\ql\processes\blackscholesprocess.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\processes\defaultable.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\processes\eulerdiscretization.cpp">
 			</File>
 			<File
