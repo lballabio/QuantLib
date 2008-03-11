@@ -5,6 +5,7 @@
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
+#include <ql/math/interpolations/constrainedcubicspline.hpp>
 #include <ql/math/interpolations/cubicspline.hpp>
 #include <ql/math/interpolations/extrapolation.hpp>
 #include <ql/math/interpolations/flatextrapolation2d.hpp>
