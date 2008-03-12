@@ -25,17 +25,14 @@
 namespace QuantLib {
 
     void SmileSection::update() {
-        if (!isFloating_)
-            return;
-        referenceDate_ = Settings::instance().evaluationDate();
-        initializeExerciseTime();
+        if (isFloating_) {
+            referenceDate_ = Settings::instance().evaluationDate();
+            initializeExerciseTime();
+        }
         //LazyObject::update();
     }
 
     void SmileSection::initializeExerciseTime() const {
-        if (!isFloating_)
-            return;
-
         QL_REQUIRE(exerciseDate_>=referenceDate_,
                    "expiry date (" << exerciseDate_ <<
                    ") must be greater than reference date (" <<
