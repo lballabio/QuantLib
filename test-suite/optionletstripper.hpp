@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2008 Ferdinando Ametrano
- Copyright (C) 2007 Laurent Hoffmann
+ Copyright (C) 2007, 2008 Laurent Hoffmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,8 +28,10 @@
 
 class OptionletStripperTest {
   public:
-    static void testFlatTermVolatilityStripping();
-    static void testTermVolatilityStripping();
+    static void testFlatTermVolatilityStripping1();
+    static void testTermVolatilityStripping1();
+    static void testFlatTermVolatilityStripping2();
+    static void testTermVolatilityStripping2();
     static boost::unit_test_framework::test_suite* suite();
 };
 
