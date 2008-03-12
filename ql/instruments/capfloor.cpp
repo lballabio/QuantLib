@@ -22,10 +22,12 @@
 
 #include <ql/instruments/capfloor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
-//#include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/solvers1d/newtonsafe.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/utilities/dataformatters.hpp>
+
+using boost::shared_ptr;
 
 namespace QuantLib {
 
@@ -163,12 +165,27 @@ namespace QuantLib {
         return CashFlows::maturityDate(floatingLeg_);
     }
 
-    boost::shared_ptr<FloatingRateCoupon>
+    shared_ptr<FloatingRateCoupon>
     CapFloor::lastFloatingRateCoupon() const {
-        boost::shared_ptr<CashFlow> lastCF(floatingLeg_.back());
-        boost::shared_ptr<FloatingRateCoupon> lastFloatingCoupon =
+        shared_ptr<CashFlow> lastCF(floatingLeg_.back());
+        shared_ptr<FloatingRateCoupon> lastFloatingCoupon =
             boost::dynamic_pointer_cast<FloatingRateCoupon>(lastCF);
         return lastFloatingCoupon;
+    }
+
+    shared_ptr<CapFloor> CapFloor::optionlet(const Size i) const {
+        QL_REQUIRE(i < floatingLeg().size(),
+                   io::ordinal(i+1) << " optionlet does not exist, only " <<
+                   floatingLeg().size());
+        Leg cf(1, floatingLeg()[i]);
+
+        std::vector<Rate> cap, floor;
+        if (type() == Cap || type() == Collar)
+            cap.push_back(capRates()[i]);
+        if (type() == Floor || type() == Collar)
+            floor.push_back(floorRates()[i]);
+
+        return shared_ptr<CapFloor>(new CapFloor(type(), cf, cap, floor));
     }
 
     void CapFloor::setupArguments(PricingEngine::arguments* args) const {
@@ -194,7 +211,7 @@ namespace QuantLib {
         Date today = Settings::instance().evaluationDate();
 
         for (Size i=0; i<n; ++i) {
-            boost::shared_ptr<FloatingRateCoupon> coupon =
+            shared_ptr<FloatingRateCoupon> coupon =
                 boost::dynamic_pointer_cast<FloatingRateCoupon>(
                                                              floatingLeg_[i]);
             QL_REQUIRE(coupon, "non-FloatingRateCoupon given");

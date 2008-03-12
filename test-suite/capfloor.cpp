@@ -272,10 +272,10 @@ void CapFloorTest::testConsistency() {
           for (Size l=0; l<LENGTH(vols); l++) {
 
               Leg leg = vars.makeLeg(startDate,lengths[i]);
-              boost::shared_ptr<Instrument> cap =
+              boost::shared_ptr<CapFloor> cap =
                   vars.makeCapFloor(CapFloor::Cap,leg,
                                     cap_rates[j],vols[l]);
-              boost::shared_ptr<Instrument> floor =
+              boost::shared_ptr<CapFloor> floor =
                   vars.makeCapFloor(CapFloor::Floor,leg,
                                     floor_rates[k],vols[l]);
               Collar collar(leg,std::vector<Rate>(1,cap_rates[j]),
@@ -292,6 +292,74 @@ void CapFloorTest::testConsistency() {
                     << "    floor value:  " << floor->NPV()
                     << " at strike: " << io::rate(floor_rates[k]) << "\n"
                     << "    collar value: " << collar.NPV());
+
+
+              // test re-composition by optionlets, N.B. two per year
+              Real capletsNPV = 0.0;
+              std::vector<boost::shared_ptr<CapFloor> > caplets;
+              for (Integer m=0; m<lengths[i]*2; m++) {
+                caplets.push_back(cap->optionlet(m));
+                caplets[m]->setPricingEngine(vars.makeEngine(vols[l]));
+                capletsNPV += caplets[m]->NPV();
+              }
+
+              if (std::fabs(cap->NPV() - capletsNPV) > 1e-10) {
+                BOOST_FAIL(
+                  "sum of caplet NPVs does not equal cap NPV:\n"
+                    << "    length:       " << lengths[i] << " years\n"
+                    << "    volatility:   " << io::volatility(vols[l]) << "\n"
+                    << "    cap value:    " << cap->NPV()
+                    << " at strike: " << io::rate(cap_rates[j]) << "\n"
+                    << "    sum of caplets value:  " << capletsNPV
+                    << " at strike (first): " << io::rate(caplets[0]->capRates()[0]) << "\n"
+                );
+              }
+
+              Real floorletsNPV = 0.0;
+              std::vector<boost::shared_ptr<CapFloor> > floorlets;
+              for (Integer m=0; m<lengths[i]*2; m++) {
+                floorlets.push_back(floor->optionlet(m));
+                floorlets[m]->setPricingEngine(vars.makeEngine(vols[l]));
+                floorletsNPV += floorlets[m]->NPV();
+              }
+
+              if (std::fabs(floor->NPV() - floorletsNPV) > 1e-10) {
+                BOOST_FAIL(
+                  "sum of floorlet NPVs does not equal floor NPV:\n"
+                    << "    length:       " << lengths[i] << " years\n"
+                    << "    volatility:   " << io::volatility(vols[l]) << "\n"
+                    << "    cap value:    " << floor->NPV()
+                    << " at strike: " << io::rate(floor_rates[j]) << "\n"
+                    << "    sum of floorlets value:  " << floorletsNPV
+                    << " at strike (first): " << io::rate(floorlets[0]->floorRates()[0]) << "\n"
+                );
+              }
+
+              Real collarletsNPV = 0.0;
+              std::vector<boost::shared_ptr<CapFloor> > collarlets;
+              for (Integer m=0; m<lengths[i]*2; m++) {
+                collarlets.push_back(collar.optionlet(m));
+                collarlets[m]->setPricingEngine(vars.makeEngine(vols[l]));
+                collarletsNPV += collarlets[m]->NPV();
+              }
+
+              if (std::fabs(collar.NPV() - collarletsNPV) > 1e-10) {
+                BOOST_FAIL(
+                  "sum of collarlet NPVs does not equal floor NPV:\n"
+                    << "    length:       " << lengths[i] << " years\n"
+                    << "    volatility:   " << io::volatility(vols[l]) << "\n"
+                    << "    cap value:    " << collar.NPV()
+                    << " at strike floor: " << io::rate(floor_rates[j])
+                    << " at strike cap: " << io::rate(cap_rates[j]) << "\n"
+                    << "    sum of collarlets value:  " << collarletsNPV
+                    << " at strike floor (first): " << io::rate(collarlets[0]->floorRates()[0])
+                    << " at strike cap (first): " << io::rate(collarlets[0]->capRates()[0]) << "\n"
+                );
+              }
+
+
+
+
               }
           }
         }
