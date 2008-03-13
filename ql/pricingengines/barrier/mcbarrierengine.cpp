@@ -191,7 +191,7 @@ namespace QuantLib {
                 if (asset_price <= barrier_) {
                     isOptionActive = true;
                     if (knockNode == null)
-                        knockNode = i+1;
+                        knockNode = i;
                 }
             }
             break;
@@ -202,7 +202,7 @@ namespace QuantLib {
                 if (asset_price >= barrier_) {
                     isOptionActive = true;
                     if (knockNode == null)
-                        knockNode = i+1;
+                        knockNode = i;
                 }
             }
             break;
@@ -213,7 +213,7 @@ namespace QuantLib {
                 if (asset_price <= barrier_) {
                     isOptionActive = false;
                     if (knockNode == null)
-                        knockNode = i+1;
+                        knockNode = i;
                 }
             }
             break;
@@ -224,7 +224,7 @@ namespace QuantLib {
                 if (asset_price >= barrier_) {
                     isOptionActive = false;
                     if (knockNode == null)
-                        knockNode = i+1;
+                        knockNode = i;
                 }
             }
             break;
@@ -249,4 +249,3 @@ namespace QuantLib {
     }
 
 }
-
