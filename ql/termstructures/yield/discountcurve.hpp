@@ -28,6 +28,7 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/math/interpolations/loginterpolation.hpp>
 #include <ql/math/comparison.hpp>
+#include <boost/noncopyable.hpp>
 #include <vector>
 #include <utility>
 
@@ -36,7 +37,8 @@ namespace QuantLib {
     //! Term structure based on interpolation of discount factors
     /*! \ingroup yieldtermstructures */
     template <class Interpolator>
-    class InterpolatedDiscountCurve : public YieldTermStructure {
+    class InterpolatedDiscountCurve : public YieldTermStructure,
+                                      public boost::noncopyable {
       public:
         InterpolatedDiscountCurve(const std::vector<Date>& dates,
                                   const std::vector<DiscountFactor>& dfs,

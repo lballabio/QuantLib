@@ -27,6 +27,7 @@
 #include <ql/termstructures/yield/forwardstructure.hpp>
 #include <ql/math/interpolation.hpp>
 #include <ql/math/comparison.hpp>
+#include <boost/noncopyable.hpp>
 
 namespace QuantLib {
 
@@ -35,7 +36,8 @@ namespace QuantLib {
     //! Term structure based on interpolation of forward rates
     /*! \ingroup yieldtermstructures */
     template <class Interpolator>
-    class InterpolatedForwardCurve : public ForwardRateStructure {
+    class InterpolatedForwardCurve : public ForwardRateStructure,
+                                     public boost::noncopyable {
       public:
         // constructor
         InterpolatedForwardCurve(const std::vector<Date>& dates,

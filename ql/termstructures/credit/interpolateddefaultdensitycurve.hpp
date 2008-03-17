@@ -28,12 +28,14 @@
 
 #include <ql/termstructures/credit/defaultdensitystructure.hpp>
 #include <ql/math/interpolation.hpp>
+#include <boost/noncopyable.hpp>
 
 namespace QuantLib {
 
     //! interpolated default-density curve
     template <class Interpolator>
-    class InterpolatedDefaultDensityCurve : public DefaultDensityStructure {
+    class InterpolatedDefaultDensityCurve : public DefaultDensityStructure,
+                                            public boost::noncopyable {
       public:
         InterpolatedDefaultDensityCurve(const std::vector<Date>& dates,
                                         const std::vector<Real>& densities,

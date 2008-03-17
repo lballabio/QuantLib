@@ -28,6 +28,7 @@
 #include <ql/termstructures/inflationtermstructure.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/comparison.hpp>
+#include <boost/noncopyable.hpp>
 
 namespace QuantLib {
 
@@ -37,7 +38,8 @@ namespace QuantLib {
         \ingroup inflationtermstructures
     */
     template<class Interpolator>
-    class InterpolatedYoYInflationCurve: public YoYInflationTermStructure {
+    class InterpolatedYoYInflationCurve: public YoYInflationTermStructure,
+                                         public boost::noncopyable {
       public:
         InterpolatedYoYInflationCurve(const Date& referenceDate,
                                       const Calendar& calendar,

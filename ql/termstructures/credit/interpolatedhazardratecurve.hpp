@@ -29,12 +29,14 @@
 
 #include <ql/termstructures/credit/hazardratestructure.hpp>
 #include <ql/math/interpolation.hpp>
+#include <boost/noncopyable.hpp>
 
 namespace QuantLib {
 
     //! interpolated hazard-rate curve
     template <class Interpolator>
-    class InterpolatedHazardRateCurve : public HazardRateStructure {
+    class InterpolatedHazardRateCurve : public HazardRateStructure,
+                                        public boost::noncopyable {
       public:
         InterpolatedHazardRateCurve(const std::vector<Date>& dates,
                                     const std::vector<Real>& hazardRates,

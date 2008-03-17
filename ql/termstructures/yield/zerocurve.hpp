@@ -27,6 +27,7 @@
 #include <ql/termstructures/yield/zeroyieldstructure.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/comparison.hpp>
+#include <boost/noncopyable.hpp>
 #include <vector>
 #include <utility>
 
@@ -35,7 +36,8 @@ namespace QuantLib {
     //! Term structure based on interpolation of zero yields
     /*! \ingroup yieldtermstructures */
     template <class Interpolator>
-    class InterpolatedZeroCurve : public ZeroYieldStructure {
+    class InterpolatedZeroCurve : public ZeroYieldStructure,
+                                  public boost::noncopyable {
       public:
         // constructor
         InterpolatedZeroCurve(const std::vector<Date>& dates,

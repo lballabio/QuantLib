@@ -27,13 +27,15 @@
 #include <ql/termstructures/inflationtermstructure.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/comparison.hpp>
+#include <boost/noncopyable.hpp>
 
 namespace QuantLib {
 
     //! Inflation term structure based on the interpolation of zero rates.
     /*! \ingroup inflationtermstructures */
     template<class Interpolator>
-    class InterpolatedZeroInflationCurve : public ZeroInflationTermStructure {
+    class InterpolatedZeroInflationCurve : public ZeroInflationTermStructure,
+                                           public boost::noncopyable {
       public:
         InterpolatedZeroInflationCurve(const Date& referenceDate,
                                        const Calendar& calendar,
