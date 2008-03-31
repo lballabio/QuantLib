@@ -97,7 +97,9 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
                   boost_unit_test_framework-$CC \
                   boost_unit_test_framework \
                   boost_unit_test_framework-mt-$CC$CC_VERSION \
+                  boost_unit_test_framework-$CC$CC_VERSION-mt \
                   boost_unit_test_framework-mt-$CC \
+                  boost_unit_test_framework-$CC-mt \
                   boost_unit_test_framework-mt ; do
      LIBS="$ql_original_LIBS -l$boost_lib"
      # 1.33.1 or 1.34 static
