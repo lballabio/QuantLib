@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2006 Roland Lichters
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -50,6 +50,7 @@ namespace QuantLib {
       //! \name YieldTermStructure interface
       //@{
       DayCounter dayCounter() const;
+      Natural settlementDays() const;
       Calendar calendar() const;
       const Date& referenceDate() const;
       Date maxDate() const;
@@ -91,6 +92,10 @@ namespace QuantLib {
 
     inline Calendar PiecewiseZeroSpreadedTermStructure::calendar() const {
         return originalCurve_->calendar();
+    }
+
+    inline Natural PiecewiseZeroSpreadedTermStructure::settlementDays() const {
+        return originalCurve_->settlementDays();
     }
 
     inline const Date&

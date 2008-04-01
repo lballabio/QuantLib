@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -50,12 +51,11 @@ namespace QuantLib {
                     Real underlyingExchRateCorrelation);
         //! \name YieldTermStructure interface
         //@{
-        DayCounter dayCounter() const {
-            return underlyingDividendTS_->dayCounter();
-        }
+        DayCounter dayCounter() const;
         Calendar calendar() const;
+        Natural settlementDays() const;
         const Date& referenceDate() const;
-        Date maxDate() const { return maxDate_; }
+        Date maxDate() const;
         //@}
       protected:
         //! returns the zero yield as seen from the evaluation date
@@ -66,7 +66,6 @@ namespace QuantLib {
         Handle<BlackVolTermStructure> underlyingBlackVolTS_,
                                       exchRateBlackVolTS_;
         Real underlyingExchRateCorrelation_, strike_, exchRateATMlevel_;
-        Date maxDate_;
     };
 
 
@@ -93,21 +92,31 @@ namespace QuantLib {
         registerWith(foreignRiskFreeTS_);
         registerWith(underlyingBlackVolTS_);
         registerWith(exchRateBlackVolTS_);
+    }
 
-        maxDate_ = std::min(underlyingDividendTS_->maxDate(),
-                            riskFreeTS_->maxDate());
-        maxDate_ = std::min(maxDate_, foreignRiskFreeTS_->maxDate());
-        maxDate_ = std::min(maxDate_, underlyingBlackVolTS_->maxDate());
-        maxDate_ = std::min(maxDate_, exchRateBlackVolTS_->maxDate());
-
+    inline DayCounter QuantoTermStructure::dayCounter() const {
+        return underlyingDividendTS_->dayCounter();
     }
 
     inline Calendar QuantoTermStructure::calendar() const {
         return underlyingDividendTS_->calendar();
     }
 
+    inline Natural QuantoTermStructure::settlementDays() const {
+        return underlyingDividendTS_->settlementDays();
+    }
+
     inline const Date& QuantoTermStructure::referenceDate() const {
         return underlyingDividendTS_->referenceDate();
+    }
+
+    inline Date QuantoTermStructure::maxDate() const {
+        Date maxDate = std::min(underlyingDividendTS_->maxDate(),
+                                riskFreeTS_->maxDate());
+        maxDate = std::min(maxDate, foreignRiskFreeTS_->maxDate());
+        maxDate = std::min(maxDate, underlyingBlackVolTS_->maxDate());
+        maxDate = std::min(maxDate, exchRateBlackVolTS_->maxDate());
+        return maxDate;
     }
 
     inline Rate QuantoTermStructure::zeroYieldImpl(Time t) const {

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -44,10 +45,11 @@ namespace QuantLib {
                            const Handle<BlackVolTermStructure>& blackVolTS);
         //! \name YieldTermStructure interface
         //@{
-        DayCounter dayCounter() const { return riskFreeTS_->dayCounter(); }
+        DayCounter dayCounter() const;
         Calendar calendar() const;
+        Natural settlementDays() const;
         const Date& referenceDate() const;
-        Date maxDate() const { return maxDate_; }
+        Date maxDate() const;
         //@}
       protected:
         //! returns the discount factor as seen from the evaluation date
@@ -56,7 +58,6 @@ namespace QuantLib {
         Handle<YieldTermStructure> riskFreeTS_, dividendTS_;
         Handle<BlackVolTermStructure> blackVolTS_;
         Real underlyingLevel_;
-        Date maxDate_;
     };
 
 
@@ -73,20 +74,30 @@ namespace QuantLib {
         registerWith(riskFreeTS_);
         registerWith(dividendTS_);
         registerWith(blackVolTS_);
+    }
 
-        maxDate_ = std::min(dividendTS_->maxDate(),
-                            riskFreeTS_->maxDate());
-        maxDate_ = std::min(maxDate_, blackVolTS_->maxDate());
+    inline DayCounter DriftTermStructure::dayCounter() const {
+        return riskFreeTS_->dayCounter();
     }
 
     inline Calendar DriftTermStructure::calendar() const {
         return riskFreeTS_->calendar();
     }
 
+    inline Natural DriftTermStructure::settlementDays() const {
+        return riskFreeTS_->settlementDays();
+    }
+
     inline const Date& DriftTermStructure::referenceDate() const {
         // warning: here it is assumed that all TS have the same referenceDate
         //          It should be QL_REQUIREd
         return riskFreeTS_->referenceDate();
+    }
+
+    inline Date DriftTermStructure::maxDate() const {
+        return std::min(std::min(dividendTS_->maxDate(),
+                                 riskFreeTS_->maxDate()),
+                        blackVolTS_->maxDate());
     }
 
     inline Rate DriftTermStructure::zeroYieldImpl(Time t) const {

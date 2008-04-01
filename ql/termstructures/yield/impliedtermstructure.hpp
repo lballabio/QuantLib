@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -49,8 +50,9 @@ namespace QuantLib {
                              const Date& referenceDate);
         //! \name YieldTermStructure interface
         //@{
-        DayCounter dayCounter() const { return originalCurve_->dayCounter(); }
+        DayCounter dayCounter() const;
         Calendar calendar() const;
+        Natural settlementDays() const;
         Date maxDate() const;
         //@}
       protected:
@@ -70,8 +72,16 @@ namespace QuantLib {
         registerWith(originalCurve_);
     }
 
+    inline DayCounter ImpliedTermStructure::dayCounter() const {
+        return originalCurve_->dayCounter();
+    }
+
     inline Calendar ImpliedTermStructure::calendar() const {
         return originalCurve_->calendar();
+    }
+
+    inline Natural ImpliedTermStructure::settlementDays() const {
+        return originalCurve_->settlementDays();
     }
 
     inline Date ImpliedTermStructure::maxDate() const {

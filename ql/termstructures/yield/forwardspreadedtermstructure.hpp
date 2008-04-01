@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -51,6 +51,7 @@ namespace QuantLib {
         //@{
         DayCounter dayCounter() const;
         Calendar calendar() const;
+        Natural settlementDays() const;
         const Date& referenceDate() const;
         Date maxDate() const;
         Time maxTime() const;
@@ -80,6 +81,10 @@ namespace QuantLib {
 
     inline Calendar ForwardSpreadedTermStructure::calendar() const {
         return originalCurve_->calendar();
+    }
+
+    inline Natural ForwardSpreadedTermStructure::settlementDays() const {
+        return originalCurve_->settlementDays();
     }
 
     inline const Date& ForwardSpreadedTermStructure::referenceDate() const {
