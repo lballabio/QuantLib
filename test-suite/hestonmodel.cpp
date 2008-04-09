@@ -525,7 +525,7 @@ void HestonModelTest::testDifferentIntegrals() {
     Handle<YieldTermStructure> dividendTS(flatRate(0.03, dayCounter));
 
     const Real strikes[] = { 0.5, 0.7, 1.0, 1.25, 1.5, 2.0 };
-    const Real maturities[] = { 1, 2, 3, 12, 60, 120, 360};
+    const Integer maturities[] = { 1, 2, 3, 12, 60, 120, 360};
     const Option::Type types[] ={ Option::Put, Option::Call };
 
     const HestonParameter equityfx      = { 0.07, 2.0, 0.04, 0.55, -0.8 };
