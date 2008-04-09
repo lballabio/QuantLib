@@ -2037,6 +2037,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\integrals\gausslobattointegral.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\integrals\gausslobattointegral.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\integrals\integral.cpp"
 					>
 				</File>
