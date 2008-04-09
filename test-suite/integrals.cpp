@@ -23,6 +23,7 @@
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
+#include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/termstructures/volatility/abcd.hpp>
@@ -96,6 +97,12 @@ void IntegralTest::testGaussKronrodAdaptive() {
     testSeveral(GaussKronrodAdaptive(tolerance, maxEvaluations));
 }
 
+void IntegralTest::testGaussLobatto() {
+    BOOST_MESSAGE("Testing adaptive Gauss-Lobatto integration...");
+    Size maxEvaluations = 1000;
+    testSeveral(GaussLobattoIntegral(maxEvaluations, tolerance));
+}
+
 void IntegralTest::testGaussKronrodNonAdaptive() {
     BOOST_MESSAGE("Testing non-adaptive Gauss-Kronrod integration...");
     Real precision = tolerance;
@@ -115,6 +122,7 @@ test_suite* IntegralTest::suite() {
     suite->add(BOOST_TEST_CASE(&IntegralTest::testSimpson));
     suite->add(BOOST_TEST_CASE(&IntegralTest::testGaussKronrodAdaptive));
     suite->add(BOOST_TEST_CASE(&IntegralTest::testGaussKronrodNonAdaptive));
+    suite->add(BOOST_TEST_CASE(&IntegralTest::testGaussLobatto));
     return suite;
 }
 

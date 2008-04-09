@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004, 2005 Klaus Spanderen
+ Copyright (C) 2004, 2005, 2008 Klaus Spanderen
  Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -23,17 +23,35 @@
   based on fourier transformation
 */
 
-#include <ql/pricingengines/vanilla/analytichestonengine.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/math/integrals/simpsonintegral.hpp>
+#include <ql/math/integrals/kronrodintegral.hpp>
+#include <ql/math/integrals/trapezoidintegral.hpp>
+#include <ql/math/integrals/gausslobattointegral.hpp>
+
 #include <ql/instruments/payoffs.hpp>
+#include <ql/pricingengines/vanilla/analytichestonengine.hpp>
+
+#if defined(QL_PATCH_MSVC71) || defined(QL_PATCH_MSVC80)
+#pragma warning(disable: 4180)
+#endif
+
+#include <boost/lambda/if.hpp> 
+#include <boost/lambda/bind.hpp>
+#include <boost/lambda/lambda.hpp>
+
+using namespace boost::lambda;
 
 namespace QuantLib {
 
     // helper class for integration
-    class AnalyticHestonEngine::Fj_Helper {
+    class AnalyticHestonEngine::Fj_Helper 
+        : public std::unary_function<Real, Real> {
       public:
         Fj_Helper(const VanillaOption::arguments& arguments,
                   const boost::shared_ptr<HestonModel>& model,
                   const AnalyticHestonEngine* const engine,
+                  ComplexLogFormula cpxLog,
                   Time term, Real ratio, Size j);
 
         Real operator()(Real phi)      const;
@@ -42,7 +60,8 @@ namespace QuantLib {
         const Size j_;
         const VanillaOption::arguments& arg_;
         const Real kappa_, theta_, sigma_, v0_;
-
+        const ComplexLogFormula cpxLog_;
+        
         // helper variables
         const Time term_;
         const Real x_, sx_, dd_;
@@ -61,11 +80,12 @@ namespace QuantLib {
         const VanillaOption::arguments& arguments,
         const boost::shared_ptr<HestonModel>& model,
         const AnalyticHestonEngine* const engine,
+        ComplexLogFormula cpxLog,
         Time term, Real ratio, Size j)
     : j_ (j), arg_(arguments),
       kappa_(model->kappa()), theta_(model->theta()),
       sigma_(model->sigma()), v0_(model->v0()),
-      term_(term),
+      cpxLog_(cpxLog), term_(term),
       x_(std::log(model->process()->s0()->value())),
       sx_(std::log(boost::dynamic_pointer_cast<StrikedTypePayoff>
                    (arg_.payoff)->strike())),
@@ -83,57 +103,104 @@ namespace QuantLib {
         const std::complex<Real> d =
             std::sqrt(t1*t1 - sigma2_*phi
                       *std::complex<Real>(-phi, (j_== 1)? 1 : -1));
-        const std::complex<Real> p  = (t1+d)/(t1 - d);
         const std::complex<Real> ex = std::exp(-d*term_);
 
-        // next term: g = std::log((1.0 - p*std::exp(d*term_))/(1.0 - p))
-        std::complex<Real> g;
+        if (cpxLog_ == Gatheral) {
+            if (phi != 0.0) {
+                const std::complex<Real> p = (t1-d)/(t1+d);
+                const std::complex<Real> g 
+                    = std::log((1.0 - p*std::exp(-d*term_))/(1.0 - p));
+                
+                return
+                    std::exp(v0_*(t1-d)*(1.0-ex)/(sigma2_*(1.0-ex*p))
+                             + (kappa_*theta_)/sigma2_*((t1-d)*term_-2.0*g)
+                             + std::complex<Real>(0.0, phi*(dd_-sx_))
+                             + engine_->addOnTerm(phi, term_, j_)
+                             ).imag()/phi;
+            }
+            else {
+                // use l'Hospital's rule to get lim_{phi->0}
+                if (j_ == 1) {
+                    const Real kmr = rsigma_-kappa_;
+                    if (std::fabs(kmr) > 1e-7) {
+                        return dd_-sx_ 
+                            + (std::exp(kmr*term_)*kappa_*theta_
+                               -kappa_*theta_*(kmr*term_+1.0) ) / (2*kmr*kmr) 
+                            - v0_*(1.0-std::exp(kmr*term_)) / (2.0*kmr);
+                    }
+                    else
+                        // \kappa = \rho * \sigma
+                        return dd_-sx_ + 0.25*kappa_*theta_*term_*term_ 
+                                       + 0.5*v0_*term_;
+                }
+                else {
+                    const std::complex<Real> p = (t1-d)/(t1+d);
+                    const std::complex<Real> g 
+                        = std::log((1.0 - p*std::exp(-d*term_))/(1.0 - p));
 
-        // the exp of the following expression is needed.
-        const std::complex<Real> e = std::log(p)+d*term_;
-
-        // does it fit to the machine precision?
-        if (std::exp(-e.real()) > QL_EPSILON) {
-            g = std::log((1.0 - p*std::exp(d*term_))/(1.0 - p));
-        } else {
-            // use a "big phi" approximation
-            g = d*term_ + std::log(p/(p - 1.0));
-
-            if (g.imag() > M_PI || g.imag() <= -M_PI) {
-                // get back to principal branch of the complex logarithm
-                Real im = std::fmod(g.imag(), 2*M_PI);
-                if (im > M_PI)
-                    im -= 2*M_PI;
-                else if (im <= -M_PI)
-                    im += 2*M_PI;
-
-                g = std::complex<Real>(g.real(), im);
+                    return dd_-sx_
+                        - (std::exp(-kappa_*term_)*kappa_*theta_
+                           +kappa_*theta_*(kappa_*term_-1.0))/(2*kappa_*kappa_)
+                        - v0_*(1.0-std::exp(-kappa_*term_))/(2*kappa_);
+                }
             }
         }
+        else if (cpxLog_ == BranchCorrection) {
+            const std::complex<Real> p  = (t1+d)/(t1 - d);
 
-        // be careful here as we have to use a log branch correction
-        // to deal with the discontinuities of the complex logarithm.
-        // the principal branch is not always the correct one.
-        // (s. A. Sepp, chapter 4)
-        // remark: there is still the change that we miss a branch
-        // if the order of the integration is not high enough.
-        const Real tmp = g.imag() - g_km1_;
-        if (tmp <= -M_PI)
-            ++b_;
-        else if (tmp > M_PI)
-            --b_;
+            // next term: g = std::log((1.0 - p*std::exp(d*term_))/(1.0 - p))
+            std::complex<Real> g;
+            
+            g = std::log((1.0 - p*std::exp(-d*term_))/(1.0 - p));
 
-        g_km1_ = g.imag();
-        g += std::complex<Real>(0, 2*b_*M_PI);
-
-        return std::exp(v0_*(t1+d)*(ex-1.0)/(sigma2_*(ex-p))
-                        + (kappa_*theta_)/sigma2_*((t1+d)*term_-2.0*g)
-                        + std::complex<Real>(0,phi*(dd_-sx_))
-                        + engine_->addOnTerm(phi, term_, j_)
-                        ).imag()/phi;
+            // the exp of the following expression is needed.
+            const std::complex<Real> e = std::log(p)+d*term_;
+            
+            // does it fit to the machine precision?
+            if (std::exp(-e.real()) > QL_EPSILON) {
+                g = std::log((1.0 - p*std::exp(d*term_))/(1.0 - p));
+            } else {
+                // use a "big phi" approximation
+                g = d*term_ + std::log(p/(p - 1.0));
+                
+                if (g.imag() > M_PI || g.imag() <= -M_PI) {
+                    // get back to principal branch of the complex logarithm
+                    Real im = std::fmod(g.imag(), 2*M_PI);
+                    if (im > M_PI)
+                        im -= 2*M_PI;
+                    else if (im <= -M_PI)
+                        im += 2*M_PI;
+                    
+                    g = std::complex<Real>(g.real(), im);
+                }
+            }
+            
+            // be careful here as we have to use a log branch correction
+            // to deal with the discontinuities of the complex logarithm.
+            // the principal branch is not always the correct one.
+            // (s. A. Sepp, chapter 4)
+            // remark: there is still the change that we miss a branch
+            // if the order of the integration is not high enough.
+            const Real tmp = g.imag() - g_km1_;
+            if (tmp <= -M_PI)
+                ++b_;
+            else if (tmp > M_PI)
+                --b_;
+            
+            g_km1_ = g.imag();
+            g += std::complex<Real>(0, 2*b_*M_PI);
+            
+            return std::exp(v0_*(t1+d)*(ex-1.0)/(sigma2_*(ex-p))
+                            + (kappa_*theta_)/sigma2_*((t1+d)*term_-2.0*g)
+                            + std::complex<Real>(0,phi*(dd_-sx_))
+                            + engine_->addOnTerm(phi, term_, j_)
+                            ).imag()/phi;
+        }
+        else {
+            QL_FAIL("unknown complex logarithm formula");
+            return 0.0;
+        }
     }
-
-
 
     AnalyticHestonEngine::AnalyticHestonEngine(
                               const boost::shared_ptr<HestonModel>& model,
@@ -141,8 +208,40 @@ namespace QuantLib {
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
-      gaussLaguerre(integrationOrder) {}
+      cpxLog_     (Gatheral),
+      integration_(new Integration(
+                          Integration::gaussLaguerre(integrationOrder))) {
+    }
+    
+    AnalyticHestonEngine::AnalyticHestonEngine(
+                              const boost::shared_ptr<HestonModel>& model,
+                              Real relTolerance, Size maxEvaluations)
+    : GenericModelEngine<HestonModel,
+                         VanillaOption::arguments,
+                         VanillaOption::results>(model),
+      cpxLog_(Gatheral),
+      integration_(new Integration(Integration::gaussLobatto(
+                              relTolerance, Null<Real>(), maxEvaluations))) {
+    }
 
+    AnalyticHestonEngine::AnalyticHestonEngine(
+                              const boost::shared_ptr<HestonModel>& model,
+                              ComplexLogFormula cpxLog,
+                              const Integration& integration)
+    : GenericModelEngine<HestonModel,
+                         VanillaOption::arguments,
+                         VanillaOption::results>(model),
+      cpxLog_(cpxLog),
+      integration_(new Integration(integration)) {
+        QL_REQUIRE(   cpxLog_ != BranchCorrection
+                   || !integration.isAdaptiveIntegration(),
+                   "Branch correction does not work in conjunction "
+                   "with adaptive integration methods");
+    }
+
+    Size AnalyticHestonEngine::numberOfEvaluations() const {
+        return evaluations_;
+    }
 
     std::complex<Real>
     AnalyticHestonEngine::addOnTerm(Real, Time, Size) const {
@@ -169,13 +268,23 @@ namespace QuantLib {
 
         const Real spotPrice = process->s0()->value();
         QL_REQUIRE(spotPrice > 0.0, "negative or null underlying given");
+
         const Real strikePrice = payoff->strike();
         const Real term = process->time(arguments_.exercise->lastDate());
 
-        const Real p1 = gaussLaguerre(Fj_Helper(arguments_, model_,
-                                                this, term, ratio, 1))/M_PI;
-        const Real p2 = gaussLaguerre(Fj_Helper(arguments_, model_,
-                                                this, term, ratio, 2))/M_PI;
+        // scaling coefficient as given by Kahl and Jaekel
+        const Real c_inf = std::min(10.0, std::max(0.0001,
+                std::sqrt(1.0-square<Real>()(model_->rho())))/model_->sigma())
+                *(model_->v0() + model_->kappa()*model_->theta()*term);
+
+        evaluations_ = 0;
+        const Real p1 = integration_->calculate(c_inf, 
+            Fj_Helper(arguments_, model_, this, cpxLog_, term, ratio, 1))/M_PI;
+        evaluations_+= integration_->numberOfEvaluations();
+        
+        const Real p2 = integration_->calculate(c_inf, 
+            Fj_Helper(arguments_, model_, this, cpxLog_, term, ratio, 2))/M_PI;
+        evaluations_+= integration_->numberOfEvaluations();        
 
         switch (payoff->optionType()) {
           case Option::Call:
@@ -190,4 +299,142 @@ namespace QuantLib {
             QL_FAIL("unknown option type");
         }
     }
+
+
+    AnalyticHestonEngine::Integration::Integration(
+            Algorithm intAlgo,
+            const boost::shared_ptr<Integrator>& integrator)
+    : intAlgo_(intAlgo),
+      integrator_(integrator) { }
+
+    AnalyticHestonEngine::Integration::Integration(
+            Algorithm intAlgo,
+            const boost::shared_ptr<GaussianQuadrature>& gaussianQuadrature)
+    : intAlgo_(intAlgo),
+      gaussianQuadrature_(gaussianQuadrature) { }
+
+    AnalyticHestonEngine::Integration 
+    AnalyticHestonEngine::Integration::gaussLobatto(Real relTolerance,
+                                                    Real absTolerance,
+                                                    Size maxEvaluations) {
+        return Integration(GaussLobatto, 
+                           boost::shared_ptr<Integrator>(
+                               new GaussLobattoIntegral(maxEvaluations, 
+                                                        absTolerance, 
+                                                        relTolerance,
+                                                        false)));
+    }
+
+    AnalyticHestonEngine::Integration 
+    AnalyticHestonEngine::Integration::gaussKronrod(Real absTolerance,
+                                                   Size maxEvaluations) {
+        return Integration(GaussKronrod, 
+                           boost::shared_ptr<Integrator>(
+                               new GaussKronrodAdaptive(absTolerance,
+                                                        maxEvaluations)));
+    }
+
+    AnalyticHestonEngine::Integration 
+    AnalyticHestonEngine::Integration::simpson(Real absTolerance,
+                                               Size maxEvaluations) {
+        return Integration(Simpson, 
+                           boost::shared_ptr<Integrator>(
+                               new SimpsonIntegral(absTolerance,
+                                                   maxEvaluations)));
+    }
+
+    AnalyticHestonEngine::Integration 
+    AnalyticHestonEngine::Integration::trapezoid(Real absTolerance,
+                                        Size maxEvaluations) {
+        return Integration(Trapezoid, 
+                           boost::shared_ptr<Integrator>(
+                              new TrapezoidIntegral<Default>(absTolerance,
+                                                             maxEvaluations)));
+    }
+
+    AnalyticHestonEngine::Integration
+    AnalyticHestonEngine::Integration::gaussLaguerre(Size intOrder) {
+        QL_REQUIRE(intOrder <= 192, "maximum integraton order (192) exceeded");
+        return Integration(GaussLaguerre, 
+                           boost::shared_ptr<GaussianQuadrature>(
+                               new GaussLaguerreIntegration(intOrder)));
+    }
+
+    AnalyticHestonEngine::Integration 
+    AnalyticHestonEngine::Integration::gaussLegendre(Size intOrder) {
+        return Integration(GaussLegendre, 
+                           boost::shared_ptr<GaussianQuadrature>(
+                               new GaussLegendreIntegration(intOrder)));
+    }
+
+    AnalyticHestonEngine::Integration 
+    AnalyticHestonEngine::Integration::gaussChebyshev(Size intOrder) {
+        return Integration(GaussChebyshev,
+                           boost::shared_ptr<GaussianQuadrature>(
+                               new GaussChebyshevIntegration(intOrder)));
+    }
+
+    AnalyticHestonEngine::Integration 
+    AnalyticHestonEngine::Integration::gaussChebyshev2th(Size intOrder) {
+        return Integration(GaussChebyshev2th,
+                           boost::shared_ptr<GaussianQuadrature>(
+                               new GaussChebyshev2thIntegration(intOrder)));
+    }
+
+    Size AnalyticHestonEngine::Integration::numberOfEvaluations() const {
+        if (integrator_) {
+            return integrator_->numberOfEvaluations();
+        }
+        else if (gaussianQuadrature_) {
+            return gaussianQuadrature_->order();
+        }
+        else {
+            QL_FAIL("neither Integrator nor GaussianQuadrature given");
+        }
+    }
+
+    bool AnalyticHestonEngine::Integration::isAdaptiveIntegration() const {
+        return intAlgo_ == GaussLobatto
+            || intAlgo_ == GaussKronrod
+            || intAlgo_ == Simpson
+            || intAlgo_ == Trapezoid;
+    }
+
+    Real AnalyticHestonEngine::Integration::calculate(
+                               Real c_inf,
+                               const boost::function1<Real, Real>& f) const {
+        Real retVal;
+
+        switch(intAlgo_) {
+          case GaussLaguerre:
+            retVal = gaussianQuadrature_->operator()(f);
+            break;
+          case GaussLegendre: 
+          case GaussChebyshev: 
+          case GaussChebyshev2th:
+            retVal = gaussianQuadrature_->operator()(
+                boost::function1<Real, Real>(
+                    if_then_else_return ( (_1+1.0)*c_inf > QL_EPSILON, 
+                        bind(f, -bind(std::ptr_fun<Real,Real>(std::log), 
+                                      0.5*_1+0.5 )/c_inf )/((_1+1.0)*c_inf),
+                        bind(constant<Real, Real>(0.0), _1))));
+            break;
+          case Simpson:
+          case Trapezoid:
+          case GaussLobatto:
+          case GaussKronrod:
+            retVal = integrator_->operator()(
+                boost::function1<Real, Real>(
+                    if_then_else_return ( _1*c_inf > QL_EPSILON, 
+                        bind(f,-bind(std::ptr_fun<Real,Real>(std::log), _1)
+                             /c_inf) /(_1*c_inf), 
+                        bind(constant<Real, Real>(0.0), _1))), 
+                0.0, 1.0);
+            break;
+          default:
+              QL_FAIL("unknwon integration algorithm");
+        }
+
+        return retVal;
+     }
 }

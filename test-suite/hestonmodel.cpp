@@ -108,7 +108,8 @@ void HestonModelTest::testBlackCalibration() {
             options[i]->setPricingEngine(engine);
 
         LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
-        model->calibrate(options, om, EndCriteria(400, 40, 1.0e-8, 1.0e-8, 1.0e-8));
+        model->calibrate(options, om, EndCriteria(400, 40, 1.0e-8, 
+                                                  1.0e-8, 1.0e-8));
 
         Real tolerance = 3.0e-3;
 
@@ -484,7 +485,6 @@ void HestonModelTest::testKahlJaeckelCase() {
         .withAntitheticVariate()
         .withTolerance(tolerance)
         .withSeed(1234);
-
     option.setPricingEngine(engine);
 
     const Real expected = 4.95212;
@@ -505,81 +505,139 @@ void HestonModelTest::testKahlJaeckelCase() {
     }
 }
 
+namespace {
+    struct HestonParameter {
+        Real v0, kappa, theta, sigma, rho; };
+}
 
-void HestonModelTest::testEngines() {
+void HestonModelTest::testDifferentIntegrals() {
     BOOST_MESSAGE(
-       "Testing Monte Carlo Heston engine against analytic Heston engine...");
+       "Testing different numerical Heston integration algorithms...");
 
     SavedSettings backup;
 
-    Date settlementDate(27, December, 2004);
+    const Date settlementDate(27, December, 2004);
     Settings::instance().evaluationDate() = settlementDate;
 
-    DayCounter dayCounter = ActualActual();
-    Date exerciseDate(28, July, 2005);
+    const DayCounter dayCounter = ActualActual();
 
-    boost::shared_ptr<StrikedTypePayoff> payoff(
-                                   new PlainVanillaPayoff(Option::Put, 1.05));
-    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+    Handle<YieldTermStructure> riskFreeTS(flatRate(0.05, dayCounter));
+    Handle<YieldTermStructure> dividendTS(flatRate(0.03, dayCounter));
 
-    Handle<YieldTermStructure> riskFreeTS(flatRate(0.7, dayCounter));
-    Handle<YieldTermStructure> dividendTS(flatRate(0.4, dayCounter));
+    const Real strikes[] = { 0.5, 0.7, 1.0, 1.25, 1.5, 2.0 };
+    const Real maturities[] = { 1, 2, 3, 12, 60, 120, 360};
+    const Option::Type types[] ={ Option::Put, Option::Call };
 
-    const Real v0 = 0.8;
-    const Real theta = 0.4;
-    const Real rho = -0.8;
+    const HestonParameter equityfx      = { 0.07, 2.0, 0.04, 0.55, -0.8 };
+    const HestonParameter highCorr      = { 0.07, 1.0, 0.04, 0.55,  0.995 };
+    const HestonParameter lowVolOfVol   = { 0.07, 1.0, 0.04, 0.025, -0.75 };
+    const HestonParameter highVolOfVol  = { 0.07, 1.0, 0.04, 5.0, -0.75 };
+    const HestonParameter kappaEqSigRho = { 0.07, 0.4, 0.04, 0.5, 0.8 };
 
-    for (Real s0 = 0.5; s0 < 1.6; s0 += 0.5) {
-        for (Real kappa = 1.0; kappa < 8.0; kappa += 2.0) {
-            for (Real sigma = 0.5; sigma < 7.0; sigma += 2.0) {
+    std::vector<HestonParameter> params;
+    params.push_back(equityfx);
+    params.push_back(highCorr);
+    params.push_back(lowVolOfVol);
+    params.push_back(highVolOfVol);
+    params.push_back(kappaEqSigRho);
 
-                BOOST_MESSAGE("s0 = " << s0
-                              << ", kappa = " << kappa
-                              << ", sigma = " << sigma);
+    const Real tol[] = { 1e-3, 1e-3, 0.2, 0.01, 1e-3 };
 
-                Handle<Quote> q(boost::shared_ptr<Quote>(new SimpleQuote(s0)));
-                boost::shared_ptr<HestonProcess> process(new HestonProcess(
-                    riskFreeTS, dividendTS, q, v0, kappa, theta, sigma, rho));
+    for (std::vector<HestonParameter>::const_iterator iter = params.begin();
+         iter != params.end(); ++iter) {
 
-                VanillaOption option(payoff, exercise);
+        Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(1.0)));
+        boost::shared_ptr<HestonProcess> process(new HestonProcess(
+            riskFreeTS, dividendTS, 
+            s0, iter->v0, iter->kappa, 
+            iter->theta, iter->sigma, iter->rho));
 
-                boost::shared_ptr<PricingEngine> engine1 =
-                    MakeMCEuropeanHestonEngine<PseudoRandom>(process)
-                    .withStepsPerYear(1825)
-                    .withAntitheticVariate()
-                    .withSamples(20000)
-                    .withSeed(1234);
+        boost::shared_ptr<HestonModel> model(new HestonModel(process));
 
-                boost::shared_ptr<PricingEngine> engine2(
-                    new AnalyticHestonEngine(boost::shared_ptr<HestonModel>(
-                                               new HestonModel(process)),192));
+        boost::shared_ptr<AnalyticHestonEngine> lobattoEngine(
+                              new AnalyticHestonEngine(model, 1e-10,
+                                                       1000000));
+        boost::shared_ptr<AnalyticHestonEngine> laguerreEngine(
+                                        new AnalyticHestonEngine(model, 192));
+        boost::shared_ptr<AnalyticHestonEngine> legendreEngine(
+            new AnalyticHestonEngine(
+                model, AnalyticHestonEngine::Gatheral,
+                AnalyticHestonEngine::Integration::gaussLegendre(512)));
+        boost::shared_ptr<AnalyticHestonEngine> chebyshevEngine(
+            new AnalyticHestonEngine(
+                model, AnalyticHestonEngine::Gatheral,
+                AnalyticHestonEngine::Integration::gaussChebyshev(512)));
+        boost::shared_ptr<AnalyticHestonEngine> chebyshev2thEngine(
+            new AnalyticHestonEngine(
+                model, AnalyticHestonEngine::Gatheral,
+                AnalyticHestonEngine::Integration::gaussChebyshev2th(512)));
 
-                option.setPricingEngine(engine1);
-                Real calculated = option.NPV();
-                Real errorEstimate = option.errorEstimate();
+        Real maxLegendreDiff    = 0.0;
+        Real maxChebyshevDiff   = 0.0;
+        Real maxChebyshev2thDiff= 0.0;
+        Real maxLaguerreDiff    = 0.0;
 
-                option.setPricingEngine(engine2);
-                Real expected = option.NPV();
-                Real tolerance = 7.5e-4;
+        for (Size i=0; i < LENGTH(maturities); ++i) {
+            boost::shared_ptr<Exercise> exercise(
+                new EuropeanExercise(settlementDate
+                                     + Period(maturities[i], Months)));
 
-                if (std::fabs(calculated - expected) > 1.65*errorEstimate) {
-                    BOOST_ERROR("failed to match results from engines"
-                                << "\n    analytic:    " << expected
-                                << "\n    Monte Carlo: " << calculated
-                                << " +/- " << errorEstimate);
-                }
-                if (errorEstimate > 2.0*tolerance) {
-                    BOOST_ERROR("failed to reproduce error estimate"
-                                << "\n    calculated: " << errorEstimate
-                                << "\n    expected:   " << tolerance);
+            for (Size j=0; j < LENGTH(strikes); ++j) {
+                for (Size k=0; k < LENGTH(types); ++k) {
+
+                    boost::shared_ptr<StrikedTypePayoff> payoff(
+                        new PlainVanillaPayoff(types[k], strikes[j]));
+                    
+                    VanillaOption option(payoff, exercise);
+
+                    option.setPricingEngine(lobattoEngine);
+                    const Real lobattoNPV = option.NPV();
+
+                    option.setPricingEngine(laguerreEngine);
+                    const Real laguerre = option.NPV();
+
+                    option.setPricingEngine(legendreEngine);
+                    const Real legendre = option.NPV();
+
+                    option.setPricingEngine(chebyshevEngine);
+                    const Real chebyshev = option.NPV();
+
+                    option.setPricingEngine(chebyshev2thEngine);
+                    const Real chebyshev2th = option.NPV();
+
+                    maxLaguerreDiff 
+                        = std::max(maxLaguerreDiff,
+                                   std::fabs(lobattoNPV-laguerre));
+                    maxLegendreDiff
+                        = std::max(maxLegendreDiff,
+                                   std::fabs(lobattoNPV-legendre));
+                    maxChebyshevDiff
+                        = std::max(maxChebyshevDiff,
+                                   std::fabs(lobattoNPV-chebyshev));
+                    maxChebyshev2thDiff
+                        = std::max(maxChebyshev2thDiff,
+                                   std::fabs(lobattoNPV-chebyshev2th));
+
                 }
             }
+        }
+        const Real maxDiff = std::max(std::max(
+            std::max(maxLaguerreDiff,maxLegendreDiff), 
+                                     maxChebyshevDiff), maxChebyshev2thDiff);
+
+        const Real tr = tol[iter - params.begin()];
+        if (maxDiff > tr) {
+            BOOST_ERROR("Failed to reproduce Heston pricing values "
+                        "within given tolerance"
+                        << "\n    maxDifference: " << maxDiff
+                        << "\n    tolerance:     " << tr);
         }
     }
 }
 
 test_suite* HestonModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
+
     // FLOATING_POINT_EXCEPTION
     suite->add(BOOST_TEST_CASE(&HestonModelTest::testBlackCalibration));
     // FLOATING_POINT_EXCEPTION
@@ -588,9 +646,12 @@ test_suite* HestonModelTest::suite() {
     suite->add(BOOST_TEST_CASE(&HestonModelTest::testAnalyticVsBlack));
     suite->add(BOOST_TEST_CASE(&HestonModelTest::testAnalyticVsCached));
     suite->add(BOOST_TEST_CASE(&HestonModelTest::testKahlJaeckelCase));
+    suite->add(BOOST_TEST_CASE(&HestonModelTest::testDifferentIntegrals));
+
     // this passes but takes way too long
     // suite->add(BOOST_TEST_CASE(&HestonModelTest::testEngines));
-    suite->add(BOOST_TEST_CASE(&HestonModelTest::testMcVsCached));
+    //suite->add(BOOST_TEST_CASE(&HestonModelTest::testMcVsCached));
+    
     return suite;
 }
 
