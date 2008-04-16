@@ -36,7 +36,7 @@
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/interpolations/loginterpolation.hpp>
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
-#include <ql/math/interpolations/cubicspline.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
@@ -480,14 +480,14 @@ void PiecewiseYieldCurveTest::testLogCubicDiscountConsistency() {
     CommonVars vars;
 
     testCurveConsistency(Discount(),
-        LogCubic(CubicSplineInterpolation::SecondDerivative,0.0,
-                 CubicSplineInterpolation::SecondDerivative,0.0,
-                 true),
+        LogCubic(CubicInterpolation::Spline, true,
+                 CubicInterpolation::SecondDerivative, 0.0,
+                 CubicInterpolation::SecondDerivative, 0.0),
         vars);
     testBMACurveConsistency(Discount(),
-        LogCubic(CubicSplineInterpolation::SecondDerivative,0.0,
-                 CubicSplineInterpolation::SecondDerivative,0.0,
-                 true),
+        LogCubic(CubicInterpolation::Spline, true,
+                 CubicInterpolation::SecondDerivative, 0.0,
+                 CubicInterpolation::SecondDerivative, 0.0),
         vars);
 }
 
@@ -544,15 +544,15 @@ void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
 
     testCurveConsistency(
                    ZeroYield(),
-                   CubicSpline(CubicSplineInterpolation::SecondDerivative,0.0,
-                               CubicSplineInterpolation::SecondDerivative,0.0,
-                               true),
+                   Cubic(CubicInterpolation::Spline, true,
+                         CubicInterpolation::SecondDerivative, 0.0,
+                         CubicInterpolation::SecondDerivative, 0.0),
                    vars);
     testBMACurveConsistency(
                    ZeroYield(),
-                   CubicSpline(CubicSplineInterpolation::SecondDerivative,0.0,
-                               CubicSplineInterpolation::SecondDerivative,0.0,
-                               true),
+                   Cubic(CubicInterpolation::Spline, true,
+                         CubicInterpolation::SecondDerivative, 0.0,
+                         CubicInterpolation::SecondDerivative, 0.0),
                    vars);
 }
 
@@ -587,15 +587,15 @@ void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
 
     testCurveConsistency(
                    ForwardRate(),
-                   CubicSpline(CubicSplineInterpolation::SecondDerivative,0.0,
-                               CubicSplineInterpolation::SecondDerivative,0.0,
-                               true),
+                   Cubic(CubicInterpolation::Spline, true,
+                         CubicInterpolation::SecondDerivative, 0.0,
+                         CubicInterpolation::SecondDerivative, 0.0),
                    vars);
     testBMACurveConsistency(
                    ForwardRate(),
-                   CubicSpline(CubicSplineInterpolation::SecondDerivative,0.0,
-                               CubicSplineInterpolation::SecondDerivative,0.0,
-                               true),
+                   Cubic(CubicInterpolation::Spline, true,
+                         CubicInterpolation::SecondDerivative, 0.0,
+                         CubicInterpolation::SecondDerivative, 0.0),
                    vars);
 }
 

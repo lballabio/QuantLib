@@ -26,8 +26,7 @@
 #define quantlib_log_interpolation_hpp
 
 #include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/math/interpolations/cubicspline.hpp>
-#include <ql/math/interpolations/constrainedcubicspline.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 namespace QuantLib {
@@ -83,9 +82,9 @@ namespace QuantLib {
         template <class I1, class I2>
         LogLinearInterpolation(const I1& xBegin, const I1& xEnd,
                                const I2& yBegin) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(
-                new detail::LogInterpolationImpl<I1,I2,Linear>(
-                                                       xBegin, xEnd, yBegin));
+            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+                detail::LogInterpolationImpl<I1, I2, Linear>(xBegin, xEnd,
+                                                             yBegin));
             impl_->update();
         }
     };
@@ -95,69 +94,23 @@ namespace QuantLib {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
-        LogCubicInterpolation(
-                    const I1& xBegin, const I1& xEnd,
-                    const I2& yBegin,
-                    CubicSplineInterpolation::BoundaryCondition leftCondition,
-                    Real leftConditionValue,
-                    CubicSplineInterpolation::BoundaryCondition rightCondition,
-                    Real rightConditionValue,
-                    bool monotonicityConstraint) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(
-                new detail::LogInterpolationImpl<I1,I2,CubicSpline>(
-                                        xBegin, xEnd, yBegin,
-                                        CubicSpline(leftCondition,
-                                                    leftConditionValue,
-                                                    rightCondition,
-                                                    rightConditionValue,
-                                                    monotonicityConstraint)));
+        LogCubicInterpolation(const I1& xBegin, const I1& xEnd,
+                              const I2& yBegin,
+                              CubicInterpolation::DerivativeApprox da,
+                              bool monotonic,
+                              CubicInterpolation::BoundaryCondition leftC,
+                              Real leftConditionValue,
+                              CubicInterpolation::BoundaryCondition rightC,
+                              Real rightConditionValue) {
+            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+                detail::LogInterpolationImpl<I1, I2, Cubic>(
+                    xBegin, xEnd, yBegin,
+                    Cubic(da, monotonic,
+                          leftC, leftConditionValue,
+                          rightC, rightConditionValue)));
             impl_->update();
         }
     };
-
-    //! %log-ConstrainedCubic interpolation between discrete points
-    class ConstrainedLogCubicInterpolation : public Interpolation {
-      public:
-        /*! \pre the \f$ x \f$ values must be sorted. */
-        template <class I1, class I2>
-        ConstrainedLogCubicInterpolation(
-                    const I1& xBegin, const I1& xEnd,
-                    const I2& yBegin) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(
-                new detail::LogInterpolationImpl<I1,I2,ConstrainedCubicSpline>(
-                                        xBegin, xEnd, yBegin));
-            impl_->update();
-        }
-    };
-
-    // convenience classes
-
-    //! %LogCubic spline with null second derivative at end points
-    class NaturalLogCubic : public LogCubicInterpolation {
-      public:
-        /*! \pre the \f$ x \f$ values must be sorted. */
-        template <class I1, class I2>
-        NaturalLogCubic(const I1& xBegin, const I1& xEnd,
-                        const I2& yBegin)
-        : LogCubicInterpolation(xBegin,xEnd,yBegin,
-                      CubicSplineInterpolation::SecondDerivative, 0.0,
-                      CubicSplineInterpolation::SecondDerivative, 0.0,
-                      false) {}
-    };
-
-    //! Natural LogCubic spline with monotonicity constraint
-    class MonotonicNaturalLogCubic : public LogCubicInterpolation {
-      public:
-        /*! \pre the \f$ x \f$ values must be sorted. */
-        template <class I1, class I2>
-        MonotonicNaturalLogCubic(const I1& xBegin, const I1& xEnd,
-                                 const I2& yBegin)
-        : LogCubicInterpolation(xBegin,xEnd,yBegin,
-                      CubicSplineInterpolation::SecondDerivative, 0.0,
-                      CubicSplineInterpolation::SecondDerivative, 0.0,
-                      true) {}
-    };
-
 
     //! log-linear interpolation factory and traits
     class LogLinear {
@@ -171,47 +124,35 @@ namespace QuantLib {
         static const Size requiredPoints = 2;
     };
 
-
     //! log-cubic interpolation factory and traits
     class LogCubic {
       public:
-        LogCubic(CubicSplineInterpolation::BoundaryCondition leftCondition
-                    //= CubicSplineInterpolation::NotAKnot,
-                    = CubicSplineInterpolation::SecondDerivative,
-                 Real leftConditionValue = 0.0,
-                 CubicSplineInterpolation::BoundaryCondition rightCondition
-                    = CubicSplineInterpolation::SecondDerivative,
-                 Real rightConditionValue = 0.0,
-                 bool monotonicityConstraint = true)
-        : lefType_(leftCondition), rightType_(rightCondition),
-          leftValue_(leftConditionValue), rightValue_(rightConditionValue),
-          monotonic_(monotonicityConstraint) {}
+        LogCubic(CubicInterpolation::DerivativeApprox da,
+                  bool monotonic = true,
+                  CubicInterpolation::BoundaryCondition leftCondition
+                     = CubicInterpolation::SecondDerivative,
+                  Real leftConditionValue = 0.0,
+                  CubicInterpolation::BoundaryCondition rightCondition
+                     = CubicInterpolation::SecondDerivative,
+                  Real rightConditionValue = 0.0)
+        : da_(da), monotonic_(monotonic),
+          leftType_(leftCondition), rightType_(rightCondition),
+          leftValue_(leftConditionValue), rightValue_(rightConditionValue) {}
         template <class I1, class I2>
         Interpolation interpolate(const I1& xBegin, const I1& xEnd,
                                   const I2& yBegin) const {
             return LogCubicInterpolation(xBegin, xEnd, yBegin,
-                                         lefType_,leftValue_,
-                                         rightType_, rightValue_,
-                                         monotonic_);
+                                         da_, monotonic_,
+                                         leftType_, leftValue_,
+                                         rightType_, rightValue_);
         }
         static const bool global = true;
         static const Size requiredPoints = 2;
       private:
-        CubicSplineInterpolation::BoundaryCondition lefType_, rightType_;
-        Real leftValue_, rightValue_;
+        CubicInterpolation::DerivativeApprox da_;
         bool monotonic_;
-    };
-
-    //! Constrained log-cubic interpolation factory and traits
-    class ConstrainedLogCubic {
-      public:
-        template <class I1, class I2>
-        Interpolation interpolate(const I1& xBegin, const I1& xEnd,
-                                  const I2& yBegin) const {
-            return ConstrainedLogCubicInterpolation(xBegin, xEnd, yBegin);
-        }
-        static const bool global = true;
-        static const Size requiredPoints = 2;
+        CubicInterpolation::BoundaryCondition leftType_, rightType_;
+        Real leftValue_, rightValue_;
     };
 
 }

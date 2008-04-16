@@ -26,7 +26,7 @@
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/math/interpolations/forwardflatinterpolation.hpp>
-#include <ql/math/interpolations/cubicspline.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/interpolations/multicubicspline.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
@@ -67,11 +67,11 @@ namespace {
 
     template <class I, class J>
     void checkValues(const char* type,
-                     const CubicSplineInterpolation& spline,
+                     const CubicInterpolation& cubic,
                      I xBegin, I xEnd, J yBegin) {
         Real tolerance = 2.0e-15;
         while (xBegin != xEnd) {
-            Real interpolated = spline(*xBegin);
+            Real interpolated = cubic(*xBegin);
             if (std::fabs(interpolated-*yBegin) > tolerance) {
                 BOOST_ERROR(type << " interpolation failed at x = " << *xBegin
                             << QL_SCIENTIFIC
@@ -85,11 +85,11 @@ namespace {
     }
 
     void check1stDerivativeValue(const char* type,
-                                 const CubicSplineInterpolation& spline,
+                                 const CubicInterpolation& cubic,
                                  Real x,
                                  Real value) {
         Real tolerance = 1.0e-14;
-        Real interpolated = spline.derivative(x);
+        Real interpolated = cubic.derivative(x);
         Real error = std::fabs(interpolated-value);
         if (error > tolerance) {
             BOOST_ERROR(type << " interpolation first derivative failure\n"
@@ -102,11 +102,11 @@ namespace {
     }
 
     void check2ndDerivativeValue(const char* type,
-                                 const CubicSplineInterpolation& spline,
+                                 const CubicInterpolation& cubic,
                                  Real x,
                                  Real value) {
         Real tolerance = 1.0e-13;
-        Real interpolated = spline.secondDerivative(x);
+        Real interpolated = cubic.secondDerivative(x);
         Real error = std::fabs(interpolated-value);
         if (error > tolerance) {
             BOOST_ERROR(type << " interpolation second derivative failure\n"
@@ -119,9 +119,9 @@ namespace {
     }
 
     void checkNotAKnotCondition(const char* type,
-                                const CubicSplineInterpolation& spline) {
+                                const CubicInterpolation& cubic) {
         Real tolerance = 1.0e-14;
-        const std::vector<Real>& c = spline.cCoefficients();
+        const std::vector<Real>& c = cubic.cCoefficients();
         if (std::fabs(c[0]-c[1]) > tolerance) {
             BOOST_ERROR(type << " interpolation failure"
                         << "\n    cubic coefficient of the first"
@@ -140,11 +140,11 @@ namespace {
     }
 
     void checkSymmetry(const char* type,
-                       const CubicSplineInterpolation& spline,
+                       const CubicInterpolation& cubic,
                        Real xMin) {
         Real tolerance = 1.0e-15;
         for (Real x = xMin; x < 0.0; x += 0.1) {
-            Real y1 = spline(x), y2 = spline(-x);
+            Real y1 = cubic(x), y2 = cubic(-x);
             if (std::fabs(y1-y2) > tolerance) {
                 BOOST_ERROR(type << " interpolation not symmetric"
                             << "\n    x = " << x
@@ -215,10 +215,10 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
         std::vector<Real> y = gaussian(x);
 
         // Not-a-knot
-        CubicSplineInterpolation f(x.begin(), x.end(), y.begin(),
-                      CubicSplineInterpolation::NotAKnot, Null<Real>(),
-                      CubicSplineInterpolation::NotAKnot, Null<Real>(),
-                      false);
+        CubicInterpolation f(x.begin(), x.end(), y.begin(),
+                             CubicInterpolation::Spline, false,
+                             CubicInterpolation::NotAKnot, Null<Real>(),
+                             CubicInterpolation::NotAKnot, Null<Real>());
         f.update();
         Real result = std::sqrt(integral(make_error_function(f), -1.7, 1.9));
         result /= scaleFactor;
@@ -229,9 +229,10 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
                         << "\n    it should be:       " << tabulatedErrors[i]);
 
         // MC not-a-knot
-        f = MonotonicCubicSpline(x.begin(), x.end(), y.begin(),
-                                 CubicSplineInterpolation::NotAKnot, Null<Real>(),
-                                 CubicSplineInterpolation::NotAKnot, Null<Real>());
+        f = CubicInterpolation(x.begin(), x.end(), y.begin(),
+                               CubicInterpolation::Spline, true,
+                               CubicInterpolation::NotAKnot, Null<Real>(),
+                               CubicInterpolation::NotAKnot, Null<Real>());
         f.update();
         result = std::sqrt(integral(make_error_function(f), -1.7, 1.9));
         result /= scaleFactor;
@@ -264,10 +265,10 @@ void InterpolationTest::testSplineOnGaussianValues() {
         y = gaussian(x);
 
         // Not-a-knot spline
-        CubicSplineInterpolation f(x.begin(), x.end(), y.begin(),
-                      CubicSplineInterpolation::NotAKnot, Null<Real>(),
-                      CubicSplineInterpolation::NotAKnot, Null<Real>(),
-                      false);
+        CubicInterpolation f(x.begin(), x.end(), y.begin(),
+                             CubicInterpolation::Spline, false,
+                             CubicInterpolation::NotAKnot, Null<Real>(),
+                             CubicInterpolation::NotAKnot, Null<Real>());
         f.update();
         checkValues("Not-a-knot spline", f,
                     x.begin(), x.end(), y.begin());
@@ -286,9 +287,10 @@ void InterpolationTest::testSplineOnGaussianValues() {
         }
 
         // MC not-a-knot spline
-        f = MonotonicCubicSpline(x.begin(), x.end(), y.begin(),
-                                 CubicSplineInterpolation::NotAKnot, Null<Real>(),
-                                 CubicSplineInterpolation::NotAKnot, Null<Real>());
+        f = CubicInterpolation(x.begin(), x.end(), y.begin(),
+                               CubicInterpolation::Spline, true,
+                               CubicInterpolation::NotAKnot, Null<Real>(),
+                               CubicInterpolation::NotAKnot, Null<Real>());
         f.update();
         checkValues("MC not-a-knot spline", f,
                     x.begin(), x.end(), y.begin());
@@ -333,8 +335,12 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     Real interpolated;
 
     // Natural spline
-    CubicSplineInterpolation f = NaturalCubicSpline(BEGIN(RPN15A_x), END(RPN15A_x),
-                                       BEGIN(RPN15A_y));
+    CubicInterpolation f = CubicInterpolation(
+                                    BEGIN(RPN15A_x), END(RPN15A_x),
+                                    BEGIN(RPN15A_y),
+                                    CubicInterpolation::Spline, false,
+                                    CubicInterpolation::SecondDerivative, 0.0,
+                                    CubicInterpolation::SecondDerivative, 0.0);
     f.update();
     checkValues("Natural spline", f,
                 BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y));
@@ -355,10 +361,10 @@ void InterpolationTest::testSplineOnRPN15AValues() {
 
 
     // Clamped spline
-    f = CubicSplineInterpolation(BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y),
-                    CubicSplineInterpolation::FirstDerivative, 0.0,
-                    CubicSplineInterpolation::FirstDerivative, 0.0,
-                    false);
+    f = CubicInterpolation(BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y),
+                           CubicInterpolation::Spline, false,
+                           CubicInterpolation::FirstDerivative, 0.0,
+                           CubicInterpolation::FirstDerivative, 0.0);
     f.update();
     checkValues("Clamped spline", f,
                 BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y));
@@ -378,10 +384,10 @@ void InterpolationTest::testSplineOnRPN15AValues() {
 
 
     // Not-a-knot spline
-    f = CubicSplineInterpolation(BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y),
-                    CubicSplineInterpolation::NotAKnot, Null<Real>(),
-                    CubicSplineInterpolation::NotAKnot, Null<Real>(),
-                    false);
+    f = CubicInterpolation(BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y),
+                           CubicInterpolation::Spline, false, 
+                           CubicInterpolation::NotAKnot, Null<Real>(),
+                           CubicInterpolation::NotAKnot, Null<Real>());
     f.update();
     checkValues("Not-a-knot spline", f,
                 BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y));
@@ -398,8 +404,11 @@ void InterpolationTest::testSplineOnRPN15AValues() {
 
 
     // MC natural spline values
-    f = MonotonicNaturalCubicSpline(BEGIN(RPN15A_x), END(RPN15A_x),
-                                    BEGIN(RPN15A_y));
+    f = CubicInterpolation(BEGIN(RPN15A_x), END(RPN15A_x),
+                           BEGIN(RPN15A_y),
+                           CubicInterpolation::Spline, true,
+                           CubicInterpolation::SecondDerivative, 0.0,
+                           CubicInterpolation::SecondDerivative, 0.0);
     f.update();
     checkValues("MC natural spline", f,
                 BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y));
@@ -415,9 +424,10 @@ void InterpolationTest::testSplineOnRPN15AValues() {
 
 
     // MC clamped spline values
-    f = MonotonicCubicSpline(BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y),
-                             CubicSplineInterpolation::FirstDerivative, 0.0,
-                             CubicSplineInterpolation::FirstDerivative, 0.0);
+    f = CubicInterpolation(BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y),
+                           CubicInterpolation::Spline, true,
+                           CubicInterpolation::FirstDerivative, 0.0,
+                           CubicInterpolation::FirstDerivative, 0.0);
     f.update();
     checkValues("MC clamped spline", f,
                 BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y));
@@ -437,9 +447,10 @@ void InterpolationTest::testSplineOnRPN15AValues() {
 
 
     // MC not-a-knot spline values
-    f = MonotonicCubicSpline(BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y),
-                             CubicSplineInterpolation::NotAKnot, Null<Real>(),
-                             CubicSplineInterpolation::NotAKnot, Null<Real>());
+    f = CubicInterpolation(BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y),
+                           CubicInterpolation::Spline, true,
+                           CubicInterpolation::NotAKnot, Null<Real>(),
+                           CubicInterpolation::NotAKnot, Null<Real>());
     f.update();
     checkValues("MC not-a-knot spline", f,
                 BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y));
@@ -471,13 +482,13 @@ void InterpolationTest::testSplineOnGenericValues() {
     std::vector<Real> x35(3);
 
     // Natural spline
-    CubicSplineInterpolation f(BEGIN(generic_x), END(generic_x),
-                  BEGIN(generic_y),
-                  CubicSplineInterpolation::SecondDerivative,
-                  generic_natural_y2[0],
-                  CubicSplineInterpolation::SecondDerivative,
-                  generic_natural_y2[n-1],
-                  false);
+    CubicInterpolation f(BEGIN(generic_x), END(generic_x),
+                         BEGIN(generic_y),
+                         CubicInterpolation::Spline, false,
+                         CubicInterpolation::SecondDerivative,
+                         generic_natural_y2[0],
+                         CubicInterpolation::SecondDerivative,
+                         generic_natural_y2[n-1]);
     f.update();
     checkValues("Natural spline", f,
                 BEGIN(generic_x), END(generic_x), BEGIN(generic_y));
@@ -498,10 +509,10 @@ void InterpolationTest::testSplineOnGenericValues() {
 
     // Clamped spline
     Real y1a = 0.0, y1b = 0.0;
-    f = CubicSplineInterpolation(BEGIN(generic_x), END(generic_x), BEGIN(generic_y),
-                    CubicSplineInterpolation::FirstDerivative, y1a,
-                    CubicSplineInterpolation::FirstDerivative, y1b,
-                    false);
+    f = CubicInterpolation(BEGIN(generic_x), END(generic_x), BEGIN(generic_y),
+                    CubicInterpolation::Spline, false,
+                    CubicInterpolation::FirstDerivative, y1a,
+                    CubicInterpolation::FirstDerivative, y1b);
     f.update();
     checkValues("Clamped spline", f,
                 BEGIN(generic_x), END(generic_x), BEGIN(generic_y));
@@ -513,10 +524,10 @@ void InterpolationTest::testSplineOnGenericValues() {
 
 
     // Not-a-knot spline
-    f = CubicSplineInterpolation(BEGIN(generic_x), END(generic_x), BEGIN(generic_y),
-                    CubicSplineInterpolation::NotAKnot, Null<Real>(),
-                    CubicSplineInterpolation::NotAKnot, Null<Real>(),
-                    false);
+    f = CubicInterpolation(BEGIN(generic_x), END(generic_x), BEGIN(generic_y),
+                           CubicInterpolation::Spline, false, 
+                           CubicInterpolation::NotAKnot, Null<Real>(),
+                           CubicInterpolation::NotAKnot, Null<Real>());
     f.update();
     checkValues("Not-a-knot spline", f,
                 BEGIN(generic_x), END(generic_x), BEGIN(generic_y));
@@ -547,10 +558,10 @@ void InterpolationTest::testSimmetricEndConditions() {
     y = gaussian(x);
 
     // Not-a-knot spline
-    CubicSplineInterpolation f(x.begin(), x.end(), y.begin(),
-                  CubicSplineInterpolation::NotAKnot, Null<Real>(),
-                  CubicSplineInterpolation::NotAKnot, Null<Real>(),
-                  false);
+    CubicInterpolation f(x.begin(), x.end(), y.begin(),
+                         CubicInterpolation::Spline, false, 
+                         CubicInterpolation::NotAKnot, Null<Real>(),
+                         CubicInterpolation::NotAKnot, Null<Real>());
     f.update();
     checkValues("Not-a-knot spline", f,
                 x.begin(), x.end(), y.begin());
@@ -559,9 +570,10 @@ void InterpolationTest::testSimmetricEndConditions() {
 
 
     // MC not-a-knot spline
-    f = MonotonicCubicSpline(x.begin(), x.end(), y.begin(),
-                             CubicSplineInterpolation::NotAKnot, Null<Real>(),
-                             CubicSplineInterpolation::NotAKnot, Null<Real>());
+    f = CubicInterpolation(x.begin(), x.end(), y.begin(),
+                           CubicInterpolation::Spline, true,
+                           CubicInterpolation::NotAKnot, Null<Real>(),
+                           CubicInterpolation::NotAKnot, Null<Real>());
     f.update();
     checkValues("MC not-a-knot spline", f,
                 x.begin(), x.end(), y.begin());
@@ -581,10 +593,10 @@ void InterpolationTest::testDerivativeEndConditions() {
     y = parabolic(x);
 
     // Not-a-knot spline
-    CubicSplineInterpolation f(x.begin(), x.end(), y.begin(),
-                  CubicSplineInterpolation::NotAKnot, Null<Real>(),
-                  CubicSplineInterpolation::NotAKnot, Null<Real>(),
-                  false);
+    CubicInterpolation f(x.begin(), x.end(), y.begin(),
+                         CubicInterpolation::Spline, false, 
+                         CubicInterpolation::NotAKnot, Null<Real>(),
+                         CubicInterpolation::NotAKnot, Null<Real>());
     f.update();
     checkValues("Not-a-knot spline", f,
                 x.begin(), x.end(), y.begin());
@@ -599,10 +611,10 @@ void InterpolationTest::testDerivativeEndConditions() {
 
 
     // Clamped spline
-    f = CubicSplineInterpolation(x.begin(), x.end(), y.begin(),
-                    CubicSplineInterpolation::FirstDerivative,  4.0,
-                    CubicSplineInterpolation::FirstDerivative, -4.0,
-                    false);
+    f = CubicInterpolation(x.begin(), x.end(), y.begin(),
+                           CubicInterpolation::Spline, false, 
+                           CubicInterpolation::FirstDerivative,  4.0,
+                           CubicInterpolation::FirstDerivative, -4.0);
     f.update();
     checkValues("Clamped spline", f,
                 x.begin(), x.end(), y.begin());
@@ -617,10 +629,10 @@ void InterpolationTest::testDerivativeEndConditions() {
 
 
     // SecondDerivative spline
-    f = CubicSplineInterpolation(x.begin(), x.end(), y.begin(),
-                    CubicSplineInterpolation::SecondDerivative, -2.0,
-                    CubicSplineInterpolation::SecondDerivative, -2.0,
-                    false);
+    f = CubicInterpolation(x.begin(), x.end(), y.begin(),
+                           CubicInterpolation::Spline, false, 
+                           CubicInterpolation::SecondDerivative, -2.0,
+                           CubicInterpolation::SecondDerivative, -2.0);
     f.update();
     checkValues("SecondDerivative spline", f,
                 x.begin(), x.end(), y.begin());
@@ -634,10 +646,10 @@ void InterpolationTest::testDerivativeEndConditions() {
                             x[n-1], -2.0);
 
     // MC Not-a-knot spline
-    f = CubicSplineInterpolation(x.begin(), x.end(), y.begin(),
-                    CubicSplineInterpolation::NotAKnot, Null<Real>(),
-                    CubicSplineInterpolation::NotAKnot, Null<Real>(),
-                    true);
+    f = CubicInterpolation(x.begin(), x.end(), y.begin(),
+                           CubicInterpolation::Spline, true, 
+                           CubicInterpolation::NotAKnot, Null<Real>(),
+                           CubicInterpolation::NotAKnot, Null<Real>());
     f.update();
     checkValues("MC Not-a-knot spline", f,
                 x.begin(), x.end(), y.begin());
@@ -652,10 +664,10 @@ void InterpolationTest::testDerivativeEndConditions() {
 
 
     // MC Clamped spline
-    f = CubicSplineInterpolation(x.begin(), x.end(), y.begin(),
-                    CubicSplineInterpolation::FirstDerivative,  4.0,
-                    CubicSplineInterpolation::FirstDerivative, -4.0,
-                    true);
+    f = CubicInterpolation(x.begin(), x.end(), y.begin(),
+                           CubicInterpolation::Spline, true, 
+                           CubicInterpolation::FirstDerivative,  4.0,
+                           CubicInterpolation::FirstDerivative, -4.0);
     f.update();
     checkValues("MC Clamped spline", f,
                 x.begin(), x.end(), y.begin());
@@ -670,10 +682,10 @@ void InterpolationTest::testDerivativeEndConditions() {
 
 
     // MC SecondDerivative spline
-    f = CubicSplineInterpolation(x.begin(), x.end(), y.begin(),
-                    CubicSplineInterpolation::SecondDerivative, -2.0,
-                    CubicSplineInterpolation::SecondDerivative, -2.0,
-                    true);
+    f = CubicInterpolation(x.begin(), x.end(), y.begin(),
+                           CubicInterpolation::Spline, true, 
+                           CubicInterpolation::SecondDerivative, -2.0,
+                           CubicInterpolation::SecondDerivative, -2.0);
     f.update();
     checkValues("MC SecondDerivative spline", f,
                 x.begin(), x.end(), y.begin());
@@ -706,10 +718,10 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
     Real zero=0.0, interpolated, expected=0.0;
 
     // MC Not-a-knot spline
-    CubicSplineInterpolation f(x.begin(), x.end(), y.begin(),
-                  CubicSplineInterpolation::NotAKnot, Null<Real>(),
-                  CubicSplineInterpolation::NotAKnot, Null<Real>(),
-                  true);
+    CubicInterpolation f(x.begin(), x.end(), y.begin(),
+                         CubicInterpolation::Spline, true,
+                         CubicInterpolation::NotAKnot, Null<Real>(),
+                         CubicInterpolation::NotAKnot, Null<Real>());
     f.update();
     interpolated = f(zero);
     if (std::fabs(interpolated-expected)>1e-15) {
@@ -723,10 +735,10 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
 
 
     // MC Clamped spline
-    f = CubicSplineInterpolation(x.begin(), x.end(), y.begin(),
-                    CubicSplineInterpolation::FirstDerivative,  4.0,
-                    CubicSplineInterpolation::FirstDerivative, -4.0,
-                    true);
+    f = CubicInterpolation(x.begin(), x.end(), y.begin(),
+                           CubicInterpolation::Spline, true,
+                           CubicInterpolation::FirstDerivative,  4.0,
+                           CubicInterpolation::FirstDerivative, -4.0);
     f.update();
     interpolated = f(zero);
     if (std::fabs(interpolated-expected)>1e-15) {
@@ -740,10 +752,10 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
 
 
     // MC SecondDerivative spline
-    f = CubicSplineInterpolation(x.begin(), x.end(), y.begin(),
-                    CubicSplineInterpolation::SecondDerivative, -2.0,
-                    CubicSplineInterpolation::SecondDerivative, -2.0,
-                    true);
+    f = CubicInterpolation(x.begin(), x.end(), y.begin(),
+                           CubicInterpolation::Spline, true,
+                           CubicInterpolation::SecondDerivative, -2.0,
+                           CubicInterpolation::SecondDerivative, -2.0);
     f.update();
     interpolated = f(zero);
     if (std::fabs(interpolated-expected)>1e-15) {

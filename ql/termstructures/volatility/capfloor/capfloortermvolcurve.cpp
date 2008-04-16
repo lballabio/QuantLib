@@ -21,7 +21,7 @@
 */
 
 #include <ql/termstructures/volatility/capfloor/capfloortermvolcurve.hpp>
-#include <ql/math/interpolations/cubicspline.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
@@ -145,14 +145,12 @@ namespace QuantLib {
 
     void CapFloorTermVolCurve::interpolate()
     {
-        interpolation_ = CubicSplineInterpolation(optionTimes_.begin(),
-                                     optionTimes_.end(),
-                                     vols_.begin(),
-                                     CubicSplineInterpolation::SecondDerivative,
-                                     0.0,
-                                     CubicSplineInterpolation::SecondDerivative,
-                                     0.0,
-                                     false);
+        interpolation_ = CubicInterpolation(
+                                    optionTimes_.begin(), optionTimes_.end(),
+                                    vols_.begin(),
+                                    CubicInterpolation::Spline, false,
+                                    CubicInterpolation::SecondDerivative, 0.0,
+                                    CubicInterpolation::SecondDerivative, 0.0);
     }
 
     void CapFloorTermVolCurve::update()

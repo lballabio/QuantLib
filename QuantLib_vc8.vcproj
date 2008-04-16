@@ -1865,11 +1865,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\math\interpolations\constrainedcubicspline.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\math\interpolations\cubicspline.hpp"
+					RelativePath=".\ql\math\interpolations\cubicinterpolation.hpp"
 					>
 				</File>
 				<File

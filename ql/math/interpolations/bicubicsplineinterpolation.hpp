@@ -26,7 +26,7 @@
 #define quantlib_bicubic_spline_interpolation_hpp
 
 #include <ql/math/interpolations/interpolation2d.hpp>
-#include <ql/math/interpolations/cubicspline.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 
 namespace QuantLib {
 
@@ -46,17 +46,23 @@ namespace QuantLib {
             void calculate() {
                 splines_.reserve(this->zData_.rows());
                 for (Size i=0; i<(this->zData_.rows()); ++i)
-                    splines_.push_back(NaturalCubicSpline(
-                                                  this->xBegin_, this->xEnd_,
-                                                  this->zData_.row_begin(i)));
+                    splines_.push_back(CubicInterpolation(
+                                this->xBegin_, this->xEnd_,
+                                this->zData_.row_begin(i),
+                                CubicInterpolation::Spline, false,
+                                CubicInterpolation::SecondDerivative, 0.0,
+                                CubicInterpolation::SecondDerivative, 0.0));
             }
             Real value(Real x, Real y) const {
                 std::vector<Real> section(splines_.size());
                 for (Size i=0; i<splines_.size(); i++)
                     section[i]=splines_[i](x,true);
 
-                NaturalCubicSpline spline(this->yBegin_, this->yEnd_,
-                                          section.begin());
+                CubicInterpolation spline(this->yBegin_, this->yEnd_,
+                                          section.begin(),
+                                          CubicInterpolation::Spline, false,
+                                          CubicInterpolation::SecondDerivative, 0.0,
+                                          CubicInterpolation::SecondDerivative, 0.0);
                 return spline(y,true);
             }
           private:

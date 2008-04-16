@@ -26,7 +26,7 @@
 
 #include <ql/math/array.hpp>
 #include <ql/grid.hpp>
-#include <ql/math/interpolations/cubicspline.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 
 namespace QuantLib {
 
@@ -106,9 +106,12 @@ namespace QuantLib {
 
             std::transform(grid_.begin(), grid_.end(),
                            transformed_grid.begin(), func);
-            NaturalCubicSpline priceSpline(transformed_grid.begin(),
+            CubicInterpolation priceSpline(transformed_grid.begin(),
                                            transformed_grid.end(),
-                                           values_.begin());
+                                           values_.begin(),
+                                           CubicInterpolation::Spline, false,
+                                           CubicInterpolation::SecondDerivative, 0.0,
+                                           CubicInterpolation::SecondDerivative, 0.0);
             priceSpline.update();
 
             Array newValues = new_grid;
