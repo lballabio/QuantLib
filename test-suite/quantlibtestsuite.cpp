@@ -206,10 +206,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ExchangeRateTest::suite());
     test->add(FactorialTest::suite());
     test->add(ForwardOptionTest::suite());
-    */
-    test->add(GJRGARCHModelTest::suite());
-    /*
     test->add(GaussianQuadraturesTest::suite());
+    test->add(GJRGARCHModelTest::suite());
     test->add(HestonModelTest::suite());        // FLOATING_POINT_EXCEPTION
     test->add(HybridHestonHullWhiteProcessTest::suite());   // FLOATING_POINT_EXCEPTION
     test->add(InflationTest::suite());
