@@ -7,6 +7,7 @@
 #include <ql/processes/forwardmeasureprocess.hpp>
 #include <ql/processes/g2process.hpp>
 #include <ql/processes/geometricbrownianprocess.hpp>
+#include <ql/processes/gjrgarchprocess.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/processes/hullwhiteprocess.hpp>
 #include <ql/processes/hybridhestonhullwhiteprocess.hpp>

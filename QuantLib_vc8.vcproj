@@ -3681,6 +3681,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\models\equity\gjrgarchmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\models\equity\gjrgarchmodel.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\models\equity\hestonmodel.cpp"
 					>
 				</File>
@@ -4403,6 +4411,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\processes\geometricbrownianprocess.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\processes\gjrgarchprocess.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\processes\gjrgarchprocess.hpp"
 				>
 			</File>
 			<File
@@ -5131,6 +5147,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\vanilla\analyticgjrgarchengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\analyticgjrgarchengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\vanilla\analytichestonengine.cpp"
 					>
 				</File>
@@ -5568,6 +5592,10 @@
 				</File>
 				<File
 					RelativePath="ql\pricingengines\vanilla\mceuropeanengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\mceuropeangjrgarchengine.hpp"
 					>
 				</File>
 				<File

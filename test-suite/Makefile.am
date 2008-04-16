@@ -31,6 +31,7 @@ QL_TESTS = \
 	factorial.hpp factorial.cpp \
 	forwardoption.hpp forwardoption.cpp \
 	gaussianquadratures.hpp gaussianquadratures.cpp \
+	gjrgarchmodel.hpp gjrgarchmodel.cpp \
 	hestonmodel.hpp hestonmodel.cpp \
 	hybridhestonhullwhiteprocess.hpp hybridhestonhullwhiteprocess.cpp \
 	inflation.hpp inflation.cpp \

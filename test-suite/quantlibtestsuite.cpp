@@ -68,6 +68,7 @@
 #include "factorial.hpp"
 #include "forwardoption.hpp"
 #include "gaussianquadratures.hpp"
+#include "gjrgarchmodel.hpp"
 #include "hestonmodel.hpp"
 #include "hybridhestonhullwhiteprocess.hpp"
 #include "inflation.hpp"
@@ -177,7 +178,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test_suite* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(BOOST_TEST_CASE(startTimer));
-
     test->add(AmericanOptionTest::suite());   // FLOATING_POINT_EXCEPTION
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
@@ -206,6 +206,9 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ExchangeRateTest::suite());
     test->add(FactorialTest::suite());
     test->add(ForwardOptionTest::suite());
+    */
+    test->add(GJRGARCHModelTest::suite());
+    /*
     test->add(GaussianQuadraturesTest::suite());
     test->add(HestonModelTest::suite());        // FLOATING_POINT_EXCEPTION
     test->add(HybridHestonHullWhiteProcessTest::suite());   // FLOATING_POINT_EXCEPTION
@@ -262,7 +265,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(LiborMarketModelTest::suite());
     test->add(LiborMarketModelProcessTest::suite());
     test->add(OldPricerTest::suite());                               // FLOATING_POINT_EXCEPTION
-
     test->add(BOOST_TEST_CASE(stopTimer));
 
     return test;

@@ -10,6 +10,7 @@ this_include_HEADERS = \
 	forwardmeasureprocess.hpp \
 	g2process.hpp \
 	geometricbrownianprocess.hpp \
+	gjrgarchprocess.hpp \
 	hestonprocess.hpp \
 	hullwhiteprocess.hpp \
 	hybridhestonhullwhiteprocess.hpp \
@@ -26,6 +27,7 @@ libProcesses_la_SOURCES = \
 	forwardmeasureprocess.cpp \
 	g2process.cpp \
 	geometricbrownianprocess.cpp \
+	gjrgarchprocess.cpp \
 	hestonprocess.cpp \
 	hullwhiteprocess.cpp \
 	hybridhestonhullwhiteprocess.cpp \

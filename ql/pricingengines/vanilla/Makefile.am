@@ -8,6 +8,7 @@ this_include_HEADERS = \
     analyticdigitalamericanengine.hpp \
     analyticdividendeuropeanengine.hpp \
     analyticeuropeanengine.hpp \
+    analyticgjrgarchengine.hpp \
     analytichestonengine.hpp \
     analytichestonhullwhiteengine.hpp \
     baroneadesiwhaleyengine.hpp \
@@ -42,6 +43,7 @@ libVanillaEngines_la_SOURCES = \
     analyticdigitalamericanengine.cpp \
     analyticdividendeuropeanengine.cpp \
     analyticeuropeanengine.cpp \
+    analyticgjrgarchengine.cpp \
     analytichestonengine.cpp \
     analytichestonhullwhiteengine.cpp \
     baroneadesiwhaleyengine.cpp \

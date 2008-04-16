@@ -5,11 +5,13 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     batesmodel.hpp \
+    gjrgarchmodel.hpp \
     hestonmodel.hpp \
     hestonmodelhelper.hpp
 
 libEquityModels_la_SOURCES = \
     batesmodel.cpp \
+    gjrgarchmodel.cpp \
     hestonmodel.cpp \
     hestonmodelhelper.cpp
 
