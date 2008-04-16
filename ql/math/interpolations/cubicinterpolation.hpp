@@ -225,8 +225,8 @@ namespace QuantLib {
                                    Real leftConditionValue,
                                    CubicInterpolation::BoundaryCondition rightCondition,
                                    Real rightConditionValue)
-            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
-              CoefficientHolder(xEnd-xBegin),
+            : CoefficientHolder(xEnd-xBegin),
+              Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
               da_(da),
               monotonic_(monotonic),
               leftType_(leftCondition), rightType_(rightCondition),
