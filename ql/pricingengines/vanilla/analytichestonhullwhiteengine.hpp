@@ -64,10 +64,17 @@ namespace QuantLib {
     */
     class AnalyticHestonHullWhiteEngine : public AnalyticHestonEngine {
       public:
+	    // see AnalticHestonEninge for usage of different constructors
         AnalyticHestonHullWhiteEngine(
                         const boost::shared_ptr<HestonModel>& hestonModel,
                         const boost::shared_ptr<HullWhite>& hullWhiteModel,
-                        Size integrationOrder = 64);
+                        Size integrationOrder = 144);
+
+		AnalyticHestonHullWhiteEngine(
+						const boost::shared_ptr<HestonModel>& model,
+						const boost::shared_ptr<HullWhite>& hullWhiteModel,
+                        Real relTolerance, Size maxEvaluations);
+
 
         void update();
         void calculate() const;

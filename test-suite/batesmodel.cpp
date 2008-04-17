@@ -401,7 +401,7 @@ void BatesModelTest::testDAXCalibration() {
         new BatesModel(process,1.1098, -0.1285, 0.1702));
 
     boost::shared_ptr<PricingEngine> batesEngine(
-       new BatesEngine(batesModel));
+                                            new BatesEngine(batesModel, 64));
 
     std::vector<boost::shared_ptr<CalibrationHelper> > options;
 
@@ -446,17 +446,17 @@ void BatesModelTest::testDAXCalibration() {
     pricingEngines.push_back(boost::shared_ptr<PricingEngine>(
         new BatesDetJumpEngine(
             boost::shared_ptr<BatesDetJumpModel>(
-                new BatesDetJumpModel(process, 1, -0.1)))) );
+                             new BatesDetJumpModel(process, 1, -0.1)), 64)) );
 
     pricingEngines.push_back(boost::shared_ptr<PricingEngine>(
         new BatesDoubleExpEngine(
             boost::shared_ptr<BatesDoubleExpModel>(
-                new BatesDoubleExpModel(process, 1.0)))) );
+                               new BatesDoubleExpModel(process, 1.0)), 64)) );
 
     pricingEngines.push_back(boost::shared_ptr<PricingEngine>(
         new BatesDoubleExpDetJumpEngine(
             boost::shared_ptr<BatesDoubleExpDetJumpModel>(
-                new BatesDoubleExpDetJumpModel(process, 1.0)))) );
+                        new BatesDoubleExpDetJumpModel(process, 1.0)), 64)) );
 
     Real expectedValues[] = { 5896.37,
                               5499.29,

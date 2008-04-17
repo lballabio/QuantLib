@@ -106,7 +106,9 @@ namespace QuantLib {
     class BatesEngine : public AnalyticHestonEngine {
       public:
         BatesEngine(const boost::shared_ptr<BatesModel>& model,
-                    Size integrationOrder = 64);
+                    Size integrationOrder = 144);
+		BatesEngine(const boost::shared_ptr<BatesModel>& model,
+                    Real relTolerance, Size maxEvaluations);
 
       protected:
         std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
@@ -116,7 +118,9 @@ namespace QuantLib {
     class BatesDetJumpEngine : public BatesEngine {
       public:
         BatesDetJumpEngine(const boost::shared_ptr<BatesDetJumpModel>& model,
-                           Size integrationOrder = 64);
+                           Size integrationOrder = 144);
+		BatesDetJumpEngine(const boost::shared_ptr<BatesDetJumpModel>& model,
+						   Real relTolerance, Size maxEvaluations);
 
       protected:
         std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
@@ -127,7 +131,10 @@ namespace QuantLib {
       public:
         BatesDoubleExpEngine(
             const boost::shared_ptr<BatesDoubleExpModel>& model,
-            Size integrationOrder = 64);
+            Size integrationOrder = 144);
+		BatesDoubleExpEngine(
+			const boost::shared_ptr<BatesDoubleExpModel>& model,
+			Real relTolerance, Size maxEvaluations);
 
       protected:
         std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
@@ -138,7 +145,10 @@ namespace QuantLib {
       public:
         BatesDoubleExpDetJumpEngine(
             const boost::shared_ptr<BatesDoubleExpDetJumpModel>& model,
-            Size integrationOrder = 64);
+            Size integrationOrder = 144);
+		BatesDoubleExpDetJumpEngine(
+			const boost::shared_ptr<BatesDoubleExpDetJumpModel>& model,
+			Real relTolerance, Size maxEvaluations);
 
       protected:
         std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
