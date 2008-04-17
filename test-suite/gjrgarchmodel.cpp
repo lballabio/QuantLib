@@ -49,7 +49,7 @@ void GJRGARCHModelTest::testEngines() {
     Handle<YieldTermStructure> dividendTS(flatRate(0.0, dayCounter));
 
     const Real s0 = 50.0;
-    const Real omega = 2.0e-6; 
+    const Real omega = 2.0e-6;
     const Real alpha = 0.024;
     const Real beta = 0.93;
     const Real gamma = 0.059;
@@ -154,40 +154,33 @@ void GJRGARCHModelTest::testEngines() {
         for (Size i = 0; i < 2; ++i) {
             for (Size j = 0; j < 6; ++j) {
                 Real x = strike[j];
-                
+
                 boost::shared_ptr<StrikedTypePayoff> payoff(
                                      new PlainVanillaPayoff(Option::Call, x));
                 Date exDate = today + maturity[i];
                 boost::shared_ptr<Exercise> exercise(
                                                 new EuropeanExercise(exDate));
 
-                BOOST_MESSAGE("strike = " << x
-                              << ", maturity = " << maturity[i]
-                              << ", v0 = " << v0);
-                
                 VanillaOption option(payoff, exercise);
 
                 option.setPricingEngine(engine1);
                 Real calculated = option.NPV();
-                
+
                 option.setPricingEngine(engine2);
                 Real expected = option.NPV();
                 Real tolerance = 7.5e-2;
 
-                BOOST_MESSAGE("calculted = " << calculated
-                              << ", expected = " << expected);
-
                 if (std::fabs(expected - analytic[k][i][j]) > 2.0*tolerance) {
                     BOOST_ERROR("failed to match results from engines"
-                                << "\n    correct value:    " 
+                                << "\n    correct value:    "
                                 << analytic[k][i][j]
-                                << "\n    Analytic Approx.: " 
+                                << "\n    Analytic Approx.: "
                                 << expected
                                 << " +/- " << tolerance);
                 }
                 if (std::fabs(calculated-mcValues[k][i][j]) > 2.0*tolerance) {
                     BOOST_ERROR("failed to match results from engines"
-                                << "\n    correct value:    " 
+                                << "\n    correct value:    "
                                 << mcValues[k][i][j]
                                 << "\n    Monte Carlo: " << calculated
                                 << " +/- " << tolerance);

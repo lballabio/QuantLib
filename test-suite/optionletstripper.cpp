@@ -361,7 +361,6 @@ void OptionletStripperTest::testTermVolatilityStripping1() {
                            "\ntolerance:          " << io::rate(vars.tolerance));
             }
     }
-    BOOST_MESSAGE("Done");
 }
 
 
@@ -491,9 +490,6 @@ void OptionletStripperTest::testTermVolatilityStripping2() {
                  "\ntolerance:     " << io::rate(vars.tolerance));
     }
   }
-
-  BOOST_MESSAGE("Done");
-
 }
 
 test_suite* OptionletStripperTest::suite() {
