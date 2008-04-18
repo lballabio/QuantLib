@@ -1,9 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2004, 2008 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -174,19 +174,19 @@
 // non-ASCII characters - Disabling this warning here is ineffective
 // and the change has been made instead under project properties
 //#  pragma warning(disable: 4819)
-//#elif (_MSC_VER == 1500)
-//// move inside here configs specific to VC++ 9 (2008)
-//#  ifndef _SCL_SECURE_NO_DEPRECATE
-//#    define _SCL_SECURE_NO_DEPRECATE
-//#  endif
-//#  ifndef _CRT_SECURE_NO_DEPRECATE
-//#    define _CRT_SECURE_NO_DEPRECATE
-//#  endif
-//#  define QL_PATCH_MSVC90
-//#  define QL_WORKING_BOOST_STREAMS
-//// see the corresponding pragmas in the 7.1 section
-//#  pragma warning(disable: 4267)
-//#  pragma warning(disable: 4224)
+#elif (_MSC_VER == 1500)
+// move inside here configs specific to VC++ 9 (2008)
+#  ifndef _SCL_SECURE_NO_DEPRECATE
+#    define _SCL_SECURE_NO_DEPRECATE
+#  endif
+#  ifndef _CRT_SECURE_NO_DEPRECATE
+#    define _CRT_SECURE_NO_DEPRECATE
+#  endif
+#  define QL_PATCH_MSVC90
+#  define QL_WORKING_BOOST_STREAMS
+// see the corresponding pragmas in the 7.1 section
+#  pragma warning(disable: 4267)
+#  pragma warning(disable: 4224)
 #else
 #  error "unknown Microsoft compiler"
 #endif

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2008 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,8 +29,8 @@
 #  define QL_LIB_TOOLSET "vc71"
 #elif (_MSC_VER == 1400)
 #  define QL_LIB_TOOLSET "vc80"
-//#elif (_MSC_VER == 1500)
-//#  define QL_LIB_TOOLSET "vc90"
+#elif (_MSC_VER == 1500)
+#  define QL_LIB_TOOLSET "vc90"
 #else
 #  error "unknown Microsoft compiler"
 #endif

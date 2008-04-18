@@ -1196,11 +1196,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\gjrgarchmodel.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\hestonmodel.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\hybridhestonhullwhiteprocess.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\inflation.cpp"
 				>
 			</File>
 			<File
@@ -1707,6 +1715,10 @@
 			</File>
 			<File
 				RelativePath=".\optimizers.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\optionletstripper.cpp"
 				>
 			</File>
 			<File
@@ -2311,11 +2323,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\gjrgarchmodel.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\hestonmodel.hpp"
 				>
 			</File>
 			<File
 				RelativePath=".\hybridhestonhullwhiteprocess.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\inflation.hpp"
 				>
 			</File>
 			<File
@@ -2408,6 +2428,10 @@
 			</File>
 			<File
 				RelativePath=".\optimizers.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\optionletstripper.hpp"
 				>
 			</File>
 			<File

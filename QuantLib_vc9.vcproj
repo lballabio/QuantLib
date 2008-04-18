@@ -1004,6 +1004,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\indexes\ibor\seklibor.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\indexes\ibor\tibor.hpp"
 					>
 				</File>
@@ -1285,11 +1289,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\instruments\makeswaptions.cpp"
+				RelativePath=".\ql\instruments\makeswaption.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\instruments\makeswaptions.hpp"
+				RelativePath=".\ql\instruments\makeswaption.hpp"
 				>
 			</File>
 			<File
@@ -1858,7 +1862,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\math\interpolations\cubicspline.hpp"
+					RelativePath=".\ql\math\interpolations\cubicinterpolation.hpp"
 					>
 				</File>
 				<File
@@ -2023,6 +2027,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\integrals\gaussianquadratures.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\integrals\gausslobattointegral.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\integrals\gausslobattointegral.hpp"
 					>
 				</File>
 				<File
@@ -3666,6 +3678,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\models\equity\gjrgarchmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\models\equity\gjrgarchmodel.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\models\equity\hestonmodel.cpp"
 					>
 				</File>
@@ -3691,11 +3711,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\termstructures\bootstraperror.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\termstructures\bootstraphelper.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\termstructures\bootstrapper.hpp"
+				RelativePath=".\ql\termstructures\defaulttermstructure.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\defaulttermstructure.hpp"
 				>
 			</File>
 			<File
@@ -3704,6 +3732,10 @@
 			</File>
 			<File
 				RelativePath=".\ql\termstructures\inflationtermstructure.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\iterativebootstrap.hpp"
 				>
 			</File>
 			<File
@@ -3746,6 +3778,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\volatility\flatsmilesection.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\flatsmilesection.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\volatility\interpolatedsmilesection.hpp"
 					>
 				</File>
@@ -3771,6 +3811,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\volatility\smilesection.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\spreadedsmilesection.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\spreadedsmilesection.hpp"
 					>
 				</File>
 				<Filter
@@ -3802,6 +3850,14 @@
 					</File>
 					<File
 						RelativePath=".\ql\termstructures\volatility\capfloor\capfloortermvolsurface.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\capfloor\constantcapfloortermvol.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\capfloor\constantcapfloortermvol.hpp"
 						>
 					</File>
 				</Filter>
@@ -3881,14 +3937,6 @@
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatility\optionlet\capletvolatilitiesstructures.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatility\optionlet\capletvolatilitiesstructures.hpp"
-						>
-					</File>
-					<File
 						RelativePath=".\ql\termstructures\volatility\optionlet\constantoptionletvol.cpp"
 						>
 					</File>
@@ -3934,6 +3982,14 @@
 					</File>
 					<File
 						RelativePath=".\ql\termstructures\volatility\optionlet\spreadedoptionletvol.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\optionlet\strippedoptionlet.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\optionlet\strippedoptionlet.hpp"
 						>
 					</File>
 					<File
@@ -4166,6 +4222,46 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="credit"
+				>
+				<File
+					RelativePath=".\ql\termstructures\credit\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\defaultdensitystructure.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\defaultdensitystructure.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\flathazardrate.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\flathazardrate.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\hazardratestructure.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\hazardratestructure.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\interpolateddefaultdensitycurve.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\interpolatedhazardratecurve.hpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="utilities"
@@ -4267,6 +4363,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\processes\batesprocess.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\processes\batesprocess.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\processes\blackscholesprocess.cpp"
 				>
 			</File>
@@ -4304,6 +4408,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\processes\geometricbrownianprocess.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\processes\gjrgarchprocess.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\processes\gjrgarchprocess.hpp"
 				>
 			</File>
 			<File
@@ -5032,6 +5144,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\vanilla\analyticgjrgarchengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\analyticgjrgarchengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\vanilla\analytichestonengine.cpp"
 					>
 				</File>
@@ -5472,6 +5592,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\vanilla\mceuropeangjrgarchengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\vanilla\mceuropeanhestonengine.hpp"
 					>
 				</File>
@@ -5489,7 +5613,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="capFloor"
+				Name="capfloor"
 				>
 				<File
 					RelativePath=".\ql\pricingengines\capfloor\all.hpp"
@@ -5750,6 +5874,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\quotes\impliedstddevquote.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\quotes\sensitivityanalysis.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\quotes\sensitivityanalysis.hpp"
 				>
 			</File>
 			<File
