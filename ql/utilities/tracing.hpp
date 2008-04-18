@@ -63,7 +63,7 @@ namespace QuantLib {
     namespace detail {
 
         class Tracing : public Singleton<Tracing> {
-            friend class Singleton<Tracing>;
+            friend class QuantLib::Singleton<Tracing>;
         private:
             Tracing();
         public:
