@@ -1203,6 +1203,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\gjrgarchmodel.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\hestonmodel.cpp"
 				>
 			</File>
@@ -2323,6 +2327,10 @@
 			</File>
 			<File
 				RelativePath=".\gaussianquadratures.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\gjrgarchmodel.hpp"
 				>
 			</File>
 			<File
