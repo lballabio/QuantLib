@@ -217,43 +217,43 @@ int main(int, char* []) {
             true, depositDayCounter));
         imm = IMM::nextDate(imm+1);
         boost::shared_ptr<RateHelper> fut2(new FuturesRateHelper(
-            Handle<Quote>(fut1Price),
+            Handle<Quote>(fut2Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             true, depositDayCounter));
         imm = IMM::nextDate(imm+1);
         boost::shared_ptr<RateHelper> fut3(new FuturesRateHelper(
-            Handle<Quote>(fut1Price),
+            Handle<Quote>(fut3Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             true, depositDayCounter));
         imm = IMM::nextDate(imm+1);
         boost::shared_ptr<RateHelper> fut4(new FuturesRateHelper(
-            Handle<Quote>(fut1Price),
+            Handle<Quote>(fut4Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             true, depositDayCounter));
         imm = IMM::nextDate(imm+1);
         boost::shared_ptr<RateHelper> fut5(new FuturesRateHelper(
-            Handle<Quote>(fut1Price),
+            Handle<Quote>(fut5Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             true, depositDayCounter));
         imm = IMM::nextDate(imm+1);
         boost::shared_ptr<RateHelper> fut6(new FuturesRateHelper(
-            Handle<Quote>(fut1Price),
+            Handle<Quote>(fut6Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             true, depositDayCounter));
         imm = IMM::nextDate(imm+1);
         boost::shared_ptr<RateHelper> fut7(new FuturesRateHelper(
-            Handle<Quote>(fut1Price),
+            Handle<Quote>(fut7Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             true, depositDayCounter));
         imm = IMM::nextDate(imm+1);
         boost::shared_ptr<RateHelper> fut8(new FuturesRateHelper(
-            Handle<Quote>(fut1Price),
+            Handle<Quote>(fut8Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             true, depositDayCounter));
