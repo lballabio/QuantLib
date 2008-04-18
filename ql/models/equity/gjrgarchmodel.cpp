@@ -68,8 +68,10 @@ namespace QuantLib {
         process_.reset(new GJRGARCHProcess(process_->riskFreeRate(),
                                            process_->dividendYield(),
                                            process_->s0(),
-                                           v0(), omega(), alpha(),
-                                           beta(), gamma(), lambda()));
+                                           process_->v0(), process_->omega(),
+                                           process_->alpha(), process_->beta(),
+                                           process_->gamma(), process_->lambda(),
+                                           process_->daysPerYr()));
     }
 }
 

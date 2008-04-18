@@ -31,6 +31,8 @@
 namespace QuantLib {
 
     //! Stochastic-volatility GJR-GARCH(1,1) process
+    // parameters supplied should be daily constants
+    // they are annualized by setting the parameter daysPerYr
     /*! This class describes the stochastic volatility
         process governed by
         \f[
@@ -67,8 +69,8 @@ namespace QuantLib {
         GJRGARCHProcess(const Handle<YieldTermStructure>& riskFreeRate,
                         const Handle<YieldTermStructure>& dividendYield,
                         const Handle<Quote>& s0,
-                        Real v0, Real omega, Real alpha, 
-                        Real beta, Real gamma, Real lambda,
+                        Real v0, Real omega, Real alpha, Real beta,
+                        Real gamma, Real lambda, Real daysPerYr = 252.0,
                         Discretization d = FullTruncation);
 
         Size size() const;
@@ -85,6 +87,7 @@ namespace QuantLib {
         Real alpha()  const { return alpha_; }
         Real beta()   const { return beta_; }
         Real gamma()  const { return gamma_; }
+        Real daysPerYr()  const { return daysPerYr_; }
 
         const Handle<Quote>& s0() const;
         const Handle<YieldTermStructure>& dividendYield() const;
@@ -94,7 +97,7 @@ namespace QuantLib {
       private:
         Handle<YieldTermStructure> riskFreeRate_, dividendYield_;
         Handle<Quote> s0_;
-        Real v0_, omega_, alpha_, beta_, gamma_, lambda_;
+        Real v0_, omega_, alpha_, beta_, gamma_, lambda_, daysPerYr_;
         Discretization discretization_;
     };
 

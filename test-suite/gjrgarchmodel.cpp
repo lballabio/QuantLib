@@ -45,14 +45,16 @@ void GJRGARCHModelTest::testEngines() {
 
     DayCounter dayCounter = ActualActual();
 
-    Handle<YieldTermStructure> riskFreeTS(flatRate(0.05, dayCounter));
-    Handle<YieldTermStructure> dividendTS(flatRate(0.0, dayCounter));
+    const Date today = Date::todaysDate();
+    Handle<YieldTermStructure> riskFreeTS(flatRate(today, 0.05, dayCounter));
+    Handle<YieldTermStructure> dividendTS(flatRate(today, 0.0, dayCounter));
 
     const Real s0 = 50.0;
     const Real omega = 2.0e-6;
     const Real alpha = 0.024;
     const Real beta = 0.93;
     const Real gamma = 0.059;
+    const Real daysPerYr = 365.0; // number of trading days per year
     const Size maturity[] = {90, 180};
     const Real strike[] = {35,40,45,50,55,60};
     const Real Lambda[] = {0.0,0.1,0.2};
@@ -131,7 +133,6 @@ void GJRGARCHModelTest::testEngines() {
     mcValues[2][1][4] = 3.3103;
     mcValues[2][1][5] = 1.8053;
 
-    const Date today = Date::todaysDate();
     for (Size k = 0; k < 3; ++k) {
         Real lambda = Lambda[k];
         Real m1 = beta+(alpha+gamma*CumulativeNormalDistribution()(lambda))
@@ -140,8 +141,7 @@ void GJRGARCHModelTest::testEngines() {
         Real v0 = omega/(1.0-m1);
         Handle<Quote> q(boost::shared_ptr<Quote>(new SimpleQuote(s0)));
         boost::shared_ptr<GJRGARCHProcess> process(new GJRGARCHProcess(
-            riskFreeTS, dividendTS, q, v0, omega, alpha, beta, gamma, lambda));
-
+            riskFreeTS, dividendTS, q, v0, omega, alpha, beta, gamma, lambda, daysPerYr));
         boost::shared_ptr<PricingEngine> engine1 =
             MakeMCEuropeanGJRGARCHEngine<PseudoRandom>(process)
             .withStepsPerYear(20)
