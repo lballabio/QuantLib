@@ -5,8 +5,7 @@ if AUTO_EXAMPLES
 bin_PROGRAMS = Replication
 TESTS = Replication$(EXEEXT)
 else
-EXTRA_PROGRAMS = Replication
-CLEANFILES = Replication$(EXEEXT)
+noinst_PROGRAMS = Replication
 endif
 Replication_SOURCES = Replication.cpp
 Replication_LDADD = ../../ql/libQuantLib.la

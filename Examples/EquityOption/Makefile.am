@@ -5,8 +5,7 @@ if AUTO_EXAMPLES
 bin_PROGRAMS = EquityOption
 TESTS = EquityOption$(EXEEXT)
 else
-EXTRA_PROGRAMS = EquityOption
-CLEANFILES = EquityOption$(EXEEXT)
+noinst_PROGRAMS = EquityOption
 endif
 EquityOption_SOURCES = EquityOption.cpp
 EquityOption_LDADD = ../../ql/libQuantLib.la

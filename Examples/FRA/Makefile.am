@@ -5,8 +5,7 @@ if AUTO_EXAMPLES
 bin_PROGRAMS = FRA
 TESTS = FRA$(EXEEXT)
 else
-EXTRA_PROGRAMS = FRA
-CLEANFILES = FRA$(EXEEXT)
+noinst_PROGRAMS = FRA
 endif
 FRA_SOURCES = FRA.cpp
 FRA_LDADD = ../../ql/libQuantLib.la

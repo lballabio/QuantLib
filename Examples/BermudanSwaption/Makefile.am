@@ -5,8 +5,7 @@ if AUTO_EXAMPLES
 bin_PROGRAMS = BermudanSwaption
 TESTS = BermudanSwaption$(EXEEXT)
 else
-EXTRA_PROGRAMS = BermudanSwaption
-CLEANFILES = BermudanSwaption$(EXEEXT)
+noinst_PROGRAMS = BermudanSwaption
 endif
 BermudanSwaption_SOURCES = BermudanSwaption.cpp
 BermudanSwaption_LDADD = ../../ql/libQuantLib.la

@@ -5,8 +5,7 @@ if AUTO_EXAMPLES
 bin_PROGRAMS = Repo
 TESTS = Repo$(EXEEXT)
 else
-EXTRA_PROGRAMS = Repo
-CLEANFILES = Repo$(EXEEXT)
+noinst_PROGRAMS = Repo
 endif
 Repo_SOURCES = Repo.cpp
 Repo_LDADD = ../../ql/libQuantLib.la

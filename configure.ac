@@ -10,7 +10,7 @@ AM_INIT_AUTOMAKE([foreign])
 
 AC_COPYRIGHT([
 Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
-Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
+Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
 Copyright (C) 2004, 2005 Ferdinando Ametrano
 
 This file is part of QuantLib, a free-software/open-source library
@@ -289,7 +289,7 @@ AC_ARG_ENABLE([examples],
                              [If enabled, examples are built and installed
                               when "make" and "make install" are invoked.
                               If disabled (the default) they are built
-                              with "make examples" and not installed.]),
+                              but not installed.]),
               [ql_install_examples=$enableval],
               [ql_install_examples=no])
 AM_CONDITIONAL(AUTO_EXAMPLES, test "$ql_install_examples" != "no")
@@ -301,8 +301,7 @@ AC_ARG_ENABLE([benchmark],
                              [If enabled, the benchmark is built and
                               installed when "make" and "make install"
                               are invoked. If disabled (the default)
-                              it is built with "make benchmark" and
-                              not installed.]),
+                              it is built but not installed.]),
               [ql_install_benchmark=$enableval],
               [ql_install_benchmark=no])
 AM_CONDITIONAL(AUTO_BENCHMARK, test "$ql_install_benchmark" != "no")

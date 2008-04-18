@@ -5,8 +5,7 @@ if AUTO_EXAMPLES
 bin_PROGRAMS = FittedBondCurve
 TESTS = FittedBondCurve$(EXEEXT)
 else
-EXTRA_PROGRAMS = FittedBondCurve
-CLEANFILES = FittedBondCurve$(EXEEXT)
+noinst_PROGRAMS = FittedBondCurve
 endif
 FittedBondCurve_SOURCES = FittedBondCurve.cpp
 FittedBondCurve_LDADD = ../../ql/libQuantLib.la

@@ -5,8 +5,7 @@ if AUTO_EXAMPLES
 bin_PROGRAMS = ConvertibleBonds
 TESTS = ConvertibleBonds$(EXEEXT)
 else
-EXTRA_PROGRAMS = ConvertibleBonds
-CLEANFILES = ConvertibleBonds$(EXEEXT)
+noinst_PROGRAMS = ConvertibleBonds
 endif
 ConvertibleBonds_SOURCES = ConvertibleBonds.cpp
 ConvertibleBonds_LDADD = ../../ql/libQuantLib.la

@@ -5,8 +5,7 @@ if AUTO_EXAMPLES
 bin_PROGRAMS = DiscreteHedging
 TESTS = DiscreteHedging$(EXEEXT)
 else
-EXTRA_PROGRAMS = DiscreteHedging
-CLEANFILES = DiscreteHedging$(EXEEXT)
+noinst_PROGRAMS = DiscreteHedging
 endif
 DiscreteHedging_SOURCES = DiscreteHedging.cpp
 DiscreteHedging_LDADD = ../../ql/libQuantLib.la

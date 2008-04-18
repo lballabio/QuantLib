@@ -5,8 +5,7 @@ if AUTO_EXAMPLES
 bin_PROGRAMS = SwapValuation
 TESTS = SwapValuation$(EXEEXT)
 else
-EXTRA_PROGRAMS = SwapValuation
-CLEANFILES = SwapValuation$(EXEEXT)
+noinst_PROGRAMS = SwapValuation
 endif
 SwapValuation_SOURCES = swapvaluation.cpp
 SwapValuation_LDADD = ../../ql/libQuantLib.la

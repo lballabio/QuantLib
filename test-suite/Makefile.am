@@ -145,8 +145,7 @@ if AUTO_BENCHMARK
 bin_PROGRAMS = quantlib-test-suite quantlib-benchmark
 else
 bin_PROGRAMS = quantlib-test-suite
-EXTRA_PROGRAMS = quantlib-benchmark
-CLEANFILES = quantlib-benchmark$(EXEEXT)
+noinst_PROGRAMS = quantlib-benchmark
 endif
 
 quantlib_test_suite_SOURCES = ${QL_TESTS}
