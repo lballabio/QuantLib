@@ -57,7 +57,7 @@ namespace QuantLib {
     /*! Cubic interpolation is fully defined when the ${f_i}$ function values
         at points ${x_i}$ are supplemented with ${f_i}$ function derivative
         values.
-    
+
         Different type of first derivative approximations are implemented, both
         local and non-local. Local schemes (Fourth-order, Parabolic,
         Modified Parabolic, Fritsch-Butland, Akima, Kruger) use only $f$ values
@@ -72,17 +72,17 @@ namespace QuantLib {
         values) the interpolating cubic remains monotonic. If the interpolating
         cubic is already monotonic, the Hyman filter leaves it unchanged
         preserving all its original features.
-        
+
         In the case of $C^2$ interpolants the Hyman filter ensures local
         monotonicity at the expense of the second derivative of the interpolant
         which will no longer be continuous in the points where the filter has
-        been applied. 
+        been applied.
 
         While some non-linear schemes (Modified Parabolic, Fritsch-Butland,
         Kruger) are guaranteed to be locally monotone in their original
         approximation, all other schemes must be filtered according to the
         Hyman criteria at the expense of their linearity.
-        
+
         See R. L. Dougherty, A. Edelman, and J. M. Hyman,
         "Nonnegativity-, Monotonicity-, or Convexity-Preserving CubicSpline and
         Quintic Hermite Interpolation"
@@ -142,14 +142,14 @@ namespace QuantLib {
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
         CubicInterpolation(const I1& xBegin,
-                            const I1& xEnd,
-                            const I2& yBegin,
-                            CubicInterpolation::DerivativeApprox da,
-                            bool monotonic,
-                            CubicInterpolation::BoundaryCondition leftCond,
-                            Real leftConditionValue,
-                            CubicInterpolation::BoundaryCondition rightCond,
-                            Real rightConditionValue) {
+                           const I1& xEnd,
+                           const I2& yBegin,
+                           CubicInterpolation::DerivativeApprox da,
+                           bool monotonic,
+                           CubicInterpolation::BoundaryCondition leftCond,
+                           Real leftConditionValue,
+                           CubicInterpolation::BoundaryCondition rightCond,
+                           Real rightConditionValue) {
             impl_ = boost::shared_ptr<Interpolation::Impl>(new
                 detail::CubicInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
                                                        da,
@@ -176,18 +176,47 @@ namespace QuantLib {
     };
 
 
+    // convenience classes
+
+    class NaturalCubicInterpolation : public CubicInterpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        NaturalCubicInterpolation(const I1& xBegin,
+                                  const I1& xEnd,
+                                  const I2& yBegin)
+        : CubicInterpolation(xBegin, xEnd, yBegin,
+                             Spline, false,
+                             SecondDerivative, 0.0,
+                             SecondDerivative, 0.0) {}
+    };
+
+    class MonotonicNaturalCubicInterpolation : public CubicInterpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        MonotonicNaturalCubicInterpolation(const I1& xBegin,
+                                           const I1& xEnd,
+                                           const I2& yBegin)
+        : CubicInterpolation(xBegin, xEnd, yBegin,
+                             Spline, true,
+                             SecondDerivative, 0.0,
+                             SecondDerivative, 0.0) {}
+    };
+
+
     //! %Cubic interpolation factory and traits
     class Cubic {
       public:
         Cubic(CubicInterpolation::DerivativeApprox da
                   = CubicInterpolation::Kruger,
-               bool monotonic = false,
-               CubicInterpolation::BoundaryCondition leftCondition
+              bool monotonic = false,
+              CubicInterpolation::BoundaryCondition leftCondition
                   = CubicInterpolation::SecondDerivative,
-               Real leftConditionValue = 0.0,
-               CubicInterpolation::BoundaryCondition rightCondition
+              Real leftConditionValue = 0.0,
+              CubicInterpolation::BoundaryCondition rightCondition
                   = CubicInterpolation::SecondDerivative,
-               Real rightConditionValue = 0.0)
+              Real rightConditionValue = 0.0)
         : da_(da), monotonic_(monotonic),
           leftType_(leftCondition), rightType_(rightCondition),
           leftValue_(leftConditionValue), rightValue_(rightConditionValue) {}
