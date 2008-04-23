@@ -27,13 +27,10 @@ namespace QuantLib {
         class Impl : public Constraint::Impl {
           public:
             bool test(const Array& params) const {
-                const Real omega = params[0];
-                const Real alpha = params[1];
-                const Real beta = params[2];
+                const Real beta  = params[2];
                 const Real gamma = params[3];
 
-                return (omega > 0.0 && alpha >= 0.0
-                        && beta >= 0.0 && alpha+gamma >= 0.0);
+                return (beta+gamma >= 0.0);
             }
         };
       public:
@@ -48,15 +45,18 @@ namespace QuantLib {
         arguments_[0] = ConstantParameter(process->omega(),
                                           PositiveConstraint());
         arguments_[1] = ConstantParameter(process->alpha(),
-                                          PositiveConstraint());
+                                          BoundaryConstraint( 0.0, 1.0));
         arguments_[2] = ConstantParameter(process->beta(),
-                                          PositiveConstraint());
+                                          BoundaryConstraint( 0.0, 1.0));
         arguments_[3] = ConstantParameter(process->gamma(),
                                           BoundaryConstraint(-1.0, 1.0));
-        arguments_[4] = ConstantParameter(process->lambda(),
-                                          BoundaryConstraint(-1.0, 1.0));
+        arguments_[4] = ConstantParameter(process->lambda(), NoConstraint());
         arguments_[5] = ConstantParameter(process->v0(),
                                           PositiveConstraint());
+
+        constraint_ = boost::shared_ptr<Constraint>(
+            new CompositeConstraint(*constraint_, VolatilityConstraint()));
+
         generateArguments();
 
         registerWith(process_->riskFreeRate());
@@ -68,9 +68,9 @@ namespace QuantLib {
         process_.reset(new GJRGARCHProcess(process_->riskFreeRate(),
                                            process_->dividendYield(),
                                            process_->s0(),
-                                           process_->v0(), process_->omega(),
-                                           process_->alpha(), process_->beta(),
-                                           process_->gamma(), process_->lambda(),
+                                           v0(), omega(),
+                                           alpha(), beta(),
+                                           gamma(), lambda(),
                                            process_->daysPerYr()));
     }
 }

@@ -28,6 +28,7 @@
 class GJRGARCHModelTest {
   public:
     static void testEngines();
+    static void testDAXCalibration();
     static boost::unit_test_framework::test_suite* suite();
 };
 

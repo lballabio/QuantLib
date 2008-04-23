@@ -44,7 +44,7 @@ namespace QuantLib {
         GJRGARCHModel(const boost::shared_ptr<GJRGARCHProcess>& process);
 
         // variance mean reversion level multiplied by
-	// the proportion not accounted by alpha, beta and gamma
+        // the proportion not accounted by alpha, beta and gamma
         Real omega() const { return arguments_[0](0.0); }
         // proportion attributed to the impact of all innovations
         Real alpha() const { return arguments_[1](0.0); }
@@ -65,7 +65,6 @@ namespace QuantLib {
         void generateArguments();
         boost::shared_ptr<GJRGARCHProcess> process_;
     };
-
 }
 
 

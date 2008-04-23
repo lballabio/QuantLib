@@ -22,6 +22,7 @@
 #include <ql/processes/gjrgarchprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/models/equity/gjrgarchmodel.hpp>
+#include <ql/models/equity/hestonmodelhelper.hpp>
 #include <ql/pricingengines/vanilla/analyticgjrgarchengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeangjrgarchengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
@@ -32,7 +33,7 @@
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/math/optimization/simplex.hpp>
 #include <ql/time/period.hpp>
 
 using namespace QuantLib;
@@ -190,9 +191,121 @@ void GJRGARCHModelTest::testEngines() {
     }
 }
 
+
+void GJRGARCHModelTest::testDAXCalibration() {
+    /* this example is taken from A. Sepp
+       Pricing European-Style Options under Jump Diffusion Processes
+       with Stochstic Volatility: Applications of Fourier Transform
+       http://math.ut.ee/~spartak/papers/stochjumpvols.pdf
+    */
+
+    BOOST_MESSAGE(
+         "Testing GJR-GARCH model calibration using DAX volatility data...");
+
+    SavedSettings backup;
+
+    Date settlementDate(5, July, 2002);
+    Settings::instance().evaluationDate() = settlementDate;
+
+    DayCounter dayCounter = Actual365Fixed();
+    Calendar calendar = TARGET();
+
+    Integer t[] = { 13, 41, 75, 165, 256, 345, 524, 703 };
+    Rate r[] = { 0.0357,0.0349,0.0341,0.0355,0.0359,0.0368,0.0386,0.0401 };
+
+    std::vector<Date> dates;
+    std::vector<Rate> rates;
+    dates.push_back(settlementDate);
+    rates.push_back(0.0357);
+    Size i;
+    for (i = 0; i < 8; ++i) {
+        dates.push_back(settlementDate + t[i]);
+        rates.push_back(r[i]);
+    }
+    Handle<YieldTermStructure> riskFreeTS(
+                       boost::shared_ptr<YieldTermStructure>(
+                                    new ZeroCurve(dates, rates, dayCounter)));
+
+    Handle<YieldTermStructure> dividendTS(
+                                   flatRate(settlementDate, 0.0, dayCounter));
+
+    Volatility v[] =
+      { 0.6625,0.4875,0.4204,0.3667,0.3431,0.3267,0.3121,0.3121,
+        0.6007,0.4543,0.3967,0.3511,0.3279,0.3154,0.2984,0.2921,
+        0.5084,0.4221,0.3718,0.3327,0.3155,0.3027,0.2919,0.2889,
+        0.4541,0.3869,0.3492,0.3149,0.2963,0.2926,0.2819,0.2800,
+        0.4060,0.3607,0.3330,0.2999,0.2887,0.2811,0.2751,0.2775,
+        0.3726,0.3396,0.3108,0.2781,0.2788,0.2722,0.2661,0.2686,
+        0.3550,0.3277,0.3012,0.2781,0.2781,0.2661,0.2661,0.2681,
+        0.3428,0.3209,0.2958,0.2740,0.2688,0.2627,0.2580,0.2620,
+        0.3302,0.3062,0.2799,0.2631,0.2573,0.2533,0.2504,0.2544,
+        0.3343,0.2959,0.2705,0.2540,0.2504,0.2464,0.2448,0.2462,
+        0.3460,0.2845,0.2624,0.2463,0.2425,0.2385,0.2373,0.2422,
+        0.3857,0.2860,0.2578,0.2399,0.2357,0.2327,0.2312,0.2351,
+        0.3976,0.2860,0.2607,0.2356,0.2297,0.2268,0.2241,0.2320 };
+
+    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(4468.17)));
+    Real strike[] = { 3400,3600,3800,4000,4200,4400,
+                      4500,4600,4800,5000,5200,5400,5600 };
+
+    std::vector<boost::shared_ptr<CalibrationHelper> > options;
+
+    for (Size s = 3; s < 10; ++s) {
+        for (Size m = 0; m < 3; ++m) {
+            Handle<Quote> vol(boost::shared_ptr<Quote>(
+                                                  new SimpleQuote(v[s*8+m])));
+
+            Period maturity((int)((t[m]+3)/7.), Weeks); // round to weeks
+            options.push_back(boost::shared_ptr<CalibrationHelper>(
+                        new HestonModelHelper(maturity, calendar,
+                                              s0->value(), strike[s], vol,
+                                              riskFreeTS, dividendTS, true)));
+        }
+    }
+
+    const Real omega = 2.0e-6;
+    const Real alpha = 0.024;
+    const Real beta = 0.93;
+    const Real gamma = 0.059;
+    const Real lambda = 0.1; 
+    const Real daysPerYr = 365.0; // number of trading days per year
+    const Real m1 = beta+(alpha+gamma*CumulativeNormalDistribution()(lambda))
+            *(1.0+lambda*lambda)+gamma*lambda*std::exp(-lambda*lambda/2.0)
+            /std::sqrt(2.0*M_PI);
+    const Real v0 = omega/(1.0-m1);
+
+    boost::shared_ptr<GJRGARCHProcess> process(new GJRGARCHProcess(
+                             riskFreeTS, dividendTS, s0, v0, 
+                             omega, alpha, beta, gamma, lambda, daysPerYr));
+    boost::shared_ptr<GJRGARCHModel> model(new GJRGARCHModel(process));
+
+    boost::shared_ptr<PricingEngine> engine(
+        new AnalyticGJRGARCHEngine(boost::shared_ptr<GJRGARCHModel>(model)));
+
+    for (i = 0; i < options.size(); ++i)
+        options[i]->setPricingEngine(engine);
+
+    Simplex om(0.05);
+    model->calibrate(options, om, 
+                     EndCriteria(400, 40, 1.0e-8, 1.0e-8, 1.0e-8));
+
+    Real sse = 0;
+    for (i = 0; i < options.size(); ++i) {
+        const Real diff = options[i]->calibrationError()*100.0;
+        sse += diff*diff;
+    }
+    Real maxExpected = 15; 
+    if (sse > maxExpected) {
+        BOOST_FAIL("Failed to reproduce calibration error"
+                   << "\n    calculated: " << sse
+                   << "\n    expected: < " << maxExpected);
+    }
+}
+
 test_suite* GJRGARCHModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("GJR-GARCH model tests");
     suite->add(BOOST_TEST_CASE(&GJRGARCHModelTest::testEngines));
+    suite->add(BOOST_TEST_CASE(&GJRGARCHModelTest::testDAXCalibration));
     return suite;
 }
 
