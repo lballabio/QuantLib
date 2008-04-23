@@ -9,6 +9,7 @@
 #include <ql/cashflow.hpp>
 #include <ql/compounding.hpp>
 #include <ql/currency.hpp>
+#include <ql/default.hpp>
 #include <ql/discretizedasset.hpp>
 #include <ql/errors.hpp>
 #include <ql/exchangerate.hpp>
@@ -19,6 +20,7 @@
 #include <ql/index.hpp>
 #include <ql/instrument.hpp>
 #include <ql/interestrate.hpp>
+#include <ql/issuer.hpp>
 #include <ql/money.hpp>
 #include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>

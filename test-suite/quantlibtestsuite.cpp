@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004, 2005, 2006, 2007 Ferdinando Ametrano
- Copyright (C) 2004, 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -56,6 +56,7 @@
 #include "compoundforward.hpp"
 #include "convertiblebonds.hpp"
 #include "covariance.hpp"
+#include "creditdefaultswap.hpp"
 #include "curvestates.hpp"
 #include "dates.hpp"
 #include "daycounters.hpp"
@@ -195,6 +196,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CmsTest::suite());
     test->add(ConvertibleBondTest::suite());
     test->add(CovarianceTest::suite());
+    test->add(CreditDefaultSwapTest::suite());
     test->add(CurveStatesTest::suite());
     test->add(DateTest::suite());
     test->add(DayCounterTest::suite());

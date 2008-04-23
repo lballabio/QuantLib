@@ -26,6 +26,7 @@ this_include_HEADERS = \
 	compounding.hpp \
 	config.hpp \
 	currency.hpp \
+	default.hpp \
 	discretizedasset.hpp \
 	errors.hpp \
 	exchangerate.hpp \
@@ -36,6 +37,7 @@ this_include_HEADERS = \
 	index.hpp \
 	instrument.hpp \
 	interestrate.hpp \
+	issuer.hpp \
 	money.hpp \
 	numericalmethod.hpp \
 	option.hpp \
@@ -56,12 +58,14 @@ this_include_HEADERS = \
 
 libQuantLib_la_SOURCES = \
     currency.cpp \
+	default.cpp \
 	discretizedasset.cpp \
 	errors.cpp \
 	exchangerate.cpp \
 	exercise.cpp \
     index.cpp \
     interestrate.cpp \
+    issuer.cpp \
     money.cpp \
     position.cpp \
     prices.cpp \

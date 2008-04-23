@@ -13,6 +13,7 @@
 #include <ql/instruments/capfloor.hpp>
 #include <ql/instruments/cliquetoption.hpp>
 #include <ql/instruments/compositeinstrument.hpp>
+#include <ql/instruments/creditdefaultswap.hpp>
 #include <ql/instruments/dividendschedule.hpp>
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/instruments/europeanoption.hpp>

@@ -378,6 +378,7 @@ AC_CONFIG_FILES([
     ql/pricingengines/bond/Makefile
     ql/pricingengines/capfloor/Makefile
     ql/pricingengines/cliquet/Makefile
+    ql/pricingengines/credit/Makefile
     ql/pricingengines/forward/Makefile
     ql/pricingengines/hybrid/Makefile
     ql/pricingengines/lookback/Makefile

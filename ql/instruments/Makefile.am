@@ -18,6 +18,7 @@ this_include_HEADERS = \
     capfloor.hpp \
     cliquetoption.hpp \
     compositeinstrument.hpp \
+    creditdefaultswap.hpp \
     dividendschedule.hpp \
     dividendvanillaoption.hpp \
     europeanoption.hpp \
@@ -59,6 +60,7 @@ libInstruments_la_SOURCES = \
     capfloor.cpp \
     cliquetoption.cpp \
     compositeinstrument.cpp \
+    creditdefaultswap.cpp \
     dividendvanillaoption.cpp \
     europeanoption.cpp \
     fixedratebondforward.cpp \

@@ -18,6 +18,7 @@
 #include <ql/pricingengines/bond/all.hpp>
 #include <ql/pricingengines/capfloor/all.hpp>
 #include <ql/pricingengines/cliquet/all.hpp>
+#include <ql/pricingengines/credit/all.hpp>
 #include <ql/pricingengines/forward/all.hpp>
 #include <ql/pricingengines/hybrid/all.hpp>
 #include <ql/pricingengines/lookback/all.hpp>
