@@ -22,24 +22,6 @@
 
 namespace QuantLib {
 
-    class HestonModel::FellerConstraint : public Constraint {
-      private:
-        class Impl : public Constraint::Impl {
-          public:
-            bool test(const Array& params) const {
-                const Real theta = params[0];
-                const Real kappa = params[1];
-                const Real sigma = params[2];
-
-                return (sigma >= 0.0 && sigma*sigma < 2.0*kappa*theta);
-            }
-        };
-      public:
-        FellerConstraint()
-        : Constraint(boost::shared_ptr<Constraint::Impl>(
-                                           new FellerConstraint::Impl)) {}
-    };
-
     HestonModel::HestonModel(const boost::shared_ptr<HestonProcess> & process)
     : CalibratedModel(5), process_(process) {
         arguments_[0] = ConstantParameter(process->theta(),
