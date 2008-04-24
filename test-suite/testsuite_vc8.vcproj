@@ -879,6 +879,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\creditdefaultswap.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\curvestates.cpp"
 				>
 			</File>
@@ -2279,6 +2283,10 @@
 			</File>
 			<File
 				RelativePath="covariance.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\creditdefaultswap.hpp"
 				>
 			</File>
 			<File
