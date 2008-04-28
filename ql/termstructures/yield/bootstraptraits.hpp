@@ -85,7 +85,7 @@ namespace QuantLib {
             data[i] = discount;
         }
         // upper bound for convergence loop
-        static Size maxIterations() { return 300; }
+        static Size maxIterations() { return 50; }
     };
 
 
