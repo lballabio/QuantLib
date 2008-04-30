@@ -736,8 +736,8 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
 test_suite* PiecewiseYieldCurveTest::suite() {
 
     test_suite* suite = BOOST_TEST_SUITE("Piecewise yield curve tests");
-    suite->add(BOOST_TEST_CASE(
-                 &PiecewiseYieldCurveTest::testLogCubicDiscountConsistency));
+    //suite->add(BOOST_TEST_CASE(
+    //             &PiecewiseYieldCurveTest::testLogCubicDiscountConsistency));
     suite->add(BOOST_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLogLinearDiscountConsistency));
     suite->add(BOOST_TEST_CASE(
