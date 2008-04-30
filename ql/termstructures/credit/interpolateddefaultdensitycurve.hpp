@@ -189,8 +189,8 @@ namespace QuantLib {
                      + data_.back()*(t - times_.back());
         }
         Probability P = 1.0 - integral;
-        QL_ENSURE(P >= 0.0, "negative survival probability");
-        return P;
+        // QL_ENSURE(P >= 0.0, "negative survival probability");
+        return std::max<Real>(P, 0.0);
     }
 
 }

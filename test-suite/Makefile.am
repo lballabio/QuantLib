@@ -23,6 +23,7 @@ QL_TESTS = \
 	curvestates.hpp curvestates.cpp \
 	dates.hpp dates.cpp \
 	daycounters.hpp daycounters.cpp \
+	defaultprobabilitycurves.hpp defaultprobabilitycurves.cpp \
 	digitalcoupon.hpp digitalcoupon.cpp \
 	digitaloption.hpp digitaloption.cpp \
 	distributions.hpp distributions.cpp \

@@ -5,13 +5,17 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     defaultdensitystructure.hpp \
+    defaultprobabilityhelpers.hpp \
     flathazardrate.hpp \
     hazardratestructure.hpp \
     interpolateddefaultdensitycurve.hpp \
-    interpolatedhazardratecurve.hpp
+    interpolatedhazardratecurve.hpp \
+    piecewisedefaultcurve.hpp \
+    probabilitytraits.hpp
 
 libDefaultTermStructures_la_SOURCES = \
     defaultdensitystructure.cpp \
+    defaultprobabilityhelpers.cpp \
     flathazardrate.cpp \
     hazardratestructure.cpp
 

@@ -60,6 +60,7 @@
 #include "curvestates.hpp"
 #include "dates.hpp"
 #include "daycounters.hpp"
+#include "defaultprobabilitycurves.hpp"
 #include "digitalcoupon.hpp"
 #include "digitaloption.hpp"
 #include "distributions.hpp"
@@ -200,6 +201,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CurveStatesTest::suite());
     test->add(DateTest::suite());
     test->add(DayCounterTest::suite());
+    test->add(DefaultProbabilityCurveTest::suite());
     test->add(DigitalCouponTest::suite()); // might fail with QL_USE_INDEXED_COUPON
     test->add(DigitalOptionTest::suite());  // FLOATING_POINT_EXCEPTION
     test->add(DistributionTest::suite());
