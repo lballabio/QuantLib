@@ -1197,6 +1197,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\instruments\creditdefaultswap.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\creditdefaultswap.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\instruments\dividendschedule.hpp"
 				>
 			</File>
@@ -4238,6 +4246,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\credit\defaultprobabilityhelpers.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\defaultprobabilityhelpers.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\credit\flathazardrate.cpp"
 					>
 				</File>
@@ -4259,6 +4275,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\credit\interpolatedhazardratecurve.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\piecewisedefaultcurve.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\probabilitytraits.hpp"
 					>
 				</File>
 			</Filter>
@@ -5820,6 +5844,22 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="credit"
+				>
+				<File
+					RelativePath=".\ql\pricingengines\credit\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\credit\midpointcdsengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\credit\midpointcdsengine.hpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="quotes"
@@ -7070,6 +7110,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ql\default.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\default.hpp"
+			>
+		</File>
+		<File
 			RelativePath=".\ql\discretizedasset.cpp"
 			>
 		</File>
@@ -7131,6 +7179,14 @@
 		</File>
 		<File
 			RelativePath=".\ql\interestrate.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\issuer.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\issuer.hpp"
 			>
 		</File>
 		<File

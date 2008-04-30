@@ -872,6 +872,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\creditdefaultswap.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\curvestates.cpp"
 				>
 			</File>
@@ -974,6 +978,10 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\defaultprobabilitycurves.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\digitalcoupon.cpp"
@@ -2275,6 +2283,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\creditdefaultswap.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\curvestates.hpp"
 				>
 			</File>
@@ -2284,6 +2296,10 @@
 			</File>
 			<File
 				RelativePath="daycounters.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\defaultprobabilitycurves.hpp"
 				>
 			</File>
 			<File
