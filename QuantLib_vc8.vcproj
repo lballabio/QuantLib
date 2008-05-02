@@ -4249,6 +4249,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\credit\defaultprobabilityhelpers.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\defaultprobabilityhelpers.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\credit\flathazardrate.cpp"
 					>
 				</File>
@@ -4270,6 +4278,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\credit\interpolatedhazardratecurve.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\piecewisedefaultcurve.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\probabilitytraits.hpp"
 					>
 				</File>
 			</Filter>

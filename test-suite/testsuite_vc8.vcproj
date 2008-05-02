@@ -987,6 +987,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\defaultprobabilitycurves.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\digitalcoupon.cpp"
 				>
 			</File>
@@ -2299,6 +2303,10 @@
 			</File>
 			<File
 				RelativePath="daycounters.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\defaultprobabilitycurves.hpp"
 				>
 			</File>
 			<File
