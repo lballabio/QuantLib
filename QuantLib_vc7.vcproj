@@ -787,6 +787,12 @@
 				RelativePath=".\ql\instruments\compositeinstrument.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\instruments\creditdefaultswap.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\instruments\creditdefaultswap.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\instruments\dividendschedule.hpp">
 			</File>
 			<File
@@ -1607,6 +1613,12 @@
 					RelativePath=".\ql\math\integrals\gaussianquadratures.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\math\integrals\gausslobattointegral.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\integrals\gausslobattointegral.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\math\integrals\integral.cpp">
 				</File>
 				<File
@@ -1650,7 +1662,7 @@
 					RelativePath=".\ql\math\interpolations\bilinearinterpolation.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\math\interpolations\cubicspline.hpp">
+					RelativePath=".\ql\math\interpolations\cubicinterpolation.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\math\interpolations\extrapolation.hpp">
@@ -2691,6 +2703,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\models\equity\batesmodel.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\equity\gjrgarchmodel.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\equity\gjrgarchmodel.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\models\equity\hestonmodel.cpp">
@@ -4772,6 +4790,12 @@
 					RelativePath="ql\pricingengines\vanilla\analyticeuropeanengine.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\vanilla\analyticgjrgarchengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\analyticgjrgarchengine.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\vanilla\analytichestonengine.cpp">
 				</File>
 				<File
@@ -5237,6 +5261,9 @@
 					RelativePath="ql\pricingengines\vanilla\mceuropeanengine.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\vanilla\mceuropeangjrgarchengine.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\vanilla\mceuropeanhestonengine.hpp">
 				</File>
 				<File
@@ -5412,6 +5439,19 @@
 					RelativePath=".\ql\pricingengines\swap\treeswapengine.hpp">
 				</File>
 			</Filter>
+			<Filter
+				Name="credit"
+				Filter="">
+				<File
+					RelativePath=".\ql\pricingengines\credit\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\credit\midpointcdsengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\credit\midpointcdsengine.hpp">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="processes"
@@ -5454,6 +5494,12 @@
 			</File>
 			<File
 				RelativePath=".\ql\processes\geometricbrownianprocess.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\processes\gjrgarchprocess.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\processes\gjrgarchprocess.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\processes\hestonprocess.cpp">
@@ -5564,6 +5610,12 @@
 			</File>
 			<File
 				RelativePath=".\ql\termstructures\bootstraphelper.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\defaulttermstructure.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\defaulttermstructure.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\termstructures\inflationtermstructure.cpp">
@@ -5942,6 +5994,49 @@
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\inflation\piecewisezeroinflationcurve.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="credit"
+				Filter="">
+				<File
+					RelativePath=".\ql\termstructures\credit\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\defaultdensitystructure.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\defaultdensitystructure.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\defaultprobabilityhelpers.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\defaultprobabilityhelpers.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\flathazardrate.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\flathazardrate.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\hazardratestructure.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\hazardratestructure.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\interpolateddefaultdensitycurve.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\interpolatedhazardratecurve.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\piecewisedefaultcurve.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\probabilitytraits.hpp">
 				</File>
 			</Filter>
 		</Filter>
@@ -6929,6 +7024,12 @@
 			RelativePath=".\ql\currency.hpp">
 		</File>
 		<File
+			RelativePath=".\ql\default.cpp">
+		</File>
+		<File
+			RelativePath=".\ql\default.hpp">
+		</File>
+		<File
 			RelativePath=".\ql\discretizedasset.cpp">
 		</File>
 		<File
@@ -6975,6 +7076,12 @@
 		</File>
 		<File
 			RelativePath=".\ql\interestrate.hpp">
+		</File>
+		<File
+			RelativePath=".\ql\issuer.cpp">
+		</File>
+		<File
+			RelativePath=".\ql\issuer.hpp">
 		</File>
 		<File
 			RelativePath=".\ql\money.cpp">

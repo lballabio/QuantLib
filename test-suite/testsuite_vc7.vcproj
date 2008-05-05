@@ -957,6 +957,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\creditdefaultswap.cpp">
+			</File>
+			<File
 				RelativePath=".\curvestates.cpp">
 			</File>
 			<File
@@ -1078,6 +1081,9 @@
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\defaultprobabilitycurves.cpp">
 			</File>
 			<File
 				RelativePath=".\digitalcoupon.cpp">
@@ -1333,6 +1339,9 @@
 			</File>
 			<File
 				RelativePath=".\gaussianquadratures.cpp">
+			</File>
+			<File
+				RelativePath=".\gjrgarchmodel.cpp">
 			</File>
 			<File
 				RelativePath=".\hestonmodel.cpp">
@@ -2524,6 +2533,9 @@
 				RelativePath="covariance.hpp">
 			</File>
 			<File
+				RelativePath=".\creditdefaultswap.hpp">
+			</File>
+			<File
 				RelativePath=".\curvestates.hpp">
 			</File>
 			<File
@@ -2531,6 +2543,9 @@
 			</File>
 			<File
 				RelativePath="daycounters.hpp">
+			</File>
+			<File
+				RelativePath=".\defaultprobabilitycurves.hpp">
 			</File>
 			<File
 				RelativePath=".\digitalcoupon.hpp">
@@ -2558,6 +2573,9 @@
 			</File>
 			<File
 				RelativePath=".\gaussianquadratures.hpp">
+			</File>
+			<File
+				RelativePath=".\gjrgarchmodel.hpp">
 			</File>
 			<File
 				RelativePath=".\hestonmodel.hpp">
