@@ -84,8 +84,8 @@ void TimeSeriesTest::testIntervalPrice() {
 
 test_suite* TimeSeriesTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("time series tests");
-    suite->add(BOOST_TEST_CASE(&TimeSeriesTest::testConstruction));
-    suite->add(BOOST_TEST_CASE(&TimeSeriesTest::testIntervalPrice));
+    suite->add(QUANTLIB_TEST_CASE(&TimeSeriesTest::testConstruction));
+    suite->add(QUANTLIB_TEST_CASE(&TimeSeriesTest::testIntervalPrice));
     return suite;
 }
 

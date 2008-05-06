@@ -774,11 +774,11 @@ void QuantoOptionTest::testForwardPerformanceValues() {
 
 test_suite* QuantoOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Quanto option tests");
-    suite->add(BOOST_TEST_CASE(&QuantoOptionTest::testValues));
-    suite->add(BOOST_TEST_CASE(&QuantoOptionTest::testGreeks));
-    suite->add(BOOST_TEST_CASE(&QuantoOptionTest::testForwardValues));
-    suite->add(BOOST_TEST_CASE(&QuantoOptionTest::testForwardGreeks));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testValues));
+    suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testForwardValues));
+    suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testForwardGreeks));
+    suite->add(QUANTLIB_TEST_CASE(
                             &QuantoOptionTest::testForwardPerformanceValues));
     return suite;
 }

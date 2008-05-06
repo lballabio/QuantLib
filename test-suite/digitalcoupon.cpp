@@ -1141,13 +1141,17 @@ void DigitalCouponTest::testReplicationType() {
 
 test_suite* DigitalCouponTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Digital coupon tests");
-    suite->add(BOOST_TEST_CASE(&DigitalCouponTest::testAssetOrNothing));
-    suite->add(BOOST_TEST_CASE(&DigitalCouponTest::testAssetOrNothingDeepInTheMoney));
-    suite->add(BOOST_TEST_CASE(&DigitalCouponTest::testAssetOrNothingDeepOutTheMoney));
-    suite->add(BOOST_TEST_CASE(&DigitalCouponTest::testCashOrNothing));
-    suite->add(BOOST_TEST_CASE(&DigitalCouponTest::testCashOrNothingDeepInTheMoney));
-    suite->add(BOOST_TEST_CASE(&DigitalCouponTest::testCashOrNothingDeepOutTheMoney));
-    suite->add(BOOST_TEST_CASE(&DigitalCouponTest::testCallPutParity));
-    suite->add(BOOST_TEST_CASE(&DigitalCouponTest::testReplicationType));
+    suite->add(QUANTLIB_TEST_CASE(&DigitalCouponTest::testAssetOrNothing));
+    suite->add(QUANTLIB_TEST_CASE(
+                       &DigitalCouponTest::testAssetOrNothingDeepInTheMoney));
+    suite->add(QUANTLIB_TEST_CASE(
+                      &DigitalCouponTest::testAssetOrNothingDeepOutTheMoney));
+    suite->add(QUANTLIB_TEST_CASE(&DigitalCouponTest::testCashOrNothing));
+    suite->add(QUANTLIB_TEST_CASE(
+                        &DigitalCouponTest::testCashOrNothingDeepInTheMoney));
+    suite->add(QUANTLIB_TEST_CASE(
+                       &DigitalCouponTest::testCashOrNothingDeepOutTheMoney));
+    suite->add(QUANTLIB_TEST_CASE(&DigitalCouponTest::testCallPutParity));
+    suite->add(QUANTLIB_TEST_CASE(&DigitalCouponTest::testReplicationType));
     return suite;
 }

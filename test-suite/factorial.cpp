@@ -89,8 +89,8 @@ void FactorialTest::testGammaFunction() {
 
 test_suite* FactorialTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Factorial tests");
-    suite->add(BOOST_TEST_CASE(&FactorialTest::testFactorial));
-    suite->add(BOOST_TEST_CASE(&FactorialTest::testGammaFunction));
+    suite->add(QUANTLIB_TEST_CASE(&FactorialTest::testFactorial));
+    suite->add(QUANTLIB_TEST_CASE(&FactorialTest::testGammaFunction));
     return suite;
 }
 

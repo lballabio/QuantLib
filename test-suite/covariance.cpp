@@ -268,9 +268,9 @@ void CovarianceTest::testCovariance() {
 
 test_suite* CovarianceTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Covariance/correlation tests");
-    suite->add(BOOST_TEST_CASE(&CovarianceTest::testCovariance));
-    suite->add(BOOST_TEST_CASE(&CovarianceTest::testSalvagingMatrix));
-    suite->add(BOOST_TEST_CASE(&CovarianceTest::testRankReduction));
+    suite->add(QUANTLIB_TEST_CASE(&CovarianceTest::testCovariance));
+    suite->add(QUANTLIB_TEST_CASE(&CovarianceTest::testSalvagingMatrix));
+    suite->add(QUANTLIB_TEST_CASE(&CovarianceTest::testRankReduction));
     return suite;
 }
 

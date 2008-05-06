@@ -268,9 +268,9 @@ void LookbackOptionTest::testAnalyticContinuousFixedLookback() {
 test_suite* LookbackOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Lookback option tests");
 
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                 &LookbackOptionTest::testAnalyticContinuousFloatingLookback));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                 &LookbackOptionTest::testAnalyticContinuousFixedLookback));
     return suite;
 }

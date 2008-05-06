@@ -353,9 +353,11 @@ void CreditDefaultSwapTest::testImpliedHazardRate() {
 
 test_suite* CreditDefaultSwapTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Credit-default swap tests");
-    suite->add(BOOST_TEST_CASE(&CreditDefaultSwapTest::testCachedValue));
-    suite->add(BOOST_TEST_CASE(&CreditDefaultSwapTest::testCachedMarketValue));
-    suite->add(BOOST_TEST_CASE(&CreditDefaultSwapTest::testImpliedHazardRate));
+    suite->add(QUANTLIB_TEST_CASE(&CreditDefaultSwapTest::testCachedValue));
+    suite->add(QUANTLIB_TEST_CASE(
+                              &CreditDefaultSwapTest::testCachedMarketValue));
+    suite->add(QUANTLIB_TEST_CASE(
+                              &CreditDefaultSwapTest::testImpliedHazardRate));
     return suite;
 }
 

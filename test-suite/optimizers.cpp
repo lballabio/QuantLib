@@ -304,8 +304,8 @@ void OptimizersTest::nestedOptimizationTest() {
 
 test_suite* OptimizersTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Optimizers tests");
-    suite->add(BOOST_TEST_CASE(&OptimizersTest::test));
-    suite->add(BOOST_TEST_CASE(&OptimizersTest::nestedOptimizationTest));
+    suite->add(QUANTLIB_TEST_CASE(&OptimizersTest::test));
+    suite->add(QUANTLIB_TEST_CASE(&OptimizersTest::nestedOptimizationTest));
     return suite;
 }
 

@@ -1478,7 +1478,7 @@ namespace {
             priceTolerance = 2.0e-4;
         }
     };
-    
+
 }
 
 
@@ -1646,9 +1646,11 @@ void RangeAccrualTest::testPriceMonotonicityWithRespectToUpperStrike() {
 
 test_suite* RangeAccrualTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Range Accrual tests");
-    suite->add(BOOST_TEST_CASE(&RangeAccrualTest::testInfiniteRange));
-    suite->add(BOOST_TEST_CASE(&RangeAccrualTest::testPriceMonotonicityWithRespectToLowerStrike));
-    suite->add(BOOST_TEST_CASE(&RangeAccrualTest::testPriceMonotonicityWithRespectToUpperStrike));
+    suite->add(QUANTLIB_TEST_CASE(&RangeAccrualTest::testInfiniteRange));
+    suite->add(QUANTLIB_TEST_CASE(
+           &RangeAccrualTest::testPriceMonotonicityWithRespectToLowerStrike));
+    suite->add(QUANTLIB_TEST_CASE(
+           &RangeAccrualTest::testPriceMonotonicityWithRespectToUpperStrike));
     return suite;
 }
 

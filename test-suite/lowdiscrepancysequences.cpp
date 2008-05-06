@@ -1095,41 +1095,42 @@ void LowDiscrepancyTest::testSobolSkipping() {
 test_suite* LowDiscrepancyTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Low-discrepancy sequence tests");
 
-      suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
            &LowDiscrepancyTest::testRandomizedLattices));
 
 
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
            &LowDiscrepancyTest::testSeedGenerator));
 
-    suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testPolynomialsModuloTwo));
+    suite->add(QUANTLIB_TEST_CASE(
+           &LowDiscrepancyTest::testPolynomialsModuloTwo));
 
-    suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testSobol));
-    suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testHalton));
-    suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testFaure));
+    suite->add(QUANTLIB_TEST_CASE(&LowDiscrepancyTest::testSobol));
+    suite->add(QUANTLIB_TEST_CASE(&LowDiscrepancyTest::testHalton));
+    suite->add(QUANTLIB_TEST_CASE(&LowDiscrepancyTest::testFaure));
 
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
            &LowDiscrepancyTest::testMersenneTwisterDiscrepancy));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
            &LowDiscrepancyTest::testPlainHaltonDiscrepancy));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
            &LowDiscrepancyTest::testRandomStartHaltonDiscrepancy));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
            &LowDiscrepancyTest::testRandomShiftHaltonDiscrepancy));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
            &LowDiscrepancyTest::testRandomStartRandomShiftHaltonDiscrepancy));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
         &LowDiscrepancyTest::testUnitSobolDiscrepancy));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
            &LowDiscrepancyTest::testJackelSobolDiscrepancy));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
            &LowDiscrepancyTest::testSobolLevitanSobolDiscrepancy));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
            &LowDiscrepancyTest::testSobolLevitanLemieuxSobolDiscrepancy));
 
-    suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testSobolSkipping));
+    suite->add(QUANTLIB_TEST_CASE(&LowDiscrepancyTest::testSobolSkipping));
 
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
            &LowDiscrepancyTest::testRandomizedLowDiscrepancySequence));
 
     return suite;

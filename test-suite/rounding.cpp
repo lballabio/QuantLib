@@ -156,11 +156,11 @@ void RoundingTest::testCeiling() {
 
 test_suite* RoundingTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Rounding tests");
-    suite->add(BOOST_TEST_CASE(&RoundingTest::testClosest));
-    suite->add(BOOST_TEST_CASE(&RoundingTest::testUp));
-    suite->add(BOOST_TEST_CASE(&RoundingTest::testDown));
-    suite->add(BOOST_TEST_CASE(&RoundingTest::testFloor));
-    suite->add(BOOST_TEST_CASE(&RoundingTest::testCeiling));
+    suite->add(QUANTLIB_TEST_CASE(&RoundingTest::testClosest));
+    suite->add(QUANTLIB_TEST_CASE(&RoundingTest::testUp));
+    suite->add(QUANTLIB_TEST_CASE(&RoundingTest::testDown));
+    suite->add(QUANTLIB_TEST_CASE(&RoundingTest::testFloor));
+    suite->add(QUANTLIB_TEST_CASE(&RoundingTest::testCeiling));
     return suite;
 }
 

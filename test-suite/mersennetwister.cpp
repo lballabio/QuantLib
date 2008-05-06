@@ -18,6 +18,7 @@
 */
 
 #include "mersennetwister.hpp"
+#include "utilities.hpp"
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 
 using namespace QuantLib;
@@ -483,7 +484,7 @@ void MersenneTwisterTest::testValues() {
 
 test_suite* MersenneTwisterTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Mersenne twister tests");
-    suite->add(BOOST_TEST_CASE(&MersenneTwisterTest::testValues));
+    suite->add(QUANTLIB_TEST_CASE(&MersenneTwisterTest::testValues));
     return suite;
 }
 

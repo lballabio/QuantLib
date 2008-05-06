@@ -372,9 +372,11 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence() {
 test_suite* SwaptionVolatilityMatrixTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Swaption Volatility Matrix tests");
 
-    suite->add(BOOST_TEST_CASE(&SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence));
+    suite->add(QUANTLIB_TEST_CASE(
+              &SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence));
 
-    suite->add(BOOST_TEST_CASE(&SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability));
+    suite->add(QUANTLIB_TEST_CASE(
+          &SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability));
 
     return suite;
 }

@@ -384,10 +384,10 @@ void ForwardOptionTest::testPerformanceGreeks() {
 
 test_suite* ForwardOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Forward option tests");
-    suite->add(BOOST_TEST_CASE(&ForwardOptionTest::testValues));
-    suite->add(BOOST_TEST_CASE(&ForwardOptionTest::testGreeks));
-    suite->add(BOOST_TEST_CASE(&ForwardOptionTest::testPerformanceValues));
-    suite->add(BOOST_TEST_CASE(&ForwardOptionTest::testPerformanceGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testValues));
+    suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testPerformanceValues));
+    suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testPerformanceGreeks));
     return suite;
 }
 

@@ -47,7 +47,7 @@ void SurfaceTest::testOutput() {
 test_suite* SurfaceTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Surface tests");
 
-    suite->add(BOOST_TEST_CASE(&SurfaceTest::testOutput));
+    suite->add(QUANTLIB_TEST_CASE(&SurfaceTest::testOutput));
     return suite;
 }
 

@@ -639,18 +639,18 @@ test_suite* HestonModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
 
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&HestonModelTest::testBlackCalibration));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testBlackCalibration));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&HestonModelTest::testDAXCalibration));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDAXCalibration));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&HestonModelTest::testAnalyticVsBlack));
-    suite->add(BOOST_TEST_CASE(&HestonModelTest::testAnalyticVsCached));
-    suite->add(BOOST_TEST_CASE(&HestonModelTest::testKahlJaeckelCase));
-    suite->add(BOOST_TEST_CASE(&HestonModelTest::testDifferentIntegrals));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAnalyticVsBlack));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAnalyticVsCached));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testKahlJaeckelCase));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDifferentIntegrals));
 
     // this passes but takes way too long
-    // suite->add(BOOST_TEST_CASE(&HestonModelTest::testEngines));
-    //suite->add(BOOST_TEST_CASE(&HestonModelTest::testMcVsCached));
+    // suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testEngines));
+    //suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMcVsCached));
     
     return suite;
 }

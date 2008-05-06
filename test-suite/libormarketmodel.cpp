@@ -492,11 +492,11 @@ void LiborMarketModelTest::testSwaptionPricing() {
 test_suite* LiborMarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Libor market model tests");
 
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                           &LiborMarketModelTest::testSimpleCovarianceModels));
-    suite->add(BOOST_TEST_CASE(&LiborMarketModelTest::testCapletPricing));
-    suite->add(BOOST_TEST_CASE(&LiborMarketModelTest::testSwaptionPricing));
-    suite->add(BOOST_TEST_CASE(&LiborMarketModelTest::testCalibration));
+    suite->add(QUANTLIB_TEST_CASE(&LiborMarketModelTest::testCapletPricing));
+    suite->add(QUANTLIB_TEST_CASE(&LiborMarketModelTest::testSwaptionPricing));
+    suite->add(QUANTLIB_TEST_CASE(&LiborMarketModelTest::testCalibration));
 
     return suite;
 }

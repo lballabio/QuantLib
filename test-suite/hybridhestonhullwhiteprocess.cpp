@@ -1559,29 +1559,29 @@ void HybridHestonHullWhiteProcessTest::testJointCalibration() {
 test_suite* HybridHestonHullWhiteProcessTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Hybrid Heston-HullWhite tests");
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testZeroBondPricing));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testMcVanillaPricing));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testMcPureHestonPricing));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
       &HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testCallableEquityPricing));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testDiscretizationError));
     // FLOATING_POINT_EXCEPTION
     //runs through but takes far too long
-    //suite->add(BOOST_TEST_CASE(
+    //suite->add(QUANTLIB_TEST_CASE(
     //          &HybridHestonHullWhiteProcessTest::testJointCalibration));
 
     return suite;

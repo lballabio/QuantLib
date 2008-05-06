@@ -301,13 +301,13 @@ void TermStructureTest::testZSpreadedObs() {
 
 test_suite* TermStructureTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Term structure tests");
-    suite->add(BOOST_TEST_CASE(&TermStructureTest::testReferenceChange));
-    suite->add(BOOST_TEST_CASE(&TermStructureTest::testImplied));
-    suite->add(BOOST_TEST_CASE(&TermStructureTest::testImpliedObs));
-    suite->add(BOOST_TEST_CASE(&TermStructureTest::testFSpreaded));
-    suite->add(BOOST_TEST_CASE(&TermStructureTest::testFSpreadedObs));
-    suite->add(BOOST_TEST_CASE(&TermStructureTest::testZSpreaded));
-    suite->add(BOOST_TEST_CASE(&TermStructureTest::testZSpreadedObs));
+    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testReferenceChange));
+    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testImplied));
+    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testImpliedObs));
+    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testFSpreaded));
+    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testFSpreadedObs));
+    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testZSpreaded));
+    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testZSpreadedObs));
     return suite;
 }
 

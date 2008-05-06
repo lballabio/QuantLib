@@ -860,13 +860,13 @@ void BondTest::testBrazilianCached() {
 test_suite* BondTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Bond tests");
 
-    suite->add(BOOST_TEST_CASE(&BondTest::testYield));
-    suite->add(BOOST_TEST_CASE(&BondTest::testTheoretical));
-    suite->add(BOOST_TEST_CASE(&BondTest::testCached));
-    suite->add(BOOST_TEST_CASE(&BondTest::testCachedZero));
-    suite->add(BOOST_TEST_CASE(&BondTest::testCachedFixed));
-    suite->add(BOOST_TEST_CASE(&BondTest::testCachedFloating));
-    suite->add(BOOST_TEST_CASE(&BondTest::testBrazilianCached));
+    suite->add(QUANTLIB_TEST_CASE(&BondTest::testYield));
+    suite->add(QUANTLIB_TEST_CASE(&BondTest::testTheoretical));
+    suite->add(QUANTLIB_TEST_CASE(&BondTest::testCached));
+    suite->add(QUANTLIB_TEST_CASE(&BondTest::testCachedZero));
+    suite->add(QUANTLIB_TEST_CASE(&BondTest::testCachedFixed));
+    suite->add(QUANTLIB_TEST_CASE(&BondTest::testCachedFloating));
+    suite->add(QUANTLIB_TEST_CASE(&BondTest::testBrazilianCached));
     return suite;
 }
 

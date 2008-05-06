@@ -370,12 +370,12 @@ void DistributionTest::testInverseCumulativePoisson() {
 
 test_suite* DistributionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Distribution tests");
-    suite->add(BOOST_TEST_CASE(&DistributionTest::testNormal));
-    suite->add(BOOST_TEST_CASE(&DistributionTest::testBivariate));
-    suite->add(BOOST_TEST_CASE(&DistributionTest::testPoisson));
-    suite->add(BOOST_TEST_CASE(&DistributionTest::testCumulativePoisson));
-    suite->add(
-            BOOST_TEST_CASE(&DistributionTest::testInverseCumulativePoisson));
+    suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testNormal));
+    suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testBivariate));
+    suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testPoisson));
+    suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testCumulativePoisson));
+    suite->add(QUANTLIB_TEST_CASE(
+                            &DistributionTest::testInverseCumulativePoisson));
     return suite;
 }
 

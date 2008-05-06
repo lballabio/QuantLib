@@ -197,11 +197,12 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
 
 test_suite* QuoteTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Quote tests");
-    /*suite->add(BOOST_TEST_CASE(&QuoteTest::testObservable));
-    suite->add(BOOST_TEST_CASE(&QuoteTest::testObservableHandle));
-    suite->add(BOOST_TEST_CASE(&QuoteTest::testDerived));
-    suite->add(BOOST_TEST_CASE(&QuoteTest::testComposite));*/
-    suite->add(BOOST_TEST_CASE(&QuoteTest::testForwardValueQuoteAndImpliedStdevQuote));
+    suite->add(QUANTLIB_TEST_CASE(&QuoteTest::testObservable));
+    suite->add(QUANTLIB_TEST_CASE(&QuoteTest::testObservableHandle));
+    suite->add(QUANTLIB_TEST_CASE(&QuoteTest::testDerived));
+    suite->add(QUANTLIB_TEST_CASE(&QuoteTest::testComposite));
+    suite->add(QUANTLIB_TEST_CASE(
+                      &QuoteTest::testForwardValueQuoteAndImpliedStdevQuote));
     return suite;
 }
 

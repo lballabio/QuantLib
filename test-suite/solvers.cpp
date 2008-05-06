@@ -80,7 +80,7 @@ void Solver1DTest::testResults() {
 
 test_suite* Solver1DTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("1-D solver tests");
-    suite->add(BOOST_TEST_CASE(&Solver1DTest::testResults));
+    suite->add(QUANTLIB_TEST_CASE(&Solver1DTest::testResults));
     return suite;
 }
 

@@ -540,7 +540,8 @@ void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
 test_suite* MarketModelCmsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("CMS Market-model tests");
 
-    suite->add(BOOST_TEST_CASE(&MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions));
+    suite->add(QUANTLIB_TEST_CASE(
+                      &MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions));
 
     return suite;
 }

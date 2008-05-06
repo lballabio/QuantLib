@@ -483,10 +483,10 @@ test_suite* InflationTest::suite() {
 
     test_suite* suite = BOOST_TEST_SUITE("Inflation tests");
 
-    suite->add(BOOST_TEST_CASE(&InflationTest::testZeroIndex));
-    suite->add(BOOST_TEST_CASE(&InflationTest::testYYIndex));
-    suite->add(BOOST_TEST_CASE(&InflationTest::testZeroTermStructure));
-    suite->add(BOOST_TEST_CASE(&InflationTest::testYoYTermStructure));
+    suite->add(QUANTLIB_TEST_CASE(&InflationTest::testZeroIndex));
+    suite->add(QUANTLIB_TEST_CASE(&InflationTest::testYYIndex));
+    suite->add(QUANTLIB_TEST_CASE(&InflationTest::testZeroTermStructure));
+    suite->add(QUANTLIB_TEST_CASE(&InflationTest::testYoYTermStructure));
 
     return suite;
 }

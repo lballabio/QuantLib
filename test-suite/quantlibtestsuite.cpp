@@ -38,6 +38,8 @@
 //   namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
 
 #endif
+#include "utilities.hpp"
+
 #include "americanoption.hpp"
 #include "array.hpp"
 #include "asianoptions.hpp"
@@ -179,7 +181,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     BOOST_MESSAGE(rule);
     test_suite* test = BOOST_TEST_SUITE("QuantLib test suite");
 
-    test->add(BOOST_TEST_CASE(startTimer));
+    test->add(QUANTLIB_TEST_CASE(startTimer));
     test->add(AmericanOptionTest::suite());   // FLOATING_POINT_EXCEPTION
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
@@ -267,7 +269,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(LiborMarketModelTest::suite());
     test->add(LiborMarketModelProcessTest::suite());
     test->add(OldPricerTest::suite());                               // FLOATING_POINT_EXCEPTION
-    test->add(BOOST_TEST_CASE(stopTimer));
+    test->add(QUANTLIB_TEST_CASE(stopTimer));
 
     return test;
 }

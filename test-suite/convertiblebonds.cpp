@@ -352,8 +352,8 @@ void ConvertibleBondTest::testOption() {
 test_suite* ConvertibleBondTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Convertible bond tests");
 
-    suite->add(BOOST_TEST_CASE(&ConvertibleBondTest::testBond));
-    suite->add(BOOST_TEST_CASE(&ConvertibleBondTest::testOption));
+    suite->add(QUANTLIB_TEST_CASE(&ConvertibleBondTest::testBond));
+    suite->add(QUANTLIB_TEST_CASE(&ConvertibleBondTest::testOption));
 
     return suite;
 }

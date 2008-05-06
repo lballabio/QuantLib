@@ -177,7 +177,7 @@ void ArrayTest::testConstruction() {
 
 test_suite* ArrayTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("array tests");
-    suite->add(BOOST_TEST_CASE(&ArrayTest::testConstruction));
+    suite->add(QUANTLIB_TEST_CASE(&ArrayTest::testConstruction));
     return suite;
 }
 

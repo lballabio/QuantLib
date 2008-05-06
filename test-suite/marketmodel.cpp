@@ -2231,29 +2231,29 @@ void MarketModelTest::testIsInSubset() {
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
 
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepForwardsAndOptionlets));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepNormalForwardsAndOptionlets));
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testOneStepForwardsAndOptionlets));
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testOneStepNormalForwardsAndOptionlets));
 
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAllMultiStepProducts));
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testAllMultiStepProducts));
 
     //// just one of the tests below is run in order to reduce running times...
     //// uncomment as much as you prefer...
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapLS));
+    //suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
+    //suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapLS));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapAnderson));
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapAnderson));
 
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testGreeks));
 
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
 
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testPeriodAdapter));
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPeriodAdapter));
 
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testDriftCalculator));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testIsInSubset));
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testDriftCalculator));
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testIsInSubset));
 
     return suite;
 }

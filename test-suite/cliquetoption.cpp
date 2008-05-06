@@ -274,9 +274,9 @@ void CliquetOptionTest::testPerformanceGreeks() {
 
 test_suite* CliquetOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Cliquet option tests");
-    suite->add(BOOST_TEST_CASE(&CliquetOptionTest::testValues));
-    suite->add(BOOST_TEST_CASE(&CliquetOptionTest::testGreeks));
-    suite->add(BOOST_TEST_CASE(&CliquetOptionTest::testPerformanceGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testValues));
+    suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testPerformanceGreeks));
     return suite;
 }
 

@@ -102,11 +102,11 @@ void TqrEigenDecompositionTest::testEigenVectorDecomposition() {
 
 test_suite* TqrEigenDecompositionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("TQR eigendecomposition tests");
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                    &TqrEigenDecompositionTest::testEigenValueDecomposition));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                    &TqrEigenDecompositionTest::testZeroOffDiagEigenValues));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                    &TqrEigenDecompositionTest::testEigenVectorDecomposition));
     return suite;
 }

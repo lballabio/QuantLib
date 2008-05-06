@@ -325,9 +325,9 @@ void StatisticsTest::testConvergenceStatistics() {
 
 test_suite* StatisticsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Statistics tests");
-    suite->add(BOOST_TEST_CASE(&StatisticsTest::testStatistics));
-    suite->add(BOOST_TEST_CASE(&StatisticsTest::testSequenceStatistics));
-    suite->add(BOOST_TEST_CASE(&StatisticsTest::testConvergenceStatistics));
+    suite->add(QUANTLIB_TEST_CASE(&StatisticsTest::testStatistics));
+    suite->add(QUANTLIB_TEST_CASE(&StatisticsTest::testSequenceStatistics));
+    suite->add(QUANTLIB_TEST_CASE(&StatisticsTest::testConvergenceStatistics));
     return suite;
 }
 

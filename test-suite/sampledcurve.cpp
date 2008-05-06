@@ -80,7 +80,7 @@ void SampledCurveTest::testConstruction() {
 
 test_suite* SampledCurveTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("sampled curve tests");
-    suite->add(BOOST_TEST_CASE(&SampledCurveTest::testConstruction));
+    suite->add(QUANTLIB_TEST_CASE(&SampledCurveTest::testConstruction));
     return suite;
 }
 

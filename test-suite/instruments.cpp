@@ -63,7 +63,7 @@ void InstrumentTest::testObservable() {
 
 test_suite* InstrumentTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Instrument tests");
-    suite->add(BOOST_TEST_CASE(&InstrumentTest::testObservable));
+    suite->add(QUANTLIB_TEST_CASE(&InstrumentTest::testObservable));
     return suite;
 }
 

@@ -1314,23 +1314,25 @@ void InterpolationTest::testSabrInterpolation(){
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
 
-    suite->add(BOOST_TEST_CASE(&InterpolationTest::testSplineOnGenericValues));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
+                        &InterpolationTest::testSplineOnGenericValues));
+    suite->add(QUANTLIB_TEST_CASE(
                         &InterpolationTest::testSimmetricEndConditions));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                         &InterpolationTest::testDerivativeEndConditions));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                         &InterpolationTest::testNonRestrictiveHymanFilter));
-    suite->add(BOOST_TEST_CASE(&InterpolationTest::testSplineOnRPN15AValues));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
+                        &InterpolationTest::testSplineOnRPN15AValues));
+    suite->add(QUANTLIB_TEST_CASE(
                         &InterpolationTest::testSplineOnGaussianValues));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                         &InterpolationTest::testSplineErrorOnGaussianValues));
-    suite->add(BOOST_TEST_CASE(&InterpolationTest::testMultiSpline));
-    suite->add(BOOST_TEST_CASE(&InterpolationTest::testAsFunctor));
-    suite->add(BOOST_TEST_CASE(&InterpolationTest::testBackwardFlat));
-    suite->add(BOOST_TEST_CASE(&InterpolationTest::testForwardFlat));
-    suite->add(BOOST_TEST_CASE(&InterpolationTest::testSabrInterpolation));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testMultiSpline));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testAsFunctor));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBackwardFlat));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testForwardFlat));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSabrInterpolation));
     return suite;
 }
 

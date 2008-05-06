@@ -77,6 +77,8 @@
 #  undef BOOST_LIB_NAME
 #endif
 
+#include "utilities.hpp"
+
 #include "americanoption.hpp"
 #include "asianoptions.hpp"
 #include "barrieroption.hpp"
@@ -110,7 +112,7 @@ namespace {
         }
 
         test_case* getTestCase() const {
-            return BOOST_TEST_CASE(f_);
+            return QUANTLIB_TEST_CASE(f_);
         }
         double getMflops() const {
             return mflops_;
@@ -147,7 +149,7 @@ namespace {
 
         /* PAPI code
         PAPI_flips(&real_time, &proc_time, &flpins, &mflops);
-        printf("Real_time: %f Proc_time: %f Total mflpins: %f MFLOPS %f\n", 
+        printf("Real_time: %f Proc_time: %f Total mflpins: %f MFLOPS %f\n",
                real_time, proc_time, flpins/1e6, mflops);
         */
     }
@@ -261,12 +263,12 @@ test_suite* init_unit_test_suite(int, char*[]) {
 
     for (std::list<Benchmark>::const_iterator iter = bm.begin();
          iter != bm.end(); ++iter) {
-        test->add(BOOST_TEST_CASE(startTimer));
+        test->add(QUANTLIB_TEST_CASE(startTimer));
         test->add(iter->getTestCase());
-        test->add(BOOST_TEST_CASE(stopTimer));
+        test->add(QUANTLIB_TEST_CASE(stopTimer));
     }
 
-    test->add(BOOST_TEST_CASE(printResults));
+    test->add(QUANTLIB_TEST_CASE(printResults));
 
     return test;
 }

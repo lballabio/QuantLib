@@ -895,20 +895,20 @@ void SwaptionTest::testImpliedVolatility() {
 test_suite* SwaptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Swaption tests");
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&SwaptionTest::testCashSettledSwaptions));
+    suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testCashSettledSwaptions));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&SwaptionTest::testStrikeDependency));
+    suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testStrikeDependency));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&SwaptionTest::testSpreadDependency));
+    suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testSpreadDependency));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&SwaptionTest::testSpreadTreatment));
+    suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testSpreadTreatment));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&SwaptionTest::testCachedValue));
+    suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testCachedValue));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&SwaptionTest::testImpliedVolatility));
+    suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testImpliedVolatility));
 
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&SwaptionTest::testVega));
+    suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testVega));
 
     return suite;
 }

@@ -270,9 +270,10 @@ void ShortRateModelTest::testFuturesConvexityBias() {
 
 test_suite* ShortRateModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Short-rate model tests");
-    suite->add(BOOST_TEST_CASE(&ShortRateModelTest::testCachedHullWhite));
-    suite->add(BOOST_TEST_CASE(&ShortRateModelTest::testSwaps));
-    suite->add(BOOST_TEST_CASE(&ShortRateModelTest::testFuturesConvexityBias));
+    suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhite));
+    suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testSwaps));
+    suite->add(QUANTLIB_TEST_CASE(
+                              &ShortRateModelTest::testFuturesConvexityBias));
     return suite;
 }
 

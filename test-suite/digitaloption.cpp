@@ -742,23 +742,23 @@ void DigitalOptionTest::testMCCashAtHit() {
 
 test_suite* DigitalOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Digital option tests");
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                &DigitalOptionTest::testCashOrNothingEuropeanValues));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                &DigitalOptionTest::testAssetOrNothingEuropeanValues));
-    suite->add(BOOST_TEST_CASE(&DigitalOptionTest::testGapEuropeanValues));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(&DigitalOptionTest::testGapEuropeanValues));
+    suite->add(QUANTLIB_TEST_CASE(
                &DigitalOptionTest::testCashAtHitOrNothingAmericanValues));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                &DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                &DigitalOptionTest::testAssetAtHitOrNothingAmericanValues));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                &DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                &DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues));
     //FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&DigitalOptionTest::testMCCashAtHit));
+    suite->add(QUANTLIB_TEST_CASE(&DigitalOptionTest::testMCCashAtHit));
     return suite;
 }
 

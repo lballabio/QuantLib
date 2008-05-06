@@ -923,23 +923,25 @@ void DividendOptionTest::testFdAmericanDegenerate() {
 
 test_suite* DividendOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Dividend European option tests");
-    suite->add(BOOST_TEST_CASE(&DividendOptionTest::testEuropeanValues));
+    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanValues));
     // Doesn't quite work.  Need to deal with date conventions
-    //  suite->add(BOOST_TEST_CASE(&DividendOptionTest::testEuropeanKnownValue));
-    suite->add(BOOST_TEST_CASE(&DividendOptionTest::testEuropeanStartLimit));
+    //  suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanKnownValue));
+    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanStartLimit));
     // Doesn't quite work.  Need to use discounted values
-    // suite->add(BOOST_TEST_CASE(&DividendOptionTest::testEuropeanEndLimit));
-    suite->add(BOOST_TEST_CASE(&DividendOptionTest::testEuropeanGreeks));
+    // suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanEndLimit));
+    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanGreeks));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdEuropeanValues));
+    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanValues));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdEuropeanGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanGreeks));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdAmericanGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdAmericanGreeks));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdEuropeanDegenerate));
+    suite->add(QUANTLIB_TEST_CASE(
+                              &DividendOptionTest::testFdEuropeanDegenerate));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdAmericanDegenerate));
+    suite->add(QUANTLIB_TEST_CASE(
+                              &DividendOptionTest::testFdAmericanDegenerate));
     return suite;
 }
 

@@ -32,7 +32,7 @@ void FastFourierTransformTest::testConstruction() {
 
 test_suite* FastFourierTransformTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("fast fourier transform tests");
-    suite->add(BOOST_TEST_CASE(&FastFourierTransformTest::testConstruction));
+    suite->add(QUANTLIB_TEST_CASE(&FastFourierTransformTest::testConstruction));
     return suite;
 }
 

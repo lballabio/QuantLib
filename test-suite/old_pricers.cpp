@@ -298,9 +298,9 @@ void OldPricerTest::testMcMultiFactorPricers() {
 
 test_suite* OldPricerTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Old-style pricer tests");
-    suite->add(BOOST_TEST_CASE(&OldPricerTest::testMcSingleFactorPricers));
+    suite->add(QUANTLIB_TEST_CASE(&OldPricerTest::testMcSingleFactorPricers));
      // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&OldPricerTest::testMcMultiFactorPricers));
+    suite->add(QUANTLIB_TEST_CASE(&OldPricerTest::testMcMultiFactorPricers));
     return suite;
 }
 

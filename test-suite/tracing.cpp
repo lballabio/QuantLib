@@ -80,7 +80,7 @@ void TracingTest::testOutput() {
 test_suite* TracingTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Tracing tests");
 
-    suite->add(BOOST_TEST_CASE(&TracingTest::testOutput));
+    suite->add(QUANTLIB_TEST_CASE(&TracingTest::testOutput));
     return suite;
 }
 

@@ -494,9 +494,13 @@ void OptionletStripperTest::testTermVolatilityStripping2() {
 
 test_suite* OptionletStripperTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("OptionletStripper Tests");
-    suite->add(BOOST_TEST_CASE(&OptionletStripperTest::testFlatTermVolatilityStripping1));
-    suite->add(BOOST_TEST_CASE(&OptionletStripperTest::testTermVolatilityStripping1));
-    suite->add(BOOST_TEST_CASE(&OptionletStripperTest::testFlatTermVolatilityStripping2));
-    suite->add(BOOST_TEST_CASE(&OptionletStripperTest::testTermVolatilityStripping2));
+    suite->add(QUANTLIB_TEST_CASE(
+                   &OptionletStripperTest::testFlatTermVolatilityStripping1));
+    suite->add(QUANTLIB_TEST_CASE(
+                       &OptionletStripperTest::testTermVolatilityStripping1));
+    suite->add(QUANTLIB_TEST_CASE(
+                   &OptionletStripperTest::testFlatTermVolatilityStripping2));
+    suite->add(QUANTLIB_TEST_CASE(
+                       &OptionletStripperTest::testTermVolatilityStripping2));
     return suite;
 }

@@ -298,13 +298,13 @@ void MatricesTest::testDeterminant() {
 
 test_suite* MatricesTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Matrix tests");
-    suite->add(BOOST_TEST_CASE(&MatricesTest::testEigenvectors));
-    suite->add(BOOST_TEST_CASE(&MatricesTest::testSqrt));
-    suite->add(BOOST_TEST_CASE(&MatricesTest::testSVD));
-    suite->add(BOOST_TEST_CASE(&MatricesTest::testHighamSqrt));
+    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testEigenvectors));
+    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testSqrt));
+    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testSVD));
+    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testHighamSqrt));
     #if !defined(QL_NO_UBLAS_SUPPORT)
-    suite->add(BOOST_TEST_CASE(&MatricesTest::testInverse));
-    suite->add(BOOST_TEST_CASE(&MatricesTest::testDeterminant));
+    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testInverse));
+    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testDeterminant));
     #endif
     return suite;
 }

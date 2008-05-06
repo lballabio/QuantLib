@@ -478,9 +478,9 @@ void BarrierOptionTest::testBeagleholeValues() {
 
 test_suite* BarrierOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Barrier option tests");
-    suite->add(BOOST_TEST_CASE(&BarrierOptionTest::testHaugValues));
-    suite->add(BOOST_TEST_CASE(&BarrierOptionTest::testBabsiriValues));
-    suite->add(BOOST_TEST_CASE(&BarrierOptionTest::testBeagleholeValues));
+    suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testHaugValues));
+    suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testBabsiriValues));
+    suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testBeagleholeValues));
     return suite;
 }
 

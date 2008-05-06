@@ -235,15 +235,15 @@ void DefaultProbabilityCurveTest::testLinearDensityConsistency() {
 
 test_suite* DefaultProbabilityCurveTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Default-probability curve tests");
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                        &DefaultProbabilityCurveTest::testDefaultProbability));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                            &DefaultProbabilityCurveTest::testFlatHazardRate));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                     &DefaultProbabilityCurveTest::testFlatHazardConsistency));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                    &DefaultProbabilityCurveTest::testFlatDensityConsistency));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                  &DefaultProbabilityCurveTest::testLinearDensityConsistency));
     return suite;
 }

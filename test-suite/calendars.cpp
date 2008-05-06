@@ -21,6 +21,7 @@
 */
 
 #include "calendars.hpp"
+#include "utilities.hpp"
 #include <ql/time/calendar.hpp>
 #include <ql/time/calendars/brazil.hpp>
 #include <ql/time/calendars/germany.hpp>
@@ -996,34 +997,34 @@ void CalendarTest::testBusinessDaysBetween() {
 test_suite* CalendarTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Calendar tests");
 
-    suite->add(BOOST_TEST_CASE(&CalendarTest::testBrazil));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testBrazil));
 
-//    suite->add(BOOST_TEST_CASE(&CalendarTest::testItalySettlement));
-    suite->add(BOOST_TEST_CASE(&CalendarTest::testItalyExchange));
+//    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testItalySettlement));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testItalyExchange));
 
-    suite->add(BOOST_TEST_CASE(&CalendarTest::testUKSettlement));
-    suite->add(BOOST_TEST_CASE(&CalendarTest::testUKExchange));
-    suite->add(BOOST_TEST_CASE(&CalendarTest::testUKMetals));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUKSettlement));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUKExchange));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUKMetals));
 
-//    suite->add(BOOST_TEST_CASE(&CalendarTest::testGermanySettlement));
-    suite->add(BOOST_TEST_CASE(&CalendarTest::testGermanyFrankfurt));
-    suite->add(BOOST_TEST_CASE(&CalendarTest::testGermanyXetra));
-    suite->add(BOOST_TEST_CASE(&CalendarTest::testGermanyEurex));
+//    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testGermanySettlement));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testGermanyFrankfurt));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testGermanyXetra));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testGermanyEurex));
 
-    suite->add(BOOST_TEST_CASE(&CalendarTest::testTARGET));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testTARGET));
 
-    suite->add(BOOST_TEST_CASE(&CalendarTest::testUSSettlement));
-    suite->add(BOOST_TEST_CASE(&CalendarTest::testUSGovernmentBondMarket));
-    suite->add(BOOST_TEST_CASE(&CalendarTest::testUSNewYorkStockExchange));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUSSettlement));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUSGovernmentBondMarket));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUSNewYorkStockExchange));
 
-    suite->add(BOOST_TEST_CASE(&CalendarTest::testSouthKoreanSettlement));
-    suite->add(BOOST_TEST_CASE(&CalendarTest::testKoreaStockExchange));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testSouthKoreanSettlement));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testKoreaStockExchange));
 
-    suite->add(BOOST_TEST_CASE(&CalendarTest::testModifiedCalendars));
-    suite->add(BOOST_TEST_CASE(&CalendarTest::testJointCalendars));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testModifiedCalendars));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testJointCalendars));
 
-    suite->add(BOOST_TEST_CASE(&CalendarTest::testEndOfMonth));
-    suite->add(BOOST_TEST_CASE(&CalendarTest::testBusinessDaysBetween));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testEndOfMonth));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testBusinessDaysBetween));
 
     return suite;
 }

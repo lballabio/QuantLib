@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003, 2004 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +27,8 @@
 #include <ql/quote.hpp>
 #include <ql/patterns/observable.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
+#include <boost/test/unit_test.hpp>
+#include <boost/function.hpp>
 #include <vector>
 #include <string>
 #include <numeric>
@@ -54,7 +56,29 @@
 #define QL_TEST_START_TIMING
 #endif
 
+#if BOOST_VERSION < 103500
+#define QUANTLIB_TEST_CASE(f) BOOST_TEST_CASE(f)
+#else
+#define QUANTLIB_TEST_CASE(f) BOOST_TEST_CASE(QuantLib::detail::quantlib_test_case(f))
+#endif
+
 namespace QuantLib {
+
+    namespace detail {
+
+        // used to avoid no-assertion messages in Boost 1.35
+        class quantlib_test_case {
+            boost::function0<void> test_;
+          public:
+            template <class F>
+            quantlib_test_case(F test) : test_(test) {}
+            void operator()() const {
+                BOOST_CHECK(true);
+                test_();
+            }
+        };
+
+    }
 
     std::string payoffTypeToString(const boost::shared_ptr<Payoff>&);
     std::string exerciseTypeToString(const boost::shared_ptr<Exercise>&);

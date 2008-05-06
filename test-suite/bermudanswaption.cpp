@@ -200,7 +200,7 @@ void BermudanSwaptionTest::testCachedValues() {
 
 test_suite* BermudanSwaptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Bermudan swaption tests");
-    suite->add(BOOST_TEST_CASE(&BermudanSwaptionTest::testCachedValues));
+    suite->add(QUANTLIB_TEST_CASE(&BermudanSwaptionTest::testCachedValues));
     return suite;
 }
 

@@ -284,10 +284,10 @@ void DayCounterTest::testBusiness252() {
 
 test_suite* DayCounterTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Day counter tests");
-    suite->add(BOOST_TEST_CASE(&DayCounterTest::testActualActual));
-    suite->add(BOOST_TEST_CASE(&DayCounterTest::testSimple));
-    suite->add(BOOST_TEST_CASE(&DayCounterTest::testOne));
-    suite->add(BOOST_TEST_CASE(&DayCounterTest::testBusiness252));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActual));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testSimple));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testOne));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testBusiness252));
     return suite;
 }
 

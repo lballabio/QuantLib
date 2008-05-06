@@ -18,6 +18,7 @@
 */
 
 #include "money.hpp"
+#include "utilities.hpp"
 #include <ql/money.hpp>
 #include <ql/currencies/europe.hpp>
 #include <ql/currencies/america.hpp>
@@ -123,9 +124,9 @@ void MoneyTest::testAutomated() {
 
 test_suite* MoneyTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Money tests");
-    suite->add(BOOST_TEST_CASE(&MoneyTest::testNone));
-    suite->add(BOOST_TEST_CASE(&MoneyTest::testBaseCurrency));
-    suite->add(BOOST_TEST_CASE(&MoneyTest::testAutomated));
+    suite->add(QUANTLIB_TEST_CASE(&MoneyTest::testNone));
+    suite->add(QUANTLIB_TEST_CASE(&MoneyTest::testBaseCurrency));
+    suite->add(QUANTLIB_TEST_CASE(&MoneyTest::testAutomated));
     return suite;
 }
 

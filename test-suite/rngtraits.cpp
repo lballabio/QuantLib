@@ -19,6 +19,7 @@
 */
 
 #include "rngtraits.hpp"
+#include "utilities.hpp"
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/comparison.hpp>
 
@@ -93,9 +94,9 @@ void RngTraitsTest::testCustomPoisson() {
 
 test_suite* RngTraitsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("RNG traits tests");
-    suite->add(BOOST_TEST_CASE(&RngTraitsTest::testGaussian));
-    suite->add(BOOST_TEST_CASE(&RngTraitsTest::testDefaultPoisson));
-    suite->add(BOOST_TEST_CASE(&RngTraitsTest::testCustomPoisson));
+    suite->add(QUANTLIB_TEST_CASE(&RngTraitsTest::testGaussian));
+    suite->add(QUANTLIB_TEST_CASE(&RngTraitsTest::testDefaultPoisson));
+    suite->add(QUANTLIB_TEST_CASE(&RngTraitsTest::testCustomPoisson));
     return suite;
 }
 

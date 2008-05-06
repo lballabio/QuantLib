@@ -176,11 +176,11 @@ void GaussianQuadraturesTest::testTabulated() {
 
 test_suite* GaussianQuadraturesTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Gaussian quadratures tests");
-    suite->add(BOOST_TEST_CASE(&GaussianQuadraturesTest::testJacobi));
-    suite->add(BOOST_TEST_CASE(&GaussianQuadraturesTest::testLaguerre));
-    suite->add(BOOST_TEST_CASE(&GaussianQuadraturesTest::testHermite));
-    suite->add(BOOST_TEST_CASE(&GaussianQuadraturesTest::testHyperbolic));
-    suite->add(BOOST_TEST_CASE(&GaussianQuadraturesTest::testTabulated));
+    suite->add(QUANTLIB_TEST_CASE(&GaussianQuadraturesTest::testJacobi));
+    suite->add(QUANTLIB_TEST_CASE(&GaussianQuadraturesTest::testLaguerre));
+    suite->add(QUANTLIB_TEST_CASE(&GaussianQuadraturesTest::testHermite));
+    suite->add(QUANTLIB_TEST_CASE(&GaussianQuadraturesTest::testHyperbolic));
+    suite->add(QUANTLIB_TEST_CASE(&GaussianQuadraturesTest::testTabulated));
     return suite;
 }
 

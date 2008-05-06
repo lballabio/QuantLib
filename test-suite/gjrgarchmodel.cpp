@@ -304,8 +304,8 @@ void GJRGARCHModelTest::testDAXCalibration() {
 
 test_suite* GJRGARCHModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("GJR-GARCH model tests");
-    suite->add(BOOST_TEST_CASE(&GJRGARCHModelTest::testEngines));
-    suite->add(BOOST_TEST_CASE(&GJRGARCHModelTest::testDAXCalibration));
+    suite->add(QUANTLIB_TEST_CASE(&GJRGARCHModelTest::testEngines));
+    suite->add(QUANTLIB_TEST_CASE(&GJRGARCHModelTest::testDAXCalibration));
     return suite;
 }
 

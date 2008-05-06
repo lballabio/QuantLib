@@ -559,17 +559,17 @@ void AmericanOptionTest::testFdShoutGreeks() {
 test_suite* AmericanOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("American option tests");
     suite->add(
-          BOOST_TEST_CASE(&AmericanOptionTest::testBaroneAdesiWhaleyValues));
+        QUANTLIB_TEST_CASE(&AmericanOptionTest::testBaroneAdesiWhaleyValues));
     suite->add(
-          BOOST_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandValues));
+        QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandValues));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&AmericanOptionTest::testJuValues));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testJuValues));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&AmericanOptionTest::testFdValues));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdValues));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&AmericanOptionTest::testFdAmericanGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdAmericanGreeks));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));
     return suite;
 }
 

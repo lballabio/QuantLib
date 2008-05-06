@@ -346,10 +346,10 @@ void SwapForwardMappingsTest::testForwardCoterminalMappings() {
 test_suite* SwapForwardMappingsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("swap-forward mappings tests");
 
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                     &SwapForwardMappingsTest::testForwardSwapJacobians));
     #if !defined(QL_NO_UBLAS_SUPPORT)
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
                     &SwapForwardMappingsTest::testForwardCoterminalMappings));
     #endif
     return suite;

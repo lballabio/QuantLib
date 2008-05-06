@@ -116,13 +116,13 @@ void IntegralTest::testGaussKronrodNonAdaptive() {
 
 test_suite* IntegralTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Integration tests");
-    suite->add(BOOST_TEST_CASE(&IntegralTest::testSegment));
-    suite->add(BOOST_TEST_CASE(&IntegralTest::testTrapezoid));
-    suite->add(BOOST_TEST_CASE(&IntegralTest::testMidPointTrapezoid));
-    suite->add(BOOST_TEST_CASE(&IntegralTest::testSimpson));
-    suite->add(BOOST_TEST_CASE(&IntegralTest::testGaussKronrodAdaptive));
-    suite->add(BOOST_TEST_CASE(&IntegralTest::testGaussKronrodNonAdaptive));
-    suite->add(BOOST_TEST_CASE(&IntegralTest::testGaussLobatto));
+    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testSegment));
+    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testTrapezoid));
+    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testMidPointTrapezoid));
+    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testSimpson));
+    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussKronrodAdaptive));
+    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussKronrodNonAdaptive));
+    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussLobatto));
     return suite;
 }
 

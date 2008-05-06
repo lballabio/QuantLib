@@ -18,6 +18,7 @@
 */
 
 #include "exchangerate.hpp"
+#include "utilities.hpp"
 #include <ql/exchangerate.hpp>
 #include <ql/currencies/europe.hpp>
 #include <ql/currencies/america.hpp>
@@ -375,11 +376,11 @@ void ExchangeRateTest::testSmartLookup() {
 
 test_suite* ExchangeRateTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Exchange-rate tests");
-    suite->add(BOOST_TEST_CASE(&ExchangeRateTest::testDirect));
-    suite->add(BOOST_TEST_CASE(&ExchangeRateTest::testDerived));
-    suite->add(BOOST_TEST_CASE(&ExchangeRateTest::testDirectLookup));
-    suite->add(BOOST_TEST_CASE(&ExchangeRateTest::testTriangulatedLookup));
-    suite->add(BOOST_TEST_CASE(&ExchangeRateTest::testSmartLookup));
+    suite->add(QUANTLIB_TEST_CASE(&ExchangeRateTest::testDirect));
+    suite->add(QUANTLIB_TEST_CASE(&ExchangeRateTest::testDerived));
+    suite->add(QUANTLIB_TEST_CASE(&ExchangeRateTest::testDirectLookup));
+    suite->add(QUANTLIB_TEST_CASE(&ExchangeRateTest::testTriangulatedLookup));
+    suite->add(QUANTLIB_TEST_CASE(&ExchangeRateTest::testSmartLookup));
     return suite;
 }
 

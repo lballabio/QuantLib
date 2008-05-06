@@ -444,16 +444,18 @@ test_suite* SwaptionVolatilityCubeTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Swaption Volatility Cube tests");
 
     // SwaptionVolCubeByLinear reproduces ATM vol with machine precision
-    suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testAtmVols));
+    suite->add(QUANTLIB_TEST_CASE(&SwaptionVolatilityCubeTest::testAtmVols));
     // SwaptionVolCubeByLinear reproduces smile spreads with machine precision
-    suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testSmile));
+    suite->add(QUANTLIB_TEST_CASE(&SwaptionVolatilityCubeTest::testSmile));
 
     // SwaptionVolCubeBySabr reproduces ATM vol with given tolerance
     // SwaptionVolCubeBySabr reproduces smile spreads with given tolerance
-    suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testSabrVols));
-    suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testSpreadedCube));
+    suite->add(QUANTLIB_TEST_CASE(&SwaptionVolatilityCubeTest::testSabrVols));
+    suite->add(QUANTLIB_TEST_CASE(
+                              &SwaptionVolatilityCubeTest::testSpreadedCube));
 
-    suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testObservability));
+    suite->add(QUANTLIB_TEST_CASE(
+                             &SwaptionVolatilityCubeTest::testObservability));
 
     return suite;
 }

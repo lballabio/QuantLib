@@ -478,12 +478,12 @@ void BatesModelTest::testDAXCalibration() {
 
 test_suite* BatesModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Bates model tests");
-    suite->add(BOOST_TEST_CASE(&BatesModelTest::testAnalyticVsBlack));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(&BatesModelTest::testAnalyticVsBlack));
+    suite->add(QUANTLIB_TEST_CASE(
                         &BatesModelTest::testAnalyticAndMcVsJumpDiffusion));
-    suite->add(BOOST_TEST_CASE(&BatesModelTest::testAnalyticVsMCPricing));
+    suite->add(QUANTLIB_TEST_CASE(&BatesModelTest::testAnalyticVsMCPricing));
     // FLOATING_POINT_EXCEPTION
-    suite->add(BOOST_TEST_CASE(&BatesModelTest::testDAXCalibration));
+    suite->add(QUANTLIB_TEST_CASE(&BatesModelTest::testDAXCalibration));
     return suite;
 }
 

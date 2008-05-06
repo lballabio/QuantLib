@@ -213,8 +213,8 @@ void CompoundForwardTest::testConvertedRates() {
 
 test_suite* CompoundForwardTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Compound forward tests");
-    suite->add(BOOST_TEST_CASE(&CompoundForwardTest::testSuppliedRates));
-    suite->add(BOOST_TEST_CASE(&CompoundForwardTest::testConvertedRates));
+    suite->add(QUANTLIB_TEST_CASE(&CompoundForwardTest::testSuppliedRates));
+    suite->add(QUANTLIB_TEST_CASE(&CompoundForwardTest::testConvertedRates));
     return suite;
 }
 

@@ -478,8 +478,8 @@ void CmsTest::testParity() {
 
 test_suite* CmsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Cms tests");
-    suite->add(BOOST_TEST_CASE(&CmsTest::testFairRate));
-    suite->add(BOOST_TEST_CASE(&CmsTest::testCmsSwap));
-    suite->add(BOOST_TEST_CASE(&CmsTest::testParity));
+    suite->add(QUANTLIB_TEST_CASE(&CmsTest::testFairRate));
+    suite->add(QUANTLIB_TEST_CASE(&CmsTest::testCmsSwap));
+    suite->add(QUANTLIB_TEST_CASE(&CmsTest::testParity));
     return suite;
 }

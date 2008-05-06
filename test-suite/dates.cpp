@@ -20,6 +20,7 @@
 */
 
 #include "dates.hpp"
+#include "utilities.hpp"
 #include <ql/time/date.hpp>
 #include <ql/time/imm.hpp>
 #include <ql/utilities/dataparsers.hpp>
@@ -218,9 +219,9 @@ void DateTest::isoDates() {
 
 test_suite* DateTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Date tests");
-    suite->add(BOOST_TEST_CASE(&DateTest::testConsistency));
-    suite->add(BOOST_TEST_CASE(&DateTest::immDates));
-    suite->add(BOOST_TEST_CASE(&DateTest::isoDates));
+    suite->add(QUANTLIB_TEST_CASE(&DateTest::testConsistency));
+    suite->add(QUANTLIB_TEST_CASE(&DateTest::immDates));
+    suite->add(QUANTLIB_TEST_CASE(&DateTest::isoDates));
     return suite;
 }
 

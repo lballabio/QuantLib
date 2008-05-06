@@ -776,17 +776,17 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
 test_suite* AsianOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Asian option tests");
 
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
         &AsianOptionTest::testAnalyticContinuousGeometricAveragePrice));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
         &AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
         &AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
         &AsianOptionTest::testMCDiscreteGeometricAveragePrice));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
         &AsianOptionTest::testMCDiscreteArithmeticAveragePrice));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
         &AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks));
 
     return suite;
