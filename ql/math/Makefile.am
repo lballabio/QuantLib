@@ -1,5 +1,5 @@
 
-SUBDIRS = distributions integrals interpolations \
+SUBDIRS = copulas distributions integrals interpolations \
           matrixutilities optimization randomnumbers solvers1d \
           statistics
 
@@ -46,6 +46,7 @@ libMath_la_SOURCES = \
 	surface.cpp
 
 libMath_la_LIBADD = \
+    copulas/libCopulas.la \
     distributions/libDistributions.la \
     integrals/libIntegrals.la \
     matrixutilities/libMatrixUtilities.la \

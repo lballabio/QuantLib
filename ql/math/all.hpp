@@ -24,6 +24,7 @@
 #include <ql/math/surface.hpp>
 #include <ql/math/transformedgrid.hpp>
 
+#include <ql/math/copulas/all.hpp>
 #include <ql/math/distributions/all.hpp>
 #include <ql/math/integrals/all.hpp>
 #include <ql/math/interpolations/all.hpp>

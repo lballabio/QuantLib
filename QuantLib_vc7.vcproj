@@ -2180,6 +2180,67 @@
 					RelativePath=".\ql\math\statistics\statistics.hpp">
 				</File>
 			</Filter>
+			<Filter
+				Name="copulas"
+				Filter="">
+				<File
+					RelativePath=".\ql\math\copulas\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\claytoncopula.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\claytoncopula.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\farliegumbelmorgensterncopula.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\farliegumbelmorgensterncopula.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\frankcopula.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\frankcopula.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\gaussiancopula.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\gaussiancopula.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\gumbelcopula.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\gumbelcopula.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\independentcopula.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\independentcopula.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\marshallolkincopula.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\marshallolkincopula.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\maxcopula.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\maxcopula.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\mincopula.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\mincopula.hpp">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="methods"

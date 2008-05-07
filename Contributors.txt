@@ -4,8 +4,8 @@ Akin, Sercan Atalik, James Battle, Christopher Baus, Thomas Becker,
 Adolfo Benin, Luca Berardi, David Binderman, Theo Boafo, Joe Byers,
 Antoine Cellerier, Aurelien Chanudet, Yiping Chen, Warren Chou, Jon
 Davidson, Daniele De Francesco, Piter Dias, Silvia Frasson, Matteo
-Gallivanoni, Roman Gitlin, Richard Gould, Tomoya Kawanishi, Gary
-Kennedy, Chris Kenyon, Allen Kuo, Paul Laderoute, James Lee, Gang
+Gallivanoni, Roman Gitlin, Marek Glowacki, Richard Gould, Tomoya Kawanishi,
+Gary Kennedy, Chris Kenyon, Allen Kuo, Paul Laderoute, James Lee, Gang
 Liang, Roland Lichters, Robert Lopez, André Louw, John Maiden, Enrico
 Michelotti, Tiziano Müller, Guillaume Pealat, Gilbert Peffer, Walter
 Penschke, Gianni Piolanti, Fabio Ramponi, Peter Schmitteckert, David
