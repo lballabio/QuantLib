@@ -106,9 +106,8 @@ namespace QuantLib {
         Real theta_correction;
         // Haug arbitrary criterium is:
         //for (i=0; i<11; i++) {
-        for (i=0;
-             lastContribution>relativeAccuracy_ && i<maxIterations_;
-             i++) {
+        for (i=0;  (lastContribution>relativeAccuracy_ && i<maxIterations_) 
+        		 || i < Size(lambda*t); i++) {
 
             // constant vol/rate assumption. It should be relaxed
             v = std::sqrt((variance + i*jumpSquareVol)/t);
