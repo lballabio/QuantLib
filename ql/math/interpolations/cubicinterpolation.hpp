@@ -152,12 +152,12 @@ namespace QuantLib {
                            Real rightConditionValue) {
             impl_ = boost::shared_ptr<Interpolation::Impl>(new
                 detail::CubicInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
-                                                       da,
-                                                       monotonic,
-                                                       leftCond,
-                                                       leftConditionValue,
-                                                       rightCond,
-                                                       rightConditionValue));
+                                                      da,
+                                                      monotonic,
+                                                      leftCond,
+                                                      leftConditionValue,
+                                                      rightCond,
+                                                      rightConditionValue));
             impl_->update();
             coeffs_ =
                 boost::dynamic_pointer_cast<detail::CoefficientHolder>(impl_);
