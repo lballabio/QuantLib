@@ -407,6 +407,7 @@ AC_CONFIG_FILES([
     Docs/Makefile
     Examples/Makefile
     Examples/BermudanSwaption/Makefile
+    Examples/CDS/Makefile
     Examples/ConvertibleBonds/Makefile
     Examples/DiscreteHedging/Makefile
     Examples/EquityOption/Makefile

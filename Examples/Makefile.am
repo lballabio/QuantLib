@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 SUBDIRS =  \
     BermudanSwaption \
+    CDS \
     ConvertibleBonds \
     DiscreteHedging \
     EquityOption \
