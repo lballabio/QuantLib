@@ -329,6 +329,7 @@ AC_CONFIG_FILES([
     ql/cashflows/Makefile
     ql/currencies/Makefile
     ql/experimental/Makefile
+    ql/experimental/volatility/Makefile
     ql/indexes/Makefile
     ql/indexes/ibor/Makefile
     ql/indexes/inflation/Makefile

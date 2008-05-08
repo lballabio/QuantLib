@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/interestratevolsurface.hpp>
+#include <ql/experimental/volatility/interestratevolsurface.hpp>
 
 namespace QuantLib {
 

@@ -25,7 +25,7 @@
 #ifndef quantlib_abcd_atm_vol_curve_hpp
 #define quantlib_abcd_atm_vol_curve_hpp
 
-#include <ql/experimental/blackatmvolcurve.hpp>
+#include <ql/experimental/volatility/blackatmvolcurve.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/math/interpolations/abcdinterpolation.hpp>
 
@@ -44,7 +44,7 @@ namespace QuantLib {
                         const Calendar& cal,
                         const std::vector<Period>& optionTenors,
                         const std::vector<Handle<Quote> >& volsHandles,
-                        const std::vector<bool> inclusionInInterpolationFlag 
+                        const std::vector<bool> inclusionInInterpolationFlag
                             = std::vector<bool>(1, true),
                         BusinessDayConvention bdc = Following,
                         const DayCounter& dc = Actual365Fixed());
@@ -112,7 +112,7 @@ namespace QuantLib {
         mutable std::vector<Volatility> actualVols_;
 
         mutable std::vector<bool> inclusionInInterpolation_;
-        
+
         boost::shared_ptr<AbcdInterpolation> interpolation_;
     };
 
@@ -148,7 +148,7 @@ namespace QuantLib {
     inline const std::vector<Period>& AbcdAtmVolCurve::optionTenorsInInterpolation() const {
         return actualOptionTenors_;
     }
-    
+
     inline
     const std::vector<Date>& AbcdAtmVolCurve::optionDates() const {
         return optionDates_;
@@ -163,7 +163,7 @@ namespace QuantLib {
     std::vector<Real> AbcdAtmVolCurve::k() const {
         return interpolation_->k();
     }
-    
+
     inline
     Real AbcdAtmVolCurve::k(Time t) const {
         return interpolation_->k(t,actualOptionTimes_.begin(),actualOptionTimes_.end());

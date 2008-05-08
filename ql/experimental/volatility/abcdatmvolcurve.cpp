@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/abcdatmvolcurve.hpp>
+#include <ql/experimental/volatility/abcdatmvolcurve.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/quote.hpp>
 
@@ -127,8 +127,8 @@ namespace QuantLib {
         actualOptionTimes_.clear();
         for (Size i=0; i<nOptionTenors_; ++i) {
             if(inclusionInInterpolation_[i]==true) {
-               actualOptionTimes_.push_back(optionTimes_[i]); 
-               actualOptionTenors_.push_back(optionTenors_[i]); 
+               actualOptionTimes_.push_back(optionTimes_[i]);
+               actualOptionTenors_.push_back(optionTenors_[i]);
             }
         }
     }
@@ -137,9 +137,9 @@ namespace QuantLib {
 
         actualVols_.clear();
         for (Size i=0; i<nOptionTenors_; ++i) {
-            vols_[i] = volHandles_[i]->value();    
+            vols_[i] = volHandles_[i]->value();
             if(inclusionInInterpolation_[i]==true)
-               actualVols_.push_back(vols_[i]); 
+               actualVols_.push_back(vols_[i]);
         }
     }
 
@@ -150,7 +150,7 @@ namespace QuantLib {
         for (Size i=0; i<vols_.size(); ++i) {
             vols_[i] = volHandles_[i]->value();
             if(inclusionInInterpolation_[i]==true)
-               actualVols_.push_back(vols_[i]); 
+               actualVols_.push_back(vols_[i]);
         }
         interpolation_->update();
     }
