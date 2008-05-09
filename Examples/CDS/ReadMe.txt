@@ -1,2 +1,2 @@
-Prices a bermudan swaption using different models calibrated to market 
-swaptions.
+This example bootstraps a default-probability curve over a number of
+CDS and reprices them.
