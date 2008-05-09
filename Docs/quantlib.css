@@ -13,7 +13,7 @@ body {
 
 #menu {
     float: right;
-    width: 11em;
+    width: 14em;
     margin: 0;
     margin-bottom: 1em;
     padding: 1em;
@@ -37,7 +37,7 @@ ul#profiles li {
 }
 
 #content {
-    margin-right: 15em;
+    margin-right: 17em;
     padding: 1em;
     vertical-align: top;
 }
