@@ -2,4 +2,5 @@
 /* Add the files to be included into Makefile.am instead. */
 
 
+#include <ql/experimental/callablebonds/all.hpp>
 #include <ql/experimental/volatility/all.hpp>
