@@ -21,6 +21,7 @@
 #include "utilities.hpp"
 #include <ql/instruments/creditdefaultswap.hpp>
 #include <ql/pricingengines/credit/midpointcdsengine.hpp>
+#include <ql/pricingengines/credit/integralcdsengine.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/termstructures/credit/interpolatedhazardratecurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -70,9 +71,9 @@ void CreditDefaultSwapTest::testCachedValue() {
                       convention, convention, DateGeneration::Forward, false);
 
     // Build the CDS
-    Rate fixedRate=0.0120;
-    DayCounter dayCount=Actual360();
-    Real notional=10000.0;
+    Rate fixedRate = 0.0120;
+    DayCounter dayCount = Actual360();
+    Real notional = 10000.0;
     Real recoveryRatio = 0.4;
     Issuer issuer(probabilityCurve, recoveryRatio);
 
@@ -81,21 +82,69 @@ void CreditDefaultSwapTest::testCachedValue() {
     cds.setPricingEngine(boost::shared_ptr<PricingEngine>(
                                 new MidPointCdsEngine(issuer,discountCurve)));
 
-    double calculatedNpv = cds.NPV();
-    double calculatedFairRate = cds.fairSpread();
-    double npv = 295.0153398, fairRate=0.007517539081;
-    double tolerance = 1.0e-7;
+    Real npv = 295.0153398;
+    Rate fairRate = 0.007517539081;
+
+    Real calculatedNpv = cds.NPV();
+    Rate calculatedFairRate = cds.fairSpread();
+    Real tolerance = 1.0e-7;
 
     if (std::fabs(calculatedNpv - npv) > tolerance)
         BOOST_ERROR(
-            "Failed to reproduce cds NPV\n"
+            "Failed to reproduce NPV with mid-point engine\n"
             << std::setprecision(10)
             << "    calculated NPV: " << calculatedNpv << "\n"
             << "    expected NPV:   " << npv);
 
     if (std::fabs(calculatedFairRate - fairRate) > tolerance)
         BOOST_ERROR(
-            "Failed to reproduce cds fair rate\n"
+            "Failed to reproduce fair rate with mid-point engine\n"
+            << std::setprecision(10)
+            << "    calculated fair rate: " << calculatedFairRate << "\n"
+            << "    expected fair rate:   " << fairRate);
+
+    cds.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                         new IntegralCdsEngine(1*Days,issuer,discountCurve)));
+
+    calculatedNpv = cds.NPV();
+    calculatedFairRate = cds.fairSpread();
+    tolerance = 1.0e-5;
+
+    if (std::fabs(calculatedNpv - npv) > notional*tolerance*10)
+        BOOST_ERROR(
+            "Failed to reproduce NPV with integral engine "
+            "(step = 1 day)\n"
+            << std::setprecision(10)
+            << "    calculated NPV: " << calculatedNpv << "\n"
+            << "    expected NPV:   " << npv);
+
+    if (std::fabs(calculatedFairRate - fairRate) > tolerance)
+        BOOST_ERROR(
+            "Failed to reproduce fair rate with integral engine "
+            "(step = 1 day)\n"
+            << std::setprecision(10)
+            << "    calculated fair rate: " << calculatedFairRate << "\n"
+            << "    expected fair rate:   " << fairRate);
+
+    cds.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                        new IntegralCdsEngine(1*Weeks,issuer,discountCurve)));
+
+    calculatedNpv = cds.NPV();
+    calculatedFairRate = cds.fairSpread();
+    tolerance = 1.0e-5;
+
+    if (std::fabs(calculatedNpv - npv) > notional*tolerance*10)
+        BOOST_ERROR(
+            "Failed to reproduce NPV with integral engine "
+            "(step = 1 week)\n"
+            << std::setprecision(10)
+            << "    calculated NPV: " << calculatedNpv << "\n"
+            << "    expected NPV:   " << npv);
+
+    if (std::fabs(calculatedFairRate - fairRate) > tolerance)
+        BOOST_ERROR(
+            "Failed to reproduce fair rate with integral engine "
+            "(step = 1 week)\n"
             << std::setprecision(10)
             << "    calculated fair rate: " << calculatedFairRate << "\n"
             << "    expected fair rate:   " << fairRate);
