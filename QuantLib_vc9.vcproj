@@ -1181,6 +1181,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\instruments\claim.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\claim.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\instruments\cliquetoption.cpp"
 				>
 			</File>
@@ -5929,6 +5937,14 @@
 				>
 				<File
 					RelativePath=".\ql\pricingengines\credit\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\credit\integralcdsengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\credit\integralcdsengine.hpp"
 					>
 				</File>
 				<File
