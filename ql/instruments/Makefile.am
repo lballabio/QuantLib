@@ -16,6 +16,7 @@ this_include_HEADERS = \
     bond.hpp \
     callabilityschedule.hpp \
     capfloor.hpp \
+    claim.hpp \
     cliquetoption.hpp \
     compositeinstrument.hpp \
     creditdefaultswap.hpp \
@@ -58,6 +59,7 @@ libInstruments_la_SOURCES = \
     bmaswap.cpp \
     bond.cpp \
     capfloor.cpp \
+    claim.cpp \
     cliquetoption.cpp \
     compositeinstrument.cpp \
     creditdefaultswap.cpp \

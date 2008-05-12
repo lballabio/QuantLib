@@ -11,6 +11,7 @@
 #include <ql/instruments/bond.hpp>
 #include <ql/instruments/callabilityschedule.hpp>
 #include <ql/instruments/capfloor.hpp>
+#include <ql/instruments/claim.hpp>
 #include <ql/instruments/cliquetoption.hpp>
 #include <ql/instruments/compositeinstrument.hpp>
 #include <ql/instruments/creditdefaultswap.hpp>

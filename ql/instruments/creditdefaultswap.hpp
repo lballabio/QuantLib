@@ -34,6 +34,7 @@
 namespace QuantLib {
 
     class YieldTermStructure;
+    class Claim;
 
     //! Credit default swap
     /*! \note This instrument currently assumes that the issuer did
@@ -55,7 +56,9 @@ namespace QuantLib {
                           BusinessDayConvention paymentConvention,
                           const DayCounter& dayCounter,
                           bool settlesAccrual = true,
-                          bool paysAtDefaultTime = true);
+                          bool paysAtDefaultTime = true,
+                          const boost::shared_ptr<Claim>& =
+                                                  boost::shared_ptr<Claim>());
         //@}
         //! \name Instrument interface
         //@{
@@ -94,6 +97,7 @@ namespace QuantLib {
         Real notional_;
         Rate spread_;
         bool settlesAccrual_, paysAtDefaultTime_;
+        boost::shared_ptr<Claim> claim_;
         Leg leg_;
         // results
         mutable Rate fairSpread_;
@@ -112,6 +116,7 @@ namespace QuantLib {
         Leg leg;
         bool settlesAccrual;
         bool paysAtDefaultTime;
+        boost::shared_ptr<Claim> claim;
         void validate() const;
     };
 

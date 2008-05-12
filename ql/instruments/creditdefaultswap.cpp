@@ -20,6 +20,7 @@
 */
 
 #include <ql/instruments/creditdefaultswap.hpp>
+#include <ql/instruments/claim.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
@@ -36,13 +37,19 @@ namespace QuantLib {
                                          BusinessDayConvention convention,
                                          const DayCounter& dayCounter,
                                          bool settlesAccrual,
-                                         bool paysAtDefaultTime)
+                                         bool paysAtDefaultTime,
+                                         const boost::shared_ptr<Claim>& claim)
     : side_(side), notional_(notional), spread_(spread),
-      settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime) {
+      settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime),
+      claim_(claim) {
         leg_ = FixedRateLeg(schedule, dayCounter)
             .withNotionals(notional)
             .withCouponRates(spread)
             .withPaymentAdjustment(convention);
+
+        if (!claim_)
+            claim_ = boost::shared_ptr<Claim>(new FaceValueClaim);
+        registerWith(claim_);
     }
 
     Protection::Side CreditDefaultSwap::side() const {
@@ -98,8 +105,9 @@ namespace QuantLib {
         arguments->leg = leg_;
         arguments->settlesAccrual = settlesAccrual_;
         arguments->paysAtDefaultTime = paysAtDefaultTime_;
+        arguments->claim = claim_;
     }
-        
+
 
     void CreditDefaultSwap::fetchResults(
                                       const PricingEngine::results* r) const {
@@ -209,6 +217,7 @@ namespace QuantLib {
         QL_REQUIRE(notional != 0.0, "null notional set");
         QL_REQUIRE(spread != Null<Rate>(), "spread not set");
         QL_REQUIRE(!leg.empty(), "coupons not set");
+        QL_REQUIRE(claim, "claim not set");
     }
 
     void CreditDefaultSwap::results::reset() {
