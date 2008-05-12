@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 New York::Shanghai Financial Technologies
+ Copyright (C) 2008 Allen Kuo
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -162,7 +162,7 @@ namespace QuantLib {
                          priceVol*std::sqrt(exerciseTime));
 
         if (type == Option::Call) {
-            results_.value =  npv - embeddedOptionValue; 
+            results_.value =  npv - embeddedOptionValue;
         } else {
             results_.value =  npv + embeddedOptionValue;
         }
