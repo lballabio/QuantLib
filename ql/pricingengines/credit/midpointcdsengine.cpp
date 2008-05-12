@@ -36,9 +36,9 @@ namespace QuantLib {
 
     void MidPointCdsEngine::calculate() const {
         QL_REQUIRE(!discountCurve_.empty(),
-                   "CreditDefaultSwap: no discount term structure set");
+                   "no discount term structure set");
         QL_REQUIRE(!issuer_.defaultProbability().empty(),
-                   "CreditDefaultSwap: no probability term structure set");
+                   "no probability term structure set");
 
         const Handle<DefaultProbabilityTermStructure>& probabilityCurve =
             issuer_.defaultProbability();
