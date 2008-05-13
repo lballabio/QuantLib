@@ -51,16 +51,28 @@ namespace QuantLib {
             || (d == 3 && m == January && y == 2005)
             || ((d == 2 || d == 3) && m == January && y == 2006)
             || (d <= 3 && m == January && y == 2007)
-            // Labor Day
-            || (d >= 1 && d <= 7 && m == May)
-            // National Day
-            || (d >= 1 && d <= 7 && m == October)
+            || (d == 31 && m == December && y == 2007)
+            || (d == 1 && m == January && y == 2008)
             // Chinese New Year
             || (d >= 19 && d <= 28 && m == January && y == 2004)
             || (d >=  7 && d <= 15 && m == February && y == 2005)
             || (((d >= 26 && m == January) || (d <= 3 && m == February))
                 && y == 2006)
             || (d >= 17 && d <= 25 && m == February && y == 2007)
+            || (d >= 6 && d <= 12 && m == February && y == 2008)
+            // Ching Ming Festival
+            || (d == 4 && m == April && y <= 2008)
+            // Labor Day
+            || (d >= 1 && d <= 7 && m == May && y <= 2007)
+            || (d >= 1 && d <= 2 && m == May && y == 2008)
+            // Tuen Ng Festival
+            || (d == 9 && m == June && y <= 2008)
+            // Mid-Autumn Festival
+            || (d == 15 && m == September && y <= 2008)
+            // National Day
+            || (d >= 1 && d <= 7 && m == October && y <= 2007)
+            || (d >= 29 && m == September && y == 2008)
+            || (d <= 3 && m == October && y == 2008)
             )
             return false;
         return true;

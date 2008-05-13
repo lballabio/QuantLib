@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 FIMAT Group
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -52,6 +52,7 @@ namespace QuantLib {
             || ((d == 9 || d == 10) && m == February && y == 2005)
             || ((d == 30 || d == 31) && m == January && y == 2006)
             || ((d == 19 || d == 20) && m == February && y == 2007)
+            || ((d == 7 || d == 8) && m == February && y == 2008)
 
             // Hari Raya Haji
             || ((d == 1 || d == 2) && m == February && y == 2004)
@@ -59,16 +60,19 @@ namespace QuantLib {
             || (d == 10 && m == January && y == 2006)
             || (d == 2 && m == January && y == 2007)
             || (d == 20 && m == December && y == 2007)
+            || (d == 8 && m == December && y == 2008)
 
             // Vesak Poya Day
             || (d == 2 && m == June && y == 2004)
             || (d == 22 && m == May && y == 2005)
             || (d == 12 && m == May && y == 2006)
             || (d == 31 && m == May && y == 2007)
+            || (d == 18 && m == May && y == 2008)
 
             // Deepavali
             || (d == 11 && m == November && y == 2004)
             || (d == 8 && m == November && y == 2007)
+            || (d == 28 && m == October && y == 2008)
 
             // Diwali
             || (d == 1 && m == November && y == 2005)
@@ -78,6 +82,7 @@ namespace QuantLib {
             || (d == 3 && m == November && y == 2005)
             || (d == 24 && m == October && y == 2006)
             || (d == 13 && m == October && y == 2007)
+            || (d == 1 && m == October && y == 2008)
             )
             return false;
         return true;

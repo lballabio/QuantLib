@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2007 StatPro Italia srl
+ Copyright (C) 2005, 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -109,6 +109,33 @@ namespace QuantLib {
                 || (d == 18 && m == May)
                 || ((d == 12 || d == 15 || d == 16) && m == October)
                 || ((d == 21 || d == 24) && m == October)
+                )
+                return false;
+        }
+        if (y == 2007) {
+            if (// Islamic New Year
+                ((d == 10 || d == 11) && m == January)
+                // Chinese New Year
+                || ((d == 7 || d == 8) && m == February)
+                // Saka's New Year
+                || (d == 7 && m == March)
+                // Birthday of the prophet Muhammad SAW
+                || (d == 20 && m == March)
+                // Vesak Day
+                || (d == 20 && m == May)
+                // Isra' Mi'raj of the prophet Muhammad SAW
+                || (d == 30 && m == July)
+                // Ied Fitr
+                || (d == 30 && m == September)
+                || ((d == 1 || d == 2 || d == 3) && m == October)
+                // Ied Adha
+                || (d == 8 && m == December)
+                // Islamic New Year
+                || (d == 29 && m == December)
+                // New Year's Eve
+                || (d == 31 && m == December)
+                // National leave
+                || (d == 18 && m == August)
                 )
                 return false;
         }

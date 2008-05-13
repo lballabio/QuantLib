@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 FIMAT Group
- Copyright (C) 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -119,6 +119,14 @@ namespace QuantLib {
                 || (d == 24 && m == September)
                 // Moon Festival
                 || (d == 25 && m == September)
+                )
+                return false;
+        }
+        if (y == 2008) {
+            if (// Chinese Lunar New Year
+                (d >= 4 && d <= 11 && m == February)
+                // Tomb Sweeping Day
+                || (d == 4 && m == April)
                 )
                 return false;
         }

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2007 StatPro Italia srl
+ Copyright (C) 2005, 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -99,12 +99,40 @@ namespace QuantLib {
                 || (d == 27 && m == March)
                 // Maharashtra Day
                 || (d == 1 && m == May)
-                // Buddha Pournima 
+                // Buddha Pournima
                 || (d == 2 && m == May)
                 // Laxmi Puja
                 || (d == 9 && m == November)
                 // Bakri Id (again)
                 || (d == 21 && m == December)
+                )
+                return false;
+        }
+        if (y == 2008) {
+            if (// Mahashivratri
+                (d == 6 && m == March)
+                // Id-E-Milad
+                || (d == 20 && m == March)
+                // Mahavir Jayanti
+                || (d == 18 && m == April)
+                // Maharashtra Day
+                || (d == 1 && m == May)
+                // Buddha Pournima
+                || (d == 19 && m == May)
+                // Ganesh Chaturthi
+                || (d == 3 && m == September)
+                // Ramzan Id
+                || (d == 2 && m == October)
+                // Dasara
+                || (d == 9 && m == October)
+                // Laxmi Puja
+                || (d == 28 && m == October)
+                // Bhau bhij
+                || (d == 30 && m == October)
+                // Gurunanak Jayanti
+                || (d == 13 && m == November)
+                // Bakri Id
+                || (d == 9 && m == December)
                 )
                 return false;
         }

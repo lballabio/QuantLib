@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2007 StatPro Italia srl
+ Copyright (C) 2005, 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,20 +34,21 @@ namespace QuantLib {
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
-        <li>Good Friday</li>
         <li>New Year's Day, January 1st</li>
+        <li>Good Friday</li>
         <li>Ascension of Jesus Christ</li>
         <li>Independence Day, August 17th</li>
         <li>Christmas, December 25th</li>
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2005-2007 only:)
+        (data available for 2005-2008 only:)
         <ul>
         <li>Idul Adha</li>
         <li>Ied Adha</li>
         <li>Imlek</li>
         <li>Moslem's New Year Day</li>
+        <li>Chinese New Year</li>
         <li>Nyepi (Saka's New Year)</li>
         <li>Birthday of Prophet Muhammad SAW</li>
         <li>Waisak</li>

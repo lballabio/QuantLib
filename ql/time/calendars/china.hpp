@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 FIMAT Group
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -40,9 +40,13 @@ namespace QuantLib {
         <li>National Day, one week from October 1st</li>
         </ul>
 
-        Other holidays for which no rule is given:
+        Other holidays for which no rule is given (data available for
+        2004-2008 only):
         <ul>
-        <li>Chinese New Year (data available for 2004-2007 only)</li>
+        <li>Chinese New Year</li>
+        <li>Ching Ming Festival</li>
+        <li>Tuen Ng Festival</li>
+        <li>Mid-Autumn Festival</li>
         </ul>
 
         Data from <http://www.sse.com.cn/sseportal/en_us/ps/home.shtml>
