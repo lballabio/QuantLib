@@ -502,7 +502,7 @@ namespace QuantLib {
         Schedule bmaSchedule = MakeSchedule(earliestDate_,
                                             maturity,
                                             bmaPeriod_,
-                                            calendar_,
+                                            bmaIndex_->fixingCalendar(),
                                             bmaConvention_).backwards();
 
         Schedule liborSchedule =

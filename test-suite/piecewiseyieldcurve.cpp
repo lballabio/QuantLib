@@ -393,9 +393,9 @@ namespace {
     void testBMACurveConsistency(const T&, const I& interpolator,
                                  CommonVars& vars) {
 
-        // readjust settlement
+        // re-adjust settlement
         vars.calendar = JointCalendar(BMAIndex().fixingCalendar(),
-                                      USDLibor(6*Months).fixingCalendar(),
+                                      USDLibor(3*Months).fixingCalendar(),
                                       JoinHolidays);
         vars.today = vars.calendar.adjust(Date::todaysDate());
         Settings::instance().evaluationDate() = vars.today;
@@ -409,13 +409,13 @@ namespace {
 
         boost::shared_ptr<BMAIndex> bmaIndex(new BMAIndex);
         boost::shared_ptr<IborIndex> liborIndex(
-                                        new USDLibor(6*Months,riskFreeCurve));
+                                        new USDLibor(3*Months,riskFreeCurve));
         for (Size i=0; i<vars.bmas; ++i) {
             Handle<Quote> f(vars.fractions[i]);
             vars.bmaHelpers[i] = boost::shared_ptr<RateHelper>(
                       new BMASwapRateHelper(f, bmaData[i].n*bmaData[i].units,
                                             vars.settlementDays,
-                                            bmaIndex->fixingCalendar(),
+                                            vars.calendar,
                                             Period(vars.bmaFrequency),
                                             vars.bmaConvention,
                                             vars.bmaDayCounter,
@@ -439,7 +439,7 @@ namespace {
 
         // check BMA swaps
         boost::shared_ptr<BMAIndex> bma(new BMAIndex(curveHandle));
-        boost::shared_ptr<IborIndex> libor6m(new USDLibor(6*Months,
+        boost::shared_ptr<IborIndex> libor3m(new USDLibor(3*Months,
                                                           riskFreeCurve));
         for (Size i=0; i<vars.bmas; i++) {
             Period tenor = bmaData[i].n*bmaData[i].units;
@@ -451,19 +451,19 @@ namespace {
                                                 vars.bmaConvention).backwards();
             Schedule liborSchedule = MakeSchedule(vars.settlement,
                                                   vars.settlement+tenor,
-                                                  libor6m->tenor(),
-                                                  libor6m->fixingCalendar(),
-                                                  libor6m->businessDayConvention())
-                .endOfMonth(libor6m->endOfMonth())
+                                                  libor3m->tenor(),
+                                                  libor3m->fixingCalendar(),
+                                                  libor3m->businessDayConvention())
+                .endOfMonth(libor3m->endOfMonth())
                 .backwards();
 
 
             BMASwap swap(BMASwap::Payer, 100.0,
                          liborSchedule, 0.75, 0.0,
-                         libor6m, libor6m->dayCounter(),
+                         libor3m, libor3m->dayCounter(),
                          bmaSchedule, bma, vars.bmaDayCounter);
             swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                        new DiscountingSwapEngine(libor6m->termStructure())));
+                        new DiscountingSwapEngine(libor3m->termStructure())));
 
             Real expectedFraction = bmaData[i].rate/100,
                  estimatedFraction = swap.fairLiborFraction();
