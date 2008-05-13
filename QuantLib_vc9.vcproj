@@ -6980,6 +6980,30 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="coupons"
+				>
+				<File
+					RelativePath=".\ql\experimental\coupons\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\coupons\quantocouponpricer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\coupons\quantocouponpricer.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\coupons\subperiodcoupons.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\coupons\subperiodcoupons.hpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\ql\auto_link.hpp"
