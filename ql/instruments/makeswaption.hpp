@@ -51,19 +51,25 @@ namespace QuantLib {
         operator boost::shared_ptr<Swaption>() const ;
 
         MakeSwaption& withSettlementType(Settlement::Type delivery);
-        MakeSwaption& withSwaptionConvention(BusinessDayConvention bdc);
+        MakeSwaption& withOptionConvention(BusinessDayConvention bdc);
+        MakeSwaption& withExerciseDate(const Date&);
 
         MakeSwaption& withPricingEngine(
                               const boost::shared_ptr<PricingEngine>& engine);
       private:
         boost::shared_ptr<SwapIndex> swapIndex_;
-        Period optionTenor_;
-        Rate strike_;
         Settlement::Type delivery_;
-        BusinessDayConvention swaptionConvention_;
-        boost::shared_ptr<PricingEngine> engine_;
-        mutable boost::shared_ptr<Exercise> exercise_;
         mutable boost::shared_ptr<VanillaSwap> underlyingSwap_;
+
+        Period optionTenor_;
+        BusinessDayConvention optionConvention_;
+        mutable Date fixingDate_;
+        Date exerciseDate_;
+        mutable boost::shared_ptr<Exercise> exercise_;
+
+        Rate strike_;
+
+        boost::shared_ptr<PricingEngine> engine_;
     };
 
 }

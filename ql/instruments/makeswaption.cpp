@@ -32,10 +32,10 @@ namespace QuantLib {
                                const Period& optionTenor,
                                Rate strike)
     : swapIndex_(swapIndex),
-      optionTenor_(optionTenor),
-      strike_(strike),
       delivery_(Settlement::Physical),
-      swaptionConvention_(ModifiedFollowing) {}
+      optionTenor_(optionTenor),
+      optionConvention_(ModifiedFollowing),
+      strike_(strike) {}
 
     MakeSwaption::operator Swaption() const {
         boost::shared_ptr<Swaption> swaption = *this;
@@ -43,13 +43,21 @@ namespace QuantLib {
     }
 
     MakeSwaption::operator boost::shared_ptr<Swaption>() const {
-        Date evaluationDate = Settings::instance().evaluationDate();
-        Date optionDate =
-            swapIndex_->fixingCalendar().advance(evaluationDate,
-                                                 optionTenor_,
-                                                 swaptionConvention_);
-        exercise_ = boost::shared_ptr<Exercise>(new
-            EuropeanExercise(optionDate));
+
+        const Date& evaluationDate = Settings::instance().evaluationDate();
+        const Calendar& fixingCalendar = swapIndex_->fixingCalendar();
+        fixingDate_ = fixingCalendar.advance(evaluationDate, optionTenor_,
+                                             optionConvention_);
+        if (exerciseDate_ == Null<Date>()) {
+            exercise_ = boost::shared_ptr<Exercise>(new
+                EuropeanExercise(fixingDate_));
+        } else {
+            QL_REQUIRE(exerciseDate_ <= fixingDate_,
+                       "exercise date (" << exerciseDate_ << ") must be less "
+                       "than or equal to fixing date (" << fixingDate_ << ")");
+            exercise_ = boost::shared_ptr<Exercise>(new
+                EuropeanExercise(exerciseDate_));
+        }
 
         Rate usedStrike = strike_;
         if (strike_ == Null<Rate>()) {
@@ -58,7 +66,7 @@ namespace QuantLib {
                        "no forecasting term structure set to " <<
                        swapIndex_->name());
             boost::shared_ptr<VanillaSwap> temp =
-                swapIndex_->underlyingSwap(optionDate);
+                swapIndex_->underlyingSwap(fixingDate_);
             temp->setPricingEngine(boost::shared_ptr<PricingEngine>(new
                         DiscountingSwapEngine(swapIndex_->termStructure())));
             usedStrike = temp->fairRate();
@@ -68,7 +76,7 @@ namespace QuantLib {
         underlyingSwap_ =
             MakeVanillaSwap(swapIndex_->tenor(),
                             swapIndex_->iborIndex(), usedStrike)
-            .withEffectiveDate(swapIndex_->valueDate(optionDate))
+            .withEffectiveDate(swapIndex_->valueDate(fixingDate_))
             .withFixedLegCalendar(swapIndex_->fixingCalendar())
             .withFixedLegDayCount(swapIndex_->dayCounter())
             .withFixedLegConvention(bdc)
@@ -86,8 +94,8 @@ namespace QuantLib {
     }
 
     MakeSwaption&
-    MakeSwaption::withSwaptionConvention(BusinessDayConvention bdc) {
-        swaptionConvention_ = bdc;
+    MakeSwaption::withOptionConvention(BusinessDayConvention bdc) {
+        optionConvention_ = bdc;
         return *this;
     }
 
