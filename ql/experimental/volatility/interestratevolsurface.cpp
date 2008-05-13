@@ -46,6 +46,7 @@ namespace QuantLib {
 
     Date InterestRateVolSurface::optionDateFromTenor(const Period& p) const {
         boost::shared_ptr<InterestRateIndex> i = index();
+        // optionlet style
         Date refDate = i->fixingCalendar().adjust(referenceDate(), Following);
         Date settlement = i->valueDate(refDate);
         Date start = settlement+p;

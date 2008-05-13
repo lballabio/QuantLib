@@ -85,6 +85,7 @@ namespace QuantLib {
 
     inline Date
     VolatilityTermStructure::optionDateFromTenor(const Period& p) const {
+        // swaption flower
         return calendar().advance(referenceDate(),
                                   p,
                                   businessDayConvention());
