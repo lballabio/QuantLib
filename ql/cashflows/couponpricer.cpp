@@ -24,6 +24,7 @@
 #include <ql/cashflows/digitalcmscoupon.hpp>
 #include <ql/cashflows/digitaliborcoupon.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
+#include <ql/experimental/coupons/subperiodcoupons.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
@@ -154,7 +155,8 @@ namespace QuantLib {
                              public Visitor<CappedFlooredCmsCoupon>,
                              public Visitor<DigitalIborCoupon>,
                              public Visitor<DigitalCmsCoupon>,
-                             public Visitor<RangeAccrualFloatersCoupon>{
+                             public Visitor<RangeAccrualFloatersCoupon>,
+                             public Visitor<SubPeriodsCoupon> {
           private:
             const boost::shared_ptr<FloatingRateCouponPricer> pricer_;
           public:
@@ -171,6 +173,7 @@ namespace QuantLib {
             void visit(CappedFlooredCmsCoupon& c);
             void visit(DigitalCmsCoupon& c);
             void visit(RangeAccrualFloatersCoupon& c);
+            void visit(SubPeriodsCoupon& c);
         };
 
         void PricerSetter::visit(CashFlow&) {
@@ -235,6 +238,14 @@ namespace QuantLib {
             QL_REQUIRE(rangeAccrualPricer,
                        "pricer not compatible with range-accrual coupon");
             c.setPricer(rangeAccrualPricer);
+        }
+
+        void PricerSetter::visit(SubPeriodsCoupon& c) {
+            const boost::shared_ptr<SubPeriodsPricer> subPeriodsPricer =
+                boost::dynamic_pointer_cast<SubPeriodsPricer>(pricer_);
+            QL_REQUIRE(subPeriodsPricer,
+                       "pricer not compatible with sub-period coupon");
+            c.setPricer(subPeriodsPricer);
         }
 
     }
