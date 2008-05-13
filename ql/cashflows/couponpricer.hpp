@@ -97,8 +97,7 @@ namespace QuantLib {
         Real optionletPrice(Option::Type optionType,
                             Real effStrike) const;
 
-      private:
-        Rate adjustedFixing() const;
+        virtual Rate adjustedFixing(Rate fixing = Null<Rate>()) const;
 
         const IborCoupon* coupon_;
         Real discount_;

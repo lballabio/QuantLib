@@ -3,4 +3,5 @@
 
 
 #include <ql/experimental/callablebonds/all.hpp>
+#include <ql/experimental/coupons/all.hpp>
 #include <ql/experimental/volatility/all.hpp>

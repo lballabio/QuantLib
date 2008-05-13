@@ -112,11 +112,12 @@ namespace QuantLib {
         }
     }
 
-    Rate BlackIborCouponPricer::adjustedFixing() const {
+    Rate BlackIborCouponPricer::adjustedFixing(Rate fixing) const {
 
         Real adjustement = 0.0;
 
-        Rate fixing = coupon_->indexFixing();
+        if (fixing == Null<Rate>())
+            fixing = coupon_->indexFixing();
 
         if (!coupon_->isInArrears()) {
             adjustement = 0.0;

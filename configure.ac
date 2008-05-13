@@ -330,6 +330,7 @@ AC_CONFIG_FILES([
     ql/currencies/Makefile
     ql/experimental/Makefile
     ql/experimental/callablebonds/Makefile
+    ql/experimental/coupons/Makefile
     ql/experimental/volatility/Makefile
     ql/indexes/Makefile
     ql/indexes/ibor/Makefile
