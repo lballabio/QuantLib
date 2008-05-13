@@ -6848,7 +6848,7 @@
 			Name="experimental"
 			>
 			<File
-				RelativePath=".\ql\experimental\abcdatmvolcurve.cpp"
+				RelativePath=".\ql\experimental\volatility\abcdatmvolcurve.cpp"
 				>
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32"
@@ -6888,7 +6888,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\ql\experimental\abcdatmvolcurve.hpp"
+				RelativePath=".\ql\experimental\volatility\abcdatmvolcurve.hpp"
 				>
 			</File>
 			<File
@@ -6896,7 +6896,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\experimental\blackatmvolcurve.cpp"
+				RelativePath=".\ql\experimental\volatility\blackatmvolcurve.cpp"
 				>
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32"
@@ -6936,55 +6936,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\ql\experimental\blackatmvolcurve.hpp"
+				RelativePath=".\ql\experimental\volatility\blackatmvolcurve.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\experimental\blackvolsurface.cpp"
-				>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\ql\experimental\blackvolsurface.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\experimental\equityfxvolsurface.cpp"
+				RelativePath=".\ql\experimental\volatility\blackvolsurface.cpp"
 				>
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32"
@@ -7024,55 +6980,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\ql\experimental\equityfxvolsurface.hpp"
+				RelativePath=".\ql\experimental\volatility\blackvolsurface.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\experimental\interestratevolsurface.cpp"
-				>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\ql\experimental\interestratevolsurface.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\experimental\sabrvolsurface.cpp"
+				RelativePath=".\ql\experimental\volatility\equityfxvolsurface.cpp"
 				>
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32"
@@ -7112,11 +7024,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\ql\experimental\sabrvolsurface.hpp"
+				RelativePath=".\ql\experimental\volatility\equityfxvolsurface.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\experimental\volcube.cpp"
+				RelativePath=".\ql\experimental\volatility\interestratevolsurface.cpp"
 				>
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32"
@@ -7156,7 +7068,95 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\ql\experimental\volcube.hpp"
+				RelativePath=".\ql\experimental\volatility\interestratevolsurface.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\experimental\volatility\sabrvolsurface.cpp"
+				>
+				<FileConfiguration
+					Name="Debug CRTDLL|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release CRTDLL|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\experimental\volatility\sabrvolsurface.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\experimental\volatilities\volcube.cpp"
+				>
+				<FileConfiguration
+					Name="Debug CRTDLL|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release CRTDLL|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\experimental\volatilities\volcube.hpp"
 				>
 			</File>
 		</Filter>

@@ -6835,16 +6835,16 @@
 			Name="experimental"
 			Filter="">
 			<File
-				RelativePath=".\ql\experimental\abcdatmvolcurve.cpp">
+				RelativePath=".\ql\experimental\volatility\abcdatmvolcurve.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\experimental\abcdatmvolcurve.hpp">
+				RelativePath=".\ql\experimental\volatility\abcdatmvolcurve.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\experimental\all.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\experimental\blackatmvolcurve.cpp">
+				RelativePath=".\ql\experimental\volatility\blackatmvolcurve.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -6883,10 +6883,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\ql\experimental\blackatmvolcurve.hpp">
+				RelativePath=".\ql\experimental\volatility\blackatmvolcurve.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\experimental\blackvolsurface.cpp">
+				RelativePath=".\ql\experimental\volatility\blackvolsurface.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -6925,10 +6925,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\ql\experimental\blackvolsurface.hpp">
+				RelativePath=".\ql\experimental\volatility\blackvolsurface.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\experimental\equityfxvolsurface.cpp">
+				RelativePath=".\ql\experimental\volatility\equityfxvolsurface.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -6967,10 +6967,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\ql\experimental\equityfxvolsurface.hpp">
+				RelativePath=".\ql\experimental\volatility\equityfxvolsurface.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\experimental\interestratevolsurface.cpp">
+				RelativePath=".\ql\experimental\volatility\interestratevolsurface.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -7009,10 +7009,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\ql\experimental\interestratevolsurface.hpp">
+				RelativePath=".\ql\experimental\volatility\interestratevolsurface.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\experimental\sabrvolsurface.cpp">
+				RelativePath=".\ql\experimental\volatility\sabrvolsurface.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -7051,7 +7051,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\ql\experimental\sabrvolsurface.hpp">
+				RelativePath=".\ql\experimental\volatility\sabrvolsurface.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\experimental\volcube.cpp">
