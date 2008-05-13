@@ -45,7 +45,7 @@ namespace QuantLib {
         DayCounter dayCounter;
         void setConventions() {
             calendar = TARGET();
-            optionBdc = Following;
+            optionBdc = ModifiedFollowing;
             dayCounter = Actual365Fixed();
         }
     };
