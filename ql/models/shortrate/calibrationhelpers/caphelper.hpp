@@ -29,9 +29,12 @@
 
 namespace QuantLib {
 
-    class Iborindex;
-
     //! calibration helper for ATM cap
+    /*! \bug This helper does not register with the passed IBOR index
+             and with the evaluation date. Furthermore, the ATM strike
+             rate is not recalculated when any of its observables
+             change.
+    */
     class CapHelper : public CalibrationHelper {
       public:
         CapHelper(const Period& length,

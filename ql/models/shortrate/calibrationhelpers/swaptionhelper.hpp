@@ -29,9 +29,12 @@
 
 namespace QuantLib {
 
-    class Iborindex;
-
     //! calibration helper for ATM swaption
+    /*! \bug This helper does not register with the passed IBOR index
+             and with the evaluation date. Furthermore, the ATM
+             exercise rate is not recalculated when any of its
+             observables change.
+    */
     class SwaptionHelper : public CalibrationHelper {
       public:
         SwaptionHelper(const Period& maturity,
