@@ -61,9 +61,9 @@ namespace QuantLib {
         ts_ = ts;
 
         Size n = ts_->instruments_.size();
-        QL_REQUIRE(n >= Interpolator::requiredPoints,
+        QL_REQUIRE(n+1 >= Interpolator::requiredPoints,
                    "not enough instruments: " << n << " provided, " <<
-                   Interpolator::requiredPoints << " required");
+                   Interpolator::requiredPoints-1 << " required");
 
         for (Size i=0; i<n; ++i){
             ts_->registerWith(ts_->instruments_[i]);

@@ -231,6 +231,39 @@ void DefaultProbabilityCurveTest::testLinearDensityConsistency() {
     testPiecewiseCurve<DefaultDensity,Linear>();
 }
 
+void DefaultProbabilityCurveTest::testSingleInstrumentBootstrap() {
+    BOOST_MESSAGE("Testing single-instrument curve bootstrap...");
+
+    Calendar calendar = TARGET();
+
+    Date today = Settings::instance().evaluationDate();
+
+    Integer settlementDays = 0;
+
+    Real quote = 0.005;
+    Period tenor = 2*Years;
+
+    Frequency frequency = Quarterly;
+    BusinessDayConvention convention = ModifiedFollowing;
+    DayCounter dayCounter = Thirty360();
+    Real recoveryRate = 0.4;
+
+    RelinkableHandle<YieldTermStructure> discountCurve;
+    discountCurve.linkTo(boost::shared_ptr<YieldTermStructure>(
+                                    new FlatForward(today,0.06,Actual360())));
+
+    std::vector<boost::shared_ptr<DefaultProbabilityHelper> > helpers(1);
+
+    helpers[0] = boost::shared_ptr<DefaultProbabilityHelper>(
+                              new CdsHelper(quote, tenor,
+                                            settlementDays, calendar,
+                                            frequency, convention, dayCounter,
+                                            recoveryRate, discountCurve));
+
+    PiecewiseDefaultCurve<HazardRate,BackwardFlat> defaultCurve(today, helpers,
+                                                                dayCounter);
+    defaultCurve.recalculate();
+}
 
 
 test_suite* DefaultProbabilityCurveTest::suite() {
@@ -245,5 +278,7 @@ test_suite* DefaultProbabilityCurveTest::suite() {
                    &DefaultProbabilityCurveTest::testFlatDensityConsistency));
     suite->add(QUANTLIB_TEST_CASE(
                  &DefaultProbabilityCurveTest::testLinearDensityConsistency));
+    suite->add(QUANTLIB_TEST_CASE(
+                &DefaultProbabilityCurveTest::testSingleInstrumentBootstrap));
     return suite;
 }

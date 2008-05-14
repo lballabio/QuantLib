@@ -32,6 +32,7 @@ class DefaultProbabilityCurveTest {
     static void testFlatHazardConsistency();
     static void testFlatDensityConsistency();
     static void testLinearDensityConsistency();
+    static void testSingleInstrumentBootstrap();
     static boost::unit_test_framework::test_suite* suite();
 };
 
