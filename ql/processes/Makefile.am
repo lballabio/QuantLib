@@ -6,6 +6,7 @@ this_include_HEADERS = \
 	all.hpp \
 	batesprocess.hpp \
 	blackscholesprocess.hpp \
+	endeulerdiscretization.hpp \
 	eulerdiscretization.hpp \
 	forwardmeasureprocess.hpp \
 	g2process.hpp \
@@ -23,6 +24,7 @@ this_include_HEADERS = \
 libProcesses_la_SOURCES = \
 	batesprocess.cpp \
 	blackscholesprocess.cpp \
+	endeulerdiscretization.cpp \
 	eulerdiscretization.cpp \
 	forwardmeasureprocess.cpp \
 	g2process.cpp \
