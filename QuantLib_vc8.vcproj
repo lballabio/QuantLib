@@ -7116,7 +7116,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\experimental\volatilities\volcube.cpp"
+				RelativePath=".\ql\experimental\volatility\volcube.cpp"
 				>
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32"
@@ -7156,7 +7156,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\ql\experimental\volatilities\volcube.hpp"
+				RelativePath=".\ql\experimental\volatility\volcube.hpp"
 				>
 			</File>
 		</Filter>
