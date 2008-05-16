@@ -58,7 +58,8 @@ namespace QuantLib {
     FixedRateBondHelper::FixedRateBondHelper(
                                 const Handle<Quote>& cleanPrice,
                                 const boost::shared_ptr<FixedRateBond>& bond)
-    : BootstrapHelper<YieldTermStructure>(cleanPrice) {
+    : BootstrapHelper<YieldTermStructure>(cleanPrice),
+      bond_(bond) {
 
         latestDate_ = bond_->maturityDate();
         registerWith(Settings::instance().evaluationDate());

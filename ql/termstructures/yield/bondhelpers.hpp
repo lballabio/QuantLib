@@ -46,6 +46,12 @@ namespace QuantLib {
                             BusinessDayConvention paymentConv = Following,
                             Real redemption = 100.0,
                             const Date& issueDate = Date());
+        /*! \warning Setting a pricing engine to the passed bond from
+                     external code will cause the bootstrap to fail or
+                     to give wrong results. It is advised to discard
+                     the bond after creating the helper, so that the
+                     helper has sole ownership of it.
+        */
         FixedRateBondHelper(const Handle<Quote>& cleanPrice,
                             const boost::shared_ptr<FixedRateBond>& bond);
         //! \name BootstrapHelper interface
