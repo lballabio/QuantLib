@@ -17,7 +17,19 @@
 */
 
 /*! \example BermudanSwaption.cpp
-    This is an example of using the %QuantLib short rate models.
+    This example prices a few bermudan swaptions using different
+    short-rate models calibrated to market swaptions.
+*/
+
+/*! \example CallableBonds.cpp
+    This examples prices a number of callable bonds and compares the
+    results to known good data. It uses the experimental CallableBond
+    class.
+*/
+
+/*! \example CDS.cpp
+    This example bootstraps a default-probability curve over a number
+    of CDS and reprices them.
 */
 
 /*! \example ConvertibleBonds.cpp
@@ -30,7 +42,7 @@
 
 /*! \example EquityOption.cpp
     This example evaluates European, American and Bermudan options
-    using different methods
+    using different methods.
  */
 
 /*! \example FittedBondCurve.cpp
@@ -52,6 +64,6 @@
  */
 
 /*! \example swapvaluation.cpp
-    This is an example of using the %QuantLib Term Structure for pricing
+    This is an example of using a %QuantLib term structure for pricing
     a simple swap.
 */
