@@ -1,1 +1,1 @@
-Calculates convertible bond values
+This example evaluates convertible bond values
