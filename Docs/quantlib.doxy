@@ -1,4 +1,4 @@
-# Doxyfile 1.5.5
+# Doxyfile 1.5.6
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -36,6 +36,7 @@ OPTIMIZE_OUTPUT_VHDL   = NO
 BUILTIN_STL_SUPPORT    = YES
 CPP_CLI_SUPPORT        = NO
 SIP_SUPPORT            = NO
+IDL_PROPERTY_SUPPORT   = YES
 DISTRIBUTE_GROUP_DOC   = NO
 SUBGROUPING            = YES
 TYPEDEF_HIDES_STRUCT   = NO
@@ -69,6 +70,8 @@ ENABLED_SECTIONS       =
 MAX_INITIALIZER_LINES  = 30
 SHOW_USED_FILES        = NO
 SHOW_DIRECTORIES       = NO
+SHOW_FILES             = YES
+SHOW_NAMESPACES        = NO
 FILE_VERSION_FILTER    = 
 #---------------------------------------------------------------------------
 # configuration options related to warning and progress messages
@@ -142,12 +145,14 @@ HTML_DYNAMIC_SECTIONS  = NO
 CHM_FILE               = ../QuantLib-docs-ql_version.chm
 HHC_LOCATION           = hhc.exe
 GENERATE_CHI           = NO
+CHM_INDEX_ENCODING     = 
 BINARY_TOC             = NO
 TOC_EXPAND             = NO
 DISABLE_INDEX          = YES
 ENUM_VALUES_PER_LINE   = 4
 GENERATE_TREEVIEW      = NO
 TREEVIEW_WIDTH         = 250
+FORMULA_FONTSIZE       = 12
 #---------------------------------------------------------------------------
 # configuration options related to the LaTeX output
 #---------------------------------------------------------------------------
@@ -237,6 +242,8 @@ CLASS_DIAGRAMS         = YES
 MSCGEN_PATH            = 
 HIDE_UNDOC_RELATIONS   = NO
 HAVE_DOT               = YES
+DOT_FONTNAME           = FreeSans
+DOT_FONTPATH           = 
 CLASS_GRAPH            = YES
 COLLABORATION_GRAPH    = NO
 GROUP_GRAPHS           = NO
