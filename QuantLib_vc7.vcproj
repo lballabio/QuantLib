@@ -775,6 +775,12 @@
 				RelativePath=".\ql\instruments\capfloor.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\instruments\claim.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\instruments\claim.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\instruments\cliquetoption.cpp">
 			</File>
 			<File
@@ -5507,6 +5513,12 @@
 					RelativePath=".\ql\pricingengines\credit\all.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\credit\integralcdsengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\credit\integralcdsengine.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\credit\midpointcdsengine.cpp">
 				</File>
 				<File
@@ -6834,231 +6846,166 @@
 		<Filter
 			Name="experimental"
 			Filter="">
-			<File
-				RelativePath=".\ql\experimental\volatility\abcdatmvolcurve.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\experimental\volatility\abcdatmvolcurve.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\experimental\all.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\experimental\volatility\blackatmvolcurve.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\ql\experimental\volatility\blackatmvolcurve.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\experimental\volatility\blackvolsurface.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\ql\experimental\volatility\blackvolsurface.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\experimental\volatility\equityfxvolsurface.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\ql\experimental\volatility\equityfxvolsurface.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\experimental\volatility\interestratevolsurface.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\ql\experimental\volatility\interestratevolsurface.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\experimental\volatility\sabrvolsurface.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\ql\experimental\volatility\sabrvolsurface.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\experimental\volcube.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\experimental\volcube.hpp">
-			</File>
+			<Filter
+				Name="coupons"
+				Filter="">
+				<File
+					RelativePath=".\ql\experimental\coupons\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\coupons\quantocouponpricer.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\coupons\quantocouponpricer.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\coupons\subperiodcoupons.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\coupons\subperiodcoupons.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="callablebonds"
+				Filter="">
+				<File
+					RelativePath=".\ql\experimental\callablebonds\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\callablebonds\blackcallablebondengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\callablebonds\blackcallablebondengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\callablebonds\callablebond.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\callablebonds\callablebond.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\callablebonds\callablebondconstantvol.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\callablebonds\callablebondconstantvol.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\callablebonds\callablebondvolstructure.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\callablebonds\callablebondvolstructure.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\callablebonds\discretizedcallablefixedratebond.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\callablebonds\discretizedcallablefixedratebond.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\callablebonds\treecallablebondengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\callablebonds\treecallablebondengine.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="processes"
+				Filter="">
+				<File
+					RelativePath=".\ql\experimental\processes\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\processes\extendedblackscholesprocess.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\processes\extendedblackscholesprocess.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="volatility"
+				Filter="">
+				<File
+					RelativePath=".\ql\experimental\volatility\abcdatmvolcurve.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\abcdatmvolcurve.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\blackatmvolcurve.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\blackatmvolcurve.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\blackvolsurface.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\blackvolsurface.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\equityfxvolsurface.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\equityfxvolsurface.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\interestratevolsurface.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\interestratevolsurface.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\sabrvolsurface.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\sabrvolsurface.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\volcube.cpp">
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\volcube.hpp">
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\ql\auto_link.hpp">
