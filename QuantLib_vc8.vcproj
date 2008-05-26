@@ -2024,6 +2024,14 @@
 					RelativePath=".\ql\math\distributions\poissondistribution.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\math\distributions\studenttdistribution.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\distributions\studenttdistribution.hpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="integrals"
@@ -7024,6 +7032,70 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\coupons\subperiodcoupons.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="credit"
+				>
+				<File
+					RelativePath=".\ql\experimental\credit\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\cdsoption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\cdsoption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\distribution.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\distribution.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\lossdistribution.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\lossdistribution.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\nthtodefault.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\nthtodefault.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\onefactorcopula.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\onefactorcopula.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\onefactorgaussiancopula.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\onefactorgaussiancopula.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\onefactorstudentcopula.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\onefactorstudentcopula.hpp"
 					>
 				</File>
 			</Filter>
