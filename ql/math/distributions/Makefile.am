@@ -9,13 +9,15 @@ this_include_HEADERS = \
 	chisquaredistribution.hpp \
 	gammadistribution.hpp \
 	normaldistribution.hpp \
-	poissondistribution.hpp
+	poissondistribution.hpp \
+	studenttdistribution.hpp
 
 libDistributions_la_SOURCES = \
 	bivariatenormaldistribution.cpp \
 	chisquaredistribution.cpp \
 	gammadistribution.cpp \
-	normaldistribution.cpp 
+	normaldistribution.cpp \
+	studenttdistribution.cpp
 
 noinst_LTLIBRARIES = libDistributions.la
 

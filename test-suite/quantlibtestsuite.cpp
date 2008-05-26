@@ -96,6 +96,7 @@
 #include "mclongstaffschwartzengine.hpp"
 #include "mersennetwister.hpp"
 #include "money.hpp"
+#include "nthtodefault.hpp"
 #include "operators.hpp"
 #include "optimizers.hpp"
 #include "optionletstripper.hpp"
@@ -235,6 +236,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MCLongstaffSchwartzEngineTest::suite());              // FLOATING_POINT_EXCEPTION
     test->add(MersenneTwisterTest::suite());
     test->add(MoneyTest::suite());
+    test->add(NthToDefaultTest::suite());
     test->add(OperatorTest::suite());                             // FLOATING_POINT_EXCEPTION
     test->add(OptimizersTest::suite());
     test->add(OptionletStripperTest::suite());

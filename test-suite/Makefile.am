@@ -57,6 +57,7 @@ QL_TESTS = \
 	mclongstaffschwartzengine.hpp mclongstaffschwartzengine.cpp \
 	mersennetwister.hpp mersennetwister.cpp \
 	money.hpp money.cpp \
+	nthtodefault.hpp nthtodefault.cpp \
 	operators.hpp operators.cpp \
 	optimizers.hpp optimizers.cpp \
 	optionletstripper.hpp optionletstripper.cpp \
