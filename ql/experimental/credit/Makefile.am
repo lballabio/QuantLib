@@ -4,6 +4,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    cdsoption.hpp \
     distribution.hpp \
     lossdistribution.hpp \
     nthtodefault.hpp \
@@ -12,6 +13,7 @@ this_include_HEADERS = \
     onefactorstudentcopula.hpp
 
 libCredit_la_SOURCES = \
+    cdsoption.cpp \
     distribution.cpp \
     lossdistribution.cpp \
     nthtodefault.cpp \

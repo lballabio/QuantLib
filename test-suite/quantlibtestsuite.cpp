@@ -53,6 +53,7 @@
 #include "calendars.hpp"
 #include "capfloor.hpp"
 #include "capflooredcoupon.hpp"
+#include "cdsoption.hpp"
 #include "cliquetoption.hpp"
 #include "cms.hpp"
 #include "compoundforward.hpp"
@@ -196,6 +197,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CalendarTest::suite());
     test->add(CapFloorTest::suite());       // FLOATING_POINT_EXCEPTION
     test->add(CapFlooredCouponTest::suite());
+    test->add(CdsOptionTest::suite());
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
     test->add(ConvertibleBondTest::suite());
