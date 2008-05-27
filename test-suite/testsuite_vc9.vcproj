@@ -760,6 +760,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\cdsoption.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\cliquetoption.cpp"
 				>
 			</File>
@@ -1622,6 +1626,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\nthtodefault.cpp"
+				>
+			</File>
+			<File
 				RelativePath="old_pricers.cpp"
 				>
 				<FileConfiguration
@@ -2263,6 +2271,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\cdsoption.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\cliquetoption.hpp"
 				>
 			</File>
@@ -2432,6 +2444,10 @@
 			</File>
 			<File
 				RelativePath=".\money.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\nthtodefault.hpp"
 				>
 			</File>
 			<File
