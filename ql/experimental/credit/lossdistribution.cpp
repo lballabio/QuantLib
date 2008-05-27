@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/credit/lossdistribution.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 
 using namespace std;
 
@@ -182,10 +183,11 @@ namespace QuantLib {
                                     const vector<Real>& probabilities) const {
     //--------------------------------------------------------------------------
         Distribution dist (nBuckets_, 0.0, maximum_);
+        MersenneTwisterUniformRng mt;
         for (Size i = 0; i < simulations_; i++) {
-            double e = 0;
+            Real e = 0;
             for (Size j = 0; j < nominals.size(); j++) {
-                double r = drand48();
+                Real r = mt.next().value;
                 if (r <= probabilities[j])
                     e += nominals[j];
             }
