@@ -14,6 +14,7 @@ EXTRA_DIST = \
     Replication.dev \
     Replication_vc7.vcproj \
     Replication_vc8.vcproj \
+    Replication_vc9.vcproj \
     ReadMe.txt
 
 .PHONY: examples check-examples

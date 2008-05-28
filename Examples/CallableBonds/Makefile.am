@@ -13,7 +13,8 @@ CallableBonds_LDADD = ../../ql/libQuantLib.la
 EXTRA_DIST = \
     CallableBonds.dev \
     CallableBonds_vc7.vcproj \
-    CallableBonds_vc7_vc8.vcproj \
+    CallableBonds_vc8.vcproj \
+    CallableBonds_vc9.vcproj \
     ReadMe.txt
 
 .PHONY: examples check-examples

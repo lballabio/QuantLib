@@ -14,6 +14,7 @@ EXTRA_DIST = \
     Repo.dev \
     Repo_vc7.vcproj \
     Repo_vc8.vcproj \
+    Repo_vc9.vcproj \
     ReadMe.txt
 
 .PHONY: examples check-examples

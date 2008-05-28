@@ -14,6 +14,7 @@ EXTRA_DIST = \
     FRA.dev \
     FRA_vc7.vcproj \
     FRA_vc8.vcproj \
+    FRA_vc9.vcproj \
     ReadMe.txt
 
 .PHONY: examples check-examples

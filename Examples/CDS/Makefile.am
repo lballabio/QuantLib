@@ -14,6 +14,7 @@ EXTRA_DIST = \
     CDS.dev \
     CDS_vc7.vcproj \
     CDS_vc8.vcproj \
+    CDS_vc9.vcproj \
     ReadMe.txt
 
 .PHONY: examples check-examples

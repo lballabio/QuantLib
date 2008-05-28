@@ -171,6 +171,7 @@ EXTRA_DIST = \
 	README.txt \
 	testsuite_vc7.vcproj \
 	testsuite_vc8.vcproj \
+	testsuite_vc9.vcproj \
 	testsuite.dev
 
 else
@@ -181,6 +182,7 @@ EXTRA_DIST = \
 	README.txt \
 	testsuite_vc7.vcproj \
 	testsuite_vc8.vcproj \
+	testsuite_vc9.vcproj \
 	testsuite.dev
 
 endif

@@ -18,11 +18,12 @@ EXTRA_DIST = \
 	LICENSE.TXT \
 	News.txt \
 	QuantLib.dev \
-	QuantLib.nsi \
 	QuantLib_vc7.sln \
 	QuantLib_vc7.vcproj \
 	QuantLib_vc8.sln \
 	QuantLib_vc8.vcproj \
+	QuantLib_vc9.sln \
+	QuantLib_vc9.vcproj \
 	Readme.txt \
 	autogen.sh
 

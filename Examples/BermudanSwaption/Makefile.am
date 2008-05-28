@@ -14,6 +14,7 @@ EXTRA_DIST = \
     BermudanSwaption.dev \
     BermudanSwaption_vc7.vcproj \
     BermudanSwaption_vc8.vcproj \
+    BermudanSwaption_vc9.vcproj \
     ReadMe.txt
 
 .PHONY: examples check-examples
