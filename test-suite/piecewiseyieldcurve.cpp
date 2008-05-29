@@ -38,6 +38,7 @@
 #include <ql/math/interpolations/loginterpolation.hpp>
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/math/interpolations/convexmonotoneinterpolation.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
@@ -263,14 +264,15 @@ namespace {
     };
 
 
-    template <class T, class I>
-    void testCurveConsistency(const T&, const I& interpolator,
-                              CommonVars& vars) {
+    template <class T, class I, template<class C> class B>
+    void testCurveConsistency(CommonVars& vars,
+                              const I& interpolator = I(),
+                              Real tolerance = 1.0e-9) {
 
         vars.termStructure = boost::shared_ptr<YieldTermStructure>(new
-            PiecewiseYieldCurve<T,I>(vars.settlement, vars.instruments,
-                                     Actual360(), Handle<Quote>(), 1.0e-12,
-                                     interpolator));
+            PiecewiseYieldCurve<T,I,B>(vars.settlement, vars.instruments,
+                                       Actual360(), Handle<Quote>(), 1.0e-12,
+                                       interpolator));
 
         RelinkableHandle<YieldTermStructure> curveHandle;
         curveHandle.linkTo(vars.termStructure);
@@ -280,7 +282,7 @@ namespace {
             Euribor index(depositData[i].n*depositData[i].units,curveHandle);
             Rate expectedRate  = depositData[i].rate/100,
                  estimatedRate = index.fixing(vars.today);
-            if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {
+            if (std::fabs(expectedRate-estimatedRate) > tolerance) {
                 BOOST_ERROR(
                     depositData[i].n << " "
                     << (depositData[i].units == Weeks ? "week(s)" : "month(s)")
@@ -305,7 +307,6 @@ namespace {
 
             Rate expectedRate = swapData[i].rate/100,
                  estimatedRate = swap.fairRate();
-            Real tolerance = 1.0e-9;
             Spread error = std::fabs(expectedRate-estimatedRate);
             if (error > tolerance) {
                 BOOST_ERROR(
@@ -320,9 +321,9 @@ namespace {
 
         // check bonds
         vars.termStructure = boost::shared_ptr<YieldTermStructure>(new
-            PiecewiseYieldCurve<T,I>(vars.settlement, vars.bondHelpers,
-                                     Actual360(), Handle<Quote>(), 1.0e-12,
-                                     interpolator));
+            PiecewiseYieldCurve<T,I,B>(vars.settlement, vars.bondHelpers,
+                                       Actual360(), Handle<Quote>(), 1.0e-12,
+                                       interpolator));
         curveHandle.linkTo(vars.termStructure);
 
         for (Size i=0; i<vars.bonds; i++) {
@@ -345,12 +346,13 @@ namespace {
 
             Real expectedPrice = bondData[i].price,
                  estimatedPrice = bond.cleanPrice();
-            Real tolerance = 1.0e-9;
-            if (std::fabs(expectedPrice-estimatedPrice) > tolerance) {
+            Real error = std::fabs(expectedPrice-estimatedPrice);
+            if (error > tolerance) {
                 BOOST_ERROR(io::ordinal(i+1) << " bond failure:" <<
                             std::setprecision(8) <<
                             "\n  estimated price: " << estimatedPrice <<
-                            "\n  expected price:  " << expectedPrice);
+                            "\n  expected price:  " << expectedPrice <<
+                            "\n  error:           " << error);
             }
         }
 
@@ -378,7 +380,6 @@ namespace {
                                      euribor3m, curveHandle);
             Rate expectedRate = fraData[i].rate/100,
                  estimatedRate = fra.forwardRate();
-            Real tolerance = 1.0e-9;
             if (std::fabs(expectedRate-estimatedRate) > tolerance) {
                 BOOST_ERROR(io::ordinal(i+1) << " FRA failure:" <<
                             std::setprecision(8) <<
@@ -389,9 +390,10 @@ namespace {
     }
 
 
-    template <class T, class I>
-    void testBMACurveConsistency(const T&, const I& interpolator,
-                                 CommonVars& vars) {
+    template <class T, class I, template<class C> class B>
+    void testBMACurveConsistency(CommonVars& vars,
+                                 const I& interpolator = I(),
+                                 Real tolerance = 1.0e-9) {
 
         // re-adjust settlement
         vars.calendar = JointCalendar(BMAIndex().fixingCalendar(),
@@ -430,9 +432,9 @@ namespace {
         bmaIndex->addFixing(lastFixing, 0.03);
 
         vars.termStructure = boost::shared_ptr<YieldTermStructure>(new
-            PiecewiseYieldCurve<T,I>(vars.settlement, vars.bmaHelpers,
-                                     Actual360(), Handle<Quote>(), 1.0e-12,
-                                     interpolator));
+            PiecewiseYieldCurve<T,I,B>(vars.settlement, vars.bmaHelpers,
+                                       Actual360(), Handle<Quote>(), 1.0e-12,
+                                       interpolator));
 
         RelinkableHandle<YieldTermStructure> curveHandle;
         curveHandle.linkTo(vars.termStructure);
@@ -467,7 +469,6 @@ namespace {
 
             Real expectedFraction = bmaData[i].rate/100,
                  estimatedFraction = swap.fairLiborFraction();
-            Real tolerance = 1.0e-9;
             Real error = std::fabs(expectedFraction-estimatedFraction);
             if (error > tolerance) {
                 BOOST_ERROR(bmaData[i].n << " year(s) BMA swap:\n"
@@ -490,16 +491,16 @@ void PiecewiseYieldCurveTest::testLogCubicDiscountConsistency() {
 
     CommonVars vars;
 
-    testCurveConsistency(Discount(),
+    testCurveConsistency<Discount,LogCubic,IterativeBootstrap>(
+        vars,
         LogCubic(CubicInterpolation::Spline, true,
                  CubicInterpolation::SecondDerivative, 0.0,
-                 CubicInterpolation::SecondDerivative, 0.0),
-        vars);
-    testBMACurveConsistency(Discount(),
+                 CubicInterpolation::SecondDerivative, 0.0));
+    testBMACurveConsistency<Discount,LogCubic,IterativeBootstrap>(
+        vars,
         LogCubic(CubicInterpolation::Spline, true,
                  CubicInterpolation::SecondDerivative, 0.0,
-                 CubicInterpolation::SecondDerivative, 0.0),
-        vars);
+                 CubicInterpolation::SecondDerivative, 0.0));
 }
 
 void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
@@ -509,8 +510,8 @@ void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
 
     CommonVars vars;
 
-    testCurveConsistency(Discount(), LogLinear(), vars);
-    testBMACurveConsistency(Discount(), LogLinear(), vars);
+    testCurveConsistency<Discount,LogLinear,IterativeBootstrap>(vars);
+    testBMACurveConsistency<Discount,LogLinear,IterativeBootstrap>(vars);
 }
 
 void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
@@ -520,8 +521,8 @@ void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
 
     CommonVars vars;
 
-    testCurveConsistency(Discount(), Linear(), vars);
-    testBMACurveConsistency(Discount(), Linear(), vars);
+    testCurveConsistency<Discount,Linear,IterativeBootstrap>(vars);
+    testBMACurveConsistency<Discount,Linear,IterativeBootstrap>(vars);
 }
 
 void PiecewiseYieldCurveTest::testLogLinearZeroConsistency() {
@@ -531,8 +532,8 @@ void PiecewiseYieldCurveTest::testLogLinearZeroConsistency() {
 
     CommonVars vars;
 
-    testCurveConsistency(ZeroYield(), LogLinear(), vars);
-    testBMACurveConsistency(ZeroYield(), LogLinear(), vars);
+    testCurveConsistency<ZeroYield,LogLinear,IterativeBootstrap>(vars);
+    testBMACurveConsistency<ZeroYield,LogLinear,IterativeBootstrap>(vars);
 }
 
 void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
@@ -542,8 +543,8 @@ void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
 
     CommonVars vars;
 
-    testCurveConsistency(ZeroYield(), Linear(), vars);
-    testBMACurveConsistency(ZeroYield(), Linear(), vars);
+    testCurveConsistency<ZeroYield,Linear,IterativeBootstrap>(vars);
+    testBMACurveConsistency<ZeroYield,Linear,IterativeBootstrap>(vars);
 }
 
 void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
@@ -553,18 +554,16 @@ void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
 
     CommonVars vars;
 
-    testCurveConsistency(
-                   ZeroYield(),
+    testCurveConsistency<ZeroYield,Cubic,IterativeBootstrap>(
+                   vars,
                    Cubic(CubicInterpolation::Spline, true,
                          CubicInterpolation::SecondDerivative, 0.0,
-                         CubicInterpolation::SecondDerivative, 0.0),
-                   vars);
-    testBMACurveConsistency(
-                   ZeroYield(),
+                         CubicInterpolation::SecondDerivative, 0.0));
+    testBMACurveConsistency<ZeroYield,Cubic,IterativeBootstrap>(
+                   vars,
                    Cubic(CubicInterpolation::Spline, true,
                          CubicInterpolation::SecondDerivative, 0.0,
-                         CubicInterpolation::SecondDerivative, 0.0),
-                   vars);
+                         CubicInterpolation::SecondDerivative, 0.0));
 }
 
 void PiecewiseYieldCurveTest::testLinearForwardConsistency() {
@@ -574,8 +573,8 @@ void PiecewiseYieldCurveTest::testLinearForwardConsistency() {
 
     CommonVars vars;
 
-    testCurveConsistency(ForwardRate(), Linear(), vars);
-    testBMACurveConsistency(ForwardRate(), Linear(), vars);
+    testCurveConsistency<ForwardRate,Linear,IterativeBootstrap>(vars);
+    testBMACurveConsistency<ForwardRate,Linear,IterativeBootstrap>(vars);
 }
 
 void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
@@ -585,8 +584,8 @@ void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
 
     CommonVars vars;
 
-    testCurveConsistency(ForwardRate(), BackwardFlat(), vars);
-    testBMACurveConsistency(ForwardRate(), BackwardFlat(), vars);
+    testCurveConsistency<ForwardRate,BackwardFlat,IterativeBootstrap>(vars);
+    testBMACurveConsistency<ForwardRate,BackwardFlat,IterativeBootstrap>(vars);
 }
 
 void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
@@ -596,19 +595,41 @@ void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
 
     CommonVars vars;
 
-    testCurveConsistency(
-                   ForwardRate(),
+    testCurveConsistency<ForwardRate,Cubic,IterativeBootstrap>(
+                   vars,
                    Cubic(CubicInterpolation::Spline, true,
                          CubicInterpolation::SecondDerivative, 0.0,
-                         CubicInterpolation::SecondDerivative, 0.0),
-                   vars);
-    testBMACurveConsistency(
-                   ForwardRate(),
+                         CubicInterpolation::SecondDerivative, 0.0));
+    testBMACurveConsistency<ForwardRate,Cubic,IterativeBootstrap>(
+                   vars,
                    Cubic(CubicInterpolation::Spline, true,
                          CubicInterpolation::SecondDerivative, 0.0,
-                         CubicInterpolation::SecondDerivative, 0.0),
-                   vars);
+                         CubicInterpolation::SecondDerivative, 0.0));
 }
+
+void PiecewiseYieldCurveTest::testConvexMonotoneForwardConsistency() {
+    BOOST_MESSAGE(
+        "Testing consistency of convex monotone forward-rate curve...");
+
+    CommonVars vars;
+    testCurveConsistency<ForwardRate,ConvexMonotone,IterativeBootstrap>(vars);
+
+    testBMACurveConsistency<ForwardRate,ConvexMonotone,
+                            IterativeBootstrap>(vars);
+}
+
+
+void PiecewiseYieldCurveTest::testLocalBootstrapConsistency() {
+    BOOST_MESSAGE(
+        "Testing consistency of local-bootstrap algorithm...");
+
+    CommonVars vars;
+    testCurveConsistency<ForwardRate,ConvexMonotone,LocalBootstrap>(
+                                              vars, ConvexMonotone(), 1.0e-7);
+    testBMACurveConsistency<ForwardRate,ConvexMonotone,LocalBootstrap>(
+                                              vars, ConvexMonotone(), 1.0e-9);
+}
+
 
 void PiecewiseYieldCurveTest::testObservability() {
 
@@ -758,6 +779,11 @@ test_suite* PiecewiseYieldCurveTest::suite() {
                  &PiecewiseYieldCurveTest::testFlatForwardConsistency));
     //suite->add(QUANTLIB_TEST_CASE(
     //             &PiecewiseYieldCurveTest::testSplineForwardConsistency));
+
+    suite->add(QUANTLIB_TEST_CASE(
+             &PiecewiseYieldCurveTest::testConvexMonotoneForwardConsistency));
+    suite->add(QUANTLIB_TEST_CASE(
+             &PiecewiseYieldCurveTest::testLocalBootstrapConsistency));
 
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testObservability));
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLiborFixing));

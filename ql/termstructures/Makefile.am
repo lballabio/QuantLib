@@ -11,6 +11,7 @@ this_include_HEADERS = \
 	defaulttermstructure.hpp \
 	inflationtermstructure.hpp \
 	iterativebootstrap.hpp \
+	localbootstrap.hpp \
 	voltermstructure.hpp \
 	yieldtermstructure.hpp
 

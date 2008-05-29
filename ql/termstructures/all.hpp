@@ -6,6 +6,7 @@
 #include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
 #include <ql/termstructures/iterativebootstrap.hpp>
+#include <ql/termstructures/localbootstrap.hpp>
 #include <ql/termstructures/voltermstructure.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 

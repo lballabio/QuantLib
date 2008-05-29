@@ -27,6 +27,7 @@
 #define quantlib_piecewise_yield_curve_hpp
 
 #include <ql/termstructures/iterativebootstrap.hpp>
+#include <ql/termstructures/localbootstrap.hpp>
 #include <ql/termstructures/yield/bootstraptraits.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/quote.hpp>
@@ -74,10 +75,11 @@ namespace QuantLib {
                const DayCounter& dayCounter,
                const Handle<Quote>& turnOfYearEffect = Handle<Quote>(),
                Real accuracy = 1.0e-12,
-               const Interpolator& i = Interpolator())
+               const Interpolator& i = Interpolator(),
+               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
         : base_curve(referenceDate, dayCounter, i),
-          instruments_(instruments),
-          turnOfYearEffect_(turnOfYearEffect), accuracy_(accuracy) {
+          instruments_(instruments), turnOfYearEffect_(turnOfYearEffect),
+          accuracy_(accuracy), bootstrap_(bootstrap) {
             setTurnOfYear();
             registerWith(turnOfYearEffect_);
             bootstrap_.setup(this);
@@ -90,10 +92,11 @@ namespace QuantLib {
                const DayCounter& dayCounter,
                const Handle<Quote>& turnOfYearEffect = Handle<Quote>(),
                Real accuracy = 1.0e-12,
-               const Interpolator& i = Interpolator())
+               const Interpolator& i = Interpolator(),
+               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
         : base_curve(settlementDays, calendar, dayCounter, i),
-          instruments_(instruments),
-          turnOfYearEffect_(turnOfYearEffect), accuracy_(accuracy) {
+          instruments_(instruments), turnOfYearEffect_(turnOfYearEffect),
+          accuracy_(accuracy), bootstrap_(bootstrap) {
             setTurnOfYear();
             registerWith(turnOfYearEffect_);
             bootstrap_.setup(this);
@@ -131,7 +134,8 @@ namespace QuantLib {
         // it would increase the complexity---which is high enough
         // already.
         friend class Bootstrap<this_curve>;
-        friend class BootstrapError<this_curve>;
+        friend class BootstrapError<this_curve> ;
+        friend class PenaltyFunction<this_curve>;
         Bootstrap<this_curve> bootstrap_;
     };
 

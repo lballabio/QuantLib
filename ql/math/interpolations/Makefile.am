@@ -8,6 +8,7 @@ this_include_HEADERS = \
 	backwardflatinterpolation.hpp \
 	bicubicsplineinterpolation.hpp \
 	bilinearinterpolation.hpp \
+	convexmonotoneinterpolation.hpp \
 	cubicinterpolation.hpp \
 	extrapolation.hpp \
 	flatextrapolation2d.hpp \

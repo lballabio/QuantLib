@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2006 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,6 +38,9 @@ class PiecewiseYieldCurveTest {
     static void testLinearForwardConsistency();
     static void testFlatForwardConsistency();
     static void testSplineForwardConsistency();
+
+    static void testConvexMonotoneForwardConsistency();
+    static void testLocalBootstrapConsistency();
 
     static void testObservability();
     static void testLiborFixing();
