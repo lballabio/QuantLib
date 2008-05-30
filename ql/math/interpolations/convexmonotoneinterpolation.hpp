@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file convexmonotone.hpp
+/*! \file convexmonotoneinterpolation.hpp
     \brief convex monotone interpolation method
 */
 

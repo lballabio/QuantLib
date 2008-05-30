@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file subperiodcoupon.hpp
+/*! \file subperiodcoupons.hpp
     \brief averaging coupons
 */
 

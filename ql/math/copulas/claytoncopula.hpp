@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file claytonopula.hpp
+/*! \file claytoncopula.hpp
     \brief Clayton copula
 */
 
@@ -36,7 +36,7 @@ namespace QuantLib {
       private:
         Real theta_;
     };
-    
+
 }
 
 #endif

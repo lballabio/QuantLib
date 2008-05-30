@@ -70,7 +70,7 @@ namespace QuantLib {
         \qquad
         \Theta (x) = \left\{
         \begin{array}{ll}
-        1 & x \geq 0 \                          \
+        1 & x \geq 0 \\
         0 & x < 0
         \end{array}\right.
         \f]

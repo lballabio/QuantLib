@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file gausslabottointegral.hpp
-    \brief integral of a one-dimensional function using the adaptive 
+/*! \file gausslobattointegral.hpp
+    \brief integral of a one-dimensional function using the adaptive
     Gauss-Lobatto integral
 */
 
@@ -39,8 +39,8 @@ namespace QuantLib {
 
     /*! References:
        This algorithm is a C++ implementation of the algorithm outlined in
-       
-       W. Gander and W. Gautschi, Adaptive Quadrature - Revisited. 
+
+       W. Gander and W. Gautschi, Adaptive Quadrature - Revisited.
        BIT, 40(1):84-101, March 2000. CS technical report:
        ftp.inf.ethz.ch/pub/publications/tech-reports/3xx/306.ps.gz
 
@@ -56,13 +56,13 @@ namespace QuantLib {
                              bool useConvergenceEstimate = true);
 
       protected:
-        Real integrate (const boost::function<Real (Real)>& f, 
+        Real integrate (const boost::function<Real (Real)>& f,
                         Real a, Real b) const;
 
         Real adaptivGaussLobattoStep(const boost::function<Real (Real)>& f,
                                      Real a, Real b, Real fa, Real fb,
                                      Real is) const;
-        Real calculateAbsTolerance(const boost::function<Real (Real)>& f, 
+        Real calculateAbsTolerance(const boost::function<Real (Real)>& f,
                                    Real a, Real b) const;
 
         Real relAccuracy_;
