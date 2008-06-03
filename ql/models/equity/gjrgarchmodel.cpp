@@ -71,7 +71,7 @@ namespace QuantLib {
                                            v0(), omega(),
                                            alpha(), beta(),
                                            gamma(), lambda(),
-                                           process_->daysPerYr()));
+                                           process_->daysPerYear()));
     }
 }
 

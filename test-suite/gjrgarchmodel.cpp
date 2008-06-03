@@ -55,7 +55,7 @@ void GJRGARCHModelTest::testEngines() {
     const Real alpha = 0.024;
     const Real beta = 0.93;
     const Real gamma = 0.059;
-    const Real daysPerYr = 365.0; // number of trading days per year
+    const Real daysPerYear = 365.0; // number of trading days per year
     const Size maturity[] = {90, 180};
     const Real strike[] = {35,40,45,50,55,60};
     const Real Lambda[] = {0.0,0.1,0.2};
@@ -142,7 +142,7 @@ void GJRGARCHModelTest::testEngines() {
         Real v0 = omega/(1.0-m1);
         Handle<Quote> q(boost::shared_ptr<Quote>(new SimpleQuote(s0)));
         boost::shared_ptr<GJRGARCHProcess> process(new GJRGARCHProcess(
-            riskFreeTS, dividendTS, q, v0, omega, alpha, beta, gamma, lambda, daysPerYr));
+            riskFreeTS, dividendTS, q, v0, omega, alpha, beta, gamma, lambda, daysPerYear));
         boost::shared_ptr<PricingEngine> engine1 =
             MakeMCEuropeanGJRGARCHEngine<PseudoRandom>(process)
             .withStepsPerYear(20)
@@ -268,7 +268,7 @@ void GJRGARCHModelTest::testDAXCalibration() {
     const Real beta = 0.93;
     const Real gamma = 0.059;
     const Real lambda = 0.1; 
-    const Real daysPerYr = 365.0; // number of trading days per year
+    const Real daysPerYear = 365.0; // number of trading days per year
     const Real m1 = beta+(alpha+gamma*CumulativeNormalDistribution()(lambda))
             *(1.0+lambda*lambda)+gamma*lambda*std::exp(-lambda*lambda/2.0)
             /std::sqrt(2.0*M_PI);
@@ -276,7 +276,7 @@ void GJRGARCHModelTest::testDAXCalibration() {
 
     boost::shared_ptr<GJRGARCHProcess> process(new GJRGARCHProcess(
                              riskFreeTS, dividendTS, s0, v0, 
-                             omega, alpha, beta, gamma, lambda, daysPerYr));
+                             omega, alpha, beta, gamma, lambda, daysPerYear));
     boost::shared_ptr<GJRGARCHModel> model(new GJRGARCHModel(process));
 
     boost::shared_ptr<PricingEngine> engine(

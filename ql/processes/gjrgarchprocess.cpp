@@ -30,12 +30,12 @@ namespace QuantLib {
                               const Handle<YieldTermStructure>& dividendYield,
                               const Handle<Quote>& s0, Real v0, 
                               Real omega, Real alpha, Real beta, 
-                              Real gamma, Real lambda, Real daysPerYr, Discretization d)
+                              Real gamma, Real lambda, Real daysPerYear, Discretization d)
     : StochasticProcess(boost::shared_ptr<discretization>(
                                                     new EulerDiscretization)),
       riskFreeRate_(riskFreeRate), dividendYield_(dividendYield), s0_(s0),
       v0_(v0), omega_(omega), alpha_(alpha), 
-      beta_(beta), gamma_(gamma), lambda_(lambda), daysPerYr_(daysPerYr),
+      beta_(beta), gamma_(gamma), lambda_(lambda), daysPerYear_(daysPerYear),
       discretization_(d) {
         registerWith(riskFreeRate_);
         registerWith(dividendYield_);
@@ -49,7 +49,7 @@ namespace QuantLib {
     Disposable<Array> GJRGARCHProcess::initialValues() const {
         Array tmp(2);
         tmp[0] = s0_->value();
-        tmp[1] = daysPerYr_*v0_;
+        tmp[1] = daysPerYear_*v0_;
         return tmp;
     }
 
@@ -67,7 +67,7 @@ namespace QuantLib {
                - dividendYield_->forwardRate(t, t, Continuous)
                - 0.5 * vol * vol;
 
-        tmp[1] = daysPerYr_*daysPerYr_*omega_ + daysPerYr_*(beta_ 
+        tmp[1] = daysPerYear_*daysPerYear_*omega_ + daysPerYear_*(beta_ 
                                              + alpha_*q2 + gamma_*q3 - 1.0) *
            ((discretization_==PartialTruncation) ? x[1] : vol*vol);
         return tmp;
@@ -97,9 +97,9 @@ namespace QuantLib {
                          : (discretization_ == Reflection) ? -sqrt(-x[1])
                          : 1e-8; // set vol to (almost) zero but still
                                  // expose some correlation information
-        const Real rho1 = std::sqrt(daysPerYr_)*(alpha_*sigma12 
+        const Real rho1 = std::sqrt(daysPerYear_)*(alpha_*sigma12 
                                             + gamma_*sigma13) * vol * vol;
-        const Real rho2 = vol*vol*std::sqrt(daysPerYr_)
+        const Real rho2 = vol*vol*std::sqrt(daysPerYear_)
             *std::sqrt(alpha_*alpha_*(sigma2 - sigma12*sigma12) 
                        + gamma_*gamma_*(sigma3 - sigma13*sigma13) 
                        + 2.0*alpha_*gamma_*(sigma23 - sigma12*sigma13)); 
@@ -137,8 +137,8 @@ namespace QuantLib {
         const Real sigma12 = -2.0*lambda_;
         const Real sigma13 = -2.0*n - 2*lambda_*N;
         const Real sigma23 = 2.0*N + sigma12*sigma13;
-        const Real rho1 = std::sqrt(daysPerYr_)*(alpha_*sigma12 + gamma_*sigma13);
-        const Real rho2 = std::sqrt(daysPerYr_)
+        const Real rho1 = std::sqrt(daysPerYear_)*(alpha_*sigma12 + gamma_*sigma13);
+        const Real rho2 = std::sqrt(daysPerYear_)
             *std::sqrt(alpha_*alpha_*(sigma2 - sigma12*sigma12) 
                        + gamma_*gamma_*(sigma3 - sigma13*sigma13) 
                        + 2.0*alpha_*gamma_*(sigma23 - sigma12*sigma13));
@@ -154,8 +154,8 @@ namespace QuantLib {
             mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
                   - dividendYield_->forwardRate(t0, t0+dt, Continuous)
                     - 0.5 * vol * vol;
-            nu = daysPerYr_*daysPerYr_*omega_ 
-                + daysPerYr_*(beta_ + alpha_*q2 + gamma_*q3 - 1.0) * x0[1];
+            nu = daysPerYear_*daysPerYear_*omega_ 
+                + daysPerYear_*(beta_ + alpha_*q2 + gamma_*q3 - 1.0) * x0[1];
 
             retVal[0] = x0[0] * std::exp(mu*dt+vol*dw[0]*sdt);
             retVal[1] = x0[1] + nu*dt + sdt*vol*vol*(rho1*dw[0] + rho2*dw[1]);
@@ -165,8 +165,8 @@ namespace QuantLib {
             mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
                   - dividendYield_->forwardRate(t0, t0+dt, Continuous)
                     - 0.5 * vol * vol;
-            nu = daysPerYr_*daysPerYr_*omega_ 
-                + daysPerYr_*(beta_ + alpha_*q2 + gamma_*q3 - 1.0) * vol *vol;
+            nu = daysPerYear_*daysPerYear_*omega_ 
+                + daysPerYear_*(beta_ + alpha_*q2 + gamma_*q3 - 1.0) * vol *vol;
 
             retVal[0] = x0[0] * std::exp(mu*dt+vol*dw[0]*sdt);
             retVal[1] = x0[1] + nu*dt + sdt*vol*vol*(rho1*dw[0] + rho2*dw[1]);
@@ -176,8 +176,8 @@ namespace QuantLib {
             mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
                   - dividendYield_->forwardRate(t0, t0+dt, Continuous)
                     - 0.5 * vol*vol;
-            nu = daysPerYr_*daysPerYr_*omega_ 
-                + daysPerYr_*(beta_ + alpha_*q2 + gamma_*q3 - 1.0) * vol * vol;
+            nu = daysPerYear_*daysPerYear_*omega_ 
+                + daysPerYear_*(beta_ + alpha_*q2 + gamma_*q3 - 1.0) * vol * vol;
 
             retVal[0] = x0[0]*std::exp(mu*dt+vol*dw[0]*sdt);
             retVal[1] = vol*vol

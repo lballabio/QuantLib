@@ -67,8 +67,8 @@ namespace QuantLib {
         QL_REQUIRE(spotPrice > 0.0, "negative or null underlying given");
         const Real strikePrice = payoff->strike();
         const Real term = process->time(arguments_.exercise->lastDate());
-        Size T = Size(process->daysPerYr()*term+0.5);
-        Real r = -std::log(riskFreeDiscount/dividendDiscount)/(process->daysPerYr()*term);
+        Size T = Size(process->daysPerYear()*term+0.5);
+        Real r = -std::log(riskFreeDiscount/dividendDiscount)/(process->daysPerYear()*term);
         Real h1 = process->v0();
         Real b0 = process->omega();
         Real b2 = process->alpha();
