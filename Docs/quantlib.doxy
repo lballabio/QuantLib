@@ -212,19 +212,7 @@ EXPAND_ONLY_PREDEF     = NO
 SEARCH_INCLUDES        = YES
 INCLUDE_PATH           = 
 INCLUDE_FILE_PATTERNS  = 
-PREDEFINED             = __DOXYGEN__ \
-                         __BORLANDC__ \
-                         HAVE_CMATH \
-                         HAVE_LIMITS \
-                         HAVE_CTIME \
-                         HAVE_CCTYPE \
-                         QL_MIN \
-                         QL_MAX \
-                         QL_ALLOW_TEMPLATE_METHOD_CALLS=1 \
-                         HAVE_EXPRESSION_TEMPLATES \
-                         HAVE_TEMPLATE_METAPROGRAMMING \
-                         QL_ITERATOR \
-                         QL_ITERATOR_TRAITS
+PREDEFINED             = __DOXYGEN__
 EXPAND_AS_DEFINED      = 
 SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------
