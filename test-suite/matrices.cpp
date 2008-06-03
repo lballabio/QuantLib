@@ -245,7 +245,7 @@ void MatricesTest::testInverse() {
 #include <iostream>
 void MatricesTest::testDeterminant() {
 
-    BOOST_MESSAGE("Testing LU determinat calculation");
+    BOOST_MESSAGE("Testing LU determinant calculation");
 
     setup();
     Real tol = 1e-10;
@@ -255,7 +255,7 @@ void MatricesTest::testDeterminant() {
     Real expected[] = { 0.044, -0.012, 5.0, 5.7621e-11, 1.0};
 
     for (Size i=0; i < LENGTH(testMatrices); ++i) {
-        const Real calculated = det(testMatrices[i]);
+        const Real calculated = determinant(testMatrices[i]);
         if (std::fabs(expected[i] - calculated) > tol)
             BOOST_FAIL("determinant calculation failed "
                        << "\n matrix     :\n" << testMatrices[i]
@@ -286,7 +286,7 @@ void MatricesTest::testDeterminant() {
         const Real& i=m[2][2];
 
         const Real expected = a*e*i+b*f*g+c*d*h-(g*e*c+h*f*a+i*d*b);
-        const Real calculated = det(m);
+        const Real calculated = determinant(m);
 
         if (std::fabs(expected-calculated) > tol)
             BOOST_FAIL("determinant calculation failed "

@@ -72,7 +72,7 @@ namespace QuantLib {
         #endif
     }
 
-    Real det(const Matrix& m) {
+    Real determinant(const Matrix& m) {
         #if !defined(QL_NO_UBLAS_SUPPORT)
         QL_REQUIRE(m.rows() == m.columns(), "matrix is not square");
 

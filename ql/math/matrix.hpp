@@ -177,7 +177,7 @@ namespace QuantLib {
     Disposable<Matrix> inverse(const Matrix& m);
 
     /*! \relates Matrix */
-    Real det(const Matrix& m);
+    Real determinant(const Matrix& m);
 
     // inline definitions
 
