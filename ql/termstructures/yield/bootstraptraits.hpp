@@ -32,7 +32,7 @@
 
 namespace QuantLib {
 
-    namespace {
+    namespace detail {
         const Rate avgRate = 0.05;
     }
 
@@ -56,7 +56,9 @@ namespace QuantLib {
         // true if the initialValue is just a dummy value
         static bool dummyInitialValue() { return false; }
         // initial guess
-        static DiscountFactor initialGuess() { return 1.0/(1.0+avgRate*0.25); }
+        static DiscountFactor initialGuess() {
+            return 1.0/(1.0+detail::avgRate*0.25);
+        }
         // further guesses
         static DiscountFactor guess(const YieldTermStructure* c,
                                     const Date& d) {
@@ -103,11 +105,13 @@ namespace QuantLib {
             return c->referenceDate();
         }
         // dummy value at reference date
-        static Rate initialValue(const YieldTermStructure*) { return avgRate; }
+        static Rate initialValue(const YieldTermStructure*) {
+            return detail::avgRate;
+        }
         // true if the initialValue is just a dummy value
         static bool dummyInitialValue() { return true; }
         // initial guess
-        static Rate initialGuess() { return avgRate; }
+        static Rate initialGuess() { return detail::avgRate; }
         // further guesses
         static Rate guess(const YieldTermStructure* c,
                           const Date& d) {
@@ -156,11 +160,13 @@ namespace QuantLib {
             return c->referenceDate();
         }
         // dummy value at reference date
-        static Rate initialValue(const YieldTermStructure*) { return avgRate; }
+        static Rate initialValue(const YieldTermStructure*) {
+            return detail::avgRate;
+        }
         // true if the initialValue is just a dummy value
         static bool dummyInitialValue() { return true; }
         // initial guess
-        static Rate initialGuess() { return avgRate; }
+        static Rate initialGuess() { return detail::avgRate; }
         // further guesses
         static Rate guess(const YieldTermStructure* c,
                           const Date& d) {
