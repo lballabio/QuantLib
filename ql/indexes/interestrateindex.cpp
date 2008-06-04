@@ -34,8 +34,6 @@ namespace QuantLib {
     : familyName_(familyName), tenor_(tenor), fixingDays_(fixingDays),
       fixingCalendar_(fixingCalendar), currency_(currency),
       dayCounter_(dayCounter) {
-        QL_REQUIRE(fixingDays<3,
-                   "wrong number (" << fixingDays << ") of fixing days");
         tenor_.normalize();
         registerWith(Settings::instance().evaluationDate());
         registerWith(IndexManager::instance().notifier(name()));
@@ -44,15 +42,18 @@ namespace QuantLib {
     std::string InterestRateIndex::name() const {
         std::ostringstream out;
         out << familyName_;
-        if (tenor_.units()==Days) {
+        if (tenor_ == 1*Days) {
             if (fixingDays_==0)
                 out << "ON";
+            else if (fixingDays_==1)
+                out << "TN";
             else if (fixingDays_==2)
                 out << "SN";
             else
-                out << "TN";
-        } else
+                out << io::short_period(tenor_);
+        } else {
             out << io::short_period(tenor_);
+        }
         out << " " << dayCounter_.name();
         return out.str();
     }
