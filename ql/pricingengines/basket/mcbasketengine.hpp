@@ -137,8 +137,8 @@ namespace QuantLib {
 
         Time residualTime = processes_->time(
                                        this->arguments_.exercise->lastDate());
-
-        return TimeGrid(residualTime, maxTimeStepsPerYear_);
+        Size steps = static_cast<Size>(maxTimeStepsPerYear_*residualTime);
+        return TimeGrid(residualTime, std::max<Size>(steps, 1));
     }
 
     template <class RNG, class S>
