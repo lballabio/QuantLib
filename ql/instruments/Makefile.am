@@ -23,6 +23,7 @@ this_include_HEADERS = \
     dividendschedule.hpp \
     dividendvanillaoption.hpp \
     europeanoption.hpp \
+    everestoption.hpp \
     fixedratebondforward.hpp \
     forward.hpp \
     forwardrateagreement.hpp \
@@ -65,6 +66,7 @@ libInstruments_la_SOURCES = \
     creditdefaultswap.cpp \
     dividendvanillaoption.cpp \
     europeanoption.cpp \
+    everestoption.cpp \
     fixedratebondforward.cpp \
     forward.cpp \
     forwardrateagreement.cpp \

@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2003, 2006 Ferdinando Ametrano
  Copyright (C) 2006 Warren Chou
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006, 2008 StatPro Italia srl
  Copyright (C) 2006 Chiara Fornarola
 
  This file is part of QuantLib, a free-software/open-source library
@@ -31,6 +31,19 @@
 #include <ql/payoff.hpp>
 
 namespace QuantLib {
+
+    //! Dummy %payoff class
+    class NullPayoff : public Payoff {
+      public:
+        //! \name Payoff interface
+        //@{
+        std::string name() const;
+        std::string description() const;
+        Real operator()(Real price) const;
+        virtual void accept(AcyclicVisitor&);
+        //@}
+    };
+
 
     //! Intermediate class for put/call payoffs
     class TypePayoff : public Payoff {

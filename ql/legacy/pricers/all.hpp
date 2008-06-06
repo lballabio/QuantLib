@@ -4,7 +4,6 @@
 #include <ql/legacy/pricers/discretegeometricaso.hpp>
 #include <ql/legacy/pricers/mccliquetoption.hpp>
 #include <ql/legacy/pricers/mcdiscretearithmeticaso.hpp>
-#include <ql/legacy/pricers/mceverest.hpp>
 #include <ql/legacy/pricers/mchimalaya.hpp>
 #include <ql/legacy/pricers/mcpagoda.hpp>
 #include <ql/legacy/pricers/mcperformanceoption.hpp>

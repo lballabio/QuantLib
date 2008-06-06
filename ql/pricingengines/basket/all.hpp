@@ -3,5 +3,6 @@
 
 #include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
 #include <ql/pricingengines/basket/mcbasketengine.hpp>
+#include <ql/pricingengines/basket/mceverestengine.hpp>
 #include <ql/pricingengines/basket/stulzengine.hpp>
 

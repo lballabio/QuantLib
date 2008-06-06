@@ -69,6 +69,7 @@
 #include "distributions.hpp"
 #include "dividendoption.hpp"
 #include "europeanoption.hpp"
+#include "everestoption.hpp"
 #include "exchangerate.hpp"
 #include "factorial.hpp"
 #include "forwardoption.hpp"
@@ -212,6 +213,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(DistributionTest::suite());
     test->add(DividendOptionTest::suite());
     test->add(EuropeanOptionTest::suite());
+    test->add(EverestOptionTest::suite());
     test->add(ExchangeRateTest::suite());
     test->add(FactorialTest::suite());
     test->add(ForwardOptionTest::suite());
@@ -268,7 +270,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(VarianceSwapTest::suite());
     test->add(VolatilityModelsTest::suite());
 
-     //tests for deprecated classes
+    //tests for deprecated classes
     test->add(CompoundForwardTest::suite()); // fails with QL_USE_INDEXED_COUPON
     test->add(LiborMarketModelTest::suite());
     test->add(LiborMarketModelProcessTest::suite());

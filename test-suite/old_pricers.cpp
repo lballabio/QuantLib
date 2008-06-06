@@ -20,7 +20,6 @@
 #include "old_pricers.hpp"
 #include "utilities.hpp"
 #include <ql/legacy/pricers/mcdiscretearithmeticaso.hpp>
-#include <ql/legacy/pricers/mceverest.hpp>
 #include <ql/legacy/pricers/mcpagoda.hpp>
 #include <ql/legacy/pricers/mchimalaya.hpp>
 #include <ql/pricingengines/blackformula.hpp>
@@ -252,13 +251,6 @@ void OldPricerTest::testMcMultiFactorPricers() {
     Time resTime = 1.0;
 
     BigNatural seed = 86421;
-
-    // McEverest
-    testMcMFPricer(McEverest(dividendYields, riskFreeRate, volatilities,
-                             correlation, resTime, seed),
-                   0.75784944,
-                   1.0e-8,
-                   "McEverest");
 
     // McPagoda
     std::vector<Real> portfolio(4);

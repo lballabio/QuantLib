@@ -7,7 +7,6 @@ this_include_HEADERS = \
     discretegeometricaso.hpp \
     mccliquetoption.hpp \
     mcdiscretearithmeticaso.hpp \
-    mceverest.hpp \
     mchimalaya.hpp \
     mcpagoda.hpp \
     mcperformanceoption.hpp \
@@ -18,7 +17,6 @@ libPricers_la_SOURCES = \
     discretegeometricaso.cpp \
     mccliquetoption.cpp \
     mcdiscretearithmeticaso.cpp \
-    mceverest.cpp \
     mchimalaya.cpp \
     mcpagoda.cpp \
     mcperformanceoption.cpp \

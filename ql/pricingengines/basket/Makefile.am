@@ -6,11 +6,13 @@ this_include_HEADERS = \
 	all.hpp \
 	mcamericanbasketengine.hpp \
 	mcbasketengine.hpp \
+	mceverestengine.hpp \
 	stulzengine.hpp
 
 libBasketEngines_la_SOURCES = \
 	mcamericanbasketengine.cpp \
 	mcbasketengine.cpp \
+	mceverestengine.cpp \
 	stulzengine.cpp
 
 noinst_LTLIBRARIES = libBasketEngines.la

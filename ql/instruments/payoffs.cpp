@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2003, 2006 Ferdinando Ametrano
  Copyright (C) 2006 Warren Chou
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006, 2008 StatPro Italia srl
  Copyright (C) 2006 Chiara Fornarola
 
  This file is part of QuantLib, a free-software/open-source library
@@ -23,6 +23,29 @@
 #include <ql/instruments/payoffs.hpp>
 
 namespace QuantLib {
+
+    std::string NullPayoff::name() const {
+        return "Null";
+    }
+
+    std::string NullPayoff::description() const {
+        return name();
+    }
+
+    Real NullPayoff::operator()(Real) const {
+        QL_FAIL("dummy payoff given");
+    }
+
+    void NullPayoff::accept(AcyclicVisitor& v) {
+        Visitor<NullPayoff>* v1 =
+            dynamic_cast<Visitor<NullPayoff>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            Payoff::accept(v);
+    }
+
+
 
     std::string TypePayoff::description() const {
         std::ostringstream result;
