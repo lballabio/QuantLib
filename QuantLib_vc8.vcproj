@@ -1881,6 +1881,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\interpolations\convexmonotoneinterpolation.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\interpolations\cubicinterpolation.hpp"
 					>
 				</File>
@@ -3846,6 +3850,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\termstructures\localbootstrap.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\termstructures\voltermstructure.cpp"
 				>
 			</File>
@@ -4996,6 +5004,14 @@
 				</File>
 				<File
 					RelativePath="ql\pricingengines\basket\mcbasketengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\basket\mceverestengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\basket\mceverestengine.hpp"
 					>
 				</File>
 				<File
@@ -6679,14 +6695,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\legacy\pricers\mceverest.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mceverest.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\legacy\pricers\mchimalaya.cpp"
 					>
 				</File>
@@ -7096,6 +7104,34 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\onefactorstudentcopula.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="mcbasket"
+				>
+				<File
+					RelativePath=".\ql\experimental\mcbasket\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\mcbasket\mcpathbasketengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\mcbasket\mcpathbasketengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\mcbasket\pathmultiassetoption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\mcbasket\pathmultiassetoption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\mcbasket\pathpayoff.hpp"
 					>
 				</File>
 			</Filter>
