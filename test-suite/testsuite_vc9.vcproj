@@ -1146,6 +1146,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\everestoption.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\exchangerate.cpp"
 				>
 			</File>
@@ -2332,6 +2336,10 @@
 			</File>
 			<File
 				RelativePath="europeanoption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\everestoption.hpp"
 				>
 			</File>
 			<File
