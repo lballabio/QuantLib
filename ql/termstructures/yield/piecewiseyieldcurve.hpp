@@ -73,15 +73,19 @@ namespace QuantLib {
                const std::vector<boost::shared_ptr<typename Traits::helper> >&
                                                                   instruments,
                const DayCounter& dayCounter,
-               const Handle<Quote>& turnOfYearEffect = Handle<Quote>(),
+               const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+               const std::vector<Date>& jumpDates = std::vector<Date>(),
                Real accuracy = 1.0e-12,
                const Interpolator& i = Interpolator(),
                const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
         : base_curve(referenceDate, dayCounter, i),
-          instruments_(instruments), turnOfYearEffect_(turnOfYearEffect),
+          instruments_(instruments),
+          jumps_(jumps), jumpDates_(jumpDates), jumpTimes_(jumpDates.size()),
+          nJumps_(jumps_.size()),
           accuracy_(accuracy), bootstrap_(bootstrap) {
-            setTurnOfYear();
-            registerWith(turnOfYearEffect_);
+            setJumps();
+            for (Size i=0; i<jumps.size(); ++i)
+                registerWith(jumps_[i]);
             bootstrap_.setup(this);
         }
         PiecewiseYieldCurve(
@@ -90,15 +94,19 @@ namespace QuantLib {
                const std::vector<boost::shared_ptr<typename Traits::helper> >&
                                                                   instruments,
                const DayCounter& dayCounter,
-               const Handle<Quote>& turnOfYearEffect = Handle<Quote>(),
+               const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+               const std::vector<Date>& jumpDates = std::vector<Date>(),
                Real accuracy = 1.0e-12,
                const Interpolator& i = Interpolator(),
                const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
         : base_curve(settlementDays, calendar, dayCounter, i),
-          instruments_(instruments), turnOfYearEffect_(turnOfYearEffect),
+          instruments_(instruments),
+          jumps_(jumps), jumpDates_(jumpDates), jumpTimes_(jumpDates.size()),
+          nJumps_(jumps_.size()),
           accuracy_(accuracy), bootstrap_(bootstrap) {
-            setTurnOfYear();
-            registerWith(turnOfYearEffect_);
+            setJumps();
+            for (Size i=0; i<nJumps_; ++i)
+                registerWith(jumps_[i]);
             bootstrap_.setup(this);
         }
         //@}
@@ -112,6 +120,9 @@ namespace QuantLib {
         const std::vector<Date>& dates() const;
         const std::vector<Real>& data() const;
         std::vector<std::pair<Date, Real> > nodes() const;
+
+        const std::vector<Date>& jumpDates() const;
+        const std::vector<Time>& jumpTimes() const;
         //@}
         //! \name Observer interface
         //@{
@@ -121,13 +132,15 @@ namespace QuantLib {
         // methods
         void performCalculations() const;
         DiscountFactor discountImpl(Time) const;
-        void setTurnOfYear();
+        void setJumps();
         // data members
         std::vector<boost::shared_ptr<typename Traits::helper> > instruments_;
-        Handle<Quote> turnOfYearEffect_;
+        std::vector<Handle<Quote> > jumps_;
+        std::vector<Date> jumpDates_;
+        std::vector<Time> jumpTimes_;
+        Size nJumps_;
         Real accuracy_;
         Date latestReference_;
-        Time turnOfYear_;
 
         // bootstrapper classes are declared as friend to manipulate
         // the curve data. They might be passed the data instead, but
@@ -174,11 +187,23 @@ namespace QuantLib {
     }
 
     template <class C, class I, template <class> class B>
+    inline const std::vector<Date>& PiecewiseYieldCurve<C,I,B>::jumpDates() const {
+        calculate();
+        return this->jumpDates_;
+    }
+
+    template <class C, class I, template <class> class B>
+    inline const std::vector<Time>& PiecewiseYieldCurve<C,I,B>::jumpTimes() const {
+        calculate();
+        return this->jumpTimes_;
+    }
+
+    template <class C, class I, template <class> class B>
     inline void PiecewiseYieldCurve<C,I,B>::update() {
         base_curve::update();
         LazyObject::update();
         if (base_curve::referenceDate() != latestReference_)
-            setTurnOfYear();
+            setJumps();
     }
 
     template <class C, class I, template <class> class B>
@@ -186,23 +211,38 @@ namespace QuantLib {
     DiscountFactor PiecewiseYieldCurve<C,I,B>::discountImpl(Time t) const {
         calculate();
 
-        if ((!turnOfYearEffect_.empty()) && t>turnOfYear_) {
-            QL_REQUIRE(turnOfYearEffect_->isValid(),
-                       "invalid turnOfYearEffect quote");
-            DiscountFactor turnOfYearEffect = turnOfYearEffect_->value();
-            QL_REQUIRE(turnOfYearEffect > 0.0 && turnOfYearEffect <= 1.0,
-                       "invalid turnOfYearEffect value: " << turnOfYearEffect);
-            return turnOfYearEffect * base_curve::discountImpl(t);
+        if (!jumps_.empty()) {
+            DiscountFactor jumpEffect = 1.0;
+            for (Size i=0; i<nJumps_ && jumpTimes_[i]<t; ++i) {
+                QL_REQUIRE(jumps_[i]->isValid(),
+                           "invalid " << io::ordinal(i+1) << " jump quote");
+                DiscountFactor thisJump = jumps_[i]->value();
+                QL_REQUIRE(thisJump > 0.0 && thisJump <= 1.0,
+                           "invalid " << io::ordinal(i+1) << " jump value: " <<
+                           thisJump);
+                jumpEffect *= thisJump;
+            }
+            return jumpEffect * base_curve::discountImpl(t);
         }
 
         return base_curve::discountImpl(t);
     }
 
     template <class C, class I, template <class> class B>
-    inline void PiecewiseYieldCurve<C,I,B>::setTurnOfYear() {
+    inline void PiecewiseYieldCurve<C,I,B>::setJumps() {
         Date referenceDate = base_curve::referenceDate();
-        Date turnOfYear = Date(31, December, referenceDate.year());
-        turnOfYear_ = base_curve::timeFromReference(turnOfYear);
+        if (jumpDates_.empty() && !jumps_.empty()) { // turn of year dates
+            jumpDates_.resize(nJumps_);
+            jumpTimes_.resize(nJumps_);
+            for (Size i=0; i<nJumps_; ++i)
+                jumpDates_[i] = Date(31, December, referenceDate.year()+i);
+        } else { // fixed dats
+            QL_REQUIRE(jumpDates_.size()==nJumps_,
+                       "mismatch between number of jumps (" << nJumps_ <<
+                       ") and jump dates (" << jumpDates_.size() << ")");
+        }
+        for (Size i=0; i<nJumps_; ++i)
+            jumpTimes_[i] = base_curve::timeFromReference(jumpDates_[i]);
         latestReference_ = referenceDate;
     }
 

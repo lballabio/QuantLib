@@ -271,7 +271,10 @@ namespace {
 
         vars.termStructure = boost::shared_ptr<YieldTermStructure>(new
             PiecewiseYieldCurve<T,I,B>(vars.settlement, vars.instruments,
-                                       Actual360(), Handle<Quote>(), 1.0e-12,
+                                       Actual360(),
+                                       std::vector<Handle<Quote> >(),
+                                       std::vector<Date>(),
+                                       1.0e-12,
                                        interpolator));
 
         RelinkableHandle<YieldTermStructure> curveHandle;
@@ -322,7 +325,10 @@ namespace {
         // check bonds
         vars.termStructure = boost::shared_ptr<YieldTermStructure>(new
             PiecewiseYieldCurve<T,I,B>(vars.settlement, vars.bondHelpers,
-                                       Actual360(), Handle<Quote>(), 1.0e-12,
+                                       Actual360(),
+                                       std::vector<Handle<Quote> >(),
+                                       std::vector<Date>(),
+                                       1.0e-12,
                                        interpolator));
         curveHandle.linkTo(vars.termStructure);
 
@@ -359,7 +365,10 @@ namespace {
         // check FRA
         vars.termStructure = boost::shared_ptr<YieldTermStructure>(new
             PiecewiseYieldCurve<T,I>(vars.settlement, vars.fraHelpers,
-                                     Actual360(), Handle<Quote>(), 1.0e-12,
+                                     Actual360(),
+                                     std::vector<Handle<Quote> >(),
+                                     std::vector<Date>(),
+                                     1.0e-12,
                                      interpolator));
         curveHandle.linkTo(vars.termStructure);
 
@@ -433,7 +442,10 @@ namespace {
 
         vars.termStructure = boost::shared_ptr<YieldTermStructure>(new
             PiecewiseYieldCurve<T,I,B>(vars.settlement, vars.bmaHelpers,
-                                       Actual360(), Handle<Quote>(), 1.0e-12,
+                                       Actual360(),
+                                       std::vector<Handle<Quote> >(),
+                                       std::vector<Date>(),
+                                       1.0e-12,
                                        interpolator));
 
         RelinkableHandle<YieldTermStructure> curveHandle;
