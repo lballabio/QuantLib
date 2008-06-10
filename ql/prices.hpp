@@ -55,7 +55,7 @@ namespace QuantLib {
                        const Real last,
                        const Real close);
 
-    /*! return the MidSafe price, i.e. the mid if
+    /*! return the MidSafe price, i.e. the mid only if
         both bid and ask prices are available
     */
     Real midSafe(const Real bid,
