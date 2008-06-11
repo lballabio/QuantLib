@@ -814,6 +814,12 @@
 				RelativePath=".\ql\instruments\europeanoption.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\instruments\everestoption.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\instruments\everestoption.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\instruments\fixedratebondforward.cpp">
 			</File>
 			<File
@@ -1024,12 +1030,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\legacy\pricers\mcdiscretearithmeticaso.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mceverest.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mceverest.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\legacy\pricers\mchimalaya.cpp">
@@ -1599,6 +1599,12 @@
 				<File
 					RelativePath=".\ql\math\distributions\poissondistribution.hpp">
 				</File>
+				<File
+					RelativePath=".\ql\math\distributions\studenttdistribution.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\distributions\studenttdistribution.hpp">
+				</File>
 			</Filter>
 			<Filter
 				Name="integrals"
@@ -1666,6 +1672,9 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\interpolations\bilinearinterpolation.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\interpolations\convexmonotoneinterpolation.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\math\interpolations\cubicinterpolation.hpp">
@@ -4563,6 +4572,12 @@
 					RelativePath="ql\pricingengines\basket\mcbasketengine.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\basket\mceverestengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\basket\mceverestengine.hpp">
+				</File>
+				<File
 					RelativePath="ql\pricingengines\basket\stulzengine.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
@@ -5698,6 +5713,9 @@
 			</File>
 			<File
 				RelativePath=".\ql\termstructures\iterativebootstrap.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\localbootstrap.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\termstructures\voltermstructure.cpp">
@@ -7004,6 +7022,77 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\volatility\volcube.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="mcbasket"
+				Filter="">
+				<File
+					RelativePath=".\ql\experimental\mcbasket\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\mcbasket\mcpathbasketengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\mcbasket\mcpathbasketengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\mcbasket\pathmultiassetoption.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\mcbasket\pathmultiassetoption.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\mcbasket\pathpayoff.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="credit"
+				Filter="">
+				<File
+					RelativePath=".\ql\experimental\credit\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\cdsoption.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\cdsoption.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\distribution.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\distribution.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\lossdistribution.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\lossdistribution.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\nthtodefault.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\nthtodefault.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\onefactorcopula.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\onefactorcopula.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\onefactorgaussiancopula.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\onefactorgaussiancopula.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\onefactorstudentcopula.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\onefactorstudentcopula.hpp">
 				</File>
 			</Filter>
 		</Filter>

@@ -828,6 +828,9 @@
 				RelativePath=".\capflooredcoupon.cpp">
 			</File>
 			<File
+				RelativePath=".\cdsoption.hpp">
+			</File>
+			<File
 				RelativePath=".\cliquetoption.cpp">
 			</File>
 			<File
@@ -1270,6 +1273,9 @@
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\everestoption.cpp">
 			</File>
 			<File
 				RelativePath=".\exchangerate.cpp">
@@ -1810,6 +1816,9 @@
 			</File>
 			<File
 				RelativePath=".\money.cpp">
+			</File>
+			<File
+				RelativePath=".\nthtodefault.cpp">
 			</File>
 			<File
 				RelativePath="old_pricers.cpp">
@@ -2563,6 +2572,9 @@
 				RelativePath="europeanoption.hpp">
 			</File>
 			<File
+				RelativePath=".\everestoption.hpp">
+			</File>
+			<File
 				RelativePath=".\exchangerate.hpp">
 			</File>
 			<File
@@ -2645,6 +2657,9 @@
 			</File>
 			<File
 				RelativePath=".\money.hpp">
+			</File>
+			<File
+				RelativePath=".\nthtodefault.hpp">
 			</File>
 			<File
 				RelativePath="old_pricers.hpp">
