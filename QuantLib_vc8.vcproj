@@ -1236,6 +1236,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\instruments\everestoption.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\everestoption.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\instruments\fixedratebondforward.cpp"
 				>
 			</File>
