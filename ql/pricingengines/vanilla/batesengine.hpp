@@ -107,7 +107,7 @@ namespace QuantLib {
       public:
         BatesEngine(const boost::shared_ptr<BatesModel>& model,
                     Size integrationOrder = 144);
-		BatesEngine(const boost::shared_ptr<BatesModel>& model,
+        BatesEngine(const boost::shared_ptr<BatesModel>& model,
                     Real relTolerance, Size maxEvaluations);
 
       protected:
@@ -119,8 +119,8 @@ namespace QuantLib {
       public:
         BatesDetJumpEngine(const boost::shared_ptr<BatesDetJumpModel>& model,
                            Size integrationOrder = 144);
-		BatesDetJumpEngine(const boost::shared_ptr<BatesDetJumpModel>& model,
-						   Real relTolerance, Size maxEvaluations);
+        BatesDetJumpEngine(const boost::shared_ptr<BatesDetJumpModel>& model,
+                           Real relTolerance, Size maxEvaluations);
 
       protected:
         std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
@@ -132,9 +132,9 @@ namespace QuantLib {
         BatesDoubleExpEngine(
             const boost::shared_ptr<BatesDoubleExpModel>& model,
             Size integrationOrder = 144);
-		BatesDoubleExpEngine(
-			const boost::shared_ptr<BatesDoubleExpModel>& model,
-			Real relTolerance, Size maxEvaluations);
+        BatesDoubleExpEngine(
+            const boost::shared_ptr<BatesDoubleExpModel>& model,
+            Real relTolerance, Size maxEvaluations);
 
       protected:
         std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
@@ -146,9 +146,9 @@ namespace QuantLib {
         BatesDoubleExpDetJumpEngine(
             const boost::shared_ptr<BatesDoubleExpDetJumpModel>& model,
             Size integrationOrder = 144);
-		BatesDoubleExpDetJumpEngine(
-			const boost::shared_ptr<BatesDoubleExpDetJumpModel>& model,
-			Real relTolerance, Size maxEvaluations);
+        BatesDoubleExpDetJumpEngine(
+            const boost::shared_ptr<BatesDoubleExpDetJumpModel>& model,
+            Real relTolerance, Size maxEvaluations);
 
       protected:
         std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;

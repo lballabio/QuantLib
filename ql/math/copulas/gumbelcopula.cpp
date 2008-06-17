@@ -22,19 +22,19 @@
 
 namespace QuantLib {
 
-	GumbelCopula::GumbelCopula(Real theta) : theta_(theta)
+    GumbelCopula::GumbelCopula(Real theta) : theta_(theta)
     {
         QL_REQUIRE(theta >= 1.0,
                    "theta (" << theta << ") must be greater or equal to 1");
     }
-	
+    
     Real GumbelCopula::operator()(Real x, Real y) const 
-	{
+    {
         QL_REQUIRE(x >= 0.0 && x <=1.0 ,
                    "1st argument (" << x << ") must be in [0,1]");
-		QL_REQUIRE(y >= 0.0 && y <=1.0 ,
+        QL_REQUIRE(y >= 0.0 && y <=1.0 ,
                    "2nd argument (" << y << ") must be in [0,1]");
-		using namespace std;
+        using namespace std;
         return exp(-pow( pow( -log(x), theta_)+pow( -log(y), theta_),1/theta_));
     }
 

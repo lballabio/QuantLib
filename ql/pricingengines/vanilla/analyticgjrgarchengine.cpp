@@ -239,7 +239,7 @@ namespace QuantLib {
             ST4 = sEhe2h + (sEhh + (sEh2 + 2*sEh1_2eh1_2eh)); 
             ex3 = pow<3>(T*r) - 1.5*T*T*r*r*sEh 
                 + 3*T*r*(SD1/4+SD2-SD3) + (ST2-ST1/8+3*ST3/4-3*ST4/2);
-            SQ2 = 6*sEhe2h + (12*sEh1_2eh1_2eh + 3*sEh2);	 
+            SQ2 = 6*sEhe2h + (12*sEh1_2eh1_2eh + 3*sEh2);     
             SQ4 = 2*sEhhh + 2*sEhh2;
             SQ5 = 3*sEhh1_2eh + 3*sEh1_2ehh + 3*sEh3_2eh 
                 + 3*sEh1_2eh2 + sEh3_2e3h;

@@ -33,9 +33,9 @@ namespace QuantLib {
     /*! References:
 
         Glosten, L., Jagannathan, R., Runkle, D., 1993. 
-	Relationship between the expected value and the volatility
-	of the nominal excess return on stocks. Journal of Finance
-	48, 1779-1801
+    Relationship between the expected value and the volatility
+    of the nominal excess return on stocks. Journal of Finance
+    48, 1779-1801
 
         \test calibration is not implemented for GJR-GARCH
     */

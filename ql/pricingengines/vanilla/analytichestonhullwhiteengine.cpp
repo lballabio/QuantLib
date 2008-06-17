@@ -33,22 +33,22 @@ namespace QuantLib {
         registerWith(hullWhiteModel_);
     }
 
-	AnalyticHestonHullWhiteEngine::AnalyticHestonHullWhiteEngine(
-					const boost::shared_ptr<HestonModel>& hestonModel,
-					const boost::shared_ptr<HullWhite>& hullWhiteModel,
-					Real relTolerance, Size maxEvaluations)
+    AnalyticHestonHullWhiteEngine::AnalyticHestonHullWhiteEngine(
+                    const boost::shared_ptr<HestonModel>& hestonModel,
+                    const boost::shared_ptr<HullWhite>& hullWhiteModel,
+                    Real relTolerance, Size maxEvaluations)
     : AnalyticHestonEngine(hestonModel, relTolerance, maxEvaluations),
       hullWhiteModel_(hullWhiteModel) {
 
         update();
         registerWith(hullWhiteModel_);
     }
-		
-	void AnalyticHestonHullWhiteEngine::update() {
-		a_ = hullWhiteModel_->params()[0];
-		sigma_ = hullWhiteModel_->params()[1];
+        
+    void AnalyticHestonHullWhiteEngine::update() {
+        a_ = hullWhiteModel_->params()[0];
+        sigma_ = hullWhiteModel_->params()[1];
 
-		AnalyticHestonEngine::update();
+        AnalyticHestonEngine::update();
     }
 
     void AnalyticHestonHullWhiteEngine::calculate() const {

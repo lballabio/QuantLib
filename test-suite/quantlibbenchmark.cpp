@@ -30,7 +30,7 @@
  and PAPI, http://icl.cs.utk.edu/papi
 
  Example results: 1. Core2 Quad@2.4Ghz   :1186.3 mflops
- 				  2. Core2 Dual@2.0Ghz   : 670.4 mflops
+                   2. Core2 Dual@2.0Ghz   : 670.4 mflops
                   3. Pentium4 Dual@2.8Ghz: 423.8 mflops
                   4. Pentium4@3.0Ghz     : 266.3 mflops
                   5. PentiumIII@1.1Ghz   : 146.2 mflops

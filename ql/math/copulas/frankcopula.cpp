@@ -22,20 +22,20 @@
 
 namespace QuantLib {
 
-	FrankCopula::FrankCopula(Real theta): theta_(theta)
+    FrankCopula::FrankCopula(Real theta): theta_(theta)
     {
         QL_REQUIRE(theta != 0.0,
                    "theta (" << theta << ") must be different from 0");
     }
-	
+    
     Real FrankCopula::operator()(Real x, Real y) const 
-	{
+    {
         QL_REQUIRE(x >= 0.0 && x <=1.0 ,
                    "1st argument (" << x << ") must be in [0,1]");
-		QL_REQUIRE(y >= 0.0 && y <=1.0 ,
+        QL_REQUIRE(y >= 0.0 && y <=1.0 ,
                    "2nd argument (" << y << ") must be in [0,1]");
-		using namespace std;
-		return -1.0/theta_  *  log(1 + (exp(-theta_*x) -1) * (exp(-theta_*y) -1) / (exp(-theta_)- 1)   );
+        using namespace std;
+        return -1.0/theta_  *  log(1 + (exp(-theta_*x) -1) * (exp(-theta_*y) -1) / (exp(-theta_)- 1)   );
     }
 
 }
