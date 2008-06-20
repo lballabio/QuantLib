@@ -241,23 +241,6 @@ int mod( int k, int m )
 return( k % m );
 }
 
-#if BUG
-void pmat( int m, int n, double* y  )
-{
-int i, j, k;
-
-k = 0;
-for( i=0; i<m; i++ )
-    {
-    for( j=0; j<n; j++ )
-        {
-        printf( "%.5e ", y[k] );
-        k += 1;
-        }
-    printf( "\n" );
-    }
-}
-#endif
 
 /***********Sample of user supplied function****************
  * m = number of functions
@@ -360,9 +343,6 @@ static double zero = 0.0;
 
 temp = dmax1(epsfcn,MACHEP);
 eps = std::sqrt(temp);
-#if BUG
-printf( "fdjac2\n" );
-#endif
 ij = 0;
 for( j=0; j<n; j++ )
     {
@@ -381,9 +361,6 @@ for( j=0; j<n; j++ )
         ij += 1;    /* fjac[i+m*j] */
         }
     }
-#if BUG
-pmat( m, n, fjac );
-#endif
 /*
 *     last card of subroutine fdjac2.
 */
@@ -491,9 +468,6 @@ for( j=0; j<n; j++ )
         ipvt[j] = j;
     ij += m; /* m*j */
     }
-#if BUG
-printf( "qrfac\n" );
-#endif
 /*
 *     reduce a to r with householder transformations.
 */
@@ -709,9 +683,6 @@ for( j=0; j<n; j++ )
     wa[j] = qtb[j];
     kk += ldr+1; /* j+ldr*j */
     }
-#if BUG
-printf( "qrsolv\n" );
-#endif
 /*
 *     eliminate the diagonal matrix d using a givens rotation.
 */
@@ -944,9 +915,6 @@ static double p001 = 0.001;
 
 extern double DWARF;
 
-#if BUG
-printf( "lmpar\n" );
-#endif
 /*
 *     compute and store in x the gauss-newton direction. if the
 *     jacobian is rank-deficient, obtain a least squares solution.
@@ -962,9 +930,6 @@ for( j=0; j<n; j++ )
         wa1[j] = zero;
     jj += ldr+1; /* [j+ldr*j] */
     }
-#if BUG
-printf( "nsing %d ", nsing );
-#endif
 if(nsing >= 1)
     {
     for( k=0; k<nsing; k++ )
@@ -1002,9 +967,6 @@ dxnorm = enorm(n,wa2);
 fp = dxnorm - delta;
 if(fp <= p1*delta)
     {
-#if BUG
-    printf( "going to L220\n" );
-#endif
     goto L220;
     }
 /*
@@ -1069,9 +1031,6 @@ if(paru == zero)
 *par = dmin1( *par,paru);
 if( *par == zero)
     *par = gnorm/dxnorm;
-#if BUG
-printf( "parl %.4e  par %.4e  paru %.4e\n", parl, *par, paru );
-#endif
 /*
 *     beginning of an iteration.
 */
@@ -1380,9 +1339,6 @@ if( mode == 2 )
             goto L300;
         }
     }
-#if BUG
-printf( "lmdif\n" );
-#endif
 /*
 *     evaluate the function at the starting point
 *     and calculate its norm.
@@ -1423,9 +1379,6 @@ if( nprint > 0 )
         fcn(m,n,x,fvec,&iflag);
         if(iflag < 0)
             goto L300;
-        #if BUG
-        printf( "fnorm %.15e\n", enorm(m,fvec) );
-        #endif
         }
     }
 /*
@@ -1566,9 +1519,6 @@ fcn(m,n,wa2,wa4,&iflag);
 if(iflag < 0)
     goto L300;
 fnorm1 = enorm(m,wa4);
-#if BUG
-printf( "pnorm %.10e  fnorm1 %.10e\n", pnorm, fnorm1 );
-#endif
 /*
 *       compute the scaled actual reduction.
 */
