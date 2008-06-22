@@ -179,7 +179,9 @@ int main(int, char* []) {
                      new PiecewiseYieldCurve<Discount,LogLinear>(
                                          settlementDate, fraInstruments,
                                          termStructureDayCounter,
-                                         Handle<Quote>(), tolerance));
+                                         vector<Handle<Quote> >(), 
+                                         vector<Date>(),
+                                         tolerance));
 
 
         // Term structures used for pricing/discounting
