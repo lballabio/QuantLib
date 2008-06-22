@@ -99,7 +99,7 @@ namespace QuantLib {
             sample_type path = pathGenerator_->next();
             result_type price = (*pathPricer_)(path.value);
 
-            if (isControlVariate_)
+            if (isControlVariate_) {
                 if (!cvPathGenerator_) {
                     price += cvOptionValue_-(*cvPathPricer_)(path.value);
                 }
@@ -107,17 +107,19 @@ namespace QuantLib {
                     sample_type cvPath = cvPathGenerator_->next();
                     price += cvOptionValue_-(*cvPathPricer_)(cvPath.value);
                 }
+            }
 
             if (isAntitheticVariate_) {
                 path = pathGenerator_->antithetic();
                 result_type price2 = (*pathPricer_)(path.value);
-                if (isControlVariate_)
+                if (isControlVariate_) {
                     if (!cvPathGenerator_)
                         price2 += cvOptionValue_-(*cvPathPricer_)(path.value);
                     else {
                         sample_type cvPath = cvPathGenerator_->antithetic();
                         price2 += cvOptionValue_-(*cvPathPricer_)(cvPath.value);
                     }
+                }
 
                 sampleAccumulator_.add((price+price2)/2.0, path.weight);
             } else {

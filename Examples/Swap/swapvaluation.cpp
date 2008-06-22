@@ -321,7 +321,9 @@ int main(int, char* []) {
             new PiecewiseYieldCurve<Discount,LogLinear>(
                                           settlementDate, depoSwapInstruments,
                                           termStructureDayCounter,
-                                          Handle<Quote>(), tolerance));
+                                          std::vector<Handle<Quote> >(), 
+                                          std::vector<Date>(),
+                                          tolerance));
 
 
         // A depo-futures-swap curve
@@ -344,7 +346,9 @@ int main(int, char* []) {
             new PiecewiseYieldCurve<Discount,LogLinear>(
                                        settlementDate, depoFutSwapInstruments,
                                        termStructureDayCounter,
-                                       Handle<Quote>(), tolerance));
+                                       std::vector<Handle<Quote> >(), 
+                                       std::vector<Date>(),
+                                       tolerance));
 
 
         // A depo-FRA-swap curve
@@ -364,7 +368,9 @@ int main(int, char* []) {
             new PiecewiseYieldCurve<Discount,LogLinear>(
                                        settlementDate, depoFRASwapInstruments,
                                        termStructureDayCounter,
-                                       Handle<Quote>(), tolerance));
+                                       std::vector<Handle<Quote> >(), 
+                                       std::vector<Date>(),
+                                       tolerance));
 
 
         // Term structures that will be used for pricing:
