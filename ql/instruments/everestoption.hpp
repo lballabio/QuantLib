@@ -25,7 +25,6 @@
 #define quantlib_everest_option_hpp
 
 #include <ql/instruments/multiassetoption.hpp>
-#include <ql/math/array.hpp>
 
 namespace QuantLib {
 
