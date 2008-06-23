@@ -490,7 +490,7 @@ namespace
             // ok let's see if we can find a value of alpha that works
             bool foundUpOK = false;
             bool foundDownOK = false;
-            Real alphaUp,alphaDown;
+            Real alphaUp = alpha0, alphaDown = alpha0;
             Real stepSize = (alphaMax-alpha0)/steps;
 
             for (Size j=0;

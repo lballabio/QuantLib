@@ -34,7 +34,6 @@ using namespace boost::unit_test_framework;
 namespace {
 
     Real tolerance = 1.0e-6;
-    bool verbose = true;
 
     template <class T>
     void testSingle(const T& I, const std::string& tag,

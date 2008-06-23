@@ -248,7 +248,6 @@ void OldPricerTest::testMcMultiFactorPricers() {
     dividendYields[3] = Handle<YieldTermStructure>(flatRate(today, 0.03, dc));
 
     Handle<YieldTermStructure> riskFreeRate(flatRate(today, 0.05, dc));
-    Time resTime = 1.0;
 
     BigNatural seed = 86421;
 

@@ -45,14 +45,14 @@ namespace QuantLib {
         QL_REQUIRE (y >= 0 && y <= 1, "argument out of range [0, 1]");
 
         Real x = 0;
-        int count = 0;
+        Size count = 0;
 
         // do a few newton steps to find x
         do {
             x -= (f_(x) - y) / d_(x);
             count++;
         }
-        while (fabs(f_(x) - y) > accuracy_ && count < maxIterations_);
+        while (std::fabs(f_(x) - y) > accuracy_ && count < maxIterations_);
 
         QL_REQUIRE (count < maxIterations_,
                     "maximum number of iterations " << maxIterations_

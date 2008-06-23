@@ -82,7 +82,7 @@ namespace QuantLib {
 
         // lu decomposition
         boost::numeric::ublas::permutation_matrix<Size> pert(m.rows());
-        const Size singular = lu_factorize(a, pert);
+        /* const Size singular = */ lu_factorize(a, pert);
 
         Real retVal = 1.0;
 
