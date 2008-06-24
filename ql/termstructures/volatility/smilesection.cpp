@@ -71,8 +71,8 @@ namespace QuantLib {
         nu_ = sabrParams[2];
         rho_ = sabrParams[3];
 
-        QL_REQUIRE(forward_>0.0, "forward must be positive: "
-                                << io::rate(forward_) << " not allowed");
+        QL_REQUIRE(forward_>0.0, "at the money forward rate must be "
+                   "positive: " << io::rate(forward_) << " not allowed");
         validateSabrParameters(alpha_, beta_, nu_, rho_);
     }
 
@@ -87,8 +87,8 @@ namespace QuantLib {
         nu_ = sabrParams[2];
         rho_ = sabrParams[3];
 
-        QL_REQUIRE(forward_>0.0, "forward must be positive: "
-                                << io::rate(forward_) << " not allowed");
+        QL_REQUIRE(forward_>0.0, "at the money forward rate must be "
+                   "positive: " << io::rate(forward_) << " not allowed");
         validateSabrParameters(alpha_, beta_, nu_, rho_);
     }
 

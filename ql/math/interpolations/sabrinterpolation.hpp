@@ -137,8 +137,8 @@ namespace QuantLib {
 
             void update() {
                 // forward_ might have changed
-                QL_REQUIRE(forward_>0.0, "forward must be positive: " <<
-                           io::rate(forward_) << " not allowed");
+                QL_REQUIRE(forward_>0.0, "at the money forward rate must be "
+                           "positive: " << io::rate(forward_) << " not allowed");
 
                 // we should also check that y contains positive values only
 

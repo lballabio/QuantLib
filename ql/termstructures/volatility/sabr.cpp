@@ -92,8 +92,8 @@ namespace QuantLib {
                         Real rho) {
         QL_REQUIRE(strike>0.0, "strike must be positive: "
                                << io::rate(strike) << " not allowed");
-        QL_REQUIRE(forward>0.0, "forward must be positive: "
-                                << io::rate(forward) << " not allowed");
+        QL_REQUIRE(forward_>0.0, "at the money forward rate must be "
+                   "positive: " << io::rate(forward_) << " not allowed");
         QL_REQUIRE(expiryTime>=0.0, "expiry time must be non-negative: "
                                    << expiryTime << " not allowed");
         validateSabrParameters(alpha, beta, nu, rho);
