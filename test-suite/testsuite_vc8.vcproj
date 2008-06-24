@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="testsuite"
 	ProjectGUID="{A613045C-34AF-4706-AA3C-730C92524F74}"
 	RootNamespace="testsuite"
@@ -1227,6 +1227,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\himalayaoption.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\hybridhestonhullwhiteprocess.cpp"
 				>
 			</File>
@@ -2371,6 +2375,10 @@
 			</File>
 			<File
 				RelativePath=".\hestonmodel.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\himalayaoption.hpp"
 				>
 			</File>
 			<File

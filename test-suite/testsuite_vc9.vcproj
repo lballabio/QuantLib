@@ -1220,6 +1220,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\himalayaoption.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\hybridhestonhullwhiteprocess.cpp"
 				>
 			</File>
@@ -2364,6 +2368,10 @@
 			</File>
 			<File
 				RelativePath=".\hestonmodel.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\himalayaoption.hpp"
 				>
 			</File>
 			<File

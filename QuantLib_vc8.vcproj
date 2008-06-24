@@ -1276,6 +1276,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\instruments\himalayaoption.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\himalayaoption.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\instruments\impliedvolatility.cpp"
 				>
 			</File>
@@ -5023,6 +5031,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\basket\mchimalayaengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\basket\mchimalayaengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath="ql\pricingengines\basket\stulzengine.cpp"
 					>
 					<FileConfiguration
@@ -6700,14 +6716,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\legacy\pricers\mcdiscretearithmeticaso.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mchimalaya.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mchimalaya.hpp"
 					>
 				</File>
 				<File
