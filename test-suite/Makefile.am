@@ -37,6 +37,7 @@ QL_TESTS = \
 	gaussianquadratures.hpp gaussianquadratures.cpp \
 	gjrgarchmodel.hpp gjrgarchmodel.cpp \
 	hestonmodel.hpp hestonmodel.cpp \
+	himalayaoption.hpp himalayaoption.cpp \
 	hybridhestonhullwhiteprocess.hpp hybridhestonhullwhiteprocess.cpp \
 	inflation.hpp inflation.cpp \
 	instruments.hpp instruments.cpp \

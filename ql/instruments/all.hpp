@@ -23,6 +23,7 @@
 #include <ql/instruments/forward.hpp>
 #include <ql/instruments/forwardrateagreement.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
+#include <ql/instruments/himalayaoption.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
 #include <ql/instruments/inflationswap.hpp>
 #include <ql/instruments/lookbackoption.hpp>

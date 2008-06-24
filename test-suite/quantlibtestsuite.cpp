@@ -76,6 +76,7 @@
 #include "gaussianquadratures.hpp"
 #include "gjrgarchmodel.hpp"
 #include "hestonmodel.hpp"
+#include "himalayaoption.hpp"
 #include "hybridhestonhullwhiteprocess.hpp"
 #include "inflation.hpp"
 #include "instruments.hpp"
@@ -220,6 +221,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(GaussianQuadraturesTest::suite());
     test->add(GJRGARCHModelTest::suite());
     test->add(HestonModelTest::suite());
+    test->add(HimalayaOptionTest::suite());
     test->add(HybridHestonHullWhiteProcessTest::suite());
     test->add(InflationTest::suite());
     test->add(InstrumentTest::suite());

@@ -7,12 +7,14 @@ this_include_HEADERS = \
 	mcamericanbasketengine.hpp \
 	mcbasketengine.hpp \
 	mceverestengine.hpp \
+	mchimalayaengine.hpp \
 	stulzengine.hpp
 
 libBasketEngines_la_SOURCES = \
 	mcamericanbasketengine.cpp \
 	mcbasketengine.cpp \
 	mceverestengine.cpp \
+	mchimalayaengine.cpp \
 	stulzengine.cpp
 
 noinst_LTLIBRARIES = libBasketEngines.la

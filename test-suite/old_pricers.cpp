@@ -21,7 +21,6 @@
 #include "utilities.hpp"
 #include <ql/legacy/pricers/mcdiscretearithmeticaso.hpp>
 #include <ql/legacy/pricers/mcpagoda.hpp>
-#include <ql/legacy/pricers/mchimalaya.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/matrixutilities/getcovariance.hpp>
@@ -270,20 +269,6 @@ void OldPricerTest::testMcMultiFactorPricers() {
                    0.01221094,
                    1.0e-8,
                    "McPagoda");
-
-    // McHimalaya
-    std::vector<Real> assetValues(4);
-    assetValues[0] = 100.0;
-    assetValues[1] = 110.0;
-    assetValues[2] =  90.0;
-    assetValues[3] = 105.0;
-    Real strike = 101.0;
-    testMcMFPricer(McHimalaya(assetValues, dividendYields, riskFreeRate,
-                              volatilities, correlation, strike,
-                              timeIncrements, seed),
-                   5.80409038,
-                   1.0e-8,
-                   "McHimalaya");
 }
 
 
