@@ -228,29 +228,29 @@ void MatricesTest::testQRDecomposition() {
 
     Real tol = 1.0e-12;
     Matrix testMatrices[] = { M1, M2, I, 
-    						  M3, transpose(M3), M4, transpose(M4), M5 };
+                              M3, transpose(M3), M4, transpose(M4), M5 };
 
     for (Size j = 0; j < LENGTH(testMatrices); j++) {
-    	Matrix Q, R;
-    	bool pivot = true;
-    	const Matrix& A = testMatrices[j];
-    	const std::vector<Size> ipvt = qrDecomposition(A, Q, R, pivot); 
+        Matrix Q, R;
+        bool pivot = true;
+        const Matrix& A = testMatrices[j];
+        const std::vector<Size> ipvt = qrDecomposition(A, Q, R, pivot); 
 
-    	Matrix P(A.columns(), A.columns(), 0.0);
+        Matrix P(A.columns(), A.columns(), 0.0);
     	
-    	// reverse column pivoting
-    	for (Size i=0; i < P.columns(); ++i) {
-    		P[ipvt[i]][i] = 1.0;
-    	}
+        // reverse column pivoting
+        for (Size i=0; i < P.columns(); ++i) {
+            P[ipvt[i]][i] = 1.0;
+        }
     	
         if (norm(Q*R - A*P) > tol)
             BOOST_FAIL("Q*R does not match matrix A*P (norm = "
                        << norm(Q*R-A*P) << ")");
         
         pivot = false;
-    	qrDecomposition(A, Q, R, pivot); 
+        qrDecomposition(A, Q, R, pivot); 
 
-    	if (norm(Q*R - A) > tol)
+        if (norm(Q*R - A) > tol)
             BOOST_FAIL("Q*R does not match matrix A (norm = "
                        << norm(Q*R-A) << ")");
     }
@@ -265,29 +265,29 @@ void MatricesTest::testQRSolve() {
     Real tol = 1.0e-12;
     MersenneTwisterUniformRng rng(1234);
     Matrix testMatrices[] = { M1, M2, M3, transpose(M3), 
-    						  M4, transpose(M4), M5, I, M7 };     
+                              M4, transpose(M4), M5, I, M7 };     
     
     for (Size j = 0; j < LENGTH(testMatrices); j++) {
-    	const Matrix& A = testMatrices[j];
-    	Array b(A.rows());
+        const Matrix& A = testMatrices[j];
+        Array b(A.rows());
     	
         for (Size k=0; k < 100; ++k) {
-        	for (Array::iterator iter = b.begin(); iter != b.end(); ++iter) {
-        		*iter = rng.next().value;
-        	}
-        	const Array x = qrSolve(A, b, true);
+            for (Array::iterator iter = b.begin(); iter != b.end(); ++iter) {
+                *iter = rng.next().value;
+            }
+            const Array x = qrSolve(A, b, true);
         	
-        	if (A.columns() >= A.rows()) {
-            	if (norm(A*x - b) > tol)
-            		BOOST_FAIL("A*x does not match vector b (norm = "
-            					<< norm(A*x - b) << ")");        		
-        	}
-        	else {
-        		// use the SVD to calculate the reference values
-        		const Size n = A.columns();
-        		Array xr(n, 0.0);
+            if (A.columns() >= A.rows()) {
+                if (norm(A*x - b) > tol)
+                    BOOST_FAIL("A*x does not match vector b (norm = "
+                               << norm(A*x - b) << ")");        		
+            }
+            else {
+                // use the SVD to calculate the reference values
+                const Size n = A.columns();
+                Array xr(n, 0.0);
 
-        		SVD svd(A);
+                SVD svd(A);
                 const Matrix& V = svd.V();
                 const Matrix& U = svd.U();
                 const Array&  w = svd.singularValues();
@@ -306,11 +306,11 @@ void MatricesTest::testQRSolve() {
                 }
                 
                 if (norm(xr-x) > tol) {
-            		BOOST_FAIL("least square solution does not match (norm = "
-            					<< norm(x - xr) << ")");        		
+                    BOOST_FAIL("least square solution does not match (norm = "
+                               << norm(x - xr) << ")");        		
                 	
                 }
-        	}
+            }
         }
     }
 }

@@ -45,10 +45,10 @@ namespace QuantLib {
                    const LmdifCostFunction& fcn);
         
         void qrsolv(int n,double* r,int ldr,int* ipvt,
-        		    double* diag,double* qtb, double* x,
-        		    double* sdiag,double* wa);
+                    double* diag,double* qtb, double* x,
+                    double* sdiag,double* wa);
         void qrfac(int m,int n,double* a,int, int pivot,int* ipvt,
-        		   int,double* rdiag,double* acnorm,double* wa);
+                   int,double* rdiag,double* acnorm,double* wa);
     }
 }
 #endif

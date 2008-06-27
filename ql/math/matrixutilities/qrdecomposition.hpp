@@ -47,9 +47,9 @@ namespace QuantLib {
         See lmdiff.cpp for further details.
     */ 	
 	Disposable<std::vector<Size> > qrDecomposition(const Matrix& A, 
-												   Matrix& q, 
-												   Matrix& r, 
-												   bool pivot = true);
+                                                   Matrix& q, 
+                                                   Matrix& r, 
+                                                   bool pivot = true);
 
     //! QR Solve
     /*! This implementation is based on MINPACK
@@ -69,9 +69,9 @@ namespace QuantLib {
         See lmdiff.cpp for further details.
     */
 	Disposable<Array> qrSolve(const Matrix& a, 
-							  const Array& b, 
-							  bool pivot = true, 
-							  const Array& d = Array());
+                              const Array& b, 
+                              bool pivot = true, 
+                              const Array& d = Array());
 }
 
 #endif
