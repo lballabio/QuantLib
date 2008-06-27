@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,8 +22,8 @@
     \brief date generation rule
 */
 
-#ifndef quantlib_dategenerationrule_hpp
-#define quantlib_dategenerationrule_hpp
+#ifndef quantlib_date_generation_rule_hpp
+#define quantlib_date_generation_rule_hpp
 
 #include <ql/qldefines.hpp>
 #include <ostream>
@@ -37,15 +38,24 @@ namespace QuantLib {
     */
     struct DateGeneration {
         enum Rule {
-            Backward,      /*!< Backward from termination date to
-                                effective date. */
-            Forward,       /*!< Forward from effective date to
-                               termination date. */
-            Zero,          /*!< No intermediate dates between effective date
-                                and termination date. */
-            ThirdWednesday /*!< All dates but effective date and termination
-                                date are taken to be on the third wednesday
-                                of their month (with forward calculation)*/
+            Backward,       /*!< Backward from termination date to
+                                 effective date. */
+            Forward,        /*!< Forward from effective date to
+                                 termination date. */
+            Zero,           /*!< No intermediate dates between effective date
+                                 and termination date. */
+            ThirdWednesday, /*!< All dates but effective date and termination
+                                 date are taken to be on the third wednesday
+                                 of their month (with forward calculation.) */
+            Twentieth,      /*!< All dates but the effective date are
+                                 taken to be the twentieth of their
+                                 month (used for CDS schedules in
+                                 emerging markets.)  The termination
+                                 date is also modified. */
+            TwentiethIMM    /*!< All dates but the effective date are
+                                 taken to be the twentieth of an IMM
+                                 month (used for CDS schedules.)  The
+                                 termination date is also modified. */
         };
     };
 

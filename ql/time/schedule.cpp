@@ -24,6 +24,25 @@
 
 namespace QuantLib {
 
+    namespace {
+
+        Date nextTwentieth(const Date& d, DateGeneration::Rule rule) {
+            Date result = Date(20, d.month(), d.year());
+            if (result < d)
+                result += 1*Months;
+            if (rule == DateGeneration::TwentiethIMM) {
+                Month m = result.month();
+                if (m % 3 != 0) { // not a main IMM nmonth
+                    Integer skip = 3 - m%3;
+                    result += skip*Months;
+                }
+            }
+            return result;
+        }
+
+    }
+
+
     Schedule::Schedule(const std::vector<Date>& dates,
                        const Calendar& calendar,
                        BusinessDayConvention convention)
@@ -85,6 +104,8 @@ namespace QuantLib {
                              ") is not an IMM date");
                 break;
               case DateGeneration::Zero:
+              case DateGeneration::Twentieth:
+              case DateGeneration::TwentiethIMM:
                 QL_FAIL("first date incompatible with " << rule_ <<
                         " date generation rule");
               default:
@@ -107,6 +128,8 @@ namespace QuantLib {
                              "first date (" << firstDate <<
                              ") is not an IMM date");
               case DateGeneration::Zero:
+              case DateGeneration::Twentieth:
+              case DateGeneration::TwentiethIMM:
                 QL_FAIL("next to last date incompatible with " << rule_ <<
                         " date generation rule");
               default:
@@ -170,6 +193,8 @@ namespace QuantLib {
             }
             break;
 
+          case DateGeneration::Twentieth:
+          case DateGeneration::TwentiethIMM:
           case DateGeneration::ThirdWednesday:
             QL_REQUIRE(!endOfMonth,
                        "endOfMonth convention incompatible with " << rule_ <<
@@ -180,15 +205,24 @@ namespace QuantLib {
             dates_.push_back(effectiveDate);
 
             seed = effectiveDate;
+
             if (firstDate!=Date()) {
                 dates_.push_back(firstDate);
-                Date temp = nullCalendar.advance(seed,
-                    periods*tenor_, convention, endOfMonth);
+                Date temp = nullCalendar.advance(seed, periods*tenor_,
+                                                 convention, endOfMonth);
                 if (temp!=firstDate)
                     isRegular_.push_back(false);
                 else
                     isRegular_.push_back(true);
                 seed = firstDate;
+            } else if (rule_ == DateGeneration::Twentieth ||
+                       rule_ == DateGeneration::TwentiethIMM) {
+                Date next20th = nextTwentieth(effectiveDate, rule_);
+                if (next20th != effectiveDate) {
+                    dates_.push_back(next20th);
+                    isRegular_.push_back(false);
+                    seed = next20th;
+                }
             }
 
             exitDate = terminationDate;
@@ -196,11 +230,11 @@ namespace QuantLib {
                 exitDate = nextToLastDate;
 
             while (true) {
-                Date temp = nullCalendar.advance(seed,
-                    periods*tenor_, convention, endOfMonth);
-                if (temp > exitDate)
+                Date temp = nullCalendar.advance(seed, periods*tenor_,
+                                                 convention, endOfMonth);
+                if (temp > exitDate) {
                     break;
-                else {
+                } else {
                     dates_.push_back(temp);
                     isRegular_.push_back(true);
                     ++periods;
@@ -212,8 +246,14 @@ namespace QuantLib {
 
             if (calendar.adjust(dates_.back(),terminationDateConvention)!=
                 calendar.adjust(terminationDate, terminationDateConvention)) {
-                dates_.push_back(terminationDate);
-                isRegular_.push_back(false);
+                if (rule_ == DateGeneration::Twentieth ||
+                    rule_ == DateGeneration::TwentiethIMM) {
+                    dates_.push_back(nextTwentieth(terminationDate, rule_));
+                    isRegular_.push_back(true);
+                } else {
+                    dates_.push_back(terminationDate);
+                    isRegular_.push_back(false);
+                }
             }
 
             break;
@@ -232,9 +272,13 @@ namespace QuantLib {
         for (Size i=0; i<dates_.size()-1; ++i)
             dates_[i]=calendar.adjust(dates_[i], convention);
 
-        // termination date is NOT adjusted as per ISDA specifications,
-        // unless otherwise specified in the confirmation of the deal
-        if (terminationDateConvention!=Unadjusted) {
+        // termination date is NOT adjusted as per ISDA
+        // specifications, unless otherwise specified in the
+        // confirmation of the deal or unless we're creating a CDS
+        // schedule
+        if (terminationDateConvention != Unadjusted
+            || rule_ == DateGeneration::Twentieth
+            || rule_ == DateGeneration::TwentiethIMM) {
             dates_[dates_.size()-1]=calendar.adjust(dates_[dates_.size()-1],
                                                     terminationDateConvention);
         }

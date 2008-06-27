@@ -86,6 +86,8 @@ namespace QuantLib {
             break;
           case DateGeneration::Zero:
           case DateGeneration::ThirdWednesday:
+          case DateGeneration::Twentieth:
+          case DateGeneration::TwentiethIMM:
             QL_FAIL("stub date (" << stubDate << ") not allowed with " <<
                     rule << " DateGeneration::Rule");
           default:

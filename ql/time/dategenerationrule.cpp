@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,6 +34,10 @@ namespace QuantLib {
             return out << "Zero";
           case DateGeneration::ThirdWednesday:
             return out << "ThirdWednesday";
+          case DateGeneration::Twentieth:
+            return out << "Twentieth";
+          case DateGeneration::TwentiethIMM:
+            return out << "TwentiethIMM";
           default:
             QL_FAIL("unknown DateGeneration::Rule (" << Integer(r) << ")");
         }
