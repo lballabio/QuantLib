@@ -29,11 +29,11 @@ namespace QuantLib {
     Disposable<std::vector<Size> > qrDecomposition(const Matrix& M, 
 	                                               Matrix& q, Matrix& r, 
 	                                               bool pivot) {
-	    Matrix mT = transpose(M);
-	    const Size m = M.rows();
-	    const Size n = M.columns();
+        Matrix mT = transpose(M);
+        const Size m = M.rows();
+        const Size n = M.columns();
     	
-	    boost::scoped_array<int> lipvt(new int[n]);
+        boost::scoped_array<int> lipvt(new int[n]);
         boost::scoped_array<double> rdiag(new double[n]);
         boost::scoped_array<double> wa(new double[n]);
     	
