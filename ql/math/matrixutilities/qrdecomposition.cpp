@@ -29,9 +29,9 @@ namespace QuantLib {
 	Disposable<std::vector<Size> > qrDecomposition(const Matrix& M, 
 												   Matrix& q, Matrix& r, 
 												   bool pivot) {
-		Matrix mT = transpose(M);
-		const Size m = M.rows();
-        const Size n = M.columns();
+	    Matrix mT = transpose(M);
+	    const Size m = M.rows();
+	    const Size n = M.columns();
     	
         boost::scoped_array<int> lipvt(new int[n]);
         boost::scoped_array<double> rdiag(new double[n]);
@@ -47,7 +47,7 @@ namespace QuantLib {
             std::fill(r.row_begin(i), r.row_begin(i)+i, 0.0);
             r[i][i] = rdiag[i];
             std::copy(mT.column_begin(i)+i+1, mT.column_end(i), 
-                    r.row_begin(i)+i+1);
+                      r.row_begin(i)+i+1);
         }
 
         if (q.rows() != m || q.columns() != n)
@@ -66,7 +66,7 @@ namespace QuantLib {
                                              w.begin()+j, 0.0)/t3;
                     for (Size i=j; i<m; ++i) {
                         w[i]-=mT[j][i]*t;
-                        }
+                    }
                 }
                 q[k][j] = w[j];
             }		

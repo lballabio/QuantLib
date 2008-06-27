@@ -33,9 +33,9 @@ namespace QuantLib {
         (<http://www.netlib.org/minpack>,
         <http://www.netlib.org/cephes/linalg.tgz>)
     
-     	This subroutine uses householder transformations with column
-     	pivoting (optional) to compute a qr factorization of the
-     	m by n matrix A. That is, qrfac determines an orthogonal
+        This subroutine uses householder transformations with column
+        pivoting (optional) to compute a qr factorization of the
+        m by n matrix A. That is, qrfac determines an orthogonal
         matrix q, a permutation matrix p, and an upper trapezoidal
         matrix r with diagonal elements of nonincreasing magnitude,
         such that A*p = q*r.
@@ -63,7 +63,8 @@ namespace QuantLib {
         A*x = b ,     d*x = 0 ,
 
         in the least squares sense.
-		d is an input array of length n which must contain the
+        
+        d is an input array of length n which must contain the
         diagonal elements of the matrix d.		
 
         See lmdiff.cpp for further details.
