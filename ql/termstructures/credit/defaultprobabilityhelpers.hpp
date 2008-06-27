@@ -29,6 +29,7 @@
 
 #include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
+#include <ql/time/dategenerationrule.hpp>
 
 namespace QuantLib {
 
@@ -48,6 +49,7 @@ namespace QuantLib {
                   const Calendar& calendar,
                   Frequency frequency,
                   BusinessDayConvention paymentConvention,
+                  DateGeneration::Rule rule,
                   const DayCounter& dayCounter,
                   Real recoveryRate,
                   const Handle<YieldTermStructure>& discountCurve,
@@ -59,6 +61,7 @@ namespace QuantLib {
                   const Calendar& calendar,
                   Frequency frequency,
                   BusinessDayConvention paymentConvention,
+                  DateGeneration::Rule rule,
                   const DayCounter& dayCounter,
                   Real recoveryRate,
                   const Handle<YieldTermStructure>& discountCurve,
@@ -74,6 +77,7 @@ namespace QuantLib {
         Calendar calendar_;
         Frequency frequency_;
         BusinessDayConvention paymentConvention_;
+        DateGeneration::Rule rule_;
         DayCounter dayCounter_;
         Real recoveryRate_;
         Handle<YieldTermStructure> discountCurve_;

@@ -78,7 +78,7 @@ int main(int, char* []) {
         vector<Date> maturities;
         for (Size i=0; i<4; i++) {
             maturities.push_back(calendar.adjust(todaysDate + tenors[i],
-                                                 ModifiedFollowing));
+                                                 Following));
         }
 
         std::vector<boost::shared_ptr<DefaultProbabilityHelper> > instruments;
@@ -90,7 +90,8 @@ int main(int, char* []) {
                               0,
                               calendar,
                               Quarterly,
-                              ModifiedFollowing,
+                              Following,
+                              DateGeneration::TwentiethIMM,
                               Actual365Fixed(),
                               recovery_rate,
                               tsCurve)));
@@ -140,42 +141,46 @@ int main(int, char* []) {
 
         Schedule cdsSchedule = MakeSchedule(todaysDate, maturities[0],
                                             Period(Quarterly), calendar,
-                                            ModifiedFollowing);
+                                            Following)
+            .withRule(DateGeneration::TwentiethIMM);
         CreditDefaultSwap cds_3m(Protection::Seller,
                                  nominal,
                                  quoted_spreads[0],
                                  cdsSchedule,
-                                 ModifiedFollowing,
+                                 Following,
                                  Actual365Fixed());
 
         cdsSchedule = MakeSchedule(todaysDate, maturities[1],
                                    Period(Quarterly), calendar,
-                                   ModifiedFollowing);
+                                   Following)
+            .withRule(DateGeneration::TwentiethIMM);
         CreditDefaultSwap cds_6m(Protection::Seller,
                                  nominal,
                                  quoted_spreads[1],
                                  cdsSchedule,
-                                 ModifiedFollowing,
+                                 Following,
                                  Actual365Fixed());
 
         cdsSchedule = MakeSchedule(todaysDate, maturities[2],
                                    Period(Quarterly), calendar,
-                                   ModifiedFollowing);
+                                   Following)
+            .withRule(DateGeneration::TwentiethIMM);
         CreditDefaultSwap cds_1y(Protection::Seller,
                                  nominal,
                                  quoted_spreads[2],
                                  cdsSchedule,
-                                 ModifiedFollowing,
+                                 Following,
                                  Actual365Fixed());
 
         cdsSchedule = MakeSchedule(todaysDate, maturities[3],
                                    Period(Quarterly), calendar,
-                                   ModifiedFollowing);
+                                   Following)
+            .withRule(DateGeneration::TwentiethIMM);
         CreditDefaultSwap cds_2y(Protection::Seller,
                                  nominal,
                                  quoted_spreads[3],
                                  cdsSchedule,
-                                 ModifiedFollowing,
+                                 Following,
                                  Actual365Fixed());
 
         cds_3m.setPricingEngine(engine);

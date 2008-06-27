@@ -36,6 +36,7 @@ namespace QuantLib {
                          const Calendar& calendar,
                          Frequency frequency,
                          BusinessDayConvention paymentConvention,
+                         DateGeneration::Rule rule,
                          const DayCounter& dayCounter,
                          Real recoveryRate,
                          const Handle<YieldTermStructure>& discountCurve,
@@ -44,7 +45,7 @@ namespace QuantLib {
     : DefaultProbabilityHelper(spread),
       tenor_(tenor), settlementDays_(settlementDays), calendar_(calendar),
       frequency_(frequency), paymentConvention_(paymentConvention),
-      dayCounter_(dayCounter), recoveryRate_(recoveryRate),
+      rule_(rule), dayCounter_(dayCounter), recoveryRate_(recoveryRate),
       discountCurve_(discountCurve),
       settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime) {
 
@@ -60,6 +61,7 @@ namespace QuantLib {
                          const Calendar& calendar,
                          Frequency frequency,
                          BusinessDayConvention paymentConvention,
+                         DateGeneration::Rule rule,
                          const DayCounter& dayCounter,
                          Real recoveryRate,
                          const Handle<YieldTermStructure>& discountCurve,
@@ -68,7 +70,7 @@ namespace QuantLib {
     : DefaultProbabilityHelper(spread),
       tenor_(tenor), settlementDays_(settlementDays), calendar_(calendar),
       frequency_(frequency), paymentConvention_(paymentConvention),
-      dayCounter_(dayCounter), recoveryRate_(recoveryRate),
+      rule_(rule), dayCounter_(dayCounter), recoveryRate_(recoveryRate),
       discountCurve_(discountCurve),
       settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime) {
 
@@ -86,7 +88,7 @@ namespace QuantLib {
 
     void CdsHelper::setTermStructure(DefaultProbabilityTermStructure* ts) {
         DefaultProbabilityHelper::setTermStructure(ts);
-        
+
         probability_.linkTo(
             boost::shared_ptr<DefaultProbabilityTermStructure>(ts, no_deletion),
             false);
@@ -106,12 +108,14 @@ namespace QuantLib {
 
         Date startDate = calendar_.advance(evaluationDate_,
                                            settlementDays_, Days);
-        Date endDate = calendar_.adjust(startDate + tenor_, paymentConvention_);
+        Date endDate = startDate + tenor_;
 
-        Schedule schedule = MakeSchedule(startDate, endDate,
-                                         Period(frequency_),
-                                         calendar_,
-                                         paymentConvention_);
+        Schedule schedule =
+            MakeSchedule(startDate, endDate,
+                         Period(frequency_),
+                         calendar_,
+                         paymentConvention_)
+            .withRule(rule_);
         earliestDate_ = schedule.dates().front();
         latestDate_ = schedule.dates().back();
 

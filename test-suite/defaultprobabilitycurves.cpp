@@ -161,7 +161,8 @@ namespace {
         n.push_back(5);
 
         Frequency frequency = Quarterly;
-        BusinessDayConvention convention = ModifiedFollowing;
+        BusinessDayConvention convention = Following;
+        DateGeneration::Rule rule = DateGeneration::TwentiethIMM;
         DayCounter dayCounter = Thirty360();
         Real recoveryRate = 0.4;
 
@@ -176,8 +177,9 @@ namespace {
                 boost::shared_ptr<DefaultProbabilityHelper>(
                     new CdsHelper(quote[i], Period(n[i], Years),
                                   settlementDays, calendar,
-                                  frequency, convention, dayCounter,
-                                  recoveryRate, discountCurve)));
+                                  frequency, convention, rule,
+                                  dayCounter, recoveryRate,
+                                  discountCurve)));
 
         RelinkableHandle<DefaultProbabilityTermStructure> piecewiseCurve;
         piecewiseCurve.linkTo(
@@ -194,8 +196,7 @@ namespace {
             Date endDate = calendar.advance(settlement, n[i], Years,
                                             convention);
             Schedule schedule(settlement, endDate, Period(frequency), calendar,
-                              convention, convention,
-                              DateGeneration::Forward, false);
+                              convention, convention, rule, false);
 
             CreditDefaultSwap cds(Protection::Buyer, notional, quote[i],
                                   schedule, convention, dayCounter);
@@ -244,7 +245,8 @@ void DefaultProbabilityCurveTest::testSingleInstrumentBootstrap() {
     Period tenor = 2*Years;
 
     Frequency frequency = Quarterly;
-    BusinessDayConvention convention = ModifiedFollowing;
+    BusinessDayConvention convention = Following;
+    DateGeneration::Rule rule = DateGeneration::TwentiethIMM;
     DayCounter dayCounter = Thirty360();
     Real recoveryRate = 0.4;
 
@@ -257,8 +259,9 @@ void DefaultProbabilityCurveTest::testSingleInstrumentBootstrap() {
     helpers[0] = boost::shared_ptr<DefaultProbabilityHelper>(
                               new CdsHelper(quote, tenor,
                                             settlementDays, calendar,
-                                            frequency, convention, dayCounter,
-                                            recoveryRate, discountCurve));
+                                            frequency, convention, rule,
+                                            dayCounter, recoveryRate,
+                                            discountCurve));
 
     PiecewiseDefaultCurve<HazardRate,BackwardFlat> defaultCurve(today, helpers,
                                                                 dayCounter);
