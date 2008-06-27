@@ -61,9 +61,9 @@ namespace QuantLib {
         boost::scoped_array<double> wa4(new double[m]);
         // call lmdif to minimize the sum of the squares of m functions
         // in n variables by the Levenberg-Marquardt algorithm.
-        QuantLib::MINPACK::LmdifCostFunction lmdifCostFunction = 
+        MINPACK::LmdifCostFunction lmdifCostFunction = 
             boost::bind(&LevenbergMarquardt::fcn, this, _1, _2, _3, _4, _5);
-        QuantLib::MINPACK::lmdif(m, n, xx.get(), fvec.get(),
+        MINPACK::lmdif(m, n, xx.get(), fvec.get(),
                                  static_cast<double>(endCriteria.functionEpsilon()),
                                  static_cast<double>(xtol_),
                                  static_cast<double>(gtol_),
