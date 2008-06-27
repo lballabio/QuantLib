@@ -43,9 +43,12 @@ namespace QuantLib {
                    int ldfjac,int* ipvt,double* qtf,
                    double* wa1,double* wa2,double* wa3,double* wa4,
                    const LmdifCostFunction& fcn);
+        
+        void qrsolv(int n,double* r,int ldr,int* ipvt,
+        		    double* diag,double* qtb, double* x,
+        		    double* sdiag,double* wa);
+        void qrfac(int m,int n,double* a,int, int pivot,int* ipvt,
+        		   int,double* rdiag,double* acnorm,double* wa);
     }
-
 }
-
-
 #endif

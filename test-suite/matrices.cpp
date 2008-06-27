@@ -26,6 +26,7 @@
 #include <ql/math/matrixutilities/svd.hpp>
 #include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
+#include <ql/math/matrixutilities/qrdecomposition.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -33,7 +34,7 @@ using namespace boost::unit_test_framework;
 namespace {
 
     Size N;
-    Matrix M1, M2, M3, M4, M5, M6, I;
+    Matrix M1, M2, M3, M4, M5, M6, M7, I;
 
     Real norm(const Array& v) {
         return std::sqrt(DotProduct(v,v));
@@ -89,6 +90,8 @@ namespace {
         M6[2][0] = M6[0][2]; M6[2][1] = M6[1][2]; M6[2][2] = 1;        M6[2][3] = M6[0][1];
         M6[3][0] = M6[0][3]; M6[3][1] = M6[1][3]; M6[3][2] = M6[2][3]; M6[3][3] = 1;
 
+        M7 = M1;
+        M7[0][1] = 0.3; M7[0][2] = 0.2; M7[2][1] = 1.2;
     }
 
 }
@@ -217,6 +220,101 @@ void MatricesTest::testSVD() {
     }
 }
 
+void MatricesTest::testQRDecomposition() {
+
+    BOOST_MESSAGE("Testing QR decomposition...");
+
+    setup();
+
+    Real tol = 1.0e-12;
+    Matrix testMatrices[] = { M1, M2, I, 
+    						  M3, transpose(M3), M4, transpose(M4), M5 };
+
+    for (Size j = 0; j < LENGTH(testMatrices); j++) {
+    	Matrix Q, R;
+    	bool pivot = true;
+    	const Matrix& A = testMatrices[j];
+    	const std::vector<Size> ipvt = qrDecomposition(A, Q, R, pivot); 
+
+    	Matrix P(A.columns(), A.columns(), 0.0);
+    	
+    	// reverse column pivoting
+    	for (Size i=0; i < P.columns(); ++i) {
+    		P[ipvt[i]][i] = 1.0;
+    	}
+    	
+        if (norm(Q*R - A*P) > tol)
+            BOOST_FAIL("Q*R does not match matrix A*P (norm = "
+                       << norm(Q*R-A*P) << ")");
+        
+        pivot = false;
+    	qrDecomposition(A, Q, R, pivot); 
+
+    	if (norm(Q*R - A) > tol)
+            BOOST_FAIL("Q*R does not match matrix A (norm = "
+                       << norm(Q*R-A) << ")");
+    }
+}
+
+void MatricesTest::testQRSolve() {
+
+    BOOST_MESSAGE("Testing QR solve...");
+
+    setup();
+
+    Real tol = 1.0e-12;
+    MersenneTwisterUniformRng rng(1234);
+    Matrix testMatrices[] = { M1, M2, M3, transpose(M3), 
+    						  M4, transpose(M4), M5, I, M7 };     
+    
+    for (Size j = 0; j < LENGTH(testMatrices); j++) {
+    	const Matrix& A = testMatrices[j];
+    	Array b(A.rows());
+    	
+        for (Size k=0; k < 100; ++k) {
+        	for (Array::iterator iter = b.begin(); iter != b.end(); ++iter) {
+        		*iter = rng.next().value;
+        	}
+        	const Array x = qrSolve(A, b, true);
+        	
+        	if (A.columns() >= A.rows()) {
+            	if (norm(A*x - b) > tol)
+            		BOOST_FAIL("A*x does not match vector b (norm = "
+            					<< norm(A*x - b) << ")");        		
+        	}
+        	else {
+        		// use the SVD to calculate the reference values
+        		const Size n = A.columns();
+        		Array xr(n, 0.0);
+
+        		SVD svd(A);
+                const Matrix& V = svd.V();
+                const Matrix& U = svd.U();
+                const Array&  w = svd.singularValues();
+                const Real threshold = n*QL_EPSILON;
+
+                for (Size i=0; i<n; ++i) {
+                    if (w[i] > threshold) {
+                        const Real u = std::inner_product(U.column_begin(i),
+                                                          U.column_end(i),
+                                                          b.begin(), 0.0)/w[i];
+
+                        for (Size j=0; j<n; ++j) {
+                            xr[j]  +=u*V[j][i];
+                        }
+                    }
+                }
+                
+                if (norm(xr-x) > tol) {
+            		BOOST_FAIL("least square solution does not match (norm = "
+            					<< norm(x - xr) << ")");        		
+                	
+                }
+        	}
+        }
+    }
+}
+
 void MatricesTest::testInverse() {
 
     BOOST_MESSAGE("Testing LU inverse calculation...");
@@ -224,25 +322,28 @@ void MatricesTest::testInverse() {
     setup();
 
     Real tol = 1.0e-12;
-    Matrix testMatrices[] = { M1, M2, I };
+    Matrix testMatrices[] = { M1, M2, I, M5 };
 
     for (Size j = 0; j < LENGTH(testMatrices); j++) {
-        Matrix& A = testMatrices[j];
-        Matrix invA = inverse(A);
+        const Matrix& A = testMatrices[j];
+        const Matrix invA = inverse(A);
 
-        Matrix I1 = invA*A;
-        Matrix I2 = A*invA;
+        const Matrix I1 = invA*A;
+        const Matrix I2 = A*invA;
+        
+        Matrix eins(A.rows(), A.rows(), 0.0);
+        for (Size i=0; i < A.rows(); ++i) eins[i][i] = 1.0;
 
-        if (norm(I1 - I) > tol)
+        if (norm(I1 - eins) > tol)
             BOOST_FAIL("inverse(A)*A does not recover unit matrix (norm = "
-                       << norm(I1-I) << ")");
+                       << norm(I1-eins) << ")");
 
-        if (norm(I2 - I) > tol)
+        if (norm(I2 - eins) > tol)
             BOOST_FAIL("A*inverse(A) does not recover unit matrix (norm = "
-                       << norm(I1-I) << ")");
+                       << norm(I1-eins) << ")");
     }
 }
-#include <iostream>
+
 void MatricesTest::testDeterminant() {
 
     BOOST_MESSAGE("Testing LU determinant calculation");
@@ -302,6 +403,8 @@ test_suite* MatricesTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testSqrt));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testSVD));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testHighamSqrt));
+    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testQRDecomposition));
+    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testQRSolve));
     #if !defined(QL_NO_UBLAS_SUPPORT)
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testInverse));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testDeterminant));

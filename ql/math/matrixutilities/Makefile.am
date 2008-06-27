@@ -8,6 +8,7 @@ this_include_HEADERS = \
 	choleskydecomposition.hpp \
 	getcovariance.hpp \
 	pseudosqrt.hpp \
+	qrdecomposition.hpp \
 	svd.hpp \
 	symmetricschurdecomposition.hpp \
 	tapcorrelations.hpp \
@@ -18,6 +19,7 @@ libMatrixUtilities_la_SOURCES = \
 	choleskydecomposition.cpp \
 	getcovariance.cpp \
 	pseudosqrt.cpp \
+	qrdecomposition.cpp \
 	svd.cpp \
 	symmetricschurdecomposition.cpp \
 	tapcorrelations.cpp \

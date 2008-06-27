@@ -32,6 +32,8 @@ class MatricesTest {
     static void testSqrt();
     static void testHighamSqrt();
     static void testSVD();
+    static void testQRDecomposition();
+    static void testQRSolve();
     static void testInverse();
     static void testDeterminant();
     static boost::unit_test_framework::test_suite* suite();
