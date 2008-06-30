@@ -75,14 +75,16 @@ namespace QuantLib {
                 subsetElement = subset[j];
                 result[i] = false;
                 // if smaller no hope, leave false and go to next i
-                if (setElement < subsetElement) break;
+                if (setElement < subsetElement)
+                    break;
                 // if match, set result[i] to true and go to next i
                 if (setElement == subsetElement) {
                     result[i] = true;
                     break;
                 }
                 // if larger, leave false if at the end or go to next j
-                if (j > dimsubSet-1) break;
+                if (j == dimsubSet-1)
+                    break;
                 ++j;
             }
         }
