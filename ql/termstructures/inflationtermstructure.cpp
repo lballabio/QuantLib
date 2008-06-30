@@ -199,11 +199,11 @@ namespace QuantLib {
             endMonth = December;
             break;
           case Semiannual:
-            startMonth = Month((month-1)/6 + 1);
+            startMonth = Month(6*(month-1)/6 + 1);
             endMonth = Month(startMonth + 5);
             break;
           case Quarterly:
-            startMonth = Month((month-1)/3 + 1);
+            startMonth = Month(3*(month-1)/3 + 1);
             endMonth = Month(startMonth + 2);
             break;
           case Monthly:
