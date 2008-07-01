@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2003 RiskMap srl
- Copyright (C) 2004, 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -525,14 +525,22 @@ void CapFloorTest::testImpliedVolatility() {
                                                             tolerance,
                                                             maxEvaluations);
                         } catch (std::exception& e) {
-                            BOOST_FAIL("implied vol failure: " <<
-                                       typeToString(types[i]) <<
-                                       "\n  strike:     " << io::rate(strikes[j]) <<
-                                       "\n  risk-free:  " << io::rate(r) <<
-                                       "\n  length:     " << lengths[k] << "Y" <<
-                                       "\n  volatility: " << io::volatility(v) <<
-                                       "\n  price:      " << value <<
-                                       "\n" << e.what());
+                            // couldn't bracket?
+                            capfloor->setPricingEngine(vars.makeEngine(0.0));
+                            Real value2 = capfloor->NPV();
+                            if (std::fabs(value-value2) < tolerance) {
+                                // ok, just skip:
+                                continue;
+                            }
+                            // otherwise, report error
+                            BOOST_ERROR("implied vol failure: " <<
+                                        typeToString(types[i]) <<
+                                        "\n  strike:     " << io::rate(strikes[j]) <<
+                                        "\n  risk-free:  " << io::rate(r) <<
+                                        "\n  length:     " << lengths[k] << "Y" <<
+                                        "\n  volatility: " << io::volatility(v) <<
+                                        "\n  price:      " << value <<
+                                        "\n" << e.what());
                         }
                         if (std::fabs(implVol-v) > tolerance) {
                             // the difference might not matter

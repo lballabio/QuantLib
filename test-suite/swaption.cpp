@@ -5,7 +5,7 @@
  Copyright (C) 2006, 2007 Ferdinando Ametrano
  Copyright (C) 2006 Marco Bianchetti
  Copyright (C) 2006 Cristina Duminuco
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -847,7 +847,6 @@ void SwaptionTest::testImpliedVolatility() {
                                 vars.makeSwaption(swap, exerciseDate,
                                                   vols[u], types[h]);
                             // Black price
-                            // FLOATING_POINT_EXCEPTION
                             Real value = swaption->NPV();
                             Volatility implVol = 0.0;
                             try {
@@ -858,14 +857,22 @@ void SwaptionTest::testImpliedVolatility() {
                                                               tolerance,
                                                               maxEvaluations);
                             } catch (std::exception& e) {
-                                BOOST_FAIL("implied vol failure: " <<
-                                           exercises[i] << "x" << lengths[j] << " " << type[k] <<
-                                           "\nsettlement: " << types[h] <<
-                                           "\nstrike      " << strikes[t] <<
-                                           "\natm level:  " << io::rate(swap->fairRate()) <<
-                                           "\nvol:        " << io::volatility(vols[u]) <<
-                                           "\nprice:      " << value <<
-                                           "\n" << e.what());
+                                // couldn't bracket?
+                                swaption->setPricingEngine(vars.makeEngine(0.0));
+                                Real value2 = swaption->NPV();
+                                if (std::fabs(value-value2) < tolerance) {
+                                    // ok, just skip:
+                                    continue;
+                                }
+                                // otherwise, report error
+                                BOOST_ERROR("implied vol failure: " <<
+                                            exercises[i] << "x" << lengths[j] << " " << type[k] <<
+                                            "\nsettlement: " << types[h] <<
+                                            "\nstrike      " << strikes[t] <<
+                                            "\natm level:  " << io::rate(swap->fairRate()) <<
+                                            "\nvol:        " << io::volatility(vols[u]) <<
+                                            "\nprice:      " << value <<
+                                            "\n" << e.what());
                             }
                             if (std::fabs(implVol-vols[u]) > tolerance) {
                                 // the difference might not matter
