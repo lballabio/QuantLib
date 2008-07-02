@@ -419,12 +419,9 @@ namespace QuantLib {
         shared_ptr<FloatingRateCoupon> lastFloating =
             boost::dynamic_pointer_cast<FloatingRateCoupon>(
                                                  swap_->floatingLeg().back());
-        Date fixingValueDate = calendar_.advance(lastFloating->fixingDate(),
-                                                 iborIndex_->fixingDays()*Days);
-        Date endValueDate = calendar_.advance(fixingValueDate,
-                                              iborIndex_->tenor(),
-                                              iborIndex_->businessDayConvention(),
-                                              iborIndex_->endOfMonth());
+        Date fixingValueDate =
+            iborIndex_->valueDate(lastFloating->fixingDate());
+        Date endValueDate = iborIndex_->maturityDate(fixingValueDate);
         latestDate_ = std::max(latestDate_, endValueDate);
         #endif
     }
