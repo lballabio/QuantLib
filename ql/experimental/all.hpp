@@ -7,4 +7,5 @@
 #include <ql/experimental/credit/all.hpp>
 #include <ql/experimental/mcbasket/all.hpp>
 #include <ql/experimental/processes/all.hpp>
+#include <ql/experimental/risk/all.hpp>
 #include <ql/experimental/volatility/all.hpp>
