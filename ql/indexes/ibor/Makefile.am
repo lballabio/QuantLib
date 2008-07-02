@@ -16,6 +16,7 @@ this_include_HEADERS = \
     jpylibor.hpp \
     libor.hpp \
     nzdlibor.hpp \
+    seklibor.hpp \
     tibor.hpp \
     trlibor.hpp \
     usdlibor.hpp \
