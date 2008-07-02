@@ -2193,6 +2193,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\matrixutilities\qrdecomposition.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\qrdecomposition.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\matrixutilities\svd.cpp"
 					>
 				</File>
@@ -4526,6 +4534,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\processes\endeulerdiscretization.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\processes\endeulerdiscretization.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\processes\eulerdiscretization.cpp"
 				>
 			</File>
@@ -6064,14 +6080,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\quotes\sensitivityanalysis.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\quotes\sensitivityanalysis.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\quotes\simplequote.hpp"
 				>
 			</File>
@@ -7148,6 +7156,22 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\mcbasket\pathpayoff.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="risk"
+				>
+				<File
+					RelativePath=".\ql\experimental\risk\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\risk\sensitivityanalysis.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\risk\sensitivityanalysis.hpp"
 					>
 				</File>
 			</Filter>

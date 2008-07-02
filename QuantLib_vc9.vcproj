@@ -2190,6 +2190,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\matrixutilities\qrdecomposition.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\qrdecomposition.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\matrixutilities\svd.cpp"
 					>
 				</File>
@@ -4523,6 +4531,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\processes\endeulerdiscretization.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\processes\endeulerdiscretization.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\processes\eulerdiscretization.cpp"
 				>
 			</File>
@@ -6061,14 +6077,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\quotes\sensitivityanalysis.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\quotes\sensitivityanalysis.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\quotes\simplequote.hpp"
 				>
 			</File>
@@ -6892,6 +6900,10 @@
 		<Filter
 			Name="experimental"
 			>
+			<File
+				RelativePath=".\ql\experimental\all.hpp"
+				>
+			</File>
 			<Filter
 				Name="volatility"
 				>
@@ -7097,6 +7109,66 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\onefactorstudentcopula.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="mcbasket"
+				>
+				<File
+					RelativePath=".\ql\experimental\mcbasket\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\mcbasket\mcpathbasketengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\mcbasket\mcpathbasketengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\mcbasket\pathmultiassetoption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\mcbasket\pathmultiassetoption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\mcbasket\pathpayoff.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="processes"
+				>
+				<File
+					RelativePath=".\ql\experimental\processes\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\processes\extendedblackscholesprocess.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\processes\extendedblackscholesprocess.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="risk"
+				>
+				<File
+					RelativePath=".\ql\experimental\risk\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\risk\sensitivityanalysis.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\risk\sensitivityanalysis.hpp"
 					>
 				</File>
 			</Filter>

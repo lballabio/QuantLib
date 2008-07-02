@@ -2017,6 +2017,12 @@
 					RelativePath=".\ql\math\matrixutilities\pseudosqrt.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\math\matrixutilities\qrdecomposition.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\qrdecomposition.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\math\matrixutilities\svd.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
@@ -5566,6 +5572,12 @@
 				RelativePath=".\ql\processes\blackscholesprocess.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\processes\endeulerdiscretization.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\processes\endeulerdiscretization.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\processes\eulerdiscretization.cpp">
 			</File>
 			<File
@@ -5687,12 +5699,6 @@
 				RelativePath=".\ql\quotes\impliedstddevquote.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\quotes\sensitivityanalysis.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\quotes\sensitivityanalysis.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\quotes\simplequote.hpp">
 			</File>
 		</Filter>
@@ -5701,6 +5707,9 @@
 			Filter="">
 			<File
 				RelativePath=".\ql\termstructures\all.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\bootstraperror.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\termstructures\bootstraphelper.hpp">
@@ -6870,6 +6879,9 @@
 		<Filter
 			Name="experimental"
 			Filter="">
+			<File
+				RelativePath=".\ql\experimental\all.hpp">
+			</File>
 			<Filter
 				Name="coupons"
 				Filter="">
@@ -7099,6 +7111,19 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\onefactorstudentcopula.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="risk"
+				Filter="">
+				<File
+					RelativePath=".\ql\experimental\risk\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\risk\sensitivityanalysis.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\risk\sensitivityanalysis.hpp">
 				</File>
 			</Filter>
 		</Filter>
