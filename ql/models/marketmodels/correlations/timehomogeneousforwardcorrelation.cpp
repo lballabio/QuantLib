@@ -34,7 +34,7 @@ namespace QuantLib {
       times_(numberOfRates_) {
 
         checkIncreasingTimes(rateTimes);
-        QL_REQUIRE(numberOfRates_>1,
+        QL_REQUIRE(numberOfRates_>=1,
                    "Rate times must contain at least two values");
         QL_REQUIRE(numberOfRates_==fwdCorrelation.rows(),
                    "mismatch between number of rates (" << numberOfRates_ <<
