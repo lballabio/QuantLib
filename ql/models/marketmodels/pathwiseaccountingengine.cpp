@@ -1,0 +1,319 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
+/*
+Copyright (C) 2008 Mark Joshi
+
+This file is part of QuantLib, a free-software/open-source library
+for financial quantitative analysts and developers - http://quantlib.org/
+
+QuantLib is free software: you can redistribute it and/or modify it
+under the terms of the QuantLib license.  You should have received a
+copy of the license along with this program; if not, please email
+<quantlib-dev@lists.sf.net>. The license is also available online at
+<http://quantlib.org/license.shtml>.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+#include <ql/models/marketmodels/pathwiseaccountingengine.hpp>
+#include <ql/models/marketmodels/discounter.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalfwdrateeuler.hpp>
+#include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <ql/models/marketmodels/curvestate.hpp>
+#include <ql/models/marketmodels/marketmodel.hpp>
+#include <algorithm>
+
+namespace QuantLib {
+
+    PathwiseAccountingEngine::PathwiseAccountingEngine(const boost::shared_ptr<LogNormalFwdRateEuler>& evolver, // method relies heavily on LMM Euler
+        const Clone<MarketModelPathwiseMultiProduct>& product,
+        const boost::shared_ptr<MarketModel>& pseudoRootStructure, // we need pseudo-roots and displacements
+        Real initialNumeraireValue)
+        : evolver_(evolver), product_(product),pseudoRootStructure_(pseudoRootStructure),
+        initialNumeraireValue_(initialNumeraireValue),
+        numberProducts_(product->numberOfProducts()),
+        numerairesHeld_(product->numberOfProducts()),
+        numberCashFlowsThisStep_(product->numberOfProducts()),
+        cashFlowsGenerated_(product->numberOfProducts()) ,
+        deflatorAndDerivatives_(product->numberOfProducts()+1)
+    {
+
+        numberRates_ = pseudoRootStructure_->numberOfRates();
+        numberSteps_ = pseudoRootStructure_->numberOfSteps();
+
+        Matrix VModel(numberSteps_+1,numberRates_);
+
+        Discounts_ = Matrix(numberSteps_+1,numberRates_+1);
+
+        for (Size i=0; i <= numberSteps_; ++i)
+            Discounts_[i][0] = 1.0;
+
+
+        V_.reserve(numberProducts_);
+
+
+        //std::vector<std::vector<Size> > numberCashFlowsThisIndex;
+        // Matrix totalCashFlowsThisIndex;
+
+        Matrix  modelCashFlowIndex(product_->possibleCashFlowTimes().size(), numberRates_+1);
+
+
+        numberCashFlowsThisIndex_.resize(numberProducts_);
+
+        for (Size i=0; i<numberProducts_; ++i)
+        {
+            cashFlowsGenerated_[i].resize(
+                product_->maxNumberOfCashFlowsPerProductPerStep());
+
+            for (Size j=0; j < cashFlowsGenerated_[i].size(); ++j)
+                cashFlowsGenerated_[i][j].amount.resize(numberRates_+1);
+
+            numberCashFlowsThisIndex_[i].resize(product_->possibleCashFlowTimes().size());
+
+            V_.push_back(VModel);
+
+
+            totalCashFlowsThisIndex_.push_back(modelCashFlowIndex);
+        }
+
+        LIBORRatios_ = VModel;
+        StepsDiscountsSquared_ = VModel;
+        LIBORRates_ = VModel;
+
+
+
+        const std::vector<Time>& cashFlowTimes =
+            product_->possibleCashFlowTimes();
+        numberCashFlowTimes_ = cashFlowTimes.size();
+
+        const std::vector<Time>& rateTimes = product_->evolution().rateTimes();
+        const std::vector<Time>& evolutionTimes = product_->evolution().evolutionTimes();
+        discounters_.reserve(cashFlowTimes.size());
+
+        for (Size j=0; j<cashFlowTimes.size(); ++j)
+            discounters_.push_back(MarketModelPathwiseDiscounter(cashFlowTimes[j],
+            rateTimes));
+
+
+        // need to check that we are in money market measure
+
+
+        // we need to allocate cash-flow times to steps, i.e. what is the last step completed before a flow occurs
+        // what we really need is for each step, what cash flow time indices to look at 
+
+        cashFlowIndicesThisStep_.resize(numberSteps_);
+
+        for (Size i=0; i < numberCashFlowTimes_; ++i)
+        {
+            std::vector<Time>::const_iterator it = std::upper_bound( evolutionTimes.begin(), evolutionTimes.end(), cashFlowTimes[i]);
+            if (it != evolutionTimes.begin())
+                --it;
+            Size index = it - evolutionTimes.begin();
+            cashFlowIndicesThisStep_[index].push_back(i);
+        }
+
+        partials_ = Matrix(pseudoRootStructure_->numberOfFactors(),numberRates_);
+    }
+
+    Real PathwiseAccountingEngine::singlePathValues(std::vector<Real>& values) 
+    {
+
+        const std::vector<Real> initialForwards_(pseudoRootStructure_->initialRates());
+        currentForwards_ = initialForwards_;
+        // clear accumulation variables
+        for (Size i=0; i < numberProducts_; ++i)
+        {
+            numerairesHeld_[i]=0.0;
+
+            for (Size j=0; j < numberCashFlowTimes_; ++j)
+            {
+                numberCashFlowsThisIndex_[i][j] =0;
+
+                for (Size k=0; k <= numberRates_; ++k)
+                    totalCashFlowsThisIndex_[i][j][k] =0.0;
+            }
+
+            for (Size l=0;  l<= numberRates_; ++l)
+                for (Size m=0; m <= numberSteps_; ++m)
+                    V_[i][m][l] =0.0;
+
+        }
+
+
+
+        Real weight = evolver_->startNewPath();
+        product_->reset();
+
+        Size thisStep; 
+
+        bool done = false;
+        do {
+            thisStep = evolver_->currentStep();
+            Size storeStep = thisStep+1;
+            weight *= evolver_->advanceStep();
+
+            done = product_->nextTimeStep(evolver_->currentState(),
+                numberCashFlowsThisStep_,
+                cashFlowsGenerated_);
+
+            lastForwards_ = currentForwards_;
+            currentForwards_ =  evolver_->currentState().forwardRates();
+
+            for (unsigned long i=0; i < numberRates_; ++i)
+            {
+                Real x=  evolver_->currentState().discountRatio(i+1,i);
+                StepsDiscountsSquared_[storeStep][i] = x*x;
+
+                LIBORRatios_[storeStep][i] = currentForwards_[i]/lastForwards_[i];
+                LIBORRates_[storeStep][i] = currentForwards_[i];
+                Discounts_[storeStep][i+1] = evolver_->currentState().discountRatio(i+1,0);
+            }
+
+            // for each product...
+            for (Size i=0; i<numberProducts_; ++i) 
+            {
+                // ...and each cash flow...
+                const std::vector<MarketModelPathwiseMultiProduct::CashFlow>& cashflows =
+                    cashFlowsGenerated_[i];
+                for (Size j=0; j<numberCashFlowsThisStep_[i]; ++j) 
+                {
+                    Size k = cashFlowsGenerated_[i][j].timeIndex;
+                    ++numberCashFlowsThisIndex_[i][ k];
+
+                    for (Size l=0; l <= numberRates_; ++l)
+                        totalCashFlowsThisIndex_[i][k][l] += cashFlowsGenerated_[i][j].amount[l]*weight;
+
+                }
+            }
+
+
+        } while (!done);
+
+        // ok we've gathered cash-flows, still have to backwards computation
+
+        Size factors = pseudoRootStructure_->numberOfFactors();
+        const std::vector<Time>& taus= pseudoRootStructure_->evolution(). rateTaus();
+
+        bool flowsFound = false;
+
+        Integer finalStepDone = thisStep; 
+        Integer stepsUndone =  cashFlowIndicesThisStep_.size() - finalStepDone;
+
+        for (Integer currentStep =  numberSteps_-1; currentStep >=0 ; --currentStep) // must be a signed type as we go negative
+        {
+            Integer stepToUse = std::min<Integer>(currentStep, finalStepDone)+1; 
+
+            for (Size k=0; k < cashFlowIndicesThisStep_[currentStep].size(); ++k)
+            {
+                Size cashFlowIndex =cashFlowIndicesThisStep_[currentStep][k];
+
+                // first check to see if anything actually happened before spending time on computing stuff 
+                bool noFlows = true;
+                for (Size l=0; l < numberProducts_ && noFlows; ++l)
+                    noFlows = noFlows && (numberCashFlowsThisIndex_[l][cashFlowIndex] ==0);
+
+                flowsFound = flowsFound || !noFlows;
+
+                if (!noFlows)
+                {
+
+                    discounters_[cashFlowIndex].getFactors(LIBORRates_, Discounts_,stepToUse, deflatorAndDerivatives_); // get amount to discount cash flow by and amount to multiply its derivatives by                                
+                    for (Size j=0; j < numberProducts_; ++j)
+                    {
+                        if (numberCashFlowsThisIndex_[j][cashFlowIndex] > 0)
+                        {
+                            Real deflatedCashFlow = totalCashFlowsThisIndex_[j][cashFlowIndex][0];
+                            //cashFlowsGenerated_[j][cashFlowIndex].amount[0]*deflatorAndDerivatives_[0];
+                            numerairesHeld_[j] += deflatedCashFlow;
+
+                            for (Size i=1; i <= numberRates_; ++i)
+                            {
+                                Real thisDerivative =  totalCashFlowsThisIndex_[j][cashFlowIndex][i]*deflatorAndDerivatives_[0];
+                                thisDerivative +=  totalCashFlowsThisIndex_[j][cashFlowIndex][0]*deflatorAndDerivatives_[i];
+
+                                V_[j][stepToUse][i-1] += thisDerivative; // zeroth row of V is t =0 not t_0 
+                            }
+                        }
+                    }
+                }
+            }
+
+            // need to do backwards updating 
+            if (flowsFound)
+            {
+                Size nextStepToUse  = std::min(currentStep-1, finalStepDone); 
+                Size nextStepIndex = nextStepToUse+1;
+                if (nextStepIndex != stepToUse) // then we need to update V
+                {
+
+                    const Matrix& thisPseudoRoot_= pseudoRootStructure_->pseudoRoot(currentStep);
+
+                    for (Size i=0; i < numberProducts_; ++i)
+                    {
+                        // compute partials
+                        for (Size f=0; f < factors; ++f)\
+                        {
+                            Real libor = LIBORRates_[stepToUse][numberRates_-1];
+                            Real V = V_[i][stepToUse][numberRates_-1];
+                            Real pseudo = thisPseudoRoot_[numberRates_-1][f];
+                            Real thisPartialTerm = libor*V*pseudo;
+                            partials_[f][numberRates_-1] = thisPartialTerm;
+
+                            for (Integer r = numberRates_-2; r >=0 ; --r)
+                            {
+                                Real thisPartialTermr = LIBORRates_[stepToUse][r]*V_[i][stepToUse][r]*thisPseudoRoot_[r][f];
+
+                                partials_[f][r] = partials_[f][r+1] + thisPartialTermr;
+
+                            }
+                        }
+                        for (Size j=0; j < numberRates_; ++j)
+                        {
+                            Real nextV = V_[i][stepToUse][j] * LIBORRatios_[stepToUse][j];
+                            V_[i][nextStepIndex][j] = nextV;
+
+                            Real summandTerm = 0.0;
+                            for (Size f=0; f < factors; ++f)
+                                summandTerm += thisPseudoRoot_[j][f]*partials_[f][j];
+
+                            summandTerm *= taus[j]*StepsDiscountsSquared_[stepToUse][j];
+
+                            V_[i][nextStepIndex][j] += summandTerm;
+
+                        }
+                    }
+
+                }
+            }
+
+
+
+
+        }
+
+        // write answer into values 
+
+        for (Size i=0; i < numberProducts_; ++i)
+        {
+            values[i] = numerairesHeld_[i]*initialNumeraireValue_;
+            for (Size j=0; j < numberRates_; ++j)
+                values[(i+1)*numberProducts_+j] = V_[i][0][j]*initialNumeraireValue_;
+        }
+
+        return 1.0; // we have put the weight in already, this results in lower variance since weight changes along the path
+    }
+
+    void PathwiseAccountingEngine::multiplePathValues(SequenceStatistics& stats,
+        Size numberOfPaths)
+    {
+        std::vector<Real> values(product_->numberOfProducts()*(numberRates_+1));
+        for (Size i=0; i<numberOfPaths; ++i) 
+        {
+            Real weight = singlePathValues(values);
+            stats.add(values,weight);
+        }
+    }
+
+}
