@@ -43,7 +43,7 @@ namespace QuantLib {
         numberRates_ = pseudoRootStructure_->numberOfRates();
         numberSteps_ = pseudoRootStructure_->numberOfSteps();
 
-        Matrix VModel(numberSteps_+1,numberRates_);
+        Matrix VModel(numberSteps_+1,numberRates_+1);
 
         Discounts_ = Matrix(numberSteps_+1,numberRates_+1);
 
