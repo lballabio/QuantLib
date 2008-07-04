@@ -64,8 +64,10 @@ void MarketModelPathwiseDiscounter::getFactors(const Matrix& LIBORRates, // LIBO
             factors[0] = preDF;
 
             Size i=0;
-            for (; i <=before_; ++i)
+            for (; i <before_; ++i)
                 factors[i+1] = -preDF*taus_[i]*Discounts[currentStep][i+1]/Discounts[currentStep][i];
+
+            factors[before_+1]=0.0;
 
            return;
        }
