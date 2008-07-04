@@ -75,7 +75,9 @@ namespace QuantLib {
         {
             numberCashFlowsThisStep[currentIndex_] = 1;
             for (Size i=1; i <= numberRates_; ++i)
-                cashFlowsGenerated[currentIndex_][0].amount[i] =  accruals_[currentIndex_];
+                cashFlowsGenerated[currentIndex_][0].amount[i] =0;
+            
+             cashFlowsGenerated[currentIndex_][0].amount[currentIndex_+1]  = accruals_[currentIndex_];
         }
         ++currentIndex_;
         return (currentIndex_ == strikes_.size());
