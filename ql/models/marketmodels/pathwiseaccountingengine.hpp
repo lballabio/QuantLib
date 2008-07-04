@@ -74,6 +74,8 @@ namespace QuantLib {
 
         std::vector<Matrix> V_;  // one V for each product, with components for each time step and rate
 
+   //     std::vector<std::vector<std::vector<Real> > > V_; // one V for each product, with components for each time step and rate
+
         Matrix LIBORRatios_; // dimensions are step and rate number
         Matrix Discounts_; // dimensions are step and rate number, goes from 0 to n. P(t_0, t_j)
 

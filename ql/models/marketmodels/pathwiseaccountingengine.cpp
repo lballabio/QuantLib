@@ -43,7 +43,14 @@ namespace QuantLib {
         numberRates_ = pseudoRootStructure_->numberOfRates();
         numberSteps_ = pseudoRootStructure_->numberOfSteps();
 
-        Matrix VModel(numberSteps_+1,numberRates_+1);
+        Matrix VModel(numberSteps_+1,numberRates_);
+
+       // std::vector<std::vector<Real> > VModel(numberSteps_+1);
+       // for (Size j=0; j <= numberSteps_; ++j)
+         //   VModel[j].resize(numberRates_);
+
+ //      Matrix Vmodel2(numberSteps_+1,numberRates_);
+
 
         Discounts_ = Matrix(numberSteps_+1,numberRates_+1);
 
@@ -80,7 +87,8 @@ namespace QuantLib {
 
         LIBORRatios_ = VModel;
         StepsDiscountsSquared_ = VModel;
-        LIBORRates_ = VModel;
+        LIBORRates_ =VModel;
+
 
 
 
@@ -135,7 +143,7 @@ namespace QuantLib {
                     totalCashFlowsThisIndex_[i][j][k] =0.0;
             }
 
-            for (Size l=0;  l<= numberRates_; ++l)
+            for (Size l=0;  l< numberRates_; ++l)
                 for (Size m=0; m <= numberSteps_; ++m)
                     V_[i][m][l] =0.0;
 
@@ -253,7 +261,7 @@ namespace QuantLib {
                     for (Size i=0; i < numberProducts_; ++i)
                     {
                         // compute partials
-                        for (Size f=0; f < factors; ++f)\
+                        for (Size f=0; f < factors; ++f)
                         {
                             Real libor = LIBORRates_[stepToUse][numberRates_-1];
                             Real V = V_[i][stepToUse][numberRates_-1];
