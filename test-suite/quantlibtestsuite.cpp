@@ -186,6 +186,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test_suite* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(QUANTLIB_TEST_CASE(startTimer));
+ 
     test->add(AmericanOptionTest::suite());
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
@@ -237,6 +238,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MarketModelSmmCapletAlphaCalibrationTest::suite());
     test->add(MarketModelSmmCapletCalibrationTest::suite());
     test->add(MarketModelSmmCapletHomoCalibrationTest::suite());
+    
     test->add(MarketModelTest::suite());
     test->add(MatricesTest::suite());
     test->add(MCLongstaffSchwartzEngineTest::suite());
@@ -277,6 +279,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(LiborMarketModelTest::suite());
     test->add(LiborMarketModelProcessTest::suite());
     test->add(OldPricerTest::suite());
+
     test->add(QUANTLIB_TEST_CASE(stopTimer));
 
     return test;

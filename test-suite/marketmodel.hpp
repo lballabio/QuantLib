@@ -36,6 +36,7 @@ class MarketModelTest {
     static void testCallableSwapLS();
     static void testCallableSwapAnderson();
     static void testGreeks();
+    static void testPathwiseGreeks();
     static void testAbcdVolatilityIntegration();
     static void testAbcdVolatilityCompare();
     static void testAbcdVolatilityFit();
