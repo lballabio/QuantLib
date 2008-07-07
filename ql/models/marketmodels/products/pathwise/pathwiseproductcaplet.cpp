@@ -26,6 +26,12 @@
 
 namespace QuantLib {
 
+
+    bool MarketModelPathwiseMultiCaplet::alreadyDeflated() const
+    {
+        return false;
+    }
+
     MarketModelPathwiseMultiCaplet::MarketModelPathwiseMultiCaplet(const std::vector<Time>& rateTimes,
                         const std::vector<Real>& accruals,
                         const std::vector<Time>& paymentTimes,

@@ -58,6 +58,11 @@ namespace QuantLib {
         virtual std::vector<Time> possibleCashFlowTimes() const;
         virtual Size numberOfProducts() const;
         virtual Size maxNumberOfCashFlowsPerProductPerStep() const;
+
+        // has division by the numeraire already been done?
+        virtual bool alreadyDeflated() const;
+
+
         //! during simulation put product at start of path
         virtual void reset();
 
