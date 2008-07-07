@@ -64,6 +64,8 @@ namespace QuantLib {
 
         std::vector<Real> currentForwards_, lastForwards_;
 
+        bool doDeflation_;
+
 
         // workspace
         std::vector<Real> numerairesHeld_;

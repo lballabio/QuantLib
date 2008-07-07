@@ -37,7 +37,8 @@ namespace QuantLib {
         numerairesHeld_(product->numberOfProducts()),
         numberCashFlowsThisStep_(product->numberOfProducts()),
         cashFlowsGenerated_(product->numberOfProducts()) ,
-        deflatorAndDerivatives_(product->numberOfProducts()+1)
+        deflatorAndDerivatives_(product->numberOfProducts()+1),
+        doDeflation_(!product->alreadyDeflated())
     {
 
         numberRates_ = pseudoRootStructure_->numberOfRates();
@@ -45,12 +46,7 @@ namespace QuantLib {
 
         Matrix VModel(numberSteps_+1,numberRates_);
 
-       // std::vector<std::vector<Real> > VModel(numberSteps_+1);
-       // for (Size j=0; j <= numberSteps_; ++j)
-         //   VModel[j].resize(numberRates_);
-
- //      Matrix Vmodel2(numberSteps_+1,numberRates_);
-
+    
 
         Discounts_ = Matrix(numberSteps_+1,numberRates_+1);
 
@@ -59,10 +55,6 @@ namespace QuantLib {
 
 
         V_.reserve(numberProducts_);
-
-
-        //std::vector<std::vector<Size> > numberCashFlowsThisIndex;
-        // Matrix totalCashFlowsThisIndex;
 
         Matrix  modelCashFlowIndex(product_->possibleCashFlowTimes().size(), numberRates_+1);
 
@@ -226,20 +218,27 @@ namespace QuantLib {
 
                 if (!noFlows)
                 {
-
-                    discounters_[cashFlowIndex].getFactors(LIBORRates_, Discounts_,stepToUse, deflatorAndDerivatives_); // get amount to discount cash flow by and amount to multiply its derivatives by                                
+                    if (doDeflation_)
+                        discounters_[cashFlowIndex].getFactors(LIBORRates_, Discounts_,stepToUse, deflatorAndDerivatives_); // get amount to discount cash flow by and amount to multiply its derivatives by                                
+    
                     for (Size j=0; j < numberProducts_; ++j)
                     {
                         if (numberCashFlowsThisIndex_[j][cashFlowIndex] > 0)
                         {
                             Real deflatedCashFlow = totalCashFlowsThisIndex_[j][cashFlowIndex][0];
+                            if (doDeflation_)
+                                deflatedCashFlow *= deflatorAndDerivatives_[0];
                             //cashFlowsGenerated_[j][cashFlowIndex].amount[0]*deflatorAndDerivatives_[0];
                             numerairesHeld_[j] += deflatedCashFlow;
 
                             for (Size i=1; i <= numberRates_; ++i)
                             {
-                                Real thisDerivative =  totalCashFlowsThisIndex_[j][cashFlowIndex][i]*deflatorAndDerivatives_[0];
-                                thisDerivative +=  totalCashFlowsThisIndex_[j][cashFlowIndex][0]*deflatorAndDerivatives_[i];
+                                Real thisDerivative =  totalCashFlowsThisIndex_[j][cashFlowIndex][i];
+                                if (doDeflation_)
+                                {
+                                    thisDerivative *= deflatorAndDerivatives_[0];
+                                    thisDerivative +=  totalCashFlowsThisIndex_[j][cashFlowIndex][0]*deflatorAndDerivatives_[i];
+                                }
 
                                 V_[j][stepToUse][i-1] += thisDerivative; // zeroth row of V is t =0 not t_0 
                             }

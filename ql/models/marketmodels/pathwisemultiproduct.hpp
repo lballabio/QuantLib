@@ -63,6 +63,9 @@ namespace QuantLib {
         virtual std::vector<Time> possibleCashFlowTimes() const = 0;
         virtual Size numberOfProducts() const = 0;
         virtual Size maxNumberOfCashFlowsPerProductPerStep() const = 0;
+
+        virtual bool alreadyDeflated() const =0;
+
         //! during simulation put product at start of path
         virtual void reset() = 0;
         //! return value indicates whether path is finished, TRUE means done
