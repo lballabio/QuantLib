@@ -1,5 +1,5 @@
 
-SUBDIRS = onestep multistep
+SUBDIRS = onestep multistep pathwise
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
