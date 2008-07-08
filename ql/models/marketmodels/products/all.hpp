@@ -9,3 +9,4 @@
 
 #include <ql/models/marketmodels/products/onestep/all.hpp>
 #include <ql/models/marketmodels/products/multistep/all.hpp>
+#include <ql/models/marketmodels/products/pathwise/all.hpp>
