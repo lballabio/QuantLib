@@ -15,6 +15,7 @@
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/models/marketmodels/marketmodeldifferences.hpp>
 #include <ql/models/marketmodels/multiproduct.hpp>
+#include <ql/models/marketmodels/pathwiseaccountingengine.hpp>
 #include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
 #include <ql/models/marketmodels/proxygreekengine.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>

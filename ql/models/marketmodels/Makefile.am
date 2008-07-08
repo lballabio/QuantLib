@@ -22,6 +22,7 @@ this_include_HEADERS = \
     marketmodeldifferences.hpp \
     multiproduct.hpp \
     pathwiseaccountingengine.hpp \
+    pathwisediscounter.hpp \
     piecewiseconstantcorrelation.hpp \
     proxygreekengine.hpp \
     swapforwardmappings.hpp \
@@ -37,6 +38,7 @@ libMarketModels_la_SOURCES = \
     marketmodel.cpp \
     marketmodeldifferences.cpp \
     pathwiseaccountingengine.cpp \
+    pathwisediscounter.cpp \
     proxygreekengine.cpp \
     swapforwardmappings.cpp \
     utilities.cpp
