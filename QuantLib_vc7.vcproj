@@ -2950,6 +2950,21 @@
 					RelativePath=".\ql\models\marketmodels\multiproduct.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\models\marketmodels\pathwiseaccountingengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\pathwiseaccountingengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\pathwisediscounter.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\pathwisediscounter.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\pathwisemultiproduct.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelation.hpp">
 				</File>
 				<File
@@ -3114,6 +3129,19 @@
 						</File>
 						<File
 							RelativePath=".\ql\models\marketmodels\products\multistep\multistepswap.hpp">
+						</File>
+					</Filter>
+					<Filter
+						Name="pathwise"
+						Filter="">
+						<File
+							RelativePath=".\ql\models\marketmodels\products\pathwise\all.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\pathwise\pathwiseproductcaplet.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\pathwise\pathwiseproductcaplet.hpp">
 						</File>
 					</Filter>
 				</Filter>
