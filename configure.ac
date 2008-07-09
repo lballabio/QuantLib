@@ -373,6 +373,7 @@ AC_CONFIG_FILES([
     ql/models/marketmodels/products/Makefile
     ql/models/marketmodels/products/onestep/Makefile
     ql/models/marketmodels/products/multistep/Makefile
+    ql/models/marketmodels/products/pathwise/Makefile
     ql/models/shortrate/Makefile
     ql/models/shortrate/calibrationhelpers/Makefile
     ql/models/shortrate/onefactormodels/Makefile
