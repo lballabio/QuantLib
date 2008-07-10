@@ -46,8 +46,13 @@ namespace QuantLib {
         for (Size i=0; i < n; ++i) {
             std::fill(r.row_begin(i), r.row_begin(i)+i, 0.0);
             r[i][i] = rdiag[i];
-            std::copy(mT.column_begin(i)+i+1, mT.column_end(i), 
-                      r.row_begin(i)+i+1);
+            if (i < m) {
+                std::copy(mT.column_begin(i)+i+1, mT.column_end(i), 
+                          r.row_begin(i)+i+1);
+            }
+            else {
+                std::fill(r.row_begin(i)+i+1, r.row_end(i), 0.0);
+            }
         }
 
         if (q.rows() != m || q.columns() != n)
@@ -58,7 +63,7 @@ namespace QuantLib {
             std::fill(w.begin(), w.end(), 0.0);
             w[k] = 1.0;
     		
-            for (Size j=0; j < n; ++j) {
+            for (Size j=0; j < std::min(n, m); ++j) {
                 const Real t3 = mT[j][j];
                 if (t3 != 0.0) {
                     const Real t
@@ -69,7 +74,8 @@ namespace QuantLib {
                     }
                 }
                 q[k][j] = w[j];
-            }		
+            }
+            std::fill(q.row_begin(k) + std::min(n, m), q.row_end(k), 0.0);
         }
     	
         std::vector<Size> ipvt(n);
@@ -105,7 +111,7 @@ namespace QuantLib {
         boost::scoped_array<double> sdiag(new double[n]);
         boost::scoped_array<double> wa(new double[n]);
     	
-        Array ld(b.size(), 0.0);
+        Array ld(n, 0.0);
         if (!d.empty()) {
             std::copy(d.begin(), d.end(), ld.begin());
         }
