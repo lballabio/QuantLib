@@ -3680,6 +3680,18 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="pathwisegreeks"
+					>
+					<File
+						RelativePath=".\ql\models\marketmodels\pathwisegreeks\ratepseudorootjacobian.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\pathwisegreeks\ratepseudorootjacobian.hpp"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="shortrate"
