@@ -3479,6 +3479,16 @@
 						RelativePath=".\ql\models\marketmodels\correlations\timehomogeneousforwardcorrelation.hpp">
 					</File>
 				</Filter>
+				<Filter
+					Name="pathwisegreeks"
+					Filter="">
+					<File
+						RelativePath=".\ql\models\marketmodels\pathwisegreeks\ratepseudorootjacobian.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\pathwisegreeks\ratepseudorootjacobian.hpp">
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="shortrate"
