@@ -21,7 +21,7 @@ this_include_HEADERS = \
     marketmodeldifferences.hpp \
     multiproduct.hpp \
     pathwiseaccountingengine.hpp \
-    pathwisemultiproduct.hpp ]
+    pathwisemultiproduct.hpp \
     pathwisediscounter.hpp \
     piecewiseconstantcorrelation.hpp \
     proxygreekengine.hpp \
