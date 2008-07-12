@@ -16,6 +16,7 @@
 #include <ql/models/marketmodels/marketmodeldifferences.hpp>
 #include <ql/models/marketmodels/multiproduct.hpp>
 #include <ql/models/marketmodels/pathwiseaccountingengine.hpp>
+#include <ql/models/marketmodels/pathwisediscounter.hpp>
 #include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
 #include <ql/models/marketmodels/proxygreekengine.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
@@ -29,3 +30,4 @@
 #include <ql/models/marketmodels/evolvers/all.hpp>
 #include <ql/models/marketmodels/models/all.hpp>
 #include <ql/models/marketmodels/products/all.hpp>
+#include <ql/models/marketmodels/pathwisegreeks/all.hpp>

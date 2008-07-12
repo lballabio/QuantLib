@@ -1,6 +1,6 @@
 
 SUBDIRS = browniangenerators callability correlations curvestates \
-          driftcomputation evolvers models products
+          driftcomputation evolvers models products pathwisegreeks 
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 

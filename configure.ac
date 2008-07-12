@@ -370,6 +370,7 @@ AC_CONFIG_FILES([
     ql/models/marketmodels/driftcomputation/Makefile
     ql/models/marketmodels/evolvers/Makefile
     ql/models/marketmodels/models/Makefile
+    ql/models/marketmodels/pathwisegreeks/Makefile
     ql/models/marketmodels/products/Makefile
     ql/models/marketmodels/products/onestep/Makefile
     ql/models/marketmodels/products/multistep/Makefile
