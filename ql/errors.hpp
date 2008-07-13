@@ -76,7 +76,7 @@ if (!(condition)) { \
     _ql_msg_stream << message; \
     throw QuantLib::Error(__FILE__,__LINE__, \
                           BOOST_CURRENT_FUNCTION,_ql_msg_stream.str()); \
- } else {}
+ } else 
 
 
 /*! \def QL_REQUIRE
@@ -88,7 +88,7 @@ if (!(condition)) { \
     _ql_msg_stream << message; \
     throw QuantLib::Error(__FILE__,__LINE__, \
                           BOOST_CURRENT_FUNCTION,_ql_msg_stream.str()); \
- } else {}
+ } else 
 
 
 /*! \def QL_ENSURE
@@ -100,7 +100,7 @@ if (!(condition)) { \
     _ql_msg_stream << message; \
     throw QuantLib::Error(__FILE__,__LINE__, \
                           BOOST_CURRENT_FUNCTION,_ql_msg_stream.str()); \
- } else {}
+ } else 
 
 
 #endif
