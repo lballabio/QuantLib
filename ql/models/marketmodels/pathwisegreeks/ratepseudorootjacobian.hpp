@@ -30,8 +30,11 @@
 /*! Classes for computing derivative of the map taking rates one step 
 to the next with respect to a change in the pseudo-root. We do it both
 numerically and analytically to provide an easy test of the analytic method.
+This is useful for pathwise vegas.
 
 Evolution is log Euler. 
+
+One is tested against the other in MarketModelTest::testPathwiseVegas
 */
 
 namespace QuantLib
