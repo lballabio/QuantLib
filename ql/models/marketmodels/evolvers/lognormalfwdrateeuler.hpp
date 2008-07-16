@@ -47,6 +47,15 @@ namespace QuantLib {
         const CurveState& currentState() const;
         void setInitialState(const CurveState&);
         //@}
+
+        //! accessor methods useful for doing pathwise vegas
+        const std::vector<Real>& browniansThisStep() const
+        {
+            return brownians_;
+        }
+     
+
+
       private:
         void setForwards(const std::vector<Real>& forwards);
         // inputs
