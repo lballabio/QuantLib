@@ -33,7 +33,11 @@ namespace QuantLib {
     class CurveState;
 
     //! market-model pathwise caplet
-    /*! implementation of path wise methodology for caplets
+    /*! implementation of path wise methodology for caplets, essentially a test class
+    since we have better ways of computing Greeks of caplets
+
+    used in   MarketModelTest::testPathwiseVegas
+    and       MarketModelTest::testPathwiseGreeks
 
     */
 
