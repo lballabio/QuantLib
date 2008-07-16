@@ -2020,222 +2020,236 @@ void MarketModelTest::testPathwiseGreeks()
         //CashOrNothingPayoff(Option::Call, todaysForwards[i]+displacement, 0.01));
     }
 
-    MarketModelPathwiseMultiCaplet product(rateTimes, accruals,
-        paymentTimes, todaysForwards);
+    for (Size whichProduct=0; whichProduct<2; ++whichProduct)
+    {
+        MarketModelPathwiseMultiDeflatedCaplet product1(rateTimes, accruals,
+            paymentTimes, todaysForwards);
 
-    MultiStepOptionlets productDummy(rateTimes, accruals,
-        paymentTimes, payoffs);
+        MarketModelPathwiseMultiCaplet product2(rateTimes, accruals,
+            paymentTimes, todaysForwards);
+
+        std::auto_ptr<MarketModelPathwiseMultiProduct> product;
+
+        if (whichProduct == 0)
+            product = product2.clone();
+        else
+            product = product1.clone();
+
+
+        MultiStepOptionlets productDummy(rateTimes, accruals,
+            paymentTimes, payoffs);
 
 
 
-    EvolutionDescription evolution = product.evolution();
+        EvolutionDescription evolution = product->evolution();
 
-    MarketModelType marketModels[] = {
-        // CalibratedMM,
-        // ExponentialCorrelationFlatVolatility,
-        ExponentialCorrelationAbcdVolatility };
+        MarketModelType marketModels[] = {
+            // CalibratedMM,
+            // ExponentialCorrelationFlatVolatility,
+            ExponentialCorrelationAbcdVolatility };
 
-        for (Size j=0; j<LENGTH(marketModels); j++)
-        {
-
-            Size testedFactors[] = { 2
-                //, 4, 8, todaysForwards.size() 
-            };
-
-            for (Size m=0; m<LENGTH(testedFactors); ++m) 
+            for (Size j=0; j<LENGTH(marketModels); j++)
             {
-                Size factors = testedFactors[m];
 
-                MeasureType measures[] = { 
-                    MoneyMarket
+                Size testedFactors[] = { 2
+                    //, 4, 8, todaysForwards.size() 
                 };
 
-                for (Size k=0; k<LENGTH(measures); k++) 
+                for (Size m=0; m<LENGTH(testedFactors); ++m) 
                 {
-                    std::vector<Size> numeraires = makeMeasure(productDummy, measures[k]);
+                    Size factors = testedFactors[m];
 
-                    for (Size n=0; n<1; n++) 
+                    MeasureType measures[] = { 
+                        MoneyMarket
+                    };
+
+                    for (Size k=0; k<LENGTH(measures); k++) 
                     {
-                        MTBrownianGeneratorFactory generatorFactory(seed_);
+                        std::vector<Size> numeraires = makeMeasure(productDummy, measures[k]);
 
-                        bool logNormal = true;
-                        boost::shared_ptr<MarketModel> marketModel =
-                            makeMarketModel(logNormal, evolution, factors,
-                            marketModels[j]);
-
-                        LogNormalFwdRateEuler evolver(marketModel,
-                            generatorFactory,
-                            numeraires);
-                        SequenceStatistics stats(product.numberOfProducts()*(todaysForwards.size()+1));
-
-
-
-
-
-
-
-                        Spread forwardBump = 1.0e-6;
-
-                        std::ostringstream config;
-                        config <<
-                            marketModelTypeToString(marketModels[j]) << ", " <<
-                            factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
-                            measureTypeToString(measures[k]) << ", " <<
-                            "MT BGF";
-                        if (printReport_)
-                            BOOST_MESSAGE("    " << config.str());
-
-                        Size initialNumeraire = evolver.numeraires().front();
-                        Real initialNumeraireValue =
-                            todaysDiscounts[initialNumeraire];
-
+                        for (Size n=0; n<1; n++) 
                         {
+                            MTBrownianGeneratorFactory generatorFactory(seed_);
 
-                            PathwiseAccountingEngine accountingengine(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver)), // method relies heavily on LMM Euler
-                                product,
-                                marketModel, // we need pseudo-roots and displacements
-                                initialNumeraireValue);
+                            bool logNormal = true;
+                            boost::shared_ptr<MarketModel> marketModel =
+                                makeMarketModel(logNormal, evolution, factors,
+                                marketModels[j]);
 
-
-
-                            accountingengine.multiplePathValues(stats,paths_);
-                        }
-
-
-                        std::vector<Real> valuesAndDeltas = stats.mean();
-                        std::vector<Real> errors = stats.errorEstimate();
-
-                        std::vector<Real> prices(product.numberOfProducts());
-                        std::vector<Real> priceErrors(product.numberOfProducts());
-
-                        Matrix deltas( product.numberOfProducts(), todaysForwards.size()); 
-                        Matrix deltasErrors( product.numberOfProducts(), todaysForwards.size());
-                        std::vector<Real> modelPrices(product.numberOfProducts());
+                            LogNormalFwdRateEuler evolver(marketModel,
+                                generatorFactory,
+                                numeraires);
+                            SequenceStatistics stats(product->numberOfProducts()*(todaysForwards.size()+1));
 
 
-                        for (Size i=0; i < product.numberOfProducts(); ++i)
-                        {                         
-                            prices[i] = valuesAndDeltas[i];
-
-                            priceErrors[i] = errors[i];
-
-                            modelPrices[i] = BlackCalculator(displacedPayoffs[i], todaysForwards[i],
-                                volatilities[i]*sqrt(rateTimes[i]),
-                                todaysDiscounts[i+1]*(rateTimes[i+1]-rateTimes[i])).value();
 
 
-                            for (Size j=0; j <  todaysForwards.size(); ++j)
+
+
+
+                            Spread forwardBump = 1.0e-6;
+
+                            std::ostringstream config;
+                            config <<
+                                marketModelTypeToString(marketModels[j]) << ", " <<
+                                factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
+                                measureTypeToString(measures[k]) << ", " <<
+                                "MT BGF";
+                            if (printReport_)
+                                BOOST_MESSAGE("    " << config.str());
+
+                            Size initialNumeraire = evolver.numeraires().front();
+                            Real initialNumeraireValue =
+                                todaysDiscounts[initialNumeraire];
+
                             {
-                                deltas[i][j] = valuesAndDeltas[(i+1)*product.numberOfProducts()+j];
-                                deltasErrors[i][j]  = errors[(i+1)* product.numberOfProducts()+j];
 
+                                PathwiseAccountingEngine accountingengine(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver)), // method relies heavily on LMM Euler
+                                    *product,
+                                    marketModel, // we need pseudo-roots and displacements
+                                    initialNumeraireValue);
+
+
+
+                                accountingengine.multiplePathValues(stats,paths_);
                             }
 
-                        }
 
-                        Matrix modelDeltas(product.numberOfProducts(), todaysForwards.size()); 
+                            std::vector<Real> valuesAndDeltas = stats.mean();
+                            std::vector<Real> errors = stats.errorEstimate();
+
+                            std::vector<Real> prices(product->numberOfProducts());
+                            std::vector<Real> priceErrors(product->numberOfProducts());
+
+                            Matrix deltas( product->numberOfProducts(), todaysForwards.size()); 
+                            Matrix deltasErrors( product->numberOfProducts(), todaysForwards.size());
+                            std::vector<Real> modelPrices(product->numberOfProducts());
 
 
-                        std::vector<DiscountFactor> discPlus(todaysForwards.size()+1, todaysDiscounts[0]);
-                        std::vector<DiscountFactor> discMinus(todaysForwards.size()+1, todaysDiscounts[0]);
-                        std::vector<Rate> fwdPlus(todaysForwards.size());
-                        std::vector<Rate> fwdMinus(todaysForwards.size());
+                            for (Size i=0; i < product->numberOfProducts(); ++i)
+                            {                         
+                                prices[i] = valuesAndDeltas[i];
+
+                                priceErrors[i] = errors[i];
+
+                                modelPrices[i] = BlackCalculator(displacedPayoffs[i], todaysForwards[i],
+                                    volatilities[i]*sqrt(rateTimes[i]),
+                                    todaysDiscounts[i+1]*(rateTimes[i+1]-rateTimes[i])).value();
 
 
-                        for (Size i=0; i < todaysForwards.size(); ++i)
-                        {
-                            for (Size j=0; j < todaysForwards.size(); ++j)
-                            {
-                                if (i != j)
+                                for (Size j=0; j <  todaysForwards.size(); ++j)
                                 {
-                                    fwdPlus[j] = todaysForwards[j];
-                                    fwdMinus[j] = todaysForwards[j];
+                                    deltas[i][j] = valuesAndDeltas[(i+1)*product->numberOfProducts()+j];
+                                    deltasErrors[i][j]  = errors[(i+1)* product->numberOfProducts()+j];
 
                                 }
-                                else
+
+                            }
+
+                            Matrix modelDeltas(product->numberOfProducts(), todaysForwards.size()); 
+
+
+                            std::vector<DiscountFactor> discPlus(todaysForwards.size()+1, todaysDiscounts[0]);
+                            std::vector<DiscountFactor> discMinus(todaysForwards.size()+1, todaysDiscounts[0]);
+                            std::vector<Rate> fwdPlus(todaysForwards.size());
+                            std::vector<Rate> fwdMinus(todaysForwards.size());
+
+
+                            for (Size i=0; i < todaysForwards.size(); ++i)
+                            {
+                                for (Size j=0; j < todaysForwards.size(); ++j)
                                 {
-                                    fwdPlus[j] = todaysForwards[j]+forwardBump;
-                                    fwdMinus[j] = todaysForwards[j]-forwardBump;
+                                    if (i != j)
+                                    {
+                                        fwdPlus[j] = todaysForwards[j];
+                                        fwdMinus[j] = todaysForwards[j];
+
+                                    }
+                                    else
+                                    {
+                                        fwdPlus[j] = todaysForwards[j]+forwardBump;
+                                        fwdMinus[j] = todaysForwards[j]-forwardBump;
+                                    }
+
+                                    Time tau = rateTimes[j+1]-rateTimes[j];                                    
+                                    discPlus[j+1]=discPlus[j]/(1.0+fwdPlus[j]*tau);
+                                    discMinus[j+1]=discMinus[j]/(1.0+fwdMinus[j]*tau);
+
                                 }
 
-                                Time tau = rateTimes[j+1]-rateTimes[j];                                    
-                                discPlus[j+1]=discPlus[j]/(1.0+fwdPlus[j]*tau);
-                                discMinus[j+1]=discMinus[j]/(1.0+fwdMinus[j]*tau);
-
-                            }
-
-                            for (Size k=0; k  < product.numberOfProducts(); ++k)
-                            {
-                                Real tau = rateTimes[k+1] - rateTimes[k];
-                                Real priceUp = BlackCalculator(displacedPayoffs[k], fwdPlus[k],
-                                    volatilities[k]*sqrt(rateTimes[k]),
-                                    discPlus[k+1]*tau).value();
-                                Real priceDown = BlackCalculator(displacedPayoffs[k], fwdMinus[k],
-                                    volatilities[k]*sqrt(rateTimes[k]),
-                                    discMinus[k+1]*tau).value();
-
-                                modelDeltas[k][i] = (priceUp-priceDown)/(2*forwardBump);
-
-                            }
-                        }
-
-
-                        Integer numberErrors =0;
-
-                        for (Size i=0; i<product.numberOfProducts(); ++i) 
-                        {
-
-                            Real thisPrice = prices[i];
-                            Real thisModelPrice =  modelPrices[i];
-                            Real priceErrorInSds = ((thisPrice - thisModelPrice)/priceErrors[i]);
-
-                            Real errorTheshold = 3.5;
-
-                            if (fabs(priceErrorInSds) > errorTheshold)
-                            {
-                                BOOST_MESSAGE("Caplet " << i << " price " << prices[i] << " model price " << modelPrices[i] 
-                                << "   Standard error: " <<priceErrors[i] << " errors in sds: " << priceErrorInSds);
-
-                                ++numberErrors;
-
-                            }
-
-                            Real threshold =1e-10;
-
-                            for (Size j =0; j < todaysForwards.size(); ++j)
-                            {
-                                Real delta = deltas[i][j];
-                                Real modelDelta = modelDeltas[i][j];
-
-                                Real deltaErrorInSds =100;
-
-                                if (deltasErrors[i][j] > 0.0)
-                                    deltaErrorInSds = (( delta  - modelDelta )/deltasErrors[i][j]);
-                                else 
-                                    if (fabs(modelDelta -delta) < threshold) // to cope with zero over zero
-                                        deltaErrorInSds =0.0;
-
-                                if (fabs(deltaErrorInSds) > errorTheshold)
+                                for (Size k=0; k  < product->numberOfProducts(); ++k)
                                 {
+                                    Real tau = rateTimes[k+1] - rateTimes[k];
+                                    Real priceUp = BlackCalculator(displacedPayoffs[k], fwdPlus[k],
+                                        volatilities[k]*sqrt(rateTimes[k]),
+                                        discPlus[k+1]*tau).value();
+                                    Real priceDown = BlackCalculator(displacedPayoffs[k], fwdMinus[k],
+                                        volatilities[k]*sqrt(rateTimes[k]),
+                                        discMinus[k+1]*tau).value();
 
-                                    BOOST_MESSAGE("Caplet " << i << " delta " << j << "has value " << deltas[i][j] << " model value " << modelDeltas[i][j]
-                                    << "   Standard error: " <<deltasErrors[i][j] << " errors in sds: " << deltaErrorInSds);
+                                    modelDeltas[k][i] = (priceUp-priceDown)/(2*forwardBump);
+
+                                }
+                            }
+
+
+                            Integer numberErrors =0;
+
+                            for (Size i=0; i<product->numberOfProducts(); ++i) 
+                            {
+
+                                Real thisPrice = prices[i];
+                                Real thisModelPrice =  modelPrices[i];
+                                Real priceErrorInSds = ((thisPrice - thisModelPrice)/priceErrors[i]);
+
+                                Real errorTheshold = 3.5;
+
+                                if (fabs(priceErrorInSds) > errorTheshold)
+                                {
+                                    BOOST_MESSAGE("Caplet " << i << " price " << prices[i] << " model price " << modelPrices[i] 
+                                    << "   Standard error: " <<priceErrors[i] << " errors in sds: " << priceErrorInSds);
 
                                     ++numberErrors;
+
+                                }
+
+                                Real threshold =1e-10;
+
+                                for (Size j =0; j < todaysForwards.size(); ++j)
+                                {
+                                    Real delta = deltas[i][j];
+                                    Real modelDelta = modelDeltas[i][j];
+
+                                    Real deltaErrorInSds =100;
+
+                                    if (deltasErrors[i][j] > 0.0)
+                                        deltaErrorInSds = (( delta  - modelDelta )/deltasErrors[i][j]);
+                                    else 
+                                        if (fabs(modelDelta -delta) < threshold) // to cope with zero over zero
+                                            deltaErrorInSds =0.0;
+
+                                    if (fabs(deltaErrorInSds) > errorTheshold)
+                                    {
+
+                                        BOOST_MESSAGE("Caplet " << i << " delta " << j << "has value " << deltas[i][j] << " model value " << modelDeltas[i][j]
+                                        << "   Standard error: " <<deltasErrors[i][j] << " errors in sds: " << deltaErrorInSds);
+
+                                        ++numberErrors;
+                                    }
+
+
                                 }
 
 
                             }
 
-
+                            if (numberErrors >0)
+                                BOOST_FAIL("Pathwise greeks test has " << numberErrors <<"\n");
                         }
-
-                        if (numberErrors >0)
-                            BOOST_FAIL("Pathwise greeks test has " << numberErrors <<"\n");
                     }
                 }
             }
-        }
+    }
 }
 
 void MarketModelTest::testPathwiseVegas() 
@@ -2267,9 +2281,12 @@ void MarketModelTest::testPathwiseVegas()
         paymentTimes, todaysForwards);
 
 
+    MarketModelPathwiseMultiDeflatedCaplet capletsDeflated(rateTimes, accruals,
+        paymentTimes, todaysForwards);
 
 
-   
+
+
 
     EvolutionDescription evolution = product.evolution();
     Size steps = evolution.numberOfSteps();
@@ -2279,7 +2296,7 @@ void MarketModelTest::testPathwiseVegas()
     Size pathsToDo =10; // for the numerical differentiation test we are requiring equality on each path so this is actually quite strict
     Size pathsToDoSimulation = paths_;
     Size bumpIncrement = 1 + evolution.numberOfSteps()/3;
-  
+
     Real multiplier = 50; // how many times the bump size squared, the numerical differentation is allowed to differ by 
     // printReport_ = true;
     Real maxError =0.0;
@@ -2295,11 +2312,11 @@ void MarketModelTest::testPathwiseVegas()
     {
 
         Size testedFactors[] = { std::min<Size>(3UL,todaysForwards.size())
-        //    todaysForwards.size()
+            //    todaysForwards.size()
             //, 4, 8, 
         };
 
-    
+
 
 
         for (Size m=0; m<LENGTH(testedFactors); ++m) 
@@ -2314,7 +2331,7 @@ void MarketModelTest::testPathwiseVegas()
 
             std::vector<Matrix> pseudoBumps;
             std::vector<Matrix> pseudoBumpsDown;
-            
+
             for (Size k=0; k < evolution.numberOfRates(); ++k)
             {
                 for (Size f=0; f < factors; ++f)
@@ -2328,9 +2345,9 @@ void MarketModelTest::testPathwiseVegas()
             }
 
             std::vector<std::vector<Matrix> > vegaBumps;
-              
+
             Matrix modelBump(evolution.numberOfRates(), factors,0.0);
-                   
+
 
             for (Size l = 0; l < evolution.numberOfSteps(); ++l)
             {
@@ -2351,7 +2368,7 @@ void MarketModelTest::testPathwiseVegas()
                         }        
                     }
                 }
-                   
+
             }
 
 
@@ -2360,7 +2377,7 @@ void MarketModelTest::testPathwiseVegas()
 
             for (Size k=0; k<LENGTH(measures); k++)          
             {
-                    
+
                 std::vector<Size> numeraires = makeMeasure(product, measures[k]); 
                 std::vector<RatePseudoRootJacobian> testees;
                 std::vector<RatePseudoRootJacobianNumerical> testers;
@@ -2497,165 +2514,173 @@ void MarketModelTest::testPathwiseVegas()
 
             // the quick test done now do a simulation test for the vegas
 
-
-            for (Size k=0; k<LENGTH(measures); k++)          
+            for (Size deflate =0; deflate <2; ++deflate)
             {
-        
-                std::vector<Size> numeraires = makeMeasure(product, measures[k]);
-            
-                MTBrownianGeneratorFactory generatorFactory(seed_);
+                std::auto_ptr<MarketModelPathwiseMultiProduct> productToUse;
 
-                bool logNormal = true;
-                boost::shared_ptr<MarketModel> marketModel =
-                    makeMarketModel(logNormal, evolution, factors,
-                    marketModels[j]);
+                if (deflate ==0)
+                    productToUse = caplets.clone();
+                else
+                    productToUse = capletsDeflated.clone();
 
-                LogNormalFwdRateEuler evolver(marketModel,
-                    generatorFactory,
-                    numeraires);
-
-          //      SequenceStatistics stats(product.numberOfProducts()*(todaysForwards.size()+1+vegaBumps[0].size()));
-
-
-                Spread forwardBump = 1.0e-6;
-
-                std::ostringstream config;
-                config <<
-                    marketModelTypeToString(marketModels[j]) << ", " <<
-                    factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
-                    measureTypeToString(measures[k]) << ", " <<
-                    "MT BGF";
-                if (printReport_)
-                    BOOST_MESSAGE("    " << config.str());
-
-                Size initialNumeraire = evolver.numeraires().front();
-                Real initialNumeraireValue =
-                    todaysDiscounts[initialNumeraire];
-
-                std::vector<Real> values;
-
-                std::vector<Real> errors;
-
+                for (Size k=0; k<LENGTH(measures); k++)          
                 {
-                   
-                    PathwiseVegasAccountingEngine accountingengine(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver)), // method relies heavily on LMM Euler
-                        caplets,
-                        marketModel, // we need pseudo-roots and displacements
-                        vegaBumps, 
-                        initialNumeraireValue);
 
-                    accountingengine.multiplePathValues(values,errors,pathsToDoSimulation);
-                }
+                    std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
-                // we have computed the vegas now we have to test them against the analytic values
+                    MTBrownianGeneratorFactory generatorFactory(seed_);
 
-                // extract into easier format
+                    bool logNormal = true;
+                    boost::shared_ptr<MarketModel> marketModel =
+                        makeMarketModel(logNormal, evolution, factors,
+                        marketModels[j]);
 
-            
+                    LogNormalFwdRateEuler evolver(marketModel,
+                        generatorFactory,
+                        numeraires);
 
-
-                Matrix vegasMatrix(caplets.numberOfProducts(), vegaBumps[0].size());
-                Matrix standardErrors(vegasMatrix);
-                Size entriesPerProduct = 1+caplets.numberOfProducts()+vegaBumps[0].size();
-
-                for (Size i=0; i < caplets.numberOfProducts(); ++i)
-                    for (Size j=0; j < vegaBumps[0].size(); ++j)
-                    {                     
-                        vegasMatrix[i][j] = values[i*entriesPerProduct + caplets.numberOfProducts()+j];
-                        standardErrors[i][j] = errors[i*entriesPerProduct + caplets.numberOfProducts() +j];
-                    }
-
-                        
+                    //      SequenceStatistics stats(product.numberOfProducts()*(todaysForwards.size()+1+vegaBumps[0].size()));
 
 
-                // first get the terminal vols
+                    Spread forwardBump = 1.0e-6;
 
-                Matrix totalCovariance(marketModel->totalCovariance(marketModel->numberOfSteps()-1));
+                    std::ostringstream config;
+                    config <<
+                        marketModelTypeToString(marketModels[j]) << ", " <<
+                        factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
+                        measureTypeToString(measures[k]) << ", " <<
+                        "MT BGF";
+                    if (printReport_)
+                        BOOST_MESSAGE("    " << config.str());
 
-           
-                std::vector<Real> truePrices(caplets.numberOfProducts());
+                    Size initialNumeraire = evolver.numeraires().front();
+                    Real initialNumeraireValue =
+                        todaysDiscounts[initialNumeraire];
 
-                for (Size r =0; r < truePrices.size(); ++r)
-                {
-                     truePrices[r] = BlackCalculator(displacedPayoffs[r], todaysForwards[r], sqrt(totalCovariance[r][r]),
-                                todaysDiscounts[r+1]*(rateTimes[r+1]-rateTimes[r])).value();
-                }
+                    std::vector<Real> values;
 
-                Size numberErrors =0;
+                    std::vector<Real> errors;
 
-                for (Size b =0; b < vegaBumps[0].size(); ++b)
-                {
-                        
-                 
-                    std::vector<Real> bumpedPrices(truePrices.size());
-                    std::vector<Real> variances(truePrices.size(),0.0);
-                    std::vector<Real> vegas(truePrices.size());
-
-
-                    for (Size step = 0; step < marketModel->numberOfSteps(); ++step)
-                    {
-                        Matrix pseudoRoot( marketModel->pseudoRoot(step));
-                        pseudoRoot += vegaBumps[step][b];
-
-                        for (Size rate=step; rate<marketModel->numberOfRates(); ++rate)
-                        {
-                            Real variance = 0.0;
-                            for (Size f=0; f < marketModel->numberOfFactors(); ++f)
-                                variance+= pseudoRoot[rate][f]* pseudoRoot[rate][f];
-
-                            variances[rate]+=variance;
-                        }
-                    }
-
-                    for (Size r =0; r < truePrices.size(); ++r)
                     {
 
-                        bumpedPrices[r] = BlackCalculator(displacedPayoffs[r], todaysForwards[r], sqrt(variances[r]),
-                                todaysDiscounts[r+1]*(rateTimes[r+1]-rateTimes[r])).value();
+                        PathwiseVegasAccountingEngine accountingengine(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver)), // method relies heavily on LMM Euler
+                            productToUse,
+                            marketModel, // we need pseudo-roots and displacements
+                            vegaBumps, 
+                            initialNumeraireValue);
 
-                        vegas[r] = bumpedPrices[r] - truePrices[r];
-                
+                        accountingengine.multiplePathValues(values,errors,pathsToDoSimulation);
                     }
 
+                    // we have computed the vegas now we have to test them against the analytic values
 
-                    for (Size s=0; s  < truePrices.size(); ++s)
-                    {
-                        Real mcVega = vegasMatrix[s][b];
-                        Real analyticVega = vegas[s];
-                        Real thisError =  mcVega - analyticVega;   
-                        Real thisSE = standardErrors[s][b];
+                    // extract into easier format
 
-                        if (fabs(thisError) >  0.0)
-                        {
-                            Real errorInSEs = thisError/thisSE;
-    
-                            if (errorInSEs > 3.5)
-                                ++numberErrors;
+
+
+
+                    Matrix vegasMatrix(caplets.numberOfProducts(), vegaBumps[0].size());
+                    Matrix standardErrors(vegasMatrix);
+                    Size entriesPerProduct = 1+caplets.numberOfProducts()+vegaBumps[0].size();
+
+                    for (Size i=0; i < caplets.numberOfProducts(); ++i)
+                        for (Size j=0; j < vegaBumps[0].size(); ++j)
+                        {                     
+                            vegasMatrix[i][j] = values[i*entriesPerProduct + caplets.numberOfProducts()+j];
+                            standardErrors[i][j] = errors[i*entriesPerProduct + caplets.numberOfProducts() +j];
                         }
 
-                    }
-
-
-                }
-
-
-                if (numberErrors >0)
-                       BOOST_FAIL("Pathwise vega test fails : " << numberErrors <<"\n");
-          
 
 
 
+                        // first get the terminal vols
+
+                        Matrix totalCovariance(marketModel->totalCovariance(marketModel->numberOfSteps()-1));
+
+
+                        std::vector<Real> truePrices(caplets.numberOfProducts());
+
+                        for (Size r =0; r < truePrices.size(); ++r)
+                        {
+                            truePrices[r] = BlackCalculator(displacedPayoffs[r], todaysForwards[r], sqrt(totalCovariance[r][r]),
+                                todaysDiscounts[r+1]*(rateTimes[r+1]-rateTimes[r])).value();
+                        }
+
+                        Size numberErrors =0;
+
+                        for (Size b =0; b < vegaBumps[0].size(); ++b)
+                        {
+
+
+                            std::vector<Real> bumpedPrices(truePrices.size());
+                            std::vector<Real> variances(truePrices.size(),0.0);
+                            std::vector<Real> vegas(truePrices.size());
+
+
+                            for (Size step = 0; step < marketModel->numberOfSteps(); ++step)
+                            {
+                                Matrix pseudoRoot( marketModel->pseudoRoot(step));
+                                pseudoRoot += vegaBumps[step][b];
+
+                                for (Size rate=step; rate<marketModel->numberOfRates(); ++rate)
+                                {
+                                    Real variance = 0.0;
+                                    for (Size f=0; f < marketModel->numberOfFactors(); ++f)
+                                        variance+= pseudoRoot[rate][f]* pseudoRoot[rate][f];
+
+                                    variances[rate]+=variance;
+                                }
+                            }
+
+                            for (Size r =0; r < truePrices.size(); ++r)
+                            {
+
+                                bumpedPrices[r] = BlackCalculator(displacedPayoffs[r], todaysForwards[r], sqrt(variances[r]),
+                                    todaysDiscounts[r+1]*(rateTimes[r+1]-rateTimes[r])).value();
+
+                                vegas[r] = bumpedPrices[r] - truePrices[r];
+
+                            }
+
+
+                            for (Size s=0; s  < truePrices.size(); ++s)
+                            {
+                                Real mcVega = vegasMatrix[s][b];
+                                Real analyticVega = vegas[s];
+                                Real thisError =  mcVega - analyticVega;   
+                                Real thisSE = standardErrors[s][b];
+
+                                if (fabs(thisError) >  0.0)
+                                {
+                                    Real errorInSEs = thisError/thisSE;
+
+                                    if (errorInSEs > 3.5)
+                                        ++numberErrors;
+                                }
+
+                            }
+
+
+                        }
+
+
+                        if (numberErrors >0)
+                            BOOST_FAIL("Pathwise vega test fails : " << numberErrors <<"\n");
 
 
 
 
-                 
 
 
 
-            } // end of k loop over measures
 
- 
+
+
+
+
+                } // end of k loop over measures
+
+            } // end of loop over deflation
 
 
 
@@ -2904,10 +2929,12 @@ void MarketModelTest::testIsInSubset() {
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
 
+
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPathwiseGreeks));
+
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPathwiseVegas));
 
 
-    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPathwiseGreeks));
 
 
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testOneStepForwardsAndOptionlets));
@@ -2933,6 +2960,6 @@ test_suite* MarketModelTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testDriftCalculator));
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testIsInSubset));
-
-    return suite;
+   
+        return suite;
 }
