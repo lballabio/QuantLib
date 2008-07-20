@@ -25,6 +25,7 @@
 #define quantlib_sequence_statistics_hpp
 
 #include <ql/math/statistics/statistics.hpp>
+#include <ql/math/statistics/incrementalstatistics.hpp>
 #include <ql/math/matrix.hpp>
 
 namespace QuantLib {
@@ -151,6 +152,7 @@ namespace QuantLib {
               checking them against numerical calculations.
     */
     typedef GenericSequenceStatistics<Statistics> SequenceStatistics;
+    typedef GenericSequenceStatistics<IncrementalStatistics> SequenceStatisticsInc;
 
     // inline definitions
 

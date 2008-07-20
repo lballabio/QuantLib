@@ -312,7 +312,7 @@ namespace QuantLib {
         return 1.0; // we have put the weight in already, this results in lower variance since weight changes along the path
     }
 
-    void PathwiseAccountingEngine::multiplePathValues(SequenceStatistics& stats,
+    void PathwiseAccountingEngine::multiplePathValues(SequenceStatisticsInc& stats,
         Size numberOfPaths)
     {
         std::vector<Real> values(product_->numberOfProducts()*(numberRates_+1));

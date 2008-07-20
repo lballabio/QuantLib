@@ -112,7 +112,7 @@ namespace QuantLib {
         return weight;
     }
 
-    void AccountingEngine::multiplePathValues(SequenceStatistics& stats,
+    void AccountingEngine::multiplePathValues(SequenceStatisticsInc& stats,
                                               Size numberOfPaths)
     {
         std::vector<Real> values(product_->numberOfProducts());

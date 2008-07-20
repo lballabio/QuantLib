@@ -79,8 +79,8 @@ namespace QuantLib {
     }
 
     void ProxyGreekEngine::multiplePathValues(
-                  SequenceStatistics& stats,
-                  std::vector<std::vector<SequenceStatistics> >& modifiedStats,
+                  SequenceStatisticsInc& stats,
+                  std::vector<std::vector<SequenceStatisticsInc> >& modifiedStats,
                   Size numberOfPaths) {
         Size N = product_->numberOfProducts();
 

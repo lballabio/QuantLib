@@ -236,15 +236,15 @@ namespace {
 #endif
     }
 
-    const boost::shared_ptr<SequenceStatistics> simulate(
+    const boost::shared_ptr<SequenceStatisticsInc> simulate(
         const boost::shared_ptr<MarketModelEvolver>& evolver,
         const MarketModelMultiProduct& product) {
             Size initialNumeraire = evolver->numeraires().front();
             Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 
             AccountingEngine engine(evolver, product, initialNumeraireValue);
-            boost::shared_ptr<SequenceStatistics> stats(
-                new SequenceStatistics(product.numberOfProducts()));
+            boost::shared_ptr<SequenceStatisticsInc> stats(
+                new SequenceStatisticsInc(product.numberOfProducts()));
             engine.multiplePathValues(*stats, paths_);
             return stats;
     }
@@ -437,7 +437,7 @@ namespace {
             }
     }
 
-    void checkMultiProductCompositeResults (const SequenceStatistics& stats,
+    void checkMultiProductCompositeResults (const SequenceStatisticsInc& stats,
         const std::vector<SubProductExpectedValues>& subProductExpectedValues,
         const std::string& config) {
 
@@ -496,7 +496,7 @@ namespace {
     }
 
 
-    void checkForwardsAndOptionlets(const SequenceStatistics& stats,
+    void checkForwardsAndOptionlets(const SequenceStatisticsInc& stats,
         const std::vector<Rate>& forwardStrikes,
         const std::vector<boost::shared_ptr<StrikedTypePayoff> >& displacedPayoffs,
         const std::string& config) {
@@ -564,7 +564,7 @@ namespace {
 
 
 
-    void checkNormalForwardsAndOptionlets(const SequenceStatistics& stats,
+    void checkNormalForwardsAndOptionlets(const SequenceStatisticsInc& stats,
         const std::vector<Rate>& forwardStrikes,
         const std::vector<boost::shared_ptr<PlainVanillaPayoff> >& displacedPayoffs,
         const std::string& config) {
@@ -631,7 +631,7 @@ namespace {
 
 
 
-    void checkCallableSwap(const SequenceStatistics& stats,
+    void checkCallableSwap(const SequenceStatisticsInc& stats,
         const std::string& config) {
             Real payerNPV    = stats.mean()[0];
             Real receiverNPV = stats.mean()[1];
@@ -757,7 +757,7 @@ void MarketModelTest::testOneStepForwardsAndOptionlets() {
                             if (printReport_)
                                 BOOST_MESSAGE("    " << config.str());
 
-                            boost::shared_ptr<SequenceStatistics> stats =
+                            boost::shared_ptr<SequenceStatisticsInc> stats =
                                 simulate(evolver, product);
                             checkForwardsAndOptionlets(*stats,
                                 forwardStrikes,
@@ -850,7 +850,7 @@ void MarketModelTest::testOneStepNormalForwardsAndOptionlets() {
                             if (printReport_)
                                 BOOST_MESSAGE("    " << config.str());
 
-                            boost::shared_ptr<SequenceStatistics> stats =
+                            boost::shared_ptr<SequenceStatisticsInc> stats =
                                 simulate(evolver, product);
                             checkNormalForwardsAndOptionlets(*stats,
                                 forwardStrikes,
@@ -924,7 +924,7 @@ void testMultiProductComposite(const MarketModelMultiProduct& product,
                                                                if (printReport_)
                                                                    BOOST_MESSAGE("    " << config.str());
 
-                                                               boost::shared_ptr<SequenceStatistics> stats =
+                                                               boost::shared_ptr<SequenceStatisticsInc> stats =
                                                                    simulate(evolver, product);
                                                                checkMultiProductCompositeResults(*stats,
                                                                    subProductExpectedValues,
@@ -1205,7 +1205,7 @@ void MarketModelTest::testPeriodAdapter() {
         generatorFactory,
         Pc);
 
-    boost::shared_ptr<SequenceStatistics> stats =
+    boost::shared_ptr<SequenceStatisticsInc> stats =
         simulate(evolver, theProduct);
 
     std::vector<Real> results = stats->mean();
@@ -1357,7 +1357,7 @@ void MarketModelTest::testCallableSwapNaif() {
                             allProducts.add(callableProduct);
                             allProducts.finalize();
 
-                            boost::shared_ptr<SequenceStatistics> stats =
+                            boost::shared_ptr<SequenceStatisticsInc> stats =
                                 simulate(evolver, allProducts);
                             checkCallableSwap(*stats, config.str());
 
@@ -1535,7 +1535,7 @@ void MarketModelTest::testCallableSwapLS() {
                             allProducts.add(callableProduct);
                             allProducts.finalize();
 
-                            boost::shared_ptr<SequenceStatistics> stats =
+                            boost::shared_ptr<SequenceStatisticsInc> stats =
                                 simulate(evolver, allProducts);
                             checkCallableSwap(*stats, config.str());
 
@@ -1710,7 +1710,7 @@ void MarketModelTest::testCallableSwapAnderson() {
                             allProducts.add(bermudanProduct);
                             allProducts.add(callableProduct);
                             allProducts.finalize();
-                            boost::shared_ptr<SequenceStatistics> stats =
+                            boost::shared_ptr<SequenceStatisticsInc> stats =
                                 simulate(evolver, allProducts);
                             checkCallableSwap(*stats, config.str());
 
@@ -1815,7 +1815,7 @@ void MarketModelTest::testGreeks() {
                             LogNormalFwdRateEuler(marketModel,
                             generatorFactory,
                             numeraires));
-                        SequenceStatistics stats(product.numberOfProducts());
+                        SequenceStatisticsInc stats(product.numberOfProducts());
 
 
                         std::vector<Size> startIndexOfConstraint;
@@ -1831,13 +1831,13 @@ void MarketModelTest::testGreeks() {
                             std::vector<boost::shared_ptr<ConstrainedEvolver> > >
                             constrainedEvolvers;
                         std::vector<std::vector<std::vector<Real> > > diffWeights;
-                        std::vector<std::vector<SequenceStatistics> > greekStats;
+                        std::vector<std::vector<SequenceStatisticsInc> > greekStats;
 
                         std::vector<boost::shared_ptr<ConstrainedEvolver> >
                             deltaGammaEvolvers;
                         std::vector<std::vector<Real> > deltaGammaWeights(
                             2, std::vector<Real>(3));
-                        std::vector<SequenceStatistics> deltaGammaStats(2,stats);
+                        std::vector<SequenceStatisticsInc> deltaGammaStats(2,stats);
 
 
                         Spread forwardBump = 1.0e-6;
@@ -1875,7 +1875,7 @@ void MarketModelTest::testGreeks() {
                             vegaEvolvers;
                         std::vector<std::vector<Real> > vegaWeights(
                             1, std::vector<Real>(3));
-                        std::vector<SequenceStatistics> vegaStats(1,stats);
+                        std::vector<SequenceStatisticsInc> vegaStats(1,stats);
 
                         Volatility volBump = 1.0e-4;
                         marketModel =
@@ -2079,7 +2079,7 @@ void MarketModelTest::testPathwiseGreeks()
                             LogNormalFwdRateEuler evolver(marketModel,
                                 generatorFactory,
                                 numeraires);
-                            SequenceStatistics stats(product->numberOfProducts()*(todaysForwards.size()+1));
+                            SequenceStatisticsInc stats(product->numberOfProducts()*(todaysForwards.size()+1));
 
 
 
@@ -2945,8 +2945,8 @@ test_suite* MarketModelTest::suite() {
 
     //// just one of the tests below is run in order to reduce running times...
     //// uncomment as much as you prefer...
-    //suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
-    //suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapLS));
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapLS));
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapAnderson));
 

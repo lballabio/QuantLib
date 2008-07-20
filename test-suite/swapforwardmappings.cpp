@@ -118,7 +118,7 @@ namespace {
             volatilities_[i] =   mktVols[i];//.0;
     }
 
-    const boost::shared_ptr<SequenceStatistics> simulate(
+    const boost::shared_ptr<SequenceStatisticsInc> simulate(
             const std::vector<Real> todaysDiscounts,
             const boost::shared_ptr<MarketModelEvolver>& evolver,
             const MarketModelMultiProduct& product)
@@ -134,8 +134,8 @@ namespace {
         Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 
         AccountingEngine engine(evolver, product, initialNumeraireValue);
-        boost::shared_ptr<SequenceStatistics> stats(new
-            SequenceStatistics(product.numberOfProducts()));
+        boost::shared_ptr<SequenceStatisticsInc> stats(new
+            SequenceStatisticsInc(product.numberOfProducts()));
         engine.multiplePathValues(*stats, paths_);
         return stats;
     }
@@ -314,7 +314,7 @@ void SwapForwardMappingsTest::testForwardCoterminalMappings() {
     boost::shared_ptr<MarketModelEvolver> evolver(new LogNormalFwdRatePc
         (lmmMarketModel, generatorFactory, numeraires));
 
-    boost::shared_ptr<SequenceStatistics> stats =
+    boost::shared_ptr<SequenceStatisticsInc> stats =
                             simulate(marketData.discountFactors(), evolver, product);
     std::vector<Real> results = stats->mean();
     std::vector<Real> errors = stats->errorEstimate();

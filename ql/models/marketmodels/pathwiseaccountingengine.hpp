@@ -49,7 +49,7 @@ namespace QuantLib {
                          const boost::shared_ptr<MarketModel>& pseudoRootStructure, // we need pseudo-roots and displacements
                          Real initialNumeraireValue);
 
-        void multiplePathValues(SequenceStatistics& stats,
+        void multiplePathValues(SequenceStatisticsInc& stats,
                                 Size numberOfPaths);
       private:
           Real singlePathValues(std::vector<Real>& values);

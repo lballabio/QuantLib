@@ -166,15 +166,15 @@ namespace {
 #endif
     }
 
-    const boost::shared_ptr<SequenceStatistics> simulate(
+    const boost::shared_ptr<SequenceStatisticsInc> simulate(
                          const boost::shared_ptr<MarketModelEvolver>& evolver,
                          const MarketModelMultiProduct& product) {
         Size initialNumeraire = evolver->numeraires().front();
         Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 
         AccountingEngine engine(evolver, product, initialNumeraireValue);
-        boost::shared_ptr<SequenceStatistics> stats(
-                          new SequenceStatistics(product.numberOfProducts()));
+        boost::shared_ptr<SequenceStatisticsInc> stats(
+                          new SequenceStatisticsInc(product.numberOfProducts()));
         engine.multiplePathValues(*stats, paths_);
         return stats;
     }
@@ -356,7 +356,7 @@ namespace {
         }
     }
 
-    void checkCoterminalSwapsAndSwaptions(const SequenceStatistics& stats,
+    void checkCoterminalSwapsAndSwaptions(const SequenceStatisticsInc& stats,
                                           const Rate fixedRate,
                                           const std::vector<boost::shared_ptr<StrikedTypePayoff> >& displacedPayoff,
                                           const boost::shared_ptr<MarketModel>, //marketModel,
@@ -503,7 +503,7 @@ void MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions() {
                             "MT BGF";
                         if (printReport_)
                             BOOST_MESSAGE("    " << config.str());
-                        boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product);
+                        boost::shared_ptr<SequenceStatisticsInc> stats = simulate(evolver, product);
                         checkCoterminalSwapsAndSwaptions(*stats, fixedRate,
                                                          displacedPayoff, marketModel,config.str());
                     }

@@ -46,8 +46,8 @@ namespace QuantLib {
             const Clone<MarketModelMultiProduct>& product,
             double initialNumeraireValue);
         void multiplePathValues(
-                  SequenceStatistics& stats,
-                  std::vector<std::vector<SequenceStatistics> >& modifiedStats,
+                  SequenceStatisticsInc& stats,
+                  std::vector<std::vector<SequenceStatisticsInc> >& modifiedStats,
                   Size numberOfPaths);
         void singlePathValues(
                 std::vector<Real>& values,

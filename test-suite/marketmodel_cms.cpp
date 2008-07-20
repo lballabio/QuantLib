@@ -167,15 +167,15 @@ namespace {
         #endif
     }
 
-    const boost::shared_ptr<SequenceStatistics> simulate(
+    const boost::shared_ptr<SequenceStatisticsInc> simulate(
                          const boost::shared_ptr<MarketModelEvolver>& evolver,
                          const MarketModelMultiProduct& product) {
         Size initialNumeraire = evolver->numeraires().front();
         Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 
         AccountingEngine engine(evolver, product, initialNumeraireValue);
-        boost::shared_ptr<SequenceStatistics> stats(
-                          new SequenceStatistics(product.numberOfProducts()));
+        boost::shared_ptr<SequenceStatisticsInc> stats(
+                          new SequenceStatisticsInc(product.numberOfProducts()));
         engine.multiplePathValues(*stats, paths_);
         return stats;
     }
@@ -364,7 +364,7 @@ namespace {
 
 
     void checkCMSAndSwaptions(
-              const SequenceStatistics& stats,
+              const SequenceStatisticsInc& stats,
               const Rate fixedRate,
               const std::vector<boost::shared_ptr<StrikedTypePayoff> >&
                                                               displacedPayoff,
@@ -523,7 +523,7 @@ void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
                         if (printReport_)
                             BOOST_MESSAGE("    " << config.str());
 
-                        boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product);
+                        boost::shared_ptr<SequenceStatisticsInc> stats = simulate(evolver, product);
                         checkCMSAndSwaptions(*stats, fixedRate,
                                              displacedPayoff, marketModel,config.str());
 

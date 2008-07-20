@@ -256,7 +256,7 @@ namespace QuantLib {
                     AccountingEngine engine(currentEvolver, callable,
                                             1.0); // this causes the result
                                                   // to be in numeraire units
-                    SequenceStatistics innerStats(callable.numberOfProducts());
+                    SequenceStatisticsInc innerStats(callable.numberOfProducts());
                     engine.multiplePathValues(innerStats, innerPaths);
 
                     const std::vector<Real>& values = innerStats.mean();
