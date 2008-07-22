@@ -36,6 +36,7 @@ class MatricesTest {
     static void testQRSolve();
     static void testInverse();
     static void testDeterminant();
+    static void testOrthogonalProjection();
     static boost::unit_test_framework::test_suite* suite();
 };
 

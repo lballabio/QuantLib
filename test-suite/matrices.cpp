@@ -27,6 +27,7 @@
 #include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/matrixutilities/qrdecomposition.hpp>
+#include <ql/math/matrixutilities/basisincompleteordered.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -401,8 +402,81 @@ void MatricesTest::testDeterminant() {
     }
 }
 
+void MatricesTest::testOrthogonalProjection() 
+{
+    BOOST_MESSAGE("Testing orthogonal projections...");
+
+    Size dimension = 1000;
+    Size numberVectors = 50;
+    Real multiplier = 100;
+    Real tolerance = 1e-6;
+    unsigned long seed = 1;
+
+    Real errorAcceptable = 1E-11;
+
+    Matrix test(numberVectors,dimension);
+
+    MersenneTwisterUniformRng rng(seed);
+
+    for (Size i=0; i < numberVectors; ++i)
+        for (Size j=0; j < dimension; ++j)
+            test[i][j] = rng.next().value;
+    
+    OrthogonalProjections projector(test,
+                                    multiplier,
+                                    tolerance  );
+
+    Size numberFailures =0;
+    Size failuresTwo=0;
+
+    for (Size i=0; i < numberVectors; ++i)
+    {
+        // check output vector i is orthogonal to all other vectors
+
+        if (projector.validVectors()[i])
+        {
+            for (Size j=0; j < numberVectors; ++j)
+                  if (projector.validVectors()[j] && i != j)
+                  {
+                      Real dotProduct=0.0;
+                      for (Size k=0; k < dimension; ++k)
+                          dotProduct += test[j][k]*projector.GetVector(i)[k];
+
+                      if (fabs(dotProduct) > errorAcceptable)
+                          ++numberFailures;
+
+                  }
+
+           Real innerProductWithOriginal =0.0;
+           Real normSq =0.0;
+
+           for (Size j=0; j < dimension; ++j)
+           {
+                innerProductWithOriginal +=   projector.GetVector(i)[j]*test[i][j];
+                normSq += test[i][j]*test[i][j];
+           }
+
+           if (fabs(innerProductWithOriginal-normSq) > errorAcceptable)
+               ++failuresTwo;
+
+        }
+
+    }
+
+    if (numberFailures > 0 || failuresTwo >0)
+        BOOST_FAIL("OrthogonalProjections test failed with " << numberFailures << " failures  of orthogonality and " 
+                    << failuresTwo << " failures of projection size.");
+
+}
+
+
+
 test_suite* MatricesTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Matrix tests");
+
+    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testOrthogonalProjection));
+  
+
     /*
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testEigenvectors));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testSqrt));

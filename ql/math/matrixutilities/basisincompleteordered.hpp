@@ -39,6 +39,46 @@ namespace QuantLib {
         Array newVector_;
     };
 
+/*! Given a collection of vectors, w_i, find a collection of vectors x_i such that 
+x_i is orthogonal to w_j for i \neq j, and <x_i, w_i> = <w_i, w_i> 
+
+This is done by performing GramSchmidt on the other vectors and then projecting onto
+the orthogonal space. 
+
+This class is tested in
+
+    MatricesTest::testOrthogonalProjection();
+*/
+
+    class OrthogonalProjections
+    {
+    public:
+        OrthogonalProjections(const Matrix& originalVectors,
+                              Real multiplierCutOff,
+                               Real tolerance  );
+
+        const std::vector<bool>& validVectors() const;
+        const std::vector<Real>& GetVector(Size index) const;
+
+
+    private:
+
+        //! inputs
+        Matrix originalVectors_;
+        Real multiplierCutoff_;
+        Size numberVectors_;
+        Size dimension_;
+
+        //!outputs
+        std::vector<bool> validVectors_;
+        std::vector<std::vector<Real> > projectedVectors_;
+
+        //!workspace
+        Matrix orthoNormalizedVectors_;
+
+
+    };
+
 }
 
 #endif
