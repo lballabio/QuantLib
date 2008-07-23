@@ -2260,6 +2260,8 @@ void MarketModelTest::testPathwiseVegas()
     setup();
 
 
+  
+
 
     std::vector<boost::shared_ptr<Payoff> > payoffs(todaysForwards.size());
     std::vector<boost::shared_ptr<StrikedTypePayoff> >

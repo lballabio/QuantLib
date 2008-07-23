@@ -1,21 +1,21 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando Ametrano
- Copyright (C) 2006 François du Vignaud
+Copyright (C) 2007 Ferdinando Ametrano
+Copyright (C) 2006 François du Vignaud
 
- This file is part of QuantLib, a free-software/open-source library
- for financial quantitative analysts and developers - http://quantlib.org/
+This file is part of QuantLib, a free-software/open-source library
+for financial quantitative analysts and developers - http://quantlib.org/
 
- QuantLib is free software: you can redistribute it and/or modify it
- under the terms of the QuantLib license.  You should have received a
- copy of the license along with this program; if not, please email
- <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+QuantLib is free software: you can redistribute it and/or modify it
+under the terms of the QuantLib license.  You should have received a
+copy of the license along with this program; if not, please email
+<quantlib-dev@lists.sf.net>. The license is also available online at
+<http://quantlib.org/license.shtml>.
 
- This program is distributed in the hope that it will be useful, but WITHOUT
- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE.  See the license for more details.
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
 #include "swapforwardmappings.hpp"
@@ -37,6 +37,8 @@
 #include <ql/math/statistics/sequencestatistics.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 
+#include <ql/models/marketmodels/products/multistep/multistepswaption.hpp>
+
 #if defined(BOOST_MSVC)
 #include <float.h>
 //namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
@@ -51,7 +53,7 @@ using namespace boost::unit_test_framework;
 namespace {
 
     class MarketModelData{
-      public:
+    public:
         MarketModelData();
         const std::vector<Time>& rateTimes(){return rateTimes_;}
         const std::vector<Rate>& forwards(){return forwards_;}
@@ -59,7 +61,7 @@ namespace {
         const std::vector<Rate>& displacements(){return displacements_;}
         const std::vector<DiscountFactor>& discountFactors(){return discountFactors_;}
         const Size nbRates(){return nbRates_;}
-      private:
+    private:
         std::vector<Time> rateTimes_, accruals_;
         std::vector<Rate> forwards_;
         std::vector<Spread> displacements_;
@@ -69,12 +71,12 @@ namespace {
     };
 
     MarketModelData::MarketModelData(){
-         // Times
+        // Times
         Calendar calendar = NullCalendar();
         Date todaysDate = Settings::instance().evaluationDate();
-        Date endDate = todaysDate + 10*Years;
+        Date endDate = todaysDate + 9*Years; // change back
         Schedule dates(todaysDate, endDate, Period(Semiannual),
-                       calendar, Following, Following, DateGeneration::Backward, false);
+            calendar, Following, Following, DateGeneration::Backward, false);
         nbRates_ = dates.size()-2;
         rateTimes_ = std::vector<Time>(nbRates_+1);
         //paymentTimes_ = std::vector<Time>(rateTimes_.size()-1);
@@ -92,40 +94,64 @@ namespace {
             forwards_[i] = 0.03 + 0.0010*i;
             accruals_[i] = rateTimes_[i+1] - rateTimes_[i];
             discountFactors_[i+1] = discountFactors_[i]
-                    /(1+forwards_[i]*accruals_[i]);
+            /(1+forwards_[i]*accruals_[i]);
         }
         Volatility mktVols[] = {0.15541283,
-                                0.18719678,
-                                0.20890740,
-                                0.22318179,
-                                0.23212717,
-                                0.23731450,
-                                0.23988649,
-                                0.24066384,
-                                0.24023111,
-                                0.23900189,
-                                0.23726699,
-                                0.23522952,
-                                0.23303022,
-                                0.23076564,
-                                0.22850101,
-                                0.22627951,
-                                0.22412881,
-                                0.22206569,
-                                0.22009939};
+            0.18719678,
+            0.20890740,
+            0.22318179,
+            0.23212717,
+            0.23731450,
+            0.23988649,
+            0.24066384,
+            0.24023111,
+            0.23900189,
+            0.23726699,
+            0.23522952,
+            0.23303022,
+            0.23076564,
+            0.22850101,
+            0.22627951,
+            0.22412881,
+            0.22206569,
+            0.22009939
+            /*
+            0.2,
+            0.2,
+            0.2,
+            0.2,
+            0.2,
+            0.2,
+            0.2,
+            0.2,
+            0.2,
+            0.2,
+            0.2,
+            0.2,
+            0.2,
+            0.2,
+            0.2,
+            0.2,
+            0.2,
+            0.2,
+            0.2,
+            0.2
+            */
+
+        };
         volatilities_ = std::vector<Volatility>(nbRates_);
         for (Size i = 0; i < volatilities_.size(); ++i)
             volatilities_[i] =   mktVols[i];//.0;
     }
 
     const boost::shared_ptr<SequenceStatisticsInc> simulate(
-            const std::vector<Real> todaysDiscounts,
-            const boost::shared_ptr<MarketModelEvolver>& evolver,
-            const MarketModelMultiProduct& product)
+        const std::vector<Real> todaysDiscounts,
+        const boost::shared_ptr<MarketModelEvolver>& evolver,
+        const MarketModelMultiProduct& product)
     {
         Size paths_;
 #ifdef _DEBUG
-        paths_ = 1; // 127;// //
+        paths_ = 127;// //
 #else
         paths_ = 32767; //262144-1; // //; // 2^15-1
 #endif
@@ -142,14 +168,14 @@ namespace {
 
     MultiStepCoterminalSwaptions makeMultiStepCoterminalSwaptions(
         const std::vector<Time>& rateTimes, Real strike ){
-        std::vector<Time> paymentTimes(rateTimes.begin(), rateTimes.end()-1);
-        std::vector<boost::shared_ptr<StrikedTypePayoff> > payoffs(paymentTimes.size());
-        for (Size i = 0; i < payoffs.size(); ++i){
-            payoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
-                PlainVanillaPayoff(Option::Call, strike));
-        }
-        return MultiStepCoterminalSwaptions (rateTimes,
-                                             paymentTimes, payoffs);
+            std::vector<Time> paymentTimes(rateTimes.begin(), rateTimes.end()-1);
+            std::vector<boost::shared_ptr<StrikedTypePayoff> > payoffs(paymentTimes.size());
+            for (Size i = 0; i < payoffs.size(); ++i){
+                payoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
+                    PlainVanillaPayoff(Option::Call, strike));
+            }
+            return MultiStepCoterminalSwaptions (rateTimes,
+                paymentTimes, payoffs);
 
     }
 
@@ -292,30 +318,30 @@ void SwapForwardMappingsTest::testForwardCoterminalMappings() {
         lmmCurveState, displacement);
 
     Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
-                                                  longTermCorr,
-                                                  beta);
+        longTermCorr,
+        beta);
     boost::shared_ptr<PiecewiseConstantCorrelation> corr(new
         TimeHomogeneousForwardCorrelation(correlations,
-                                          rateTimes));
+        rateTimes));
     boost::shared_ptr<MarketModel> smmMarketModel(new
         FlatVol(marketData.volatilities(),
-                       corr,
-                       evolution,
-                       numberOfFactors,
-                       lmmCurveState.coterminalSwapRates(),
-                       marketData.displacements()));
+        corr,
+        evolution,
+        numberOfFactors,
+        lmmCurveState.coterminalSwapRates(),
+        marketData.displacements()));
 
     boost::shared_ptr<MarketModel>
         lmmMarketModel(new CotSwapToFwdAdapter(smmMarketModel));
 
     SobolBrownianGeneratorFactory generatorFactory(SobolBrownianGenerator::Diagonal);
     std::vector<Size> numeraires(nbRates,
-                                 nbRates);
+        nbRates);
     boost::shared_ptr<MarketModelEvolver> evolver(new LogNormalFwdRatePc
         (lmmMarketModel, generatorFactory, numeraires));
 
     boost::shared_ptr<SequenceStatisticsInc> stats =
-                            simulate(marketData.discountFactors(), evolver, product);
+        simulate(marketData.discountFactors(), evolver, product);
     std::vector<Real> results = stats->mean();
     std::vector<Real> errors = stats->errorEstimate();
 
@@ -329,29 +355,115 @@ void SwapForwardMappingsTest::testForwardCoterminalMappings() {
             new PlainVanillaPayoff(Option::Call, strike+displacement));
         //const std::vector<Time>&  taus = lmmCurveState.rateTaus();
         Real expectedSwaption = BlackCalculator(payoff,
-                        todaysCoterminalSwapRates[i]+displacement,
-                        std::sqrt(cotSwapsCovariance[i][i]),
-                        lmmCurveState.coterminalSwapAnnuity(i,i) *
-                        todaysDiscounts[i]).value();
+            todaysCoterminalSwapRates[i]+displacement,
+            std::sqrt(cotSwapsCovariance[i][i]),
+            lmmCurveState.coterminalSwapAnnuity(i,i) *
+            todaysDiscounts[i]).value();
         if (false)
             BOOST_MESSAGE(
-                    "expected\t" << expectedSwaption <<
-                    "\tLMM\t" << results[i]
-                    << "\tstdev:\t" << errors[i] <<
-                    "\t" <<std::fabs(results[i]- expectedSwaption)/errors[i]);
+            "expected\t" << expectedSwaption <<
+            "\tLMM\t" << results[i]
+        << "\tstdev:\t" << errors[i] <<
+            "\t" <<std::fabs(results[i]- expectedSwaption)/errors[i]);
     }
 }
+
+void SwapForwardMappingsTest::testSwaptionImpliedVolatility() 
+{
+
+    BOOST_MESSAGE("Testing swaption implied vol in LMM using HW approximation...");
+    MarketModelData marketData;
+    const std::vector<Time>& rateTimes = marketData.rateTimes();
+    const std::vector<Rate>& forwards = marketData.forwards();
+    const Size nbRates = marketData.nbRates();
+    LMMCurveState lmmCurveState(rateTimes);
+    lmmCurveState.setOnForwardRates(forwards);
+
+    const Real longTermCorr=0.5;
+    const Real beta = .2;
+    Real strike = .03;
+
+    for (Size startIndex = 1; startIndex+2 < nbRates; startIndex = startIndex+5)
+    {
+        
+        Size endIndex = nbRates-2;
+
+        boost::shared_ptr<StrikedTypePayoff> payoff(new   
+            PlainVanillaPayoff(Option::Call, strike));
+        MultiStepSwaption product(rateTimes, startIndex, endIndex,payoff );
+
+        const EvolutionDescription evolution = product.evolution();
+        const Size numberOfFactors = nbRates;
+        Spread displacement = marketData.displacements().front();
+        Matrix jacobian =
+            SwapForwardMappings::coterminalSwapZedMatrix(
+            lmmCurveState, displacement);
+
+        Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
+            longTermCorr,
+            beta);
+        boost::shared_ptr<PiecewiseConstantCorrelation> corr(new
+            TimeHomogeneousForwardCorrelation(correlations,
+            rateTimes));
+        boost::shared_ptr<MarketModel> lmmMarketModel(new
+            FlatVol(marketData.volatilities(),
+            corr,
+            evolution,
+            numberOfFactors,
+            lmmCurveState.forwardRates(),
+            marketData.displacements()));
+
+
+        SobolBrownianGeneratorFactory generatorFactory(SobolBrownianGenerator::Diagonal);
+        std::vector<Size> numeraires(nbRates,
+            nbRates);
+        boost::shared_ptr<MarketModelEvolver> evolver(new LogNormalFwdRatePc
+            (lmmMarketModel, generatorFactory, numeraires));
+
+        boost::shared_ptr<SequenceStatisticsInc> stats =
+            simulate(marketData.discountFactors(), evolver, product);
+        std::vector<Real> results = stats->mean();
+        std::vector<Real> errors = stats->errorEstimate();
+
+
+        Real estimatedImpliedVol = SwapForwardMappings::swaptionImpliedVolatility(*lmmMarketModel,startIndex,endIndex);
+
+        Real swapRate = lmmCurveState.cmSwapRate(startIndex,endIndex-startIndex);
+        Real swapAnnuity = lmmCurveState.cmSwapAnnuity(startIndex,startIndex,endIndex-startIndex)*marketData.discountFactors()[startIndex];
+
+        boost::shared_ptr<PlainVanillaPayoff> payoffDis( new PlainVanillaPayoff(Option::Call, strike+displacement));
+
+        Real expectedSwaption = BlackCalculator(payoffDis,
+            swapRate+displacement, estimatedImpliedVol *sqrt(rateTimes[startIndex]),
+            swapAnnuity).value();
+
+        Real error = expectedSwaption - results[0];
+        Real errorInSds = error/errors[0];
+        if (fabs(errorInSds) > 3.5 )
+            BOOST_ERROR(
+            "expected\t" << expectedSwaption <<
+            "\tLMM\t" << results[0]
+        << "\tstdev:\t" << errors[0] <<
+            "\t" <<errorInSds);
+    }
+
+}
+
 
 
 test_suite* SwapForwardMappingsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("swap-forward mappings tests");
 
+
     suite->add(QUANTLIB_TEST_CASE(
-                    &SwapForwardMappingsTest::testForwardSwapJacobians));
-    #if !defined(QL_NO_UBLAS_SUPPORT)
+        &SwapForwardMappingsTest::testSwaptionImpliedVolatility));
+
     suite->add(QUANTLIB_TEST_CASE(
-                    &SwapForwardMappingsTest::testForwardCoterminalMappings));
-    #endif
+        &SwapForwardMappingsTest::testForwardSwapJacobians));
+#if !defined(QL_NO_UBLAS_SUPPORT)
+    suite->add(QUANTLIB_TEST_CASE(
+        &SwapForwardMappingsTest::testForwardCoterminalMappings));
+#endif
     return suite;
 }
 

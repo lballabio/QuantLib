@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2006 Ferdinando Ametrano
- Copyright (C) 2006 Mark Joshi
+ Copyright (C) 2006, 2008 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,6 +30,7 @@
 namespace QuantLib {
 
     class CurveState;
+    class MarketModel;
 
     class SwapForwardMappings {
       public:
@@ -81,6 +82,17 @@ namespace QuantLib {
         cmSwapZedMatrix(const CurveState& cs,
                         const Size spanningForwards,
                         const Spread displacement);
+
+        /*! computes the implied vol of a swaption specified by two indices
+        using the freezing coefficients methdodology. This routine is easy to use but not very efficient
+        and if you want to do a lot of cases, then a different approach should be used. 
+
+        Tested in SwapForwardMappingsTest::testSwaptionImpliedVolatility() in swapforwardmappings.cpp
+        */
+        static Real 
+        swaptionImpliedVolatility(const MarketModel& volStructure,
+                                  Size startIndex,
+                                  Size endIndex);
 
     };
 

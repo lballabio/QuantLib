@@ -4,7 +4,7 @@
 Copyright (C) 2006 Ferdinando Ametrano
 Copyright (C) 2006 Marco Bianchetti
 Copyright (C) 2006 Giorgio Facchinetti
-Copyright (C) 2006 Mark Joshi
+Copyright (C) 2006, 2008 Mark Joshi
 
 This file is part of QuantLib, a free-software/open-source library
 for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,6 +22,9 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
+#include <ql/models/marketmodels/marketmodel.hpp>
+#include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -174,5 +177,52 @@ namespace QuantLib {
                 zMatrix[i][j] *= (f[j]+displacement)/(sr[i]+displacement);
         return zMatrix;
     }
+
+      Real 
+      SwapForwardMappings::swaptionImpliedVolatility(const MarketModel& volStructure,
+                                  Size startIndex,
+                                  Size endIndex)
+      {
+          QL_REQUIRE(startIndex < endIndex, "start index must be before end index in swaptionImpliedVolatility");
+
+          LMMCurveState cs(volStructure.evolution().rateTimes());
+          cs.setOnForwardRates(volStructure.initialRates());
+          Real displacement = volStructure.displacements()[0];
+
+          Matrix cmsZed(cmSwapZedMatrix(cs, endIndex-startIndex,displacement));
+
+          Real variance=0.0;
+
+          Size index=0;
+
+          const EvolutionDescription& evolution(volStructure.evolution());
+          Size factors = volStructure.numberOfFactors();
+
+          while (startIndex >= evolution.firstAliveRate()[index] )
+          {
+              const Matrix& thisPseudo = volStructure.pseudoRoot(index);
+              Real thisVariance =0.0;
+              
+              for (Size f=0; f < factors; ++f)
+              {
+                  Real sum=0.0;
+
+                  for (Size j=startIndex; j < endIndex;++j)
+                  {
+                      sum += cmsZed[startIndex][j]*thisPseudo[j][f];
+
+                  }
+                  thisVariance += sum*sum;
+
+              }
+              variance += thisVariance;
+              ++index;
+
+          }
+
+          Real expiry = evolution.rateTimes()[startIndex];
+          return sqrt(variance/expiry);
+
+      }
 
 }
