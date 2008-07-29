@@ -13,4 +13,5 @@
 #include <ql/models/marketmodels/products/multistep/multistepperiodcapletswaptions.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepratchet.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepswap.hpp>
+#include <ql/models/marketmodels/products/multistep/multistepswaption.hpp>
 
