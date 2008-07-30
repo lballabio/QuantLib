@@ -3,10 +3,12 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    ratepseudorootjacobian.hpp
+    ratepseudorootjacobian.hpp \
+    swaptionpseudojacobian.hpp
 
 libMarketModelsPathwiseGreeks_la_SOURCES = \
-    ratepseudorootjacobian.cpp 
+    ratepseudorootjacobian.cpp \
+    swaptionpseudojacobian.cpp
 
 noinst_LTLIBRARIES = libMarketModelsPathwiseGreeks.la
 
