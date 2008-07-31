@@ -62,11 +62,24 @@ namespace QuantLib {
         }
         Type type() const { return type_; }
         Date date() const { return date_; }
+        //@}
+        //! \name Visitability
+        //@{
+        virtual void accept(AcyclicVisitor&);
+        //@}
       private:
         boost::optional<Price> price_;
         Type type_;
         Date date_;
     };
+
+    inline void Callability::accept(AcyclicVisitor& v){
+        Visitor<Callability>* v1 = dynamic_cast<Visitor<Callability>*>(&v);
+        if(v1 != 0)
+            v1->visit(*this);
+        else
+            Event::accept(v);
+    }
 
     typedef std::vector<boost::shared_ptr<Callability> > CallabilitySchedule;
 
