@@ -1,413 +1,2692 @@
-2007-12-14 14:15  Luigi Ballabio
+2008-07-10 09:02  Luigi Ballabio
 
-	* [r13819] ChangeLog.txt:
+	* [r15207] QuantLib_vc7.vcproj, QuantLib_vc8.vcproj,
+	  QuantLib_vc9.vcproj, ql/models/marketmodels/Makefile.am,
+	  ql/models/marketmodels/pathwiseaccountingengine.cpp,
+	  ql/models/marketmodels/pathwiseaccountingengine.hpp,
+	  ql/models/marketmodels/pathwisediscounter.cpp,
+	  ql/models/marketmodels/products/Makefile.am,
+	  ql/models/marketmodels/products/all.hpp,
+	  ql/models/marketmodels/products/pathwise/Makefile.am,
+	  ql/models/marketmodels/products/pathwise/all.hpp,
+	  ql/models/marketmodels/products/pathwise/pathwiseproductcaplet.cpp:
 	  
-	  Updated ChangeLog
+	  Reverted changesets 15190, 15191, 15200, and 15202.
+	  Sorry, folks---next release. These files look like still in
+	  development,
+	  and I'd rather not have to keep track of them while we clean up for
+	  release.
 
-2007-12-14 14:04  Luigi Ballabio
+2008-07-09 07:46  Ferdinando Ametrano
 
-	* [r13818] Examples/FittedBondCurve/FittedBondCurve.cpp:
+	* [r15203] ql/errors.hpp:
 	  
-	  Fixed out-of-bounds access in example code
-
-2007-12-14 09:38  Ferdinando Ametrano
-
-	* [r13817] ql/instruments/assetswap.hpp:
+	  fixed parameter name to avoid the following compilation error
+	  obtained with VC7 and boost 1.35:
+	  ../QuantLib\ql\errors.hpp(45) : error C2872: 'function' : ambiguous
+	  symbol
+	  could be 'boost::detail::function'
+	  or
+	  'C:\Boost\include\boost-1_35\boost\function\function_base.hpp(106) :
+	  boost::function'
 	  
-	  removed unused (potentially misleading) private data member
+	  the rational escapes me, but the fix is effective. The error was not
+	  present with VC7 and previous versions of boost.
 
-2007-12-14 09:04  Luigi Ballabio
+2008-07-08 13:39  Ferdinando Ametrano
 
-	* [r13816] ql/instruments/assetswap.cpp:
-	  
-	  Restored missing asset-swap results
-
-2007-12-13 15:43  Luigi Ballabio
-
-	* [r13810] ChangeLog.txt:
-	  
-	  Updated ChangeLog
-
-2007-12-13 14:21  Luigi Ballabio
-
-	* [r13809] ql/termstructures/volatility/optionlet/all.hpp:
-	  
-	  Regenerated all.hpp file
-
-2007-12-13 14:19  Luigi Ballabio
-
-	* [r13808] QuantLib.dev:
-	  
-	  Updated Dev-C++ project
-
-2007-12-13 14:07  Ferdinando Ametrano
-
-	* [r13807] QuantLib_vc7.vcproj, QuantLib_vc8.vcproj,
-	  ql/termstructures/volatility/optionlet/Makefile.am,
-	  ql/termstructures/volatility/optionlet/all.hpp,
-	  ql/termstructures/volatility/optionlet/capletvolatilitiesstructures.cpp,
-	  ql/termstructures/volatility/optionlet/capletvolatilitiesstructures.hpp:
-	  
-	  removed obsolete unused files (DevCpp still to be updated)
-
-2007-12-13 13:56  Ferdinando Ametrano
-
-	* [r13806] ql/cashflows/couponpricer.cpp, ql/experimental/volcube.hpp:
-	  
-	  chenged error messages
-
-2007-12-13 13:56  Ferdinando Ametrano
-
-	* [r13805] ql/instruments/assetswap.cpp:
-	  
-	  fixed bug on default floating leg schedule
-
-2007-12-13 12:46  Luigi Ballabio
-
-	* [r13804] test-suite/hestonmodel.cpp:
-	  
-	  Fixed test message
-
-2007-12-13 12:46  Luigi Ballabio
-
-	* [r13803] ql/instruments/yearonyearinflationswap.cpp:
-	  
-	  Fixed bug in fair-rate calculation
-
-2007-12-12 16:41  Luigi Ballabio
-
-	* [r13799] ql/math/optimization/simplex.cpp:
-	  
-	  Compilation fix for gcc 3.4
-
-2007-12-11 15:29  Luigi Ballabio
-
-	* [r13768] ql/instruments/inflationswap.hpp,
-	  ql/instruments/yearonyearinflationswap.hpp,
-	  ql/instruments/zerocouponinflationswap.hpp:
-	  
-	  Improved documentation
-
-2007-12-11 11:22  Luigi Ballabio
-
-	* [r13764] ChangeLog.txt:
-	  
-	  Updated changelogs and news
-
-2007-12-11 10:12  Ferdinando Ametrano
-
-	* [r13761]
-	  ql/termstructures/volatility/optionlet/optionletstripper1.cpp:
-	  
-	  formatting
-
-2007-12-11 09:10  Luigi Ballabio
-
-	* [r13756] test-suite/testsuite.dev:
-	  
-	  Updated project
-
-2007-12-10 17:15  Ferdinando Ametrano
-
-	* [r13755] ql/instruments/capfloor.hpp:
-	  
-	  named input parameter to make clearer it is a discounting term
-	  structure
-
-2007-12-10 17:15  Ferdinando Ametrano
-
-	* [r13754] ql/termstructures/yield/ratehelpers.cpp:
-	  
-	  used equivalent (but more robust) Index::fixingDate() method
-
-2007-12-10 14:47  Luigi Ballabio
-
-	* [r13750] Contributors.txt, Docs/pages/authors.docs,
-	  ql/time/calendar.cpp:
-	  
-	  Fixed business-day calculation in corner case (thanks to Paul
-	  Laderoute)
-
-2007-12-10 13:50  Luigi Ballabio
-
-	* [r13749] Docs/pages/overview.docs:
-	  
-	  Updated count
-
-2007-12-10 11:58  Luigi Ballabio
-
-	* [r13746] ql/indexes/inflationindex.cpp, test-suite/Makefile.am,
-	  test-suite/inflation.cpp, test-suite/inflation.hpp,
-	  test-suite/quantlibtestsuite.cpp, test-suite/testsuite.dev,
-	  test-suite/testsuite_vc7.vcproj, test-suite/testsuite_vc8.vcproj:
-	  
-	  Fix for inflation-rate fixing; test added
-
-2007-12-10 11:57  Luigi Ballabio
-
-	* [r13745] ql/cashflows/averagebmacoupon.cpp, ql/indexes/bmaindex.cpp:
-	  
-	  Further fixes for BMA coupons
-
-2007-12-10 09:01  Luigi Ballabio
-
-	* [r13743] ql/math/randomnumbers/sobolrsg.cpp:
-	  
-	  Backported revision 13731 from trunk
-
-2007-12-06 17:15  Luigi Ballabio
-
-	* [r13726] ql/cashflows/averagebmacoupon.cpp:
-	  
-	  Fixed signed+unsigned sum on VC++
-
-2007-12-06 15:33  Ferdinando Ametrano
-
-	* [r13722] ql/instruments/makevanillaswap.cpp:
-	  
-	  explicit choice for improved readability
-
-2007-12-06 15:16  Luigi Ballabio
-
-	* [r13720] ql/cashflows/averagebmacoupon.cpp, ql/indexes/bmaindex.cpp,
-	  ql/termstructures/yield/ratehelpers.cpp,
-	  test-suite/piecewiseyieldcurve.cpp:
-	  
-	  Fixed average BMA coupon fixing; test added (thanks to Roland
-	  Lichters)
-
-2007-12-06 13:04  Luigi Ballabio
-
-	* [r13711] Docs/pages/history.docs, News.txt,
-	  ql/time/calendars/brazil.cpp, ql/time/calendars/brazil.hpp:
-	  
-	  Fixed Bovespa calendar (thanks to Piter Dias)
-
-2007-12-06 10:57  Ferdinando Ametrano
-
-	* [r13703]
-	  ql/termstructures/volatility/optionlet/optionletstripper.cpp,
-	  ql/termstructures/volatility/optionlet/optionletstripper.hpp,
-	  ql/termstructures/volatility/optionlet/optionletstripper2.cpp,
-	  ql/termstructures/volatility/optionlet/strippedoptionletbase.hpp:
-	  
-	  renamed StrippedOptionletBase::atmOptionletRate as
-	  StrippedOptionletBase::atmOptionletRates
-
-2007-12-06 10:40  Ferdinando Ametrano
-
-	* [r13700]
-	  ql/termstructures/volatility/capfloor/capfloortermvolatilitystructure.hpp:
-	  
-	  formatting
-
-2007-12-06 10:39  Ferdinando Ametrano
-
-	* [r13699]
-	  ql/termstructures/volatility/optionlet/strippedoptionletadapter.cpp:
-	  
-	  fixed bug which prevented extrapolation
-
-2007-12-04 12:47  Luigi Ballabio
-
-	* [r13664] Announce.txt, ChangeLog.txt, Docs/pages/history.docs,
-	  News.txt:
-	  
-	  Updated changelog, news and announce
-
-2007-12-03 19:19  Ferdinando Ametrano
-
-	* [r13656] ql/termstructures/yield/ratehelpers.cpp,
-	  ql/termstructures/yield/ratehelpers.hpp:
-	  
-	  added SwapRateHelper::forwardStart() inspector
-
-2007-12-03 15:02  Ferdinando Ametrano
-
-	* [r13649] test-suite/optimizers.cpp:
+	* [r15202] ql/models/marketmodels/products/all.hpp:
 	  
 	  
 
-2007-12-03 14:09  Luigi Ballabio
+2008-07-08 08:42  Ferdinando Ametrano
 
-	* [r13648] test-suite/assetswap.cpp, test-suite/capfloor.cpp,
-	  test-suite/digitalcoupon.cpp,
-	  test-suite/hybridhestonhullwhiteprocess.cpp,
-	  test-suite/libormarketmodel.cpp,
-	  test-suite/libormarketmodelprocess.cpp,
-	  test-suite/lowdiscrepancysequences.cpp, test-suite/marketmodel.cpp,
-	  test-suite/marketmodel_smmcaplethomocalibration.cpp,
-	  test-suite/optimizers.cpp, test-suite/period.cpp,
-	  test-suite/swapforwardmappings.cpp:
+	* [r15200] ql/models/marketmodels/products/Makefile.am,
+	  ql/models/marketmodels/products/pathwise/Makefile.am:
 	  
-	  Cleaned up test-case messages
+	  fixed linking
 
-2007-12-03 11:37  Luigi Ballabio
+2008-07-07 10:34  Ferdinando Ametrano
 
-	* [r13646] ql/cashflows/iborcoupon.cpp:
+	* [r15191] ql/models/marketmodels/pathwiseaccountingengine.cpp,
+	  ql/models/marketmodels/pathwiseaccountingengine.hpp,
+	  ql/models/marketmodels/pathwisediscounter.cpp,
+	  ql/models/marketmodels/products/pathwise/pathwiseproductcaplet.cpp:
 	  
-	  Added check for in-arrears fixing
+	  backported bug-fix changeset 15168:15171 from trunk to branch
 
-2007-12-03 11:36  Luigi Ballabio
+2008-07-07 10:29  Ferdinando Ametrano
 
-	* [r13645] test-suite/hybridhestonhullwhiteprocess.cpp:
+	* [r15190] QuantLib_vc7.vcproj, QuantLib_vc8.vcproj,
+	  QuantLib_vc9.vcproj, ql/models/marketmodels/Makefile.am,
+	  ql/models/marketmodels/products/Makefile.am,
+	  ql/models/marketmodels/products/pathwise/Makefile.am,
+	  ql/models/marketmodels/products/pathwise/all.hpp:
 	  
-	  Increased MC tolerance
+	  updated makefiles for Mark's latest files
 
-2007-11-30 16:16  Luigi Ballabio
+2008-07-04 12:33  Luigi Ballabio
 
-	* [r13640] ql/termstructures/yield/ratehelpers.cpp:
+	* [r15180] ql/math/matrixutilities/qrdecomposition.cpp,
+	  ql/math/matrixutilities/qrdecomposition.hpp:
 	  
-	  Fixed date calculation
+	  Replaced tabs with spaces
 
-2007-11-30 12:23  Luigi Ballabio
+2008-07-04 10:55  Luigi Ballabio
 
-	* [r13637] ql/indexes/ibor/euribor.cpp, ql/indexes/ibor/euribor.hpp,
-	  ql/indexes/ibor/eurlibor.hpp, ql/indexes/swap/euriborswapfixa.cpp,
-	  ql/indexes/swap/euriborswapfixa.hpp,
-	  ql/indexes/swap/euriborswapfixb.cpp,
-	  ql/indexes/swap/euriborswapfixb.hpp,
-	  ql/indexes/swap/euriborswapfixifr.cpp,
-	  ql/indexes/swap/euriborswapfixifr.hpp,
-	  ql/indexes/swap/eurliborswapfixa.cpp,
-	  ql/indexes/swap/eurliborswapfixa.hpp,
-	  ql/indexes/swap/eurliborswapfixb.cpp,
-	  ql/indexes/swap/eurliborswapfixb.hpp,
-	  ql/indexes/swap/eurliborswapfixifr.cpp,
-	  ql/indexes/swap/eurliborswapfixifr.hpp, test-suite/assetswap.cpp,
-	  test-suite/bermudanswaption.cpp, test-suite/capfloor.cpp,
-	  test-suite/capflooredcoupon.cpp, test-suite/cms.cpp,
-	  test-suite/convertiblebonds.cpp, test-suite/digitalcoupon.cpp,
-	  test-suite/libormarketmodel.cpp,
-	  test-suite/libormarketmodelprocess.cpp,
-	  test-suite/piecewiseyieldcurve.cpp, test-suite/quotes.cpp,
-	  test-suite/rangeaccrual.cpp, test-suite/shortratemodels.cpp,
-	  test-suite/swap.cpp, test-suite/swaption.cpp,
-	  test-suite/swaptionvolatilitycube.cpp:
-	  
-	  Reverted revision 13636 (FBE calls it Euribor, and so would I) and
-	  13634.
-	  Let's discuss a bit more about it (preferably on ql-dev.)
-
-2007-11-30 11:46  Ferdinando Ametrano
-
-	* [r13636] ql/indexes/ibor/euribor.cpp, ql/indexes/ibor/euribor.hpp,
-	  ql/indexes/ibor/eurlibor.hpp, ql/indexes/swap/euriborswapfixa.cpp,
-	  ql/indexes/swap/euriborswapfixa.hpp,
-	  ql/indexes/swap/euriborswapfixb.cpp,
-	  ql/indexes/swap/euriborswapfixb.hpp,
-	  ql/indexes/swap/euriborswapfixifr.cpp,
-	  ql/indexes/swap/euriborswapfixifr.hpp,
-	  ql/indexes/swap/eurliborswapfixa.cpp,
-	  ql/indexes/swap/eurliborswapfixa.hpp,
-	  ql/indexes/swap/eurliborswapfixb.cpp,
-	  ql/indexes/swap/eurliborswapfixb.hpp,
-	  ql/indexes/swap/eurliborswapfixifr.cpp,
-	  ql/indexes/swap/eurliborswapfixifr.hpp, test-suite/assetswap.cpp,
-	  test-suite/bermudanswaption.cpp, test-suite/capfloor.cpp,
-	  test-suite/capflooredcoupon.cpp, test-suite/cms.cpp,
-	  test-suite/convertiblebonds.cpp, test-suite/digitalcoupon.cpp,
-	  test-suite/libormarketmodel.cpp,
-	  test-suite/libormarketmodelprocess.cpp,
-	  test-suite/piecewiseyieldcurve.cpp, test-suite/quotes.cpp,
-	  test-suite/rangeaccrual.cpp, test-suite/shortratemodels.cpp,
-	  test-suite/swap.cpp, test-suite/swaption.cpp,
-	  test-suite/swaptionvolatilitycube.cpp:
-	  
-	  - adopted homogeneous capitalization for QuantLib::EUR(L)ibor*
-	  (formerly was QuantLib::Eur(L)ibor*). In QuantLibAddin we still
-	  prefer Eur(L)ibor
-
-2007-11-30 11:13  Luigi Ballabio
-
-	* [r13635] ql/indexes/swapindex.cpp,
-	  ql/instruments/makevanillaswap.cpp,
-	  ql/math/randomnumbers/sobolrsg.cpp:
-	  
-	  Removed hard tabs
-
-2007-11-30 11:08  Ferdinando Ametrano
-
-	* [r13634] ql/indexes/ibor/euribor.hpp, ql/indexes/ibor/eurlibor.hpp,
-	  ql/indexes/swap/euriborswapfixa.cpp,
-	  ql/indexes/swap/euriborswapfixa.hpp,
-	  ql/indexes/swap/euriborswapfixb.cpp,
-	  ql/indexes/swap/euriborswapfixb.hpp,
-	  ql/indexes/swap/euriborswapfixifr.cpp,
-	  ql/indexes/swap/euriborswapfixifr.hpp,
-	  ql/indexes/swap/eurliborswapfixa.cpp,
-	  ql/indexes/swap/eurliborswapfixa.hpp,
-	  ql/indexes/swap/eurliborswapfixb.cpp,
-	  ql/indexes/swap/eurliborswapfixb.hpp,
-	  ql/indexes/swap/eurliborswapfixifr.cpp,
-	  ql/indexes/swap/eurliborswapfixifr.hpp,
-	  test-suite/bermudanswaption.cpp, test-suite/capfloor.cpp,
-	  test-suite/capflooredcoupon.cpp, test-suite/cms.cpp,
-	  test-suite/convertiblebonds.cpp, test-suite/digitalcoupon.cpp,
-	  test-suite/libormarketmodel.cpp,
-	  test-suite/libormarketmodelprocess.cpp,
-	  test-suite/piecewiseyieldcurve.cpp, test-suite/rangeaccrual.cpp,
-	  test-suite/shortratemodels.cpp, test-suite/swaption.cpp,
-	  test-suite/swaptionvolatilitycube.cpp:
-	  
-	  removed redundant specialized classes (they were not covering all
-	  needs anyway)
-
-2007-11-30 10:40  Luigi Ballabio
-
-	* [r13629] man/FittedBondCurve.1:
+	* [r15178] ql/math/matrixutilities/qrdecomposition.cpp,
+	  ql/math/matrixutilities/qrdecomposition.hpp:
 	  
 	  Fixed SVN properties
 
-2007-11-30 10:29  Luigi Ballabio
+2008-07-04 10:35  Luigi Ballabio
 
-	* [r13628] ql/indexes/inflationindex.hpp,
-	  ql/indexes/swap/euriborswapfixa.hpp,
-	  ql/indexes/swap/euriborswapfixb.hpp,
-	  ql/indexes/swap/euriborswapfixifr.hpp,
-	  ql/indexes/swap/eurliborswapfixa.hpp,
-	  ql/indexes/swap/eurliborswapfixb.hpp,
-	  ql/indexes/swap/eurliborswapfixifr.hpp,
-	  ql/methods/finitedifferences/pdeshortrate.hpp,
-	  ql/methods/finitedifferences/stepcondition.hpp,
-	  ql/methods/montecarlo/multipathgenerator.hpp,
-	  ql/models/marketmodels/marketmodeldifferences.cpp,
-	  ql/models/marketmodels/marketmodeldifferences.hpp,
-	  ql/pricingengines/forward/replicatingvarianceswapengine.hpp,
-	  ql/pricingengines/hybrid/binomialconvertibleengine.hpp,
-	  ql/pricingengines/vanilla/fdconditions.hpp,
-	  ql/termstructures/inflation/interpolatedyoyinflationcurve.hpp,
-	  ql/termstructures/inflation/interpolatedzeroinflationcurve.hpp,
-	  ql/termstructures/volatility/equityfx/localconstantvol.hpp,
-	  ql/termstructures/volatility/equityfx/localvolcurve.hpp,
-	  ql/termstructures/yield/bootstraptraits.hpp:
+	* [r15177] test-suite/cms.cpp, test-suite/dividendoption.cpp,
+	  test-suite/hybridhestonhullwhiteprocess.cpp,
+	  test-suite/lowdiscrepancysequences.cpp, test-suite/marketmodel.cpp,
+	  test-suite/matrices.cpp, test-suite/optionletstripper.cpp,
+	  test-suite/quotes.cpp:
+	  
+	  Fixed test-suite messages
+
+2008-07-04 09:29  Luigi Ballabio
+
+	* [r15175] ql/termstructures/bootstraperror.hpp,
+	  ql/termstructures/localbootstrap.hpp:
 	  
 	  Enforced self-consistency of headers
 
-2007-11-30 09:52  Marco Bianchetti
+2008-07-03 15:48  Luigi Ballabio
 
-	* [r13627] test-suite/lowdiscrepancysequences.cpp:
+	* [r15166] ql/math/interpolations/convexmonotoneinterpolation.hpp,
+	  ql/termstructures/iterativebootstrap.hpp:
 	  
-	  handled missing case
+	  Removed compilation warnings for Dev-C++
 
-2007-11-30 09:01  Luigi Ballabio
+2008-07-03 15:12  Luigi Ballabio
 
-	* [r13622] ql/cashflows/replication.hpp,
-	  ql/experimental/sabrvolsurface.hpp,
-	  ql/models/marketmodels/evolutiondescription.hpp,
-	  ql/models/marketmodels/marketmodeldifferences.hpp,
-	  ql/models/marketmodels/models/capletcoterminalperiodic.cpp,
-	  ql/models/marketmodels/models/fwdperiodadapter.cpp,
-	  ql/models/marketmodels/models/volatilityinterpolationspecifier.hpp,
-	  ql/models/marketmodels/models/volatilityinterpolationspecifierabcd.cpp,
-	  ql/models/marketmodels/models/volatilityinterpolationspecifierabcd.hpp:
+	* [r15162] ql/math/matrix.cpp,
+	  ql/pricingengines/vanilla/analytichestonengine.cpp:
 	  
-	  Fixed inclusion order (ql first, boost second, then stl)
+	  Removed compilation warnings for VC++9
 
-2007-11-30 08:51  Luigi Ballabio
+2008-07-03 12:37  Luigi Ballabio
 
-	* [r13620] ql/pricingengines/vanilla/analyticbsmhullwhiteengine.cpp,
-	  ql/pricingengines/vanilla/analyticbsmhullwhiteengine.hpp,
+	* [r15161] Examples/CDS/CDS.cpp,
+	  test-suite/hybridhestonhullwhiteprocess.cpp:
+	  
+	  Fixed license links
+
+2008-07-03 12:33  Luigi Ballabio
+
+	* [r15160] Docs/pages/license.docs, LICENSE.TXT:
+	  
+	  Updated license with new copyrights
+
+2008-07-03 08:54  Luigi Ballabio
+
+	* [r15159] :
+	  
+	  Created release branch for version 0.9.5
+
+2008-07-03 06:59  Mark Joshi
+
+	* [r15156]
+	  ql/models/marketmodels/correlations/timehomogeneousforwardcorrelation.cpp:
+	  
+	  fixed buggy test
+
+2008-07-02 15:34  Luigi Ballabio
+
+	* [r15152] QuantLib.dev, QuantLib_vc7.sln, QuantLib_vc7.vcproj,
+	  QuantLib_vc8.sln, QuantLib_vc8.vcproj, QuantLib_vc9.sln,
+	  QuantLib_vc9.vcproj, test-suite/testsuite.dev,
+	  test-suite/testsuite_vc7.vcproj:
+	  
+	  Updated VC++ and Dev-C++ projects
+
+2008-07-02 15:21  Luigi Ballabio
+
+	* [r15151] configure.ac, ql/experimental/Makefile.am,
+	  ql/experimental/all.hpp, ql/experimental/risk,
+	  ql/experimental/risk/Makefile.am, ql/experimental/risk/all.hpp,
+	  ql/experimental/risk/sensitivityanalysis.cpp,
+	  ql/experimental/risk/sensitivityanalysis.hpp, ql/quotes/Makefile.am,
+	  ql/quotes/all.hpp, ql/quotes/sensitivityanalysis.cpp,
+	  ql/quotes/sensitivityanalysis.hpp:
+	  
+	  Moved sensitivity analysis to experimental folder
+
+2008-07-02 14:22  Luigi Ballabio
+
+	* [r15149] ql/indexes/ibor/Makefile.am, ql/indexes/ibor/all.hpp:
+	  
+	  Added missing file to distribution
+
+2008-07-02 14:21  Luigi Ballabio
+
+	* [r15148] ql/termstructures/yield/ratehelpers.cpp:
+	  
+	  Replaced redundant calculation with calls to index methods
+
+2008-07-01 15:51  Luigi Ballabio
+
+	* [r15147] test-suite/capfloor.cpp, test-suite/swaption.cpp:
+	  
+	  Do not report bracketing failure when due to numerical precision
+
+2008-07-01 08:08  Luigi Ballabio
+
+	* [r15146] configure.ac:
+	  
+	  Removed outdated RPM specification files from distributed tarballs
+
+2008-06-30 16:17  Luigi Ballabio
+
+	* [r15145] ql/termstructures/inflationtermstructure.cpp:
+	  
+	  Fixed inflation-period calculation
+
+2008-06-30 16:15  Luigi Ballabio
+
+	* [r15144] ql/models/marketmodels/utilities.cpp:
+	  
+	  Fixed out-of-bounds access (thanks to Jan van Heys)
+
+2008-06-27 22:02  Klaus Spanderen
+
+	* [r15139] ql/math/matrixutilities/qrdecomposition.cpp:
+	  
+	  formatting
+
+2008-06-27 22:00  Klaus Spanderen
+
+	* [r15138] ql/math/matrixutilities/qrdecomposition.cpp:
+	  
+	  formatting
+
+2008-06-27 21:55  Klaus Spanderen
+
+	* [r15137] ql/math/matrixutilities/qrdecomposition.cpp,
+	  ql/math/matrixutilities/qrdecomposition.hpp:
+	  
+	  formatting
+
+2008-06-27 21:48  Klaus Spanderen
+
+	* [r15136] ql/math/matrixutilities/qrdecomposition.cpp,
+	  ql/math/matrixutilities/qrdecomposition.hpp,
+	  ql/math/optimization/lmdif.hpp, test-suite/matrices.cpp:
+	  
+	  formatting
+
+2008-06-27 20:52  Klaus Spanderen
+
+	* [r15135] ql/math/optimization/levenbergmarquardt.cpp:
+	  
+	  removed obvious namespace
+
+2008-06-27 20:51  Klaus Spanderen
+
+	* [r15134] ql/math/matrixutilities/qrdecomposition.cpp,
+	  ql/math/matrixutilities/qrdecomposition.hpp:
+	  
+	  matrix QR decomposition
+
+2008-06-27 20:49  Klaus Spanderen
+
+	* [r15133] ql/math/matrixutilities/Makefile.am,
+	  ql/math/matrixutilities/all.hpp, ql/math/optimization/lmdif.hpp,
+	  test-suite/matrices.cpp, test-suite/matrices.hpp:
+	  
+	  matrix QR decomposition
+
+2008-06-27 14:57  Luigi Ballabio
+
+	* [r15132] Examples/CDS/CDS.cpp,
+	  ql/termstructures/credit/defaultprobabilityhelpers.cpp,
+	  ql/termstructures/credit/defaultprobabilityhelpers.hpp,
+	  test-suite/defaultprobabilitycurves.cpp:
+	  
+	  Added choice of date-generation rule to CDS helpers
+
+2008-06-27 13:24  Luigi Ballabio
+
+	* [r15131] ql/instruments/bonds/fixedratebond.cpp,
+	  ql/instruments/bonds/floatingratebond.cpp,
+	  ql/time/dategenerationrule.cpp, ql/time/dategenerationrule.hpp,
+	  ql/time/schedule.cpp:
+	  
+	  Added date-generation rules for CDS schedules
+
+2008-06-24 17:05  Ferdinando Ametrano
+
+	* [r15125] ql/termstructures/volatility/sabr.cpp:
+	  
+	  
+
+2008-06-24 16:50  Ferdinando Ametrano
+
+	* [r15124] ql/math/interpolations/sabrinterpolation.hpp,
+	  ql/termstructures/volatility/sabr.cpp,
+	  ql/termstructures/volatility/smilesection.cpp:
+	  
+	  improved error message
+
+2008-06-24 13:59  Luigi Ballabio
+
+	* [r15119] test-suite/optionletstripper.cpp:
+	  
+	  Increased tolerance
+
+2008-06-24 13:47  Ferdinando Ametrano
+
+	* [r15118] QuantLib_vc7.vcproj, QuantLib_vc8.vcproj,
+	  QuantLib_vc9.vcproj, test-suite/testsuite_vc7.vcproj,
+	  test-suite/testsuite_vc8.vcproj, test-suite/testsuite_vc9.vcproj:
+	  
+	  VC7-8-9 cacthing up
+
+2008-06-24 09:58  Luigi Ballabio
+
+	* [r15115] ql/instruments/Makefile.am, ql/instruments/all.hpp,
+	  ql/instruments/himalayaoption.cpp,
+	  ql/instruments/himalayaoption.hpp, ql/legacy/pricers/Makefile.am,
+	  ql/legacy/pricers/all.hpp, ql/legacy/pricers/mchimalaya.cpp,
+	  ql/legacy/pricers/mchimalaya.hpp,
+	  ql/pricingengines/basket/Makefile.am,
+	  ql/pricingengines/basket/all.hpp,
+	  ql/pricingengines/basket/mchimalayaengine.cpp,
+	  ql/pricingengines/basket/mchimalayaengine.hpp,
+	  test-suite/Makefile.am, test-suite/himalayaoption.cpp,
+	  test-suite/himalayaoption.hpp, test-suite/old_pricers.cpp,
+	  test-suite/quantlibtestsuite.cpp:
+	  
+	  Ported Himalaya option to pricing-engine framework (thanks to the
+	  IMAFA students at Polytech'Nice Sophia)
+
+2008-06-23 14:18  Luigi Ballabio
+
+	* [r15113] ql/instruments/everestoption.hpp:
+	  
+	  Removed unused inclusion
+
+2008-06-23 10:56  Luigi Ballabio
+
+	* [r15111] ql/math/distributions/studenttdistribution.cpp,
+	  ql/math/matrix.cpp, ql/models/marketmodels/models/alphafinder.cpp,
+	  test-suite/integrals.cpp, test-suite/old_pricers.cpp:
+	  
+	  Avoided compilation warnings with gcc -Wall etc
+
+2008-06-22 07:55  Joseph Wang
+
+	* [r15108] Examples/Swap/swapvaluation.cpp,
+	  ql/methods/montecarlo/montecarlomodel.hpp:
+	  
+	  Fix build warning in montecarlo about else
+	  Fix build break in Examples/Swap
+
+2008-06-22 07:39  Joseph Wang
+
+	* [r15107] Examples/FRA/FRA.cpp:
+	  
+	  Sync up FRA example to PiecewiseYieldCurve
+
+2008-06-20 08:03  Klaus Spanderen
+
+	* [r15106] ql/math/optimization/lmdif.cpp:
+	  
+	  removed BUG #defines
+
+2008-06-17 15:04  Ferdinando Ametrano
+
+	* [r15098] QuantLib_vc8.vcproj:
+	  
+	  
+
+2008-06-17 14:31  Eric Ehlers
+
+	* [r15096] ql/math/copulas/claytoncopula.cpp,
+	  ql/math/copulas/farliegumbelmorgensterncopula.cpp,
+	  ql/math/copulas/frankcopula.cpp, ql/math/copulas/gaussiancopula.cpp,
+	  ql/math/copulas/gumbelcopula.cpp,
+	  ql/math/copulas/independentcopula.cpp,
+	  ql/math/copulas/marshallolkincopula.cpp,
+	  ql/math/copulas/maxcopula.cpp, ql/math/copulas/mincopula.cpp,
+	  ql/models/equity/gjrgarchmodel.hpp,
+	  ql/pricingengines/vanilla/analyticgjrgarchengine.cpp,
+	  ql/pricingengines/vanilla/analyticgjrgarchengine.hpp,
+	  ql/pricingengines/vanilla/analytichestonhullwhiteengine.cpp,
+	  ql/pricingengines/vanilla/analytichestonhullwhiteengine.hpp,
+	  ql/pricingengines/vanilla/batesengine.cpp,
+	  ql/pricingengines/vanilla/batesengine.hpp,
+	  ql/pricingengines/vanilla/jumpdiffusionengine.cpp,
+	  test-suite/quantlibbenchmark.cpp:
+	  
+	  replace hard tabs with 4 spaces
+
+2008-06-13 15:03  Marco Bianchetti
+
+	* [r15079] QuantLib_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2008-06-11 17:57  Marco Bianchetti
+
+	* [r15073] QuantLib_vc7.vcproj, test-suite/testsuite_vc7.vcproj:
+	  
+	  VC7 catching up
+
+2008-06-10 15:39  Ferdinando Ametrano
+
+	* [r15070] ql/models/marketmodels/historicalforwardratesanalysis.hpp,
+	  ql/termstructures/yield/piecewiseyieldcurve.hpp,
+	  test-suite/piecewiseyieldcurve.cpp:
+	  
+	  introduced multiple arbitrary-date jumps
+
+2008-06-10 15:38  Ferdinando Ametrano
+
+	* [r15068] QuantLib_vc9.vcproj, test-suite/testsuite_vc9.vcproj:
+	  
+	  VC9 catching up
+
+2008-06-10 15:37  Ferdinando Ametrano
+
+	* [r15067] ql/prices.hpp:
+	  
+	  fixed description
+
+2008-06-08 19:54  Marco Bianchetti
+
+	* [r15056] QuantLib_vc8.vcproj, test-suite/testsuite_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2008-06-06 13:32  Luigi Ballabio
+
+	* [r15055] ql/instruments/Makefile.am, ql/instruments/all.hpp,
+	  ql/instruments/everestoption.cpp, ql/instruments/everestoption.hpp,
+	  ql/instruments/payoffs.cpp, ql/instruments/payoffs.hpp,
+	  ql/legacy/pricers/Makefile.am, ql/legacy/pricers/all.hpp,
+	  ql/legacy/pricers/mceverest.cpp, ql/legacy/pricers/mceverest.hpp,
+	  ql/pricingengines/basket/Makefile.am,
+	  ql/pricingengines/basket/all.hpp,
+	  ql/pricingengines/basket/mceverestengine.cpp,
+	  ql/pricingengines/basket/mceverestengine.hpp,
+	  test-suite/Makefile.am, test-suite/everestoption.cpp,
+	  test-suite/everestoption.hpp, test-suite/old_pricers.cpp,
+	  test-suite/quantlibtestsuite.cpp:
+	  
+	  Ported Everest option to pricing-engine framework (thanks to the
+	  IMAFA students at Polytech'Nice Sophia)
+
+2008-06-05 14:59  Luigi Ballabio
+
+	* [r15054] ql/pricingengines/basket/mcbasketengine.hpp:
+	  
+	  Corrected number of steps in MC simulation
+
+2008-06-04 07:14  Luigi Ballabio
+
+	* [r15044] ql/indexes/interestrateindex.cpp:
+	  
+	  Relaxed constraint on fixing days
+
+2008-06-03 14:49  Luigi Ballabio
+
+	* [r15042] ql/termstructures/yield/bootstraptraits.hpp:
+	  
+	  Removed anonymous namespace from header file
+
+2008-06-03 14:40  Luigi Ballabio
+
+	* [r15041] ql/models/equity/gjrgarchmodel.cpp,
+	  ql/pricingengines/vanilla/analyticgjrgarchengine.cpp,
+	  ql/processes/gjrgarchprocess.cpp, ql/processes/gjrgarchprocess.hpp,
+	  test-suite/gjrgarchmodel.cpp:
+	  
+	  Spelled out method and variable name
+
+2008-06-03 14:31  Luigi Ballabio
+
+	* [r15040] ql/math/matrix.cpp, ql/math/matrix.hpp,
+	  test-suite/matrices.cpp:
+	  
+	  Spelled out method name
+
+2008-06-03 10:43  Luigi Ballabio
+
+	* [r15036] Docs/quantlib.doxy:
+	  
+	  Removed obsolete macros from Doxygen configuration
+
+2008-06-03 10:09  Luigi Ballabio
+
+	* [r15034] configure.ac, ql/experimental/Makefile.am,
+	  ql/experimental/all.hpp, ql/experimental/mcbasket,
+	  ql/experimental/mcbasket/Makefile.am,
+	  ql/experimental/mcbasket/all.hpp,
+	  ql/experimental/mcbasket/mcpathbasketengine.cpp,
+	  ql/experimental/mcbasket/mcpathbasketengine.hpp,
+	  ql/experimental/mcbasket/pathmultiassetoption.cpp,
+	  ql/experimental/mcbasket/pathmultiassetoption.hpp,
+	  ql/experimental/mcbasket/pathpayoff.hpp:
+	  
+	  Added experimental generic MC basket option (thanks to Andrea
+	  Odetti)
+
+2008-05-30 13:25  Luigi Ballabio
+
+	* [r15021] ql/experimental/coupons/quantocouponpricer.hpp,
+	  ql/experimental/coupons/subperiodcoupons.hpp,
+	  ql/experimental/credit/onefactorcopula.hpp,
+	  ql/math/copulas/claytoncopula.hpp,
+	  ql/math/integrals/gausslobattointegral.hpp,
+	  ql/math/interpolations/convexmonotoneinterpolation.hpp:
+	  
+	  Fixes for documentation
+
+2008-05-29 14:15  Luigi Ballabio
+
+	* [r15018] ql/math/interpolations/Makefile.am,
+	  ql/math/interpolations/all.hpp,
+	  ql/math/interpolations/convexmonotoneinterpolation.hpp,
+	  ql/termstructures/Makefile.am, ql/termstructures/all.hpp,
+	  ql/termstructures/localbootstrap.hpp,
+	  ql/termstructures/yield/piecewiseyieldcurve.hpp,
+	  test-suite/piecewiseyieldcurve.cpp,
+	  test-suite/piecewiseyieldcurve.hpp:
+	  
+	  Added local bootstrap of forward rates (thanks to Simon Ibbotson)
+
+2008-05-29 09:16  Luigi Ballabio
+
+	* [r15013] test-suite/quantlibtestsuite.cpp:
+	  
+	  Removed noise
+
+2008-05-28 10:44  Luigi Ballabio
+
+	* [r15008] Examples/BermudanSwaption/Makefile.am,
+	  Examples/CDS/Makefile.am, Examples/CallableBonds/Makefile.am,
+	  Examples/ConvertibleBonds/Makefile.am,
+	  Examples/DiscreteHedging/Makefile.am,
+	  Examples/EquityOption/Makefile.am, Examples/FRA/Makefile.am,
+	  Examples/FittedBondCurve/Makefile.am,
+	  Examples/Replication/Makefile.am, Examples/Repo/Makefile.am,
+	  Examples/Swap/Makefile.am, Makefile.am,
+	  ql/pricingengines/vanilla/Makefile.am,
+	  ql/pricingengines/vanilla/all.hpp, test-suite/Makefile.am:
+	  
+	  Fixes for 'make dist'
+
+2008-05-27 10:42  Ferdinando Ametrano
+
+	* [r14998] QuantLib_vc9.vcproj, test-suite/testsuite_vc9.vcproj:
+	  
+	  VC9 catching up
+
+2008-05-27 07:53  Luigi Ballabio
+
+	* [r14992] ql/experimental/credit/lossdistribution.cpp:
+	  
+	  Replaced non-portable drand48 call
+
+2008-05-26 21:25  Marco Bianchetti
+
+	* [r14991] QuantLib_vc8.vcproj, test-suite/testsuite_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2008-05-26 12:31  Luigi Ballabio
+
+	* [r14986] ql/experimental/credit/Makefile.am,
+	  ql/experimental/credit/all.hpp,
+	  ql/experimental/credit/cdsoption.cpp,
+	  ql/experimental/credit/cdsoption.hpp, test-suite/Makefile.am,
+	  test-suite/cdsoption.cpp, test-suite/cdsoption.hpp,
+	  test-suite/quantlibtestsuite.cpp:
+	  
+	  Added CDS option (thanks to Roland Stamm)
+
+2008-05-26 08:24  Luigi Ballabio
+
+	* [r14981] configure.ac, ql/experimental/Makefile.am,
+	  ql/experimental/all.hpp, ql/experimental/credit,
+	  ql/experimental/credit/Makefile.am, ql/experimental/credit/all.hpp,
+	  ql/experimental/credit/distribution.cpp,
+	  ql/experimental/credit/distribution.hpp,
+	  ql/experimental/credit/lossdistribution.cpp,
+	  ql/experimental/credit/lossdistribution.hpp,
+	  ql/experimental/credit/nthtodefault.cpp,
+	  ql/experimental/credit/nthtodefault.hpp,
+	  ql/experimental/credit/onefactorcopula.cpp,
+	  ql/experimental/credit/onefactorcopula.hpp,
+	  ql/experimental/credit/onefactorgaussiancopula.cpp,
+	  ql/experimental/credit/onefactorgaussiancopula.hpp,
+	  ql/experimental/credit/onefactorstudentcopula.cpp,
+	  ql/experimental/credit/onefactorstudentcopula.hpp,
+	  ql/math/distributions/Makefile.am, ql/math/distributions/all.hpp,
+	  ql/math/distributions/studenttdistribution.cpp,
+	  ql/math/distributions/studenttdistribution.hpp,
+	  test-suite/Makefile.am, test-suite/nthtodefault.cpp,
+	  test-suite/nthtodefault.hpp, test-suite/quantlibtestsuite.cpp:
+	  
+	  Added nth-to-default swap (thanks to Roland Lichters)
+
+2008-05-24 08:33  Marco Bianchetti
+
+	* [r14979] QuantLib_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2008-05-22 17:56  Marco Bianchetti
+
+	* [r14975] QuantLib_vc7.vcproj:
+	  
+	  VC7 catching up
+
+2008-05-21 09:16  Luigi Ballabio
+
+	* [r14965] Examples/CDS/CDS.dev, Examples/CDS/CDS_vc7.vcproj,
+	  Examples/CDS/CDS_vc8.vcproj, Examples/CDS/CDS_vc9.vcproj,
+	  Examples/CallableBonds/CallableBonds.dev,
+	  Examples/CallableBonds/CallableBonds_vc7.vcproj,
+	  Examples/CallableBonds/CallableBonds_vc8.vcproj,
+	  Examples/CallableBonds/CallableBonds_vc9.vcproj,
+	  ql/math/integrals/gausslobattointegral.cpp,
+	  ql/math/integrals/gausslobattointegral.hpp,
+	  ql/models/equity/gjrgarchmodel.cpp,
+	  ql/models/equity/gjrgarchmodel.hpp,
+	  ql/pricingengines/vanilla/analyticgjrgarchengine.cpp,
+	  ql/pricingengines/vanilla/analyticgjrgarchengine.hpp,
+	  ql/pricingengines/vanilla/mceuropeangjrgarchengine.hpp,
+	  ql/processes/batesprocess.cpp, ql/processes/batesprocess.hpp,
+	  ql/processes/gjrgarchprocess.cpp, ql/processes/gjrgarchprocess.hpp,
+	  test-suite/gjrgarchmodel.cpp, test-suite/gjrgarchmodel.hpp:
+	  
+	  Fixed svn properties
+
+2008-05-21 08:11  Luigi Ballabio
+
+	* [r14964] Docs/Makefile.am, Docs/quantlib.doxy,
+	  Docs/quantlibheader.html:
+	  
+	  Upgraded to Doxygen 1.5.6
+
+2008-05-21 08:10  Luigi Ballabio
+
+	* [r14963] Docs/pages/examples.docs:
+	  
+	  Added new examples to docs
+
+2008-05-21 08:10  Luigi Ballabio
+
+	* [r14962] Examples/BermudanSwaption/ReadMe.txt,
+	  Examples/ConvertibleBonds/ReadMe.txt,
+	  Examples/FittedBondCurve/ReadMe.txt:
+	  
+	  Reworded ReadMe
+
+2008-05-16 15:47  Luigi Ballabio
+
+	* [r14949] ql/termstructures/yield/bondhelpers.cpp,
+	  ql/termstructures/yield/bondhelpers.hpp:
+	  
+	  Fixed initialization in bond-based constructor
+
+2008-05-15 16:15  Eric Ehlers
+
+	* [r14946] QuantLib_vc8.vcproj:
+	  
+	  Fix broken paths
+
+2008-05-15 06:50  Luigi Ballabio
+
+	* [r14938] configure.ac, ql/experimental/Makefile.am,
+	  ql/experimental/all.hpp, ql/experimental/processes,
+	  ql/experimental/processes/Makefile.am,
+	  ql/experimental/processes/all.hpp,
+	  ql/experimental/processes/extendedblackscholesprocess.cpp,
+	  ql/experimental/processes/extendedblackscholesprocess.hpp:
+	  
+	  Added extended Black-Scholes-Merton process (thanks to Frank
+	  Hoevermann)
+
+2008-05-15 06:50  Luigi Ballabio
+
+	* [r14937] ql/processes/Makefile.am, ql/processes/all.hpp,
+	  ql/processes/endeulerdiscretization.cpp,
+	  ql/processes/endeulerdiscretization.hpp:
+	  
+	  Added Euler end-point discretization (thanks to Frank Hoevermann)
+
+2008-05-14 15:06  Luigi Ballabio
+
+	* [r14936] ql/models/shortrate/calibrationhelpers/caphelper.hpp,
+	  ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp:
+	  
+	  Marked known bug in short-rate calibration helpers
+
+2008-05-14 10:12  Luigi Ballabio
+
+	* [r14934] ql/termstructures/iterativebootstrap.hpp,
+	  test-suite/defaultprobabilitycurves.cpp,
+	  test-suite/defaultprobabilitycurves.hpp:
+	  
+	  Fixed check for numer of bootstrap helpers
+
+2008-05-13 17:22  Ferdinando Ametrano
+
+	* [r14923] QuantLib_vc9.vcproj:
+	  
+	  VC9 catching up
+
+2008-05-13 16:15  Luigi Ballabio
+
+	* [r14922] ql/time/calendars/china.cpp, ql/time/calendars/china.hpp,
+	  ql/time/calendars/india.cpp, ql/time/calendars/india.hpp,
+	  ql/time/calendars/indonesia.cpp, ql/time/calendars/indonesia.hpp,
+	  ql/time/calendars/singapore.cpp, ql/time/calendars/singapore.hpp,
+	  ql/time/calendars/taiwan.cpp, ql/time/calendars/taiwan.hpp:
+	  
+	  Updated holidays for 2008
+
+2008-05-13 15:13  Luigi Ballabio
+
+	* [r14921] ql/termstructures/yield/ratehelpers.cpp,
+	  test-suite/piecewiseyieldcurve.cpp:
+	  
+	  Fixes for BMA-swap bootstrapping
+
+2008-05-13 14:49  Luigi Ballabio
+
+	* [r14920] ql/cashflows/couponpricer.cpp:
+	  
+	  Added sub-period coupon to pricer setter
+
+2008-05-13 14:25  Luigi Ballabio
+
+	* [r14916] configure.ac, ql/cashflows/couponpricer.cpp,
+	  ql/cashflows/couponpricer.hpp, ql/experimental/Makefile.am,
+	  ql/experimental/all.hpp, ql/experimental/coupons,
+	  ql/experimental/coupons/Makefile.am,
+	  ql/experimental/coupons/all.hpp,
+	  ql/experimental/coupons/quantocouponpricer.cpp,
+	  ql/experimental/coupons/quantocouponpricer.hpp,
+	  ql/experimental/coupons/subperiodcoupons.cpp,
+	  ql/experimental/coupons/subperiodcoupons.hpp:
+	  
+	  Added quanto-adjusted coupons and averaged coupons (thanks to Toyin
+	  Akin)
+
+2008-05-13 14:25  Eric Ehlers
+
+	* [r14915] QuantLib_vc7.vcproj, QuantLib_vc8.vcproj:
+	  
+	  Fix broken paths
+
+2008-05-13 12:55  Ferdinando Ametrano
+
+	* [r14911] test-suite/swaptionvolatilitymatrix.cpp:
+	  
+	  
+
+2008-05-13 12:55  Ferdinando Ametrano
+
+	* [r14910] test-suite/swaptionvolstructuresutilities.hpp:
+	  
+	  fixed end-of-month test failure
+
+2008-05-13 10:53  Ferdinando Ametrano
+
+	* [r14908] ql/instruments/makeswaption.cpp,
+	  ql/instruments/makeswaption.hpp,
+	  ql/termstructures/voltermstructure.hpp:
+	  
+	  fixed conventions
+
+2008-05-13 10:25  Ferdinando Ametrano
+
+	* [r14907] ql/experimental/volatility/interestratevolsurface.cpp,
+	  ql/termstructures/voltermstructure.hpp:
+	  
+	  
+
+2008-05-12 16:52  Ferdinando Ametrano
+
+	* [r14904] QuantLib_vc9.vcproj:
+	  
+	  catching up
+
+2008-05-12 14:20  Ferdinando Ametrano
+
+	* [r14902] QuantLib_vc9.vcproj:
+	  
+	  VC9 catching up
+
+2008-05-12 12:46  Luigi Ballabio
+
+	* [r14895] ql/pricingengines/credit/Makefile.am,
+	  ql/pricingengines/credit/all.hpp,
+	  ql/pricingengines/credit/integralcdsengine.cpp,
+	  ql/pricingengines/credit/integralcdsengine.hpp,
+	  test-suite/creditdefaultswap.cpp:
+	  
+	  Added integral CDS engine (thanks to Roland Lichters)
+
+2008-05-12 12:44  Luigi Ballabio
+
+	* [r14894] ql/pricingengines/credit/midpointcdsengine.cpp:
+	  
+	  Fixed error messages
+
+2008-05-12 10:06  Luigi Ballabio
+
+	* [r14892] ql/instruments/Makefile.am, ql/instruments/all.hpp,
+	  ql/instruments/claim.cpp, ql/instruments/claim.hpp,
+	  ql/instruments/creditdefaultswap.cpp,
+	  ql/instruments/creditdefaultswap.hpp,
+	  ql/pricingengines/credit/midpointcdsengine.cpp:
+	  
+	  Added hook to CDS for different default claims
+
+2008-05-12 08:10  Luigi Ballabio
+
+	* [r14889] ql/experimental/callablebonds/blackcallablebondengine.cpp,
+	  ql/experimental/callablebonds/blackcallablebondengine.hpp,
+	  ql/experimental/callablebonds/callablebond.cpp,
+	  ql/experimental/callablebonds/callablebond.hpp,
+	  ql/experimental/callablebonds/callablebondconstantvol.cpp,
+	  ql/experimental/callablebonds/callablebondconstantvol.hpp,
+	  ql/experimental/callablebonds/callablebondvolstructure.cpp,
+	  ql/experimental/callablebonds/callablebondvolstructure.hpp,
+	  ql/experimental/callablebonds/discretizedcallablefixedratebond.cpp,
+	  ql/experimental/callablebonds/discretizedcallablefixedratebond.hpp,
+	  ql/experimental/callablebonds/treecallablebondengine.cpp,
+	  ql/experimental/callablebonds/treecallablebondengine.hpp:
+	  
+	  Fixed copyright attribution
+
+2008-05-09 13:41  Luigi Ballabio
+
+	* [r14885] Docs/quantlib.css:
+	  
+	  Added link to Symphony port
+
+2008-05-09 11:26  Luigi Ballabio
+
+	* [r14884] Examples/CallableBonds,
+	  Examples/CallableBonds/CallableBonds.cpp,
+	  Examples/CallableBonds/CallableBonds.dev,
+	  Examples/CallableBonds/CallableBonds_vc7.vcproj,
+	  Examples/CallableBonds/CallableBonds_vc8.vcproj,
+	  Examples/CallableBonds/CallableBonds_vc9.vcproj,
+	  Examples/CallableBonds/Makefile.am,
+	  Examples/CallableBonds/ReadMe.txt, Examples/Makefile.am,
+	  configure.ac, ql/experimental/Makefile.am, ql/experimental/all.hpp,
+	  ql/experimental/callablebonds,
+	  ql/experimental/callablebonds/Makefile.am,
+	  ql/experimental/callablebonds/all.hpp,
+	  ql/experimental/callablebonds/blackcallablebondengine.cpp,
+	  ql/experimental/callablebonds/blackcallablebondengine.hpp,
+	  ql/experimental/callablebonds/callablebond.cpp,
+	  ql/experimental/callablebonds/callablebond.hpp,
+	  ql/experimental/callablebonds/callablebondconstantvol.cpp,
+	  ql/experimental/callablebonds/callablebondconstantvol.hpp,
+	  ql/experimental/callablebonds/callablebondvolstructure.cpp,
+	  ql/experimental/callablebonds/callablebondvolstructure.hpp,
+	  ql/experimental/callablebonds/discretizedcallablefixedratebond.cpp,
+	  ql/experimental/callablebonds/discretizedcallablefixedratebond.hpp,
+	  ql/experimental/callablebonds/treecallablebondengine.cpp,
+	  ql/experimental/callablebonds/treecallablebondengine.hpp:
+	  
+	  Added callable bonds (thanks to Allen Kuo)
+
+2008-05-09 10:40  Luigi Ballabio
+
+	* [r14883] Examples/CDS/ReadMe.txt:
+	  
+	  Fixed
+
+2008-05-08 15:34  Luigi Ballabio
+
+	* [r14881] Examples/CDS, Examples/CDS/CDS.cpp, Examples/CDS/CDS.dev,
+	  Examples/CDS/CDS_vc7.vcproj, Examples/CDS/CDS_vc8.vcproj,
+	  Examples/CDS/CDS_vc9.vcproj, Examples/CDS/Makefile.am,
+	  Examples/CDS/ReadMe.txt, Examples/Makefile.am, configure.ac:
+	  
+	  Added CDS example (thanks to Jose Aparicio)
+
+2008-05-08 13:40  Luigi Ballabio
+
+	* [r14879] configure.ac, ql/experimental/Makefile.am,
+	  ql/experimental/abcdatmvolcurve.cpp,
+	  ql/experimental/abcdatmvolcurve.hpp, ql/experimental/all.hpp,
+	  ql/experimental/blackatmvolcurve.cpp,
+	  ql/experimental/blackatmvolcurve.hpp,
+	  ql/experimental/blackvolsurface.cpp,
+	  ql/experimental/blackvolsurface.hpp,
+	  ql/experimental/equityfxvolsurface.cpp,
+	  ql/experimental/equityfxvolsurface.hpp,
+	  ql/experimental/interestratevolsurface.cpp,
+	  ql/experimental/interestratevolsurface.hpp,
+	  ql/experimental/sabrvolsurface.cpp,
+	  ql/experimental/sabrvolsurface.hpp, ql/experimental/volatility,
+	  ql/experimental/volatility/Makefile.am,
+	  ql/experimental/volatility/abcdatmvolcurve.cpp,
+	  ql/experimental/volatility/abcdatmvolcurve.hpp,
+	  ql/experimental/volatility/all.hpp,
+	  ql/experimental/volatility/blackatmvolcurve.cpp,
+	  ql/experimental/volatility/blackatmvolcurve.hpp,
+	  ql/experimental/volatility/blackvolsurface.cpp,
+	  ql/experimental/volatility/blackvolsurface.hpp,
+	  ql/experimental/volatility/equityfxvolsurface.cpp,
+	  ql/experimental/volatility/equityfxvolsurface.hpp,
+	  ql/experimental/volatility/interestratevolsurface.cpp,
+	  ql/experimental/volatility/interestratevolsurface.hpp,
+	  ql/experimental/volatility/sabrvolsurface.cpp,
+	  ql/experimental/volatility/sabrvolsurface.hpp,
+	  ql/experimental/volatility/volcube.cpp,
+	  ql/experimental/volatility/volcube.hpp, ql/experimental/volcube.cpp,
+	  ql/experimental/volcube.hpp:
+	  
+	  Moved experimental volatility classes to own subfolder
+
+2008-05-07 18:59  Klaus Spanderen
+
+	* [r14876] ql/pricingengines/vanilla/jumpdiffusionengine.cpp:
+	  
+	  JumpDiffusionEngine, don't run away immediately
+
+2008-05-07 15:09  Luigi Ballabio
+
+	* [r14872] ql/math/copulas:
+	  
+	  Added svn:ignore property
+
+2008-05-07 15:08  Luigi Ballabio
+
+	* [r14871] configure.ac, ql/math/copulas/Makefile.am,
+	  ql/math/copulas/all.hpp:
+	  
+	  Fixes for gcc build
+
+2008-05-07 14:42  Ferdinando Ametrano
+
+	* [r14870] ql/math/interpolations/cubicinterpolation.hpp:
+	  
+	  
+
+2008-05-07 14:42  Ferdinando Ametrano
+
+	* [r14869] Contributors.txt, QuantLib_vc7.vcproj, QuantLib_vc8.vcproj,
+	  QuantLib_vc9.vcproj, ql/math/Makefile.am, ql/math/all.hpp,
+	  ql/math/copulas, ql/math/copulas/all.hpp,
+	  ql/math/copulas/claytoncopula.cpp,
+	  ql/math/copulas/claytoncopula.hpp,
+	  ql/math/copulas/farliegumbelmorgensterncopula.cpp,
+	  ql/math/copulas/farliegumbelmorgensterncopula.hpp,
+	  ql/math/copulas/frankcopula.cpp, ql/math/copulas/frankcopula.hpp,
+	  ql/math/copulas/gaussiancopula.cpp,
+	  ql/math/copulas/gaussiancopula.hpp,
+	  ql/math/copulas/gumbelcopula.cpp, ql/math/copulas/gumbelcopula.hpp,
+	  ql/math/copulas/independentcopula.cpp,
+	  ql/math/copulas/independentcopula.hpp,
+	  ql/math/copulas/marshallolkincopula.cpp,
+	  ql/math/copulas/marshallolkincopula.hpp,
+	  ql/math/copulas/maxcopula.cpp, ql/math/copulas/maxcopula.hpp,
+	  ql/math/copulas/mincopula.cpp, ql/math/copulas/mincopula.hpp:
+	  
+	  added copulas (thanks to Marek Glowacki)
+
+2008-05-06 19:29  Klaus Spanderen
+
+	* [r14854] ql/pricingengines/vanilla/jumpdiffusionengine.cpp:
+	  
+	  removed dummy strike
+
+2008-05-06 16:17  Luigi Ballabio
+
+	* [r14853] QuantLib.dev, test-suite/testsuite.dev:
+	  
+	  Updated Dev-C++ projects
+
+2008-05-06 16:13  Luigi Ballabio
+
+	* [r14852] test-suite/americanoption.cpp, test-suite/array.cpp,
+	  test-suite/asianoptions.cpp, test-suite/assetswap.cpp,
+	  test-suite/barrieroption.cpp, test-suite/basketoption.cpp,
+	  test-suite/batesmodel.cpp, test-suite/bermudanswaption.cpp,
+	  test-suite/bonds.cpp, test-suite/brownianbridge.cpp,
+	  test-suite/calendars.cpp, test-suite/capfloor.cpp,
+	  test-suite/capflooredcoupon.cpp, test-suite/cliquetoption.cpp,
+	  test-suite/cms.cpp, test-suite/compoundforward.cpp,
+	  test-suite/convertiblebonds.cpp, test-suite/covariance.cpp,
+	  test-suite/creditdefaultswap.cpp, test-suite/curvestates.cpp,
+	  test-suite/dates.cpp, test-suite/daycounters.cpp,
+	  test-suite/defaultprobabilitycurves.cpp,
+	  test-suite/digitalcoupon.cpp, test-suite/digitaloption.cpp,
+	  test-suite/distributions.cpp, test-suite/dividendoption.cpp,
+	  test-suite/europeanoption.cpp, test-suite/exchangerate.cpp,
+	  test-suite/factorial.cpp, test-suite/fastfouriertransform.cpp,
+	  test-suite/forwardoption.cpp, test-suite/gaussianquadratures.cpp,
+	  test-suite/gjrgarchmodel.cpp, test-suite/hestonmodel.cpp,
+	  test-suite/hybridhestonhullwhiteprocess.cpp,
+	  test-suite/inflation.cpp, test-suite/instruments.cpp,
+	  test-suite/integrals.cpp, test-suite/interestrates.cpp,
+	  test-suite/interpolations.cpp, test-suite/jumpdiffusion.cpp,
+	  test-suite/libormarketmodel.cpp,
+	  test-suite/libormarketmodelprocess.cpp,
+	  test-suite/linearleastsquaresregression.cpp,
+	  test-suite/lookbackoptions.cpp,
+	  test-suite/lowdiscrepancysequences.cpp, test-suite/marketmodel.cpp,
+	  test-suite/marketmodel_cms.cpp, test-suite/marketmodel_smm.cpp,
+	  test-suite/marketmodel_smmcapletalphacalibration.cpp,
+	  test-suite/marketmodel_smmcapletcalibration.cpp,
+	  test-suite/marketmodel_smmcaplethomocalibration.cpp,
+	  test-suite/matrices.cpp, test-suite/mclongstaffschwartzengine.cpp,
+	  test-suite/mersennetwister.cpp, test-suite/money.cpp,
+	  test-suite/old_pricers.cpp, test-suite/operators.cpp,
+	  test-suite/optimizers.cpp, test-suite/optionletstripper.cpp,
+	  test-suite/pathgenerator.cpp, test-suite/period.cpp,
+	  test-suite/piecewiseyieldcurve.cpp,
+	  test-suite/quantlibbenchmark.cpp, test-suite/quantlibtestsuite.cpp,
+	  test-suite/quantooption.cpp, test-suite/quotes.cpp,
+	  test-suite/rangeaccrual.cpp, test-suite/riskstats.cpp,
+	  test-suite/rngtraits.cpp, test-suite/rounding.cpp,
+	  test-suite/sampledcurve.cpp, test-suite/shortratemodels.cpp,
+	  test-suite/solvers.cpp, test-suite/stats.cpp,
+	  test-suite/surface.cpp, test-suite/swap.cpp,
+	  test-suite/swapforwardmappings.cpp, test-suite/swaption.cpp,
+	  test-suite/swaptionvolatilitycube.cpp,
+	  test-suite/swaptionvolatilitymatrix.cpp,
+	  test-suite/termstructures.cpp, test-suite/timeseries.cpp,
+	  test-suite/tqreigendecomposition.cpp, test-suite/tracing.cpp,
+	  test-suite/transformedgrid.cpp, test-suite/utilities.hpp,
+	  test-suite/varianceswaps.cpp, test-suite/volatilitymodels.cpp:
+	  
+	  Avoided spurious no-assertion messages with Boost 1.35
+
+2008-05-05 21:07  Klaus Spanderen
+
+	* [r14843] test-suite/quantlibbenchmark.cpp:
+	  
+	  added new benchmark result
+
+2008-05-05 16:06  Marco Bianchetti
+
+	* [r14842] QuantLib_vc7.vcproj, test-suite/testsuite_vc7.vcproj:
+	  
+	  VC7 catching up
+
+2008-05-02 09:39  Ferdinando Ametrano
+
+	* [r14822] QuantLib_vc8.vcproj, test-suite/testsuite_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2008-04-30 15:13  Luigi Ballabio
+
+	* [r14818] QuantLib_vc9.vcproj, test-suite/testsuite_vc9.vcproj:
+	  
+	  Updated VC9 projects
+
+2008-04-30 14:37  Luigi Ballabio
+
+	* [r14817] ql/termstructures/credit/Makefile.am,
+	  ql/termstructures/credit/all.hpp,
+	  ql/termstructures/credit/defaultdensitystructure.cpp,
+	  ql/termstructures/credit/defaultprobabilityhelpers.cpp,
+	  ql/termstructures/credit/defaultprobabilityhelpers.hpp,
+	  ql/termstructures/credit/interpolateddefaultdensitycurve.hpp,
+	  ql/termstructures/credit/piecewisedefaultcurve.hpp,
+	  ql/termstructures/credit/probabilitytraits.hpp,
+	  test-suite/Makefile.am, test-suite/defaultprobabilitycurves.cpp,
+	  test-suite/defaultprobabilitycurves.hpp,
+	  test-suite/quantlibtestsuite.cpp:
+	  
+	  Added piecewise default-probability curve
+
+2008-04-30 13:06  Luigi Ballabio
+
+	* [r14816] test-suite/piecewiseyieldcurve.cpp:
+	  
+	  Disabled hopeless test case
+
+2008-04-30 12:58  Luigi Ballabio
+
+	* [r14815] test-suite/piecewiseyieldcurve.cpp:
+	  
+	  Fixed settlement date for BMA test
+
+2008-04-28 07:34  Ferdinando Ametrano
+
+	* [r14799] ql/termstructures/yield/bootstraptraits.hpp:
+	  
+	  lowered max number of iterations
+
+2008-04-24 09:12  Ferdinando Ametrano
+
+	* [r14791] QuantLib_vc8.vcproj, test-suite/testsuite_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2008-04-23 23:15  Klaus Spanderen
+
+	* [r14788] ql/models/equity/gjrgarchmodel.cpp,
+	  ql/models/equity/gjrgarchmodel.hpp, test-suite/gjrgarchmodel.cpp,
+	  test-suite/gjrgarchmodel.hpp:
+	  
+	  enable calibration of GJR GARCH model
+
+2008-04-23 23:14  Klaus Spanderen
+
+	* [r14787] ql/models/equity/hestonmodel.cpp,
+	  ql/models/equity/hestonmodel.hpp:
+	  
+	  putting the Feller Constraint into hestonmodel.hpp
+
+2008-04-23 14:48  Luigi Ballabio
+
+	* [r14786] configure.ac, ql/Makefile.am, ql/default.cpp,
+	  ql/default.hpp, ql/instruments/Makefile.am, ql/instruments/all.hpp,
+	  ql/instruments/creditdefaultswap.cpp,
+	  ql/instruments/creditdefaultswap.hpp, ql/issuer.cpp, ql/issuer.hpp,
+	  ql/pricingengines/Makefile.am, ql/pricingengines/all.hpp,
+	  ql/pricingengines/credit, ql/pricingengines/credit/Makefile.am,
+	  ql/pricingengines/credit/all.hpp,
+	  ql/pricingengines/credit/midpointcdsengine.cpp,
+	  ql/pricingengines/credit/midpointcdsengine.hpp, ql/quantlib.hpp,
+	  test-suite/Makefile.am, test-suite/creditdefaultswap.cpp,
+	  test-suite/creditdefaultswap.hpp, test-suite/quantlibtestsuite.cpp:
+	  
+	  Added credit-default swaps (thanks to StatPro Italia, Roland
+	  Lichters, and Jose Aparicio)
+
+2008-04-22 08:13  Luigi Ballabio
+
+	* [r14769] ql/time/calendars/southkorea.cpp,
+	  ql/time/calendars/southkorea.hpp, test-suite/calendars.cpp,
+	  test-suite/calendars.hpp:
+	  
+	  Fixes for South Korea calendar (thanks to Charles Chongseok Hyun)
+
+2008-04-21 09:39  Luigi Ballabio
+
+	* [r14758] ql/math/interpolations/cubicinterpolation.hpp:
+	  
+	  Added convenience classes back. They might be wrong, but they're
+	  needed for the QuantLib-SWIG build.
+
+2008-04-18 22:16  Klaus Spanderen
+
+	* [r14748] ql/models/equity/gjrgarchmodel.cpp,
+	  ql/pricingengines/vanilla/analyticgjrgarchengine.cpp,
+	  ql/processes/gjrgarchprocess.cpp, ql/processes/gjrgarchprocess.hpp,
+	  test-suite/gjrgarchmodel.cpp:
+	  
+	  added recent changes of the GJR-GARCH engines by Yee Man Chan
+
+2008-04-18 15:38  Luigi Ballabio
+
+	* [r14743] QuantLib_vc9.vcproj, ql/auto_link.hpp, ql/config.msvc.hpp,
+	  test-suite/testsuite_vc9.vcproj:
+	  
+	  Enabled support for VC9 (requires Boost 1.35)
+
+2008-04-18 15:38  Luigi Ballabio
+
+	* [r14742] ql/utilities/tracing.hpp:
+	  
+	  Compilation fix for VC9 (thanks to Dave Compton)
+
+2008-04-18 13:03  Luigi Ballabio
+
+	* [r14741] Examples/BermudanSwaption/Makefile.am,
+	  Examples/ConvertibleBonds/Makefile.am,
+	  Examples/DiscreteHedging/Makefile.am,
+	  Examples/EquityOption/Makefile.am, Examples/FRA/Makefile.am,
+	  Examples/FittedBondCurve/Makefile.am,
+	  Examples/Replication/Makefile.am, Examples/Repo/Makefile.am,
+	  Examples/Swap/Makefile.am, configure.ac, test-suite/Makefile.am:
+	  
+	  examples and benchmark included in autotools build (but not
+	  installed unless specified)
+
+2008-04-18 12:10  Ferdinando Ametrano
+
+	* [r14740] test-suite/tapcorrelations.cpp,
+	  test-suite/tapcorrelations.hpp, test-suite/testsuite_vc8.vcproj:
+	  
+	  - VC8 catching up
+	  - removed unused files
+
+2008-04-18 09:05  Luigi Ballabio
+
+	* [r14736] Examples/Swap/swapvaluation.cpp:
+	  
+	  Fixed used prices (thanks to snovik)
+
+2008-04-17 21:33  Klaus Spanderen
+
+	* [r14734]
+	  ql/pricingengines/vanilla/analytichestonhullwhiteengine.cpp,
+	  ql/pricingengines/vanilla/analytichestonhullwhiteengine.hpp,
+	  ql/pricingengines/vanilla/batesengine.cpp,
+	  ql/pricingengines/vanilla/batesengine.hpp,
+	  test-suite/batesmodel.cpp:
+	  
+	  added new constructors to support Gauss-Lobatto integration
+
+2008-04-17 12:05  Luigi Ballabio
+
+	* [r14732] test-suite/gjrgarchmodel.cpp,
+	  test-suite/optionletstripper.cpp:
+	  
+	  Removed extra messages
+
+2008-04-16 21:22  Klaus Spanderen
+
+	* [r14727] ql/math/interpolations/cubicinterpolation.hpp:
+	  
+	  reorder constructor calls to avoid g++ warnings
+
+2008-04-16 21:19  Klaus Spanderen
+
+	* [r14726] test-suite/quantlibtestsuite.cpp:
+	  
+	  added GJR-GARCH pricing engines (thanks to Yee Man Chan)
+
+2008-04-16 21:15  Klaus Spanderen
+
+	* [r14725] QuantLib_vc8.vcproj, ql/models/equity/Makefile.am,
+	  ql/models/equity/all.hpp, ql/models/equity/gjrgarchmodel.cpp,
+	  ql/models/equity/gjrgarchmodel.hpp,
+	  ql/pricingengines/vanilla/Makefile.am,
+	  ql/pricingengines/vanilla/all.hpp,
+	  ql/pricingengines/vanilla/analyticgjrgarchengine.cpp,
+	  ql/pricingengines/vanilla/analyticgjrgarchengine.hpp,
+	  ql/pricingengines/vanilla/mceuropeangjrgarchengine.hpp,
+	  ql/processes/Makefile.am, ql/processes/all.hpp,
+	  ql/processes/gjrgarchprocess.cpp, ql/processes/gjrgarchprocess.hpp,
+	  test-suite/Makefile.am, test-suite/gjrgarchmodel.cpp,
+	  test-suite/gjrgarchmodel.hpp, test-suite/quantlibtestsuite.cpp:
+	  
+	  added GJR-GARCH pricing engines (thanks to Yee Man Chan)
+
+2008-04-16 17:21  Ferdinando Ametrano
+
+	* [r14724] QuantLib_vc8.vcproj, ql/math/interpolations/Makefile.am,
+	  ql/math/interpolations/all.hpp,
+	  ql/math/interpolations/bicubicsplineinterpolation.hpp,
+	  ql/math/interpolations/constrainedcubicspline.hpp,
+	  ql/math/interpolations/cubicinterpolation.hpp,
+	  ql/math/interpolations/cubicspline.hpp,
+	  ql/math/interpolations/loginterpolation.hpp,
+	  ql/math/sampledcurve.cpp, ql/math/sampledcurve.hpp,
+	  ql/termstructures/volatility/capfloor/capfloortermvolcurve.cpp,
+	  test-suite/interpolations.cpp, test-suite/piecewiseyieldcurve.cpp:
+	  
+	  refactored cubic interpolation to allow for different methods to
+	  calculate derivatives (spline, Kruger, etc.)
+	  Most methods have to be implemented yet; convenience classes will be
+	  added back later.
+
+2008-04-09 11:11  Luigi Ballabio
+
+	* [r14688] ql/math/integrals/all.hpp:
+	  
+	  Regenerated header
+
+2008-04-09 10:16  Ferdinando Ametrano
+
+	* [r14687] QuantLib_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2008-04-09 10:15  Ferdinando Ametrano
+
+	* [r14686] test-suite/hestonmodel.cpp:
+	  
+	  avoided cast warning
+
+2008-04-09 09:32  Klaus Spanderen
+
+	* [r14685] ql/math/integrals/Makefile.am,
+	  ql/math/integrals/gausslobattointegral.cpp,
+	  ql/math/integrals/gausslobattointegral.hpp,
+	  ql/pricingengines/vanilla/analytichestonengine.cpp,
+	  ql/pricingengines/vanilla/analytichestonengine.hpp,
+	  test-suite/hestonmodel.cpp, test-suite/hestonmodel.hpp,
+	  test-suite/integrals.cpp, test-suite/integrals.hpp:
+	  
+	  rework of complex Heston integration
+	  added Gauss-Lobatto integration
+
+2008-04-01 15:45  Luigi Ballabio
+
+	* [r14661] ql/termstructures/yield/drifttermstructure.hpp,
+	  ql/termstructures/yield/forwardspreadedtermstructure.hpp,
+	  ql/termstructures/yield/impliedtermstructure.hpp,
+	  ql/termstructures/yield/piecewisezerospreadedtermstructure.hpp,
+	  ql/termstructures/yield/quantotermstructure.hpp,
+	  ql/termstructures/yield/zerospreadedtermstructure.hpp:
+	  
+	  Added missing settlementDays override
+
+2008-03-31 15:28  Luigi Ballabio
+
+	* [r14659] acinclude.m4:
+	  
+	  Improved detection of Boost unit-test library
+
+2008-03-17 11:29  Luigi Ballabio
+
+	* [r14593]
+	  ql/termstructures/credit/interpolateddefaultdensitycurve.hpp,
+	  ql/termstructures/credit/interpolatedhazardratecurve.hpp,
+	  ql/termstructures/inflation/interpolatedyoyinflationcurve.hpp,
+	  ql/termstructures/inflation/interpolatedzeroinflationcurve.hpp,
+	  ql/termstructures/yield/discountcurve.hpp,
+	  ql/termstructures/yield/forwardcurve.hpp,
+	  ql/termstructures/yield/zerocurve.hpp:
+	  
+	  Disabled wrong copying behavior
+
+2008-03-14 12:09  Eric Ehlers
+
+	* [r14577] test-suite/testsuite_vc8.vcproj:
+	  
+	  Deactivate warning C4819 (non-ASCII characters in source code) in
+	  the settings of a couple more projects
+
+2008-03-13 09:48  Ferdinando Ametrano
+
+	* [r14567] ql/pricingengines/barrier/mcbarrierengine.cpp:
+	  
+	  fixed bug (thanks to Simon Ibbotson)
+	  The same code was used for BiasedBarrierPathPricer and
+	  BarrierPathPricer despite the "for(i = 0; i < n-1; i++)" loop in
+	  BarrierPathPricer being different from the "for(i = 1; i < n; i++)"
+	  loop in the BiasedBarrierPathPricer version. It only causes an error
+	  when the knockNode = n, therefore, it worked most of the time but
+	  occasionally has undetermined behavior.
+
+2008-03-12 15:57  Ferdinando Ametrano
+
+	* [r14565] test-suite/optionletstripper.cpp,
+	  test-suite/optionletstripper.hpp:
+	  
+	  added OptionletStripper2 test (thanks to Laurent Hoffmann)
+
+2008-03-12 14:41  Ferdinando Ametrano
+
+	* [r14564] ql/instruments/capfloor.cpp, ql/instruments/capfloor.hpp,
+	  test-suite/capfloor.cpp:
+	  
+	  added optionlet method, also tested in the unit-test. Thanks to
+	  Chris Kenyon.
+
+2008-03-12 10:51  Ferdinando Ametrano
+
+	* [r14563] ql/termstructures/volatility/smilesection.cpp:
+	  
+	  fixed bug (thanks to Simon Ibbotson)
+
+2008-03-11 17:04  Luigi Ballabio
+
+	* [r14560] QuantLib_vc7.vcproj, QuantLib_vc8.vcproj:
+	  
+	  Removed non-distributed file from VC projects
+
+2008-03-11 12:01  Luigi Ballabio
+
+	* [r14558] ql/math/interpolations/Makefile.am,
+	  ql/math/interpolations/all.hpp:
+	  
+	  Added new file to Linux build
+
+2008-03-10 23:44  Eric Ehlers
+
+	* [r14556] QuantLib_vc8.vcproj, ql/config.msvc.hpp:
+	  
+	  Disable warning 4819 (non ASCII characters) in project properties
+
+2008-03-10 20:41  Klaus Spanderen
+
+	* [r14555] ql/termstructures/credit/defaultdensitystructure.cpp,
+	  ql/termstructures/credit/hazardratestructure.cpp:
+	  
+	  fixed gcc compiler problems
+
+2008-03-10 18:39  Ferdinando Ametrano
+
+	* [r14553] QuantLib_vc8.vcproj,
+	  ql/math/interpolations/constrainedcubicspline.hpp,
+	  ql/math/interpolations/loginterpolation.hpp:
+	  
+	  - added ConstrainedCubicSpline: direct solution (no need for linear
+	  system solving), etc. More info will be added
+	  - implemented derivative and secondDerivative of LogInterpolation
+	  - exported to XL both new interpolation and its application to yield
+	  curve bootstrapping
+
+2008-03-10 09:52  Ferdinando Ametrano
+
+	* [r14551] QuantLib_vc7.vcproj:
+	  
+	  VC7 catching up
+
+2008-03-08 14:57  Klaus Spanderen
+
+	* [r14550] test-suite/quantlibbenchmark.cpp:
+	  
+	  added new benchmark result
+
+2008-03-04 23:47  Klaus Spanderen
+
+	* [r14548] test-suite/Makefile.am, test-suite/quantlibbenchmark.cpp:
+	  
+	  added three new benchmarks (from market models and convertable
+	  bonds)
+	  switched towards PAPI for performance measurement
+	  removed legacy benchmarks
+	  total number of floating point operations updated for all benchmarks
+
+2008-03-04 10:50  Eric Ehlers
+
+	* [r14547] ql/time/calendars/ukraine.hpp:
+	  
+	  replace non-ASCII character with an ASCII equivalent
+
+2008-03-04 10:45  Eric Ehlers
+
+	* [r14546] ql/time/calendars/ukraine.cpp:
+	  
+	  remove non-ASCII character from file
+
+2008-03-04 09:51  Luigi Ballabio
+
+	* [r14545] ql/instruments/varianceswap.cpp,
+	  ql/instruments/varianceswap.hpp,
+	  ql/pricingengines/forward/mcvarianceswapengine.hpp,
+	  ql/pricingengines/forward/replicatingvarianceswapengine.hpp,
+	  test-suite/varianceswaps.cpp:
+	  
+	  Moved stochastic process into pricing engines
+
+2008-03-03 13:22  Luigi Ballabio
+
+	* [r14540] ql/cashflows/cashflows.cpp, ql/instruments/bond.cpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionlet.cpp,
+	  ql/termstructures/volatility/swaption/cmsmarket.cpp:
+	  
+	  Avoided warnings in gcc -Wall compilation
+
+2008-03-03 11:29  Luigi Ballabio
+
+	* [r14539] ql/instruments/assetswap.cpp, ql/instruments/bmaswap.cpp,
+	  ql/instruments/swap.cpp, ql/instruments/swap.hpp,
+	  ql/instruments/vanillaswap.cpp:
+	  
+	  Added protected leg-less constructor to Swap class
+
+2008-03-03 11:28  Luigi Ballabio
+
+	* [r14538] ql/processes/batesprocess.hpp:
+	  
+	  Doc fix
+
+2008-02-28 17:22  Luigi Ballabio
+
+	* [r14461]
+	  ql/termstructures/volatility/equityfx/blackvariancesurface.cpp:
+	  
+	  Removed check for monotonic variance along constant strikes
+
+2008-02-27 13:01  Luigi Ballabio
+
+	* [r14435] ql/termstructures/credit/defaultdensitystructure.cpp,
+	  ql/termstructures/credit/hazardratestructure.cpp:
+	  
+	  Skip range check during integration
+
+2008-02-27 12:25  Luigi Ballabio
+
+	* [r14433] ql/math/interpolations/abcdinterpolation.hpp,
+	  ql/math/interpolations/backwardflatinterpolation.hpp,
+	  ql/math/interpolations/cubicspline.hpp,
+	  ql/math/interpolations/forwardflatinterpolation.hpp,
+	  ql/math/interpolations/linearinterpolation.hpp,
+	  ql/math/interpolations/loginterpolation.hpp,
+	  ql/math/interpolations/sabrinterpolation.hpp:
+	  
+	  Replaced legacy enumerations with static const variables (now
+	  working with all supported compilers)
+
+2008-02-27 11:30  Eric Ehlers
+
+	* [r14426] ql/config.msvc.hpp:
+	  
+	  Disable VC warning for non ASCII characters in source code
+
+2008-02-26 20:58  Klaus Spanderen
+
+	* [r14425] ql/processes/batesprocess.cpp,
+	  ql/processes/batesprocess.hpp:
+	  
+	  performance improvement for the Bates process
+
+2008-02-26 17:29  Ferdinando Ametrano
+
+	* [r14423] QuantLib_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2008-02-26 17:29  Ferdinando Ametrano
+
+	* [r14422] ql/math/interpolations/loginterpolation.hpp:
+	  
+	  
+
+2008-02-26 16:38  Luigi Ballabio
+
+	* [r14420] ql/termstructures/yield/piecewiseyieldcurve.hpp:
+	  
+	  Forward methods to base class when available
+
+2008-02-26 15:51  Luigi Ballabio
+
+	* [r14419] ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp,
+	  ql/termstructures/inflation/piecewisezeroinflationcurve.hpp,
+	  ql/termstructures/yield/piecewiseyieldcurve.hpp:
+	  
+	  Added typedef to own type to reduce verbosity
+
+2008-02-26 15:00  Luigi Ballabio
+
+	* [r14418] ql/termstructures/bootstraperror.hpp,
+	  ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp,
+	  ql/termstructures/inflation/piecewisezeroinflationcurve.hpp,
+	  ql/termstructures/iterativebootstrap.hpp,
+	  ql/termstructures/yield/piecewiseyieldcurve.hpp:
+	  
+	  Added typedefs to piecewise curves to decrease template parameters
+	  of bootstrap class and ensure consistency
+
+2008-02-26 14:42  Luigi Ballabio
+
+	* [r14416] ql/termstructures/Makefile.am, ql/termstructures/all.hpp,
+	  ql/termstructures/bootstraperror.hpp,
+	  ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp,
+	  ql/termstructures/inflation/piecewisezeroinflationcurve.hpp,
+	  ql/termstructures/iterativebootstrap.hpp,
+	  ql/termstructures/yield/piecewiseyieldcurve.hpp:
+	  
+	  Moved BootstrapError in own file
+
+2008-02-26 14:03  Luigi Ballabio
+
+	* [r14414] QuantLib.dev, QuantLib_vc7.vcproj, QuantLib_vc8.vcproj,
+	  ql/termstructures/Makefile.am, ql/termstructures/all.hpp,
+	  ql/termstructures/bootstrapper.hpp,
+	  ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp,
+	  ql/termstructures/inflation/piecewisezeroinflationcurve.hpp,
+	  ql/termstructures/iterativebootstrap.hpp,
+	  ql/termstructures/yield/piecewiseyieldcurve.hpp:
+	  
+	  Renamed bootstrapper.hpp file
+
+2008-02-25 20:49  Klaus Spanderen
+
+	* [r14410] ql/models/equity/hestonmodel.cpp,
+	  ql/models/equity/hestonmodel.hpp:
+	  
+	  rename VolatilityConstraint into FellerConstraint
+
+2008-02-25 17:07  Ferdinando Ametrano
+
+	* [r14409] QuantLib_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2008-02-25 15:25  Luigi Ballabio
+
+	* [r14403] ql/termstructures/credit/Makefile.am,
+	  ql/termstructures/credit/all.hpp,
+	  ql/termstructures/credit/flathazardrate.cpp,
+	  ql/termstructures/credit/flathazardrate.hpp,
+	  ql/termstructures/credit/interpolateddefaultdensitycurve.hpp,
+	  ql/termstructures/credit/interpolatedhazardratecurve.hpp:
+	  
+	  Added flat hazard-rate curve and interpolated hazard-rate and
+	  default-density curves (thanks to Jose Aparicio, Chris Kenyon,
+	  Roland Lichters, and StatPro Italia)
+
+2008-02-25 13:28  Luigi Ballabio
+
+	* [r14402] ql/processes/all.hpp:
+	  
+	  Regenerated header
+
+2008-02-25 12:04  Ferdinando Ametrano
+
+	* [r14399] QuantLib_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2008-02-25 09:10  Ferdinando Ametrano
+
+	* [r14392] ql/termstructures/bootstrapper.hpp,
+	  test-suite/piecewiseyieldcurve.cpp,
+	  test-suite/piecewiseyieldcurve.hpp:
+	  
+	  - fixed guess calculation: it must be performed before extending
+	  interpolation to ensure that any extrapolation is performed using
+	  the curve bootstrapped so far and no more
+	  - improved error message
+	  - added LogCubic-Discount unit test
+
+2008-02-25 09:03  Ferdinando Ametrano
+
+	* [r14391] ql/termstructures/yield/bootstraptraits.hpp:
+	  
+	  - parametrized guess with a common average rate
+	  - increased maxIterations for Discount
+
+2008-02-25 09:00  Ferdinando Ametrano
+
+	* [r14390] test-suite/interpolations.cpp:
+	  
+	  - renamed NaturalMonotonicXXX as MonotonicNatural
+
+2008-02-25 08:55  Ferdinando Ametrano
+
+	* [r14388] ql/math/interpolations/cubicspline.hpp,
+	  ql/math/interpolations/loginterpolation.hpp:
+	  
+	  - fixed number of required points
+	  - added convenience classes
+	  - renamed NaturalMonotonicXXX as MonotonicNatural
+
+2008-02-23 16:36  Klaus Spanderen
+
+	* [r14386] ql/processes/batesprocess.cpp,
+	  ql/processes/batesprocess.hpp:
+	  
+	  added BatesProcess
+
+2008-02-23 16:30  Klaus Spanderen
+
+	* [r14385] ql/processes/Makefile.am, test-suite/batesmodel.cpp,
+	  test-suite/batesmodel.hpp:
+	  
+	  added BatesProcess
+
+2008-02-22 15:10  Ferdinando Ametrano
+
+	* [r14382] ql/termstructures/bootstrapper.hpp:
+	  
+	  improved bootstrapping:
+	  - after first successful bootstrap, successive ones reuse previous
+	  curve as guess
+	  - start using target interpolation as soon as possible in the first
+	  iteration, not just in the second iteration
+
+2008-02-22 15:04  Ferdinando Ametrano
+
+	* [r14381] ql/termstructures/yield/bootstraptraits.hpp:
+	  
+	  smarter guess
+
+2008-02-22 15:03  Ferdinando Ametrano
+
+	* [r14380] ql/math/interpolations/loginterpolation.hpp:
+	  
+	  reverted unnatural choice
+
+2008-02-21 17:40  Ferdinando Ametrano
+
+	* [r14379] QuantLib_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2008-02-21 17:19  Ferdinando Ametrano
+
+	* [r14378] ql/methods/finitedifferences/tridiagonaloperator.cpp:
+	  
+	  relaxed too stringent condition
+
+2008-02-21 16:36  Luigi Ballabio
+
+	* [r14377] configure.ac, ql/termstructures/Makefile.am,
+	  ql/termstructures/all.hpp, ql/termstructures/credit,
+	  ql/termstructures/credit/Makefile.am,
+	  ql/termstructures/credit/all.hpp,
+	  ql/termstructures/credit/defaultdensitystructure.cpp,
+	  ql/termstructures/credit/defaultdensitystructure.hpp,
+	  ql/termstructures/credit/hazardratestructure.cpp,
+	  ql/termstructures/credit/hazardratestructure.hpp,
+	  ql/termstructures/defaulttermstructure.cpp,
+	  ql/termstructures/defaulttermstructure.hpp:
+	  
+	  Added interface for default-probability term structure and adapters
+	  for hazard-rate and default-density structures (thanks to Jose
+	  Aparicio, Chris Kenyon, Roland Lichters, and StatPro Italia)
+
+2008-02-19 18:50  Ferdinando Ametrano
+
+	* [r14369] ql/termstructures/yield/piecewiseyieldcurve.hpp:
+	  
+	  added safety check
+
+2008-02-19 15:44  Luigi Ballabio
+
+	* [r14364] Examples/FRA/FRA.cpp, Examples/Swap/swapvaluation.cpp:
+	  
+	  Compilation fix for examples
+
+2008-02-18 18:25  Ferdinando Ametrano
+
+	* [r14363] ql/instruments/vanillaswap.cpp,
+	  ql/instruments/vanillaswap.hpp:
+	  
+	  - added explicit payment business day convention fixing bug where
+	  improper (fixed leg schedule's) convention was used
+	  - more inspectors added
+
+2008-02-18 11:57  Ferdinando Ametrano
+
+	* [r14361] ql/cashflows/cashflowvectors.hpp:
+	  
+	  changed hard-coded fixing days default value (2) to index natural
+	  fixing days lag
+
+2008-02-14 13:34  Ferdinando Ametrano
+
+	* [r14351] ql/termstructures/yield/ratehelpers.cpp:
+	  
+	  
+
+2008-02-13 14:12  Luigi Ballabio
+
+	* [r14346] ql/time/calendars/unitedstates.cpp,
+	  ql/time/calendars/unitedstates.hpp:
+	  
+	  Added one-off holiday to NYSE calendar
+
+2008-02-13 11:46  Luigi Ballabio
+
+	* [r14342] Docs/quantlib.css:
+	  
+	  Upgraded to Doxygen 1.5.5
+
+2008-02-13 10:10  Luigi Ballabio
+
+	* [r14341] Docs/quantlib.doxy, ql/instruments/makeswaption.hpp:
+	  
+	  Upgraded to Doxygen 1.5.5
+
+2008-02-07 16:18  Ferdinando Ametrano
+
+	* [r14307]
+	  ql/termstructures/volatility/optionlet/strippedoptionlet.cpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionlet.hpp:
+	  
+	  cleaned up StrippedOptionlet class using Dates instead of Periods
+
+2008-02-07 14:45  Ferdinando Ametrano
+
+	* [r14306] ql/indexes/swapindex.cpp, ql/indexes/swapindex.hpp:
+	  
+	  in order to guarantee internal consistency:
+	  - removed fixedRateSchedule(const Date&): use underlyingSwap(const
+	  Date&)->fixedSchedule() instead
+	  - fixed maturityDate implementation using Swap::maturityDate()
+
+2008-02-07 14:30  Ferdinando Ametrano
+
+	* [r14305] ql/experimental/interestratevolsurface.cpp,
+	  ql/experimental/interestratevolsurface.hpp:
+	  
+	  implemented market standard compliant optionDateFromTenor using
+	  InterestRateIndex
+
+2008-02-07 14:28  Ferdinando Ametrano
+
+	* [r14304] ql/cashflows/conundrumpricer.cpp:
+	  
+	  using VanillaSwap::fixedSchedule instead of
+	  SwapIndex::fixedRateSchedule to avoid possible inconsistencies
+
+2008-02-07 14:20  Ferdinando Ametrano
+
+	* [r14303] ql/instruments/vanillaswap.cpp,
+	  ql/instruments/vanillaswap.hpp:
+	  
+	  added Schedule inspectors
+
+2008-02-07 13:09  Luigi Ballabio
+
+	* [r14302] acinclude.m4, ql/math/matrix.cpp,
+	  test-suite/marketmodel_smmcapletalphacalibration.cpp,
+	  test-suite/marketmodel_smmcapletcalibration.cpp,
+	  test-suite/marketmodel_smmcaplethomocalibration.cpp,
+	  test-suite/matrices.cpp, test-suite/swapforwardmappings.cpp:
+	  
+	  Moved uBLAS-support check into configure script
+
+2008-02-07 08:42  Luigi Ballabio
+
+	* [r14301] test-suite/marketmodel.cpp:
+	  
+	  Re-enabled market-model tests
+
+2008-02-06 18:34  Ferdinando Ametrano
+
+	* [r14300] ql/termstructures/bootstrapper.hpp:
+	  
+	  increased error messages' information
+
+2008-02-06 16:49  Ferdinando Ametrano
+
+	* [r14297] test-suite/marketmodel.cpp:
+	  
+	  reverted Rev14294
+
+2008-02-06 16:22  Luigi Ballabio
+
+	* [r14296] ql/termstructures/yield/piecewiseyieldcurve.hpp:
+	  
+	  Turn-of-year recalculation when reference date changes
+
+2008-02-06 15:33  Ferdinando Ametrano
+
+	* [r14294] test-suite/marketmodel.cpp:
+	  
+	  
+
+2008-02-06 15:25  Luigi Ballabio
+
+	* [r14293] test-suite/swaption.cpp,
+	  test-suite/swaptionvolatilitycube.cpp,
+	  test-suite/swaptionvolatilitymatrix.cpp:
+	  
+	  Use struct to delete observers when test case exits
+
+2008-02-06 15:14  Ferdinando Ametrano
+
+	* [r14292] ql/experimental/abcdatmvolcurve.cpp,
+	  ql/experimental/sabrvolsurface.cpp,
+	  ql/instruments/dividendvanillaoption.cpp,
+	  ql/math/matrixutilities/getcovariance.hpp,
+	  ql/models/marketmodels/evolutiondescription.cpp,
+	  ql/models/marketmodels/models/cotswaptofwdadapter.cpp,
+	  ql/models/marketmodels/models/fwdtocotswapadapter.cpp,
+	  ql/termstructures/bootstrapper.hpp,
+	  ql/termstructures/volatility/capfloor/capfloortermvolcurve.cpp,
+	  ql/termstructures/volatility/capfloor/capfloortermvolsurface.cpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionlet.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvoldiscrete.cpp,
+	  ql/termstructures/yield/fittedbonddiscountcurve.cpp,
+	  test-suite/array.cpp, test-suite/marketmodel.cpp,
+	  test-suite/marketmodel_cms.cpp, test-suite/marketmodel_smm.cpp,
+	  test-suite/marketmodel_smmcapletalphacalibration.cpp,
+	  test-suite/marketmodel_smmcapletcalibration.cpp,
+	  test-suite/marketmodel_smmcaplethomocalibration.cpp,
+	  test-suite/piecewiseyieldcurve.cpp, test-suite/sampledcurve.cpp:
+	  
+	  fixed io::ordinal usage as per Luigi's picky preferences ;-)
+
+2008-02-06 13:42  Ferdinando Ametrano
+
+	* [r14287] ql/termstructures/bootstrapper.hpp,
+	  test-suite/quantlibtestsuite.cpp:
+	  
+	  formatting
+
+2008-02-06 13:37  Ferdinando Ametrano
+
+	* [r14286] ql/models/marketmodels/historicalforwardratesanalysis.hpp,
+	  ql/termstructures/yield/piecewiseyieldcurve.hpp,
+	  test-suite/piecewiseyieldcurve.cpp,
+	  test-suite/quantlibtestsuite.cpp:
+	  
+	  introduced Turn-Of-Year-Effect in yield curve bootstrapping
+
+2008-02-06 13:18  Ferdinando Ametrano
+
+	* [r14285] test-suite/termstructures.cpp:
+	  
+	  formatting
+
+2008-02-06 13:07  Ferdinando Ametrano
+
+	* [r14284] ql/termstructures/bootstrapper.hpp,
+	  ql/termstructures/yield/fittedbonddiscountcurve.cpp:
+	  
+	  increased error messages' information
+
+2008-02-06 10:49  Luigi Ballabio
+
+	* [r14282] test-suite/piecewiseyieldcurve.cpp,
+	  test-suite/rangeaccrual.cpp, test-suite/swap.cpp:
+	  
+	  Use struct to delete observers when test case exits
+
+2008-02-05 17:13  Luigi Ballabio
+
+	* [r14280] test-suite/marketmodel.cpp, test-suite/marketmodel_cms.cpp,
+	  test-suite/marketmodel_smm.cpp,
+	  test-suite/marketmodel_smmcapletalphacalibration.cpp,
+	  test-suite/marketmodel_smmcapletcalibration.cpp,
+	  test-suite/marketmodel_smmcaplethomocalibration.cpp,
+	  test-suite/optionletstripper.cpp:
+	  
+	  Use struct to delete observers when test case exits
+
+2008-02-05 15:18  Ferdinando Ametrano
+
+	* [r14278] test-suite/quantlibtestsuite.cpp:
+	  
+	  
+
+2008-02-05 15:16  Ferdinando Ametrano
+
+	* [r14277] ql/pricingengines/capfloor/blackcapfloorengine.cpp,
+	  ql/pricingengines/swaption/blackswaptionengine.cpp,
+	  ql/termstructures/volatility/capfloor/capfloortermvolatilitystructure.hpp,
+	  ql/termstructures/volatility/capfloor/capfloortermvolcurve.cpp,
+	  ql/termstructures/volatility/capfloor/capfloortermvolcurve.hpp,
+	  ql/termstructures/volatility/capfloor/capfloortermvolsurface.cpp,
+	  ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp,
+	  ql/termstructures/volatility/capfloor/constantcapfloortermvol.cpp,
+	  ql/termstructures/volatility/capfloor/constantcapfloortermvol.hpp,
+	  ql/termstructures/volatility/optionlet/capletvariancecurve.hpp,
+	  ql/termstructures/volatility/optionlet/constantoptionletvol.cpp,
+	  ql/termstructures/volatility/optionlet/constantoptionletvol.hpp,
+	  ql/termstructures/volatility/optionlet/optionletvolatilitystructure.hpp,
+	  ql/termstructures/volatility/optionlet/spreadedoptionletvol.cpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionlet.cpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionlet.hpp,
+	  ql/termstructures/volatility/swaption/spreadedswaptionvol.cpp,
+	  ql/termstructures/volatility/swaption/swaptionconstantvol.cpp,
+	  ql/termstructures/volatility/swaption/swaptionconstantvol.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvoldiscrete.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvoldiscrete.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolmatrix.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.hpp,
+	  ql/termstructures/voltermstructure.hpp, test-suite/assetswap.cpp,
+	  test-suite/capflooredcoupon.cpp, test-suite/cms.cpp,
+	  test-suite/digitalcoupon.cpp,
+	  test-suite/libormarketmodelprocess.cpp,
+	  test-suite/optionletstripper.cpp, test-suite/quantlibtestsuite.cpp,
+	  test-suite/rangeaccrual.cpp, test-suite/swap.cpp,
+	  test-suite/swaptionvolatilitycube.cpp,
+	  test-suite/swaptionvolatilitymatrix.cpp:
+	  
+	  removed default values for BusinessDayConvention, as it is not
+	  always clear what the default value should be.
+	  (Actually the current optionDate calculation is not 100% correct,
+	  and the proper fix will be the usage of the new interest rate
+	  volatility classes, which are aware of their InterestRateIndex
+	  conventions)
+
+2008-02-05 11:54  Ferdinando Ametrano
+
+	* [r14276] ql/instruments/makeswaption.cpp:
+	  
+	  fixed market convention
+
+2008-02-05 11:38  Luigi Ballabio
+
+	* [r14275] test-suite/americanoption.cpp, test-suite/asianoptions.cpp,
+	  test-suite/assetswap.cpp, test-suite/barrieroption.cpp,
+	  test-suite/basketoption.cpp, test-suite/batesmodel.cpp,
+	  test-suite/bermudanswaption.cpp, test-suite/bonds.cpp,
+	  test-suite/brownianbridge.cpp, test-suite/capfloor.cpp,
+	  test-suite/capflooredcoupon.cpp, test-suite/cliquetoption.cpp,
+	  test-suite/cms.cpp, test-suite/compoundforward.cpp,
+	  test-suite/convertiblebonds.cpp, test-suite/covariance.cpp,
+	  test-suite/curvestates.cpp, test-suite/daycounters.cpp,
+	  test-suite/digitalcoupon.cpp, test-suite/digitaloption.cpp,
+	  test-suite/distributions.cpp, test-suite/dividendoption.cpp,
+	  test-suite/europeanoption.cpp, test-suite/forwardoption.cpp,
+	  test-suite/gaussianquadratures.cpp, test-suite/integrals.cpp,
+	  test-suite/interestrates.cpp, test-suite/interpolations.cpp,
+	  test-suite/jumpdiffusion.cpp, test-suite/libormarketmodel.cpp,
+	  test-suite/libormarketmodelprocess.cpp,
+	  test-suite/lookbackoptions.cpp,
+	  test-suite/lowdiscrepancysequences.cpp, test-suite/marketmodel.cpp,
+	  test-suite/marketmodel_cms.cpp, test-suite/marketmodel_smm.cpp,
+	  test-suite/marketmodel_smmcapletalphacalibration.cpp,
+	  test-suite/marketmodel_smmcapletcalibration.cpp,
+	  test-suite/marketmodel_smmcaplethomocalibration.cpp,
+	  test-suite/matrices.cpp, test-suite/mclongstaffschwartzengine.cpp,
+	  test-suite/old_pricers.cpp, test-suite/operators.cpp,
+	  test-suite/optimizers.cpp, test-suite/optionletstripper.cpp,
+	  test-suite/pathgenerator.cpp, test-suite/piecewiseyieldcurve.cpp,
+	  test-suite/quantooption.cpp, test-suite/quotes.cpp,
+	  test-suite/rangeaccrual.cpp, test-suite/rounding.cpp,
+	  test-suite/shortratemodels.cpp, test-suite/solvers.cpp,
+	  test-suite/stats.cpp, test-suite/swap.cpp,
+	  test-suite/swapforwardmappings.cpp, test-suite/swaption.cpp,
+	  test-suite/swaptionvolatilitycube.cpp,
+	  test-suite/swaptionvolatilitymatrix.cpp,
+	  test-suite/tapcorrelations.cpp, test-suite/termstructures.cpp,
+	  test-suite/tqreigendecomposition.cpp, test-suite/tracing.cpp,
+	  test-suite/utilities.hpp, test-suite/varianceswaps.cpp:
+	  
+	  Removed obsolete macro
+
+2008-02-05 09:08  Luigi Ballabio
+
+	* [r14274] ql/termstructures/bootstraphelper.hpp:
+	  
+	  Fixed docs
+
+2008-02-04 17:36  Ferdinando Ametrano
+
+	* [r14271] ql/cashflows/cashflows.cpp, ql/cashflows/cashflows.hpp:
+	  
+	  - improved IRR calculation using derivative (i.e. modified duration)
+	  - extended duration and convexity to SimpleThenCompounding
+	  - added example workbook
+
+2008-02-04 09:48  Ferdinando Ametrano
+
+	* [r14269] ql/instruments/capfloor.cpp:
+	  
+	  
+
+2008-02-04 09:23  Ferdinando Ametrano
+
+	* [r14267] ql/pricingengines/capfloor/blackcapfloorengine.cpp:
+	  
+	  extended additional results
+
+2008-02-04 09:20  Ferdinando Ametrano
+
+	* [r14266] ql/instruments/capfloor.cpp, ql/instruments/swaption.cpp,
+	  test-suite/capfloor.cpp, test-suite/swaption.cpp:
+	  
+	  improved implied vol calculation using (vega-based) Newton solver
+	  instead of Brent
+
+2008-02-04 08:53  Ferdinando Ametrano
+
+	* [r14265] ql/termstructures/volatility/swaption/swaptionvolcube.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube1.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube1.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube2.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube2.hpp,
+	  test-suite/cms.cpp, test-suite/rangeaccrual.cpp,
+	  test-suite/swaptionvolatilitycube.cpp:
+	  
+	  fixed bug: swaption's underlying short tenor swap has different ibor
+	  index
+
+2008-02-01 17:21  Ferdinando Ametrano
+
+	* [r14254] ql/pricingengines/swaption/blackswaptionengine.cpp:
+	  
+	  - fixed proper usage of forecasting/discounting curves
+	  - introduced more additional results
+
+2008-02-01 17:13  Ferdinando Ametrano
+
+	* [r14252] ql/instruments/capfloor.cpp,
+	  ql/instruments/makeswaption.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.hpp,
+	  ql/time/period.cpp, ql/time/period.hpp, test-suite/swaption.cpp:
+	  
+	  
+
+2008-02-01 16:35  Luigi Ballabio
+
+	* [r14250] test-suite/digitalcoupon.cpp,
+	  test-suite/hybridhestonhullwhiteprocess.cpp,
+	  test-suite/interpolations.cpp, test-suite/quantlibtestsuite.cpp:
+	  
+	  Moved some global variables in a struct so that they're destructed
+	  after the test case exits
+
+2008-02-01 15:51  Ferdinando Ametrano
+
+	* [r14249] ql/instruments/swaption.cpp, ql/instruments/swaption.hpp,
+	  test-suite/swaption.cpp:
+	  
+	  removed ambiguous atmRate method (didn't take into account floating
+	  leg spread and forecasting/discounting curves)
+
+2008-02-01 15:51  Ferdinando Ametrano
+
+	* [r14248] ql/pricingengines/swaption/blackswaptionengine.cpp:
+	  
+	  fixed cash settlement for Payer swaption
+
+2008-02-01 14:19  Ferdinando Ametrano
+
+	* [r14247] ql/pricingengines/capfloor/blackcapfloorengine.cpp:
+	  
+	  fixed bugs:
+	  - time to maturity calculation (using vol term structure)
+	  - optionletPrices in the CapFloor::Collar case
+
+2008-02-01 13:53  Ferdinando Ametrano
+
+	* [r14244] ql/pricingengines/blackformula.cpp:
+	  
+	  fixed zero stdDev case
+
+2008-02-01 12:12  Eric Ehlers
+
+	* [r14239] ql/quotes/Makefile.am, ql/quotes/all.hpp:
+	  
+	  linux catching up
+
+2008-02-01 10:20  Marco Bianchetti
+
+	* [r14236] QuantLib_vc7.vcproj:
+	  
+	  VC7 catching up
+
+2008-01-31 16:20  Ferdinando Ametrano
+
+	* [r14233] ql/pricingengines/swaption/blackswaptionengine.cpp,
+	  test-suite/quantlibtestsuite.cpp, test-suite/shortratemodels.cpp,
+	  test-suite/swaption.cpp, test-suite/swaptionvolatilitymatrix.cpp:
+	  
+	  fixed (long overdue) bug in BlackSwaptionEngine: wrong calculation
+	  of swap length prevented exact recovery of expected volatilities
+	  from SwaptionVolatilityStructure. The fix relies on Rev14223
+
+2008-01-31 15:49  Ferdinando Ametrano
+
+	* [r14232] test-suite/assetswap.cpp:
+	  
+	  formatting
+
+2008-01-31 15:31  Luigi Ballabio
+
+	* [r14231] test-suite/capflooredcoupon.cpp, test-suite/cms.cpp,
+	  test-suite/compoundforward.cpp, test-suite/convertiblebonds.cpp,
+	  test-suite/curvestates.cpp:
+	  
+	  Moved some global variables in a struct so that they're destructed
+	  after the test case exits
+
+2008-01-31 11:53  Ferdinando Ametrano
+
+	* [r14230] ql/termstructures/yield/ratehelpers.cpp:
+	  
+	  
+
+2008-01-31 11:33  Ferdinando Ametrano
+
+	* [r14229] test-suite/swaptionvolatilitymatrix.cpp,
+	  test-suite/swaptionvolstructuresutilities.hpp:
+	  
+	  extended test
+
+2008-01-31 11:29  Ferdinando Ametrano
+
+	* [r14228] ql/instruments/makeswaption.cpp,
+	  ql/instruments/makeswaption.hpp, ql/instruments/makevanillaswap.cpp:
+	  
+	  fixed swaption ATM calculation
+
+2008-01-31 09:40  Ferdinando Ametrano
+
+	* [r14227] ql/option.hpp:
+	  
+	  added inspectors
+
+2008-01-31 09:02  Ferdinando Ametrano
+
+	* [r14226] QuantLib_vc8.vcproj, ql/instruments/Makefile.am,
+	  ql/instruments/all.hpp, ql/instruments/makeswaption.cpp,
+	  ql/instruments/makeswaption.hpp, ql/instruments/makeswaptions.cpp,
+	  ql/instruments/makeswaptions.hpp:
+	  
+	  renamed files
+
+2008-01-30 17:11  Ferdinando Ametrano
+
+	* [r14224]
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.hpp:
+	  
+	  extended interface with Date/Tenor exercise and Time swapLength
+	  signatures
+
+2008-01-30 16:49  Ferdinando Ametrano
+
+	* [r14223] ql/termstructures/volatility/swaption/swaptionvolcube1.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube2.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvoldiscrete.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.hpp,
+	  test-suite/swaptionvolatilitymatrix.cpp:
+	  
+	  refactored swapLength calculation (in order to avoid
+	  inconsistencies)
+
+2008-01-30 16:26  Ferdinando Ametrano
+
+	* [r14222] test-suite/swaption.cpp:
+	  
+	  formatting
+
+2008-01-30 15:57  Ferdinando Ametrano
+
+	* [r14220] ql/time/period.cpp, ql/time/period.hpp:
+	  
+	  added years/months/weeks/days conversion utility functions
+
+2008-01-30 15:55  Luigi Ballabio
+
+	* [r14219] ql/currencies/exchangeratemanager.cpp:
+	  
+	  Fixed degenerate exchange-rate lookup
+
+2008-01-30 15:19  Luigi Ballabio
+
+	* [r14218] ql/exchangerate.cpp:
+	  
+	  Fixed display of chained exchange rates
+
+2008-01-30 15:04  Luigi Ballabio
+
+	* [r14217] ql/currencies/america.hpp,
+	  ql/currencies/exchangeratemanager.cpp:
+	  
+	  Added Peruvian currency
+
+2008-01-30 13:10  Ferdinando Ametrano
+
+	* [r14216]
+	  ql/termstructures/volatility/swaption/swaptionvoldiscrete.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvoldiscrete.hpp,
+	  test-suite/swaptionvolatilitymatrix.cpp:
+	  
+	  - using Period algebra for option/swap tenor checks
+	  - using SwaptionVolatilityStructure::convertSwapTenor for converting
+	  swap tenors into times
+	  - made few auxiliary methods private
+	  - extended unit test
+
+2008-01-30 11:37  Ferdinando Ametrano
+
+	* [r14215]
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.cpp:
+	  
+	  improved comment
+
+2008-01-30 10:30  Ferdinando Ametrano
+
+	* [r14213]
+	  ql/termstructures/volatility/swaption/swaptionvoldiscrete.cpp,
+	  test-suite/swaptionvolatilitymatrix.cpp:
+	  
+	  ...ooops...
+
+2008-01-30 10:21  Ferdinando Ametrano
+
+	* [r14212]
+	  ql/termstructures/volatility/swaption/swaptionvoldiscrete.cpp,
+	  test-suite/swaptionvolatilitymatrix.cpp:
+	  
+	  fixed test logic (i.e. catching up with last refactoring)
+
+2008-01-29 10:23  Luigi Ballabio
+
+	* [r14210] Examples/BermudanSwaption/Makefile.am,
+	  Examples/ConvertibleBonds/Makefile.am,
+	  Examples/DiscreteHedging/Makefile.am,
+	  Examples/EquityOption/Makefile.am, Examples/FRA/Makefile.am,
+	  Examples/FittedBondCurve/Makefile.am,
+	  Examples/Replication/Makefile.am, Examples/Repo/Makefile.am,
+	  Examples/Swap/Makefile.am, test-suite/Makefile.am:
+	  
+	  Build fixes for Cygwin
+
+2008-01-28 17:01  Luigi Ballabio
+
+	* [r14200] Docs/Makefile.am, Docs/quantlibheaderonline.html:
+	  
+	  Trimmed size of online docs
+
+2008-01-28 16:59  Luigi Ballabio
+
+	* [r14199]
+	  ql/termstructures/inflation/interpolatedyoyinflationcurve.hpp,
+	  ql/termstructures/inflation/interpolatedzeroinflationcurve.hpp:
+	  
+	  Removed call to old method
+
+2008-01-28 15:41  Ferdinando Ametrano
+
+	* [r14194] ql/quotes/sensitivityanalysis.hpp:
+	  
+	  
+
+2008-01-28 12:27  Ferdinando Ametrano
+
+	* [r14192] ql/quotes/sensitivityanalysis.cpp,
+	  ql/quotes/sensitivityanalysis.hpp:
+	  
+	  fixed bug (and typos)
+
+2008-01-28 10:29  Luigi Ballabio
+
+	* [r14187] ql/termstructures/yield/discountcurve.hpp,
+	  ql/termstructures/yield/forwardcurve.hpp,
+	  ql/termstructures/yield/zerocurve.hpp:
+	  
+	  Prevented access violation
+
+2008-01-28 10:10  Ferdinando Ametrano
+
+	* [r14186] ql/quotes/sensitivityanalysis.cpp,
+	  ql/quotes/sensitivityanalysis.hpp:
+	  
+	  added sensitivity analysis functions (sorry... I forgot to add these
+	  new files)
+
+2008-01-28 10:00  Ferdinando Ametrano
+
+	* [r14185] QuantLib_vc8.vcproj:
+	  
+	  added sensitivity analysis functions
+
+2008-01-28 09:57  Ferdinando Ametrano
+
+	* [r14183] ql/time/businessdayconvention.cpp:
+	  
+	  
+
+2008-01-25 13:33  Luigi Ballabio
+
+	* [r14182] Examples/BermudanSwaption/Makefile.am,
+	  Examples/ConvertibleBonds/Makefile.am,
+	  Examples/DiscreteHedging/Makefile.am,
+	  Examples/EquityOption/Makefile.am, Examples/FRA/Makefile.am,
+	  Examples/FittedBondCurve/Makefile.am,
+	  Examples/Replication/Makefile.am, Examples/Repo/Makefile.am,
+	  Examples/Swap/Makefile.am:
+	  
+	  Fix for Cygwin build
+
+2008-01-24 18:38  Ferdinando Ametrano
+
+	* [r14180]
+	  ql/termstructures/volatility/optionlet/optionletstripper.cpp,
+	  ql/termstructures/volatility/optionlet/optionletstripper.hpp,
+	  ql/termstructures/volatility/optionlet/optionletstripper1.cpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionlet.cpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionlet.hpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionletadapter.cpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionletbase.hpp:
+	  
+	  cleaned up ambiguity between settlementDays and referenceDate in
+	  StrippedOptionletBase
+
+2008-01-23 16:40  Ferdinando Ametrano
+
+	* [r14167] ql/pricingengines/blackformula.cpp,
+	  ql/pricingengines/blackformula.hpp,
+	  ql/quotes/eurodollarfuturesquote.cpp,
+	  ql/quotes/eurodollarfuturesquote.hpp,
+	  ql/quotes/impliedstddevquote.cpp, ql/quotes/impliedstddevquote.hpp,
+	  ql/termstructures/volatility/optionlet/optionletstripper1.cpp,
+	  ql/termstructures/volatility/optionlet/optionletstripper1.hpp,
+	  test-suite/quotes.cpp:
+	  
+	  added explicit maxIteration parameter in implied volatility
+	  calculation (warning: also moved displacement parameter in the same
+	  place as other functions)
+
+2008-01-23 16:25  Ferdinando Ametrano
+
+	* [r14166] ql/instruments/capfloor.cpp, ql/instruments/capfloor.hpp,
+	  ql/instruments/swaption.cpp, ql/instruments/swaption.hpp,
+	  test-suite/capfloor.cpp, test-suite/swaption.cpp:
+	  
+	  - added explicit guess parameter in implied volatility calculation
+	  - moved Swaption::ImpliedVolhelper out of Swaption class into
+	  anonymous namespace (as in CapFloor)
+
+2008-01-23 15:58  Ferdinando Ametrano
+
+	* [r14165] ql/instruments/impliedvolatility.cpp,
+	  ql/instruments/impliedvolatility.hpp:
+	  
+	  
+
+2008-01-23 15:55  Ferdinando Ametrano
+
+	* [r14164]
+	  ql/termstructures/volatility/optionlet/optionletstripper2.cpp:
+	  
+	  
+
+2008-01-23 15:11  Ferdinando Ametrano
+
+	* [r14162] test-suite/libormarketmodel.cpp,
+	  test-suite/shortratemodels.cpp:
+	  
+	  fixed typo
+
+2008-01-23 15:10  Ferdinando Ametrano
+
+	* [r14161] ql/pricingengines/capfloor/blackcapfloorengine.cpp,
+	  ql/pricingengines/capfloor/blackcapfloorengine.hpp,
+	  ql/pricingengines/swaption/blackswaptionengine.cpp,
+	  ql/pricingengines/swaption/blackswaptionengine.hpp:
+	  
+	  cleaned up inclusions and removed unused private data member
+
+2008-01-23 15:07  Ferdinando Ametrano
+
+	* [r14160] ql/models/shortrate/calibrationhelpers/caphelper.cpp,
+	  ql/models/shortrate/calibrationhelpers/caphelper.hpp,
+	  ql/models/shortrate/calibrationhelpers/swaptionhelper.cpp,
+	  ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp,
+	  test-suite/libormarketmodel.cpp, test-suite/shortratemodels.cpp:
+	  
+	  cleaned up inclusions
+
+2008-01-23 13:58  Marco Bianchetti
+
+	* [r14159] QuantLib_vc7.vcproj:
+	  
+	  VC7 catching up
+
+2008-01-19 15:50  Klaus Spanderen
+
+	* [r14144] test-suite/hybridhestonhullwhiteprocess.cpp:
+	  
+	  test improvements
+
+2008-01-19 15:49  Klaus Spanderen
+
+	* [r14143] ql/processes/hybridhestonhullwhiteprocess.cpp:
+	  
+	  performance optimization
+
+2008-01-18 12:56  Luigi Ballabio
+
+	* [r14137] Announce.txt,
+	  Examples/BermudanSwaption/BermudanSwaption.dev,
+	  Examples/ConvertibleBonds/ConvertibleBonds.dev,
+	  Examples/DiscreteHedging/DiscreteHedging.dev,
+	  Examples/EquityOption/EquityOption.dev, Examples/FRA/FRA.dev,
+	  Examples/FittedBondCurve/FittedBondCurve.dev,
+	  Examples/Replication/Replication.dev, Examples/Repo/Repo.dev,
+	  Examples/Swap/Swap.dev, QuantLib.dev, QuantLib.nsi,
+	  QuantLib_vc7.vcproj, QuantLib_vc8.vcproj, QuantLib_vc9.vcproj,
+	  configure.ac, ql/qldefines.hpp, test-suite/testsuite.dev,
+	  test-suite/testsuite_vc7.vcproj, test-suite/testsuite_vc8.vcproj,
+	  test-suite/testsuite_vc9.vcproj:
+	  
+	  Increased version number
+
+2008-01-18 10:44  Luigi Ballabio
+
+	* [r14136] Examples/FRA/FRA.cpp,
+	  Examples/FittedBondCurve/FittedBondCurve.cpp,
+	  Examples/Swap/swapvaluation.cpp, ql/indexes/ibor/chflibor.hpp,
+	  ql/indexes/ibor/dkklibor.hpp:
+	  
+	  Compilation fixes for examples
+
+2008-01-16 10:54  Luigi Ballabio
+
+	* [r14115] ql/pricingengines/swap:
+	  
+	  Ignored TAGS file
+
+2008-01-14 15:55  Ferdinando Ametrano
+
+	* [r14092] ql/cashflows/cashflows.cpp, ql/cashflows/cashflows.hpp,
+	  ql/instruments/bond.cpp, ql/instruments/bond.hpp,
+	  test-suite/assetswap.cpp:
+	  
+	  fixed next/previous coupon rate calculation when the actual real
+	  coupon is decomposed in multiple coupon on the same date
+
+2008-01-14 15:54  Ferdinando Ametrano
+
+	* [r14091] ql/instruments/bonds/floatingratebond.hpp:
+	  
+	  formatting
+
+2008-01-14 15:52  Ferdinando Ametrano
+
+	* [r14090] ql/time/dategenerationrule.hpp, ql/time/schedule.cpp,
+	  ql/time/schedule.hpp:
+	  
+	  - relaxed first/next-to-last (null) date requirement for
+	  DateGeneration::ThirdWednesday
+	  - switched to actual forward date generation instead of backward for
+	  DateGeneration::ThirdWednesday
+	  - fixed unused stubDate bug in MakeSchedule
+
+2008-01-11 17:55  Ferdinando Ametrano
+
+	* [r14082] ql/instruments/makevanillaswap.cpp,
+	  ql/instruments/makevanillaswap.hpp:
+	  
+	  added initial support for IMM swaps
+
+2008-01-11 15:11  Ferdinando Ametrano
+
+	* [r14075] ql/time/period.cpp:
+	  
+	  avoided useless normalization when the length is zero (it would only
+	  change the unit)
+
+2008-01-11 15:06  Ferdinando Ametrano
+
+	* [r14074] ql/time/schedule.cpp:
+	  
+	  fixed (infinite loop) bug (part 2... sorry folks)
+
+2008-01-11 15:04  Ferdinando Ametrano
+
+	* [r14073] ql/time/schedule.cpp:
+	  
+	  fixed (infinite loop) bug
+
+2008-01-11 13:45  Ferdinando Ametrano
+
+	* [r14070] ql/models/marketmodels/historicalforwardratesanalysis.hpp,
+	  ql/termstructures/yield/bondhelpers.cpp,
+	  ql/termstructures/yield/bondhelpers.hpp,
+	  ql/termstructures/yield/ratehelpers.cpp,
+	  ql/termstructures/yield/ratehelpers.hpp,
+	  test-suite/piecewiseyieldcurve.cpp, test-suite/termstructures.cpp:
+	  
+	  - removed unused parameters in DepositRateHelper and FraRateHelper
+	  - added parameters in FuturesRateHelper and FixedRateBondHelper
+
+2008-01-10 20:06  Ferdinando Ametrano
+
+	* [r14066] ql/indexes/ibor/audlibor.hpp, ql/indexes/ibor/cadlibor.hpp,
+	  ql/indexes/ibor/chflibor.hpp, ql/indexes/ibor/dkklibor.hpp,
+	  ql/indexes/ibor/euribor.cpp, ql/indexes/ibor/euribor.hpp,
+	  ql/indexes/ibor/eurlibor.cpp, ql/indexes/ibor/eurlibor.hpp,
+	  ql/indexes/ibor/gbplibor.hpp, ql/indexes/ibor/jpylibor.hpp,
+	  ql/indexes/ibor/libor.cpp, ql/indexes/ibor/libor.hpp,
+	  ql/indexes/ibor/nzdlibor.hpp, ql/indexes/ibor/usdlibor.hpp:
+	  
+	  - added one-day deposit indexes
+	  - cleaned up some logic
+
+2008-01-10 19:55  Ferdinando Ametrano
+
+	* [r14064] ql/termstructures/yield/ratehelpers.cpp,
+	  ql/termstructures/yield/ratehelpers.hpp:
+	  
+	  cleaned up inclusions
+
+2008-01-10 19:54  Ferdinando Ametrano
+
+	* [r14063] ql/time/calendar.cpp:
+	  
+	  removed redundant check
+
+2008-01-10 19:46  Ferdinando Ametrano
+
+	* [r14061] ql/indexes/interestrateindex.cpp:
+	  
+	  discriminate between different (ON, TN, SN) one day deposits
+
+2008-01-10 19:40  Ferdinando Ametrano
+
+	* [r14060] QuantLib_vc8.vcproj, ql/indexes/ibor/seklibor.hpp:
+	  
+	  added SEK Libor index
+
+2008-01-10 10:14  Ferdinando Ametrano
+
+	* [r14059] ql/termstructures/yield/ratehelpers.cpp,
+	  ql/termstructures/yield/ratehelpers.hpp:
+	  
+	  removed unused variable
+
+2008-01-10 10:06  Ferdinando Ametrano
+
+	* [r14058] ql/termstructures/yield/ratehelpers.cpp,
+	  ql/termstructures/yield/ratehelpers.hpp:
+	  
+	  - added IborIndex based constructors
+	  - increased usage of IborIndex interface for internal calculations
+
+2008-01-09 18:04  Ferdinando Ametrano
+
+	* [r14054] ql/termstructures/bootstrapper.hpp:
+	  
+	  fixed non-guaranteed instrument accuracy
+
+2008-01-09 14:32  Marco Bianchetti
+
+	* [r14046] QuantLib_vc7.vcproj, test-suite/testsuite_vc7.vcproj:
+	  
+	  VC7 catching up
+
+2008-01-09 12:27  Ferdinando Ametrano
+
+	* [r14042] ql/termstructures/yield/bondhelpers.cpp,
+	  ql/termstructures/yield/bondhelpers.hpp,
+	  ql/termstructures/yield/fittedbonddiscountcurve.cpp:
+	  
+	  - added bond based constructor
+	  - moved in the constructor code from setTermStructure
+	  - cleaned up interface
+
+2008-01-09 12:26  Ferdinando Ametrano
+
+	* [r14041] ql/instruments/bonds/fixedratebond.cpp,
+	  ql/instruments/bonds/fixedratebond.hpp:
+	  
+	  extended interface
+
+2008-01-09 12:22  Ferdinando Ametrano
+
+	* [r14038] ql/termstructures/volatility/swaption/swaptionvolcube.cpp:
+	  
+	  added (unfortunate but necessary for the time being) check
+
+2008-01-09 10:09  Luigi Ballabio
+
+	* [r14037] ql/termstructures/volatility/capfloor/Makefile.am,
+	  ql/termstructures/volatility/capfloor/all.hpp,
+	  test-suite/Makefile.am:
+	  
+	  Added new files to gcc build
+
+2008-01-08 17:08  Ferdinando Ametrano
+
+	* [r14036] test-suite/optionletstripper.cpp,
+	  test-suite/optionletstripper.hpp, test-suite/quantlibtestsuite.cpp,
+	  test-suite/testsuite_vc8.vcproj:
+	  
+	  added first non-final unit test
+
+2008-01-08 17:07  Ferdinando Ametrano
+
+	* [r14035] QuantLib_vc8.vcproj,
+	  ql/termstructures/volatility/capfloor/constantcapfloortermvol.cpp,
+	  ql/termstructures/volatility/capfloor/constantcapfloortermvol.hpp:
+	  
+	  added ConstantCapFloorTermVolatility class
+
+2008-01-07 16:26  Ferdinando Ametrano
+
+	* [r14027] ql/pricingengines/capfloor/blackcapfloorengine.cpp,
+	  ql/pricingengines/swaption/blackswaptionengine.cpp,
+	  ql/termstructures/volatility/optionlet/constantoptionletvol.cpp,
+	  ql/termstructures/volatility/optionlet/constantoptionletvol.hpp,
+	  ql/termstructures/volatility/optionlet/optionletstripper2.cpp,
+	  ql/termstructures/volatility/optionlet/spreadedoptionletvol.cpp,
+	  ql/termstructures/volatility/optionlet/spreadedoptionletvol.hpp,
+	  ql/termstructures/volatility/swaption/spreadedswaptionvol.cpp,
+	  ql/termstructures/volatility/swaption/spreadedswaptionvol.hpp,
+	  ql/termstructures/volatility/swaption/swaptionconstantvol.cpp,
+	  ql/termstructures/volatility/swaption/swaptionconstantvol.hpp,
+	  test-suite/assetswap.cpp, test-suite/capflooredcoupon.cpp,
+	  test-suite/digitalcoupon.cpp,
+	  test-suite/libormarketmodelprocess.cpp, test-suite/swap.cpp,
+	  test-suite/swaptionvolatilitycube.cpp:
+	  
+	  renamed as per Luigi's request
+
+2008-01-05 19:25  Ferdinando Ametrano
+
+	* [r14023]
+	  ql/termstructures/volatility/swaption/swaptionvolmatrix.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp:
+	  
+	  - removed redundant volatilityImpl method
+	  - introduced missing smileSectionImpl method, commented out for the
+	  time being as it breaks cms unit test: further investigation is
+	  needed
+
+2008-01-05 19:22  Ferdinando Ametrano
+
+	* [r14022] test-suite/hybridhestonhullwhiteprocess.cpp,
+	  test-suite/matrices.cpp:
+	  
+	  avoided warnings
+
+2008-01-05 13:02  Ferdinando Ametrano
+
+	* [r14021] ql/termstructures/volatility/flatsmilesection.hpp,
+	  ql/termstructures/volatility/smilesection.hpp,
+	  ql/termstructures/volatility/spreadedsmilesection.cpp,
+	  ql/termstructures/volatility/spreadedsmilesection.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube1.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolmatrix.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp:
+	  
+	  cleaned up code
+
+2008-01-04 23:17  Klaus Spanderen
+
+	* [r14019] ql/methods/montecarlo/montecarlomodel.hpp,
+	  ql/pricingengines/mcsimulation.hpp,
 	  ql/pricingengines/vanilla/mchestonhullwhiteengine.cpp,
 	  ql/pricingengines/vanilla/mchestonhullwhiteengine.hpp,
 	  ql/processes/hybridhestonhullwhiteprocess.cpp,
@@ -417,96 +2696,752 @@
 	  test-suite/hybridhestonhullwhiteprocess.cpp,
 	  test-suite/hybridhestonhullwhiteprocess.hpp:
 	  
-	  Fixed license links
+	  improved control variate for hybrid heston hull white model
+	  better interface & class design
 
-2007-11-30 08:47  Luigi Ballabio
+2008-01-04 23:15  Klaus Spanderen
 
-	* [r13619] Docs/pages/license.docs, LICENSE.TXT,
-	  ql/math/optimization/conjugategradient.cpp,
-	  ql/math/optimization/simplex.cpp, test-suite/digitaloption.cpp,
-	  test-suite/optimizers.cpp:
+	* [r14018]
+	  ql/pricingengines/vanilla/analytichestonhullwhiteengine.hpp:
 	  
-	  Updated license with new copyrights
+	  typo corrected
 
-2007-11-29 16:58  Ferdinando Ametrano
+2008-01-04 23:13  Klaus Spanderen
 
-	* [r13614] ql/instruments/makevanillaswap.cpp:
+	* [r14017] test-suite/hestonmodel.cpp:
 	  
-	  removed useless check
+	  typo corrected
 
-2007-11-29 16:45  Ferdinando Ametrano
+2008-01-04 23:12  Klaus Spanderen
 
-	* [r13611] ql/indexes/swapindex.cpp:
+	* [r14016] ql/math/matrix.cpp, ql/math/matrix.hpp,
+	  test-suite/matrices.cpp, test-suite/matrices.hpp:
 	  
-	  bug fixed: removed too early checks
+	  added method to calculate the determinant
 
-2007-11-29 16:44  Ferdinando Ametrano
+2008-01-04 17:10  Ferdinando Ametrano
 
-	* [r13610] ql/instruments/makevanillaswap.cpp,
+	* [r14013] test-suite/cms.cpp:
+	  
+	  
+
+2008-01-04 17:08  Luigi Ballabio
+
+	* [r14012]
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.hpp:
+	  
+	  Compilation fix for gcc
+
+2008-01-04 16:34  Ferdinando Ametrano
+
+	* [r14011]
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.hpp:
+	  
+	  fixed glitch and formatting
+
+2008-01-04 16:31  Ferdinando Ametrano
+
+	* [r14010] ql/termstructures/volatility/swaption/swaptionvolcube1.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube1.hpp:
+	  
+	  formatting
+
+2008-01-04 16:29  Ferdinando Ametrano
+
+	* [r14009] ql/termstructures/volatility/swaption/swaptionvolcube2.cpp:
+	  
+	  formatting
+
+2008-01-04 16:29  Ferdinando Ametrano
+
+	* [r14008] ql/termstructures/volatility/swaption/swaptionvolcube2.hpp:
+	  
+	  
+
+2008-01-04 15:54  Ferdinando Ametrano
+
+	* [r14007]
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.cpp:
+	  
+	  
+
+2008-01-04 15:43  Ferdinando Ametrano
+
+	* [r14006] ql/pricingengines/capfloor/blackcapfloorengine.cpp,
+	  ql/pricingengines/swaption/blackswaptionengine.cpp,
+	  ql/termstructures/volatility/optionlet/constantoptionletvol.cpp,
+	  ql/termstructures/volatility/optionlet/constantoptionletvol.hpp,
+	  ql/termstructures/volatility/optionlet/optionletvolatilitystructure.hpp,
+	  ql/termstructures/volatility/optionlet/spreadedoptionletvol.cpp,
+	  ql/termstructures/volatility/optionlet/spreadedoptionletvol.hpp,
+	  ql/termstructures/volatility/swaption/spreadedswaptionvol.cpp,
+	  ql/termstructures/volatility/swaption/spreadedswaptionvol.hpp,
+	  ql/termstructures/volatility/swaption/swaptionconstantvol.cpp,
+	  ql/termstructures/volatility/swaption/swaptionconstantvol.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube.hpp,
+	  test-suite/assetswap.cpp, test-suite/capflooredcoupon.cpp,
+	  test-suite/digitalcoupon.cpp,
+	  test-suite/libormarketmodelprocess.cpp, test-suite/swap.cpp,
+	  test-suite/swaptionvolatilitycube.cpp:
+	  
+	  fixed many glitches in constant/spreaded optionlet/swaption vol
+	  classes
+
+2008-01-04 12:22  Ferdinando Ametrano
+
+	* [r14005]
+	  ql/termstructures/volatility/swaption/spreadedswaptionvol.cpp,
+	  ql/termstructures/volatility/swaption/spreadedswaptionvol.hpp,
+	  ql/termstructures/volatility/swaption/swaptionconstantvol.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.hpp:
+	  
+	  fixed incoherent maxSwapLength calculation bug
+
+2008-01-04 11:42  Luigi Ballabio
+
+	* [r14004] ql/instruments/makecms.cpp, ql/instruments/makecms.hpp:
+	  
+	  Fixes for revision 13897:
+	  - restored the old constructor as overloading; the ibor index
+	  contained
+	  in the swap index might be ok;
+	  - for the principle of least surprise, if no spread is passed no
+	  spread
+	  should be used;
+	  - replaced magic number (Null<double>) with explicit withAtmSpread
+	  method
+
+2008-01-04 11:05  Ferdinando Ametrano
+
+	* [r14003]
+	  ql/termstructures/volatility/swaption/spreadedswaptionvol.cpp,
+	  ql/termstructures/volatility/swaption/spreadedswaptionvol.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube1.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube2.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvoldiscrete.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvoldiscrete.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.hpp,
+	  test-suite/swaptionvolatilitymatrix.cpp:
+	  
+	  consolidated different convertSwapTenor methods in just one
+	  (non-virtual) method in the SwaptionVolatilityStructure base class
+
+2008-01-04 10:34  Ferdinando Ametrano
+
+	* [r14002]
+	  ql/termstructures/volatility/optionlet/optionletvolatilitystructure.hpp:
+	  
+	  - avoided duplicate checks
+	  - formatting
+
+2008-01-04 09:58  Luigi Ballabio
+
+	* [r14001]
+	  ql/termstructures/volatility/optionlet/optionletvolatilitystructure.hpp:
+	  
+	  Compilation fix for gcc
+
+2008-01-04 09:24  Ferdinando Ametrano
+
+	* [r14000] test-suite/swaptionvolatilitycube.cpp:
+	  
+	  
+
+2008-01-04 09:14  Ferdinando Ametrano
+
+	* [r13999] ql/pricingengines/capfloor/blackcapfloorengine.cpp,
+	  ql/termstructures/volatility/optionlet/capletvariancecurve.hpp,
+	  ql/termstructures/volatility/optionlet/constantoptionletvol.cpp,
+	  ql/termstructures/volatility/optionlet/constantoptionletvol.hpp,
+	  ql/termstructures/volatility/optionlet/optionletvolatilitystructure.hpp,
+	  ql/termstructures/volatility/optionlet/spreadedoptionletvol.cpp,
+	  ql/termstructures/volatility/optionlet/spreadedoptionletvol.hpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionlet.cpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionlet.hpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionletadapter.cpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp,
+	  test-suite/capflooredcoupon.cpp, test-suite/digitalcoupon.cpp,
+	  test-suite/libormarketmodelprocess.cpp, test-suite/swap.cpp:
+	  
+	  - added smilesection methods to OptionletVolatilityStructure. Now it
+	  should be evident that SwaptionVolatilityStructure is nothing else
+	  that a container of many OptionletVolatilityStructure.
+	  - reorder some related code
+
+2008-01-03 19:06  Ferdinando Ametrano
+
+	* [r13998] ql/termstructures/volatility/equityfx/blackconstantvol.hpp,
+	  ql/termstructures/volatility/equityfx/blackvariancecurve.hpp,
+	  ql/termstructures/volatility/equityfx/blackvariancesurface.hpp,
+	  ql/termstructures/volatility/equityfx/impliedvoltermstructure.hpp:
+	  
+	  fixed comments
+
+2008-01-03 19:04  Ferdinando Ametrano
+
+	* [r13997] ql/termstructures/volatility/equityfx/localconstantvol.hpp,
+	  ql/termstructures/volatility/equityfx/localvolcurve.hpp,
+	  ql/termstructures/volatility/equityfx/localvolsurface.hpp:
+	  
+	  fixed comments
+
+2008-01-03 18:56  Ferdinando Ametrano
+
+	* [r13996] ql/experimental/abcdatmvolcurve.cpp,
+	  ql/experimental/abcdatmvolcurve.hpp:
+	  
+	  cleaned up inclusions
+
+2008-01-03 18:36  Ferdinando Ametrano
+
+	* [r13995]
+	  ql/termstructures/volatility/swaption/spreadedswaptionvol.cpp,
+	  ql/termstructures/volatility/swaption/spreadedswaptionvol.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube1.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube2.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvoldiscrete.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvoldiscrete.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.hpp,
+	  test-suite/swaptionvolatilitymatrix.cpp:
+	  
+	  replaced convertDates methods with equivalent (timeFromreference
+	  and) convertSwapTenor methods
+
+2008-01-03 16:47  Ferdinando Ametrano
+
+	* [r13994]
+	  ql/termstructures/volatility/swaption/spreadedswaptionvol.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube2.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.hpp:
+	  
+	  - added void checkSwapTenor methods, and removed
+	  checkRange(Time/const Date&, Time/const Period&, Rate, bool)
+	  - added option date and swap tenor checks to smileSection methods
+	  - added "bool extrapolate" as last input parameter to smileSection
+	  methods
+
+2008-01-03 16:35  Ferdinando Ametrano
+
+	* [r13993] test-suite/cms.cpp:
+	  
+	  
+
+2008-01-03 14:55  Ferdinando Ametrano
+
+	* [r13992] ql/termstructures/inflationtermstructure.hpp:
+	  
+	  removed redundant definition
+
+2008-01-03 14:54  Ferdinando Ametrano
+
+	* [r13991]
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.hpp:
+	  
+	  removed redundant private data member
+
+2008-01-03 14:37  Luigi Ballabio
+
+	* [r13990] ql/termstructures/volatility/Makefile.am,
+	  ql/termstructures/volatility/all.hpp,
+	  ql/termstructures/volatility/smilesection.hpp:
+	  
+	  Fixes for gcc build
+
+2008-01-03 13:15  Ferdinando Ametrano
+
+	* [r13989] ql/experimental/abcdatmvolcurve.hpp,
+	  ql/experimental/sabrvolsurface.hpp,
+	  ql/termstructures/volatility/capfloor/capfloortermvolatilitystructure.hpp,
+	  ql/termstructures/volatility/capfloor/capfloortermvolcurve.hpp,
+	  ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp,
+	  ql/termstructures/volatility/equityfx/blackvariancecurve.hpp,
+	  ql/termstructures/volatility/equityfx/blackvoltermstructure.cpp,
+	  ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp,
+	  ql/termstructures/volatility/equityfx/localvoltermstructure.cpp,
+	  ql/termstructures/volatility/equityfx/localvoltermstructure.hpp,
+	  ql/termstructures/volatility/optionlet/constantoptionletvol.hpp,
+	  ql/termstructures/volatility/optionlet/optionletvolatilitystructure.hpp,
+	  ql/termstructures/volatility/optionlet/spreadedoptionletvol.hpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.hpp,
+	  ql/termstructures/voltermstructure.cpp,
+	  ql/termstructures/voltermstructure.hpp:
+	  
+	  - moved minStrike and maxStrike in the VolatilityTermStructure
+	  interface
+	  - added VolatilityTermStructure::checkStrike(Rate, bool)
+
+2008-01-03 13:13  Ferdinando Ametrano
+
+	* [r13988] ql/index.hpp:
+	  
+	  - added QuantLib::Index::timeSeries() inspector
+	  - exported qlTimeSeriesFromIndex constructor to QuantLibAddin
+
+2008-01-03 10:56  Ferdinando Ametrano
+
+	* [r13985] ql/termstructure.cpp, ql/termstructure.hpp:
+	  
+	  checkRange(const Date&, bool) now returns date-based error messages
+
+2008-01-03 10:20  Ferdinando Ametrano
+
+	* [r13984] ql/cashflows/conundrumpricer.cpp,
+	  ql/cashflows/conundrumpricer.hpp,
+	  ql/termstructures/volatility/swaption/cmsmarket.cpp,
+	  ql/termstructures/volatility/swaption/cmsmarket.hpp,
+	  test-suite/assetswap.cpp, test-suite/cms.cpp:
+	  
+	  cleaning up CMS conundrum code (work in progress)
+
+2008-01-02 12:30  Ferdinando Ametrano
+
+	* [r13974] test-suite/cms.cpp:
+	  
+	  
+
+2008-01-02 12:23  Ferdinando Ametrano
+
+	* [r13973] ql/pricingengines/capfloor/blackcapfloorengine.cpp:
+	  
+	  avoided useless registration
+
+2008-01-02 12:23  Ferdinando Ametrano
+
+	* [r13972] ql/pricingengines/swaption/blackswaptionengine.cpp,
+	  ql/pricingengines/swaption/blackswaptionengine.hpp:
+	  
+	  added BlackSwaption constructor with Volatility input
+
+2008-01-02 12:18  Ferdinando Ametrano
+
+	* [r13971] ql/termstructure.cpp:
+	  
+	  formatting
+
+2008-01-02 11:01  Ferdinando Ametrano
+
+	* [r13969] ql/cashflows/cmscoupon.cpp, ql/cashflows/cmscoupon.hpp:
+	  
+	  formatting
+
+2008-01-02 11:00  Ferdinando Ametrano
+
+	* [r13968] ql/cashflows/iborcoupon.cpp, ql/cashflows/iborcoupon.hpp:
+	  
+	  added iborIndex inspector
+
+2008-01-02 10:59  Ferdinando Ametrano
+
+	* [r13967] ql/cashflows/cashflowvectors.hpp:
+	  
+	  default nominal = 1.0
+
+2008-01-02 09:49  Ferdinando Ametrano
+
+	* [r13966] ql/cashflows/cashflows.cpp, ql/cashflows/cashflows.hpp:
+	  
+	  - removed const reference when it required additional object
+	  creation
+	  - added a couple of const reference where appropriate
+	  - fixed different behavior between npv and bps when a
+	  YieldTermStructure is provided
+
+2007-12-31 14:39  Ferdinando Ametrano
+
+	* [r13965] test-suite/swaption.cpp:
+	  
+	  fixed bug (testing exercise into expired swaps was not that
+	  interesting...)
+
+2007-12-31 08:43  Ferdinando Ametrano
+
+	* [r13961]
+	  ql/termstructures/volatility/swaption/spreadedswaptionvol.cpp,
+	  ql/termstructures/volatility/swaption/swaptionconstantvol.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolmatrix.cpp,
+	  test-suite/rangeaccrual.cpp:
+	  
+	  reordered Smilesection (sorry for breaking up this change in
+	  multiple commits)
+
+2007-12-31 08:15  Ferdinando Ametrano
+
+	* [r13960] QuantLib_vc8.vcproj:
+	  
+	  reordered Smilesection
+
+2007-12-31 07:59  Ferdinando Ametrano
+
+	* [r13959] test-suite/cms.cpp:
+	  
+	  cleaned up messy code
+
+2007-12-31 07:40  Ferdinando Ametrano
+
+	* [r13957] ql/termstructures/volatility/flatsmilesection.cpp,
+	  ql/termstructures/volatility/flatsmilesection.hpp,
+	  ql/termstructures/volatility/smilesection.cpp,
+	  ql/termstructures/volatility/smilesection.hpp,
+	  ql/termstructures/volatility/spreadedsmilesection.cpp,
+	  ql/termstructures/volatility/spreadedsmilesection.hpp:
+	  
+	  reordered
+
+2007-12-31 07:35  Ferdinando Ametrano
+
+	* [r13956] ql/pricingengines/genericmodelengine.hpp:
+	  
+	  - allowed setting of null ModelType (to 'invalidate' object)
+
+2007-12-31 07:34  Ferdinando Ametrano
+
+	* [r13955] ql/instruments/makecapfloor.hpp:
+	  
+	  removed (wrong) default parameter
+
+2007-12-31 07:33  Ferdinando Ametrano
+
+	* [r13954] ql/instruments/makecms.hpp:
+	  
+	  formatting
+
+2007-12-31 07:28  Ferdinando Ametrano
+
+	* [r13953] ql/instruments/vanillaswap.hpp:
+	  
+	  fixed first letter capitalization (as in all other enumerations)
+
+2007-12-31 07:27  Ferdinando Ametrano
+
+	* [r13952] ql/cashflows/capflooredcoupon.cpp,
+	  ql/cashflows/conundrumpricer.hpp, ql/cashflows/couponpricer.cpp,
+	  ql/cashflows/couponpricer.hpp, ql/cashflows/digitalcoupon.hpp,
+	  ql/cashflows/floatingratecoupon.cpp:
+	  
+	  - allowed setting of null pricer (to 'invalidate' object) and of
+	  empty Handle (which can be linked later on, before being actually
+	  used)
+	  - added std:.ostream& operator<<(ostrem&,
+	  GFunctionFuctory::ModelOfYieldCurve)
+	  - formatting
+
+2007-12-26 23:53  Ferdinando Ametrano
+
+	* [r13930] ql/time/frequency.cpp:
+	  
+	  fixed first letter capitalization (as in all other enumerations)
+
+2007-12-26 23:51  Ferdinando Ametrano
+
+	* [r13929] ql/time/schedule.cpp:
+	  
+	  guarded against out-of-bound access
+
+2007-12-26 15:01  Ferdinando Ametrano
+
+	* [r13920] ql/termstructures/volatility/swaption/cmsmarket.cpp,
+	  ql/termstructures/volatility/swaption/cmsmarket.hpp:
+	  
+	  cleaned up messy code (also gained some efficiency).
+	  There is still a lot to do...
+
+2007-12-26 15:00  Ferdinando Ametrano
+
+	* [r13919]
+	  ql/termstructures/volatility/swaption/cmsmarketcalibration.cpp:
+	  
+	  formatted, avoided a couple of useless Array copy, smarter
+	  constraint test
+
+2007-12-25 16:20  Ferdinando Ametrano
+
+	* [r13912]
+	  ql/termstructures/volatility/swaption/cmsmarketcalibration.hpp:
+	  
+	  cleaned up inclusions
+
+2007-12-25 16:09  Ferdinando Ametrano
+
+	* [r13910] ql/instruments/makecms.hpp,
+	  ql/termstructures/volatility/swaption/cmsmarket.cpp,
+	  ql/termstructures/volatility/swaption/cmsmarket.hpp:
+	  
+	  catching up with the new makeCMs signature
+
+2007-12-25 12:02  Ferdinando Ametrano
+
+	* [r13909] ql/instruments/makecms.cpp:
+	  
+	  fixed bug: avoided null CouponPricer setting
+
+2007-12-24 12:40  Ferdinando Ametrano
+
+	* [r13902] ql/termstructure.hpp:
+	  
+	  made timeFromReference public
+
+2007-12-24 12:38  Ferdinando Ametrano
+
+	* [r13901] ql/instruments/vanillaswap.cpp,
+	  ql/instruments/vanillaswap.hpp:
+	  
+	  added iborIndex inspector
+
+2007-12-24 12:37  Ferdinando Ametrano
+
+	* [r13900] ql/instruments/makevanillaswap.hpp,
+	  ql/instruments/swap.cpp:
+	  
+	  
+
+2007-12-24 12:36  Ferdinando Ametrano
+
+	* [r13899] ql/instruments/makeswaptions.cpp,
+	  ql/instruments/makeswaptions.hpp:
+	  
+	  - fixed signature: the option tenor is very much unlikely to be
+	  0*Days!
+	  - improved constness and mutability
+
+2007-12-24 12:33  Ferdinando Ametrano
+
+	* [r13898] ql/instruments/makecapfloor.cpp,
+	  ql/instruments/makecapfloor.hpp:
+	  
+	  fixed bug: ATM rate must be calculated on forecasting term
+	  structure.
+	  removed withDiscountingTermStructure method as it should be
+	  redundant with the one in the PricingEngine.
+	  Further analysis is needed
+
+2007-12-24 12:32  Ferdinando Ametrano
+
+	* [r13897] ql/instruments/makecms.cpp, ql/instruments/makecms.hpp:
+	  
+	  - fixed bug: the floating IborIndex cannot inherit the term
+	  structure from the SwapIndex, since they can have different
+	  forecasting curves.
+	  - added withCmsCouponPricer method.
+	  - enhanced so that if Null<Spread>() is used as spread over
+	  IborIndex, the ATM level is used
+
+2007-12-24 12:01  Ferdinando Ametrano
+
+	* [r13896] ql/instruments/makevanillaswap.cpp,
 	  ql/instruments/makevanillaswap.hpp:
 	  
-	  added safety checks to iborIndex
+	  fixed bug: the ATM strike must be calculated on forecasting curve.
+	  The discountingTermStructure is immediately hidden in the
+	  DiscountingSwapEngine
 
-2007-11-29 16:28  Luigi Ballabio
+2007-12-23 18:51  Eric Ehlers
 
-	* [r13609] Examples/BermudanSwaption/BermudanSwaption.cpp,
+	* [r13876] test-suite/piecewiseyieldcurve.cpp:
+	  
+	  Merged revisions 13852:13875 from R000900-branch to trunk
+
+2007-12-22 16:57  Ferdinando Ametrano
+
+	* [r13873]
+	  ql/termstructures/volatility/optionlet/optionletstripper.cpp,
+	  ql/termstructures/volatility/optionlet/optionletstripper.hpp,
+	  ql/termstructures/volatility/optionlet/optionletstripper1.cpp,
+	  ql/termstructures/volatility/optionlet/optionletstripper1.hpp,
+	  ql/termstructures/volatility/optionlet/optionletstripper2.cpp,
+	  ql/termstructures/volatility/optionlet/optionletstripper2.hpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionlet.cpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionlet.hpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionletadapter.cpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionletbase.hpp:
+	  
+	  revisited and bug fixed
+
+2007-12-22 16:49  Ferdinando Ametrano
+
+	* [r13872] ql/cashflows/cashflows.cpp, ql/cashflows/cashflows.hpp:
+	  
+	  switched signatures to Natural instead of Integer and const Date&
+	  instead of Date
+
+2007-12-19 20:03  Ferdinando Ametrano
+
+	* [r13855] Announce.txt, ChangeLog.txt, Contributors.txt,
+	  Docs/pages/authors.docs, Docs/pages/history.docs,
+	  Docs/pages/license.docs, Docs/pages/overview.docs,
+	  Docs/quantlib.doxy, Docs/quantlibheader.html,
+	  Examples/BermudanSwaption/BermudanSwaption.cpp,
+	  Examples/BermudanSwaption/BermudanSwaption_vc9.vcproj,
 	  Examples/ConvertibleBonds/ConvertibleBonds.cpp,
+	  Examples/ConvertibleBonds/ConvertibleBonds_vc9.vcproj,
 	  Examples/DiscreteHedging/DiscreteHedging.cpp,
-	  Examples/EquityOption/EquityOption.cpp, Examples/FRA/FRA.cpp,
+	  Examples/DiscreteHedging/DiscreteHedging_vc9.vcproj,
+	  Examples/EquityOption/EquityOption.cpp,
+	  Examples/EquityOption/EquityOption_vc9.vcproj, Examples/FRA/FRA.cpp,
+	  Examples/FRA/FRA_vc9.vcproj,
 	  Examples/FittedBondCurve/FittedBondCurve.cpp,
-	  Examples/Replication/Replication.cpp, Examples/Repo/Repo.cpp,
-	  Examples/Swap/swapvaluation.cpp, test-suite/quantlibbenchmark.cpp,
-	  test-suite/quantlibtestsuite.cpp:
-	  
-	  auto-link message defaulting to silent
-	  (It was confusing to some users. If you know what the message is
-	  about
-	  and want to display it, create the environment variable CL and set
-	  it to
-	  /DBOOST_LIB_DIAGNOSTIC )
-
-2007-11-29 15:56  Luigi Ballabio
-
-	* [r13608] Docs/pages/overview.docs, ql/event.hpp, ql/exercise.hpp,
-	  ql/indexes/iborindex.hpp, ql/instruments/basketoption.hpp,
+	  Examples/FittedBondCurve/FittedBondCurve_vc9.vcproj,
+	  Examples/Replication/Replication.cpp,
+	  Examples/Replication/Replication_vc9.vcproj, Examples/Repo/Repo.cpp,
+	  Examples/Repo/Repo_vc9.vcproj, Examples/Swap/Swap_vc9.vcproj,
+	  Examples/Swap/swapvaluation.cpp, LICENSE.TXT, News.txt,
+	  QuantLib.dev, QuantLib_vc7.vcproj, QuantLib_vc8.vcproj,
+	  QuantLib_vc9.sln, QuantLib_vc9.vcproj, man/FittedBondCurve.1,
+	  man/Makefile.am, ql/Makefile.am, ql/auto_link.hpp,
+	  ql/cashflows/averagebmacoupon.cpp, ql/cashflows/couponpricer.cpp,
+	  ql/cashflows/iborcoupon.cpp, ql/cashflows/replication.hpp,
+	  ql/config.msvc.hpp, ql/event.hpp, ql/exercise.hpp,
+	  ql/experimental/sabrvolsurface.hpp, ql/experimental/volcube.hpp,
+	  ql/indexes/bmaindex.cpp, ql/indexes/iborindex.hpp,
+	  ql/indexes/inflation/ukrpi.hpp, ql/indexes/inflationindex.cpp,
+	  ql/indexes/inflationindex.hpp, ql/indexes/swap/euriborswapfixa.hpp,
+	  ql/indexes/swap/euriborswapfixb.hpp,
+	  ql/indexes/swap/euriborswapfixifr.hpp,
+	  ql/indexes/swap/eurliborswapfixa.hpp,
+	  ql/indexes/swap/eurliborswapfixb.hpp,
+	  ql/indexes/swap/eurliborswapfixifr.hpp, ql/indexes/swapindex.cpp,
+	  ql/instruments/assetswap.cpp, ql/instruments/assetswap.hpp,
+	  ql/instruments/basketoption.hpp, ql/instruments/capfloor.hpp,
+	  ql/instruments/inflationswap.hpp,
+	  ql/instruments/makevanillaswap.cpp,
+	  ql/instruments/makevanillaswap.hpp,
+	  ql/instruments/yearonyearinflationswap.cpp,
+	  ql/instruments/yearonyearinflationswap.hpp,
+	  ql/instruments/zerocouponinflationswap.hpp,
 	  ql/legacy/pricers/discretegeometricaso.hpp, ql/math/bspline.hpp,
-	  ql/math/interpolations/loginterpolation.hpp, ql/option.hpp,
-	  ql/pricingengines/barrier/analyticbarrierengine.hpp,
-	  ql/termstructures/volatility/capfloor/capfloortermvolcurve.hpp:
+	  ql/math/interpolations/loginterpolation.hpp,
+	  ql/math/optimization/conjugategradient.cpp,
+	  ql/math/optimization/simplex.cpp,
+	  ql/math/randomnumbers/sobolrsg.cpp,
+	  ql/methods/finitedifferences/pdeshortrate.hpp,
+	  ql/methods/finitedifferences/stepcondition.hpp,
+	  ql/methods/montecarlo/multipathgenerator.hpp,
+	  ql/models/marketmodels/evolutiondescription.hpp,
+	  ql/models/marketmodels/marketmodeldifferences.cpp,
+	  ql/models/marketmodels/marketmodeldifferences.hpp,
+	  ql/models/marketmodels/models/capletcoterminalperiodic.cpp,
+	  ql/models/marketmodels/models/fwdperiodadapter.cpp,
+	  ql/models/marketmodels/models/volatilityinterpolationspecifier.hpp,
+	  ql/models/marketmodels/models/volatilityinterpolationspecifierabcd.cpp,
+	  ql/models/marketmodels/models/volatilityinterpolationspecifierabcd.hpp,
+	  ql/option.hpp, ql/pricingengines/barrier/analyticbarrierengine.hpp,
+	  ql/pricingengines/forward/replicatingvarianceswapengine.hpp,
+	  ql/pricingengines/hybrid/binomialconvertibleengine.hpp,
+	  ql/pricingengines/vanilla/analyticbsmhullwhiteengine.cpp,
+	  ql/pricingengines/vanilla/analyticbsmhullwhiteengine.hpp,
+	  ql/pricingengines/vanilla/fdconditions.hpp,
+	  ql/pricingengines/vanilla/mchestonhullwhiteengine.cpp,
+	  ql/pricingengines/vanilla/mchestonhullwhiteengine.hpp,
+	  ql/processes/hybridhestonhullwhiteprocess.cpp,
+	  ql/processes/hybridhestonhullwhiteprocess.hpp,
+	  ql/processes/jointstochasticprocess.cpp,
+	  ql/processes/jointstochasticprocess.hpp,
+	  ql/termstructures/inflation/inflationhelpers.cpp,
+	  ql/termstructures/inflation/interpolatedyoyinflationcurve.hpp,
+	  ql/termstructures/inflation/interpolatedzeroinflationcurve.hpp,
+	  ql/termstructures/volatility/capfloor/capfloortermvolatilitystructure.hpp,
+	  ql/termstructures/volatility/capfloor/capfloortermvolcurve.hpp,
+	  ql/termstructures/volatility/equityfx/localconstantvol.hpp,
+	  ql/termstructures/volatility/equityfx/localvolcurve.hpp,
+	  ql/termstructures/volatility/optionlet/Makefile.am,
+	  ql/termstructures/volatility/optionlet/all.hpp,
+	  ql/termstructures/volatility/optionlet/capletvolatilitiesstructures.cpp,
+	  ql/termstructures/volatility/optionlet/capletvolatilitiesstructures.hpp,
+	  ql/termstructures/volatility/optionlet/optionletstripper.cpp,
+	  ql/termstructures/volatility/optionlet/optionletstripper.hpp,
+	  ql/termstructures/volatility/optionlet/optionletstripper1.cpp,
+	  ql/termstructures/volatility/optionlet/optionletstripper2.cpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionletadapter.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp,
+	  ql/termstructures/yield/bootstraptraits.hpp,
+	  ql/termstructures/yield/ratehelpers.cpp,
+	  ql/termstructures/yield/ratehelpers.hpp, ql/time/calendar.cpp,
+	  ql/time/calendars/brazil.cpp, ql/time/calendars/brazil.hpp,
+	  test-suite/Makefile.am, test-suite/assetswap.cpp,
+	  test-suite/capfloor.cpp, test-suite/digitalcoupon.cpp,
+	  test-suite/digitaloption.cpp, test-suite/hestonmodel.cpp,
+	  test-suite/hybridhestonhullwhiteprocess.cpp,
+	  test-suite/hybridhestonhullwhiteprocess.hpp,
+	  test-suite/inflation.cpp, test-suite/inflation.hpp,
+	  test-suite/libormarketmodel.cpp,
+	  test-suite/libormarketmodelprocess.cpp,
+	  test-suite/lowdiscrepancysequences.cpp, test-suite/marketmodel.cpp,
+	  test-suite/marketmodel_smmcaplethomocalibration.cpp,
+	  test-suite/optimizers.cpp, test-suite/period.cpp,
+	  test-suite/piecewiseyieldcurve.cpp,
+	  test-suite/quantlibbenchmark.cpp, test-suite/quantlibtestsuite.cpp,
+	  test-suite/swapforwardmappings.cpp, test-suite/testsuite.dev,
+	  test-suite/testsuite_vc7.vcproj, test-suite/testsuite_vc8.vcproj,
+	  test-suite/testsuite_vc9.vcproj:
 	  
-	  Doc fixes
+	  merged changeset 13573:13852 from branches\R000900-branch into trunk
 
-2007-11-29 15:53  Luigi Ballabio
+2007-12-19 19:02  Ferdinando Ametrano
 
-	* [r13607]
-	  ql/termstructures/volatility/capfloor/capfloortermvolcurve.hpp:
+	* [r13854] ql/interestrate.hpp:
 	  
-	  Prevented ill-behaved copy
+	  added default parameters
 
-2007-11-29 14:22  Luigi Ballabio
+2007-12-18 22:54  Mark Joshi
 
-	* [r13606] Docs/quantlib.doxy, Docs/quantlibheader.html,
-	  ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp:
+	* [r13843] ql/math/randomnumbers/sobolrsg.cpp:
 	  
-	  Doc fixes
+	  bug fixes for Kuo numbers
 
-2007-11-29 08:31  Luigi Ballabio
+2007-12-15 09:18  Ferdinando Ametrano
 
-	* [r13601] man/FittedBondCurve.1, man/Makefile.am:
+	* [r13831] ql/cashflows/cashflows.cpp:
 	  
-	  Added man page for new example (thanks to Dirk Eddelbuettel)
+	  formatting
 
-2007-11-28 16:43  Luigi Ballabio
+2007-12-07 03:10  Mark Joshi
 
-	* [r13599] ql/Makefile.am:
+	* [r13731] ql/math/randomnumbers/sobolrsg.cpp:
 	  
-	  Fix for MSys installation
+	  put in missing zeros from initializer lists
 
-2007-11-27 12:45  Luigi Ballabio
+2007-11-30 09:14  Marco Bianchetti
 
-	* [r13573] :
+	* [r13624] test-suite:
 	  
-	  Created 0.9.0 release branch
+	  fixed properties
+
+2007-11-29 13:35  Ferdinando Ametrano
+
+	* [r13605] QuantLib_vc7.vcproj,
+	  ql/termstructures/volatility/optionlet/Makefile.am,
+	  ql/termstructures/volatility/optionlet/all.hpp:
+	  
+	  gcc and VC7 catching up (DevCpp not updated...)
+
+2007-11-29 13:28  Giorgio Facchinetti
+
+	* [r13604]
+	  ql/termstructures/volatility/optionlet/strippedoptionlet.cpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionlet.hpp:
+	  
+	  Added StrippedOptionlet class
+
+2007-11-29 11:39  Giorgio Facchinetti
+
+	* [r13603] QuantLib_vc8.vcproj,
+	  ql/termstructures/volatility/optionlet/strippedoptionletbase.hpp:
+	  
+	  Added StrippedOptionlet class
 
 2007-11-27 12:42  Luigi Ballabio
 
@@ -32347,7 +35282,7 @@
 	  which will
 	  allow users to get price curve information.
 
-2005-10-15 08:08  dicesare
+2005-10-15 08:08  Nicolas Di Césaré
 
 	* [r6093] ql/FiniteDifferences/tridiagonaloperator.hpp:
 	  
@@ -38994,7 +41929,7 @@
 	  
 	  Added missing data
 
-2004-08-19 06:38  dicesare
+2004-08-19 06:38  Nicolas Di Césaré
 
 	* [r4621] ql/TermStructures/ratehelpers.cpp,
 	  ql/TermStructures/ratehelpers.hpp:
@@ -39002,7 +41937,7 @@
 	  replace dayCounter of dummyIndex with the correct one for Euribor
 	  index (Act360)
 
-2004-08-19 06:27  dicesare
+2004-08-19 06:27  Nicolas Di Césaré
 
 	* [r4620] ql/Instruments/simpleswap.cpp, ql/userconfig.hpp,
 	  test-suite/capfloor.cpp, test-suite/swap.cpp,
@@ -39168,7 +42103,7 @@
 	  
 	  VC7 catching up
 
-2004-08-16 20:31  dicesare
+2004-08-16 20:31  Nicolas Di Césaré
 
 	* [r4595] ql/CashFlows/indexcashflowvectors.hpp:
 	  
@@ -39239,19 +42174,19 @@
 	  
 	  A currency object is now less expensive to create or copy
 
-2004-08-04 19:17  dicesare
+2004-08-04 19:17  Nicolas Di Césaré
 
 	* [r4586] ql/CashFlows/indexcashflowvectors.hpp:
 	  
 	  Correction of msvc6 bug with template function
 
-2004-08-03 19:46  dicesare
+2004-08-03 19:46  Nicolas Di Césaré
 
 	* [r4585] ql/exercise.cpp:
 	  
 	  Type for BermudanExercise is "Bermudan" and not "American".
 
-2004-08-03 19:42  dicesare
+2004-08-03 19:42  Nicolas Di Césaré
 
 	* [r4584] ql/basicdataformatters.hpp:
 	  
@@ -40225,14 +43160,14 @@
 	  
 	  Moved QUEP 6 implementation to its own branch
 
-2004-05-25 12:15  andrelouw
+2004-05-25 12:15  André Louw
 
 	* [r4441] ql/TermStructures/ratehelpers.cpp,
 	  ql/basicdataformatters.cpp:
 	  
 	  Implementation of QUEP 6
 
-2004-05-25 12:03  andrelouw
+2004-05-25 12:03  André Louw
 
 	* [r4440] ql/Indexes/audlibor.hpp, ql/Indexes/cadlibor.hpp,
 	  ql/Indexes/chflibor.hpp, ql/Indexes/euribor.hpp,
@@ -40242,7 +43177,7 @@
 	  
 	  Implementation of QUEP 6
 
-2004-05-25 10:49  andrelouw
+2004-05-25 10:49  André Louw
 
 	* [r4439] ql/Currencies, ql/Currencies/Makefile.am,
 	  ql/Currencies/all.hpp, ql/Currencies/audcurrency.cpp,
@@ -40262,7 +43197,7 @@
 	  
 	  Implementation of QUEP 6
 
-2004-05-25 10:11  andrelouw
+2004-05-25 10:11  André Louw
 
 	* [r4438] ql/Math/rounding.cpp, ql/Math/rounding.hpp:
 	  
@@ -41216,13 +44151,13 @@
 	  
 	  Rationalized types a bit
 
-2004-05-05 05:58  andrelouw
+2004-05-05 05:58  André Louw
 
 	* [r4363] ql/types.hpp:
 	  
 	  Decimal type added as typedef to double.
 
-2004-05-04 13:46  andrelouw
+2004-05-04 13:46  André Louw
 
 	* [r4362] ql/Math/rounding.hpp:
 	  
@@ -41241,7 +44176,7 @@
 	  
 	  Fixes for VC++6
 
-2004-05-04 12:34  andrelouw
+2004-05-04 12:34  André Louw
 
 	* [r4359] ql/Math/Makefile.am, ql/Math/all.hpp, ql/Math/rounding.hpp:
 	  
@@ -41268,7 +44203,7 @@
 	  
 	  Constness added
 
-2004-05-04 04:32  andrelouw
+2004-05-04 04:32  André Louw
 
 	* [r4354] ql/TermStructures/discountcurve.cpp,
 	  ql/TermStructures/discountcurve.hpp,
@@ -41277,7 +44212,7 @@
 	  
 	  Changed interpolation to be changeable by sub classes.
 
-2004-05-04 04:31  andrelouw
+2004-05-04 04:31  André Louw
 
 	* [r4353] ql/TermStructures/compoundforward.cpp,
 	  ql/TermStructures/compoundforward.hpp:
@@ -44148,13 +47083,13 @@
 	  
 	  Some work on SVD
 
-2004-02-23 09:59  andrelouw
+2004-02-23 09:59  André Louw
 
 	* [r3946] ql/Calendars/johannesburg.cpp:
 	  
 	  Fixed compile error
 
-2004-02-23 09:57  andrelouw
+2004-02-23 09:57  André Louw
 
 	* [r3945] ql/Calendars/johannesburg.cpp:
 	  
@@ -49668,7 +52603,7 @@
 	  
 	  updated
 
-2003-07-22 10:44  andrelouw
+2003-07-22 10:44  André Louw
 
 	* [r3195] ql/TermStructures/compoundforward.cpp,
 	  ql/TermStructures/compoundforward.hpp,
@@ -49678,7 +52613,7 @@
 	  Refactoring and simplification. Proper calculation of rates on non
 	  compounding boundaries.
 
-2003-07-22 10:40  andrelouw
+2003-07-22 10:40  André Louw
 
 	* [r3194] ql/TermStructures/flatforward.hpp,
 	  ql/TermStructures/piecewiseflatforward.cpp,
@@ -49686,27 +52621,27 @@
 	  
 	  Specific implementation of compound forward rate from zero yield.
 
-2003-07-22 10:38  andrelouw
+2003-07-22 10:38  André Louw
 
 	* [r3193] ql/termstructure.hpp:
 	  
 	  Added compound forward and zero coupon implementations.
 
-2003-07-22 10:37  andrelouw
+2003-07-22 10:37  André Louw
 
 	* [r3192] ql/TermStructures/ratehelpers.cpp,
 	  ql/TermStructures/ratehelpers.hpp:
 	  
 	  Added Futures rate helper with specified maturity date.
 
-2003-07-22 10:20  andrelouw
+2003-07-22 10:20  André Louw
 
 	* [r3191] ql/Instruments/swap.cpp, ql/Instruments/swap.hpp:
 	  
 	  Added bucketed bps calculation as well as simple fairRate
 	  calculation.
 
-2003-07-22 10:18  andrelouw
+2003-07-22 10:18  André Louw
 
 	* [r3190] ql/Instruments/simpleswap.cpp,
 	  ql/Instruments/simpleswap.hpp:
@@ -49714,14 +52649,14 @@
 	  Added swap constructor using specified maturity date as well as
 	  added functionality in Scheduler.
 
-2003-07-22 10:15  andrelouw
+2003-07-22 10:15  André Louw
 
 	* [r3189] ql/CashFlows/basispointsensitivity.hpp:
 	  
 	  Added date bucketed basis point sensitivity based on 1st derivative
 	  of zero coupon rate.
 
-2003-07-22 09:57  andrelouw
+2003-07-22 09:57  André Louw
 
 	* [r3188] ql/CashFlows/cashflowvectors.cpp,
 	  ql/CashFlows/cashflowvectors.hpp, ql/scheduler.cpp,
@@ -49732,20 +52667,20 @@
 	  cashflow vector using specified vectors of nominals,couponRates and
 	  dates.
 
-2003-07-22 09:49  andrelouw
+2003-07-22 09:49  André Louw
 
 	* [r3187] ql/marketelement.hpp:
 	  
 	  Only notify observers when value actually changed.
 
-2003-07-22 09:48  andrelouw
+2003-07-22 09:48  André Louw
 
 	* [r3186] ql/dataparsers.cpp, ql/dataparsers.hpp, ql/date.cpp,
 	  ql/date.hpp:
 	  
 	  Added parsing of input date string using supplied format string.
 
-2003-07-22 09:45  andrelouw
+2003-07-22 09:45  André Louw
 
 	* [r3185] ql/calendar.cpp, ql/calendar.hpp:
 	  
@@ -49754,7 +52689,7 @@
 	  day of month all resulting dates will also be last business day of
 	  month.
 
-2003-07-22 09:31  andrelouw
+2003-07-22 09:31  André Louw
 
 	* [r3184] ql/Calendars/johannesburg.cpp:
 	  
@@ -49885,7 +52820,7 @@
 	  Old class Grid no longer exists, use CenteredGrid to obtain the same
 	  result.
 
-2003-07-04 20:09  dicesare
+2003-07-04 20:09  Nicolas Di Césaré
 
 	* [r3164] QuantLib.dsp:
 	  
@@ -53464,7 +56399,7 @@
 	  
 	  fixed copyright and formatting
 
-2003-02-22 18:20  dicesare
+2003-02-22 18:20  Nicolas Di Césaré
 
 	* [r2724] ql/CashFlows/inarrearindexedcoupon.hpp,
 	  ql/CashFlows/indexcashflowvectors.hpp,
@@ -55669,7 +58604,7 @@
 	  AffineTermstructure:
 	  * Time maxTime() removed
 
-2002-07-08 07:51  andrelouw
+2002-07-08 07:51  André Louw
 
 	* [r2395] ql/Math/interpolation.hpp,
 	  ql/Math/loglinearinterpolation.hpp:
@@ -55950,7 +58885,7 @@
 	  
 	  How on earth could Borland compile _that_?
 
-2002-06-11 08:18  andrelouw
+2002-06-11 08:18  André Louw
 
 	* [r2356] ql/Instruments/swap.hpp:
 	  
@@ -56156,7 +59091,7 @@
 	  
 	  Removed requirements from constructor
 
-2002-05-24 08:57  andrelouw
+2002-05-24 08:57  André Louw
 
 	* [r2329] ql/TermStructures/piecewiseflatforward.cpp:
 	  
@@ -56170,7 +59105,7 @@
 	  Fix:
 	  Return 1.0 as discount.
 
-2002-05-24 08:49  andrelouw
+2002-05-24 08:49  André Louw
 
 	* [r2328] ql/Instruments/swap.hpp:
 	  
@@ -56359,7 +59294,7 @@
 	  
 	  Removed gcc warning
 
-2002-05-06 08:26  andrelouw
+2002-05-06 08:26  André Louw
 
 	* [r2291] ql/TermStructures/compoundforward.cpp:
 	  
@@ -56403,7 +59338,7 @@
 	  
 	  updated
 
-2002-05-03 09:07  andrelouw
+2002-05-03 09:07  André Louw
 
 	* [r2281] Examples/BermudanSwaption/BermudanSwaption.cpp,
 	  Examples/Swap/swapvaluation.cpp, ql/TermStructures/ratehelpers.cpp,
@@ -56412,7 +59347,7 @@
 	  Modified SwapRateHelper to accept TimeUnit when constructing.
 	  Modified existing examples to use new constructors.
 
-2002-05-03 08:59  andrelouw
+2002-05-03 08:59  André Louw
 
 	* [r2280] ql/Makefile.am, ql/dataparsers.cpp, ql/dataparsers.hpp,
 	  ql/date.cpp:
@@ -56442,7 +59377,7 @@
 	  
 	  updated
 
-2002-04-30 11:48  andrelouw
+2002-04-30 11:48  André Louw
 
 	* [r2267] ql/TermStructures/compoundforward.cpp,
 	  ql/TermStructures/compoundforward.hpp:
@@ -56462,7 +59397,7 @@
 	  UK bank holidays fix.
 	  Thanks to Jon Davidson
 
-2002-04-30 06:39  andrelouw
+2002-04-30 06:39  André Louw
 
 	* [r2264] ql/TermStructures/compoundforward.cpp,
 	  ql/TermStructures/compoundforward.hpp:
@@ -56471,7 +59406,7 @@
 	  zeroYieldImpl and forwardImpl.
 	  Fix potential problem with improperly initialized iterators.
 
-2002-04-30 06:34  andrelouw
+2002-04-30 06:34  André Louw
 
 	* [r2263] ql/date.hpp:
 	  
@@ -56483,7 +59418,7 @@
 	  
 	  The payment date could be after the end of the accrual period
 
-2002-04-29 15:23  andrelouw
+2002-04-29 15:23  André Louw
 
 	* [r2260] ql/TermStructures/discountcurve.cpp:
 	  
@@ -56621,7 +59556,7 @@
 	  
 	  Assigned copyright to Andre
 
-2002-04-23 05:18  andrelouw
+2002-04-23 05:18  André Louw
 
 	* [r2240] ql/TermStructures/compoundforward.cpp:
 	  
@@ -56642,7 +59577,7 @@
 	  
 	  More autoconfiscated time functions and types
 
-2002-04-22 16:29  andrelouw
+2002-04-22 16:29  André Louw
 
 	* [r2237] ql/TermStructures/compoundforward.cpp:
 	  
@@ -56662,7 +59597,7 @@
 	  
 	  Renamed Solver1D::lowBound and hiBound
 
-2002-04-22 13:48  andrelouw
+2002-04-22 13:48  André Louw
 
 	* [r2235] ql/TermStructures/compoundforward.cpp,
 	  ql/TermStructures/compoundforward.hpp,
@@ -56694,21 +59629,21 @@
 	  
 	  added gotcha
 
-2002-04-22 11:10  andrelouw
+2002-04-22 11:10  André Louw
 
 	* [r2231] ql/TermStructures/compoundforward.cpp,
 	  ql/TermStructures/compoundforward.hpp:
 	  
 	  Added standard QuantLib licensing comment.
 
-2002-04-22 10:30  andrelouw
+2002-04-22 10:30  André Louw
 
 	* [r2229] QuantLib.dsp:
 	  
 	  Added LogLinearInterpolation, DiscountCurve TermStructure and
 	  CompoundForward TermStructure
 
-2002-04-22 10:23  andrelouw
+2002-04-22 10:23  André Louw
 
 	* [r2228] ql/Math/loglinearinterpolation.hpp,
 	  ql/TermStructures/Makefile.am,
@@ -56720,13 +59655,13 @@
 	  Add DiscountCurve TermStructure, CompoundForward TermStructure,
 	  LogLinear interpolation.
 
-2002-04-22 10:20  andrelouw
+2002-04-22 10:20  André Louw
 
 	* [r2227] ql/calendar.cpp, ql/calendar.hpp:
 	  
 	  Advance calendar using a Period instance.
 
-2002-04-22 10:18  andrelouw
+2002-04-22 10:18  André Louw
 
 	* [r2226] ql/date.cpp, ql/date.hpp:
 	  
@@ -56795,7 +59730,7 @@
 	  
 	  normal distribution exported as functions
 
-2002-04-16 09:20  andrelouw
+2002-04-16 09:20  André Louw
 
 	* [r2207] TODO.txt:
 	  

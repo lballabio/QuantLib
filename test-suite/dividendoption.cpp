@@ -229,7 +229,7 @@ void DividendOptionTest::testEuropeanKnownValue() {
 void DividendOptionTest::testEuropeanStartLimit() {
 
     BOOST_MESSAGE(
-              "Testing dividend European option values with no dividends...");
+       "Testing dividend European option with a dividend on today's date...");
 
     SavedSettings backup;
 

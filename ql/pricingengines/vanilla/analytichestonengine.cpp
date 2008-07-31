@@ -32,7 +32,7 @@
 #include <ql/instruments/payoffs.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 
-#if defined(QL_PATCH_MSVC71) || defined(QL_PATCH_MSVC80)
+#if defined(QL_PATCH_MSVC)
 #pragma warning(disable: 4180)
 #endif
 

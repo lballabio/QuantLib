@@ -1076,7 +1076,7 @@ void addCoterminalSwapsAndSwaptions(MultiProductComposite& product,
 
 
 void MarketModelTest::testAllMultiStepProducts() {
-    std::string testDescription = "all multiStepProducts ";
+    std::string testDescription = "all multi-step products ";
 
     setup();
 
@@ -2961,7 +2961,7 @@ test_suite* MarketModelTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPeriodAdapter));
 
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testDriftCalculator));
-    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testIsInSubset));
+    //suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testIsInSubset));
    
         return suite;
 }

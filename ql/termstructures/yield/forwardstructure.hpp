@@ -105,6 +105,9 @@ namespace QuantLib {
     }
 
     inline DiscountFactor ForwardRateStructure::discountImpl(Time t) const {
+        if (t == 0.0)     // this acts as a safe guard in cases where
+            return 1.0;   // zeroYieldImpl(0.0) would throw.
+
         Rate r = zeroYieldImpl(t);
         return DiscountFactor(std::exp(-r*t));
     }

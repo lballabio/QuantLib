@@ -7,6 +7,8 @@ EXTRA_DIST =
 if AUTO_EXAMPLES
 
 dist_man_MANS += BermudanSwaption.1 \
+                 CallableBonds.1 \
+                 CDS.1 \
                  ConvertibleBonds.1 \
                  DiscreteHedging.1 \
                  EquityOption.1 \
@@ -19,6 +21,8 @@ dist_man_MANS += BermudanSwaption.1 \
 else
 
 EXTRA_DIST += BermudanSwaption.1 \
+              CallableBonds.1 \
+              CDS.1 \
               ConvertibleBonds.1 \
               DiscreteHedging.1 \
               EquityOption.1 \

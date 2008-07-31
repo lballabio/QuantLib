@@ -20,7 +20,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file optionletstripper.hpp
+/*! \file optionletstripper1.hpp
     \brief optionlet (caplet/floorlet) volatility stripper
 */
 

@@ -1,95 +1,108 @@
 
+Notable changes for QuantLib 0.9.5:
+
+CREDIT FRAMEWORK
+
+New credit framework due to the joint efforts of StatPro Italia,
+Roland Lichters, Chris Kenyon, and Jose Aparicio. The framework
+currently include:
+
+- Interface for default-probability term structure and adapters for
+  hazard-rate and default-density structures.
+- Flat hazard-rate curve.
+- Interpolated hazard-rate and default-density curves.
+- Credit-default swaps (mid-point and integral engines.)
+- Bootstrapped piecewise default-probability curve.
+- CDS example.
+
 PORTABILITY
 
-- Fixes for MSYS and Cygwin build.
-- Fixes for VC++ build with CLR support enabled.
-- Dropped MetroWerks CodeWarrior support.
+- Added support for Microsoft Visual C++ 2008 (Boost 1.35 is required
+  for this compiler.)
+- Fixes for Cygwin build.
+
+EXPERIMENTAL FOLDER
+
+The new ql/experimental folder contains code which is still not fully
+integrated with the library, but is released in order to get user
+feedback.  Experimental classes are considered unstable; their
+interfaces are likely to change in future releases. The folder
+currently include:
+
+- Generic MC basket option (thanks to Andrea Odetti.)
+- CDS option (thanks to Roland Stamm.)
+- Nth-to-default swap (thanks to Roland Lichters.)
+- Extended Black-Scholes-Merton process (thanks to Frank Hövermann.)
+- Quanto-adjusted coupons and averaged coupons (thanks to Toyin Akin.)
+- Callable bonds (thanks to Allen Kuo.)
+- New framework for volatility term structures.
+- Sensitivity analysis functions.
 
 CALENDARS
 
-- Fix for business-days calculation (thanks to Piter Dias.)
-- Updated Hong Kong's holidays for 2008 and China's for 2007.
-- Added new holiday to Canadian calendars (thanks to Matt Knox.)
-- Fixed joint-calendar specification (thanks to Jay Walters.)
-- Split Canadian calendar into settlement and TSX (thanks to Matt Knox.)
-- Added Brazilian exchange calendar (thanks to Richard Gomes.)
-- Fixes for the Brazilian calendars (thanks to Piter Dias.)
+- Added 2008 holidays for China, India, Indonesia, Singapore, and Taiwan.
+- Added one-off holiday (President Reagan's and Ford's funerals) to
+  NYSE calendar.
+- Fixed South Korea calendar (thanks to Charles Chongseok Hyun.)
 
-CASH FLOWS
+CURRENCIES
 
-- Added average-BMA coupon (thanks to Roland Lichters.)
-- Fixed-rate coupons can now accept an InterestRate instance (thanks
-  to Piter Dias.)
-- implemented cash-flow vector builders as helper classes to ease
-  skipping default parameters and single/multiple inputs.
+- Added Peruvian currency.
 
 DATES
 
-- Extended date range up to year 2199.
-- Fixed period comparison (thanks to Chris Kenyon.)
-- Fixed short date formatting (thanks to Robert Lopez.)
-- Enhanced period algebra.
+- Added date-generation rules for CDS schedules (i.e., rolling to the
+  20th of the month.)
 
 INDEXES
 
-- Added BMA index (thanks to Roland Lichters.)
-- Added inflation indexes (thanks to Chris Kenyon.)
-- Added historical interest-rate index analysis.
+- Added SEK LIBOR index.
 
 INSTRUMENTS
 
-- Added BMA swaps (thanks to Roland Lichters.)
-- Added year-on-year and zero-coupon inflation swaps (thanks to Chris Kenyon.)
-- Fixed stub-date management and backward date generation for
-  fixed-rate bonds (thanks to Toyin Akin.)
-- Added clean/dirty bond-price calculation from Z-spread.
-
-LATTICES
-
-- Fixed Tsiveriotis-Fernandes tree initialization (thanks to John Maiden.)
+- Ported Himalaya and Everest options to pricing-engine framework
+  (thanks to the IMAFA students at Polytech'Nice Sophia: Jérôme Bessi,
+  Sébastien Bonifaci, Benjamin Degerbaix and Renaud Pentel.)
 
 MATH
 
-- Added multi-dimensional cost function for least-square problems
-  (thanks to Guillaume Pealat.)
-- Added histogram class (thanks to Gang Liang.)
-- Added log-cubic interpolation.
-- Fixed conjugate-gradient bug.
-- Fixed nested Levenberg-Marquardt bug.
+- Added matrix determinant.
+- Added QR matrix decomposition.
+- Added a number of copulas (thanks to Marek Glowacki.)
+- Added constrained cubic spline.
+- Implemented derivative and second derivative of log-interpolations.
+- Added Gauss-Lobatto integration.
+- Added student-t distribution (thanks to Roland Lichters.)
+
+MODELS
+
+- Added calibrated GJR-GARCH model (thanks to Yee Man Chan.)
+- Added Feller constraint to Heston model.
 
 PRICING ENGINES
 
-- Refactored option engines (the underlying stochastic process is now
-  passed to the pricing engine.)
-- Refactored bond, cap/floor, swap, and swaption engines (the discount
-  curve is now passed to the pricing engine.)
-- Added Heston/Hull-White analytic and Monte Carlo engines for vanilla options.
-- Fixed bug in blackFormulaCashItmProbability in case of non null
-  displacement.
+- Refactored variance-swap engines (the underlying stochastic process
+  is now passed to the pricing engine.)
+- Added GJR-GARCH pricing engines for vanilla options (thanks to Yee
+  Man Chan.)
 
 PROCESSES
 
-- Added hybrid Heston/Hull-White process.
-- Fixed joint-process bug.
-
-QUOTES
-
-- Added forward-swap quote.
-
-RANDOM NUMBERS
-
-- Fixed ordering of primitive polynomials for Sobol/Levitan and
-  Sobol/Levitan/Lemieux methods.
-- Added JoeKuoD5, JoeKuoD6 and JoeKuoD7 direction integers for Sobol generator.
-- Added Kuo, Kuo2 and Kuo3 direction integers for Sobol generator.
-- Added class to generate low-discrepancy sequences using a lattice rule.
+- Added Euler end-point discretization (thanks to Frank Hövermann.)
+- Added GJR-GARCH process (thanks to Yee Man Chan.)
+- Added Bates process.
 
 TERM STRUCTURES
 
-- Added discount curve fitted on bond prices (thanks to Allen Kuo.)
-- Added BMA-swap rate helper (thanks to Roland Lichters.)
-- Made SwapRateHelper forward-start enabled.
-- Added universal term-structure bootstrapper (thanks to Chris Kenyon.)
-- Added abstract inflation term structures (thanks to Chris Kenyon.)
-- Added piecewise inflation curves (thanks to Chris Kenyon.)
+- Added turn-of-year effect to yield-curve bootstrapping (generalized
+  to multiple jumps at arbitrary dates.)
+- Added local bootstrap of forward rates (thanks to Simon Ibbotson.)
+- Disabled copies of interpolated curves (the existing behavior was
+  incorrect. A fix to re-enable copying will be included in a future
+  release.)
+
+VOLATILITY
+
+- Added constant cap/floor term volatility structure.
+- Added stripped optionlet.
 

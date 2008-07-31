@@ -32,7 +32,7 @@ namespace QuantLib {
     /*! This implementation is based on MINPACK
         (<http://www.netlib.org/minpack>,
         <http://www.netlib.org/cephes/linalg.tgz>)
-    
+
         This subroutine uses householder transformations with column
         pivoting (optional) to compute a qr factorization of the
         m by n matrix A. That is, qrfac determines an orthogonal
@@ -40,22 +40,22 @@ namespace QuantLib {
         matrix r with diagonal elements of nonincreasing magnitude,
         such that A*p = q*r.
 
-        Return value ipvt is an integer array of length n, which 
+        Return value ipvt is an integer array of length n, which
         defines the permutation matrix p such that A*p = q*r.
         Column j of p is column ipvt(j) of the identity matrix.
-        
+
         See lmdiff.cpp for further details.
-    */ 	
-	Disposable<std::vector<Size> > qrDecomposition(const Matrix& A, 
-                                                   Matrix& q, 
-                                                   Matrix& r, 
+    */
+    Disposable<std::vector<Size> > qrDecomposition(const Matrix& A,
+                                                   Matrix& q,
+                                                   Matrix& r,
                                                    bool pivot = true);
 
     //! QR Solve
     /*! This implementation is based on MINPACK
         (<http://www.netlib.org/minpack>,
         <http://www.netlib.org/cephes/linalg.tgz>)
-    
+
         Given an m by n matrix A, an n by n diagonal matrix d,
         and an m-vector b, the problem is to determine an x which
         solves the system
@@ -63,15 +63,15 @@ namespace QuantLib {
         A*x = b ,     d*x = 0 ,
 
         in the least squares sense.
-        
+
         d is an input array of length n which must contain the
-        diagonal elements of the matrix d.		
+        diagonal elements of the matrix d.
 
         See lmdiff.cpp for further details.
     */
-	Disposable<Array> qrSolve(const Matrix& a, 
-                              const Array& b, 
-                              bool pivot = true, 
+    Disposable<Array> qrSolve(const Matrix& a,
+                              const Array& b,
+                              bool pivot = true,
                               const Array& d = Array());
 }
 

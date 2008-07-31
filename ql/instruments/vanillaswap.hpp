@@ -38,6 +38,13 @@ namespace QuantLib {
     //! Plain-vanilla swap
     /*! \ingroup instruments
 
+        \warning if QL_TODAYS_PAYMENTS was defined (in userconfig.hpp
+                 or when calling ./configure; it is undefined by
+                 default) payments occurring at the settlement date of
+                 the swap are included in the NPV, and therefore
+                 affect the fair-rate and fair-spread
+                 calculation. This might not be what you want.
+
         \test
         - the correctness of the returned value is tested by checking
           that the price of a swap paying the fair fixed rate is null.

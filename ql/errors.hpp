@@ -40,8 +40,9 @@ namespace QuantLib {
         /*! The explicit use of this constructor is not advised.
             Use the QL_FAIL macro instead.
         */
-        Error(const std::string& file, long line,
-              const std::string& function,
+        Error(const std::string& file,
+              long line,
+              const std::string& functionName,
               const std::string& message = "");
         /*! the automatically generated destructor would
             not have the throw specifier.

@@ -40,7 +40,14 @@ namespace QuantLib {
     /*! \note This instrument currently assumes that the issuer did
               not default until today's date.
 
-        \ingroup instruments
+        \warning if QL_TODAYS_PAYMENTS was defined (in userconfig.hpp
+                 or when calling ./configure; it is undefined by
+                 default) payments occurring at the settlement date of
+                 the swap are included in the NPV, and therefore
+                 affect the fair-spread calculation. This might not be
+                 what you want.
+
+         \ingroup instruments
     */
     class CreditDefaultSwap : public Instrument {
       public:

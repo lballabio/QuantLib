@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file optionletstripper.hpp
+/*! \file strippedoptionlet.hpp
 */
 
 #ifndef quantlib_strippedoptionlet_hpp
@@ -76,7 +76,7 @@ namespace QuantLib {
         std::vector<Time> optionletTimes_;
         mutable std::vector<Rate> optionletAtmRates_;
         std::vector<std::vector<Rate> > optionletStrikes_;
-        Size nStrikes_; 
+        Size nStrikes_;
 
         std::vector<std::vector<Handle<Quote> > > optionletVolQuotes_;
         mutable std::vector<std::vector<Volatility> > optionletVolatilities_;

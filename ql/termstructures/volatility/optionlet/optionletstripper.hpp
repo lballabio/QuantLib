@@ -19,6 +19,7 @@
 */
 
 /*! \file optionletstripper.hpp
+    \brief optionlet (caplet/floorlet) volatility stripper
 */
 
 #ifndef quantlib_optionletstripper_hpp
@@ -61,8 +62,8 @@ namespace QuantLib {
 
       protected:
         const boost::shared_ptr<CapFloorTermVolSurface> termVolSurface_;
-        const boost::shared_ptr<IborIndex> iborIndex_; 
-        Size nStrikes_; 
+        const boost::shared_ptr<IborIndex> iborIndex_;
+        Size nStrikes_;
         Size nOptionletTenors_;
 
         mutable std::vector<std::vector<Rate> > optionletStrikes_;
@@ -72,9 +73,9 @@ namespace QuantLib {
         mutable std::vector<Date> optionletDates_;
         std::vector<Period> optionletTenors_;
         mutable std::vector<Rate> atmOptionletRate_;
-        mutable std::vector<Date> optionletPaymentDates_; 
+        mutable std::vector<Date> optionletPaymentDates_;
         mutable std::vector<Time> optionletAccrualPeriods_;
-        
+
         std::vector<Period> capFloorLengths_;
 
     };

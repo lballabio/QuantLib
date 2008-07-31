@@ -123,7 +123,8 @@ void QuoteTest::testComposite() {
 }
 
 void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
-    BOOST_MESSAGE("Testing forward-value and implied-stdev quotes...");
+    BOOST_MESSAGE(
+            "Testing forward-value and implied-standard-deviation quotes...");
     Real forwardRate = .05;
     DayCounter dc = ActualActual();
     Calendar calendar = TARGET();

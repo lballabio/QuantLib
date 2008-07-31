@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -55,7 +55,7 @@ using namespace boost::unit_test_framework;
 
 void HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine() {
     BOOST_MESSAGE("Testing European option pricing for a BSM process"
-                  " with one factor Hull-White Model...");
+                  " with one-factor Hull-White model...");
 
     SavedSettings backup;
 
@@ -149,8 +149,8 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine() {
 }
 
 void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
-    BOOST_MESSAGE("Testing Comparing European option pricing for a BSM process"
-                  " with one factor Hull-White Model...");
+    BOOST_MESSAGE("Comparing European option pricing for a BSM process"
+                  " with one-factor Hull-White model...");
 
     SavedSettings backup;
 
@@ -247,7 +247,7 @@ void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
 }
 
 void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
-    BOOST_MESSAGE("Testing Monte-Carlo Zero Bond Pricing...");
+    BOOST_MESSAGE("Testing Monte-Carlo zero bond pricing...");
 
     SavedSettings backup;
 
@@ -376,7 +376,7 @@ void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
 }
 
 void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
-    BOOST_MESSAGE("Testing Monte-Carlo Vanilla Option Pricing...");
+    BOOST_MESSAGE("Testing Monte-Carlo vanilla option pricing...");
 
     SavedSettings backup;
 
@@ -472,7 +472,7 @@ void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
 
 
 void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
-    BOOST_MESSAGE("Testing Monte-Carlo Heston Option Pricing...");
+    BOOST_MESSAGE("Testing Monte-Carlo Heston option pricing...");
 
     SavedSettings backup;
 
@@ -582,7 +582,7 @@ void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
 
 
 void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
-    BOOST_MESSAGE("Testing analytic Heston Hull White Option Pricing...");
+    BOOST_MESSAGE("Testing analytic Heston Hull-White option pricing...");
 
     SavedSettings backup;
 
@@ -780,8 +780,8 @@ void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
 }
 
 void HybridHestonHullWhiteProcessTest::testDiscretizationError() {
-    BOOST_MESSAGE("Testing the Discretization Error of the "
-                  "Heston Hull-White Process...");
+    BOOST_MESSAGE("Testing the discretization error of the "
+                  "Heston Hull-White process...");
 
     SavedSettings backup;
 
@@ -1359,8 +1359,8 @@ namespace {
 }
 
 void HybridHestonHullWhiteProcessTest::testJointCalibration() {
-    BOOST_MESSAGE("Testing Joint Calibration of an Heston Equity Process "
-                  "incl. Stochastic Interest Rates via a Hull-White Model...");
+    BOOST_MESSAGE("Testing joint calibration of a Heston equity process "
+                  "incl. stochastic interest rates via a Hull-White model...");
 
     SavedSettings backup;
 

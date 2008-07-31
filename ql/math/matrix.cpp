@@ -22,7 +22,7 @@
 */
 
 #include <ql/math/matrix.hpp>
-#if defined(QL_PATCH_MSVC71) || defined(QL_PATCH_MSVC80)
+#if defined(QL_PATCH_MSVC)
 #pragma warning(push)
 #pragma warning(disable:4180)
 #endif

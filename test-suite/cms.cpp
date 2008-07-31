@@ -267,7 +267,7 @@ namespace {
 
 void CmsTest::testFairRate()  {
 
-    BOOST_MESSAGE("Testing Hagan Pricer flat vol equivalence (coupon)...");
+    BOOST_MESSAGE("Testing Hagan-pricer flat-vol equivalence for coupons...");
 
     CommonVars vars;
 
@@ -328,7 +328,7 @@ void CmsTest::testFairRate()  {
 
 void CmsTest::testCmsSwap() {
 
-    BOOST_MESSAGE("Testing Hagan Pricer flat vol equivalence (swaps)...");
+    BOOST_MESSAGE("Testing Hagan-pricer flat-vol equivalence for swaps...");
 
     CommonVars vars;
 

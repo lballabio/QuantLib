@@ -982,7 +982,7 @@ void LowDiscrepancyTest::testRandomStartRandomShiftHaltonDiscrepancy() {
 
 void LowDiscrepancyTest::testJackelSobolDiscrepancy() {
 
-    BOOST_MESSAGE("Testing Jäckel-Sobol discrepancy...");
+    BOOST_MESSAGE("Testing Jaeckel-Sobol discrepancy...");
 
     const Real * const discrepancy[8] = {
         dim002Discr_Sobol, dim003Discr_Sobol,

@@ -18,6 +18,7 @@
 */
 
 /*! \file optionletstripper2.hpp
+    \brief optionlet (caplet/floorlet) volatility stripper
 */
 
 #ifndef quantlib_optionletstripper2_hpp
@@ -67,7 +68,7 @@ namespace QuantLib {
             Real targetValue_;
 
         };
-        
+
         const boost::shared_ptr<OptionletStripper1> stripper1_;
         const Handle<CapFloorTermVolCurve> atmCapFloorTermVolCurve_;
         DayCounter dc_;
@@ -79,7 +80,7 @@ namespace QuantLib {
         Size maxEvaluations_;
         Real accuracy_;
     };
- 
+
 }
 
 #endif
