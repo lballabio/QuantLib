@@ -45,6 +45,7 @@ namespace QuantLib {
         VarianceSwap(Position::Type position,
                      Real strike,
                      Real notional,
+                     const Date& startDate,
                      const Date& maturityDate);
         //! \name Instrument interface
         //@{
@@ -55,6 +56,7 @@ namespace QuantLib {
         // inspectors
         Real strike() const;
         Position::Type position() const;
+        Date startDate() const;
         Date maturityDate() const;
         Real notional() const;
         // results
@@ -69,7 +71,7 @@ namespace QuantLib {
         Position::Type position_;
         Real strike_;
         Real notional_;
-        Date maturityDate_;
+        Date startDate_, maturityDate_;
         // results
         mutable Real variance_;
     };
@@ -83,6 +85,7 @@ namespace QuantLib {
         Position::Type position;
         Real strike;
         Real notional;
+        Date startDate;
         Date maturityDate;
     };
 
@@ -104,6 +107,10 @@ namespace QuantLib {
 
 
     // inline definitions
+
+    inline Date VarianceSwap::startDate() const {
+        return startDate_;
+    }
 
     inline Date VarianceSwap::maturityDate() const {
         return maturityDate_;

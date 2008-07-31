@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2006 Warren Chou
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -203,6 +203,7 @@ void VarianceSwapTest::testReplicatingVarianceSwap() {
         VarianceSwap varianceSwap(values[i].type,
                                   values[i].varStrike,
                                   values[i].nominal,
+                                  today,
                                   exDate);
         varianceSwap.setPricingEngine(engine);
 
@@ -282,6 +283,7 @@ void VarianceSwapTest::testMCVarianceSwap() {
         VarianceSwap varianceSwap(values[i].type,
                                   values[i].varStrike,
                                   values[i].nominal,
+                                  today,
                                   exDate);
         varianceSwap.setPricingEngine(engine);
 

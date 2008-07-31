@@ -26,9 +26,10 @@ namespace QuantLib {
                           Position::Type position,
                           Real strike,
                           Real notional,
+                          const Date& startDate,
                           const Date& maturityDate)
     : position_(position), strike_(strike), notional_(notional),
-      maturityDate_(maturityDate) {}
+      startDate_(startDate), maturityDate_(maturityDate) {}
 
     Real VarianceSwap::variance() const {
         calculate();
@@ -49,6 +50,7 @@ namespace QuantLib {
         arguments->position = position_;
         arguments->strike = strike_;
         arguments->notional = notional_;
+        arguments->startDate = startDate_;
         arguments->maturityDate = maturityDate_;
     }
 
@@ -64,6 +66,8 @@ namespace QuantLib {
         QL_REQUIRE(strike > 0.0, "negative or null strike given");
         QL_REQUIRE(notional != Null<Real>(), "no notional given");
         QL_REQUIRE(notional > 0.0, "negative or null notional given");
+        QL_REQUIRE(startDate != Date(), "null start date given");
+        QL_REQUIRE(maturityDate != Date(), "null maturity date given");
     }
 
     bool VarianceSwap::isExpired() const {
