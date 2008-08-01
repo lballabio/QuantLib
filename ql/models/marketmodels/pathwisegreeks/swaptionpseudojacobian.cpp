@@ -52,11 +52,13 @@ namespace QuantLib
         {   
             const Matrix& thisPseudo = inputModel->pseudoRoot(index);
 
-            Real thisVariance =0.0;
+            Real thisVariance_ =0.0;
             for (Size j=startIndex; j < endIndex; ++j)
                 for (Size k=startIndex; k < endIndex; ++k)
                     for (Size f=0; f < factors; ++f)
-                        variance_+= zed[0][j]*thisPseudo[j][f]*thisPseudo[k][f]*zed[0][k];
+                        thisVariance_+= zed[0][j-startIndex]*thisPseudo[j][f]*thisPseudo[k][f]*zed[0][k-startIndex];
+
+            variance_ += thisVariance_;
 
             ++index;
         }
@@ -89,7 +91,7 @@ namespace QuantLib
                     for (Size rate2 = startIndex; rate2<endIndex; ++rate2)
                     {
                         Size zIndex2 = rate2-startIndex;
-                        sum += zed[0][zIndex2] * thisPseudo[zIndex2][f];
+                        sum += zed[0][zIndex2] * thisPseudo[rate2][f];
                     }
                     sum *= 2.0*zed[0][zIndex];
 
@@ -104,7 +106,9 @@ namespace QuantLib
                 for (Size f =0; f < factors; ++f)
                     thisDerivative[rate][f] *= scale;
 
-            volatilityDerivatives_.push_back(thisDerivative);            
+            volatilityDerivatives_.push_back(thisDerivative);     
+
+            ++index;
         }
 
         for (; index < inputModel->evolution().numberOfSteps(); ++index)

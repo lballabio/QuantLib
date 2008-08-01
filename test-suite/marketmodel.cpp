@@ -87,6 +87,9 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductcaplet.hpp>
 #include <ql/models/marketmodels/pathwiseaccountingengine.hpp>
 #include <ql/models/marketmodels/pathwisegreeks/ratepseudorootjacobian.hpp>
+#include <ql/models/marketmodels/pathwisegreeks/swaptionpseudojacobian.hpp>
+
+#include <ql/models/marketmodels/models/pseudorootfacade.hpp>
 
 #if defined(BOOST_MSVC)
 #include <float.h>
@@ -2298,10 +2301,14 @@ void MarketModelTest::testPathwiseVegas()
     Size pathsToDo =10; // for the numerical differentiation test we are requiring equality on each path so this is actually quite strict
     Size pathsToDoSimulation = paths_;
     Size bumpIncrement = 1 + evolution.numberOfSteps()/3;
+    Real numericalBumpSizeForSwaptionPseudo =1E-7;
 
     Real multiplier = 50; // how many times the bump size squared, the numerical differentation is allowed to differ by 
     // printReport_ = true;
     Real maxError =0.0;
+    Size numberSwaptionPseudoFailures =0;
+    Real swaptionPseudoTolerance = 1e-8;
+
 
     MarketModelType marketModels[] = 
     {
@@ -2309,6 +2316,96 @@ void MarketModelTest::testPathwiseVegas()
         // ExponentialCorrelationFlatVolatility,
         ExponentialCorrelationAbcdVolatility 
     };
+    /////////////////////////////////// test derivative of swaption implied vol with respect to pseudo-root elements
+
+     for (Size j=0; j<LENGTH(marketModels); j++)
+    {
+
+        Size testedFactors[] = { std::min<Size>(1UL,todaysForwards.size())
+            //    todaysForwards.size()
+            //, 4, 8, 
+        };
+
+
+
+
+        for (Size m=0; m<LENGTH(testedFactors); ++m) 
+        {
+            Size factors = testedFactors[m];
+                
+            MTBrownianGeneratorFactory generatorFactory(seed_);
+
+            bool logNormal = true;
+            
+            boost::shared_ptr<MarketModel> marketModel =
+                    makeMarketModel(logNormal, evolution, factors,
+                    marketModels[j]);
+
+            Size startIndex = 1;
+            Size endIndex = evolution.numberOfRates()-1;
+
+            SwaptionPseudoDerivative derivative(marketModel,
+                                               startIndex,
+                                               endIndex);
+
+            std::vector<Matrix> pseudoRoots;
+            for (Size k=0; k < marketModel->numberOfSteps(); ++k)
+                pseudoRoots.push_back( marketModel->pseudoRoot(k));
+
+
+            for (Size step=0; step < evolution.numberOfSteps(); ++ step)
+            {
+                for (Size l=0; l < evolution.numberOfRates(); ++l)
+                    for (Size f=0; f < factors; ++f)
+                    {
+                        pseudoRoots[step][l][f] += numericalBumpSizeForSwaptionPseudo;
+
+                        PseudoRootFacade bumpedUp(pseudoRoots,rateTimes,marketModel->initialRates(),marketModel->displacements());
+                        
+                        Real upImpVol = SwapForwardMappings::swaptionImpliedVolatility(bumpedUp,
+                                                                                        startIndex,
+                                                                                        endIndex);
+
+
+                        pseudoRoots[step][l][f] -= numericalBumpSizeForSwaptionPseudo;
+
+                        pseudoRoots[step][l][f] -= numericalBumpSizeForSwaptionPseudo;
+
+                        PseudoRootFacade bumpedDown(pseudoRoots,rateTimes,marketModel->initialRates(),marketModel->displacements());
+                        
+                        Real downImpVol = SwapForwardMappings::swaptionImpliedVolatility(bumpedDown,
+                                                                                        startIndex,
+                                                                                        endIndex);
+
+                        pseudoRoots[step][l][f] += numericalBumpSizeForSwaptionPseudo;
+
+                        Real volDeriv = (upImpVol-downImpVol)/(2.0*numericalBumpSizeForSwaptionPseudo);
+
+                        Real modelVal = derivative.volatilityDerivative(step)[l][f];
+
+                        Real error = volDeriv - modelVal;
+
+                        if (fabs(error) > swaptionPseudoTolerance)
+                            ++numberSwaptionPseudoFailures;
+
+
+
+                    }
+
+            }
+
+            if (numberSwaptionPseudoFailures >0)
+                BOOST_ERROR("swaption pseudo test failed " << numberSwaptionPseudoFailures << " times" );
+        }
+     }
+
+         
+
+
+
+               
+
+    /////////////////////////////////////
 
     for (Size j=0; j<LENGTH(marketModels); j++)
     {

@@ -170,7 +170,7 @@ namespace QuantLib {
         std::vector<Rate> sr(n);
 
         for (Size i=0; i<n; ++i)
-            sr[i] = cs.cmSwapRate(i,spanningForwards+i);
+            sr[i] = cs.cmSwapRate(i,spanningForwards);
 
         for (Size i=0; i<n; ++i)
             for (Size j=i; j<n; ++j)
