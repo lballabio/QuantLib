@@ -24,12 +24,14 @@
 #include <ql/termstructures/yield/bondhelpers.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
+#include <ql/time/calendars/japan.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
+#include <ql/indexes/ibor/jpylibor.hpp>
 #include <ql/indexes/bmaindex.hpp>
 #include <ql/indexes/indexmanager.hpp>
 #include <ql/instruments/forwardrateagreement.hpp>
@@ -765,6 +767,80 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
     }
 }
 
+void PiecewiseYieldCurveTest::testJpyLibor() {
+    BOOST_MESSAGE(
+        "Testing bootstrap over JPY LIBOR swaps...");
+
+    CommonVars vars;
+
+    vars.today = Date(4, October, 2007);
+    Settings::instance().evaluationDate() = vars.today;
+
+    vars.calendar = Japan();
+    vars.settlement =
+        vars.calendar.advance(vars.today,vars.settlementDays,Days);
+
+    // market elements
+    vars.rates = std::vector<boost::shared_ptr<SimpleQuote> >(vars.swaps);
+    for (Size i=0; i<vars.swaps; i++) {
+        vars.rates[i] = boost::shared_ptr<SimpleQuote>(
+                                       new SimpleQuote(swapData[i].rate/100));
+    }
+
+    // rate helpers
+    vars.instruments = std::vector<boost::shared_ptr<RateHelper> >(vars.swaps);
+
+    boost::shared_ptr<IborIndex> index(new JPYLibor(6*Months));
+    for (Size i=0; i<vars.swaps; i++) {
+        Handle<Quote> r(vars.rates[i]);
+        vars.instruments[i] = boost::shared_ptr<RateHelper>(
+           new SwapRateHelper(r, swapData[i].n*swapData[i].units,
+                              vars.calendar,
+                              vars.fixedLegFrequency, vars.fixedLegConvention,
+                              vars.fixedLegDayCounter, index));
+    }
+
+    vars.termStructure = boost::shared_ptr<YieldTermStructure>(
+        new PiecewiseYieldCurve<Discount,LogLinear>(
+                                       vars.settlement, vars.instruments,
+                                       Actual360(),
+                                       std::vector<Handle<Quote> >(),
+                                       std::vector<Date>(),
+                                       1.0e-12));
+
+    RelinkableHandle<YieldTermStructure> curveHandle;
+    curveHandle.linkTo(vars.termStructure);
+
+    // check swaps
+    boost::shared_ptr<IborIndex> jpylibor6m(new JPYLibor(6*Months,curveHandle));
+    for (Size i=0; i<vars.swaps; i++) {
+        Period tenor = swapData[i].n*swapData[i].units;
+
+        VanillaSwap swap = MakeVanillaSwap(tenor, jpylibor6m, 0.0)
+            .withEffectiveDate(vars.settlement)
+            .withFixedLegDayCount(vars.fixedLegDayCounter)
+            .withFixedLegTenor(Period(vars.fixedLegFrequency))
+            .withFixedLegConvention(vars.fixedLegConvention)
+            .withFixedLegTerminationDateConvention(vars.fixedLegConvention)
+            .withFixedLegCalendar(vars.calendar)
+            .withFloatingLegCalendar(vars.calendar);
+
+        Rate expectedRate = swapData[i].rate/100,
+             estimatedRate = swap.fairRate();
+        Spread error = std::fabs(expectedRate-estimatedRate);
+        Real tolerance = 1.0e-9;
+
+        if (error > tolerance) {
+            BOOST_ERROR(swapData[i].n << " year(s) swap:\n"
+                        << std::setprecision(8)
+                        << "\n estimated rate: " << io::rate(estimatedRate)
+                        << "\n expected rate:  " << io::rate(expectedRate)
+                        << "\n error:          " << io::rate(error)
+                        << "\n tolerance:      " << io::rate(tolerance));
+        }
+    }
+}
+
 
 test_suite* PiecewiseYieldCurveTest::suite() {
 
@@ -799,5 +875,7 @@ test_suite* PiecewiseYieldCurveTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testObservability));
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLiborFixing));
+
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testJpyLibor));
     return suite;
 }

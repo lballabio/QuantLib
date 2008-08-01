@@ -44,6 +44,9 @@ class PiecewiseYieldCurveTest {
 
     static void testObservability();
     static void testLiborFixing();
+
+    static void testJpyLibor();
+
     static boost::unit_test_framework::test_suite* suite();
 };
 

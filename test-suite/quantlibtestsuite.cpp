@@ -238,9 +238,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MarketModelSmmCapletAlphaCalibrationTest::suite());
     test->add(MarketModelSmmCapletCalibrationTest::suite());
     test->add(MarketModelSmmCapletHomoCalibrationTest::suite());
-    
     test->add(MarketModelTest::suite());
-
     test->add(MatricesTest::suite());
     test->add(MCLongstaffSchwartzEngineTest::suite());
     test->add(MersenneTwisterTest::suite());
@@ -263,9 +261,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(StatisticsTest::suite());
     test->add(SurfaceTest::suite());
     test->add(SwapTest::suite());
-
     test->add(SwapForwardMappingsTest::suite());
- 
     test->add(SwaptionTest::suite());
     test->add(SwaptionVolatilityCubeTest::suite());
     test->add(SwaptionVolatilityMatrixTest::suite());

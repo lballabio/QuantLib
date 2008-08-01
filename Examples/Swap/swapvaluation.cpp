@@ -64,8 +64,6 @@ int main(int, char* []) {
          *********************/
 
         Calendar calendar = TARGET();
-        // uncommenting the following line generates an error
-        // calendar = Tokyo();
         Date settlementDate(22, September, 2004);
         // must be a business day
         settlementDate = calendar.adjust(settlementDate);
@@ -321,7 +319,7 @@ int main(int, char* []) {
             new PiecewiseYieldCurve<Discount,LogLinear>(
                                           settlementDate, depoSwapInstruments,
                                           termStructureDayCounter,
-                                          std::vector<Handle<Quote> >(), 
+                                          std::vector<Handle<Quote> >(),
                                           std::vector<Date>(),
                                           tolerance));
 
@@ -346,7 +344,7 @@ int main(int, char* []) {
             new PiecewiseYieldCurve<Discount,LogLinear>(
                                        settlementDate, depoFutSwapInstruments,
                                        termStructureDayCounter,
-                                       std::vector<Handle<Quote> >(), 
+                                       std::vector<Handle<Quote> >(),
                                        std::vector<Date>(),
                                        tolerance));
 
@@ -368,7 +366,7 @@ int main(int, char* []) {
             new PiecewiseYieldCurve<Discount,LogLinear>(
                                        settlementDate, depoFRASwapInstruments,
                                        termStructureDayCounter,
-                                       std::vector<Handle<Quote> >(), 
+                                       std::vector<Handle<Quote> >(),
                                        std::vector<Date>(),
                                        tolerance));
 

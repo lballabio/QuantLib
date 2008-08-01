@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
  Copyright (C) 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2007 Roland Lichters
 
@@ -390,16 +390,8 @@ namespace QuantLib {
     void SwapRateHelper::initializeDates() {
 
         // dummy ibor index with curve/swap arguments
-        shared_ptr<IborIndex> clonedIborIndex(new
-            IborIndex(iborIndex_->familyName(),  // take fixing into account
-                      iborIndex_->tenor(),
-                      iborIndex_->fixingDays(),
-                      iborIndex_->currency(),
-                      iborIndex_->fixingCalendar(),
-                      iborIndex_->businessDayConvention(),
-                      iborIndex_->endOfMonth(),
-                      iborIndex_->dayCounter(),
-                      termStructureHandle_));
+        boost::shared_ptr<IborIndex> clonedIborIndex =
+            iborIndex_->clone(termStructureHandle_);
 
         // do not pass the spread here, as it might be a Quote
         // i.e. it can dinamically change
@@ -407,7 +399,9 @@ namespace QuantLib {
             .withFixedLegDayCount(fixedDayCount_)
             .withFixedLegTenor(Period(fixedFrequency_))
             .withFixedLegConvention(fixedConvention_)
-            .withFixedLegTerminationDateConvention(fixedConvention_);
+            .withFixedLegTerminationDateConvention(fixedConvention_)
+            .withFixedLegCalendar(calendar_)
+            .withFloatingLegCalendar(calendar_);
 
         earliestDate_ = swap_->startDate();
 

@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Chiara Fornarola
- Copyright (C) 2005, 2006 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -72,6 +72,7 @@ namespace QuantLib {
                 UnitedKingdom(UnitedKingdom::Exchange),
                 liborConvention(tenor), liborEOM(tenor),
                 dayCounter, h),
+      financialCenterCalendar_(financialCenterCalendar),
       jointCalendar_(JointCalendar(UnitedKingdom(UnitedKingdom::Exchange),
                                    financialCenterCalendar,
                                    JoinHolidays)) {
@@ -130,6 +131,17 @@ namespace QuantLib {
                 dayCounter, h) {
         QL_REQUIRE(currency!=EURCurrency(),
                    "for EUR Libor dedicated EurLibor constructor must be used");
+    }
+
+    boost::shared_ptr<IborIndex> Libor::clone(
+                                  const Handle<YieldTermStructure>& h) const {
+        return boost::shared_ptr<IborIndex>(new Libor(familyName(),
+                                                      tenor(),
+                                                      fixingDays(),
+                                                      currency(),
+                                                      financialCenterCalendar_,
+                                                      dayCounter(),
+                                                      h));
     }
 
 }
