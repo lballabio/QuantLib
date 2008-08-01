@@ -57,15 +57,15 @@
 
 //! version string
 #ifdef QL_DEBUG
-    #define QL_VERSION "0.9.5-debug"
+    #define QL_VERSION "0.9.6-debug"
 #else
-    #define QL_VERSION "0.9.5"
+    #define QL_VERSION "0.9.6"
 #endif
 
 //! version hexadecimal number
-#define QL_HEX_VERSION 0x000905f0
+#define QL_HEX_VERSION 0x000906f0
 //! version string for output lib name
-#define QL_LIB_VERSION "0_9_5"
+#define QL_LIB_VERSION "0_9_6"
 
 #if   defined(HAVE_CONFIG_H)    // Dynamically created by configure
    #include <ql/config.hpp>
