@@ -110,6 +110,7 @@ namespace {
     Calendar calendar;
     DayCounter dayCounter;
     std::vector<Rate> todaysForwards, todaysCoterminalSwapRates;
+    Rate meanForward;
     std::vector<Real> coterminalAnnuity;
     Spread displacement;
     std::vector<DiscountFactor> todaysDiscounts;
@@ -157,9 +158,17 @@ namespace {
         // Rates & displacement
         todaysForwards = std::vector<Rate>(paymentTimes.size());
         displacement = 0.0;
+        meanForward=0.0;
+
         for (Size i=0; i<todaysForwards.size(); ++i)
+        {
             // FLOATING_POINT_EXCEPTION
             todaysForwards[i] = 0.03 + 0.0010*i;
+            meanForward+= todaysForwards[i];
+        }
+        meanForward /= todaysForwards.size();
+
+
 
         // Discounts
         todaysDiscounts = std::vector<DiscountFactor>(rateTimes.size());
@@ -2263,7 +2272,7 @@ void MarketModelTest::testPathwiseVegas()
     setup();
 
 
-  
+
 
 
     std::vector<boost::shared_ptr<Payoff> > payoffs(todaysForwards.size());
@@ -2289,6 +2298,8 @@ void MarketModelTest::testPathwiseVegas()
     MarketModelPathwiseMultiDeflatedCaplet capletsDeflated(rateTimes, accruals,
         paymentTimes, todaysForwards);
 
+    LMMCurveState cs(rateTimes);
+    cs.setOnForwardRates(todaysForwards);
 
 
 
@@ -2307,7 +2318,12 @@ void MarketModelTest::testPathwiseVegas()
     // printReport_ = true;
     Real maxError =0.0;
     Size numberSwaptionPseudoFailures =0;
+    Size numberCapPseudoFailures = 0;
+    Size numberCapImpVolFailures = 0;
+    Size numberCapVolPseudoFailures =0;
     Real swaptionPseudoTolerance = 1e-8;
+    Real impVolTolerance = 1e-5;
+    Real capStrike = meanForward;
 
 
     MarketModelType marketModels[] = 
@@ -2318,10 +2334,10 @@ void MarketModelTest::testPathwiseVegas()
     };
     /////////////////////////////////// test derivative of swaption implied vol with respect to pseudo-root elements
 
-     for (Size j=0; j<LENGTH(marketModels); j++)
+    for (Size j=0; j<LENGTH(marketModels); j++)
     {
 
-        Size testedFactors[] = { std::min<Size>(1UL,todaysForwards.size())
+        Size testedFactors[] = { std::min<Size>(3UL,todaysForwards.size())
             //    todaysForwards.size()
             //, 4, 8, 
         };
@@ -2332,21 +2348,21 @@ void MarketModelTest::testPathwiseVegas()
         for (Size m=0; m<LENGTH(testedFactors); ++m) 
         {
             Size factors = testedFactors[m];
-                
+
             MTBrownianGeneratorFactory generatorFactory(seed_);
 
             bool logNormal = true;
-            
+
             boost::shared_ptr<MarketModel> marketModel =
-                    makeMarketModel(logNormal, evolution, factors,
-                    marketModels[j]);
+                makeMarketModel(logNormal, evolution, factors,
+                marketModels[j]);
 
             Size startIndex = 1;
             Size endIndex = evolution.numberOfRates()-1;
 
             SwaptionPseudoDerivative derivative(marketModel,
-                                               startIndex,
-                                               endIndex);
+                startIndex,
+                endIndex);
 
             std::vector<Matrix> pseudoRoots;
             for (Size k=0; k < marketModel->numberOfSteps(); ++k)
@@ -2361,10 +2377,10 @@ void MarketModelTest::testPathwiseVegas()
                         pseudoRoots[step][l][f] += numericalBumpSizeForSwaptionPseudo;
 
                         PseudoRootFacade bumpedUp(pseudoRoots,rateTimes,marketModel->initialRates(),marketModel->displacements());
-                        
+
                         Real upImpVol = SwapForwardMappings::swaptionImpliedVolatility(bumpedUp,
-                                                                                        startIndex,
-                                                                                        endIndex);
+                            startIndex,
+                            endIndex);
 
 
                         pseudoRoots[step][l][f] -= numericalBumpSizeForSwaptionPseudo;
@@ -2372,10 +2388,10 @@ void MarketModelTest::testPathwiseVegas()
                         pseudoRoots[step][l][f] -= numericalBumpSizeForSwaptionPseudo;
 
                         PseudoRootFacade bumpedDown(pseudoRoots,rateTimes,marketModel->initialRates(),marketModel->displacements());
-                        
+
                         Real downImpVol = SwapForwardMappings::swaptionImpliedVolatility(bumpedDown,
-                                                                                        startIndex,
-                                                                                        endIndex);
+                            startIndex,
+                            endIndex);
 
                         pseudoRoots[step][l][f] += numericalBumpSizeForSwaptionPseudo;
 
@@ -2397,13 +2413,262 @@ void MarketModelTest::testPathwiseVegas()
             if (numberSwaptionPseudoFailures >0)
                 BOOST_ERROR("swaption pseudo test failed " << numberSwaptionPseudoFailures << " times" );
         }
-     }
+    }
 
-         
+    /////////////////////////////////////
+
+    for (Size j=0; j<LENGTH(marketModels); j++)   
+    {
+
+        Size testedFactors[] = { std::min<Size>(3UL,todaysForwards.size())
+            //    todaysForwards.size()
+            //, 4, 8, 
+        };
 
 
+
+
+        for (Size m=0; m<LENGTH(testedFactors); ++m) 
+        {
+            Size factors = testedFactors[m];
+
+            MTBrownianGeneratorFactory generatorFactory(seed_);
+
+            bool logNormal = true;
+
+            boost::shared_ptr<MarketModel> marketModel =
+                makeMarketModel(logNormal, evolution, factors,
+                marketModels[j]);
+
+            for (Size startIndex = 1; startIndex < evolution.numberOfRates()-1; ++startIndex)
+                for (Size endIndex = startIndex+1; endIndex < evolution.numberOfRates(); ++endIndex)
+                {
+
+                    CapPseudoDerivative derivative(marketModel,
+                        capStrike,
+                        startIndex,
+                        endIndex);
+
+                    std::vector<Matrix> pseudoRoots;
+                    for (Size k=0; k < marketModel->numberOfSteps(); ++k)
+                        pseudoRoots.push_back( marketModel->pseudoRoot(k));
+
+
+                    for (Size step=0; step < evolution.numberOfSteps(); ++ step)
+                    {
+                        for (Size l=0; l < evolution.numberOfRates(); ++l)
+                            for (Size f=0; f < factors; ++f)
+                            {
+                                pseudoRoots[step][l][f] += numericalBumpSizeForSwaptionPseudo;
+
+                                PseudoRootFacade bumpedUp(pseudoRoots,rateTimes,marketModel->initialRates(),marketModel->displacements());
+
+
+                                Matrix totalCovUp(bumpedUp.totalCovariance( marketModel->numberOfSteps()-1));
+
+
+                                pseudoRoots[step][l][f] -= numericalBumpSizeForSwaptionPseudo;
+
+                                pseudoRoots[step][l][f] -= numericalBumpSizeForSwaptionPseudo;
+
+                                PseudoRootFacade bumpedDown(pseudoRoots,rateTimes,marketModel->initialRates(),marketModel->displacements());
+
+                                Matrix totalCovDown(bumpedDown.totalCovariance( marketModel->numberOfSteps()-1));
+
+
+                                pseudoRoots[step][l][f] += numericalBumpSizeForSwaptionPseudo;
+
+
+                                Real priceDeriv=0.0;
+                                for (Size k=startIndex; k < endIndex; ++k)
+                                {
+                                    Real upSd = sqrt(totalCovUp[k][k]);
+                                    Real downSd = sqrt(totalCovDown[k][k]);
+
+                                    Real expiry = rateTimes[k];
+                                    Real annuity =  cs.discountRatio(k+1,0)* marketModel->evolution().rateTaus()[k];
+                                    Real forward = todaysForwards[k];
+
+
+                                    Real upPrice = blackFormula(Option::Call,                      
+                                        capStrike,
+                                        forward,                      
+                                        upSd,
+                                        annuity,
+                                        marketModel->displacements()[k]);
+
+
+                                    Real downPrice = blackFormula(Option::Call,                      
+                                        capStrike,
+                                        forward,                      
+                                        downSd,
+                                        annuity,
+                                        marketModel->displacements()[k]);
+
+
+                                    priceDeriv += (upPrice-downPrice)/(2.0*numericalBumpSizeForSwaptionPseudo);
+
+                                }
+
+                                Real modelVal = derivative.priceDerivative(step)[l][f];
+
+                                Real error = priceDeriv - modelVal;
+
+                                if (fabs(error) > swaptionPseudoTolerance)
+                                    ++numberCapPseudoFailures;
+
+
+
+                            }
+
+                    }
+
+                    // test implied vol 
+
+                    Real impVol = derivative.impliedVolatility();
+
+                    Matrix totalCov(marketModel->totalCovariance(evolution.numberOfSteps()-1 ) );
+                    Real priceConstVol =0.0;
+                    Real priceVarVol =0.0;
+
+                    for (Size m= startIndex; m < endIndex; ++m)
+                    {
+                        Real annuity = cs.discountRatio(m+1,0)* marketModel->evolution().rateTaus()[m];
+                        Real expiry = rateTimes[m];                                    
+                        Real forward = todaysForwards[m];
+
+                        priceConstVol += blackFormula(Option::Call,                      
+                                        capStrike,
+                                        forward,                      
+                                        impVol*sqrt(expiry),
+                                        annuity,
+                                        marketModel->displacements()[m]);
+                        
+                        priceVarVol += blackFormula(Option::Call,                      
+                                        capStrike,
+                                        forward,                      
+                                        sqrt(totalCov[m][m]),
+                                        annuity,
+                                        marketModel->displacements()[m]);
+
+                    }
+
+                    if (fabs(priceVarVol - priceConstVol) > impVolTolerance)
+                        ++numberCapImpVolFailures;
+                
+
+                }
+
+                if (numberCapPseudoFailures >0)
+                    BOOST_ERROR("cap pseudo test failed for prices " << numberCapPseudoFailures << " times" );
+
+                if (numberCapImpVolFailures >0)
+                    BOOST_ERROR("cap pseudo test failed for implied vols " << numberCapImpVolFailures << " times" );
+        
+    }
+
+    // we have tested the price derivative and the implied vol function, now the derivative of the imp vols
+    // since we have already tested the imp vol function we use it here
+
+  
+    for (Size m=0; m<LENGTH(testedFactors); ++m) 
+        {
+            Size factors = testedFactors[m];
+
+            MTBrownianGeneratorFactory generatorFactory(seed_);
+
+            bool logNormal = true;
+
+            boost::shared_ptr<MarketModel> marketModel =
+                makeMarketModel(logNormal, evolution, factors,
+                marketModels[j]);
+
+            for (Size startIndex = 1; startIndex < evolution.numberOfRates()-1; ++startIndex)
+                for (Size endIndex = startIndex+1; endIndex < evolution.numberOfRates(); ++endIndex)
+                {
+
+                    CapPseudoDerivative derivative(marketModel,
+                        capStrike,
+                        startIndex,
+                        endIndex);
+
+                    std::vector<Matrix> pseudoRoots;
+                    for (Size k=0; k < marketModel->numberOfSteps(); ++k)
+                        pseudoRoots.push_back( marketModel->pseudoRoot(k));
+
+
+                    for (Size step=0; step < evolution.numberOfSteps(); ++ step)
+                    {
+                        for (Size l=0; l < evolution.numberOfRates(); ++l)
+                            for (Size f=0; f < factors; ++f)
+                            {
+                                pseudoRoots[step][l][f] += numericalBumpSizeForSwaptionPseudo;
+
+                                PseudoRootFacade bumpedUp(pseudoRoots,rateTimes,marketModel->initialRates(),marketModel->displacements());
+                                    
+                                CapPseudoDerivative upDerivative(boost::shared_ptr<MarketModel>(new PseudoRootFacade(bumpedUp)),
+                                                                 capStrike,
+                                                                 startIndex,
+                                                                  endIndex);
+
+                                Real volUp = upDerivative.impliedVolatility();
+
+
+
+
+                                pseudoRoots[step][l][f] -= numericalBumpSizeForSwaptionPseudo;
+
+                                pseudoRoots[step][l][f] -= numericalBumpSizeForSwaptionPseudo;
+
+                                PseudoRootFacade bumpedDown(pseudoRoots,rateTimes,marketModel->initialRates(),marketModel->displacements());
+
+                                CapPseudoDerivative downDerivative(boost::shared_ptr<MarketModel>(new PseudoRootFacade(bumpedDown)),
+                                                                 capStrike,
+                                                                 startIndex,
+                                                                  endIndex);
+
+                                
+                                Real volDown = downDerivative.impliedVolatility();
+
+
+
+
+                                pseudoRoots[step][l][f] += numericalBumpSizeForSwaptionPseudo;
+
+
+                                Real volDeriv = (volUp-volDown)/(2.0*numericalBumpSizeForSwaptionPseudo);
+
+                                Real modelVal = derivative.volatilityDerivative(step)[l][f];
+
+                                Real error = volDeriv - modelVal;
+
+                                if (fabs(error) > impVolTolerance*10)
+                                    ++numberCapVolPseudoFailures;
+
+
+
+                            }
 
                
+                
+                    }
+
+                 
+
+                }
+
+                if (numberCapVolPseudoFailures >0)
+                    BOOST_ERROR("cap pseudo test failed for implied vols " << numberCapVolPseudoFailures << " times" );
+
+         }
+    }
+
+
+
+
+
+
+
 
     /////////////////////////////////////
 
@@ -3059,6 +3324,6 @@ test_suite* MarketModelTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testDriftCalculator));
     //suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testIsInSubset));
-   
-        return suite;
+
+    return suite;
 }

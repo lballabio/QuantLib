@@ -29,6 +29,8 @@
 derivative of a swaption implied vol against changes in pseudo-root elements.
 This is that class.
 
+This is tested in the pathwise vegas routine in MarketModels.cpp
+
 */
 
 namespace QuantLib
@@ -61,6 +63,48 @@ namespace QuantLib
 
 
     };
+
+/*! In order to compute market vegas, we need a class that gives the
+derivative of a cap implied vol against changes in pseudo-root elements.
+This is that class.
+
+The operation is non-trivial because the cap implied vol has a complicated
+relationship with the caplet implied vols. 
+
+This is  tested in the pathwise vegas routine in MarketModels.cpp
+
+*/
+
+   class CapPseudoDerivative
+    {
+
+        public:
+            CapPseudoDerivative(boost::shared_ptr<MarketModel> inputModel,
+                                   Real strike,
+                                   Size startIndex,
+                                   Size endIndex);
+
+            const Matrix& volatilityDerivative(Size i) const;
+            const Matrix& priceDerivative(Size i) const;
+
+            Real impliedVolatility() const;
+
+
+
+        private:
+            boost::shared_ptr<MarketModel> inputModel_;
+      
+            std::vector<Matrix> volatilityDerivatives_;
+            
+            std::vector<Matrix> priceDerivatives_;
+
+            Real impliedVolatility_;
+            Real vega_;
+
+
+
+    };
+
 }
 
 #endif

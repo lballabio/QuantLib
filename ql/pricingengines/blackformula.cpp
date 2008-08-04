@@ -269,6 +269,20 @@ namespace QuantLib {
     }
 
 
+    Real blackFormulaVolDerivative(Rate strike,
+                                      Rate forward,
+                                      Real stdDev,
+                                      Real expiry,
+                                      Real discount,
+                                      Real displacement)
+    {
+        return  blackFormulaStdDevDerivative(strike,
+                                     forward,
+                                     stdDev,
+                                     discount,
+                                     displacement)*sqrt(expiry);
+    }
+
     Real blackFormulaStdDevDerivative(Rate strike,
                                       Rate forward,
                                       Real stdDev,

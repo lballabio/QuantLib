@@ -24,6 +24,10 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
+#include <ql/pricingengines/blackformula.hpp>
+#include <ql/math/solvers1D/brent.hpp>
+
+
 namespace QuantLib
 {
 
@@ -146,5 +150,236 @@ namespace QuantLib
     {
         return expiry_;
     }
+
+    namespace
+    {
+
+        // this class doesn't copy anything so fast to create and use
+        // but make sure everything it uses stays in scope... 
+        class QuickCap
+        {
+        public:
+            QuickCap(Real Strike,
+                const std::vector<Real>& annuities,
+                const std::vector<Real>& currentRates,
+                const std::vector<Real>& expiries,
+                Real price);
+
+            Real operator()(Real volatility) const; // returns difference from input price
+
+            Real vega(Real volatility) const; // returns vol derivative
+
+
+
+        private:
+            Real strike_;
+            const std::vector<Real>& annuities_;
+            const std::vector<Real>& currentRates_;
+            const std::vector<Real>& expiries_;
+            Real price_;
+
+        };
+
+        QuickCap::QuickCap(Real Strike,
+            const std::vector<Real>& annuities,
+            const std::vector<Real>& currentRates,
+            const std::vector<Real>& expiries,
+            Real price)
+            :
+        strike_(Strike),
+            annuities_(annuities),
+            currentRates_(currentRates),
+            expiries_(expiries),
+            price_(price)
+        {
+        }
+
+        Real QuickCap::operator()(Real volatility) const
+        {
+            Real price =0.0;
+            for (Size i=0; i < annuities_.size(); ++i)
+            {
+                price += blackFormula(Option::Call,
+                    currentRates_[i],
+                    strike_,
+                    volatility*sqrt(expiries_[i]),
+                    annuities_[i]);
+
+
+            }
+            return price-price_;
+        }
+
+        Real QuickCap::vega(Real volatility) const // returns vol derivative
+        {
+            Real vega =0.0;
+            for (Size i=0; i < annuities_.size(); ++i)
+            {
+         
+
+                vega+= blackFormulaVolDerivative(currentRates_[i],
+                                                 strike_,
+                                                 volatility*sqrt(expiries_[i]),
+                                                 expiries_[i],
+                                                 annuities_[i],
+                                                 0.0);
+            }
+
+            return vega;
+        }
+
+
+
+    }
+
+    CapPseudoDerivative::CapPseudoDerivative(boost::shared_ptr<MarketModel> inputModel,
+        Real strike,
+        Size startIndex,
+        Size endIndex)
+    {
+        Size numberCaplets = endIndex-startIndex;
+        Size numberRates = inputModel->numberOfRates();
+        Size factors = inputModel->numberOfFactors();
+        LMMCurveState curve(inputModel->evolution().rateTimes());
+        curve.setOnForwardRates(inputModel->initialRates());
+
+        const Matrix& totalCovariance(inputModel->totalCovariance(inputModel->numberOfSteps()-1));
+
+        std::vector<Real> displacedImpliedVols(numberCaplets);
+        std::vector<Real> annuities(numberCaplets);
+        std::vector<Real> capletPrices(numberCaplets);
+        std::vector<Real> initialRates(numberCaplets);
+        std::vector<Real> expiries(numberCaplets);
+
+        Real capPrice =0.0;
+
+        Real guess=0.0;
+        Real minVol = 1e10;
+        Real maxVol =0.0;
+
+        for (Size j = startIndex; j < endIndex; ++j)
+        {
+            Size capletIndex = j - startIndex;
+            Time resetTime = inputModel->evolution().rateTimes()[j];
+            expiries[capletIndex] =  resetTime;
+
+            Real sd = sqrt(totalCovariance[j][j]);
+            displacedImpliedVols[capletIndex] = sqrt(totalCovariance[j][j]/resetTime);
+
+            Real forward = inputModel->initialRates()[j];
+            initialRates[capletIndex] = forward;
+
+            Real annuity = curve.discountRatio(j+1,0)* inputModel->evolution().rateTaus()[j];
+            annuities[capletIndex] = annuity;
+
+            Real displacement =  inputModel->displacements()[j];
+
+            guess+=  displacedImpliedVols[capletIndex]*(forward+displacement)/forward;
+            minVol =std::min(minVol, displacedImpliedVols[capletIndex]);
+            maxVol =std::max(maxVol, displacedImpliedVols[capletIndex]*(forward+displacement)/forward);
+
+
+            Real capletPrice = blackFormula(Option::Call,
+                forward,
+                strike,
+                sd,
+                annuity,
+                displacement
+                );
+
+            capletPrices[capletIndex] = capletPrice;
+
+            capPrice += capletPrice;
+
+        }
+
+        guess/=numberCaplets;
+
+
+        for (Size step =0; step < inputModel->evolution().numberOfSteps(); ++step)
+        {
+            Matrix thisDerivative(numberRates,factors,0.0);
+
+            for (Size rate =std::max(inputModel->evolution().firstAliveRate()[step],startIndex); 
+                rate < endIndex; ++rate)
+            {
+                for (Size f=0; f < factors; ++f)
+                {
+                    Real expiry = inputModel->evolution().rateTimes()[rate];
+                    Real volDerivative = inputModel->pseudoRoot(step)[rate][f]
+                    /(displacedImpliedVols[rate-startIndex]*expiry);
+                    Real capletVega = blackFormulaVolDerivative(inputModel->initialRates()[rate],
+                        strike,
+                        displacedImpliedVols[rate-startIndex]*sqrt(expiry),
+                        expiry,
+                        annuities[rate-startIndex],
+                        inputModel->displacements()[rate]);
+
+                    // note that the cap derivative  is equal to one of the caplet ones so we lose a loop
+                    thisDerivative[rate][f] = volDerivative*capletVega;
+                }
+            }
+
+            priceDerivatives_.push_back(thisDerivative);
+
+        }
+
+        QuickCap capPricer(strike, annuities, initialRates, expiries,capPrice);
+
+        Size maxEvaluations = 1000;
+        Real accuracy = 1E-6;
+
+        Brent solver;
+        solver.setMaxEvaluations(maxEvaluations);
+        impliedVolatility_ =   solver.solve(capPricer,accuracy,guess,minVol*0.99,maxVol*1.01);
+      
+            
+
+        vega_ = capPricer.vega(impliedVolatility_);
+
+
+
+        for (Size step =0; step < inputModel->evolution().numberOfSteps(); ++step)
+        {
+            Matrix thisDerivative(numberRates,factors,0.0);
+
+            for (Size rate =std::max(inputModel->evolution().firstAliveRate()[step],startIndex); 
+                rate < endIndex; ++rate)
+            {
+                for (Size f=0; f < factors; ++f)
+                {
+                   
+                    thisDerivative[rate][f] = priceDerivatives_[step][rate][f]/vega_;
+                }
+            }
+
+            volatilityDerivatives_.push_back(thisDerivative);
+
+        }
+
+
+
+    }
+
+
+    const Matrix& CapPseudoDerivative::priceDerivative(Size i) const
+    {
+        return priceDerivatives_[i];
+    }
+
+    const Matrix& CapPseudoDerivative::volatilityDerivative(Size i) const
+    { 
+        return volatilityDerivatives_[i];
+    }
+
+
+
+    Real CapPseudoDerivative::impliedVolatility() const
+    {
+        return impliedVolatility_;
+    }
+
+
+
 
 }
