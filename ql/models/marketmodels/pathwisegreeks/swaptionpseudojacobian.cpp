@@ -25,7 +25,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/math/solvers1D/brent.hpp>
+#include <ql/math/solvers1d/brent.hpp>
 
 
 namespace QuantLib
