@@ -114,13 +114,15 @@ namespace QuantLib {
         }
 
         // set initial guess only if the current curve cannot be used as guess
-        if (validCurve_)
+        if (validCurve_) {
             QL_ENSURE(ts_->data_.size() == n+1,
                       "dimension mismatch: expected " << n+1 <<
                       ", actual " << ts_->data_.size());
-        else {
+        } else {
             ts_->data_ = std::vector<Rate>(n+1);
             ts_->data_[0] = Traits::initialValue(ts_);
+            for (Size i=0; i<n; ++i)
+                ts_->data_[i+1] = Traits::initialGuess();
         }
 
         Brent solver;
@@ -166,7 +168,11 @@ namespace QuantLib {
                                                       ts_->times_.begin()+i+1,
                                                       ts_->data_.begin());
                     } catch(...) {
-                        // if the target interpolation is not usable yet
+                        if (!Interpolator::global)
+                            throw; // no chance to fix it in a later iteration
+
+                        // otherwise, if the target interpolation is
+                        // not usable yet
                         ts_->interpolation_ = Linear().interpolate(
                                                       ts_->times_.begin(),
                                                       ts_->times_.begin()+i+1,

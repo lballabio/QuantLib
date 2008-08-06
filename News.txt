@@ -1,4 +1,11 @@
 
+Changes for QuantLib 0.9.6:
+
+Version 0.9.6 is a bug-fix release for QuantLib 0.9.5.  It fixes a bug
+that would cause bootstrapped term structures to silently switch to
+linear interpolation when log-linear was requested.
+
+
 Notable changes for QuantLib 0.9.5:
 
 CREDIT FRAMEWORK

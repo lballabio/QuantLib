@@ -1,3 +1,56 @@
+2008-07-28 13:04  Luigi Ballabio
+
+	* [r15278] man/CDS.1, man/CallableBonds.1, man/Makefile.am:
+	  
+	  Added man pages for new examples
+
+2008-07-28 13:03  Luigi Ballabio
+
+	* [r15277] man/quantlib-benchmark.1, man/quantlib-config.1:
+	  
+	  Fixes for man pages
+
+2008-07-18 14:18  Luigi Ballabio
+
+	* [r15248] ql/termstructures/yield/forwardstructure.hpp,
+	  ql/termstructures/yield/zeroyieldstructure.hpp:
+	  
+	  Added safeguards for zeroYieldImpl at t=0.0 (thanks to Luca Billi)
+
+2008-07-17 07:05  Luigi Ballabio
+
+	* [r15246] ql/instruments/creditdefaultswap.hpp,
+	  ql/instruments/vanillaswap.hpp,
+	  ql/termstructures/volatility/optionlet/optionletstripper.hpp,
+	  ql/termstructures/volatility/optionlet/optionletstripper1.hpp,
+	  ql/termstructures/volatility/optionlet/optionletstripper2.hpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionlet.hpp:
+	  
+	  Fixes for documentation
+
+2008-07-11 08:55  Ferdinando Ametrano
+
+	* [r15216] ql/math/matrixutilities/qrdecomposition.cpp:
+	  
+	  back-ported Rev15210 bug-fix from trunk to branch
+
+2008-07-10 14:32  Luigi Ballabio
+
+	* [r15209] ql/time/calendars/argentina.cpp,
+	  ql/time/calendars/argentina.hpp, ql/time/calendars/iceland.cpp,
+	  ql/time/calendars/iceland.hpp, ql/time/calendars/indonesia.cpp,
+	  ql/time/calendars/indonesia.hpp, ql/time/calendars/mexico.cpp,
+	  ql/time/calendars/mexico.hpp, ql/time/calendars/ukraine.cpp,
+	  ql/time/calendars/ukraine.hpp:
+	  
+	  Removed executable property
+
+2008-07-10 14:28  Luigi Ballabio
+
+	* [r15208] ChangeLog.txt, Docs/pages/history.docs, News.txt:
+	  
+	  Updated Changelog and News
+
 2008-07-10 09:02  Luigi Ballabio
 
 	* [r15207] QuantLib_vc7.vcproj, QuantLib_vc8.vcproj,
