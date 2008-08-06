@@ -38,6 +38,7 @@ this_include_HEADERS = \
     makevanillaswap.hpp \
     multiassetoption.hpp \
     oneassetoption.hpp \
+    pagodaoption.hpp \
     payoffs.hpp \
     quantoforwardvanillaoption.hpp \
     quantovanillaoption.hpp \
@@ -82,6 +83,7 @@ libInstruments_la_SOURCES = \
     makevanillaswap.cpp \
     multiassetoption.cpp \
     oneassetoption.cpp \
+    pagodaoption.cpp \
     payoffs.cpp \
     quantoforwardvanillaoption.cpp \
     quantovanillaoption.cpp \

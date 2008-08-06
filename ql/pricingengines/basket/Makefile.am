@@ -8,6 +8,7 @@ this_include_HEADERS = \
 	mcbasketengine.hpp \
 	mceverestengine.hpp \
 	mchimalayaengine.hpp \
+	mcpagodaengine.hpp \
 	stulzengine.hpp
 
 libBasketEngines_la_SOURCES = \
@@ -15,6 +16,7 @@ libBasketEngines_la_SOURCES = \
 	mcbasketengine.cpp \
 	mceverestengine.cpp \
 	mchimalayaengine.cpp \
+	mcpagodaengine.cpp \
 	stulzengine.cpp
 
 noinst_LTLIBRARIES = libBasketEngines.la

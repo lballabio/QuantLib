@@ -33,6 +33,7 @@
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/instruments/multiassetoption.hpp>
 #include <ql/instruments/oneassetoption.hpp>
+#include <ql/instruments/pagodaoption.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/instruments/quantoforwardvanillaoption.hpp>
 #include <ql/instruments/quantovanillaoption.hpp>

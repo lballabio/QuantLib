@@ -20,7 +20,6 @@
 #include "old_pricers.hpp"
 #include "utilities.hpp"
 #include <ql/legacy/pricers/mcdiscretearithmeticaso.hpp>
-#include <ql/legacy/pricers/mcpagoda.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/matrixutilities/getcovariance.hpp>
@@ -175,108 +174,10 @@ void OldPricerTest::testMcSingleFactorPricers() {
 
 }
 
-namespace {
-
-    template <class P>
-    void testMcMFPricer(const P& pricer, Real storedValue,
-                        Real tolerance, const std::string& name) {
-
-        // cannot be too low, or one cannot compare numbers when
-        // switching to a new default generator
-        Size fixedSamples = 1023;
-        Real minimumTol = 1.0e-2;
-
-        Real value = pricer.valueWithSamples(fixedSamples);
-        if (std::fabs(value-storedValue) > tolerance)
-            BOOST_FAIL(name << ":\n"
-                       << std::setprecision(10)
-                       << "    calculated value: " << value << "\n"
-                       << "    expected:         " << storedValue);
-
-        tolerance = pricer.errorEstimate()/value;
-        tolerance = std::min<Real>(tolerance/2.0, minimumTol);
-        value = pricer.value(tolerance);
-        Real accuracy = pricer.errorEstimate()/value;
-        if (accuracy > tolerance)
-            BOOST_FAIL(name << ":\n"
-                       << std::setprecision(10)
-                       << "    reached accuracy: " << accuracy << "\n"
-                       << "    expected:         " << tolerance);
-
-    }
-
-}
-
-
-void OldPricerTest::testMcMultiFactorPricers() {
-
-    BOOST_MESSAGE("Testing old-style Monte Carlo multi-factor pricers...");
-
-    QL_TEST_START_TIMING;
-
-    DayCounter dc = Actual360();
-    Matrix correlation(4,4);
-    correlation[0][0] = 1.00;
-                    correlation[0][1] = 0.50;
-                                    correlation[0][2] = 0.30;
-                                                    correlation[0][3] = 0.10;
-    correlation[1][0] = 0.50;
-                    correlation[1][1] = 1.00;
-                                    correlation[1][2] = 0.20;
-                                                    correlation[1][3] = 0.40;
-    correlation[2][0] = 0.30;
-                    correlation[2][1] = 0.20;
-                                    correlation[2][2] = 1.00;
-                                                    correlation[2][3] = 0.60;
-    correlation[3][0] = 0.10;
-                    correlation[3][1] = 0.40;
-                                    correlation[3][2] = 0.60;
-                                                    correlation[3][3] = 1.00;
-
-    Date today = Date::todaysDate();
-    std::vector<Handle<BlackVolTermStructure> > volatilities(4);
-    volatilities[0] = Handle<BlackVolTermStructure>(flatVol(today, 0.30, dc));
-    volatilities[1] = Handle<BlackVolTermStructure>(flatVol(today, 0.35, dc));
-    volatilities[2] = Handle<BlackVolTermStructure>(flatVol(today, 0.25, dc));
-    volatilities[3] = Handle<BlackVolTermStructure>(flatVol(today, 0.20, dc));
-
-    std::vector<Handle<YieldTermStructure> > dividendYields(4);
-    dividendYields[0] = Handle<YieldTermStructure>(flatRate(today, 0.01, dc));
-    dividendYields[1] = Handle<YieldTermStructure>(flatRate(today, 0.05, dc));
-    dividendYields[2] = Handle<YieldTermStructure>(flatRate(today, 0.04, dc));
-    dividendYields[3] = Handle<YieldTermStructure>(flatRate(today, 0.03, dc));
-
-    Handle<YieldTermStructure> riskFreeRate(flatRate(today, 0.05, dc));
-
-    BigNatural seed = 86421;
-
-    // McPagoda
-    std::vector<Real> portfolio(4);
-    portfolio[0] = 0.15;
-    portfolio[1] = 0.20;
-    portfolio[2] = 0.35;
-    portfolio[3] = 0.30;
-    Real fraction = 0.62;
-    Real roof = 0.20;
-    std::vector<Time> timeIncrements(4);
-    timeIncrements[0] = 0.25;
-    timeIncrements[1] = 0.50;
-    timeIncrements[2] = 0.75;
-    timeIncrements[3] = 1.00;
-    testMcMFPricer(McPagoda(portfolio, fraction, roof, dividendYields,
-                            riskFreeRate, volatilities, correlation,
-                            timeIncrements, seed),
-                   0.01221094,
-                   1.0e-8,
-                   "McPagoda");
-}
-
 
 test_suite* OldPricerTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Old-style pricer tests");
     suite->add(QUANTLIB_TEST_CASE(&OldPricerTest::testMcSingleFactorPricers));
-     // FLOATING_POINT_EXCEPTION
-    suite->add(QUANTLIB_TEST_CASE(&OldPricerTest::testMcMultiFactorPricers));
     return suite;
 }
 

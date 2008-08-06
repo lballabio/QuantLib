@@ -248,8 +248,6 @@ test_suite* init_unit_test_suite(int, char*[]) {
     bm.push_back(Benchmark("MarketModelSmmTest::testMultiSmmSwaptions",
         &MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions,
         11231.11));
-    bm.push_back(Benchmark("OldPricer::McMultiFactorPricers",
-        &OldPricerTest::testMcMultiFactorPricers, 435.52));
     bm.push_back(Benchmark("QuantoOption::ForwardGreeks",
         &QuantoOptionTest::testForwardGreeks, 89.36));
     bm.push_back(Benchmark("RandomNumber::MersenneTwisterDescrepancy",

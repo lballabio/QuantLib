@@ -64,8 +64,9 @@ QL_TESTS = \
 	operators.hpp operators.cpp \
 	optimizers.hpp optimizers.cpp \
 	optionletstripper.hpp optionletstripper.cpp \
-	period.hpp period.cpp \
+	pagodaoption.hpp pagodaoption.cpp \
 	pathgenerator.hpp pathgenerator.cpp \
+	period.hpp period.cpp \
 	piecewiseyieldcurve.hpp piecewiseyieldcurve.cpp \
 	quantooption.hpp quantooption.cpp \
 	quotes.hpp quotes.cpp \

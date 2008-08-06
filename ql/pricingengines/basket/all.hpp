@@ -5,5 +5,6 @@
 #include <ql/pricingengines/basket/mcbasketengine.hpp>
 #include <ql/pricingengines/basket/mceverestengine.hpp>
 #include <ql/pricingengines/basket/mchimalayaengine.hpp>
+#include <ql/pricingengines/basket/mcpagodaengine.hpp>
 #include <ql/pricingengines/basket/stulzengine.hpp>
 
