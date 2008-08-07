@@ -6736,14 +6736,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\legacy\pricers\mcpagoda.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mcpagoda.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\legacy\pricers\mcperformanceoption.cpp"
 					>
 				</File>
