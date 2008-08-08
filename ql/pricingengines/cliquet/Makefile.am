@@ -5,11 +5,13 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
 	analyticcliquetengine.hpp \
-	analyticperformanceengine.hpp
+	analyticperformanceengine.hpp \
+	mcperformanceengine.hpp
 
 libCliquetEngines_la_SOURCES = \
     analyticcliquetengine.cpp \
-    analyticperformanceengine.cpp
+    analyticperformanceengine.cpp \
+    mcperformanceengine.cpp
 
 noinst_LTLIBRARIES = libCliquetEngines.la
 

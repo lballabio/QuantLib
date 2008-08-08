@@ -6783,14 +6783,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\legacy\pricers\mcperformanceoption.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mcperformanceoption.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\legacy\pricers\mcpricer.hpp"
 					>
 				</File>

@@ -7,7 +7,6 @@ this_include_HEADERS = \
     discretegeometricaso.hpp \
     mccliquetoption.hpp \
     mcdiscretearithmeticaso.hpp \
-    mcperformanceoption.hpp \
     mcpricer.hpp \
     singleassetoption.hpp
 
@@ -15,7 +14,6 @@ libPricers_la_SOURCES = \
     discretegeometricaso.cpp \
     mccliquetoption.cpp \
     mcdiscretearithmeticaso.cpp \
-    mcperformanceoption.cpp \
     singleassetoption.cpp
 
 noinst_LTLIBRARIES = libPricers.la

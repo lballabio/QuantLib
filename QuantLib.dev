@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=1305
+UnitCount=1303
 Type=2
 Ver=1
 ObjFiles=
@@ -2310,9 +2310,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit229]
-FileName=ql\legacy\pricers\mcperformanceoption.cpp
+FileName=ql\experimental\risk\all.hpp
 CompileCpp=1
-Folder=legacy/pricers
+Folder=experimental/risk
 Compile=1
 Link=1
 Priority=1000
@@ -2320,9 +2320,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit230]
-FileName=ql\legacy\pricers\mcperformanceoption.hpp
+FileName=ql\experimental\risk\sensitivityanalysis.cpp
 CompileCpp=1
-Folder=legacy/pricers
+Folder=experimental/risk
 Compile=1
 Link=1
 Priority=1000
@@ -13076,24 +13076,3 @@ Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
-
-[Unit1304]
-FileName=ql\experimental\risk\all.hpp
-CompileCpp=1
-Folder=experimental/risk
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit1305]
-FileName=ql\experimental\risk\sensitivityanalysis.cpp
-CompileCpp=1
-Folder=experimental/risk
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-

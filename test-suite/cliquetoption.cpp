@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004, 2007 StatPro Italia srl
+ Copyright (C) 2004, 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,6 +23,7 @@
 #include <ql/instruments/cliquetoption.hpp>
 #include <ql/pricingengines/cliquet/analyticcliquetengine.hpp>
 #include <ql/pricingengines/cliquet/analyticperformanceengine.hpp>
+#include <ql/pricingengines/cliquet/mcperformanceengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
@@ -36,7 +37,7 @@ using namespace boost::unit_test_framework;
 
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, v, \
                        expected, calculated, error, tolerance) \
-    BOOST_FAIL(payoff->optionType() << " option:\n" \
+    BOOST_ERROR(payoff->optionType() << " option:\n" \
                << "    spot value:       " << s << "\n" \
                << "    moneyness:        " << payoff->strike() << "\n" \
                << "    dividend yield:   " << io::rate(q) << "\n" \
@@ -272,11 +273,111 @@ void CliquetOptionTest::testPerformanceGreeks() {
 }
 
 
+void CliquetOptionTest::testMcPerformance() {
+    BOOST_MESSAGE(
+        "Testing Monte Carlo performance engine against analytic results...");
+
+    SavedSettings backup;
+
+    Option::Type types[] = { Option::Call, Option::Put };
+    Real moneyness[] = { 0.9, 1.1 };
+    Real underlyings[] = { 100.0 };
+    Rate qRates[] = { 0.04, 0.06 };
+    Rate rRates[] = { 0.01, 0.10 };
+    Integer lengths[] = { 2, 4 };
+    Frequency frequencies[] = { Semiannual, Quarterly };
+    Volatility vols[] = { 0.10, 0.90 };
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+    Settings::instance().evaluationDate() = today;
+
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
+
+    boost::shared_ptr<BlackScholesMertonProcess> process(
+                            new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                                          qTS, rTS, volTS));
+
+    for (Size i=0; i<LENGTH(types); i++) {
+      for (Size j=0; j<LENGTH(moneyness); j++) {
+        for (Size k=0; k<LENGTH(lengths); k++) {
+          for (Size kk=0; kk<LENGTH(frequencies); kk++) {
+
+              Period tenor = Period(frequencies[kk]);
+              boost::shared_ptr<EuropeanExercise> maturity(
+                              new EuropeanExercise(today + lengths[k]*tenor));
+
+              boost::shared_ptr<PercentageStrikePayoff> payoff(
+                          new PercentageStrikePayoff(types[i], moneyness[j]));
+
+              std::vector<Date> reset;
+              for (Date d = today + tenor; d < maturity->lastDate(); d += tenor)
+                  reset.push_back(d);
+
+              CliquetOption option(payoff, maturity, reset);
+
+              boost::shared_ptr<PricingEngine> refEngine(
+                                      new AnalyticPerformanceEngine(process));
+
+              boost::shared_ptr<PricingEngine> mcEngine(
+                            new MCPerformanceEngine<PseudoRandom>(process,
+                                                                  true, false,
+                                                                  Null<Size>(),
+                                                                  5.0e-3,
+                                                                  Null<Size>(),
+                                                                  42));
+
+              for (Size l=0; l<LENGTH(underlyings); l++) {
+                for (Size m=0; m<LENGTH(qRates); m++) {
+                  for (Size n=0; n<LENGTH(rRates); n++) {
+                    for (Size p=0; p<LENGTH(vols); p++) {
+
+                      Real u = underlyings[l];
+                      Rate q = qRates[m],
+                           r = rRates[n];
+                      Volatility v = vols[p];
+                      spot->setValue(u);
+                      qRate->setValue(q);
+                      rRate->setValue(r);
+                      vol->setValue(v);
+
+                      option.setPricingEngine(refEngine);
+                      Real refValue = option.NPV();
+
+                      option.setPricingEngine(mcEngine);
+                      Real value = option.NPV();
+
+                      Real error = std::fabs(refValue-value);
+                      Real tolerance = 1.0e-2;
+                      if (error > tolerance) {
+                          REPORT_FAILURE("value", payoff, maturity,
+                                         u, q, r, today, v,
+                                         refValue, value,
+                                         error, tolerance);
+                      }
+                    }
+                  }
+                }
+              }
+          }
+        }
+      }
+    }
+}
+
+
 test_suite* CliquetOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Cliquet option tests");
     suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testValues));
     suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testGreeks));
     suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testPerformanceGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testMcPerformance));
     return suite;
 }
 
