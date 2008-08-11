@@ -1645,56 +1645,6 @@
 				>
 			</File>
 			<File
-				RelativePath="old_pricers.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="operators.cpp"
 				>
 				<FileConfiguration
@@ -2475,10 +2425,6 @@
 			</File>
 			<File
 				RelativePath=".\nthtodefault.hpp"
-				>
-			</File>
-			<File
-				RelativePath="old_pricers.hpp"
 				>
 			</File>
 			<File

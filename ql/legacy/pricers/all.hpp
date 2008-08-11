@@ -3,7 +3,6 @@
 
 #include <ql/legacy/pricers/discretegeometricaso.hpp>
 #include <ql/legacy/pricers/mccliquetoption.hpp>
-#include <ql/legacy/pricers/mcdiscretearithmeticaso.hpp>
 #include <ql/legacy/pricers/mcpricer.hpp>
 #include <ql/legacy/pricers/singleassetoption.hpp>
 

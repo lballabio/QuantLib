@@ -1,7 +1,7 @@
 [Project]
 FileName=testsuite.dev
 Name=QuantLib-test-suite
-UnitCount=186
+UnitCount=184
 Type=1
 Ver=1
 ObjFiles=
@@ -318,7 +318,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit28]
-FileName=old_pricers.cpp
+FileName=pagodaoption.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1
@@ -698,7 +698,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit67]
-FileName=old_pricers.hpp
+FileName=pagodaoption.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1
@@ -1879,26 +1879,6 @@ BuildCmd=
 
 [Unit184]
 FileName=swaptionvolstructuresutilities.hpp
-CompileCpp=1
-Folder=QuantLib-test-suite
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit185]
-FileName=pagodaoption.cpp
-CompileCpp=1
-Folder=QuantLib-test-suite
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit186]
-FileName=pagodaoption.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1

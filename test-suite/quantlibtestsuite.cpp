@@ -129,8 +129,6 @@
 #include "varianceswaps.hpp"
 #include "volatilitymodels.hpp"
 #include "swaptionvolatilitymatrix.hpp"
-// to be deprecated
-#include "old_pricers.hpp"
 
 #include <iostream>
 #include <iomanip>
@@ -279,7 +277,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CompoundForwardTest::suite()); // fails with QL_USE_INDEXED_COUPON
     test->add(LiborMarketModelTest::suite());
     test->add(LiborMarketModelProcessTest::suite());
-    test->add(OldPricerTest::suite());
 
     test->add(QUANTLIB_TEST_CASE(stopTimer));
 

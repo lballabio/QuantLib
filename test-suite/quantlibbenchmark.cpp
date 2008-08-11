@@ -97,7 +97,6 @@
 #include "quantooption.hpp"
 #include "riskstats.hpp"
 #include "shortratemodels.hpp"
-#include "old_pricers.hpp"
 
 using namespace boost::unit_test_framework;
 

@@ -2270,9 +2270,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit225]
-FileName=ql\legacy\pricers\mcdiscretearithmeticaso.cpp
+FileName=ql\pricingengines\asian\mc_discr_arith_av_strike.cpp
 CompileCpp=1
-Folder=legacy/pricers
+Folder=pricingengines/asian
 Compile=1
 Link=1
 Priority=1000
@@ -2280,9 +2280,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit226]
-FileName=ql\legacy\pricers\mcdiscretearithmeticaso.hpp
+FileName=ql\pricingengines\asian\mc_discr_arith_av_strike.hpp
 CompileCpp=1
-Folder=legacy/pricers
+Folder=pricingengines/asian
 Compile=1
 Link=1
 Priority=1000

@@ -90,7 +90,6 @@ QL_TESTS = \
 	transformedgrid.hpp transformedgrid.cpp \
 	tqreigendecomposition.hpp tqreigendecomposition.cpp \
 	tracing.hpp tracing.cpp \
-	old_pricers.hpp old_pricers.cpp \
 	utilities.hpp utilities.cpp \
 	varianceswaps.hpp varianceswaps.cpp \
 	volatilitymodels.hpp volatilitymodels.cpp
@@ -115,7 +114,6 @@ QL_BENCHMARKS = \
 	quantooption.hpp quantooption.cpp \
 	riskstats.hpp riskstats.cpp \
 	shortratemodels.hpp shortratemodels.cpp \
-	old_pricers.hpp old_pricers.cpp \
 	utilities.hpp utilities.cpp
 
 dist-hook:

@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2005, 2007 StatPro Italia srl
+ Copyright (C) 2005, 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +26,7 @@
 #include <ql/pricingengines/asian/analytic_cont_geom_av_price.hpp>
 #include <ql/pricingengines/asian/mc_discr_geom_av_price.hpp>
 #include <ql/pricingengines/asian/mc_discr_arith_av_price.hpp>
+#include <ql/pricingengines/asian/mc_discr_arith_av_strike.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -610,6 +611,145 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
 
 }
 
+
+void AsianOptionTest::testMCDiscreteArithmeticAverageStrike() {
+
+    BOOST_MESSAGE(
+          "Testing Monte Carlo discrete arithmetic average-strike Asians...");
+
+    QL_TEST_START_TIMING
+
+    // data from "Asian Option", Levy, 1997
+    // in "Exotic Options: The State of the Art",
+    // edited by Clewlow, Strickland
+    DiscreteAverageData cases5[] = {
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 2,
+          0.13, true, 1.51917595129 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 4,
+          0.13, true, 1.67940165674 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 8,
+          0.13, true, 1.75371215251 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 12,
+          0.13, true, 1.77595318693 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 26,
+          0.13, true, 1.81430536630 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 52,
+          0.13, true, 1.82269246898 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 100,
+          0.13, true, 1.83822402464 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 250,
+          0.13, true, 1.83875059026 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 500,
+          0.13, true, 1.83750703638 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 1000,
+          0.13, true, 1.83887181884 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 2,
+          0.13, true, 1.51154400089 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 4,
+          0.13, true, 1.67103508506 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 8,
+          0.13, true, 1.74529684070 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 12,
+          0.13, true, 1.76667074564 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 26,
+          0.13, true, 1.80528400613 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 52,
+          0.13, true, 1.81400883891 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 100,
+          0.13, true, 1.82922901451 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 250,
+          0.13, true, 1.82937111773 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 500,
+          0.13, true, 1.82826193186 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 1000,
+          0.13, true, 1.82967846654 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 2,
+          0.13, true, 1.49648170891 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 4,
+          0.13, true, 1.65443100462 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 8,
+          0.13, true, 1.72817806731 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 12,
+          0.13, true, 1.74877367895 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 26,
+          0.13, true, 1.78733801988 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 52,
+          0.13, true, 1.79624826757 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 100,
+          0.13, true, 1.81114186876 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 250,
+          0.13, true, 1.81101152587 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 500,
+          0.13, true, 1.81002311939 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 1000,
+          0.13, true, 1.81145760308 }
+    };
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.06));
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+
+    Average::Type averageType = Average::Arithmetic;
+    Real runningSum = 0.0;
+    Size pastFixings = 0;
+    for (Size l=0; l<LENGTH(cases5); l++) {
+
+        boost::shared_ptr<StrikedTypePayoff> payoff(new
+            PlainVanillaPayoff(cases5[l].type, cases5[l].strike));
+
+        Time dt = cases5[l].length/(cases5[l].fixings-1);
+        std::vector<Time> timeIncrements(cases5[l].fixings);
+        std::vector<Date> fixingDates(cases5[l].fixings);
+        timeIncrements[0] = cases5[l].first;
+        fixingDates[0] = today + Integer(timeIncrements[0]*360+0.5);
+        for (Size i=1; i<cases5[l].fixings; i++) {
+            timeIncrements[i] = i*dt + cases5[l].first;
+            fixingDates[i] = today + Integer(timeIncrements[i]*360+0.5);
+        }
+        boost::shared_ptr<Exercise> exercise(new
+            EuropeanExercise(fixingDates[cases5[l].fixings-1]));
+
+        spot ->setValue(cases5[l].underlying);
+        qRate->setValue(cases5[l].dividendYield);
+        rRate->setValue(cases5[l].riskFreeRate);
+        vol  ->setValue(cases5[l].volatility);
+
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+            BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
+
+        boost::shared_ptr<PricingEngine> engine =
+            MakeMCDiscreteArithmeticASEngine<LowDiscrepancy>(stochProcess)
+            .withSeed(3456789)
+            .withSamples(1023);
+
+        DiscreteAveragingAsianOption option(averageType, runningSum,
+                                            pastFixings, fixingDates,
+                                            payoff, exercise);
+        option.setPricingEngine(engine);
+
+        Real calculated = option.NPV();
+        Real expected = cases5[l].result;
+        Real tolerance = 2.0e-2;
+        if (std::fabs(calculated-expected) > tolerance) {
+            REPORT_FAILURE("value", averageType, runningSum, pastFixings,
+                           fixingDates, payoff, exercise, spot->value(),
+                           qRate->value(), rRate->value(), today,
+                           vol->value(), expected, calculated, tolerance);
+        }
+    }
+
+}
+
 void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
 
     BOOST_MESSAGE("Testing discrete-averaging geometric Asian greeks...");
@@ -786,6 +926,8 @@ test_suite* AsianOptionTest::suite() {
         &AsianOptionTest::testMCDiscreteGeometricAveragePrice));
     suite->add(QUANTLIB_TEST_CASE(
         &AsianOptionTest::testMCDiscreteArithmeticAveragePrice));
+    suite->add(QUANTLIB_TEST_CASE(
+        &AsianOptionTest::testMCDiscreteArithmeticAverageStrike));
     suite->add(QUANTLIB_TEST_CASE(
         &AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks));
 

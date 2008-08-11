@@ -1038,12 +1038,6 @@
 					RelativePath=".\ql\legacy\pricers\mccliquetoption.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\legacy\pricers\mcdiscretearithmeticaso.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mcdiscretearithmeticaso.hpp">
-				</File>
-				<File
 					RelativePath=".\ql\legacy\pricers\mcpricer.hpp">
 				</File>
 				<File
@@ -4333,6 +4327,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\asian\mc_discr_arith_av_price.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\asian\mc_discr_arith_av_strike.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\asian\mc_discr_arith_av_strike.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\asian\mc_discr_geom_av_price.cpp">

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,6 +33,7 @@ class AsianOptionTest {
     static void testAnalyticDiscreteGeometricAveragePrice();
     static void testMCDiscreteGeometricAveragePrice();
     static void testMCDiscreteArithmeticAveragePrice();
+    static void testMCDiscreteArithmeticAverageStrike();
     static void testAnalyticDiscreteGeometricAveragePriceGreeks();
     static boost::unit_test_framework::test_suite* suite();
 };
