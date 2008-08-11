@@ -1353,6 +1353,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\instruments\pagodaoption.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\pagodaoption.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\instruments\payoffs.cpp"
 				>
 			</File>
@@ -5064,6 +5072,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\basket\mcpagodaengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\basket\mcpagodaengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath="ql\pricingengines\basket\stulzengine.cpp"
 					>
 					<FileConfiguration
@@ -5913,6 +5929,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\cliquet\analyticperformanceengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\cliquet\mcperformanceengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\cliquet\mcperformanceengine.hpp"
 					>
 				</File>
 			</Filter>

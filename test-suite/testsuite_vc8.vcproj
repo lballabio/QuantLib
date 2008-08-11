@@ -1757,6 +1757,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\pagodaoption.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\period.cpp"
 				>
 			</File>
@@ -2491,6 +2495,10 @@
 			</File>
 			<File
 				RelativePath=".\pathgenerator.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\pagodaoption.hpp"
 				>
 			</File>
 			<File

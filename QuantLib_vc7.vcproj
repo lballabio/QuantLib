@@ -898,6 +898,12 @@
 				RelativePath=".\ql\instruments\oneassetoption.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\instruments\pagodaoption.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\instruments\pagodaoption.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\instruments\payoffs.cpp">
 			</File>
 			<File
@@ -4616,6 +4622,12 @@
 					RelativePath=".\ql\pricingengines\basket\mchimalayaengine.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\basket\mcpagodaengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\basket\mcpagodaengine.hpp">
+				</File>
+				<File
 					RelativePath="ql\pricingengines\basket\stulzengine.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
@@ -5484,6 +5496,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\cliquet\analyticperformanceengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\cliquet\mcperformanceengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\cliquet\mcperformanceengine.hpp">
 				</File>
 			</Filter>
 			<Filter
