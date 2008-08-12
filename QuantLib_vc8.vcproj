@@ -3700,6 +3700,14 @@
 					Name="pathwisegreeks"
 					>
 					<File
+						RelativePath=".\ql\models\marketmodels\pathwisegreeks\bumpinstrumentjacobian.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\pathwisegreeks\bumpinstrumentjacobian.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\models\marketmodels\pathwisegreeks\ratepseudorootjacobian.cpp"
 						>
 					</File>
@@ -3713,6 +3721,14 @@
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\pathwisegreeks\swaptionpseudojacobian.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\pathwisegreeks\vegabumpcluster.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\pathwisegreeks\vegabumpcluster.hpp"
 						>
 					</File>
 				</Filter>

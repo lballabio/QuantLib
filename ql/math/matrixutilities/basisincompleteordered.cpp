@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
-Copyright (C) 2007 Mark Joshi
+Copyright (C) 2007, 2008 Mark Joshi
 
 This file is part of QuantLib, a free-software/open-source library
 for financial quantitative analysts and developers - http://quantlib.org/
@@ -210,6 +210,10 @@ namespace QuantLib {
 
         } //end of j loop
 
+        numberValidVectors_ =0;
+        for (Size i=0; i < numberVectors_; ++i)
+            numberValidVectors_ +=  validVectors_[i] ? 1 : 0;
+
 
     } // end of constructor
 
@@ -224,6 +228,11 @@ namespace QuantLib {
         return projectedVectors_[index];
     }
 
+
+  Size OrthogonalProjections::numberValidVectors() const
+  {
+        return numberValidVectors_;
+  }
 
 
 

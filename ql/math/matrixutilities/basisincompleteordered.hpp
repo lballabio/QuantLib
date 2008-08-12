@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Mark Joshi
+ Copyright (C) 2007, 2008 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -60,6 +60,8 @@ This class is tested in
         const std::vector<bool>& validVectors() const;
         const std::vector<Real>& GetVector(Size index) const;
 
+        Size numberValidVectors() const;
+
 
     private:
 
@@ -67,6 +69,7 @@ This class is tested in
         Matrix originalVectors_;
         Real multiplierCutoff_;
         Size numberVectors_;
+        Size numberValidVectors_;
         Size dimension_;
 
         //!outputs

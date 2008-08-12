@@ -104,7 +104,7 @@ namespace QuantLib {
     // 
     // The method is intimately connected with log-normal Euler evolution 
     // 
-    // We must work with continuously compounding MM account
+    // We must work with discretely compounding MM account
     // To compute a vega means changing the pseudo-square root at each time step
     // So for each vega, we have a vector of matrices. So we need a vector of vectors of matrices to compute all the vegas.
     // We do the outermost vector by time step and inner one by which vega.
