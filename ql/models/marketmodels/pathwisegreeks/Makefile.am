@@ -3,12 +3,16 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    bumpinstrumentjacobian.hpp \
     ratepseudorootjacobian.hpp \
-    swaptionpseudojacobian.hpp
+    swaptionpseudojacobian.hpp \
+    vegabumpcluster.hpp
 
 libMarketModelsPathwiseGreeks_la_SOURCES = \
+    bumpinstrumentjacobian.cpp \
     ratepseudorootjacobian.cpp \
-    swaptionpseudojacobian.cpp
+    swaptionpseudojacobian.cpp \
+    vegabumpcluster.cpp
 
 noinst_LTLIBRARIES = libMarketModelsPathwiseGreeks.la
 
