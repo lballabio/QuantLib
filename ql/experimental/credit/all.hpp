@@ -8,4 +8,5 @@
 #include <ql/experimental/credit/onefactorcopula.hpp>
 #include <ql/experimental/credit/onefactorgaussiancopula.hpp>
 #include <ql/experimental/credit/onefactorstudentcopula.hpp>
+#include <ql/experimental/credit/riskyassetswap.hpp>
 

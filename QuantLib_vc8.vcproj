@@ -7210,6 +7210,14 @@
 					RelativePath=".\ql\experimental\credit\onefactorstudentcopula.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\riskyassetswap.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\riskyassetswap.hpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="mcbasket"

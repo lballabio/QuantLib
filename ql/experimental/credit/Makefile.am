@@ -10,7 +10,8 @@ this_include_HEADERS = \
     nthtodefault.hpp \
     onefactorcopula.hpp \
     onefactorgaussiancopula.hpp \
-    onefactorstudentcopula.hpp
+    onefactorstudentcopula.hpp \
+    riskyassetswap.hpp
 
 libCredit_la_SOURCES = \
     cdsoption.cpp \
@@ -19,7 +20,8 @@ libCredit_la_SOURCES = \
     nthtodefault.cpp \
     onefactorcopula.cpp \
     onefactorgaussiancopula.cpp \
-    onefactorstudentcopula.cpp
+    onefactorstudentcopula.cpp \
+    riskyassetswap.cpp
 
 noinst_LTLIBRARIES = libCredit.la
 
