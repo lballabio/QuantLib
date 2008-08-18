@@ -69,7 +69,7 @@ namespace QuantLib {
         Date optionDate = Date(static_cast<BigInteger>(
             optionInterpolator_(optionTime)));
         Rounding rounder(0);
-        Period swapTenor(static_cast<Integer>(rounder(swapLength/12.0)), Months);
+        Period swapTenor(static_cast<Integer>(rounder(swapLength*12.0)), Months);
         return smileSectionImpl(optionDate, swapTenor);
     }
 
