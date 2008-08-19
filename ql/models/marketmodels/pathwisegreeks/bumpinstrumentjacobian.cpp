@@ -64,7 +64,7 @@ namespace QuantLib
                 for (Size i= bumps_.allBumps()[k].stepBegin(); i < bumps_.allBumps()[k].stepEnd(); ++i)
                 {
                     const Matrix& fullDerivative = thisPseudo.volatilityDerivative(i);
-                    for (Size f= bumps_.allBumps()[k].factorBegin(); f < bumps_.allBumps()[k].factorBegin(); ++f)
+                    for (Size f= bumps_.allBumps()[k].factorBegin(); f < bumps_.allBumps()[k].factorEnd(); ++f)
                         for (Size r= bumps_.allBumps()[k].rateBegin(); r < bumps_.allBumps()[k].rateEnd(); ++r)
                             v += fullDerivative[r][f];
                 }
@@ -126,7 +126,7 @@ namespace QuantLib
     const Matrix& VolatilityBumpInstrumentJacobian::getAllOnePercentBumps() const
     {
         if (!allComputed_)
-             for (Size i=0; i < bumps_.numberBumps(); ++i)
+             for (Size i=0; i <swaptions_.size()+caps_.size(); ++i)
                 derivativesVolatility(i);
 
         allComputed_ =true;
@@ -184,7 +184,7 @@ namespace QuantLib
 
         Size bumpIndex =0;
 
-        for (Size instrument=0; instrument < derivativesProducer_.getInputBumps().numberBumps(); ++instrument)
+        for (Size instrument=0; instrument < projector.validVectors().size(); ++instrument)
         {
             if (projector.validVectors()[instrument])
             {

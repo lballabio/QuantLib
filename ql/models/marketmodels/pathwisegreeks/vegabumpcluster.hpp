@@ -88,6 +88,14 @@ namespace QuantLib
 
     };
 
+    /*! 
+    There are too many pseudo-root elements to allow bumping them all independently so we cluster them together and 
+    then divide all elements into a collection of such clusters. 
+   
+
+
+    */
+
     class VegaBumpCollection
     {
     public:

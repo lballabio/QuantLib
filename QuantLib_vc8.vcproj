@@ -3314,6 +3314,14 @@
 							RelativePath=".\ql\models\marketmodels\products\pathwise\pathwiseproductcaplet.hpp"
 							>
 						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\pathwise\pathwiseproductswaption.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\pathwise\pathwiseproductswaption.hpp"
+							>
+						</File>
 					</Filter>
 				</Filter>
 				<Filter

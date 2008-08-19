@@ -81,6 +81,8 @@ namespace QuantLib
 
     Get out pseudo-root bumps that shift each implied vol by one percent, and leave the other instruments fixed. 
 
+    If the contribution of an instrument is too correlated with other instruments used, discard it. 
+
     */
 
     class OrthogonalizedBumpFinder
@@ -89,8 +91,8 @@ namespace QuantLib
             OrthogonalizedBumpFinder(const VegaBumpCollection& bumps,
                                      const std::vector<VolatilityBumpInstrumentJacobian::Swaption>& swaptions,
                                      const std::vector<VolatilityBumpInstrumentJacobian::Cap>& caps,
-                                     Real multiplierCutOff,
-                                     Real tolerance);
+                                     Real multiplierCutOff, // if vector length grows by more than this discard
+                                     Real tolerance);      // if vector projection before scaling less than this discard
 
             void GetVegaBumps(std::vector<std::vector<Matrix> >& theBumps) const; // this is precisely the vector to pass into PathwiseVegasAccountingEngine
              

@@ -198,7 +198,7 @@ namespace QuantLib {
           const EvolutionDescription& evolution(volStructure.evolution());
           Size factors = volStructure.numberOfFactors();
 
-          while (startIndex >= evolution.firstAliveRate()[index] )
+          while (index < evolution.numberOfSteps() && startIndex >= evolution.firstAliveRate()[index] )
           {
               const Matrix& thisPseudo = volStructure.pseudoRoot(index);
               Real thisVariance =0.0;

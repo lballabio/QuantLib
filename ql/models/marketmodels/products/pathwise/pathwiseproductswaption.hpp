@@ -1,3 +1,4 @@
+ 
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
@@ -18,40 +19,33 @@
 */
 
 
-#ifndef quantlib_market_model_pathwise_caplet_hpp
-#define quantlib_market_model_pathwise_caplet_hpp
+#ifndef quantlib_market_model_pathwise_swaption_hpp
+#define quantlib_market_model_pathwise_swaption_hpp
 
 #include <ql/types.hpp>
 #include <vector>
 #include <memory>
 #include <ql/models/marketmodels/pathwisemultiproduct.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
 
 namespace QuantLib {
 
     class EvolutionDescription;
     class CurveState;
 
-    //! market-model pathwise caplet
-    /*! implementation of path wise methodology for caplets, essentially a test class
-    since we have better ways of computing Greeks of caplets
-
-    used in   MarketModelTest::testPathwiseVegas
-    and       MarketModelTest::testPathwiseGreeks
-
+    /*!
+    Main use is to test market pathwise vegas. The swaptions are payers and co-terminal. 
     */
-
-    class MarketModelPathwiseMultiCaplet : public MarketModelPathwiseMultiProduct
+class MarketModelPathwiseCoterminalSwaptionsDeflated : public MarketModelPathwiseMultiProduct
     {
      public:
         
-       MarketModelPathwiseMultiCaplet(
+       MarketModelPathwiseCoterminalSwaptionsDeflated(
                           const std::vector<Time>& rateTimes,
-                          const std::vector<Real>& accruals,
-                          const std::vector<Time>& paymentTimes,
                           const std::vector<Rate>& strikes);
 
-        virtual ~MarketModelPathwiseMultiCaplet() {}
+        virtual ~MarketModelPathwiseCoterminalSwaptionsDeflated() {}
 
         virtual std::vector<Size> suggestedNumeraires() const;
         virtual const EvolutionDescription& evolution() const;
@@ -66,9 +60,8 @@ namespace QuantLib {
         //! during simulation put product at start of path
         virtual void reset();
 
-             //! return value indicates whether path is finished, TRUE means done
-  
-          virtual bool nextTimeStep(
+        //! return value indicates whether path is finished, TRUE means done  
+        virtual bool nextTimeStep(
             const CurveState& currentState,
             std::vector<Size>& numberCashFlowsThisStep,
             std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >& cashFlowsGenerated) ;
@@ -78,8 +71,6 @@ namespace QuantLib {
 
     private:
         std::vector<Real> rateTimes_;
-        std::vector<Real> accruals_;
-        std::vector<Time> paymentTimes_;
         std::vector<Rate> strikes_;
         Size numberRates_;
         // things that vary in a path
@@ -88,17 +79,20 @@ namespace QuantLib {
         EvolutionDescription evolution_;
     };
 
-    class MarketModelPathwiseMultiDeflatedCaplet : public MarketModelPathwiseMultiProduct
+  /*!
+  Easiest way to test MarketModelPathwiseCoterminalSwaptionsDeflated is by doing a numerical differentiation version. 
+
+  */
+class MarketModelPathwiseCoterminalSwaptionsNumericalDeflated : public MarketModelPathwiseMultiProduct
     {
      public:
         
-       MarketModelPathwiseMultiDeflatedCaplet(
+       MarketModelPathwiseCoterminalSwaptionsNumericalDeflated(
                           const std::vector<Time>& rateTimes,
-                          const std::vector<Real>& accruals,
-                          const std::vector<Time>& paymentTimes,
-                          const std::vector<Rate>& strikes);
+                          const std::vector<Rate>& strikes,
+                          Real bumpSize_);
 
-        virtual ~MarketModelPathwiseMultiDeflatedCaplet() {}
+        virtual ~MarketModelPathwiseCoterminalSwaptionsNumericalDeflated() {}
 
         virtual std::vector<Size> suggestedNumeraires() const;
         virtual const EvolutionDescription& evolution() const;
@@ -113,9 +107,8 @@ namespace QuantLib {
         //! during simulation put product at start of path
         virtual void reset();
 
-             //! return value indicates whether path is finished, TRUE means done
-  
-          virtual bool nextTimeStep(
+        //! return value indicates whether path is finished, TRUE means done  
+        virtual bool nextTimeStep(
             const CurveState& currentState,
             std::vector<Size>& numberCashFlowsThisStep,
             std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >& cashFlowsGenerated) ;
@@ -125,16 +118,23 @@ namespace QuantLib {
 
     private:
         std::vector<Real> rateTimes_;
-        std::vector<Real> accruals_;
-        std::vector<Time> paymentTimes_;
         std::vector<Rate> strikes_;
         Size numberRates_;
         // things that vary in a path
         Size currentIndex_;
         
         EvolutionDescription evolution_;
+
+        Real bumpSize_;
+        LMMCurveState up_;
+        LMMCurveState down_;
+        std::vector<Rate> forwards_;
     };
+
+  
 
 
 }
+
+
 #endif

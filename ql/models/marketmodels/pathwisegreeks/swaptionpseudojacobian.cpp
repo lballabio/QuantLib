@@ -52,7 +52,7 @@ namespace QuantLib
         variance_=0.0;
         Size index=0;
 
-        while (inputModel->evolution().firstAliveRate()[index] <= startIndex)
+        while (index <  inputModel->evolution().numberOfSteps() && inputModel->evolution().firstAliveRate()[index] <= startIndex)
         {   
             const Matrix& thisPseudo = inputModel->pseudoRoot(index);
 

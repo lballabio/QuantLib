@@ -213,7 +213,7 @@ namespace QuantLib {
     {
             std::vector<Size> numeraires(numberRates_);
             for (Size i=0; i < numberRates_; ++i)
-                numeraires[i] = i+1;
+                numeraires[i] = i;
 
             return numeraires;
     }
