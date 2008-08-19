@@ -3307,6 +3307,10 @@
 						Name="pathwise"
 						>
 						<File
+							RelativePath=".\ql\models\marketmodels\products\pathwise\all.hpp"
+							>
+						</File>
+						<File
 							RelativePath=".\ql\models\marketmodels\products\pathwise\pathwiseproductcaplet.cpp"
 							>
 						</File>
@@ -3707,6 +3711,10 @@
 				<Filter
 					Name="pathwisegreeks"
 					>
+					<File
+						RelativePath=".\ql\models\marketmodels\pathwisegreeks\all.hpp"
+						>
+					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\pathwisegreeks\bumpinstrumentjacobian.cpp"
 						>
