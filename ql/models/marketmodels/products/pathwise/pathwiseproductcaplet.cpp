@@ -344,7 +344,8 @@ namespace QuantLib {
 
     std::auto_ptr<MarketModelPathwiseMultiProduct> MarketModelPathwiseMultiDeflatedCap::clone() const
     {
-        return new MarketModelPathwiseMultiDeflatedCap(*this);
+        return std::auto_ptr<MarketModelPathwiseMultiProduct>(
+                              new MarketModelPathwiseMultiDeflatedCap(*this));
     }
 
 }
