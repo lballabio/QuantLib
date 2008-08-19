@@ -135,6 +135,61 @@ namespace QuantLib {
         EvolutionDescription evolution_;
     };
 
+    /*! MarketModelPathwiseMultiDeflatedCap to price several caps and get their derivatives
+    simultaneously. Mainly useful for testing pathwise market vegas code. 
+        
+    */
+
+  class MarketModelPathwiseMultiDeflatedCap : public MarketModelPathwiseMultiProduct
+    {
+     public:
+        
+       MarketModelPathwiseMultiDeflatedCap(
+                          const std::vector<Time>& rateTimes,
+                          const std::vector<Real>& accruals,
+                          const std::vector<Time>& paymentTimes,
+                          const std::vector<Rate>& strikes,
+                          const std::vector<std::pair<Size,Size> >& startsAndEnds);
+
+        virtual ~MarketModelPathwiseMultiDeflatedCap() {}
+
+        virtual std::vector<Size> suggestedNumeraires() const;
+        virtual const EvolutionDescription& evolution() const;
+        virtual std::vector<Time> possibleCashFlowTimes() const;
+        virtual Size numberOfProducts() const;
+        virtual Size maxNumberOfCashFlowsPerProductPerStep() const;
+
+        // has division by the numeraire already been done?
+        virtual bool alreadyDeflated() const;
+
+
+        //! during simulation put product at start of path
+        virtual void reset();
+
+             //! return value indicates whether path is finished, TRUE means done
+  
+          virtual bool nextTimeStep(
+            const CurveState& currentState,
+            std::vector<Size>& numberCashFlowsThisStep,
+            std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >& cashFlowsGenerated) ;
+    
+        //! returns a newly-allocated copy of itself
+        virtual std::auto_ptr<MarketModelPathwiseMultiProduct> clone() const;
+
+    private:
+        MarketModelPathwiseMultiDeflatedCaplet underlyingCaplets_;
+     
+        Size numberRates_;
+
+        std::vector<std::pair<Size,Size> > startsAndEnds_;
+
+        // things that vary in a path
+        Size currentIndex_;
+        std::vector<Size> innerCashFlowSizes_;
+        std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> > innerCashFlowsGenerated_;
+         
+    };
+
 
 }
 #endif

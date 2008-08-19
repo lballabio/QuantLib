@@ -3175,7 +3175,8 @@ void MarketModelTest::testPathwiseMarketVegas()
 
             // the bumps is now the bumps required to get a one percent implied vol in each instrumnet
             // indexed by step, instrument, pseudo-root matrix
-            // if we dot product with swaption derivatives, we should get the vegas
+            // if we dot product with swaption derivatives, we should get a 1% change in imp vol on the diagonal
+            // and zero off it 
 
             Matrix vegasMatrix(swaptionsDeflated.numberOfProducts(), theBumps[0].size());
 
@@ -3186,35 +3187,45 @@ void MarketModelTest::testPathwiseMarketVegas()
                     swaptions[i].startIndex_,
                     swaptions[i].endIndex_);
 
-                vegasMatrix[i][i] = 0;
+               
+                for (Size j=0; j < swaptionsDeflated.numberOfProducts(); ++j) 
+                {
+                     vegasMatrix[i][j] = 0;
+
 
                 for (Size k=0; k < steps; ++k)
                     for (Size l=0; l < numberRates; ++l)
                         for (Size m=0; m < factors; ++m)
-                            vegasMatrix[i][i] += theBumps[k][i][l][m]*thisPseudoDerivative.volatilityDerivative(k)[l][m];
-
+                            vegasMatrix[i][j] += theBumps[k][j][l][m]*thisPseudoDerivative.volatilityDerivative(k)[l][m];
+                }
             }
-
 
             Size numberDiagonalFailures = 0;
             Size offDiagonalFailures=0;
 
-
             for (Size i=0; i < swaptions.size(); ++i)
             {
-                Real thisError = vegasMatrix[i][i] - 0.01;
+                for (Size j=0; j < swaptions.size(); ++j)
+                {
+                    if (i == j)
+                    {    
+                        Real thisError = vegasMatrix[i][i] - 0.01;
 
-                if (fabs(thisError) > 1e-8)
-                    ++numberDiagonalFailures;
+                        if (fabs(thisError) > 1e-8)
+                            ++numberDiagonalFailures;
+                    }
+                    else
+                    {
+                         Real thisError = vegasMatrix[i][j];
 
-
-
-
-
+                        if (fabs(thisError) > 1e-8)
+                            ++offDiagonalFailures;
+                    }
+                }
             }
 
 
-            if (numberDiagonalFailures >0)
+            if (numberDiagonalFailures + offDiagonalFailures>0 )
                 BOOST_FAIL("Pathwise market vega analytic test fails for coterminal swaptions : " << offDiagonalFailures <<" off diagonal failures \n "
                 << " and " << numberDiagonalFailures << " on the diagonal." );
 

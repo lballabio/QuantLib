@@ -36,6 +36,7 @@ namespace QuantLib {
 
     /*!
     Main use is to test market pathwise vegas. The swaptions are payers and co-terminal. 
+    The class is tested in TestPathwiseVegas by running against the numerical version below. 
     */
 class MarketModelPathwiseCoterminalSwaptionsDeflated : public MarketModelPathwiseMultiProduct
     {
