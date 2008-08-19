@@ -3086,14 +3086,17 @@ void MarketModelTest::testPathwiseMarketVegas()
     MultiStepOptionlets dummyProduct(rateTimes, accruals,
         paymentTimes, payoffs);
 
-     Real bumpSizeNumericalDifferentiation = 1E-6;
-    MarketModelPathwiseCoterminalSwaptionsNumericalDeflated swaptionsDeflated(rateTimes, cs.coterminalSwapRates(),bumpSizeNumericalDifferentiation);
+    Real bumpSizeNumericalDifferentiation = 1E-6;
+
+    MarketModelPathwiseCoterminalSwaptionsDeflated swaptionsDeflated(rateTimes, cs.coterminalSwapRates());
+    MarketModelPathwiseCoterminalSwaptionsNumericalDeflated swaptionsDeflated2(rateTimes, cs.coterminalSwapRates(),bumpSizeNumericalDifferentiation);
+
 
     EvolutionDescription evolution = dummyProduct.evolution();
     Size steps = evolution.numberOfSteps();
     Size numberRates = evolution.numberOfRates();
 
-   
+
     Real vegaBumpSize = 1e-2;
     Size pathsToDo =10; // for the numerical differentiation test we are requiring equality on each path so this is actually quite strict
     Size pathsToDoSimulation = paths_;
@@ -3126,8 +3129,8 @@ void MarketModelTest::testPathwiseMarketVegas()
         ExponentialCorrelationAbcdVolatility 
     };
     /////////////////////////////////// 
-        /////////////////////////////////// 
-// test analytically first, it's faster!
+    /////////////////////////////////// 
+    // test analytically first, it's faster!
 
     for (Size j=0; j<LENGTH(marketModels); j++)
     {
@@ -3143,21 +3146,21 @@ void MarketModelTest::testPathwiseMarketVegas()
         {
             Size factors = testedFactors[m];
 
-              
+
             bool logNormal = true;
 
             boost::shared_ptr<MarketModel> marketModel =
                 makeMarketModel(logNormal, evolution, factors,
                 marketModels[j]);
 
-        
 
-             
+
+
 
             // we need to work out our bumps
 
             VegaBumpCollection possibleBumps(marketModel, 
-                                             allowFactorwiseBumping); 
+                allowFactorwiseBumping); 
 
 
             OrthogonalizedBumpFinder  bumpFinder(possibleBumps,
@@ -3179,28 +3182,28 @@ void MarketModelTest::testPathwiseMarketVegas()
 
             for (Size i=0; i < swaptionsDeflated.numberOfProducts(); ++i)       
             {       
-                    SwaptionPseudoDerivative thisPseudoDerivative(marketModel,
-                                                                  swaptions[i].startIndex_,
-                                                                  swaptions[i].endIndex_);
+                SwaptionPseudoDerivative thisPseudoDerivative(marketModel,
+                    swaptions[i].startIndex_,
+                    swaptions[i].endIndex_);
 
-                    vegasMatrix[i][i] = 0;
+                vegasMatrix[i][i] = 0;
 
-                    for (Size k=0; k < steps; ++k)
-                        for (Size l=0; l < numberRates; ++l)
-                            for (Size m=0; m < factors; ++m)
-                                vegasMatrix[i][i] += theBumps[k][i][l][m]*thisPseudoDerivative.volatilityDerivative(k)[l][m];
+                for (Size k=0; k < steps; ++k)
+                    for (Size l=0; l < numberRates; ++l)
+                        for (Size m=0; m < factors; ++m)
+                            vegasMatrix[i][i] += theBumps[k][i][l][m]*thisPseudoDerivative.volatilityDerivative(k)[l][m];
 
             }
 
-           
+
             Size numberDiagonalFailures = 0;
             Size offDiagonalFailures=0;
-         
+
 
             for (Size i=0; i < swaptions.size(); ++i)
             {
                 Real thisError = vegasMatrix[i][i] - 0.01;
-            
+
                 if (fabs(thisError) > 1e-8)
                     ++numberDiagonalFailures;
 
@@ -3209,18 +3212,130 @@ void MarketModelTest::testPathwiseMarketVegas()
 
 
             }
-         
+
 
             if (numberDiagonalFailures >0)
-                   BOOST_FAIL("Pathwise market vega analytic test fails for coterminal swaptions : " << offDiagonalFailures <<" off diagonal failures \n "
-                              << " and " << numberDiagonalFailures << " on the diagonal." );
+                BOOST_FAIL("Pathwise market vega analytic test fails for coterminal swaptions : " << offDiagonalFailures <<" off diagonal failures \n "
+                << " and " << numberDiagonalFailures << " on the diagonal." );
 
 
-                
-        
+
+
         } // end of  for (Size m=0; m<LENGTH(testedFactors); ++m) 
     } // end of   for (Size j=0; j<LENGTH(marketModels); j++)
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // test numerically differentiated swaptions against analytically done ones
+    // we require equality on very path so we don't need many paths
+
+
+    std::vector<Size> numberCashFlowsThisStep1(swaptionsDeflated.numberOfProducts());
+
+    std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> > cashFlowsGenerated1(swaptionsDeflated.numberOfProducts());
+
+
+    for (Size i=0; i < swaptionsDeflated.numberOfProducts(); ++i)
+    {
+        cashFlowsGenerated1[i].resize(swaptionsDeflated.maxNumberOfCashFlowsPerProductPerStep());
+        for (Size j=0; j < swaptionsDeflated.maxNumberOfCashFlowsPerProductPerStep(); ++j)
+            cashFlowsGenerated1[i][j].amount.resize(numberRates+1);
+    }
+
+    std::vector<Size> numberCashFlowsThisStep2(numberCashFlowsThisStep1);
+    std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> > 
+        cashFlowsGenerated2(cashFlowsGenerated1);
+
+
+
+    for (Size j=0; j<LENGTH(marketModels); j++)
+    {
+
+        Size testedFactors[] = { std::min<Size>(1UL,todaysForwards.size())
+            //    todaysForwards.size()
+            //, 4, 8, 
+        };
+
+
+
+
+        for (Size m=0; m<LENGTH(testedFactors); ++m) 
+        {
+            Size factors = testedFactors[m];
+
+            MTBrownianGeneratorFactory generatorFactory(seed_);
+
+            bool logNormal = true;
+
+            boost::shared_ptr<MarketModel> marketModel =
+                makeMarketModel(logNormal, evolution, factors,
+                marketModels[j]);
+
+            LogNormalFwdRateEuler evolver1(marketModel,
+                generatorFactory,swaptionsDeflated.suggestedNumeraires()
+                );
+
+            LogNormalFwdRateEuler evolver2(marketModel,
+                generatorFactory,swaptionsDeflated.suggestedNumeraires()
+                );
+
+            for (Size p=0; p < pathsToDo; ++p)
+            {
+                evolver1.startNewPath();
+                swaptionsDeflated.reset();
+                evolver2.startNewPath();
+                swaptionsDeflated2.reset();
+                Size step =0;
+
+                bool done,done2;
+
+                do
+                {
+                    evolver1.advanceStep();
+                    done = swaptionsDeflated.nextTimeStep(evolver1.currentState(),
+                        numberCashFlowsThisStep1,
+                        cashFlowsGenerated1);
+
+                    evolver2.advanceStep();
+                    done2 = swaptionsDeflated2.nextTimeStep(evolver2.currentState(),
+                        numberCashFlowsThisStep2,
+                        cashFlowsGenerated2);
+
+                    if (done != done2)
+                        BOOST_FAIL("numerical swaptions derivative and swaptions disagree on termination");
+
+                    for (Size prod = 0; prod <  swaptionsDeflated.numberOfProducts(); ++prod)
+                    {
+                        if (numberCashFlowsThisStep1[prod] != numberCashFlowsThisStep2[prod])
+                            BOOST_FAIL("numerical swaptions derivative and swaptions disagree on number of cash flows");
+
+                        for (Size cf =0; cf < numberCashFlowsThisStep1[prod]; ++cf)
+                            for (Size rate=0; rate<= numberRates; ++rate)
+                                if ( fabs(cashFlowsGenerated1[prod][cf].amount[rate] -  cashFlowsGenerated2[prod][cf].amount[rate]) > tolerance )
+                                    BOOST_FAIL("numerical swaptions derivative and swaptions disagree on cash flow size. cf = " << cf << 
+                                    "step " << step << ", rate " << rate << ", amount1 " << cashFlowsGenerated1[prod][cf].amount[rate]
+                                << " ,amount2 " << cashFlowsGenerated2[prod][cf].amount[rate] << "\n");
+
+
+
+
+
+                    }
+
+                    ++step;
+
+
+                }
+                while (!done);
+
+
+
+            }
+
+
+        } // end of  for (Size m=0; m<LENGTH(testedFactors); ++m) 
+    } // end of   for (Size j=0; j<LENGTH(marketModels); j++)
+
+    /////////////////////////////////////
+
 
     for (Size j=0; j<LENGTH(marketModels); j++)
     {
@@ -3249,9 +3364,9 @@ void MarketModelTest::testPathwiseMarketVegas()
                 generatorFactory,swaptionsDeflated.suggestedNumeraires()
                 );
 
-             Size initialNumeraire = evolver.numeraires().front();
-             Real initialNumeraireValue =
-                        todaysDiscounts[initialNumeraire];
+            Size initialNumeraire = evolver.numeraires().front();
+            Real initialNumeraireValue =
+                todaysDiscounts[initialNumeraire];
 
 
             // we need to work out our bumps
@@ -3289,7 +3404,7 @@ void MarketModelTest::testPathwiseMarketVegas()
 
             // we now have the simulation vegas, put them in more convenient form 
 
-            
+
             Matrix vegasMatrix(swaptionsDeflated.numberOfProducts(), theBumps[0].size());
             Matrix standardErrors(vegasMatrix);
             Size entriesPerProduct = 1+swaptionsDeflated.numberOfProducts()+theBumps[0].size();
@@ -3301,77 +3416,77 @@ void MarketModelTest::testPathwiseMarketVegas()
                     standardErrors[i][j] = errors[i*entriesPerProduct + swaptionsDeflated.numberOfProducts() +j];        
                 }
 
-            // we next get the model vegas for comparison
+                // we next get the model vegas for comparison
 
-            std::vector<Real> impliedVols_(swaptions.size());
+                std::vector<Real> impliedVols_(swaptions.size());
 
-            for (Size i=0; i < swaptions.size(); ++i)
-                impliedVols_[i] = SwapForwardMappings::swaptionImpliedVolatility(*marketModel,
-                                                                                 swaptions[i].startIndex_,
-                                                                                 swaptions[i].endIndex_);
+                for (Size i=0; i < swaptions.size(); ++i)
+                    impliedVols_[i] = SwapForwardMappings::swaptionImpliedVolatility(*marketModel,
+                    swaptions[i].startIndex_,
+                    swaptions[i].endIndex_);
 
-            std::vector<Real> analyticVegas(swaptions.size());
-            for (Size i=0; i < swaptions.size(); ++i)
-            {
-                Real swapRate = cs.coterminalSwapRates()[i];
-                Real annuity =  cs.coterminalSwapAnnuity(0,i)*initialNumeraireValue;
-                Real expiry = rateTimes[i];
-                Real sd = impliedVols_[i]*sqrt(expiry);
-                Real swapDisplacement=0.0;
-
-                Real vega = blackFormulaVolDerivative(swapRate,
-                                      swapRate,
-                                      sd,
-                                      expiry,
-                                      annuity,
-                                      swapDisplacement);
-
-                analyticVegas[i] = vega*0.01; // one percent move
-
-            }
-
-            // diagonal vegas should agree up to standard errors
-            // off diagonal vegas should be zero 
-         
-            Size numberDiagonalFailures = 0;
-            Size offDiagonalFailures=0;
-
-
-            for (Size i=0; i < swaptions.size(); ++i)
-            {
-                Real thisError = vegasMatrix[i][i] - analyticVegas[i];
-                Real thisErrorInSds = thisError /  (standardErrors[i][i]+1E-6); // silly to penalize for tiny standard error
-
-                if (fabs(thisErrorInSds) > 4)
-                    ++numberDiagonalFailures;
-
-
-
-
-
-            }
-            
-            for (Size i=0; i < swaptions.size(); ++i)
-                for (Size j=0; j < swaptions.size(); ++j)
+                std::vector<Real> analyticVegas(swaptions.size());
+                for (Size i=0; i < swaptions.size(); ++i)
                 {
-                    if ( i !=j )
-                    {
-                         Real thisError = vegasMatrix[i][j]; // true value is zero
+                    Real swapRate = cs.coterminalSwapRates()[i];
+                    Real annuity =  cs.coterminalSwapAnnuity(0,i)*initialNumeraireValue;
+                    Real expiry = rateTimes[i];
+                    Real sd = impliedVols_[i]*sqrt(expiry);
+                    Real swapDisplacement=0.0;
 
-                         Real thisErrorInSds = thisError /  (standardErrors[i][i]+1E-6);
+                    Real vega = blackFormulaVolDerivative(swapRate,
+                        swapRate,
+                        sd,
+                        expiry,
+                        annuity,
+                        swapDisplacement);
 
-                         if (fabs(thisErrorInSds) > 3.5) 
-                                ++offDiagonalFailures;
-                    }
+                    analyticVegas[i] = vega*0.01; // one percent move
+
                 }
 
-            if (offDiagonalFailures + numberDiagonalFailures >0)
-                   BOOST_FAIL("Pathwise market vega test fails for coterminal swaptions : " << offDiagonalFailures <<" off diagonal failures \n "
-                              << " and " << numberDiagonalFailures << " on the diagonal." );
+                // diagonal vegas should agree up to standard errors
+                // off diagonal vegas should be zero 
+
+                Size numberDiagonalFailures = 0;
+                Size offDiagonalFailures=0;
 
 
-                
-        
+                for (Size i=0; i < swaptions.size(); ++i)
+                {
+                    Real thisError = vegasMatrix[i][i] - analyticVegas[i];
+                    Real thisErrorInSds = thisError /  (standardErrors[i][i]+1E-6); // silly to penalize for tiny standard error
+
+                    if (fabs(thisErrorInSds) > 4)
+                        ++numberDiagonalFailures;
+
+
+
+
+
+                }
+
+                for (Size i=0; i < swaptions.size(); ++i)
+                    for (Size j=0; j < swaptions.size(); ++j)
+                    {
+                        if ( i !=j )
+                        {
+                            Real thisError = vegasMatrix[i][j]; // true value is zero
+
+                            Real thisErrorInSds = thisError /  (standardErrors[i][i]+1E-6);
+
+                            if (fabs(thisErrorInSds) > 3.5) 
+                                ++offDiagonalFailures;
+                        }
+                    }
+
+                    if (offDiagonalFailures + numberDiagonalFailures >0)
+                        BOOST_FAIL("Pathwise market vega test fails for coterminal swaptions : " << offDiagonalFailures <<" off diagonal failures \n "
+                        << " and " << numberDiagonalFailures << " on the diagonal." );
+
+
+
+
         } // end of  for (Size m=0; m<LENGTH(testedFactors); ++m) 
     } // end of   for (Size j=0; j<LENGTH(marketModels); j++)
 

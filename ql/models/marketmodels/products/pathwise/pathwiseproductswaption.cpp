@@ -76,12 +76,13 @@ namespace QuantLib {
             
             for (Size k=currentIndex_; k < numberRates_; ++k)
             {
-              cashFlowsGenerated[currentIndex_][0].amount[k+1]  = annuity; // main part of derivative
+              cashFlowsGenerated[currentIndex_][0].amount[k+1]  = (rateTimes_[k+1]-rateTimes_[k])*currentState.discountRatio(k+1,currentIndex_); 
 
               Real multiplier = - (rateTimes_[k+1]-rateTimes_[k])*currentState.discountRatio(k+1,k);
 
               for (Size l=k; l < numberRates_; ++l)
-                 cashFlowsGenerated[currentIndex_][0].amount[k+1]  -= multiplier*currentState.discountRatio(l+1,currentIndex_);
+                 cashFlowsGenerated[currentIndex_][0].amount[k+1]  +=(currentState.forwardRate(l)-strikes_[currentIndex_])*(rateTimes_[l+1]-rateTimes_[l])
+                                                                    * multiplier*currentState.discountRatio(l+1,currentIndex_);
             }
         }
         ++currentIndex_;
