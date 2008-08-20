@@ -128,7 +128,7 @@ namespace QuantLib {
 
         for (Size i = 0; i < nominals.size(); i++) {
             vector<Real> aa = a, pp = p;
-            for (Size k = Size(a.size())-1; k >= 0; k--) {
+            for (Integer k = Integer(a.size())-1; k >= 0; k--) {
                 if (p[k] > 0) {
                     Size u = locateTargetBucket (a[k] + nominals[i]);
 
@@ -139,7 +139,7 @@ namespace QuantLib {
                     //        MESSAGE ("contract=" << i << " u=" << u << "<k=" << k);
 
                     Real dp = p[k] * probabilities[i];
-                    if (Size(u) == k)
+                    if (u == Size(k))
                         aa[k] = a[k] + probabilities[i] * nominals[i];
                     else {
                         if (u <= nBuckets_) { // overflow in u = nBuckets + 1
