@@ -19,8 +19,6 @@
 
 #include <ql/experimental/credit/onefactorstudentcopula.hpp>
 
-using namespace std;
-
 namespace QuantLib {
 
     //-------------------------------------------------------------------------

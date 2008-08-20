@@ -19,8 +19,6 @@
 
 #include <ql/experimental/credit/onefactorgaussiancopula.hpp>
 
-using namespace std;
-
 namespace QuantLib {
 
     //-----------------------------------------------------------------------
