@@ -2317,6 +2317,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\fastfouriertransform.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\forwardoption.hpp"
 				>
 			</File>

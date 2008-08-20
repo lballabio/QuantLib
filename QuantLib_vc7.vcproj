@@ -3118,6 +3118,12 @@
 						<File
 							RelativePath=".\ql\models\marketmodels\products\multistep\multistepswap.hpp">
 						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepswaption.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepswaption.hpp">
+						</File>
 					</Filter>
 					<Filter
 						Name="pathwise"
@@ -3475,6 +3481,12 @@
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\pathwisegreeks\ratepseudorootjacobian.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\pathwisegreeks\swaptionpseudojacobian.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\pathwisegreeks\swaptionpseudojacobian.hpp">
 					</File>
 				</Filter>
 			</Filter>
