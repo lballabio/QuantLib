@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=1309
+UnitCount=1311
 Type=2
 Ver=1
 ObjFiles=
@@ -13129,6 +13129,26 @@ BuildCmd=
 
 [Unit1309]
 FileName=ql\experimental\credit\riskyassetswap.hpp
+CompileCpp=1
+Folder=experimental/credit
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1310]
+FileName=ql\experimental\credit\cdo.cpp
+CompileCpp=1
+Folder=experimental/credit
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1311]
+FileName=ql\experimental\credit\cdo.hpp
 CompileCpp=1
 Folder=experimental/credit
 Compile=1

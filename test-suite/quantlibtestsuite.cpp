@@ -53,6 +53,7 @@
 #include "calendars.hpp"
 #include "capfloor.hpp"
 #include "capflooredcoupon.hpp"
+#include "cdo.hpp"
 #include "cdsoption.hpp"
 #include "cliquetoption.hpp"
 #include "cms.hpp"
@@ -200,6 +201,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CapFloorTest::suite());
     test->add(CapFlooredCouponTest::suite());
     test->add(CdsOptionTest::suite());
+    test->add(CdoTest::suite());
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
     test->add(ConvertibleBondTest::suite());

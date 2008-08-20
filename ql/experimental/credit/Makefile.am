@@ -4,6 +4,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    cdo.hpp \
     cdsoption.hpp \
     distribution.hpp \
     lossdistribution.hpp \
@@ -14,6 +15,7 @@ this_include_HEADERS = \
     riskyassetswap.hpp
 
 libCredit_la_SOURCES = \
+    cdo.cpp \
     cdsoption.cpp \
     distribution.cpp \
     lossdistribution.cpp \

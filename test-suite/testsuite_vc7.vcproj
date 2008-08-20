@@ -828,6 +828,9 @@
 				RelativePath=".\capflooredcoupon.cpp">
 			</File>
 			<File
+				RelativePath=".\cdo.cpp">
+			</File>
+			<File
 				RelativePath=".\cdsoption.cpp">
 			</File>
 			<File
@@ -2471,6 +2474,9 @@
 			</File>
 			<File
 				RelativePath=".\capflooredcoupon.hpp">
+			</File>
+			<File
+				RelativePath=".\cdo.hpp">
 			</File>
 			<File
 				RelativePath=".\cdsoption.hpp">

@@ -7076,6 +7076,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\cdo.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\cdo.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\cdsoption.cpp"
 					>
 				</File>
