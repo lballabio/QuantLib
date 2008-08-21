@@ -25,39 +25,33 @@
 
     - Ferdinando Ametrano, Banca IMI SpA, administrator
     - Luigi Ballabio, StatPro Italia srl, administrator
-    - Mario Aleppo, StatPro Italia srl
     - Marco Bianchetti, Banca IMI SpA
     - Nicolas Di Césaré
-    - Cristina Duminuco, Banca IMI SpA
     - Dirk Eddelbuettel
-    - Giorgio Facchinetti, Banca IMI SpA
     - Neil Firth, Mathematical Institute, University of Oxford
-    - Chiara Fornarola, Banca IMI SpA
     - Nicola Jean, StatPro Italia srl
-    - Katiuscia Manzoni, Banca IMI SpA
+    - Chris Kenyon
+    - Roland Lichters
     - Marco Marchioro, StatPro Italia srl
-    - Mario Pucci, Banca IMI SpA
-    - Sadruddin Rejeb
-    - Enrico Sirola, StatPro Italia srl
     - Klaus Spanderen
-    - Niels Elken Sønderby
-    - François du Vignaud, Banca IMI SpA
     - Joseph Wang
     
     \section contributors Contributors
 
     We gratefully acknowledge contributions from Xavier Abulker, Toyin
-    Akin, Sercan Atalik, James Battle, Christopher Baus, Thomas
-    Becker, Adolfo Benin, Luca Berardi, David Binderman, Theo Boafo,
-    Joe Byers, Antoine Cellerier, Aurelien Chanudet, Yiping Chen,
-    Warren Chou, Jon Davidson, Daniele De Francesco, Piter Dias,
-    Silvia Frasson, Matteo Gallivanoni, Roman Gitlin, Richard Gould,
-    Tomoya Kawanishi, Gary Kennedy, Chris Kenyon, Allen Kuo, Paul
-    Laderoute, James Lee, Gang Liang, Roland Lichters, Robert Lopez,
-    André Louw, John Maiden, Enrico Michelotti, Tiziano Müller,
-    Guillaume Pealat, Gilbert Peffer, Walter Penschke, Gianni
-    Piolanti, Fabio Ramponi, Peter Schmitteckert, David Schwartz,
-    Eugene Shevkoplyas, Maxim Sokolov, Marco Tarenghi, Charles
+    Akin, Mario Aleppo, Sercan Atalik, James Battle, Christopher Baus,
+    Thomas Becker, Adolfo Benin, Luca Berardi, David Binderman, Theo
+    Boafo, Joe Byers, Antoine Cellerier, Aurelien Chanudet, Yiping
+    Chen, Warren Chou, Jon Davidson, Daniele De Francesco, Piter Dias,
+    Cristina Duminuco, Giorgio Facchinetti, Chiara Fornarola, Silvia
+    Frasson, Matteo Gallivanoni, Roman Gitlin, Richard Gould, Tomoya
+    Kawanishi, Gary Kennedy, Allen Kuo, Paul Laderoute, James Lee,
+    Gang Liang, Robert Lopez, André Louw, John Maiden, Katiuscia
+    Manzoni, Enrico Michelotti, Tiziano Müller, Guillaume Pealat,
+    Gilbert Peffer, Walter Penschke, Gianni Piolanti, Mario Pucci,
+    Fabio Ramponi, Sadruddin Rejeb, Peter Schmitteckert, David
+    Schwartz, Eugene Shevkoplyas, Enrico Sirola, Maxim Sokolov, Niels
+    Elken Sønderby, Marco Tarenghi, François du Vignaud, Charles
     Whitmore, Bernd Johannes Wuebben, and Jeff Yu.
 
     %QuantLib also includes code taken from Peter Jäckel's book "Monte

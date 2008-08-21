@@ -1,20 +1,12 @@
 Ferdinando Ametrano, Banca IMI SpA, administrator
 Luigi Ballabio, StatPro Italia srl, administrator
-Mario Aleppo, StatPro Italia srl
 Marco Bianchetti, Banca IMI SpA
 Nicolas Di Césaré
-Cristina Duminuco, Banca IMI SpA
 Dirk Eddelbuettel
-Giorgio Facchinetti, Banca IMI SpA
 Neil Firth, Mathematical Institute, University of Oxford
-Chiara Fornarola, Banca IMI SpA
 Nicola Jean, StatPro Italia srl
-Katiuscia Manzoni, Banca IMI SpA
+Chris Kenyon
+Roland Lichters
 Marco Marchioro, StatPro Italia srl
-Mario Pucci, Banca IMI SpA
-Sadruddin Rejeb
-Enrico Sirola, StatPro Italia srl
 Klaus Spanderen
-Niels Elken Sønderby
-François du Vignaud, Banca IMI SpA
 Joseph Wang
