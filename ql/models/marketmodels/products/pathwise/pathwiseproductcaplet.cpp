@@ -64,6 +64,9 @@ namespace QuantLib {
 
     }
 
+   
+
+
     bool MarketModelPathwiseMultiCaplet::nextTimeStep(
         const CurveState& currentState,
         std::vector<Size>& numberCashFlowsThisStep,
@@ -171,6 +174,39 @@ namespace QuantLib {
 
     }
 
+       MarketModelPathwiseMultiDeflatedCaplet::MarketModelPathwiseMultiDeflatedCaplet(const std::vector<Time>& rateTimes,
+        const std::vector<Real>& accruals,
+        const std::vector<Time>& paymentTimes,
+        Rate strike)
+        : rateTimes_(rateTimes), 
+        accruals_(accruals),
+        paymentTimes_(paymentTimes), 
+        strikes_(accruals.size()) ,
+        numberRates_(accruals_.size())
+    {
+        checkIncreasingTimes(rateTimes);
+        checkIncreasingTimes(paymentTimes);
+        std::vector<Time> evolTimes(rateTimes_);
+        evolTimes.pop_back();
+
+        QL_REQUIRE(evolTimes.size()==numberRates_,
+            "rateTimes.size()<> numberOfRates+1");
+
+        QL_REQUIRE(paymentTimes.size()==numberRates_,
+            "paymentTimes.size()<> numberOfRates");
+
+        QL_REQUIRE(accruals.size()==numberRates_,
+            "accruals.size()<> numberOfRates");
+
+        
+        std::fill(strikes_.begin(), strikes_.end(),strike);
+
+
+        evolution_ = EvolutionDescription(rateTimes,evolTimes);
+
+    }
+
+
     bool MarketModelPathwiseMultiDeflatedCaplet::nextTimeStep(
         const CurveState& currentState,
         std::vector<Size>& numberCashFlowsThisStep,
@@ -248,9 +284,9 @@ namespace QuantLib {
         const std::vector<Time>& rateTimes,
         const std::vector<Real>& accruals,
         const std::vector<Time>& paymentTimes,
-        const std::vector<Rate>& strikes,
+        Rate strike,
         const std::vector<std::pair<Size, Size> >& startsAndEnds) 
-        : underlyingCaplets_(rateTimes, accruals, paymentTimes, strikes),
+        : underlyingCaplets_(rateTimes, accruals, paymentTimes, strike),numberRates_(accruals.size()),
         startsAndEnds_(startsAndEnds)
     {
         for (Size j=0; j < startsAndEnds_.size(); ++j)

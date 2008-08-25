@@ -237,6 +237,9 @@ namespace QuantLib
         Size startIndex,
         Size endIndex)
     {
+        QL_REQUIRE(startIndex < endIndex, "for a cap pseudo derivative the start of the cap must be before the end");
+        QL_REQUIRE( endIndex <= inputModel->numberOfRates(), "for a cap pseudo derivative the end of the cap must before the end of the rates");
+
         Size numberCaplets = endIndex-startIndex;
         Size numberRates = inputModel->numberOfRates();
         Size factors = inputModel->numberOfFactors();

@@ -98,6 +98,11 @@ namespace QuantLib {
                           const std::vector<Time>& paymentTimes,
                           const std::vector<Rate>& strikes);
 
+       MarketModelPathwiseMultiDeflatedCaplet(const std::vector<Time>& rateTimes,
+                                     const std::vector<Real>& accruals,
+                                     const std::vector<Time>& paymentTimes,
+                                     Rate strike);
+
         virtual ~MarketModelPathwiseMultiDeflatedCaplet() {}
 
         virtual std::vector<Size> suggestedNumeraires() const;
@@ -148,8 +153,10 @@ namespace QuantLib {
                           const std::vector<Time>& rateTimes,
                           const std::vector<Real>& accruals,
                           const std::vector<Time>& paymentTimes,
-                          const std::vector<Rate>& strikes,
+                          Rate strike,
                           const std::vector<std::pair<Size,Size> >& startsAndEnds);
+
+      
 
         virtual ~MarketModelPathwiseMultiDeflatedCap() {}
 

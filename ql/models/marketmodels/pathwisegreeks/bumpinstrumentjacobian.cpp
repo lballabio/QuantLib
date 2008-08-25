@@ -53,6 +53,8 @@ namespace QuantLib
         Real sizesq=0.0;
         computed_[j] = true;
 
+        Size initj = j;
+
         if ( j < swaptions_.size()) // ok its a swaptions
         {
             SwaptionPseudoDerivative thisPseudo(bumps_.associatedModel(), swaptions_[j].startIndex_,swaptions_[j].endIndex_);
@@ -90,27 +92,27 @@ namespace QuantLib
                 for (Size i= bumps_.allBumps()[k].stepBegin(); i < bumps_.allBumps()[k].stepEnd(); ++i)
                 {
                     const Matrix& fullDerivative = thisPseudo.volatilityDerivative(i);
-                    for (Size f= bumps_.allBumps()[k].factorBegin(); f < bumps_.allBumps()[k].factorBegin(); ++f)
+                    for (Size f= bumps_.allBumps()[k].factorBegin(); f < bumps_.allBumps()[k].factorEnd(); ++f)
                         for (Size r= bumps_.allBumps()[k].rateBegin(); r < bumps_.allBumps()[k].rateEnd(); ++r)
                             v += fullDerivative[r][f];
                 }
 
                 sizesq += v*v;
 
-                derivatives_[j][k] =v;
+                derivatives_[initj][k] =v;
             }
 
         }
 
         for (Size k=0; k < bumps_.numberBumps(); ++k)
         {
-            bumpMatrix_[j][k] = onePercentBumps_[j][k] = 0.01 * derivatives_[j][k]/sizesq;
+            bumpMatrix_[initj][k] = onePercentBumps_[initj][k] = 0.01 * derivatives_[initj][k]/sizesq;
 
         }
 
 
 
-     return derivatives_[j];
+     return derivatives_[initj];
 
     }
 

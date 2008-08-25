@@ -677,7 +677,7 @@ namespace QuantLib {
             for (Size j=0; j < numberRates_; ++j)
                 values[i*entriesPerProduct+j] = V_[i][0][j]*initialNumeraireValue_;
             for (Size k=0; k < numberBumps_; ++k)
-                values[i*entriesPerProduct + numberRates_ +k ] = vegasThisPath_[i][k]*initialNumeraireValue_;                           
+                values[i*entriesPerProduct + numberRates_ +k +1 ] = vegasThisPath_[i][k]*initialNumeraireValue_;                           
         }
 
         return 1.0; // we have put the weight in already, this results in lower variance since weight changes along the path
