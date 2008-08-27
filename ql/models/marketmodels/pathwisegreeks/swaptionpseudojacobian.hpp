@@ -82,7 +82,8 @@ This is  tested in the pathwise vegas routine in MarketModels.cpp
             CapPseudoDerivative(boost::shared_ptr<MarketModel> inputModel,
                                    Real strike,
                                    Size startIndex,
-                                   Size endIndex);
+                                   Size endIndex, 
+                                   Real firstDF);
 
             const Matrix& volatilityDerivative(Size i) const;
             const Matrix& priceDerivative(Size i) const;
@@ -100,6 +101,7 @@ This is  tested in the pathwise vegas routine in MarketModels.cpp
 
             Real impliedVolatility_;
             Real vega_;
+            Real firstDF_;
 
 
 

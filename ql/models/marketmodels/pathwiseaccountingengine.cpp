@@ -447,7 +447,7 @@ namespace QuantLib {
     Real PathwiseVegasAccountingEngine::singlePathValues(std::vector<Real>& values) 
     {
 
-        const std::vector<Real> initialForwards_(pseudoRootStructure_->initialRates());
+        const std::vector<Real>& initialForwards_(pseudoRootStructure_->initialRates());
         currentForwards_ = initialForwards_;
         // clear accumulation variables
         for (Size i=0; i < numberProducts_; ++i)
@@ -580,7 +580,7 @@ namespace QuantLib {
                                     fullDerivatives_[i-1] = thisDerivative;
                                 }
                                 else
-                                    fullDerivatives_[i-1] = deflatorAndDerivatives_[i];
+                                    fullDerivatives_[i-1] = thisDerivative;
 
                                 V_[j][stepToUse][i-1] += thisDerivative; // zeroth row of V is t =0 not t_0 
                             } 
@@ -658,10 +658,7 @@ namespace QuantLib {
                     } // end of (Size i=0; i < numberProducts_; ++i)
 
 
-                 
-
-
-
+    
                 } //  end of   if (nextStepIndex != stepToUse) 
             } // end of  if (flowsFound)
 
@@ -675,7 +672,7 @@ namespace QuantLib {
         {
             values[i*entriesPerProduct] = numerairesHeld_[i]*initialNumeraireValue_;
             for (Size j=0; j < numberRates_; ++j)
-                values[i*entriesPerProduct+j] = V_[i][0][j]*initialNumeraireValue_;
+                values[i*entriesPerProduct+1+j] = V_[i][0][j]*initialNumeraireValue_;
             for (Size k=0; k < numberBumps_; ++k)
                 values[i*entriesPerProduct + numberRates_ +k +1 ] = vegasThisPath_[i][k]*initialNumeraireValue_;                           
         }

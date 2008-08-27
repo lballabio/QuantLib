@@ -81,7 +81,7 @@ namespace QuantLib
             j-= swaptions_.size();
 
             
-            CapPseudoDerivative thisPseudo(bumps_.associatedModel(), caps_[j].strike_, caps_[j].startIndex_,caps_[j].endIndex_);
+            CapPseudoDerivative thisPseudo(bumps_.associatedModel(), caps_[j].strike_, caps_[j].startIndex_,caps_[j].endIndex_,1.0); // ifrst df shouldn't make any difference
 
            
 
