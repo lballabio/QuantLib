@@ -37,7 +37,7 @@ namespace QuantLib {
         <li>New Year's Day, January 1st</li>
         <li>Tiradentes's Day, April 21th</li>
         <li>Labour Day, May 1st</li>
-        <li>Independence Day, September 21th</li>
+        <li>Independence Day, September 7th</li>
         <li>Nossa Sra. Aparecida Day, October 12th</li>
         <li>All Souls Day, November 2nd</li>
         <li>Republic Day, November 15th</li>
@@ -56,7 +56,7 @@ namespace QuantLib {
         <li>Tiradentes's Day, April 21th</li>
         <li>Labour Day, May 1st</li>
         <li>Revolution Day, July 9th</li>
-        <li>Independence Day, September 21th</li>
+        <li>Independence Day, September 7th</li>
         <li>Nossa Sra. Aparecida Day, October 12th</li>
         <li>All Souls Day, November 2nd</li>
         <li>Republic Day, November 15th</li>
