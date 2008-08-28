@@ -100,7 +100,7 @@ void CdoTest::testHW() {
     boost::shared_ptr<DefaultProbabilityTermStructure> ptr (
                new FlatHazardRate (asofDate,
                                    hazardRate,
-                                   daycount));
+                                   Actual365Fixed()));
     for (Size i=0; i<names; ++i) {
         basket.push_back(Handle<DefaultProbabilityTermStructure>(ptr));
     }
