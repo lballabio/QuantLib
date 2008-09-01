@@ -45,8 +45,7 @@ namespace QuantLib {
           const boost::shared_ptr<HestonProcess> & hestonProcess,
           const boost::shared_ptr<HullWhiteForwardProcess> & hullWhiteProcess,
           Real corrEquityShortRate,
-          Size factors,
-          bool controlVariateProcess = false);
+          Size factors);
 
         void preEvolve(Time t0, const Array& x0,
                        Time dt, const Array& dw) const;
@@ -70,8 +69,6 @@ namespace QuantLib {
         const boost::shared_ptr<HullWhite> hullWhiteModel_;
 
         const Real corrEquityShortRate_;
-        const bool controlVariateProcess_;
-
         const Time T_;
         DiscountFactor endDiscount_;
     };

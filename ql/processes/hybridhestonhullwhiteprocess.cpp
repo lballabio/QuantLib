@@ -48,15 +48,13 @@ namespace QuantLib {
         const boost::shared_ptr<HestonProcess> & hestonProcess,
         const boost::shared_ptr<HullWhiteForwardProcess> & hullWhiteProcess,
         Real corrEquityShortRate,
-        Size factors,
-        bool controlVariateProcess)
+        Size factors)
     : JointStochasticProcess(buildProcessList(hestonProcess, hullWhiteProcess),
                              factors),
       hullWhiteModel_(new HullWhite(hestonProcess->riskFreeRate(),
                                     hullWhiteProcess->a(),
                                     hullWhiteProcess->sigma())),
       corrEquityShortRate_(corrEquityShortRate),
-      controlVariateProcess_(controlVariateProcess),
 
       T_(hullWhiteProcess->getForwardMeasureTime()),
       endDiscount_(hestonProcess->riskFreeRate()->discount(T_)) {
@@ -126,22 +124,9 @@ namespace QuantLib {
         const Real v2 = eta*eta*dt;
 
         // todo: better discretization here
-        if (!controlVariateProcess_) {
-            const Real vol = std::sqrt(v1)*dw[2] + std::sqrt(v2)*dw[0];
-            const Real mu = m1 + m2 + m3 + m4 + m5;
-            retVal[0] = x0[0]*std::exp(mu + vol);
-        }
-        else {
-            const Real mu = m1 + m3 + m4 + m5;
-
-            // now recover the uncorrelated random number
-            const Real run = (dw[2]-rho*dw[0])/std::sqrt(1-rho*rho);
-            const Real vol = std::sqrt(v1)*run + std::sqrt(v2)*dw[0];
-
-            retVal[0] = x0[0]*std::exp(mu + vol);
-            retVal[2] = hullWhiteProcess->evolve(t0, r, dt, run);
-        }
-        
+        const Real vol = std::sqrt(v1)*dw[2] + std::sqrt(v2)*dw[0];
+        const Real mu = m1 + m2 + m3 + m4 + m5;
+        retVal[0] = x0[0]*std::exp(mu + vol);
 
         return retVal;
     }
