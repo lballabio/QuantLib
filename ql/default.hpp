@@ -26,6 +26,10 @@
 
 #include <ql/event.hpp>
 
+#ifdef SEC
+#undef SEC
+#endif
+
 namespace QuantLib {
 
     //! Seniority of a default event
