@@ -105,7 +105,8 @@ namespace QuantLib {
                     \frac{k}{2}y_t \right] d_t+ \frac{\sigma }{2}dW_{t}
         \f].
     */
-    class CoxIngersollRoss::Dynamics : public ShortRateDynamics {
+    class CoxIngersollRoss::Dynamics :
+        public OneFactorModel::ShortRateDynamics {
       public:
         Dynamics(Real theta,
                  Real k,

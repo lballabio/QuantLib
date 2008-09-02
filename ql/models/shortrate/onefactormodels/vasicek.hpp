@@ -74,7 +74,7 @@ namespace QuantLib {
     /*! The short-rate follows an Ornstein-Uhlenbeck process with mean
         \f$ b \f$.
     */
-    class Vasicek::Dynamics : public ShortRateDynamics {
+    class Vasicek::Dynamics : public OneFactorModel::ShortRateDynamics {
       public:
         Dynamics(Real a,
                  Real b,

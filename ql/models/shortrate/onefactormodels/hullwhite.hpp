@@ -93,7 +93,7 @@ namespace QuantLib {
         parameter used for term-structure fitting and \f$ x_t \f$ is the
         state variable following an Ornstein-Uhlenbeck process.
     */
-    class HullWhite::Dynamics : public ShortRateDynamics {
+    class HullWhite::Dynamics : public OneFactorModel::ShortRateDynamics {
       public:
         Dynamics(const Parameter& fitting,
                  Real a,
