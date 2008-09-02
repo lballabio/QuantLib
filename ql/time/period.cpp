@@ -55,6 +55,8 @@ namespace QuantLib {
             units_ = Days;
             length_ = 1;
             break;
+          case OtherFrequency:
+            QL_FAIL("unknown frequency");  // no point in showing 999...
           default:
             QL_FAIL("unknown frequency (" << Integer(f) << ")");
         }
@@ -68,13 +70,15 @@ namespace QuantLib {
 
         switch (units_) {
           case Years:
-            QL_REQUIRE(length==1,
-                       "cannot instantiate a Frequency from " << *this);
-            return Annual;
+            if (length == 1)
+                return Annual;
+            else
+                return OtherFrequency;
           case Months:
-            QL_REQUIRE((12%length)==0 && length<=12,
-                       "cannot instantiate a Frequency from " << *this);
-            return Frequency(12/length);
+            if (12%length == 0 && length <= 12)
+                return Frequency(12/length);
+            else
+                return OtherFrequency;
           case Weeks:
             if (length==1)
                 return Weekly;
@@ -83,11 +87,12 @@ namespace QuantLib {
             else if (length==4)
                 return EveryFourthWeek;
             else
-                QL_FAIL("cannot instantiate a Frequency from " << *this);
+                return OtherFrequency;
           case Days:
-            QL_REQUIRE(length==1,
-                       "cannot instantiate a Frequency from " << *this);
-            return Daily;
+            if (length==1)
+                return Daily;
+            else
+                return OtherFrequency;
           default:
             QL_FAIL("unknown time unit (" << Integer(units_) << ")");
         }

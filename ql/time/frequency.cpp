@@ -41,17 +41,19 @@ namespace QuantLib {
           case Quarterly:
             return out << "Quarterly";
           case Bimonthly:
-            return out << "bimonthly";
+            return out << "Bimonthly";
           case Monthly:
-            return out << "monthly";
+            return out << "Monthly";
           case EveryFourthWeek:
-            return out << "every-fourth-week";
+            return out << "Every-fourth-week";
           case Biweekly:
-            return out << "biweekly";
+            return out << "Biweekly";
           case Weekly:
             return out << "Weekly";
           case Daily:
             return out << "Daily";
+          case OtherFrequency:
+            return out << "Unknown frequency";
           default:
             QL_FAIL("unknown frequency (" << Integer(f) << ")");
         }
