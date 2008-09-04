@@ -26,17 +26,23 @@
 
 #include <ql/event.hpp>
 
-#ifdef SEC
-#undef SEC
-#endif
-
 namespace QuantLib {
 
     //! Seniority of a default event
-    enum Seniority { SEN, SUB, SEC, TI0, TI1, PCL, AnySeniority };
+    enum Seniority { Senior,
+                     Subordinated,
+                     Secured,
+                     UpperTier,
+                     Tier1,
+                     PolicyClaims,
+                     AnySeniority };
 
     //! Restructuring of a default event
-    enum Restructuring { NR, MR, MM, RR, AnyRestructuring };
+    enum Restructuring { NoRestructuring,
+                         ModifiedRestructuring,
+                         ModifiedModifiedRestructuring,
+                         FullRestructuring,
+                         AnyRestructuring };
 
     //! Credit-default event
     class DefaultEvent : public Event {
