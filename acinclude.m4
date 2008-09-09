@@ -92,14 +92,15 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
  AC_REQUIRE([AC_PROG_CC])
  ql_original_LIBS=$LIBS
  ql_original_CXXFLAGS=$CXXFLAGS
+ CC_BASENAME=`basename $CC`
  CC_VERSION=`echo "__GNUC__ __GNUC_MINOR__" | $CC -E -x c - | tail -n 1 | $SED -e "s/ //"`
- for boost_lib in boost_unit_test_framework-$CC$CC_VERSION \
-                  boost_unit_test_framework-$CC \
+ for boost_lib in boost_unit_test_framework-$CC_BASENAME$CC_VERSION \
+                  boost_unit_test_framework-$CC_BASENAME \
                   boost_unit_test_framework \
-                  boost_unit_test_framework-mt-$CC$CC_VERSION \
-                  boost_unit_test_framework-$CC$CC_VERSION-mt \
-                  boost_unit_test_framework-mt-$CC \
-                  boost_unit_test_framework-$CC-mt \
+                  boost_unit_test_framework-mt-$CC_BASENAME$CC_VERSION \
+                  boost_unit_test_framework-$CC_BASENAME$CC_VERSION-mt \
+                  boost_unit_test_framework-mt-$CC_BASENAME \
+                  boost_unit_test_framework-$CC_BASENAME-mt \
                   boost_unit_test_framework-mt ; do
      LIBS="$ql_original_LIBS -l$boost_lib"
      # 1.33.1 or 1.34 static
