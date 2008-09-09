@@ -14,7 +14,7 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="Release CRTDLL|Win32"
+			Name="Release|Win32"
 			OutputDirectory=".\build\vc80\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc80\$(ConfigurationName)"
 			ConfigurationType="1"
@@ -113,7 +113,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
+			Name="Release (static runtime)|Win32"
 			OutputDirectory=".\build\vc80\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc80\$(ConfigurationName)"
 			ConfigurationType="1"
@@ -212,7 +212,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug CRTDLL|Win32"
+			Name="Debug|Win32"
 			OutputDirectory=".\build\vc80\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc80\$(ConfigurationName)"
 			ConfigurationType="1"
@@ -310,7 +310,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug|Win32"
+			Name="Debug (static runtime)|Win32"
 			OutputDirectory=".\build\vc80\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc80\$(ConfigurationName)"
 			ConfigurationType="1"
@@ -419,17 +419,6 @@
 				RelativePath="BermudanSwaption.cpp"
 				>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -441,7 +430,18 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
+					Name="Release (static runtime)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -453,7 +453,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Debug (static runtime)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

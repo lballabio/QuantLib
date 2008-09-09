@@ -12,7 +12,7 @@
 	</Platforms>
 	<Configurations>
 		<Configuration
-			Name="Debug CRTDLL|Win32"
+			Name="Debug|Win32"
 			OutputDirectory=".\build\vc71\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc71\$(ConfigurationName)"
 			ConfigurationType="4"
@@ -72,7 +72,7 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Release SingleThread|Win32"
+			Name="Release (single-threaded runtime)|Win32"
 			OutputDirectory=".\build\vc71\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc71\$(ConfigurationName)"
 			ConfigurationType="4"
@@ -136,7 +136,7 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
+			Name="Release (static runtime)|Win32"
 			OutputDirectory=".\build\vc71\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc71\$(ConfigurationName)"
 			ConfigurationType="4"
@@ -200,7 +200,7 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Release CRTDLL|Win32"
+			Name="Release|Win32"
 			OutputDirectory=".\build\vc71\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc71\$(ConfigurationName)"
 			ConfigurationType="4"
@@ -264,7 +264,7 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Debug|Win32"
+			Name="Debug (static runtime)|Win32"
 			OutputDirectory=".\build\vc71\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc71\$(ConfigurationName)"
 			ConfigurationType="4"
@@ -324,7 +324,7 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Debug SingleThread|Win32"
+			Name="Debug (single-threaded runtime)|Win32"
 			OutputDirectory=".\build\vc71\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc71\$(ConfigurationName)"
 			ConfigurationType="4"
@@ -1176,7 +1176,7 @@
 			<File
 				RelativePath="ql\math\beta.cpp">
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1186,7 +1186,16 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32">
+					Name="Release (single-threaded runtime)|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
@@ -1204,16 +1213,7 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
+					Name="Debug (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1223,7 +1223,7 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug SingleThread|Win32">
+					Name="Debug (single-threaded runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1254,7 +1254,7 @@
 			<File
 				RelativePath="ql\math\errorfunction.cpp">
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1264,7 +1264,16 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32">
+					Name="Release (single-threaded runtime)|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
@@ -1282,16 +1291,7 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
+					Name="Debug (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1301,7 +1301,7 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug SingleThread|Win32">
+					Name="Debug (single-threaded runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1317,7 +1317,7 @@
 			<File
 				RelativePath="ql\math\factorial.cpp">
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1327,7 +1327,16 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32">
+					Name="Release (single-threaded runtime)|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
@@ -1345,16 +1354,7 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
+					Name="Debug (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1364,7 +1364,7 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug SingleThread|Win32">
+					Name="Debug (single-threaded runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1383,7 +1383,7 @@
 			<File
 				RelativePath="ql\math\incompletegamma.cpp">
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1393,7 +1393,16 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32">
+					Name="Release (single-threaded runtime)|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
@@ -1411,16 +1420,7 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
+					Name="Debug (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1430,7 +1430,7 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug SingleThread|Win32">
+					Name="Debug (single-threaded runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1461,7 +1461,7 @@
 			<File
 				RelativePath="ql\math\primenumbers.cpp">
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1471,7 +1471,16 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32">
+					Name="Release (single-threaded runtime)|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
@@ -1489,16 +1498,7 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
+					Name="Debug (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1508,7 +1508,7 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug SingleThread|Win32">
+					Name="Debug (single-threaded runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1917,13 +1917,19 @@
 				<File
 					RelativePath=".\ql\math\matrixutilities\choleskydecomposition.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -1935,19 +1941,13 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -1965,13 +1965,19 @@
 				<File
 					RelativePath=".\ql\math\matrixutilities\pseudosqrt.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -1983,19 +1989,13 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2013,13 +2013,19 @@
 				<File
 					RelativePath=".\ql\math\matrixutilities\svd.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2031,19 +2037,13 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2055,13 +2055,19 @@
 				<File
 					RelativePath=".\ql\math\matrixutilities\symmetricschurdecomposition.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2073,19 +2079,13 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2103,13 +2103,19 @@
 				<File
 					RelativePath=".\ql\math\matrixutilities\tqreigendecomposition.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2121,19 +2127,13 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2357,13 +2357,19 @@
 				<File
 					RelativePath=".\ql\methods\lattices\binomialtree.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2375,19 +2381,13 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2417,13 +2417,19 @@
 				<File
 					RelativePath=".\ql\methods\lattices\trinomialtree.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2435,19 +2441,13 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2466,13 +2466,19 @@
 				<File
 					RelativePath=".\ql\methods\montecarlo\brownianbridge.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2484,19 +2490,13 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2514,13 +2514,19 @@
 				<File
 					RelativePath=".\ql\methods\montecarlo\genericlsregression.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2532,19 +2538,13 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2559,13 +2559,19 @@
 				<File
 					RelativePath=".\ql\methods\montecarlo\lsmbasissystem.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2577,19 +2583,13 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2642,13 +2642,19 @@
 			<File
 				RelativePath=".\ql\models\calibrationhelper.cpp">
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32">
+					Name="Release (single-threaded runtime)|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2660,19 +2666,13 @@
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32">
+					Name="Debug (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
+					Name="Debug (single-threaded runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2684,13 +2684,19 @@
 			<File
 				RelativePath=".\ql\models\model.cpp">
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32">
+					Name="Release (single-threaded runtime)|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2702,19 +2708,13 @@
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32">
+					Name="Debug (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
+					Name="Debug (single-threaded runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2735,13 +2735,19 @@
 				<File
 					RelativePath=".\ql\models\equity\batesmodel.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2753,19 +2759,13 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2783,13 +2783,19 @@
 				<File
 					RelativePath=".\ql\models\equity\hestonmodel.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2801,19 +2807,13 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2825,13 +2825,19 @@
 				<File
 					RelativePath=".\ql\models\equity\hestonmodelhelper.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -2843,19 +2849,13 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -3499,7 +3499,7 @@
 				<File
 					RelativePath="ql\models\shortrate\onefactormodel.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -3509,7 +3509,16 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="2"
@@ -3527,16 +3536,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -3546,7 +3546,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -3562,7 +3562,7 @@
 				<File
 					RelativePath="ql\models\shortrate\twofactormodel.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -3572,7 +3572,16 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="2"
@@ -3590,16 +3599,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -3609,7 +3609,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -3631,7 +3631,7 @@
 					<File
 						RelativePath="ql\models\shortrate\calibrationhelpers\caphelper.cpp">
 						<FileConfiguration
-							Name="Debug CRTDLL|Win32">
+							Name="Debug|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -3641,7 +3641,16 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release SingleThread|Win32">
+							Name="Release (single-threaded runtime)|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (static runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="2"
@@ -3659,16 +3668,7 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release CRTDLL|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								Optimization="2"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-								BrowseInformation="1"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug (static runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -3678,7 +3678,7 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug SingleThread|Win32">
+							Name="Debug (single-threaded runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -3694,7 +3694,7 @@
 					<File
 						RelativePath="ql\models\shortrate\calibrationhelpers\swaptionhelper.cpp">
 						<FileConfiguration
-							Name="Debug CRTDLL|Win32">
+							Name="Debug|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -3704,7 +3704,16 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release SingleThread|Win32">
+							Name="Release (single-threaded runtime)|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (static runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="2"
@@ -3722,16 +3731,7 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release CRTDLL|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								Optimization="2"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-								BrowseInformation="1"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug (static runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -3741,7 +3741,7 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug SingleThread|Win32">
+							Name="Debug (single-threaded runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -3764,7 +3764,7 @@
 					<File
 						RelativePath="ql\models\shortrate\onefactormodels\blackkarasinski.cpp">
 						<FileConfiguration
-							Name="Debug CRTDLL|Win32">
+							Name="Debug|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -3774,7 +3774,16 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release SingleThread|Win32">
+							Name="Release (single-threaded runtime)|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (static runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="2"
@@ -3792,16 +3801,7 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release CRTDLL|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								Optimization="2"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-								BrowseInformation="1"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug (static runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -3811,7 +3811,7 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug SingleThread|Win32">
+							Name="Debug (single-threaded runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -3827,7 +3827,7 @@
 					<File
 						RelativePath="ql\models\shortrate\onefactormodels\coxingersollross.cpp">
 						<FileConfiguration
-							Name="Debug CRTDLL|Win32">
+							Name="Debug|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -3837,7 +3837,16 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release SingleThread|Win32">
+							Name="Release (single-threaded runtime)|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (static runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="2"
@@ -3855,16 +3864,7 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release CRTDLL|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								Optimization="2"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-								BrowseInformation="1"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug (static runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -3874,7 +3874,7 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug SingleThread|Win32">
+							Name="Debug (single-threaded runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -3890,7 +3890,7 @@
 					<File
 						RelativePath="ql\models\shortrate\onefactormodels\extendedcoxingersollross.cpp">
 						<FileConfiguration
-							Name="Debug CRTDLL|Win32">
+							Name="Debug|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -3900,7 +3900,16 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release SingleThread|Win32">
+							Name="Release (single-threaded runtime)|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (static runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="2"
@@ -3918,16 +3927,7 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release CRTDLL|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								Optimization="2"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-								BrowseInformation="1"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug (static runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -3937,7 +3937,7 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug SingleThread|Win32">
+							Name="Debug (single-threaded runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -3953,7 +3953,7 @@
 					<File
 						RelativePath="ql\models\shortrate\onefactormodels\hullwhite.cpp">
 						<FileConfiguration
-							Name="Debug CRTDLL|Win32">
+							Name="Debug|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -3963,7 +3963,16 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release SingleThread|Win32">
+							Name="Release (single-threaded runtime)|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (static runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="2"
@@ -3981,16 +3990,7 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release CRTDLL|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								Optimization="2"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-								BrowseInformation="1"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug (static runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -4000,7 +4000,7 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug SingleThread|Win32">
+							Name="Debug (single-threaded runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -4016,7 +4016,7 @@
 					<File
 						RelativePath="ql\models\shortrate\onefactormodels\vasicek.cpp">
 						<FileConfiguration
-							Name="Debug CRTDLL|Win32">
+							Name="Debug|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -4026,7 +4026,16 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release SingleThread|Win32">
+							Name="Release (single-threaded runtime)|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (static runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="2"
@@ -4044,16 +4053,7 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release CRTDLL|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								Optimization="2"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-								BrowseInformation="1"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug (static runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -4063,7 +4063,7 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug SingleThread|Win32">
+							Name="Debug (single-threaded runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -4086,7 +4086,7 @@
 					<File
 						RelativePath="ql\models\shortrate\twofactormodels\g2.cpp">
 						<FileConfiguration
-							Name="Debug CRTDLL|Win32">
+							Name="Debug|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -4096,7 +4096,16 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release SingleThread|Win32">
+							Name="Release (single-threaded runtime)|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (static runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="2"
@@ -4114,16 +4123,7 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release CRTDLL|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								Optimization="2"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-								BrowseInformation="1"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug (static runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -4133,7 +4133,7 @@
 								BrowseInformation="1"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug SingleThread|Win32">
+							Name="Debug (single-threaded runtime)|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								Optimization="0"
@@ -4226,7 +4226,7 @@
 			<File
 				RelativePath="ql\pricingengines\blackformula.cpp">
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -4236,7 +4236,16 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32">
+					Name="Release (single-threaded runtime)|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
@@ -4254,16 +4263,7 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
+					Name="Debug (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -4273,7 +4273,7 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug SingleThread|Win32">
+					Name="Debug (single-threaded runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -4365,7 +4365,7 @@
 				<File
 					RelativePath="ql\pricingengines\barrier\analyticbarrierengine.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4375,7 +4375,16 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="2"
@@ -4393,16 +4402,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4412,7 +4412,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4428,7 +4428,7 @@
 				<File
 					RelativePath="ql\pricingengines\barrier\mcbarrierengine.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4438,7 +4438,16 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="2"
@@ -4456,16 +4465,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4475,7 +4475,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4498,7 +4498,7 @@
 				<File
 					RelativePath="ql\pricingengines\basket\mcamericanbasketengine.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4508,7 +4508,16 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="2"
@@ -4526,16 +4535,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4545,7 +4545,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4561,7 +4561,7 @@
 				<File
 					RelativePath="ql\pricingengines\basket\mcbasketengine.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4571,7 +4571,16 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="2"
@@ -4589,16 +4598,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4608,7 +4608,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4642,7 +4642,7 @@
 				<File
 					RelativePath="ql\pricingengines\basket\stulzengine.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4652,7 +4652,16 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="2"
@@ -4670,16 +4679,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4689,7 +4689,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4747,7 +4747,7 @@
 				<File
 					RelativePath="ql\pricingengines\vanilla\analyticdigitalamericanengine.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4757,7 +4757,16 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="2"
@@ -4775,16 +4784,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4794,7 +4794,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4810,7 +4810,7 @@
 				<File
 					RelativePath="ql\pricingengines\vanilla\analyticdividendeuropeanengine.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4820,7 +4820,16 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="2"
@@ -4838,16 +4847,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4857,7 +4857,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4873,7 +4873,7 @@
 				<File
 					RelativePath="ql\pricingengines\vanilla\analyticeuropeanengine.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4883,7 +4883,16 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="2"
@@ -4901,16 +4910,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4920,7 +4920,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4954,7 +4954,7 @@
 				<File
 					RelativePath="ql\pricingengines\vanilla\baroneadesiwhaleyengine.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -4964,7 +4964,16 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="2"
@@ -4982,16 +4991,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -5001,7 +5001,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -5026,7 +5026,7 @@
 				<File
 					RelativePath="ql\pricingengines\vanilla\bjerksundstenslandengine.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -5036,7 +5036,16 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="2"
@@ -5054,16 +5063,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -5073,7 +5073,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -5089,7 +5089,7 @@
 				<File
 					RelativePath="ql\pricingengines\vanilla\discretizedvanillaoption.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -5099,7 +5099,16 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="2"
@@ -5117,16 +5126,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -5136,7 +5136,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -5203,7 +5203,7 @@
 				<File
 					RelativePath="ql\pricingengines\vanilla\integralengine.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -5213,7 +5213,16 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="2"
@@ -5231,16 +5240,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -5250,7 +5250,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -5266,7 +5266,7 @@
 				<File
 					RelativePath="ql\pricingengines\vanilla\jumpdiffusionengine.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -5276,7 +5276,16 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="2"
@@ -5294,16 +5303,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -5313,7 +5313,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -5341,7 +5341,7 @@
 				<File
 					RelativePath="ql\pricingengines\vanilla\mcdigitalengine.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -5351,7 +5351,16 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="2"
@@ -5369,16 +5378,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -5388,7 +5388,7 @@
 							BrowseInformation="1"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="0"
@@ -6211,13 +6211,19 @@
 			<File
 				RelativePath=".\ql\time\businessdayconvention.cpp">
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32">
+					Name="Release (single-threaded runtime)|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -6229,19 +6235,13 @@
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32">
+					Name="Debug (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
+					Name="Debug (single-threaded runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -6253,13 +6253,19 @@
 			<File
 				RelativePath=".\ql\time\calendar.cpp">
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32">
+					Name="Release (single-threaded runtime)|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -6271,19 +6277,13 @@
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32">
+					Name="Debug (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
+					Name="Debug (single-threaded runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -6295,13 +6295,19 @@
 			<File
 				RelativePath=".\ql\time\date.cpp">
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32">
+					Name="Release (single-threaded runtime)|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -6313,19 +6319,13 @@
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32">
+					Name="Debug (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
+					Name="Debug (single-threaded runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -6346,13 +6346,19 @@
 			<File
 				RelativePath=".\ql\time\frequency.cpp">
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32">
+					Name="Release (single-threaded runtime)|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -6364,19 +6370,13 @@
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32">
+					Name="Debug (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
+					Name="Debug (single-threaded runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -6394,13 +6394,19 @@
 			<File
 				RelativePath=".\ql\time\period.cpp">
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32">
+					Name="Release (single-threaded runtime)|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -6412,19 +6418,13 @@
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32">
+					Name="Debug (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
+					Name="Debug (single-threaded runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -6436,14 +6436,21 @@
 			<File
 				RelativePath=".\ql\time\schedule.cpp">
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						DisableLanguageExtensions="FALSE"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32">
+					Name="Release (single-threaded runtime)|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						DisableLanguageExtensions="FALSE"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						DisableLanguageExtensions="FALSE"
@@ -6457,21 +6464,14 @@
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32">
+					Name="Debug (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						DisableLanguageExtensions="FALSE"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						DisableLanguageExtensions="FALSE"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
+					Name="Debug (single-threaded runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						DisableLanguageExtensions="FALSE"
@@ -6490,13 +6490,19 @@
 			<File
 				RelativePath=".\ql\time\weekday.cpp">
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32">
+					Name="Release (single-threaded runtime)|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -6508,19 +6514,13 @@
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32">
+					Name="Debug (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
+					Name="Debug (single-threaded runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -6755,13 +6755,19 @@
 				<File
 					RelativePath=".\ql\time\daycounters\actualactual.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -6773,19 +6779,13 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -6806,13 +6806,19 @@
 				<File
 					RelativePath=".\ql\time\daycounters\simpledaycounter.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -6824,19 +6830,13 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -6848,13 +6848,19 @@
 				<File
 					RelativePath=".\ql\time\daycounters\thirty360.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -6866,19 +6872,13 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -7058,13 +7058,19 @@
 				<File
 					RelativePath=".\ql\experimental\volatility\volcube.cpp">
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
+						Name="Debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release SingleThread|Win32">
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
@@ -7076,19 +7082,13 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32">
+						Name="Debug (static runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
+						Name="Debug (single-threaded runtime)|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>

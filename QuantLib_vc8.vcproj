@@ -15,7 +15,7 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="Debug CRTDLL|Win32"
+			Name="Debug|Win32"
 			OutputDirectory=".\build\vc80\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc80\$(ConfigurationName)"
 			ConfigurationType="4"
@@ -98,7 +98,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
+			Name="Release (static runtime)|Win32"
 			OutputDirectory=".\build\vc80\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc80\$(ConfigurationName)"
 			ConfigurationType="4"
@@ -184,7 +184,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release CRTDLL|Win32"
+			Name="Release|Win32"
 			OutputDirectory=".\build\vc80\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc80\$(ConfigurationName)"
 			ConfigurationType="4"
@@ -270,7 +270,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug|Win32"
+			Name="Debug (static runtime)|Win32"
 			OutputDirectory=".\build\vc80\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc80\$(ConfigurationName)"
 			ConfigurationType="4"
@@ -655,7 +655,7 @@
 				RelativePath="ql\cashflows\cashflowvectors.cpp"
 				>
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -663,6 +663,17 @@
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -678,18 +689,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Debug (static runtime)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -825,7 +825,7 @@
 				RelativePath="ql\cashflows\timebasket.cpp"
 				>
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -833,6 +833,17 @@
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -848,18 +859,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Debug (static runtime)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1531,7 +1531,7 @@
 				RelativePath="ql\math\beta.cpp"
 				>
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1539,6 +1539,17 @@
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -1554,18 +1565,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Debug (static runtime)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1605,7 +1605,7 @@
 				RelativePath="ql\math\errorfunction.cpp"
 				>
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1613,6 +1613,17 @@
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -1628,18 +1639,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Debug (static runtime)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1659,7 +1659,7 @@
 				RelativePath="ql\math\factorial.cpp"
 				>
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1667,6 +1667,17 @@
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -1682,18 +1693,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Debug (static runtime)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1717,7 +1717,7 @@
 				RelativePath="ql\math\incompletegamma.cpp"
 				>
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1725,6 +1725,17 @@
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -1740,18 +1751,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Debug (static runtime)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1791,7 +1791,7 @@
 				RelativePath="ql\math\primenumbers.cpp"
 				>
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1799,6 +1799,17 @@
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -1814,18 +1825,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Debug (static runtime)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2152,7 +2152,16 @@
 					RelativePath=".\ql\math\matrixutilities\getcovariance.cpp"
 					>
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2170,16 +2179,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
+						Name="Debug (static runtime)|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3371,7 +3371,16 @@
 						RelativePath=".\ql\models\marketmodels\callability\bermudanswaptionexercisevalue.cpp"
 						>
 						<FileConfiguration
-							Name="Debug CRTDLL|Win32"
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (static runtime)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -3389,16 +3398,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release CRTDLL|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32"
+							Name="Debug (static runtime)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -3415,7 +3415,16 @@
 						RelativePath=".\ql\models\marketmodels\callability\collectnodedata.cpp"
 						>
 						<FileConfiguration
-							Name="Debug CRTDLL|Win32"
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (static runtime)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -3433,16 +3442,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release CRTDLL|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32"
+							Name="Debug (static runtime)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -3463,7 +3463,16 @@
 						RelativePath=".\ql\models\marketmodels\callability\lsstrategy.cpp"
 						>
 						<FileConfiguration
-							Name="Debug CRTDLL|Win32"
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (static runtime)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -3481,16 +3490,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release CRTDLL|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32"
+							Name="Debug (static runtime)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -3519,7 +3519,16 @@
 						RelativePath=".\ql\models\marketmodels\callability\nothingexercisevalue.cpp"
 						>
 						<FileConfiguration
-							Name="Debug CRTDLL|Win32"
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (static runtime)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -3537,16 +3546,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release CRTDLL|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32"
+							Name="Debug (static runtime)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -3563,7 +3563,16 @@
 						RelativePath=".\ql\models\marketmodels\callability\parametricexerciseadapter.cpp"
 						>
 						<FileConfiguration
-							Name="Debug CRTDLL|Win32"
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (static runtime)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -3581,16 +3590,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release CRTDLL|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32"
+							Name="Debug (static runtime)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -3615,7 +3615,16 @@
 						RelativePath=".\ql\models\marketmodels\callability\swapratetrigger.cpp"
 						>
 						<FileConfiguration
-							Name="Debug CRTDLL|Win32"
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (static runtime)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -3633,16 +3642,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release CRTDLL|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32"
+							Name="Debug (static runtime)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -3667,7 +3667,16 @@
 						RelativePath=".\ql\models\marketmodels\callability\upperboundengine.cpp"
 						>
 						<FileConfiguration
-							Name="Debug CRTDLL|Win32"
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (static runtime)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -3685,16 +3694,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release CRTDLL|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32"
+							Name="Debug (static runtime)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -4777,7 +4777,7 @@
 				RelativePath="ql\pricingengines\blackformula.cpp"
 				>
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4785,6 +4785,17 @@
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BasicRuntimeChecks="3"
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -4800,18 +4811,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Debug (static runtime)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4922,7 +4922,7 @@
 					RelativePath="ql\pricingengines\barrier\analyticbarrierengine.cpp"
 					>
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4930,6 +4930,17 @@
 							AdditionalIncludeDirectories=""
 							PreprocessorDefinitions=""
 							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
@@ -4945,18 +4956,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
+						Name="Debug (static runtime)|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4976,7 +4976,7 @@
 					RelativePath="ql\pricingengines\barrier\mcbarrierengine.cpp"
 					>
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4984,6 +4984,17 @@
 							AdditionalIncludeDirectories=""
 							PreprocessorDefinitions=""
 							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
@@ -4999,18 +5010,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
+						Name="Debug (static runtime)|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5038,7 +5038,7 @@
 					RelativePath="ql\pricingengines\basket\mcamericanbasketengine.cpp"
 					>
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5046,6 +5046,17 @@
 							AdditionalIncludeDirectories=""
 							PreprocessorDefinitions=""
 							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
@@ -5061,18 +5072,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
+						Name="Debug (static runtime)|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5092,7 +5092,7 @@
 					RelativePath="ql\pricingengines\basket\mcbasketengine.cpp"
 					>
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5100,6 +5100,17 @@
 							AdditionalIncludeDirectories=""
 							PreprocessorDefinitions=""
 							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
@@ -5115,18 +5126,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
+						Name="Debug (static runtime)|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5170,7 +5170,7 @@
 					RelativePath="ql\pricingengines\basket\stulzengine.cpp"
 					>
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5178,6 +5178,17 @@
 							AdditionalIncludeDirectories=""
 							PreprocessorDefinitions=""
 							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
@@ -5193,18 +5204,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
+						Name="Debug (static runtime)|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5276,7 +5276,7 @@
 					RelativePath="ql\pricingengines\vanilla\analyticdigitalamericanengine.cpp"
 					>
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5284,6 +5284,17 @@
 							AdditionalIncludeDirectories=""
 							PreprocessorDefinitions=""
 							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
@@ -5299,18 +5310,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
+						Name="Debug (static runtime)|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5330,7 +5330,7 @@
 					RelativePath="ql\pricingengines\vanilla\analyticdividendeuropeanengine.cpp"
 					>
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5338,6 +5338,17 @@
 							AdditionalIncludeDirectories=""
 							PreprocessorDefinitions=""
 							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
@@ -5353,18 +5364,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
+						Name="Debug (static runtime)|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5384,7 +5384,7 @@
 					RelativePath="ql\pricingengines\vanilla\analyticeuropeanengine.cpp"
 					>
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5392,6 +5392,17 @@
 							AdditionalIncludeDirectories=""
 							PreprocessorDefinitions=""
 							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
@@ -5407,18 +5418,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
+						Name="Debug (static runtime)|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5462,7 +5462,7 @@
 					RelativePath="ql\pricingengines\vanilla\baroneadesiwhaleyengine.cpp"
 					>
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5470,6 +5470,17 @@
 							AdditionalIncludeDirectories=""
 							PreprocessorDefinitions=""
 							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
@@ -5485,18 +5496,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
+						Name="Debug (static runtime)|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5528,7 +5528,7 @@
 					RelativePath="ql\pricingengines\vanilla\bjerksundstenslandengine.cpp"
 					>
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5536,6 +5536,17 @@
 							AdditionalIncludeDirectories=""
 							PreprocessorDefinitions=""
 							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
@@ -5551,18 +5562,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
+						Name="Debug (static runtime)|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5582,7 +5582,7 @@
 					RelativePath="ql\pricingengines\vanilla\discretizedvanillaoption.cpp"
 					>
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5590,6 +5590,17 @@
 							AdditionalIncludeDirectories=""
 							PreprocessorDefinitions=""
 							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
@@ -5605,18 +5616,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
+						Name="Debug (static runtime)|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5704,7 +5704,7 @@
 					RelativePath="ql\pricingengines\vanilla\integralengine.cpp"
 					>
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5712,6 +5712,17 @@
 							AdditionalIncludeDirectories=""
 							PreprocessorDefinitions=""
 							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
@@ -5727,18 +5738,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
+						Name="Debug (static runtime)|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5758,7 +5758,7 @@
 					RelativePath="ql\pricingengines\vanilla\jumpdiffusionengine.cpp"
 					>
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5766,6 +5766,17 @@
 							AdditionalIncludeDirectories=""
 							PreprocessorDefinitions=""
 							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
@@ -5781,18 +5792,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
+						Name="Debug (static runtime)|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5828,7 +5828,7 @@
 					RelativePath="ql\pricingengines\vanilla\mcdigitalengine.cpp"
 					>
 					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5836,6 +5836,17 @@
 							AdditionalIncludeDirectories=""
 							PreprocessorDefinitions=""
 							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
 							BrowseInformation="1"
 						/>
 					</FileConfiguration>
@@ -5851,18 +5862,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
+						Name="Debug (static runtime)|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -6215,7 +6215,16 @@
 				RelativePath=".\ql\time\businessdayconvention.cpp"
 				>
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6233,16 +6242,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Debug (static runtime)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6259,7 +6259,16 @@
 				RelativePath=".\ql\time\calendar.cpp"
 				>
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6277,16 +6286,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Debug (static runtime)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6303,7 +6303,16 @@
 				RelativePath=".\ql\time\date.cpp"
 				>
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6321,16 +6330,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Debug (static runtime)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6359,7 +6359,16 @@
 				RelativePath=".\ql\time\frequency.cpp"
 				>
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6377,16 +6386,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Debug (static runtime)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6419,7 +6419,16 @@
 				RelativePath=".\ql\time\schedule.cpp"
 				>
 				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -6437,16 +6446,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Debug (static runtime)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

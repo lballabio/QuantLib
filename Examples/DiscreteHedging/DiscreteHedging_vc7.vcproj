@@ -12,7 +12,7 @@
 	</Platforms>
 	<Configurations>
 		<Configuration
-			Name="Release SingleThread|Win32"
+			Name="Release (single-threaded runtime)|Win32"
 			OutputDirectory=".\build\vc71\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc71\$(ConfigurationName)"
 			ConfigurationType="1"
@@ -83,7 +83,7 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
+			Name="Release (static runtime)|Win32"
 			OutputDirectory=".\build\vc71\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc71\$(ConfigurationName)"
 			ConfigurationType="1"
@@ -154,7 +154,7 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Debug SingleThread|Win32"
+			Name="Debug (single-threaded runtime)|Win32"
 			OutputDirectory=".\build\vc71\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc71\$(ConfigurationName)"
 			ConfigurationType="1"
@@ -223,7 +223,7 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Release CRTDLL|Win32"
+			Name="Release|Win32"
 			OutputDirectory=".\build\vc71\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc71\$(ConfigurationName)"
 			ConfigurationType="1"
@@ -293,7 +293,7 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Debug|Win32"
+			Name="Debug (static runtime)|Win32"
 			OutputDirectory=".\build\vc71\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc71\$(ConfigurationName)"
 			ConfigurationType="1"
@@ -362,7 +362,7 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Debug CRTDLL|Win32"
+			Name="Debug|Win32"
 			OutputDirectory=".\build\vc71\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc71\$(ConfigurationName)"
 			ConfigurationType="1"
@@ -440,12 +440,31 @@
 			<File
 				RelativePath="DiscreteHedging.cpp">
 				<FileConfiguration
-					Name="Release SingleThread|Win32">
+					Name="Release (single-threaded runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (single-threaded runtime)|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -458,36 +477,17 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug SingleThread|Win32">
+					Name="Debug (static runtime)|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
