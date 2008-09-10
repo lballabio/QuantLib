@@ -48,16 +48,16 @@ namespace QuantLib {
     class DefaultEvent : public Event {
       public:
         DefaultEvent(const Date& date,
-                     Real recoveryRatio,
+                     Real recoveryRate,
                      Seniority seniority = AnySeniority,
                      Restructuring restructuring = AnyRestructuring);
         Date date() const;
-        Real recoveryRatio() const;
+        Real recoveryRate() const;
         Seniority seniority() const;
         Restructuring restructuring() const;
       private:
         Date defaultDate_;
-        Rate recoveryRatio_;
+        Rate recoveryRate_;
         Seniority seniority_;
         Restructuring restructuring_;
         void accept(AcyclicVisitor&);

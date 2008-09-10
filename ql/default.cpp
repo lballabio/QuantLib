@@ -22,18 +22,18 @@
 namespace QuantLib {
 
     DefaultEvent::DefaultEvent(const Date& date,
-                               Real recoveryRatio,
+                               Real recoveryRate,
                                Seniority seniority,
                                Restructuring restructuring)
-    : defaultDate_(date), recoveryRatio_(recoveryRatio),
+    : defaultDate_(date), recoveryRate_(recoveryRate),
       seniority_(seniority), restructuring_(restructuring) {}
 
     Date DefaultEvent::date() const {
         return defaultDate_;
     }
 
-    Real DefaultEvent::recoveryRatio() const {
-        return recoveryRatio_;
+    Real DefaultEvent::recoveryRate() const {
+        return recoveryRate_;
     }
 
     Seniority DefaultEvent::seniority() const {

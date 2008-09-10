@@ -74,8 +74,8 @@ void CreditDefaultSwapTest::testCachedValue() {
     Rate fixedRate = 0.0120;
     DayCounter dayCount = Actual360();
     Real notional = 10000.0;
-    Real recoveryRatio = 0.4;
-    Issuer issuer(probabilityCurve, recoveryRatio);
+    Real recoveryRate = 0.4;
+    Issuer issuer(probabilityCurve, recoveryRate);
 
     CreditDefaultSwap cds(Protection::Seller, notional, fixedRate,
                           schedule, convention, dayCount, true, true);
@@ -260,11 +260,11 @@ void CreditDefaultSwapTest::testCachedMarketValue() {
                       DateGeneration::Forward, false);
 
     // Build the CDS
-    Real recoveryRatio = 0.25;
+    Real recoveryRate = 0.25;
     Rate fixedRate=0.0224;
     DayCounter dayCount=Actual360();
     Real cdsNotional=100.0;
-    Issuer issuer(piecewiseFlatHazardRate, recoveryRatio);
+    Issuer issuer(piecewiseFlatHazardRate, recoveryRate);
 
     CreditDefaultSwap cds(Protection::Seller, cdsNotional, fixedRate,
                           schedule, cdsConvention, dayCount, true, true);
@@ -337,8 +337,8 @@ void CreditDefaultSwapTest::testImpliedHazardRate() {
     Rate fixedRate = 0.0120;
     DayCounter cdsDayCount = Actual360();
     Real notional = 10000.0;
-    Real recoveryRatio = 0.4;
-    Issuer issuer(probabilityCurve, recoveryRatio);
+    Real recoveryRate = 0.4;
+    Issuer issuer(probabilityCurve, recoveryRate);
 
     Rate latestRate = Null<Rate>();
     for (Integer n=6; n<=10; ++n) {
