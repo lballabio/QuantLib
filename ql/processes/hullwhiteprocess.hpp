@@ -45,13 +45,15 @@ namespace QuantLib {
         Real expectation(Time t0, Real x0, Time dt) const;
         Real stdDeviation(Time t0, Real x0, Time dt) const;
         Real variance(Time t0, Real x0, Time dt) const;
+
+        Real a() const;
+        Real sigma() const;
+        Real alpha(Time t) const;
         //@}
     protected:
         boost::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> process_;
         Handle<YieldTermStructure> h_;
         Real a_, sigma_;
-
-        Real alpha(Time t) const ;
     };
 
     //! %Forward Hull-White stochastic process

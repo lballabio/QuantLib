@@ -71,6 +71,13 @@ namespace QuantLib {
         return alfa;
     }
 
+    Real HullWhiteProcess::a() const {
+        return a_;
+    }
+
+    Real HullWhiteProcess::sigma() const {
+        return sigma_;
+    }
 
     HullWhiteForwardProcess::HullWhiteForwardProcess(
                                           const Handle<YieldTermStructure>& h,
