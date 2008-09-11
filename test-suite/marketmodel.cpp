@@ -3985,8 +3985,7 @@ void MarketModelTest::testPathwiseMarketVegas()
                         Real sd = impliedVols_[i]*sqrt(expiry);
                         Real displacement=0.0;
 
-                        Real capletVega = blackFormulaVolDerivative(forward,
-                            caps[i].strike_,
+                        Real capletVega = blackFormulaVolDerivative(caps[i].strike_,forward,
                             sd,
                             expiry,
                             annuity,

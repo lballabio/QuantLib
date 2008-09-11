@@ -199,9 +199,8 @@ namespace QuantLib
             Real price =0.0;
             for (Size i=0; i < annuities_.size(); ++i)
             {
-                price += blackFormula(Option::Call,
+                price += blackFormula(Option::Call,strike_,
                     currentRates_[i],
-                    strike_,
                     volatility*sqrt(expiries_[i]),
                     annuities_[i]);
 
@@ -217,8 +216,8 @@ namespace QuantLib
             {
          
 
-                vega+= blackFormulaVolDerivative(currentRates_[i],
-                                                 strike_,
+                vega+= blackFormulaVolDerivative(strike_,currentRates_[i],
+                                                 
                                                  volatility*sqrt(expiries_[i]),
                                                  expiries_[i],
                                                  annuities_[i],
@@ -283,8 +282,8 @@ namespace QuantLib
 
 
             Real capletPrice = blackFormula(Option::Call,
-                forward,
                 strike,
+                forward,
                 sd,
                 annuity,
                 displacement
@@ -311,8 +310,7 @@ namespace QuantLib
                     Real expiry = inputModel->evolution().rateTimes()[rate];
                     Real volDerivative = inputModel->pseudoRoot(step)[rate][f]
                     /(displacedImpliedVols[rate-startIndex]*expiry);
-                    Real capletVega = blackFormulaVolDerivative(inputModel->initialRates()[rate],
-                        strike,
+                    Real capletVega = blackFormulaVolDerivative(strike,inputModel->initialRates()[rate],
                         displacedImpliedVols[rate-startIndex]*sqrt(expiry),
                         expiry,
                         annuities[rate-startIndex],

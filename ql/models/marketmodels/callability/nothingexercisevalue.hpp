@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_bermudan_swaption_exercise_value_hpp
-#define quantlib_bermudan_swaption_exercise_value_hpp
+#ifndef quantlib_nothing_exercise_value_hpp
+#define quantlib_nothing_exercise_value_hpp
 
 #include <ql/models/marketmodels/callability/exercisevalue.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
