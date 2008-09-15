@@ -74,6 +74,7 @@ namespace QuantLib {
         Real minStrike () const { return strikes_.front(); }
         Real maxStrike () const { return strikes_.back(); }
         virtual Real atmLevel() const { return atmLevel_->value(); }
+        void update();
       private:
         Real exerciseTimeSquareRoot_;
         std::vector<Rate> strikes_;
@@ -199,6 +200,12 @@ namespace QuantLib {
     Real InterpolatedSmileSection<Interpolator>::volatilityImpl(Real strike) const {
         calculate();
         return interpolation_(strike, true);
+    }
+
+    template <class Interpolator>
+    void InterpolatedSmileSection<Interpolator>::update() {
+        LazyObject::update();
+        SmileSection::update();
     }
     #endif
 

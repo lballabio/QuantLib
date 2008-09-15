@@ -36,7 +36,8 @@ namespace QuantLib {
 
     //! interest rate volatility smile section
     /*! This abstract class provides volatility smile section interface */
-    class SmileSection : public virtual Observable, public Observer {
+    class SmileSection : public virtual Observable,
+                         public virtual Observer {
       public:
         friend class SpreadedSmileSection;
         SmileSection(const Date& d,

@@ -29,7 +29,6 @@ namespace QuantLib {
             referenceDate_ = Settings::instance().evaluationDate();
             initializeExerciseTime();
         }
-        //LazyObject::update();
     }
 
     void SmileSection::initializeExerciseTime() const {
