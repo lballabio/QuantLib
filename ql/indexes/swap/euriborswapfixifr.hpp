@@ -35,8 +35,8 @@ namespace QuantLib {
         distributed by Reuters page TGM42281 and by Telerate.
         For more info see <http://www.ifrmarkets.com>.
 
-        \warning The 1Y swap's floating leg is based on Eurlibor3M; the
-                 floating legs of longer swaps are based on Eurlibor6M
+        \warning The 1Y swap's floating leg is based on Euribor3M; the
+                 floating legs of longer swaps are based on Euribor6M
     */
     class EuriborSwapFixIFR : public SwapIndex {
       public:

@@ -36,8 +36,8 @@ namespace QuantLib {
         Reuters page ISDAFIX2 or EURSFIXLB=.
         Further info can be found at: <http://www.isda.org/fix/isdafix.html>.
 
-        \warning The 1Y swap's floating leg is based on Euribor3M; the
-                 floating legs of longer swaps are based on Euribor6M
+        \warning The 1Y swap's floating leg is based on Eurlibor3M; the
+                 floating legs of longer swaps are based on Eurlibor6M
     */
     class EurliborSwapFixB : public SwapIndex {
       public:
