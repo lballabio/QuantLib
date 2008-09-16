@@ -63,7 +63,7 @@ namespace QuantLib {
         Calendar jointCalendar_;
     };
 
-    //! base class for O/N-S/N BBA LIBOR indexes but the EUR ones
+    //! base class for all O/N-S/N BBA LIBOR indexes but the EUR ones
     /*! One day deposit LIBOR fixed by BBA.
 
         See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.

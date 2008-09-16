@@ -67,7 +67,7 @@ namespace QuantLib {
     */
     class DailyTenorEURLibor : public IborIndex {
       public:
-        DailyTenorEURLibor(Natural settlementDays = 0,
+        DailyTenorEURLibor(Natural settlementDays,
                            const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
     };

@@ -53,6 +53,18 @@ namespace QuantLib {
                 Actual360(), h) {}
     };
 
+    //! base class for the one day deposit BBA %JPY %LIBOR indexes
+    class JPYDailyTenorLibor : public DailyTenorLibor {
+      public:
+        JPYDailyTenorLibor(Natural settlementDays,
+                           const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : DailyTenorLibor("JPYLibor", settlementDays,
+                          JPYCurrency(),
+                          Japan(),
+                          Actual360(), h) {}
+    };
+
 }
 
 
