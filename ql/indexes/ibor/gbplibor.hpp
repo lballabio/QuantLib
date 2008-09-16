@@ -50,9 +50,9 @@ namespace QuantLib {
     };
 
     //! base class for the one day deposit BBA %GBP %LIBOR indexes
-    class GBPDailyTenorLibor : public DailyTenorLibor {
+    class DailyTenorGBPLibor : public DailyTenorLibor {
       public:
-        GBPDailyTenorLibor(Natural settlementDays,
+        DailyTenorGBPLibor(Natural settlementDays,
                            const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : DailyTenorLibor("GBPLibor", settlementDays,
@@ -62,11 +62,11 @@ namespace QuantLib {
     };
 
     //! Overnight %GBP %Libor index
-    class GBPLiborON : public GBPDailyTenorLibor {
+    class GBPLiborON : public DailyTenorGBPLibor {
       public:
         GBPLiborON(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : GBPDailyTenorLibor(0, h) {}
+        : DailyTenorGBPLibor(0, h) {}
     };
 
 }

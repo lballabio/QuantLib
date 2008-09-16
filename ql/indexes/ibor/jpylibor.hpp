@@ -54,9 +54,9 @@ namespace QuantLib {
     };
 
     //! base class for the one day deposit BBA %JPY %LIBOR indexes
-    class JPYDailyTenorLibor : public DailyTenorLibor {
+    class DailyTenorJPYLibor : public DailyTenorLibor {
       public:
-        JPYDailyTenorLibor(Natural settlementDays,
+        DailyTenorJPYLibor(Natural settlementDays,
                            const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : DailyTenorLibor("JPYLibor", settlementDays,
