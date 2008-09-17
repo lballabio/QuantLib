@@ -33,6 +33,7 @@ QL_TESTS = \
 	europeanoption.hpp europeanoption.cpp \
 	everestoption.hpp everestoption.cpp \
 	exchangerate.hpp exchangerate.cpp \
+	extendedtrees.hpp extendedtrees.cpp \
 	factorial.hpp factorial.cpp \
 	forwardoption.hpp forwardoption.cpp \
 	gaussianquadratures.hpp gaussianquadratures.cpp \

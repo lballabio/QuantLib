@@ -332,6 +332,7 @@ AC_CONFIG_FILES([
     ql/experimental/callablebonds/Makefile
     ql/experimental/coupons/Makefile
     ql/experimental/credit/Makefile
+    ql/experimental/lattices/Makefile
     ql/experimental/mcbasket/Makefile
     ql/experimental/processes/Makefile
     ql/experimental/risk/Makefile
