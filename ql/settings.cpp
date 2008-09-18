@@ -72,7 +72,7 @@ namespace QuantLib {
 
     SavedSettings::~SavedSettings() {
         try {
-            Settings::instance().evaluationDate() == evaluationDate_;
+            Settings::instance().evaluationDate() = evaluationDate_;
             Settings::instance().enforcesTodaysHistoricFixings() =
                 enforcesTodaysHistoricFixings_;
         } catch (...) {
