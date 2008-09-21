@@ -35,6 +35,7 @@ QL_TESTS = \
 	exchangerate.hpp exchangerate.cpp \
 	extendedtrees.hpp extendedtrees.cpp \
 	factorial.hpp factorial.cpp \
+	fdmlinearop.hpp fdmlinearop.cpp \
 	forwardoption.hpp forwardoption.cpp \
 	gaussianquadratures.hpp gaussianquadratures.cpp \
 	gjrgarchmodel.hpp gjrgarchmodel.cpp \

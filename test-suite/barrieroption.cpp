@@ -25,6 +25,7 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/barrieroption.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
+#include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <ql/pricingengines/barrier/mcbarrierengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
@@ -247,6 +248,20 @@ void BarrierOptionTest::testHaugValues() {
         Real error = std::fabs(calculated-expected);
         if (error>values[i].tol) {
             REPORT_FAILURE("value", values[i].barrierType, values[i].barrier,
+                           values[i].rebate, payoff, exercise, values[i].s,
+                           values[i].q, values[i].r, today, values[i].v,
+                           expected, calculated, error, values[i].tol);
+        }
+        
+        engine = boost::shared_ptr<PricingEngine>(
+                new FdBlackScholesBarrierEngine(stochProcess, 200, 400));
+        barrierOption.setPricingEngine(engine);
+
+        calculated = barrierOption.NPV();
+        expected = values[i].result;
+        error = std::fabs(calculated-expected);
+        if (error>5.0e-3) {
+            REPORT_FAILURE("fd value", values[i].barrierType, values[i].barrier,
                            values[i].rebate, payoff, exercise, values[i].s,
                            values[i].q, values[i].r, today, values[i].v,
                            expected, calculated, error, values[i].tol);

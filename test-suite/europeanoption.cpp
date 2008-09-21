@@ -25,6 +25,7 @@
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/binomialengine.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/integralengine.hpp>
@@ -305,6 +306,20 @@ void EuropeanOptionTest::testValues() {
         Real calculated = option.NPV();
         Real error = std::fabs(calculated-values[i].result);
         Real tolerance = values[i].tol;
+        if (error>tolerance) {
+            REPORT_FAILURE("value", payoff, exercise, values[i].s,
+                           values[i].q, values[i].r, today,
+                           values[i].v, values[i].result, calculated,
+                           error, tolerance);
+        }
+        
+        engine = boost::shared_ptr<PricingEngine>(
+                    new FdBlackScholesVanillaEngine(stochProcess,200,400));
+        option.setPricingEngine(engine);
+
+        calculated = option.NPV();
+        error = std::fabs(calculated-values[i].result);
+        tolerance = 1.0e-3;
         if (error>tolerance) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s,
                            values[i].q, values[i].r, today,

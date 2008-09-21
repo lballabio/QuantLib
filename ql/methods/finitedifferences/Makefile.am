@@ -1,4 +1,6 @@
 
+SUBDIRS = multidim
+
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 this_includedir=${includedir}/${subdir}
@@ -34,6 +36,9 @@ libFiniteDifferences_la_SOURCES = \
     boundarycondition.cpp \
     bsmoperator.cpp \
     tridiagonaloperator.cpp
+
+libFiniteDifferences_la_LIBADD = \
+    multidim/libMultiDimFDM.la
 
 noinst_LTLIBRARIES = libFiniteDifferences.la
 

@@ -21,6 +21,7 @@ this_include_HEADERS = \
     compositeinstrument.hpp \
     creditdefaultswap.hpp \
     dividendschedule.hpp \
+    dividendbarrieroption.hpp \
     dividendvanillaoption.hpp \
     europeanoption.hpp \
     everestoption.hpp \
@@ -66,6 +67,7 @@ libInstruments_la_SOURCES = \
     cliquetoption.cpp \
     compositeinstrument.cpp \
     creditdefaultswap.cpp \
+    dividendbarrieroption.cpp \
     dividendvanillaoption.cpp \
     europeanoption.cpp \
     everestoption.cpp \

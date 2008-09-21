@@ -359,6 +359,7 @@ AC_CONFIG_FILES([
     ql/math/statistics/Makefile
     ql/methods/Makefile
     ql/methods/finitedifferences/Makefile
+    ql/methods/finitedifferences/multidim/Makefile
     ql/methods/lattices/Makefile
     ql/methods/montecarlo/Makefile
     ql/models/Makefile

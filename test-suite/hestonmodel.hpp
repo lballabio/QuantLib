@@ -33,6 +33,8 @@ class HestonModelTest {
     static void testAnalyticVsCached();
     static void testKahlJaeckelCase();
     static void testMcVsCached();
+    static void testFdBarrierVsCached();    
+    static void testFdVanillaVsCached();    
     static void testEngines();
     static void testDifferentIntegrals();
     static boost::unit_test_framework::test_suite* suite();

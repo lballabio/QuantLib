@@ -5,11 +5,19 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
     analyticbarrierengine.hpp \
+    fdblackscholesbarrierengine.hpp \
+    fdblackscholesrebateengine.hpp \
+    fdhestonbarrierengine.hpp \
+    fdhestonrebateengine.hpp \
     mcbarrierengine.hpp
 
 libBarrierEngines_la_SOURCES = \
     analyticbarrierengine.cpp \
-	mcbarrierengine.cpp
+    fdblackscholesbarrierengine.cpp \
+    fdblackscholesrebateengine.cpp \
+    fdhestonbarrierengine.cpp \
+    fdhestonrebateengine.cpp \
+    mcbarrierengine.cpp
 
 noinst_LTLIBRARIES = libBarrierEngines.la
 
