@@ -1,9 +1,10 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2005, 2006 StatPro Italia srl
  Copyright (C) 2005 Charles Whitmore
+ Copyright (C) 2007, 2008 Ferdinando Ametrano
+ Copyright (C) 2008 Toyin Akin
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -167,6 +168,24 @@ namespace QuantLib {
         static Real convexity(const Leg& leg,
                               const InterestRate& y,
                               Date settlementDate = Date());
+
+        //! Basis-point value
+        /*! Obtained by setting dy = 0.0001 in the 2nd-order Taylor
+            series expansion.
+        */
+        static Real basisPointValue(const Leg& leg,
+                                    const InterestRate& y,
+                                    Date settlementDate = Date());
+
+        //! Yield value of a basis point
+        /*! The yield value of a one basis point change in price is
+            the derivative of the yield with respect to the price
+            multiplied by 0.01
+        */
+        static Real yieldValueBasisPoint(const Leg& leg,
+                                         const InterestRate& y,
+                                         Date settlementDate = Date());
+
     };
 
 }

@@ -1,9 +1,10 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2005, 2006 StatPro Italia srl
  Copyright (C) 2005 Charles Whitmore
+ Copyright (C) 2007, 2008 Ferdinando Ametrano
+ Copyright (C) 2008 Toyin Akin
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -472,6 +473,40 @@ namespace QuantLib {
             return 0.0;
 
         return d2Pdy2/P;
+    }
+
+
+    Real CashFlows::basisPointValue(const Leg& leg,
+                                    const InterestRate& y,
+                                    Date settlementDate) {
+        Real shift = 0.0001;
+        Real dirtyPrice = CashFlows::npv(leg, y, settlementDate);
+        Real modifiedDuration = CashFlows::duration(leg, y,
+                                                    Duration::Modified,
+                                                    settlementDate);
+        Real convexity = CashFlows::convexity(leg, y, settlementDate);
+
+        Real delta = -modifiedDuration*dirtyPrice;
+
+        Real gamma = (convexity/100.0)*dirtyPrice;
+
+        delta *= shift;
+        gamma *= shift*shift;
+
+        return delta + 0.5*gamma;
+    }
+
+    Real CashFlows::yieldValueBasisPoint(const Leg& leg,
+                                         const InterestRate& y,
+                                         Date settlementDate) {
+        Real shift = 0.01;
+
+        Real dirtyPrice = CashFlows::npv(leg, y, settlementDate);
+        Real modifiedDuration = CashFlows::duration(leg, y,
+                                                    Duration::Modified,
+                                                    settlementDate);
+
+        return (1.0/(-dirtyPrice*modifiedDuration))*shift;
     }
 
 }
