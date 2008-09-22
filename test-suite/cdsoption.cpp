@@ -93,6 +93,6 @@ void CdsOptionTest::testCached() {
 
 test_suite* CdsOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("range-accrual-swap tests");
-    suite->add(BOOST_TEST_CASE(&CdsOptionTest::testCached));
+    suite->add(QUANTLIB_TEST_CASE(&CdsOptionTest::testCached));
     return suite;
 }
