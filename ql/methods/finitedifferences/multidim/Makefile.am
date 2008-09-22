@@ -4,25 +4,26 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    craigsneydscheme.hpp \
 	douglasscheme.hpp \
+	fdm1dmesher.hpp \
 	fdmamericanstepcondition.hpp \
 	fdmblackscholesop.hpp \
 	fdmblackscholessolver.hpp \
 	fdmdirichletboundary.hpp \
 	fdmdividendhandler.hpp \
-	fdminnervaluecalculator.hpp \
-	fdmhestonop.hpp \
 	fdmhestonhullwhiteop.hpp \
+	fdmhestoninnervalue.hpp \
+	fdmhestonop.hpp \
+	fdmhestonquantohelper.hpp \
 	fdmhestonsolver.hpp \
 	fdmhestonvariancemesher.hpp \
-	fdmmesher.hpp \
-	fdm1dmesher.hpp \
-	fdmmeshercomposite.hpp \
+	fdminnervaluecalculator.hpp \
 	fdmlinearop.hpp \
-        fdmlinearopcomposite.hpp \
+	fdmlinearopcomposite.hpp \
 	fdmlinearopiterator.hpp \
-        fdmlinearoplayout.hpp \
+	fdmlinearoplayout.hpp \
+	fdmmesher.hpp \
+	fdmmeshercomposite.hpp \
 	fdmsnapshotcondition.hpp \
 	fdmstepconditioncomposite.hpp \
 	firstderivativeop.hpp \
@@ -32,26 +33,28 @@ this_include_HEADERS = \
 	secondordermixedderivativeop.hpp \
 	triplebandlinearop.hpp \
 	uniform1dmesher.hpp \
-	uniformgridmesher.hpp
+	uniformgridmesher.hpp \
+    craigsneydscheme.hpp
 
 libMultiDimFDM_la_SOURCES = \
+	craigsneydscheme.cpp \
 	douglasscheme.cpp \
 	fdmamericanstepcondition.cpp \
 	fdmblackscholesop.cpp \
 	fdmblackscholessolver.cpp \
 	fdmdirichletboundary.cpp \
 	fdmdividendhandler.cpp \
-	fdmlinearoplayout.cpp \
-	fdmmeshercomposite.cpp \
-	fdmhestonop.cpp \
 	fdmhestonhullwhiteop.cpp \
+	fdmhestonop.cpp \
+	fdmhestonquantohelper.cpp \
 	fdmhestonsolver.cpp \
 	fdmhestonvariancemesher.cpp \
+	fdmlinearoplayout.cpp \
+	fdmmeshercomposite.cpp \
 	fdmsnapshotcondition.cpp \
 	fdmstepconditioncomposite.cpp \
 	firstderivativeop.cpp \
-	craigsneydscheme.cpp \
-        hundsdorferscheme.cpp \
+	hundsdorferscheme.cpp \
 	ninepointlinearop.cpp \
 	secondderivativeop.cpp \
 	secondordermixedderivativeop.cpp \

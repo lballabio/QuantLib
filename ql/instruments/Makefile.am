@@ -20,8 +20,8 @@ this_include_HEADERS = \
     cliquetoption.hpp \
     compositeinstrument.hpp \
     creditdefaultswap.hpp \
-    dividendschedule.hpp \
     dividendbarrieroption.hpp \
+    dividendschedule.hpp \
     dividendvanillaoption.hpp \
     europeanoption.hpp \
     everestoption.hpp \
