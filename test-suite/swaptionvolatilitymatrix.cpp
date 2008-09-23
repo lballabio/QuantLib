@@ -23,7 +23,7 @@
 #include "swaptionvolstructuresutilities.hpp"
 #include "utilities.hpp"
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/indexes/swap/euriborswapfixa.hpp>
+#include <ql/indexes/swap/euriborswap.hpp>
 #include <ql/instruments/makeswaption.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -145,7 +145,7 @@ namespace {
                                "\n   exp. swap length: " << years(atm.tenors.swaps[j]));
 
                 boost::shared_ptr<SwapIndex> swapIndex(new
-                    EuriborSwapFixA(atm.tenors.swaps[j], termStructure));
+                    EuriborSwapIsdaFixA(atm.tenors.swaps[j], termStructure));
 
                 for (Size i=0; i<atm.tenors.options.size(); ++i) {
                     Real error, tolerance = 1.0e-16;

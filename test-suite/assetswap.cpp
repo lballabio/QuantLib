@@ -86,7 +86,7 @@ namespace {
                      new Euribor(Period(floatingFrequency), termStructure));
             Calendar calendar = iborIndex->fixingCalendar();
             swapIndex= boost::shared_ptr<SwapIndex>(
-                new SwapIndex("EuriborSwapFixA", 10*Years, swapSettlementDays,
+                new SwapIndex("EuriborSwapIsdaFixA", 10*Years, swapSettlementDays,
                               iborIndex->currency(), calendar,
                               Period(fixedFrequency), fixedConvention,
                               iborIndex->dayCounter(), iborIndex));

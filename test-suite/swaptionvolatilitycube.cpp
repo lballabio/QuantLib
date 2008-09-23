@@ -22,7 +22,7 @@
 #include "swaptionvolatilitycube.hpp"
 #include "swaptionvolstructuresutilities.hpp"
 #include "utilities.hpp"
-#include <ql/indexes/swap/euriborswapfixa.hpp>
+#include <ql/indexes/swap/euriborswap.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolcube2.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolcube1.hpp>
@@ -136,9 +136,9 @@ namespace {
             termStructure.linkTo(flatRate(0.05, Actual365Fixed()));
 
             swapIndexBase = boost::shared_ptr<SwapIndex>(new
-                EuriborSwapFixA(2*Years, termStructure));
+                EuriborSwapIsdaFixA(2*Years, termStructure));
             shortSwapIndexBase = boost::shared_ptr<SwapIndex>(new
-                EuriborSwapFixA(1*Years, termStructure));
+                EuriborSwapIsdaFixA(1*Years, termStructure));
 
             vegaWeighedSmileFit=false;
         }

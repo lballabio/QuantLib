@@ -1247,51 +1247,51 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\indexes\swap\euriborswapfixa.cpp"
+					RelativePath=".\ql\indexes\swap\chfliborswap.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\indexes\swap\euriborswapfixa.hpp"
+					RelativePath=".\ql\indexes\swap\chfliborswap.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\indexes\swap\euriborswapfixb.cpp"
+					RelativePath=".\ql\indexes\swap\euriborswap.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\indexes\swap\euriborswapfixb.hpp"
+					RelativePath=".\ql\indexes\swap\euriborswap.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\indexes\swap\euriborswapfixifr.cpp"
+					RelativePath=".\ql\indexes\swap\eurliborswap.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\indexes\swap\euriborswapfixifr.hpp"
+					RelativePath=".\ql\indexes\swap\eurliborswap.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\indexes\swap\eurliborswapfixa.cpp"
+					RelativePath=".\ql\indexes\swap\gbpliborswap.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\indexes\swap\eurliborswapfixa.hpp"
+					RelativePath=".\ql\indexes\swap\gbpliborswap.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\indexes\swap\eurliborswapfixb.cpp"
+					RelativePath=".\ql\indexes\swap\jpyliborswap.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\indexes\swap\eurliborswapfixb.hpp"
+					RelativePath=".\ql\indexes\swap\jpyliborswap.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\indexes\swap\eurliborswapfixifr.cpp"
+					RelativePath=".\ql\indexes\swap\usdliborswap.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\indexes\swap\eurliborswapfixifr.hpp"
+					RelativePath=".\ql\indexes\swap\usdliborswap.hpp"
 					>
 				</File>
 			</Filter>

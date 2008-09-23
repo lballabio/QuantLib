@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2007 Ferdinando Ametrano
- Copyright (C) 2006 Chiara Fornarola
+ Copyright (C) 2008 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,26 +17,36 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/indexes/swap/euriborswapfixifr.hpp>
-#include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/swap/usdliborswap.hpp>
+#include <ql/indexes/ibor/usdlibor.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
-#include <ql/currencies/europe.hpp>
+#include <ql/currencies/america.hpp>
 
 namespace QuantLib {
 
-    EuriborSwapFixIFR::EuriborSwapFixIFR(const Period& tenor,
+    UsdLiborSwapIsdaFixAm::UsdLiborSwapIsdaFixAm(const Period& tenor,
                                                  const Handle<YieldTermStructure>& h)
-    : SwapIndex("EuriborSwapFixIFR", // familyName
+    : SwapIndex("UsdLiborSwapIsdaFixAm", // familyName
                 tenor,
                 2, // settlementDays
-                EURCurrency(),
+                USDCurrency(),
                 TARGET(),
-                1*Years, // fixedLegTenor
+                6*Months, // fixedLegTenor
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
-                tenor > 1*Years ?
-                    boost::shared_ptr<IborIndex>(new Euribor6M(h)) :
-                    boost::shared_ptr<IborIndex>(new Euribor3M(h))) {}
+                boost::shared_ptr<IborIndex>(new USDLibor(3*Months, h))) {}
+
+    UsdLiborSwapIsdaFixPm::UsdLiborSwapIsdaFixPm(const Period& tenor,
+                                                 const Handle<YieldTermStructure>& h)
+    : SwapIndex("UsdLiborSwapIsdaFixPm", // familyName
+                tenor,
+                2, // settlementDays
+                USDCurrency(),
+                TARGET(),
+                6*Months, // fixedLegTenor
+                ModifiedFollowing, // fixedLegConvention
+                Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
+                boost::shared_ptr<IborIndex>(new USDLibor(3*Months, h))) {}
 
 }

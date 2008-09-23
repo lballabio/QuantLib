@@ -19,7 +19,7 @@
 
 #include "rangeaccrual.hpp"
 #include "utilities.hpp"
-#include <ql/indexes/swap/euriborswapfixa.hpp>
+#include <ql/indexes/swap/euriborswap.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
@@ -257,10 +257,10 @@ namespace {
             fixedLegConvention = Unadjusted;
             fixedLegDayCounter = Thirty360();
             boost::shared_ptr<SwapIndex> swapIndexBase_(new
-                EuriborSwapFixA(2*Years, termStructure));
+                EuriborSwapIsdaFixA(2*Years, termStructure));
 
             boost::shared_ptr<SwapIndex> shortSwapIndexBase(new
-                EuriborSwapFixA(1*Years, termStructure));
+                EuriborSwapIsdaFixA(1*Years, termStructure));
 
             vegaWeightedSmileFit = false;
 

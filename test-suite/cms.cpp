@@ -24,7 +24,7 @@
 #include <ql/instruments/swap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
-#include <ql/indexes/swap/euriborswapfixa.hpp>
+#include <ql/indexes/swap/euriborswap.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
@@ -190,9 +190,9 @@ namespace {
 
             iborIndex = shared_ptr<IborIndex>(new Euribor6M(termStructure));
             shared_ptr<SwapIndex> swapIndexBase(new
-                EuriborSwapFixA(10*Years, termStructure));
+                EuriborSwapIsdaFixA(10*Years, termStructure));
             shared_ptr<SwapIndex> shortSwapIndexBase(new
-                EuriborSwapFixA(2*Years, termStructure));
+                EuriborSwapIsdaFixA(2*Years, termStructure));
 
             bool vegaWeightedSmileFit = false;
 
@@ -271,7 +271,7 @@ void CmsTest::testFairRate()  {
 
     CommonVars vars;
 
-    shared_ptr<SwapIndex> swapIndex(new SwapIndex("EuriborSwapFixA",
+    shared_ptr<SwapIndex> swapIndex(new SwapIndex("EuriborSwapIsdaFixA",
                                                   10*Years,
                                                   vars.iborIndex->fixingDays(),
                                                   vars.iborIndex->currency(),
@@ -282,7 +282,7 @@ void CmsTest::testFairRate()  {
                                                   vars.iborIndex));
     // FIXME
     //shared_ptr<SwapIndex> swapIndex(new
-    //    EuriborSwapFixA(10*Years, vars.iborIndex->termStructure()));
+    //    EuriborSwapIsdaFixA(10*Years, vars.iborIndex->termStructure()));
     Date startDate = vars.termStructure->referenceDate() + 20*Years;
     Date paymentDate = startDate + 1*Years;
     Date endDate = paymentDate;
@@ -332,7 +332,7 @@ void CmsTest::testCmsSwap() {
 
     CommonVars vars;
 
-    shared_ptr<SwapIndex> swapIndex(new SwapIndex("EuriborSwapFixA",
+    shared_ptr<SwapIndex> swapIndex(new SwapIndex("EuriborSwapIsdaFixA",
                                                   10*Years,
                                                   vars.iborIndex->fixingDays(),
                                                   vars.iborIndex->currency(),
@@ -343,7 +343,7 @@ void CmsTest::testCmsSwap() {
                                                   vars.iborIndex));
     // FIXME
     //shared_ptr<SwapIndex> swapIndex(new
-    //    EuriborSwapFixA(10*Years, vars.iborIndex->termStructure()));
+    //    EuriborSwapIsdaFixA(10*Years, vars.iborIndex->termStructure()));
     Spread spread = 0.0;
     std::vector<Size> swapLengths;
     swapLengths.push_back(1);
@@ -401,7 +401,7 @@ void CmsTest::testParity() {
     swaptionVols.push_back(vars.SabrVolCube2);
 
     shared_ptr<SwapIndex> swapIndex(new
-        EuriborSwapFixA(10*Years, vars.iborIndex->termStructure()));
+        EuriborSwapIsdaFixA(10*Years, vars.iborIndex->termStructure()));
     Date startDate = vars.termStructure->referenceDate() + 20*Years;
     Date paymentDate = startDate + 1*Years;
     Date endDate = paymentDate;
