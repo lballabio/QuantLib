@@ -218,7 +218,9 @@ namespace QuantLib {
         Real underlying(Size i, Size index) const;
         Real probability(Size, Size, Size branch) const;
       protected:
-        Real up_, down_, pu_, pd_, OddSteps_, Strike_, End_;
+        Time end_;
+        Size oddSteps_;
+        Real strike_, up_, down_, pu_, pd_;
     };
 
 
@@ -233,7 +235,9 @@ namespace QuantLib {
         Real probability(Size, Size, Size branch) const;
       protected:
         Real computeUpProb(Real k, Real dj) const;
-        Real up_, down_, pu_, pd_, OddSteps_, Strike_, End_;
+        Time end_;
+        Size oddSteps_;
+        Real strike_, up_, down_, pu_, pd_;
     };
 
 
