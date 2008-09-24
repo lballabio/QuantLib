@@ -11,7 +11,6 @@
 #include <ql/methods/finitedifferences/multidim/fdmhestonhullwhiteop.hpp>
 #include <ql/methods/finitedifferences/multidim/fdmhestoninnervalue.hpp>
 #include <ql/methods/finitedifferences/multidim/fdmhestonop.hpp>
-#include <ql/methods/finitedifferences/multidim/fdmhestonquantohelper.hpp>
 #include <ql/methods/finitedifferences/multidim/fdmhestonsolver.hpp>
 #include <ql/methods/finitedifferences/multidim/fdmhestonvariancemesher.hpp>
 #include <ql/methods/finitedifferences/multidim/fdminnervaluecalculator.hpp>

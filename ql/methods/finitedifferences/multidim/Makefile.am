@@ -14,7 +14,6 @@ this_include_HEADERS = \
 	fdmhestonhullwhiteop.hpp \
 	fdmhestoninnervalue.hpp \
 	fdmhestonop.hpp \
-	fdmhestonquantohelper.hpp \
 	fdmhestonsolver.hpp \
 	fdmhestonvariancemesher.hpp \
 	fdminnervaluecalculator.hpp \
@@ -34,7 +33,7 @@ this_include_HEADERS = \
 	triplebandlinearop.hpp \
 	uniform1dmesher.hpp \
 	uniformgridmesher.hpp \
-    craigsneydscheme.hpp
+        craigsneydscheme.hpp
 
 libMultiDimFDM_la_SOURCES = \
 	craigsneydscheme.cpp \
@@ -46,7 +45,6 @@ libMultiDimFDM_la_SOURCES = \
 	fdmdividendhandler.cpp \
 	fdmhestonhullwhiteop.cpp \
 	fdmhestonop.cpp \
-	fdmhestonquantohelper.cpp \
 	fdmhestonsolver.cpp \
 	fdmhestonvariancemesher.cpp \
 	fdmlinearoplayout.cpp \
