@@ -4,20 +4,20 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    euriborswapfixa.hpp \
-    euriborswapfixb.hpp \
-    euriborswapfixifr.hpp \
-    eurliborswapfixa.hpp \
-    eurliborswapfixb.hpp \
-    eurliborswapfixifr.hpp
+    chfliborswap.hpp \
+    euriborswap.hpp \
+    eurliborswap.hpp \
+    gbpliborswap.hpp \
+    jpyliborswap.hpp \
+    usdliborswap.hpp
 
 libSwapIndexes_la_SOURCES = \
-    euriborswapfixa.cpp \
-    euriborswapfixb.cpp \
-    euriborswapfixifr.cpp \
-    eurliborswapfixa.cpp \
-    eurliborswapfixb.cpp \
-    eurliborswapfixifr.cpp
+    chfliborswap.cpp \
+    euriborswap.cpp \
+    eurliborswap.cpp \
+    gbpliborswap.cpp \
+    jpyliborswap.cpp \
+    usdliborswap.cpp
 
 noinst_LTLIBRARIES = libSwapIndexes.la
 
