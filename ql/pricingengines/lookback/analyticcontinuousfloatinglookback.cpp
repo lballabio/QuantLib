@@ -93,18 +93,17 @@ namespace QuantLib {
     Real AnalyticContinuousFloatingLookbackEngine::A(Real eta) const {
         Volatility vol = volatility();
         Real lambda = 2.0*(riskFreeRate() - dividendYield())/(vol*vol);
-        Real SS = underlying()/minmax();
-        Real d1 =
-            std::log(SS)/stdDeviation() + 0.5*(lambda+1.0)*stdDeviation();
-        Real N1 = f_(eta*d1);
-        Real N2 = f_(eta*(d1-stdDeviation()));
-        Real N3 = f_(eta*(-d1+lambda*stdDeviation()));
-        Real N4 = f_(eta*-d1);
-        Real powSS = std::pow(SS, -lambda);
-        return eta*((underlying() * dividendDiscount() * N1 -
-                    minmax() * riskFreeDiscount() * N2) +
+        Real s = underlying()/minmax();
+        Real d1 = std::log(s)/stdDeviation() + 0.5*(lambda+1.0)*stdDeviation();
+        Real n1 = f_(eta*d1);
+        Real n2 = f_(eta*(d1-stdDeviation()));
+        Real n3 = f_(eta*(-d1+lambda*stdDeviation()));
+        Real n4 = f_(eta*-d1);
+        Real pow_s = std::pow(s, -lambda);
+        return eta*((underlying() * dividendDiscount() * n1 -
+                    minmax() * riskFreeDiscount() * n2) +
                     (underlying() * riskFreeDiscount() *
-                    (powSS * N3 - dividendDiscount()* N4/riskFreeDiscount())/
+                    (pow_s * n3 - dividendDiscount()* n4/riskFreeDiscount())/
             lambda));
     }
 
