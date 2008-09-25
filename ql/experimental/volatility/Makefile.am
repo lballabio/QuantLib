@@ -8,6 +8,8 @@ this_include_HEADERS = \
     blackatmvolcurve.hpp \
     blackvolsurface.hpp \
     equityfxvolsurface.hpp \
+    extendedblackvariancecurve.hpp \
+    extendedblackvariancesurface.hpp \
     interestratevolsurface.hpp \
     sabrvolsurface.hpp \
     volcube.hpp
@@ -17,6 +19,8 @@ libVolatility_la_SOURCES = \
     blackatmvolcurve.cpp \
     blackvolsurface.cpp \
     equityfxvolsurface.cpp \
+    extendedblackvariancecurve.cpp \
+    extendedblackvariancesurface.cpp \
     interestratevolsurface.cpp \
     sabrvolsurface.cpp \
     volcube.cpp
