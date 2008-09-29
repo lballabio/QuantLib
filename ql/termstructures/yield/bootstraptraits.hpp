@@ -28,7 +28,7 @@
 #include <ql/termstructures/yield/discountcurve.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yield/forwardcurve.hpp>
-#include <ql/termstructures/bootstraphelper.hpp>
+#include <ql/termstructures/yield/ratehelper.hpp>
 
 namespace QuantLib {
 
@@ -44,7 +44,7 @@ namespace QuantLib {
             typedef InterpolatedDiscountCurve<Interpolator> type;
         };
         // helper class
-        typedef BootstrapHelper<YieldTermStructure> helper;
+        typedef RateHelper helper;
         // start of curve data
         static Date initialDate(const YieldTermStructure* c) {
             return c->referenceDate();
@@ -99,7 +99,7 @@ namespace QuantLib {
             typedef InterpolatedZeroCurve<Interpolator> type;
         };
         // helper class
-        typedef BootstrapHelper<YieldTermStructure> helper;
+        typedef RateHelper helper;
         // start of curve data
         static Date initialDate(const YieldTermStructure* c) {
             return c->referenceDate();
@@ -154,7 +154,7 @@ namespace QuantLib {
             typedef InterpolatedForwardCurve<Interpolator> type;
         };
         // helper class
-        typedef BootstrapHelper<YieldTermStructure> helper;
+        typedef RateHelper helper;
         // start of curve data
         static Date initialDate(const YieldTermStructure* c) {
             return c->referenceDate();

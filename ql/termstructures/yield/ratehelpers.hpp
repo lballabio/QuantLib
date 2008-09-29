@@ -27,7 +27,7 @@
 #ifndef quantlib_ratehelpers_hpp
 #define quantlib_ratehelpers_hpp
 
-#include <ql/termstructures/bootstraphelper.hpp>
+#include <ql/termstructures/yield/ratehelper.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/instruments/bmaswap.hpp>
 #include <ql/time/calendar.hpp>
@@ -36,9 +36,6 @@
 namespace QuantLib {
 
     class SwapIndex;
-    class Quote;
-
-    typedef BootstrapHelper<YieldTermStructure> RateHelper;
 
     //! Rate helper for bootstrapping over IborIndex futures prices
     class FuturesRateHelper : public RateHelper {
@@ -68,6 +65,10 @@ namespace QuantLib {
                           const boost::shared_ptr<IborIndex>& iborIndex,
                           Rate convexityAdjustment = 0.0);
         //! \name RateHelper interface
+        //@{
+        Rate rate() const;
+        //@}
+        //! \name BootstrapHelper interface
         //@{
         Real impliedQuote() const;
         //@}
@@ -121,6 +122,10 @@ namespace QuantLib {
                           const boost::shared_ptr<IborIndex>& iborIndex);
         //! \name RateHelper interface
         //@{
+        Rate rate() const { return quoteValue(); }
+        //@}
+        //! \name BootstrapHelper interface
+        //@{
         Real impliedQuote() const;
         void setTermStructure(YieldTermStructure*);
         //@}
@@ -158,6 +163,10 @@ namespace QuantLib {
                       Natural monthsToStart,
                       const boost::shared_ptr<IborIndex>& iborIndex);
         //! \name RateHelper interface
+        //@{
+        Rate rate() const { return quoteValue(); }
+        //@}
+        //! \name BootstrapHelper interface
         //@{
         Real impliedQuote() const;
         void setTermStructure(YieldTermStructure*);
@@ -206,6 +215,10 @@ namespace QuantLib {
                        const Period& fwdStart = 0*Days);
         //! \name RateHelper interface
         //@{
+        Rate rate() const { return quoteValue(); }
+        //@}
+        //! \name BootstrapHelper interface
+        //@{
         Real impliedQuote() const;
         void setTermStructure(YieldTermStructure*);
         //@}
@@ -244,6 +257,10 @@ namespace QuantLib {
                           // ibor leg
                           const boost::shared_ptr<IborIndex>& index);
         //! \name RateHelper interface
+        //@{
+        Rate rate() const { return quoteValue(); }
+        //@}
+        //! \name BootstrapHelper interface
         //@{
         Real impliedQuote() const;
         void setTermStructure(YieldTermStructure*);

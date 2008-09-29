@@ -107,6 +107,15 @@ namespace QuantLib {
         yearFraction_=i->dayCounter().yearFraction(earliestDate_, latestDate_);
     }
 
+    Rate FuturesRateHelper::rate() const {
+        Rate futureRate = 1.0 - quoteValue()/100.0;
+        Rate convAdj = convAdj_.empty() ? 0.0 : convAdj_->value();
+        QL_ENSURE(convAdj >= 0.0,
+                  "Negative (" << convAdj <<
+                  ") futures convexity adjustment");
+        return futureRate - convAdj;
+    }
+
     Real FuturesRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         Rate forwardRate = (termStructure_->discount(earliestDate_) /
