@@ -36,8 +36,10 @@ namespace QuantLib {
 
     class RateHelper : public BootstrapHelper<YieldTermStructure> {
       public:
-        RateHelper(const Handle<Quote>& quote) : BootstrapHelper(quote) {}
-        RateHelper(Real quote) : BootstrapHelper(quote) {}
+        RateHelper(const Handle<Quote>& quote) : 
+            BootstrapHelper<YieldTermStructure>(quote) {}
+        RateHelper(Real quote) : 
+            BootstrapHelper<YieldTermStructure>(quote) {}
         virtual Rate rate() const = 0;
     };
 
