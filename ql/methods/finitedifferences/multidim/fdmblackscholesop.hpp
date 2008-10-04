@@ -57,8 +57,8 @@ namespace QuantLib {
         const boost::shared_ptr<BlackVolTermStructure> volTS_;
         const FirstDerivativeOp  dxMap_;
         const TripleBandLinearOp dxxMap_;
-        const Real strike_;
         TripleBandLinearOp mapT_;
+        const Real strike_;
     };
 }
 
