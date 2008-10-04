@@ -111,6 +111,9 @@ namespace QuantLib {
         }
 
 		// 3.2 Step condition if american exercise
+        QL_REQUIRE(   arguments_.exercise->type() == Exercise::American
+                   || arguments_.exercise->type() == Exercise::European,
+                   "exercise type is not supported");
 		if (arguments_.exercise->type() == Exercise::American) {
 			boost::shared_ptr<FdmInnerValueCalculator> calculator(
 											new FdmLogInnerValue(payoff, 0));
