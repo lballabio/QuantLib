@@ -57,8 +57,8 @@ namespace QuantLib {
          \f[
          Pay(L) = min (D_1, LGD) - min (D_2, LGD) = \left\{
          \begin{array}{lcl}
-         \displaystyle 0 &;& LGD < D_1 \                    \
-         \displaystyle LGD - D_1 &;& D_1 \leq LGD \leq D_2 \    \
+         \displaystyle 0 &;& LGD < D_1 \\
+         \displaystyle LGD - D_1 &;& D_1 \leq LGD \leq D_2 \\
          \displaystyle D_2 - D_1 &;& LGD > D_2
          \end{array}
          \right.
