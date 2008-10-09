@@ -3,6 +3,7 @@
 
 #include <ql/time/calendars/argentina.hpp>
 #include <ql/time/calendars/australia.hpp>
+#include <ql/time/calendars/bespokecalendar.hpp>
 #include <ql/time/calendars/brazil.hpp>
 #include <ql/time/calendars/canada.hpp>
 #include <ql/time/calendars/china.hpp>

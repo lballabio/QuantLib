@@ -6,6 +6,7 @@ this_include_HEADERS = \
 	all.hpp \
 	argentina.hpp \
 	australia.hpp \
+	bespokecalendar.hpp \
 	brazil.hpp \
 	canada.hpp \
 	china.hpp \
@@ -43,6 +44,7 @@ this_include_HEADERS = \
 libCalendars_la_SOURCES = \
 	argentina.cpp \
 	australia.cpp \
+	bespokecalendar.cpp \
 	brazil.cpp \
 	canada.cpp \
 	china.cpp \

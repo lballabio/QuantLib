@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003, 2004 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2008 StatPro Italia srl
  Copyright (C) 2008 Charles Chongseok Hyun
 
  This file is part of QuantLib, a free-software/open-source library
@@ -53,6 +53,7 @@ class CalendarTest {
 
     static void testModifiedCalendars();
     static void testJointCalendars();
+    static void testBespokeCalendars();
 
     static void testEndOfMonth();
     static void testBusinessDaysBetween();

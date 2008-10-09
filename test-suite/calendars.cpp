@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003, 2004 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2008 StatPro Italia srl
  Copyright (C) 2005 Ferdinando Ametrano
  Copyright (C) 2006 Piter Dias
  Copyright (C) 2008 Charles Chongseok Hyun
@@ -32,6 +32,7 @@
 #include <ql/time/calendars/japan.hpp>
 #include <ql/time/calendars/southkorea.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
+#include <ql/time/calendars/bespokecalendar.hpp>
 #include <ql/errors.hpp>
 #include <fstream>
 
@@ -994,6 +995,120 @@ void CalendarTest::testBusinessDaysBetween() {
 }
 
 
+void CalendarTest::testBespokeCalendars() {
+
+    BOOST_MESSAGE("Testing bespoke calendars...");
+
+    BespokeCalendar a1;
+    BespokeCalendar b1;
+
+    Date testDate1 = Date(4, October, 2008); // Saturday
+    Date testDate2 = Date(5, October, 2008); // Sunday
+    Date testDate3 = Date(6, October, 2008); // Monday
+    Date testDate4 = Date(7, October, 2008); // Tuesday
+
+    if (!a1.isBusinessDay(testDate1))
+        BOOST_ERROR(testDate1 << " erroneously detected as holiday");
+    if (!a1.isBusinessDay(testDate2))
+        BOOST_ERROR(testDate2 << " erroneously detected as holiday");
+    if (!a1.isBusinessDay(testDate3))
+        BOOST_ERROR(testDate3 << " erroneously detected as holiday");
+    if (!a1.isBusinessDay(testDate4))
+        BOOST_ERROR(testDate4 << " erroneously detected as holiday");
+
+    if (!b1.isBusinessDay(testDate1))
+        BOOST_ERROR(testDate1 << " erroneously detected as holiday");
+    if (!b1.isBusinessDay(testDate2))
+        BOOST_ERROR(testDate2 << " erroneously detected as holiday");
+    if (!b1.isBusinessDay(testDate3))
+        BOOST_ERROR(testDate3 << " erroneously detected as holiday");
+    if (!b1.isBusinessDay(testDate4))
+        BOOST_ERROR(testDate4 << " erroneously detected as holiday");
+
+    a1.addWeekend(Sunday);
+
+    if (!a1.isBusinessDay(testDate1))
+        BOOST_ERROR(testDate1 << " erroneously detected as holiday");
+    if (a1.isBusinessDay(testDate2))
+        BOOST_ERROR(testDate2 << " (Sunday) not detected as weekend");
+    if (!a1.isBusinessDay(testDate3))
+        BOOST_ERROR(testDate3 << " erroneously detected as holiday");
+    if (!a1.isBusinessDay(testDate4))
+        BOOST_ERROR(testDate4 << " erroneously detected as holiday");
+
+    if (!b1.isBusinessDay(testDate1))
+        BOOST_ERROR(testDate1 << " erroneously detected as holiday");
+    if (!b1.isBusinessDay(testDate2))
+        BOOST_ERROR(testDate2 << " erroneously detected as holiday");
+    if (!b1.isBusinessDay(testDate3))
+        BOOST_ERROR(testDate3 << " erroneously detected as holiday");
+    if (!b1.isBusinessDay(testDate4))
+        BOOST_ERROR(testDate4 << " erroneously detected as holiday");
+
+    a1.addHoliday(testDate3);
+
+    if (!a1.isBusinessDay(testDate1))
+        BOOST_ERROR(testDate1 << " erroneously detected as holiday");
+    if (a1.isBusinessDay(testDate2))
+        BOOST_ERROR(testDate2 << " (Sunday) not detected as weekend");
+    if (a1.isBusinessDay(testDate3))
+        BOOST_ERROR(testDate3 << " (marked as holiday) not detected");
+    if (!a1.isBusinessDay(testDate4))
+        BOOST_ERROR(testDate4 << " erroneously detected as holiday");
+
+    if (!b1.isBusinessDay(testDate1))
+        BOOST_ERROR(testDate1 << " erroneously detected as holiday");
+    if (!b1.isBusinessDay(testDate2))
+        BOOST_ERROR(testDate2 << " erroneously detected as holiday");
+    if (!b1.isBusinessDay(testDate3))
+        BOOST_ERROR(testDate3 << " erroneously detected as holiday");
+    if (!b1.isBusinessDay(testDate4))
+        BOOST_ERROR(testDate4 << " erroneously detected as holiday");
+
+    BespokeCalendar a2 = a1;  // linked to a1
+
+    a2.addWeekend(Saturday);
+
+    if (a1.isBusinessDay(testDate1))
+        BOOST_ERROR(testDate1 << " (Saturday) not detected as weekend");
+    if (a1.isBusinessDay(testDate2))
+        BOOST_ERROR(testDate2 << " (Sunday) not detected as weekend");
+    if (a1.isBusinessDay(testDate3))
+        BOOST_ERROR(testDate3 << " (marked as holiday) not detected");
+    if (!a1.isBusinessDay(testDate4))
+        BOOST_ERROR(testDate4 << " erroneously detected as holiday");
+
+    if (a2.isBusinessDay(testDate1))
+        BOOST_ERROR(testDate1 << " (Saturday) not detected as weekend");
+    if (a2.isBusinessDay(testDate2))
+        BOOST_ERROR(testDate2 << " (Sunday) not detected as weekend");
+    if (a2.isBusinessDay(testDate3))
+        BOOST_ERROR(testDate3 << " (marked as holiday) not detected");
+    if (!a2.isBusinessDay(testDate4))
+        BOOST_ERROR(testDate4 << " erroneously detected as holiday");
+
+    a2.addHoliday(testDate4);
+
+    if (a1.isBusinessDay(testDate1))
+        BOOST_ERROR(testDate1 << " (Saturday) not detected as weekend");
+    if (a1.isBusinessDay(testDate2))
+        BOOST_ERROR(testDate2 << " (Sunday) not detected as weekend");
+    if (a1.isBusinessDay(testDate3))
+        BOOST_ERROR(testDate3 << " (marked as holiday) not detected");
+    if (a1.isBusinessDay(testDate4))
+        BOOST_ERROR(testDate4 << " (marked as holiday) not detected");
+
+    if (a2.isBusinessDay(testDate1))
+        BOOST_ERROR(testDate1 << " (Saturday) not detected as weekend");
+    if (a2.isBusinessDay(testDate2))
+        BOOST_ERROR(testDate2 << " (Sunday) not detected as weekend");
+    if (a2.isBusinessDay(testDate3))
+        BOOST_ERROR(testDate3 << " (marked as holiday) not detected");
+    if (a2.isBusinessDay(testDate4))
+        BOOST_ERROR(testDate4 << " (marked as holiday) not detected");
+
+}
+
 test_suite* CalendarTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Calendar tests");
 
@@ -1022,6 +1137,7 @@ test_suite* CalendarTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testModifiedCalendars));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testJointCalendars));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testBespokeCalendars));
 
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testEndOfMonth));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testBusinessDaysBetween));
