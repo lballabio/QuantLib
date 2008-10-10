@@ -10,4 +10,13 @@
 #include <ql/experimental/credit/onefactorgaussiancopula.hpp>
 #include <ql/experimental/credit/onefactorstudentcopula.hpp>
 #include <ql/experimental/credit/riskyassetswap.hpp>
+#include <ql/experimental/credit/basket.hpp>
+#include <ql/experimental/credit/pool.hpp>
+#include <ql/experimental/credit/syntheticcdo.hpp>
+#include <ql/experimental/credit/syntheticcdoengines.hpp>
+#include <ql/experimental/credit/syntheticcdosquared.hpp>
+#include <ql/experimental/credit/syntheticcdosquaredengines.hpp>
+#include <ql/experimental/credit/spreadedhazardratecurve.hpp>
+#include <ql/experimental/credit/factorspreadedhazardratecurve.hpp>
+#include <ql/experimental/credit/randomdefaultmodel.hpp>
 

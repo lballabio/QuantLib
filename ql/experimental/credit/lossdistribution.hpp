@@ -24,112 +24,203 @@
 #ifndef quantlib_loss_distribution_hpp
 #define quantlib_loss_distribution_hpp
 
+#include <ql/math/distributions/binomialdistribution.hpp>
 #include <ql/experimental/credit/distribution.hpp>
 #include <ql/experimental/credit/onefactorcopula.hpp>
 
 namespace QuantLib {
 
-    namespace detail {
+    //! Probability formulas and algorithms
+    /*!
+      \ingroup probability
+    */ 
+    class LossDist {
+    public:
+        LossDist() {}
+        virtual ~LossDist() {}
 
-        /* Probability of exactly n defaults (Hull-White)
+        virtual Distribution operator()(const std::vector<Real>& volumes, 
+                             const std::vector<Real>& probabilities) const = 0;
+        virtual Size buckets () const = 0;
+        virtual Real maximum () const = 0;
 
-          \todo Stabilize the algorithm:
-          The recursive implementation is capable of
-          generating probabilities < 0 and > 1 when the number of events is
-          large (> ~30) and close to the number of underlyings in the basket,
-          i.e. overall probability for N events becomes (should become) minimal.
-          This numerical effect is currently cut off by setting the probability
-          of N events to zero when either the calculated probability
-          becomes invalid (outside [0;1]) or the cumulative probability of up
-          to N events exceeds 1.
+        /*! Binomial probability of n defaults using prob[0]
+         */ 
+        static Real binomialProbabilityOfNEvents(int n, std::vector<Real>& p);
+  
+        /*! Binomial probability of at least n defaults using prob[0]
+         */ 
+        static Real binomialProbabilityOfAtLeastNEvents(int n, 
+                                                        std::vector<Real>& p);
+        /*! Probability of exactly n default events
+          Xiaofong Ma, "Numerical Methods for the Valuation of Synthetic
+          Collateralized Debt Obligations", PhD Thesis, 
+          Graduate Department of Computer Science, University of Toronto, 2007  
+          http://www.cs.toronto.edu/pub/reports/na/ma-07-phd.pdf (formula 2.1)
         */
-        Real probabilityOfNEvents(Size n, const std::vector<Real>& prob);
+        static std::vector<Real> probabilityOfNEvents(std::vector<Real>& p);
 
-        /* Probability of at least n defaults (Hull-White) */
-        Real probabilityOfAtLeastNEvents(Size n, const std::vector<Real>& prob);
+        static Real probabilityOfNEvents(int n, std::vector<Real>& p);
+  
+        /*! Probability of at least n defaults
+         */ 
+        static Real probabilityOfAtLeastNEvents(int n, std::vector<Real>& p);
+    }; 
 
-    }
+    //! Probability of N events 
+    class ProbabilityOfNEvents {
+    public:
+        ProbabilityOfNEvents (int n) : n_(n) {}
+        Real operator()(std::vector<Real> p) const;
+    private:
+        Size n_;
+    };
 
-    //! Loss distribution with Hull-White bucketing
-    /*! See John Hull and Alan White, "Valuation of a CDO and nth to
-        default CDS without Monte Carlo simulation", Journal of
-        Derivatives 12, 2, 2004
+    //! Probability of at least N events 
+    class ProbabilityOfAtLeastNEvents {
+    public:
+        ProbabilityOfAtLeastNEvents (int n) : n_(n) {}
+        Real operator()(std::vector<Real> p) const;
+    private:
+        Size n_;
+    };
 
-        Independence of default events is assumed. Correlation is
-        built in separately via a copula approach that reuses the
-        results here (conditional independence).
+    //! Probability of at least N events 
+    class BinomialProbabilityOfAtLeastNEvents {
+    public:
+        BinomialProbabilityOfAtLeastNEvents(int n) : n_(n) {}
+        Real operator()(std::vector<Real> p);
+    private:
+        int n_;
+    };
 
-        For the case that probabilities vary and volumes are identical
-        (or do not matter as in a nth to default basket), loss
-        distribution and probability of n defaults can be calculated
-        using HullWhite algorithm, see class
-        ProbabilityOfAtLeastNEvents.
-
-        If both volumes and probabilities vary, the loss distribution
-        is not accessible via the probability of n defaults, but needs
-        a more general algorithm (Probability Bucketing, Monte Carlo
-        simulation).
+    //! Binomial loss distribution
+    /*! Binomial loss distribution
+      \ingroup probability
     */
-    class LossDistBucketing {
-      public:
-        LossDistBucketing(Size nBuckets, Real maximum)
-        : nBuckets_(nBuckets), maximum_(maximum) {}
-        Distribution operator()(const std::vector<Real>& volumes,
+    class LossDistBinomial : public LossDist {
+    public:
+        LossDistBinomial (Size nBuckets, Real maximum)
+            : nBuckets_(nBuckets), maximum_(maximum) {}
+        Distribution operator()(Size n, Real volume, Real probability) const; 
+        Distribution operator()(const std::vector<Real>& volumes, 
                                 const std::vector<Real>& probabilities) const;
-        Size buckets() const { return nBuckets_; }
-        Real maximum() const { return maximum_; }
-      private:
-        Size locateTargetBucket(Real loss) const;
+        Size buckets () const { return nBuckets_; }
+        Real maximum () const { return maximum_; }
+        Real volume() const { return volume_; }
+        Size size () const { return n_; }
+        std::vector<Real> probability() const { return probability_; }
+        std::vector<Real> excessProbability() const { return excessProbability_; }
+    private:
+        Size nBuckets_;
+        Real maximum_;
+        mutable Real volume_;
+        mutable Size n_;
+        mutable std::vector<Real> probability_;
+        mutable std::vector<Real> excessProbability_;
+    };
+
+    //! Loss Distribution for Homogeneous Pool
+    /*! Loss Distribution for Homogeneous Pool
+
+      Loss distribution for equal volumes but varying probabilities of 
+      default.
+
+      The method builds the exact loss distribution for a homogeneous pool
+      of underlyings iteratively by computing the convolution of the given
+      loss distribution with the "loss distribution" of an additional credit
+      following 
+      
+      Xiaofong Ma, "Numerical Methods for the Valuation of Synthetic
+      Collateralized Debt Obligations", PhD Thesis, 
+      Graduate Department of Computer Science, University of Toronto, 2007  
+      http://www.cs.toronto.edu/pub/reports/na/ma-07-phd.pdf (formula 2.1)
+
+      avoiding numerical instability of the algorithm by
+
+      John Hull and Alan White, "Valuation of a CDO and nth to default CDS 
+      without Monte Carlo simulation", Journal of Derivatives 12, 2, 2004 
+
+      \ingroup probability
+     */
+    class LossDistHomogeneous : public LossDist {
+    public:
+        LossDistHomogeneous (Size nBuckets, Real maximum, Real epsilon = 1e-6) 
+            : nBuckets_(nBuckets), maximum_(maximum), epsilon_(epsilon),
+              n_(0), volume_(0.0) {}
+        Distribution operator()(Real volume, 
+                                const std::vector<Real>& probabilities) const;
+        Distribution operator()(const std::vector<Real>& volumes, 
+                                const std::vector<Real>& probabilities) const;
+        Size buckets () const { return nBuckets_; }
+        Real maximum () const { return maximum_; }
+        Size size () const { return n_; }
+        Real volume() const { return volume_; }
+        std::vector<Real> probability() const { return probability_; }
+        std::vector<Real> excessProbability() const { return excessProbability_; }
+    private:
+        Size nBuckets_;
+        Real maximum_;
+        Real epsilon_;
+        mutable Size n_;
+        mutable Real volume_;
+        mutable std::vector<Real> probability_;
+        mutable std::vector<Real> excessProbability_;
+    };
+
+    //! Loss distribution with Hull-White bucketing 
+    /*! Loss distribution with Hull-White bucketing 
+
+      Loss distribution for varying volumes and probabilities of default, 
+      independence assumed.
+
+      The implementation of the loss distribution follows 
+
+      John Hull and Alan White, "Valuation of a CDO and nth to default CDS 
+      without Monte Carlo simulation", Journal of Derivatives 12, 2, 2004. 
+
+      \ingroup probability
+    */
+    class LossDistBucketing : public LossDist {
+    public:
+        LossDistBucketing (Size nBuckets, Real maximum, 
+                           Real epsilon = 1e-6)
+            : nBuckets_(nBuckets), maximum_(maximum), epsilon_(epsilon) {}
+        Distribution operator()(const std::vector<Real>& volumes, 
+                                const std::vector<Real>& probabilities) const;
+        Size buckets () const { return nBuckets_; }
+        Real maximum () const { return maximum_; }
+    private:
+        int locateTargetBucket (Real loss, Size i0 = 0) const;
 
         Size nBuckets_;
         Real maximum_;
+        Real epsilon_;
     };
 
     //! Loss distribution with Monte Carlo simulation
-    class LossDistMonteCarlo {
-      public:
-        LossDistMonteCarlo(Size nBuckets, Real maximum, Size simulations)
-        : nBuckets_(nBuckets), maximum_(maximum), simulations_(simulations) {}
-        Distribution operator()(const std::vector<Real>& volumes,
+    /*!
+      Loss distribution for varying volumes and probabilities of default
+      via Monte Carlo simulation of independent default events.
+
+      \ingroup probability
+    */
+    class LossDistMonteCarlo : public LossDist {
+    public:
+        LossDistMonteCarlo (Size nBuckets, Real maximum, Size simulations,
+                            long seed = 42, Real epsilon = 1e-6)
+            : nBuckets_(nBuckets), maximum_(maximum), 
+              simulations_(simulations), seed_(seed), epsilon_(epsilon) {}
+        Distribution operator()(const std::vector<Real>& volumes, 
                                 const std::vector<Real>& probabilities) const;
-        Size buckets() const { return nBuckets_; }
-        Real maximum() const { return maximum_; }
-      private:
+        Size buckets () const { return nBuckets_; }
+        Real maximum () const { return maximum_; }
+    private:
         Size nBuckets_;
         Real maximum_;
         Size simulations_;
-    };
-
-    //! Probability of N events
-    /*! Implementation of the probability of N events when individual
-        probabilities vary, following:
-
-        John Hull and Alan White, "Valuation of a CDO and nth to
-        default CDS without Monte Carlo simulation", Journal of
-        Derivatives 12, 2, 2004
-    */
-    class ProbabilityOfNEvents {
-      public:
-        ProbabilityOfNEvents(Size n) : n_(n) {}
-        Real operator()(const std::vector<Real>& p) const;
-      private:
-        Size n_;
-    };
-
-    //! Probability of at least N events
-    /*! Implementation of the probability of at least N events when
-        individual probabilities vary, following:
-
-        John Hull and Alan White, "Valuation of a CDO and nth to
-        default CDS without Monte Carlo simulation", Journal of
-        Derivatives 12, 2, 2004
-    */
-    class ProbabilityOfAtLeastNEvents {
-      public:
-        ProbabilityOfAtLeastNEvents(Size n) : n_(n) {}
-        Real operator()(const std::vector<Real>& p) const;
-      private:
-        Size n_;
+        long seed_;
+        Real epsilon_;
     };
 
 }

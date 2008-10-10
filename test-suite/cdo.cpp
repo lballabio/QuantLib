@@ -20,10 +20,13 @@
 #include "cdo.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/credit/cdo.hpp>
+#include <ql/experimental/credit/syntheticcdoengines.hpp>
+#include <ql/experimental/credit/spreadedhazardratecurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
 #include <ql/experimental/credit/onefactorgaussiancopula.hpp>
 #include <ql/experimental/credit/onefactorstudentcopula.hpp>
 #include <iomanip>
@@ -54,8 +57,20 @@ namespace {
         //  { 0.3,  5,  5, { 1713, 359, 136,  9 } }
     };
 
-}
+    void check(ostringstream& o, 
+               int i, int j, string desc, Real found, Real expected,
+               Real bpTolerance, Real relativeTolerance) {
+        Real absDiff = found - expected;
+        Real relDiff = absDiff / expected;
+        cout.setf (ios::fixed, ios::floatfield);
+        o << setprecision(2) << setw(8) << found << " ";
+        BOOST_CHECK_MESSAGE (fabs(relDiff) < relativeTolerance ||
+                             fabs(absDiff) < bpTolerance,
+                             "case " << i << " " << j << " ("<< desc << "): "
+                             << found << " vs. " << expected);
+    }
 
+}
 
 void CdoTest::testHW() {
 
@@ -63,22 +78,19 @@ void CdoTest::testHW() {
 
     SavedSettings backup;
 
-    Size names = 100;
+    Size poolSize = 100;
     Real lambda = 0.01;
 
-    Real absTolerance = 2; // bps
-    Real relTolerance = 0.03; // 3%
-
     // nBuckets and period determine the computation time
-    Size nBuckets = 100;
-    Period period = 1*Weeks;
+    Size nBuckets = 200;
+    Period period = 1*Months;
 
     Real rate = 0.05;
     DayCounter daycount = Actual360();
     Compounding cmp = Continuous; // Simple;
 
     Real recovery = 0.4;
-    vector<Real> nominals(names, 100.0);
+    vector<Real> nominals(poolSize, 100.0);
     Real premium = 0.02;
     Period maxTerm (5, Years);
     Schedule schedule = MakeSchedule (Date (1, September, 2006),
@@ -100,21 +112,50 @@ void CdoTest::testHW() {
     boost::shared_ptr<DefaultProbabilityTermStructure> ptr (
                new FlatHazardRate (asofDate,
                                    hazardRate,
-                                   Actual365Fixed()));
-    for (Size i=0; i<names; ++i) {
+                                   ActualActual()));
+    boost::shared_ptr<Pool> pool (new Pool());
+    vector<string> names;
+    vector<Issuer> issuers;
+    for (Size i=0; i<poolSize; ++i) {
+        ostringstream o;
+        o << "issuer-" << i;
+        names.push_back(o.str());
         basket.push_back(Handle<DefaultProbabilityTermStructure>(ptr));
+        issuers.push_back(Issuer(Handle<DefaultProbabilityTermStructure>(ptr),
+                                 recovery));
+        pool->add(names.back(), issuers.back());
     }
 
     boost::shared_ptr<SimpleQuote> correlation (new SimpleQuote(0.0));
     Handle<Quote> hCorrelation (correlation);
 
     boost::shared_ptr<OneFactorCopula> pGaussianCopula (
-                                  new OneFactorGaussianCopula (hCorrelation));
+                            new OneFactorGaussianCopula (hCorrelation));
     RelinkableHandle<OneFactorCopula> hCopula (pGaussianCopula);
+
+    boost::shared_ptr<RandomDefaultModel> rdm(new 
+                        GaussianRandomDefaultModel(pool, hCopula, 1.e-6, 42));
+
+    boost::shared_ptr<PricingEngine> engine1(
+                          new IHPIntegralCDOEngine(hCopula, nBuckets, period));
+    boost::shared_ptr<PricingEngine> engine2(
+                          new IHPMidPointCDOEngine(hCopula, nBuckets));
+    boost::shared_ptr<PricingEngine> engine3(
+                          new HPIntegralCDOEngine(hCopula, nBuckets, period));
+    boost::shared_ptr<PricingEngine> engine4(
+                          new HPMidPointCDOEngine(hCopula, nBuckets));
+    boost::shared_ptr<PricingEngine> engine5(
+                          new MonteCarloCDOEngine1(rdm, 10000));
+    boost::shared_ptr<PricingEngine> engine6(
+                          new MonteCarloCDOEngine2(rdm, 10000));
+    boost::shared_ptr<PricingEngine> engine7(
+                          new GLHPMidPointCDOEngine(hCopula));
 
     QL_REQUIRE (LENGTH(hwAttachment) == LENGTH(hwDetachment),
                 "data length does not match");
-    Real absDiff, relDiff, maxDiff = 0, maxRelDiff = 0;
+
+    BOOST_MESSAGE("correlation attach - detach expected : found1 found2 ...");
+    BOOST_MESSAGE("--------------------------------------------------------");
     for (Size i = 0; i < LENGTH(hwData7); i++) {
         correlation->setValue (hwData7[i].correlation);
         QL_REQUIRE (LENGTH(hwAttachment) == LENGTH(hwData7[i].trancheSpread),
@@ -145,32 +186,63 @@ void CdoTest::testHW() {
         }
 
         for (Size j = 0; j < LENGTH(hwAttachment); j ++) {
+            boost::shared_ptr<Basket> basketPtr (new Basket(names, 
+                                                            nominals,
+                                                            pool,
+                                                            hwAttachment[j],
+                                                            hwDetachment[j]));
             CDO cdo (hwAttachment[j], hwDetachment[j],
                      nominals, basket, hCopula,
                      true, schedule, premium, daycount, recovery, 0.0,
                      yieldHandle, nBuckets, period);
 
-            absDiff = cdo.fairPremium() * 1e4 - hwData7[i].trancheSpread[j];
-            relDiff = absDiff / hwData7[i].trancheSpread[j];
-            maxDiff = max (maxDiff, fabs (absDiff));
-            maxRelDiff = max (maxRelDiff, fabs (relDiff));
+            SyntheticCDO cdoe(basketPtr, Protection::Seller, 
+                              schedule, 0.0, premium, daycount, Following, 
+                              yieldHandle);
+
             ostringstream o;
             o.setf (ios::fixed, ios::floatfield);
-            o << setprecision(2) << setw (4) << correlation->value() << " "
-              << setw (2) << hwData7[i].nm << " "
-              << setw (2) << hwData7[i].nz << " "
-              << setprecision(2) << setw(5) << hwAttachment[j] << " "
-              << setprecision(2) << setw(5) << hwDetachment[j] << " "
-              << setprecision(0) << setw(8) << cdo.fairPremium() * 1e4 << " "
-              << setprecision(0) << setw(8) << hwData7[i].trancheSpread[j] << " "
-              << setprecision(2) << setw(8) << absDiff << " "
-              << setprecision(1) << setw(6) << 100.0 * relDiff << " " << cdo.error();
 
-            BOOST_CHECK_MESSAGE (fabs(relDiff) < relTolerance ||
-                                 fabs(absDiff) < absTolerance,
-                                 "tolerance " << relTolerance
-                                 << "|" << absTolerance
-                                 << " exceeded in: " << o.str());
+            o << setprecision(2) 
+              << correlation->value() << " "
+              << hwAttachment[j] << " - "
+              << hwDetachment[j] << " "
+              << setprecision(2) 
+              << setw(8) << hwData7[i].trancheSpread[j] << " : ";
+
+                        
+            check(o, i, j, "performCalculations", cdo.fairPremium() * 1e4, 
+                  hwData7[i].trancheSpread[j], 1, 0.02);
+
+            cdoe.setPricingEngine(engine1);
+            check(o, i, j, "IHPIntegralEngine", cdoe.fairPremium() * 1e4, 
+                  hwData7[i].trancheSpread[j], 1, 0.03);
+            
+            cdoe.setPricingEngine(engine2);
+            check(o, i, j, "IHPMidPointEngine", cdoe.fairPremium() * 1e4, 
+                  hwData7[i].trancheSpread[j], 1, 0.04);
+
+            cdoe.setPricingEngine(engine3);
+            check(o, i, j, "HPIntegralEngine", cdoe.fairPremium() * 1e4, 
+                  hwData7[i].trancheSpread[j], 1, 0.03);
+
+            cdoe.setPricingEngine(engine4);
+            check(o, i, j, "HPMidPointEngine", cdoe.fairPremium() * 1e4, 
+                  hwData7[i].trancheSpread[j], 1, 0.04);
+            
+            cdoe.setPricingEngine(engine5);
+            check(o, i, j, "McEngine1 10k", cdoe.fairPremium() * 1e4, 
+                  hwData7[i].trancheSpread[j], 1, 0.07);
+
+            cdoe.setPricingEngine(engine6);
+            check(o, i, j, "McEngine2 10k", cdoe.fairPremium() * 1e4, 
+                  hwData7[i].trancheSpread[j], 1, 0.07);
+            
+            cdoe.setPricingEngine(engine7);
+            check(o, i, j, "Gaussian LHP", cdoe.fairPremium() * 1e4, 
+                  hwData7[i].trancheSpread[j], 10, 0.5);
+            
+            BOOST_MESSAGE (o.str());
         }
     }
 }
