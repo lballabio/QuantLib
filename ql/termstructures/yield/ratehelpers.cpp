@@ -391,7 +391,7 @@ namespace QuantLib {
       fixedDayCount_(swapIndex->dayCounter()),
       iborIndex_(swapIndex->iborIndex()),
       spread_(spread), fwdStart_(fwdStart) {
-        registerWith(iborIndex_);               // take fixing into account
+        registerWith(iborIndex_);
         registerWith(spread_);
         initializeDates();
     }
