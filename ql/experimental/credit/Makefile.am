@@ -4,17 +4,24 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    basket.hpp \
     cdo.hpp \
     cdsoption.hpp \
     distribution.hpp \
+    loss.hpp \
     lossdistribution.hpp \
     nthtodefault.hpp \
     onefactorcopula.hpp \
     onefactorgaussiancopula.hpp \
     onefactorstudentcopula.hpp \
-    riskyassetswap.hpp
+    pool.hpp \
+    randomdefaultmodel.hpp \
+    riskyassetswap.hpp \
+    syntheticcdo.hpp \
+    syntheticcdoengines.hpp
 
 libCredit_la_SOURCES = \
+    basket.cpp \
     cdo.cpp \
     cdsoption.cpp \
     distribution.cpp \
@@ -23,7 +30,11 @@ libCredit_la_SOURCES = \
     onefactorcopula.cpp \
     onefactorgaussiancopula.cpp \
     onefactorstudentcopula.cpp \
-    riskyassetswap.cpp
+    pool.cpp \
+    randomdefaultmodel.cpp \
+    riskyassetswap.cpp \
+    syntheticcdo.cpp \
+    syntheticcdoengines.cpp
 
 noinst_LTLIBRARIES = libCredit.la
 

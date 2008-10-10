@@ -38,7 +38,7 @@ namespace QuantLib {
         return 1.0 - binomial(n-1);
         /*
         Real defp = 0;
-        for (Size i = n; i <= p.size(); i++) 
+        for (Size i = n; i <= p.size(); i++)
             defp += binomialProbabilityOfNEvents (i, p);
 
         return defp;
@@ -55,9 +55,9 @@ namespace QuantLib {
         for (Size j = 0; j < n; j++) {
             prev = probability;
             probability[0] = prev[0] * (1.0 - p[j]);
-            for (Size i = 1; i <= j; i++) 
+            for (Size i = 1; i <= j; i++)
                 probability[i] = prev[i-1] * p[j] + prev[i] * (1.0 - p[j]);
-            probability[j+1] = prev[j] * p[j];  
+            probability[j+1] = prev[j] * p[j];
         }
 
         return probability;
@@ -75,7 +75,7 @@ namespace QuantLib {
         Real pZero = 1.0;
         for (Size i = 0; i < w.size(); i++) {
             pZero *= (1.0 - p[i]);
-            w[i] = p[i] / (1.0 - p[i]); 
+            w[i] = p[i] / (1.0 - p[i]);
         }
 
         if (k == 0) return pZero;
@@ -84,7 +84,7 @@ namespace QuantLib {
         Real prodw = 1.0;
 
         // Cumulated probability of up to n events:
-        // Cut off when the cumulated probability reaches 1, 
+        // Cut off when the cumulated probability reaches 1,
         // i.e. set all following probabilities of exactly n events to zero.
         Real sum = 1.0;
 
@@ -94,7 +94,7 @@ namespace QuantLib {
             for (Size j = 0; j < w.size(); j++)
                 v[i] += pow (w[j], i);
             u[i] = 0;
-            for (int j = 1; j <= i; j++) 
+            for (int j = 1; j <= i; j++)
                 u[i] +=  pow (-1.0, j+1) * v[j] * u[i-j];
             u[i] /= i;
 
@@ -113,12 +113,12 @@ namespace QuantLib {
     //--------------------------------------------------------------------------
         vector<Real> probability = probabilityOfNEvents(p);
         Real sum = 1.0;
-        for (int j = 0; j < k; j++) 
+        for (int j = 0; j < k; j++)
             sum -= probability[j];
         return sum;
         /*
         Real sum = 0;
-        for (Size i = k; i <= p.size(); i++) 
+        for (Size i = k; i <= p.size(); i++)
             sum += probabilityOfNEvents (i, p);
         return sum;
         */
@@ -172,14 +172,14 @@ namespace QuantLib {
     }
 
     //--------------------------------------------------------------------------
-    Distribution LossDistBinomial::operator()(const vector<Real>& nominals, 
+    Distribution LossDistBinomial::operator()(const vector<Real>& nominals,
                                     const vector<Real>& probabilities) const {
     //--------------------------------------------------------------------------
         return operator()(nominals.size(), nominals[0], probabilities[0]);
     }
 
     //--------------------------------------------------------------------------
-    Distribution LossDistHomogeneous::operator()(Real volume, 
+    Distribution LossDistHomogeneous::operator()(Real volume,
                                                  const vector<Real>& p) const {
     //--------------------------------------------------------------------------
         volume_ = volume;
@@ -191,11 +191,11 @@ namespace QuantLib {
         for (Size k = 0; k < n_; k++) {
             prev = probability_;
             probability_[0] = prev[0] * (1.0 - p[k]);
-            for (Size i = 1; i <= k; i++) 
+            for (Size i = 1; i <= k; i++)
                 probability_[i] = prev[i-1] * p[k] + prev[i] * (1.0 - p[k]);
-            probability_[k+1] = prev[k] * p[k];  
+            probability_[k+1] = prev[k] * p[k];
         }
-        
+
         excessProbability_.clear();
         excessProbability_.resize(n_+1, 0.0);
         excessProbability_[n_] = probability_[n_];
@@ -213,20 +213,18 @@ namespace QuantLib {
 
         dist.normalize();
 
-        dist.print("dist.txt");
-
         return dist;
     }
 
     //--------------------------------------------------------------------------
-    Distribution LossDistHomogeneous::operator()(const vector<Real>& nominals, 
+    Distribution LossDistHomogeneous::operator()(const vector<Real>& nominals,
                                     const vector<Real>& probabilities) const {
     //--------------------------------------------------------------------------
         return operator()(nominals[0], probabilities);
     }
 
     //--------------------------------------------------------------------------
-    Distribution LossDistBucketing::operator()(const vector<Real>& nominals, 
+    Distribution LossDistBucketing::operator()(const vector<Real>& nominals,
                                     const vector<Real>& probabilities) const {
     //--------------------------------------------------------------------------
         QL_REQUIRE (nominals.size() == probabilities.size(), "sizes differ: "
@@ -235,22 +233,22 @@ namespace QuantLib {
         vector<Real> p (nBuckets_, 0.0);
         vector<Real> a (nBuckets_, 0.0);
         vector<Real> ap (nBuckets_, 0.0);
-        
+
         p[0] = 1.0;
         a[0] = 0.0;
-        Real dx = maximum_ / nBuckets_; 
+        Real dx = maximum_ / nBuckets_;
         for (Size k = 1; k < nBuckets_; k++)
             a[k] = dx * k + dx/2;
 
         for (Size i = 0; i < nominals.size(); i++) {
             Real L = nominals[i];
-            Real P = probabilities[i]; 
+            Real P = probabilities[i];
             for (int k = a.size()-1; k >= 0; k--) {
-                if (p[k] > 0) {	
+                if (p[k] > 0) {
                     int u = locateTargetBucket (a[k] + L, k);
                     QL_REQUIRE (u >= 0, "u=" << u << " at i=" << i << " k=" << k);
                     QL_REQUIRE (u >= k, "u=" << u << "<k=" << k << " at i=" << i);
-                    
+
                     Real dp = p[k] * P;
                     if (u == k)
                         a[k] += P * L;
@@ -264,7 +262,7 @@ namespace QuantLib {
                             }
                             /* formulation of Hull-White:
                                if (p[u] + dp > 0)
-                                  a[u] = (p[u] * a[u] + dp * (a[k] + L)) 
+                                  a[u] = (p[u] * a[u] + dp * (a[k] + L))
                                          / (p[u] + dp);
                             */
                             p[u] += dp;
@@ -290,14 +288,14 @@ namespace QuantLib {
     int LossDistBucketing::locateTargetBucket (Real loss, Size i0) const {
     //--------------------------------------------------------------------------
         QL_REQUIRE (loss >= 0, "loss " << loss << " must be >= 0");
-        Real dx = maximum_ / nBuckets_; 
+        Real dx = maximum_ / nBuckets_;
         for (Size i = i0; i < nBuckets_; i++)
             if (dx * i > loss + epsilon_) return i - 1;
         return nBuckets_;
     }
 
     //--------------------------------------------------------------------------
-    Distribution LossDistMonteCarlo::operator()(const vector<Real>& nominals, 
+    Distribution LossDistMonteCarlo::operator()(const vector<Real>& nominals,
                                    const vector<Real>& probabilities) const {
     //--------------------------------------------------------------------------
         Distribution dist (nBuckets_, 0.0, maximum_);
@@ -313,7 +311,7 @@ namespace QuantLib {
             }
             dist.add (e + epsilon_);
         }
-  
+
         dist.normalize();
 
         return dist;

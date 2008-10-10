@@ -17,21 +17,16 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*!
-  \file syntheticcdo.cpp
-*/
 #include <ql/experimental/credit/syntheticcdo.hpp>
-#include <ql/quantlib.hpp>
 
 using namespace std;
-using namespace QuantLib;
 
 namespace QuantLib {
 
     SyntheticCDO::SyntheticCDO (const boost::shared_ptr<Basket> basket,
                                 Protection::Side side,
                                 const Schedule& schedule,
-                                Rate upfrontRate, 
+                                Rate upfrontRate,
                                 Rate runningRate,
                                 const DayCounter& dayCounter,
                                 BusinessDayConvention paymentConvention,
@@ -42,29 +37,29 @@ namespace QuantLib {
           upfrontRate_(upfrontRate),
           runningRate_(runningRate),
           dayCounter_(dayCounter),
-          paymentConvention_(paymentConvention), 
+          paymentConvention_(paymentConvention),
           yieldTS_(yieldTS) {
         QL_REQUIRE (basket->names().size() > 0, "basket is empty");
-    
+
         registerWith (yieldTS_);
         const boost::shared_ptr<Pool> pool = basket->pool();
         for (Size i = 0; i < basket->names().size(); i++)
             registerWith(pool->get(basket->names()[i]).defaultProbability());
     }
-   
-    Rate SyntheticCDO::premiumValue () const { 
+
+    Rate SyntheticCDO::premiumValue () const {
         calculate();
-        return premiumValue_; 
+        return premiumValue_;
     }
 
-    Rate SyntheticCDO::protectionValue () const { 
+    Rate SyntheticCDO::protectionValue () const {
         calculate();
-        return protectionValue_; 
+        return protectionValue_;
     }
 
     Rate SyntheticCDO::fairPremium () const {
         calculate();
-        return runningRate_ 
+        return runningRate_
             * (protectionValue_ - upfrontPremiumValue_) / premiumValue_;
     }
 
@@ -78,9 +73,9 @@ namespace QuantLib {
         return expectedTrancheLoss_;
     }
 
-    Size SyntheticCDO::error () const { 
+    Size SyntheticCDO::error () const {
         calculate();
-        return error_; 
+        return error_;
     }
 
     bool SyntheticCDO::isExpired () const {
@@ -96,7 +91,7 @@ namespace QuantLib {
     }
 
     void SyntheticCDO::setupArguments(PricingEngine::arguments* args) const {
-        SyntheticCDO::arguments* arguments 
+        SyntheticCDO::arguments* arguments
             = dynamic_cast<SyntheticCDO::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong argument type");
         arguments->basket = basket_;
@@ -112,7 +107,7 @@ namespace QuantLib {
     void SyntheticCDO::fetchResults(const PricingEngine::results* r) const {
         Instrument::fetchResults(r);
 
-        const SyntheticCDO::results* results 
+        const SyntheticCDO::results* results
             = dynamic_cast<const SyntheticCDO::results*>(r);
         QL_REQUIRE(results != 0, "wrong result type");
 
@@ -123,7 +118,7 @@ namespace QuantLib {
         error_ = results->error;
         expectedTrancheLoss_ = results->expectedTrancheLoss;
     }
- 
+
     void SyntheticCDO::setupExpired() const {
         Instrument::setupExpired();
         premiumValue_ = 0.0;
@@ -132,7 +127,7 @@ namespace QuantLib {
         remainingNotional_ = 1.0;
         expectedTrancheLoss_.clear();
     }
-    
+
     void SyntheticCDO::arguments::validate() const {
         QL_REQUIRE(side != Protection::Side(-1), "side not set");
         QL_REQUIRE(basket && !basket->names().empty(), "no basket given");
@@ -140,7 +135,7 @@ namespace QuantLib {
         QL_REQUIRE(upfrontRate != Null<Real>(), "no upfront rate given");
         QL_REQUIRE(!dayCounter.empty(), "no day counter given");
         QL_REQUIRE(!yieldTS.empty(), "no discount curve given");
-    };
+    }
 
     void SyntheticCDO::results::reset() {
         Instrument::results::reset();
@@ -150,6 +145,6 @@ namespace QuantLib {
         remainingNotional = Null<Real>();
         error = 0;
         expectedTrancheLoss.clear();
-    }    
+    }
 
 }

@@ -18,7 +18,7 @@
 */
 
 /*! \file basket.hpp
-  \brief basket of issuers and related notionals
+    \brief basket of issuers and related notionals
 */
 
 #ifndef quantlib_basket_hpp
@@ -30,18 +30,15 @@
 #include <ql/experimental/credit/loss.hpp>
 #include <ql/termstructures/defaulttermstructure.hpp>
 
-using namespace std;
-using namespace QuantLib;
-
 namespace QuantLib {
 
-    /*! Credit Basket 
-      A basket is a collection of credit names, represented by a unique 
-      identifier (a text string), associated notional amounts, a pool and 
-      tranche information. The pool is a map of "names" to issuers. 
-      The Basket structure is motivated by CDO squared instruments containing 
-      various underlying inner CDOs which can be represented by respective 
-      baskets including their tranche structure. 
+    /*! Credit Basket
+      A basket is a collection of credit names, represented by a unique
+      identifier (a text string), associated notional amounts, a pool and
+      tranche information. The pool is a map of "names" to issuers.
+      The Basket structure is motivated by CDO squared instruments containing
+      various underlying inner CDOs which can be represented by respective
+      baskets including their tranche structure.
       The role of the Pool is providing a unique list of relevant issuers
       while names may appear multiple times across different baskets (overlap).
 
@@ -50,24 +47,24 @@ namespace QuantLib {
     class Basket {
       public:
         Basket() {}
-        Basket(const vector<string>& names,
-               const vector<Real>& notionals,
+        Basket(const std::vector<std::string>& names,
+               const std::vector<Real>& notionals,
                const boost::shared_ptr<Pool> pool,
                Real attachmentRatio = 0.0,
                Real detachmentRatio = 1.0);
 
         Size size() const;
 
-        const vector<string>& names() const;
-        
-        const vector<Real>& notionals() const;
+        const std::vector<std::string>& names() const;
 
-        boost::shared_ptr<Pool> pool();
+        const std::vector<Real>& notionals() const;
+
+        boost::shared_ptr<Pool> pool() const;
         /*!
-          Loss Given Default for all issuers/notionals based on expected 
+          Loss Given Default for all issuers/notionals based on expected
           recovery rates for the respective issuers.
          */
-        const vector<Real>& LGDs() const;
+        const std::vector<Real>& LGDs() const;
         /*!
           Attachment point expressed as a fraction of the total pool notional.
          */
@@ -96,12 +93,12 @@ namespace QuantLib {
           Vector of cumulative default probability to date d for al issuers in
           the basket.
          */
-        vector<Real> probabilities(const Date& d) const;
-        /*! 
-          Actual basket losses between start and end date, taking the actual 
+        std::vector<Real> probabilities(const Date& d) const;
+        /*!
+          Actual basket losses between start and end date, taking the actual
           recovery rates of loss events into account.
         */
-        Real cumulatedLoss(const Date& startDate, 
+        Real cumulatedLoss(const Date& startDate,
                            const Date& endDate) const;
         /*!
           Remaining basket notional after losses between start and end date.
@@ -113,16 +110,16 @@ namespace QuantLib {
           Vector of surviving notionals after losses between start and end date,
           recovery ignored.
          */
-        vector<Real> remainingNotionals(const Date& startDate,
-                                        const Date& endDate) const;
+        std::vector<Real> remainingNotionals(const Date& startDate,
+                                             const Date& endDate) const;
         /*!
           Vector of surviving issuers after defaults between start and end date.
          */
-        vector<string> remainingNames(const Date& startDate,
-                                      const Date& endDate) const;
+        std::vector<std::string> remainingNames(const Date& startDate,
+                                                const Date& endDate) const;
         /*!
           The remaining attachment amount is
-          RAA = max (0, attachmentAmount - cumulatedLoss()) 
+          RAA = max (0, attachmentAmount - cumulatedLoss())
 
           The remaining attachment ratio is then
           RAR = RAA / remainingNotional()
@@ -133,7 +130,7 @@ namespace QuantLib {
                                        const Date& endDate) const;
         /*!
           The remaining detachment amount is
-          RDA = max (0, detachmentAmount - cumulatedLoss()) 
+          RDA = max (0, detachmentAmount - cumulatedLoss())
 
           The remaining detachment ratio is then
           RDR = RDA / remainingNotional()
@@ -146,17 +143,17 @@ namespace QuantLib {
         /*!
           Based on the default times stored in the Pool for each name, return
           the related tranche loss between start and end date for this basket.
-          Names with actual default events between effective and start date are 
+          Names with actual default events between effective and start date are
           ignored.
          */
-        Real scenarioTrancheLoss(Date endDate);
+        Real scenarioTrancheLoss(Date endDate) const;
         void updateScenarioLoss(Date startDate, Date endDate);
-        vector<Loss> scenarioBasketLosses();
-        vector<Loss> scenarioIncrementalTrancheLosses(Date startDate, 
-                                                      Date endDate);
+        std::vector<Loss> scenarioBasketLosses() const;
+        std::vector<Loss> scenarioIncrementalTrancheLosses(Date startDate,
+                                                           Date endDate) const;
       private:
-        vector<string> names_;
-        vector<Real> notionals_;
+        std::vector<std::string> names_;
+        std::vector<Real> notionals_;
         boost::shared_ptr<Pool> pool_;
         Real attachmentRatio_;
         Real detachmentRatio_;
@@ -164,9 +161,10 @@ namespace QuantLib {
         Real trancheNotional_;
         Real attachmentAmount_;
         Real detachmentAmount_;
-        vector<Real> LGDs_;
-        vector<Loss> scenarioLoss_;
+        std::vector<Real> LGDs_;
+        std::vector<Loss> scenarioLoss_;
     };
+
 }
 
 

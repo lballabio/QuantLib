@@ -18,29 +18,28 @@
 */
 
 /*! \file syntheticcdoengines.hpp
-  \brief Pricing engines for the Synthetic CDO instrument
-  \todo Add further engines for analytical expected tranche loss cases - large 
-  homogeneous pool with Normal Inverse Gaussian, Gamma copula
+    \brief Pricing engines for the Synthetic CDO instrument
+    \todo Add further engines for analytical expected tranche loss
+          cases - large homogeneous pool with Normal Inverse Gaussian,
+          Gamma copula
 */
 
-#ifndef quantlib_cdoengines_hpp
-#define quantlib_cdoengines_hpp
+#ifndef quantlib_synthetic_cdo_engines_hpp
+#define quantlib_synthetic_cdo_engines_hpp
 
 #include <ql/experimental/credit/syntheticcdo.hpp>
 #include <ql/experimental/credit/randomdefaultmodel.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 
-using namespace QuantLib;
-
 namespace QuantLib {
 
     //--------------------------------------------------------------------------
     //! CDO base engine
-    class SyntheticCDO::engine : public GenericEngine<SyntheticCDO::arguments, 
+    class SyntheticCDO::engine : public GenericEngine<SyntheticCDO::arguments,
                                                       SyntheticCDO::results> {
     protected:
-        virtual Real expectedTrancheLoss(const Date&) const = 0;        
+        virtual Real expectedTrancheLoss(const Date&) const = 0;
         virtual void initialize() const {
             Date today = Settings::instance().evaluationDate();
             Date start = this->arguments_.schedule.startDate();
@@ -48,13 +47,13 @@ namespace QuantLib {
             /*
               Remove defaulted names and adjust the subordination.
             */
-            std::vector<string> names = basket->remainingNames(start, today);
-            std::vector<Real> notionals 
+            std::vector<std::string> names = basket->remainingNames(start, today);
+            std::vector<Real> notionals
                 = basket->remainingNotionals(start, today);
             Real a = basket->remainingAttachmentRatio(start, today);
             Real d = basket->remainingDetachmentRatio(start, today);
             const boost::shared_ptr<Pool> pool = basket->pool();
-            remainingBasket_ = 
+            remainingBasket_ =
                 boost::shared_ptr<Basket>(new Basket(names, notionals, pool,
                                                      a, d));
 
@@ -62,7 +61,7 @@ namespace QuantLib {
             this->results_.xMax = remainingBasket_->detachmentAmount();
             this->results_.remainingNotional = results_.xMax - results_.xMin;
 
-            const vector<Date>& dates = arguments_.schedule.dates();
+            const std::vector<Date>& dates = arguments_.schedule.dates();
             for (Size i = 0; i < dates.size(); i++) {
                 if (dates[i] <= today)
                     results_.expectedTrancheLoss.push_back(0.0);
@@ -84,9 +83,9 @@ namespace QuantLib {
     private:
         virtual Real expectedTrancheLoss(const Date&) const = 0;
     };
-    
+
     //--------------------------------------------------------------------------
-    //! CDO base engine taking (possibly) small time steps 
+    //! CDO base engine taking (possibly) small time steps
     class IntegralCDOEngine : public SyntheticCDO::engine {
     public:
         void calculate() const;
@@ -96,13 +95,13 @@ namespace QuantLib {
     protected:
         Period stepSize_;
     };
-    
+
     //--------------------------------------------------------------------------
     //! CDO engine, Monte Carlo for the exptected tranche loss distribution
     class MonteCarloCDOEngine1 : public MidPointCDOEngine {
     public:
         MonteCarloCDOEngine1 (boost::shared_ptr<RandomDefaultModel> rdm,
-                              Size samples) 
+                              Size samples)
             : rdm_(rdm), samples_(samples) {}
     private:
         void defaultScenarios() const;
@@ -111,14 +110,14 @@ namespace QuantLib {
             Date today = Settings::instance().evaluationDate();
             Date start = this->arguments_.schedule.startDate();
             boost::shared_ptr<Basket>& basket = this->arguments_.basket;
-            std::vector<string> names = basket->remainingNames(start, today);
-            std::vector<Real> notionals 
+            std::vector<std::string> names = basket->remainingNames(start, today);
+            std::vector<Real> notionals
                 = basket->remainingNotionals(start, today);
             Real a = basket->remainingAttachmentRatio(start, today);
             Real d = basket->remainingDetachmentRatio(start, today);
             const boost::shared_ptr<Pool> pool = basket->pool();
-            remainingBasket_ = 
-                boost::shared_ptr<Basket>(new Basket(names, notionals, 
+            remainingBasket_ =
+                boost::shared_ptr<Basket>(new Basket(names, notionals,
                                                      pool, a, d));
 
             this->results_.xMin = remainingBasket_->attachmentAmount();
@@ -126,21 +125,21 @@ namespace QuantLib {
 
             this->results_.remainingNotional = results_.xMax - results_.xMin;
 
-            const vector<Date>& dates = arguments_.schedule.dates();
+            const std::vector<Date>& dates = arguments_.schedule.dates();
             results_.expectedTrancheLoss.resize(dates.size(), 0.0);
 
-            // This sets the vector results_.expectedTrancheLoss for each 
+            // This sets the vector results_.expectedTrancheLoss for each
             // schedule date by Monte Carlo simulation
             defaultScenarios();
         }
 
         Real expectedTrancheLoss(const Date& d) const {
-            const vector<Date>& dates = arguments_.schedule.dates();
+            const std::vector<Date>& dates = arguments_.schedule.dates();
             Real L = 0.0;
             for (Size i = 0; i < dates.size(); i++)
                 if (d >= dates[i])
                     L = results_.expectedTrancheLoss[i];
-                else 
+                else
                     break;
             return L;
         }
@@ -154,7 +153,7 @@ namespace QuantLib {
     class MonteCarloCDOEngine2 : public MidPointCDOEngine {
     public:
         MonteCarloCDOEngine2 (boost::shared_ptr<RandomDefaultModel> rdm,
-                              Size samples) 
+                              Size samples)
             : rdm_(rdm), samples_(samples) {}
         void calculate() const;
     private:
@@ -173,15 +172,15 @@ namespace QuantLib {
     class HomogeneousPoolCDOEngine : public CDOEngine {
     public:
         HomogeneousPoolCDOEngine(const Handle<OneFactorCopula> copula,
-                                 Size nBuckets, Period stepSize = 1*Days) 
+                                 Size nBuckets, Period stepSize = 1*Days)
             : CDOEngine(stepSize), copula_(copula), nBuckets_(nBuckets) {}
     private:
         Real expectedTrancheLoss(const Date& d) const {
             LossDistHomogeneous op(nBuckets_, this->results_.xMax);
-            vector<Real> lgd = this->remainingBasket_->LGDs();
-            vector<Real> prob = this->remainingBasket_->probabilities(d);
+            std::vector<Real> lgd = this->remainingBasket_->LGDs();
+            std::vector<Real> prob = this->remainingBasket_->probabilities(d);
             Distribution dist = copula_->integral (op, lgd, prob);
-            return dist.cumulativeExcessProbability (this->results_.xMin, 
+            return dist.cumulativeExcessProbability (this->results_.xMin,
                                                      this->results_.xMax);
         };
     protected:
@@ -190,20 +189,20 @@ namespace QuantLib {
     };
 
     //--------------------------------------------------------------------------
-    //! CDO engine, loss disctribution bucketing for finite inhomogeneous pool 
+    //! CDO engine, loss disctribution bucketing for finite inhomogeneous pool
     template <class CDOEngine>
     class InhomogeneousPoolCDOEngine : public CDOEngine {
     public:
         InhomogeneousPoolCDOEngine(const Handle<OneFactorCopula> copula,
-                                   Size nBuckets, Period stepSize = 1*Days) 
+                                   Size nBuckets, Period stepSize = 1*Days)
             : CDOEngine(stepSize), copula_(copula), nBuckets_(nBuckets) {}
     private:
         Real expectedTrancheLoss(const Date& d) const{
             LossDistBucketing op (nBuckets_, this->results_.xMax);
-            vector<Real> lgd = this->remainingBasket_->LGDs();
-            vector<Real> prob = this->remainingBasket_->probabilities(d);
+            std::vector<Real> lgd = this->remainingBasket_->LGDs();
+            std::vector<Real> prob = this->remainingBasket_->probabilities(d);
             Distribution dist = copula_->integral (op, lgd, prob);
-            return dist.cumulativeExcessProbability (this->results_.xMin, 
+            return dist.cumulativeExcessProbability (this->results_.xMin,
                                                      this->results_.xMax);
     };
     protected:
@@ -212,8 +211,8 @@ namespace QuantLib {
     };
 
     //--------------------------------------------------------------------------
-    /*! 
-      CDO engine with analytical expected tranche loss for a large homogeneous 
+    /*!
+      CDO engine with analytical expected tranche loss for a large homogeneous
       pool with Gaussian one-factor copula. See for example
       "The Normal Inverse Gaussian Distribution for Synthetic CDO pricing.",
       Anna Kalemanova, Bernd Schmid, Ralf Werner,
@@ -224,14 +223,15 @@ namespace QuantLib {
     class GaussianLHPCDOEngine : public CDOEngine {
     public:
         GaussianLHPCDOEngine(const Handle<OneFactorCopula> copula,
-                             Period stepSize = 1*Days) 
+                             Period stepSize = 1*Days)
             : CDOEngine(stepSize), copula_(copula) {}
     private:
         Real expectedTrancheLoss(const Date& d) const {
             Date today = Settings::instance().evaluationDate();
             Date start = this->arguments_.schedule.startDate();
             boost::shared_ptr<Basket>& basket = this->arguments_.basket;
-            vector<string> names = basket->remainingNames(start, today);
+            std::vector<std::string> names =
+                basket->remainingNames(start, today);
             const boost::shared_ptr<Pool> pool = basket->pool();
 
             Issuer name = pool->get(names[0]);
@@ -251,25 +251,26 @@ namespace QuantLib {
 
             if (prob > 0) {
                 Real ip = inverse(prob);
-                if (k1 > 0) 
-                    return ntl 
+                if (k1 > 0)
+                    return ntl
                         * (biphi(-inverse(k1), ip) - biphi(-inverse(k2), ip))
                         / (k2 - k1);
                 else return ntl * (prob - biphi(-inverse(k2), ip)) / (k2 - k1);
-            } 
+            }
             else return 0.0;
         };
         const Handle<OneFactorCopula> copula_;
     };
-    
+
     typedef HomogeneousPoolCDOEngine<MidPointCDOEngine> HPMidPointCDOEngine;
     typedef HomogeneousPoolCDOEngine<IntegralCDOEngine> HPIntegralCDOEngine;
 
     typedef InhomogeneousPoolCDOEngine<MidPointCDOEngine> IHPMidPointCDOEngine;
     typedef InhomogeneousPoolCDOEngine<IntegralCDOEngine> IHPIntegralCDOEngine;
-    
+
     typedef GaussianLHPCDOEngine<MidPointCDOEngine> GLHPMidPointCDOEngine;
     typedef GaussianLHPCDOEngine<IntegralCDOEngine> GLHPIntegralCDOEngine;
+
 }
 
 #endif

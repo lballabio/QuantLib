@@ -20,9 +20,7 @@
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/loss.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
-#include <iostream>
 
-using namespace QuantLib;
 using namespace std;
 
 namespace QuantLib {
@@ -32,7 +30,7 @@ namespace QuantLib {
                    const boost::shared_ptr<Pool> pool,
                    Real attachment,
                    Real detachment)
-        : names_(names), 
+        : names_(names),
           notionals_(notionals),
           pool_(pool),
           attachmentRatio_(attachment),
@@ -45,22 +43,22 @@ namespace QuantLib {
           scenarioLoss_(names.size(), Loss(0.0, 0.0)) {
         QL_REQUIRE(!names_.empty(), "no names given");
         QL_REQUIRE(!notionals_.empty(), "notionals empty");
-        QL_REQUIRE (attachmentRatio_ >= 0 && 
-                    attachmentRatio_ < detachmentRatio_ && 
+        QL_REQUIRE (attachmentRatio_ >= 0 &&
+                    attachmentRatio_ < detachmentRatio_ &&
                     detachmentRatio_ <= 1,
                     "invalid attachment/detachment ratio");
         for (Size i = 0; i < notionals_.size(); i++) {
             basketNotional_ += notionals_[i];
             attachmentAmount_ += notionals_[i] * attachmentRatio_;
             detachmentAmount_ += notionals_[i] * detachmentRatio_;
-            LGDs_[i] = notionals_[i] 
+            LGDs_[i] = notionals_[i]
                 * (1.0 - pool_->get(names_[i]).recoveryRate());
             //expectedLGD_ += expectedLGDs_[i];
         }
         trancheNotional_ = detachmentAmount_ - attachmentAmount_;
     }
 
-    Size Basket::size() const { 
+    Size Basket::size() const {
         return names_.size();
     }
 
@@ -72,7 +70,7 @@ namespace QuantLib {
         return notionals_;
     }
 
-    boost::shared_ptr<Pool> Basket::pool() {
+    boost::shared_ptr<Pool> Basket::pool() const {
         return pool_;
     }
 
@@ -81,11 +79,11 @@ namespace QuantLib {
     }
 
     Real Basket::attachmentRatio() const {
-        return attachmentRatio_; 
+        return attachmentRatio_;
     }
 
     Real Basket::detachmentRatio() const {
-        return detachmentRatio_; 
+        return detachmentRatio_;
     }
 
     Real Basket::basketNotional() const {
@@ -107,7 +105,7 @@ namespace QuantLib {
     vector<Real> Basket::probabilities(const Date& d) const {
         vector<Real> prob (names_.size());
         for (Size j = 0; j < names_.size(); j++)
-            prob[j] = pool_->get(names_[j]).defaultProbability()->defaultProbability (d); 
+            prob[j] = pool_->get(names_[j]).defaultProbability()->defaultProbability (d);
         return prob;
     }
 
@@ -118,7 +116,7 @@ namespace QuantLib {
             boost::shared_ptr<DefaultEvent> event =
                 pool_->get(names_[i]).defaultedBetween(startDate, endDate);
             if (event)
-                loss += notionals_[i] * (1.0 - event->recoveryRatio());
+                loss += notionals_[i] * (1.0 - event->recoveryRate());
         }
         return loss;
     }
@@ -153,27 +151,27 @@ namespace QuantLib {
         return names;
     }
 
-    Real Basket::remainingAttachmentAmount(const Date& startDate, 
+    Real Basket::remainingAttachmentAmount(const Date& startDate,
                                            const Date& endDate) const {
         Real loss = cumulatedLoss(startDate, endDate);
         return std::max(0.0, attachmentAmount_ - loss);
     }
 
-    Real Basket::remainingAttachmentRatio(const Date& startDate, 
+    Real Basket::remainingAttachmentRatio(const Date& startDate,
                                           const Date& endDate) const {
         return remainingAttachmentAmount(startDate, endDate)
             / remainingNotional(startDate, endDate);
     }
 
-    Real Basket::remainingDetachmentAmount(const Date& startDate, 
+    Real Basket::remainingDetachmentAmount(const Date& startDate,
                                            const Date& endDate) const {
         Real loss = cumulatedLoss(startDate, endDate);
         return std::max(0.0, detachmentAmount_ - loss);
     }
 
-    Real Basket::remainingDetachmentRatio(const Date& startDate, 
+    Real Basket::remainingDetachmentRatio(const Date& startDate,
                                           const Date& endDate) const {
-        return remainingDetachmentAmount(startDate, endDate) 
+        return remainingDetachmentAmount(startDate, endDate)
             / remainingNotional(startDate, endDate);
     }
 
@@ -186,11 +184,11 @@ namespace QuantLib {
         std::sort(scenarioLoss_.begin(), scenarioLoss_.end());
     }
 
-    vector<Loss> Basket::scenarioBasketLosses() {
+    vector<Loss> Basket::scenarioBasketLosses() const {
         return scenarioLoss_;
     }
 
-    Real Basket::scenarioTrancheLoss(Date endDate) {
+    Real Basket::scenarioTrancheLoss(Date endDate) const {
         Real A = attachmentAmount_;
         Real D = detachmentAmount_;
         Date today = Settings::instance().evaluationDate();
@@ -201,12 +199,12 @@ namespace QuantLib {
                 L += scenarioLoss_[i].amount;
             else break;
         }
-        
+
         return std::min(L, D) - std::min(L, A);
     }
 
-    vector<Loss> Basket::scenarioIncrementalTrancheLosses(Date startDate, 
-                                                          Date endDate) {
+    vector<Loss> Basket::scenarioIncrementalTrancheLosses(Date startDate,
+                                                          Date endDate) const {
         vector<Loss> losses;
         Real A = attachmentAmount_;
         Real D = detachmentAmount_;
@@ -220,13 +218,14 @@ namespace QuantLib {
             if (t > tmax) break;
             if (t < tmin) continue;
             L += scenarioLoss_[i].amount;
-            Real TL2 = std::min(L, D) - std::min(L, A);  
+            Real TL2 = std::min(L, D) - std::min(L, A);
             Real increment = TL2 - TL1;
             TL1 = TL2;
             if (increment > 0)
                 losses.push_back(Loss(t, increment));
-        }        
+        }
         return losses;
     }
+
 }
 

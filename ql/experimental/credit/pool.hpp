@@ -18,7 +18,7 @@
 */
 
 /*! \file pool.hpp
-  \brief pool of issuers
+    \brief pool of issuers
 */
 
 #ifndef quantlib_pool_hpp
@@ -26,27 +26,25 @@
 
 #include <ql/issuer.hpp>
 
-using namespace std;
-using namespace QuantLib;
-
 namespace QuantLib {
 
     class Pool {
       public:
-        Pool(); 
+        Pool();
         Size size() const;
         void clear();
-        bool has (const std::string& name) const; 
+        bool has (const std::string& name) const;
         void add (const std::string& name, const Issuer& issuer);
-        const Issuer& get (const std::string& name) const; 
+        const Issuer& get (const std::string& name) const;
         void setTime(const std::string& name, Real time);
-        Real getTime (const std::string& name) const; 
+        Real getTime (const std::string& name) const;
         const std::vector<std::string>& names() const;
     private:
-        std::map<string,Issuer> data_;
-        std::map<string,Real> time_;
+        std::map<std::string,Issuer> data_;
+        std::map<std::string,Real> time_;
         std::vector<std::string> names_;
     };
+
 }
 
 

@@ -17,25 +17,38 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file randomdefaultmodel.cpp
-  \brief Provide random default time scenarios for a pool of credit names
-*/
-
 #include <ql/experimental/credit/randomdefaultmodel.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 
 using namespace std;
-using namespace QuantLib;
 
 namespace QuantLib {
+
+    namespace {
+
+        // Utility for the numerical solver
+        class Root {
+          public:
+            Root(const Handle<DefaultProbabilityTermStructure> dts, Real pd)
+            : dts_(dts), pd_(pd) {}
+            Real operator()(Real t) const {
+                QL_REQUIRE (t >= 0.0, "t < 0");
+                return dts_->defaultProbability(t, true) - pd_;
+            }
+          private:
+            const Handle<DefaultProbabilityTermStructure> dts_;
+            Real pd_;
+        };
+
+    }
 
     GaussianRandomDefaultModel::GaussianRandomDefaultModel(
                                           boost::shared_ptr<Pool> pool,
                                           Handle<OneFactorCopula> copula,
                                           Real accuracy,
                                           long seed)
-        : RandomDefaultModel(pool), 
-          copula_(copula), 
+        : RandomDefaultModel(pool),
+          copula_(copula),
           accuracy_(accuracy),
           seed_(seed),
           rsg_(PseudoRandom::make_sequence_generator(pool->size()+1, seed)) {}
@@ -47,8 +60,8 @@ namespace QuantLib {
             const string name = pool_->names()[j];
             const Handle<DefaultProbabilityTermStructure>&
                 dts = pool_->get(name).defaultProbability();
-            
-            Real y = a * values[0] + sqrt(1-a*a) * values[j+1];  
+
+            Real y = a * values[0] + sqrt(1-a*a) * values[j+1];
             Real p = CumulativeNormalDistribution()(y);
 
             if (dts->defaultProbability(tmax) < p)
@@ -57,5 +70,6 @@ namespace QuantLib {
                 pool_->setTime(name, Brent().solve(Root(dts,p),accuracy_,0,1));
         }
     }
+
 }
 

@@ -1,5 +1,5 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
- 
+
 /*
  Copyright (C) 2008 Roland Lichters
 
@@ -24,13 +24,8 @@
 #ifndef quantlib_probability_distribution_hpp
 #define quantlib_probability_distribution_hpp
 
-#include <vector>
-#include <iostream>
-#include <fstream>
 #include <ql/types.hpp>
-
-using namespace std;
-using namespace QuantLib;
+#include <vector>
 
 namespace QuantLib {
 
@@ -49,39 +44,37 @@ namespace QuantLib {
         void addDensity (int bucket, Real value);
         void addAverage (int bucket, Real value);
         void normalize ();
-  
+
         Size size () const { return size_; }
         Real x (Size k) { return x_.at(k); }
-        vector<Real>& x () { return x_; }
+        std::vector<Real>& x () { return x_; }
         Real dx (Size k) { return dx_.at(k); }
-        vector<Real>& dx () { return dx_; }
+        std::vector<Real>& dx () { return dx_; }
         Real dx (Real x);
 
-        Real density (Size k) { 
+        Real density (Size k) {
             normalize();
-            return density_.at(k); 
+            return density_.at(k);
         }
-        Real cumulative (Size k) { 
+        Real cumulative (Size k) {
             normalize();
-            return cumulativeDensity_.at(k); 
+            return cumulativeDensity_.at(k);
         }
-        Real excess (Size k) { 
+        Real excess (Size k) {
             normalize();
-            return excessProbability_.at(k); 
+            return excessProbability_.at(k);
         }
-        Real cumulativeExcess (Size k) { 
+        Real cumulativeExcess (Size k) {
             normalize();
-            return cumulativeExcessProbability_.at(k); 
+            return cumulativeExcessProbability_.at(k);
         }
         Real average (Size k) { return average_.at(k); }
-
-        void print (string fileName);
 
         Real confidenceLevel (Real quantil);
         Real cumulativeDensity (Real x);
         Real cumulativeExcessProbability (Real a, Real b);
         Real expectedValue ();
-        Real trancheExpectedValue (Real a, Real d); 
+        Real trancheExpectedValue (Real a, Real d);
 
         template <class F>
         Real expectedValue (F& f) {
@@ -112,18 +105,18 @@ namespace QuantLib {
     private:
         int size_;
         Real xmin_, xmax_;
-        vector<int> count_;
+        std::vector<int> count_;
         // x: coordinate of left hand cell bundary
         // dx: cell width
-        vector<Real> x_, dx_;
+        std::vector<Real> x_, dx_;
         // density: probability density, densitx*dx = prob. of loss in cell i
         // cumulatedDensity: cumulated (integrated) from x = 0
         // excessProbability: cumulated from x_i to infinity
         // cumulativeExcessProbability: integrated excessProbability from x = 0
-        vector<Real> density_, cumulativeDensity_;
-        vector<Real> excessProbability_, cumulativeExcessProbability_;
-        // average loss in cell i 
-        vector<Real> average_;
+        std::vector<Real> density_, cumulativeDensity_;
+        std::vector<Real> excessProbability_, cumulativeExcessProbability_;
+        // average loss in cell i
+        std::vector<Real> average_;
 
         int overFlow_, underFlow_;
         bool isNormalized_;
@@ -131,7 +124,7 @@ namespace QuantLib {
 
     class ManipulateDistribution {
     public:
-        static Distribution convolve (const Distribution& d1, 
+        static Distribution convolve (const Distribution& d1,
                                       const Distribution& d2,
                                       Size buckets = 0);
     };
