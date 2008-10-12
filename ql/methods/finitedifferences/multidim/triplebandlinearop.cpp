@@ -32,20 +32,37 @@ namespace QuantLib {
         Size direction,
         const boost::shared_ptr<FdmMesher>& mesher)
     : direction_(direction),
-      i0_   (new Size[mesher->layout()->size()]),
-      i2_   (new Size[mesher->layout()->size()]),
-      lower_(new Real[mesher->layout()->size()]),
-      diag_ (new Real[mesher->layout()->size()]),
-      upper_(new Real[mesher->layout()->size()]),
+      i0_       (new Size[mesher->layout()->size()]),
+      i2_       (new Size[mesher->layout()->size()]),
+      reverseIndex_ (new Size[mesher->layout()->size()]),
+      lower_    (new Real[mesher->layout()->size()]),
+      diag_     (new Real[mesher->layout()->size()]),
+      upper_    (new Real[mesher->layout()->size()]),
       mesher_(mesher) {
 
         const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
         const FdmLinearOpIterator endIter = layout->end();
 
+        std::vector<Size> newDim(layout->dim());
+        std::iter_swap(newDim.begin(), newDim.begin()+direction_);
+        std::vector<Size> newSpacing = FdmLinearOpLayout(newDim).spacing();
+        std::iter_swap(newSpacing.begin(), newSpacing.begin()+direction_);
+
         for (FdmLinearOpIterator iter = layout->begin(); iter!=endIter; ++iter) {
             const Size i = iter.index();
+
             i0_[i] = layout->neighbourhood(iter, direction, -1);
             i2_[i] = layout->neighbourhood(iter, direction,  1);
+            
+            const std::vector<Size>& coordinates = iter.coordinates();
+            const Size newIndex =  
+                  std::inner_product(coordinates.begin(), coordinates.end(),
+                                     newSpacing.begin(), Size(0));
+            reverseIndex_[newIndex] = i;
+            
+            //lowerEdge_[newIndex] = (coordinates[direction_] != 0);
+            //upperEdge_[newIndex] = 
+            //    (coordinates[direction_] != layout->dim()[direction_]-1);
         }
     }
         
@@ -53,6 +70,7 @@ namespace QuantLib {
     : direction_(m.direction_),
       i0_   (new Size[m.mesher_->layout()->size()]),
       i2_   (new Size[m.mesher_->layout()->size()]),
+      reverseIndex_(new Size[m.mesher_->layout()->size()]),
       lower_(new Real[m.mesher_->layout()->size()]),
       diag_ (new Real[m.mesher_->layout()->size()]),
       upper_(new Real[m.mesher_->layout()->size()]),
@@ -60,6 +78,8 @@ namespace QuantLib {
         const Size len = m.mesher_->layout()->size();
         std::copy(m.i0_.get(), m.i0_.get() + len, i0_.get());
         std::copy(m.i2_.get(), m.i2_.get() + len, i2_.get());
+        std::copy(m.reverseIndex_.get(), m.reverseIndex_.get()+len,
+                  reverseIndex_.get());
         std::copy(m.lower_.get(), m.lower_.get() + len, lower_.get());
         std::copy(m.diag_.get(),  m.diag_.get() + len,  diag_.get());
         std::copy(m.upper_.get(), m.upper_.get() + len, upper_.get());
@@ -89,6 +109,7 @@ namespace QuantLib {
         std::swap(direction_, m.direction_);
 
         i0_.swap(m.i0_); i2_.swap(m.i2_);
+        reverseIndex_.swap(m.reverseIndex_);
         lower_.swap(m.lower_); diag_.swap(m.diag_); upper_.swap(m.upper_);
     }
 
@@ -161,7 +182,7 @@ namespace QuantLib {
     }
 
     Disposable<TripleBandLinearOp> 
-        TripleBandLinearOp::add(const TripleBandLinearOp& m) const {
+    TripleBandLinearOp::add(const TripleBandLinearOp& m) const {
 
         TripleBandLinearOp retVal(direction_, mesher_);
         const Size size = mesher_->layout()->size();
@@ -175,8 +196,7 @@ namespace QuantLib {
     }
 
 
-    Disposable<TripleBandLinearOp> TripleBandLinearOp::mult(const Array& u) 
-        const {
+    Disposable<TripleBandLinearOp> TripleBandLinearOp::mult(const Array& u) const {
         
         TripleBandLinearOp retVal(direction_, mesher_);
 
@@ -191,8 +211,7 @@ namespace QuantLib {
         return retVal;
     }
 
-    Disposable<TripleBandLinearOp> TripleBandLinearOp::add(const Array& u) 
-        const {
+    Disposable<TripleBandLinearOp> TripleBandLinearOp::add(const Array& u) const {
         
         TripleBandLinearOp retVal(direction_, mesher_);
 
@@ -211,9 +230,15 @@ namespace QuantLib {
 
         QL_REQUIRE(r.size() == index->size(), "inconsistent length of r");
 
-        Array retVal(r.size());
+        const Real* lptr = lower_.get();
+        const Real* dptr = diag_.get();
+        const Real* uptr = upper_.get();
+        const Size* i0ptr = i0_.get();
+        const Size* i2ptr = i2_.get();
+        
+        array_type retVal(r.size());
         for (Size i=0; i < index->size(); ++i) {
-            retVal[i] = r[i0_[i]]*lower_[i]+r[i]*diag_[i]+r[i2_[i]]*upper_[i];
+            retVal[i] = r[i0ptr[i]]*lptr[i]+r[i]*dptr[i]+r[i2ptr[i]]*uptr[i];
         }
 
         return retVal;
@@ -221,52 +246,50 @@ namespace QuantLib {
 
     Disposable<Array> 
     TripleBandLinearOp::solve_splitting(const Array& r, Real a, Real b) const {
-        Array retVal(r.size());
-
-        // start scrambling
         const boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
-
-        std::vector<Size> newDim(layout->dim());
-        std::iter_swap(newDim.begin(), newDim.begin()+direction_);
-        std::vector<Size> newSpacing = FdmLinearOpLayout(newDim).spacing();
-        std::iter_swap(newSpacing.begin(), newSpacing.begin()+direction_);
-
-        Array diag(layout->size()), rhs(layout->size());
-        Array lower(layout->size()-1, 0.0), upper(layout->size()-1, 0.0);
-
-        const FdmLinearOpIterator endIter = layout->end();
-        for (FdmLinearOpIterator iter = layout->begin(); iter!=endIter; ++iter) {
+        QL_REQUIRE(r.size() == layout->size(), "inconsistent size of rhs");
+        
+#ifdef QL_EXTRA_SAFETY_CHECKS
+        for (FdmLinearOpIterator iter = layout->begin(); 
+             iter!=layout->end(); ++iter) {
             const std::vector<Size>& coordinates = iter.coordinates();
-            const Size index = iter.index();
-            const Size newIndex 
-                = std::inner_product(coordinates.begin(), coordinates.end(),
-                                     newSpacing.begin(), Size(0)); 
-
-            rhs[newIndex]   = r[index];
-            diag[newIndex]  = a*diag_[index]+b;
-            if (coordinates[direction_] != 0)
-                lower[newIndex-1] = a*lower_[index];
-            else 
-                QL_REQUIRE(lower_[index] == 0, "removing non zero entry!");
-
-            if (coordinates[direction_] != layout->dim()[direction_]-1)
-                upper[newIndex] = a*upper_[index];
-            else
-                QL_REQUIRE(upper_[index] == 0, "removing non zero entry!");
+            QL_REQUIRE(   coordinates[direction_] != 0 
+                       || lower_[iter.index()] == 0,"removing non zero entry!"); 
+            QL_REQUIRE(   coordinates[direction_] != layout->dim()[direction_]-1 
+                       || upper_[iter.index()] == 0,"removing non zero entry!"); 
         }
+#endif
+        
+        Array retVal(r.size()), tmp(r.size());
 
-        Array s = TridiagonalOperator(lower, diag, upper).solveFor(rhs);
+        const Real* lptr = lower_.get();
+        const Real* dptr = diag_.get();
+        const Real* uptr = upper_.get();
 
-        for (FdmLinearOpIterator iter = layout->begin(); iter!=endIter; ++iter) {
-            const std::vector<Size>& coordinates = iter.coordinates();
-            const Size index = iter.index();
-            const Size newIndex 
-                = std::inner_product(coordinates.begin(), coordinates.end(),
-                                     newSpacing.begin(), Size(0)); 
+        // Thomson algorithm to solve a tridiagonal system.
+        // Example code taken from Tridiagonalopertor and 
+        // changed to fit for the triple band operator.  
+        Size rim1 = reverseIndex_[0];
+        Real bet=1.0/(a*dptr[rim1]+b);
+        QL_REQUIRE(bet != 0.0, "division by zero");
+        retVal[reverseIndex_[0]] = r[rim1]*bet;
 
-            retVal[index]   = s[newIndex];
+        for (Size j=1; j<=layout->size()-1; j++){
+            const Size ri = reverseIndex_[j];
+            tmp[j] = a*uptr[rim1]*bet;
+            
+            bet=b+a*(dptr[ri]-tmp[j]*lptr[ri]);
+            QL_ENSURE(bet != 0.0, "division by zero");
+            bet=1.0/bet;
+            
+            retVal[ri] = (r[ri]-a*lptr[ri]*retVal[rim1])*bet;
+            rim1 = ri;
         }
-
+        // cannot be j>=0 with Size j
+        for (Size j=layout->size()-2; j>0; --j)
+            retVal[reverseIndex_[j]] -= tmp[j+1]*retVal[reverseIndex_[j+1]];
+        retVal[reverseIndex_[0]] -= tmp[1]*retVal[reverseIndex_[1]];
+        
         return retVal;        
     }
 }

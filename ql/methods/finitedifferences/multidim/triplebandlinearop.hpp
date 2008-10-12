@@ -34,6 +34,8 @@
 #include <ql/methods/finitedifferences/multidim/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/multidim/fdmlinearop.hpp>
 
+#include <deque>
+
 namespace QuantLib {
 
     class TripleBandLinearOp : public FdmLinearOp {
@@ -47,8 +49,8 @@ namespace QuantLib {
         TripleBandLinearOp& operator=(const Disposable<TripleBandLinearOp>& m);
         
         Disposable<Array> apply(const Array& r) const;
-        Disposable<Array> solve_splitting(const Array& r, 
-                                          Real a, Real b = 1.0) const;
+        Disposable<Array> solve_splitting(const Array& r, Real a, 
+                                          Real b = 1.0) const;
 
         Disposable<TripleBandLinearOp> mult(const Array& u) const;
         Disposable<TripleBandLinearOp> add(const TripleBandLinearOp& m) const;
@@ -65,6 +67,7 @@ namespace QuantLib {
 
         Size direction_;
         boost::shared_array<Size> i0_, i2_;
+        boost::shared_array<Size> reverseIndex_;
         boost::shared_array<Real> lower_, diag_, upper_;
 
         boost::shared_ptr<FdmMesher> mesher_;
