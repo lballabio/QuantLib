@@ -304,7 +304,7 @@ void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
     std::vector<GeneralStatistics> zeroStat(90);
     std::vector<GeneralStatistics> optionStat(90);
 
-    const Size nrTrails = 1000;
+    const Size nrTrails = 10000;
     const Size optionTenor = 24;
     const DiscountFactor strike = 0.5;
 
@@ -350,7 +350,7 @@ void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
         Real error = zeroStat[j].errorEstimate();
         Real expected = ts->discount(t);
 
-        if (std::fabs(calculated - expected) > 3*error) {
+        if (std::fabs(calculated - expected) > 5*error) {
             BOOST_ERROR("Failed to reproduce expected zero bond prices"
                         << "\n   t:          " << t
                         << "\n   calculated: " << calculated
@@ -364,7 +364,7 @@ void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
         error = optionStat[j].errorEstimate();
         expected = hwModel->discountBondOption(Option::Call, strike, t, T);
 
-        if (std::fabs(calculated - expected) > 3*error) {
+        if (std::fabs(calculated - expected) > 5*error) {
             BOOST_ERROR("Failed to reproduce expected zero bond option prices"
                         << "\n   t:          " << t
                         << "\n   T:          " << T
