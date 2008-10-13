@@ -1158,6 +1158,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\extendedtrees.cpp"
+				>
+			</File>
+			<File
 				RelativePath="factorial.cpp"
 				>
 				<FileConfiguration
@@ -1206,6 +1210,10 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\fdmlinearop.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\forwardoption.cpp"
@@ -1700,11 +1708,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\pathgenerator.cpp"
+				RelativePath=".\pagodaoption.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\pagodaoption.cpp"
+				RelativePath=".\pathgenerator.cpp"
 				>
 			</File>
 			<File
@@ -2313,11 +2321,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\extendedtrees.hpp"
+				>
+			</File>
+			<File
 				RelativePath="factorial.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\fastfouriertransform.hpp"
+				RelativePath=".\fdmlinearop.hpp"
 				>
 			</File>
 			<File
@@ -2445,11 +2457,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\pathgenerator.hpp"
+				RelativePath=".\pagodaoption.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\pagodaoption.hpp"
+				RelativePath=".\pathgenerator.hpp"
 				>
 			</File>
 			<File
