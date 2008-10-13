@@ -64,6 +64,8 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine() {
     const Date today = Date::todaysDate();
     const Date maturity = today + Period(20, Years);
 
+    Settings::instance().evaluationDate() = today;
+
     const Handle<Quote> spot(
                          boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
@@ -157,6 +159,8 @@ void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
     DayCounter dc = Actual365Fixed();
 
     const Date today = Date::todaysDate();
+
+    Settings::instance().evaluationDate() = today;
 
     const Handle<Quote> spot(
                          boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
@@ -253,6 +257,8 @@ void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
 
     DayCounter dc = Actual360();
     const Date today = Date::todaysDate();
+
+    Settings::instance().evaluationDate() = today;
 
     // construct a strange yield curve to check drifts and discounting
     // of the joint stochastic process
@@ -383,6 +389,8 @@ void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
     DayCounter dc = Actual360();
     const Date today = Date::todaysDate();
 
+    Settings::instance().evaluationDate() = today;
+
     // construct a strange yield curve to check drifts and discounting
     // of the joint stochastic process
 
@@ -475,6 +483,8 @@ void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
     DayCounter dc = Actual360();
     const Date today = Date::todaysDate();
 
+    Settings::instance().evaluationDate() = today;
+
     // construct a strange yield curve to check drifts and discounting
     // of the joint stochastic process
 
@@ -561,6 +571,8 @@ void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
 
     DayCounter dc = Actual360();
     const Date today = Date::todaysDate();
+
+    Settings::instance().evaluationDate() = today;
 
     // construct a strange yield curve to check drifts and discounting
     // of the joint stochastic process
@@ -656,6 +668,8 @@ void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
     const Size maturity = 7;
     DayCounter dc = Actual365Fixed();
     const Date today = Date::todaysDate();
+
+    Settings::instance().evaluationDate() = today;
 
     Handle<Quote> spot(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
@@ -760,6 +774,8 @@ void HybridHestonHullWhiteProcessTest::testDiscretizationError() {
 
     DayCounter dc = Actual360();
     const Date today = Date::todaysDate();
+
+    Settings::instance().evaluationDate() = today;
 
     // construct a strange yield curve to check drifts and discounting
     // of the joint stochastic process
