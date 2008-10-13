@@ -3168,6 +3168,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\models\marketmodels\evolvers\marketmodelvolprocess.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\evolvers\marketmodelvolprocess.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\models\marketmodels\evolvers\normalfwdratepc.cpp"
 						>
 					</File>
@@ -3175,6 +3183,22 @@
 						RelativePath=".\ql\models\marketmodels\evolvers\normalfwdratepc.hpp"
 						>
 					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\evolvers\svddfwdratepc.hpp"
+						>
+					</File>
+					<Filter
+						Name="volprocesses"
+						>
+						<File
+							RelativePath=".\ql\models\marketmodels\evolvers\volprocesses\squarerootandersen.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\evolvers\volprocesses\squarerootandersen.hpp"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="models"
@@ -7754,6 +7778,10 @@
 		</File>
 		<File
 			RelativePath=".\ql\stochasticprocess.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\models\marketmodels\evolvers\svddfwdratepc.cpp"
 			>
 		</File>
 		<File
