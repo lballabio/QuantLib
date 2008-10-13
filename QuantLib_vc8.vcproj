@@ -646,6 +646,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\methods\finitedifferences\multidim\fdmhestoninnervalue.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\methods\finitedifferences\multidim\fdmhestonop.cpp"
 						>
 					</File>
@@ -3190,6 +3194,10 @@
 					<Filter
 						Name="volprocesses"
 						>
+						<File
+							RelativePath=".\ql\models\marketmodels\evolvers\volprocesses\all.hpp"
+							>
+						</File>
 						<File
 							RelativePath=".\ql\models\marketmodels\evolvers\volprocesses\squarerootandersen.cpp"
 							>
@@ -6795,6 +6803,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\time\calendars\bespokecalendar.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\bespokecalendar.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\time\calendars\brazil.cpp"
 					>
 				</File>
@@ -7467,6 +7483,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\basket.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\basket.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\cdo.cpp"
 					>
 				</File>
@@ -7488,6 +7512,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\distribution.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\loss.hpp"
 					>
 				</File>
 				<File
@@ -7531,11 +7559,43 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\pool.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\pool.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\randomdefaultmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\randomdefaultmodel.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\riskyassetswap.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\riskyassetswap.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\syntheticcdo.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\syntheticcdo.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\syntheticcdoengines.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\syntheticcdoengines.hpp"
 					>
 				</File>
 			</Filter>
