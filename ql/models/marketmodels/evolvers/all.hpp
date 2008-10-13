@@ -7,5 +7,8 @@
 #include <ql/models/marketmodels/evolvers/lognormalfwdrateeulerconstrained.hpp>
 #include <ql/models/marketmodels/evolvers/lognormalfwdrateipc.hpp>
 #include <ql/models/marketmodels/evolvers/lognormalfwdratepc.hpp>
+#include <ql/models/marketmodels/evolvers/marketmodelvolprocess.hpp>
 #include <ql/models/marketmodels/evolvers/normalfwdratepc.hpp>
+#include <ql/models/marketmodels/evolvers/svddfwdratepc.hpp>
 
+#include <ql/models/marketmodels/evolvers/volprocesses/all.hpp>
