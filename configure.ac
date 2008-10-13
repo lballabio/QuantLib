@@ -332,6 +332,7 @@ AC_CONFIG_FILES([
     ql/experimental/callablebonds/Makefile
     ql/experimental/coupons/Makefile
     ql/experimental/credit/Makefile
+    ql/experimental/finitedifferences/Makefile
     ql/experimental/lattices/Makefile
     ql/experimental/mcbasket/Makefile
     ql/experimental/processes/Makefile
@@ -359,7 +360,6 @@ AC_CONFIG_FILES([
     ql/math/statistics/Makefile
     ql/methods/Makefile
     ql/methods/finitedifferences/Makefile
-    ql/methods/finitedifferences/multidim/Makefile
     ql/methods/lattices/Makefile
     ql/methods/montecarlo/Makefile
     ql/models/Makefile

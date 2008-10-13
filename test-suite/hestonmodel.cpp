@@ -19,7 +19,7 @@
 
 #include "hestonmodel.hpp"
 #include "utilities.hpp"
-#include <ql/instruments/dividendbarrieroption.hpp>
+#include <ql/experimental/finitedifferences/dividendbarrieroption.hpp>
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
@@ -29,10 +29,10 @@
 #include <ql/pricingengines/vanilla/fdamericanengine.hpp>
 #include <ql/pricingengines/vanilla/fddividendeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/fdeuropeanengine.hpp>
-#include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
-#include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
-#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
-#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
+#include <ql/experimental/finitedifferences/fdhestonbarrierengine.hpp>
+#include <ql/experimental/finitedifferences/fdblackscholesbarrierengine.hpp>
+#include <ql/experimental/finitedifferences/fdblackscholesvanillaengine.hpp>
+#include <ql/experimental/finitedifferences/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -118,7 +118,7 @@ void HestonModelTest::testBlackCalibration() {
             options[i]->setPricingEngine(engine);
 
         LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
-        model->calibrate(options, om, EndCriteria(400, 40, 1.0e-8, 
+        model->calibrate(options, om, EndCriteria(400, 40, 1.0e-8,
                                                   1.0e-8, 1.0e-8));
 
         Real tolerance = 3.0e-3;
@@ -300,7 +300,7 @@ void HestonModelTest::testAnalyticVsBlack() {
                    << "\n    expected:   " << expected
                    << "\n    error:      " << QL_SCIENTIFIC << error);
     }
-    
+
     engine = boost::shared_ptr<PricingEngine>(new FdHestonVanillaEngine(
               boost::shared_ptr<HestonModel>(new HestonModel(process)),
               200,200,100));
@@ -485,15 +485,15 @@ void HestonModelTest::testFdBarrierVsCached() {
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
     boost::shared_ptr<StrikedTypePayoff> payoff(new
-    		PlainVanillaPayoff(Option::Call, 90.0));
+            PlainVanillaPayoff(Option::Call, 90.0));
 
     boost::shared_ptr<HestonProcess> process(new HestonProcess(
-    		rTS, qTS, s0, 0.25*0.25, 1.0, 0.25*0.25, 0.001, 0.0));
+            rTS, qTS, s0, 0.25*0.25, 1.0, 0.25*0.25, 0.001, 0.0));
 
     boost::shared_ptr<PricingEngine> engine;
     engine = boost::shared_ptr<PricingEngine>(new FdHestonBarrierEngine(
-              		boost::shared_ptr<HestonModel>(new HestonModel(process)),
-              		200,400,100));
+                    boost::shared_ptr<HestonModel>(new HestonModel(process)),
+                    200,400,100));
 
     BarrierOption option(Barrier::DownOut, 95.0, 3.0, payoff, exercise);
     option.setPricingEngine(engine);
@@ -505,7 +505,7 @@ void HestonModelTest::testFdBarrierVsCached() {
         BOOST_FAIL("failed to reproduce cached price with FD Barrier engine"
                    << "\n    calculated: " << calculated
                    << "\n    expected:   " << expected
-        		   << "\n    error:      " << QL_SCIENTIFIC << error);
+                   << "\n    error:      " << QL_SCIENTIFIC << error);
     }
 
     option = BarrierOption(Barrier::DownIn, 95.0, 3.0, payoff, exercise);
@@ -518,7 +518,7 @@ void HestonModelTest::testFdBarrierVsCached() {
         BOOST_FAIL("failed to reproduce cached price with FD Barrier engine"
                    << "\n    calculated: " << calculated
                    << "\n    expected:   " << expected
-        		   << "\n    error:      " << QL_SCIENTIFIC << error);
+                   << "\n    error:      " << QL_SCIENTIFIC << error);
     }
 }
 
@@ -549,8 +549,8 @@ void HestonModelTest::testFdVanillaVsCached() {
 
     boost::shared_ptr<PricingEngine> engine;
     engine = boost::shared_ptr<PricingEngine>(new FdHestonVanillaEngine(
-              		boost::shared_ptr<HestonModel>(new HestonModel(process)),
-              		100,200,100));
+                    boost::shared_ptr<HestonModel>(new HestonModel(process)),
+                    100,200,100));
     option.setPricingEngine(engine);
 
     Real expected = 0.0632851308977151;
@@ -562,21 +562,21 @@ void HestonModelTest::testFdVanillaVsCached() {
         BOOST_FAIL("failed to reproduce cached price with FD engine"
                    << "\n    calculated: " << calculated
                    << "\n    expected:   " << expected
-        		   << "\n    error:      " << QL_SCIENTIFIC << error);
+                   << "\n    error:      " << QL_SCIENTIFIC << error);
     }
 
     BOOST_MESSAGE("Testing FD Vanilla Heston engine for discrete dividends ...");
 
     payoff = boost::shared_ptr<StrikedTypePayoff>(
                           new PlainVanillaPayoff(Option::Call, 95.0));
-    s0 = Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));    
+    s0 = Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
 
     riskFreeTS = Handle<YieldTermStructure>(flatRate(0.05, dayCounter));
     dividendTS = Handle<YieldTermStructure>(flatRate(0.0, dayCounter));
 
     exerciseDate = Date(28, March, 2006);
     exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate));
-    
+
     std::vector<Date> dividendDates;
     std::vector<Real> dividends;
     for (Date d = settlementDate + 3*Months;
@@ -585,15 +585,15 @@ void HestonModelTest::testFdVanillaVsCached() {
         dividendDates.push_back(d);
         dividends.push_back(1.0);
     }
-    
+
     DividendVanillaOption divOption(payoff, exercise,
                                     dividendDates, dividends);
     process = boost::shared_ptr<HestonProcess>(new HestonProcess(
                    riskFreeTS, dividendTS, s0, 0.04, 1.0, 0.04, 0.001, 0.0));
     engine = boost::shared_ptr<PricingEngine>(new FdHestonVanillaEngine(
-              		boost::shared_ptr<HestonModel>(new HestonModel(process)),
-              		200,400,100));
-    divOption.setPricingEngine(engine);    
+                    boost::shared_ptr<HestonModel>(new HestonModel(process)),
+                    200,400,100));
+    divOption.setPricingEngine(engine);
     calculated = divOption.NPV();
     // Value calculated with an independent FD framework, validated with
     // an independent MC framework
@@ -605,34 +605,34 @@ void HestonModelTest::testFdVanillaVsCached() {
         BOOST_FAIL("failed to reproduce discrete dividend price with FD engine"
                    << "\n    calculated: " << calculated
                    << "\n    expected:   " << expected
-        		   << "\n    error:      " << QL_SCIENTIFIC << error);
+                   << "\n    error:      " << QL_SCIENTIFIC << error);
     }
- 
+
     BOOST_MESSAGE("Testing FD Vanilla Heston engine for american exercise ...");
 
     dividendTS = Handle<YieldTermStructure>(flatRate(0.03, dayCounter));
     process = boost::shared_ptr<HestonProcess>(new HestonProcess(
                    riskFreeTS, dividendTS, s0, 0.04, 1.0, 0.04, 0.001, 0.0));
     engine = boost::shared_ptr<PricingEngine>(new FdHestonVanillaEngine(
-              		boost::shared_ptr<HestonModel>(new HestonModel(process)),
-              		200,400,100));
+                    boost::shared_ptr<HestonModel>(new HestonModel(process)),
+                    200,400,100));
     payoff = boost::shared_ptr<StrikedTypePayoff>(
                           new PlainVanillaPayoff(Option::Put, 95.0));
     exercise = boost::shared_ptr<Exercise>(new AmericanExercise(
-    		settlementDate, exerciseDate));
+            settlementDate, exerciseDate));
     option = VanillaOption(payoff, exercise);
     option.setPricingEngine(engine);
     calculated = option.NPV();
 
-    Handle<BlackVolTermStructure> volTS(flatVol(settlementDate, 0.2, 
-    		                                      dayCounter));
+    Handle<BlackVolTermStructure> volTS(flatVol(settlementDate, 0.2,
+                                                  dayCounter));
     boost::shared_ptr<BlackScholesMertonProcess> ref_process(
-    	new BlackScholesMertonProcess(s0, dividendTS, riskFreeTS, volTS));
+        new BlackScholesMertonProcess(s0, dividendTS, riskFreeTS, volTS));
     boost::shared_ptr<PricingEngine> ref_engine(
         new FDAmericanEngine(ref_process, 200, 400));
-    option.setPricingEngine(ref_engine);    
+    option.setPricingEngine(ref_engine);
     expected = option.NPV();
-    
+
     error = std::fabs(calculated - expected);
     tolerance = 1.0e-3;
 
@@ -640,7 +640,7 @@ void HestonModelTest::testFdVanillaVsCached() {
         BOOST_FAIL("failed to reproduce american option price with FD engine"
                    << "\n    calculated: " << calculated
                    << "\n    expected:   " << expected
-        		   << "\n    error:      " << QL_SCIENTIFIC << error);
+                   << "\n    error:      " << QL_SCIENTIFIC << error);
     }
 }
 
@@ -705,10 +705,10 @@ void HestonModelTest::testKahlJaeckelCase() {
     }
 
     engine = boost::shared_ptr<PricingEngine>(new FdHestonVanillaEngine(
-              		boost::shared_ptr<HestonModel>(new HestonModel(process)),
-              		200,400,100));
+                    boost::shared_ptr<HestonModel>(new HestonModel(process)),
+                    200,400,100));
     option.setPricingEngine(engine);
-    
+
     calculated = option.NPV();
     const Real error = std::fabs(calculated - expected);
     tolerance = 2.0e-2;
@@ -716,7 +716,7 @@ void HestonModelTest::testKahlJaeckelCase() {
         BOOST_FAIL("failed to reproduce cached price with FD engine"
                    << "\n    calculated: " << calculated
                    << "\n    expected:   " << expected
-        		   << "\n    error:      " << QL_SCIENTIFIC << error);
+                   << "\n    error:      " << QL_SCIENTIFIC << error);
     }
 }
 
@@ -763,8 +763,8 @@ void HestonModelTest::testDifferentIntegrals() {
 
         Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(1.0)));
         boost::shared_ptr<HestonProcess> process(new HestonProcess(
-            riskFreeTS, dividendTS, 
-            s0, iter->v0, iter->kappa, 
+            riskFreeTS, dividendTS,
+            s0, iter->v0, iter->kappa,
             iter->theta, iter->sigma, iter->rho));
 
         boost::shared_ptr<HestonModel> model(new HestonModel(process));
@@ -802,7 +802,7 @@ void HestonModelTest::testDifferentIntegrals() {
 
                     boost::shared_ptr<StrikedTypePayoff> payoff(
                         new PlainVanillaPayoff(types[k], strikes[j]));
-                    
+
                     VanillaOption option(payoff, exercise);
 
                     option.setPricingEngine(lobattoEngine);
@@ -820,7 +820,7 @@ void HestonModelTest::testDifferentIntegrals() {
                     option.setPricingEngine(chebyshev2thEngine);
                     const Real chebyshev2th = option.NPV();
 
-                    maxLaguerreDiff 
+                    maxLaguerreDiff
                         = std::max(maxLaguerreDiff,
                                    std::fabs(lobattoNPV-laguerre));
                     maxLegendreDiff
@@ -837,7 +837,7 @@ void HestonModelTest::testDifferentIntegrals() {
             }
         }
         const Real maxDiff = std::max(std::max(
-            std::max(maxLaguerreDiff,maxLegendreDiff), 
+            std::max(maxLaguerreDiff,maxLegendreDiff),
                                      maxChebyshevDiff), maxChebyshev2thDiff);
 
         const Real tr = tol[iter - params.begin()];
@@ -868,7 +868,7 @@ test_suite* HestonModelTest::suite() {
     //suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMcVsCached));
     //suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdBarrierVsCached));
     //suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdVanillaVsCached));
-    
+
     return suite;
 }
 

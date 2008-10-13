@@ -40,22 +40,22 @@
 #include <ql/pricingengines/vanilla/analytichestonhullwhiteengine.hpp>
 
 #include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
-#include <ql/methods/finitedifferences/multidim/douglasscheme.hpp>
-#include <ql/methods/finitedifferences/multidim/hundsdorferscheme.hpp>
-#include <ql/methods/finitedifferences/multidim/craigsneydscheme.hpp>
-#include <ql/methods/finitedifferences/multidim/uniformgridmesher.hpp>
-#include <ql/methods/finitedifferences/multidim/uniform1dmesher.hpp>
-#include <ql/methods/finitedifferences/multidim/fdmlinearop.hpp>
-#include <ql/methods/finitedifferences/multidim/fdmhestonhullwhiteop.hpp>
-#include <ql/methods/finitedifferences/multidim/fdmhestonvariancemesher.hpp>
-#include <ql/methods/finitedifferences/multidim/fdmhestonsolver.hpp>
-#include <ql/methods/finitedifferences/multidim/fdmmeshercomposite.hpp>
-#include <ql/methods/finitedifferences/multidim/fdmamericanstepcondition.hpp>
-#include <ql/methods/finitedifferences/multidim/fdmstepconditioncomposite.hpp>
-#include <ql/methods/finitedifferences/multidim/fdmdividendhandler.hpp>
-#include <ql/methods/finitedifferences/multidim/firstderivativeop.hpp>
-#include <ql/methods/finitedifferences/multidim/secondderivativeop.hpp>
-#include <ql/methods/finitedifferences/multidim/secondordermixedderivativeop.hpp>
+#include <ql/experimental/finitedifferences/douglasscheme.hpp>
+#include <ql/experimental/finitedifferences/hundsdorferscheme.hpp>
+#include <ql/experimental/finitedifferences/craigsneydscheme.hpp>
+#include <ql/experimental/finitedifferences/uniformgridmesher.hpp>
+#include <ql/experimental/finitedifferences/uniform1dmesher.hpp>
+#include <ql/experimental/finitedifferences/fdmlinearop.hpp>
+#include <ql/experimental/finitedifferences/fdmhestonhullwhiteop.hpp>
+#include <ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp>
+#include <ql/experimental/finitedifferences/fdmhestonsolver.hpp>
+#include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
+#include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
+#include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
+#include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
+#include <ql/experimental/finitedifferences/firstderivativeop.hpp>
+#include <ql/experimental/finitedifferences/secondderivativeop.hpp>
+#include <ql/experimental/finitedifferences/secondordermixedderivativeop.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

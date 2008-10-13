@@ -1,5 +1,5 @@
 
-SUBDIRS = callablebonds coupons credit lattices \
+SUBDIRS = callablebonds coupons credit finitedifferences lattices \
           mcbasket processes risk volatility
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
@@ -14,6 +14,7 @@ libExperimental_la_LIBADD = \
     callablebonds/libCallableBonds.la \
     coupons/libCoupons.la \
     credit/libCredit.la \
+    finitedifferences/libMultiDimFDM.la \
     lattices/libLattices.la \
     mcbasket/libMcBasket.la \
     processes/libProcesses.la \

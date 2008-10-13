@@ -25,7 +25,7 @@
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/binomialengine.hpp>
-#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
+#include <ql/experimental/finitedifferences/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/integralengine.hpp>
@@ -312,7 +312,7 @@ void EuropeanOptionTest::testValues() {
                            values[i].v, values[i].result, calculated,
                            error, tolerance);
         }
-        
+
         engine = boost::shared_ptr<PricingEngine>(
                     new FdBlackScholesVanillaEngine(stochProcess,200,400));
         option.setPricingEngine(engine);
