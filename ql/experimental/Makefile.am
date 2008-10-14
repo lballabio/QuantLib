@@ -1,6 +1,6 @@
 
 SUBDIRS = callablebonds coupons credit finitedifferences lattices \
-          mcbasket processes risk volatility
+          mcbasket processes risk varianceswap volatility
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
@@ -19,6 +19,7 @@ libExperimental_la_LIBADD = \
     mcbasket/libMcBasket.la \
     processes/libProcesses.la \
     risk/libRisk.la \
+    varianceswap/libVarianceSwap.la \
     volatility/libVolatility.la
 
 noinst_LTLIBRARIES = libExperimental.la
