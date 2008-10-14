@@ -30,7 +30,11 @@
 namespace QuantLib {
 
     //! integral Heston-model variance-swap engine
-    /*! \ingroup forwardengines */
+    /*! This engine implements the approach described in
+        <http://www.econ.univpm.it/recchioni/finance/w4/>.
+
+        \ingroup forwardengines
+    */
     class IntegralHestonVarianceSwapEngine : public VarianceSwap::engine  {
       public:
         IntegralHestonVarianceSwapEngine(
