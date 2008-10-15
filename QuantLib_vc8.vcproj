@@ -4433,10 +4433,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\termstructures\yield\ratehelper.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\termstructures\yield\ratehelpers.cpp"
 					>
 				</File>

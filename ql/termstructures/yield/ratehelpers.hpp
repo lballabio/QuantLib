@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
  Copyright (C) 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2007 Roland Lichters
 
@@ -27,7 +27,7 @@
 #ifndef quantlib_ratehelpers_hpp
 #define quantlib_ratehelpers_hpp
 
-#include <ql/termstructures/yield/ratehelper.hpp>
+#include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/instruments/bmaswap.hpp>
 #include <ql/time/calendar.hpp>
@@ -36,6 +36,9 @@
 namespace QuantLib {
 
     class SwapIndex;
+    class Quote;
+
+    typedef BootstrapHelper<YieldTermStructure> RateHelper;
 
     //! Rate helper for bootstrapping over IborIndex futures prices
     class FuturesRateHelper : public RateHelper {
@@ -66,15 +69,15 @@ namespace QuantLib {
                           Rate convexityAdjustment = 0.0);
         //! \name RateHelper interface
         //@{
-        Rate rate() const;
-        //@}
-        //! \name BootstrapHelper interface
-        //@{
         Real impliedQuote() const;
         //@}
         //! \name FuturesRateHelper inspectors
         //@{
         Real convexityAdjustment() const;
+        //@}
+        //! \name Visitability
+        //@{
+        void accept(AcyclicVisitor&);
         //@}
       private:
         Time yearFraction_;
@@ -122,12 +125,12 @@ namespace QuantLib {
                           const boost::shared_ptr<IborIndex>& iborIndex);
         //! \name RateHelper interface
         //@{
-        Rate rate() const { return quoteValue(); }
-        //@}
-        //! \name BootstrapHelper interface
-        //@{
         Real impliedQuote() const;
         void setTermStructure(YieldTermStructure*);
+        //@}
+        //! \name Visitability
+        //@{
+        void accept(AcyclicVisitor&);
         //@}
       private:
         void initializeDates();
@@ -164,12 +167,12 @@ namespace QuantLib {
                       const boost::shared_ptr<IborIndex>& iborIndex);
         //! \name RateHelper interface
         //@{
-        Rate rate() const { return quoteValue(); }
-        //@}
-        //! \name BootstrapHelper interface
-        //@{
         Real impliedQuote() const;
         void setTermStructure(YieldTermStructure*);
+        //@}
+        //! \name Visitability
+        //@{
+        void accept(AcyclicVisitor&);
         //@}
       private:
         void initializeDates();
@@ -215,10 +218,6 @@ namespace QuantLib {
                        const Period& fwdStart = 0*Days);
         //! \name RateHelper interface
         //@{
-        Rate rate() const { return quoteValue(); }
-        //@}
-        //! \name BootstrapHelper interface
-        //@{
         Real impliedQuote() const;
         void setTermStructure(YieldTermStructure*);
         //@}
@@ -227,6 +226,10 @@ namespace QuantLib {
         Spread spread() const;
         boost::shared_ptr<VanillaSwap> swap() const;
         const Period& forwardStart() const;
+        //@}
+        //! \name Visitability
+        //@{
+        void accept(AcyclicVisitor&);
         //@}
       protected:
         void initializeDates();
@@ -258,12 +261,12 @@ namespace QuantLib {
                           const boost::shared_ptr<IborIndex>& index);
         //! \name RateHelper interface
         //@{
-        Rate rate() const { return quoteValue(); }
-        //@}
-        //! \name BootstrapHelper interface
-        //@{
         Real impliedQuote() const;
         void setTermStructure(YieldTermStructure*);
+        //@}
+        //! \name Visitability
+        //@{
+        void accept(AcyclicVisitor&);
         //@}
     protected:
         void initializeDates();

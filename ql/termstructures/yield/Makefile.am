@@ -18,7 +18,6 @@ this_include_HEADERS = \
     piecewiseyieldcurve.hpp \
     piecewisezerospreadedtermstructure.hpp \
     quantotermstructure.hpp \
-    ratehelper.hpp \
     ratehelpers.hpp \
     zerocurve.hpp \
     zerospreadedtermstructure.hpp \

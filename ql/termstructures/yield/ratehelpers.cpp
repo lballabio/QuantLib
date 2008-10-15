@@ -107,15 +107,6 @@ namespace QuantLib {
         yearFraction_=i->dayCounter().yearFraction(earliestDate_, latestDate_);
     }
 
-    Rate FuturesRateHelper::rate() const {
-        Rate futureRate = 1.0 - quoteValue()/100.0;
-        Rate convAdj = convAdj_.empty() ? 0.0 : convAdj_->value();
-        QL_ENSURE(convAdj >= 0.0,
-                  "Negative (" << convAdj <<
-                  ") futures convexity adjustment");
-        return futureRate - convAdj;
-    }
-
     Real FuturesRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         Rate forwardRate = (termStructure_->discount(earliestDate_) /
@@ -131,6 +122,16 @@ namespace QuantLib {
     Real FuturesRateHelper::convexityAdjustment() const {
         return convAdj_.empty() ? 0.0 : convAdj_->value();
     }
+
+    void FuturesRateHelper::accept(AcyclicVisitor& v) {
+        Visitor<FuturesRateHelper>* v1 =
+            dynamic_cast<Visitor<FuturesRateHelper>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            RateHelper::accept(v);
+    }
+
 
     RelativeDateRateHelper::RelativeDateRateHelper(const Handle<Quote>& quote)
     : RateHelper(quote) {
@@ -227,6 +228,15 @@ namespace QuantLib {
         fixingDate_ = iborIndex_->fixingDate(earliestDate_);
     }
 
+    void DepositRateHelper::accept(AcyclicVisitor& v) {
+        Visitor<DepositRateHelper>* v1 =
+            dynamic_cast<Visitor<DepositRateHelper>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            RateHelper::accept(v);
+    }
+
 
     FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
                                  Natural monthsToStart,
@@ -315,6 +325,15 @@ namespace QuantLib {
                                iborIndex_->endOfMonth());
         latestDate_ = iborIndex_->maturityDate(earliestDate_);
         fixingDate_ = iborIndex_->fixingDate(earliestDate_);
+    }
+
+    void FraRateHelper::accept(AcyclicVisitor& v) {
+        Visitor<FraRateHelper>* v1 =
+            dynamic_cast<Visitor<FraRateHelper>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            RateHelper::accept(v);
     }
 
 
@@ -464,6 +483,16 @@ namespace QuantLib {
         return fwdStart_;
     }
 
+    void SwapRateHelper::accept(AcyclicVisitor& v) {
+        Visitor<SwapRateHelper>* v1 =
+            dynamic_cast<Visitor<SwapRateHelper>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            RateHelper::accept(v);
+    }
+
+
     BMASwapRateHelper::BMASwapRateHelper(
                           const Handle<Quote>& liborFraction,
                           const Period& tenor,
@@ -549,6 +578,15 @@ namespace QuantLib {
         // we didn't register as observers - force calculation
         swap_->recalculate();
         return swap_->fairLiborFraction();
+    }
+
+    void BMASwapRateHelper::accept(AcyclicVisitor& v) {
+        Visitor<BMASwapRateHelper>* v1 =
+            dynamic_cast<Visitor<BMASwapRateHelper>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            RateHelper::accept(v);
     }
 
 }

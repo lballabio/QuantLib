@@ -40,7 +40,7 @@ namespace QuantLib {
                                     BusinessDayConvention paymentConvention,
                                     Real redemption,
                                     const Date& issueDate)
-    : RateHelper(cleanPrice) {
+    : BootstrapHelper<YieldTermStructure>(cleanPrice) {
 
         bond_ = boost::shared_ptr<FixedRateBond>(new
             FixedRateBond(settlementDays, faceAmount, schedule,
@@ -58,7 +58,8 @@ namespace QuantLib {
     FixedRateBondHelper::FixedRateBondHelper(
                                 const Handle<Quote>& cleanPrice,
                                 const boost::shared_ptr<FixedRateBond>& bond)
-    : RateHelper(cleanPrice), bond_(bond) {
+    : BootstrapHelper<YieldTermStructure>(cleanPrice),
+      bond_(bond) {
 
         latestDate_ = bond_->maturityDate();
         registerWith(Settings::instance().evaluationDate());
@@ -81,18 +82,20 @@ namespace QuantLib {
         return bond_;
     }
 
-    Rate FixedRateBondHelper::rate() const {
-        QL_FAIL("not implemented yet");
-        // some kind of conventional yield should be calculated
-        Rate yield;
-        return yield;
-    }
-
     Real FixedRateBondHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we didn't register as observers - force calculation
         bond_->recalculate();
         return bond_->cleanPrice();
+    }
+
+    void FixedRateBondHelper::accept(AcyclicVisitor& v) {
+        Visitor<FixedRateBondHelper>* v1 =
+            dynamic_cast<Visitor<FixedRateBondHelper>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            BootstrapHelper<YieldTermStructure>::accept(v);
     }
 
 }

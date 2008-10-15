@@ -26,7 +26,7 @@
 #ifndef quantlib_bond_helpers_hpp
 #define quantlib_bond_helpers_hpp
 
-#include <ql/termstructures/yield/ratehelper.hpp>
+#include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/instruments/bonds/fixedratebond.hpp>
 
 namespace QuantLib {
@@ -35,7 +35,7 @@ namespace QuantLib {
     /*! \warning This class assumes that the reference date
                  does not change between calls of setTermStructure().
     */
-    class FixedRateBondHelper : public RateHelper {
+    class FixedRateBondHelper : public BootstrapHelper<YieldTermStructure> {
       public:
         FixedRateBondHelper(const Handle<Quote>& cleanPrice,
                             Natural settlementDays,
@@ -54,10 +54,6 @@ namespace QuantLib {
         */
         FixedRateBondHelper(const Handle<Quote>& cleanPrice,
                             const boost::shared_ptr<FixedRateBond>& bond);
-        //! \name RateHelper interface
-        //@{
-        Rate rate() const;
-        //@}
         //! \name BootstrapHelper interface
         //@{
         Real impliedQuote() const;
@@ -66,6 +62,10 @@ namespace QuantLib {
         //! \name additional inspectors
         //@{
         boost::shared_ptr<FixedRateBond> bond() const;
+        //@}
+        //! \name Visitability
+        //@{
+        void accept(AcyclicVisitor&);
         //@}
       protected:
         boost::shared_ptr<FixedRateBond> bond_;

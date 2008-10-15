@@ -70,7 +70,8 @@ namespace QuantLib {
         //@{
         PiecewiseYieldCurve(
                const Date& referenceDate,
-               const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+               const std::vector<boost::shared_ptr<typename Traits::helper> >&
+                                                                  instruments,
                const DayCounter& dayCounter,
                const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
                const std::vector<Date>& jumpDates = std::vector<Date>(),
@@ -90,7 +91,8 @@ namespace QuantLib {
         PiecewiseYieldCurve(
                Natural settlementDays,
                const Calendar& calendar,
-               const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+               const std::vector<boost::shared_ptr<typename Traits::helper> >&
+                                                                  instruments,
                const DayCounter& dayCounter,
                const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
                const std::vector<Date>& jumpDates = std::vector<Date>(),
@@ -132,7 +134,7 @@ namespace QuantLib {
         DiscountFactor discountImpl(Time) const;
         void setJumps();
         // data members
-        std::vector<boost::shared_ptr<RateHelper> > instruments_;
+        std::vector<boost::shared_ptr<typename Traits::helper> > instruments_;
         std::vector<Handle<Quote> > jumps_;
         std::vector<Date> jumpDates_;
         std::vector<Time> jumpTimes_;

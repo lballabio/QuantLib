@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
  Copyright (C) 2007 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
@@ -29,6 +29,7 @@
 #include <ql/time/date.hpp>
 #include <ql/handle.hpp>
 #include <ql/patterns/observable.hpp>
+#include <ql/patterns/visitor.hpp>
 #include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {
@@ -83,6 +84,10 @@ namespace QuantLib {
         //@{
         virtual void update();
         //@}
+        //! \name Visitability
+        //@{
+        virtual void accept(AcyclicVisitor&);
+        //@}
       protected:
         Handle<Quote> quote_;
         TS* termStructure_;
@@ -135,6 +140,16 @@ namespace QuantLib {
     template <class TS>
     void BootstrapHelper<TS>::update() {
         notifyObservers();
+    }
+
+    template <class TS>
+    void BootstrapHelper<TS>::accept(AcyclicVisitor& v) {
+        Visitor<BootstrapHelper<TS> >* v1 =
+            dynamic_cast<Visitor<BootstrapHelper<TS> >*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            QL_FAIL("not a bootstrap-helper visitor");
     }
 
 
