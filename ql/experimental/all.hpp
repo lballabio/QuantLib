@@ -3,6 +3,7 @@
 
 
 #include <ql/experimental/callablebonds/all.hpp>
+#include <ql/experimental/commodities/all.hpp>
 #include <ql/experimental/coupons/all.hpp>
 #include <ql/experimental/credit/all.hpp>
 #include <ql/experimental/finitedifferences/all.hpp>
