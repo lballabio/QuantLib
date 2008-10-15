@@ -63,11 +63,9 @@ namespace QuantLib {
         const Money& undiscountedPaymentAmount() const {
             return undiscountedPaymentAmount_;
         }
-        const Real discountFactor() const { return discountFactor_; }
-        const Real paymentDiscountFactor() const {
-            return paymentDiscountFactor_;
-        }
-        const bool finalized() const { return finalized_; }
+        Real discountFactor() const { return discountFactor_; }
+        Real paymentDiscountFactor() const { return paymentDiscountFactor_; }
+        bool finalized() const { return finalized_; }
 
         //@}
         //! \name Visitability
