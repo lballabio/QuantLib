@@ -64,20 +64,7 @@ namespace QuantLib {
             : public std::binary_function<CashFlow,CashFlow,bool> {
         bool operator()(const CashFlow& c1,
                         const CashFlow& c2) {
-            if (c1.date()<c2.date())
-                return true;
-
-            if (c1.date()==c2.date()) {
-                try {
-                    if (c1.amount()<c2.amount())
-                        return true;
-                } catch (...) {
-                        return false;
-                }
-
-            }
-
-            return false;
+            return c1.date() < c2.date();
         }
     };
 
