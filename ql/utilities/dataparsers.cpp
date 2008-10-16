@@ -32,7 +32,7 @@
 namespace QuantLib {
 
     Period PeriodParser::parse(const std::string& str) {
-        QL_REQUIRE(str.length()>1, "argument needs length of at least 2");
+        QL_REQUIRE(str.length()>1, "period string length must be at least 2");
         
         std::vector<std::string > subStrings;
         std::string reducedString = str;
