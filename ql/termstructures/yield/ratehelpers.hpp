@@ -45,7 +45,7 @@ namespace QuantLib {
       public:
         FuturesRateHelper(const Handle<Quote>& price,
                           const Date& immDate,
-                          Size nMonths,
+                          Natural lengthInMonths,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           bool endOfMonth,
@@ -53,7 +53,7 @@ namespace QuantLib {
                           const Handle<Quote>& convexityAdjustment = Handle<Quote>());
         FuturesRateHelper(Real price,
                           const Date& immDate,
-                          Size nMonths,
+                          Natural lengthInMonths,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           bool endOfMonth,
@@ -165,6 +165,28 @@ namespace QuantLib {
         FraRateHelper(Rate rate,
                       Natural monthsToStart,
                       const boost::shared_ptr<IborIndex>& iborIndex);
+        FraRateHelper(const Handle<Quote>& rate,
+                      Period periodToStart,
+                      Natural lengthInMonths,
+                      Natural fixingDays,
+                      const Calendar& calendar,
+                      BusinessDayConvention convention,
+                      bool endOfMonth,
+                      const DayCounter& dayCounter);
+        FraRateHelper(Rate rate,
+                      Period periodToStart,
+                      Natural lengthInMonths,
+                      Natural fixingDays,
+                      const Calendar& calendar,
+                      BusinessDayConvention convention,
+                      bool endOfMonth,
+                      const DayCounter& dayCounter);
+        FraRateHelper(const Handle<Quote>& rate,
+                      Period periodToStart,
+                      const boost::shared_ptr<IborIndex>& iborIndex);
+        FraRateHelper(Rate rate,
+                      Period periodToStart,
+                      const boost::shared_ptr<IborIndex>& iborIndex);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -177,7 +199,7 @@ namespace QuantLib {
       private:
         void initializeDates();
         Date fixingDate_;
-        Natural monthsToStart_;
+        Period periodToStart_;
         boost::shared_ptr<IborIndex> iborIndex_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };

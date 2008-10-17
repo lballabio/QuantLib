@@ -41,7 +41,7 @@ namespace QuantLib {
 
     FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
                                          const Date& immDate,
-                                         Size nMonths,
+                                         Natural lengthInMonths,
                                          const Calendar& calendar,
                                          BusinessDayConvention convention,
                                          bool endOfMonth,
@@ -51,8 +51,8 @@ namespace QuantLib {
         QL_REQUIRE(IMM::isIMMdate(immDate, false),
                    immDate << " is not a valid IMM date");
         earliestDate_ = immDate;
-        latestDate_ = calendar.advance(immDate, nMonths*Months, convention,
-                                                                endOfMonth);
+        latestDate_ = calendar.advance(immDate, lengthInMonths*Months,
+                                       convention, endOfMonth);
         yearFraction_ = dayCounter.yearFraction(earliestDate_, latestDate_);
 
         registerWith(convAdj_);
@@ -60,7 +60,7 @@ namespace QuantLib {
 
     FuturesRateHelper::FuturesRateHelper(Real price,
                                          const Date& immDate,
-                                         Size nMonths,
+                                         Natural lengthInMonths,
                                          const Calendar& calendar,
                                          BusinessDayConvention convention,
                                          bool endOfMonth,
@@ -72,8 +72,8 @@ namespace QuantLib {
         QL_REQUIRE(IMM::isIMMdate(immDate, false),
                    immDate << "is not a valid IMM date");
         earliestDate_ = immDate;
-        latestDate_ = calendar.advance(immDate, nMonths*Months, convention,
-                                                                endOfMonth);
+        latestDate_ = calendar.advance(immDate, lengthInMonths*Months,
+                                       convention, endOfMonth);
         yearFraction_ = dayCounter.yearFraction(earliestDate_, latestDate_);
     }
 
@@ -246,7 +246,7 @@ namespace QuantLib {
                                  BusinessDayConvention convention,
                                  bool endOfMonth,
                                  const DayCounter& dayCounter)
-    : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart) {
+    : RelativeDateRateHelper(rate), periodToStart_(monthsToStart*Months) {
         QL_REQUIRE(monthsToEnd>monthsToStart,
                    "monthsToEnd must be grater than monthsToStart");
         iborIndex_ = shared_ptr<IborIndex>(new
@@ -266,7 +266,7 @@ namespace QuantLib {
                                  BusinessDayConvention convention,
                                  bool endOfMonth,
                                  const DayCounter& dayCounter)
-    : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart) {
+    : RelativeDateRateHelper(rate),periodToStart_(monthsToStart*Months) {
         QL_REQUIRE(monthsToEnd>monthsToStart,
                    "monthsToEnd must be grater than monthsToStart");
         iborIndex_ = shared_ptr<IborIndex>(new
@@ -281,7 +281,7 @@ namespace QuantLib {
     FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
                                  Natural monthsToStart,
                                  const shared_ptr<IborIndex>& i)
-    : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart) {
+    : RelativeDateRateHelper(rate), periodToStart_(monthsToStart*Months) {
         iborIndex_ = shared_ptr<IborIndex>(new
             IborIndex("no-fix", // never take fixing into account
                       i->tenor(), i->fixingDays(), Currency(),
@@ -293,7 +293,67 @@ namespace QuantLib {
     FraRateHelper::FraRateHelper(Rate rate,
                                  Natural monthsToStart,
                                  const shared_ptr<IborIndex>& i)
-    : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart) {
+    : RelativeDateRateHelper(rate), periodToStart_(monthsToStart*Months) {
+        iborIndex_ = shared_ptr<IborIndex>(new
+            IborIndex("no-fix", // never take fixing into account
+                      i->tenor(), i->fixingDays(), Currency(),
+                      i->fixingCalendar(), i->businessDayConvention(),
+                      i->endOfMonth(), i->dayCounter(), termStructureHandle_));
+        initializeDates();
+    }
+
+    FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
+                                 Period periodToStart,
+                                 Natural lengthInMonths,
+                                 Natural fixingDays,
+                                 const Calendar& calendar,
+                                 BusinessDayConvention convention,
+                                 bool endOfMonth,
+                                 const DayCounter& dayCounter)
+    : RelativeDateRateHelper(rate), periodToStart_(periodToStart) {
+        iborIndex_ = shared_ptr<IborIndex>(new
+            IborIndex("no-fix", // never take fixing into account
+                      lengthInMonths*Months,
+                      fixingDays,
+                      Currency(), calendar, convention,
+                      endOfMonth, dayCounter, termStructureHandle_));
+        initializeDates();
+    }
+
+    FraRateHelper::FraRateHelper(Rate rate,
+                                 Period periodToStart,
+                                 Natural lengthInMonths,
+                                 Natural fixingDays,
+                                 const Calendar& calendar,
+                                 BusinessDayConvention convention,
+                                 bool endOfMonth,
+                                 const DayCounter& dayCounter)
+    : RelativeDateRateHelper(rate),periodToStart_(periodToStart) {
+        iborIndex_ = shared_ptr<IborIndex>(new
+            IborIndex("no-fix", // never take fixing into account
+                      lengthInMonths*Months,
+                      fixingDays,
+                      Currency(), calendar, convention,
+                      endOfMonth, dayCounter, termStructureHandle_));
+        initializeDates();
+    }
+
+    FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
+                                 Period periodToStart,
+                                 const shared_ptr<IborIndex>& i)
+    : RelativeDateRateHelper(rate), periodToStart_(periodToStart) {
+        iborIndex_ = shared_ptr<IborIndex>(new
+            IborIndex("no-fix", // never take fixing into account
+                      i->tenor(), i->fixingDays(), Currency(),
+                      i->fixingCalendar(), i->businessDayConvention(),
+                      i->endOfMonth(), i->dayCounter(), termStructureHandle_));
+        initializeDates();
+    }
+
+    FraRateHelper::FraRateHelper(Rate rate,
+                                 Period periodToStart,
+                                 const shared_ptr<IborIndex>& i)
+    : RelativeDateRateHelper(rate), periodToStart_(periodToStart) {
         iborIndex_ = shared_ptr<IborIndex>(new
             IborIndex("no-fix", // never take fixing into account
                       i->tenor(), i->fixingDays(), Currency(),
@@ -320,7 +380,7 @@ namespace QuantLib {
             evaluationDate_, iborIndex_->fixingDays()*Days);
         earliestDate_ = iborIndex_->fixingCalendar().advance(
                                settlement,
-                               monthsToStart_*Months,
+                               periodToStart_,
                                iborIndex_->businessDayConvention(),
                                iborIndex_->endOfMonth());
         latestDate_ = iborIndex_->maturityDate(earliestDate_);
