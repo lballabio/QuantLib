@@ -39,6 +39,7 @@ class MarketModelTest {
     static void testPathwiseGreeks();
     static void testPathwiseVegas();
     static void testPathwiseMarketVegas();
+    static void testStochVolForwardsAndOptionlets();
     static void testAbcdVolatilityIntegration();
     static void testAbcdVolatilityCompare();
     static void testAbcdVolatilityFit();

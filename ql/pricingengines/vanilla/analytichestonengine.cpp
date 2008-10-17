@@ -46,22 +46,38 @@ namespace QuantLib {
 
     // helper class for integration
     class AnalyticHestonEngine::Fj_Helper 
-        : public std::unary_function<Real, Real> {
-      public:
+        : public std::unary_function<Real, Real> 
+    {
+    public:
         Fj_Helper(const VanillaOption::arguments& arguments,
-                  const boost::shared_ptr<HestonModel>& model,
-                  const AnalyticHestonEngine* const engine,
-                  ComplexLogFormula cpxLog,
-                  Time term, Real ratio, Size j);
+            const boost::shared_ptr<HestonModel>& model,
+            const AnalyticHestonEngine* const engine,
+            ComplexLogFormula cpxLog,
+            Time term, Real ratio, Size j);
+
+        Fj_Helper(Real kappa, Real theta, Real sigma, Real v0, Real s0, Real rho,
+            const AnalyticHestonEngine* const engine,
+            ComplexLogFormula cpxLog,
+            Time term,
+            Real strike, 
+            Real ratio, 
+            Size j);
+
+         Fj_Helper(Real kappa, Real theta, Real sigma, Real v0, Real s0, Real rho,
+            ComplexLogFormula cpxLog,
+            Time term,
+            Real strike, 
+            Real ratio, 
+            Size j);
 
         Real operator()(Real phi)      const;
 
-      private:
+    private:
         const Size j_;
-        const VanillaOption::arguments& arg_;
+        //     const VanillaOption::arguments& arg_;
         const Real kappa_, theta_, sigma_, v0_;
         const ComplexLogFormula cpxLog_;
-        
+
         // helper variables
         const Time term_;
         const Real x_, sx_, dd_;
@@ -82,21 +98,78 @@ namespace QuantLib {
         const AnalyticHestonEngine* const engine,
         ComplexLogFormula cpxLog,
         Time term, Real ratio, Size j)
-    : j_ (j), arg_(arguments),
-      kappa_(model->kappa()), theta_(model->theta()),
-      sigma_(model->sigma()), v0_(model->v0()),
-      cpxLog_(cpxLog), term_(term),
-      x_(std::log(model->process()->s0()->value())),
-      sx_(std::log(boost::dynamic_pointer_cast<StrikedTypePayoff>
-                   (arg_.payoff)->strike())),
-      dd_(x_-std::log(ratio)),
-      sigma2_(sigma_*sigma_),
-      rsigma_(model->rho()*sigma_),
-      t0_(kappa_ - ((j_== 1)? model->rho()*sigma_ : 0)),
-      b_(0), g_km1_(0),
-      engine_(engine) {}
+        : j_ (j), //arg_(arguments),
+        kappa_(model->kappa()), theta_(model->theta()),
+        sigma_(model->sigma()), v0_(model->v0()),
+        cpxLog_(cpxLog), term_(term),
+        x_(std::log(model->process()->s0()->value())),
+        sx_(std::log(boost::dynamic_pointer_cast<StrikedTypePayoff>
+        (arguments.payoff)->strike())),
+        dd_(x_-std::log(ratio)),
+        sigma2_(sigma_*sigma_),
+        rsigma_(model->rho()*sigma_),
+        t0_(kappa_ - ((j_== 1)? model->rho()*sigma_ : 0)),
+        b_(0), g_km1_(0),
+        engine_(engine) 
+    {
+    }
 
-    Real AnalyticHestonEngine::Fj_Helper::operator()(Real phi) const {
+    AnalyticHestonEngine::Fj_Helper::Fj_Helper(Real kappa, Real theta, Real sigma, Real v0, Real s0, Real rho,
+        const AnalyticHestonEngine* const engine,
+        ComplexLogFormula cpxLog,
+        Time term,
+        Real strike, 
+        Real ratio, 
+        Size j)
+        :
+        j_(j),
+        kappa_(kappa),
+        theta_(theta),
+        sigma_(sigma),
+        v0_(v0),
+        cpxLog_(cpxLog), 
+        term_(term),
+        x_(std::log(s0)),
+        sx_(std::log(strike)),
+        dd_(x_-std::log(ratio)),
+        sigma2_(sigma_*sigma_),
+        rsigma_(rho*sigma_),
+        t0_(kappa - ((j== 1)? rho*sigma : 0)),
+        b_(0), 
+        g_km1_(0),
+        engine_(engine) 
+    {
+    }
+
+    AnalyticHestonEngine::Fj_Helper::Fj_Helper(Real kappa, Real theta, Real sigma, Real v0, Real s0, Real rho,
+        ComplexLogFormula cpxLog,
+        Time term,
+        Real strike, 
+        Real ratio, 
+        Size j)
+        :
+        j_(j),
+        kappa_(kappa),
+        theta_(theta),
+        sigma_(sigma),
+        v0_(v0),
+        cpxLog_(cpxLog), 
+        term_(term),
+        x_(std::log(s0)),
+        sx_(std::log(strike)),
+        dd_(x_-std::log(ratio)),
+        sigma2_(sigma_*sigma_),
+        rsigma_(rho*sigma_),
+        t0_(kappa - ((j== 1)? rho*sigma : 0)),
+        b_(0), 
+        g_km1_(0),
+        engine_(0) 
+    {
+    }
+
+
+    Real AnalyticHestonEngine::Fj_Helper::operator()(Real phi) const 
+    {
         const Real rpsig(rsigma_*phi);
 
         const std::complex<Real> t1 = t0_+std::complex<Real>(0, -rpsig);
@@ -110,12 +183,15 @@ namespace QuantLib {
                 const std::complex<Real> p = (t1-d)/(t1+d);
                 const std::complex<Real> g 
                     = std::log((1.0 - p*std::exp(-d*term_))/(1.0 - p));
+
+                std::complex<Real> addOnTerm = engine_ > 0 ? engine_->addOnTerm(phi, term_, j_) :0;
+       
                 
                 return
                     std::exp(v0_*(t1-d)*(1.0-ex)/(sigma2_*(1.0-ex*p))
                              + (kappa_*theta_)/sigma2_*((t1-d)*term_-2.0*g)
                              + std::complex<Real>(0.0, phi*(dd_-sx_))
-                             + engine_->addOnTerm(phi, term_, j_)
+                             + addOnTerm
                              ).imag()/phi;
             }
             else {
@@ -189,11 +265,13 @@ namespace QuantLib {
             
             g_km1_ = g.imag();
             g += std::complex<Real>(0, 2*b_*M_PI);
+
+            std::complex<Real> addOnTerm = engine_ > 0 ? engine_->addOnTerm(phi, term_, j_) :0;
             
             return std::exp(v0_*(t1+d)*(ex-1.0)/(sigma2_*(ex-p))
                             + (kappa_*theta_)/sigma2_*((t1+d)*term_-2.0*g)
                             + std::complex<Real>(0,phi*(dd_-sx_))
-                            + engine_->addOnTerm(phi, term_, j_)
+                            + addOnTerm
                             ).imag()/phi;
         }
         else {
@@ -248,7 +326,58 @@ namespace QuantLib {
         return std::complex<Real>(0,0);
     }
 
-    void AnalyticHestonEngine::calculate() const {
+    void AnalyticHestonEngine::doCalculation(Real riskFreeDiscount,
+                                             Real dividendDiscount,
+                                             Real spotPrice, 
+                                             Real strikePrice,
+                                             Real term,
+                                             Real kappa, Real theta, Real sigma, Real v0, Real rho,
+                                             const TypePayoff& type,
+                                             const Integration& integration,
+                                             const ComplexLogFormula cpxLog,
+                                             const AnalyticHestonEngine* const enginePtr,
+                                             Real& value,
+                                             Size& evaluations)
+    {
+
+        const Real ratio = riskFreeDiscount/dividendDiscount;
+
+        const Real c_inf = std::min(10.0, std::max(0.0001,
+                std::sqrt(1.0-square<Real>()(rho))/sigma))
+                *(v0 + kappa*theta*term);
+
+        evaluations = 0;
+        const Real p1 = integration.calculate(c_inf, 
+
+            Fj_Helper(kappa,theta,sigma,v0,spotPrice,rho, enginePtr, cpxLog, term, strikePrice, ratio, 1))                   
+            //Fj_Helper(arguments_, model_, this, cpxLog_, term, ratio, 1))
+            /M_PI;
+        evaluations+= integration.numberOfEvaluations();
+        
+        const Real p2 = integration.calculate(c_inf, 
+                  Fj_Helper(kappa,theta,sigma,v0,spotPrice,rho, enginePtr, cpxLog, term, strikePrice, ratio, 2))
+            //Fj_Helper(arguments_, model_, this, cpxLog_, term, ratio, 2))
+            /M_PI;
+        evaluations+= integration.numberOfEvaluations();        
+
+        switch (type.optionType()) 
+        {
+          case Option::Call:
+            value = spotPrice*dividendDiscount*(p1+0.5)
+                           - strikePrice*riskFreeDiscount*(p2+0.5);
+            break;
+          case Option::Put:
+            value = spotPrice*dividendDiscount*(p1-0.5)
+                           - strikePrice*riskFreeDiscount*(p2-0.5);
+            break;
+          default:
+            QL_FAIL("unknown option type");
+        }
+
+    }
+
+    void AnalyticHestonEngine::calculate() const 
+    {
         // this is a european option pricer
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European option");
@@ -260,44 +389,34 @@ namespace QuantLib {
 
         const boost::shared_ptr<HestonProcess>& process = model_->process();
 
-        const Rate riskFreeDiscount = process->riskFreeRate()->discount(
+        const Real riskFreeDiscount = process->riskFreeRate()->discount(
                                             arguments_.exercise->lastDate());
-        const Rate dividendDiscount = process->dividendYield()->discount(
+        const Real dividendDiscount = process->dividendYield()->discount(
                                             arguments_.exercise->lastDate());
-        const Real ratio = riskFreeDiscount/dividendDiscount;
-
+   
         const Real spotPrice = process->s0()->value();
         QL_REQUIRE(spotPrice > 0.0, "negative or null underlying given");
 
         const Real strikePrice = payoff->strike();
         const Real term = process->time(arguments_.exercise->lastDate());
 
-        // scaling coefficient as given by Kahl and Jaekel
-        const Real c_inf = std::min(10.0, std::max(0.0001,
-                std::sqrt(1.0-square<Real>()(model_->rho())))/model_->sigma())
-                *(model_->v0() + model_->kappa()*model_->theta()*term);
+        doCalculation(riskFreeDiscount,
+                                             dividendDiscount,
+                                             spotPrice, 
+                                             strikePrice,
+                                             term,
+                                             model_->kappa(), 
+                                             model_->theta(),
+                                             model_->sigma(), 
+                                             model_->v0(), 
+                                             model_->rho(),
+                                             *payoff,
+                                             *integration_,
+                                             cpxLog_,
+                                             this,
+                                             results_.value,
+                                             evaluations_);
 
-        evaluations_ = 0;
-        const Real p1 = integration_->calculate(c_inf, 
-            Fj_Helper(arguments_, model_, this, cpxLog_, term, ratio, 1))/M_PI;
-        evaluations_+= integration_->numberOfEvaluations();
-        
-        const Real p2 = integration_->calculate(c_inf, 
-            Fj_Helper(arguments_, model_, this, cpxLog_, term, ratio, 2))/M_PI;
-        evaluations_+= integration_->numberOfEvaluations();        
-
-        switch (payoff->optionType()) {
-          case Option::Call:
-            results_.value = spotPrice*dividendDiscount*(p1+0.5)
-                           - strikePrice*riskFreeDiscount*(p2+0.5);
-            break;
-          case Option::Put:
-            results_.value = spotPrice*dividendDiscount*(p1-0.5)
-                           - strikePrice*riskFreeDiscount*(p2-0.5);
-            break;
-          default:
-            QL_FAIL("unknown option type");
-        }
     }
 
 

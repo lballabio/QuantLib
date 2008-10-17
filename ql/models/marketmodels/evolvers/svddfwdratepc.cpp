@@ -54,6 +54,7 @@ namespace QuantLib {
       correlatedBrownians_(numberOfRates_),
       alive_(marketModel->evolution().firstAliveRate())
     {
+        QL_REQUIRE(initialStep ==0, "initial step zero only supported currently. ");
         checkCompatibility(marketModel->evolution(), numeraires);
 
         Size steps = marketModel->evolution().numberOfSteps();

@@ -145,6 +145,8 @@ QuantLib
         for (Size k=0; k < numberSubSteps_; ++k)
             stepVariance += w1_*vPath_[k+lastStepStart]+w2_*vPath_[k+lastStepStart+1];
 
+        stepVariance /= numberSubSteps_;
+
         return sqrt(stepVariance);
     }
 
