@@ -26,9 +26,9 @@
 
 #include <ql/default.hpp>
 #include <ql/issuer.hpp>
+#include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/experimental/credit/pool.hpp>
 #include <ql/experimental/credit/loss.hpp>
-#include <ql/termstructures/defaulttermstructure.hpp>
 
 namespace QuantLib {
 
@@ -58,6 +58,7 @@ namespace QuantLib {
         const std::vector<std::string>& names() const;
 
         const std::vector<Real>& notionals() const;
+        Real notional();
 
         boost::shared_ptr<Pool> pool() const;
         /*!
@@ -65,6 +66,8 @@ namespace QuantLib {
           recovery rates for the respective issuers.
          */
         const std::vector<Real>& LGDs() const;
+        Real lgd();
+
         /*!
           Attachment point expressed as a fraction of the total pool notional.
          */
@@ -77,6 +80,10 @@ namespace QuantLib {
           Original basket notional ignoring any losses.
         */
         Real basketNotional() const;
+        /*!
+          Original expected basket LGD.
+        */
+        Real basketLGD() const;
         /*!
           Original tranche notional ignoring any losses.
         */
@@ -141,16 +148,26 @@ namespace QuantLib {
                                        const Date& endDate) const;
 
         /*!
-          Based on the default times stored in the Pool for each name, return
-          the related tranche loss between start and end date for this basket.
-          Names with actual default events between effective and start date are
-          ignored.
+          Based on the default times stored in the Pool for each name, update
+          the vector of incremental basket losses (sorted by default time)
+          for this basket. If zeroRecovery is set to true, losses are full
+          notional amounts, otherwise loss give defaults.
+         */
+        void updateScenarioLoss(bool zeroRecovery = false);
+        /*!
+          Cumulative tranche loss up to end date under the current scenario
          */
         Real scenarioTrancheLoss(Date endDate) const;
-        void updateScenarioLoss(Date startDate, Date endDate);
-        std::vector<Loss> scenarioBasketLosses() const;
-        std::vector<Loss> scenarioIncrementalTrancheLosses(Date startDate,
-                                                           Date endDate) const;
+        /*!
+          Vector of incremental basket losses under the current scenario
+         */
+        std::vector<Loss> scenarioIncrementalBasketLosses() const;
+        /*!
+          Vector of incremental tranche losses under the current scenario
+         */
+        std::vector<Loss> scenarioIncrementalTrancheLosses(
+                                Date startDate = Date::minDate(),
+                                Date endDate = Date::maxDate()) const;
       private:
         std::vector<std::string> names_;
         std::vector<Real> notionals_;
@@ -158,6 +175,7 @@ namespace QuantLib {
         Real attachmentRatio_;
         Real detachmentRatio_;
         Real basketNotional_;
+        Real basketLGD_;
         Real trancheNotional_;
         Real attachmentAmount_;
         Real detachmentAmount_;

@@ -125,9 +125,6 @@ namespace QuantLib {
 
             this->results_.remainingNotional = results_.xMax - results_.xMin;
 
-            const std::vector<Date>& dates = arguments_.schedule.dates();
-            results_.expectedTrancheLoss.resize(dates.size(), 0.0);
-
             // This sets the vector results_.expectedTrancheLoss for each
             // schedule date by Monte Carlo simulation
             defaultScenarios();
@@ -150,7 +147,7 @@ namespace QuantLib {
 
     //--------------------------------------------------------------------------
     //! CDO engine, Monte Carlo for the sample payoff
-    class MonteCarloCDOEngine2 : public MidPointCDOEngine {
+    class MonteCarloCDOEngine2 : public SyntheticCDO::engine {
     public:
         MonteCarloCDOEngine2 (boost::shared_ptr<RandomDefaultModel> rdm,
                               Size samples)

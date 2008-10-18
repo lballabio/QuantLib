@@ -181,11 +181,12 @@ namespace QuantLib {
 
         vector<vector<Real> > cumulativeTrancheLoss(samples_, vector<Real>());
 
+        results_.expectedTrancheLoss.resize(dates.size(), 0.0);
         for (Size i = 0; i < samples_; i++) {
             rdm_->nextSequence(tmax);
 
             cumulativeTrancheLoss[i].resize(dates.size(), 0.0);
-            remainingBasket_->updateScenarioLoss(dates.front(), dates.back());
+            remainingBasket_->updateScenarioLoss();
             for (Size k = 0; k < dates.size(); k++) {
                 cumulativeTrancheLoss[i][k]
                     = remainingBasket_->scenarioTrancheLoss(dates[k]);
@@ -216,7 +217,7 @@ namespace QuantLib {
                 arguments_.upfrontRate * results_.remainingNotional;
 
         Real tmax = ActualActual().yearFraction(today, dates.back());
-        Real tmin = ActualActual().yearFraction(today, dates.front());
+        //Real tmin = ActualActual().yearFraction(today, dates.front());
         QL_REQUIRE(tmax >= 0, "tmax < 0");
 
         vector<boost::shared_ptr<CashFlow> > premiumLeg =
@@ -244,7 +245,7 @@ namespace QuantLib {
              * (2) Cumulative tranche loss to schedule dates
              ******************************************************************/
             cumulativeTrancheLoss[i].resize(dates.size(), 0.0);
-            remainingBasket_->updateScenarioLoss(dates.front(), dates.back());
+            remainingBasket_->updateScenarioLoss();
             for (Size k = 0; k < dates.size(); k++)
                 cumulativeTrancheLoss[i][k]
                     = remainingBasket_->scenarioTrancheLoss(dates[k]);

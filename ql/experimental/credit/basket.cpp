@@ -36,6 +36,7 @@ namespace QuantLib {
           attachmentRatio_(attachment),
           detachmentRatio_(detachment),
           basketNotional_(0.0),
+          basketLGD_(0.0),
           trancheNotional_(0.0),
           attachmentAmount_(0.0),
           detachmentAmount_(0.0),
@@ -53,7 +54,7 @@ namespace QuantLib {
             detachmentAmount_ += notionals_[i] * detachmentRatio_;
             LGDs_[i] = notionals_[i]
                 * (1.0 - pool_->get(names_[i]).recoveryRate());
-            //expectedLGD_ += expectedLGDs_[i];
+            basketLGD_ += LGDs_[i];
         }
         trancheNotional_ = detachmentAmount_ - attachmentAmount_;
     }
@@ -88,6 +89,10 @@ namespace QuantLib {
 
     Real Basket::basketNotional() const {
         return basketNotional_;
+    }
+
+    Real Basket::basketLGD() const {
+        return basketLGD_;
     }
 
     Real Basket::trancheNotional() const {
@@ -175,16 +180,19 @@ namespace QuantLib {
             / remainingNotional(startDate, endDate);
     }
 
-    void Basket::updateScenarioLoss(Date startDate, Date endDate) {
+    void Basket::updateScenarioLoss(bool zeroRecovery) {
         Date today = Settings::instance().evaluationDate();
         for (Size i = 0; i < names_.size(); i++) {
-            scenarioLoss_[i].amount = LGDs_[i];
+            if (zeroRecovery)
+                scenarioLoss_[i].amount = notionals_[i];
+            else
+                scenarioLoss_[i].amount = LGDs_[i];
             scenarioLoss_[i].time = pool_->getTime(names_[i]);
         }
         std::sort(scenarioLoss_.begin(), scenarioLoss_.end());
     }
 
-    vector<Loss> Basket::scenarioBasketLosses() const {
+    vector<Loss> Basket::scenarioIncrementalBasketLosses() const {
         return scenarioLoss_;
     }
 
@@ -199,7 +207,6 @@ namespace QuantLib {
                 L += scenarioLoss_[i].amount;
             else break;
         }
-
         return std::min(L, D) - std::min(L, A);
     }
 
@@ -215,14 +222,13 @@ namespace QuantLib {
         Real L = 0.0;
         for (Size i = 0; i < scenarioLoss_.size(); i++) {
             Real t = scenarioLoss_[i].time;
-            if (t > tmax) break;
-            if (t < tmin) continue;
+            if (t > tmax && endDate != Date::maxDate()) break;
+            if (t < tmin && startDate != Date::minDate()) continue;
             L += scenarioLoss_[i].amount;
             Real TL2 = std::min(L, D) - std::min(L, A);
             Real increment = TL2 - TL1;
             TL1 = TL2;
-            if (increment > 0)
-                losses.push_back(Loss(t, increment));
+            losses.push_back(Loss(t, increment));
         }
         return losses;
     }
