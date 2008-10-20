@@ -1,9 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando Ametrano
- Copyright (C) 2006, 2007 Chiara Fornarola
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2008 Simon Ibbotson
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/bonds/cmsratebond.hpp>
+#include <ql/experimental/amortizingbonds/amortizingcmsratebond.hpp>
 #include <ql/cashflows/cmscoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/indexes/swapindex.hpp>
@@ -27,27 +25,27 @@
 
 namespace QuantLib {
 
-    CmsRateBond::CmsRateBond(
-                           Natural settlementDays,
-                           Real faceAmount,
-                           const Schedule& schedule,
-                           const boost::shared_ptr<SwapIndex>& index,
-                           const DayCounter& paymentDayCounter,
-                           BusinessDayConvention paymentConvention,
-                           Natural fixingDays,
-                           const std::vector<Real>& gearings,
-                           const std::vector<Spread>& spreads,
-                           const std::vector<Rate>& caps,
-                           const std::vector<Rate>& floors,
-                           bool inArrears,
-                           Real redemption,
-                           const Date& issueDate)
+    AmortizingCmsRateBond::AmortizingCmsRateBond(
+                                    Natural settlementDays,
+                                    const std::vector<Real>& notionals,
+                                    const Schedule& schedule,
+                                    const boost::shared_ptr<SwapIndex>& index,
+                                    const DayCounter& paymentDayCounter,
+                                    BusinessDayConvention paymentConvention,
+                                    Natural fixingDays,
+                                    const std::vector<Real>& gearings,
+                                    const std::vector<Spread>& spreads,
+                                    const std::vector<Rate>& caps,
+                                    const std::vector<Rate>& floors,
+                                    bool inArrears,
+                                    const std::vector<Real>& redemptions,
+                                    const Date& issueDate)
     : Bond(settlementDays, schedule.calendar(), issueDate) {
 
         maturityDate_ = schedule.endDate();
 
         cashflows_ = CmsLeg(schedule, index)
-            .withNotionals(faceAmount)
+            .withNotionals(notionals)
             .withPaymentDayCounter(paymentDayCounter)
             .withPaymentAdjustment(paymentConvention)
             .withFixingDays(fixingDays)
@@ -57,10 +55,9 @@ namespace QuantLib {
             .withFloors(floors)
             .inArrears(inArrears);
 
-        addRedemptionsToCashflows(std::vector<Real>(1, redemption));
+        addRedemptionsToCashflows(redemptions);
 
         QL_ENSURE(!cashflows().empty(), "bond with no cashflows!");
-        QL_ENSURE(redemptions_.size() == 1, "multiple redemptions created");
 
         registerWith(index);
     }

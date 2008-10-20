@@ -36,11 +36,17 @@ namespace QuantLib {
         const Leg& cashflows = arguments_.cashflows;
         const Date& settlementDate = arguments_.settlementDate;
 
+        Date valuationDate = (*discountCurve())->referenceDate();
+
         QL_REQUIRE(!discountCurve().empty(),
                    "no discounting term structure set");
         results_.value = CashFlows::npv(cashflows,
                                         **discountCurve(),
-                                        settlementDate, settlementDate);
+                                        valuationDate, valuationDate);
+        results_.settlementValue = CashFlows::npv(cashflows,
+                                                  **discountCurve(),
+                                                  settlementDate,
+                                                  settlementDate);
     }
 
 }

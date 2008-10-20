@@ -329,6 +329,7 @@ AC_CONFIG_FILES([
     ql/cashflows/Makefile
     ql/currencies/Makefile
     ql/experimental/Makefile
+    ql/experimental/amortizingbonds/Makefile
     ql/experimental/callablebonds/Makefile
     ql/experimental/commodities/Makefile
     ql/experimental/coupons/Makefile

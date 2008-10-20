@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2005, 2008 StatPro Italia srl
  Copyright (C) 2007 Ferdinando Ametrano
- Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,14 +30,12 @@ namespace QuantLib {
                                    BusinessDayConvention paymentConvention,
                                    Real redemption,
                                    const Date& issueDate)
-    : Bond(settlementDays, calendar, faceAmount, maturityDate, issueDate) {
+    : Bond(settlementDays, calendar, issueDate) {
 
-        Date redemptionDate = calendar_.adjust(maturityDate_,
+        maturityDate_ = maturityDate;
+        Date redemptionDate = calendar_.adjust(maturityDate,
                                                paymentConvention);
-        cashflows_ = Leg(1, boost::shared_ptr<CashFlow>(new
-            SimpleCashFlow(faceAmount_*redemption/100, redemptionDate)));
-
-        QL_ENSURE(!cashflows().empty(), "bond with no cashflows!");
+        setSingleRedemption(faceAmount, redemption, redemptionDate);
     }
 
 }

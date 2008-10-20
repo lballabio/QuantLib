@@ -165,19 +165,19 @@ void ConvertibleBondTest::testBond() {
 
     Real tolerance = 1.0e-2 * (vars.faceAmount/100.0);
 
-    Real error = std::fabs(euZero.NPV()-zero.NPV());
+    Real error = std::fabs(euZero.NPV()-zero.settlementValue());
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce zero-coupon bond price:"
                     << "\n    calculated: " << euZero.NPV()
-                    << "\n    expected:   " << zero.NPV()
+                    << "\n    expected:   " << zero.settlementValue()
                     << "\n    error:      " << error);
     }
 
-    error = std::fabs(amZero.NPV()-zero.NPV());
+    error = std::fabs(amZero.NPV()-zero.settlementValue());
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce zero-coupon bond price:"
                     << "\n    calculated: " << amZero.NPV()
-                    << "\n    expected:   " << zero.NPV()
+                    << "\n    expected:   " << zero.settlementValue()
                     << "\n    error:      " << error);
     }
 
@@ -213,19 +213,19 @@ void ConvertibleBondTest::testBond() {
 
     tolerance = 2.0e-2 * (vars.faceAmount/100.0);
 
-    error = std::fabs(euFixed.NPV()-fixed.NPV());
+    error = std::fabs(euFixed.NPV()-fixed.settlementValue());
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce fixed-coupon bond price:"
                     << "\n    calculated: " << euFixed.NPV()
-                    << "\n    expected:   " << fixed.NPV()
+                    << "\n    expected:   " << fixed.settlementValue()
                     << "\n    error:      " << error);
     }
 
-    error = std::fabs(amFixed.NPV()-fixed.NPV());
+    error = std::fabs(amFixed.NPV()-fixed.settlementValue());
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce fixed-coupon bond price:"
                     << "\n    calculated: " << amFixed.NPV()
-                    << "\n    expected:   " << fixed.NPV()
+                    << "\n    expected:   " << fixed.settlementValue()
                     << "\n    error:      " << error);
     }
 
@@ -274,19 +274,19 @@ void ConvertibleBondTest::testBond() {
 
     tolerance = 2.0e-2 * (vars.faceAmount/100.0);
 
-    error = std::fabs(euFloating.NPV()-floating.NPV());
+    error = std::fabs(euFloating.NPV()-floating.settlementValue());
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce floating-rate bond price:"
                     << "\n    calculated: " << euFloating.NPV()
-                    << "\n    expected:   " << floating.NPV()
+                    << "\n    expected:   " << floating.settlementValue()
                     << "\n    error:      " << error);
     }
 
-    error = std::fabs(amFloating.NPV()-floating.NPV());
+    error = std::fabs(amFloating.NPV()-floating.settlementValue());
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce floating-rate bond price:"
                     << "\n    calculated: " << amFloating.NPV()
-                    << "\n    expected:   " << floating.NPV()
+                    << "\n    expected:   " << floating.settlementValue()
                     << "\n    error:      " << error);
     }
 }

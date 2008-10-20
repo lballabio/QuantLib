@@ -36,9 +36,10 @@ namespace QuantLib {
                                Real redemption,
                                const Date& issueDate,
                                const CallabilitySchedule& putCallSchedule)
-    : Bond(settlementDays, schedule.calendar(), faceAmount,
-           schedule.dates().back(), issueDate),
+    : Bond(settlementDays, schedule.calendar(), issueDate),
       paymentDayCounter_(paymentDayCounter), putCallSchedule_(putCallSchedule) {
+
+        maturityDate_ = schedule.dates().back();
 
         if (!putCallSchedule_.empty()) {
             Date finalOptionDate = Date::minDate();
@@ -136,17 +137,16 @@ namespace QuantLib {
             cashflows_ =
                 FixedRateLeg(schedule,
                              accrualDayCounter)
-                .withNotionals(faceAmount_)
+                .withNotionals(faceAmount)
                 .withCouponRates(coupons)
                 .withPaymentAdjustment(paymentConvention);
+
+            addRedemptionsToCashflows(std::vector<Real>(1, redemption));
+        } else {
+            Date redemptionDate = calendar_.adjust(maturityDate_,
+                                                   paymentConvention);
+            setSingleRedemption(faceAmount, redemption, redemptionDate);
         }
-
-        Date redemptionDate = calendar_.adjust(maturityDate_,
-                                               paymentConvention);
-
-        cashflows_.push_back(boost::shared_ptr<CashFlow>(
-                              new SimpleCashFlow(faceAmount_*redemption/100.0,
-                                                 redemptionDate)));
 
         // used for impliedVolatility() calculation
         boost::shared_ptr<SimpleQuote> dummyVolQuote(new SimpleQuote(0.));
@@ -169,7 +169,8 @@ namespace QuantLib {
                     boost::dynamic_pointer_cast<Coupon>(cashflows_[i]);
                 if (coupon)
                     // !!!
-                    return coupon->accruedAmount(settlement)/faceAmount_*100.0;
+                    return coupon->accruedAmount(settlement) /
+                           notional(settlement) * 100.0;
                 else
                     return 0.0;
             }

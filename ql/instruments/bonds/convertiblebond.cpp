@@ -39,17 +39,18 @@ namespace QuantLib {
             const DayCounter& dayCounter,
             const Schedule& schedule,
             Real)
-    : Bond(settlementDays, schedule.calendar(), 100.0,
-           schedule.endDate(), issueDate),
+    : Bond(settlementDays, schedule.calendar(), issueDate),
       conversionRatio_(conversionRatio), callability_(callability),
       dividends_(dividends), creditSpread_(creditSpread) {
+
+        maturityDate_ = schedule.endDate();
 
         registerWith(creditSpread);
     }
 
     void ConvertibleBond::performCalculations() const {
         option_->setPricingEngine(engine_);
-        NPV_ = option_->NPV();
+        NPV_ = settlementValue_ = option_->NPV();
         errorEstimate_ = Null<Real>();
     }
 
@@ -71,11 +72,8 @@ namespace QuantLib {
 
         cashflows_ = Leg();
 
-        // redemption
-        // !!!
-        redemption *= faceAmount_/100.0;
-        cashflows_.push_back(boost::shared_ptr<CashFlow>(new
-            SimpleCashFlow(redemption, maturityDate_)));
+        // !!! notional forcibly set to 100
+        setSingleRedemption(100.0, redemption, maturityDate_);
 
         option_ = boost::shared_ptr<option>(
                            new option(this, exercise, conversionRatio,
@@ -101,17 +99,15 @@ namespace QuantLib {
                       creditSpread, issueDate, settlementDays, dayCounter,
                       schedule, redemption) {
 
-        // !!!
+        // !!! notional forcibly set to 100
         cashflows_ = FixedRateLeg(schedule,dayCounter)
-            .withNotionals(faceAmount_)
+            .withNotionals(100.0)
             .withCouponRates(coupons)
             .withPaymentAdjustment(schedule.businessDayConvention());
 
-        // redemption
-        // !!!
-        redemption *= faceAmount_/100.0;
-        cashflows_.push_back(boost::shared_ptr<CashFlow>(new
-            SimpleCashFlow(redemption, maturityDate_)));
+        addRedemptionsToCashflows(std::vector<Real>(1, redemption));
+
+        QL_ENSURE(redemptions_.size() == 1, "multiple redemptions created");
 
         option_ = boost::shared_ptr<option>(
                            new option(this, exercise, conversionRatio,
@@ -139,16 +135,17 @@ namespace QuantLib {
                       creditSpread, issueDate, settlementDays, dayCounter,
                       schedule, redemption) {
 
+        // !!! notional forcibly set to 100
         cashflows_ = IborLeg(schedule, index)
             .withPaymentDayCounter(dayCounter)
-            .withNotionals(faceAmount_)
+            .withNotionals(100.0)
             .withPaymentAdjustment(schedule.businessDayConvention())
             .withFixingDays(fixingDays)
             .withSpreads(spreads);
 
-        redemption *= faceAmount_/100.0;
-        cashflows_.push_back(boost::shared_ptr<CashFlow>(
-                              new SimpleCashFlow(redemption, maturityDate_)));
+        addRedemptionsToCashflows(std::vector<Real>(1, redemption));
+
+        QL_ENSURE(redemptions_.size() == 1, "multiple redemptions created");
 
         option_ = boost::shared_ptr<option>(
                            new option(this, exercise, conversionRatio,

@@ -2,6 +2,7 @@
 /* Add the files to be included into Makefile.am instead. */
 
 
+#include <ql/experimental/amortizingbonds/all.hpp>
 #include <ql/experimental/callablebonds/all.hpp>
 #include <ql/experimental/commodities/all.hpp>
 #include <ql/experimental/coupons/all.hpp>

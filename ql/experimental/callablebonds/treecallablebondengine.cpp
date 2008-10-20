@@ -76,7 +76,7 @@ namespace QuantLib {
                                     arguments_.redemptionDate);
         callableBond.initialize(lattice, redemptionTime);
         callableBond.rollback(0.0);
-        results_.value = callableBond.presentValue();
+        results_.value = results_.settlementValue = callableBond.presentValue();
     }
 
 }

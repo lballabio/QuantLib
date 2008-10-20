@@ -39,7 +39,7 @@ namespace QuantLib {
                                        Real notional,
                                        Real recoveryRate) const {
         Real accrual = referenceSecurity_->accruedAmount(d)
-                     / referenceSecurity_->redemption()->amount();
+                     / referenceSecurity_->notional(d);
         return notional * (1.0-recoveryRate-accrual);
     }
 

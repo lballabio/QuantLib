@@ -35,22 +35,21 @@ namespace QuantLib {
                                  BusinessDayConvention paymentConvention,
                                  Real redemption,
                                  const Date& issueDate)
-    : Bond(settlementDays, schedule.calendar(), faceAmount,
-           schedule.endDate(), issueDate),
+    : Bond(settlementDays, schedule.calendar(), issueDate),
       frequency_(schedule.tenor().frequency()),
       dayCounter_(accrualDayCounter) {
 
+        maturityDate_ = schedule.endDate();
+
         cashflows_ = FixedRateLeg(schedule, accrualDayCounter)
-            .withNotionals(faceAmount_)
+            .withNotionals(faceAmount)
             .withCouponRates(coupons)
             .withPaymentAdjustment(paymentConvention);
 
-        Date redemptionDate = calendar_.adjust(maturityDate_,
-                                               paymentConvention);
-        cashflows_.push_back(boost::shared_ptr<CashFlow>(new
-            SimpleCashFlow(faceAmount_*redemption/100.0, redemptionDate)));
+        addRedemptionsToCashflows(std::vector<Real>(1, redemption));
 
         QL_ENSURE(!cashflows().empty(), "bond with no cashflows!");
+        QL_ENSURE(redemptions_.size() == 1, "multiple redemptions created");
     }
 
     FixedRateBond::FixedRateBond(Natural settlementDays,
@@ -68,11 +67,10 @@ namespace QuantLib {
                                  const Date& stubDate,
                                  DateGeneration::Rule rule,
                                  bool endOfMonth)
-    : Bond(settlementDays, calendar, faceAmount, maturityDate, issueDate),
-      frequency_(tenor.frequency()),
-      dayCounter_(accrualDayCounter) {
+    : Bond(settlementDays, calendar, issueDate),
+      frequency_(tenor.frequency()), dayCounter_(accrualDayCounter) {
 
-        maturityDate_     = maturityDate;
+        maturityDate_ = maturityDate;
 
         Date firstDate, nextToLastDate;
         switch (rule) {
@@ -100,16 +98,14 @@ namespace QuantLib {
                           firstDate, nextToLastDate);
 
         cashflows_ = FixedRateLeg(schedule, accrualDayCounter)
-            .withNotionals(faceAmount_)
+            .withNotionals(faceAmount)
             .withCouponRates(coupons)
             .withPaymentAdjustment(paymentConvention);
 
-        Date redemptionDate = calendar_.adjust(maturityDate_,
-                                               paymentConvention);
-        cashflows_.push_back(boost::shared_ptr<CashFlow>(new
-            SimpleCashFlow(faceAmount_*redemption/100.0, redemptionDate)));
+        addRedemptionsToCashflows(std::vector<Real>(1, redemption));
 
         QL_ENSURE(!cashflows().empty(), "bond with no cashflows!");
+        QL_ENSURE(redemptions_.size() == 1, "multiple redemptions created");
     }
 
 }

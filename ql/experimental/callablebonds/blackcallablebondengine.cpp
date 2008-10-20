@@ -137,12 +137,15 @@ namespace QuantLib {
 
         Leg fixedLeg = arguments_.cashflows;
 
-        Real npv = CashFlows::npv(fixedLeg,
-                                  **discountCurve_,
-                                  settle,
-                                  settle);
+        Real value = CashFlows::npv(fixedLeg,
+                                    **discountCurve_,
+                                    settle,
+                                    settle);
 
-        Real fwdCashPrice = (npv - spotIncome())/
+        Real npv = CashFlows::npv(fixedLeg,
+                                  **discountCurve_);
+
+        Real fwdCashPrice = (value - spotIncome())/
                             discountCurve_->discount(exerciseDate);
 
         Real cashStrike = arguments_.callabilityPrices[0];
@@ -162,9 +165,11 @@ namespace QuantLib {
                          priceVol*std::sqrt(exerciseTime));
 
         if (type == Option::Call) {
-            results_.value =  npv - embeddedOptionValue;
+            results_.value = npv - embeddedOptionValue;
+            results_.settlementValue = value - embeddedOptionValue;
         } else {
-            results_.value =  npv + embeddedOptionValue;
+            results_.value = npv + embeddedOptionValue;
+            results_.settlementValue = value + embeddedOptionValue;
         }
     }
 
