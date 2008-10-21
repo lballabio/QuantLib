@@ -7832,6 +7832,38 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="amortizingbonds"
+				>
+				<File
+					RelativePath=".\ql\experimental\amortizingbonds\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\amortizingbonds\amortizingcmsratebond.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\amortizingbonds\amortizingcmsratebond.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\amortizingbonds\amortizingfixedratebond.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\amortizingbonds\amortizingfixedratebond.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\amortizingbonds\amortizingfloatingratebond.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\amortizingbonds\amortizingfloatingratebond.hpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\ql\auto_link.hpp"
