@@ -76,8 +76,8 @@ namespace QuantLib {
       jointCalendar_(JointCalendar(UnitedKingdom(UnitedKingdom::Exchange),
                                    financialCenterCalendar,
                                    JoinHolidays)) {
-        QL_REQUIRE(tenor.units()!=Days,
-                   "for daily tenors (" << tenor <<
+        QL_REQUIRE(this->tenor().units()!=Days,
+                   "for daily tenors (" << this->tenor() <<
                    ") dedicated DailyTenor constructor must be used");
         QL_REQUIRE(currency!=EURCurrency(),
                    "for EUR Libor dedicated EurLibor constructor must be used");
