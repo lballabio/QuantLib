@@ -421,6 +421,7 @@ AC_CONFIG_FILES([
     Docs/Makefile
     Examples/Makefile
     Examples/BermudanSwaption/Makefile
+    Examples/Bonds/Makefile
     Examples/CallableBonds/Makefile
     Examples/CDS/Makefile
     Examples/ConvertibleBonds/Makefile
