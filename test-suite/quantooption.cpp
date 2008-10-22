@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2004, 2007 StatPro Italia srl
+ Copyright (C) 2008 Paul Farrington
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,7 +24,9 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/quantovanillaoption.hpp>
 #include <ql/instruments/quantoforwardvanillaoption.hpp>
+#include <ql/instruments/quantobarrieroption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/pricingengines/quanto/quantoengine.hpp>
 #include <ql/pricingengines/forward/forwardperformanceengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -79,6 +82,33 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
+#define QUANTO_BARRIER_REPORT_FAILURE(greekName, payoff, \
+                        barrierType, barrier, rebate, \
+                        exercise, s, q, r, \
+                        today, v, fxr, fxv, corr, expected, \
+                        calculated, error, tolerance) \
+    BOOST_FAIL("Quanto Barrier" << exerciseTypeToString(exercise) << " " \
+               << payoff->optionType() << " option with " \
+               << "    barrier type:        " << barrierType << "\n" \
+               << "    barrier:             " << barrier << "\n" \
+               << "    rebate:              " << rebate << "\n" \
+               << "    payoff:              " << payoffTypeToString(payoff) << "\n" \
+               << "    spot value:          " << s << "\n" \
+               << "    strike:              " << payoff->strike() << "\n" \
+               << "    dividend yield:      " << io::rate(q) << "\n" \
+               << "    risk-free rate:      " << io::rate(r) << "\n" \
+               << "    fx risk-free rate:   " << io::rate(fxr) << "\n" \
+               << "    reference date:      " << today << "\n" \
+               << "    maturity:            " << exercise->lastDate() << "\n" \
+               << "    volatility:          " << io::volatility(v) << "\n" \
+               << "    fx volatility:       " << io::volatility(fxv) << "\n" \
+               << "    correlation:         " << corr << "\n\n" \
+               << "    expected   " << greekName << ": " << expected << "\n" \
+               << "    calculated " << greekName << ": " << calculated << "\n"\
+               << "    error:            " << error << "\n" \
+               << "    tolerance:        " << tolerance);
+
+
 namespace {
 
     struct QuantoOptionData {
@@ -103,6 +133,24 @@ namespace {
         Rate q;          // dividend
         Rate r;          // risk-free rate
         Time start;      // time to reset
+        Time t;          // time to maturity
+        Volatility v;    // volatility
+        Rate fxr;        // fx risk-free rate
+        Volatility fxv;  // fx volatility
+        Real corr;       // correlation
+        Real result;     // expected result
+        Real tol;        // tolerance
+    };
+
+    struct QuantoBarrierOptionData {
+        Barrier::Type barrierType;
+        Real barrier;
+        Real rebate;
+        Option::Type type;
+        Real s;          // spot
+        Real strike;
+        Rate q;          // dividend
+        Rate r;          // risk-free rate
         Time t;          // time to maturity
         Volatility v;    // volatility
         Rate fxr;        // fx risk-free rate
@@ -772,6 +820,95 @@ void QuantoOptionTest::testForwardPerformanceValues() {
 
 }
 
+void QuantoOptionTest::testBarrierValues()  {
+
+    BOOST_MESSAGE("Testing quanto-barrier option values...");
+
+    SavedSettings backup;
+
+    QuantoBarrierOptionData values[] = {
+         // TODO:  Bench results against an existing prop calculator
+         // barrierType, barrier, rebate, type, spot, strike,
+         // q, r, T, vol, fx risk-free rate, fx vol, corr, result, tol
+        { Barrier::DownOut, 95.0, 3.0, Option::Call, 100, 90,
+          0.04, 0.0212, 0.50, 0.25, 0.05, 0.2, 0.3, 8.247, 0.5 },
+        { Barrier::DownOut, 95.0, 3.0, Option::Put, 100, 90,
+          0.04, 0.0212, 0.50, 0.25, 0.05, 0.2, 0.3, 2.274, 0.5 },
+        { Barrier::DownIn, 95.0, 0, Option::Put, 100, 90,
+          0.04, 0.0212, 0.50, 0.25, 0.05, 0.2, 0.3, 2.85, 0.5 },
+    };
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+
+    boost::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> fxrTS(flatRate(today, fxRate, dc));
+    boost::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
+    boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
+
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
+         new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                       Handle<YieldTermStructure>(qTS),
+                                       Handle<YieldTermStructure>(rTS),
+                                       Handle<BlackVolTermStructure>(volTS)));
+
+    boost::shared_ptr<PricingEngine> engine(
+        new QuantoEngine<BarrierOption, AnalyticBarrierEngine>(
+                                                 stochProcess, fxrTS, fxVolTS,
+                                                 Handle<Quote>(correlation)));
+
+    for (Size i=0; i<LENGTH(values); i++) {
+
+        boost::shared_ptr<StrikedTypePayoff> payoff(
+                    new PlainVanillaPayoff(values[i].type, values[i].strike));
+
+        Date exDate = today + Integer(values[i].t*360+0.5);
+        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+
+        spot ->setValue(values[i].s);
+        qRate->setValue(values[i].q);
+        rRate->setValue(values[i].r);
+        vol  ->setValue(values[i].v);
+
+        fxRate->setValue(values[i].fxr);
+        fxVol->setValue(values[i].fxv);
+        correlation->setValue(values[i].corr);
+
+        QuantoBarrierOption option(values[i].barrierType,
+                                   values[i].barrier,
+                                   values[i].rebate,
+                                   payoff,
+                                   exercise);
+
+        option.setPricingEngine(engine);
+
+        Real calculated = option.NPV();
+        Real error = std::fabs(calculated-values[i].result);
+        Real tolerance = values[i].tol;
+
+        if (error>tolerance) {
+            QUANTO_BARRIER_REPORT_FAILURE("value", payoff,
+                values[i].barrierType,
+                values[i].barrier,
+                values[i].rebate,
+                exercise,
+                values[i].s, values[i].q, values[i].r, today,
+                values[i].v, values[i].fxr, values[i].fxv, values[i].corr,
+                values[i].result, calculated, error, tolerance);
+        }
+    }
+}
+
+
 test_suite* QuantoOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Quanto option tests");
     suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testValues));
@@ -780,6 +917,7 @@ test_suite* QuantoOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testForwardGreeks));
     suite->add(QUANTLIB_TEST_CASE(
                             &QuantoOptionTest::testForwardPerformanceValues));
+    suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testBarrierValues));
     return suite;
 }
 

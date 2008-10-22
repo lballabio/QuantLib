@@ -40,7 +40,8 @@ this_include_HEADERS = \
     oneassetoption.hpp \
     pagodaoption.hpp \
     payoffs.hpp \
-    quantoforwardvanillaoption.hpp \
+    quantobarrieroption.hpp \
+    quantovanillaoption.hpp \
     quantovanillaoption.hpp \
     stickyratchet.hpp \
     stock.hpp \
@@ -85,6 +86,7 @@ libInstruments_la_SOURCES = \
     oneassetoption.cpp \
     pagodaoption.cpp \
     payoffs.cpp \
+    quantobarrieroption.cpp \
     quantoforwardvanillaoption.cpp \
     quantovanillaoption.cpp \
     stickyratchet.cpp \

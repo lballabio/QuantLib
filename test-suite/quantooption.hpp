@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2008 Paul Farrington
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,6 +34,7 @@ class QuantoOptionTest {
     static void testForwardValues();
     static void testForwardGreeks();
     static void testForwardPerformanceValues();
+    static void testBarrierValues();
     static boost::unit_test_framework::test_suite* suite();
 };
 
