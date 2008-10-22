@@ -1372,6 +1372,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\instruments\quantobarrieroption.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\quantobarrieroption.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\instruments\quantoforwardvanillaoption.cpp"
 				>
 			</File>
