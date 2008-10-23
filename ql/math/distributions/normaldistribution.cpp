@@ -1,8 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2002, 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,6 +20,7 @@
 */
 
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/comparison.hpp>
 
 namespace QuantLib {
 
@@ -84,9 +86,17 @@ namespace QuantLib {
     const Real InverseCumulativeNormal::x_high_= 1.0 - x_low_;
 
     Real InverseCumulativeNormal::operator()(Real x) const {
-        QL_REQUIRE(x > 0.0 && x < 1.0,
-                   "InverseCumulativeNormal(" << x
+        if (x < 0.0 || x > 1.0) {
+            // try to recover if due to numerical error
+            if (close_enough(x, 1.0)) {
+                x = 1.0;
+            } else if (std::fabs(x) < QL_EPSILON) {
+                x = 0.0;
+            } else {
+                QL_FAIL("InverseCumulativeNormal(" << x
                    << ") undefined: must be 0 < x < 1");
+            }
+        }
 
         Real z, r;
 
