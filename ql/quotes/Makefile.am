@@ -11,6 +11,7 @@ this_include_HEADERS = \
     forwardvaluequote.hpp \
     futuresconvadjustmentquote.hpp \
     impliedstddevquote.hpp \
+    lastfixingquote.hpp \
     simplequote.hpp
 
 libQuotes_la_SOURCES = \
@@ -18,7 +19,8 @@ libQuotes_la_SOURCES = \
     forwardswapquote.cpp \
     forwardvaluequote.cpp \
     futuresconvadjustmentquote.cpp \
-    impliedstddevquote.cpp
+    impliedstddevquote.cpp \
+    lastfixingquote.cpp
 
 noinst_LTLIBRARIES = libQuotes.la
 
