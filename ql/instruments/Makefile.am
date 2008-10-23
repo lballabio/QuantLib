@@ -41,7 +41,7 @@ this_include_HEADERS = \
     pagodaoption.hpp \
     payoffs.hpp \
     quantobarrieroption.hpp \
-    quantovanillaoption.hpp \
+    quantoforwardvanillaoption.hpp \
     quantovanillaoption.hpp \
     stickyratchet.hpp \
     stock.hpp \
