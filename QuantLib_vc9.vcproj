@@ -7780,6 +7780,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\commodities\energybasisswap.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\commodities\energybasisswap.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\commodities\energycommodity.cpp"
 					>
 				</File>
@@ -7793,6 +7801,22 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\commodities\energyfuture.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\commodities\energyswap.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\commodities\energyswap.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\commodities\energyvanillaswap.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\commodities\energyvanillaswap.hpp"
 					>
 				</File>
 				<File
