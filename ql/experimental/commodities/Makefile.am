@@ -15,6 +15,8 @@ this_include_HEADERS = \
     dateinterval.hpp \
     energycommodity.hpp \
     energyfuture.hpp \
+    energyswap.hpp \
+    energyvanillaswap.hpp \
     exchangecontract.hpp \
     paymentterm.hpp \
     petroleumunitsofmeasure.hpp \
@@ -36,6 +38,8 @@ libCommodities_la_SOURCES = \
     dateinterval.cpp \
     energycommodity.cpp \
     energyfuture.cpp \
+    energyswap.cpp \
+    energyvanillaswap.cpp \
     paymentterm.cpp \
     quantity.cpp \
     unitofmeasure.cpp \

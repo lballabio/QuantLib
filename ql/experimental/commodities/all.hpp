@@ -12,6 +12,8 @@
 #include <ql/experimental/commodities/dateinterval.hpp>
 #include <ql/experimental/commodities/energycommodity.hpp>
 #include <ql/experimental/commodities/energyfuture.hpp>
+#include <ql/experimental/commodities/energyswap.hpp>
+#include <ql/experimental/commodities/energyvanillaswap.hpp>
 #include <ql/experimental/commodities/exchangecontract.hpp>
 #include <ql/experimental/commodities/paymentterm.hpp>
 #include <ql/experimental/commodities/petroleumunitsofmeasure.hpp>
