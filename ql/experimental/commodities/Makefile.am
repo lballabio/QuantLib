@@ -13,6 +13,7 @@ this_include_HEADERS = \
     commoditytype.hpp \
     commodityunitcost.hpp \
     dateinterval.hpp \
+    energybasisswap.hpp \
     energycommodity.hpp \
     energyfuture.hpp \
     energyswap.hpp \
@@ -36,6 +37,7 @@ libCommodities_la_SOURCES = \
     commoditytype.cpp \
     commodityunitcost.cpp \
     dateinterval.cpp \
+    energybasisswap.cpp \
     energycommodity.cpp \
     energyfuture.cpp \
     energyswap.cpp \

@@ -10,6 +10,7 @@
 #include <ql/experimental/commodities/commoditytype.hpp>
 #include <ql/experimental/commodities/commodityunitcost.hpp>
 #include <ql/experimental/commodities/dateinterval.hpp>
+#include <ql/experimental/commodities/energybasisswap.hpp>
 #include <ql/experimental/commodities/energycommodity.hpp>
 #include <ql/experimental/commodities/energyfuture.hpp>
 #include <ql/experimental/commodities/energyswap.hpp>
