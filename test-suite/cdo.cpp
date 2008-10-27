@@ -249,6 +249,6 @@ void CdoTest::testHW() {
 
 test_suite* CdoTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("CDO tests");
-    suite->add(BOOST_TEST_CASE(&CdoTest::testHW));
+    suite->add(QUANTLIB_TEST_CASE(&CdoTest::testHW));
     return suite;
 }

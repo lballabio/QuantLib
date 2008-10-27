@@ -75,6 +75,8 @@ namespace {
 void InflationTest::testYoYTermStructure() {
     BOOST_MESSAGE("Testing year-on-year inflation term structure...");
 
+    SavedSettings backup;
+
     // try the YY UK
     Calendar calendar = UnitedKingdom();
     BusinessDayConvention bdc = ModifiedFollowing;
@@ -178,6 +180,8 @@ void InflationTest::testYoYTermStructure() {
 
 void InflationTest::testZeroTermStructure() {
     BOOST_MESSAGE("Testing zero inflation term structure...");
+
+    SavedSettings backup;
 
     // try the Zero UK
     Calendar calendar = UnitedKingdom();
@@ -283,6 +287,8 @@ void InflationTest::testZeroTermStructure() {
 
 void InflationTest::testYYIndex() {
     BOOST_MESSAGE("Testing year-on-year inflation indices...");
+
+    SavedSettings backup;
 
     YYEUHICP yyeuhicp(Monthly, false, false);
     if (yyeuhicp.name() != "EU YY_HICP"
@@ -402,6 +408,8 @@ void InflationTest::testYYIndex() {
 
 void InflationTest::testZeroIndex() {
     BOOST_MESSAGE("Testing zero inflation indices...");
+
+    SavedSettings backup;
 
     EUHICP euhicp(Monthly, false, false);
     if (euhicp.name() != "EU HICP"

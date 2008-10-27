@@ -73,8 +73,14 @@ namespace QuantLib {
             template <class F>
             quantlib_test_case(F test) : test_(test) {}
             void operator()() const {
+                Date before = Settings::instance().evaluationDate();
                 BOOST_CHECK(true);
                 test_();
+                Date after = Settings::instance().evaluationDate();
+                if (before != after)
+                    BOOST_ERROR("Evaluation date not reset"
+                                << "\n  before: " << before
+                                << "\n  after:  " << after);
             }
         };
 

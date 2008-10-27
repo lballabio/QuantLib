@@ -93,6 +93,8 @@ void NthToDefaultTest::testGauss() {
     BOOST_MESSAGE("Testing nth-to-default against Hull-White values "
                   "with Gaussian copula...");
 
+    SavedSettings backup;
+
     /*************************
      * Tolerances
      */
@@ -199,6 +201,8 @@ void NthToDefaultTest::testGauss() {
 void NthToDefaultTest::testGaussStudent() {
     BOOST_MESSAGE ("Testing nth-to-default against Hull-White values "
                    "with Gaussian and Student copula...");
+
+    SavedSettings backup;
 
     /*************************
      * Tolerances
