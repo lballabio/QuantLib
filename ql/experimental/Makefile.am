@@ -1,7 +1,7 @@
 
 SUBDIRS = amortizingbonds callablebonds commodities coupons credit \
           finitedifferences lattices mcbasket processes risk \
-          varianceswap volatility
+          varianceoption volatility
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
@@ -22,7 +22,7 @@ libExperimental_la_LIBADD = \
     mcbasket/libMcBasket.la \
     processes/libProcesses.la \
     risk/libRisk.la \
-    varianceswap/libVarianceSwap.la \
+    varianceoption/libVarianceOption.la \
     volatility/libVolatility.la
 
 noinst_LTLIBRARIES = libExperimental.la

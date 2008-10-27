@@ -17,27 +17,27 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file integralhestonvarianceswapengine.hpp
-    \brief integral Heston-model variance-swap engine
+/*! \file integralhestonvarianceoptionengine.hpp
+    \brief integral Heston-model variance-option engine
 */
 
-#ifndef quantlib_integral_heston_variance_swap_engine_hpp
-#define quantlib_integral_heston_variance_swap_engine_hpp
+#ifndef quantlib_integral_heston_variance_option_engine_hpp
+#define quantlib_integral_heston_variance_option_engine_hpp
 
-#include <ql/instruments/varianceswap.hpp>
+#include <ql/experimental/varianceoption/varianceoption.hpp>
 #include <ql/processes/hestonprocess.hpp>
 
 namespace QuantLib {
 
-    //! integral Heston-model variance-swap engine
+    //! integral Heston-model variance-option engine
     /*! This engine implements the approach described in
         <http://www.econ.univpm.it/recchioni/finance/w4/>.
 
         \ingroup forwardengines
     */
-    class IntegralHestonVarianceSwapEngine : public VarianceSwap::engine  {
+    class IntegralHestonVarianceOptionEngine : public VarianceOption::engine  {
       public:
-        IntegralHestonVarianceSwapEngine(
+        IntegralHestonVarianceOptionEngine(
                     const boost::shared_ptr<HestonProcess>&);
         void calculate() const;
       private:

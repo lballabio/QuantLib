@@ -21,7 +21,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/varianceswap/integralhestonvarianceswapengine.hpp>
+#include <ql/experimental/varianceoption/integralhestonvarianceoptionengine.hpp>
 #include <ql/errors.hpp>
 #include <complex>
 
@@ -198,16 +198,21 @@ namespace {
 
 namespace QuantLib {
 
-    IntegralHestonVarianceSwapEngine::IntegralHestonVarianceSwapEngine(
+    IntegralHestonVarianceOptionEngine::IntegralHestonVarianceOptionEngine(
                               const boost::shared_ptr<HestonProcess>& process)
     : process_(process) {
         registerWith(process_);
     }
 
-    void IntegralHestonVarianceSwapEngine::calculate() const {
+    void IntegralHestonVarianceOptionEngine::calculate() const {
 
         QL_REQUIRE(process_->dividendYield().empty(),
                    "this engine does not manage dividend yields");
+
+        boost::shared_ptr<PlainVanillaPayoff> callPayoff =
+            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        QL_REQUIRE(callPayoff && callPayoff->optionType() == Option::Call,
+                   "this engine requires a vanilla call payoff");
 
         Handle<YieldTermStructure> riskFreeRate = process_->riskFreeRate();
 
@@ -217,7 +222,7 @@ namespace QuantLib {
         Real rho = process_->rho();
         Real v0 = process_->v0();
 
-        Real strike = arguments_.strike;
+        Real strike = callPayoff->strike();
         Time tau = riskFreeRate->dayCounter().yearFraction(
                                         Settings::instance().evaluationDate(),
                                         arguments_.maturityDate);
@@ -225,23 +230,9 @@ namespace QuantLib {
                                         riskFreeRate->dayCounter(),
                                         Continuous);
 
-        Real multiplier;
-        switch (arguments_.position) {
-          case Position::Long:
-            multiplier = 1.0;
-            break;
-          case Position::Short:
-            multiplier = -1.0;
-            break;
-          default:
-            QL_FAIL("Unknown position");
-        }
-
         results_.value = IvopOneDim(epsilon, chi, theta, rho,
                                     v0, strike, tau, r)
-            * multiplier * arguments_.notional;
-
-        results_.variance = Null<Real>();
+            * arguments_.notional;
     }
 
 }
