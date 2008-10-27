@@ -32,7 +32,10 @@ void VarianceOptionTest::testIntegralHeston() {
     BOOST_MESSAGE("Testing variance option with integral Heston engine...");
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
+
+    BOOST_MESSAGE(today);
+    BOOST_MESSAGE(Date::todaysDate());
 
     Handle<Quote> s0(boost::shared_ptr<SimpleQuote>(new SimpleQuote(1.0)));
     Handle<YieldTermStructure> qTS;
