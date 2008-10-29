@@ -74,32 +74,7 @@ namespace QuantLib {
                                DiscountFactor discount,
                                Real runningProduct = 1.0,
                                Size pastFixings = 0);
-        Real operator()(const Path& path) const {
-            Size n = path.length() - 1;
-            QL_REQUIRE(n>0, "the path cannot be empty");
-
-            Real averagePrice;
-            Real product = runningProduct_;
-            Size fixings = n+pastFixings_;
-            if (path.timeGrid().mandatoryTimes()[0]==0.0) {
-                fixings += 1;
-                product *= path.front();
-            }
-            // care must be taken not to overflow product
-            Real maxValue = QL_MAX_REAL;
-            averagePrice = 1.0;
-            for (Size i=1; i<n+1; i++) {
-                Real price = path[i];
-                if (product < maxValue/price) {
-                    product *= price;
-                } else {
-                    averagePrice *= std::pow(product, 1.0/fixings);
-                    product = price;
-                }
-            }
-            averagePrice *= std::pow(product, 1.0/fixings);
-            return discount_ * payoff_(averagePrice);
-        }
+        Real operator()(const Path& path) const;
       private:
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;
@@ -152,11 +127,13 @@ namespace QuantLib {
 
         return boost::shared_ptr<typename
             MCDiscreteGeometricAPEngine<RNG,S>::path_pricer_type>(
-            new GeometricAPOPathPricer(
-              payoff->optionType(),
-              payoff->strike(),
-              this->process_->riskFreeRate()->discount(
-                                                   this->timeGrid().back())));
+                new GeometricAPOPathPricer(
+                    payoff->optionType(),
+                    payoff->strike(),
+                    this->process_->riskFreeRate()->discount(
+                                                   this->timeGrid().back()),
+                    this->arguments_.runningAccumulator,
+                    this->arguments_.pastFixings));
     }
 
 

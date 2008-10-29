@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -84,23 +84,7 @@ namespace QuantLib {
                                 DiscountFactor discount,
                                 Real runningSum = 0.0,
                                 Size pastFixings = 0);
-        Real operator()(const Path& path) const  {
-            Size n = path.length();
-            QL_REQUIRE(n>1, "the path cannot be empty");
-
-            Real sum;
-            Size fixings;
-            if (path.timeGrid().mandatoryTimes()[0]==0.0) {
-                // include initial fixing
-                sum = std::accumulate(path.begin(),path.end(),runningSum_);
-                fixings = pastFixings_ + n;
-            } else {
-                sum = std::accumulate(path.begin()+1,path.end(),runningSum_);
-                fixings = pastFixings_ + n - 1;
-            }
-            Real averagePrice = sum/fixings;
-            return discount_ * payoff_(averagePrice);
-        }
+        Real operator()(const Path& path) const;
       private:
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;
@@ -151,11 +135,13 @@ namespace QuantLib {
 
         return boost::shared_ptr<typename
             MCDiscreteArithmeticAPEngine<RNG,S>::path_pricer_type>(
-            new ArithmeticAPOPathPricer(
-              payoff->optionType(),
-              payoff->strike(),
-              this->process_->riskFreeRate()->discount(
-                                                   this->timeGrid().back())));
+                new ArithmeticAPOPathPricer(
+                    payoff->optionType(),
+                    payoff->strike(),
+                    this->process_->riskFreeRate()->discount(
+                                                     this->timeGrid().back()),
+                    this->arguments_.runningAccumulator,
+                    this->arguments_.pastFixings));
     }
 
     template <class RNG, class S>

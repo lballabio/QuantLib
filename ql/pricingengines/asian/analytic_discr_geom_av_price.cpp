@@ -52,7 +52,8 @@ namespace QuantLib {
             QL_REQUIRE(arguments_.runningAccumulator>0.0,
                        "positive running product required: "
                        << arguments_.runningAccumulator << " not allowed");
-            runningLog = std::log(arguments_.runningAccumulator);
+            runningLog =
+                std::log(arguments_.runningAccumulator);
             pastFixings = arguments_.pastFixings;
         } else {  // it is being used as control variate
             runningLog = 1.0;
@@ -108,7 +109,8 @@ namespace QuantLib {
         Real s = process_->stateVariable()->value();
         QL_REQUIRE(s > 0.0, "positive underlying value required");
 
-        Real muG = pastWeight * runningLog +
+        Size M = (pastFixings == 0 ? 1 : pastFixings);
+        Real muG = pastWeight * runningLog/M +
             futureWeight * std::log(s) + nu*timeSum/N;
         Real forwardPrice = std::exp(muG + variance / 2.0);
 

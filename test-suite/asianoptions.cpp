@@ -913,6 +913,147 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
     }
 }
 
+
+void AsianOptionTest::testPastFixings() {
+
+    BOOST_MESSAGE("Testing use of past fixings in Asian options...");
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.06));
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+
+    boost::shared_ptr<StrikedTypePayoff> payoff(
+                                  new PlainVanillaPayoff(Option::Put, 100.0));
+
+
+    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(today + 1*Years));
+
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
+        new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
+
+    // MC arithmetic average-price
+
+    Real runningSum = 0.0;
+    Size pastFixings = 0;
+    std::vector<Date> fixingDates1;
+    for (Integer i=0; i<=12; ++i)
+        fixingDates1.push_back(today + i*Months);
+
+    DiscreteAveragingAsianOption option1(Average::Arithmetic, runningSum,
+                                         pastFixings, fixingDates1,
+                                         payoff, exercise);
+
+    pastFixings = 2;
+    runningSum = pastFixings * spot->value() * 0.8;
+    std::vector<Date> fixingDates2;
+    for (Integer i=-2; i<=12; ++i)
+        fixingDates2.push_back(today + i*Months);
+
+    DiscreteAveragingAsianOption option2(Average::Arithmetic, runningSum,
+                                         pastFixings, fixingDates2,
+                                         payoff, exercise);
+
+    boost::shared_ptr<PricingEngine> engine =
+        MakeMCDiscreteArithmeticAPEngine<LowDiscrepancy>(stochProcess)
+        .withStepsPerYear(1)
+        .withSamples(2047);
+
+    option1.setPricingEngine(engine);
+    option2.setPricingEngine(engine);
+
+    Real price1 = option1.NPV();
+    Real price2 = option2.NPV();
+
+    if (close(price1, price2)) {
+        BOOST_ERROR(
+             "past fixings had no effect on arithmetic average-price option"
+             << "\n  without fixings: " << price1
+             << "\n  with fixings:    " << price2);
+    }
+
+    // MC arithmetic average-strike
+
+    engine =
+        MakeMCDiscreteArithmeticASEngine<LowDiscrepancy>(stochProcess)
+        .withSamples(2047);
+
+    option1.setPricingEngine(engine);
+    option2.setPricingEngine(engine);
+
+    price1 = option1.NPV();
+    price2 = option2.NPV();
+
+    if (close(price1, price2)) {
+        BOOST_ERROR(
+             "past fixings had no effect on arithmetic average-strike option"
+             << "\n  without fixings: " << price1
+             << "\n  with fixings:    " << price2);
+    }
+
+    // analytic geometric average-price
+
+    Real runningProduct = 1.0;
+    pastFixings = 0;
+
+    DiscreteAveragingAsianOption option3(Average::Geometric, runningProduct,
+                                         pastFixings, fixingDates1,
+                                         payoff, exercise);
+
+    pastFixings = 2;
+    runningProduct = spot->value() * spot->value();
+
+    DiscreteAveragingAsianOption option4(Average::Geometric, runningProduct,
+                                         pastFixings, fixingDates2,
+                                         payoff, exercise);
+
+    engine = boost::shared_ptr<PricingEngine>(
+          new AnalyticDiscreteGeometricAveragePriceAsianEngine(stochProcess));
+
+    option3.setPricingEngine(engine);
+    option4.setPricingEngine(engine);
+
+    Real price3 = option3.NPV();
+    Real price4 = option4.NPV();
+
+    if (close(price3, price4)) {
+        BOOST_ERROR(
+             "past fixings had no effect on geometric average-price option"
+             << "\n  without fixings: " << price3
+             << "\n  with fixings:    " << price4);
+    }
+
+    // MC geometric average-price
+
+    engine =
+        MakeMCDiscreteGeometricAPEngine<LowDiscrepancy>(stochProcess)
+        .withStepsPerYear(1)
+        .withSamples(2047);
+
+    option3.setPricingEngine(engine);
+    option4.setPricingEngine(engine);
+
+    price3 = option3.NPV();
+    price4 = option4.NPV();
+
+    if (close(price3, price4)) {
+        BOOST_ERROR(
+             "past fixings had no effect on geometric average-price option"
+             << "\n  without fixings: " << price3
+             << "\n  with fixings:    " << price4);
+    }
+
+}
+
 test_suite* AsianOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Asian option tests");
 
@@ -930,6 +1071,8 @@ test_suite* AsianOptionTest::suite() {
         &AsianOptionTest::testMCDiscreteArithmeticAverageStrike));
     suite->add(QUANTLIB_TEST_CASE(
         &AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks));
+    suite->add(QUANTLIB_TEST_CASE(
+        &AsianOptionTest::testPastFixings));
 
     return suite;
 }
