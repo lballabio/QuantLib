@@ -56,13 +56,10 @@ namespace {
         //  { 0.3,  5,  5, { 1713, 359, 136,  9 } }
     };
 
-    void check(ostringstream& o,
-               int i, int j, string desc, Real found, Real expected,
+    void check(int i, int j, string desc, Real found, Real expected,
                Real bpTolerance, Real relativeTolerance) {
         Real absDiff = found - expected;
         Real relDiff = absDiff / expected;
-        o.setf (ios::fixed, ios::floatfield);
-        o << setprecision(2) << setw(8) << found << " ";
         BOOST_CHECK_MESSAGE (fabs(relDiff) < relativeTolerance ||
                              fabs(absDiff) < bpTolerance,
                              "case " << i << " " << j << " ("<< desc << "): "
@@ -153,8 +150,6 @@ void CdoTest::testHW() {
     QL_REQUIRE (LENGTH(hwAttachment) == LENGTH(hwDetachment),
                 "data length does not match");
 
-    BOOST_MESSAGE("correlation attach - detach expected : found1 found2 ...");
-    BOOST_MESSAGE("--------------------------------------------------------");
     for (Size i = 0; i < LENGTH(hwData7); i++) {
         correlation->setValue (hwData7[i].correlation);
         QL_REQUIRE (LENGTH(hwAttachment) == LENGTH(hwData7[i].trancheSpread),
@@ -199,49 +194,36 @@ void CdoTest::testHW() {
                               schedule, 0.0, premium, daycount, Following,
                               yieldHandle);
 
-            ostringstream o;
-            o.setf (ios::fixed, ios::floatfield);
-
-            o << setprecision(2)
-              << correlation->value() << " "
-              << hwAttachment[j] << " - "
-              << hwDetachment[j] << " "
-              << setprecision(2)
-              << setw(8) << hwData7[i].trancheSpread[j] << " : ";
-
-
-            check(o, i, j, "performCalculations", cdo.fairPremium() * 1e4,
+            check(i, j, "performCalculations", cdo.fairPremium() * 1e4,
                   hwData7[i].trancheSpread[j], 1, 0.02);
 
             cdoe.setPricingEngine(engine1);
-            check(o, i, j, "IHPIntegralEngine", cdoe.fairPremium() * 1e4,
+            check(i, j, "IHPIntegralEngine", cdoe.fairPremium() * 1e4,
                   hwData7[i].trancheSpread[j], 1, 0.03);
 
             cdoe.setPricingEngine(engine2);
-            check(o, i, j, "IHPMidPointEngine", cdoe.fairPremium() * 1e4,
+            check(i, j, "IHPMidPointEngine", cdoe.fairPremium() * 1e4,
                   hwData7[i].trancheSpread[j], 1, 0.04);
 
             cdoe.setPricingEngine(engine3);
-            check(o, i, j, "HPIntegralEngine", cdoe.fairPremium() * 1e4,
+            check(i, j, "HPIntegralEngine", cdoe.fairPremium() * 1e4,
                   hwData7[i].trancheSpread[j], 1, 0.03);
 
             cdoe.setPricingEngine(engine4);
-            check(o, i, j, "HPMidPointEngine", cdoe.fairPremium() * 1e4,
+            check(i, j, "HPMidPointEngine", cdoe.fairPremium() * 1e4,
                   hwData7[i].trancheSpread[j], 1, 0.04);
 
             cdoe.setPricingEngine(engine5);
-            check(o, i, j, "McEngine1 10k", cdoe.fairPremium() * 1e4,
+            check(i, j, "McEngine1 10k", cdoe.fairPremium() * 1e4,
                   hwData7[i].trancheSpread[j], 1, 0.07);
 
             cdoe.setPricingEngine(engine6);
-            check(o, i, j, "McEngine2 10k", cdoe.fairPremium() * 1e4,
+            check(i, j, "McEngine2 10k", cdoe.fairPremium() * 1e4,
                   hwData7[i].trancheSpread[j], 1, 0.07);
 
             cdoe.setPricingEngine(engine7);
-            check(o, i, j, "Gaussian LHP", cdoe.fairPremium() * 1e4,
+            check(i, j, "Gaussian LHP", cdoe.fairPremium() * 1e4,
                   hwData7[i].trancheSpread[j], 10, 0.5);
-
-            BOOST_MESSAGE (o.str());
         }
     }
 }
