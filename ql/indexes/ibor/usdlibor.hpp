@@ -45,7 +45,7 @@ namespace QuantLib {
         : Libor("USDLibor", tenor,
                 2,
                 USDCurrency(),
-                UnitedStates(UnitedStates::NYSE),
+                UnitedStates(UnitedStates::Settlement),
                 Actual360(), h) {}
     };
 
@@ -57,7 +57,7 @@ namespace QuantLib {
                                     Handle<YieldTermStructure>())
         : DailyTenorLibor("USDLibor", settlementDays,
                           USDCurrency(),
-                          UnitedStates(UnitedStates::NYSE),
+                          UnitedStates(UnitedStates::Settlement),
                           Actual360(), h) {}
     };
 
