@@ -24,6 +24,7 @@
 #include <ql/experimental/varianceoption/integralhestonvarianceoptionengine.hpp>
 #include <ql/errors.hpp>
 #include <boost/function.hpp>
+#include <boost/scoped_array.hpp>
 #include <complex>
 
 namespace {
@@ -54,13 +55,15 @@ namespace {
                       double v0, double eprice, double tau, double rtax)
     {
         double i0=0.0, x0=0.0, s=0.0,ss=0.0, kchi=0.0;
-        double  xiv[2048*2048+1],nris=0.0;
+        boost::scoped_array<double> xiv(new double[2048*2048+1]);
+        double nris=0.0;
         int j=0,mm=0;
         double pi=0,pi2=0;
         double dstep=0;
         double option=0, impart=0;
 
-        Complex  ff[2048*2048],xi;
+        boost::scoped_array<Complex> ff(new Complex[2048*2048]);
+        Complex xi;
         Complex ui,beta,zita,gamma,csum,vero;
         Complex contrib, caux, caux1,caux2,caux3;
 
@@ -201,7 +204,9 @@ namespace {
                     const boost::function<double(double)>& payoff) {
 
         double i0=0.0, x0=0.0, s=0.0,ss=0.0, kchi=0.0;
-        double  xiv[2048*2048+1], ivet[2048*2048+1],nris=0.0;
+        boost::scoped_array<double> xiv(new double[2048*2048+1]);
+        boost::scoped_array<double> ivet(new double[2048*2048+1]);
+        double nris=0.0;
         int j=0,mm=0,k=0;
         double pi=0,pi2=0;
 
@@ -213,7 +218,8 @@ namespace {
         double sumr=0,sumi=0;
         Complex dxi,z;
 
-        Complex  ff[2048*2048],xi;
+        boost::scoped_array<Complex> ff(new Complex[2048*2048]);
+        Complex xi;
         Complex ui,beta,zita,gamma,csum,vero;
         Complex contrib, caux, caux1,caux2,caux3;
 
