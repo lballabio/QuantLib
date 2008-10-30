@@ -7668,18 +7668,26 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="varianceswap"
+				Name="varianceoption"
 				>
 				<File
-					RelativePath=".\ql\experimental\varianceswap\all.hpp"
+					RelativePath=".\ql\experimental\varianceoption\all.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\varianceswap\integralhestonvarianceswapengine.cpp"
+					RelativePath=".\ql\experimental\varianceoption\integralhestonvarianceoptionengine.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\varianceswap\integralhestonvarianceswapengine.hpp"
+					RelativePath=".\ql\experimental\varianceoption\integralhestonvarianceoptionengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\varianceoption\varianceoption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\varianceoption\varianceoption.hpp"
 					>
 				</File>
 			</Filter>
