@@ -910,6 +910,12 @@
 				RelativePath=".\ql\instruments\payoffs.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\instruments\quantobarrieroption.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\instruments\quantobarrieroption.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\instruments\quantoforwardvanillaoption.cpp">
 			</File>
 			<File
@@ -5804,6 +5810,12 @@
 				RelativePath=".\ql\quotes\impliedstddevquote.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\quotes\lastfixingquote.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\quotes\lastfixingquote.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\quotes\simplequote.hpp">
 			</File>
 		</Filter>
@@ -7507,16 +7519,25 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="varianceswap"
+				Name="varianceoption"
 				Filter="">
 				<File
 					RelativePath=".\ql\experimental\varianceswap\all.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\experimental\varianceswap\integralhestonvarianceswapengine.cpp">
+					RelativePath=".\ql\experimental\varianceoption\all.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\experimental\varianceswap\integralhestonvarianceswapengine.hpp">
+					RelativePath=".\ql\experimental\varianceoption\integralhestonvarianceoptionengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\varianceoption\integralhestonvarianceoptionengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\varianceoption\varianceoption.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\varianceoption\varianceoption.hpp">
 				</File>
 			</Filter>
 			<Filter
@@ -7605,6 +7626,12 @@
 					RelativePath=".\ql\experimental\commodities\dateinterval.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\experimental\commodities\energybasisswap.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\commodities\energybasisswap.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\experimental\commodities\energycommodity.cpp">
 				</File>
 				<File
@@ -7615,6 +7642,18 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\commodities\energyfuture.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\commodities\energyswap.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\commodities\energyswap.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\commodities\energyvanillaswap.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\commodities\energyvanillaswap.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\experimental\commodities\exchangecontract.hpp">

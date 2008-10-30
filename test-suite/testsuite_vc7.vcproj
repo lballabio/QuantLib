@@ -1284,6 +1284,9 @@
 				RelativePath=".\exchangerate.cpp">
 			</File>
 			<File
+				RelativePath=".\extendedtrees.cpp">
+			</File>
+			<File
 				RelativePath="factorial.cpp">
 				<FileConfiguration
 					Name="Debug (static runtime)|Win32">
@@ -1342,6 +1345,9 @@
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\fdmlinearop.cpp">
 			</File>
 			<File
 				RelativePath=".\forwardoption.cpp">
@@ -1893,10 +1899,10 @@
 				RelativePath=".\optionletstripper.cpp">
 			</File>
 			<File
-				RelativePath=".\pathgenerator.cpp">
+				RelativePath=".\pagodaoption.cpp">
 			</File>
 			<File
-				RelativePath=".\pagodaoption.cpp">
+				RelativePath=".\pathgenerator.cpp">
 			</File>
 			<File
 				RelativePath=".\period.cpp">
@@ -2427,6 +2433,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\varianceoption.cpp">
+			</File>
+			<File
 				RelativePath=".\varianceswaps.cpp">
 			</File>
 			<File
@@ -2533,7 +2542,13 @@
 				RelativePath=".\exchangerate.hpp">
 			</File>
 			<File
+				RelativePath=".\extendedtrees.hpp">
+			</File>
+			<File
 				RelativePath="factorial.hpp">
+			</File>
+			<File
+				RelativePath=".\fdmlinearop.hpp">
 			</File>
 			<File
 				RelativePath=".\forwardoption.hpp">
@@ -2629,10 +2644,10 @@
 				RelativePath=".\optionletstripper.hpp">
 			</File>
 			<File
-				RelativePath=".\pathgenerator.hpp">
+				RelativePath=".\pagodaoption.hpp">
 			</File>
 			<File
-				RelativePath=".\pagodaoption.hpp">
+				RelativePath=".\pathgenerator.hpp">
 			</File>
 			<File
 				RelativePath=".\period.hpp">
@@ -2708,6 +2723,9 @@
 			</File>
 			<File
 				RelativePath="utilities.hpp">
+			</File>
+			<File
+				RelativePath=".\varianceoption.hpp">
 			</File>
 			<File
 				RelativePath=".\varianceswaps.hpp">
