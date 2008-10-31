@@ -115,10 +115,6 @@ namespace QuantLib {
 
     class EnergyCommodity::arguments : public virtual PricingEngine::arguments {
       public:
-        arguments(const Currency& ccy,
-                  const UnitOfMeasure& uom) :
-        currency(ccy), unitOfMeasure(uom) {}
-
         Currency currency;
         UnitOfMeasure unitOfMeasure;
         void validate() const {}
