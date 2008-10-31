@@ -354,7 +354,7 @@ void CliquetOptionTest::testMcPerformance() {
                       Real value = option.NPV();
 
                       Real error = std::fabs(refValue-value);
-                      Real tolerance = 1.0e-2;
+                      Real tolerance = 1.5e-2;
                       if (error > tolerance) {
                           REPORT_FAILURE("value", payoff, maturity,
                                          u, q, r, today, v,
