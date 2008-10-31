@@ -343,9 +343,10 @@ void RiskStatisticsTest::testResults() {
             expected = s.gaussianPotentialUpside(twoSigma);
             calculated = test.gaussianPotentialUpside(twoSigma);
             if (calculated!=expected)
-                BOOST_FAIL("GenericGaussianStatistics<StatsHolder> fails");
-
-
+                BOOST_FAIL("GenericGaussianStatistics<StatsHolder> fails"
+                           << std::setprecision(16)
+                           << "\n  calculated: " << calculated
+                           << "\n  expected: " << expected);
 
             // value-at-risk
             expected = -std::min<Real>(lower_tail,0.0);
