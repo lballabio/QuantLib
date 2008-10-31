@@ -7528,9 +7528,6 @@
 					RelativePath=".\ql\experimental\varianceoption\all.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\experimental\varianceswap\all.hpp">
-				</File>
-				<File
 					RelativePath=".\ql\experimental\varianceoption\integralhestonvarianceoptionengine.cpp">
 				</File>
 				<File
