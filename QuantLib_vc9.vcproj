@@ -2798,14 +2798,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\models\marketmodels\TODO.txt"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\upper bound.txt"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\models\marketmodels\utilities.cpp"
 					>
 				</File>
@@ -7108,6 +7100,22 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\volatility\extendedblackvariancecurve.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\extendedblackvariancecurve.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\extendedblackvariancesurface.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\extendedblackvariancesurface.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\volatility\interestratevolsurface.cpp"
 					>
 				</File>
@@ -7669,18 +7677,26 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="varianceswap"
+				Name="varianceoption"
 				>
 				<File
-					RelativePath=".\ql\experimental\varianceswap\all.hpp"
+					RelativePath=".\ql\experimental\varianceoption\all.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\varianceswap\integralhestonvarianceswapengine.cpp"
+					RelativePath=".\ql\experimental\varianceoption\integralhestonvarianceoptionengine.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\varianceswap\integralhestonvarianceswapengine.hpp"
+					RelativePath=".\ql\experimental\varianceoption\integralhestonvarianceoptionengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\varianceoption\varianceoption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\varianceoption\varianceoption.hpp"
 					>
 				</File>
 			</Filter>
@@ -7901,6 +7917,22 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\amortizingbonds\amortizingfloatingratebond.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="barrieroption"
+				>
+				<File
+					RelativePath=".\ql\experimental\barrieroption\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\barrieroption\perturbativebarrieroptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\barrieroption\perturbativebarrieroptionengine.hpp"
 					>
 				</File>
 			</Filter>

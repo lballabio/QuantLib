@@ -1673,10 +1673,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\pagodaoption.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\pathgenerator.cpp"
 				>
 			</File>
@@ -2423,10 +2419,6 @@
 			</File>
 			<File
 				RelativePath=".\optionletstripper.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\pagodaoption.hpp"
 				>
 			</File>
 			<File

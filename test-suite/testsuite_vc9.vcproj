@@ -2180,6 +2180,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\varianceoption.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\varianceswaps.cpp"
 				>
 			</File>
@@ -2562,6 +2566,10 @@
 			</File>
 			<File
 				RelativePath="utilities.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\varianceoption.hpp"
 				>
 			</File>
 			<File

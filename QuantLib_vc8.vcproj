@@ -7439,6 +7439,22 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\volatility\extendedblackvariancecurve.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\extendedblackvariancecurve.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\extendedblackvariancesurface.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\extendedblackvariancesurface.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\volatility\interestratevolsurface.cpp"
 					>
 				</File>
@@ -7658,6 +7674,10 @@
 			<Filter
 				Name="lattices"
 				>
+				<File
+					RelativePath=".\ql\experimental\lattices\all.hpp"
+					>
+				</File>
 				<File
 					RelativePath=".\ql\experimental\lattices\extendedbinomialtree.cpp"
 					>
