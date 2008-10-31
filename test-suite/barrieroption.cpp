@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2003 Neil Firth
- Copyright (C) 2003, 2004, 2005, 2007 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2007, 2008 StatPro Italia srl
  Copyright (C) 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
@@ -26,9 +26,11 @@
 #include <ql/instruments/barrieroption.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesbarrierengine.hpp>
+#include <ql/experimental/barrieroption/perturbativebarrieroptionengine.hpp>
 #include <ql/pricingengines/barrier/mcbarrierengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
@@ -490,12 +492,97 @@ void BarrierOptionTest::testBeagleholeValues() {
     }
 }
 
+void BarrierOptionTest::testPerturbative() {
+    BOOST_MESSAGE("Testing perturbative engine for barrier options...");
+
+    Real S = 100.0;
+    Real rebate = 0.0;
+    Rate r = 0.03;
+    Rate q = 0.02;
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
+    boost::shared_ptr<SimpleQuote> underlying(new SimpleQuote(S));
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, q, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, r, dc);
+
+    std::vector<Date> dates(2);
+    std::vector<Volatility> vols(2);
+
+    dates[0] = today + 90;  vols[0] = 0.105;
+    dates[1] = today + 180; vols[1] = 0.11;
+
+    boost::shared_ptr<BlackVolTermStructure> volTS(
+                              new BlackVarianceCurve(today, dates, vols, dc));
+
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
+        new BlackScholesMertonProcess(Handle<Quote>(underlying),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
+
+    Real strike = 101.0;
+    Real barrier = 101.0;
+    Date exDate = today+180;
+
+    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+    boost::shared_ptr<StrikedTypePayoff> payoff(
+                                 new PlainVanillaPayoff(Option::Put, strike));
+
+    BarrierOption option(Barrier::UpOut, barrier, rebate, payoff, exercise);
+
+    Natural order = 0;
+    bool zeroGamma = false;
+    boost::shared_ptr<PricingEngine> engine(
+         new PerturbativeBarrierOptionEngine(stochProcess, order, zeroGamma));
+
+    option.setPricingEngine(engine);
+
+    Real calculated = option.NPV();
+    Real expected = 0.897365;
+    Real tolerance = 1.0e-6;
+    if (std::fabs(calculated-expected) > tolerance) {
+        BOOST_ERROR("Failed to reproduce expected value"
+                    << "\n  calculated: " << std::setprecision(5) << calculated
+                    << "\n  expected:   " << std::setprecision(5) << expected);
+    }
+
+    order = 1;
+    engine = boost::shared_ptr<PricingEngine>(
+         new PerturbativeBarrierOptionEngine(stochProcess, order, zeroGamma));
+
+    option.setPricingEngine(engine);
+
+    calculated = option.NPV();
+    expected = 0.894374;
+    if (std::fabs(calculated-expected) > tolerance) {
+        BOOST_ERROR("Failed to reproduce expected value"
+                    << "\n  calculated: " << std::setprecision(5) << calculated
+                    << "\n  expected:   " << std::setprecision(5) << expected);
+    }
+
+    order = 2;
+    engine = boost::shared_ptr<PricingEngine>(
+         new PerturbativeBarrierOptionEngine(stochProcess, order, zeroGamma));
+
+    option.setPricingEngine(engine);
+
+    calculated = option.NPV();
+    expected = 0.894375;
+    if (std::fabs(calculated-expected) > tolerance) {
+        BOOST_ERROR("Failed to reproduce expected value"
+                    << "\n  calculated: " << std::setprecision(5) << calculated
+                    << "\n  expected:   " << std::setprecision(5) << expected);
+    }
+}
 
 test_suite* BarrierOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Barrier option tests");
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testHaugValues));
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testBabsiriValues));
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testBeagleholeValues));
+    suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testPerturbative));
     return suite;
 }
 

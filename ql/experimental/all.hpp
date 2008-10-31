@@ -3,6 +3,7 @@
 
 
 #include <ql/experimental/amortizingbonds/all.hpp>
+#include <ql/experimental/barrieroption/all.hpp>
 #include <ql/experimental/callablebonds/all.hpp>
 #include <ql/experimental/commodities/all.hpp>
 #include <ql/experimental/coupons/all.hpp>

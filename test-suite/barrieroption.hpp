@@ -30,6 +30,7 @@ class BarrierOptionTest {
     static void testHaugValues();
     static void testBabsiriValues();
     static void testBeagleholeValues();
+    static void testPerturbative();
     static boost::unit_test_framework::test_suite* suite();
 };
 
