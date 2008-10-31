@@ -7895,6 +7895,22 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="barrieroption"
+				>
+				<File
+					RelativePath=".\ql\experimental\barrieroption\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\barrieroption\perturbativebarrieroptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\barrieroption\perturbativebarrieroptionengine.hpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\ql\auto_link.hpp"
