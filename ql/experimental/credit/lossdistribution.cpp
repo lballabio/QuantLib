@@ -257,7 +257,11 @@ namespace QuantLib {
                         if (u < int(nBuckets_)) {
                             // a[u] remains unchanged, if dp = 0
                             if (dp > 0.0) {
-                                Real f = 1.0 / (1.0 + p[u] / dp);
+                                // on Windows, p[u]/dp could cause a NaN for
+                                // some very small values of p[k].
+                                // Writing the above as (p[u]/p[k])/P prevents
+                                // the NaN. What can I say?
+                                Real f = 1.0 / (1.0 + (p[u]/p[k]) / P);
                                 a[u] = (1.0 - f) * a[u] + f * (a[k] + L);
                             }
                             /* formulation of Hull-White:
