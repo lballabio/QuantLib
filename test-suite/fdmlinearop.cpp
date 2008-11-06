@@ -851,7 +851,7 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     const Real equityShortRateCorr = -0.7;
     boost::shared_ptr<HybridHestonHullWhiteProcess> jointProcess(
         new HybridHestonHullWhiteProcess(hestonProcess, hwFwdProcess,
-                                         equityShortRateCorr, 3));
+                                         equityShortRateCorr));
 
     Size dims[] = {51, 31, 31};
     const std::vector<Size> dim(dims, dims+LENGTH(dims));
@@ -929,7 +929,8 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
         boost::shared_ptr<PricingEngine>(
             new MCHestonHullWhiteEngine<PseudoRandom>(
                                   jointProcess,
-                                  200, Null<Size>(), true, 1,
+                                  200, Null<Size>(), 
+                                  true, true, 1,
                                   tol, Null<Size>(), 42)));
 
     // the following takes far too long

@@ -27,77 +27,111 @@
 
 namespace QuantLib {
 
-    namespace {
-
-        static std::vector<boost::shared_ptr<StochasticProcess> >
-        buildProcessList(
-          const boost::shared_ptr<HestonProcess> & hestonProcess,
-          const boost::shared_ptr<HullWhiteForwardProcess> & hullWhiteProcess)
-        {
-            std::vector<boost::shared_ptr<StochasticProcess> > retVal;
-
-            retVal.push_back(hestonProcess);
-            retVal.push_back(hullWhiteProcess);
-
-            return retVal;
-        }
-
-    }
-
     HybridHestonHullWhiteProcess::HybridHestonHullWhiteProcess(
         const boost::shared_ptr<HestonProcess> & hestonProcess,
         const boost::shared_ptr<HullWhiteForwardProcess> & hullWhiteProcess,
         Real corrEquityShortRate,
-        Size factors)
-    : JointStochasticProcess(buildProcessList(hestonProcess, hullWhiteProcess),
-                             factors),
+        HybridHestonHullWhiteProcess::Discretization discretization)
+    : hestonProcess_(hestonProcess),
+      hullWhiteProcess_(hullWhiteProcess),
       hullWhiteModel_(new HullWhite(hestonProcess->riskFreeRate(),
                                     hullWhiteProcess->a(),
                                     hullWhiteProcess->sigma())),
       corrEquityShortRate_(corrEquityShortRate),
+      discretization_(discretization),
+      maxRho_(std::sqrt(1-hestonProcess->rho()*hestonProcess->rho()) 
+              - std::sqrt(QL_EPSILON) /* reserve for rounding errors */),
 
       T_(hullWhiteProcess->getForwardMeasureTime()),
       endDiscount_(hestonProcess->riskFreeRate()->discount(T_)) {
 
         QL_REQUIRE(  corrEquityShortRate*corrEquityShortRate
                     +hestonProcess->rho()*hestonProcess->rho() <= 1.0,
-                    "correlation matrix has negative eigenvalues");
+                    "correlation matrix is not positive definite");
+        
+        QL_REQUIRE(hullWhiteProcess->sigma() > 0.0, 
+                   "positive vol of Hull White process is required");
+    }
+        
+    Size HybridHestonHullWhiteProcess::size() const {
+        return 3;
     }
 
-
-    void HybridHestonHullWhiteProcess::preEvolve(Time t0, const Array& x0,
-                                                 Time dt, const Array& dw)
-    const { }
-
-    Disposable<Array>
-    HybridHestonHullWhiteProcess::postEvolve(Time t0, const Array& x0,
-                                             Time dt, const Array& dw,
-                                             const Array& y0) const {
-        // recalculate equity process to reduce discretization
-        // errors within the pure heston equity process
-        Array retVal(y0);
+    Disposable<Array> HybridHestonHullWhiteProcess::initialValues() const {
+        Array retVal(3);
+        retVal[0] = hestonProcess_->s0()->value();
+        retVal[1] = hestonProcess_->v0();
+        retVal[2] = hullWhiteProcess_->x0();
         
-        const boost::shared_ptr<HestonProcess> 
-                                         hestonProcess(this->hestonProcess());
-        const boost::shared_ptr<HullWhiteForwardProcess> 
-                                   hullWhiteProcess(this->hullWhiteProcess());
+        return retVal;
+    }
+
+    Disposable<Array> 
+    HybridHestonHullWhiteProcess::drift(Time t, const Array& x) const {
+        Array retVal(3), x0(2);
         
+        x0[0] = x[0]; x0[1] = x[1];
+        Array y0 = hestonProcess_->drift(t, x0);
+        
+        retVal[0] = y0[0]; retVal[1] = y0[1];
+        retVal[2] = hullWhiteProcess_->drift(t, x[2]);
+        
+        return retVal;
+    }
+
+    Disposable<Array> 
+    HybridHestonHullWhiteProcess::apply(const Array& x0,const Array& dx) const {
+        Array retVal(3), xt(2), dxt(2);
+        
+        xt[0]  = x0[0]; xt[1]  = x0[1];
+        dxt[0] = dx[0]; dxt[1] = dx[1];
+
+        Array yt = hestonProcess_->apply(xt, dxt);
+        
+        retVal[0] = yt[0]; retVal[1] = yt[1];
+        retVal[2] = hullWhiteProcess_->apply(x0[2], dx[2]);
+        
+        return retVal;
+    }
+    
+    Disposable<Matrix> 
+    HybridHestonHullWhiteProcess::diffusion(Time t, const Array& x) const {
+        Matrix retVal(3,3);
+
+        Array xt(2); xt[0] = x[0]; xt[1] = x[1];
+        Matrix m = hestonProcess_->diffusion(t, xt);
+        retVal[0][0] = m[0][0]; retVal[0][1] = 0.0;     retVal[0][2] = 0.0;
+        retVal[1][0] = m[1][0]; retVal[1][1] = m[1][1]; retVal[1][2] = 0.0;
+        
+        const Real sigma = hullWhiteProcess_->sigma();
+        retVal[2][0] = corrEquityShortRate_ * sigma;
+        retVal[2][1] = - retVal[2][0]*retVal[1][0] / retVal[1][1];
+        retVal[2][2] = std::sqrt( sigma*sigma - retVal[2][1]*retVal[2][1] 
+                                              - retVal[2][0]*retVal[2][0] );
+        
+        return retVal;
+    }
+
+    Disposable<Array> 
+    HybridHestonHullWhiteProcess::evolve(Time t0, const Array& x0,
+                                         Time dt, const Array& dw) const {
+
         const Rate r         = x0[2];
-        const Real a         = hullWhiteProcess->a();
-        const Real sigma     = hullWhiteProcess->sigma();
+        const Real a         = hullWhiteProcess_->a();
+        const Real sigma     = hullWhiteProcess_->sigma();
         const Real rho       = corrEquityShortRate_;
+        const Real xi        = hestonProcess_->rho();
         const Volatility eta = (x0[1] > 0.0) ? std::sqrt(x0[1]) : 0.0;
-
         const Time s = t0;
         const Time t = t0 + dt;
         const Time T = T_;
         const Rate dy
-            = hestonProcess->dividendYield()->forwardRate(s, t, Continuous,
-                                                          NoFrequency);
+            = hestonProcess_->dividendYield()->forwardRate(s, t, Continuous,
+                                                           NoFrequency);
 
         const Real df
-            = std::log(  hestonProcess->riskFreeRate()->discount(t)
-                       / hestonProcess->riskFreeRate()->discount(s));
+            = std::log(  hestonProcess_->riskFreeRate()->discount(t)
+                       / hestonProcess_->riskFreeRate()->discount(s));
 
         const Real eaT=std::exp(-a*T);
         const Real eat=std::exp(-a*t);
@@ -109,8 +143,8 @@ namespace QuantLib {
 
         const Real m2 = -rho*sigma*eta/a*(dt-1/a*eaT*(iat-ias));
 
-        const Real m3 = (r - hullWhiteProcess->alpha(s))
-                       *hullWhiteProcess->B(s,t);
+        const Real m3 = (r - hullWhiteProcess_->alpha(s))
+                       *hullWhiteProcess_->B(s,t);
 
         const Real m4 = sigma*sigma/(2*a*a)
             *(dt + 2/a*(eat-eas) - 1/(2*a)*(eat*eat-eas*eas));
@@ -118,62 +152,88 @@ namespace QuantLib {
         const Real m5 = -sigma*sigma/(a*a)
             *(dt - 1/a*(1-eat*ias) - 1/(2*a)*eaT*(iat-2*ias+eat*ias*ias));
 
-        const Real v1 = sigma*sigma/(a*a)
-            *(dt - 2/a*(1-eat*ias)
-              + 1/(2*a)*(1-eat*eat*ias*ias));
-        const Real v2 = eta*eta*dt;
-
-        // todo: better discretization here
-        const Real vol = std::sqrt(v1)*dw[2] + std::sqrt(v2)*dw[0];
         const Real mu = m1 + m2 + m3 + m4 + m5;
-        retVal[0] = x0[0]*std::exp(mu + vol);
+
+        Array retVal(3), xt(2), dwt(2);
+        
+        xt[0]  = x0[0]; xt[1]  = x0[1];
+        dwt[0] = dw[0]; dwt[1] = dw[1];
+        
+        retVal[1] = hestonProcess_->evolve(t0, xt, dt, dwt)[1];
+
+        if (discretization_ == BSMHullWhite) {
+            const Real v1 = eta*eta*dt 
+                + sigma*sigma/(a*a)*(dt - 2/a*(1 - eat*ias) 
+                                        + 1/(2*a)*(1 - eat*eat*ias*ias))
+                + 2*sigma*eta/a*rho*(dt - 1/a*(1 - eat*ias));
+            const Real v2 = hullWhiteProcess_->variance(t0, r, dt);
+            const Real v12 = (1-eat*ias)*(sigma*eta/a*rho + sigma*sigma/(a*a))
+                            - sigma*sigma/(2*a*a)*(1 - eat*eat*ias*ias);
+    
+            QL_REQUIRE(v1 > 0.0 && v2 > 0.0, "zero or negative variance given");
+            
+            // terminal rho must be between -maxRho and +maxRho
+            const Real rhoT 
+                = std::min(maxRho_, std::max(-maxRho_, v12/std::sqrt(v1*v2)));
+            QL_REQUIRE(    rhoT <= 1.0 && rhoT >= -1.0
+                       && 1-rhoT*rhoT/(1-xi*xi) >= 0.0, 
+                       "invalid terminal correlation");
+            
+            const Real dw_0 =  dw[0];
+            const Real dw_2 =  rhoT*dw[0]- rhoT*xi/std::sqrt(1-xi*xi)*dw[1] 
+                             + std::sqrt(1 - rhoT*rhoT/(1-xi*xi))*dw[2];        
+    
+            retVal[2] = hullWhiteProcess_->evolve(t0, r, dt, dw_2);
+    
+            const Real vol = std::sqrt(v1)*dw_0;
+            retVal[0] = x0[0]*std::exp(mu + vol);
+        }
+        else if (discretization_ == Euler) {
+            const Real dw_2 =  rho*dw[0]- rho*xi/std::sqrt(1-xi*xi)*dw[1] 
+                             + std::sqrt(1 - rho*rho/(1-xi*xi))*dw[2];        
+    
+            retVal[2] = hullWhiteProcess_->evolve(t0, r, dt, dw_2);
+    
+            const Real vol = eta*std::sqrt(dt)*dw[0];
+            retVal[0] = x0[0]*std::exp(mu + vol);            
+        }
+        else
+            QL_FAIL("unknown discretization scheme");
 
         return retVal;
     }
-
-    Disposable<Matrix>
-    HybridHestonHullWhiteProcess::crossModelCorrelation(
-        Time t0, const Array& x0) const {
-
-        const Size size = 3;
-        Matrix retVal(size, size, 0.0);
-
-        retVal[0][2] = retVal[2][0] = corrEquityShortRate_;
-
-        return retVal;
-    }
-
-    bool HybridHestonHullWhiteProcess::correlationIsStateDependent() const {
-        return false;
-    }
-
-    boost::shared_ptr<HestonProcess> 
-    HybridHestonHullWhiteProcess::hestonProcess() const {
-        return boost::dynamic_pointer_cast<HestonProcess>(l_[0]);
-    }
-
-    boost::shared_ptr<HullWhiteForwardProcess> 
-    HybridHestonHullWhiteProcess::hullWhiteProcess() const {
-        return boost::dynamic_pointer_cast<HullWhiteForwardProcess>(l_[1]);
-    }
-
+    
     DiscountFactor
     HybridHestonHullWhiteProcess::numeraire(Time t, const Array& x) const {
 
         return hullWhiteModel_->discountBond(t, T_, x[2]) / endDiscount_;
     }
 
-    Real HybridHestonHullWhiteProcess::correlation() const {
+    Real HybridHestonHullWhiteProcess::eta() const {
         return corrEquityShortRate_;
     }
 
+    const boost::shared_ptr<HestonProcess>& 
+    HybridHestonHullWhiteProcess::hestonProcess() const {
+        return hestonProcess_;
+    }
+    
+    const boost::shared_ptr<HullWhiteForwardProcess>& 
+    HybridHestonHullWhiteProcess::hullWhiteProcess() const {
+        return hullWhiteProcess_;
+    }
+
+    HybridHestonHullWhiteProcess::Discretization 
+    HybridHestonHullWhiteProcess::discretization() const {
+        return discretization_;
+    }
+    
+    Time HybridHestonHullWhiteProcess::time(const Date& date) const {
+        return hestonProcess_->time(date);
+    }
+
     void HybridHestonHullWhiteProcess::update() {
-        const boost::shared_ptr<HestonProcess> hestonProcess(
-                         boost::dynamic_pointer_cast<HestonProcess>(l_[0]));
-
-        endDiscount_ = hestonProcess->riskFreeRate()->discount(T_);
-
-        this->JointStochasticProcess::update();
+        endDiscount_ = hestonProcess_->riskFreeRate()->discount(T_);
     }
 }
 

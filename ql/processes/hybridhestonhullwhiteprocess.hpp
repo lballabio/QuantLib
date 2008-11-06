@@ -39,36 +39,46 @@ namespace QuantLib {
 
         \ingroup processes
     */
-    class HybridHestonHullWhiteProcess : public JointStochasticProcess {
+    class HybridHestonHullWhiteProcess : public StochasticProcess {
       public:
+        enum Discretization { Euler, BSMHullWhite };
+
         HybridHestonHullWhiteProcess(
           const boost::shared_ptr<HestonProcess> & hestonProcess,
           const boost::shared_ptr<HullWhiteForwardProcess> & hullWhiteProcess,
           Real corrEquityShortRate,
-          Size factors);
+          Discretization discretization = BSMHullWhite);
 
-        void preEvolve(Time t0, const Array& x0,
-                       Time dt, const Array& dw) const;
-        Disposable<Array> postEvolve(Time t0, const Array& x0,
-                                     Time dt, const Array& dw,
-                                     const Array& y0) const;
+        Size size() const;
+        Disposable<Array> initialValues() const;
+        Disposable<Array> drift(Time t, const Array& x) const;
+        Disposable<Matrix> diffusion(Time t, const Array& x) const;
+        Disposable<Array> apply(const Array& x0, const Array& dx) const;
+
+        Disposable<Array> evolve(Time t0, const Array& x0,
+                                 Time dt, const Array& dw) const;
 
         DiscountFactor numeraire(Time t, const Array& x) const;
-        bool correlationIsStateDependent() const;
-        Disposable<Matrix> crossModelCorrelation(Time t0,
-                                                 const Array& x0) const;
 
-        boost::shared_ptr<HestonProcess> hestonProcess() const;
-        boost::shared_ptr<HullWhiteForwardProcess> hullWhiteProcess() const;
+        const boost::shared_ptr<HestonProcess>& hestonProcess() const;
+        const boost::shared_ptr<HullWhiteForwardProcess>& 
+                                                    hullWhiteProcess() const;
 
+        Real eta() const;
+        Time time(const Date& date) const;
+        Discretization discretization() const;
         void update();
-        Real correlation() const;
 
       protected:
+        const boost::shared_ptr<HestonProcess> hestonProcess_;
+        const boost::shared_ptr<HullWhiteForwardProcess> hullWhiteProcess_;
+        
         //model is used to calculate P(t,T)
         const boost::shared_ptr<HullWhite> hullWhiteModel_;
 
         const Real corrEquityShortRate_;
+        const Discretization discretization_;
+        const Real maxRho_;
         const Time T_;
         DiscountFactor endDiscount_;
     };
