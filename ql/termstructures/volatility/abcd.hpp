@@ -42,7 +42,10 @@ namespace QuantLib {
     class AbcdFunction : public std::unary_function<Real, Real> {
 
       public:
-        AbcdFunction(Real a=-0.06, Real b=0.17, Real c=0.54, Real d=0.17);
+        AbcdFunction(Real a = -0.06,
+                     Real b = 0.17,
+                     Real c = 0.54,
+                     Real d = 0.17);
 
         //! volatility function value at time u: \f[ f(u) \f]
         Real operator()(Time u) const;
@@ -98,7 +101,7 @@ namespace QuantLib {
             \f[ \int f(T-t)f(S-t)dt \f] */
         Real primitive(Time t, Time T, Time S) const;
         
-        /*! Inspectors*/
+        /*! Inspectors */
         Real a() const { return a_; }
         Real b() const { return b_; }
         Real c() const { return c_; }
