@@ -26,6 +26,7 @@
 
 #include <ql/experimental/commodities/dateinterval.hpp>
 #include <ql/experimental/commodities/quantity.hpp>
+#include <vector>
 
 namespace QuantLib {
 

@@ -25,9 +25,9 @@
 #define quantlib_commodity_type_hpp
 
 #include <ql/qldefines.hpp>
+#include <boost/shared_ptr.hpp>
 #include <map>
 #include <ostream>
-#include <boost/shared_ptr.hpp>
 #include <string>
 
 namespace QuantLib {

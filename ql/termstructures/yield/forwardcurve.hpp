@@ -114,6 +114,8 @@ namespace QuantLib {
         return results;
     }
 
+    #ifndef __DOXYGEN__
+
     template <class T>
     inline InterpolatedForwardCurve<T>::InterpolatedForwardCurve(
                                                  const DayCounter& dayCounter,
@@ -187,6 +189,7 @@ namespace QuantLib {
         interpolation_.update();
     }
 
+    #endif
 }
 
 

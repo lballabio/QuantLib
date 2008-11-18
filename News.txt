@@ -1,115 +1,66 @@
 
-Changes for QuantLib 0.9.6:
-
-Version 0.9.6 is a bug-fix release for QuantLib 0.9.5.  It fixes a bug
-that would cause bootstrapped term structures to silently switch to
-linear interpolation when log-linear was requested.
-
-
-Notable changes for QuantLib 0.9.5:
-
-CREDIT FRAMEWORK
-
-New credit framework due to the joint efforts of StatPro Italia,
-Roland Lichters, Chris Kenyon, and Jose Aparicio. The framework
-currently include:
-
-- Interface for default-probability term structure and adapters for
-  hazard-rate and default-density structures.
-- Flat hazard-rate curve.
-- Interpolated hazard-rate and default-density curves.
-- Credit-default swaps (mid-point and integral engines.)
-- Bootstrapped piecewise default-probability curve.
-- CDS example.
+Notable changes for QuantLib 0.9.7:
 
 PORTABILITY
 
-- Added support for Microsoft Visual C++ 2008 (Boost 1.35 is required
-  for this compiler.)
-- Fixes for Cygwin build.
+- Microsoft Visual C++ configurations have been renamed. The default
+  Debug and Release configurations now link to the DLL version of the
+  common runtime library. The names of other configuration should now
+  be more descriptive.
+- Fixes for Solaris build.
 
-EXPERIMENTAL FOLDER
+BONDS
 
-The new ql/experimental folder contains code which is still not fully
-integrated with the library, but is released in order to get user
-feedback.  Experimental classes are considered unstable; their
-interfaces are likely to change in future releases. The folder
-currently include:
+- Added bond example (thanks to Florent Grenier.)
+- Added support for amortizing bonds (thanks to Simon Ibbotson.)
 
-- Generic MC basket option (thanks to Andrea Odetti.)
-- CDS option (thanks to Roland Stamm.)
-- Nth-to-default swap (thanks to Roland Lichters.)
-- Extended Black-Scholes-Merton process (thanks to Frank Hövermann.)
-- Quanto-adjusted coupons and averaged coupons (thanks to Toyin Akin.)
-- Callable bonds (thanks to Allen Kuo.)
-- New framework for volatility term structures.
-- Sensitivity analysis functions.
+CASH FLOWS
 
-CALENDARS
+- Added two more cashflow analysis functions (thanks to Toyin Akin.)
 
-- Added 2008 holidays for China, India, Indonesia, Singapore, and Taiwan.
-- Added one-off holiday (President Reagan's and Ford's funerals) to
-  NYSE calendar.
-- Fixed South Korea calendar (thanks to Charles Chongseok Hyun.)
+DATE/TIME
 
-CURRENCIES
-
-- Added Peruvian currency.
-
-DATES
-
-- Added date-generation rules for CDS schedules (i.e., rolling to the
-  20th of the month.)
+- Added bespoke calendar.
 
 INDEXES
 
-- Added SEK LIBOR index.
+- Added GBP/USD/CHF/JPY swap-rate indexes.
+- Fixed USD LIBOR calendar (settlement, not NYSE.)
 
-INSTRUMENTS
+MARKET MODELS
 
-- Ported Himalaya and Everest options to pricing-engine framework
-  (thanks to the IMAFA students at Polytech'Nice Sophia: Jérôme Bessi,
-  Sébastien Bonifaci, Benjamin Degerbaix and Renaud Pentel.)
-
-MATH
-
-- Added matrix determinant.
-- Added QR matrix decomposition.
-- Added a number of copulas (thanks to Marek Glowacki.)
-- Added constrained cubic spline.
-- Implemented derivative and second derivative of log-interpolations.
-- Added Gauss-Lobatto integration.
-- Added student-t distribution (thanks to Roland Lichters.)
-
-MODELS
-
-- Added calibrated GJR-GARCH model (thanks to Yee Man Chan.)
-- Added Feller constraint to Heston model.
+- Added first displaced-diffusion stochastic-volatility evolver.
 
 PRICING ENGINES
 
-- Refactored variance-swap engines (the underlying stochastic process
-  is now passed to the pricing engine.)
-- Added GJR-GARCH pricing engines for vanilla options (thanks to Yee
-  Man Chan.)
+- Monte Carlo average-price options now uses past fixings correctly.
 
-PROCESSES
+QUOTES
 
-- Added Euler end-point discretization (thanks to Frank Hövermann.)
-- Added GJR-GARCH process (thanks to Yee Man Chan.)
-- Added Bates process.
+- added LastFixingQuote, a Quote adapter for the last available fixing
+  of a given index.
 
-TERM STRUCTURES
+EXPERIMENTAL FOLDER
 
-- Added turn-of-year effect to yield-curve bootstrapping (generalized
-  to multiple jumps at arbitrary dates.)
-- Added local bootstrap of forward rates (thanks to Simon Ibbotson.)
-- Disabled copies of interpolated curves (the existing behavior was
-  incorrect. A fix to re-enable copying will be included in a future
-  release.)
+The ql/experimental folder contains code which is still not fully
+integrated with the library or even fully tested, but is released in
+order to get user feedback.  Experimental classes are considered
+unstable; their interfaces are likely to change in future
+releases. New contributions for this release were:
 
-VOLATILITY
-
-- Added constant cap/floor term volatility structure.
-- Added stripped optionlet.
-
+- time-dependent binomial trees (thanks to John Maiden.)
+- a new multidimensional FDM framework based on operator splitting
+  using Craig-Sneyd, Hundsdorfer or Douglas schemes (thanks to Andreas
+  Gaida, Ralph Schreyer, and Klaus Spanderen.)
+- implementations of Black-variance curve and surface taking a set of
+  quotes as input (thanks to Frank Hövermann.)
+- synthetic CDO engines (thanks to Roland Lichters.)
+- variance options, together with a Heston-process engine (thanks to
+  Lorella Fatone, Francesca Mariani, Maria Cristina Recchioni, and
+  Francesco Zirilli.)
+- a commodity framework, including instruments such as energy futures
+  and energy swaps (thanks to J. Erik Radmall.)
+- quanto-barrier options (thanks to Paul Farrington.)
+- amortizing bonds (thanks to Simon Ibbotson.)
+- a perturbative engine for barrier options (thanks to Lorella Fatone,
+  Maria Cristina Recchioni, and Francesco Zirilli.)

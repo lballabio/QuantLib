@@ -1,12 +1,12 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Cristina Duminuco
- Copyright (C) 2007 Chiara Fornarola
+ Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
- Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2007 Cristina Duminuco
+ Copyright (C) 2007 Chiara Fornarola
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -62,7 +62,7 @@ namespace QuantLib {
         strike = strike + displacement;
 
         // since displacement is non-negative strike==0 iff displacement==0
-        // so returning forward*discount is OK 
+        // so returning forward*discount is OK
         if (strike==0.0)
             return (optionType==Option::Call ? forward*discount : 0.0);
 
@@ -191,7 +191,7 @@ namespace QuantLib {
         CumulativeNormalDistribution N_;
     };
 
-   
+
     Real blackFormulaImpliedStdDev(Option::Type optionType,
                                    Real strike,
                                    Real forward,
@@ -258,7 +258,7 @@ namespace QuantLib {
         return phi(optionType*d2);
     }
 
-   
+
     Real blackFormulaCashItmProbability(
                         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
@@ -298,11 +298,12 @@ namespace QuantLib {
         forward = forward + displacement;
         strike = strike + displacement;
 
-        if (stdDev==0.0)
+        if (stdDev==0.0) {
             if (forward>strike)
                 return discount * forward;
             else
                 return 0.0;
+        }
 
         Real d1 = std::log(forward/strike)/stdDev + .5*stdDev;
         return discount * forward *

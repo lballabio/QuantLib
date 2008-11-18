@@ -34,8 +34,7 @@ namespace QuantLib {
 
     //! Finite-Differences Black Scholes vanilla option engine
 
-    /*! 
-        \ingroup vanillaengines
+    /*! \ingroup vanillaengines
 
         \test the correctness of the returned value is tested by
               reproducing results available in web/literature
@@ -43,21 +42,21 @@ namespace QuantLib {
     */
     class FdBlackScholesVanillaEngine
         : public GenericEngine<DividendVanillaOption::arguments,
-        					   DividendVanillaOption::results> {
+                               DividendVanillaOption::results> {
       public:
         // Constructor
-    	  FdBlackScholesVanillaEngine(
-                const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-    			Size tGrid = 100, Size xGrid = 100);
+          FdBlackScholesVanillaEngine(
+                const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
+                Size tGrid = 100, Size xGrid = 100);
 
         void calculate() const;
-        
+
       private:
         const boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
-    	const Size tGrid_, xGrid_;
+        const Size tGrid_, xGrid_;
     };
 
 
 }
 
-#endif /*quantlib_fd_black_scholes_vanilla_engine_hpp*/
+#endif

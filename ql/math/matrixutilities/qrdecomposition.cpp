@@ -27,8 +27,8 @@
 namespace QuantLib {
 
     Disposable<std::vector<Size> > qrDecomposition(const Matrix& M,
-	                                               Matrix& q, Matrix& r,
-	                                               bool pivot) {
+                                                   Matrix& q, Matrix& r,
+                                                   bool pivot) {
         Matrix mT = transpose(M);
         const Size m = M.rows();
         const Size n = M.columns();

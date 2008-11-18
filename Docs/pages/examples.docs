@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000-2007 StatPro Italia srl
+ Copyright (C) 2000-2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,6 +19,12 @@
 /*! \example BermudanSwaption.cpp
     This example prices a few bermudan swaptions using different
     short-rate models calibrated to market swaptions.
+*/
+
+/*! \example Bonds.cpp
+    This example shows how to set up a term structure and then price
+    some simple bonds. The last part is dedicated to peripherical
+    computations such as "Yield to Price" or "Price to Yield"
 */
 
 /*! \example CallableBonds.cpp

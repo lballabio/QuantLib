@@ -34,8 +34,7 @@ namespace QuantLib {
 
     //! Finite-Differences Heston Vanilla Option engine
 
-    /*! 
-        \ingroup vanillaengines
+    /*! \ingroup vanillaengines
 
         \test the correctness of the returned value is tested by
               reproducing results available in web/literature
@@ -43,20 +42,21 @@ namespace QuantLib {
     */
     class FdHestonVanillaEngine
         : public GenericModelEngine<HestonModel,
-        							DividendVanillaOption::arguments,
-        							DividendVanillaOption::results> {
+                                    DividendVanillaOption::arguments,
+                                    DividendVanillaOption::results> {
       public:
         // Constructor
-    	FdHestonVanillaEngine(const boost::shared_ptr<HestonModel>& model, 
-    			Size tGrid = 100, Size xGrid = 100, Size vGrid = 20);
+        FdHestonVanillaEngine(const boost::shared_ptr<HestonModel>& model,
+                              Size tGrid = 100,
+                              Size xGrid = 100,
+                              Size vGrid = 20);
 
         void calculate() const;
-        
-      private:
-    	const Size tGrid_, xGrid_, vGrid_;
-    };
 
+      private:
+        const Size tGrid_, xGrid_, vGrid_;
+    };
 
 }
 
-#endif /*quantlib_fd_heston_vanilla_engine_hpp*/
+#endif

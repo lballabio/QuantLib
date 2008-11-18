@@ -2,7 +2,6 @@
 
 /*
  Copyright (C) 2008 Simon Ibbotson
- Copyright (C) 2008 Straumur
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/

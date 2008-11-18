@@ -26,7 +26,8 @@
 #ifndef quantlib_fdm_inner_value_calculator_hpp
 #define quantlib_fdm_inner_value_calculator_hpp
 
-#include <ql/types.hpp>
+#include <ql/math/array.hpp>
+#include <ql/payoff.hpp>
 
 namespace QuantLib {
 

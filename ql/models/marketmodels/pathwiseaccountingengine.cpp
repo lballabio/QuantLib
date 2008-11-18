@@ -34,11 +34,11 @@ namespace QuantLib {
         : evolver_(evolver), product_(product),pseudoRootStructure_(pseudoRootStructure),
         initialNumeraireValue_(initialNumeraireValue),
         numberProducts_(product->numberOfProducts()),
+        doDeflation_(!product->alreadyDeflated()),
         numerairesHeld_(product->numberOfProducts()),
         numberCashFlowsThisStep_(product->numberOfProducts()),
         cashFlowsGenerated_(product->numberOfProducts()) ,
-        deflatorAndDerivatives_(product->numberOfProducts()+1),
-        doDeflation_(!product->alreadyDeflated())
+        deflatorAndDerivatives_(product->numberOfProducts()+1)
     {
 
         numberRates_ = pseudoRootStructure_->numberOfRates();
@@ -46,7 +46,7 @@ namespace QuantLib {
 
         Matrix VModel(numberSteps_+1,numberRates_);
 
-    
+
 
         Discounts_ = Matrix(numberSteps_+1,numberRates_+1);
 
@@ -101,7 +101,7 @@ namespace QuantLib {
 
 
         // we need to allocate cash-flow times to steps, i.e. what is the last step completed before a flow occurs
-        // what we really need is for each step, what cash flow time indices to look at 
+        // what we really need is for each step, what cash flow time indices to look at
 
         cashFlowIndicesThisStep_.resize(numberSteps_);
 
@@ -117,7 +117,7 @@ namespace QuantLib {
         partials_ = Matrix(pseudoRootStructure_->numberOfFactors(),numberRates_);
     }
 
-    Real PathwiseAccountingEngine::singlePathValues(std::vector<Real>& values) 
+    Real PathwiseAccountingEngine::singlePathValues(std::vector<Real>& values)
     {
 
         const std::vector<Real> initialForwards_(pseudoRootStructure_->initialRates());
@@ -146,7 +146,7 @@ namespace QuantLib {
         Real weight = evolver_->startNewPath();
         product_->reset();
 
-        Size thisStep; 
+        Size thisStep;
 
         bool done = false;
         do {
@@ -172,12 +172,10 @@ namespace QuantLib {
             }
 
             // for each product...
-            for (Size i=0; i<numberProducts_; ++i) 
+            for (Size i=0; i<numberProducts_; ++i)
             {
                 // ...and each cash flow...
-                const std::vector<MarketModelPathwiseMultiProduct::CashFlow>& cashflows =
-                    cashFlowsGenerated_[i];
-                for (Size j=0; j<numberCashFlowsThisStep_[i]; ++j) 
+                for (Size j=0; j<numberCashFlowsThisStep_[i]; ++j)
                 {
                     Size k = cashFlowsGenerated_[i][j].timeIndex;
                     ++numberCashFlowsThisIndex_[i][ k];
@@ -198,18 +196,17 @@ namespace QuantLib {
 
         bool flowsFound = false;
 
-        Integer finalStepDone = thisStep; 
-        Integer stepsUndone =  cashFlowIndicesThisStep_.size() - finalStepDone;
+        Integer finalStepDone = thisStep;
 
         for (Integer currentStep =  numberSteps_-1; currentStep >=0 ; --currentStep) // must be a signed type as we go negative
         {
-            Integer stepToUse = std::min<Integer>(currentStep, finalStepDone)+1; 
+            Integer stepToUse = std::min<Integer>(currentStep, finalStepDone)+1;
 
             for (Size k=0; k < cashFlowIndicesThisStep_[currentStep].size(); ++k)
             {
                 Size cashFlowIndex =cashFlowIndicesThisStep_[currentStep][k];
 
-                // first check to see if anything actually happened before spending time on computing stuff 
+                // first check to see if anything actually happened before spending time on computing stuff
                 bool noFlows = true;
                 for (Size l=0; l < numberProducts_ && noFlows; ++l)
                     noFlows = noFlows && (numberCashFlowsThisIndex_[l][cashFlowIndex] ==0);
@@ -219,8 +216,8 @@ namespace QuantLib {
                 if (!noFlows)
                 {
                     if (doDeflation_)
-                        discounters_[cashFlowIndex].getFactors(LIBORRates_, Discounts_,stepToUse, deflatorAndDerivatives_); // get amount to discount cash flow by and amount to multiply its derivatives by                                
-    
+                        discounters_[cashFlowIndex].getFactors(LIBORRates_, Discounts_,stepToUse, deflatorAndDerivatives_); // get amount to discount cash flow by and amount to multiply its derivatives by
+
                     for (Size j=0; j < numberProducts_; ++j)
                     {
                         if (numberCashFlowsThisIndex_[j][cashFlowIndex] > 0)
@@ -240,19 +237,19 @@ namespace QuantLib {
                                     thisDerivative +=  totalCashFlowsThisIndex_[j][cashFlowIndex][0]*deflatorAndDerivatives_[i];
                                 }
 
-                                V_[j][stepToUse][i-1] += thisDerivative; // zeroth row of V is t =0 not t_0 
+                                V_[j][stepToUse][i-1] += thisDerivative; // zeroth row of V is t =0 not t_0
                             }
                         }
                     }
                 }
             }
 
-            // need to do backwards updating 
+            // need to do backwards updating
             if (flowsFound)
             {
-                Size nextStepToUse  = std::min(currentStep-1, finalStepDone); 
+                Size nextStepToUse  = std::min(currentStep-1, finalStepDone);
                 Size nextStepIndex = nextStepToUse+1;
-                if (nextStepIndex != stepToUse) // then we need to update V
+                if (nextStepIndex != Size(stepToUse)) // then we need to update V
                 {
 
                     const Matrix& thisPseudoRoot_= pseudoRootStructure_->pseudoRoot(currentStep);
@@ -300,7 +297,7 @@ namespace QuantLib {
 
         }
 
-        // write answer into values 
+        // write answer into values
 
         for (Size i=0; i < numberProducts_; ++i)
         {
@@ -316,7 +313,7 @@ namespace QuantLib {
         Size numberOfPaths)
     {
         std::vector<Real> values(product_->numberOfProducts()*(numberRates_+1));
-        for (Size i=0; i<numberOfPaths; ++i) 
+        for (Size i=0; i<numberOfPaths; ++i)
         {
             Real weight = singlePathValues(values);
             stats.add(values,weight);
@@ -327,18 +324,18 @@ namespace QuantLib {
         const boost::shared_ptr<LogNormalFwdRateEuler>& evolver, // method relies heavily on LMM Euler
         const Clone<MarketModelPathwiseMultiProduct>& product,
         const boost::shared_ptr<MarketModel>& pseudoRootStructure, // we need pseudo-roots and displacements
-        const std::vector<std::vector<Matrix> >& vegaBumps, 
+        const std::vector<std::vector<Matrix> >& vegaBumps,
         Real initialNumeraireValue)
         : evolver_(evolver), product_(product),pseudoRootStructure_(pseudoRootStructure),
         initialNumeraireValue_(initialNumeraireValue),
         numberProducts_(product->numberOfProducts()),
+        doDeflation_(!product->alreadyDeflated()),
         numerairesHeld_(product->numberOfProducts()),
         numberCashFlowsThisStep_(product->numberOfProducts()),
-        cashFlowsGenerated_(product->numberOfProducts()) ,
-        deflatorAndDerivatives_(pseudoRootStructure_->numberOfRates()+1),
-        doDeflation_(!product->alreadyDeflated()),
+        cashFlowsGenerated_(product->numberOfProducts()),
+        stepsDiscounts_(pseudoRootStructure_->numberOfRates()+1),
         vegasThisPath_(product->numberOfProducts(),vegaBumps[0].size()),
-        stepsDiscounts_(pseudoRootStructure_->numberOfRates()+1)
+        deflatorAndDerivatives_(pseudoRootStructure_->numberOfRates()+1)
     {
 
         stepsDiscounts_[0]=1.0;
@@ -346,7 +343,7 @@ namespace QuantLib {
         numberRates_ = pseudoRootStructure_->numberOfRates();
         numberSteps_ = pseudoRootStructure_->numberOfSteps();
         fullDerivatives_.resize(numberRates_);
-       
+
 
         const EvolutionDescription& evolution = pseudoRootStructure_->evolution();
         numeraires_ =  moneyMarketMeasure(evolution);
@@ -360,20 +357,20 @@ namespace QuantLib {
         {
             Size thisSize = vegaBumps[i].size();
             QL_REQUIRE(thisSize == numberBumps_,"We must have precisely the same number of bumps for each step.");
-            jacobianComputers_.push_back(RatePseudoRootJacobian(pseudoRootStructure_->pseudoRoot(i),evolution.firstAliveRate()[i], 
+            jacobianComputers_.push_back(RatePseudoRootJacobian(pseudoRootStructure_->pseudoRoot(i),evolution.firstAliveRate()[i],
                                 numeraires_[i],
                                 evolution.rateTaus(),
                                 vegaBumps[i], pseudoRootStructure_->displacements()));
 
             jacobiansThisPaths_.push_back(Matrix(numberBumps_,pseudoRootStructure_->numberOfRates()));
-                                    
+
         }
 
-      
+
 
         Matrix VModel(numberSteps_+1,numberRates_);
 
-    
+
 
         Discounts_ = Matrix(numberSteps_+1,numberRates_+1);
 
@@ -428,7 +425,7 @@ namespace QuantLib {
 
 
         // we need to allocate cash-flow times to steps, i.e. what is the last step completed before a flow occurs
-        // what we really need is for each step, what cash flow time indices to look at 
+        // what we really need is for each step, what cash flow time indices to look at
 
         cashFlowIndicesThisStep_.resize(numberSteps_);
 
@@ -444,7 +441,7 @@ namespace QuantLib {
         partials_ = Matrix(pseudoRootStructure_->numberOfFactors(),numberRates_);
     }
 
-    Real PathwiseVegasAccountingEngine::singlePathValues(std::vector<Real>& values) 
+    Real PathwiseVegasAccountingEngine::singlePathValues(std::vector<Real>& values)
     {
 
         const std::vector<Real>& initialForwards_(pseudoRootStructure_->initialRates());
@@ -476,7 +473,7 @@ namespace QuantLib {
         Real weight = evolver_->startNewPath();
         product_->reset();
 
-        Size thisStep; 
+        Size thisStep;
 
         bool done = false;
         do {
@@ -503,20 +500,18 @@ namespace QuantLib {
             }
 
             jacobianComputers_[thisStep].getBumps(lastForwards_,
-                                         stepsDiscounts_,  
-                                         currentForwards_,   
+                                         stepsDiscounts_,
+                                         currentForwards_,
                                          evolver_->browniansThisStep(),
                                          jacobiansThisPaths_[thisStep]);
 
 
 
             // for each product...
-            for (Size i=0; i<numberProducts_; ++i) 
+            for (Size i=0; i<numberProducts_; ++i)
             {
                 // ...and each cash flow...
-                const std::vector<MarketModelPathwiseMultiProduct::CashFlow>& cashflows =
-                    cashFlowsGenerated_[i];
-                for (Size j=0; j<numberCashFlowsThisStep_[i]; ++j) 
+                for (Size j=0; j<numberCashFlowsThisStep_[i]; ++j)
                 {
                     Size k = cashFlowsGenerated_[i][j].timeIndex;
                     ++numberCashFlowsThisIndex_[i][ k];
@@ -537,18 +532,17 @@ namespace QuantLib {
 
         bool flowsFound = false;
 
-        Integer finalStepDone = thisStep; 
-        Integer stepsUndone =  cashFlowIndicesThisStep_.size() - finalStepDone;
+        Integer finalStepDone = thisStep;
 
         for (Integer currentStep =  numberSteps_-1; currentStep >=0 ; --currentStep) // must be a signed type as we go negative
         {
-            Integer stepToUse = std::min<Integer>(currentStep, finalStepDone)+1; 
+            Integer stepToUse = std::min<Integer>(currentStep, finalStepDone)+1;
 
             for (Size k=0; k < cashFlowIndicesThisStep_[currentStep].size(); ++k)
             {
                 Size cashFlowIndex =cashFlowIndicesThisStep_[currentStep][k];
 
-                // first check to see if anything actually happened before spending time on computing stuff 
+                // first check to see if anything actually happened before spending time on computing stuff
                 bool noFlows = true;
                 for (Size l=0; l < numberProducts_ && noFlows; ++l)
                     noFlows = noFlows && (numberCashFlowsThisIndex_[l][cashFlowIndex] ==0);
@@ -558,8 +552,8 @@ namespace QuantLib {
                 if (!noFlows)
                 {
                     if (doDeflation_)
-                        discounters_[cashFlowIndex].getFactors(LIBORRates_, Discounts_,stepToUse, deflatorAndDerivatives_); // get amount to discount cash flow by and amount to multiply its derivatives by                                
-    
+                        discounters_[cashFlowIndex].getFactors(LIBORRates_, Discounts_,stepToUse, deflatorAndDerivatives_); // get amount to discount cash flow by and amount to multiply its derivatives by
+
                     for (Size j=0; j < numberProducts_; ++j)
                     {
                         if (numberCashFlowsThisIndex_[j][cashFlowIndex] > 0)
@@ -582,11 +576,11 @@ namespace QuantLib {
                                 else
                                     fullDerivatives_[i-1] = thisDerivative;
 
-                                V_[j][stepToUse][i-1] += thisDerivative; // zeroth row of V is t =0 not t_0 
-                            } 
+                                V_[j][stepToUse][i-1] += thisDerivative; // zeroth row of V is t =0 not t_0
+                            }
 
                             // ok we've got the derivatives and stored them, now add them to vegas
-                            // this corresponds to the \frac{\partial F_n}[\partial theta} term 
+                            // this corresponds to the \frac{\partial F_n}[\partial theta} term
                             // we add the indirect terms later
 
                             for (Size k=0; k < numberBumps_; ++k)
@@ -601,12 +595,12 @@ namespace QuantLib {
                 } // end of  if (!noFlows)
             }
 
-            // need to do backwards updating 
+            // need to do backwards updating
             if (flowsFound)
             {
-                Size nextStepToUse  = std::min(currentStep-1, finalStepDone); 
+                Size nextStepToUse  = std::min(currentStep-1, finalStepDone);
                 Size nextStepIndex = nextStepToUse+1;
-                if (nextStepIndex != stepToUse) // then we need to update V
+                if (nextStepIndex != Size(stepToUse)) // then we need to update V
                 {
 
                     const Matrix& thisPseudoRoot_= pseudoRootStructure_->pseudoRoot(currentStep);
@@ -658,13 +652,13 @@ namespace QuantLib {
                     } // end of (Size i=0; i < numberProducts_; ++i)
 
 
-    
-                } //  end of   if (nextStepIndex != stepToUse) 
+
+                } //  end of   if (nextStepIndex != stepToUse)
             } // end of  if (flowsFound)
 
-        } // end of  for (Integer currentStep =  numberSteps_-1; currentStep >=0 ; --currentStep) 
+        } // end of  for (Integer currentStep =  numberSteps_-1; currentStep >=0 ; --currentStep)
 
-        // write answer into values 
+        // write answer into values
 
         Size entriesPerProduct = 1+numberRates_+numberBumps_;
 
@@ -674,7 +668,7 @@ namespace QuantLib {
             for (Size j=0; j < numberRates_; ++j)
                 values[i*entriesPerProduct+1+j] = V_[i][0][j]*initialNumeraireValue_;
             for (Size k=0; k < numberBumps_; ++k)
-                values[i*entriesPerProduct + numberRates_ +k +1 ] = vegasThisPath_[i][k]*initialNumeraireValue_;                           
+                values[i*entriesPerProduct + numberRates_ +k +1 ] = vegasThisPath_[i][k]*initialNumeraireValue_;
         }
 
         return 1.0; // we have put the weight in already, this results in lower variance since weight changes along the path
@@ -689,12 +683,12 @@ namespace QuantLib {
         std::vector<Real> sums(values.size(),0.0);
         std::vector<Real> sumsqs(values.size(),0.0);
 
-        
 
-        for (Size i=0; i<numberOfPaths; ++i) 
+
+        for (Size i=0; i<numberOfPaths; ++i)
         {
-            Real weight = singlePathValues(values);
-      //      stats.add(values,weight);
+            /* Real weight = */ singlePathValues(values);
+            // stats.add(values,weight);
             for (Size j=0; j < values.size(); ++j)
             {
                 sums[j] += values[j];

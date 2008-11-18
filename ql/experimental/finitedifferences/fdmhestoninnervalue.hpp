@@ -26,7 +26,6 @@
 #ifndef quantlib_fdm_heston_inner_value_hpp
 #define quantlib_fdm_heston_inner_value_hpp
 
-#include <ql/payoff.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 
 namespace QuantLib {

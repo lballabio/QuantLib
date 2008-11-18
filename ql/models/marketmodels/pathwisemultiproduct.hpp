@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006,2008 Mark Joshi
+ Copyright (C) 2006, 2008 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -45,7 +45,7 @@ namespace QuantLib {
         callable product then this would encompass the product and its
         exercise strategy.
 
-        This class differs from market-model multi-product in that it also returns the 
+        This class differs from market-model multi-product in that it also returns the
         derivative of the pay-off with respect to each forward rate
 
     */

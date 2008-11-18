@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file unifromgridmesher.hpp
+/*! \file uniformgridmesher.hpp
     \brief uniform grid mesher
 */
 

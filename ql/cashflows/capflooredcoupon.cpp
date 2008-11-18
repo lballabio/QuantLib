@@ -62,10 +62,12 @@ namespace QuantLib {
                 cap_ = floor;
               }
         }
-        if (isCapped_ && isFloored_)
+
+        if (isCapped_ && isFloored_) {
             QL_REQUIRE(cap >= floor,
                        "cap level (" << cap <<
                        ") less than floor level (" << floor << ")");
+        }
 
         registerWith(underlying);
     }

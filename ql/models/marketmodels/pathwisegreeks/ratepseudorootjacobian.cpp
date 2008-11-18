@@ -27,20 +27,20 @@ namespace QuantLib
 
 
     RatePseudoRootJacobianNumerical::RatePseudoRootJacobianNumerical(const Matrix& pseudoRoot,
-        Size aliveIndex, 
+        Size aliveIndex,
         Size numeraire,
         const std::vector<Time>& taus,
         const std::vector<Matrix>& pseudoBumps,
         const std::vector<Spread>& displacements)
         :
-    pseudoRoot_(pseudoRoot),        
-        aliveIndex_(aliveIndex), 
+    pseudoRoot_(pseudoRoot),
+        aliveIndex_(aliveIndex),
         taus_(taus),
         displacements_(displacements),
         numberBumps_(pseudoBumps.size()),
+        factors_(pseudoRoot.columns()),
         drifts_(taus.size()),
-        bumpedRates_(taus.size()),
-        factors_(pseudoRoot.columns())
+        bumpedRates_(taus.size())
     {
         Size numberRates= taus.size();
 
@@ -76,8 +76,8 @@ namespace QuantLib
 
 
     void RatePseudoRootJacobianNumerical::getBumps(const std::vector<Rate>& oldRates,
-        const std::vector<Real>& , // not used in the numerical implementation 
-        const std::vector<Rate>& newRates,   
+        const std::vector<Real>& , // not used in the numerical implementation
+        const std::vector<Rate>& newRates,
         const std::vector<Real>& gaussians,
         Matrix& B)
     {
@@ -93,7 +93,7 @@ namespace QuantLib
         {
             const Matrix& pseudo = pseudoBumped_[i];
             driftsComputers_[i].compute(oldRates,
-                drifts_); 
+                drifts_);
 
             for (Size j =0; j < aliveIndex_; ++j)
                 B[i][j]=0.0;
@@ -121,20 +121,20 @@ namespace QuantLib
     }
 
     RatePseudoRootJacobian::RatePseudoRootJacobian(const Matrix& pseudoRoot,
-        Size aliveIndex, 
+        Size aliveIndex,
         Size numeraire,
         const std::vector<Time>& taus,
         const std::vector<Matrix>& pseudoBumps,
         const std::vector<Spread>& displacements)
         :
-    pseudoRoot_(pseudoRoot),        
-        aliveIndex_(aliveIndex), 
+    pseudoRoot_(pseudoRoot),
+        aliveIndex_(aliveIndex),
         taus_(taus),
         pseudoBumps_(pseudoBumps),
         displacements_(displacements),
         numberBumps_(pseudoBumps.size()),
-        bumpedRates_(taus.size()),
         factors_(pseudoRoot.columns()),
+        bumpedRates_(taus.size()),
         e_(pseudoRoot.rows(), pseudoRoot.columns()),
         ratios_(taus_.size())
     {
@@ -173,8 +173,8 @@ namespace QuantLib
 
 
     void RatePseudoRootJacobian::getBumps(const std::vector<Rate>& oldRates,
-        const std::vector<Real>& discountRatios, 
-        const std::vector<Rate>& newRates,   
+        const std::vector<Real>& discountRatios,
+        const std::vector<Rate>& newRates,
         const std::vector<Real>& gaussians,
         Matrix& B)
     {
@@ -182,8 +182,8 @@ namespace QuantLib
 
          QL_REQUIRE(B.rows() == numberBumps_, "we need B.rows() which is " << B.rows() << " to equal numberBumps_ which is "  << numberBumps_);
          QL_REQUIRE(B.columns() == numberRates, "we need B.columns() which is " << B.columns() << " to equal numberRates which is "  << numberRates);
-       
-      
+
+
         for (Size j=aliveIndex_; j < numberRates; ++j)
             ratios_[j] = (oldRates[j] + displacements_[j])*discountRatios[j+1];
 
@@ -227,7 +227,7 @@ namespace QuantLib
 
                 for (; j < aliveIndex_; ++j)
                 {
-                    B[i][j]=0.0;        
+                    B[i][j]=0.0;
                 }
                 for (; j < numberRates; ++j)
                 {
@@ -238,7 +238,7 @@ namespace QuantLib
                             sum += pseudoBumps_[i][k][f]*allDerivatives_[j][k][f];
                     B[i][j] =sum;
 
-                }      
+                }
 
             }
 

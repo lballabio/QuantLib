@@ -42,13 +42,13 @@ MarketModelPathwiseDiscounter::MarketModelPathwiseDiscounter(Time paymentTime,
 
         postWeight_  = 1.0 - beforeWeight_;
         taus_.resize(numberRates_);
-    
+
         for (Size i=0; i < numberRates_; ++i)
             taus_[i] = rateTimes[i+1] - rateTimes[i];
 
 }
 
-void MarketModelPathwiseDiscounter::getFactors(const Matrix& LIBORRates, // LIBOR rate values for all steps   
+void MarketModelPathwiseDiscounter::getFactors(const Matrix& LIBORRates, // LIBOR rate values for all steps
                                 const Matrix& Discounts, // P(t_0, t_j) for j=0,...n for each step
                                  Size currentStep,
                                  std::vector<Real>& factors) const
@@ -72,7 +72,7 @@ void MarketModelPathwiseDiscounter::getFactors(const Matrix& LIBORRates, // LIBO
            return;
        }
 
-   
+
 
        Real df = preDF *  std::pow(postDF/preDF, postWeight_);
 
@@ -87,6 +87,5 @@ void MarketModelPathwiseDiscounter::getFactors(const Matrix& LIBORRates, // LIBO
 
         return ;
 }
-   
+
 }
-  

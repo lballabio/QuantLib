@@ -38,9 +38,9 @@ QuantLib
         k_(reversionSpeed),
         epsilon_(volVar),
         v0_(v0),
+        numberSubSteps_(numberSubSteps),
         dt_(evolutionTimes.size()*numberSubSteps),
         eMinuskDt_(evolutionTimes.size()*numberSubSteps),
-        numberSubSteps_(numberSubSteps),
         w1_(w1),
         w2_(w2),
         PsiC_(cutPoint),
@@ -51,7 +51,7 @@ QuantLib
         for (; j < numberSubSteps_; ++j)
             dt_[j] = evolutionTimes[0]/numberSubSteps_;
 
-        for (Size i=1; i < evolutionTimes.size(); ++i) 
+        for (Size i=1; i < evolutionTimes.size(); ++i)
         {
             Real dt = (evolutionTimes[i] - evolutionTimes[i-1])/numberSubSteps_;
 
@@ -60,7 +60,7 @@ QuantLib
 
             for (Size k=0; k < numberSubSteps_; ++k)
             {
-                dt_[j] = dt; 
+                dt_[j] = dt;
                 eMinuskDt_[j] = ekdt;
 
                 ++j;
@@ -74,26 +74,26 @@ QuantLib
     {
         return numberSubSteps_;
     }
-    
+
     Size SquareRootAndersen::numberSteps()
     {
         return dt_.size()*numberSubSteps_;
     }
-    
+
     void SquareRootAndersen::nextPath()
     {
           v_=v0_;
           currentStep_=0;
           subStep_=0;
-        
+
     }
-     
+
     void SquareRootAndersen::DoOneSubStep(Real& vt, Real z, Size j)
     {
-     
+
         Real eminuskT = eMinuskDt_[j];
         Real m = theta_+(vt-theta_)*eminuskT;
-        Real s2= vt*epsilon_*epsilon_*eminuskT*(1-eminuskT)/k_ 
+        Real s2= vt*epsilon_*epsilon_*eminuskT*(1-eminuskT)/k_
                 + theta_*epsilon_*epsilon_*(1- eminuskT)*(1- eminuskT)/(2*k_);
         Real s = sqrt(s2);
         Real psi = s*s/(m*m);
@@ -110,25 +110,25 @@ QuantLib
             Real p = (psi-1.0)/(psi+1.0);
             Real beta = (1.0-p)/m;
             Real u = CumulativeNormalDistribution()(z);
-       
+
             if (u < p)
-            {                
+            {
                 vt=0;
                 return;
-            }             
-             
+            }
+
              vt = log((1.0-p)/(1.0-u))/beta;
         }
 
     }
-    
+
 
     Real SquareRootAndersen::nextstep(const std::vector<Real>& variates)
     {
         for (Size j=0; j < numberSubSteps_; ++j)
         {
             DoOneSubStep(v_, variates[j], subStep_);
-            ++subStep_;        
+            ++subStep_;
             vPath_[subStep_] = v_;
         }
 
@@ -136,8 +136,8 @@ QuantLib
 
         return 1.0; // no importance sampling here
     }
-    
-    Real SquareRootAndersen::stepSd() const 
+
+    Real SquareRootAndersen::stepSd() const
     {
         QL_REQUIRE(currentStep_>0, "nextStep must be called before stepSd");
         Real stepVariance =0.0;
@@ -152,7 +152,7 @@ QuantLib
 
     std::vector<Real>& SquareRootAndersen::stateVariables() const
     {
-        state_[0] = v_;   
+        state_[0] = v_;
         return state_;
     }
 

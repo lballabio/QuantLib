@@ -123,8 +123,9 @@ namespace QuantLib {
         for (Size i=0; i<arguments_.fixingDates.size(); i++) {
             Time t = processes_->time(arguments_.fixingDates[i]);
             QL_REQUIRE(t >= 0.0, "seasoned options are not handled");
-            if (i > 0)
+            if (i > 0) {
                 QL_REQUIRE(t > fixingTimes.back(), "fixing dates not sorted");
+            }
             fixingTimes.push_back(t);
         }
 

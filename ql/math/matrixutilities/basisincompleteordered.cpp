@@ -121,15 +121,17 @@ namespace QuantLib {
     }
 
 
-  
-    OrthogonalProjections::OrthogonalProjections(const Matrix& originalVectors,
-        Real multiplierCutoff,
-        Real tolerance)
-        : originalVectors_(originalVectors), multiplierCutoff_(multiplierCutoff), validVectors_(originalVectors.rows(), true),
-        orthoNormalizedVectors_(originalVectors.rows(), originalVectors.columns()),
-        numberVectors_(originalVectors.rows()),
-        dimension_(originalVectors.columns())
 
+    OrthogonalProjections::OrthogonalProjections(const Matrix& originalVectors,
+                                                 Real multiplierCutoff,
+                                                 Real tolerance)
+    : originalVectors_(originalVectors),
+      multiplierCutoff_(multiplierCutoff),
+      numberVectors_(originalVectors.rows()),
+      dimension_(originalVectors.columns()),
+      validVectors_(originalVectors.rows(), true),
+      orthoNormalizedVectors_(originalVectors.rows(),
+                              originalVectors.columns())
     {
         std::vector<Real> currentVector(dimension_);
         for (Size j=0; j < numberVectors_; ++j)
@@ -173,18 +175,18 @@ namespace QuantLib {
 
                     } // end of if k !=j && validVectors_[k])
 
-                }// end of  for (Size k=0; k< numberVectors_; ++k) 
+                }// end of  for (Size k=0; k< numberVectors_; ++k)
 
                 // we now have an o.n. basis for everything except  j
 
                 Real prevNormSquared = normSquared(originalVectors_, j);
 
-        
+
                 for (Size r=0; r < numberVectors_; ++r)
                     if (validVectors_[r] && r != j)
                     {
                         Real dotProduct = innerProduct(orthoNormalizedVectors_, j, orthoNormalizedVectors_,r);
-                        
+
                         for (Size s=0; s < dimension_; ++s)
                            orthoNormalizedVectors_[j][s] -= dotProduct*orthoNormalizedVectors_[r][s];
 

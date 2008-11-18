@@ -38,7 +38,7 @@ QuantLib is
     Copyright (C) 2006, 2007 Chiara Fornarola
     Copyright (C) 2006 Silvia Frasson
     Copyright (C) 2006 Richard Gould
-    Copyright (C) 2006, 2007 Mark Joshi
+    Copyright (C) 2006, 2007, 2008 Mark Joshi
     Copyright (C) 2006, 2007, 2008 Allen Kuo
     Copyright (C) 2006, 2007, 2008 Roland Lichters
     Copyright (C) 2006, 2007 Katiuscia Manzoni
@@ -54,14 +54,23 @@ QuantLib is
     Copyright (C) 2008 Jose Aparicio
     Copyright (C) 2008 Yee Man Chan
     Copyright (C) 2008 Charles Chongseok Hyun
+    Copyright (C) 2008 Paul Farrington
+    Copyright (C) 2008 Lorella Fatone
+    Copyright (C) 2008 Andreas Gaida
     Copyright (C) 2008 Marek Glowacki
+    Copyright (C) 2008 Florent Grenier
     Copyright (C) 2008 Frank Hövermann
     Copyright (C) 2008 Simon Ibbotson
+    Copyright (C) 2008 John Maiden
+    Copyright (C) 2008 Francesca Mariani
     Copyright (C) 2008 Master IMAFA - Polytech'Nice Sophia -
                        Université de Nice Sophia Antipolis
     Copyright (C) 2008 Andrea Odetti
+    Copyright (C) 2008 J. Erik Radmall
+    Copyright (C) 2008 Maria Cristina Recchioni
+    Copyright (C) 2008 Ralph Schreyer
     Copyright (C) 2008 Roland Stamm
-    Copyright (C) 2008 Straumur
+    Copyright (C) 2008 Francesco Zirilli
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
 Methods in Finance".

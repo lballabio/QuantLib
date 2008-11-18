@@ -25,6 +25,7 @@
 #define quantlib_exchange_contract_hpp
 
 #include <ql/time/date.hpp>
+#include <map>
 
 namespace QuantLib {
 

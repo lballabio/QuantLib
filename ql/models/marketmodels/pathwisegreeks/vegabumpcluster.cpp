@@ -1,11 +1,27 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
+/*
+ Copyright (C) 2008 Mark Joshi
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
 
 #include <ql/models/marketmodels/pathwisegreeks/vegabumpcluster.hpp>
 #include <ql/errors.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 
-namespace
-QuantLib
-{
+namespace QuantLib {
 
 
 
@@ -54,7 +70,7 @@ QuantLib
 
     }
 
-        
+
     bool VegaBumpCluster::isCompatible(const boost::shared_ptr<MarketModel>& volStructure) const
     {
 
@@ -71,7 +87,7 @@ QuantLib
         Size firstAliveRate = volStructure->evolution().firstAliveRate()[stepEnd_-1];
 
         if (rateBegin_ < firstAliveRate) // if the rate has reset before the beginning of the last step of the bump
-            return false; 
+            return false;
 
         return true;
 
@@ -79,8 +95,8 @@ QuantLib
 
 
 
-    VegaBumpCollection::VegaBumpCollection(const boost::shared_ptr<MarketModel>& volStructure, 
-                           bool factorwiseBumping) 
+    VegaBumpCollection::VegaBumpCollection(const boost::shared_ptr<MarketModel>& volStructure,
+                           bool factorwiseBumping)
                             : associatedVolStructure_(volStructure)
     {
         Size steps = volStructure->numberOfSteps();
@@ -113,16 +129,16 @@ QuantLib
 
 
     }
-         
+
 
     VegaBumpCollection::VegaBumpCollection(const std::vector<VegaBumpCluster>& allBumps,  const boost::shared_ptr<MarketModel>& volStructure)
         : allBumps_(allBumps), associatedVolStructure_(volStructure), checked_(false)
     {
         for (Size j=0; j < allBumps_.size(); ++j)
             QL_REQUIRE(allBumps_[j].isCompatible(associatedVolStructure_),"incompatible bumps passed to VegaBumpCollection");
-        
+
     }
-    
+
 
     const std::vector<VegaBumpCluster>& VegaBumpCollection::allBumps() const
     {
@@ -148,7 +164,7 @@ QuantLib
             v.push_back(modelTwo);
 
         for (Size k=0; k < allBumps_.size(); ++k)
-        {            
+        {
             for (Size f=allBumps_[k].factorBegin(); f <  allBumps_[k].factorEnd(); ++f)
                 for (Size r=allBumps_[k].rateBegin(); r <  allBumps_[k].rateEnd(); ++r)
                     for (Size s= allBumps_[k].stepBegin(); s <  allBumps_[k].stepEnd(); ++s)
@@ -166,18 +182,18 @@ QuantLib
         return numberFailures>0;
 
     }
-    
+
     bool VegaBumpCollection::isNonOverlapping() const // i.e. is every alive pseudo-root element bumped at most once
     {
-        
+
         if (checked_)
             return nonOverlapped_;
 
         std::vector<std::vector<std::vector<bool> > > v;
-   
+
         Size factors = associatedVolStructure_->numberOfFactors();
 
-      
+
         std::vector<bool> model(factors);
         std::fill(model.begin(), model.end(), false);
 
@@ -187,11 +203,11 @@ QuantLib
 
         for (Size j=0; j < associatedVolStructure_->numberOfSteps(); ++j)
             v.push_back(modelTwo);
-        
+
         Size numberFailures=0;
 
         for (Size k=0; k < allBumps_.size(); ++k)
-        {            
+        {
             for (Size f=allBumps_[k].factorBegin(); f <  allBumps_[k].factorEnd(); ++f)
                 for (Size r=allBumps_[k].rateBegin(); r <  allBumps_[k].rateEnd(); ++r)
                     for (Size s= allBumps_[k].stepBegin(); s <  allBumps_[k].stepEnd(); ++s)
@@ -215,7 +231,7 @@ QuantLib
         return isNonOverlapping() && isFull();
     }
 
-    
+
     Size VegaBumpCollection::numberBumps() const
     {
         return allBumps_.size();

@@ -79,6 +79,8 @@ namespace QuantLib {
 
     // template definitions
 
+    #ifndef __DOXYGEN__
+
     template <class T>
     InterpolatedDefaultDensityCurve<T>::InterpolatedDefaultDensityCurve(
                                          const std::vector<Date>& dates,
@@ -193,6 +195,7 @@ namespace QuantLib {
         return std::max<Real>(P, 0.0);
     }
 
+    #endif
 }
 
 

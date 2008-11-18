@@ -27,6 +27,8 @@
 #define quantlib_fdm_uniform_1d_mesher_hpp
 
 #include <ql/experimental/finitedifferences/fdm1dmesher.hpp>
+#include <ql/errors.hpp>
+#include <ql/utilities/null.hpp>
 
 namespace QuantLib {
 

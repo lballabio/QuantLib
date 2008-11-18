@@ -79,6 +79,7 @@ namespace QuantLib {
                         Time end,
                         Size steps)
         : ExtendedBinomialTree<T>(process, end, steps) {}
+        virtual ~ExtendedEqualProbabilitiesBinomialTree() {}
 
         Real underlying(Size i, Size index) const {
             Time stepTime = i*this->dt_;
@@ -105,6 +106,7 @@ namespace QuantLib {
                         Time end,
                         Size steps)
         : ExtendedBinomialTree<T>(process, end, steps) {}
+        virtual ~ExtendedEqualJumpsBinomialTree() {}
 
         Real underlying(Size i, Size index) const {
             Time stepTime = i*this->dt_;

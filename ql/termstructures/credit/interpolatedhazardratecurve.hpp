@@ -80,6 +80,8 @@ namespace QuantLib {
 
     // template definitions
 
+    #ifndef __DOXYGEN__
+
     template <class T>
     InterpolatedHazardRateCurve<T>::InterpolatedHazardRateCurve(
                                          const std::vector<Date>& dates,
@@ -192,6 +194,7 @@ namespace QuantLib {
         return std::exp(-integral);
     }
 
+    #endif
 }
 
 

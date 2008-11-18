@@ -191,7 +191,6 @@ namespace QuantLib {
             std::sqrt(variance);
 
         Real pu = PeizerPrattMethod2Inversion(d2, oddSteps_);
-        Real pd = 1.0 - pu;
         Real pdash = PeizerPrattMethod2Inversion(d2+std::sqrt(variance),
             oddSteps_);
         Real up = ermqdt * pdash / pu;
@@ -204,7 +203,6 @@ namespace QuantLib {
     Real ExtendedLeisenReimer::probability(Size i, Size, Size branch) const {
         Time stepTime = i*this->dt_;
         Real variance = this->treeProcess_->variance(stepTime, x0_, end_);
-        Real ermqdt = std::exp(this->driftStep(stepTime) + 0.5*variance/oddSteps_);
         Real d2 = (std::log(x0_/strike_) + this->driftStep(stepTime)*oddSteps_ ) /
             std::sqrt(variance);
 
@@ -266,7 +264,6 @@ namespace QuantLib {
             std::sqrt(variance);
 
         Real pu = computeUpProb((oddSteps_-1.0)/2.0,d2 );
-        Real pd = 1.0 - pu;
         Real pdash = computeUpProb((oddSteps_-1.0)/2.0,d2+std::sqrt(variance));
         Real up = ermqdt * pdash / pu;
         Real down = (ermqdt - pu * up) / (1.0 - pu);
@@ -278,7 +275,6 @@ namespace QuantLib {
     Real ExtendedJoshi4::probability(Size i, Size, Size branch) const {
         Time stepTime = i*this->dt_;
         Real variance = this->treeProcess_->variance(stepTime, x0_, end_);
-        Real ermqdt = std::exp(this->driftStep(stepTime) + 0.5*variance/oddSteps_);
         Real d2 = (std::log(x0_/strike_) + this->driftStep(stepTime)*oddSteps_ ) /
             std::sqrt(variance);
 

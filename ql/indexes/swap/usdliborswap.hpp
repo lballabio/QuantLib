@@ -25,10 +25,9 @@
 #define quantlib_usdliborswap_hpp
 
 #include <ql/indexes/swapindex.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
-
-    class YieldTermStructure;
 
     //! %UsdLiborSwapIsdaFixAm index base class
     /*! %USD %Libor %Swap indexes fixed by ISDA in cooperation with

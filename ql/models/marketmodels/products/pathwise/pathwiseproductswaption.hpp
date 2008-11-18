@@ -1,4 +1,3 @@
- 
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
@@ -23,11 +22,11 @@
 #define quantlib_market_model_pathwise_swaption_hpp
 
 #include <ql/types.hpp>
-#include <vector>
-#include <memory>
 #include <ql/models/marketmodels/pathwisemultiproduct.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
+#include <vector>
+#include <memory>
 
 namespace QuantLib {
 
@@ -35,13 +34,13 @@ namespace QuantLib {
     class CurveState;
 
     /*!
-    Main use is to test market pathwise vegas. The swaptions are payers and co-terminal. 
-    The class is tested in TestPathwiseVegas by running against the numerical version below. 
+    Main use is to test market pathwise vegas. The swaptions are payers and co-terminal.
+    The class is tested in TestPathwiseVegas by running against the numerical version below.
     */
 class MarketModelPathwiseCoterminalSwaptionsDeflated : public MarketModelPathwiseMultiProduct
     {
      public:
-        
+
        MarketModelPathwiseCoterminalSwaptionsDeflated(
                           const std::vector<Time>& rateTimes,
                           const std::vector<Rate>& strikes);
@@ -61,12 +60,12 @@ class MarketModelPathwiseCoterminalSwaptionsDeflated : public MarketModelPathwis
         //! during simulation put product at start of path
         virtual void reset();
 
-        //! return value indicates whether path is finished, TRUE means done  
+        //! return value indicates whether path is finished, TRUE means done
         virtual bool nextTimeStep(
             const CurveState& currentState,
             std::vector<Size>& numberCashFlowsThisStep,
             std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >& cashFlowsGenerated) ;
-    
+
         //! returns a newly-allocated copy of itself
         virtual std::auto_ptr<MarketModelPathwiseMultiProduct> clone() const;
 
@@ -76,18 +75,18 @@ class MarketModelPathwiseCoterminalSwaptionsDeflated : public MarketModelPathwis
         Size numberRates_;
         // things that vary in a path
         Size currentIndex_;
-        
+
         EvolutionDescription evolution_;
     };
 
   /*!
-  Easiest way to test MarketModelPathwiseCoterminalSwaptionsDeflated is by doing a numerical differentiation version. 
+  Easiest way to test MarketModelPathwiseCoterminalSwaptionsDeflated is by doing a numerical differentiation version.
 
   */
 class MarketModelPathwiseCoterminalSwaptionsNumericalDeflated : public MarketModelPathwiseMultiProduct
     {
      public:
-        
+
        MarketModelPathwiseCoterminalSwaptionsNumericalDeflated(
                           const std::vector<Time>& rateTimes,
                           const std::vector<Rate>& strikes,
@@ -108,12 +107,12 @@ class MarketModelPathwiseCoterminalSwaptionsNumericalDeflated : public MarketMod
         //! during simulation put product at start of path
         virtual void reset();
 
-        //! return value indicates whether path is finished, TRUE means done  
+        //! return value indicates whether path is finished, TRUE means done
         virtual bool nextTimeStep(
             const CurveState& currentState,
             std::vector<Size>& numberCashFlowsThisStep,
             std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >& cashFlowsGenerated) ;
-    
+
         //! returns a newly-allocated copy of itself
         virtual std::auto_ptr<MarketModelPathwiseMultiProduct> clone() const;
 
@@ -123,7 +122,7 @@ class MarketModelPathwiseCoterminalSwaptionsNumericalDeflated : public MarketMod
         Size numberRates_;
         // things that vary in a path
         Size currentIndex_;
-        
+
         EvolutionDescription evolution_;
 
         Real bumpSize_;
@@ -132,7 +131,7 @@ class MarketModelPathwiseCoterminalSwaptionsNumericalDeflated : public MarketMod
         std::vector<Rate> forwards_;
     };
 
-  
+
 
 
 }

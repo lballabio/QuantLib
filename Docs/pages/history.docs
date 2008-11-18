@@ -18,6 +18,64 @@
 
 /*! \page history Version history
 
+    <strong>Release 0.9.7 - November 2008</strong>
+
+    PORTABILITY
+    - Microsoft Visual C++ configurations have been renamed. The
+      default Debug and Release configurations now link to the DLL
+      version of the common runtime library. The names of other
+      configuration should now be more descriptive.
+    - Fixes for Solaris build.
+
+    BONDS
+    - Added bond example (thanks to Florent Grenier.)
+    - Added support for amortizing bonds (thanks to Simon Ibbotson.)
+
+    CASH FLOWS
+    - Added two more cashflow analysis functions (thanks to Toyin Akin.)
+
+    DATE/TIME
+    - Added bespoke calendar.
+
+    INDEXES
+    - Added GBP/USD/CHF/JPY swap-rate indexes.
+    - Fixed USD LIBOR calendar (settlement, not NYSE.)
+
+    MARKET MODELS
+    - Added first displaced-diffusion stochastic-volatility evolver.
+
+    PRICING ENGINES
+    - Monte Carlo average-price options now uses past fixings correctly.
+
+    QUOTES
+    - added LastFixingQuote, a Quote adapter for the last available
+      fixing of a given index.
+
+    EXPERIMENTAL FOLDER
+
+    The ql/experimental folder contains code which is still not fully
+    integrated with the library or even fully tested, but is released
+    in order to get user feedback.  Experimental classes are
+    considered unstable; their interfaces are likely to change in
+    future releases. New contributions for this release were:
+
+    - time-dependent binomial trees (thanks to John Maiden.)
+    - a new multidimensional FDM framework based on operator splitting
+      using Craig-Sneyd, Hundsdorfer or Douglas schemes (thanks to
+      Andreas Gaida, Ralph Schreyer, and Klaus Spanderen.)
+    - implementations of Black-variance curve and surface taking a set
+      of quotes as input (thanks to Frank Hövermann.)
+    - synthetic CDO engines (thanks to Roland Lichters.)
+    - variance options, together with a Heston-process engine (thanks
+      to Lorella Fatone, Francesca Mariani, Maria Cristina Recchioni,
+      and Francesco Zirilli.)
+    - a commodity framework, including instruments such as energy
+      futures and energy swaps (thanks to J. Erik Radmall.)
+    - quanto-barrier options (thanks to Paul Farrington.)
+    - amortizing bonds (thanks to Simon Ibbotson.)
+    - a perturbative engine for barrier options (thanks to Lorella
+      Fatone, Maria Cristina Recchioni, and Francesco Zirilli.)
+
     <strong>Release 0.9.6 - August 6th, 2008</strong>
 
     Bug-fix release for QuantLib 0.9.5.  It fixes a bug that would

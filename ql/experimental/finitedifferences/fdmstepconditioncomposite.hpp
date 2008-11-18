@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmstepconditioncomposite.cpp
+/*! \file fdmstepconditioncomposite.hpp
     \brief composite of fdm step conditions
 */
 

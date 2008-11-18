@@ -110,6 +110,8 @@ namespace QuantLib {
         return results;
     }
 
+    #ifndef __DOXYGEN__
+
     template <class T>
     inline InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
                                                  const DayCounter& dayCounter,
@@ -175,6 +177,7 @@ namespace QuantLib {
 
     }
 
+    #endif
 }
 
 #endif

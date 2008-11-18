@@ -39,11 +39,11 @@ namespace QuantLib {
         Array newVector_;
     };
 
-/*! Given a collection of vectors, w_i, find a collection of vectors x_i such that 
-x_i is orthogonal to w_j for i \neq j, and <x_i, w_i> = <w_i, w_i> 
+/*! Given a collection of vectors, w_i, find a collection of vectors x_i such that
+x_i is orthogonal to w_j for i != j, and <x_i, w_i> = <w_i, w_i>
 
 This is done by performing GramSchmidt on the other vectors and then projecting onto
-the orthogonal space. 
+the orthogonal space.
 
 This class is tested in
 

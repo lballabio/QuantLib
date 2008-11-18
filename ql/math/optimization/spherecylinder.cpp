@@ -19,34 +19,35 @@
 
 #include <ql/math/optimization/spherecylinder.hpp>
 #include <ql/errors.hpp>
+#include <boost/bind.hpp>
 
 namespace QuantLib {
 
     namespace {
 
-        template<class T, Real (T::*Value)(Real) const >
+        template<class F>
         Real BrentMinimize(Real low,
                            Real mid,
                            Real high,
                            Real tolerance,
                            Size maxIt,
-                           const T& theObject) {
+                           const F& objectiveFunction) {
 
-            Real leftValue = (theObject.*Value)(low);
-            Real rightValue = (theObject.*Value)(high);
+            Real leftValue = objectiveFunction(low);
+            Real rightValue = objectiveFunction(high);
             Real W = 0.5*(3.0-sqrt(5.0));
             Real x = W*low+(1-W)*high;
             if (mid > low && mid < high)
-                x = mid; 
+                x = mid;
 
-            Real midValue = (theObject.*Value)(x);
+            Real midValue = objectiveFunction(x);
 
             Size iterations = 0;
             while (high-low > tolerance && iterations < maxIt) {
                 if (x - low > high -x) { // left interval is bigger
                     Real tentativeNewMid = W*low+(1-W)*x;
-                    Real tentativeNewMidValue = 
-                        (theObject.*Value)(tentativeNewMid);
+                    Real tentativeNewMidValue =
+                        objectiveFunction(tentativeNewMid);
 
                     if (tentativeNewMidValue < midValue) { // go left
                         high =x;
@@ -60,7 +61,7 @@ namespace QuantLib {
                 } else {
                     Real tentativeNewMid = W*x+(1-W)*high;
                     Real tentativeNewMidValue =
-                        (theObject.*Value)(tentativeNewMid);
+                        objectiveFunction(tentativeNewMid);
 
                     if (tentativeNewMidValue < midValue) { // go right
                         low =x;
@@ -94,7 +95,7 @@ namespace QuantLib {
         s = std::max(s,0.0);
          QL_REQUIRE(alpha>0,
                    "cylinder centre must have positive coordinate");
-        
+
         if (fabs(alpha-s) > r )
             nonEmpty_=false;
         else
@@ -105,11 +106,11 @@ namespace QuantLib {
         if (cylinderInside >0.0)
         {
             topValue_ = alpha+s;
-            bottomValue_ = alpha-s;                
+            bottomValue_ = alpha-s;
         }
         else
         {
-          
+
             bottomValue_ = alpha-s;
             Real tmp = r*r - (s *s+alpha*alpha);
 
@@ -117,17 +118,17 @@ namespace QuantLib {
             { // max to left of maximimum
                 Real topValue2 = sqrt(s*s - tmp*tmp/(4*alpha*alpha));
                 topValue_ = alpha -sqrt(s*s - topValue2*topValue2);
-                
+
             }
-            else    
-            { 
+            else
+            {
                 topValue_ = alpha+ tmp/(2.0*alpha);
-                
+
             }
-           
-            
+
+
         }
-            
+
     }
 
     bool SphereCylinderOptimizer::isIntersectionNonEmpty() const {
@@ -138,22 +139,23 @@ namespace QuantLib {
                                               Real tolerance,
                                               Real& y1,
                                               Real& y2,
-                                              Real& y3) const 
+                                              Real& y3) const
     {
          Real x1,x2,x3;
          findByProjection(x1,x2,x3);
 
-         y1 = BrentMinimize<SphereCylinderOptimizer,
-                            &SphereCylinderOptimizer::objectiveFunction>(
-                                bottomValue_, x1, topValue_,tolerance, maxIterations,*this);
+         y1 = BrentMinimize(
+                bottomValue_, x1, topValue_,tolerance, maxIterations,
+                boost::bind(
+                      &SphereCylinderOptimizer::objectiveFunction, this, _1));
          y2 =sqrt(s_*s_ - (y1-alpha_)*(y1-alpha_));
          y3= sqrt(r_*r_ - y1*y1-y2*y2);
     }
 
-    Real SphereCylinderOptimizer::objectiveFunction(Real x1) const 
+    Real SphereCylinderOptimizer::objectiveFunction(Real x1) const
     {
    //     Real x1 = alpha_ - sqrt(s_*s_-x2*x2);
-      
+
         Real x2sq = s_*s_ - (x1-alpha_)*(x1-alpha_);
          // a negative number will be minuscule and a result of rounding error
         Real x2 = x2sq >= 0.0 ? sqrt(x2sq) : 0.0;
@@ -204,7 +206,7 @@ namespace QuantLib {
                                                      Real z3,
                                                      Natural maxIterations,
                                                      Real tolerance,
-                                                     Real zweight) 
+                                                     Real zweight)
     {
 
         SphereCylinderOptimizer optimizer(r, s, alpha, z1, z2, z3, zweight);
@@ -217,7 +219,7 @@ namespace QuantLib {
             optimizer.findByProjection(y[0], y[1], y[2]);
         else
             optimizer.findClosest(maxIterations, tolerance, y[0], y[1], y[2]);
-   
+
         return y;
      }
 

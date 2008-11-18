@@ -118,6 +118,8 @@ namespace QuantLib {
         return results;
     }
 
+    #ifndef __DOXYGEN__
+
     template <class T>
     inline InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
                                                  const DayCounter& dayCounter,
@@ -187,6 +189,7 @@ namespace QuantLib {
         interpolation_.update();
     }
 
+    #endif
 }
 
 #endif

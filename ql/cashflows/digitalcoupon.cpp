@@ -57,13 +57,15 @@ namespace QuantLib {
 
         QL_REQUIRE(replication->gap()>0.0, "Non positive epsilon not allowed");
 
-        if (putStrike == Null<Rate>())
+        if (putStrike == Null<Rate>()) {
             QL_REQUIRE(putDigitalPayoff == Null<Rate>(),
             "Put Cash rate non allowed if put strike is null");
-        if (callStrike == Null<Rate>())
+        }
+        if (callStrike == Null<Rate>()) {
             QL_REQUIRE(callDigitalPayoff == Null<Rate>(),
             "Call Cash rate non allowed if call strike is null");
-        if (callStrike != Null<Rate>()){
+        }
+        if (callStrike != Null<Rate>()) {
             QL_REQUIRE(callStrike >= 0., "negative call strike not allowed");
             hasCallStrike_ = true;
             callStrike_ = callStrike;

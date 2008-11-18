@@ -21,8 +21,7 @@
     Before installing QuantLib, make sure that you have a working
     Boost installation; see
     http://www.boost.org/more/getting_started.html
-    for instructions. Boost 1.31 or later is required; Boost 1.33 is
-    suggested.
+    for instructions.
 
     \section linux Linux/Unix/Mac OS X/Cygwin
     A tarball of the source distribution is available from <br>
@@ -44,6 +43,6 @@
     "ql/userconfig.hpp"; see the \ref config section for details.
 
     Projects files are supplied for building the library with
-    Microsoft Visual C++ 7.1 and 8.0 and with Dev-C++.
+    Microsoft Visual C++ 7.1, 8.0 and 9.0 and with Dev-C++.
 
 */
