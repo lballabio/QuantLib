@@ -47,7 +47,6 @@ namespace QuantLib {
         MCPagodaEngine(const boost::shared_ptr<StochasticProcessArray>&,
                        bool brownianBridge,
                        bool antitheticVariate,
-                       bool controlVariate,
                        Size requiredSamples,
                        Real requiredTolerance,
                        Size maxSamples,
@@ -105,12 +104,11 @@ namespace QuantLib {
                    const boost::shared_ptr<StochasticProcessArray>& processes,
                    bool brownianBridge,
                    bool antitheticVariate,
-                   bool controlVariate,
                    Size requiredSamples,
                    Real requiredTolerance,
                    Size maxSamples,
                    BigNatural seed)
-    : McSimulation<MultiVariate,RNG,S>(antitheticVariate, controlVariate),
+    : McSimulation<MultiVariate,RNG,S>(antitheticVariate, false),
       processes_(processes), requiredSamples_(requiredSamples),
       maxSamples_(maxSamples), requiredTolerance_(requiredTolerance),
       brownianBridge_(brownianBridge), seed_(seed) {

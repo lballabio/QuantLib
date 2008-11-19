@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2003, 2004 Neil Firth
  Copyright (C) 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2003, 2004, 2005, 2007 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -69,7 +69,6 @@ namespace QuantLib {
              Size maxTimeStepsPerYear,
              bool brownianBridge,
              bool antitheticVariate,
-             bool controlVariate,
              Size requiredSamples,
              Real requiredTolerance,
              Size maxSamples,
@@ -99,7 +98,6 @@ namespace QuantLib {
                                                  grid, gen, brownianBridge_));
         }
         boost::shared_ptr<path_pricer_type> pathPricer() const;
-        // Real controlVariateValue() const;
         // data members
         boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size maxTimeStepsPerYear_;
@@ -160,13 +158,12 @@ namespace QuantLib {
              Size maxTimeStepsPerYear,
              bool brownianBridge,
              bool antitheticVariate,
-             bool controlVariate,
              Size requiredSamples,
              Real requiredTolerance,
              Size maxSamples,
              bool isBiased,
              BigNatural seed)
-    : McSimulation<SingleVariate,RNG,S>(antitheticVariate, controlVariate),
+    : McSimulation<SingleVariate,RNG,S>(antitheticVariate, false),
       process_(process), maxTimeStepsPerYear_(maxTimeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
@@ -225,31 +222,6 @@ namespace QuantLib {
                     sequenceGen));
         }
     }
-
-    /*
-    template<class RNG, class S>
-    inline
-    Real MCBarrierEngine<RNG,S>::controlVariateValue() const {
-
-        boost::shared_ptr<PricingEngine> controlPE =
-                this->controlPricingEngine();
-            QL_REQUIRE(controlPE,
-                       "engine does not provide "
-                       "control-variation pricing engine");
-
-            BarrierOption::arguments* controlArguments =
-                dynamic_cast<BarrierOption::arguments*>(
-                    controlPE->arguments());
-            *controlArguments = arguments_;
-            controlPE->calculate();
-
-            const BarrierOption::results* controlResults =
-                dynamic_cast<const BarrierOption::results*>(
-                    controlPE->results());
-
-            return controlResults->value;
-    }
-    */
 
 }
 

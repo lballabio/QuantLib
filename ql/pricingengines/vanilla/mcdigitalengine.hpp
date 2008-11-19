@@ -74,7 +74,6 @@ namespace QuantLib {
                     Size timeStepsPerYear,
                     bool brownianBridge,
                     bool antitheticVariate,
-                    bool controlVariate,
                     Size requiredSamples,
                     Real requiredTolerance,
                     Size maxSamples,
@@ -99,12 +98,11 @@ namespace QuantLib {
         MakeMCDigitalEngine& withMaxSamples(Size samples);
         MakeMCDigitalEngine& withSeed(BigNatural seed);
         MakeMCDigitalEngine& withAntitheticVariate(bool b = true);
-        MakeMCDigitalEngine& withControlVariate(bool b = true);
         // conversion to pricing engine
         operator boost::shared_ptr<PricingEngine>() const;
       private:
         boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
-        bool antithetic_, controlVariate_;
+        bool antithetic_;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
         bool brownianBridge_;
@@ -139,7 +137,6 @@ namespace QuantLib {
              Size timeStepsPerYear,
              bool brownianBridge,
              bool antitheticVariate,
-             bool controlVariate,
              Size requiredSamples,
              Real requiredTolerance,
              Size maxSamples,
@@ -149,7 +146,7 @@ namespace QuantLib {
                                            timeStepsPerYear,
                                            brownianBridge,
                                            antitheticVariate,
-                                           controlVariate,
+                                           false,
                                            requiredSamples,
                                            requiredTolerance,
                                            maxSamples,
@@ -192,7 +189,7 @@ namespace QuantLib {
     template <class RNG, class S>
     inline MakeMCDigitalEngine<RNG,S>::MakeMCDigitalEngine(
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process), antithetic_(false), controlVariate_(false),
+    : process_(process), antithetic_(false),
       steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
       samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()), brownianBridge_(false), seed_(0) {}
@@ -261,13 +258,6 @@ namespace QuantLib {
     }
 
     template <class RNG, class S>
-    inline MakeMCDigitalEngine<RNG,S>&
-    MakeMCDigitalEngine<RNG,S>::withControlVariate(bool b) {
-        controlVariate_ = b;
-        return *this;
-    }
-
-    template <class RNG, class S>
     inline
     MakeMCDigitalEngine<RNG,S>::operator boost::shared_ptr<PricingEngine>()
                                                                       const {
@@ -281,7 +271,6 @@ namespace QuantLib {
                                    stepsPerYear_,
                                    brownianBridge_,
                                    antithetic_,
-                                   controlVariate_,
                                    samples_, tolerance_,
                                    maxSamples_,
                                    seed_));

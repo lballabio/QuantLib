@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 Neil Firth
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -54,7 +54,6 @@ namespace QuantLib {
                                Size maxTimeStepsPerYear,
                                bool brownianBridge,
                                bool antitheticVariate,
-                               bool controlVariate,
                                Size requiredSamples,
                                Real requiredTolerance,
                                Size maxSamples,
@@ -89,7 +88,6 @@ namespace QuantLib {
                                                  grid, gen, brownianBridge_));
         }
         boost::shared_ptr<path_pricer_type> pathPricer() const;
-        // Real controlVariateValue() const;
         // data members
         boost::shared_ptr<StochasticProcessArray> processes_;
         Size maxTimeStepsPerYear_;
@@ -119,12 +117,11 @@ namespace QuantLib {
                    Size maxTimeStepsPerYear,
                    bool brownianBridge,
                    bool antitheticVariate,
-                   bool controlVariate,
                    Size requiredSamples,
                    Real requiredTolerance,
                    Size maxSamples,
                    BigNatural seed)
-    : McSimulation<MultiVariate,RNG,S>(antitheticVariate, controlVariate),
+    : McSimulation<MultiVariate,RNG,S>(antitheticVariate, false),
       processes_(processes), maxTimeStepsPerYear_(maxTimeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),

@@ -99,7 +99,7 @@ void PagodaOptionTest::testCached() {
     option.setPricingEngine(boost::shared_ptr<PricingEngine>(
                                 new MCPagodaEngine<PseudoRandom>(process,
                                                                  false,
-                                                                 false, false,
+                                                                 false,
                                                                  fixedSamples,
                                                                  Null<Real>(),
                                                                  Null<Size>(),
@@ -121,7 +121,7 @@ void PagodaOptionTest::testCached() {
     option.setPricingEngine(boost::shared_ptr<PricingEngine>(
                                 new MCPagodaEngine<PseudoRandom>(process,
                                                                  false,
-                                                                 false, false,
+                                                                 false,
                                                                  Null<Size>(),
                                                                  tolerance,
                                                                  Null<Size>(),

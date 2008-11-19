@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2008 StatPro Italia srl
  Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2004 Neil Firth
 
@@ -291,7 +291,7 @@ void BasketOptionTest::testEuroTwoValues() {
         boost::shared_ptr<PricingEngine> mcEngine(
             new MCEuropeanBasketEngine<PseudoRandom, Statistics>(
                                                          process,
-                                                         1, false, false, false,
+                                                         1, false, false,
                                                          10000, Null<Real>(),
                                                          100000, 42));
 
@@ -490,7 +490,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
         // Think long and hard before moving to more than 1 timestep....
         boost::shared_ptr<PricingEngine> mcQuasiEngine(new
             MCEuropeanBasketEngine<LowDiscrepancy>(process,
-                                                   1, false, false, false,
+                                                   1, false, false,
                                                    8091, Null<Real>(),
                                                    Null<Size>(), 42));
 
@@ -518,7 +518,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
         BigNatural seed = 1;
         boost::shared_ptr<PricingEngine> mcLSMCEngine(
             new MCAmericanBasketEngine<>(process, timeSteps, Null<Size>(),
-                                         false, true, false, requiredSamples,
+                                         false, true, requiredSamples,
                                          Null<Real>(), Null<Size>(),
                                          seed, requiredSamples/4));
 
@@ -639,7 +639,7 @@ void BasketOptionTest::testTavellaValues() {
                                new StochasticProcessArray(procs,correlation));
     boost::shared_ptr<PricingEngine> mcLSMCEngine(
             new MCAmericanBasketEngine<>(process, timeSteps, Null<Size>(),
-                                         false, true, false, requiredSamples,
+                                         false, true, requiredSamples,
                                          Null<Real>(), Null<Size>(),
                                          seed, requiredSamples/4));
 
@@ -744,7 +744,7 @@ void BasketOptionTest::testOneDAmericanValues() {
 
     boost::shared_ptr<PricingEngine> mcLSMCEngine(
             new MCAmericanBasketEngine<>(process, timeSteps, Null<Size>(),
-                                         false, true, false, requiredSamples,
+                                         false, true, requiredSamples,
                                          Null<Real>(), Null<Size>(),
                                          seed, requiredSamples/4));
 
@@ -831,7 +831,7 @@ void BasketOptionTest::testOddSamples() {
 
     boost::shared_ptr<PricingEngine> mcLSMCEngine(
             new MCAmericanBasketEngine<>(process, timeSteps, Null<Size>(),
-                                         false, true, false, requiredSamples,
+                                         false, true, requiredSamples,
                                          Null<Real>(), Null<Size>(),
                                          seed, requiredSamples/4));
 

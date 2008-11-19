@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -57,7 +57,6 @@ namespace QuantLib {
              Size maxTimeStepPerYear,
              bool brownianBridge,
              bool antitheticVariate,
-             bool controlVariate,
              Size requiredSamples,
              Real requiredTolerance,
              Size maxSamples,
@@ -92,7 +91,6 @@ namespace QuantLib {
              Size maxTimeStepPerYear,
              bool brownianBridge,
              bool antitheticVariate,
-             bool controlVariate,
              Size requiredSamples,
              Real requiredTolerance,
              Size maxSamples,
@@ -101,7 +99,7 @@ namespace QuantLib {
                                             maxTimeStepPerYear,
                                             brownianBridge,
                                             antitheticVariate,
-                                            controlVariate,
+                                            false,
                                             requiredSamples,
                                             requiredTolerance,
                                             maxSamples,
@@ -150,12 +148,11 @@ namespace QuantLib {
         MakeMCDiscreteGeometricAPEngine& withMaxSamples(Size samples);
         MakeMCDiscreteGeometricAPEngine& withSeed(BigNatural seed);
         MakeMCDiscreteGeometricAPEngine& withAntitheticVariate(bool b = true);
-        MakeMCDiscreteGeometricAPEngine& withControlVariate(bool b = true);
         // conversion to pricing engine
         operator boost::shared_ptr<PricingEngine>() const;
       private:
         boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
-        bool antithetic_, controlVariate_;
+        bool antithetic_;
         Size steps_, samples_, maxSamples_;
         Real tolerance_;
         bool brownianBridge_;
@@ -166,7 +163,7 @@ namespace QuantLib {
     inline
     MakeMCDiscreteGeometricAPEngine<RNG,S>::MakeMCDiscreteGeometricAPEngine(
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process), antithetic_(false), controlVariate_(false),
+    : process_(process), antithetic_(false),
       steps_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()), brownianBridge_(true), seed_(0) {}
 
@@ -227,13 +224,6 @@ namespace QuantLib {
     }
 
     template <class RNG, class S>
-    inline MakeMCDiscreteGeometricAPEngine<RNG,S>&
-    MakeMCDiscreteGeometricAPEngine<RNG,S>::withControlVariate(bool b) {
-        controlVariate_ = b;
-        return *this;
-    }
-
-    template <class RNG, class S>
     inline
     MakeMCDiscreteGeometricAPEngine<RNG,S>::operator boost::shared_ptr<PricingEngine>()
                                                                       const {
@@ -243,7 +233,7 @@ namespace QuantLib {
             MCDiscreteGeometricAPEngine<RNG,S>(process_,
                                                steps_,
                                                brownianBridge_,
-                                               antithetic_, controlVariate_,
+                                               antithetic_,
                                                samples_, tolerance_,
                                                maxSamples_,
                                                seed_));

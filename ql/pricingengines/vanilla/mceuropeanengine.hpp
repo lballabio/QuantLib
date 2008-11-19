@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -57,7 +57,6 @@ namespace QuantLib {
              Size timeStepsPerYear,
              bool brownianBridge,
              bool antitheticVariate,
-             bool controlVariate,
              Size requiredSamples,
              Real requiredTolerance,
              Size maxSamples,
@@ -81,12 +80,11 @@ namespace QuantLib {
         MakeMCEuropeanEngine& withMaxSamples(Size samples);
         MakeMCEuropeanEngine& withSeed(BigNatural seed);
         MakeMCEuropeanEngine& withAntitheticVariate(bool b = true);
-        MakeMCEuropeanEngine& withControlVariate(bool b = true);
         // conversion to pricing engine
         operator boost::shared_ptr<PricingEngine>() const;
       private:
         boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
-        bool antithetic_, controlVariate_;
+        bool antithetic_;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
         bool brownianBridge_;
@@ -115,7 +113,6 @@ namespace QuantLib {
              Size timeStepsPerYear,
              bool brownianBridge,
              bool antitheticVariate,
-             bool controlVariate,
              Size requiredSamples,
              Real requiredTolerance,
              Size maxSamples,
@@ -125,7 +122,7 @@ namespace QuantLib {
                                            timeStepsPerYear,
                                            brownianBridge,
                                            antitheticVariate,
-                                           controlVariate,
+                                           false,
                                            requiredSamples,
                                            requiredTolerance,
                                            maxSamples,
@@ -159,7 +156,7 @@ namespace QuantLib {
     template <class RNG, class S>
     inline MakeMCEuropeanEngine<RNG,S>::MakeMCEuropeanEngine(
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process), antithetic_(false), controlVariate_(false),
+    : process_(process), antithetic_(false),
       steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
       samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()), brownianBridge_(false), seed_(0) {}
@@ -228,13 +225,6 @@ namespace QuantLib {
     }
 
     template <class RNG, class S>
-    inline MakeMCEuropeanEngine<RNG,S>&
-    MakeMCEuropeanEngine<RNG,S>::withControlVariate(bool b) {
-        controlVariate_ = b;
-        return *this;
-    }
-
-    template <class RNG, class S>
     inline
     MakeMCEuropeanEngine<RNG,S>::operator boost::shared_ptr<PricingEngine>()
                                                                       const {
@@ -248,7 +238,6 @@ namespace QuantLib {
                                     stepsPerYear_,
                                     brownianBridge_,
                                     antithetic_,
-                                    controlVariate_,
                                     samples_, tolerance_,
                                     maxSamples_,
                                     seed_));

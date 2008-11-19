@@ -102,7 +102,7 @@ void EverestOptionTest::testCached() {
     option.setPricingEngine(boost::shared_ptr<PricingEngine>(
                                new MCEverestEngine<PseudoRandom>(process,
                                                                  1, false,
-                                                                 false, false,
+                                                                 false,
                                                                  fixedSamples,
                                                                  Null<Real>(),
                                                                  Null<Size>(),
@@ -123,7 +123,7 @@ void EverestOptionTest::testCached() {
     option.setPricingEngine(boost::shared_ptr<PricingEngine>(
                                new MCEverestEngine<PseudoRandom>(process,
                                                                  1, false,
-                                                                 false, false,
+                                                                 false,
                                                                  Null<Size>(),
                                                                  tolerance,
                                                                  Null<Size>(),
