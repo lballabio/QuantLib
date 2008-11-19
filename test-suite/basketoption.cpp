@@ -1,9 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2003, 2004, 2005 StatPro Italia srl
  Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2004 Neil Firth
- Copyright (C) 2003, 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,7 +24,7 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/basketoption.hpp>
 #include <ql/pricingengines/basket/stulzengine.hpp>
-#include <ql/pricingengines/basket/mcbasketengine.hpp>
+#include <ql/pricingengines/basket/mceuropeanbasketengine.hpp>
 #include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
@@ -289,7 +289,8 @@ void BasketOptionTest::testEuroTwoValues() {
                                                                 stochProcess2,
                                                                 values[i].rho));
         boost::shared_ptr<PricingEngine> mcEngine(
-            new MCBasketEngine<PseudoRandom, Statistics>(process,
+            new MCEuropeanBasketEngine<PseudoRandom, Statistics>(
+                                                         process,
                                                          1, false, false, false,
                                                          10000, Null<Real>(),
                                                          100000, 42));
@@ -488,10 +489,10 @@ void BasketOptionTest::testBarraquandThreeValues() {
         // use a 3D sobol sequence...
         // Think long and hard before moving to more than 1 timestep....
         boost::shared_ptr<PricingEngine> mcQuasiEngine(new
-            MCBasketEngine<LowDiscrepancy>(process,
-                                           1, false, false, false,
-                                           8091, Null<Real>(),
-                                           Null<Size>(), 42));
+            MCEuropeanBasketEngine<LowDiscrepancy>(process,
+                                                   1, false, false, false,
+                                                   8091, Null<Real>(),
+                                                   Null<Size>(), 42));
 
         BasketOption euroBasketOption(basketTypeToPayoff(values[i].basketType,
                                                          payoff),

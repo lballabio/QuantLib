@@ -2,7 +2,7 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
-#include <ql/pricingengines/basket/mcbasketengine.hpp>
+#include <ql/pricingengines/basket/mceuropeanbasketengine.hpp>
 #include <ql/pricingengines/basket/mceverestengine.hpp>
 #include <ql/pricingengines/basket/mchimalayaengine.hpp>
 #include <ql/pricingengines/basket/mcpagodaengine.hpp>

@@ -5,7 +5,7 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
 	mcamericanbasketengine.hpp \
-	mcbasketengine.hpp \
+	mceuropeanbasketengine.hpp \
 	mceverestengine.hpp \
 	mchimalayaengine.hpp \
 	mcpagodaengine.hpp \
@@ -13,7 +13,7 @@ this_include_HEADERS = \
 
 libBasketEngines_la_SOURCES = \
 	mcamericanbasketengine.cpp \
-	mcbasketengine.cpp \
+	mceuropeanbasketengine.cpp \
 	mceverestengine.cpp \
 	mchimalayaengine.cpp \
 	mcpagodaengine.cpp \
