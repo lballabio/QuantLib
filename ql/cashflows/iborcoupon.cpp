@@ -96,6 +96,10 @@ namespace QuantLib {
             // forecast: 3) spanningTime
             Time spanningTime = index_->dayCounter().yearFraction(
                 fixingValueDate, nextFixingValueDate);
+            QL_REQUIRE(spanningTime!=0.0,
+                       "cannot calculate forward rate between " <<
+                       fixingValueDate << " and " << nextFixingValueDate <<
+                       ": time is zero using " << index_->dayCounter().name());
             // forecast: 4) implied fixing
             return (startDiscount/endDiscount-1.0)/spanningTime;
         }
