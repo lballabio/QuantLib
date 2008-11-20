@@ -97,6 +97,8 @@ namespace QuantLib {
                            ") out of [effective (" << effectiveDate <<
                            "), termination (" << terminationDate <<
                            ")] date range");
+                // we should ensure that the above condition is still
+                // verified after adjustment
                 break;
               case DateGeneration::ThirdWednesday:
                   QL_REQUIRE(IMM::isIMMdate(firstDate, false),
@@ -122,6 +124,8 @@ namespace QuantLib {
                            ") out of [effective (" << effectiveDate <<
                            "), termination (" << terminationDate <<
                            ")] date range");
+                // we should ensure that the above condition is still
+                // verified after adjustment
                 break;
               case DateGeneration::ThirdWednesday:
                   QL_REQUIRE(IMM::isIMMdate(nextToLastDate, false),
@@ -174,9 +178,15 @@ namespace QuantLib {
             while (true) {
                 Date temp = nullCalendar.advance(seed,
                     -periods*tenor_, convention, endOfMonth);
-                if (temp < exitDate)
+                if (temp < exitDate) {
+                    if (firstDate != Date() &&
+                        (calendar.adjust(dates_.front(),convention)!=
+                         calendar.adjust(firstDate,convention))) {
+                        dates_.insert(dates_.begin(), firstDate);
+                        isRegular_.insert(isRegular_.begin(), false);
+                    }
                     break;
-                else {
+                } else {
                     dates_.insert(dates_.begin(), temp);
                     isRegular_.insert(isRegular_.begin(), true);
                     ++periods;
@@ -187,7 +197,7 @@ namespace QuantLib {
                 convention=Preceding;
 
             if (calendar.adjust(dates_.front(),convention)!=
-                calendar.adjust(effectiveDate, convention)) {
+                calendar.adjust(effectiveDate,convention)) {
                 dates_.insert(dates_.begin(), effectiveDate);
                 isRegular_.insert(isRegular_.begin(), false);
             }
@@ -233,6 +243,12 @@ namespace QuantLib {
                 Date temp = nullCalendar.advance(seed, periods*tenor_,
                                                  convention, endOfMonth);
                 if (temp > exitDate) {
+                    if (nextToLastDate != Date() &&
+                        (calendar.adjust(dates_.back(),convention)!=
+                         calendar.adjust(nextToLastDate,convention))) {
+                        dates_.push_back(nextToLastDate);
+                        isRegular_.push_back(false);
+                    }
                     break;
                 } else {
                     dates_.push_back(temp);
@@ -245,7 +261,7 @@ namespace QuantLib {
                 convention=Preceding;
 
             if (calendar.adjust(dates_.back(),terminationDateConvention)!=
-                calendar.adjust(terminationDate, terminationDateConvention)) {
+                calendar.adjust(terminationDate,terminationDateConvention)) {
                 if (rule_ == DateGeneration::Twentieth ||
                     rule_ == DateGeneration::TwentiethIMM) {
                     dates_.push_back(nextTwentieth(terminationDate, rule_));
