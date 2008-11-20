@@ -181,10 +181,13 @@ namespace QuantLib {
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
       brownianBridge_(brownianBridge), seed_(seed) {
-        QL_REQUIRE(timeSteps>0,
+        QL_REQUIRE(timeSteps != Null<Size>() ||
+                   timeStepsPerYear != Null<Size>(),
+                   "no time steps provided");
+        QL_REQUIRE(timeSteps != 0,
                    "timeSteps must be positive, " << timeSteps <<
                    " not allowed");
-        QL_REQUIRE(timeStepsPerYear>0,
+        QL_REQUIRE(timeStepsPerYear != 0,
                    "timeStepsPerYear must be positive, " << timeStepsPerYear <<
                    " not allowed");
     }

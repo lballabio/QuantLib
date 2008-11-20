@@ -116,10 +116,13 @@ namespace QuantLib {
       seed_               (seed),
       nCalibrationSamples_( (nCalibrationSamples == Null<Size>())
                             ? 2048 : nCalibrationSamples) {
-        QL_REQUIRE(timeSteps>0,
+        QL_REQUIRE(timeSteps != Null<Size>() ||
+                   timeStepsPerYear != Null<Size>(),
+                   "no time steps provided");
+        QL_REQUIRE(timeSteps != 0,
                    "timeSteps must be positive, " << timeSteps <<
                    " not allowed");
-        QL_REQUIRE(timeStepsPerYear>0,
+        QL_REQUIRE(timeStepsPerYear != 0,
                    "timeStepsPerYear must be positive, " << timeStepsPerYear <<
                    " not allowed");
         this->registerWith(process_);
