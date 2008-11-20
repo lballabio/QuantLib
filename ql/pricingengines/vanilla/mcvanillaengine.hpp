@@ -112,6 +112,9 @@ namespace QuantLib {
         QL_REQUIRE(timeSteps != Null<Size>() ||
                    timeStepsPerYear != Null<Size>(),
                    "no time steps provided");
+        QL_REQUIRE(timeSteps == Null<Size>() ||
+                   timeStepsPerYear == Null<Size>(),
+                   "both time steps and time steps per year were provided");
         QL_REQUIRE(timeSteps != 0,
                    "timeSteps must be positive, " << timeSteps <<
                    " not allowed");
