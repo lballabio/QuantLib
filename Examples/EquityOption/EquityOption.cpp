@@ -308,7 +308,7 @@ int main(int, char* []) {
         boost::shared_ptr<PricingEngine> mcengine1;
         mcengine1 = MakeMCEuropeanEngine<PseudoRandom>(bsmProcess)
             .withSteps(timeSteps)
-            .withTolerance(0.02)
+            .withAbsoluteTolerance(0.02)
             .withSeed(mcSeed);
         europeanOption.setPricingEngine(mcengine1);
         // Real errorEstimate = europeanOption.errorEstimate();
@@ -342,7 +342,7 @@ int main(int, char* []) {
             .withSteps(100)
             .withAntitheticVariate()
             .withCalibrationSamples(4096)
-            .withTolerance(0.02)
+            .withAbsoluteTolerance(0.02)
             .withSeed(mcSeed);
         americanOption.setPricingEngine(mcengine3);
         std::cout << std::setw(widths[0]) << std::left << method

@@ -146,7 +146,7 @@ void GJRGARCHModelTest::testEngines() {
         boost::shared_ptr<PricingEngine> engine1 =
             MakeMCEuropeanGJRGARCHEngine<PseudoRandom>(process)
             .withStepsPerYear(20)
-            .withTolerance(0.02)
+            .withAbsoluteTolerance(0.02)
             .withSeed(1234);
 
         boost::shared_ptr<PricingEngine> engine2(
@@ -267,7 +267,7 @@ void GJRGARCHModelTest::testDAXCalibration() {
     const Real alpha = 0.024;
     const Real beta = 0.93;
     const Real gamma = 0.059;
-    const Real lambda = 0.1; 
+    const Real lambda = 0.1;
     const Real daysPerYear = 365.0; // number of trading days per year
     const Real m1 = beta+(alpha+gamma*CumulativeNormalDistribution()(lambda))
             *(1.0+lambda*lambda)+gamma*lambda*std::exp(-lambda*lambda/2.0)
@@ -275,7 +275,7 @@ void GJRGARCHModelTest::testDAXCalibration() {
     const Real v0 = omega/(1.0-m1);
 
     boost::shared_ptr<GJRGARCHProcess> process(new GJRGARCHProcess(
-                             riskFreeTS, dividendTS, s0, v0, 
+                             riskFreeTS, dividendTS, s0, v0,
                              omega, alpha, beta, gamma, lambda, daysPerYear));
     boost::shared_ptr<GJRGARCHModel> model(new GJRGARCHModel(process));
 
@@ -286,7 +286,7 @@ void GJRGARCHModelTest::testDAXCalibration() {
         options[i]->setPricingEngine(engine);
 
     Simplex om(0.05);
-    model->calibrate(options, om, 
+    model->calibrate(options, om,
                      EndCriteria(400, 40, 1.0e-8, 1.0e-8, 1.0e-8));
 
     Real sse = 0;
@@ -294,7 +294,7 @@ void GJRGARCHModelTest::testDAXCalibration() {
         const Real diff = options[i]->calibrationError()*100.0;
         sse += diff*diff;
     }
-    Real maxExpected = 15; 
+    Real maxExpected = 15;
     if (sse > maxExpected) {
         BOOST_FAIL("Failed to reproduce calibration error"
                    << "\n    calculated: " << sse

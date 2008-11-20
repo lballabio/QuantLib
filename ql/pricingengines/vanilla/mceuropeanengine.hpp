@@ -76,7 +76,7 @@ namespace QuantLib {
         MakeMCEuropeanEngine& withStepsPerYear(Size steps);
         MakeMCEuropeanEngine& withBrownianBridge(bool b = true);
         MakeMCEuropeanEngine& withSamples(Size samples);
-        MakeMCEuropeanEngine& withTolerance(Real tolerance);
+        MakeMCEuropeanEngine& withAbsoluteTolerance(Real tolerance);
         MakeMCEuropeanEngine& withMaxSamples(Size samples);
         MakeMCEuropeanEngine& withSeed(BigNatural seed);
         MakeMCEuropeanEngine& withAntitheticVariate(bool b = true);
@@ -186,7 +186,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCEuropeanEngine<RNG,S>&
-    MakeMCEuropeanEngine<RNG,S>::withTolerance(Real tolerance) {
+    MakeMCEuropeanEngine<RNG,S>::withAbsoluteTolerance(Real tolerance) {
         QL_REQUIRE(samples_ == Null<Size>(),
                    "number of samples already set");
         QL_REQUIRE(RNG::allowsErrorEstimate,

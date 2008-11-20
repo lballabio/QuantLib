@@ -159,7 +159,7 @@ namespace QuantLib {
         // named parameters
         MakeMCHullWhiteCapFloorEngine& withBrownianBridge(bool b = true);
         MakeMCHullWhiteCapFloorEngine& withSamples(Size samples);
-        MakeMCHullWhiteCapFloorEngine& withTolerance(Real tolerance);
+        MakeMCHullWhiteCapFloorEngine& withAbsoluteTolerance(Real tolerance);
         MakeMCHullWhiteCapFloorEngine& withMaxSamples(Size samples);
         MakeMCHullWhiteCapFloorEngine& withSeed(BigNatural seed);
         MakeMCHullWhiteCapFloorEngine& withAntitheticVariate(bool b = true);
@@ -196,7 +196,8 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCHullWhiteCapFloorEngine<RNG,S>&
-    MakeMCHullWhiteCapFloorEngine<RNG,S>::withTolerance(Real tolerance) {
+    MakeMCHullWhiteCapFloorEngine<RNG,S>::withAbsoluteTolerance(
+                                                             Real tolerance) {
         QL_REQUIRE(samples_ == Null<Size>(),
                    "number of samples already set");
         QL_REQUIRE(RNG::allowsErrorEstimate,

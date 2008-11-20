@@ -129,7 +129,7 @@ namespace QuantLib {
         // named parameters
         MakeMCDiscreteArithmeticASEngine& withBrownianBridge(bool b = true);
         MakeMCDiscreteArithmeticASEngine& withSamples(Size samples);
-        MakeMCDiscreteArithmeticASEngine& withTolerance(Real tolerance);
+        MakeMCDiscreteArithmeticASEngine& withAbsoluteTolerance(Real tolerance);
         MakeMCDiscreteArithmeticASEngine& withMaxSamples(Size samples);
         MakeMCDiscreteArithmeticASEngine& withSeed(BigNatural seed);
         MakeMCDiscreteArithmeticASEngine& withAntitheticVariate(bool b = true);
@@ -163,7 +163,8 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCDiscreteArithmeticASEngine<RNG,S>&
-    MakeMCDiscreteArithmeticASEngine<RNG,S>::withTolerance(Real tolerance) {
+    MakeMCDiscreteArithmeticASEngine<RNG,S>::withAbsoluteTolerance(
+                                                             Real tolerance) {
         QL_REQUIRE(samples_ == Null<Size>(),
                    "number of samples already set");
         QL_REQUIRE(RNG::allowsErrorEstimate,

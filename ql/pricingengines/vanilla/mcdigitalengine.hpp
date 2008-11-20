@@ -94,7 +94,7 @@ namespace QuantLib {
         MakeMCDigitalEngine& withStepsPerYear(Size steps);
         MakeMCDigitalEngine& withBrownianBridge(bool b = true);
         MakeMCDigitalEngine& withSamples(Size samples);
-        MakeMCDigitalEngine& withTolerance(Real tolerance);
+        MakeMCDigitalEngine& withAbsoluteTolerance(Real tolerance);
         MakeMCDigitalEngine& withMaxSamples(Size samples);
         MakeMCDigitalEngine& withSeed(BigNatural seed);
         MakeMCDigitalEngine& withAntitheticVariate(bool b = true);
@@ -219,7 +219,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCDigitalEngine<RNG,S>&
-    MakeMCDigitalEngine<RNG,S>::withTolerance(Real tolerance) {
+    MakeMCDigitalEngine<RNG,S>::withAbsoluteTolerance(Real tolerance) {
         QL_REQUIRE(samples_ == Null<Size>(),
                    "number of samples already set");
         QL_REQUIRE(RNG::allowsErrorEstimate,

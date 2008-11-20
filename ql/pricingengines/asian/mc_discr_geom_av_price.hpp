@@ -140,7 +140,7 @@ namespace QuantLib {
         // named parameters
         MakeMCDiscreteGeometricAPEngine& withBrownianBridge(bool b = true);
         MakeMCDiscreteGeometricAPEngine& withSamples(Size samples);
-        MakeMCDiscreteGeometricAPEngine& withTolerance(Real tolerance);
+        MakeMCDiscreteGeometricAPEngine& withAbsoluteTolerance(Real tolerance);
         MakeMCDiscreteGeometricAPEngine& withMaxSamples(Size samples);
         MakeMCDiscreteGeometricAPEngine& withSeed(BigNatural seed);
         MakeMCDiscreteGeometricAPEngine& withAntitheticVariate(bool b = true);
@@ -174,7 +174,8 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCDiscreteGeometricAPEngine<RNG,S>&
-    MakeMCDiscreteGeometricAPEngine<RNG,S>::withTolerance(Real tolerance) {
+    MakeMCDiscreteGeometricAPEngine<RNG,S>::withAbsoluteTolerance(
+                                                             Real tolerance) {
         QL_REQUIRE(samples_ == Null<Size>(),
                    "number of samples already set");
         QL_REQUIRE(RNG::allowsErrorEstimate,

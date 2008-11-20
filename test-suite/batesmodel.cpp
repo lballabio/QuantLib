@@ -209,7 +209,7 @@ void BatesModelTest::testAnalyticAndMcVsJumpDiffusion() {
                             Handle<Quote>(jumpIntensity),
                             Handle<Quote>(meanLogJump),
                             Handle<Quote>(jumpVol)));
-          
+
     boost::shared_ptr<PricingEngine> batesEngine(new BatesEngine(
         boost::shared_ptr<BatesModel>(
             new BatesModel(batesProcess,
@@ -218,11 +218,11 @@ void BatesModelTest::testAnalyticAndMcVsJumpDiffusion() {
                            batesProcess->delta())), 160));
 
     const Real mcTol = 0.1;
-    boost::shared_ptr<PricingEngine> mcBatesEngine = 
+    boost::shared_ptr<PricingEngine> mcBatesEngine =
         MakeMCEuropeanHestonEngine<PseudoRandom>(batesProcess)
             .withStepsPerYear(2)
             .withAntitheticVariate()
-            .withTolerance(mcTol)
+            .withAbsoluteTolerance(mcTol)
             .withSeed(1234);
 
     boost::shared_ptr<PricingEngine> mertonEngine(
@@ -290,7 +290,7 @@ void BatesModelTest::testAnalyticVsMCPricing() {
     Handle<YieldTermStructure> dividendTS(flatRate(0.0, dayCounter));
     Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100)));
     boost::shared_ptr<BatesProcess> batesProcess(new BatesProcess(
-                   riskFreeTS, dividendTS, s0, 
+                   riskFreeTS, dividendTS, s0,
                    0.0776, 1.88, 0.0919, 0.6526, -0.9549, 2, -0.2, 0.25));
 
     const Real tolerance = 0.25;
@@ -298,7 +298,7 @@ void BatesModelTest::testAnalyticVsMCPricing() {
             MakeMCEuropeanHestonEngine<PseudoRandom>(batesProcess)
             .withStepsPerYear(10)
             .withAntitheticVariate()
-            .withTolerance(tolerance)
+            .withAbsoluteTolerance(tolerance)
             .withSeed(1234);
 
     boost::shared_ptr<PricingEngine> analyticEngine(new BatesEngine(
@@ -424,7 +424,7 @@ void BatesModelTest::testDAXCalibration() {
 
     // check calibration engine
     LevenbergMarquardt om;
-    batesModel->calibrate(options, om, 
+    batesModel->calibrate(options, om,
                           EndCriteria(400, 40, 1.0e-8, 1.0e-8, 1.0e-8));
 
     Real expected = 36.6;

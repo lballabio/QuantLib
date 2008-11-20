@@ -683,7 +683,7 @@ void HestonModelTest::testKahlJaeckelCase() {
         MakeMCEuropeanHestonEngine<PseudoRandom>(process)
         .withSteps(10)
         .withAntitheticVariate()
-        .withTolerance(tolerance)
+        .withAbsoluteTolerance(tolerance)
         .withSeed(1234);
     option.setPricingEngine(engine);
 

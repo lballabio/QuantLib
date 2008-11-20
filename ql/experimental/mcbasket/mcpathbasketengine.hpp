@@ -196,7 +196,7 @@ namespace QuantLib {
         MakeMCPathBasketEngine& withSteps(Size steps);
         MakeMCPathBasketEngine& withBrownianBridge(bool b = true);
         MakeMCPathBasketEngine& withSamples(Size samples);
-        MakeMCPathBasketEngine& withTolerance(Real tolerance);
+        MakeMCPathBasketEngine& withAbsoluteTolerance(Real tolerance);
         MakeMCPathBasketEngine& withMaxSamples(Size samples);
         MakeMCPathBasketEngine& withSeed(BigNatural seed);
         MakeMCPathBasketEngine& withAntitheticVariate(bool b = true);
@@ -236,7 +236,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCPathBasketEngine<RNG,S>&
-    MakeMCPathBasketEngine<RNG,S>::withTolerance(Real tolerance) {
+    MakeMCPathBasketEngine<RNG,S>::withAbsoluteTolerance(Real tolerance) {
         QL_REQUIRE(samples_ == Null<Size>(),
                    "number of samples already set");
         QL_REQUIRE(RNG::allowsErrorEstimate,

@@ -181,7 +181,7 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
                 MakeMCAmericanEngine<PseudoRandom>(stochasticProcess)
                   .withSteps(75)
                   .withAntitheticVariate()
-                  .withTolerance(0.02)
+                  .withAbsoluteTolerance(0.02)
                   .withSeed(42)
                   .withPolynomOrder(3)
                   .withBasisSystem(

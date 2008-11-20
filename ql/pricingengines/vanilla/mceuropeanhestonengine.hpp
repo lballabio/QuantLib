@@ -63,7 +63,7 @@ namespace QuantLib {
         MakeMCEuropeanHestonEngine& withSteps(Size steps);
         MakeMCEuropeanHestonEngine& withStepsPerYear(Size steps);
         MakeMCEuropeanHestonEngine& withSamples(Size samples);
-        MakeMCEuropeanHestonEngine& withTolerance(Real tolerance);
+        MakeMCEuropeanHestonEngine& withAbsoluteTolerance(Real tolerance);
         MakeMCEuropeanHestonEngine& withMaxSamples(Size samples);
         MakeMCEuropeanHestonEngine& withSeed(BigNatural seed);
         MakeMCEuropeanHestonEngine& withAntitheticVariate(bool b = true);
@@ -166,7 +166,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCEuropeanHestonEngine<RNG,S>&
-    MakeMCEuropeanHestonEngine<RNG,S>::withTolerance(Real tolerance) {
+    MakeMCEuropeanHestonEngine<RNG,S>::withAbsoluteTolerance(Real tolerance) {
         QL_REQUIRE(samples_ == Null<Size>(),
                    "number of samples already set");
         QL_REQUIRE(RNG::allowsErrorEstimate,

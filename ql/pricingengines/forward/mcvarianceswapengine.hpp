@@ -136,7 +136,7 @@ namespace QuantLib {
         MakeMCVarianceSwapEngine& withStepsPerYear(Size steps);
         MakeMCVarianceSwapEngine& withBrownianBridge(bool b = true);
         MakeMCVarianceSwapEngine& withSamples(Size samples);
-        MakeMCVarianceSwapEngine& withTolerance(Real tolerance);
+        MakeMCVarianceSwapEngine& withAbsoluteTolerance(Real tolerance);
         MakeMCVarianceSwapEngine& withMaxSamples(Size samples);
         MakeMCVarianceSwapEngine& withSeed(BigNatural seed);
         MakeMCVarianceSwapEngine& withAntitheticVariate(bool b = true);
@@ -251,7 +251,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCVarianceSwapEngine<RNG,S>&
-    MakeMCVarianceSwapEngine<RNG,S>::withTolerance(Real tolerance) {
+    MakeMCVarianceSwapEngine<RNG,S>::withAbsoluteTolerance(Real tolerance) {
         QL_REQUIRE(samples_ == Null<Size>(),
                    "number of samples already set");
         QL_REQUIRE(RNG::allowsErrorEstimate,
