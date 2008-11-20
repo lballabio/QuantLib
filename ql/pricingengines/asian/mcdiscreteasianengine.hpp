@@ -1,9 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -52,7 +52,6 @@ namespace QuantLib {
         // constructor
         MCDiscreteAveragingAsianEngine(
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size maxTimeStepsPerYear,
              bool brownianBridge,
              bool antitheticVariate,
              bool controlVariate,
@@ -84,7 +83,6 @@ namespace QuantLib {
         Real controlVariateValue() const;
         // data members
         boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
-        Size maxTimeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
         bool brownianBridge_;
@@ -98,7 +96,6 @@ namespace QuantLib {
     inline
     MCDiscreteAveragingAsianEngine<RNG,S>::MCDiscreteAveragingAsianEngine(
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size maxTimeStepsPerYear,
              bool brownianBridge,
              bool antitheticVariate,
              bool controlVariate,
@@ -107,9 +104,8 @@ namespace QuantLib {
              Size maxSamples,
              BigNatural seed)
     : McSimulation<SingleVariate,RNG,S>(antitheticVariate, controlVariate),
-      process_(process), maxTimeStepsPerYear_(maxTimeStepsPerYear),
-      requiredSamples_(requiredSamples), maxSamples_(maxSamples),
-      requiredTolerance_(requiredTolerance),
+      process_(process), requiredSamples_(requiredSamples),
+      maxSamples_(maxSamples), requiredTolerance_(requiredTolerance),
       brownianBridge_(brownianBridge), seed_(seed) {
         registerWith(process_);
     }
@@ -129,7 +125,6 @@ namespace QuantLib {
             }
         }
 
-        // handle here maxStepsPerYear
         return TimeGrid(fixingTimes.begin(), fixingTimes.end());
     }
 

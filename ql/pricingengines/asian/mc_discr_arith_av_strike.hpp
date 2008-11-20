@@ -85,7 +85,6 @@ namespace QuantLib {
              Size maxSamples,
              BigNatural seed)
     : MCDiscreteAveragingAsianEngine<RNG,S>(process,
-                                            1,
                                             brownianBridge,
                                             antitheticVariate,
                                             false,

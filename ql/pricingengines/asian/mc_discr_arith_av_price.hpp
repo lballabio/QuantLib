@@ -58,7 +58,6 @@ namespace QuantLib {
         // constructor
         MCDiscreteArithmeticAPEngine(
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size maxTimeStepPerYear,
              bool brownianBridge,
              bool antitheticVariate,
              bool controlVariate,
@@ -99,7 +98,6 @@ namespace QuantLib {
     inline
     MCDiscreteArithmeticAPEngine<RNG,S>::MCDiscreteArithmeticAPEngine(
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size maxTimeStepPerYear,
              bool brownianBridge,
              bool antitheticVariate,
              bool controlVariate,
@@ -108,7 +106,6 @@ namespace QuantLib {
              Size maxSamples,
              BigNatural seed)
     : MCDiscreteAveragingAsianEngine<RNG,S>(process,
-                                            maxTimeStepPerYear,
                                             brownianBridge,
                                             antitheticVariate,
                                             controlVariate,
@@ -178,7 +175,6 @@ namespace QuantLib {
         MakeMCDiscreteArithmeticAPEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
         // named parameters
-        MakeMCDiscreteArithmeticAPEngine& withStepsPerYear(Size maxSteps);
         MakeMCDiscreteArithmeticAPEngine& withBrownianBridge(bool b = true);
         MakeMCDiscreteArithmeticAPEngine& withSamples(Size samples);
         MakeMCDiscreteArithmeticAPEngine& withTolerance(Real tolerance);
@@ -191,7 +187,7 @@ namespace QuantLib {
       private:
         boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         bool antithetic_, controlVariate_;
-        Size steps_, samples_, maxSamples_;
+        Size samples_, maxSamples_;
         Real tolerance_;
         bool brownianBridge_;
         BigNatural seed_;
@@ -202,15 +198,8 @@ namespace QuantLib {
     MakeMCDiscreteArithmeticAPEngine<RNG,S>::MakeMCDiscreteArithmeticAPEngine(
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
     : process_(process), antithetic_(false), controlVariate_(false),
-      steps_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()), brownianBridge_(true), seed_(0) {}
-
-    template <class RNG, class S>
-    inline MakeMCDiscreteArithmeticAPEngine<RNG,S>&
-    MakeMCDiscreteArithmeticAPEngine<RNG,S>::withStepsPerYear(Size maxSteps) {
-        steps_ = maxSteps;
-        return *this;
-    }
 
     template <class RNG, class S>
     inline MakeMCDiscreteArithmeticAPEngine<RNG,S>&
@@ -272,11 +261,8 @@ namespace QuantLib {
     inline
     MakeMCDiscreteArithmeticAPEngine<RNG,S>::operator boost::shared_ptr<PricingEngine>()
                                                                       const {
-        QL_REQUIRE(steps_ != Null<Size>(),
-                   "max number of steps per year not given");
         return boost::shared_ptr<PricingEngine>(new
             MCDiscreteArithmeticAPEngine<RNG,S>(process_,
-                                                steps_,
                                                 brownianBridge_,
                                                 antithetic_, controlVariate_,
                                                 samples_, tolerance_,

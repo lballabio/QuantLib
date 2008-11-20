@@ -408,7 +408,6 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
 
     boost::shared_ptr<PricingEngine> engine =
         MakeMCDiscreteGeometricAPEngine<LowDiscrepancy>(stochProcess)
-        .withStepsPerYear(1)
         .withSamples(8191);
 
     Average::Type averageType = Average::Geometric;
@@ -589,7 +588,6 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
 
         boost::shared_ptr<PricingEngine> engine =
             MakeMCDiscreteArithmeticAPEngine<LowDiscrepancy>(stochProcess)
-            .withStepsPerYear(1)
             .withSamples(2047)
             .withControlVariate();
 
@@ -965,7 +963,6 @@ void AsianOptionTest::testPastFixings() {
 
     boost::shared_ptr<PricingEngine> engine =
         MakeMCDiscreteArithmeticAPEngine<LowDiscrepancy>(stochProcess)
-        .withStepsPerYear(1)
         .withSamples(2047);
 
     option1.setPricingEngine(engine);
@@ -1036,7 +1033,6 @@ void AsianOptionTest::testPastFixings() {
 
     engine =
         MakeMCDiscreteGeometricAPEngine<LowDiscrepancy>(stochProcess)
-        .withStepsPerYear(1)
         .withSamples(2047);
 
     option3.setPricingEngine(engine);
