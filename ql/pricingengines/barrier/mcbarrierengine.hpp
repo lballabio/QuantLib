@@ -66,7 +66,8 @@ namespace QuantLib {
         // constructor
         MCBarrierEngine(
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size maxTimeStepsPerYear,
+             Size timeSteps,
+             Size timeStepsPerYear,
              bool brownianBridge,
              bool antitheticVariate,
              Size requiredSamples,
@@ -100,7 +101,7 @@ namespace QuantLib {
         boost::shared_ptr<path_pricer_type> pathPricer() const;
         // data members
         boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
-        Size maxTimeStepsPerYear_;
+        Size timeSteps_, timeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
         bool isBiased_;
@@ -155,7 +156,8 @@ namespace QuantLib {
     template <class RNG, class S>
     inline MCBarrierEngine<RNG,S>::MCBarrierEngine(
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size maxTimeStepsPerYear,
+             Size timeSteps,
+             Size timeStepsPerYear,
              bool brownianBridge,
              bool antitheticVariate,
              Size requiredSamples,
@@ -164,11 +166,24 @@ namespace QuantLib {
              bool isBiased,
              BigNatural seed)
     : McSimulation<SingleVariate,RNG,S>(antitheticVariate, false),
-      process_(process), maxTimeStepsPerYear_(maxTimeStepsPerYear),
+      process_(process), timeSteps_(timeSteps),
+      timeStepsPerYear_(timeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
       isBiased_(isBiased),
       brownianBridge_(brownianBridge), seed_(seed) {
+        QL_REQUIRE(timeSteps != Null<Size>() ||
+                   timeStepsPerYear != Null<Size>(),
+                   "no time steps provided");
+        QL_REQUIRE(timeSteps == Null<Size>() ||
+                   timeStepsPerYear == Null<Size>(),
+                   "both time steps and time steps per year were provided");
+        QL_REQUIRE(timeSteps != 0,
+                   "timeSteps must be positive, " << timeSteps <<
+                   " not allowed");
+        QL_REQUIRE(timeStepsPerYear != 0,
+                   "timeStepsPerYear must be positive, " << timeStepsPerYear <<
+                   " not allowed");
         registerWith(process_);
     }
 
@@ -176,9 +191,14 @@ namespace QuantLib {
     inline TimeGrid MCBarrierEngine<RNG,S>::timeGrid() const {
 
         Time residualTime = process_->time(arguments_.exercise->lastDate());
-        return TimeGrid(residualTime,
-                        Size(std::max<Real>(residualTime*maxTimeStepsPerYear_,
-                                            1.0)));
+        if (timeSteps_ != Null<Size>()) {
+            return TimeGrid(residualTime, timeSteps_);
+        } else if (timeStepsPerYear_ != Null<Size>()) {
+            Size steps = static_cast<Size>(timeStepsPerYear_*residualTime);
+            return TimeGrid(residualTime, std::max<Size>(steps, 1));
+        } else {
+            QL_FAIL("time steps not specified");
+        }
     }
 
 

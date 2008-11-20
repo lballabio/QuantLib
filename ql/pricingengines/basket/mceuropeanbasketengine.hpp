@@ -51,7 +51,8 @@ namespace QuantLib {
             stats_type;
         // constructor
         MCEuropeanBasketEngine(const boost::shared_ptr<StochasticProcessArray>&,
-                               Size maxTimeStepsPerYear,
+                               Size timeSteps,
+                               Size timeStepsPerYear,
                                bool brownianBridge,
                                bool antitheticVariate,
                                Size requiredSamples,
@@ -90,7 +91,7 @@ namespace QuantLib {
         boost::shared_ptr<path_pricer_type> pathPricer() const;
         // data members
         boost::shared_ptr<StochasticProcessArray> processes_;
-        Size maxTimeStepsPerYear_;
+        Size timeSteps_, timeStepsPerYear_;
         Size requiredSamples_;
         Size maxSamples_;
         Real requiredTolerance_;
@@ -114,7 +115,8 @@ namespace QuantLib {
     template<class RNG, class S>
     inline MCEuropeanBasketEngine<RNG,S>::MCEuropeanBasketEngine(
                    const boost::shared_ptr<StochasticProcessArray>& processes,
-                   Size maxTimeStepsPerYear,
+                   Size timeSteps,
+                   Size timeStepsPerYear,
                    bool brownianBridge,
                    bool antitheticVariate,
                    Size requiredSamples,
@@ -122,10 +124,23 @@ namespace QuantLib {
                    Size maxSamples,
                    BigNatural seed)
     : McSimulation<MultiVariate,RNG,S>(antitheticVariate, false),
-      processes_(processes), maxTimeStepsPerYear_(maxTimeStepsPerYear),
+      processes_(processes), timeSteps_(timeSteps),
+      timeStepsPerYear_(timeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
       brownianBridge_(brownianBridge), seed_(seed) {
+        QL_REQUIRE(timeSteps != Null<Size>() ||
+                   timeStepsPerYear != Null<Size>(),
+                   "no time steps provided");
+        QL_REQUIRE(timeSteps == Null<Size>() ||
+                   timeStepsPerYear == Null<Size>(),
+                   "both time steps and time steps per year were provided");
+        QL_REQUIRE(timeSteps != 0,
+                   "timeSteps must be positive, " << timeSteps <<
+                   " not allowed");
+        QL_REQUIRE(timeStepsPerYear != 0,
+                   "timeStepsPerYear must be positive, " << timeStepsPerYear <<
+                   " not allowed");
         registerWith(processes_);
     }
 
@@ -134,8 +149,14 @@ namespace QuantLib {
 
         Time residualTime = processes_->time(
                                        this->arguments_.exercise->lastDate());
-        Size steps = static_cast<Size>(maxTimeStepsPerYear_*residualTime);
-        return TimeGrid(residualTime, std::max<Size>(steps, 1));
+        if (timeSteps_ != Null<Size>()) {
+            return TimeGrid(residualTime, timeSteps_);
+        } else if (timeStepsPerYear_ != Null<Size>()) {
+            Size steps = static_cast<Size>(timeStepsPerYear_*residualTime);
+            return TimeGrid(residualTime, std::max<Size>(steps, 1));
+        } else {
+            QL_FAIL("time steps not specified");
+        }
     }
 
     template <class RNG, class S>

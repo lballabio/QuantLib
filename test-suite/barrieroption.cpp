@@ -354,7 +354,7 @@ void BarrierOptionTest::testBabsiriValues() {
         }
 
         Real maxMcRelativeErrorAllowed = 2.0e-2;
-        Size timeSteps = 1;
+        Size timeStepsPerYear = 1;
         bool antitheticVariate = false;
         bool brownianBridge = true;
         Size requiredSamples = 131071; // 2^17-1
@@ -365,7 +365,8 @@ void BarrierOptionTest::testBabsiriValues() {
 
         boost::shared_ptr<PricingEngine> mcEngine(new
             MCBarrierEngine<LowDiscrepancy>(stochProcess,
-                                            timeSteps, brownianBridge,
+                                            Null<Size>(), timeStepsPerYear,
+                                            brownianBridge,
                                             antitheticVariate,
                                             requiredSamples, requiredTolerance,
                                             maxSamples, isBiased, seed));
@@ -460,7 +461,7 @@ void BarrierOptionTest::testBeagleholeValues() {
         }
 
         Real maxMcRelativeErrorAllowed = 0.01;
-        Size timeSteps = 1;
+        Size timeStepsPerYear = 1;
         bool brownianBridge = true;
         bool antitheticVariate = false;
         Size requiredSamples = 131071; // 2^17-1
@@ -470,7 +471,8 @@ void BarrierOptionTest::testBeagleholeValues() {
         long seed = 10;
         boost::shared_ptr<PricingEngine> mcEngine(
             new MCBarrierEngine<LowDiscrepancy>(stochProcess,
-                                                timeSteps, brownianBridge,
+                                                Null<Size>(), timeStepsPerYear,
+                                                brownianBridge,
                                                 antitheticVariate,
                                                 requiredSamples,
                                                 requiredTolerance,

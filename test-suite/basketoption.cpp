@@ -291,6 +291,7 @@ void BasketOptionTest::testEuroTwoValues() {
         boost::shared_ptr<PricingEngine> mcEngine(
             new MCEuropeanBasketEngine<PseudoRandom, Statistics>(
                                                          process,
+                                                         Null<Size>(),
                                                          1, false, false,
                                                          10000, Null<Real>(),
                                                          100000, 42));
@@ -490,6 +491,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
         // Think long and hard before moving to more than 1 timestep....
         boost::shared_ptr<PricingEngine> mcQuasiEngine(new
             MCEuropeanBasketEngine<LowDiscrepancy>(process,
+                                                   Null<Size>(),
                                                    1, false, false,
                                                    8091, Null<Real>(),
                                                    Null<Size>(), 42));
