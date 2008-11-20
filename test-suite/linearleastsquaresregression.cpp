@@ -35,7 +35,7 @@ void LinearLeastSquaresRegressionTest::testRegression() {
     const Real tolerance = 0.025;
 
     const Size nr=100000;
-    PseudoRandom::rng_type rng(MersenneTwisterUniformRng(1234u));
+    PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234u));
 
     std::vector<boost::function1<Real, Real> > v;
     v.push_back(constant<Real, Real>(1.0));
