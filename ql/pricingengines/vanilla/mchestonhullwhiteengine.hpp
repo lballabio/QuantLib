@@ -64,6 +64,31 @@ namespace QuantLib {
         boost::shared_ptr<path_generator_type> controlPathGenerator() const;
     };
 
+    //! Monte Carlo Heston/Hull-White engine factory
+    template <class RNG = PseudoRandom, class S = Statistics>
+    class MakeMCHestonHullWhiteEngine {
+      public:
+        MakeMCHestonHullWhiteEngine(
+                    const boost::shared_ptr<HybridHestonHullWhiteProcess>&);
+        // named parameters
+        MakeMCHestonHullWhiteEngine& withSteps(Size steps);
+        MakeMCHestonHullWhiteEngine& withStepsPerYear(Size steps);
+        MakeMCHestonHullWhiteEngine& withAntitheticVariate(bool b = true);
+        MakeMCHestonHullWhiteEngine& withControlVariate(bool b = true);
+        MakeMCHestonHullWhiteEngine& withSamples(Size samples);
+        MakeMCHestonHullWhiteEngine& withAbsoluteTolerance(Real tolerance);
+        MakeMCHestonHullWhiteEngine& withMaxSamples(Size samples);
+        MakeMCHestonHullWhiteEngine& withSeed(BigNatural seed);
+        // conversion to pricing engine
+        operator boost::shared_ptr<PricingEngine>() const;
+      private:
+        boost::shared_ptr<HybridHestonHullWhiteProcess> process_;
+        Size steps_, stepsPerYear_, samples_, maxSamples_;
+        bool antithetic_, controlVariate_;
+        Real tolerance_;
+        BigNatural seed_;
+    };
+
 
     class HestonHullWhitePathPricer : public PathPricer<MultiPath> {
       public:
@@ -147,7 +172,7 @@ namespace QuantLib {
 
         boost::shared_ptr<HestonProcess> hestonProcess =
             process_->hestonProcess();
-        
+
         boost::shared_ptr<HullWhiteForwardProcess> hullWhiteProcess =
             process_->hullWhiteProcess();
 
@@ -164,9 +189,9 @@ namespace QuantLib {
 
     template <class RNG, class S> inline
     boost::shared_ptr<
-        typename MCHestonHullWhiteEngine<RNG,S>::path_generator_type> 
+        typename MCHestonHullWhiteEngine<RNG,S>::path_generator_type>
     MCHestonHullWhiteEngine<RNG,S>::controlPathGenerator() const {
-        
+
         Size dimensions = process_->factors();
         TimeGrid grid = this->timeGrid();
         typename RNG::rsg_type generator =
@@ -182,6 +207,100 @@ namespace QuantLib {
         return boost::shared_ptr<path_generator_type>(
                   new path_generator_type(cvProcess, grid, generator, false));
     }
+
+
+    template <class RNG, class S>
+    inline MakeMCHestonHullWhiteEngine<RNG,S>::MakeMCHestonHullWhiteEngine(
+             const boost::shared_ptr<HybridHestonHullWhiteProcess>& process)
+    : process_(process),
+      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()),
+      antithetic_(false), controlVariate_(false),
+      tolerance_(Null<Real>()), seed_(0) {}
+
+    template <class RNG, class S>
+    inline MakeMCHestonHullWhiteEngine<RNG,S>&
+    MakeMCHestonHullWhiteEngine<RNG,S>::withSteps(Size steps) {
+        steps_ = steps;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCHestonHullWhiteEngine<RNG,S>&
+    MakeMCHestonHullWhiteEngine<RNG,S>::withStepsPerYear(Size steps) {
+        stepsPerYear_ = steps;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCHestonHullWhiteEngine<RNG,S>&
+    MakeMCHestonHullWhiteEngine<RNG,S>::withAntitheticVariate(bool b) {
+        antithetic_ = b;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCHestonHullWhiteEngine<RNG,S>&
+    MakeMCHestonHullWhiteEngine<RNG,S>::withControlVariate(bool b) {
+        controlVariate_ = b;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCHestonHullWhiteEngine<RNG,S>&
+    MakeMCHestonHullWhiteEngine<RNG,S>::withSamples(Size samples) {
+        QL_REQUIRE(tolerance_ == Null<Real>(),
+                   "tolerance already set");
+        samples_ = samples;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCHestonHullWhiteEngine<RNG,S>&
+    MakeMCHestonHullWhiteEngine<RNG,S>::withAbsoluteTolerance(Real tolerance) {
+        QL_REQUIRE(samples_ == Null<Size>(),
+                   "number of samples already set");
+        QL_REQUIRE(RNG::allowsErrorEstimate,
+                   "chosen random generator policy "
+                   "does not allow an error estimate");
+        tolerance_ = tolerance;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCHestonHullWhiteEngine<RNG,S>&
+    MakeMCHestonHullWhiteEngine<RNG,S>::withMaxSamples(Size samples) {
+        maxSamples_ = samples;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCHestonHullWhiteEngine<RNG,S>&
+    MakeMCHestonHullWhiteEngine<RNG,S>::withSeed(BigNatural seed) {
+        seed_ = seed;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline
+    MakeMCHestonHullWhiteEngine<RNG,S>::operator
+    boost::shared_ptr<PricingEngine>() const {
+        QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
+                   "number of steps not given");
+        QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
+                   "number of steps overspecified");
+        return boost::shared_ptr<PricingEngine>(new
+            MCHestonHullWhiteEngine<RNG,S>(process_,
+                                           steps_,
+                                           stepsPerYear_,
+                                           antithetic_,
+                                           controlVariate_,
+                                           samples_,
+                                           tolerance_,
+                                           maxSamples_,
+                                           seed_));
+    }
+
 }
 
 #endif

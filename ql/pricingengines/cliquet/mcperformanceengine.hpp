@@ -78,6 +78,32 @@ namespace QuantLib {
         BigNatural seed_;
     };
 
+
+    //! Monte Carlo performance-option engine factory
+    template <class RNG = PseudoRandom, class S = Statistics>
+    class MakeMCPerformanceEngine {
+      public:
+        MakeMCPerformanceEngine(
+                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
+        // named parameters
+        MakeMCPerformanceEngine& withBrownianBridge(bool b = true);
+        MakeMCPerformanceEngine& withAntitheticVariate(bool b = true);
+        MakeMCPerformanceEngine& withSamples(Size samples);
+        MakeMCPerformanceEngine& withAbsoluteTolerance(Real tolerance);
+        MakeMCPerformanceEngine& withMaxSamples(Size samples);
+        MakeMCPerformanceEngine& withSeed(BigNatural seed);
+        // conversion to pricing engine
+        operator boost::shared_ptr<PricingEngine>() const;
+      private:
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        bool brownianBridge_, antithetic_;
+        Size samples_, maxSamples_;
+        Real tolerance_;
+        BigNatural seed_;
+    };
+
+
+
     class PerformanceOptionPathPricer : public PathPricer<Path> {
       public:
         PerformanceOptionPathPricer(
@@ -152,6 +178,77 @@ namespace QuantLib {
                          new PerformanceOptionPathPricer(payoff->optionType(),
                                                          payoff->strike(),
                                                          discounts));
+    }
+
+
+    template <class RNG, class S>
+    inline MakeMCPerformanceEngine<RNG,S>::MakeMCPerformanceEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+    : process_(process), brownianBridge_(false), antithetic_(false),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()),
+      tolerance_(Null<Real>()), seed_(0) {}
+
+    template <class RNG, class S>
+    inline MakeMCPerformanceEngine<RNG,S>&
+    MakeMCPerformanceEngine<RNG,S>::withBrownianBridge(bool brownianBridge) {
+        brownianBridge_ = brownianBridge;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCPerformanceEngine<RNG,S>&
+    MakeMCPerformanceEngine<RNG,S>::withAntitheticVariate(bool b) {
+        antithetic_ = b;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCPerformanceEngine<RNG,S>&
+    MakeMCPerformanceEngine<RNG,S>::withSamples(Size samples) {
+        QL_REQUIRE(tolerance_ == Null<Real>(),
+                   "tolerance already set");
+        samples_ = samples;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCPerformanceEngine<RNG,S>&
+    MakeMCPerformanceEngine<RNG,S>::withAbsoluteTolerance(Real tolerance) {
+        QL_REQUIRE(samples_ == Null<Size>(),
+                   "number of samples already set");
+        QL_REQUIRE(RNG::allowsErrorEstimate,
+                   "chosen random generator policy "
+                   "does not allow an error estimate");
+        tolerance_ = tolerance;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCPerformanceEngine<RNG,S>&
+    MakeMCPerformanceEngine<RNG,S>::withMaxSamples(Size samples) {
+        maxSamples_ = samples;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCPerformanceEngine<RNG,S>&
+    MakeMCPerformanceEngine<RNG,S>::withSeed(BigNatural seed) {
+        seed_ = seed;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline
+    MakeMCPerformanceEngine<RNG,S>::operator boost::shared_ptr<PricingEngine>()
+                                                                      const {
+        return boost::shared_ptr<PricingEngine>(new
+            MCPerformanceEngine<RNG,S>(process_,
+                                       brownianBridge_,
+                                       antithetic_,
+                                       samples_,
+                                       tolerance_,
+                                       maxSamples_,
+                                       seed_));
     }
 
 }

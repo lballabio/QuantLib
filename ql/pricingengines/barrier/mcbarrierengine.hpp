@@ -110,6 +110,33 @@ namespace QuantLib {
     };
 
 
+    //! Monte Carlo barrier-option engine factory
+    template <class RNG = PseudoRandom, class S = Statistics>
+    class MakeMCBarrierEngine {
+      public:
+        MakeMCBarrierEngine(
+                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
+        // named parameters
+        MakeMCBarrierEngine& withSteps(Size steps);
+        MakeMCBarrierEngine& withStepsPerYear(Size steps);
+        MakeMCBarrierEngine& withBrownianBridge(bool b = true);
+        MakeMCBarrierEngine& withAntitheticVariate(bool b = true);
+        MakeMCBarrierEngine& withSamples(Size samples);
+        MakeMCBarrierEngine& withAbsoluteTolerance(Real tolerance);
+        MakeMCBarrierEngine& withMaxSamples(Size samples);
+        MakeMCBarrierEngine& withBias(bool b = true);
+        MakeMCBarrierEngine& withSeed(BigNatural seed);
+        // conversion to pricing engine
+        operator boost::shared_ptr<PricingEngine>() const;
+      private:
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        bool brownianBridge_, antithetic_, biased_;
+        Size steps_, stepsPerYear_, samples_, maxSamples_;
+        Real tolerance_;
+        BigNatural seed_;
+    };
+
+
     class BarrierPathPricer : public PathPricer<Path> {
       public:
         BarrierPathPricer(
@@ -149,6 +176,7 @@ namespace QuantLib {
         PlainVanillaPayoff payoff_;
         std::vector<DiscountFactor> discounts_;
     };
+
 
 
     // template definitions
@@ -241,6 +269,105 @@ namespace QuantLib {
                     process_,
                     sequenceGen));
         }
+    }
+
+
+    template <class RNG, class S>
+    inline MakeMCBarrierEngine<RNG,S>::MakeMCBarrierEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+    : process_(process), brownianBridge_(false), antithetic_(false),
+      biased_(false), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()),
+      tolerance_(Null<Real>()), seed_(0) {}
+
+    template <class RNG, class S>
+    inline MakeMCBarrierEngine<RNG,S>&
+    MakeMCBarrierEngine<RNG,S>::withSteps(Size steps) {
+        steps_ = steps;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCBarrierEngine<RNG,S>&
+    MakeMCBarrierEngine<RNG,S>::withStepsPerYear(Size steps) {
+        stepsPerYear_ = steps;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCBarrierEngine<RNG,S>&
+    MakeMCBarrierEngine<RNG,S>::withBrownianBridge(bool brownianBridge) {
+        brownianBridge_ = brownianBridge;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCBarrierEngine<RNG,S>&
+    MakeMCBarrierEngine<RNG,S>::withAntitheticVariate(bool b) {
+        antithetic_ = b;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCBarrierEngine<RNG,S>&
+    MakeMCBarrierEngine<RNG,S>::withSamples(Size samples) {
+        QL_REQUIRE(tolerance_ == Null<Real>(),
+                   "tolerance already set");
+        samples_ = samples;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCBarrierEngine<RNG,S>&
+    MakeMCBarrierEngine<RNG,S>::withAbsoluteTolerance(Real tolerance) {
+        QL_REQUIRE(samples_ == Null<Size>(),
+                   "number of samples already set");
+        QL_REQUIRE(RNG::allowsErrorEstimate,
+                   "chosen random generator policy "
+                   "does not allow an error estimate");
+        tolerance_ = tolerance;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCBarrierEngine<RNG,S>&
+    MakeMCBarrierEngine<RNG,S>::withMaxSamples(Size samples) {
+        maxSamples_ = samples;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCBarrierEngine<RNG,S>&
+    MakeMCBarrierEngine<RNG,S>::withBias(bool biased) {
+        biased_ = biased;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCBarrierEngine<RNG,S>&
+    MakeMCBarrierEngine<RNG,S>::withSeed(BigNatural seed) {
+        seed_ = seed;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline
+    MakeMCBarrierEngine<RNG,S>::operator boost::shared_ptr<PricingEngine>()
+                                                                      const {
+        QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
+                   "number of steps not given");
+        QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
+                   "number of steps overspecified");
+        return boost::shared_ptr<PricingEngine>(new
+            MCBarrierEngine<RNG,S>(process_,
+                                   steps_,
+                                   stepsPerYear_,
+                                   brownianBridge_,
+                                   antithetic_,
+                                   samples_, tolerance_,
+                                   maxSamples_,
+                                   biased_,
+                                   seed_));
     }
 
 }

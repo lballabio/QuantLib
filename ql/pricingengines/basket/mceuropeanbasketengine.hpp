@@ -99,6 +99,33 @@ namespace QuantLib {
         BigNatural seed_;
     };
 
+
+    //! Monte Carlo basket-option engine factory
+    template <class RNG = PseudoRandom, class S = Statistics>
+    class MakeMCEuropeanBasketEngine {
+      public:
+        MakeMCEuropeanBasketEngine(
+                            const boost::shared_ptr<StochasticProcessArray>&);
+        // named parameters
+        MakeMCEuropeanBasketEngine& withSteps(Size steps);
+        MakeMCEuropeanBasketEngine& withStepsPerYear(Size steps);
+        MakeMCEuropeanBasketEngine& withBrownianBridge(bool b = true);
+        MakeMCEuropeanBasketEngine& withAntitheticVariate(bool b = true);
+        MakeMCEuropeanBasketEngine& withSamples(Size samples);
+        MakeMCEuropeanBasketEngine& withAbsoluteTolerance(Real tolerance);
+        MakeMCEuropeanBasketEngine& withMaxSamples(Size samples);
+        MakeMCEuropeanBasketEngine& withSeed(BigNatural seed);
+        // conversion to pricing engine
+        operator boost::shared_ptr<PricingEngine>() const;
+      private:
+        boost::shared_ptr<StochasticProcessArray> process_;
+        bool brownianBridge_, antithetic_;
+        Size steps_, stepsPerYear_, samples_, maxSamples_;
+        Real tolerance_;
+        BigNatural seed_;
+    };
+
+
     class EuropeanMultiPathPricer : public PathPricer<MultiPath> {
       public:
         EuropeanMultiPathPricer(const boost::shared_ptr<BasketPayoff>& payoff,
@@ -178,6 +205,97 @@ namespace QuantLib {
             new EuropeanMultiPathPricer(payoff,
                                         process->riskFreeRate()->discount(
                                            arguments_.exercise->lastDate())));
+    }
+
+
+    template <class RNG, class S>
+    inline MakeMCEuropeanBasketEngine<RNG,S>::MakeMCEuropeanBasketEngine(
+                     const boost::shared_ptr<StochasticProcessArray>& process)
+    : process_(process), brownianBridge_(false), antithetic_(false),
+      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()),
+      tolerance_(Null<Real>()), seed_(0) {}
+
+    template <class RNG, class S>
+    inline MakeMCEuropeanBasketEngine<RNG,S>&
+    MakeMCEuropeanBasketEngine<RNG,S>::withSteps(Size steps) {
+        steps_ = steps;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCEuropeanBasketEngine<RNG,S>&
+    MakeMCEuropeanBasketEngine<RNG,S>::withStepsPerYear(Size steps) {
+        stepsPerYear_ = steps;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCEuropeanBasketEngine<RNG,S>&
+    MakeMCEuropeanBasketEngine<RNG,S>::withBrownianBridge(bool brownianBridge) {
+        brownianBridge_ = brownianBridge;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCEuropeanBasketEngine<RNG,S>&
+    MakeMCEuropeanBasketEngine<RNG,S>::withAntitheticVariate(bool b) {
+        antithetic_ = b;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCEuropeanBasketEngine<RNG,S>&
+    MakeMCEuropeanBasketEngine<RNG,S>::withSamples(Size samples) {
+        QL_REQUIRE(tolerance_ == Null<Real>(),
+                   "tolerance already set");
+        samples_ = samples;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCEuropeanBasketEngine<RNG,S>&
+    MakeMCEuropeanBasketEngine<RNG,S>::withAbsoluteTolerance(Real tolerance) {
+        QL_REQUIRE(samples_ == Null<Size>(),
+                   "number of samples already set");
+        QL_REQUIRE(RNG::allowsErrorEstimate,
+                   "chosen random generator policy "
+                   "does not allow an error estimate");
+        tolerance_ = tolerance;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCEuropeanBasketEngine<RNG,S>&
+    MakeMCEuropeanBasketEngine<RNG,S>::withMaxSamples(Size samples) {
+        maxSamples_ = samples;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCEuropeanBasketEngine<RNG,S>&
+    MakeMCEuropeanBasketEngine<RNG,S>::withSeed(BigNatural seed) {
+        seed_ = seed;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline
+    MakeMCEuropeanBasketEngine<RNG,S>::operator
+    boost::shared_ptr<PricingEngine>() const {
+        QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
+                   "number of steps not given");
+        QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
+                   "number of steps overspecified");
+        return boost::shared_ptr<PricingEngine>(new
+            MCEuropeanBasketEngine<RNG,S>(process_,
+                                          steps_,
+                                          stepsPerYear_,
+                                          brownianBridge_,
+                                          antithetic_,
+                                          samples_, tolerance_,
+                                          maxSamples_,
+                                          seed_));
     }
 
 }

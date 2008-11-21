@@ -86,6 +86,30 @@ namespace QuantLib {
         BigNatural seed_;
     };
 
+
+    //! Monte Carlo pagoda-option engine factory
+    template <class RNG = PseudoRandom, class S = Statistics>
+    class MakeMCPagodaEngine {
+      public:
+        MakeMCPagodaEngine(const boost::shared_ptr<StochasticProcessArray>&);
+        // named parameters
+        MakeMCPagodaEngine& withBrownianBridge(bool b = true);
+        MakeMCPagodaEngine& withAntitheticVariate(bool b = true);
+        MakeMCPagodaEngine& withSamples(Size samples);
+        MakeMCPagodaEngine& withAbsoluteTolerance(Real tolerance);
+        MakeMCPagodaEngine& withMaxSamples(Size samples);
+        MakeMCPagodaEngine& withSeed(BigNatural seed);
+        // conversion to pricing engine
+        operator boost::shared_ptr<PricingEngine>() const;
+      private:
+        boost::shared_ptr<StochasticProcessArray> process_;
+        bool brownianBridge_, antithetic_;
+        Size samples_, maxSamples_;
+        Real tolerance_;
+        BigNatural seed_;
+    };
+
+
     class PagodaMultiPathPricer : public PathPricer<MultiPath> {
       public:
         PagodaMultiPathPricer(Real roof, Real fraction,
@@ -147,6 +171,76 @@ namespace QuantLib {
             new PagodaMultiPathPricer(arguments_.roof, arguments_.fraction,
                                       process->riskFreeRate()->discount(
                                            arguments_.exercise->lastDate())));
+    }
+
+
+    template <class RNG, class S>
+    inline MakeMCPagodaEngine<RNG,S>::MakeMCPagodaEngine(
+                     const boost::shared_ptr<StochasticProcessArray>& process)
+    : process_(process), brownianBridge_(false), antithetic_(false),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()),
+      tolerance_(Null<Real>()), seed_(0) {}
+
+    template <class RNG, class S>
+    inline MakeMCPagodaEngine<RNG,S>&
+    MakeMCPagodaEngine<RNG,S>::withBrownianBridge(bool brownianBridge) {
+        brownianBridge_ = brownianBridge;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCPagodaEngine<RNG,S>&
+    MakeMCPagodaEngine<RNG,S>::withAntitheticVariate(bool b) {
+        antithetic_ = b;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCPagodaEngine<RNG,S>&
+    MakeMCPagodaEngine<RNG,S>::withSamples(Size samples) {
+        QL_REQUIRE(tolerance_ == Null<Real>(),
+                   "tolerance already set");
+        samples_ = samples;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCPagodaEngine<RNG,S>&
+    MakeMCPagodaEngine<RNG,S>::withAbsoluteTolerance(Real tolerance) {
+        QL_REQUIRE(samples_ == Null<Size>(),
+                   "number of samples already set");
+        QL_REQUIRE(RNG::allowsErrorEstimate,
+                   "chosen random generator policy "
+                   "does not allow an error estimate");
+        tolerance_ = tolerance;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCPagodaEngine<RNG,S>&
+    MakeMCPagodaEngine<RNG,S>::withMaxSamples(Size samples) {
+        maxSamples_ = samples;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCPagodaEngine<RNG,S>&
+    MakeMCPagodaEngine<RNG,S>::withSeed(BigNatural seed) {
+        seed_ = seed;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline
+    MakeMCPagodaEngine<RNG,S>::operator
+    boost::shared_ptr<PricingEngine>() const {
+        return boost::shared_ptr<PricingEngine>(new
+            MCPagodaEngine<RNG,S>(process_,
+                                  brownianBridge_,
+                                  antithetic_,
+                                  samples_, tolerance_,
+                                  maxSamples_,
+                                  seed_));
     }
 
 }

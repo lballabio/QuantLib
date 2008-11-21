@@ -96,6 +96,31 @@ namespace QuantLib {
     };
 
 
+    //! Monte Carlo Everest-option engine factory
+    template <class RNG = PseudoRandom, class S = Statistics>
+    class MakeMCEverestEngine {
+      public:
+        MakeMCEverestEngine(const boost::shared_ptr<StochasticProcessArray>&);
+        // named parameters
+        MakeMCEverestEngine& withSteps(Size steps);
+        MakeMCEverestEngine& withStepsPerYear(Size steps);
+        MakeMCEverestEngine& withBrownianBridge(bool b = true);
+        MakeMCEverestEngine& withAntitheticVariate(bool b = true);
+        MakeMCEverestEngine& withSamples(Size samples);
+        MakeMCEverestEngine& withAbsoluteTolerance(Real tolerance);
+        MakeMCEverestEngine& withMaxSamples(Size samples);
+        MakeMCEverestEngine& withSeed(BigNatural seed);
+        // conversion to pricing engine
+        operator boost::shared_ptr<PricingEngine>() const;
+      private:
+        boost::shared_ptr<StochasticProcessArray> process_;
+        bool brownianBridge_, antithetic_;
+        Size steps_, stepsPerYear_, samples_, maxSamples_;
+        Real tolerance_;
+        BigNatural seed_;
+    };
+
+
     class EverestMultiPathPricer : public PathPricer<MultiPath> {
       public:
         explicit EverestMultiPathPricer(Real notional,
@@ -177,6 +202,97 @@ namespace QuantLib {
                               new EverestMultiPathPricer(arguments_.notional,
                                                          arguments_.guarantee,
                                                          endDiscount()));
+    }
+
+
+    template <class RNG, class S>
+    inline MakeMCEverestEngine<RNG,S>::MakeMCEverestEngine(
+                     const boost::shared_ptr<StochasticProcessArray>& process)
+    : process_(process), brownianBridge_(false), antithetic_(false),
+      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()),
+      tolerance_(Null<Real>()), seed_(0) {}
+
+    template <class RNG, class S>
+    inline MakeMCEverestEngine<RNG,S>&
+    MakeMCEverestEngine<RNG,S>::withSteps(Size steps) {
+        steps_ = steps;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCEverestEngine<RNG,S>&
+    MakeMCEverestEngine<RNG,S>::withStepsPerYear(Size steps) {
+        stepsPerYear_ = steps;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCEverestEngine<RNG,S>&
+    MakeMCEverestEngine<RNG,S>::withBrownianBridge(bool brownianBridge) {
+        brownianBridge_ = brownianBridge;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCEverestEngine<RNG,S>&
+    MakeMCEverestEngine<RNG,S>::withAntitheticVariate(bool b) {
+        antithetic_ = b;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCEverestEngine<RNG,S>&
+    MakeMCEverestEngine<RNG,S>::withSamples(Size samples) {
+        QL_REQUIRE(tolerance_ == Null<Real>(),
+                   "tolerance already set");
+        samples_ = samples;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCEverestEngine<RNG,S>&
+    MakeMCEverestEngine<RNG,S>::withAbsoluteTolerance(Real tolerance) {
+        QL_REQUIRE(samples_ == Null<Size>(),
+                   "number of samples already set");
+        QL_REQUIRE(RNG::allowsErrorEstimate,
+                   "chosen random generator policy "
+                   "does not allow an error estimate");
+        tolerance_ = tolerance;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCEverestEngine<RNG,S>&
+    MakeMCEverestEngine<RNG,S>::withMaxSamples(Size samples) {
+        maxSamples_ = samples;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCEverestEngine<RNG,S>&
+    MakeMCEverestEngine<RNG,S>::withSeed(BigNatural seed) {
+        seed_ = seed;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline
+    MakeMCEverestEngine<RNG,S>::operator
+    boost::shared_ptr<PricingEngine>() const {
+        QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
+                   "number of steps not given");
+        QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
+                   "number of steps overspecified");
+        return boost::shared_ptr<PricingEngine>(new
+            MCEverestEngine<RNG,S>(process_,
+                                   steps_,
+                                   stepsPerYear_,
+                                   brownianBridge_,
+                                   antithetic_,
+                                   samples_, tolerance_,
+                                   maxSamples_,
+                                   seed_));
     }
 
 }

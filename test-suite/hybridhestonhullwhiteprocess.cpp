@@ -318,7 +318,7 @@ void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
 
     std::vector<DiscountFactor> tmpZero(m);
     std::vector<DiscountFactor> tmpOption(m);
-    
+
     for (Size i=0; i < nrTrails; ++i) {
         const bool antithetic = (i%2)==0 ? false : true;
         sample_type path = (!antithetic) ? generator.next()
@@ -351,7 +351,7 @@ void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
             }
         }
     }
-    
+
     for (Size j=1; j < m; ++j) {
         const Time t = grid[j];
         Real calculated = zeroStat[j].mean();
@@ -443,12 +443,15 @@ void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
                                new EuropeanExercise(maturity));
 
             VanillaOption optionHestonHW(payoff, exercise);
-            optionHestonHW.setPricingEngine(
-                boost::shared_ptr<PricingEngine>(
-                    new MCHestonHullWhiteEngine<PseudoRandom>(
-                                          jointProcess,
-                                          1, Null<Size>(), true, true, 1,
-                                          tol, Null<Size>(), 42)));
+            boost::shared_ptr<PricingEngine> engine =
+                MakeMCHestonHullWhiteEngine<PseudoRandom>(jointProcess)
+                .withSteps(1)
+                .withAntitheticVariate()
+                .withControlVariate()
+                .withAbsoluteTolerance(tol)
+                .withSeed(42);
+
+            optionHestonHW.setPricingEngine(engine);
 
             const boost::shared_ptr<HullWhite> hwModel(
                         new HullWhite(Handle<YieldTermStructure>(rTS),
@@ -527,7 +530,7 @@ void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
         for (Size j=0; j < LENGTH(strike); ++j) {
             boost::shared_ptr<HybridHestonHullWhiteProcess> jointProcess(
                 new HybridHestonHullWhiteProcess(
-                        hestonProcess, hwProcess, 
+                        hestonProcess, hwProcess,
                         corr[i], HybridHestonHullWhiteProcess::Euler));
 
             boost::shared_ptr<StrikedTypePayoff> payoff(
@@ -546,12 +549,12 @@ void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
             Real expected   = optionPureHeston.NPV();
 
             optionHestonHW.setPricingEngine(
-                boost::shared_ptr<PricingEngine>(
-                    new MCHestonHullWhiteEngine<PseudoRandom>(
-                                          jointProcess,
-                                          2, Null<Size>(), true, true, 1,
-                                          tol, Null<Size>(), 42)));
-
+                MakeMCHestonHullWhiteEngine<PseudoRandom>(jointProcess)
+                .withSteps(2)
+                .withAntitheticVariate()
+                .withControlVariate()
+                .withAbsoluteTolerance(tol)
+                .withSeed(42));
 
             Real calculated = optionHestonHW.NPV();
             Real error      = optionHestonHW.errorEstimate();
@@ -622,7 +625,7 @@ void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
         for (Size j=0; j < LENGTH(strike); ++j) {
             boost::shared_ptr<HybridHestonHullWhiteProcess> jointProcess(
                 new HybridHestonHullWhiteProcess(
-                        hestonProcess, hwFwdProcess, 0.0, 
+                        hestonProcess, hwFwdProcess, 0.0,
                         HybridHestonHullWhiteProcess::Euler));
 
             boost::shared_ptr<StrikedTypePayoff> payoff(
@@ -632,12 +635,12 @@ void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
 
             VanillaOption optionHestonHW(payoff, exercise);
             optionHestonHW.setPricingEngine(
-                boost::shared_ptr<PricingEngine>(
-                    new MCHestonHullWhiteEngine<PseudoRandom>(
-                                          jointProcess,
-                                          1, Null<Size>(), 
-                                          true, true, 1,
-                                          tol, Null<Size>(), 42)));
+                    MakeMCHestonHullWhiteEngine<PseudoRandom>(jointProcess)
+                    .withSteps(1)
+                    .withAntitheticVariate()
+                    .withControlVariate()
+                    .withAbsoluteTolerance(tol)
+                    .withSeed(42));
 
             VanillaOption optionPureHeston(payoff, exercise);
             optionPureHeston.setPricingEngine(
@@ -826,7 +829,7 @@ void HybridHestonHullWhiteProcessTest::testDiscretizationError() {
     const Real tol = 0.05;
     const Real corr[] = {-0.85, 0.5 };
     const Real strike[] = { 50, 100, 125 };
-    
+
     for (Size i=0; i < LENGTH(corr); ++i) {
         for (Size j=0; j < LENGTH(strike); ++j) {
             boost::shared_ptr<StrikedTypePayoff> payoff(
@@ -849,12 +852,11 @@ void HybridHestonHullWhiteProcessTest::testDiscretizationError() {
                 new HybridHestonHullWhiteProcess(hestonProcess,
                                                  hwProcess, corr[i]));
             optionHestonHW.setPricingEngine(
-                boost::shared_ptr<PricingEngine>(
-                    new MCHestonHullWhiteEngine<PseudoRandom>(
-                                          jointProcess,
-                                          1, Null<Size>(), 
-                                          true, false, 1,
-                                          tol, Null<Size>(), 42)));
+                    MakeMCHestonHullWhiteEngine<PseudoRandom>(jointProcess)
+                    .withSteps(1)
+                    .withAntitheticVariate()
+                    .withAbsoluteTolerance(tol)
+                    .withSeed(42));
 
             Real calculated = optionHestonHW.NPV();
             Real error      = optionHestonHW.errorEstimate();

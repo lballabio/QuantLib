@@ -86,6 +86,31 @@ namespace QuantLib {
         BigNatural seed_;
     };
 
+
+    //! Monte Carlo Himalaya-option engine factory
+    template <class RNG = PseudoRandom, class S = Statistics>
+    class MakeMCHimalayaEngine {
+      public:
+        MakeMCHimalayaEngine(
+                    const boost::shared_ptr<StochasticProcessArray>&);
+        // named parameters
+        MakeMCHimalayaEngine& withBrownianBridge(bool b = true);
+        MakeMCHimalayaEngine& withAntitheticVariate(bool b = true);
+        MakeMCHimalayaEngine& withSamples(Size samples);
+        MakeMCHimalayaEngine& withAbsoluteTolerance(Real tolerance);
+        MakeMCHimalayaEngine& withMaxSamples(Size samples);
+        MakeMCHimalayaEngine& withSeed(BigNatural seed);
+        // conversion to pricing engine
+        operator boost::shared_ptr<PricingEngine>() const;
+      private:
+        boost::shared_ptr<StochasticProcessArray> process_;
+        bool brownianBridge_, antithetic_;
+        Size samples_, maxSamples_;
+        Real tolerance_;
+        BigNatural seed_;
+    };
+
+
     class HimalayaMultiPathPricer : public PathPricer<MultiPath> {
       public:
         HimalayaMultiPathPricer(const boost::shared_ptr<Payoff>& payoff,
@@ -146,6 +171,78 @@ namespace QuantLib {
                                         process->riskFreeRate()->discount(
                                            arguments_.exercise->lastDate())));
     }
+
+
+    template <class RNG, class S>
+    inline MakeMCHimalayaEngine<RNG,S>::MakeMCHimalayaEngine(
+                     const boost::shared_ptr<StochasticProcessArray>& process)
+    : process_(process), brownianBridge_(false), antithetic_(false),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()),
+      tolerance_(Null<Real>()), seed_(0) {}
+
+    template <class RNG, class S>
+    inline MakeMCHimalayaEngine<RNG,S>&
+    MakeMCHimalayaEngine<RNG,S>::withBrownianBridge(bool brownianBridge) {
+        brownianBridge_ = brownianBridge;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCHimalayaEngine<RNG,S>&
+    MakeMCHimalayaEngine<RNG,S>::withAntitheticVariate(bool b) {
+        antithetic_ = b;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCHimalayaEngine<RNG,S>&
+    MakeMCHimalayaEngine<RNG,S>::withSamples(Size samples) {
+        QL_REQUIRE(tolerance_ == Null<Real>(),
+                   "tolerance already set");
+        samples_ = samples;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCHimalayaEngine<RNG,S>&
+    MakeMCHimalayaEngine<RNG,S>::withAbsoluteTolerance(Real tolerance) {
+        QL_REQUIRE(samples_ == Null<Size>(),
+                   "number of samples already set");
+        QL_REQUIRE(RNG::allowsErrorEstimate,
+                   "chosen random generator policy "
+                   "does not allow an error estimate");
+        tolerance_ = tolerance;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCHimalayaEngine<RNG,S>&
+    MakeMCHimalayaEngine<RNG,S>::withMaxSamples(Size samples) {
+        maxSamples_ = samples;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCHimalayaEngine<RNG,S>&
+    MakeMCHimalayaEngine<RNG,S>::withSeed(BigNatural seed) {
+        seed_ = seed;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline
+    MakeMCHimalayaEngine<RNG,S>::operator boost::shared_ptr<PricingEngine>()
+                                                                      const {
+        return boost::shared_ptr<PricingEngine>(new
+            MCHimalayaEngine<RNG,S>(process_,
+                                    brownianBridge_,
+                                    antithetic_,
+                                    samples_,
+                                    tolerance_,
+                                    maxSamples_,
+                                    seed_));
+    }
+
 }
 
 #endif

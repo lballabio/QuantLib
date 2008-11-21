@@ -99,15 +99,10 @@ void EverestOptionTest::testCached() {
     boost::shared_ptr<StochasticProcessArray> process(
                           new StochasticProcessArray(processes, correlation));
 
-    option.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                               new MCEverestEngine<PseudoRandom>(process,
-                                                                 Null<Size>(),
-                                                                 1, false,
-                                                                 false,
-                                                                 fixedSamples,
-                                                                 Null<Real>(),
-                                                                 Null<Size>(),
-                                                                 seed)));
+    option.setPricingEngine(MakeMCEverestEngine<PseudoRandom>(process)
+                            .withStepsPerYear(1)
+                            .withSamples(fixedSamples)
+                            .withSeed(seed));
 
     Real value = option.NPV();
     Real storedValue = 0.75784944;
@@ -121,15 +116,10 @@ void EverestOptionTest::testCached() {
     tolerance = option.errorEstimate();
     tolerance = std::min<Real>(tolerance/2.0, minimumTol*value);
 
-    option.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                               new MCEverestEngine<PseudoRandom>(process,
-                                                                 Null<Size>(),
-                                                                 1, false,
-                                                                 false,
-                                                                 Null<Size>(),
-                                                                 tolerance,
-                                                                 Null<Size>(),
-                                                                 seed)));
+    option.setPricingEngine(MakeMCEverestEngine<PseudoRandom>(process)
+                            .withStepsPerYear(1)
+                            .withAbsoluteTolerance(tolerance)
+                            .withSeed(seed));
 
     value = option.NPV();
     Real accuracy = option.errorEstimate();

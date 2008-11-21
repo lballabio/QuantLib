@@ -96,14 +96,9 @@ void PagodaOptionTest::testCached() {
     boost::shared_ptr<StochasticProcessArray> process(
                           new StochasticProcessArray(processes, correlation));
 
-    option.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                                new MCPagodaEngine<PseudoRandom>(process,
-                                                                 false,
-                                                                 false,
-                                                                 fixedSamples,
-                                                                 Null<Real>(),
-                                                                 Null<Size>(),
-                                                                 seed)));
+    option.setPricingEngine(MakeMCPagodaEngine<PseudoRandom>(process)
+                            .withSamples(fixedSamples)
+                            .withSeed(seed));
 
     Real value = option.NPV();
     Real storedValue = 0.01221094;
@@ -118,14 +113,9 @@ void PagodaOptionTest::testCached() {
     tolerance = option.errorEstimate();
     tolerance = std::min<Real>(tolerance/2.0, minimumTol*value);
 
-    option.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                                new MCPagodaEngine<PseudoRandom>(process,
-                                                                 false,
-                                                                 false,
-                                                                 Null<Size>(),
-                                                                 tolerance,
-                                                                 Null<Size>(),
-                                                                 seed)));
+    option.setPricingEngine(MakeMCPagodaEngine<PseudoRandom>(process)
+                            .withAbsoluteTolerance(tolerance)
+                            .withSeed(seed));
 
     value = option.NPV();
     Real accuracy = option.errorEstimate();

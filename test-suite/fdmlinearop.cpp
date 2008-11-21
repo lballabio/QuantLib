@@ -926,12 +926,12 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
 
     const Real tol = 0.025;
     option.setPricingEngine(
-        boost::shared_ptr<PricingEngine>(
-            new MCHestonHullWhiteEngine<PseudoRandom>(
-                                  jointProcess,
-                                  200, Null<Size>(), 
-                                  true, true, 1,
-                                  tol, Null<Size>(), 42)));
+            MakeMCHestonHullWhiteEngine<PseudoRandom>(jointProcess)
+            .withSteps(200)
+            .withAntitheticVariate()
+            .withControlVariate()
+            .withAbsoluteTolerance(tol)
+            .withSeed(42));
 
     // the following takes far too long
     // const Real expected = option.NPV();

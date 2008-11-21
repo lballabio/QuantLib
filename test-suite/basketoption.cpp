@@ -288,13 +288,11 @@ void BasketOptionTest::testEuroTwoValues() {
         boost::shared_ptr<PricingEngine> engine(new StulzEngine(stochProcess1,
                                                                 stochProcess2,
                                                                 values[i].rho));
-        boost::shared_ptr<PricingEngine> mcEngine(
-            new MCEuropeanBasketEngine<PseudoRandom, Statistics>(
-                                                         process,
-                                                         Null<Size>(),
-                                                         1, false, false,
-                                                         10000, Null<Real>(),
-                                                         100000, 42));
+        boost::shared_ptr<PricingEngine> mcEngine =
+            MakeMCEuropeanBasketEngine<PseudoRandom, Statistics>(process)
+            .withStepsPerYear(1)
+            .withSamples(10000)
+            .withSeed(42);
 
         BasketOption basketOption(basketTypeToPayoff(values[i].basketType,
                                                      payoff),
@@ -489,12 +487,11 @@ void BasketOptionTest::testBarraquandThreeValues() {
 
         // use a 3D sobol sequence...
         // Think long and hard before moving to more than 1 timestep....
-        boost::shared_ptr<PricingEngine> mcQuasiEngine(new
-            MCEuropeanBasketEngine<LowDiscrepancy>(process,
-                                                   Null<Size>(),
-                                                   1, false, false,
-                                                   8091, Null<Real>(),
-                                                   Null<Size>(), 42));
+        boost::shared_ptr<PricingEngine> mcQuasiEngine =
+            MakeMCEuropeanBasketEngine<LowDiscrepancy>(process)
+            .withStepsPerYear(1)
+            .withSamples(8091)
+            .withSeed(42);
 
         BasketOption euroBasketOption(basketTypeToPayoff(values[i].basketType,
                                                          payoff),
@@ -518,12 +515,13 @@ void BasketOptionTest::testBarraquandThreeValues() {
         Size requiredSamples = 1000;
         Size timeSteps = 500;
         BigNatural seed = 1;
-        boost::shared_ptr<PricingEngine> mcLSMCEngine(
-            new MCAmericanBasketEngine<>(process, timeSteps, Null<Size>(),
-                                         false, true, requiredSamples,
-                                         Null<Real>(), Null<Size>(),
-                                         seed, requiredSamples/4));
-
+        boost::shared_ptr<PricingEngine> mcLSMCEngine =
+            MakeMCAmericanBasketEngine<>(process)
+            .withSteps(timeSteps)
+            .withAntitheticVariate()
+            .withSamples(requiredSamples)
+            .withCalibrationSamples(requiredSamples/4)
+            .withSeed(seed);
 
         BasketOption amBasketOption(basketTypeToPayoff(values[i].basketType,
                                                        payoff),
@@ -639,11 +637,13 @@ void BasketOptionTest::testTavellaValues() {
 
     boost::shared_ptr<StochasticProcessArray> process(
                                new StochasticProcessArray(procs,correlation));
-    boost::shared_ptr<PricingEngine> mcLSMCEngine(
-            new MCAmericanBasketEngine<>(process, timeSteps, Null<Size>(),
-                                         false, true, requiredSamples,
-                                         Null<Real>(), Null<Size>(),
-                                         seed, requiredSamples/4));
+    boost::shared_ptr<PricingEngine> mcLSMCEngine =
+        MakeMCAmericanBasketEngine<>(process)
+        .withSteps(timeSteps)
+        .withAntitheticVariate()
+        .withSamples(requiredSamples)
+        .withCalibrationSamples(requiredSamples/4)
+        .withSeed(seed);
 
     BasketOption basketOption(basketTypeToPayoff(values[0].basketType,
                                                  payoff),
@@ -744,11 +744,13 @@ void BasketOptionTest::testOneDAmericanValues() {
     boost::shared_ptr<StochasticProcessArray> process(
                                new StochasticProcessArray(procs,correlation));
 
-    boost::shared_ptr<PricingEngine> mcLSMCEngine(
-            new MCAmericanBasketEngine<>(process, timeSteps, Null<Size>(),
-                                         false, true, requiredSamples,
-                                         Null<Real>(), Null<Size>(),
-                                         seed, requiredSamples/4));
+    boost::shared_ptr<PricingEngine> mcLSMCEngine =
+        MakeMCAmericanBasketEngine<>(process)
+        .withSteps(timeSteps)
+        .withAntitheticVariate()
+        .withSamples(requiredSamples)
+        .withCalibrationSamples(requiredSamples/4)
+        .withSeed(seed);
 
     for (Size i=0; i<LENGTH(values); i++) {
         boost::shared_ptr<PlainVanillaPayoff> payoff(new
@@ -831,11 +833,13 @@ void BasketOptionTest::testOddSamples() {
     boost::shared_ptr<StochasticProcessArray> process(
                                new StochasticProcessArray(procs,correlation));
 
-    boost::shared_ptr<PricingEngine> mcLSMCEngine(
-            new MCAmericanBasketEngine<>(process, timeSteps, Null<Size>(),
-                                         false, true, requiredSamples,
-                                         Null<Real>(), Null<Size>(),
-                                         seed, requiredSamples/4));
+    boost::shared_ptr<PricingEngine> mcLSMCEngine =
+        MakeMCAmericanBasketEngine<>(process)
+        .withSteps(timeSteps)
+        .withAntitheticVariate()
+        .withSamples(requiredSamples)
+        .withCalibrationSamples(requiredSamples/4)
+        .withSeed(seed);
 
     for (Size i=0; i<LENGTH(values); i++) {
         boost::shared_ptr<PlainVanillaPayoff> payoff(new

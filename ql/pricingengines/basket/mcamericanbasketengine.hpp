@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2004 Neil Firth
  Copyright (C) 2006 Klaus Spanderen
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -61,6 +61,33 @@ namespace QuantLib {
       protected:
         boost::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> >
             lsmPathPricer() const;
+    };
+
+
+    //! Monte Carlo American basket-option engine factory
+    template <class RNG = PseudoRandom>
+    class MakeMCAmericanBasketEngine {
+      public:
+        MakeMCAmericanBasketEngine(
+                            const boost::shared_ptr<StochasticProcessArray>&);
+        // named parameters
+        MakeMCAmericanBasketEngine& withSteps(Size steps);
+        MakeMCAmericanBasketEngine& withStepsPerYear(Size steps);
+        MakeMCAmericanBasketEngine& withBrownianBridge(bool b = true);
+        MakeMCAmericanBasketEngine& withAntitheticVariate(bool b = true);
+        MakeMCAmericanBasketEngine& withSamples(Size samples);
+        MakeMCAmericanBasketEngine& withAbsoluteTolerance(Real tolerance);
+        MakeMCAmericanBasketEngine& withMaxSamples(Size samples);
+        MakeMCAmericanBasketEngine& withSeed(BigNatural seed);
+        MakeMCAmericanBasketEngine& withCalibrationSamples(Size samples);
+        // conversion to pricing engine
+        operator boost::shared_ptr<PricingEngine>() const;
+      private:
+        boost::shared_ptr<StochasticProcessArray> process_;
+        bool brownianBridge_, antithetic_;
+        Size steps_, stepsPerYear_, samples_, maxSamples_, calibrationSamples_;
+        Real tolerance_;
+        BigNatural seed_;
     };
 
 
@@ -144,6 +171,107 @@ namespace QuantLib {
                      this->timeGrid(),
                      earlyExercisePathPricer,
                      *(process->riskFreeRate())));
+    }
+
+
+    template <class RNG>
+    inline MakeMCAmericanBasketEngine<RNG>::MakeMCAmericanBasketEngine(
+                     const boost::shared_ptr<StochasticProcessArray>& process)
+    : process_(process), brownianBridge_(false), antithetic_(false),
+      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()),
+      calibrationSamples_(Null<Size>()),
+      tolerance_(Null<Real>()), seed_(0) {}
+
+    template <class RNG>
+    inline MakeMCAmericanBasketEngine<RNG>&
+    MakeMCAmericanBasketEngine<RNG>::withSteps(Size steps) {
+        steps_ = steps;
+        return *this;
+    }
+
+    template <class RNG>
+    inline MakeMCAmericanBasketEngine<RNG>&
+    MakeMCAmericanBasketEngine<RNG>::withStepsPerYear(Size steps) {
+        stepsPerYear_ = steps;
+        return *this;
+    }
+
+    template <class RNG>
+    inline MakeMCAmericanBasketEngine<RNG>&
+    MakeMCAmericanBasketEngine<RNG>::withBrownianBridge(bool brownianBridge) {
+        brownianBridge_ = brownianBridge;
+        return *this;
+    }
+
+    template <class RNG>
+    inline MakeMCAmericanBasketEngine<RNG>&
+    MakeMCAmericanBasketEngine<RNG>::withAntitheticVariate(bool b) {
+        antithetic_ = b;
+        return *this;
+    }
+
+    template <class RNG>
+    inline MakeMCAmericanBasketEngine<RNG>&
+    MakeMCAmericanBasketEngine<RNG>::withSamples(Size samples) {
+        QL_REQUIRE(tolerance_ == Null<Real>(),
+                   "tolerance already set");
+        samples_ = samples;
+        return *this;
+    }
+
+    template <class RNG>
+    inline MakeMCAmericanBasketEngine<RNG>&
+    MakeMCAmericanBasketEngine<RNG>::withAbsoluteTolerance(Real tolerance) {
+        QL_REQUIRE(samples_ == Null<Size>(),
+                   "number of samples already set");
+        QL_REQUIRE(RNG::allowsErrorEstimate,
+                   "chosen random generator policy "
+                   "does not allow an error estimate");
+        tolerance_ = tolerance;
+        return *this;
+    }
+
+    template <class RNG>
+    inline MakeMCAmericanBasketEngine<RNG>&
+    MakeMCAmericanBasketEngine<RNG>::withMaxSamples(Size samples) {
+        maxSamples_ = samples;
+        return *this;
+    }
+
+    template <class RNG>
+    inline MakeMCAmericanBasketEngine<RNG>&
+    MakeMCAmericanBasketEngine<RNG>::withSeed(BigNatural seed) {
+        seed_ = seed;
+        return *this;
+    }
+
+    template <class RNG>
+    inline MakeMCAmericanBasketEngine<RNG>&
+    MakeMCAmericanBasketEngine<RNG>::withCalibrationSamples(Size samples) {
+        calibrationSamples_ = samples;
+        return *this;
+    }
+
+    template <class RNG>
+    inline
+    MakeMCAmericanBasketEngine<RNG>::operator
+    boost::shared_ptr<PricingEngine>() const {
+        QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
+                   "number of steps not given");
+        QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
+                   "number of steps overspecified");
+        return boost::shared_ptr<PricingEngine>(new
+            MCAmericanBasketEngine<RNG>(process_,
+                                        steps_,
+                                        stepsPerYear_,
+                                        brownianBridge_,
+                                        antithetic_,
+                                        samples_,
+                                        tolerance_,
+                                        maxSamples_,
+                                        seed_,
+                                        calibrationSamples_));
     }
 
 }

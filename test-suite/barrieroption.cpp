@@ -354,22 +354,14 @@ void BarrierOptionTest::testBabsiriValues() {
         }
 
         Real maxMcRelativeErrorAllowed = 2.0e-2;
-        Size timeStepsPerYear = 1;
-        bool antitheticVariate = false;
-        bool brownianBridge = true;
-        Size requiredSamples = 131071; // 2^17-1
-        Real requiredTolerance = Null<Real>();
-        Size maxSamples = 1048575; // 2^20-1
-        bool isBiased = false;
-        long seed = 5;
 
-        boost::shared_ptr<PricingEngine> mcEngine(new
-            MCBarrierEngine<LowDiscrepancy>(stochProcess,
-                                            Null<Size>(), timeStepsPerYear,
-                                            brownianBridge,
-                                            antitheticVariate,
-                                            requiredSamples, requiredTolerance,
-                                            maxSamples, isBiased, seed));
+        boost::shared_ptr<PricingEngine> mcEngine =
+            MakeMCBarrierEngine<LowDiscrepancy>(stochProcess)
+            .withStepsPerYear(1)
+            .withBrownianBridge()
+            .withSamples(131071) // 2^17-1
+            .withMaxSamples(1048575) // 2^20-1
+            .withSeed(5);
 
         barrierCallOption.setPricingEngine(mcEngine);
         calculated = barrierCallOption.NPV();
@@ -461,22 +453,13 @@ void BarrierOptionTest::testBeagleholeValues() {
         }
 
         Real maxMcRelativeErrorAllowed = 0.01;
-        Size timeStepsPerYear = 1;
-        bool brownianBridge = true;
-        bool antitheticVariate = false;
-        Size requiredSamples = 131071; // 2^17-1
-        Real requiredTolerance = Null<Real>();
-        Size maxSamples = 1048575; // 2^20-1
-        bool isBiased = false;
-        long seed = 10;
-        boost::shared_ptr<PricingEngine> mcEngine(
-            new MCBarrierEngine<LowDiscrepancy>(stochProcess,
-                                                Null<Size>(), timeStepsPerYear,
-                                                brownianBridge,
-                                                antitheticVariate,
-                                                requiredSamples,
-                                                requiredTolerance,
-                                                maxSamples, isBiased, seed));
+        boost::shared_ptr<PricingEngine> mcEngine =
+            MakeMCBarrierEngine<LowDiscrepancy>(stochProcess)
+            .withStepsPerYear(1)
+            .withBrownianBridge()
+            .withSamples(131071) // 2^17-1
+            .withMaxSamples(1048575) // 2^20-1
+            .withSeed(10);
 
         barrierCallOption.setPricingEngine(mcEngine);
         calculated = barrierCallOption.NPV();

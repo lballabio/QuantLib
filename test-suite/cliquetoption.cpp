@@ -325,13 +325,11 @@ void CliquetOptionTest::testMcPerformance() {
               boost::shared_ptr<PricingEngine> refEngine(
                                       new AnalyticPerformanceEngine(process));
 
-              boost::shared_ptr<PricingEngine> mcEngine(
-                            new MCPerformanceEngine<PseudoRandom>(process,
-                                                                  true, false,
-                                                                  Null<Size>(),
-                                                                  5.0e-3,
-                                                                  Null<Size>(),
-                                                                  42));
+              boost::shared_ptr<PricingEngine> mcEngine =
+                  MakeMCPerformanceEngine<PseudoRandom>(process)
+                  .withBrownianBridge()
+                  .withAbsoluteTolerance(5.0e-3)
+                  .withSeed(42);
 
               for (Size l=0; l<LENGTH(underlyings); l++) {
                 for (Size m=0; m<LENGTH(qRates); m++) {
