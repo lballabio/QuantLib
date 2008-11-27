@@ -109,9 +109,6 @@ namespace QuantLib {
             //! Parabolic approximation (local, non-monotone, linear)
             Parabolic,
 
-            //! Modified-Parabolic approximation (local, monotone, non-linear)
-            ModifiedParabolic,
-
             //! Fritsch-Butland approximation (local, monotone, non-linear)
             FritschButland,
 
@@ -341,16 +338,30 @@ namespace QuantLib {
                                 QL_FAIL("FourthOrder not implemented yet");
                                 break;
                             case CubicInterpolation::Parabolic:
-                                QL_FAIL("Parabolic not implemented yet");
-                                break;
-                            case CubicInterpolation::ModifiedParabolic:
-                                QL_FAIL("ModifiedParabolic not implemented yet");
+                                // intermediate points
+                                for (Size i=1; i<n_-1; ++i) {
+                                    tmp[i] = (dx[i-1]*S[i]+dx[i]*S[i-1])/(dx[i]+dx[i-1]);
+                                }
+                                // end points
+                                tmp[0]    = ((2.0*dx[   0]+dx[   1])*S[   0] - dx[   0]*S[   1]) / (dx[   0]+dx[   1]);
+                                tmp[n_-1] = ((2.0*dx[n_-2]+dx[n_-3])*S[n_-2] - dx[n_-2]*S[n_-3]) / (dx[n_-2]+dx[n_-3]);
                                 break;
                             case CubicInterpolation::FritschButland:
-                                QL_FAIL("FritschButland not implemented yet");
+                                // intermediate points
+                                for (Size i=1; i<n_-1; ++i) {
+                                    Real Smin = std::min(S[i-1], S[i]);
+                                    Real Smax = std::max(S[i-1], S[i]);
+                                    tmp[i] = 3.0*Smin*Smax/(Smax+2.0*Smin);
+                                }
+                                // end points
+                                tmp[0]    = ((2.0*dx[   0]+dx[   1])*S[   0] - dx[   0]*S[   1]) / (dx[   0]+dx[   1]);
+                                tmp[n_-1] = ((2.0*dx[n_-2]+dx[n_-3])*S[n_-2] - dx[n_-2]*S[n_-3]) / (dx[n_-2]+dx[n_-3]);
                                 break;
                             case CubicInterpolation::Akima:
                                 QL_FAIL("Akima not implemented yet");
+                                // end points
+                                tmp[0]    = ((2.0*dx[   0]+dx[   1])*S[   0] - dx[   0]*S[   1]) / (dx[   0]+dx[   1]);
+                                tmp[n_-1] = ((2.0*dx[n_-2]+dx[n_-3])*S[n_-2] - dx[n_-2]*S[n_-3]) / (dx[n_-2]+dx[n_-3]);
                                 break;
                             case CubicInterpolation::Kruger:
                                 // intermediate points
