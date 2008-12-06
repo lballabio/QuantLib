@@ -19,8 +19,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_affine_map_hpp
-#define quantlib_test_affine_map_hpp
+#ifndef quantlib_test_fdm_linear_op_hpp
+#define quantlib_test_fdm_linear_op_hpp
 
 #include <boost/test/unit_test.hpp>
 

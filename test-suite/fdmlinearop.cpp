@@ -22,8 +22,6 @@
 #include "fdmlinearop.hpp"
 #include "utilities.hpp"
 
-#include <boost/lambda/lambda.hpp>
-
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
@@ -34,10 +32,7 @@
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
-#include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/mchestonhullwhiteengine.hpp>
-#include <ql/pricingengines/vanilla/analyticbsmhullwhiteengine.hpp>
-#include <ql/pricingengines/vanilla/analytichestonhullwhiteengine.hpp>
 
 #include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
 #include <ql/experimental/finitedifferences/douglasscheme.hpp>
