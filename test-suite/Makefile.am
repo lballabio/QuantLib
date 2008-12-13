@@ -35,6 +35,7 @@ QL_TESTS = \
 	exchangerate.hpp exchangerate.cpp \
 	extendedtrees.hpp extendedtrees.cpp \
 	factorial.hpp factorial.cpp \
+	fdheston.hpp fdheston.cpp \
 	fdmlinearop.hpp fdmlinearop.cpp \
 	forwardoption.hpp forwardoption.cpp \
 	gaussianquadratures.hpp gaussianquadratures.cpp \
@@ -109,6 +110,7 @@ QL_BENCHMARKS = \
 	digitaloption.hpp digitaloption.cpp \
 	dividendoption.hpp dividendoption.cpp \
 	europeanoption.hpp europeanoption.cpp \
+	fdheston.hpp fdheston.cpp \
 	hestonmodel.hpp hestonmodel.cpp \
 	interpolations.hpp interpolations.cpp \
 	jumpdiffusion.hpp jumpdiffusion.cpp \
