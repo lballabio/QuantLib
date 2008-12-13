@@ -29,28 +29,33 @@
  using the perfex library, http://user.it.uu.se/~mikpe/linux/perfctr
  and PAPI, http://icl.cs.utk.edu/papi
 
- Example results: 1. Core2 Quad@2.4Ghz   :1186.3 mflops
-                   2. Core2 Dual@2.0Ghz   : 670.4 mflops
-                  3. Pentium4 Dual@2.8Ghz: 423.8 mflops
-                  4. Pentium4@3.0Ghz     : 266.3 mflops
-                  5. PentiumIII@1.1Ghz   : 146.2 mflops
-                  6. Alpha 2xEV68@833Mhz : 184.6 mflops
-                  7. Strong ARM@206Mhz   :   1.4 mflops
+ Example results: 1. Core2 Q9300@2.5Ghz  :1575.7 mflops
+                  2. Core2 Q6600@2.4Ghz  :1285.1 mflops
+                  3. Core2 Dual@2.0Ghz   : 670.4 mflops
+                  4. Athlon 64 X2 4400+  : 601.7 mflops
+                  5. Pentium4 Dual@2.8Ghz: 423.8 mflops
+                  6. Pentium4@3.0Ghz     : 266.3 mflops
+                  7. PentiumIII@1.1Ghz   : 146.2 mflops
+                  8. Alpha 2xEV68@833Mhz : 184.6 mflops
+                  9. Strong ARM@206Mhz   :   1.4 mflops
 
  Remarks: OS: Linux, static libs
-  1 & 2. gcc-4.2.1, -O3 -ffast-math
+  1. gcc-4.2.1, -O3 -ffast-math -mfpmath=sse,387 -msse2 -funroll-all-loops
+      Remark: four processes
+  2. gcc-4.2.1, -O3 -ffast-math -mfpmath=sse,387 -msse2 -funroll-all-loops
+      Remark: four processes
+  3. gcc-4.2.1, -O3 -ffast-math -mfpmath=sse,387 -msse2 -funroll-all-loops
+      Remark: two processes
+  4. gcc-4.2.1, -O3 -ffast-math -mfpmath=sse,387 -msse2 -funroll-all-loops
+      Remark: two processes
+  5. gcc-4.0.1, -O3 -march=pentium4 -ffast-math 
+      -mfpmath=sse,387 -msse2 -funroll-all-loops, Remark: two processes
+  6. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
                 -mfpmath=sse,387 -msse2 -funroll-all-loops
-                slightly modified QL version to enable multi threading.
-  3. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
-                -mfpmath=sse,387 -msse2 -funroll-all-loops
-                slightly modified QL version to enable multi threading.
-  4. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
-                -mfpmath=sse,387 -msse2 -funroll-all-loops
-  5. gcc-4.1.1, -O3 -march=pentium3 -ffast-math
+  7. gcc-4.1.1, -O3 -march=pentium3 -ffast-math
                 -mfpmath=sse,387 -msse -funroll-all-loops
-  6. gcc-3.3.5, -O3 -mcpu=e67 -funroll-all-loops
-                slightly modified QL version to enable multi threading.
-  7. gcc-3.4.3, -O2 -g on a Zaurus PDA
+  8. gcc-3.3.5, -O3 -mcpu=e67 -funroll-all-loops, Remark: two processes
+  9. gcc-3.4.3, -O2 -g on a Zaurus PDA
 
   This benchmark is derived from quantlibtestsuite.cpp. Please see the
   copyrights therein.
@@ -88,6 +93,7 @@
 #include "digitaloption.hpp"
 #include "dividendoption.hpp"
 #include "europeanoption.hpp"
+#include "fdheston.hpp"
 #include "hestonmodel.hpp"
 #include "interpolations.hpp"
 #include "jumpdiffusion.hpp"
@@ -233,6 +239,8 @@ test_suite* init_unit_test_suite(int, char*[]) {
         &EuropeanOptionTest::testFdEngines, 148.43));
     bm.push_back(Benchmark("EuropeanOption::PriceCurve",
         &EuropeanOptionTest::testPriceCurve, 414.76));
+    bm.push_back(Benchmark("FdHestonTest::testFdmHestonAmerican",
+        &FdHestonTest::testFdmHestonAmerican, 165.75));
     bm.push_back(Benchmark("HestonModel::DAXCalibration",
         &HestonModelTest::testDAXCalibration, 744.41));
     bm.push_back(Benchmark("HestonModel::McVsCached",
