@@ -92,6 +92,22 @@ namespace QuantLib {
         <li>New Year's Eve, December 31st</li>
         </ul>
 
+        Holidays for the Euwax exchange
+        (data from http://www.boerse-stuttgart.de):
+        <ul>
+        <li>Saturdays</li>
+        <li>Sundays</li>
+        <li>New Year's Day, January 1st</li>
+        <li>Good Friday</li>
+        <li>Easter Monday</li>
+        <li>Labour Day, May 1st</li>
+        <li>Whit Monday</li>
+        <li>Christmas' Eve, December 24th</li>
+        <li>Christmas, December 25th</li>
+        <li>Christmas Holiday, December 26th</li>
+        <li>New Year's Eve, December 31st</li>
+        </ul>
+
         \ingroup calendars
 
         \test the correctness of the returned results is tested
@@ -119,12 +135,19 @@ namespace QuantLib {
             std::string name() const { return "Eurex"; }
             bool isBusinessDay(const Date&) const;
         };
+        class EuwaxImpl : public Calendar::WesternImpl {
+        public:
+            std::string name() const { return "Euwax"; }
+            bool isBusinessDay(const Date&) const;
+        };
+
       public:
         //! German calendars
         enum Market { Settlement,             //!< generic settlement calendar
                       FrankfurtStockExchange, //!< Frankfurt stock-exchange
                       Xetra,                  //!< Xetra
-                      Eurex                   //!< Eurex
+                      Eurex,                  //!< Eurex
+                      Euwax                   //!< Euwax
         };
         Germany(Market market = FrankfurtStockExchange);
     };

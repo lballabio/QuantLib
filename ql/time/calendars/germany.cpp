@@ -33,6 +33,9 @@ namespace QuantLib {
             new Germany::XetraImpl);
         static boost::shared_ptr<Calendar::Impl> eurexImpl(
             new Germany::EurexImpl);
+        static boost::shared_ptr<Calendar::Impl> euwaxImpl(
+            new Germany::EuwaxImpl);
+
         switch (market) {
           case Settlement:
             impl_ = settlementImpl;
@@ -45,6 +48,9 @@ namespace QuantLib {
             break;
           case Eurex:
             impl_ = eurexImpl;
+            break;
+          case Euwax:
+            impl_ = euwaxImpl;
             break;
           default:
             QL_FAIL("unknown market");
@@ -168,6 +174,34 @@ namespace QuantLib {
             return false;
         return true;
     }
-
+    
+    bool Germany::EuwaxImpl::isBusinessDay(const Date& date) const {
+        Weekday w = date.weekday();
+        Day d = date.dayOfMonth(), dd = date.dayOfYear();
+        Month m = date.month();
+        Year y = date.year();
+        Day em = easterMonday(y);
+        if ((w == Saturday || w == Sunday)
+            // New Year's Day
+            || (d == 1 && m == January)
+            // Good Friday
+            || (dd == em-3)
+            // Easter Monday
+            || (dd == em)
+            // Labour Day
+            || (d == 1 && m == May)
+            // Whit Monday
+            || (dd == em+49)
+            // Christmas' Eve
+            || (d == 24 && m == December)
+            // Christmas
+            || (d == 25 && m == December)
+            // Christmas Day
+            || (d == 26 && m == December)
+            // New Year's Eve
+            || (d == 31 && m == December))
+            return false;
+        return true;
+    }
 }
 
