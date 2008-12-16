@@ -31,6 +31,7 @@ this_include_HEADERS = \
 	fdmlinearoplayout.hpp \
 	fdmmesher.hpp \
 	fdmmeshercomposite.hpp \
+	fdmquantohelper.hpp \
 	fdmsnapshotcondition.hpp \
 	fdmstepconditioncomposite.hpp \
 	firstderivativeop.hpp \
@@ -63,6 +64,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdmhestonvariancemesher.cpp \
 	fdmlinearoplayout.cpp \
 	fdmmeshercomposite.cpp \
+	fdmquantohelper.cpp \
 	fdmsnapshotcondition.cpp \
 	fdmstepconditioncomposite.cpp \
 	firstderivativeop.cpp \

@@ -28,14 +28,16 @@ namespace QuantLib {
     FdmHestonEquityPart::FdmHestonEquityPart(
         const boost::shared_ptr<FdmMesher>& mesher,
         const boost::shared_ptr<YieldTermStructure>& rTS,
-        const boost::shared_ptr<YieldTermStructure>& qTS)
+        const boost::shared_ptr<YieldTermStructure>& qTS,
+		const boost::shared_ptr<FdmQuantoHelper>& quantoHelper)
     : varianceValues_(0.5*mesher->locations(1)),
       dxMap_ (FirstDerivativeOp(0, mesher)),
       dxxMap_(SecondDerivativeOp(0, mesher).mult(0.5*mesher->locations(1))),
       mapT_   (0, mesher),
       mesher_(mesher),
       rTS_(rTS),
-      qTS_(qTS) {
+      qTS_(qTS),
+	  quantoHelper_(quantoHelper) {
 
         // on the boundary s_min and s_max the second derivative
         // d^2V/dS^2 is zero and due to Ito's Lemma the variance term
@@ -56,8 +58,15 @@ namespace QuantLib {
         const Real r = rTS_->forwardRate(t1, t2, Continuous);
         const Real q = qTS_->forwardRate(t1, t2, Continuous);
 
-        mapT_.axpyb(r - q - varianceValues_, dxMap_,
-                    dxxMap_, Array(1, -0.5*r));
+		if (quantoHelper_) {
+			mapT_.axpyb(r - q - varianceValues_
+				- quantoHelper_->quantoAdjustment(
+				volatilityValues_, t1, t2), 
+				dxMap_, dxxMap_, Array(1, -0.5*r));
+		}
+		else {
+			mapT_.axpyb(r - q - varianceValues_, dxMap_, dxxMap_, Array(1, -0.5*r));
+		}
     }
 
     const TripleBandLinearOp& FdmHestonEquityPart::getMap() const {
@@ -87,7 +96,8 @@ namespace QuantLib {
 
     FdmHestonOp::FdmHestonOp(
         const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<HestonProcess> & hestonProcess)
+        const boost::shared_ptr<HestonProcess> & hestonProcess,
+		const boost::shared_ptr<FdmQuantoHelper>& quantoHelper)
     : v0_(hestonProcess->v0()),
       kappa_(hestonProcess->kappa()),
       theta_(hestonProcess->theta()),
@@ -99,7 +109,8 @@ namespace QuantLib {
       dyMap_(mesher, rTS_,
              sigma_, kappa_, theta_),
       dxMap_(mesher,
-             rTS_, hestonProcess->dividendYield().currentLink()) {
+             rTS_, hestonProcess->dividendYield().currentLink(),
+			 quantoHelper) {
     }
 
 

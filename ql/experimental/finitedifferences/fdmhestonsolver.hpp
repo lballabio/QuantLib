@@ -53,7 +53,9 @@ namespace QuantLib {
             Time maturity,
             Size timeSteps,
             FdmSchemeType type = HundsdorferScheme,
-            Real theta = 0.3, Real mu = 0.5);
+            Real theta = 0.3, Real mu = 0.5,
+			const Handle<FdmQuantoHelper>& quantoHelper 
+												= Handle<FdmQuantoHelper>());
 
         Real valueAt(Real s, Real v) const;
         Real deltaAt(Real s, Real v, Real eps) const;
@@ -74,6 +76,7 @@ namespace QuantLib {
 
         const FdmSchemeType schemeType_;
         const Real theta_, mu_;
+		const Handle<FdmQuantoHelper> quantoHelper_;
 
         std::vector<Real> x_, v_, initialValues_;
         mutable Matrix resultValues_;

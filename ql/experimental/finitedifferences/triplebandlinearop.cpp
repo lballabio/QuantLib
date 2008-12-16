@@ -132,7 +132,7 @@ namespace QuantLib {
                 }
             }
             else {
-                const Real *bptr(b.begin());
+				Array::const_iterator bptr(b.begin());
                 const Size binc = (b.size() > 1) ? 1 : 0;
 
                 for (Size i=0; i < size; ++i) {
@@ -143,7 +143,7 @@ namespace QuantLib {
             }
         }
         else if (b.empty()) {
-            const Real *aptr(a.begin());
+            Array::const_iterator aptr(a.begin());
             const Size ainc = (a.size() > 1) ? 1 : 0;
 
             const Real *x_diag (x.diag_.get());
@@ -158,10 +158,10 @@ namespace QuantLib {
             }
         }
         else {
-            const Real *bptr(b.begin());
+            Array::const_iterator bptr(b.begin());
             const Size binc = (b.size() > 1) ? 1 : 0;
 
-            const Real *aptr(a.begin());
+            Array::const_iterator aptr(a.begin());
             const Size ainc = (a.size() > 1) ? 1 : 0;
 
             const Real *x_diag (x.diag_.get());

@@ -27,6 +27,7 @@
 #define quantlib_fdm_heston_op_hpp
 
 #include <ql/processes/hestonprocess.hpp>
+#include <ql/experimental/finitedifferences/fdmquantohelper.hpp>
 #include <ql/experimental/finitedifferences/firstderivativeop.hpp>
 #include <ql/experimental/finitedifferences/triplebandlinearop.hpp>
 #include <ql/experimental/finitedifferences/ninepointlinearop.hpp>
@@ -39,7 +40,8 @@ namespace QuantLib {
         FdmHestonEquityPart(
             const boost::shared_ptr<FdmMesher>& mesher,
             const boost::shared_ptr<YieldTermStructure>& rTS,
-            const boost::shared_ptr<YieldTermStructure>& qTS);
+            const boost::shared_ptr<YieldTermStructure>& qTS,
+			const boost::shared_ptr<FdmQuantoHelper>& quantoHelper);
 
         void setTime(Time t1, Time t2);
         const TripleBandLinearOp& getMap() const;
@@ -52,6 +54,7 @@ namespace QuantLib {
 
         const boost::shared_ptr<FdmMesher> mesher_;
         const boost::shared_ptr<YieldTermStructure> rTS_, qTS_;
+		const boost::shared_ptr<FdmQuantoHelper> quantoHelper_;
     };
 
     class FdmHestonVariancePart {
@@ -76,7 +79,9 @@ namespace QuantLib {
       public:
         FdmHestonOp(
             const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::shared_ptr<HestonProcess>& hestonProcess);
+            const boost::shared_ptr<HestonProcess>& hestonProcess,
+			const boost::shared_ptr<FdmQuantoHelper>& quantoHelper 
+										= boost::shared_ptr<FdmQuantoHelper>());
 
         Size size() const;
         void setTime(Time t1, Time t2);

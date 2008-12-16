@@ -28,6 +28,7 @@
 #include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
+#include <ql/experimental/finitedifferences/fdmquantohelper.hpp>
 #include <ql/experimental/finitedifferences/fdmsnapshotcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/firstderivativeop.hpp>
