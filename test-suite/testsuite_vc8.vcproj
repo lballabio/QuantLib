@@ -1173,6 +1173,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\fdheston.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\fdmlinearop.cpp"
 				>
 			</File>
@@ -2291,6 +2295,10 @@
 			</File>
 			<File
 				RelativePath="factorial.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\fdheston.hpp"
 				>
 			</File>
 			<File
