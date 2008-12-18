@@ -197,7 +197,7 @@ namespace QuantLib {
 
                 QL_ENSURE(maxErrors[j][k]<maxErrorTolerance_,
                           "global swaptions calibration failed: "
-                          "maxErrorTolerance = " << maxErrorTolerance_
+                          "maxErrorTolerance = " << io::rate(maxErrorTolerance_)
                           << " exceeded " << "\n" <<
                           "option maturity = " << optionDates[j] << ", \n" <<
                           "swap tenor = " << swapTenors[k] << "\n" <<
