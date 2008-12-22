@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
- Copyright (C) 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
  Copyright (C) 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2007 Chiara Fornarola
  Copyright (C) 2008 Simon Ibbotson
@@ -265,6 +265,14 @@ namespace QuantLib {
         void setSingleRedemption(Real notional,
                                  Real redemption,
                                  const Date& date);
+
+        /*! This method can be called by derived classes in order to
+            build a bond with a single redemption payment.  It will
+            fill the notionalSchedule_, notionals_, and redemptions_
+            data members.
+        */
+        void setSingleRedemption(Real notional,
+                                 const boost::shared_ptr<CashFlow>& redemption);
 
         Natural settlementDays_;
         Calendar calendar_;

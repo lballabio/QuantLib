@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
- Copyright (C) 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
  Copyright (C) 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2007 Chiara Fornarola
  Copyright (C) 2008 Simon Ibbotson
@@ -469,6 +469,15 @@ namespace QuantLib {
     void Bond::setSingleRedemption(Real notional,
                                    Real redemption,
                                    const Date& date) {
+
+        boost::shared_ptr<CashFlow> redemptionCashflow(
+                         new SimpleCashFlow(notional*redemption/100.0, date));
+        setSingleRedemption(notional, redemptionCashflow);
+    }
+
+    void Bond::setSingleRedemption(
+                              Real notional,
+                              const boost::shared_ptr<CashFlow>& redemption) {
         notionals_.resize(2);
         notionalSchedule_.resize(2);
         redemptions_.clear();
@@ -476,13 +485,11 @@ namespace QuantLib {
         notionalSchedule_[0] = Date();
         notionals_[0] = notional;
 
-        notionalSchedule_[1] = date;
+        notionalSchedule_[1] = redemption->date();
         notionals_[1] = 0.0;
-
-        boost::shared_ptr<CashFlow> redemptionCashflow(
-                         new SimpleCashFlow(notional*redemption/100.0, date));
-        cashflows_.push_back(redemptionCashflow);
-        redemptions_.push_back(redemptionCashflow);
+        
+        cashflows_.push_back(redemption);
+        redemptions_.push_back(redemption);
     }
 
 
