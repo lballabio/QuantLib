@@ -24,11 +24,12 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #define quantlib_fdm_quanto_helper_hpp
 
 #include <ql/math/array.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/termstructures/voltermstructure.hpp>
-#include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
+#include <ql/patterns/observable.hpp>
 
 namespace QuantLib {
+
+    class YieldTermStructure;
+    class BlackVolTermStructure;
 
 	class FdmQuantoHelper : public Observable {
 	public:

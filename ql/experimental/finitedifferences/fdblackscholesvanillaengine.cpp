@@ -35,10 +35,10 @@ namespace QuantLib {
 
     FdBlackScholesVanillaEngine::FdBlackScholesVanillaEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Size tGrid, Size xGrid)
+            Size tGrid, Size xGrid, Real theta)
     : GenericEngine<DividendVanillaOption::arguments,
                     DividendVanillaOption::results>(),
-      process_(process), tGrid_(tGrid), xGrid_(xGrid) {
+      process_(process), tGrid_(tGrid), xGrid_(xGrid), theta_(theta) {
     }
 
     void FdBlackScholesVanillaEngine::calculate() const {
@@ -128,7 +128,7 @@ namespace QuantLib {
                 new FdmBlackScholesSolver(
                                 Handle<GeneralizedBlackScholesProcess>(process_),
                                 mesher, boundaries, conditions,
-                                payoff, maturity, tGrid_));
+                                payoff, maturity, tGrid_, theta_));
 
         results_.value = solver->valueAt(spot);
         results_.delta = solver->deltaAt(spot);

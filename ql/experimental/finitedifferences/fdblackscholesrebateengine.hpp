@@ -43,14 +43,15 @@ namespace QuantLib {
         // Constructor
           FdBlackScholesRebateEngine(
                 const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                Size tGrid = 100, Size xGrid = 100);
+                Size tGrid = 100, Size xGrid = 100, Real theta = 0.5);
 
         void calculate() const;
 
       private:
         const boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         const Size tGrid_, xGrid_;
-    };
+        const Real theta_;
+};
 
 
 }

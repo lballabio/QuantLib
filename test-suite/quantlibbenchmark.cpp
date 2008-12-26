@@ -240,7 +240,7 @@ test_suite* init_unit_test_suite(int, char*[]) {
     bm.push_back(Benchmark("EuropeanOption::PriceCurve",
         &EuropeanOptionTest::testPriceCurve, 414.76));
     bm.push_back(Benchmark("FdHestonTest::testFdmHestonAmerican",
-        &FdHestonTest::testFdmHestonAmerican, 165.75));
+        &FdHestonTest::testFdmHestonAmerican, 181.22));
     bm.push_back(Benchmark("HestonModel::DAXCalibration",
         &HestonModelTest::testDAXCalibration, 744.41));
     bm.push_back(Benchmark("HestonModel::McVsCached",

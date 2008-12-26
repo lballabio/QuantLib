@@ -41,8 +41,11 @@
 #include <ql/experimental/finitedifferences/uniformgridmesher.hpp>
 #include <ql/experimental/finitedifferences/uniform1dmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearop.hpp>
+#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
+#include <ql/experimental/finitedifferences/fdmlinearopcomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonhullwhiteop.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp>
+#include <ql/experimental/finitedifferences/fdmhestonop.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>

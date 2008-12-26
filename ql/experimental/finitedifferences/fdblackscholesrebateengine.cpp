@@ -35,10 +35,10 @@ namespace QuantLib {
 
     FdBlackScholesRebateEngine::FdBlackScholesRebateEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Size tGrid, Size xGrid)
+            Size tGrid, Size xGrid, Real theta)
     : GenericEngine<DividendBarrierOption::arguments,
                     DividendBarrierOption::results>(),
-      process_(process), tGrid_(tGrid), xGrid_(xGrid) {
+      process_(process), tGrid_(tGrid), xGrid_(xGrid), theta_(theta) {
     }
 
     void FdBlackScholesRebateEngine::calculate() const {
@@ -148,7 +148,7 @@ namespace QuantLib {
                 new FdmBlackScholesSolver(
                                 Handle<GeneralizedBlackScholesProcess>(process_),
                                 mesher, boundaries, conditions,
-                                rebatePayoff, maturity, tGrid_));
+                                rebatePayoff, maturity, tGrid_, theta_));
 
         results_.value = solver->valueAt(spot);
         results_.delta = solver->deltaAt(spot);

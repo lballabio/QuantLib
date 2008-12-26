@@ -20,10 +20,9 @@
 */
 
 #include <ql/experimental/finitedifferences/fdhestonbarrierengine.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
-#include <ql/experimental/finitedifferences/fdmhestonsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
@@ -32,16 +31,19 @@
 #include <ql/experimental/finitedifferences/fdhestonrebateengine.hpp>
 #include <ql/experimental/finitedifferences/fdhestonvanillaengine.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 
 namespace QuantLib {
 
     FdHestonBarrierEngine::FdHestonBarrierEngine(
             const boost::shared_ptr<HestonModel>& model,
-            Size tGrid, Size xGrid, Size vGrid)
+            Size tGrid, Size xGrid, Size vGrid,
+            FdmHestonSolver::FdmSchemeType type, Real theta, Real mu)
     : GenericModelEngine<HestonModel,
                         DividendBarrierOption::arguments,
                         DividendBarrierOption::results>(model),
-      tGrid_(tGrid), xGrid_(xGrid), vGrid_(vGrid) {
+      tGrid_(tGrid), xGrid_(xGrid), vGrid_(vGrid),
+      type_(type), theta_(theta), mu_(mu) {
     }
 
     void FdHestonBarrierEngine::calculate() const {
@@ -59,7 +61,8 @@ namespace QuantLib {
 
         // 2.1 The variance mesher
         const boost::shared_ptr<FdmHestonVarianceMesher> varianceMesher(
-            new FdmHestonVarianceMesher(layout->dim()[1], process, maturity));
+            new FdmHestonVarianceMesher(layout->dim()[1], process, maturity,
+                                        std::max(10u, tGrid_/5)));
 
         // 2.2 The equity mesher
         // Calculate the forward
@@ -109,7 +112,7 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
         meshers.push_back(equityMesher);
         meshers.push_back(varianceMesher);
-        boost::shared_ptr<FdmMesher> mesher (new FdmMesherComposite(
+        boost::shared_ptr<FdmMesher> mesher(new FdmMesherComposite(
                                                             layout, meshers));
 
         // 3. Step conditions
@@ -155,7 +158,8 @@ namespace QuantLib {
         boost::shared_ptr<FdmHestonSolver> solver(new FdmHestonSolver(
                                         Handle<HestonProcess>(process),
                                         mesher, boundaries, conditions,
-                                        arguments_.payoff, maturity, tGrid_));
+                                        arguments_.payoff, maturity, tGrid_,
+                                        type_, theta_, mu_));
 
         results_.value = solver->valueAt(spot, process->v0());
         results_.delta = solver->deltaAt(spot, process->v0(), spot*0.01);
@@ -174,7 +178,8 @@ namespace QuantLib {
                     new DividendVanillaOption(payoff,arguments_.exercise,
                                               dividendDates, dividends));
             vanillaOption->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                    new FdHestonVanillaEngine(model_, tGrid_, xGrid_, vGrid_)));
+                    new FdHestonVanillaEngine(model_, tGrid_, xGrid_, vGrid_,
+                                              type_, theta_, mu_)));
             // Calculate the rebate value
             boost::shared_ptr<DividendBarrierOption> rebateOption(
                     new DividendBarrierOption(arguments_.barrierType,
@@ -183,7 +188,10 @@ namespace QuantLib {
                                               payoff, arguments_.exercise,
                                               dividendDates, dividends));
             rebateOption->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                    new FdHestonRebateEngine(model_, tGrid_, 20, 10)));
+                    new FdHestonRebateEngine(model_, tGrid_, 
+                                             std::max(20u, xGrid_/5), 
+                                             std::max(10u, vGrid_/5),
+                                             type_, theta_, mu_)));
 
             results_.value = vanillaOption->NPV()   + rebateOption->NPV()
                                                     - results_.value;

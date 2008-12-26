@@ -21,6 +21,8 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
 #include <ql/experimental/finitedifferences/fdmquantohelper.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 
 namespace QuantLib {
 

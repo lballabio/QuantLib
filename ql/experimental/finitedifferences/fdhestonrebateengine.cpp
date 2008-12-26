@@ -20,26 +20,28 @@
 */
 
 #include <ql/experimental/finitedifferences/fdhestonrebateengine.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
-#include <ql/experimental/finitedifferences/fdmhestonsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
 #include <ql/experimental/finitedifferences/uniform1dmesher.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 
 namespace QuantLib {
 
     FdHestonRebateEngine::FdHestonRebateEngine(
             const boost::shared_ptr<HestonModel>& model,
-            Size tGrid, Size xGrid, Size vGrid)
+            Size tGrid, Size xGrid, Size vGrid,
+            FdmHestonSolver::FdmSchemeType type, Real theta, Real mu)
     : GenericModelEngine<HestonModel,
                         DividendBarrierOption::arguments,
                         DividendBarrierOption::results>(model),
-      tGrid_(tGrid), xGrid_(xGrid), vGrid_(vGrid) {
+      tGrid_(tGrid), xGrid_(xGrid), vGrid_(vGrid),
+      type_(type), theta_(theta), mu_(mu) {
     }
 
     void FdHestonRebateEngine::calculate() const {
@@ -57,7 +59,8 @@ namespace QuantLib {
 
         // 2.1 The variance mesher
         const boost::shared_ptr<FdmHestonVarianceMesher> varianceMesher(
-            new FdmHestonVarianceMesher(layout->dim()[1], process, maturity));
+            new FdmHestonVarianceMesher(layout->dim()[1], process, maturity, 
+                                        std::max(10u, tGrid_/10)));
 
         // 2.2 The equity mesher
         // Calculate the forward
@@ -155,7 +158,8 @@ namespace QuantLib {
         boost::shared_ptr<FdmHestonSolver> solver(new FdmHestonSolver(
                                         Handle<HestonProcess>(process),
                                         mesher, boundaries, conditions,
-                                        rebatePayoff, maturity, tGrid_));
+                                        rebatePayoff, maturity, tGrid_,
+                                        type_, theta_, mu_));
 
         results_.value = solver->valueAt(spot, process->v0());
         results_.delta = solver->deltaAt(spot, process->v0(), spot*0.01);

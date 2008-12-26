@@ -38,10 +38,10 @@ namespace QuantLib {
 
     FdBlackScholesBarrierEngine::FdBlackScholesBarrierEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Size tGrid, Size xGrid)
+            Size tGrid, Size xGrid, Real theta)
     : GenericEngine<DividendBarrierOption::arguments,
                     DividendBarrierOption::results>(),
-      process_(process), tGrid_(tGrid), xGrid_(xGrid) {
+      process_(process), tGrid_(tGrid), xGrid_(xGrid), theta_(theta) {
     }
 
     void FdBlackScholesBarrierEngine::calculate() const {
@@ -149,7 +149,7 @@ namespace QuantLib {
                 new FdmBlackScholesSolver(
                                 Handle<GeneralizedBlackScholesProcess>(process_),
                                 mesher, boundaries, conditions,
-                                payoff, maturity, tGrid_));
+                                payoff, maturity, tGrid_, theta_));
 
         results_.value = solver->valueAt(spot);
         results_.delta = solver->deltaAt(spot);
@@ -168,7 +168,8 @@ namespace QuantLib {
                     new DividendVanillaOption(payoff,arguments_.exercise,
                                               dividendDates, dividends));
             vanillaOption->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                    new FdBlackScholesVanillaEngine(process_, tGrid_, xGrid_)));
+                new FdBlackScholesVanillaEngine(process_, 
+                                                tGrid_, xGrid_, theta_)));
             // Calculate the rebate value
             boost::shared_ptr<DividendBarrierOption> rebateOption(
                     new DividendBarrierOption(arguments_.barrierType,
@@ -177,7 +178,9 @@ namespace QuantLib {
                                               payoff, arguments_.exercise,
                                               dividendDates, dividends));
             rebateOption->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                    new FdBlackScholesRebateEngine(process_, tGrid_, 100)));
+                    new FdBlackScholesRebateEngine(process_, tGrid_, 
+                                                   std::max(50u, xGrid_/5), 
+                                                   theta_)));
 
             results_.value = vanillaOption->NPV()   + rebateOption->NPV()
                                                     - results_.value;

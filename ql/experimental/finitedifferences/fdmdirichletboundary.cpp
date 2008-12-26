@@ -20,6 +20,7 @@
 */
 
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
+#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 
 namespace QuantLib {
 

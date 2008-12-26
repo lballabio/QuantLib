@@ -25,23 +25,25 @@
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp>
 
+#include <set>
+
 namespace QuantLib {
 
     FdmHestonVarianceMesher::FdmHestonVarianceMesher(
         Size size,
         const boost::shared_ptr<HestonProcess> & process,
-        Time maturity)
+        Time maturity, Size tAvgSteps)
         : Fdm1dMesher(size) {
 
-        const Size avgSteps = 10;
         const Real epsilon=0.0001;
 
         std::vector<Real> vGrid(size, 0.0), pGrid(size, 0.0);
         const Real df  = 4*process->theta()*process->kappa()/
             square<Real>()(process->sigma());
         try {
-            for (Size l=1; l<=avgSteps; ++l) {
-                const Real t = (maturity*l)/avgSteps;
+            std::multiset<std::pair<Real, Real> > grid;
+            for (Size l=1; l<=tAvgSteps; ++l) {
+                const Real t = (maturity*l)/tAvgSteps;
                 const Real ncp = 4*process->kappa()*std::exp(-process->kappa()*t)
                     /(square<Real>()(process->sigma())
                     *(1-std::exp(-process->kappa()*t)))*process->v0();
@@ -50,38 +52,44 @@ namespace QuantLib {
 
                 const Real qMin = std::min(process->v0(),
                     k*InverseNonCentralChiSquareDistribution(
-                    df, ncp, 100, 1e-16)(epsilon));
+                    df, ncp, 100, 1e-7)(epsilon));
                 const Real qMax = std::max(process->v0(),
                     k*InverseNonCentralChiSquareDistribution(
-                    df, ncp, 100,  1e-16)(1-epsilon));
+                    df, ncp, 100,  1e-7)(1-epsilon));
 
                 const Real minVStep=(qMax-qMin)/(50*size);
                 Real ps,p = epsilon;
 
-                std::vector<Real> vTmp(size);
-                vTmp[0]=qMin;
-                pGrid[0]+=epsilon;
+                Real vTmp = qMin;
+                grid.insert(std::pair<Real, Real>(qMin, epsilon));
                 for (Size i=1; i < size; ++i) {
                     ps = (1 - epsilon - p)/(size-i);
                     p += ps;
                     const Real tmp = k*InverseNonCentralChiSquareDistribution(
-                        df, ncp, 100, 1e-16)(p);
+                        df, ncp, 100, 1e-7)(p);
 
-                    const Real vx = std::max(vTmp[i-1]+minVStep, tmp);
+                    const Real vx = std::max(vTmp+minVStep, tmp);
                     p = NonCentralChiSquareDistribution(df, ncp)(vx/k);
-                    vTmp[i]= vx;
-                    pGrid[i]+= p;
+                    
+                    vTmp=vx;
+                    grid.insert(std::pair<Real, Real>(vx, p));
                 }
-                std::transform(vTmp.begin(), vTmp.end(), vGrid.begin(),
-                    vGrid.begin(), std::plus<Real>());
             }
-            QL_REQUIRE(vGrid.size() == size, "somethings wrong with the vgrid");
-
-            std::transform(vGrid.begin(), vGrid.end(), vGrid.begin(),
-                std::bind2nd(std::divides<Real>(), Real(avgSteps)));
-            std::transform(pGrid.begin(), pGrid.end(), pGrid.begin(),
-                std::bind2nd(std::divides<Real>(), Real(avgSteps)));
-        } catch (const QuantLib::Error&) {
+            QL_REQUIRE(grid.size() == size*tAvgSteps, 
+                       "somethings wrong with the grid size");
+            
+            std::vector<std::pair<Real, Real> > tp(grid.begin(), grid.end());
+            
+            for (Size i=0; i < size; ++i) {
+                const Size b = (i*tp.size())/size;
+                const Size e = ((i+1)*tp.size())/size;
+                for (Size j=b; j < e; ++j) {
+                    vGrid[i]+=tp[j].first/(e-b);
+                    pGrid[i]+=tp[j].second/(e-b);
+                }
+            }
+        } 
+        catch (const QuantLib::Error&) {
             // use default mesh
             const Real vol = process->sigma()*
                 std::sqrt(process->theta()/(2*process->kappa()));
@@ -103,7 +111,7 @@ namespace QuantLib {
                         LinearInterpolation(pGrid.begin(), pGrid.end(),
                         vGrid.begin()))),
             pGrid.front(), pGrid.back());
-
+        
         const Real v0 = process->v0();
         for (Size i=1; i<vGrid.size(); ++i) {
             if (vGrid[i-1] <= v0 && vGrid[i] >= v0) {

@@ -29,9 +29,10 @@
 
 #include <ql/methods/finitedifferences/boundarycondition.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearop.hpp>
-#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 
 namespace QuantLib {
+
+    class FdmLinearOpLayout;
 
     class FdmDirichletBoundary : public BoundaryCondition<FdmLinearOp> {
       public:

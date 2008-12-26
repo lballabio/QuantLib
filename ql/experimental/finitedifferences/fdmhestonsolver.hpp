@@ -26,16 +26,18 @@
 #define quantlib_fdm_heston_solver_hpp
 
 #include <ql/handle.hpp>
+#include <ql/payoff.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/processes/hestonprocess.hpp>
-#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
-#include <ql/experimental/finitedifferences/fdmmesher.hpp>
-#include <ql/experimental/finitedifferences/fdmhestonop.hpp>
+#include <ql/experimental/finitedifferences/fdmquantohelper.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
-#include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
-#include <ql/experimental/finitedifferences/fdmsnapshotcondition.hpp>
 
 namespace QuantLib {
+
+    class FdmMesher;
+    class FdmSnapshotCondition;
+    class FdmStepConditionComposite;
+    class BicubicSpline;
 
     class FdmHestonSolver : LazyObject {
       public:
