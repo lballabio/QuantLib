@@ -29,33 +29,36 @@
  using the perfex library, http://user.it.uu.se/~mikpe/linux/perfctr
  and PAPI, http://icl.cs.utk.edu/papi
 
- Example results: 1. Core2 Q9300@2.5Ghz  :1575.7 mflops
-                  2. Core2 Q6600@2.4Ghz  :1285.1 mflops
-                  3. Core2 Dual@2.0Ghz   : 670.4 mflops
-                  4. Athlon 64 X2 4400+  : 601.7 mflops
-                  5. Pentium4 Dual@2.8Ghz: 423.8 mflops
-                  6. Pentium4@3.0Ghz     : 266.3 mflops
-                  7. PentiumIII@1.1Ghz   : 146.2 mflops
-                  8. Alpha 2xEV68@833Mhz : 184.6 mflops
-                  9. Strong ARM@206Mhz   :   1.4 mflops
+ Example results: 1. Core2 Q9300@2.5Ghz  :2272.6 mflops
+                  2. Core2 Q6600@2.4Ghz  :1984.0 mflops
+                  3. Core2 Dual@2.0Ghz   : 835.9 mflops
+                  4. Athlon 64 X2 4400+  : 824.2 mflops
+                  5. Core2 Dual@2.0Ghz   : 754.1 mflops
+                  6. Pentium4 Dual@2.8Ghz: 423.8 mflops
+                  7. Pentium4@3.0Ghz     : 266.3 mflops
+                  8. PentiumIII@1.1Ghz   : 146.2 mflops
+                  9. Alpha 2xEV68@833Mhz : 184.6 mflops
+                 10. Strong ARM@206Mhz   :   1.4 mflops
 
  Remarks: OS: Linux, static libs
-  1. gcc-4.2.1, -O3 -ffast-math -mfpmath=sse,387 -msse2 -funroll-all-loops
+  1. icc-11.0,  -gcc-version=420 -fast -fp-model fast=2 -ipo-jobs2
       Remark: four processes
-  2. gcc-4.2.1, -O3 -ffast-math -mfpmath=sse,387 -msse2 -funroll-all-loops
+  2. icc-11.0,  -gcc-version=420 -fast -fp-model fast=2 -ipo-jobs2
       Remark: four processes
-  3. gcc-4.2.1, -O3 -ffast-math -mfpmath=sse,387 -msse2 -funroll-all-loops
+  3. icc-11.0,  -gcc-version=420 -fast -fp-model fast=2 -ipo-jobs2
       Remark: two processes
-  4. gcc-4.2.1, -O3 -ffast-math -mfpmath=sse,387 -msse2 -funroll-all-loops
+  4. icc-11.0,  -gcc-version=420 -xSSSE3 -O3 -ipo -no-prec-div -static 
+                -fp-model fast=2 -ipo-jobs2, Remark: two processes
+  5. gcc-4.2.1, -O3 -ffast-math -mfpmath=sse,387 -msse3 -funroll-all-loops
       Remark: two processes
-  5. gcc-4.0.1, -O3 -march=pentium4 -ffast-math 
+  6. gcc-4.0.1, -O3 -march=pentium4 -ffast-math 
       -mfpmath=sse,387 -msse2 -funroll-all-loops, Remark: two processes
-  6. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
+  7. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
                 -mfpmath=sse,387 -msse2 -funroll-all-loops
-  7. gcc-4.1.1, -O3 -march=pentium3 -ffast-math
+  8. gcc-4.1.1, -O3 -march=pentium3 -ffast-math
                 -mfpmath=sse,387 -msse -funroll-all-loops
-  8. gcc-3.3.5, -O3 -mcpu=e67 -funroll-all-loops, Remark: two processes
-  9. gcc-3.4.3, -O2 -g on a Zaurus PDA
+  9. gcc-3.3.5, -O3 -mcpu=e67 -funroll-all-loops, Remark: two processes
+ 10. gcc-3.4.3, -O2 -g on a Zaurus PDA
 
   This benchmark is derived from quantlibtestsuite.cpp. Please see the
   copyrights therein.
