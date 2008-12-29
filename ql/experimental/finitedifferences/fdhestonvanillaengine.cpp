@@ -58,9 +58,10 @@ namespace QuantLib {
         const Time maturity = process->time(arguments_.exercise->lastDate());
 
         // 2.1 The variance mesher
+        const Size tGridMin = 10;
         const boost::shared_ptr<FdmHestonVarianceMesher> varianceMesher(
             new FdmHestonVarianceMesher(layout->dim()[1], process, maturity, 
-                                        std::max(10u, tGrid_/5)));
+                                        std::max(tGridMin, tGrid_/5)));
 
         // 2.2 The equity mesher
         // Calculate the forward

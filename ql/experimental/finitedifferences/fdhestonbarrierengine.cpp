@@ -60,9 +60,10 @@ namespace QuantLib {
         const Time maturity = process->time(arguments_.exercise->lastDate());
 
         // 2.1 The variance mesher
+        const Size tGridMin = 10;
         const boost::shared_ptr<FdmHestonVarianceMesher> varianceMesher(
             new FdmHestonVarianceMesher(layout->dim()[1], process, maturity,
-                                        std::max(10u, tGrid_/5)));
+                                        std::max(tGridMin, tGrid_/5)));
 
         // 2.2 The equity mesher
         // Calculate the forward
@@ -187,10 +188,12 @@ namespace QuantLib {
                                               arguments_.rebate,
                                               payoff, arguments_.exercise,
                                               dividendDates, dividends));
+            const Size xGridMin = 20;
+            const Size vGridMin = 10;
             rebateOption->setPricingEngine(boost::shared_ptr<PricingEngine>(
                     new FdHestonRebateEngine(model_, tGrid_, 
-                                             std::max(20u, xGrid_/5), 
-                                             std::max(10u, vGrid_/5),
+                                             std::max(xGridMin, xGrid_/5), 
+                                             std::max(vGridMin, vGrid_/5),
                                              type_, theta_, mu_)));
 
             results_.value = vanillaOption->NPV()   + rebateOption->NPV()
