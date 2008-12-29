@@ -177,9 +177,11 @@ namespace QuantLib {
                                               arguments_.rebate,
                                               payoff, arguments_.exercise,
                                               dividendDates, dividends));
+            const Size min_grid_size = 50;
             rebateOption->setPricingEngine(boost::shared_ptr<PricingEngine>(
                     new FdBlackScholesRebateEngine(process_, tGrid_, 
-                                                   std::max(50u, xGrid_/5), 
+                                                   std::max(min_grid_size, 
+                                                   xGrid_/5), 
                                                    theta_)));
 
             results_.value = vanillaOption->NPV()   + rebateOption->NPV()
