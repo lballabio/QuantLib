@@ -18,6 +18,7 @@ this_include_HEADERS = \
 	primitivepolynomials.h \
 	randomizedlds.hpp \
 	randomsequencegenerator.hpp \
+	ranluxuniformrng.hpp \
 	rngtraits.hpp \
 	seedgenerator.hpp \
 	sobolrsg.hpp

@@ -15,6 +15,7 @@
 #include <ql/math/randomnumbers/primitivepolynomials.h>
 #include <ql/math/randomnumbers/randomizedlds.hpp>
 #include <ql/math/randomnumbers/randomsequencegenerator.hpp>
+#include <ql/math/randomnumbers/ranluxuniformrng.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/randomnumbers/seedgenerator.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
