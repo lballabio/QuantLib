@@ -45,7 +45,7 @@ namespace QuantLib {
 
         Date today = Settings::instance().evaluationDate();
 
-        if (paymentDate > today)
+        if (paymentDate > rateCurve->referenceDate())
             discount_ = rateCurve->discount(paymentDate);
         else
             discount_ = 1.0;
