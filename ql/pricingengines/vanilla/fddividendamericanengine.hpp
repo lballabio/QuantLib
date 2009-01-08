@@ -38,9 +38,6 @@ namespace QuantLib {
           reproducing numerical derivatives.
         - the invariance of the results upon addition of null
           dividends is tested.
-
-        \bug results are not overly reliable.
-        \bug method impliedVolatility() utterly fails
     */
     typedef FDEngineAdapter<FDAmericanCondition<FDDividendEngine>,
                             DividendVanillaOption::engine>

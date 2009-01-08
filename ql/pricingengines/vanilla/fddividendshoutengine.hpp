@@ -32,10 +32,7 @@
 namespace QuantLib {
 
     //! Finite-differences shout engine with dividends
-    /*! \ingroup vanillaengines
-
-        \bug results are not overly reliable.
-    */
+    /*! \ingroup vanillaengines */
     typedef FDEngineAdapter<FDShoutCondition<FDDividendEngine>,
                             DividendVanillaOption::engine>
     FDDividendShoutEngine;

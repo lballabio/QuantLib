@@ -84,7 +84,7 @@ xi        Real variance = volatility_*volatility_*residualTime_;
         center_ *= scaleFactor;
 
         intrinsicValues_.scaleGrid(scaleFactor);
-        initializeInitialCondition();
+        intrinsicValues_.sample(*payoff_);
         prices_.scaleGrid(scaleFactor);
         initializeOperator();
         initializeModel();
@@ -130,7 +130,7 @@ xi        Real variance = volatility_*volatility_*residualTime_;
         center_ = adder(center_);
         intrinsicValues_.transformGrid(adder);
 
-        initializeInitialCondition();
+        intrinsicValues_.sample(*payoff_);
         prices_.transformGrid(adder);
 
         initializeOperator();
