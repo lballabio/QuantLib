@@ -192,8 +192,8 @@ int main(int, char* [])
              << 100.*sigma
              << endl;
 
-        cout << "QuantLib  NPV/yld (%) ";
-        cout << callableBond0.NPV() << " / "
+        cout << "QuantLib price/yld (%)  ";
+        cout << callableBond0.cleanPrice() << " / "
              << 100. * callableBond0.yield(bondDayCounter,
                                            Compounded,
                                            frequency,
@@ -201,7 +201,7 @@ int main(int, char* [])
                                            maxIterations)
              << endl;
 
-        cout << "Bloomberg NPV/yld (%) ";
+        cout << "Bloomberg price/yld (%) ";
         cout << "96.50 / 5.47"
              << endl
              << endl;
@@ -223,8 +223,8 @@ int main(int, char* [])
         callableBond1.setPricingEngine(engine1);
 
 
-        cout << "QuantLib  NPV/yld (%) ";
-        cout << callableBond1.NPV() << " / "
+        cout << "QuantLib price/yld (%)  ";
+        cout << callableBond1.cleanPrice() << " / "
              << 100.* callableBond1.yield(bondDayCounter,
                                           Compounded,
                                           frequency,
@@ -232,7 +232,7 @@ int main(int, char* [])
                                           maxIterations)
              << endl;
 
-        cout << "Bloomberg NPV/yld (%) ";
+        cout << "Bloomberg price/yld (%) ";
         cout << "95.68 / 5.66"
              << endl
              << endl;
@@ -257,8 +257,8 @@ int main(int, char* [])
              << 100.*sigma
              << endl;
 
-        cout << "QuantLib  NPV/yld (%) ";
-        cout << callableBond2.NPV() << " / "
+        cout << "QuantLib price/yld (%)  ";
+        cout << callableBond2.cleanPrice() << " / "
              << 100. * callableBond2.yield(bondDayCounter,
                                            Compounded,
                                            frequency,
@@ -266,7 +266,7 @@ int main(int, char* [])
                                            maxIterations)
              << endl;
 
-        cout << "Bloomberg NPV/yld (%) ";
+        cout << "Bloomberg price/yld (%) ";
         cout << "92.34 / 6.49"
              << endl
              << endl;
@@ -291,8 +291,8 @@ int main(int, char* [])
              << 100.*sigma
              << endl;
 
-        cout << "QuantLib  NPV/yld (%) ";
-        cout << callableBond3.NPV() << " / "
+        cout << "QuantLib price/yld (%)  ";
+        cout << callableBond3.cleanPrice() << " / "
              << 100. * callableBond3.yield(bondDayCounter,
                                            Compounded,
                                            frequency,
@@ -300,7 +300,7 @@ int main(int, char* [])
                                            maxIterations)
              << endl;
 
-        cout << "Bloomberg NPV/yld (%) ";
+        cout << "Bloomberg price/yld (%) ";
         cout << "87.16 / 7.83"
              << endl
              << endl;
@@ -325,8 +325,8 @@ int main(int, char* [])
              << 100.*sigma
              << endl;
 
-        cout << "QuantLib  NPV/yld (%) ";
-        cout << callableBond4.NPV() << " / "
+        cout << "QuantLib price/yld (%)  ";
+        cout << callableBond4.cleanPrice() << " / "
              << 100.* callableBond4.yield(bondDayCounter,
                                           Compounded,
                                           frequency,
@@ -334,7 +334,7 @@ int main(int, char* [])
                                           maxIterations)
              << endl;
 
-        cout << "Bloomberg NPV/yld (%) ";
+        cout << "Bloomberg price/yld (%) ";
         cout << "77.31 / 10.65"
              << endl
              << endl;
