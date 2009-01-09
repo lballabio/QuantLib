@@ -179,11 +179,11 @@ int main(int, char* [])
         boost::shared_ptr<PricingEngine> engine0(
                       new TreeCallableFixedRateBondEngine(hw0,gridIntervals));
 
-        CallableFixedRateBond callableBond0(settlementDays, faceAmount, sch,
-                                            vector<Rate>(1, coupon),
-                                            bondDayCounter, paymentConvention,
-                                            redemption, issue, callSchedule);
-        callableBond0.setPricingEngine(engine0);
+        CallableFixedRateBond callableBond(settlementDays, faceAmount, sch,
+                                           vector<Rate>(1, coupon),
+                                           bondDayCounter, paymentConvention,
+                                           redemption, issue, callSchedule);
+        callableBond.setPricingEngine(engine0);
 
         cout << setprecision(2)
              << showpoint
@@ -193,12 +193,12 @@ int main(int, char* [])
              << endl;
 
         cout << "QuantLib price/yld (%)  ";
-        cout << callableBond0.cleanPrice() << " / "
-             << 100. * callableBond0.yield(bondDayCounter,
-                                           Compounded,
-                                           frequency,
-                                           accuracy,
-                                           maxIterations)
+        cout << callableBond.cleanPrice() << " / "
+             << 100. * callableBond.yield(bondDayCounter,
+                                          Compounded,
+                                          frequency,
+                                          accuracy,
+                                          maxIterations)
              << endl;
 
         cout << "Bloomberg price/yld (%) ";
@@ -216,20 +216,15 @@ int main(int, char* [])
         boost::shared_ptr<PricingEngine> engine1(
                       new TreeCallableFixedRateBondEngine(hw1,gridIntervals));
 
-        CallableFixedRateBond callableBond1(settlementDays, faceAmount, sch,
-                                            vector<Rate>(1, coupon),
-                                            bondDayCounter, paymentConvention,
-                                            redemption, issue, callSchedule);
-        callableBond1.setPricingEngine(engine1);
-
+        callableBond.setPricingEngine(engine1);
 
         cout << "QuantLib price/yld (%)  ";
-        cout << callableBond1.cleanPrice() << " / "
-             << 100.* callableBond1.yield(bondDayCounter,
-                                          Compounded,
-                                          frequency,
-                                          accuracy,
-                                          maxIterations)
+        cout << callableBond.cleanPrice() << " / "
+             << 100.* callableBond.yield(bondDayCounter,
+                                         Compounded,
+                                         frequency,
+                                         accuracy,
+                                         maxIterations)
              << endl;
 
         cout << "Bloomberg price/yld (%) ";
@@ -247,23 +242,19 @@ int main(int, char* [])
         boost::shared_ptr<PricingEngine> engine2(
                       new TreeCallableFixedRateBondEngine(hw2,gridIntervals));
 
-        CallableFixedRateBond callableBond2(settlementDays, faceAmount, sch,
-                                            vector<Rate>(1, coupon),
-                                            bondDayCounter, paymentConvention,
-                                            redemption, issue, callSchedule);
-        callableBond2.setPricingEngine(engine2);
+        callableBond.setPricingEngine(engine2);
 
         cout << "sigma/vol (%) = "
              << 100.*sigma
              << endl;
 
         cout << "QuantLib price/yld (%)  ";
-        cout << callableBond2.cleanPrice() << " / "
-             << 100. * callableBond2.yield(bondDayCounter,
-                                           Compounded,
-                                           frequency,
-                                           accuracy,
-                                           maxIterations)
+        cout << callableBond.cleanPrice() << " / "
+             << 100. * callableBond.yield(bondDayCounter,
+                                          Compounded,
+                                          frequency,
+                                          accuracy,
+                                          maxIterations)
              << endl;
 
         cout << "Bloomberg price/yld (%) ";
@@ -281,23 +272,19 @@ int main(int, char* [])
         boost::shared_ptr<PricingEngine> engine3(
                       new TreeCallableFixedRateBondEngine(hw3,gridIntervals));
 
-        CallableFixedRateBond callableBond3(settlementDays, faceAmount, sch,
-                                            vector<Rate>(1, coupon),
-                                            bondDayCounter, paymentConvention,
-                                            redemption, issue, callSchedule);
-        callableBond3.setPricingEngine(engine3);
+        callableBond.setPricingEngine(engine3);
 
         cout << "sigma/vol (%) = "
              << 100.*sigma
              << endl;
 
         cout << "QuantLib price/yld (%)  ";
-        cout << callableBond3.cleanPrice() << " / "
-             << 100. * callableBond3.yield(bondDayCounter,
-                                           Compounded,
-                                           frequency,
-                                           accuracy,
-                                           maxIterations)
+        cout << callableBond.cleanPrice() << " / "
+             << 100. * callableBond.yield(bondDayCounter,
+                                          Compounded,
+                                          frequency,
+                                          accuracy,
+                                          maxIterations)
              << endl;
 
         cout << "Bloomberg price/yld (%) ";
@@ -315,23 +302,19 @@ int main(int, char* [])
         boost::shared_ptr<PricingEngine> engine4(
                       new TreeCallableFixedRateBondEngine(hw4,gridIntervals));
 
-        CallableFixedRateBond callableBond4(settlementDays, faceAmount, sch,
-                                            vector<Rate>(1, coupon),
-                                            bondDayCounter, paymentConvention,
-                                            redemption, issue, callSchedule);
-        callableBond4.setPricingEngine(engine4);
+        callableBond.setPricingEngine(engine4);
 
         cout << "sigma/vol (%) = "
              << 100.*sigma
              << endl;
 
         cout << "QuantLib price/yld (%)  ";
-        cout << callableBond4.cleanPrice() << " / "
-             << 100.* callableBond4.yield(bondDayCounter,
-                                          Compounded,
-                                          frequency,
-                                          accuracy,
-                                          maxIterations)
+        cout << callableBond.cleanPrice() << " / "
+             << 100.* callableBond.yield(bondDayCounter,
+                                         Compounded,
+                                         frequency,
+                                         accuracy,
+                                         maxIterations)
              << endl;
 
         cout << "Bloomberg price/yld (%) ";
