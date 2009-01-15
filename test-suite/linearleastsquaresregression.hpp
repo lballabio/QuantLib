@@ -28,6 +28,7 @@
 class LinearLeastSquaresRegressionTest {
   public:
     static void testRegression();
+    static void testMultiDimRegression();
     static boost::unit_test_framework::test_suite* suite();
 };
 

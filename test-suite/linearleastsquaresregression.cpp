@@ -22,6 +22,7 @@
 #include <ql/math/functional.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/linearleastsquaresregression.hpp>
+#include <boost/bind.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -96,6 +97,65 @@ void LinearLeastSquaresRegressionTest::testRegression() {
     }
 }
 
+namespace {
+    Real f(const Array& a, Size i) {
+        return a[i];
+    }
+}
+
+void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
+
+    BOOST_MESSAGE("Testing linear least-squares regression...");
+
+    SavedSettings backup;
+
+    const Size nr=100000;
+    const Size dims = 4;
+    const Real tolerance = 0.01;
+    PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234u));
+
+    std::vector<boost::function1<Real, Array> > v;
+    v.push_back(constant<Array, Real>(1.0));
+    for (Size i=0; i < dims; ++i) {
+        v.push_back(boost::bind(f, _1, i));
+    }
+
+    Array coeff(v.size());
+    for (Size i=0; i < v.size(); ++i) {
+        coeff[i] = rng.next().value;
+    }
+    
+    std::vector<Real> y(nr, 0.0);
+    std::vector<Array> x(nr, Array(dims));
+    for (Size i=0; i < nr; ++i) {
+        for (Size j=0; j < dims; ++j) {
+            x[i][j] = rng.next().value;
+        }
+        
+        for (Size j=0; j < v.size(); ++j) {
+            y[i] += coeff[j]*v[j](x[i]);
+        }
+        y[i] += rng.next().value;
+    }
+    
+    LinearLeastSquaresRegression<Array> m(x, y, v);
+    
+    for (Size i=0; i < v.size(); ++i) {
+        if (m.error()[i] > tolerance) {
+            BOOST_ERROR("Failed to reproduce linear regression coef."
+                        << "\n    error:     " << m.error()[i]
+                        << "\n    tolerance: " << tolerance);
+        }
+        
+        if (std::fabs(m.a()[i]-coeff[i]) > 3*tolerance) {
+            BOOST_ERROR("Failed to reproduce linear regression coef."
+                        << "\n    calculated: " << m.a()[i]
+                        << "\n    error:      " << m.error()[i]
+                        << "\n    expected:   " << coeff[i]);
+        }
+    }
+}
+
 
 test_suite* LinearLeastSquaresRegressionTest::suite() {
     test_suite* suite =
@@ -103,6 +163,9 @@ test_suite* LinearLeastSquaresRegressionTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(
         &LinearLeastSquaresRegressionTest::testRegression));
+    suite->add(QUANTLIB_TEST_CASE(
+        &LinearLeastSquaresRegressionTest::testMultiDimRegression));
+    
     return suite;
 }
 
