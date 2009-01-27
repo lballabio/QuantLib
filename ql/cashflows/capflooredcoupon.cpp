@@ -1,10 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2006, 2007 Cristina Duminuco
- Copyright (C) 2006 StatPro Italia srl
-
+ Copyright (C) 2006, 2009 StatPro Italia srl
+ Copyright (C) 2007 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -74,14 +73,9 @@ namespace QuantLib {
 
     void CappedFlooredCoupon::setPricer(
                  const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
-            if (pricer_)
-                unregisterWith(pricer_);
-            pricer_ = pricer;
-            if (pricer_)
-                registerWith(pricer_);
-            update();
-            underlying_->setPricer(pricer);
-        }
+        FloatingRateCoupon::setPricer(pricer);
+        underlying_->setPricer(pricer);
+    }
 
     Rate CappedFlooredCoupon::rate() const {
         QL_REQUIRE(underlying_->pricer(), "pricer not set");
