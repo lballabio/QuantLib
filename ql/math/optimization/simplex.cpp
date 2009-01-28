@@ -72,7 +72,10 @@ namespace QuantLib {
             pTry -= vertices_[iHighest]*factor2;
             #endif
             factor *= 0.5;
-        } while (!P.constraint().test(pTry));
+        } while (!P.constraint().test(pTry) && std::fabs(factor) > QL_EPSILON);
+        if (std::fabs(factor) <= QL_EPSILON) {
+        	return values_[iHighest];
+        }
         factor *= 2.0;
         Real vTry = P.value(pTry);
         if (vTry < values_[iHighest]) {
@@ -172,12 +175,12 @@ namespace QuantLib {
             if ((vTry <= values_[iLowest]) && (factor == -1.0)) {
                 factor = 2.0;
                 extrapolate(P, iHighest, factor);
-            } else {
+            } else if (std::fabs(factor) > QL_EPSILON) {
                 if (vTry >= values_[iNextHighest]) {
                     Real vSave = values_[iHighest];
                     factor = 0.5;
                     vTry = extrapolate(P, iHighest, factor);
-                    if (vTry >= vSave) {
+                    if (vTry >= vSave && std::fabs(factor) > QL_EPSILON) {
                         for (Size i=0; i<=n; i++) {
                             if (i!=iLowest) {
                                 #if defined(QL_ARRAY_EXPRESSIONS)
@@ -192,6 +195,14 @@ namespace QuantLib {
                         }
                     }
                 }
+            }
+            // If can't extrapolate given the constraints, exit
+            if (std::fabs(factor) <= QL_EPSILON) {
+                x_ = vertices_[iLowest];
+                Real low = values_[iLowest];
+                P.setFunctionValue(low);
+                P.setCurrentValue(x_);
+                return EndCriteria::StationaryFunctionValue;
             }
         } while (end == false);
         QL_FAIL("optimization failed: unexpected behaviour");
