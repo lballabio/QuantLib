@@ -55,10 +55,10 @@ namespace QuantLib {
         QL_REQUIRE(numberOfRates_==ks.size(),
                    "mismatch between number of rates (" << numberOfRates_ <<
                    ") and ks (" << ks.size() << ")");
-        QL_REQUIRE(numberOfRates_<=numberOfFactors_*numberOfSteps_,
-                   "number of rates (" << numberOfRates_ <<
-                   ") greater than number of factors (" << numberOfFactors_
-                   << ") times number of steps (" << numberOfSteps_ << ")");
+      //  QL_REQUIRE(numberOfRates_<=numberOfFactors_*numberOfSteps_,
+      //             "number of rates (" << numberOfRates_ <<
+     //              ") greater than number of factors (" << numberOfFactors_
+       //            << ") times number of steps (" << numberOfSteps_ << ")");
         QL_REQUIRE(numberOfFactors<=numberOfRates_,
                    "number of factors (" << numberOfFactors <<
                    ") cannot be greater than numberOfRates (" <<
