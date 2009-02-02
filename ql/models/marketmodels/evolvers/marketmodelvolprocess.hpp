@@ -45,7 +45,7 @@ namespace QuantLib
           virtual Real nextstep(const std::vector<Real>& variates)=0;
           virtual Real stepSd() const =0;
 
-          virtual std::vector<Real>& stateVariables() const=0;
+          virtual const std::vector<Real>& stateVariables() const=0;
           virtual Size numberStateVariables() const=0;
      
       private:

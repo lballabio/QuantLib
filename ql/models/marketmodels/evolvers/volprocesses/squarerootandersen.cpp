@@ -150,7 +150,7 @@ QuantLib
         return sqrt(stepVariance);
     }
 
-    std::vector<Real>& SquareRootAndersen::stateVariables() const
+    const std::vector<Real>& SquareRootAndersen::stateVariables() const
     {
         state_[0] = v_;
         return state_;
