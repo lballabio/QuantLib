@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/cashflows/eoniacoupon.hpp>
+#include <ql/experimental/overnightswap/eoniacoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/utilities/vectors.hpp>
 
@@ -61,7 +61,7 @@ namespace QuantLib {
 
                     d2 = std::min(nextValueDate, endDate);
 
-                    comp *= (1.0 + index->fixing(fixingDates[i]) 
+                    comp *= (1.0 + index->fixing(fixingDates[i])
                              * dc.yearFraction(d1, d2));
 
                     days += (d2 - d1);
@@ -99,17 +99,17 @@ namespace QuantLib {
     }
 
     EoniaCoupon::EoniaCoupon(const Date& paymentDate,
-			     Real nominal,
-			     const Date& startDate,
-			     const Date& endDate,
-			     const boost::shared_ptr<Eonia>& index,
-			     Real gearing, Spread spread,
-			     const Date& refPeriodStart,
-			     const Date& refPeriodEnd,
-			     const DayCounter& dayCounter)
+                 Real nominal,
+                 const Date& startDate,
+                 const Date& endDate,
+                 const boost::shared_ptr<Eonia>& index,
+                 Real gearing, Spread spread,
+                 const Date& refPeriodStart,
+                 const Date& refPeriodEnd,
+                 const DayCounter& dayCounter)
       : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
-			   index->fixingDays(), index, gearing, spread,
-			   refPeriodStart, refPeriodEnd, dayCounter, false),
+               index->fixingDays(), index, gearing, spread,
+               refPeriodStart, refPeriodEnd, dayCounter, false),
         fixingSchedule_(MakeSchedule(startDate, endDate, 1*Days,
                                      index->fixingCalendar(),
                                  index->businessDayConvention()).backwards()) {

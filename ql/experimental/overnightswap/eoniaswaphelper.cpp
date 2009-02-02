@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/yield/eoniaswaphelper.hpp>
+#include <ql/experimental/overnightswap/eoniaswaphelper.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/quote.hpp>
 #include <ql/currency.hpp>
@@ -30,8 +30,7 @@ namespace QuantLib {
         void no_deletion(YieldTermStructure*) {}
     }
 
-    EoniaSwapHelper::EoniaSwapHelper(
-                                     const Handle<Quote>& fixedRate,
+    EoniaSwapHelper::EoniaSwapHelper(const Handle<Quote>& fixedRate,
                                      const Period& tenor, // swap maturity
                                      Natural settlementDays,
                                      const Calendar& calendar,
@@ -43,15 +42,15 @@ namespace QuantLib {
                                      const Period& fixedPeriod,
                                      BusinessDayConvention fixedConvention,
                                      const DayCounter& fixedDayCount)
-        : RelativeDateRateHelper(fixedRate),
-          tenor_(tenor), settlementDays_(settlementDays),
-          calendar_(calendar),
-          eoniaPeriod_(eoniaPeriod),
-          eoniaConvention_(eoniaConvention),
-          index_(index),
-          fixedPeriod_(fixedPeriod),
-          fixedConvention_(fixedConvention),
-          fixedDayCount_(fixedDayCount) {
+    : RelativeDateRateHelper(fixedRate),
+      tenor_(tenor), settlementDays_(settlementDays),
+      calendar_(calendar),
+      eoniaPeriod_(eoniaPeriod),
+      eoniaConvention_(eoniaConvention),
+      index_(index),
+      fixedPeriod_(fixedPeriod),
+      fixedConvention_(fixedConvention),
+      fixedDayCount_(fixedDayCount) {
         registerWith(index_);
         initializeDates();
     }
@@ -67,10 +66,10 @@ namespace QuantLib {
         shared_ptr<Eonia> clonedIndex(new Eonia(termStructureHandle_));
 
         Schedule eoniaSchedule = MakeSchedule(earliestDate_,
-                                            maturity,
-                                            eoniaPeriod_,
-                                            index_->fixingCalendar(),
-                                            eoniaConvention_).backwards();
+                                              maturity,
+                                              eoniaPeriod_,
+                                              index_->fixingCalendar(),
+                                              eoniaConvention_).backwards();
 
         Schedule fixedSchedule =
             MakeSchedule(earliestDate_,
@@ -116,4 +115,5 @@ namespace QuantLib {
         else
             RateHelper::accept(v);
     }
+
 }

@@ -11,6 +11,7 @@
 #include <ql/experimental/finitedifferences/all.hpp>
 #include <ql/experimental/lattices/all.hpp>
 #include <ql/experimental/mcbasket/all.hpp>
+#include <ql/experimental/overnightswap/all.hpp>
 #include <ql/experimental/processes/all.hpp>
 #include <ql/experimental/risk/all.hpp>
 #include <ql/experimental/varianceoption/all.hpp>

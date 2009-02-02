@@ -338,6 +338,7 @@ AC_CONFIG_FILES([
     ql/experimental/finitedifferences/Makefile
     ql/experimental/lattices/Makefile
     ql/experimental/mcbasket/Makefile
+    ql/experimental/overnightswap/Makefile
     ql/experimental/processes/Makefile
     ql/experimental/risk/Makefile
     ql/experimental/varianceoption/Makefile

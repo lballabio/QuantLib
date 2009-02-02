@@ -25,16 +25,15 @@
 #define quantlib_eonia_coupon_hpp
 
 #include <ql/cashflows/floatingratecoupon.hpp>
-#include <ql/indexes/ibor/eonia.hpp>
+#include <ql/experimental/overnightswap/eonia.hpp>
 #include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 
     //! Eonia coupon
-    /*! %Coupon paying the compounded interest due to daily Eonia fixings.
-    */
+    /*! %Coupon paying the compounded interest due to daily Eonia fixings. */
     class EoniaCoupon : public FloatingRateCoupon {
-    public:
+      public:
         EoniaCoupon(const Date& paymentDate,
                     Real nominal,
                     const Date& startDate,
@@ -45,7 +44,7 @@ namespace QuantLib {
                     const Date& refPeriodStart = Date(),
                     const Date& refPeriodEnd = Date(),
                     const DayCounter& dayCounter = DayCounter());
-        
+
         //! \name FloatingRateCoupon interface
         //@{
         //! not applicable here; use fixingDates() instead

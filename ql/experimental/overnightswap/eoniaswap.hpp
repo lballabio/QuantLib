@@ -25,15 +25,14 @@
 #define quantlib_eonia_swap_hpp
 
 #include <ql/instruments/swap.hpp>
-#include <ql/indexes/iborindex.hpp>
-#include <ql/indexes/ibor/eonia.hpp>
+#include <ql/experimental/overnightswap/eonia.hpp>
 #include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 
     //! Overnight index swap paying compounded Eonia vs. fixed coupons
     class EoniaSwap : public Swap {
-    public:
+      public:
         enum Type { Receiver = -1, Payer = 1 };
         EoniaSwap(Type type,
                   Real nominal,

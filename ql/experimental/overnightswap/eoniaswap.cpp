@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Roland Lichters
+ Copyright (C) 2009 Roland Lichters
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,10 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/eoniaswap.hpp>
-#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/experimental/overnightswap/eoniaswap.hpp>
+#include <ql/experimental/overnightswap/eoniacoupon.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
-#include <ql/cashflows/eoniacoupon.hpp>
 
 namespace QuantLib {
 
