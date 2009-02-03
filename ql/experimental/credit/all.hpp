@@ -5,6 +5,7 @@
 #include <ql/experimental/credit/cdo.hpp>
 #include <ql/experimental/credit/cdsoption.hpp>
 #include <ql/experimental/credit/distribution.hpp>
+#include <ql/experimental/credit/factorspreadedhazardratecurve.hpp>
 #include <ql/experimental/credit/loss.hpp>
 #include <ql/experimental/credit/lossdistribution.hpp>
 #include <ql/experimental/credit/nthtodefault.hpp>
@@ -16,6 +17,7 @@
 #include <ql/experimental/credit/riskyassetswap.hpp>
 #include <ql/experimental/credit/riskyassetswapoption.hpp>
 #include <ql/experimental/credit/riskybond.hpp>
+#include <ql/experimental/credit/spreadedhazardratecurve.hpp>
 #include <ql/experimental/credit/syntheticcdo.hpp>
 #include <ql/experimental/credit/syntheticcdoengines.hpp>
 

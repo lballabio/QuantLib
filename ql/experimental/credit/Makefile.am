@@ -8,6 +8,7 @@ this_include_HEADERS = \
     cdo.hpp \
     cdsoption.hpp \
     distribution.hpp \
+    factorspreadedhazardratecurve.hpp \
     loss.hpp \
     lossdistribution.hpp \
     nthtodefault.hpp \
@@ -19,6 +20,7 @@ this_include_HEADERS = \
     riskyassetswap.hpp \
     riskyassetswapoption.hpp \
     riskybond.hpp \
+    spreadedhazardratecurve.hpp \
     syntheticcdo.hpp \
     syntheticcdoengines.hpp
 
