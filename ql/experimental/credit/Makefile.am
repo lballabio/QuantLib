@@ -17,6 +17,7 @@ this_include_HEADERS = \
     pool.hpp \
     randomdefaultmodel.hpp \
     riskyassetswap.hpp \
+    riskyassetswapoption.hpp \
     riskybond.hpp \
     syntheticcdo.hpp \
     syntheticcdoengines.hpp
@@ -34,6 +35,7 @@ libCredit_la_SOURCES = \
     pool.cpp \
     randomdefaultmodel.cpp \
     riskyassetswap.cpp \
+    riskyassetswapoption.cpp \
     riskybond.cpp \
     syntheticcdo.cpp \
     syntheticcdoengines.cpp

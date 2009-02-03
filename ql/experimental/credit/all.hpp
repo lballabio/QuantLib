@@ -14,6 +14,7 @@
 #include <ql/experimental/credit/pool.hpp>
 #include <ql/experimental/credit/randomdefaultmodel.hpp>
 #include <ql/experimental/credit/riskyassetswap.hpp>
+#include <ql/experimental/credit/riskyassetswapoption.hpp>
 #include <ql/experimental/credit/riskybond.hpp>
 #include <ql/experimental/credit/syntheticcdo.hpp>
 #include <ql/experimental/credit/syntheticcdoengines.hpp>
