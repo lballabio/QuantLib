@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Roland Lichters
+ Copyright (C) 2008, 2009 Roland Lichters
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -177,6 +177,99 @@ namespace QuantLib {
         Real initialDiscount = yieldTS_->discount(fixedSchedule_[0]);
 
         return (1.0 - initialDiscount + value - recoveryValue_) / fixedAnnuity_;
+    }
+
+
+
+    AssetSwapHelper::AssetSwapHelper(
+                          const Handle<Quote>& spread,
+                          const Period& tenor,
+                          Natural settlementDays,
+                          const Calendar& calendar,
+                          const Period& fixedPeriod,
+                          BusinessDayConvention fixedConvention,
+                          const DayCounter& fixedDayCount,
+                          const Period& floatPeriod,
+                          BusinessDayConvention floatConvention,
+                          const DayCounter& floatDayCount,
+                          Real recoveryRate,
+                          const RelinkableHandle<YieldTermStructure>& yieldTS,
+                          const Period& integrationStepSize)
+    : DefaultProbabilityHelper(spread),
+      tenor_(tenor), settlementDays_(settlementDays), calendar_(calendar),
+      fixedConvention_(fixedConvention),
+      fixedPeriod_(fixedPeriod), fixedDayCount_(fixedDayCount),
+      floatConvention_(fixedConvention),
+      floatPeriod_(floatPeriod), floatDayCount_(fixedDayCount),
+      recoveryRate_(recoveryRate), yieldTS_(yieldTS),
+      integrationStepSize_(integrationStepSize) {
+
+        initializeDates();
+
+        registerWith(Settings::instance().evaluationDate());
+        registerWith(yieldTS);
+    }
+
+    Real AssetSwapHelper::impliedQuote() const {
+        QL_REQUIRE(!probability_.empty(),
+                   "default term structure not set");
+        // we didn't register as observers - force calculation
+        asw_->recalculate();
+        return asw_->fairSpread();
+    }
+
+    namespace {
+        void no_deletion(DefaultProbabilityTermStructure*) {}
+    }
+
+    void AssetSwapHelper::setTermStructure(
+                                        DefaultProbabilityTermStructure* ts) {
+        DefaultProbabilityHelper::setTermStructure(ts);
+
+        probability_.linkTo(
+            boost::shared_ptr<DefaultProbabilityTermStructure>(ts, no_deletion),
+            false);
+
+        initializeDates();
+    }
+
+    void AssetSwapHelper::update() {
+        if (evaluationDate_ != Settings::instance().evaluationDate())
+            initializeDates();
+
+        DefaultProbabilityHelper::update();
+    }
+
+    void AssetSwapHelper::initializeDates() {
+        evaluationDate_ = Settings::instance().evaluationDate();
+
+        earliestDate_ = calendar_.advance (evaluationDate_,
+                                           settlementDays_, Days);
+
+        Date maturity = earliestDate_ + tenor_;
+
+        latestDate_ = calendar_.adjust (maturity, fixedConvention_);
+
+        Schedule fixedSchedule(earliestDate_, maturity,
+                               fixedPeriod_, calendar_,
+                               fixedConvention_, fixedConvention_,
+                               DateGeneration::Forward, false);
+        Schedule floatSchedule(earliestDate_, maturity,
+                               floatPeriod_, calendar_,
+                               floatConvention_, floatConvention_,
+                               DateGeneration::Forward, false);
+
+        asw_ = boost::shared_ptr<RiskyAssetSwap>(
+                                      new RiskyAssetSwap(true,
+                                                         100.0,
+                                                         fixedSchedule,
+                                                         floatSchedule,
+                                                         fixedDayCount_,
+                                                         floatDayCount_,
+                                                         0.01,
+                                                         recoveryRate_,
+                                                         yieldTS_,
+                                                         probability_));
     }
 
 }

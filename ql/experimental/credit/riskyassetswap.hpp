@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Roland Lichters
+ Copyright (C) 2008, 2009 Roland Lichters
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +27,7 @@
 #include <ql/instrument.hpp>
 #include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/termstructures/credit/defaultprobabilityhelpers.hpp>
 #include <ql/time/schedule.hpp>
 
 namespace QuantLib {
@@ -81,6 +82,48 @@ namespace QuantLib {
         Handle<YieldTermStructure> yieldTS_;
         Handle<DefaultProbabilityTermStructure> defaultTS_;
         mutable Real coupon_;
+    };
+
+
+    // risky-asset-swap helper for probability-curve bootstrap
+    class AssetSwapHelper : public DefaultProbabilityHelper {
+      public:
+        AssetSwapHelper(const Handle<Quote>& spread,
+                        const Period& tenor,
+                        Natural settlementDays,
+                        const Calendar& calendar,
+                        const Period& fixedPeriod,
+                        BusinessDayConvention fixedConvention,
+                        const DayCounter& fixedDayCount,
+                        const Period& floatPeriod,
+                        BusinessDayConvention floatConvention,
+                        const DayCounter& floatDayCount,
+                        Real recoveryRate,
+                        const RelinkableHandle<YieldTermStructure>& yieldTS,
+                        const Period& integrationStepSize = Period());
+        Real impliedQuote() const;
+        void setTermStructure(DefaultProbabilityTermStructure*);
+
+      private:
+        void update();
+        void initializeDates();
+
+        Period tenor_;
+        Natural settlementDays_;
+        Calendar calendar_;
+        BusinessDayConvention fixedConvention_;
+        Period fixedPeriod_;
+        DayCounter fixedDayCount_;
+        BusinessDayConvention floatConvention_;
+        Period floatPeriod_;
+        DayCounter floatDayCount_;
+        Real recoveryRate_;
+        RelinkableHandle<YieldTermStructure> yieldTS_;
+        Period integrationStepSize_;
+
+        Date evaluationDate_;
+        boost::shared_ptr<RiskyAssetSwap> asw_;
+        RelinkableHandle<DefaultProbabilityTermStructure> probability_;
     };
 
 }
