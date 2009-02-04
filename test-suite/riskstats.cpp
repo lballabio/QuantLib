@@ -24,6 +24,7 @@
 #include <ql/math/statistics/incrementalstatistics.hpp>
 #include <ql/math/statistics/sequencestatistics.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
+#include <ql/math/comparison.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -342,7 +343,7 @@ void RiskStatisticsTest::testResults() {
             GenericGaussianStatistics<StatsHolder> test(h);
             expected = s.gaussianPotentialUpside(twoSigma);
             calculated = test.gaussianPotentialUpside(twoSigma);
-            if (calculated!=expected)
+            if (!close(calculated,expected))
                 BOOST_FAIL("GenericGaussianStatistics<StatsHolder> fails"
                            << std::setprecision(16)
                            << "\n  calculated: " << calculated

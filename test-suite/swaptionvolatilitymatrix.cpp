@@ -27,6 +27,7 @@
 #include <ql/instruments/makeswaption.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/math/comparison.hpp>
 #include <string>
 
 using namespace QuantLib;
@@ -121,7 +122,7 @@ namespace {
                          "\nactual option date : " << optionDate <<
                          "\n  exp. option date : " << vol->optionDates()[i]);
                 Time optionTime = vol->timeFromReference(optionDate);
-                if (optionTime!=vol->optionTimes()[i])
+                if (!close(optionTime,vol->optionTimes()[i]))
                     BOOST_FAIL(
                          "timeFromReference failure for " <<
                          description << ":"
@@ -137,7 +138,7 @@ namespace {
 
             for (Size j=0; j<atm.tenors.swaps.size(); j++) {
                 Time swapLength = vol->swapLength(atm.tenors.swaps[j]);
-                if (swapLength!=years(atm.tenors.swaps[j]))
+                if (!close(swapLength,years(atm.tenors.swaps[j])))
                     BOOST_FAIL("convertSwapTenor failure for " <<
                                description << ":"
                                "\n        swap tenor : " << atm.tenors.swaps[j] <<
@@ -216,7 +217,7 @@ namespace {
                     Date start = swaption.underlyingSwap()->startDate();
                     Date end = swaption.underlyingSwap()->maturityDate();
                     Time swapLength2 = vol->swapLength(start, end);
-                    if (swapLength2!=swapLength)
+                    if (!close(swapLength2,swapLength))
                         BOOST_FAIL(
                              "swapLength failure for " <<
                              description << ":"
