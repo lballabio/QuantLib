@@ -99,6 +99,7 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
                   boost_unit_test_framework \
                   boost_unit_test_framework-mt-$CC_BASENAME$CC_VERSION \
                   boost_unit_test_framework-$CC_BASENAME$CC_VERSION-mt \
+                  boost_unit_test_framework-x$CC_BASENAME$CC_VERSION-mt \
                   boost_unit_test_framework-mt-$CC_BASENAME \
                   boost_unit_test_framework-$CC_BASENAME-mt \
                   boost_unit_test_framework-mt ; do
