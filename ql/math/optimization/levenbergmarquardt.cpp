@@ -93,7 +93,8 @@ namespace QuantLib {
         // set problem
         std::copy(xx.get(), xx.get()+n, x_.begin());
         P.setCurrentValue(x_);
-
+        P.setFunctionValue(P.costFunction().value(x_));
+        
         return ecType;
     }
 
