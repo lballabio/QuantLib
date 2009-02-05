@@ -333,6 +333,7 @@ AC_CONFIG_FILES([
     ql/experimental/barrieroption/Makefile
     ql/experimental/callablebonds/Makefile
     ql/experimental/commodities/Makefile
+    ql/experimental/compoundoption/Makefile
     ql/experimental/coupons/Makefile
     ql/experimental/credit/Makefile
     ql/experimental/finitedifferences/Makefile

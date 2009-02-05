@@ -58,6 +58,7 @@
 #include "cliquetoption.hpp"
 #include "cms.hpp"
 #include "compoundforward.hpp"
+#include "compoundoption.hpp"
 #include "convertiblebonds.hpp"
 #include "covariance.hpp"
 #include "creditdefaultswap.hpp"
@@ -208,6 +209,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CdoTest::suite());
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
+    test->add(CompoundOptionTest::suite());
     test->add(ConvertibleBondTest::suite());
     test->add(CovarianceTest::suite());
     test->add(CreditDefaultSwapTest::suite());
