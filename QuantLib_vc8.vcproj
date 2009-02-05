@@ -2924,11 +2924,11 @@
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateBalland.cpp"
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateballand.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateBalland.hpp"
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateballand.hpp"
 						>
 					</File>
 					<File

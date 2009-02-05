@@ -3,6 +3,7 @@
 
 #include <ql/models/marketmodels/evolvers/lognormalcmswapratepc.hpp>
 #include <ql/models/marketmodels/evolvers/lognormalcotswapratepc.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalfwdrateballand.hpp>
 #include <ql/models/marketmodels/evolvers/lognormalfwdrateeuler.hpp>
 #include <ql/models/marketmodels/evolvers/lognormalfwdrateeulerconstrained.hpp>
 #include <ql/models/marketmodels/evolvers/lognormalfwdrateipc.hpp>

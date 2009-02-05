@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_forward_rate_Balland_evolver_hpp
-#define quantlib_forward_rate_Balland_evolver_hpp
+#ifndef quantlib_forward_rate_balland_evolver_hpp
+#define quantlib_forward_rate_balland_evolver_hpp
 
 #include <ql/models/marketmodels/evolver.hpp>
 #include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>

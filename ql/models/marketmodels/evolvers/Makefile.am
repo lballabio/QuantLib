@@ -7,6 +7,7 @@ this_include_HEADERS = \
 	all.hpp \
 	lognormalcmswapratepc.hpp \
 	lognormalcotswapratepc.hpp \
+	lognormalfwdrateballand.hpp \
 	lognormalfwdrateeuler.hpp \
 	lognormalfwdrateeulerconstrained.hpp \
 	lognormalfwdrateipc.hpp \
@@ -18,6 +19,7 @@ this_include_HEADERS = \
 libMarketModelsEvolvers_la_SOURCES = \
 	lognormalcmswapratepc.cpp \
 	lognormalcotswapratepc.cpp \
+	lognormalfwdrateballand.cpp \
 	lognormalfwdrateeuler.cpp \
 	lognormalfwdrateeulerconstrained.cpp \
 	lognormalfwdrateipc.cpp \

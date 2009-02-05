@@ -39,7 +39,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/evolvers/lognormalfwdrateeuler.hpp>
 #include <ql/models/marketmodels/evolvers/lognormalfwdrateeulerconstrained.hpp>
 #include <ql/models/marketmodels/evolvers/lognormalfwdrateipc.hpp>
-#include <ql/models/marketmodels/evolvers/lognormalfwdrateBalland.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalfwdrateballand.hpp>
 #include <ql/models/marketmodels/evolvers/lognormalfwdratepc.hpp>
 #include <ql/models/marketmodels/evolvers/normalfwdratepc.hpp>
 #include <ql/models/marketmodels/discounter.hpp>
