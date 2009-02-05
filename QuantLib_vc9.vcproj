@@ -2925,6 +2925,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateBalland.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateBalland.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateeuler.cpp"
 						>
 					</File>
@@ -7399,6 +7407,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmmeshercomposite.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmquantohelper.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmquantohelper.hpp"
 					>
 				</File>
 				<File

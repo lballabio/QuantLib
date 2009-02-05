@@ -1212,6 +1212,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\fdheston.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\fdmlinearop.cpp"
 				>
 			</File>
@@ -2333,6 +2337,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\fastfouriertransform.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\fdheston.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\fdmlinearop.hpp"
 				>
 			</File>
@@ -2486,6 +2498,10 @@
 			</File>
 			<File
 				RelativePath=".\rangeaccrual.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\README.txt"
 				>
 			</File>
 			<File

@@ -39,6 +39,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/evolvers/lognormalfwdrateeuler.hpp>
 #include <ql/models/marketmodels/evolvers/lognormalfwdrateeulerconstrained.hpp>
 #include <ql/models/marketmodels/evolvers/lognormalfwdrateipc.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalfwdrateBalland.hpp>
 #include <ql/models/marketmodels/evolvers/lognormalfwdratepc.hpp>
 #include <ql/models/marketmodels/evolvers/normalfwdratepc.hpp>
 #include <ql/models/marketmodels/discounter.hpp>
@@ -424,12 +425,14 @@ namespace {
             return result;
     }
 
-    enum EvolverType { Ipc, Pc, NormalPc};
+    enum EvolverType { Ipc, Balland, Pc, NormalPc};
 
     std::string evolverTypeToString(EvolverType type) {
         switch (type) {
           case Ipc:
               return "iterative predictor corrector";
+          case Balland:
+              return "Balland predictor corrector";
           case Pc:
               return "predictor corrector";
           case NormalPc:
@@ -449,6 +452,10 @@ namespace {
           case Ipc:
               return boost::shared_ptr<MarketModelEvolver>(
                   new LogNormalFwdRateIpc(marketModel, generatorFactory,
+                  numeraires, initialStep));
+          case Balland:
+              return boost::shared_ptr<MarketModelEvolver>(
+                  new LogNormalFwdRateBalland(marketModel, generatorFactory,
                   numeraires, initialStep));
           case Pc:
               return boost::shared_ptr<MarketModelEvolver>(
@@ -758,7 +765,7 @@ void MarketModelTest::testOneStepForwardsAndOptionlets() {
                     boost::shared_ptr<MarketModel> marketModel =
                         makeMarketModel(logNormal, evolution, factors, marketModels[j]);
 
-                    EvolverType evolvers[] = { Pc, Ipc };
+                    EvolverType evolvers[] = { Pc,  Balland, Ipc};
                     boost::shared_ptr<MarketModelEvolver> evolver;
                     Size stop =
                         isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
@@ -925,7 +932,7 @@ void testMultiProductComposite(const MarketModelMultiProduct& product,
                                                            makeMarketModel(logNormal, evolution, factors, marketModels[j]);
 
 
-                                                       EvolverType evolvers[] = { Pc, Ipc };
+                                                       EvolverType evolvers[] = { Pc, Balland, Ipc };
                                                        boost::shared_ptr<MarketModelEvolver> evolver;
                                                        Size stop =
                                                            isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
@@ -1336,7 +1343,7 @@ void MarketModelTest::testCallableSwapNaif() {
                         makeMarketModel(logNormal, evolution, factors, marketModels[j]);
 
 
-                    EvolverType evolvers[] = { Pc, Ipc };
+                    EvolverType evolvers[] = { Pc, Balland, Ipc };
                     boost::shared_ptr<MarketModelEvolver> evolver;
                     Size stop =
                         isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
@@ -1505,7 +1512,7 @@ void MarketModelTest::testCallableSwapLS() {
                         makeMarketModel(logNormal, evolution, factors, marketModels[j]);
 
 
-                    EvolverType evolvers[] = { Pc, Ipc };
+                    EvolverType evolvers[] = { Pc, Balland, Ipc };
                     boost::shared_ptr<MarketModelEvolver> evolver;
                     Size stop =
                         isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
@@ -1681,7 +1688,7 @@ void MarketModelTest::testCallableSwapAnderson() {
                     bool logNormal = true;
                     boost::shared_ptr<MarketModel> marketModel =
                         makeMarketModel(logNormal, evolution, factors, marketModels[j]);
-                    EvolverType evolvers[] = { Pc, Ipc };
+                    EvolverType evolvers[] = { Pc, Balland, Ipc };
                     boost::shared_ptr<MarketModelEvolver> evolver;
                     Size stop =
                         isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
