@@ -66,9 +66,9 @@ namespace QuantLib {
           public:
             templateImpl(const I1& xBegin, const I1& xEnd, const I2& yBegin)
             : xBegin_(xBegin), xEnd_(xEnd), yBegin_(yBegin) {
-                QL_REQUIRE(xEnd_-xBegin_ >= 2,
+                QL_REQUIRE(static_cast<int>(xEnd_-xBegin_) >= 2,
                            "not enough points to interpolate: at least 2 "
-                           "required, " << xEnd_-xBegin_ << " provided");
+                           "required, " << static_cast<int>(xEnd_-xBegin_)<< " provided");
             }
             Real xMin() const {
                 return *xBegin_;
