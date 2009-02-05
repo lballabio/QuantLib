@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2008, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,14 +20,12 @@
 #include "cdsoption.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/credit/cdsoption.hpp>
+#include <ql/experimental/credit/blackcdsoptionengine.hpp>
 #include <ql/instruments/creditdefaultswap.hpp>
 #include <ql/pricingengines/credit/midpointcdsengine.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
-//#include <ql/cashflows/all.hpp>
-//#include <ql/indexes/all.hpp>
-//#include <ql/models/shortrate/all.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <iomanip>
 
@@ -70,24 +68,48 @@ void CdsOptionTest::testCached() {
 
     Issuer issuer(defaultProbability, recoveryRate);
 
+    boost::shared_ptr<PricingEngine> swapEngine(
+                                     new MidPointCdsEngine(issuer, riskFree));
+
     CreditDefaultSwap swap(Protection::Seller, notional, 0.001, schedule,
                            convention, dayCounter);
-    swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                                    new MidPointCdsEngine(issuer, riskFree)));
+    swap.setPricingEngine(swapEngine);
     Rate strike = swap.fairSpread();
 
-    Handle<Quote> cdsVol(boost::shared_ptr<Quote>(new SimpleQuote(0.2)));
+    Handle<Quote> cdsVol(boost::shared_ptr<Quote>(new SimpleQuote(0.20)));
 
-    CdsOption option(expiry, strike, cdsVol, issuer, Protection::Seller,
-                     notional, schedule, dayCounter, true, riskFree);
+    boost::shared_ptr<CreditDefaultSwap> underlying(
+         new CreditDefaultSwap(Protection::Seller, notional, strike, schedule,
+                               convention, dayCounter));
+    underlying->setPricingEngine(swapEngine);
 
-    Real cachedValue = 275.584421;
-    if (std::fabs(option.NPV() - cachedValue) > 1.0e-5)
-        BOOST_ERROR(
-            "failed to reproduce cached value:\n"
-            << std::fixed << std::setprecision(6)
-            << "    calculated: " << option.NPV() << "\n"
-            << "    expected:   " << cachedValue);
+    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(expiry));
+    CdsOption option1(underlying, exercise);
+    option1.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                         new BlackCdsOptionEngine(issuer, riskFree, cdsVol)));
+
+    Real cachedValue = 270.976348;
+    if (std::fabs(option1.NPV() - cachedValue) > 1.0e-5)
+        BOOST_ERROR("failed to reproduce cached value:\n"
+                    << std::fixed << std::setprecision(6)
+                    << "    calculated: " << option1.NPV() << "\n"
+                    << "    expected:   " << cachedValue);
+
+    underlying = boost::shared_ptr<CreditDefaultSwap>(
+         new CreditDefaultSwap(Protection::Buyer, notional, strike, schedule,
+                               convention, dayCounter));
+    underlying->setPricingEngine(swapEngine);
+
+    CdsOption option2(underlying, exercise);
+    option2.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                         new BlackCdsOptionEngine(issuer, riskFree, cdsVol)));
+
+    cachedValue = 270.976348;
+    if (std::fabs(option2.NPV() - cachedValue) > 1.0e-5)
+        BOOST_ERROR("failed to reproduce cached value:\n"
+                    << std::fixed << std::setprecision(6)
+                    << "    calculated: " << option2.NPV() << "\n"
+                    << "    expected:   " << cachedValue);
 }
 
 

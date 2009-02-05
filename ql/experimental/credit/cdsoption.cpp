@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2008 Roland Stamm
+ Copyright (C) 2009 Jose Aparicio
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,122 +19,138 @@
 */
 
 #include <ql/experimental/credit/cdsoption.hpp>
-#include <ql/quote.hpp>
+#include <ql/experimental/credit/blackcdsoptionengine.hpp>
+#include <ql/exercise.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/instruments/payoffs.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/solvers1d/brent.hpp>
 
 namespace QuantLib {
 
-    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    CdsOption::CdsOption(const Date& expiry,
-                         Real strike,
-                         const Handle<Quote>& volatility,
-                         const Issuer& issuer,
-                         Protection::Side side,
-                         Real nominal,
-                         const Schedule& premiumSchedule,
-                         const DayCounter& dayCounter,
-                         bool settlePremiumAccrual,
-                         const Handle<YieldTermStructure>& yieldTS)
-        : expiry_(expiry), strike_(strike), volatility_(volatility),
-          issuer_(issuer), side_(side), nominal_(nominal),
-          premiumSchedule_(premiumSchedule), dayCounter_(dayCounter),
-          settlePremiumAccrual_(settlePremiumAccrual), yieldTS_(yieldTS) {
-    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    namespace {
 
-        QL_REQUIRE(strike_ > 0, "Strike must be greater than 0");
+        class ImpliedVolHelper {
+          public:
+            ImpliedVolHelper(const CdsOption& cdsoption,
+                             const Issuer& issuer,
+                             const Handle<YieldTermStructure>& termStructure,
+                             Real targetValue)
+            : termStructure_(termStructure), issuer_(issuer),
+              targetValue_(targetValue) {
 
-        registerWith(volatility_);
-        registerWith(issuer_.defaultProbability());
-        registerWith(yieldTS_);
+                vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
+                Handle<Quote> h(vol_);
+                engine_ = boost::shared_ptr<PricingEngine>(
+                         new BlackCdsOptionEngine(issuer_, termStructure, h));
+                cdsoption.setupArguments(engine_->getArguments());
+
+                results_ =
+                    dynamic_cast<const Instrument::results*>(
+                                                       engine_->getResults());
+            }
+            Real operator()(Volatility x) const {
+                vol_->setValue(x);
+                engine_->calculate();
+                return results_->value-targetValue_;
+            }
+          private:
+            boost::shared_ptr<PricingEngine> engine_;
+            Handle<YieldTermStructure> termStructure_;
+            Issuer issuer_;
+            Real targetValue_;
+            boost::shared_ptr<SimpleQuote> vol_;
+            const Instrument::results* results_;
+        };
+
     }
 
-    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    CdsOption::CdsOption(const boost::shared_ptr<CreditDefaultSwap>& swap,
+                         const boost::shared_ptr<Exercise>& exercise,
+                         bool knocksOut)
+    : Option(boost::shared_ptr<Payoff>(new NullPayoff), exercise),
+      swap_(swap), knocksOut_(knocksOut) {
+        QL_REQUIRE(swap->side() == Protection::Buyer || knocksOut_,
+                   "receiver CDS options must knock out");
+        registerWith(swap_);
+    }
+
     bool CdsOption::isExpired () const {
-    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         Date today = Settings::instance().evaluationDate();
-        return (expiry_ <= today);
+        return (exercise_->dates().back() <= today);
     }
 
-    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     void CdsOption::setupExpired() const {
-    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         Instrument::setupExpired();
-        forward_ = 0.0;
         riskyAnnuity_ = 0.0;
     }
 
-    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    Real CdsOption::forward() const {
-    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        calculate();
-        return forward_;
+    void CdsOption::setupArguments(PricingEngine::arguments* args) const {
+        swap_->setupArguments(args);
+        Option::setupArguments(args);
+
+        CdsOption::arguments* arguments =
+            dynamic_cast<CdsOption::arguments*>(args);
+
+        QL_REQUIRE(arguments != 0, "wrong argument type");
+
+        arguments->swap      = swap_;
+        arguments->knocksOut = knocksOut_;
     }
 
-    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    void CdsOption::fetchResults(const PricingEngine::results* r) const {
+        Option::fetchResults(r);
+        const CdsOption::results* results =
+            dynamic_cast<const CdsOption::results*>(r);
+        QL_ENSURE(results != 0, "wrong results type");
+        riskyAnnuity_ = results->riskyAnnuity;
+    }
+
+
+
+    Rate CdsOption::atmRate() const{
+        return swap_->fairSpread();
+    }
+
     Real CdsOption::riskyAnnuity() const {
-    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         calculate();
+        QL_REQUIRE(riskyAnnuity_ != Null<Real>(), "risky annuity not provided");
         return riskyAnnuity_;
     }
 
-    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    void CdsOption::performCalculations() const {
-    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    Volatility CdsOption::impliedVolatility(
+                              Real targetValue,
+                              const Handle<YieldTermStructure>& termStructure,
+                              const Issuer& issuer,
+                              Real accuracy,
+                              Size maxEvaluations,
+                              Volatility minVol,
+                              Volatility maxVol) const {
+        calculate();
+        QL_REQUIRE(!isExpired(), "instrument expired");
 
-        errorEstimate_ = Null<Real>();
+        Volatility guess = 0.10;
 
-        NPV_ = 0.0;
-        riskyAnnuity_ = 0.0;
-        forward_ = 0.0;
-        Real defDiscProd = 0.0;
-        Real defAnnuity = 0.0;
-        Date today = Settings::instance().evaluationDate();
-        Date settlement = yieldTS_->referenceDate();
+        ImpliedVolHelper f(*this, issuer, termStructure, targetValue);
+        Brent solver;
+        solver.setMaxEvaluations(maxEvaluations);
+        return solver.solve(f, accuracy, guess, minVol, maxVol);
+    }
 
-        const Handle<DefaultProbabilityTermStructure>& defaultTS =
-            issuer_.defaultProbability();
-        for (Size i = 1; i < premiumSchedule_.size(); i++) {
-            Date start = premiumSchedule_[i-1];
-            Date end = premiumSchedule_[i];
-            if (end > settlement) {
-                Real discount = yieldTS_->discount(end);
-                Real survProb = defaultTS->survivalProbability(end);
-                Real defProb =
-                    defaultTS->defaultProbability(std::max(start,today), end);
-                Time dcf = dayCounter_.yearFraction(start,end);
 
-                riskyAnnuity_ += discount * survProb * dcf;
-                defAnnuity    += discount * defProb * dcf;
-                defDiscProd   += discount * defProb;
-            }
-        }
 
-        forward_ = (1 - issuer_.recoveryRate()) * defDiscProd
-                 / (riskyAnnuity_ + 0.5 * defAnnuity);
+    void CdsOption::arguments::validate() const {
+        CreditDefaultSwap::arguments::validate();
+        Option::arguments::validate();
+        QL_REQUIRE(swap, "CDS not set");
+        QL_REQUIRE(exercise, "exercise not set");
+    }
 
-        Real w = 0.0;
-        switch (side_) {
-          case Protection::Seller:
-            w = -1.0;
-            break;
-          case Protection::Buyer:
-            w = 1.0;
-            break;
-          default:
-            QL_FAIL("unknown protection side");
-        }
-
-        Time expiryTime = dayCounter_.yearFraction(today, expiry_);
-        Real stdDev = volatility_->value() * sqrt(expiryTime);
-
-        Real d1 = std::log(forward_/strike_)/stdDev + 0.5 * stdDev;
-        Real d2 = d1 - stdDev;
-
-        NPV_ = riskyAnnuity_ * nominal_ *
-               (w * forward_ * CumulativeNormalDistribution()(w * d1)
-                - w * strike_ * CumulativeNormalDistribution()(w * d2));
-
+    void CdsOption::results::reset() {
+        Option::results::reset();
+        riskyAnnuity = Null<Real>();
     }
 
 }

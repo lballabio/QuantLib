@@ -2,6 +2,7 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/experimental/credit/basket.hpp>
+#include <ql/experimental/credit/blackcdsoptionengine.hpp>
 #include <ql/experimental/credit/cdo.hpp>
 #include <ql/experimental/credit/cdsoption.hpp>
 #include <ql/experimental/credit/distribution.hpp>

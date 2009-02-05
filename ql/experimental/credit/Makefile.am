@@ -5,6 +5,7 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     basket.hpp \
+    blackcdsoptionengine.hpp \
     cdo.hpp \
     cdsoption.hpp \
     distribution.hpp \
@@ -26,6 +27,7 @@ this_include_HEADERS = \
 
 libCredit_la_SOURCES = \
     basket.cpp \
+    blackcdsoptionengine.cpp \
     cdo.cpp \
     cdsoption.cpp \
     distribution.cpp \
