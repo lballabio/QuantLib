@@ -66,7 +66,7 @@ namespace QuantLib {
         static Real maxValueAfter(Size, const std::vector<Real>& data) {
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.
-            return 3.0;
+            return 200.0;
         }
         // update with new guess
         static void updateGuess(std::vector<Real>& data,
