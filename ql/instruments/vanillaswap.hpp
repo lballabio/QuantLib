@@ -1,9 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2008 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2006, 2008 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,6 +29,7 @@
 #include <ql/instruments/swap.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/schedule.hpp>
+#include <boost/optional.hpp>
 
 namespace QuantLib {
 
@@ -37,6 +38,9 @@ namespace QuantLib {
 
     //! Plain-vanilla swap
     /*! \ingroup instruments
+
+        If no payment convention is passed, the convention of the
+        floating-rate schedule is used.
 
         \warning if QL_TODAYS_PAYMENTS was defined (in userconfig.hpp
                  or when calling ./configure; it is undefined by
@@ -65,16 +69,18 @@ namespace QuantLib {
         class arguments;
         class results;
         class engine;
-        VanillaSwap(Type type,
-                    Real nominal,
-                    const Schedule& fixedSchedule,
-                    Rate fixedRate,
-                    const DayCounter& fixedDayCount,
-                    const Schedule& floatSchedule,
-                    const boost::shared_ptr<IborIndex>& iborIndex,
-                    Spread spread,
-                    const DayCounter& floatingDayCount,
-                    BusinessDayConvention paymentConvention = Following);
+        VanillaSwap(
+            Type type,
+            Real nominal,
+            const Schedule& fixedSchedule,
+            Rate fixedRate,
+            const DayCounter& fixedDayCount,
+            const Schedule& floatSchedule,
+            const boost::shared_ptr<IborIndex>& iborIndex,
+            Spread spread,
+            const DayCounter& floatingDayCount,
+            boost::optional<BusinessDayConvention> paymentConvention =
+                                                                 boost::none);
         // results
         Real fixedLegBPS() const;
         Real fixedLegNPV() const;

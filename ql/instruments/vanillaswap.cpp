@@ -1,9 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2007 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,22 +30,27 @@
 
 namespace QuantLib {
 
-    VanillaSwap::VanillaSwap(Type type,
-                             Real nominal,
-                             const Schedule& fixedSchedule,
-                             Rate fixedRate,
-                             const DayCounter& fixedDayCount,
-                             const Schedule& floatSchedule,
-                             const boost::shared_ptr<IborIndex>& iborIndex,
-                             Spread spread,
-                             const DayCounter& floatingDayCount,
-                             BusinessDayConvention paymentConvention)
+    VanillaSwap::VanillaSwap(
+                     Type type,
+                     Real nominal,
+                     const Schedule& fixedSchedule,
+                     Rate fixedRate,
+                     const DayCounter& fixedDayCount,
+                     const Schedule& floatSchedule,
+                     const boost::shared_ptr<IborIndex>& iborIndex,
+                     Spread spread,
+                     const DayCounter& floatingDayCount,
+                     boost::optional<BusinessDayConvention> paymentConvention)
     : Swap(2), type_(type), nominal_(nominal),
       fixedSchedule_(fixedSchedule), fixedRate_(fixedRate),
       fixedDayCount_(fixedDayCount),
       floatingSchedule_(floatSchedule), iborIndex_(iborIndex), spread_(spread),
-      floatingDayCount_(floatingDayCount),
-      paymentConvention_(paymentConvention) {
+      floatingDayCount_(floatingDayCount) {
+
+        if (paymentConvention)
+            paymentConvention_ = *paymentConvention;
+        else
+            paymentConvention_ = floatingSchedule_.businessDayConvention();
 
         Leg fixedLeg = FixedRateLeg(fixedSchedule_, fixedDayCount_)
             .withNotionals(nominal_)
