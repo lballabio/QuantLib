@@ -127,6 +127,8 @@ namespace QuantLib {
         convertible.initialize(lattice, maturity);
         convertible.rollback(0.0);
         results_.value = convertible.presentValue();
+        QL_ENSURE(results_.value < std::numeric_limits<Real>::max(),
+                  "floating-point overflow on tree grid");
     }
 
 }
