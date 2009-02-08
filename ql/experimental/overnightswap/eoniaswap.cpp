@@ -21,6 +21,8 @@
 #include <ql/experimental/overnightswap/eoniacoupon.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 
+#include <iostream>
+
 namespace QuantLib {
 
   EoniaSwap::EoniaSwap(Type type,
@@ -47,6 +49,7 @@ namespace QuantLib {
         legs_[1] = EoniaLeg(eoniaSchedule, index)
             .withNotionals(nominal)
             .withPaymentDayCounter(index->dayCounter())
+            .withSpreads(eoniaSpread)
             .withPaymentAdjustment(eoniaSchedule.businessDayConvention());
 
         for (Size j=0; j<2; ++j) {
@@ -110,7 +113,7 @@ namespace QuantLib {
         return fixedRate_ - NPV_/(fixedLegBPS()/basisPoint);
     }
 
-    Spread EoniaSwap::fairEoniaSpread() const {
+    Spread EoniaSwap::fairSpread() const {
         static Spread basisPoint = 1.0e-4;
         calculate();
         return eoniaSpread_ - NPV_/(eoniaLegBPS()/basisPoint);

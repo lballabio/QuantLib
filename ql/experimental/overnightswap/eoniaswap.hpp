@@ -50,7 +50,7 @@ namespace QuantLib {
         Spread eoniaSpread() const;
         Rate fixedRate() const;
         Real nominal() const;
-        //! "payer" or "receiver" refer to the BMA leg
+        //! "payer" or "receiver" refer to the Eonia leg
         Type type() const;
         const Leg& eoniaLeg() const;
         const Leg& fixedLeg() const;
@@ -60,7 +60,7 @@ namespace QuantLib {
         //@{
         Real eoniaLegBPS() const;
         Real eoniaLegNPV() const;
-        Spread fairEoniaSpread() const;
+        Spread fairSpread() const;
 
         Real fixedLegBPS() const;
         Real fixedLegNPV() const;

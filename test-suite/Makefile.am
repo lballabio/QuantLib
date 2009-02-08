@@ -31,6 +31,7 @@ QL_TESTS = \
 	digitaloption.hpp digitaloption.cpp \
 	distributions.hpp distributions.cpp \
 	dividendoption.hpp dividendoption.cpp \
+	eoniaswap.hpp eoniaswap.cpp \
 	europeanoption.hpp europeanoption.cpp \
 	everestoption.hpp everestoption.cpp \
 	exchangerate.hpp exchangerate.cpp \
