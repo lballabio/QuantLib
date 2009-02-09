@@ -258,7 +258,7 @@ void FdHestonTest::testFdmHestonConvergence() {
                                       values[i].sigma, 
                                       values[i].rho));
             
-                Date exerciseDate = todaysDate + Period(values[i].T*365, Days);
+                Date exerciseDate = todaysDate + Period(static_cast<Integer>(values[i].T*365), Days);
                 boost::shared_ptr<Exercise> exercise(
                                            new EuropeanExercise(exerciseDate));
             
