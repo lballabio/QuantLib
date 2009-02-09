@@ -44,6 +44,7 @@ namespace QuantLib {
           computed but set to tmax + 1 instead to save coputation time.
          */
         virtual void nextSequence(Real tmax = QL_MAX_REAL) = 0;
+        virtual void reset() = 0;
     protected:
         boost::shared_ptr<Pool> pool_;
     };
@@ -57,6 +58,7 @@ namespace QuantLib {
                                    Handle<OneFactorCopula> copula,
                                    Real accuracy, long seed);
         void nextSequence(Real tmax = QL_MAX_REAL);
+        void reset();
     private:
         Handle<OneFactorCopula> copula_;
         Real accuracy_;

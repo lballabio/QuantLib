@@ -53,6 +53,11 @@ namespace QuantLib {
           seed_(seed),
           rsg_(PseudoRandom::make_sequence_generator(pool->size()+1, seed)) {}
 
+    void GaussianRandomDefaultModel::reset() {
+        Size dim = pool_->size() + 1;
+        rsg_ = PseudoRandom::make_sequence_generator(dim, seed_);
+    }
+
     void GaussianRandomDefaultModel::nextSequence(Real tmax) {
         const std::vector<Real>& values = rsg_.nextSequence().value;
         Real a = sqrt(copula_->correlation());
