@@ -7489,6 +7489,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\blackcdsoptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\blackcdsoptionengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\cdo.cpp"
 					>
 				</File>
@@ -7510,6 +7518,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\distribution.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\factorspreadedhazardratecurve.hpp"
 					>
 				</File>
 				<File
@@ -7578,6 +7590,26 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\riskyassetswap.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\riskyassetswapoption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\riskyassetswapoption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\riskybond.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\riskybond.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\spreadedhazardratecurve.hpp"
 					>
 				</File>
 				<File
@@ -7898,6 +7930,70 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\barrieroption\perturbativebarrieroptionengine.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="overnightswap"
+				>
+				<File
+					RelativePath=".\ql\experimental\overnightswap\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\overnightswap\eonia.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\overnightswap\eonia.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\overnightswap\eoniacoupon.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\overnightswap\eoniacoupon.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\overnightswap\eoniaswap.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\overnightswap\eoniaswap.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\overnightswap\eoniaswaphelper.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\overnightswap\eoniaswaphelper.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="compoundoption"
+				>
+				<File
+					RelativePath=".\ql\experimental\compoundoption\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\compoundoption\analyticcompoundoptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\compoundoption\analyticcompoundoptionengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\compoundoption\compoundoption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\compoundoption\compoundoption.hpp"
 					>
 				</File>
 			</Filter>

@@ -787,6 +787,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\compoundoption.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\convertiblebonds.cpp"
 				>
 			</File>
@@ -1058,6 +1062,10 @@
 			</File>
 			<File
 				RelativePath=".\dividendoption.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\eoniaswap.cpp"
 				>
 			</File>
 			<File
@@ -2234,6 +2242,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\compoundoption.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\convertiblebonds.hpp"
 				>
 			</File>
@@ -2275,6 +2287,10 @@
 			</File>
 			<File
 				RelativePath=".\dividendoption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\eoniaswap.hpp"
 				>
 			</File>
 			<File
