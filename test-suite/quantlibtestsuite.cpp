@@ -70,6 +70,7 @@
 #include "digitaloption.hpp"
 #include "distributions.hpp"
 #include "dividendoption.hpp"
+#include "eoniaswap.hpp"
 #include "europeanoption.hpp"
 #include "everestoption.hpp"
 #include "exchangerate.hpp"
@@ -221,6 +222,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(DigitalOptionTest::suite());
     test->add(DistributionTest::suite());
     test->add(DividendOptionTest::suite());
+    test->add(EoniaSwapTest::suite());
     test->add(EuropeanOptionTest::suite());
     test->add(EverestOptionTest::suite());
     test->add(ExchangeRateTest::suite());
