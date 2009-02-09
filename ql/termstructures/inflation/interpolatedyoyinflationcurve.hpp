@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007, 2008 Chris Kenyon
+ Copyright (C) 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,9 +27,10 @@
 #define quantlib_interpolated_yoy_inflationcurve_hpp
 
 #include <ql/termstructures/inflationtermstructure.hpp>
+#include <ql/termstructures/interpolatedcurve.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/comparison.hpp>
-#include <boost/noncopyable.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -38,8 +40,9 @@ namespace QuantLib {
         \ingroup inflationtermstructures
     */
     template<class Interpolator>
-    class InterpolatedYoYInflationCurve: public YoYInflationTermStructure,
-                                         public boost::noncopyable {
+    class InterpolatedYoYInflationCurve
+        : public YoYInflationTermStructure,
+          protected InterpolatedCurve<Interpolator> {
       public:
         InterpolatedYoYInflationCurve(const Date& referenceDate,
                                       const Calendar& calendar,
@@ -72,10 +75,6 @@ namespace QuantLib {
         Rate yoyRateImpl(Time t) const;
         //@}
         mutable std::vector<Date> dates_;
-        mutable std::vector<Time> times_;
-        mutable std::vector<Rate> data_;
-        mutable Interpolation interpolation_;
-        Interpolator interpolator_;
 
         /*! Protected version for use when descendents don't want to
             (or can't) provide the points for interpolation on
@@ -111,7 +110,8 @@ namespace QuantLib {
                                   const Interpolator& interpolator)
     : YoYInflationTermStructure(referenceDate, calendar, dayCounter,
                                 lag, frequency, rates[0], yTS),
-      dates_(dates), data_(rates), interpolator_(interpolator) {
+      InterpolatedCurve<Interpolator>(std::vector<Time>(), rates, interpolator),
+      dates_(dates) {
 
         QL_REQUIRE(dates_.size()>1, "too few dates: " << dates_.size());
 
@@ -124,30 +124,34 @@ namespace QuantLib {
                    "first data date is not in base period, date: " << dates_[0]
                    << " not within [" << lim.first << "," << lim.second << "]");
 
-        QL_REQUIRE(data_.size() == dates_.size(),
+        QL_REQUIRE(this->data_.size() == dates_.size(),
                    "indices/dates count mismatch: "
-                   << data_.size() << " vs " << dates_.size());
+                   << this->data_.size() << " vs " << dates_.size());
 
-        times_.resize(dates_.size());
-        times_[0] = timeFromReference(dates_[0]);
+        this->times_.resize(dates_.size());
+        this->times_[0] = timeFromReference(dates_[0]);
 
         for (Size i = 1; i < dates_.size(); i++) {
             QL_REQUIRE(dates_[i] > dates_[i-1],
                        "dates not sorted");
             // YoY inflation data may be positive or negative
             // but must be greater than -1
-            QL_REQUIRE(data_[i] > -1.0, "year-on-year inflation data < -100 %");
+            QL_REQUIRE(this->data_[i] > -1.0,
+                       "year-on-year inflation data < -100 %");
 
-            times_[i] = timeFromReference(dates_[i]);  // this can be negative
-            QL_REQUIRE(!close(times_[i],times_[i-1]),
+            // this can be negative
+            this->times_[i] = timeFromReference(dates_[i]);
+
+            QL_REQUIRE(!close(this->times_[i],this->times_[i-1]),
                        "two dates correspond to the same time "
                        "under this curve's day count convention");
         }
 
-        interpolation_ = interpolator_.interpolate(times_.begin(),
-                                                   times_.end(),
-                                                   data_.begin());
-        interpolation_.update();
+        this->interpolation_ =
+            this->interpolator_.interpolate(this->times_.begin(),
+                                            this->times_.end(),
+                                            this->data_.begin());
+        this->interpolation_.update();
     }
 
     template <class Interpolator>
@@ -162,7 +166,7 @@ namespace QuantLib {
                                   const Interpolator& interpolator)
     : YoYInflationTermStructure(referenceDate, calendar, dayCounter,
                                 lag, frequency, baseYoYRate, yTS),
-      interpolator_(interpolator) {}
+      InterpolatedCurve<Interpolator>(interpolator) {}
 
 
     template <class T>
@@ -178,13 +182,13 @@ namespace QuantLib {
 
     template <class T>
     inline Rate InterpolatedYoYInflationCurve<T>::yoyRateImpl(Time t) const {
-        return interpolation_(t, true);
+        return this->interpolation_(t, true);
     }
 
     template <class T>
     inline const std::vector<Time>&
     InterpolatedYoYInflationCurve<T>::times() const {
-        return times_;
+        return this->times_;
     }
 
     template <class T>
@@ -196,7 +200,7 @@ namespace QuantLib {
     template <class T>
     inline const std::vector<Rate>&
     InterpolatedYoYInflationCurve<T>::rates() const {
-        return data_;
+        return this->data_;
     }
 
     template <class T>
@@ -204,7 +208,7 @@ namespace QuantLib {
     InterpolatedYoYInflationCurve<T>::nodes() const {
         std::vector<std::pair<Date,Rate> > results(dates_.size());
         for (Size i=0; i<dates_.size(); ++i)
-            results[i] = std::make_pair(dates_[i],data_[i]);
+            results[i] = std::make_pair(dates_[i],this->data_[i]);
         return results;
     }
 

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,19 +25,18 @@
 #define quantlib_forward_curve_hpp
 
 #include <ql/termstructures/yield/forwardstructure.hpp>
-#include <ql/math/interpolation.hpp>
+#include <ql/termstructures/interpolatedcurve.hpp>
+#include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/math/comparison.hpp>
-#include <boost/noncopyable.hpp>
+#include <utility>
 
 namespace QuantLib {
-
-    class BackwardFlat;
 
     //! Term structure based on interpolation of forward rates
     /*! \ingroup yieldtermstructures */
     template <class Interpolator>
     class InterpolatedForwardCurve : public ForwardRateStructure,
-                                     public boost::noncopyable {
+                                     protected InterpolatedCurve<Interpolator> {
       public:
         // constructor
         InterpolatedForwardCurve(const std::vector<Date>& dates,
@@ -68,10 +67,6 @@ namespace QuantLib {
         Rate forwardImpl(Time t) const;
         Rate zeroYieldImpl(Time t) const;
         mutable std::vector<Date> dates_;
-        mutable std::vector<Time> times_;
-        mutable std::vector<Rate> data_;
-        mutable Interpolation interpolation_;
-        Interpolator interpolator_;
     };
 
     //! Term structure based on flat interpolation of forward rates
@@ -90,7 +85,7 @@ namespace QuantLib {
     template <class T>
     inline const std::vector<Time>& InterpolatedForwardCurve<T>::times()
                                                                        const {
-        return times_;
+        return this->times_;
     }
 
     template <class T>
@@ -102,7 +97,7 @@ namespace QuantLib {
     template <class T>
     inline const std::vector<Rate>&
     InterpolatedForwardCurve<T>::forwards() const {
-        return data_;
+        return this->data_;
     }
 
     template <class T>
@@ -110,7 +105,7 @@ namespace QuantLib {
     InterpolatedForwardCurve<T>::nodes() const {
         std::vector<std::pair<Date,Rate> > results(dates_.size());
         for (Size i=0; i<dates_.size(); ++i)
-            results[i] = std::make_pair(dates_[i],data_[i]);
+            results[i] = std::make_pair(dates_[i],this->data_[i]);
         return results;
     }
 
@@ -120,7 +115,7 @@ namespace QuantLib {
     inline InterpolatedForwardCurve<T>::InterpolatedForwardCurve(
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
-    : interpolator_(interpolator) {}
+    : InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     inline InterpolatedForwardCurve<T>::InterpolatedForwardCurve(
@@ -128,7 +123,7 @@ namespace QuantLib {
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
     : ForwardRateStructure(referenceDate, Calendar(), dayCounter),
-      interpolator_(interpolator) {}
+      InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     inline InterpolatedForwardCurve<T>::InterpolatedForwardCurve(
@@ -137,11 +132,11 @@ namespace QuantLib {
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
     : ForwardRateStructure(settlementDays, calendar, dayCounter),
-      interpolator_(interpolator) {}
+      InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     Rate InterpolatedForwardCurve<T>::forwardImpl(Time t) const {
-        return interpolation_(t, true);
+        return this->interpolation_(t, true);
     }
 
     template <class T>
@@ -149,7 +144,7 @@ namespace QuantLib {
         if (t == 0.0)
             return forwardImpl(0.0);
         else
-            return interpolation_.primitive(t, true)/t;
+            return this->interpolation_.primitive(t, true)/t;
     }
 
 
@@ -162,31 +157,33 @@ namespace QuantLib {
                                             const DayCounter& dayCounter,
                                             const T& interpolator)
     : ForwardRateStructure(dates.front(), Calendar(), dayCounter),
-      dates_(dates), data_(forwards), interpolator_(interpolator) {
+      InterpolatedCurve<T>(std::vector<Time>(), forwards, interpolator),
+      dates_(dates) {
 
         QL_REQUIRE(dates_.size()>1, "too few dates");
-        QL_REQUIRE(data_.size()==dates_.size(),
+        QL_REQUIRE(this->data_.size()==dates_.size(),
                    "dates/yields count mismatch");
 
-        times_.resize(dates_.size());
-        times_[0]=0.0;
+        this->times_.resize(dates_.size());
+        this->times_[0]=0.0;
         for (Size i = 1; i < dates_.size(); i++) {
             QL_REQUIRE(dates_[i] > dates_[i-1],
                        "invalid date (" << dates_[i] << ", vs "
                        << dates_[i-1] << ")");
             #if !defined(QL_NEGATIVE_RATES)
-            QL_REQUIRE(data_[i] >= 0.0, "negative forward");
+            QL_REQUIRE(this->data_[i] >= 0.0, "negative forward");
             #endif
-            times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
-            QL_REQUIRE(!close(times_[i],times_[i-1]),
+            this->times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
+            QL_REQUIRE(!close(this->times_[i],this->times_[i-1]),
                        "two dates correspond to the same time "
                        "under this curve's day count convention");
         }
 
-        interpolation_ = interpolator_.interpolate(times_.begin(),
-                                                   times_.end(),
-                                                   data_.begin());
-        interpolation_.update();
+        this->interpolation_ =
+            this->interpolator_.interpolate(this->times_.begin(),
+                                            this->times_.end(),
+                                            this->data_.begin());
+        this->interpolation_.update();
     }
 
     #endif

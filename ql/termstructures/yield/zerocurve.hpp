@@ -25,10 +25,9 @@
 #define quantlib_zero_curve_hpp
 
 #include <ql/termstructures/yield/zeroyieldstructure.hpp>
+#include <ql/termstructures/interpolatedcurve.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/comparison.hpp>
-#include <boost/noncopyable.hpp>
-#include <vector>
 #include <utility>
 
 namespace QuantLib {
@@ -37,7 +36,7 @@ namespace QuantLib {
     /*! \ingroup yieldtermstructures */
     template <class Interpolator>
     class InterpolatedZeroCurve : public ZeroYieldStructure,
-                                  public boost::noncopyable {
+                                  protected InterpolatedCurve<Interpolator> {
       public:
         // constructor
         InterpolatedZeroCurve(const std::vector<Date>& dates,
@@ -67,10 +66,6 @@ namespace QuantLib {
                                                             = Interpolator());
         Rate zeroYieldImpl(Time t) const;
         mutable std::vector<Date> dates_;
-        mutable std::vector<Time> times_;
-        mutable std::vector<Rate> data_;
-        mutable Interpolation interpolation_;
-        Interpolator interpolator_;
     };
 
     //! Term structure based on linear interpolation of zero yields
@@ -87,7 +82,7 @@ namespace QuantLib {
 
     template <class T>
     inline const std::vector<Time>& InterpolatedZeroCurve<T>::times() const {
-        return times_;
+        return this->times_;
     }
 
     template <class T>
@@ -98,7 +93,7 @@ namespace QuantLib {
     template <class T>
     inline const std::vector<Rate>&
     InterpolatedZeroCurve<T>::zeroRates() const {
-        return data_;
+        return this->data_;
     }
 
     template <class T>
@@ -106,7 +101,7 @@ namespace QuantLib {
     InterpolatedZeroCurve<T>::nodes() const {
         std::vector<std::pair<Date,Rate> > results(dates_.size());
         for (Size i=0; i<dates_.size(); ++i)
-            results[i] = std::make_pair(dates_[i],data_[i]);
+            results[i] = std::make_pair(dates_[i],this->data_[i]);
         return results;
     }
 
@@ -116,7 +111,7 @@ namespace QuantLib {
     inline InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
-    : interpolator_(interpolator) {}
+    : InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     inline InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
@@ -124,7 +119,7 @@ namespace QuantLib {
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
     : ZeroYieldStructure(referenceDate, Calendar(), dayCounter),
-      interpolator_(interpolator) {}
+      InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     inline InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
@@ -133,11 +128,11 @@ namespace QuantLib {
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
     : ZeroYieldStructure(settlementDays,calendar, dayCounter),
-      interpolator_(interpolator) {}
+      InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     Rate InterpolatedZeroCurve<T>::zeroYieldImpl(Time t) const {
-        return interpolation_(t, true);
+        return this->interpolation_(t, true);
     }
 
     // template definitions
@@ -149,32 +144,33 @@ namespace QuantLib {
                                               const DayCounter& dayCounter,
                                               const T& interpolator)
     : ZeroYieldStructure(dates.front(), Calendar(), dayCounter),
-      dates_(dates), data_(yields), interpolator_(interpolator) {
+      InterpolatedCurve<T>(std::vector<Time>(), yields, interpolator),
+      dates_(dates) {
 
         QL_REQUIRE(dates_.size()>1, "too few dates");
-        QL_REQUIRE(data_.size()==dates_.size(),
+        QL_REQUIRE(this->data_.size()==dates_.size(),
                    "dates/yields count mismatch");
 
-        times_.resize(dates_.size());
-        times_[0]=0.0;
+        this->times_.resize(dates_.size());
+        this->times_[0]=0.0;
         for (Size i = 1; i < dates_.size(); i++) {
             QL_REQUIRE(dates_[i] > dates_[i-1],
                        "invalid date (" << dates_[i] << ", vs "
                        << dates_[i-1] << ")");
             #if !defined(QL_NEGATIVE_RATES)
-            QL_REQUIRE(data_[i] >= 0.0, "negative yield");
+            QL_REQUIRE(this->data_[i] >= 0.0, "negative yield");
             #endif
-            times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
-            QL_REQUIRE(!close(times_[i],times_[i-1]),
+            this->times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
+            QL_REQUIRE(!close(this->times_[i],this->times_[i-1]),
                        "two dates correspond to the same time "
                        "under this curve's day count convention");
         }
 
-        interpolation_ = interpolator_.interpolate(times_.begin(),
-                                                   times_.end(),
-                                                   data_.begin());
-        interpolation_.update();
-
+        this->interpolation_ =
+            this->interpolator_.interpolate(this->times_.begin(),
+                                            this->times_.end(),
+                                            this->data_.begin());
+        this->interpolation_.update();
     }
 
     #endif

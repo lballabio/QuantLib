@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003 Decillion Pty(Ltd)
- Copyright (C) 2005, 2006, 2008 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2008, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,10 +26,9 @@
 #define quantlib_discount_curve_hpp
 
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/termstructures/interpolatedcurve.hpp>
 #include <ql/math/interpolations/loginterpolation.hpp>
 #include <ql/math/comparison.hpp>
-#include <boost/noncopyable.hpp>
-#include <vector>
 #include <utility>
 
 namespace QuantLib {
@@ -37,8 +36,9 @@ namespace QuantLib {
     //! Term structure based on interpolation of discount factors
     /*! \ingroup yieldtermstructures */
     template <class Interpolator>
-    class InterpolatedDiscountCurve : public YieldTermStructure,
-                                      public boost::noncopyable {
+    class InterpolatedDiscountCurve
+        : public YieldTermStructure,
+          protected InterpolatedCurve<Interpolator> {
       public:
         InterpolatedDiscountCurve(const std::vector<Date>& dates,
                                   const std::vector<DiscountFactor>& dfs,
@@ -69,10 +69,6 @@ namespace QuantLib {
                                                             = Interpolator());
         DiscountFactor discountImpl(Time) const;
         mutable std::vector<Date> dates_;
-        mutable std::vector<Time> times_;
-        mutable std::vector<DiscountFactor> data_;
-        mutable Interpolation interpolation_;
-        Interpolator interpolator_;
     };
 
     //! Term structure based on log-linear interpolation of discount factors
@@ -94,7 +90,7 @@ namespace QuantLib {
     template <class T>
     inline const std::vector<Time>&
     InterpolatedDiscountCurve<T>::times() const {
-        return times_;
+        return this->times_;
     }
 
     template <class T>
@@ -106,7 +102,7 @@ namespace QuantLib {
     template <class T>
     inline const std::vector<DiscountFactor>&
     InterpolatedDiscountCurve<T>::discounts() const {
-        return data_;
+        return this->data_;
     }
 
     template <class T>
@@ -114,7 +110,7 @@ namespace QuantLib {
     InterpolatedDiscountCurve<T>::nodes() const {
         std::vector<std::pair<Date,DiscountFactor> > results(dates_.size());
         for (Size i=0; i<dates_.size(); ++i)
-            results[i] = std::make_pair(dates_[i],data_[i]);
+            results[i] = std::make_pair(dates_[i],this->data_[i]);
         return results;
     }
 
@@ -124,7 +120,7 @@ namespace QuantLib {
     inline InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
-    : YieldTermStructure(dayCounter), interpolator_(interpolator) {}
+    : YieldTermStructure(dayCounter), InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     inline InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
@@ -132,7 +128,7 @@ namespace QuantLib {
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
     : YieldTermStructure(referenceDate, Calendar(), dayCounter),
-      interpolator_(interpolator) {}
+      InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     inline InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
@@ -141,13 +137,13 @@ namespace QuantLib {
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
     : YieldTermStructure(settlementDays, calendar, dayCounter),
-      interpolator_(interpolator) {}
+      InterpolatedCurve<T>(interpolator) {}
 
 
     template <class T>
     inline DiscountFactor InterpolatedDiscountCurve<T>::discountImpl(Time t)
                                                                        const {
-        return interpolation_(t, true);
+        return this->interpolation_(t, true);
     }
 
     // template definitions
@@ -160,33 +156,35 @@ namespace QuantLib {
                                  const Calendar& cal,
                                  const T& interpolator)
     : YieldTermStructure(dates.front(), cal, dayCounter),
-      dates_(dates), data_(discounts),
-      interpolator_(interpolator) {
+      InterpolatedCurve<T>(std::vector<Time>(), discounts, interpolator),
+      dates_(dates) {
+
         QL_REQUIRE(!dates_.empty(), "no input dates given");
-        QL_REQUIRE(!data_.empty(), "no input discount factors given");
-        QL_REQUIRE(data_.size() == dates_.size(),
+        QL_REQUIRE(!this->data_.empty(), "no input discount factors given");
+        QL_REQUIRE(this->data_.size() == dates_.size(),
                    "dates/discount factors count mismatch");
-        QL_REQUIRE(data_[0] == 1.0,
+        QL_REQUIRE(this->data_[0] == 1.0,
                    "the first discount must be == 1.0 "
                    "to flag the corrsponding date as settlement date");
 
-        times_.resize(dates_.size());
-        times_[0] = 0.0;
+        this->times_.resize(dates_.size());
+        this->times_[0] = 0.0;
         for (Size i = 1; i < dates_.size(); i++) {
             QL_REQUIRE(dates_[i] > dates_[i-1],
                        "invalid date (" << dates_[i] << ", vs "
                        << dates_[i-1] << ")");
-            QL_REQUIRE(data_[i] > 0.0, "negative discount");
-            times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
-            QL_REQUIRE(!close(times_[i],times_[i-1]),
+            QL_REQUIRE(this->data_[i] > 0.0, "negative discount");
+            this->times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
+            QL_REQUIRE(!close(this->times_[i],this->times_[i-1]),
                        "two dates correspond to the same time "
                        "under this curve's day count convention");
         }
 
-        interpolation_ = interpolator_.interpolate(times_.begin(),
-                                                   times_.end(),
-                                                   data_.begin());
-        interpolation_.update();
+        this->interpolation_ =
+            this->interpolator_.interpolate(this->times_.begin(),
+                                            this->times_.end(),
+                                            this->data_.begin());
+        this->interpolation_.update();
     }
 
     #endif

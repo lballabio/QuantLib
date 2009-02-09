@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -41,6 +41,7 @@
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/interpolations/convexmonotoneinterpolation.hpp>
+#include <ql/math/comparison.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
@@ -841,6 +842,76 @@ void PiecewiseYieldCurveTest::testJpyLibor() {
     }
 }
 
+namespace {
+
+    template <class T, class I>
+    void testCurveCopy(CommonVars& vars,
+                       const I& interpolator = I()) {
+
+        PiecewiseYieldCurve<T,I> curve(vars.settlement, vars.instruments,
+                                       Actual360(),
+                                       std::vector<Handle<Quote> >(),
+                                       std::vector<Date>(),
+                                       1.0e-12,
+                                       interpolator);
+        // necessary to trigger bootstrap
+        curve.recalculate();
+
+        typedef typename T::template curve<I>::type base_curve;
+
+        base_curve copiedCurve = curve;
+
+        // the two curves should be the same.
+        Time t = 2.718;
+        Rate r1 = curve.zeroRate(t, Continuous);
+        Rate r2 = copiedCurve.zeroRate(t, Continuous);
+        if (!close(r1, r2)) {
+            BOOST_ERROR("failed to link original and copied curve");
+        }
+
+        for (Size i=0; i<vars.rates.size(); ++i) {
+            vars.rates[i]->setValue(vars.rates[i]->value() + 0.001);
+        }
+
+        // now the original curve should have changed; the copied
+        // curve should not.
+        Rate r3 = curve.zeroRate(t, Continuous);
+        Rate r4 = copiedCurve.zeroRate(t, Continuous);
+        if (close(r1, r3)) {
+            BOOST_ERROR("failed to modify original curve");
+        }
+        if (!close(r2,r4)) {
+            BOOST_ERROR(
+                    "failed to break link between original and copied curve");
+        }
+    }
+
+}
+
+
+void PiecewiseYieldCurveTest::testDiscountCopy() {
+    BOOST_MESSAGE("Testing copying of discount curve...");
+
+    CommonVars vars;
+    testCurveCopy<Discount,LogLinear>(vars);
+}
+
+void PiecewiseYieldCurveTest::testForwardCopy() {
+    BOOST_MESSAGE("Testing copying of forward-rate curve...");
+
+    CommonVars vars;
+    testCurveCopy<ForwardRate,BackwardFlat>(vars);
+}
+
+void PiecewiseYieldCurveTest::testZeroCopy() {
+    BOOST_MESSAGE("Testing copying of zero-rate curve...");
+
+    CommonVars vars;
+    testCurveCopy<ZeroYield,Linear>(vars);
+}
+
+
+
 
 test_suite* PiecewiseYieldCurveTest::suite() {
 
@@ -877,5 +948,10 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLiborFixing));
 
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testJpyLibor));
+
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testDiscountCopy));
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testForwardCopy));
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testZeroCopy));
+
     return suite;
 }

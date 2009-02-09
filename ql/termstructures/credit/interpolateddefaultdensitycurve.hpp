@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2008 Chris Kenyon
  Copyright (C) 2008 Roland Lichters
- Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2008, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,15 +27,16 @@
 #define quantlib_interpolated_default_density_curve_hpp
 
 #include <ql/termstructures/credit/defaultdensitystructure.hpp>
-#include <ql/math/interpolation.hpp>
-#include <boost/noncopyable.hpp>
+#include <ql/termstructures/interpolatedcurve.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     //! interpolated default-density curve
     template <class Interpolator>
-    class InterpolatedDefaultDensityCurve : public DefaultDensityStructure,
-                                            public boost::noncopyable {
+    class InterpolatedDefaultDensityCurve
+        : public DefaultDensityStructure,
+          protected InterpolatedCurve<Interpolator> {
       public:
         InterpolatedDefaultDensityCurve(const std::vector<Date>& dates,
                                         const std::vector<Real>& densities,
@@ -70,10 +71,6 @@ namespace QuantLib {
         Real defaultDensityImpl(Time) const;
         Probability survivalProbabilityImpl(Time) const;
         mutable std::vector<Date> dates_;
-        mutable std::vector<Time> times_;
-        mutable std::vector<Real> data_;
-        mutable Interpolation interpolation_;
-        Interpolator interpolator_;
     };
 
 
@@ -89,29 +86,31 @@ namespace QuantLib {
                                          const Calendar& calendar,
                                          const T& interpolator)
     : DefaultDensityStructure(dates.front(), calendar, dayCounter),
-      dates_(dates), data_(densities), interpolator_(interpolator) {
-        QL_REQUIRE(data_.size() == dates_.size(),
+      InterpolatedCurve<T>(std::vector<Time>(), densities, interpolator),
+      dates_(dates) {
+        QL_REQUIRE(this->data_.size() == dates_.size(),
                    "dates/densities count mismatch");
         QL_REQUIRE(dates_.size() >= T::requiredPoints,
                    "not enough input dates given");
 
-        times_.resize(dates_.size());
-        times_[0] = 0.0;
+        this->times_.resize(dates_.size());
+        this->times_[0] = 0.0;
         for (Size i = 1; i < dates_.size(); i++) {
             QL_REQUIRE(dates_[i] > dates_[i-1],
                        "invalid date (" << dates_[i] << ", vs "
                        << dates_[i-1] << ")");
-            QL_REQUIRE(data_[i] > 0.0, "negative hazard rate");
-            times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
-            QL_REQUIRE(!close(times_[i],times_[i-1]),
+            QL_REQUIRE(this->data_[i] > 0.0, "negative hazard rate");
+            this->times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
+            QL_REQUIRE(!close(this->times_[i],this->times_[i-1]),
                        "two dates correspond to the same time "
                        "under this curve's day count convention");
         }
 
-        interpolation_ = interpolator_.interpolate(times_.begin(),
-                                                   times_.end(),
-                                                   data_.begin());
-        interpolation_.update();
+        this->interpolation_ =
+            this->interpolator_.interpolate(this->times_.begin(),
+                                            this->times_.end(),
+                                            this->data_.begin());
+        this->interpolation_.update();
     }
 
 
@@ -119,7 +118,8 @@ namespace QuantLib {
     InterpolatedDefaultDensityCurve<T>::InterpolatedDefaultDensityCurve(
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
-    : DefaultDensityStructure(dayCounter), interpolator_(interpolator) {}
+    : DefaultDensityStructure(dayCounter),
+      InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     InterpolatedDefaultDensityCurve<T>::InterpolatedDefaultDensityCurve(
@@ -127,7 +127,7 @@ namespace QuantLib {
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
     : DefaultDensityStructure(referenceDate, Calendar(), dayCounter),
-      interpolator_(interpolator) {}
+      InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     InterpolatedDefaultDensityCurve<T>::InterpolatedDefaultDensityCurve(
@@ -136,7 +136,7 @@ namespace QuantLib {
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
     : DefaultDensityStructure(settlementDays, calendar, dayCounter),
-      interpolator_(interpolator) {}
+      InterpolatedCurve<T>(interpolator) {}
 
 
     template <class T>
@@ -146,7 +146,7 @@ namespace QuantLib {
 
     template <class T>
     const std::vector<Time>& InterpolatedDefaultDensityCurve<T>::times() const {
-        return times_;
+        return this->times_;
     }
 
     template <class T>
@@ -157,7 +157,7 @@ namespace QuantLib {
     template <class T>
     const std::vector<Real>&
     InterpolatedDefaultDensityCurve<T>::defaultDensities() const {
-        return data_;
+        return this->data_;
     }
 
     template <class T>
@@ -165,17 +165,17 @@ namespace QuantLib {
     InterpolatedDefaultDensityCurve<T>::nodes() const {
         std::vector<std::pair<Date,Real> > results(dates_.size());
         for (Size i=0; i<dates_.size(); ++i)
-            results[i] = std::make_pair(dates_[i],data_[i]);
+            results[i] = std::make_pair(dates_[i],this->data_[i]);
         return results;
     }
 
     template <class T>
     Real InterpolatedDefaultDensityCurve<T>::defaultDensityImpl(Time t) const {
-        if (t <= times_.back()) {
-            return interpolation_(t, true);
+        if (t <= this->times_.back()) {
+            return this->interpolation_(t, true);
         } else {
             // flat extrapolation
-            return data_.back();
+            return this->data_.back();
         }
     }
 
@@ -183,12 +183,12 @@ namespace QuantLib {
     Probability InterpolatedDefaultDensityCurve<T>::survivalProbabilityImpl(
                                                                Time t) const {
         Real integral = 0.0;
-        if (t <= times_.back()) {
-            integral = interpolation_.primitive(t, true);
+        if (t <= this->times_.back()) {
+            integral = this->interpolation_.primitive(t, true);
         } else {
             // flat extrapolation
-            integral = interpolation_.primitive(times_.back(), true)
-                     + data_.back()*(t - times_.back());
+            integral = this->interpolation_.primitive(this->times_.back(), true)
+                     + this->data_.back()*(t - this->times_.back());
         }
         Probability P = 1.0 - integral;
         // QL_ENSURE(P >= 0.0, "negative survival probability");

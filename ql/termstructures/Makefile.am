@@ -10,6 +10,7 @@ this_include_HEADERS = \
 	bootstraphelper.hpp \
 	defaulttermstructure.hpp \
 	inflationtermstructure.hpp \
+	interpolatedcurve.hpp \
 	iterativebootstrap.hpp \
 	localbootstrap.hpp \
 	voltermstructure.hpp \
