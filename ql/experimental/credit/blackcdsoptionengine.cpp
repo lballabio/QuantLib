@@ -33,7 +33,7 @@ namespace QuantLib {
     : issuer_(issuer), termStructure_(termStructure),
       volatility_(volatility) {
 
-        registerWith(issuer_.defaultProbability());
+        registerWith(issuer_);
         registerWith(termStructure_);
         registerWith(volatility_);
     }

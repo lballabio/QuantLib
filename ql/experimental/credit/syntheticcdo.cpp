@@ -44,7 +44,7 @@ namespace QuantLib {
         registerWith (yieldTS_);
         const boost::shared_ptr<Pool> pool = basket->pool();
         for (Size i = 0; i < basket->names().size(); i++)
-            registerWith(pool->get(basket->names()[i]).defaultProbability());
+            registerWith(pool->get(basket->names()[i]));
     }
 
     Rate SyntheticCDO::premiumValue () const {

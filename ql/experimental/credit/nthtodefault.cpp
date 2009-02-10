@@ -51,7 +51,7 @@ namespace QuantLib {
             .withPaymentAdjustment(Unadjusted);
 
         for (Size i=0; i<basket_.size(); i++)
-            registerWith(basket_[i].defaultProbability());
+            registerWith(basket_[i]);
         registerWith(copula_);
         registerWith(yieldTS_);
 

@@ -30,7 +30,7 @@ namespace QuantLib {
                               const Issuer& issuer,
                               const Handle<YieldTermStructure>& discountCurve)
     : integrationStep_(step), issuer_(issuer), discountCurve_(discountCurve) {
-        registerWith(issuer_.defaultProbability());
+        registerWith(issuer_);
         registerWith(discountCurve_);
     }
 

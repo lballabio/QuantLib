@@ -42,13 +42,13 @@ namespace QuantLib {
     */
     class RiskyBond : public Instrument {
     public:
-        RiskyBond(std::string name, 
+        RiskyBond(std::string name,
                   Currency ccy,
                   Issuer issuer,
                   Handle<YieldTermStructure> yieldTS)
             : name_(name), ccy_(ccy), issuer_(issuer), yieldTS_(yieldTS) {
             registerWith (yieldTS_);
-            registerWith (issuer.defaultProbability());
+            registerWith (issuer);
         }
         virtual ~RiskyBond() {}
         virtual std::vector<boost::shared_ptr<CashFlow> > cashflows() const = 0;
@@ -60,7 +60,7 @@ namespace QuantLib {
         Real totalFutureFlows(Date date) const;
         std::string name() const;
         Currency ccy() const;
-        Handle<YieldTermStructure> yieldTS() const; 
+        Handle<YieldTermStructure> yieldTS() const;
         Issuer issuer() const;
         //! \name Instrument interface
         //@{
@@ -77,17 +77,17 @@ namespace QuantLib {
     };
 
     inline std::string RiskyBond::name() const {
-        return name_; 
+        return name_;
     }
 
     inline Currency RiskyBond::ccy() const {
-        return ccy_; 
+        return ccy_;
     }
-    
+
     inline Handle<YieldTermStructure> RiskyBond::yieldTS() const {
         return yieldTS_;
     }
-    
+
     inline Issuer RiskyBond::issuer() const {
         return issuer_;
     }

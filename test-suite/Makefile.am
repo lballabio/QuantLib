@@ -50,6 +50,7 @@ QL_TESTS = \
 	integrals.hpp integrals.cpp \
 	interestrates.hpp interestrates.cpp \
 	interpolations.hpp interpolations.cpp \
+	issuer.hpp issuer.cpp \
 	jumpdiffusion.hpp jumpdiffusion.cpp \
 	libormarketmodel.hpp libormarketmodel.cpp \
 	libormarketmodelprocess.hpp libormarketmodelprocess.cpp \
