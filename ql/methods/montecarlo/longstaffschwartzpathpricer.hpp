@@ -148,8 +148,8 @@ namespace QuantLib {
             }
 
             if (v_.size() <=  x.size()) {
-                coeff_[i]
-                    = LinearLeastSquaresRegression<StateType>(x, y, v_).a();
+                coeff_[i] = LinearLeastSquaresRegression<StateType>(x, y, v_)
+                                .coefficients();
             }
             else {
             // if number of itm paths is smaller then the number of

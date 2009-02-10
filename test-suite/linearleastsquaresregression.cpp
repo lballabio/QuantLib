@@ -33,7 +33,7 @@ void LinearLeastSquaresRegressionTest::testRegression() {
 
     SavedSettings backup;
 
-    const Real tolerance = 0.025;
+    const Real tolerance = 0.05;
 
     const Size nr=100000;
     PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234u));
@@ -66,26 +66,28 @@ void LinearLeastSquaresRegressionTest::testRegression() {
         LinearLeastSquaresRegression<> m(x, y, v);
 
         for (i=0; i<v.size(); ++i) {
-            if (m.error()[i] > tolerance) {
+            if (m.standardErrors()[i] > tolerance) {
                 BOOST_ERROR("Failed to reproduce linear regression coef."
-                            << "\n    error:     " << m.error()[i]
+                            << "\n    error:     " << m.standardErrors()[i]
                             << "\n    tolerance: " << tolerance);
             }
-            if (std::fabs(m.a()[i]-a[i]) > 3*m.error()[i]) {
+            if (std::fabs(m.coefficients()[i]-a[i]) > 3*m.standardErrors()[i]) {
                 BOOST_ERROR("Failed to reproduce linear regression coef."
-                            << "\n    calculated: " << m.a()[i]
-                            << "\n    error:      " << m.error()[i]
+                            << "\n    calculated: " << m.coefficients()[i]
+                            << "\n    error:      " << m.standardErrors()[i]
                             << "\n    expected:   " << a[i]);
             }
         }
 
         m = LinearLeastSquaresRegression<>(x, y, w);
 
-        const Real ma[] = {m.a()[0], m.a()[1], m.a()[2]+m.a()[4],m.a()[3]};
-        const Real err[] = {m.error()[0], m.error()[1],
-                            std::sqrt( m.error()[2]*m.error()[2]
-                                      +m.error()[4]*m.error()[4]),
-                            m.error()[3]};
+        const Real ma[] = {m.coefficients()[0], m.coefficients()[1], 
+                           m.coefficients()[2]+m.coefficients()[4],
+                           m.coefficients()[3]};
+        const Real err[] = {m.standardErrors()[0], m.standardErrors()[1],
+                        std::sqrt( m.standardErrors()[2]*m.standardErrors()[2]
+                                  +m.standardErrors()[4]*m.standardErrors()[4]),
+                            m.standardErrors()[3]};
         for (i=0; i<v.size(); ++i) {
             if (std::fabs(ma[i] - a[i]) > 3*err[i]) {
                 BOOST_ERROR("Failed to reproduce linear regression coef."
@@ -141,31 +143,74 @@ void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
     LinearLeastSquaresRegression<Array> m(x, y, v);
     
     for (Size i=0; i < v.size(); ++i) {
-        if (m.error()[i] > tolerance) {
+        if (m.standardErrors()[i] > tolerance) {
             BOOST_ERROR("Failed to reproduce linear regression coef."
-                        << "\n    error:     " << m.error()[i]
+                        << "\n    error:     " << m.standardErrors()[i]
                         << "\n    tolerance: " << tolerance);
         }
         
-        if (std::fabs(m.a()[i]-coeff[i]) > 3*tolerance) {
+        if (std::fabs(m.coefficients()[i]-coeff[i]) > 3*tolerance) {
             BOOST_ERROR("Failed to reproduce linear regression coef."
-                        << "\n    calculated: " << m.a()[i]
-                        << "\n    error:      " << m.error()[i]
+                        << "\n    calculated: " << m.coefficients()[i]
+                        << "\n    error:      " << m.standardErrors()[i]
                         << "\n    expected:   " << coeff[i]);
         }
     }
+}
+
+void LinearLeastSquaresRegressionTest::test1dLinearRegression() {
+
+    BOOST_MESSAGE("Testing 1d simple linear least-squares regression...");
+
+    /* Example taken from the QuantLib-User list, see posting
+     * Multiple linear regression/weighted regression, Boris Skorodumov */
+    
+    SavedSettings backup;
+    
+    std::vector<Real> x(9),y(9);
+    x[0]=2.4; x[1]=1.8; x[2]=2.5; x[3]=3.0; 
+    x[4]=2.1; x[5]=1.2; x[6]=2.0; x[7]=2.7; x[8]=3.6;
+
+    y[0]=7.8; y[1]=5.5; y[2]=8.0; y[3]=9.0;
+    y[4]=6.5; y[5]=4.0; y[6]=6.3; y[7]=8.4; y[8]=10.2;
+
+    std::vector<boost::function1<Real, Real> > v;
+    v.push_back(constant<Real, Real>(1.0));
+    v.push_back(identity<Real>());
+
+    LinearRegression m(x, y);
+    
+    const Real tol = 0.0002;
+    const Real coeffExpected[]  = { 0.9448, 2.6853 };
+    const Real errorsExpected[] = { 0.3654, 0.1487 };
+
+    for (Size i=0; i < 2; ++i) {
+        if (std::fabs(m.standardErrors()[i]-errorsExpected[i]) > tol) {
+            BOOST_ERROR("Failed to reproduce linear regression standard errors"
+                        << "\n    calculated: " << m.standardErrors()[i]
+                        << "\n    expected:   " << errorsExpected[i]                                          
+                        << "\n    tolerance:  " << tol);
+        }
+        
+        if (std::fabs(m.coefficients()[i]-coeffExpected[i]) > tol) {
+            BOOST_ERROR("Failed to reproduce linear regression coef."
+                        << "\n    calculated: " << m.coefficients()[i]
+                        << "\n    expected:   " << coeffExpected[i]
+                        << "\n    tolerance:  " << tol);
+        }
+    }    
 }
 
 
 test_suite* LinearLeastSquaresRegressionTest::suite() {
     test_suite* suite =
         BOOST_TEST_SUITE("linear least squares regression tests");
-
     suite->add(QUANTLIB_TEST_CASE(
         &LinearLeastSquaresRegressionTest::testRegression));
     suite->add(QUANTLIB_TEST_CASE(
         &LinearLeastSquaresRegressionTest::testMultiDimRegression));
-    
+    suite->add(QUANTLIB_TEST_CASE(
+        &LinearLeastSquaresRegressionTest::test1dLinearRegression));
     return suite;
 }
 
