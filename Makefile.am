@@ -1,5 +1,7 @@
 
-SUBDIRS = config ql man Docs Examples test-suite
+SUBDIRS = config ql m4 man Docs Examples test-suite
+
+ACLOCAL_AMFLAGS = -I m4
 
 bin_SCRIPTS = quantlib-config
 

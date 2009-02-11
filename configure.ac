@@ -7,10 +7,11 @@ AC_CONFIG_SRCDIR([ql/qldefines.hpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([ql/config.hpp])
 AM_INIT_AUTOMAKE([foreign])
+AC_CONFIG_MACRO_DIR([m4])
 
 AC_COPYRIGHT([
 Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
-Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
+Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
 Copyright (C) 2004, 2005 Ferdinando Ametrano
 
 This file is part of QuantLib, a free-software/open-source library
@@ -421,6 +422,7 @@ AC_CONFIG_FILES([
     ql/time/daycounters/Makefile
     ql/utilities/Makefile
     man/Makefile
+    m4/Makefile
     Docs/Makefile
     Examples/Makefile
     Examples/BermudanSwaption/Makefile
