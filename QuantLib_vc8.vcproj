@@ -7997,6 +7997,58 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="inflation"
+				>
+				<File
+					RelativePath=".\ql\experimental\inflation\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\capflooredinflationcoupon.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\capflooredinflationcoupon.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\inflationcappedcouponpricer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\inflationcappedcouponpricer.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\inflationcoupon.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\inflationcoupon.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\inflationcouponpricer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\inflationcouponpricer.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\nominalyoyinflationcoupon.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\nominalyoyinflationcoupon.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\yoyoptionletvolatilitystructures.hpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\ql\auto_link.hpp"
