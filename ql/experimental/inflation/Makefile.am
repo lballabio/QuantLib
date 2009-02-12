@@ -5,6 +5,7 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     capflooredinflationcoupon.hpp \
+    genericindexes.hpp \
     inflationcappedcouponpricer.hpp \
     inflationcoupon.hpp \
     inflationcouponpricer.hpp \
