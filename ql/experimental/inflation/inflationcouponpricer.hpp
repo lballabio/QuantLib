@@ -82,7 +82,7 @@ namespace QuantLib {
         virtual void setCapletVolatility(
                       const Handle<YoYOptionletVolatilitySurface>& capletVol);
 
-        virtual void initialize(const YoYInflationCoupon& coupon) = 0;
+        virtual void initialize(const YoYInflationCoupon& coupon);
         //! \name InflationCouponPricer interface
         //@{
         virtual Real swapletPrice() const;

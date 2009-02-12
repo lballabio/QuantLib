@@ -6,6 +6,8 @@ this_include_HEADERS = \
     all.hpp \
     capflooredinflationcoupon.hpp \
     genericindexes.hpp \
+    inflationcapfloor.hpp \
+    inflationcapfloorengines.hpp \
     inflationcappedcouponpricer.hpp \
     inflationcoupon.hpp \
     inflationcouponpricer.hpp \
@@ -14,6 +16,8 @@ this_include_HEADERS = \
 
 libInflation_la_SOURCES = \
     capflooredinflationcoupon.cpp \
+    inflationcapfloor.cpp \
+    inflationcapfloorengines.cpp \
     inflationcappedcouponpricer.cpp \
     inflationcoupon.cpp \
     inflationcouponpricer.cpp \

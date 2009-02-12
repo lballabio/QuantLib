@@ -3,6 +3,8 @@
 
 #include <ql/experimental/inflation/capflooredinflationcoupon.hpp>
 #include <ql/experimental/inflation/genericindexes.hpp>
+#include <ql/experimental/inflation/inflationcapfloor.hpp>
+#include <ql/experimental/inflation/inflationcapfloorengines.hpp>
 #include <ql/experimental/inflation/inflationcappedcouponpricer.hpp>
 #include <ql/experimental/inflation/inflationcoupon.hpp>
 #include <ql/experimental/inflation/inflationcouponpricer.hpp>
