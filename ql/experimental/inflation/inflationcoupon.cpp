@@ -74,7 +74,8 @@ namespace QuantLib {
 
     Date InflationCoupon::fixingDate() const {
         // always fix lag + fixings days before the end of period
-        return calendar().advance(refPeriodEnd_, -fixingDays_, Days,
+        return calendar().advance(refPeriodEnd_,
+                                  -static_cast<Integer>(fixingDays_), Days,
                                   businessDayConvention_);
     }
 
