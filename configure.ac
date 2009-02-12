@@ -338,6 +338,7 @@ AC_CONFIG_FILES([
     ql/experimental/coupons/Makefile
     ql/experimental/credit/Makefile
     ql/experimental/finitedifferences/Makefile
+    ql/experimental/inflation/Makefile
     ql/experimental/lattices/Makefile
     ql/experimental/mcbasket/Makefile
     ql/experimental/overnightswap/Makefile
