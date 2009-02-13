@@ -341,6 +341,7 @@ AC_CONFIG_FILES([
     ql/experimental/inflation/Makefile
     ql/experimental/lattices/Makefile
     ql/experimental/mcbasket/Makefile
+    ql/experimental/models/Makefile
     ql/experimental/overnightswap/Makefile
     ql/experimental/processes/Makefile
     ql/experimental/risk/Makefile

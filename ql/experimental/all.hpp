@@ -13,6 +13,7 @@
 #include <ql/experimental/inflation/all.hpp>
 #include <ql/experimental/lattices/all.hpp>
 #include <ql/experimental/mcbasket/all.hpp>
+#include <ql/experimental/models/all.hpp>
 #include <ql/experimental/overnightswap/all.hpp>
 #include <ql/experimental/processes/all.hpp>
 #include <ql/experimental/risk/all.hpp>
