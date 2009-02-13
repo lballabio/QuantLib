@@ -23,7 +23,7 @@
 #include <ql/time/imm.hpp>
 #include <ql/settings.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
-#include <boost/lexical_cast.hpp>
+//#include <boost/lexical_cast.hpp> // causes compilation errors with x64
 
 using boost::algorithm::to_upper_copy;
 using std::string;
@@ -150,7 +150,9 @@ namespace QuantLib {
         else if (ms=="Z") m = December;
         else QL_FAIL("invalid IMM month letter");
 
-        Year y = boost::lexical_cast<Year>(code.substr(1,1));
+//        Year y = boost::lexical_cast<Year>(); // lexical_cast causes compilation errors with x64
+
+        Year y=atoi(code.substr(1,1).c_str());
         /* year<1900 are not valid QuantLib years: to avoid a run-time
            exception few lines below we need to add 10 years right away */
         if (y==0 && referenceDate.year()<=1909) y+=10;
