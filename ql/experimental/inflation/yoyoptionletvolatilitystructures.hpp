@@ -26,6 +26,7 @@
 
 #include <ql/termstructures/voltermstructure.hpp>
 #include <ql/math/interpolation.hpp>
+#include <ql/time/calendars/target.hpp>
 
 namespace QuantLib {
 

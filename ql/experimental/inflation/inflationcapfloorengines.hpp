@@ -43,6 +43,8 @@ namespace QuantLib {
         Handle<YieldTermStructure> termStructure();
         Handle<YoYOptionletVolatilitySurface> volatility();
 
+        virtual void setVolatility(
+                               const Handle<YoYOptionletVolatilitySurface> &);
       protected:
         Handle<YieldTermStructure> termStructure_;
         Handle<YoYOptionletVolatilitySurface> volatility_;

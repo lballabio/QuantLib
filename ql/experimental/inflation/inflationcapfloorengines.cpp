@@ -49,6 +49,16 @@ namespace QuantLib {
         return volatility_;
     }
 
+    void YoYInflationCapFloorEngine::setVolatility(
+                             const Handle<YoYOptionletVolatilitySurface> &v) {
+        if (!volatility_.empty())
+            unregisterWith(volatility_);
+        volatility_ = v;
+        registerWith(volatility_);
+        update();
+    }
+
+
 
     BlackYoYInflationCapFloorEngine::BlackYoYInflationCapFloorEngine(
                       const Handle<YieldTermStructure>& termStructure,

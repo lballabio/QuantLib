@@ -11,7 +11,13 @@ this_include_HEADERS = \
     inflationcappedcouponpricer.hpp \
     inflationcoupon.hpp \
     inflationcouponpricer.hpp \
+    interpolatedyoyoptionletstripper.hpp \
+    kinterpolatedyoyoptionletvolatilitysurface.hpp \
     nominalyoyinflationcoupon.hpp \
+    piecewiseyoyoptionletvolatility.hpp \
+    yoycapfloortermpricesurface.hpp \
+    yoyoptionlethelpers.hpp \
+    yoyoptionletstripper.hpp \
     yoyoptionletvolatilitystructures.hpp
 
 libInflation_la_SOURCES = \
@@ -21,7 +27,9 @@ libInflation_la_SOURCES = \
     inflationcappedcouponpricer.cpp \
     inflationcoupon.cpp \
     inflationcouponpricer.cpp \
-    nominalyoyinflationcoupon.cpp
+    nominalyoyinflationcoupon.cpp \
+    yoycapfloortermpricesurface.cpp \
+    yoyoptionlethelpers.cpp
 
 noinst_LTLIBRARIES = libInflation.la
 
