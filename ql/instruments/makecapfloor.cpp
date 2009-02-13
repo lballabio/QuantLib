@@ -29,7 +29,7 @@ namespace QuantLib {
                                Rate strike,
                                const Period& forwardStart)
     : capFloorType_(capFloorType), strike_(strike),
-      firstCapletExcluded_(forwardStart==0*Days),
+      firstCapletExcluded_(forwardStart==0*Days), asOptionlet_(false),
       makeVanillaSwap_(MakeVanillaSwap(tenor, iborIndex, 0.0, forwardStart)) {}
 
     MakeCapFloor::operator CapFloor() const {
@@ -44,6 +44,10 @@ namespace QuantLib {
         Leg leg = swap.floatingLeg();
         if (firstCapletExcluded_)
             leg.erase(leg.begin());
+
+        // only leaves the last coupon
+        if (asOptionlet_ && leg.size() > 1)
+            leg.erase(leg.begin(), --leg.end());
 
         std::vector<Rate> strikeVector(1, strike_);
         if (strike_ == Null<Rate>()) {
@@ -127,6 +131,11 @@ namespace QuantLib {
     MakeCapFloor& MakeCapFloor::withDayCount(const DayCounter& dc) {
         makeVanillaSwap_.withFixedLegDayCount(dc);
         makeVanillaSwap_.withFloatingLegDayCount(dc);
+        return *this;
+    }
+
+    MakeCapFloor& MakeCapFloor::asOptionlet(bool b) {
+        asOptionlet_ = b;
         return *this;
     }
 

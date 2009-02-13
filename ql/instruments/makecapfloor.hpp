@@ -58,12 +58,15 @@ namespace QuantLib {
         MakeCapFloor& withNextToLastDate(const Date& d);
         MakeCapFloor& withDayCount(const DayCounter& dc);
 
+        //! only get last coupon
+        MakeCapFloor& asOptionlet(bool b = true);
+
         MakeCapFloor& withPricingEngine(
                               const boost::shared_ptr<PricingEngine>& engine);
       private:
         CapFloor::Type capFloorType_;
         Rate strike_;
-        bool firstCapletExcluded_;
+        bool firstCapletExcluded_, asOptionlet_;
 
         MakeVanillaSwap makeVanillaSwap_;
 
