@@ -1091,7 +1091,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\indexes\inflation\aucpi.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\indexes\inflation\euhicp.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\indexes\inflation\frhicp.hpp"
 					>
 				</File>
 				<File
@@ -8013,6 +8021,26 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\inflation\genericindexes.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\inflationcapfloor.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\inflationcapfloor.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\inflationcapfloorengines.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\inflationcapfloorengines.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\inflation\inflationcappedcouponpricer.cpp"
 					>
 				</File>
@@ -8037,6 +8065,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\inflation\interpolatedyoyoptionletstripper.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\kinterpolatedyoyoptionletvolatilitysurface.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\inflation\nominalyoyinflationcoupon.cpp"
 					>
 				</File>
@@ -8045,7 +8081,63 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\inflation\piecewiseyoyoptionletvolatility.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\yoycapfloortermpricesurface.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\yoycapfloortermpricesurface.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\yoyoptionlethelpers.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\yoyoptionlethelpers.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\yoyoptionletstripper.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\inflation\yoyoptionletvolatilitystructures.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="models"
+				>
+				<File
+					RelativePath=".\ql\experimental\models\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\twomixmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\twomixmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\twomixmodelengines.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\twomixmodelengines.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\twomixmodelhelpers.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\twomixmodelhelpers.hpp"
 					>
 				</File>
 			</Filter>
