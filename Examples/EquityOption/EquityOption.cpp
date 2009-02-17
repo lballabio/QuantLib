@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*!
- Copyright (C) 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2007, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -180,11 +180,14 @@ int main(int, char* []) {
         Size timeSteps = 801;
         method = "Finite differences";
         europeanOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                     new FDEuropeanEngine(bsmProcess,timeSteps,timeSteps-1)));
+                 new FDEuropeanEngine<CrankNicolson>(bsmProcess,
+                                                     timeSteps,timeSteps-1)));
         bermudanOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                     new FDBermudanEngine(bsmProcess,timeSteps,timeSteps-1)));
+                 new FDBermudanEngine<CrankNicolson>(bsmProcess,
+                                                     timeSteps,timeSteps-1)));
         americanOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                     new FDAmericanEngine(bsmProcess,timeSteps,timeSteps-1)));
+                 new FDAmericanEngine<CrankNicolson>(bsmProcess,
+                                                     timeSteps,timeSteps-1)));
         std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanOption.NPV()

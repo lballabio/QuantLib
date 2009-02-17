@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Joseph Wang
+ Copyright (C) 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,17 +34,53 @@ namespace QuantLib {
 
     //! Finite-differences shout engine with dividends
     /*! \ingroup vanillaengines */
-    typedef FDEngineAdapter<FDShoutCondition<FDDividendEngine>,
-                            DividendVanillaOption::engine>
-    FDDividendShoutEngine;
+    template <template <class> class Scheme = CrankNicolson>
+    class FDDividendShoutEngine
+        : public FDEngineAdapter<FDShoutCondition<FDDividendEngine<Scheme> >,
+                                 DividendVanillaOption::engine> {
+        typedef FDEngineAdapter<FDShoutCondition<FDDividendEngine<Scheme> >,
+                                DividendVanillaOption::engine> super;
+      public:
+        FDDividendShoutEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size timeSteps=100, Size gridPoints=100,
+             bool timeDependent = false)
+        : super(process, timeSteps, gridPoints,timeDependent) {}
+    };
 
-    typedef FDEngineAdapter<FDShoutCondition<FDDividendEngineMerton73>,
-                            DividendVanillaOption::engine>
-    FDDividendShoutEngineMerton73;
 
-    typedef FDEngineAdapter<FDShoutCondition<FDDividendEngineShiftScale>,
-                            DividendVanillaOption::engine>
-    FDDividendShoutEngineShiftScale;
+    template <template <class> class Scheme = CrankNicolson>
+    class FDDividendShoutEngineMerton73
+        : public FDEngineAdapter<FDShoutCondition<
+                                     FDDividendEngineMerton73<Scheme> >,
+                                 DividendVanillaOption::engine> {
+        typedef FDEngineAdapter<FDShoutCondition<
+                                    FDDividendEngineMerton73<Scheme> >,
+                                DividendVanillaOption::engine> super;
+      public:
+        FDDividendShoutEngineMerton73(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size timeSteps=100, Size gridPoints=100,
+             bool timeDependent = false)
+        : super(process, timeSteps, gridPoints,timeDependent) {}
+    };
+
+    template <template <class> class Scheme = CrankNicolson>
+    class FDDividendShoutEngineShiftScale
+        : public FDEngineAdapter<FDShoutCondition<
+                                     FDDividendEngineShiftScale<Scheme> >,
+                                 DividendVanillaOption::engine> {
+        typedef FDEngineAdapter<FDShoutCondition<
+                                    FDDividendEngineShiftScale<Scheme> >,
+                                DividendVanillaOption::engine> super;
+      public:
+        FDDividendShoutEngineShiftScale(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Size timeSteps=100, Size gridPoints=100,
+             bool timeDependent = false)
+        : super(process, timeSteps, gridPoints,timeDependent) {}
+    };
+
 }
 
 

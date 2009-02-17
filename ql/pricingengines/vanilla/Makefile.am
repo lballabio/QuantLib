@@ -54,10 +54,6 @@ libVanillaEngines_la_SOURCES = \
     integralengine.cpp \
     jumpdiffusionengine.cpp \
     juquadraticengine.cpp \
-    fddividendengine.cpp \
-    fdeuropeanengine.cpp \
-    fdmultiperiodengine.cpp \
-    fdstepconditionengine.cpp \
     fdvanillaengine.cpp \
     mcamericanengine.cpp \
     mcdigitalengine.cpp \

@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2005 Joseph Wang
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +27,8 @@
 
 #include <ql/instruments/oneassetoption.hpp>
 #include <ql/pricingengines/vanilla/fdvanillaengine.hpp>
+#include <ql/pricingengines/greeks.hpp>
+#include <ql/methods/finitedifferences/cranknicolson.hpp>
 #include <ql/math/sampledcurve.hpp>
 
 namespace QuantLib {
@@ -37,6 +39,7 @@ namespace QuantLib {
         \test the correctness of the returned value is tested by
               checking it against analytic results.
     */
+    template <template <class> class Scheme = CrankNicolson>
     class FDEuropeanEngine : public OneAssetOption::engine,
                              public FDVanillaEngine {
       public:
@@ -52,6 +55,33 @@ namespace QuantLib {
         mutable SampledCurve prices_;
         void calculate() const;
     };
+
+
+    template <template <class> class Scheme>
+    void FDEuropeanEngine<Scheme>::calculate() const {
+        setupArguments(&arguments_);
+        setGridLimits();
+        initializeInitialCondition();
+        initializeOperator();
+        initializeBoundaryConditions();
+
+        FiniteDifferenceModel<Scheme<TridiagonalOperator> > model(
+                                             finiteDifferenceOperator_, BCs_);
+
+        prices_ = intrinsicValues_;
+
+        model.rollback(prices_.values(), getResidualTime(),
+                       0, timeSteps_);
+
+        results_.value = prices_.valueAtCenter();
+        results_.delta = prices_.firstDerivativeAtCenter();
+        results_.gamma = prices_.secondDerivativeAtCenter();
+        results_.theta = blackScholesTheta(process_,
+                                           results_.value,
+                                           results_.delta,
+                                           results_.gamma);
+        results_.additionalResults["priceCurve"] = prices_;
+    }
 
 }
 

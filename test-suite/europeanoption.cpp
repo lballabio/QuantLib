@@ -144,7 +144,9 @@ namespace {
             break;
           case FiniteDifferences:
             engine = boost::shared_ptr<PricingEngine>(
-                    new FDEuropeanEngine(stochProcess,binomialSteps,samples));
+                            new FDEuropeanEngine<CrankNicolson>(stochProcess,
+                                                                binomialSteps,
+                                                                samples));
             break;
           case Integral:
             engine = boost::shared_ptr<PricingEngine>(
@@ -1316,8 +1318,10 @@ void EuropeanOptionTest::testPriceCurve() {
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
-    boost::shared_ptr<PricingEngine>
-        engine(new FDEuropeanEngine(stochProcess, timeSteps, gridPoints));
+    boost::shared_ptr<PricingEngine> engine(
+                             new FDEuropeanEngine<CrankNicolson>(stochProcess,
+                                                                 timeSteps,
+                                                                 gridPoints));
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -1354,9 +1358,10 @@ void EuropeanOptionTest::testPriceCurve() {
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
-            boost::shared_ptr<PricingEngine>
-                engine1(new FDEuropeanEngine(stochProcess,
-                                             timeSteps, gridPoints));
+            boost::shared_ptr<PricingEngine> engine1(
+                             new FDEuropeanEngine<CrankNicolson>(stochProcess,
+                                                                 timeSteps,
+                                                                 gridPoints));
 
             option.setPricingEngine(engine1);
             Real calculated = option.NPV();

@@ -629,7 +629,7 @@ void HestonModelTest::testFdVanillaVsCached() {
     boost::shared_ptr<BlackScholesMertonProcess> ref_process(
         new BlackScholesMertonProcess(s0, dividendTS, riskFreeTS, volTS));
     boost::shared_ptr<PricingEngine> ref_engine(
-        new FDAmericanEngine(ref_process, 200, 400));
+                  new FDAmericanEngine<CrankNicolson>(ref_process, 200, 400));
     option.setPricingEngine(ref_engine);
     expected = option.NPV();
 

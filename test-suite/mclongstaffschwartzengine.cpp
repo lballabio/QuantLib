@@ -193,7 +193,8 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
             const Real errorEstimate = americanOption.errorEstimate();
 
             americanOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                          new FDAmericanEngine(stochasticProcess, 401, 200)));
+                        new FDAmericanEngine<CrankNicolson>(stochasticProcess,
+                                                            401, 200)));
             const Real expected = americanOption.NPV();
 
             if (std::fabs(calculated - expected) > 2.34*errorEstimate) {

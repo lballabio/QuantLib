@@ -59,7 +59,8 @@ namespace QuantLib {
             engine.reset(new AnalyticDividendEuropeanEngine(newProcess));
             break;
           case Exercise::American:
-            engine.reset(new FDDividendAmericanEngine(newProcess));
+            engine.reset(new FDDividendAmericanEngine<CrankNicolson>(
+                                                                 newProcess));
             break;
           case Exercise::Bermudan:
             QL_FAIL("engine not available for Bermudan option with dividends");

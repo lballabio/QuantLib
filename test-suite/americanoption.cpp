@@ -407,7 +407,7 @@ void AmericanOptionTest::testFdValues() {
                                       Handle<BlackVolTermStructure>(volTS)));
 
         boost::shared_ptr<PricingEngine> engine(
-                                 new FDAmericanEngine(stochProcess, 100,100));
+                  new FDAmericanEngine<CrankNicolson>(stochProcess, 100,100));
 
         VanillaOption option(payoff, exercise);
         option.setPricingEngine(engine);
@@ -548,12 +548,12 @@ namespace {
 
 void AmericanOptionTest::testFdAmericanGreeks() {
     BOOST_MESSAGE("Testing finite-differences American option greeks...");
-    testFdGreeks<FDAmericanEngine>();
+    testFdGreeks<FDAmericanEngine<CrankNicolson> >();
 }
 
 void AmericanOptionTest::testFdShoutGreeks() {
     BOOST_MESSAGE("Testing finite-differences shout option greeks...");
-    testFdGreeks<FDShoutEngine>();
+    testFdGreeks<FDShoutEngine<CrankNicolson> >();
 }
 
 test_suite* AmericanOptionTest::suite() {

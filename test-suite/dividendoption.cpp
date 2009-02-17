@@ -622,8 +622,9 @@ void DividendOptionTest::testFdEuropeanValues() {
                                                           qTS, rTS, volTS));
 
           boost::shared_ptr<PricingEngine> engine(
-                         new FDDividendEuropeanEngine(stochProcess,
-                                                      timeSteps, gridPoints));
+              new FDDividendEuropeanEngine<CrankNicolson>(stochProcess,
+                                                          timeSteps,
+                                                          gridPoints));
 
           boost::shared_ptr<PricingEngine> ref_engine(
                             new AnalyticDividendEuropeanEngine(stochProcess));
@@ -807,7 +808,7 @@ void DividendOptionTest::testFdEuropeanGreeks() {
     for (Size i=0; i<LENGTH(lengths); i++) {
         Date exDate = today + lengths[i]*Years;
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        testFdGreeks<FDDividendEuropeanEngine>(today,exercise);
+        testFdGreeks<FDDividendEuropeanEngine<CrankNicolson> >(today,exercise);
     }
 }
 
@@ -825,7 +826,7 @@ void DividendOptionTest::testFdAmericanGreeks() {
         Date exDate = today + lengths[i]*Years;
         boost::shared_ptr<Exercise> exercise(
                                           new AmericanExercise(today,exDate));
-        testFdGreeks<FDDividendAmericanEngine>(today,exercise);
+        testFdGreeks<FDDividendAmericanEngine<CrankNicolson> >(today,exercise);
     }
 }
 
@@ -901,7 +902,7 @@ void DividendOptionTest::testFdEuropeanDegenerate() {
 
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-    testFdDegenerate<FDDividendEuropeanEngine>(today,exercise);
+    testFdDegenerate<FDDividendEuropeanEngine<CrankNicolson> >(today,exercise);
 }
 
 void DividendOptionTest::testFdAmericanDegenerate() {
@@ -917,7 +918,7 @@ void DividendOptionTest::testFdAmericanDegenerate() {
 
     boost::shared_ptr<Exercise> exercise(new AmericanExercise(today,exDate));
 
-    testFdDegenerate<FDDividendAmericanEngine>(today,exercise);
+    testFdDegenerate<FDDividendAmericanEngine<CrankNicolson> >(today,exercise);
 }
 
 

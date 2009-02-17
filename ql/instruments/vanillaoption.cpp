@@ -57,10 +57,10 @@ namespace QuantLib {
             engine.reset(new AnalyticEuropeanEngine(newProcess));
             break;
           case Exercise::American:
-            engine.reset(new FDAmericanEngine(newProcess));
+            engine.reset(new FDAmericanEngine<CrankNicolson>(newProcess));
             break;
           case Exercise::Bermudan:
-            engine.reset(new FDBermudanEngine(newProcess));
+            engine.reset(new FDBermudanEngine<CrankNicolson>(newProcess));
             break;
           default:
             QL_FAIL("unknown exercise type");
