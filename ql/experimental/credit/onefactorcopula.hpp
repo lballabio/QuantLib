@@ -101,9 +101,10 @@ namespace QuantLib {
     class OneFactorCopula : public LazyObject {
       public:
         OneFactorCopula(const Handle<Quote>& correlation,
-                        Real maximum = 5, Size integrationSteps = 50)
+                        Real maximum = 5.0, Size integrationSteps = 50,
+                        Real minimum = -5.0)
         : correlation_(correlation),
-          max_(maximum), steps_(integrationSteps) {
+          max_(maximum), steps_(integrationSteps), min_(minimum) {
             QL_REQUIRE(correlation_->value() >= -1
                        && correlation_->value() <= 1,
                        "correlation out of range [-1, +1]");
@@ -238,12 +239,13 @@ namespace QuantLib {
         Handle<Quote> correlation_;
         mutable Real max_;
         mutable Size steps_;
+        mutable Real min_;
 
         // Tabulated numerical solution of the cumulated distribution of Y
         mutable std::vector<Real> y_;
         mutable std::vector<Real> cumulativeY_;
 
-      private:
+        //private:
         // utilities for simple Euler integrations over the density of M
         Size steps() const;
         Real dm(Size i) const;
@@ -260,12 +262,12 @@ namespace QuantLib {
     }
 
     inline Real OneFactorCopula::dm(Size i) const {
-        return 2.0 * max_ / steps_;
+        return (max_ - min_)/ steps_;
     }
 
     inline Real OneFactorCopula::m(Size i) const {
         QL_REQUIRE(i < steps_, "index out of range");
-        return -max_ + dm(i) * i + dm(i) / 2;
+        return min_ + dm(i) * i + dm(i) / 2;
     }
 
     inline Real OneFactorCopula::densitydm(Size i) const {
