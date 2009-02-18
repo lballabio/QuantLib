@@ -45,10 +45,6 @@ docs:
 	BASEPATH=$(BASEPATH) $(MAKE) -C Docs docs-all
 html-local:
 	BASEPATH=$(BASEPATH) $(MAKE) -C Docs docs-html
-pdf-local:
-	BASEPATH=$(BASEPATH) $(MAKE) -C Docs docs-pdf
-ps-local:
-	BASEPATH=$(BASEPATH) $(MAKE) -C Docs docs-ps
 docs-man:
 	BASEPATH=$(BASEPATH) $(MAKE) -C Docs docs-man
 docs-online:
