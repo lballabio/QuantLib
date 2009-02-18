@@ -21,6 +21,8 @@
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/utilities/vectors.hpp>
 
+#include <iostream>
+
 namespace QuantLib {
 
     namespace {
@@ -46,7 +48,7 @@ namespace QuantLib {
                 QL_REQUIRE (fixingDates.size() > 0, "fixing date list empty");
                 QL_REQUIRE (index->valueDate(fixingDates.back()) >= endDate,
                             "last fixing date valid before period end");
-
+                
                 Rate comp = 1.0;
                 Integer days = 0;
                 for (Size i=0; i<fixingDates.size() - 1; ++i) {
@@ -60,7 +62,11 @@ namespace QuantLib {
                         continue;
 
                     d2 = std::min(nextValueDate, endDate);
-
+                    /*
+                    comp *= (1.0 
+                             + (index->fixing(fixingDates[i])+coupon_->spread())
+                             * dc.yearFraction(d1, d2));
+                    */
                     comp *= (1.0 + index->fixing(fixingDates[i])
                              * dc.yearFraction(d1, d2));
 
@@ -75,6 +81,7 @@ namespace QuantLib {
                           "interest days " << (endDate - startDate));
 
                 return coupon_->gearing() * rate + coupon_->spread();
+                //return coupon_->gearing() * rate;
             }
 
             Real swapletPrice() const {
@@ -151,7 +158,7 @@ namespace QuantLib {
     }
 
     EoniaLeg::EoniaLeg(const Schedule& schedule,
-                                 const boost::shared_ptr<Eonia>& index)
+                       const boost::shared_ptr<Eonia>& index)
     : schedule_(schedule), index_(index), paymentAdjustment_(Following) {}
 
     EoniaLeg& EoniaLeg::withNotionals(Real notional) {
@@ -221,14 +228,14 @@ namespace QuantLib {
 
             cashflows.push_back(boost::shared_ptr<CashFlow>(
                           new EoniaCoupon(paymentDate,
-                                               detail::get(notionals_, i,
-                                                           notionals_.back()),
-                                               start, end,
-                                               index_,
-                                               detail::get(gearings_, i, 1.0),
-                                               detail::get(spreads_, i, 0.0),
-                                               refStart, refEnd,
-                                               paymentDayCounter_)));
+                                          detail::get(notionals_, i,
+                                                      notionals_.back()),
+                                          start, end,
+                                          index_,
+                                          detail::get(gearings_, i, 1.0),
+                                          detail::get(spreads_, i, 0.0),
+                                          refStart, refEnd,
+                                          paymentDayCounter_)));
         }
 
         return cashflows;
