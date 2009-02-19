@@ -1,9 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2006, 2007 Chiara Fornarola
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -205,9 +205,16 @@ namespace QuantLib {
     }
 
     Spread AssetSwap::fairSpread() const {
+        static const Spread basisPoint = 1.0e-4;
         calculate();
-        QL_REQUIRE(fairSpread_ != Null<Spread>(), "fair spread not available");
-        return fairSpread_;
+        if (fairSpread_ != Null<Spread>()) {
+            return fairSpread_;
+        } else if (legBPS_.size() > 1 && legBPS_[1] != Null<Spread>()) {
+            fairSpread_ = spread_ - NPV_/(legBPS_[1]/basisPoint);
+            return fairSpread_;
+        } else {
+            QL_FAIL("fair spread not available");
+        }
     }
 
     Real AssetSwap::floatingLegBPS() const {
@@ -219,31 +226,21 @@ namespace QuantLib {
 
     Real AssetSwap::fairPrice() const {
         calculate();
-        QL_REQUIRE(fairPrice_ != Null<Real>(), "fair price not available");
-        return fairPrice_;
+        if (fairPrice_ != Null<Real>()) {
+            return fairPrice_;
+        } else if (upfrontDate_ >= discountCurve_->referenceDate()) {
+            fairPrice_= bondCleanPrice_ - NPV_/(nominal_/100.0)/
+                                discountCurve_->discount(upfrontDate_);
+            return fairPrice_;
+        } else {
+            QL_FAIL("fair price not available");
+        }
     }
+
     void AssetSwap::setupExpired() const {
         Swap::setupExpired();
         fairSpread_ = Null<Spread>();
         fairPrice_= Null<Real>();
-    }
-
-    void AssetSwap::performCalculations() const {
-        static const Spread basisPoint = 1.0e-4;
-
-        Swap::performCalculations();
-
-        if (fairSpread_ == Null<Spread>()) {
-            // the engine didn't provide it; calculate from BPS if available
-            if (legBPS_.size() > 1 && legBPS_[1] != Null<Spread>())
-                fairSpread_ = spread_ - NPV_/(legBPS_[1]/basisPoint);
-        }
-
-        if (fairPrice_ == Null<Real>()) {
-            if (upfrontDate_ >= discountCurve_->referenceDate())
-                fairPrice_= bondCleanPrice_ - NPV_/(nominal_/100.0)/
-                                discountCurve_->discount(upfrontDate_);
-        }
     }
 
     void AssetSwap::fetchResults(const PricingEngine::results* r) const {
