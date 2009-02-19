@@ -35,17 +35,16 @@ namespace QuantLib {
                          Real bondCleanPrice,
                          const boost::shared_ptr<IborIndex>& index,
                          Spread spread,
-                         const Handle<YieldTermStructure>& discountCurve,
+                         const Date& settlementDate,
                          const Schedule& floatSch,
                          const DayCounter& floatingDayCounter,
                          bool parSwap)
     : Swap(2), spread_(spread), bondCleanPrice_(bondCleanPrice),
-      discountCurve_(discountCurve) {
+      settlementDate_(settlementDate) {
 
         Schedule schedule = floatSch;
         if (floatSch.empty()) {
-            Date refDate = discountCurve_->referenceDate();
-            schedule = Schedule(bond->settlementDate(refDate),
+            schedule = Schedule(bond->settlementDate(settlementDate),
                                 bond->maturityDate(),
                                 index->tenor(),
                                 index->fixingCalendar(),
@@ -142,9 +141,6 @@ namespace QuantLib {
             payer_[0]=+1.0;
             payer_[1]=-1.0;
         }
-
-        setPricingEngine(boost::shared_ptr<PricingEngine>(
-                                  new DiscountingSwapEngine(discountCurve_)));
     }
 
     void AssetSwap::setupArguments(PricingEngine::arguments* args) const {
@@ -158,7 +154,7 @@ namespace QuantLib {
             return;
 
         arguments->nominal = nominal_;
-        arguments->settlementDate = discountCurve_->referenceDate();
+        arguments->settlementDate = settlementDate_;
 
         // reset in case it's not set later
         arguments->currentFloatingCoupon = Null<Real>();
@@ -228,12 +224,15 @@ namespace QuantLib {
         calculate();
         if (fairPrice_ != Null<Real>()) {
             return fairPrice_;
-        } else if (upfrontDate_ >= discountCurve_->referenceDate()) {
-            fairPrice_= bondCleanPrice_ - NPV_/(nominal_/100.0)/
-                                discountCurve_->discount(upfrontDate_);
-            return fairPrice_;
         } else {
-            QL_FAIL("fair price not available");
+            std::vector<DiscountFactor> dfs;
+            try {
+                dfs = result<std::vector<DiscountFactor> >("startDiscounts");
+            } catch (...) {
+                QL_FAIL("fair price not available");
+            }
+            fairPrice_ = bondCleanPrice_ - NPV_/(nominal_/100.0)/dfs[1];
+            return fairPrice_;
         }
     }
 

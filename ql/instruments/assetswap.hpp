@@ -53,7 +53,7 @@ namespace QuantLib {
                   Real bondCleanPrice,
                   const boost::shared_ptr<IborIndex>& index,
                   Spread spread,
-                  const Handle<YieldTermStructure>& discountCurve,
+                  const Date& settlementDate,
                   const Schedule& floatSchedule = Schedule(),
                   const DayCounter& floatingDayCount = DayCounter(),
                   bool parAssetSwap = true);
@@ -80,7 +80,7 @@ namespace QuantLib {
         Real nominal_;
         Date upfrontDate_;
         Real bondCleanPrice_;
-        Handle<YieldTermStructure> discountCurve_;
+        Date settlementDate_;
         // results
         mutable Spread fairSpread_;
         mutable Real fairPrice_;
