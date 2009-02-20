@@ -110,11 +110,17 @@ namespace QuantLib {
     }
 
     Rate CappedFlooredCoupon::effectiveCap() const {
-        return (cap_ - spread())/gearing();
+        if (isCapped_)
+            return (cap_ - spread())/gearing();
+        else
+            return Null<Rate>();
     }
 
     Rate CappedFlooredCoupon::effectiveFloor() const {
-        return (floor_ - spread())/gearing();
+        if (isFloored_)
+            return (floor_ - spread())/gearing();
+        else
+            return Null<Rate>();
     }
 
     void CappedFlooredCoupon::update() {
