@@ -5655,10 +5655,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\pricingengines\vanilla\fddividendengine.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\pricingengines\vanilla\fddividendengine.hpp"
 					>
 				</File>
@@ -5671,15 +5667,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\pricingengines\vanilla\fdeuropeanengine.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\pricingengines\vanilla\fdeuropeanengine.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\pricingengines\vanilla\fdmultiperiodengine.cpp"
 					>
 				</File>
 				<File
@@ -5688,10 +5676,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\vanilla\fdshoutengine.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\pricingengines\vanilla\fdstepconditionengine.cpp"
 					>
 				</File>
 				<File
@@ -6146,6 +6130,22 @@
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\credit\midpointcdsengine.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="inflation"
+				>
+				<File
+					RelativePath=".\ql\pricingengines\inflation\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\inflation\discountinginflationswapengines.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\inflation\discountinginflationswapengines.hpp"
 					>
 				</File>
 			</Filter>
