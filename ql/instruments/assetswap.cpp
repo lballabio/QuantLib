@@ -35,16 +35,14 @@ namespace QuantLib {
                          Real bondCleanPrice,
                          const boost::shared_ptr<IborIndex>& index,
                          Spread spread,
-                         const Date& settlementDate,
                          const Schedule& floatSch,
                          const DayCounter& floatingDayCounter,
                          bool parSwap)
-    : Swap(2), spread_(spread), bondCleanPrice_(bondCleanPrice),
-      settlementDate_(settlementDate) {
+    : Swap(2), spread_(spread), bondCleanPrice_(bondCleanPrice) {
 
         Schedule schedule = floatSch;
         if (floatSch.empty()) {
-            schedule = Schedule(bond->settlementDate(settlementDate),
+            schedule = Schedule(bond->settlementDate(),
                                 bond->maturityDate(),
                                 index->tenor(),
                                 index->fixingCalendar(),
@@ -154,10 +152,6 @@ namespace QuantLib {
             return;
 
         arguments->nominal = nominal_;
-        arguments->settlementDate = settlementDate_;
-
-        // reset in case it's not set later
-        arguments->currentFloatingCoupon = Null<Real>();
 
         const Leg& fixedCoupons = bondLeg();
 
@@ -194,9 +188,6 @@ namespace QuantLib {
             arguments->floatingFixingDates[i] = coupon->fixingDate();
             arguments->floatingAccrualTimes[i] = coupon->accrualPeriod();
             arguments->floatingSpreads[i] = coupon->spread();
-            if (coupon->accrualStartDate() < arguments->settlementDate
-                && coupon->date() >= arguments->settlementDate)
-                arguments->currentFloatingCoupon = coupon->amount();
         }
     }
 
@@ -276,10 +267,6 @@ namespace QuantLib {
         QL_REQUIRE(floatingSpreads.size() == floatingPayDates.size(),
                    "number of floating spreads different from "
                    "number of floating payment dates");
-        QL_REQUIRE(currentFloatingCoupon != Null<Real>() || // unless...
-                   floatingResetDates.empty() ||
-                   floatingResetDates[0] >= settlementDate,
-                   "current floating coupon null or not set");
     }
 
     void AssetSwap::results::reset() {
@@ -289,4 +276,3 @@ namespace QuantLib {
     }
 
 }
-

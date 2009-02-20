@@ -53,7 +53,6 @@ namespace QuantLib {
                   Real bondCleanPrice,
                   const boost::shared_ptr<IborIndex>& index,
                   Spread spread,
-                  const Date& settlementDate,
                   const Schedule& floatSchedule = Schedule(),
                   const DayCounter& floatingDayCount = DayCounter(),
                   bool parAssetSwap = true);
@@ -80,7 +79,6 @@ namespace QuantLib {
         Real nominal_;
         Date upfrontDate_;
         Real bondCleanPrice_;
-        Date settlementDate_;
         // results
         mutable Spread fairSpread_;
         mutable Real fairPrice_;
@@ -90,10 +88,8 @@ namespace QuantLib {
     //! %Arguments for asset swap calculation
     class AssetSwap::arguments : public Swap::arguments {
       public:
-        arguments() : nominal(Null<Real>()),
-                      currentFloatingCoupon(Null<Rate>()) {}
+        arguments() : nominal(Null<Real>()) {}
         Real nominal;
-        Date settlementDate;
         std::vector<Date> fixedResetDates;
         std::vector<Date> fixedPayDates;
         std::vector<Real> fixedCoupons;
@@ -102,7 +98,6 @@ namespace QuantLib {
         std::vector<Date> floatingFixingDates;
         std::vector<Date> floatingPayDates;
         std::vector<Spread> floatingSpreads;
-        Rate currentFloatingCoupon;
         void validate() const;
     };
 

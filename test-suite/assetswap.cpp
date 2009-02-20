@@ -154,7 +154,6 @@ void AssetSwapTest::testImpliedValue() {
     AssetSwap fixedBondAssetSwap1(payFixedRate,
                                   fixedBond1, fixedBondPrice1,
                                   vars.iborIndex, vars.spread,
-                                  vars.termStructure->referenceDate(),
                                   Schedule(),
                                   vars.iborIndex->dayCounter(),
                                   parAssetSwap);
@@ -195,7 +194,6 @@ void AssetSwapTest::testImpliedValue() {
     AssetSwap fixedBondAssetSwap2(payFixedRate,
                                   fixedBond2, fixedBondPrice2,
                                   vars.iborIndex, vars.spread,
-                                  vars.termStructure->referenceDate(),
                                   Schedule(),
                                   vars.iborIndex->dayCounter(),
                                   parAssetSwap);
@@ -242,7 +240,6 @@ void AssetSwapTest::testImpliedValue() {
     AssetSwap floatingBondAssetSwap1(payFixedRate,
                                      floatingBond1, floatingBondPrice1,
                                      vars.iborIndex, vars.spread,
-                                     vars.termStructure->referenceDate(),
                                      Schedule(),
                                      vars.iborIndex->dayCounter(),
                                      parAssetSwap);
@@ -303,7 +300,6 @@ void AssetSwapTest::testImpliedValue() {
     AssetSwap floatingBondAssetSwap2(payFixedRate,
                                      floatingBond2, floatingBondPrice2,
                                      vars.iborIndex, vars.spread,
-                                     vars.termStructure->referenceDate(),
                                      Schedule(),
                                      vars.iborIndex->dayCounter(),
                                      parAssetSwap);
@@ -349,7 +345,6 @@ void AssetSwapTest::testImpliedValue() {
     AssetSwap cmsBondAssetSwap1(payFixedRate,
                                 cmsBond1, cmsBondPrice1,
                                 vars.iborIndex, vars.spread,
-                                vars.termStructure->referenceDate(),
                                 Schedule(),
                                 vars.iborIndex->dayCounter(),
                                 parAssetSwap);
@@ -392,7 +387,6 @@ void AssetSwapTest::testImpliedValue() {
     AssetSwap cmsBondAssetSwap2(payFixedRate,
                                 cmsBond2, cmsBondPrice2,
                                 vars.iborIndex, vars.spread,
-                                vars.termStructure->referenceDate(),
                                 Schedule(),
                                 vars.iborIndex->dayCounter(),
                                 parAssetSwap);
@@ -425,7 +419,6 @@ void AssetSwapTest::testImpliedValue() {
     AssetSwap zeroCpnAssetSwap1(payFixedRate,
                                 zeroCpnBond1, zeroCpnBondPrice1,
                                 vars.iborIndex, vars.spread,
-                                vars.termStructure->referenceDate(),
                                 Schedule(),
                                 vars.iborIndex->dayCounter(),
                                 parAssetSwap);
@@ -458,7 +451,6 @@ void AssetSwapTest::testImpliedValue() {
     AssetSwap zeroCpnAssetSwap2(payFixedRate,
                                 zeroCpnBond2, zeroCpnBondPrice2,
                                 vars.iborIndex, vars.spread,
-                                vars.termStructure->referenceDate(),
                                 Schedule(),
                                 vars.iborIndex->dayCounter(),
                                 parAssetSwap);
@@ -518,7 +510,6 @@ void AssetSwapTest::testMarketASWSpread() {
     AssetSwap fixedBondParAssetSwap1(payFixedRate,
                                      fixedBond1, fixedBondMktPrice1,
                                      vars.iborIndex, vars.spread,
-                                     vars.termStructure->referenceDate(),
                                      Schedule(),
                                      vars.iborIndex->dayCounter(),
                                      parAssetSwap);
@@ -527,7 +518,6 @@ void AssetSwapTest::testMarketASWSpread() {
     AssetSwap fixedBondMktAssetSwap1(payFixedRate,
                                      fixedBond1, fixedBondMktPrice1,
                                      vars.iborIndex, vars.spread,
-                                     vars.termStructure->referenceDate(),
                                      Schedule(),
                                      vars.iborIndex->dayCounter(),
                                      mktAssetSwap);
@@ -570,7 +560,6 @@ void AssetSwapTest::testMarketASWSpread() {
     AssetSwap fixedBondParAssetSwap2(payFixedRate,
                                      fixedBond2, fixedBondMktPrice2,
                                      vars.iborIndex, vars.spread,
-                                     vars.termStructure->referenceDate(),
                                      Schedule(),
                                      vars.iborIndex->dayCounter(),
                                      parAssetSwap);
@@ -579,7 +568,6 @@ void AssetSwapTest::testMarketASWSpread() {
     AssetSwap fixedBondMktAssetSwap2(payFixedRate,
                                      fixedBond2, fixedBondMktPrice2,
                                      vars.iborIndex, vars.spread,
-                                     vars.termStructure->referenceDate(),
                                      Schedule(),
                                      vars.iborIndex->dayCounter(),
                                      mktAssetSwap);
@@ -629,7 +617,6 @@ void AssetSwapTest::testMarketASWSpread() {
     AssetSwap floatingBondParAssetSwap1(payFixedRate,
                                         floatingBond1, floatingBondMktPrice1,
                                         vars.iborIndex, vars.spread,
-                                        vars.termStructure->referenceDate(),
                                         Schedule(),
                                         vars.iborIndex->dayCounter(),
                                         parAssetSwap);
@@ -639,7 +626,6 @@ void AssetSwapTest::testMarketASWSpread() {
     AssetSwap floatingBondMktAssetSwap1(payFixedRate,
                                         floatingBond1, floatingBondMktPrice1,
                                         vars.iborIndex, vars.spread,
-                                        vars.termStructure->referenceDate(),
                                         Schedule(),
                                         vars.iborIndex->dayCounter(),
                                         mktAssetSwap);
@@ -689,7 +675,6 @@ void AssetSwapTest::testMarketASWSpread() {
     AssetSwap floatingBondParAssetSwap2(payFixedRate,
                                         floatingBond2, floatingBondMktPrice2,
                                         vars.iborIndex, vars.spread,
-                                        vars.termStructure->referenceDate(),
                                         Schedule(),
                                         vars.iborIndex->dayCounter(),
                                         parAssetSwap);
@@ -699,7 +684,6 @@ void AssetSwapTest::testMarketASWSpread() {
     AssetSwap floatingBondMktAssetSwap2(payFixedRate,
                                         floatingBond2, floatingBondMktPrice2,
                                         vars.iborIndex, vars.spread,
-                                        vars.termStructure->referenceDate(),
                                         Schedule(),
                                         vars.iborIndex->dayCounter(),
                                         mktAssetSwap);
@@ -746,7 +730,6 @@ void AssetSwapTest::testMarketASWSpread() {
     AssetSwap cmsBondParAssetSwap1(payFixedRate,
                                    cmsBond1, cmsBondMktPrice1,
                                    vars.iborIndex, vars.spread,
-                                   vars.termStructure->referenceDate(),
                                    Schedule(),
                                    vars.iborIndex->dayCounter(),
                                    parAssetSwap);
@@ -755,7 +738,6 @@ void AssetSwapTest::testMarketASWSpread() {
     AssetSwap cmsBondMktAssetSwap1(payFixedRate,
                                    cmsBond1, cmsBondMktPrice1,
                                    vars.iborIndex, vars.spread,
-                                   vars.termStructure->referenceDate(),
                                    Schedule(),
                                    vars.iborIndex->dayCounter(),
                                    mktAssetSwap);
@@ -801,7 +783,6 @@ void AssetSwapTest::testMarketASWSpread() {
     AssetSwap cmsBondParAssetSwap2(payFixedRate,
                                    cmsBond2, cmsBondMktPrice2,
                                    vars.iborIndex, vars.spread,
-                                   vars.termStructure->referenceDate(),
                                    Schedule(),
                                    vars.iborIndex->dayCounter(),
                                    parAssetSwap);
@@ -810,7 +791,6 @@ void AssetSwapTest::testMarketASWSpread() {
     AssetSwap cmsBondMktAssetSwap2(payFixedRate,
                                    cmsBond2, cmsBondMktPrice2,
                                    vars.iborIndex, vars.spread,
-                                   vars.termStructure->referenceDate(),
                                    Schedule(),
                                    vars.iborIndex->dayCounter(),
                                    mktAssetSwap);
@@ -848,7 +828,6 @@ void AssetSwapTest::testMarketASWSpread() {
     AssetSwap zeroCpnBondParAssetSwap1(payFixedRate,zeroCpnBond1,
                                        zeroCpnBondMktPrice1,
                                        vars.iborIndex, vars.spread,
-                                       vars.termStructure->referenceDate(),
                                        Schedule(),
                                        vars.iborIndex->dayCounter(),
                                        parAssetSwap);
@@ -857,7 +836,6 @@ void AssetSwapTest::testMarketASWSpread() {
     AssetSwap zeroCpnBondMktAssetSwap1(payFixedRate,zeroCpnBond1,
                                        zeroCpnBondMktPrice1,
                                        vars.iborIndex, vars.spread,
-                                       vars.termStructure->referenceDate(),
                                        Schedule(),
                                        vars.iborIndex->dayCounter(),
                                        mktAssetSwap);
@@ -897,7 +875,6 @@ void AssetSwapTest::testMarketASWSpread() {
     AssetSwap zeroCpnBondParAssetSwap2(payFixedRate,zeroCpnBond2,
                                        zeroCpnBondMktPrice2,
                                        vars.iborIndex, vars.spread,
-                                       vars.termStructure->referenceDate(),
                                        Schedule(),
                                        vars.iborIndex->dayCounter(),
                                        parAssetSwap);
@@ -906,7 +883,6 @@ void AssetSwapTest::testMarketASWSpread() {
     AssetSwap zeroCpnBondMktAssetSwap2(payFixedRate,zeroCpnBond2,
                                        zeroCpnBondMktPrice2,
                                        vars.iborIndex, vars.spread,
-                                       vars.termStructure->referenceDate(),
                                        Schedule(),
                                        vars.iborIndex->dayCounter(),
                                        mktAssetSwap);
@@ -1413,7 +1389,6 @@ void AssetSwapTest::testGenericBondImplied() {
     AssetSwap fixedBondAssetSwap1(payFixedRate,
                                   fixedBond1, fixedBondPrice1,
                                   vars.iborIndex, vars.spread,
-                                  vars.termStructure->referenceDate(),
                                   Schedule(),
                                   vars.iborIndex->dayCounter(),
                                   parAssetSwap);
@@ -1458,7 +1433,6 @@ void AssetSwapTest::testGenericBondImplied() {
     AssetSwap fixedBondAssetSwap2(payFixedRate,
                                   fixedBond2, fixedBondPrice2,
                                   vars.iborIndex, vars.spread,
-                                  vars.termStructure->referenceDate(),
                                   Schedule(),
                                   vars.iborIndex->dayCounter(),
                                   parAssetSwap);
@@ -1507,7 +1481,6 @@ void AssetSwapTest::testGenericBondImplied() {
     AssetSwap floatingBondAssetSwap1(payFixedRate,
                                      floatingBond1, floatingBondPrice1,
                                      vars.iborIndex, vars.spread,
-                                     vars.termStructure->referenceDate(),
                                      Schedule(),
                                      vars.iborIndex->dayCounter(),
                                      parAssetSwap);
@@ -1573,7 +1546,6 @@ void AssetSwapTest::testGenericBondImplied() {
     AssetSwap floatingBondAssetSwap2(payFixedRate,
                                      floatingBond2, floatingBondPrice2,
                                      vars.iborIndex, vars.spread,
-                                     vars.termStructure->referenceDate(),
                                      Schedule(),
                                      vars.iborIndex->dayCounter(),
                                      parAssetSwap);
@@ -1623,7 +1595,6 @@ void AssetSwapTest::testGenericBondImplied() {
     AssetSwap cmsBondAssetSwap1(payFixedRate,
                                 cmsBond1, cmsBondPrice1,
                                 vars.iborIndex, vars.spread,
-                                vars.termStructure->referenceDate(),
                                 Schedule(),
                                 vars.iborIndex->dayCounter(),
                                 parAssetSwap);
@@ -1671,7 +1642,6 @@ void AssetSwapTest::testGenericBondImplied() {
     AssetSwap cmsBondAssetSwap2(payFixedRate,
                                 cmsBond2, cmsBondPrice2,
                                 vars.iborIndex, vars.spread,
-                                vars.termStructure->referenceDate(),
                                 Schedule(),
                                 vars.iborIndex->dayCounter(),
                                 parAssetSwap);
@@ -1706,7 +1676,6 @@ void AssetSwapTest::testGenericBondImplied() {
     AssetSwap zeroCpnAssetSwap1(payFixedRate,
                                 zeroCpnBond1, zeroCpnBondPrice1,
                                 vars.iborIndex, vars.spread,
-                                vars.termStructure->referenceDate(),
                                 Schedule(),
                                 vars.iborIndex->dayCounter(),
                                 parAssetSwap);
@@ -1741,7 +1710,6 @@ void AssetSwapTest::testGenericBondImplied() {
     AssetSwap zeroCpnAssetSwap2(payFixedRate,
                                 zeroCpnBond2, zeroCpnBondPrice2,
                                 vars.iborIndex, vars.spread,
-                                vars.termStructure->referenceDate(),
                                 Schedule(),
                                 vars.iborIndex->dayCounter(),
                                 parAssetSwap);
@@ -1809,7 +1777,6 @@ void AssetSwapTest::testMASWWithGenericBond() {
     AssetSwap fixedBondParAssetSwap1(payFixedRate,
                                      fixedBond1, fixedBondMktPrice1,
                                      vars.iborIndex, vars.spread,
-                                     vars.termStructure->referenceDate(),
                                      Schedule(),
                                      vars.iborIndex->dayCounter(),
                                      parAssetSwap);
@@ -1818,7 +1785,6 @@ void AssetSwapTest::testMASWWithGenericBond() {
     AssetSwap fixedBondMktAssetSwap1(payFixedRate,
                                      fixedBond1, fixedBondMktPrice1,
                                      vars.iborIndex, vars.spread,
-                                     vars.termStructure->referenceDate(),
                                      Schedule(),
                                      vars.iborIndex->dayCounter(),
                                      mktAssetSwap);
@@ -1867,7 +1833,6 @@ void AssetSwapTest::testMASWWithGenericBond() {
     AssetSwap fixedBondParAssetSwap2(payFixedRate,
                                      fixedBond2, fixedBondMktPrice2,
                                      vars.iborIndex, vars.spread,
-                                     vars.termStructure->referenceDate(),
                                      Schedule(),
                                      vars.iborIndex->dayCounter(),
                                      parAssetSwap);
@@ -1876,7 +1841,6 @@ void AssetSwapTest::testMASWWithGenericBond() {
     AssetSwap fixedBondMktAssetSwap2(payFixedRate,
                                      fixedBond2, fixedBondMktPrice2,
                                      vars.iborIndex, vars.spread,
-                                     vars.termStructure->referenceDate(),
                                      Schedule(),
                                      vars.iborIndex->dayCounter(),
                                      mktAssetSwap);
@@ -1930,7 +1894,6 @@ void AssetSwapTest::testMASWWithGenericBond() {
     AssetSwap floatingBondParAssetSwap1(payFixedRate,
                                         floatingBond1, floatingBondMktPrice1,
                                         vars.iborIndex, vars.spread,
-                                        vars.termStructure->referenceDate(),
                                         Schedule(),
                                         vars.iborIndex->dayCounter(),
                                         parAssetSwap);
@@ -1940,7 +1903,6 @@ void AssetSwapTest::testMASWWithGenericBond() {
     AssetSwap floatingBondMktAssetSwap1(payFixedRate,
                                         floatingBond1, floatingBondMktPrice1,
                                         vars.iborIndex, vars.spread,
-                                        vars.termStructure->referenceDate(),
                                         Schedule(),
                                         vars.iborIndex->dayCounter(),
                                         mktAssetSwap);
@@ -1996,7 +1958,6 @@ void AssetSwapTest::testMASWWithGenericBond() {
     AssetSwap floatingBondParAssetSwap2(payFixedRate,
                                         floatingBond2, floatingBondMktPrice2,
                                         vars.iborIndex, vars.spread,
-                                        vars.termStructure->referenceDate(),
                                         Schedule(),
                                         vars.iborIndex->dayCounter(),
                                         parAssetSwap);
@@ -2006,7 +1967,6 @@ void AssetSwapTest::testMASWWithGenericBond() {
     AssetSwap floatingBondMktAssetSwap2(payFixedRate,
                                         floatingBond2, floatingBondMktPrice2,
                                         vars.iborIndex, vars.spread,
-                                        vars.termStructure->referenceDate(),
                                         Schedule(),
                                         vars.iborIndex->dayCounter(),
                                         mktAssetSwap);
@@ -2059,7 +2019,6 @@ void AssetSwapTest::testMASWWithGenericBond() {
     AssetSwap cmsBondParAssetSwap1(payFixedRate,
                                    cmsBond1, cmsBondMktPrice1,
                                    vars.iborIndex, vars.spread,
-                                   vars.termStructure->referenceDate(),
                                    Schedule(),
                                    vars.iborIndex->dayCounter(),
                                    parAssetSwap);
@@ -2068,7 +2027,6 @@ void AssetSwapTest::testMASWWithGenericBond() {
     AssetSwap cmsBondMktAssetSwap1(payFixedRate,
                                    cmsBond1, cmsBondMktPrice1,
                                    vars.iborIndex, vars.spread,
-                                   vars.termStructure->referenceDate(),
                                    Schedule(),
                                    vars.iborIndex->dayCounter(),
                                    mktAssetSwap);
@@ -2119,7 +2077,6 @@ void AssetSwapTest::testMASWWithGenericBond() {
     AssetSwap cmsBondParAssetSwap2(payFixedRate,
                                    cmsBond2, cmsBondMktPrice2,
                                    vars.iborIndex, vars.spread,
-                                   vars.termStructure->referenceDate(),
                                    Schedule(),
                                    vars.iborIndex->dayCounter(),
                                    parAssetSwap);
@@ -2128,7 +2085,6 @@ void AssetSwapTest::testMASWWithGenericBond() {
     AssetSwap cmsBondMktAssetSwap2(payFixedRate,
                                    cmsBond2, cmsBondMktPrice2,
                                    vars.iborIndex, vars.spread,
-                                   vars.termStructure->referenceDate(),
                                    Schedule(),
                                    vars.iborIndex->dayCounter(),
                                    mktAssetSwap);
@@ -2168,7 +2124,6 @@ void AssetSwapTest::testMASWWithGenericBond() {
     AssetSwap zeroCpnBondParAssetSwap1(payFixedRate,zeroCpnBond1,
                                        zeroCpnBondMktPrice1,
                                        vars.iborIndex, vars.spread,
-                                       vars.termStructure->referenceDate(),
                                        Schedule(),
                                        vars.iborIndex->dayCounter(),
                                        parAssetSwap);
@@ -2177,7 +2132,6 @@ void AssetSwapTest::testMASWWithGenericBond() {
     AssetSwap zeroCpnBondMktAssetSwap1(payFixedRate,zeroCpnBond1,
                                        zeroCpnBondMktPrice1,
                                        vars.iborIndex, vars.spread,
-                                       vars.termStructure->referenceDate(),
                                        Schedule(),
                                        vars.iborIndex->dayCounter(),
                                        mktAssetSwap);
@@ -2218,7 +2172,6 @@ void AssetSwapTest::testMASWWithGenericBond() {
     AssetSwap zeroCpnBondParAssetSwap2(payFixedRate,zeroCpnBond2,
                                        zeroCpnBondMktPrice2,
                                        vars.iborIndex, vars.spread,
-                                       vars.termStructure->referenceDate(),
                                        Schedule(),
                                        vars.iborIndex->dayCounter(),
                                        parAssetSwap);
@@ -2227,7 +2180,6 @@ void AssetSwapTest::testMASWWithGenericBond() {
     AssetSwap zeroCpnBondMktAssetSwap2(payFixedRate,zeroCpnBond2,
                                        zeroCpnBondMktPrice2,
                                        vars.iborIndex, vars.spread,
-                                       vars.termStructure->referenceDate(),
                                        Schedule(),
                                        vars.iborIndex->dayCounter(),
                                        mktAssetSwap);
@@ -3352,7 +3304,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     AssetSwap fixedBondAssetSwap1(payFixedRate,
                                   fixedBond1, fixedBondPrice1,
                                   vars.iborIndex, vars.nonnullspread,
-                                  vars.termStructure->referenceDate(),
                                   Schedule(),
                                   vars.iborIndex->dayCounter(),
                                   parAssetSwap);
@@ -3362,7 +3313,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                              fixedSpecializedBondPrice1,
                                              vars.iborIndex,
                                              vars.nonnullspread,
-                                             vars.termStructure->referenceDate(),
                                              Schedule(),
                                              vars.iborIndex->dayCounter(),
                                              parAssetSwap);
@@ -3389,7 +3339,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     AssetSwap fixedBondASW1(payFixedRate,
                             fixedBond1, fixedBondMktPrice1,
                             vars.iborIndex, vars.spread,
-                            vars.termStructure->referenceDate(),
                             Schedule(),
                             vars.iborIndex->dayCounter(),
                             parAssetSwap);
@@ -3398,7 +3347,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                        fixedSpecializedBond1,
                                        fixedBondMktPrice1,
                                        vars.iborIndex, vars.spread,
-                                       vars.termStructure->referenceDate(),
                                        Schedule(),
                                        vars.iborIndex->dayCounter(),
                                        parAssetSwap);
@@ -3456,7 +3404,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     AssetSwap fixedBondAssetSwap2(payFixedRate,
                                   fixedBond2, fixedBondPrice2,
                                   vars.iborIndex, vars.nonnullspread,
-                                  vars.termStructure->referenceDate(),
                                   Schedule(),
                                   vars.iborIndex->dayCounter(),
                                   parAssetSwap);
@@ -3466,7 +3413,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                              fixedSpecializedBondPrice2,
                                              vars.iborIndex,
                                              vars.nonnullspread,
-                                             vars.termStructure->referenceDate(),
                                              Schedule(),
                                              vars.iborIndex->dayCounter(),
                                              parAssetSwap);
@@ -3493,7 +3439,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     AssetSwap fixedBondASW2(payFixedRate,
                             fixedBond2, fixedBondMktPrice2,
                             vars.iborIndex, vars.spread,
-                            vars.termStructure->referenceDate(),
                             Schedule(),
                             vars.iborIndex->dayCounter(),
                             parAssetSwap);
@@ -3502,7 +3447,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                        fixedSpecializedBond2,
                                        fixedBondMktPrice2,
                                        vars.iborIndex, vars.spread,
-                                       vars.termStructure->referenceDate(),
                                        Schedule(),
                                        vars.iborIndex->dayCounter(),
                                        parAssetSwap);
@@ -3570,7 +3514,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     AssetSwap floatingBondAssetSwap1(payFixedRate,
                                      floatingBond1, floatingBondPrice1,
                                      vars.iborIndex, vars.nonnullspread,
-                                     vars.termStructure->referenceDate(),
                                      Schedule(),
                                      vars.iborIndex->dayCounter(),
                                      parAssetSwap);
@@ -3580,7 +3523,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                                 floatingSpecializedBondPrice1,
                                                 vars.iborIndex,
                                                 vars.nonnullspread,
-                                                vars.termStructure->referenceDate(),
                                                 Schedule(),
                                                 vars.iborIndex->dayCounter(),
                                                 parAssetSwap);
@@ -3607,7 +3549,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     AssetSwap floatingBondASW1(payFixedRate,
                                floatingBond1, floatingBondMktPrice1,
                                vars.iborIndex, vars.spread,
-                               vars.termStructure->referenceDate(),
                                Schedule(),
                                vars.iborIndex->dayCounter(),
                                parAssetSwap);
@@ -3616,7 +3557,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                           floatingSpecializedBond1,
                                           floatingBondMktPrice1,
                                           vars.iborIndex, vars.spread,
-                                          vars.termStructure->referenceDate(),
                                           Schedule(),
                                           vars.iborIndex->dayCounter(),
                                           parAssetSwap);
@@ -3688,7 +3628,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     AssetSwap floatingBondAssetSwap2(payFixedRate,
                                      floatingBond2, floatingBondPrice2,
                                      vars.iborIndex, vars.nonnullspread,
-                                     vars.termStructure->referenceDate(),
                                      Schedule(),
                                      vars.iborIndex->dayCounter(),
                                      parAssetSwap);
@@ -3698,7 +3637,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                                 floatingSpecializedBondPrice2,
                                                 vars.iborIndex,
                                                 vars.nonnullspread,
-                                                vars.termStructure->referenceDate(),
                                                 Schedule(),
                                                 vars.iborIndex->dayCounter(),
                                                 parAssetSwap);
@@ -3724,7 +3662,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     AssetSwap floatingBondASW2(payFixedRate,
                                floatingBond2, floatingBondMktPrice2,
                                vars.iborIndex, vars.spread,
-                               vars.termStructure->referenceDate(),
                                Schedule(),
                                vars.iborIndex->dayCounter(),
                                parAssetSwap);
@@ -3733,7 +3670,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                           floatingSpecializedBond2,
                                           floatingBondMktPrice2,
                                           vars.iborIndex, vars.spread,
-                                          vars.termStructure->referenceDate(),
                                           Schedule(),
                                           vars.iborIndex->dayCounter(),
                                           parAssetSwap);
@@ -3800,7 +3736,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     Real cmsSpecializedBondPrice1 = cmsSpecializedBond1->cleanPrice();
     AssetSwap cmsBondAssetSwap1(payFixedRate,cmsBond1, cmsBondPrice1,
                                 vars.iborIndex, vars.nonnullspread,
-                                vars.termStructure->referenceDate(),
                                 Schedule(),vars.iborIndex->dayCounter(),
                                 parAssetSwap);
     cmsBondAssetSwap1.setPricingEngine(swapEngine);
@@ -3808,7 +3743,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                            cmsSpecializedBondPrice1,
                                            vars.iborIndex,
                                            vars.nonnullspread,
-                                           vars.termStructure->referenceDate(),
                                            Schedule(),
                                            vars.iborIndex->dayCounter(),
                                            parAssetSwap);
@@ -3833,7 +3767,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     AssetSwap cmsBondASW1(payFixedRate,
                           cmsBond1, cmsBondMktPrice1,
                           vars.iborIndex, vars.spread,
-                          vars.termStructure->referenceDate(),
                           Schedule(),
                           vars.iborIndex->dayCounter(),
                           parAssetSwap);
@@ -3842,7 +3775,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                      cmsSpecializedBond1,
                                      cmsBondMktPrice1,
                                      vars.iborIndex, vars.spread,
-                                     vars.termStructure->referenceDate(),
                                      Schedule(),
                                      vars.iborIndex->dayCounter(),
                                      parAssetSwap);
@@ -3905,7 +3837,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     Real cmsSpecializedBondPrice2 = cmsSpecializedBond2->cleanPrice();
     AssetSwap cmsBondAssetSwap2(payFixedRate,cmsBond2, cmsBondPrice2,
                                 vars.iborIndex, vars.nonnullspread,
-                                vars.termStructure->referenceDate(),
                                 Schedule(),
                                 vars.iborIndex->dayCounter(),
                                 parAssetSwap);
@@ -3914,7 +3845,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                            cmsSpecializedBondPrice2,
                                            vars.iborIndex,
                                            vars.nonnullspread,
-                                           vars.termStructure->referenceDate(),
                                            Schedule(),
                                            vars.iborIndex->dayCounter(),
                                            parAssetSwap);
@@ -3939,7 +3869,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     AssetSwap cmsBondASW2(payFixedRate,
                           cmsBond2, cmsBondMktPrice2,
                           vars.iborIndex, vars.spread,
-                          vars.termStructure->referenceDate(),
                           Schedule(),
                           vars.iborIndex->dayCounter(),
                           parAssetSwap);
@@ -3948,7 +3877,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                      cmsSpecializedBond2,
                                      cmsBondMktPrice2,
                                      vars.iborIndex, vars.spread,
-                                     vars.termStructure->referenceDate(),
                                      Schedule(),
                                      vars.iborIndex->dayCounter(),
                                      parAssetSwap);
@@ -3996,7 +3924,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     AssetSwap zeroCpnBondAssetSwap1(payFixedRate,zeroCpnBond1,
                                     zeroCpnBondPrice1,
                                     vars.iborIndex, vars.nonnullspread,
-                                    vars.termStructure->referenceDate(),
                                     Schedule(),
                                     vars.iborIndex->dayCounter(),
                                     parAssetSwap);
@@ -4006,7 +3933,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                                zeroCpnSpecializedBondPrice1,
                                                vars.iborIndex,
                                                vars.nonnullspread,
-                                               vars.termStructure->referenceDate(),
                                                Schedule(),
                                                vars.iborIndex->dayCounter(),
                                                parAssetSwap);
@@ -4031,7 +3957,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     AssetSwap zeroCpnBondASW1(payFixedRate,
                               zeroCpnBond1,zeroCpnBondMktPrice1,
                               vars.iborIndex, vars.spread,
-                              vars.termStructure->referenceDate(),
                               Schedule(),
                               vars.iborIndex->dayCounter(),
                               parAssetSwap);
@@ -4040,7 +3965,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                          zeroCpnSpecializedBond1,
                                          zeroCpnBondMktPrice1,
                                          vars.iborIndex, vars.spread,
-                                         vars.termStructure->referenceDate(),
                                          Schedule(),
                                          vars.iborIndex->dayCounter(),
                                          parAssetSwap);
@@ -4091,7 +4015,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     AssetSwap zeroCpnBondAssetSwap2(payFixedRate,zeroCpnBond2,
                                     zeroCpnBondPrice2,
                                     vars.iborIndex, vars.nonnullspread,
-                                    vars.termStructure->referenceDate(),
                                     Schedule(),
                                     vars.iborIndex->dayCounter(),
                                     parAssetSwap);
@@ -4101,7 +4024,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                                zeroCpnSpecializedBondPrice2,
                                                vars.iborIndex,
                                                vars.nonnullspread,
-                                               vars.termStructure->referenceDate(),
                                                Schedule(),
                                                vars.iborIndex->dayCounter(),
                                                parAssetSwap);
@@ -4126,7 +4048,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     AssetSwap zeroCpnBondASW2(payFixedRate,
                               zeroCpnBond2,zeroCpnBondMktPrice2,
                               vars.iborIndex, vars.spread,
-                              vars.termStructure->referenceDate(),
                               Schedule(),
                               vars.iborIndex->dayCounter(),
                               parAssetSwap);
@@ -4135,7 +4056,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                          zeroCpnSpecializedBond2,
                                          zeroCpnBondMktPrice2,
                                          vars.iborIndex, vars.spread,
-                                         vars.termStructure->referenceDate(),
                                          Schedule(),
                                          vars.iborIndex->dayCounter(),
                                          parAssetSwap);
