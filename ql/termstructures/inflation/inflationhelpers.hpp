@@ -26,6 +26,7 @@
 #define quantlib_inflation_helpers_hpp
 
 #include <ql/termstructures/bootstraphelper.hpp>
+#include <ql/termstructures/inflationtermstructure.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>
 #include <ql/instruments/yearonyearinflationswap.hpp>
 

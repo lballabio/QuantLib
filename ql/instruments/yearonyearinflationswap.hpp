@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Chris Kenyon
+ Copyright (C) 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -49,30 +50,18 @@ namespace QuantLib {
     */
     class YearOnYearInflationSwap : public InflationSwap {
       public:
-        YearOnYearInflationSwap(
-                   const Date& start,
-                   const Date& maturity,
-                   const Period& lag,
-                   Rate fixedRate,
-                   const Calendar& calendar,
-                   BusinessDayConvention convention,
-                   const DayCounter& dayCounter,
-                   const Handle<YieldTermStructure>& yieldTS,
-                   const Handle<YoYInflationTermStructure>& inflationTS,
-                   bool allowAmbiguousPayments = false,
-                   const Period& ambiguousPaymentPeriod = Period(1, Months));
-
-        //! \name Instrument interface
-        //@{
-        bool isExpired() const;
-        //@}
-
-        //! \name InflationSwap interface
-        //@{
-        //! the rate \f$ \tilde{K} \f$ such that NPV = 0.
-        Rate fairRate() const;
-        //@}
-
+        class arguments;
+        class engine;
+        YearOnYearInflationSwap(const Date& start,
+                                const Date& maturity,
+                                const Period& lag,
+                                Rate fixedRate,
+                                const Calendar& calendar,
+                                BusinessDayConvention convention,
+                                const DayCounter& dayCounter,
+                                bool allowAmbiguousPayments = false,
+                                const Period& ambiguousPaymentPeriod =
+                                                           Period(1, Months));
         //! \name Inspectors
         //@{
         //! \f$ K \f$ in the above formula.
@@ -80,22 +69,27 @@ namespace QuantLib {
         std::vector<Date> paymentDates() const;
         //@}
 
-      protected:
         //! \name Instrument interface
         //@{
-        void setupExpired() const;
-        void performCalculations() const;
+        void setupArguments(PricingEngine::arguments*) const;
         //@}
 
+      protected:
         Rate fixedRate_;
-        Handle<YoYInflationTermStructure> inflationTS_;
-
-        bool allowAmbiguousPayments_;
-        Period ambiguousPaymentPeriod_;
         std::vector<Date> paymentDates_;
-
-        mutable Rate fairRate_;
     };
+
+
+    class YearOnYearInflationSwap::arguments : public InflationSwap::arguments {
+      public:
+        Rate fixedRate;
+        std::vector<Date> paymentDates;
+        void validate() const;
+    };
+
+    class YearOnYearInflationSwap::engine
+        : public GenericEngine<YearOnYearInflationSwap::arguments,
+                               YearOnYearInflationSwap::results> {};
 
 }
 

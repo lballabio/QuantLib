@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Chris Kenyon
+ Copyright (C) 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,7 +26,8 @@
 #define quantlib_inflation_swap_hpp
 
 #include <ql/instrument.hpp>
-#include <ql/termstructures/inflationtermstructure.hpp>
+#include <ql/time/calendar.hpp>
+#include <ql/time/daycounter.hpp>
 
 namespace QuantLib {
 
@@ -41,12 +43,13 @@ namespace QuantLib {
     */
     class InflationSwap : public Instrument {
       public:
+        class arguments;
+        class results;
         //! the constructor sets common data members
         InflationSwap(const Date& start, const Date& maturity,
                       const Period& lag, const Calendar& calendar,
                       BusinessDayConvention convention,
-                      const DayCounter& dayCounter,
-                      const Handle<YieldTermStructure>& yieldTS);
+                      const DayCounter& dayCounter);
         //! \name Inspectors
         /*! The inflation rate is taken relative to the base date,
             which is a lag period before the start date of the swap.
@@ -60,16 +63,45 @@ namespace QuantLib {
         BusinessDayConvention businessDayConvention() const;
         DayCounter dayCounter() const;
         //@}
-        virtual Rate fairRate() const = 0;
+        //! \name Results
+        //@{
+        Rate fairRate() const;
+        //@}
+        //! \name Instrument interface
+        //@{
+        bool isExpired() const;
+        void setupArguments(PricingEngine::arguments*) const;
       protected:
+        void fetchResults(const PricingEngine::results*) const;
+        void setupExpired() const;
+        //@}
         Date start_;
         Date maturity_;
         Period lag_;
         Calendar calendar_;
         BusinessDayConvention bdc_;
         DayCounter dayCounter_;
-        Handle<YieldTermStructure> yieldTS_;
         Date baseDate_;
+        // results
+        mutable Rate fairRate_;
+    };
+
+    class InflationSwap::arguments : public virtual PricingEngine::arguments {
+      public:
+        Date start;
+        Date maturity;
+        Period lag;
+        Calendar calendar;
+        BusinessDayConvention bdc;
+        DayCounter dayCounter;
+        Date baseDate;
+        void validate() const;
+    };
+
+    class InflationSwap::results : public Instrument::results {
+      public:
+        Rate fairRate;
+        void reset();
     };
 
 }

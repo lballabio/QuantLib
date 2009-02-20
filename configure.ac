@@ -403,6 +403,7 @@ AC_CONFIG_FILES([
     ql/pricingengines/credit/Makefile
     ql/pricingengines/forward/Makefile
     ql/pricingengines/hybrid/Makefile
+    ql/pricingengines/inflation/Makefile
     ql/pricingengines/lookback/Makefile
     ql/pricingengines/quanto/Makefile
     ql/pricingengines/swap/Makefile

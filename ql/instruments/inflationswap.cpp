@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Chris Kenyon
+ Copyright (C) 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,21 +19,19 @@
 */
 
 #include <ql/instruments/inflationswap.hpp>
+#include <ql/settings.hpp>
 
 namespace QuantLib {
 
     InflationSwap::InflationSwap(const Date& start, const Date& maturity,
                                  const Period& lag, const Calendar& calendar,
                                  BusinessDayConvention convention,
-                                 const DayCounter& dayCounter,
-                                 const Handle<YieldTermStructure>& yieldTS)
+                                 const DayCounter& dayCounter)
     : start_(start), maturity_(maturity), lag_(lag), calendar_(calendar),
-      bdc_(convention), dayCounter_(dayCounter), yieldTS_(yieldTS) {
+      bdc_(convention), dayCounter_(dayCounter) {
 
         baseDate_ = calendar_.adjust(start_ - lag_, bdc_);
         maturity_ = calendar_.adjust(maturity_, bdc_);
-
-        registerWith(yieldTS_);
     }
 
     Date InflationSwap::baseDate() const {
@@ -61,6 +60,61 @@ namespace QuantLib {
 
     DayCounter InflationSwap::dayCounter() const {
         return dayCounter_;
+    }
+
+    Rate InflationSwap::fairRate() const {
+        calculate();
+        QL_REQUIRE(fairRate_ != Null<Real>(), "fair rate not provided");
+        return fairRate_;
+    }
+
+    bool InflationSwap::isExpired() const {
+        return maturity_ < Settings::instance().evaluationDate();
+    }
+
+    void InflationSwap::setupArguments(PricingEngine::arguments* args) const {
+        InflationSwap::arguments* arguments =
+            dynamic_cast<InflationSwap::arguments*>(args);
+        QL_REQUIRE(arguments != 0, "wrong argument type");
+
+        arguments->start = start_;
+        arguments->maturity = maturity_;
+        arguments->lag = lag_;
+        arguments->calendar = calendar_;
+        arguments->bdc = bdc_;
+        arguments->dayCounter = dayCounter_;
+        arguments->baseDate = baseDate_;
+    }
+
+    void InflationSwap::fetchResults(const PricingEngine::results* r) const {
+        Instrument::fetchResults(r);
+
+        const InflationSwap::results* results =
+            dynamic_cast<const InflationSwap::results*>(r);
+        QL_REQUIRE(results != 0, "wrong result type");
+
+        fairRate_ = results->fairRate;
+    }
+
+    void InflationSwap::setupExpired() const {
+        Instrument::setupExpired();
+        fairRate_ = 0.0;
+    }
+
+
+    void InflationSwap::arguments::validate() const {
+        QL_REQUIRE(start != Date(), "start date not provided");
+        QL_REQUIRE(maturity != Date(), "maturity date not provided");
+        QL_REQUIRE(lag != Period(), "lag not provided");
+        QL_REQUIRE(!calendar.empty(), "calendar not provided");
+        QL_REQUIRE(!dayCounter.empty(), "day counter not provided");
+        QL_REQUIRE(baseDate != Date(), "base date not provided");
+    }
+
+
+    void InflationSwap::results::reset() {
+        Instrument::results::reset();
+        fairRate = Null<Rate>();
     }
 
 }

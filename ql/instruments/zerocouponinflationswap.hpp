@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Chris Kenyon
+ Copyright (C) 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -41,27 +42,15 @@ namespace QuantLib {
     */
     class ZeroCouponInflationSwap : public InflationSwap {
       public:
-        ZeroCouponInflationSwap(
-                       const Date& start,
-                       const Date& maturity,
-                       const Period& lag,
-                       Rate fixedRate,
-                       const Calendar& calendar,
-                       BusinessDayConvention convention,
-                       const DayCounter& dayCounter,
-                       const Handle<YieldTermStructure>& yieldTS,
-                       const Handle<ZeroInflationTermStructure>& inflationTS);
-
-        //! \name Instrument interface
-        //@{
-        bool isExpired() const;
-        //@}
-
-        //! \name InflationSwap interface
-        //@{
-        //! the rate \f$ \tilde{K} \f$ such that NPV = 0.
-        Rate fairRate() const;
-        //@}
+        class arguments;
+        class engine;
+        ZeroCouponInflationSwap(const Date& start,
+                                const Date& maturity,
+                                const Period& lag,
+                                Rate fixedRate,
+                                const Calendar& calendar,
+                                BusinessDayConvention convention,
+                                const DayCounter& dayCounter);
 
         //! \name Inspectors
         //@{
@@ -69,15 +58,25 @@ namespace QuantLib {
         Rate fixedRate() const;
         //@}
 
-      protected:
         //! \name Instrument interface
         //@{
-        void performCalculations() const;
+        void setupArguments(PricingEngine::arguments*) const;
         //@}
 
+      protected:
         Rate fixedRate_;
-        Handle<ZeroInflationTermStructure> inflationTS_;
     };
+
+
+    class ZeroCouponInflationSwap::arguments : public InflationSwap::arguments {
+      public:
+        Rate fixedRate;
+        void validate() const;
+    };
+
+    class ZeroCouponInflationSwap::engine
+        : public GenericEngine<ZeroCouponInflationSwap::arguments,
+                               ZeroCouponInflationSwap::results> {};
 
 }
 

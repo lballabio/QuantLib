@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Chris Kenyon
+ Copyright (C) 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,30 +23,15 @@
 namespace QuantLib {
 
     ZeroCouponInflationSwap::ZeroCouponInflationSwap(
-                        const Date& start,
-                        const Date& maturity,
-                        const Period &lag,
-                        Rate fixedRate,
-                        const Calendar& calendar,
-                        BusinessDayConvention convention,
-                        const DayCounter& dayCounter,
-                        const Handle<YieldTermStructure>& yieldTS,
-                        const Handle<ZeroInflationTermStructure>& inflationTS)
-    : InflationSwap(start, maturity, lag, calendar, convention,
-                    dayCounter, yieldTS),
-      fixedRate_(fixedRate), inflationTS_(inflationTS) {
-        registerWith(inflationTS_);
-    }
-
-
-    bool ZeroCouponInflationSwap::isExpired() const {
-        return yieldTS_->referenceDate() > maturity_;
-    }
-
-
-    Rate ZeroCouponInflationSwap::fairRate() const {
-        return inflationTS_->zeroRate(maturity_ - lag_);
-    }
+                                             const Date& start,
+                                             const Date& maturity,
+                                             const Period &lag,
+                                             Rate fixedRate,
+                                             const Calendar& calendar,
+                                             BusinessDayConvention convention,
+                                             const DayCounter& dayCounter)
+    : InflationSwap(start, maturity, lag, calendar, convention, dayCounter),
+      fixedRate_(fixedRate) {}
 
 
     Rate ZeroCouponInflationSwap::fixedRate() const {
@@ -53,15 +39,23 @@ namespace QuantLib {
     }
 
 
-    void ZeroCouponInflationSwap::performCalculations() const {
 
-        // the observation lag is also taken into account in fairRate();
-        // discount is relative to the payment date, not the observation date.
-        Real T = dayCounter_.yearFraction(inflationTS_->baseDate(),
-                                          maturity_ - lag_);
-        NPV_ = yieldTS_->discount(maturity_) *
-            (std::pow(1.0 + fixedRate_, T) - std::pow(1.0 + fairRate(), T));
-        errorEstimate_ = 0.0;
+    void ZeroCouponInflationSwap::setupArguments(
+                                       PricingEngine::arguments* args) const {
+        InflationSwap::setupArguments(args);
+
+        ZeroCouponInflationSwap::arguments* arguments =
+            dynamic_cast<ZeroCouponInflationSwap::arguments*>(args);
+        QL_REQUIRE(arguments != 0, "wrong argument type");
+
+        arguments->fixedRate = fixedRate_;
+    }
+
+
+    void ZeroCouponInflationSwap::arguments::validate() const {
+        InflationSwap::arguments::validate();
+
+        QL_REQUIRE(fixedRate != Null<Rate>(), "fixed rate not provided");
     }
 
 }

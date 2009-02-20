@@ -19,6 +19,7 @@
 */
 
 #include <ql/termstructures/inflation/inflationhelpers.hpp>
+#include <ql/pricingengines/inflation/discountinginflationswapengines.hpp>
 
 namespace QuantLib {
 
@@ -70,9 +71,10 @@ namespace QuantLib {
         Date start = z->nominalTermStructure()->referenceDate();
         zciis_.reset(new ZeroCouponInflationSwap(start, maturity_, lag_, K,
                                                  calendar_, paymentConvention_,
-                                                 dayCounter_,
-                                                 z->nominalTermStructure(),
-                                                 inflationTS));
+                                                 dayCounter_));
+        zciis_->setPricingEngine(boost::shared_ptr<PricingEngine>(
+             new DiscountingZeroInflationSwapEngine(z->nominalTermStructure(),
+                                                    inflationTS)));
     }
 
 
@@ -121,9 +123,10 @@ namespace QuantLib {
         Date start = y->nominalTermStructure()->referenceDate();
         yyiis_.reset(new YearOnYearInflationSwap(start, maturity_, lag_, K,
                                                  calendar_, paymentConvention_,
-                                                 dayCounter_,
-                                                 y->nominalTermStructure(),
-                                                 inflationTS));
+                                                 dayCounter_));
+        yyiis_->setPricingEngine(boost::shared_ptr<PricingEngine>(
+              new DiscountingYoYInflationSwapEngine(y->nominalTermStructure(),
+                                                    inflationTS)));
         // now known
         earliestDate_ = yyiis_->paymentDates().front() - lag_;
         // Note that this can imply inflation _before_ the reference
@@ -134,7 +137,7 @@ namespace QuantLib {
         Date lastPayment = yyiis_->paymentDates().back(),
              lastFixing = calendar_.adjust(lastPayment - lag_,
                                            paymentConvention_);
-        
+
         latestDate_ = std::max(maturity_ - lag_, lastFixing);
     }
 

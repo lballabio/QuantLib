@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Chris Kenyon
+ Copyright (C) 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,22 +24,17 @@
 namespace QuantLib {
 
     YearOnYearInflationSwap::YearOnYearInflationSwap(
-                   const Date& start,
-                   const Date& maturity,
-                   const Period& lag,
-                   Rate fixedRate,
-                   const Calendar& calendar,
-                   BusinessDayConvention convention,
-                   const DayCounter& dayCounter,
-                   const Handle<YieldTermStructure>& yieldTS,
-                   const Handle<YoYInflationTermStructure>& inflationTS,
-                   bool allowAmbiguousPayments,
-                   const Period& ambiguousPaymentPeriod)
-    : InflationSwap(start, maturity, lag, calendar, convention,
-                    dayCounter, yieldTS),
-      fixedRate_(fixedRate), inflationTS_(inflationTS),
-      allowAmbiguousPayments_(allowAmbiguousPayments),
-      ambiguousPaymentPeriod_(ambiguousPaymentPeriod) {
+                                         const Date& start,
+                                         const Date& maturity,
+                                         const Period& lag,
+                                         Rate fixedRate,
+                                         const Calendar& calendar,
+                                         BusinessDayConvention convention,
+                                         const DayCounter& dayCounter,
+                                         bool allowAmbiguousPayments,
+                                         const Period& ambiguousPaymentPeriod)
+    : InflationSwap(start, maturity, lag, calendar, convention, dayCounter),
+      fixedRate_(fixedRate) {
 
         Schedule temp = MakeSchedule(start_, maturity_,
                                      Period(1,Years),
@@ -49,8 +45,8 @@ namespace QuantLib {
         // the first payment date is the _second_ date in the schedule,
         // so we start from index 1
         for (Size i=1; i<temp.size(); ++i) {
-            if (!allowAmbiguousPayments_) {
-                if (temp[i] > start_ + ambiguousPaymentPeriod_) {
+            if (!allowAmbiguousPayments) {
+                if (temp[i] > start_ + ambiguousPaymentPeriod) {
                     paymentDates_.push_back(temp[i]);
                 }
             } else {
@@ -63,66 +59,32 @@ namespace QuantLib {
                     << ", maturity: " <<  maturity_);
     }
 
-
-    bool YearOnYearInflationSwap::isExpired() const {
-        return yieldTS_->referenceDate() > maturity_;
-    }
-
-
-    Rate YearOnYearInflationSwap::fairRate() const {
-        calculate();
-        return fairRate_;
-    }
-
-
     Rate YearOnYearInflationSwap::fixedRate() const {
         return fixedRate_;
     }
-
 
     std::vector<Date> YearOnYearInflationSwap::paymentDates() const {
         return paymentDates_;
     }
 
+    void YearOnYearInflationSwap::setupArguments(
+                                       PricingEngine::arguments* args) const {
+        InflationSwap::setupArguments(args);
 
-    void YearOnYearInflationSwap::setupExpired() const {
-        Instrument::setupExpired();
-        fairRate_ = Null<Rate>();
+        YearOnYearInflationSwap::arguments* arguments =
+            dynamic_cast<YearOnYearInflationSwap::arguments*>(args);
+        QL_REQUIRE(arguments != 0, "wrong argument type");
+
+        arguments->fixedRate = fixedRate_;
+        arguments->paymentDates = paymentDates_;
     }
 
 
-    void YearOnYearInflationSwap::performCalculations() const {
-        // Rates for instruments always look at earlier values paid later.
-        Real nom = 0.0;
-        Real infl = 0.0;
-        Real frac;
+    void YearOnYearInflationSwap::arguments::validate() const {
+        InflationSwap::arguments::validate();
 
-        Date referenceDate = yieldTS_->referenceDate();
-        for (Size i=0; i<paymentDates_.size(); i++) {
-            Date couponPayDate = paymentDates_[i];
-            if (couponPayDate >= referenceDate) {
-                if (i==0) {
-                    frac = dayCounter_.yearFraction(referenceDate,
-                                                    couponPayDate);
-                } else {
-                    if (referenceDate > paymentDates_[i-1])
-                        frac = dayCounter_.yearFraction(referenceDate,
-                                                        couponPayDate);
-                    else
-                        frac = dayCounter_.yearFraction(paymentDates_[i-1],
-                                                        couponPayDate);
-                }
-
-                nom += frac * yieldTS_->discount(couponPayDate);
-                infl += frac * inflationTS_->yoyRate(
-                             calendar().adjust(couponPayDate - lag(), bdc_)) *
-                    yieldTS_->discount(couponPayDate);
-            }
-        }
-
-        NPV_ = nom*fixedRate_ - infl;
-        errorEstimate_ = 0.0;
-        fairRate_ = infl/nom;
+        QL_REQUIRE(fixedRate != Null<Rate>(), "fixed rate not provided");
+        QL_REQUIRE(!paymentDates.empty(), "payment dates not provided");
     }
 
 }
