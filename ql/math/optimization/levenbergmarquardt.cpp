@@ -64,16 +64,16 @@ namespace QuantLib {
         MINPACK::LmdifCostFunction lmdifCostFunction = 
             boost::bind(&LevenbergMarquardt::fcn, this, _1, _2, _3, _4, _5);
         MINPACK::lmdif(m, n, xx.get(), fvec.get(),
-                                 static_cast<double>(endCriteria.functionEpsilon()),
-                                 static_cast<double>(xtol_),
-                                 static_cast<double>(gtol_),
-                                 static_cast<int>(endCriteria.maxIterations()),
-                                 static_cast<double>(epsfcn_),
-                                 diag.get(), mode, factor,
-                                 nprint, &info, &nfev, fjac.get(),
-                                 ldfjac, ipvt.get(), qtf.get(),
-                                 wa1.get(), wa2.get(), wa3.get(), wa4.get(),
-                                 lmdifCostFunction);
+                       static_cast<double>(endCriteria.functionEpsilon()),
+                       static_cast<double>(xtol_),
+                       static_cast<double>(gtol_),
+                       static_cast<int>(endCriteria.maxIterations()),
+                       static_cast<double>(epsfcn_),
+                       diag.get(), mode, factor,
+                       nprint, &info, &nfev, fjac.get(),
+                       ldfjac, ipvt.get(), qtf.get(),
+                       wa1.get(), wa2.get(), wa3.get(), wa4.get(),
+                       lmdifCostFunction);
         info_ = info;
         // check requirements & endCriteria evaluation
         QL_REQUIRE(info != 0, "MINPACK: improper input parameters");
