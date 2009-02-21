@@ -25,7 +25,6 @@
 #define quantlib_compounding_hpp
 
 #include <ql/qldefines.hpp>
-#include <ostream>
 
 namespace QuantLib {
 
