@@ -63,6 +63,8 @@ namespace QuantLib {
              LsmBasisSystem::PolynomType polynomType,
              Size nCalibrationSamples = Null<Size>());
 
+        void calculate() const;
+        
       protected:
         boost::shared_ptr<LongstaffSchwartzPathPricer<Path> >
             lsmPathPricer() const;
@@ -147,6 +149,17 @@ namespace QuantLib {
       polynomOrder_(polynomOrder),
       polynomType_(polynomType) {}
 
+    template <class RNG, class S>
+    inline void MCAmericanEngine<RNG,S>::calculate() const {
+        MCLongstaffSchwartzEngine<VanillaOption::engine,
+                                  SingleVariate,RNG,S>::calculate();
+        if (this->controlVariate_) {
+            // control variate might lead to small negative
+            // option values for deep OTM options
+            this->results_.value = std::max(0.0, this->results_.value);
+        }
+    }
+        
     template <class RNG, class S>
     inline boost::shared_ptr<LongstaffSchwartzPathPricer<Path> >
     MCAmericanEngine<RNG,S>::lsmPathPricer() const {

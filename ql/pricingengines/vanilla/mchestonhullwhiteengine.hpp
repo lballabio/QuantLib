@@ -53,6 +53,8 @@ namespace QuantLib {
                Size maxSamples,
                BigNatural seed);
 
+        void calculate() const;
+        
       protected:
         // just to avoid upcasting
         boost::shared_ptr<HybridHestonHullWhiteProcess> process_;
@@ -123,7 +125,17 @@ namespace QuantLib {
                 requiredTolerance, maxSamples, seed),
       process_(process) {}
 
-
+    template<class RNG,class S>
+    inline void MCHestonHullWhiteEngine<RNG,S>::calculate() const {
+        MCVanillaEngine<MultiVariate, RNG, S>::calculate();
+        
+        if (this->controlVariate_) {
+            // control variate might lead to small negative
+            // option values for deep OTM options
+            this->results_.value = std::max(0.0, this->results_.value);
+        }
+    }
+                  
     template <class RNG,class S> inline
     boost::shared_ptr<typename MCHestonHullWhiteEngine<RNG,S>::path_pricer_type>
     MCHestonHullWhiteEngine<RNG,S>::pathPricer() const {
