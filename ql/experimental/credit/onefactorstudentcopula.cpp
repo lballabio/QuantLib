@@ -33,8 +33,8 @@ namespace QuantLib {
 
         QL_REQUIRE (nz > 2 && nm > 2, "degrees of freedom must be > 2");
 
-        scaleM_ = sqrt (Real (nm_ - 2) / nm_);
-        scaleZ_ = sqrt (Real (nz_ - 2) / nz_);
+        scaleM_ = std::sqrt (Real (nm_ - 2) / nm_);
+        scaleZ_ = std::sqrt (Real (nz_ - 2) / nz_);
 
         calculate ();
     }
@@ -88,7 +88,7 @@ namespace QuantLib {
             // inner integral -> cumulativeStudent(nz)(y) for c-> 0
             for (Real m = minimum + delta/2; m < maximum; m += delta)
                 for (Real z = minimum + delta/2;
-                     z < (y - sqrt(c) * m) / sqrt (1. - c); z += delta)
+                     z < (y - std::sqrt(c) * m) / std::sqrt (1. - c); z += delta)
                     cumulated += dm (m / scaleM_) / scaleM_
                         * dz (z / scaleZ_) / scaleZ_;
         }
@@ -97,7 +97,7 @@ namespace QuantLib {
             // inner integral -> cumulativeStudent(nm)(y) for c-> 1
             for (Real z = minimum + delta/2; z < maximum; z += delta)
                 for (Real m = minimum + delta/2;
-                     m < (y - sqrt(1.0 - c) * z) / sqrt(c); m += delta)
+                     m < (y - std::sqrt(1.0 - c) * z) / std::sqrt(c); m += delta)
                     cumulated += dm (m / scaleM_) / scaleM_
                         * dz (z / scaleZ_) / scaleZ_;
         }
@@ -116,7 +116,7 @@ namespace QuantLib {
 
         QL_REQUIRE (nz > 2, "degrees of freedom must be > 2");
 
-        scaleZ_ = sqrt (Real (nz_ - 2) / nz_);
+        scaleZ_ = std::sqrt (Real (nz_ - 2) / nz_);
 
         calculate ();
     }
@@ -170,7 +170,7 @@ namespace QuantLib {
             // inner integral -> cumulativeStudent(nz)(y) for c-> 0
             for (Real m = minimum + delta/2; m < maximum; m += delta)
                 for (Real z = minimum + delta/2;
-                     z < (y - sqrt(c) * m) / sqrt (1. - c);
+                     z < (y - std::sqrt(c) * m) / std::sqrt (1. - c);
                      z += delta)
                     cumulated += dm (m) * dz (z / scaleZ_) / scaleZ_;
         }
@@ -179,7 +179,7 @@ namespace QuantLib {
             // inner integral -> cumulativeNormal(y) for c-> 1
             for (Real z = minimum + delta/2; z < maximum; z += delta)
                 for (Real m = minimum + delta/2;
-                     m < (y - sqrt(1.0 - c) * z) / sqrt(c);
+                     m < (y - std::sqrt(1.0 - c) * z) / std::sqrt(c);
                      m += delta)
                     cumulated += dm (m) * dz (z / scaleZ_) / scaleZ_;
         }
@@ -198,7 +198,7 @@ namespace QuantLib {
 
         QL_REQUIRE (nm > 2, "degrees of freedom must be > 2");
 
-        scaleM_ = sqrt (Real (nm_ - 2) / nm_);
+        scaleM_ = std::sqrt (Real (nm_ - 2) / nm_);
 
         calculate ();
     }
@@ -253,7 +253,7 @@ namespace QuantLib {
             // inner integral -> cumulativeNormal(y) for c-> 0
             for (Real m = minimum + delta/2; m < maximum; m += delta)
                 for (Real z = minimum + delta/2;
-                     z < (y - sqrt(c) * m) / sqrt (1. - c);
+                     z < (y - std::sqrt(c) * m) / std::sqrt (1. - c);
                      z += delta)
                     cumulated += dm (m / scaleM_) / scaleM_ * dz (z);
         }
@@ -262,7 +262,7 @@ namespace QuantLib {
             // inner integral -> cumulativeStudent(nm)(y) for c-> 1
             for (Real z = minimum + delta/2; z < maximum; z += delta)
                 for (Real m = minimum + delta/2;
-                     m < (y - sqrt(1.0 - c) * z) / sqrt(c);
+                     m < (y - std::sqrt(1.0 - c) * z) / std::sqrt(c);
                      m += delta)
                     cumulated += dm (m / scaleM_) / scaleM_ * dz (z);
         }

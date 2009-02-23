@@ -27,7 +27,7 @@ namespace QuantLib {
                              const Real resultAsc) {
         err = std::fabs(err) ;
         if (resultAsc != 0 && err != 0){
-            Real scale = pow((200 * err / resultAsc), 1.5) ;
+            Real scale = std::pow((200 * err / resultAsc), 1.5) ;
             if (scale < 1)
                 err = resultAsc * scale ;
             else

@@ -281,7 +281,7 @@ namespace {
          **************************************************************
          */
         dstep=64.0;
-        nris=sqrt(pi2)/dstep;
+        nris=std::sqrt(pi2)/dstep;
         mm=(int)(pi2/(nris*nris));
 
         /*
@@ -346,7 +346,7 @@ namespace {
         sumr=sumr*nris;
         sumi=sumi*nris;
 
-        option=exp(-rtax*tau)*sumr;
+        option=std::exp(-rtax*tau)*sumr;
         impart=sumi;
         //QL_ENSURE(impart <= 1e-3,
         //          "imaginary part option (must be close to zero) = " << impart);

@@ -55,7 +55,7 @@ QuantLib
         {
             Real dt = (evolutionTimes[i] - evolutionTimes[i-1])/numberSubSteps_;
 
-            Real ekdt = exp(-k_*dt);
+            Real ekdt = std::exp(-k_*dt);
             QL_REQUIRE(dt >0.0, "Steps must be of positive size.");
 
             for (Size k=0; k < numberSubSteps_; ++k)
@@ -95,13 +95,13 @@ QuantLib
         Real m = theta_+(vt-theta_)*eminuskT;
         Real s2= vt*epsilon_*epsilon_*eminuskT*(1-eminuskT)/k_
                 + theta_*epsilon_*epsilon_*(1- eminuskT)*(1- eminuskT)/(2*k_);
-        Real s = sqrt(s2);
+        Real s = std::sqrt(s2);
         Real psi = s*s/(m*m);
         if (psi<= PsiC_)
         {
             Real psiinv = 1.0/psi;
-            Real b2 = 2.0*psiinv -1+sqrt(2*psiinv*(2*psiinv-1.0));
-            Real b = sqrt(b2);
+            Real b2 = 2.0*psiinv -1+std::sqrt(2*psiinv*(2*psiinv-1.0));
+            Real b = std::sqrt(b2);
             Real a= m/(1+b2);
             vt= a*(b+z)*(b+z);
         }
@@ -117,7 +117,7 @@ QuantLib
                 return;
             }
 
-             vt = log((1.0-p)/(1.0-u))/beta;
+             vt = std::log((1.0-p)/(1.0-u))/beta;
         }
 
     }
@@ -147,7 +147,7 @@ QuantLib
 
         stepVariance /= numberSubSteps_;
 
-        return sqrt(stepVariance);
+        return std::sqrt(stepVariance);
     }
 
     const std::vector<Real>& SquareRootAndersen::stateVariables() const

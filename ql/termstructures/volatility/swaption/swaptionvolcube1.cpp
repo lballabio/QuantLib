@@ -324,7 +324,7 @@ namespace QuantLib {
                               optionTimes.begin(), optionTimes.end());
         std::sort(atmOptionTimes.begin(),atmOptionTimes.end());
         std::vector<Time>::iterator new_end =
-            unique(atmOptionTimes.begin(), atmOptionTimes.end());
+            std::unique(atmOptionTimes.begin(), atmOptionTimes.end());
         atmOptionTimes.erase(new_end, atmOptionTimes.end());
 
         std::vector<Time> atmSwapLengths(atmVolStructure->swapLengths());
@@ -332,7 +332,7 @@ namespace QuantLib {
         atmSwapLengths.insert(atmSwapLengths.end(),
                               swapLengths.begin(), swapLengths.end());
         std::sort(atmSwapLengths.begin(),atmSwapLengths.end());
-        new_end = unique(atmSwapLengths.begin(), atmSwapLengths.end());
+        new_end = std::unique(atmSwapLengths.begin(), atmSwapLengths.end());
         atmSwapLengths.erase(new_end, atmSwapLengths.end());
 
         std::vector<Date> atmOptionDates = atmVolStructure->optionDates();
@@ -341,7 +341,7 @@ namespace QuantLib {
                                 optionDates.begin(), optionDates.end());
         std::sort(atmOptionDates.begin(),atmOptionDates.end());
         std::vector<Date>::iterator new_end_1 =
-            unique(atmOptionDates.begin(), atmOptionDates.end());
+            std::unique(atmOptionDates.begin(), atmOptionDates.end());
         atmOptionDates.erase(new_end_1, atmOptionDates.end());
 
         std::vector<Period> atmSwapTenors = atmVolStructure->swapTenors();
@@ -350,7 +350,7 @@ namespace QuantLib {
                              swapTenors.begin(), swapTenors.end());
         std::sort(atmSwapTenors.begin(),atmSwapTenors.end());
         std::vector<Period>::iterator new_end_2 =
-            unique(atmSwapTenors.begin(), atmSwapTenors.end());
+            std::unique(atmSwapTenors.begin(), atmSwapTenors.end());
         atmSwapTenors.erase(new_end_2, atmSwapTenors.end());
 
         createSparseSmiles();

@@ -145,7 +145,7 @@ namespace QuantLib {
         isConstraintActive_ = isConstraintActive;
 
         for (unsigned long i=0; i < rateConstraints_.size(); i++)
-            rateConstraints_[i] = log(rateConstraints_[i]+displacements_[i]);
+            rateConstraints_[i] = std::log(rateConstraints_[i]+displacements_[i]);
     }
 
 

@@ -23,7 +23,7 @@
 namespace QuantLib {
 
     Real TestSurface::operator() (Real x, Real y) const {
-        return sin(x) * cos(y);
+        return std::sin(x) * std::cos(y);
     }
 
     boost::shared_ptr<Domain> TestSurface::domain() const {

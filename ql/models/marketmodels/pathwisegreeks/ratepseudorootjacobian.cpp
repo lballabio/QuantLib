@@ -100,7 +100,7 @@ namespace QuantLib
 
             for (Size j=aliveIndex_; j < numberRates; ++j)
             {
-                bumpedRates_[j] = log(oldRates[j]+displacements_[j]);
+                bumpedRates_[j] = std::log(oldRates[j]+displacements_[j]);
 
                 for (Size k=0; k < factors_; ++k)
                     bumpedRates_[j] += -0.5*pseudo[j][k]*pseudo[j][k];
@@ -110,7 +110,7 @@ namespace QuantLib
                 for (Size k=0; k < factors_; ++k)
                     bumpedRates_[j] += pseudo[j][k]*gaussians[k];
 
-                bumpedRates_[j] =exp(bumpedRates_[j]);
+                bumpedRates_[j] = std::exp(bumpedRates_[j]);
                 bumpedRates_[j] -= displacements_[j];
                 Real tmp = bumpedRates_[j] - newRates[j];
 

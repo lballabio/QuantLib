@@ -200,7 +200,7 @@ namespace QuantLib {
 
             redemptions_.push_back(cashflows.back());
 
-            std::sort(cashflows_.begin(), --cashflows_.end(),
+            std::sort(cashflows_.begin(), cashflows_.end()-1,
                       earlier_than<boost::shared_ptr<CashFlow> >());
         }
 
@@ -222,7 +222,7 @@ namespace QuantLib {
         // lower_bound, *i is the earliest date which is greater or
         // equal than d.  Its index is greater or equal to 1.
         std::vector<Date>::const_iterator i =
-            std::lower_bound(++notionalSchedule_.begin(),
+            std::lower_bound(notionalSchedule_.begin()+1,
                              notionalSchedule_.end(), d);
         Size index = std::distance(notionalSchedule_.begin(), i);
 

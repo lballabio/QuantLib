@@ -35,7 +35,7 @@ namespace QuantLib {
 
             Real leftValue = objectiveFunction(low);
             Real rightValue = objectiveFunction(high);
-            Real W = 0.5*(3.0-sqrt(5.0));
+            Real W = 0.5*(3.0-std::sqrt(5.0));
             Real x = W*low+(1-W)*high;
             if (mid > low && mid < high)
                 x = mid;
@@ -96,7 +96,7 @@ namespace QuantLib {
          QL_REQUIRE(alpha>0,
                    "cylinder centre must have positive coordinate");
 
-        if (fabs(alpha-s) > r )
+        if (std::fabs(alpha-s) > r )
             nonEmpty_=false;
         else
             nonEmpty_=true;
@@ -116,8 +116,8 @@ namespace QuantLib {
 
             if (  tmp <=0)
             { // max to left of maximimum
-                Real topValue2 = sqrt(s*s - tmp*tmp/(4*alpha*alpha));
-                topValue_ = alpha -sqrt(s*s - topValue2*topValue2);
+                Real topValue2 = std::sqrt(s*s - tmp*tmp/(4*alpha*alpha));
+                topValue_ = alpha -std::sqrt(s*s - topValue2*topValue2);
 
             }
             else
@@ -148,18 +148,18 @@ namespace QuantLib {
                 bottomValue_, x1, topValue_,tolerance, maxIterations,
                 boost::bind(
                       &SphereCylinderOptimizer::objectiveFunction, this, _1));
-         y2 =sqrt(s_*s_ - (y1-alpha_)*(y1-alpha_));
-         y3= sqrt(r_*r_ - y1*y1-y2*y2);
+         y2 =std::sqrt(s_*s_ - (y1-alpha_)*(y1-alpha_));
+         y3= std::sqrt(r_*r_ - y1*y1-y2*y2);
     }
 
     Real SphereCylinderOptimizer::objectiveFunction(Real x1) const
     {
-   //     Real x1 = alpha_ - sqrt(s_*s_-x2*x2);
+   //     Real x1 = alpha_ - std::sqrt(s_*s_-x2*x2);
 
         Real x2sq = s_*s_ - (x1-alpha_)*(x1-alpha_);
          // a negative number will be minuscule and a result of rounding error
-        Real x2 = x2sq >= 0.0 ? sqrt(x2sq) : 0.0;
-        Real x3= sqrt(r_*r_ - x1*x1-x2*x2);
+        Real x2 = x2sq >= 0.0 ? std::sqrt(x2sq) : 0.0;
+        Real x3= std::sqrt(r_*r_ - x1*x1-x2*x2);
 
         Real err=0.0;
         err+= (x1-z1_)*(x1-z1_);
@@ -173,14 +173,14 @@ namespace QuantLib {
                                                    Real& y2,
                                                    Real& y3) const {
         Real z1moved = z1_-alpha_;
-        Real distance = sqrt( z1moved*z1moved + z2_*z2_);
+        Real distance = std::sqrt( z1moved*z1moved + z2_*z2_);
         Real scale = s_/distance;
         Real y1moved = z1moved*scale;
         y1 = alpha_+ y1moved;
         y2 = scale*z2_;
         Real residual = r_*r_ - y1*y1 -y2*y2;
         if (residual >=0.0) {
-            y3 = sqrt(residual);
+            y3 = std::sqrt(residual);
             return true;
         }
         // we are outside the sphere
@@ -193,7 +193,7 @@ namespace QuantLib {
        // so take rightmost point
        y3 = 0.0;
        y1 = topValue_;
-       y2 = sqrt(r_*r_ -y1*y1);
+       y2 = std::sqrt(r_*r_ -y1*y1);
 
        return true;
     }

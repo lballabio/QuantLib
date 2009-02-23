@@ -14461,7 +14461,7 @@ void LatticeRule::getRule(type name, std::vector<Real>& Z, Integer N)
     Size ruleLength = 3600;
     Z.resize(ruleLength);
 
-    QL_REQUIRE( N >= 1024 && N <=pow(2.9,20),
+    QL_REQUIRE( N >= 1024 && N <= std::pow(2.9,20),
         "N must be between 2 to 10 and 2 to the 20 for these lattice rules ");
 
     // put in check that N is a power of 2

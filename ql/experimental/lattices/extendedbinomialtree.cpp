@@ -215,7 +215,7 @@ namespace QuantLib {
 
 
     Real ExtendedJoshi4::computeUpProb(Real k, Real dj) const {
-        Real alpha = dj/(sqrt(8.0));
+        Real alpha = dj/(std::sqrt(8.0));
         Real alpha2 = alpha*alpha;
         Real alpha3 = alpha*alpha2;
         Real alpha5 = alpha3*alpha2;
@@ -226,7 +226,7 @@ namespace QuantLib {
         Real delta = -0.1025 *alpha- 0.9285 *alpha3
             -1.43 *alpha5 -0.5 *alpha7;
         Real p =0.5;
-        Real rootk= sqrt(k);
+        Real rootk= std::sqrt(k);
         p+= alpha/rootk;
         p+= beta /(k*rootk);
         p+= gamma/(k*k*rootk);

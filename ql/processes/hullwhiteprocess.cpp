@@ -36,7 +36,7 @@ namespace QuantLib {
     }
 
     Real HullWhiteProcess::drift(Time t, Real x) const {
-        Real alpha_drift = sigma_*sigma_/(2*a_)*(1-exp(-2*a_*t));
+        Real alpha_drift = sigma_*sigma_/(2*a_)*(1-std::exp(-2*a_*t));
         Real shift = 0.0001;
         Real f = h_->forwardRate(t, t, Continuous, NoFrequency);
         Real fup = h_->forwardRate(t+shift, t+shift, Continuous, NoFrequency);
@@ -92,7 +92,7 @@ namespace QuantLib {
     }
 
     Real HullWhiteForwardProcess::drift(Time t, Real x) const {
-        Real alpha_drift = sigma_*sigma_/(2*a_)*(1-exp(-2*a_*t));
+        Real alpha_drift = sigma_*sigma_/(2*a_)*(1-std::exp(-2*a_*t));
         Real shift = 0.0001;
         Real f = h_->forwardRate(t, t, Continuous, NoFrequency);
         Real fup = h_->forwardRate(t+shift, t+shift, Continuous, NoFrequency);

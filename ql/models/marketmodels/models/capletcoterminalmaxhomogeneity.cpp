@@ -65,7 +65,7 @@ namespace QuantLib {
                 if (success)
                 {
                     solution[0]  = volminus;
-                    solution[1]  = sqrt(residual);
+                    solution[1]  = std::sqrt(residual);
                     swaptionError= 0.0;
                     capletError =0.0;
                     return success;
@@ -77,17 +77,17 @@ namespace QuantLib {
                 {
                     solution[0]  =  volminus;
                     solution[1]  =  0; // residual is negative or we'd have totally succeeded
-                    swaptionError =  sqrt(thisSwapVariance)-volminus;
+                    swaptionError =  std::sqrt(thisSwapVariance)-volminus;
                     capletError =0.0;
                     return success;
                 }
 
                 if (capSuccess && !prioritizeCaplet)
                 {
-                    solution[0] = sqrt(thisSwapVariance);
+                    solution[0] = std::sqrt(thisSwapVariance);
                     solution[1] = 0.0;
                     swaptionError=0.0;
-                    capletError= sqrt(q(solution[0])+capletVariance) - sqrt(capletVariance);
+                    capletError= std::sqrt(q(solution[0])+capletVariance) - std::sqrt(capletVariance);
                     return success;
                 }
 
@@ -96,9 +96,9 @@ namespace QuantLib {
                 if (swapSuccess)
                 {
                     solution[0]  = volminus;
-                    solution[1]  = sqrt(residual);
+                    solution[1]  = std::sqrt(residual);
                     swaptionError= 0.0;
-                    capletError= sqrt(q(solution[0])+capletVariance) - sqrt(capletVariance);
+                    capletError= std::sqrt(q(solution[0])+capletVariance) - std::sqrt(capletVariance);
                     return success;
                 }
 
@@ -108,16 +108,16 @@ namespace QuantLib {
                 {
                     solution[0]  = volminus; 
                     solution[1]  =  0; // residual is negative or we'd have totally succeeded
-                    swaptionError =  sqrt(thisSwapVariance)-volminus;
+                    swaptionError =  std::sqrt(thisSwapVariance)-volminus;
                     capletError =0.0;
   
                 }
                 else
                 {
-                    solution[0] = sqrt(thisSwapVariance);
+                    solution[0] = std::sqrt(thisSwapVariance);
                     solution[1] = 0.0;
                     swaptionError=0.0;
-                    capletError= sqrt(q(solution[0])+capletVariance) - sqrt(capletVariance);
+                    capletError= std::sqrt(q(solution[0])+capletVariance) - std::sqrt(capletVariance);
 
 
                 }
@@ -162,9 +162,9 @@ namespace QuantLib {
             Real S2 = capletVariance/theta - constQuadraticTerm;
 
             // if S2 < 0, there are no solutions so we take the best we can. 
-            Real S = S2 > 0 ? sqrt(S2) : 0;
+            Real S = S2 > 0 ? std::sqrt(S2) : 0;
 
-            Real R = sqrt(thisSwapVariance);
+            Real R = std::sqrt(thisSwapVariance);
 
             BasisIncompleteOrdered basis(capletNumber+1);
             basis.addVector(cylinderCentre);
@@ -318,7 +318,7 @@ namespace QuantLib {
             std::vector<std::vector<Volatility> > newVols;
             std::vector<Volatility> theseNewVols(numberOfRates);
             std::vector<Volatility> firstRateVols(numberOfRates);
-            firstRateVols[0] = sqrt(displacedSwapVariances[0]->variances()[0]);
+            firstRateVols[0] = std::sqrt(displacedSwapVariances[0]->variances()[0]);
             std::vector<Volatility> secondRateVols(numberOfRates);
             std::vector<Real> correlations(numberOfRates);
             newVols.push_back(firstRateVols);
@@ -334,7 +334,7 @@ namespace QuantLib {
                     displacedSwapVariances[i+1]->variances();
 
                 for (Size j =0; j < i+2; ++j)
-                    secondRateVols[j] = sqrt(var[j]);
+                    secondRateVols[j] = std::sqrt(var[j]);
 
                 for (Size k=0; k < i+1; k++) {
                     Real correlation=0.0;

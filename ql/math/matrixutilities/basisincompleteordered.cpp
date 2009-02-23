@@ -45,7 +45,7 @@ namespace QuantLib {
                 newVector_[k] -=innerProd*currentBasis_[j][k];
         }
 
-        Real norm = sqrt(std::inner_product(newVector_.begin(),
+        Real norm = std::sqrt(std::inner_product(newVector_.begin(),
             newVector_.end(),
             newVector_.begin(), 0.0));
 
@@ -92,7 +92,7 @@ namespace QuantLib {
 
         Real norm(const Matrix& v, Size row)
         {
-            return sqrt(normSquared( v,  row));
+            return std::sqrt(normSquared( v,  row));
         }
 
         Real innerProduct(const Matrix& v, Size row1, const Matrix& w, Size row2)
@@ -116,7 +116,7 @@ namespace QuantLib {
 
         Real norm(const std::vector<Real>& v)
         {
-            return sqrt(normSquared(v));
+            return std::sqrt(normSquared(v));
         }
     }
 
@@ -195,7 +195,7 @@ namespace QuantLib {
                Real projectionOnOriginalDirection = innerProduct(originalVectors_,j,orthoNormalizedVectors_,j);
                Real sizeMultiplier = prevNormSquared/projectionOnOriginalDirection;
 
-               if (fabs(sizeMultiplier) < multiplierCutoff_)
+               if (std::fabs(sizeMultiplier) < multiplierCutoff_)
                {
                     for (Size t=0; t < dimension_; ++t)
                         currentVector[t] = orthoNormalizedVectors_[j][t]*sizeMultiplier;

@@ -57,7 +57,7 @@ namespace QuantLib {
     Disposable<Array> HestonProcess::drift(Time t, const Array& x) const {
         Array tmp(2);
         const Real vol = (x[1] > 0.0) ? std::sqrt(x[1])
-                         : (discretization_ == Reflection) ? -sqrt(-x[1])
+                         : (discretization_ == Reflection) ? - std::sqrt(-x[1])
                          : 0.0;
 
         tmp[0] = riskFreeRate_->forwardRate(t, t, Continuous)
@@ -79,7 +79,7 @@ namespace QuantLib {
         */
         Matrix tmp(2,2);
         const Real vol = (x[1] > 0.0) ? std::sqrt(x[1])
-                         : (discretization_ == Reflection) ? -sqrt(-x[1])
+                         : (discretization_ == Reflection) ? -std::sqrt(-x[1])
                          : 1e-8; // set vol to (almost) zero but still
                                  // expose some correlation information
         const Real sigma2 = sigma_ * vol;

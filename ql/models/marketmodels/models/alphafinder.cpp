@@ -25,12 +25,13 @@ namespace QuantLib {
 namespace
 {
 
-    template<class T, Real (T::*Value)(Real) >
+    template<class T>
     Real Bisection(Real target,
                    Real low,
                    Real high,
                    Real tolerance,
-                   T& theObject) {
+                   T& theObject,
+                   Real (T::*Value)(Real)) {
 
         Real x=0.5*(low+high);
         Real y=(theObject.*Value)(x);
@@ -41,16 +42,17 @@ namespace
 
             x = 0.5*(low+high);
             y = (theObject.*Value)(x);
-        } while ((fabs(high-low) > tolerance));
+        } while ((std::fabs(high-low) > tolerance));
 
         return x;
     }
 
-    template<class T, bool (T::*Value)(Real) >
+    template<class T>
     Real FindHighestOK(Real low,
                        Real high,
                        Real tolerance,
-                       T& theObject) {
+                       T& theObject,
+                       bool (T::*Value)(Real)) {
 
         Real x=0.5*(low+high);
         bool ok=(theObject.*Value)(x);
@@ -61,16 +63,17 @@ namespace
 
             x = 0.5*(low+high);
             ok = (theObject.*Value)(x);
-        } while ((fabs(high-low) > tolerance));
+        } while ((std::fabs(high-low) > tolerance));
 
         return x;
     }
 
-    template<class T, bool (T::*Value)(Real) >
+    template<class T>
     Real FindLowestOK(Real low,
                       Real high,
                       Real tolerance,
-                      T& theObject) {
+                      T& theObject,
+                      bool (T::*Value)(Real)) {
 
         Real x=0.5*(low+high);
         bool ok=(theObject.*Value)(x);
@@ -81,22 +84,24 @@ namespace
 
             x = 0.5*(low+high);
             ok = (theObject.*Value)(x);
-        } while ( (fabs(high-low) > tolerance) );
+        } while ( (std::fabs(high-low) > tolerance) );
 
         return x;
     }
 
 
-    template<class T, Real (T::*Value)(Real),  bool (T::*Condition)(Real) >
+    template<class T>
     Real Minimize(Real low,
                   Real high,
                   Real tolerance,
                   T& theObject,
+                  Real (T::*Value)(Real),
+                  bool (T::*Condition)(Real),
                   bool& failed) {
 
         Real leftValue = (theObject.*Value)(low);
         Real rightValue = (theObject.*Value)(high);
-        Real W = 0.5*(3.0-sqrt(5.0));
+        Real W = 0.5*(3.0-std::sqrt(5.0));
         Real x=W*low+(1-W)*high;
         Real midValue =  (theObject.*Value)(x);
 
@@ -249,7 +254,7 @@ namespace
             Real VarToFind = totalVar_-varSoFar;
             if (VarToFind < 0)
                 return false;
-            Real requiredSd = sqrt(VarToFind);
+            Real requiredSd = std::sqrt(VarToFind);
             b = requiredSd / (ratetwohomogeneousvols[stepindex+1] *
                                             (*parametricform_)(stepindex));
             ratetwovols[stepindex+1] = requiredSd;
@@ -379,20 +384,22 @@ namespace
         if (bottomValue <= targetVariance) {
             // then find root of increasing function
             // (or as if increasing function)
-            alpha = Bisection<AlphaFinder, &AlphaFinder::valueAtTurningPoint>(
-                                                            targetVariance,
-                                                            bottomAlpha,
-                                                            bilimit,
-                                                            tolerance,
-                                                            *this);
+            alpha = Bisection<AlphaFinder>(
+                                           targetVariance,
+                                           bottomAlpha,
+                                           bilimit,
+                                           tolerance,
+                                           *this,
+                                           &AlphaFinder::valueAtTurningPoint);
         } else {
             // find root of decreasing function (or as if decreasing function)
-            alpha=Bisection<AlphaFinder, &AlphaFinder::minusValueAtTurningPoint>(
-                                                            -targetVariance,
-                                                            bilimit,
-                                                            topAlpha,
-                                                            tolerance,
-                                                            *this);
+            alpha=Bisection<AlphaFinder>(
+                                         -targetVariance,
+                                         bilimit,
+                                         topAlpha,
+                                         tolerance,
+                                         *this,
+                                         &AlphaFinder::minusValueAtTurningPoint);
         }
         finalPart(alpha,
                   stepindex,
@@ -460,29 +467,32 @@ namespace
                 // lower alpha is bad
                 if (alpha0OK) {
                     // must die somewhere in between
-                    alpha1 = FindLowestOK<AlphaFinder, &AlphaFinder::testIfSolutionExists>(
+                    alpha1 = FindLowestOK<AlphaFinder>(
                          alphaMin,
                          alpha0,
                          tolerance,
-                        *this);
+                        *this,
+                         &AlphaFinder::testIfSolutionExists);
                 } else {
                     // alphaMaxOK must be true to get here
-                    alpha1 = FindLowestOK<AlphaFinder, &AlphaFinder::testIfSolutionExists>(
+                    alpha1 = FindLowestOK<AlphaFinder>(
                          alpha0,
                          alphaMax,
                          tolerance,
-                        *this);
+                        *this,
+                         &AlphaFinder::testIfSolutionExists);
                 }
             }
 
 
             if (!alphaMaxOK) {
                 // higher alpha is bad
-                alpha2 = FindHighestOK<AlphaFinder, &AlphaFinder::testIfSolutionExists>(
+                alpha2 = FindHighestOK<AlphaFinder>(
                      alpha1,
                      alphaMax,
                      tolerance,
-                     *this);
+                     *this,
+                     &AlphaFinder::testIfSolutionExists);
             } else
                 alpha2= alphaMax;
             }
@@ -507,29 +517,33 @@ namespace
 
             if (foundUpOK) {
                 alpha1 = alphaUp;
-                alpha2 = FindHighestOK<AlphaFinder, &AlphaFinder::testIfSolutionExists>(
+                alpha2 = FindHighestOK<AlphaFinder>(
                      alpha1,
                      alphaMax,
                      tolerance,
-                     *this);
+                     *this,
+                     &AlphaFinder::testIfSolutionExists);
             } else {
                 alpha2 = alphaDown;
-                alpha1 = FindLowestOK<AlphaFinder, &AlphaFinder::testIfSolutionExists>(
+                alpha1 = FindLowestOK<AlphaFinder>(
                      alphaMin,
                      alpha2,
                      tolerance,
-                    *this);
+                    *this,
+                     &AlphaFinder::testIfSolutionExists);
             }
         }
 
         // we have now found alpha1, alpha2 such that solution exists
         // at endpoints. we now want to minimize within that interval
         bool failed;
-        alpha =  Minimize<AlphaFinder, &AlphaFinder::homogeneityfailure, &AlphaFinder::testIfSolutionExists>(
+        alpha =  Minimize<AlphaFinder>(
                                         alpha1,
                                         alpha2,
                                         tolerance,
                                         *this,
+                                        &AlphaFinder::homogeneityfailure,
+                                        &AlphaFinder::testIfSolutionExists,
                                         failed) ;
 
         finalPart(alpha,

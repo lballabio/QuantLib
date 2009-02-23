@@ -47,7 +47,7 @@ namespace QuantLib
             x = y = turningPoint();
             return false;
         }
-        d = sqrt(d);
+        d = std::sqrt(d);
         x = (-b_ -  d)/(2*a_);
         y = (-b_ + d)/(2*a_);
         return true;

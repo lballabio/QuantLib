@@ -56,11 +56,11 @@ namespace QuantLib {
     Disposable<Array> GJRGARCHProcess::drift(Time t, const Array& x) const {
         Array tmp(2);
         const Real N = CumulativeNormalDistribution()(lambda_);
-        const Real n = exp(-lambda_*lambda_/2.0)/sqrt(2*M_PI);
+        const Real n = std::exp(-lambda_*lambda_/2.0)/std::sqrt(2*M_PI);
         const Real q2 = 1.0 + lambda_*lambda_;
         const Real q3 = lambda_*n + N + lambda_*lambda_*N;
         const Real vol = (x[1] > 0.0) ? std::sqrt(x[1])
-                         : (discretization_ == Reflection) ? -sqrt(-x[1])
+                         : (discretization_ == Reflection) ? - std::sqrt(-x[1])
                          : 0.0;
 
         tmp[0] = riskFreeRate_->forwardRate(t, t, Continuous)
@@ -79,11 +79,11 @@ namespace QuantLib {
            | rho   1  |
            whose square root (which is used here) is
            |  1          0       |
-           | rho   sqrt(1-rho^2) |
+           | rho   std::sqrt(1-rho^2) |
         */
         Matrix tmp(2,2);
         const Real N = CumulativeNormalDistribution()(lambda_);
-        const Real n = exp(-lambda_*lambda_/2.0)/sqrt(2*M_PI);
+        const Real n = std::exp(-lambda_*lambda_/2.0)/std::sqrt(2*M_PI);
         const Real sigma2 = 2.0 + 4.0*lambda_*lambda_;
         const Real q3 = lambda_*n + N + lambda_*lambda_*N;
         const Real Eml_e4 = lambda_*lambda_*lambda_*n + 5.0*lambda_*n 
@@ -94,7 +94,7 @@ namespace QuantLib {
         const Real sigma13 = -2.0*n - 2*lambda_*N;
         const Real sigma23 = 2.0*N + sigma12*sigma13;
         const Real vol = (x[1] > 0.0) ? std::sqrt(x[1])
-                         : (discretization_ == Reflection) ? -sqrt(-x[1])
+                         : (discretization_ == Reflection) ? - std::sqrt(-x[1])
                          : 1e-8; // set vol to (almost) zero but still
                                  // expose some correlation information
         const Real rho1 = std::sqrt(daysPerYear_)*(alpha_*sigma12 
@@ -126,7 +126,7 @@ namespace QuantLib {
 
         const Real sdt = std::sqrt(dt);
         const Real N = CumulativeNormalDistribution()(lambda_);
-        const Real n = std::exp(-lambda_*lambda_/2.0)/sqrt(2*M_PI);
+        const Real n = std::exp(-lambda_*lambda_/2.0)/std::sqrt(2*M_PI);
         const Real sigma2 = 2.0 + 4.0*lambda_*lambda_;
         const Real q2 = 1.0 + lambda_*lambda_;
         const Real q3 = lambda_*n + N + lambda_*lambda_*N;

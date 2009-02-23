@@ -128,7 +128,7 @@ namespace QuantLib {
         std::vector<std::vector<Volatility> > newVols;
         std::vector<Volatility> theseNewVols(numberOfRates);
         std::vector<Volatility> firstRateVols(numberOfRates);
-        firstRateVols[0] = sqrt(displacedSwapVariances[0]->variances()[0]);
+        firstRateVols[0] = std::sqrt(displacedSwapVariances[0]->variances()[0]);
         std::vector<Volatility> secondRateVols(numberOfRates);
         std::vector<Real> correlations(numberOfRates);
         newVols.push_back(firstRateVols);
@@ -146,7 +146,7 @@ namespace QuantLib {
             const std::vector<Real>& var =
                                     displacedSwapVariances[i+1]->variances();
             for (Size j =0; j < i+2; ++j)
-                secondRateVols[j] = sqrt(var[j]);
+                secondRateVols[j] = std::sqrt(var[j]);
 
             for (Size k=0; k < i+1; k++) {
                 Real correlation=0.0;

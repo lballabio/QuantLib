@@ -78,7 +78,7 @@ namespace QuantLib {
         QL_REQUIRE(F > 0.0, "negative forward given");
 
         // Set the grid boundaries
-        const Real normInvEps = fabs(InverseCumulativeNormal()(0.0001));
+        const Real normInvEps = std::fabs(InverseCumulativeNormal()(0.0001));
         const Real sigmaSqrtT =  process_->blackVolatility()->blackVol(
                             maturity, payoff->strike())*std::sqrt(maturity);
         const Real xMin = std::log(F) - sigmaSqrtT*normInvEps*2.0

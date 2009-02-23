@@ -151,7 +151,7 @@ namespace QuantLib
 
             for (Size i=0; i < numberBigRates; ++i)
             {
-                modelSwaptionVols[i] = sqrt(swaptionTotCovariance[i][i]/periodsmm->evolution().rateTimes()[i]);
+                modelSwaptionVols[i] = std::sqrt(swaptionTotCovariance[i][i]/periodsmm->evolution().rateTimes()[i]);
                 Real scale = marketSwaptionVols[i]/modelSwaptionVols[i];
                 scalingFactors[i] *= scale; // since applied to vol
 
@@ -162,7 +162,7 @@ namespace QuantLib
             for (Size i=0; i < numberBigRates; ++i)
                 modelSwaptionVolsMatrix[iterationsDone][i] = modelSwaptionVols[i];
 
-            periodSwaptionRmsError = sqrt(totalSwaptionError/numberBigRates);
+            periodSwaptionRmsError = std::sqrt(totalSwaptionError/numberBigRates);
             errorImprovement = previousError -periodSwaptionRmsError;
             previousError = periodSwaptionRmsError;
         }

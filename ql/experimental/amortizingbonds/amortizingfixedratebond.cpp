@@ -87,8 +87,8 @@ namespace QuantLib {
                 ((Real)superDays.first)/((Real)subDays.second);
             Real maxPeriodRatio =
                 ((Real)superDays.second)/((Real)subDays.first);
-            Integer lowRatio = static_cast<Integer>(floor(minPeriodRatio));
-            Integer highRatio = static_cast<Integer>(ceil(maxPeriodRatio));
+            Integer lowRatio = static_cast<Integer>(std::floor(minPeriodRatio));
+            Integer highRatio = static_cast<Integer>(std::ceil(maxPeriodRatio));
 
             try {
                 for(Integer i=lowRatio; i <= highRatio; ++i) {
@@ -131,7 +131,7 @@ namespace QuantLib {
             notionals.front() = initialNotional;
             Real coupon = couponRate / static_cast<Real>(sinkingFrequency);
             Real compoundedInterest = 1.0;
-            Real totalValue = pow(1.0+coupon, nPeriods);
+            Real totalValue = std::pow(1.0+coupon, nPeriods);
             for(Size i = 0; i < (Size)nPeriods-1; ++i) {
                 compoundedInterest *= (1.0 + coupon);
                 Real currentNotional =

@@ -280,7 +280,7 @@ namespace QuantLib {
                                      forward,
                                      stdDev,
                                      discount,
-                                     displacement)*sqrt(expiry);
+                                     displacement)*std::sqrt(expiry);
     }
 
     Real blackFormulaStdDevDerivative(Rate strike,
