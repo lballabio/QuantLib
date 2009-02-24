@@ -64,7 +64,7 @@ namespace {
 
         CommonVars() {
             accuracy = 1.0e-6;
-            tolerance = 1.5e-5;
+            tolerance = 2.5e-5;
         }
 
         void setTermStructure() {
