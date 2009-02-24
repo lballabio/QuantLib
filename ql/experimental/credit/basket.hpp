@@ -25,7 +25,7 @@
 #define quantlib_basket_hpp
 
 #include <ql/default.hpp>
-#include <ql/issuer.hpp>
+#include <ql/experimental/credit/issuer.hpp>
 #include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/experimental/credit/pool.hpp>
 #include <ql/experimental/credit/loss.hpp>

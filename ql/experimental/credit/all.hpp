@@ -7,6 +7,7 @@
 #include <ql/experimental/credit/cdsoption.hpp>
 #include <ql/experimental/credit/distribution.hpp>
 #include <ql/experimental/credit/factorspreadedhazardratecurve.hpp>
+#include <ql/experimental/credit/issuer.hpp>
 #include <ql/experimental/credit/loss.hpp>
 #include <ql/experimental/credit/lossdistribution.hpp>
 #include <ql/experimental/credit/nthtodefault.hpp>

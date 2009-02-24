@@ -37,7 +37,6 @@ this_include_HEADERS = \
 	index.hpp \
 	instrument.hpp \
 	interestrate.hpp \
-	issuer.hpp \
 	money.hpp \
 	numericalmethod.hpp \
 	option.hpp \
@@ -65,7 +64,6 @@ libQuantLib_la_SOURCES = \
 	exercise.cpp \
     index.cpp \
     interestrate.cpp \
-    issuer.cpp \
     money.cpp \
     position.cpp \
     prices.cpp \

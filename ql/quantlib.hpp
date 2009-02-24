@@ -20,7 +20,6 @@
 #include <ql/index.hpp>
 #include <ql/instrument.hpp>
 #include <ql/interestrate.hpp>
-#include <ql/issuer.hpp>
 #include <ql/money.hpp>
 #include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>

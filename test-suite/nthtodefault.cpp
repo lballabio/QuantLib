@@ -132,14 +132,13 @@ void NthToDefaultTest::testGauss() {
                                    new FlatForward (asofDate, rate, dc, cmp));
     Handle<YieldTermStructure> yieldHandle (yieldPtr);
 
-    vector<Issuer> basket;
+    vector<Handle<DefaultProbabilityTermStructure> > probabilities;
     Period maxTerm (10, Years);
     for (Size i = 0; i < lambda.size(); i++) {
         Handle<Quote> h(shared_ptr<Quote>(new SimpleQuote(lambda[i])));
         shared_ptr<DefaultProbabilityTermStructure> ptr (
                                          new FlatHazardRate(asofDate, h, dc));
-        basket.push_back(Issuer(Handle<DefaultProbabilityTermStructure>(ptr),
-                                recovery));
+        probabilities.push_back(Handle<DefaultProbabilityTermStructure>(ptr));
     }
 
     shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.0));
@@ -149,15 +148,16 @@ void NthToDefaultTest::testGauss() {
                              new OneFactorGaussianCopula (correlationHandle));
     Handle<OneFactorCopula> copula (gaussianCopula);
 
-    vector<Issuer> singleBasket;
-    singleBasket.push_back (basket[0]);
+    vector<Handle<DefaultProbabilityTermStructure> > singleProbability;
+    singleProbability.push_back (probabilities[0]);
 
     CreditDefaultSwap cds (Protection::Seller, 100.0, 0.02,
                            schedule, Following, Actual360());
     cds.setPricingEngine(shared_ptr<PricingEngine>(
-                    new IntegralCdsEngine(timeUnit, basket[0], yieldHandle)));
+                             new IntegralCdsEngine(timeUnit, probabilities[0],
+                                                   recovery, yieldHandle)));
 
-    NthToDefault ftd (1, singleBasket, copula,
+    NthToDefault ftd (1, singleProbability, recovery, copula,
                       Protection::Seller, 100.0, schedule, 0.02,
                       Actual360(), true, yieldHandle, timeUnit);
 
@@ -172,8 +172,9 @@ void NthToDefaultTest::testGauss() {
                            "tolerance " << tinyTolerance << " exceeded");
 
     vector<NthToDefault> ntd;
-    for (Size i = 1; i <= basket.size(); i++)
-        ntd.push_back (NthToDefault (i, basket, copula, Protection::Seller,
+    for (Size i = 1; i <= probabilities.size(); i++)
+        ntd.push_back (NthToDefault (i, probabilities, recovery,
+                                     copula, Protection::Seller,
                                      100.0, schedule, 0.02, Actual360(),
                                      true, yieldHandle, timeUnit));
 
@@ -241,14 +242,13 @@ void NthToDefaultTest::testGaussStudent() {
     shared_ptr<YieldTermStructure> yieldPtr (new FlatForward (asofDate, rate, dc, cmp));
     Handle<YieldTermStructure> yieldHandle (yieldPtr);
 
-    vector<Issuer> basket;
+    vector<Handle<DefaultProbabilityTermStructure> > probabilities;
     Period maxTerm (10, Years);
     for (Size i = 0; i < lambda.size(); i++) {
         Handle<Quote> h(shared_ptr<Quote>(new SimpleQuote(lambda[i])));
         shared_ptr<DefaultProbabilityTermStructure> ptr (
                                          new FlatHazardRate(asofDate, h, dc));
-        basket.push_back(Issuer(Handle<DefaultProbabilityTermStructure>(ptr),
-                                recovery));
+        probabilities.push_back(Handle<DefaultProbabilityTermStructure>(ptr));
     }
 
     shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.3));
@@ -261,8 +261,9 @@ void NthToDefaultTest::testGaussStudent() {
     RelinkableHandle<OneFactorCopula> copula;
 
     vector<NthToDefault> ntd;
-    for (Size i = 1; i <= basket.size(); i++)
-        ntd.push_back (NthToDefault (i, basket, copula, Protection::Seller,
+    for (Size i = 1; i <= probabilities.size(); i++)
+        ntd.push_back (NthToDefault (i, probabilities, recovery,
+                                     copula, Protection::Seller,
                                      100.0, schedule, 0.02, Actual360(),
                                      true, yieldHandle, timeUnit));
 

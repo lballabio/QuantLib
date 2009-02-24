@@ -24,7 +24,7 @@
 #ifndef quantlib_synthetic_cdo_hpp
 #define quantlib_synthetic_cdo_hpp
 
-#include <ql/issuer.hpp>
+#include <ql/experimental/credit/issuer.hpp>
 #include <ql/instrument.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>

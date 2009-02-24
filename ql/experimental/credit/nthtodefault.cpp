@@ -26,20 +26,23 @@
 namespace QuantLib {
 
 
-    NthToDefault::NthToDefault(Size n,
-                               const std::vector<Issuer>& basket,
-                               const Handle<OneFactorCopula>& copula,
-                               Protection::Side side,
-                               Real nominal,
-                               const Schedule& premiumSchedule,
-                               Rate premiumRate,
-                               const DayCounter& dayCounter,
-                               bool settlePremiumAccrual,
-                               const Handle<YieldTermStructure>& yieldTS,
-                               const Period& integrationStepSize,
-                               boost::shared_ptr<Claim> claim)
-    : n_(n), basket_(basket), copula_(copula),
-      side_(side), nominal_(nominal),
+    NthToDefault::NthToDefault(
+              Size n,
+              const std::vector<Handle<DefaultProbabilityTermStructure> >&
+                                                                probabilities,
+              Real recoveryRate,
+              const Handle<OneFactorCopula>& copula,
+              Protection::Side side,
+              Real nominal,
+              const Schedule& premiumSchedule,
+              Rate premiumRate,
+              const DayCounter& dayCounter,
+              bool settlePremiumAccrual,
+              const Handle<YieldTermStructure>& yieldTS,
+              const Period& integrationStepSize,
+              boost::shared_ptr<Claim> claim)
+    : n_(n), probabilities_(probabilities), recoveryRate_(recoveryRate),
+      copula_(copula), side_(side), nominal_(nominal),
       premiumSchedule_(premiumSchedule), premiumRate_(premiumRate),
       dayCounter_(dayCounter), settlePremiumAccrual_(settlePremiumAccrual),
       yieldTS_(yieldTS), integrationStepSize_(integrationStepSize),
@@ -50,8 +53,8 @@ namespace QuantLib {
             .withCouponRates(premiumRate)
             .withPaymentAdjustment(Unadjusted);
 
-        for (Size i=0; i<basket_.size(); i++)
-            registerWith(basket_[i]);
+        for (Size i=0; i<probabilities_.size(); i++)
+            registerWith(probabilities_[i]);
         registerWith(copula_);
         registerWith(yieldTS_);
 
@@ -80,16 +83,13 @@ namespace QuantLib {
     void NthToDefault::performCalculations() const {
         QL_REQUIRE(!yieldTS_.empty(), "no yield term structure set");
 
-        for (Size i = 0; i < basket_.size(); i++) {
-            QL_REQUIRE(!basket_[i].defaultProbability().empty(),
+        for (Size i = 0; i < probabilities_.size(); i++) {
+            QL_REQUIRE(!probabilities_[i].empty(),
                        "no default term structure set");
             if (i > 0) {
-                QL_REQUIRE(basket_[i].defaultProbability()->referenceDate() ==
-                           basket_[i-1].defaultProbability()->referenceDate(),
+                QL_REQUIRE(probabilities_[i]->referenceDate() ==
+                           probabilities_[i-1]->referenceDate(),
                            "basket reference dates do not match");
-                QL_REQUIRE(
-                     basket_[i].recoveryRate() == basket_[i-1].recoveryRate(),
-                     "basket recovery rates do not match");
             }
         }
 
@@ -99,7 +99,6 @@ namespace QuantLib {
         Real premiumValue = 0.0;
         Real accrualValue = 0.0;
         Real claimValue = 0.0;
-        Real recoveryRate = basket_.front().recoveryRate();
         Date d, d0;
         for (Size i = 0; i < premiumLeg_.size(); i++) {
             boost::shared_ptr<FixedRateCoupon> coupon =
@@ -129,8 +128,7 @@ namespace QuantLib {
                     if (settlePremiumAccrual_)
                         accrualValue += coupon->accruedAmount(d)*disc*dcfdd;
 
-                    claimValue -= claim_->amount(d, nominal_,
-                                                 recoveryRate)
+                    claimValue -= claim_->amount(d, nominal_, recoveryRate_)
                                   * disc * dcfdd;
 
                     d0 = d;
@@ -158,12 +156,12 @@ namespace QuantLib {
     }
 
     Probability NthToDefault::defaultProbability(const Date& d) const {
-        if (d <= basket_.front().defaultProbability()->referenceDate())
+        if (d <= probabilities_.front()->referenceDate())
             return 0.0;
 
-        std::vector<Real> defProb(basket_.size());
-        for (Size j = 0; j < basket_.size(); j++)
-            defProb[j] = basket_[j].defaultProbability()->defaultProbability(d);
+        std::vector<Real> defProb(probabilities_.size());
+        for (Size j = 0; j < probabilities_.size(); j++)
+            defProb[j] = probabilities_[j]->defaultProbability(d);
 
         ProbabilityOfAtLeastNEvents op(n_);
 
@@ -171,3 +169,4 @@ namespace QuantLib {
     }
 
 }
+

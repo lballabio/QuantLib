@@ -19,7 +19,7 @@
 
 #include "issuer.hpp"
 #include "utilities.hpp"
-#include <ql/issuer.hpp>
+#include <ql/experimental/credit/issuer.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/quotes/simplequote.hpp>

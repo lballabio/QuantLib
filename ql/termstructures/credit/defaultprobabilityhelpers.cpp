@@ -126,9 +126,9 @@ namespace QuantLib {
                                                 paysAtDefaultTime_));
 
         swap_->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                    new MidPointCdsEngine(Issuer(probability_, recoveryRate_),
-                                          discountCurve_)));
-
+                                      new MidPointCdsEngine(probability_,
+                                                            recoveryRate_,
+                                                            discountCurve_)));
     }
 
 }

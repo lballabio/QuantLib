@@ -52,11 +52,11 @@ namespace QuantLib {
             Date d2 = cf[i]->date();
             if (d2 > today) {
                 Date defaultDate = d1 + (d2-d1)/2;
-                Real coupon = cf[i]->amount() 
-                    * issuer().defaultProbability()->survivalProbability(d2);
-                Real recovery = notional(defaultDate) * issuer().recoveryRate()
-                    * (issuer().defaultProbability()->survivalProbability(d1)
-                       -issuer().defaultProbability()->survivalProbability(d2));
+                Real coupon = cf[i]->amount()
+                    * probability_->survivalProbability(d2);
+                Real recovery = notional(defaultDate) * recoveryRate_
+                    * (probability_->survivalProbability(d1)
+                       -probability_->survivalProbability(d2));
                 NPV_ += coupon * yieldTS()->discount(d2);
                 NPV_ += recovery * yieldTS()->discount(defaultDate);
             }
@@ -96,16 +96,16 @@ namespace QuantLib {
             Date d2 = cf[i]->date();
             if (d2 > today) {
                 Date defaultDate = d1 + (d2-d1)/2;
-                Real coupon = cf[i]->amount() 
-                    * issuer().defaultProbability()->survivalProbability(d2);
-                Real recovery = notional(defaultDate) * issuer().recoveryRate()
-                    * (issuer().defaultProbability()->survivalProbability(d1)
-                       -issuer().defaultProbability()->survivalProbability(d2));
-                boost::shared_ptr<CashFlow> 
+                Real coupon = cf[i]->amount()
+                    * probability_->survivalProbability(d2);
+                Real recovery = notional(defaultDate) * recoveryRate_
+                    * (probability_->survivalProbability(d1)
+                       -probability_->survivalProbability(d2));
+                boost::shared_ptr<CashFlow>
                     flow1(new SimpleCashFlow(coupon, d2));
                 expected.push_back(flow1);
 
-                boost::shared_ptr<CashFlow> 
+                boost::shared_ptr<CashFlow>
                     flow2(new SimpleCashFlow(recovery, defaultDate));
                 expected.push_back(flow2);
             }
@@ -115,16 +115,18 @@ namespace QuantLib {
     }
 
     //------------------------------------------------------------------------
-    RiskyFixedBond::RiskyFixedBond(std::string name,
-                                   Currency ccy,
-                                   Issuer issuer,
-                                   Schedule schedule,
-                                   Real rate,
-                                   DayCounter dayCounter,
-                                   BusinessDayConvention paymentConvention,
-                                   std::vector<Real> notionals,
-                                   Handle<YieldTermStructure> yieldTS)
-        : RiskyBond(name, ccy, issuer, yieldTS),
+    RiskyFixedBond::RiskyFixedBond(
+                          std::string name,
+                          Currency ccy,
+                          Handle<DefaultProbabilityTermStructure> probability,
+                          Real recoveryRate,
+                          Schedule schedule,
+                          Real rate,
+                          DayCounter dayCounter,
+                          BusinessDayConvention paymentConvention,
+                          std::vector<Real> notionals,
+                          Handle<YieldTermStructure> yieldTS)
+        : RiskyBond(name, ccy, probability, recoveryRate, yieldTS),
           schedule_(schedule),
           rate_(rate),
           dayCounter_(dayCounter),
@@ -134,13 +136,13 @@ namespace QuantLib {
         std::vector<Date> dates = schedule_.dates();
         Real previousNotional = notionals_.front();
         for (Size i = 1; i < dates.size(); i++) {
-            Real currentNotional = (i < notionals_.size() ? 
+            Real currentNotional = (i < notionals_.size() ?
                              notionals_[i] :
                              notionals_.back());
             boost::shared_ptr<CashFlow> interest (new
-                   FixedRateCoupon(previousNotional, dates[i], 
+                   FixedRateCoupon(previousNotional, dates[i],
                                    rate_, dayCounter_, dates[i-1], dates[i]));
-            boost::shared_ptr<CashFlow> amortization(new 
+            boost::shared_ptr<CashFlow> amortization(new
                  SimpleCashFlow(previousNotional - currentNotional, dates[i]));
             previousNotional = currentNotional;
 
@@ -149,7 +151,7 @@ namespace QuantLib {
                 leg_.push_back(amortization);
         }
 
-        boost::shared_ptr<CashFlow> redemption(new 
+        boost::shared_ptr<CashFlow> redemption(new
                  SimpleCashFlow(previousNotional, schedule_.dates().back()));
         leg_.push_back(redemption);
     }
@@ -180,16 +182,18 @@ namespace QuantLib {
     }
 
     //------------------------------------------------------------------------
-    RiskyFloatingBond::RiskyFloatingBond(std::string name,
-                                         Currency ccy,
-                                         Issuer issuer,
-                                         Schedule schedule,
-                                         boost::shared_ptr<IborIndex> index,
-                                         Integer fixingDays,
-                                         Real spread,
-                                         std::vector<Real> notionals,
-                                         Handle<YieldTermStructure> yieldTS)
-        : RiskyBond(name, ccy, issuer, yieldTS),
+    RiskyFloatingBond::RiskyFloatingBond(
+                          std::string name,
+                          Currency ccy,
+                          Handle<DefaultProbabilityTermStructure> probability,
+                          Real recoveryRate,
+                          Schedule schedule,
+                          boost::shared_ptr<IborIndex> index,
+                          Integer fixingDays,
+                          Real spread,
+                          std::vector<Real> notionals,
+                          Handle<YieldTermStructure> yieldTS)
+        : RiskyBond(name, ccy, probability, recoveryRate, yieldTS),
           schedule_(schedule),
           index_(index),
           fixingDays_(fixingDays),
@@ -200,13 +204,13 @@ namespace QuantLib {
         std::vector<Date> dates = schedule_.dates();
         Real previousNotional = notionals_.front();
         for (Size i = 1; i < dates.size(); i++) {
-            Real currentNotional = (i < notionals_.size() ? 
+            Real currentNotional = (i < notionals_.size() ?
                              notionals_[i] :
                              notionals_.back());
             boost::shared_ptr<CashFlow> interest (new
                    IborCoupon(dates[i], previousNotional, dates[i-1], dates[i],
                               fixingDays_, index_, 1.0, spread_));
-            boost::shared_ptr<CashFlow> amortization(new 
+            boost::shared_ptr<CashFlow> amortization(new
                  SimpleCashFlow(previousNotional - currentNotional, dates[i]));
             previousNotional = currentNotional;
 
@@ -215,7 +219,7 @@ namespace QuantLib {
                 leg_.push_back(amortization);
         }
 
-        boost::shared_ptr<CashFlow> redemption(new 
+        boost::shared_ptr<CashFlow> redemption(new
                  SimpleCashFlow(previousNotional, schedule_.dates().back()));
         leg_.push_back(redemption);
 
@@ -225,7 +229,7 @@ namespace QuantLib {
         setCouponPricer(leg_,fictitiousPricer);
     }
 
-    std::vector<boost::shared_ptr<CashFlow> > RiskyFloatingBond::cashflows() 
+    std::vector<boost::shared_ptr<CashFlow> > RiskyFloatingBond::cashflows()
         const {
         return leg_;
     }

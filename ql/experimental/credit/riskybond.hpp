@@ -25,7 +25,7 @@
 #define quantlib_riskybond_hpp
 
 #include <ql/instrument.hpp>
-#include <ql/issuer.hpp>
+#include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/default.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/time/daycounter.hpp>
@@ -44,11 +44,13 @@ namespace QuantLib {
     public:
         RiskyBond(std::string name,
                   Currency ccy,
-                  Issuer issuer,
+                  Handle<DefaultProbabilityTermStructure> probability,
+                  Real recoveryRate,
                   Handle<YieldTermStructure> yieldTS)
-            : name_(name), ccy_(ccy), issuer_(issuer), yieldTS_(yieldTS) {
+            : name_(name), ccy_(ccy), probability_(probability),
+              recoveryRate_(recoveryRate), yieldTS_(yieldTS) {
             registerWith (yieldTS_);
-            registerWith (issuer);
+            registerWith (probability_);
         }
         virtual ~RiskyBond() {}
         virtual std::vector<boost::shared_ptr<CashFlow> > cashflows() const = 0;
@@ -61,7 +63,6 @@ namespace QuantLib {
         std::string name() const;
         Currency ccy() const;
         Handle<YieldTermStructure> yieldTS() const;
-        Issuer issuer() const;
         //! \name Instrument interface
         //@{
         bool isExpired() const;
@@ -72,7 +73,8 @@ namespace QuantLib {
     private:
         std::string name_;
         Currency ccy_;
-        Issuer issuer_;
+        Handle<DefaultProbabilityTermStructure> probability_;
+        Real recoveryRate_;
         Handle<YieldTermStructure> yieldTS_;
     };
 
@@ -88,10 +90,6 @@ namespace QuantLib {
         return yieldTS_;
     }
 
-    inline Issuer RiskyBond::issuer() const {
-        return issuer_;
-    }
-
     /*! Default risky fixed bond
       \ingroup credit
     */
@@ -99,7 +97,8 @@ namespace QuantLib {
     public:
         RiskyFixedBond(std::string name,
                        Currency ccy,
-                       Issuer,
+                       Handle<DefaultProbabilityTermStructure> probability,
+                       Real recoveryRate,
                        Schedule schedule,
                        Real rate,
                        DayCounter dayCounter,
@@ -127,7 +126,8 @@ namespace QuantLib {
     public:
         RiskyFloatingBond(std::string name,
                           Currency ccy,
-                          Issuer issuer,
+                          Handle<DefaultProbabilityTermStructure> probability,
+                          Real recoveryRate,
                           Schedule schedule,
                           boost::shared_ptr<IborIndex> index,
                           Integer fixingDays,

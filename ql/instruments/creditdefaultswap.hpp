@@ -28,7 +28,8 @@
 
 #include <ql/instrument.hpp>
 #include <ql/cashflow.hpp>
-#include <ql/issuer.hpp>
+#include <ql/default.hpp>
+#include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/time/schedule.hpp>
 
 namespace QuantLib {

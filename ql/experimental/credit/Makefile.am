@@ -10,6 +10,7 @@ this_include_HEADERS = \
     cdsoption.hpp \
     distribution.hpp \
     factorspreadedhazardratecurve.hpp \
+    issuer.hpp \
     loss.hpp \
     lossdistribution.hpp \
     nthtodefault.hpp \
@@ -31,6 +32,7 @@ libCredit_la_SOURCES = \
     cdo.cpp \
     cdsoption.cpp \
     distribution.cpp \
+    issuer.cpp \
     lossdistribution.cpp \
     nthtodefault.cpp \
     onefactorcopula.cpp \

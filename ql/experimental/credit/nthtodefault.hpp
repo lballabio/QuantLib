@@ -25,8 +25,9 @@
 #define quantlib_nth_to_default_hpp
 
 #include <ql/instrument.hpp>
-#include <ql/issuer.hpp>
 #include <ql/cashflow.hpp>
+#include <ql/default.hpp>
+#include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/experimental/credit/onefactorcopula.hpp>
 #include <ql/time/schedule.hpp>
 
@@ -67,19 +68,21 @@ namespace QuantLib {
     */
     class NthToDefault : public Instrument {
       public:
-        NthToDefault(Size n,
-                     const std::vector<Issuer>& basket,
-                     const Handle<OneFactorCopula>& copula,
-                     Protection::Side side,
-                     Real nominal,
-                     const Schedule& premiumSchedule,
-                     Rate premiumRate,
-                     const DayCounter& dayCounter,
-                     bool settlePremiumAccrual,
-                     const Handle<YieldTermStructure>& yieldTS,
-                     const Period& integrationStepSize,
-                     boost::shared_ptr<Claim> claim =
-                                                  boost::shared_ptr<Claim>());
+        NthToDefault(
+                Size n,
+                const std::vector<Handle<DefaultProbabilityTermStructure> >&
+                                                                probabilities,
+                Real recoveryRate,
+                const Handle<OneFactorCopula>& copula,
+                Protection::Side side,
+                Real nominal,
+                const Schedule& premiumSchedule,
+                Rate premiumRate,
+                const DayCounter& dayCounter,
+                bool settlePremiumAccrual,
+                const Handle<YieldTermStructure>& yieldTS,
+                const Period& integrationStepSize,
+                boost::shared_ptr<Claim> claim = boost::shared_ptr<Claim>());
 
         bool isExpired() const;
 
@@ -91,7 +94,7 @@ namespace QuantLib {
         DayCounter dayCounter() const { return dayCounter_; }
         Protection::Side side() const { return side_; }
         Size rank() const { return n_; }
-        Size basketSize() const { return basket_.size(); }
+        Size basketSize() const { return probabilities_.size(); }
 
       private:
         Probability defaultProbability(const Date& d) const;
@@ -100,7 +103,8 @@ namespace QuantLib {
         void performCalculations() const;
 
         Size n_;
-        std::vector<Issuer> basket_;
+        std::vector<Handle<DefaultProbabilityTermStructure> > probabilities_;
+        Real recoveryRate_;
         Handle<OneFactorCopula> copula_;
         Protection::Side side_;
         Real nominal_;

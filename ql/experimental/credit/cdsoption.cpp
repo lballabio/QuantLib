@@ -33,17 +33,19 @@ namespace QuantLib {
 
         class ImpliedVolHelper {
           public:
-            ImpliedVolHelper(const CdsOption& cdsoption,
-                             const Issuer& issuer,
-                             const Handle<YieldTermStructure>& termStructure,
-                             Real targetValue)
-            : termStructure_(termStructure), issuer_(issuer),
-              targetValue_(targetValue) {
+            ImpliedVolHelper(
+                   const CdsOption& cdsoption,
+                   const Handle<DefaultProbabilityTermStructure>& probability,
+                   Real recoveryRate,
+                   const Handle<YieldTermStructure>& termStructure,
+                   Real targetValue)
+            : targetValue_(targetValue) {
 
                 vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
                 Handle<Quote> h(vol_);
                 engine_ = boost::shared_ptr<PricingEngine>(
-                         new BlackCdsOptionEngine(issuer_, termStructure, h));
+                           new BlackCdsOptionEngine(probability, recoveryRate,
+                                                    termStructure, h));
                 cdsoption.setupArguments(engine_->getArguments());
 
                 results_ =
@@ -57,8 +59,6 @@ namespace QuantLib {
             }
           private:
             boost::shared_ptr<PricingEngine> engine_;
-            Handle<YieldTermStructure> termStructure_;
-            Issuer issuer_;
             Real targetValue_;
             boost::shared_ptr<SimpleQuote> vol_;
             const Instrument::results* results_;
@@ -121,19 +121,21 @@ namespace QuantLib {
     }
 
     Volatility CdsOption::impliedVolatility(
-                              Real targetValue,
-                              const Handle<YieldTermStructure>& termStructure,
-                              const Issuer& issuer,
-                              Real accuracy,
-                              Size maxEvaluations,
-                              Volatility minVol,
-                              Volatility maxVol) const {
+                   Real targetValue,
+                   const Handle<YieldTermStructure>& termStructure,
+                   const Handle<DefaultProbabilityTermStructure>& probability,
+                   Real recoveryRate,
+                   Real accuracy,
+                   Size maxEvaluations,
+                   Volatility minVol,
+                   Volatility maxVol) const {
         calculate();
         QL_REQUIRE(!isExpired(), "instrument expired");
 
         Volatility guess = 0.10;
 
-        ImpliedVolHelper f(*this, issuer, termStructure, targetValue);
+        ImpliedVolHelper f(*this, probability, recoveryRate,
+                           termStructure, targetValue);
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);

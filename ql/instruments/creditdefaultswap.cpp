@@ -190,9 +190,8 @@ namespace QuantLib {
         Handle<DefaultProbabilityTermStructure> probability(
             boost::shared_ptr<DefaultProbabilityTermStructure>(
                     new FlatHazardRate(Handle<Quote>(flatRate), dayCounter)));
-        Issuer issuer(probability, recoveryRate);
 
-        MidPointCdsEngine engine(issuer, discountCurve);
+        MidPointCdsEngine engine(probability, recoveryRate, discountCurve);
         setupArguments(engine.getArguments());
         const CreditDefaultSwap::results* results =
             dynamic_cast<const CreditDefaultSwap::results*>(

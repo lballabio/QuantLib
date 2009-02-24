@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2008 Roland Lichters
- Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2008, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,12 +32,14 @@ namespace QuantLib {
     class IntegralCdsEngine : public CreditDefaultSwap::engine {
       public:
         IntegralCdsEngine(const Period& integrationStep,
-                          const Issuer& issuer,
+                          const Handle<DefaultProbabilityTermStructure>&,
+                          Real recoveryRate,
                           const Handle<YieldTermStructure>& discountCurve);
         void calculate() const;
       private:
         Period integrationStep_;
-        Issuer issuer_;
+        Handle<DefaultProbabilityTermStructure> probability_;
+        Real recoveryRate_;
         Handle<YieldTermStructure> discountCurve_;
     };
 

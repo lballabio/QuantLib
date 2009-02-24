@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2008 Roland Lichters
- Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2008, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,11 +26,13 @@
 namespace QuantLib {
 
     IntegralCdsEngine::IntegralCdsEngine(
-                              const Period& step,
-                              const Issuer& issuer,
-                              const Handle<YieldTermStructure>& discountCurve)
-    : integrationStep_(step), issuer_(issuer), discountCurve_(discountCurve) {
-        registerWith(issuer_);
+                   const Period& step,
+                   const Handle<DefaultProbabilityTermStructure>& probability,
+                   Real recoveryRate,
+                   const Handle<YieldTermStructure>& discountCurve)
+    : integrationStep_(step), probability_(probability),
+      recoveryRate_(recoveryRate), discountCurve_(discountCurve) {
+        registerWith(probability_);
         registerWith(discountCurve_);
     }
 
@@ -39,11 +41,8 @@ namespace QuantLib {
                    "null period set");
         QL_REQUIRE(!discountCurve_.empty(),
                    "no discount term structure set");
-        QL_REQUIRE(!issuer_.defaultProbability().empty(),
+        QL_REQUIRE(!probability_.empty(),
                    "no probability term structure set");
-
-        const Handle<DefaultProbabilityTermStructure>& probabilityCurve =
-            issuer_.defaultProbability();
 
         Date today = Settings::instance().evaluationDate();
         Date settlementDate = discountCurve_->referenceDate();
@@ -70,7 +69,7 @@ namespace QuantLib {
                 effectiveStartDate + (endDate-effectiveStartDate)/2;
             Real couponAmount = coupon->amount();
 
-            Probability S = probabilityCurve->survivalProbability(paymentDate);
+            Probability S = probability_->survivalProbability(paymentDate);
 
             // On one side, we add the fixed rate payments in case of
             // survival.
@@ -83,7 +82,7 @@ namespace QuantLib {
             Period step = integrationStep_;
             Date d0 = effectiveStartDate;
             Date d1 = std::min(d0 + step, endDate);
-            Probability P0 = probabilityCurve->defaultProbability(d0);
+            Probability P0 = probability_->defaultProbability(d0);
             DiscountFactor endDiscount = discountCurve_->discount(paymentDate);
             do {
                 DiscountFactor B =
@@ -91,7 +90,7 @@ namespace QuantLib {
                     discountCurve_->discount(d1) :
                     endDiscount;
 
-                Probability P1 = probabilityCurve->defaultProbability(d1);
+                Probability P1 = probability_->defaultProbability(d1);
                 Probability dP = P1 - P0;
 
                 // accrual...
@@ -107,7 +106,7 @@ namespace QuantLib {
                 // ...and claim.
                 Real claim = arguments_.claim->amount(d1,
                                                       arguments_.notional,
-                                                      issuer_.recoveryRate());
+                                                      recoveryRate_);
                 results_.defaultLegNPV += claim * B * dP;
 
                 // setup for next time around the loop

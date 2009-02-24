@@ -133,11 +133,9 @@ int main(int, char* []) {
 
         // reprice instruments
         Real nominal = 1000000.0;
-        Issuer issuer(Handle<DefaultProbabilityTermStructure>(
-                                                         hazardRateStructure),
-                      recovery_rate);
+        Handle<DefaultProbabilityTermStructure> probability(hazardRateStructure);
         boost::shared_ptr<PricingEngine> engine(
-                                      new MidPointCdsEngine(issuer, tsCurve));
+                  new MidPointCdsEngine(probability, recovery_rate, tsCurve));
 
         Schedule cdsSchedule = MakeSchedule(todaysDate, maturities[0],
                                             Period(Quarterly), calendar,

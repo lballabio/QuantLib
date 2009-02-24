@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2008 Jose Aparicio
  Copyright (C) 2008 Roland Lichters
- Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2008, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,11 +32,13 @@ namespace QuantLib {
 
     class MidPointCdsEngine : public CreditDefaultSwap::engine {
       public:
-        MidPointCdsEngine(const Issuer& issuer,
+        MidPointCdsEngine(const Handle<DefaultProbabilityTermStructure>&,
+                          Real recoveryRate,
                           const Handle<YieldTermStructure>& discountCurve);
         void calculate() const;
       private:
-        Issuer issuer_;
+        Handle<DefaultProbabilityTermStructure> probability_;
+        Real recoveryRate_;
         Handle<YieldTermStructure> discountCurve_;
     };
 

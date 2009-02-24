@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2008 Jose Aparicio
  Copyright (C) 2008 Roland Lichters
- Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2008, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,21 +27,20 @@
 namespace QuantLib {
 
     MidPointCdsEngine::MidPointCdsEngine(
-                              const Issuer& issuer,
-                              const Handle<YieldTermStructure>& discountCurve)
-    : issuer_(issuer), discountCurve_(discountCurve) {
-        registerWith(issuer_);
+                   const Handle<DefaultProbabilityTermStructure>& probability,
+                   Real recoveryRate,
+                   const Handle<YieldTermStructure>& discountCurve)
+    : probability_(probability), recoveryRate_(recoveryRate),
+      discountCurve_(discountCurve) {
+        registerWith(probability_);
         registerWith(discountCurve_);
     }
 
     void MidPointCdsEngine::calculate() const {
         QL_REQUIRE(!discountCurve_.empty(),
                    "no discount term structure set");
-        QL_REQUIRE(!issuer_.defaultProbability().empty(),
+        QL_REQUIRE(!probability_.empty(),
                    "no probability term structure set");
-
-        const Handle<DefaultProbabilityTermStructure>& probabilityCurve =
-            issuer_.defaultProbability();
 
         Date today = Settings::instance().evaluationDate();
         Date settlementDate = discountCurve_->referenceDate();
@@ -67,10 +66,9 @@ namespace QuantLib {
             Date defaultDate = // mid-point
                 effectiveStartDate + (endDate-effectiveStartDate)/2;
 
-            Probability S = probabilityCurve->survivalProbability(paymentDate);
-            Probability P =
-                probabilityCurve->defaultProbability(effectiveStartDate,
-                                                     endDate);
+            Probability S = probability_->survivalProbability(paymentDate);
+            Probability P = probability_->defaultProbability(effectiveStartDate,
+                                                             endDate);
 
             // on one side, we add the fixed rate payments in case of
             // survival...
@@ -94,7 +92,7 @@ namespace QuantLib {
             // on the other side, we add the payment in case of default.
             Real claim = arguments_.claim->amount(defaultDate,
                                                   arguments_.notional,
-                                                  issuer_.recoveryRate());
+                                                  recoveryRate_);
             if (arguments_.paysAtDefaultTime) {
                 results_.defaultLegNPV +=
                     P * claim * discountCurve_->discount(defaultDate);

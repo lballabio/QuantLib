@@ -67,7 +67,8 @@ namespace QuantLib {
         Volatility impliedVolatility(
                               Real price,
                               const Handle<YieldTermStructure>& termStructure,
-                              const Issuer& issuer,
+                              const Handle<DefaultProbabilityTermStructure>&,
+                              Real recoveryRate,
                               Real accuracy = 1.e-4,
                               Size maxEvaluations = 100,
                               Volatility minVol = 1.0e-7,

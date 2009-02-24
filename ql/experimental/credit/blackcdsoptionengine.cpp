@@ -27,13 +27,14 @@
 namespace QuantLib {
 
     BlackCdsOptionEngine::BlackCdsOptionEngine(
-                            const Issuer& issuer,
-                            const Handle<YieldTermStructure>& termStructure,
-                            const Handle<Quote>& volatility)
-    : issuer_(issuer), termStructure_(termStructure),
-      volatility_(volatility) {
+                   const Handle<DefaultProbabilityTermStructure>& probability,
+                   Real recoveryRate,
+                   const Handle<YieldTermStructure>& termStructure,
+                   const Handle<Quote>& volatility)
+    : probability_(probability), recoveryRate_(recoveryRate),
+      termStructure_(termStructure), volatility_(volatility) {
 
-        registerWith(issuer_);
+        registerWith(probability_);
         registerWith(termStructure_);
         registerWith(volatility_);
     }
@@ -71,8 +72,8 @@ namespace QuantLib {
         if (arguments_.side == Protection::Buyer && !arguments_.knocksOut) {
             Real frontEndProtection =
                 callPut * arguments_.swap->notional()
-                * (1.-issuer_.recoveryRate())
-                * issuer_.defaultProbability()->defaultProbability(exerciseDate)
+                * (1.-recoveryRate_)
+                * probability_->defaultProbability(exerciseDate)
                 * termStructure_->discount(exerciseDate);
             results_.value += frontEndProtection;
         }

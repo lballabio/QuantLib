@@ -17,29 +17,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/issuer.hpp>
+#include <ql/experimental/credit/issuer.hpp>
 
 namespace QuantLib {
-
-    namespace {
-
-        // order events based on date
-        struct earlier_than {
-            bool operator()(const boost::shared_ptr<DefaultEvent>& e1,
-                            const boost::shared_ptr<DefaultEvent>& e2) const {
-                return e1->date() < e2->date();
-            }
-        };
-
-    }
-
 
     Issuer::Issuer(const Handle<DefaultProbabilityTermStructure>& probability,
                    Real recoveryRate,
                    const std::vector<boost::shared_ptr<DefaultEvent> >& events)
     : probability_(probability), recoveryRate_(recoveryRate),
       events_(events) {
-        std::sort(events_.begin(), events_.end(), earlier_than());
+        std::sort(events_.begin(), events_.end(),
+                  earlier_than<boost::shared_ptr<DefaultEvent> >());
     }
 
 

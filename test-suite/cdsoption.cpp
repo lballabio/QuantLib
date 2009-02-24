@@ -66,10 +66,8 @@ void CdsOptionTest::testCached() {
         boost::shared_ptr<DefaultProbabilityTermStructure>(
                                  new FlatHazardRate(hazardRate, dayCounter)));
 
-    Issuer issuer(defaultProbability, recoveryRate);
-
     boost::shared_ptr<PricingEngine> swapEngine(
-                                     new MidPointCdsEngine(issuer, riskFree));
+           new MidPointCdsEngine(defaultProbability, recoveryRate, riskFree));
 
     CreditDefaultSwap swap(Protection::Seller, notional, 0.001, schedule,
                            convention, dayCounter);
@@ -86,7 +84,8 @@ void CdsOptionTest::testCached() {
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(expiry));
     CdsOption option1(underlying, exercise);
     option1.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                         new BlackCdsOptionEngine(issuer, riskFree, cdsVol)));
+                    new BlackCdsOptionEngine(defaultProbability, recoveryRate,
+                                             riskFree, cdsVol)));
 
     Real cachedValue = 270.976348;
     if (std::fabs(option1.NPV() - cachedValue) > 1.0e-5)
@@ -102,7 +101,8 @@ void CdsOptionTest::testCached() {
 
     CdsOption option2(underlying, exercise);
     option2.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                         new BlackCdsOptionEngine(issuer, riskFree, cdsVol)));
+                    new BlackCdsOptionEngine(defaultProbability, recoveryRate,
+                                             riskFree, cdsVol)));
 
     cachedValue = 270.976348;
     if (std::fabs(option2.NPV() - cachedValue) > 1.0e-5)

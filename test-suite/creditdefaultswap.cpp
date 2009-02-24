@@ -75,12 +75,11 @@ void CreditDefaultSwapTest::testCachedValue() {
     DayCounter dayCount = Actual360();
     Real notional = 10000.0;
     Real recoveryRate = 0.4;
-    Issuer issuer(probabilityCurve, recoveryRate);
 
     CreditDefaultSwap cds(Protection::Seller, notional, fixedRate,
                           schedule, convention, dayCount, true, true);
     cds.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                                new MidPointCdsEngine(issuer,discountCurve)));
+         new MidPointCdsEngine(probabilityCurve,recoveryRate,discountCurve)));
 
     Real npv = 295.0153398;
     Rate fairRate = 0.007517539081;
@@ -104,7 +103,8 @@ void CreditDefaultSwapTest::testCachedValue() {
             << "    expected fair rate:   " << fairRate);
 
     cds.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                         new IntegralCdsEngine(1*Days,issuer,discountCurve)));
+                          new IntegralCdsEngine(1*Days,probabilityCurve,
+                                                recoveryRate,discountCurve)));
 
     calculatedNpv = cds.NPV();
     calculatedFairRate = cds.fairSpread();
@@ -127,7 +127,8 @@ void CreditDefaultSwapTest::testCachedValue() {
             << "    expected fair rate:   " << fairRate);
 
     cds.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                        new IntegralCdsEngine(1*Weeks,issuer,discountCurve)));
+                          new IntegralCdsEngine(1*Weeks,probabilityCurve,
+                                                recoveryRate,discountCurve)));
 
     calculatedNpv = cds.NPV();
     calculatedFairRate = cds.fairSpread();
@@ -264,12 +265,12 @@ void CreditDefaultSwapTest::testCachedMarketValue() {
     Rate fixedRate=0.0224;
     DayCounter dayCount=Actual360();
     Real cdsNotional=100.0;
-    Issuer issuer(piecewiseFlatHazardRate, recoveryRate);
 
     CreditDefaultSwap cds(Protection::Seller, cdsNotional, fixedRate,
                           schedule, cdsConvention, dayCount, true, true);
     cds.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                                new MidPointCdsEngine(issuer,discountCurve)));
+                          new MidPointCdsEngine(piecewiseFlatHazardRate,
+                                                recoveryRate,discountCurve)));
 
     double calculatedNpv = cds.NPV();
     double calculatedFairRate = cds.fairSpread();
@@ -338,7 +339,6 @@ void CreditDefaultSwapTest::testImpliedHazardRate() {
     DayCounter cdsDayCount = Actual360();
     Real notional = 10000.0;
     Real recoveryRate = 0.4;
-    Issuer issuer(probabilityCurve, recoveryRate);
 
     Rate latestRate = Null<Rate>();
     for (Integer n=6; n<=10; ++n) {
@@ -352,12 +352,13 @@ void CreditDefaultSwapTest::testImpliedHazardRate() {
                               schedule, convention, cdsDayCount,
                               true, true);
         cds.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                                new MidPointCdsEngine(issuer,discountCurve)));
+                         new MidPointCdsEngine(probabilityCurve,
+                                               recoveryRate, discountCurve)));
 
         Real NPV = cds.NPV();
         Rate flatRate = cds.impliedHazardRate(NPV, discountCurve,
                                               dayCounter,
-                                              issuer.recoveryRate());
+                                              recoveryRate);
 
         if (flatRate < h1 || flatRate > h2) {
             BOOST_ERROR("implied hazard rate outside expected range\n"
@@ -381,13 +382,13 @@ void CreditDefaultSwapTest::testImpliedHazardRate() {
          new FlatHazardRate(
            Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(flatRate))),
            dayCounter)));
-        Issuer i(probability, issuer.recoveryRate());
 
         CreditDefaultSwap cds2(Protection::Seller, notional, fixedRate,
                                schedule, convention, cdsDayCount,
                                true, true);
         cds2.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                                new MidPointCdsEngine(issuer,discountCurve)));
+                               new MidPointCdsEngine(probability,recoveryRate,
+                                                     discountCurve)));
 
         Real NPV2 = cds2.NPV();
         Real tolerance = 1.0;

@@ -189,7 +189,6 @@ namespace {
 
         Real notional = 1.0;
         double tolerance = 1.0e-6;
-        Issuer issuer(piecewiseCurve, recoveryRate);
 
         for (Size i=0; i<n.size(); i++) {
             Date settlement = calendar.advance(today, settlementDays, Days);
@@ -201,7 +200,8 @@ namespace {
             CreditDefaultSwap cds(Protection::Buyer, notional, quote[i],
                                   schedule, convention, dayCounter);
             cds.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                               new MidPointCdsEngine(issuer, discountCurve)));
+                           new MidPointCdsEngine(piecewiseCurve, recoveryRate,
+                                                 discountCurve)));
 
             // test
             Rate inputRate = quote[i];
