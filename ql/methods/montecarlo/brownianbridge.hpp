@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2009 Bojan Nikolic
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -52,22 +53,50 @@ namespace QuantLib {
     */
     class BrownianBridge {
       public:
-        //! unit-time path
+        /*! The constructor generates the time grid so that each step
+            is of unit-time length.
+
+            \param steps The number of steps in the path
+        */
         BrownianBridge(Size steps);
-        //! generic times
-        /*! \note the starting time of the path is assumed to be 0
-                  and must not be included
+        /*! The step times are copied from the supplied vector
+
+            \param times A vector containing the times at which the
+                         steps occur. This also defines the number of
+                         steps that will be generated.
+
+            \note the starting time of the path is assumed to be 0 and
+                  must not be included
         */
         BrownianBridge(const std::vector<Time>& times);
-        //! generic times
+        /*! The step times are copied from the TimeGrid object
+
+            \param timeGrid a time grid containing the times at which
+                            the steps will occur
+        */
         BrownianBridge(const TimeGrid& timeGrid);
         //! \name inspectors
         //@{
         Size size() const;
         const std::vector<Time>& times() const;
         //@}
-        //! \name Brownian-bridge constructor
-        //@{
+
+        //! Brownian-bridge generator function
+        /*! Transforms an input sequence of random variates into a
+            sequence of variations in a Brownian bridge path.
+
+            \param begin  The start iterator of the input sequence.
+            \param end    The end iterator of the input sequence.
+            \param output The start iterator of the output sequence.
+
+            \note To get the canonical Brownian bridge which starts
+                  and finishes at the same value, the first element of
+                  the input sequence must be zero. Conversely, to get
+                  a sloped bridge set the first element to a non-zero
+                  value. In this case, the final value in the bridge
+                  will be sqrt(last time point)*(first element of
+                  input sequence).
+        */
         template <class RandomAccessIterator1,
                   class RandomAccessIterator2>
         void transform(RandomAccessIterator1 begin,
@@ -109,6 +138,7 @@ namespace QuantLib {
         std::vector<Size> bridgeIndex_, leftIndex_, rightIndex_;
         std::vector<Real> leftWeight_, rightWeight_, stdDev_;
     };
+
 
     inline Size BrownianBridge::size() const {
         return size_;
