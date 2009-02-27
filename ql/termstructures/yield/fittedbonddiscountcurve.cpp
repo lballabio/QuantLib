@@ -166,19 +166,20 @@ namespace QuantLib {
         Real squaredSum = 0.0;
 
         for (Size k=0; k<curve_->instruments_.size(); ++k) {
-            boost::shared_ptr<Bond> bond = curve_->instruments_[k]->bond();
+            boost::shared_ptr<FixedRateBond> bond =
+                curve_->instruments_[k]->bond();
 
             Leg leg = bond->cashflows();
             Real cleanPrice = curve_->instruments_[k]->quoteValue();
             Rate ytm = bond->yield(cleanPrice,
-                                   curve_->instruments_[k]->bond()->dayCounter(),
+                                   bond->dayCounter(),
                                    Compounded,
-                                   curve_->instruments_[k]->bond()->frequency(),
+                                   bond->frequency(),
                                    today);
             InterestRate r(ytm,
-                           curve_->instruments_[k]->bond()->dayCounter(),
+                           bond->dayCounter(),
                            Compounded,
-                           curve_->instruments_[k]->bond()->frequency());
+                           bond->frequency());
 
             Date settlement = bond->settlementDate(today);
             Time duration =
@@ -259,8 +260,8 @@ namespace QuantLib {
         Array trialDirtyPrice(numberOfBonds,0.);
         Real squaredError = 0.0;
 
-        for (Size i=0; i<numberOfBonds;++i) {
-            boost::shared_ptr<Bond> bond =
+        for (Size i=0; i<numberOfBonds; ++i) {
+            boost::shared_ptr<FixedRateBond> bond =
                 fittingMethod_->curve_->instruments_[i]->bond();
             Real quotedPrice =
                 fittingMethod_->curve_->instruments_[i]->quoteValue();
@@ -268,8 +269,7 @@ namespace QuantLib {
             Date settlement = bond->settlementDate(today);
             Real dirtyPrice = quotedPrice + bond->accruedAmount(settlement);
 
-            DayCounter bondDayCount =
-                fittingMethod_->curve_->instruments_[i]->bond()->dayCounter();
+            const DayCounter& bondDayCount = bond->dayCounter();
             Leg cf = bond->cashflows();
 
             // loop over cashFlows: P_j = sum( cf_i * d(t_i))
