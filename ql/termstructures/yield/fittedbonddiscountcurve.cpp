@@ -167,8 +167,7 @@ namespace QuantLib {
 
         for (Size k=0; k<curve_->instruments_.size(); ++k) {
             boost::shared_ptr<FixedRateBond> bond =
-                curve_->instruments_[k]->bond();
-
+                curve_->instruments_[k]->fixedRateBond();
             Leg leg = bond->cashflows();
             Real cleanPrice = curve_->instruments_[k]->quoteValue();
             Rate ytm = bond->yield(cleanPrice,
@@ -260,9 +259,9 @@ namespace QuantLib {
         Array trialDirtyPrice(numberOfBonds,0.);
         Real squaredError = 0.0;
 
-        for (Size i=0; i<numberOfBonds; ++i) {
+        for (Size i=0; i<numberOfBonds;++i) {
             boost::shared_ptr<FixedRateBond> bond =
-                fittingMethod_->curve_->instruments_[i]->bond();
+                fittingMethod_->curve_->instruments_[i]->fixedRateBond();
             Real quotedPrice =
                 fittingMethod_->curve_->instruments_[i]->quoteValue();
 

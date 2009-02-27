@@ -30,34 +30,8 @@ namespace QuantLib {
         void no_deletion(YieldTermStructure*) {}
     }
 
-    FixedRateBondHelper::FixedRateBondHelper(
-                                    const Handle<Quote>& cleanPrice,
-                                    Natural settlementDays,
-                                    Real faceAmount,
-                                    const Schedule& schedule,
-                                    const std::vector<Rate>& coupons,
-                                    const DayCounter& dayCounter,
-                                    BusinessDayConvention paymentConvention,
-                                    Real redemption,
-                                    const Date& issueDate)
-    : RelativeDateRateHelper(cleanPrice) {
-
-        bond_ = boost::shared_ptr<FixedRateBond>(new
-            FixedRateBond(settlementDays, faceAmount, schedule,
-                          coupons, dayCounter, paymentConvention,
-                          redemption, issueDate));
-
-        latestDate_ = bond_->maturityDate();
-        registerWith(Settings::instance().evaluationDate());
-
-        boost::shared_ptr<PricingEngine> bondEngine(new
-            DiscountingBondEngine(termStructureHandle_));
-        bond_->setPricingEngine(bondEngine);
-    }
-
-    FixedRateBondHelper::FixedRateBondHelper(
-                                const Handle<Quote>& cleanPrice,
-                                const boost::shared_ptr<FixedRateBond>& bond)
+    BondHelper::BondHelper(const Handle<Quote>& cleanPrice,
+                           const boost::shared_ptr<Bond>& bond)
     : RelativeDateRateHelper(cleanPrice), bond_(bond) {
 
         latestDate_ = bond_->maturityDate();
@@ -68,7 +42,7 @@ namespace QuantLib {
         bond_->setPricingEngine(bondEngine);
     }
 
-    void FixedRateBondHelper::setTermStructure(YieldTermStructure* t) {
+    void BondHelper::setTermStructure(YieldTermStructure* t) {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed
         termStructureHandle_.linkTo(
@@ -77,15 +51,58 @@ namespace QuantLib {
         BootstrapHelper<YieldTermStructure>::setTermStructure(t);
     }
 
-    boost::shared_ptr<FixedRateBond> FixedRateBondHelper::bond() const {
+    boost::shared_ptr<Bond> BondHelper::bond() const {
         return bond_;
     }
 
-    Real FixedRateBondHelper::impliedQuote() const {
+    Real BondHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we didn't register as observers - force calculation
         bond_->recalculate();
         return bond_->cleanPrice();
+    }
+
+    void BondHelper::accept(AcyclicVisitor& v) {
+        Visitor<BondHelper>* v1 =
+            dynamic_cast<Visitor<BondHelper>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            BootstrapHelper<YieldTermStructure>::accept(v);
+    }
+
+    void BondHelper::initializeDates() {
+        earliestDate_ = bond_->nextCouponDate();
+    }
+
+    FixedRateBondHelper::FixedRateBondHelper(
+                                    const Handle<Quote>& cleanPrice,
+                                    Natural settlementDays,
+                                    Real faceAmount,
+                                    const Schedule& schedule,
+                                    const std::vector<Rate>& coupons,
+                                    const DayCounter& dayCounter,
+                                    BusinessDayConvention paymentConvention,
+                                    Real redemption,
+                                    const Date& issueDate)
+    : BondHelper(cleanPrice,  boost::shared_ptr<Bond>()) {
+
+        fixedRateBond_ = boost::shared_ptr<FixedRateBond>(new
+            FixedRateBond(settlementDays, faceAmount, schedule,
+                          coupons, dayCounter, paymentConvention,
+                          redemption, issueDate));
+        bond_ = fixedRateBond_;
+
+        latestDate_ = bond_->maturityDate();
+        registerWith(Settings::instance().evaluationDate());
+
+        boost::shared_ptr<PricingEngine> bondEngine(new
+            DiscountingBondEngine(termStructureHandle_));
+        bond_->setPricingEngine(bondEngine);
+    }
+
+    boost::shared_ptr<FixedRateBond> FixedRateBondHelper::fixedRateBond() const {
+        return fixedRateBond_;
     }
 
     void FixedRateBondHelper::accept(AcyclicVisitor& v) {
@@ -95,10 +112,6 @@ namespace QuantLib {
             v1->visit(*this);
         else
             BootstrapHelper<YieldTermStructure>::accept(v);
-    }
-
-    void FixedRateBondHelper::initializeDates() {
-        earliestDate_ = bond_->nextCouponDate();
     }
 
 }

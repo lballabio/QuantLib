@@ -35,7 +35,37 @@ namespace QuantLib {
     /*! \warning This class assumes that the reference date
                  does not change between calls of setTermStructure().
     */
-    class FixedRateBondHelper : public RelativeDateRateHelper {
+    class BondHelper : public RelativeDateRateHelper {
+      public:
+        /*! \warning Setting a pricing engine to the passed bond from
+                     external code will cause the bootstrap to fail or
+                     to give wrong results. It is advised to discard
+                     the bond after creating the helper, so that the
+                     helper has sole ownership of it.
+        */
+        BondHelper(const Handle<Quote>& cleanPrice,
+                   const boost::shared_ptr<Bond>& bond);
+        //! \name BootstrapHelper interface
+        //@{
+        Real impliedQuote() const;
+        void setTermStructure(YieldTermStructure*);
+        //@}
+        //! \name additional inspectors
+        //@{
+        boost::shared_ptr<Bond> bond() const;
+        //@}
+        //! \name Visitability
+        //@{
+        void accept(AcyclicVisitor&);
+        //@}
+      protected:
+        boost::shared_ptr<Bond> bond_;
+        RelinkableHandle<YieldTermStructure> termStructureHandle_;
+      private:
+        void initializeDates();
+    };
+
+    class FixedRateBondHelper : public BondHelper {
       public:
         FixedRateBondHelper(const Handle<Quote>& cleanPrice,
                             Natural settlementDays,
@@ -46,32 +76,16 @@ namespace QuantLib {
                             BusinessDayConvention paymentConv = Following,
                             Real redemption = 100.0,
                             const Date& issueDate = Date());
-        /*! \warning Setting a pricing engine to the passed bond from
-                     external code will cause the bootstrap to fail or
-                     to give wrong results. It is advised to discard
-                     the bond after creating the helper, so that the
-                     helper has sole ownership of it.
-        */
-        FixedRateBondHelper(const Handle<Quote>& cleanPrice,
-                            const boost::shared_ptr<FixedRateBond>& bond);
-        //! \name BootstrapHelper interface
-        //@{
-        Real impliedQuote() const;
-        void setTermStructure(YieldTermStructure*);
-        //@}
         //! \name additional inspectors
         //@{
-        boost::shared_ptr<FixedRateBond> bond() const;
+        boost::shared_ptr<FixedRateBond> fixedRateBond() const;
         //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&);
         //@}
       protected:
-        boost::shared_ptr<FixedRateBond> bond_;
-        RelinkableHandle<YieldTermStructure> termStructureHandle_;
-      private:
-        void initializeDates();
+        boost::shared_ptr<FixedRateBond> fixedRateBond_;
     };
 
 }
