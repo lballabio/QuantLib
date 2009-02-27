@@ -1,9 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2004, 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2004, 2005, 2006, 2007, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -61,6 +61,12 @@ namespace QuantLib {
         /*! \todo revise extrapolation */
         Real diffusion(Time t, Real x) const;
         Real apply(Real x0, Real dx) const;
+        /*! \warning raises a "not implemented" exception.  It should
+                     be rewritten to return the expectation E(S) of
+                     the process, not exp(E(log S)).
+        */
+        Real expectation(Time t0, Real x0, Time dt) const;
+        Real evolve(Time t0, Real x0, Time dt, Real dw) const;
         //@}
         Time time(const Date&) const;
         //! \name Observer interface

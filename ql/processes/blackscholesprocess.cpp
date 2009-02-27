@@ -66,6 +66,17 @@ namespace QuantLib {
         return x0 * std::exp(dx);
     }
 
+    Real GeneralizedBlackScholesProcess::expectation(Time t0, Real x0,
+                                                     Time dt) const {
+        QL_FAIL("not implemented");
+    }
+
+    Real GeneralizedBlackScholesProcess::evolve(Time t0, Real x0,
+                                                Time dt, Real dw) const {
+        return apply(x0, discretization_->drift(*this,t0,x0,dt) +
+                         stdDeviation(t0,x0,dt)*dw);
+    }
+
     Time GeneralizedBlackScholesProcess::time(const Date& d) const {
         return riskFreeRate_->dayCounter().yearFraction(
                                            riskFreeRate_->referenceDate(), d);
