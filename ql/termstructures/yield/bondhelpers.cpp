@@ -35,7 +35,7 @@ namespace QuantLib {
     : RelativeDateRateHelper(cleanPrice), bond_(bond) {
 
         latestDate_ = bond_->maturityDate();
-        registerWith(Settings::instance().evaluationDate());
+        initializeDates();
 
         boost::shared_ptr<PricingEngine> bondEngine(new
             DiscountingBondEngine(termStructureHandle_));
@@ -85,21 +85,10 @@ namespace QuantLib {
                                     BusinessDayConvention paymentConvention,
                                     Real redemption,
                                     const Date& issueDate)
-    : BondHelper(cleanPrice,  boost::shared_ptr<Bond>()) {
-
-        fixedRateBond_ = boost::shared_ptr<FixedRateBond>(new
-            FixedRateBond(settlementDays, faceAmount, schedule,
-                          coupons, dayCounter, paymentConvention,
-                          redemption, issueDate));
-        bond_ = fixedRateBond_;
-
-        latestDate_ = bond_->maturityDate();
-        registerWith(Settings::instance().evaluationDate());
-
-        boost::shared_ptr<PricingEngine> bondEngine(new
-            DiscountingBondEngine(termStructureHandle_));
-        bond_->setPricingEngine(bondEngine);
-    }
+    : BondHelper(cleanPrice, boost::shared_ptr<Bond>(new
+        FixedRateBond(settlementDays, faceAmount, schedule,
+                      coupons, dayCounter, paymentConvention,
+                      redemption, issueDate))) {}
 
     boost::shared_ptr<FixedRateBond> FixedRateBondHelper::fixedRateBond() const {
         return fixedRateBond_;
