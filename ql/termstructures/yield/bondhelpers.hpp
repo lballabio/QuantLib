@@ -26,7 +26,7 @@
 #ifndef quantlib_bond_helpers_hpp
 #define quantlib_bond_helpers_hpp
 
-#include <ql/termstructures/bootstraphelper.hpp>
+#include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/instruments/bonds/fixedratebond.hpp>
 
 namespace QuantLib {
@@ -35,7 +35,7 @@ namespace QuantLib {
     /*! \warning This class assumes that the reference date
                  does not change between calls of setTermStructure().
     */
-    class FixedRateBondHelper : public BootstrapHelper<YieldTermStructure> {
+    class FixedRateBondHelper : public RelativeDateRateHelper {
       public:
         FixedRateBondHelper(const Handle<Quote>& cleanPrice,
                             Natural settlementDays,
@@ -70,6 +70,8 @@ namespace QuantLib {
       protected:
         boost::shared_ptr<FixedRateBond> bond_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
+      private:
+        void initializeDates();
     };
 
 }

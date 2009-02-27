@@ -40,7 +40,7 @@ namespace QuantLib {
                                     BusinessDayConvention paymentConvention,
                                     Real redemption,
                                     const Date& issueDate)
-    : BootstrapHelper<YieldTermStructure>(cleanPrice) {
+    : RelativeDateRateHelper(cleanPrice) {
 
         bond_ = boost::shared_ptr<FixedRateBond>(new
             FixedRateBond(settlementDays, faceAmount, schedule,
@@ -58,8 +58,7 @@ namespace QuantLib {
     FixedRateBondHelper::FixedRateBondHelper(
                                 const Handle<Quote>& cleanPrice,
                                 const boost::shared_ptr<FixedRateBond>& bond)
-    : BootstrapHelper<YieldTermStructure>(cleanPrice),
-      bond_(bond) {
+    : RelativeDateRateHelper(cleanPrice), bond_(bond) {
 
         latestDate_ = bond_->maturityDate();
         registerWith(Settings::instance().evaluationDate());
@@ -96,6 +95,10 @@ namespace QuantLib {
             v1->visit(*this);
         else
             BootstrapHelper<YieldTermStructure>::accept(v);
+    }
+
+    void FixedRateBondHelper::initializeDates() {
+        earliestDate_ = bond_->nextCouponDate();
     }
 
 }
