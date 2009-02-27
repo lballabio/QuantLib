@@ -53,6 +53,10 @@ namespace QuantLib {
                                        const Date& refDate = Date());
         static Rate nextCouponRate(const Leg& leg,
                                    const Date& refDate = Date());
+        static Date previousCouponDate(const Leg& leg,
+                                       const Date& refDate = Date());
+        static Date nextCouponDate(const Leg& leg,
+                                   const Date& refDate = Date());
 
         static Date startDate(const Leg& leg);
         static Date maturityDate(const Leg& leg);

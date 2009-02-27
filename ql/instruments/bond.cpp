@@ -418,6 +418,18 @@ namespace QuantLib {
         return CashFlows::previousCouponRate(cashflows_, settlement);
     }
 
+    Date Bond::nextCouponDate(Date settlement) const {
+        if (settlement == Date())
+            settlement = settlementDate();
+        return CashFlows::nextCouponDate(cashflows_, settlement);
+    }
+
+    Date Bond::previousCouponDate(Date settlement) const {
+        if (settlement == Date())
+            settlement = settlementDate();
+        return CashFlows::previousCouponDate(cashflows_, settlement);
+    }
+
     void Bond::setupExpired() const {
         Instrument::setupExpired();
         settlementValue_ = 0.0;

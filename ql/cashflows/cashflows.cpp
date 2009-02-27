@@ -253,6 +253,20 @@ namespace QuantLib {
         return couponRate(leg, cf);
     }
 
+    Date CashFlows::previousCouponDate(const Leg& leg,
+                                       const Date& refDate) {
+        Leg::const_iterator cf = previousCashFlow(leg, refDate);
+        if (cf==leg.end()) return Date();
+        return (*cf)->date();
+    }
+
+    Date CashFlows::nextCouponDate(const Leg& leg,
+                                   const Date& refDate) {
+        Leg::const_iterator cf = nextCashFlow(leg, refDate);
+        if (cf==leg.end()) return Date();
+        return (*cf)->date();
+    }
+
     Date CashFlows::startDate(const Leg& cashflows) {
         Date d = Date::maxDate();
         for (Size i=0; i<cashflows.size(); ++i) {

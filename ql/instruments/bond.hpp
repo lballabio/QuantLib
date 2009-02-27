@@ -231,6 +231,9 @@ namespace QuantLib {
             The current bond settlement is used if no date is given.
         */
         Rate previousCoupon(Date d = Date()) const;
+
+        Date nextCouponDate(Date d = Date()) const;
+        Date previousCouponDate(Date d = Date()) const;
         //@}
 
       protected:
