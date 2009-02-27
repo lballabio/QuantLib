@@ -7533,6 +7533,50 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\issuer.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (static runtime)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\issuer.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\loss.hpp"
 					>
 				</File>
@@ -8244,14 +8288,6 @@
 		</File>
 		<File
 			RelativePath=".\ql\interestrate.hpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ql\issuer.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ql\issuer.hpp"
 			>
 		</File>
 		<File

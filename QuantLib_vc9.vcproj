@@ -7154,6 +7154,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\issuer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\issuer.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\loss.hpp"
 					>
 				</File>
@@ -8161,14 +8169,6 @@
 		</File>
 		<File
 			RelativePath=".\ql\interestrate.hpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ql\issuer.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ql\issuer.hpp"
 			>
 		</File>
 		<File
