@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2007, 2008 StatPro Italia srl
+ Copyright (C) 2005, 2007, 2008, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -57,6 +57,7 @@ namespace QuantLib {
             || (d == 25 && m == December)
             )
             return false;
+
         if (y == 2005) {
             if (// Idul Adha
                 (d == 21 && m == January)
@@ -80,6 +81,7 @@ namespace QuantLib {
                 )
                 return false;
         }
+
         if (y == 2006) {
             if (// Idul Adha
                 (d == 10 && m == January)
@@ -98,6 +100,7 @@ namespace QuantLib {
                 )
                 return false;
         }
+
         if (y == 2007) {
             if (// Nyepi
                 (d == 19 && m == March)
@@ -112,7 +115,8 @@ namespace QuantLib {
                 )
                 return false;
         }
-        if (y == 2007) {
+
+        if (y == 2008) {
             if (// Islamic New Year
                 ((d == 10 || d == 11) && m == January)
                 // Chinese New Year
@@ -125,6 +129,8 @@ namespace QuantLib {
                 || (d == 20 && m == May)
                 // Isra' Mi'raj of the prophet Muhammad SAW
                 || (d == 30 && m == July)
+                // National leave
+                || (d == 18 && m == August)
                 // Ied Fitr
                 || (d == 30 && m == September)
                 || ((d == 1 || d == 2 || d == 3) && m == October)
@@ -134,11 +140,37 @@ namespace QuantLib {
                 || (d == 29 && m == December)
                 // New Year's Eve
                 || (d == 31 && m == December)
-                // National leave
-                || (d == 18 && m == August)
                 )
                 return false;
         }
+
+        if (y == 2009) {
+            if (// Public holiday
+                (d == 2 && m == January)
+                // Chinese New Year
+                || (d == 26 && m == January)
+                // Birthday of the prophet Muhammad SAW
+                || (d == 9 && m == March)
+                // Saka's New Year
+                || (d == 26 && m == March)
+                // National leave
+                || (d == 9 && m == April)
+                // Isra' Mi'raj of the prophet Muhammad SAW
+                || (d == 20 && m == July)
+                // Ied Fitr
+                || (d >= 18 && d <= 23 && m == September)
+                // Ied Adha
+                || (d == 27 && m == November)
+                // Islamic New Year
+                || (d == 18 && m == December)
+                // Public Holiday
+                || (d == 24 && m == December)
+                // Trading holiday
+                || (d == 31 && m == December)
+                )
+                return false;
+        }
+
         return true;
     }
 

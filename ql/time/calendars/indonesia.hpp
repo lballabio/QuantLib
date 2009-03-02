@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2007, 2008 StatPro Italia srl
+ Copyright (C) 2005, 2007, 2008, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,7 +42,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2005-2008 only:)
+        (data available for 2005-2009 only:)
         <ul>
         <li>Idul Adha</li>
         <li>Ied Adha</li>

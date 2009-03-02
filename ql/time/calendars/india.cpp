@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2007, 2008 StatPro Italia srl
+ Copyright (C) 2005, 2007, 2008, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -50,6 +50,7 @@ namespace QuantLib {
             || (d == 25 && m == December)
             )
             return false;
+
         if (y == 2005) {
             // Moharram, Holi, Maharashtra Day, and Ramzan Id fall
             // on Saturday or Sunday in 2005
@@ -68,6 +69,7 @@ namespace QuantLib {
                 )
                 return false;
         }
+
         if (y == 2006) {
             if (// Bakri Id
                 (d == 11 && m == January)
@@ -88,6 +90,7 @@ namespace QuantLib {
                 )
                 return false;
         }
+
         if (y == 2007) {
             if (// Bakri Id
                 (d == 1 && m == January)
@@ -108,6 +111,7 @@ namespace QuantLib {
                 )
                 return false;
         }
+
         if (y == 2008) {
             if (// Mahashivratri
                 (d == 6 && m == March)
@@ -136,6 +140,36 @@ namespace QuantLib {
                 )
                 return false;
         }
+
+        if (y == 2009) {
+            if (// Moharram
+                (d == 8 && m == January)
+                // Mahashivratri
+                || (d == 23 && m == February)
+                // Id-E-Milad
+                || (d == 10 && m == March)
+                // Holi
+                || (d == 11 && m == March)
+                // Ram Navmi
+                || (d == 3 && m == April)
+                // Mahavir Jayanti
+                || (d == 7 && m == April)
+                // Maharashtra Day
+                || (d == 1 && m == May)
+                // Ramzan Id
+                || (d == 21 && m == September)
+                // Dasara
+                || (d == 28 && m == September)
+                // Bhau Bhij
+                || (d == 19 && m == October)
+                // Gurunanak Jayanti
+                || (d == 2 && m == November)
+                // Moharram (again)
+                || (d == 28 && m == December)
+                )
+                return false;
+        }
+
         return true;
     }
 

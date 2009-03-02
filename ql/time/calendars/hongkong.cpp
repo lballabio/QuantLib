@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 FIMAT Group
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -62,8 +62,8 @@ namespace QuantLib {
             // Christmas Day
             || (d == 25 && m == December)
             // Boxing Day
-            || ((d == 26 || ((d == 27 || d == 28) && w == Monday))
-                && m == December))
+            || (d == 26 && m == December)
+            )
             return false;
 
         if (y == 2004) {
@@ -135,6 +135,22 @@ namespace QuantLib {
                 || (d == 15 && m == September)
                 // Chung Yeung festival
                 || (d == 7 && m == October))
+            return false;
+        }
+
+        if (y == 2009) {
+            if (// Lunar New Year
+                ((d >= 26 && d <= 28) && m == January)
+                // Ching Ming Festival
+                || (d == 4 && m == April)
+                // Buddha's birthday
+                || (d == 2 && m == May)
+                // Tuen NG festival
+                || (d == 28 && m == May)
+                // Mid-autumn festival
+                || (d == 3 && m == October)
+                // Chung Yeung festival
+                || (d == 26 && m == October))
             return false;
         }
 

@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 FIMAT Group
- Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -59,6 +59,7 @@ namespace QuantLib {
                 )
                 return false;
         }
+
         if (y == 2003) {
             // Tomb Sweeping Day falls on Saturday
             if (// Chinese Lunar New Year
@@ -70,6 +71,7 @@ namespace QuantLib {
                 )
                 return false;
         }
+
         if (y == 2004) {
             // Tomb Sweeping Day falls on Sunday
             if (// Chinese Lunar New Year
@@ -81,6 +83,7 @@ namespace QuantLib {
                 )
                 return false;
         }
+
         if (y == 2005) {
             // Dragon Boat and Moon Festival fall on Saturday or Sunday
             if (// Chinese Lunar New Year
@@ -92,6 +95,7 @@ namespace QuantLib {
                 )
                 return false;
         }
+
         if (y == 2006) {
             // Dragon Boat and Moon Festival fall on Saturday or Sunday
             if (// Chinese Lunar New Year
@@ -105,6 +109,7 @@ namespace QuantLib {
                 )
                 return false;
         }
+
         if (y == 2007) {
             if (// Chinese Lunar New Year
                 (d >= 17 && d <= 25 && m == February)
@@ -122,6 +127,7 @@ namespace QuantLib {
                 )
                 return false;
         }
+
         if (y == 2008) {
             if (// Chinese Lunar New Year
                 (d >= 4 && d <= 11 && m == February)
@@ -130,6 +136,22 @@ namespace QuantLib {
                 )
                 return false;
         }
+
+        if (y == 2009) {
+            if (// Public holiday
+                (d == 2 && m == January)
+                // Chinese Lunar New Year
+                || (d >= 24 && m == January)
+                // Tomb Sweeping Day
+                || (d == 4 && m == April)
+                // Dragon Boat Festival
+                || ((d == 28 || d == 29) && m == May)
+                // Moon Festival
+                || (d == 3 && m == October)
+                )
+                return false;
+        }
+
         return true;
     }
 
