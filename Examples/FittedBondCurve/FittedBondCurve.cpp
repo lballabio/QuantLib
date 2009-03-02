@@ -495,14 +495,14 @@ int main(int, char* []) {
             Real quotePrice = instrumentsA[k]->quoteValue();
             Rate ytm = instrumentsA[k]->bond()->yield(
                                         quotePrice,
-                                        instrumentsA[k]->bond()->dayCounter(),
+                                        bondDayCount,
                                         Compounded,
-                                        instrumentsA[k]->bond()->frequency(),
+                                        frequency,
                                         today);
             InterestRate r(ytm,
-                           instrumentsA[k]->bond()->dayCounter(),
+                           bondDayCount,
                            Compounded,
-                           instrumentsA[k]->bond()->frequency());
+                           frequency);
             Time dur = CashFlows::duration(leg, r, Duration::Modified, today);
 
             const Real BpsChange = 5.;

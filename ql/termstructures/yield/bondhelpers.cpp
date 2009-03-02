@@ -88,7 +88,9 @@ namespace QuantLib {
     : BondHelper(cleanPrice, boost::shared_ptr<Bond>(new
         FixedRateBond(settlementDays, faceAmount, schedule,
                       coupons, dayCounter, paymentConvention,
-                      redemption, issueDate))) {}
+                      redemption, issueDate))) {
+        fixedRateBond_ = boost::dynamic_pointer_cast<FixedRateBond>(bond_);
+    }
 
     boost::shared_ptr<FixedRateBond> FixedRateBondHelper::fixedRateBond() const {
         return fixedRateBond_;
