@@ -28,6 +28,7 @@
 #include <ql/patterns/observable.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <boost/test/unit_test.hpp>
+#include <boost/test/floating_point_comparison.hpp>
 #include <boost/function.hpp>
 #include <vector>
 #include <string>
@@ -82,6 +83,9 @@ namespace QuantLib {
                                 << "\n  before: " << before
                                 << "\n  after:  " << after);
             }
+            // defined to avoid unused-variable warnings
+            void _use_check(void* = &boost::test_tools::check_is_close,
+                            void* = &boost::test_tools::check_is_small) const {}
         };
 
     }
