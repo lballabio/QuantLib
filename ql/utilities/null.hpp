@@ -26,7 +26,6 @@
 #define quantlib_null_hpp
 
 #include <ql/types.hpp>
-#include <ql/time/date.hpp>
 
 namespace QuantLib {
 
@@ -34,17 +33,7 @@ namespace QuantLib {
     template <class Type>
     class Null;
 
-    //! template class providing a null value for a given type.
-    template <>
-    class Null<Date> 
-    {
-      public:
-        Null() {}
-        operator Date() const 
-            { return Date(); }
-    };
 
-    
 #ifdef x64
     //! template class providing a null value for a given type.
     template <>

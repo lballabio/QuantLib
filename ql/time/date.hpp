@@ -30,7 +30,7 @@
 
 #include <ql/time/period.hpp>
 #include <ql/time/weekday.hpp>
-#include <ql/types.hpp>
+#include <ql/utilities/null.hpp>
 #include <utility>
 #include <functional>
 
@@ -237,6 +237,15 @@ namespace QuantLib {
         detail::iso_date_holder iso_date(const Date&);
 
     }
+
+
+    //! specialization of Null template for the Date class
+    template <>
+    class Null<Date> {
+      public:
+        Null() {}
+        operator Date() const { return Date(); }
+    };
 
 
     // inline definitions
