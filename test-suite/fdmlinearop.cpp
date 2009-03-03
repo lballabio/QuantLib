@@ -121,15 +121,15 @@ void FdmLinearOpTest::testFdmLinearOpLayout() {
 
     FdmLinearOpLayout layout = FdmLinearOpLayout(dim);
 
-    Real calculatedDim = layout.dim().size();
-    Real expectedDim = dim.size();
+    Size calculatedDim = layout.dim().size();
+    Size expectedDim = dim.size();
     if (calculatedDim != expectedDim) {
         BOOST_ERROR("index.dimensions() should be " << expectedDim
                     << ", but is " << calculatedDim);
     }
 
-    Real calculatedSize = layout.size();
-    Real expectedSize = std::accumulate(dim.begin(), dim.end(),
+    Size calculatedSize = layout.size();
+    Size expectedSize = std::accumulate(dim.begin(), dim.end(),
                                         1.0, std::multiplies<Real>());
 
     if (calculatedSize != expectedSize) {

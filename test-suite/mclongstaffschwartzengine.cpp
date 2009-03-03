@@ -279,7 +279,7 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
     const Real expected[] = {8.08, 13.90, 21.34};
     for (Size i = 0; i < 3; ++i) {
 
-        const Real underlying = 90 + i*10;
+        const Real underlying = 90.0 + i*10.0;
         underlyingH.linkTo(
             boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
 

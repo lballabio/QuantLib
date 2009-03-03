@@ -114,7 +114,7 @@ namespace QuantLib {
               case FD: {
                   Real r1 = quantile(data_, 0.25);
                   Real r2 = quantile(data_, 0.75);
-                  Real h = 2.0 * (r2-r1) * std::pow(data_.size(), -1.0/3);
+                  Real h = 2.0 * (r2-r1) * std::pow(static_cast<Real>(data_.size()), -1.0/3.0);
                   bins_ = static_cast<Size>(std::ceil((max-min)/h));
                   break;
               }
@@ -123,7 +123,7 @@ namespace QuantLib {
                   summary.addSequence(data_.begin(), data_.end());
                   Real variance = summary.variance();
                   Real h = 3.5 * std::sqrt(variance)
-                         * std::pow(data_.size(), -1.0/3);
+                         * std::pow(static_cast<Real>(data_.size()), -1.0/3.0);
                   bins_ = static_cast<Size>(std::ceil((max-min)/h));
                   break;
               }

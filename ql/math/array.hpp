@@ -29,6 +29,7 @@
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
 #include <ql/utilities/disposable.hpp>
+#include <ql/utilities/null.hpp>
 #include <boost/iterator/reverse_iterator.hpp>
 #include <boost/scoped_array.hpp>
 #include <functional>
@@ -134,6 +135,18 @@ namespace QuantLib {
         boost::scoped_array<Real> data_;
         Size n_;
     };
+
+    //! specialization of null template for this class
+     template <>
+    class Null<Array> 
+    {
+      public:
+        Null() {}
+        operator Array() const 
+            { return Array(); }
+    };
+
+
 
     /*! \relates Array */
     Real DotProduct(const Array&, const Array&);

@@ -26,16 +26,34 @@
 #define quantlib_null_hpp
 
 #include <ql/types.hpp>
+#include <ql/time/date.hpp>
 
 namespace QuantLib {
 
     //! template class providing a null value for a given type.
     template <class Type>
-    class Null {
+    class Null;
+
+    //! template class providing a null value for a given type.
+    template <>
+    class Null<Date> 
+    {
       public:
         Null() {}
-        operator Type() const { return Type(); }
+        operator Date() const 
+            { return Date(); }
     };
+
+    
+#ifdef x64
+    //! template class providing a null value for a given type.
+    template <>
+    class Null<Size> {
+      public:
+        Null() {}
+        operator Size() const { return Size(QL_NULL_INTEGER); }
+    };
+#endif
 
 #if !defined(__DOXYGEN__)
 
@@ -115,6 +133,8 @@ namespace QuantLib {
         Null() {}
         operator long double() const { return (long double)(QL_NULL_REAL); }
     };
+
+
 
 #endif
 

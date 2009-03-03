@@ -27,6 +27,7 @@
 #define quantlib_prices_hpp
 
 #include <ql/timeseries.hpp>
+#include <ql/utilities/null.hpp>
 
 namespace QuantLib {
 
@@ -101,6 +102,15 @@ namespace QuantLib {
         //@}
       private:
         Real open_, close_, high_, low_;
+    };
+
+    
+    template <>
+    class Null<IntervalPrice> 
+    {
+      public:
+        Null() {}
+        operator IntervalPrice() const { return IntervalPrice(); }
     };
 
 }
