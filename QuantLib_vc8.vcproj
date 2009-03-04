@@ -4598,6 +4598,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\utilities\lexicalcastwrapper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\utilities\lexicalcastwrapper.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\utilities\null.hpp"
 				>
 			</File>
