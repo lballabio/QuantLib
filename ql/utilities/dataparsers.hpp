@@ -3,6 +3,8 @@
 /*
  Copyright (C) 2002, 2003 Decillion Pty(Ltd)
  Copyright (C) 2006 Joseph Wang
+ Copyright (C) 2009 Mark Joshi
+ Copyright (C) 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,6 +31,12 @@
 #include <vector>
 
 namespace QuantLib {
+
+    namespace io {
+
+        Integer to_integer(const std::string&);
+
+    }
 
     class PeriodParser {
       public:

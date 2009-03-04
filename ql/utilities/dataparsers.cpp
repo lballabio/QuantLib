@@ -4,6 +4,7 @@
  Copyright (C) 2002, 2003 Decillion Pty(Ltd)
  Copyright (C) 2006 Joseph Wang
  Copyright (2) 2009 Mark Joshi
+ Copyright (2) 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,9 +24,9 @@
 #include <ql/utilities/null.hpp>
 #include <ql/time/period.hpp>
 #include <ql/errors.hpp>
-//#include <boost/lexical_cast.hpp>
-
-#include <ql/utilities/lexicalcastwrapper.hpp>
+#ifndef x64
+#include <boost/lexical_cast.hpp>
+#endif
 #include <boost/algorithm/string/case_conv.hpp>
 #include <cctype>
 #if defined(BOOST_NO_STDC_NAMESPACE)
@@ -34,9 +35,21 @@
 
 namespace QuantLib {
 
+    namespace io {
+
+        Integer to_integer(const std::string& str) {
+        #ifndef x64
+            return  boost::lexical_cast<Integer>(str.c_str());
+        #else
+            return std::atoi(str.c_str());
+        #endif
+        }
+
+    }
+
     Period PeriodParser::parse(const std::string& str) {
         QL_REQUIRE(str.length()>1, "period string length must be at least 2");
-        
+
         std::vector<std::string > subStrings;
         std::string reducedString = str;
 
@@ -50,7 +63,7 @@ namespace QuantLib {
             ++max_iter;
             QL_REQUIRE(max_iter<str.length(), "unknown '" << str << "' unit");
         }
-         
+
         Period result = parseOnePeriod(subStrings[0]);
         for (Size i=1; i<subStrings.size(); ++i)
             result += parseOnePeriod(subStrings[i]);
@@ -75,7 +88,7 @@ namespace QuantLib {
         QL_REQUIRE(nPos<iPos, "no numbers of " << units << " provided");
         Integer n;
         try {
-            n = LexicalCastToInteger(str.substr(nPos,iPos));
+            n = io::to_integer(str.substr(nPos,iPos));
                 //boost::lexical_cast<Integer>(str.substr(nPos,iPos));
         } catch (std::exception& e) {
             QL_FAIL("unable to parse the number of units of " << units <<
@@ -112,14 +125,14 @@ namespace QuantLib {
         for (i=0;i<flist.size();i++) {
             std::string sub = flist[i];
             if (boost::algorithm::to_lower_copy(sub) == "dd")
-              //  d = boost::lexical_cast<Integer>(slist[i]);
-               d = LexicalCastToInteger(slist[i]);
+                //  d = boost::lexical_cast<Integer>(slist[i]);
+                d = io::to_integer(slist[i]);
             else if (boost::algorithm::to_lower_copy(sub) == "mm")
-           //     m = boost::lexical_cast<Integer>(slist[i]);
-              m = LexicalCastToInteger( slist[i]);          
+                //     m = boost::lexical_cast<Integer>(slist[i]);
+                m = io::to_integer( slist[i]);
             else if (boost::algorithm::to_lower_copy(sub) == "yyyy") {
-           //     y = boost::lexical_cast<Integer>(slist[i]);
-                y=LexicalCastToInteger(slist[i]);
+                //     y = boost::lexical_cast<Integer>(slist[i]);
+                y = io::to_integer(slist[i]);
                 if (y < 100)
                     y += 2000;
             }
@@ -131,13 +144,13 @@ namespace QuantLib {
         QL_REQUIRE(str.size() == 10 && str[4] == '-' && str[7] == '-',
                    "invalid format");
         Integer year = //boost::lexical_cast<Integer>(str.substr(0, 4));
-                        LexicalCastToInteger(str.substr(0, 4));
+            io::to_integer(str.substr(0, 4));
         Month month =
-          //  static_cast<Month>(boost::lexical_cast<Integer>(str.substr(5, 2)));
-                static_cast<Month>(LexicalCastToInteger(str.substr(5, 2)));
+            //  static_cast<Month>(boost::lexical_cast<Integer>(str.substr(5, 2)));
+            static_cast<Month>(io::to_integer(str.substr(5, 2)));
         Integer day = //boost::lexical_cast<Integer>(str.substr(8, 2));
-                   static_cast<Month>(LexicalCastToInteger(str.substr(8, 2)));
-                    
+            static_cast<Month>(io::to_integer(str.substr(8, 2)));
+
         return Date(day, month, year);
     }
 
