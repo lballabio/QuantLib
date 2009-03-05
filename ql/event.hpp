@@ -43,12 +43,12 @@ namespace QuantLib {
         virtual Date date() const = 0;
 
         //! returns true if an event has already occurred before a date
-        /*! If QL_TODAYS_PAYMENT is true, then a payment event has not
+        /*! If QL_TODAYS_PAYMENTS is true, then a payment event has not
             occurred if the input date is the same as the event date,
             and so includeToday should be defaulted to true.
 
             This should be the only place in the code that is affected
-            directly by QL_TODAYS_PAYMENT
+            directly by QL_TODAYS_PAYMENTS
         */
         bool hasOccurred(const Date &d,
                          #if defined(QL_TODAYS_PAYMENTS)
