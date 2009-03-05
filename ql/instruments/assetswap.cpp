@@ -31,14 +31,14 @@
 namespace QuantLib {
 
     AssetSwap::AssetSwap(bool payFixedRate,
-                         const boost::shared_ptr<Bond>& bondinp,
+                         const boost::shared_ptr<Bond>& bond,
                          Real bondCleanPrice,
                          const boost::shared_ptr<IborIndex>& index,
                          Spread spread,
                          const Schedule& floatSch,
                          const DayCounter& floatingDayCounter,
                          bool parSwap)
-    : Swap(2), bond_(bondinp), bondCleanPrice_(bondCleanPrice),
+    : Swap(2), bond_(bond), bondCleanPrice_(bondCleanPrice),
       spread_(spread), parSwap_(parSwap) {
 
         Schedule schedule = floatSch;
@@ -128,7 +128,6 @@ namespace QuantLib {
         QL_REQUIRE(!legs_[0].empty(), "empty bond leg");
         for (Leg::const_iterator i=legs_[0].begin(); i<legs_[0].end(); ++i)
             registerWith(*i);
-
 
         if (payFixedRate) {
             payer_[0]=-1.0;
