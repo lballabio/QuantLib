@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2006, 2007 Chiara Fornarola
- Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007, 2009 Ferdinando Ametrano
  Copyright (C) 2007, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -59,29 +59,28 @@ namespace QuantLib {
         // results
         Spread fairSpread() const;
         Real floatingLegBPS() const;
-        Real fairPrice() const;
+        Real fairCleanPrice() const;
         // inspectors
-        Spread spread() const;
-        Real nominal() const;
-        bool payFixedRate() const;
-        const Leg& bondLeg() const {
-            return legs_[0];
-        }
-        const Leg& floatingLeg() const {
-            return legs_[1];
-        }
+        bool parSwap() const { return parSwap_; }
+        Spread spread() const { return spread_; }
+        Real nominal() const { return nominal_; }
+        bool payFixedRate() const { return (payer_[0] == -1.0); }
+        const Leg& bondLeg() const { return legs_[0]; }
+        const Leg& floatingLeg() const { return legs_[1]; }
         // other
         void setupArguments(PricingEngine::arguments* args) const;
         void fetchResults(const PricingEngine::results*) const;
       private:
         void setupExpired() const;
+        boost::shared_ptr<Bond> bond_;
+        Real bondCleanPrice_;
         Spread spread_;
+        bool parSwap_;
         Real nominal_;
         Date upfrontDate_;
-        Real bondCleanPrice_;
         // results
         mutable Spread fairSpread_;
-        mutable Real fairPrice_;
+        mutable Real fairCleanPrice_;
     };
 
 
@@ -105,24 +104,9 @@ namespace QuantLib {
     class AssetSwap::results : public Swap::results {
       public:
         Spread fairSpread;
-        Real fairPrice;
+        Real fairCleanPrice;
         void reset();
     };
-
-
-    // inline definitions
-
-    inline Spread AssetSwap::spread() const {
-        return spread_;
-    }
-
-    inline Real AssetSwap::nominal() const {
-        return nominal_;
-    }
-
-    inline bool AssetSwap::payFixedRate() const {
-        return (payer_[0] == -1.0);
-    }
 
 }
 

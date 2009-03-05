@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2006, 2007 Chiara Fornarola
- Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007, 2009 Ferdinando Ametrano
  Copyright (C) 2007, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -31,19 +31,20 @@
 namespace QuantLib {
 
     AssetSwap::AssetSwap(bool payFixedRate,
-                         const boost::shared_ptr<Bond>& bond,
+                         const boost::shared_ptr<Bond>& bondinp,
                          Real bondCleanPrice,
                          const boost::shared_ptr<IborIndex>& index,
                          Spread spread,
                          const Schedule& floatSch,
                          const DayCounter& floatingDayCounter,
                          bool parSwap)
-    : Swap(2), spread_(spread), bondCleanPrice_(bondCleanPrice) {
+    : Swap(2), bond_(bondinp), bondCleanPrice_(bondCleanPrice),
+      spread_(spread), parSwap_(parSwap) {
 
         Schedule schedule = floatSch;
         if (floatSch.empty()) {
-            schedule = Schedule(bond->settlementDate(),
-                                bond->maturityDate(),
+            schedule = Schedule(bond_->settlementDate(),
+                                bond_->maturityDate(),
                                 index->tenor(),
                                 index->fixingCalendar(),
                                 index->businessDayConvention(),
@@ -52,27 +53,30 @@ namespace QuantLib {
                                 false);
         }
 
+        //QL_REQUIRE(bond_->maturityDate()==schedule.endDate(),
+        //           "schedule end date (" << schedule.endDate() <<
+        //           ") must be equal to bond maturity date (" <<
+        //           bond_->maturityDate() << ")");
+
         // what if this date is not a business day??
         // we are assuming it is a business day!
         upfrontDate_ = schedule.startDate();
         Real dirtyPrice = bondCleanPrice_ +
-                          bond->accruedAmount(upfrontDate_);
+                          bond_->accruedAmount(upfrontDate_);
 
         /* In the market asset swap, the bond is purchased in return for
            payment of the full price. The notional of the floating leg is
            then scaled by the full price, and the resulting value of the
            asset swap spread is different. */
-        if (parSwap) nominal_ = bond->faceAmount();
-        else         nominal_ = dirtyPrice/100*bond->faceAmount();
+        if (parSwap_) nominal_ = bond_->faceAmount();
+        else          nominal_ = dirtyPrice/100*bond_->faceAmount();
 
+        std::vector<Real> nominals(1, nominal_);
+        std::vector<Spread> spreads(1, spread);
         // the following should/might be input parameters
-        // -------------------------------------------------
         BusinessDayConvention paymentAdjustment = Following;
         Natural fixingDays = index->fixingDays();
-        std::vector<Real> nominals(1, nominal_);
         std::vector<Real> gearings(1, 1.0);
-        std::vector<Spread> spreads(1, spread);
-        // -------------------------------------------------
 
         legs_[1] = IborLeg(schedule, index)
             .withNotionals(nominals)
@@ -85,7 +89,7 @@ namespace QuantLib {
         for (Leg::const_iterator i=legs_[1].begin(); i<legs_[1].end(); ++i)
             registerWith(*i);
 
-        const Leg& bondLeg = bond->cashflows();
+        const Leg& bondLeg = bond_->cashflows();
         for (Leg::const_iterator i=bondLeg.begin(); i<bondLeg.end(); ++i) {
             if (!(*i)->hasOccurred(upfrontDate_))
                 legs_[0].push_back(*i);
@@ -94,10 +98,8 @@ namespace QuantLib {
         QL_REQUIRE(!legs_[0].empty(),
                    "empty bond leg to start with");
 
-        // what happen if floatSchedule.endDate() < bond->maturityDate() ??
-
         // special flows
-        if (parSwap) {
+        if (parSwap_) {
             // upfront on the floating leg
             Real upfront = (dirtyPrice-100.0)/100.0*nominal_;
             // we are assuming upfrontDate_ is a business day
@@ -115,13 +117,11 @@ namespace QuantLib {
             legs_[1].push_back(backPaymentCashFlow);
         } else {
             // final nominal exchange
-            Real finalFlow = (dirtyPrice)/100.0*bond->faceAmount();
-            // we are assuming bond->maturityDate() == schedule.endDate()
             Date finalDate = schedule.calendar().adjust(
                 schedule.endDate(), paymentAdjustment);
-                //bond->maturityDate(), paymentAdjustment);
+                //bond_->maturityDate(), paymentAdjustment);
             boost::shared_ptr<CashFlow> finalCashFlow (new
-                SimpleCashFlow(finalFlow, finalDate));
+                SimpleCashFlow(nominal_, finalDate));
             legs_[1].push_back(finalCashFlow);
         }
 
@@ -129,8 +129,6 @@ namespace QuantLib {
         for (Leg::const_iterator i=legs_[0].begin(); i<legs_[0].end(); ++i)
             registerWith(*i);
 
-        // handle when termination date is earlier than
-        // bond maturity date
 
         if (payFixedRate) {
             payer_[0]=-1.0;
@@ -197,7 +195,7 @@ namespace QuantLib {
         if (fairSpread_ != Null<Spread>()) {
             return fairSpread_;
         } else if (legBPS_.size() > 1 && legBPS_[1] != Null<Spread>()) {
-            fairSpread_ = spread_ - NPV_/(legBPS_[1]/basisPoint);
+            fairSpread_ = spread_ - NPV_/legBPS_[1]*basisPoint;
             return fairSpread_;
         } else {
             QL_FAIL("fair spread not available");
@@ -211,26 +209,34 @@ namespace QuantLib {
         return legBPS_[1];
     }
 
-    Real AssetSwap::fairPrice() const {
+    Real AssetSwap::fairCleanPrice() const {
         calculate();
-        if (fairPrice_ != Null<Real>()) {
-            return fairPrice_;
+        if (fairCleanPrice_ != Null<Real>()) {
+            return fairCleanPrice_;
         } else {
             std::vector<DiscountFactor> dfs;
             try {
                 dfs = result<std::vector<DiscountFactor> >("startDiscounts");
             } catch (...) {
-                QL_FAIL("fair price not available");
+                QL_FAIL("fair clean price not available");
             }
-            fairPrice_ = bondCleanPrice_ - NPV_/(nominal_/100.0)/dfs[1];
-            return fairPrice_;
+
+            if (parSwap_) {
+                fairCleanPrice_ = bondCleanPrice_-NPV_/(nominal_/100.0)/dfs[1];
+            } else {
+                Real dirty = nominal_*100/bond_->faceAmount();
+                Real fairDirty = - legNPV_[0]/legNPV_[1] * dirty;
+                fairCleanPrice_ = fairDirty-bond_->accruedAmount(upfrontDate_);
+            }
+
+            return fairCleanPrice_;
         }
     }
 
     void AssetSwap::setupExpired() const {
         Swap::setupExpired();
         fairSpread_ = Null<Spread>();
-        fairPrice_= Null<Real>();
+        fairCleanPrice_= Null<Real>();
     }
 
     void AssetSwap::fetchResults(const PricingEngine::results* r) const {
@@ -239,10 +245,10 @@ namespace QuantLib {
             dynamic_cast<const AssetSwap::results*>(r);
         if (results) {
             fairSpread_ = results->fairSpread;
-            fairPrice_= results->fairPrice;
+            fairCleanPrice_= results->fairCleanPrice;
         } else {
             fairSpread_ = Null<Spread>();
-            fairPrice_= Null<Real>();
+            fairCleanPrice_= Null<Real>();
         }
     }
 
@@ -272,7 +278,7 @@ namespace QuantLib {
     void AssetSwap::results::reset() {
         Swap::results::reset();
         fairSpread = Null<Spread>();
-        fairPrice = Null<Real>();
+        fairCleanPrice = Null<Real>();
     }
 
 }

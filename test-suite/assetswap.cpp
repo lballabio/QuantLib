@@ -158,7 +158,7 @@ void AssetSwapTest::testImpliedValue() {
                                   vars.iborIndex->dayCounter(),
                                   parAssetSwap);
     fixedBondAssetSwap1.setPricingEngine(swapEngine);
-    Real fixedBondAssetSwapPrice1 = fixedBondAssetSwap1.fairPrice();
+    Real fixedBondAssetSwapPrice1 = fixedBondAssetSwap1.fairCleanPrice();
     Real tolerance = 1.0e-13;
     Real error1 = std::fabs(fixedBondAssetSwapPrice1-fixedBondPrice1);
 
@@ -198,7 +198,7 @@ void AssetSwapTest::testImpliedValue() {
                                   vars.iborIndex->dayCounter(),
                                   parAssetSwap);
     fixedBondAssetSwap2.setPricingEngine(swapEngine);
-    Real fixedBondAssetSwapPrice2 = fixedBondAssetSwap2.fairPrice();
+    Real fixedBondAssetSwapPrice2 = fixedBondAssetSwap2.fairCleanPrice();
     Real error2 = std::fabs(fixedBondAssetSwapPrice2-fixedBondPrice2);
 
     if (error2>tolerance) {
@@ -244,7 +244,7 @@ void AssetSwapTest::testImpliedValue() {
                                      vars.iborIndex->dayCounter(),
                                      parAssetSwap);
     floatingBondAssetSwap1.setPricingEngine(swapEngine);
-    Real floatingBondAssetSwapPrice1 = floatingBondAssetSwap1.fairPrice();
+    Real floatingBondAssetSwapPrice1 = floatingBondAssetSwap1.fairCleanPrice();
     Real error3 = std::fabs(floatingBondAssetSwapPrice1-floatingBondPrice1);
 
     if (error3>tolerance) {
@@ -304,7 +304,7 @@ void AssetSwapTest::testImpliedValue() {
                                      vars.iborIndex->dayCounter(),
                                      parAssetSwap);
     floatingBondAssetSwap2.setPricingEngine(swapEngine);
-    Real floatingBondAssetSwapPrice2 = floatingBondAssetSwap2.fairPrice();
+    Real floatingBondAssetSwapPrice2 = floatingBondAssetSwap2.fairCleanPrice();
     Real error5 = std::fabs(floatingBondAssetSwapPrice2-floatingBondPrice2);
 
     if (error5>tolerance) {
@@ -349,7 +349,7 @@ void AssetSwapTest::testImpliedValue() {
                                 vars.iborIndex->dayCounter(),
                                 parAssetSwap);
     cmsBondAssetSwap1.setPricingEngine(swapEngine);
-    Real cmsBondAssetSwapPrice1 = cmsBondAssetSwap1.fairPrice();
+    Real cmsBondAssetSwapPrice1 = cmsBondAssetSwap1.fairCleanPrice();
     Real error6 = std::fabs(cmsBondAssetSwapPrice1-cmsBondPrice1);
 
     if (error6>tolerance) {
@@ -391,7 +391,7 @@ void AssetSwapTest::testImpliedValue() {
                                 vars.iborIndex->dayCounter(),
                                 parAssetSwap);
     cmsBondAssetSwap2.setPricingEngine(swapEngine);
-    Real cmsBondAssetSwapPrice2 = cmsBondAssetSwap2.fairPrice();
+    Real cmsBondAssetSwapPrice2 = cmsBondAssetSwap2.fairCleanPrice();
     Real error7 = std::fabs(cmsBondAssetSwapPrice2-cmsBondPrice2);
 
     if (error7>tolerance) {
@@ -423,7 +423,7 @@ void AssetSwapTest::testImpliedValue() {
                                 vars.iborIndex->dayCounter(),
                                 parAssetSwap);
     zeroCpnAssetSwap1.setPricingEngine(swapEngine);
-    Real zeroCpnBondAssetSwapPrice1 = zeroCpnAssetSwap1.fairPrice();
+    Real zeroCpnBondAssetSwapPrice1 = zeroCpnAssetSwap1.fairCleanPrice();
     Real error8 = std::fabs(cmsBondAssetSwapPrice1-cmsBondPrice1);
 
     if (error8>tolerance) {
@@ -455,7 +455,7 @@ void AssetSwapTest::testImpliedValue() {
                                 vars.iborIndex->dayCounter(),
                                 parAssetSwap);
     zeroCpnAssetSwap2.setPricingEngine(swapEngine);
-    Real zeroCpnBondAssetSwapPrice2 = zeroCpnAssetSwap2.fairPrice();
+    Real zeroCpnBondAssetSwapPrice2 = zeroCpnAssetSwap2.fairCleanPrice();
     Real error9 = std::fabs(cmsBondAssetSwapPrice2-cmsBondPrice2);
 
     if (error9>tolerance) {
@@ -1393,7 +1393,7 @@ void AssetSwapTest::testGenericBondImplied() {
                                   vars.iborIndex->dayCounter(),
                                   parAssetSwap);
     fixedBondAssetSwap1.setPricingEngine(swapEngine);
-    Real fixedBondAssetSwapPrice1 = fixedBondAssetSwap1.fairPrice();
+    Real fixedBondAssetSwapPrice1 = fixedBondAssetSwap1.fairCleanPrice();
     Real tolerance = 1.0e-13;
     Real error1 = std::fabs(fixedBondAssetSwapPrice1-fixedBondPrice1);
 
@@ -1437,7 +1437,7 @@ void AssetSwapTest::testGenericBondImplied() {
                                   vars.iborIndex->dayCounter(),
                                   parAssetSwap);
     fixedBondAssetSwap2.setPricingEngine(swapEngine);
-    Real fixedBondAssetSwapPrice2 = fixedBondAssetSwap2.fairPrice();
+    Real fixedBondAssetSwapPrice2 = fixedBondAssetSwap2.fairCleanPrice();
     Real error2 = std::fabs(fixedBondAssetSwapPrice2-fixedBondPrice2);
 
     if (error2>tolerance) {
@@ -1485,7 +1485,7 @@ void AssetSwapTest::testGenericBondImplied() {
                                      vars.iborIndex->dayCounter(),
                                      parAssetSwap);
     floatingBondAssetSwap1.setPricingEngine(swapEngine);
-    Real floatingBondAssetSwapPrice1 = floatingBondAssetSwap1.fairPrice();
+    Real floatingBondAssetSwapPrice1 = floatingBondAssetSwap1.fairCleanPrice();
     Real error3 = std::fabs(floatingBondAssetSwapPrice1-floatingBondPrice1);
 
     if (error3>tolerance) {
@@ -1550,7 +1550,7 @@ void AssetSwapTest::testGenericBondImplied() {
                                      vars.iborIndex->dayCounter(),
                                      parAssetSwap);
     floatingBondAssetSwap2.setPricingEngine(swapEngine);
-    Real floatingBondAssetSwapPrice2 = floatingBondAssetSwap2.fairPrice();
+    Real floatingBondAssetSwapPrice2 = floatingBondAssetSwap2.fairCleanPrice();
     Real error5 = std::fabs(floatingBondAssetSwapPrice2-floatingBondPrice2);
 
     if (error5>tolerance) {
@@ -1599,7 +1599,7 @@ void AssetSwapTest::testGenericBondImplied() {
                                 vars.iborIndex->dayCounter(),
                                 parAssetSwap);
     cmsBondAssetSwap1.setPricingEngine(swapEngine);
-    Real cmsBondAssetSwapPrice1 = cmsBondAssetSwap1.fairPrice();
+    Real cmsBondAssetSwapPrice1 = cmsBondAssetSwap1.fairCleanPrice();
     Real error6 = std::fabs(cmsBondAssetSwapPrice1-cmsBondPrice1);
 
     if (error6>tolerance) {
@@ -1646,7 +1646,7 @@ void AssetSwapTest::testGenericBondImplied() {
                                 vars.iborIndex->dayCounter(),
                                 parAssetSwap);
     cmsBondAssetSwap2.setPricingEngine(swapEngine);
-    Real cmsBondAssetSwapPrice2 = cmsBondAssetSwap2.fairPrice();
+    Real cmsBondAssetSwapPrice2 = cmsBondAssetSwap2.fairCleanPrice();
     Real error7 = std::fabs(cmsBondAssetSwapPrice2-cmsBondPrice2);
 
     if (error7>tolerance) {
@@ -1680,7 +1680,7 @@ void AssetSwapTest::testGenericBondImplied() {
                                 vars.iborIndex->dayCounter(),
                                 parAssetSwap);
     zeroCpnAssetSwap1.setPricingEngine(swapEngine);
-    Real zeroCpnBondAssetSwapPrice1 = zeroCpnAssetSwap1.fairPrice();
+    Real zeroCpnBondAssetSwapPrice1 = zeroCpnAssetSwap1.fairCleanPrice();
     Real error8 = std::fabs(zeroCpnBondAssetSwapPrice1-zeroCpnBondPrice1);
 
     if (error8>tolerance) {
@@ -1714,7 +1714,7 @@ void AssetSwapTest::testGenericBondImplied() {
                                 vars.iborIndex->dayCounter(),
                                 parAssetSwap);
     zeroCpnAssetSwap2.setPricingEngine(swapEngine);
-    Real zeroCpnBondAssetSwapPrice2 = zeroCpnAssetSwap2.fairPrice();
+    Real zeroCpnBondAssetSwapPrice2 = zeroCpnAssetSwap2.fairCleanPrice();
     Real error9 = std::fabs(cmsBondAssetSwapPrice2-cmsBondPrice2);
 
     if (error9>tolerance) {
@@ -3317,9 +3317,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                              vars.iborIndex->dayCounter(),
                                              parAssetSwap);
     fixedSpecializedBondAssetSwap1.setPricingEngine(swapEngine);
-    Real fixedBondAssetSwapPrice1 = fixedBondAssetSwap1.fairPrice();
+    Real fixedBondAssetSwapPrice1 = fixedBondAssetSwap1.fairCleanPrice();
     Real fixedSpecializedBondAssetSwapPrice1 =
-        fixedSpecializedBondAssetSwap1.fairPrice();
+        fixedSpecializedBondAssetSwap1.fairCleanPrice();
     Real tolerance = 1.0e-13;
     Real error1 =
         std::fabs(fixedBondAssetSwapPrice1-fixedSpecializedBondAssetSwapPrice1);
@@ -3417,9 +3417,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                              vars.iborIndex->dayCounter(),
                                              parAssetSwap);
     fixedSpecializedBondAssetSwap2.setPricingEngine(swapEngine);
-    Real fixedBondAssetSwapPrice2 = fixedBondAssetSwap2.fairPrice();
+    Real fixedBondAssetSwapPrice2 = fixedBondAssetSwap2.fairCleanPrice();
     Real fixedSpecializedBondAssetSwapPrice2 =
-        fixedSpecializedBondAssetSwap2.fairPrice();
+        fixedSpecializedBondAssetSwap2.fairCleanPrice();
 
     Real error3 =
         std::fabs(fixedBondAssetSwapPrice2-fixedSpecializedBondAssetSwapPrice2);
@@ -3527,9 +3527,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                                 vars.iborIndex->dayCounter(),
                                                 parAssetSwap);
     floatingSpecializedBondAssetSwap1.setPricingEngine(swapEngine);
-    Real floatingBondAssetSwapPrice1 = floatingBondAssetSwap1.fairPrice();
+    Real floatingBondAssetSwapPrice1 = floatingBondAssetSwap1.fairCleanPrice();
     Real floatingSpecializedBondAssetSwapPrice1 =
-        floatingSpecializedBondAssetSwap1.fairPrice();
+        floatingSpecializedBondAssetSwap1.fairCleanPrice();
 
     Real error5 =
         std::fabs(floatingBondAssetSwapPrice1-floatingSpecializedBondAssetSwapPrice1);
@@ -3641,9 +3641,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                                 vars.iborIndex->dayCounter(),
                                                 parAssetSwap);
     floatingSpecializedBondAssetSwap2.setPricingEngine(swapEngine);
-    Real floatingBondAssetSwapPrice2 = floatingBondAssetSwap2.fairPrice();
+    Real floatingBondAssetSwapPrice2 = floatingBondAssetSwap2.fairCleanPrice();
     Real floatingSpecializedBondAssetSwapPrice2 =
-        floatingSpecializedBondAssetSwap2.fairPrice();
+        floatingSpecializedBondAssetSwap2.fairCleanPrice();
     Real error7 =
         std::fabs(floatingBondAssetSwapPrice2-floatingSpecializedBondAssetSwapPrice2);
     if (error7>tolerance) {
@@ -3747,9 +3747,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                            vars.iborIndex->dayCounter(),
                                            parAssetSwap);
     cmsSpecializedBondAssetSwap1.setPricingEngine(swapEngine);
-    Real cmsBondAssetSwapPrice1 = cmsBondAssetSwap1.fairPrice();
+    Real cmsBondAssetSwapPrice1 = cmsBondAssetSwap1.fairCleanPrice();
     Real cmsSpecializedBondAssetSwapPrice1 =
-        cmsSpecializedBondAssetSwap1.fairPrice();
+        cmsSpecializedBondAssetSwap1.fairCleanPrice();
     Real error9 =
         std::fabs(cmsBondAssetSwapPrice1-cmsSpecializedBondAssetSwapPrice1);
     if (error9>tolerance) {
@@ -3849,9 +3849,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                            vars.iborIndex->dayCounter(),
                                            parAssetSwap);
     cmsSpecializedBondAssetSwap2.setPricingEngine(swapEngine);
-    Real cmsBondAssetSwapPrice2 = cmsBondAssetSwap2.fairPrice();
+    Real cmsBondAssetSwapPrice2 = cmsBondAssetSwap2.fairCleanPrice();
     Real cmsSpecializedBondAssetSwapPrice2 =
-        cmsSpecializedBondAssetSwap2.fairPrice();
+        cmsSpecializedBondAssetSwap2.fairCleanPrice();
     Real error11 =
         std::fabs(cmsBondAssetSwapPrice2-cmsSpecializedBondAssetSwapPrice2);
     if (error11>tolerance) {
@@ -3937,9 +3937,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                                vars.iborIndex->dayCounter(),
                                                parAssetSwap);
     zeroCpnSpecializedBondAssetSwap1.setPricingEngine(swapEngine);
-    Real zeroCpnBondAssetSwapPrice1 = zeroCpnBondAssetSwap1.fairPrice();
+    Real zeroCpnBondAssetSwapPrice1 = zeroCpnBondAssetSwap1.fairCleanPrice();
     Real zeroCpnSpecializedBondAssetSwapPrice1 =
-        zeroCpnSpecializedBondAssetSwap1.fairPrice();
+        zeroCpnSpecializedBondAssetSwap1.fairCleanPrice();
     Real error13 =
         std::fabs(zeroCpnBondAssetSwapPrice1-zeroCpnSpecializedBondAssetSwapPrice1);
     if (error13>tolerance) {
@@ -4028,9 +4028,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                                vars.iborIndex->dayCounter(),
                                                parAssetSwap);
     zeroCpnSpecializedBondAssetSwap2.setPricingEngine(swapEngine);
-    Real zeroCpnBondAssetSwapPrice2 = zeroCpnBondAssetSwap2.fairPrice();
+    Real zeroCpnBondAssetSwapPrice2 = zeroCpnBondAssetSwap2.fairCleanPrice();
     Real zeroCpnSpecializedBondAssetSwapPrice2 =
-                               zeroCpnSpecializedBondAssetSwap2.fairPrice();
+                               zeroCpnSpecializedBondAssetSwap2.fairCleanPrice();
     Real error15 = std::fabs(zeroCpnBondAssetSwapPrice2
                              -zeroCpnSpecializedBondAssetSwapPrice2);
     if (error8>tolerance) {
