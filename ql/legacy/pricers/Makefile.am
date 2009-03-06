@@ -4,15 +4,11 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    discretegeometricaso.hpp \
     mccliquetoption.hpp \
-    mcpricer.hpp \
-    singleassetoption.hpp
+    mcpricer.hpp
 
 libPricers_la_SOURCES = \
-    discretegeometricaso.cpp \
-    mccliquetoption.cpp \
-    singleassetoption.cpp
+    mccliquetoption.cpp
 
 noinst_LTLIBRARIES = libPricers.la
 

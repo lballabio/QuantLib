@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2005, 2007, 2008 StatPro Italia srl
+ Copyright (C) 2009 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,6 +24,7 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/asianoption.hpp>
 #include <ql/pricingengines/asian/analytic_discr_geom_av_price.hpp>
+#include <ql/pricingengines/asian/analytic_discr_geom_av_strike.hpp>
 #include <ql/pricingengines/asian/analytic_cont_geom_av_price.hpp>
 #include <ql/pricingengines/asian/mc_discr_geom_av_price.hpp>
 #include <ql/pricingengines/asian/mc_discr_arith_av_price.hpp>
@@ -370,6 +372,65 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
     Real calculated = option.NPV();
     Real expected = 5.3425606635;
     Real tolerance = 1e-10;
+    if (std::fabs(calculated-expected) > tolerance) {
+        REPORT_FAILURE("value", averageType, runningAccumulator, pastFixings,
+                       fixingDates, payoff, exercise, spot->value(),
+                       qRate->value(), rRate->value(), today,
+                       vol->value(), expected, calculated, tolerance);
+    }
+}
+
+void AsianOptionTest::testAnalyticDiscreteGeometricAverageStrike() {
+
+    BOOST_MESSAGE(
+              "Testing analytic discrete geometric average-strike Asians...");
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.06));
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+        BlackScholesMertonProcess(Handle<Quote>(spot),
+                                  Handle<YieldTermStructure>(qTS),
+                                  Handle<YieldTermStructure>(rTS),
+                                  Handle<BlackVolTermStructure>(volTS)));
+
+    boost::shared_ptr<PricingEngine> engine(
+          new AnalyticDiscreteGeometricAverageStrikeAsianEngine(stochProcess));
+
+    Average::Type averageType = Average::Geometric;
+    Real runningAccumulator = 1.0;
+    Size pastFixings = 0;
+    Size futureFixings = 10;
+    Option::Type type = Option::Call;
+    Real strike = 100.0;
+    boost::shared_ptr<StrikedTypePayoff> payoff(
+                                        new PlainVanillaPayoff(type, strike));
+
+    Date exerciseDate = today + 360;
+    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+
+    std::vector<Date> fixingDates(futureFixings);
+    Integer dt = Integer(360/futureFixings+0.5);
+    fixingDates[0] = today + dt;
+    for (Size j=1; j<futureFixings; j++)
+        fixingDates[j] = fixingDates[j-1] + dt;
+
+    DiscreteAveragingAsianOption option(averageType, runningAccumulator,
+                                        pastFixings, fixingDates,
+                                        payoff, exercise);
+    option.setPricingEngine(engine);
+
+    Real calculated = option.NPV();
+    Real expected = 4.97109;
+    Real tolerance = 1e-5;
     if (std::fabs(calculated-expected) > tolerance) {
         REPORT_FAILURE("value", averageType, runningAccumulator, pastFixings,
                        fixingDates, payoff, exercise, spot->value(),
@@ -1059,6 +1120,8 @@ test_suite* AsianOptionTest::suite() {
         &AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks));
     suite->add(QUANTLIB_TEST_CASE(
         &AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice));
+    suite->add(QUANTLIB_TEST_CASE(
+        &AsianOptionTest::testAnalyticDiscreteGeometricAverageStrike));
     suite->add(QUANTLIB_TEST_CASE(
         &AsianOptionTest::testMCDiscreteGeometricAveragePrice));
     suite->add(QUANTLIB_TEST_CASE(
