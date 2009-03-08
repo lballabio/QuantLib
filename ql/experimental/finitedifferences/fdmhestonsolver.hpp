@@ -60,9 +60,15 @@ namespace QuantLib {
 												= Handle<FdmQuantoHelper>());
 
         Real valueAt(Real s, Real v) const;
+        Real thetaAt(Real s, Real v) const;
+        
+        // First and second order derivative with respect to S_t. 
+        // Please note that this is not the "model implied" delta or gamma.
+        // E.g. see Fabio Mercurio, Massimo Morini 
+        // "A Note on Hedging with Local and Stochastic Volatility Models",
+        // http://papers.ssrn.com/sol3/papers.cfm?abstract_id=1294284  
         Real deltaAt(Real s, Real v, Real eps) const;
         Real gammaAt(Real s, Real v, Real eps) const;
-        Real thetaAt(Real s, Real v) const;
 
       protected:
         void performCalculations() const;
