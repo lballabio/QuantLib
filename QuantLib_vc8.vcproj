@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="QuantLib"
 	ProjectGUID="{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}"
 	RootNamespace="QuantLib"
@@ -6845,14 +6845,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\legacy\pricers\discretegeometricaso.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\discretegeometricaso.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\legacy\pricers\mccliquetoption.cpp"
 					>
 				</File>
@@ -6862,14 +6854,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\legacy\pricers\mcpricer.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\singleassetoption.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\singleassetoption.hpp"
 					>
 				</File>
 			</Filter>
