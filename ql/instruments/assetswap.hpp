@@ -28,11 +28,11 @@
 
 #include <ql/instruments/swap.hpp>
 #include <ql/instruments/bond.hpp>
-#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 
     class IborIndex;
+    class Schedule;
 
     //! Bullet bond vs %Libor swap
     /*! for mechanics of par asset swap and market asset swap, refer to
@@ -40,6 +40,9 @@ namespace QuantLib {
         Income Research - January 2000, D. O'Kane
 
         \ingroup instruments
+
+        \warning bondCleanPrice must be the (forward) price at the
+                 floatSchedule start date
 
         \bug fair prices are not calculated correctly when using
              indexed coupons.

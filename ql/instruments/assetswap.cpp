@@ -19,6 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/time/schedule.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
@@ -53,13 +54,22 @@ namespace QuantLib {
                                 false);
         }
 
-        //QL_REQUIRE(bond_->maturityDate()==schedule.endDate(),
-        //           "schedule end date (" << schedule.endDate() <<
-        //           ") must be equal to bond maturity date (" <<
-        //           bond_->maturityDate() << ")");
+        // the following might become an input parameter
+        BusinessDayConvention paymentAdjustment = Following;
 
-        // what if this date is not a business day??
-        // we are assuming it is a business day!
+        Date finalDate = schedule.calendar().adjust(
+            schedule.endDate(), paymentAdjustment);
+        Date adjBondMaturityDate = schedule.calendar().adjust(
+            bond_->maturityDate(), paymentAdjustment);
+
+        QL_REQUIRE(finalDate==adjBondMaturityDate,
+                   "adjusted schedule end date (" <<
+                   finalDate <<
+                   ") must be equal to adjusted bond maturity date (" <<
+                   adjBondMaturityDate << ")");
+
+        //  bondCleanPrice must be the (forward) clean price
+        // at the floating schedule start date
         upfrontDate_ = schedule.startDate();
         Real dirtyPrice = bondCleanPrice_ +
                           bond_->accruedAmount(upfrontDate_);
@@ -71,20 +81,11 @@ namespace QuantLib {
         if (parSwap_) nominal_ = bond_->faceAmount();
         else          nominal_ = dirtyPrice/100*bond_->faceAmount();
 
-        std::vector<Real> nominals(1, nominal_);
-        std::vector<Spread> spreads(1, spread);
-        // the following should/might be input parameters
-        BusinessDayConvention paymentAdjustment = Following;
-        Natural fixingDays = index->fixingDays();
-        std::vector<Real> gearings(1, 1.0);
-
         legs_[1] = IborLeg(schedule, index)
-            .withNotionals(nominals)
+            .withNotionals(nominal_)
             .withPaymentDayCounter(floatingDayCounter)
             .withPaymentAdjustment(paymentAdjustment)
-            .withFixingDays(fixingDays)
-            .withGearings(gearings)
-            .withSpreads(spreads);
+            .withSpreads(spread);
 
         for (Leg::const_iterator i=legs_[1].begin(); i<legs_[1].end(); ++i)
             registerWith(*i);
@@ -102,24 +103,17 @@ namespace QuantLib {
         if (parSwap_) {
             // upfront on the floating leg
             Real upfront = (dirtyPrice-100.0)/100.0*nominal_;
-            // we are assuming upfrontDate_ is a business day
-            // see above!
             boost::shared_ptr<CashFlow> upfrontCashFlow (new
                 SimpleCashFlow(upfront, upfrontDate_));
             legs_[1].insert(legs_[1].begin(), upfrontCashFlow);
             // backpayment on the floating leg
             // (accounts for non-par redemption, if any)
             Real backPayment = nominal_;
-            Date backPaymentDate = schedule.calendar().adjust(
-                schedule.endDate(), paymentAdjustment);
             boost::shared_ptr<CashFlow> backPaymentCashFlow (new
-                SimpleCashFlow(backPayment, backPaymentDate));
+                SimpleCashFlow(backPayment, finalDate));
             legs_[1].push_back(backPaymentCashFlow);
         } else {
             // final nominal exchange
-            Date finalDate = schedule.calendar().adjust(
-                schedule.endDate(), paymentAdjustment);
-                //bond_->maturityDate(), paymentAdjustment);
             boost::shared_ptr<CashFlow> finalCashFlow (new
                 SimpleCashFlow(nominal_, finalDate));
             legs_[1].push_back(finalCashFlow);
