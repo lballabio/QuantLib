@@ -86,6 +86,9 @@ namespace QuantLib {
                                                      Bootstrap,
                                                      Traits> this_curve;
       public:
+        typedef Traits traits_type;
+        typedef Interpolator interpolator_type;
+
         PiecewiseYoYOptionletVolatilityCurve(
               Natural settlementDays,
               const Calendar &cal,
