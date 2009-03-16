@@ -79,7 +79,7 @@ namespace QuantLib {
             Real slope_;
             std::vector<Time> tvec_;
             std::vector<Date> dvec_;
-            std::vector<Volatility> vvec_;
+            mutable std::vector<Volatility> vvec_;
             YoYInflationCapFloor capfloor_;
             Real priceToMatch_;
             boost::shared_ptr<YoYCapFloorTermPriceSurface> surf_;
