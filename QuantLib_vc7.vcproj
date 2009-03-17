@@ -704,7 +704,13 @@
 					RelativePath=".\ql\indexes\inflation\all.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\indexes\inflation\aucpi.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\indexes\inflation\euhicp.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\indexes\inflation\frhicp.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\indexes\inflation\ukrpi.hpp">
@@ -1032,12 +1038,6 @@
 					RelativePath=".\ql\legacy\pricers\all.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\legacy\pricers\discretegeometricaso.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\discretegeometricaso.hpp">
-				</File>
-				<File
 					RelativePath=".\ql\legacy\pricers\mccliquetoption.cpp">
 				</File>
 				<File
@@ -1045,12 +1045,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\legacy\pricers\mcpricer.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\singleassetoption.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\singleassetoption.hpp">
 				</File>
 			</Filter>
 			<Filter
@@ -1891,6 +1885,9 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\randomnumbers\randomsequencegenerator.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\randomnumbers\ranluxuniformrng.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\math\randomnumbers\rngtraits.hpp">
@@ -3170,6 +3167,12 @@
 						RelativePath=".\ql\models\marketmodels\evolvers\lognormalcotswapratepc.hpp">
 					</File>
 					<File
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateballand.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateballand.hpp">
+					</File>
+					<File
 						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateeuler.cpp">
 					</File>
 					<File
@@ -4387,6 +4390,12 @@
 					RelativePath=".\ql\pricingengines\asian\analytic_discr_geom_av_price.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\asian\analytic_discr_geom_av_strike.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\asian\analytic_discr_geom_av_strike.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\asian\mc_discr_arith_av_price.cpp">
 				</File>
 				<File
@@ -4611,67 +4620,10 @@
 					RelativePath="ql\pricingengines\basket\mcamericanbasketengine.hpp">
 				</File>
 				<File
-					RelativePath="ql\pricingengines\basket\mcbasketengine.cpp">
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release (single-threaded runtime)|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release (static runtime)|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug (static runtime)|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug (single-threaded runtime)|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
+					RelativePath=".\ql\pricingengines\basket\mceuropeanbasketengine.cpp">
 				</File>
 				<File
-					RelativePath="ql\pricingengines\basket\mcbasketengine.hpp">
+					RelativePath=".\ql\pricingengines\basket\mceuropeanbasketengine.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\basket\mceverestengine.cpp">
@@ -5214,9 +5166,6 @@
 					RelativePath=".\ql\pricingengines\vanilla\fddividendamericanengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\pricingengines\vanilla\fddividendengine.cpp">
-				</File>
-				<File
 					RelativePath=".\ql\pricingengines\vanilla\fddividendengine.hpp">
 				</File>
 				<File
@@ -5226,22 +5175,13 @@
 					RelativePath=".\ql\pricingengines\vanilla\fddividendshoutengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\pricingengines\vanilla\fdeuropeanengine.cpp">
-				</File>
-				<File
 					RelativePath=".\ql\pricingengines\vanilla\fdeuropeanengine.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\pricingengines\vanilla\fdmultiperiodengine.cpp">
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\vanilla\fdmultiperiodengine.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\vanilla\fdshoutengine.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\pricingengines\vanilla\fdstepconditionengine.cpp">
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\vanilla\fdstepconditionengine.hpp">
@@ -5660,6 +5600,19 @@
 					RelativePath=".\ql\pricingengines\credit\midpointcdsengine.hpp">
 				</File>
 			</Filter>
+			<Filter
+				Name="inflation"
+				Filter="">
+				<File
+					RelativePath=".\ql\pricingengines\inflation\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\inflation\discountinginflationswapengines.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\inflation\discountinginflationswapengines.hpp">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="processes"
@@ -5839,6 +5792,9 @@
 			</File>
 			<File
 				RelativePath=".\ql\termstructures\inflationtermstructure.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\interpolatedcurve.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\termstructures\iterativebootstrap.hpp">
@@ -7212,6 +7168,12 @@
 					RelativePath=".\ql\experimental\finitedifferences\fdmmeshercomposite.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmquantohelper.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmquantohelper.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmsnapshotcondition.cpp">
 				</File>
 				<File
@@ -7414,6 +7376,12 @@
 					RelativePath=".\ql\experimental\credit\basket.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\blackcdsoptionengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\blackcdsoptionengine.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\cdo.cpp">
 				</File>
 				<File
@@ -7430,6 +7398,51 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\distribution.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\factorspreadedhazardratecurve.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\issuer.cpp">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (static runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (static runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (single-threaded runtime)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\issuer.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\loss.hpp">
@@ -7481,6 +7494,21 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\riskyassetswap.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\riskyassetswapoption.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\riskyassetswapoption.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\riskybond.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\riskybond.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\spreadedhazardratecurve.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\syntheticcdo.cpp">
@@ -7708,6 +7736,160 @@
 					RelativePath=".\ql\experimental\barrieroption\perturbativebarrieroptionengine.hpp">
 				</File>
 			</Filter>
+			<Filter
+				Name="compoundoption"
+				Filter="">
+				<File
+					RelativePath=".\ql\experimental\compoundoption\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\compoundoption\analyticcompoundoptionengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\compoundoption\analyticcompoundoptionengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\compoundoption\compoundoption.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\compoundoption\compoundoption.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="inflation"
+				Filter="">
+				<File
+					RelativePath=".\ql\experimental\inflation\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\capflooredinflationcoupon.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\capflooredinflationcoupon.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\genericindexes.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\inflationcapfloor.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\inflationcapfloor.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\inflationcapfloorengines.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\inflationcapfloorengines.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\inflationcappedcouponpricer.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\inflationcappedcouponpricer.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\inflationcoupon.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\inflationcoupon.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\inflationcouponpricer.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\inflationcouponpricer.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\interpolatedyoyoptionletstripper.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\kinterpolatedyoyoptionletvolatilitysurface.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\nominalyoyinflationcoupon.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\nominalyoyinflationcoupon.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\piecewiseyoyoptionletvolatility.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\yoycapfloortermpricesurface.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\yoycapfloortermpricesurface.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\yoyoptionlethelpers.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\yoyoptionlethelpers.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\yoyoptionletstripper.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\yoyoptionletvolatilitystructures.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="models"
+				Filter="">
+				<File
+					RelativePath=".\ql\experimental\models\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\twomixmodel.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\twomixmodel.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\twomixmodelengines.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\twomixmodelengines.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\twomixmodelhelpers.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\twomixmodelhelpers.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="overnightswap"
+				Filter="">
+				<File
+					RelativePath=".\ql\experimental\overnightswap\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\overnightswap\eonia.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\overnightswap\eonia.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\overnightswap\eoniacoupon.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\overnightswap\eoniacoupon.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\overnightswap\eoniaswap.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\overnightswap\eoniaswap.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\overnightswap\eoniaswaphelper.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\overnightswap\eoniaswaphelper.hpp">
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\ql\auto_link.hpp">
@@ -7786,12 +7968,6 @@
 		</File>
 		<File
 			RelativePath=".\ql\interestrate.hpp">
-		</File>
-		<File
-			RelativePath=".\ql\issuer.cpp">
-		</File>
-		<File
-			RelativePath=".\ql\issuer.hpp">
 		</File>
 		<File
 			RelativePath=".\ql\money.cpp">

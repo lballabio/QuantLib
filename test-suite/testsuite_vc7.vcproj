@@ -900,6 +900,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\compoundoption.cpp">
+			</File>
+			<File
 				RelativePath=".\convertiblebonds.cpp">
 			</File>
 			<File
@@ -1218,6 +1221,9 @@
 				RelativePath=".\dividendoption.cpp">
 			</File>
 			<File
+				RelativePath=".\eoniaswap.cpp">
+			</File>
+			<File
 				RelativePath="europeanoption.cpp">
 				<FileConfiguration
 					Name="Debug (static runtime)|Win32">
@@ -1345,6 +1351,9 @@
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\fdheston.cpp">
 			</File>
 			<File
 				RelativePath=".\fdmlinearop.cpp">
@@ -1552,6 +1561,9 @@
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\issuer.cpp">
 			</File>
 			<File
 				RelativePath="jumpdiffusion.cpp">
@@ -2500,6 +2512,9 @@
 				RelativePath="compoundforward.hpp">
 			</File>
 			<File
+				RelativePath=".\compoundoption.hpp">
+			</File>
+			<File
 				RelativePath=".\convertiblebonds.hpp">
 			</File>
 			<File
@@ -2533,6 +2548,9 @@
 				RelativePath=".\dividendoption.hpp">
 			</File>
 			<File
+				RelativePath=".\eoniaswap.hpp">
+			</File>
+			<File
 				RelativePath="europeanoption.hpp">
 			</File>
 			<File
@@ -2546,6 +2564,9 @@
 			</File>
 			<File
 				RelativePath="factorial.hpp">
+			</File>
+			<File
+				RelativePath=".\fdheston.hpp">
 			</File>
 			<File
 				RelativePath=".\fdmlinearop.hpp">
@@ -2582,6 +2603,9 @@
 			</File>
 			<File
 				RelativePath="interpolations.hpp">
+			</File>
+			<File
+				RelativePath=".\issuer.hpp">
 			</File>
 			<File
 				RelativePath="jumpdiffusion.hpp">

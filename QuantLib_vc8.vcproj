@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="QuantLib"
 	ProjectGUID="{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}"
 	RootNamespace="QuantLib"
@@ -2353,6 +2353,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\randomnumbers\ranluxuniformrng.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\randomnumbers\rngtraits.hpp"
 					>
 				</File>
@@ -4018,6 +4022,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\termstructures\interpolatedcurve.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\termstructures\iterativebootstrap.hpp"
 				>
 			</File>
@@ -4932,6 +4940,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\asian\analytic_discr_geom_av_price.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\asian\analytic_discr_geom_av_strike.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\asian\analytic_discr_geom_av_strike.hpp"
 					>
 				</File>
 				<File
