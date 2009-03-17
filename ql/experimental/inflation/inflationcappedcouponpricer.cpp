@@ -22,6 +22,7 @@
 #include <ql/math/randomnumbers/knuthuniformrng.hpp>
 #include <ql/math/randomnumbers/boxmullergaussianrng.hpp>
 #include <boost/function.hpp>
+#include <boost/bind.hpp>
 
 namespace QuantLib {
 
@@ -134,8 +135,9 @@ namespace QuantLib {
         Real max = nSD;
 
         Size n = nPoints_;      // integration points
-        boost::function<Real (Real)> f;
-        f = std::bind1st(std::mem_fun(&AnalyticInflationCappedCouponPricer::payoffContribution), this);
+        boost::function<Real (Real)> f =
+            boost::bind(&AnalyticInflationCappedCouponPricer::payoffContribution,
+                        this, _1);
         SimpsonIntegral I(0.00001,n);
         Real value = I(f, min, max);
         return value;
