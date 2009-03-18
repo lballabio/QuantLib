@@ -23,19 +23,37 @@
 
 namespace QuantLib {
 
+
+    FixedRateCoupon::FixedRateCoupon(Real nominal,
+                                     const Date& paymentDate,
+                                     Rate rate,
+                                     const DayCounter& dayCounter,
+                                     const Date& accrualStartDate,
+                                     const Date& accrualEndDate,
+                                     const Date& refPeriodStart,
+                                     const Date& refPeriodEnd)
+    : Coupon(nominal, paymentDate, accrualStartDate, accrualEndDate,
+             refPeriodStart, refPeriodEnd),
+      rate_(InterestRate(rate, dayCounter, Simple)),
+      dayCounter_(dayCounter) {}
+
+    FixedRateCoupon::FixedRateCoupon(Real nominal,
+                                     const Date& paymentDate,
+                                     const InterestRate& interestRate,
+                                     const DayCounter& dayCounter,
+                                     const Date& accrualStartDate,
+                                     const Date& accrualEndDate,
+                                     const Date& refPeriodStart,
+                                     const Date& refPeriodEnd)
+    : Coupon(nominal, paymentDate, accrualStartDate, accrualEndDate,
+             refPeriodStart, refPeriodEnd),
+      rate_(interestRate), dayCounter_(dayCounter) {}
+
     Real FixedRateCoupon::amount() const {
         return nominal()*(rate_.compoundFactor(accrualStartDate_,
                                                accrualEndDate_,
                                                refPeriodStart_,
                                                refPeriodEnd_) - 1.0);
-    }
-
-    Rate FixedRateCoupon::rate() const {
-        return rate_;
-    }
-
-    InterestRate FixedRateCoupon::interestRate() const {
-        return rate_;
     }
 
     Real FixedRateCoupon::accruedAmount(const Date& d) const {
@@ -110,8 +128,8 @@ namespace QuantLib {
 
     FixedRateLeg::operator Leg() const {
 
-        QL_REQUIRE(!couponRates_.empty(), "coupon rates not specified");
-        QL_REQUIRE(!notionals_.empty(), "nominals not specified");
+        QL_REQUIRE(!couponRates_.empty(), "no coupon rates given");
+        QL_REQUIRE(!notionals_.empty(), "no notional given");
 
         Leg leg;
 

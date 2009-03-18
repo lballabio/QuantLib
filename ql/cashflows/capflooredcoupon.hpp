@@ -98,22 +98,22 @@ namespace QuantLib {
     class CappedFlooredIborCoupon : public CappedFlooredCoupon {
       public:
         CappedFlooredIborCoupon(
+                  Real nominal,
                   const Date& paymentDate,
-                  const Real nominal,
                   const Date& startDate,
                   const Date& endDate,
-                  const Natural fixingDays,
+                  Natural fixingDays,
                   const boost::shared_ptr<IborIndex>& index,
-                  const Real gearing = 1.0,
-                  const Spread spread = 0.0,
-                  const Rate cap = Null<Rate>(),
-                  const Rate floor = Null<Rate>(),
+                  Real gearing = 1.0,
+                  Spread spread = 0.0,
+                  Rate cap = Null<Rate>(),
+                  Rate floor = Null<Rate>(),
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false)
         : CappedFlooredCoupon(boost::shared_ptr<FloatingRateCoupon>(new
-            IborCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
+            IborCoupon(nominal, paymentDate, startDate, endDate, fixingDays,
                        index, gearing, spread, refPeriodStart, refPeriodEnd,
                        dayCounter, isInArrears)), cap, floor) {}
 
@@ -130,14 +130,14 @@ namespace QuantLib {
     class CappedFlooredCmsCoupon : public CappedFlooredCoupon {
       public:
         CappedFlooredCmsCoupon(
+                  Real nominal,
                   const Date& paymentDate,
-                  const Real nominal,
                   const Date& startDate,
                   const Date& endDate,
-                  const Natural fixingDays,
+                  Natural fixingDays,
                   const boost::shared_ptr<SwapIndex>& index,
-                  const Real gearing = 1.0,
-                  const Spread spread= 0.0,
+                  Real gearing = 1.0,
+                  Spread spread= 0.0,
                   const Rate cap = Null<Rate>(),
                   const Rate floor = Null<Rate>(),
                   const Date& refPeriodStart = Date(),
@@ -145,7 +145,7 @@ namespace QuantLib {
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false)
         : CappedFlooredCoupon(boost::shared_ptr<FloatingRateCoupon>(new
-            CmsCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
+            CmsCoupon(nominal, paymentDate, startDate, endDate, fixingDays,
                       index, gearing, spread, refPeriodStart, refPeriodEnd,
                       dayCounter, isInArrears)), cap, floor) {}
 

@@ -114,7 +114,7 @@ namespace QuantLib {
                  const Date& refPeriodStart,
                  const Date& refPeriodEnd,
                  const DayCounter& dayCounter)
-      : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
+      : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,
                index->fixingDays(), index, gearing, spread,
                refPeriodStart, refPeriodEnd, dayCounter, false),
         fixingSchedule_(MakeSchedule(startDate, endDate, 1*Days,

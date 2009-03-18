@@ -25,19 +25,19 @@
 
 namespace QuantLib {
 
-    CmsCoupon::CmsCoupon(const Date& paymentDate,
-                         const Real nominal,
+    CmsCoupon::CmsCoupon(Real nominal,
+                         const Date& paymentDate,
                          const Date& startDate,
                          const Date& endDate,
-                         const Natural fixingDays,
+                         Natural fixingDays,
                          const boost::shared_ptr<SwapIndex>& swapIndex,
-                         const Real gearing,
-                         const Spread spread,
+                         Real gearing,
+                         Spread spread,
                          const Date& refPeriodStart,
                          const Date& refPeriodEnd,
                          const DayCounter& dayCounter,
                          bool isInArrears)
-    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
+    : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,
                          fixingDays, swapIndex, gearing, spread,
                          refPeriodStart, refPeriodEnd,
                          dayCounter, isInArrears),

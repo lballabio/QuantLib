@@ -45,12 +45,7 @@ namespace QuantLib {
                         const Date& accrualStartDate,
                         const Date& accrualEndDate,
                         const Date& refPeriodStart = Date(),
-                        const Date& refPeriodEnd = Date())
-        : Coupon(nominal, paymentDate, accrualStartDate, accrualEndDate,
-                 refPeriodStart, refPeriodEnd),
-          rate_(InterestRate(rate,dayCounter,Simple)),
-          dayCounter_(dayCounter) {}
-
+                        const Date& refPeriodEnd = Date());
         FixedRateCoupon(Real nominal,
                         const Date& paymentDate,
                         const InterestRate& interestRate,
@@ -58,10 +53,7 @@ namespace QuantLib {
                         const Date& accrualStartDate,
                         const Date& accrualEndDate,
                         const Date& refPeriodStart = Date(),
-                        const Date& refPeriodEnd = Date())
-        : Coupon(nominal, paymentDate, accrualStartDate, accrualEndDate,
-                 refPeriodStart, refPeriodEnd),
-          rate_(interestRate), dayCounter_(dayCounter) {}
+                        const Date& refPeriodEnd = Date());
         //@}
         //! \name CashFlow interface
         //@{
@@ -69,8 +61,8 @@ namespace QuantLib {
         //@}
         //! \name Coupon interface
         //@{
-        Rate rate() const;
-        InterestRate interestRate() const;
+        Rate rate() const { return rate_; }
+        InterestRate interestRate() const { return rate_; }
         DayCounter dayCounter() const { return dayCounter_; }
         Real accruedAmount(const Date&) const;
         //@}
@@ -106,7 +98,6 @@ namespace QuantLib {
         DayCounter paymentDayCounter_, firstPeriodDayCounter_;
         BusinessDayConvention paymentAdjustment_;
     };
-
 
     inline void FixedRateCoupon::accept(AcyclicVisitor& v) {
         Visitor<FixedRateCoupon>* v1 =

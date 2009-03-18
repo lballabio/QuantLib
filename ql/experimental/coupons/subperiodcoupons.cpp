@@ -38,7 +38,7 @@ namespace QuantLib {
                                     Rate rateSpread,
                                     const Date& refPeriodStart,
                                     const Date& refPeriodEnd)
-    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
+    : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,
                          fixingDays, index, gearing, couponSpread,
                          refPeriodStart, refPeriodEnd, dayCounter),
       rateSpread_(rateSpread) {

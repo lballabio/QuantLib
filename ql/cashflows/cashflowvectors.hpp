@@ -70,6 +70,7 @@ namespace QuantLib {
                     bool isZero) {
 
         Size n = schedule.size()-1;
+        QL_REQUIRE(!nominals.empty(), "no notional given");
         QL_REQUIRE(nominals.size() <= n,
                    "too many nominals (" << nominals.size() <<
                    "), only " << n << " required");
@@ -120,20 +121,21 @@ namespace QuantLib {
             } else { // floating coupon
                 if (detail::noOption(caps, floors, i))
                     leg.push_back(boost::shared_ptr<CashFlow>(new
-                        FloatingCouponType(paymentDate,
-                               detail::get(nominals, i, 1.0),
-                               start, end,
-                               detail::get(fixingDays, i, index->fixingDays()),
-                               index,
-                               detail::get(gearings, i, 1.0),
-                               detail::get(spreads, i, 0.0),
-                               refStart, refEnd,
-                               paymentDayCounter, isInArrears)));
+                        FloatingCouponType(
+                            detail::get(nominals, i, 1.0),
+                            paymentDate,
+                            start, end,
+                            detail::get(fixingDays, i, index->fixingDays()),
+                            index,
+                            detail::get(gearings, i, 1.0),
+                            detail::get(spreads, i, 0.0),
+                            refStart, refEnd,
+                            paymentDayCounter, isInArrears)));
                 else {
                     leg.push_back(boost::shared_ptr<CashFlow>(new
                         CappedFlooredCouponType(
-                               paymentDate,
                                detail::get(nominals, i, 1.0),
+                               paymentDate,
                                start, end,
                                detail::get(fixingDays, i, index->fixingDays()),
                                index,
@@ -174,6 +176,7 @@ namespace QuantLib {
                    const boost::shared_ptr<DigitalReplication>& replication) {
 
         Size n = schedule.size()-1;
+        QL_REQUIRE(!nominals.empty(), "no notional given");
         QL_REQUIRE(nominals.size() <= n,
                    "too many nominals (" << nominals.size() <<
                    "), only " << n << " required");
@@ -219,8 +222,8 @@ namespace QuantLib {
                                     start, end, refStart, refEnd)));
             } else { // floating digital coupon
                 boost::shared_ptr<FloatingCouponType> underlying(new
-                    FloatingCouponType(paymentDate,
-                                       detail::get(nominals, i, 1.0),
+                    FloatingCouponType(detail::get(nominals, i, 1.0),
+                                       paymentDate,
                                        start, end,
                                        detail::get(fixingDays, i, index->fixingDays()),
                                        index,

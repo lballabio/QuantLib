@@ -113,7 +113,7 @@ void DigitalCouponTest::testAssetOrNothing() {
                     Rate spread = spreads[h];
 
                     boost::shared_ptr<FloatingRateCoupon> underlying(new
-                        IborCoupon(paymentDate, vars.nominal,
+                        IborCoupon(vars.nominal, paymentDate,
                                    startDate, endDate,
                                    vars.fixingDays, vars.index,
                                    gearing, spread));
@@ -285,7 +285,7 @@ void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
         Date paymentDate = endDate;
 
         boost::shared_ptr<FloatingRateCoupon> underlying(new
-            IborCoupon(paymentDate, vars.nominal,
+            IborCoupon(vars.nominal, paymentDate,
                        startDate, endDate,
                        vars.fixingDays, vars.index,
                        gearing, spread));
@@ -397,7 +397,7 @@ void DigitalCouponTest::testAssetOrNothingDeepOutTheMoney() {
         Date paymentDate = endDate;
 
         boost::shared_ptr<FloatingRateCoupon> underlying(new
-            IborCoupon(paymentDate, vars.nominal,
+            IborCoupon(vars.nominal, paymentDate,
                        startDate, endDate,
                        vars.fixingDays, vars.index,
                        gearing, spread));
@@ -523,7 +523,7 @@ void DigitalCouponTest::testCashOrNothing() {
 
                 Date paymentDate = endDate;
                 boost::shared_ptr<FloatingRateCoupon> underlying(new
-                    IborCoupon(paymentDate, vars.nominal,
+                    IborCoupon(vars.nominal, paymentDate,
                                startDate, endDate,
                                vars.fixingDays, vars.index,
                                gearing, spread));
@@ -663,7 +663,7 @@ void DigitalCouponTest::testCashOrNothingDeepInTheMoney() {
         Date paymentDate = endDate;
 
         boost::shared_ptr<FloatingRateCoupon> underlying(new
-            IborCoupon(paymentDate, vars.nominal,
+            IborCoupon(vars.nominal, paymentDate,
                        startDate, endDate,
                        vars.fixingDays, vars.index,
                        gearing, spread));
@@ -773,7 +773,7 @@ void DigitalCouponTest::testCashOrNothingDeepOutTheMoney() {
         Date paymentDate = endDate;
 
         boost::shared_ptr<FloatingRateCoupon> underlying(new
-            IborCoupon(paymentDate, vars.nominal,
+            IborCoupon(vars.nominal, paymentDate,
                        startDate, endDate,
                        vars.fixingDays, vars.index,
                        gearing, spread));
@@ -890,7 +890,7 @@ void DigitalCouponTest::testCallPutParity() {
                 Date paymentDate = endDate;
 
                 boost::shared_ptr<FloatingRateCoupon> underlying(new
-                    IborCoupon(paymentDate, vars.nominal,
+                    IborCoupon(vars.nominal, paymentDate,
                                startDate, endDate,
                                vars.fixingDays, vars.index,
                                gearing, spread));
@@ -997,7 +997,7 @@ void DigitalCouponTest::testReplicationType() {
                 Date paymentDate = endDate;
 
                 boost::shared_ptr<FloatingRateCoupon> underlying(new
-                    IborCoupon(paymentDate, vars.nominal,
+                    IborCoupon(vars.nominal, paymentDate,
                                startDate, endDate,
                                vars.fixingDays, vars.index,
                                gearing, spread));

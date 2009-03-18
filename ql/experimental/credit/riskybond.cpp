@@ -208,7 +208,7 @@ namespace QuantLib {
                              notionals_[i] :
                              notionals_.back());
             boost::shared_ptr<CashFlow> interest (new
-                   IborCoupon(dates[i], previousNotional, dates[i-1], dates[i],
+                   IborCoupon(previousNotional, dates[i], dates[i-1], dates[i],
                               fixingDays_, index_, 1.0, spread_));
             boost::shared_ptr<CashFlow> amortization(new
                  SimpleCashFlow(previousNotional - currentNotional, dates[i]));

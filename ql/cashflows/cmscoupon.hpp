@@ -38,14 +38,14 @@ namespace QuantLib {
     */
     class CmsCoupon : public FloatingRateCoupon {
       public:
-        CmsCoupon(const Date& paymentDate,
-                  const Real nominal,
+        CmsCoupon(Real nominal,
+                  const Date& paymentDate,
                   const Date& startDate,
                   const Date& endDate,
-                  const Natural fixingDays,
+                  Natural fixingDays,
                   const boost::shared_ptr<SwapIndex>& index,
-                  const Real gearing = 1.0,
-                  const Spread spread= 0.0,
+                  Real gearing = 1.0,
+                  Spread spread = 0.0,
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),

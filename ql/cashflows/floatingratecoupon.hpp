@@ -43,14 +43,14 @@ namespace QuantLib {
     class FloatingRateCoupon : public Coupon,
                                public Observer {
       public:
-        FloatingRateCoupon(const Date& paymentDate,
-                           const Real nominal,
+        FloatingRateCoupon(Real nominal,
+                           const Date& paymentDate,
                            const Date& startDate,
                            const Date& endDate,
-                           const Natural fixingDays,
+                           Natural fixingDays,
                            const boost::shared_ptr<InterestRateIndex>& index,
-                           const Real gearing = 1.0,
-                           const Spread spread = 0.0,
+                           Real gearing = 1.0,
+                           Spread spread = 0.0,
                            const Date& refPeriodStart = Date(),
                            const Date& refPeriodEnd = Date(),
                            const DayCounter& dayCounter = DayCounter(),
@@ -58,15 +58,15 @@ namespace QuantLib {
 
         //! \name CashFlow interface
         //@{
-        Real amount() const;
+        Real amount() const { return rate() * accrualPeriod() * nominal(); }
         //@}
 
         //! \name Coupon interface
         //@{
         Rate rate() const;
         Real price(const Handle<YieldTermStructure>& discountingCurve) const;
-        DayCounter dayCounter() const;
-        Real accruedAmount(const Date&) const; //Attenzione
+        DayCounter dayCounter() const { return dayCounter_; }
+        Real accruedAmount(const Date&) const;
         //@}
 
         //! \name Inspectors
@@ -74,13 +74,13 @@ namespace QuantLib {
         //! floating index
         const boost::shared_ptr<InterestRateIndex>& index() const;
         //! fixing days
-        Natural fixingDays() const;
+        Natural fixingDays() const { return fixingDays_; }
         //! fixing date
         virtual Date fixingDate() const;
         //! index gearing, i.e. multiplicative coefficient for the index
-        Real gearing() const;
+        Real gearing() const { return gearing_; }
         //! spread paid over the fixing of the underlying index
-        Spread spread() const;
+        Spread spread() const { return spread_; }
         //! fixing of the underlying index
         virtual Rate indexFixing() const;
         //! convexity adjustment
@@ -88,12 +88,12 @@ namespace QuantLib {
         //! convexity-adjusted fixing
         virtual Rate adjustedFixing() const;
         //! whether or not the coupon fixes in arrears
-        bool isInArrears() const;
+        bool isInArrears() const { return isInArrears_; }
         //@}
 
         //! \name Observer interface
         //@{
-        void update();
+        void update() { notifyObservers(); }
         //@}
 
         //! \name Visitability
@@ -114,6 +114,40 @@ namespace QuantLib {
         bool isInArrears_;
         boost::shared_ptr<FloatingRateCouponPricer> pricer_;
     };
+
+    // inline definitions
+
+    inline const boost::shared_ptr<InterestRateIndex>&
+    FloatingRateCoupon::index() const {
+        return index_;
+    }
+
+    inline Rate FloatingRateCoupon::convexityAdjustment() const {
+        return convexityAdjustmentImpl(indexFixing());
+    }
+
+    inline Rate FloatingRateCoupon::adjustedFixing() const {
+        return (rate()-spread())/gearing();
+    }
+
+    inline boost::shared_ptr<FloatingRateCouponPricer>
+    FloatingRateCoupon::pricer() const {
+        return pricer_;
+    }
+
+    inline Rate
+    FloatingRateCoupon::convexityAdjustmentImpl(Rate fixing) const {
+        return (gearing() == 0.0 ? 0.0 : adjustedFixing()-fixing);
+    }
+
+    inline void FloatingRateCoupon::accept(AcyclicVisitor& v) {
+        Visitor<FloatingRateCoupon>* v1 =
+            dynamic_cast<Visitor<FloatingRateCoupon>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            Coupon::accept(v);
+    }
 
 }
 

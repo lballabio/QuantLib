@@ -35,8 +35,8 @@ namespace QuantLib {
                   bool isPutATMIncluded,
                   Rate putDigitalPayoff,
                   const boost::shared_ptr<DigitalReplication>& replication)
-    : FloatingRateCoupon(underlying->date(),
-                         underlying->nominal(),
+    : FloatingRateCoupon(underlying->nominal(),
+                         underlying->date(),
                          underlying->accrualStartDate(),
                          underlying->accrualEndDate(),
                          underlying->fixingDays(),

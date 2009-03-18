@@ -101,8 +101,8 @@ namespace QuantLib {
     }
 
 
-    AverageBMACoupon::AverageBMACoupon(const Date& paymentDate,
-                                       Real nominal,
+    AverageBMACoupon::AverageBMACoupon(Real nominal,
+                                       const Date& paymentDate,
                                        const Date& startDate,
                                        const Date& endDate,
                                        const boost::shared_ptr<BMAIndex>& index,
@@ -110,7 +110,7 @@ namespace QuantLib {
                                        const Date& refPeriodStart,
                                        const Date& refPeriodEnd,
                                        const DayCounter& dayCounter)
-    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
+    : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,
                          index->fixingDays(), index, gearing, spread,
                          refPeriodStart, refPeriodEnd, dayCounter, false),
       fixingSchedule_(index->fixingSchedule(
@@ -232,9 +232,9 @@ namespace QuantLib {
                                          paymentAdjustment_);
 
             cashflows.push_back(boost::shared_ptr<CashFlow>(
-                          new AverageBMACoupon(paymentDate,
-                                               detail::get(notionals_, i,
+                          new AverageBMACoupon(detail::get(notionals_, i,
                                                            notionals_.back()),
+                                               paymentDate,
                                                start, end,
                                                index_,
                                                detail::get(gearings_, i, 1.0),

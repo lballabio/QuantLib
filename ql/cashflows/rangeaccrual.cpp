@@ -38,12 +38,12 @@ namespace QuantLib {
     //===========================================================================//
 
     RangeAccrualFloatersCoupon::RangeAccrualFloatersCoupon(
-                const Real nominal,
+                Real nominal,
                 const Date& paymentDate,
                 const boost::shared_ptr<IborIndex>& index,
                 const Date& startDate,                                  // S
                 const Date& endDate,                                    // T
-                Integer fixingDays,
+                Natural fixingDays,
                 const DayCounter& dayCounter,
                 Real gearing,
                 Rate spread,
@@ -53,9 +53,9 @@ namespace QuantLib {
                 Real lowerTrigger,                                    // l
                 Real upperTrigger                                     // u
         )
-    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
-                        fixingDays, index, gearing, spread,
-                        refPeriodStart, refPeriodEnd, dayCounter),
+    : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,
+                         fixingDays, index, gearing, spread,
+                         refPeriodStart, refPeriodEnd, dayCounter),
     observationsSchedule_(observationsSchedule),
     lowerTrigger_(lowerTrigger),
     upperTrigger_(upperTrigger){
@@ -73,7 +73,7 @@ namespace QuantLib {
         observationsNo_ = observationDates_.size();
 
         const Handle<YieldTermStructure>& rateCurve = index->termStructure();
-        const Date referenceDate = rateCurve->referenceDate();
+        Date referenceDate = rateCurve->referenceDate();
 
         startTime_ = dayCounter.yearFraction(referenceDate, startDate);
         endTime_ = dayCounter.yearFraction(referenceDate, endDate);
@@ -400,7 +400,7 @@ namespace QuantLib {
                                         Real expiry,
                                         Real deflator) const {
         Real result;
-        if(byCallSpread_){
+        if (byCallSpread_) {
 
             // Previous strike
             const Real previousStrike = strike - eps_/2;
@@ -633,7 +633,7 @@ namespace QuantLib {
 
     RangeAccrualLeg::operator Leg() const {
 
-        QL_REQUIRE(!notionals_.empty(), "no nominal given");
+        QL_REQUIRE(!notionals_.empty(), "no notional given");
 
         Size n = schedule_.size()-1;
         QL_REQUIRE(notionals_.size() <= n,

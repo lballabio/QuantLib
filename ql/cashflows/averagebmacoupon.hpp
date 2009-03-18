@@ -43,8 +43,8 @@ namespace QuantLib {
     */
     class AverageBMACoupon : public FloatingRateCoupon {
       public:
-        AverageBMACoupon(const Date& paymentDate,
-                         Real nominal,
+        AverageBMACoupon(Real nominal,
+                         const Date& paymentDate,
                          const Date& startDate,
                          const Date& endDate,
                          const boost::shared_ptr<BMAIndex>& index,
