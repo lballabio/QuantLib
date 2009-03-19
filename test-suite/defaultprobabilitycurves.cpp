@@ -117,7 +117,7 @@ void DefaultProbabilityCurveTest::testFlatHazardRate() {
     Date startDate = today;
     Date endDate = startDate;
 
-    FlatHazardRate flatHazardRate(hazardRateQuote, dayCounter);
+    FlatHazardRate flatHazardRate(today, hazardRateQuote, dayCounter);
 
     for(Size i=0; i<n; i++){
         endDate = calendar.advance(endDate, 1, Years);

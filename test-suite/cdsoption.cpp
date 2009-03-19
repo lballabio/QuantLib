@@ -64,7 +64,7 @@ void CdsOptionTest::testCached() {
     Real recoveryRate = 0.4;
     Handle<DefaultProbabilityTermStructure> defaultProbability(
         boost::shared_ptr<DefaultProbabilityTermStructure>(
-                                 new FlatHazardRate(hazardRate, dayCounter)));
+                    new FlatHazardRate(0, calendar, hazardRate, dayCounter)));
 
     boost::shared_ptr<PricingEngine> swapEngine(
            new MidPointCdsEngine(defaultProbability, recoveryRate, riskFree));

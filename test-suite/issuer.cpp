@@ -24,6 +24,7 @@
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -36,7 +37,8 @@ void IssuerTest::testObservability() {
 
     Handle<DefaultProbabilityTermStructure> probability(
         boost::shared_ptr<DefaultProbabilityTermStructure>(
-             new FlatHazardRate(Handle<Quote>(hazardRate), Actual360())));
+             new FlatHazardRate(0, NullCalendar(),
+                                Handle<Quote>(hazardRate), Actual360())));
     Real recoveryRate = 0.4;
 
     Issuer issuer(probability, recoveryRate);

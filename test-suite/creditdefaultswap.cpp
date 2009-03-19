@@ -47,13 +47,14 @@ void CreditDefaultSwapTest::testCachedValue() {
     // Initialize curves
     Settings::instance().evaluationDate() = Date(9,June,2006);
     Date today = Settings::instance().evaluationDate();
+    Calendar calendar = TARGET();
 
     Handle<Quote> hazardRate = Handle<Quote>(
                 boost::shared_ptr<Quote>(new SimpleQuote(0.01234)));
     RelinkableHandle<DefaultProbabilityTermStructure> probabilityCurve;
     probabilityCurve.linkTo(
         boost::shared_ptr<DefaultProbabilityTermStructure>(
-            new FlatHazardRate(hazardRate, Actual360())));
+                   new FlatHazardRate(0, calendar, hazardRate, Actual360())));
 
     RelinkableHandle<YieldTermStructure> discountCurve;
 
@@ -61,7 +62,6 @@ void CreditDefaultSwapTest::testCachedValue() {
                             new FlatForward(today,0.06,Actual360())));
 
     // Build the schedule
-    Calendar calendar = TARGET();
     Date issueDate = calendar.advance(today, -1, Years);
     Date maturity = calendar.advance(issueDate, 10, Years);
     Frequency frequency = Semiannual;
@@ -380,6 +380,7 @@ void CreditDefaultSwapTest::testImpliedHazardRate() {
         RelinkableHandle<DefaultProbabilityTermStructure> probability;
         probability.linkTo(boost::shared_ptr<DefaultProbabilityTermStructure>(
          new FlatHazardRate(
+           today,
            Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(flatRate))),
            dayCounter)));
 
