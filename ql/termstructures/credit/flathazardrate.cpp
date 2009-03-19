@@ -19,21 +19,22 @@
 */
 
 #include <ql/termstructures/credit/flathazardrate.hpp>
-#include <ql/time/calendars/nullcalendar.hpp>
 
 namespace QuantLib {
 
-    FlatHazardRate::FlatHazardRate(const Handle<Quote>& hazardRate,
+    FlatHazardRate::FlatHazardRate(Natural settlementDays,
+                                   const Calendar& calendar,
+                                   const Handle<Quote>& hazardRate,
                                    const DayCounter& dayCounter)
-    : HazardRateStructure(0, NullCalendar(), dayCounter),
+    : HazardRateStructure(settlementDays, calendar, dayCounter),
       hazardRate_(hazardRate) {
         registerWith(hazardRate_);
     }
 
-    FlatHazardRate::FlatHazardRate(const Date& todaysDate,
+    FlatHazardRate::FlatHazardRate(const Date& referenceDate,
                                    const Handle<Quote>& hazardRate,
                                    const DayCounter& dayCounter)
-    : HazardRateStructure(todaysDate, Calendar(), dayCounter),
+    : HazardRateStructure(referenceDate, Calendar(), dayCounter),
       hazardRate_(hazardRate) {
         registerWith(hazardRate_);
     }

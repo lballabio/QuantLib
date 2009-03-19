@@ -188,8 +188,9 @@ namespace QuantLib {
         boost::shared_ptr<SimpleQuote> flatRate(new SimpleQuote(0.0));
 
         Handle<DefaultProbabilityTermStructure> probability(
-            boost::shared_ptr<DefaultProbabilityTermStructure>(
-                    new FlatHazardRate(Handle<Quote>(flatRate), dayCounter)));
+            boost::shared_ptr<DefaultProbabilityTermStructure>(new
+                FlatHazardRate(0, NullCalendar(),
+                               Handle<Quote>(flatRate), dayCounter)));
 
         MidPointCdsEngine engine(probability, recoveryRate, discountCurve);
         setupArguments(engine.getArguments());
