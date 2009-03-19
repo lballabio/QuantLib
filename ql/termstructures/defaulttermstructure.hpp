@@ -60,10 +60,10 @@ namespace QuantLib {
         //@}
         //! \name Default probability
         //@{
-        //! probability of default between today and a given date
+        //! probability of default between the reference date and a given date
         Probability defaultProbability(const Date&,
                                        bool extrapolate = false) const;
-        //! probability of default between today (t = 0) and a given time
+        //! probability of default between the reference time (t = 0) and a given time
         Probability defaultProbability(Time,
                                        bool extrapolate = false) const;
         //! probability of default between two given dates
