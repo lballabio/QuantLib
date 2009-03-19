@@ -24,17 +24,19 @@ namespace QuantLib {
 
     InflationCoupon::InflationCoupon(
                   const Date& paymentDate,
-                  const Real nominal,
+                  Real nominal,
                   const Date& startDate,
                   const Date& endDate,
                   const Period &lag,
-                  const Natural fixingDays,
-                  const Real gearing , const Spread spread,
+                  Natural fixingDays,
+                  Real gearing,
+                  Spread spread,
                   const DayCounter& dayCounter,
-                  const BusinessDayConvention &bdc,
+                  BusinessDayConvention bdc,
                   const Calendar &cal,
-                  const Date& refPeriodStart, const Date& refPeriodEnd)
-    : Coupon(nominal, paymentDate,
+                  const Date& refPeriodStart,
+                  const Date& refPeriodEnd)
+    : Coupon(paymentDate, nominal,
              startDate, endDate, refPeriodStart, refPeriodEnd),
       dayCounter_(dayCounter), businessDayConvention_(bdc), cal_(cal),
       lag_(lag), fixingDays_(fixingDays),

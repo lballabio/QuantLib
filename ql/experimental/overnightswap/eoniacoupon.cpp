@@ -106,17 +106,18 @@ namespace QuantLib {
     }
 
     EoniaCoupon::EoniaCoupon(const Date& paymentDate,
-                 Real nominal,
-                 const Date& startDate,
-                 const Date& endDate,
-                 const boost::shared_ptr<Eonia>& index,
-                 Real gearing, Spread spread,
-                 const Date& refPeriodStart,
-                 const Date& refPeriodEnd,
-                 const DayCounter& dayCounter)
-      : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,
-               index->fixingDays(), index, gearing, spread,
-               refPeriodStart, refPeriodEnd, dayCounter, false),
+                             Real nominal,
+                             const Date& startDate,
+                             const Date& endDate,
+                             const boost::shared_ptr<Eonia>& index,
+                             Real gearing,
+                             Spread spread,
+                             const Date& refPeriodStart,
+                             const Date& refPeriodEnd,
+                             const DayCounter& dayCounter)
+      : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
+                           index->fixingDays(), index, gearing, spread,
+                           refPeriodStart, refPeriodEnd, dayCounter, false),
         fixingSchedule_(MakeSchedule(startDate, endDate, 1*Days,
                                      index->fixingCalendar(),
                                  index->businessDayConvention()).backwards()) {

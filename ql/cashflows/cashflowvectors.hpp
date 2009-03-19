@@ -56,8 +56,8 @@ namespace QuantLib {
     template <typename InterestRateIndexType,
               typename FloatingCouponType,
               typename CappedFlooredCouponType>
-    Leg FloatingLeg(const std::vector<Real>& nominals,
-                    const Schedule& schedule,
+    Leg FloatingLeg(const Schedule& schedule,
+                    const std::vector<Real>& nominals,
                     const boost::shared_ptr<InterestRateIndexType>& index,
                     const DayCounter& paymentDayCounter,
                     BusinessDayConvention paymentAdj,
@@ -112,8 +112,8 @@ namespace QuantLib {
             }
             if (detail::get(gearings, i, 1.0) == 0.0) { // fixed coupon
                 leg.push_back(boost::shared_ptr<CashFlow>(new
-                    FixedRateCoupon(detail::get(nominals, i, 1.0),
-                                    paymentDate,
+                    FixedRateCoupon(paymentDate,
+                                    detail::get(nominals, i, 1.0),
                                     detail::effectiveFixedRate(spreads,caps,
                                                                floors,i),
                                     paymentDayCounter,
@@ -122,8 +122,8 @@ namespace QuantLib {
                 if (detail::noOption(caps, floors, i))
                     leg.push_back(boost::shared_ptr<CashFlow>(new
                         FloatingCouponType(
-                            detail::get(nominals, i, 1.0),
                             paymentDate,
+                            detail::get(nominals, i, 1.0),
                             start, end,
                             detail::get(fixingDays, i, index->fixingDays()),
                             index,
@@ -134,8 +134,8 @@ namespace QuantLib {
                 else {
                     leg.push_back(boost::shared_ptr<CashFlow>(new
                         CappedFlooredCouponType(
-                               detail::get(nominals, i, 1.0),
                                paymentDate,
+                               detail::get(nominals, i, 1.0),
                                start, end,
                                detail::get(fixingDays, i, index->fixingDays()),
                                index,
@@ -156,25 +156,26 @@ namespace QuantLib {
     template <typename InterestRateIndexType,
               typename FloatingCouponType,
               typename DigitalCouponType>
-    Leg FloatingDigitalLeg(const std::vector<Real>& nominals,
-                   const Schedule& schedule,
-                   const boost::shared_ptr<InterestRateIndexType>& index,
-                   const DayCounter& paymentDayCounter,
-                   BusinessDayConvention paymentAdj,
-                   const std::vector<Natural>& fixingDays,
-                   const std::vector<Real>& gearings,
-                   const std::vector<Spread>& spreads,
-                   bool isInArrears,
-                   const std::vector<Rate>& callStrikes,
-                   Position::Type callPosition,
-                   bool isCallATMIncluded,
-                   const std::vector<Rate>& callDigitalPayoffs,
-                   const std::vector<Rate>& putStrikes,
-                   Position::Type putPosition,
-                   bool isPutATMIncluded,
-                   const std::vector<Rate>& putDigitalPayoffs,
-                   const boost::shared_ptr<DigitalReplication>& replication) {
-
+    Leg FloatingDigitalLeg(
+                        const Schedule& schedule,
+                        const std::vector<Real>& nominals,
+                        const boost::shared_ptr<InterestRateIndexType>& index,
+                        const DayCounter& paymentDayCounter,
+                        BusinessDayConvention paymentAdj,
+                        const std::vector<Natural>& fixingDays,
+                        const std::vector<Real>& gearings,
+                        const std::vector<Spread>& spreads,
+                        bool isInArrears,
+                        const std::vector<Rate>& callStrikes,
+                        Position::Type callPosition,
+                        bool isCallATMIncluded,
+                        const std::vector<Rate>& callDigitalPayoffs,
+                        const std::vector<Rate>& putStrikes,
+                        Position::Type putPosition,
+                        bool isPutATMIncluded,
+                        const std::vector<Rate>& putDigitalPayoffs,
+                        const boost::shared_ptr<DigitalReplication>& replication)
+    {
         Size n = schedule.size()-1;
         QL_REQUIRE(!nominals.empty(), "no notional given");
         QL_REQUIRE(nominals.size() <= n,
@@ -215,15 +216,15 @@ namespace QuantLib {
             }
             if (detail::get(gearings, i, 1.0) == 0.0) { // fixed coupon
                 leg.push_back(boost::shared_ptr<CashFlow>(new
-                    FixedRateCoupon(detail::get(nominals, i, 1.0),
-                                    paymentDate,
+                    FixedRateCoupon(paymentDate,
+                                    detail::get(nominals, i, 1.0),
                                     detail::get(spreads, i, 1.0),
                                     paymentDayCounter,
                                     start, end, refStart, refEnd)));
             } else { // floating digital coupon
                 boost::shared_ptr<FloatingCouponType> underlying(new
-                    FloatingCouponType(detail::get(nominals, i, 1.0),
-                                       paymentDate,
+                    FloatingCouponType(paymentDate,
+                                       detail::get(nominals, i, 1.0),
                                        start, end,
                                        detail::get(fixingDays, i, index->fixingDays()),
                                        index,

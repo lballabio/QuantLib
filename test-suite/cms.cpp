@@ -291,7 +291,7 @@ void CmsTest::testFairRate()  {
     Rate infiniteFloor = Null<Real>();
     Real gearing = 1.0;
     Spread spread = 0.0;
-    CappedFlooredCmsCoupon coupon(nominal, paymentDate,
+    CappedFlooredCmsCoupon coupon(paymentDate, nominal,
                                   startDate, endDate,
                                   swapIndex->fixingDays(), swapIndex,
                                   gearing, spread,
@@ -411,7 +411,7 @@ void CmsTest::testParity() {
     Real gearing = 1.0;
     Spread spread = 0.0;
     DiscountFactor discount = vars.termStructure->discount(paymentDate);
-    CappedFlooredCmsCoupon swaplet(nominal, paymentDate,
+    CappedFlooredCmsCoupon swaplet(paymentDate, nominal,
                                    startDate, endDate,
                                    swapIndex->fixingDays(),
                                    swapIndex,
@@ -420,7 +420,7 @@ void CmsTest::testParity() {
                                    startDate, endDate,
                                    vars.iborIndex->dayCounter());
     for (Rate strike = .02; strike<.12; strike+=0.05) {
-        CappedFlooredCmsCoupon   caplet(nominal, paymentDate,
+        CappedFlooredCmsCoupon   caplet(paymentDate, nominal,
                                         startDate, endDate,
                                         swapIndex->fixingDays(),
                                         swapIndex,
@@ -428,7 +428,7 @@ void CmsTest::testParity() {
                                         strike, infiniteFloor,
                                         startDate, endDate,
                                         vars.iborIndex->dayCounter());
-        CappedFlooredCmsCoupon floorlet(nominal, paymentDate,
+        CappedFlooredCmsCoupon floorlet(paymentDate, nominal,
                                         startDate, endDate,
                                         swapIndex->fixingDays(),
                                         swapIndex,

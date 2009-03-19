@@ -98,8 +98,8 @@ namespace QuantLib {
     class CappedFlooredIborCoupon : public CappedFlooredCoupon {
       public:
         CappedFlooredIborCoupon(
-                  Real nominal,
                   const Date& paymentDate,
+                  Real nominal,
                   const Date& startDate,
                   const Date& endDate,
                   Natural fixingDays,
@@ -113,7 +113,7 @@ namespace QuantLib {
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false)
         : CappedFlooredCoupon(boost::shared_ptr<FloatingRateCoupon>(new
-            IborCoupon(nominal, paymentDate, startDate, endDate, fixingDays,
+            IborCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
                        index, gearing, spread, refPeriodStart, refPeriodEnd,
                        dayCounter, isInArrears)), cap, floor) {}
 
@@ -130,8 +130,8 @@ namespace QuantLib {
     class CappedFlooredCmsCoupon : public CappedFlooredCoupon {
       public:
         CappedFlooredCmsCoupon(
-                  Real nominal,
                   const Date& paymentDate,
+                  Real nominal,
                   const Date& startDate,
                   const Date& endDate,
                   Natural fixingDays,
@@ -145,7 +145,7 @@ namespace QuantLib {
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false)
         : CappedFlooredCoupon(boost::shared_ptr<FloatingRateCoupon>(new
-            CmsCoupon(nominal, paymentDate, startDate, endDate, fixingDays,
+            CmsCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
                       index, gearing, spread, refPeriodStart, refPeriodEnd,
                       dayCounter, isInArrears)), cap, floor) {}
 

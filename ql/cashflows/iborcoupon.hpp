@@ -36,8 +36,8 @@ namespace QuantLib {
     //! %Coupon paying a Libor-type index
     class IborCoupon : public FloatingRateCoupon {
       public:
-        IborCoupon(Real nominal,
-                   const Date& paymentDate,
+        IborCoupon(const Date& paymentDate,
+                   Real nominal,
                    const Date& startDate,
                    const Date& endDate,
                    Natural fixingDays,

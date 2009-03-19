@@ -44,12 +44,12 @@ namespace QuantLib {
           // averaging/compounding across three coupons within the
           // coupon period.
           SubPeriodsCoupon(
-                const Real nominal,
                 const Date& paymentDate,
+                Real nominal,
                 const boost::shared_ptr<IborIndex>& index,
                 const Date& startDate,
                 const Date& endDate,
-                Integer fixingDays,
+                Natural fixingDays,
                 const DayCounter& dayCounter,
                 Real gearing,
                 Rate couponSpread, // Spread added to the computed

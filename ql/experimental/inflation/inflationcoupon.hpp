@@ -40,15 +40,15 @@ namespace QuantLib {
                             public Observer {
       public:
         InflationCoupon(const Date& paymentDate,
-                        const Real nominal,
+                        Real nominal,
                         const Date& startDate,
                         const Date& endDate,
                         const Period &lag,
-                        const Natural fixingDays,
-                        const Real gearing = 1.0,
-                        const Spread spread = 0.0,
+                        Natural fixingDays,
+                        Real gearing = 1.0,
+                        Spread spread = 0.0,
                         const DayCounter& dayCounter = Actual365Fixed(),
-                        const BusinessDayConvention &bdc = ModifiedFollowing,
+                        BusinessDayConvention bdc = ModifiedFollowing,
                         const Calendar &cal = TARGET(),
                         const Date& refPeriodStart = Date(),
                         const Date& refPeriodEnd = Date());

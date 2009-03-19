@@ -25,8 +25,8 @@
 
 namespace QuantLib {
 
-    CmsCoupon::CmsCoupon(Real nominal,
-                         const Date& paymentDate,
+    CmsCoupon::CmsCoupon(const Date& paymentDate,
+                         Real nominal,
                          const Date& startDate,
                          const Date& endDate,
                          Natural fixingDays,
@@ -37,7 +37,7 @@ namespace QuantLib {
                          const Date& refPeriodEnd,
                          const DayCounter& dayCounter,
                          bool isInArrears)
-    : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,
+    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, swapIndex, gearing, spread,
                          refPeriodStart, refPeriodEnd,
                          dayCounter, isInArrears),
@@ -141,7 +141,7 @@ namespace QuantLib {
 
     CmsLeg::operator Leg() const {
         return FloatingLeg<SwapIndex, CmsCoupon, CappedFlooredCmsCoupon>(
-                         notionals_, schedule_, swapIndex_, paymentDayCounter_,
+                         schedule_, notionals_, swapIndex_, paymentDayCounter_,
                          paymentAdjustment_, fixingDays_, gearings_, spreads_,
                          caps_, floors_, inArrears_, zeroPayments_);
     }

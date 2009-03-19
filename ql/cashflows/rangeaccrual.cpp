@@ -38,8 +38,8 @@ namespace QuantLib {
     //===========================================================================//
 
     RangeAccrualFloatersCoupon::RangeAccrualFloatersCoupon(
-                Real nominal,
                 const Date& paymentDate,
+                Real nominal,
                 const boost::shared_ptr<IborIndex>& index,
                 const Date& startDate,                                  // S
                 const Date& endDate,                                    // T
@@ -53,7 +53,7 @@ namespace QuantLib {
                 Real lowerTrigger,                                    // l
                 Real upperTrigger                                     // u
         )
-    : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,
+    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, index, gearing, spread,
                          refPeriodStart, refPeriodEnd, dayCounter),
     observationsSchedule_(observationsSchedule),
@@ -678,8 +678,8 @@ namespace QuantLib {
             }
             if (detail::get(gearings_, i, 1.0) == 0.0) { // fixed coupon
                 leg.push_back(boost::shared_ptr<CashFlow>(new
-                    FixedRateCoupon(detail::get(notionals_, i, Null<Real>()),
-                                    paymentDate,
+                    FixedRateCoupon(paymentDate,
+                                    detail::get(notionals_, i, Null<Real>()),
                                     detail::get(spreads_, i, 0.0),
                                     paymentDayCounter_,
                                     start, end, refStart, refEnd)));
@@ -694,8 +694,8 @@ namespace QuantLib {
 
                     leg.push_back(boost::shared_ptr<CashFlow>(new
                        RangeAccrualFloatersCoupon(
-                            detail::get(notionals_, i, Null<Real>()),
                             paymentDate,
+                            detail::get(notionals_, i, Null<Real>()),
                             index_,
                             start, end,
                             detail::get(fixingDays_, i, 2),

@@ -27,8 +27,8 @@
 
 namespace QuantLib {
 
-    IborCoupon::IborCoupon(Real nominal,
-                           const Date& paymentDate,
+    IborCoupon::IborCoupon(const Date& paymentDate,
+                           Real nominal,
                            const Date& startDate,
                            const Date& endDate,
                            Natural fixingDays,
@@ -39,7 +39,7 @@ namespace QuantLib {
                            const Date& refPeriodEnd,
                            const DayCounter& dayCounter,
                            bool isInArrears)
-    : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,
+    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, iborIndex, gearing, spread,
                          refPeriodStart, refPeriodEnd,
                          dayCounter, isInArrears),
@@ -208,7 +208,7 @@ namespace QuantLib {
 
         Leg cashflows =
             FloatingLeg<IborIndex, IborCoupon, CappedFlooredIborCoupon>(
-                         notionals_, schedule_, index_, paymentDayCounter_,
+                         schedule_, notionals_, index_, paymentDayCounter_,
                          paymentAdjustment_, fixingDays_, gearings_, spreads_,
                          caps_, floors_, inArrears_, zeroPayments_);
 

@@ -38,16 +38,16 @@ namespace QuantLib {
       public:
         //! \name constructors
         //@{
-        FixedRateCoupon(Real nominal,
-                        const Date& paymentDate,
+        FixedRateCoupon(const Date& paymentDate,
+                        Real nominal,
                         Rate rate,
                         const DayCounter& dayCounter,
                         const Date& accrualStartDate,
                         const Date& accrualEndDate,
                         const Date& refPeriodStart = Date(),
                         const Date& refPeriodEnd = Date());
-        FixedRateCoupon(Real nominal,
-                        const Date& paymentDate,
+        FixedRateCoupon(const Date& paymentDate,
+                        Real nominal,
                         const InterestRate& interestRate,
                         const DayCounter& dayCounter,
                         const Date& accrualStartDate,

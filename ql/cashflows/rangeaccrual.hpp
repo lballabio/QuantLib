@@ -42,8 +42,8 @@ namespace QuantLib {
       public:
 
           RangeAccrualFloatersCoupon(
-                Real nominal,
                 const Date& paymentDate,
+                Real nominal,
                 const boost::shared_ptr<IborIndex>& index,
                 const Date& startDate,
                 const Date& endDate,

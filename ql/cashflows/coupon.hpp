@@ -41,8 +41,8 @@ namespace QuantLib {
         /*! \warning the coupon does not adjust the payment date which
                      must already be a business day.
         */
-        Coupon(Real nominal,
-               const Date& paymentDate,
+        Coupon(const Date& paymentDate,
+               Real nominal,
                const Date& accrualStartDate,
                const Date& accrualEndDate,
                const Date& refPeriodStart = Date(),
@@ -78,9 +78,9 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       protected:
+        Date paymentDate_;
         Real nominal_;
-        Date paymentDate_, accrualStartDate_, accrualEndDate_,
-             refPeriodStart_, refPeriodEnd_;
+        Date accrualStartDate_,accrualEndDate_, refPeriodStart_,refPeriodEnd_;
     };
 
 

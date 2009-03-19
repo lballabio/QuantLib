@@ -41,13 +41,13 @@ namespace QuantLib {
       public:
         NominalYoYInflationCoupon(
                          const Date &paymentDate,
-                         const Real nominal,
+                         Real nominal,
                          const Date &startDate,
                          const Date &endDate,
-                         const Natural nominalFixingDays,
-                         const BusinessDayConvention nominalBdc,
+                         Natural nominalFixingDays,
+                         BusinessDayConvention nominalBdc,
                          const boost::shared_ptr<IborIndex> &nominalIndex,
-                         const bool yoyIsRatio,
+                         bool yoyIsRatio,
                          const Period &yoyLag,
                          const boost::shared_ptr<YoYInflationIndex> &yoyIndex,
                          const DayCounter &accrualDayCounter);

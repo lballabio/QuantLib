@@ -192,7 +192,7 @@ namespace QuantLib {
     DigitalIborLeg::operator Leg() const {
 
         return FloatingDigitalLeg<IborIndex, IborCoupon, DigitalIborCoupon>(
-                            notionals_, schedule_, index_, paymentDayCounter_,
+                            schedule_, notionals_, index_, paymentDayCounter_,
                             paymentAdjustment_, fixingDays_,
                             gearings_, spreads_, inArrears_,
                             callStrikes_, longCallOption_,

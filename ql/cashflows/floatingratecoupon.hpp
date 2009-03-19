@@ -43,8 +43,8 @@ namespace QuantLib {
     class FloatingRateCoupon : public Coupon,
                                public Observer {
       public:
-        FloatingRateCoupon(Real nominal,
-                           const Date& paymentDate,
+        FloatingRateCoupon(const Date& paymentDate,
+                           Real nominal,
                            const Date& startDate,
                            const Date& endDate,
                            Natural fixingDays,

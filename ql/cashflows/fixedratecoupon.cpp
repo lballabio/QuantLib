@@ -24,28 +24,28 @@
 namespace QuantLib {
 
 
-    FixedRateCoupon::FixedRateCoupon(Real nominal,
-                                     const Date& paymentDate,
+    FixedRateCoupon::FixedRateCoupon(const Date& paymentDate,
+                                     Real nominal,
                                      Rate rate,
                                      const DayCounter& dayCounter,
                                      const Date& accrualStartDate,
                                      const Date& accrualEndDate,
                                      const Date& refPeriodStart,
                                      const Date& refPeriodEnd)
-    : Coupon(nominal, paymentDate, accrualStartDate, accrualEndDate,
+    : Coupon(paymentDate, nominal, accrualStartDate, accrualEndDate,
              refPeriodStart, refPeriodEnd),
       rate_(InterestRate(rate, dayCounter, Simple)),
       dayCounter_(dayCounter) {}
 
-    FixedRateCoupon::FixedRateCoupon(Real nominal,
-                                     const Date& paymentDate,
+    FixedRateCoupon::FixedRateCoupon(const Date& paymentDate,
+                                     Real nominal,
                                      const InterestRate& interestRate,
                                      const DayCounter& dayCounter,
                                      const Date& accrualStartDate,
                                      const Date& accrualEndDate,
                                      const Date& refPeriodStart,
                                      const Date& refPeriodEnd)
-    : Coupon(nominal, paymentDate, accrualStartDate, accrualEndDate,
+    : Coupon(paymentDate, nominal, accrualStartDate, accrualEndDate,
              refPeriodStart, refPeriodEnd),
       rate_(interestRate), dayCounter_(dayCounter) {}
 
@@ -146,19 +146,18 @@ namespace QuantLib {
                        firstPeriodDayCounter_ == paymentDayCounter_,
                        "regular first coupon "
                        "does not allow a first-period day count");
-            leg.push_back(boost::shared_ptr<CashFlow>(
-                                new FixedRateCoupon(nominal, paymentDate,
-                                                    rate, paymentDayCounter_,
-                                                    start, end, start, end)));
+            leg.push_back(boost::shared_ptr<CashFlow>(new
+                FixedRateCoupon(paymentDate, nominal, rate,
+                                paymentDayCounter_, start, end, start, end)));
         } else {
             Date ref = end - schedule_.tenor();
             ref = calendar.adjust(ref, schedule_.businessDayConvention());
             DayCounter dc = firstPeriodDayCounter_.empty() ?
                             paymentDayCounter_ :
                             firstPeriodDayCounter_;
-            leg.push_back(boost::shared_ptr<CashFlow>(
-                               new FixedRateCoupon(nominal, paymentDate, rate,
-                                                   dc, start, end, ref, end)));
+            leg.push_back(boost::shared_ptr<CashFlow>(new
+                FixedRateCoupon(paymentDate, nominal, rate,
+                                dc, start, end, ref, end)));
         }
         // regular periods
         for (Size i=2; i<schedule_.size()-1; ++i) {
@@ -172,10 +171,9 @@ namespace QuantLib {
                 nominal = notionals_[i-1];
             else
                 nominal = notionals_.back();
-            leg.push_back(boost::shared_ptr<CashFlow>(
-                                new FixedRateCoupon(nominal, paymentDate,
-                                                    rate, paymentDayCounter_,
-                                                    start, end, start, end)));
+            leg.push_back(boost::shared_ptr<CashFlow>(new
+                FixedRateCoupon(paymentDate, nominal, rate,
+                                paymentDayCounter_, start, end, start, end)));
         }
         if (schedule_.size() > 2) {
             // last period might be short or long
@@ -191,17 +189,17 @@ namespace QuantLib {
             else
                 nominal = notionals_.back();
             if (schedule_.isRegular(N-1)) {
-                leg.push_back(boost::shared_ptr<CashFlow>(
-                                new FixedRateCoupon(nominal, paymentDate,
-                                                    rate, paymentDayCounter_,
-                                                    start, end, start, end)));
+                leg.push_back(boost::shared_ptr<CashFlow>(new
+                    FixedRateCoupon(paymentDate, nominal, rate,
+                                    paymentDayCounter_,
+                                    start, end, start, end)));
             } else {
                 Date ref = start + schedule_.tenor();
                 ref = calendar.adjust(ref, schedule_.businessDayConvention());
-                leg.push_back(boost::shared_ptr<CashFlow>(
-                                new FixedRateCoupon(nominal, paymentDate,
-                                                    rate, paymentDayCounter_,
-                                                    start, end, start, ref)));
+                leg.push_back(boost::shared_ptr<CashFlow>(new
+                    FixedRateCoupon(paymentDate, nominal, rate,
+                                    paymentDayCounter_,
+                                    start, end, start, ref)));
             }
         }
         return leg;

@@ -1491,18 +1491,18 @@ void RangeAccrualTest::testInfiniteRange()  {
     CommonVars vars;
 
     //Coupon
-    RangeAccrualFloatersCoupon coupon(1.,
-                                vars.paymentDate,
-                                vars.iborIndex,
-                                vars.startDate,
-                                vars.endDate,
-                                vars.fixingDays,
-                                vars.rangeCouponDayCount,
-                                vars.gearing, vars.spread,
-                                vars.startDate, vars.endDate,
-                                vars.observationSchedule,
-                                vars.infiniteLowerStrike,
-                                vars.infiniteUpperStrike);
+    RangeAccrualFloatersCoupon coupon(vars.paymentDate,
+                                      1.0,
+                                      vars.iborIndex,
+                                      vars.startDate,
+                                      vars.endDate,
+                                      vars.fixingDays,
+                                      vars.rangeCouponDayCount,
+                                      vars.gearing, vars.spread,
+                                      vars.startDate, vars.endDate,
+                                      vars.observationSchedule,
+                                      vars.infiniteLowerStrike,
+                                      vars.infiniteUpperStrike);
 
     Date fixingDate = coupon.fixingDate();
 
@@ -1556,8 +1556,9 @@ void RangeAccrualTest::testPriceMonotonicityWithRespectToLowerStrike() {
 
             for (Size k = 1; k < 100; k++){
                 effectiveLowerStrike = 0.005 + k*0.001;
-                RangeAccrualFloatersCoupon coupon(1.,
+                RangeAccrualFloatersCoupon coupon(
                                             vars.paymentDate,
+                                            1.,
                                             vars.iborIndex,
                                             vars.startDate,
                                             vars.endDate,
@@ -1610,8 +1611,9 @@ void RangeAccrualTest::testPriceMonotonicityWithRespectToUpperStrike() {
 
             for (Size k = 1; k < 95; k++){
                 effectiveUpperStrike = 0.006 + k*0.001;
-                RangeAccrualFloatersCoupon coupon(1.,
+                RangeAccrualFloatersCoupon coupon(
                                             vars.paymentDate,
+                                            1.,
                                             vars.iborIndex,
                                             vars.startDate,
                                             vars.endDate,

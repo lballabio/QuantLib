@@ -101,8 +101,8 @@ namespace QuantLib {
     }
 
 
-    AverageBMACoupon::AverageBMACoupon(Real nominal,
-                                       const Date& paymentDate,
+    AverageBMACoupon::AverageBMACoupon(const Date& paymentDate,
+                                       Real nominal,
                                        const Date& startDate,
                                        const Date& endDate,
                                        const boost::shared_ptr<BMAIndex>& index,
@@ -110,7 +110,7 @@ namespace QuantLib {
                                        const Date& refPeriodStart,
                                        const Date& refPeriodEnd,
                                        const DayCounter& dayCounter)
-    : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,
+    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          index->fixingDays(), index, gearing, spread,
                          refPeriodStart, refPeriodEnd, dayCounter, false),
       fixingSchedule_(index->fixingSchedule(
@@ -231,16 +231,15 @@ namespace QuantLib {
                 refEnd = calendar.adjust(start + schedule_.tenor(),
                                          paymentAdjustment_);
 
-            cashflows.push_back(boost::shared_ptr<CashFlow>(
-                          new AverageBMACoupon(detail::get(notionals_, i,
-                                                           notionals_.back()),
-                                               paymentDate,
-                                               start, end,
-                                               index_,
-                                               detail::get(gearings_, i, 1.0),
-                                               detail::get(spreads_, i, 0.0),
-                                               refStart, refEnd,
-                                               paymentDayCounter_)));
+            cashflows.push_back(boost::shared_ptr<CashFlow>(new
+                AverageBMACoupon(paymentDate,
+                                 detail::get(notionals_, i, notionals_.back()),
+                                 start, end,
+                                 index_,
+                                 detail::get(gearings_, i, 1.0),
+                                 detail::get(spreads_, i, 0.0),
+                                 refStart, refEnd,
+                                 paymentDayCounter_)));
         }
 
         return cashflows;

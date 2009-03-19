@@ -26,33 +26,33 @@
 namespace QuantLib {
 
     SubPeriodsCoupon::SubPeriodsCoupon(
-                                    const Real nominal,
                                     const Date& paymentDate,
+                                    Real nominal,
                                     const boost::shared_ptr<IborIndex>& index,
                                     const Date& startDate,
                                     const Date& endDate,
-                                    Integer fixingDays,
+                                    Natural fixingDays,
                                     const DayCounter& dayCounter,
                                     Real gearing,
                                     Rate couponSpread,
                                     Rate rateSpread,
                                     const Date& refPeriodStart,
                                     const Date& refPeriodEnd)
-    : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,
+    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, index, gearing, couponSpread,
                          refPeriodStart, refPeriodEnd, dayCounter),
       rateSpread_(rateSpread) {
         const Handle<YieldTermStructure>& rateCurve = index->termStructure();
         const Date& referenceDate = rateCurve->referenceDate();
 
-        observationsSchedule_ = boost::shared_ptr<Schedule>(
-            new Schedule(startDate, endDate,
-                        index->tenor(),
-                        NullCalendar(),
-                        Unadjusted,
-                        Unadjusted,
-                         DateGeneration::Forward,
-                        false));
+        observationsSchedule_ = boost::shared_ptr<Schedule>(new
+            Schedule(startDate, endDate,
+                     index->tenor(),
+                     NullCalendar(),
+                     Unadjusted,
+                     Unadjusted,
+                     DateGeneration::Forward,
+                     false));
 
         observationDates_ = observationsSchedule_->dates();
         observationDates_.pop_back();                       //remove end date
@@ -61,7 +61,7 @@ namespace QuantLib {
         startTime_ = dayCounter.yearFraction(referenceDate, startDate);
         endTime_ = dayCounter.yearFraction(referenceDate, endDate);
 
-        for(Size i=0;i<observations_;i++) {
+        for (Size i=0; i<observations_; ++i) {
             observationTimes_.push_back(
                 dayCounter.yearFraction(referenceDate, observationDates_[i]));
         }

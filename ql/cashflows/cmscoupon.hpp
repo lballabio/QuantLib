@@ -38,8 +38,8 @@ namespace QuantLib {
     */
     class CmsCoupon : public FloatingRateCoupon {
       public:
-        CmsCoupon(Real nominal,
-                  const Date& paymentDate,
+        CmsCoupon(const Date& paymentDate,
+                  Real nominal,
                   const Date& startDate,
                   const Date& endDate,
                   Natural fixingDays,

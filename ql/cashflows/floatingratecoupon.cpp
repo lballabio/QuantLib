@@ -30,8 +30,8 @@
 namespace QuantLib {
 
     FloatingRateCoupon::FloatingRateCoupon(
-                            Real nominal,
                             const Date& paymentDate,
+                            Real nominal,
                             const Date& startDate,
                             const Date& endDate,
                             Natural fixingDays,
@@ -42,7 +42,7 @@ namespace QuantLib {
                             const Date& refPeriodEnd,
                             const DayCounter& dayCounter,
                             bool isInArrears)
-    : Coupon(nominal, paymentDate,
+    : Coupon(paymentDate, nominal,
              startDate, endDate, refPeriodStart, refPeriodEnd),
       index_(index), dayCounter_(dayCounter),
       fixingDays_(fixingDays==Null<Size>() ? index->fixingDays() : fixingDays),
