@@ -52,8 +52,6 @@ namespace QuantLib {
                          const boost::shared_ptr<YoYInflationIndex> &yoyIndex,
                          const DayCounter &accrualDayCounter);
 
-        virtual ~NominalYoYInflationCoupon(){}
-
         //! \name CashFlow interface
         //@{
         virtual Real amount() const;
