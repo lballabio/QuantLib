@@ -27,11 +27,57 @@
 #ifndef ql_probability_traits_hpp
 #define ql_probability_traits_hpp
 
+#include <ql/termstructures/credit/interpolatedsurvivalprobabilitycurve.hpp>
 #include <ql/termstructures/credit/interpolateddefaultdensitycurve.hpp>
 #include <ql/termstructures/credit/interpolatedhazardratecurve.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
 
 namespace QuantLib {
+
+    //! Survival-Probability-curve traits
+    struct SurvivalProbability {
+        // interpolated curve type
+        template <class Interpolator>
+        struct curve {
+            typedef InterpolatedSurvivalProbabilityCurve<Interpolator> type;
+        };
+        // helper class
+        typedef BootstrapHelper<DefaultProbabilityTermStructure> helper;
+        // start of curve data
+        static Date initialDate(const DefaultProbabilityTermStructure* c) {
+            return c->referenceDate();
+        }
+        // value at reference date
+        static Real initialValue(const DefaultProbabilityTermStructure*) {
+            return 1.0;
+        }
+        // true if the initialValue is just a dummy value
+        static bool dummyInitialValue() { return false; }
+        // initial guess
+        static Real initialGuess() { return 0.99; }
+        // further guesses
+        static Real guess(const DefaultProbabilityTermStructure* c,
+                          const Date& d) {
+            return c->survivalProbability(d,true);
+        }
+        // possible constraints based on previous values
+        static Real minValueAfter(Size,
+                                  const std::vector<Real>&) {
+            return QL_EPSILON;
+        }
+        static Real maxValueAfter(Size i,
+                                  const std::vector<Real>& data) {
+            return data[i-1];
+        }
+        // update with new guess
+        static void updateGuess(std::vector<Real>& data,
+                                Probability p,
+                                Size i) {
+            data[i] = p;
+        }
+        // upper bound for convergence loop
+        static Size maxIterations() { return 25; }
+    };
 
     //! Hazard-rate-curve traits
     struct HazardRate {

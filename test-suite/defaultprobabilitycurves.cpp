@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +28,7 @@
 #include <ql/pricingengines/credit/midpointcdsengine.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
+#include <ql/math/interpolations/loginterpolation.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
@@ -232,6 +234,11 @@ void DefaultProbabilityCurveTest::testLinearDensityConsistency() {
     testPiecewiseCurve<DefaultDensity,Linear>();
 }
 
+void DefaultProbabilityCurveTest::testLogLinearSurvivalConsistency() {
+    BOOST_MESSAGE("Testing log-linear survival-probability consistency...");
+    testPiecewiseCurve<SurvivalProbability,LogLinear>();
+}
+
 void DefaultProbabilityCurveTest::testSingleInstrumentBootstrap() {
     BOOST_MESSAGE("Testing single-instrument curve bootstrap...");
 
@@ -281,6 +288,8 @@ test_suite* DefaultProbabilityCurveTest::suite() {
                    &DefaultProbabilityCurveTest::testFlatDensityConsistency));
     suite->add(QUANTLIB_TEST_CASE(
                  &DefaultProbabilityCurveTest::testLinearDensityConsistency));
+    suite->add(QUANTLIB_TEST_CASE(
+                 &DefaultProbabilityCurveTest::testLogLinearSurvivalConsistency));
     suite->add(QUANTLIB_TEST_CASE(
                 &DefaultProbabilityCurveTest::testSingleInstrumentBootstrap));
     return suite;

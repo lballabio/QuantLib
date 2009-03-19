@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,6 +33,7 @@ class DefaultProbabilityCurveTest {
     static void testFlatHazardConsistency();
     static void testFlatDensityConsistency();
     static void testLinearDensityConsistency();
+    static void testLogLinearSurvivalConsistency();
     static void testSingleInstrumentBootstrap();
     static boost::unit_test_framework::test_suite* suite();
 };

@@ -1,10 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Jose Aparicio
- Copyright (C) 2008 Chris Kenyon
- Copyright (C) 2008 Roland Lichters
- Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,19 +17,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file hazardratestructure.hpp
-    \brief hazard-rate term structure
+/*! \file survivalprobabilitystructure.hpp
+    \brief survival-probability term structure
 */
 
-#ifndef quantlib_hazard_rate_structure_hpp
-#define quantlib_hazard_rate_structure_hpp
+#ifndef quantlib_survival_probability_structure_hpp
+#define quantlib_survival_probability_structure_hpp
 
 #include <ql/termstructures/defaulttermstructure.hpp>
 
 namespace QuantLib {
 
-    //! hazard-rate adapter for default-probability term structures
-    class HazardRateStructure : public DefaultProbabilityTermStructure {
+    //! survival-probability adapter for default-probability term structures
+    class SurvivalProbabilityStructure : public DefaultProbabilityTermStructure {
       public:
         /*! \name Constructors
             See the TermStructure documentation for issues regarding
@@ -44,28 +41,22 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        HazardRateStructure(const DayCounter& dc = DayCounter());
+        SurvivalProbabilityStructure(const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
-        HazardRateStructure(const Date& referenceDate,
-                            const Calendar& cal = Calendar(),
-                            const DayCounter& dc = DayCounter());
+        SurvivalProbabilityStructure(const Date& referenceDate,
+                                const Calendar& cal = Calendar(),
+                                const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
-        HazardRateStructure(Natural settlementDays,
-                            const Calendar& cal,
-                            const DayCounter& dc = DayCounter());
+        SurvivalProbabilityStructure(Natural settlementDays,
+                                const Calendar& cal,
+                                const DayCounter& dc = DayCounter());
         //@}
       protected:
-        //! probability of survival between today (t = 0) and a given time
-        /*! implemented in terms of the hazard rate \f$ h(t) \f$ as
-            \f[
-            S(t) = \exp\left( - \int_0^t h(\tau) d\tau \right).
-            \f]
-
-            \note This implementation uses numerical integration.
-                  Derived classes should override it if a more
-                  efficient formula is available.
+        //! instantaneous hazard rate at a given time
+        /*! implemented in terms of the survival probability \f$ S(t) \f$ as
+            \f$ h(t) = -[ln S(t)]/t. \f$
         */
-        Probability survivalProbabilityImpl(Time) const;
+        Real hazardRateImpl(Time) const;
         //! instantaneous default density at a given time
         /*! implemented in terms of the hazard rate \f$ h(t) \f$ and
             the survival probability \f$ S(t) \f$ as
@@ -76,7 +67,16 @@ namespace QuantLib {
 
     // inline methods
 
-    inline Real HazardRateStructure::defaultDensityImpl(Time t) const {
+    inline Real SurvivalProbabilityStructure::hazardRateImpl(Time t) const {
+        if (t==0) {
+            Time dt = 0.0001;
+            return - std::log(survivalProbabilityImpl(dt))/dt;
+        }
+        return - std::log(survivalProbabilityImpl(t))/t;
+    }
+
+    inline
+    Real SurvivalProbabilityStructure::defaultDensityImpl(Time t) const {
         return hazardRateImpl(t) * survivalProbabilityImpl(t);
     }
 
