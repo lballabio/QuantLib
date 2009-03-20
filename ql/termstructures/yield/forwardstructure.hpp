@@ -46,13 +46,13 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        ForwardRateStructure(const DayCounter& dayCounter = Actual365Fixed());
+        ForwardRateStructure(const DayCounter& dayCounter = DayCounter());
         ForwardRateStructure(const Date& referenceDate,
                              const Calendar& cal = Calendar(),
-                             const DayCounter& dayCounter =Actual365Fixed());
+                             const DayCounter& dc = DayCounter());
         ForwardRateStructure(Natural settlementDays,
-                             const Calendar&,
-                             const DayCounter& dayCounter = Actual365Fixed());
+                             const Calendar& cal,
+                             const DayCounter& dc = DayCounter());
         //@}
         virtual ~ForwardRateStructure() {}
       protected:
@@ -113,6 +113,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif
