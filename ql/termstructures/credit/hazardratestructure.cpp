@@ -75,4 +75,9 @@ namespace QuantLib {
         return std::exp(-integral(remap(bind(f,this,_1), t)) * t/2.0);
     }
 
+    Real HazardRateStructure::defaultDensityImpl(Time t) const {
+        return hazardRateImpl(t) * survivalProbabilityImpl(t);
+    }
+
 }
+
