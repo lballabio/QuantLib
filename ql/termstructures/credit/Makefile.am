@@ -10,14 +10,17 @@ this_include_HEADERS = \
     hazardratestructure.hpp \
     interpolateddefaultdensitycurve.hpp \
     interpolatedhazardratecurve.hpp \
+    interpolatedsurvivalprobabilitycurve.hpp \
     piecewisedefaultcurve.hpp \
-    probabilitytraits.hpp
+    probabilitytraits.hpp \
+    survivalprobabilitystructure.hpp
 
 libDefaultTermStructures_la_SOURCES = \
     defaultdensitystructure.cpp \
     defaultprobabilityhelpers.cpp \
     flathazardrate.cpp \
-    hazardratestructure.cpp
+    hazardratestructure.cpp \
+    survivalprobabilitystructure.cpp
 
 noinst_LTLIBRARIES = libDefaultTermStructures.la
 
