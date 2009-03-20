@@ -29,7 +29,8 @@
 namespace QuantLib {
 
     //! survival-probability adapter for default-probability term structures
-    class SurvivalProbabilityStructure : public DefaultProbabilityTermStructure {
+    class SurvivalProbabilityStructure
+        : public DefaultProbabilityTermStructure {
       public:
         /*! \name Constructors
             See the TermStructure documentation for issues regarding
@@ -53,32 +54,21 @@ namespace QuantLib {
         //@}
       protected:
         //! instantaneous hazard rate at a given time
-        /*! implemented in terms of the survival probability \f$ S(t) \f$ as
-            \f$ h(t) = -[ln S(t)]/t. \f$
+        /*! implemented in terms of the default density \f$ p(t) \f$ and
+            the survival probability \f$ S(t) \f$ as
+            \f$ h(t) = p(t)/S(t). \f$
         */
         Real hazardRateImpl(Time) const;
         //! instantaneous default density at a given time
-        /*! implemented in terms of the hazard rate \f$ h(t) \f$ and
-            the survival probability \f$ S(t) \f$ as
-            \f$ p(t) = h(t) S(t). \f$
+        /*! implemented in terms of the survival probability \f$ S(t) \f$ as
+            \f$ p(t) = -\frac{d}{dt} S(t). \f$
+
+            \note This implementation uses numerical differentiation.
+                  Derived classes should override it if a more
+                  efficient formula is available.
         */
         Real defaultDensityImpl(Time) const;
     };
-
-    // inline methods
-
-    inline Real SurvivalProbabilityStructure::hazardRateImpl(Time t) const {
-        if (t==0) {
-            Time dt = 0.0001;
-            return - std::log(survivalProbabilityImpl(dt))/dt;
-        }
-        return - std::log(survivalProbabilityImpl(t))/t;
-    }
-
-    inline
-    Real SurvivalProbabilityStructure::defaultDensityImpl(Time t) const {
-        return hazardRateImpl(t) * survivalProbabilityImpl(t);
-    }
 
 }
 

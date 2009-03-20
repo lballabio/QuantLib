@@ -21,7 +21,8 @@
 
 namespace QuantLib {
 
-    SurvivalProbabilityStructure::SurvivalProbabilityStructure(const DayCounter& dc)
+    SurvivalProbabilityStructure::SurvivalProbabilityStructure(
+                                                         const DayCounter& dc)
     : DefaultProbabilityTermStructure(dc) {}
 
     SurvivalProbabilityStructure::SurvivalProbabilityStructure(
@@ -35,5 +36,22 @@ namespace QuantLib {
                                                         const Calendar& cal,
                                                         const DayCounter& dc)
     : DefaultProbabilityTermStructure(settlementDays, cal, dc) {}
+
+
+    Real SurvivalProbabilityStructure::hazardRateImpl(Time t) const {
+        Probability S = survivalProbabilityImpl(t);
+        return S == 0.0 ? 0.0 : defaultDensityImpl(t)/S;
+    }
+
+    Real SurvivalProbabilityStructure::defaultDensityImpl(Time t) const {
+        Time dt = 0.0001;
+        Time t1 = std::max(t-dt, 0.0);
+        Time t2 = t+dt;
+
+        Probability S1 = survivalProbabilityImpl(t1);
+        Probability S2 = survivalProbabilityImpl(t2);
+
+        return -(S2-S1)/(t2-t1);
+    }
 
 }
