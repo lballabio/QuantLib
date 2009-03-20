@@ -67,51 +67,54 @@ namespace QuantLib {
                                              const DayCounter&,
                                              const Interpolator& interpolator
                                                             = Interpolator());
-        Real hazardRateImpl(Time) const;
         Probability survivalProbabilityImpl(Time) const;
         mutable std::vector<Date> dates_;
     };
 
+    // inline definitions
 
-    // template definitions
+    template <class T>
+    inline Date InterpolatedSurvivalProbabilityCurve<T>::maxDate() const {
+        return dates_.back();
+    }
+
+    template <class T>
+    inline const std::vector<Time>&
+    InterpolatedSurvivalProbabilityCurve<T>::times() const {
+        return this->times_;
+    }
+
+    template <class T>
+    inline const std::vector<Date>&
+    InterpolatedSurvivalProbabilityCurve<T>::dates() const {
+        return dates_;
+    }
+
+    template <class T>
+    inline const std::vector<Probability>&
+    InterpolatedSurvivalProbabilityCurve<T>::survivalProbabilities() const {
+        return this->data_;
+    }
+
+    template <class T>
+    inline std::vector<std::pair<Date,Real> >
+    InterpolatedSurvivalProbabilityCurve<T>::nodes() const {
+        std::vector<std::pair<Date,Real> > results(dates_.size());
+        for (Size i=0; i<dates_.size(); ++i)
+            results[i] = std::make_pair(dates_[i],this->data_[i]);
+        return results;
+    }
 
     #ifndef __DOXYGEN__
 
+    // template definitions
+
     template <class T>
-    InterpolatedSurvivalProbabilityCurve<T>::InterpolatedSurvivalProbabilityCurve(
-                                         const std::vector<Date>& dates,
-                                         const std::vector<Probability>& probabilities,
-                                         const DayCounter& dayCounter,
-                                         const Calendar& calendar,
-                                         const T& interpolator)
-    : SurvivalProbabilityStructure(dates.front(), calendar, dayCounter),
-      InterpolatedCurve<T>(std::vector<Time>(), probabilities, interpolator),
-      dates_(dates) {
-        QL_REQUIRE(this->data_.size() == dates_.size(),
-                   "dates/probabilities count mismatch");
-        QL_REQUIRE(dates_.size() >= T::requiredPoints,
-                   "not enough input dates given");
-
-        this->times_.resize(dates_.size());
-        this->times_[0] = 0.0;
-        for (Size i = 1; i < dates_.size(); i++) {
-            QL_REQUIRE(dates_[i] > dates_[i-1],
-                       "invalid date (" << dates_[i] << ", vs "
-                       << dates_[i-1] << ")");
-            QL_REQUIRE(this->data_[i] > 0.0, "negative hazard rate");
-            this->times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
-            QL_REQUIRE(!close(this->times_[i],this->times_[i-1]),
-                       "two dates correspond to the same time "
-                       "under this curve's day count convention");
-        }
-
-        this->interpolation_ =
-            this->interpolator_.interpolate(this->times_.begin(),
-                                            this->times_.end(),
-                                            this->data_.begin());
-        this->interpolation_.update();
+    Probability
+    InterpolatedSurvivalProbabilityCurve<T>::survivalProbabilityImpl(Time t)
+                                                                        const {
+        return this->interpolation_(t, true);
     }
-
 
     template <class T>
     InterpolatedSurvivalProbabilityCurve<T>::InterpolatedSurvivalProbabilityCurve(
@@ -137,46 +140,43 @@ namespace QuantLib {
     : SurvivalProbabilityStructure(settlementDays, calendar, dayCounter),
       InterpolatedCurve<T>(interpolator) {}
 
-
     template <class T>
-    Date InterpolatedSurvivalProbabilityCurve<T>::maxDate() const {
-        return dates_.back();
-    }
+    InterpolatedSurvivalProbabilityCurve<T>::InterpolatedSurvivalProbabilityCurve(
+                                         const std::vector<Date>& dates,
+                                         const std::vector<Probability>& probabilities,
+                                         const DayCounter& dayCounter,
+                                         const Calendar& calendar,
+                                         const T& interpolator)
+    : SurvivalProbabilityStructure(dates.front(), calendar, dayCounter),
+      InterpolatedCurve<T>(std::vector<Time>(), probabilities, interpolator),
+      dates_(dates)
+    {
+        QL_REQUIRE(dates_.size() >= T::requiredPoints,
+                   "not enough input dates given");
+        QL_REQUIRE(this->data_.size() == dates_.size(),
+                   "dates/data count mismatch");
+        QL_REQUIRE(this->data_[0] == 1.0,
+                   "the first probability must be == 1.0 "
+                   "to flag the corresponding date as reference date");
 
-    template <class T>
-    const std::vector<Time>& InterpolatedSurvivalProbabilityCurve<T>::times() const {
-        return this->times_;
-    }
+        this->times_.resize(dates_.size());
+        this->times_[0] = 0.0;
+        for (Size i=1; i<dates_.size(); ++i) {
+            QL_REQUIRE(dates_[i] > dates_[i-1],
+                       "invalid date (" << dates_[i] << ", vs "
+                       << dates_[i-1] << ")");
+            QL_REQUIRE(this->data_[i] > 0.0, "negative probability");
+            this->times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
+            QL_REQUIRE(!close(this->times_[i],this->times_[i-1]),
+                       "two dates correspond to the same time "
+                       "under this curve's day count convention");
+        }
 
-    template <class T>
-    const std::vector<Date>& InterpolatedSurvivalProbabilityCurve<T>::dates() const {
-        return dates_;
-    }
-
-    template <class T>
-    const std::vector<Probability>&
-    InterpolatedSurvivalProbabilityCurve<T>::survivalProbabilities() const {
-        return this->data_;
-    }
-
-    template <class T>
-    std::vector<std::pair<Date,Real> >
-    InterpolatedSurvivalProbabilityCurve<T>::nodes() const {
-        std::vector<std::pair<Date,Real> > results(dates_.size());
-        for (Size i=0; i<dates_.size(); ++i)
-            results[i] = std::make_pair(dates_[i],this->data_[i]);
-        return results;
-    }
-
-    template <class T>
-    Real InterpolatedSurvivalProbabilityCurve<T>::hazardRateImpl(Time t) const {
-        return this->interpolation_.derivative(t, true);
-    }
-
-    template <class T>
-    Probability InterpolatedSurvivalProbabilityCurve<T>::survivalProbabilityImpl(
-                                                               Time t) const {
-        return this->interpolation_(t, true);
+        this->interpolation_ =
+            this->interpolator_.interpolate(this->times_.begin(),
+                                            this->times_.end(),
+                                            this->data_.begin());
+        this->interpolation_.update();
     }
 
     #endif

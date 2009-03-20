@@ -73,101 +73,43 @@ namespace QuantLib {
         mutable std::vector<Date> dates_;
     };
 
-
-    // template definitions
-
-    #ifndef __DOXYGEN__
+    // inline definitions
 
     template <class T>
-    InterpolatedDefaultDensityCurve<T>::InterpolatedDefaultDensityCurve(
-                                         const std::vector<Date>& dates,
-                                         const std::vector<Real>& densities,
-                                         const DayCounter& dayCounter,
-                                         const Calendar& calendar,
-                                         const T& interpolator)
-    : DefaultDensityStructure(dates.front(), calendar, dayCounter),
-      InterpolatedCurve<T>(std::vector<Time>(), densities, interpolator),
-      dates_(dates) {
-        QL_REQUIRE(this->data_.size() == dates_.size(),
-                   "dates/densities count mismatch");
-        QL_REQUIRE(dates_.size() >= T::requiredPoints,
-                   "not enough input dates given");
-
-        this->times_.resize(dates_.size());
-        this->times_[0] = 0.0;
-        for (Size i = 1; i < dates_.size(); i++) {
-            QL_REQUIRE(dates_[i] > dates_[i-1],
-                       "invalid date (" << dates_[i] << ", vs "
-                       << dates_[i-1] << ")");
-            QL_REQUIRE(this->data_[i] > 0.0, "negative hazard rate");
-            this->times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
-            QL_REQUIRE(!close(this->times_[i],this->times_[i-1]),
-                       "two dates correspond to the same time "
-                       "under this curve's day count convention");
-        }
-
-        this->interpolation_ =
-            this->interpolator_.interpolate(this->times_.begin(),
-                                            this->times_.end(),
-                                            this->data_.begin());
-        this->interpolation_.update();
-    }
-
-
-    template <class T>
-    InterpolatedDefaultDensityCurve<T>::InterpolatedDefaultDensityCurve(
-                                                 const DayCounter& dayCounter,
-                                                 const T& interpolator)
-    : DefaultDensityStructure(dayCounter),
-      InterpolatedCurve<T>(interpolator) {}
-
-    template <class T>
-    InterpolatedDefaultDensityCurve<T>::InterpolatedDefaultDensityCurve(
-                                                 const Date& referenceDate,
-                                                 const DayCounter& dayCounter,
-                                                 const T& interpolator)
-    : DefaultDensityStructure(referenceDate, Calendar(), dayCounter),
-      InterpolatedCurve<T>(interpolator) {}
-
-    template <class T>
-    InterpolatedDefaultDensityCurve<T>::InterpolatedDefaultDensityCurve(
-                                                 Natural settlementDays,
-                                                 const Calendar& calendar,
-                                                 const DayCounter& dayCounter,
-                                                 const T& interpolator)
-    : DefaultDensityStructure(settlementDays, calendar, dayCounter),
-      InterpolatedCurve<T>(interpolator) {}
-
-
-    template <class T>
-    Date InterpolatedDefaultDensityCurve<T>::maxDate() const {
+    inline Date InterpolatedDefaultDensityCurve<T>::maxDate() const {
         return dates_.back();
     }
 
     template <class T>
-    const std::vector<Time>& InterpolatedDefaultDensityCurve<T>::times() const {
+    inline const std::vector<Time>&
+    InterpolatedDefaultDensityCurve<T>::times() const {
         return this->times_;
     }
 
     template <class T>
-    const std::vector<Date>& InterpolatedDefaultDensityCurve<T>::dates() const {
+    inline const std::vector<Date>&
+    InterpolatedDefaultDensityCurve<T>::dates() const {
         return dates_;
     }
 
     template <class T>
-    const std::vector<Real>&
+    inline const std::vector<Real>&
     InterpolatedDefaultDensityCurve<T>::defaultDensities() const {
         return this->data_;
     }
 
     template <class T>
-    std::vector<std::pair<Date,Real> >
+    inline std::vector<std::pair<Date,Real> >
     InterpolatedDefaultDensityCurve<T>::nodes() const {
         std::vector<std::pair<Date,Real> > results(dates_.size());
         for (Size i=0; i<dates_.size(); ++i)
             results[i] = std::make_pair(dates_[i],this->data_[i]);
         return results;
     }
+
+    #ifndef __DOXYGEN__
+
+    // template definitions
 
     template <class T>
     Real InterpolatedDefaultDensityCurve<T>::defaultDensityImpl(Time t) const {
@@ -195,8 +137,68 @@ namespace QuantLib {
         return std::max<Real>(P, 0.0);
     }
 
+    template <class T>
+    InterpolatedDefaultDensityCurve<T>::InterpolatedDefaultDensityCurve(
+                                                 const DayCounter& dayCounter,
+                                                 const T& interpolator)
+    : DefaultDensityStructure(dayCounter),
+      InterpolatedCurve<T>(interpolator) {}
+
+    template <class T>
+    InterpolatedDefaultDensityCurve<T>::InterpolatedDefaultDensityCurve(
+                                                 const Date& referenceDate,
+                                                 const DayCounter& dayCounter,
+                                                 const T& interpolator)
+    : DefaultDensityStructure(referenceDate, Calendar(), dayCounter),
+      InterpolatedCurve<T>(interpolator) {}
+
+    template <class T>
+    InterpolatedDefaultDensityCurve<T>::InterpolatedDefaultDensityCurve(
+                                                 Natural settlementDays,
+                                                 const Calendar& calendar,
+                                                 const DayCounter& dayCounter,
+                                                 const T& interpolator)
+    : DefaultDensityStructure(settlementDays, calendar, dayCounter),
+      InterpolatedCurve<T>(interpolator) {}
+
+    template <class T>
+    InterpolatedDefaultDensityCurve<T>::InterpolatedDefaultDensityCurve(
+                                         const std::vector<Date>& dates,
+                                         const std::vector<Real>& densities,
+                                         const DayCounter& dayCounter,
+                                         const Calendar& calendar,
+                                         const T& interpolator)
+    : DefaultDensityStructure(dates.front(), calendar, dayCounter),
+      InterpolatedCurve<T>(std::vector<Time>(), densities, interpolator),
+      dates_(dates)
+    {
+        QL_REQUIRE(dates_.size() >= T::requiredPoints,
+                   "not enough input dates given");
+        QL_REQUIRE(this->data_.size() == dates_.size(),
+                   "dates/data count mismatch");
+
+        this->times_.resize(dates_.size());
+        this->times_[0] = 0.0;
+        for (Size i=1; i<dates_.size(); ++i) {
+            QL_REQUIRE(dates_[i] > dates_[i-1],
+                       "invalid date (" << dates_[i] << ", vs "
+                       << dates_[i-1] << ")");
+            QL_REQUIRE(this->data_[i] >= 0.0, "negative default density");
+            this->times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
+            QL_REQUIRE(!close(this->times_[i],this->times_[i-1]),
+                       "two dates correspond to the same time "
+                       "under this curve's day count convention");
+        }
+
+        this->interpolation_ =
+            this->interpolator_.interpolate(this->times_.begin(),
+                                            this->times_.end(),
+                                            this->data_.begin());
+        this->interpolation_.update();
+    }
+
+
     #endif
 }
-
 
 #endif

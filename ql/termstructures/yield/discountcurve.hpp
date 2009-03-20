@@ -46,9 +46,12 @@ namespace QuantLib {
                                   const Calendar& cal = Calendar(),
                                   const Interpolator& interpolator
                                                             = Interpolator());
-        //! \name Inspectors
+        //! \name TermStructure interface
         //@{
         Date maxDate() const;
+        //@}
+        //! \name other inspectors
+        //@{
         const std::vector<Time>& times() const;
         const std::vector<Date>& dates() const;
         const std::vector<DiscountFactor>& discounts() const;
@@ -116,14 +119,22 @@ namespace QuantLib {
 
     #ifndef __DOXYGEN__
 
-    template <class T>
-    inline InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
-                                                 const DayCounter& dayCounter,
-                                                 const T& interpolator)
-    : YieldTermStructure(dayCounter), InterpolatedCurve<T>(interpolator) {}
+    // template definitions
 
     template <class T>
-    inline InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
+    DiscountFactor InterpolatedDiscountCurve<T>::discountImpl(Time t) const {
+        return this->interpolation_(t, true);
+    }
+
+    template <class T>
+    InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
+                                                 const DayCounter& dayCounter,
+                                                 const T& interpolator)
+    : YieldTermStructure(dayCounter),
+      InterpolatedCurve<T>(interpolator) {}
+
+    template <class T>
+    InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
                                                  const Date& referenceDate,
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
@@ -131,7 +142,7 @@ namespace QuantLib {
       InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
-    inline InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
+    InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
                                                  Natural settlementDays,
                                                  const Calendar& calendar,
                                                  const DayCounter& dayCounter,
@@ -139,37 +150,28 @@ namespace QuantLib {
     : YieldTermStructure(settlementDays, calendar, dayCounter),
       InterpolatedCurve<T>(interpolator) {}
 
-
-    template <class T>
-    inline DiscountFactor InterpolatedDiscountCurve<T>::discountImpl(Time t)
-                                                                       const {
-        return this->interpolation_(t, true);
-    }
-
-    // template definitions
-
     template <class T>
     InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
                                  const std::vector<Date>& dates,
                                  const std::vector<DiscountFactor>& discounts,
                                  const DayCounter& dayCounter,
-                                 const Calendar& cal,
+                                 const Calendar& calendar,
                                  const T& interpolator)
-    : YieldTermStructure(dates.front(), cal, dayCounter),
+    : YieldTermStructure(dates.front(), calendar, dayCounter),
       InterpolatedCurve<T>(std::vector<Time>(), discounts, interpolator),
-      dates_(dates) {
-
-        QL_REQUIRE(!dates_.empty(), "no input dates given");
-        QL_REQUIRE(!this->data_.empty(), "no input discount factors given");
+      dates_(dates)
+    {
+        QL_REQUIRE(dates_.size() >= T::requiredPoints,
+                   "not enough input dates given");
         QL_REQUIRE(this->data_.size() == dates_.size(),
-                   "dates/discount factors count mismatch");
+                   "dates/data count mismatch");
         QL_REQUIRE(this->data_[0] == 1.0,
                    "the first discount must be == 1.0 "
-                   "to flag the corrsponding date as settlement date");
+                   "to flag the corresponding date as reference date");
 
         this->times_.resize(dates_.size());
         this->times_[0] = 0.0;
-        for (Size i = 1; i < dates_.size(); i++) {
+        for (Size i=1; i<dates_.size(); ++i) {
             QL_REQUIRE(dates_[i] > dates_[i-1],
                        "invalid date (" << dates_[i] << ", vs "
                        << dates_[i-1] << ")");

@@ -42,15 +42,20 @@ namespace QuantLib {
         InterpolatedZeroCurve(const std::vector<Date>& dates,
                               const std::vector<Rate>& yields,
                               const DayCounter& dayCounter,
+                              const Calendar& calendar = Calendar(),
                               const Interpolator& interpolator
                                                             = Interpolator());
-        //! \name Inspectors
+        //! \name TermStructure interface
         //@{
         Date maxDate() const;
+        //@}
+        //! \name other inspectors
+        //@{
         const std::vector<Time>& times() const;
         const std::vector<Date>& dates() const;
         const std::vector<Rate>& zeroRates() const;
         std::vector<std::pair<Date,Rate> > nodes() const;
+        //@}
       protected:
         InterpolatedZeroCurve(const DayCounter&,
                               const Interpolator& interpolator
@@ -107,14 +112,22 @@ namespace QuantLib {
 
     #ifndef __DOXYGEN__
 
-    template <class T>
-    inline InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
-                                                 const DayCounter& dayCounter,
-                                                 const T& interpolator)
-    : InterpolatedCurve<T>(interpolator) {}
+    // template definitions
 
     template <class T>
-    inline InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
+    Rate InterpolatedZeroCurve<T>::zeroYieldImpl(Time t) const {
+        return this->interpolation_(t, true);
+    }
+
+    template <class T>
+    InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
+                                                 const DayCounter& dayCounter,
+                                                 const T& interpolator)
+    : ZeroYieldStructure(dayCounter),
+      InterpolatedCurve<T>(interpolator) {}
+
+    template <class T>
+    InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
                                                  const Date& referenceDate,
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
@@ -122,38 +135,33 @@ namespace QuantLib {
       InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
-    inline InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
+    InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
                                                  Natural settlementDays,
                                                  const Calendar& calendar,
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
-    : ZeroYieldStructure(settlementDays,calendar, dayCounter),
+    : ZeroYieldStructure(settlementDays, calendar, dayCounter),
       InterpolatedCurve<T>(interpolator) {}
-
-    template <class T>
-    Rate InterpolatedZeroCurve<T>::zeroYieldImpl(Time t) const {
-        return this->interpolation_(t, true);
-    }
-
-    // template definitions
 
     template <class T>
     InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
                                               const std::vector<Date>& dates,
                                               const std::vector<Rate>& yields,
                                               const DayCounter& dayCounter,
+                                              const Calendar& calendar,
                                               const T& interpolator)
-    : ZeroYieldStructure(dates.front(), Calendar(), dayCounter),
+    : ZeroYieldStructure(dates.front(), calendar, dayCounter),
       InterpolatedCurve<T>(std::vector<Time>(), yields, interpolator),
-      dates_(dates) {
-
-        QL_REQUIRE(dates_.size()>1, "too few dates");
-        QL_REQUIRE(this->data_.size()==dates_.size(),
-                   "dates/yields count mismatch");
+      dates_(dates)
+    {
+        QL_REQUIRE(dates_.size() >= T::requiredPoints,
+                   "not enough input dates given");
+        QL_REQUIRE(this->data_.size() == dates_.size(),
+                   "dates/data count mismatch");
 
         this->times_.resize(dates_.size());
-        this->times_[0]=0.0;
-        for (Size i = 1; i < dates_.size(); i++) {
+        this->times_[0] = 0.0;
+        for (Size i=1; i<dates_.size(); ++i) {
             QL_REQUIRE(dates_[i] > dates_[i-1],
                        "invalid date (" << dates_[i] << ", vs "
                        << dates_[i-1] << ")");
