@@ -51,7 +51,7 @@ namespace QuantLib {
                            const Calendar& calendar = Calendar(),
                            const DayCounter& dc = DayCounter());
         ZeroYieldStructure(Natural settlementDays,
-                           const Calendar&,
+                           const Calendar& calendar,
                            const DayCounter& dc = DayCounter());
         //@}
         virtual ~ZeroYieldStructure() {}
