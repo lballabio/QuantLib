@@ -67,6 +67,7 @@ namespace QuantLib {
         bool parSwap() const { return parSwap_; }
         Spread spread() const { return spread_; }
         Real nominal() const { return nominal_; }
+        const boost::shared_ptr<Bond>& bond() const { return bond_; }
         bool payFixedRate() const { return (payer_[0] == -1.0); }
         const Leg& bondLeg() const { return legs_[0]; }
         const Leg& floatingLeg() const { return legs_[1]; }
