@@ -4565,6 +4565,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\credit\interpolatedsurvivalprobabilitycurve.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\credit\piecewisedefaultcurve.hpp"
 					>
 				</File>

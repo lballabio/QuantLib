@@ -5,6 +5,7 @@
  Copyright (C) 2008 Chris Kenyon
  Copyright (C) 2008 Roland Lichters
  Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,11 +29,15 @@
 #define ql_probability_traits_hpp
 
 #include <ql/termstructures/credit/interpolatedsurvivalprobabilitycurve.hpp>
-#include <ql/termstructures/credit/interpolateddefaultdensitycurve.hpp>
 #include <ql/termstructures/credit/interpolatedhazardratecurve.hpp>
+#include <ql/termstructures/credit/interpolateddefaultdensitycurve.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
 
 namespace QuantLib {
+
+    namespace detail {
+        const Rate avgHazardRate = 0.01;
+    }
 
     //! Survival-Probability-curve traits
     struct SurvivalProbability {
@@ -54,7 +59,9 @@ namespace QuantLib {
         // true if the initialValue is just a dummy value
         static bool dummyInitialValue() { return false; }
         // initial guess
-        static Real initialGuess() { return 0.99; }
+        static Real initialGuess() {
+            return 1.0/(1.0+detail::avgHazardRate*0.25);
+        }
         // further guesses
         static Real guess(const DefaultProbabilityTermStructure* c,
                           const Date& d) {
@@ -76,7 +83,7 @@ namespace QuantLib {
             data[i] = p;
         }
         // upper bound for convergence loop
-        static Size maxIterations() { return 25; }
+        static Size maxIterations() { return 50; }
     };
 
     //! Hazard-rate-curve traits
@@ -92,18 +99,18 @@ namespace QuantLib {
         static Date initialDate(const DefaultProbabilityTermStructure* c) {
             return c->referenceDate();
         }
-        // value at reference date
+        // dummy value at reference date
         static Real initialValue(const DefaultProbabilityTermStructure*) {
-            return 0.01;
+            return detail::avgHazardRate;
         }
         // true if the initialValue is just a dummy value
         static bool dummyInitialValue() { return true; }
         // initial guess
-        static Real initialGuess() { return 0.001; }
+        static Real initialGuess() { return detail::avgHazardRate; }
         // further guesses
         static Real guess(const DefaultProbabilityTermStructure* c,
                           const Date& d) {
-            return c->hazardRate(d,true);
+            return c->hazardRate(d, true);
         }
         // possible constraints based on previous values
         static Real minValueAfter(Size, const std::vector<Real>&) {
@@ -123,7 +130,7 @@ namespace QuantLib {
                 data[0] = rate; // first point is updated as well
         }
         // upper bound for convergence loop
-        static Size maxIterations() { return 25; }
+        static Size maxIterations() { return 30; }
     };
 
     //! Default-density-curve traits
@@ -141,16 +148,16 @@ namespace QuantLib {
         }
         // value at reference date
         static Real initialValue(const DefaultProbabilityTermStructure*) {
-            return 0.01;
+            return detail::avgHazardRate;
         }
         // true if the initialValue is just a dummy value
         static bool dummyInitialValue() { return true; }
         // initial guess
-        static Real initialGuess() { return 0.05; }
+        static Real initialGuess() { return detail::avgHazardRate; }
         // further guesses
         static Real guess(const DefaultProbabilityTermStructure* c,
                           const Date& d) {
-            return c->defaultDensity(d,true);
+            return c->defaultDensity(d, true);
         }
         // possible constraints based on previous values
         static Real minValueAfter(Size, const std::vector<Real>&) {
@@ -170,7 +177,7 @@ namespace QuantLib {
                 data[0] = density; // first point is updated as well
         }
         // upper bound for convergence loop
-        static Size maxIterations() { return 25; }
+        static Size maxIterations() { return 30; }
     };
 
 }
