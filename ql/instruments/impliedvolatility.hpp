@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,30 +30,38 @@
 
 namespace QuantLib {
 
-    //! helper class for one-asset implied-volatility calculation
-    /*! The passed engine must be linked to the passed quote (see,
-        e.g., VanillaOption to see how this can be achieved.)
-    */
-    class ImpliedVolatilityHelper {
-      public:
-        static Volatility calculate(const Instrument& instrument,
-                                    const PricingEngine& engine,
-                                    SimpleQuote& volQuote,
-                                    Real targetValue,
-                                    Real accuracy,
-                                    Natural maxEvaluations,
-                                    Volatility minVol,
-                                    Volatility maxVol);
-        // utilities
+    namespace detail {
 
-        /*! The returned process is equal to the passed one, except
-            for the volatility which is flat and whose value is driven
-            by the passed quote.
+        //! helper class for one-asset implied-volatility calculation
+        /*! The passed engine must be linked to the passed quote (see,
+             e.g., VanillaOption to see how this can be achieved.)
+
+             \note this function is meant for developers of option
+                   classes so that they can implement an
+                   impliedVolatility() method.
         */
-        static boost::shared_ptr<GeneralizedBlackScholesProcess> clone(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             const boost::shared_ptr<SimpleQuote>& volQuote);
-    };
+        class ImpliedVolatilityHelper {
+          public:
+            static Volatility calculate(const Instrument& instrument,
+                                        const PricingEngine& engine,
+                                        SimpleQuote& volQuote,
+                                        Real targetValue,
+                                        Real accuracy,
+                                        Natural maxEvaluations,
+                                        Volatility minVol,
+                                        Volatility maxVol);
+            // utilities
+
+            /*! The returned process is equal to the passed one, except
+                for the volatility which is flat and whose value is driven
+                by the passed quote.
+            */
+            static boost::shared_ptr<GeneralizedBlackScholesProcess> clone(
+                     const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
+                     const boost::shared_ptr<SimpleQuote>&);
+        };
+
+    }
 
 }
 

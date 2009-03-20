@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -57,47 +57,52 @@ namespace QuantLib {
     }
 
 
-    Volatility ImpliedVolatilityHelper::calculate(
-                               const Instrument& instrument,
-                               const PricingEngine& engine,
-                               SimpleQuote& volQuote,
-                               Real targetValue,
-                               Real accuracy,
-                               Natural maxEvaluations,
-                               Volatility minVol,
-                               Volatility maxVol) {
+    namespace detail {
 
-        instrument.setupArguments(engine.getArguments());
-        engine.getArguments()->validate();
+        Volatility ImpliedVolatilityHelper::calculate(
+                                                 const Instrument& instrument,
+                                                 const PricingEngine& engine,
+                                                 SimpleQuote& volQuote,
+                                                 Real targetValue,
+                                                 Real accuracy,
+                                                 Natural maxEvaluations,
+                                                 Volatility minVol,
+                                                 Volatility maxVol) {
 
-        PriceError f(engine, volQuote, targetValue);
-        Brent solver;
-        solver.setMaxEvaluations(maxEvaluations);
-        Volatility guess = (minVol+maxVol)/2.0;
-        Volatility result = solver.solve(f, accuracy, guess, minVol, maxVol);
-        return result;
-    }
+            instrument.setupArguments(engine.getArguments());
+            engine.getArguments()->validate();
 
-    boost::shared_ptr<GeneralizedBlackScholesProcess>
-    ImpliedVolatilityHelper::clone(
+            PriceError f(engine, volQuote, targetValue);
+            Brent solver;
+            solver.setMaxEvaluations(maxEvaluations);
+            Volatility guess = (minVol+maxVol)/2.0;
+            Volatility result = solver.solve(f, accuracy, guess,
+                                             minVol, maxVol);
+            return result;
+        }
+
+        boost::shared_ptr<GeneralizedBlackScholesProcess>
+        ImpliedVolatilityHelper::clone(
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
              const boost::shared_ptr<SimpleQuote>& volQuote) {
 
-        Handle<Quote> stateVariable = process->stateVariable();
-        Handle<YieldTermStructure> dividendYield = process->dividendYield();
-        Handle<YieldTermStructure> riskFreeRate = process->riskFreeRate();
+            Handle<Quote> stateVariable = process->stateVariable();
+            Handle<YieldTermStructure> dividendYield = process->dividendYield();
+            Handle<YieldTermStructure> riskFreeRate = process->riskFreeRate();
 
-        Handle<BlackVolTermStructure> blackVol = process->blackVolatility();
-        Handle<BlackVolTermStructure> volatility(
+            Handle<BlackVolTermStructure> blackVol = process->blackVolatility();
+            Handle<BlackVolTermStructure> volatility(
                 boost::shared_ptr<BlackVolTermStructure>(
                                new BlackConstantVol(blackVol->referenceDate(),
                                                     blackVol->calendar(),
                                                     Handle<Quote>(volQuote),
                                                     blackVol->dayCounter())));
 
-        return boost::shared_ptr<GeneralizedBlackScholesProcess>(
-              new GeneralizedBlackScholesProcess(stateVariable, dividendYield,
-                                                 riskFreeRate, volatility));
+            return boost::shared_ptr<GeneralizedBlackScholesProcess>(
+                new GeneralizedBlackScholesProcess(stateVariable, dividendYield,
+                                                   riskFreeRate, volatility));
+        }
+
     }
-                               
+
 }

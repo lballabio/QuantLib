@@ -50,7 +50,7 @@ namespace QuantLib {
         boost::shared_ptr<SimpleQuote> volQuote(new SimpleQuote);
 
         boost::shared_ptr<GeneralizedBlackScholesProcess> newProcess =
-            ImpliedVolatilityHelper::clone(process, volQuote);
+            detail::ImpliedVolatilityHelper::clone(process, volQuote);
 
         // engines are built-in for the time being
         boost::scoped_ptr<PricingEngine> engine;
@@ -69,13 +69,13 @@ namespace QuantLib {
             QL_FAIL("unknown exercise type");
         }
 
-        return ImpliedVolatilityHelper::calculate(*this,
-                                                  *engine,
-                                                  *volQuote,
-                                                  targetValue,
-                                                  accuracy,
-                                                  maxEvaluations,
-                                                  minVol, maxVol);
+        return detail::ImpliedVolatilityHelper::calculate(*this,
+                                                          *engine,
+                                                          *volQuote,
+                                                          targetValue,
+                                                          accuracy,
+                                                          maxEvaluations,
+                                                          minVol, maxVol);
     }
 
 
