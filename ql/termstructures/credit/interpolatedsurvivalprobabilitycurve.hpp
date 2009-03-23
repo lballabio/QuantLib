@@ -68,6 +68,7 @@ namespace QuantLib {
                                              const Interpolator& interpolator
                                                             = Interpolator());
         Probability survivalProbabilityImpl(Time) const;
+        Real defaultDensityImpl(Time) const;
         mutable std::vector<Date> dates_;
     };
 
@@ -114,6 +115,12 @@ namespace QuantLib {
     InterpolatedSurvivalProbabilityCurve<T>::survivalProbabilityImpl(Time t)
                                                                         const {
         return this->interpolation_(t, true);
+    }
+
+    template <class T>
+    Real
+    InterpolatedSurvivalProbabilityCurve<T>::defaultDensityImpl(Time t) const {
+        return -this->interpolation_.derivative(t, true);
     }
 
     template <class T>
