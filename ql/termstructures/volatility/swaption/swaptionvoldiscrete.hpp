@@ -57,9 +57,12 @@ namespace QuantLib {
         const std::vector<Period>& swapTenors() const;
         const std::vector<Time>& swapLengths() const;
         //@}
-        //! \name LazyObject interface
+        //! \name Observer interface
         //@{
         void update();
+        //@}
+        //! \name LazyObject interface
+        //@{
         void performCalculations() const;
         //@}
       protected:
