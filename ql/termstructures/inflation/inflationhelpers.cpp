@@ -62,7 +62,7 @@ namespace QuantLib {
         // set up a new ZCIIS
         // but this one does NOT own its inflation term structure
         const bool own = false;
-        Rate K = quoteValue();
+        Rate K = quote()->value();
 
         Handle<ZeroInflationTermStructure> inflationTS(
                  boost::shared_ptr<ZeroInflationTermStructure>(z,no_deletion),
@@ -111,7 +111,7 @@ namespace QuantLib {
         // set up a new YYIIS
         // but this one does NOT own its inflation term structure
         const bool own = false;
-        Rate K = quoteValue();
+        Rate K = quote()->value();
 
         Handle<YoYInflationTermStructure> inflationTS(
                  boost::shared_ptr<YoYInflationTermStructure>(y,no_deletion),

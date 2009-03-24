@@ -118,7 +118,7 @@ namespace QuantLib {
 
         // double check bond quotes still valid and/or instruments not expired
         for (Size i=0; i<instruments_.size(); ++i) {
-            QL_REQUIRE(instruments_[i]->quoteIsValid(),
+            QL_REQUIRE(instruments_[i]->quote()->isValid(),
                        io::ordinal(i+1) << " instrument has an invalid quote");
             instruments_[i]->setTermStructure(
                                   const_cast<FittedBondDiscountCurve*>(this));
@@ -169,7 +169,7 @@ namespace QuantLib {
             boost::shared_ptr<FixedRateBond> bond =
                 curve_->instruments_[k]->fixedRateBond();
             Leg leg = bond->cashflows();
-            Real cleanPrice = curve_->instruments_[k]->quoteValue();
+            Real cleanPrice = curve_->instruments_[k]->quote()->value();
             Rate ytm = bond->yield(cleanPrice,
                                    bond->dayCounter(),
                                    Compounded,
@@ -263,7 +263,7 @@ namespace QuantLib {
             boost::shared_ptr<FixedRateBond> bond =
                 fittingMethod_->curve_->instruments_[i]->fixedRateBond();
             Real quotedPrice =
-                fittingMethod_->curve_->instruments_[i]->quoteValue();
+                fittingMethod_->curve_->instruments_[i]->quote()->value();
 
             Date settlement = bond->settlementDate(today);
             Real dirtyPrice = quotedPrice + bond->accruedAmount(settlement);

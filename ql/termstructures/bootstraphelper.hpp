@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
- Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007, 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -52,10 +52,9 @@ namespace QuantLib {
         virtual ~BootstrapHelper() {}
         //! \name BootstrapHelper interface
         //@{
-        Real quoteError() const;
-        Real quoteValue() const;
-        bool quoteIsValid() const;
+        const Handle<Quote>& quote() const { return quote_; }
         virtual Real impliedQuote() const = 0;
+        Real quoteError() const { return quote_->value() - impliedQuote(); }
         //! sets the term structure to be used for pricing
         /*! \warning Being a pointer and not a shared_ptr, the term
                      structure is not guaranteed to remain allocated
@@ -107,21 +106,6 @@ namespace QuantLib {
       termStructure_(0) {}
 
     template <class TS>
-    Real BootstrapHelper<TS>::quoteError() const {
-        return quote_->value()-impliedQuote();
-    }
-
-    template <class TS>
-    Real BootstrapHelper<TS>::quoteValue() const {
-        return quote_->value();
-    }
-
-    template <class TS>
-    bool BootstrapHelper<TS>::quoteIsValid() const {
-        return quote_->isValid();
-    }
-
-    template <class TS>
     void BootstrapHelper<TS>::setTermStructure(TS* t) {
         QL_REQUIRE(t != 0, "null term structure given");
         termStructure_ = t;
@@ -151,7 +135,6 @@ namespace QuantLib {
         else
             QL_FAIL("not a bootstrap-helper visitor");
     }
-
 
     namespace detail {
 
