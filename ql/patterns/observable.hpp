@@ -33,7 +33,7 @@ namespace QuantLib {
 
     class Observer;
 
-    //! Object that notifies its changes to a set of observables
+    //! Object that notifies its changes to a set of observers
     /*! \ingroup patterns */
     class Observable {
         friend class Observer;
