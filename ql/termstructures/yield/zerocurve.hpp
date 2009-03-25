@@ -177,8 +177,8 @@ namespace QuantLib {
             QL_REQUIRE(this->data_[i] > 0.0, "non-positive yield");
             // positive yields are not enough to ensure non-negative fwd rates
             // so here's a stronger requirement
-            QL_REQUIRE(this->data_[i]   * times_[i] -
-                       this->data_[i-1] * times_[i-1] >= 0.0,
+            QL_REQUIRE(this->data_[i]   * this->times_[i] -
+                       this->data_[i-1] * this->times_[i-1] >= 0.0,
                        "negative forward rate implied by the zero yield " <<
                        io::rate(this->data_[i]) << " at " << dates_[i] <<
                        " (t=" << this->times_[i] << ") after the zero yield " <<
