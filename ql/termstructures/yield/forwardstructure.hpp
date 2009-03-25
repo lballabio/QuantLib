@@ -73,7 +73,7 @@ namespace QuantLib {
         */
         virtual Rate zeroYieldImpl(Time) const;
         /*! Returns the discount factor for the given date calculating it
-            from the zero rate as \f$ d(t) = \exp (-z(t) t) \f$
+            from the zero rate as \f$ d(t) = \exp \left( -z(t) t \right) \f$
         */
         DiscountFactor discountImpl(Time) const;
         //@}
