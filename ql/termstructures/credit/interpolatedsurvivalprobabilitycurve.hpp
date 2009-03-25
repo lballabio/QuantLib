@@ -67,8 +67,11 @@ namespace QuantLib {
                                              const DayCounter&,
                                              const Interpolator& interpolator
                                                             = Interpolator());
+        //! \name DefaultProbabilityTermStructure implementation
+        //@{
         Probability survivalProbabilityImpl(Time) const;
         Real defaultDensityImpl(Time) const;
+        //@}
         mutable std::vector<Date> dates_;
     };
 

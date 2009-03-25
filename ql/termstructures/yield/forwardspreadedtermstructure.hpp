@@ -57,11 +57,12 @@ namespace QuantLib {
         Time maxTime() const;
         //@}
       protected:
-        //! returns the spreaded forward rate
-        Rate forwardImpl(Time) const;
-        //! returns the spreaded zero yield rate
+        //! \name ForwardRateStructure implementation
+        //@{
+        Rate forwardImpl(Time t) const;
         /* This method must disappear should the spread become a curve */
-        Rate zeroYieldImpl(Time) const;
+        Rate zeroYieldImpl(Time t) const;
+        //@}
       private:
         Handle<YieldTermStructure> originalCurve_;
         Handle<Quote> spread_;
@@ -110,6 +111,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

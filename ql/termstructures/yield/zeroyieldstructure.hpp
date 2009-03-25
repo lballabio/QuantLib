@@ -46,24 +46,39 @@ namespace QuantLib {
             constructors.
         */
         //@{
+        //! default constructor
+        /*! \warning term structures initialized by means of this
+                     constructor must manage their own reference date
+                     by overriding the referenceDate() method.
+        */
         ZeroYieldStructure(const DayCounter& dc = DayCounter());
+        //! initialize with a fixed reference date
         ZeroYieldStructure(const Date& referenceDate,
                            const Calendar& calendar = Calendar(),
                            const DayCounter& dc = DayCounter());
+        //! calculate the reference date based on the global evaluation date
         ZeroYieldStructure(Natural settlementDays,
                            const Calendar& calendar,
                            const DayCounter& dc = DayCounter());
         //@}
-        virtual ~ZeroYieldStructure() {}
       protected:
+        /*! \name Calculations
+
+            These methods must be implemented in derived classes to
+            perform the actual calculations. When they are called,
+            range check has already been performed; therefore, they
+            must assume that extrapolation is required.
+        */
+        //@{
+        //! zero-yield calculation
+        virtual Rate zeroYieldImpl(Time) const = 0;
+        //@}
         //! \name YieldTermStructure implementation
         //@{
         /*! Returns the discount factor for the given date calculating it
             from the zero yield.
         */
         DiscountFactor discountImpl(Time) const;
-        //! zero-yield calculation
-        virtual Rate zeroYieldImpl(Time) const = 0;
         //@}
     };
 

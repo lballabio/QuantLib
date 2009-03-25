@@ -70,7 +70,10 @@ namespace QuantLib {
                                   const DayCounter&,
                                   const Interpolator& interpolator
                                                             = Interpolator());
+        //! \name YieldTermStructure implementation
+        //@{
         DiscountFactor discountImpl(Time) const;
+        //@}
         mutable std::vector<Date> dates_;
     };
 

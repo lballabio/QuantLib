@@ -48,12 +48,14 @@ namespace QuantLib {
         Date maxDate() const;
         //@}
       private:
+        //! \name DefaultProbabilityTermStructure interface
+        //@{
         Real hazardRateImpl(Time) const;
         Probability survivalProbabilityImpl(Time) const;
+        //@}
         Handle<Quote> hazardRate_;
     };
 
 }
-
 
 #endif

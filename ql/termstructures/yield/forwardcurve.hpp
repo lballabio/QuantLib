@@ -69,8 +69,11 @@ namespace QuantLib {
                                  const DayCounter&,
                                  const Interpolator& interpolator
                                                             = Interpolator());
+        //! \name ForwardRateStructure implementation
+        //@{
         Rate forwardImpl(Time t) const;
         Rate zeroYieldImpl(Time t) const;
+        //@}
         mutable std::vector<Date> dates_;
     };
 

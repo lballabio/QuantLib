@@ -54,10 +54,9 @@ namespace QuantLib {
         Calendar calendar() const;
         Natural settlementDays() const;
         Date maxDate() const;
-        //@}
       protected:
-        //! returns the discount factor as seen from the evaluation date
         DiscountFactor discountImpl(Time) const;
+        //@}
       private:
         Handle<YieldTermStructure> originalCurve_;
     };

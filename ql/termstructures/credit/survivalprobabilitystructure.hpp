@@ -53,6 +53,8 @@ namespace QuantLib {
                                 const DayCounter& dc = DayCounter());
         //@}
       protected:
+        //! \name DefaultProbabilityTermStructure implementation
+        //@{
         //! instantaneous hazard rate at a given time
         /*! implemented in terms of the default density \f$ p(t) \f$ and
             the survival probability \f$ S(t) \f$ as
@@ -69,6 +71,7 @@ namespace QuantLib {
                      implementation is available.
         */
         Real defaultDensityImpl(Time) const;
+        //@}
     };
 
 }
