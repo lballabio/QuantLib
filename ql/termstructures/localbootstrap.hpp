@@ -149,7 +149,7 @@ namespace QuantLib {
 
         // check that there is no instruments with invalid quote
         for (Size i=0; i<nInsts; ++i)
-            QL_REQUIRE(ts_->instruments_[i]->quoteIsValid(),
+            QL_REQUIRE(ts_->instruments_[i]->quote()->isValid(),
                        io::ordinal(i+1) << " instrument (maturity: " <<
                        ts_->instruments_[i]->latestDate() <<
                        ") has an invalid quote");
