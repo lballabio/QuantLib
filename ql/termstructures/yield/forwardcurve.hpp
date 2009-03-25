@@ -193,13 +193,13 @@ namespace QuantLib {
             QL_REQUIRE(dates_[i] > dates_[i-1],
                        "invalid date (" << dates_[i] << ", vs "
                        << dates_[i-1] << ")");
-            #if !defined(QL_NEGATIVE_RATES)
-            QL_REQUIRE(this->data_[i] >= 0.0, "negative forward");
-            #endif
             this->times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
             QL_REQUIRE(!close(this->times_[i],this->times_[i-1]),
                        "two dates correspond to the same time "
                        "under this curve's day count convention");
+            #if !defined(QL_NEGATIVE_RATES)
+            QL_REQUIRE(this->data_[i] >= 0.0, "negative forward");
+            #endif
         }
 
         this->interpolation_ =
