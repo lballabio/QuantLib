@@ -492,7 +492,7 @@ int main(int, char* []) {
             std::vector<boost::shared_ptr<CashFlow> > leg =
                 instrumentsA[k]->bond()->cashflows();
 
-            Real quotePrice = instrumentsA[k]->quoteValue();
+            Real quotePrice = instrumentsA[k]->quote()->value();
             Rate ytm = instrumentsA[k]->bond()->yield(
                                         quotePrice,
                                         bondDayCount,
