@@ -70,10 +70,11 @@ namespace QuantLib {
                                                  Frequency freq,
                                                  bool extrapolate) const {
         if (d1==d2) {
-            Time t1 = timeFromReference(d1);
-            Time t2 = t1 + 0.0001;
+            Time t = timeFromReference(d1);
+            Time t1 = std::max(t - 0.0001, 0.0);
+            Time t2 = t + 0.0001;
             Real compound =
-                discount(t1, extrapolate)/discount(t2, extrapolate);
+                discount(t1, extrapolate)/discount(t2, true);
             return InterestRate::impliedRate(compound, t2-t1,
                                              dayCounter, comp, freq);
         }
@@ -89,9 +90,15 @@ namespace QuantLib {
                                                  Compounding comp,
                                                  Frequency freq,
                                                  bool extrapolate) const {
-        if (t2==t1) t2=t1+0.0001;
-        QL_REQUIRE(t2>t1, "t2 (" << t2 << ") < t1 (" << t2 << ")");
-        Real compound = discount(t1, extrapolate)/discount(t2, extrapolate);
+        Real compound;
+        if (t2==t1) {
+            t2 = t1+0.0001;
+            t1 = std::max(t1-0.0001, 0.0);
+            compound = discount(t1, extrapolate)/discount(t2, true);
+        } else {
+            QL_REQUIRE(t2>t1, "t2 (" << t2 << ") < t1 (" << t2 << ")");
+            compound = discount(t1, extrapolate)/discount(t2, extrapolate);
+        }
         return InterestRate::impliedRate(compound, t2-t1,
                                          dayCounter(), comp, freq);
     }
