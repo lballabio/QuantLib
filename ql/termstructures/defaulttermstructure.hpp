@@ -60,10 +60,10 @@ namespace QuantLib {
         //@}
         //! \name Default probability
         //@{
-        //! probability of default between the reference date and a given date
+        //! probability of default between reference date and a given date
         Probability defaultProbability(const Date&,
                                        bool extrapolate = false) const;
-        //! probability of default between the reference time (t = 0) and a given time
+        //! probability of default between reference time (t = 0) and a given time
         Probability defaultProbability(Time,
                                        bool extrapolate = false) const;
         //! probability of default between two given dates
@@ -77,10 +77,10 @@ namespace QuantLib {
         //@}
         //! \name Survival probability
         //@{
-        //! probability of survival between today and a given date
+        //! probability of survival between reference date and a given date
         Probability survivalProbability(const Date&,
                                         bool extrapolate = false) const;
-        //! probability of default between today (t = 0) and a given time
+        //! probability of survival between reference time (t = 0) and a given time
         Probability survivalProbability(Time,
                                         bool extrapolate = false) const;
         //@}
@@ -103,7 +103,7 @@ namespace QuantLib {
                         bool extrapolate = false) const;
         //@}
       protected:
-        //! probability of survival between today (t = 0) and a given time
+        //! probability of survival between reference time (t = 0) and a given time
         virtual Probability survivalProbabilityImpl(Time) const = 0;
         //! instantaneous default density at a given time
         virtual Real defaultDensityImpl(Time) const = 0;
@@ -112,6 +112,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif
