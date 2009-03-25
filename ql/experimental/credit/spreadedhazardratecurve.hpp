@@ -50,8 +50,10 @@ namespace QuantLib {
         Time maxTime() const;
         //@}
       protected:
-        //! returns the spreaded hazard rate
+        //! \name DefaultProbabilityTermStructure interface
+        //@{
         Real hazardRateImpl(Time t) const;
+        //@}
       private:
         Handle<DefaultProbabilityTermStructure> originalCurve_;
         Handle<Quote> spread_;
