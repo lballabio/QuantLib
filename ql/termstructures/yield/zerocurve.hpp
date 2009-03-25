@@ -181,9 +181,9 @@ namespace QuantLib {
                        this->data_[i-1] * times_[i-1] >= 0.0,
                        "negative forward rate implied by the zero yield " <<
                        io::rate(this->data_[i]) << " at " << dates_[i] <<
-                       " (t=" << times_[i] << ") after the zero yield " <<
+                       " (t=" << this->times_[i] << ") after the zero yield " <<
                        io::rate(this->data_[i-1]) << " at " << dates_[i-1] <<
-                       " (t=" << times_[i-1] << ")");
+                       " (t=" << this->times_[i-1] << ")");
             #endif
         }
 

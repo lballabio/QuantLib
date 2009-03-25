@@ -187,9 +187,9 @@ namespace QuantLib {
             QL_REQUIRE(this->data_[i] <= this->data_[i-1],
                        "negative forward rate implied by the discount " <<
                        this->data_[i] << " at " << dates_[i] <<
-                       " (t=" << times_[i] << ") after the discount " <<
+                       " (t=" << this->times_[i] << ") after the discount " <<
                        this->data_[i-1] << " at " << dates_[i-1] <<
-                       " (t=" << times_[i-1] << ")");
+                       " (t=" << this->times_[i-1] << ")");
             #endif
         }
 
