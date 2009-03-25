@@ -38,9 +38,6 @@ namespace QuantLib {
 
         Rates are assumed to be annual continuous compounding.
 
-        \todo add derived class ParSwapTermStructure similar to
-              ZeroYieldTermStructure, DiscountStructure, ForwardRateStructure
-
         \ingroup yieldtermstructures
 
         \test observability against evaluation date changes is checked.
@@ -187,10 +184,10 @@ namespace QuantLib {
       protected:
         /*! \name Calculations
 
-            These methods must be implemented in derived classes to perform
-            the actual discount and rate calculations. When they are called,
-            range check has already been performed; therefore, they must
-            assume that extrapolation is required.
+            These methods must be implemented in derived classes to
+            perform the actual calculations. When they are called,
+            range check has already been performed; therefore, they
+            must assume that extrapolation is required.
         */
         //@{
         //! discount calculation
