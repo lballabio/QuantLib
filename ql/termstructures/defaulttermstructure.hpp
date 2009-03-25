@@ -103,12 +103,21 @@ namespace QuantLib {
                         bool extrapolate = false) const;
         //@}
       protected:
-        //! probability of survival between t = 0 and a given time
+        /*! \name Calculations
+
+            These methods must be implemented in derived classes to
+            perform the actual calculations. When they are called,
+            range check has already been performed; therefore, they
+            must assume that extrapolation is required.
+        */
+        //@{
+        //! probability of survival between reference time (t = 0) and a given time
         virtual Probability survivalProbabilityImpl(Time) const = 0;
         //! instantaneous default density at a given time
         virtual Real defaultDensityImpl(Time) const = 0;
         //! instantaneous hazard rate at a given time
         virtual Real hazardRateImpl(Time) const = 0;
+        //@}
     };
 
 }

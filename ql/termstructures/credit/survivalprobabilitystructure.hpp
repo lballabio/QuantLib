@@ -63,9 +63,10 @@ namespace QuantLib {
         /*! implemented in terms of the survival probability \f$ S(t) \f$ as
             \f$ p(t) = -\frac{d}{dt} S(t). \f$
 
-            \note This implementation uses numerical differentiation.
-                  Derived classes should override it if a more
-                  efficient formula is available.
+            \warning This implementation uses numerical differentiation,
+                     which might be inefficient and inaccurate.
+                     Derived classes should override it if a more efficient
+                     implementation is available.
         */
         Real defaultDensityImpl(Time) const;
     };

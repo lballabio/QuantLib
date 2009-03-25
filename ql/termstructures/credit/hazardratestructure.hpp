@@ -55,15 +55,16 @@ namespace QuantLib {
                             const DayCounter& dc = DayCounter());
         //@}
       protected:
-        //! probability of survival between today (t = 0) and a given time
+        //! probability of survival between reference time (t = 0) and a given time
         /*! implemented in terms of the hazard rate \f$ h(t) \f$ as
             \f[
             S(t) = \exp\left( - \int_0^t h(\tau) d\tau \right).
             \f]
 
-            \note This implementation uses numerical integration.
-                  Derived classes should override it if a more
-                  efficient formula is available.
+            \warning This default implementation uses numerical integration,
+                     which might be inefficient and inaccurate.
+                     Derived classes should override it if a more efficient
+                     implementation is available.
         */
         Probability survivalProbabilityImpl(Time) const;
         //! instantaneous default density at a given time
