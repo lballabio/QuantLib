@@ -54,9 +54,14 @@ namespace QuantLib {
                              const Calendar& cal,
                              const DayCounter& dc = DayCounter());
         //@}
-        virtual ~ForwardRateStructure() {}
       protected:
-        //! \name YieldTermStructure implementation
+        /*! \name Calculations
+
+            These methods must be implemented in derived classes to
+            perform the actual calculations. When they are called,
+            range check has already been performed; therefore, they
+            must assume that extrapolation is required.
+        */
         //@{
         //! instantaneous forward-rate calculation
         virtual Rate forwardImpl(Time) const = 0;
@@ -72,6 +77,9 @@ namespace QuantLib {
                      implementation is available.
         */
         virtual Rate zeroYieldImpl(Time) const;
+        //@}
+        //! \name YieldTermStructure implementation
+        //@{
         /*! Returns the discount factor for the given date calculating it
             from the zero rate as \f$ d(t) = \exp \left( -z(t) t \right) \f$
         */

@@ -59,7 +59,6 @@ namespace QuantLib {
                                 BusinessDayConvention bdc,
                                 const DayCounter& dc = DayCounter());
         //@}
-        virtual ~VolatilityTermStructure() {}
         //! the business day convention used in tenor to date conversion
         virtual BusinessDayConvention businessDayConvention() const;
         //! period/date conversion

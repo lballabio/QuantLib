@@ -64,7 +64,6 @@ namespace QuantLib {
                            const Calendar& cal,
                            const DayCounter& dc = DayCounter());
         //@}
-        virtual ~YieldTermStructure() {}
         /*! \name zero-yield rates
 
             These methods return the implied zero-yield rate for a
