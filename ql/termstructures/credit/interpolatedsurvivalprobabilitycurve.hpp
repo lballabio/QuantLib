@@ -175,11 +175,19 @@ namespace QuantLib {
             QL_REQUIRE(dates_[i] > dates_[i-1],
                        "invalid date (" << dates_[i] << ", vs "
                        << dates_[i-1] << ")");
-            QL_REQUIRE(this->data_[i] > 0.0, "negative probability");
             this->times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
             QL_REQUIRE(!close(this->times_[i],this->times_[i-1]),
                        "two dates correspond to the same time "
                        "under this curve's day count convention");
+            QL_REQUIRE(this->data_[i] > 0.0, "negative probability");
+            QL_REQUIRE(this->data_[i] <= this->data_[i-1],
+                       "negative hazard rate implied by the survival "
+                       "probability " <<
+                       this->data_[i] << " at " << dates_[i] <<
+                       " (t=" << this->times_[i] << ") after the survival "
+                       "probability " <<
+                       this->data_[i-1] << " at " << dates_[i-1] <<
+                       " (t=" << this->times_[i-1] << ")");
         }
 
         this->interpolation_ =
