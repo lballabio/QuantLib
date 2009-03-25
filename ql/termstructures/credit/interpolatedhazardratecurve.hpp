@@ -126,7 +126,7 @@ namespace QuantLib {
     template <class T>
     Probability InterpolatedHazardRateCurve<T>::survivalProbabilityImpl(
                                                                Time t) const {
-        Real integral = 0.0;
+        Real integral;
         if (t <= this->times_.back()) {
             integral = this->interpolation_.primitive(t, true);
         } else {
