@@ -120,15 +120,28 @@ namespace QuantLib {
 
     template <class T>
     Rate InterpolatedForwardCurve<T>::forwardImpl(Time t) const {
-        return this->interpolation_(t, true);
+        if (t <= this->times_.back()) {
+            return this->interpolation_(t, true);
+        } else {
+            // flat extrapolation
+            return this->data_.back();
+        }
     }
 
     template <class T>
     Rate InterpolatedForwardCurve<T>::zeroYieldImpl(Time t) const {
         if (t == 0.0)
             return forwardImpl(0.0);
-        else
-            return this->interpolation_.primitive(t, true)/t;
+
+        Real integral;
+        if (t <= this->times_.back()) {
+            integral = this->interpolation_.primitive(t, true);
+        } else {
+            // flat extrapolation
+            integral = this->interpolation_.primitive(this->times_.back(), true)
+                     + this->data_.back()*(t - this->times_.back());
+        }
+        return integral/t;
     }
 
     template <class T>
