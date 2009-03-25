@@ -122,8 +122,11 @@ namespace QuantLib {
     }
 
     template <class T>
-    Probability InterpolatedDefaultDensityCurve<T>::survivalProbabilityImpl(
-                                                               Time t) const {
+    Probability
+    InterpolatedDefaultDensityCurve<T>::survivalProbabilityImpl(Time t) const {
+        if (t == 0.0)
+            return 1.0;
+
         Real integral = 0.0;
         if (t <= this->times_.back()) {
             integral = this->interpolation_.primitive(t, true);
