@@ -58,20 +58,24 @@ namespace QuantLib {
       protected:
         //! \name YieldTermStructure implementation
         //@{
-        /*! Returns the discount factor for the given date calculating it
-            from the instantaneous forward rate.
-        */
-        DiscountFactor discountImpl(Time) const;
         //! instantaneous forward-rate calculation
         virtual Rate forwardImpl(Time) const = 0;
         /*! Returns the zero yield rate for the given date calculating it
-            from the instantaneous forward rate.
+            from the instantaneous forward rate \f$ f(t) \f$ as
+            \f[
+            z(t) = \int_0^t f(\tau) d\tau
+            \f]
 
-            \warning This is just a default, highly inefficient and
-                     possibly wildly inaccurate implementation. Derived
-                     classes should implement their own zeroYield method.
+            \warning This default implementation uses an highly inefficient
+                     and possibly wildly inaccurate numerical integration.
+                     Derived classes should override it if a more efficient
+                     implementation is available.
         */
         virtual Rate zeroYieldImpl(Time) const;
+        /*! Returns the discount factor for the given date calculating it
+            from the zero rate as \f$ d(t) = \exp (-z(t) t) \f$
+        */
+        DiscountFactor discountImpl(Time) const;
         //@}
     };
 
