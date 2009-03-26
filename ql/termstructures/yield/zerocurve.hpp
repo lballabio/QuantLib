@@ -120,7 +120,14 @@ namespace QuantLib {
 
     template <class T>
     Rate InterpolatedZeroCurve<T>::zeroYieldImpl(Time t) const {
-        return this->interpolation_(t, true);
+        if (t <= this->times_.back())
+            return this->interpolation_(t, true);
+        
+        // flat fwd extrapolation
+        Time tMax = this->times_.back();
+        Rate zMax = this->data_.back();
+        Rate instFwdMax = zMax + tMax * this->interpolation_.derivative(tMax);
+        return (zMax * tMax + instFwdMax * (t-tMax)) / t;
     }
 
     template <class T>

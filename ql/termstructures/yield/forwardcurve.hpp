@@ -126,7 +126,7 @@ namespace QuantLib {
         if (t <= this->times_.back()) {
             return this->interpolation_(t, true);
         } else {
-            // flat extrapolation
+            // flat fwd extrapolation
             return this->data_.back();
         }
     }
@@ -140,7 +140,7 @@ namespace QuantLib {
         if (t <= this->times_.back()) {
             integral = this->interpolation_.primitive(t, true);
         } else {
-            // flat extrapolation
+            // flat fwd extrapolation
             integral = this->interpolation_.primitive(this->times_.back(), true)
                      + this->data_.back()*(t - this->times_.back());
         }

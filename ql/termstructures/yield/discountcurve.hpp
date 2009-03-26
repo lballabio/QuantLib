@@ -126,7 +126,14 @@ namespace QuantLib {
 
     template <class T>
     DiscountFactor InterpolatedDiscountCurve<T>::discountImpl(Time t) const {
-        return this->interpolation_(t, true);
+        if (t <= this->times_.back())
+            return this->interpolation_(t, true);
+
+        // flat fwd extrapolation
+        Time tMax = this->times_.back();
+        DiscountFactor dMax = this->data_.back();
+        Rate instFwdMax = - this->interpolation_.derivative(tMax) / dMax;
+        return dMax * std::exp(- instFwdMax * (t-tMax));
     }
 
     template <class T>
