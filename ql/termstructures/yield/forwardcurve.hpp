@@ -123,12 +123,11 @@ namespace QuantLib {
 
     template <class T>
     Rate InterpolatedForwardCurve<T>::forwardImpl(Time t) const {
-        if (t <= this->times_.back()) {
+        if (t <= this->times_.back())
             return this->interpolation_(t, true);
-        } else {
-            // flat fwd extrapolation
-            return this->data_.back();
-        }
+
+        // flat fwd extrapolation
+        return this->data_.back();
     }
 
     template <class T>
