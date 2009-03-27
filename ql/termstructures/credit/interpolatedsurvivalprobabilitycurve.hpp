@@ -117,13 +117,27 @@ namespace QuantLib {
     Probability
     InterpolatedSurvivalProbabilityCurve<T>::survivalProbabilityImpl(Time t)
                                                                         const {
-        return this->interpolation_(t, true);
+        if (t <= this->times_.back())
+            return this->interpolation_(t, true);
+
+        // flat hazard rate extrapolation
+        Time tMax = this->times_.back();
+        Probability sMax = this->data_.back();
+        Rate hazardMax = - this->interpolation_.derivative(tMax) / sMax;
+        return sMax * std::exp(- hazardMax * (t-tMax));
     }
 
     template <class T>
     Real
     InterpolatedSurvivalProbabilityCurve<T>::defaultDensityImpl(Time t) const {
-        return -this->interpolation_.derivative(t, true);
+        if (t <= this->times_.back())
+            return -this->interpolation_.derivative(t, true);
+
+        // flat hazard rate extrapolation
+        Time tMax = this->times_.back();
+        Probability sMax = this->data_.back();
+        Rate hazardMax = - this->interpolation_.derivative(tMax) / sMax;
+        return sMax * hazardMax * std::exp(- hazardMax * (t-tMax));
     }
 
     template <class T>

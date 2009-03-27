@@ -113,12 +113,11 @@ namespace QuantLib {
 
     template <class T>
     Real InterpolatedDefaultDensityCurve<T>::defaultDensityImpl(Time t) const {
-        if (t <= this->times_.back()) {
+        if (t <= this->times_.back())
             return this->interpolation_(t, true);
-        } else {
-            // flat extrapolation
-            return this->data_.back();
-        }
+
+        // flat default density extrapolation
+        return this->data_.back();
     }
 
     template <class T>
@@ -131,7 +130,7 @@ namespace QuantLib {
         if (t <= this->times_.back()) {
             integral = this->interpolation_.primitive(t, true);
         } else {
-            // flat extrapolation
+            // flat default density extrapolation
             integral = this->interpolation_.primitive(this->times_.back(), true)
                      + this->data_.back()*(t - this->times_.back());
         }
