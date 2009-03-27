@@ -261,7 +261,7 @@ namespace QuantLib {
                   const I1& xEnd,
                   const I2& yBegin)
         : CubicInterpolation(xBegin, xEnd, yBegin,
-                             Parabolic, false,
+                             CubicInterpolation::Parabolic, false,
                              SecondDerivative, 0.0,
                              SecondDerivative, 0.0) {}
     };

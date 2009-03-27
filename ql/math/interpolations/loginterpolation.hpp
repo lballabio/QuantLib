@@ -165,9 +165,9 @@ namespace QuantLib {
                               const I1& xEnd,
                               const I2& yBegin)
         : LogCubicInterpolation(xBegin, xEnd, yBegin,
-                                Spline, false,
-                                SecondDerivative, 0.0,
-                                SecondDerivative, 0.0) {}
+                                CubicInterpolation::Spline, false,
+                                CubicInterpolation::SecondDerivative, 0.0,
+                                CubicInterpolation::SecondDerivative, 0.0) {}
     };
 
     class MonotonicLogCubicNaturalSpline : public LogCubicInterpolation {
@@ -178,9 +178,9 @@ namespace QuantLib {
                                        const I1& xEnd,
                                        const I2& yBegin)
         : LogCubicInterpolation(xBegin, xEnd, yBegin,
-                                Spline, true,
-                                SecondDerivative, 0.0,
-                                SecondDerivative, 0.0) {}
+                                CubicInterpolation::Spline, true,
+                                CubicInterpolation::SecondDerivative, 0.0,
+                                CubicInterpolation::SecondDerivative, 0.0) {}
     };
 
     class KrugerLogCubic : public LogCubicInterpolation {
@@ -191,9 +191,9 @@ namespace QuantLib {
                        const I1& xEnd,
                        const I2& yBegin)
         : LogCubicInterpolation(xBegin, xEnd, yBegin,
-                                Kruger, false,
-                                SecondDerivative, 0.0,
-                                SecondDerivative, 0.0) {}
+                                CubicInterpolation::Kruger, false,
+                                CubicInterpolation::SecondDerivative, 0.0,
+                                CubicInterpolation::SecondDerivative, 0.0) {}
     };
 
     class FritschButlandLogCubic : public LogCubicInterpolation {
@@ -204,9 +204,9 @@ namespace QuantLib {
                                const I1& xEnd,
                                const I2& yBegin)
         : LogCubicInterpolation(xBegin, xEnd, yBegin,
-                                FritschButland, false,
-                                SecondDerivative, 0.0,
-                                SecondDerivative, 0.0) {}
+                                CubicInterpolation::FritschButland, false,
+                                CubicInterpolation::SecondDerivative, 0.0,
+                                CubicInterpolation::SecondDerivative, 0.0) {}
     };
 
     class LogParabolic : public LogCubicInterpolation {
@@ -217,9 +217,9 @@ namespace QuantLib {
                      const I1& xEnd,
                      const I2& yBegin)
         : LogCubicInterpolation(xBegin, xEnd, yBegin,
-                                Parabolic, false,
-                                SecondDerivative, 0.0,
-                                SecondDerivative, 0.0) {}
+                                CubicInterpolation::Parabolic, false,
+                                CubicInterpolation::SecondDerivative, 0.0,
+                                CubicInterpolation::SecondDerivative, 0.0) {}
     };
 
     class MonotonicLogParabolic : public LogCubicInterpolation {
@@ -230,9 +230,9 @@ namespace QuantLib {
                               const I1& xEnd,
                               const I2& yBegin)
         : LogCubicInterpolation(xBegin, xEnd, yBegin,
-                                Parabolic, true,
-                                SecondDerivative, 0.0,
-                                SecondDerivative, 0.0) {}
+                                CubicInterpolation::Parabolic, true,
+                                CubicInterpolation::SecondDerivative, 0.0,
+                                CubicInterpolation::SecondDerivative, 0.0) {}
     };
 
 }
