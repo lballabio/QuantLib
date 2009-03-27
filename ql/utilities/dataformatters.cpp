@@ -45,12 +45,12 @@ namespace QuantLib {
             std::ios::fmtflags flags = out.flags();
             Size width = out.width();
             if (width > 2)
-                out.width(width-1); // eat space used by percent sign
+                out.width(width-2); // eat space used by percent sign
             out << std::fixed;
             if (holder.value == Null<Real>())
                 out << "null";
             else
-                out << holder.value * 100.0 << "%";
+                out << holder.value * 100.0 << " %";
             out.flags(flags);
             return out;
         }
