@@ -95,9 +95,9 @@ namespace QuantLib {
 
         std::copy(rhs.begin(), rhs.end(), resultValues_.begin());
 
-        interpolation_ = boost::shared_ptr<CubicInterpolation> (
-            new NaturalCubicInterpolation(x_.begin(), x_.end(),
-                                          resultValues_.begin()));
+        interpolation_ = boost::shared_ptr<CubicInterpolation>(new
+            MonotonicCubicNaturalSpline(x_.begin(), x_.end(),
+                                        resultValues_.begin()));
     }
 
     Real FdmBlackScholesSolver::valueAt(Real s) const {
@@ -123,8 +123,8 @@ namespace QuantLib {
         const Array& rhs = thetaCondition_->getValues();
         std::copy(rhs.begin(), rhs.end(), thetaValues.begin());
 
-        return (NaturalCubicInterpolation(x_.begin(), x_.end(),
-                                          thetaValues.begin())
-                (std::log(s)) - valueAt(s)) / thetaCondition_->getTime();
+        Real temp = MonotonicCubicNaturalSpline(
+            x_.begin(), x_.end(), thetaValues.begin())(std::log(s)); 
+        return ( temp - valueAt(s) ) / thetaCondition_->getTime();
     }
 }

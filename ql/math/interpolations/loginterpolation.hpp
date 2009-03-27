@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2002, 2003, 2008 Ferdinando Ametrano
+ Copyright (C) 2002, 2003, 2008, 2009 Ferdinando Ametrano
  Copyright (C) 2004, 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -89,6 +89,18 @@ namespace QuantLib {
         }
     };
 
+    //! log-linear interpolation factory and traits
+    class LogLinear {
+      public:
+        template <class I1, class I2>
+        Interpolation interpolate(const I1& xBegin, const I1& xEnd,
+                                  const I2& yBegin) const {
+            return LogLinearInterpolation(xBegin, xEnd, yBegin);
+        }
+        static const bool global = false;
+        static const Size requiredPoints = 2;
+    };
+
     //! %log-cubic interpolation between discrete points
     class LogCubicInterpolation : public Interpolation {
       public:
@@ -110,18 +122,6 @@ namespace QuantLib {
                           rightC, rightConditionValue)));
             impl_->update();
         }
-    };
-
-    //! log-linear interpolation factory and traits
-    class LogLinear {
-      public:
-        template <class I1, class I2>
-        Interpolation interpolate(const I1& xBegin, const I1& xEnd,
-                                  const I2& yBegin) const {
-            return LogLinearInterpolation(xBegin, xEnd, yBegin);
-        }
-        static const bool global = false;
-        static const Size requiredPoints = 2;
     };
 
     //! log-cubic interpolation factory and traits
@@ -153,6 +153,86 @@ namespace QuantLib {
         bool monotonic_;
         CubicInterpolation::BoundaryCondition leftType_, rightType_;
         Real leftValue_, rightValue_;
+    };
+
+    // convenience classes
+
+    class LogCubicNaturalSpline : public LogCubicInterpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        LogCubicNaturalSpline(const I1& xBegin,
+                              const I1& xEnd,
+                              const I2& yBegin)
+        : LogCubicInterpolation(xBegin, xEnd, yBegin,
+                                Spline, false,
+                                SecondDerivative, 0.0,
+                                SecondDerivative, 0.0) {}
+    };
+
+    class MonotonicLogCubicNaturalSpline : public LogCubicInterpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        MonotonicLogCubicNaturalSpline(const I1& xBegin,
+                                       const I1& xEnd,
+                                       const I2& yBegin)
+        : LogCubicInterpolation(xBegin, xEnd, yBegin,
+                                Spline, true,
+                                SecondDerivative, 0.0,
+                                SecondDerivative, 0.0) {}
+    };
+
+    class KrugerLogCubic : public LogCubicInterpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        KrugerLogCubic(const I1& xBegin,
+                       const I1& xEnd,
+                       const I2& yBegin)
+        : LogCubicInterpolation(xBegin, xEnd, yBegin,
+                                Kruger, false,
+                                SecondDerivative, 0.0,
+                                SecondDerivative, 0.0) {}
+    };
+
+    class FritschButlandLogCubic : public LogCubicInterpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        FritschButlandLogCubic(const I1& xBegin,
+                               const I1& xEnd,
+                               const I2& yBegin)
+        : LogCubicInterpolation(xBegin, xEnd, yBegin,
+                                FritschButland, false,
+                                SecondDerivative, 0.0,
+                                SecondDerivative, 0.0) {}
+    };
+
+    class LogParabolic : public LogCubicInterpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        LogParabolic(const I1& xBegin,
+                     const I1& xEnd,
+                     const I2& yBegin)
+        : LogCubicInterpolation(xBegin, xEnd, yBegin,
+                                Parabolic, false,
+                                SecondDerivative, 0.0,
+                                SecondDerivative, 0.0) {}
+    };
+
+    class MonotonicLogParabolic : public LogCubicInterpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        MonotonicLogParabolic(const I1& xBegin,
+                              const I1& xEnd,
+                              const I2& yBegin)
+        : LogCubicInterpolation(xBegin, xEnd, yBegin,
+                                Parabolic, true,
+                                SecondDerivative, 0.0,
+                                SecondDerivative, 0.0) {}
     };
 
 }

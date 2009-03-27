@@ -175,32 +175,109 @@ namespace QuantLib {
 
     // convenience classes
 
-    class NaturalCubicInterpolation : public CubicInterpolation {
+    //class NaturalCubicInterpolation : public CubicInterpolation {
+    //  public:
+    //    /*! \pre the \f$ x \f$ values must be sorted. */
+    //    template <class I1, class I2>
+    //    NaturalCubicInterpolation(const I1& xBegin,
+    //                              const I1& xEnd,
+    //                              const I2& yBegin)
+    //    : CubicInterpolation(xBegin, xEnd, yBegin,
+    //                         Spline, false,
+    //                         SecondDerivative, 0.0,
+    //                         SecondDerivative, 0.0) {}
+    //};
+
+    //class MonotonicNaturalCubicInterpolation : public CubicInterpolation {
+    //  public:
+    //    /*! \pre the \f$ x \f$ values must be sorted. */
+    //    template <class I1, class I2>
+    //    MonotonicNaturalCubicInterpolation(const I1& xBegin,
+    //                                       const I1& xEnd,
+    //                                       const I2& yBegin)
+    //    : CubicInterpolation(xBegin, xEnd, yBegin,
+    //                         Spline, true,
+    //                         SecondDerivative, 0.0,
+    //                         SecondDerivative, 0.0) {}
+    //};
+
+    class CubicNaturalSpline : public CubicInterpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
-        NaturalCubicInterpolation(const I1& xBegin,
-                                  const I1& xEnd,
-                                  const I2& yBegin)
+        CubicNaturalSpline(const I1& xBegin,
+                           const I1& xEnd,
+                           const I2& yBegin)
         : CubicInterpolation(xBegin, xEnd, yBegin,
                              Spline, false,
                              SecondDerivative, 0.0,
                              SecondDerivative, 0.0) {}
     };
 
-    class MonotonicNaturalCubicInterpolation : public CubicInterpolation {
+    class MonotonicCubicNaturalSpline : public CubicInterpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
-        MonotonicNaturalCubicInterpolation(const I1& xBegin,
-                                           const I1& xEnd,
-                                           const I2& yBegin)
+        MonotonicCubicNaturalSpline(const I1& xBegin,
+                                    const I1& xEnd,
+                                    const I2& yBegin)
         : CubicInterpolation(xBegin, xEnd, yBegin,
                              Spline, true,
                              SecondDerivative, 0.0,
                              SecondDerivative, 0.0) {}
     };
 
+    class KrugerCubic : public CubicInterpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        KrugerCubic(const I1& xBegin,
+                    const I1& xEnd,
+                    const I2& yBegin)
+        : CubicInterpolation(xBegin, xEnd, yBegin,
+                             Kruger, false,
+                             SecondDerivative, 0.0,
+                             SecondDerivative, 0.0) {}
+    };
+
+    class FritschButlandCubic : public CubicInterpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        FritschButlandCubic(const I1& xBegin,
+                            const I1& xEnd,
+                            const I2& yBegin)
+        : CubicInterpolation(xBegin, xEnd, yBegin,
+                             FritschButland, false,
+                             SecondDerivative, 0.0,
+                             SecondDerivative, 0.0) {}
+    };
+
+    class Parabolic : public CubicInterpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        Parabolic(const I1& xBegin,
+                  const I1& xEnd,
+                  const I2& yBegin)
+        : CubicInterpolation(xBegin, xEnd, yBegin,
+                             Parabolic, false,
+                             SecondDerivative, 0.0,
+                             SecondDerivative, 0.0) {}
+    };
+
+    class MonotonicParabolic : public CubicInterpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        MonotonicParabolic(const I1& xBegin,
+                           const I1& xEnd,
+                           const I2& yBegin)
+        : CubicInterpolation(xBegin, xEnd, yBegin,
+                             Parabolic, true,
+                             SecondDerivative, 0.0,
+                             SecondDerivative, 0.0) {}
+    };
 
     //! %Cubic interpolation factory and traits
     class Cubic {
