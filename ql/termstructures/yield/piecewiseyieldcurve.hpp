@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
- Copyright (C) 2007, 2008 Ferdinando Ametrano
+ Copyright (C) 2007, 2008, 2009 Ferdinando Ametrano
  Copyright (C) 2007 Chris Kenyon
 
  This file is part of QuantLib, a free-software/open-source library
@@ -176,7 +176,7 @@ namespace QuantLib {
     template <class C, class I, template <class> class B>
     inline const std::vector<Real>& PiecewiseYieldCurve<C,I,B>::data() const {
         calculate();
-        return this->data_;
+        return base_curve::data();
     }
 
     template <class C, class I, template <class> class B>

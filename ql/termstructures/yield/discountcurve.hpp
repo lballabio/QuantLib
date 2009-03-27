@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2002, 2003 Decillion Pty(Ltd)
  Copyright (C) 2005, 2006, 2008, 2009 StatPro Italia srl
+ Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -54,6 +55,7 @@ namespace QuantLib {
         //@{
         const std::vector<Time>& times() const;
         const std::vector<Date>& dates() const;
+        const std::vector<Real>& data() const;
         const std::vector<DiscountFactor>& discounts() const;
         std::vector<std::pair<Date,DiscountFactor> > nodes() const;
         //@}
@@ -103,6 +105,12 @@ namespace QuantLib {
     inline const std::vector<Date>&
     InterpolatedDiscountCurve<T>::dates() const {
         return dates_;
+    }
+
+    template <class T>
+    inline const std::vector<Real>&
+    InterpolatedDiscountCurve<T>::data() const {
+        return this->data_;
     }
 
     template <class T>

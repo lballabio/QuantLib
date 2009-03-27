@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
+ Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -54,6 +55,7 @@ namespace QuantLib {
         //@{
         const std::vector<Time>& times() const;
         const std::vector<Date>& dates() const;
+        const std::vector<Real>& data() const;
         const std::vector<Rate>& zeroRates() const;
         std::vector<std::pair<Date,Rate> > nodes() const;
         //@}
@@ -97,6 +99,12 @@ namespace QuantLib {
     template <class T>
     inline const std::vector<Date>& InterpolatedZeroCurve<T>::dates() const {
         return dates_;
+    }
+
+    template <class T>
+    inline const std::vector<Real>&
+    InterpolatedZeroCurve<T>::data() const {
+        return this->data_;
     }
 
     template <class T>
