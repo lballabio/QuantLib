@@ -270,8 +270,7 @@ namespace QuantLib {
     Date CashFlows::startDate(const Leg& cashflows) {
         Date d = Date::maxDate();
         for (Size i=0; i<cashflows.size(); ++i) {
-            shared_ptr<Coupon> c =
-                boost::dynamic_pointer_cast<Coupon>(cashflows[i]);
+            shared_ptr<Coupon> c = dynamic_pointer_cast<Coupon>(cashflows[i]);
             if (c)
                 d = std::min(d, c->accrualStartDate());
         }
