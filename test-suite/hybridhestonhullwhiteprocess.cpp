@@ -171,8 +171,8 @@ void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
     for (Size i=0; i <= 40; ++i) {
         dates.push_back(today+Period(i, Years));
         // FLOATING_POINT_EXCEPTION
-        rates.push_back(0.01 + 0.02*std::exp(std::sin(i/4.0)));
-        divRates.push_back(0.02 + 0.01*std::exp(std::sin(i/5.0)));
+        rates.push_back(0.01 + 0.0002*std::exp(std::sin(i/4.0)));
+        divRates.push_back(0.02 + 0.0001*std::exp(std::sin(i/5.0)));
         times.push_back(dc.yearFraction(today, dates.back()));
     }
 
@@ -272,7 +272,7 @@ void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
     times.push_back(0.0);
     for (Size i=120; i < 240; ++i) {
         dates.push_back(today+Period(i, Months));
-        rates.push_back(0.02 + 0.04*std::exp(std::sin(i/8.0)));
+        rates.push_back(0.02 + 0.0002*std::exp(std::sin(i/8.0)));
         times.push_back(dc.yearFraction(today, dates.back()));
     }
 
@@ -403,8 +403,8 @@ void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
     for (Size i=0; i <= 40; ++i) {
         dates.push_back(today+Period(i, Years));
         // FLOATING_POINT_EXCEPTION
-        rates.push_back(0.01 + 0.03*std::exp(std::sin(i/4.0)));
-        divRates.push_back(0.02 + 0.01*std::exp(std::sin(i/5.0)));
+        rates.push_back(0.03 + 0.0003*std::exp(std::sin(i/4.0)));
+        divRates.push_back(0.02 + 0.0001*std::exp(std::sin(i/5.0)));
         times.push_back(dc.yearFraction(today, dates.back()));
     }
 
@@ -501,8 +501,8 @@ void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
     for (Size i=0; i <= 100; ++i) {
         dates.push_back(today+Period(i, Months));
         // FLOATING_POINT_EXCEPTION
-        rates.push_back(0.01 + 0.02*std::exp(std::sin(i/10.0)));
-        divRates.push_back(0.02 + 0.01*std::exp(std::sin(i/20.0)));
+        rates.push_back(0.02 + 0.0002*std::exp(std::sin(i/10.0)));
+        divRates.push_back(0.02 + 0.0001*std::exp(std::sin(i/20.0)));
         times.push_back(dc.yearFraction(today, dates.back()));
     }
 
@@ -593,8 +593,8 @@ void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
     for (Size i=0; i <= 40; ++i) {
         dates.push_back(today+Period(i, Years));
         // FLOATING_POINT_EXCEPTION
-        rates.push_back(0.03 + 0.01*std::exp(std::sin(i/4.0)));
-        divRates.push_back(0.02 + 0.02*std::exp(std::sin(i/3.0)));
+        rates.push_back(0.03 + 0.0001*std::exp(std::sin(i/4.0)));
+        divRates.push_back(0.02 + 0.0002*std::exp(std::sin(i/3.0)));
         times.push_back(dc.yearFraction(today, dates.back()));
     }
 
@@ -799,8 +799,8 @@ void HybridHestonHullWhiteProcessTest::testDiscretizationError() {
     for (Size i=0; i <= 31; ++i) {
         dates.push_back(today+Period(i, Years));
         // FLOATING_POINT_EXCEPTION
-        rates.push_back(0.04 + 0.01*std::exp(std::sin(double(i))));
-        divRates.push_back(0.04 + 0.01*std::exp(std::sin(double(i))));
+        rates.push_back(0.04 + 0.0001*std::exp(std::sin(double(i))));
+        divRates.push_back(0.04 + 0.0001*std::exp(std::sin(double(i))));
         times.push_back(dc.yearFraction(today, dates.back()));
     }
 

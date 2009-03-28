@@ -825,8 +825,8 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
 
     for (Size i=0; i <= 25; ++i) {
         dates.push_back(today+Period(i, Years));
-        rates.push_back(0.05+0.01*std::sin(Real(i)));
-        divRates.push_back((0.02 + 0.02*std::cos(Real(i))));
+        rates.push_back(0.05);
+        divRates.push_back(0.02);
     }
 
     const Handle<YieldTermStructure> rTS(
@@ -932,9 +932,9 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
             .withSeed(42));
 
     // the following takes far too long
-    // const Real expected = option.NPV();
+    //const Real expected = option.NPV();
     // use precalculated value instead
-    const Real expected = 8.25;
+    const Real expected = 4.73;
 
     if (std::fabs(calculated - expected) > 3*tol) {
         QL_FAIL("Error in calculating PV for Heston Hull White Option");
@@ -960,6 +960,7 @@ test_suite* FdmLinearOpTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonBarrier));
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonAmerican));
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonExpress));
+
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonHullWhiteOp));
 
     return suite;
