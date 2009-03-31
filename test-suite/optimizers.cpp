@@ -25,12 +25,11 @@
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/optimization/conjugategradient.hpp>
 #include <ql/math/optimization/steepestdescent.hpp>
+#include <ql/math/optimization/bfgs.hpp>
 #include <ql/math/optimization/constraint.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-
-//#define VERBOSE // Uncomment this line to have a more detailed display
 
 namespace {
 
@@ -103,7 +102,8 @@ namespace {
     enum OptimizationMethodType {simplex,
                                  levenbergMarquardt,
                                  conjugateGradient,
-                                 steepestDescent};
+                                 steepestDescent,
+                                 bfgs};
 
     std::string optimizationMethodTypeToString(OptimizationMethodType type) {
         switch (type) {
@@ -115,6 +115,8 @@ namespace {
             return "Conjugate Gradient";
           case steepestDescent:
             return "Steepest Descent";
+          case bfgs:
+            return "BFGS";
           default:
             QL_FAIL("unknown OptimizationMethod type");
         }
@@ -142,11 +144,11 @@ namespace {
                                        levenbergMarquardtXtol,
                                        levenbergMarquardtGtol));
           case conjugateGradient:
-            return boost::shared_ptr<OptimizationMethod>(
-                new ConjugateGradient());
+            return boost::shared_ptr<OptimizationMethod>(new ConjugateGradient);
           case steepestDescent:
-            return boost::shared_ptr<OptimizationMethod>(
-                new SteepestDescent());
+            return boost::shared_ptr<OptimizationMethod>(new SteepestDescent);
+          case bfgs:
+            return boost::shared_ptr<OptimizationMethod>(new BFGS);
           default:
             QL_FAIL("unknown OptimizationMethod type");
         }
@@ -174,6 +176,14 @@ namespace {
             results.push_back(namedOptimizationMethod);
         }
         return results;
+    }
+
+    Real maxDifference(const Array& a, const Array& b) {
+        Array diff = a-b;
+        Real maxDiff = 0.0;
+        for (Size i=0; i<diff.size(); ++i)
+            maxDiff = std::max(maxDiff, std::fabs(diff[i]));
+        return maxDiff;
     }
 
     // Set up, for each cost function, all the ingredients for optimization:
@@ -208,7 +218,8 @@ namespace {
                             gradientNormEpsilons_.back())));
         // Set optimization methods for optimizer
         OptimizationMethodType optimizationMethodTypes[] = {
-            simplex, levenbergMarquardt, conjugateGradient/*, steepestDescent*/};
+            simplex, levenbergMarquardt, conjugateGradient, bfgs//, steepestDescent
+        };
         Real simplexLambda = 0.1;                   // characteristic search length for simplex
         Real levenbergMarquardtEpsfcn = 1.0e-8;     // parameters specific for Levenberg-Marquardt
         Real levenbergMarquardtXtol   = 1.0e-8;     //
@@ -235,21 +246,15 @@ void OptimizersTest::test() {
 
     // Loop over problems (currently there is only 1 problem)
     for (Size i=0; i<costFunctions_.size(); ++i) {
-        #ifdef VERBOSE
-            BOOST_MESSAGE("costFunction # = " << i << "\n");
-        #endif
         Problem problem(*costFunctions_[i], *constraints_[i],
                         initialValues_[i]);
         Array initialValues = problem.currentValue();
         // Loop over optimizers
         for (Size j=0; j<(optimizationMethods_[i]).size(); ++j) {
-            #ifdef VERBOSE
-                BOOST_MESSAGE("  Optimizer: " << optimizationMethods_[i][j].name);
-            #endif
             Real rootEpsilon = endCriterias_[i]->rootEpsilon();
             Size endCriteriaTests = 1;
            // Loop over rootEpsilon
-            for(Size k=0; k<endCriteriaTests; ++k) {
+            for (Size k=0; k<endCriteriaTests; ++k) {
                 problem.setCurrentValue(initialValues);
                 EndCriteria endCriteria(
                             endCriterias_[i]->maxIterations(),
@@ -263,23 +268,52 @@ void OptimizersTest::test() {
                     problem, endCriteria);
                 Array xMinCalculated = problem.currentValue();
                 Array yMinCalculated = problem.values(xMinCalculated);
+
                 // Check optimization results vs known solution
-                #ifndef VERBOSE
-                    if (endCriteriaResult==EndCriteria::None ||
-                        endCriteriaResult==EndCriteria::MaxIterations ||
-                        endCriteriaResult==EndCriteria::Unknown)
-                #endif
-                BOOST_MESSAGE("\n    function evaluations: " << problem.functionEvaluation()  <<
-                              "\n    gradient evaluations: " << problem.gradientEvaluation() <<
-                              "\n    x expected:           " << xMinExpected_[i] <<
-                              "\n    x calculated:         " << std::setprecision(9) << xMinCalculated <<
-                              "\n    x difference:         " <<  xMinExpected_[i]- xMinCalculated <<
-                              "\n    rootEpsilon:          " << std::setprecision(9) << endCriteria.rootEpsilon() <<
-                              "\n    y expected:           " << yMinExpected_[i] <<
-                              "\n    y calculated:         " << std::setprecision(9) << yMinCalculated <<
-                              "\n    y difference:         " <<  yMinExpected_[i]- yMinCalculated <<
-                              "\n    functionEpsilon:      " << std::setprecision(9) << endCriteria.functionEpsilon() <<
-                              "\n    endCriteriaResult:    " << endCriteriaResult);
+                bool completed;
+                switch (endCriteriaResult) {
+                  case EndCriteria::None:
+                  case EndCriteria::MaxIterations:
+                  case EndCriteria::Unknown:
+                    completed = false;
+                  default:
+                    completed = true;
+                }
+
+                Real xError = maxDifference(xMinCalculated,xMinExpected_[i]);
+                Real yError = maxDifference(yMinCalculated,yMinExpected_[i]);
+
+                bool correct = (xError <= endCriteria.rootEpsilon() ||
+                                yError <= endCriteria.functionEpsilon());
+
+                if ((!completed) || (!correct))
+                    BOOST_ERROR("costFunction # = " << i <<
+                                "\nOptimizer: " <<
+                                optimizationMethods_[i][j].name <<
+                                "\n    function evaluations: " <<
+                                problem.functionEvaluation()  <<
+                                "\n    gradient evaluations: " <<
+                                problem.gradientEvaluation() <<
+                                "\n    x expected:           " <<
+                                xMinExpected_[i] <<
+                                "\n    x calculated:         " <<
+                                std::setprecision(9) << xMinCalculated <<
+                                "\n    x difference:         " <<
+                                xMinExpected_[i]- xMinCalculated <<
+                                "\n    rootEpsilon:          " <<
+                                std::setprecision(9) <<
+                                endCriteria.rootEpsilon() <<
+                                "\n    y expected:           " <<
+                                yMinExpected_[i] <<
+                                "\n    y calculated:         " <<
+                                std::setprecision(9) << yMinCalculated <<
+                                "\n    y difference:         " <<
+                                yMinExpected_[i]- yMinCalculated <<
+                                "\n    functionEpsilon:      " <<
+                                std::setprecision(9) <<
+                                endCriteria.functionEpsilon() <<
+                                "\n    endCriteriaResult:    " <<
+                                endCriteriaResult);
             }
         }
     }

@@ -5,6 +5,7 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     armijo.hpp \
+    bfgs.hpp \
     conjugategradient.hpp \
     constraint.hpp \
     costfunction.hpp \
@@ -23,6 +24,7 @@ this_include_HEADERS = \
 
 libOptimization_la_SOURCES = \
     armijo.cpp \
+    bfgs.cpp \
     conjugategradient.cpp \
     constraint.cpp \
     endcriteria.cpp \

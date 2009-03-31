@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2009 Frédéric Degraeve
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +26,7 @@
 #define quantlib_line_search_based_optimization_method_h
 
 #include <ql/math/optimization/method.hpp>
+#include <ql/math/array.hpp>
 #include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
@@ -36,6 +38,15 @@ namespace QuantLib {
         LineSearchBasedMethod(const boost::shared_ptr<LineSearch>& lSearch =
                                             boost::shared_ptr<LineSearch>());
         virtual ~LineSearchBasedMethod() {}
+
+        virtual Disposable<Array>
+        getUpdatedDirection(Problem &P,
+                            Real fold,
+                            Real gold2,
+                            const Array& gradient) = 0;
+
+        virtual EndCriteria::Type minimize(Problem& P,
+                                           const EndCriteria& endCriteria);
       protected:
         //! line search
         boost::shared_ptr<LineSearch> lineSearch_;

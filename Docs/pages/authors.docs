@@ -42,18 +42,18 @@
     Akin, Mario Aleppo, Sercan Atalik, Christopher Baus, Thomas
     Becker, Adolfo Benin, Luca Berardi, David Binderman, Theo Boafo,
     Joe Byers, Antoine Cellerier, Aurelien Chanudet, Yiping Chen,
-    Warren Chou, Jon Davidson, Daniele De Francesco, Piter Dias,
-    Cristina Duminuco, Giorgio Facchinetti, Chiara Fornarola, Silvia
-    Frasson, Matteo Gallivanoni, Roman Gitlin, Richard Gould, Tomoya
-    Kawanishi, Gary Kennedy, Allen Kuo, Paul Laderoute, James Lee,
-    Gang Liang, Robert Lopez, Andr&eacute; Louw, John Maiden,
-    Katiuscia Manzoni, Enrico Michelotti, Tiziano M&uuml;ller,
-    Guillaume Pealat, Gilbert Peffer, Walter Penschke, Gianni
-    Piolanti, Mario Pucci, Fabio Ramponi, Sadruddin Rejeb, Peter
-    Schmitteckert, David Schwartz, Eugene Shevkoplyas, Enrico Sirola,
-    Maxim Sokolov, Niels Elken S&oslash;nderby, Marco Tarenghi,
-    Fran&ccedil;ois du Vignaud, Charles Whitmore, Bernd Johannes
-    Wuebben, and Jeff Yu.
+    Warren Chou, Jon Davidson, Daniele De Francesco,
+    Fr&eacute;d&eacute;ric Degraeve, Piter Dias, Cristina Duminuco,
+    Giorgio Facchinetti, Chiara Fornarola, Silvia Frasson, Matteo
+    Gallivanoni, Roman Gitlin, Richard Gould, Tomoya Kawanishi, Gary
+    Kennedy, Allen Kuo, Paul Laderoute, James Lee, Gang Liang, Robert
+    Lopez, Andr&eacute; Louw, John Maiden, Katiuscia Manzoni, Enrico
+    Michelotti, Tiziano M&uuml;ller, Guillaume Pealat, Gilbert Peffer,
+    Walter Penschke, Gianni Piolanti, Mario Pucci, Fabio Ramponi,
+    Sadruddin Rejeb, Peter Schmitteckert, David Schwartz, Eugene
+    Shevkoplyas, Enrico Sirola, Maxim Sokolov, Niels Elken
+    S&oslash;nderby, Marco Tarenghi, Fran&ccedil;ois du Vignaud,
+    Charles Whitmore, Bernd Johannes Wuebben, and Jeff Yu.
 
     %QuantLib also includes code taken from Peter J&auml;ckel's book
     "Monte Carlo Methods in Finance".

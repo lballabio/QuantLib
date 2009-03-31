@@ -1,8 +1,6 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
- Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
  Copyright (C) 2009 Frédéric Degraeve
 
  This file is part of QuantLib, a free-software/open-source library
@@ -19,36 +17,38 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file conjugategradient.hpp
-    \brief Conjugate gradient optimization method
+/*! \file bfgs.hpp
+    \brief Broyden-Fletcher-Goldfarb-Shanno optimization method
 */
 
-#ifndef quantlib_optimization_conjugate_gradient_h
-#define quantlib_optimization_conjugate_gradient_h
+#ifndef quantlib_optimization_bfgs_hpp
+#define quantlib_optimization_bfgs_hpp
 
 #include <ql/math/optimization/linesearchbasedmethod.hpp>
+#include <ql/math/matrix.hpp>
 
 namespace QuantLib {
 
-    //! Multi-dimensional Conjugate Gradient class.
-    /*! Fletcher-Reeves-Polak-Ribiere algorithm
-        adapted from Numerical Recipes in C, 2nd edition.
+    //! Broyden-Fletcher-Goldfarb-Shanno algorithm
+    /*! See <http://en.wikipedia.org/wiki/BFGS_method>.
+
+        Adapted from Numerical Recipes in C, 2nd edition.
 
         User has to provide line-search method and optimization end criteria.
-        Search direction \f$ d_i = - f'(x_i) + c_i*d_{i-1} \f$
-        where \f$ c_i = ||f'(x_i)||^2/||f'(x_{i-1})||^2 \f$
-        and \f$ d_1 = - f'(x_1) \f$
     */
-    class ConjugateGradient: public LineSearchBasedMethod {
+    class BFGS: public LineSearchBasedMethod {
       public:
-        ConjugateGradient(const boost::shared_ptr<LineSearch>& lineSearch =
-                                            boost::shared_ptr<LineSearch>())
+        BFGS(const boost::shared_ptr<LineSearch>& lineSearch =
+                                              boost::shared_ptr<LineSearch>())
         : LineSearchBasedMethod(lineSearch) {}
         //! computes the new search direction
         Disposable<Array> getUpdatedDirection(Problem &P,
                                               Real fold,
                                               Real gold2,
                                               const Array& oldGradient);
+      private:
+        //! inverse of hessian matrix
+        Matrix inverseHessian_;
     };
 
 }

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
+ Copyright (C) 2009 Frédéric Degraeve
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,10 +39,11 @@ namespace QuantLib {
         SteepestDescent(const boost::shared_ptr<LineSearch>& lineSearch =
                                             boost::shared_ptr<LineSearch>())
         : LineSearchBasedMethod(lineSearch) {}
-        //! minimize the optimization problem P
-        virtual EndCriteria::Type minimize(Problem& P,
-                                           const EndCriteria& endCriteria //= EndCriteria()
-                                           );
+        //! computes the new search direction
+        Disposable<Array> getUpdatedDirection(Problem &P,
+                                              Real fold,
+                                              Real gold2,
+                                              const Array& oldGradient);
     };
 
 }
