@@ -11,6 +11,7 @@
 #include <ql/math/errorfunction.hpp>
 #include <ql/math/factorial.hpp>
 #include <ql/math/functional.hpp>
+#include <ql/math/kernelfunctions.hpp>
 #include <ql/math/incompletegamma.hpp>
 #include <ql/math/interpolation.hpp>
 #include <ql/math/lexicographicalview.hpp>

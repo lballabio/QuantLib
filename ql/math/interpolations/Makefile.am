@@ -14,6 +14,7 @@ this_include_HEADERS = \
 	flatextrapolation2d.hpp \
 	forwardflatinterpolation.hpp \
 	interpolation2d.hpp \
+	kernelinterpolation.hpp \
 	linearinterpolation.hpp \
 	loginterpolation.hpp \
 	multicubicspline.hpp \

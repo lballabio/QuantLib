@@ -4,6 +4,7 @@
  Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2005, 2006 StatPro Italia srl
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2009 Dimitri Reiswich
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,6 +30,7 @@
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/interpolations/multicubicspline.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
+#include <ql/math/interpolations/kernelinterpolation.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
@@ -385,7 +387,7 @@ void InterpolationTest::testSplineOnRPN15AValues() {
 
     // Not-a-knot spline
     f = CubicInterpolation(BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y),
-                           CubicInterpolation::Spline, false, 
+                           CubicInterpolation::Spline, false,
                            CubicInterpolation::NotAKnot, Null<Real>(),
                            CubicInterpolation::NotAKnot, Null<Real>());
     f.update();
@@ -525,7 +527,7 @@ void InterpolationTest::testSplineOnGenericValues() {
 
     // Not-a-knot spline
     f = CubicInterpolation(BEGIN(generic_x), END(generic_x), BEGIN(generic_y),
-                           CubicInterpolation::Spline, false, 
+                           CubicInterpolation::Spline, false,
                            CubicInterpolation::NotAKnot, Null<Real>(),
                            CubicInterpolation::NotAKnot, Null<Real>());
     f.update();
@@ -559,7 +561,7 @@ void InterpolationTest::testSimmetricEndConditions() {
 
     // Not-a-knot spline
     CubicInterpolation f(x.begin(), x.end(), y.begin(),
-                         CubicInterpolation::Spline, false, 
+                         CubicInterpolation::Spline, false,
                          CubicInterpolation::NotAKnot, Null<Real>(),
                          CubicInterpolation::NotAKnot, Null<Real>());
     f.update();
@@ -594,7 +596,7 @@ void InterpolationTest::testDerivativeEndConditions() {
 
     // Not-a-knot spline
     CubicInterpolation f(x.begin(), x.end(), y.begin(),
-                         CubicInterpolation::Spline, false, 
+                         CubicInterpolation::Spline, false,
                          CubicInterpolation::NotAKnot, Null<Real>(),
                          CubicInterpolation::NotAKnot, Null<Real>());
     f.update();
@@ -612,7 +614,7 @@ void InterpolationTest::testDerivativeEndConditions() {
 
     // Clamped spline
     f = CubicInterpolation(x.begin(), x.end(), y.begin(),
-                           CubicInterpolation::Spline, false, 
+                           CubicInterpolation::Spline, false,
                            CubicInterpolation::FirstDerivative,  4.0,
                            CubicInterpolation::FirstDerivative, -4.0);
     f.update();
@@ -630,7 +632,7 @@ void InterpolationTest::testDerivativeEndConditions() {
 
     // SecondDerivative spline
     f = CubicInterpolation(x.begin(), x.end(), y.begin(),
-                           CubicInterpolation::Spline, false, 
+                           CubicInterpolation::Spline, false,
                            CubicInterpolation::SecondDerivative, -2.0,
                            CubicInterpolation::SecondDerivative, -2.0);
     f.update();
@@ -647,7 +649,7 @@ void InterpolationTest::testDerivativeEndConditions() {
 
     // MC Not-a-knot spline
     f = CubicInterpolation(x.begin(), x.end(), y.begin(),
-                           CubicInterpolation::Spline, true, 
+                           CubicInterpolation::Spline, true,
                            CubicInterpolation::NotAKnot, Null<Real>(),
                            CubicInterpolation::NotAKnot, Null<Real>());
     f.update();
@@ -665,7 +667,7 @@ void InterpolationTest::testDerivativeEndConditions() {
 
     // MC Clamped spline
     f = CubicInterpolation(x.begin(), x.end(), y.begin(),
-                           CubicInterpolation::Spline, true, 
+                           CubicInterpolation::Spline, true,
                            CubicInterpolation::FirstDerivative,  4.0,
                            CubicInterpolation::FirstDerivative, -4.0);
     f.update();
@@ -683,7 +685,7 @@ void InterpolationTest::testDerivativeEndConditions() {
 
     // MC SecondDerivative spline
     f = CubicInterpolation(x.begin(), x.end(), y.begin(),
-                           CubicInterpolation::Spline, true, 
+                           CubicInterpolation::Spline, true,
                            CubicInterpolation::SecondDerivative, -2.0,
                            CubicInterpolation::SecondDerivative, -2.0);
     f.update();
@@ -1308,8 +1310,131 @@ void InterpolationTest::testSabrInterpolation(){
         }
       }
     }
-
 }
+
+
+void InterpolationTest::testKernelInterpolation() {
+
+    BOOST_MESSAGE("Testing kernel 1D interpolation ...");
+
+    std::vector<Real> deltaGrid(5); // x-values, here delta in FX
+    deltaGrid[0]=0.10; deltaGrid[1]=0.25; deltaGrid[2]=0.50;
+    deltaGrid[3]=0.75; deltaGrid[4]=0.90;
+
+    std::vector<Real> yd1(deltaGrid.size()); // test y-values 1
+    yd1[0]=11.275; yd1[1]=11.125; yd1[2]=11.250;
+    yd1[3]=11.825; yd1[4]=12.625;
+
+    std::vector<Real> yd2(deltaGrid.size()); // test y-values 2
+    yd2[0]=16.025; yd2[1]=13.450; yd2[2]=11.350;
+    yd2[3]=10.150; yd2[4]=10.075;
+
+    std::vector<Real> yd3(deltaGrid.size()); // test y-values 3
+    yd3[0]=10.3000; yd3[1]=9.6375; yd3[2]=9.2000;
+    yd3[3]=9.1125; yd3[4]=9.4000;
+
+    std::vector<std::vector<Real> > yd;
+    yd.push_back(yd1);
+    yd.push_back(yd2);
+    yd.push_back(yd3);
+
+    std::vector<Real> lambdaVec(5);
+    lambdaVec[0]=0.05; lambdaVec[1]=0.50; lambdaVec[2]=0.75;
+    lambdaVec[3]=1.65; lambdaVec[4]=2.55;
+
+    Real tolerance = 2.0e-5;
+
+    Real expectedVal;
+    Real calcVal;
+
+    // Check that y-values at knots are exactly the feeded y-values,
+    // irrespective of kernel parameters
+    for (Size i=0; i<lambdaVec.size(); ++i) {
+        boost::shared_ptr<KernelFunction> myKernel(
+                                          new GaussianKernel(0,lambdaVec[i]));
+
+        for (Size j=0; j<yd.size(); ++j) {
+
+            std::vector<Real> currY = yd[j];
+            KernelInterpolation f(deltaGrid.begin(), deltaGrid.end(),
+                                  currY.begin(), myKernel);
+            f.update();
+
+            for (Size dIt=0; dIt< deltaGrid.size(); ++dIt) {
+                expectedVal=currY[dIt];
+                calcVal=f(deltaGrid[dIt]);
+
+                if (std::fabs(expectedVal-calcVal)>tolerance) {
+
+                    BOOST_ERROR("Kernel interpolation failed at x = "
+                                << deltaGrid[dIt]
+                                << QL_SCIENTIFIC
+                                << "\n    interpolated value: " << calcVal
+                                << "\n    expected value:     " << expectedVal
+                                << "\n    error:              "
+                                << std::fabs(expectedVal-calcVal));
+                }
+            }
+        }
+    }
+
+    std::vector<Real> testDeltaGrid(deltaGrid.size());
+    testDeltaGrid[0]=0.121; testDeltaGrid[1]=0.279; testDeltaGrid[2]=0.678;
+    testDeltaGrid[3]=0.790; testDeltaGrid[4]=0.980;
+
+    // Gaussian Kernel values for testDeltaGrid with a standard
+    // deviation of 2.05 (the value is arbitrary.)  Source: parrallel
+    // implementation in R, no literature sources found
+
+    std::vector<Real> ytd1(testDeltaGrid.size());
+    ytd1[0]=11.23847; ytd1[1]=11.12003; ytd1[2]=11.58932;
+    ytd1[3]=11.99168; ytd1[4]=13.29650;
+
+    std::vector<Real> ytd2(testDeltaGrid.size());
+    ytd2[0]=15.55922; ytd2[1]=13.11088; ytd2[2]=10.41615;
+    ytd2[3]=10.05153; ytd2[4]=10.50741;
+
+    std::vector<Real> ytd3(testDeltaGrid.size());
+    ytd3[0]= 10.17473; ytd3[1]= 9.557842; ytd3[2]= 9.09339;
+    ytd3[3]= 9.149687; ytd3[4]= 9.779971;
+
+    std::vector<std::vector<Real> > ytd;
+    ytd.push_back(ytd1);
+    ytd.push_back(ytd2);
+    ytd.push_back(ytd3);
+
+    boost::shared_ptr<KernelFunction> myKernel(new GaussianKernel(0,2.05));
+
+    for (Size j=0; j< ytd.size(); ++j) {
+        std::vector<Real> currY=yd[j];
+        std::vector<Real> currTY=ytd[j];
+
+        // Build interpolation according to original grid + y-values
+        KernelInterpolation f(deltaGrid.begin(), deltaGrid.end(),
+                              currY.begin(), myKernel);
+        f.update();
+
+        // test values at test Grid
+        for (Size dIt=0; dIt< testDeltaGrid.size(); ++dIt) {
+
+            expectedVal=currTY[dIt];
+            f.enableExtrapolation();// allow extrapolation
+
+            calcVal=f(testDeltaGrid[dIt]);
+            if (std::fabs(expectedVal-calcVal)>tolerance) {
+
+                BOOST_ERROR("Kernel interpolation failed at x = "
+                            << deltaGrid[dIt]
+                            << QL_SCIENTIFIC
+                            << "\n    interpolated value: " << calcVal
+                            << "\n    expected value:     " << expectedVal
+                            << "\n    error:              "
+                            << std::fabs(expectedVal-calcVal));
+            }
+        }
+    }
+}
+
 
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
@@ -1333,6 +1458,7 @@ test_suite* InterpolationTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBackwardFlat));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testForwardFlat));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSabrInterpolation));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testKernelInterpolation));
     return suite;
 }
 
