@@ -103,7 +103,7 @@ namespace QuantLib {
                 const std::vector<Real>& y = this->yValues();
 
                 // Solve y=M*\alpha for \alpha
-                alpha_ = qrSolve(M, Array(y));
+                alpha_ = qrSolve(M, Array(y.begin(), y.end()));
             }
 
             boost::shared_ptr<KernelFunction> kernel_;

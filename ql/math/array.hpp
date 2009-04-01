@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2009 StatPro Italia srl
  Copyright (C) 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
@@ -32,6 +32,7 @@
 #include <ql/utilities/null.hpp>
 #include <boost/iterator/reverse_iterator.hpp>
 #include <boost/scoped_array.hpp>
+#include <boost/type_traits.hpp>
 #include <functional>
 #include <numeric>
 #include <vector>
@@ -61,8 +62,9 @@ namespace QuantLib {
         Array(Size size, Real value, Real increment);
         Array(const Array&);
         Array(const Disposable<Array>&);
-        //! creates the array as a copy of a given stl vector
-        explicit Array(const std::vector<Real>&);
+        //! creates the array from an iterable sequence
+        template <class ForwardIterator>
+        Array(ForwardIterator begin, ForwardIterator end);
 
         Array& operator=(const Array&);
         Array& operator=(const Disposable<Array>&);
@@ -137,13 +139,11 @@ namespace QuantLib {
     };
 
     //! specialization of null template for this class
-     template <>
-    class Null<Array> 
-    {
+    template <>
+    class Null<Array> {
       public:
         Null() {}
-        operator Array() const 
-            { return Array(); }
+        operator Array() const { return Array(); }
     };
 
 
@@ -228,10 +228,46 @@ namespace QuantLib {
         swap(const_cast<Disposable<Array>&>(from));
     }
 
-    inline Array::Array(const std::vector<Real>& from)
-    : data_(from.size() ? new Real[from.size()] : (Real*)(0)), 
-      n_(from.size()) {
-        std::copy(from.begin(),from.end(),begin());
+    namespace detail {
+
+        template <class I>
+        inline void _fill_array_(Array& a,
+                                 boost::scoped_array<Real>& data_,
+                                 Size& n_,
+                                 I begin, I end,
+                                 const boost::true_type&) {
+            // we got redirected here from a call like Array(3, 4)
+            // because it matched the constructor below exactly with
+            // ForwardIterator = int.  What we wanted was fill an
+            // Array with a given value, which we do here.
+            Size n = begin;
+            Real value = end;
+            data_.reset(n ? new Real[n] : (Real*)(0));
+            n_ = n;
+            std::fill(a.begin(),a.end(),value);
+        }
+
+        template <class I>
+        inline void _fill_array_(Array& a,
+                                 boost::scoped_array<Real>& data_,
+                                 Size& n_,
+                                 I begin, I end,
+                                 const boost::false_type&) {
+            // true iterators
+            Size n = std::distance(begin, end);
+            data_.reset(n ? new Real[n] : (Real*)(0));
+            n_ = n;
+            std::copy(begin, end, a.begin());
+        }
+
+    }
+
+    template <class ForwardIterator>
+    inline Array::Array(ForwardIterator begin, ForwardIterator end) {
+        // Unfortunately, calls such as Array(3, 4) match this constructor.
+        // We have to detect integral types and dispatch.
+        detail::_fill_array_(*this, data_, n_, begin, end,
+                             boost::is_integral<ForwardIterator>());
     }
 
     inline Array& Array::operator=(const Array& from) {

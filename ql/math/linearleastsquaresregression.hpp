@@ -60,7 +60,7 @@ namespace QuantLib {
 #ifndef QL_DISABLE_DEPRECATED
         const Array& a() const     { return a_;  }
 #endif
-        
+
       private:
         Array a_, err_, residuals_, standardErrors_;
     };
@@ -85,7 +85,7 @@ namespace QuantLib {
       private:
         LinearLeastSquaresRegression<std::vector<Real> > reg_;
     };
-    
+
     template <class ArgumentType> inline
     LinearLeastSquaresRegression<ArgumentType>::LinearLeastSquaresRegression(
         const std::vector<ArgumentType> & x,
@@ -127,41 +127,41 @@ namespace QuantLib {
             }
         }
         err_      = Sqrt(err_);
-        residuals_= A*a_-Array(y);
+        residuals_= A*a_-Array(y.begin(), y.end());
 
-        const Real chiSq 
+        const Real chiSq
             = std::inner_product(residuals_.begin(), residuals_.end(),
                                  residuals_.begin(), 0.0);
         std::transform(err_.begin(), err_.end(), standardErrors_.begin(),
-                       std::bind1st(std::multiplies<Real>(), 
+                       std::bind1st(std::multiplies<Real>(),
                                     std::sqrt(chiSq/(n-2))));
     }
-    
+
     namespace details {
         class LinearFct : public std::unary_function<Real, std::vector<Real> >{
-          public: 
+          public:
             LinearFct(Size i) : i_(i) {}
-            
+
             inline Real operator()(const std::vector<Real>& x) const {
-                return x[i_]; 
+                return x[i_];
             }
-            
+
           private:
-            const Size i_;  
+            const Size i_;
         };
-        
+
         inline std::vector<boost::function1<Real, std::vector<Real> > >
         linearFcts(Size dims) {
             std::vector<boost::function1<Real, std::vector<Real> > > retVal;
             retVal.push_back(constant<std::vector<Real>, Real>(1.0));
-            
+
             for (Size i=0; i < dims; ++i) {
                 retVal.push_back(LinearFct(i));
             }
-            
+
             return retVal;
         }
-        
+
         inline std::vector<std::vector<Real> > argumentWrapper(
             const std::vector<Real>& x) {
             std::vector<std::vector<Real> > retVal;
@@ -169,19 +169,19 @@ namespace QuantLib {
                  iter != x.end(); ++iter) {
                 retVal.push_back(std::vector<Real>(1, *iter));
             }
-            
+
             return retVal;
         }
     }
-    
+
     inline LinearRegression::LinearRegression(
         const std::vector<std::vector<Real> >& x,
         const std::vector<Real>& y)
     : reg_(x, y, details::linearFcts(x.size())) { }
-    
+
     inline LinearRegression::LinearRegression(
         const std::vector<Real>& x,
         const std::vector<Real>& y)
-    : reg_(details::argumentWrapper(x), y, details::linearFcts(1)) { }    
+    : reg_(details::argumentWrapper(x), y, details::linearFcts(1)) { }
 }
 #endif
