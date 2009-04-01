@@ -258,8 +258,6 @@ namespace QuantLib {
         void addRedemptionsToCashflows(const std::vector<Real>& redemptions
                                                        = std::vector<Real>());
 
-        void calculateNotionalsFromCashflows();
-
         /*! This method can be called by derived classes in order to
             build a bond with a single redemption payment.  It will
             fill the notionalSchedule_, notionals_, and redemptions_
@@ -276,6 +274,11 @@ namespace QuantLib {
         */
         void setSingleRedemption(Real notional,
                                  const boost::shared_ptr<CashFlow>& redemption);
+
+        /*! used internally to collect notional information from the
+            coupons. It should not be called by derived classes.
+        */
+        void calculateNotionalsFromCashflows();
 
         Natural settlementDays_;
         Calendar calendar_;
