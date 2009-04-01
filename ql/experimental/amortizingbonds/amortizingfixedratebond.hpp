@@ -41,8 +41,6 @@ namespace QuantLib {
                           const std::vector<Rate>& coupons,
                           const DayCounter& accrualDayCounter,
                           BusinessDayConvention paymentConvention = Following,
-                          const std::vector<Real>& redemption =
-                                                  std::vector<Real>(1, 100.0),
                           const Date& issueDate = Date());
         /*! Automatically generates a set of equal coupons, with an
             amortizing bond.  The coupons are equal and the accrual

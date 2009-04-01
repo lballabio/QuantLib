@@ -50,8 +50,6 @@ namespace QuantLib {
                         const std::vector<Rate>& caps = std::vector<Rate>(),
                         const std::vector<Rate>& floors = std::vector<Rate>(),
                         bool inArrears = false,
-                        const std::vector<Real>& redemptions =
-                                                  std::vector<Real>(1, 100.0),
                         const Date& issueDate = Date());
     };
 

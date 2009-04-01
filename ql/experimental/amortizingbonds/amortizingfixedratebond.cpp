@@ -31,7 +31,6 @@ namespace QuantLib {
                                       const std::vector<Rate>& coupons,
                                       const DayCounter& accrualDayCounter,
                                       BusinessDayConvention paymentConvention,
-                                      const std::vector<Real>& redemptions,
                                       const Date& issueDate)
     : Bond(settlementDays, schedule.calendar(), issueDate),
       frequency_(schedule.tenor().frequency()),
@@ -44,7 +43,7 @@ namespace QuantLib {
             .withCouponRates(coupons)
             .withPaymentAdjustment(paymentConvention);
 
-        addRedemptionsToCashflows(redemptions);
+        addRedemptionsToCashflows();
 
         QL_ENSURE(!cashflows().empty(), "bond with no cashflows!");
     }
