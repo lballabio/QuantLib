@@ -443,7 +443,7 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
     bool maximizeHomogeneity = false; //?
     if (printReport_) {
         BOOST_MESSAGE("caplet market vols: " << QL_FIXED <<
-                      std::setprecision(4) << Array(capletVols_));
+                      std::setprecision(4) << io::sequence(capletVols_));
         BOOST_MESSAGE("alphaMin:           " << alphaMin_);
         BOOST_MESSAGE("alphaInitial:       " << alpha_);
         BOOST_MESSAGE("alphaMax:           " << alphaMax_);
@@ -496,7 +496,7 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
     }
     if (printReport_) {
         BOOST_MESSAGE("caplet smm implied vols: " << QL_FIXED <<
-                      std::setprecision(4) << Array(capletVols));
+                      std::setprecision(4) << io::sequence(capletVols));
         BOOST_MESSAGE("failures: " << calibrator.failures());
         BOOST_MESSAGE("deformationSize: " << calibrator.deformationSize());
         BOOST_MESSAGE("capletRmsError: " << calibrator.capletRmsError());

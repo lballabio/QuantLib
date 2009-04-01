@@ -449,7 +449,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
     Real caplet0Swaption1Priority = 1.0;
     if (printReport_) {
         BOOST_MESSAGE("caplet market vols: " << QL_FIXED <<
-                      std::setprecision(4) << Array(capletVols_));
+                      std::setprecision(4) << io::sequence(capletVols_));
         BOOST_MESSAGE("caplet0Swapt1Prior: " << caplet0Swaption1Priority);
     }
     CTSMMCapletMaxHomogeneityCalibration calibrator(evolution,
@@ -494,7 +494,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
     }
     if (printReport_) {
         BOOST_MESSAGE("caplet smm implied vols: " << QL_FIXED <<
-                      std::setprecision(4) << Array(capletVols));
+                      std::setprecision(4) << io::sequence(capletVols));
         BOOST_MESSAGE("failures: " << calibrator.failures());
         BOOST_MESSAGE("deformationSize: " << calibrator.deformationSize());
         BOOST_MESSAGE("capletRmsError: " << calibrator.capletRmsError());
@@ -597,7 +597,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
     Real caplet0Swaption1Priority = 1.0;
     if (printReport_) {
         BOOST_MESSAGE("caplet market vols: " << QL_FIXED <<
-                      std::setprecision(4) << Array(capletVols_));
+                      std::setprecision(4) << io::sequence(capletVols_));
         BOOST_MESSAGE("caplet0Swapt1Prior: " << caplet0Swaption1Priority);
     }
 

@@ -24,6 +24,7 @@
 #include <ql/models/marketmodels/correlations/timehomogeneousforwardcorrelation.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
 #include <ql/math/comparison.hpp>
+#include <ql/utilities/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -41,7 +42,7 @@ namespace QuantLib {
         QL_REQUIRE(beta>=0.0,
                    "beta (" << beta <<
                    ") must be greater than zero");
-        QL_REQUIRE(gamma<=1.0 && gamma>=0.0, 
+        QL_REQUIRE(gamma<=1.0 && gamma>=0.0,
                    "gamma (" << gamma <<
                    ") outside [0;1] interval");
 
@@ -49,7 +50,7 @@ namespace QuantLib {
         Size nbRows = rateTimes.size()-1;
         Matrix correlations(nbRows, nbRows, 0.0);
         for (Size i=0; i<nbRows; ++i) {
-            // correlation is defined only between 
+            // correlation is defined only between
             // (alive) stochastic rates...
             if (time<=rateTimes[i]) {
                 correlations[i][i] = 1.0;
@@ -96,8 +97,9 @@ namespace QuantLib {
         if (close(gamma,1.0)) {
             std::vector<Time> temp(rateTimes_.begin(), rateTimes_.end()-1);
             QL_REQUIRE(times_==temp,
-                       "corr times " << Array(times_) << " must be equal to "
-                       "(all) rate times (but the last) " << Array(temp));
+                       "corr times " << io::sequence(times_)
+                       << " must be equal to (all) rate times (but the last) "
+                       << io::sequence(temp));
             Matrix c = exponentialCorrelations(
                 rateTimes_, longTermCorr_, beta_, 1.0, 0.0);
             correlations_ =

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -58,6 +58,14 @@ namespace QuantLib {
         };
         std::ostream& operator<<(std::ostream&, const percent_holder&);
 
+        template <typename InputIterator> struct sequence_holder {
+            sequence_holder(InputIterator begin, InputIterator end)
+            : begin(begin), end(end) {}
+            InputIterator begin, end;
+        };
+        template <typename I>
+        std::ostream& operator<<(std::ostream&, const sequence_holder<I>&);
+
     }
 
 
@@ -90,11 +98,15 @@ namespace QuantLib {
         //! output volatilities as percentages
         detail::percent_holder volatility(Volatility);
 
+        //! output STL-compliant containers as space-separated sequences
+        template <class Container>
+        detail::sequence_holder<typename Container::const_iterator>
+        sequence(const Container& c);
+
         /*! @}  */
 
 
         // inline definitions
-
 
         template <typename T>
         inline detail::null_checker<T> checknull(T x) {
@@ -120,6 +132,13 @@ namespace QuantLib {
 
         inline detail::percent_holder volatility(Volatility v) {
             return detail::percent_holder(v);
+        }
+
+        template <class Container>
+        inline detail::sequence_holder<typename Container::const_iterator>
+        sequence(const Container& c) {
+            return detail::sequence_holder<typename Container::const_iterator>(
+                                                           c.begin(), c.end());
         }
 
     }
@@ -150,6 +169,16 @@ namespace QuantLib {
                 }
             }
             return out << n << "*2^" << power;
+        }
+
+        template <typename I>
+        inline std::ostream& operator<<(std::ostream& out,
+                                        const sequence_holder<I>& holder) {
+            out << "( ";
+            for (I i = holder.begin; i != holder.end; ++i)
+                out << *i << " ";
+            out << ")";
+            return out;
         }
 
     }

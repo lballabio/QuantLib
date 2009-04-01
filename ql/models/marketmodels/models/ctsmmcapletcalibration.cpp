@@ -26,6 +26,7 @@
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/comparison.hpp>
+#include <ql/utilities/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -52,8 +53,8 @@ namespace QuantLib {
         performChecks(evolution_, *corr_, displacedSwapVariances_,
                       mktCapletVols_, *cs_);
 
-        
-        
+
+
     }
 
     const std::vector<Volatility>&
@@ -85,8 +86,10 @@ namespace QuantLib {
     {
         const std::vector<Time>& evolutionTimes = evolution.evolutionTimes();
         QL_REQUIRE(evolutionTimes==corr.times(),
-                   "evolutionTimes " << Array(evolutionTimes) <<
-                   " not equal to correlation times " << Array(corr.times()));
+                   "evolutionTimes "
+                   << io::sequence(evolutionTimes)
+                   << " not equal to correlation times "
+                   << io::sequence(corr.times()));
 
         const std::vector<Time>& rateTimes = evolution.rateTimes();
         QL_REQUIRE(rateTimes==cs.rateTimes(),
@@ -152,7 +155,7 @@ namespace QuantLib {
 
         // calibration loop
         do {
-            failures_ = calibrationImpl_(numberOfFactors, 
+            failures_ = calibrationImpl_(numberOfFactors,
                                          innerSolvingMaxIterations,
                                          innerSolvingTolerance);
 
@@ -183,7 +186,7 @@ namespace QuantLib {
                 capletRmsError_ += capletError*capletError;
                 capletMaxError_ = std::max(capletMaxError_, capletError);
 
-                if (i < numberOfRates_-1) 
+                if (i < numberOfRates_-1)
                     usedCapletVols_[i] *= mktCapletVols_[i]/mdlCapletVols_[i];
             }
             swaptionRmsError_ = std::sqrt(swaptionRmsError_/numberOfRates_);
@@ -202,7 +205,7 @@ namespace QuantLib {
          for (Size i=0; i<numberOfRates_; ++i)
              timeDependentCalibratedSwaptionVols_.push_back(
                 ctsmm->timeDependentVolatility(i));
-      
+
         // calculate deformationSize_ ??
         calibrated_ = true;
         return failures_==0;

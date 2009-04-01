@@ -439,7 +439,7 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     bool useFullApprox = false;
     if (printReport_) {
         BOOST_MESSAGE("caplet market vols: " << QL_FIXED <<
-                      std::setprecision(4) << Array(capletVols_));
+                      std::setprecision(4) << io::sequence(capletVols_));
         BOOST_MESSAGE("alpha:              " << alpha_);
         BOOST_MESSAGE("lowestRoot:         " << lowestRoot);
         BOOST_MESSAGE("useFullApprox:      " << useFullApprox);
@@ -486,7 +486,7 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     }
     if (printReport_) {
         BOOST_MESSAGE("caplet smm implied vols: " << QL_FIXED <<
-                      std::setprecision(4) << Array(capletVols));
+                      std::setprecision(4) << io::sequence(capletVols));
         BOOST_MESSAGE("failures: " << calibrator.failures());
         BOOST_MESSAGE("deformationSize: " << calibrator.deformationSize());
         BOOST_MESSAGE("capletRmsError: " << calibrator.capletRmsError());
