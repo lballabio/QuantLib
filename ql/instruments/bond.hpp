@@ -182,30 +182,6 @@ namespace QuantLib {
                    Real accuracy = 1.0e-8,
                    Size maxEvaluations = 100) const;
 
-        //! clean price given Z-spread
-        /*! Z-spread compounding, frequency, daycount are taken into account
-            The default bond settlement is used if no date is given.
-            For details on Z-spread refer to:
-            "Credit Spreads Explained", Lehman Brothers European Fixed
-            Income Research - March 2004, D. O'Kane*/
-        Real cleanPriceFromZSpread(Spread zSpread,
-                                   const DayCounter& dc,
-                                   Compounding comp,
-                                   Frequency freq,
-                                   Date settlementDate = Date()) const;
-
-        //! dirty price given Z-spread
-        /*! Z-spread compounding, frequency, daycount are taken into account
-            The default bond settlement is used if no date is given.
-            For details on Z-spread refer to:
-            "Credit Spreads Explained", Lehman Brothers European Fixed
-            Income Research - March 2004, D. O'Kane*/
-        Real dirtyPriceFromZSpread(Spread zSpread,
-                                   const DayCounter& dc,
-                                   Compounding comp,
-                                   Frequency freq,
-                                   Date settlementDate = Date()) const;
-
         //! accrued amount at a given date
         /*! The default bond settlement is used if no date is given. */
         virtual Real accruedAmount(Date d = Date()) const;

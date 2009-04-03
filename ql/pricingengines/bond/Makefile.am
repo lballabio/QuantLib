@@ -4,10 +4,12 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    discountingbondengine.hpp
+    discountingbondengine.hpp \
+    zspread.hpp
 
 libBondEngines_la_SOURCES = \
-    discountingbondengine.cpp
+    discountingbondengine.cpp \
+    zspread.cpp
 
 noinst_LTLIBRARIES = libBondEngines.la
 

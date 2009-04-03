@@ -29,7 +29,6 @@
 #include <ql/math/comparison.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
-#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/settings.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 
@@ -120,39 +119,6 @@ namespace QuantLib {
             Frequency frequency_;
             Date settlement_;
         };
-
-
-        Real dirtyPriceFromZSpreadFunction(
-                            Real faceAmount,
-                            const Leg& cashflows,
-                            Spread zSpread,
-                            const DayCounter& dc,
-                            Compounding comp,
-                            Frequency freq,
-                            const Date& settlement,
-                            const Handle<YieldTermStructure>& discountCurve) {
-
-            QL_REQUIRE(freq != NoFrequency && freq != Once,
-                       "invalid frequency:" << freq);
-
-            Handle<Quote> zSpreadQuoteHandle(shared_ptr<Quote>(new
-                SimpleQuote(zSpread)));
-
-            ZeroSpreadedTermStructure spreadedCurve(discountCurve,
-                                                    zSpreadQuoteHandle,
-                                                    comp, freq, dc);
-            Real price = 0.0;
-            for (Size i=0; i<cashflows.size(); ++i) {
-                if (cashflows[i]->hasOccurred(settlement))
-                    continue;
-
-                Date couponDate = cashflows[i]->date();
-                Real amount = cashflows[i]->amount();
-                price += amount * spreadedCurve.discount(couponDate);
-            }
-            price /= spreadedCurve.discount(settlement);
-            return price/faceAmount*100.0;
-        }
 
     } // anonymous namespace ends here
 
@@ -339,34 +305,6 @@ namespace QuantLib {
         return solver.solve(objective, accuracy, 0.02, 0.0, 1.0);
     }
 
-    Real Bond::cleanPriceFromZSpread(Spread zSpread,
-                                     const DayCounter& dc,
-                                     Compounding comp,
-                                     Frequency freq,
-                                     Date settlement) const {
-        Real p = dirtyPriceFromZSpread(zSpread, dc, comp, freq, settlement);
-        return p - accruedAmount(settlement);
-    }
-
-    Real Bond::dirtyPriceFromZSpread(Spread zSpread,
-                                     const DayCounter& dc,
-                                     Compounding comp,
-                                     Frequency freq,
-                                     Date settlement) const {
-         if (settlement == Date())
-             settlement = settlementDate();
-         QL_REQUIRE(engine_, "null pricing engine");
-
-         shared_ptr<DiscountingBondEngine> bondEngine =
-             dynamic_pointer_cast<DiscountingBondEngine>(engine_);
-         QL_REQUIRE(bondEngine, "engine not compatible with calculation");
-
-         return dirtyPriceFromZSpreadFunction(notional(settlement), cashflows_,
-                                              zSpread, dc, comp, freq,
-                                              settlement,
-                                              bondEngine->discountCurve());
-    }
-
     Real Bond::accruedAmount(Date settlement) const {
         if (settlement==Date())
             settlement = settlementDate();
@@ -499,7 +437,7 @@ namespace QuantLib {
 
         notionalSchedule_[1] = redemption->date();
         notionals_[1] = 0.0;
-        
+
         cashflows_.push_back(redemption);
         redemptions_.push_back(redemption);
     }

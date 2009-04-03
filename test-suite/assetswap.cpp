@@ -52,6 +52,7 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
+#include <ql/pricingengines/bond/zspread.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 
 using namespace QuantLib;
@@ -938,10 +939,12 @@ void AssetSwapTest::testZSpread() {
     Date fixedBondSettlementDate1= fixedBond1->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YC...
-    Real fixedBondCleanPrice1= fixedBond1->cleanPriceFromZSpread(vars.spread,
+    Real fixedBondCleanPrice1 = cleanPriceFromZSpread(
+         *fixedBond1, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          fixedBondSettlementDate1);
-    Real fixedBondDirtyPrice1= fixedBond1->dirtyPriceFromZSpread(vars.spread,
+    Real fixedBondDirtyPrice1 = dirtyPriceFromZSpread(
+         *fixedBond1, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          fixedBondSettlementDate1);
     Real tolerance = 1.0e-13;
@@ -990,10 +993,12 @@ void AssetSwapTest::testZSpread() {
     Date fixedBondSettlementDate2= fixedBond2->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
-    Real fixedBondCleanPrice2= fixedBond2->cleanPriceFromZSpread(vars.spread,
+    Real fixedBondCleanPrice2 = cleanPriceFromZSpread(
+         *fixedBond2, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          fixedBondSettlementDate2);
-    Real fixedBondDirtyPrice2= fixedBond2->dirtyPriceFromZSpread(vars.spread,
+    Real fixedBondDirtyPrice2 = dirtyPriceFromZSpread(
+         *fixedBond2, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual, //FIXME ??
          fixedBondSettlementDate2);
     Real error3 = std::fabs(fixedBondImpliedValue2-fixedBondCleanPrice2);
@@ -1048,11 +1053,13 @@ void AssetSwapTest::testZSpread() {
     Date floatingBondSettlementDate1= floatingBond1->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
-    Real floatingBondCleanPrice1= floatingBond1->cleanPriceFromZSpread(
-        vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
+    Real floatingBondCleanPrice1 = cleanPriceFromZSpread(
+        *floatingBond1, *vars.termStructure, vars.spread,
+        Actual365Fixed(), vars.compounding, Semiannual,
         fixedBondSettlementDate1);
-    Real floatingBondDirtyPrice1= floatingBond1->dirtyPriceFromZSpread(
-        vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
+    Real floatingBondDirtyPrice1 = dirtyPriceFromZSpread(
+        *floatingBond1, *vars.termStructure, vars.spread,
+        Actual365Fixed(), vars.compounding, Semiannual,
         floatingBondSettlementDate1);
     Real error5 = std::fabs(floatingBondImpliedValue1-floatingBondCleanPrice1);
     if (error5>tolerance) {
@@ -1105,10 +1112,12 @@ void AssetSwapTest::testZSpread() {
     Date floatingBondSettlementDate2= floatingBond2->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
-    Real floatingBondCleanPrice2= floatingBond2->cleanPriceFromZSpread(
+    Real floatingBondCleanPrice2 = cleanPriceFromZSpread(
+        *floatingBond2, *vars.termStructure,
         vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
         fixedBondSettlementDate1);
-    Real floatingBondDirtyPrice2= floatingBond2->dirtyPriceFromZSpread(
+    Real floatingBondDirtyPrice2 = dirtyPriceFromZSpread(
+        *floatingBond2, *vars.termStructure, 
         vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
         floatingBondSettlementDate2);
     Real error7 = std::fabs(floatingBondImpliedValue2-floatingBondCleanPrice2);
@@ -1162,10 +1171,12 @@ void AssetSwapTest::testZSpread() {
     Date cmsBondSettlementDate1= cmsBond1->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
-    Real cmsBondCleanPrice1= cmsBond1->cleanPriceFromZSpread(vars.spread,
+    Real cmsBondCleanPrice1 = cleanPriceFromZSpread(
+        *cmsBond1, *vars.termStructure, vars.spread,
         Actual365Fixed(), vars.compounding, Annual,
         cmsBondSettlementDate1);
-    Real cmsBondDirtyPrice1= cmsBond1->dirtyPriceFromZSpread(vars.spread,
+    Real cmsBondDirtyPrice1 = dirtyPriceFromZSpread(
+        *cmsBond1, *vars.termStructure, vars.spread,
         Actual365Fixed(), vars.compounding, Annual,
         fixedBondSettlementDate1);
     Real error9 = std::fabs(cmsBondImpliedValue1-cmsBondCleanPrice1);
@@ -1215,10 +1226,12 @@ void AssetSwapTest::testZSpread() {
     Date cmsBondSettlementDate2= cmsBond2->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
-    Real cmsBondCleanPrice2= cmsBond2->cleanPriceFromZSpread(vars.spread,
+    Real cmsBondCleanPrice2 = cleanPriceFromZSpread(
+         *cmsBond2, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          cmsBondSettlementDate2);
-    Real cmsBondDirtyPrice2= cmsBond2->dirtyPriceFromZSpread(vars.spread,
+    Real cmsBondDirtyPrice2 = dirtyPriceFromZSpread(
+         *cmsBond2, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          fixedBondSettlementDate2);
     Real error11 = std::fabs(cmsBondImpliedValue2-cmsBondCleanPrice2);
@@ -1259,15 +1272,19 @@ void AssetSwapTest::testZSpread() {
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real zeroCpnBondCleanPrice1 =
-        zeroCpnBond1->cleanPriceFromZSpread(vars.spread,
-                                            Actual365Fixed(),
-                                            vars.compounding, Annual,
-                                            zeroCpnBondSettlementDate1);
+        cleanPriceFromZSpread(*zeroCpnBond1,
+                              *vars.termStructure,
+                              vars.spread,
+                              Actual365Fixed(),
+                              vars.compounding, Annual,
+                              zeroCpnBondSettlementDate1);
     Real zeroCpnBondDirtyPrice1 =
-        zeroCpnBond1->dirtyPriceFromZSpread(vars.spread,
-                                            Actual365Fixed(),
-                                            vars.compounding, Annual,
-                                            zeroCpnBondSettlementDate1);
+        dirtyPriceFromZSpread(*zeroCpnBond1,
+                              *vars.termStructure,
+                              vars.spread,
+                              Actual365Fixed(),
+                              vars.compounding, Annual,
+                              zeroCpnBondSettlementDate1);
     Real error13 = std::fabs(zeroCpnBondImpliedValue1-zeroCpnBondCleanPrice1);
     if (error13>tolerance) {
         BOOST_ERROR("wrong clean price for zero coupon bond:"
@@ -1308,15 +1325,19 @@ void AssetSwapTest::testZSpread() {
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real zeroCpnBondCleanPrice2 =
-        zeroCpnBond2->cleanPriceFromZSpread(vars.spread,
-                                            Actual365Fixed(),
-                                            vars.compounding, Annual,
-                                            zeroCpnBondSettlementDate2);
+        cleanPriceFromZSpread(*zeroCpnBond2,
+                              *vars.termStructure,
+                              vars.spread,
+                              Actual365Fixed(),
+                              vars.compounding, Annual,
+                              zeroCpnBondSettlementDate2);
     Real zeroCpnBondDirtyPrice2 =
-        zeroCpnBond2->dirtyPriceFromZSpread(vars.spread,
-                                            Actual365Fixed(),
-                                            vars.compounding, Annual,
-                                            zeroCpnBondSettlementDate2);
+        dirtyPriceFromZSpread(*zeroCpnBond2,
+                              *vars.termStructure,
+                              vars.spread,
+                              Actual365Fixed(),
+                              vars.compounding, Annual,
+                              zeroCpnBondSettlementDate2);
     Real error15 = std::fabs(zeroCpnBondImpliedValue2-zeroCpnBondCleanPrice2);
     if (error15>tolerance) {
         BOOST_ERROR("wrong clean price for zero coupon bond:"
@@ -2242,10 +2263,12 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Date fixedBondSettlementDate1= fixedBond1->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
-    Real fixedBondCleanPrice1= fixedBond1->cleanPriceFromZSpread(vars.spread,
+    Real fixedBondCleanPrice1 = cleanPriceFromZSpread(
+         *fixedBond1, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          fixedBondSettlementDate1);
-    Real fixedBondDirtyPrice1= fixedBond1->dirtyPriceFromZSpread(vars.spread,
+    Real fixedBondDirtyPrice1 = dirtyPriceFromZSpread(
+         *fixedBond1, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          fixedBondSettlementDate1);
     Real tolerance = 1.0e-13;
@@ -2302,10 +2325,12 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
 
-    Real fixedBondCleanPrice2= fixedBond2->cleanPriceFromZSpread(vars.spread,
+    Real fixedBondCleanPrice2 = cleanPriceFromZSpread(
+         *fixedBond2, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          fixedBondSettlementDate2);
-    Real fixedBondDirtyPrice2= fixedBond2->dirtyPriceFromZSpread(vars.spread,
+    Real fixedBondDirtyPrice2 = dirtyPriceFromZSpread(
+         *fixedBond2, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual, //FIXME ??
          fixedBondSettlementDate2);
     Real error3 = std::fabs(fixedBondImpliedValue2-fixedBondCleanPrice2);
@@ -2365,10 +2390,12 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Date floatingBondSettlementDate1= floatingBond1->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
-    Real floatingBondCleanPrice1= floatingBond1->cleanPriceFromZSpread(
+    Real floatingBondCleanPrice1 = cleanPriceFromZSpread(
+        *floatingBond1, *vars.termStructure, 
         vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
         fixedBondSettlementDate1);
-    Real floatingBondDirtyPrice1= floatingBond1->dirtyPriceFromZSpread(
+    Real floatingBondDirtyPrice1 = dirtyPriceFromZSpread(
+        *floatingBond1, *vars.termStructure, 
         vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
         floatingBondSettlementDate1);
     Real error5 = std::fabs(floatingBondImpliedValue1-floatingBondCleanPrice1);
@@ -2429,10 +2456,12 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Date floatingBondSettlementDate2= floatingBond2->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
-    Real floatingBondCleanPrice2= floatingBond2->cleanPriceFromZSpread(
+    Real floatingBondCleanPrice2 = cleanPriceFromZSpread(
+        *floatingBond2, *vars.termStructure, 
         vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
         fixedBondSettlementDate1);
-    Real floatingBondDirtyPrice2= floatingBond2->dirtyPriceFromZSpread(
+    Real floatingBondDirtyPrice2 = dirtyPriceFromZSpread(
+        *floatingBond2, *vars.termStructure, 
         vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
         floatingBondSettlementDate2);
     Real error7 = std::fabs(floatingBondImpliedValue2-floatingBondCleanPrice2);
@@ -2493,10 +2522,12 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Date cmsBondSettlementDate1= cmsBond1->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
-    Real cmsBondCleanPrice1= cmsBond1->cleanPriceFromZSpread(vars.spread,
+    Real cmsBondCleanPrice1 = cleanPriceFromZSpread(
+         *cmsBond1, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          cmsBondSettlementDate1);
-    Real cmsBondDirtyPrice1= cmsBond1->dirtyPriceFromZSpread(vars.spread,
+    Real cmsBondDirtyPrice1 = dirtyPriceFromZSpread(
+         *cmsBond1, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          fixedBondSettlementDate1);
     Real error9 = std::fabs(cmsBondImpliedValue1-cmsBondCleanPrice1);
@@ -2552,10 +2583,12 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Date cmsBondSettlementDate2= cmsBond2->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
-    Real cmsBondCleanPrice2= cmsBond2->cleanPriceFromZSpread(vars.spread,
+    Real cmsBondCleanPrice2 = cleanPriceFromZSpread(
+         *cmsBond2, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          cmsBondSettlementDate2);
-    Real cmsBondDirtyPrice2= cmsBond2->dirtyPriceFromZSpread(vars.spread,
+    Real cmsBondDirtyPrice2 = dirtyPriceFromZSpread(
+         *cmsBond2, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          fixedBondSettlementDate2);
     Real error11 = std::fabs(cmsBondImpliedValue2-cmsBondCleanPrice2);
@@ -2599,15 +2632,19 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real zeroCpnBondCleanPrice1 =
-        zeroCpnBond1->cleanPriceFromZSpread(vars.spread,
-                                            Actual365Fixed(),
-                                            vars.compounding, Annual,
-                                            zeroCpnBondSettlementDate1);
+        cleanPriceFromZSpread(*zeroCpnBond1,
+                              *vars.termStructure,
+                              vars.spread,
+                              Actual365Fixed(),
+                              vars.compounding, Annual,
+                              zeroCpnBondSettlementDate1);
     Real zeroCpnBondDirtyPrice1 =
-        zeroCpnBond1->dirtyPriceFromZSpread(vars.spread,
-                                            Actual365Fixed(),
-                                            vars.compounding, Annual,
-                                            zeroCpnBondSettlementDate1);
+        dirtyPriceFromZSpread(*zeroCpnBond1,
+                              *vars.termStructure,
+                              vars.spread,
+                              Actual365Fixed(),
+                              vars.compounding, Annual,
+                              zeroCpnBondSettlementDate1);
     Real error13 = std::fabs(zeroCpnBondImpliedValue1-zeroCpnBondCleanPrice1);
     if (error13>tolerance) {
         BOOST_ERROR("wrong clean price for zero coupon bond:"
@@ -2652,15 +2689,19 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real zeroCpnBondCleanPrice2 =
-        zeroCpnBond2->cleanPriceFromZSpread(vars.spread,
-                                            Actual365Fixed(),
-                                            vars.compounding, Annual,
-                                            zeroCpnBondSettlementDate2);
+        cleanPriceFromZSpread(*zeroCpnBond2,
+                              *vars.termStructure,
+                              vars.spread,
+                              Actual365Fixed(),
+                              vars.compounding, Annual,
+                              zeroCpnBondSettlementDate2);
     Real zeroCpnBondDirtyPrice2 =
-        zeroCpnBond2->dirtyPriceFromZSpread(vars.spread,
-                                            Actual365Fixed(),
-                                            vars.compounding, Annual,
-                                            zeroCpnBondSettlementDate2);
+        dirtyPriceFromZSpread(*zeroCpnBond2,
+                              *vars.termStructure,
+                              vars.spread,
+                              Actual365Fixed(),
+                              vars.compounding, Annual,
+                              zeroCpnBondSettlementDate2);
     Real error15 = std::fabs(zeroCpnBondImpliedValue2-zeroCpnBondCleanPrice2);
     if (error15>tolerance) {
         BOOST_ERROR("wrong clean price for zero coupon bond:"

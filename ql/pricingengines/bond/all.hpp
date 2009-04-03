@@ -2,4 +2,5 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
+#include <ql/pricingengines/bond/zspread.hpp>
 
