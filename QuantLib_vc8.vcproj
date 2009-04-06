@@ -1610,10 +1610,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\math\complexarray.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\math\curve.hpp"
 				>
 			</File>
@@ -1727,10 +1723,6 @@
 			</File>
 			<File
 				RelativePath="ql\math\factorial.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\math\fastfouriertransform.hpp"
 				>
 			</File>
 			<File
