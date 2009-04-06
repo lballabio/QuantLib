@@ -130,7 +130,7 @@ void FdmLinearOpTest::testFdmLinearOpLayout() {
 
     Size calculatedSize = layout.size();
     Size expectedSize = std::accumulate(dim.begin(), dim.end(),
-                                        1.0, std::multiplies<Real>());
+                                        1, std::multiplies<Size>());
 
     if (calculatedSize != expectedSize) {
         BOOST_FAIL("index.size() should be "
