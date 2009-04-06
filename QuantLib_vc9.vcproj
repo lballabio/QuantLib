@@ -2086,6 +2086,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\math\complexarray.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\math\curve.hpp"
 				>
 			</File>
@@ -2294,6 +2298,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\math\fastfouriertransform.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\math\functional.hpp"
 				>
 			</File>
@@ -2399,6 +2407,10 @@
 			</File>
 			<File
 				RelativePath=".\ql\math\interpolation.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\math\kernelfunctions.hpp"
 				>
 			</File>
 			<File
@@ -2602,6 +2614,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\interpolations\interpolation2d.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\interpolations\kernelinterpolation.hpp"
 					>
 				</File>
 				<File
@@ -3122,6 +3138,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\optimization\armijo.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\optimization\bfgs.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\optimization\bfgs.hpp"
 					>
 				</File>
 				<File
@@ -7518,6 +7542,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\bond\discountingbondengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\bond\zspread.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\bond\zspread.hpp"
 					>
 				</File>
 			</Filter>
