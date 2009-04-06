@@ -4,6 +4,7 @@
  Copyright (C) 2007 Chiara Fornarola
  Copyright (C) 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2009 StatPro Italia srl
+ Copyright (C) 2009 Nathan Abbott
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -41,9 +42,9 @@ namespace QuantLib {
                    const Bond& bond,
                    const boost::shared_ptr<YieldTermStructure>& discountCurve,
                    Spread zSpread,
-                   const DayCounter& dc,
-                   Compounding comp,
-                   Frequency freq,
+                   const DayCounter& dayCounter,
+                   Compounding compounding,
+                   Frequency frequency,
                    Date settlementDate = Date());
 
     //! dirty bond price given a discount curve and a Z-spread
@@ -57,10 +58,37 @@ namespace QuantLib {
                    const Bond& bond,
                    const boost::shared_ptr<YieldTermStructure>& discountCurve,
                    Spread zSpread,
-                   const DayCounter& dc,
-                   Compounding comp,
-                   Frequency freq,
+                   const DayCounter& dayCounter,
+                   Compounding compounding,
+                   Frequency frequency,
                    Date settlementDate = Date());
+
+
+    //! Z-spread given a discount curve and a clean price
+    /*! The default bond settlement is used if no date is given. */
+    Spread zSpreadFromCleanPrice(
+                   const Bond& bond,
+                   const boost::shared_ptr<YieldTermStructure>& discountCurve,
+                   Real cleanPrice,
+                   const DayCounter& dayCounter,
+                   Compounding compounding,
+                   Frequency frequency,
+                   Date settlementDate = Date(),
+                   Real accuracy = 1.0e-8,
+                   Size maxEvaluations = 100);
+
+    //! Z-spread given a discount curve and a dirty price
+    /*! The default bond settlement is used if no date is given. */
+    Spread zSpreadFromDirtyPrice(
+                   const Bond& bond,
+                   const boost::shared_ptr<YieldTermStructure>& discountCurve,
+                   Real dirtyPrice,
+                   const DayCounter& dayCounter,
+                   Compounding compounding,
+                   Frequency frequency,
+                   Date settlementDate = Date(),
+                   Real accuracy = 1.0e-8,
+                   Size maxEvaluations = 100);
 
 }
 
