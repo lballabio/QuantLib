@@ -48,21 +48,23 @@ namespace QuantLib {
     Time SwaptionVolatilityStructure::swapLength(const Period& p) const {
         QL_REQUIRE(p.length()>0,
                    "non-positive swap tenor (" << p << ") given");
-        /* while using the reference date is arbitrary it is coherent between
-           different swaption structures defined on the same reference date.
-        */
-        Date start = referenceDate();
-        Date end = start + p;
-        return swapLength(start, end);
+        switch (p.units()) {
+          case Months:
+            return p.length()/12.0;
+          case Years:
+            return static_cast<Time>(p.length());
+          default:
+            QL_FAIL("invalid Time Unit (" << p.units() << ") for swap length");
+        }
     }
 
     Time SwaptionVolatilityStructure::swapLength(const Date& start,
                                                  const Date& end) const {
         QL_REQUIRE(end>start, "swap end date (" << end <<
                    ") must be greater than start (" << start << ")");
-        Time result = (end-start)/365.25*24.0; // half a month unit
+        Time result = (end-start)/365.25*12.0; // month unit
         result = ClosestRounding(0)(result);
-        result /= 24.0; // year unit
+        result /= 12.0; // year unit
         return result;
     }
 
