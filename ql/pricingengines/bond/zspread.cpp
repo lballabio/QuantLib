@@ -93,8 +93,7 @@ namespace QuantLib {
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         ZSpreadFinder objective(bond,
-                                discountCurve,
-                                dirtyPrice,
+                                discountCurve, dirtyPrice,
                                 dayCounter, compounding, frequency,
                                 settlement);
         return solver.solve(objective, accuracy, 0.0, 0.001);

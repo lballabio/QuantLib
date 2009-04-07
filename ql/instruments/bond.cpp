@@ -31,98 +31,12 @@
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/settings.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
+#include <ql/pricingengines/bond/yield.hpp>
 
 using boost::shared_ptr;
 using boost::dynamic_pointer_cast;
 
 namespace QuantLib {
-
-    namespace {
-
-        Real dirtyPriceFromYield(Real faceAmount,
-                                 const Leg& cashflows,
-                                 Rate yield,
-                                 const DayCounter& dayCounter,
-                                 Compounding compounding,
-                                 Frequency frequency,
-                                 const Date& settlement) {
-            if (frequency == NoFrequency || frequency == Once)
-                frequency = Annual;
-
-            InterestRate y(yield, dayCounter, compounding, frequency);
-
-            Real price = 0.0;
-            DiscountFactor discount = 1.0;
-            Date lastDate = Date();
-
-            for (Size i=0; i<cashflows.size(); ++i) {
-                if (cashflows[i]->hasOccurred(settlement))
-                    continue;
-
-                Date couponDate = cashflows[i]->date();
-                Real amount = cashflows[i]->amount();
-                if (lastDate == Date()) {
-                    // first not-expired coupon
-                    if (i > 0) {
-                        lastDate = cashflows[i-1]->date();
-                    } else {
-                        boost::shared_ptr<Coupon> coupon =
-                            boost::dynamic_pointer_cast<Coupon>(cashflows[i]);
-                        if (coupon)
-                            lastDate = coupon->accrualStartDate();
-                        else
-                            lastDate = couponDate - 1*Years;
-                    }
-                    discount *= y.discountFactor(settlement, couponDate,
-                                                 lastDate, couponDate);
-                } else  {
-                    discount *= y.discountFactor(lastDate, couponDate);
-                }
-                lastDate = couponDate;
-
-                price += amount * discount;
-            }
-
-            return price/faceAmount*100.0;
-        }
-
-
-        class YieldFinder {
-          public:
-            YieldFinder(
-                   Real faceAmount,
-                   const Leg& cashflows,
-                   Real dirtyPrice,
-                   const DayCounter& dayCounter,
-                   Compounding compounding,
-                   Frequency frequency,
-                   const Date& settlement)
-            : faceAmount_(faceAmount), cashflows_(cashflows),
-              dirtyPrice_(dirtyPrice),compounding_(compounding),
-              dayCounter_(dayCounter), frequency_(frequency),
-              settlement_(settlement) {}
-            Real operator()(Real yield) const {
-                return dirtyPrice_ - dirtyPriceFromYield(faceAmount_,
-                                                         cashflows_,
-                                                         yield,
-                                                         dayCounter_,
-                                                         compounding_,
-                                                         frequency_,
-                                                         settlement_);
-            }
-          private:
-            Real faceAmount_;
-            Leg cashflows_;
-            Real dirtyPrice_;
-            Compounding compounding_;
-            DayCounter dayCounter_;
-            Frequency frequency_;
-            Date settlement_;
-        };
-
-    } // anonymous namespace ends here
-
-
 
     Bond::Bond(Natural settlementDays,
                const Calendar& calendar,
@@ -254,13 +168,8 @@ namespace QuantLib {
                      Frequency freq,
                      Real accuracy,
                      Size maxEvaluations) const {
-        Brent solver;
-        solver.setMaxEvaluations(maxEvaluations);
-        YieldFinder objective(notional(settlementDate()), cashflows_,
-                              dirtyPrice(),
-                              dc, comp, freq,
-                              settlementDate());
-        return solver.solve(objective, accuracy, 0.02, 0.0, 1.0);
+        return yieldFromCleanPrice(*this, cleanPrice(), dc, comp, freq,
+                                   settlementDate(), accuracy, maxEvaluations);
     }
 
     Real Bond::cleanPrice(Rate yield,
@@ -268,10 +177,7 @@ namespace QuantLib {
                           Compounding comp,
                           Frequency freq,
                           Date settlement) const {
-        if (settlement == Date())
-            settlement = settlementDate();
-        return dirtyPrice(yield, dc, comp, freq, settlement)
-             - accruedAmount(settlement);
+        return cleanPriceFromYield(*this, yield, dc, comp, freq, settlement);
     }
 
     Real Bond::dirtyPrice(Rate yield,
@@ -279,11 +185,8 @@ namespace QuantLib {
                           Compounding comp,
                           Frequency freq,
                           Date settlement) const {
-        if (settlement == Date())
-            settlement = settlementDate();
-        return dirtyPriceFromYield(notional(settlement), cashflows_, yield,
-                                   dc, comp, freq,
-                                   settlement);
+        return cleanPriceFromYield(*this, yield, dc, comp, freq, settlement) +
+            accruedAmount(settlement);
     }
 
     Rate Bond::yield(Real cleanPrice,
@@ -293,18 +196,8 @@ namespace QuantLib {
                      Date settlement,
                      Real accuracy,
                      Size maxEvaluations) const {
-        if (settlement == Date())
-            settlement = settlementDate();
-
-        Real dirtyPrice = cleanPrice + accruedAmount(settlement);
-
-        Brent solver;
-        solver.setMaxEvaluations(maxEvaluations);
-        YieldFinder objective(notional(settlement), cashflows_,
-                              dirtyPrice,
-                              dc, comp, freq,
-                              settlement);
-        return solver.solve(objective, accuracy, 0.02, 0.0, 1.0);
+        return yieldFromCleanPrice(*this, cleanPrice, dc, comp, freq,
+                                   settlement, accuracy, maxEvaluations);
     }
 
     Real Bond::accruedAmount(Date settlement) const {
