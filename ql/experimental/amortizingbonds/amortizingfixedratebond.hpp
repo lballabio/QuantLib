@@ -58,15 +58,6 @@ namespace QuantLib {
                           const DayCounter& accrualDayCounter,
                           BusinessDayConvention paymentConvention = Following,
                           const Date& issueDate = Date());
-
-        Real IRR() const {
-            return yield(dayCounter_, Compounded, frequency_);
-        }
-
-        Real cleanPriceFromIRR(Real irr) const {
-            return cleanPrice(irr, dayCounter_, Compounded, frequency_);
-        }
-
         Frequency frequency() const { return frequency_; }
         const DayCounter& dayCounter() const { return dayCounter_; }
       protected:
