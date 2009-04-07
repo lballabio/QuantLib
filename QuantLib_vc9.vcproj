@@ -7537,6 +7537,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\bond\yield.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\bond\yield.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\bond\zspread.cpp"
 					>
 				</File>
