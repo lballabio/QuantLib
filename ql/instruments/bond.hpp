@@ -142,45 +142,9 @@ namespace QuantLib {
         /*! The default bond settlement date is used for calculation. */
         Real settlementValue() const;
 
-        //! theoretical bond yield
-        /*! The default bond settlement and theoretical price are used
-            for calculation.
-        */
-        Rate yield(const DayCounter& dc,
-                   Compounding comp,
-                   Frequency freq,
-                   Real accuracy = 1.0e-8,
-                   Size maxEvaluations = 100) const;
-
-        //! clean price given a yield and settlement date
-        /*! The default bond settlement is used if no date is given. */
-        Real cleanPrice(Rate yield,
-                        const DayCounter& dc,
-                        Compounding comp,
-                        Frequency freq,
-                        Date settlementDate = Date()) const;
-
-        //! dirty price given a yield and settlement date
-        /*! The default bond settlement is used if no date is given. */
-        Real dirtyPrice(Rate yield,
-                        const DayCounter& dc,
-                        Compounding comp,
-                        Frequency freq,
-                        Date settlementDate = Date()) const;
-
         //! settlement value as a function of the clean price
         /*! The default bond settlement date is used for calculation. */
         Real settlementValue(Real cleanPrice) const;
-
-        //! yield given a (clean) price and settlement date
-        /*! The default bond settlement is used if no date is given. */
-        Rate yield(Real cleanPrice,
-                   const DayCounter& dc,
-                   Compounding comp,
-                   Frequency freq,
-                   Date settlementDate = Date(),
-                   Real accuracy = 1.0e-8,
-                   Size maxEvaluations = 100) const;
 
         //! accrued amount at a given date
         /*! The default bond settlement is used if no date is given. */

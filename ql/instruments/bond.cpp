@@ -163,43 +163,6 @@ namespace QuantLib {
         return dirtyPrice/100.0 * notional(settlementDate());
     }
 
-    Rate Bond::yield(const DayCounter& dc,
-                     Compounding comp,
-                     Frequency freq,
-                     Real accuracy,
-                     Size maxEvaluations) const {
-        return yieldFromCleanPrice(*this, cleanPrice(), dc, comp, freq,
-                                   settlementDate(), accuracy, maxEvaluations);
-    }
-
-    Real Bond::cleanPrice(Rate yield,
-                          const DayCounter& dc,
-                          Compounding comp,
-                          Frequency freq,
-                          Date settlement) const {
-        return cleanPriceFromYield(*this, yield, dc, comp, freq, settlement);
-    }
-
-    Real Bond::dirtyPrice(Rate yield,
-                          const DayCounter& dc,
-                          Compounding comp,
-                          Frequency freq,
-                          Date settlement) const {
-        return cleanPriceFromYield(*this, yield, dc, comp, freq, settlement) +
-            accruedAmount(settlement);
-    }
-
-    Rate Bond::yield(Real cleanPrice,
-                     const DayCounter& dc,
-                     Compounding comp,
-                     Frequency freq,
-                     Date settlement,
-                     Real accuracy,
-                     Size maxEvaluations) const {
-        return yieldFromCleanPrice(*this, cleanPrice, dc, comp, freq,
-                                   settlement, accuracy, maxEvaluations);
-    }
-
     Real Bond::accruedAmount(Date settlement) const {
         if (settlement == Date())
             settlement = settlementDate();
