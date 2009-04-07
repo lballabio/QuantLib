@@ -943,10 +943,6 @@ void AssetSwapTest::testZSpread() {
          *fixedBond1, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          fixedBondSettlementDate1);
-    Real fixedBondDirtyPrice1 = dirtyPriceFromZSpread(
-         *fixedBond1, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual,
-         fixedBondSettlementDate1);
     Real tolerance = 1.0e-13;
     Real error1 = std::fabs(fixedBondImpliedValue1-fixedBondCleanPrice1);
     if (error1>tolerance) {
@@ -957,19 +953,6 @@ void AssetSwapTest::testZSpread() {
                     << "\n  par asset swap spread: " << fixedBondCleanPrice1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error1
-                    << "\n  tolerance:             " << tolerance);
-    }
-    Real fixedBondImpliedDirty1 =
-        fixedBondImpliedValue1+fixedBond1->accruedAmount();
-    Real error2 = std::fabs(fixedBondImpliedDirty1-fixedBondDirtyPrice1);
-    if (error2>tolerance) {
-        BOOST_ERROR("wrong dirty price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: " <<
-                    fixedBondImpliedDirty1
-                    << "\n  par asset swap spread: " << fixedBondDirtyPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error2
                     << "\n  tolerance:             " << tolerance);
     }
 
@@ -997,10 +980,6 @@ void AssetSwapTest::testZSpread() {
          *fixedBond2, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          fixedBondSettlementDate2);
-    Real fixedBondDirtyPrice2 = dirtyPriceFromZSpread(
-         *fixedBond2, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual, //FIXME ??
-         fixedBondSettlementDate2);
     Real error3 = std::fabs(fixedBondImpliedValue2-fixedBondCleanPrice2);
     if (error3>tolerance) {
         BOOST_ERROR("wrong clean price for fixed bond:"
@@ -1010,19 +989,6 @@ void AssetSwapTest::testZSpread() {
                     << "\n  par asset swap spread: " << fixedBondCleanPrice2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error3
-                    << "\n  tolerance:             " << tolerance);
-    }
-    Real fixedBondImpliedDirty2 =
-        fixedBondImpliedValue2+fixedBond2->accruedAmount();
-    Real error4 = std::fabs(fixedBondImpliedDirty2-fixedBondDirtyPrice2);
-    if (error4>tolerance) {
-        BOOST_ERROR("wrong dirty price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: " <<
-                    fixedBondImpliedDirty2
-                    << "\n  par asset swap spread: " << fixedBondDirtyPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error4
                     << "\n  tolerance:             " << tolerance);
     }
 
@@ -1057,10 +1023,6 @@ void AssetSwapTest::testZSpread() {
         *floatingBond1, *vars.termStructure, vars.spread,
         Actual365Fixed(), vars.compounding, Semiannual,
         fixedBondSettlementDate1);
-    Real floatingBondDirtyPrice1 = dirtyPriceFromZSpread(
-        *floatingBond1, *vars.termStructure, vars.spread,
-        Actual365Fixed(), vars.compounding, Semiannual,
-        floatingBondSettlementDate1);
     Real error5 = std::fabs(floatingBondImpliedValue1-floatingBondCleanPrice1);
     if (error5>tolerance) {
         BOOST_ERROR("wrong clean price for fixed bond:"
@@ -1070,19 +1032,6 @@ void AssetSwapTest::testZSpread() {
                     << "\n  par asset swap spread: " << floatingBondCleanPrice1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error5
-                    << "\n  tolerance:             " << tolerance);
-    }
-    Real floatingBondImpliedDirty1 = floatingBondImpliedValue1+
-                                     floatingBond1->accruedAmount();
-    Real error6 = std::fabs(floatingBondImpliedDirty1-floatingBondDirtyPrice1);
-    if (error6>tolerance) {
-        BOOST_ERROR("wrong dirty price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: " <<
-                    floatingBondImpliedDirty1
-                    << "\n  par asset swap spread: " << floatingBondDirtyPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error6
                     << "\n  tolerance:             " << tolerance);
     }
 
@@ -1116,10 +1065,6 @@ void AssetSwapTest::testZSpread() {
         *floatingBond2, *vars.termStructure,
         vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
         fixedBondSettlementDate1);
-    Real floatingBondDirtyPrice2 = dirtyPriceFromZSpread(
-        *floatingBond2, *vars.termStructure, 
-        vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
-        floatingBondSettlementDate2);
     Real error7 = std::fabs(floatingBondImpliedValue2-floatingBondCleanPrice2);
     if (error7>tolerance) {
         BOOST_ERROR("wrong clean price for fixed bond:"
@@ -1131,20 +1076,6 @@ void AssetSwapTest::testZSpread() {
                     << "\n  error:                 " << error7
                     << "\n  tolerance:             " << tolerance);
     }
-    Real floatingBondImpliedDirty2 = floatingBondImpliedValue2+
-                                     floatingBond2->accruedAmount();
-    Real error8 = std::fabs(floatingBondImpliedDirty2-floatingBondDirtyPrice2);
-    if (error8>tolerance) {
-        BOOST_ERROR("wrong dirty price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: " <<
-                    floatingBondImpliedDirty2
-                    << "\n  par asset swap spread: " << floatingBondDirtyPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error8
-                    << "\n  tolerance:             " << tolerance);
-    }
-
 
     //// CMS bond (Isin: XS0228052402 CRDIT 0 8/22/20)
     //// maturity doesn't occur on a business day
@@ -1175,10 +1106,6 @@ void AssetSwapTest::testZSpread() {
         *cmsBond1, *vars.termStructure, vars.spread,
         Actual365Fixed(), vars.compounding, Annual,
         cmsBondSettlementDate1);
-    Real cmsBondDirtyPrice1 = dirtyPriceFromZSpread(
-        *cmsBond1, *vars.termStructure, vars.spread,
-        Actual365Fixed(), vars.compounding, Annual,
-        fixedBondSettlementDate1);
     Real error9 = std::fabs(cmsBondImpliedValue1-cmsBondCleanPrice1);
     if (error9>tolerance) {
         BOOST_ERROR("wrong clean price for fixed bond:"
@@ -1189,20 +1116,9 @@ void AssetSwapTest::testZSpread() {
                     << "\n  error:                 " << error9
                     << "\n  tolerance:             " << tolerance);
     }
-    Real cmsBondImpliedDirty1 = cmsBondImpliedValue1+cmsBond1->accruedAmount();
-    Real error10 = std::fabs(cmsBondImpliedDirty1-cmsBondDirtyPrice1);
-    if (error10>tolerance) {
-        BOOST_ERROR("wrong dirty price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: " << cmsBondImpliedDirty1
-                    << "\n  par asset swap spread: " << cmsBondDirtyPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error10
-                    << "\n  tolerance:             " << tolerance);
-    }
 
-     // CMS bond (Isin: XS0218766664 ISPIM 0 5/6/15)
-     // maturity occurs on a business day
+    // CMS bond (Isin: XS0218766664 ISPIM 0 5/6/15)
+    // maturity occurs on a business day
 
     Schedule cmsBondSchedule2(Date(06,May,2005),
                               Date(06,May,2015),
@@ -1230,10 +1146,6 @@ void AssetSwapTest::testZSpread() {
          *cmsBond2, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          cmsBondSettlementDate2);
-    Real cmsBondDirtyPrice2 = dirtyPriceFromZSpread(
-         *cmsBond2, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual,
-         fixedBondSettlementDate2);
     Real error11 = std::fabs(cmsBondImpliedValue2-cmsBondCleanPrice2);
     if (error11>tolerance) {
         BOOST_ERROR("wrong clean price for fixed bond:"
@@ -1242,17 +1154,6 @@ void AssetSwapTest::testZSpread() {
                     << "\n  par asset swap spread: " << cmsBondCleanPrice2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error11
-                    << "\n  tolerance:             " << tolerance);
-    }
-    Real cmsBondImpliedDirty2 = cmsBondImpliedValue2+cmsBond2->accruedAmount();
-    Real error12 = std::fabs(cmsBondImpliedDirty2-cmsBondDirtyPrice2);
-    if (error12>tolerance) {
-        BOOST_ERROR("wrong dirty price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: " << cmsBondImpliedDirty2
-                    << "\n  par asset swap spread: " << cmsBondDirtyPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error12
                     << "\n  tolerance:             " << tolerance);
     }
 
@@ -1278,13 +1179,6 @@ void AssetSwapTest::testZSpread() {
                               Actual365Fixed(),
                               vars.compounding, Annual,
                               zeroCpnBondSettlementDate1);
-    Real zeroCpnBondDirtyPrice1 =
-        dirtyPriceFromZSpread(*zeroCpnBond1,
-                              *vars.termStructure,
-                              vars.spread,
-                              Actual365Fixed(),
-                              vars.compounding, Annual,
-                              zeroCpnBondSettlementDate1);
     Real error13 = std::fabs(zeroCpnBondImpliedValue1-zeroCpnBondCleanPrice1);
     if (error13>tolerance) {
         BOOST_ERROR("wrong clean price for zero coupon bond:"
@@ -1296,19 +1190,7 @@ void AssetSwapTest::testZSpread() {
                     << "\n  error:                 " << error13
                     << "\n  tolerance:             " << tolerance);
     }
-    Real zeroCpnBondImpliedDirty1 = zeroCpnBondImpliedValue1+
-                                    zeroCpnBond1->accruedAmount();
-    Real error14 = std::fabs(zeroCpnBondImpliedDirty1-zeroCpnBondDirtyPrice1);
-    if (error14>tolerance) {
-        BOOST_ERROR("wrong dirty price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  bond's implied dirty price: " <<
-                    zeroCpnBondImpliedDirty1
-                    << "\n  bond's full price: " << zeroCpnBondDirtyPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error14
-                    << "\n  tolerance:             " << tolerance);
-    }
+
     // Zero Coupon bond (Isin: IT0001200390 ISPIM 0 02/17/28)
     // maturity doesn't occur on a business day
 
@@ -1331,13 +1213,6 @@ void AssetSwapTest::testZSpread() {
                               Actual365Fixed(),
                               vars.compounding, Annual,
                               zeroCpnBondSettlementDate2);
-    Real zeroCpnBondDirtyPrice2 =
-        dirtyPriceFromZSpread(*zeroCpnBond2,
-                              *vars.termStructure,
-                              vars.spread,
-                              Actual365Fixed(),
-                              vars.compounding, Annual,
-                              zeroCpnBondSettlementDate2);
     Real error15 = std::fabs(zeroCpnBondImpliedValue2-zeroCpnBondCleanPrice2);
     if (error15>tolerance) {
         BOOST_ERROR("wrong clean price for zero coupon bond:"
@@ -1347,19 +1222,6 @@ void AssetSwapTest::testZSpread() {
                     << "\n  zero cpn price: " << zeroCpnBondCleanPrice2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error15
-                    << "\n  tolerance:             " << tolerance);
-    }
-    Real zeroCpnBondImpliedDirty2 = zeroCpnBondImpliedValue2+
-                                    zeroCpnBond2->accruedAmount();
-    Real error16 = std::fabs(zeroCpnBondImpliedDirty2-zeroCpnBondDirtyPrice2);
-    if (error16>tolerance) {
-        BOOST_ERROR("wrong dirty price for zero coupon bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  bond's implied dirty price: " <<
-                    zeroCpnBondImpliedDirty2
-                    << "\n  bond's full price: " << zeroCpnBondDirtyPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error16
                     << "\n  tolerance:             " << tolerance);
     }
 }
@@ -2267,10 +2129,6 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
          *fixedBond1, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          fixedBondSettlementDate1);
-    Real fixedBondDirtyPrice1 = dirtyPriceFromZSpread(
-         *fixedBond1, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual,
-         fixedBondSettlementDate1);
     Real tolerance = 1.0e-13;
     Real error1 = std::fabs(fixedBondImpliedValue1-fixedBondCleanPrice1);
     if (error1>tolerance) {
@@ -2281,19 +2139,6 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                     << "\n  par asset swap spread: " << fixedBondCleanPrice1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error1
-                    << "\n  tolerance:             " << tolerance);
-    }
-    Real fixedBondImpliedDirty1 =
-        fixedBondImpliedValue1+fixedBond1->accruedAmount();
-    Real error2 = std::fabs(fixedBondImpliedDirty1-fixedBondDirtyPrice1);
-    if (error2>tolerance) {
-        BOOST_ERROR("wrong dirty price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: "
-                    << fixedBondImpliedDirty1
-                    << "\n  par asset swap spread: " << fixedBondDirtyPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error2
                     << "\n  tolerance:             " << tolerance);
     }
 
@@ -2329,10 +2174,6 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
          *fixedBond2, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          fixedBondSettlementDate2);
-    Real fixedBondDirtyPrice2 = dirtyPriceFromZSpread(
-         *fixedBond2, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual, //FIXME ??
-         fixedBondSettlementDate2);
     Real error3 = std::fabs(fixedBondImpliedValue2-fixedBondCleanPrice2);
     if (error3>tolerance) {
         BOOST_ERROR("wrong clean price for fixed bond:"
@@ -2342,19 +2183,6 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                     << "\n  par asset swap spread: " << fixedBondCleanPrice2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error3
-                    << "\n  tolerance:             " << tolerance);
-    }
-    Real fixedBondImpliedDirty2 =
-        fixedBondImpliedValue2+fixedBond2->accruedAmount();
-    Real error4 = std::fabs(fixedBondImpliedDirty2-fixedBondDirtyPrice2);
-    if (error4>tolerance) {
-        BOOST_ERROR("wrong dirty price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: "
-                    << fixedBondImpliedDirty2
-                    << "\n  par asset swap spread: " << fixedBondDirtyPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error4
                     << "\n  tolerance:             " << tolerance);
     }
 
@@ -2394,10 +2222,6 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
         *floatingBond1, *vars.termStructure, 
         vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
         fixedBondSettlementDate1);
-    Real floatingBondDirtyPrice1 = dirtyPriceFromZSpread(
-        *floatingBond1, *vars.termStructure, 
-        vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
-        floatingBondSettlementDate1);
     Real error5 = std::fabs(floatingBondImpliedValue1-floatingBondCleanPrice1);
     if (error5>tolerance) {
         BOOST_ERROR("wrong clean price for fixed bond:"
@@ -2407,19 +2231,6 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                     << "\n  par asset swap spread: " << floatingBondCleanPrice1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error5
-                    << "\n  tolerance:             " << tolerance);
-    }
-    Real floatingBondImpliedDirty1 = floatingBondImpliedValue1+
-                                     floatingBond1->accruedAmount();
-    Real error6 = std::fabs(floatingBondImpliedDirty1-floatingBondDirtyPrice1);
-    if (error6>tolerance) {
-        BOOST_ERROR("wrong dirty price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: " <<
-                    floatingBondImpliedDirty1
-                    << "\n  par asset swap spread: " << floatingBondDirtyPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error6
                     << "\n  tolerance:             " << tolerance);
     }
 
@@ -2460,10 +2271,6 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
         *floatingBond2, *vars.termStructure, 
         vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
         fixedBondSettlementDate1);
-    Real floatingBondDirtyPrice2 = dirtyPriceFromZSpread(
-        *floatingBond2, *vars.termStructure, 
-        vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
-        floatingBondSettlementDate2);
     Real error7 = std::fabs(floatingBondImpliedValue2-floatingBondCleanPrice2);
     if (error7>tolerance) {
         BOOST_ERROR("wrong clean price for fixed bond:"
@@ -2475,20 +2282,6 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                     << "\n  error:                 " << error7
                     << "\n  tolerance:             " << tolerance);
     }
-    Real floatingBondImpliedDirty2 = floatingBondImpliedValue2+
-                                     floatingBond2->accruedAmount();
-    Real error8 = std::fabs(floatingBondImpliedDirty2-floatingBondDirtyPrice2);
-    if (error8>tolerance) {
-        BOOST_ERROR("wrong dirty price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: " <<
-                    floatingBondImpliedDirty2
-                    << "\n  par asset swap spread: " << floatingBondDirtyPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error8
-                    << "\n  tolerance:             " << tolerance);
-    }
-
 
     // CMS Underlying bond (Isin: XS0228052402 CRDIT 0 8/22/20)
     // maturity doesn't occur on a business day
@@ -2526,10 +2319,6 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
          *cmsBond1, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          cmsBondSettlementDate1);
-    Real cmsBondDirtyPrice1 = dirtyPriceFromZSpread(
-         *cmsBond1, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual,
-         fixedBondSettlementDate1);
     Real error9 = std::fabs(cmsBondImpliedValue1-cmsBondCleanPrice1);
     if (error9>tolerance) {
         BOOST_ERROR("wrong clean price for fixed bond:"
@@ -2538,17 +2327,6 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                     << "\n  par asset swap spread: " << cmsBondCleanPrice1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error9
-                    << "\n  tolerance:             " << tolerance);
-    }
-    Real cmsBondImpliedDirty1 = cmsBondImpliedValue1+cmsBond1->accruedAmount();
-    Real error10 = std::fabs(cmsBondImpliedDirty1-cmsBondDirtyPrice1);
-    if (error10>tolerance) {
-        BOOST_ERROR("wrong dirty price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: " << cmsBondImpliedDirty1
-                    << "\n  par asset swap spread: " << cmsBondDirtyPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error10
                     << "\n  tolerance:             " << tolerance);
     }
 
@@ -2587,10 +2365,6 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
          *cmsBond2, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          cmsBondSettlementDate2);
-    Real cmsBondDirtyPrice2 = dirtyPriceFromZSpread(
-         *cmsBond2, *vars.termStructure, vars.spread,
-         Actual365Fixed(), vars.compounding, Annual,
-         fixedBondSettlementDate2);
     Real error11 = std::fabs(cmsBondImpliedValue2-cmsBondCleanPrice2);
     if (error11>tolerance) {
         BOOST_ERROR("wrong clean price for fixed bond:"
@@ -2599,17 +2373,6 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                     << "\n  par asset swap spread: " << cmsBondCleanPrice2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error11
-                    << "\n  tolerance:             " << tolerance);
-    }
-    Real cmsBondImpliedDirty2 = cmsBondImpliedValue2+cmsBond2->accruedAmount();
-    Real error12 = std::fabs(cmsBondImpliedDirty2-cmsBondDirtyPrice2);
-    if (error12>tolerance) {
-        BOOST_ERROR("wrong dirty price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  market asset swap spread: " << cmsBondImpliedDirty2
-                    << "\n  par asset swap spread: " << cmsBondDirtyPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error12
                     << "\n  tolerance:             " << tolerance);
     }
 
@@ -2638,13 +2401,6 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                               Actual365Fixed(),
                               vars.compounding, Annual,
                               zeroCpnBondSettlementDate1);
-    Real zeroCpnBondDirtyPrice1 =
-        dirtyPriceFromZSpread(*zeroCpnBond1,
-                              *vars.termStructure,
-                              vars.spread,
-                              Actual365Fixed(),
-                              vars.compounding, Annual,
-                              zeroCpnBondSettlementDate1);
     Real error13 = std::fabs(zeroCpnBondImpliedValue1-zeroCpnBondCleanPrice1);
     if (error13>tolerance) {
         BOOST_ERROR("wrong clean price for zero coupon bond:"
@@ -2654,19 +2410,6 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                     << "\n  zero cpn price: " << zeroCpnBondCleanPrice1
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error13
-                    << "\n  tolerance:             " << tolerance);
-    }
-    Real zeroCpnBondImpliedDirty1 = zeroCpnBondImpliedValue1+
-                                    zeroCpnBond1->accruedAmount();
-    Real error14 = std::fabs(zeroCpnBondImpliedDirty1-zeroCpnBondDirtyPrice1);
-    if (error14>tolerance) {
-        BOOST_ERROR("wrong dirty price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  bond's implied dirty price: " <<
-                    zeroCpnBondImpliedDirty1
-                    << "\n  bond's full price: " << zeroCpnBondDirtyPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error14
                     << "\n  tolerance:             " << tolerance);
     }
 
@@ -2695,13 +2438,6 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                               Actual365Fixed(),
                               vars.compounding, Annual,
                               zeroCpnBondSettlementDate2);
-    Real zeroCpnBondDirtyPrice2 =
-        dirtyPriceFromZSpread(*zeroCpnBond2,
-                              *vars.termStructure,
-                              vars.spread,
-                              Actual365Fixed(),
-                              vars.compounding, Annual,
-                              zeroCpnBondSettlementDate2);
     Real error15 = std::fabs(zeroCpnBondImpliedValue2-zeroCpnBondCleanPrice2);
     if (error15>tolerance) {
         BOOST_ERROR("wrong clean price for zero coupon bond:"
@@ -2711,19 +2447,6 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                     << "\n  zero cpn price: " << zeroCpnBondCleanPrice2
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error15
-                    << "\n  tolerance:             " << tolerance);
-    }
-    Real zeroCpnBondImpliedDirty2 = zeroCpnBondImpliedValue2+
-                                    zeroCpnBond2->accruedAmount();
-    Real error16 = std::fabs(zeroCpnBondImpliedDirty2-zeroCpnBondDirtyPrice2);
-    if (error16>tolerance) {
-        BOOST_ERROR("wrong dirty price for zero coupon bond:"
-                    << QL_FIXED << std::setprecision(4)
-                    << "\n  bond's implied dirty price: " <<
-                    zeroCpnBondImpliedDirty2
-                    << "\n  bond's full price: " << zeroCpnBondDirtyPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error16
                     << "\n  tolerance:             " << tolerance);
     }
 }

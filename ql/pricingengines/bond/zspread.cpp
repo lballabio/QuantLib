@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2007 Chiara Fornarola
- Copyright (C) 2007, 2008 Ferdinando Ametrano
+ Copyright (C) 2007, 2008, 2009 Ferdinando Ametrano
  Copyright (C) 2009 StatPro Italia srl
  Copyright (C) 2009 Nathan Abbott
 
@@ -26,58 +26,22 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 
+using boost::shared_ptr;
+
 namespace QuantLib {
 
-    Real cleanPriceFromZSpread(
-                   const Bond& bond,
-                   const boost::shared_ptr<YieldTermStructure>& discountCurve,
-                   Spread zSpread,
-                   const DayCounter& dayCounter,
-                   Compounding compounding,
-                   Frequency frequency,
-                   Date settlementDate) {
-        Real dirtyPrice = dirtyPriceFromZSpread(bond, discountCurve,
-                                                zSpread, dayCounter,
-                                                compounding, frequency,
-                                                settlementDate);
-        return dirtyPrice - bond.accruedAmount(settlementDate);
-    }
-
-    Real dirtyPriceFromZSpread(
-                   const Bond& bond,
-                   const boost::shared_ptr<YieldTermStructure>& discountCurve,
-                   Spread zSpread,
-                   const DayCounter& dayCounter,
-                   Compounding compounding,
-                   Frequency frequency,
-                   Date settlementDate) {
-
-        if (settlementDate == Date())
-            settlementDate = bond.settlementDate();
-
-        QL_REQUIRE(frequency != NoFrequency && frequency != Once,
-                   "invalid frequency:" << frequency);
-
-        Handle<YieldTermStructure> discountCurveHandle(discountCurve);
-        Handle<Quote> zSpreadQuoteHandle(
-                          boost::shared_ptr<Quote>(new SimpleQuote(zSpread)));
-
-        ZeroSpreadedTermStructure spreadedCurve(discountCurveHandle,
-                                                zSpreadQuoteHandle,
-                                                compounding,
-                                                frequency,
-                                                dayCounter);
-
-        Real NPV = CashFlows::npv(bond.cashflows(),
-                                  spreadedCurve,
-                                  settlementDate,
-                                  settlementDate);
-
-        return NPV * 100.0 / bond.notional(settlementDate);
-    }
-
-
     namespace {
+
+        Real dirtyPriceF(const Bond& bond,
+                         const YieldTermStructure& discCurve,
+                         Date settlementDate) {
+            Real NPV = CashFlows::npv(bond.cashflows(),
+                                      discCurve,
+                                      settlementDate,
+                                      settlementDate);
+
+            return NPV * 100.0 / bond.notional(settlementDate);
+        }
 
         class ZSpreadFinder {
           public:
@@ -85,35 +49,28 @@ namespace QuantLib {
                    const Bond& bond,
                    const boost::shared_ptr<YieldTermStructure>& discountCurve,
                    Real dirtyPrice,
-                   const DayCounter& dayCounter,
-                   Compounding compounding,
-                   Frequency frequency,
+                   const DayCounter& dc,
+                   Compounding comp,
+                   Frequency freq,
                    const Date& settlementDate)
-            : bond_(bond), discountCurve_(discountCurve),
-              dirtyPrice_(dirtyPrice), dayCounter_(dayCounter),
-              compounding_(compounding), frequency_(frequency),
+            : bond_(bond), zSpread_(new SimpleQuote(0.0)),
+              curve_(Handle<YieldTermStructure>(discountCurve),
+                     Handle<Quote>(zSpread_), comp, freq, dc),
+              dirtyPrice_(dirtyPrice),
               settlementDate_(settlementDate) {}
             Real operator()(Real zSpread) const {
-                return dirtyPrice_ - dirtyPriceFromZSpread(bond_,
-                                                           discountCurve_,
-                                                           zSpread,
-                                                           dayCounter_,
-                                                           compounding_,
-                                                           frequency_,
-                                                           settlementDate_);
+                zSpread_->setValue(zSpread);
+                return dirtyPrice_ - dirtyPriceF(bond_, curve_, settlementDate_);
             }
           private:
             const Bond& bond_;
-            boost::shared_ptr<YieldTermStructure> discountCurve_;
+            shared_ptr<SimpleQuote> zSpread_;
+            ZeroSpreadedTermStructure curve_;
             Real dirtyPrice_;
-            DayCounter dayCounter_;
-            Compounding compounding_;
-            Frequency frequency_;
             Date settlementDate_;
         };
 
     }
-
 
     Spread zSpreadFromCleanPrice(
                    const Bond& bond,
@@ -122,36 +79,55 @@ namespace QuantLib {
                    const DayCounter& dayCounter,
                    Compounding compounding,
                    Frequency frequency,
-                   Date settlementDate,
+                   Date settlement,
                    Real accuracy,
                    Size maxEvaluations) {
+        if (settlement == Date())
+            settlement = bond.settlementDate();
 
-        Real dirtyPrice = cleanPrice + bond.accruedAmount(settlementDate);
-        return zSpreadFromDirtyPrice(bond, discountCurve, dirtyPrice,
-                                     dayCounter, compounding,
-                                     frequency, settlementDate,
-                                     accuracy, maxEvaluations);
-    }
+        QL_REQUIRE(frequency != NoFrequency && frequency != Once,
+                   "invalid frequency:" << frequency);
 
+        Real dirtyPrice = cleanPrice + bond.accruedAmount(settlement);
 
-    Spread zSpreadFromDirtyPrice(
-                   const Bond& bond,
-                   const boost::shared_ptr<YieldTermStructure>& discountCurve,
-                   Real dirtyPrice,
-                   const DayCounter& dayCounter,
-                   Compounding compounding,
-                   Frequency frequency,
-                   Date settlementDate,
-                   Real accuracy,
-                   Size maxEvaluations) {
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
-
-        ZSpreadFinder objective(bond, discountCurve, dirtyPrice,
-                                dayCounter, compounding,
-                                frequency, settlementDate);
+        ZSpreadFinder objective(bond,
+                                discountCurve,
+                                dirtyPrice,
+                                dayCounter, compounding, frequency,
+                                settlement);
         return solver.solve(objective, accuracy, 0.0, 0.001);
     }
 
-}
+    Real cleanPriceFromZSpread(
+                   const Bond& bond,
+                   const boost::shared_ptr<YieldTermStructure>& discountCurve,
+                   Spread zSpread,
+                   const DayCounter& dc,
+                   Compounding comp,
+                   Frequency freq,
+                   Date settlementDate) {
+        if (settlementDate == Date())
+            settlementDate = bond.settlementDate();
 
+        QL_REQUIRE(freq != NoFrequency && freq != Once,
+                   "invalid frequency: " << freq);
+
+        Handle<YieldTermStructure> discountCurveHandle(discountCurve);
+        Handle<Quote> zSpreadQuoteHandle(shared_ptr<Quote>(new
+            SimpleQuote(zSpread)));
+
+        ZeroSpreadedTermStructure spreadedCurve(discountCurveHandle,
+                                                zSpreadQuoteHandle,
+                                                comp,
+                                                freq,
+                                                dc);
+
+        Real dirtyPrice = dirtyPriceF(bond,
+                                      spreadedCurve,
+                                      settlementDate);
+        return dirtyPrice - bond.accruedAmount(settlementDate);
+    }
+
+}

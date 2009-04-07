@@ -47,42 +47,12 @@ namespace QuantLib {
                    Frequency frequency,
                    Date settlementDate = Date());
 
-    //! dirty bond price given a discount curve and a Z-spread
-    /*! Z-spread compounding, frequency, daycount are taken into account
-        The default bond settlement is used if no date is given.
-        For details on Z-spread refer to:
-        "Credit Spreads Explained", Lehman Brothers European Fixed
-        Income Research - March 2004, D. O'Kane
-    */
-    Real dirtyPriceFromZSpread(
-                   const Bond& bond,
-                   const boost::shared_ptr<YieldTermStructure>& discountCurve,
-                   Spread zSpread,
-                   const DayCounter& dayCounter,
-                   Compounding compounding,
-                   Frequency frequency,
-                   Date settlementDate = Date());
-
-
     //! Z-spread given a discount curve and a clean price
     /*! The default bond settlement is used if no date is given. */
     Spread zSpreadFromCleanPrice(
                    const Bond& bond,
                    const boost::shared_ptr<YieldTermStructure>& discountCurve,
                    Real cleanPrice,
-                   const DayCounter& dayCounter,
-                   Compounding compounding,
-                   Frequency frequency,
-                   Date settlementDate = Date(),
-                   Real accuracy = 1.0e-8,
-                   Size maxEvaluations = 100);
-
-    //! Z-spread given a discount curve and a dirty price
-    /*! The default bond settlement is used if no date is given. */
-    Spread zSpreadFromDirtyPrice(
-                   const Bond& bond,
-                   const boost::shared_ptr<YieldTermStructure>& discountCurve,
-                   Real dirtyPrice,
                    const DayCounter& dayCounter,
                    Compounding compounding,
                    Frequency frequency,
