@@ -25,9 +25,16 @@
 #ifndef quantlib_yield_hpp
 #define quantlib_yield_hpp
 
-#include <ql/instruments/bond.hpp>
+#include <ql/types.hpp>
+#include <ql/compounding.hpp>
+#include <ql/time/frequency.hpp>
+#include <ql/time/date.hpp>
 
 namespace QuantLib {
+
+    // forward declarations
+    class Bond;
+    class DayCounter;
 
     //! clean bond price given a yield
     /*! Yield compounding, frequency, daycount are taken into account

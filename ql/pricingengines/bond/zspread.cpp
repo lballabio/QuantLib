@@ -20,10 +20,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/bond/zspread.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
-#include <ql/cashflows/cashflows.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/pricingengines/bond/zspread.hpp>
+#include <ql/instruments/bond.hpp>
+#include <ql/cashflows/cashflows.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 
 using boost::shared_ptr;
@@ -47,7 +48,7 @@ namespace QuantLib {
           public:
             ZSpreadFinder(
                    const Bond& bond,
-                   const boost::shared_ptr<YieldTermStructure>& discountCurve,
+                   const shared_ptr<YieldTermStructure>& discountCurve,
                    Real dirtyPrice,
                    const DayCounter& dc,
                    Compounding comp,
@@ -70,11 +71,11 @@ namespace QuantLib {
             Date settlementDate_;
         };
 
-    }
+    } // anonymous namespace ends here
 
     Spread zSpreadFromCleanPrice(
                    const Bond& bond,
-                   const boost::shared_ptr<YieldTermStructure>& discountCurve,
+                   const shared_ptr<YieldTermStructure>& discountCurve,
                    Real cleanPrice,
                    const DayCounter& dayCounter,
                    Compounding compounding,
@@ -96,12 +97,14 @@ namespace QuantLib {
                                 discountCurve, dirtyPrice,
                                 dayCounter, compounding, frequency,
                                 settlement);
-        return solver.solve(objective, accuracy, 0.0, 0.001);
+        Real guess = 0.0;
+        Real step = 0.001;
+        return solver.solve(objective, accuracy, guess, step);
     }
 
     Real cleanPriceFromZSpread(
                    const Bond& bond,
-                   const boost::shared_ptr<YieldTermStructure>& discountCurve,
+                   const shared_ptr<YieldTermStructure>& discountCurve,
                    Spread zSpread,
                    const DayCounter& dc,
                    Compounding comp,

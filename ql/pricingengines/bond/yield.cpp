@@ -23,6 +23,7 @@
 */
 
 #include <ql/pricingengines/bond/yield.hpp>
+#include <ql/instruments/bond.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 
@@ -38,8 +39,6 @@ namespace QuantLib {
                                  Compounding compounding,
                                  Frequency frequency,
                                  const Date& settlement) {
-            if (frequency == NoFrequency || frequency == Once)
-                frequency = Annual;
 
             InterestRate y(yield, dayCounter, compounding, frequency);
 
@@ -59,7 +58,7 @@ namespace QuantLib {
                     if (i > 0) {
                         lastDate = cashflows[i-1]->date();
                     } else {
-                        boost::shared_ptr<Coupon> coupon =
+                        shared_ptr<Coupon> coupon =
                             boost::dynamic_pointer_cast<Coupon>(cashflows[i]);
                         if (coupon)
                             lastDate = coupon->accrualStartDate();
@@ -134,7 +133,10 @@ namespace QuantLib {
                               dirtyPrice,
                               dc, comp, freq,
                               settlement);
-        return solver.solve(objective, accuracy, 0.02, 0.0, 1.0);
+        Real guess = 0.02;
+        Rate yieldMin = 0.0;
+        Rate yieldMax = 1.0;
+        return solver.solve(objective, accuracy, guess, yieldMin, yieldMax);
     }
 
     Real cleanPriceFromYield(const Bond& bond,
@@ -142,17 +144,17 @@ namespace QuantLib {
                              const DayCounter& dc,
                              Compounding comp,
                              Frequency freq,
-                             Date settlement) {
-        if (settlement == Date())
-            settlement = bond.settlementDate();
+                             Date settlementDate) {
+        if (settlementDate == Date())
+            settlementDate = bond.settlementDate();
 
         QL_REQUIRE(freq != NoFrequency && freq != Once,
                    "invalid frequency: " << freq);
 
         Real dirtyPrice = dirtyPriceFromYield(bond,
                                               yield, dc, comp, freq,
-                                              settlement);
-        return dirtyPrice - bond.accruedAmount(settlement);
+                                              settlementDate);
+        return dirtyPrice - bond.accruedAmount(settlementDate);
     }
 
 }

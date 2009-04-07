@@ -27,14 +27,21 @@
 #ifndef quantlib_z_spread_hpp
 #define quantlib_z_spread_hpp
 
-#include <ql/instruments/bond.hpp>
+#include <ql/types.hpp>
+#include <ql/compounding.hpp>
+#include <ql/time/frequency.hpp>
+#include <ql/time/date.hpp>
 
 namespace QuantLib {
 
-    //! clean bond price given a discount curve and a Z-spread
+    // forward declarations
+    class Bond;
+    class DayCounter;
+
+    //! clean bond price given a discount curve and a z-spread
     /*! Z-spread compounding, frequency, daycount are taken into account
         The default bond settlement is used if no date is given.
-        For details on Z-spread refer to:
+        For details on z-spread refer to:
         "Credit Spreads Explained", Lehman Brothers European Fixed
         Income Research - March 2004, D. O'Kane
     */
