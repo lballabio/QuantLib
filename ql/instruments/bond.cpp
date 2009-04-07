@@ -73,7 +73,7 @@ namespace QuantLib {
                         else
                             lastDate = couponDate - 1*Years;
                     }
-                    discount *= y.discountFactor(settlement,couponDate,
+                    discount *= y.discountFactor(settlement, couponDate,
                                                  lastDate, couponDate);
                 } else  {
                     discount *= y.discountFactor(lastDate, couponDate);
@@ -249,7 +249,6 @@ namespace QuantLib {
         return dirtyPrice/100.0 * notional(settlementDate());
     }
 
-
     Rate Bond::yield(const DayCounter& dc,
                      Compounding comp,
                      Frequency freq,
@@ -296,17 +295,20 @@ namespace QuantLib {
                      Size maxEvaluations) const {
         if (settlement == Date())
             settlement = settlementDate();
+
+        Real dirtyPrice = cleanPrice + accruedAmount(settlement);
+
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
-        Real dirtyPrice = cleanPrice + accruedAmount(settlement);
-        YieldFinder objective(notional(settlement), cashflows_, dirtyPrice,
+        YieldFinder objective(notional(settlement), cashflows_,
+                              dirtyPrice,
                               dc, comp, freq,
                               settlement);
         return solver.solve(objective, accuracy, 0.02, 0.0, 1.0);
     }
 
     Real Bond::accruedAmount(Date settlement) const {
-        if (settlement==Date())
+        if (settlement == Date())
             settlement = settlementDate();
 
         Leg::const_iterator cf =
