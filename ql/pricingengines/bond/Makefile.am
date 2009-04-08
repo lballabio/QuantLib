@@ -5,10 +5,12 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     discountingbondengine.hpp \
+    yield.hpp \
     zspread.hpp
 
 libBondEngines_la_SOURCES = \
     discountingbondengine.cpp \
+    yield.cpp \
     zspread.cpp
 
 noinst_LTLIBRARIES = libBondEngines.la
