@@ -174,7 +174,6 @@ namespace QuantLib {
 
         Date nextCouponDate(Date d = Date()) const;
         Date previousCouponDate(Date d = Date()) const;
-        //@}
 
       protected:
         void setupExpired() const;
