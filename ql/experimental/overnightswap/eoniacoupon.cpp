@@ -48,7 +48,7 @@ namespace QuantLib {
                 QL_REQUIRE (fixingDates.size() > 0, "fixing date list empty");
                 QL_REQUIRE (index->valueDate(fixingDates.back()) >= endDate,
                             "last fixing date valid before period end");
-                
+
                 Rate comp = 1.0;
                 Integer days = 0;
                 for (Size i=0; i<fixingDates.size() - 1; ++i) {
@@ -63,7 +63,7 @@ namespace QuantLib {
 
                     d2 = std::min(nextValueDate, endDate);
                     /*
-                    comp *= (1.0 
+                    comp *= (1.0
                              + (index->fixing(fixingDates[i])+coupon_->spread())
                              * dc.yearFraction(d1, d2));
                     */
@@ -118,9 +118,13 @@ namespace QuantLib {
       : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                            index->fixingDays(), index, gearing, spread,
                            refPeriodStart, refPeriodEnd, dayCounter, false),
-        fixingSchedule_(MakeSchedule(startDate, endDate, 1*Days,
-                                     index->fixingCalendar(),
-                                 index->businessDayConvention()).backwards()) {
+        fixingSchedule_(MakeSchedule()
+                        .from(startDate)
+                        .to(endDate)
+                        .withTenor(1*Days)
+                        .withCalendar(index->fixingCalendar())
+                        .withConvention(index->businessDayConvention())
+                        .backwards()) {
         setPricer(boost::shared_ptr<FloatingRateCouponPricer>(
                                                  new EoniaCouponPricer));
     }

@@ -89,10 +89,10 @@ void CdoTest::testHW() {
     vector<Real> nominals(poolSize, 100.0);
     Real premium = 0.02;
     Period maxTerm (5, Years);
-    Schedule schedule = MakeSchedule (Date (1, September, 2006),
-                                      Date (1, September, 2011),
-                                      Period (3, Months),
-                                      TARGET(), Following);
+    Schedule schedule = MakeSchedule().from(Date (1, September, 2006))
+                                      .to(Date (1, September, 2011))
+                                      .withTenor(Period (3, Months))
+                                      .withCalendar(TARGET());
 
     Date asofDate = Date(31, August, 2006);
 

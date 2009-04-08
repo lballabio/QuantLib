@@ -87,8 +87,10 @@ void InflationTest::testYoYTermStructure() {
     // fixing data
     Date from(1, January, 2005);
     Date to(13, August, 2007);
-    Schedule rpiSchedule = MakeSchedule(from,to,Period(1,Months),
-                                        UnitedKingdom(),ModifiedFollowing);
+    Schedule rpiSchedule = MakeSchedule().from(from).to(to)
+                                         .withTenor(1*Months)
+                                         .withCalendar(UnitedKingdom())
+                                         .withConvention(ModifiedFollowing);
     Real fixData[] = { 189.9, 189.9, 189.6, 190.5, 191.6, 192.0,
                        192.2, 192.2, 192.6, 193.1, 193.3, 193.6,
                        194.1, 193.4, 194.2, 195.0, 196.5, 197.7,
@@ -158,8 +160,10 @@ void InflationTest::testYoYTermStructure() {
 
     from = pYITS->baseDate();
     to = pYITS->maxDate()-1*Months; // a bit of margin for adjustments
-    Schedule testIndex = MakeSchedule(from,to,Period(1,Months),
-                                      UnitedKingdom(),ModifiedFollowing);
+    Schedule testIndex = MakeSchedule().from(from).to(to)
+                                       .withTenor(1*Months)
+                                       .withCalendar(UnitedKingdom())
+                                       .withConvention(ModifiedFollowing);
 
     Date bd = hy->baseDate();
     // get the relevant period end
@@ -193,8 +197,11 @@ void InflationTest::testZeroTermStructure() {
     // fixing data
     Date from(1, January, 2005);
     Date to(13, August, 2007);
-    Schedule rpiSchedule = MakeSchedule(from,to,Period(1,Months),
-                                        UnitedKingdom(),ModifiedFollowing);
+    Schedule rpiSchedule = MakeSchedule().from(from).to(to)
+                                         .withTenor(1*Months)
+                                         .withCalendar(UnitedKingdom())
+                                         .withConvention(ModifiedFollowing);
+
     Real fixData[] = { 189.9, 189.9, 189.6, 190.5, 191.6, 192.0,
                        192.2, 192.2, 192.6, 193.1, 193.3, 193.6,
                        194.1, 193.4, 194.2, 195.0, 196.5, 197.7,
@@ -262,8 +269,10 @@ void InflationTest::testZeroTermStructure() {
 
     from = hz->baseDate();
     to = hz->maxDate()-1*Months; // a bit of margin for adjustments
-    Schedule testIndex = MakeSchedule(from,to,Period(1,Months),
-                                      UnitedKingdom(),ModifiedFollowing);
+    Schedule testIndex = MakeSchedule().from(from).to(to)
+                                       .withTenor(1*Months)
+                                       .withCalendar(UnitedKingdom())
+                                       .withConvention(ModifiedFollowing);
 
     Date bd = hz->baseDate();
     // get the relevant period end
@@ -365,8 +374,11 @@ void InflationTest::testYYIndex() {
     // fixing data
     Date from(1, January, 2005);
     Date to(13, August, 2007);
-    Schedule rpiSchedule = MakeSchedule(from,to,Period(1,Months),
-                                        UnitedKingdom(),ModifiedFollowing);
+    Schedule rpiSchedule = MakeSchedule().from(from).to(to)
+                                         .withTenor(1*Months)
+                                         .withCalendar(UnitedKingdom())
+                                         .withConvention(ModifiedFollowing);
+
     Real fixData[] = { 189.9, 189.9, 189.6, 190.5, 191.6, 192.0,
                        192.2, 192.2, 192.6, 193.1, 193.3, 193.6,
                        194.1, 193.4, 194.2, 195.0, 196.5, 197.7,
@@ -449,8 +461,11 @@ void InflationTest::testZeroIndex() {
     // fixing data
     Date from(1, January, 2005);
     Date to(13, August, 2007);
-    Schedule rpiSchedule = MakeSchedule(from,to,Period(1,Months),
-                                        UnitedKingdom(),ModifiedFollowing);
+    Schedule rpiSchedule = MakeSchedule().from(from).to(to)
+                                         .withTenor(1*Months)
+                                         .withCalendar(UnitedKingdom())
+                                         .withConvention(ModifiedFollowing);
+
     Real fixData[] = { 189.9, 189.9, 189.6, 190.5, 191.6, 192.0,
                        192.2, 192.2, 192.6, 193.1, 193.3, 193.6,
                        194.1, 193.4, 194.2, 195.0, 196.5, 197.7,

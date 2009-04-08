@@ -65,18 +65,21 @@ namespace QuantLib {
         // dummy Eonia index with curve/swap arguments
         shared_ptr<Eonia> clonedIndex(new Eonia(termStructureHandle_));
 
-        Schedule eoniaSchedule = MakeSchedule(earliestDate_,
-                                              maturity,
-                                              eoniaPeriod_,
-                                              index_->fixingCalendar(),
-                                              eoniaConvention_).backwards();
+        Schedule eoniaSchedule =
+            MakeSchedule().from(earliestDate_)
+                          .to(maturity)
+                          .withTenor(eoniaPeriod_)
+                          .withCalendar(index_->fixingCalendar())
+                          .withConvention(eoniaConvention_)
+                          .backwards();
 
         Schedule fixedSchedule =
-            MakeSchedule(earliestDate_,
-                         maturity,
-                         fixedPeriod_,
-                         index_->fixingCalendar(),
-                         fixedConvention_).backwards();
+            MakeSchedule().from(earliestDate_)
+                          .to(maturity)
+                          .withTenor(fixedPeriod_)
+                          .withCalendar(index_->fixingCalendar())
+                          .withConvention(fixedConvention_)
+                          .backwards();
 
         swap_ = shared_ptr<EoniaSwap>(new EoniaSwap(EoniaSwap::Payer, 100.0,
                                                     eoniaSchedule,

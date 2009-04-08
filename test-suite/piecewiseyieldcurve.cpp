@@ -461,18 +461,21 @@ namespace {
         for (Size i=0; i<vars.bmas; i++) {
             Period tenor = bmaData[i].n*bmaData[i].units;
 
-            Schedule bmaSchedule = MakeSchedule(vars.settlement,
-                                                vars.settlement+tenor,
-                                                Period(vars.bmaFrequency),
-                                                bma->fixingCalendar(),
-                                                vars.bmaConvention).backwards();
-            Schedule liborSchedule = MakeSchedule(vars.settlement,
-                                                  vars.settlement+tenor,
-                                                  libor3m->tenor(),
-                                                  libor3m->fixingCalendar(),
-                                                  libor3m->businessDayConvention())
-                .endOfMonth(libor3m->endOfMonth())
-                .backwards();
+            Schedule bmaSchedule =
+                MakeSchedule().from(vars.settlement)
+                              .to(vars.settlement+tenor)
+                              .withFrequency(vars.bmaFrequency)
+                              .withCalendar(bma->fixingCalendar())
+                              .withConvention(vars.bmaConvention)
+                              .backwards();
+            Schedule liborSchedule =
+                MakeSchedule().from(vars.settlement)
+                              .to(vars.settlement+tenor)
+                              .withTenor(libor3m->tenor())
+                              .withCalendar(libor3m->fixingCalendar())
+                              .withConvention(libor3m->businessDayConvention())
+                              .endOfMonth(libor3m->endOfMonth())
+                              .backwards();
 
 
             BMASwap swap(BMASwap::Payer, 100.0,

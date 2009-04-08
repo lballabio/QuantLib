@@ -137,10 +137,11 @@ int main(int, char* []) {
         boost::shared_ptr<PricingEngine> engine(
                   new MidPointCdsEngine(probability, recovery_rate, tsCurve));
 
-        Schedule cdsSchedule = MakeSchedule(todaysDate, maturities[0],
-                                            Period(Quarterly), calendar,
-                                            Following)
-            .withRule(DateGeneration::TwentiethIMM);
+        Schedule cdsSchedule =
+            MakeSchedule().from(todaysDate).to(maturities[0])
+                          .withFrequency(Quarterly)
+                          .withCalendar(calendar)
+                          .withRule(DateGeneration::TwentiethIMM);
         CreditDefaultSwap cds_3m(Protection::Seller,
                                  nominal,
                                  quoted_spreads[0],
@@ -148,10 +149,11 @@ int main(int, char* []) {
                                  Following,
                                  Actual365Fixed());
 
-        cdsSchedule = MakeSchedule(todaysDate, maturities[1],
-                                   Period(Quarterly), calendar,
-                                   Following)
-            .withRule(DateGeneration::TwentiethIMM);
+        cdsSchedule =
+            MakeSchedule().from(todaysDate).to(maturities[1])
+                          .withFrequency(Quarterly)
+                          .withCalendar(calendar)
+                          .withRule(DateGeneration::TwentiethIMM);
         CreditDefaultSwap cds_6m(Protection::Seller,
                                  nominal,
                                  quoted_spreads[1],
@@ -159,10 +161,11 @@ int main(int, char* []) {
                                  Following,
                                  Actual365Fixed());
 
-        cdsSchedule = MakeSchedule(todaysDate, maturities[2],
-                                   Period(Quarterly), calendar,
-                                   Following)
-            .withRule(DateGeneration::TwentiethIMM);
+        cdsSchedule =
+            MakeSchedule().from(todaysDate).to(maturities[2])
+                          .withFrequency(Quarterly)
+                          .withCalendar(calendar)
+                          .withRule(DateGeneration::TwentiethIMM);
         CreditDefaultSwap cds_1y(Protection::Seller,
                                  nominal,
                                  quoted_spreads[2],
@@ -170,10 +173,11 @@ int main(int, char* []) {
                                  Following,
                                  Actual365Fixed());
 
-        cdsSchedule = MakeSchedule(todaysDate, maturities[3],
-                                   Period(Quarterly), calendar,
-                                   Following)
-            .withRule(DateGeneration::TwentiethIMM);
+        cdsSchedule =
+            MakeSchedule().from(todaysDate).to(maturities[3])
+                          .withFrequency(Quarterly)
+                          .withCalendar(calendar)
+                          .withRule(DateGeneration::TwentiethIMM);
         CreditDefaultSwap cds_2y(Protection::Seller,
                                  nominal,
                                  quoted_spreads[3],

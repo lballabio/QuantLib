@@ -79,10 +79,12 @@ namespace QuantLib {
     }
 
     Schedule BMAIndex::fixingSchedule(const Date& start, const Date& end) {
-        return MakeSchedule(previousWednesday(start),
-                            nextWednesday(end),
-                            1 * Weeks,
-                            fixingCalendar_, Following).forwards();
+        return MakeSchedule().from(previousWednesday(start))
+                             .to(nextWednesday(end))
+                             .withFrequency(Weekly)
+                             .withCalendar(fixingCalendar_)
+                             .withConvention(Following)
+                             .forwards();
     }
 
     Rate BMAIndex::forecastFixing(const Date& fixingDate) const {

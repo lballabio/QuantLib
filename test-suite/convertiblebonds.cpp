@@ -139,9 +139,12 @@ void ConvertibleBondTest::testBond() {
 
     // zero-coupon
 
-    Schedule schedule = MakeSchedule(vars.issueDate, vars.maturityDate,
-                                     Period(Once), vars.calendar,
-                                     Following).backwards();
+    Schedule schedule =
+        MakeSchedule().from(vars.issueDate)
+                      .to(vars.maturityDate)
+                      .withFrequency(Once)
+                      .withCalendar(vars.calendar)
+                      .backwards();
 
     ConvertibleZeroCouponBond euZero(euExercise, vars.conversionRatio,
                                      vars.no_dividends, vars.no_callability,
@@ -189,9 +192,11 @@ void ConvertibleBondTest::testBond() {
 
     std::vector<Rate> coupons(1, 0.05);
 
-    schedule = MakeSchedule(vars.issueDate, vars.maturityDate,
-                            Period(vars.frequency), vars.calendar,
-                            Following).backwards();
+    schedule = MakeSchedule().from(vars.issueDate)
+                             .to(vars.maturityDate)
+                             .withFrequency(vars.frequency)
+                             .withCalendar(vars.calendar)
+                             .backwards();
 
     ConvertibleFixedCouponBond euFixed(euExercise, vars.conversionRatio,
                                        vars.no_dividends, vars.no_callability,
@@ -324,9 +329,11 @@ void ConvertibleBondTest::testOption() {
     boost::shared_ptr<StrikedTypePayoff> payoff(
                       new PlainVanillaPayoff(Option::Call, conversionStrike));
 
-    Schedule schedule = MakeSchedule(vars.issueDate, vars.maturityDate,
-                                     Period(Once), vars.calendar,
-                                     Following).backwards();
+    Schedule schedule = MakeSchedule().from(vars.issueDate)
+                                      .to(vars.maturityDate)
+                                      .withFrequency(Once)
+                                      .withCalendar(vars.calendar)
+                                      .backwards();
 
     ConvertibleZeroCouponBond euZero(euExercise, vars.conversionRatio,
                                      vars.no_dividends, vars.no_callability,
@@ -412,8 +419,11 @@ void ConvertibleBondTest::testRegression() {
     Date issueDate(23, July, 2008);
     Date maturityDate(1, August, 2013);
     Calendar calendar = UnitedStates();
-    Schedule schedule = MakeSchedule(issueDate, maturityDate,
-                                     6*Months, calendar, Unadjusted);
+    Schedule schedule = MakeSchedule().from(issueDate)
+                                      .to(maturityDate)
+                                      .withTenor(6*Months)
+                                      .withCalendar(calendar)
+                                      .withConvention(Unadjusted);
     Integer settlementDays = 3;
     shared_ptr<Exercise> exercise(new EuropeanExercise(maturityDate));
     Real conversionRatio = 100.0/20.3175;

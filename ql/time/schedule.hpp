@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2006, 2007 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,6 +31,7 @@
 #include <ql/time/period.hpp>
 #include <ql/time/dategenerationrule.hpp>
 #include <ql/errors.hpp>
+#include <boost/optional.hpp>
 
 namespace QuantLib {
 
@@ -101,11 +102,13 @@ namespace QuantLib {
     */
     class MakeSchedule {
       public:
-        MakeSchedule(const Date& effectiveDate,
-                     const Date& terminationDate,
-                     const Period& tenor,
-                     const Calendar& calendar,
-                     BusinessDayConvention convention);
+        MakeSchedule();
+        MakeSchedule& from(const Date& effectiveDate);
+        MakeSchedule& to(const Date& terminationDate);
+        MakeSchedule& withTenor(const Period&);
+        MakeSchedule& withFrequency(Frequency);
+        MakeSchedule& withCalendar(const Calendar&);
+        MakeSchedule& withConvention(BusinessDayConvention);
         MakeSchedule& withTerminationDateConvention(BusinessDayConvention);
         MakeSchedule& withRule(DateGeneration::Rule);
         MakeSchedule& forwards();
@@ -117,8 +120,9 @@ namespace QuantLib {
       private:
         Calendar calendar_;
         Date effectiveDate_, terminationDate_;
-        Period tenor_;
-        BusinessDayConvention convention_, terminationDateConvention_;
+        boost::optional<Period> tenor_;
+        boost::optional<BusinessDayConvention> convention_;
+        boost::optional<BusinessDayConvention> terminationDateConvention_;
         DateGeneration::Rule rule_;
         bool endOfMonth_;
         Date firstDate_, nextToLastDate_;

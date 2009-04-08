@@ -111,11 +111,11 @@ namespace QuantLib {
         Date endDate = startDate + tenor_;
 
         Schedule schedule =
-            MakeSchedule(startDate, endDate,
-                         Period(frequency_),
-                         calendar_,
-                         paymentConvention_)
-            .withRule(rule_);
+            MakeSchedule().from(startDate).to(endDate)
+                          .withFrequency(frequency_)
+                          .withCalendar(calendar_)
+                          .withConvention(paymentConvention_)
+                          .withRule(rule_);
         earliestDate_ = schedule.dates().front();
         latestDate_ = schedule.dates().back();
 

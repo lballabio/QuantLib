@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006, 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -333,17 +334,38 @@ namespace QuantLib {
     }
 
 
-    MakeSchedule::MakeSchedule(const Date& effectiveDate,
-                               const Date& terminationDate,
-                               const Period& tenor,
-                               const Calendar& calendar,
-                               BusinessDayConvention convention)
-    : calendar_(calendar),
-      effectiveDate_(effectiveDate), terminationDate_(terminationDate),
-      tenor_(tenor),
-      convention_(convention), terminationDateConvention_(convention),
-      rule_(DateGeneration::Backward), endOfMonth_(false),
-      firstDate_(Date()), nextToLastDate_(Date()) {}
+    MakeSchedule::MakeSchedule()
+    : rule_(DateGeneration::Backward), endOfMonth_(false) {}
+
+    MakeSchedule& MakeSchedule::from(const Date& effectiveDate) {
+        effectiveDate_ = effectiveDate;
+        return *this;
+    }
+
+    MakeSchedule& MakeSchedule::to(const Date& terminationDate) {
+        terminationDate_ = terminationDate;
+        return *this;
+    }
+
+    MakeSchedule& MakeSchedule::withTenor(const Period& tenor) {
+        tenor_ = tenor;
+        return *this;
+    }
+
+    MakeSchedule& MakeSchedule::withFrequency(Frequency frequency) {
+        tenor_ = Period(frequency);
+        return *this;
+    }
+
+    MakeSchedule& MakeSchedule::withCalendar(const Calendar& calendar) {
+        calendar_ = calendar;
+        return *this;
+    }
+
+    MakeSchedule& MakeSchedule::withConvention(BusinessDayConvention conv) {
+        convention_ = conv;
+        return *this;
+    }
 
     MakeSchedule& MakeSchedule::withTerminationDateConvention(
                                                 BusinessDayConvention conv) {
@@ -382,8 +404,44 @@ namespace QuantLib {
     }
 
     MakeSchedule::operator Schedule() const {
-        return Schedule(effectiveDate_, terminationDate_, tenor_, calendar_,
-                        convention_, terminationDateConvention_,
+        // check for mandatory arguments
+        QL_REQUIRE(effectiveDate_ != Date(), "effective date not provided");
+        QL_REQUIRE(terminationDate_ != Date(), "termination date not provided");
+        QL_REQUIRE(tenor_, "tenor/frequency not provided");
+
+        // set dynamic defaults:
+        BusinessDayConvention convention;
+        // if a convention was set, we use it.
+        if (convention_) {
+            convention = *convention_;
+        } else {
+            if (!calendar_.empty()) {
+                // ...if we set a calendar, we probably want it to be used;
+                convention = Following;
+            } else {
+                // if not, we don't care.
+                convention = Unadjusted;
+            }
+        }
+
+        BusinessDayConvention terminationDateConvention;
+        // if set explicitly, we use it;
+        if (terminationDateConvention_) {
+            terminationDateConvention = *terminationDateConvention_;
+        } else {
+            // it equals the convention for all other dates.
+            terminationDateConvention = convention;
+        }
+
+        Calendar calendar = calendar_;
+        // if no calendar was set...
+        if (calendar.empty()) {
+            // ...we use a null one.
+            calendar = NullCalendar();
+        }
+
+        return Schedule(effectiveDate_, terminationDate_, *tenor_, calendar,
+                        convention, terminationDateConvention,
                         rule_, endOfMonth_, firstDate_, nextToLastDate_);
     }
 

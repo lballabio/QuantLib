@@ -36,9 +36,10 @@ namespace QuantLib {
     : InflationSwap(start, maturity, lag, calendar, convention, dayCounter),
       fixedRate_(fixedRate) {
 
-        Schedule temp = MakeSchedule(start_, maturity_,
-                                     Period(1,Years),
-                                     calendar_, bdc_);
+        Schedule temp = MakeSchedule().from(start_).to(maturity_)
+                                      .withFrequency(Annual)
+                                      .withCalendar(calendar_)
+                                      .withConvention(bdc_);
         paymentDates_.clear();
         paymentDates_.reserve(temp.size()-1);
 

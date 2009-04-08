@@ -201,9 +201,11 @@ namespace QuantLib {
 
         QL_REQUIRE(tenorN_>0,"requested cap/floor with <1 coupon: "<< tenorN_);
         // cap with n coupons ...
-        Schedule s = MakeSchedule(effectiveDate_,
-                                  effectiveDate_+Period(tenorN_,Years),
-                                  Period(1,Years), cal_, bdc_);
+        Schedule s = MakeSchedule().from(effectiveDate_)
+                                   .to(effectiveDate_+Period(tenorN_,Years))
+                                   .withTenor(Period(1,Years))
+                                   .withCalendar(cal_)
+                                   .withConvention(bdc_);
         // check you have the right number of payoffs
         QL_REQUIRE(s.size() == tenorN_+1,
                    "Dates/calendar/adjustment incompatible with "

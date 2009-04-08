@@ -588,20 +588,20 @@ namespace QuantLib {
         // dummy BMA index with curve/swap arguments
         shared_ptr<BMAIndex> clonedIndex(new BMAIndex(termStructureHandle_));
 
-        Schedule bmaSchedule = MakeSchedule(earliestDate_,
-                                            maturity,
-                                            bmaPeriod_,
-                                            bmaIndex_->fixingCalendar(),
-                                            bmaConvention_).backwards();
+        Schedule bmaSchedule =
+            MakeSchedule().from(earliestDate_).to(maturity)
+                          .withTenor(bmaPeriod_)
+                          .withCalendar(bmaIndex_->fixingCalendar())
+                          .withConvention(bmaConvention_)
+                          .backwards();
 
         Schedule liborSchedule =
-            MakeSchedule(earliestDate_,
-                         maturity,
-                         iborIndex_->tenor(),
-                         iborIndex_->fixingCalendar(),
-                         iborIndex_->businessDayConvention())
-            .endOfMonth(iborIndex_->endOfMonth())
-            .backwards();
+            MakeSchedule().from(earliestDate_).to(maturity)
+                          .withTenor(iborIndex_->tenor())
+                          .withCalendar(iborIndex_->fixingCalendar())
+                          .withConvention(iborIndex_->businessDayConvention())
+                          .endOfMonth(iborIndex_->endOfMonth())
+                          .backwards();
 
         swap_ = shared_ptr<BMASwap>(new BMASwap(BMASwap::Payer, 100.0,
                                                 liborSchedule,
