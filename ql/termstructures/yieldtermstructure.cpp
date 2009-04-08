@@ -127,11 +127,10 @@ namespace QuantLib {
                                      Frequency freq,
                                      bool extrapolate) const {
         QL_REQUIRE(times.size() >= 2, "at least two times are required");
-        checkRange(times.back(), extrapolate);
         Real sum = 0.0;
-        for (Size i=1; i<times.size(); i++)
-            sum += discountImpl(times[i]);
-        Real result = discountImpl(times.front())-discountImpl(times.back());
+        for (Size i=1; i<times.size(); ++i)
+            sum += discount(times[i], extrapolate);
+        Real result = discount(times.front(), extrapolate)-discount(times.back(), extrapolate);
         result *=  Real(freq)/sum;
         return result;
     }
