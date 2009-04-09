@@ -274,19 +274,24 @@ int main(int, char* []) {
                  << 100.*coupons[i] << " | "
                  // piecewise bootstrap
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*ts0->parRate(keyDates,Annual,false) << " | "
+                 << 100.*ts0->parRate(keyDates,bondDayCount,
+                                      Annual,false) << " | "
                  // exponential splines
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*ts1->parRate(keyDates,Annual,false) << " | "
+                 << 100.*ts1->parRate(keyDates,bondDayCount,
+                                      Annual,false) << " | "
                  // simple polynomial
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*ts2->parRate(keyDates,Annual,false) << " | "
+                 << 100.*ts2->parRate(keyDates,bondDayCount,
+                                      Annual,false) << " | "
                  // nelson siegel
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*ts3->parRate(keyDates,Annual,false) << " | "
+                 << 100.*ts3->parRate(keyDates,bondDayCount,
+                                      Annual,false) << " | "
                  // cubic bsplines
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*ts4->parRate(keyDates,Annual,false) << endl;
+                 << 100.*ts4->parRate(keyDates,bondDayCount,
+                                      Annual,false) << endl;
         }
 
         cout << endl << endl << endl;
@@ -346,19 +351,24 @@ int main(int, char* []) {
                  << 100.*coupons[i] << " | "
                  // piecewise bootstrap
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*ts0->parRate(keyDates,Annual,false) << " | "
+                 << 100.*ts0->parRate(keyDates,bondDayCount,
+                                      Annual,false) << " | "
                  // exponential splines
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*ts1->parRate(keyDates,Annual,false) << " | "
+                 << 100.*ts1->parRate(keyDates,bondDayCount,
+                                      Annual,false) << " | "
                  // simple polynomial
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*ts2->parRate(keyDates,Annual,false) << " | "
+                 << 100.*ts2->parRate(keyDates,bondDayCount,
+                                      Annual,false) << " | "
                  // nelson siegel
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*ts3->parRate(keyDates,Annual,false) << " | "
+                 << 100.*ts3->parRate(keyDates,bondDayCount,
+                                      Annual,false) << " | "
                  // cubic bsplines
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*ts4->parRate(keyDates,Annual,false) << endl;
+                 << 100.*ts4->parRate(keyDates,bondDayCount,
+                                      Annual,false) << endl;
         }
 
         cout << endl << endl << endl;
@@ -463,19 +473,24 @@ int main(int, char* []) {
                  << 100.*coupons[i+1] << " | "
                  // piecewise bootstrap
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*ts00->parRate(keyDates,Annual,false) << " | "
+                 << 100.*ts00->parRate(keyDates,bondDayCount,
+                                      Annual,false) << " | "
                  // exponential splines
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*ts11->parRate(keyDates,Annual,false) << " | "
+                 << 100.*ts11->parRate(keyDates,bondDayCount,
+                                      Annual,false) << " | "
                  // simple polynomial
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*ts22->parRate(keyDates,Annual,false) << " | "
+                 << 100.*ts22->parRate(keyDates,bondDayCount,
+                                      Annual,false) << " | "
                  // nelson siegel
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*ts33->parRate(keyDates,Annual,false) << " | "
+                 << 100.*ts33->parRate(keyDates,bondDayCount,
+                                      Annual,false) << " | "
                  // cubic bsplines
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*ts44->parRate(keyDates,Annual,false) << endl;
+                 << 100.*ts44->parRate(keyDates,bondDayCount,
+                                      Annual,false) << endl;
         }
 
 
@@ -544,19 +559,24 @@ int main(int, char* []) {
                  << 100.*coupons[i+1] << " | "
                  // piecewise bootstrap
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*ts00->parRate(keyDates,Annual,false) << " | "
+                 << 100.*ts00->parRate(keyDates,bondDayCount,
+                                      Annual,false) << " | "
                  // exponential splines
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*ts11->parRate(keyDates,Annual,false) << " | "
+                 << 100.*ts11->parRate(keyDates,bondDayCount,
+                                      Annual,false) << " | "
                  // simple polynomial
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*ts22->parRate(keyDates,Annual,false) << " | "
+                 << 100.*ts22->parRate(keyDates,bondDayCount,
+                                      Annual,false) << " | "
                  // nelson siegel
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*ts33->parRate(keyDates,Annual,false) << " | "
+                 << 100.*ts33->parRate(keyDates,bondDayCount,
+                                      Annual,false) << " | "
                  // cubic bsplines
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*ts44->parRate(keyDates,Annual,false) << endl;
+                 << 100.*ts44->parRate(keyDates,bondDayCount,
+                                      Annual,false) << endl;
         }
 
 
