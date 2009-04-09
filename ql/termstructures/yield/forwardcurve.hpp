@@ -40,12 +40,14 @@ namespace QuantLib {
                                      protected InterpolatedCurve<Interpolator> {
       public:
         // constructor
-        InterpolatedForwardCurve(const std::vector<Date>& dates,
-                                 const std::vector<Rate>& forwards,
-                                 const DayCounter& dayCounter,
-                                 const Calendar& cal = Calendar(),
-                                 const Interpolator& interpolator
-                                                            = Interpolator());
+        InterpolatedForwardCurve(
+            const std::vector<Date>& dates,
+            const std::vector<Rate>& forwards,
+            const DayCounter& dayCounter,
+            const Calendar& cal = Calendar(),
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>(),
+            const Interpolator& interpolator = Interpolator());
         //! \name TermStructure interface
         //@{
         Date maxDate() const;
@@ -59,18 +61,24 @@ namespace QuantLib {
         std::vector<std::pair<Date,Rate> > nodes() const;
         //@}
       protected:
-        InterpolatedForwardCurve(const DayCounter&,
-                                 const Interpolator& interpolator
-                                                            = Interpolator());
-        InterpolatedForwardCurve(const Date& referenceDate,
-                                 const DayCounter&,
-                                 const Interpolator& interpolator
-                                                            = Interpolator());
-        InterpolatedForwardCurve(Natural settlementDays,
-                                 const Calendar&,
-                                 const DayCounter&,
-                                 const Interpolator& interpolator
-                                                            = Interpolator());
+        InterpolatedForwardCurve(
+            const DayCounter&,
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>(),
+            const Interpolator& interpolator = Interpolator());
+        InterpolatedForwardCurve(
+            const Date& referenceDate,
+            const DayCounter&,
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>(),
+            const Interpolator& interpolator = Interpolator());
+        InterpolatedForwardCurve(
+            Natural settlementDays,
+            const Calendar&,
+            const DayCounter&,
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>(),
+            const Interpolator& interpolator = Interpolator());
         //! \name ForwardRateStructure implementation
         //@{
         Rate forwardImpl(Time t) const;
@@ -117,9 +125,9 @@ namespace QuantLib {
     }
 
     template <class T>
-    inline std::vector<std::pair<Date,Rate> >
+    inline std::vector<std::pair<Date, Real> >
     InterpolatedForwardCurve<T>::nodes() const {
-        std::vector<std::pair<Date,Rate> > results(dates_.size());
+        std::vector<std::pair<Date, Real> > results(dates_.size());
         for (Size i=0; i<dates_.size(); ++i)
             results[i] = std::make_pair(dates_[i],this->data_[i]);
         return results;
@@ -156,36 +164,44 @@ namespace QuantLib {
 
     template <class T>
     InterpolatedForwardCurve<T>::InterpolatedForwardCurve(
-                                                 const DayCounter& dayCounter,
-                                                 const T& interpolator)
-    : ForwardRateStructure(dayCounter),
+                                    const DayCounter& dayCounter,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates,
+                                    const T& interpolator)
+    : ForwardRateStructure(dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     InterpolatedForwardCurve<T>::InterpolatedForwardCurve(
-                                                 const Date& referenceDate,
-                                                 const DayCounter& dayCounter,
-                                                 const T& interpolator)
-    : ForwardRateStructure(referenceDate, Calendar(), dayCounter),
+                                    const Date& referenceDate,
+                                    const DayCounter& dayCounter,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates,
+                                    const T& interpolator)
+    : ForwardRateStructure(referenceDate, Calendar(), dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     InterpolatedForwardCurve<T>::InterpolatedForwardCurve(
-                                                 Natural settlementDays,
-                                                 const Calendar& calendar,
-                                                 const DayCounter& dayCounter,
-                                                 const T& interpolator)
-    : ForwardRateStructure(settlementDays, calendar, dayCounter),
+                                    Natural settlementDays,
+                                    const Calendar& calendar,
+                                    const DayCounter& dayCounter,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates,
+                                    const T& interpolator)
+    : ForwardRateStructure(settlementDays, calendar, dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     InterpolatedForwardCurve<T>::InterpolatedForwardCurve(
-                                            const std::vector<Date>& dates,
-                                            const std::vector<Rate>& forwards,
-                                            const DayCounter& dayCounter,
-                                            const Calendar& calendar,
-                                            const T& interpolator)
-    : ForwardRateStructure(dates.front(), calendar, dayCounter),
+                                    const std::vector<Date>& dates,
+                                    const std::vector<Rate>& forwards,
+                                    const DayCounter& dayCounter,
+                                    const Calendar& calendar,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates,
+                                    const T& interpolator)
+    : ForwardRateStructure(dates.front(), calendar, dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(std::vector<Time>(), forwards, interpolator),
       dates_(dates)
     {

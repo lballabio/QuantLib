@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2004, 2009 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
@@ -20,22 +20,87 @@
 */
 
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/utilities/dataformatters.hpp>
 
 namespace QuantLib {
 
-    YieldTermStructure::YieldTermStructure(const DayCounter& dc)
-    : TermStructure(dc) {}
+    YieldTermStructure::YieldTermStructure(
+                                    const DayCounter& dc,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates)
+    : TermStructure(dc), jumps_(jumps),
+      jumpDates_(jumpDates), jumpTimes_(jumpDates.size()),
+      nJumps_(jumps_.size()) {
+        setJumps();
+        for (Size i=0; i<nJumps_; ++i)
+            registerWith(jumps_[i]);
+    }
 
-    YieldTermStructure::YieldTermStructure(const Date& referenceDate,
-                                           const Calendar& cal,
-                                           const DayCounter& dc)
-    : TermStructure(referenceDate, cal, dc) {}
+    YieldTermStructure::YieldTermStructure(
+                                    const Date& referenceDate,
+                                    const Calendar& cal,
+                                    const DayCounter& dc,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates)
+    : TermStructure(referenceDate, cal, dc), jumps_(jumps),
+      jumpDates_(jumpDates), jumpTimes_(jumpDates.size()),
+      nJumps_(jumps_.size()) {
+        setJumps();
+        for (Size i=0; i<nJumps_; ++i)
+            registerWith(jumps_[i]);
+    }
 
-    YieldTermStructure::YieldTermStructure(Natural settlementDays,
-                                           const Calendar& cal,
-                                           const DayCounter& dc)
-    : TermStructure(settlementDays, cal, dc) {}
+    YieldTermStructure::YieldTermStructure(
+                                    Natural settlementDays,
+                                    const Calendar& cal,
+                                    const DayCounter& dc,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates)
+    : TermStructure(settlementDays, cal, dc), jumps_(jumps),
+      jumpDates_(jumpDates), jumpTimes_(jumpDates.size()),
+      nJumps_(jumps_.size()) {
+        setJumps();
+        for (Size i=0; i<nJumps_; ++i)
+            registerWith(jumps_[i]);
+    }
 
+    void YieldTermStructure::setJumps() {
+        if (jumpDates_.empty() && !jumps_.empty()) { // turn of year dates
+            jumpDates_.resize(nJumps_);
+            jumpTimes_.resize(nJumps_);
+            Year y = referenceDate().year();
+            for (Size i=0; i<nJumps_; ++i)
+                jumpDates_[i] = Date(31, December, y+i);
+        } else { // fixed dats
+            QL_REQUIRE(jumpDates_.size()==nJumps_,
+                       "mismatch between number of jumps (" << nJumps_ <<
+                       ") and jump dates (" << jumpDates_.size() << ")");
+        }
+        for (Size i=0; i<nJumps_; ++i)
+            jumpTimes_[i] = timeFromReference(jumpDates_[i]);
+        latestReference_ = referenceDate();
+    }
+
+    DiscountFactor YieldTermStructure::discount(Time t,
+                                                bool extrapolate) const {
+        checkRange(t, extrapolate);
+
+        if (!jumps_.empty()) {
+            DiscountFactor jumpEffect = 1.0;
+            for (Size i=0; i<nJumps_ && jumpTimes_[i]<t; ++i) {
+                QL_REQUIRE(jumps_[i]->isValid(),
+                           "invalid " << io::ordinal(i+1) << " jump quote");
+                DiscountFactor thisJump = jumps_[i]->value();
+                QL_REQUIRE(thisJump > 0.0 && thisJump <= 1.0,
+                           "invalid " << io::ordinal(i+1) << " jump value: " <<
+                           thisJump);
+                jumpEffect *= thisJump;
+            }
+            return jumpEffect * discountImpl(t);
+        }
+
+        return discountImpl(t);
+    }
 
     InterestRate YieldTermStructure::zeroRate(const Date& d,
                                               const DayCounter& dayCounter,
@@ -45,6 +110,8 @@ namespace QuantLib {
         if (d==referenceDate()) {
             Time t = 0.0001;
             Real compound = 1.0/discount(t, extrapolate);
+            // t has been calculated with a possibly different daycounter
+            // but the difference should not matter for very small times
             return InterestRate::impliedRate(compound, t, dayCounter,
                                              comp, freq);
         }
@@ -75,6 +142,8 @@ namespace QuantLib {
             Time t2 = t + 0.0001;
             Real compound =
                 discount(t1, extrapolate)/discount(t2, true);
+            // times have been calculated with a possibly different daycounter
+            // but the difference should not matter for very small times
             return InterestRate::impliedRate(compound, t2-t1,
                                              dayCounter, comp, freq);
         }

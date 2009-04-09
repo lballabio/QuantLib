@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2004, 2009 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
@@ -28,6 +28,7 @@
 
 #include <ql/termstructure.hpp>
 #include <ql/interestrate.hpp>
+#include <ql/quote.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -54,16 +55,39 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        YieldTermStructure(const DayCounter& dc = DayCounter());
+        YieldTermStructure(const DayCounter& dc = DayCounter(),
+                           const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+                           const std::vector<Date>& jumpDates = std::vector<Date>());
         //! initialize with a fixed reference date
         YieldTermStructure(const Date& referenceDate,
                            const Calendar& cal = Calendar(),
-                           const DayCounter& dc = DayCounter());
+                           const DayCounter& dc = DayCounter(),
+                           const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+                           const std::vector<Date>& jumpDates = std::vector<Date>());
         //! calculate the reference date based on the global evaluation date
         YieldTermStructure(Natural settlementDays,
                            const Calendar& cal,
-                           const DayCounter& dc = DayCounter());
+                           const DayCounter& dc = DayCounter(),
+                           const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+                           const std::vector<Date>& jumpDates = std::vector<Date>());
         //@}
+
+        /*! \name discount factors
+
+            These methods return the discount factor for a given date
+            or time.  In the former case, the time is calculated as a
+            fraction of year from the reference date.
+        */
+        //@{
+        DiscountFactor discount(const Date& d,
+                                bool extrapolate = false) const;
+        /*! The same day-counting rule used by the term structure
+            should be used for calculating the passed time t.
+        */
+        DiscountFactor discount(Time t,
+                                bool extrapolate = false) const;
+        //@}
+
         /*! \name zero-yield rates
 
             These methods return the implied zero-yield rate for a
@@ -88,22 +112,6 @@ namespace QuantLib {
                               Compounding comp,
                               Frequency freq = Annual,
                               bool extrapolate = false) const;
-        //@}
-
-        /*! \name discount factors
-
-            These methods return the discount factor for a given date
-            or time.  In the former case, the time is calculated as a
-            fraction of year from the reference date.
-        */
-        //@{
-        DiscountFactor discount(const Date&,
-                                bool extrapolate = false) const;
-        /*! The same day-counting rule used by the term structure
-            should be used for calculating the passed time t.
-        */
-        DiscountFactor discount(Time,
-                                bool extrapolate = false) const;
         //@}
 
         /*! \name forward rates
@@ -188,18 +196,39 @@ namespace QuantLib {
                      bool extrapolate = false) const;
         //@}
 
+        //@}
+
+        //! \name Jump inspectors
+        //@{
+        const std::vector<Date>& jumpDates() const;
+        const std::vector<Time>& jumpTimes() const;
+        //@}
+
+        //! \name Observer interface
+        //@{
+        void update();
+        //@}
       protected:
         /*! \name Calculations
 
-            These methods must be implemented in derived classes to
-            perform the actual calculations. When they are called,
-            range check has already been performed; therefore, they
+            This method must be implemented in derived classes to
+            perform the actual calculations. When it is called,
+            range check has already been performed; therefore, it
             must assume that extrapolation is required.
         */
         //@{
         //! discount calculation
         virtual DiscountFactor discountImpl(Time) const = 0;
         //@}
+      private:
+        // methods
+        void setJumps();
+        // data members
+        std::vector<Handle<Quote> > jumps_;
+        std::vector<Date> jumpDates_;
+        std::vector<Time> jumpTimes_;
+        Size nJumps_;
+        Date latestReference_;
     };
 
     // inline definitions
@@ -220,11 +249,18 @@ namespace QuantLib {
         return discount(timeFromReference(d), extrapolate);
     }
 
-    inline
-    DiscountFactor YieldTermStructure::discount(Time t,
-                                                bool extrapolate) const {
-        checkRange(t, extrapolate);
-        return discountImpl(t);
+    inline const std::vector<Date>& YieldTermStructure::jumpDates() const {
+        return this->jumpDates_;
+    }
+
+    inline const std::vector<Time>& YieldTermStructure::jumpTimes() const {
+        return this->jumpTimes_;
+    }
+
+    inline void YieldTermStructure::update() {
+        TermStructure::update();
+        if (referenceDate() != latestReference_)
+            setJumps();
     }
 
 }

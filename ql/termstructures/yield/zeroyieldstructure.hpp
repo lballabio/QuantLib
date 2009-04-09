@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004 StatPro Italia srl
+ Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -51,15 +52,24 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        ZeroYieldStructure(const DayCounter& dc = DayCounter());
+        ZeroYieldStructure(
+            const DayCounter& dc = DayCounter(),
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>());
         //! initialize with a fixed reference date
-        ZeroYieldStructure(const Date& referenceDate,
-                           const Calendar& calendar = Calendar(),
-                           const DayCounter& dc = DayCounter());
+        ZeroYieldStructure(
+            const Date& referenceDate,
+            const Calendar& calendar = Calendar(),
+            const DayCounter& dc = DayCounter(),
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>());
         //! calculate the reference date based on the global evaluation date
-        ZeroYieldStructure(Natural settlementDays,
-                           const Calendar& calendar,
-                           const DayCounter& dc = DayCounter());
+        ZeroYieldStructure(
+            Natural settlementDays,
+            const Calendar& calendar,
+            const DayCounter& dc = DayCounter(),
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>());
         //@}
       protected:
         /*! \name Calculations
@@ -83,19 +93,6 @@ namespace QuantLib {
     };
 
     // inline definitions
-
-    inline ZeroYieldStructure::ZeroYieldStructure(const DayCounter& dc)
-    : YieldTermStructure(dc) {}
-
-    inline ZeroYieldStructure::ZeroYieldStructure(const Date& refDate,
-                                                  const Calendar& cal,
-                                                  const DayCounter& dc)
-    : YieldTermStructure(refDate, cal, dc) {}
-
-    inline ZeroYieldStructure::ZeroYieldStructure(Natural settlementDays,
-                                                  const Calendar& cal,
-                                                  const DayCounter& dc)
-    : YieldTermStructure(settlementDays, cal, dc) {}
 
     inline DiscountFactor ZeroYieldStructure::discountImpl(Time t) const {
         if (t == 0.0)     // this acts as a safe guard in cases where

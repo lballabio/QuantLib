@@ -41,12 +41,14 @@ namespace QuantLib {
                                   protected InterpolatedCurve<Interpolator> {
       public:
         // constructor
-        InterpolatedZeroCurve(const std::vector<Date>& dates,
-                              const std::vector<Rate>& yields,
-                              const DayCounter& dayCounter,
-                              const Calendar& calendar = Calendar(),
-                              const Interpolator& interpolator
-                                                            = Interpolator());
+        InterpolatedZeroCurve(
+            const std::vector<Date>& dates,
+            const std::vector<Rate>& yields,
+            const DayCounter& dayCounter,
+            const Calendar& calendar = Calendar(),
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>(),
+            const Interpolator& interpolator = Interpolator());
         //! \name TermStructure interface
         //@{
         Date maxDate() const;
@@ -57,21 +59,27 @@ namespace QuantLib {
         const std::vector<Date>& dates() const;
         const std::vector<Real>& data() const;
         const std::vector<Rate>& zeroRates() const;
-        std::vector<std::pair<Date,Rate> > nodes() const;
+        std::vector<std::pair<Date, Real> > nodes() const;
         //@}
       protected:
-        InterpolatedZeroCurve(const DayCounter&,
-                              const Interpolator& interpolator
-                                                            = Interpolator());
-        InterpolatedZeroCurve(const Date& referenceDate,
-                              const DayCounter&,
-                              const Interpolator& interpolator
-                                                            = Interpolator());
-        InterpolatedZeroCurve(Natural settlementDays,
-                              const Calendar&,
-                              const DayCounter&,
-                              const Interpolator& interpolator
-                                                            = Interpolator());
+        InterpolatedZeroCurve(
+            const DayCounter&,
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>(),
+            const Interpolator& interpolator = Interpolator());
+        InterpolatedZeroCurve(
+            const Date& referenceDate,
+            const DayCounter&,
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>(),
+            const Interpolator& interpolator = Interpolator());
+        InterpolatedZeroCurve(
+            Natural settlementDays,
+            const Calendar&,
+            const DayCounter&,
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>(),
+            const Interpolator& interpolator = Interpolator());
         //! \name ZeroYieldStructure implementation
         //@{
         Rate zeroYieldImpl(Time t) const;
@@ -114,9 +122,9 @@ namespace QuantLib {
     }
 
     template <class T>
-    inline std::vector<std::pair<Date,Rate> >
+    inline std::vector<std::pair<Date, Real> >
     InterpolatedZeroCurve<T>::nodes() const {
-        std::vector<std::pair<Date,Rate> > results(dates_.size());
+        std::vector<std::pair<Date, Real> > results(dates_.size());
         for (Size i=0; i<dates_.size(); ++i)
             results[i] = std::make_pair(dates_[i],this->data_[i]);
         return results;
@@ -140,36 +148,44 @@ namespace QuantLib {
 
     template <class T>
     InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
-                                                 const DayCounter& dayCounter,
-                                                 const T& interpolator)
-    : ZeroYieldStructure(dayCounter),
+                                    const DayCounter& dayCounter,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates,
+                                    const T& interpolator)
+    : ZeroYieldStructure(dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
-                                                 const Date& referenceDate,
-                                                 const DayCounter& dayCounter,
-                                                 const T& interpolator)
-    : ZeroYieldStructure(referenceDate, Calendar(), dayCounter),
+                                    const Date& referenceDate,
+                                    const DayCounter& dayCounter,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates,
+                                    const T& interpolator)
+    : ZeroYieldStructure(referenceDate, Calendar(), dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
-                                                 Natural settlementDays,
-                                                 const Calendar& calendar,
-                                                 const DayCounter& dayCounter,
-                                                 const T& interpolator)
-    : ZeroYieldStructure(settlementDays, calendar, dayCounter),
+                                    Natural settlementDays,
+                                    const Calendar& calendar,
+                                    const DayCounter& dayCounter,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates,
+                                    const T& interpolator)
+: ZeroYieldStructure(settlementDays, calendar, dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
-                                              const std::vector<Date>& dates,
-                                              const std::vector<Rate>& yields,
-                                              const DayCounter& dayCounter,
-                                              const Calendar& calendar,
-                                              const T& interpolator)
-    : ZeroYieldStructure(dates.front(), calendar, dayCounter),
+                                    const std::vector<Date>& dates,
+                                    const std::vector<Rate>& yields,
+                                    const DayCounter& dayCounter,
+                                    const Calendar& calendar,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates,
+                                    const T& interpolator)
+    : ZeroYieldStructure(dates.front(), calendar, dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(std::vector<Time>(), yields, interpolator),
       dates_(dates)
     {

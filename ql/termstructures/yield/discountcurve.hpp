@@ -41,12 +41,14 @@ namespace QuantLib {
         : public YieldTermStructure,
           protected InterpolatedCurve<Interpolator> {
       public:
-        InterpolatedDiscountCurve(const std::vector<Date>& dates,
-                                  const std::vector<DiscountFactor>& dfs,
-                                  const DayCounter& dayCounter,
-                                  const Calendar& cal = Calendar(),
-                                  const Interpolator& interpolator
-                                                            = Interpolator());
+        InterpolatedDiscountCurve(
+            const std::vector<Date>& dates,
+            const std::vector<DiscountFactor>& dfs,
+            const DayCounter& dayCounter,
+            const Calendar& cal = Calendar(),
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>(),
+            const Interpolator& interpolator = Interpolator());
         //! \name TermStructure interface
         //@{
         Date maxDate() const;
@@ -57,21 +59,27 @@ namespace QuantLib {
         const std::vector<Date>& dates() const;
         const std::vector<Real>& data() const;
         const std::vector<DiscountFactor>& discounts() const;
-        std::vector<std::pair<Date,DiscountFactor> > nodes() const;
+        std::vector<std::pair<Date, Real> > nodes() const;
         //@}
       protected:
-        InterpolatedDiscountCurve(const DayCounter&,
-                                  const Interpolator& interpolator
-                                                            = Interpolator());
-        InterpolatedDiscountCurve(const Date& referenceDate,
-                                  const DayCounter&,
-                                  const Interpolator& interpolator
-                                                            = Interpolator());
-        InterpolatedDiscountCurve(Natural settlementDays,
-                                  const Calendar&,
-                                  const DayCounter&,
-                                  const Interpolator& interpolator
-                                                            = Interpolator());
+        InterpolatedDiscountCurve(
+            const DayCounter&,
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>(),
+            const Interpolator& interpolator = Interpolator());
+        InterpolatedDiscountCurve(
+            const Date& referenceDate,
+            const DayCounter&,
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>(),
+            const Interpolator& interpolator = Interpolator());
+        InterpolatedDiscountCurve(
+            Natural settlementDays,
+            const Calendar&,
+            const DayCounter&,
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>(),
+            const Interpolator& interpolator = Interpolator());
         //! \name YieldTermStructure implementation
         //@{
         DiscountFactor discountImpl(Time) const;
@@ -120,9 +128,9 @@ namespace QuantLib {
     }
 
     template <class T>
-    inline std::vector<std::pair<Date,DiscountFactor> >
+    inline std::vector<std::pair<Date, Real> >
     InterpolatedDiscountCurve<T>::nodes() const {
-        std::vector<std::pair<Date,DiscountFactor> > results(dates_.size());
+        std::vector<std::pair<Date, Real> > results(dates_.size());
         for (Size i=0; i<dates_.size(); ++i)
             results[i] = std::make_pair(dates_[i],this->data_[i]);
         return results;
@@ -146,36 +154,44 @@ namespace QuantLib {
 
     template <class T>
     InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
-                                                 const DayCounter& dayCounter,
-                                                 const T& interpolator)
-    : YieldTermStructure(dayCounter),
+                                    const DayCounter& dayCounter,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates,
+                                    const T& interpolator)
+    : YieldTermStructure(dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
-                                                 const Date& referenceDate,
-                                                 const DayCounter& dayCounter,
-                                                 const T& interpolator)
-    : YieldTermStructure(referenceDate, Calendar(), dayCounter),
+                                    const Date& referenceDate,
+                                    const DayCounter& dayCounter,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates,
+                                    const T& interpolator)
+    : YieldTermStructure(referenceDate, Calendar(), dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
-                                                 Natural settlementDays,
-                                                 const Calendar& calendar,
-                                                 const DayCounter& dayCounter,
-                                                 const T& interpolator)
-    : YieldTermStructure(settlementDays, calendar, dayCounter),
+                                    Natural settlementDays,
+                                    const Calendar& calendar,
+                                    const DayCounter& dayCounter,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates,
+                                    const T& interpolator)
+    : YieldTermStructure(settlementDays, calendar, dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
-                                 const std::vector<Date>& dates,
-                                 const std::vector<DiscountFactor>& discounts,
-                                 const DayCounter& dayCounter,
-                                 const Calendar& calendar,
-                                 const T& interpolator)
-    : YieldTermStructure(dates.front(), calendar, dayCounter),
+                                    const std::vector<Date>& dates,
+                                    const std::vector<DiscountFactor>& discounts,
+                                    const DayCounter& dayCounter,
+                                    const Calendar& calendar,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates,
+                                    const T& interpolator)
+    : YieldTermStructure(dates.front(), calendar, dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(std::vector<Time>(), discounts, interpolator),
       dates_(dates)
     {

@@ -4453,6 +4453,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\yield\forwardstructure.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\yield\forwardstructure.hpp"
 					>
 				</File>
@@ -4494,6 +4498,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\yield\zerospreadedtermstructure.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\zeroyieldstructure.cpp"
 					>
 				</File>
 				<File
