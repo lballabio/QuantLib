@@ -135,7 +135,7 @@ namespace QuantLib {
 
         /*! The resulting interest rate has the same day-counting rule
             used by the term structure. The same rule should be used
-            for the calculating the passed times t1 and t2.
+            for calculating the passed times t1 and t2.
         */
         InterestRate forwardRate(Time t1,
                                  Time t2,
@@ -160,9 +160,11 @@ namespace QuantLib {
                      the term structure and call the swap's fairRate()
                      method.
         */
+
         //@{
-        Rate parRate(Integer tenor,
+        Rate parRate(Natural tenor,
                      const Date& startDate,
+                     const DayCounter& resultDayCounter,
                      Frequency freq = Annual,
                      bool extrapolate = false) const;
 
@@ -170,15 +172,21 @@ namespace QuantLib {
             the following dates must equal the payment dates.
         */
         Rate parRate(const std::vector<Date>& dates,
+                     const DayCounter& resultDayCounter,
                      Frequency freq = Annual,
                      bool extrapolate = false) const;
 
         /*! the first time in the vector must equal the start time;
             the following times must equal the payment times.
+
+            The resulting interest rate has the same day-counting rule
+            used by the term structure. The same rule should be used
+            for calculating the passed times t1 and t2.
         */
         Rate parRate(const std::vector<Time>& times,
                      Frequency freq = Annual,
                      bool extrapolate = false) const;
+        //@}
 
       protected:
         /*! \name Calculations

@@ -103,24 +103,32 @@ namespace QuantLib {
                                          dayCounter(), comp, freq);
     }
 
-    Rate YieldTermStructure::parRate(Integer tenor,
+    Rate YieldTermStructure::parRate(Natural tenor,
                                      const Date& startDate,
+                                     const DayCounter& resultDayCounter,
                                      Frequency freq,
                                      bool extrapolate) const {
-        std::vector<Date> dates(1, startDate);
-        dates.reserve(tenor+1);
-        for (Integer i=1; i<=tenor; ++i)
+        std::vector<Date> dates(tenor+1);
+        dates[0] = startDate;
+        for (Natural i=1; i<=tenor; ++i)
             dates.push_back(startDate + i*Years);
-        return parRate(dates, freq, extrapolate);
+        return parRate(dates, resultDayCounter, freq, extrapolate);
     }
 
     Rate YieldTermStructure::parRate(const std::vector<Date>& dates,
+                                     const DayCounter& resultDayCounter,
                                      Frequency freq,
                                      bool extrapolate) const {
-        std::vector<Time> times(dates.size());
-        for (Size i=0; i<dates.size(); i++)
-            times[i] = timeFromReference(dates[i]);
-        return parRate(times,freq,extrapolate);
+        QL_REQUIRE(dates.size() >= 2, "at least two dates are required");
+        Real sum = 0.0;
+        Time dt;
+        for (Size i=1; i<dates.size(); ++i) {
+            dt = resultDayCounter.yearFraction(dates[i-1], dates[i]);
+            QL_REQUIRE(dt>0.0, "unsorted dates");
+            sum += discount(dates[i], extrapolate) * dt;
+        }
+        Real result = discount(dates.front(), extrapolate)-discount(dates.back(), extrapolate);
+        return result/sum;
     }
 
     Rate YieldTermStructure::parRate(const std::vector<Time>& times,
@@ -128,11 +136,14 @@ namespace QuantLib {
                                      bool extrapolate) const {
         QL_REQUIRE(times.size() >= 2, "at least two times are required");
         Real sum = 0.0;
-        for (Size i=1; i<times.size(); ++i)
-            sum += discount(times[i], extrapolate);
+        Time dt;
+        for (Size i=1; i<times.size(); ++i) {
+            dt = times[i]-times[i-1];
+            QL_REQUIRE(dt>0.0, "unsorted times");
+            sum += discount(times[i], extrapolate) * dt;
+        }
         Real result = discount(times.front(), extrapolate)-discount(times.back(), extrapolate);
-        result *=  Real(freq)/sum;
-        return result;
+        return result/sum;
     }
 
 }
