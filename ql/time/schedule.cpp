@@ -429,8 +429,8 @@ namespace QuantLib {
         if (terminationDateConvention_) {
             terminationDateConvention = *terminationDateConvention_;
         } else {
-            // it equals the convention for all other dates.
-            terminationDateConvention = convention;
+            // Unadjusted as per ISDA specification
+            terminationDateConvention = Unadjusted;
         }
 
         Calendar calendar = calendar_;
