@@ -5397,6 +5397,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\yield\flatforward.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\yield\flatforward.hpp"
 					>
 				</File>
