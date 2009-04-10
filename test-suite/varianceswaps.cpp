@@ -20,6 +20,7 @@
 
 #include "varianceswaps.hpp"
 #include "utilities.hpp"
+#include <ql/quotes/simplequote.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/instruments/varianceswap.hpp>

@@ -27,6 +27,8 @@
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/quotes/simplequote.hpp>
+
 #include <iomanip>
 
 using namespace QuantLib;

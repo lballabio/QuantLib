@@ -54,6 +54,7 @@
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/pricingengines/bond/zspread.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/quotes/simplequote.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

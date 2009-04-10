@@ -28,6 +28,8 @@
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/experimental/credit/onefactorgaussiancopula.hpp>
 #include <ql/experimental/credit/onefactorstudentcopula.hpp>
+#include <ql/quotes/simplequote.hpp>
+
 #include <iomanip>
 
 using namespace QuantLib;

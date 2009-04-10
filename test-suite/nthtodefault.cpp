@@ -28,6 +28,7 @@
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <iostream>
 
 using namespace QuantLib;

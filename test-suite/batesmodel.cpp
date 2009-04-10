@@ -36,6 +36,7 @@
 #include <ql/models/equity/batesmodel.hpp>
 #include <ql/models/equity/hestonmodelhelper.hpp>
 #include <ql/time/period.hpp>
+#include <ql/quotes/simplequote.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
