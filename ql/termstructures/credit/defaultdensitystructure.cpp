@@ -48,19 +48,27 @@ namespace QuantLib {
 
     }
 
-    DefaultDensityStructure::DefaultDensityStructure(const DayCounter& dc)
-    : DefaultProbabilityTermStructure(dc) {}
+    DefaultDensityStructure::DefaultDensityStructure(
+                                    const DayCounter& dc,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates)
+    : DefaultProbabilityTermStructure(dc, jumps, jumpDates) {}
 
-    DefaultDensityStructure::DefaultDensityStructure(const Date& referenceDate,
-                                                     const Calendar& cal,
-                                                     const DayCounter& dc)
-    : DefaultProbabilityTermStructure(referenceDate, cal, dc) {}
+    DefaultDensityStructure::DefaultDensityStructure(
+                                    const Date& refDate,
+                                    const Calendar& cal,
+                                    const DayCounter& dc,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates)
+    : DefaultProbabilityTermStructure(refDate, cal, dc, jumps, jumpDates) {}
 
-    DefaultDensityStructure::DefaultDensityStructure(Natural settlementDays,
-                                                     const Calendar& cal,
-                                                     const DayCounter& dc)
-    : DefaultProbabilityTermStructure(settlementDays, cal, dc) {}
-
+    DefaultDensityStructure::DefaultDensityStructure(
+                                    Natural settlDays,
+                                    const Calendar& cal,
+                                    const DayCounter& dc,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates)
+    : DefaultProbabilityTermStructure(settlDays, cal, dc, jumps, jumpDates) {}
 
     Probability DefaultDensityStructure::survivalProbabilityImpl(Time t) const {
         static GaussChebyshevIntegration integral(48);
@@ -76,10 +84,4 @@ namespace QuantLib {
         return std::max<Real>(P, 0.0);
     }
 
-    Real DefaultDensityStructure::hazardRateImpl(Time t) const {
-        Probability S = survivalProbabilityImpl(t);
-        return S == 0.0 ? 0.0 : defaultDensityImpl(t)/S;
-    }
-
 }
-

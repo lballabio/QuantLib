@@ -66,9 +66,11 @@ namespace QuantLib {
                const std::vector<boost::shared_ptr<typename Traits::helper> >&
                                                                   instruments,
                const DayCounter& dayCounter,
+               const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+               const std::vector<Date>& jumpDates = std::vector<Date>(),
                Real accuracy = 1.0e-12,
                const Interpolator& i = Interpolator())
-        : base_curve(referenceDate, dayCounter, i),
+        : base_curve(referenceDate, dayCounter, jumps, jumpDates, i),
           instruments_(instruments), accuracy_(accuracy) {
             bootstrap_.setup(this);
         }
@@ -78,18 +80,20 @@ namespace QuantLib {
                const std::vector<boost::shared_ptr<typename Traits::helper> >&
                                                                   instruments,
                const DayCounter& dayCounter,
+               const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+               const std::vector<Date>& jumpDates = std::vector<Date>(),
                Real accuracy = 1.0e-12,
                const Interpolator& i = Interpolator())
-        : base_curve(settlementDays, calendar, dayCounter, i),
+        : base_curve(settlementDays, calendar, dayCounter, jumps, jumpDates, i),
           instruments_(instruments), accuracy_(accuracy) {
             bootstrap_.setup(this);
         }
         //@}
-        //! \name DefaultTermStructure interface
+        //! \name TermStructure interface
         //@{
         Date maxDate() const;
         //@}
-        //! \name Inspectors
+        //! \name base_curve interface
         //@{
         const std::vector<Time>& times() const;
         const std::vector<Date>& dates() const;
@@ -101,8 +105,11 @@ namespace QuantLib {
         void update();
         //@}
       private:
-        // methods
+        //! \name LazyObject interface
+        //@{
         void performCalculations() const;
+        //@}
+        // methods
         Probability survivalProbabilityImpl(Time) const;
         Real defaultDensityImpl(Time) const;
         Real hazardRateImpl(Time) const;

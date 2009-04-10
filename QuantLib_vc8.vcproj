@@ -4604,6 +4604,14 @@
 					RelativePath=".\ql\termstructures\credit\probabilitytraits.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\survivalprobabilitystructure.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\survivalprobabilitystructure.hpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter

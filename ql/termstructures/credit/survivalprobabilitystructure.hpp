@@ -28,7 +28,17 @@
 
 namespace QuantLib {
 
-    //! survival-probability adapter for default-probability term structures
+    //! Hazard-rate term structure
+    /*! This abstract class acts as an adapter to
+        DefaultProbabilityTermStructure allowing the programmer to implement
+        only the <tt>survivalProbabilityImpl(Time)</tt> method in derived
+        classes.
+
+        Hazard rates and default densities are calculated
+        from survival probabilities.
+
+        \ingroup defaultprobabilitytermstructures
+    */
     class SurvivalProbabilityStructure
         : public DefaultProbabilityTermStructure {
       public:
@@ -37,30 +47,26 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        //! default constructor
-        /*! \warning term structures initialized by means of this
-                     constructor must manage their own reference date
-                     by overriding the referenceDate() method.
-        */
-        SurvivalProbabilityStructure(const DayCounter& dc = DayCounter());
-        //! initialize with a fixed reference date
-        SurvivalProbabilityStructure(const Date& referenceDate,
-                                const Calendar& cal = Calendar(),
-                                const DayCounter& dc = DayCounter());
-        //! calculate the reference date based on the global evaluation date
-        SurvivalProbabilityStructure(Natural settlementDays,
-                                const Calendar& cal,
-                                const DayCounter& dc = DayCounter());
+        SurvivalProbabilityStructure(
+            const DayCounter& dayCounter = DayCounter(),
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>());
+        SurvivalProbabilityStructure(
+            const Date& referenceDate,
+            const Calendar& cal = Calendar(),
+            const DayCounter& dayCounter = DayCounter(),
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>());
+        SurvivalProbabilityStructure(
+            Natural settlementDays,
+            const Calendar& cal,
+            const DayCounter& dayCounter = DayCounter(),
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>());
         //@}
       protected:
         //! \name DefaultProbabilityTermStructure implementation
         //@{
-        //! instantaneous hazard rate at a given time
-        /*! implemented in terms of the default density \f$ p(t) \f$ and
-            the survival probability \f$ S(t) \f$ as
-            \f$ h(t) = p(t)/S(t). \f$
-        */
-        Real hazardRateImpl(Time) const;
         //! instantaneous default density at a given time
         /*! implemented in terms of the survival probability \f$ S(t) \f$ as
             \f$ p(t) = -\frac{d}{dt} S(t). \f$

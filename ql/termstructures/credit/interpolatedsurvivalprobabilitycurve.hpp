@@ -30,19 +30,21 @@
 
 namespace QuantLib {
 
-    //! interpolated hazard-rate curve
+    //! DefaultProbabilityTermStructure based on interpolation of survival probabilities
+    /*! \ingroup defaultprobabilitytermstructures */
     template <class Interpolator>
     class InterpolatedSurvivalProbabilityCurve
         : public SurvivalProbabilityStructure,
           protected InterpolatedCurve<Interpolator> {
       public:
         InterpolatedSurvivalProbabilityCurve(
-                                const std::vector<Date>& dates,
-                                const std::vector<Probability>& probabilities,
-                                const DayCounter& dayCounter,
-                                const Calendar& calendar = Calendar(),
-                                const Interpolator& interpolator
-                                        = Interpolator());
+            const std::vector<Date>& dates,
+            const std::vector<Probability>& probabilities,
+            const DayCounter& dayCounter,
+            const Calendar& calendar = Calendar(),
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>(),
+            const Interpolator& interpolator = Interpolator());
         //! \name TermStructure interface
         //@{
         Date maxDate() const;
@@ -51,22 +53,29 @@ namespace QuantLib {
         //@{
         const std::vector<Time>& times() const;
         const std::vector<Date>& dates() const;
+        const std::vector<Real>& data() const;
         const std::vector<Probability>& survivalProbabilities() const;
-        std::vector<std::pair<Date,Real> > nodes() const;
+        std::vector<std::pair<Date, Real> > nodes() const;
         //@}
       protected:
-        InterpolatedSurvivalProbabilityCurve(const DayCounter&,
-                                             const Interpolator& interpolator
-                                                            = Interpolator());
-        InterpolatedSurvivalProbabilityCurve(const Date& referenceDate,
-                                             const DayCounter&,
-                                             const Interpolator& interpolator
-                                                            = Interpolator());
-        InterpolatedSurvivalProbabilityCurve(Natural settlementDays,
-                                             const Calendar&,
-                                             const DayCounter&,
-                                             const Interpolator& interpolator
-                                                            = Interpolator());
+        InterpolatedSurvivalProbabilityCurve(
+            const DayCounter&,
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>(),
+            const Interpolator& interpolator = Interpolator());
+        InterpolatedSurvivalProbabilityCurve(
+            const Date& referenceDate,
+            const DayCounter&,
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>(),
+            const Interpolator& interpolator = Interpolator());
+        InterpolatedSurvivalProbabilityCurve(
+            Natural settlementDays,
+            const Calendar&,
+            const DayCounter&,
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>(),
+            const Interpolator& interpolator = Interpolator());
         //! \name DefaultProbabilityTermStructure implementation
         //@{
         Probability survivalProbabilityImpl(Time) const;
@@ -92,6 +101,12 @@ namespace QuantLib {
     inline const std::vector<Date>&
     InterpolatedSurvivalProbabilityCurve<T>::dates() const {
         return dates_;
+    }
+
+    template <class T>
+    inline const std::vector<Real>&
+    InterpolatedSurvivalProbabilityCurve<T>::data() const {
+        return this->data_;
     }
 
     template <class T>
@@ -142,36 +157,44 @@ namespace QuantLib {
 
     template <class T>
     InterpolatedSurvivalProbabilityCurve<T>::InterpolatedSurvivalProbabilityCurve(
-                                                 const DayCounter& dayCounter,
-                                                 const T& interpolator)
-    : SurvivalProbabilityStructure(dayCounter),
+                                    const DayCounter& dayCounter,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates,
+                                    const T& interpolator)
+    : SurvivalProbabilityStructure(dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     InterpolatedSurvivalProbabilityCurve<T>::InterpolatedSurvivalProbabilityCurve(
-                                                 const Date& referenceDate,
-                                                 const DayCounter& dayCounter,
-                                                 const T& interpolator)
-    : SurvivalProbabilityStructure(referenceDate, Calendar(), dayCounter),
+                                    const Date& referenceDate,
+                                    const DayCounter& dayCounter,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates,
+                                    const T& interpolator)
+    : SurvivalProbabilityStructure(referenceDate, Calendar(), dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     InterpolatedSurvivalProbabilityCurve<T>::InterpolatedSurvivalProbabilityCurve(
-                                                 Natural settlementDays,
-                                                 const Calendar& calendar,
-                                                 const DayCounter& dayCounter,
-                                                 const T& interpolator)
-    : SurvivalProbabilityStructure(settlementDays, calendar, dayCounter),
+                                    Natural settlementDays,
+                                    const Calendar& calendar,
+                                    const DayCounter& dayCounter,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates,
+                                    const T& interpolator)
+    : SurvivalProbabilityStructure(settlementDays, calendar, dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     InterpolatedSurvivalProbabilityCurve<T>::InterpolatedSurvivalProbabilityCurve(
-                                         const std::vector<Date>& dates,
-                                         const std::vector<Probability>& probabilities,
-                                         const DayCounter& dayCounter,
-                                         const Calendar& calendar,
-                                         const T& interpolator)
-    : SurvivalProbabilityStructure(dates.front(), calendar, dayCounter),
+                                    const std::vector<Date>& dates,
+                                    const std::vector<Probability>& probabilities,
+                                    const DayCounter& dayCounter,
+                                    const Calendar& calendar,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates,
+                                    const T& interpolator)
+    : SurvivalProbabilityStructure(dates.front(), calendar, dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(std::vector<Time>(), probabilities, interpolator),
       dates_(dates)
     {

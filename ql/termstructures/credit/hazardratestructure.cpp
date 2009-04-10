@@ -5,6 +5,7 @@
  Copyright (C) 2008 Chris Kenyon
  Copyright (C) 2008 Roland Lichters
  Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -49,19 +50,27 @@ namespace QuantLib {
 
     }
 
-    HazardRateStructure::HazardRateStructure(const DayCounter& dc)
-    : DefaultProbabilityTermStructure(dc) {}
+    HazardRateStructure::HazardRateStructure(
+                                    const DayCounter& dc,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates)
+    : DefaultProbabilityTermStructure(dc, jumps, jumpDates) {}
 
-    HazardRateStructure::HazardRateStructure(const Date& referenceDate,
-                                             const Calendar& cal,
-                                             const DayCounter& dc)
-    : DefaultProbabilityTermStructure(referenceDate, cal, dc) {}
+    HazardRateStructure::HazardRateStructure(
+                                    const Date& refDate,
+                                    const Calendar& cal,
+                                    const DayCounter& dc,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates)
+    : DefaultProbabilityTermStructure(refDate, cal, dc, jumps, jumpDates) {}
 
-    HazardRateStructure::HazardRateStructure(Natural settlementDays,
-                                             const Calendar& cal,
-                                             const DayCounter& dc)
-    : DefaultProbabilityTermStructure(settlementDays, cal, dc) {}
-
+    HazardRateStructure::HazardRateStructure(
+                                    Natural settlDays,
+                                    const Calendar& cal,
+                                    const DayCounter& dc,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates)
+    : DefaultProbabilityTermStructure(settlDays, cal, dc, jumps, jumpDates) {}
 
     Probability HazardRateStructure::survivalProbabilityImpl(Time t) const {
         static GaussChebyshevIntegration integral(48);
@@ -75,9 +84,4 @@ namespace QuantLib {
         return std::exp(-integral(remap(bind(f,this,_1), t)) * t/2.0);
     }
 
-    Real HazardRateStructure::defaultDensityImpl(Time t) const {
-        return hazardRateImpl(t) * survivalProbabilityImpl(t);
-    }
-
 }
-

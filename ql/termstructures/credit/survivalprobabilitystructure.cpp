@@ -22,36 +22,36 @@
 namespace QuantLib {
 
     SurvivalProbabilityStructure::SurvivalProbabilityStructure(
-                                                         const DayCounter& dc)
-    : DefaultProbabilityTermStructure(dc) {}
+                                    const DayCounter& dc,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates)
+    : DefaultProbabilityTermStructure(dc, jumps, jumpDates) {}
 
     SurvivalProbabilityStructure::SurvivalProbabilityStructure(
-                                                    const Date& referenceDate,
-                                                    const Calendar& cal,
-                                                    const DayCounter& dc)
-    : DefaultProbabilityTermStructure(referenceDate, cal, dc) {}
+                                    const Date& refDate,
+                                    const Calendar& cal,
+                                    const DayCounter& dc,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates)
+    : DefaultProbabilityTermStructure(refDate, cal, dc, jumps, jumpDates) {}
 
     SurvivalProbabilityStructure::SurvivalProbabilityStructure(
-                                                        Natural settlementDays,
-                                                        const Calendar& cal,
-                                                        const DayCounter& dc)
-    : DefaultProbabilityTermStructure(settlementDays, cal, dc) {}
-
-
-    Real SurvivalProbabilityStructure::hazardRateImpl(Time t) const {
-        Probability S = survivalProbabilityImpl(t);
-        return S == 0.0 ? 0.0 : defaultDensityImpl(t)/S;
-    }
+                                    Natural settlDays,
+                                    const Calendar& cal,
+                                    const DayCounter& dc,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates)
+    : DefaultProbabilityTermStructure(settlDays, cal, dc, jumps, jumpDates) {}
 
     Real SurvivalProbabilityStructure::defaultDensityImpl(Time t) const {
         Time dt = 0.0001;
         Time t1 = std::max(t-dt, 0.0);
         Time t2 = t+dt;
 
-        Probability S1 = survivalProbabilityImpl(t1);
-        Probability S2 = survivalProbabilityImpl(t2);
+        Probability p1 = survivalProbabilityImpl(t1);
+        Probability p2 = survivalProbabilityImpl(t2);
 
-        return -(S2-S1)/(t2-t1);
+        return (p1-p2)/(t2-t1);
     }
 
 }

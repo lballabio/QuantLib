@@ -67,8 +67,8 @@ namespace QuantLib {
                 effectiveStartDate + (endDate-effectiveStartDate)/2;
 
             Probability S = probability_->survivalProbability(paymentDate);
-            Probability P = probability_->defaultProbability(effectiveStartDate,
-                                                             endDate);
+            Probability P = probability_->defaultProbability(endDate) -
+                probability_->defaultProbability(effectiveStartDate);
 
             // on one side, we add the fixed rate payments in case of
             // survival...

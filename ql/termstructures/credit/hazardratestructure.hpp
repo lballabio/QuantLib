@@ -5,6 +5,7 @@
  Copyright (C) 2008 Chris Kenyon
  Copyright (C) 2008 Roland Lichters
  Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,7 +32,19 @@
 
 namespace QuantLib {
 
-    //! hazard-rate adapter for default-probability term structures
+    //! Hazard-rate term structure
+    /*! This abstract class acts as an adapter to
+        DefaultProbabilityTermStructure allowing the programmer to implement
+        only the <tt>hazardRateImpl(Time)</tt> method in derived classes.
+
+        Survival/default probabilities and default densities are calculated
+        from hazard rates.
+
+        Hazard rates are defined with annual frequency and continuous
+        compounding.
+
+        \ingroup defaultprobabilitytermstructures
+    */
     class HazardRateStructure : public DefaultProbabilityTermStructure {
       public:
         /*! \name Constructors
@@ -39,26 +52,40 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        //! default constructor
-        /*! \warning term structures initialized by means of this
-                     constructor must manage their own reference date
-                     by overriding the referenceDate() method.
-        */
-        HazardRateStructure(const DayCounter& dc = DayCounter());
-        //! initialize with a fixed reference date
-        HazardRateStructure(const Date& referenceDate,
-                            const Calendar& cal = Calendar(),
-                            const DayCounter& dc = DayCounter());
-        //! calculate the reference date based on the global evaluation date
-        HazardRateStructure(Natural settlementDays,
-                            const Calendar& cal,
-                            const DayCounter& dc = DayCounter());
+        HazardRateStructure(
+            const DayCounter& dayCounter = DayCounter(),
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>());
+        HazardRateStructure(
+            const Date& referenceDate,
+            const Calendar& cal = Calendar(),
+            const DayCounter& dayCounter = DayCounter(),
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>());
+        HazardRateStructure(
+            Natural settlementDays,
+            const Calendar& cal,
+            const DayCounter& dayCounter = DayCounter(),
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>());
         //@}
       protected:
+        /*! \name Calculations
+
+            This method must be implemented in derived classes to
+            perform the actual calculations. When it is called,
+            range check has already been performed; therefore, it
+            must assume that extrapolation is required.
+        */
+        //@{
+        //! hazard rate calculation
+        virtual Real hazardRateImpl(Time) const = 0;
+        //@}
+
         //! \name DefaultProbabilityTermStructure implementation
         //@{
-        //! probability of survival between reference time (t = 0) and a given time
-        /*! implemented in terms of the hazard rate \f$ h(t) \f$ as
+        /*! survival probability calculation
+            implemented in terms of the hazard rate \f$ h(t) \f$ as
             \f[
             S(t) = \exp\left( - \int_0^t h(\tau) d\tau \right).
             \f]
@@ -69,14 +96,16 @@ namespace QuantLib {
                      implementation is available.
         */
         Probability survivalProbabilityImpl(Time) const;
-        //! instantaneous default density at a given time
-        /*! implemented in terms of the hazard rate \f$ h(t) \f$ and
-            the survival probability \f$ S(t) \f$ as
-            \f$ p(t) = h(t) S(t). \f$
-        */
+        //! default density calculation
         Real defaultDensityImpl(Time) const;
         //@}
     };
+
+    // inline definitions
+
+    inline Real HazardRateStructure::defaultDensityImpl(Time t) const {
+        return hazardRateImpl(t)*survivalProbabilityImpl(t);
+    }
 
 }
 

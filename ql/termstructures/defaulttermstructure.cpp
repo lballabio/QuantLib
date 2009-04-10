@@ -4,6 +4,7 @@
  Copyright (C) 2008 Roland Lichters
  Copyright (C) 2008 Chris Kenyon
  Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,36 +21,87 @@
 */
 
 #include <ql/termstructures/defaulttermstructure.hpp>
+#include <ql/utilities/dataformatters.hpp>
 
 namespace QuantLib {
 
     DefaultProbabilityTermStructure::DefaultProbabilityTermStructure(
-                                                         const DayCounter& dc)
-    : TermStructure(dc) {}
-
-    DefaultProbabilityTermStructure::DefaultProbabilityTermStructure(
-                                                    const Date& referenceDate,
-                                                    const Calendar& cal,
-                                                    const DayCounter& dc)
-    : TermStructure(referenceDate, cal, dc) {}
-
-    DefaultProbabilityTermStructure::DefaultProbabilityTermStructure(
-                                                         Natural settlementDays,
-                                                         const Calendar& cal,
-                                                         const DayCounter& dc)
-    : TermStructure(settlementDays, cal, dc) {}
-
-
-    Probability DefaultProbabilityTermStructure::defaultProbability(
-                                                     const Date& d,
-                                                     bool extrapolate) const {
-        return 1.0 - survivalProbability(d, extrapolate);
+                                    const DayCounter& dc,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates)
+    : TermStructure(dc), jumps_(jumps),
+      jumpDates_(jumpDates), jumpTimes_(jumpDates.size()),
+      nJumps_(jumps_.size()) {
+        setJumps();
+        for (Size i=0; i<nJumps_; ++i)
+            registerWith(jumps_[i]);
     }
 
-    Probability DefaultProbabilityTermStructure::defaultProbability(
+    DefaultProbabilityTermStructure::DefaultProbabilityTermStructure(
+                                    const Date& referenceDate,
+                                    const Calendar& cal,
+                                    const DayCounter& dc,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates)
+    : TermStructure(referenceDate, cal, dc), jumps_(jumps),
+      jumpDates_(jumpDates), jumpTimes_(jumpDates.size()),
+      nJumps_(jumps_.size()) {
+        setJumps();
+        for (Size i=0; i<nJumps_; ++i)
+            registerWith(jumps_[i]);
+    }
+
+    DefaultProbabilityTermStructure::DefaultProbabilityTermStructure(
+                                    Natural settlementDays,
+                                    const Calendar& cal,
+                                    const DayCounter& dc,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates)
+    : TermStructure(settlementDays, cal, dc), jumps_(jumps),
+      jumpDates_(jumpDates), jumpTimes_(jumpDates.size()),
+      nJumps_(jumps_.size()) {
+        setJumps();
+        for (Size i=0; i<nJumps_; ++i)
+            registerWith(jumps_[i]);
+    }
+
+    void DefaultProbabilityTermStructure::setJumps() {
+        if (jumpDates_.empty() && !jumps_.empty()) { // turn of year dates
+            jumpDates_.resize(nJumps_);
+            jumpTimes_.resize(nJumps_);
+            Year y = referenceDate().year();
+            for (Size i=0; i<nJumps_; ++i)
+                jumpDates_[i] = Date(31, December, y+i);
+        } else { // fixed dats
+            QL_REQUIRE(jumpDates_.size()==nJumps_,
+                       "mismatch between number of jumps (" << nJumps_ <<
+                       ") and jump dates (" << jumpDates_.size() << ")");
+        }
+        for (Size i=0; i<nJumps_; ++i)
+            jumpTimes_[i] = timeFromReference(jumpDates_[i]);
+        latestReference_ = referenceDate();
+    }
+
+    Probability DefaultProbabilityTermStructure::survivalProbability(
                                                      Time t,
                                                      bool extrapolate) const {
-        return 1.0 - survivalProbability(t, extrapolate);
+        checkRange(t, extrapolate);
+
+        if (!jumps_.empty()) {
+            Probability jumpEffect = 1.0;
+            for (Size i=0; i<nJumps_ && jumpTimes_[i]<t; ++i) {
+                QL_REQUIRE(jumps_[i]->isValid(),
+                           "invalid " << io::ordinal(i+1) << " jump quote");
+                DiscountFactor thisJump = jumps_[i]->value();
+                QL_REQUIRE(thisJump > 0.0 && thisJump <= 1.0,
+                           "invalid " << io::ordinal(i+1) << " jump value: " <<
+                           thisJump);
+                jumpEffect *= thisJump;
+            }
+            return jumpEffect * survivalProbabilityImpl(t);
+        }
+
+        return survivalProbabilityImpl(t);
     }
 
     Probability DefaultProbabilityTermStructure::defaultProbability(
@@ -74,49 +126,6 @@ namespace QuantLib {
         Probability p1 = defaultProbability(t1,extrapolate),
                     p2 = defaultProbability(t2,extrapolate);
         return p2 - p1;
-    }
-
-
-    Probability DefaultProbabilityTermStructure::survivalProbability(
-                                                     const Date& d,
-                                                     bool extrapolate) const {
-        checkRange(d, extrapolate);
-        return survivalProbabilityImpl(timeFromReference(d));
-    }
-
-    Probability DefaultProbabilityTermStructure::survivalProbability(
-                                                     Time t,
-                                                     bool extrapolate) const {
-        checkRange(t, extrapolate);
-        return survivalProbabilityImpl(t);
-    }
-
-
-    Real DefaultProbabilityTermStructure::defaultDensity(
-                                                     const Date& d,
-                                                     bool extrapolate) const {
-        checkRange(d, extrapolate);
-        return defaultDensityImpl(timeFromReference(d));
-    }
-
-    Real DefaultProbabilityTermStructure::defaultDensity(
-                                                     Time t,
-                                                     bool extrapolate) const {
-        checkRange(t, extrapolate);
-        return defaultDensityImpl(t);
-    }
-
-
-    Real DefaultProbabilityTermStructure::hazardRate(const Date& d,
-                                                     bool extrapolate) const {
-        checkRange(d, extrapolate);
-        return hazardRateImpl(timeFromReference(d));
-    }
-
-    Real DefaultProbabilityTermStructure::hazardRate(Time t,
-                                                     bool extrapolate) const {
-        checkRange(t, extrapolate);
-        return hazardRateImpl(t);
     }
 
 }

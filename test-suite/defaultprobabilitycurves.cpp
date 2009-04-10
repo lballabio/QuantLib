@@ -210,10 +210,11 @@ namespace {
             Rate computedRate = cds.fairSpread();
             if (std::fabs(inputRate - computedRate) > tolerance)
                 BOOST_ERROR(
-                    "Failed to reproduce fair spread for credit-default swaps\n"
+                    "\nFailed to reproduce fair spread for " << n[i] <<
+                    "Y credit-default swaps\n"
                     << std::setprecision(10)
-                    << "    computed rate: " << computedRate << "\n"
-                    << "    input rate:    " << inputRate);
+                    << "    computed rate: " << io::rate(computedRate) << "\n"
+                    << "    input rate:    " << io::rate(inputRate));
         }
     }
 
