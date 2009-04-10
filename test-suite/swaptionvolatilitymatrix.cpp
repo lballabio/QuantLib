@@ -208,7 +208,7 @@ namespace {
                     Date exerciseDate = swaption.exercise()->dates().front();
                     if (exerciseDate!=vol->optionDates()[i])
                         BOOST_FAIL(
-                             "optionDateFromTenor mismatch for " <<
+                             "\noptionDateFromTenor mismatch for " <<
                              description << ":"
                              "\n      option tenor: " << atm.tenors.options[i] <<
                              "\nactual option date: " << exerciseDate <<
