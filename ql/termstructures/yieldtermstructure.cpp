@@ -24,6 +24,11 @@
 
 namespace QuantLib {
 
+    namespace {
+        // time interval used in finite differences
+        const Time dt = 0.0001;
+    }
+
     YieldTermStructure::YieldTermStructure(
                                     const DayCounter& dc,
                                     const std::vector<Handle<Quote> >& jumps,
@@ -108,11 +113,10 @@ namespace QuantLib {
                                               Frequency freq,
                                               bool extrapolate) const {
         if (d==referenceDate()) {
-            Time t = 0.0001;
-            Real compound = 1.0/discount(t, extrapolate);
+            Real compound = 1.0/discount(dt, extrapolate);
             // t has been calculated with a possibly different daycounter
             // but the difference should not matter for very small times
-            return InterestRate::impliedRate(compound, t, dayCounter,
+            return InterestRate::impliedRate(compound, dt, dayCounter,
                                              comp, freq);
         }
         Real compound = 1.0/discount(d, extrapolate);
@@ -124,7 +128,7 @@ namespace QuantLib {
                                               Compounding comp,
                                               Frequency freq,
                                               bool extrapolate) const {
-        if (t==0.0) t = 0.0001;
+        if (t==0.0) t = dt;
         Real compound = 1.0/discount(t, extrapolate);
         return InterestRate::impliedRate(compound, t, dayCounter(),
                                          comp, freq);
@@ -137,21 +141,20 @@ namespace QuantLib {
                                                  Frequency freq,
                                                  bool extrapolate) const {
         if (d1==d2) {
-            Time t = timeFromReference(d1);
-            Time t1 = std::max(t - 0.0001, 0.0);
-            Time t2 = t + 0.0001;
+            checkRange(d1, extrapolate);
+            Time t1 = std::max(timeFromReference(d1) - dt/2.0, 0.0);
+            Time t2 = t1 + dt;
             Real compound =
-                discount(t1, extrapolate)/discount(t2, true);
+                discount(t1, true)/discount(t2, true);
             // times have been calculated with a possibly different daycounter
             // but the difference should not matter for very small times
-            return InterestRate::impliedRate(compound, t2-t1,
+            return InterestRate::impliedRate(compound, dt,
                                              dayCounter, comp, freq);
         }
         QL_REQUIRE(d1 < d2,  d1 << " later than " << d2);
         Real compound = discount(d1, extrapolate)/discount(d2, extrapolate);
-        return InterestRate::impliedRate(compound,
-                                         d1, d2, dayCounter,
-                                         comp, freq);
+        return InterestRate::impliedRate(compound, d1, d2,
+                                         dayCounter, comp, freq);
     }
 
     InterestRate YieldTermStructure::forwardRate(Time t1,
@@ -161,9 +164,10 @@ namespace QuantLib {
                                                  bool extrapolate) const {
         Real compound;
         if (t2==t1) {
-            t2 = t1+0.0001;
-            t1 = std::max(t1-0.0001, 0.0);
-            compound = discount(t1, extrapolate)/discount(t2, true);
+            checkRange(t1, extrapolate);
+            t1 = std::max(t1 - dt/2.0, 0.0);
+            t2 = t1 + dt;
+            compound = discount(t1, true)/discount(t2, true);
         } else {
             QL_REQUIRE(t2>t1, "t2 (" << t2 << ") < t1 (" << t2 << ")");
             compound = discount(t1, extrapolate)/discount(t2, extrapolate);

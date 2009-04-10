@@ -35,9 +35,7 @@ namespace QuantLib {
 
     //! Interest-rate term structure
     /*! This abstract class defines the interface of concrete
-        rate structures which will be derived from this one.
-
-        Rates are assumed to be annual continuous compounding.
+        interest rate structures which will be derived from this one.
 
         \ingroup yieldtermstructures
 
@@ -50,21 +48,14 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        //! default constructor
-        /*! \warning term structures initialized by means of this
-                     constructor must manage their own reference date
-                     by overriding the referenceDate() method.
-        */
         YieldTermStructure(const DayCounter& dc = DayCounter(),
                            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
                            const std::vector<Date>& jumpDates = std::vector<Date>());
-        //! initialize with a fixed reference date
         YieldTermStructure(const Date& referenceDate,
                            const Calendar& cal = Calendar(),
                            const DayCounter& dc = DayCounter(),
                            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
                            const std::vector<Date>& jumpDates = std::vector<Date>());
-        //! calculate the reference date based on the global evaluation date
         YieldTermStructure(Natural settlementDays,
                            const Calendar& cal,
                            const DayCounter& dc = DayCounter(),
@@ -72,11 +63,11 @@ namespace QuantLib {
                            const std::vector<Date>& jumpDates = std::vector<Date>());
         //@}
 
-        /*! \name discount factors
+        /*! \name Discount factors
 
-            These methods return the discount factor for a given date
-            or time.  In the former case, the time is calculated as a
-            fraction of year from the reference date.
+            These methods return the discount factor from a given date or time
+            to the refernce date.  In the latter case, the time is calculated
+            as a fraction of year from the reference date.
         */
         //@{
         DiscountFactor discount(const Date& d,
@@ -88,7 +79,7 @@ namespace QuantLib {
                                 bool extrapolate = false) const;
         //@}
 
-        /*! \name zero-yield rates
+        /*! \name Zero-yield rates
 
             These methods return the implied zero-yield rate for a
             given date or time.  In the former case, the time is
@@ -114,11 +105,14 @@ namespace QuantLib {
                               bool extrapolate = false) const;
         //@}
 
-        /*! \name forward rates
+        /*! \name Forward rates
 
-            These methods returns the implied forward interest rate
-            between two dates or times.  In the former case, times are
-            calculated as fractions of year from the reference date.
+            These methods returns the forward interest rate between two dates
+            or times.  In the former case, times are calculated as fractions
+            of year from the reference date.
+
+            If both dates (times) are equal the instantaneous forward rate is
+            returned.
         */
         //@{
         /*! The resulting interest rate has the required day-counting
@@ -152,7 +146,7 @@ namespace QuantLib {
                                  bool extrapolate = false) const;
         //@}
 
-        /*! \name par rates
+        /*! \name Par rates
 
             These methods returns the implied par rate for a given
             sequence of payments at the given dates or times.  In the
@@ -168,7 +162,6 @@ namespace QuantLib {
                      the term structure and call the swap's fairRate()
                      method.
         */
-
         //@{
         Rate parRate(Natural tenor,
                      const Date& startDate,
@@ -177,7 +170,7 @@ namespace QuantLib {
                      bool extrapolate = false) const;
 
         /*! the first date in the vector must equal the start date;
-            the following dates must equal the payment dates.
+            the following dates must equal the par rate payment dates.
         */
         Rate parRate(const std::vector<Date>& dates,
                      const DayCounter& resultDayCounter,
@@ -185,7 +178,7 @@ namespace QuantLib {
                      bool extrapolate = false) const;
 
         /*! the first time in the vector must equal the start time;
-            the following times must equal the payment times.
+            the following times must equal the par rate payment times.
 
             The resulting interest rate has the same day-counting rule
             used by the term structure. The same rule should be used
@@ -194,8 +187,6 @@ namespace QuantLib {
         Rate parRate(const std::vector<Time>& times,
                      Frequency freq = Annual,
                      bool extrapolate = false) const;
-        //@}
-
         //@}
 
         //! \name Jump inspectors
@@ -217,7 +208,7 @@ namespace QuantLib {
             must assume that extrapolation is required.
         */
         //@{
-        //! discount calculation
+        //! discount factor calculation
         virtual DiscountFactor discountImpl(Time) const = 0;
         //@}
       private:
@@ -234,6 +225,12 @@ namespace QuantLib {
     // inline definitions
 
     inline
+    DiscountFactor YieldTermStructure::discount(const Date& d,
+                                                bool extrapolate) const {
+        return discount(timeFromReference(d), extrapolate);
+    }
+
+    inline
     InterestRate YieldTermStructure::forwardRate(const Date& d,
                                                  const Period& p,
                                                  const DayCounter& dayCounter,
@@ -241,12 +238,6 @@ namespace QuantLib {
                                                  Frequency freq,
                                                  bool extrapolate) const {
         return forwardRate(d, d+p, dayCounter, comp, freq, extrapolate);
-    }
-
-    inline
-    DiscountFactor YieldTermStructure::discount(const Date& d,
-                                                bool extrapolate) const {
-        return discount(timeFromReference(d), extrapolate);
     }
 
     inline const std::vector<Date>& YieldTermStructure::jumpDates() const {
