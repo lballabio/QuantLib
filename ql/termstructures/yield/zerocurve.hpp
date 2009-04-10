@@ -34,7 +34,7 @@
 
 namespace QuantLib {
 
-    //! Term structure based on interpolation of zero yields
+    //! YieldTermStructure based on interpolation of zero rates
     /*! \ingroup yieldtermstructures */
     template <class Interpolator>
     class InterpolatedZeroCurve : public ZeroYieldStructure,
@@ -126,7 +126,7 @@ namespace QuantLib {
     InterpolatedZeroCurve<T>::nodes() const {
         std::vector<std::pair<Date, Real> > results(dates_.size());
         for (Size i=0; i<dates_.size(); ++i)
-            results[i] = std::make_pair(dates_[i],this->data_[i]);
+            results[i] = std::make_pair(dates_[i], this->data_[i]);
         return results;
     }
 
@@ -173,7 +173,7 @@ namespace QuantLib {
                                     const std::vector<Handle<Quote> >& jumps,
                                     const std::vector<Date>& jumpDates,
                                     const T& interpolator)
-: ZeroYieldStructure(settlementDays, calendar, dayCounter, jumps, jumpDates),
+    : ZeroYieldStructure(settlementDays, calendar, dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(interpolator) {}
 
     template <class T>

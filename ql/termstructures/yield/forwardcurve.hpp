@@ -33,7 +33,7 @@
 
 namespace QuantLib {
 
-    //! Term structure based on interpolation of forward rates
+    //! YieldTermStructure based on interpolation of forward rates
     /*! \ingroup yieldtermstructures */
     template <class Interpolator>
     class InterpolatedForwardCurve : public ForwardRateStructure,
@@ -58,7 +58,7 @@ namespace QuantLib {
         const std::vector<Date>& dates() const;
         const std::vector<Real>& data() const;
         const std::vector<Rate>& forwards() const;
-        std::vector<std::pair<Date,Rate> > nodes() const;
+        std::vector<std::pair<Date, Real> > nodes() const;
         //@}
       protected:
         InterpolatedForwardCurve(
@@ -129,7 +129,7 @@ namespace QuantLib {
     InterpolatedForwardCurve<T>::nodes() const {
         std::vector<std::pair<Date, Real> > results(dates_.size());
         for (Size i=0; i<dates_.size(); ++i)
-            results[i] = std::make_pair(dates_[i],this->data_[i]);
+            results[i] = std::make_pair(dates_[i], this->data_[i]);
         return results;
     }
 
@@ -217,7 +217,7 @@ namespace QuantLib {
                        "invalid date (" << dates_[i] << ", vs "
                        << dates_[i-1] << ")");
             this->times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
-            QL_REQUIRE(!close(this->times_[i],this->times_[i-1]),
+            QL_REQUIRE(!close(this->times_[i], this->times_[i-1]),
                        "two dates correspond to the same time "
                        "under this curve's day count convention");
             #if !defined(QL_NEGATIVE_RATES)

@@ -34,7 +34,7 @@
 
 namespace QuantLib {
 
-    //! Term structure based on interpolation of discount factors
+    //! YieldTermStructure based on interpolation of discount factors
     /*! \ingroup yieldtermstructures */
     template <class Interpolator>
     class InterpolatedDiscountCurve
@@ -132,7 +132,7 @@ namespace QuantLib {
     InterpolatedDiscountCurve<T>::nodes() const {
         std::vector<std::pair<Date, Real> > results(dates_.size());
         for (Size i=0; i<dates_.size(); ++i)
-            results[i] = std::make_pair(dates_[i],this->data_[i]);
+            results[i] = std::make_pair(dates_[i], this->data_[i]);
         return results;
     }
 
