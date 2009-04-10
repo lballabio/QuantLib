@@ -430,7 +430,7 @@ namespace QuantLib {
             terminationDateConvention = *terminationDateConvention_;
         } else {
             // Unadjusted as per ISDA specification
-            terminationDateConvention = Unadjusted;
+            terminationDateConvention = convention;
         }
 
         Calendar calendar = calendar_;

@@ -58,7 +58,7 @@ namespace QuantLib {
       private:
         //! \name HazardRateStructure interface
         //@{
-        Rate hazardImpl(Time) const { return hazardRate_->value(); }
+        Rate hazardRateImpl(Time) const { return hazardRate_->value(); }
         //@}
 
         //! \name DefaultProbabilityTermStructure interface
