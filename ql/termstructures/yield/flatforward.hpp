@@ -27,7 +27,7 @@
 
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/quotes/simplequote.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 
@@ -36,7 +36,8 @@ namespace QuantLib {
     class FlatForward : public YieldTermStructure,
                         public LazyObject {
       public:
-        // constructors
+        //! \name Constructors
+        //@{
         FlatForward(const Date& referenceDate,
                     const Handle<Quote>& forward,
                     const DayCounter& dayCounter,
@@ -59,14 +60,32 @@ namespace QuantLib {
                     const DayCounter& dayCounter,
                     Compounding compounding = Continuous,
                     Frequency frequency = Annual);
+        //@}
+
         // inspectors
         Compounding compounding() const { return compounding_; }
         Frequency compoundingFrequency() const { return frequency_; }
-        virtual void performCalculations() const;
-        Date maxDate() const;
+
+        //! \name TermStructure interface
+        //@{
+        Date maxDate() const { return Date::maxDate(); }
+        //@}
+
+        //! \name Observer interface
+        //@{
         void update();
+        //@}
       private:
+        //! \name LazyObject interface
+        //@{
+        void performCalculations() const;
+        //@}
+
+        //! \name YieldTermStructure implementation
+        //@{
         DiscountFactor discountImpl(Time) const;
+        //@}
+
         Handle<Quote> forward_;
         Compounding compounding_;
         Frequency frequency_;
@@ -74,49 +93,6 @@ namespace QuantLib {
     };
 
     // inline definitions
-    inline FlatForward::FlatForward(const Date& referenceDate,
-                                    const Handle<Quote>& forward,
-                                    const DayCounter& dayCounter,
-                                    Compounding compounding,
-                                    Frequency frequency)
-    : YieldTermStructure(referenceDate, Calendar(), dayCounter),
-      forward_(forward), compounding_(compounding), frequency_(frequency) {
-        registerWith(forward_);
-    }
-
-    inline FlatForward::FlatForward(const Date& referenceDate,
-                                    Rate forward,
-                                    const DayCounter& dayCounter,
-                                    Compounding compounding,
-                                    Frequency frequency)
-    : YieldTermStructure(referenceDate, Calendar(), dayCounter),
-      forward_(boost::shared_ptr<Quote>(new SimpleQuote(forward))),
-      compounding_(compounding), frequency_(frequency) {}
-
-    inline FlatForward::FlatForward(Natural settlementDays,
-                                    const Calendar& calendar,
-                                    const Handle<Quote>& forward,
-                                    const DayCounter& dayCounter,
-                                    Compounding compounding,
-                                    Frequency frequency)
-    : YieldTermStructure(settlementDays, calendar, dayCounter),
-      forward_(forward), compounding_(compounding), frequency_(frequency) {
-        registerWith(forward_);
-    }
-
-    inline FlatForward::FlatForward(Natural settlementDays,
-                                    const Calendar& calendar,
-                                    Rate forward,
-                                    const DayCounter& dayCounter,
-                                    Compounding compounding,
-                                    Frequency frequency)
-    : YieldTermStructure(settlementDays, calendar, dayCounter),
-      forward_(boost::shared_ptr<Quote>(new SimpleQuote(forward))),
-      compounding_(compounding), frequency_(frequency) {}
-
-    inline Date FlatForward::maxDate() const {
-        return Date::maxDate();
-    }
 
     inline void FlatForward::update() {
         LazyObject::update();
