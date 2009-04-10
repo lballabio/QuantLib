@@ -30,31 +30,50 @@
 
 namespace QuantLib {
 
-    //! flat hazard-rate curve
+    //! Flat hazard-rate curve
+    /*! \ingroup defaultprobabilitytermstructures */
     class FlatHazardRate : public HazardRateStructure {
       public:
         //! \name Constructors
         //@{
+        FlatHazardRate(const Date& referenceDate,
+                       const Handle<Quote>& hazardRate,
+                       const DayCounter&);
+        FlatHazardRate(const Date& referenceDate,
+                       Rate hazardRate,
+                       const DayCounter&);
         FlatHazardRate(Natural settlementDays,
                        const Calendar& calendar,
                        const Handle<Quote>& hazardRate,
                        const DayCounter&);
-        FlatHazardRate(const Date& referenceDate,
-                       const Handle<Quote>& hazardRate,
+        FlatHazardRate(Natural settlementDays,
+                       const Calendar& calendar,
+                       Rate hazardRate,
                        const DayCounter&);
         //@}
         //! \name TermStructure interface
         //@{
-        Date maxDate() const;
+        Date maxDate() const { return Date::maxDate(); }
         //@}
       private:
+        //! \name HazardRateStructure interface
+        //@{
+        Rate hazardImpl(Time) const { return hazardRate_->value(); }
+        //@}
+
         //! \name DefaultProbabilityTermStructure interface
         //@{
-        Real hazardRateImpl(Time) const;
         Probability survivalProbabilityImpl(Time) const;
         //@}
+
         Handle<Quote> hazardRate_;
     };
+
+    // inline definitions
+
+    inline Probability FlatHazardRate::survivalProbabilityImpl(Time t) const {
+        return std::exp(-hazardRate_->value()*t);
+    }
 
 }
 

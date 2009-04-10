@@ -19,8 +19,23 @@
 */
 
 #include <ql/termstructures/credit/flathazardrate.hpp>
+#include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {
+
+    FlatHazardRate::FlatHazardRate(const Date& referenceDate,
+                                   const Handle<Quote>& hazardRate,
+                                   const DayCounter& dayCounter)
+    : HazardRateStructure(referenceDate, Calendar(), dayCounter),
+      hazardRate_(hazardRate) {
+        registerWith(hazardRate_);
+    }
+
+    FlatHazardRate::FlatHazardRate(const Date& referenceDate,
+                                   Rate hazardRate,
+                                   const DayCounter& dayCounter)
+    : HazardRateStructure(referenceDate, Calendar(), dayCounter),
+      hazardRate_(boost::shared_ptr<Quote>(new SimpleQuote(hazardRate))) {}
 
     FlatHazardRate::FlatHazardRate(Natural settlementDays,
                                    const Calendar& calendar,
@@ -31,25 +46,11 @@ namespace QuantLib {
         registerWith(hazardRate_);
     }
 
-    FlatHazardRate::FlatHazardRate(const Date& referenceDate,
-                                   const Handle<Quote>& hazardRate,
+    FlatHazardRate::FlatHazardRate(Natural settlementDays,
+                                   const Calendar& calendar,
+                                   Rate hazardRate,
                                    const DayCounter& dayCounter)
-    : HazardRateStructure(referenceDate, Calendar(), dayCounter),
-      hazardRate_(hazardRate) {
-        registerWith(hazardRate_);
-    }
-
-    Date FlatHazardRate::maxDate() const {
-        return Date::maxDate();
-    }
-
-    Real FlatHazardRate::hazardRateImpl(Time) const {
-        return hazardRate_->value();
-    }
-
-    Probability FlatHazardRate::survivalProbabilityImpl(Time t) const {
-        return std::exp(-hazardRate_->value()*t);
-    }
+    : HazardRateStructure(settlementDays, calendar, dayCounter),
+      hazardRate_(boost::shared_ptr<Quote>(new SimpleQuote(hazardRate))) {}
 
 }
-
