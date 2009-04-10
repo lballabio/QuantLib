@@ -4441,6 +4441,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\yield\flatforward.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\yield\flatforward.hpp"
 					>
 				</File>
@@ -4598,14 +4602,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\credit\probabilitytraits.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\credit\survivalprobabilitystructure.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\credit\survivalprobabilitystructure.hpp"
 					>
 				</File>
 			</Filter>
