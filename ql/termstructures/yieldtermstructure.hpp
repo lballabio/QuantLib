@@ -66,7 +66,7 @@ namespace QuantLib {
         /*! \name Discount factors
 
             These methods return the discount factor from a given date or time
-            to the refernce date.  In the latter case, the time is calculated
+            to the reference date.  In the latter case, the time is calculated
             as a fraction of year from the reference date.
         */
         //@{
