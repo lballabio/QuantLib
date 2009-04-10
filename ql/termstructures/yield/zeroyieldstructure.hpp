@@ -33,10 +33,11 @@ namespace QuantLib {
     //! Zero-yield term structure
     /*! This abstract class acts as an adapter to YieldTermStructure
         allowing the programmer to implement only the
-        <tt>zeroYieldImpl(Time, bool)</tt> method in derived classes.
+        <tt>zeroYieldImpl(Time)</tt> method in derived classes.
+
         Discount and forward are calculated from zero yields.
 
-        Rates are assumed to be annual continuous compounding.
+        Zero rates are assumed to be annual continuous compounding.
 
         \ingroup yieldtermstructures
     */
@@ -47,23 +48,16 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        //! default constructor
-        /*! \warning term structures initialized by means of this
-                     constructor must manage their own reference date
-                     by overriding the referenceDate() method.
-        */
         ZeroYieldStructure(
             const DayCounter& dc = DayCounter(),
             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>());
-        //! initialize with a fixed reference date
         ZeroYieldStructure(
             const Date& referenceDate,
             const Calendar& calendar = Calendar(),
             const DayCounter& dc = DayCounter(),
             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>());
-        //! calculate the reference date based on the global evaluation date
         ZeroYieldStructure(
             Natural settlementDays,
             const Calendar& calendar,
@@ -74,15 +68,16 @@ namespace QuantLib {
       protected:
         /*! \name Calculations
 
-            These methods must be implemented in derived classes to
-            perform the actual calculations. When they are called,
-            range check has already been performed; therefore, they
+            This method must be implemented in derived classes to
+            perform the actual calculations. When it is called,
+            range check has already been performed; therefore, it
             must assume that extrapolation is required.
         */
         //@{
         //! zero-yield calculation
         virtual Rate zeroYieldImpl(Time) const = 0;
         //@}
+
         //! \name YieldTermStructure implementation
         //@{
         /*! Returns the discount factor for the given date calculating it

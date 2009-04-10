@@ -99,7 +99,7 @@ namespace QuantLib {
             bootstrap_.setup(this);
         }
         //@}
-        //! \name YieldTermStructure interface
+        //! \name TermStructure interface
         //@{
         Date maxDate() const;
         //@}
@@ -182,11 +182,8 @@ namespace QuantLib {
         return base_curve::discountImpl(t);
     }
 
-
-    // template definitions
-
     template <class C, class I, template <class> class B>
-    void PiecewiseYieldCurve<C,I,B>::performCalculations() const {
+    inline void PiecewiseYieldCurve<C,I,B>::performCalculations() const {
         // just delegate to the bootstrapper
         bootstrap_.calculate();
     }

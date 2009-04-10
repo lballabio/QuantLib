@@ -31,12 +31,13 @@
 namespace QuantLib {
 
     //! %Forward-rate term structure
-    /*! This abstract class acts as an adapter to TermStructure allowing the
-        programmer to implement only the
-        <tt>forwardImpl(const Date&, bool)</tt> method in derived classes.
+    /*! This abstract class acts as an adapter to YieldTermStructure allowing
+        the programmer to implement only the <tt>forwardImpl(Time)</tt> method
+        in derived classes.
+
         Zero yields and discounts are calculated from forwards.
 
-        Rates are assumed to be annual continuous compounding.
+        Forward rates are assumed to be annual continuous compounding.
 
         \ingroup yieldtermstructures
     */
@@ -51,13 +52,15 @@ namespace QuantLib {
             const DayCounter& dayCounter = DayCounter(),
             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>());
-        ForwardRateStructure(const Date& referenceDate,
-                             const Calendar& cal = Calendar(),
+        ForwardRateStructure(
+            const Date& referenceDate,
+            const Calendar& cal = Calendar(),
             const DayCounter& dayCounter = DayCounter(),
             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>());
-        ForwardRateStructure(Natural settlementDays,
-                             const Calendar& cal,
+        ForwardRateStructure(
+            Natural settlementDays,
+            const Calendar& cal,
             const DayCounter& dayCounter = DayCounter(),
             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>());
@@ -86,6 +89,7 @@ namespace QuantLib {
         */
         virtual Rate zeroYieldImpl(Time) const;
         //@}
+
         //! \name YieldTermStructure implementation
         //@{
         /*! Returns the discount factor for the given date calculating it
