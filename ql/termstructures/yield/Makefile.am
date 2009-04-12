@@ -26,6 +26,7 @@ this_include_HEADERS = \
 libYieldTermStructures_la_SOURCES = \
     bondhelpers.cpp \
     fittedbonddiscountcurve.cpp \
+    flatforward.cpp \
     forwardstructure.cpp \
     nonlinearfittingmethods.cpp \
     ratehelpers.cpp \
