@@ -25,6 +25,8 @@
 #define quantlib_discounting_bond_engine_hpp
 
 #include <ql/instruments/bond.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/handle.hpp>
 
 namespace QuantLib {
 
@@ -39,6 +41,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif
