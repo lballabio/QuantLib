@@ -80,7 +80,6 @@ namespace QuantLib {
                 return -1;
         }
 
-
         Real simpleDuration(const Leg& cashflows,
                             const InterestRate& y,
                             const Date& settlementDate) {
@@ -164,25 +163,23 @@ namespace QuantLib {
                       const DayCounter& dayCounter,
                       Compounding compounding,
                       Frequency frequency,
-                      Date settlementDate)
+                      const Date& settlementDate)
             : cashflows_(cashflows), marketPrice_(marketPrice),
-              dayCounter_(dayCounter), compounding_(compounding),
-              frequency_(frequency), settlementDate_(settlementDate) {}
-            Real operator()(Rate x) const {
-                InterestRate y(x, dayCounter_, compounding_, frequency_);
-                Real NPV = CashFlows::npv(cashflows_, y, settlementDate_);
+              yield_(0.02, dayCounter, compounding, frequency),
+              settlementDate_(settlementDate) {}
+            Real operator()(Rate yield) const {
+                yield_.setRate(yield);
+                Real NPV = CashFlows::npv(cashflows_, yield_, settlementDate_);
                 return marketPrice_ - NPV;
             }
-            Real derivative(Rate x) const {
-                InterestRate y(x, dayCounter_, compounding_, frequency_);
-                return modifiedDuration(cashflows_, y, settlementDate_);
+            Real derivative(Rate yield) const {
+                yield_.setRate(yield);
+                return modifiedDuration(cashflows_, yield_, settlementDate_);
             }
           private:
             const Leg& cashflows_;
             Real marketPrice_;
-            DayCounter dayCounter_;
-            Compounding compounding_;
-            Frequency frequency_;
+            mutable InterestRate yield_;
             Date settlementDate_;
         };
 
