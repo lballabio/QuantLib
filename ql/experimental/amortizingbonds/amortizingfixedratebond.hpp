@@ -25,7 +25,7 @@
 #define quantlib_amortizing_fixed_rate_bond_hpp
 
 #include <ql/instruments/bond.hpp>
-#include <ql/time/dategenerationrule.hpp>
+#include <ql/time/daycounter.hpp>
 
 namespace QuantLib {
 

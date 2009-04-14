@@ -24,14 +24,17 @@
 #ifndef quantlib_callable_bond_hpp
 #define quantlib_callable_bond_hpp
 
-#include <ql/time/schedule.hpp>
-#include <ql/pricingengine.hpp>
 #include <ql/instruments/bond.hpp>
+#include <ql/pricingengine.hpp>
 #include <ql/instruments/callabilityschedule.hpp>
-#include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/handle.hpp>
 #include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {
+
+    class Schedule;
+    class DayCounter;
 
     //! Callable bond base class
     /*! Base callable bond class for fixed and zero coupon bonds.
@@ -200,5 +203,3 @@ namespace QuantLib {
 }
 
 #endif
-
-

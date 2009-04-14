@@ -22,6 +22,7 @@
 #include <ql/experimental/callablebonds/callablebondconstantvol.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/pricingengines/blackformula.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 
 using namespace std;
 

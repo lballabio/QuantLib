@@ -20,11 +20,7 @@
 #include <ql/experimental/callablebonds/callablebond.hpp>
 #include <ql/experimental/callablebonds/blackcallablebondengine.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/cashflows/simplecashflow.hpp>
 #include <ql/math/solvers1d/brent.hpp>
-#include <ql/cashflows/cashflows.hpp>
-#include <ql/time/schedule.hpp>
-#include <ql/math/comparison.hpp>
 
 namespace QuantLib {
 

@@ -30,6 +30,7 @@
 #include <ql/instruments/dividendschedule.hpp>
 #include <ql/instruments/callabilityschedule.hpp>
 #include <ql/time/schedule.hpp>
+#include <ql/time/daycounter.hpp>
 #include <ql/quote.hpp>
 
 namespace QuantLib {
