@@ -62,10 +62,6 @@ namespace QuantLib {
             return freqMakesSense_ ? Frequency(Integer(freq_)) : NoFrequency;
         }
         //@}
-        //! \name modifiers
-        //@{
-        void setRate(Rate r) { r_ = r; }
-        //@}
         //! \name discount/compound factor calculations
         //@{
         //! discount factor implied by the rate compounded at time t.
