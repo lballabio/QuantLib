@@ -123,8 +123,7 @@ namespace QuantLib {
                     gFunction_ = GFunctionFactory::newGFunctionExactYield(*coupon_);
                     break;
                 case GFunctionFactory::ParallelShifts: {
-                    Handle<Quote> nullMeanReversionQuote =
-                        Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
+                    Handle<Quote> nullMeanReversionQuote(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
                     gFunction_ = GFunctionFactory::newGFunctionWithShifts(*coupon_, nullMeanReversionQuote);
                     }
                     break;
