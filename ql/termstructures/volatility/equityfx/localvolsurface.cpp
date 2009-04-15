@@ -89,16 +89,16 @@ namespace QuantLib {
     Volatility LocalVolSurface::localVolImpl(Time t, Real underlyingLevel)
                                                                      const {
 
-        Real forwardValue = underlying_->value() *
-            (dividendTS_->discount(t, true)/
-             riskFreeTS_->discount(t, true));
-
+        DiscountFactor dr = riskFreeTS_->discount(t, true);
+        DiscountFactor dq = dividendTS_->discount(t, true);
+        Real forwardValue = underlying_->value()*dq/dr;
+        
         // strike derivatives
         Real strike, y, dy, strikep, strikem;
         Real w, wp, wm, dwdy, d2wdy2;
         strike = underlyingLevel;
         y = std::log(strike/forwardValue);
-        dy = ((y!=0.0) ? y*0.000001 : 0.000001);
+        dy = ((std::fabs(y) > 0.001) ? y*0.0001 : 0.000001);
         strikep=strike*std::exp(dy);
         strikem=strike/std::exp(dy);
         w  = blackTS_->blackVariance(t, strike,  true);
@@ -111,21 +111,35 @@ namespace QuantLib {
         Real dt, wpt, wmt, dwdt;
         if (t==0.0) {
             dt = 0.0001;
-            wpt = blackTS_->blackVariance(t+dt, strike, true);
+            DiscountFactor drpt = riskFreeTS_->discount(t+dt, true);
+            DiscountFactor dqpt = dividendTS_->discount(t+dt, true);           
+            Real strikept = strike*dr*dq/(drpt*dqpt);
+
+            wpt = blackTS_->blackVariance(t+dt, strikept, true);
             QL_ENSURE(wpt>=w,
                       "decreasing variance at strike " << strike
                       << " between time " << t << " and time " << t+dt);
             dwdt = (wpt-w)/dt;
         } else {
             dt = std::min<Time>(0.0001, t/2.0);
-            wpt = blackTS_->blackVariance(t+dt, strike, true);
-            wmt = blackTS_->blackVariance(t-dt, strike, true);
+            DiscountFactor drpt = riskFreeTS_->discount(t+dt, true);
+            DiscountFactor drmt = riskFreeTS_->discount(t-dt, true);
+            DiscountFactor dqpt = dividendTS_->discount(t+dt, true);
+            DiscountFactor dqmt = dividendTS_->discount(t-dt, true);
+            
+            Real strikept = strike*dr*dq/(drpt*dqpt);
+            Real strikemt = strike*dr*dq/(drmt*dqmt);
+            
+            wpt = blackTS_->blackVariance(t+dt, strikept, true);
+            wmt = blackTS_->blackVariance(t-dt, strikemt, true);
+
             QL_ENSURE(wpt>=w,
                       "decreasing variance at strike " << strike
                       << " between time " << t << " and time " << t+dt);
             QL_ENSURE(w>=wmt,
                       "decreasing variance at strike " << strike
                       << " between time " << t-dt << " and time " << t);
+         
             dwdt = (wpt-wmt)/(2.0*dt);
         }
 
@@ -137,13 +151,13 @@ namespace QuantLib {
             Real den3 = 0.5*d2wdy2;
             Real den = den1+den2+den3;
             Real result = dwdt / den;
+
             QL_ENSURE(result>=0.0,
                       "negative local vol^2 at strike " << strike
                       << " and time " << t
                       << "; the black vol surface is not smooth enough");
+
             return std::sqrt(result);
-            // return std::sqrt(dwdt / (1.0 - y/w*dwdy +
-            //    0.25*(-0.25 - 1.0/w + y*y/w/w)*dwdy*dwdy + 0.5*d2wdy2));
         }
     }
 
