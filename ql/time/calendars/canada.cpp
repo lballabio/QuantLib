@@ -54,8 +54,6 @@ namespace QuantLib {
                 && y >= 2008)
             // Good Friday
             || (dd == em-3)
-            // Easter Monday
-            || (dd == em)
             // The Monday on or preceding 24 May (Victoria Day)
             || (d > 17 && d <= 24 && w == Monday && m == May)
             // July 1st, possibly moved to Monday (Canada Day)
@@ -94,8 +92,6 @@ namespace QuantLib {
                 && y >= 2008)
             // Good Friday
             || (dd == em-3)
-            // Easter Monday
-            || (dd == em)
             // The Monday on or preceding 24 May (Victoria Day)
             || (d > 17 && d <= 24 && w == Monday && m == May)
             // July 1st, possibly moved to Monday (Canada Day)
