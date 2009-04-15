@@ -3,7 +3,8 @@
 /*
  Copyright (C) 2003, 2007 Ferdinando Ametrano
  Copyright (C) 2003, 2007 StatPro Italia srl
-
+ Copyright (C) 2009 Klaus Spanderen
+ 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -20,9 +21,12 @@
 
 #include "europeanoption.hpp"
 #include "utilities.hpp"
+#include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
+#include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/binomialengine.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesvanillaengine.hpp>
@@ -30,7 +34,9 @@
 #include <ql/pricingengines/vanilla/mceuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/integralengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <boost/progress.hpp>
 #include <map>
@@ -1382,9 +1388,142 @@ void EuropeanOptionTest::testPriceCurve() {
 }
 
 
+void EuropeanOptionTest::testLocalVolatility() {
+    BOOST_MESSAGE("Testing Finite Difference with Local Volatility ...");
+
+    SavedSettings backup;
+
+    const Date settlementDate(5, July, 2002);
+    Settings::instance().evaluationDate() = settlementDate;
+
+    const DayCounter dayCounter = Actual365Fixed();
+    const Calendar calendar = TARGET();
+
+    Integer t[] = { 13, 41, 75, 165, 256, 345, 524, 703 };
+    Rate r[] = { 0.0357,0.0349,0.0341,0.0355,0.0359,0.0368,0.0386,0.0401 };
+
+    std::vector<Rate> rates(1, 0.0357);
+    std::vector<Date> dates(1, settlementDate);
+    for (Size i = 0; i < 8; ++i) {
+        dates.push_back(settlementDate + t[i]);
+        rates.push_back(r[i]);
+    }
+    const boost::shared_ptr<YieldTermStructure> rTS(
+                                   new ZeroCurve(dates, rates, dayCounter));
+    const boost::shared_ptr<YieldTermStructure> qTS(
+                                   flatRate(settlementDate, 0.0, dayCounter));
+
+    const boost::shared_ptr<Quote> s0(new SimpleQuote(4500.00));
+    
+    Real tmp[] = { 100 ,500 ,2000,3400,3600,3800,4000,4200,4400,4500,
+                   4600,4800,5000,5200,5400,5600,7500,10000,20000,30000 };
+    const std::vector<Real> strikes(tmp, tmp+LENGTH(tmp));
+    
+    Volatility v[] =
+      { 1.015873, 1.015873, 1.015873, 0.89729, 0.796493, 0.730914, 0.631335, 0.568895,
+        0.711309, 0.711309, 0.711309, 0.641309, 0.635593, 0.583653, 0.508045, 0.463182,
+        0.516034, 0.500534, 0.500534, 0.500534, 0.448706, 0.416661, 0.375470, 0.353442,
+        0.516034, 0.482263, 0.447713, 0.387703, 0.355064, 0.337438, 0.316966, 0.306859,
+        0.497587, 0.464373, 0.430764, 0.374052, 0.344336, 0.328607, 0.310619, 0.301865,
+        0.479511, 0.446815, 0.414194, 0.361010, 0.334204, 0.320301, 0.304664, 0.297180,
+        0.461866, 0.429645, 0.398092, 0.348638, 0.324680, 0.312512, 0.299082, 0.292785,
+        0.444801, 0.413014, 0.382634, 0.337026, 0.315788, 0.305239, 0.293855, 0.288660,
+        0.428604, 0.397219, 0.368109, 0.326282, 0.307555, 0.298483, 0.288972, 0.284791,
+        0.420971, 0.389782, 0.361317, 0.321274, 0.303697, 0.295302, 0.286655, 0.282948,
+        0.413749, 0.382754, 0.354917, 0.316532, 0.300016, 0.292251, 0.284420, 0.281164,
+        0.400889, 0.370272, 0.343525, 0.307904, 0.293204, 0.286549, 0.280189, 0.277767,
+        0.390685, 0.360399, 0.334344, 0.300507, 0.287149, 0.281380, 0.276271, 0.274588,
+        0.383477, 0.353434, 0.327580, 0.294408, 0.281867, 0.276746, 0.272655, 0.271617,
+        0.379106, 0.349214, 0.323160, 0.289618, 0.277362, 0.272641, 0.269332, 0.268846,
+        0.377073, 0.347258, 0.320776, 0.286077, 0.273617, 0.269057, 0.266293, 0.266265,
+        0.399925, 0.369232, 0.338895, 0.289042, 0.265509, 0.255589, 0.249308, 0.249665,
+        0.423432, 0.406891, 0.373720, 0.314667, 0.281009, 0.263281, 0.246451, 0.242166,
+        0.453704, 0.453704, 0.453704, 0.381255, 0.334578, 0.305527, 0.268909, 0.251367,
+        0.517748, 0.517748, 0.517748, 0.416577, 0.364770, 0.331595, 0.287423, 0.264285 };
+    
+    Matrix blackVolMatrix(strikes.size(), dates.size()-1);
+    for (Size i=0; i < strikes.size(); ++i)
+        for (Size j=1; j < dates.size(); ++j) {
+            blackVolMatrix[i][j-1] = v[i*(dates.size()-1)+j-1];
+        }
+    
+    const boost::shared_ptr<BlackVarianceSurface> volTS(
+        new BlackVarianceSurface(settlementDate, calendar,
+                                 std::vector<Date>(dates.begin()+1, dates.end()),
+                                 strikes, blackVolMatrix,
+                                 dayCounter));
+    volTS->setInterpolation<Bicubic>();
+    const boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+                                              makeProcess(s0, qTS, rTS,volTS);
+    
+    for (Size i=2; i < dates.size(); ++i) {
+        for (Size j=3; j < strikes.size()-5; j+=5) {
+            const Date& exDate = dates[i];
+            const boost::shared_ptr<StrikedTypePayoff> payoff(new
+                                 PlainVanillaPayoff(Option::Call, strikes[j]));
+    
+            const boost::shared_ptr<Exercise> exercise(
+                                                 new EuropeanExercise(exDate));
+    
+            EuropeanOption option(payoff, exercise);
+            option.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                         new AnalyticEuropeanEngine(process)));
+             
+            const Real tol = 0.001;
+            const Real expectedNPV   = option.NPV();
+            const Real expectedDelta = option.delta();
+            const Real expectedGamma = option.gamma();
+            
+            option.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                    new FdBlackScholesVanillaEngine(process, 100, 400, 0.5)));
+    
+            Real calculatedNPV = option.NPV();
+            const Real calculatedDelta = option.delta();
+            const Real calculatedGamma = option.gamma();
+            
+            // check implied pricing first
+            if (std::fabs(expectedNPV - calculatedNPV) > tol*expectedNPV) {
+                BOOST_FAIL("Failed to reproduce option price for "
+                           << "\n    strike:     " << payoff->strike()
+                           << "\n    maturity:   " << exDate
+                           << "\n    calculated: " << calculatedNPV
+                           << "\n    expected:   " << expectedNPV);
+            }
+            if (std::fabs(expectedDelta - calculatedDelta) >tol*expectedDelta) {
+                BOOST_FAIL("Failed to reproduce option delta for "
+                           << "\n    strike:     " << payoff->strike()
+                           << "\n    maturity:   " << exDate
+                           << "\n    calculated: " << calculatedDelta
+                           << "\n    expected:   " << expectedDelta);
+            }
+            if (std::fabs(expectedGamma - calculatedGamma) >tol*expectedGamma) {
+                BOOST_FAIL("Failed to reproduce option gamma for "
+                           << "\n    strike:     " << payoff->strike()
+                           << "\n    maturity:   " << exDate
+                           << "\n    calculated: " << calculatedGamma
+                           << "\n    expected:   " << expectedGamma);
+            }
+            
+            // check local vol pricing
+            // delta/gamma are not the same by definition (model implied greeks)
+            option.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                    new FdBlackScholesVanillaEngine(process, 25, 400, 
+                                                    0.5, true, 0.35)));
+            calculatedNPV = option.NPV();
+            if (std::fabs(expectedNPV - calculatedNPV) > tol*expectedNPV) {
+                BOOST_FAIL("Failed to reproduce local vol option price for "
+                           << "\n    strike:     " << payoff->strike()
+                           << "\n    maturity:   " << exDate
+                           << "\n    calculated: " << calculatedNPV
+                           << "\n    expected:   " << expectedNPV);
+            }
+        }
+    }
+}
+
+
 test_suite* EuropeanOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("European option tests");
-
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testValues));
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testGreekValues));
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testGreeks));
@@ -1408,6 +1547,7 @@ test_suite* EuropeanOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testQmcEngines));
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testPriceCurve));
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testLocalVolatility));
 
     return suite;
 }

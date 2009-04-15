@@ -22,15 +22,21 @@
 #include "barrieroption.hpp"
 #include "utilities.hpp"
 #include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/instruments/barrieroption.hpp>
+#include <ql/models/equity/hestonmodel.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
+#include <ql/experimental/finitedifferences/fdhestonbarrierengine.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesbarrierengine.hpp>
 #include <ql/experimental/barrieroption/perturbativebarrieroptionengine.hpp>
 #include <ql/pricingengines/barrier/mcbarrierengine.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
@@ -559,12 +565,146 @@ void BarrierOptionTest::testPerturbative() {
     }
 }
 
+void BarrierOptionTest::testLocalVolAndHestonComparison() {
+    BOOST_MESSAGE("Testing Local Volatility and Heston FD engines "
+                  "for barrier options...");
+
+    SavedSettings backup;
+
+    const Date settlementDate(5, July, 2002);
+    Settings::instance().evaluationDate() = settlementDate;
+
+    const DayCounter dayCounter = Actual365Fixed();
+    const Calendar calendar = TARGET();
+
+    Integer t[] = { 13, 41, 75, 165, 256, 345, 524, 703 };
+    Rate r[] = { 0.0357,0.0349,0.0341,0.0355,0.0359,0.0368,0.0386,0.0401 };
+
+    std::vector<Rate> rates(1, 0.0357);
+    std::vector<Date> dates(1, settlementDate);
+    for (Size i = 0; i < 8; ++i) {
+        dates.push_back(settlementDate + t[i]);
+        rates.push_back(r[i]);
+    }
+    const Handle<YieldTermStructure> rTS(
+            boost::shared_ptr<YieldTermStructure>(
+                                    new ZeroCurve(dates, rates, dayCounter)));
+    const Handle<YieldTermStructure> qTS(
+                                   flatRate(settlementDate, 0.0, dayCounter));
+
+    const Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(4500.00)));
+    
+    Real tmp[] = { 100 ,500 ,2000,3400,3600,3800,4000,4200,4400,4500,
+                   4600,4800,5000,5200,5400,5600,7500,10000,20000,30000 };
+    const std::vector<Real> strikes(tmp, tmp+LENGTH(tmp));
+    
+    Volatility v[] =
+      { 1.015873, 1.015873, 1.015873, 0.89729, 0.796493, 0.730914, 0.631335, 0.568895,
+        0.711309, 0.711309, 0.711309, 0.641309, 0.635593, 0.583653, 0.508045, 0.463182,
+        0.516034, 0.500534, 0.500534, 0.500534, 0.448706, 0.416661, 0.375470, 0.353442,
+        0.516034, 0.482263, 0.447713, 0.387703, 0.355064, 0.337438, 0.316966, 0.306859,
+        0.497587, 0.464373, 0.430764, 0.374052, 0.344336, 0.328607, 0.310619, 0.301865,
+        0.479511, 0.446815, 0.414194, 0.361010, 0.334204, 0.320301, 0.304664, 0.297180,
+        0.461866, 0.429645, 0.398092, 0.348638, 0.324680, 0.312512, 0.299082, 0.292785,
+        0.444801, 0.413014, 0.382634, 0.337026, 0.315788, 0.305239, 0.293855, 0.288660,
+        0.428604, 0.397219, 0.368109, 0.326282, 0.307555, 0.298483, 0.288972, 0.284791,
+        0.420971, 0.389782, 0.361317, 0.321274, 0.303697, 0.295302, 0.286655, 0.282948,
+        0.413749, 0.382754, 0.354917, 0.316532, 0.300016, 0.292251, 0.284420, 0.281164,
+        0.400889, 0.370272, 0.343525, 0.307904, 0.293204, 0.286549, 0.280189, 0.277767,
+        0.390685, 0.360399, 0.334344, 0.300507, 0.287149, 0.281380, 0.276271, 0.274588,
+        0.383477, 0.353434, 0.327580, 0.294408, 0.281867, 0.276746, 0.272655, 0.271617,
+        0.379106, 0.349214, 0.323160, 0.289618, 0.277362, 0.272641, 0.269332, 0.268846,
+        0.377073, 0.347258, 0.320776, 0.286077, 0.273617, 0.269057, 0.266293, 0.266265,
+        0.399925, 0.369232, 0.338895, 0.289042, 0.265509, 0.255589, 0.249308, 0.249665,
+        0.423432, 0.406891, 0.373720, 0.314667, 0.281009, 0.263281, 0.246451, 0.242166,
+        0.453704, 0.453704, 0.453704, 0.381255, 0.334578, 0.305527, 0.268909, 0.251367,
+        0.517748, 0.517748, 0.517748, 0.416577, 0.364770, 0.331595, 0.287423, 0.264285 };
+    
+    Matrix blackVolMatrix(strikes.size(), dates.size()-1);
+    for (Size i=0; i < strikes.size(); ++i)
+        for (Size j=1; j < dates.size(); ++j) {
+            blackVolMatrix[i][j-1] = v[i*(dates.size()-1)+j-1];
+        }
+    
+    const boost::shared_ptr<BlackVarianceSurface> volTS(
+        new BlackVarianceSurface(settlementDate, calendar,
+                                 std::vector<Date>(dates.begin()+1,dates.end()),
+                                 strikes, blackVolMatrix,
+                                 dayCounter));
+    volTS->setInterpolation<Bicubic>();
+    const boost::shared_ptr<GeneralizedBlackScholesProcess> localVolProcess(
+        new BlackScholesMertonProcess(s0, qTS, rTS, 
+                                      Handle<BlackVolTermStructure>(volTS)));
+    
+    const Real v0   =0.195662;
+    const Real kappa=5.6628;
+    const Real theta=0.0745911;
+    const Real sigma=1.1619;
+    const Real rho  =-0.511493;
+
+    boost::shared_ptr<HestonProcess> hestonProcess(new HestonProcess(
+                                  rTS, qTS, s0, v0, kappa, theta, sigma, rho));
+
+    boost::shared_ptr<HestonModel> hestonModel(new HestonModel(hestonProcess));
+
+    boost::shared_ptr<PricingEngine> fdHestonEngine(
+                         new FdHestonBarrierEngine(hestonModel, 100, 400, 50));
+    
+    boost::shared_ptr<PricingEngine> fdLocalVolEngine(
+                   new FdBlackScholesBarrierEngine(localVolProcess, 100, 400, 
+                                                   0.5, true, 0.35));
+    
+    const Real strike  = s0->value();
+    const Real barrier = 3000;
+    const Real rebate  = 100;
+    const Date exDate  = settlementDate + Period(20, Months);
+    
+    const boost::shared_ptr<StrikedTypePayoff> payoff(new
+                                     PlainVanillaPayoff(Option::Put, strike));
+
+    const boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+
+    BarrierOption barrierOption(Barrier::DownOut, 
+                                barrier, rebate, payoff, exercise);
+    
+    barrierOption.setPricingEngine(fdHestonEngine);
+    const Real expectedHestonNPV = 111.5;
+    const Real calculatedHestonNPV = barrierOption.NPV();
+
+    barrierOption.setPricingEngine(fdLocalVolEngine);
+    const Real expectedLocalVolNPV = 132.8;
+    const Real calculatedLocalVolNPV = barrierOption.NPV();
+    
+    const Real tol = 0.01;
+    
+    if (std::fabs(expectedHestonNPV - calculatedHestonNPV) 
+                                                > tol*expectedHestonNPV) {
+        BOOST_FAIL("Failed to reproduce Heston barrier price for "
+                   << "\n    strike:     " << payoff->strike()
+                   << "\n    barrier:    " << barrier
+                   << "\n    maturity:   " << exDate
+                   << "\n    calculated: " << calculatedHestonNPV
+                   << "\n    expected:   " << expectedHestonNPV);
+    }
+    if (std::fabs(expectedLocalVolNPV - calculatedLocalVolNPV) 
+                                                > tol*expectedLocalVolNPV) {
+        BOOST_FAIL("Failed to reproduce Heston barrier price for "
+                   << "\n    strike:     " << payoff->strike()
+                   << "\n    barrier:    " << barrier
+                   << "\n    maturity:   " << exDate
+                   << "\n    calculated: " << calculatedHestonNPV
+                   << "\n    expected:   " << expectedHestonNPV);
+    }
+}
+
+
 test_suite* BarrierOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Barrier option tests");
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testHaugValues));
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testBabsiriValues));
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testBeagleholeValues));
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testPerturbative));
+    suite->add(QUANTLIB_TEST_CASE(
+                        &BarrierOptionTest::testLocalVolAndHestonComparison));
     return suite;
 }
-
