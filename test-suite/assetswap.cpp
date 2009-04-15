@@ -52,7 +52,7 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
-#include <ql/pricingengines/bond/zspread.hpp>
+#include <ql/pricingengines/bond/bondfunctions.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/quotes/simplequote.hpp>
 
@@ -940,7 +940,7 @@ void AssetSwapTest::testZSpread() {
     Date fixedBondSettlementDate1= fixedBond1->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YC...
-    Real fixedBondCleanPrice1 = cleanPriceFromZSpread(
+    Real fixedBondCleanPrice1 = BondFunctions::cleanPrice(
          *fixedBond1, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          fixedBondSettlementDate1);
@@ -977,7 +977,7 @@ void AssetSwapTest::testZSpread() {
     Date fixedBondSettlementDate2= fixedBond2->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
-    Real fixedBondCleanPrice2 = cleanPriceFromZSpread(
+    Real fixedBondCleanPrice2 = BondFunctions::cleanPrice(
          *fixedBond2, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          fixedBondSettlementDate2);
@@ -1020,7 +1020,7 @@ void AssetSwapTest::testZSpread() {
     Date floatingBondSettlementDate1= floatingBond1->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
-    Real floatingBondCleanPrice1 = cleanPriceFromZSpread(
+    Real floatingBondCleanPrice1 = BondFunctions::cleanPrice(
         *floatingBond1, *vars.termStructure, vars.spread,
         Actual365Fixed(), vars.compounding, Semiannual,
         fixedBondSettlementDate1);
@@ -1062,7 +1062,7 @@ void AssetSwapTest::testZSpread() {
     Date floatingBondSettlementDate2= floatingBond2->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
-    Real floatingBondCleanPrice2 = cleanPriceFromZSpread(
+    Real floatingBondCleanPrice2 = BondFunctions::cleanPrice(
         *floatingBond2, *vars.termStructure,
         vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
         fixedBondSettlementDate1);
@@ -1103,7 +1103,7 @@ void AssetSwapTest::testZSpread() {
     Date cmsBondSettlementDate1= cmsBond1->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
-    Real cmsBondCleanPrice1 = cleanPriceFromZSpread(
+    Real cmsBondCleanPrice1 = BondFunctions::cleanPrice(
         *cmsBond1, *vars.termStructure, vars.spread,
         Actual365Fixed(), vars.compounding, Annual,
         cmsBondSettlementDate1);
@@ -1143,7 +1143,7 @@ void AssetSwapTest::testZSpread() {
     Date cmsBondSettlementDate2= cmsBond2->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
-    Real cmsBondCleanPrice2 = cleanPriceFromZSpread(
+    Real cmsBondCleanPrice2 = BondFunctions::cleanPrice(
          *cmsBond2, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          cmsBondSettlementDate2);
@@ -1174,7 +1174,7 @@ void AssetSwapTest::testZSpread() {
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real zeroCpnBondCleanPrice1 =
-        cleanPriceFromZSpread(*zeroCpnBond1,
+        BondFunctions::cleanPrice(*zeroCpnBond1,
                               *vars.termStructure,
                               vars.spread,
                               Actual365Fixed(),
@@ -1208,7 +1208,7 @@ void AssetSwapTest::testZSpread() {
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real zeroCpnBondCleanPrice2 =
-        cleanPriceFromZSpread(*zeroCpnBond2,
+        BondFunctions::cleanPrice(*zeroCpnBond2,
                               *vars.termStructure,
                               vars.spread,
                               Actual365Fixed(),
@@ -2126,7 +2126,7 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Date fixedBondSettlementDate1= fixedBond1->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
-    Real fixedBondCleanPrice1 = cleanPriceFromZSpread(
+    Real fixedBondCleanPrice1 = BondFunctions::cleanPrice(
          *fixedBond1, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          fixedBondSettlementDate1);
@@ -2171,7 +2171,7 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
 
-    Real fixedBondCleanPrice2 = cleanPriceFromZSpread(
+    Real fixedBondCleanPrice2 = BondFunctions::cleanPrice(
          *fixedBond2, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          fixedBondSettlementDate2);
@@ -2219,7 +2219,7 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Date floatingBondSettlementDate1= floatingBond1->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
-    Real floatingBondCleanPrice1 = cleanPriceFromZSpread(
+    Real floatingBondCleanPrice1 = BondFunctions::cleanPrice(
         *floatingBond1, *vars.termStructure, 
         vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
         fixedBondSettlementDate1);
@@ -2268,7 +2268,7 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Date floatingBondSettlementDate2= floatingBond2->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
-    Real floatingBondCleanPrice2 = cleanPriceFromZSpread(
+    Real floatingBondCleanPrice2 = BondFunctions::cleanPrice(
         *floatingBond2, *vars.termStructure, 
         vars.spread, Actual365Fixed(), vars.compounding, Semiannual,
         fixedBondSettlementDate1);
@@ -2316,7 +2316,7 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Date cmsBondSettlementDate1= cmsBond1->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
-    Real cmsBondCleanPrice1 = cleanPriceFromZSpread(
+    Real cmsBondCleanPrice1 = BondFunctions::cleanPrice(
          *cmsBond1, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          cmsBondSettlementDate1);
@@ -2362,7 +2362,7 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Date cmsBondSettlementDate2= cmsBond2->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
-    Real cmsBondCleanPrice2 = cleanPriceFromZSpread(
+    Real cmsBondCleanPrice2 = BondFunctions::cleanPrice(
          *cmsBond2, *vars.termStructure, vars.spread,
          Actual365Fixed(), vars.compounding, Annual,
          cmsBondSettlementDate2);
@@ -2396,7 +2396,7 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real zeroCpnBondCleanPrice1 =
-        cleanPriceFromZSpread(*zeroCpnBond1,
+        BondFunctions::cleanPrice(*zeroCpnBond1,
                               *vars.termStructure,
                               vars.spread,
                               Actual365Fixed(),
@@ -2433,7 +2433,7 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real zeroCpnBondCleanPrice2 =
-        cleanPriceFromZSpread(*zeroCpnBond2,
+        BondFunctions::cleanPrice(*zeroCpnBond2,
                               *vars.termStructure,
                               vars.spread,
                               Actual365Fixed(),

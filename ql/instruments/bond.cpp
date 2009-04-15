@@ -28,7 +28,7 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
-#include <ql/pricingengines/bond/yield.hpp>
+#include <ql/pricingengines/bond/bondfunctions.hpp>
 
 using boost::shared_ptr;
 using boost::dynamic_pointer_cast;
@@ -130,7 +130,7 @@ namespace QuantLib {
         if (maturityDate_!=Null<Date>())
             return maturityDate_;
         else
-            return CashFlows::maturityDate(cashflows_);
+            return BondFunctions::maturityDate(*this);
     }
 
     Date Bond::settlementDate(const Date& date) const {
@@ -152,7 +152,7 @@ namespace QuantLib {
     }
 
     Real Bond::dirtyPrice() const {
-        return settlementValue()/notional(settlementDate())*100.0;
+        return settlementValue() * 100.0 / notional(settlementDate());
     }
 
     Real Bond::settlementValue() const {
@@ -164,7 +164,7 @@ namespace QuantLib {
 
     Real Bond::settlementValue(Real cleanPrice) const {
         Real dirtyPrice = cleanPrice + accruedAmount(settlementDate());
-        return dirtyPrice/100.0 * notional(settlementDate());
+        return dirtyPrice / 100.0 * notional(settlementDate());
     }
 
     Rate Bond::yield(const DayCounter& dc,
@@ -172,25 +172,26 @@ namespace QuantLib {
                      Frequency freq,
                      Real accuracy,
                      Size maxEvaluations) const {
-        return yieldFromCleanPrice(*this, cleanPrice(), dc, comp, freq,
-                                   settlementDate(), accuracy, maxEvaluations);
+        return BondFunctions::yield(*this, cleanPrice(), dc, comp, freq,
+                                    settlementDate(),
+                                    accuracy, maxEvaluations);
     }
 
-    Real Bond::cleanPrice(Rate yield,
+    Real Bond::cleanPrice(Rate y,
                           const DayCounter& dc,
                           Compounding comp,
                           Frequency freq,
                           Date settlement) const {
-        return cleanPriceFromYield(*this, yield, dc, comp, freq, settlement);
+        return BondFunctions::cleanPrice(*this, y, dc, comp, freq, settlement);
     }
 
-    Real Bond::dirtyPrice(Rate yield,
+    Real Bond::dirtyPrice(Rate y,
                           const DayCounter& dc,
                           Compounding comp,
                           Frequency freq,
                           Date settlement) const {
-        return cleanPriceFromYield(*this, yield, dc, comp, freq, settlement) +
-            accruedAmount(settlement);
+        return BondFunctions::cleanPrice(*this, y, dc, comp, freq, settlement)
+            + accruedAmount(settlement);
     }
 
     Rate Bond::yield(Real cleanPrice,
@@ -200,32 +201,24 @@ namespace QuantLib {
                      Date settlement,
                      Real accuracy,
                      Size maxEvaluations) const {
-        return yieldFromCleanPrice(*this, cleanPrice, dc, comp, freq,
-                                   settlement, accuracy, maxEvaluations);
+        return BondFunctions::yield(*this, cleanPrice, dc, comp, freq,
+                                    settlement, accuracy, maxEvaluations);
     }
 
     Real Bond::accruedAmount(Date settlement) const {
-        if (settlement == Date())
-            settlement = settlementDate();
-
-        Real result = CashFlows::accruedAmount(cashflows_, settlement);
-        return result/notional(settlement)*100.0;
+        return BondFunctions::accruedAmount(*this, settlement);
     }
 
     bool Bond::isExpired() const {
-        return cashflows_.back()->hasOccurred(settlementDate());
+        return CashFlows::isExpired(cashflows_, settlementDate());
     }
 
     Rate Bond::nextCouponRate(Date settlement) const {
-        if (settlement == Date())
-            settlement = settlementDate();
-        return CashFlows::nextCouponRate(cashflows_, settlement);
+        return BondFunctions::nextCouponRate(*this, settlement);
     }
 
     Rate Bond::previousCouponRate(Date settlement) const {
-        if (settlement == Date())
-            settlement = settlementDate();
-        return CashFlows::previousCouponRate(cashflows_, settlement);
+        return BondFunctions::previousCouponRate(*this, settlement);
     }
 
     Date Bond::nextCashFlowDate(Date settlement) const {

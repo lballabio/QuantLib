@@ -31,7 +31,6 @@
 #include <ql/cashflow.hpp>
 #include <ql/interestrate.hpp>
 #include <boost/shared_ptr.hpp>
-#include <vector>
 
 namespace QuantLib {
 
@@ -44,6 +43,14 @@ namespace QuantLib {
         CashFlows();
         CashFlows(const CashFlows&);
       public:
+        //! \name Date inspectors
+        //@{
+        static Date startDate(const Leg& leg);
+        static Date maturityDate(const Leg& leg);
+        static bool isExpired(const Leg& leg,
+                              Date refDate = Date());
+        //@}
+
         //! \name CashFlow inspectors
         //@{
         static Leg::const_iterator previousCashFlow(const Leg& leg,
@@ -63,17 +70,11 @@ namespace QuantLib {
         //! \name Coupon inspectors
         //@{
         static Rate previousCouponRate(const Leg& leg,
-                                       Date refDate = Date());
+                                       Date settlementDate = Date());
         static Rate nextCouponRate(const Leg& leg,
-                                   Date refDate = Date());
+                                   Date settlementDate = Date());
         static Real accruedAmount(const Leg& leg,
-                                  Date refDate = Date());
-        //@}
-
-        //! \name Date inspectors
-        //@{
-        static Date startDate(const Leg& leg);
-        static Date maturityDate(const Leg& leg);
+                                  Date settlementDate = Date());
         //@}
 
         //! \name YieldTermStructure functions
@@ -106,13 +107,16 @@ namespace QuantLib {
         */
         static Rate atmRate(const Leg& leg,
                             const YieldTermStructure& discountCurve,
-                            const Date& settlementDate = Date(),
+                            Date settlementDate = Date(),
                             const Date& npvDate = Date(),
                             Natural exDividendDays = 0,
                             Real npv = Null<Real>());
         //@}
 
         //! \name Yield (a.k.a. Internal Rate of Return, i.e. IRR) functions
+        /*! The IRR is the interest rate at which the NPV of the cash
+            flows equals the dirty price.
+        */
         //@{
         //! NPV of the cash flows.
         /*! The NPV is the sum of the cash flows, each discounted
@@ -122,6 +126,13 @@ namespace QuantLib {
         */
         static Real npv(const Leg& leg,
                         const InterestRate& yield,
+                        Date settlementDate = Date(),
+                        Natural exDividendDays = 0);
+        static Real npv(const Leg& leg,
+                        Rate yield,
+                        const DayCounter& dayCounter,
+                        Compounding compounding,
+                        Frequency frequency,
                         Date settlementDate = Date(),
                         Natural exDividendDays = 0);
         //! Basis-point sensitivity of the cash flows.
@@ -136,22 +147,28 @@ namespace QuantLib {
                         const InterestRate& yield,
                         Date settlementDate = Date(),
                         Natural exDividendDays = 0);
-        //! Internal rate of return.
-        /*! The IRR is the interest rate at which the NPV of the cash
-            flows equals the given dirty price. The function verifies
-            the theoretical existance of an IRR and numerically
-            establishes the IRR to the desired precision.
-        */
-        static Rate irr(const Leg& leg,
-                        Real dirtyPrice,
+        static Real bps(const Leg& leg,
+                        Rate yield,
                         const DayCounter& dayCounter,
                         Compounding compounding,
                         Frequency frequency,
                         Date settlementDate = Date(),
-                        Natural exDividendDays = 0,
-                        Real accuracy = 1.0e-10,
-                        Size maxIterations = 100,
-                        Rate guess = 0.05);
+                        Natural exDividendDays = 0);
+        //! Implied internal rate of return.
+        /*! The function verifies
+            the theoretical existance of an IRR and numerically
+            establishes the IRR to the desired precision.
+        */
+        static Rate yield(const Leg& leg,
+                          Real npv,
+                          const DayCounter& dayCounter,
+                          Compounding compounding,
+                          Frequency frequency,
+                          Date settlementDate = Date(),
+                          Natural exDividendDays = 0,
+                          Real accuracy = 1.0e-10,
+                          Size maxIterations = 100,
+                          Rate guess = 0.05);
 
         //! Cash-flow duration.
         /*! The simple duration of a string of cash flows is defined as
@@ -182,6 +199,14 @@ namespace QuantLib {
                              Duration::Type type = Duration::Modified,
                              Date settlementDate = Date(),
                              Natural exDividendDays = 0);
+        static Time duration(const Leg& leg,
+                             Rate yield,
+                             const DayCounter& dayCounter,
+                             Compounding compounding,
+                             Frequency frequency,
+                             Duration::Type type = Duration::Modified,
+                             Date settlementDate = Date(),
+                             Natural exDividendDays = 0);
 
         //! Cash-flow convexity
         /*! The convexity of a string of cash flows is defined as
@@ -195,6 +220,13 @@ namespace QuantLib {
                               const InterestRate& yield,
                               Date settlementDate = Date(),
                               Natural exDividendDays = 0);
+        static Real convexity(const Leg& leg,
+                              Rate yield,
+                              const DayCounter& dayCounter,
+                              Compounding compounding,
+                              Frequency frequency,
+                              Date settlementDate = Date(),
+                              Natural exDividendDays = 0);
 
         //! Basis-point value
         /*! Obtained by setting dy = 0.0001 in the 2nd-order Taylor
@@ -202,6 +234,13 @@ namespace QuantLib {
         */
         static Real basisPointValue(const Leg& leg,
                                     const InterestRate& yield,
+                                    Date settlementDate = Date(),
+                                    Natural exDividendDays = 0);
+        static Real basisPointValue(const Leg& leg,
+                                    Rate yield,
+                                    const DayCounter& dayCounter,
+                                    Compounding compounding,
+                                    Frequency frequency,
                                     Date settlementDate = Date(),
                                     Natural exDividendDays = 0);
 
@@ -214,10 +253,20 @@ namespace QuantLib {
                                          const InterestRate& yield,
                                          Date settlementDate = Date(),
                                          Natural exDividendDays = 0);
-
+        static Real yieldValueBasisPoint(const Leg& leg,
+                                         Rate yield,
+                                         const DayCounter& dayCounter,
+                                         Compounding compounding,
+                                         Frequency frequency,
+                                         Date settlementDate = Date(),
+                                         Natural exDividendDays = 0);
         //@}
 
         //! \name Z-spread functions
+        /*! For details on z-spread refer to:
+            "Credit Spreads Explained", Lehman Brothers European Fixed
+            Income Research - March 2004, D. O'Kane
+        */
         //@{
         //! NPV of the cash flows.
         /*! The NPV is the sum of the cash flows, each discounted
@@ -234,14 +283,9 @@ namespace QuantLib {
                         Date settlementDate = Date(),
                         const Date& npvDate = Date(),
                         Natural exDividendDays = 0);
-        //! Internal rate of return.
-        /*! The IRR is the interest rate at which the NPV of the cash
-            flows equals the given dirty price. The function verifies
-            the theoretical existance of an IRR and numerically
-            establishes the IRR to the desired precision.
-        */
+        //! implied Z-spread.
         static Spread zSpread(const Leg& leg,
-                              Real dirtyPrice,
+                              Real npv,
                               const boost::shared_ptr<YieldTermStructure>&,
                               const DayCounter& dayCounter,
                               Compounding compounding,

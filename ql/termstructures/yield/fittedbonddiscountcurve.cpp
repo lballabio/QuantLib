@@ -18,7 +18,7 @@
 */
 
 #include <ql/termstructures/yield/fittedbonddiscountcurve.hpp>
-#include <ql/pricingengines/bond/yield.hpp>
+#include <ql/pricingengines/bond/bondfunctions.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/math/optimization/costfunction.hpp>
 #include <ql/math/optimization/constraint.hpp>
@@ -171,11 +171,11 @@ namespace QuantLib {
                 curve_->instruments_[k]->fixedRateBond();
             Leg leg = bond->cashflows();
             Real cleanPrice = curve_->instruments_[k]->quote()->value();
-            Rate ytm = yieldFromCleanPrice(*bond, cleanPrice,
-                                   bond->dayCounter(),
-                                   Compounded,
-                                   bond->frequency(),
-                                   today);
+            Rate ytm = BondFunctions::yield(*bond, cleanPrice,
+                                          bond->dayCounter(),
+                                          Compounded,
+                                          bond->frequency(),
+                                          today);
             InterestRate r(ytm,
                            bond->dayCounter(),
                            Compounded,

@@ -94,7 +94,7 @@ namespace QuantLib {
         if (frequency == NoFrequency || frequency == Once)
             frequency = Annual;
 
-        Rate fwdYtm = CashFlows::irr(fixedLeg,
+        Rate fwdYtm = CashFlows::yield(fixedLeg,
                                      fwdNpv,
                                      dayCounter,
                                      Compounded,
