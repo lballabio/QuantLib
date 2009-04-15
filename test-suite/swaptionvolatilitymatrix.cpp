@@ -218,12 +218,16 @@ namespace {
                     Date end = swaption.underlyingSwap()->maturityDate();
                     Time swapLength2 = vol->swapLength(start, end);
                     if (!close(swapLength2,swapLength))
-                        BOOST_FAIL(
-                             "swapLength failure for " <<
-                             description << ":"
-                             "\n        swap tenor : " << atm.tenors.swaps[j] <<
-                             "\n actual swap length: " << swapLength2 <<
-                             "\n   exp. swap length: " << swapLength);
+                        BOOST_FAIL("\nswapLength failure for " <<
+                                   description << ":"
+                                   "\n   exp. swap length: " << swapLength <<
+                                   "\n actual swap length: " << swapLength2 <<
+                                   "\n        swap tenor : " << atm.tenors.swaps[j] <<
+                                   "\n  swap index tenor : " << swapIndex->tenor() <<
+                                   "\n        option date: " << exerciseDate <<
+                                   "\n         start date: " << start <<
+                                   "\n      maturity date: " << end
+                                   );
 
                     Real npv = swaption.NPV();
                     actVol = swaption.impliedVolatility(npv, termStructure,
