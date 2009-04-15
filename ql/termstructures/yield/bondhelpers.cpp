@@ -72,7 +72,7 @@ namespace QuantLib {
     }
 
     void BondHelper::initializeDates() {
-        earliestDate_ = bond_->nextCouponDate();
+        earliestDate_ = bond_->nextCashFlowDate();
     }
 
     FixedRateBondHelper::FixedRateBondHelper(

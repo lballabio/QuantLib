@@ -4,7 +4,7 @@
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
  Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
- Copyright (C) 2007, 2008 Ferdinando Ametrano
+ Copyright (C) 2007, 2008, 2009 Ferdinando Ametrano
  Copyright (C) 2007 Chiara Fornarola
  Copyright (C) 2008 Simon Ibbotson
 
@@ -30,19 +30,16 @@
 #define quantlib_bond_hpp
 
 #include <ql/instrument.hpp>
-#include <ql/cashflow.hpp>
-#include <ql/cashflows/coupon.hpp>
+
 #include <ql/time/calendar.hpp>
-#include <ql/time/daycounter.hpp>
-#include <ql/time/schedule.hpp>
-#include <ql/types.hpp>
-#include <ql/handle.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/cashflow.hpp>
+#include <ql/compounding.hpp>
+
 #include <vector>
 
 namespace QuantLib {
 
-    class CashFlow;
+    class DayCounter;
 
     typedef std::vector<boost::shared_ptr<CashFlow> > Leg;
 
@@ -196,7 +193,7 @@ namespace QuantLib {
 
             The current bond settlement is used if no date is given.
         */
-        virtual Rate nextCoupon(Date d = Date()) const;
+        virtual Rate nextCouponRate(Date d = Date()) const;
 
         //! Previous coupon already paid at a given date
         /*! Expected previous coupon: depending on (the bond and) the given
@@ -206,10 +203,10 @@ namespace QuantLib {
 
             The current bond settlement is used if no date is given.
         */
-        Rate previousCoupon(Date d = Date()) const;
+        Rate previousCouponRate(Date d = Date()) const;
 
-        Date nextCouponDate(Date d = Date()) const;
-        Date previousCouponDate(Date d = Date()) const;
+        Date nextCashFlowDate(Date d = Date()) const;
+        Date previousCashFlowDate(Date d = Date()) const;
 
       protected:
         void setupExpired() const;
@@ -311,13 +308,6 @@ namespace QuantLib {
 
     inline const Leg& Bond::redemptions() const {
         return redemptions_;
-    }
-
-    inline Date Bond::maturityDate() const {
-        if (maturityDate_!=Null<Date>())
-            return maturityDate_;
-        else
-            return cashflows_.back()->date();
     }
 
     inline Date Bond::issueDate() const {

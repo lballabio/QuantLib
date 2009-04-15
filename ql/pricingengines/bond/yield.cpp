@@ -38,79 +38,32 @@ namespace QuantLib {
                                  const DayCounter& dayCounter,
                                  Compounding compounding,
                                  Frequency frequency,
-                                 const Date& settlement) {
+                                 Date settlement) {
 
             InterestRate y(yield, dayCounter, compounding, frequency);
 
-            Real price = 0.0;
-            DiscountFactor discount = 1.0;
-            Date lastDate = Date();
+            if (settlement == Date())
+                settlement = bond.settlementDate();
 
-            const Leg& cashflows = bond.cashflows();
-            for (Size i=0; i<cashflows.size(); ++i) {
-                if (cashflows[i]->hasOccurred(settlement))
-                    continue;
-
-                Date couponDate = cashflows[i]->date();
-                Real amount = cashflows[i]->amount();
-                if (lastDate == Date()) {
-                    // first not-expired coupon
-                    if (i > 0) {
-                        lastDate = cashflows[i-1]->date();
-                    } else {
-                        shared_ptr<Coupon> coupon =
-                            boost::dynamic_pointer_cast<Coupon>(cashflows[i]);
-                        if (coupon)
-                            lastDate = coupon->accrualStartDate();
-                        else
-                            lastDate = couponDate - 1*Years;
-                    }
-                    discount *= y.discountFactor(settlement, couponDate,
-                                                 lastDate, couponDate);
-                } else  {
-                    discount *= y.discountFactor(lastDate, couponDate);
-                }
-                lastDate = couponDate;
-
-                price += amount * discount;
-            }
-
-            return price * 100.0 / bond.notional(settlement);
+            Real dirtyPrice = CashFlows::npv(bond.cashflows(), y, settlement);
+            return dirtyPrice * 100.0 / bond.notional(settlement);
         }
-
-
-        class YieldFinder {
-          public:
-            YieldFinder(const Bond& bond,
-                        Real dirtyPrice,
-                        const DayCounter& dayCounter,
-                        Compounding compounding,
-                        Frequency frequency,
-                        const Date& settlement)
-            : bond_(bond),
-              dirtyPrice_(dirtyPrice),compounding_(compounding),
-              dayCounter_(dayCounter), frequency_(frequency),
-              settlement_(settlement) {}
-            Real operator()(Real yield) const {
-                return dirtyPrice_ - dirtyPriceFromYield(bond_,
-                                                         yield,
-                                                         dayCounter_,
-                                                         compounding_,
-                                                         frequency_,
-                                                         settlement_);
-            }
-          private:
-            const Bond& bond_;
-            Real dirtyPrice_;
-            Compounding compounding_;
-            DayCounter dayCounter_;
-            Frequency frequency_;
-            Date settlement_;
-        };
 
     } // anonymous namespace ends here
 
-    Spread yieldFromCleanPrice(
+    Real cleanPriceFromYield(const Bond& bond,
+                             Rate yield,
+                             const DayCounter& dc,
+                             Compounding comp,
+                             Frequency freq,
+                             Date settlementDate) {
+        Real dirtyPrice = dirtyPriceFromYield(bond,
+                                              yield, dc, comp, freq,
+                                              settlementDate);
+        return dirtyPrice - bond.accruedAmount(settlementDate);
+    }
+
+    Rate yieldFromCleanPrice(
                    const Bond& bond,
                    Real cleanPrice,
                    const DayCounter& dc,
@@ -121,40 +74,15 @@ namespace QuantLib {
                    Size maxEvaluations) {
         if (settlement == Date())
             settlement = bond.settlementDate();
-
-        QL_REQUIRE(freq != NoFrequency && freq != Once,
-                   "invalid frequency:" << freq);
-
         Real dirtyPrice = cleanPrice + bond.accruedAmount(settlement);
+        dirtyPrice /= 100.0 / bond.notional(settlement);
 
-        Brent solver;
-        solver.setMaxEvaluations(maxEvaluations);
-        YieldFinder objective(bond,
-                              dirtyPrice,
+        Natural exDividendDays = 0;
+
+        return CashFlows::irr(bond.cashflows(), dirtyPrice,
                               dc, comp, freq,
-                              settlement);
-        Real guess = 0.02;
-        Rate yieldMin = 0.0;
-        Rate yieldMax = 1.0;
-        return solver.solve(objective, accuracy, guess, yieldMin, yieldMax);
-    }
-
-    Real cleanPriceFromYield(const Bond& bond,
-                             Rate yield,
-                             const DayCounter& dc,
-                             Compounding comp,
-                             Frequency freq,
-                             Date settlementDate) {
-        if (settlementDate == Date())
-            settlementDate = bond.settlementDate();
-
-        QL_REQUIRE(freq != NoFrequency && freq != Once,
-                   "invalid frequency: " << freq);
-
-        Real dirtyPrice = dirtyPriceFromYield(bond,
-                                              yield, dc, comp, freq,
-                                              settlementDate);
-        return dirtyPrice - bond.accruedAmount(settlementDate);
+                              settlement, exDividendDays,
+                              accuracy, maxEvaluations);
     }
 
 }

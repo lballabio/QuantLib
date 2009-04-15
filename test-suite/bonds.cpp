@@ -42,6 +42,7 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/pricingengines/bond/yield.hpp>
+#include <ql/pricingengines/bond/zspread.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -98,14 +99,15 @@ void BondTest::testYield() {
             for (Size n=0; n<LENGTH(compounding); n++) {
 
               Date dated = vars.calendar.advance(vars.today,
-                                                    issueMonths[i], Months);
+                                                 issueMonths[i], Months);
               Date issue = dated;
               Date maturity = vars.calendar.advance(issue,
-                                                       lengths[j], Years);
+                                                    lengths[j], Years);
 
               Schedule sch(dated, maturity,
                            Period(frequencies[l]), vars.calendar,
-                           accrualConvention, accrualConvention, DateGeneration::Backward, false);
+                           accrualConvention, accrualConvention,
+                           DateGeneration::Backward, false);
 
               FixedRateBond bond(settlementDays, vars.faceAmount, sch,
                                  std::vector<Rate>(1, coupons[k]),
@@ -131,19 +133,110 @@ void BondTest::testYield() {
                                                     compounding[n],
                                                     frequencies[l]);
                   if (std::fabs(price-price2)/price > tolerance) {
-                      BOOST_ERROR(
-                          "yield recalculation failed:\n"
-                          << "    issue:     " << issue << "\n"
-                          << "    maturity:  " << maturity << "\n"
-                          << "    coupon:    " << io::rate(coupons[k]) << "\n"
-                          << "    frequency: " << frequencies[l] << "\n\n"
-                          << "    yield:  " << io::rate(yields[m]) << " "
-                          << (compounding[n] == Compounded ?
-                              "compounded" : "continuous") << "\n"
-                          << std::setprecision(7)
-                          << "    price:  " << price << "\n"
-                          << "    yield': " << io::rate(calculated) << "\n"
-                          << "    price': " << price2);
+                      BOOST_FAIL("\nyield recalculation failed:"
+                          "\n    issue:     " << issue <<
+                          "\n    maturity:  " << maturity <<
+                          "\n    coupon:    " << io::rate(coupons[k]) <<
+                          "\n    frequency: " << frequencies[l] <<
+                          "\n    yield:   " << io::rate(yields[m]) <<
+                          (compounding[n] == Compounded ?
+                                " compounded" : " continuous") <<
+                          std::setprecision(7) <<
+                          "\n    price:   " << price <<
+                          "\n    yield': " << io::rate(calculated) <<
+                          "\n    price': " << price2);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+}
+
+void BondTest::testZspread() {
+
+    BOOST_MESSAGE("Testing consistency of bond price/z-spread calculation...");
+
+    CommonVars vars;
+
+    Real tolerance = 1.0e-7;
+    Size maxEvaluations = 100;
+
+    Handle<YieldTermStructure> discountCurve(flatRate(vars.today,0.03,Actual360()));
+
+    Integer issueMonths[] = { -24, -18, -12, -6, 0, 6, 12, 18, 24 };
+    Integer lengths[] = { 3, 5, 10, 15, 20 };
+    Natural settlementDays = 3;
+    Real coupons[] = { 0.02, 0.05, 0.08 };
+    Frequency frequencies[] = { Semiannual, Annual };
+    DayCounter bondDayCount = Thirty360();
+    BusinessDayConvention accrualConvention = Unadjusted;
+    BusinessDayConvention paymentConvention = ModifiedFollowing;
+    Real redemption = 100.0;
+
+    Spread spreads[] = { -0.01, -0.005, 0.0, 0.005, 0.01 };
+    Compounding compounding[] = { Compounded, Continuous };
+
+    for (Size i=0; i<LENGTH(issueMonths); i++) {
+      for (Size j=0; j<LENGTH(lengths); j++) {
+        for (Size k=0; k<LENGTH(coupons); k++) {
+          for (Size l=0; l<LENGTH(frequencies); l++) {
+            for (Size n=0; n<LENGTH(compounding); n++) {
+
+              Date dated = vars.calendar.advance(vars.today,
+                                                 issueMonths[i], Months);
+              Date issue = dated;
+              Date maturity = vars.calendar.advance(issue,
+                                                    lengths[j], Years);
+
+              Schedule sch(dated, maturity,
+                           Period(frequencies[l]), vars.calendar,
+                           accrualConvention, accrualConvention,
+                           DateGeneration::Backward, false);
+
+              FixedRateBond bond(settlementDays, vars.faceAmount, sch,
+                                 std::vector<Rate>(1, coupons[k]),
+                                 bondDayCount, paymentConvention,
+                                 redemption, issue);
+
+              for (Size m=0; m<LENGTH(spreads); m++) {
+
+                Real price = cleanPriceFromZSpread(bond, *discountCurve,
+                                                   spreads[m],
+                                                   bondDayCount,
+                                                   compounding[n],
+                                                   frequencies[l]);
+                Spread calculated = zSpreadFromCleanPrice(bond, *discountCurve,
+                                                          price,
+                                                          bondDayCount,
+                                                          compounding[n],
+                                                          frequencies[l],
+                                                          Date(),
+                                                          tolerance,
+                                                          maxEvaluations);
+
+                if (std::fabs(spreads[m]-calculated) > tolerance) {
+                  // the difference might not matter
+                  Real price2 = cleanPriceFromZSpread(bond, *discountCurve,
+                                                      calculated,
+                                                      bondDayCount,
+                                                      compounding[n],
+                                                      frequencies[l]);
+                  if (std::fabs(price-price2)/price > tolerance) {
+                      BOOST_FAIL("\nZ-spread recalculation failed:"
+                          "\n    issue:     " << issue <<
+                          "\n    maturity:  " << maturity <<
+                          "\n    coupon:    " << io::rate(coupons[k]) <<
+                          "\n    frequency: " << frequencies[l] <<
+                          "\n    Z-spread:  " << io::rate(spreads[m]) <<
+                          (compounding[n] == Compounded ?
+                                " compounded" : " continuous") <<
+                          std::setprecision(7) <<
+                          "\n    price:     " << price <<
+                          "\n    Z-spread': " << io::rate(calculated) <<
+                          "\n    price':    " << price2);
                   }
                 }
               }
@@ -213,17 +306,16 @@ void BondTest::testTheoretical() {
                 Real calculatedPrice = bond.cleanPrice();
 
                 if (std::fabs(price-calculatedPrice) > tolerance) {
-                    BOOST_FAIL(
-                        "price calculation failed:"
-                        << "\n    issue:     " << issue
-                        << "\n    maturity:  " << maturity
-                        << "\n    coupon:    " << io::rate(coupons[k])
-                        << "\n    frequency: " << frequencies[l] << "\n"
-                        << "\n    yield:  " << io::rate(yields[m])
-                        << std::setprecision(7)
-                        << "\n    expected:    " << price
-                        << "\n    calculated': " << calculatedPrice
-                        << "\n    error':      " << price-calculatedPrice);
+                    BOOST_FAIL("price calculation failed:" <<
+                        "\n    issue:     " << issue <<
+                        "\n    maturity:  " << maturity <<
+                        "\n    coupon:    " << io::rate(coupons[k]) <<
+                        "\n    frequency: " << frequencies[l] <<
+                        "\n    yield:  " << io::rate(yields[m]) <<
+                        std::setprecision(7) <<
+                        "\n    expected:    " << price <<
+                        "\n    calculated': " << calculatedPrice <<
+                        "\n    error':      " << price-calculatedPrice);
                 }
 
                 Rate calculatedYield = yieldFromCleanPrice(bond, calculatedPrice,
@@ -231,16 +323,15 @@ void BondTest::testTheoretical() {
                     bond.settlementDate(),
                     tolerance, maxEvaluations);
                 if (std::fabs(yields[m]-calculatedYield) > tolerance) {
-                    BOOST_FAIL(
-                        "yield calculation failed:"
-                        << "\n    issue:     " << issue
-                        << "\n    maturity:  " << maturity
-                        << "\n    coupon:    " << io::rate(coupons[k])
-                        << "\n    frequency: " << frequencies[l] << "\n"
-                        << "\n    yield:  " << io::rate(yields[m])
-                        << std::setprecision(7)
-                        << "\n    price:  " << price
-                        << "\n    yield': " << io::rate(calculatedYield));
+                    BOOST_FAIL("yield calculation failed:" <<
+                        "\n    issue:     " << issue <<
+                        "\n    maturity:  " << maturity <<
+                        "\n    coupon:    " << io::rate(coupons[k]) <<
+                        "\n    frequency: " << frequencies[l] <<
+                        "\n    yield:  " << io::rate(yields[m]) <<
+                        std::setprecision(7) <<
+                        "\n    price:  " << price <<
+                        "\n    yield': " << io::rate(calculatedYield));
                 }
             }
         }
@@ -335,12 +426,12 @@ void BondTest::testCached() {
 
     yield = yieldFromCleanPrice(bond1, marketPrice1, bondDayCount, Compounded, freq);
     if (std::fabs(yield-cachedYield1a) > tolerance) {
-        BOOST_FAIL("failed to reproduce cached compounded yield:"
-                   << std::setprecision(4)
-                   << "\n    calculated: " << io::rate(yield)
-                   << "\n    expected:   " << io::rate(cachedYield1a)
-                   << "\n    tolerance:  " << io::rate(tolerance)
-                   << "\n    error:      " << io::rate(yield-cachedYield1a));
+        BOOST_FAIL("\nfailed to reproduce cached compounded yield:" <<
+                   std::setprecision(4) <<
+                   "\n    calculated: " << io::rate(yield) <<
+                   "\n    expected:   " << io::rate(cachedYield1a) <<
+                   "\n    tolerance:  " << io::rate(tolerance) <<
+                   "\n    error:      " << io::rate(yield-cachedYield1a));
     }
 
     yield = yieldFromCleanPrice(bond1, marketPrice1, bondDayCount, Continuous, freq);
@@ -864,6 +955,7 @@ test_suite* BondTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Bond tests");
 
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testYield));
+    suite->add(QUANTLIB_TEST_CASE(&BondTest::testZspread));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testTheoretical));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testCached));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testCachedZero));

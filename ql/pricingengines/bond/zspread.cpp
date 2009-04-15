@@ -20,12 +20,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
-#include <ql/quotes/simplequote.hpp>
 #include <ql/pricingengines/bond/zspread.hpp>
 #include <ql/instruments/bond.hpp>
 #include <ql/cashflows/cashflows.hpp>
-#include <ql/math/solvers1d/brent.hpp>
 
 using boost::shared_ptr;
 
@@ -33,74 +30,30 @@ namespace QuantLib {
 
     namespace {
 
-        Real dirtyPriceF(const Bond& bond,
-                         const YieldTermStructure& discCurve,
-                         Date settlementDate) {
+        Real dirtyPriceFromZSpread(
+                       const Bond& bond,
+                       const shared_ptr<YieldTermStructure>& discountCurve,
+                       Spread zSpread,
+                       const DayCounter& dc,
+                       Compounding comp,
+                       Frequency freq,
+                       Date settlementDate) {
+            if (settlementDate == Date())
+                settlementDate = bond.settlementDate();
+
+            Natural exDividendDays = 0;
+
             Real NPV = CashFlows::npv(bond.cashflows(),
-                                      discCurve,
+                                      discountCurve,
+                                      zSpread, dc, comp, freq,
                                       settlementDate,
-                                      settlementDate);
+                                      settlementDate,
+                                      exDividendDays);
 
             return NPV * 100.0 / bond.notional(settlementDate);
         }
 
-        class ZSpreadFinder {
-          public:
-            ZSpreadFinder(
-                   const Bond& bond,
-                   const shared_ptr<YieldTermStructure>& discountCurve,
-                   Real dirtyPrice,
-                   const DayCounter& dc,
-                   Compounding comp,
-                   Frequency freq,
-                   const Date& settlementDate)
-            : bond_(bond), zSpread_(new SimpleQuote(0.0)),
-              curve_(Handle<YieldTermStructure>(discountCurve),
-                     Handle<Quote>(zSpread_), comp, freq, dc),
-              dirtyPrice_(dirtyPrice),
-              settlementDate_(settlementDate) {}
-            Real operator()(Real zSpread) const {
-                zSpread_->setValue(zSpread);
-                return dirtyPrice_ - dirtyPriceF(bond_, curve_, settlementDate_);
-            }
-          private:
-            const Bond& bond_;
-            shared_ptr<SimpleQuote> zSpread_;
-            ZeroSpreadedTermStructure curve_;
-            Real dirtyPrice_;
-            Date settlementDate_;
-        };
-
     } // anonymous namespace ends here
-
-    Spread zSpreadFromCleanPrice(
-                   const Bond& bond,
-                   const shared_ptr<YieldTermStructure>& discountCurve,
-                   Real cleanPrice,
-                   const DayCounter& dayCounter,
-                   Compounding compounding,
-                   Frequency frequency,
-                   Date settlement,
-                   Real accuracy,
-                   Size maxEvaluations) {
-        if (settlement == Date())
-            settlement = bond.settlementDate();
-
-        QL_REQUIRE(frequency != NoFrequency && frequency != Once,
-                   "invalid frequency:" << frequency);
-
-        Real dirtyPrice = cleanPrice + bond.accruedAmount(settlement);
-
-        Brent solver;
-        solver.setMaxEvaluations(maxEvaluations);
-        ZSpreadFinder objective(bond,
-                                discountCurve, dirtyPrice,
-                                dayCounter, compounding, frequency,
-                                settlement);
-        Real guess = 0.0;
-        Real step = 0.001;
-        return solver.solve(objective, accuracy, guess, step);
-    }
 
     Real cleanPriceFromZSpread(
                    const Bond& bond,
@@ -110,26 +63,37 @@ namespace QuantLib {
                    Compounding comp,
                    Frequency freq,
                    Date settlementDate) {
-        if (settlementDate == Date())
-            settlementDate = bond.settlementDate();
-
-        QL_REQUIRE(freq != NoFrequency && freq != Once,
-                   "invalid frequency: " << freq);
-
-        Handle<YieldTermStructure> discountCurveHandle(discountCurve);
-        Handle<Quote> zSpreadQuoteHandle(shared_ptr<Quote>(new
-            SimpleQuote(zSpread)));
-
-        ZeroSpreadedTermStructure spreadedCurve(discountCurveHandle,
-                                                zSpreadQuoteHandle,
-                                                comp,
-                                                freq,
-                                                dc);
-
-        Real dirtyPrice = dirtyPriceF(bond,
-                                      spreadedCurve,
-                                      settlementDate);
+        Real dirtyPrice = dirtyPriceFromZSpread(bond,
+                                                discountCurve,
+                                                zSpread,
+                                                dc, comp, freq,
+                                                settlementDate);
         return dirtyPrice - bond.accruedAmount(settlementDate);
+    }
+
+    Spread zSpreadFromCleanPrice(
+                   const Bond& bond,
+                   const shared_ptr<YieldTermStructure>& discountCurve,
+                   Real cleanPrice,
+                   const DayCounter& dc,
+                   Compounding comp,
+                   Frequency freq,
+                   Date settlement,
+                   Real accuracy,
+                   Size maxEvaluations) {
+        if (settlement == Date())
+            settlement = bond.settlementDate();
+        Real dirtyPrice = cleanPrice + bond.accruedAmount(settlement);
+
+        dirtyPrice /= 100.0 / bond.notional(settlement);
+
+        Natural exDividendDays = 0;
+
+        return CashFlows::zSpread(bond.cashflows(), dirtyPrice,
+                                  discountCurve,
+                                  dc, comp, freq,
+                                  settlement, settlement, exDividendDays,
+                                  accuracy, maxEvaluations);
     }
 
 }

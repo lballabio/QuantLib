@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2007 Chiara Fornarola
- Copyright (C) 2007, 2008 Ferdinando Ametrano
+ Copyright (C) 2007, 2008, 2009 Ferdinando Ametrano
  Copyright (C) 2009 StatPro Italia srl
  Copyright (C) 2009 Nathan Abbott
 
@@ -31,12 +31,14 @@
 #include <ql/compounding.hpp>
 #include <ql/time/frequency.hpp>
 #include <ql/time/date.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
 
     // forward declarations
     class Bond;
     class DayCounter;
+    class YieldTermStructure;
 
     //! clean bond price given a discount curve and a z-spread
     /*! Z-spread compounding, frequency, daycount are taken into account
@@ -64,7 +66,7 @@ namespace QuantLib {
                    Compounding compounding,
                    Frequency frequency,
                    Date settlementDate = Date(),
-                   Real accuracy = 1.0e-8,
+                   Real accuracy = 1.0e-10,
                    Size maxEvaluations = 100);
 
 }

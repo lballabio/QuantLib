@@ -4,7 +4,7 @@
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
  Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
- Copyright (C) 2007, 2008 Ferdinando Ametrano
+ Copyright (C) 2007, 2008, 2009 Ferdinando Ametrano
  Copyright (C) 2007 Chiara Fornarola
  Copyright (C) 2008 Simon Ibbotson
 
@@ -26,10 +26,7 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/coupon.hpp>
 #include <ql/math/solvers1d/brent.hpp>
-#include <ql/math/comparison.hpp>
-#include <ql/quotes/simplequote.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
-#include <ql/settings.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/pricingengines/bond/yield.hpp>
 
@@ -129,6 +126,13 @@ namespace QuantLib {
         return redemptions_.back();
     }
 
+    Date Bond::maturityDate() const {
+        if (maturityDate_!=Null<Date>())
+            return maturityDate_;
+        else
+            return CashFlows::maturityDate(cashflows_);
+    }
+
     Date Bond::settlementDate(const Date& date) const {
         Date d = (date==Date() ?
                   Settings::instance().evaluationDate() :
@@ -204,34 +208,7 @@ namespace QuantLib {
         if (settlement == Date())
             settlement = settlementDate();
 
-        Leg::const_iterator cf =
-            CashFlows::nextCashFlow(cashflows_, settlement);
-        if (cf==cashflows_.end()) return 0.0;
-
-        Date paymentDate = (*cf)->date();
-        bool firstCouponFound = false;
-        Real nominal = Null<Real>();
-        Time accrualPeriod = Null<Time>();
-        DayCounter dc;
-        Rate result = 0.0;
-        for (; cf<cashflows_.end() && (*cf)->date()==paymentDate; ++cf) {
-            shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
-            if (cp) {
-                if (firstCouponFound) {
-                    QL_REQUIRE(nominal       == cp->nominal() &&
-                               accrualPeriod == cp->accrualPeriod() &&
-                               dc            == cp->dayCounter(),
-                               "cannot aggregate accrued amount of two "
-                               "different coupons on " << paymentDate);
-                } else {
-                    firstCouponFound = true;
-                    nominal = cp->nominal();
-                    accrualPeriod = cp->accrualPeriod();
-                    dc = cp->dayCounter();
-                }
-                result += cp->accruedAmount(settlement);
-            }
-        }
+        Real result = CashFlows::accruedAmount(cashflows_, settlement);
         return result/notional(settlement)*100.0;
     }
 
@@ -239,28 +216,28 @@ namespace QuantLib {
         return cashflows_.back()->hasOccurred(settlementDate());
     }
 
-    Rate Bond::nextCoupon(Date settlement) const {
+    Rate Bond::nextCouponRate(Date settlement) const {
         if (settlement == Date())
             settlement = settlementDate();
         return CashFlows::nextCouponRate(cashflows_, settlement);
     }
 
-    Rate Bond::previousCoupon(Date settlement) const {
+    Rate Bond::previousCouponRate(Date settlement) const {
         if (settlement == Date())
             settlement = settlementDate();
         return CashFlows::previousCouponRate(cashflows_, settlement);
     }
 
-    Date Bond::nextCouponDate(Date settlement) const {
+    Date Bond::nextCashFlowDate(Date settlement) const {
         if (settlement == Date())
             settlement = settlementDate();
-        return CashFlows::nextCouponDate(cashflows_, settlement);
+        return CashFlows::nextCashFlowDate(cashflows_, settlement);
     }
 
-    Date Bond::previousCouponDate(Date settlement) const {
+    Date Bond::previousCashFlowDate(Date settlement) const {
         if (settlement == Date())
             settlement = settlementDate();
-        return CashFlows::previousCouponDate(cashflows_, settlement);
+        return CashFlows::previousCashFlowDate(cashflows_, settlement);
     }
 
     void Bond::setupExpired() const {

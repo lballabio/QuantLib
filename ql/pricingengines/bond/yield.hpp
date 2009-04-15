@@ -40,25 +40,23 @@ namespace QuantLib {
     /*! Yield compounding, frequency, daycount are taken into account
         The default bond settlement is used if no date is given.
     */
-    Real cleanPriceFromYield(
-                   const Bond& bond,
-                   Rate yield,
-                   const DayCounter& dayCounter,
-                   Compounding compounding,
-                   Frequency frequency,
-                   Date settlementDate = Date());
+    Real cleanPriceFromYield(const Bond& bond,
+                             Rate yield,
+                             const DayCounter& dayCounter,
+                             Compounding compounding,
+                             Frequency frequency,
+                             Date settlementDate = Date());
 
     //! Yield given a clean price
     /*! The default bond settlement is used if no date is given. */
-    Rate yieldFromCleanPrice(
-                   const Bond& bond,
-                   Real cleanPrice,
-                   const DayCounter& dayCounter,
-                   Compounding compounding,
-                   Frequency frequency,
-                   Date settlementDate = Date(),
-                   Real accuracy = 1.0e-8,
-                   Size maxEvaluations = 100);
+    Rate yieldFromCleanPrice(const Bond& bond,
+                             Real cleanPrice,
+                             const DayCounter& dayCounter,
+                             Compounding compounding,
+                             Frequency frequency,
+                             Date settlementDate = Date(),
+                             Real accuracy = 1.0e-10,
+                             Size maxEvaluations = 100);
 
 }
 
