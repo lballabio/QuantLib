@@ -49,7 +49,9 @@ namespace QuantLib {
             const boost::shared_ptr<Payoff>& payoff,
             Time maturity,
             Size timeSteps,
-            Real theta = 0.5);
+            Real theta = 0.5,
+            bool localVol = false,
+            Real illegalLocalVolOverwrite = -Null<Real>());
 
         Real valueAt(Real s) const;
         Real deltaAt(Real s) const;
@@ -70,6 +72,8 @@ namespace QuantLib {
         const Size timeSteps_;
 
         const Real theta_;
+        const bool localVol_;
+        const Real illegalLocalVolOverwrite_;
 
         std::vector<Real> x_, initialValues_;
         mutable Array resultValues_;

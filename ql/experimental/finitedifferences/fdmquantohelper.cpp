@@ -40,8 +40,8 @@ namespace QuantLib {
 
 	Rate FdmQuantoHelper::quantoAdjustment(Volatility equityVol, 
 											     Time t1, Time t2) const {
-		const Rate rDomestic = rTS_->forwardRate(t1, t2, Continuous);
-		const Rate rForeign  = fTS_->forwardRate(t1, t2, Continuous);
+		const Rate rDomestic = rTS_->forwardRate(t1, t2, Continuous).rate();
+		const Rate rForeign  = fTS_->forwardRate(t1, t2, Continuous).rate();
 		const Volatility fxVol 
 			= fxVolTS_->blackForwardVol(t1, t2, exchRateATMlevel_);
 
@@ -51,8 +51,8 @@ namespace QuantLib {
 	Disposable<Array> FdmQuantoHelper::quantoAdjustment(
 		const Array& equityVol, Time t1, Time t2) const {
 
-		const Rate rDomestic = rTS_->forwardRate(t1, t2, Continuous);
-		const Rate rForeign  = fTS_->forwardRate(t1, t2, Continuous);
+		const Rate rDomestic = rTS_->forwardRate(t1, t2, Continuous).rate();
+		const Rate rForeign  = fTS_->forwardRate(t1, t2, Continuous).rate();
 		const Volatility fxVol 
 			= fxVolTS_->blackForwardVol(t1, t2, exchRateATMlevel_);
 

@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2008, 2009 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -47,7 +47,10 @@ namespace QuantLib {
         // Constructor
           FdBlackScholesVanillaEngine(
                 const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
-                Size tGrid = 100, Size xGrid = 100, Real theta=0.5);
+                Size tGrid = 100, Size xGrid = 100,
+                Real theta=0.5,
+                bool localVol = false,
+                Real illegalLocalVolOverwrite = -Null<Real>());
 
         void calculate() const;
 
@@ -55,9 +58,9 @@ namespace QuantLib {
         const boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         const Size tGrid_, xGrid_;
         const Real theta_;
+        const bool localVol_;
+        const Real illegalLocalVolOverwrite_;
     };
-
-
 }
 
 #endif

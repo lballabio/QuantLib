@@ -33,7 +33,7 @@ namespace QuantLib {
     : varianceValues_(0.5*mesher->locations(1)),
       dxMap_ (FirstDerivativeOp(0, mesher)),
       dxxMap_(SecondDerivativeOp(0, mesher).mult(0.5*mesher->locations(1))),
-      mapT_   (0, mesher),
+      mapT_  (0, mesher),
       mesher_(mesher),
       rTS_(rTS),
       qTS_(qTS),
@@ -55,8 +55,8 @@ namespace QuantLib {
     }
 
     void FdmHestonEquityPart::setTime(Time t1, Time t2) {
-        const Real r = rTS_->forwardRate(t1, t2, Continuous);
-        const Real q = qTS_->forwardRate(t1, t2, Continuous);
+        const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
+        const Rate q = qTS_->forwardRate(t1, t2, Continuous).rate();
 
 		if (quantoHelper_) {
 			mapT_.axpyb(r - q - varianceValues_
@@ -86,7 +86,7 @@ namespace QuantLib {
     }
 
     void FdmHestonVariancePart::setTime(Time t1, Time t2) {
-        const Real r = rTS_->forwardRate(t1, t2, Continuous);
+        const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
         mapT_.axpyb(Array(), dyMap_, dyMap_, Array(1,-0.5*r));
     }
 

@@ -51,7 +51,7 @@ namespace QuantLib {
     }
 
     void FdmHestonHullWhiteEquityPart::setTime(Time t1, Time t2) {
-        const Real q = qTS_->forwardRate(t1, t2, Continuous);
+        const Rate q = qTS_->forwardRate(t1, t2, Continuous).rate();
 
         mapT_.axpyb(rates_-varianceValues_-q, dxMap_, dxxMap_, Array());
     }

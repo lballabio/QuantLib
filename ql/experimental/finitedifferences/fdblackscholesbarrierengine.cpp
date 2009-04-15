@@ -32,16 +32,17 @@
 #include <ql/experimental/finitedifferences/fdblackscholesrebateengine.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesvanillaengine.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
-#include <iostream>
 
 namespace QuantLib {
 
     FdBlackScholesBarrierEngine::FdBlackScholesBarrierEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Size tGrid, Size xGrid, Real theta)
+            Size tGrid, Size xGrid, Real theta,
+            bool localVol, Real illegalLocalVolOverwrite)
     : GenericEngine<DividendBarrierOption::arguments,
                     DividendBarrierOption::results>(),
-      process_(process), tGrid_(tGrid), xGrid_(xGrid), theta_(theta) {
+      process_(process), tGrid_(tGrid), xGrid_(xGrid), theta_(theta),
+      localVol_(localVol), illegalLocalVolOverwrite_(illegalLocalVolOverwrite){
     }
 
     void FdBlackScholesBarrierEngine::calculate() const {
@@ -149,7 +150,8 @@ namespace QuantLib {
                 new FdmBlackScholesSolver(
                                 Handle<GeneralizedBlackScholesProcess>(process_),
                                 mesher, boundaries, conditions,
-                                payoff, maturity, tGrid_, theta_));
+                                payoff, maturity, tGrid_, theta_,
+                                localVol_, illegalLocalVolOverwrite_));
 
         results_.value = solver->valueAt(spot);
         results_.delta = solver->deltaAt(spot);
@@ -168,8 +170,10 @@ namespace QuantLib {
                     new DividendVanillaOption(payoff,arguments_.exercise,
                                               dividendDates, dividends));
             vanillaOption->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                new FdBlackScholesVanillaEngine(process_, 
-                                                tGrid_, xGrid_, theta_)));
+                new FdBlackScholesVanillaEngine(
+                        process_, tGrid_, xGrid_, theta_,
+                        localVol_, illegalLocalVolOverwrite_)));
+
             // Calculate the rebate value
             boost::shared_ptr<DividendBarrierOption> rebateOption(
                     new DividendBarrierOption(arguments_.barrierType,
@@ -179,10 +183,9 @@ namespace QuantLib {
                                               dividendDates, dividends));
             const Size min_grid_size = 50;
             rebateOption->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                    new FdBlackScholesRebateEngine(process_, tGrid_, 
-                                                   std::max(min_grid_size, 
-                                                   xGrid_/5), 
-                                                   theta_)));
+                    new FdBlackScholesRebateEngine(
+                            process_, tGrid_, std::max(min_grid_size, xGrid_/5), 
+                            theta_, localVol_, illegalLocalVolOverwrite_)));
 
             results_.value = vanillaOption->NPV()   + rebateOption->NPV()
                                                     - results_.value;

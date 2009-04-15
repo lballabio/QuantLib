@@ -52,7 +52,9 @@ namespace QuantLib {
         const boost::shared_ptr<Payoff>& payoff,
         const Time maturity,
         const Size timeSteps,
-        Real theta)
+        Real theta,
+        bool localVol,
+        Real illegalLocalVolOverwrite)
     : process_(process),
       mesher_(mesher),
       bcSet_(bcSet),
@@ -65,6 +67,8 @@ namespace QuantLib {
       maturity_(maturity),
       timeSteps_(timeSteps),
       theta_(theta),
+      localVol_(localVol),
+      illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
       initialValues_(mesher->layout()->size()),
       resultValues_(mesher->layout()->dim()[0]) {
         registerWith(process_);
@@ -83,7 +87,8 @@ namespace QuantLib {
 
     void FdmBlackScholesSolver::performCalculations() const {
         boost::shared_ptr<FdmBlackScholesOp> map(new FdmBlackScholesOp(
-                mesher_, process_.currentLink(), payoff_));
+                mesher_, process_.currentLink(), payoff_, 
+                localVol_, illegalLocalVolOverwrite_));
 
         Array rhs(initialValues_.size());
         std::copy(initialValues_.begin(), initialValues_.end(), rhs.begin());
@@ -106,11 +111,12 @@ namespace QuantLib {
     }
 
     Real FdmBlackScholesSolver::deltaAt(Real s) const {
-        return interpolation_->derivative(std::log(s));
+        return interpolation_->derivative(std::log(s))/s;
     }
 
     Real FdmBlackScholesSolver::gammaAt(Real s) const {
-        return interpolation_->secondDerivative(std::log(s));
+        return (interpolation_->secondDerivative(std::log(s))
+                -interpolation_->derivative(std::log(s)))/(s*s);
     }
 
     Real FdmBlackScholesSolver::thetaAt(Real s) const {

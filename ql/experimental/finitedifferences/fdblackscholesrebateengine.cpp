@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2008, 2009 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -35,10 +35,12 @@ namespace QuantLib {
 
     FdBlackScholesRebateEngine::FdBlackScholesRebateEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Size tGrid, Size xGrid, Real theta)
+            Size tGrid, Size xGrid, Real theta,
+            bool localVol, Real illegalLocalVolOverwrite)
     : GenericEngine<DividendBarrierOption::arguments,
                     DividendBarrierOption::results>(),
-      process_(process), tGrid_(tGrid), xGrid_(xGrid), theta_(theta) {
+      process_(process), tGrid_(tGrid), xGrid_(xGrid), theta_(theta),
+      localVol_(localVol), illegalLocalVolOverwrite_(illegalLocalVolOverwrite){
     }
 
     void FdBlackScholesRebateEngine::calculate() const {
@@ -148,7 +150,8 @@ namespace QuantLib {
                 new FdmBlackScholesSolver(
                                 Handle<GeneralizedBlackScholesProcess>(process_),
                                 mesher, boundaries, conditions,
-                                rebatePayoff, maturity, tGrid_, theta_));
+                                rebatePayoff, maturity, tGrid_, theta_,
+                                localVol_, illegalLocalVolOverwrite_));
 
         results_.value = solver->valueAt(spot);
         results_.delta = solver->deltaAt(spot);
