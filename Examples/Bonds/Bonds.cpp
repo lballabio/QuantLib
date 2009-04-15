@@ -518,14 +518,14 @@ int main(int, char* []) {
 
          std::cout << std::setw(widths[0]) << "Previous coupon"
          << std::setw(widths[1]) << "N/A" // zeroCouponBond
-         << std::setw(widths[2]) << io::rate(fixedRateBond.previousCoupon())
-         << std::setw(widths[3]) << io::rate(floatingRateBond.previousCoupon())
+         << std::setw(widths[2]) << io::rate(fixedRateBond.previousCouponRate())
+         << std::setw(widths[3]) << io::rate(floatingRateBond.previousCouponRate())
          << std::endl;
 
          std::cout << std::setw(widths[0]) << "Next coupon"
          << std::setw(widths[1]) << "N/A" // zeroCouponBond
-         << std::setw(widths[2]) << io::rate(fixedRateBond.nextCoupon())
-         << std::setw(widths[3]) << io::rate(floatingRateBond.nextCoupon())
+         << std::setw(widths[2]) << io::rate(fixedRateBond.nextCouponRate())
+         << std::setw(widths[3]) << io::rate(floatingRateBond.nextCouponRate())
          << std::endl;
 
          std::cout << std::setw(widths[0]) << "Yield"
