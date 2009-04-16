@@ -19,6 +19,7 @@
 */
 
 #include <ql/instruments/varianceswap.hpp>
+#include <ql/event.hpp>
 
 namespace QuantLib {
 
@@ -71,9 +72,7 @@ namespace QuantLib {
     }
 
     bool VarianceSwap::isExpired() const {
-        return maturityDate_ < Settings::instance().evaluationDate();
+        return Event::hasOccurredFunction(maturityDate_);
     }
 
 }
-
-

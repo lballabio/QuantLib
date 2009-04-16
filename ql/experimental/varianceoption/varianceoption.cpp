@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/varianceoption/varianceoption.hpp>
+#include <ql/event.hpp>
 
 namespace QuantLib {
 
@@ -49,9 +50,7 @@ namespace QuantLib {
     }
 
     bool VarianceOption::isExpired() const {
-        return maturityDate_ < Settings::instance().evaluationDate();
+        return Event::hasOccurredFunction(maturityDate_);
     }
 
 }
-
-

@@ -50,9 +50,8 @@ namespace QuantLib {
     }
 
     bool EnergySwap::isExpired() const {
-        Date today = Settings::instance().evaluationDate();
         return pricingPeriods_.empty()
-            || pricingPeriods_.back()->paymentDate() < today;
+            ||  Event::hasOccurredFunction(pricingPeriods_.back()->paymentDate());
     }
 
 }

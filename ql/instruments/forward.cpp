@@ -19,7 +19,7 @@
 
 #include <ql/instruments/forward.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/settings.hpp>
+#include <ql/event.hpp>
 
 namespace QuantLib {
 
@@ -52,11 +52,7 @@ namespace QuantLib {
 
 
     bool Forward::isExpired() const {
-        #if defined(QL_TODAYS_PAYMENTS)
-        return maturityDate_ < settlementDate();
-        #else
-        return maturityDate_ <= settlementDate();
-        #endif
+        return Event::hasOccurredFunction(maturityDate_, settlementDate());
     }
 
 
@@ -95,4 +91,3 @@ namespace QuantLib {
     }
 
 }
-

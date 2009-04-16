@@ -22,6 +22,7 @@
 #include <ql/instruments/claim.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/event.hpp>
 
 namespace QuantLib {
 
@@ -64,8 +65,8 @@ namespace QuantLib {
     }
 
     bool NthToDefault::isExpired() const {
-        Date settlement = yieldTS_->referenceDate();
-        return (premiumLeg_.back()->date() <= settlement);
+        return Event::hasOccurredFunction(premiumLeg_.back()->date(),
+                                          yieldTS_->referenceDate());
     }
 
     Rate NthToDefault::fairPremium() const {

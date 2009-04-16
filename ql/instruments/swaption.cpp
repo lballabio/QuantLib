@@ -104,8 +104,7 @@ namespace QuantLib {
     }
 
     bool Swaption::isExpired() const {
-        Date today = Settings::instance().evaluationDate();
-        return exercise_->dates().back() < today;
+        return Event::hasOccurredFunction(exercise_->dates().back());
     }
 
     void Swaption::setupArguments(PricingEngine::arguments* args) const {

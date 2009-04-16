@@ -49,7 +49,7 @@ namespace QuantLib {
           finalized_(finalized) {}
         //! \name CashFlow interface
         //@{
-        Date date() const { return date_; }
+        const Date& date() const { return date_; }
         Real amount() const { return discountedAmount_.value(); }
         const Currency& currency() const {
             return discountedAmount_.currency();

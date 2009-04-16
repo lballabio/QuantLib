@@ -150,9 +150,8 @@ namespace QuantLib {
     }
 
     bool CapFloor::isExpired() const {
-        Date today = Settings::instance().evaluationDate();
-        for (Size i=0; i<floatingLeg_.size(); ++i)
-            if (!floatingLeg_[i]->hasOccurred(today))
+        for (Size i=floatingLeg_.size(); i>0; --i)
+            if (!floatingLeg_[i-1]->hasOccurred())
                 return false;
         return true;
     }

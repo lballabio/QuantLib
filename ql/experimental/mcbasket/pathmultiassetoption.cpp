@@ -21,6 +21,7 @@
 #include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/event.hpp>
 
 namespace QuantLib {
 
@@ -35,7 +36,7 @@ namespace QuantLib {
     }
 
     bool PathMultiAssetOption::isExpired() const {
-        return fixingDates().back() < Settings::instance().evaluationDate();
+        return Event::hasOccurredFunction(fixingDates().back());
     }
 
     void PathMultiAssetOption::setupExpired() const {

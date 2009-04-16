@@ -60,11 +60,10 @@ namespace QuantLib {
 
 
     bool Swap::isExpired() const {
-        Date today = Settings::instance().evaluationDate();
         for (Size j=0; j<legs_.size(); ++j) {
-            for (Leg::const_iterator i = legs_[j].begin();
-                                     i!= legs_[j].end(); ++i)
-                if (!(*i)->hasOccurred(today))
+            Leg::const_iterator i; 
+            for (i = legs_[j].begin(); i!= legs_[j].end(); ++i)
+                if (!(*i)->hasOccurred())
                     return false;
         }
         return true;

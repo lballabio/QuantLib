@@ -27,6 +27,7 @@
 #include <ql/pricingengines/credit/midpointcdsengine.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/event.hpp>
 
 namespace QuantLib {
 
@@ -78,11 +79,9 @@ namespace QuantLib {
 
 
     bool CreditDefaultSwap::isExpired() const {
-        Date today = Settings::instance().evaluationDate();
-        for (Leg::const_iterator i = leg_.begin(); i != leg_.end(); ++i) {
-            if (!(*i)->hasOccurred(today))
+        for (Size i=leg_.size(); i>0; --i)
+            if (!leg_[i-1]->hasOccurred())
                 return false;
-        }
         return true;
     }
 
@@ -229,4 +228,3 @@ namespace QuantLib {
     }
 
 }
-

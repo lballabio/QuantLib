@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/credit/cdo.hpp>
+#include <ql/event.hpp>
 
 using namespace std;
 
@@ -86,8 +87,8 @@ namespace QuantLib {
 
 
     bool CDO::isExpired () const {
-        Date settlement = yieldTS_->referenceDate();
-        return premiumSchedule_.dates().back() <= settlement;
+        return Event::hasOccurredFunction(premiumSchedule_.dates().back(),
+                                          yieldTS_->referenceDate());
     }
 
 

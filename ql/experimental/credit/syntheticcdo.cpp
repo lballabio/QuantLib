@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/credit/syntheticcdo.hpp>
+#include <ql/event.hpp>
 
 using namespace std;
 
@@ -79,10 +80,8 @@ namespace QuantLib {
     }
 
     bool SyntheticCDO::isExpired () const {
-    if (schedule_.dates().back() <= yieldTS_->referenceDate())
-        return true;
-    else
-        return false;
+        return Event::hasOccurredFunction(schedule_.dates().back(),
+                                          yieldTS_->referenceDate());
     }
 
     Real SyntheticCDO::remainingNotional() const {

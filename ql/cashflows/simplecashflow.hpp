@@ -37,7 +37,7 @@ namespace QuantLib {
         : amount_(amount), date_(date) {}
         //! \name Event interface
         //@{
-        Date date() const { return date_; }
+        const Date& date() const { return date_; }
         //@}
         //! \name CashFlow interface
         //@{

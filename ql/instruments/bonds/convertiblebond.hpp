@@ -41,7 +41,9 @@ namespace QuantLib {
     //! %callability leaving to the holder the possibility to convert
     class SoftCallability : public Callability {
       public:
-        SoftCallability(const Price& price, const Date& date, Real trigger)
+        SoftCallability(const Price& price,
+                        const Date& date,
+                        Real trigger)
         : Callability(price, Callability::Call, date), trigger_(trigger) {}
         Real trigger() const { return trigger_; }
       private:

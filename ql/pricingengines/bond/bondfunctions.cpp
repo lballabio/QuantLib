@@ -40,7 +40,7 @@ namespace QuantLib {
     }
 
     bool BondFunctions::isExpired(const Bond& bond,
-                                  Date refDate) {
+                                  const Date& refDate) {
         return CashFlows::isExpired(bond.cashflows(), refDate);
     }
 

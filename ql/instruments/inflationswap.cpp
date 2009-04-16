@@ -19,7 +19,7 @@
 */
 
 #include <ql/instruments/inflationswap.hpp>
-#include <ql/settings.hpp>
+#include <ql/event.hpp>
 
 namespace QuantLib {
 
@@ -69,7 +69,7 @@ namespace QuantLib {
     }
 
     bool InflationSwap::isExpired() const {
-        return maturity_ < Settings::instance().evaluationDate();
+        return Event::hasOccurredFunction(maturity_);
     }
 
     void InflationSwap::setupArguments(PricingEngine::arguments* args) const {
@@ -118,4 +118,3 @@ namespace QuantLib {
     }
 
 }
-

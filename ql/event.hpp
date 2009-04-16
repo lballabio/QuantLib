@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2009 Ferdinando Ametrano
  Copyright (C) 2005 Joseph Wang
 
  This file is part of QuantLib, a free-software/open-source library
@@ -40,7 +41,7 @@ namespace QuantLib {
         //! \name Event interface
         //@{
         //! returns the date at which the event occurs
-        virtual Date date() const = 0;
+        virtual const Date& date() const = 0;
 
         //! returns true if an event has already occurred before a date
         /*! If QL_TODAYS_PAYMENTS is true, then a payment event has not
@@ -50,18 +51,20 @@ namespace QuantLib {
             This should be the only place in the code that is affected
             directly by QL_TODAYS_PAYMENTS
         */
-        bool hasOccurred(const Date &d,
+        static bool hasOccurredFunction(const Date& d,
+                                        const Date& refDate = Date(),
+                                        #if defined(QL_TODAYS_PAYMENTS)
+                                        bool includeToday = true);
+                                        #else
+                                        bool includeToday = false);
+                                        #endif
+        bool hasOccurred(const Date& refDate = Date(),
                          #if defined(QL_TODAYS_PAYMENTS)
-                         bool includeToday = true
+                         bool includeToday = true) const {
                          #else
-                         bool includeToday = false
+                         bool includeToday = false) const {
                          #endif
-                         ) const {
-            if (includeToday) {
-                return date() < d;
-            } else {
-                return date() <= d;
-            }
+            return hasOccurredFunction(date(), refDate, includeToday);
         }
         //@}
 

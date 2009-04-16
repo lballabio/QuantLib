@@ -61,7 +61,7 @@ namespace QuantLib {
             return *price_;
         }
         Type type() const { return type_; }
-        Date date() const { return date_; }
+        const Date& date() const { return date_; }
         //@}
         //! \name Visitability
         //@{

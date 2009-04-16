@@ -52,7 +52,7 @@ namespace QuantLib {
                      Real recoveryRate,
                      Seniority seniority = AnySeniority,
                      Restructuring restructuring = AnyRestructuring);
-        Date date() const;
+        const Date& date() const { return defaultDate_; }
         Real recoveryRate() const;
         Seniority seniority() const;
         Restructuring restructuring() const;

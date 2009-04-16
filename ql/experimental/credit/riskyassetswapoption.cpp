@@ -19,6 +19,7 @@
 
 #include <ql/experimental/credit/riskyassetswapoption.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/event.hpp>
 
 namespace QuantLib {
 
@@ -34,9 +35,7 @@ namespace QuantLib {
 
 
     bool RiskyAssetSwapOption::isExpired() const {
-        Date today = Settings::instance().evaluationDate();
-
-        return expiry_ <= today;
+        return Event::hasOccurredFunction(expiry_);
     }
 
 

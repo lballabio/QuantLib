@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/credit/riskyassetswap.hpp>
+#include <ql/event.hpp>
 
 namespace QuantLib {
 
@@ -44,11 +45,8 @@ namespace QuantLib {
     }
 
     bool RiskyAssetSwap::isExpired () const {
-        Date settlement = yieldTS_->referenceDate();
-        if (fixedSchedule_.dates().back() <= settlement)
-            return true;
-        else
-            return false;
+        return Event::hasOccurredFunction(fixedSchedule_.dates().back(),
+                                          yieldTS_->referenceDate());
     }
 
 

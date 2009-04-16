@@ -20,8 +20,8 @@
 */
 
 #include <ql/instruments/oneassetoption.hpp>
-#include <ql/settings.hpp>
 #include <ql/exercise.hpp>
+#include <ql/event.hpp>
 
 namespace QuantLib {
 
@@ -31,7 +31,7 @@ namespace QuantLib {
     : Option(payoff, exercise) {}
 
     bool OneAssetOption::isExpired() const {
-        return exercise_->lastDate() < Settings::instance().evaluationDate();
+        return Event::hasOccurredFunction(exercise_->lastDate());
     }
 
     Real OneAssetOption::delta() const {

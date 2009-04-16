@@ -19,6 +19,7 @@
 
 #include <ql/instruments/forwardrateagreement.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/event.hpp>
 
 namespace QuantLib {
     
@@ -66,11 +67,7 @@ namespace QuantLib {
     }
 
     bool ForwardRateAgreement::isExpired() const {
-        #if defined(QL_TODAYS_PAYMENTS)
-        return valueDate_ < settlementDate();
-        #else
-        return valueDate_ <= settlementDate();
-        #endif
+        return Event::hasOccurredFunction(valueDate_, settlementDate());
     }
 
     Real ForwardRateAgreement::spotIncome(
@@ -108,4 +105,3 @@ namespace QuantLib {
     }
 
 }
-

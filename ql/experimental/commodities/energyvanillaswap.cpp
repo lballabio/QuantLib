@@ -48,8 +48,7 @@ namespace QuantLib {
     }
 
     bool EnergyVanillaSwap::isExpired() const {
-        Date today = Settings::instance().evaluationDate();
-        return today > pricingPeriods_.back()->endDate();
+        return Event::hasOccurredFunction(pricingPeriods_.back()->endDate());
     }
 
     void EnergyVanillaSwap::performCalculations() const {
