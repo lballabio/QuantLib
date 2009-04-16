@@ -169,7 +169,7 @@ namespace QuantLib {
             Real redemption)
     : OneAssetOption(boost::shared_ptr<StrikedTypePayoff>(new
           PlainVanillaPayoff(Option::Call,
-                             bond->faceAmount()/100.0
+                             (bond->notionals()[0])/100.0
                              *redemption/conversionRatio)),
                             exercise),
       bond_(bond), conversionRatio_(conversionRatio),

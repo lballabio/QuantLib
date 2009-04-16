@@ -67,7 +67,6 @@ namespace QuantLib {
         // inspectors
         bool parSwap() const { return parSwap_; }
         Spread spread() const { return spread_; }
-        Real nominal() const { return nominal_; }
         const boost::shared_ptr<Bond>& bond() const { return bond_; }
         bool payFixedRate() const { return (payer_[0] == -1.0); }
         const Leg& bondLeg() const { return legs_[0]; }
@@ -81,7 +80,6 @@ namespace QuantLib {
         Real bondCleanPrice_;
         Spread spread_;
         bool parSwap_;
-        Real nominal_;
         Date upfrontDate_;
         // results
         mutable Spread fairSpread_;
@@ -92,8 +90,7 @@ namespace QuantLib {
     //! %Arguments for asset swap calculation
     class AssetSwap::arguments : public Swap::arguments {
       public:
-        arguments() : nominal(Null<Real>()) {}
-        Real nominal;
+        arguments() {}
         std::vector<Date> fixedResetDates;
         std::vector<Date> fixedPayDates;
         std::vector<Real> fixedCoupons;

@@ -90,7 +90,7 @@ namespace QuantLib {
         //@{
         Natural settlementDays() const;
         const Calendar& calendar() const;
-        Real faceAmount() const;
+        //Real faceAmount() const;
 
         const std::vector<Real>& notionals() const;
         virtual Real notional(Date d = Date()) const;
@@ -294,9 +294,9 @@ namespace QuantLib {
         return calendar_;
     }
 
-    inline Real Bond::faceAmount() const {
-        return notionals_.front();
-    }
+    //inline Real Bond::faceAmount() const {
+    //    return notionals_.front();
+    //}
 
     inline const std::vector<Real>& Bond::notionals() const {
         return notionals_;

@@ -78,11 +78,12 @@ namespace QuantLib {
            payment of the full price. The notional of the floating leg is
            then scaled by the full price, and the resulting value of the
            asset swap spread is different. */
-        if (parSwap_) nominal_ = bond_->faceAmount();
-        else          nominal_ = dirtyPrice/100*bond_->faceAmount();
+        Real nominal = bond_->notional(upfrontDate_);
+        if (!parSwap_)
+            nominal *= dirtyPrice/100.0;
 
         legs_[1] = IborLeg(schedule, index)
-            .withNotionals(nominal_)
+            .withNotionals(nominal)
             .withPaymentDayCounter(floatingDayCounter)
             .withPaymentAdjustment(paymentAdjustment)
             .withSpreads(spread);
@@ -102,20 +103,20 @@ namespace QuantLib {
         // special flows
         if (parSwap_) {
             // upfront on the floating leg
-            Real upfront = (dirtyPrice-100.0)/100.0*nominal_;
+            Real upfront = (dirtyPrice-100.0)/100.0*nominal;
             boost::shared_ptr<CashFlow> upfrontCashFlow (new
                 SimpleCashFlow(upfront, upfrontDate_));
             legs_[1].insert(legs_[1].begin(), upfrontCashFlow);
             // backpayment on the floating leg
             // (accounts for non-par redemption, if any)
-            Real backPayment = nominal_;
+            Real backPayment = nominal;
             boost::shared_ptr<CashFlow> backPaymentCashFlow (new
                 SimpleCashFlow(backPayment, finalDate));
             legs_[1].push_back(backPaymentCashFlow);
         } else {
             // final nominal exchange
             boost::shared_ptr<CashFlow> finalCashFlow (new
-                SimpleCashFlow(nominal_, finalDate));
+                SimpleCashFlow(nominal, finalDate));
             legs_[1].push_back(finalCashFlow);
         }
 
@@ -141,8 +142,6 @@ namespace QuantLib {
 
         if (!arguments)  // it's a swap engine...
             return;
-
-        arguments->nominal = nominal_;
 
         const Leg& fixedCoupons = bondLeg();
 
@@ -214,10 +213,11 @@ namespace QuantLib {
                 QL_FAIL("fair clean price not available");
             }
 
+            Real nominal = bond_->notional(upfrontDate_);
             if (parSwap_) {
-                fairCleanPrice_ = bondCleanPrice_-NPV_/(nominal_/100.0)/dfs[1];
+                fairCleanPrice_ = bondCleanPrice_-NPV_/(nominal/100.0)/dfs[1];
             } else {
-                Real dirty = nominal_*100/bond_->faceAmount();
+                Real dirty = nominal*100/nominal;
                 Real fairDirty = - legNPV_[0]/legNPV_[1] * dirty;
                 fairCleanPrice_ = fairDirty-bond_->accruedAmount(upfrontDate_);
             }
@@ -246,8 +246,6 @@ namespace QuantLib {
     }
 
     void AssetSwap::arguments::validate() const {
-        QL_REQUIRE(nominal != Null<Real>(),
-                   "nominal null or not set");
         QL_REQUIRE(fixedResetDates.size() == fixedPayDates.size(),
                    "number of fixed start dates different from "
                    "number of fixed payment dates");
