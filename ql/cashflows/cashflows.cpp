@@ -68,10 +68,10 @@ namespace QuantLib {
         if (refDate==Date())
             refDate = Settings::instance().evaluationDate();
 
-        bool result = true;
-        for (Size i=leg.size(); i>0 && result; --i)
-            result = leg[i-1]->hasOccurred(refDate);
-        return result;
+        for (Size i=leg.size(); i>0; --i)
+            if (!leg[i-1]->hasOccurred(refDate))
+                return false;
+        return true;
     }
 
     Leg::const_iterator CashFlows::previousCashFlow(const Leg& leg,
