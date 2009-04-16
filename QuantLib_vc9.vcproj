@@ -9851,6 +9851,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ql\event.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\ql\event.hpp"
 			>
 		</File>
