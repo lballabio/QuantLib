@@ -36,7 +36,7 @@ namespace QuantLib {
     }
 
     bool PathMultiAssetOption::isExpired() const {
-        return hasOccurredFunction(fixingDates().back());
+        return detail::simple_event(fixingDates().back()).hasOccurred();
     }
 
     void PathMultiAssetOption::setupExpired() const {

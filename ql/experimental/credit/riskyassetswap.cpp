@@ -45,8 +45,8 @@ namespace QuantLib {
     }
 
     bool RiskyAssetSwap::isExpired () const {
-        return hasOccurredFunction(fixedSchedule_.dates().back(),
-                                          yieldTS_->referenceDate());
+        return detail::simple_event(fixedSchedule_.dates().back())
+               .hasOccurred(yieldTS_->referenceDate());
     }
 
 

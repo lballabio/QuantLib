@@ -31,7 +31,7 @@ namespace QuantLib {
     : Option(payoff, exercise) {}
 
     bool OneAssetOption::isExpired() const {
-        return hasOccurredFunction(exercise_->lastDate());
+        return detail::simple_event(exercise_->lastDate()).hasOccurred();
     }
 
     Real OneAssetOption::delta() const {

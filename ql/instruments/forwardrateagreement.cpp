@@ -22,7 +22,7 @@
 #include <ql/event.hpp>
 
 namespace QuantLib {
-    
+
     ForwardRateAgreement::ForwardRateAgreement(
                            const Date& valueDate,
                            const Date& maturityDate,
@@ -67,7 +67,7 @@ namespace QuantLib {
     }
 
     bool ForwardRateAgreement::isExpired() const {
-        return hasOccurredFunction(valueDate_, settlementDate());
+        return detail::simple_event(valueDate_).hasOccurred(settlementDate());
     }
 
     Real ForwardRateAgreement::spotIncome(
@@ -94,7 +94,7 @@ namespace QuantLib {
     }
 
     void ForwardRateAgreement::performCalculations() const {
-        Date fixingDate = calendar_.advance(valueDate_, 
+        Date fixingDate = calendar_.advance(valueDate_,
             -static_cast<Integer>(settlementDays_), Days);
         forwardRate_ = InterestRate(index_->fixing(fixingDate),
                                     index_->dayCounter(),

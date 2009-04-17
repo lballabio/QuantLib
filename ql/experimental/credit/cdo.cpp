@@ -87,8 +87,8 @@ namespace QuantLib {
 
 
     bool CDO::isExpired () const {
-        return hasOccurredFunction(premiumSchedule_.dates().back(),
-                                          yieldTS_->referenceDate());
+        return detail::simple_event(premiumSchedule_.dates().back())
+               .hasOccurred(yieldTS_->referenceDate());
     }
 
 

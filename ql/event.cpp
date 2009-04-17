@@ -23,15 +23,21 @@
 
 namespace QuantLib {
 
-    bool hasOccurredFunction(const Date& d,
-                             const Date& refDateInput,
-                             bool includeToday) {
-        Date refDate = refDateInput!=Date() ? refDateInput :
-                                        Settings::instance().evaluationDate();
+    bool Event::hasOccurred(const Date& d,
+                            bool includeToday) const {
+        Date refDate = d!=Date() ? d : Settings::instance().evaluationDate();
         if (includeToday)
-            return d < refDate;
+            return date() < refDate;
         else
-            return d <= refDate;
+            return date() <= refDate;
+    }
+
+    void Event::accept(AcyclicVisitor& v) {
+        Visitor<Event>* v1 = dynamic_cast<Visitor<Event>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            QL_FAIL("not an event visitor");
     }
 
 }

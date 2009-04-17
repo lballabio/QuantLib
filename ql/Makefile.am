@@ -60,6 +60,7 @@ libQuantLib_la_SOURCES = \
 	default.cpp \
 	discretizedasset.cpp \
 	errors.cpp \
+	event.cpp \
 	exchangerate.cpp \
 	exercise.cpp \
     index.cpp \

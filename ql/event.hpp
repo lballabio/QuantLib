@@ -31,25 +31,6 @@
 
 namespace QuantLib {
 
-    //! returns true if a given date is before a reference date
-    /*! If QL_TODAYS_PAYMENTS is true, then a payment event has not
-        occurred if the given date is the same as the reference date,
-        and so includeToday should be defaulted to true.
-
-        If no refernce date is provided it defaults to the current
-        evaluation date (see Settings)
-
-        This file should be the only place in the code that is affected
-        directly by QL_TODAYS_PAYMENTS
-    */
-    bool hasOccurredFunction(const Date& d,
-                             const Date& refDate = Date(),
-                             #if defined(QL_TODAYS_PAYMENTS)
-                             bool includeToday = true);
-                             #else
-                             bool includeToday = false);
-                             #endif
-
     //! Base class for event
     /*! This class acts as a base class for the actual
         event implementations.
@@ -67,17 +48,16 @@ namespace QuantLib {
             occurred if the input date is the same as the event date,
             and so includeToday should be defaulted to true.
 
-            This file should be the only place in the code that is affected
+            This should be the only place in the code that is affected
             directly by QL_TODAYS_PAYMENTS
         */
         bool hasOccurred(const Date& refDate = Date(),
                          #if defined(QL_TODAYS_PAYMENTS)
-                         bool includeToday = true) const {
+                         bool includeToday = true
                          #else
-                         bool includeToday = false) const {
+                         bool includeToday = false
                          #endif
-            return hasOccurredFunction(date(), refDate, includeToday);
-        }
+                         ) const;
         //@}
 
         //! \name Visitability
@@ -87,14 +67,18 @@ namespace QuantLib {
     };
 
 
-    // inline definitions
+    namespace detail {
 
-    inline void Event::accept(AcyclicVisitor& v) {
-        Visitor<Event>* v1 = dynamic_cast<Visitor<Event>*>(&v);
-        if (v1 != 0)
-            v1->visit(*this);
-        else
-            QL_FAIL("not an event visitor");
+        // used to create an Event instance.
+        // to be replaced with specific events as soon as we find out which.
+        class simple_event : public Event {
+          public:
+            simple_event(const Date& date) : date_(date) {}
+            Date date() const { return date_; }
+          private:
+            Date date_;
+        };
+
     }
 
 }

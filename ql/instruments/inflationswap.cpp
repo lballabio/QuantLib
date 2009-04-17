@@ -69,7 +69,7 @@ namespace QuantLib {
     }
 
     bool InflationSwap::isExpired() const {
-        return hasOccurredFunction(maturity_);
+        return detail::simple_event(maturity_).hasOccurred();
     }
 
     void InflationSwap::setupArguments(PricingEngine::arguments* args) const {
