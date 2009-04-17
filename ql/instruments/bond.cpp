@@ -145,10 +145,9 @@ namespace QuantLib {
             return BondFunctions::maturityDate(*this);
     }
 
-    Date Bond::settlementDate(const Date& date) const {
-        Date d = (date==Date() ?
-                  Settings::instance().evaluationDate() :
-                  date);
+    Date Bond::settlementDate(Date d) const {
+        if (d==Date())
+            d = Settings::instance().evaluationDate();
 
         // usually, the settlement is at T+n...
         Date settlement = calendar_.advance(d, settlementDays_, Days);

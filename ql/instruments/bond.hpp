@@ -105,7 +105,7 @@ namespace QuantLib {
         Date maturityDate() const;
         Date issueDate() const;
 
-        Date settlementDate(const Date& d = Date()) const;
+        Date settlementDate(Date d = Date()) const;
         //@}
 
         //! \name Calculations
