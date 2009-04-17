@@ -23,11 +23,11 @@
 
 namespace QuantLib {
 
-    bool Event::hasOccurredFunction(const Date& d,
-                                    const Date& refDateInput,
-                                    bool includeToday) {
+    bool hasOccurredFunction(const Date& d,
+                             const Date& refDateInput,
+                             bool includeToday) {
         Date refDate = refDateInput!=Date() ? refDateInput :
-                                Settings::instance().evaluationDate();
+                                        Settings::instance().evaluationDate();
         if (includeToday)
             return d < refDate;
         else

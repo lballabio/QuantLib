@@ -33,7 +33,7 @@ using namespace std;
 namespace QuantLib {
 
     bool RiskyBond::isExpired() const {
-        return Event::hasOccurredFunction(maturityDate());
+        return hasOccurredFunction(maturityDate());
     }
 
     void RiskyBond::setupExpired() const {

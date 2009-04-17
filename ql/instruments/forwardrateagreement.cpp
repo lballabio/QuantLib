@@ -67,7 +67,7 @@ namespace QuantLib {
     }
 
     bool ForwardRateAgreement::isExpired() const {
-        return Event::hasOccurredFunction(valueDate_, settlementDate());
+        return hasOccurredFunction(valueDate_, settlementDate());
     }
 
     Real ForwardRateAgreement::spotIncome(

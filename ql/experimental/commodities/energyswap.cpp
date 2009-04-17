@@ -51,7 +51,7 @@ namespace QuantLib {
 
     bool EnergySwap::isExpired() const {
         return pricingPeriods_.empty()
-            ||  Event::hasOccurredFunction(pricingPeriods_.back()->paymentDate());
+            ||  hasOccurredFunction(pricingPeriods_.back()->paymentDate());
     }
 
 }

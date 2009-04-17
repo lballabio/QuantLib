@@ -50,7 +50,7 @@ namespace QuantLib {
     }
 
     bool VarianceOption::isExpired() const {
-        return Event::hasOccurredFunction(maturityDate_);
+        return hasOccurredFunction(maturityDate_);
     }
 
 }

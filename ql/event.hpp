@@ -31,6 +31,25 @@
 
 namespace QuantLib {
 
+    //! returns true if a given date is before a reference date
+    /*! If QL_TODAYS_PAYMENTS is true, then a payment event has not
+        occurred if the given date is the same as the reference date,
+        and so includeToday should be defaulted to true.
+
+        If no refernce date is provided it defaults to the current
+        evaluation date (see Settings)
+
+        This file should be the only place in the code that is affected
+        directly by QL_TODAYS_PAYMENTS
+    */
+    bool hasOccurredFunction(const Date& d,
+                             const Date& refDate = Date(),
+                             #if defined(QL_TODAYS_PAYMENTS)
+                             bool includeToday = true);
+                             #else
+                             bool includeToday = false);
+                             #endif
+
     //! Base class for event
     /*! This class acts as a base class for the actual
         event implementations.
@@ -48,16 +67,9 @@ namespace QuantLib {
             occurred if the input date is the same as the event date,
             and so includeToday should be defaulted to true.
 
-            This should be the only place in the code that is affected
+            This file should be the only place in the code that is affected
             directly by QL_TODAYS_PAYMENTS
         */
-        static bool hasOccurredFunction(const Date& d,
-                                        const Date& refDate = Date(),
-                                        #if defined(QL_TODAYS_PAYMENTS)
-                                        bool includeToday = true);
-                                        #else
-                                        bool includeToday = false);
-                                        #endif
         bool hasOccurred(const Date& refDate = Date(),
                          #if defined(QL_TODAYS_PAYMENTS)
                          bool includeToday = true) const {

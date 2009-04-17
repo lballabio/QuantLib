@@ -72,7 +72,7 @@ namespace QuantLib {
     }
 
     bool VarianceSwap::isExpired() const {
-        return Event::hasOccurredFunction(maturityDate_);
+        return hasOccurredFunction(maturityDate_);
     }
 
 }

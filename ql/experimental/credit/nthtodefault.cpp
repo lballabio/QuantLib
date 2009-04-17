@@ -65,7 +65,7 @@ namespace QuantLib {
     }
 
     bool NthToDefault::isExpired() const {
-        return Event::hasOccurredFunction(premiumLeg_.back()->date(),
+        return hasOccurredFunction(premiumLeg_.back()->date(),
                                           yieldTS_->referenceDate());
     }
 

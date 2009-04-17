@@ -35,7 +35,7 @@ namespace QuantLib {
 
 
     bool RiskyAssetSwapOption::isExpired() const {
-        return Event::hasOccurredFunction(expiry_);
+        return hasOccurredFunction(expiry_);
     }
 
 

@@ -52,7 +52,7 @@ namespace QuantLib {
 
 
     bool Forward::isExpired() const {
-        return Event::hasOccurredFunction(maturityDate_, settlementDate());
+        return hasOccurredFunction(maturityDate_, settlementDate());
     }
 
 

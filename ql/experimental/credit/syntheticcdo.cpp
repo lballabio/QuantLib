@@ -80,7 +80,7 @@ namespace QuantLib {
     }
 
     bool SyntheticCDO::isExpired () const {
-        return Event::hasOccurredFunction(schedule_.dates().back(),
+        return hasOccurredFunction(schedule_.dates().back(),
                                           yieldTS_->referenceDate());
     }
 
