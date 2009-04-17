@@ -47,9 +47,9 @@ namespace QuantLib {
                const Date& accrualEndDate,
                const Date& refPeriodStart = Date(),
                const Date& refPeriodEnd = Date());
-        //! \name Partial CashFlow interface
+        //! \name Event interface
         //@{
-        const Date& date() const { return paymentDate_; }
+        Date date() const { return paymentDate_; }
         //@}
         //! \name Inspectors
         //@{

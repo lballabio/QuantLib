@@ -52,7 +52,10 @@ namespace QuantLib {
                      Real recoveryRate,
                      Seniority seniority = AnySeniority,
                      Restructuring restructuring = AnyRestructuring);
-        const Date& date() const { return defaultDate_; }
+        //! \name Event interface
+        //@{
+        Date date() const { return defaultDate_; }
+        //@}
         Real recoveryRate() const;
         Seniority seniority() const;
         Restructuring restructuring() const;
@@ -73,13 +76,11 @@ namespace QuantLib {
         }
     };
 
-
     //! information on a default-protection contract
     struct Protection {
         enum Side { Buyer, Seller };
     };
 
 }
-
 
 #endif

@@ -47,10 +47,14 @@ namespace QuantLib {
           discountFactor_(discountFactor),
           paymentDiscountFactor_(paymentDiscountFactor),
           finalized_(finalized) {}
+        //! \name Event interface
+        //@{
+        Date date() const { return date_; }
+        //@}
         //! \name CashFlow interface
         //@{
-        const Date& date() const { return date_; }
         Real amount() const { return discountedAmount_.value(); }
+        //@}
         const Currency& currency() const {
             return discountedAmount_.currency();
         }
@@ -67,7 +71,6 @@ namespace QuantLib {
         Real paymentDiscountFactor() const { return paymentDiscountFactor_; }
         bool finalized() const { return finalized_; }
 
-        //@}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);

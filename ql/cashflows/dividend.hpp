@@ -39,7 +39,7 @@ namespace QuantLib {
         : date_(date) {}
         //! \name Event interface
         //@{
-        const Date& date() const { return date_; }
+        Date date() const { return date_; }
         //@}
         //! \name CashFlow interface
         //@{
@@ -70,7 +70,7 @@ namespace QuantLib {
     };
 
     //! Predetermined cash flow
-    /*! This cash flow pays a predetermined amount at a given date. */
+    /*! This cash flow pays a fractional amount at a given date. */
     class FractionalDividend : public Dividend {
       public:
         FractionalDividend(Real rate, const Date& date)

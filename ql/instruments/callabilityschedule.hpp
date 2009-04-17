@@ -61,7 +61,9 @@ namespace QuantLib {
             return *price_;
         }
         Type type() const { return type_; }
-        const Date& date() const { return date_; }
+        //! \name Event interface
+        //@{
+        Date date() const { return date_; }
         //@}
         //! \name Visitability
         //@{

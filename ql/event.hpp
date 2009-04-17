@@ -41,7 +41,7 @@ namespace QuantLib {
         //! \name Event interface
         //@{
         //! returns the date at which the event occurs
-        virtual const Date& date() const = 0;
+        virtual Date date() const = 0;
 
         //! returns true if an event has already occurred before a date
         /*! If QL_TODAYS_PAYMENTS is true, then a payment event has not
