@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2009 Chris Kenyon
+ Copyright (C) 2009 Bernd Engelmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,6 +31,8 @@
 #include <ql/math/interpolation.hpp>
 #include <ql/math/interpolations/interpolation2d.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+
+#include <ql/experimental/inflation/polynomial2dspline.hpp>
 
 namespace QuantLib {
 
@@ -300,137 +303,156 @@ namespace QuantLib {
     void InterpolatedYoYCapFloorTermPriceSurface<I2D,I1D>::
     intersect() const {
 
-        // generally we must EXTrapolate at least
-        // one of these curves to get an intersection
-        // Two possibilities:
-        // 1) use put-call parity from the other curve
-        //    BUT that requires a swap that we don't have
-        // 2) create our own extension rather than
-        //    leaving it up to the Interpolator
-        //    because we know the 2nd derivative is important
-        //    and typically this will be missed.
-        // We choose 2) matching the first two derivatives
-        // calculated as a discrete approximation.
-
-        // only do this if have at least 3 points for each
-
-        Size nc = cStrikes_.size();
-        Size ncB = nc + 2;
-        Size nc0 = nc - 1;
-        Size nc1 = nc - 2;
-        Size nc2 = nc - 3;
-        Size nf = fStrikes_.size();
-        Size nfB = nf + 2;
-        Size nM = cfMaturities_.size();
-        // two extra strikes in each matrix, so create bigger matrices
-        cPriceB_ = Matrix(ncB,nM);
-        fPriceB_ = Matrix(nfB,nM);
-        for(Size i = 0; i < nM; i++) { // leave empty space on the low/high side
-            for(Size j = 0; j < nc; j++) cPriceB_[j+2][i] = cPrice_[j][i];
-            for(Size j = 0; j < nf; j++) fPriceB_[j][i] = fPrice_[j][i];
-        }
-
-        Rate dc1 = cStrikes_[1] - cStrikes_[0];
-        Rate df1 = fStrikes_[nc1] - fStrikes_[nc0];
-        Rate dc2 = cStrikes_[2] - cStrikes_[1];
-        Rate df2 = fStrikes_[nc2] - fStrikes_[nc1];
-        Rate cX1 =  cStrikes_[0] - dc1;
-        Rate fX1 =  fStrikes_[nc0] - df1;
-        Rate cX2 =  cStrikes_[0] - 2*dc1;
-        Rate fX2 =  fStrikes_[nc0] - 2*df1;
-
-        cStrikesB_.clear();
-        cStrikesB_.resize(nc+2,0.0);
-        for(Size j = 0; j < nc; j++) cStrikesB_[j+2] = cStrikes_[j];
-        cStrikesB_[0] = cX2;
-        cStrikesB_[1] = cX1;
-        fStrikesB_.clear();
-        fStrikesB_.resize(nf+2,0.0);
-        for(Size j = 0; j < nf; j++) fStrikesB_[j] = fStrikes_[j];
-        fStrikesB_[nf] = fX1;
-        fStrikesB_[nf+1] = fX2;
-
-        // put in the extra prices
-        for(Size i = 0; i < nM; i++) {
-            Real gc1 =  (cPrice_[1][i] - cPrice_[0][i]) / dc1;
-            Real gc2a =  gc1 + 1 * ( gc1 - (cPrice_[2][i] - cPrice_[1][i]) / dc2);
-            Real gc2b =  gc1 + 2 * ( gc1 - (cPrice_[2][i] - cPrice_[1][i]) / dc2);
-
-            Real gf1 =  (fPrice_[nc1][i] - fPrice_[nc0][i]) / df1;
-            Real gf2a =  gf1 + 1 * ( gf1 - (fPrice_[nc2][i] - fPrice_[nc1][i]) / df2);
-            Real gf2b =  gf1 + 2 * ( gf1 - (fPrice_[nc2][i] - fPrice_[nc1][i]) / df2);
-
-            cPriceB_[1][i] = std::max(cPriceB_[2][i] - gc2a * dc1, 0.0);
-            cPriceB_[0][i] = std::max(cPriceB_[1][i] - gc2b * dc1, 0.0);
-
-            fPriceB_[nf][i] = std::max(fPriceB_[nf-1][i] - gf2a * df1, 0.0);
-            fPriceB_[nf+1][i] = std::max(fPriceB_[nf][i] - gf2b * df1, 0.0);
-        }
-
-        capPrice_ =
-            interpolator2d_.interpolate(
-                                    cfMaturities_.begin(),cfMaturities_.end(),
-                                    cStrikesB_.begin(), cStrikesB_.end(),
-                                    cPriceB_);
-
-        floorPrice_ =
-            interpolator2d_.interpolate(
-                                    cfMaturities_.begin(),cfMaturities_.end(),
-                                    fStrikesB_.begin(), fStrikesB_.end(),
-                                    fPriceB_);
-
-        // Get all intersections ... conservatively because the
-        // extrapolation may be poor, i.e. start with brackets close
-        // then move the brackets out one step at a time (just twice -
-        // checking that there is space).
-        atmYoYSwapRates_ = std::pair<std::vector<Time>, std::vector<Rate> >();
-        Brent solver;
-        Real solverTolerance_ = 1e-7;
-        Real lo,hi,guess;
-        for (Size i = 0; i < cfMaturities_.size(); i++) {
-            Time t = cfMaturities_[i];
-            lo = fStrikes_[fStrikes_.size()-2];
-            hi = cStrikes_[1];
-            guess = (hi+lo)/2.0;
-            Rate kI = -999.999;
-            try {
-                kI = solver.solve(ObjectiveFunction(t, capPrice_, floorPrice_),
-                                  solverTolerance_, guess, lo, hi );
-            } catch( std::exception &e) {
-                if(fStrikes_.size()<3 || cStrikes_.size()<3)
-                    QL_FAIL("cap/floor intersection finding failed at t = "
-                            << t << ", error msg: "<< e.what());
-                try {
-                    // move the bracket out one step (we know there is space)
-                    lo = fStrikes_[fStrikes_.size()-3];
-                    hi = cStrikes_[2];
-                    guess = (hi+lo)/2.0;
-                    kI = solver.solve(ObjectiveFunction(t, capPrice_,
-                                                        floorPrice_),
-                                      solverTolerance_, guess, lo, hi );
-                } catch( std::exception &f) {
-                    if(fStrikes_.size()<4 || cStrikes_.size()<4)
-                        QL_FAIL("cap/floor intersection finding failed at t = "
-                                << t << ", error msg: "<< f.what());
-                    try {
-                        // move the bracket out one step (we know
-                        // there is still space)
-                        lo = fStrikes_[fStrikes_.size()-4];
-                        hi = cStrikes_[3];
-                        guess = (hi+lo)/2.0;
-                        kI = solver.solve(ObjectiveFunction(t, capPrice_,
-                                                            floorPrice_),
-                                          solverTolerance_, guess, lo, hi );
-                    } catch( std::exception &g) {
-                        QL_FAIL("cap/floor intersection finding failed at t = "
-                                << t << ", error msg: "<< g.what());
-                    }
-                }
-            }
-            atmYoYSwapRates_.first.push_back(t);
-            atmYoYSwapRates_.second.push_back(kI);
-        }
-
+        
+		// TODO: define the constants outside the code
+		const Real maxSearchRange = 0.0201;
+		const Real maxExtrapolationMaturity = 5.01;
+		const Real searchStep = 0.0050;
+		const Real intrinsicValueAddOn = 0.001;
+		
+		capPrice_ = interpolator2d_.interpolate(
+												cfMaturities_.begin(),cfMaturities_.end(),
+												cStrikes_.begin(), cStrikes_.end(),
+												cPrice_
+												);
+		capPrice_.enableExtrapolation();
+		
+		floorPrice_ = interpolator2d_.interpolate(
+												  cfMaturities_.begin(),cfMaturities_.end(),
+												  fStrikes_.begin(), fStrikes_.end(),
+												  fPrice_
+												  );
+		floorPrice_.enableExtrapolation();
+		
+		atmYoYSwapRates_.first.clear();
+		atmYoYSwapRates_.second.clear();
+		Brent solver;
+		Real solverTolerance_ = 1e-7;
+		Real lo,hi,guess;
+		std::vector<Real> minSwapRateIntersection(cfMaturities_.size());
+		std::vector<Real> maxSwapRateIntersection(cfMaturities_.size());
+		std::vector<Time> tmpSwapMaturities;
+		std::vector<Rate> tmpSwapRates;
+		for (Size i = 0; i < cfMaturities_.size(); i++) {
+			Time t = cfMaturities_[i];
+			// determine the sum of discount factors
+			Size numYears = (Size)(cfMaturities_[i] + 0.5);
+			Real sumDiscount = 0.0;
+			for (Size j=0; j<numYears; ++j)
+				sumDiscount += nominalTermStructure_->discount(j + 1.0);
+			// determine the minimum value of the ATM swap point
+			Real tmpMinSwapRateIntersection = -1.e10;
+			Real tmpMaxSwapRateIntersection = 1.e10;
+			for (Size j=0; j<fStrikes_.size(); ++j) {
+				Real price = floorPrice_(t,fStrikes_[j]);
+				Real minSwapRate = fStrikes_[j] - price / (sumDiscount * 10000);
+				if (minSwapRate > tmpMinSwapRateIntersection)
+					tmpMinSwapRateIntersection = minSwapRate;
+			}
+			for (Size j=0; j<cStrikes_.size(); ++j) {
+				Real price = capPrice_(t,cStrikes_[j]);
+				Real maxSwapRate = cStrikes_[j] + price / (sumDiscount * 10000);
+				if (maxSwapRate < tmpMaxSwapRateIntersection)
+					tmpMaxSwapRateIntersection = maxSwapRate;
+			}
+			maxSwapRateIntersection[i] = tmpMaxSwapRateIntersection;
+			minSwapRateIntersection[i] = tmpMinSwapRateIntersection;
+			
+			// find the interval where the intersection lies
+			bool trialsExceeded = false;
+			int numTrials = (int)(maxSearchRange / searchStep);
+			if ( floorPrice_(t,cStrikes_.back()) > capPrice_(t,cStrikes_.front()) ) {
+				int counter = 1;
+				bool stop = false;
+				Real strike;
+				while (stop == false) {
+					strike = fStrikes_.back() - counter * searchStep;
+					if (floorPrice_(t, strike) < capPrice_(t, strike))
+						stop = true;
+					counter++;
+					if (counter == numTrials + 1) {
+						if (stop == false) {
+							stop = true;
+							trialsExceeded = true;
+						}
+					}
+				}
+				lo = strike;
+				hi = strike + searchStep;
+			} else {
+				int counter = 1;
+				bool stop = false;
+				Real strike;
+				while (stop == false) {
+					strike = fStrikes_.back() + counter * searchStep;
+					if (floorPrice_(t, strike) > capPrice_(t, strike))
+						stop = true;
+					counter++;
+					if (counter == numTrials + 1) {
+						if (stop == false) {
+							stop = true;
+							trialsExceeded = true;
+						}
+					}
+				}
+				lo = strike - searchStep;
+				hi = strike;
+			}
+			
+			guess = (hi+lo)/2.0;
+			Rate kI = -999.999;
+			
+			if (trialsExceeded == false) {
+				try{
+					kI = solver.solve(  ObjectiveFunction(t, capPrice_, floorPrice_), solverTolerance_, guess, lo, hi );
+				} catch( std::exception &e) {
+					QL_FAIL("cap/floor intersection finding failed at t = " << t << ", error msg: "<< e.what());
+				}
+				// error message if kI is economically nonsensical (only if t is large)
+				if (kI <= minSwapRateIntersection[i]) {
+					if (t > maxExtrapolationMaturity)
+						QL_FAIL("cap/floor intersection finding failed at t = " << t <<
+								", error msg: intersection value is below the arbitrage free lower bound "
+								<< minSwapRateIntersection[i]);
+				}
+				else
+				{
+					tmpSwapMaturities.push_back(t);
+					tmpSwapRates.push_back(kI);
+				}
+			}
+			else
+			{
+				// error message if t is too large
+				if (t > maxExtrapolationMaturity)
+					QL_FAIL("cap/floor intersection finding failed at t = " << t <<
+							", error msg: no interection found inside the admissible range");
+			}
+		}
+		
+		// extrapolation of swap rates if necessary
+		Polynomial2D tmpInterpol;
+		Interpolation interpol = tmpInterpol.interpolate(tmpSwapMaturities.begin(), tmpSwapMaturities.end(), tmpSwapRates.begin());
+		interpol.enableExtrapolation();
+		Time startMaturity = tmpSwapMaturities.front();
+		int counter = 0;
+		for (Size i=0; i<cfMaturities_.size(); ++i) {
+			if (cfMaturities_[i] < startMaturity - QL_EPSILON) {
+				atmYoYSwapRates_.first.push_back(cfMaturities_[i]);
+				// atmYoYSwapRates_->second.push_back(interpol((*cfMaturities_)[i]));
+				// Heuristic: overwrite the the swap rate with a value that guarantees that the 
+				// intrinsic value of all options is lower than the price
+				Real newSwapRate = minSwapRateIntersection[i] + intrinsicValueAddOn;
+				if (newSwapRate > maxSwapRateIntersection[i])
+					newSwapRate = 0.5 * (minSwapRateIntersection[i] + maxSwapRateIntersection[i]);
+				atmYoYSwapRates_.second.push_back(newSwapRate);
+			} else {
+				atmYoYSwapRates_.first.push_back(tmpSwapMaturities[counter]);
+				atmYoYSwapRates_.second.push_back(tmpSwapRates[counter]);
+				counter++;
+			}
+		}
+		
         // create the swap curve using the factory
         atmYoYSwapRateCurve_ =
             interpolator1d_.interpolate(atmYoYSwapRates_.first.begin(),

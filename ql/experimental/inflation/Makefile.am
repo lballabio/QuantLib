@@ -18,7 +18,9 @@ this_include_HEADERS = \
     yoycapfloortermpricesurface.hpp \
     yoyoptionlethelpers.hpp \
     yoyoptionletstripper.hpp \
-    yoyoptionletvolatilitystructures.hpp
+    yoyoptionletvolatilitystructures.hpp \
+    polynomial2D.hpp \
+    polynomial2Dspline.hpp
 
 libInflation_la_SOURCES = \
     capflooredinflationcoupon.cpp \

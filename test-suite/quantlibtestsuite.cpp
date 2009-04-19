@@ -85,6 +85,7 @@
 #include "himalayaoption.hpp"
 #include "hybridhestonhullwhiteprocess.hpp"
 #include "inflation.hpp"
+#include "inflationvol.hpp"
 #include "instruments.hpp"
 #include "integrals.hpp"
 #include "interestrates.hpp"
@@ -238,6 +239,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(HimalayaOptionTest::suite());
     test->add(HybridHestonHullWhiteProcessTest::suite());
     test->add(InflationTest::suite());
+	test->add(InflationVolTest::suite());
     test->add(InstrumentTest::suite());
     test->add(IntegralTest::suite());
     test->add(InterestRateTest::suite());

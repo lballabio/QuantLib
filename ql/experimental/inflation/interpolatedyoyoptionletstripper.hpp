@@ -27,6 +27,7 @@
 #include <ql/experimental/inflation/yoyoptionletstripper.hpp>
 #include <ql/experimental/inflation/piecewiseyoyoptionletvolatility.hpp>
 #include <ql/experimental/inflation/yoyoptionlethelpers.hpp>
+#include <ql/experimental/inflation/genericindexes.hpp>
 
 namespace QuantLib {
 
