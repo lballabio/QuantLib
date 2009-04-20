@@ -30,10 +30,10 @@ namespace QuantLib {
     : BlackCalculator(payoff, spot*growth/discount, stdDev, discount),
       spot_(spot), growth_(growth)
     {
-        QL_REQUIRE(spot_>0.0, "positive spot value required: " <<
-                   spot_ << " not allowed");
-        QL_REQUIRE(growth_>0.0, "positive growth value required: " <<
-                   growth_ << " not allowed");
+        QL_REQUIRE(spot_>0.0,
+                   "spot (" << spot_ << ") must be positive");
+        QL_REQUIRE(growth_>0.0,
+                   "growth (" << growth_ << ") must be positive");
     }
 
 
