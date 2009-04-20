@@ -28,10 +28,6 @@ namespace QuantLib {
         registerWith(discountCurve_);
     }
 
-    Handle<YieldTermStructure> DiscountingBondEngine::discountCurve() const {
-        return discountCurve_;
-    }
-
     void DiscountingBondEngine::calculate() const {
         const Leg& cashflows = arguments_.cashflows;
         const Date& settlementDate = arguments_.settlementDate;

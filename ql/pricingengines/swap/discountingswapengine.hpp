@@ -35,11 +35,13 @@ namespace QuantLib {
         DiscountingSwapEngine(const Handle<YieldTermStructure>& discountCurve =
                                                 Handle<YieldTermStructure>());
         void calculate() const;
+        Handle<YieldTermStructure> discountCurve() const {
+            return discountCurve_;
+        }
       private:
         Handle<YieldTermStructure> discountCurve_;
     };
 
 }
-
 
 #endif

@@ -35,7 +35,9 @@ namespace QuantLib {
         DiscountingBondEngine(const Handle<YieldTermStructure>& discountCurve =
                                                 Handle<YieldTermStructure>());
         void calculate() const;
-        Handle<YieldTermStructure> discountCurve() const;
+        Handle<YieldTermStructure> discountCurve() const {
+            return discountCurve_;
+        }
       private:
         Handle<YieldTermStructure> discountCurve_;
     };
