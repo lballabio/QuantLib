@@ -41,8 +41,6 @@ namespace QuantLib {
 
     class DayCounter;
 
-    typedef std::vector<boost::shared_ptr<CashFlow> > Leg;
-
     //! Base bond class
     /*! Derived classes must fill the uninitialized data members.
 
