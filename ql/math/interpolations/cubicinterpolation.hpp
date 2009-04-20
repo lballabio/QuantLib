@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004, 2008 Ferdinando Ametrano
+ Copyright (C) 2004, 2008, 2009 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
 
@@ -55,16 +55,17 @@ namespace QuantLib {
 
     //! %Cubic interpolation between discrete points.
     /*! Cubic interpolation is fully defined when the ${f_i}$ function values
-        at points ${x_i}$ are supplemented with ${f_i}$ function derivative
+        at points ${x_i}$ are supplemented with ${f^'_i}$ function derivative
         values.
 
-        Different type of first derivative approximations are implemented, both
-        local and non-local. Local schemes (Fourth-order, Parabolic,
+        Different type of first derivative approximations are implemented,
+        both local and non-local. Local schemes (Fourth-order, Parabolic,
         Modified Parabolic, Fritsch-Butland, Akima, Kruger) use only $f$ values
-        near $x_i$ to calculate $f_i$. Non-local schemes (Spline with different
-        boundary conditions) use all ${f_i}$ values and obtain ${f_i}$ by
-        solving a linear system of equations. Local schemes produce $C^1$
-        interpolants, while the spline scheme generates $C^2$ interpolants.
+        near $x_i$ to calculate each $f^'_i$. Non-local schemes (Spline with
+        different boundary conditions) use all ${f_i}$ values and obtain
+        ${f^'_i}$ by solving a linear system of equations. Local schemes
+        produce $C^1$ interpolants, while the spline schemes generate $C^2$
+        interpolants.
 
         Hyman's monotonicity constraint filter is also implemented: it can be
         applied to all schemes to ensure that in the regions of local
@@ -174,32 +175,6 @@ namespace QuantLib {
 
 
     // convenience classes
-
-    //class NaturalCubicInterpolation : public CubicInterpolation {
-    //  public:
-    //    /*! \pre the \f$ x \f$ values must be sorted. */
-    //    template <class I1, class I2>
-    //    NaturalCubicInterpolation(const I1& xBegin,
-    //                              const I1& xEnd,
-    //                              const I2& yBegin)
-    //    : CubicInterpolation(xBegin, xEnd, yBegin,
-    //                         Spline, false,
-    //                         SecondDerivative, 0.0,
-    //                         SecondDerivative, 0.0) {}
-    //};
-
-    //class MonotonicNaturalCubicInterpolation : public CubicInterpolation {
-    //  public:
-    //    /*! \pre the \f$ x \f$ values must be sorted. */
-    //    template <class I1, class I2>
-    //    MonotonicNaturalCubicInterpolation(const I1& xBegin,
-    //                                       const I1& xEnd,
-    //                                       const I2& yBegin)
-    //    : CubicInterpolation(xBegin, xEnd, yBegin,
-    //                         Spline, true,
-    //                         SecondDerivative, 0.0,
-    //                         SecondDerivative, 0.0) {}
-    //};
 
     class CubicNaturalSpline : public CubicInterpolation {
       public:

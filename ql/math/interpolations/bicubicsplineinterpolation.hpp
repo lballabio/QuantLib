@@ -37,7 +37,8 @@ namespace QuantLib {
             : public Interpolation2D::templateImpl<I1,I2,M> {
           public:
             BicubicSplineImpl(const I1& xBegin, const I1& xEnd,
-                              const I2& yBegin, const I2& yEnd, const M& zData)
+                              const I2& yBegin, const I2& yEnd,
+                              const M& zData)
             : Interpolation2D::templateImpl<I1,I2,M>(xBegin,xEnd,
                                                      yBegin,yEnd,
                                                      zData) {
@@ -53,7 +54,8 @@ namespace QuantLib {
                                 CubicInterpolation::SecondDerivative, 0.0,
                                 CubicInterpolation::SecondDerivative, 0.0));
             }
-            Real value(Real x, Real y) const {
+            Real value(Real x,
+                       Real y) const {
                 std::vector<Real> section(splines_.size());
                 for (Size i=0; i<splines_.size(); i++)
                     section[i]=splines_[i](x,true);
@@ -98,6 +100,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

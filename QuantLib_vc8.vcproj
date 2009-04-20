@@ -8177,6 +8177,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\inflation\polynomial2D.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\polynomial2Dspline.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\inflation\yoycapfloortermpricesurface.cpp"
 					>
 				</File>
