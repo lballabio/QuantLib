@@ -81,10 +81,12 @@ namespace QuantLib {
         if (refDate==Date())
             refDate = Settings::instance().evaluationDate();
 
-        if ( ! (*leg.begin())->hasOccurred(refDate) )
+        if ( ! (*leg.begin())->hasOccurred(refDate, false) )
             return leg.end();
 
         Leg::const_iterator i = nextCashFlow(leg, refDate);
+        // --i is not what we're looking for since there
+        // might be more than one CashFlow at (*--i)->date()
         Date beforeLastPaymentDate = (*--i)->date()-1;
         return nextCashFlow(leg, beforeLastPaymentDate);
     }
@@ -97,7 +99,7 @@ namespace QuantLib {
         Leg::const_iterator i;
         for (i = leg.begin(); i<leg.end(); ++i) {
             // the first cashflow paying after d is the one we're after
-            if ( ! (*i)->hasOccurred(refDate) )
+            if ( ! (*i)->hasOccurred(refDate, false) )
                 return i;
         }
         return leg.end();
@@ -429,7 +431,7 @@ namespace QuantLib {
         Date lastDate = Date();
 
         for (Size i=0; i<leg.size(); ++i) {
-            if (leg[i]->hasOccurred(settlementDate+exDividendDays))
+            if (leg[i]->hasOccurred(settlementDate+exDividendDays, false))
                 continue;
 
             Date couponDate = leg[i]->date();
@@ -514,7 +516,7 @@ namespace QuantLib {
         Integer lastSign = sign(-npv),
                 signChanges = 0;
         for (Size i = 0; i < leg.size(); ++i) {
-            if (!leg[i]->hasOccurred(settlementDate+exDividendDays)) {
+            if (!leg[i]->hasOccurred(settlementDate+exDividendDays, false)) {
                 Integer thisSign = sign(leg[i]->amount());
                 if (lastSign * thisSign < 0) // sign change
                     signChanges++;
@@ -602,7 +604,7 @@ namespace QuantLib {
         Rate r = y.rate();
         Natural N = y.frequency();
         for (Size i=0; i<leg.size(); ++i) {
-            if (!leg[i]->hasOccurred(settlementDate+exDividendDays)) {
+            if (!leg[i]->hasOccurred(settlementDate+exDividendDays, false)) {
                 Time t = dc.yearFraction(settlementDate,
                                          leg[i]->date());
                 Real c = leg[i]->amount();
