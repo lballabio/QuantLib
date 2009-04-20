@@ -431,9 +431,9 @@ namespace QuantLib {
         }
 
         // extrapolation of swap rates if necessary
-        Polynomial2D tmpInterpol;
-        Interpolation interpol = tmpInterpol.interpolate(tmpSwapMaturities.begin(), tmpSwapMaturities.end(), tmpSwapRates.begin());
-        interpol.enableExtrapolation();
+        //Polynomial2D tmpInterpol;
+        //Interpolation interpol = tmpInterpol.interpolate(tmpSwapMaturities.begin(), tmpSwapMaturities.end(), tmpSwapRates.begin());
+        //interpol.enableExtrapolation();
         Time startMaturity = tmpSwapMaturities.front();
         int counter = 0;
         for (Size i=0; i<cfMaturities_.size(); ++i) {
