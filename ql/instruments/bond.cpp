@@ -39,8 +39,8 @@ namespace QuantLib {
                const Calendar& calendar,
                const Date& issueDate,
                const Leg& coupons)
-      : settlementDays_(settlementDays), calendar_(calendar),
-        cashflows_(coupons), issueDate_(issueDate) {
+    : settlementDays_(settlementDays), calendar_(calendar),
+      cashflows_(coupons), issueDate_(issueDate) {
 
         if (!coupons.empty()) {
             std::sort(cashflows_.begin(), cashflows_.end(),
@@ -223,7 +223,7 @@ namespace QuantLib {
     }
 
     bool Bond::isExpired() const {
-        return CashFlows::isExpired(cashflows_, settlementDate());
+        return CashFlows::isExpired(cashflows_);
     }
 
     Rate Bond::nextCouponRate(Date settlement) const {
