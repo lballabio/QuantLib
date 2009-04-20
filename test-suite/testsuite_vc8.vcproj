@@ -1217,6 +1217,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\inflationvol.cpp"
+				>
+			</File>
+			<File
 				RelativePath="instruments.cpp"
 				>
 				<FileConfiguration
@@ -2351,6 +2355,10 @@
 			</File>
 			<File
 				RelativePath=".\inflation.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\inflationvol.hpp"
 				>
 			</File>
 			<File
