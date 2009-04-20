@@ -39,10 +39,11 @@ namespace QuantLib {
     Date CashFlows::startDate(const Leg& leg) {
         Date d = Date::maxDate();
         for (Size i=0; i<leg.size(); ++i) {
-            d = std::min(d, leg[i]->date());
             shared_ptr<Coupon> c = dynamic_pointer_cast<Coupon>(leg[i]);
             if (c)
                 d = std::min(d, c->accrualStartDate());
+            else
+                d = std::min(d, leg[i]->date());
         }
         QL_ENSURE(d != Date::maxDate(), "no cashflows");
         return d;
@@ -51,10 +52,11 @@ namespace QuantLib {
     Date CashFlows::maturityDate(const Leg& leg) {
         Date d = Date::minDate();
         for (Size i=0; i<leg.size(); ++i) {
-            d = std::max(d, leg[i]->date());
             shared_ptr<Coupon> c = dynamic_pointer_cast<Coupon>(leg[i]);
             if (c)
                 d = std::max(d, c->accrualEndDate());
+            else
+                d = std::max(d, leg[i]->date());
         }
         QL_ENSURE(d != Date::minDate(), "no cashflows");
         return d;
