@@ -32,7 +32,7 @@
 #include <ql/math/interpolations/interpolation2d.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 
-#include <ql/experimental/inflation/polynomial2dspline.hpp>
+#include <ql/experimental/inflation/polynomial2Dspline.hpp>
 
 namespace QuantLib {
 
@@ -303,156 +303,156 @@ namespace QuantLib {
     void InterpolatedYoYCapFloorTermPriceSurface<I2D,I1D>::
     intersect() const {
 
-        
-		// TODO: define the constants outside the code
-		const Real maxSearchRange = 0.0201;
-		const Real maxExtrapolationMaturity = 5.01;
-		const Real searchStep = 0.0050;
-		const Real intrinsicValueAddOn = 0.001;
-		
-		capPrice_ = interpolator2d_.interpolate(
-												cfMaturities_.begin(),cfMaturities_.end(),
-												cStrikes_.begin(), cStrikes_.end(),
-												cPrice_
-												);
-		capPrice_.enableExtrapolation();
-		
-		floorPrice_ = interpolator2d_.interpolate(
-												  cfMaturities_.begin(),cfMaturities_.end(),
-												  fStrikes_.begin(), fStrikes_.end(),
-												  fPrice_
-												  );
-		floorPrice_.enableExtrapolation();
-		
-		atmYoYSwapRates_.first.clear();
-		atmYoYSwapRates_.second.clear();
-		Brent solver;
-		Real solverTolerance_ = 1e-7;
-		Real lo,hi,guess;
-		std::vector<Real> minSwapRateIntersection(cfMaturities_.size());
-		std::vector<Real> maxSwapRateIntersection(cfMaturities_.size());
-		std::vector<Time> tmpSwapMaturities;
-		std::vector<Rate> tmpSwapRates;
-		for (Size i = 0; i < cfMaturities_.size(); i++) {
-			Time t = cfMaturities_[i];
-			// determine the sum of discount factors
-			Size numYears = (Size)(cfMaturities_[i] + 0.5);
-			Real sumDiscount = 0.0;
-			for (Size j=0; j<numYears; ++j)
-				sumDiscount += nominalTermStructure_->discount(j + 1.0);
-			// determine the minimum value of the ATM swap point
-			Real tmpMinSwapRateIntersection = -1.e10;
-			Real tmpMaxSwapRateIntersection = 1.e10;
-			for (Size j=0; j<fStrikes_.size(); ++j) {
-				Real price = floorPrice_(t,fStrikes_[j]);
-				Real minSwapRate = fStrikes_[j] - price / (sumDiscount * 10000);
-				if (minSwapRate > tmpMinSwapRateIntersection)
-					tmpMinSwapRateIntersection = minSwapRate;
-			}
-			for (Size j=0; j<cStrikes_.size(); ++j) {
-				Real price = capPrice_(t,cStrikes_[j]);
-				Real maxSwapRate = cStrikes_[j] + price / (sumDiscount * 10000);
-				if (maxSwapRate < tmpMaxSwapRateIntersection)
-					tmpMaxSwapRateIntersection = maxSwapRate;
-			}
-			maxSwapRateIntersection[i] = tmpMaxSwapRateIntersection;
-			minSwapRateIntersection[i] = tmpMinSwapRateIntersection;
-			
-			// find the interval where the intersection lies
-			bool trialsExceeded = false;
-			int numTrials = (int)(maxSearchRange / searchStep);
-			if ( floorPrice_(t,cStrikes_.back()) > capPrice_(t,cStrikes_.front()) ) {
-				int counter = 1;
-				bool stop = false;
-				Real strike;
-				while (stop == false) {
-					strike = fStrikes_.back() - counter * searchStep;
-					if (floorPrice_(t, strike) < capPrice_(t, strike))
-						stop = true;
-					counter++;
-					if (counter == numTrials + 1) {
-						if (stop == false) {
-							stop = true;
-							trialsExceeded = true;
-						}
-					}
-				}
-				lo = strike;
-				hi = strike + searchStep;
-			} else {
-				int counter = 1;
-				bool stop = false;
-				Real strike;
-				while (stop == false) {
-					strike = fStrikes_.back() + counter * searchStep;
-					if (floorPrice_(t, strike) > capPrice_(t, strike))
-						stop = true;
-					counter++;
-					if (counter == numTrials + 1) {
-						if (stop == false) {
-							stop = true;
-							trialsExceeded = true;
-						}
-					}
-				}
-				lo = strike - searchStep;
-				hi = strike;
-			}
-			
-			guess = (hi+lo)/2.0;
-			Rate kI = -999.999;
-			
-			if (trialsExceeded == false) {
-				try{
-					kI = solver.solve(  ObjectiveFunction(t, capPrice_, floorPrice_), solverTolerance_, guess, lo, hi );
-				} catch( std::exception &e) {
-					QL_FAIL("cap/floor intersection finding failed at t = " << t << ", error msg: "<< e.what());
-				}
-				// error message if kI is economically nonsensical (only if t is large)
-				if (kI <= minSwapRateIntersection[i]) {
-					if (t > maxExtrapolationMaturity)
-						QL_FAIL("cap/floor intersection finding failed at t = " << t <<
-								", error msg: intersection value is below the arbitrage free lower bound "
-								<< minSwapRateIntersection[i]);
-				}
-				else
-				{
-					tmpSwapMaturities.push_back(t);
-					tmpSwapRates.push_back(kI);
-				}
-			}
-			else
-			{
-				// error message if t is too large
-				if (t > maxExtrapolationMaturity)
-					QL_FAIL("cap/floor intersection finding failed at t = " << t <<
-							", error msg: no interection found inside the admissible range");
-			}
-		}
-		
-		// extrapolation of swap rates if necessary
-		Polynomial2D tmpInterpol;
-		Interpolation interpol = tmpInterpol.interpolate(tmpSwapMaturities.begin(), tmpSwapMaturities.end(), tmpSwapRates.begin());
-		interpol.enableExtrapolation();
-		Time startMaturity = tmpSwapMaturities.front();
-		int counter = 0;
-		for (Size i=0; i<cfMaturities_.size(); ++i) {
-			if (cfMaturities_[i] < startMaturity - QL_EPSILON) {
-				atmYoYSwapRates_.first.push_back(cfMaturities_[i]);
-				// atmYoYSwapRates_->second.push_back(interpol((*cfMaturities_)[i]));
-				// Heuristic: overwrite the the swap rate with a value that guarantees that the 
-				// intrinsic value of all options is lower than the price
-				Real newSwapRate = minSwapRateIntersection[i] + intrinsicValueAddOn;
-				if (newSwapRate > maxSwapRateIntersection[i])
-					newSwapRate = 0.5 * (minSwapRateIntersection[i] + maxSwapRateIntersection[i]);
-				atmYoYSwapRates_.second.push_back(newSwapRate);
-			} else {
-				atmYoYSwapRates_.first.push_back(tmpSwapMaturities[counter]);
-				atmYoYSwapRates_.second.push_back(tmpSwapRates[counter]);
-				counter++;
-			}
-		}
-		
+
+        // TODO: define the constants outside the code
+        const Real maxSearchRange = 0.0201;
+        const Real maxExtrapolationMaturity = 5.01;
+        const Real searchStep = 0.0050;
+        const Real intrinsicValueAddOn = 0.001;
+
+        capPrice_ = interpolator2d_.interpolate(
+                                                cfMaturities_.begin(),cfMaturities_.end(),
+                                                cStrikes_.begin(), cStrikes_.end(),
+                                                cPrice_
+                                                );
+        capPrice_.enableExtrapolation();
+
+        floorPrice_ = interpolator2d_.interpolate(
+                                                  cfMaturities_.begin(),cfMaturities_.end(),
+                                                  fStrikes_.begin(), fStrikes_.end(),
+                                                  fPrice_
+                                                  );
+        floorPrice_.enableExtrapolation();
+
+        atmYoYSwapRates_.first.clear();
+        atmYoYSwapRates_.second.clear();
+        Brent solver;
+        Real solverTolerance_ = 1e-7;
+        Real lo,hi,guess;
+        std::vector<Real> minSwapRateIntersection(cfMaturities_.size());
+        std::vector<Real> maxSwapRateIntersection(cfMaturities_.size());
+        std::vector<Time> tmpSwapMaturities;
+        std::vector<Rate> tmpSwapRates;
+        for (Size i = 0; i < cfMaturities_.size(); i++) {
+            Time t = cfMaturities_[i];
+            // determine the sum of discount factors
+            Size numYears = (Size)(cfMaturities_[i] + 0.5);
+            Real sumDiscount = 0.0;
+            for (Size j=0; j<numYears; ++j)
+                sumDiscount += nominalTermStructure_->discount(j + 1.0);
+            // determine the minimum value of the ATM swap point
+            Real tmpMinSwapRateIntersection = -1.e10;
+            Real tmpMaxSwapRateIntersection = 1.e10;
+            for (Size j=0; j<fStrikes_.size(); ++j) {
+                Real price = floorPrice_(t,fStrikes_[j]);
+                Real minSwapRate = fStrikes_[j] - price / (sumDiscount * 10000);
+                if (minSwapRate > tmpMinSwapRateIntersection)
+                    tmpMinSwapRateIntersection = minSwapRate;
+            }
+            for (Size j=0; j<cStrikes_.size(); ++j) {
+                Real price = capPrice_(t,cStrikes_[j]);
+                Real maxSwapRate = cStrikes_[j] + price / (sumDiscount * 10000);
+                if (maxSwapRate < tmpMaxSwapRateIntersection)
+                    tmpMaxSwapRateIntersection = maxSwapRate;
+            }
+            maxSwapRateIntersection[i] = tmpMaxSwapRateIntersection;
+            minSwapRateIntersection[i] = tmpMinSwapRateIntersection;
+
+            // find the interval where the intersection lies
+            bool trialsExceeded = false;
+            int numTrials = (int)(maxSearchRange / searchStep);
+            if ( floorPrice_(t,cStrikes_.back()) > capPrice_(t,cStrikes_.front()) ) {
+                int counter = 1;
+                bool stop = false;
+                Real strike;
+                while (stop == false) {
+                    strike = fStrikes_.back() - counter * searchStep;
+                    if (floorPrice_(t, strike) < capPrice_(t, strike))
+                        stop = true;
+                    counter++;
+                    if (counter == numTrials + 1) {
+                        if (stop == false) {
+                            stop = true;
+                            trialsExceeded = true;
+                        }
+                    }
+                }
+                lo = strike;
+                hi = strike + searchStep;
+            } else {
+                int counter = 1;
+                bool stop = false;
+                Real strike;
+                while (stop == false) {
+                    strike = fStrikes_.back() + counter * searchStep;
+                    if (floorPrice_(t, strike) > capPrice_(t, strike))
+                        stop = true;
+                    counter++;
+                    if (counter == numTrials + 1) {
+                        if (stop == false) {
+                            stop = true;
+                            trialsExceeded = true;
+                        }
+                    }
+                }
+                lo = strike - searchStep;
+                hi = strike;
+            }
+
+            guess = (hi+lo)/2.0;
+            Rate kI = -999.999;
+
+            if (trialsExceeded == false) {
+                try{
+                    kI = solver.solve(  ObjectiveFunction(t, capPrice_, floorPrice_), solverTolerance_, guess, lo, hi );
+                } catch( std::exception &e) {
+                    QL_FAIL("cap/floor intersection finding failed at t = " << t << ", error msg: "<< e.what());
+                }
+                // error message if kI is economically nonsensical (only if t is large)
+                if (kI <= minSwapRateIntersection[i]) {
+                    if (t > maxExtrapolationMaturity)
+                        QL_FAIL("cap/floor intersection finding failed at t = " << t <<
+                                ", error msg: intersection value is below the arbitrage free lower bound "
+                                << minSwapRateIntersection[i]);
+                }
+                else
+                {
+                    tmpSwapMaturities.push_back(t);
+                    tmpSwapRates.push_back(kI);
+                }
+            }
+            else
+            {
+                // error message if t is too large
+                if (t > maxExtrapolationMaturity)
+                    QL_FAIL("cap/floor intersection finding failed at t = " << t <<
+                            ", error msg: no interection found inside the admissible range");
+            }
+        }
+
+        // extrapolation of swap rates if necessary
+        Polynomial2D tmpInterpol;
+        Interpolation interpol = tmpInterpol.interpolate(tmpSwapMaturities.begin(), tmpSwapMaturities.end(), tmpSwapRates.begin());
+        interpol.enableExtrapolation();
+        Time startMaturity = tmpSwapMaturities.front();
+        int counter = 0;
+        for (Size i=0; i<cfMaturities_.size(); ++i) {
+            if (cfMaturities_[i] < startMaturity - QL_EPSILON) {
+                atmYoYSwapRates_.first.push_back(cfMaturities_[i]);
+                // atmYoYSwapRates_->second.push_back(interpol((*cfMaturities_)[i]));
+                // Heuristic: overwrite the the swap rate with a value that guarantees that the
+                // intrinsic value of all options is lower than the price
+                Real newSwapRate = minSwapRateIntersection[i] + intrinsicValueAddOn;
+                if (newSwapRate > maxSwapRateIntersection[i])
+                    newSwapRate = 0.5 * (minSwapRateIntersection[i] + maxSwapRateIntersection[i]);
+                atmYoYSwapRates_.second.push_back(newSwapRate);
+            } else {
+                atmYoYSwapRates_.first.push_back(tmpSwapMaturities[counter]);
+                atmYoYSwapRates_.second.push_back(tmpSwapRates[counter]);
+                counter++;
+            }
+        }
+
         // create the swap curve using the factory
         atmYoYSwapRateCurve_ =
             interpolator1d_.interpolate(atmYoYSwapRates_.first.begin(),
