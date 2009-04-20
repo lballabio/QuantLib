@@ -46,11 +46,12 @@ namespace QuantLib {
             std::sort(cashflows_.begin(), cashflows_.end(),
                       earlier_than<boost::shared_ptr<CashFlow> >());
 
-            if (issueDate_!=Date())
+            if (issueDate_ != Date()) {
                 QL_REQUIRE(issueDate_<cashflows_[0]->date(),
                            "issue date (" << issueDate_ <<
                            ") must be earlier than first payment date (" <<
                            cashflows_[0]->date() << ")");
+            }
 
             maturityDate_ = coupons.back()->date();
 
@@ -75,11 +76,12 @@ namespace QuantLib {
             std::sort(cashflows_.begin(), cashflows_.end()-1,
                       earlier_than<boost::shared_ptr<CashFlow> >());
 
-            if (issueDate_!=Date())
+            if (issueDate_ != Date()) {
                 QL_REQUIRE(issueDate_<cashflows_[0]->date(),
                            "issue date (" << issueDate_ <<
                            ") must be earlier than first payment date (" <<
                            cashflows_[0]->date() << ")");
+            }
 
             notionals_.resize(2);
             notionalSchedule_.resize(2);
