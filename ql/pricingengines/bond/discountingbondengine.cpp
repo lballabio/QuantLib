@@ -29,21 +29,20 @@ namespace QuantLib {
     }
 
     void DiscountingBondEngine::calculate() const {
-        const Leg& cashflows = arguments_.cashflows;
+        QL_REQUIRE(!discountCurve_.empty(),
+                   "discounting term structure handle is empty");
+
         const Date& settlementDate = arguments_.settlementDate;
+        const Date& valuationDate = (*discountCurve())->referenceDate();
 
-        Date valuationDate = (*discountCurve())->referenceDate();
-
-        QL_REQUIRE(!discountCurve().empty(),
-                   "no discounting term structure set");
-        results_.value = CashFlows::npv(cashflows,
+        results_.value = CashFlows::npv(arguments_.cashflows,
                                         **discountCurve(),
-                                        valuationDate, valuationDate);
-        results_.settlementValue = CashFlows::npv(cashflows,
+                                        valuationDate,
+                                        valuationDate);
+        results_.settlementValue = CashFlows::npv(arguments_.cashflows,
                                                   **discountCurve(),
                                                   settlementDate,
                                                   settlementDate);
     }
 
 }
-

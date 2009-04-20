@@ -30,7 +30,7 @@ namespace QuantLib {
 
     void DiscountingSwapEngine::calculate() const {
         QL_REQUIRE(!discountCurve_.empty(),
-                   "no discounting term structure set");
+                   "discounting term structure handle is empty");
 
         results_.value = 0.0;
         results_.errorEstimate = Null<Real>();
@@ -56,4 +56,3 @@ namespace QuantLib {
     }
 
 }
-
