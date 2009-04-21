@@ -154,8 +154,8 @@ namespace QuantLib {
             return BondFunctions::maturityDate(*this);
     }
 
-    bool Bond::isTradable() const {
-        return BondFunctions::isTradable(*this);
+    bool Bond::isTradable(Date d) const {
+        return BondFunctions::isTradable(*this, d);
     }
 
     Date Bond::settlementDate(Date d) const {
