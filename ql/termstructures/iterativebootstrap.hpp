@@ -192,8 +192,9 @@ namespace QuantLib {
                 } catch (std::exception &e) {
                     validCurve_ = false;
                     QL_FAIL(io::ordinal(iteration+1) << " iteration: "
-                            "could not bootstrap the " << io::ordinal(i) <<
-                            " instrument, maturity " << ts_->dates_[i] <<
+                            "failed at " << io::ordinal(i) << " instrument"
+                            ", maturity " << ts_->dates_[i] <<
+                            ", reference date " << ts_->dates_[0] <<
                             ": " << e.what());
                 }
             }
