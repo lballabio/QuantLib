@@ -54,8 +54,8 @@ namespace QuantLib {
         //@{
         static Date startDate(const Bond& bond);
         static Date maturityDate(const Bond& bond);
-        static bool isExpired(const Bond& bond,
-                              const Date& refDate = Date());
+        static bool isTradable(const Bond& bond,
+                               Date settlementDate = Date());
         //@}
 
         //! \name CashFlow inspectors

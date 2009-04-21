@@ -39,9 +39,11 @@ namespace QuantLib {
         return CashFlows::maturityDate(bond.cashflows());
     }
 
-    bool BondFunctions::isExpired(const Bond& bond,
-                                  const Date& refDate) {
-        return CashFlows::isExpired(bond.cashflows(), refDate);
+    bool BondFunctions::isTradable(const Bond& bond,
+                                   Date settlement) {
+        if (settlement == Date())
+            settlement = bond.settlementDate();
+        return CashFlows::isExpired(bond.cashflows(), settlement);
     }
 
     Leg::const_iterator BondFunctions::previousCashFlow(const Bond& bond,
