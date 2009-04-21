@@ -81,7 +81,7 @@ namespace QuantLib {
         if (refDate==Date())
             refDate = Settings::instance().evaluationDate();
 
-        if ( ! (*leg.begin())->hasOccurred(refDate, false) )
+        if ( ! (*leg.begin())->hasOccurred(refDate) )
             return leg.end();
 
         Leg::const_iterator i = nextCashFlow(leg, refDate);
@@ -99,7 +99,7 @@ namespace QuantLib {
         Leg::const_iterator i;
         for (i = leg.begin(); i<leg.end(); ++i) {
             // the first cashflow paying after d is the one we're after
-            if ( ! (*i)->hasOccurred(refDate, false) )
+            if ( ! (*i)->hasOccurred(refDate) )
                 return i;
         }
         return leg.end();
@@ -431,7 +431,7 @@ namespace QuantLib {
         Date lastDate = Date();
 
         for (Size i=0; i<leg.size(); ++i) {
-            if (leg[i]->hasOccurred(settlementDate+exDividendDays, false))
+            if (leg[i]->hasOccurred(settlementDate+exDividendDays))
                 continue;
 
             Date couponDate = leg[i]->date();
@@ -516,7 +516,7 @@ namespace QuantLib {
         Integer lastSign = sign(-npv),
                 signChanges = 0;
         for (Size i = 0; i < leg.size(); ++i) {
-            if (!leg[i]->hasOccurred(settlementDate+exDividendDays, false)) {
+            if (!leg[i]->hasOccurred(settlementDate+exDividendDays)) {
                 Integer thisSign = sign(leg[i]->amount());
                 if (lastSign * thisSign < 0) // sign change
                     signChanges++;
@@ -604,7 +604,7 @@ namespace QuantLib {
         Rate r = y.rate();
         Natural N = y.frequency();
         for (Size i=0; i<leg.size(); ++i) {
-            if (!leg[i]->hasOccurred(settlementDate+exDividendDays, false)) {
+            if (!leg[i]->hasOccurred(settlementDate+exDividendDays)) {
                 Time t = dc.yearFraction(settlementDate,
                                          leg[i]->date());
                 Real c = leg[i]->amount();
