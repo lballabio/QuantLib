@@ -98,6 +98,13 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
     }
 
+    bool Bond::isExpired() const {
+        // since this is the Instrument interface
+        // the evaluation date is used as default
+        // as for the NPV
+        return CashFlows::isExpired(cashflows_);
+    }
+
     Real Bond::notional(Date d) const {
         if (d == Date())
             d = settlementDate();
@@ -145,6 +152,10 @@ namespace QuantLib {
             return maturityDate_;
         else
             return BondFunctions::maturityDate(*this);
+    }
+
+    bool Bond::isTradable() const {
+        return BondFunctions::isTradable(*this);
     }
 
     Date Bond::settlementDate(Date d) const {
@@ -220,10 +231,6 @@ namespace QuantLib {
 
     Real Bond::accruedAmount(Date settlement) const {
         return BondFunctions::accruedAmount(*this, settlement);
-    }
-
-    bool Bond::isExpired() const {
-        return CashFlows::isExpired(cashflows_);
     }
 
     Rate Bond::nextCouponRate(Date settlement) const {

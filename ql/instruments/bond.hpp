@@ -84,11 +84,14 @@ namespace QuantLib {
         class results;
         class engine;
 
+        //! \name Instrument interface
+        //@{
+        bool isExpired() const;
+        //@}
         //! \name Inspectors
         //@{
         Natural settlementDays() const;
         const Calendar& calendar() const;
-        //Real faceAmount() const;
 
         const std::vector<Real>& notionals() const;
         virtual Real notional(Date d = Date()) const;
@@ -103,6 +106,7 @@ namespace QuantLib {
         Date maturityDate() const;
         Date issueDate() const;
 
+        bool isTradable(Date d = Date()) const;
         Date settlementDate(Date d = Date()) const;
         //@}
 
@@ -180,8 +184,6 @@ namespace QuantLib {
         //! accrued amount at a given date
         /*! The default bond settlement is used if no date is given. */
         virtual Real accruedAmount(Date d = Date()) const;
-
-        bool isExpired() const;
         //@}
 
         /*! Expected next coupon: depending on (the bond and) the given date
@@ -291,10 +293,6 @@ namespace QuantLib {
     inline const Calendar& Bond::calendar() const {
         return calendar_;
     }
-
-    //inline Real Bond::faceAmount() const {
-    //    return notionals_.front();
-    //}
 
     inline const std::vector<Real>& Bond::notionals() const {
         return notionals_;
