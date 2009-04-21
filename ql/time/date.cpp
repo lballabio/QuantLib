@@ -27,7 +27,8 @@
 #include <iomanip>
 #include <ctime>
 #if defined(BOOST_NO_STDC_NAMESPACE)
-    namespace std { using ::time; using ::time_t; using ::tm; using ::gmtime; }
+    namespace std { using ::time; using ::time_t; using ::tm;
+                    using ::gmtime; using ::localtime; }
 #endif
 
 namespace QuantLib {
@@ -131,10 +132,10 @@ namespace QuantLib {
 
         if (std::time(&t) == std::time_t(-1)) // -1 means time() didn't work
             return Date();
-        std::tm *gt = std::gmtime(&t);
-        return Date(Day(gt->tm_mday),
-                    Month(gt->tm_mon+1),
-                    Year(gt->tm_year+1900));
+        std::tm *lt = std::localtime(&t);
+        return Date(Day(lt->tm_mday),
+                    Month(lt->tm_mon+1),
+                    Year(lt->tm_year+1900));
     }
 
     Date Date::minDate() {
