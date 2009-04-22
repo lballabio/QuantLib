@@ -43,7 +43,8 @@ namespace QuantLib {
                                    Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
-        return !CashFlows::isExpired(bond.cashflows(), settlement);
+
+        return bond.notional(settlement)!=0.0;
     }
 
     Leg::const_iterator BondFunctions::previousCashFlow(const Bond& bond,
@@ -94,6 +95,11 @@ namespace QuantLib {
                                       Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
+
+        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
+                   "non tradable at " << settlement <<
+                   " (maturity being " << bond.maturityDate() << ")");
+
         return CashFlows::accruedAmount(bond.cashflows(), settlement) *
             100.0 / bond.notional(settlement);
     }
@@ -103,6 +109,11 @@ namespace QuantLib {
                                    Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
+
+        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
+                   "non tradable at " << settlement <<
+                   " (maturity being " << bond.maturityDate() << ")");
+
         Real dirtyPrice = CashFlows::npv(bond.cashflows(), discountCurve,
                               settlement, settlement) *
             100.0 / bond.notional(settlement);
@@ -114,8 +125,14 @@ namespace QuantLib {
                             Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
+
+        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
+                   "non tradable at " << settlement <<
+                   " (maturity being " << bond.maturityDate() << ")");
+
         return CashFlows::bps(bond.cashflows(), discountCurve,
-                              settlement, settlement);
+                              settlement, settlement) *
+            100.0 / bond.notional(settlement);
     }
 
     Rate BondFunctions::atmRate(const Bond& bond,
@@ -139,6 +156,11 @@ namespace QuantLib {
                                    Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
+
+        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
+                   "non tradable at " << settlement <<
+                   " (maturity being " << bond.maturityDate() << ")");
+
         Real dirtyPrice = CashFlows::npv(bond.cashflows(), yield, settlement) *
             100.0 / bond.notional(settlement);
         return dirtyPrice - bond.accruedAmount(settlement);
@@ -183,6 +205,10 @@ namespace QuantLib {
                               Rate guess) {
         if (settlement == Date())
             settlement = bond.settlementDate();
+
+        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
+                   "non tradable at " << settlement <<
+                   " (maturity being " << bond.maturityDate() << ")");
 
         Real dirtyPrice = cleanPrice + bond.accruedAmount(settlement);
         dirtyPrice /= 100.0 / bond.notional(settlement);
@@ -283,6 +309,11 @@ namespace QuantLib {
                                    Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
+
+        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
+                   "non tradable at " << settlement <<
+                   " (maturity being " << bond.maturityDate() << ")");
+
         Real dirtyPrice = CashFlows::npv(bond.cashflows(), d,
                                          zSpread, dc, comp, freq,
                                          settlement, settlement) *
@@ -302,6 +333,10 @@ namespace QuantLib {
                                   Rate guess) {
         if (settlement == Date())
             settlement = bond.settlementDate();
+
+        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
+                   "non tradable at " << settlement <<
+                   " (maturity being " << bond.maturityDate() << ")");
 
         Real dirtyPrice = cleanPrice + bond.accruedAmount(settlement);
         dirtyPrice /= 100.0 / bond.notional(settlement);
