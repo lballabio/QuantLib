@@ -43,7 +43,7 @@ namespace QuantLib {
                                    Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
-        return CashFlows::isExpired(bond.cashflows(), settlement);
+        return !CashFlows::isExpired(bond.cashflows(), settlement);
     }
 
     Leg::const_iterator BondFunctions::previousCashFlow(const Bond& bond,
