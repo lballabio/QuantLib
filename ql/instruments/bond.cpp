@@ -99,10 +99,8 @@ namespace QuantLib {
     }
 
     bool Bond::isExpired() const {
-        // since this is the Instrument interface
-        // the evaluation date is used as default
-        // as for the NPV
-        return CashFlows::isExpired(cashflows_);
+        return CashFlows::isExpired(cashflows_,
+                                    Settings::instance().evaluationDate());
     }
 
     Real Bond::notional(Date d) const {
