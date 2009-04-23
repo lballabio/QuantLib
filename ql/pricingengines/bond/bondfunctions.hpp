@@ -43,11 +43,11 @@ namespace QuantLib {
     /*! See CashFlows for functions' documentation.
 
         These adapters calls into CashFlows functions passing as input the
-        Bond cashflows, the dirty price (i.e. npv) calculated from clean price,
-        the bond settlement date (unless another date is given), and zero
-        ex-dividend days.
+        Bond cashflows, the dirty price (i.e. npv) calculated from clean
+        price, the bond settlement date (unless another date is given), zero
+        ex-dividend days, and excluding any cashflow on the settlement date.
 
-        Prices are always clean.
+        Prices are always clean, as per market convention.
     */
     struct BondFunctions {
         //! \name Date inspectors
