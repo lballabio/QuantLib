@@ -113,8 +113,8 @@ namespace QuantLib {
             dt = 0.0001;
             DiscountFactor drpt = riskFreeTS_->discount(t+dt, true);
             DiscountFactor dqpt = dividendTS_->discount(t+dt, true);           
-            Real strikept = strike*dr*dq/(drpt*dqpt);
-
+            Real strikept = strike*dr*dqpt/(drpt*dq);
+        
             wpt = blackTS_->blackVariance(t+dt, strikept, true);
             QL_ENSURE(wpt>=w,
                       "decreasing variance at strike " << strike
@@ -127,8 +127,8 @@ namespace QuantLib {
             DiscountFactor dqpt = dividendTS_->discount(t+dt, true);
             DiscountFactor dqmt = dividendTS_->discount(t-dt, true);
             
-            Real strikept = strike*dr*dq/(drpt*dqpt);
-            Real strikemt = strike*dr*dq/(drmt*dqmt);
+            Real strikept = strike*dr*dqpt/(drpt*dq);
+            Real strikemt = strike*dr*dqmt/(drmt*dq);
             
             wpt = blackTS_->blackVariance(t+dt, strikept, true);
             wmt = blackTS_->blackVariance(t-dt, strikemt, true);
