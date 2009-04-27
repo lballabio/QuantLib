@@ -209,8 +209,6 @@ int main(int, char* []) {
                  new PiecewiseYieldCurve<Discount,LogLinear>(
                          settlementDate, bondInstruments,
                          termStructureDayCounter,
-                         std::vector<Handle<Quote> >(),
-                         std::vector<Date>(),
                          tolerance));
 
          // Building of the Libor forecasting curve
@@ -353,8 +351,6 @@ int main(int, char* []) {
                  new PiecewiseYieldCurve<Discount,LogLinear>(
                          settlementDate, depoSwapInstruments,
                          termStructureDayCounter,
-                         std::vector<Handle<Quote> >(),
-                         std::vector<Date>(),
                          tolerance));
 
          // Term structures that will be used for pricing:

@@ -46,9 +46,21 @@ namespace QuantLib {
             const std::vector<Rate>& yields,
             const DayCounter& dayCounter,
             const Calendar& calendar = Calendar(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Handle<Quote> >& jumps =
+                                                std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>(),
             const Interpolator& interpolator = Interpolator());
+        InterpolatedZeroCurve(
+            const std::vector<Date>& dates,
+            const std::vector<Rate>& yields,
+            const DayCounter& dayCounter,
+            const Calendar& calendar,
+            const Interpolator& interpolator);
+        InterpolatedZeroCurve(
+            const std::vector<Date>& dates,
+            const std::vector<Rate>& yields,
+            const DayCounter& dayCounter,
+            const Interpolator& interpolator);
         //! \name TermStructure interface
         //@{
         Date maxDate() const;
@@ -85,6 +97,10 @@ namespace QuantLib {
         Rate zeroYieldImpl(Time t) const;
         //@}
         mutable std::vector<Date> dates_;
+      private:
+        void initialize(const std::vector<Date>& dates,
+                        const std::vector<Rate>& yields,
+                        const DayCounter& dayCounter);
     };
 
     //! Term structure based on linear interpolation of zero yields
@@ -138,7 +154,7 @@ namespace QuantLib {
     Rate InterpolatedZeroCurve<T>::zeroYieldImpl(Time t) const {
         if (t <= this->times_.back())
             return this->interpolation_(t, true);
-        
+
         // flat fwd extrapolation
         Time tMax = this->times_.back();
         Rate zMax = this->data_.back();
@@ -189,6 +205,44 @@ namespace QuantLib {
       InterpolatedCurve<T>(std::vector<Time>(), yields, interpolator),
       dates_(dates)
     {
+        initialize(dates, yields, dayCounter);
+    }
+
+    template <class T>
+    InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
+                                               const std::vector<Date>& dates,
+                                               const std::vector<Rate>& yields,
+                                               const DayCounter& dayCounter,
+                                               const Calendar& calendar,
+                                               const T& interpolator)
+    : ZeroYieldStructure(dates.front(), calendar, dayCounter),
+      InterpolatedCurve<T>(std::vector<Time>(), yields, interpolator),
+      dates_(dates)
+    {
+        initialize(dates, yields, dayCounter);
+    }
+
+    template <class T>
+    InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
+                                               const std::vector<Date>& dates,
+                                               const std::vector<Rate>& yields,
+                                               const DayCounter& dayCounter,
+                                               const T& interpolator)
+    : ZeroYieldStructure(dates.front(), Calendar(), dayCounter),
+      InterpolatedCurve<T>(std::vector<Time>(), yields, interpolator),
+      dates_(dates)
+    {
+        initialize(dates, yields, dayCounter);
+    }
+
+    #endif
+
+    template <class T>
+    void InterpolatedZeroCurve<T>::initialize(
+                                    const std::vector<Date>& dates,
+                                    const std::vector<Rate>& yields,
+                                    const DayCounter& dayCounter)
+    {
         QL_REQUIRE(dates_.size() >= T::requiredPoints,
                    "not enough input dates given");
         QL_REQUIRE(this->data_.size() == dates_.size(),
@@ -225,7 +279,6 @@ namespace QuantLib {
         this->interpolation_.update();
     }
 
-    #endif
 }
 
 #endif

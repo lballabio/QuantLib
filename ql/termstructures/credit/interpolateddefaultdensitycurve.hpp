@@ -44,9 +44,21 @@ namespace QuantLib {
             const std::vector<Real>& densities,
             const DayCounter& dayCounter,
             const Calendar& calendar = Calendar(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Handle<Quote> >& jumps =
+                                                std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>(),
             const Interpolator& interpolator = Interpolator());
+        InterpolatedDefaultDensityCurve(
+            const std::vector<Date>& dates,
+            const std::vector<Real>& densities,
+            const DayCounter& dayCounter,
+            const Calendar& calendar,
+            const Interpolator& interpolator);
+        InterpolatedDefaultDensityCurve(
+            const std::vector<Date>& dates,
+            const std::vector<Real>& densities,
+            const DayCounter& dayCounter,
+            const Interpolator& interpolator);
         //! \name TermStructure interface
         //@{
         Date maxDate() const;
@@ -84,6 +96,10 @@ namespace QuantLib {
         Probability survivalProbabilityImpl(Time) const;
         //@}
         mutable std::vector<Date> dates_;
+      private:
+        void initialize(const std::vector<Date>& dates,
+                        const std::vector<Real>& densities,
+                        const DayCounter& dayCounter);
     };
 
     // inline definitions
@@ -201,6 +217,46 @@ namespace QuantLib {
       InterpolatedCurve<T>(std::vector<Time>(), densities, interpolator),
       dates_(dates)
     {
+        initialize(dates, densities, dayCounter);
+    }
+
+    template <class T>
+    InterpolatedDefaultDensityCurve<T>::InterpolatedDefaultDensityCurve(
+            const std::vector<Date>& dates,
+            const std::vector<Real>& densities,
+            const DayCounter& dayCounter,
+            const Calendar& calendar,
+            const T& interpolator)
+    : DefaultDensityStructure(dates.front(), calendar, dayCounter),
+      InterpolatedCurve<T>(std::vector<Time>(), densities, interpolator),
+      dates_(dates)
+    {
+        initialize(dates, densities, dayCounter);
+    }
+
+    template <class T>
+    InterpolatedDefaultDensityCurve<T>::InterpolatedDefaultDensityCurve(
+            const std::vector<Date>& dates,
+            const std::vector<Real>& densities,
+            const DayCounter& dayCounter,
+            const T& interpolator)
+    : DefaultDensityStructure(dates.front(), Calendar(), dayCounter),
+      InterpolatedCurve<T>(std::vector<Time>(), densities, interpolator),
+      dates_(dates)
+    {
+        initialize(dates, densities, dayCounter);
+    }
+
+
+    #endif
+
+
+    template <class T>
+    void InterpolatedDefaultDensityCurve<T>::initialize(
+                                    const std::vector<Date>& dates,
+                                    const std::vector<Real>& densities,
+                                    const DayCounter& dayCounter)
+    {
         QL_REQUIRE(dates_.size() >= T::requiredPoints,
                    "not enough input dates given");
         QL_REQUIRE(this->data_.size() == dates_.size(),
@@ -226,8 +282,6 @@ namespace QuantLib {
         this->interpolation_.update();
     }
 
-
-    #endif
 }
 
 #endif

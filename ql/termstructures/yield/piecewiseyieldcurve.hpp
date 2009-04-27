@@ -72,7 +72,8 @@ namespace QuantLib {
                const std::vector<boost::shared_ptr<typename Traits::helper> >&
                                                                   instruments,
                const DayCounter& dayCounter,
-               const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+               const std::vector<Handle<Quote> >& jumps =
+                                                std::vector<Handle<Quote> >(),
                const std::vector<Date>& jumpDates = std::vector<Date>(),
                Real accuracy = 1.0e-12,
                const Interpolator& i = Interpolator(),
@@ -80,6 +81,33 @@ namespace QuantLib {
         : base_curve(referenceDate, dayCounter, jumps, jumpDates, i),
           instruments_(instruments),
           accuracy_(accuracy), bootstrap_(bootstrap) {
+            bootstrap_.setup(this);
+        }
+        PiecewiseYieldCurve(
+               const Date& referenceDate,
+               const std::vector<boost::shared_ptr<typename Traits::helper> >&
+                                                                  instruments,
+               const DayCounter& dayCounter,
+               Real accuracy,
+               const Interpolator& i = Interpolator(),
+               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
+        : base_curve(referenceDate, dayCounter,
+                     std::vector<Handle<Quote> >(), std::vector<Date>(), i),
+          instruments_(instruments),
+          accuracy_(accuracy), bootstrap_(bootstrap) {
+            bootstrap_.setup(this);
+        }
+        PiecewiseYieldCurve(
+               const Date& referenceDate,
+               const std::vector<boost::shared_ptr<typename Traits::helper> >&
+                                                                  instruments,
+               const DayCounter& dayCounter,
+               const Interpolator& i,
+               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
+        : base_curve(referenceDate, dayCounter,
+                     std::vector<Handle<Quote> >(), std::vector<Date>(), i),
+          instruments_(instruments),
+          accuracy_(1.0e-12), bootstrap_(bootstrap) {
             bootstrap_.setup(this);
         }
         PiecewiseYieldCurve(
@@ -96,6 +124,35 @@ namespace QuantLib {
         : base_curve(settlementDays, calendar, dayCounter, jumps, jumpDates, i),
           instruments_(instruments),
           accuracy_(accuracy), bootstrap_(bootstrap) {
+            bootstrap_.setup(this);
+        }
+        PiecewiseYieldCurve(
+               Natural settlementDays,
+               const Calendar& calendar,
+               const std::vector<boost::shared_ptr<typename Traits::helper> >&
+                                                                  instruments,
+               const DayCounter& dayCounter,
+               Real accuracy,
+               const Interpolator& i = Interpolator(),
+               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
+        : base_curve(settlementDays, calendar, dayCounter,
+                     std::vector<Handle<Quote> >(), std::vector<Date>(), i),
+          instruments_(instruments),
+          accuracy_(accuracy), bootstrap_(bootstrap) {
+            bootstrap_.setup(this);
+        }
+        PiecewiseYieldCurve(
+               Natural settlementDays,
+               const Calendar& calendar,
+               const std::vector<boost::shared_ptr<typename Traits::helper> >&
+                                                                  instruments,
+               const DayCounter& dayCounter,
+               const Interpolator& i,
+               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
+        : base_curve(settlementDays, calendar, dayCounter,
+                     std::vector<Handle<Quote> >(), std::vector<Date>(), i),
+          instruments_(instruments),
+          accuracy_(1.0e-12), bootstrap_(bootstrap) {
             bootstrap_.setup(this);
         }
         //@}

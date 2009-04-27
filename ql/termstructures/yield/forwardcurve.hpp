@@ -45,9 +45,21 @@ namespace QuantLib {
             const std::vector<Rate>& forwards,
             const DayCounter& dayCounter,
             const Calendar& cal = Calendar(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Handle<Quote> >& jumps =
+                                                std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>(),
             const Interpolator& interpolator = Interpolator());
+        InterpolatedForwardCurve(
+            const std::vector<Date>& dates,
+            const std::vector<Rate>& forwards,
+            const DayCounter& dayCounter,
+            const Calendar& calendar,
+            const Interpolator& interpolator);
+        InterpolatedForwardCurve(
+            const std::vector<Date>& dates,
+            const std::vector<Rate>& forwards,
+            const DayCounter& dayCounter,
+            const Interpolator& interpolator);
         //! \name TermStructure interface
         //@{
         Date maxDate() const;
@@ -85,6 +97,10 @@ namespace QuantLib {
         Rate zeroYieldImpl(Time t) const;
         //@}
         mutable std::vector<Date> dates_;
+      private:
+        void initialize(const std::vector<Date>& dates,
+                        const std::vector<Rate>& forwards,
+                        const DayCounter& dayCounter);
     };
 
     //! Term structure based on flat interpolation of forward rates
@@ -205,6 +221,44 @@ namespace QuantLib {
       InterpolatedCurve<T>(std::vector<Time>(), forwards, interpolator),
       dates_(dates)
     {
+        initialize(dates, forwards, dayCounter);
+    }
+
+    template <class T>
+    InterpolatedForwardCurve<T>::InterpolatedForwardCurve(
+            const std::vector<Date>& dates,
+            const std::vector<Rate>& forwards,
+            const DayCounter& dayCounter,
+            const Calendar& calendar,
+            const T& interpolator)
+    : ForwardRateStructure(dates.front(), calendar, dayCounter),
+      InterpolatedCurve<T>(std::vector<Time>(), forwards, interpolator),
+      dates_(dates)
+    {
+        initialize(dates, forwards, dayCounter);
+    }
+
+    template <class T>
+    InterpolatedForwardCurve<T>::InterpolatedForwardCurve(
+            const std::vector<Date>& dates,
+            const std::vector<Rate>& forwards,
+            const DayCounter& dayCounter,
+            const T& interpolator)
+    : ForwardRateStructure(dates.front(), Calendar(), dayCounter),
+      InterpolatedCurve<T>(std::vector<Time>(), forwards, interpolator),
+      dates_(dates)
+    {
+        initialize(dates, forwards, dayCounter);
+    }
+
+    #endif
+
+    template <class T>
+    void InterpolatedForwardCurve<T>::initialize(
+                                    const std::vector<Date>& dates,
+                                    const std::vector<Rate>& forwards,
+                                    const DayCounter& dayCounter)
+    {
         QL_REQUIRE(dates_.size() >= T::requiredPoints,
                    "not enough input dates given");
         QL_REQUIRE(this->data_.size() == dates_.size(),
@@ -232,7 +286,6 @@ namespace QuantLib {
         this->interpolation_.update();
     }
 
-    #endif
 }
 
 #endif

@@ -179,8 +179,6 @@ int main(int, char* []) {
                      new PiecewiseYieldCurve<Discount,LogLinear>(
                                          settlementDate, fraInstruments,
                                          termStructureDayCounter,
-                                         vector<Handle<Quote> >(), 
-                                         vector<Date>(),
                                          tolerance));
 
 

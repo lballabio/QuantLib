@@ -75,6 +75,29 @@ namespace QuantLib {
             bootstrap_.setup(this);
         }
         PiecewiseDefaultCurve(
+               const Date& referenceDate,
+               const std::vector<boost::shared_ptr<typename Traits::helper> >&
+                                                                  instruments,
+               const DayCounter& dayCounter,
+               Real accuracy,
+               const Interpolator& i = Interpolator())
+        : base_curve(referenceDate, dayCounter,
+                     std::vector<Handle<Quote> >(), std::vector<Date>(), i),
+          instruments_(instruments), accuracy_(accuracy) {
+            bootstrap_.setup(this);
+        }
+        PiecewiseDefaultCurve(
+               const Date& referenceDate,
+               const std::vector<boost::shared_ptr<typename Traits::helper> >&
+                                                                  instruments,
+               const DayCounter& dayCounter,
+               const Interpolator& i)
+        : base_curve(referenceDate, dayCounter,
+                     std::vector<Handle<Quote> >(), std::vector<Date>(), i),
+          instruments_(instruments), accuracy_(1.0e-12) {
+            bootstrap_.setup(this);
+        }
+        PiecewiseDefaultCurve(
                Natural settlementDays,
                const Calendar& calendar,
                const std::vector<boost::shared_ptr<typename Traits::helper> >&
@@ -86,6 +109,31 @@ namespace QuantLib {
                const Interpolator& i = Interpolator())
         : base_curve(settlementDays, calendar, dayCounter, jumps, jumpDates, i),
           instruments_(instruments), accuracy_(accuracy) {
+            bootstrap_.setup(this);
+        }
+        PiecewiseDefaultCurve(
+               Natural settlementDays,
+               const Calendar& calendar,
+               const std::vector<boost::shared_ptr<typename Traits::helper> >&
+                                                                  instruments,
+               const DayCounter& dayCounter,
+               Real accuracy,
+               const Interpolator& i = Interpolator())
+        : base_curve(settlementDays, calendar, dayCounter,
+                     std::vector<Handle<Quote> >(), std::vector<Date>(), i),
+          instruments_(instruments), accuracy_(accuracy) {
+            bootstrap_.setup(this);
+        }
+        PiecewiseDefaultCurve(
+               Natural settlementDays,
+               const Calendar& calendar,
+               const std::vector<boost::shared_ptr<typename Traits::helper> >&
+                                                                  instruments,
+               const DayCounter& dayCounter,
+               const Interpolator& i)
+        : base_curve(settlementDays, calendar, dayCounter,
+                     std::vector<Handle<Quote> >(), std::vector<Date>(), i),
+          instruments_(instruments), accuracy_(1.0e-12) {
             bootstrap_.setup(this);
         }
         //@}

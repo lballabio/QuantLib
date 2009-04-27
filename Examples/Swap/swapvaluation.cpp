@@ -319,8 +319,6 @@ int main(int, char* []) {
             new PiecewiseYieldCurve<Discount,LogLinear>(
                                           settlementDate, depoSwapInstruments,
                                           termStructureDayCounter,
-                                          std::vector<Handle<Quote> >(),
-                                          std::vector<Date>(),
                                           tolerance));
 
 
@@ -344,8 +342,6 @@ int main(int, char* []) {
             new PiecewiseYieldCurve<Discount,LogLinear>(
                                        settlementDate, depoFutSwapInstruments,
                                        termStructureDayCounter,
-                                       std::vector<Handle<Quote> >(),
-                                       std::vector<Date>(),
                                        tolerance));
 
 
@@ -366,8 +362,6 @@ int main(int, char* []) {
             new PiecewiseYieldCurve<Discount,LogLinear>(
                                        settlementDate, depoFRASwapInstruments,
                                        termStructureDayCounter,
-                                       std::vector<Handle<Quote> >(),
-                                       std::vector<Date>(),
                                        tolerance));
 
 

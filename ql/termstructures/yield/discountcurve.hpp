@@ -49,6 +49,17 @@ namespace QuantLib {
             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>(),
             const Interpolator& interpolator = Interpolator());
+        InterpolatedDiscountCurve(
+            const std::vector<Date>& dates,
+            const std::vector<DiscountFactor>& dfs,
+            const DayCounter& dayCounter,
+            const Calendar& calendar,
+            const Interpolator& interpolator);
+        InterpolatedDiscountCurve(
+            const std::vector<Date>& dates,
+            const std::vector<DiscountFactor>& dfs,
+            const DayCounter& dayCounter,
+            const Interpolator& interpolator);
         //! \name TermStructure interface
         //@{
         Date maxDate() const;
@@ -85,6 +96,10 @@ namespace QuantLib {
         DiscountFactor discountImpl(Time) const;
         //@}
         mutable std::vector<Date> dates_;
+      private:
+        void initialize(const std::vector<Date>& dates,
+                        const std::vector<DiscountFactor>& dfs,
+                        const DayCounter& dayCounter);
     };
 
     //! Term structure based on log-linear interpolation of discount factors
@@ -184,16 +199,54 @@ namespace QuantLib {
 
     template <class T>
     InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
-                                    const std::vector<Date>& dates,
-                                    const std::vector<DiscountFactor>& discounts,
-                                    const DayCounter& dayCounter,
-                                    const Calendar& calendar,
-                                    const std::vector<Handle<Quote> >& jumps,
-                                    const std::vector<Date>& jumpDates,
-                                    const T& interpolator)
+                                 const std::vector<Date>& dates,
+                                 const std::vector<DiscountFactor>& discounts,
+                                 const DayCounter& dayCounter,
+                                 const Calendar& calendar,
+                                 const std::vector<Handle<Quote> >& jumps,
+                                 const std::vector<Date>& jumpDates,
+                                 const T& interpolator)
     : YieldTermStructure(dates.front(), calendar, dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(std::vector<Time>(), discounts, interpolator),
       dates_(dates)
+    {
+        initialize(dates, discounts, dayCounter);
+    }
+
+    template <class T>
+    InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
+                                 const std::vector<Date>& dates,
+                                 const std::vector<DiscountFactor>& discounts,
+                                 const DayCounter& dayCounter,
+                                 const Calendar& calendar,
+                                 const T& interpolator)
+    : YieldTermStructure(dates.front(), calendar, dayCounter),
+      InterpolatedCurve<T>(std::vector<Time>(), discounts, interpolator),
+      dates_(dates)
+    {
+        initialize(dates, discounts, dayCounter);
+    }
+
+    template <class T>
+    InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
+                                 const std::vector<Date>& dates,
+                                 const std::vector<DiscountFactor>& discounts,
+                                 const DayCounter& dayCounter,
+                                 const T& interpolator)
+    : YieldTermStructure(dates.front(), Calendar(), dayCounter),
+      InterpolatedCurve<T>(std::vector<Time>(), discounts, interpolator),
+      dates_(dates)
+    {
+        initialize(dates, discounts, dayCounter);
+    }
+
+    #endif
+
+    template <class T>
+    void InterpolatedDiscountCurve<T>::initialize(
+                                 const std::vector<Date>& dates,
+                                 const std::vector<DiscountFactor>& discounts,
+                                 const DayCounter& dayCounter)
     {
         QL_REQUIRE(dates_.size() >= T::requiredPoints,
                    "not enough input dates given");
@@ -231,7 +284,6 @@ namespace QuantLib {
         this->interpolation_.update();
     }
 
-    #endif
 }
 
 #endif
