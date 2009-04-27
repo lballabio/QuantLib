@@ -51,6 +51,8 @@ namespace {
         CommonVars() {
             conventions.setConventions();
             atm.setMarketData();
+            Settings::instance().evaluationDate() =
+                conventions.calendar.adjust(Date::todaysDate());
             atmVolMatrix = RelinkableHandle<SwaptionVolatilityStructure>(
                 boost::shared_ptr<SwaptionVolatilityStructure>(new
                     SwaptionVolatilityMatrix(conventions.calendar,
