@@ -20,6 +20,9 @@
 
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/comparison.hpp>
+
+using boost::shared_ptr;
 
 namespace QuantLib {
 
@@ -41,59 +44,77 @@ namespace QuantLib {
     };
 
 
-    BlackCalculator::BlackCalculator(
-        const boost::shared_ptr<StrikedTypePayoff>& payoff,
-        Real forward, Real stdDev, Real discount)
-    : strike_(payoff->strike()), forward_(forward), stdDev_(stdDev),
+    BlackCalculator::BlackCalculator(const shared_ptr<StrikedTypePayoff>& p,
+                                     Real forward,
+                                     Real stdDev,
+                                     Real discount)
+    : strike_(p->strike()), forward_(forward), stdDev_(stdDev),
       discount_(discount), variance_(stdDev*stdDev) {
 
-        QL_REQUIRE(forward>0.0, "positive forward value required: " <<
-                   forward << " not allowed");
-
-        QL_REQUIRE(stdDev>=0.0, "non-negative standard deviation required: "
-                   << stdDev << " not allowed");
-
-        QL_REQUIRE(discount>0.0, "positive discount required: " <<
-                   discount << " not allowed");
+        QL_REQUIRE(strike_>=0.0,
+                   "strike (" << strike_ << ") must be non-negative");
+        QL_REQUIRE(forward_>0.0,
+                   "forward (" << forward_ << ") must be positive");
+        //QL_REQUIRE(displacement_>=0.0,
+        //           "displacement (" << displacement_ << ") must be non-negative");
+        QL_REQUIRE(stdDev_>=0.0,
+                   "stdDev (" << stdDev_ << ") must be non-negative");
+        QL_REQUIRE(discount_>0.0,
+                   "discount (" << discount_ << ") must be positive");
 
         if (stdDev_>=QL_EPSILON) {
-            if (strike_==0.0) {
+            if (close(strike_, 0.0)) {
+                d1_ = QL_MAX_REAL;
+                d2_ = QL_MAX_REAL;
+                cum_d1_ = 1.0;
+                cum_d2_ = 1.0;
                 n_d1_ = 0.0;
                 n_d2_ = 0.0;
-                cum_d1_ = 1.0;
-                cum_d2_= 1.0;
             } else {
-                D1_ = std::log(forward/strike_)/stdDev_ + 0.5*stdDev_;
-                D2_ = D1_-stdDev_;
+                d1_ = std::log(forward/strike_)/stdDev_ + 0.5*stdDev_;
+                d2_ = d1_-stdDev_;
                 CumulativeNormalDistribution f;
-                cum_d1_ = f(D1_);
-                cum_d2_= f(D2_);
-                n_d1_ = f.derivative(D1_);
-                n_d2_ = f.derivative(D2_);
+                cum_d1_ = f(d1_);
+                cum_d2_ = f(d2_);
+                n_d1_ = f.derivative(d1_);
+                n_d2_ = f.derivative(d2_);
             }
         } else {
-            if (forward>strike_) {
+            if (close(forward, strike_)) {
+                d1_ = 0;
+                d2_ = 0;
+                cum_d1_ = 0.5;
+                cum_d2_ = 0.5;
+                n_d1_ = M_SQRT_2 * M_1_SQRTPI;
+                n_d2_ = M_SQRT_2 * M_1_SQRTPI;
+            } else if (forward>strike_) {
+                d1_ = QL_MAX_REAL;
+                d2_ = QL_MAX_REAL;
                 cum_d1_ = 1.0;
-                cum_d2_= 1.0;
+                cum_d2_ = 1.0;
+                n_d1_ = 0.0;
+                n_d2_ = 0.0;
             } else {
+                d1_ = QL_MIN_REAL;
+                d2_ = QL_MIN_REAL;
                 cum_d1_ = 0.0;
-                cum_d2_= 0.0;
+                cum_d2_ = 0.0;
+                n_d1_ = 0.0;
+                n_d2_ = 0.0;
             }
-            n_d1_ = 0.0;
-            n_d2_ = 0.0;
         }
 
-        X_ = strike_;
-        DXDstrike_ = 1.0;
+        x_ = strike_;
+        DxDstrike_ = 1.0;
 
         // the following one will probably disappear as soon as
         // super-share will be properly handled
-        DXDs_ = 0.0;
+        DxDs_ = 0.0;
 
         // this part is always executed.
         // in case of plain-vanilla payoffs, it is also the only part
         // which is executed.
-        switch (payoff->optionType()) {
+        switch (p->optionType()) {
           case Option::Call:
             alpha_     =  cum_d1_;//  N(d1)
             DalphaDd1_ =    n_d1_;//  n(d1)
@@ -113,7 +134,7 @@ namespace QuantLib {
         // now dispatch on type.
 
         Calculator calc(*this);
-        payoff->accept(calc);
+        p->accept(calc);
     }
 
     void BlackCalculator::Calculator::visit(Payoff& p) {
@@ -124,8 +145,8 @@ namespace QuantLib {
 
     void BlackCalculator::Calculator::visit(CashOrNothingPayoff& payoff) {
         black_.alpha_ = black_.DalphaDd1_ = 0.0;
-        black_.X_ = payoff.cashPayoff();
-        black_.DXDstrike_ = 0.0;
+        black_.x_ = payoff.cashPayoff();
+        black_.DxDstrike_ = 0.0;
         switch (payoff.optionType()) {
           case Option::Call:
             black_.beta_     = black_.cum_d2_;
@@ -157,12 +178,12 @@ namespace QuantLib {
     }
 
     void BlackCalculator::Calculator::visit(GapPayoff& payoff) {
-        black_.X_ = payoff.secondStrike();
-        black_.DXDstrike_ = 0.0;
+        black_.x_ = payoff.secondStrike();
+        black_.DxDstrike_ = 0.0;
     }
 
     Real BlackCalculator::value() const {
-        Real result = discount_ * (forward_ * alpha_ + X_ * beta_);
+        Real result = discount_ * (forward_ * alpha_ + x_ * beta_);
         return result;
     }
 
@@ -177,7 +198,7 @@ namespace QuantLib {
         Real DalphaDs = DalphaDd1_/temp;
         Real DbetaDs  = DbetaDd2_/temp;
         Real temp2 = DalphaDs * forward_ + alpha_ * DforwardDs
-                      +DbetaDs  * X_       + beta_  * DXDs_;
+                      +DbetaDs  * x_       + beta_  * DxDs_;
 
         return discount_ * temp2;
     }
@@ -188,7 +209,7 @@ namespace QuantLib {
         Real DalphaDforward = DalphaDd1_/temp;
         Real DbetaDforward  = DbetaDd2_/temp;
         Real temp2 = DalphaDforward * forward_ + alpha_
-                      +DbetaDforward  * X_; // DXDforward = 0.0
+                      +DbetaDforward  * x_; // DXDforward = 0.0
 
         return discount_ * temp2;
     }
@@ -230,11 +251,11 @@ namespace QuantLib {
         Real DalphaDs = DalphaDd1_/temp;
         Real DbetaDs  = DbetaDd2_/temp;
 
-        Real D2alphaDs2 = - DalphaDs/spot*(1+D1_/stdDev_);
-        Real D2betaDs2  = - DbetaDs /spot*(1+D2_/stdDev_);
+        Real D2alphaDs2 = - DalphaDs/spot*(1+d1_/stdDev_);
+        Real D2betaDs2  = - DbetaDs /spot*(1+d2_/stdDev_);
 
         Real temp2 = D2alphaDs2 * forward_ + 2.0 * DalphaDs * DforwardDs
-                      +D2betaDs2  * X_       + 2.0 * DbetaDs  * DXDs_;
+                      +D2betaDs2  * x_       + 2.0 * DbetaDs  * DxDs_;
 
         return  discount_ * temp2;
     }
@@ -245,20 +266,21 @@ namespace QuantLib {
         Real DalphaDforward = DalphaDd1_/temp;
         Real DbetaDforward  = DbetaDd2_/temp;
 
-        Real D2alphaDforward2 = - DalphaDforward/forward_*(1+D1_/stdDev_);
-        Real D2betaDforward2  = - DbetaDforward /forward_*(1+D2_/stdDev_);
+        Real D2alphaDforward2 = - DalphaDforward/forward_*(1+d1_/stdDev_);
+        Real D2betaDforward2  = - DbetaDforward /forward_*(1+d2_/stdDev_);
 
         Real temp2 = D2alphaDforward2 * forward_ + 2.0 * DalphaDforward
-                      +D2betaDforward2  * X_; // DXDforward = 0.0
+                      +D2betaDforward2  * x_; // DXDforward = 0.0
 
         return discount_ * temp2;
     }
 
-    Real BlackCalculator::theta(Real spot, Time maturity) const {
+    Real BlackCalculator::theta(Real spot,
+                                Time maturity) const {
 
-        if (maturity==0.0) return 0.0;
-        QL_REQUIRE(maturity>0.0, "non negative maturity required: " <<
-                   maturity << " not allowed");
+        QL_REQUIRE(maturity>=0.0,
+                   "maturity (" << maturity << ") must be non-negative");
+        if (close(maturity, 0.0)) return 0.0;
         //vol = stdDev_ / std::sqrt(maturity);
         //rate = -std::log(discount_)/maturity;
         //dividendRate = -std::log(forward_ / spot * discount_)/maturity;
@@ -282,7 +304,7 @@ namespace QuantLib {
         Real DalphaDsigma = DalphaDd1_*(temp+0.5);
         Real DbetaDsigma  = DbetaDd2_ *(temp-0.5);
 
-        Real temp2 = DalphaDsigma * forward_ + DbetaDsigma * X_;
+        Real temp2 = DalphaDsigma * forward_ + DbetaDsigma * x_;
 
         return discount_ * std::sqrt(maturity) * temp2;
 
@@ -295,7 +317,7 @@ namespace QuantLib {
         // actually DalphaDr / T
         Real DalphaDr = DalphaDd1_/stdDev_;
         Real DbetaDr  = DbetaDd2_/stdDev_;
-        Real temp = DalphaDr * forward_ + alpha_ * forward_ + DbetaDr * X_;
+        Real temp = DalphaDr * forward_ + alpha_ * forward_ + DbetaDr * x_;
 
         return maturity * (discount_ * temp - value());
     }
@@ -308,7 +330,7 @@ namespace QuantLib {
         Real DalphaDq = -DalphaDd1_/stdDev_;
         Real DbetaDq  = -DbetaDd2_/stdDev_;
 
-        Real temp = DalphaDq * forward_ - alpha_ * forward_ + DbetaDq * X_;
+        Real temp = DalphaDq * forward_ - alpha_ * forward_ + DbetaDq * x_;
 
         return maturity * discount_ * temp;
     }
@@ -328,7 +350,7 @@ namespace QuantLib {
         Real DbetaDstrike  = -DbetaDd2_/temp;
 
         Real temp2 =
-            DalphaDstrike * forward_ + DbetaDstrike * X_ + beta_ * DXDstrike_;
+            DalphaDstrike * forward_ + DbetaDstrike * x_ + beta_ * DxDstrike_;
 
         return discount_ * temp2;
     }

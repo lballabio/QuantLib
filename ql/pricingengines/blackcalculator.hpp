@@ -100,9 +100,10 @@ namespace QuantLib {
         Real beta() const;
       protected:
         Real strike_, forward_, stdDev_, discount_, variance_;
-        Real D1_, D2_, alpha_, beta_, DalphaDd1_, DbetaDd2_;
+        Real d1_, d2_;
+        Real alpha_, beta_, DalphaDd1_, DbetaDd2_;
         Real n_d1_, cum_d1_, n_d2_, cum_d2_;
-        Real X_, DXDs_, DXDstrike_;
+        Real x_, DxDs_, DxDstrike_;
     };
 
 }
