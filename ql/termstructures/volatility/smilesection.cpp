@@ -54,13 +54,14 @@ namespace QuantLib {
 
     SmileSection::SmileSection(Time exerciseTime,
                                const DayCounter& dc)
-    : isFloating_(false), dc_(dc), exerciseTime_(exerciseTime) {
+    : isFloating_(false), referenceDate_(Date()),
+      dc_(dc), exerciseTime_(exerciseTime) {
         QL_REQUIRE(exerciseTime_>=0.0,
                    "expiry time must be positive: " <<
                    exerciseTime_ << " not allowed");
     }
 
-    SabrSmileSection::SabrSmileSection(const Time timeToExpiry,
+    SabrSmileSection::SabrSmileSection(Time timeToExpiry,
                                        Rate forward,
                                        const std::vector<Real>& sabrParams)
     : SmileSection(timeToExpiry), forward_(forward) {

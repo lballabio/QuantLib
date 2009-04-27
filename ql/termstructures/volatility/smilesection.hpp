@@ -56,6 +56,7 @@ namespace QuantLib {
         Volatility volatility(Rate strike = Null<Rate>()) const;
         virtual Real atmLevel() const = 0;
         const Date& exerciseDate() const { return exerciseDate_; }
+        const Date& referenceDate() const;
         Time exerciseTime() const { return exerciseTime_; }
         const DayCounter& dayCounter() const { return dc_; }
         void initializeExerciseTime() const;
@@ -80,6 +81,12 @@ namespace QuantLib {
         if (strike==Null<Rate>())
             strike = atmLevel();
         return volatilityImpl(strike);
+    }
+
+    inline const Date& SmileSection::referenceDate() const {
+        QL_REQUIRE(referenceDate_!=Date(),
+                   "referenceDate not available for this instance");
+        return referenceDate_;
     }
 
     inline Real SmileSection::varianceImpl(Rate strike) const {
