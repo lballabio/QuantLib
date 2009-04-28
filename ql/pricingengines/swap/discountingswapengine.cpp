@@ -34,16 +34,22 @@ namespace QuantLib {
 
         results_.value = 0.0;
         results_.errorEstimate = Null<Real>();
+        results_.valuationDate = (*discountCurve_)->referenceDate();
+
         results_.legNPV.resize(arguments_.legs.size());
         results_.legBPS.resize(arguments_.legs.size());
         std::vector<DiscountFactor> startDiscounts(arguments_.legs.size());
         for (Size i=0; i<arguments_.legs.size(); ++i) {
             results_.legNPV[i] =
                 arguments_.payer[i] * CashFlows::npv(arguments_.legs[i],
-                                                     **discountCurve_);
+                                                     **discountCurve_,
+                                                     results_.valuationDate,
+                                                     results_.valuationDate);
             results_.legBPS[i] =
                 arguments_.payer[i] * CashFlows::bps(arguments_.legs[i],
-                                                     **discountCurve_);
+                                                     **discountCurve_,
+                                                     results_.valuationDate,
+                                                     results_.valuationDate);
             results_.value += results_.legNPV[i];
             try {
                 Date d = CashFlows::startDate(arguments_.legs[i]);

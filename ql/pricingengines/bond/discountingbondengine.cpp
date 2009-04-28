@@ -32,15 +32,15 @@ namespace QuantLib {
         QL_REQUIRE(!discountCurve_.empty(),
                    "discounting term structure handle is empty");
 
-        const Date& settlementDate = arguments_.settlementDate;
-        const Date& valuationDate = (*discountCurve())->referenceDate();
-
+        results_.valuationDate = (*discountCurve_)->referenceDate();
         results_.value = CashFlows::npv(arguments_.cashflows,
-                                        **discountCurve(),
-                                        valuationDate,
-                                        valuationDate);
+                                        **discountCurve_,
+                                        results_.valuationDate,
+                                        results_.valuationDate);
+
+        const Date& settlementDate = arguments_.settlementDate;
         results_.settlementValue = CashFlows::npv(arguments_.cashflows,
-                                                  **discountCurve(),
+                                                  **discountCurve_,
                                                   settlementDate,
                                                   settlementDate);
     }

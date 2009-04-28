@@ -28,6 +28,7 @@
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/pricingengine.hpp>
 #include <ql/utilities/null.hpp>
+#include <ql/time/date.hpp>
 #include <boost/any.hpp>
 #include <map>
 #include <string>
@@ -46,15 +47,20 @@ namespace QuantLib {
         Instrument();
         //! \name Inspectors
         //@{
+
         //! returns the net present value of the instrument.
         Real NPV() const;
         //! returns the error estimate on the NPV when available.
         Real errorEstimate() const;
+        //! returns the date the net present value refers to.
+        const Date& valuationDate() const;
+
         //! returns any additional result returned by the pricing engine.
         template <typename T> T result(const std::string& tag) const;
         //! returns all additional result returned by the pricing engine.
         const std::map<std::string,boost::any>& additionalResults() const;
-        //! returns whether the instrument is still tradable.
+
+        //! returns whether the instrument might have value greater than zero.
         virtual bool isExpired() const = 0;
         //@}
         //! \name Modifiers
@@ -98,6 +104,7 @@ namespace QuantLib {
         */
         //@{
         mutable Real NPV_, errorEstimate_;
+        mutable Date valuationDate_;
         mutable std::map<std::string,boost::any> additionalResults_;
         //@}
         boost::shared_ptr<PricingEngine> engine_;
@@ -107,10 +114,12 @@ namespace QuantLib {
       public:
         void reset() {
             value = errorEstimate = Null<Real>();
+            valuationDate = Date();
             additionalResults.clear();
         }
         Real value;
         Real errorEstimate;
+        Date valuationDate;
         std::map<std::string,boost::any> additionalResults;
     };
 
@@ -118,7 +127,8 @@ namespace QuantLib {
     // inline definitions
 
     inline Instrument::Instrument()
-    : NPV_(Null<Real>()), errorEstimate_(Null<Real>()) {}
+    : NPV_(Null<Real>()), errorEstimate_(Null<Real>()),
+      valuationDate_(Date()) {}
 
     inline void Instrument::setPricingEngine(
                                   const boost::shared_ptr<PricingEngine>& e) {
@@ -146,6 +156,7 @@ namespace QuantLib {
 
     inline void Instrument::setupExpired() const {
         NPV_ = errorEstimate_ = 0.0;
+        valuationDate_ = Date();
         additionalResults_.clear();
     }
 
@@ -164,8 +175,11 @@ namespace QuantLib {
             dynamic_cast<const Instrument::results*>(r);
         QL_ENSURE(results != 0,
                   "no results returned from pricing engine");
+
         NPV_ = results->value;
         errorEstimate_ = results->errorEstimate;
+        valuationDate_ = results->valuationDate;
+
         additionalResults_ = results->additionalResults;
     }
 
@@ -180,6 +194,13 @@ namespace QuantLib {
         QL_REQUIRE(errorEstimate_ != Null<Real>(),
                    "error estimate not provided");
         return errorEstimate_;
+    }
+
+    inline const Date& Instrument::valuationDate() const {
+        calculate();
+        QL_REQUIRE(valuationDate_ != Date(),
+                   "valuation date not provided");
+        return valuationDate_;
     }
 
     template <class T>
@@ -198,6 +219,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif
