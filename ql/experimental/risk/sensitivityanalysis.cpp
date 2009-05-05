@@ -74,7 +74,7 @@ namespace QuantLib {
         if (referenceNpv==Null<Real>())
             referenceNpv = aggregateNPV(instruments, quantities);
 
-        vector<Real> quoteValues(n);
+        vector<Real> quoteValues(n, Null<Real>());
         for (Size i=0; i<n; ++i)
             if (quotes[i]->isValid())
                 quoteValues[i] = quotes[i]->value();
@@ -107,7 +107,7 @@ namespace QuantLib {
                     quotes[i]->setValue(quoteValues[i]);
         } catch (std::exception& e) {
             for (Size i=0; i<n; ++i)
-                if (quotes[i]->isValid())
+                if (quoteValues[i]!=Null<Real>())
                     quotes[i]->setValue(quoteValues[i]);
             throw e;
         }
