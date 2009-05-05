@@ -43,38 +43,59 @@ namespace QuantLib {
         CashFlows();
         CashFlows(const CashFlows&);
       public:
-        //! \name Date inspectors
+        //! \name Date functions
         //@{
         static Date startDate(const Leg& leg);
         static Date maturityDate(const Leg& leg);
         static bool isExpired(const Leg& leg,
-                              Date refDate = Date());
+                              Date settlementDate = Date(),
+                              bool includeSettlementDateFlows = true);
         //@}
 
-        //! \name CashFlow inspectors
+        //! \name CashFlow functions
         //@{
-        static Leg::const_iterator previousCashFlow(const Leg& leg,
-                                                    Date refDate = Date());
-        static Leg::const_iterator nextCashFlow(const Leg& leg,
-                                                Date refDate = Date());
-        static Date previousCashFlowDate(const Leg& leg,
-                                         Date refDate = Date());
-        static Date nextCashFlowDate(const Leg& leg,
-                                     Date refDate = Date());
-        static Real previousCashFlowAmount(const Leg& leg,
-                                           Date refDate = Date());
-        static Real nextCashFlowAmount(const Leg& leg,
-                                       Date refDate = Date());
+        //! the last cashflow paying before or at the given date
+        static Leg::const_iterator
+        previousCashFlow(const Leg& leg,
+                         Date settlementDate = Date(),
+                         bool includeSettlementDateFlows = true);
+        //! the first cashflow paying after the given date
+        static Leg::const_iterator
+        nextCashFlow(const Leg& leg,
+                     Date settlementDate = Date(),
+                     bool includeSettlementDateFlows = true);
+        static Date
+        previousCashFlowDate(const Leg& leg,
+                             Date settlementDate = Date(),
+                             bool includeSettlementDateFlows = true);
+        static Date
+        nextCashFlowDate(const Leg& leg,
+                         Date settlementDate = Date(),
+                         bool includeSettlementDateFlows = true);
+        static Real
+        previousCashFlowAmount(const Leg& leg,
+                               Date settlementDate = Date(),
+                               bool includeSettlementDateFlows = true);
+        static Real
+        nextCashFlowAmount(const Leg& leg,
+                           Date settlementDate = Date(),
+                           bool includeSettlementDateFlows = true);
         //@}
 
         //! \name Coupon inspectors
         //@{
-        static Rate previousCouponRate(const Leg& leg,
-                                       Date settlementDate = Date());
-        static Rate nextCouponRate(const Leg& leg,
-                                   Date settlementDate = Date());
-        static Real accruedAmount(const Leg& leg,
-                                  Date settlementDate = Date());
+        static Rate
+        previousCouponRate(const Leg& leg,
+                           Date settlementDate = Date(),
+                           bool includeSettlementDateFlows = true);
+        static Rate
+        nextCouponRate(const Leg& leg,
+                       Date settlementDate = Date(),
+                       bool includeSettlementDateFlows = true);
+        static Real
+        accruedAmount(const Leg& leg,
+                      Date settlementDate = Date(),
+                      bool includeSettlementDateFlows = true);
         //@}
 
         //! \name YieldTermStructure functions
@@ -86,8 +107,8 @@ namespace QuantLib {
         static Real npv(const Leg& leg,
                         const YieldTermStructure& discountCurve,
                         Date settlementDate = Date(),
-                        const Date& npvDate = Date(),
-                        Natural exDividendDays = 0);
+                        Date npvDate = Date(),
+                        bool includeSettlementDateFlows = true);
         //! Basis-point sensitivity of the cash flows.
         /*! The result is the change in NPV due to a uniform
             1-basis-point change in the rate paid by the cash
@@ -97,8 +118,8 @@ namespace QuantLib {
         static Real bps(const Leg& leg,
                         const YieldTermStructure& discountCurve,
                         Date settlementDate = Date(),
-                        const Date& npvDate = Date(),
-                        Natural exDividendDays = 0);
+                        Date npvDate = Date(),
+                        bool includeSettlementDateFlows = true);
         //! At-the-money rate of the cash flows.
         /*! The result is the fixed rate for which a fixed rate cash flow
             vector, equivalent to the input vector, has the required NPV
@@ -108,8 +129,8 @@ namespace QuantLib {
         static Rate atmRate(const Leg& leg,
                             const YieldTermStructure& discountCurve,
                             Date settlementDate = Date(),
-                            const Date& npvDate = Date(),
-                            Natural exDividendDays = 0,
+                            Date npvDate = Date(),
+                            bool includeSettlementDateFlows = true,
                             Real npv = Null<Real>());
         //@}
 
@@ -127,14 +148,16 @@ namespace QuantLib {
         static Real npv(const Leg& leg,
                         const InterestRate& yield,
                         Date settlementDate = Date(),
-                        Natural exDividendDays = 0);
+                        Date npvDate = Date(),
+                        bool includeSettlementDateFlows = true);
         static Real npv(const Leg& leg,
                         Rate yield,
                         const DayCounter& dayCounter,
                         Compounding compounding,
                         Frequency frequency,
                         Date settlementDate = Date(),
-                        Natural exDividendDays = 0);
+                        Date npvDate = Date(),
+                        bool includeSettlementDateFlows = true);
         //! Basis-point sensitivity of the cash flows.
         /*! The result is the change in NPV due to a uniform
             1-basis-point change in the rate paid by the cash
@@ -146,14 +169,16 @@ namespace QuantLib {
         static Real bps(const Leg& leg,
                         const InterestRate& yield,
                         Date settlementDate = Date(),
-                        Natural exDividendDays = 0);
+                        Date npvDate = Date(),
+                        bool includeSettlementDateFlows = true);
         static Real bps(const Leg& leg,
                         Rate yield,
                         const DayCounter& dayCounter,
                         Compounding compounding,
                         Frequency frequency,
                         Date settlementDate = Date(),
-                        Natural exDividendDays = 0);
+                        Date npvDate = Date(),
+                        bool includeSettlementDateFlows = true);
         //! Implied internal rate of return.
         /*! The function verifies
             the theoretical existance of an IRR and numerically
@@ -165,7 +190,8 @@ namespace QuantLib {
                           Compounding compounding,
                           Frequency frequency,
                           Date settlementDate = Date(),
-                          Natural exDividendDays = 0,
+                          Date npvDate = Date(),
+                          bool includeSettlementDateFlows = true,
                           Real accuracy = 1.0e-10,
                           Size maxIterations = 100,
                           Rate guess = 0.05);
@@ -198,7 +224,8 @@ namespace QuantLib {
                              const InterestRate& yield,
                              Duration::Type type = Duration::Modified,
                              Date settlementDate = Date(),
-                             Natural exDividendDays = 0);
+                             Date npvDate = Date(),
+                             bool includeSettlementDateFlows = true);
         static Time duration(const Leg& leg,
                              Rate yield,
                              const DayCounter& dayCounter,
@@ -206,7 +233,8 @@ namespace QuantLib {
                              Frequency frequency,
                              Duration::Type type = Duration::Modified,
                              Date settlementDate = Date(),
-                             Natural exDividendDays = 0);
+                             Date npvDate = Date(),
+                             bool includeSettlementDateFlows = true);
 
         //! Cash-flow convexity
         /*! The convexity of a string of cash flows is defined as
@@ -219,14 +247,16 @@ namespace QuantLib {
         static Real convexity(const Leg& leg,
                               const InterestRate& yield,
                               Date settlementDate = Date(),
-                              Natural exDividendDays = 0);
+                              Date npvDate = Date(),
+                              bool includeSettlementDateFlows = true);
         static Real convexity(const Leg& leg,
                               Rate yield,
                               const DayCounter& dayCounter,
                               Compounding compounding,
                               Frequency frequency,
                               Date settlementDate = Date(),
-                              Natural exDividendDays = 0);
+                              Date npvDate = Date(),
+                              bool includeSettlementDateFlows = true);
 
         //! Basis-point value
         /*! Obtained by setting dy = 0.0001 in the 2nd-order Taylor
@@ -235,14 +265,16 @@ namespace QuantLib {
         static Real basisPointValue(const Leg& leg,
                                     const InterestRate& yield,
                                     Date settlementDate = Date(),
-                                    Natural exDividendDays = 0);
+                                    Date npvDate = Date(),
+                                    bool includeSettlementDateFlows = true);
         static Real basisPointValue(const Leg& leg,
                                     Rate yield,
                                     const DayCounter& dayCounter,
                                     Compounding compounding,
                                     Frequency frequency,
                                     Date settlementDate = Date(),
-                                    Natural exDividendDays = 0);
+                                    Date npvDate = Date(),
+                                    bool includeSettlementDateFlows = true);
 
         //! Yield value of a basis point
         /*! The yield value of a one basis point change in price is
@@ -252,14 +284,16 @@ namespace QuantLib {
         static Real yieldValueBasisPoint(const Leg& leg,
                                          const InterestRate& yield,
                                          Date settlementDate = Date(),
-                                         Natural exDividendDays = 0);
+                                         Date npvDate = Date(),
+                                         bool includeSettlementDateFlows = true);
         static Real yieldValueBasisPoint(const Leg& leg,
                                          Rate yield,
                                          const DayCounter& dayCounter,
                                          Compounding compounding,
                                          Frequency frequency,
                                          Date settlementDate = Date(),
-                                         Natural exDividendDays = 0);
+                                         Date npvDate = Date(),
+                                         bool includeSettlementDateFlows = true);
         //@}
 
         //! \name Z-spread functions
@@ -281,8 +315,8 @@ namespace QuantLib {
                         Compounding compounding,
                         Frequency frequency,
                         Date settlementDate = Date(),
-                        const Date& npvDate = Date(),
-                        Natural exDividendDays = 0);
+                        Date npvDate = Date(),
+                        bool includeSettlementDateFlows = true);
         //! implied Z-spread.
         static Spread zSpread(const Leg& leg,
                               Real npv,
@@ -291,8 +325,8 @@ namespace QuantLib {
                               Compounding compounding,
                               Frequency frequency,
                               Date settlementDate = Date(),
-                              const Date& npvDate = Date(),
-                              Natural exDividendDays = 0,
+                              Date npvDate = Date(),
+                              bool includeSettlementDateFlows = true,
                               Real accuracy = 1.0e-10,
                               Size maxIterations = 100,
                               Rate guess = 0.0);

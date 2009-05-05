@@ -36,13 +36,14 @@ namespace QuantLib {
         results_.value = CashFlows::npv(arguments_.cashflows,
                                         **discountCurve_,
                                         results_.valuationDate,
-                                        results_.valuationDate);
+                                        results_.valuationDate,
+                                        true);
 
         const Date& settlementDate = arguments_.settlementDate;
         results_.settlementValue = CashFlows::npv(arguments_.cashflows,
                                                   **discountCurve_,
-                                                  settlementDate,
-                                                  settlementDate);
+                                                  settlementDate, settlementDate,
+                                                  false);
     }
 
 }

@@ -49,46 +49,46 @@ namespace QuantLib {
 
     Leg::const_iterator BondFunctions::previousCashFlow(const Bond& bond,
                                                         Date refDate) {
-        return CashFlows::previousCashFlow(bond.cashflows(), refDate);
+        return CashFlows::previousCashFlow(bond.cashflows(), refDate, false);
     }
 
     Leg::const_iterator BondFunctions::nextCashFlow(const Bond& bond,
                                                     Date refDate) {
-        return CashFlows::nextCashFlow(bond.cashflows(), refDate);
+        return CashFlows::nextCashFlow(bond.cashflows(), refDate, false);
     }
 
     Date BondFunctions::previousCashFlowDate(const Bond& bond,
                                              Date refDate) {
-        return CashFlows::previousCashFlowDate(bond.cashflows(), refDate);
+        return CashFlows::previousCashFlowDate(bond.cashflows(), refDate, false);
     }
 
     Date BondFunctions::nextCashFlowDate(const Bond& bond,
                                          Date refDate) {
-        return CashFlows::nextCashFlowDate(bond.cashflows(), refDate);
+        return CashFlows::nextCashFlowDate(bond.cashflows(), refDate, false);
     }
 
     Real BondFunctions::previousCashFlowAmount(const Bond& bond,
                                                Date refDate) {
-        return CashFlows::previousCashFlowAmount(bond.cashflows(), refDate);
+        return CashFlows::previousCashFlowAmount(bond.cashflows(), refDate, false);
     }
 
     Real BondFunctions::nextCashFlowAmount(const Bond& bond,
                                            Date refDate) {
-        return CashFlows::nextCashFlowAmount(bond.cashflows(), refDate);
+        return CashFlows::nextCashFlowAmount(bond.cashflows(), refDate, false);
     }
 
     Rate BondFunctions::previousCouponRate(const Bond& bond,
                                            Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
-        return CashFlows::previousCouponRate(bond.cashflows(), settlement);
+        return CashFlows::previousCouponRate(bond.cashflows(), settlement, false);
     }
 
     Rate BondFunctions::nextCouponRate(const Bond& bond,
                                        Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
-        return CashFlows::nextCouponRate(bond.cashflows(), settlement);
+        return CashFlows::nextCouponRate(bond.cashflows(), settlement, false);
     }
 
     Real BondFunctions::accruedAmount(const Bond& bond,
@@ -100,7 +100,7 @@ namespace QuantLib {
                    "non tradable at " << settlement <<
                    " (maturity being " << bond.maturityDate() << ")");
 
-        return CashFlows::accruedAmount(bond.cashflows(), settlement) *
+        return CashFlows::accruedAmount(bond.cashflows(), settlement, false) *
             100.0 / bond.notional(settlement);
     }
 
@@ -115,7 +115,8 @@ namespace QuantLib {
                    " (maturity being " << bond.maturityDate() << ")");
 
         Real dirtyPrice = CashFlows::npv(bond.cashflows(), discountCurve,
-                              settlement, settlement) *
+                                         settlement, settlement,
+                                         false) *
             100.0 / bond.notional(settlement);
         return dirtyPrice - bond.accruedAmount(settlement);
     }
@@ -131,7 +132,8 @@ namespace QuantLib {
                    " (maturity being " << bond.maturityDate() << ")");
 
         return CashFlows::bps(bond.cashflows(), discountCurve,
-                              settlement, settlement) *
+                              settlement, settlement,
+                              false) *
             100.0 / bond.notional(settlement);
     }
 
@@ -147,7 +149,7 @@ namespace QuantLib {
 
         return CashFlows::atmRate(bond.cashflows(), discountCurve,
                                   settlement, settlement,
-                                  0,
+                                  false,
                                   dirtyPrice);
     }
 
@@ -161,7 +163,9 @@ namespace QuantLib {
                    "non tradable at " << settlement <<
                    " (maturity being " << bond.maturityDate() << ")");
 
-        Real dirtyPrice = CashFlows::npv(bond.cashflows(), yield, settlement) *
+        Real dirtyPrice = CashFlows::npv(bond.cashflows(), yield,
+                                         settlement, settlement,
+                                         false) *
             100.0 / bond.notional(settlement);
         return dirtyPrice - bond.accruedAmount(settlement);
     }
@@ -181,7 +185,15 @@ namespace QuantLib {
                             Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
-        return CashFlows::bps(bond.cashflows(), yield, settlement);
+
+        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
+                   "non tradable at " << settlement <<
+                   " (maturity being " << bond.maturityDate() << ")");
+
+        return CashFlows::bps(bond.cashflows(), yield,
+                              settlement, settlement,
+                              false) *
+            100.0 / bond.notional(settlement);
     }
 
     Real BondFunctions::bps(const Bond& bond,
@@ -214,10 +226,10 @@ namespace QuantLib {
         dirtyPrice /= 100.0 / bond.notional(settlement);
 
         return CashFlows::yield(bond.cashflows(), dirtyPrice,
-                              dayCounter, compounding, frequency,
-                              settlement,
-                              0,
-                              accuracy, maxIterations, guess);
+                                dayCounter, compounding, frequency,
+                                settlement, settlement,
+                                false,
+                                accuracy, maxIterations, guess);
     }
 
     Time BondFunctions::duration(const Bond& bond,
@@ -226,8 +238,15 @@ namespace QuantLib {
                                  Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
+
+        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
+                   "non tradable at " << settlement <<
+                   " (maturity being " << bond.maturityDate() << ")");
+
         return CashFlows::duration(bond.cashflows(), yield,
-                                   type, settlement);
+                                   type,
+                                   settlement, settlement,
+                                   false);
     }
 
     Time BondFunctions::duration(const Bond& bond,
@@ -246,8 +265,14 @@ namespace QuantLib {
                                   Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
+
+        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
+                   "non tradable at " << settlement <<
+                   " (maturity being " << bond.maturityDate() << ")");
+
         return CashFlows::convexity(bond.cashflows(), yield,
-                                    settlement);
+                                    settlement, settlement,
+                                    false);
     }
 
     Real BondFunctions::convexity(const Bond& bond,
@@ -265,8 +290,14 @@ namespace QuantLib {
                                         Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
+
+        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
+                   "non tradable at " << settlement <<
+                   " (maturity being " << bond.maturityDate() << ")");
+
         return CashFlows::basisPointValue(bond.cashflows(), yield,
-                                          settlement);
+                                          settlement, settlement,
+                                          false);
     }
 
     Real BondFunctions::basisPointValue(const Bond& bond,
@@ -277,7 +308,8 @@ namespace QuantLib {
                                         Date settlement) {
         InterestRate y(yield, dayCounter, compounding, frequency);
         return CashFlows::basisPointValue(bond.cashflows(), y,
-                                          settlement);
+                                          settlement, settlement,
+                                          false);
     }
 
     Real BondFunctions::yieldValueBasisPoint(const Bond& bond,
@@ -285,8 +317,14 @@ namespace QuantLib {
                                              Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
+
+        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
+                   "non tradable at " << settlement <<
+                   " (maturity being " << bond.maturityDate() << ")");
+
         return CashFlows::yieldValueBasisPoint(bond.cashflows(), yield,
-                                               settlement);
+                                               settlement, settlement,
+                                               false);
     }
 
     Real BondFunctions::yieldValueBasisPoint(const Bond& bond,
@@ -297,7 +335,8 @@ namespace QuantLib {
                                              Date settlement) {
         InterestRate y(yield, dayCounter, compounding, frequency);
         return CashFlows::yieldValueBasisPoint(bond.cashflows(), y,
-                                               settlement);
+                                               settlement, settlement,
+                                               false);
     }
 
     Real BondFunctions::cleanPrice(const Bond& bond,
@@ -316,7 +355,8 @@ namespace QuantLib {
 
         Real dirtyPrice = CashFlows::npv(bond.cashflows(), d,
                                          zSpread, dc, comp, freq,
-                                         settlement, settlement) *
+                                         settlement, settlement,
+                                         false) *
             100.0 / bond.notional(settlement);
         return dirtyPrice - bond.accruedAmount(settlement);
     }
@@ -345,7 +385,7 @@ namespace QuantLib {
                                   d,
                                   dayCounter, compounding, frequency,
                                   settlement, settlement,
-                                  0,
+                                  false,
                                   accuracy, maxIterations, guess);
     }
 
