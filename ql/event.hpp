@@ -44,20 +44,12 @@ namespace QuantLib {
         virtual Date date() const = 0;
 
         //! returns true if an event has already occurred before a date
-        /*! If QL_TODAYS_PAYMENTS is true, then a payment event has not
-            occurred if the input date is the same as the event date,
-            and so includeToday should be defaulted to true.
-
-            This should be the only place in the code that is affected
-            directly by QL_TODAYS_PAYMENTS
+        /*! If includeRefDate is true, then an event has not occurred if its
+            date is the same as the refDate, i.e. this method returns false if
+            the event date is the same as the refDate.
         */
         bool hasOccurred(const Date& refDate = Date(),
-                         #if defined(QL_TODAYS_PAYMENTS)
-                         bool includeToday = true
-                         #else
-                         bool includeToday = false
-                         #endif
-                         ) const;
+                         bool includeRefDate = true) const;
         //@}
 
         //! \name Visitability

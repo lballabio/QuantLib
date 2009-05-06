@@ -71,11 +71,6 @@ namespace QuantLib {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
 
-        #ifndef QL_TODAYS_PAYMENTS
-        if (settlementDate == Settings::instance().evaluationDate())
-            includeSettlementDateFlows = false;
-        #endif
-
         for (Size i=leg.size(); i>0; --i)
             if (!leg[i-1]->hasOccurred(settlementDate,
                                        includeSettlementDateFlows))
@@ -91,11 +86,6 @@ namespace QuantLib {
 
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
-
-        #ifndef QL_TODAYS_PAYMENTS
-        if (settlementDate == Settings::instance().evaluationDate())
-            includeSettlementDateFlows = false;
-        #endif
 
         if ( ! (*leg.begin())->hasOccurred(settlementDate,
                                            includeSettlementDateFlows) )
@@ -118,11 +108,6 @@ namespace QuantLib {
 
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
-
-        #ifndef QL_TODAYS_PAYMENTS
-        if (settlementDate == Settings::instance().evaluationDate())
-            includeSettlementDateFlows = false;
-        #endif
 
         Leg::const_iterator i;
         for (i = leg.begin(); i<leg.end(); ++i) {
@@ -280,11 +265,6 @@ namespace QuantLib {
         if (settlementDate == Date())
             settlementDate = discountCurve.referenceDate();
 
-        #ifndef QL_TODAYS_PAYMENTS
-        if (settlementDate == Settings::instance().evaluationDate())
-            includeSettlementDateFlows = false;
-        #endif
-
         Real totalNPV = 0.0;
         for (Size i=0; i<leg.size(); ++i) {
             if (!leg[i]->hasOccurred(settlementDate,
@@ -306,11 +286,6 @@ namespace QuantLib {
                         bool includeSettlementDateFlows) {
         if (settlementDate == Date())
             settlementDate = discountCurve.referenceDate();
-
-        #ifndef QL_TODAYS_PAYMENTS
-        if (settlementDate == Settings::instance().evaluationDate())
-            includeSettlementDateFlows = false;
-        #endif
 
         BPSCalculator calc(discountCurve, npvDate);
         for (Size i=0; i<leg.size(); ++i) {
@@ -359,11 +334,6 @@ namespace QuantLib {
             if (settlementDate == Date())
                 settlementDate = Settings::instance().evaluationDate();
 
-            #ifndef QL_TODAYS_PAYMENTS
-            if (settlementDate == Settings::instance().evaluationDate())
-                includeSettlementDateFlows = false;
-            #endif
-
             if (npvDate == Date())
                 npvDate = settlementDate;
 
@@ -393,11 +363,6 @@ namespace QuantLib {
                               bool includeSettlementDateFlows) {
             if (settlementDate == Date())
                 settlementDate = Settings::instance().evaluationDate();
-
-            #ifndef QL_TODAYS_PAYMENTS
-            if (settlementDate == Settings::instance().evaluationDate())
-                includeSettlementDateFlows = false;
-            #endif
 
             if (npvDate == Date())
                 npvDate = settlementDate;
@@ -475,11 +440,6 @@ namespace QuantLib {
               includeSettlementDateFlows_(includeSettlementDateFlows) {
                 if (settlementDate_ == Date())
                     settlementDate_ = Settings::instance().evaluationDate();
-
-                #ifndef QL_TODAYS_PAYMENTS
-                if (settlementDate_ == Settings::instance().evaluationDate())
-                    includeSettlementDateFlows_ = false;
-                #endif
 
                 if (npvDate_ == Date())
                     npvDate_ = settlementDate_;
@@ -562,11 +522,6 @@ namespace QuantLib {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
 
-        #ifndef QL_TODAYS_PAYMENTS
-        if (settlementDate == Settings::instance().evaluationDate())
-            includeSettlementDateFlows = false;
-        #endif
-
         Real npv = 0.0;
         DiscountFactor discount = 1.0;
         Date lastDate = Date();
@@ -627,11 +582,6 @@ namespace QuantLib {
                         bool includeSettlementDateFlows) {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
-
-        #ifndef QL_TODAYS_PAYMENTS
-        if (settlementDate == Settings::instance().evaluationDate())
-            includeSettlementDateFlows = false;
-        #endif
 
         FlatForward flatRate(settlementDate, yield.rate(), yield.dayCounter(),
                              yield.compounding(), yield.frequency());
@@ -721,11 +671,6 @@ namespace QuantLib {
                               bool includeSettlementDateFlows) {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
-
-        #ifndef QL_TODAYS_PAYMENTS
-        if (settlementDate == Settings::instance().evaluationDate())
-            includeSettlementDateFlows = false;
-        #endif
 
         if (npvDate == Date())
             npvDate = settlementDate;
@@ -880,11 +825,6 @@ namespace QuantLib {
                 if (settlementDate_ == Date())
                     settlementDate_ = Settings::instance().evaluationDate();
 
-                #ifndef QL_TODAYS_PAYMENTS
-                if (settlementDate_ == Settings::instance().evaluationDate())
-                    includeSettlementDateFlows_ = false;
-                #endif
-
                 if (npvDate_ == Date())
                     npvDate_ = settlementDate_;
             }
@@ -917,11 +857,6 @@ namespace QuantLib {
                         bool includeSettlementDateFlows) {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
-
-        #ifndef QL_TODAYS_PAYMENTS
-        if (settlementDate == Settings::instance().evaluationDate())
-            includeSettlementDateFlows = false;
-        #endif
 
         Handle<YieldTermStructure> discountCurveHandle(discountCurve);
         Handle<Quote> zSpreadQuoteHandle(shared_ptr<Quote>(new

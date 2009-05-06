@@ -26,6 +26,7 @@
 #define quantlib_cash_flow_hpp
 
 #include <ql/event.hpp>
+#include <ql/settings.hpp>
 #include <ql/math/comparison.hpp>
 #include <vector>
 
@@ -42,6 +43,12 @@ namespace QuantLib {
         //@{
         //! \note This is inherited from the event class
         virtual Date date() const = 0;
+        //! returns true if an event has already occurred before a date
+        /*! overloads Event::hasOccurred in order to take QL_TODAYS_PAYMENTS
+            in account
+        */
+        bool hasOccurred(const Date& refDate = Date(),
+                         bool includeRefDate = true) const;
         //@}
         //! \name CashFlow interface
         //@{
@@ -69,6 +76,15 @@ namespace QuantLib {
     };
 
     // inline definitions
+
+    inline bool CashFlow::hasOccurred(const Date& refDate,
+                                      bool includeRefDate) const {
+        #ifndef QL_TODAYS_PAYMENTS
+        if (refDate == Date() || refDate == Settings::instance().evaluationDate())
+            includeRefDate = false;
+        #endif
+        return Event::hasOccurred(refDate, includeRefDate);
+    }
 
     inline void CashFlow::accept(AcyclicVisitor& v) {
         Visitor<CashFlow>* v1 = dynamic_cast<Visitor<CashFlow>*>(&v);
