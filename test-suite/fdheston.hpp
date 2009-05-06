@@ -29,6 +29,7 @@ class FdHestonTest {
 public:
     static void testFdmHestonBarrier();
     static void testFdmHestonAmerican();
+    static void testFdmHestonIkonenToivanen();
     static void testFdmHestonEuropeanWithDividends();
     static void testFdmHestonConvergence();
     static boost::unit_test_framework::test_suite* suite();

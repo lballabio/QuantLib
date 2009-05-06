@@ -144,6 +144,55 @@ void FdHestonTest::testFdmHestonAmerican() {
 }
 
 
+void FdHestonTest::testFdmHestonIkonenToivanen() {
+
+    BOOST_MESSAGE("Testing FDM Heston for Ikonen and Toivanen tests...");
+
+    /* check prices of american puts as given in:
+       From Efficient numerical methods for pricing American options under 
+       stochastic volatility, Samuli Ikonen, Jari Toivanen, 
+       http://users.jyu.fi/~tene/papers/reportB12-05.pdf
+    */
+    SavedSettings backup;
+
+    Handle<YieldTermStructure> rTS(flatRate(0.10, Actual360()));
+    Handle<YieldTermStructure> qTS(flatRate(0.0 , Actual360()));
+
+    Settings::instance().evaluationDate() = Date(28, March, 2004);
+    Date exerciseDate(26, June, 2004);
+
+    boost::shared_ptr<Exercise> exercise(new AmericanExercise(exerciseDate));
+
+    boost::shared_ptr<StrikedTypePayoff> payoff(new
+                                      PlainVanillaPayoff(Option::Put, 10));
+
+    VanillaOption option(payoff, exercise);
+
+    Real strikes[]  = { 8, 9, 10, 11, 12 };
+    Real expected[] = { 2.00000, 1.10763, 0.520038, 0.213681, 0.082046 };
+    const Real tol = 0.001;
+    
+    for (Size i=0; i < LENGTH(strikes); ++i) {
+        Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(strikes[i])));
+        boost::shared_ptr<HestonProcess> hestonProcess(
+            new HestonProcess(rTS, qTS, s0, 0.0625, 5, 0.16, 0.9, 0.1));
+    
+        boost::shared_ptr<PricingEngine> engine(
+             new FdHestonVanillaEngine(boost::shared_ptr<HestonModel>(
+                                 new HestonModel(hestonProcess)), 100, 400));
+        option.setPricingEngine(engine);
+        
+        Real calculated = option.NPV();
+        if (std::fabs(calculated - expected[i]) > tol) {
+            BOOST_ERROR("Failed to reproduce expected npv"
+                        << "\n    strike:     " << strikes[i]
+                        << "\n    calculated: " << calculated
+                        << "\n    expected:   " << expected[i]
+                        << "\n    tolerance:  " << tol); 
+        }
+    }
+}
+
 void FdHestonTest::testFdmHestonEuropeanWithDividends() {
 
     BOOST_MESSAGE("Testing FDM with European Option with dividends"
@@ -162,7 +211,7 @@ void FdHestonTest::testFdmHestonEuropeanWithDividends() {
     Settings::instance().evaluationDate() = Date(28, March, 2004);
     Date exerciseDate(28, March, 2005);
 
-    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+    boost::shared_ptr<Exercise> exercise(new AmericanExercise(exerciseDate));
 
     boost::shared_ptr<StrikedTypePayoff> payoff(new
                                       PlainVanillaPayoff(Option::Put, 100));
@@ -178,10 +227,10 @@ void FdHestonTest::testFdmHestonEuropeanWithDividends() {
     
     const Real tol = 0.01;
     const Real gammaTol = 0.001;
-    const Real npvExpected   =  6.7506;
-    const Real deltaExpected = -0.3486;
-    const Real gammaExpected =  0.0232;
-
+    const Real npvExpected   =  7.34893;
+    const Real deltaExpected = -0.39587;
+    const Real gammaExpected =  0.02798;
+    
     if (std::fabs(option.NPV() - npvExpected) > tol) {
         BOOST_ERROR("Failed to reproduce expected npv"
                     << "\n    calculated: " << option.NPV()
@@ -298,6 +347,7 @@ test_suite* FdHestonTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBarrier));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonAmerican));
+    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonIkonenToivanen));
     suite->add(QUANTLIB_TEST_CASE(
                     &FdHestonTest::testFdmHestonEuropeanWithDividends));
 
