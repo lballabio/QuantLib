@@ -284,7 +284,8 @@ namespace QuantLib {
     }
 
     Rate CapFloor::atmRate(const YieldTermStructure& discountCurve) const {
-        return CashFlows::atmRate(floatingLeg_, discountCurve);
+        return CashFlows::atmRate(floatingLeg_, discountCurve,
+                                  false, discountCurve.referenceDate());
     }
 
     Volatility CapFloor::impliedVolatility(

@@ -111,7 +111,7 @@ namespace QuantLib {
               Real fixedLegCashBPS =
                   CashFlows::bps(fixedLeg,
                                  InterestRate(atmForward, dayCount, Compounded),
-                                 termStructure_->referenceDate()) ;
+                                 false, termStructure_->referenceDate()) ;
               annuity = std::fabs(fixedLegCashBPS/basisPoint);
               break;
           }

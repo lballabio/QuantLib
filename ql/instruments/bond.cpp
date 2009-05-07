@@ -99,7 +99,11 @@ namespace QuantLib {
     }
 
     bool Bond::isExpired() const {
+        // this is the Instrument interface, so it doesn't use
+        // BondFunctions, and includeSettlementDateFlows is true
+        // (unless QL_TODAY_PAYMENTS will set it to false later on)
         return CashFlows::isExpired(cashflows_,
+                                    true,
                                     Settings::instance().evaluationDate());
     }
 
@@ -240,15 +244,11 @@ namespace QuantLib {
     }
 
     Date Bond::nextCashFlowDate(Date settlement) const {
-        if (settlement == Date())
-            settlement = settlementDate();
-        return CashFlows::nextCashFlowDate(cashflows_, settlement);
+        return BondFunctions::nextCashFlowDate(*this, settlement);
     }
 
     Date Bond::previousCashFlowDate(Date settlement) const {
-        if (settlement == Date())
-            settlement = settlementDate();
-        return CashFlows::previousCashFlowDate(cashflows_, settlement);
+        return BondFunctions::previousCashFlowDate(*this, settlement);
     }
 
     void Bond::setupExpired() const {

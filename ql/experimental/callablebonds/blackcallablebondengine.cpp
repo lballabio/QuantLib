@@ -83,9 +83,7 @@ namespace QuantLib {
         // value of bond cash flows at option maturity
         Real fwdNpv = CashFlows::npv(fixedLeg,
                                      **discountCurve_,
-                                     exerciseDate,
-                                     exerciseDate,
-                                     0);
+                                     false, exerciseDate);
 
         DayCounter dayCounter = arguments_.paymentDayCounter;
         Frequency frequency = arguments_.frequency;
@@ -95,11 +93,11 @@ namespace QuantLib {
             frequency = Annual;
 
         Rate fwdYtm = CashFlows::yield(fixedLeg,
-                                     fwdNpv,
-                                     dayCounter,
-                                     Compounded,
-                                     frequency,
-                                     exerciseDate);
+                                       fwdNpv,
+                                       dayCounter,
+                                       Compounded,
+                                       frequency,
+                                       false, exerciseDate);
 
         InterestRate fwdRate(fwdYtm,
                              dayCounter,
@@ -109,7 +107,7 @@ namespace QuantLib {
         Time fwdDur = CashFlows::duration(fixedLeg,
                                           fwdRate,
                                           Duration::Modified,
-                                          exerciseDate);
+                                          false, exerciseDate);
 
         Real cashStrike = arguments_.callabilityPrices[0];
         dayCounter = volatility_->dayCounter();
@@ -140,11 +138,11 @@ namespace QuantLib {
 
         Real value = CashFlows::npv(fixedLeg,
                                     **discountCurve_,
-                                    settle,
-                                    settle);
+                                    false, settle);
 
         Real npv = CashFlows::npv(fixedLeg,
-                                  **discountCurve_);
+                                  **discountCurve_,
+                                  false, discountCurve_->referenceDate());
 
         Real fwdCashPrice = (value - spotIncome())/
                             discountCurve_->discount(exerciseDate);

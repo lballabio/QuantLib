@@ -20,6 +20,7 @@
 */
 
 #include <ql/termstructures/volatility/swaption/cmsmarket.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/instruments/makecms.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -121,8 +122,12 @@ namespace QuantLib {
             mktSpreads_[i][j] = (mktBidSpreads_[i][j]+mktAskSpreads_[i][j])/2;
 
             const Leg& spotFloatLeg = spotSwaps_[i][j]->leg(1);
-            spotFloatLegNPV_[i][j] = CashFlows::npv(spotFloatLeg, **discTS_);
-            spotFloatLegBPS_[i][j] = CashFlows::bps(spotFloatLeg, **discTS_);
+            spotFloatLegNPV_[i][j] = CashFlows::npv(spotFloatLeg,
+                                                    **discTS_,
+                                                    false, discTS_->referenceDate());
+            spotFloatLegBPS_[i][j] = CashFlows::bps(spotFloatLeg,
+                                                    **discTS_,
+                                                    false, discTS_->referenceDate());
 
             // imply the spot CMS leg NPV from the spot ibor floating leg NPV
             mktSpotCmsLegNPV_[i][j] = -(spotFloatLegNPV_[i][j] +

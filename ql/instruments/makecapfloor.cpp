@@ -53,7 +53,8 @@ namespace QuantLib {
         if (strike_ == Null<Rate>()) {
             // ATM on the forecasting curve
             Handle<YieldTermStructure> fc = swap.iborIndex()->termStructure();
-            strikeVector[0] = CashFlows::atmRate(leg, **fc);
+            strikeVector[0] = CashFlows::atmRate(leg,**fc,
+                                                 false, fc->referenceDate());
         }
 
         boost::shared_ptr<CapFloor> capFloor(new

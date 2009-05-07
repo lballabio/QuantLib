@@ -43,15 +43,11 @@ namespace QuantLib {
             results_.legNPV[i] =
                 arguments_.payer[i] * CashFlows::npv(arguments_.legs[i],
                                                      **discountCurve_,
-                                                     results_.valuationDate,
-                                                     results_.valuationDate,
-                                                     true);
+                                                     true, results_.valuationDate);
             results_.legBPS[i] =
                 arguments_.payer[i] * CashFlows::bps(arguments_.legs[i],
                                                      **discountCurve_,
-                                                     results_.valuationDate,
-                                                     results_.valuationDate,
-                                                     true);
+                                                     true, results_.valuationDate);
             results_.value += results_.legNPV[i];
             try {
                 Date d = CashFlows::startDate(arguments_.legs[i]);

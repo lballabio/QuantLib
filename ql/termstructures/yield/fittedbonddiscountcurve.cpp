@@ -182,8 +182,9 @@ namespace QuantLib {
                            bond->frequency());
 
             Date settlement = bond->settlementDate(today);
-            Time duration =
-                CashFlows::duration(leg, r, Duration::Modified, settlement);
+            Time duration = CashFlows::duration(leg, r,
+                                                Duration::Modified,
+                                                false, settlement);
             tempWeights[k] = 1.0/duration;
             squaredSum += tempWeights[k]*tempWeights[k];
         }

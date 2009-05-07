@@ -48,8 +48,8 @@ namespace QuantLib {
         static Date startDate(const Leg& leg);
         static Date maturityDate(const Leg& leg);
         static bool isExpired(const Leg& leg,
-                              Date settlementDate = Date(),
-                              bool includeSettlementDateFlows = true);
+                              bool includeSettlementDateFlows,
+                              Date settlementDate = Date());
         //@}
 
         //! \name CashFlow functions
@@ -57,45 +57,45 @@ namespace QuantLib {
         //! the last cashflow paying before or at the given date
         static Leg::const_iterator
         previousCashFlow(const Leg& leg,
-                         Date settlementDate = Date(),
-                         bool includeSettlementDateFlows = true);
+                         bool includeSettlementDateFlows,
+                         Date settlementDate = Date());
         //! the first cashflow paying after the given date
         static Leg::const_iterator
         nextCashFlow(const Leg& leg,
-                     Date settlementDate = Date(),
-                     bool includeSettlementDateFlows = true);
+                     bool includeSettlementDateFlows,
+                     Date settlementDate = Date());
         static Date
         previousCashFlowDate(const Leg& leg,
-                             Date settlementDate = Date(),
-                             bool includeSettlementDateFlows = true);
+                             bool includeSettlementDateFlows,
+                             Date settlementDate = Date());
         static Date
         nextCashFlowDate(const Leg& leg,
-                         Date settlementDate = Date(),
-                         bool includeSettlementDateFlows = true);
+                         bool includeSettlementDateFlows,
+                         Date settlementDate = Date());
         static Real
         previousCashFlowAmount(const Leg& leg,
-                               Date settlementDate = Date(),
-                               bool includeSettlementDateFlows = true);
+                               bool includeSettlementDateFlows,
+                               Date settlementDate = Date());
         static Real
         nextCashFlowAmount(const Leg& leg,
-                           Date settlementDate = Date(),
-                           bool includeSettlementDateFlows = true);
+                           bool includeSettlementDateFlows,
+                           Date settlementDate = Date());
         //@}
 
         //! \name Coupon inspectors
         //@{
         static Rate
         previousCouponRate(const Leg& leg,
-                           Date settlementDate = Date(),
-                           bool includeSettlementDateFlows = true);
+                           bool includeSettlementDateFlows,
+                           Date settlementDate = Date());
         static Rate
         nextCouponRate(const Leg& leg,
-                       Date settlementDate = Date(),
-                       bool includeSettlementDateFlows = true);
+                       bool includeSettlementDateFlows,
+                       Date settlementDate = Date());
         static Real
         accruedAmount(const Leg& leg,
-                      Date settlementDate = Date(),
-                      bool includeSettlementDateFlows = true);
+                      bool includeSettlementDateFlows,
+                      Date settlementDate = Date());
         //@}
 
         //! \name YieldTermStructure functions
@@ -106,9 +106,9 @@ namespace QuantLib {
         */
         static Real npv(const Leg& leg,
                         const YieldTermStructure& discountCurve,
+                        bool includeSettlementDateFlows,
                         Date settlementDate = Date(),
-                        Date npvDate = Date(),
-                        bool includeSettlementDateFlows = true);
+                        Date npvDate = Date());
         //! Basis-point sensitivity of the cash flows.
         /*! The result is the change in NPV due to a uniform
             1-basis-point change in the rate paid by the cash
@@ -117,9 +117,9 @@ namespace QuantLib {
         */
         static Real bps(const Leg& leg,
                         const YieldTermStructure& discountCurve,
+                        bool includeSettlementDateFlows,
                         Date settlementDate = Date(),
-                        Date npvDate = Date(),
-                        bool includeSettlementDateFlows = true);
+                        Date npvDate = Date());
         //! At-the-money rate of the cash flows.
         /*! The result is the fixed rate for which a fixed rate cash flow
             vector, equivalent to the input vector, has the required NPV
@@ -128,9 +128,9 @@ namespace QuantLib {
         */
         static Rate atmRate(const Leg& leg,
                             const YieldTermStructure& discountCurve,
+                            bool includeSettlementDateFlows,
                             Date settlementDate = Date(),
                             Date npvDate = Date(),
-                            bool includeSettlementDateFlows = true,
                             Real npv = Null<Real>());
         //@}
 
@@ -147,17 +147,17 @@ namespace QuantLib {
         */
         static Real npv(const Leg& leg,
                         const InterestRate& yield,
+                        bool includeSettlementDateFlows,
                         Date settlementDate = Date(),
-                        Date npvDate = Date(),
-                        bool includeSettlementDateFlows = true);
+                        Date npvDate = Date());
         static Real npv(const Leg& leg,
                         Rate yield,
                         const DayCounter& dayCounter,
                         Compounding compounding,
                         Frequency frequency,
+                        bool includeSettlementDateFlows,
                         Date settlementDate = Date(),
-                        Date npvDate = Date(),
-                        bool includeSettlementDateFlows = true);
+                        Date npvDate = Date());
         //! Basis-point sensitivity of the cash flows.
         /*! The result is the change in NPV due to a uniform
             1-basis-point change in the rate paid by the cash
@@ -168,17 +168,17 @@ namespace QuantLib {
         */
         static Real bps(const Leg& leg,
                         const InterestRate& yield,
+                        bool includeSettlementDateFlows,
                         Date settlementDate = Date(),
-                        Date npvDate = Date(),
-                        bool includeSettlementDateFlows = true);
+                        Date npvDate = Date());
         static Real bps(const Leg& leg,
                         Rate yield,
                         const DayCounter& dayCounter,
                         Compounding compounding,
                         Frequency frequency,
+                        bool includeSettlementDateFlows,
                         Date settlementDate = Date(),
-                        Date npvDate = Date(),
-                        bool includeSettlementDateFlows = true);
+                        Date npvDate = Date());
         //! Implied internal rate of return.
         /*! The function verifies
             the theoretical existance of an IRR and numerically
@@ -189,9 +189,9 @@ namespace QuantLib {
                           const DayCounter& dayCounter,
                           Compounding compounding,
                           Frequency frequency,
+                          bool includeSettlementDateFlows,
                           Date settlementDate = Date(),
                           Date npvDate = Date(),
-                          bool includeSettlementDateFlows = true,
                           Real accuracy = 1.0e-10,
                           Size maxIterations = 100,
                           Rate guess = 0.05);
@@ -222,19 +222,19 @@ namespace QuantLib {
         */
         static Time duration(const Leg& leg,
                              const InterestRate& yield,
-                             Duration::Type type = Duration::Modified,
+                             Duration::Type type,
+                             bool includeSettlementDateFlows,
                              Date settlementDate = Date(),
-                             Date npvDate = Date(),
-                             bool includeSettlementDateFlows = true);
+                             Date npvDate = Date());
         static Time duration(const Leg& leg,
                              Rate yield,
                              const DayCounter& dayCounter,
                              Compounding compounding,
                              Frequency frequency,
-                             Duration::Type type = Duration::Modified,
+                             Duration::Type type,
+                             bool includeSettlementDateFlows,
                              Date settlementDate = Date(),
-                             Date npvDate = Date(),
-                             bool includeSettlementDateFlows = true);
+                             Date npvDate = Date());
 
         //! Cash-flow convexity
         /*! The convexity of a string of cash flows is defined as
@@ -246,17 +246,17 @@ namespace QuantLib {
         */
         static Real convexity(const Leg& leg,
                               const InterestRate& yield,
+                              bool includeSettlementDateFlows,
                               Date settlementDate = Date(),
-                              Date npvDate = Date(),
-                              bool includeSettlementDateFlows = true);
+                              Date npvDate = Date());
         static Real convexity(const Leg& leg,
                               Rate yield,
                               const DayCounter& dayCounter,
                               Compounding compounding,
                               Frequency frequency,
+                              bool includeSettlementDateFlows,
                               Date settlementDate = Date(),
-                              Date npvDate = Date(),
-                              bool includeSettlementDateFlows = true);
+                              Date npvDate = Date());
 
         //! Basis-point value
         /*! Obtained by setting dy = 0.0001 in the 2nd-order Taylor
@@ -264,17 +264,17 @@ namespace QuantLib {
         */
         static Real basisPointValue(const Leg& leg,
                                     const InterestRate& yield,
+                                    bool includeSettlementDateFlows,
                                     Date settlementDate = Date(),
-                                    Date npvDate = Date(),
-                                    bool includeSettlementDateFlows = true);
+                                    Date npvDate = Date());
         static Real basisPointValue(const Leg& leg,
                                     Rate yield,
                                     const DayCounter& dayCounter,
                                     Compounding compounding,
                                     Frequency frequency,
+                                    bool includeSettlementDateFlows,
                                     Date settlementDate = Date(),
-                                    Date npvDate = Date(),
-                                    bool includeSettlementDateFlows = true);
+                                    Date npvDate = Date());
 
         //! Yield value of a basis point
         /*! The yield value of a one basis point change in price is
@@ -283,17 +283,17 @@ namespace QuantLib {
         */
         static Real yieldValueBasisPoint(const Leg& leg,
                                          const InterestRate& yield,
+                                         bool includeSettlementDateFlows,
                                          Date settlementDate = Date(),
-                                         Date npvDate = Date(),
-                                         bool includeSettlementDateFlows = true);
+                                         Date npvDate = Date());
         static Real yieldValueBasisPoint(const Leg& leg,
                                          Rate yield,
                                          const DayCounter& dayCounter,
                                          Compounding compounding,
                                          Frequency frequency,
+                                         bool includeSettlementDateFlows,
                                          Date settlementDate = Date(),
-                                         Date npvDate = Date(),
-                                         bool includeSettlementDateFlows = true);
+                                         Date npvDate = Date());
         //@}
 
         //! \name Z-spread functions
@@ -314,19 +314,19 @@ namespace QuantLib {
                         const DayCounter& dayCounter,
                         Compounding compounding,
                         Frequency frequency,
+                        bool includeSettlementDateFlows,
                         Date settlementDate = Date(),
-                        Date npvDate = Date(),
-                        bool includeSettlementDateFlows = true);
+                        Date npvDate = Date());
         //! implied Z-spread.
         static Spread zSpread(const Leg& leg,
-                              Real npv,
                               const boost::shared_ptr<YieldTermStructure>&,
+                              Real npv,
                               const DayCounter& dayCounter,
                               Compounding compounding,
                               Frequency frequency,
+                              bool includeSettlementDateFlows,
                               Date settlementDate = Date(),
                               Date npvDate = Date(),
-                              bool includeSettlementDateFlows = true,
                               Real accuracy = 1.0e-10,
                               Size maxIterations = 100,
                               Rate guess = 0.0);
