@@ -518,7 +518,9 @@ int main(int, char* []) {
                            bondDayCount,
                            Compounded,
                            frequency);
-            Time dur = CashFlows::duration(leg, r, Duration::Modified, today);
+            Time dur = CashFlows::duration(leg, r,
+                                           Duration::Modified,
+                                           false, today);
 
             const Real BpsChange = 5.;
             // dP = -dur*P * dY
