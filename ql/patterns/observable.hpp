@@ -113,10 +113,11 @@ namespace QuantLib {
 
     inline void Observable::notifyObservers() {
         bool successful = true;
+        std::string errMsg;
         for (iterator i=observers_.begin(); i!=observers_.end(); ++i) {
             try {
                 (*i)->update();
-            } catch (...) {
+            } catch (std::exception& e) {
                 // quite a dilemma. If we don't catch the exception,
                 // other observers will not receive the notification
                 // and might be left in an incorrect state. If we do
@@ -125,9 +126,13 @@ namespace QuantLib {
                 // and notify all observers, while raising an
                 // exception if something bad happened.
                 successful = false;
+                errMsg = e.what();
+            } catch (...) {
+                successful = false;
             }
         }
-        QL_ENSURE(successful, "could not notify one or more observers");
+        QL_ENSURE(successful,
+                  "could not notify one or more observers: " << errMsg);
     }
 
 
