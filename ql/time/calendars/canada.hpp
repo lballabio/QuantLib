@@ -30,14 +30,15 @@
 namespace QuantLib {
 
     //! Canadian calendar
-    /*! Banking holidays:
+    /*! Banking holidays
+        (data from <http://www.bankofcanada.ca/en/about/holiday.html>):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
         <li>New Year's Day, January 1st (possibly moved to Monday)</li>
         <li>Family Day, third Monday of February (since 2008)</li>
         <li>Good Friday</li>
-        <li>Victoria Day, The Monday on or preceding 24 May</li>
+        <li>Victoria Day, the Monday on or preceding May 24th</li>
         <li>Canada Day, July 1st (possibly moved to Monday)</li>
         <li>Provincial Holiday, first Monday of August</li>
         <li>Labour Day, first Monday of September</li>
@@ -48,14 +49,15 @@ namespace QuantLib {
             Tuesday)</li>
         </ul>
 
-        Holidays for the Toronto stock exchange (TSX):
+        Holidays for the Toronto stock exchange
+        (data from <http://www.tsx.com/en/about_tsx/market_hours.html>):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
         <li>New Year's Day, January 1st (possibly moved to Monday)</li>
         <li>Family Day, third Monday of February (since 2008)</li>
         <li>Good Friday</li>
-        <li>Victoria Day, The Monday on or preceding 24 May</li>
+        <li>Victoria Day, the Monday on or preceding May 24th</li>
         <li>Canada Day, July 1st (possibly moved to Monday)</li>
         <li>Provincial Holiday, first Monday of August</li>
         <li>Labour Day, first Monday of September</li>

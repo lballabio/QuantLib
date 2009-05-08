@@ -74,7 +74,10 @@ namespace QuantLib {
             // Holiday for a Nation
             || (d == 4  && m == May)
             // Children's Day
-            || ((d == 5  || (d == 6 && w == Monday)) && m == May)
+            || (d == 5  && m == May)
+            // any of the three above observed later if on Saturday or Sunday
+            || ((d == 6 || d == 7) && m == May
+                && (w == Monday || w == Tuesday || w == Wednesday))
             // Marine Day (3rd Monday in July),
             // was July 20th until 2003, not a holiday before 1996
             || (w == Monday && (d >= 15 && d <= 21) && m == July

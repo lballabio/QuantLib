@@ -69,6 +69,8 @@ namespace QuantLib {
             // Day of Goodwill (possibly moved to Monday)
             || ((d == 26 || (d == 27 && w == Monday))
                 && m == December)
+            // one-shot: Election day 2009
+            || (d == 22 && m == April && y == 2009)
             )
             return false;
         return true;

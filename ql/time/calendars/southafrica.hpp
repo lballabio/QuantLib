@@ -45,8 +45,9 @@ namespace QuantLib {
         <li>Heritage Day, September 24th (possibly moved to Monday)</li>
         <li>Day of Reconciliation, December 16th
         (possibly moved to Monday)</li>
-        <li>Christmas December 25th </li>
-        <li>Day of Goodwill December 26th (possibly moved to Monday)</li>
+        <li>Christmas, December 25th </li>
+        <li>Day of Goodwill, December 26th (possibly moved to Monday)</li>
+        <li>Election Day, April 22nd 2009</li>
         </ul>
 
         \ingroup calendars
