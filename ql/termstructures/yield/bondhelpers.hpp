@@ -35,7 +35,7 @@ namespace QuantLib {
     /*! \warning This class assumes that the reference date
                  does not change between calls of setTermStructure().
     */
-    class BondHelper : public RelativeDateRateHelper {
+    class BondHelper : public RateHelper {
       public:
         /*! \warning Setting a pricing engine to the passed bond from
                      external code will cause the bootstrap to fail or
@@ -45,7 +45,7 @@ namespace QuantLib {
         */
         BondHelper(const Handle<Quote>& cleanPrice,
                    const boost::shared_ptr<Bond>& bond);
-        //! \name BootstrapHelper interface
+        //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
         void setTermStructure(YieldTermStructure*);
@@ -61,8 +61,6 @@ namespace QuantLib {
       protected:
         boost::shared_ptr<Bond> bond_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
-      private:
-        void initializeDates();
         bool isTradable_;
     };
 

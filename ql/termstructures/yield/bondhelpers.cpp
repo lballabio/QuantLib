@@ -32,11 +32,10 @@ namespace QuantLib {
 
     BondHelper::BondHelper(const Handle<Quote>& cleanPrice,
                            const boost::shared_ptr<Bond>& bond)
-    : RelativeDateRateHelper(cleanPrice), bond_(bond),
-      isTradable_(false) {
+    : RateHelper(cleanPrice), bond_(bond) {
 
         latestDate_ = bond_->maturityDate();
-        initializeDates();
+        earliestDate_ = bond_->nextCashFlowDate();
 
         boost::shared_ptr<PricingEngine> bondEngine(new
             DiscountingBondEngine(termStructureHandle_));
@@ -71,16 +70,6 @@ namespace QuantLib {
             v1->visit(*this);
         else
             BootstrapHelper<YieldTermStructure>::accept(v);
-    }
-
-    void BondHelper::initializeDates() {
-        if (bond_->isTradable()) {
-            earliestDate_ = bond_->nextCashFlowDate();
-            isTradable_ = true;
-        } else {
-            earliestDate_ = Date();
-            isTradable_ = false;
-        }
     }
 
     FixedRateBondHelper::FixedRateBondHelper(
