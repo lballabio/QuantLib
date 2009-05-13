@@ -107,7 +107,7 @@ void FdHestonTest::testFdmHestonAmerican() {
     Settings::instance().evaluationDate() = Date(28, March, 2004);
     Date exerciseDate(28, March, 2005);
 
-    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+    boost::shared_ptr<Exercise> exercise(new AmericanExercise(exerciseDate));
 
     boost::shared_ptr<StrikedTypePayoff> payoff(new
                                       PlainVanillaPayoff(Option::Put, 100));
@@ -119,9 +119,9 @@ void FdHestonTest::testFdmHestonAmerican() {
     option.setPricingEngine(engine);
     
     const Real tol = 0.01;
-    const Real npvExpected   =  5.1138;
-    const Real deltaExpected = -0.2514;
-    const Real gammaExpected =  0.0161;
+    const Real npvExpected   =  5.6335;
+    const Real deltaExpected = -0.2986;
+    const Real gammaExpected =  0.0219;
 
     if (std::fabs(option.NPV() - npvExpected) > tol) {
         BOOST_ERROR("Failed to reproduce expected npv"
