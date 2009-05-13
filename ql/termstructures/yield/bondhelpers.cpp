@@ -32,7 +32,8 @@ namespace QuantLib {
 
     BondHelper::BondHelper(const Handle<Quote>& cleanPrice,
                            const boost::shared_ptr<Bond>& bond)
-    : RelativeDateRateHelper(cleanPrice), bond_(bond) {
+    : RelativeDateRateHelper(cleanPrice), bond_(bond),
+      isTradable_(false) {
 
         latestDate_ = bond_->maturityDate();
         initializeDates();
@@ -57,6 +58,7 @@ namespace QuantLib {
 
     Real BondHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
+        QL_REQUIRE(isTradable_, "bond not tradable");
         // we didn't register as observers - force calculation
         bond_->recalculate();
         return bond_->cleanPrice();
@@ -72,7 +74,13 @@ namespace QuantLib {
     }
 
     void BondHelper::initializeDates() {
-        earliestDate_ = bond_->nextCashFlowDate();
+        if (bond_->isTradable()) {
+            earliestDate_ = bond_->nextCashFlowDate();
+            isTradable_ = true;
+        } else {
+            earliestDate_ = Date();
+            isTradable_ = false;
+        }
     }
 
     FixedRateBondHelper::FixedRateBondHelper(

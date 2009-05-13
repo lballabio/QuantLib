@@ -1,9 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2005 Toyin Akin
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007, 2009 StatPro Italia srl
+ Copyright (C) 2008 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -63,6 +63,7 @@ namespace QuantLib {
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
       private:
         void initializeDates();
+        bool isTradable_;
     };
 
     class FixedRateBondHelper : public BondHelper {
