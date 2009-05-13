@@ -39,6 +39,8 @@ namespace QuantLib {
     class Quote;
 
     typedef BootstrapHelper<YieldTermStructure> RateHelper;
+    typedef RelativeDateBootstrapHelper<YieldTermStructure>
+                                                        RelativeDateRateHelper;
 
     //! Rate helper for bootstrapping over IborIndex futures prices
     class FuturesRateHelper : public RateHelper {
@@ -82,23 +84,6 @@ namespace QuantLib {
       private:
         Time yearFraction_;
         Handle<Quote> convAdj_;
-    };
-
-    //! Rate helper with date schedule relative to the global evaluation date
-    /*! This class takes care of rebuilding the date schedule when the global
-        evaluation date changes
-    */
-    class RelativeDateRateHelper : public RateHelper {
-      public:
-        RelativeDateRateHelper(const Handle<Quote>& quote);
-        RelativeDateRateHelper(Real quote);
-        //! \name Observer interface
-        //@{
-        void update();
-        //@}
-      protected:
-        virtual void initializeDates() = 0;
-        Date evaluationDate_;
     };
 
 

@@ -42,7 +42,7 @@ namespace QuantLib {
         contains an instance of the actual instrument class to ensure
         consistancy between the algorithms used during bootstrapping
         and later instrument pricing. This is not yet fully enforced
-        in the available rate helpers.
+        in the available bootstrap helpers.
     */
     template <class TS>
     class BootstrapHelper : public Observer, public Observable {
@@ -93,6 +93,31 @@ namespace QuantLib {
         Date earliestDate_, latestDate_;
     };
 
+    //! Bootstrap helper with date schedule relative to global evaluation date
+    /*! Derived classes must takes care of rebuilding the date schedule when
+        the global evaluation date changes
+    */
+    template <class TS>
+    class RelativeDateBootstrapHelper : public BootstrapHelper<TS> {
+      public:
+        RelativeDateBootstrapHelper(const Handle<Quote>& quote);
+        RelativeDateBootstrapHelper(Real quote);
+        //! \name Observer interface
+        //@{
+        void update() {
+            if (evaluationDate_ != Settings::instance().evaluationDate()) {
+                evaluationDate_ = Settings::instance().evaluationDate();
+                initializeDates();
+            }
+            BootstrapHelper<TS>::update();
+        }
+        //@}
+      protected:
+        virtual void initializeDates() = 0;
+        Date evaluationDate_;
+    };
+
+    // template definitions
 
     template <class TS>
     BootstrapHelper<TS>::BootstrapHelper(const Handle<Quote>& quote)
@@ -134,6 +159,21 @@ namespace QuantLib {
             v1->visit(*this);
         else
             QL_FAIL("not a bootstrap-helper visitor");
+    }
+
+    template <class TS>
+    RelativeDateBootstrapHelper<TS>::RelativeDateBootstrapHelper(
+                                                    const Handle<Quote>& quote)
+    : BootstrapHelper<TS>(quote) {
+        this->registerWith(Settings::instance().evaluationDate());
+        evaluationDate_ = Settings::instance().evaluationDate();
+    }
+
+    template <class TS>
+    RelativeDateBootstrapHelper<TS>::RelativeDateBootstrapHelper(Real quote)
+    : BootstrapHelper<TS>(quote) {
+        this->registerWith(Settings::instance().evaluationDate());
+        evaluationDate_ = Settings::instance().evaluationDate();
     }
 
     namespace detail {

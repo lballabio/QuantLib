@@ -132,28 +132,6 @@ namespace QuantLib {
             RateHelper::accept(v);
     }
 
-
-    RelativeDateRateHelper::RelativeDateRateHelper(const Handle<Quote>& quote)
-    : RateHelper(quote) {
-        registerWith(Settings::instance().evaluationDate());
-        evaluationDate_ = Settings::instance().evaluationDate();
-    }
-
-    RelativeDateRateHelper::RelativeDateRateHelper(Real quote)
-    : RateHelper(quote) {
-        registerWith(Settings::instance().evaluationDate());
-        evaluationDate_ = Settings::instance().evaluationDate();
-    }
-
-    void RelativeDateRateHelper::update() {
-        if (evaluationDate_ != Settings::instance().evaluationDate()) {
-            evaluationDate_ = Settings::instance().evaluationDate();
-            initializeDates();
-        }
-        RateHelper::update();
-    }
-
-
     DepositRateHelper::DepositRateHelper(const Handle<Quote>& rate,
                                          const Period& tenor,
                                          Natural fixingDays,
