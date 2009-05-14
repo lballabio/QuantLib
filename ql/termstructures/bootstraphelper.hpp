@@ -31,6 +31,7 @@
 #include <ql/patterns/observable.hpp>
 #include <ql/patterns/visitor.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/settings.hpp>
 
 namespace QuantLib {
 
