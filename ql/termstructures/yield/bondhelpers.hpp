@@ -61,7 +61,6 @@ namespace QuantLib {
       protected:
         boost::shared_ptr<Bond> bond_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
-        bool isTradable_;
     };
 
     class FixedRateBondHelper : public BondHelper {

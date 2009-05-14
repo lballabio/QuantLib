@@ -57,7 +57,6 @@ namespace QuantLib {
 
     Real BondHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
-        QL_REQUIRE(isTradable_, "bond not tradable");
         // we didn't register as observers - force calculation
         bond_->recalculate();
         return bond_->cleanPrice();
