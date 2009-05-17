@@ -73,7 +73,6 @@ namespace QuantLib {
         std::vector<Time> dividendTimes;
         std::vector<Real> dividends;
         if(!arguments_.cashFlow.empty()) {
-            Date todaysDate = Date::todaysDate();
             DayCounter dayCounter = ActualActual();
             for (DividendSchedule::const_iterator iter
                                 = arguments_.cashFlow.begin();
