@@ -32,6 +32,7 @@ public:
     static void testFdmHestonIkonenToivanen();
     static void testFdmHestonEuropeanWithDividends();
     static void testFdmHestonConvergence();
+    static void testFdmHestonBlackScholes();
     static boost::unit_test_framework::test_suite* suite();
 };
 

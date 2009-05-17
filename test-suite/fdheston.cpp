@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
-  Copyright (C) 2008 Klaus Spanderen
+  Copyright (C) 2008, 2009 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,6 +29,7 @@
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/experimental/finitedifferences/fdhestonbarrierengine.hpp>
 #include <ql/experimental/finitedifferences/fdhestonvanillaengine.hpp>
 
@@ -193,6 +194,62 @@ void FdHestonTest::testFdmHestonIkonenToivanen() {
     }
 }
 
+void FdHestonTest::testFdmHestonBlackScholes() {
+
+    BOOST_MESSAGE("Testing FDM Heston with Black Scholes model...");
+
+    SavedSettings backup;
+
+
+    Settings::instance().evaluationDate() = Date(28, March, 2004);
+    Date exerciseDate(26, June, 2004);
+
+    Handle<YieldTermStructure> rTS(flatRate(0.10, Actual360()));
+    Handle<YieldTermStructure> qTS(flatRate(0.0 , Actual360()));
+    Handle<BlackVolTermStructure> volTS(
+                    flatVol(rTS->referenceDate(), 0.25, rTS->dayCounter()));
+    
+    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+
+    boost::shared_ptr<StrikedTypePayoff> payoff(new
+                                      PlainVanillaPayoff(Option::Put, 10));
+
+    VanillaOption option(payoff, exercise);
+
+    Real strikes[]  = { 8, 9, 10, 11, 12 };
+    const Real tol = 0.0001;
+    
+    for (Size i=0; i < LENGTH(strikes); ++i) {
+        Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(strikes[i])));
+
+        boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
+                       new GeneralizedBlackScholesProcess(s0, qTS, rTS, volTS));
+
+        option.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                        new AnalyticEuropeanEngine(bsProcess)));
+        
+        const Real expected = option.NPV();
+        
+        boost::shared_ptr<HestonProcess> hestonProcess(
+            new HestonProcess(rTS, qTS, s0, 0.0625, 1, 0.0625, 0.0001, 0.0));
+    
+        option.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                new FdHestonVanillaEngine(boost::shared_ptr<HestonModel>(
+                                  new HestonModel(hestonProcess)), 100, 400)));
+        
+        Real calculated = option.NPV();
+        if (std::fabs(calculated - expected) > tol) {
+            BOOST_ERROR("Failed to reproduce expected npv"
+                        << "\n    strike:     " << strikes[i]
+                        << "\n    calculated: " << calculated
+                        << "\n    expected:   " << expected
+                        << "\n    tolerance:  " << tol); 
+        }
+    }
+}
+
+
+
 void FdHestonTest::testFdmHestonEuropeanWithDividends() {
 
     BOOST_MESSAGE("Testing FDM with European Option with dividends"
@@ -348,6 +405,7 @@ test_suite* FdHestonTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBarrier));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonAmerican));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonIkonenToivanen));
+    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBlackScholes));
     suite->add(QUANTLIB_TEST_CASE(
                     &FdHestonTest::testFdmHestonEuropeanWithDividends));
 
