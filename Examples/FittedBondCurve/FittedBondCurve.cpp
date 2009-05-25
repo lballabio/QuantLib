@@ -75,7 +75,7 @@ int main(int, char* []) {
         const Size numberOfBonds = 15;
         Real cleanPrice[numberOfBonds];
 
-        for (Size i=0; i<=numberOfBonds; i++) {
+        for (Size i=0; i<numberOfBonds; i++) {
             cleanPrice[i]=100.0;
         }
 
