@@ -56,6 +56,9 @@ namespace QuantLib {
 
         std::vector<Size> indicies_;
     };
+    
+    typedef std::vector<boost::shared_ptr<FdmDirichletBoundary> >
+        FdmBoundaryConditionSet;
 }
 
 #endif

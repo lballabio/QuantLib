@@ -37,18 +37,16 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/methods/montecarlo/multipathgenerator.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
-
 #include <ql/models/equity/hestonmodelhelper.hpp>
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
-
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/mchestonhullwhiteengine.hpp>
 #include <ql/pricingengines/vanilla/analyticbsmhullwhiteengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonhullwhiteengine.hpp>
+#include <ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.hpp>
 
 #include <boost/bind.hpp>
-#include <boost/timer.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -874,11 +872,77 @@ void HybridHestonHullWhiteProcessTest::testDiscretizationError() {
     }
 }
 
+void HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine() {
+    BOOST_MESSAGE("Testing the FDM Heston Hull-White engine...");
 
+    SavedSettings backup;
+
+    const Date today = Date(28, March, 2004);
+    Settings::instance().evaluationDate() = today;
+    const Date exerciseDate = Date(28, March, 2012);
+    DayCounter dc = Actual365Fixed();
+    
+    const Time maturity = dc.yearFraction(today, exerciseDate);
+
+    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
+
+    const Handle<YieldTermStructure> rTS(flatRate(0.05, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(0.02, dc));
+
+    const Volatility vol = 0.30;
+    const Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
+
+    const Real v0 = vol*vol;
+    boost::shared_ptr<HestonProcess> hestonProcess(
+        new HestonProcess(rTS, qTS, s0, v0, 1.0, v0, 0.00001, 0.0));
+
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
+                      new BlackScholesMertonProcess(s0, qTS, rTS, volTS));
+
+    boost::shared_ptr<HullWhiteProcess> hwProcess(
+                              new HullWhiteProcess(rTS, 0.00883, 0.01));
+    boost::shared_ptr<HullWhite> hwModel(
+                    new HullWhite(rTS, hwProcess->a(), hwProcess->sigma()));
+    
+    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+    const Real corr[] = {-0.85, 0.5 };
+    const Real strike[] = { 75, 120, 160 };
+
+    for (Size i=0; i < LENGTH(corr); ++i) {
+        for (Size j=0; j < LENGTH(strike); ++j) {
+            boost::shared_ptr<StrikedTypePayoff> payoff(
+                              new PlainVanillaPayoff(Option::Call, strike[j]));
+            VanillaOption option(payoff, exercise);
+            
+            option.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                new FdHestonHullWhiteVanillaEngine(
+                     boost::shared_ptr<HestonModel>(
+                             new HestonModel(hestonProcess)),
+                                       hwProcess, corr[i], 50, 100, 10, 20)));
+            
+            const Real calculated = option.NPV();
+            
+            option.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                new AnalyticBSMHullWhiteEngine(corr[i],
+                                               stochProcess, hwModel)));
+            const Real expected = option.NPV();
+
+            const Real tol = 0.025;
+            if (std::fabs(calculated - expected) > tol) {
+                 BOOST_ERROR("Failed to reproduce discretization error"
+                         << "\n   corr:       " << corr[i]
+                         << "\n   strike:     " << strike[j]
+                         << "\n   calculated: " << calculated
+                         << "\n   expected:   " << expected);
+            }
+        }
+    }
+}
 
 
 test_suite* HybridHestonHullWhiteProcessTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Hybrid Heston-HullWhite tests");
+
 
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(
@@ -901,6 +965,8 @@ test_suite* HybridHestonHullWhiteProcessTest::suite() {
         &HybridHestonHullWhiteProcessTest::testCallableEquityPricing));
     suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testDiscretizationError));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine));
     return suite;
 }
 

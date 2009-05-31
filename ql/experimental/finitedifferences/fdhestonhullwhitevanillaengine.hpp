@@ -1,9 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Andreas Gaida
- Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2009 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,49 +17,53 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdhestonvanillaengine.hpp
-    \brief Finite-Differences Heston vanilla option engine
+/*! \file fdhestonhullwhitevanillaengine.hpp
+    \brief Finite-Differences Heston Hull-White vanilla option engine
 */
 
-#ifndef quantlib_fd_heston_vanilla_engine_hpp
-#define quantlib_fd_heston_vanilla_engine_hpp
+#ifndef quantlib_fd_heston_hull_white_vanilla_engine_hpp
+#define quantlib_fd_heston_hull_white_vanilla_engine_hpp
 
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
+#include <ql/processes/hullwhiteprocess.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
-#include <ql/experimental/finitedifferences/fdmhestonsolver.hpp>
+#include <ql/experimental/finitedifferences/fdmhestonhullwhitesolver.hpp>
 
 namespace QuantLib {
 
-    //! Finite-Differences Heston Vanilla Option engine
+    //! Finite-Differences Heston Hull-White Vanilla Option engine
 
     /*! \ingroup vanillaengines
 
         \test the correctness of the returned value is tested by
               reproducing results available in web/literature
-              and comparison with Black pricing.
+              and comparison with Black/Heston pricing.
     */
-    class FdHestonVanillaEngine
+    class FdHestonHullWhiteVanillaEngine
         : public GenericModelEngine<HestonModel,
                                     DividendVanillaOption::arguments,
                                     DividendVanillaOption::results> {
       public:
         // Constructor
-        FdHestonVanillaEngine(
+        FdHestonHullWhiteVanillaEngine(
             const boost::shared_ptr<HestonModel>& model,
-            Size tGrid = 100, Size xGrid = 100, Size vGrid = 50,
-            FdmHestonSolver::FdmSchemeType type 
-                                    = FdmHestonSolver::HundsdorferScheme,
+            const boost::shared_ptr<HullWhiteProcess>& hwProcess,
+            Real corrEquityShortRate,
+            Size tGrid = 50, Size xGrid = 100, 
+            Size vGrid = 40, Size rGrid = 20,
+            FdmHestonHullWhiteSolver::FdmSchemeType type 
+                                = FdmHestonHullWhiteSolver::HundsdorferScheme,
             Real theta = 0.3, Real mu = 0.5);
 
         void calculate() const;
 
       private:
-        const Size tGrid_, xGrid_, vGrid_;
-        const FdmHestonSolver::FdmSchemeType type_;
+        const boost::shared_ptr<HullWhiteProcess> hwProcess_;
+        const Real corrEquityShortRate_;
+        const Size tGrid_, xGrid_, vGrid_, rGrid_;
+        const FdmHestonHullWhiteSolver::FdmSchemeType type_;
         const Real theta_, mu_;
     };
-
 }
-
 #endif

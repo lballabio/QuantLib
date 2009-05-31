@@ -755,8 +755,9 @@ void FdmLinearOpTest::testFdmHestonExpress() {
     Handle<HestonProcess> hestonProcess(boost::shared_ptr<HestonProcess> (
         new HestonProcess(rTS, qTS, s0, 0.04, 2.5, 0.04, 0.66, -0.8)));
 
-    Settings::instance().evaluationDate() = Date(28, March, 2004);
-    Date exerciseDate(28, March, 2005);
+    const Date exerciseDate(28, March, 2005);
+    const Date evaluationDate(28, March, 2004);
+    Settings::instance().evaluationDate() = evaluationDate;
 
     std::vector<Real> triggerLevels(2);
     triggerLevels[0] = triggerLevels[1] = 100.0;
@@ -765,10 +766,12 @@ void FdmLinearOpTest::testFdmHestonExpress() {
     std::vector<Time> exerciseTimes(2);
     exerciseTimes[0] = 0.333; exerciseTimes[1] = 0.666;
 
-    const std::vector<Time> dividendTimes(1, 0.5);
-    boost::shared_ptr<StepCondition<Array> > dividendCondition(
-        new FdmDividendHandler(dividendTimes,
-                               std::vector<Real>(1, 2.5), mesher, 0));
+    DividendSchedule dividendSchedule(1, boost::shared_ptr<Dividend>(
+        new FixedDividend(2.5, evaluationDate + Period(6, Months))));
+    boost::shared_ptr<FdmDividendHandler> dividendCondition(
+        new FdmDividendHandler(dividendSchedule, mesher, 
+                               rTS->referenceDate(), 
+                               rTS->dayCounter(), 0));
 
     boost::shared_ptr<StepCondition<Array> > expressCondition(
         new FdmHestonExpressCondition(redemptions, triggerLevels,
@@ -776,7 +779,7 @@ void FdmLinearOpTest::testFdmHestonExpress() {
 
     std::list<std::vector<Time> > stoppingTimes;
     stoppingTimes.push_back(exerciseTimes);
-    stoppingTimes.push_back(dividendTimes);
+    stoppingTimes.push_back(dividendCondition->dividendTimes());
 
     std::list<boost::shared_ptr<StepCondition<Array> > > conditions;
     conditions.push_back(expressCondition);
@@ -791,18 +794,30 @@ void FdmLinearOpTest::testFdmHestonExpress() {
     FdmHestonSolver solver(hestonProcess,
                            mesher, bcSet, condition, payoff, 1.0, 50);
 
+    const Real s = s0->value();
     const Real v0 = 0.04;
 
-    if (std::fabs(solver.valueAt(s0->value(), v0) - 101.034) > 0.001) {
+    if (std::fabs(solver.valueAt(s, v0) - 101.034) > 0.001) {
         QL_FAIL("Error in calculating PV for Heston Express Certificate");
     }
 
-    if (std::fabs(solver.deltaAt(s0->value(), v0, 1) - 0.418138) > 0.0001) {
+    if (std::fabs(solver.deltaAt(s, v0) - 0.417458) > 0.0001) {
         QL_FAIL("Error in calculating Delta for Heston Express Certificate");
     }
 
-    if (std::fabs(solver.gammaAt(s0->value(), v0, 1) + 0.0401083) > 0.0001) {
+    if (std::fabs(solver.gammaAt(s, v0) + 0.039970) > 0.0001) {
         QL_FAIL("Error in calculating Gamma for Heston Express Certificate");
+    }
+    
+    if (std::fabs(solver.meanVarianceDeltaAt(s, v0) - 0.65943) > 0.0001) {
+        QL_FAIL("Error in calculating mean variance Delta for "
+                "Heston Express Certificate");
+    }
+    
+    if (std::fabs(solver.meanVarianceGammaAt(s, v0) + 0.031642) 
+                                                                    > 0.0001) {
+        QL_FAIL("Error in calculating mean variance Delta for "
+                "Heston Express Certificate");
     }
 }
 
@@ -888,6 +903,7 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     const Real theta = 0.5+std::sqrt(3.0)/6.;
     HundsdorferScheme hsEvolver(theta, 0.5, linearOp);
     FiniteDifferenceModel<HundsdorferScheme> hsModel(hsEvolver);
+
     hsModel.rollback(rhs, maturity, 0.0, 100);
 
     std::vector<Real> tx, ty, tr, y;
@@ -932,10 +948,10 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
             .withSeed(42));
 
     // the following takes far too long
-    //const Real expected = option.NPV();
+    // const Real expected = option.NPV();
     // use precalculated value instead
     const Real expected = 4.73;
-
+    
     if (std::fabs(calculated - expected) > 3*tol) {
         QL_FAIL("Error in calculating PV for Heston Hull White Option");
     }
@@ -960,7 +976,6 @@ test_suite* FdmLinearOpTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonBarrier));
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonAmerican));
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonExpress));
-
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonHullWhiteOp));
 
     return suite;

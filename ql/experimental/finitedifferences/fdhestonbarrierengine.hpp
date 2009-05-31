@@ -51,7 +51,7 @@ namespace QuantLib {
         // Constructor
         FdHestonBarrierEngine(
             const boost::shared_ptr<HestonModel>& model,
-            Size tGrid = 100, Size xGrid = 100, Size vGrid = 20,
+            Size tGrid = 100, Size xGrid = 100, Size vGrid = 50,
             FdmHestonSolver::FdmSchemeType type 
                                     = FdmHestonSolver::HundsdorferScheme,
             Real theta = 0.3, Real mu = 0.5);

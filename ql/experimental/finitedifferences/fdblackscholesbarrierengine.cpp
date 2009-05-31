@@ -19,19 +19,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/finitedifferences/fdblackscholesbarrierengine.hpp>
 #include <ql/exercise.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
+#include <ql/experimental/finitedifferences/fdblackscholesbarrierengine.hpp>
 #include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholessolver.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
-#include <ql/experimental/finitedifferences/uniform1dmesher.hpp>
+#include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesrebateengine.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesvanillaengine.hpp>
-#include <ql/time/daycounters/actualactual.hpp>
 
 namespace QuantLib {
 
@@ -58,36 +56,9 @@ namespace QuantLib {
         const boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         const Time maturity = process_->time(arguments_.exercise->lastDate());
-        const Real spot = process_->x0();
-        QL_REQUIRE(spot > 0.0, "negative or null underlying given");
-        Real F = spot*process_->dividendYield()->discount(maturity)
-                     /process_->riskFreeRate()->discount(maturity);
-        std::vector<Date> dividendDates;
-        std::vector<Time> dividendTimes;
-        std::vector<Real> dividends;
-        if(!arguments_.cashFlow.empty()) {
-            DayCounter dayCounter = ActualActual();
-            for (DividendSchedule::const_iterator iter
-                                = arguments_.cashFlow.begin();
-                                iter != arguments_.cashFlow.end(); ++iter) {
-                dividendDates.push_back((*iter)->date());
-                dividendTimes.push_back(dayCounter.yearFraction(
-                        Settings::instance().evaluationDate(),(*iter)->date()));
-                dividends.push_back((*iter)->amount());
-                F -= dividends.back()*process_->riskFreeRate()->discount(
-                                                        dividendTimes.back());
-            }
-        }
-        QL_REQUIRE(F > 0.0, "negative forward given");
 
-        // Set the grid boundaries
-        const Real normInvEps = std::fabs(InverseCumulativeNormal()(0.0001));
-        const Real sigmaSqrtT =  process_->blackVolatility()->blackVol(
-                            maturity, payoff->strike())*std::sqrt(maturity);
-        Real xMin = std::log(F) - sigmaSqrtT*normInvEps*2.0
-                                - sigmaSqrtT*sigmaSqrtT/2.0;
-        Real xMax = std::log(F) + sigmaSqrtT*normInvEps*2.0
-                                - sigmaSqrtT*sigmaSqrtT/2.0;
+        Real xMin=Null<Real>();
+        Real xMax=Null<Real>();
         if (   arguments_.barrierType == Barrier::DownIn
             || arguments_.barrierType == Barrier::DownOut) {
             xMin = std::log(arguments_.barrier);
@@ -98,32 +69,32 @@ namespace QuantLib {
         }
 
         const boost::shared_ptr<Fdm1dMesher> equityMesher(
-                            new Uniform1dMesher(xMin, xMax, layout->dim()[0]));
-
+            new FdmBlackScholesMesher(process_, layout, 0, maturity,
+                                      payoff->strike(), arguments_.cashFlow,
+                                      xMin, xMax));
+        
         std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
         meshers.push_back(equityMesher);
-        boost::shared_ptr<FdmMesher> mesher (new FdmMesherComposite(
-                                                            layout, meshers));
-
+        boost::shared_ptr<FdmMesher> mesher (
+                                     new FdmMesherComposite(layout, meshers));
+        
         // 3. Step conditions
         std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;
         std::list<std::vector<Time> > stoppingTimes;
 
         // 3.1 Step condition if discrete dividends
+        boost::shared_ptr<FdmDividendHandler> dividendCondition(
+            new FdmDividendHandler(arguments_.cashFlow, mesher,
+                                   process_->riskFreeRate()->referenceDate(),
+                                   process_->riskFreeRate()->dayCounter(), 0));
+
         if(!arguments_.cashFlow.empty()) {
-            boost::shared_ptr<StepCondition<Array> > dividendCondition(
-                new FdmDividendHandler(dividendTimes, dividends, mesher, 0));
             stepConditions.push_back(dividendCondition);
-            stoppingTimes.push_back(dividendTimes);
+            stoppingTimes.push_back(dividendCondition->dividendTimes());
         }
 
-        // 3.2 Step condition if american exercise
-        if (arguments_.exercise->type() == Exercise::American) {
-            boost::shared_ptr<FdmInnerValueCalculator> calculator(
-                                    new FdmLogInnerValue(arguments_.payoff, 0));
-            stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
-                            new FdmAmericanStepCondition(mesher,calculator)));
-        }
+        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
+                   "only european style option are supported");
 
         boost::shared_ptr<FdmStepConditionComposite> conditions(
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));
@@ -137,6 +108,7 @@ namespace QuantLib {
                                          FdmDirichletBoundary::Lower)));
 
         }
+
         if (   arguments_.barrierType == Barrier::UpIn
             || arguments_.barrierType == Barrier::UpOut) {
             boundaries.push_back(boost::shared_ptr<FdmDirichletBoundary>(
@@ -152,6 +124,7 @@ namespace QuantLib {
                                 payoff, maturity, tGrid_, theta_,
                                 localVol_, illegalLocalVolOverwrite_));
 
+        const Real spot = process_->x0();
         results_.value = solver->valueAt(spot);
         results_.delta = solver->deltaAt(spot);
         results_.gamma = solver->gammaAt(spot);
@@ -165,9 +138,12 @@ namespace QuantLib {
                     boost::dynamic_pointer_cast<StrikedTypePayoff>(
                                                             arguments_.payoff);
             // Calculate the vanilla option
+            
             boost::shared_ptr<DividendVanillaOption> vanillaOption(
-                    new DividendVanillaOption(payoff,arguments_.exercise,
-                                              dividendDates, dividends));
+                new DividendVanillaOption(payoff,arguments_.exercise,
+                                          dividendCondition->dividendDates(), 
+                                          dividendCondition->dividends()));
+            
             vanillaOption->setPricingEngine(boost::shared_ptr<PricingEngine>(
                 new FdBlackScholesVanillaEngine(
                         process_, tGrid_, xGrid_, theta_,
@@ -175,11 +151,13 @@ namespace QuantLib {
 
             // Calculate the rebate value
             boost::shared_ptr<DividendBarrierOption> rebateOption(
-                    new DividendBarrierOption(arguments_.barrierType,
-                                              arguments_.barrier,
-                                              arguments_.rebate,
-                                              payoff, arguments_.exercise,
-                                              dividendDates, dividends));
+                new DividendBarrierOption(arguments_.barrierType,
+                                          arguments_.barrier,
+                                          arguments_.rebate,
+                                          payoff, arguments_.exercise,
+                                          dividendCondition->dividendDates(), 
+                                          dividendCondition->dividends()));
+            
             const Size min_grid_size = 50;
             rebateOption->setPricingEngine(boost::shared_ptr<PricingEngine>(
                     new FdBlackScholesRebateEngine(

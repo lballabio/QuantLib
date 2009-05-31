@@ -28,18 +28,186 @@
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/experimental/finitedifferences/fdhestonbarrierengine.hpp>
 #include <ql/experimental/finitedifferences/fdhestonvanillaengine.hpp>
+#include <ql/experimental/finitedifferences/fdblackscholesbarrierengine.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+namespace {
+    struct NewBarrierOptionData {
+        Barrier::Type barrierType;
+        Real barrier;
+        Real rebate;
+        Option::Type type;
+        Real strike;
+        Real s;        // spot
+        Rate q;        // dividend
+        Rate r;        // risk-free rate
+        Time t;        // time to maturity
+        Volatility v;  // volatility
+    };
+}
+
+void FdHestonTest::testFdmHestonBarrierVsBlackScholes() {
+
+    BOOST_MESSAGE("Testing FDM with Barrier Option in Heston model ...");
+
+    SavedSettings backup;
+
+    NewBarrierOptionData values[] = {
+        /* The data below are from
+          "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 pag. 72
+        */
+        //     barrierType, barrier, rebate,         type, strike,     s,    q,    r,    t,    v
+        { Barrier::DownOut,    95.0,    3.0, Option::Call,     90, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::DownOut,    95.0,    3.0, Option::Call,    100, 100.0, 0.00, 0.08, 1.00, 0.30},
+        { Barrier::DownOut,    95.0,    3.0, Option::Call,    110, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::DownOut,   100.0,    3.0, Option::Call,     90, 100.0, 0.00, 0.08, 0.25, 0.25},
+        { Barrier::DownOut,   100.0,    3.0, Option::Call,    100, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::DownOut,   100.0,    3.0, Option::Call,    110, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::UpOut,     105.0,    3.0, Option::Call,     90, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::UpOut,     105.0,    3.0, Option::Call,    100, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::UpOut,     105.0,    3.0, Option::Call,    110, 100.0, 0.04, 0.08, 0.50, 0.25},
+
+        { Barrier::DownIn,     95.0,    3.0, Option::Call,    90, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::DownIn,     95.0,    3.0, Option::Call,   100, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::DownIn,     95.0,    3.0, Option::Call,   110, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::DownIn,    100.0,    3.0, Option::Call,    90, 100.0, 0.00, 0.08, 0.25, 0.25},
+        { Barrier::DownIn,    100.0,    3.0, Option::Call,   100, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::DownIn,    100.0,    3.0, Option::Call,   110, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::UpIn,      105.0,    3.0, Option::Call,    90, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::UpIn,      105.0,    3.0, Option::Call,   100, 100.0, 0.00, 0.08, 0.40, 0.25},
+        { Barrier::UpIn,      105.0,    3.0, Option::Call,   110, 100.0, 0.04, 0.08, 0.50, 0.15},
+
+        { Barrier::DownOut,    95.0,    3.0, Option::Call,    90, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::DownOut,    95.0,    3.0, Option::Call,   100, 100.0, 0.00, 0.08, 0.40, 0.35},
+        { Barrier::DownOut,    95.0,    3.0, Option::Call,   110, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::DownOut,   100.0,    3.0, Option::Call,    90, 100.0, 0.04, 0.08, 0.50, 0.15},
+        { Barrier::DownOut,   100.0,    3.0, Option::Call,   100, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::DownOut,   100.0,    3.0, Option::Call,   110, 100.0, 0.00, 0.00, 1.00, 0.20},
+        { Barrier::UpOut,     105.0,    3.0, Option::Call,    90, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::UpOut,     105.0,    3.0, Option::Call,   100, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::UpOut,     105.0,    3.0, Option::Call,   110, 100.0, 0.04, 0.08, 0.50, 0.30},
+
+        { Barrier::DownIn,     95.0,    3.0, Option::Call,    90, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::DownIn,     95.0,    3.0, Option::Call,   100, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::DownIn,     95.0,    3.0, Option::Call,   110, 100.0, 0.00, 0.08, 1.00, 0.30},
+        { Barrier::DownIn,    100.0,    3.0, Option::Call,    90, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::DownIn,    100.0,    3.0, Option::Call,   100, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::DownIn,    100.0,    3.0, Option::Call,   110, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::UpIn,      105.0,    3.0, Option::Call,    90, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::UpIn,      105.0,    3.0, Option::Call,   100, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::UpIn,      105.0,    3.0, Option::Call,   110, 100.0, 0.04, 0.08, 0.50, 0.30},
+
+        { Barrier::DownOut,    95.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::DownOut,    95.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::DownOut,    95.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::DownOut,   100.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::DownOut,   100.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::DownOut,   100.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::UpOut,     105.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::UpOut,     105.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::UpOut,     105.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.25},
+
+        { Barrier::DownIn,     95.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::DownIn,     95.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::DownIn,     95.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::DownIn,    100.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::DownIn,    100.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::DownIn,    100.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::UpIn,      105.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::UpIn,      105.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.25},
+        { Barrier::UpIn,      105.0,    3.0,  Option::Put,   110, 100.0, 0.00, 0.04, 1.00, 0.15},
+
+        { Barrier::DownOut,    95.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::DownOut,    95.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::DownOut,    95.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::DownOut,   100.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::DownOut,   100.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::DownOut,   100.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::UpOut,     105.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::UpOut,     105.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::UpOut,     105.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.30},
+
+        { Barrier::DownIn,     95.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::DownIn,     95.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::DownIn,     95.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::DownIn,    100.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::DownIn,    100.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::DownIn,    100.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 1.00, 0.15},
+        { Barrier::UpIn,      105.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::UpIn,      105.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.30},
+        { Barrier::UpIn,      105.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.30}
+    };
+    
+    const DayCounter dc = Actual365Fixed();     
+    const Date todaysDate(28, March, 2004);
+    const Date exerciseDate(28, March, 2005);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    Handle<Quote> spot(
+            boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
+
+    boost::shared_ptr<BlackScholesMertonProcess> bsProcess(
+                      new BlackScholesMertonProcess(spot, qTS, rTS, volTS));
+
+    boost::shared_ptr<PricingEngine> analyticEngine(
+                                        new AnalyticBarrierEngine(bsProcess));
+    
+    for (Size i=0; i<LENGTH(values); i++) {
+        Date exDate = todaysDate + Integer(values[i].t*365+0.5);
+        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+
+        boost::dynamic_pointer_cast<SimpleQuote>(spot .currentLink())
+                                                    ->setValue(values[i].s);
+        qRate->setValue(values[i].q);
+        rRate->setValue(values[i].r);
+        vol  ->setValue(values[i].v);
+
+        boost::shared_ptr<StrikedTypePayoff> payoff(new
+                    PlainVanillaPayoff(values[i].type, values[i].strike));
+
+        BarrierOption barrierOption(values[i].barrierType, values[i].barrier,
+                                    values[i].rebate, payoff, exercise);
+
+        const Real v0 = vol->value()*vol->value();
+        boost::shared_ptr<HestonProcess> hestonProcess(
+             new HestonProcess(rTS, qTS, spot, v0, 1.0, v0, 0.00001, 0.0));
+
+        barrierOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
+            new FdHestonBarrierEngine(boost::shared_ptr<HestonModel>(
+                              new HestonModel(hestonProcess)), 200, 400, 3)));
+
+        const Real calculatedHE = barrierOption.NPV();
+    
+        barrierOption.setPricingEngine(analyticEngine);
+        const Real expected = barrierOption.NPV();
+    
+        const Real tol = 0.002;
+        if (std::fabs(calculatedHE - expected)/expected > tol) {
+            BOOST_ERROR("Failed to reproduce expected Heston npv"
+                        << "\n    calculated: " << calculatedHE
+                        << "\n    expected:   " << expected
+                        << "\n    tolerance:  " << tol); 
+        }
+    }
+}
 
 void FdHestonTest::testFdmHestonBarrier() {
 
-    BOOST_MESSAGE("Testing FDM with Barrier Option in Heston model ...");
+    BOOST_MESSAGE("Testing FDM with Barrier Option for Heston model vs "
+                  "Black-Scholes model...");
 
     SavedSettings backup;
 
@@ -61,11 +229,12 @@ void FdHestonTest::testFdmHestonBarrier() {
 
     BarrierOption barrierOption(Barrier::UpOut, 135, 0.0, payoff, exercise);
 
-    boost::shared_ptr<PricingEngine> engine(
+    barrierOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new FdHestonBarrierEngine(boost::shared_ptr<HestonModel>(
-                              new HestonModel(hestonProcess)), 50, 400, 100));
-    barrierOption.setPricingEngine(engine);
+                              new HestonModel(hestonProcess)), 50, 400, 100)));
 
+    const Real calculated = barrierOption.NPV();
+    
     const Real tol = 0.01;
     const Real npvExpected   =  9.1783;
     const Real deltaExpected =  0.5244;
@@ -120,10 +289,10 @@ void FdHestonTest::testFdmHestonAmerican() {
     option.setPricingEngine(engine);
     
     const Real tol = 0.01;
-    const Real npvExpected   =  5.6335;
-    const Real deltaExpected = -0.2986;
-    const Real gammaExpected =  0.0219;
-
+    const Real npvExpected   =  5.646879;
+    const Real deltaExpected = -0.299602;
+    const Real gammaExpected =  0.021865;
+    
     if (std::fabs(option.NPV() - npvExpected) > tol) {
         BOOST_ERROR("Failed to reproduce expected npv"
                     << "\n    calculated: " << option.NPV()
@@ -271,7 +440,7 @@ void FdHestonTest::testFdmHestonEuropeanWithDividends() {
     boost::shared_ptr<Exercise> exercise(new AmericanExercise(exerciseDate));
 
     boost::shared_ptr<StrikedTypePayoff> payoff(new
-                                      PlainVanillaPayoff(Option::Put, 100));
+                                      PlainVanillaPayoff(Option::Call, 100));
 
     const std::vector<Real> dividends(1, 5);
     const std::vector<Date> dividendDates(1, Date(28, September, 2004));
@@ -284,10 +453,10 @@ void FdHestonTest::testFdmHestonEuropeanWithDividends() {
     
     const Real tol = 0.01;
     const Real gammaTol = 0.001;
-    const Real npvExpected   =  7.34893;
-    const Real deltaExpected = -0.39587;
-    const Real gammaExpected =  0.02798;
-    
+    const Real npvExpected   =  7.365075;
+    const Real deltaExpected = -0.396678;
+    const Real gammaExpected =  0.027681;
+        
     if (std::fabs(option.NPV() - npvExpected) > tol) {
         BOOST_ERROR("Failed to reproduce expected npv"
                     << "\n    calculated: " << option.NPV()
@@ -328,8 +497,7 @@ void FdHestonTest::testFdmHestonConvergence() {
        Heston model with correlation, K.J. in t'Hout and S. Foulon
     */
     
-    BOOST_MESSAGE("Testing FDM with European Option with dividends"
-                  " in Heston model ...");
+    BOOST_MESSAGE("Testing FDM Heston convergence...");
 
     SavedSettings backup;
     
@@ -403,6 +571,8 @@ test_suite* FdHestonTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Finite Difference Heston tests");
 
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBarrier));
+    suite->add(QUANTLIB_TEST_CASE(
+                         &FdHestonTest::testFdmHestonBarrierVsBlackScholes));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonAmerican));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonIkonenToivanen));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBlackScholes));

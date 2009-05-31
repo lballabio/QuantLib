@@ -111,10 +111,12 @@ namespace QuantLib {
     }
 
     Real FdmBlackScholesSolver::deltaAt(Real s) const {
+        calculate();
         return interpolation_->derivative(std::log(s))/s;
     }
 
     Real FdmBlackScholesSolver::gammaAt(Real s) const {
+        calculate();
         return (interpolation_->secondDerivative(std::log(s))
                 -interpolation_->derivative(std::log(s)))/(s*s);
     }

@@ -21,17 +21,14 @@
 
 #include <ql/experimental/finitedifferences/fdhestonbarrierengine.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
-#include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
-#include <ql/experimental/finitedifferences/uniform1dmesher.hpp>
+#include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
 #include <ql/experimental/finitedifferences/fdhestonrebateengine.hpp>
 #include <ql/experimental/finitedifferences/fdhestonvanillaengine.hpp>
-#include <ql/time/daycounters/actualactual.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
 
 namespace QuantLib {
 
@@ -67,36 +64,11 @@ namespace QuantLib {
 
         // 2.2 The equity mesher
         // Calculate the forward
-        const Real spot = process->s0()->value();
-        QL_REQUIRE(spot > 0.0, "negative or null underlying given");
-        Real F = spot*process->dividendYield()->discount(maturity)
-                     /process->riskFreeRate()->discount(maturity);
-        std::vector<Date> dividendDates;
-        std::vector<Time> dividendTimes;
-        std::vector<Real> dividends;
-        if(!arguments_.cashFlow.empty()) {
-            DayCounter dayCounter = ActualActual();
-            for (DividendSchedule::const_iterator iter
-                                = arguments_.cashFlow.begin();
-                                iter != arguments_.cashFlow.end(); ++iter) {
-                dividendDates.push_back((*iter)->date());
-                dividendTimes.push_back(dayCounter.yearFraction(
-                        Settings::instance().evaluationDate(),(*iter)->date()));
-                dividends.push_back((*iter)->amount());
-                F -= dividends.back()*process->riskFreeRate()->discount(
-                                                        dividendTimes.back());
-            }
-        }
-        QL_REQUIRE(F > 0.0, "negative forward given");
+        const boost::shared_ptr<StrikedTypePayoff> payoff =
+            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
 
-        // Set the grid boundaries
-        const Real normInvEps = std::fabs(InverseCumulativeNormal()(0.0001));
-        const Real sigmaSqrtT =  varianceMesher->volaEstimate()
-                                *std::sqrt(maturity);
-        Real xMin = std::log(F) - sigmaSqrtT*normInvEps*2.0
-                                - sigmaSqrtT*sigmaSqrtT/2.0;
-        Real xMax = std::log(F) + sigmaSqrtT*normInvEps*2.0
-                                - sigmaSqrtT*sigmaSqrtT/2.0;
+        Real xMin=Null<Real>();
+        Real xMax=Null<Real>();
         if (   arguments_.barrierType == Barrier::DownIn
             || arguments_.barrierType == Barrier::DownOut) {
             xMin = std::log(arguments_.barrier);
@@ -107,33 +79,37 @@ namespace QuantLib {
         }
 
         const boost::shared_ptr<Fdm1dMesher> equityMesher(
-                            new Uniform1dMesher(xMin, xMax, layout->dim()[0]));
-
+            new FdmBlackScholesMesher(
+                FdmBlackScholesMesher::processHelper(
+                    process->s0(), process->dividendYield(), 
+                    process->riskFreeRate(), varianceMesher->volaEstimate()),
+                layout, 0, maturity,
+                payoff->strike(), arguments_.cashFlow,
+                xMin, xMax));
+        
         std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
         meshers.push_back(equityMesher);
         meshers.push_back(varianceMesher);
-        boost::shared_ptr<FdmMesher> mesher(new FdmMesherComposite(
-                                                            layout, meshers));
-
+        boost::shared_ptr<FdmMesher> mesher (
+                                     new FdmMesherComposite(layout, meshers));
+        
         // 3. Step conditions
         std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;
         std::list<std::vector<Time> > stoppingTimes;
 
         // 3.1 Step condition if discrete dividends
+        boost::shared_ptr<FdmDividendHandler> dividendCondition(
+            new FdmDividendHandler(arguments_.cashFlow, mesher,
+                                   process->riskFreeRate()->referenceDate(),
+                                   process->riskFreeRate()->dayCounter(), 0));
+
         if(!arguments_.cashFlow.empty()) {
-            boost::shared_ptr<StepCondition<Array> > dividendCondition(
-                new FdmDividendHandler(dividendTimes, dividends, mesher, 0));
             stepConditions.push_back(dividendCondition);
-            stoppingTimes.push_back(dividendTimes);
+            stoppingTimes.push_back(dividendCondition->dividendTimes());
         }
 
-        // 3.2 Step condition if american exercise
-        if (arguments_.exercise->type() == Exercise::American) {
-            boost::shared_ptr<FdmInnerValueCalculator> calculator(
-                                    new FdmLogInnerValue(arguments_.payoff, 0));
-            stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
-                            new FdmAmericanStepCondition(mesher,calculator)));
-        }
+        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
+                   "only european style option are supported");
 
         boost::shared_ptr<FdmStepConditionComposite> conditions(
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));
@@ -161,9 +137,10 @@ namespace QuantLib {
                                         arguments_.payoff, maturity, tGrid_,
                                         type_, theta_, mu_));
 
+        const Real spot = process->s0()->value();
         results_.value = solver->valueAt(spot, process->v0());
-        results_.delta = solver->deltaAt(spot, process->v0(), spot*0.01);
-        results_.gamma = solver->gammaAt(spot, process->v0(), spot*0.01);
+        results_.delta = solver->deltaAt(spot, process->v0());
+        results_.gamma = solver->gammaAt(spot, process->v0());
         results_.theta = solver->thetaAt(spot, process->v0());
 
         // 6. Calculate vanilla option and rebate for in-barriers
@@ -175,18 +152,20 @@ namespace QuantLib {
                                                             arguments_.payoff);
             // Calculate the vanilla option
             boost::shared_ptr<DividendVanillaOption> vanillaOption(
-                    new DividendVanillaOption(payoff,arguments_.exercise,
-                                              dividendDates, dividends));
+                new DividendVanillaOption(payoff,arguments_.exercise,
+                                          dividendCondition->dividendDates(), 
+                                          dividendCondition->dividends()));
             vanillaOption->setPricingEngine(boost::shared_ptr<PricingEngine>(
                     new FdHestonVanillaEngine(model_, tGrid_, xGrid_, vGrid_,
                                               type_, theta_, mu_)));
             // Calculate the rebate value
             boost::shared_ptr<DividendBarrierOption> rebateOption(
-                    new DividendBarrierOption(arguments_.barrierType,
-                                              arguments_.barrier,
-                                              arguments_.rebate,
-                                              payoff, arguments_.exercise,
-                                              dividendDates, dividends));
+                new DividendBarrierOption(arguments_.barrierType,
+                                          arguments_.barrier,
+                                          arguments_.rebate,
+                                          payoff, arguments_.exercise,
+                                          dividendCondition->dividendDates(), 
+                                          dividendCondition->dividends()));
             const Size xGridMin = 20;
             const Size vGridMin = 10;
             rebateOption->setPricingEngine(boost::shared_ptr<PricingEngine>(

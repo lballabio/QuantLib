@@ -19,29 +19,51 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/time/daycounter.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
 
 namespace QuantLib {
 
+
     FdmDividendHandler::FdmDividendHandler(
-         const std::vector<Time> & dividendTimes,
-         const std::vector<Real> & dividends,
-         const boost::shared_ptr<FdmMesher> & mesher,
-         Size equityDirection)
+        const DividendSchedule& schedule,
+        const boost::shared_ptr<FdmMesher>& mesher,
+        const Date& referenceDate,
+        const DayCounter& dayCounter,
+        Size equityDirection)
     : x_(mesher->layout()->dim()[equityDirection]),
-      dividendTimes_(dividendTimes),
-      dividends_(dividends),
       mesher_(mesher),
       equityDirection_(equityDirection) {
-        QL_REQUIRE(dividendTimes.size() == dividends.size(),
-                   "incorrect dimensions");
 
-        Array tmp = mesher_->locations(equityDirection);
-        Size spacing = mesher_->layout()->spacing()[equityDirection];
-        for (Size i = 0; i < x_.size(); ++i) {
-            x_[i] = std::exp(tmp[i*spacing]);
-        }
+        dividends_.reserve(schedule.size());
+        dividendDates_.reserve(schedule.size());
+        dividendTimes_.reserve(schedule.size());
+        for (DividendSchedule::const_iterator iter=schedule.begin();
+              iter!=schedule.end(); ++iter) {
+             dividends_.push_back((*iter)->amount());
+             dividendDates_.push_back((*iter)->date());
+             dividendTimes_.push_back(
+                     dayCounter.yearFraction(referenceDate,(*iter)->date()));
+         }
+      
+         Array tmp = mesher_->locations(equityDirection);
+         Size spacing = mesher_->layout()->spacing()[equityDirection];
+         for (Size i = 0; i < x_.size(); ++i) {
+             x_[i] = std::exp(tmp[i*spacing]);
+         }
+    }
+
+    const std::vector<Time>& FdmDividendHandler::dividendTimes() const {
+        return dividendTimes_;
+    }
+         
+    const std::vector<Date>& FdmDividendHandler::dividendDates() const {
+        return dividendDates_;
+    }
+
+    const std::vector<Real>& FdmDividendHandler::dividends() const {
+        return dividends_;
     }
 
     void FdmDividendHandler::applyTo(Array& a, Time t) const {

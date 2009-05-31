@@ -28,6 +28,7 @@
 class FdHestonTest {
 public:
     static void testFdmHestonBarrier();
+    static void testFdmHestonBarrierVsBlackScholes();
     static void testFdmHestonAmerican();
     static void testFdmHestonIkonenToivanen();
     static void testFdmHestonEuropeanWithDividends();

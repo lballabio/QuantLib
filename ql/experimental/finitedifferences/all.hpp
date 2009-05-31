@@ -10,13 +10,16 @@
 #include <ql/experimental/finitedifferences/fdhestonbarrierengine.hpp>
 #include <ql/experimental/finitedifferences/fdhestonrebateengine.hpp>
 #include <ql/experimental/finitedifferences/fdhestonvanillaengine.hpp>
+#include <ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdm1dmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
+#include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesop.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholessolver.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
 #include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonhullwhiteop.hpp>
+#include <ql/experimental/finitedifferences/fdmhestonhullwhitesolver.hpp>
 #include <ql/experimental/finitedifferences/fdmhestoninnervalue.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonop.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonsolver.hpp>

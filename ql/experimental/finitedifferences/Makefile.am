@@ -13,13 +13,16 @@ this_include_HEADERS = \
 	fdhestonbarrierengine.hpp \
 	fdhestonrebateengine.hpp \
 	fdhestonvanillaengine.hpp \
+	fdhestonhullwhitevanillaengine.hpp \
 	fdm1dmesher.hpp \
 	fdmamericanstepcondition.hpp \
+	fdmblackscholesmesher.hpp \
 	fdmblackscholesop.hpp \
 	fdmblackscholessolver.hpp \
 	fdmdirichletboundary.hpp \
 	fdmdividendhandler.hpp \
 	fdmhestonhullwhiteop.hpp \
+	fdmhestonhullwhitesolver.hpp \
 	fdmhestoninnervalue.hpp \
 	fdmhestonop.hpp \
 	fdmhestonsolver.hpp \
@@ -53,12 +56,15 @@ libMultiDimFDM_la_SOURCES = \
 	fdhestonbarrierengine.cpp \
 	fdhestonrebateengine.cpp \
 	fdhestonvanillaengine.cpp \
+	fdhestonhullwhitevanillaengine.cpp \
 	fdmamericanstepcondition.cpp \
+	fdmblackscholesmesher.cpp \
 	fdmblackscholesop.cpp \
 	fdmblackscholessolver.cpp \
 	fdmdirichletboundary.cpp \
 	fdmdividendhandler.cpp \
 	fdmhestonhullwhiteop.cpp \
+	fdmhestonhullwhitesolver.cpp \
 	fdmhestonop.cpp \
 	fdmhestonsolver.cpp \
 	fdmhestonvariancemesher.cpp \

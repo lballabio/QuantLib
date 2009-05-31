@@ -1,9 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Andreas Gaida
- Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2009 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,17 +17,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmhestonsolver.hpp
+/*! \file fdmhestonhullwhitesolver.hpp
 */
 
-#ifndef quantlib_fdm_heston_solver_hpp
-#define quantlib_fdm_heston_solver_hpp
+#ifndef quantlib_fdm_heston_hull_white_solver_hpp
+#define quantlib_fdm_heston_hull_white_solver_hpp
 
 #include <ql/handle.hpp>
 #include <ql/payoff.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/processes/hestonprocess.hpp>
-#include <ql/experimental/finitedifferences/fdmquantohelper.hpp>
+#include <ql/processes/hullwhiteprocess.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
 
 namespace QuantLib {
@@ -39,43 +37,43 @@ namespace QuantLib {
     class FdmStepConditionComposite;
     class BicubicSpline;
 
-    class FdmHestonSolver : public LazyObject {
+    class FdmHestonHullWhiteSolver : public LazyObject {
       public:
         enum FdmSchemeType {
             HundsdorferScheme, DouglasScheme, CraigSneydScheme };
 
-        FdmHestonSolver(
-            const Handle<HestonProcess>& process,
+        FdmHestonHullWhiteSolver(
+            const Handle<HestonProcess>& hestonProcess,
+            const Handle<HullWhiteProcess>& hwProcess,
+            Rate corrEquityShortRate,
             const boost::shared_ptr<FdmMesher>& mesher,
-            const FdmBoundaryConditionSet & bcSet,
+            const FdmBoundaryConditionSet& bcSet,
             const boost::shared_ptr<FdmStepConditionComposite> & condition,
             const boost::shared_ptr<Payoff>& payoff,
             Time maturity,
             Size timeSteps,
             FdmSchemeType type = HundsdorferScheme,
-            Real theta = 0.3, Real mu = 0.5,
-			const Handle<FdmQuantoHelper>& quantoHelper 
-												= Handle<FdmQuantoHelper>());
+            Real theta = 0.3, Real mu = 0.5);
 
-        Real valueAt(Real s, Real v) const;
-        Real thetaAt(Real s, Real v) const;
+        Real valueAt(Real s, Real v, Rate r) const;
+        Real thetaAt(Real s, Real v, Rate r) const;
         
         // First and second order derivative with respect to S_t. 
         // Please note that this is not the "model implied" delta or gamma.
         // E.g. see Fabio Mercurio, Massimo Morini 
         // "A Note on Hedging with Local and Stochastic Volatility Models",
         // http://papers.ssrn.com/sol3/papers.cfm?abstract_id=1294284  
-        Real deltaAt(Real s, Real v) const;
-        Real gammaAt(Real s, Real v) const;
-
-        Real meanVarianceDeltaAt(Real s, Real v) const;
-        Real meanVarianceGammaAt(Real s, Real v) const;
+        Real deltaAt(Real s, Real v, Rate r, Real eps) const;
+        Real gammaAt(Real s, Real v, Rate r, Real eps) const;
         
       protected:
         void performCalculations() const;
 
       private:
-        Handle<HestonProcess> process_;
+        const Handle<HestonProcess> hestonProcess_;  
+        const Handle<HullWhiteProcess> hwProcess_;
+        const Real corrEquityShortRate_;
+        
         const boost::shared_ptr<FdmMesher> mesher_;
         const FdmBoundaryConditionSet bcSet_;
         const boost::shared_ptr<FdmSnapshotCondition> thetaCondition_;
@@ -85,11 +83,10 @@ namespace QuantLib {
 
         const FdmSchemeType schemeType_;
         const Real theta_, mu_;
-		const Handle<FdmQuantoHelper> quantoHelper_;
 
-        std::vector<Real> x_, v_, initialValues_;
-        mutable Matrix resultValues_;
-        mutable boost::shared_ptr<BicubicSpline> interpolation_;
+        std::vector<Real> x_, v_, r_, initialValues_;
+        mutable std::vector<Matrix> resultValues_;
+        mutable std::vector<boost::shared_ptr<BicubicSpline> > interpolation_;
     };
 }
 

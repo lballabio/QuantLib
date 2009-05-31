@@ -31,6 +31,7 @@
 #include <ql/math/interpolations/multicubicspline.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/math/interpolations/kernelinterpolation.hpp>
+#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
@@ -1435,6 +1436,48 @@ void InterpolationTest::testKernelInterpolation() {
     }
 }
 
+void InterpolationTest::testBicubicDerivatives() {
+    BOOST_MESSAGE("Testing bicubic spline derivatives ...");
+    
+    std::vector<Real> x(100), y(100);
+    for (Size i=0; i < 100; ++i) {
+        x[i] = y[i] = i/20.0;
+    }
+    
+    Matrix f(100, 100);
+    for (Size i=0; i < 100; ++i)
+        for (Size j=0; j < 100; ++j)
+            f[i][j] = y[i]/10*std::sin(x[j])+std::cos(y[i]);
+   
+    const Real tol=0.005;
+    BicubicSpline spline(x.begin(), x.end(), y.begin(), y.end(), f);
+    
+    for (Size i=5; i < 95; i+=10) {
+        for (Size j=5; j < 95; j+=10) {
+            Real f_x  = spline.derivativeX(x[j],y[i]);
+            Real f_xx = spline.secondDerivativeX(x[j],y[i]);
+            Real f_y  = spline.derivativeY(x[j],y[i]);
+            Real f_yy = spline.secondDerivativeY(x[j],y[i]);
+            Real f_xy = spline.derivativeXY(x[j],y[i]);
+
+            if (std::fabs(f_x - y[i]/10*std::cos(x[j])) > tol) {
+                BOOST_ERROR("Failed to reproduce f_x");
+            }
+            if (std::fabs(f_xx + y[i]/10*std::sin(x[j])) > tol) {
+                BOOST_ERROR("Failed to reproduce f_xx");
+            }
+            if (std::fabs(f_y - (std::sin(x[j])/10-std::sin(y[i]))) > tol) {
+                BOOST_ERROR("Failed to reproduce f_y");
+            }
+            if (std::fabs(f_yy + std::cos(y[i])) > tol) {
+                BOOST_ERROR("Failed to reproduce f_yy");
+            }
+            if (std::fabs(f_xy - std::cos(x[j])/10) > tol) {
+                BOOST_ERROR("Failed to reproduce f_xy");
+            }
+        }
+    }
+}
 
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
@@ -1459,6 +1502,8 @@ test_suite* InterpolationTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testForwardFlat));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSabrInterpolation));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testKernelInterpolation));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBicubicDerivatives));
+    
     return suite;
 }
 

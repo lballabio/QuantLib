@@ -36,7 +36,7 @@
 
 namespace QuantLib {
 
-    class FdmBlackScholesSolver : LazyObject {
+    class FdmBlackScholesSolver : public LazyObject {
       public:
         typedef std::vector<boost::shared_ptr<FdmDirichletBoundary> >
             BoundaryConditionSet;
