@@ -233,8 +233,6 @@ void FdHestonTest::testFdmHestonBarrier() {
             new FdHestonBarrierEngine(boost::shared_ptr<HestonModel>(
                               new HestonModel(hestonProcess)), 50, 400, 100)));
 
-    const Real calculated = barrierOption.NPV();
-    
     const Real tol = 0.01;
     const Real npvExpected   =  9.1783;
     const Real deltaExpected =  0.5244;
@@ -440,7 +438,7 @@ void FdHestonTest::testFdmHestonEuropeanWithDividends() {
     boost::shared_ptr<Exercise> exercise(new AmericanExercise(exerciseDate));
 
     boost::shared_ptr<StrikedTypePayoff> payoff(new
-                                      PlainVanillaPayoff(Option::Call, 100));
+                                      PlainVanillaPayoff(Option::Put, 100));
 
     const std::vector<Real> dividends(1, 5);
     const std::vector<Date> dividendDates(1, Date(28, September, 2004));

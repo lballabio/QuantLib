@@ -309,7 +309,7 @@ void HestonModelTest::testAnalyticVsBlack() {
 
     calculated = option.NPV();
     error = std::fabs(calculated - expected);
-    tolerance = 1.0e-4;
+    tolerance = 1.0e-3;
     if (error > tolerance) {
         BOOST_FAIL("failed to reproduce Black price with FdHestonVanillaEngine"
                    << "\n    calculated: " << calculated
