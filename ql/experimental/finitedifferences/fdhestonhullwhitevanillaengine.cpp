@@ -18,6 +18,7 @@
 */
 
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
@@ -28,6 +29,7 @@
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
+#include <ql/experimental/finitedifferences/fdhestonvanillaengine.hpp>
 
 namespace QuantLib {
 
@@ -37,6 +39,7 @@ namespace QuantLib {
             Real corrEquityShortRate,
             Size tGrid, Size xGrid, 
             Size vGrid, Size rGrid,
+            bool controlVariate,
             FdmHestonHullWhiteSolver::FdmSchemeType type, 
             Real theta, Real mu)
     : GenericModelEngine<HestonModel,
@@ -46,6 +49,7 @@ namespace QuantLib {
       corrEquityShortRate_(corrEquityShortRate),
       tGrid_(tGrid), xGrid_(xGrid), 
       vGrid_(vGrid), rGrid_(rGrid),
+      controlVariate_(controlVariate),
       type_(type), theta_(theta), mu_(mu) {
     }
 
@@ -80,8 +84,7 @@ namespace QuantLib {
                     hestonProcess->riskFreeRate(), 
                     varianceMesher->volaEstimate()),
                  layout, 0, maturity,
-                 payoff->strike(), arguments_.cashFlow,
-                 Null<Real>(), Null<Real>(), 0.0001, 1));
+                 payoff->strike(), arguments_.cashFlow));
        
         //2.3 The short rate mesher
         const Rate r0    = hwProcess_->x0();
@@ -147,5 +150,35 @@ namespace QuantLib {
         results_.delta = solver->deltaAt(spot, v0, r0, spot*0.01);
         results_.gamma = solver->gammaAt(spot, v0, r0, spot*0.01);
         results_.theta = solver->thetaAt(spot, v0, r0);
+        
+        if (controlVariate_) {
+            VanillaOption option(payoff, 
+                boost::shared_ptr<Exercise>(new EuropeanExercise(
+                                            arguments_.exercise->lastDate())));
+            
+            option.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                           new AnalyticHestonEngine(model_)));
+            const Real analyticNPV = option.NPV();
+            
+            FdmHestonSolver::FdmSchemeType hestonType;
+            switch (type_) {
+              case FdmHestonHullWhiteSolver::CraigSneydScheme:
+                hestonType = FdmHestonSolver::CraigSneydScheme;
+                break;
+              case FdmHestonHullWhiteSolver::DouglasScheme:
+                hestonType = FdmHestonSolver::DouglasScheme;
+                break;
+              case FdmHestonHullWhiteSolver::HundsdorferScheme:
+                hestonType = FdmHestonSolver::HundsdorferScheme;
+                break;
+              default:
+                QL_FAIL("Unknown scheme type");
+            }
+            option.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                 new FdHestonVanillaEngine(model_, tGrid_, xGrid_, vGrid_, 
+                                           hestonType, theta_, mu_)));
+            const Real fdNPV = option.NPV();
+            results_.value += analyticNPV - fdNPV;
+        }
     }
 }

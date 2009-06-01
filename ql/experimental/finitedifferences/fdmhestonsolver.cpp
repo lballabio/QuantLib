@@ -135,7 +135,6 @@ namespace QuantLib {
             break;
           default:
             QL_FAIL("Unknown scheme type");
-            break;
         }
 
         std::copy(rhs.begin(), rhs.end(), resultValues_.begin());

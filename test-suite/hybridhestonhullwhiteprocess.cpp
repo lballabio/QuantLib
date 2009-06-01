@@ -882,8 +882,6 @@ void HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine() {
     const Date exerciseDate = Date(28, March, 2012);
     DayCounter dc = Actual365Fixed();
     
-    const Time maturity = dc.yearFraction(today, exerciseDate);
-
     Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
 
     const Handle<YieldTermStructure> rTS(flatRate(0.05, dc));
@@ -894,7 +892,7 @@ void HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine() {
 
     const Real v0 = vol*vol;
     boost::shared_ptr<HestonProcess> hestonProcess(
-        new HestonProcess(rTS, qTS, s0, v0, 1.0, v0, 0.00001, 0.0));
+        new HestonProcess(rTS, qTS, s0, v0, 1.0, v0, 0.000001, 0.0));
 
     boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
                       new BlackScholesMertonProcess(s0, qTS, rTS, volTS));
@@ -918,8 +916,7 @@ void HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine() {
                 new FdHestonHullWhiteVanillaEngine(
                      boost::shared_ptr<HestonModel>(
                              new HestonModel(hestonProcess)),
-                                       hwProcess, corr[i], 50, 100, 10, 20)));
-            
+                                       hwProcess, corr[i], 50, 100, 10, 20)));    
             const Real calculated = option.NPV();
             
             option.setPricingEngine(boost::shared_ptr<PricingEngine>(
@@ -927,7 +924,7 @@ void HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine() {
                                                stochProcess, hwModel)));
             const Real expected = option.NPV();
 
-            const Real tol = 0.025;
+            const Real tol = 0.01;
             if (std::fabs(calculated - expected) > tol) {
                  BOOST_ERROR("Failed to reproduce discretization error"
                          << "\n   corr:       " << corr[i]
@@ -942,7 +939,6 @@ void HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine() {
 
 test_suite* HybridHestonHullWhiteProcessTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Hybrid Heston-HullWhite tests");
-
 
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(
