@@ -157,7 +157,7 @@ namespace QuantLib {
                                             arguments_.exercise->lastDate())));
             
             option.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                                           new AnalyticHestonEngine(model_)));
+                                       new AnalyticHestonEngine(model_, 164)));
             const Real analyticNPV = option.NPV();
             
             FdmHestonSolver::FdmSchemeType hestonType;

@@ -69,7 +69,7 @@ namespace QuantLib {
     Disposable<FdmLinearOpIterator> FdmLinearOpLayout::iter_neighbourhood(
         const FdmLinearOpIterator& iterator, Size i, Integer offset) const {
 
-        static std::vector<Size> coordinates = iterator.coordinates();
+        std::vector<Size> coordinates = iterator.coordinates();
 
         Integer coorOffset = Integer(coordinates[i])+offset;
         if (coorOffset < 0) {
