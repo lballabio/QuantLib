@@ -554,10 +554,10 @@ void HestonModelTest::testFdVanillaVsCached() {
                     100,200,100));
     option.setPricingEngine(engine);
 
-    Real expected = 0.0632851308977151;
+    Real expected = 0.06325;
     Real calculated = option.NPV();
     Real error = std::fabs(calculated - expected);
-    Real tolerance = 1.0e-5;
+    Real tolerance = 1.0e-4;
 
     if (error > tolerance) {
         BOOST_FAIL("failed to reproduce cached price with FD engine"
@@ -863,12 +863,11 @@ test_suite* HestonModelTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAnalyticVsCached));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testKahlJaeckelCase));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDifferentIntegrals));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdBarrierVsCached));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdVanillaVsCached));
 
     // this passes but takes way too long
-    //suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testEngines));
     //suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMcVsCached));
-    //suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdBarrierVsCached));
-    //suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdVanillaVsCached));
 
     return suite;
 }
