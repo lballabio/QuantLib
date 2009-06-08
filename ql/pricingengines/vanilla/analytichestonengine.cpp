@@ -401,22 +401,21 @@ namespace QuantLib {
         const Real term = process->time(arguments_.exercise->lastDate());
 
         doCalculation(riskFreeDiscount,
-                                             dividendDiscount,
-                                             spotPrice, 
-                                             strikePrice,
-                                             term,
-                                             model_->kappa(), 
-                                             model_->theta(),
-                                             model_->sigma(), 
-                                             model_->v0(), 
-                                             model_->rho(),
-                                             *payoff,
-                                             *integration_,
-                                             cpxLog_,
-                                             this,
-                                             results_.value,
-                                             evaluations_);
-
+                      dividendDiscount,
+                      spotPrice, 
+                      strikePrice,
+                      term,
+                      model_->kappa(), 
+                      model_->theta(),
+                      model_->sigma(), 
+                      model_->v0(), 
+                      model_->rho(),
+                      *payoff,
+                      *integration_,
+                      cpxLog_,
+                      this,
+                      results_.value,
+                      evaluations_);
     }
 
 
