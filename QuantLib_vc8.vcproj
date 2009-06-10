@@ -7193,6 +7193,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdhestonhullwhitevanillaengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdhestonhullwhitevanillaengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdhestonrebateengine.cpp"
 					>
 				</File>
@@ -7218,6 +7226,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmamericanstepcondition.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholesmesher.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholesmesher.hpp"
 					>
 				</File>
 				<File
@@ -7258,6 +7274,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmhestonhullwhiteop.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmhestonhullwhitesolver.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmhestonhullwhitesolver.hpp"
 					>
 				</File>
 				<File
@@ -8174,10 +8198,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\inflation\piecewiseyoyoptionletvolatility.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\inflation\polynomial2D.hpp"
 					>
 				</File>
 				<File
