@@ -44,6 +44,7 @@ namespace QuantLib {
 
         Schedule schedule = floatSch;
         if (floatSch.empty()) {
+            bool endOfMonth = false;
             schedule = Schedule(bond_->settlementDate(),
                                 bond_->maturityDate(),
                                 index->tenor(),
@@ -51,7 +52,7 @@ namespace QuantLib {
                                 index->businessDayConvention(),
                                 index->businessDayConvention(),
                                 DateGeneration::Backward,
-                                false);
+                                endOfMonth);
         }
 
         // the following might become an input parameter
@@ -68,7 +69,7 @@ namespace QuantLib {
                    ") must be equal to adjusted bond maturity date (" <<
                    adjBondMaturityDate << ")");
 
-        //  bondCleanPrice must be the (forward) clean price
+        // bondCleanPrice must be the (forward) clean price
         // at the floating schedule start date
         upfrontDate_ = schedule.startDate();
         Real dirtyPrice = bondCleanPrice_ +
@@ -93,7 +94,7 @@ namespace QuantLib {
 
         const Leg& bondLeg = bond_->cashflows();
         for (Leg::const_iterator i=bondLeg.begin(); i<bondLeg.end(); ++i) {
-            if (!(*i)->hasOccurred(upfrontDate_))
+            if (!(*i)->hasOccurred(upfrontDate_, false))
                 legs_[0].push_back(*i);
         }
 
