@@ -23,8 +23,13 @@
 namespace QuantLib {
 
     DiscountingSwapEngine::DiscountingSwapEngine(
-                              const Handle<YieldTermStructure>& discountCurve)
-    : discountCurve_(discountCurve) {
+                            const Handle<YieldTermStructure>& discountCurve,
+                            bool includeSettlementDateFlows,
+                            Date settlementDate,
+                            Date npvDate)
+    : discountCurve_(discountCurve),
+      includeSettlementDateFlows_(includeSettlementDateFlows),
+      settlementDate_(settlementDate), npvDate_(npvDate) {
         registerWith(discountCurve_);
     }
 
@@ -34,7 +39,26 @@ namespace QuantLib {
 
         results_.value = 0.0;
         results_.errorEstimate = Null<Real>();
-        results_.valuationDate = (*discountCurve_)->referenceDate();
+
+        Date refDate = (*discountCurve_)->referenceDate();
+
+        Date settlementDate = settlementDate_;
+        if (settlementDate_==Date()) {
+            settlementDate = refDate;
+        } else {
+            QL_REQUIRE(settlementDate>=refDate,
+                       "settlement date (" << settlementDate << ") before "
+                       "discount curve reference date (" << refDate << ")");
+        }
+
+        results_.valuationDate = npvDate_;
+        if (npvDate_==Date()) {
+            results_.valuationDate = refDate;
+        } else {
+            QL_REQUIRE(npvDate_>=refDate,
+                       "npv date (" << npvDate_  << ") before "
+                       "discount curve reference date (" << refDate << ")");
+        }
 
         results_.legNPV.resize(arguments_.legs.size());
         results_.legBPS.resize(arguments_.legs.size());
@@ -43,11 +67,15 @@ namespace QuantLib {
             results_.legNPV[i] =
                 arguments_.payer[i] * CashFlows::npv(arguments_.legs[i],
                                                      **discountCurve_,
-                                                     true, results_.valuationDate);
+                                                     includeSettlementDateFlows_,
+                                                     settlementDate,
+                                                     results_.valuationDate);
             results_.legBPS[i] =
                 arguments_.payer[i] * CashFlows::bps(arguments_.legs[i],
                                                      **discountCurve_,
-                                                     true, results_.valuationDate);
+                                                     includeSettlementDateFlows_,
+                                                     settlementDate,
+                                                     results_.valuationDate);
             results_.value += results_.legNPV[i];
             try {
                 Date d = CashFlows::startDate(arguments_.legs[i]);
