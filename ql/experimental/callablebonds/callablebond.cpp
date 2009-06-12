@@ -197,7 +197,7 @@ namespace QuantLib {
         arguments->couponAmounts = std::vector<Real>(cfs.size()-1);
 
         for (Size i=0; i<cfs.size()-1; i++) {
-            if (!cfs[i]->hasOccurred(settlement)) {
+            if (!cfs[i]->hasOccurred(settlement, false)) {
                 arguments->couponDates.push_back(cfs[i]->date());
                 arguments->couponAmounts.push_back(cfs[i]->amount());
             }
@@ -213,7 +213,7 @@ namespace QuantLib {
 
         arguments->putCallSchedule = putCallSchedule_;
         for (Size i=0; i<putCallSchedule_.size(); i++) {
-            if (!putCallSchedule_[i]->hasOccurred(settlement)) {
+            if (!putCallSchedule_[i]->hasOccurred(settlement, false)) {
                 arguments->callabilityDates.push_back(
                                                  putCallSchedule_[i]->date());
                 arguments->callabilityPrices.push_back(

@@ -71,8 +71,8 @@ namespace QuantLib {
           and contract delivery/maturity date
         */
         for (Size i = 0; i < cf.size(); ++i) {
-            if (!cf[i]->hasOccurred(settlement)) {
-                if (cf[i]->hasOccurred(maturityDate_)) {
+            if (!cf[i]->hasOccurred(settlement, false)) {
+                if (cf[i]->hasOccurred(maturityDate_, false)) {
                     income += cf[i]->amount() *
                               incomeDiscountCurve->discount(cf[i]->date()) ;
                 } else {

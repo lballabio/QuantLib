@@ -203,7 +203,7 @@ namespace QuantLib {
         moreArgs->callabilityPrices.reserve(n);
         moreArgs->callabilityTriggers.reserve(n);
         for (Size i=0; i<n; i++) {
-            if (!callability_[i]->hasOccurred(settlement)) {
+            if (!callability_[i]->hasOccurred(settlement, false)) {
                 moreArgs->callabilityTypes.push_back(callability_[i]->type());
                 moreArgs->callabilityDates.push_back(callability_[i]->date());
                 moreArgs->callabilityPrices.push_back(
@@ -228,7 +228,7 @@ namespace QuantLib {
         moreArgs->couponDates.clear();
         moreArgs->couponAmounts.clear();
         for (Size i=0; i<cashflows.size()-1; i++) {
-            if (!cashflows[i]->hasOccurred(settlement)) {
+            if (!cashflows[i]->hasOccurred(settlement, false)) {
                 moreArgs->couponDates.push_back(cashflows[i]->date());
                 moreArgs->couponAmounts.push_back(cashflows[i]->amount());
             }
@@ -237,7 +237,7 @@ namespace QuantLib {
         moreArgs->dividends.clear();
         moreArgs->dividendDates.clear();
         for (Size i=0; i<dividends_.size(); i++) {
-            if (!dividends_[i]->hasOccurred(settlement)) {
+            if (!dividends_[i]->hasOccurred(settlement, false)) {
                 moreArgs->dividends.push_back(dividends_[i]);
                 moreArgs->dividendDates.push_back(dividends_[i]->date());
             }

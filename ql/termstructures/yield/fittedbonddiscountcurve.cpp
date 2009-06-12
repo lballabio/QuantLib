@@ -200,7 +200,7 @@ namespace QuantLib {
             Date settlementDate = bond->settlementDate(today);
             Leg cf = bond->cashflows();
             for (Size k=0; k<cf.size(); ++k) {
-                if (!cf[k]->hasOccurred(settlementDate)) {
+                if (!cf[k]->hasOccurred(settlementDate, false)) {
                     costFunction_->startingCashFlowIndex_.push_back(k);
                     break;
                 }

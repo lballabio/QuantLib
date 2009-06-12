@@ -61,8 +61,8 @@ namespace QuantLib {
         */
         Real income = 0.0;
         for (Size i = 0; i < cf.size() - 1; ++i) {
-            if (!cf[i]->hasOccurred(settlement)) {
-                if (cf[i]->hasOccurred(optionMaturity)) {
+            if (!cf[i]->hasOccurred(settlement, false)) {
+                if (cf[i]->hasOccurred(optionMaturity, false)) {
                     income += cf[i]->amount() *
                               discountCurve_->discount(cf[i]->date());
                 } else {
