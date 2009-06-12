@@ -131,15 +131,9 @@ namespace QuantLib {
             return notionals_[index-1];
         } else {
             // d is equal to a redemption date.
-            #if defined(QL_TODAYS_PAYMENTS)
-            // We consider today's payment as pending; the bond still
-            // has the previous notional
-            return notionals_[index-1];
-            #else
-            // today's payment has occurred; the bond already changed
-            // notional.
+            // As per bond conventions, the payment has occurred;
+            // the bond already changed notional.
             return notionals_[index];
-            #endif
         }
     }
 
