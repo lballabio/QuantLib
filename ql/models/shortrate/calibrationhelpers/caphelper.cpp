@@ -35,8 +35,8 @@ namespace QuantLib {
                          const DayCounter& fixedLegDayCounter,
                          bool includeFirstSwaplet,
                          const Handle<YieldTermStructure>& termStructure,
-                         bool calibrateVolatility)
-    : CalibrationHelper(volatility,termStructure,calibrateVolatility) {
+                         CalibrationHelper::CalibrationErrorType errorType)
+    : CalibrationHelper(volatility,termStructure,errorType) {
 
         Period indexTenor = index->tenor();
         Rate fixedRate = 0.04; // dummy value

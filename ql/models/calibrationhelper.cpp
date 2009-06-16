@@ -49,25 +49,37 @@ namespace QuantLib {
     }
 
     Real CalibrationHelper::calibrationError() {
-        if (calibrateVolatility_) {
-            const Real lowerPrice = blackPrice(0.001);
-            const Real upperPrice = blackPrice(10);
-            const Real modelPrice = modelValue();
+        double error;
+        
+        switch (calibrationErrorType_) {
+          case RelativePriceError:
+            error = std::fabs(marketValue() - modelValue())/marketValue();
+            break;
+          case PriceError:
+            error = marketValue() - modelValue();
+            break;
+          case ImpliedVolError: 
+            {
+              const Real lowerPrice = blackPrice(0.001);
+              const Real upperPrice = blackPrice(10);
+              const Real modelPrice = modelValue();
 
-            Volatility implied;
-            if (modelPrice <= lowerPrice)
-                implied = 0.001;
-            else
-                if (modelPrice >= upperPrice)
-                    implied = 10.0;
-                else
-                    implied = this->impliedVolatility(
-                                        modelPrice, 1e-12, 5000, 0.001, 10);
-
-            return implied - volatility_->value();
+              Volatility implied;
+              if (modelPrice <= lowerPrice)
+                  implied = 0.001;
+              else
+                  if (modelPrice >= upperPrice)
+                      implied = 10.0;
+                  else
+                      implied = this->impliedVolatility(
+                                          modelPrice, 1e-12, 5000, 0.001, 10);
+              error = implied - volatility_->value();
+            }
+            break;
+          default:
+            QL_FAIL("unknown Calibration Error Type");
         }
-        else {
-            return std::fabs(marketValue() - modelValue())/marketValue();
-        }
+        
+        return error;
     }
 }

@@ -33,11 +33,15 @@ namespace QuantLib {
     //! liquid market instrument used during calibration
     class CalibrationHelper : public Observer, public Observable {
       public:
+        enum CalibrationErrorType {
+                            RelativePriceError, PriceError, ImpliedVolError};
+          
         CalibrationHelper(const Handle<Quote>& volatility,
                           const Handle<YieldTermStructure>& termStructure,
-                          bool calibrateVolatility = false)
+                          CalibrationErrorType calibrationErrorType 
+                                                          = RelativePriceError)
         : volatility_(volatility), termStructure_(termStructure),
-          calibrateVolatility_(calibrateVolatility) {
+          calibrationErrorType_(calibrationErrorType) {
             registerWith(volatility_);
             registerWith(termStructure_);
         }
@@ -79,7 +83,7 @@ namespace QuantLib {
 
       private:
         class ImpliedVolatilityHelper;
-        const bool calibrateVolatility_;
+        const CalibrationErrorType calibrationErrorType_;
     };
 
 }

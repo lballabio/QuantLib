@@ -298,7 +298,8 @@ void LiborMarketModelTest::testCalibration() {
 
         boost::shared_ptr<CalibrationHelper> caphelper(
             new CapHelper(maturity, capVol, index, Annual,
-                          index->dayCounter(), true, termStructure, true));
+                          index->dayCounter(), true, termStructure, 
+                          CalibrationHelper::ImpliedVolError));
 
         caphelper->setPricingEngine(boost::shared_ptr<PricingEngine>(
                            new AnalyticCapFloorEngine(model, termStructure)));
@@ -317,7 +318,8 @@ void LiborMarketModelTest::testCalibration() {
                     new SwaptionHelper(maturity, len, swaptionVol, index,
                                        index->tenor(), dayCounter,
                                        index->dayCounter(),
-                                       termStructure, true));
+                                       termStructure, 
+                                       CalibrationHelper::ImpliedVolError));
 
                 swaptionHelper->setPricingEngine(
                      boost::shared_ptr<PricingEngine>(

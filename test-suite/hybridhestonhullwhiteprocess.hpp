@@ -36,6 +36,7 @@ class HybridHestonHullWhiteProcessTest {
     static void testCallableEquityPricing();
     static void testDiscretizationError();
     static void testFdmHestonHullWhiteEngine();
+    static void testHestonHullWhiteCalibration();
     static boost::unit_test_framework::test_suite* suite();
 };
 

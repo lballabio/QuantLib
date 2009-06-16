@@ -40,7 +40,8 @@ namespace QuantLib {
                           const Handle<Quote>& volatility,
                           const Handle<YieldTermStructure>& riskFreeRate,
                           const Handle<YieldTermStructure>& dividendYield,
-                          bool calibrateVolatility = false);
+                          CalibrationHelper::CalibrationErrorType errorType
+                                    = CalibrationHelper::RelativePriceError);
 
         void addTimesTo(std::list<Time>&) const {}
         Real modelValue() const;

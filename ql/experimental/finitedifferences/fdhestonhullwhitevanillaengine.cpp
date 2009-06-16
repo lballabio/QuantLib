@@ -25,6 +25,7 @@
 #include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
 #include <ql/experimental/finitedifferences/uniform1dmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
+#include <ql/experimental/finitedifferences/fdmhullwhitemesher.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
@@ -83,20 +84,13 @@ namespace QuantLib {
                     hestonProcess->s0(), hestonProcess->dividendYield(), 
                     hestonProcess->riskFreeRate(), 
                     varianceMesher->volaEstimate()),
-                 layout, 0, maturity,
-                 payoff->strike(), arguments_.cashFlow));
+                layout, 0, maturity,
+                payoff->strike(), arguments_.cashFlow));
        
-        //2.3 The short rate mesher
-        const Rate r0    = hwProcess_->x0();
-        const Rate r_exp = hwProcess_->expectation (0, r0, maturity);
-        const Rate dev =  InverseCumulativeNormal()(1-0.0025)
-                          *hwProcess_->stdDeviation(0, r0, maturity);
-        
-        const Rate rMin = ( r_exp-dev < r0-0.2*dev) ? r_exp-dev : r0-0.2*dev;
-        const Rate rMax = ( r_exp+dev > r0+0.2*dev) ? r_exp+dev : r0+0.2*dev;
-        
+        //2.3 The short rate mesher        
+        const Rate r0 = hwProcess_->x0();
         const boost::shared_ptr<Fdm1dMesher> shortRateMesher(
-                                      new Uniform1dMesher(rMin, rMax, rGrid_));
+                        new FdmHullWhiteMesher(rGrid_, hwProcess_, maturity));
         
         std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
         meshers.push_back(equityMesher);
@@ -155,9 +149,9 @@ namespace QuantLib {
             VanillaOption option(payoff, 
                 boost::shared_ptr<Exercise>(new EuropeanExercise(
                                             arguments_.exercise->lastDate())));
-            
             option.setPricingEngine(boost::shared_ptr<PricingEngine>(
                                        new AnalyticHestonEngine(model_, 164)));
+            
             const Real analyticNPV = option.NPV();
             
             FdmHestonSolver::FdmSchemeType hestonType;

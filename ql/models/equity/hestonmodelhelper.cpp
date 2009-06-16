@@ -28,15 +28,15 @@
 namespace QuantLib {
 
     HestonModelHelper::HestonModelHelper(
-                              const Period& maturity,
-                              const Calendar& calendar,
-                              const Real s0,
-                              const Real strikePrice,
-                              const Handle<Quote>& volatility,
-                              const Handle<YieldTermStructure>& riskFreeRate,
-                              const Handle<YieldTermStructure>& dividendYield,
-                              bool calibrateVolatility)
-    : CalibrationHelper(volatility, riskFreeRate, calibrateVolatility),
+                            const Period& maturity,
+                            const Calendar& calendar,
+                            const Real s0,
+                            const Real strikePrice,
+                            const Handle<Quote>& volatility,
+                            const Handle<YieldTermStructure>& riskFreeRate,
+                            const Handle<YieldTermStructure>& dividendYield,
+                            CalibrationHelper::CalibrationErrorType errorType)
+    : CalibrationHelper(volatility, riskFreeRate, errorType),
       dividendYield_(dividendYield),
       exerciseDate_(calendar.advance(riskFreeRate->referenceDate(),
                                      maturity)),

@@ -1,9 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Andreas Gaida
- Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2009 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,29 +17,24 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmhestonvariancemesher.hpp
-    \brief One-dimensional grid mesher for the variance in the heston problem
+/*! \file fdmhullwhitemesher.hpp
+    \brief One-dimensional grid mesher for the Hull-White short rate process
 */
 
-#ifndef quantlib_fdm_heston_variance_mesher_hpp
-#define quantlib_fdm_heston_variance_mesher_hpp
+#ifndef quantlib_fdm_hull_white_mesher_hpp
+#define quantlib_fdm_hull_white_mesher_hpp
 
-#include <ql/processes/hestonprocess.hpp>
+#include <ql/processes/hullwhiteprocess.hpp>
 #include <ql/experimental/finitedifferences/fdm1dmesher.hpp>
 
 namespace QuantLib {
 
-    class FdmHestonVarianceMesher : public Fdm1dMesher {
+    class FdmHullWhiteMesher : public Fdm1dMesher {
       public:
-        FdmHestonVarianceMesher(
+        FdmHullWhiteMesher(
             Size size,
-            const boost::shared_ptr<HestonProcess> & process,
+            const boost::shared_ptr<HullWhiteProcess>& process,
             Time maturity, Size tAvgSteps = 10, Real epsilon = 0.0001);
-
-        Real volaEstimate() const { return volaEstimate_; }
-
-      private:
-        Real volaEstimate_;
     };
 }
 

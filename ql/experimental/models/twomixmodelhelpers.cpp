@@ -33,8 +33,7 @@ namespace QuantLib {
                            Rate strike, Size n, Real normalizingFactor)
     : CalibrationHelper(
                    volatility,
-                   index->yoyInflationTermStructure()->nominalTermStructure(),
-                   false), // i.e. calibrateVolatility = false
+                   index->yoyInflationTermStructure()->nominalTermStructure()),
       volatility_(volatility), notional_(notional), capFloorType_(capFloorType),
       lag_(lag), fixingDays_(fixingDays),
       index_(index), strike_(strike), n_(n),
@@ -106,8 +105,7 @@ namespace QuantLib {
                                   CapFloor::Type capFloorType,
                                   const boost::shared_ptr<IborIndex>& index,
                                   Rate strike, Size n, Real normalizingFactor)
-    : CalibrationHelper(volatility, index->termStructure(),
-                        false), // i.e. calibrateVolatility = false
+    : CalibrationHelper(volatility, index->termStructure()),
       volatility_(volatility), notional_(notional), capFloorType_(capFloorType),
       fixingDays_(index->fixingDays()),
       index_(index), strike_(strike), n_(n),

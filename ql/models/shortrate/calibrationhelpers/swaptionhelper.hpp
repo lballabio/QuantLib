@@ -45,7 +45,8 @@ namespace QuantLib {
                        const DayCounter& fixedLegDayCounter,
                        const DayCounter& floatingLegDayCounter,
                        const Handle<YieldTermStructure>& termStructure,
-                       bool calibrateVolatility = false);
+                       CalibrationHelper::CalibrationErrorType errorType
+                                      = CalibrationHelper::RelativePriceError);
         virtual void addTimesTo(std::list<Time>& times) const;
         virtual Real modelValue() const;
         virtual Real blackPrice(Volatility volatility) const;

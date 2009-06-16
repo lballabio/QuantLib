@@ -24,6 +24,7 @@
 #include <ql/experimental/finitedifferences/fdmhestonop.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp>
+#include <ql/experimental/finitedifferences/fdmhullwhitemesher.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearop.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearopcomposite.hpp>

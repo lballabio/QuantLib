@@ -32,16 +32,15 @@ namespace QuantLib {
     FdmHestonVarianceMesher::FdmHestonVarianceMesher(
         Size size,
         const boost::shared_ptr<HestonProcess> & process,
-        Time maturity, Size tAvgSteps)
+        Time maturity, Size tAvgSteps, Real epsilon)
         : Fdm1dMesher(size) {
-
-        const Real epsilon=0.0001;
 
         std::vector<Real> vGrid(size, 0.0), pGrid(size, 0.0);
         const Real df  = 4*process->theta()*process->kappa()/
             square<Real>()(process->sigma());
         try {
             std::multiset<std::pair<Real, Real> > grid;
+            
             for (Size l=1; l<=tAvgSteps; ++l) {
                 const Real t = (maturity*l)/tAvgSteps;
                 const Real ncp = 4*process->kappa()*std::exp(-process->kappa()*t)
@@ -76,7 +75,7 @@ namespace QuantLib {
                 }
             }
             QL_REQUIRE(grid.size() == size*tAvgSteps, 
-                       "somethings wrong with the grid size");
+                       "something wrong with the grid size");
             
             std::vector<std::pair<Real, Real> > tp(grid.begin(), grid.end());
             

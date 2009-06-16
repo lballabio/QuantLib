@@ -258,9 +258,10 @@ void GJRGARCHModelTest::testDAXCalibration() {
 
             Period maturity((int)((t[m]+3)/7.), Weeks); // round to weeks
             options.push_back(boost::shared_ptr<CalibrationHelper>(
-                        new HestonModelHelper(maturity, calendar,
-                                              s0->value(), strike[s], vol,
-                                              riskFreeTS, dividendTS, true)));
+                    new HestonModelHelper(maturity, calendar,
+                                          s0->value(), strike[s], vol,
+                                          riskFreeTS, dividendTS, 
+                                          CalibrationHelper::ImpliedVolError)));
         }
     }
 

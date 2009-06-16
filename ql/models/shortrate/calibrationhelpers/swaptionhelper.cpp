@@ -37,8 +37,8 @@ namespace QuantLib {
                               const DayCounter& fixedLegDayCounter,
                               const DayCounter& floatingLegDayCounter,
                               const Handle<YieldTermStructure>& termStructure,
-                              bool calibrateVolatility)
-    : CalibrationHelper(volatility,termStructure, calibrateVolatility) {
+                              CalibrationHelper::CalibrationErrorType errorType)
+    : CalibrationHelper(volatility,termStructure, errorType) {
 
         Calendar calendar = index->fixingCalendar();
         Period indexTenor = index->tenor();

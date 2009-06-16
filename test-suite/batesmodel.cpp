@@ -416,9 +416,10 @@ void BatesModelTest::testDAXCalibration() {
             // this is the calibration helper for the bates models
             // FLOATING_POINT_EXCEPTION
             options.push_back(boost::shared_ptr<CalibrationHelper>(
-                        new HestonModelHelper(maturity, calendar,
-                                              s0->value(), strike[s], vol,
-                                              riskFreeTS, dividendTS, true)));
+                    new HestonModelHelper(maturity, calendar,
+                                          s0->value(), strike[s], vol,
+                                          riskFreeTS, dividendTS, 
+                                          CalibrationHelper::ImpliedVolError)));
             options.back()->setPricingEngine(batesEngine);
         }
     }

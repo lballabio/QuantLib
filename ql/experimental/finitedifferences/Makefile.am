@@ -27,6 +27,7 @@ this_include_HEADERS = \
 	fdmhestonop.hpp \
 	fdmhestonsolver.hpp \
 	fdmhestonvariancemesher.hpp \
+	fdmhullwhitemesher.hpp \
 	fdminnervaluecalculator.hpp \
 	fdmlinearop.hpp \
 	fdmlinearopcomposite.hpp \
@@ -68,6 +69,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdmhestonop.cpp \
 	fdmhestonsolver.cpp \
 	fdmhestonvariancemesher.cpp \
+	fdmhullwhitemesher.cpp \
 	fdmlinearoplayout.cpp \
 	fdmmeshercomposite.cpp \
 	fdmquantohelper.cpp \
