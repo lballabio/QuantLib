@@ -18,6 +18,7 @@
 */
 
 #include <ql/math/functional.hpp>
+#include <ql/processes/hullwhiteprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/experimental/finitedifferences/fdmhullwhitemesher.hpp>
 

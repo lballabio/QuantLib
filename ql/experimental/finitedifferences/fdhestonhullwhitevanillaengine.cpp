@@ -80,12 +80,12 @@ namespace QuantLib {
 
         const boost::shared_ptr<Fdm1dMesher> equityMesher(
             new FdmBlackScholesMesher(
+                xGrid_,
                 FdmBlackScholesMesher::processHelper(
                     hestonProcess->s0(), hestonProcess->dividendYield(), 
                     hestonProcess->riskFreeRate(), 
                     varianceMesher->volaEstimate()),
-                layout, 0, maturity,
-                payoff->strike(), arguments_.cashFlow));
+                maturity, payoff->strike(), arguments_.cashFlow));
        
         //2.3 The short rate mesher        
         const Rate r0 = hwProcess_->x0();

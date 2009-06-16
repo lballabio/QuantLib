@@ -31,13 +31,13 @@
 namespace QuantLib {
 
     FdmBlackScholesMesher::FdmBlackScholesMesher(
+            Size size,
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            const boost::shared_ptr<FdmLinearOpLayout>& index,
-            Size equityDirection, Time maturity, Real strike,
+            Time maturity, Real strike,
             const DividendSchedule& dividends,
             Real xMinConstraint, Real xMaxConstraint, 
             Real eps, Real scaleFactor)
-    : Fdm1dMesher(index->dim()[equityDirection]) {
+    : Fdm1dMesher(size) {
 
         const Real spot = process->x0();
         QL_REQUIRE(spot > 0.0, "negative or null underlying given");
@@ -81,7 +81,7 @@ namespace QuantLib {
             xMax = xMaxConstraint;
         }
 
-        Uniform1dMesher helper(xMin, xMax, index->dim()[equityDirection]);
+        Uniform1dMesher helper(xMin, xMax, size);
         locations_ = helper.locations();
         for (Size i=0; i < locations_.size(); ++i) {
             dplus_[i]  = helper.dplus(i);

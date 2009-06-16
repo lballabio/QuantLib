@@ -66,7 +66,7 @@ namespace QuantLib {
         }
 
         const boost::shared_ptr<Fdm1dMesher> equityMesher(
-            new FdmBlackScholesMesher(process_, layout, 0, maturity,
+            new FdmBlackScholesMesher(xGrid_, process_, maturity,
                                       payoff->strike(), arguments_.cashFlow,
                                       xMin, xMax));
         

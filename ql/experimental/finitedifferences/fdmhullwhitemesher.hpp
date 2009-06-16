@@ -24,10 +24,10 @@
 #ifndef quantlib_fdm_hull_white_mesher_hpp
 #define quantlib_fdm_hull_white_mesher_hpp
 
-#include <ql/processes/hullwhiteprocess.hpp>
 #include <ql/experimental/finitedifferences/fdm1dmesher.hpp>
 
 namespace QuantLib {
+    class HullWhiteProcess;
 
     class FdmHullWhiteMesher : public Fdm1dMesher {
       public:

@@ -25,7 +25,7 @@
 #define quantlib_fdm_black_scholes_mesher_hpp
 
 #include <ql/instruments/dividendschedule.hpp>
-#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
+#include <ql/experimental/finitedifferences/fdm1dmesher.hpp>
 
 namespace QuantLib {
     
@@ -35,9 +35,9 @@ namespace QuantLib {
     class FdmBlackScholesMesher : public Fdm1dMesher {
       public:
         FdmBlackScholesMesher(
+            Size size,
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            const boost::shared_ptr<FdmLinearOpLayout>& index,            
-            Size equityDirection, Time maturity, Real strike,
+            Time maturity, Real strike,
             const DividendSchedule& dividends = DividendSchedule(),
             Real xMinConstraint = Null<Real>(),
             Real xMaxConstraint = Null<Real>(),
