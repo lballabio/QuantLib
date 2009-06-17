@@ -285,7 +285,7 @@ namespace QuantLib {
                                  Real strike)
     : dividendDiscount_(dividendDiscount), riskFreeDiscount_(riskFreeDiscount),
       standardDeviation_(standardDeviation),
-      strike_(strike),payoff_(payoff){};
+      strike_(strike),payoff_(payoff){}
 
     Real ImpliedSpotHelper::operator ()(Real spot)const{
 
