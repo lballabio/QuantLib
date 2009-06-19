@@ -243,23 +243,6 @@ if test "$ql_belt_and_braces" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_belt_and_braces])
 
-AC_MSG_CHECKING([whether to enable early payments])
-AC_ARG_ENABLE([early-payments],
-              AC_HELP_STRING([--enable-early-payments],
-                             [If enabled (the default,) payments are
-                              considered to be settled at the beginning
-                              of the day. Therefore, payments occurring
-                              at today's date are not included in the NPV
-                              of an instrument.]),
-              [ql_early_payments=$enableval],
-              [ql_early_payments=yes])
-if test "$ql_early_payments" = "no" ; then
-   AC_DEFINE([QL_TODAYS_PAYMENTS],[1],
-             [Define this if payments occurring today should enter the NPV
-              of an instrument.])
-fi
-AC_MSG_RESULT([$ql_early_payments])
-
 AC_MSG_CHECKING([whether to enable deprecated code])
 AC_ARG_ENABLE([deprecated-code],
               AC_HELP_STRING([--enable-deprecated-code],

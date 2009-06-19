@@ -59,12 +59,6 @@
 //#   define QL_EXTRA_SAFETY_CHECKS
 #endif
 
-/* Define this if payments occurring today should enter the NPV of an
-   instrument. */
-#ifndef QL_TODAYS_PAYMENTS
-//#   define QL_TODAYS_PAYMENTS
-#endif
-
 /* Define this if you want to disable deprecated code. */
 #ifndef QL_DISABLE_DEPRECATED
 //#   define QL_DISABLE_DEPRECATED

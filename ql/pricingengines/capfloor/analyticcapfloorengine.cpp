@@ -52,6 +52,15 @@ namespace QuantLib {
         CapFloor::Type type = arguments_.type;
         Size nPeriods = arguments_.endDates.size();
 
+        bool includeRefDatePayments =
+            Settings::instance().includeReferenceDateCashFlows();
+        if (referenceDate == Settings::instance().evaluationDate()) {
+            boost::optional<bool> includeTodaysPayments =
+                Settings::instance().includeTodaysCashFlows();
+            if (includeTodaysPayments)
+                includeRefDatePayments = *includeTodaysPayments;
+        }
+
         for (Size i=0; i<nPeriods; i++) {
 
             Time fixingTime =
@@ -61,11 +70,10 @@ namespace QuantLib {
                 dayCounter.yearFraction(referenceDate,
                                         arguments_.endDates[i]);
 
-            #if defined(QL_TODAYS_PAYMENTS)
-            if (paymentTime >= 0.0) {
-            #else
-            if (paymentTime > 0.0) {
-            #endif
+            bool not_expired =
+                includeRefDatePayments ? paymentTime >= 0.0 : paymentTime > 0.0;
+
+            if (not_expired) {
                 Time tenor = arguments_.accrualTimes[i];
                 Rate fixing = arguments_.forwards[i];
                 if (fixingTime <= 0.0) {
