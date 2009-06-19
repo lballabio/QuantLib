@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 François du Vignaud
- Copyright (C) 2004, 2005, 2007 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2007, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,6 +29,7 @@
 #include <ql/patterns/singleton.hpp>
 #include <ql/time/date.hpp>
 #include <ql/utilities/observablevalue.hpp>
+#include <boost/optional.hpp>
 
 namespace QuantLib {
 
@@ -69,10 +70,30 @@ namespace QuantLib {
         */
         DateProxy& evaluationDate();
         const DateProxy& evaluationDate() const;
+
+        /*! This flag specifies whether or not cashflows occurring on
+            the NPV date should, by default, enter the NPV.  It can be
+            overridden locally when calling the NPV-related
+            methods.
+        */
+        bool& includeReferenceDateCashFlows();
+        bool includeReferenceDateCashFlows() const;
+
+        /*! If set, this flag specifies whether or not cashflows
+            occurring on today's date should enter the NPV.  When the
+            NPV date (i.e., the date at which the cash flows are
+            discounted) equals today's date, this flag overrides the
+            behavior chosen for the NPV date.
+        */
+        boost::optional<bool>& includeTodaysCashFlows();
+        boost::optional<bool> includeTodaysCashFlows() const;
+
         bool& enforcesTodaysHistoricFixings();
         bool enforcesTodaysHistoricFixings() const;
       private:
         DateProxy evaluationDate_;
+        bool includeReferenceDateCashFlows_;
+        boost::optional<bool> includeTodaysCashFlows_;
         bool enforcesTodaysHistoricFixings_;
     };
 
@@ -84,6 +105,8 @@ namespace QuantLib {
         ~SavedSettings();
       private:
         Date evaluationDate_;
+        bool includeReferenceDateCashFlows_;
+        boost::optional<bool> includeTodaysCashFlows_;
         bool enforcesTodaysHistoricFixings_;
     };
 

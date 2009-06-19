@@ -14,6 +14,7 @@ QL_TESTS = \
 	calendars.hpp calendars.cpp \
 	capfloor.hpp capfloor.cpp \
 	capflooredcoupon.hpp capflooredcoupon.cpp \
+	cashflows.hpp cashflows.cpp \
 	cdo.hpp cdo.cpp \
 	cdsoption.hpp cdsoption.cpp \
 	cliquetoption.hpp cliquetoption.cpp \

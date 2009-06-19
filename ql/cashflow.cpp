@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2009 Ferdinando Ametrano
- Copyright (C) 2005 Joseph Wang
+ Copyright (C) 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,30 +18,31 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/event.hpp>
-#include <ql/settings.hpp>
+#include <ql/cashflow.hpp>
 
 namespace QuantLib {
 
-    bool Event::hasOccurred(const Date& d,
-                            boost::optional<bool> includeToday) const {
-        Date refDate =
-            d != Date() ? d : Settings::instance().evaluationDate();
-        bool includeTodaysEvent =
-            includeToday ? *includeToday :
-                           Settings::instance().includeReferenceDateCashFlows();
-        if (includeTodaysEvent)
-            return date() < refDate;
-        else
-            return date() <= refDate;
+    bool CashFlow::hasOccurred(const Date& refDate,
+                               boost::optional<bool> includeRefDate) const {
+        if (refDate == Date() ||
+            refDate == Settings::instance().evaluationDate()) {
+            // today's date; we override the bool with the one
+            // specified in the settings (if any)
+            boost::optional<bool> includeToday =
+                Settings::instance().includeTodaysCashFlows();
+            if (includeToday)
+                includeRefDate = *includeToday;
+        }
+        return Event::hasOccurred(refDate, includeRefDate);
     }
 
-    void Event::accept(AcyclicVisitor& v) {
-        Visitor<Event>* v1 = dynamic_cast<Visitor<Event>*>(&v);
+    void CashFlow::accept(AcyclicVisitor& v) {
+        Visitor<CashFlow>* v1 = dynamic_cast<Visitor<CashFlow>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else
-            QL_FAIL("not an event visitor");
+            Event::accept(v);
     }
 
 }
+

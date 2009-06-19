@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 François du Vignaud
- Copyright (C) 2004, 2005, 2007 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2007, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -45,7 +45,8 @@ namespace QuantLib {
 
 
     Settings::Settings()
-    : enforcesTodaysHistoricFixings_(false) {}
+    : includeReferenceDateCashFlows_(false),
+      enforcesTodaysHistoricFixings_(false) {}
 
     Settings::DateProxy& Settings::evaluationDate() {
         return evaluationDate_;
@@ -54,6 +55,25 @@ namespace QuantLib {
     const Settings::DateProxy& Settings::evaluationDate() const {
         return evaluationDate_;
     }
+
+
+    bool& Settings::includeReferenceDateCashFlows() {
+        return includeReferenceDateCashFlows_;
+    }
+
+    bool Settings::includeReferenceDateCashFlows() const {
+        return includeReferenceDateCashFlows_;
+    }
+
+
+    boost::optional<bool>& Settings::includeTodaysCashFlows() {
+        return includeTodaysCashFlows_;
+    }
+
+    boost::optional<bool> Settings::includeTodaysCashFlows() const {
+        return includeTodaysCashFlows_;
+    }
+
 
     bool& Settings::enforcesTodaysHistoricFixings() {
         return enforcesTodaysHistoricFixings_;
@@ -67,12 +87,19 @@ namespace QuantLib {
 
     SavedSettings::SavedSettings()
     : evaluationDate_(Settings::instance().evaluationDate()),
+      includeReferenceDateCashFlows_(
+                        Settings::instance().includeReferenceDateCashFlows()),
+      includeTodaysCashFlows_(Settings::instance().includeTodaysCashFlows()),
       enforcesTodaysHistoricFixings_(
-                      Settings::instance().enforcesTodaysHistoricFixings()) {}
+                        Settings::instance().enforcesTodaysHistoricFixings()) {}
 
     SavedSettings::~SavedSettings() {
         try {
             Settings::instance().evaluationDate() = evaluationDate_;
+            Settings::instance().includeReferenceDateCashFlows() =
+                includeReferenceDateCashFlows_;
+            Settings::instance().includeTodaysCashFlows() =
+                includeTodaysCashFlows_;
             Settings::instance().enforcesTodaysHistoricFixings() =
                 enforcesTodaysHistoricFixings_;
         } catch (...) {

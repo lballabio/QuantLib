@@ -56,6 +56,7 @@ this_include_HEADERS = \
 	volatilitymodel.hpp
 
 libQuantLib_la_SOURCES = \
+    cashflow.cpp \
     currency.cpp \
 	default.cpp \
 	discretizedasset.cpp \

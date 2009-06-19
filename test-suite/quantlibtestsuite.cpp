@@ -19,6 +19,7 @@
 */
 
 #include <ql/types.hpp>
+#include <ql/settings.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/timer.hpp>
 
@@ -53,6 +54,7 @@
 #include "calendars.hpp"
 #include "capfloor.hpp"
 #include "capflooredcoupon.hpp"
+#include "cashflows.hpp"
 #include "cdo.hpp"
 #include "cdsoption.hpp"
 #include "cliquetoption.hpp"
@@ -164,6 +166,18 @@ namespace {
                   << seconds << " s\n" << std::endl;
     }
 
+    void configure() {
+        /* if needed, either or both the lines below can be
+           uncommented and/or changed to run the test suite with a
+           different configuration. In the future, we'll need a
+           mechanism that doesn't force us to recompile (possibly a
+           couple of command-line flags for the test suite?)
+        */
+
+        //QuantLib::Settings::instance().includeReferenceDateCashFlows() = true;
+        //QuantLib::Settings::instance().includeTodaysCashFlows() = boost::none;
+    }
+
 }
 
 #if defined(QL_ENABLE_SESSIONS)
@@ -194,6 +208,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test_suite* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(QUANTLIB_TEST_CASE(startTimer));
+    test->add(QUANTLIB_TEST_CASE(configure));
 
     test->add(AmericanOptionTest::suite());
     test->add(ArrayTest::suite());
@@ -208,6 +223,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CalendarTest::suite());
     test->add(CapFloorTest::suite());
     test->add(CapFlooredCouponTest::suite());
+    test->add(CashFlowsTest::suite());
     test->add(CdsOptionTest::suite());
     test->add(CdoTest::suite());
     test->add(CliquetOptionTest::suite());

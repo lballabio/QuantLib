@@ -28,6 +28,7 @@
 #include <ql/time/date.hpp>
 #include <ql/patterns/observable.hpp>
 #include <ql/patterns/visitor.hpp>
+#include <boost/optional.hpp>
 
 namespace QuantLib {
 
@@ -48,8 +49,9 @@ namespace QuantLib {
             date is the same as the refDate, i.e. this method returns false if
             the event date is the same as the refDate.
         */
-        bool hasOccurred(const Date& refDate = Date(),
-                         bool includeRefDate = true) const;
+        virtual bool hasOccurred(
+                    const Date& refDate = Date(),
+                    boost::optional<bool> includeRefDate = boost::none) const;
         //@}
 
         //! \name Visitability

@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -47,8 +47,9 @@ namespace QuantLib {
         /*! overloads Event::hasOccurred in order to take QL_TODAYS_PAYMENTS
             in account
         */
-        bool hasOccurred(const Date& refDate = Date(),
-                         bool includeRefDate = true) const;
+        bool hasOccurred(
+                    const Date& refDate = Date(),
+                    boost::optional<bool> includeRefDate = boost::none) const;
         //@}
         //! \name CashFlow interface
         //@{
@@ -74,25 +75,6 @@ namespace QuantLib {
             return c1.date() < c2.date();
         }
     };
-
-    // inline definitions
-
-    inline bool CashFlow::hasOccurred(const Date& refDate,
-                                      bool includeRefDate) const {
-        #ifndef QL_TODAYS_PAYMENTS
-        if (refDate == Date() || refDate == Settings::instance().evaluationDate())
-            includeRefDate = false;
-        #endif
-        return Event::hasOccurred(refDate, includeRefDate);
-    }
-
-    inline void CashFlow::accept(AcyclicVisitor& v) {
-        Visitor<CashFlow>* v1 = dynamic_cast<Visitor<CashFlow>*>(&v);
-        if (v1 != 0)
-            v1->visit(*this);
-        else
-            Event::accept(v);
-    }
 
 }
 
