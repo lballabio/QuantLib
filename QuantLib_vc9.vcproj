@@ -9101,6 +9101,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholesmultistrikemesher.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholesmultistrikemesher.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholesop.cpp"
 					>
 				</File>
@@ -9832,6 +9840,10 @@
 		</Filter>
 		<File
 			RelativePath=".\ql\auto_link.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\cashflow.cpp"
 			>
 		</File>
 		<File
