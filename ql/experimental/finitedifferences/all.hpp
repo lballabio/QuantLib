@@ -14,6 +14,7 @@
 #include <ql/experimental/finitedifferences/fdm1dmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
+#include <ql/experimental/finitedifferences/fdmblackscholesmultistrikemesher.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesop.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholessolver.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>

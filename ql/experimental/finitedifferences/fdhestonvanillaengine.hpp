@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2008, 2009 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -55,11 +55,20 @@ namespace QuantLib {
             Real theta = 0.3, Real mu = 0.5);
 
         void calculate() const;
-
+        
+        // multiple strikes caching engine
+        void update();
+        void enableMultipleStrikesCaching(const std::vector<Real>& strikes);
+        
       private:
         const Size tGrid_, xGrid_, vGrid_;
         const FdmHestonSolver::FdmSchemeType type_;
         const Real theta_, mu_;
+        
+        std::vector<Real> strikes_;
+        mutable std::vector<std::pair<DividendVanillaOption::arguments,
+                                      DividendVanillaOption::results> >
+                                                            cachedArgs2results_;
     };
 
 }

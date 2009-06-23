@@ -59,6 +59,10 @@ namespace QuantLib {
 
         void calculate() const;
 
+        // multiple strikes caching engine
+        void update();
+        void enableMultipleStrikesCaching(const std::vector<Real>& strikes);
+        
       private:
         const boost::shared_ptr<HullWhiteProcess> hwProcess_;
         const Real corrEquityShortRate_;
@@ -66,6 +70,11 @@ namespace QuantLib {
         const bool controlVariate_;
         const FdmHestonHullWhiteSolver::FdmSchemeType type_;
         const Real theta_, mu_;
+        
+        std::vector<Real> strikes_;
+        mutable std::vector<std::pair<DividendVanillaOption::arguments,
+                                      DividendVanillaOption::results> >
+                                                            cachedArgs2results_;
     };
 }
 #endif

@@ -1005,6 +1005,8 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
                           start_theta, start_sigma, start_rho));
     boost::shared_ptr<HestonModel> analyticHestonModel
                                             (new HestonModel(hestonProcess));
+    boost::shared_ptr<PricingEngine> analyticHestonEngine(
+                         new AnalyticHestonEngine(analyticHestonModel, 164));
     boost::shared_ptr<HestonModel> fdmHestonModel
                                             (new HestonModel(hestonProcess));
   
@@ -1067,8 +1069,7 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
             v.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(vt)));
             
             options.back()->setPricingEngine(
-                boost::shared_ptr<PricingEngine>(
-                    new AnalyticHestonEngine(analyticHestonModel, 164)));
+                boost::shared_ptr<PricingEngine>(analyticHestonEngine));
         }
     }    
         
@@ -1082,33 +1083,43 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
     fdmHestonModel->setParams(analyticHestonModel->params());
 
     for (Size i=0; i < LENGTH(maturities); ++i) {
+        const Size tGrid = std::max(10.0,maturities[i]*10.0);
+        boost::shared_ptr<FdHestonHullWhiteVanillaEngine> engine(
+            new FdHestonHullWhiteVanillaEngine(fdmHestonModel, hwProcess, 
+                                               equityShortRateCorr, 
+                                               tGrid, 61, 13, 9, true));
+        
+        engine->enableMultipleStrikesCaching(
+                     std::vector<Real>(strikes, strikes + LENGTH(strikes)));
+        
         const Period maturity((int)(maturities[i]*12.0+0.5), Months);
-        boost::shared_ptr<Exercise> exercise(
-                                    new EuropeanExercise(today + maturity));
-
+        
         for (Size j=0; j < LENGTH(strikes); ++j) {
+            // multiple strikes engine works best if the first option
+            // per maturity has the average strike (because the first option
+            // is priced first during the calibration and the first pricing
+            // is used to calculate the prices for all strikes
+            const Size js = (j + (LENGTH(strikes)-1)/2) % LENGTH(strikes);
+ 
             boost::shared_ptr<StrikedTypePayoff> payoff(
-                             new PlainVanillaPayoff(Option::Call, strikes[j]));
+                             new PlainVanillaPayoff(Option::Call, strikes[js]));
             Handle<Quote> v(boost::shared_ptr<Quote>(
-                                   new SimpleQuote(vol[i*LENGTH(strikes)+j])));
+                                   new SimpleQuote(vol[i*LENGTH(strikes)+js])));
             options.push_back(boost::shared_ptr<CalibrationHelper>(
-                new HestonModelHelper(maturity, calendar,s0->value(), 
-                                      strikes[j], v, rTS, qTS,
+                new HestonModelHelper(maturity, calendar, s0->value(), 
+                                      strikes[js], v, rTS, qTS,
                                       CalibrationHelper::PriceError)));
             
-            options.back()->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                new FdHestonHullWhiteVanillaEngine(
-                         fdmHestonModel, hwProcess, equityShortRateCorr, 
-                         std::max(10.0,maturities[i]*10.0), 51, 7, 7, true)));
+            options.back()->setPricingEngine(engine);
         }
     }    
 
-    LevenbergMarquardt vm(1e-6, 1e-1, 1e-1);
+    LevenbergMarquardt vm(1e-6, 1e-2, 1e-2);
     fdmHestonModel->calibrate(options, vm, 
                               EndCriteria(400, 40, 1.0e-8, 1.0e-4, 1.0e-8),
                               corrConstraint);
     
-    const Real relTol = 0.02;
+    const Real relTol = 0.01;
     const Real expected_v0    =  0.12;
     const Real expected_kappa =  2.0;
     const Real expected_theta =  0.09;

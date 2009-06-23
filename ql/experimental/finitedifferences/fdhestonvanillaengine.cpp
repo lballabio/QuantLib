@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2008, 2009 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,6 +28,7 @@
 #include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
+#include <ql/experimental/finitedifferences/fdmblackscholesmultistrikemesher.hpp>
 
 namespace QuantLib {
 
@@ -43,6 +44,30 @@ namespace QuantLib {
     }
 
     void FdHestonVanillaEngine::calculate() const {
+        
+        // cache lookup for precalculated results
+        for (Size i=0; i < cachedArgs2results_.size(); ++i) {
+            if (   cachedArgs2results_[i].first.exercise->type() 
+                        == arguments_.exercise->type()
+                && cachedArgs2results_[i].first.exercise->dates()
+                        == arguments_.exercise->dates()) {
+                boost::shared_ptr<PlainVanillaPayoff> p1 =
+                    boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+                                                            arguments_.payoff);
+                boost::shared_ptr<PlainVanillaPayoff> p2 =
+                    boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+                                          cachedArgs2results_[i].first.payoff);
+                
+                if (p1 && p1->strike()     == p2->strike() 
+                       && p1->optionType() == p2->optionType()) {
+                    QL_REQUIRE(arguments_.cashFlow.empty(),
+                               "multiple strikes engine does "
+                               "not work with discrete dividends");
+                    results_ = cachedArgs2results_[i].second;
+                    return;
+                }
+            }
+        }
 
         // 1. Layout
         std::vector<Size> dim;
@@ -65,13 +90,27 @@ namespace QuantLib {
         const boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
 
-        const boost::shared_ptr<Fdm1dMesher> equityMesher(
-            new FdmBlackScholesMesher(
-                xGrid_,
-                FdmBlackScholesMesher::processHelper(
-                    process->s0(), process->dividendYield(), 
-                    process->riskFreeRate(), varianceMesher->volaEstimate()),
-                 maturity, payoff->strike(), arguments_.cashFlow));
+        boost::shared_ptr<Fdm1dMesher> equityMesher;
+        if (strikes_.empty()) {
+            equityMesher = boost::shared_ptr<Fdm1dMesher>(
+                new FdmBlackScholesMesher(
+                    xGrid_,
+                    FdmBlackScholesMesher::processHelper(
+                      process->s0(), process->dividendYield(), 
+                      process->riskFreeRate(), varianceMesher->volaEstimate()),
+                    maturity, payoff->strike(), arguments_.cashFlow));
+        }
+        else {
+            QL_REQUIRE(arguments_.cashFlow.empty(),"multiple strikes engine "
+                       "does not work with discrete dividends");
+            equityMesher = boost::shared_ptr<Fdm1dMesher>(
+                new FdmBlackScholesMultiStrikeMesher(
+                    xGrid_,
+                    FdmBlackScholesMesher::processHelper(
+                      process->s0(), process->dividendYield(), 
+                      process->riskFreeRate(), varianceMesher->volaEstimate()),
+                    maturity, strikes_));            
+        }
         
         std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
         meshers.push_back(equityMesher);
@@ -116,11 +155,39 @@ namespace QuantLib {
                                         maturity, tGrid_,
                                         type_, theta_, mu_));
 
-        const Real spot = process->s0()->value();
         const Real v0   = process->v0();
+        const Real spot = process->s0()->value();
+
         results_.value = solver->valueAt(spot, v0);
         results_.delta = solver->deltaAt(spot, v0);
         results_.gamma = solver->gammaAt(spot, v0);
         results_.theta = solver->thetaAt(spot, v0);
+        
+        cachedArgs2results_.resize(strikes_.size());        
+        for (Size i=0; i < strikes_.size(); ++i) {
+            cachedArgs2results_[i].first.exercise = arguments_.exercise;
+            cachedArgs2results_[i].first.payoff = 
+                boost::shared_ptr<PlainVanillaPayoff>(
+                    new PlainVanillaPayoff(payoff->optionType(), strikes_[i]));
+            const Real d = payoff->strike()/strikes_[i];
+            
+            DividendVanillaOption::results& 
+                                results = cachedArgs2results_[i].second;
+            results.value = solver->valueAt(spot*d, v0)/d;
+            results.delta = solver->deltaAt(spot*d, v0);
+            results.gamma = solver->gammaAt(spot*d, v0)*d;
+            results.theta = solver->thetaAt(spot*d, v0)/d;                
+        }
+    }
+    
+    void FdHestonVanillaEngine::update() {
+        cachedArgs2results_.clear();
+        GenericModelEngine<HestonModel, DividendVanillaOption::arguments,
+                           DividendVanillaOption::results>::update();
+    }
+    void FdHestonVanillaEngine::enableMultipleStrikesCaching(
+                                        const std::vector<Real>& strikes) {
+        strikes_ = strikes;
+        cachedArgs2results_.clear();
     }
 }

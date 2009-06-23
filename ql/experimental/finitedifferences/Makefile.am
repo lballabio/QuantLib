@@ -17,6 +17,7 @@ this_include_HEADERS = \
 	fdm1dmesher.hpp \
 	fdmamericanstepcondition.hpp \
 	fdmblackscholesmesher.hpp \
+	fdmblackscholesmultistrikemesher.hpp \
 	fdmblackscholesop.hpp \
 	fdmblackscholessolver.hpp \
 	fdmdirichletboundary.hpp \
@@ -60,6 +61,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdhestonhullwhitevanillaengine.cpp \
 	fdmamericanstepcondition.cpp \
 	fdmblackscholesmesher.cpp \
+	fdmblackscholesmultistrikemesher.cpp \
 	fdmblackscholesop.cpp \
 	fdmblackscholessolver.cpp \
 	fdmdirichletboundary.cpp \
