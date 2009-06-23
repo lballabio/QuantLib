@@ -852,6 +852,85 @@ void HestonModelTest::testDifferentIntegrals() {
     }
 }
 
+void HestonModelTest::testMultipleStrikesEngine() {
+    BOOST_MESSAGE("Testing Multiple Strikes Fd Heston engine...");
+
+    SavedSettings backup;
+
+    Date settlementDate(27, December, 2004);
+    Settings::instance().evaluationDate() = settlementDate;
+
+    DayCounter dayCounter = ActualActual();
+    Date exerciseDate(28, March, 2006);
+
+    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+
+    Handle<YieldTermStructure> riskFreeTS(flatRate(0.06, dayCounter));
+    Handle<YieldTermStructure> dividendTS(flatRate(0.02, dayCounter));
+
+    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(1.05)));
+
+    boost::shared_ptr<HestonProcess> process(new HestonProcess(
+                     riskFreeTS, dividendTS, s0, 0.16, 2.5, 0.09, 0.8, -0.8));
+    boost::shared_ptr<HestonModel> model(new HestonModel(process));
+    
+    std::vector<Real> strikes;
+    strikes.push_back(1.0);  strikes.push_back(0.5);
+    strikes.push_back(0.75); strikes.push_back(1.5); strikes.push_back(2.0);
+    
+    boost::shared_ptr<FdHestonVanillaEngine> singleStrikeEngine(
+                             new FdHestonVanillaEngine(model, 20, 400, 50));
+    boost::shared_ptr<FdHestonVanillaEngine> multiStrikeEngine(
+                             new FdHestonVanillaEngine(model, 20, 400, 50));
+    multiStrikeEngine->enableMultipleStrikesCaching(strikes);
+    
+    Real relTol = 5e-3;
+    for (Size i=0; i < strikes.size(); ++i) {
+        boost::shared_ptr<StrikedTypePayoff> payoff(
+                           new PlainVanillaPayoff(Option::Put, strikes[i]));
+        
+        VanillaOption aOption(payoff, exercise);
+        aOption.setPricingEngine(multiStrikeEngine);
+        
+        Real npvCalculated   = aOption.NPV();
+        Real deltaCalculated = aOption.delta();
+        Real gammaCalculated = aOption.gamma();
+        Real thetaCalculated = aOption.theta();
+        
+        aOption.setPricingEngine(singleStrikeEngine);
+        Real npvExpected   = aOption.NPV();
+        Real deltaExpected = aOption.delta();
+        Real gammaExpected = aOption.gamma();
+        Real thetaExpected = aOption.theta();
+       
+        if (std::fabs(npvCalculated-npvExpected)/npvExpected > relTol) {
+            BOOST_FAIL("failed to reproduce price with FD multi strike engine"
+                       << "\n    calculated: " << npvCalculated
+                       << "\n    expected:   " << npvExpected
+                       << "\n    error:      " << QL_SCIENTIFIC << relTol);
+        }
+        if (std::fabs(deltaCalculated-deltaExpected)/deltaExpected > relTol) {
+            BOOST_FAIL("failed to reproduce delta with FD multi strike engine"
+                       << "\n    calculated: " << deltaCalculated
+                       << "\n    expected:   " << deltaExpected
+                       << "\n    error:      " << QL_SCIENTIFIC << relTol);
+        }
+        if (std::fabs(gammaCalculated-gammaExpected)/gammaExpected > relTol) {
+            BOOST_FAIL("failed to reproduce gamma with FD multi strike engine"
+                       << "\n    calculated: " << gammaCalculated
+                       << "\n    expected:   " << gammaExpected
+                       << "\n    error:      " << QL_SCIENTIFIC << relTol);
+        }
+        if (std::fabs(thetaCalculated-thetaExpected)/thetaExpected > relTol) {
+            BOOST_FAIL("failed to reproduce theta with FD multi strike engine"
+                       << "\n    calculated: " << thetaCalculated
+                       << "\n    expected:   " << thetaExpected
+                       << "\n    error:      " << QL_SCIENTIFIC << relTol);
+        }
+    }
+}
+
+
 test_suite* HestonModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
 
@@ -866,6 +945,7 @@ test_suite* HestonModelTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDifferentIntegrals));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdBarrierVsCached));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdVanillaVsCached));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMultipleStrikesEngine));
 
     // this passes but takes way too long
     //suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMcVsCached));
