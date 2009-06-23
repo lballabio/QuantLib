@@ -383,8 +383,8 @@ namespace QuantLib {
                    "not an European option");
 
         // plain vanilla
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        boost::shared_ptr<PlainVanillaPayoff> payoff =
+            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         const boost::shared_ptr<HestonProcess>& process = model_->process();
