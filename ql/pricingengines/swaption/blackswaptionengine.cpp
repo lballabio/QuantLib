@@ -76,7 +76,8 @@ namespace QuantLib {
 
         // using the forecasting curve
         swap.setPricingEngine(boost::shared_ptr<PricingEngine>(new
-                    DiscountingSwapEngine(swap.iborIndex()->termStructure())));
+                      DiscountingSwapEngine(swap.iborIndex()->termStructure(),
+                                            false)));
         Rate atmForward = swap.fairRate();
 
         // Volatilities are quoted for zero-spreaded swaps.
@@ -95,8 +96,8 @@ namespace QuantLib {
         results_.additionalResults["atmForward"] = atmForward;
 
         // using the discounting curve
-        swap.setPricingEngine(boost::shared_ptr<PricingEngine>(new
-                                    DiscountingSwapEngine(termStructure_)));
+        swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                           new DiscountingSwapEngine(termStructure_, false)));
         Real annuity;
         switch(arguments_.settlementType) {
           case Settlement::Physical: {

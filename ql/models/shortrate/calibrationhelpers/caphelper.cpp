@@ -82,7 +82,7 @@ namespace QuantLib {
 
         Swap swap(floatingLeg, fixedLeg);
         swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                                   new DiscountingSwapEngine(termStructure)));
+                            new DiscountingSwapEngine(termStructure, false)));
         Rate fairRate = fixedRate - swap.NPV()/(swap.legBPS(1)/1.0e-4);
         engine_ = boost::shared_ptr<PricingEngine>();
         cap_ = boost::shared_ptr<Cap>(new Cap(floatingLeg,

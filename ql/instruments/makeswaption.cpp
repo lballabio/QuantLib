@@ -67,8 +67,9 @@ namespace QuantLib {
                        swapIndex_->name());
             boost::shared_ptr<VanillaSwap> temp =
                 swapIndex_->underlyingSwap(fixingDate_);
-            temp->setPricingEngine(boost::shared_ptr<PricingEngine>(new
-                        DiscountingSwapEngine(swapIndex_->termStructure())));
+            temp->setPricingEngine(boost::shared_ptr<PricingEngine>(
+                        new DiscountingSwapEngine(swapIndex_->termStructure(),
+                                                  false)));
             usedStrike = temp->fairRate();
         }
 

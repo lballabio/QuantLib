@@ -43,7 +43,7 @@ namespace QuantLib {
 
         VanillaSwap swap = *arguments_.swap;
         swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                                  new DiscountingSwapEngine(discountCurve_)));
+                           new DiscountingSwapEngine(discountCurve_, false)));
 
         Spread correction = swap.spread() *
             std::fabs(swap.floatingLegBPS()/swap.fixedLegBPS());

@@ -56,7 +56,7 @@ namespace QuantLib {
             // model)
             VanillaSwap swap = *arguments_.swap;
             swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                         new DiscountingSwapEngine(model_->termStructure())));
+                  new DiscountingSwapEngine(model_->termStructure(), false)));
             Spread correction = swap.spread() *
                 std::fabs(swap.floatingLegBPS() / swap.fixedLegBPS());
             Rate fixedRate = swap.fixedRate() - correction;

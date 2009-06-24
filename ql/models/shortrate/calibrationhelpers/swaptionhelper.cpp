@@ -62,7 +62,7 @@ namespace QuantLib {
                                DateGeneration::Forward, false);
 
         boost::shared_ptr<PricingEngine> swapEngine(
-                                    new DiscountingSwapEngine(termStructure));
+                             new DiscountingSwapEngine(termStructure, false));
 
         VanillaSwap temp(VanillaSwap::Receiver, 1.0,
                          fixedSchedule, 0.0, fixedLegDayCounter,

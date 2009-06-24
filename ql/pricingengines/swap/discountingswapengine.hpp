@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,18 +32,19 @@ namespace QuantLib {
 
     class DiscountingSwapEngine : public Swap::engine {
       public:
-        DiscountingSwapEngine(const Handle<YieldTermStructure>& discountCurve =
-                                                Handle<YieldTermStructure>(),
-                              bool includeSettlementDateFlows = true,
-                              Date settlementDate = Date(),
-                              Date npvDate = Date());
+        DiscountingSwapEngine(
+                      const Handle<YieldTermStructure>& discountCurve =
+                                                 Handle<YieldTermStructure>(),
+                      boost::optional<bool> includeSettlementDateFlows = true,
+                      Date settlementDate = Date(),
+                      Date npvDate = Date());
         void calculate() const;
         Handle<YieldTermStructure> discountCurve() const {
             return discountCurve_;
         }
       private:
         Handle<YieldTermStructure> discountCurve_;
-        bool includeSettlementDateFlows_;
+        boost::optional<bool> includeSettlementDateFlows_;
         Date settlementDate_, npvDate_;
     };
 

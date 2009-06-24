@@ -24,7 +24,7 @@ namespace QuantLib {
 
     DiscountingSwapEngine::DiscountingSwapEngine(
                             const Handle<YieldTermStructure>& discountCurve,
-                            bool includeSettlementDateFlows,
+                            boost::optional<bool> includeSettlementDateFlows,
                             Date settlementDate,
                             Date npvDate)
     : discountCurve_(discountCurve),
@@ -63,17 +63,23 @@ namespace QuantLib {
         results_.legNPV.resize(arguments_.legs.size());
         results_.legBPS.resize(arguments_.legs.size());
         std::vector<DiscountFactor> startDiscounts(arguments_.legs.size());
+
+        bool includeRefDateFlows =
+            includeSettlementDateFlows_ ?
+            *includeSettlementDateFlows_ :
+            Settings::instance().includeReferenceDateCashFlows();
+
         for (Size i=0; i<arguments_.legs.size(); ++i) {
             results_.legNPV[i] =
                 arguments_.payer[i] * CashFlows::npv(arguments_.legs[i],
                                                      **discountCurve_,
-                                                     includeSettlementDateFlows_,
+                                                     includeRefDateFlows,
                                                      settlementDate,
                                                      results_.valuationDate);
             results_.legBPS[i] =
                 arguments_.payer[i] * CashFlows::bps(arguments_.legs[i],
                                                      **discountCurve_,
-                                                     includeSettlementDateFlows_,
+                                                     includeRefDateFlows,
                                                      settlementDate,
                                                      results_.valuationDate);
             results_.value += results_.legNPV[i];
