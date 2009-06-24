@@ -42,12 +42,12 @@ namespace QuantLib {
         If no payment convention is passed, the convention of the
         floating-rate schedule is used.
 
-        \warning if QL_TODAYS_PAYMENTS was defined (in userconfig.hpp
-                 or when calling ./configure; it is undefined by
-                 default) payments occurring at the settlement date of
-                 the swap are included in the NPV, and therefore
-                 affect the fair-rate and fair-spread
-                 calculation. This might not be what you want.
+        \warning if <tt>Settings::includeReferenceDateCashFlows()</tt>
+                 is set to <tt>true</tt>, payments occurring at the
+                 settlement date of the swap might be included in the
+                 NPV and therefore affect the fair-rate and
+                 fair-spread calculation. This might not be what you
+                 want.
 
         \test
         - the correctness of the returned value is tested by checking
