@@ -27,6 +27,7 @@
 
 class AssetSwapTest {
   public:
+    static void testConsistency();
     static void testImpliedValue();
     static void testMarketASWSpread();
     static void testZSpread();
