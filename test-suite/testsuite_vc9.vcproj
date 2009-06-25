@@ -1451,6 +1451,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\cashflows.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\cdo.cpp"
 				>
 			</File>
@@ -4061,6 +4065,10 @@
 			</File>
 			<File
 				RelativePath=".\capflooredcoupon.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\cashflows.hpp"
 				>
 			</File>
 			<File
