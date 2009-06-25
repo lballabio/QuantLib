@@ -95,10 +95,10 @@ namespace {
                               iborIndex->dayCounter(), iborIndex));
             spread = 0.0;
             nonnullspread = 0.003;
-            //Date today(24,April,2007);
-            //Settings::instance().evaluationDate() = today;
+            Date today(24,April,2007);
+            Settings::instance().evaluationDate() = today;
 
-            Date today = Settings::instance().evaluationDate();
+            //Date today = Settings::instance().evaluationDate();
 
             termStructure.linkTo(flatRate(today, 0.05, Actual365Fixed()));
             pricer = boost::shared_ptr<IborCouponPricer>(new
@@ -4225,16 +4225,16 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
 test_suite* AssetSwapTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("AssetSwap tests");
     suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testConsistency));
-    //suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testImpliedValue));
-    //suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testMarketASWSpread));
-    //suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testZSpread));
-    //suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testGenericBondImplied));
-    //suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testMASWWithGenericBond));
-    //suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testZSpreadWithGenericBond));
-    //suite->add(QUANTLIB_TEST_CASE(
-    //                       &AssetSwapTest::testSpecializedBondVsGenericBond));
-    //suite->add(QUANTLIB_TEST_CASE(
-    //               &AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw));
+    suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testImpliedValue));
+    suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testMarketASWSpread));
+    suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testZSpread));
+    suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testGenericBondImplied));
+    suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testMASWWithGenericBond));
+    suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testZSpreadWithGenericBond));
+    suite->add(QUANTLIB_TEST_CASE(
+                           &AssetSwapTest::testSpecializedBondVsGenericBond));
+    suite->add(QUANTLIB_TEST_CASE(
+                   &AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw));
 
     return suite;
 }
