@@ -242,15 +242,15 @@ void AssetSwapTest::testConsistency() {
         BOOST_ERROR("\npar asset swap fair clean price changed with NpvDate:" <<
                     QL_FIXED << std::setprecision(4) <<
                     "\n  expected clean price: " << fairCleanPrice <<
-                    "\n  fair clean price:  " << parAssetSwap.fairCleanPrice() <<
-                    "\n  tolerance:         " << tolerance);
+                    "\n  fair clean price:     " << parAssetSwap.fairCleanPrice() <<
+                    "\n  tolerance:            " << tolerance);
     }
     if (std::fabs(parAssetSwap.fairSpread() - fairSpread)>tolerance) {
         BOOST_ERROR("\npar asset swap fair spread changed with NpvDate:" <<
                     QL_FIXED << std::setprecision(4) <<
                     "\n  expected spread: " << fairSpread <<
-                    "\n  fair spread:  " << parAssetSwap.fairSpread() <<
-                    "\n  tolerance:    " << tolerance);
+                    "\n  fair spread:     " << parAssetSwap.fairSpread() <<
+                    "\n  tolerance:       " << tolerance);
     }
 
     assetSwap2 = AssetSwap(payFixedRate,
