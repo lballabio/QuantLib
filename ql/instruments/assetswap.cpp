@@ -75,16 +75,15 @@ namespace QuantLib {
         Real dirtyPrice = bondCleanPrice_ +
                           bond_->accruedAmount(upfrontDate_);
 
+        Real notional = bond_->notional(upfrontDate_);
         /* In the market asset swap, the bond is purchased in return for
            payment of the full price. The notional of the floating leg is
-           then scaled by the full price, and the resulting value of the
-           asset swap spread is different. */
-        Real nominal = bond_->notional(upfrontDate_);
+           then scaled by the full price. */
         if (!parSwap_)
-            nominal *= dirtyPrice/100.0;
+            notional *= dirtyPrice/100.0;
 
         legs_[1] = IborLeg(schedule, index)
-            .withNotionals(nominal)
+            .withNotionals(notional)
             .withPaymentDayCounter(floatingDayCounter)
             .withPaymentAdjustment(paymentAdjustment)
             .withSpreads(spread);
@@ -104,20 +103,20 @@ namespace QuantLib {
         // special flows
         if (parSwap_) {
             // upfront on the floating leg
-            Real upfront = (dirtyPrice-100.0)/100.0*nominal;
+            Real upfront = (dirtyPrice-100.0)/100.0*notional;
             boost::shared_ptr<CashFlow> upfrontCashFlow (new
                 SimpleCashFlow(upfront, upfrontDate_));
             legs_[1].insert(legs_[1].begin(), upfrontCashFlow);
             // backpayment on the floating leg
             // (accounts for non-par redemption, if any)
-            Real backPayment = nominal;
+            Real backPayment = notional;
             boost::shared_ptr<CashFlow> backPaymentCashFlow (new
                 SimpleCashFlow(backPayment, finalDate));
             legs_[1].push_back(backPaymentCashFlow);
         } else {
-            // final nominal exchange
+            // final notional exchange
             boost::shared_ptr<CashFlow> finalCashFlow (new
-                SimpleCashFlow(nominal, finalDate));
+                SimpleCashFlow(notional, finalDate));
             legs_[1].push_back(finalCashFlow);
         }
 
@@ -208,19 +207,24 @@ namespace QuantLib {
             return fairCleanPrice_;
         } else {
             std::vector<DiscountFactor> dfs;
+            DiscountFactor npvDateDiscount;
             try {
                 dfs = result<std::vector<DiscountFactor> >("startDiscounts");
+                npvDateDiscount = result<DiscountFactor>("npvDateDiscount");
             } catch (...) {
                 QL_FAIL("fair clean price not available");
             }
 
-            Real nominal = bond_->notional(upfrontDate_);
+            QL_REQUIRE(dfs[1]!=Null<DiscountFactor>(),
+                       "fair clean price not available for seasoned deal");
+            Real notional = bond_->notional(upfrontDate_);
             if (parSwap_) {
-                fairCleanPrice_ = bondCleanPrice_-NPV_/(nominal/100.0)/dfs[1];
+                fairCleanPrice_ = bondCleanPrice_-NPV_*npvDateDiscount/dfs[1]/(notional/100.0);
             } else {
-                Real dirty = nominal*100/nominal;
-                Real fairDirty = - legNPV_[0]/legNPV_[1] * dirty;
-                fairCleanPrice_ = fairDirty-bond_->accruedAmount(upfrontDate_);
+                Real accruedAmount = bond_->accruedAmount(upfrontDate_);
+                Real dirtyPrice = bondCleanPrice_ + accruedAmount;
+                Real fairDirtyPrice = - legNPV_[0]/legNPV_[1] * dirtyPrice;
+                fairCleanPrice_ = fairDirtyPrice - accruedAmount;
             }
 
             return fairCleanPrice_;

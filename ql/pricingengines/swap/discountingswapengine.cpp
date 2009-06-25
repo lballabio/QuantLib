@@ -59,6 +59,8 @@ namespace QuantLib {
                        "npv date (" << npvDate_  << ") before "
                        "discount curve reference date (" << refDate << ")");
         }
+        results_.additionalResults["npvDateDiscount"] =
+                            discountCurve_->discount(results_.valuationDate);
 
         results_.legNPV.resize(arguments_.legs.size());
         results_.legBPS.resize(arguments_.legs.size());
