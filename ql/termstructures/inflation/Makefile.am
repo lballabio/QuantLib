@@ -8,10 +8,12 @@ this_include_HEADERS = \
     interpolatedyoyinflationcurve.hpp \
     interpolatedzeroinflationcurve.hpp \
     piecewiseyoyinflationcurve.hpp \
-    piecewisezeroinflationcurve.hpp
+    piecewisezeroinflationcurve.hpp \
+    seasonality.hpp
 
 libInflationTermStructures_la_SOURCES = \
-    inflationhelpers.cpp
+    inflationhelpers.cpp \
+    seasonality.cpp
 
 noinst_LTLIBRARIES = libInflationTermStructures.la
 

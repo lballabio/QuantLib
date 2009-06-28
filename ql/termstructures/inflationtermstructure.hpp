@@ -25,6 +25,7 @@
 #define quantlib_inflation_termstructure_hpp
 
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/termstructures/inflation/seasonality.hpp>
 
 namespace QuantLib {
 
@@ -38,21 +39,24 @@ namespace QuantLib {
                                Frequency frequency,
                                Rate baseRate,
                                const Handle<YieldTermStructure>& yTS,
-                               const DayCounter& dayCounter = DayCounter());
+                               const DayCounter& dayCounter = DayCounter(),
+                               const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
         InflationTermStructure(const Date& referenceDate,
                                const Period& lag,
                                Frequency frequency,
                                Rate baseRate,
                                const Handle<YieldTermStructure>& yTS,
                                const Calendar& calendar = Calendar(),
-                               const DayCounter& dayCounter = DayCounter());
+                               const DayCounter& dayCounter = DayCounter(),
+                               const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
         InflationTermStructure(Natural settlementDays,
                                const Calendar& calendar,
                                const Period& lag,
                                Frequency frequency,
                                Rate baseRate,
                                const Handle<YieldTermStructure>& yTS,
-                               const DayCounter& dayCounter = DayCounter());
+                               const DayCounter& dayCounter = DayCounter(),
+                               const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
         //@}
 
         //! \name Inflation interface
@@ -69,6 +73,13 @@ namespace QuantLib {
         virtual Date baseDate() const = 0;
         //@}
 
+		//! Functions to set and get seasonality.
+		//! Calling set with no arguments means unsetting as the default is used
+        //! to choose unsetting.
+		void setSeasonality(const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
+		boost::shared_ptr<Seasonality> seasonality() const;
+		bool hasSeasonality() const;
+		
       protected:
         Handle<YieldTermStructure> nominalTermStructure_;
 
@@ -93,6 +104,9 @@ namespace QuantLib {
                         bool extrapolate) const;
         void checkRange(Time t,
                         bool extrapolate) const;
+		
+		boost::shared_ptr<Seasonality> seasonality_;
+		bool hasSeasonalityCorrection_; //true if seasonality is set
     };
 
 
@@ -107,7 +121,8 @@ namespace QuantLib {
                                    const Period& lag,
                                    Frequency frequency,
                                    Rate baseZeroRate,
-                                   const Handle<YieldTermStructure>& yTS);
+                                   const Handle<YieldTermStructure>& yTS,
+								   const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
 
         ZeroInflationTermStructure(const Date& referenceDate,
                                    const Calendar& calendar,
@@ -115,7 +130,8 @@ namespace QuantLib {
                                    const Period& lag,
                                    Frequency frequency,
                                    Rate baseZeroRate,
-                                   const Handle<YieldTermStructure>& yTS);
+                                   const Handle<YieldTermStructure>& yTS,
+								   const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
 
         ZeroInflationTermStructure(Natural settlementDays,
                                    const Calendar& calendar,
@@ -123,7 +139,8 @@ namespace QuantLib {
                                    const Period& lag,
                                    Frequency frequency,
                                    Rate baseZeroRate,
-                                   const Handle<YieldTermStructure>& yTS);
+                                   const Handle<YieldTermStructure>& yTS,
+								   const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
         //@}
 
         //! \name Inspectors
@@ -153,7 +170,8 @@ namespace QuantLib {
                                   const Period& lag,
                                   Frequency frequency,
                                   Rate baseYoYRate,
-                                  const Handle<YieldTermStructure>& yieldTS);
+                                  const Handle<YieldTermStructure>& yieldTS,
+								  const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
 
         YoYInflationTermStructure(const Date& referenceDate,
                                   const Calendar& calendar,
@@ -161,7 +179,8 @@ namespace QuantLib {
                                   const Period& lag,
                                   Frequency frequency,
                                   Rate baseYoYRate,
-                                  const Handle<YieldTermStructure>& yieldTS);
+                                  const Handle<YieldTermStructure>& yieldTS,
+								  const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
 
         YoYInflationTermStructure(Natural settlementDays,
                                   const Calendar& calendar,
@@ -169,7 +188,8 @@ namespace QuantLib {
                                   const Period& lag,
                                   Frequency frequency,
                                   Rate baseYoYRate,
-                                  const Handle<YieldTermStructure>& yieldTS);
+                                  const Handle<YieldTermStructure>& yieldTS,
+								  const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
         //@}
 
         //! \name Inspectors
