@@ -99,16 +99,16 @@ namespace QuantLib {
             }
             return std::max(a - b, 0.0)* coupon_->accrualPeriod()*discount_;
         } else {
+            // not yet determined, use Black model
             QL_REQUIRE(!capletVolatility().empty(),
                        "missing optionlet volatility");
-            // not yet determined, use Black model
-            Real variance =
+            Real stdDev =
                 std::sqrt(capletVolatility()->blackVariance(fixingDate,
                                                             effStrike));
             Rate fixing = blackFormula(optionType,
                                        effStrike,
                                        adjustedFixing(),
-                                       variance);
+                                       stdDev);
             return fixing * coupon_->accrualPeriod() * discount_;
         }
     }
