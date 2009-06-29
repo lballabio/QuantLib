@@ -18,6 +18,4 @@
 #include <ql/experimental/inflation/yoyoptionlethelpers.hpp>
 #include <ql/experimental/inflation/yoyoptionletstripper.hpp>
 #include <ql/experimental/inflation/yoyoptionletvolatilitystructures.hpp>
-#include <ql/experimental/inflation/polynomial2D.hpp>
-#include <ql/experimental/inflation/polynomial2Dspline.hpp>
 
