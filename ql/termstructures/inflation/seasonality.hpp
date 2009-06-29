@@ -92,15 +92,16 @@ namespace QuantLib {
         number of factors as the frequency dictates e.g. 12 for
         monthly seasonality.
 
-        Multi-year seasonality (i.e. non-stationary) is fragile: the
-        user <b>must</b> ensure that corrections at whole years before
-        and after the inflation term structure base date are the same.
-        Otherwise there can be an inconsistency with quoted rates.
-        This is enforced if the frequency is lower than daily.  This
-        is not enforced for daily seasonality because this will always
-        be inconsistent due to weekends, holidays, leap years, etc.
-        If you use multi-year daily seasonality it is up to you to
-        check.
+        \warning Multi-year seasonality (i.e. non-stationary) is
+                 fragile: the user <b>must</b> ensure that corrections
+                 at whole years before and after the inflation term
+                 structure base date are the same.  Otherwise there
+                 can be an inconsistency with quoted rates.  This is
+                 enforced if the frequency is lower than daily.  This
+                 is not enforced for daily seasonality because this
+                 will always be inconsistent due to weekends,
+                 holidays, leap years, etc.  If you use multi-year
+                 daily seasonality it is up to you to check.
 
         \note Factors are normalized relative to their appropriate
               reference dates.  For zero inflation this is the
