@@ -12,7 +12,6 @@
 #include <ql/experimental/inflation/kinterpolatedyoyoptionletvolatilitysurface.hpp>
 #include <ql/experimental/inflation/nominalyoyinflationcoupon.hpp>
 #include <ql/experimental/inflation/piecewiseyoyoptionletvolatility.hpp>
-#include <ql/experimental/inflation/polynomial2D.hpp>
 #include <ql/experimental/inflation/polynomial2Dspline.hpp>
 #include <ql/experimental/inflation/yoycapfloortermpricesurface.hpp>
 #include <ql/experimental/inflation/yoyoptionlethelpers.hpp>
