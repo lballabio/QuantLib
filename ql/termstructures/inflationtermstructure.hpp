@@ -73,13 +73,14 @@ namespace QuantLib {
         virtual Date baseDate() const = 0;
         //@}
 
-		//! Functions to set and get seasonality.
-		//! Calling set with no arguments means unsetting as the default is used
-        //! to choose unsetting.
-		void setSeasonality(const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
-		boost::shared_ptr<Seasonality> seasonality() const;
-		bool hasSeasonality() const;
-		
+        //! Functions to set and get seasonality.
+        /*! Calling setSeasonality with no arguments means unsetting
+            as the default is used to choose unsetting.
+        */
+        void setSeasonality(const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
+        boost::shared_ptr<Seasonality> seasonality() const;
+        bool hasSeasonality() const;
+
       protected:
         Handle<YieldTermStructure> nominalTermStructure_;
 
@@ -104,9 +105,9 @@ namespace QuantLib {
                         bool extrapolate) const;
         void checkRange(Time t,
                         bool extrapolate) const;
-		
-		boost::shared_ptr<Seasonality> seasonality_;
-		bool hasSeasonalityCorrection_; //true if seasonality is set
+
+        boost::shared_ptr<Seasonality> seasonality_;
+        bool hasSeasonalityCorrection_; //true if seasonality is set
     };
 
 
@@ -122,7 +123,7 @@ namespace QuantLib {
                                    Frequency frequency,
                                    Rate baseZeroRate,
                                    const Handle<YieldTermStructure>& yTS,
-								   const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
+                                   const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
 
         ZeroInflationTermStructure(const Date& referenceDate,
                                    const Calendar& calendar,
@@ -131,7 +132,7 @@ namespace QuantLib {
                                    Frequency frequency,
                                    Rate baseZeroRate,
                                    const Handle<YieldTermStructure>& yTS,
-								   const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
+                                   const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
 
         ZeroInflationTermStructure(Natural settlementDays,
                                    const Calendar& calendar,
@@ -140,7 +141,7 @@ namespace QuantLib {
                                    Frequency frequency,
                                    Rate baseZeroRate,
                                    const Handle<YieldTermStructure>& yTS,
-								   const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
+                                   const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
         //@}
 
         //! \name Inspectors
@@ -171,7 +172,7 @@ namespace QuantLib {
                                   Frequency frequency,
                                   Rate baseYoYRate,
                                   const Handle<YieldTermStructure>& yieldTS,
-								  const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
+                                  const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
 
         YoYInflationTermStructure(const Date& referenceDate,
                                   const Calendar& calendar,
@@ -180,7 +181,7 @@ namespace QuantLib {
                                   Frequency frequency,
                                   Rate baseYoYRate,
                                   const Handle<YieldTermStructure>& yieldTS,
-								  const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
+                                  const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
 
         YoYInflationTermStructure(Natural settlementDays,
                                   const Calendar& calendar,
@@ -189,7 +190,7 @@ namespace QuantLib {
                                   Frequency frequency,
                                   Rate baseYoYRate,
                                   const Handle<YieldTermStructure>& yieldTS,
-								  const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
+                                  const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
         //@}
 
         //! \name Inspectors
