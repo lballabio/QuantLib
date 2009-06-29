@@ -15,7 +15,6 @@ this_include_HEADERS = \
     kinterpolatedyoyoptionletvolatilitysurface.hpp \
     nominalyoyinflationcoupon.hpp \
     piecewiseyoyoptionletvolatility.hpp \
-    polynomial2D.hpp \
     polynomial2Dspline.hpp \
     yoycapfloortermpricesurface.hpp \
     yoyoptionlethelpers.hpp \
