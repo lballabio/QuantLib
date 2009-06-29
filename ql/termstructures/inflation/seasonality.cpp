@@ -155,10 +155,10 @@ namespace QuantLib {
             if (factorPeriod.units() == Days) {
                 diff = dir*diffDays;
             } else if (factorPeriod.units() == Weeks) {
-                diff = dir*(int)floor(diffDays / 7);
+                diff = dir * (diffDays / 7);
             } else if (factorPeriod.units() == Months) {
                 std::pair<Date,Date> lim = inflationPeriod(to, factorFrequency);
-                diff = (int)floor(diffDays / (31*factorPeriod.length()));
+                diff = diffDays / (31*factorPeriod.length());
                 Date go = from + dir*diff*factorPeriod;
                 while ( !(lim.first <= go && go <= lim.second) ) {
                     go += dir*factorPeriod;
