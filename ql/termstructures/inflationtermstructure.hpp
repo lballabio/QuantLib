@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Chris Kenyon
+ Copyright (C) 2007, 2009 Chris Kenyon
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -107,7 +107,6 @@ namespace QuantLib {
                         bool extrapolate) const;
 
         boost::shared_ptr<Seasonality> seasonality_;
-        bool hasSeasonalityCorrection_; //true if seasonality is set
     };
 
 
