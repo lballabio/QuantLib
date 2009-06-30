@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,14 +33,17 @@ namespace QuantLib {
 
     class DiscountingBondEngine : public Bond::engine {
       public:
-        DiscountingBondEngine(const Handle<YieldTermStructure>& discountCurve =
-                                                Handle<YieldTermStructure>());
+        DiscountingBondEngine(
+                     const Handle<YieldTermStructure>& discountCurve =
+                                                Handle<YieldTermStructure>(),
+                     boost::optional<bool> includeSettlementDateFlows = true);
         void calculate() const;
         Handle<YieldTermStructure> discountCurve() const {
             return discountCurve_;
         }
       private:
         Handle<YieldTermStructure> discountCurve_;
+        boost::optional<bool> includeSettlementDateFlows_;
     };
 
 }
