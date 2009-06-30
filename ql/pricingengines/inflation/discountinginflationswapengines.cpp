@@ -19,13 +19,16 @@
 */
 
 #include <ql/pricingengines/inflation/discountinginflationswapengines.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
 
 namespace QuantLib {
 
     DiscountingYoYInflationSwapEngine::DiscountingYoYInflationSwapEngine(
                      const Handle<YieldTermStructure>& discountCurve,
-                     const Handle<YoYInflationTermStructure>& inflationCurve)
-    : discountCurve_(discountCurve), inflationCurve_(inflationCurve) {
+                     const Handle<YoYInflationTermStructure>& inflationCurve,
+                     boost::optional<bool> includeSettlementDateFlows)
+    : discountCurve_(discountCurve), inflationCurve_(inflationCurve),
+      includeSettlementDateFlows_(includeSettlementDateFlows) {
         registerWith(discountCurve_);
         registerWith(inflationCurve_);
     }
@@ -39,7 +42,11 @@ namespace QuantLib {
         Date referenceDate = discountCurve_->referenceDate();
         for (Size i=0; i<arguments_.paymentDates.size(); i++) {
             Date couponPayDate = arguments_.paymentDates[i];
-            if (couponPayDate >= referenceDate) {
+            // Just to use the CashFlow machinery. There has to be a
+            // better way...
+            SimpleCashFlow payment(0.0, couponPayDate);
+            if (!payment.hasOccurred(referenceDate,
+                                     includeSettlementDateFlows_)) {
                 if (i==0) {
                     frac = arguments_.dayCounter.yearFraction(referenceDate,
                                                               couponPayDate);
@@ -69,8 +76,10 @@ namespace QuantLib {
 
     DiscountingZeroInflationSwapEngine::DiscountingZeroInflationSwapEngine(
                     const Handle<YieldTermStructure>& discountCurve,
-                    const Handle<ZeroInflationTermStructure>& inflationCurve)
-    : discountCurve_(discountCurve), inflationCurve_(inflationCurve) {
+                    const Handle<ZeroInflationTermStructure>& inflationCurve,
+                    boost::optional<bool> includeSettlementDateFlows)
+    : discountCurve_(discountCurve), inflationCurve_(inflationCurve),
+      includeSettlementDateFlows_(includeSettlementDateFlows) {
         registerWith(discountCurve_);
         registerWith(inflationCurve_);
     }
@@ -80,13 +89,22 @@ namespace QuantLib {
         results_.fairRate =
             inflationCurve_->zeroRate(arguments_.maturity - arguments_.lag);
 
-        // discount is relative to the payment date, not the observation date.
-        Real T = arguments_.dayCounter.yearFraction(
+
+        Date referenceDate = discountCurve_->referenceDate();
+        SimpleCashFlow payment(0.0, arguments_.maturity);
+        if (!payment.hasOccurred(referenceDate,
+                                 includeSettlementDateFlows_)) {
+            // discount is relative to the payment date, not the
+            // observation date.
+            Real T = arguments_.dayCounter.yearFraction(
                                         inflationCurve_->baseDate(),
                                         arguments_.maturity - arguments_.lag);
-        results_.value = discountCurve_->discount(arguments_.maturity) *
-            (std::pow(1.0 + arguments_.fixedRate, T) -
-             std::pow(1.0 + results_.fairRate, T));
+            results_.value = discountCurve_->discount(arguments_.maturity) *
+                (std::pow(1.0 + arguments_.fixedRate, T) -
+                 std::pow(1.0 + results_.fairRate, T));
+        } else {
+            results_.value = 0.0;
+        }
         results_.errorEstimate = 0.0;
     }
 

@@ -38,12 +38,14 @@ namespace QuantLib {
         : public YearOnYearInflationSwap::engine {
       public:
         DiscountingYoYInflationSwapEngine(
-                     const Handle<YieldTermStructure>& discountCurve,
-                     const Handle<YoYInflationTermStructure>& inflationCurve);
+              const Handle<YieldTermStructure>& discountCurve,
+              const Handle<YoYInflationTermStructure>& inflationCurve,
+              boost::optional<bool> includeSettlementDateFlows = boost::none);
         void calculate() const;
       private:
         Handle<YieldTermStructure> discountCurve_;
         Handle<YoYInflationTermStructure> inflationCurve_;
+        boost::optional<bool> includeSettlementDateFlows_;
     };
 
 
@@ -52,12 +54,14 @@ namespace QuantLib {
         : public ZeroCouponInflationSwap::engine {
       public:
         DiscountingZeroInflationSwapEngine(
-                    const Handle<YieldTermStructure>& discountCurve,
-                    const Handle<ZeroInflationTermStructure>& inflationCurve);
+              const Handle<YieldTermStructure>& discountCurve,
+              const Handle<ZeroInflationTermStructure>& inflationCurve,
+              boost::optional<bool> includeSettlementDateFlows = boost::none);
         void calculate() const;
       private:
         Handle<YieldTermStructure> discountCurve_;
         Handle<ZeroInflationTermStructure> inflationCurve_;
+        boost::optional<bool> includeSettlementDateFlows_;
     };
 
 }
