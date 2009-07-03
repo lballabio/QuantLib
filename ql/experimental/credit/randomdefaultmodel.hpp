@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2008 Roland Lichters
+ Copyright (C) 2009 Jose Aparicio
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +28,7 @@
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/experimental/credit/pool.hpp>
 #include <ql/experimental/credit/onefactorcopula.hpp>
+#include <ql/experimental/credit/defaultprobabilitykey.hpp>
 
 namespace QuantLib {
 
@@ -34,8 +36,13 @@ namespace QuantLib {
     /*! Provides sequences of random default times for each name in the pool. */
     class RandomDefaultModel {
     public:
-        RandomDefaultModel(boost::shared_ptr<Pool> pool)
-            : pool_(pool) {}
+        RandomDefaultModel(boost::shared_ptr<Pool> pool,
+                           const std::vector<DefaultProbKey>& defaultKeys)
+        : pool_(pool), defaultKeys_(defaultKeys) {
+            // assuming none defaulted this is true.
+            QL_REQUIRE(defaultKeys.size() == pool->size(),
+                       "Incompatible pool and keys sizes.");
+        }
         virtual ~RandomDefaultModel() {}
         /*!
           Generate a sequence of random default times, one for each name in the
@@ -47,6 +54,7 @@ namespace QuantLib {
         virtual void reset() = 0;
     protected:
         boost::shared_ptr<Pool> pool_;
+        std::vector<DefaultProbKey> defaultKeys_;
     };
 
     /*!
@@ -54,9 +62,11 @@ namespace QuantLib {
     */
     class GaussianRandomDefaultModel : public RandomDefaultModel {
     public:
-        GaussianRandomDefaultModel(boost::shared_ptr<Pool> pool,
-                                   Handle<OneFactorCopula> copula,
-                                   Real accuracy, long seed);
+        GaussianRandomDefaultModel(
+                               boost::shared_ptr<Pool> pool,
+                               const std::vector<DefaultProbKey>& defaultKeys,
+                               Handle<OneFactorCopula> copula,
+                               Real accuracy, long seed);
         void nextSequence(Real tmax = QL_MAX_REAL);
         void reset();
     private:

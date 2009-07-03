@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2008 Roland Lichters
+ Copyright (C) 2009 Jose Aparicio
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,11 +29,16 @@ namespace QuantLib {
     Basket::Basket(const vector<string>& names,
                    const vector<Real>& notionals,
                    const boost::shared_ptr<Pool> pool,
+                   const vector<DefaultProbKey>& defaultKeys,
+                   const vector<boost::shared_ptr<RecoveryRateModel> >&
+                       rrModels,
                    Real attachment,
                    Real detachment)
         : names_(names),
           notionals_(notionals),
           pool_(pool),
+          defaultKeys_(defaultKeys),
+          rrModels_(rrModels),
           attachmentRatio_(attachment),
           detachmentRatio_(detachment),
           basketNotional_(0.0),
@@ -45,16 +51,26 @@ namespace QuantLib {
         QL_REQUIRE(!names_.empty(), "no names given");
         QL_REQUIRE(!notionals_.empty(), "notionals empty");
         QL_REQUIRE (attachmentRatio_ >= 0 &&
-                    attachmentRatio_ < detachmentRatio_ &&
+                    attachmentRatio_ <= detachmentRatio_ &&
                     detachmentRatio_ <= 1,
                     "invalid attachment/detachment ratio");
+        QL_REQUIRE(names_.size() == notionals_.size() &&
+                   notionals_.size() == defaultKeys_.size() &&
+                   defaultKeys_.size() == rrModels_.size(),
+            "unmatched data entry sizes in basket");
+
+        for(Size i=0; i<notionals_.size(); i++)
+            registerWith(rrModels_[i]);
+        registerWith(Settings::instance().evaluationDate());
+
+        // At this point Issuers in the pool might or might not have
+        //   probability term structures for the defultKeys(eventType+
+        //   currency+seniority) entering in this basket. This is not
+        //   neccessarily a problem.
         for (Size i = 0; i < notionals_.size(); i++) {
             basketNotional_ += notionals_[i];
             attachmentAmount_ += notionals_[i] * attachmentRatio_;
             detachmentAmount_ += notionals_[i] * detachmentRatio_;
-            LGDs_[i] = notionals_[i]
-                * (1.0 - pool_->get(names_[i]).recoveryRate());
-            basketLGD_ += LGDs_[i];
         }
         trancheNotional_ = detachmentAmount_ - attachmentAmount_;
     }
@@ -71,11 +87,22 @@ namespace QuantLib {
         return notionals_;
     }
 
+    const std::vector<DefaultProbKey>&
+    Basket::defaultKeys() const {
+        return defaultKeys_;
+    }
+
+    const std::vector<boost::shared_ptr<RecoveryRateModel> >&
+    Basket::recoveryModels() const {
+        return rrModels_;
+    }
+
     boost::shared_ptr<Pool> Basket::pool() const {
         return pool_;
     }
 
     const vector<Real>& Basket::LGDs() const {
+        calculate();
         return LGDs_;
     }
 
@@ -92,6 +119,7 @@ namespace QuantLib {
     }
 
     Real Basket::basketLGD() const {
+        calculate();
         return basketLGD_;
     }
 
@@ -110,7 +138,8 @@ namespace QuantLib {
     vector<Real> Basket::probabilities(const Date& d) const {
         vector<Real> prob (names_.size());
         for (Size j = 0; j < names_.size(); j++)
-            prob[j] = pool_->get(names_[j]).defaultProbability()->defaultProbability (d);
+            prob[j] = pool_->get(names_[j]).defaultProbability(
+                defaultKeys_[j])->defaultProbability(d);
         return prob;
     }
 
@@ -118,10 +147,23 @@ namespace QuantLib {
                                const Date& endDate) const {
         Real loss = 0.0;
         for (Size i = 0; i < names_.size(); i++) {
-            boost::shared_ptr<DefaultEvent> event =
-                pool_->get(names_[i]).defaultedBetween(startDate, endDate);
-            if (event)
-                loss += notionals_[i] * (1.0 - event->recoveryRate());
+            boost::shared_ptr<DefaultEvent> credEvent =
+                pool_->get(names_[i]).defaultedBetween(startDate,
+                                                       endDate,
+                                                       defaultKeys_[i]);
+            // to do: adjust for settlement notional accrued convexity, see doc
+            if (credEvent) {
+                if(credEvent->hasSettled()) {
+                    loss += notionals_[i] * (1. -
+                        credEvent->settlement().recoveryRate(
+                          defaultKeys_[i].seniority()));
+                }else{// name defaulted but did not settled/confirm
+                    loss += notionals_[i] * (1. -
+                        rrModels_[i]->recoveryValue(credEvent->date(),
+                                                    defaultKeys_[i]
+                                                ));
+                }
+            }
         }
         return loss;
     }
@@ -130,7 +172,9 @@ namespace QuantLib {
                                    const Date& endDate) const {
         Real notional = 0;
         for (Size i = 0; i < names_.size(); i++) {
-            if (!pool_->get(names_[i]).defaultedBetween(startDate, endDate))
+            if (!pool_->get(names_[i]).defaultedBetween(startDate,
+                                                        endDate,
+                                                        defaultKeys_[i]))
                 notional += notionals_[i];
         }
         return notional;
@@ -140,7 +184,9 @@ namespace QuantLib {
                                             const Date& endDate) const {
         vector<Real> notionals;
         for (Size i = 0; i < names_.size(); i++) {
-            if (!pool_->get(names_[i]).defaultedBetween(startDate, endDate))
+            if (!pool_->get(names_[i]).defaultedBetween(startDate,
+                                                        endDate,
+                                                        defaultKeys_[i]))
                 notionals.push_back(notionals_[i]);
         }
         return notionals;
@@ -150,10 +196,38 @@ namespace QuantLib {
                                           const Date& endDate) const {
         vector<string> names;
         for (Size i = 0; i < names_.size(); i++) {
-            if (!pool_->get(names_[i]).defaultedBetween(startDate, endDate))
+            if (!pool_->get(names_[i]).defaultedBetween(startDate,
+                                                        endDate,
+                                                        defaultKeys_[i]))
                 names.push_back(names_[i]);
         }
         return names;
+    }
+
+    vector<boost::shared_ptr<RecoveryRateModel> >
+        Basket::remainingRecModels(const Date& startDate,
+                                          const Date& endDate) const {
+        vector<boost::shared_ptr<RecoveryRateModel> > models;
+        for (Size i = 0; i < names_.size(); i++) {
+            if (!pool_->get(names_[i]).defaultedBetween(startDate,
+                                                        endDate,
+                                                        defaultKeys_[i]))
+                models.push_back(rrModels_[i]);
+        }
+        return models;
+    }
+
+        vector<DefaultProbKey>
+            Basket::remainingDefaultKeys(const Date& startDate,
+                                              const Date& endDate) const {
+        vector<DefaultProbKey> keys;
+        for (Size i = 0; i < names_.size(); i++) {
+            if (!pool_->get(names_[i]).defaultedBetween(startDate,
+                                                        endDate,
+                                                        defaultKeys_[i]))
+                keys.push_back(defaultKeys_[i]);
+        }
+        return keys;
     }
 
     Real Basket::remainingAttachmentAmount(const Date& startDate,
@@ -181,6 +255,7 @@ namespace QuantLib {
     }
 
     void Basket::updateScenarioLoss(bool zeroRecovery) {
+        calculate();
         Date today = Settings::instance().evaluationDate();
         for (Size i = 0; i < names_.size(); i++) {
             if (zeroRecovery)
@@ -232,6 +307,23 @@ namespace QuantLib {
         }
         return losses;
     }
+
+    void Basket::performCalculations() const {
+        Date today = Settings::instance().evaluationDate();
+        for (Size i = 0; i < notionals_.size(); i++) {
+            //we are registered, the quote might have changed.
+            QL_REQUIRE(
+                rrModels_[i]->appliesToSeniority(defaultKeys_[i].seniority()),
+                "Recovery model does not match basket member seniority.");
+
+            LGDs_[i] = notionals_[i]
+            * (1.0 - rrModels_[i]->recoveryValue(today,
+                                                 defaultKeys_[i]
+                                                 ));
+            basketLGD_ += LGDs_[i];
+        }
+    }
+
 
 }
 

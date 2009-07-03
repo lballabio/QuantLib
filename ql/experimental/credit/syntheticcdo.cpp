@@ -44,8 +44,30 @@ namespace QuantLib {
 
         registerWith (yieldTS_);
         const boost::shared_ptr<Pool> pool = basket->pool();
-        for (Size i = 0; i < basket->names().size(); i++)
-            registerWith(pool->get(basket->names()[i]));
+
+        Date today = Settings::instance().evaluationDate();
+        // register with probabilities if the corresponding issuer is
+        // alive under this name contractual conditions
+        for (Size i = 0; i < basket->names().size(); i++) {
+            if(!pool->get(basket->names()[i]).
+                defaultedBetween(schedule.dates()[0],
+                                 today,
+                                 basket->defaultKeys()[i]))
+            registerWith(pool->get(basket->names()[i]).
+                defaultProbability(basket->defaultKeys()[i]));
+            // To do: the basket could do this last line on its own without so much
+            //    travelling, update its interface? some RR models depend on the
+            //    probabilities and they will be registered with them. Strictly
+            //    speaking the basket does not need directly to be registered
+            //    with the probs.
+            /*
+                we used to be registering with Issuers which are not observables. However
+                this might be what we want: Issuer registration might give us registration
+                with probabilities and with creditEvents at the same time.
+            */
+        }
+        // register with recoveries:
+        registerWith(basket_);
     }
 
     Rate SyntheticCDO::premiumValue () const {
@@ -56,6 +78,18 @@ namespace QuantLib {
     Rate SyntheticCDO::protectionValue () const {
         calculate();
         return protectionValue_;
+    }
+
+    Real SyntheticCDO::premiumLegNPV() const {
+        calculate();
+        if(side_ == Protection::Buyer) return premiumValue_;
+        return -premiumValue_;
+    }
+
+    Real SyntheticCDO::protectionLegNPV() const {
+        calculate();
+        if(side_ == Protection::Buyer) return -protectionValue_;
+        return premiumValue_;
     }
 
     Rate SyntheticCDO::fairPremium () const {

@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008, 2009 StatPro Italia srl
+ Copyright (C) 2009 StatPro Italia srl
+ Copyright (C) 2009 Jose Aparicio
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,22 +18,24 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file default.hpp
-    \brief Classes for default-event handling.
-*/
-
-#ifndef quantlib_default_hpp
-#define quantlib_default_hpp
-
-#include <ql/qldefines.hpp>
+#include <ql/experimental/credit/defaulttype.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
-    //! information on a default-protection contract
-    struct Protection {
-        enum Side { Buyer, Seller };
-    };
+    DefaultType::DefaultType(AtomicDefault::Type defType,
+                             Restructuring::Type restType)
+    : defTypes_(defType), restrType_(restType) {
+        // checks restruct and norestruct are never together.
+        QL_REQUIRE((defType == AtomicDefault::Restructuring) != // xor
+                   (restrType_ == Restructuring::NoRestructuring),
+                   "Incoherent credit event type definition.");
+    }
+
+    bool operator==(const DefaultType& lhs, const DefaultType& rhs) {
+        return (lhs.defaultType() == rhs.defaultType()) &&
+            (lhs.restructuringType() == rhs.restructuringType());
+    }
 
 }
 
-#endif

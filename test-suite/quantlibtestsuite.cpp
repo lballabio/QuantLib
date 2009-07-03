@@ -92,7 +92,6 @@
 #include "integrals.hpp"
 #include "interestrates.hpp"
 #include "interpolations.hpp"
-#include "issuer.hpp"
 #include "libormarketmodel.hpp"
 #include "libormarketmodelprocess.hpp"
 #include "linearleastsquaresregression.hpp"
@@ -260,7 +259,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(IntegralTest::suite());
     test->add(InterestRateTest::suite());
     test->add(InterpolationTest::suite());
-    test->add(IssuerTest::suite());
     test->add(JumpDiffusionTest::suite());
     test->add(LinearLeastSquaresRegressionTest::suite());
     test->add(LookbackOptionTest::suite());

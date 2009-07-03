@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2008 Roland Lichters
+ Copyright (C) 2009 Jose Aparicio
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -43,11 +44,12 @@ namespace QuantLib {
     }
 
     GaussianRandomDefaultModel::GaussianRandomDefaultModel(
-                                          boost::shared_ptr<Pool> pool,
-                                          Handle<OneFactorCopula> copula,
-                                          Real accuracy,
-                                          long seed)
-        : RandomDefaultModel(pool),
+                               boost::shared_ptr<Pool> pool,
+                               const std::vector<DefaultProbKey>& defaultKeys,
+                               Handle<OneFactorCopula> copula,
+                               Real accuracy,
+                               long seed)
+        : RandomDefaultModel(pool, defaultKeys),
           copula_(copula),
           accuracy_(accuracy),
           seed_(seed),
@@ -64,7 +66,7 @@ namespace QuantLib {
         for (Size j = 0; j < pool_->size(); j++) {
             const string name = pool_->names()[j];
             const Handle<DefaultProbabilityTermStructure>&
-                dts = pool_->get(name).defaultProbability();
+                dts = pool_->get(name).defaultProbability(defaultKeys_[j]);
 
             Real y = a * values[0] + sqrt(1-a*a) * values[j+1];
             Real p = CumulativeNormalDistribution()(y);
