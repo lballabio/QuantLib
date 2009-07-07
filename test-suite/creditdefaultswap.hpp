@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2008, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,6 +30,8 @@ class CreditDefaultSwapTest {
     static void testCachedValue();
     static void testCachedMarketValue();
     static void testImpliedHazardRate();
+    static void testFairSpread();
+    static void testFairUpfront();
     static boost::unit_test_framework::test_suite* suite();
 };
 

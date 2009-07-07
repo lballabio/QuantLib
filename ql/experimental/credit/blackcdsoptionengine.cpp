@@ -48,7 +48,7 @@ namespace QuantLib {
         Date settlement   = termStructure_->referenceDate();
 
         Rate spotFwdSpread = arguments_.swap->fairSpread();
-        Rate swapSpread    = arguments_.swap->spread();
+        Rate swapSpread    = arguments_.swap->runningSpread();
 
         DayCounter tSDc = termStructure_->dayCounter();
 

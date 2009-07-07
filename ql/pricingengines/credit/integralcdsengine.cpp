@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2008 Roland Lichters
  Copyright (C) 2008, 2009 StatPro Italia srl
+ Copyright (C) 2009 Jose Aparicio
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -46,6 +47,15 @@ namespace QuantLib {
 
         Date today = Settings::instance().evaluationDate();
         Date settlementDate = discountCurve_->referenceDate();
+
+        // Upfront Flow NPV. Either we are on-the-run (no flow)
+        // or we are forward start
+        Real upfPVO1 = 0.0;
+        if (!arguments_.upfrontPayment->hasOccurred(settlementDate, true))
+            upfPVO1 =
+                probability_->survivalProbability(settlementDate) *
+                discountCurve_->discount(settlementDate);
+        results_.upfrontNPV = upfPVO1 * arguments_.upfrontPayment->amount();
 
         results_.couponLegNPV = 0.0;
         results_.defaultLegNPV = 0.0;
@@ -122,12 +132,14 @@ namespace QuantLib {
             break;
           case Protection::Buyer:
             results_.couponLegNPV *= -1.0;
+            results_.upfrontNPV   *= -1.0;
             break;
           default:
             QL_FAIL("unknown protection side");
         }
 
-        results_.value = results_.defaultLegNPV + results_.couponLegNPV;
+        results_.value =
+            results_.defaultLegNPV+results_.couponLegNPV+results_.upfrontNPV;
         results_.errorEstimate = Null<Real>();
 
         if (results_.couponLegNPV != 0.0) {
@@ -137,12 +149,28 @@ namespace QuantLib {
             results_.fairSpread = Null<Rate>();
         }
 
+        if (results_.upfrontNPV != 0.0) {
+            results_.fairUpfront =
+                -(results_.defaultLegNPV + results_.couponLegNPV)
+                * (*arguments_.upfront) / results_.upfrontNPV;
+        } else {
+            results_.fairUpfront = Null<Rate>();
+        }
+
+        static const Rate basisPoint = 1.0e-4;
+
         if (arguments_.spread != 0.0) {
-            static const Rate basisPoint = 1.0e-4;
             results_.couponLegBPS =
                 results_.couponLegNPV*basisPoint/arguments_.spread;
         } else {
             results_.couponLegBPS = Null<Rate>();
+        }
+
+        if (arguments_.upfront && *arguments_.upfront != 0.0) {
+            results_.upfrontBPS =
+                results_.upfrontNPV*basisPoint/(*arguments_.upfront);
+        } else {
+            results_.upfrontBPS = Null<Rate>();
         }
     }
 

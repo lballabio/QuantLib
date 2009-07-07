@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Jose Aparicio
+ Copyright (C) 2008, 2009 Jose Aparicio
  Copyright (C) 2008 Roland Lichters
  Copyright (C) 2008 StatPro Italia srl
 
@@ -55,11 +55,29 @@ namespace QuantLib {
         class arguments;
         class results;
         class engine;
+
         //! \name Constructors
         //@{
+        //! CDS quoted as running-spread only
+        /*! @param spread Spread in fractional units. */
         CreditDefaultSwap(Protection::Side side,
                           Real notional,
                           Rate spread,
+                          const Schedule& schedule,
+                          BusinessDayConvention paymentConvention,
+                          const DayCounter& dayCounter,
+                          bool settlesAccrual = true,
+                          bool paysAtDefaultTime = true,
+                          const boost::shared_ptr<Claim>& =
+                                                  boost::shared_ptr<Claim>());
+        //! CDS quoted as upfront and running spread
+        /*! @param runningSpread spread in fractional units.
+            @param upfrontSpread upfront in fractional units.
+        */
+        CreditDefaultSwap(Protection::Side side,
+                          Real notional,
+                          Rate upfront,
+                          Rate runningSpread,
                           const Schedule& schedule,
                           BusinessDayConvention paymentConvention,
                           const DayCounter& dayCounter,
@@ -78,17 +96,34 @@ namespace QuantLib {
         //@{
         Protection::Side side() const;
         Real notional() const;
-        Rate spread() const;
+        Rate runningSpread() const;
+        boost::optional<Rate> upfront() const;
         bool settlesAccrual() const;
         bool paysAtDefaultTime() const;
         const Leg& coupons() const;
         //@}
         //! \name Results
         //@{
+        /*! Returns the upfront spread that, given the running spread
+            and the quoted recovery rate, will make the instrument
+            have an NPV of 0.
+        */
+        Rate fairUpfront() const;
+        /*! Returns the running spread that, given the quoted recovery
+            rate, will make the running-only CDS have an NPV of 0.
+
+            \note This calculation does not take any upfront into
+                  account, even if one was given.
+        */
         Rate fairSpread() const;
+        /*! Returns the variation of the fixed-leg value given a
+            one-basis-point change in the running spread.
+        */
         Real couponLegBPS() const;
+        Real upfrontBPS() const;
         Real couponLegNPV() const;
         Real defaultLegNPV() const;
+        Real upfrontNPV() const;
         Rate impliedHazardRate(Real targetNPV,
                                const Handle<YieldTermStructure>& discountCurve,
                                const DayCounter& dayCounter,
@@ -103,13 +138,17 @@ namespace QuantLib {
         // data members
         Protection::Side side_;
         Real notional_;
-        Rate spread_;
+        boost::optional<Rate> upfront_;
+        Rate runningSpread_;
         bool settlesAccrual_, paysAtDefaultTime_;
         boost::shared_ptr<Claim> claim_;
         Leg leg_;
+        boost::shared_ptr<CashFlow> upfrontPayment_;
         // results
+        mutable Rate fairUpfront_;
         mutable Rate fairSpread_;
         mutable Real couponLegBPS_, couponLegNPV_;
+        mutable Real upfrontBPS_, upfrontNPV_;
         mutable Real defaultLegNPV_;
     };
 
@@ -120,8 +159,10 @@ namespace QuantLib {
         arguments();
         Protection::Side side;
         Real notional;
+        boost::optional<Rate> upfront;
         Rate spread;
         Leg leg;
+        boost::shared_ptr<CashFlow> upfrontPayment;
         bool settlesAccrual;
         bool paysAtDefaultTime;
         boost::shared_ptr<Claim> claim;
@@ -131,9 +172,12 @@ namespace QuantLib {
     class CreditDefaultSwap::results : public Instrument::results {
       public:
         Rate fairSpread;
+        Rate fairUpfront;
         Real couponLegBPS;
         Real couponLegNPV;
         Real defaultLegNPV;
+        Real upfrontBPS;
+        Real upfrontNPV;
         void reset();
     };
 

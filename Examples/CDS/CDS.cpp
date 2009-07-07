@@ -84,7 +84,8 @@ int main(int, char* []) {
         std::vector<boost::shared_ptr<DefaultProbabilityHelper> > instruments;
         for (Size i=0; i<4; i++) {
             instruments.push_back(boost::shared_ptr<DefaultProbabilityHelper>(
-                new CdsHelper(Handle<Quote>(boost::shared_ptr<Quote>(
+                new SpreadCdsHelper(
+                              Handle<Quote>(boost::shared_ptr<Quote>(
                                          new SimpleQuote(quoted_spreads[i]))),
                               tenors[i],
                               0,

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2008, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -402,6 +402,139 @@ void CreditDefaultSwapTest::testImpliedHazardRate() {
 }
 
 
+void CreditDefaultSwapTest::testFairSpread() {
+
+    BOOST_MESSAGE(
+        "Testing fair-spread calculation for credit-default swaps...");
+
+    SavedSettings backup;
+
+    // Initialize curves
+    Calendar calendar = TARGET();
+    Date today = calendar.adjust(Date::todaysDate());
+    Settings::instance().evaluationDate() = today;
+
+    Handle<Quote> hazardRate = Handle<Quote>(
+                boost::shared_ptr<Quote>(new SimpleQuote(0.01234)));
+    RelinkableHandle<DefaultProbabilityTermStructure> probabilityCurve;
+    probabilityCurve.linkTo(
+        boost::shared_ptr<DefaultProbabilityTermStructure>(
+                   new FlatHazardRate(0, calendar, hazardRate, Actual360())));
+
+    RelinkableHandle<YieldTermStructure> discountCurve;
+    discountCurve.linkTo(boost::shared_ptr<YieldTermStructure>(
+                            new FlatForward(today,0.06,Actual360())));
+
+    // Build the schedule
+    Date issueDate = calendar.advance(today, -1, Years);
+    Date maturity = calendar.advance(issueDate, 10, Years);
+    BusinessDayConvention convention = Following;
+
+    Schedule schedule =
+        MakeSchedule().from(issueDate)
+                      .to(maturity)
+                      .withFrequency(Quarterly)
+                      .withCalendar(calendar)
+                      .withTerminationDateConvention(convention)
+                      .withRule(DateGeneration::TwentiethIMM);
+
+    // Build the CDS
+    Rate fixedRate = 0.001;
+    DayCounter dayCount = Actual360();
+    Real notional = 10000.0;
+    Real recoveryRate = 0.4;
+
+    boost::shared_ptr<PricingEngine> engine(
+          new MidPointCdsEngine(probabilityCurve,recoveryRate,discountCurve));
+
+    CreditDefaultSwap cds(Protection::Seller, notional, fixedRate,
+                          schedule, convention, dayCount, true, true);
+    cds.setPricingEngine(engine);
+
+    Rate fairRate = cds.fairSpread();
+
+    CreditDefaultSwap fairCds(Protection::Seller, notional, fairRate,
+                              schedule, convention, dayCount, true, true);
+    fairCds.setPricingEngine(engine);
+
+    Real fairNPV = fairCds.NPV();
+    Real tolerance = 1e-10;
+
+    if (std::fabs(fairNPV) > tolerance)
+        BOOST_ERROR(
+            "Failed to reproduce null NPV with calculated fair spread\n"
+            << "    calculated spread: " << io::rate(fairRate) << "\n"
+            << "    calculated NPV:    " << fairNPV);
+}
+
+void CreditDefaultSwapTest::testFairUpfront() {
+
+    BOOST_MESSAGE(
+        "Testing fair-upfront calculation for credit-default swaps...");
+
+    SavedSettings backup;
+
+    // Initialize curves
+    Calendar calendar = TARGET();
+    Date today = calendar.adjust(Date::todaysDate());
+    Settings::instance().evaluationDate() = today;
+
+    Handle<Quote> hazardRate = Handle<Quote>(
+                boost::shared_ptr<Quote>(new SimpleQuote(0.01234)));
+    RelinkableHandle<DefaultProbabilityTermStructure> probabilityCurve;
+    probabilityCurve.linkTo(
+        boost::shared_ptr<DefaultProbabilityTermStructure>(
+                   new FlatHazardRate(0, calendar, hazardRate, Actual360())));
+
+    RelinkableHandle<YieldTermStructure> discountCurve;
+    discountCurve.linkTo(boost::shared_ptr<YieldTermStructure>(
+                            new FlatForward(today,0.06,Actual360())));
+
+    // Build the schedule
+    Date issueDate = today;
+    Date maturity = calendar.advance(issueDate, 10, Years);
+    BusinessDayConvention convention = Following;
+
+    Schedule schedule =
+        MakeSchedule().from(issueDate)
+                      .to(maturity)
+                      .withFrequency(Quarterly)
+                      .withCalendar(calendar)
+                      .withTerminationDateConvention(convention)
+                      .withRule(DateGeneration::TwentiethIMM);
+
+    // Build the CDS
+    Rate fixedRate = 0.05;
+    Rate upfront = 0.001;
+    DayCounter dayCount = Actual360();
+    Real notional = 10000.0;
+    Real recoveryRate = 0.4;
+
+    boost::shared_ptr<PricingEngine> engine(
+          new MidPointCdsEngine(probabilityCurve,recoveryRate,discountCurve));
+
+    CreditDefaultSwap cds(Protection::Seller, notional, upfront, fixedRate,
+                          schedule, convention, dayCount, true, true);
+    cds.setPricingEngine(engine);
+
+    Rate fairUpfront = cds.fairUpfront();
+
+    CreditDefaultSwap fairCds(Protection::Seller, notional,
+                              fairUpfront, fixedRate,
+                              schedule, convention, dayCount, true, true);
+    fairCds.setPricingEngine(engine);
+
+    Real fairNPV = fairCds.NPV();
+    Real tolerance = 1e-10;
+
+    if (std::fabs(fairNPV) > tolerance)
+        BOOST_ERROR(
+            "Failed to reproduce null NPV with calculated fair upfront\n"
+            << "    calculated upfront: " << io::rate(fairUpfront) << "\n"
+            << "    calculated NPV:     " << fairNPV);
+}
+
+
 test_suite* CreditDefaultSwapTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Credit-default swap tests");
     suite->add(QUANTLIB_TEST_CASE(&CreditDefaultSwapTest::testCachedValue));
@@ -409,6 +542,8 @@ test_suite* CreditDefaultSwapTest::suite() {
                               &CreditDefaultSwapTest::testCachedMarketValue));
     suite->add(QUANTLIB_TEST_CASE(
                               &CreditDefaultSwapTest::testImpliedHazardRate));
+    suite->add(QUANTLIB_TEST_CASE(&CreditDefaultSwapTest::testFairSpread));
+    suite->add(QUANTLIB_TEST_CASE(&CreditDefaultSwapTest::testFairUpfront));
     return suite;
 }
 

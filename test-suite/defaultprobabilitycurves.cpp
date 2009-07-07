@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2008, 2009 StatPro Italia srl
  Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
@@ -140,7 +140,7 @@ void DefaultProbabilityCurveTest::testFlatHazardRate() {
 namespace {
 
     template <class T, class I>
-    void testPiecewiseCurve() {
+    void testBootstrapFromSpread() {
 
         Calendar calendar = TARGET();
 
@@ -177,11 +177,11 @@ namespace {
         for(Size i=0; i<n.size(); i++)
             helpers.push_back(
                 boost::shared_ptr<DefaultProbabilityHelper>(
-                    new CdsHelper(quote[i], Period(n[i], Years),
-                                  settlementDays, calendar,
-                                  frequency, convention, rule,
-                                  dayCounter, recoveryRate,
-                                  discountCurve)));
+                    new SpreadCdsHelper(quote[i], Period(n[i], Years),
+                                        settlementDays, calendar,
+                                        frequency, convention, rule,
+                                        dayCounter, recoveryRate,
+                                        discountCurve)));
 
         RelinkableHandle<DefaultProbabilityTermStructure> piecewiseCurve;
         piecewiseCurve.linkTo(
@@ -218,26 +218,113 @@ namespace {
         }
     }
 
+
+    template <class T, class I>
+    void testBootstrapFromUpfront() {
+
+        Calendar calendar = TARGET();
+
+        Date today = Settings::instance().evaluationDate();
+        Date startDate = today;
+        Date endDate = startDate;
+
+        Integer settlementDays = 0;
+
+        std::vector<Real> quote;
+        quote.push_back(0.01);
+        quote.push_back(0.02);
+        quote.push_back(0.04);
+        quote.push_back(0.06);
+
+        std::vector<Integer> n;
+        n.push_back(2);
+        n.push_back(3);
+        n.push_back(5);
+        n.push_back(7);
+
+        Rate fixedRate = 0.05;
+        Frequency frequency = Quarterly;
+        BusinessDayConvention convention = Following;
+        DateGeneration::Rule rule = DateGeneration::TwentiethIMM;
+        DayCounter dayCounter = Thirty360();
+        Real recoveryRate = 0.4;
+
+        RelinkableHandle<YieldTermStructure> discountCurve;
+        discountCurve.linkTo(boost::shared_ptr<YieldTermStructure>(
+                                    new FlatForward(today,0.06,Actual360())));
+
+        std::vector<boost::shared_ptr<DefaultProbabilityHelper> > helpers;
+
+        for(Size i=0; i<n.size(); i++)
+            helpers.push_back(
+                boost::shared_ptr<DefaultProbabilityHelper>(
+                    new UpfrontCdsHelper(quote[i], fixedRate,
+                                         Period(n[i], Years),
+                                         settlementDays, calendar,
+                                         frequency, convention, rule,
+                                         dayCounter, recoveryRate,
+                                         discountCurve)));
+
+        RelinkableHandle<DefaultProbabilityTermStructure> piecewiseCurve;
+        piecewiseCurve.linkTo(
+            boost::shared_ptr<DefaultProbabilityTermStructure>(
+                new PiecewiseDefaultCurve<T,I>(today, helpers,
+                                               Thirty360())));
+
+        Real notional = 1.0;
+        double tolerance = 1.0e-6;
+
+        for (Size i=0; i<n.size(); i++) {
+            Date settlement = calendar.advance(today, settlementDays, Days);
+            Date endDate = calendar.advance(settlement, n[i], Years,
+                                            convention);
+            Schedule schedule(settlement, endDate, Period(frequency), calendar,
+                              convention, convention, rule, false);
+
+            CreditDefaultSwap cds(Protection::Buyer, notional,
+                                  quote[i], fixedRate,
+                                  schedule, convention, dayCounter);
+            cds.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                           new MidPointCdsEngine(piecewiseCurve, recoveryRate,
+                                                 discountCurve)));
+
+            // test
+            Rate inputUpfront = quote[i];
+            Rate computedUpfront = cds.fairUpfront();
+            if (std::fabs(inputUpfront - computedUpfront) > tolerance)
+                BOOST_ERROR(
+                    "\nFailed to reproduce fair upfront for " << n[i] <<
+                    "Y credit-default swaps\n"
+                    << std::setprecision(10)
+                    << "    computed: " << io::rate(computedUpfront) << "\n"
+                    << "    expected: " << io::rate(inputUpfront));
+        }
+    }
+
 }
 
 void DefaultProbabilityCurveTest::testFlatHazardConsistency() {
     BOOST_MESSAGE("Testing piecewise-flat hazard-rate consistency...");
-    testPiecewiseCurve<HazardRate,BackwardFlat>();
+    testBootstrapFromSpread<HazardRate,BackwardFlat>();
+    testBootstrapFromUpfront<HazardRate,BackwardFlat>();
 }
 
 void DefaultProbabilityCurveTest::testFlatDensityConsistency() {
     BOOST_MESSAGE("Testing piecewise-flat default-density consistency...");
-    testPiecewiseCurve<DefaultDensity,BackwardFlat>();
+    testBootstrapFromSpread<DefaultDensity,BackwardFlat>();
+    testBootstrapFromUpfront<DefaultDensity,BackwardFlat>();
 }
 
 void DefaultProbabilityCurveTest::testLinearDensityConsistency() {
     BOOST_MESSAGE("Testing piecewise-linear default-density consistency...");
-    testPiecewiseCurve<DefaultDensity,Linear>();
+    testBootstrapFromSpread<DefaultDensity,Linear>();
+    testBootstrapFromUpfront<DefaultDensity,Linear>();
 }
 
 void DefaultProbabilityCurveTest::testLogLinearSurvivalConsistency() {
     BOOST_MESSAGE("Testing log-linear survival-probability consistency...");
-    testPiecewiseCurve<SurvivalProbability,LogLinear>();
+    testBootstrapFromSpread<SurvivalProbability,LogLinear>();
+    testBootstrapFromUpfront<SurvivalProbability,LogLinear>();
 }
 
 void DefaultProbabilityCurveTest::testSingleInstrumentBootstrap() {
@@ -265,7 +352,7 @@ void DefaultProbabilityCurveTest::testSingleInstrumentBootstrap() {
     std::vector<boost::shared_ptr<DefaultProbabilityHelper> > helpers(1);
 
     helpers[0] = boost::shared_ptr<DefaultProbabilityHelper>(
-                              new CdsHelper(quote, tenor,
+                        new SpreadCdsHelper(quote, tenor,
                                             settlementDays, calendar,
                                             frequency, convention, rule,
                                             dayCounter, recoveryRate,

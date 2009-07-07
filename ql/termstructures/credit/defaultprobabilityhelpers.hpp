@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Jose Aparicio
+ Copyright (C) 2008, 2009 Jose Aparicio
  Copyright (C) 2008 Chris Kenyon
  Copyright (C) 2008 Roland Lichters
  Copyright (C) 2008 StatPro Italia srl
@@ -29,7 +29,7 @@
 
 #include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
-#include <ql/time/dategenerationrule.hpp>
+#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 
@@ -39,11 +39,13 @@ namespace QuantLib {
     //! alias for default-probability bootstrap helpers
     typedef BootstrapHelper<DefaultProbabilityTermStructure>
                                                      DefaultProbabilityHelper;
+    typedef RelativeDateBootstrapHelper<DefaultProbabilityTermStructure>
+                                         RelativeDateDefaultProbabilityHelper;
 
-    //! Default-probability bootstrap helper based on quoted CDS spreads
-    class CdsHelper : public DefaultProbabilityHelper {
+    //! Base default-probability bootstrap helper
+    class CdsHelper : public RelativeDateDefaultProbabilityHelper {
       public:
-        CdsHelper(const Handle<Quote>& spread,
+        CdsHelper(const Handle<Quote>& quote,
                   const Period& tenor,
                   Integer settlementDays,
                   const Calendar& calendar,
@@ -55,7 +57,7 @@ namespace QuantLib {
                   const Handle<YieldTermStructure>& discountCurve,
                   bool settlesAccrual = true,
                   bool paysAtDefaultTime = true);
-        CdsHelper(Rate spread,
+        CdsHelper(Rate quote,
                   const Period& tenor,
                   Integer settlementDays,
                   const Calendar& calendar,
@@ -67,11 +69,11 @@ namespace QuantLib {
                   const Handle<YieldTermStructure>& discountCurve,
                   bool settlesAccrual = true,
                   bool paysAtDefaultTime = true);
-        Real impliedQuote() const;
         void setTermStructure(DefaultProbabilityTermStructure*);
-      private:
+      protected:
         void update();
         void initializeDates();
+        virtual void resetEngine() = 0;
         Period tenor_;
         Integer settlementDays_;
         Calendar calendar_;
@@ -84,9 +86,86 @@ namespace QuantLib {
         bool settlesAccrual_;
         bool paysAtDefaultTime_;
 
-        Date evaluationDate_;
+        Schedule schedule_;
         boost::shared_ptr<CreditDefaultSwap> swap_;
         RelinkableHandle<DefaultProbabilityTermStructure> probability_;
+    };
+
+    //! Spread-quoted CDS hazard rate bootstrap helper.
+    class SpreadCdsHelper : public CdsHelper {
+      public:
+        /*! @param runningSpread Spread quote in fractional units. */
+        SpreadCdsHelper(const Handle<Quote>& runningSpread,
+                        const Period& tenor,
+                        Integer settlementDays,
+                        const Calendar& calendar,
+                        Frequency frequency,
+                        BusinessDayConvention paymentConvention,
+                        DateGeneration::Rule rule,
+                        const DayCounter& dayCounter,
+                        Real recoveryRate,
+                        const Handle<YieldTermStructure>& discountCurve,
+                        bool settlesAccrual = true,
+                        bool paysAtDefaultTime = true);
+
+        /*! @param runningSpread Spread rate in fractional units. */
+        SpreadCdsHelper(Rate runningSpread,
+                        const Period& tenor,
+                        Integer settlementDays,
+                        const Calendar& calendar,
+                        Frequency frequency,
+                        BusinessDayConvention paymentConvention,
+                        DateGeneration::Rule rule,
+                        const DayCounter& dayCounter,
+                        Real recoveryRate,
+                        const Handle<YieldTermStructure>& discountCurve,
+                        bool settlesAccrual = true,
+                        bool paysAtDefaultTime = true);
+        Real impliedQuote() const;
+      private:
+        void resetEngine();
+    };
+
+    //! Upfront-quoted CDS hazard rate bootstrap helper.
+    class UpfrontCdsHelper : public CdsHelper {
+      public:
+        /*! @param upfront Spread quote in fractional units.
+            @param runningSpread Spread rate in fractional units.
+        */
+        UpfrontCdsHelper(const Handle<Quote>& upfront,
+                         Rate runningSpread,
+                         const Period& tenor,
+                         Integer settlementDays,
+                         const Calendar& calendar,
+                         Frequency frequency,
+                         BusinessDayConvention paymentConvention,
+                         DateGeneration::Rule rule,
+                         const DayCounter& dayCounter,
+                         Real recoveryRate,
+                         const Handle<YieldTermStructure>& discountCurve,
+                         bool settlesAccrual = true,
+                         bool paysAtDefaultTime = true);
+
+        /*! @param upfront upfront in fractional units.
+            @param runningSpread Spread rate in fractional units.
+        */
+        UpfrontCdsHelper(Rate upfront,
+                         Rate runningSpread,
+                         const Period& tenor,
+                         Integer settlementDays,
+                         const Calendar& calendar,
+                         Frequency frequency,
+                         BusinessDayConvention paymentConvention,
+                         DateGeneration::Rule rule,
+                         const DayCounter& dayCounter,
+                         Real recoveryRate,
+                         const Handle<YieldTermStructure>& discountCurve,
+                         bool settlesAccrual = true,
+                         bool paysAtDefaultTime = true);
+        Real impliedQuote() const;
+      private:
+        Rate runningSpread_;
+        void resetEngine();
     };
 
 }

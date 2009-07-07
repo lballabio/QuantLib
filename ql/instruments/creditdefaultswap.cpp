@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Jose Aparicio
+ Copyright (C) 2008, 2009 Jose Aparicio
  Copyright (C) 2008 Roland Lichters
  Copyright (C) 2008 StatPro Italia srl
 
@@ -22,6 +22,7 @@
 #include <ql/instruments/creditdefaultswap.hpp>
 #include <ql/instruments/claim.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/pricingengines/credit/midpointcdsengine.hpp>
@@ -40,13 +41,39 @@ namespace QuantLib {
                                          bool settlesAccrual,
                                          bool paysAtDefaultTime,
                                          const boost::shared_ptr<Claim>& claim)
-    : side_(side), notional_(notional), spread_(spread),
-      settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime),
-      claim_(claim) {
+    : side_(side), notional_(notional), upfront_(boost::none),
+      runningSpread_(spread), settlesAccrual_(settlesAccrual),
+      paysAtDefaultTime_(paysAtDefaultTime), claim_(claim) {
         leg_ = FixedRateLeg(schedule, dayCounter)
             .withNotionals(notional)
             .withCouponRates(spread)
             .withPaymentAdjustment(convention);
+        upfrontPayment_.reset(new SimpleCashFlow(0.0, schedule[0]));
+
+        if (!claim_)
+            claim_ = boost::shared_ptr<Claim>(new FaceValueClaim);
+        registerWith(claim_);
+    }
+
+    CreditDefaultSwap::CreditDefaultSwap(Protection::Side side,
+                                         Real notional,
+                                         Rate upfront,
+                                         Rate runningSpread,
+                                         const Schedule& schedule,
+                                         BusinessDayConvention convention,
+                                         const DayCounter& dayCounter,
+                                         bool settlesAccrual,
+                                         bool paysAtDefaultTime,
+                                         const boost::shared_ptr<Claim>& claim)
+    : side_(side), notional_(notional), upfront_(upfront),
+      runningSpread_(runningSpread), settlesAccrual_(settlesAccrual),
+      paysAtDefaultTime_(paysAtDefaultTime), claim_(claim) {
+        leg_ = FixedRateLeg(schedule, dayCounter)
+            .withNotionals(notional)
+            .withCouponRates(runningSpread)
+            .withPaymentAdjustment(convention);
+        upfrontPayment_.reset(new SimpleCashFlow(notional*upfront,
+                                                 schedule[0]));
 
         if (!claim_)
             claim_ = boost::shared_ptr<Claim>(new FaceValueClaim);
@@ -61,8 +88,12 @@ namespace QuantLib {
         return notional_;
     }
 
-    Rate CreditDefaultSwap::spread() const {
-        return spread_;
+    Rate CreditDefaultSwap::runningSpread() const {
+        return runningSpread_;
+    }
+
+    boost::optional<Rate> CreditDefaultSwap::upfront() const {
+        return upfront_;
     }
 
     bool CreditDefaultSwap::settlesAccrual() const {
@@ -79,17 +110,19 @@ namespace QuantLib {
 
 
     bool CreditDefaultSwap::isExpired() const {
-        for (Size i=leg_.size(); i>0; --i)
-            if (!leg_[i-1]->hasOccurred())
+        for (Leg::const_reverse_iterator i = leg_.rbegin();
+                                         i != leg_.rend(); ++i) {
+            if (!(*i)->hasOccurred())
                 return false;
+        }
         return true;
     }
 
     void CreditDefaultSwap::setupExpired() const {
         Instrument::setupExpired();
-        fairSpread_ = 0.0;
-        couponLegBPS_ = 0.0;
-        couponLegNPV_ = defaultLegNPV_ = 0.0;
+        fairSpread_ = fairUpfront_ = 0.0;
+        couponLegBPS_ = upfrontBPS_ = 0.0;
+        couponLegNPV_ = defaultLegNPV_ = upfrontNPV_ = 0.0;
     }
 
     void CreditDefaultSwap::setupArguments(
@@ -100,11 +133,13 @@ namespace QuantLib {
 
         arguments->side = side_;
         arguments->notional = notional_;
-        arguments->spread = spread_;
         arguments->leg = leg_;
+        arguments->upfrontPayment = upfrontPayment_;
         arguments->settlesAccrual = settlesAccrual_;
         arguments->paysAtDefaultTime = paysAtDefaultTime_;
         arguments->claim = claim_;
+        arguments->upfront = upfront_;
+        arguments->spread = runningSpread_;
     }
 
 
@@ -117,11 +152,20 @@ namespace QuantLib {
         QL_REQUIRE(results != 0, "wrong result type");
 
         fairSpread_ = results->fairSpread;
+        fairUpfront_ = results->fairUpfront;
         couponLegBPS_ = results->couponLegBPS;
         couponLegNPV_ = results->couponLegNPV;
         defaultLegNPV_ = results->defaultLegNPV;
+        upfrontNPV_ = results->upfrontNPV;
+        upfrontBPS_ = results->upfrontBPS;
     }
 
+    Rate CreditDefaultSwap::fairUpfront() const {
+        calculate();
+        QL_REQUIRE(fairUpfront_ != Null<Rate>(),
+                   "fair upfront not available");
+        return fairUpfront_;
+    }
 
     Rate CreditDefaultSwap::fairSpread() const {
         calculate();
@@ -149,6 +193,13 @@ namespace QuantLib {
         QL_REQUIRE(defaultLegNPV_ != Null<Rate>(),
                    "default-leg NPV not available");
         return defaultLegNPV_;
+    }
+
+    Real CreditDefaultSwap::upfrontNPV() const {
+        calculate();
+        QL_REQUIRE(upfrontNPV_ != Null<Real>(),
+                   "upfront NPV not available");
+        return upfrontNPV_;
     }
 
 
@@ -216,15 +267,19 @@ namespace QuantLib {
         QL_REQUIRE(notional != 0.0, "null notional set");
         QL_REQUIRE(spread != Null<Rate>(), "spread not set");
         QL_REQUIRE(!leg.empty(), "coupons not set");
+        QL_REQUIRE(upfrontPayment, "upfront payment not set");
         QL_REQUIRE(claim, "claim not set");
     }
 
     void CreditDefaultSwap::results::reset() {
         Instrument::results::reset();
         fairSpread = Null<Rate>();
+        fairUpfront = Null<Rate>();
         couponLegBPS = Null<Real>();
         couponLegNPV = Null<Real>();
         defaultLegNPV = Null<Real>();
+        upfrontBPS = Null<Real>();
+        upfrontNPV = Null<Real>();
     }
 
 }
