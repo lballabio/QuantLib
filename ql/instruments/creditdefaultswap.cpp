@@ -202,6 +202,13 @@ namespace QuantLib {
         return upfrontNPV_;
     }
 
+    Real CreditDefaultSwap::upfrontBPS() const {
+        calculate();
+        QL_REQUIRE(upfrontBPS_ != Null<Real>(),
+                   "upfront BPS not available");
+        return upfrontBPS_;
+    }
+
 
     namespace {
 
