@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2008, 2009 StatPro Italia srl
  Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
@@ -35,6 +35,7 @@ class DefaultProbabilityCurveTest {
     static void testLinearDensityConsistency();
     static void testLogLinearSurvivalConsistency();
     static void testSingleInstrumentBootstrap();
+    static void testUpfrontBootstrap();
     static boost::unit_test_framework::test_suite* suite();
 };
 

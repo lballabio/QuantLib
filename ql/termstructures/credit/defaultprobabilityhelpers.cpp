@@ -207,6 +207,8 @@ namespace QuantLib {
       runningSpread_(runningSpread) {}
 
     Real UpfrontCdsHelper::impliedQuote() const {
+        SavedSettings backup;
+        Settings::instance().includeTodaysCashFlows() = true;
         swap_->recalculate();
         return swap_->fairUpfront();
     }

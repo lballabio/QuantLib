@@ -274,6 +274,10 @@ namespace {
         Real notional = 1.0;
         double tolerance = 1.0e-6;
 
+        SavedSettings backup;
+        // ensure apple-to-apple comparison
+        Settings::instance().includeTodaysCashFlows() = true;
+
         for (Size i=0; i<n.size(); i++) {
             Date settlement = calendar.advance(today, settlementDays, Days);
             Date endDate = calendar.advance(settlement, n[i], Years,
@@ -363,6 +367,21 @@ void DefaultProbabilityCurveTest::testSingleInstrumentBootstrap() {
     defaultCurve.recalculate();
 }
 
+void DefaultProbabilityCurveTest::testUpfrontBootstrap() {
+    BOOST_MESSAGE("Testing bootstrap on upfront quotes...");
+
+    SavedSettings backup;
+    // not taken into account, this would prevent the upfront from being used
+    Settings::instance().includeTodaysCashFlows() = false;
+
+    testBootstrapFromUpfront<HazardRate,BackwardFlat>();
+
+    // also ensure that we didn't override the flag permanently
+    boost::optional<bool> flag = Settings::instance().includeTodaysCashFlows();
+    if (flag != false)
+        BOOST_ERROR("Cash-flow settings improperly modified");
+}
+
 
 test_suite* DefaultProbabilityCurveTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Default-probability curve tests");
@@ -377,8 +396,10 @@ test_suite* DefaultProbabilityCurveTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                  &DefaultProbabilityCurveTest::testLinearDensityConsistency));
     suite->add(QUANTLIB_TEST_CASE(
-                 &DefaultProbabilityCurveTest::testLogLinearSurvivalConsistency));
+             &DefaultProbabilityCurveTest::testLogLinearSurvivalConsistency));
     suite->add(QUANTLIB_TEST_CASE(
                 &DefaultProbabilityCurveTest::testSingleInstrumentBootstrap));
+    suite->add(QUANTLIB_TEST_CASE(
+                         &DefaultProbabilityCurveTest::testUpfrontBootstrap));
     return suite;
 }
