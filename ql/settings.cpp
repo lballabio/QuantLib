@@ -95,7 +95,8 @@ namespace QuantLib {
 
     SavedSettings::~SavedSettings() {
         try {
-            Settings::instance().evaluationDate() = evaluationDate_;
+            if (Settings::instance().evaluationDate() != evaluationDate_)
+                Settings::instance().evaluationDate() = evaluationDate_;
             Settings::instance().includeReferenceDateCashFlows() =
                 includeReferenceDateCashFlows_;
             Settings::instance().includeTodaysCashFlows() =
