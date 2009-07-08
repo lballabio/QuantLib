@@ -511,7 +511,8 @@ void CreditDefaultSwapTest::testFairUpfront() {
     Real recoveryRate = 0.4;
 
     boost::shared_ptr<PricingEngine> engine(
-          new MidPointCdsEngine(probabilityCurve,recoveryRate,discountCurve));
+          new MidPointCdsEngine(probabilityCurve, recoveryRate,
+                                discountCurve, true));
 
     CreditDefaultSwap cds(Protection::Seller, notional, upfront, fixedRate,
                           schedule, convention, dayCount, true, true);

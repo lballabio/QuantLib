@@ -286,7 +286,7 @@ namespace {
                                   schedule, convention, dayCounter);
             cds.setPricingEngine(boost::shared_ptr<PricingEngine>(
                            new MidPointCdsEngine(piecewiseCurve, recoveryRate,
-                                                 discountCurve)));
+                                                 discountCurve, true)));
 
             // test
             Rate inputUpfront = quote[i];

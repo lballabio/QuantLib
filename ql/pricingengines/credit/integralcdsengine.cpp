@@ -30,9 +30,11 @@ namespace QuantLib {
                    const Period& step,
                    const Handle<DefaultProbabilityTermStructure>& probability,
                    Real recoveryRate,
-                   const Handle<YieldTermStructure>& discountCurve)
+                   const Handle<YieldTermStructure>& discountCurve,
+                   boost::optional<bool> includeSettlementDateFlows)
     : integrationStep_(step), probability_(probability),
-      recoveryRate_(recoveryRate), discountCurve_(discountCurve) {
+      recoveryRate_(recoveryRate), discountCurve_(discountCurve),
+      includeSettlementDateFlows_(includeSettlementDateFlows) {
         registerWith(probability_);
         registerWith(discountCurve_);
     }
@@ -51,7 +53,8 @@ namespace QuantLib {
         // Upfront Flow NPV. Either we are on-the-run (no flow)
         // or we are forward start
         Real upfPVO1 = 0.0;
-        if (!arguments_.upfrontPayment->hasOccurred(settlementDate, true))
+        if(!arguments_.upfrontPayment->hasOccurred(settlementDate,
+                                                   includeSettlementDateFlows_))
             upfPVO1 =
                 probability_->survivalProbability(settlementDate) *
                 discountCurve_->discount(settlementDate);
@@ -60,7 +63,8 @@ namespace QuantLib {
         results_.couponLegNPV = 0.0;
         results_.defaultLegNPV = 0.0;
         for (Size i=0; i<arguments_.leg.size(); ++i) {
-            if (arguments_.leg[i]->hasOccurred(settlementDate))
+            if (arguments_.leg[i]->hasOccurred(settlementDate,
+                                               includeSettlementDateFlows_))
                 continue;
 
             boost::shared_ptr<FixedRateCoupon> coupon =
