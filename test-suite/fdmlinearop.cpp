@@ -30,11 +30,12 @@
 #include <ql/processes/hybridhestonhullwhiteprocess.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/pricingengines/vanilla/mchestonhullwhiteengine.hpp>
-
 #include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
+#include <ql/experimental/finitedifferences/bicgstab.hpp>
 #include <ql/experimental/finitedifferences/douglasscheme.hpp>
 #include <ql/experimental/finitedifferences/hundsdorferscheme.hpp>
 #include <ql/experimental/finitedifferences/craigsneydscheme.hpp>
@@ -54,6 +55,8 @@
 #include <ql/experimental/finitedifferences/firstderivativeop.hpp>
 #include <ql/experimental/finitedifferences/secondderivativeop.hpp>
 #include <ql/experimental/finitedifferences/secondordermixedderivativeop.hpp>
+
+#include <boost/bind.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -957,6 +960,61 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     }
 }
 
+void FdmLinearOpTest::testBiCGstab() {
+    
+    BOOST_MESSAGE("Testing BiCGstab with Heston operator ...");
+    
+    SavedSettings backup;
+    
+    const Size n=41, m=21;
+    const Real theta = 1.0;
+    Matrix a(n*m, n*m, 0.0);
+    
+    
+    for (Size i=0; i < n; ++i) {
+        for (Size j=0; j < m; ++j) {
+            const Size k = i*m+j;
+            a[k][k]=1.0; 
+
+            if (i > 0 && j > 0 && i <n-1 && j < m-1) {
+                const Size im1 = i-1;
+                const Size ip1 = i+1;
+                const Size jm1 = j-1;
+                const Size jp1 = j+1;   
+                const Real delta = theta/((ip1-im1)*(jp1-jm1));
+                
+                a[k][im1*m+jm1] =  delta;
+                a[k][im1*m+jp1] = -delta;
+                a[k][ip1*m+jm1] = -delta;
+                a[k][ip1*m+jp1] =  delta;
+            }
+        }
+    }
+    
+    boost::function<Disposable<Array>(const Array&)> matmult(
+         boost::bind(multiplies<const Matrix&, const Array&, 
+                                Disposable<Array> >(), a, _1));
+
+    Array b(n*m);
+    MersenneTwisterUniformRng rng(1234);
+    for (Size i=0; i < b.size(); ++i) {
+        b[i] = rng.next().value;
+    }
+
+    const Real tol = 1e-6;
+
+    const BiCGstab biCGstab(matmult, n*m, tol);
+    const Array x = biCGstab.solve(b).x;
+    
+    const Real error = std::sqrt(DotProduct(b-a*x, b-a*x)/DotProduct(b,b));
+
+    if (error > tol) {
+        QL_FAIL("Error calculating the inverse using BiCGstab" <<
+                "\n tolerance:  " << tol <<
+                "\n error:      " << error);        
+    }
+}
+
 test_suite* FdmLinearOpTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("linear operator tests");
 
@@ -977,6 +1035,7 @@ test_suite* FdmLinearOpTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonAmerican));
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonExpress));
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonHullWhiteOp));
+    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testBiCGstab));
 
     return suite;
 }

@@ -4,6 +4,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    bicgstab.hpp \
 	craigsneydscheme.hpp \
 	dividendbarrieroption.hpp \
 	douglasscheme.hpp \
@@ -49,6 +50,7 @@ this_include_HEADERS = \
 	uniformgridmesher.hpp
 
 libMultiDimFDM_la_SOURCES = \
+    bicgstab.cpp \
 	craigsneydscheme.cpp \
 	dividendbarrieroption.cpp \
 	douglasscheme.cpp \

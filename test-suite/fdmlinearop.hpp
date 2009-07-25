@@ -39,6 +39,7 @@ public:
     static void testFdmHestonAmerican();
     static void testFdmHestonExpress();
     static void testFdmHestonHullWhiteOp();
+    static void testBiCGstab();
     static boost::unit_test_framework::test_suite* suite();
 };
 

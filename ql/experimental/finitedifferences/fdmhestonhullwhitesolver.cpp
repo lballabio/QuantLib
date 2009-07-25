@@ -110,7 +110,7 @@ namespace QuantLib {
     }
 
     void FdmHestonHullWhiteSolver::performCalculations() const {
-        boost::shared_ptr<FdmHestonHullWhiteOp> map(
+        boost::shared_ptr<FdmLinearOpComposite> map(
             new FdmHestonHullWhiteOp(mesher_, 
                                      hestonProcess_.currentLink(), 
                                      hwProcess_.currentLink(), 
