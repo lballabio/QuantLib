@@ -2,8 +2,8 @@
 
 /*
  Copyright (C) 2008 Andreas Gaida
- Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2008,2009 Ralph Schreyer
+ Copyright (C) 2008,2009 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -41,9 +41,10 @@ namespace QuantLib {
             ++iter) {
             for (Size i=0; i < dims; ++i)
                 locations[i] = mesher_->location(iter, i);
-
-            if (calculator_->innerValue(locations) > a[iter.index()]) {
-                a[iter.index()] = calculator_->innerValue(locations);
+                
+			const Real innerValue = calculator_->innerValue(mesher_, iter);
+            if (innerValue > a[iter.index()]) {
+                a[iter.index()] = innerValue;
             }
         }
     }

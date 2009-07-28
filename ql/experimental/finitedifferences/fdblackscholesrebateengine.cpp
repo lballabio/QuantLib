@@ -2,8 +2,8 @@
 
 /*
  Copyright (C) 2008 Andreas Gaida
- Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008, 2009 Klaus Spanderen
+ Copyright (C) 2008,2009 Ralph Schreyer
+ Copyright (C) 2008 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -49,7 +49,6 @@ namespace QuantLib {
                                               new FdmLinearOpLayout(dim));
 
         // 2. Mesher
-        // Calculate the forward
         const boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         const Time maturity = process_->time(arguments_.exercise->lastDate());
@@ -75,11 +74,18 @@ namespace QuantLib {
         boost::shared_ptr<FdmMesher> mesher (
                                      new FdmMesherComposite(layout, meshers));
         
-        // 3. Step conditions
+
+        // 3. Calculator
+        boost::shared_ptr<StrikedTypePayoff> rebatePayoff(
+                new CashOrNothingPayoff(Option::Call, 0.0, arguments_.rebate));
+        boost::shared_ptr<FdmInnerValueCalculator> calculator(
+                                new FdmLogInnerValue(rebatePayoff, 0));
+
+        // 4. Step conditions
         std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;
         std::list<std::vector<Time> > stoppingTimes;
 
-        // 3.1 Step condition if discrete dividends
+        // 4.1 Step condition if discrete dividends
         boost::shared_ptr<FdmDividendHandler> dividendCondition(
             new FdmDividendHandler(arguments_.cashFlow, mesher,
                                    process_->riskFreeRate()->referenceDate(),
@@ -96,7 +102,7 @@ namespace QuantLib {
         boost::shared_ptr<FdmStepConditionComposite> conditions(
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));
 
-        // 4. Boundary conditions
+        // 5. Boundary conditions
         std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;
         if (   arguments_.barrierType == Barrier::DownIn
             || arguments_.barrierType == Barrier::DownOut) {
@@ -112,15 +118,12 @@ namespace QuantLib {
                                          FdmDirichletBoundary::Upper)));
         }
 
-        // 5. Solver
-        boost::shared_ptr<StrikedTypePayoff> rebatePayoff(
-                new CashOrNothingPayoff(Option::Call, 0.0, arguments_.rebate));
-
+        // 6. Solver
         boost::shared_ptr<FdmBlackScholesSolver> solver(
                 new FdmBlackScholesSolver(
                                 Handle<GeneralizedBlackScholesProcess>(process_),
-                                mesher, boundaries, conditions,
-                                rebatePayoff, maturity, tGrid_, theta_,
+                                mesher, boundaries, conditions, calculator,
+                                payoff->strike(), maturity, tGrid_, theta_,
                                 localVol_, illegalLocalVolOverwrite_));
 
         const Real spot = process_->x0();

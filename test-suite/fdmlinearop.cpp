@@ -41,6 +41,7 @@
 #include <ql/experimental/finitedifferences/craigsneydscheme.hpp>
 #include <ql/experimental/finitedifferences/uniformgridmesher.hpp>
 #include <ql/experimental/finitedifferences/uniform1dmesher.hpp>
+#include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearop.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearopcomposite.hpp>
@@ -799,9 +800,12 @@ void FdmLinearOpTest::testFdmHestonExpress() {
 
     boost::shared_ptr<Payoff> payoff(new ExpressPayoff());
 
+    boost::shared_ptr<FdmInnerValueCalculator> calculator(
+                            new FdmLogInnerValue(payoff, 0));
+
     std::vector<boost::shared_ptr<FdmDirichletBoundary> > bcSet;
     FdmHestonSolver solver(hestonProcess,
-                           mesher, bcSet, condition, payoff, 1.0, 50);
+                           mesher, bcSet, condition, calculator, 1.0, 50);
 
     const Real s = s0->value();
     const Real v0 = 0.04;

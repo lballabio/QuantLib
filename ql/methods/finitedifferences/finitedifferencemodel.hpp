@@ -98,8 +98,13 @@ namespace QuantLib {
             Time dt = (from-to)/steps, t = from;
             evolver_.setStep(dt);
 
+            if(!stoppingTimes_.empty() && stoppingTimes_.back() == from) {
+                if (condition)
+                    condition->applyTo(a,from);            	
+            }
             for (Size i=0; i<steps; ++i, t -= dt) {
                 Time now = t, next = t-dt;
+                if (std::fabs(to-next) < std::sqrt(QL_EPSILON)) next = to;
                 bool hit = false;
                 for (Integer j = stoppingTimes_.size()-1; j >= 0 ; --j) {
                     if (next <= stoppingTimes_[j] && stoppingTimes_[j] < now) {

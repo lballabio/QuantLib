@@ -2,8 +2,8 @@
 
 /*
  Copyright (C) 2008 Andreas Gaida
- Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008, 2009 Klaus Spanderen
+ Copyright (C) 2008,2009 Ralph Schreyer
+ Copyright (C) 2008,2009 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -39,7 +39,7 @@ namespace QuantLib {
         FdmBlackScholesOp(
             const boost::shared_ptr<FdmMesher>& mesher,
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            const boost::shared_ptr<Payoff>& payoff,
+            Real strike,
             bool localVol = false,
             Real illegalLocalVolOverwrite = -Null<Real>());
 

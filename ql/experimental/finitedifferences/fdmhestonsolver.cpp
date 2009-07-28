@@ -2,8 +2,8 @@
 
 /*
  Copyright (C) 2008 Andreas Gaida
- Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2008,2009 Ralph Schreyer
+ Copyright (C) 2008,2009 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,6 +19,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/processes/hestonprocess.hpp>
+#include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
+#include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmmesher.hpp>
@@ -56,7 +59,7 @@ namespace QuantLib {
         const boost::shared_ptr<FdmMesher>& mesher,
         const FdmBoundaryConditionSet& bcSet,
         const boost::shared_ptr<FdmStepConditionComposite> & condition,
-        const boost::shared_ptr<Payoff>& payoff,
+        const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
         const Time maturity,
         const Size timeSteps,
         FdmHestonSolver::FdmSchemeType schemeType, Real theta, Real mu,
@@ -87,8 +90,7 @@ namespace QuantLib {
         const FdmLinearOpIterator endIter = layout->end();
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
              ++iter) {
-            initialValues_[iter.index()] = payoff->operator()(
-                                        std::exp(mesher->location(iter, 0)));
+            initialValues_[iter.index()] = calculator->innerValue(mesher, iter);
 
             if (!iter.coordinates()[1]) {
                 x_.push_back(mesher->location(iter, 0));

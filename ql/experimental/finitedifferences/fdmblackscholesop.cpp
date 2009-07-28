@@ -2,8 +2,8 @@
 
 /*
  Copyright (C) 2008 Andreas Gaida
- Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008, 2009 Klaus Spanderen
+ Copyright (C) 2008,2009 Ralph Schreyer
+ Copyright (C) 2008,2009 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,6 +18,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 #include <ql/math/functional.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesop.hpp>
@@ -28,7 +29,7 @@ namespace QuantLib {
     FdmBlackScholesOp::FdmBlackScholesOp(
         const boost::shared_ptr<FdmMesher>& mesher,
         const boost::shared_ptr<GeneralizedBlackScholesProcess> & bsProcess,
-        const boost::shared_ptr<Payoff>& payoff,
+        Real strike,
         bool localVol,
         Real illegalLocalVolOverwrite)
     : mesher_(mesher),
@@ -41,9 +42,7 @@ namespace QuantLib {
       dxMap_ (FirstDerivativeOp(0, mesher)),
       dxxMap_(SecondDerivativeOp(0, mesher)),
       mapT_  (0, mesher),
-      strike_(boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff) ?
-              boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff)->strike() :
-              0.0),
+      strike_(strike),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite) {
     }
 
@@ -87,7 +86,7 @@ namespace QuantLib {
     }
 
     Size FdmBlackScholesOp::size() const {
-        return 1;
+        return mesher_->layout()->dim().size();
     }
 
     Disposable<Array> FdmBlackScholesOp::apply(const Array& u) const {
@@ -98,20 +97,24 @@ namespace QuantLib {
                                                     const Array& r) const {
         if (direction == 0)
             return mapT_.apply(r);
-        else
-            QL_FAIL("direction too large");
+        else {
+        	Array retVal(r.size(), 0.0);
+        	return retVal;
+        }
     }
 
     Disposable<Array> FdmBlackScholesOp::apply_mixed(const Array& r) const {
-        QL_FAIL("apply_mixed not implemented for one dimensional problem");
+    	Array retVal(r.size(), 0.0);
+    	return retVal;
     }
 
     Disposable<Array> FdmBlackScholesOp::solve_splitting(Size direction,
                                                 const Array& r, Real a) const {
-        if (direction == 0) {
+        if (direction == 0)
             return mapT_.solve_splitting(r, a, 1.0);
+        else {
+        	Array retVal(r);
+            return retVal;
         }
-        else
-            QL_FAIL("direction too large");
     }
 }

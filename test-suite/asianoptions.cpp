@@ -29,6 +29,7 @@
 #include <ql/pricingengines/asian/mc_discr_geom_av_price.hpp>
 #include <ql/pricingengines/asian/mc_discr_arith_av_price.hpp>
 #include <ql/pricingengines/asian/mc_discr_arith_av_strike.hpp>
+#include <ql/experimental/finitedifferences/fdblackscholesasianengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -665,6 +666,19 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
                         fixingDates, payoff, exercise, spot->value(),
                         qRate->value(), rRate->value(), today,
                         vol->value(), expected, calculated, tolerance);
+        }
+        
+        if(cases4[l].fixings < 100) {
+        	engine = boost::shared_ptr<PricingEngine>(
+        			new FdBlackScholesAsianEngine(stochProcess, 100, 100, 100));
+            option.setPricingEngine(engine);
+            calculated = option.NPV();
+            if (std::fabs(calculated-expected) > tolerance) {
+                REPORT_FAILURE("value", averageType, runningSum, pastFixings,
+                            fixingDates, payoff, exercise, spot->value(),
+                            qRate->value(), rRate->value(), today,
+                            vol->value(), expected, calculated, tolerance);
+            }
         }
     }
 

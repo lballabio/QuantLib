@@ -2,9 +2,11 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/experimental/finitedifferences/bicgstab.hpp>
+#include <ql/experimental/finitedifferences/concentrating1dmesher.hpp>
 #include <ql/experimental/finitedifferences/craigsneydscheme.hpp>
 #include <ql/experimental/finitedifferences/dividendbarrieroption.hpp>
 #include <ql/experimental/finitedifferences/douglasscheme.hpp>
+#include <ql/experimental/finitedifferences/fdblackscholesasianengine.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesbarrierengine.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesrebateengine.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesvanillaengine.hpp>
@@ -14,6 +16,7 @@
 #include <ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdm1dmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
+#include <ql/experimental/finitedifferences/fdmarithmeticaveragecondition.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmultistrikemesher.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesop.hpp>
@@ -22,7 +25,6 @@
 #include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonhullwhiteop.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonhullwhitesolver.hpp>
-#include <ql/experimental/finitedifferences/fdmhestoninnervalue.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonop.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp>
@@ -35,6 +37,7 @@
 #include <ql/experimental/finitedifferences/fdmmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmquantohelper.hpp>
+#include <ql/experimental/finitedifferences/fdmsimple2dbssolver.hpp>
 #include <ql/experimental/finitedifferences/fdmsnapshotcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/firstderivativeop.hpp>

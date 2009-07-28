@@ -1,9 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Andreas Gaida
- Copyright (C) 2008,2009 Ralph Schreyer
- Copyright (C) 2008,2009 Klaus Spanderen
+ Copyright (C) 2009 Ralph Schreyer
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,30 +17,32 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmblackscholessolver.hpp
+/*! 
+ * \file fdmsimple2dbssolver.hpp
 */
 
-#ifndef quantlib_fdm_black_scholes_solver_hpp
-#define quantlib_fdm_black_scholes_solver_hpp
+#ifndef quantlib_fdm_simple_2d_bs_solver_hpp
+#define quantlib_fdm_simple_2d_bs_solver_hpp
 
 #include <ql/handle.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/math/interpolations/cubicinterpolation.hpp>
-#include <ql/experimental/finitedifferences/fdmmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
-#include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
-#include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
-#include <ql/experimental/finitedifferences/fdmsnapshotcondition.hpp>
 
 namespace QuantLib {
 
-    class FdmBlackScholesSolver : public LazyObject {
+	class FdmInnerValueCalculator;
+	class FdmMesher;
+	class FdmSnapshotCondition;
+	class FdmStepConditionComposite;
+	class BicubicSpline;
+
+	class FdmSimple2dBSSolver : LazyObject {
       public:
         typedef std::vector<boost::shared_ptr<FdmDirichletBoundary> >
             BoundaryConditionSet;
 
-        FdmBlackScholesSolver(
+        FdmSimple2dBSSolver(
             const Handle<GeneralizedBlackScholesProcess>& process,
             const boost::shared_ptr<FdmMesher>& mesher,
             const BoundaryConditionSet & bcSet,
@@ -51,14 +51,12 @@ namespace QuantLib {
             Real strike,
             Time maturity,
             Size timeSteps,
-            Real theta = 0.5,
-            bool localVol = false,
-            Real illegalLocalVolOverwrite = -Null<Real>());
+            Real theta = 0.5);
 
-        Real valueAt(Real s) const;
-        Real deltaAt(Real s) const;
-        Real gammaAt(Real s) const;
-        Real thetaAt(Real s) const;
+        Real valueAt(Real s, Real a) const;
+        Real deltaAt(Real s, Real a, Real eps) const;
+        Real gammaAt(Real s, Real a, Real eps) const;
+        Real thetaAt(Real s, Real a) const;
 
       protected:
         void performCalculations() const;
@@ -74,13 +72,11 @@ namespace QuantLib {
         const Size timeSteps_;
 
         const Real theta_;
-        const bool localVol_;
-        const Real illegalLocalVolOverwrite_;
 
-        std::vector<Real> x_, initialValues_;
-        mutable Array resultValues_;
-        mutable boost::shared_ptr<CubicInterpolation> interpolation_;
+        std::vector<Real> x_, a_, initialValues_;
+        mutable Matrix resultValues_;
+        mutable boost::shared_ptr<BicubicSpline> interpolation_;
     };
 }
 
-#endif /* quantlib_fdm_black_scholes_solver_hpp */
+#endif /* quantlib_fdm_simple_2d_bs_solver_hpp */

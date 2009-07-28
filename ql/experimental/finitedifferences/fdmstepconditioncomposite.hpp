@@ -27,8 +27,6 @@
 #define quantlib_fdm_step_condition_composite_hpp
 
 #include <ql/methods/finitedifferences/stepcondition.hpp>
-#include <ql/experimental/finitedifferences/fdmmesher.hpp>
-#include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <set>
 
 namespace QuantLib {

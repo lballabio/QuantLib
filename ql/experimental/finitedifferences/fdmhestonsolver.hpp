@@ -2,8 +2,8 @@
 
 /*
  Copyright (C) 2008 Andreas Gaida
- Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2008,2009 Ralph Schreyer
+ Copyright (C) 2008,2009 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,17 +26,21 @@
 #define quantlib_fdm_heston_solver_hpp
 
 #include <ql/handle.hpp>
+#include <ql/math/matrix.hpp>
 #include <ql/payoff.hpp>
 #include <ql/patterns/lazyobject.hpp>
-#include <ql/processes/hestonprocess.hpp>
 #include <ql/experimental/finitedifferences/fdmquantohelper.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
 
+
 namespace QuantLib {
 
+	class FdmDirichletBoundary;
+	class FdmInnerValueCalculator;
     class FdmMesher;
     class FdmSnapshotCondition;
     class FdmStepConditionComposite;
+    class HestonProcess;
     class BicubicSpline;
 
     class FdmHestonSolver : public LazyObject {
@@ -49,7 +53,7 @@ namespace QuantLib {
             const boost::shared_ptr<FdmMesher>& mesher,
             const FdmBoundaryConditionSet & bcSet,
             const boost::shared_ptr<FdmStepConditionComposite> & condition,
-            const boost::shared_ptr<Payoff>& payoff,
+            const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
             Time maturity,
             Size timeSteps,
             FdmSchemeType type = HundsdorferScheme,

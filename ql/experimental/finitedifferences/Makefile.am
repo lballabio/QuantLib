@@ -5,9 +5,11 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     bicgstab.hpp \
+    concentrating1dmesher.hpp \
 	craigsneydscheme.hpp \
 	dividendbarrieroption.hpp \
 	douglasscheme.hpp \
+	fdblackscholesasianengine.hpp \
 	fdblackscholesbarrierengine.hpp \
 	fdblackscholesrebateengine.hpp \
 	fdblackscholesvanillaengine.hpp \
@@ -17,6 +19,7 @@ this_include_HEADERS = \
 	fdhestonhullwhitevanillaengine.hpp \
 	fdm1dmesher.hpp \
 	fdmamericanstepcondition.hpp \
+    fdmarithmeticaveragecondition.hpp \
 	fdmblackscholesmesher.hpp \
 	fdmblackscholesmultistrikemesher.hpp \
 	fdmblackscholesop.hpp \
@@ -25,7 +28,6 @@ this_include_HEADERS = \
 	fdmdividendhandler.hpp \
 	fdmhestonhullwhiteop.hpp \
 	fdmhestonhullwhitesolver.hpp \
-	fdmhestoninnervalue.hpp \
 	fdmhestonop.hpp \
 	fdmhestonsolver.hpp \
 	fdmhestonvariancemesher.hpp \
@@ -38,6 +40,7 @@ this_include_HEADERS = \
 	fdmmesher.hpp \
 	fdmmeshercomposite.hpp \
 	fdmquantohelper.hpp \
+    fdmsimple2dbssolver.hpp \
 	fdmsnapshotcondition.hpp \
 	fdmstepconditioncomposite.hpp \
 	firstderivativeop.hpp \
@@ -54,6 +57,7 @@ libMultiDimFDM_la_SOURCES = \
 	craigsneydscheme.cpp \
 	dividendbarrieroption.cpp \
 	douglasscheme.cpp \
+	fdblackscholesasianengine.cpp \
 	fdblackscholesbarrierengine.cpp \
 	fdblackscholesrebateengine.cpp \
 	fdblackscholesvanillaengine.cpp \
@@ -62,6 +66,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdhestonvanillaengine.cpp \
 	fdhestonhullwhitevanillaengine.cpp \
 	fdmamericanstepcondition.cpp \
+    fdmarithmeticaveragecondition.cpp \
 	fdmblackscholesmesher.cpp \
 	fdmblackscholesmultistrikemesher.cpp \
 	fdmblackscholesop.cpp \
@@ -77,6 +82,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdmlinearoplayout.cpp \
 	fdmmeshercomposite.cpp \
 	fdmquantohelper.cpp \
+    fdmsimple2dbssolver.cpp \
 	fdmsnapshotcondition.cpp \
 	fdmstepconditioncomposite.cpp \
 	firstderivativeop.cpp \

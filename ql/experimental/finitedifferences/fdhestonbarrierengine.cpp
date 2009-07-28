@@ -2,8 +2,8 @@
 
 /*
  Copyright (C) 2008 Andreas Gaida
- Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2008,2009 Ralph Schreyer
+ Copyright (C) 2008,2009 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -63,7 +63,6 @@ namespace QuantLib {
                                         std::max(tGridMin, tGrid_/5)));
 
         // 2.2 The equity mesher
-        // Calculate the forward
         const boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
 
@@ -91,12 +90,16 @@ namespace QuantLib {
         meshers.push_back(varianceMesher);
         boost::shared_ptr<FdmMesher> mesher (
                                      new FdmMesherComposite(layout, meshers));
-        
-        // 3. Step conditions
+
+        // 3. Calculator
+        boost::shared_ptr<FdmInnerValueCalculator> calculator(
+                                new FdmLogInnerValue(payoff, 0));
+
+        // 4. Step conditions
         std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;
         std::list<std::vector<Time> > stoppingTimes;
 
-        // 3.1 Step condition if discrete dividends
+        // 4.1 Step condition if discrete dividends
         boost::shared_ptr<FdmDividendHandler> dividendCondition(
             new FdmDividendHandler(arguments_.cashFlow, mesher,
                                    process->riskFreeRate()->referenceDate(),
@@ -113,7 +116,7 @@ namespace QuantLib {
         boost::shared_ptr<FdmStepConditionComposite> conditions(
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));
 
-        // 4. Boundary conditions
+        // 5. Boundary conditions
         std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;
         if (   arguments_.barrierType == Barrier::DownIn
             || arguments_.barrierType == Barrier::DownOut) {
@@ -129,11 +132,11 @@ namespace QuantLib {
                                          FdmDirichletBoundary::Upper)));
         }
 
-        // 5. Solver
+        // 6. Solver
         boost::shared_ptr<FdmHestonSolver> solver(new FdmHestonSolver(
                                         Handle<HestonProcess>(process),
-                                        mesher, boundaries, conditions,
-                                        arguments_.payoff, maturity, tGrid_,
+                                        mesher, boundaries, conditions, 
+                                        calculator, maturity, tGrid_,
                                         type_, theta_, mu_));
 
         const Real spot = process->s0()->value();
