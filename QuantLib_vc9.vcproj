@@ -5500,6 +5500,14 @@
 					RelativePath=".\ql\termstructures\inflation\piecewisezeroinflationcurve.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\termstructures\inflation\seasonality.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\inflation\seasonality.hpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="credit"
@@ -8998,6 +9006,14 @@
 				>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\bicgstab.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\bicgstab.hpp"
 					>
 				</File>
 				<File
