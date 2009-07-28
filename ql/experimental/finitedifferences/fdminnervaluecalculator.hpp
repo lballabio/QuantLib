@@ -79,8 +79,16 @@ namespace QuantLib {
 
 			boost::function1<Real, Real> f = std::bind1st(
 					std::mem_fun(&Payoff::operator()), payoff_.get());
-			return SimpsonIntegral(1e-4, 4)(f, a, b)/(b-a);
-
+			
+			Real retVal;
+			try {
+			    retVal = SimpsonIntegral(1e-4, 4)(f, a, b)/(b-a); 
+			}
+			catch (Error&) {
+			    // use default value
+			    retVal = innerValue(mesher, iter);
+			}
+			return retVal;
 		};
 
       private:

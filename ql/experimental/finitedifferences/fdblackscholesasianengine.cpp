@@ -117,6 +117,5 @@ namespace QuantLib {
         results_.value = solver->valueAt(spot, avg);
         results_.delta = solver->deltaAt(spot, avg, spot*0.01);
         results_.gamma = solver->gammaAt(spot, avg, spot*0.01);
-        //results_.theta = solver->thetaAt(spot, avg);
     }
 }
