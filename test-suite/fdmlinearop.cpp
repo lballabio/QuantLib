@@ -111,6 +111,12 @@ namespace {
                   - ((s <= 75.0) ? 100.0 - s : 0.0);
         }
     };
+
+    template <class T, class U, class V>
+    struct multiplies : public std::binary_function<T, U, V> {
+        V operator()(T t, U u) { return t*u;}
+    };
+
 }
 
 void FdmLinearOpTest::testFdmLinearOpLayout() {
@@ -772,8 +778,8 @@ void FdmLinearOpTest::testFdmHestonExpress() {
     DividendSchedule dividendSchedule(1, boost::shared_ptr<Dividend>(
         new FixedDividend(2.5, evaluationDate + Period(6, Months))));
     boost::shared_ptr<FdmDividendHandler> dividendCondition(
-        new FdmDividendHandler(dividendSchedule, mesher, 
-                               rTS->referenceDate(), 
+        new FdmDividendHandler(dividendSchedule, mesher,
+                               rTS->referenceDate(),
                                rTS->dayCounter(), 0));
 
     boost::shared_ptr<StepCondition<Array> > expressCondition(
@@ -811,13 +817,13 @@ void FdmLinearOpTest::testFdmHestonExpress() {
     if (std::fabs(solver.gammaAt(s, v0) + 0.039970) > 0.0001) {
         QL_FAIL("Error in calculating Gamma for Heston Express Certificate");
     }
-    
+
     if (std::fabs(solver.meanVarianceDeltaAt(s, v0) - 0.65943) > 0.0001) {
         QL_FAIL("Error in calculating mean variance Delta for "
                 "Heston Express Certificate");
     }
-    
-    if (std::fabs(solver.meanVarianceGammaAt(s, v0) + 0.031642) 
+
+    if (std::fabs(solver.meanVarianceGammaAt(s, v0) + 0.031642)
                                                                     > 0.0001) {
         QL_FAIL("Error in calculating mean variance Delta for "
                 "Heston Express Certificate");
@@ -954,35 +960,35 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     // const Real expected = option.NPV();
     // use precalculated value instead
     const Real expected = 4.73;
-    
+
     if (std::fabs(calculated - expected) > 3*tol) {
         QL_FAIL("Error in calculating PV for Heston Hull White Option");
     }
 }
 
 void FdmLinearOpTest::testBiCGstab() {
-    
+
     BOOST_MESSAGE("Testing BiCGstab with Heston operator ...");
-    
+
     SavedSettings backup;
-    
+
     const Size n=41, m=21;
     const Real theta = 1.0;
     Matrix a(n*m, n*m, 0.0);
-    
-    
+
+
     for (Size i=0; i < n; ++i) {
         for (Size j=0; j < m; ++j) {
             const Size k = i*m+j;
-            a[k][k]=1.0; 
+            a[k][k]=1.0;
 
             if (i > 0 && j > 0 && i <n-1 && j < m-1) {
                 const Size im1 = i-1;
                 const Size ip1 = i+1;
                 const Size jm1 = j-1;
-                const Size jp1 = j+1;   
+                const Size jp1 = j+1;
                 const Real delta = theta/((ip1-im1)*(jp1-jm1));
-                
+
                 a[k][im1*m+jm1] =  delta;
                 a[k][im1*m+jp1] = -delta;
                 a[k][ip1*m+jm1] = -delta;
@@ -990,9 +996,9 @@ void FdmLinearOpTest::testBiCGstab() {
             }
         }
     }
-    
+
     boost::function<Disposable<Array>(const Array&)> matmult(
-         boost::bind(multiplies<const Matrix&, const Array&, 
+         boost::bind(multiplies<const Matrix&, const Array&,
                                 Disposable<Array> >(), a, _1));
 
     Array b(n*m);
@@ -1005,13 +1011,13 @@ void FdmLinearOpTest::testBiCGstab() {
 
     const BiCGstab biCGstab(matmult, n*m, tol);
     const Array x = biCGstab.solve(b).x;
-    
+
     const Real error = std::sqrt(DotProduct(b-a*x, b-a*x)/DotProduct(b,b));
 
     if (error > tol) {
         QL_FAIL("Error calculating the inverse using BiCGstab" <<
                 "\n tolerance:  " << tol <<
-                "\n error:      " << error);        
+                "\n error:      " << error);
     }
 }
 

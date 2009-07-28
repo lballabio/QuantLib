@@ -65,11 +65,6 @@ namespace QuantLib {
         T operator()(const T& t) const { T t2 = t*t; return t2*t2; }
     };
 
-    template <class T, class U, class V>
-    struct multiplies : public std::binary_function<T, U, V> {
-        V operator()(T t, U u) { return t*u;}
-    };
-
     // predicates
 
     class everywhere : public constant<Real,bool> {
