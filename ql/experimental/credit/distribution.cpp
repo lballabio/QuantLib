@@ -43,6 +43,9 @@ namespace QuantLib {
             dx_[i] = (xmax - xmin) / nBuckets;
             x_[i] = (i == 0 ? xmin : x_[i-1] + dx_[i-1]);
         }
+        // ensure we match exactly the domain, otherwise we might fail the
+        //   locate test because of precission mismatches
+        dx_.back() = xmax - x_.back();
     }
 
     //-------------------------------------------------------------------------
