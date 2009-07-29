@@ -476,7 +476,7 @@ namespace QuantLib {
                                new SimpleQuote( atmYoYSwapRate( (Time)i ) )));
             boost::shared_ptr<BootstrapHelper<YoYInflationTermStructure> >
             anInstrument(
-                new YyiisInflationHelper(
+                new YearOnYearInflationSwapHelper(
                                 quote, lag_, maturity,
                                 nominalTermStructure_->settlementDays(),
                                 calendar(), bdc_, dayCounter(), frequency_));

@@ -33,17 +33,17 @@
 namespace QuantLib {
 
     //! Zero-coupon inflation-swap bootstrap helper
-    class ZciisInflationHelper
+    class ZeroCouponInflationSwapHelper
         : public BootstrapHelper<ZeroInflationTermStructure> {
       public:
-        ZciisInflationHelper(const Handle<Quote>& quote,
-                             const Period& lag,
-                             const Date& maturity,
-                             Natural settlementDays,
-                             const Calendar& calendar,
-                             BusinessDayConvention bdc,
-                             const DayCounter& dayCounter,
-                             Frequency frequency);
+        ZeroCouponInflationSwapHelper(const Handle<Quote>& quote,
+                                      const Period& lag,
+                                      const Date& maturity,
+                                      Natural settlementDays,
+                                      const Calendar& calendar,
+                                      BusinessDayConvention bdc,
+                                      const DayCounter& dayCounter,
+                                      Frequency frequency);
 
         void setTermStructure(ZeroInflationTermStructure*);
         Real impliedQuote() const;
@@ -60,17 +60,17 @@ namespace QuantLib {
 
 
     //! Year-on-year inflation-swap bootstrap helper
-    class YyiisInflationHelper
+    class YearOnYearInflationSwapHelper
         : public BootstrapHelper<YoYInflationTermStructure> {
       public:
-        YyiisInflationHelper(const Handle<Quote>& quote,
-                             const Period& lag,
-                             const Date& maturity,
-                             Natural settlementDays,
-                             const Calendar& calendar,
-                             BusinessDayConvention bdc,
-                             const DayCounter& dayCounter,
-                             Frequency frequency);
+        YearOnYearInflationSwapHelper(const Handle<Quote>& quote,
+                                      const Period& lag,
+                                      const Date& maturity,
+                                      Natural settlementDays,
+                                      const Calendar& calendar,
+                                      BusinessDayConvention bdc,
+                                      const DayCounter& dayCounter,
+                                      Frequency frequency);
         void setTermStructure(YoYInflationTermStructure*);
         Real impliedQuote() const;
       protected:

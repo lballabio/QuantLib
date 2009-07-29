@@ -28,7 +28,8 @@ namespace QuantLib {
     }
 
 
-    ZciisInflationHelper::ZciisInflationHelper(const Handle<Quote>& quote,
+    ZeroCouponInflationSwapHelper::ZeroCouponInflationSwapHelper(
+                                               const Handle<Quote>& quote,
                                                const Period& lag,
                                                const Date& maturity,
                                                Natural settlementDays,
@@ -47,7 +48,7 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
     }
 
-    Real ZciisInflationHelper::impliedQuote() const {
+    Real ZeroCouponInflationSwapHelper::impliedQuote() const {
         // what does the term structure imply?
         // in this case just the same value ... trivial case
         // (would not be so for an inflation-linked bond)
@@ -55,7 +56,8 @@ namespace QuantLib {
         return zciis_->fairRate();
     }
 
-    void ZciisInflationHelper::setTermStructure(ZeroInflationTermStructure* z) {
+    void ZeroCouponInflationSwapHelper::setTermStructure(
+                                              ZeroInflationTermStructure* z) {
 
         BootstrapHelper<ZeroInflationTermStructure>::setTermStructure(z);
 
@@ -78,7 +80,8 @@ namespace QuantLib {
     }
 
 
-    YyiisInflationHelper::YyiisInflationHelper(const Handle<Quote>& quote,
+    YearOnYearInflationSwapHelper::YearOnYearInflationSwapHelper(
+                                               const Handle<Quote>& quote,
                                                const Period& lag,
                                                const Date& maturity,
                                                Natural settlementDays,
@@ -96,7 +99,7 @@ namespace QuantLib {
     }
 
 
-    Real YyiisInflationHelper::impliedQuote() const {
+    Real YearOnYearInflationSwapHelper::impliedQuote() const {
         // what does the term structure imply?
         // in this case just the same value ... trivial case
         // (would not be so for an inflation-linked bond)
@@ -104,7 +107,8 @@ namespace QuantLib {
         return yyiis_->fairRate();
     }
 
-    void YyiisInflationHelper::setTermStructure(YoYInflationTermStructure* y) {
+    void YearOnYearInflationSwapHelper::setTermStructure(
+                                               YoYInflationTermStructure* y) {
 
         BootstrapHelper<YoYInflationTermStructure>::setTermStructure(y);
 
