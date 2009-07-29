@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="testsuite"
 	ProjectGUID="{A613045C-34AF-4706-AA3C-730C92524F74}"
 	RootNamespace="testsuite"
@@ -1379,10 +1379,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\issuer.cpp"
-				>
-			</File>
-			<File
 				RelativePath="jumpdiffusion.cpp"
 				>
 				<FileConfiguration
@@ -2383,10 +2379,6 @@
 			</File>
 			<File
 				RelativePath="interpolations.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\issuer.hpp"
 				>
 			</File>
 			<File

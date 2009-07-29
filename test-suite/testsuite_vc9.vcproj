@@ -2615,10 +2615,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\issuer.cpp"
-				>
-			</File>
-			<File
 				RelativePath="jumpdiffusion.cpp"
 				>
 				<FileConfiguration
@@ -4217,10 +4213,6 @@
 			</File>
 			<File
 				RelativePath="interpolations.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\issuer.hpp"
 				>
 			</File>
 			<File

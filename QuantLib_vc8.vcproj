@@ -2173,6 +2173,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\matrixutilities\factorreduction.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\factorreduction.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\matrixutilities\getcovariance.cpp"
 					>
 					<FileConfiguration
@@ -7153,6 +7161,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\concentrating1dmesher.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\craigsneydscheme.cpp"
 					>
 				</File>
@@ -7174,6 +7186,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\douglasscheme.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdblackscholesasianengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdblackscholesasianengine.hpp"
 					>
 				</File>
 				<File
@@ -7242,6 +7262,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmamericanstepcondition.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmarithmeticaveragecondition.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmarithmeticaveragecondition.hpp"
 					>
 				</File>
 				<File
@@ -7386,6 +7414,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmquantohelper.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmsimple2dbssolver.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmsimple2dbssolver.hpp"
 					>
 				</File>
 				<File
@@ -7625,6 +7661,30 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\defaultevent.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\defaultevent.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\defaultprobabilitykey.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\defaultprobabilitykey.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\defaulttype.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\defaulttype.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\distribution.cpp"
 					>
 				</File>
@@ -7738,6 +7798,26 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\randomdefaultmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\recoveryratemodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\recoveryratemodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\recoveryratequote.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\recoveryratequote.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\recursivecdoengine.hpp"
 					>
 				</File>
 				<File
@@ -8328,10 +8408,6 @@
 		</File>
 		<File
 			RelativePath=".\ql\currency.hpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ql\default.cpp"
 			>
 		</File>
 		<File
