@@ -3,8 +3,8 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
- Copyright (C) 2007, 2008 Ferdinando Ametrano
- Copyright (C) 2007 Roland Lichters
+ Copyright (C) 2007, 2008, 2009 Ferdinando Ametrano
+ Copyright (C) 2007, 2009 Roland Lichters
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -378,17 +378,18 @@ namespace QuantLib {
     SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
                                    const shared_ptr<SwapIndex>& swapIndex,
                                    const Handle<Quote>& spread,
-                                   const Period& fwdStart)
+                                   const Period& fwdStart,
+                                   const Handle<YieldTermStructure>& discount)
     : RelativeDateRateHelper(rate),
-      tenor_(swapIndex->tenor()),
-      calendar_(swapIndex->fixingCalendar()),
+      tenor_(swapIndex->tenor()), calendar_(swapIndex->fixingCalendar()),
       fixedConvention_(swapIndex->fixedLegConvention()),
       fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
       fixedDayCount_(swapIndex->dayCounter()),
-      iborIndex_(swapIndex->iborIndex()),
-      spread_(spread), fwdStart_(fwdStart) {
+      iborIndex_(swapIndex->iborIndex()), spread_(spread),
+      fwdStart_(fwdStart), discountingCurve_(discount) {
         registerWith(iborIndex_);
         registerWith(spread_);
+        registerWith(discountingCurve_);
         initializeDates();
     }
 
@@ -400,17 +401,18 @@ namespace QuantLib {
                                    const DayCounter& fixedDayCount,
                                    const shared_ptr<IborIndex>& iborIndex,
                                    const Handle<Quote>& spread,
-                                   const Period& fwdStart)
+                                   const Period& fwdStart,
+                                   const Handle<YieldTermStructure>& discount)
     : RelativeDateRateHelper(rate),
-      tenor_(tenor),
-      calendar_(calendar),
+      tenor_(tenor), calendar_(calendar),
       fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
-      iborIndex_(iborIndex),
-      spread_(spread), fwdStart_(fwdStart) {
+      iborIndex_(iborIndex), spread_(spread),
+      fwdStart_(fwdStart), discountingCurve_(discount) {
         registerWith(iborIndex_);
         registerWith(spread_);
+        registerWith(discountingCurve_);
         initializeDates();
     }
 
@@ -422,34 +424,36 @@ namespace QuantLib {
                                    const DayCounter& fixedDayCount,
                                    const shared_ptr<IborIndex>& iborIndex,
                                    const Handle<Quote>& spread,
-                                   const Period& fwdStart)
+                                   const Period& fwdStart,
+                                   const Handle<YieldTermStructure>& discount)
     : RelativeDateRateHelper(rate),
-      tenor_(tenor),
-      calendar_(calendar),
+      tenor_(tenor), calendar_(calendar),
       fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
-      iborIndex_(iborIndex),
-      spread_(spread), fwdStart_(fwdStart) {
+      iborIndex_(iborIndex), spread_(spread),
+      fwdStart_(fwdStart), discountingCurve_(discount) {
         registerWith(iborIndex_);
         registerWith(spread_);
+        registerWith(discountingCurve_);
         initializeDates();
     }
 
     SwapRateHelper::SwapRateHelper(Rate rate,
                                    const shared_ptr<SwapIndex>& swapIndex,
                                    const Handle<Quote>& spread,
-                                   const Period& fwdStart)
+                                   const Period& fwdStart,
+                                   const Handle<YieldTermStructure>& discount)
     : RelativeDateRateHelper(rate),
-      tenor_(swapIndex->tenor()),
-      calendar_(swapIndex->fixingCalendar()),
+      tenor_(swapIndex->tenor()), calendar_(swapIndex->fixingCalendar()),
       fixedConvention_(swapIndex->fixedLegConvention()),
       fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
       fixedDayCount_(swapIndex->dayCounter()),
-      iborIndex_(swapIndex->iborIndex()),
-      spread_(spread), fwdStart_(fwdStart) {
+      iborIndex_(swapIndex->iborIndex()), spread_(spread),
+      fwdStart_(fwdStart), discountingCurve_(discount) {
         registerWith(iborIndex_);
         registerWith(spread_);
+        registerWith(discountingCurve_);
         initializeDates();
     }
 
@@ -461,13 +465,24 @@ namespace QuantLib {
 
         // do not pass the spread here, as it might be a Quote
         // i.e. it can dinamically change
-        swap_ = MakeVanillaSwap(tenor_, clonedIborIndex, 0.0, fwdStart_)
-            .withFixedLegDayCount(fixedDayCount_)
-            .withFixedLegTenor(Period(fixedFrequency_))
-            .withFixedLegConvention(fixedConvention_)
-            .withFixedLegTerminationDateConvention(fixedConvention_)
-            .withFixedLegCalendar(calendar_)
-            .withFloatingLegCalendar(calendar_);
+        if (discountingCurve_.empty()) {
+            swap_ = MakeVanillaSwap(tenor_, clonedIborIndex, 0.0, fwdStart_)
+                .withFixedLegDayCount(fixedDayCount_)
+                .withFixedLegTenor(Period(fixedFrequency_))
+                .withFixedLegConvention(fixedConvention_)
+                .withFixedLegTerminationDateConvention(fixedConvention_)
+                .withFixedLegCalendar(calendar_)
+                .withFloatingLegCalendar(calendar_);
+        } else {
+            swap_ = MakeVanillaSwap(tenor_, clonedIborIndex, 0.0, fwdStart_)
+                .withFixedLegDayCount(fixedDayCount_)
+                .withFixedLegTenor(Period(fixedFrequency_))
+                .withFixedLegConvention(fixedConvention_)
+                .withFixedLegTerminationDateConvention(fixedConvention_)
+                .withFixedLegCalendar(calendar_)
+                .withFloatingLegCalendar(calendar_)
+        	    .withDiscountingTermStructure(discountingCurve_);
+        }
 
         earliestDate_ = swap_->startDate();
 

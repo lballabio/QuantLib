@@ -3,8 +3,8 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
- Copyright (C) 2007, 2008 Ferdinando Ametrano
- Copyright (C) 2007 Roland Lichters
+ Copyright (C) 2007, 2008, 2009 Ferdinando Ametrano
+ Copyright (C) 2007, 2009 Roland Lichters
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -196,7 +196,10 @@ namespace QuantLib {
         SwapRateHelper(const Handle<Quote>& rate,
                        const boost::shared_ptr<SwapIndex>& swapIndex,
                        const Handle<Quote>& spread = Handle<Quote>(),
-                       const Period& fwdStart = 0*Days);
+                       const Period& fwdStart = 0*Days,
+                       // exogenous discounting curve
+                       const Handle<YieldTermStructure>& discountingCurve
+                                            = Handle<YieldTermStructure>());
         SwapRateHelper(const Handle<Quote>& rate,
                        const Period& tenor,
                        const Calendar& calendar,
@@ -207,7 +210,10 @@ namespace QuantLib {
                        // floating leg
                        const boost::shared_ptr<IborIndex>& iborIndex,
                        const Handle<Quote>& spread = Handle<Quote>(),
-                       const Period& fwdStart = 0*Days);
+                       const Period& fwdStart = 0*Days,
+                       // exogenous discounting curve
+                       const Handle<YieldTermStructure>& discountingCurve
+                                            = Handle<YieldTermStructure>());
         SwapRateHelper(Rate rate,
                        const Period& tenor,
                        const Calendar& calendar,
@@ -218,11 +224,17 @@ namespace QuantLib {
                        // floating leg
                        const boost::shared_ptr<IborIndex>& iborIndex,
                        const Handle<Quote>& spread = Handle<Quote>(),
-                       const Period& fwdStart = 0*Days);
+                       const Period& fwdStart = 0*Days,
+                       // exogenous discounting curve
+                       const Handle<YieldTermStructure>& discountingCurve
+                                            = Handle<YieldTermStructure>());
         SwapRateHelper(Rate rate,
                        const boost::shared_ptr<SwapIndex>& swapIndex,
                        const Handle<Quote>& spread = Handle<Quote>(),
-                       const Period& fwdStart = 0*Days);
+                       const Period& fwdStart = 0*Days,
+                       // exogenous discounting curve
+                       const Handle<YieldTermStructure>& discountingCurve
+                                            = Handle<YieldTermStructure>());
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -250,6 +262,7 @@ namespace QuantLib {
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
         Handle<Quote> spread_;
         Period fwdStart_;
+        Handle<YieldTermStructure> discountingCurve_;
     };
 
     //! Rate helper for bootstrapping over BMA swap rates
