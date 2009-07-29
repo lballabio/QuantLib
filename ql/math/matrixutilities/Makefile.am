@@ -6,6 +6,7 @@ this_include_HEADERS = \
 	all.hpp \
 	basisincompleteordered.hpp \
 	choleskydecomposition.hpp \
+	factorreduction.hpp \
 	getcovariance.hpp \
 	pseudosqrt.hpp \
 	qrdecomposition.hpp \
@@ -17,6 +18,7 @@ this_include_HEADERS = \
 libMatrixUtilities_la_SOURCES = \
 	basisincompleteordered.cpp \
 	choleskydecomposition.cpp \
+	factorreduction.cpp \
 	getcovariance.cpp \
 	pseudosqrt.cpp \
 	qrdecomposition.cpp \

@@ -3,6 +3,7 @@
 
 #include <ql/math/matrixutilities/basisincompleteordered.hpp>
 #include <ql/math/matrixutilities/choleskydecomposition.hpp>
+#include <ql/math/matrixutilities/factorreduction.hpp>
 #include <ql/math/matrixutilities/getcovariance.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/matrixutilities/qrdecomposition.hpp>

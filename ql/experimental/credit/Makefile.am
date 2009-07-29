@@ -24,6 +24,7 @@ this_include_HEADERS = \
     randomdefaultmodel.hpp \
     recoveryratemodel.hpp \
     recoveryratequote.hpp \
+    recursivecdoengine.hpp \
     riskyassetswap.hpp \
     riskyassetswapoption.hpp \
     riskybond.hpp \
