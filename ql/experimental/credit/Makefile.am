@@ -8,6 +8,9 @@ this_include_HEADERS = \
     blackcdsoptionengine.hpp \
     cdo.hpp \
     cdsoption.hpp \
+    defaultevent.hpp \
+    defaultprobabilitykey.hpp \
+    defaulttype.hpp \
     distribution.hpp \
     factorspreadedhazardratecurve.hpp \
     issuer.hpp \
@@ -19,6 +22,8 @@ this_include_HEADERS = \
     onefactorstudentcopula.hpp \
     pool.hpp \
     randomdefaultmodel.hpp \
+    recoveryratemodel.hpp \
+    recoveryratequote.hpp \
     riskyassetswap.hpp \
     riskyassetswapoption.hpp \
     riskybond.hpp \
@@ -31,6 +36,9 @@ libCredit_la_SOURCES = \
     blackcdsoptionengine.cpp \
     cdo.cpp \
     cdsoption.cpp \
+    defaultevent.cpp \
+    defaultprobabilitykey.cpp \
+    defaulttype.cpp \
     distribution.cpp \
     issuer.cpp \
     lossdistribution.cpp \
@@ -40,6 +48,8 @@ libCredit_la_SOURCES = \
     onefactorstudentcopula.cpp \
     pool.cpp \
     randomdefaultmodel.cpp \
+    recoveryratemodel.cpp \
+    recoveryratequote.cpp \
     riskyassetswap.cpp \
     riskyassetswapoption.cpp \
     riskybond.cpp \

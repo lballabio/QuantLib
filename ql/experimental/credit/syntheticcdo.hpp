@@ -24,8 +24,9 @@
 #ifndef quantlib_synthetic_cdo_hpp
 #define quantlib_synthetic_cdo_hpp
 
-#include <ql/experimental/credit/issuer.hpp>
 #include <ql/instrument.hpp>
+#include <ql/default.hpp>
+#include <ql/experimental/credit/issuer.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/defaulttermstructure.hpp>
@@ -118,6 +119,8 @@ namespace QuantLib {
         Rate fairUpfrontPremium() const;
         Rate premiumValue () const;
         Rate protectionValue () const;
+        Real premiumLegNPV() const;
+        Real protectionLegNPV() const;
         /*!
           Total outstanding tranche notional, not wiped out
         */

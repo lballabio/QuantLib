@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2009 StatPro Italia srl
+ Copyright (C) 2009 Jose Aparicio
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,19 +17,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_issuer_hpp
-#define quantlib_test_issuer_hpp
+#include <ql/experimental/credit/recoveryratemodel.hpp>
 
-#include <boost/test/unit_test.hpp>
+namespace QuantLib {
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
+    ConstantRecoveryModel::ConstantRecoveryModel(
+                                       const Handle<RecoveryRateQuote>& quote)
+    : quote_(quote) {
+        registerWith(quote);
+    }
 
-class IssuerTest {
-  public:
-    static void testObservability();
-    static boost::unit_test_framework::test_suite* suite();
-};
+    ConstantRecoveryModel::ConstantRecoveryModel(Real recovery,
+                                                 Seniority sen)
+    : quote_(Handle<RecoveryRateQuote>(boost::shared_ptr<RecoveryRateQuote>(
+                                    new RecoveryRateQuote(recovery, sen)))) {}
 
-
-#endif
+}

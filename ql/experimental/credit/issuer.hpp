@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2008, 2009 StatPro Italia srl
+ Copyright (C) 2009 Jose Aparicio
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,53 +25,82 @@
 #ifndef quantlib_issuer_hpp
 #define quantlib_issuer_hpp
 
-#include <ql/default.hpp>
 #include <ql/termstructures/defaulttermstructure.hpp>
+#include <ql/experimental/credit/defaultevent.hpp>
+#include <ql/experimental/credit/defaultprobabilitykey.hpp>
+#include <set>
+#include <vector>
 
 namespace QuantLib {
 
+    typedef std::set<boost::shared_ptr<DefaultEvent>,
+                earlier_than<boost::shared_ptr<DefaultEvent> > >
+            DefaultEventSet;
+
     class Issuer {
+        typedef std::pair<DefaultProbKey,
+                          Handle<DefaultProbabilityTermStructure> >
+                                                               key_curve_pair;
       public:
-        Issuer(const Handle<DefaultProbabilityTermStructure>& probability =
-                                    Handle<DefaultProbabilityTermStructure>(),
-               Real recoveryRate = 0.4,
-               const std::vector<boost::shared_ptr<DefaultEvent> >& events =
-                             std::vector<boost::shared_ptr<DefaultEvent> >());
+        /*! The first argument represents the probability of an issuer
+            of having any of its bonds with the given seniority,
+            currency incurring in that particular event.  The second
+            argument represents the history of past events.  Theres no
+            check on wether the event list makes sense, events can
+            occur several times and several of them can take place on
+            the same date.
+
+            To do: add settlement event access
+        */
+        Issuer(const std::vector<key_curve_pair>& probabilities =
+                                                std::vector<key_curve_pair>(),
+               const DefaultEventSet& events = DefaultEventSet());
+
+        Issuer(const std::vector<std::vector<
+                 boost::shared_ptr<DefaultType> > >& eventTypes,
+               const std::vector<Currency>& currencies,
+               const std::vector<Seniority>& seniorities,
+               const std::vector<Handle<DefaultProbabilityTermStructure> >&
+                   curves,
+               const DefaultEventSet& events = DefaultEventSet());
+
         //! \name Inspectors
         //@{
-        //! default probability
         const Handle<DefaultProbabilityTermStructure>&
-        defaultProbability() const;
-        //! expected recovery rate
-        Real recoveryRate() const;
+            defaultProbability(const DefaultProbKey& key) const;
+
         //@}
 
         //! \name Utilities
         //@{
-        /*! If a default event with the required seniority and
-            restructuring type is found, it is returned for
-            inspection; otherwise, the method returns an empty pointer.
-        */
+        //! If a default event with the required seniority and
+        //    restructuring type is found, it is returned for
+        //    inspection; otherwise, the method returns an empty pointer.
         boost::shared_ptr<DefaultEvent>
         defaultedBetween(const Date& start,
                          const Date& end,
-                         Seniority seniority = AnySeniority,
-                         Restructuring restructuring = AnyRestructuring) const;
-        //@}
+                         const DefaultProbKey& key,
+                         bool includeRefDate = false
+                         ) const;
 
-        //! \name Observability
-        //@{
-        operator boost::shared_ptr<Observable>() const;
         //@}
-
+        std::vector<boost::shared_ptr<DefaultEvent> >
+        defaultsBetween(const Date& start,
+                        const Date& end,
+                        const DefaultProbKey& contractKey,
+                        bool includeRefDate
+                        ) const ;
       private:
-        Handle<DefaultProbabilityTermStructure> probability_;
-        Real recoveryRate_;
-        std::vector<boost::shared_ptr<DefaultEvent> > events_;
+        //! probabilities of events for each bond collection
+        // vector of pairs preferred over maps for performance
+        std::vector<std::pair<DefaultProbKey,
+            Handle<DefaultProbabilityTermStructure> > > probabilities_;
+        //! History of past events affecting this issuer. Notice it is possible
+        //    for the same event to occur on the same bond several times along
+        //    time.
+        DefaultEventSet events_;
     };
 
 }
 
-
 #endif
-

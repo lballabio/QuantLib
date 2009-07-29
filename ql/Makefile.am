@@ -58,7 +58,6 @@ this_include_HEADERS = \
 libQuantLib_la_SOURCES = \
     cashflow.cpp \
     currency.cpp \
-	default.cpp \
 	discretizedasset.cpp \
 	errors.cpp \
 	event.cpp \

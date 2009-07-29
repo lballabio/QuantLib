@@ -42,13 +42,15 @@ namespace QuantLib {
     */
     class RiskyBond : public Instrument {
     public:
-        RiskyBond(std::string name, 
+        RiskyBond(std::string name,
                   Currency ccy,
-                  Issuer issuer,
+                  Real recoveryRate,
+                  Handle<DefaultProbabilityTermStructure> defaultTS,
                   Handle<YieldTermStructure> yieldTS)
-            : name_(name), ccy_(ccy), issuer_(issuer), yieldTS_(yieldTS) {
+            : name_(name), ccy_(ccy), recoveryRate_(recoveryRate),
+              defaultTS_(defaultTS), yieldTS_(yieldTS) {
             registerWith (yieldTS_);
-            registerWith (issuer.defaultProbability());
+            registerWith (defaultTS_);
         }
         virtual ~RiskyBond() {}
         virtual std::vector<boost::shared_ptr<CashFlow> > cashflows() const = 0;
@@ -56,14 +58,15 @@ namespace QuantLib {
         virtual Real notional(Date date = Date::minDate()) const = 0;
         virtual Date effectiveDate() const = 0;
         virtual Date maturityDate() const = 0;
-		virtual std::vector<boost::shared_ptr<CashFlow> > interestFlows() const = 0;
-		virtual std::vector<boost::shared_ptr<CashFlow> > notionalFlows() const = 0;
+        virtual std::vector<boost::shared_ptr<CashFlow> > interestFlows() const = 0;
+        virtual std::vector<boost::shared_ptr<CashFlow> > notionalFlows() const = 0;
         Real riskfreeNPV() const;
         Real totalFutureFlows(Date date) const;
         std::string name() const;
         Currency ccy() const;
-        Handle<YieldTermStructure> yieldTS() const; 
-        Issuer issuer() const;
+        Handle<YieldTermStructure> yieldTS() const;
+        Handle<DefaultProbabilityTermStructure> defaultTS() const;
+        Real recoveryRate() const;
         //! \name Instrument interface
         //@{
         bool isExpired() const;
@@ -74,24 +77,30 @@ namespace QuantLib {
     private:
         std::string name_;
         Currency ccy_;
-        Issuer issuer_;
+        Real recoveryRate_;
+        Handle<DefaultProbabilityTermStructure> defaultTS_;
         Handle<YieldTermStructure> yieldTS_;
     };
 
     inline std::string RiskyBond::name() const {
-        return name_; 
+        return name_;
     }
 
     inline Currency RiskyBond::ccy() const {
-        return ccy_; 
+        return ccy_;
     }
-    
+
     inline Handle<YieldTermStructure> RiskyBond::yieldTS() const {
         return yieldTS_;
     }
-    
-    inline Issuer RiskyBond::issuer() const {
-        return issuer_;
+
+    inline Handle<DefaultProbabilityTermStructure>
+    RiskyBond::defaultTS() const {
+        return defaultTS_;
+    }
+
+    inline Real RiskyBond::recoveryRate() const {
+        return recoveryRate_;
     }
 
     /*! Default risky fixed bond
@@ -101,7 +110,8 @@ namespace QuantLib {
     public:
         RiskyFixedBond(std::string name,
                        Currency ccy,
-                       Issuer,
+                       Real recoveryRate,
+                       Handle<DefaultProbabilityTermStructure> defaultTS,
                        Schedule schedule,
                        Real rate,
                        DayCounter dayCounter,
@@ -112,8 +122,8 @@ namespace QuantLib {
         Real notional(Date date = Date::minDate()) const;
         Date effectiveDate() const;
         Date maturityDate() const;
-		std::vector<boost::shared_ptr<CashFlow> > interestFlows() const;
-		std::vector<boost::shared_ptr<CashFlow> > notionalFlows() const;
+        std::vector<boost::shared_ptr<CashFlow> > interestFlows() const;
+        std::vector<boost::shared_ptr<CashFlow> > notionalFlows() const;
     private:
         Schedule schedule_;
         Real rate_;
@@ -121,8 +131,8 @@ namespace QuantLib {
         BusinessDayConvention paymentConvention_;
         std::vector<Real> notionals_;
         std::vector<boost::shared_ptr<CashFlow> > leg_;
-		std::vector<boost::shared_ptr<CashFlow> > interestLeg_;
-		std::vector<boost::shared_ptr<CashFlow> > redemptionLeg_;
+        std::vector<boost::shared_ptr<CashFlow> > interestLeg_;
+        std::vector<boost::shared_ptr<CashFlow> > redemptionLeg_;
     };
 
 
@@ -133,7 +143,8 @@ namespace QuantLib {
     public:
         RiskyFloatingBond(std::string name,
                           Currency ccy,
-                          Issuer issuer,
+                          Real recoveryRate,
+                          Handle<DefaultProbabilityTermStructure> defaultTS,
                           Schedule schedule,
                           boost::shared_ptr<IborIndex> index,
                           Integer fixingDays,
@@ -144,8 +155,8 @@ namespace QuantLib {
         Real notional(Date date = Date::minDate()) const;
         Date effectiveDate() const;
         Date maturityDate() const;
-		std::vector<boost::shared_ptr<CashFlow> > interestFlows() const;
-		std::vector<boost::shared_ptr<CashFlow> > notionalFlows() const;
+        std::vector<boost::shared_ptr<CashFlow> > interestFlows() const;
+        std::vector<boost::shared_ptr<CashFlow> > notionalFlows() const;
     private:
         Schedule schedule_;
         boost::shared_ptr<IborIndex> index_;
@@ -155,8 +166,8 @@ namespace QuantLib {
         BusinessDayConvention paymentConvention_;
         std::vector<Real> notionals_;
         std::vector<boost::shared_ptr<CashFlow> > leg_;
-		std::vector<boost::shared_ptr<CashFlow> > interestLeg_;
-		std::vector<boost::shared_ptr<CashFlow> > redemptionLeg_;
+        std::vector<boost::shared_ptr<CashFlow> > interestLeg_;
+        std::vector<boost::shared_ptr<CashFlow> > redemptionLeg_;
     };
 
 }

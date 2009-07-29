@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2008 Roland Lichters
+ Copyright (C) 2009 Jose Aparicio
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -55,6 +56,8 @@ namespace QuantLib {
             const boost::shared_ptr<Pool> pool = basket->pool();
             remainingBasket_ =
                 boost::shared_ptr<Basket>(new Basket(names, notionals, pool,
+                                                    basket->remainingDefaultKeys(start, today),
+                                                    basket->remainingRecModels(start, today),
                                                      a, d));
 
             this->results_.xMin = remainingBasket_->attachmentAmount();
@@ -118,7 +121,10 @@ namespace QuantLib {
             const boost::shared_ptr<Pool> pool = basket->pool();
             remainingBasket_ =
                 boost::shared_ptr<Basket>(new Basket(names, notionals,
-                                                     pool, a, d));
+                                                     pool,
+                                                     basket->remainingDefaultKeys(start, today),
+                                                     basket->remainingRecModels(start, today),
+                                                     a, d));
 
             this->results_.xMin = remainingBasket_->attachmentAmount();
             this->results_.xMax = remainingBasket_->detachmentAmount();
@@ -170,7 +176,9 @@ namespace QuantLib {
     public:
         HomogeneousPoolCDOEngine(const Handle<OneFactorCopula> copula,
                                  Size nBuckets, Period stepSize = 1*Days)
-            : CDOEngine(stepSize), copula_(copula), nBuckets_(nBuckets) {}
+            : CDOEngine(stepSize), copula_(copula), nBuckets_(nBuckets) {
+            this->registerWith(copula_);
+        }
     private:
         Real expectedTrancheLoss(const Date& d) const {
             LossDistHomogeneous op(nBuckets_, this->results_.xMax);
@@ -192,7 +200,9 @@ namespace QuantLib {
     public:
         InhomogeneousPoolCDOEngine(const Handle<OneFactorCopula> copula,
                                    Size nBuckets, Period stepSize = 1*Days)
-            : CDOEngine(stepSize), copula_(copula), nBuckets_(nBuckets) {}
+            : CDOEngine(stepSize), copula_(copula), nBuckets_(nBuckets) {
+            this->registerWith(copula_);
+        }
     private:
         Real expectedTrancheLoss(const Date& d) const{
             LossDistBucketing op (nBuckets_, this->results_.xMax);
@@ -219,9 +229,11 @@ namespace QuantLib {
     template <class CDOEngine>
     class GaussianLHPCDOEngine : public CDOEngine {
     public:
-        GaussianLHPCDOEngine(const Handle<OneFactorCopula> copula,
+        GaussianLHPCDOEngine(const Handle<OneFactorCopula>& copula,
                              Period stepSize = 1*Days)
-            : CDOEngine(stepSize), copula_(copula) {}
+            : CDOEngine(stepSize), copula_(copula) {
+            this->registerWith(copula_);
+        }
     private:
         Real expectedTrancheLoss(const Date& d) const {
             Date today = Settings::instance().evaluationDate();
@@ -232,8 +244,10 @@ namespace QuantLib {
             const boost::shared_ptr<Pool> pool = basket->pool();
 
             Issuer name = pool->get(names[0]);
-            Real prob = name.defaultProbability()->defaultProbability(d);
-            Real rec = name.recoveryRate();
+            Real prob = name.defaultProbability(basket->defaultKeys()[0])->defaultProbability(d);
+            //what if the name has defualted? The homogeneity in the model concerns the default state too...
+            Real rec = basket->recoveryModels()[0]->recoveryValue(d,
+                basket->defaultKeys()[0]);
             Real ntl = this->results_.remainingNotional;
             Real attach = basket->remainingAttachmentRatio(start, today);
             Real detach = basket->remainingDetachmentRatio(start, today);
@@ -245,6 +259,8 @@ namespace QuantLib {
             BivariateCumulativeNormalDistribution biphi(-y);
             InverseCumulativeNormal inverse;
             CumulativeNormalDistribution phi;
+
+            if (ntl == 0.) return 0.;
 
             if (prob > 0) {
                 Real ip = inverse(prob);

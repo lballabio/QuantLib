@@ -5,6 +5,9 @@
 #include <ql/experimental/credit/blackcdsoptionengine.hpp>
 #include <ql/experimental/credit/cdo.hpp>
 #include <ql/experimental/credit/cdsoption.hpp>
+#include <ql/experimental/credit/defaultevent.hpp>
+#include <ql/experimental/credit/defaultprobabilitykey.hpp>
+#include <ql/experimental/credit/defaulttype.hpp>
 #include <ql/experimental/credit/distribution.hpp>
 #include <ql/experimental/credit/factorspreadedhazardratecurve.hpp>
 #include <ql/experimental/credit/issuer.hpp>
@@ -16,6 +19,8 @@
 #include <ql/experimental/credit/onefactorstudentcopula.hpp>
 #include <ql/experimental/credit/pool.hpp>
 #include <ql/experimental/credit/randomdefaultmodel.hpp>
+#include <ql/experimental/credit/recoveryratemodel.hpp>
+#include <ql/experimental/credit/recoveryratequote.hpp>
 #include <ql/experimental/credit/riskyassetswap.hpp>
 #include <ql/experimental/credit/riskyassetswapoption.hpp>
 #include <ql/experimental/credit/riskybond.hpp>

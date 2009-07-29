@@ -21,15 +21,15 @@
 #include "utilities.hpp"
 #include <ql/experimental/credit/cdo.hpp>
 #include <ql/experimental/credit/syntheticcdoengines.hpp>
+#include <ql/experimental/credit/onefactorgaussiancopula.hpp>
+#include <ql/experimental/credit/onefactorstudentcopula.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
-#include <ql/experimental/credit/onefactorgaussiancopula.hpp>
-#include <ql/experimental/credit/onefactorstudentcopula.hpp>
 #include <ql/quotes/simplequote.hpp>
-
+#include <ql/currencies/europe.hpp>
 #include <iomanip>
 
 using namespace QuantLib;
@@ -113,14 +113,23 @@ void CdoTest::testHW() {
                                    ActualActual()));
     boost::shared_ptr<Pool> pool (new Pool());
     vector<string> names;
+    // probability key items
     vector<Issuer> issuers;
+    vector<pair<DefaultProbKey,
+           Handle<DefaultProbabilityTermStructure> > > probabilities;
+    probabilities.push_back(std::make_pair(
+        NorthAmericaCorpDefaultKey(EURCurrency(),
+                                   SeniorSec,
+                                   Period(0,Weeks),
+                                   10.),
+       ptr));
+
     for (Size i=0; i<poolSize; ++i) {
         ostringstream o;
         o << "issuer-" << i;
         names.push_back(o.str());
         basket.push_back(Handle<DefaultProbabilityTermStructure>(ptr));
-        issuers.push_back(Issuer(Handle<DefaultProbabilityTermStructure>(ptr),
-                                 recovery));
+        issuers.push_back(Issuer(probabilities));
         pool->add(names.back(), issuers.back());
     }
 
@@ -132,7 +141,13 @@ void CdoTest::testHW() {
     RelinkableHandle<OneFactorCopula> hCopula (pGaussianCopula);
 
     boost::shared_ptr<RandomDefaultModel> rdm(new
-                        GaussianRandomDefaultModel(pool, hCopula, 1.e-6, 42));
+        GaussianRandomDefaultModel(pool,
+                                   std::vector<DefaultProbKey>(poolSize,
+                                    NorthAmericaCorpDefaultKey(EURCurrency(),
+                                                               SeniorSec)),
+                                   hCopula,
+                                   1.e-6,
+                                   42));
 
     boost::shared_ptr<PricingEngine> engine1(
                           new IHPIntegralCDOEngine(hCopula, nBuckets, period));
@@ -182,11 +197,22 @@ void CdoTest::testHW() {
         }
 
         for (Size j = 0; j < LENGTH(hwAttachment); j ++) {
-            boost::shared_ptr<Basket> basketPtr (new Basket(names,
-                                                            nominals,
-                                                            pool,
-                                                            hwAttachment[j],
-                                                            hwDetachment[j]));
+            boost::shared_ptr<Basket> basketPtr (
+                new Basket(names,
+                           nominals,
+                           pool,
+                           std::vector<DefaultProbKey>(
+                                names.size(),
+                                NorthAmericaCorpDefaultKey(EURCurrency(),
+                                                           SeniorSec)),
+                           std::vector<boost::shared_ptr<RecoveryRateModel> > (
+                                names.size(),
+                                boost::shared_ptr<RecoveryRateModel>(
+                                    new ConstantRecoveryModel(recovery,
+                                                              SeniorSec))),
+                           hwAttachment[j],
+                           hwDetachment[j]));
+
             CDO cdo (hwAttachment[j], hwDetachment[j],
                      nominals, basket, hCopula,
                      true, schedule, premium, daycount, recovery, 0.0,
