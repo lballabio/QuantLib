@@ -50,7 +50,7 @@ namespace QuantLib {
       floatSpread_(0.0),
       fixedDayCount_(Thirty360(Thirty360::BondBasis)),
       floatDayCount_(index->dayCounter()),
-      engine_(new DiscountingSwapEngine(index->termStructure())) {}
+      engine_(new DiscountingSwapEngine(iborIndex_->termStructure())) {}
 
     MakeVanillaSwap::operator VanillaSwap() const {
         boost::shared_ptr<VanillaSwap> swap = *this;
