@@ -69,16 +69,15 @@ namespace QuantLib {
         /*! integral of the instantaneous covariance function between
             time t1 and t2 for T-fixing and S-fixing rates
             \f[ \int_{t1}^{t2} f(T-t)f(S-t)dt \f] */
-
         Real covariance(Time t1, Time t2, Time T, Time S) const;
 
          /*! average volatility in [tMin,tMax] of T-fixing rate:
-            \f[ \sqrt{ \int_{tMin}^{tMax} f^2(T-u)du }\f] */
-        Real volatility(Time T, Time tMax, Time tMin) const;
+            \f[ \sqrt{ \frac{\int_{tMin}^{tMax} f^2(T-u)du}{tMax-tMin} } \f] */
+        Real volatility(Time tMin, Time tMax, Time T) const;
 
         /*! variance between tMin and tMax of T-fixing rate:
-            \f[ \int_{tMin}^{tMax} f^2(T-u)du \f] */
-        Real variance(Time T, Time tMax, Time tMin) const;
+            \f[ \frac{\int_{tMin}^{tMax} f^2(T-u)du}{tMax-tMin} \f] */
+        Real variance(Time tMin, Time tMax, Time T) const;
         
 
         

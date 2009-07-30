@@ -70,8 +70,7 @@ namespace QuantLib {
         return (*this)(T-t) * (*this)(S-t);
     }
 
-    Real AbcdFunction::covariance(Time t1, Time t2, Time T, Time S)
-        const {
+    Real AbcdFunction::covariance(Time t1, Time t2, Time T, Time S) const {
         QL_REQUIRE(t1<=t2,
                    "integrations bounds (" << t1 <<
                    "," << t2 << ") are in reverse order");
