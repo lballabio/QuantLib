@@ -147,7 +147,7 @@ namespace QuantLib {
                 quote->setValue(quoteValue-shift);
                 Real npv2 = aggregateNPV(instruments, quantities);
                 result.first = (npv-npv2)/(2.0*shift);
-                result.second = (npv-2.0*referenceNpv+npv2)/shift;
+                result.second = (npv-2.0*referenceNpv+npv2)/(shift*shift);
                 }
                 break;
               default:
