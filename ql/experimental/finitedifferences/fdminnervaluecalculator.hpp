@@ -26,10 +26,11 @@
 #ifndef quantlib_fdm_inner_value_calculator_hpp
 #define quantlib_fdm_inner_value_calculator_hpp
 
-#include <ql/experimental/finitedifferences/fdmmesher.hpp>
-#include <ql/math/integrals/simpsonintegral.hpp>
-#include <ql/math/array.hpp>
 #include <ql/payoff.hpp>
+#include <ql/math/array.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/math/integrals/simpsonintegral.hpp>
+#include <ql/experimental/finitedifferences/fdmmesher.hpp>
 
 
 namespace QuantLib {
@@ -66,28 +67,28 @@ namespace QuantLib {
 						   const FdmLinearOpIterator& iter) {
 			const Size dim = mesher->layout()->dim()[direction_];
 			const Size coord = iter.coordinates()[direction_];
-			const Real loc = std::exp(mesher->location(iter,direction_));
+			const Real loc = mesher->location(iter,direction_);
 			Real a = loc;
 			Real b = loc;
-
 			if (coord > 0) {
-				a -= std::exp(mesher->dminus(iter, direction_))/2.0;
+				a -= mesher->dminus(iter, direction_)/2.0;
 			}
 			if (coord < dim-1) {
-				b += std::exp(mesher->dplus(iter, direction_))/2.0;
+				b += mesher->dplus(iter, direction_)/2.0;
 			}
-
-			boost::function1<Real, Real> f = std::bind1st(
-					std::mem_fun(&Payoff::operator()), payoff_.get());
+			boost::function1<Real, Real> f = compose(
+			    std::bind1st(std::mem_fun(&Payoff::operator()), payoff_.get()),
+			                 std::ptr_fun<Real,Real>(std::exp));
 			
 			Real retVal;
 			try {
-			    retVal = SimpsonIntegral(1e-4, 4)(f, a, b)/(b-a); 
+			    retVal = SimpsonIntegral(1e-4, 10)(f, a, b)/(b-a);
 			}
 			catch (Error&) {
 			    // use default value
 			    retVal = innerValue(mesher, iter);
 			}
+						
 			return retVal;
 		};
 
