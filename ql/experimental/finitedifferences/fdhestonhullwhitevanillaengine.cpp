@@ -108,12 +108,14 @@ namespace QuantLib {
         if (strikes_.empty()) {
             equityMesher = boost::shared_ptr<Fdm1dMesher>(
                 new FdmBlackScholesMesher(
-                    xGrid_,
+                    xGrid_, 
                     FdmBlackScholesMesher::processHelper(
                       hestonProcess->s0(), hestonProcess->dividendYield(), 
                       hestonProcess->riskFreeRate(), 
                       varianceMesher->volaEstimate()),
-                    maturity, payoff->strike(), arguments_.cashFlow));
+                      maturity, payoff->strike(), arguments_.cashFlow,
+                      Null<Real>(), Null<Real>(), 0.0001, 1.5, 
+                      std::pair<Real, Real>(payoff->strike(), 0.1)));
         }
         else {
             QL_REQUIRE(arguments_.cashFlow.empty(),"multiple strikes engine "
@@ -125,7 +127,8 @@ namespace QuantLib {
                       hestonProcess->s0(), hestonProcess->dividendYield(), 
                       hestonProcess->riskFreeRate(), 
                       varianceMesher->volaEstimate()),
-                    maturity, strikes_));            
+                    maturity, strikes_, 0.0001, 1.5,
+                    std::pair<Real, Real>(payoff->strike(), 0.075)));            
         }
        
         //2.3 The short rate mesher        

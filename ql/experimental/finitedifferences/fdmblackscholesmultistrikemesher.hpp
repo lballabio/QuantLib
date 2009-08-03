@@ -39,7 +39,9 @@ namespace QuantLib {
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
             Time maturity, const std::vector<Real>& strikes,
             Real eps = 0.0001, 
-            Real scaleFactor = 1.5);
+            Real scaleFactor = 1.5,
+            const std::pair<Real, Real>& cPoint 
+                        = (std::pair<Real, Real>(Null<Real>(), Null<Real>())));
         
         static boost::shared_ptr<GeneralizedBlackScholesProcess> processHelper(
              const Handle<Quote>& s0,

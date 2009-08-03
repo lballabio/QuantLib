@@ -25,51 +25,17 @@
 #define quantlib_concentrating_1d_mesher_hpp
 
 #include <ql/experimental/finitedifferences/fdm1dmesher.hpp>
-#include <ql/errors.hpp>
-#include <ql/utilities/null.hpp>
 
-#include <iostream>
+#include <utility>
 
 namespace QuantLib {
 
     class Concentrating1dMesher : public Fdm1dMesher {
       public:
-    	  Concentrating1dMesher(Real start, Real end, Size size,
-    	      const std::vector<std::pair<Real,Real> >& cPoints)
-        : Fdm1dMesher(size) {
-            QL_REQUIRE(end > start, "end must be larger than start");
-            QL_REQUIRE(cPoints.size() <= 1, "max. 1 cPoint supported");
-            
-            const Real cPoint  = cPoints.size() == 0 ? 
-            					 Null<Real>() : cPoints[0].first;
-            const Real density = cPoints.size() == 0 ? 
-            					 Null<Real>() : cPoints[0].second*(end-start);
-            
-            QL_REQUIRE(    cPoint == Null<Real>() 
-            		   || (cPoint >= start && cPoint <= end),
-            		   "cPoint must be between start and end");
-            QL_REQUIRE(density == Null<Real>() || density > 0.0, 
-            		   "density > 0 required" );
-            
-            const Real dx = 1.0/(size-1);
-            for (Size i=1; i < size-1; ++i) {
-            	if(cPoint != Null<Real>()) {
-                    const Real c1 = asinh((start-cPoint)/density);
-                    const Real c2 = asinh((end-cPoint)/density);
-            		locations_[i] = cPoint + density*sinh(c1*(1.0-i*dx)+c2*i*dx);
-            	}
-            	else {
-            		locations_[i] = start + i*dx*(end-start);
-            	}
-            }
-            locations_.front() = start;
-            locations_.back() = end;
-
-            for (Size i=0; i < size-1; ++i) {
-                dplus_[i] = dminus_[i+1] = locations_[i+1] - locations_[i];
-            }
-            dplus_.back() = dminus_.front() = Null<Real>();
-        }
+        Concentrating1dMesher(
+            Real start, Real end, Size size,
+    	    const std::pair<Real, Real>& cPoints 
+    	             = (std::pair<double, double>(Null<Real>(), Null<Real>())));
     };
 }
 

@@ -287,9 +287,9 @@ void FdHestonTest::testFdmHestonAmerican() {
     option.setPricingEngine(engine);
     
     const Real tol = 0.01;
-    const Real npvExpected   =  5.646879;
-    const Real deltaExpected = -0.299602;
-    const Real gammaExpected =  0.021865;
+    const Real npvExpected   =  5.66032;
+    const Real deltaExpected = -0.30065;
+    const Real gammaExpected =  0.02202;
     
     if (std::fabs(option.NPV() - npvExpected) > tol) {
         BOOST_ERROR("Failed to reproduce expected npv"

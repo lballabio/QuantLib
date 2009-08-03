@@ -26,6 +26,7 @@
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/experimental/finitedifferences/uniform1dmesher.hpp>
+#include <ql/experimental/finitedifferences/concentrating1dmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmultistrikemesher.hpp>
 
 namespace QuantLib {
@@ -34,7 +35,8 @@ namespace QuantLib {
             Size size,
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
             Time maturity, const std::vector<Real>& strikes,
-            Real eps, Real scaleFactor)
+            Real eps, Real scaleFactor,
+            const std::pair<Real, Real>& cPoint)
     : Fdm1dMesher(size) {
 
         const Real spot = process->x0();
@@ -68,11 +70,24 @@ namespace QuantLib {
                        std::log(Fmax) + sigmaSqrtTmax*normInvEps*scaleFactor
                                       - sigmaSqrtTmax*sigmaSqrtTmax/2.0);
 
-        Uniform1dMesher helper(xMin, xMax, size);
-        locations_ = helper.locations();
+        boost::shared_ptr<Fdm1dMesher> helper;
+        if (   cPoint.first != Null<Real>() 
+            && std::log(cPoint.first) >=xMin && std::log(cPoint.first) <=xMax) {
+            
+            helper = boost::shared_ptr<Fdm1dMesher>(
+                new Concentrating1dMesher(xMin, xMax, size, 
+                    std::pair<Real,Real>(std::log(cPoint.first),cPoint.second)));
+        }
+        else {
+            helper = boost::shared_ptr<Fdm1dMesher>(
+                                        new Uniform1dMesher(xMin, xMax, size));
+            
+        }
+
+        locations_ = helper->locations();
         for (Size i=0; i < locations_.size(); ++i) {
-            dplus_[i]  = helper.dplus(i);
-            dminus_[i] = helper.dminus(i);
+            dplus_[i]  = helper->dplus(i);
+            dminus_[i] = helper->dminus(i);
         }
     }            
 }

@@ -54,6 +54,7 @@ this_include_HEADERS = \
 
 libMultiDimFDM_la_SOURCES = \
     bicgstab.cpp \
+    concentrating1dmesher.cpp \
 	craigsneydscheme.cpp \
 	dividendbarrieroption.cpp \
 	douglasscheme.cpp \
@@ -79,6 +80,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdmhestonsolver.cpp \
 	fdmhestonvariancemesher.cpp \
 	fdmhullwhitemesher.cpp \
+	fdminnervaluecalculator.cpp \
 	fdmlinearoplayout.cpp \
 	fdmmeshercomposite.cpp \
 	fdmquantohelper.cpp \

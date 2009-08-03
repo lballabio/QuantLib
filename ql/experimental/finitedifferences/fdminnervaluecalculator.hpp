@@ -26,71 +26,36 @@
 #ifndef quantlib_fdm_inner_value_calculator_hpp
 #define quantlib_fdm_inner_value_calculator_hpp
 
-#include <ql/payoff.hpp>
-#include <ql/math/array.hpp>
-#include <ql/math/functional.hpp>
-#include <ql/math/integrals/simpsonintegral.hpp>
-#include <ql/experimental/finitedifferences/fdmmesher.hpp>
-
+#include <ql/types.hpp>
 
 namespace QuantLib {
 
-    class FdmInnerValueCalculator {
+    class Payoff;
+    class FdmMesher;
+    class FdmLinearOpIterator;
 
+    class FdmInnerValueCalculator {
       public:
         virtual ~FdmInnerValueCalculator() {}
 
-        virtual Real innerValue(
-			const boost::shared_ptr<FdmMesher>& mesher,
-			const FdmLinearOpIterator& iter) = 0;
+        virtual Real innerValue(const boost::shared_ptr<FdmMesher>& mesher,
+                    			const FdmLinearOpIterator& iter) = 0;
 
-		virtual Real avgInnerValue(
-			const boost::shared_ptr<FdmMesher>& mesher,
-			const FdmLinearOpIterator& iter) = 0;
+		virtual Real avgInnerValue(const boost::shared_ptr<FdmMesher>& mesher,
+		                           const FdmLinearOpIterator& iter) = 0;
     };
 
 
     class FdmLogInnerValue : public FdmInnerValueCalculator {
-
       public:
         FdmLogInnerValue(const boost::shared_ptr<Payoff>& payoff,
-                         Size direction)
-        : payoff_(payoff), direction_(direction) {};
+                         Size direction);
 
 		Real innerValue(const boost::shared_ptr<FdmMesher>& mesher,
-						const FdmLinearOpIterator& iter) {
-            return payoff_->operator()(std::exp(mesher->location(
-												iter,direction_)));
-        };
+						const FdmLinearOpIterator& iter);
 
 		Real avgInnerValue(const boost::shared_ptr<FdmMesher>& mesher,
-						   const FdmLinearOpIterator& iter) {
-			const Size dim = mesher->layout()->dim()[direction_];
-			const Size coord = iter.coordinates()[direction_];
-			const Real loc = mesher->location(iter,direction_);
-			Real a = loc;
-			Real b = loc;
-			if (coord > 0) {
-				a -= mesher->dminus(iter, direction_)/2.0;
-			}
-			if (coord < dim-1) {
-				b += mesher->dplus(iter, direction_)/2.0;
-			}
-			boost::function1<Real, Real> f = compose(
-			    std::bind1st(std::mem_fun(&Payoff::operator()), payoff_.get()),
-			                 std::ptr_fun<Real,Real>(std::exp));
-			
-			Real retVal;
-			try {
-			    retVal = SimpsonIntegral(1e-4, 10)(f, a, b)/(b-a);
-			}
-			catch (Error&) {
-			    // use default value
-			    retVal = innerValue(mesher, iter);
-			}
-						
-			return retVal;
-		};
+						   const FdmLinearOpIterator& iter);
 
       private:
         const boost::shared_ptr<Payoff> payoff_;

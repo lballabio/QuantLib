@@ -1475,7 +1475,7 @@ void EuropeanOptionTest::testLocalVolatility() {
             const Real expectedGamma = option.gamma();
             
             option.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                    new FdBlackScholesVanillaEngine(process, 100, 400, 0.5)));
+                         new FdBlackScholesVanillaEngine(process, 200, 400)));
     
             Real calculatedNPV = option.NPV();
             const Real calculatedDelta = option.delta();
