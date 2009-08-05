@@ -918,7 +918,7 @@ void HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine() {
                 new FdHestonHullWhiteVanillaEngine(
                      boost::shared_ptr<HestonModel>(
                              new HestonModel(hestonProcess)),
-                                       hwProcess, corr[i], 50, 100, 10, 20)));    
+                                       hwProcess, corr[i], 50, 200, 10, 15)));    
             const Real calculated = option.NPV();
             
             option.setPricingEngine(boost::shared_ptr<PricingEngine>(
@@ -928,7 +928,7 @@ void HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine() {
 
             const Real tol = 0.01;
             if (std::fabs(calculated - expected) > tol) {
-                 BOOST_ERROR("Failed to reproduce discretization error"
+                 BOOST_ERROR("Failed to reproduce analytic values"
                          << "\n   corr:       " << corr[i]
                          << "\n   strike:     " << strike[j]
                          << "\n   calculated: " << calculated

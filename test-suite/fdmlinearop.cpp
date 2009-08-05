@@ -810,25 +810,24 @@ void FdmLinearOpTest::testFdmHestonExpress() {
     const Real s = s0->value();
     const Real v0 = 0.04;
 
-    if (std::fabs(solver.valueAt(s, v0) - 101.034) > 0.001) {
+    if (std::fabs(solver.valueAt(s, v0) - 101.027) > 0.01) {
         QL_FAIL("Error in calculating PV for Heston Express Certificate");
     }
 
-    if (std::fabs(solver.deltaAt(s, v0) - 0.417458) > 0.0001) {
+    if (std::fabs(solver.deltaAt(s, v0) - 0.4181) > 0.001) {
         QL_FAIL("Error in calculating Delta for Heston Express Certificate");
     }
 
-    if (std::fabs(solver.gammaAt(s, v0) + 0.039970) > 0.0001) {
+    if (std::fabs(solver.gammaAt(s, v0) + 0.0400) > 0.001) {
         QL_FAIL("Error in calculating Gamma for Heston Express Certificate");
     }
 
-    if (std::fabs(solver.meanVarianceDeltaAt(s, v0) - 0.65943) > 0.0001) {
+    if (std::fabs(solver.meanVarianceDeltaAt(s, v0) - 0.6602) > 0.001) {
         QL_FAIL("Error in calculating mean variance Delta for "
                 "Heston Express Certificate");
     }
 
-    if (std::fabs(solver.meanVarianceGammaAt(s, v0) + 0.031642)
-                                                                    > 0.0001) {
+    if (std::fabs(solver.meanVarianceGammaAt(s, v0) + 0.0316) > 0.001) {
         QL_FAIL("Error in calculating mean variance Delta for "
                 "Heston Express Certificate");
     }
