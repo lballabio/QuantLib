@@ -74,12 +74,11 @@ namespace QuantLib {
         boost::shared_ptr<FdmMesher> mesher (
                                      new FdmMesherComposite(layout, meshers));
         
-
         // 3. Calculator
         boost::shared_ptr<StrikedTypePayoff> rebatePayoff(
                 new CashOrNothingPayoff(Option::Call, 0.0, arguments_.rebate));
         boost::shared_ptr<FdmInnerValueCalculator> calculator(
-                                new FdmLogInnerValue(rebatePayoff, 0));
+                                new FdmLogInnerValue(rebatePayoff, mesher, 0));
 
         // 4. Step conditions
         std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;

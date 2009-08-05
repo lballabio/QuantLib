@@ -80,8 +80,7 @@ namespace QuantLib {
         const FdmLinearOpIterator endIter = layout->end();
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
              ++iter) {
-            initialValues_[iter.index()] = calculator->innerValue(
-            		mesher, iter);
+            initialValues_[iter.index()] = calculator->avgInnerValue(iter);
             x_.push_back(mesher->location(iter, 0));
         }
     }

@@ -93,7 +93,7 @@ namespace QuantLib {
 
         // 3. Calculator
         boost::shared_ptr<FdmInnerValueCalculator> calculator(
-                                new FdmLogInnerValue(payoff, 0));
+                                new FdmLogInnerValue(payoff, mesher, 0));
 
         // 4. Step conditions
         std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;

@@ -159,9 +159,9 @@ namespace QuantLib {
         }
 
         // 3.2 Step condition if american exercise
+        boost::shared_ptr<FdmInnerValueCalculator> calculator(
+                            new FdmLogInnerValue(arguments_.payoff, mesher, 0));
         if (arguments_.exercise->type() == Exercise::American) {
-            boost::shared_ptr<FdmInnerValueCalculator> calculator(
-                                    new FdmLogInnerValue(arguments_.payoff, 0));
             stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
                             new FdmAmericanStepCondition(mesher, calculator)));
         }
@@ -178,7 +178,7 @@ namespace QuantLib {
                                          Handle<HullWhiteProcess>(hwProcess_),
                                          corrEquityShortRate_,
                                          mesher, boundaries, conditions,
-                                         arguments_.payoff, 
+                                         calculator, 
                                          maturity, tGrid_,
                                          type_, theta_, mu_));
 

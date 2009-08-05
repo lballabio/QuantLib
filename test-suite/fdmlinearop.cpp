@@ -703,7 +703,7 @@ void FdmLinearOpTest::testFdmHestonAmerican() {
 
     FdmAmericanStepCondition condition(mesher,
         boost::shared_ptr<FdmInnerValueCalculator>(
-                                           new FdmLogInnerValue(payoff, 0)));
+                                     new FdmLogInnerValue(payoff, mesher, 0)));
     const Real theta=0.5+std::sqrt(3.0)/6.;
     HundsdorferScheme hsEvolver(theta, 0.5, LinearOp);
     FiniteDifferenceModel<HundsdorferScheme> hsModel(hsEvolver);
@@ -801,7 +801,7 @@ void FdmLinearOpTest::testFdmHestonExpress() {
     boost::shared_ptr<Payoff> payoff(new ExpressPayoff());
 
     boost::shared_ptr<FdmInnerValueCalculator> calculator(
-                            new FdmLogInnerValue(payoff, 0));
+                                    new FdmLogInnerValue(payoff, mesher, 0));
 
     std::vector<boost::shared_ptr<FdmDirichletBoundary> > bcSet;
     FdmHestonSolver solver(hestonProcess,
@@ -911,7 +911,7 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
 
     FdmAmericanStepCondition condition(mesher,
         boost::shared_ptr<FdmInnerValueCalculator>(
-                                           new FdmLogInnerValue(payoff, 0)));
+                                     new FdmLogInnerValue(payoff, mesher, 0)));
 
     const Real theta = 0.5+std::sqrt(3.0)/6.;
     HundsdorferScheme hsEvolver(theta, 0.5, linearOp);

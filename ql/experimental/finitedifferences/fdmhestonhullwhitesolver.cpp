@@ -26,6 +26,7 @@
 #include <ql/experimental/finitedifferences/craigsneydscheme.hpp>
 #include <ql/experimental/finitedifferences/douglasscheme.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonhullwhiteop.hpp>
+#include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 
@@ -57,7 +58,7 @@ namespace QuantLib {
         const boost::shared_ptr<FdmMesher>& mesher,
         const FdmBoundaryConditionSet& bcSet,
         const boost::shared_ptr<FdmStepConditionComposite> & condition,
-        const boost::shared_ptr<Payoff>& payoff,
+        const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
         const Time maturity,
         const Size timeSteps,
         FdmHestonHullWhiteSolver::FdmSchemeType schemeType, 
@@ -94,8 +95,8 @@ namespace QuantLib {
         const FdmLinearOpIterator endIter = layout->end();
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
              ++iter) {
-            initialValues_[iter.index()] = payoff->operator()(
-                                        std::exp(mesher->location(iter, 0)));
+            initialValues_[iter.index()] = calculator->avgInnerValue(iter);
+
 
             if (!iter.coordinates()[1] && !iter.coordinates()[2]) {
                 x_.push_back(mesher->location(iter, 0));

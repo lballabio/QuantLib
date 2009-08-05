@@ -38,28 +38,28 @@ namespace QuantLib {
       public:
         virtual ~FdmInnerValueCalculator() {}
 
-        virtual Real innerValue(const boost::shared_ptr<FdmMesher>& mesher,
-                    			const FdmLinearOpIterator& iter) = 0;
-
-		virtual Real avgInnerValue(const boost::shared_ptr<FdmMesher>& mesher,
-		                           const FdmLinearOpIterator& iter) = 0;
+        virtual Real innerValue(const FdmLinearOpIterator& iter) = 0;
+		virtual Real avgInnerValue(const FdmLinearOpIterator& iter) = 0;
     };
 
 
     class FdmLogInnerValue : public FdmInnerValueCalculator {
       public:
         FdmLogInnerValue(const boost::shared_ptr<Payoff>& payoff,
+                         const boost::shared_ptr<FdmMesher>& mesher,
                          Size direction);
 
-		Real innerValue(const boost::shared_ptr<FdmMesher>& mesher,
-						const FdmLinearOpIterator& iter);
-
-		Real avgInnerValue(const boost::shared_ptr<FdmMesher>& mesher,
-						   const FdmLinearOpIterator& iter);
+		Real innerValue(const FdmLinearOpIterator& iter);
+		Real avgInnerValue(const FdmLinearOpIterator& iter);
 
       private:
+          
+        Real avgInnerValueCalc(const FdmLinearOpIterator& iter);
+          
         const boost::shared_ptr<Payoff> payoff_;
+        const boost::shared_ptr<FdmMesher> mesher_;
         const Size direction_;
+        std::vector<Real> avgInnerValues_;
     };
 }
 

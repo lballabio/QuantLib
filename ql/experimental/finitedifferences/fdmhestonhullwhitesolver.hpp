@@ -33,6 +33,7 @@
 namespace QuantLib {
 
     class FdmMesher;
+    class FdmInnerValueCalculator;
     class FdmSnapshotCondition;
     class FdmStepConditionComposite;
     class BicubicSpline;
@@ -49,7 +50,7 @@ namespace QuantLib {
             const boost::shared_ptr<FdmMesher>& mesher,
             const FdmBoundaryConditionSet& bcSet,
             const boost::shared_ptr<FdmStepConditionComposite> & condition,
-            const boost::shared_ptr<Payoff>& payoff,
+            const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
             Time maturity,
             Size timeSteps,
             FdmSchemeType type = HundsdorferScheme,

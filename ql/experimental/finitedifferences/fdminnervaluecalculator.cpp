@@ -29,35 +29,57 @@
 #include <ql/experimental/finitedifferences/fdmmesher.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 
+#include <deque>
 
 namespace QuantLib {
 
-    FdmLogInnerValue::FdmLogInnerValue(const boost::shared_ptr<Payoff>& payoff,
-                                       Size direction)
-    : payoff_(payoff), direction_(direction) { }
-
-    Real FdmLogInnerValue::innerValue(
-             const boost::shared_ptr<FdmMesher>& mesher,
-             const FdmLinearOpIterator& iter) {
-        
-        return payoff_->operator()(std::exp(mesher->location(
-                                            iter,direction_)));
+    FdmLogInnerValue::FdmLogInnerValue(
+        const boost::shared_ptr<Payoff>& payoff,
+        const boost::shared_ptr<FdmMesher>& mesher,
+        Size direction)
+    : payoff_(payoff), 
+      mesher_(mesher),
+      direction_ (direction) {
     }
 
-    Real FdmLogInnerValue::avgInnerValue(
-             const boost::shared_ptr<FdmMesher>& mesher,
-             const FdmLinearOpIterator& iter) {
+    Real FdmLogInnerValue::innerValue(const FdmLinearOpIterator& iter) {
+        const Real s = std::exp(mesher_->location(iter, direction_));
+        return payoff_->operator()(s);
+    }
+
+    Real FdmLogInnerValue::avgInnerValue(const FdmLinearOpIterator& iter) {
         
-        const Size dim = mesher->layout()->dim()[direction_];
+        if (avgInnerValues_.empty()) {
+            // calculate caching values
+            avgInnerValues_.resize(mesher_->layout()->dim()[direction_]);
+            std::deque<bool> initialized(avgInnerValues_.size(), false);
+
+            const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+            const FdmLinearOpIterator endIter = layout->end();
+            for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
+                 ++iter) {
+                const Size xn = iter.coordinates()[direction_];
+                if (!initialized[xn]) {
+                    initialized[xn]     = true;
+                    avgInnerValues_[xn] = avgInnerValueCalc(iter);
+                }
+            }
+        }
+        
+        return avgInnerValues_[iter.coordinates()[direction_]];
+    }
+    
+    Real FdmLogInnerValue::avgInnerValueCalc(const FdmLinearOpIterator& iter) { 
+        const Size dim = mesher_->layout()->dim()[direction_];
         const Size coord = iter.coordinates()[direction_];
-        const Real loc = mesher->location(iter,direction_);
+        const Real loc = mesher_->location(iter,direction_);
         Real a = loc;
         Real b = loc;
         if (coord > 0) {
-            a -= mesher->dminus(iter, direction_)/2.0;
+            a -= mesher_->dminus(iter, direction_)/2.0;
         }
         if (coord < dim-1) {
-            b += mesher->dplus(iter, direction_)/2.0;
+            b += mesher_->dplus(iter, direction_)/2.0;
         }
         boost::function1<Real, Real> f = compose(
             std::bind1st(std::mem_fun(&Payoff::operator()), payoff_.get()),
@@ -65,11 +87,13 @@ namespace QuantLib {
         
         Real retVal;
         try {
-            retVal = SimpsonIntegral(1e-4, 10)(f, a, b)/(b-a);
+            const Real acc 
+                = ((f(a) != 0.0 || f(b) != 0.0) ? (f(a)+f(b))*5e-5 : 1e-4);
+            retVal = SimpsonIntegral(acc, 8)(f, a, b)/(b-a);
         }
         catch (Error&) {
             // use default value
-            retVal = innerValue(mesher, iter);
+            retVal = innerValue(iter);
         }
                     
         return retVal;

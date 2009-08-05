@@ -111,7 +111,7 @@ namespace QuantLib {
                     FdmBlackScholesMesher::processHelper(
                       process->s0(), process->dividendYield(), 
                       process->riskFreeRate(), varianceMesher->volaEstimate()),
-                    maturity, strikes_,0.0001, 1.5,
+                    maturity, strikes_, 0.0001, 1.5,
                     std::pair<Real, Real>(payoff->strike(), 0.075)));            
         }
         
@@ -123,7 +123,7 @@ namespace QuantLib {
 
         // 3. Calculator
         boost::shared_ptr<FdmInnerValueCalculator> calculator(
-                                new FdmLogInnerValue(arguments_.payoff, 0));
+                          new FdmLogInnerValue(arguments_.payoff, mesher, 0));
 
         // 4. Step conditions
         std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;
