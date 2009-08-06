@@ -35,31 +35,13 @@ namespace QuantLib {
             Size size,
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
             Time maturity, Real strike,
-            const DividendSchedule& dividends,
             Real xMinConstraint, Real xMaxConstraint, 
             Real eps, Real scaleFactor,
             const std::pair<Real, Real>& cPoint)
     : Fdm1dMesher(size) {
 
-        const Real spot = process->x0();
-        QL_REQUIRE(spot > 0.0, "negative or null underlying given");
-
-        Real F = spot;
-        if(!dividends.empty()) {
-            for (DividendSchedule::const_iterator iter = dividends.begin();
-                 iter != dividends.end(); ++iter) {
-                QL_REQUIRE(process->time((*iter)->date()) <= maturity, 
-                           "dividend past maturity given");
-
-                F -= (*iter)->amount()
-                           *process->riskFreeRate()->discount((*iter)->date())
-                           /process->dividendYield()->discount((*iter)->date());
-            }
-        }
-        F*= process->dividendYield()->discount(maturity)
-           /process->riskFreeRate()->discount(maturity);
-        
-        QL_REQUIRE(F > 0.0, "negative forward given");
+        const Real S = process->x0();
+        QL_REQUIRE(S > 0.0, "negative or null underlying given");
 
         // Set the grid boundaries
         const Real normInvEps = InverseCumulativeNormal()(1-eps);
@@ -67,15 +49,9 @@ namespace QuantLib {
             = process->blackVolatility()->blackVol(maturity, strike)
                                                         *std::sqrt(maturity);
         
-        Real xMin = std::log(F) - sigmaSqrtT*normInvEps*scaleFactor
-                                - sigmaSqrtT*sigmaSqrtT/2.0;
-        Real xMax = std::log(F) + sigmaSqrtT*normInvEps*scaleFactor
-                                - sigmaSqrtT*sigmaSqrtT/2.0;
-        
-        //ensure that the spot is part of the grid
-        xMin = std::min(xMin, std::log(0.8*spot));
-        xMax = std::max(xMax, std::log(1.2*spot));
-        
+        Real xMin = std::log(S) - sigmaSqrtT*normInvEps*scaleFactor;
+        Real xMax = std::log(S) + sigmaSqrtT*normInvEps*scaleFactor;
+                
         if (xMinConstraint != Null<Real>()) {
             xMin = xMinConstraint;
         }

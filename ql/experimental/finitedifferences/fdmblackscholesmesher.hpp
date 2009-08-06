@@ -35,10 +35,9 @@ namespace QuantLib {
     class FdmBlackScholesMesher : public Fdm1dMesher {
       public:
         FdmBlackScholesMesher(
-            Size size,
+            Size size, 
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
             Time maturity, Real strike,
-            const DividendSchedule& dividends = DividendSchedule(),
             Real xMinConstraint = Null<Real>(),
             Real xMaxConstraint = Null<Real>(),
             Real eps = 0.0001, 

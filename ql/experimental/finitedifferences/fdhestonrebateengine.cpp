@@ -82,7 +82,7 @@ namespace QuantLib {
                 FdmBlackScholesMesher::processHelper(
                     process->s0(), process->dividendYield(), 
                     process->riskFreeRate(), varianceMesher->volaEstimate()),
-                maturity, payoff->strike(), arguments_.cashFlow, xMin, xMax));
+                maturity, payoff->strike(), xMin, xMax));
         
         std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
         meshers.push_back(equityMesher);

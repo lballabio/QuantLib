@@ -57,9 +57,9 @@ namespace QuantLib {
         const Time maturity = process_->time(arguments_.exercise->lastDate());
         const boost::shared_ptr<Fdm1dMesher> equityMesher(
             new FdmBlackScholesMesher(
-                    xGrid_, process_,maturity, payoff->strike(), 
-                    arguments_.cashFlow, Null<Real>(), Null<Real>(), 0.0001, 
-                    1.5, std::pair<Real, Real>(payoff->strike(), 0.1)));
+                    xGrid_, process_, maturity, payoff->strike(), 
+                    Null<Real>(), Null<Real>(), 0.0001, 1.5, 
+                    std::pair<Real, Real>(payoff->strike(), 0.1)));
         
         std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
         meshers.push_back(equityMesher);

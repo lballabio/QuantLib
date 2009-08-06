@@ -113,7 +113,7 @@ namespace QuantLib {
                       hestonProcess->s0(), hestonProcess->dividendYield(), 
                       hestonProcess->riskFreeRate(), 
                       varianceMesher->volaEstimate()),
-                      maturity, payoff->strike(), arguments_.cashFlow,
+                      maturity, payoff->strike(),
                       Null<Real>(), Null<Real>(), 0.0001, 1.5, 
                       std::pair<Real, Real>(payoff->strike(), 0.1)));
         }
