@@ -88,7 +88,7 @@ namespace QuantLib {
                 }
             }
         } 
-        catch (const QuantLib::Error&) {
+        catch (const Error&) {
             // use default mesh
             const Real vol = process->sigma()*
                 std::sqrt(process->theta()/(2*process->kappa()));
