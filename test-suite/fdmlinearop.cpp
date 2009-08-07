@@ -27,20 +27,26 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/processes/hullwhiteprocess.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/hybridhestonhullwhiteprocess.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/mchestonhullwhiteengine.hpp>
 #include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
 #include <ql/experimental/finitedifferences/bicgstab.hpp>
 #include <ql/experimental/finitedifferences/douglasscheme.hpp>
 #include <ql/experimental/finitedifferences/hundsdorferscheme.hpp>
+#include <ql/experimental/finitedifferences/impliciteulerscheme.hpp>
 #include <ql/experimental/finitedifferences/craigsneydscheme.hpp>
 #include <ql/experimental/finitedifferences/uniformgridmesher.hpp>
 #include <ql/experimental/finitedifferences/uniform1dmesher.hpp>
+#include <ql/experimental/finitedifferences/fdmblackscholesop.hpp>
+#include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearop.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
@@ -1024,6 +1030,103 @@ void FdmLinearOpTest::testBiCGstab() {
     }
 }
 
+void FdmLinearOpTest::testCrankNicolsonWithDamping() {
+
+    BOOST_MESSAGE("Testing CrankNicolson with initial implicit damping steps "
+                  "for a digital option ...");
+
+    SavedSettings backup;
+    
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, 0.06, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, 0.06, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, 0.35, dc);
+
+    boost::shared_ptr<StrikedTypePayoff> payoff(
+                             new CashOrNothingPayoff(Option::Put, 100, 10.0));
+
+    Time maturity = 0.75;
+    Date exDate = today + Integer(maturity*360+0.5);
+    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+
+    boost::shared_ptr<BlackScholesMertonProcess> process(new
+        BlackScholesMertonProcess(Handle<Quote>(spot),
+                                  Handle<YieldTermStructure>(qTS),
+                                  Handle<YieldTermStructure>(rTS),
+                                  Handle<BlackVolTermStructure>(volTS)));
+    boost::shared_ptr<PricingEngine> engine(
+                                new AnalyticEuropeanEngine(process));
+
+    VanillaOption opt(payoff, exercise);
+    opt.setPricingEngine(engine);
+    Real expectedPV = opt.NPV();
+    Real expectedGamma = opt.gamma();
+
+    // fd pricing using implicit damping steps and Crank Nicolson
+    const Size csSteps = 25, dampingSteps = 3, xGrid = 400;
+    const std::vector<Size> dim(1, xGrid);
+
+    boost::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
+    const boost::shared_ptr<Fdm1dMesher> equityMesher(
+        new FdmBlackScholesMesher(
+                dim[0], process, maturity, payoff->strike(), 
+                Null<Real>(), Null<Real>(), 0.0001, 1.5, 
+                std::pair<Real, Real>(payoff->strike(), 0.01)));
+
+    boost::shared_ptr<FdmMesher> mesher (
+        new FdmMesherComposite(layout, 
+              std::vector<boost::shared_ptr<Fdm1dMesher> >(1, equityMesher)));
+
+    boost::shared_ptr<FdmBlackScholesOp> map(
+                     new FdmBlackScholesOp(mesher, process, payoff->strike()));
+
+    boost::shared_ptr<FdmInnerValueCalculator> calculator(
+                                  new FdmLogInnerValue(payoff, mesher, 0));
+
+    Array rhs(layout->size()), x(layout->size());
+    const FdmLinearOpIterator endIter = layout->end();
+    
+    for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
+         ++iter) {
+        rhs[iter.index()] = calculator->avgInnerValue(iter);
+        x[iter.index()] = mesher->location(iter, 0);
+    }
+    
+    const Time dampingEndTime = maturity*csSteps/(dampingSteps + csSteps);
+    ImplicitEulerScheme implicitEvolver(map);    
+    FiniteDifferenceModel<ImplicitEulerScheme> dampingModel(implicitEvolver);
+    dampingModel.rollback(rhs, maturity, dampingEndTime, dampingSteps);
+    
+    DouglasScheme csEvolver(0.5, map);  // is a Crank-Nicolson scheme
+    FiniteDifferenceModel<DouglasScheme> csModel(csEvolver);
+    csModel.rollback(rhs, dampingEndTime, 0.0, csSteps);
+
+    MonotonicCubicNaturalSpline spline(x.begin(), x.end(), rhs.begin());
+    
+    Real s = spot->value();
+    Real calculatedPV = spline(std::log(s));
+    Real calculatedGamma = (spline.secondDerivative(std::log(s))
+                            - spline.derivative(std::log(s))    )/(s*s);
+
+    Real relTol = 1e-3;
+    
+    if (std::fabs(calculatedPV - expectedPV) > relTol*expectedPV) {
+        QL_FAIL("Error calculating the PV of the digital option" <<
+                "\n rel. tolerance:  " << relTol <<
+                "\n expected:        " << expectedPV <<
+                "\n calculated:      " << calculatedPV);
+    }
+    if (std::fabs(calculatedGamma - expectedGamma) > relTol*expectedGamma) {
+        QL_FAIL("Error calculating the Gamma of the digital option" <<
+                "\n rel. tolerance:  " << relTol <<
+                "\n expected:        " << expectedGamma <<
+                "\n calculated:      " << calculatedGamma);
+    }
+}
+
 test_suite* FdmLinearOpTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("linear operator tests");
 
@@ -1035,8 +1138,7 @@ test_suite* FdmLinearOpTest::suite() {
         QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFirstDerivativesMapApply));
     suite->add(
         QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSecondDerivativesMapApply));
-    suite->add(
-        QUANTLIB_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
             &FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply));
     suite->add(
         QUANTLIB_TEST_CASE(&FdmLinearOpTest::testTripleBandMapSolve));
@@ -1045,6 +1147,8 @@ test_suite* FdmLinearOpTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonExpress));
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonHullWhiteOp));
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testBiCGstab));
-
+    suite->add(
+        QUANTLIB_TEST_CASE(&FdmLinearOpTest::testCrankNicolsonWithDamping));
+    
     return suite;
 }

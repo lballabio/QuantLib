@@ -40,6 +40,7 @@ public:
     static void testFdmHestonExpress();
     static void testFdmHestonHullWhiteOp();
     static void testBiCGstab();
+    static void testCrankNicolsonWithDamping();
     static boost::unit_test_framework::test_suite* suite();
 };
 
