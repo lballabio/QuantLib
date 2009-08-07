@@ -104,8 +104,8 @@ namespace QuantLib {
         Array rhs(initialValues_.size());
         std::copy(initialValues_.begin(), initialValues_.end(), rhs.begin());
 
-        QuantLib::DouglasScheme dsEvolver(theta_, map, bcSet_);
-        FiniteDifferenceModel<QuantLib::DouglasScheme> dsModel(
+        DouglasScheme dsEvolver(theta_, map, bcSet_);
+        FiniteDifferenceModel<DouglasScheme> dsModel(
             dsEvolver, condition_->stoppingTimes());
         dsModel.rollback(rhs, maturity_, 0.0, timeSteps_, *condition_);
 
