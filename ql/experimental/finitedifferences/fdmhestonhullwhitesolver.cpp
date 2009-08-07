@@ -17,6 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
+#include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonhullwhitesolver.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmmesher.hpp>
@@ -27,8 +30,6 @@
 #include <ql/experimental/finitedifferences/douglasscheme.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonhullwhiteop.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
-#include <ql/math/interpolations/cubicinterpolation.hpp>
-#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 
 
 namespace QuantLib {

@@ -28,7 +28,6 @@
 #define quantlib_hundsdorfer_scheme_hpp
 
 #include <ql/methods/finitedifferences/operatortraits.hpp>
-#include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearopcomposite.hpp>
 #include <vector>

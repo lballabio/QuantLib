@@ -20,6 +20,7 @@
 */
 
 #include <ql/processes/hestonprocess.hpp>
+#include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonsolver.hpp>
