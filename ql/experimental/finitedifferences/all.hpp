@@ -42,6 +42,7 @@
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/firstderivativeop.hpp>
 #include <ql/experimental/finitedifferences/hundsdorferscheme.hpp>
+#include <ql/experimental/finitedifferences/impliciteulerscheme.hpp>
 #include <ql/experimental/finitedifferences/ninepointlinearop.hpp>
 #include <ql/experimental/finitedifferences/secondderivativeop.hpp>
 #include <ql/experimental/finitedifferences/secondordermixedderivativeop.hpp>

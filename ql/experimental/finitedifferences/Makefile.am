@@ -45,6 +45,7 @@ this_include_HEADERS = \
 	fdmstepconditioncomposite.hpp \
 	firstderivativeop.hpp \
 	hundsdorferscheme.hpp \
+	impliciteulerscheme.hpp \
 	ninepointlinearop.hpp \
 	secondderivativeop.hpp \
 	secondordermixedderivativeop.hpp \
@@ -89,6 +90,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdmstepconditioncomposite.cpp \
 	firstderivativeop.cpp \
 	hundsdorferscheme.cpp \
+	impliciteulerscheme.cpp \
 	ninepointlinearop.cpp \
 	secondderivativeop.cpp \
 	secondordermixedderivativeop.cpp \
