@@ -27,11 +27,13 @@
 namespace QuantLib {
 
     ImplicitEulerScheme::ImplicitEulerScheme(
-        const boost::shared_ptr<FdmLinearOpComposite> & map,
-        const std::vector<boost::shared_ptr<FdmDirichletBoundary> > & bcSet)
-    : dt_(Null<Real>()),
-      map_  (map),
-      bcSet_(bcSet) {
+        const boost::shared_ptr<FdmLinearOpComposite>& map,
+        const std::vector<boost::shared_ptr<FdmDirichletBoundary> >& bcSet,
+        Real relTol)
+    : dt_    (Null<Real>()),
+      relTol_(relTol),
+      map_   (map),
+      bcSet_ (bcSet) {
     }
 
     Disposable<Array> ImplicitEulerScheme::apply(const Array& r) const {
@@ -43,11 +45,10 @@ namespace QuantLib {
         QL_REQUIRE(t-dt_ > -1e-8, "a step towards negative time given");
         map_->setTime(std::max(0.0, t-dt_), t);
 
-        const Real tol = 1e-6;
         const BiCGstab biCGstab(
                 boost::function<Disposable<Array>(const Array&)>(
                     boost::bind(&ImplicitEulerScheme::apply, this, _1)), 
-                10000, tol);
+                10*a.size(), relTol_);
         
         a = biCGstab.solve(a).x;
 

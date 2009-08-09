@@ -45,7 +45,8 @@ namespace QuantLib {
         ImplicitEulerScheme(
             const boost::shared_ptr<FdmLinearOpComposite>& map,
             const std::vector<boost::shared_ptr<FdmDirichletBoundary> >& bc_set
-                = std::vector<boost::shared_ptr<FdmDirichletBoundary> >());
+                = std::vector<boost::shared_ptr<FdmDirichletBoundary> >(),
+            Real relTol = 1e-6);
 
         void step(array_type& a, Time t);
         void setStep(Time dt);
@@ -54,6 +55,7 @@ namespace QuantLib {
         Disposable<Array> apply(const Array& r) const;   
           
         Time dt_;
+        const Real relTol_;
         const boost::shared_ptr<FdmLinearOpComposite> & map_;
         const std::vector<boost::shared_ptr<FdmDirichletBoundary> > bcSet_;
     };
