@@ -1036,7 +1036,7 @@ void FdmLinearOpTest::testCrankNicolsonWithDamping() {
                   "for a digital option ...");
 
     SavedSettings backup;
-    
+
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
@@ -1072,12 +1072,12 @@ void FdmLinearOpTest::testCrankNicolsonWithDamping() {
     boost::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
     const boost::shared_ptr<Fdm1dMesher> equityMesher(
         new FdmBlackScholesMesher(
-                dim[0], process, maturity, payoff->strike(), 
-                Null<Real>(), Null<Real>(), 0.0001, 1.5, 
+                dim[0], process, maturity, payoff->strike(),
+                Null<Real>(), Null<Real>(), 0.0001, 1.5,
                 std::pair<Real, Real>(payoff->strike(), 0.01)));
 
     boost::shared_ptr<FdmMesher> mesher (
-        new FdmMesherComposite(layout, 
+        new FdmMesherComposite(layout,
               std::vector<boost::shared_ptr<Fdm1dMesher> >(1, equityMesher)));
 
     boost::shared_ptr<FdmBlackScholesOp> map(
@@ -1088,31 +1088,31 @@ void FdmLinearOpTest::testCrankNicolsonWithDamping() {
 
     Array rhs(layout->size()), x(layout->size());
     const FdmLinearOpIterator endIter = layout->end();
-    
+
     for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
          ++iter) {
         rhs[iter.index()] = calculator->avgInnerValue(iter);
         x[iter.index()] = mesher->location(iter, 0);
     }
-    
+
     const Time dampingEndTime = maturity*csSteps/(dampingSteps + csSteps);
-    ImplicitEulerScheme implicitEvolver(map);    
+    ImplicitEulerScheme implicitEvolver(map);
     FiniteDifferenceModel<ImplicitEulerScheme> dampingModel(implicitEvolver);
     dampingModel.rollback(rhs, maturity, dampingEndTime, dampingSteps);
-    
+
     DouglasScheme csEvolver(0.5, map);  // is a Crank-Nicolson scheme
     FiniteDifferenceModel<DouglasScheme> csModel(csEvolver);
     csModel.rollback(rhs, dampingEndTime, 0.0, csSteps);
 
     MonotonicCubicNaturalSpline spline(x.begin(), x.end(), rhs.begin());
-    
+
     Real s = spot->value();
     Real calculatedPV = spline(std::log(s));
     Real calculatedGamma = (spline.secondDerivative(std::log(s))
                             - spline.derivative(std::log(s))    )/(s*s);
 
-    Real relTol = 1e-3;
-    
+    Real relTol = 2e-3;
+
     if (std::fabs(calculatedPV - expectedPV) > relTol*expectedPV) {
         QL_FAIL("Error calculating the PV of the digital option" <<
                 "\n rel. tolerance:  " << relTol <<
@@ -1149,6 +1149,6 @@ test_suite* FdmLinearOpTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testBiCGstab));
     suite->add(
         QUANTLIB_TEST_CASE(&FdmLinearOpTest::testCrankNicolsonWithDamping));
-    
+
     return suite;
 }
