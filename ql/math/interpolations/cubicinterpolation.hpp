@@ -1,9 +1,10 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004, 2008, 2009 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
+ Copyright (C) 2004, 2008, 2009 Ferdinando Ametrano
+ Copyright (C) 2009 Sylvain Bertrand
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,9 +24,10 @@
     \brief cubic interpolation between discrete points
 */
 
-#ifndef quantlib_cubicinterpolation_hpp
-#define quantlib_cubicinterpolation_hpp
+#ifndef quantlib_cubic_interpolation_hpp
+#define quantlib_cubic_interpolation_hpp
 
+#include <ql/math/matrix.hpp>
 #include <ql/math/interpolation.hpp>
 #include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
 #include <vector>
@@ -103,6 +105,12 @@ namespace QuantLib {
                 boundaries: see BoundaryCondition.
             */
             Spline,
+
+            //! Overshooting minimization 1st derivative
+            SplineOM1,
+
+            //! Overshooting minimization 2nd derivative
+            SplineOM2,
 
             //! Fourth-order approximation (local, non-monotone, linear)
             FourthOrder,
@@ -200,6 +208,45 @@ namespace QuantLib {
                              Spline, true,
                              SecondDerivative, 0.0,
                              SecondDerivative, 0.0) {}
+    };
+
+    class CubicSplineOvershootingMinimization1 : public CubicInterpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        CubicSplineOvershootingMinimization1 (const I1& xBegin,
+                                           const I1& xEnd,
+                                           const I2& yBegin)
+        : CubicInterpolation(xBegin, xEnd, yBegin,
+                             SplineOM1, false,
+                             SecondDerivative, 0.0,
+                             SecondDerivative, 0.0) {}
+    };
+
+    class CubicSplineOvershootingMinimization2 : public CubicInterpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        CubicSplineOvershootingMinimization2 (const I1& xBegin,
+                                           const I1& xEnd,
+                                           const I2& yBegin)
+        : CubicInterpolation(xBegin, xEnd, yBegin,
+                             SplineOM2, false,
+                             SecondDerivative, 0.0,
+                             SecondDerivative, 0.0) {}
+    };
+
+    class AkimaCubicInterpolation : public CubicInterpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+    template <class I1, class I2>
+    AkimaCubicInterpolation(const I1& xBegin,
+                const I1& xEnd,
+                const I2& yBegin)
+    : CubicInterpolation(xBegin, xEnd, yBegin,
+                 Akima, false,
+                 SecondDerivative, 0.0,
+                 SecondDerivative, 0.0) {}
     };
 
     class KrugerCubic : public CubicInterpolation {
@@ -381,6 +428,113 @@ namespace QuantLib {
 
                     // solve the system
                     tmp = L.solveFor(tmp);
+                } else if (da_==CubicInterpolation::SplineOM1) {
+                    Matrix T_,S_,Up_,Us_,Z_,I_,V_,W_,Q_,J_;
+                    T_=Matrix(n_-2,n_,0.0);
+                    for (Size i=0; i<n_-2; ++i) {
+                        T_[i][i]=dx[i]/6.0;
+                        T_[i][i+1]=(dx[i+1]+dx[i])/3.0;
+                        T_[i][i+2]=dx[i+1]/6.0;
+                    }
+                    S_=Matrix(n_-2,n_,0.0);
+                    for (Size i=0; i<n_-2; ++i) {
+                        S_[i][i]=1.0/dx[i];
+                        S_[i][i+1]=-(1.0/dx[i+1]+1.0/dx[i]);
+                        S_[i][i+2]=1.0/dx[i+1];
+                    }
+                    Up_=Matrix(n_,2,0.0);
+                    Up_[0][0]=1;
+                    Up_[n_-1][1]=1;
+                    Us_=Matrix(n_,n_-2,0.0);
+                    for (Size i=0; i<n_-2; ++i) {
+                        Us_[i+1][i]=1;
+                    }
+                    Z_=Matrix(n_,n_-2);
+                    Z_=Us_*inverse(T_*Us_);
+                    I_=Matrix(n_,n_,0.0);
+                    for (Size i=0; i<n_; ++i) {
+                        I_[i][i]=1;
+                    }
+                    V_=Matrix(n_,2);
+                    V_=(I_-Z_*T_)*Up_;
+                    W_=Matrix(n_,n_);
+                    W_=Z_*S_;
+                    Q_=Matrix(n_,n_,0.0);
+                    Q_[0][0]=1.0/(n_-1)*dx[0]*dx[0]*dx[0];
+                    Q_[0][1]=7.0/8*1.0/(n_-1)*dx[0]*dx[0]*dx[0];
+                    for (Size i=1; i<n_-1; ++i) {
+                        Q_[i][i-1]=7.0/8*1.0/(n_-1)*dx[i-1]*dx[i-1]*dx[i-1];
+                        Q_[i][i]=1.0/(n_-1)*dx[i]*dx[i]*dx[i]+1.0/(n_-1)*dx[i-1]*dx[i-1]*dx[i-1];
+                        Q_[i][i+1]=7.0/8*1.0/(n_-1)*dx[i]*dx[i]*dx[i];
+                    }
+                    Q_[n_-1][n_-2]=7.0/8*1.0/(n_-1)*dx[n_-2]*dx[n_-2]*dx[n_-2];
+                    Q_[n_-1][n_-1]=1.0/(n_-1)*dx[n_-2]*dx[n_-2]*dx[n_-2];
+                    J_=Matrix(n_,n_);
+                    J_=(I_-V_*inverse(transpose(V_)*Q_*V_)*transpose(V_)*Q_)*W_;
+                    Array Y_(n_);
+                    Array D_(n_);
+                    for (Size i=0; i<n_; ++i) {
+                        Y_[i]=this->yBegin_[i];
+                    }
+                    D_=J_*Y_;
+                    for (Size i=0; i<n_-1; ++i) {
+                        tmp[i]=(Y_[i+1]-Y_[i])/dx[i]-(2.0*D_[i]+D_[i+1])*dx[i]/6.0;
+                    }
+                    tmp[n_-1]=tmp[n_-2]+D_[n_-2]*dx[n_-2]+(D_[n_-1]-D_[n_-2])*dx[n_-2]/2.0;
+
+                } else if (da_==CubicInterpolation::SplineOM2) {
+                    Matrix T_,S_,Up_,Us_,Z_,I_,V_,W_,Q_,J_;
+                    T_=Matrix(n_-2,n_,0.0);
+                    for (Size i=0; i<n_-2; ++i) {
+                        T_[i][i]=dx[i]/6.0;
+                        T_[i][i+1]=(dx[i]+dx[i+1])/3.0;
+                        T_[i][i+2]=dx[i+1]/6.0;
+                    }
+                    S_=Matrix(n_-2,n_,0.0);
+                    for (Size i=0; i<n_-2; ++i) {
+                        S_[i][i]=1.0/dx[i];
+                        S_[i][i+1]=-(1.0/dx[i+1]+1.0/dx[i]);
+                        S_[i][i+2]=1.0/dx[i+1];
+                    }
+                    Up_=Matrix(n_,2,0.0);
+                    Up_[0][0]=1;
+                    Up_[n_-1][1]=1;
+                    Us_=Matrix(n_,n_-2,0.0);
+                    for (Size i=0; i<n_-2; ++i) {
+                        Us_[i+1][i]=1;
+                    }
+                    Z_=Matrix(n_,n_-2);
+                    Z_=Us_*inverse(T_*Us_);
+                    I_=Matrix(n_,n_,0.0);
+                    for (Size i=0; i<n_; ++i) {
+                        I_[i][i]=1;
+                    }
+                    V_=Matrix(n_,2);
+                    V_=(I_-Z_*T_)*Up_;
+                    W_=Matrix(n_,n_);
+                    W_=Z_*S_;
+                    Q_=Matrix(n_,n_,0.0);
+                    Q_[0][0]=1.0/(n_-1)*dx[0];
+                    Q_[0][1]=1.0/2*1.0/(n_-1)*dx[0];
+                    for (Size i=1; i<n_-1; ++i) {
+                        Q_[i][i-1]=1.0/2*1.0/(n_-1)*dx[i-1];
+                        Q_[i][i]=1.0/(n_-1)*dx[i]+1.0/(n_-1)*dx[i-1];
+                        Q_[i][i+1]=1.0/2*1.0/(n_-1)*dx[i];
+                    }
+                    Q_[n_-1][n_-2]=1.0/2*1.0/(n_-1)*dx[n_-2];
+                    Q_[n_-1][n_-1]=1.0/(n_-1)*dx[n_-2];
+                    J_=Matrix(n_,n_);
+                    J_=(I_-V_*inverse(transpose(V_)*Q_*V_)*transpose(V_)*Q_)*W_;
+                    Array Y_(n_);
+                    Array D_(n_);
+                    for (Size i=0; i<n_; ++i) {
+                        Y_[i]=this->yBegin_[i];
+                    }
+                    D_=J_*Y_;
+                    for (Size i=0; i<n_-1; ++i) {
+                        tmp[i]=(Y_[i+1]-Y_[i])/dx[i]-(2.0*D_[i]+D_[i+1])*dx[i]/6.0;
+                    }
+                    tmp[n_-1]=tmp[n_-2]+D_[n_-2]*dx[n_-2]+(D_[n_-1]-D_[n_-2])*dx[n_-2]/2.0;
                 } else { // local schemes
                     if (n_==2)
                         tmp[0] = tmp[1] = S[0];
@@ -410,11 +564,24 @@ namespace QuantLib {
                                 tmp[n_-1] = ((2.0*dx[n_-2]+dx[n_-3])*S[n_-2] - dx[n_-2]*S[n_-3]) / (dx[n_-2]+dx[n_-3]);
                                 break;
                             case CubicInterpolation::Akima:
-                                QL_FAIL("Akima not implemented yet");
-                                // end points
-                                tmp[0]    = ((2.0*dx[   0]+dx[   1])*S[   0] - dx[   0]*S[   1]) / (dx[   0]+dx[   1]);
-                                tmp[n_-1] = ((2.0*dx[n_-2]+dx[n_-3])*S[n_-2] - dx[n_-2]*S[n_-3]) / (dx[n_-2]+dx[n_-3]);
-                                break;
+                                tmp[0] = (std::abs(S[1]-S[0])*2*S[0]*S[1]+std::abs(2*S[0]*S[1]-4*S[0]*S[0]*S[1])*S[0])/(std::abs(S[1]-S[0])+std::abs(2*S[0]*S[1]-4*S[0]*S[0]*S[1]));
+                                tmp[1] = (std::abs(S[2]-S[1])*S[0]+std::abs(S[0]-2*S[0]*S[1])*S[1])/(std::abs(S[2]-S[1])+std::abs(S[0]-2*S[0]*S[1]));
+                                for (Size i=2; i<n_-2; ++i) {
+                                    if ((S[i-2]==S[i-1]) && (S[i]!=S[i+1])) {
+                                        tmp[i] = S[i-1];
+                                    } else if ((S[i-2]!=S[i-1]) && (S[i]==S[i+1])) {
+                                        tmp[i] = S[i];
+                                    } else if (S[i]==S[i-1]) {
+                                        tmp[i] = S[i];
+                                    } else if ((S[i-2]==S[i-1]) && (S[i-1]!=S[i]) && (S[i]==S[i+1])) {
+                                        tmp[i] = (S[i-1]+S[i])/2.0;
+                                    } else {
+                                        tmp[i] = (std::abs(S[i+1]-S[i])*S[i-1]+std::abs(S[i-1]-S[i-2])*S[i])/(std::abs(S[i+1]-S[i])+std::abs(S[i-1]-S[i-2]));
+                                    }
+                                 }
+                                 tmp[n_-2] = (std::abs(2*S[n_-2]*S[n_-3]-S[n_-2])*S[n_-3]+std::abs(S[n_-3]-S[n_-4])*S[n_-2])/(std::abs(2*S[n_-2]*S[n_-3]-S[n_-2])+std::abs(S[n_-3]-S[n_-4]));
+                                 tmp[n_-1] = (std::abs(4*S[n_-2]*S[n_-2]*S[n_-3]-2*S[n_-2]*S[n_-3])*S[n_-2]+std::abs(S[n_-2]-S[n_-3])*2*S[n_-2]*S[n_-3])/(std::abs(4*S[n_-2]*S[n_-2]*S[n_-3]-2*S[n_-2]*S[n_-3])+std::abs(S[n_-2]-S[n_-3]));
+                                 break;
                             case CubicInterpolation::Kruger:
                                 // intermediate points
                                 for (Size i=1; i<n_-1; ++i) {
