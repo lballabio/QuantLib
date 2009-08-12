@@ -33,12 +33,13 @@ namespace QuantLib {
 
     FdBlackScholesVanillaEngine::FdBlackScholesVanillaEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Size tGrid, Size xGrid, Real theta,
+            Size tGrid, Size xGrid, Size dampingSteps, Real theta,
             bool localVol, Real illegalLocalVolOverwrite)
     : GenericEngine<DividendVanillaOption::arguments,
                     DividendVanillaOption::results>(),
       process_(process),
-      tGrid_(tGrid), xGrid_(xGrid), theta_(theta), localVol_(localVol),
+      tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
+      theta_(theta), localVol_(localVol),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite) {
     }
 
@@ -104,10 +105,10 @@ namespace QuantLib {
         // 6. Solver
         boost::shared_ptr<FdmBlackScholesSolver> solver(
                 new FdmBlackScholesSolver(
-                               Handle<GeneralizedBlackScholesProcess>(process_),
-                               mesher, boundaries, conditions, calculator,
-                               payoff->strike(), maturity, tGrid_,
-                               theta_, localVol_, illegalLocalVolOverwrite_));
+                             Handle<GeneralizedBlackScholesProcess>(process_),
+                             mesher, boundaries, conditions, calculator,
+                             payoff->strike(), maturity, tGrid_, dampingSteps_,
+                             theta_, localVol_, illegalLocalVolOverwrite_));
 
         const Real spot = process_->x0();
         results_.value = solver->valueAt(spot);

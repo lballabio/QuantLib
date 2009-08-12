@@ -27,7 +27,6 @@
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmsnapshotcondition.hpp>
-#include <ql/experimental/finitedifferences/fdmquantohelper.hpp>
 #include <ql/experimental/finitedifferences/hundsdorferscheme.hpp>
 #include <ql/experimental/finitedifferences/craigsneydscheme.hpp>
 #include <ql/experimental/finitedifferences/douglasscheme.hpp>
@@ -63,7 +62,9 @@ namespace QuantLib {
         const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
         const Time maturity,
         const Size timeSteps,
-        FdmHestonSolver::FdmSchemeType schemeType, Real theta, Real mu,
+        Size dampingSteps,
+        FdmBackwardSolver::FdmSchemeType schemeType, 
+        Real theta, Real mu,
 		const Handle<FdmQuantoHelper>& quantoHelper)
     : process_(process),
       mesher_(mesher),
@@ -75,6 +76,7 @@ namespace QuantLib {
       condition_(addCondition(thetaCondition_, condition)),
       maturity_(maturity),
       timeSteps_(timeSteps),
+      dampingSteps_(dampingSteps),
       schemeType_(schemeType),
       theta_(theta),
       mu_(mu),
@@ -111,34 +113,8 @@ namespace QuantLib {
         Array rhs(initialValues_.size());
         std::copy(initialValues_.begin(), initialValues_.end(), rhs.begin());
 
-        switch (schemeType_) {
-          case HundsdorferScheme:
-            {
-                QuantLib::HundsdorferScheme hsEvolver(theta_, mu_, map, bcSet_);
-                FiniteDifferenceModel<QuantLib::HundsdorferScheme> hsModel(
-                    hsEvolver, condition_->stoppingTimes());
-                hsModel.rollback(rhs, maturity_, 0.0, timeSteps_, *condition_);
-            }
-            break;
-          case DouglasScheme:
-            {
-                QuantLib::DouglasScheme dsEvolver(theta_, map, bcSet_);
-                FiniteDifferenceModel<QuantLib::DouglasScheme> dsModel(
-                    dsEvolver, condition_->stoppingTimes());
-                dsModel.rollback(rhs, maturity_, 0.0, timeSteps_, *condition_);
-            }
-            break;
-          case CraigSneydScheme:
-            {
-                QuantLib::CraigSneydScheme csEvolver(theta_, mu_, map, bcSet_);
-                FiniteDifferenceModel<QuantLib::CraigSneydScheme> csModel(
-                    csEvolver, condition_->stoppingTimes());
-                csModel.rollback(rhs, maturity_, 0.0, timeSteps_, *condition_);
-            }
-            break;
-          default:
-            QL_FAIL("Unknown scheme type");
-        }
+        FdmBackwardSolver(map, bcSet_, condition_, schemeType_, theta_, mu_)
+            .rollback(rhs, maturity_, 0.0, timeSteps_, dampingSteps_);
 
         std::copy(rhs.begin(), rhs.end(), resultValues_.begin());
         interpolation_ = boost::shared_ptr<BicubicSpline> (

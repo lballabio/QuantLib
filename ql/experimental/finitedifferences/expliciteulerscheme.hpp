@@ -19,20 +19,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file impliciteulerscheme.hpp
-    \brief Implicit-Euler scheme
+/*! \file expliciteulerscheme.hpp
+    \brief explicit-Euler scheme
 */
 
-#ifndef quantlib_implicit_euler_scheme_hpp
-#define quantlib_implicit_euler_scheme_hpp
+#ifndef quantlib_explicit_euler_scheme_hpp
+#define quantlib_explicit_euler_scheme_hpp
 
 #include <ql/methods/finitedifferences/operatortraits.hpp>
-#include <ql/experimental/finitedifferences/fdmlinearopcomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
+#include <ql/experimental/finitedifferences/fdmlinearopcomposite.hpp>
 
 namespace QuantLib {
 
-    class ImplicitEulerScheme {
+    class ExplicitEulerScheme  {
       public:
         // typedefs
         typedef OperatorTraits<FdmLinearOp> traits;
@@ -42,21 +42,17 @@ namespace QuantLib {
         typedef traits::condition_type condition_type;
 
         // constructors
-        ImplicitEulerScheme(
+        ExplicitEulerScheme(
             const boost::shared_ptr<FdmLinearOpComposite>& map,
             const std::vector<boost::shared_ptr<FdmDirichletBoundary> >& bc_set
-                = std::vector<boost::shared_ptr<FdmDirichletBoundary> >(),
-            Real relTol = 1e-8);
+                = std::vector<boost::shared_ptr<FdmDirichletBoundary> >());
 
         void step(array_type& a, Time t);
         void setStep(Time dt);
 
       protected:
-        Disposable<Array> apply(const Array& r) const;   
-          
         Time dt_;
-        const Real relTol_;
-        const boost::shared_ptr<FdmLinearOpComposite> map_;
+        const boost::shared_ptr<FdmLinearOpComposite> & map_;
         const std::vector<boost::shared_ptr<FdmDirichletBoundary> > bcSet_;
     };
 }

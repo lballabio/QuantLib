@@ -142,8 +142,10 @@ namespace QuantLib {
         return correlationMap_.apply(r);
     }
 
-    Disposable<Array> FdmHestonOp::solve_splitting(Size direction,
-                                                const Array& r, Real a) const {
+    Disposable<Array> 
+        FdmHestonOp::solve_splitting(Size direction,
+                                     const Array& r, Real a) const {
+        
         if (direction == 0) {
             return dxMap_.getMap().solve_splitting(r, a, 1.0);
         }
@@ -152,5 +154,11 @@ namespace QuantLib {
         }
         else
             QL_FAIL("direction too large");
+    }
+
+    Disposable<Array> 
+        FdmHestonOp::preconditioner(const Array& r, Real dt) const {
+
+        return solve_splitting(0, r, dt);
     }
 }

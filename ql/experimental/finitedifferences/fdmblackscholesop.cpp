@@ -109,12 +109,17 @@ namespace QuantLib {
     }
 
     Disposable<Array> FdmBlackScholesOp::solve_splitting(Size direction,
-                                                const Array& r, Real a) const {
+                                                const Array& r, Real dt) const {
         if (direction == 0)
-            return mapT_.solve_splitting(r, a, 1.0);
+            return mapT_.solve_splitting(r, dt, 1.0);
         else {
-        	Array retVal(r);
+            Array retVal(r);
             return retVal;
         }
+    }
+    
+    Disposable<Array> FdmBlackScholesOp::preconditioner(const Array& r, 
+                                                        Real dt) const {
+        return solve_splitting(0, r, dt);
     }
 }

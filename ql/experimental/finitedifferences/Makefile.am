@@ -9,6 +9,7 @@ this_include_HEADERS = \
 	craigsneydscheme.hpp \
 	dividendbarrieroption.hpp \
 	douglasscheme.hpp \
+	expliciteulerscheme.hpp \
 	fdblackscholesasianengine.hpp \
 	fdblackscholesbarrierengine.hpp \
 	fdblackscholesrebateengine.hpp \
@@ -20,6 +21,7 @@ this_include_HEADERS = \
 	fdm1dmesher.hpp \
 	fdmamericanstepcondition.hpp \
     fdmarithmeticaveragecondition.hpp \
+    fdmbackwardsolver.hpp \
 	fdmblackscholesmesher.hpp \
 	fdmblackscholesmultistrikemesher.hpp \
 	fdmblackscholesop.hpp \
@@ -59,6 +61,7 @@ libMultiDimFDM_la_SOURCES = \
 	craigsneydscheme.cpp \
 	dividendbarrieroption.cpp \
 	douglasscheme.cpp \
+	expliciteulerscheme.cpp \
 	fdblackscholesasianengine.cpp \
 	fdblackscholesbarrierengine.cpp \
 	fdblackscholesrebateengine.cpp \
@@ -69,6 +72,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdhestonhullwhitevanillaengine.cpp \
 	fdmamericanstepcondition.cpp \
     fdmarithmeticaveragecondition.cpp \
+    fdmbackwardsolver.cpp \
 	fdmblackscholesmesher.cpp \
 	fdmblackscholesmultistrikemesher.cpp \
 	fdmblackscholesop.cpp \

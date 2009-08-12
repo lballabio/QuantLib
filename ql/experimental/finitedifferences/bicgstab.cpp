@@ -35,8 +35,11 @@ namespace QuantLib {
         
     BiCGStabResult BiCGstab::solve(const Array& b, const Array& x0) const {
         Real bnorm2 = norm2(b);
-        QL_REQUIRE(bnorm2 > 0.0, "b is zero");
-
+        if (bnorm2 == 0.0) { 
+            BiCGStabResult result = { 0, 0.0, b};
+            return result;
+        }
+        
         Array x = ((!x0.empty()) ? x0 : Array(b.size(), 0.0));
         Array r = b - A_(x);
         

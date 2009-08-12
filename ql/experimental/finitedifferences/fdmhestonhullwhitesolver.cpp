@@ -62,7 +62,8 @@ namespace QuantLib {
         const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
         const Time maturity,
         const Size timeSteps,
-        FdmHestonHullWhiteSolver::FdmSchemeType schemeType, 
+        const Size dampingSteps,
+        FdmBackwardSolver::FdmSchemeType schemeType, 
         Real theta, Real mu)
     : hestonProcess_(hestonProcess),
       hwProcess_(hwProcess),
@@ -76,6 +77,7 @@ namespace QuantLib {
       condition_(addCondition(thetaCondition_, condition)),
       maturity_(maturity),
       timeSteps_(timeSteps),
+      dampingSteps_(dampingSteps),
       schemeType_(schemeType),
       theta_(theta),
       mu_(mu),
@@ -121,35 +123,8 @@ namespace QuantLib {
         Array rhs(initialValues_.size());
         std::copy(initialValues_.begin(), initialValues_.end(), rhs.begin());
 
-        switch (schemeType_) {
-          case HundsdorferScheme:
-            {
-                QuantLib::HundsdorferScheme hsEvolver(theta_, mu_, map, bcSet_);
-                FiniteDifferenceModel<QuantLib::HundsdorferScheme> hsModel(
-                    hsEvolver, condition_->stoppingTimes());
-                hsModel.rollback(rhs, maturity_, 0.0, timeSteps_, *condition_);
-            }
-            break;
-          case DouglasScheme:
-            {
-                QuantLib::DouglasScheme dsEvolver(theta_, map, bcSet_);
-                FiniteDifferenceModel<QuantLib::DouglasScheme> dsModel(
-                    dsEvolver, condition_->stoppingTimes());
-                dsModel.rollback(rhs, maturity_, 0.0, timeSteps_, *condition_);
-            }
-            break;
-          case CraigSneydScheme:
-            {
-                QuantLib::CraigSneydScheme csEvolver(theta_, mu_, map, bcSet_);
-                FiniteDifferenceModel<QuantLib::CraigSneydScheme> csModel(
-                    csEvolver, condition_->stoppingTimes());
-                csModel.rollback(rhs, maturity_, 0.0, timeSteps_, *condition_);
-            }
-            break;
-          default:
-            QL_FAIL("Unknown scheme type");
-            break;
-        }
+        FdmBackwardSolver(map, bcSet_, condition_, schemeType_, theta_, mu_)
+            .rollback(rhs, maturity_, 0.0, timeSteps_, dampingSteps_);
 
         for (Size i=0; i < r_.size(); ++i) {
             std::copy(rhs.begin()+i    *v_.size()*x_.size(), 

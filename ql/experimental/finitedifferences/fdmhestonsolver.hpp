@@ -26,12 +26,10 @@
 #define quantlib_fdm_heston_solver_hpp
 
 #include <ql/handle.hpp>
-#include <ql/math/matrix.hpp>
-#include <ql/payoff.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/experimental/finitedifferences/fdmquantohelper.hpp>
+#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
-
 
 namespace QuantLib {
 
@@ -45,9 +43,6 @@ namespace QuantLib {
 
     class FdmHestonSolver : public LazyObject {
       public:
-        enum FdmSchemeType {
-            HundsdorferScheme, DouglasScheme, CraigSneydScheme };
-
         FdmHestonSolver(
             const Handle<HestonProcess>& process,
             const boost::shared_ptr<FdmMesher>& mesher,
@@ -56,7 +51,9 @@ namespace QuantLib {
             const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
             Time maturity,
             Size timeSteps,
-            FdmSchemeType type = HundsdorferScheme,
+            Size dampingSteps = 0,
+            FdmBackwardSolver::FdmSchemeType type 
+                                        = FdmBackwardSolver::Hundsdorfer,
             Real theta = 0.3, Real mu = 0.5,
 			const Handle<FdmQuantoHelper>& quantoHelper 
 												= Handle<FdmQuantoHelper>());
@@ -86,8 +83,9 @@ namespace QuantLib {
         const boost::shared_ptr<FdmStepConditionComposite> condition_;
         const Time maturity_;
         const Size timeSteps_;
+        const Size dampingSteps_;
 
-        const FdmSchemeType schemeType_;
+        const FdmBackwardSolver::FdmSchemeType schemeType_;
         const Real theta_, mu_;
 		const Handle<FdmQuantoHelper> quantoHelper_;
 

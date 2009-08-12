@@ -24,11 +24,12 @@
 #define quantlib_fdm_heston_hull_white_solver_hpp
 
 #include <ql/handle.hpp>
-#include <ql/payoff.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/processes/hullwhiteprocess.hpp>
+#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
+
 
 namespace QuantLib {
 
@@ -40,9 +41,6 @@ namespace QuantLib {
 
     class FdmHestonHullWhiteSolver : public LazyObject {
       public:
-        enum FdmSchemeType {
-            HundsdorferScheme, DouglasScheme, CraigSneydScheme };
-
         FdmHestonHullWhiteSolver(
             const Handle<HestonProcess>& hestonProcess,
             const Handle<HullWhiteProcess>& hwProcess,
@@ -53,7 +51,9 @@ namespace QuantLib {
             const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
             Time maturity,
             Size timeSteps,
-            FdmSchemeType type = HundsdorferScheme,
+            Size dampingSteps = 0,
+            FdmBackwardSolver::FdmSchemeType type 
+                                    = FdmBackwardSolver::Hundsdorfer,
             Real theta = 0.3, Real mu = 0.5);
 
         Real valueAt(Real s, Real v, Rate r) const;
@@ -81,8 +81,9 @@ namespace QuantLib {
         const boost::shared_ptr<FdmStepConditionComposite> condition_;
         const Time maturity_;
         const Size timeSteps_;
+        const Size dampingSteps_;
 
-        const FdmSchemeType schemeType_;
+        const FdmBackwardSolver::FdmSchemeType schemeType_;
         const Real theta_, mu_;
 
         std::vector<Real> x_, v_, r_, initialValues_;

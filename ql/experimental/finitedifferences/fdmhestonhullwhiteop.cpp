@@ -173,4 +173,9 @@ namespace QuantLib {
         else
             QL_FAIL("direction too large");
     }
+    
+    Disposable<Array> FdmHestonHullWhiteOp::preconditioner(const Array& r, 
+                                                           Real dt) const {
+        return solve_splitting(0, r, dt);
+    }
 }

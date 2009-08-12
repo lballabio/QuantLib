@@ -41,8 +41,9 @@ namespace QuantLib {
             Real corrEquityShortRate,
             Size tGrid, Size xGrid, 
             Size vGrid, Size rGrid,
+            Size dampingSteps,
             bool controlVariate,
-            FdmHestonHullWhiteSolver::FdmSchemeType type, 
+            FdmBackwardSolver::FdmSchemeType type, 
             Real theta, Real mu)
     : GenericModelEngine<HestonModel,
                          DividendVanillaOption::arguments,
@@ -51,6 +52,7 @@ namespace QuantLib {
       corrEquityShortRate_(corrEquityShortRate),
       tGrid_(tGrid), xGrid_(xGrid), 
       vGrid_(vGrid), rGrid_(rGrid),
+      dampingSteps_(dampingSteps),
       controlVariate_(controlVariate),
       type_(type), theta_(theta), mu_(mu) {
     }
@@ -179,7 +181,7 @@ namespace QuantLib {
                                          corrEquityShortRate_,
                                          mesher, boundaries, conditions,
                                          calculator, 
-                                         maturity, tGrid_,
+                                         maturity, tGrid_, dampingSteps_,
                                          type_, theta_, mu_));
 
         const Real spot = hestonProcess->s0()->value();
@@ -214,24 +216,11 @@ namespace QuantLib {
             VanillaOption option(payoff, exercise);
             option.setPricingEngine(analyticEngine);
             Real analyticNPV = option.NPV();
-            
-            FdmHestonSolver::FdmSchemeType hestonType;
-            switch (type_) {
-              case FdmHestonHullWhiteSolver::CraigSneydScheme:
-                hestonType = FdmHestonSolver::CraigSneydScheme;
-                break;
-              case FdmHestonHullWhiteSolver::DouglasScheme:
-                hestonType = FdmHestonSolver::DouglasScheme;
-                break;
-              case FdmHestonHullWhiteSolver::HundsdorferScheme:
-                hestonType = FdmHestonSolver::HundsdorferScheme;
-                break;
-              default:
-                QL_FAIL("Unknown scheme type");
-            }
+
             boost::shared_ptr<FdHestonVanillaEngine> fdEngine(
-                    new FdHestonVanillaEngine(model_, tGrid_, xGrid_, vGrid_, 
-                                              hestonType, theta_, mu_));
+                    new FdHestonVanillaEngine(model_, tGrid_, xGrid_, 
+                                              vGrid_, dampingSteps_, 
+                                              type_, theta_, mu_));
             fdEngine->enableMultipleStrikesCaching(strikes_);
             option.setPricingEngine(fdEngine);
             

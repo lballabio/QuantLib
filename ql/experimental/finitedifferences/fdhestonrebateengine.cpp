@@ -22,6 +22,7 @@
 #include <ql/experimental/finitedifferences/fdhestonrebateengine.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
+#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
@@ -33,12 +34,13 @@ namespace QuantLib {
 
     FdHestonRebateEngine::FdHestonRebateEngine(
             const boost::shared_ptr<HestonModel>& model,
-            Size tGrid, Size xGrid, Size vGrid,
-            FdmHestonSolver::FdmSchemeType type, Real theta, Real mu)
+            Size tGrid, Size xGrid, Size vGrid, Size dampingSteps,
+            FdmBackwardSolver::FdmSchemeType type, Real theta, Real mu)
     : GenericModelEngine<HestonModel,
                         DividendBarrierOption::arguments,
                         DividendBarrierOption::results>(model),
-      tGrid_(tGrid), xGrid_(xGrid), vGrid_(vGrid),
+      tGrid_(tGrid), xGrid_(xGrid), vGrid_(vGrid), 
+      dampingSteps_(dampingSteps),
       type_(type), theta_(theta), mu_(mu) {
     }
 
@@ -137,7 +139,8 @@ namespace QuantLib {
         boost::shared_ptr<FdmHestonSolver> solver(new FdmHestonSolver(
                                         Handle<HestonProcess>(process),
                                         mesher, boundaries, conditions,
-                                        calculator, maturity, tGrid_,
+                                        calculator, maturity, 
+                                        tGrid_, dampingSteps_,
                                         type_, theta_, mu_));
 
         const Real spot = process->s0()->value();

@@ -26,10 +26,11 @@
 #ifndef quantlib_fd_heston_barrier_engine_hpp
 #define quantlib_fd_heston_barrier_engine_hpp
 
-#include <ql/experimental/finitedifferences/dividendbarrieroption.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonsolver.hpp>
+#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
+#include <ql/experimental/finitedifferences/dividendbarrieroption.hpp>
 
 
 namespace QuantLib {
@@ -51,16 +52,17 @@ namespace QuantLib {
         // Constructor
         FdHestonBarrierEngine(
             const boost::shared_ptr<HestonModel>& model,
-            Size tGrid = 100, Size xGrid = 100, Size vGrid = 50,
-            FdmHestonSolver::FdmSchemeType type 
-                                    = FdmHestonSolver::HundsdorferScheme,
+            Size tGrid = 100, Size xGrid = 100, 
+            Size vGrid = 50, Size dampingSteps = 0,
+            FdmBackwardSolver::FdmSchemeType type 
+                                    = FdmBackwardSolver::Hundsdorfer,
             Real theta = 0.3, Real mu = 0.5);
 
         void calculate() const;
 
       private:
-        const Size tGrid_, xGrid_, vGrid_;
-        const FdmHestonSolver::FdmSchemeType type_;
+        const Size tGrid_, xGrid_, vGrid_, dampingSteps_;
+        const FdmBackwardSolver::FdmSchemeType type_;
         const Real theta_, mu_;
     };
 

@@ -49,9 +49,10 @@ namespace QuantLib {
         // Constructor
         FdHestonVanillaEngine(
             const boost::shared_ptr<HestonModel>& model,
-            Size tGrid = 100, Size xGrid = 100, Size vGrid = 50,
-            FdmHestonSolver::FdmSchemeType type 
-                                    = FdmHestonSolver::HundsdorferScheme,
+            Size tGrid = 100, Size xGrid = 100, 
+            Size vGrid = 50, Size dampingSteps = 0,
+            FdmBackwardSolver::FdmSchemeType type 
+                                        = FdmBackwardSolver::Hundsdorfer,
             Real theta = 0.3, Real mu = 0.5);
 
         void calculate() const;
@@ -61,8 +62,8 @@ namespace QuantLib {
         void enableMultipleStrikesCaching(const std::vector<Real>& strikes);
         
       private:
-        const Size tGrid_, xGrid_, vGrid_;
-        const FdmHestonSolver::FdmSchemeType type_;
+        const Size tGrid_, xGrid_, vGrid_, dampingSteps_;
+        const FdmBackwardSolver::FdmSchemeType type_;
         const Real theta_, mu_;
         
         std::vector<Real> strikes_;

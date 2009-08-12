@@ -38,11 +38,13 @@ namespace QuantLib {
         virtual void setTime(Time t1, Time t2) = 0;
 
         virtual Disposable<Array> apply_mixed(const Array& r) const = 0;
-
-        virtual Disposable<Array> apply_direction(Size direction,
-                                                  const Array& r) const = 0;
-        virtual Disposable<Array> solve_splitting(Size direction,
-                                            const Array& r, Real s) const = 0;
+        
+        virtual Disposable<Array> 
+            apply_direction(Size direction, const Array& r) const = 0;
+        virtual Disposable<Array> 
+            solve_splitting(Size direction, const Array& r, Real s) const = 0;
+        virtual Disposable<Array> 
+            preconditioner(const Array& r, Real s) const = 0;
     };
 }
 

@@ -34,12 +34,13 @@ namespace QuantLib {
 
     FdHestonVanillaEngine::FdHestonVanillaEngine(
             const boost::shared_ptr<HestonModel>& model,
-            Size tGrid, Size xGrid, Size vGrid,
-            FdmHestonSolver::FdmSchemeType type, Real theta, Real mu)
+            Size tGrid, Size xGrid, Size vGrid, Size dampingSteps,
+            FdmBackwardSolver::FdmSchemeType type, Real theta, Real mu)
     : GenericModelEngine<HestonModel,
                         DividendVanillaOption::arguments,
                         DividendVanillaOption::results>(model),
-      tGrid_(tGrid), xGrid_(xGrid), vGrid_(vGrid),
+      tGrid_(tGrid), xGrid_(xGrid), 
+      vGrid_(vGrid), dampingSteps_(dampingSteps),
       type_(type), theta_(theta), mu_(mu) {
     }
 
@@ -156,7 +157,8 @@ namespace QuantLib {
         boost::shared_ptr<FdmHestonSolver> solver(new FdmHestonSolver(
                                         Handle<HestonProcess>(process),
                                         mesher, boundaries, conditions,
-                                        calculator, maturity, tGrid_,
+                                        calculator, maturity, 
+                                        tGrid_, dampingSteps_,
                                         type_, theta_, mu_));
 
         const Real v0   = process->v0();

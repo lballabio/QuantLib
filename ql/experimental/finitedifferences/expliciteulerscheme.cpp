@@ -19,46 +19,28 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/finitedifferences/bicgstab.hpp>
-#include <ql/experimental/finitedifferences/impliciteulerscheme.hpp>
-
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
+#include <ql/experimental/finitedifferences/expliciteulerscheme.hpp>
 
 namespace QuantLib {
 
-    ImplicitEulerScheme::ImplicitEulerScheme(
-        const boost::shared_ptr<FdmLinearOpComposite>& map,
-        const std::vector<boost::shared_ptr<FdmDirichletBoundary> >& bcSet,
-        Real relTol)
-    : dt_    (Null<Real>()),
-      relTol_(relTol),
-      map_   (map),
-      bcSet_ (bcSet) {
+    ExplicitEulerScheme::ExplicitEulerScheme(
+        const boost::shared_ptr<FdmLinearOpComposite> & map,
+        const std::vector<boost::shared_ptr<FdmDirichletBoundary> > & bcSet)
+    : dt_(Null<Real>()),
+      map_  (map),
+      bcSet_(bcSet) {
     }
 
-    Disposable<Array> ImplicitEulerScheme::apply(const Array& r) const {
-        return r - dt_*map_->apply(r);
-    }
-
-    void ImplicitEulerScheme::step(array_type& a, Time t) {
+        
+    void ExplicitEulerScheme::step(array_type& a, Time t) {
         QL_REQUIRE(t-dt_ > -1e-8, "a step towards negative time given");
         map_->setTime(std::max(0.0, t-dt_), t);
-
-        a = BiCGstab(
-                boost::function<Disposable<Array>(const Array&)>(
-                    boost::bind(&ImplicitEulerScheme::apply, this, _1)), 
-                10*a.size(), relTol_,
-                boost::function<Disposable<Array>(const Array&)>(
-                    boost::bind(&FdmLinearOpComposite::preconditioner, 
-                                map_, _1, -dt_))
-            ).solve(a).x;
-        
+        a += dt_*map_->apply(a);
         for (Size i=0; i<bcSet_.size(); i++)
             bcSet_[i]->applyAfterApplying(a);
     }
 
-    void ImplicitEulerScheme::setStep(Time dt) {
+    void ExplicitEulerScheme::setStep(Time dt) {
         dt_=dt;
     }
 }

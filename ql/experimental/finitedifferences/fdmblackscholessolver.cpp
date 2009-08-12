@@ -20,7 +20,7 @@
 */
 
 #include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
-#include <ql/experimental/finitedifferences/douglasscheme.hpp>
+#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesop.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholessolver.hpp>
 
@@ -50,9 +50,10 @@ namespace QuantLib {
         const FdmBlackScholesSolver::BoundaryConditionSet& bcSet,
         const boost::shared_ptr<FdmStepConditionComposite> & condition,
         const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
-        const Real strike,
-        const Time maturity,
-        const Size timeSteps,
+        Real strike,
+        Time maturity,
+        Size timeSteps,
+        Size dampingSteps,
         Real theta,
         bool localVol,
         Real illegalLocalVolOverwrite)
@@ -67,6 +68,7 @@ namespace QuantLib {
       strike_(strike),
       maturity_(maturity),
       timeSteps_(timeSteps),
+      dampingSteps_(dampingSteps),
       theta_(theta),
       localVol_(localVol),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
@@ -93,10 +95,9 @@ namespace QuantLib {
         Array rhs(initialValues_.size());
         std::copy(initialValues_.begin(), initialValues_.end(), rhs.begin());
 
-        DouglasScheme dsEvolver(theta_, map, bcSet_);
-        FiniteDifferenceModel<DouglasScheme> dsModel(
-            dsEvolver, condition_->stoppingTimes());
-        dsModel.rollback(rhs, maturity_, 0.0, timeSteps_, *condition_);
+        FdmBackwardSolver(map, bcSet_, condition_, 
+                          FdmBackwardSolver::Douglas, theta_, 0.0)
+            .rollback(rhs, maturity_, 0.0, timeSteps_, dampingSteps_);
 
         std::copy(rhs.begin(), rhs.end(), resultValues_.begin());
 

@@ -52,9 +52,10 @@ namespace QuantLib {
             Real corrEquityShortRate,
             Size tGrid = 50, Size xGrid = 100, 
             Size vGrid = 40, Size rGrid = 20,
+            Size dampingSteps = 0,
             bool controlVariate = true,
-            FdmHestonHullWhiteSolver::FdmSchemeType type 
-                                = FdmHestonHullWhiteSolver::HundsdorferScheme,
+            FdmBackwardSolver::FdmSchemeType type 
+                                    = FdmBackwardSolver::Hundsdorfer,
             Real theta = 0.3, Real mu = 0.5);
 
         void calculate() const;
@@ -67,8 +68,9 @@ namespace QuantLib {
         const boost::shared_ptr<HullWhiteProcess> hwProcess_;
         const Real corrEquityShortRate_;
         const Size tGrid_, xGrid_, vGrid_, rGrid_;
+        const Size dampingSteps_;
         const bool controlVariate_;
-        const FdmHestonHullWhiteSolver::FdmSchemeType type_;
+        const FdmBackwardSolver::FdmSchemeType type_;
         const Real theta_, mu_;
         
         std::vector<Real> strikes_;

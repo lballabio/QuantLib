@@ -51,6 +51,7 @@ namespace QuantLib {
             Real strike,
             Time maturity,
             Size timeSteps,
+            Size dampingSteps = 0,
             Real theta = 0.5,
             bool localVol = false,
             Real illegalLocalVolOverwrite = -Null<Real>());
@@ -72,6 +73,7 @@ namespace QuantLib {
         const Real strike_;
         const Time maturity_;
         const Size timeSteps_;
+        const Size dampingSteps_;
 
         const Real theta_;
         const bool localVol_;

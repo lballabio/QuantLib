@@ -52,6 +52,7 @@ namespace QuantLib {
                                           const Array& r) const;
         Disposable<Array> solve_splitting(Size direction,
                                           const Array& r, Real s) const;
+        Disposable<Array> preconditioner(const Array& r, Real s) const;
 
       private:
         const boost::shared_ptr<FdmMesher> mesher_;

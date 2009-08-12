@@ -45,6 +45,7 @@
 #include <ql/experimental/finitedifferences/craigsneydscheme.hpp>
 #include <ql/experimental/finitedifferences/uniformgridmesher.hpp>
 #include <ql/experimental/finitedifferences/uniform1dmesher.hpp>
+#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesop.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
@@ -1095,14 +1096,10 @@ void FdmLinearOpTest::testCrankNicolsonWithDamping() {
         x[iter.index()] = mesher->location(iter, 0);
     }
 
-    const Time dampingEndTime = maturity*csSteps/(dampingSteps + csSteps);
-    ImplicitEulerScheme implicitEvolver(map);
-    FiniteDifferenceModel<ImplicitEulerScheme> dampingModel(implicitEvolver);
-    dampingModel.rollback(rhs, maturity, dampingEndTime, dampingSteps);
-
-    DouglasScheme csEvolver(0.5, map);  // is a Crank-Nicolson scheme
-    FiniteDifferenceModel<DouglasScheme> csModel(csEvolver);
-    csModel.rollback(rhs, dampingEndTime, 0.0, csSteps);
+    FdmBackwardSolver solver(map, FdmBoundaryConditionSet(), 
+                             boost::shared_ptr<FdmStepConditionComposite>(),
+                             FdmBackwardSolver::Douglas, 0.5, 0.5);
+    solver.rollback(rhs, maturity, 0.0, csSteps, dampingSteps);
 
     MonotonicCubicNaturalSpline spline(x.begin(), x.end(), rhs.begin());
 
