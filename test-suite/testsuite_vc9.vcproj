@@ -4324,10 +4324,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\README.txt"
-				>
-			</File>
-			<File
 				RelativePath="riskstats.hpp"
 				>
 			</File>

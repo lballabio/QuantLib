@@ -828,6 +828,9 @@
 				RelativePath=".\capflooredcoupon.cpp">
 			</File>
 			<File
+				RelativePath=".\cashflows.cpp">
+			</File>
+			<File
 				RelativePath=".\cdo.cpp">
 			</File>
 			<File
@@ -1380,6 +1383,9 @@
 				RelativePath=".\inflation.cpp">
 			</File>
 			<File
+				RelativePath=".\inflationvol.cpp">
+			</File>
+			<File
 				RelativePath="instruments.cpp">
 				<FileConfiguration
 					Name="Debug (static runtime)|Win32">
@@ -1561,9 +1567,6 @@
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\issuer.cpp">
 			</File>
 			<File
 				RelativePath="jumpdiffusion.cpp">
@@ -2497,6 +2500,9 @@
 				RelativePath=".\capflooredcoupon.hpp">
 			</File>
 			<File
+				RelativePath=".\cashflows.hpp">
+			</File>
+			<File
 				RelativePath=".\cdo.hpp">
 			</File>
 			<File
@@ -2593,6 +2599,9 @@
 				RelativePath=".\inflation.hpp">
 			</File>
 			<File
+				RelativePath=".\inflationvol.hpp">
+			</File>
+			<File
 				RelativePath="instruments.hpp">
 			</File>
 			<File
@@ -2603,9 +2612,6 @@
 			</File>
 			<File
 				RelativePath="interpolations.hpp">
-			</File>
-			<File
-				RelativePath=".\issuer.hpp">
 			</File>
 			<File
 				RelativePath="jumpdiffusion.hpp">

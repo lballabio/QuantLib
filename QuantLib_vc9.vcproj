@@ -9069,6 +9069,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\concentrating1dmesher.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\concentrating1dmesher.hpp"
 					>
 				</File>
@@ -9245,10 +9249,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmhestoninnervalue.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmhestonop.cpp"
 					>
 				</File>
@@ -9278,6 +9278,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmhullwhitemesher.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdminnervaluecalculator.cpp"
 					>
 				</File>
 				<File
@@ -9362,6 +9366,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\hundsdorferscheme.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\impliciteulerscheme.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\impliciteulerscheme.hpp"
 					>
 				</File>
 				<File

@@ -1447,6 +1447,9 @@
 				RelativePath=".\ql\math\interpolation.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\math\kernelfunctions.hpp">
+			</File>
+			<File
 				RelativePath="ql\math\lexicographicalview.hpp">
 			</File>
 			<File
@@ -1680,6 +1683,9 @@
 					RelativePath=".\ql\math\interpolations\interpolation2d.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\math\interpolations\kernelinterpolation.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\math\interpolations\linearinterpolation.hpp">
 				</File>
 				<File
@@ -1731,6 +1737,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\optimization\armijo.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\optimization\bfgs.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\optimization\bfgs.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\math\optimization\conjugategradient.cpp">
@@ -1958,6 +1970,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\matrixutilities\choleskydecomposition.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\factorreduction.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\factorreduction.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\math\matrixutilities\getcovariance.cpp">
@@ -5550,6 +5568,12 @@
 					RelativePath=".\ql\pricingengines\bond\all.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\bond\bondfunctions.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\bond\bondfunctions.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\bond\discountingbondengine.cpp">
 				</File>
 				<File
@@ -6102,6 +6126,9 @@
 					RelativePath=".\ql\termstructures\yield\fittedbonddiscountcurve.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\yield\flatforward.cpp">
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\yield\flatforward.hpp">
 				</File>
 				<File
@@ -6109,6 +6136,9 @@
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\yield\forwardspreadedtermstructure.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\forwardstructure.cpp">
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\yield\forwardstructure.hpp">
@@ -6144,6 +6174,9 @@
 					RelativePath=".\ql\termstructures\yield\zerospreadedtermstructure.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\yield\zeroyieldstructure.cpp">
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\yield\zeroyieldstructure.hpp">
 				</File>
 			</Filter>
@@ -6170,6 +6203,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\inflation\piecewisezeroinflationcurve.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\inflation\seasonality.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\inflation\seasonality.hpp">
 				</File>
 			</Filter>
 			<Filter
@@ -6209,10 +6248,19 @@
 					RelativePath=".\ql\termstructures\credit\interpolatedhazardratecurve.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\credit\interpolatedsurvivalprobabilitycurve.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\credit\piecewisedefaultcurve.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\credit\probabilitytraits.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\survivalprobabilitystructure.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\credit\survivalprobabilitystructure.hpp">
 				</File>
 			</Filter>
 		</Filter>
@@ -7027,6 +7075,18 @@
 					RelativePath=".\ql\experimental\finitedifferences\all.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\bicgstab.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\bicgstab.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\concentrating1dmesher.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\concentrating1dmesher.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\craigsneydscheme.cpp">
 				</File>
 				<File
@@ -7043,6 +7103,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\douglasscheme.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdblackscholesasianengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdblackscholesasianengine.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdblackscholesbarrierengine.cpp">
@@ -7069,6 +7135,12 @@
 					RelativePath=".\ql\experimental\finitedifferences\fdhestonbarrierengine.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdhestonhullwhitevanillaengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdhestonhullwhitevanillaengine.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdhestonrebateengine.cpp">
 				</File>
 				<File
@@ -7088,6 +7160,24 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmamericanstepcondition.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmarithmeticaveragecondition.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmarithmeticaveragecondition.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholesmesher.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholesmesher.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholesmultistrikemesher.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholesmultistrikemesher.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholesop.cpp">
@@ -7120,7 +7210,10 @@
 					RelativePath=".\ql\experimental\finitedifferences\fdmhestonhullwhiteop.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmhestoninnervalue.hpp">
+					RelativePath=".\ql\experimental\finitedifferences\fdmhestonhullwhitesolver.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmhestonhullwhitesolver.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmhestonop.cpp">
@@ -7139,6 +7232,15 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmhestonvariancemesher.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmhullwhitemesher.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmhullwhitemesher.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdminnervaluecalculator.cpp">
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdminnervaluecalculator.hpp">
@@ -7174,6 +7276,12 @@
 					RelativePath=".\ql\experimental\finitedifferences\fdmquantohelper.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmsimple2dbssolver.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmsimple2dbssolver.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmsnapshotcondition.cpp">
 				</File>
 				<File
@@ -7196,6 +7304,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\hundsdorferscheme.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\impliciteulerscheme.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\impliciteulerscheme.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\ninepointlinearop.cpp">
@@ -7394,6 +7508,24 @@
 					RelativePath=".\ql\experimental\credit\cdsoption.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\defaultevent.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\defaultevent.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\defaultprobabilitykey.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\defaultprobabilitykey.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\defaulttype.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\defaulttype.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\distribution.cpp">
 				</File>
 				<File
@@ -7488,6 +7620,21 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\randomdefaultmodel.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\recoveryratemodel.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\recoveryratemodel.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\recoveryratequote.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\recoveryratequote.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\recursivecdoengine.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\riskyassetswap.cpp">
@@ -7816,6 +7963,9 @@
 					RelativePath=".\ql\experimental\inflation\piecewiseyoyoptionletvolatility.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\experimental\inflation\polynomial2Dspline.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\experimental\inflation\yoycapfloortermpricesurface.cpp">
 				</File>
 				<File
@@ -7895,6 +8045,9 @@
 			RelativePath=".\ql\auto_link.hpp">
 		</File>
 		<File
+			RelativePath=".\ql\cashflow.cpp">
+		</File>
+		<File
 			RelativePath=".\ql\cashflow.hpp">
 		</File>
 		<File
@@ -7916,9 +8069,6 @@
 			RelativePath=".\ql\currency.hpp">
 		</File>
 		<File
-			RelativePath=".\ql\default.cpp">
-		</File>
-		<File
 			RelativePath=".\ql\default.hpp">
 		</File>
 		<File
@@ -7932,6 +8082,9 @@
 		</File>
 		<File
 			RelativePath=".\ql\errors.hpp">
+		</File>
+		<File
+			RelativePath=".\ql\event.cpp">
 		</File>
 		<File
 			RelativePath=".\ql\event.hpp">
