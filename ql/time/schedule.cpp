@@ -129,9 +129,10 @@ namespace QuantLib {
                 // verified after adjustment
                 break;
               case DateGeneration::ThirdWednesday:
-                  QL_REQUIRE(IMM::isIMMdate(nextToLastDate, false),
-                             "first date (" << firstDate <<
-                             ") is not an IMM date");
+                QL_REQUIRE(IMM::isIMMdate(nextToLastDate, false),
+                           "next-to-last date (" << nextToLastDate <<
+                           ") is not an IMM date");
+                break;
               case DateGeneration::Zero:
               case DateGeneration::Twentieth:
               case DateGeneration::TwentiethIMM:
