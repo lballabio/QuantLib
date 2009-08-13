@@ -27,7 +27,8 @@
 
 #include <math.h>
 
-// asinh is missing in WIN32!
+// asinh is missing in WIN32! 
+// see http://msdn.microsoft.com/en-us/library/w3t84e33%28VS.71%29.aspx for details ...
 
 #ifdef WIN32
 #define asinh(x) log(x + sqrt(x * x + 1))
