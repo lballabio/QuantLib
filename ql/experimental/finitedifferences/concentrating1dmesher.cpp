@@ -27,6 +27,13 @@
 
 #include <math.h>
 
+// asinh is missing in WIN32!
+
+#ifdef WIN32
+#define asinh(x) log(x + sqrt(x * x + 1))
+#endif
+
+
 namespace QuantLib {
 
     Concentrating1dMesher::Concentrating1dMesher(
