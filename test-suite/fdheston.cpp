@@ -399,12 +399,30 @@ void FdHestonTest::testFdmHestonBlackScholes() {
         
         boost::shared_ptr<HestonProcess> hestonProcess(
             new HestonProcess(rTS, qTS, s0, 0.0625, 1, 0.0625, 0.0001, 0.0));
-    
+
+        // Hundsdorfer scheme
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                new FdHestonVanillaEngine(boost::shared_ptr<HestonModel>(
-                                  new HestonModel(hestonProcess)), 100, 400)));
+             new FdHestonVanillaEngine(boost::shared_ptr<HestonModel>(
+                                           new HestonModel(hestonProcess)), 
+                                       100, 400)));
         
         Real calculated = option.NPV();
+        if (std::fabs(calculated - expected) > tol) {
+            BOOST_ERROR("Failed to reproduce expected npv"
+                        << "\n    strike:     " << strikes[i]
+                        << "\n    calculated: " << calculated
+                        << "\n    expected:   " << expected
+                        << "\n    tolerance:  " << tol); 
+        }
+        
+        // Explicit scheme
+        option.setPricingEngine(boost::shared_ptr<PricingEngine>(
+             new FdHestonVanillaEngine(boost::shared_ptr<HestonModel>(
+                                           new HestonModel(hestonProcess)), 
+                                       10000, 400, 5, 0, 
+                                       FdmBackwardSolver::ExplicitEuler)));
+        
+        calculated = option.NPV();
         if (std::fabs(calculated - expected) > tol) {
             BOOST_ERROR("Failed to reproduce expected npv"
                         << "\n    strike:     " << strikes[i]
