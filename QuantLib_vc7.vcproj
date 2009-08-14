@@ -7105,6 +7105,12 @@
 					RelativePath=".\ql\experimental\finitedifferences\douglasscheme.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\expliciteulerscheme.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\expliciteulerscheme.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdblackscholesasianengine.cpp">
 				</File>
 				<File
@@ -7166,6 +7172,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmarithmeticaveragecondition.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmbackwardsolver.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmbackwardsolver.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholesmesher.cpp">
