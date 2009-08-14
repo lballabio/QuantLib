@@ -26,10 +26,8 @@
 #include <ql/experimental/finitedifferences/concentrating1dmesher.hpp>
 #include <cmath>
 
-// asinh is missing in WIN32! 
-// see http://msdn.microsoft.com/en-us/library/w3t84e33%28VS.71%29.aspx for details ...
-
-#ifdef WIN32
+// asinh is missing in WIN32 (and possibly on other compilers)
+#if !defined(QL_HAVE_ASINH)
 #define asinh(x) std::log(x + std::sqrt(x * x + 1))
 #endif
 
@@ -38,25 +36,25 @@ namespace QuantLib {
     Concentrating1dMesher::Concentrating1dMesher(
         Real start, Real end, Size size, const std::pair<Real, Real>& cPoints)
     : Fdm1dMesher(size) {
-            
+
         QL_REQUIRE(end > start, "end must be larger than start");
-        
+
         const Real cPoint  = cPoints.first;
-        const Real density = cPoints.second == Null<Real>() ? 
+        const Real density = cPoints.second == Null<Real>() ?
                              Null<Real>() : cPoints.second*(end-start);
-        
-        QL_REQUIRE(    cPoint == Null<Real>() 
+
+        QL_REQUIRE(    cPoint == Null<Real>()
                    || (cPoint >= start && cPoint <= end),
                    "cPoint must be between start and end");
-        QL_REQUIRE(density == Null<Real>() || density > 0.0, 
+        QL_REQUIRE(density == Null<Real>() || density > 0.0,
                    "density > 0 required" );
-        
+
         const Real dx = 1.0/(size-1);
         for (Size i=1; i < size-1; ++i) {
             if(cPoint != Null<Real>()) {
                 const Real c1 = asinh((start-cPoint)/density);
                 const Real c2 = asinh((end-cPoint)/density);
-                locations_[i] = cPoint 
+                locations_[i] = cPoint
                     + density*std::sinh(c1*(1.0-i*dx)+c2*i*dx);
             }
             else {

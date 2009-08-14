@@ -84,6 +84,8 @@ QL_CHECK_CONSTANT([M_SQRT_2],[double],[cmath],
 QL_CHECK_CONSTANT([M_LN2],[double],[cmath],
                   [0.693147180559945309417],[ln(2)])
 
+QL_CHECK_ASINH
+
 # Check for Boost components
 QL_CHECK_BOOST
 AM_CONDITIONAL(BOOST_UNIT_TEST_FOUND, test "x${BOOST_UNIT_TEST_LIB}" != "x")

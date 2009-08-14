@@ -32,6 +32,23 @@ AC_DEFUN([QL_CHECK_LONG_LONG],
     ])
 ])
 
+# QL_CHECK_ASINH
+# ----------------------------------------------
+# Check whether the asinh function is defined in cmath.
+# It defines QL_HAVE_ASINH if found.
+AC_DEFUN([QL_CHECK_ASINH],
+[AC_MSG_CHECKING([for asinh])
+ AC_TRY_COMPILE(
+    [@%:@include<cmath>],
+    [double x = asinh(0.0);],
+    [AC_MSG_RESULT([yes])
+     AC_DEFINE([QL_HAVE_ASINH],[],
+               [Define this if your compiler defines asinh in <cmath>.])
+    ],
+    [AC_MSG_RESULT([no])
+    ])
+])
+
 # QL_CHECK_BOOST_DEVEL
 # --------------------
 # Check whether the Boost headers are available
