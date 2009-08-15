@@ -48,6 +48,7 @@ this_include_HEADERS = \
 	firstderivativeop.hpp \
 	hundsdorferscheme.hpp \
 	impliciteulerscheme.hpp \
+	modifiedcraigsneydscheme.hpp \
 	ninepointlinearop.hpp \
 	secondderivativeop.hpp \
 	secondordermixedderivativeop.hpp \
@@ -95,6 +96,7 @@ libMultiDimFDM_la_SOURCES = \
 	firstderivativeop.cpp \
 	hundsdorferscheme.cpp \
 	impliciteulerscheme.cpp \
+	modifiedcraigsneydscheme.cpp \
 	ninepointlinearop.cpp \
 	secondderivativeop.cpp \
 	secondordermixedderivativeop.cpp \

@@ -29,6 +29,7 @@
 #include <ql/experimental/finitedifferences/hundsdorferscheme.hpp>
 #include <ql/experimental/finitedifferences/impliciteulerscheme.hpp>
 #include <ql/experimental/finitedifferences/expliciteulerscheme.hpp>
+#include <ql/experimental/finitedifferences/modifiedcraigsneydscheme.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 
 namespace QuantLib {
@@ -91,7 +92,15 @@ namespace QuantLib {
                 csModel.rollback(rhs, dampingTo, to, steps, *condition_);
             }
             break;
-            case ImplicitEuler:
+          case ModifiedCraigSneyd:
+            {
+                ModifiedCraigSneydScheme csEvolver(theta_, mu_, map_, bcSet_);
+                FiniteDifferenceModel<ModifiedCraigSneydScheme> 
+                              mcsModel(csEvolver, condition_->stoppingTimes());
+                mcsModel.rollback(rhs, dampingTo, to, steps, *condition_);
+            }
+            break;
+          case ImplicitEuler:
             {
                 ImplicitEulerScheme implicitEvolver(map_, bcSet_);
                 FiniteDifferenceModel<ImplicitEulerScheme> 
@@ -99,7 +108,7 @@ namespace QuantLib {
                 implicitModel.rollback(rhs, from, to, allSteps, *condition_);
             }
             break;
-            case ExplicitEuler:
+          case ExplicitEuler:
             {
                 ExplicitEulerScheme explicitEvolver(map_, bcSet_);
                 FiniteDifferenceModel<ExplicitEulerScheme> 

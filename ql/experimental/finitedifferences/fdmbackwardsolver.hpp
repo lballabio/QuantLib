@@ -35,7 +35,8 @@ namespace QuantLib {
     class FdmBackwardSolver {
       public:
         enum FdmSchemeType { Hundsdorfer, Douglas, 
-                             CraigSneyd, ImplicitEuler, ExplicitEuler };
+                             CraigSneyd, ModifiedCraigSneyd, 
+                             ImplicitEuler, ExplicitEuler };
         typedef FdmLinearOp::array_type array_type;
         
         FdmBackwardSolver(

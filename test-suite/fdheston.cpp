@@ -504,6 +504,12 @@ namespace {
         Real T;
         Real K;
     };
+    
+    struct SchemeData {
+        FdmBackwardSolver::FdmSchemeType schemeType;
+        Real theta;
+        Real mu;
+    };
 }
 
 void FdHestonTest::testFdmHestonConvergence() {
@@ -524,58 +530,73 @@ void FdHestonTest::testFdmHestonConvergence() {
         { 2.5   , 0.06  , 0.5   , -0.1   , 0.0507, 0.0469, 0.25, 100 }
     };
     
+    SchemeData schemes[] = {
+        { FdmBackwardSolver::Hundsdorfer, 0.5+std::sqrt(3)/6, 0.5 },
+        { FdmBackwardSolver::ModifiedCraigSneyd, 0.3, 0.3 }
+        // runs through but takes too long
+        //{ FdmBackwardSolver::Hundsdorfer, 1.0-std::sqrt(2)/2, 0.5 },
+        //{ FdmBackwardSolver::CraigSneyd, 0.5, 0.5 },
+    };
+    
     Size tn[] = { 100 };
-    Real v0[] = { 0.01, 0.04 };
+    Real v0[] = { 0.04 };
     
     const Date todaysDate(28, March, 2004); 
     Settings::instance().evaluationDate() = todaysDate;
     
     Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(75.0)));
 
-    for (Size i=0; i < LENGTH(values); ++i) {
-        for (Size j=0; j < LENGTH(tn); ++j) {
+    for (Size l=0; l < LENGTH(schemes); ++l) {
+        for (Size i=0; i < LENGTH(values); ++i) {
+            for (Size j=0; j < LENGTH(tn); ++j) {
                 for (Size k=0; k < LENGTH(v0); ++k) {
-                Handle<YieldTermStructure> rTS(
-                    flatRate(values[i].r, Actual365Fixed()));
-                Handle<YieldTermStructure> qTS(
-                    flatRate(values[i].q, Actual365Fixed()));
+                    Handle<YieldTermStructure> rTS(
+                        flatRate(values[i].r, Actual365Fixed()));
+                    Handle<YieldTermStructure> qTS(
+                        flatRate(values[i].q, Actual365Fixed()));
+                
+                    boost::shared_ptr<HestonProcess> hestonProcess(
+                        new HestonProcess(rTS, qTS, s0, 
+                                          v0[k], 
+                                          values[i].kappa, 
+                                          values[i].theta, 
+                                          values[i].sigma, 
+                                          values[i].rho));
+                
+                    Date exerciseDate = todaysDate 
+                        + Period(static_cast<Integer>(values[i].T*365), Days);
+                    boost::shared_ptr<Exercise> exercise(
+                                          new EuropeanExercise(exerciseDate));
+                
+                    boost::shared_ptr<StrikedTypePayoff> payoff(new
+                               PlainVanillaPayoff(Option::Call, values[i].K));
             
-                boost::shared_ptr<HestonProcess> hestonProcess(
-                    new HestonProcess(rTS, qTS, s0, 
-                                      v0[k], 
-                                      values[i].kappa, 
-                                      values[i].theta, 
-                                      values[i].sigma, 
-                                      values[i].rho));
-            
-                Date exerciseDate = todaysDate + Period(static_cast<Integer>(values[i].T*365), Days);
-                boost::shared_ptr<Exercise> exercise(
-                                           new EuropeanExercise(exerciseDate));
-            
-                boost::shared_ptr<StrikedTypePayoff> payoff(new
-                                PlainVanillaPayoff(Option::Call, values[i].K));
-        
-                VanillaOption option(payoff, exercise);
-                boost::shared_ptr<PricingEngine> engine(
-                     new FdHestonVanillaEngine(boost::shared_ptr<HestonModel>(
-                         new HestonModel(hestonProcess)), tn[j], 400, 100));
-                option.setPricingEngine(engine);
-                
-                const Real calculated = option.NPV();
-                
-                boost::shared_ptr<PricingEngine> analyticEngine(
-                    new AnalyticHestonEngine(boost::shared_ptr<HestonModel>(
-                            new HestonModel(hestonProcess)), 144));
-                
-                option.setPricingEngine(analyticEngine);
-                const Real expected = option.NPV();
-                
-                if (   std::fabs(expected - calculated)/expected > 0.02
-                    && std::fabs(expected - calculated) > 0.002) {
-                    BOOST_ERROR("Failed to reproduce expected npv"
-                                << "\n    calculated: " << calculated
-                                << "\n    expected:   " << expected
-                                << "\n    tolerance:  " << 0.01); 
+                    VanillaOption option(payoff, exercise);
+                    boost::shared_ptr<PricingEngine> engine(
+                         new FdHestonVanillaEngine(
+                             boost::shared_ptr<HestonModel>(
+                                 new HestonModel(hestonProcess)), 
+                             tn[j], 400, 100, 0, 
+                             schemes[l].schemeType,
+                             schemes[l].theta, schemes[l].mu));
+                    option.setPricingEngine(engine);
+                    
+                    const Real calculated = option.NPV();
+                    
+                    boost::shared_ptr<PricingEngine> analyticEngine(
+                        new AnalyticHestonEngine(
+                            boost::shared_ptr<HestonModel>(
+                                new HestonModel(hestonProcess)), 144));
+                    
+                    option.setPricingEngine(analyticEngine);
+                    const Real expected = option.NPV();
+                    if (   std::fabs(expected - calculated)/expected > 0.02
+                        && std::fabs(expected - calculated) > 0.002) {
+                        BOOST_ERROR("Failed to reproduce expected npv"
+                                    << "\n    calculated: " << calculated
+                                    << "\n    expected:   " << expected
+                                    << "\n    tolerance:  " << 0.01); 
+                    }
                 }
             }
         }
