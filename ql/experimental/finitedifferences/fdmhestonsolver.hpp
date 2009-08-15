@@ -54,7 +54,8 @@ namespace QuantLib {
             Size dampingSteps = 0,
             FdmBackwardSolver::FdmSchemeType type 
                                         = FdmBackwardSolver::Hundsdorfer,
-            Real theta = 0.3, Real mu = 0.5,
+            Real theta = 0.5+std::sqrt(3)/6,
+            Real mu = 0.5,
 			const Handle<FdmQuantoHelper>& quantoHelper 
 												= Handle<FdmQuantoHelper>());
 

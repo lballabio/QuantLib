@@ -234,10 +234,10 @@ void FdHestonTest::testFdmHestonBarrier() {
                               new HestonModel(hestonProcess)), 50, 400, 100)));
 
     const Real tol = 0.01;
-    const Real npvExpected   =  9.1783;
-    const Real deltaExpected =  0.5244;
-    const Real gammaExpected = -0.0365;
-    
+    const Real npvExpected   =  9.1530;
+    const Real deltaExpected =  0.5218;
+    const Real gammaExpected = -0.0354;
+
     if (std::fabs(barrierOption.NPV() - npvExpected) > tol) {
         BOOST_ERROR("Failed to reproduce expected npv"
                     << "\n    calculated: " << barrierOption.NPV()
@@ -524,7 +524,7 @@ void FdHestonTest::testFdmHestonConvergence() {
         { 2.5   , 0.06  , 0.5   , -0.1   , 0.0507, 0.0469, 0.25, 100 }
     };
     
-    Size tn[] = { 50 };
+    Size tn[] = { 100 };
     Real v0[] = { 0.01, 0.04 };
     
     const Date todaysDate(28, March, 2004); 
