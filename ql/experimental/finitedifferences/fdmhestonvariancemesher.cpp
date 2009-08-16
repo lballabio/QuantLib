@@ -35,9 +35,9 @@ namespace QuantLib {
         Time maturity, Size tAvgSteps, Real epsilon)
         : Fdm1dMesher(size) {
 
-        std::vector<Real> vGrid(size, 0.0), pGrid(size, 0.0);
+            std::vector<Real> vGrid(size, 0.0), pGrid(size, 0.0);
         const Real df  = 4*process->theta()*process->kappa()/
-            square<Real>()(process->sigma());
+                            square<Real>()(process->sigma());
         try {
             std::multiset<std::pair<Real, Real> > grid;
             
@@ -51,21 +51,22 @@ namespace QuantLib {
 
                 const Real qMin = std::min(process->v0(),
                     k*InverseNonCentralChiSquareDistribution(
-                    df, ncp, 100, 1e-7)(epsilon));
+                                            df, ncp, 1000, 1e-8)(epsilon));
                 const Real qMax = std::max(process->v0(),
                     k*InverseNonCentralChiSquareDistribution(
-                    df, ncp, 100,  1e-7)(1-epsilon));
+                                            df, ncp, 1000,  1e-8)(1-epsilon));
 
                 const Real minVStep=(qMax-qMin)/(50*size);
                 Real ps,p = epsilon;
 
                 Real vTmp = qMin;
                 grid.insert(std::pair<Real, Real>(qMin, epsilon));
+                
                 for (Size i=1; i < size; ++i) {
                     ps = (1 - epsilon - p)/(size-i);
                     p += ps;
                     const Real tmp = k*InverseNonCentralChiSquareDistribution(
-                        df, ncp, 100, 1e-7)(p);
+                        df, ncp, 1000, 1e-8)(p);
 
                     const Real vx = std::max(vTmp+minVStep, tmp);
                     p = NonCentralChiSquareDistribution(df, ncp)(vx/k);
@@ -104,12 +105,14 @@ namespace QuantLib {
             }
         }
 
+        Real skewHint = ((process->kappa() != 0.0) 
+                ? std::max(1.0, process->sigma()/process->kappa()) : 1.0);
         volaEstimate_ = GaussLobattoIntegral(1000, 1e-5)(
             boost::function1<Real, Real>(
                 compose(std::ptr_fun<Real, Real>(std::sqrt),
                         LinearInterpolation(pGrid.begin(), pGrid.end(),
                         vGrid.begin()))),
-            pGrid.front(), pGrid.back());
+            pGrid.front(), pGrid.back())*skewHint;
         
         const Real v0 = process->v0();
         for (Size i=1; i<vGrid.size(); ++i) {

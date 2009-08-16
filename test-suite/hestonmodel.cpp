@@ -708,7 +708,7 @@ void HestonModelTest::testKahlJaeckelCase() {
 
     engine = boost::shared_ptr<PricingEngine>(new FdHestonVanillaEngine(
                     boost::shared_ptr<HestonModel>(new HestonModel(process)),
-                    200,400,100));
+                    400,200,100));
     option.setPricingEngine(engine);
 
     calculated = option.NPV();
