@@ -933,7 +933,7 @@ void HestonModelTest::testMultipleStrikesEngine() {
 
 test_suite* HestonModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
-/*
+
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testBlackCalibration));
     // FLOATING_POINT_EXCEPTION
@@ -941,14 +941,11 @@ test_suite* HestonModelTest::suite() {
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAnalyticVsBlack));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAnalyticVsCached));
-    */
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testKahlJaeckelCase));
-    /*
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDifferentIntegrals));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdBarrierVsCached));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdVanillaVsCached));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMultipleStrikesEngine));
-*/
     // this passes but takes way too long
     //suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMcVsCached));
 
