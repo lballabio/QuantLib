@@ -112,7 +112,7 @@ namespace QuantLib {
                 compose(std::ptr_fun<Real, Real>(std::sqrt),
                         LinearInterpolation(pGrid.begin(), pGrid.end(),
                         vGrid.begin()))),
-            pGrid.front(), pGrid.back())*skewHint;
+            pGrid.front(), pGrid.back())*std::pow(skewHint, 1.5);
         
         const Real v0 = process->v0();
         for (Size i=1; i<vGrid.size(); ++i) {
