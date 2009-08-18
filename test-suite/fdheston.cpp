@@ -531,7 +531,7 @@ void FdHestonTest::testFdmHestonConvergence() {
     };
     
     SchemeData schemes[] = {
-        { FdmBackwardSolver::Hundsdorfer, 0.5+std::sqrt(3)/6, 0.5 },
+        { FdmBackwardSolver::Hundsdorfer, 0.5+std::sqrt(3.0)/6, 0.5 },
         { FdmBackwardSolver::ModifiedCraigSneyd, 0.3, 0.3 }
         // runs through but takes too long
         //{ FdmBackwardSolver::Hundsdorfer, 1.0-std::sqrt(2)/2, 0.5 },

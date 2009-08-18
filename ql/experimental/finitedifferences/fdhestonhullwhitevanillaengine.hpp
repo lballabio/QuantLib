@@ -56,7 +56,7 @@ namespace QuantLib {
             bool controlVariate = true,
             FdmBackwardSolver::FdmSchemeType type 
                                     = FdmBackwardSolver::Hundsdorfer,
-            Real theta = 0.5+std::sqrt(3)/6,
+            Real theta = 0.5+std::sqrt(3.0)/6,
             Real mu = 0.5);
 
         void calculate() const;

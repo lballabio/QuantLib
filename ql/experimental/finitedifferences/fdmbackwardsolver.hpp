@@ -44,7 +44,7 @@ namespace QuantLib {
           const FdmBoundaryConditionSet& bcSet,
           const boost::shared_ptr<FdmStepConditionComposite> condition,
           FdmSchemeType schemeType = Hundsdorfer,
-          Real theta = 0.5+std::sqrt(3)/6,
+          Real theta = 0.5+std::sqrt(3.0)/6,
           Real mu    = 0.5);
 
         void rollback(array_type& a, 
