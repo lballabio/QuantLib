@@ -121,8 +121,9 @@ namespace QuantLib {
                 new FdmBlackScholesSolver(
                                 Handle<GeneralizedBlackScholesProcess>(process_),
                                 mesher, boundaries, conditions, calculator,
-                                payoff->strike(), maturity, tGrid_, theta_,
-                                localVol_, illegalLocalVolOverwrite_));
+                                payoff->strike(), maturity, tGrid_,
+                                0, // dampingSteps
+                                theta_, localVol_, illegalLocalVolOverwrite_));
 
         const Real spot = process_->x0();
         results_.value = solver->valueAt(spot);
