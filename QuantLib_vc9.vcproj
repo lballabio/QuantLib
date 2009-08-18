@@ -9393,6 +9393,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\modifiedcraigsneydscheme.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\modifiedcraigsneydscheme.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\ninepointlinearop.cpp"
 					>
 				</File>
