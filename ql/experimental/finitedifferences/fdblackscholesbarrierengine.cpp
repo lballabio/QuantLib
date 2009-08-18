@@ -36,11 +36,12 @@ namespace QuantLib {
 
     FdBlackScholesBarrierEngine::FdBlackScholesBarrierEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Size tGrid, Size xGrid, Real theta,
+            Size tGrid, Size xGrid, Size dampingSteps, Real theta,
             bool localVol, Real illegalLocalVolOverwrite)
     : GenericEngine<DividendBarrierOption::arguments,
                     DividendBarrierOption::results>(),
-      process_(process), tGrid_(tGrid), xGrid_(xGrid), theta_(theta),
+      process_(process), tGrid_(tGrid), xGrid_(xGrid), 
+      dampingSteps_(dampingSteps), theta_(theta),
       localVol_(localVol), illegalLocalVolOverwrite_(illegalLocalVolOverwrite){
     }
 
@@ -125,7 +126,7 @@ namespace QuantLib {
                                 Handle<GeneralizedBlackScholesProcess>(process_),
                                 mesher, boundaries, conditions, calculator,
                                 payoff->strike(), maturity, tGrid_,
-                                0, // dampingSteps
+                                dampingSteps_,
                                 theta_, localVol_, illegalLocalVolOverwrite_));
 
         const Real spot = process_->x0();
@@ -164,10 +165,14 @@ namespace QuantLib {
                                           dividendCondition->dividends()));
             
             const Size min_grid_size = 50;
+            const Size rebateDampingSteps 
+                = (dampingSteps_ > 0) ? std::min(Size(1), dampingSteps_/2) : 0; 
+
             rebateOption->setPricingEngine(boost::shared_ptr<PricingEngine>(
                     new FdBlackScholesRebateEngine(
                             process_, tGrid_, std::max(min_grid_size, xGrid_/5), 
-                            theta_, localVol_, illegalLocalVolOverwrite_)));
+                            rebateDampingSteps, theta_, localVol_, 
+                            illegalLocalVolOverwrite_)));
 
             results_.value = vanillaOption->NPV()   + rebateOption->NPV()
                                                     - results_.value;

@@ -32,11 +32,12 @@ namespace QuantLib {
 
     FdBlackScholesRebateEngine::FdBlackScholesRebateEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Size tGrid, Size xGrid, Real theta,
+            Size tGrid, Size xGrid, Size dampingSteps, Real theta,
             bool localVol, Real illegalLocalVolOverwrite)
     : GenericEngine<DividendBarrierOption::arguments,
                     DividendBarrierOption::results>(),
-      process_(process), tGrid_(tGrid), xGrid_(xGrid), theta_(theta),
+      process_(process), tGrid_(tGrid), xGrid_(xGrid), 
+      dampingSteps_(dampingSteps), theta_(theta),
       localVol_(localVol), illegalLocalVolOverwrite_(illegalLocalVolOverwrite){
     }
 
@@ -122,7 +123,7 @@ namespace QuantLib {
                                 Handle<GeneralizedBlackScholesProcess>(process_),
                                 mesher, boundaries, conditions, calculator,
                                 payoff->strike(), maturity, tGrid_,
-                                0, // dampingSteps
+                                dampingSteps_,
                                 theta_, localVol_, illegalLocalVolOverwrite_));
 
         const Real spot = process_->x0();

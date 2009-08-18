@@ -43,7 +43,7 @@ namespace QuantLib {
         // Constructor
           FdBlackScholesRebateEngine(
                 const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                Size tGrid = 100, Size xGrid = 100,
+                Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
                 Real theta = 0.5,
                 bool localVol = false, 
                 Real illegalLocalVolOverwrite = -Null<Real>());
@@ -52,7 +52,7 @@ namespace QuantLib {
 
       private:
         const boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
-        const Size tGrid_, xGrid_;
+        const Size tGrid_, xGrid_, dampingSteps_;
         const Real theta_;
         const bool localVol_;
         const Real illegalLocalVolOverwrite_;
