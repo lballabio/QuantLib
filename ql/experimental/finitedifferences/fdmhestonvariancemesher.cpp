@@ -107,7 +107,7 @@ namespace QuantLib {
 
         Real skewHint = ((process->kappa() != 0.0) 
                 ? std::max(1.0, process->sigma()/process->kappa()) : 1.0);
-        volaEstimate_ = GaussLobattoIntegral(1000, 1e-5)(
+        volaEstimate_ = GaussLobattoIntegral(100000, 1e-4)(
             boost::function1<Real, Real>(
                 compose(std::ptr_fun<Real, Real>(std::sqrt),
                         LinearInterpolation(pGrid.begin(), pGrid.end(),
