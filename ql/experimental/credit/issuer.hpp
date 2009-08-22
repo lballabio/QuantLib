@@ -25,9 +25,9 @@
 #ifndef quantlib_issuer_hpp
 #define quantlib_issuer_hpp
 
-#include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/experimental/credit/defaultevent.hpp>
 #include <ql/experimental/credit/defaultprobabilitykey.hpp>
+#include <ql/termstructures/defaulttermstructure.hpp>
 #include <set>
 #include <vector>
 
@@ -38,10 +38,10 @@ namespace QuantLib {
             DefaultEventSet;
 
     class Issuer {
+      public:
         typedef std::pair<DefaultProbKey,
                           Handle<DefaultProbabilityTermStructure> >
                                                                key_curve_pair;
-      public:
         /*! The first argument represents the probability of an issuer
             of having any of its bonds with the given seniority,
             currency incurring in that particular event.  The second
