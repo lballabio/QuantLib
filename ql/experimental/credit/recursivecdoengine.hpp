@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <boost/bind.hpp>
 
+#include <ql/quotes/simplequote.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/matrixutilities/factorreduction.hpp>
