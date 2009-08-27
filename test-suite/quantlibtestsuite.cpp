@@ -20,6 +20,7 @@
 
 #include <ql/types.hpp>
 #include <ql/settings.hpp>
+#include <ql/version.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/timer.hpp>
 

@@ -2,6 +2,7 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/qldefines.hpp>
+#include <ql/version.hpp>
 #ifdef BOOST_MSVC
 #  include <ql/auto_link.hpp>
 #endif

@@ -47,11 +47,11 @@
       Remark: four processes
   3. icc-11.0,  -gcc-version=420 -fast -fp-model fast=2 -ipo-jobs2
       Remark: two processes
-  4. icc-11.0,  -gcc-version=420 -xSSSE3 -O3 -ipo -no-prec-div -static 
+  4. icc-11.0,  -gcc-version=420 -xSSSE3 -O3 -ipo -no-prec-div -static
                 -fp-model fast=2 -ipo-jobs2, Remark: two processes
   5. gcc-4.2.1, -O3 -ffast-math -mfpmath=sse,387 -msse3 -funroll-all-loops
       Remark: two processes
-  6. gcc-4.0.1, -O3 -march=pentium4 -ffast-math 
+  6. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
       -mfpmath=sse,387 -msse2 -funroll-all-loops, Remark: two processes
   7. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
                 -mfpmath=sse,387 -msse2 -funroll-all-loops
@@ -65,6 +65,7 @@
 */
 
 #include <ql/types.hpp>
+#include <ql/version.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/timer.hpp>
 #include <iostream>

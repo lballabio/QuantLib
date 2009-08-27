@@ -53,6 +53,7 @@ this_include_HEADERS = \
 	timegrid.hpp \
 	timeseries.hpp \
 	types.hpp \
+	version.hpp \
 	volatilitymodel.hpp
 
 libQuantLib_la_SOURCES = \
@@ -104,11 +105,13 @@ quantlib.hpp: Makefile.am
 	echo "/* Add the files to be included into Makefile.am instead. */" >> $@
 	echo >> $@
 	echo "#include <ql/qldefines.hpp>" >> $@
+	echo "#include <ql/version.hpp>" >> $@
 	echo "#ifdef BOOST_MSVC" >> $@
 	echo "#  include <ql/auto_link.hpp>" >> $@
 	echo "#endif" >> $@
 	echo >> $@
-	for i in $(filter-out auto_link.hpp config.hpp quantlib.hpp qldefines.hpp, \
+	for i in $(filter-out auto_link.hpp config.hpp quantlib.hpp \
+                          qldefines.hpp version.hpp, \
 	           $(this_include_HEADERS)); do \
 		echo "#include <${subdir}/$$i>" >> $@; \
 	done

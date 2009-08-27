@@ -20,6 +20,7 @@
 #ifndef quantlib_autolink_hpp
 #define quantlib_autolink_hpp
 
+#include <ql/version.hpp>
 #include <boost/config.hpp>
 
 // select toolset:
