@@ -177,26 +177,40 @@ namespace QuantLib {
             std::sqrt(t1*t1 - sigma2_*phi
                       *std::complex<Real>(-phi, (j_== 1)? 1 : -1));
         const std::complex<Real> ex = std::exp(-d*term_);
+		const std::complex<Real> addOnTerm 
+			= engine_ > 0 ? engine_->addOnTerm(phi, term_, j_) : 0.0;
 
         if (cpxLog_ == Gatheral) {
             if (phi != 0.0) {
-                const std::complex<Real> p = (t1-d)/(t1+d);
-                const std::complex<Real> g 
-                    = std::log((1.0 - p*std::exp(-d*term_))/(1.0 - p));
+				if (sigma_ > 1e-4) {
+					const std::complex<Real> p = (t1-d)/(t1+d);
+					const std::complex<Real> g 
+											= std::log((1.0 - p*ex)/(1.0 - p));
 
-                std::complex<Real> addOnTerm = engine_ > 0 ? engine_->addOnTerm(phi, term_, j_) :0;
-       
-                
-                return
-                    std::exp(v0_*(t1-d)*(1.0-ex)/(sigma2_*(1.0-ex*p))
-                             + (kappa_*theta_)/sigma2_*((t1-d)*term_-2.0*g)
-                             + std::complex<Real>(0.0, phi*(dd_-sx_))
-                             + addOnTerm
-                             ).imag()/phi;
+					return
+						std::exp(v0_*(t1-d)*(1.0-ex)/(sigma2_*(1.0-ex*p))
+								 + (kappa_*theta_)/sigma2_*((t1-d)*term_-2.0*g)
+								 + std::complex<Real>(0.0, phi*(dd_-sx_))
+								 + addOnTerm
+								 ).imag()/phi;
+				}
+				else {
+					const std::complex<Real> td = phi/(2.0*t1)
+						           *std::complex<Real>(-phi, (j_== 1)? 1 : -1);
+					const std::complex<Real> p = td*sigma2_/(t1+d);
+					const std::complex<Real> g = p*(1.0-ex);
+
+					return
+						std::exp(v0_*td*(1.0-ex)/(1.0-p*ex)
+								 + (kappa_*theta_)*(td*term_-2.0*g/sigma2_)
+								 + std::complex<Real>(0.0, phi*(dd_-sx_))
+								 + addOnTerm
+								 ).imag()/phi;
+				}
             }
             else {
                 // use l'Hospital's rule to get lim_{phi->0}
-                if (j_ == 1) {
+				if (j_ == 1) {
                     const Real kmr = rsigma_-kappa_;
                     if (std::fabs(kmr) > 1e-7) {
                         return dd_-sx_ 
@@ -212,7 +226,7 @@ namespace QuantLib {
                 else {
                     const std::complex<Real> p = (t1-d)/(t1+d);
                     const std::complex<Real> g 
-                        = std::log((1.0 - p*std::exp(-d*term_))/(1.0 - p));
+                        = std::log((1.0 - p*ex)/(1.0 - p));
 
                     return dd_-sx_
                         - (std::exp(-kappa_*term_)*kappa_*theta_
@@ -226,15 +240,13 @@ namespace QuantLib {
 
             // next term: g = std::log((1.0 - p*std::exp(d*term_))/(1.0 - p))
             std::complex<Real> g;
-            
-            g = std::log((1.0 - p*std::exp(-d*term_))/(1.0 - p));
 
             // the exp of the following expression is needed.
             const std::complex<Real> e = std::log(p)+d*term_;
             
             // does it fit to the machine precision?
             if (std::exp(-e.real()) > QL_EPSILON) {
-                g = std::log((1.0 - p*std::exp(d*term_))/(1.0 - p));
+                g = std::log((1.0 - p/ex)/(1.0 - p));
             } else {
                 // use a "big phi" approximation
                 g = d*term_ + std::log(p/(p - 1.0));
@@ -266,9 +278,7 @@ namespace QuantLib {
             g_km1_ = g.imag();
             g += std::complex<Real>(0, 2*b_*M_PI);
 
-            std::complex<Real> addOnTerm = engine_ > 0 ? engine_->addOnTerm(phi, term_, j_) :0;
-            
-            return std::exp(v0_*(t1+d)*(ex-1.0)/(sigma2_*(ex-p))
+			return std::exp(v0_*(t1+d)*(ex-1.0)/(sigma2_*(ex-p))
                             + (kappa_*theta_)/sigma2_*((t1+d)*term_-2.0*g)
                             + std::complex<Real>(0,phi*(dd_-sx_))
                             + addOnTerm
