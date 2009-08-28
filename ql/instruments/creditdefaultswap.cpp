@@ -28,7 +28,7 @@
 #include <ql/pricingengines/credit/midpointcdsengine.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/math/solvers1d/brent.hpp>
-#include <ql/event.hpp>
+#include <ql/time/calendars/weekendsonly.hpp>
 
 namespace QuantLib {
 
@@ -260,7 +260,7 @@ namespace QuantLib {
 
         Handle<DefaultProbabilityTermStructure> probability(
             boost::shared_ptr<DefaultProbabilityTermStructure>(new
-                FlatHazardRate(0, NullCalendar(),
+                FlatHazardRate(0, WeekendsOnly(),
                                Handle<Quote>(flatRate), dayCounter)));
 
         MidPointCdsEngine engine(probability, recoveryRate, discountCurve);
@@ -288,7 +288,7 @@ namespace QuantLib {
 
         Handle<DefaultProbabilityTermStructure> probability(
             boost::shared_ptr<DefaultProbabilityTermStructure>(
-                             new FlatHazardRate(0, NullCalendar(),
+                             new FlatHazardRate(0, WeekendsOnly(),
                                                 flatHazardRate, dayCounter)));
 
         MidPointCdsEngine engine(probability, conventionalRecovery,

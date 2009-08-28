@@ -151,6 +151,23 @@ namespace QuantLib {
         Real defaultLegNPV() const;
         Real upfrontNPV() const;
 
+        //! Implied hazard rate calculation
+        /*! \note This method performs the calculation with the
+                  instrument characteristics. It will coincide with
+                  the ISDA calculation if your object has the standard
+                  characteristics. Notably:
+                  - The calendar should have no bank holidays, just
+                    weekends.
+                  - The yield curve should be LIBOR piecewise constant
+                    in fwd rates, with a discount factor of 1 on the
+                    calculation date, which coincides with the trade
+                    date.
+                  - Convention should be Following for yield curve and
+                    contract cashflows.
+                  - The CDS should pay accrued and mature on standard
+                    IMM dates, settle on trade date +1 and upfront
+                    settle on trade date +3.
+        */
         Rate impliedHazardRate(Real targetNPV,
                                const Handle<YieldTermStructure>& discountCurve,
                                const DayCounter& dayCounter,
@@ -177,6 +194,8 @@ namespace QuantLib {
                   instrument characteristics. It will coincide with
                   the ISDA calculation if your object has the standard
                   characteristics. Notably:
+                  - The calendar should have no bank holidays, just
+                    weekends.
                   - The yield curve should be LIBOR piecewise constant
                     in fwd rates, with a discount factor of 1 on the
                     calculation date, which coincides with the trade

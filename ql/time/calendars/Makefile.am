@@ -39,7 +39,8 @@ this_include_HEADERS = \
 	turkey.hpp \
 	ukraine.hpp \
 	unitedkingdom.hpp \
-	unitedstates.hpp
+	unitedstates.hpp \
+	weekendsonly.hpp
 
 libCalendars_la_SOURCES = \
 	argentina.cpp \
@@ -76,7 +77,8 @@ libCalendars_la_SOURCES = \
 	turkey.cpp \
 	ukraine.cpp \
 	unitedkingdom.cpp \
-	unitedstates.cpp
+	unitedstates.cpp \
+	weekendsonly.cpp
 
 noinst_LTLIBRARIES = libCalendars.la
 
