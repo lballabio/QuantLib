@@ -182,7 +182,7 @@ namespace QuantLib {
 
         if (cpxLog_ == Gatheral) {
             if (phi != 0.0) {
-				if (sigma_ > 1e-4) {
+				if (sigma_ > 1e-5) {
 					const std::complex<Real> p = (t1-d)/(t1+d);
 					const std::complex<Real> g 
 											= std::log((1.0 - p*ex)/(1.0 - p));
