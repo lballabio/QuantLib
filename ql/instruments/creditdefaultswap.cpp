@@ -276,6 +276,32 @@ namespace QuantLib {
         return Brent().solve(f, accuracy, guess, step);
     }
 
+
+    Rate CreditDefaultSwap::conventionalSpread(
+                              Real conventionalRecovery,
+                              const Handle<YieldTermStructure>& discountCurve,
+                              const DayCounter& dayCounter) const {
+        Rate flatHazardRate = impliedHazardRate(0.0,
+                                                discountCurve,
+                                                dayCounter,
+                                                conventionalRecovery);
+
+        Handle<DefaultProbabilityTermStructure> probability(
+            boost::shared_ptr<DefaultProbabilityTermStructure>(
+                             new FlatHazardRate(0, NullCalendar(),
+                                                flatHazardRate, dayCounter)));
+
+        MidPointCdsEngine engine(probability, conventionalRecovery,
+                                 discountCurve, true);
+        setupArguments(engine.getArguments());
+        engine.calculate();
+        const CreditDefaultSwap::results* results =
+            dynamic_cast<const CreditDefaultSwap::results*>(
+                                                       engine.getResults());
+        return results->fairSpread;
+    }
+
+
     const Date& CreditDefaultSwap::protectionStartDate() const {
         return protectionStart_;
     }
