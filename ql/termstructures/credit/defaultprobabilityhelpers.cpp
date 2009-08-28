@@ -94,9 +94,10 @@ namespace QuantLib {
     }
 
     void CdsHelper::initializeDates() {
-        Date startDate = calendar_.advance(evaluationDate_,
-                                           settlementDays_, Days);
-        Date endDate = startDate + tenor_;
+        Date protectionStart_ = evaluationDate_ + settlementDays_;
+        Date startDate = calendar_.adjust(protectionStart_,
+                                          paymentConvention_);
+        Date endDate = evaluationDate_ + tenor_;
 
         schedule_ =
             MakeSchedule().from(startDate)
@@ -157,7 +158,8 @@ namespace QuantLib {
                     new CreditDefaultSwap(Protection::Buyer, 100.0, 0.01,
                                           schedule_, paymentConvention_,
                                           dayCounter_, settlesAccrual_,
-                                          paysAtDefaultTime_));
+                                          paysAtDefaultTime_,
+                                          protectionStart_));
 
         swap_->setPricingEngine(boost::shared_ptr<PricingEngine>(
                                       new MidPointCdsEngine(probability_,
@@ -178,13 +180,17 @@ namespace QuantLib {
                               const DayCounter& dayCounter,
                               Real recoveryRate,
                               const Handle<YieldTermStructure>& discountCurve,
+                              Natural upfrontSettlementDays,
                               bool settlesAccrual,
                               bool paysAtDefaultTime)
     : CdsHelper(upfront, tenor, settlementDays, calendar,
                 frequency, paymentConvention, rule, dayCounter,
                 recoveryRate, discountCurve, settlesAccrual,
                 paysAtDefaultTime),
-      runningSpread_(runningSpread) {}
+      upfrontSettlementDays_(upfrontSettlementDays),
+      runningSpread_(runningSpread) {
+        initializeDates();
+    }
 
     UpfrontCdsHelper::UpfrontCdsHelper(
                               Rate upfrontSpread,
@@ -198,13 +204,24 @@ namespace QuantLib {
                               const DayCounter& dayCounter,
                               Real recoveryRate,
                               const Handle<YieldTermStructure>& discountCurve,
+                              Natural upfrontSettlementDays,
                               bool settlesAccrual,
                               bool paysAtDefaultTime)
     : CdsHelper(upfrontSpread, tenor, settlementDays, calendar,
                 frequency, paymentConvention, rule, dayCounter,
                 recoveryRate, discountCurve, settlesAccrual,
                 paysAtDefaultTime),
-      runningSpread_(runningSpread) {}
+      upfrontSettlementDays_(upfrontSettlementDays),
+      runningSpread_(runningSpread) {
+        initializeDates();
+    }
+
+    void UpfrontCdsHelper::initializeDates() {
+        CdsHelper::initializeDates();
+        upfrontDate_ = calendar_.advance(evaluationDate_,
+                                         upfrontSettlementDays_, Days,
+                                         paymentConvention_);
+    }
 
     Real UpfrontCdsHelper::impliedQuote() const {
         SavedSettings backup;
@@ -220,7 +237,9 @@ namespace QuantLib {
                                                 schedule_, paymentConvention_,
                                                 dayCounter_,
                                                 settlesAccrual_,
-                                                paysAtDefaultTime_));
+                                                paysAtDefaultTime_,
+                                                protectionStart_,
+                                                upfrontDate_));
 
         swap_->setPricingEngine(boost::shared_ptr<PricingEngine>(
                                       new MidPointCdsEngine(probability_,

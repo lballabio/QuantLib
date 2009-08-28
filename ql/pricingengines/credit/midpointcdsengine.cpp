@@ -50,11 +50,18 @@ namespace QuantLib {
         // Upfront Flow NPV. Either we are on-the-run (no flow)
         // or we are forward start
         Real upfPVO1 = 0.0;
-        if(!arguments_.upfrontPayment->hasOccurred(settlementDate,
-                                                   includeSettlementDateFlows_))
+        if (!arguments_.upfrontPayment->hasOccurred(
+                                               settlementDate,
+                                               includeSettlementDateFlows_)) {
+            // date determining the probability survival so we have to pay
+            //   the upfront (did not knock out)
+            Date effectiveUpfrontDate =
+                arguments_.protectionStart > probability_->referenceDate() ?
+                    arguments_.protectionStart : probability_->referenceDate();
             upfPVO1 =
-                probability_->survivalProbability(settlementDate) *
-                discountCurve_->discount(settlementDate);
+                probability_->survivalProbability(effectiveUpfrontDate) *
+                discountCurve_->discount(arguments_.upfrontPayment->date());
+        }
         results_.upfrontNPV = upfPVO1 * arguments_.upfrontPayment->amount();
 
         results_.couponLegNPV  = 0.0;
@@ -74,6 +81,9 @@ namespace QuantLib {
             Date paymentDate = coupon->date(),
                  startDate = coupon->accrualStartDate(),
                  endDate = coupon->accrualEndDate();
+            // this is the only point where it might not coincide
+            if (i==0)
+                startDate = arguments_.protectionStart;
             Date effectiveStartDate =
                 (startDate <= today && today <= endDate) ? today : startDate;
             Date defaultDate = // mid-point

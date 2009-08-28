@@ -42,7 +42,15 @@ namespace QuantLib {
     typedef RelativeDateBootstrapHelper<DefaultProbabilityTermStructure>
                                          RelativeDateDefaultProbabilityHelper;
 
-    //! Base default-probability bootstrap helper
+    /*! Base default-probability bootstrap helper
+        @param tenor  CDS tenor.
+        @param frequency  Coupon frequency.
+        @param settlementDays  The number of days from today's date
+                               to the start of the protection period.
+        @param paymentConvention The payment convention applied to
+                                 coupons schedules, settlement dates
+                                 and protection period calculations.
+    */
     class CdsHelper : public RelativeDateDefaultProbabilityHelper {
       public:
         CdsHelper(const Handle<Quote>& quote,
@@ -89,6 +97,8 @@ namespace QuantLib {
         Schedule schedule_;
         boost::shared_ptr<CreditDefaultSwap> swap_;
         RelinkableHandle<DefaultProbabilityTermStructure> probability_;
+        //! protection effective date.
+        Date protectionStart_;
     };
 
     //! Spread-quoted CDS hazard rate bootstrap helper.
@@ -143,6 +153,7 @@ namespace QuantLib {
                          const DayCounter& dayCounter,
                          Real recoveryRate,
                          const Handle<YieldTermStructure>& discountCurve,
+                         Natural upfrontSettlementDays = 0,
                          bool settlesAccrual = true,
                          bool paysAtDefaultTime = true);
 
@@ -160,10 +171,14 @@ namespace QuantLib {
                          const DayCounter& dayCounter,
                          Real recoveryRate,
                          const Handle<YieldTermStructure>& discountCurve,
+                         Natural upfrontSettlementDays = 0,
                          bool settlesAccrual = true,
                          bool paysAtDefaultTime = true);
         Real impliedQuote() const;
+        void initializeDates();
       private:
+        Natural upfrontSettlementDays_;
+        Date upfrontDate_;
         Rate runningSpread_;
         void resetEngine();
     };

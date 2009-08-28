@@ -40,10 +40,15 @@ namespace QuantLib {
                                          const DayCounter& dayCounter,
                                          bool settlesAccrual,
                                          bool paysAtDefaultTime,
+                                         const Date& protectionStart,
                                          const boost::shared_ptr<Claim>& claim)
     : side_(side), notional_(notional), upfront_(boost::none),
       runningSpread_(spread), settlesAccrual_(settlesAccrual),
-      paysAtDefaultTime_(paysAtDefaultTime), claim_(claim) {
+      paysAtDefaultTime_(paysAtDefaultTime), claim_(claim),
+      protectionStart_(protectionStart == Null<Date>() ? schedule[0] :
+                                                         protectionStart) {
+        QL_REQUIRE(protectionStart_ >= schedule[0],
+                   "protection can not start after accrual");
         leg_ = FixedRateLeg(schedule, dayCounter)
             .withNotionals(notional)
             .withCouponRates(spread)
@@ -64,16 +69,24 @@ namespace QuantLib {
                                          const DayCounter& dayCounter,
                                          bool settlesAccrual,
                                          bool paysAtDefaultTime,
+                                         const Date& protectionStart,
+                                         const Date& upfrontDate,
                                          const boost::shared_ptr<Claim>& claim)
     : side_(side), notional_(notional), upfront_(upfront),
       runningSpread_(runningSpread), settlesAccrual_(settlesAccrual),
-      paysAtDefaultTime_(paysAtDefaultTime), claim_(claim) {
+      paysAtDefaultTime_(paysAtDefaultTime), claim_(claim),
+      protectionStart_(protectionStart == Null<Date>() ? schedule[0] :
+                                                         protectionStart) {
+        QL_REQUIRE(protectionStart_ <= schedule[0],
+                   "protection can not start after accrual");
         leg_ = FixedRateLeg(schedule, dayCounter)
             .withNotionals(notional)
             .withCouponRates(runningSpread)
             .withPaymentAdjustment(convention);
-        upfrontPayment_.reset(new SimpleCashFlow(notional*upfront,
-                                                 schedule[0]));
+        Date d = upfrontDate == Null<Date>() ? schedule[0] : upfrontDate;
+        upfrontPayment_.reset(new SimpleCashFlow(notional*upfront, d));
+        QL_REQUIRE(upfrontPayment_->date() >= protectionStart_,
+                   "upfront can not be due before contract start");
 
         if (!claim_)
             claim_ = boost::shared_ptr<Claim>(new FaceValueClaim);
@@ -140,6 +153,7 @@ namespace QuantLib {
         arguments->claim = claim_;
         arguments->upfront = upfront_;
         arguments->spread = runningSpread_;
+        arguments->protectionStart = protectionStart_;
     }
 
 
@@ -262,6 +276,14 @@ namespace QuantLib {
         return Brent().solve(f, accuracy, guess, step);
     }
 
+    const Date& CreditDefaultSwap::protectionStartDate() const {
+        return protectionStart_;
+    }
+
+    const Date& CreditDefaultSwap::protectionEndDate() const {
+        return boost::dynamic_pointer_cast<Coupon>(leg_.back())
+            ->accrualEndDate();
+    }
 
 
     CreditDefaultSwap::arguments::arguments()
@@ -276,6 +298,8 @@ namespace QuantLib {
         QL_REQUIRE(!leg.empty(), "coupons not set");
         QL_REQUIRE(upfrontPayment, "upfront payment not set");
         QL_REQUIRE(claim, "claim not set");
+        QL_REQUIRE(protectionStart != Null<Date>(),
+                   "protection start date not set");
     }
 
     void CreditDefaultSwap::results::reset() {

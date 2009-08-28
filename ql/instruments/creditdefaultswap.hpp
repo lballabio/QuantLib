@@ -58,7 +58,17 @@ namespace QuantLib {
         //! \name Constructors
         //@{
         //! CDS quoted as running-spread only
-        /*! @param spread Spread in fractional units. */
+        /*! @param spread Running spread in fractional units.
+            @param settlesAccrual Whether or not the accrued coupon is
+                                  due in the event of a default.
+            @param paysAtDefaultTime If set to true, any payments
+                                     triggered by a default event are
+                                     due at default time. If set to
+                                     false, they are due at the end of
+                                     the accrual period.
+            @param protectionStart The first date where a default
+                                   event will trigger the contract.
+        */
         CreditDefaultSwap(Protection::Side side,
                           Real notional,
                           Rate spread,
@@ -67,21 +77,34 @@ namespace QuantLib {
                           const DayCounter& dayCounter,
                           bool settlesAccrual = true,
                           bool paysAtDefaultTime = true,
+                          const Date& protectionStart = Date(),
                           const boost::shared_ptr<Claim>& =
                                                   boost::shared_ptr<Claim>());
         //! CDS quoted as upfront and running spread
-        /*! @param runningSpread spread in fractional units.
-            @param upfrontSpread upfront in fractional units.
+        /*! @param spread Running spread in fractional units.
+            @param upfront Upfront in fractional units.
+            @param settlesAccrual Whether or not the accrued coupon is
+                                  due in the event of a default.
+            @param paysAtDefaultTime If set to true, any payments
+                                     triggered by a default event are
+                                     due at default time. If set to
+                                     false, they are due at the end of
+                                     the accrual period.
+            @param protectionStart The first date where a default
+                                   event will trigger the contract.
+            @param upfrontDate Settlement date for the upfront payment.
         */
         CreditDefaultSwap(Protection::Side side,
                           Real notional,
                           Rate upfront,
-                          Rate runningSpread,
+                          Rate spread,
                           const Schedule& schedule,
                           BusinessDayConvention paymentConvention,
                           const DayCounter& dayCounter,
                           bool settlesAccrual = true,
                           bool paysAtDefaultTime = true,
+                          const Date& protectionStart = Date(),
+                          const Date& upfrontDate = Date(),
                           const boost::shared_ptr<Claim>& =
                                                   boost::shared_ptr<Claim>());
         //@}
@@ -100,6 +123,10 @@ namespace QuantLib {
         bool settlesAccrual() const;
         bool paysAtDefaultTime() const;
         const Leg& coupons() const;
+        //! The first date for which defaults will trigger the contract
+        const Date& protectionStartDate() const;
+        //! The last date for which defaults will trigger the contract
+        const Date& protectionEndDate() const;
         //@}
         //! \name Results
         //@{
@@ -143,6 +170,7 @@ namespace QuantLib {
         boost::shared_ptr<Claim> claim_;
         Leg leg_;
         boost::shared_ptr<CashFlow> upfrontPayment_;
+        Date protectionStart_;
         // results
         mutable Rate fairUpfront_;
         mutable Rate fairSpread_;
@@ -165,6 +193,7 @@ namespace QuantLib {
         bool settlesAccrual;
         bool paysAtDefaultTime;
         boost::shared_ptr<Claim> claim;
+        Date protectionStart;
         void validate() const;
     };
 
