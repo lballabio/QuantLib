@@ -42,7 +42,7 @@ namespace QuantLib {
                    || polynomType == LsmBasisSystem::Laguerre
                    || polynomType == LsmBasisSystem::Hermite
                    || polynomType == LsmBasisSystem::Hyperbolic
-                   || polynomType == LsmBasisSystem::Chebyshev2th,
+                   || polynomType == LsmBasisSystem::Chebyshev2nd,
                    "insufficient polynom type");
         const boost::shared_ptr<BasketPayoff> basketPayoff
             = boost::dynamic_pointer_cast<BasketPayoff>(payoff_);

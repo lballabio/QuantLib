@@ -44,7 +44,7 @@ namespace QuantLib {
                    || polynomType == LsmBasisSystem::Laguerre
                    || polynomType == LsmBasisSystem::Hermite
                    || polynomType == LsmBasisSystem::Hyperbolic
-                   || polynomType == LsmBasisSystem::Chebyshev2th,
+                   || polynomType == LsmBasisSystem::Chebyshev2nd,
                    "insufficient polynom type");
 
         // the payoff gives an additional value

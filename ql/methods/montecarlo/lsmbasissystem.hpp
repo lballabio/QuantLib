@@ -34,7 +34,7 @@ namespace QuantLib {
     class LsmBasisSystem {
       public:
         enum PolynomType { Monomial, Laguerre, Hermite, Hyperbolic,
-                           Legendre, Chebyshev, Chebyshev2th };
+                           Legendre, Chebyshev, Chebyshev2nd };
 
         static std::vector<boost::function1<Real, Real> >
             pathBasisSystem(Size order, PolynomType polynomType);

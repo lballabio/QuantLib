@@ -215,7 +215,7 @@ void HestonModelTest::testDAXCalibration() {
             options.push_back(boost::shared_ptr<CalibrationHelper>(
                     new HestonModelHelper(maturity, calendar,
                                           s0->value(), strike[s], vol,
-                                          riskFreeTS, dividendTS, 
+                                          riskFreeTS, dividendTS,
                                           CalibrationHelper::ImpliedVolError)));
         }
     }
@@ -784,14 +784,14 @@ void HestonModelTest::testDifferentIntegrals() {
             new AnalyticHestonEngine(
                 model, AnalyticHestonEngine::Gatheral,
                 AnalyticHestonEngine::Integration::gaussChebyshev(512)));
-        boost::shared_ptr<AnalyticHestonEngine> chebyshev2thEngine(
+        boost::shared_ptr<AnalyticHestonEngine> chebyshev2ndEngine(
             new AnalyticHestonEngine(
                 model, AnalyticHestonEngine::Gatheral,
-                AnalyticHestonEngine::Integration::gaussChebyshev2th(512)));
+                AnalyticHestonEngine::Integration::gaussChebyshev2nd(512)));
 
         Real maxLegendreDiff    = 0.0;
         Real maxChebyshevDiff   = 0.0;
-        Real maxChebyshev2thDiff= 0.0;
+        Real maxChebyshev2ndDiff= 0.0;
         Real maxLaguerreDiff    = 0.0;
 
         for (Size i=0; i < LENGTH(maturities); ++i) {
@@ -819,8 +819,8 @@ void HestonModelTest::testDifferentIntegrals() {
                     option.setPricingEngine(chebyshevEngine);
                     const Real chebyshev = option.NPV();
 
-                    option.setPricingEngine(chebyshev2thEngine);
-                    const Real chebyshev2th = option.NPV();
+                    option.setPricingEngine(chebyshev2ndEngine);
+                    const Real chebyshev2nd = option.NPV();
 
                     maxLaguerreDiff
                         = std::max(maxLaguerreDiff,
@@ -831,16 +831,16 @@ void HestonModelTest::testDifferentIntegrals() {
                     maxChebyshevDiff
                         = std::max(maxChebyshevDiff,
                                    std::fabs(lobattoNPV-chebyshev));
-                    maxChebyshev2thDiff
-                        = std::max(maxChebyshev2thDiff,
-                                   std::fabs(lobattoNPV-chebyshev2th));
+                    maxChebyshev2ndDiff
+                        = std::max(maxChebyshev2ndDiff,
+                                   std::fabs(lobattoNPV-chebyshev2nd));
 
                 }
             }
         }
         const Real maxDiff = std::max(std::max(
             std::max(maxLaguerreDiff,maxLegendreDiff),
-                                     maxChebyshevDiff), maxChebyshev2thDiff);
+                                     maxChebyshevDiff), maxChebyshev2ndDiff);
 
         const Real tr = tol[iter - params.begin()];
         if (maxDiff > tr) {
@@ -873,36 +873,36 @@ void HestonModelTest::testMultipleStrikesEngine() {
     boost::shared_ptr<HestonProcess> process(new HestonProcess(
                      riskFreeTS, dividendTS, s0, 0.16, 2.5, 0.09, 0.8, -0.8));
     boost::shared_ptr<HestonModel> model(new HestonModel(process));
-    
+
     std::vector<Real> strikes;
     strikes.push_back(1.0);  strikes.push_back(0.5);
     strikes.push_back(0.75); strikes.push_back(1.5); strikes.push_back(2.0);
-    
+
     boost::shared_ptr<FdHestonVanillaEngine> singleStrikeEngine(
                              new FdHestonVanillaEngine(model, 20, 400, 50));
     boost::shared_ptr<FdHestonVanillaEngine> multiStrikeEngine(
                              new FdHestonVanillaEngine(model, 20, 400, 50));
     multiStrikeEngine->enableMultipleStrikesCaching(strikes);
-    
+
     Real relTol = 5e-3;
     for (Size i=0; i < strikes.size(); ++i) {
         boost::shared_ptr<StrikedTypePayoff> payoff(
                            new PlainVanillaPayoff(Option::Put, strikes[i]));
-        
+
         VanillaOption aOption(payoff, exercise);
         aOption.setPricingEngine(multiStrikeEngine);
-        
+
         Real npvCalculated   = aOption.NPV();
         Real deltaCalculated = aOption.delta();
         Real gammaCalculated = aOption.gamma();
         Real thetaCalculated = aOption.theta();
-        
+
         aOption.setPricingEngine(singleStrikeEngine);
         Real npvExpected   = aOption.NPV();
         Real deltaExpected = aOption.delta();
         Real gammaExpected = aOption.gamma();
         Real thetaExpected = aOption.theta();
-       
+
         if (std::fabs(npvCalculated-npvExpected)/npvExpected > relTol) {
             BOOST_FAIL("failed to reproduce price with FD multi strike engine"
                        << "\n    calculated: " << npvCalculated

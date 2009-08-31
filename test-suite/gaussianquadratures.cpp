@@ -122,7 +122,7 @@ void GaussianQuadraturesTest::testJacobi() {
 
     testSingleJacobi(GaussLegendreIntegration(16));
     testSingleJacobi(GaussChebyshevIntegration(130));
-    testSingleJacobi(GaussChebyshev2thIntegration(130));
+    testSingleJacobi(GaussChebyshev2ndIntegration(130));
     testSingleJacobi(GaussGegenbauerIntegration(50,0.55));
 }
 

@@ -173,9 +173,9 @@ namespace QuantLib {
             w(x)=(1-x^2)^{1/2}
         \f]
     */
-    class GaussChebyshev2thIntegration : public GaussianQuadrature {
+    class GaussChebyshev2ndIntegration : public GaussianQuadrature {
       public:
-        GaussChebyshev2thIntegration(Size n)
+        GaussChebyshev2ndIntegration(Size n)
       : GaussianQuadrature(n, GaussJacobiPolynomial(0.5, 0.5)) {}
     };
 

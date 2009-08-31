@@ -115,9 +115,9 @@ namespace QuantLib {
     };
 
     //! Gauss-Chebyshev polynomial (second kind)
-    class GaussChebyshev2thPolynomial : public GaussJacobiPolynomial {
+    class GaussChebyshev2ndPolynomial : public GaussJacobiPolynomial {
       public:
-        GaussChebyshev2thPolynomial();
+        GaussChebyshev2ndPolynomial();
     };
 
     //! Gauss-Gegenbauer polynomial

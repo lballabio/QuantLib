@@ -150,7 +150,7 @@ namespace QuantLib {
     : GaussJacobiPolynomial(0.0, 0.0) {
     }
 
-    GaussChebyshev2thPolynomial::GaussChebyshev2thPolynomial()
+    GaussChebyshev2ndPolynomial::GaussChebyshev2ndPolynomial()
     : GaussJacobiPolynomial(0.5, 0.5) {
     }
 

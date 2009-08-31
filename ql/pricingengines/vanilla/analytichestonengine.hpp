@@ -38,14 +38,14 @@ namespace QuantLib {
 
     //! analytic Heston-model engine based on Fourier transform
 
-    /*! Integration detail: 
-        Two algebraically equivalent formulations of the complex 
-        logarithm of the Heston model exist. Gatherals [2005] 
-        (also Duffie, Pan and Singleton [2000], and Schoutens, 
+    /*! Integration detail:
+        Two algebraically equivalent formulations of the complex
+        logarithm of the Heston model exist. Gatherals [2005]
+        (also Duffie, Pan and Singleton [2000], and Schoutens,
         Simons and Tistaert[2004]) version does not cause
-        discoutinuities whereas the original version (e.g. Heston [1993]) 
-        needs some sort of "branch correction" to work properly. 
-        Gatheral's version does also work with adaptive integration 
+        discoutinuities whereas the original version (e.g. Heston [1993])
+        needs some sort of "branch correction" to work properly.
+        Gatheral's version does also work with adaptive integration
         routines and should be preferred over the original Heston version.
     */
 
@@ -62,11 +62,11 @@ namespace QuantLib {
 
         R. Lord and C. Kahl, Why the rotation count algorithm works,
         http://papers.ssrn.com/sol3/papers.cfm?abstract_id=921335
-        
-        H. Albrecher, P. Mayer, W.Schoutens and J. Tistaert, 
+
+        H. Albrecher, P. Mayer, W.Schoutens and J. Tistaert,
         The Little Heston Trap, http://www.schoutens.be/HestonTrap.pdf
 
-        J. Gatheral, The Volatility Surface: A Practitioner's Guide,        
+        J. Gatheral, The Volatility Surface: A Practitioner's Guide,
         Wiley Finance
 
         \ingroup vanillaengines
@@ -83,31 +83,31 @@ namespace QuantLib {
         class Integration;
         enum ComplexLogFormula { Gatheral, BranchCorrection };
 
-        // Simple to use constructor: Using adaptive 
+        // Simple to use constructor: Using adaptive
         // Gauss-Lobatto integration and Gatheral's version of complex log.
         // Be aware: using a too large number for maxEvaluations might result
-        // in a stack overflow as the Lobatto integration is a recursive 
+        // in a stack overflow as the Lobatto integration is a recursive
         // algorithm.
         AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
                              Real relTolerance, Size maxEvaluations);
 
-        // Constructor using Laguerre integration 
+        // Constructor using Laguerre integration
         // and Gatheral's version of complex log.
         AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
                              Size integrationOrder = 144);
 
-        // Constructor giving full control 
+        // Constructor giving full control
         // over the Fourier integration algorithm
         AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
                              ComplexLogFormula cpxLog, const Integration& itg);
 
- 
+
         void calculate() const;
         Size numberOfEvaluations() const;
 
         static void doCalculation(Real riskFreeDiscount,
                                              Real dividendDiscount,
-                                             Real spotPrice, 
+                                             Real spotPrice,
                                              Real strikePrice,
                                              Real term,
                                              Real kappa, Real theta, Real sigma, Real v0, Real rho,
@@ -130,7 +130,7 @@ namespace QuantLib {
         const ComplexLogFormula cpxLog_;
         const boost::shared_ptr<Integration> integration_;
 
-      
+
 
     };
 
@@ -141,21 +141,21 @@ namespace QuantLib {
         static Integration gaussLaguerre    (Size integrationOrder = 128);
         static Integration gaussLegendre    (Size integrationOrder = 128);
         static Integration gaussChebyshev   (Size integrationOrder = 128);
-        static Integration gaussChebyshev2th(Size integrationOrder = 128);
+        static Integration gaussChebyshev2nd(Size integrationOrder = 128);
 
-        // for an adaptive integration algorithm Gatheral's version has to 
+        // for an adaptive integration algorithm Gatheral's version has to
         // be used.Be aware: using a too large number for maxEvaluations might
-        // result in a stack overflow as the these integrations are based on 
+        // result in a stack overflow as the these integrations are based on
         // recursive algorithms.
         static Integration gaussLobatto(Real relTolerance, Real absTolerance,
                                         Size maxEvaluations = 1000);
 
         // usually these routine have a poor convergence behaviour.
-        static Integration gaussKronrod(Real absTolerance, 
+        static Integration gaussKronrod(Real absTolerance,
                                         Size maxEvaluations = 1000);
-        static Integration simpson(Real absTolerance, 
+        static Integration simpson(Real absTolerance,
                                    Size maxEvaluations = 1000);
-        static Integration trapezoid(Real absTolerance, 
+        static Integration trapezoid(Real absTolerance,
                                      Size maxEvaluations = 1000);
 
         Real calculate(Real c_inf,
@@ -165,18 +165,18 @@ namespace QuantLib {
         bool isAdaptiveIntegration() const;
 
       private:
-        enum Algorithm 
-            { GaussLobatto, GaussKronrod, Simpson, Trapezoid, 
-              GaussLaguerre, GaussLegendre, 
-              GaussChebyshev, GaussChebyshev2th };
+        enum Algorithm
+            { GaussLobatto, GaussKronrod, Simpson, Trapezoid,
+              GaussLaguerre, GaussLegendre,
+              GaussChebyshev, GaussChebyshev2nd };
 
         mutable Real c_inf_;
         mutable boost::function1<Real, Real> f_;
 
-        Integration(Algorithm intAlgo, 
+        Integration(Algorithm intAlgo,
                     const boost::shared_ptr<GaussianQuadrature>& quadrature);
 
-        Integration(Algorithm intAlgo, 
+        Integration(Algorithm intAlgo,
                     const boost::shared_ptr<Integrator>& integrator);
 
         const Algorithm intAlgo_;

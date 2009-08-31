@@ -95,10 +95,10 @@ namespace QuantLib {
                     bind(&GaussianOrthogonalPolynomial::weightedValue,
                                 GaussChebyshevPolynomial(), i, _1));
                 break;
-              case Chebyshev2th:
+              case Chebyshev2nd:
                 ret.push_back(
                     bind(&GaussianOrthogonalPolynomial::weightedValue,
-                                GaussChebyshev2thPolynomial(), i, _1));
+                                GaussChebyshev2ndPolynomial(), i, _1));
                 break;
               default:
                 QL_FAIL("unknown regression type");

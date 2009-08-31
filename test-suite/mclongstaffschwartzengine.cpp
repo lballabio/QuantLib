@@ -155,7 +155,7 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
     LsmBasisSystem::PolynomType polynomTypes[]
         = { LsmBasisSystem::Monomial, LsmBasisSystem::Laguerre,
             LsmBasisSystem::Hermite, LsmBasisSystem::Hyperbolic,
-            LsmBasisSystem::Chebyshev2th };
+            LsmBasisSystem::Chebyshev2nd };
 
     for (Integer i=0; i<2; ++i) {
         for (Integer j=0; j<3; ++j) {
