@@ -84,8 +84,9 @@ namespace QuantLib {
                                 << "\n  after:  " << after);
             }
             // defined to avoid unused-variable warnings
-            void _use_check(void* = &boost::test_tools::check_is_close,
-                            void* = &boost::test_tools::check_is_small) const {}
+            void _use_check(
+                    const void* = &boost::test_tools::check_is_close,
+                    const void* = &boost::test_tools::check_is_small) const {}
         };
 
     }
