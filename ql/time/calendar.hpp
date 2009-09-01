@@ -200,7 +200,7 @@ namespace QuantLib {
     }
 
     inline bool Calendar::isEndOfMonth(const Date& d) const {
-        return (d.month() != adjust(d+1).month());
+        return (d.month() != adjust(d+1).month()) && isBusinessDay(d);
     }
 
     inline Date Calendar::endOfMonth(const Date& d) const {
