@@ -82,10 +82,10 @@ namespace QuantLib {
         const Time maturity = process->time(arguments_.exercise->lastDate());
 
         // 2.1 The variance mesher
-        const Size tGridMin = 10;
+        const Size tGridMin = 5;
         const boost::shared_ptr<FdmHestonVarianceMesher> varianceMesher(
             new FdmHestonVarianceMesher(layout->dim()[1], process, 
-                                        maturity,std::max(tGridMin, tGrid_/5)));
+                                        maturity,std::max(tGridMin,tGrid_/50)));
 
         // 2.2 The equity mesher
         const boost::shared_ptr<StrikedTypePayoff> payoff =
