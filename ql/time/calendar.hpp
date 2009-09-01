@@ -177,7 +177,6 @@ namespace QuantLib {
     /*! \relates Calendar */
     bool operator!=(const Calendar&, const Calendar&);
 
-
     /*! \relates Calendar */
     std::ostream& operator<<(std::ostream&, const Calendar&);
 
@@ -201,7 +200,7 @@ namespace QuantLib {
     }
 
     inline bool Calendar::isEndOfMonth(const Date& d) const {
-        return (d.month() != adjust(d+1).month()) && isBusinessDay(d);
+        return (d.month() != adjust(d+1).month());
     }
 
     inline Date Calendar::endOfMonth(const Date& d) const {
