@@ -8456,6 +8456,14 @@
 					RelativePath=".\ql\time\calendars\unitedstates.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\time\calendars\weekendsonly.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\weekendsonly.hpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="daycounters"
@@ -10172,6 +10180,10 @@
 		</File>
 		<File
 			RelativePath=".\ql\userconfig.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\version.hpp"
 			>
 		</File>
 		<File
