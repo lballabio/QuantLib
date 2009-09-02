@@ -50,7 +50,6 @@ namespace QuantLib {
 
         const boost::shared_ptr<StrikedTypePayoff> strikePayoff
             = boost::dynamic_pointer_cast<StrikedTypePayoff>(basketPayoff->basePayoff());
-        QL_REQUIRE(basketPayoff, "payoff not a basket strike payoff");
 
         if (strikePayoff) {
             scalingValue_/=strikePayoff->strike();
