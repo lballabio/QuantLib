@@ -20,10 +20,6 @@
 #ifndef recursive_cdo_engine_hpp
 #define recursive_cdo_engine_hpp
 
-#include <map>
-#include <algorithm>
-#include <boost/bind.hpp>
-
 #include <ql/quotes/simplequote.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
@@ -31,6 +27,9 @@
 #include <ql/experimental/credit/syntheticcdoengines.hpp>
 #include <ql/experimental/credit/onefactorgaussiancopula.hpp>
 #include <ql/experimental/credit/onefactorstudentcopula.hpp>
+#include <boost/bind.hpp>
+#include <map>
+#include <algorithm>
 
 namespace QuantLib {
 
