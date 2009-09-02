@@ -28,6 +28,7 @@
 #include <ql/qldefines.hpp>
 #include <ql/math/matrixutilities/svd.hpp>
 #include <ql/math/array.hpp>
+#include <ql/math/functional.hpp>
 #include <boost/function.hpp>
 #include <vector>
 

@@ -27,6 +27,8 @@
 #define quantlib_fdm_inner_value_calculator_hpp
 
 #include <ql/types.hpp>
+#include <boost/shared_ptr.hpp>
+#include <vector>
 
 namespace QuantLib {
 
@@ -39,7 +41,7 @@ namespace QuantLib {
         virtual ~FdmInnerValueCalculator() {}
 
         virtual Real innerValue(const FdmLinearOpIterator& iter) = 0;
-		virtual Real avgInnerValue(const FdmLinearOpIterator& iter) = 0;
+        virtual Real avgInnerValue(const FdmLinearOpIterator& iter) = 0;
     };
 
 
@@ -49,13 +51,13 @@ namespace QuantLib {
                          const boost::shared_ptr<FdmMesher>& mesher,
                          Size direction);
 
-		Real innerValue(const FdmLinearOpIterator& iter);
-		Real avgInnerValue(const FdmLinearOpIterator& iter);
+        Real innerValue(const FdmLinearOpIterator& iter);
+        Real avgInnerValue(const FdmLinearOpIterator& iter);
 
       private:
-          
+
         Real avgInnerValueCalc(const FdmLinearOpIterator& iter);
-          
+
         const boost::shared_ptr<Payoff> payoff_;
         const boost::shared_ptr<FdmMesher> mesher_;
         const Size direction_;

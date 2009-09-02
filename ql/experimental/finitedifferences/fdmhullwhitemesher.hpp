@@ -25,8 +25,10 @@
 #define quantlib_fdm_hull_white_mesher_hpp
 
 #include <ql/experimental/finitedifferences/fdm1dmesher.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
+
     class HullWhiteProcess;
 
     class FdmHullWhiteMesher : public Fdm1dMesher {
@@ -36,6 +38,7 @@ namespace QuantLib {
             const boost::shared_ptr<HullWhiteProcess>& process,
             Time maturity, Size tAvgSteps = 10, Real epsilon = 0.0001);
     };
+
 }
 
 #endif

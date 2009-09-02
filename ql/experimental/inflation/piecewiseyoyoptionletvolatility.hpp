@@ -26,6 +26,7 @@
 
 #include <ql/experimental/inflation/yoyoptionletvolatilitystructures.hpp>
 #include <ql/termstructures/iterativebootstrap.hpp>
+#include <ql/patterns/lazyobject.hpp>
 
 namespace QuantLib {
 

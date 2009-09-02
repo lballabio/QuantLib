@@ -25,7 +25,7 @@
 #define quantlib_concentrating_1d_mesher_hpp
 
 #include <ql/experimental/finitedifferences/fdm1dmesher.hpp>
-
+#include <ql/utilities/null.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -34,8 +34,8 @@ namespace QuantLib {
       public:
         Concentrating1dMesher(
             Real start, Real end, Size size,
-    	    const std::pair<Real, Real>& cPoints 
-    	             = (std::pair<double, double>(Null<Real>(), Null<Real>())));
+            const std::pair<Real, Real>& cPoints
+                     = (std::pair<double, double>(Null<Real>(), Null<Real>())));
     };
 }
 

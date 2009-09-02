@@ -29,6 +29,7 @@
 #include <ql/instruments/swap.hpp>
 #include <ql/instruments/bond.hpp>
 #include <ql/time/schedule.hpp>
+#include <ql/time/daycounter.hpp>
 
 namespace QuantLib {
 

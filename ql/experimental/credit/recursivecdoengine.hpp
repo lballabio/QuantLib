@@ -30,6 +30,7 @@
 #include <ql/math/matrixutilities/factorreduction.hpp>
 #include <ql/experimental/credit/syntheticcdoengines.hpp>
 #include <ql/experimental/credit/onefactorgaussiancopula.hpp>
+#include <ql/experimental/credit/onefactorstudentcopula.hpp>
 
 namespace QuantLib {
 

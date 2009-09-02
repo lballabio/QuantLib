@@ -27,14 +27,15 @@
 
 #include <ql/handle.hpp>
 #include <ql/patterns/lazyobject.hpp>
+#include <ql/math/matrix.hpp>
 #include <ql/experimental/finitedifferences/fdmquantohelper.hpp>
 #include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
 
 namespace QuantLib {
 
-	class FdmDirichletBoundary;
-	class FdmInnerValueCalculator;
+    class FdmDirichletBoundary;
+    class FdmInnerValueCalculator;
     class FdmMesher;
     class FdmSnapshotCondition;
     class FdmStepConditionComposite;
@@ -52,27 +53,27 @@ namespace QuantLib {
             Time maturity,
             Size timeSteps,
             Size dampingSteps = 0,
-            FdmBackwardSolver::FdmSchemeType type 
+            FdmBackwardSolver::FdmSchemeType type
                                         = FdmBackwardSolver::Hundsdorfer,
             Real theta = 0.5+std::sqrt(3.0)/6,
             Real mu = 0.5,
-			const Handle<FdmQuantoHelper>& quantoHelper 
-												= Handle<FdmQuantoHelper>());
+            const Handle<FdmQuantoHelper>& quantoHelper
+                                                = Handle<FdmQuantoHelper>());
 
         Real valueAt(Real s, Real v) const;
         Real thetaAt(Real s, Real v) const;
-        
-        // First and second order derivative with respect to S_t. 
+
+        // First and second order derivative with respect to S_t.
         // Please note that this is not the "model implied" delta or gamma.
-        // E.g. see Fabio Mercurio, Massimo Morini 
+        // E.g. see Fabio Mercurio, Massimo Morini
         // "A Note on Hedging with Local and Stochastic Volatility Models",
-        // http://papers.ssrn.com/sol3/papers.cfm?abstract_id=1294284  
+        // http://papers.ssrn.com/sol3/papers.cfm?abstract_id=1294284
         Real deltaAt(Real s, Real v) const;
         Real gammaAt(Real s, Real v) const;
 
         Real meanVarianceDeltaAt(Real s, Real v) const;
         Real meanVarianceGammaAt(Real s, Real v) const;
-        
+
       protected:
         void performCalculations() const;
 
@@ -88,7 +89,7 @@ namespace QuantLib {
 
         const FdmBackwardSolver::FdmSchemeType schemeType_;
         const Real theta_, mu_;
-		const Handle<FdmQuantoHelper> quantoHelper_;
+        const Handle<FdmQuantoHelper> quantoHelper_;
 
         std::vector<Real> x_, v_, initialValues_;
         mutable Matrix resultValues_;
