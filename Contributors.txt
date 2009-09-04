@@ -1,19 +1,28 @@
 
 We gratefully acknowledge contributions from Nathan Abbott, Xavier
-Abulker, Toyin Akin, Mario Aleppo, Sercan Atalik, Christopher Baus,
-Thomas Becker, Adolfo Benin, Luca Berardi, David Binderman, Theo
-Boafo, Joe Byers, Antoine Cellerier, Aurelien Chanudet, Yiping Chen,
-Warren Chou, Jon Davidson, Daniele De Francesco, Frédéric Degraeve,
-Piter Dias, Cristina Duminuco, Giorgio Facchinetti, Chiara Fornarola,
-Silvia Frasson, Matteo Gallivanoni, Roman Gitlin, Marek Glowacki,
-Richard Gould, Tomoya Kawanishi, Gary Kennedy, Allen Kuo, Paul
-Laderoute, James Lee, Gang Liang, Robert Lopez, André Louw, John
-Maiden, Katiuscia Manzoni, Enrico Michelotti, Tiziano Müller,
-Guillaume Pealat, Gilbert Peffer, Walter Penschke, Gianni Piolanti,
-Mario Pucci, Fabio Ramponi, Dimitri Reiswich, Sadruddin Rejeb, Peter
-Schmitteckert, David Schwartz, Eugene Shevkoplyas, Enrico Sirola,
-Maxim Sokolov, Niels Elken Sønderby, Marco Tarenghi, François du
-Vignaud, Charles Whitmore, Bernd Johannes Wuebben, and Jeff Yu.
+Abulker, Toyin Akin, Mario Aleppo, Jose Aparicio, Sercan Atalik,
+Christopher Baus, Thomas Becker, Adolfo Benin, Luca Berardi, Sylvain
+Bertrand, David Binderman, Theo Boafo, Joe Byers, Antoine Cellerier,
+Yee Man Chan, Aurelien Chanudet, Yiping Chen, Warren Chou, Jon
+Davidson, Daniele De Francesco, Frédéric Degraeve, Piero Del Boca,
+Piter Dias, Cristina Duminuco, Dirk Eddelbuettel, Bernd Engelmann,
+Giorgio Facchinetti, Paul Farrington, Lorella Fatone, Luca Ferraro,
+Chiara Fornarola, Silvia Frasson, Andreas Gaida, Matteo Gallivanoni,
+Roman Gitlin, Marek Glowacki, Richard Gomes, Richard Gould, Florent
+Grenier, Michael Heckl, Laurent Hoffmann, Frank Hövermann, Charles
+Chongseok Hyun, Simon Ibbotson, Tomoya Kawanishi, Gary Kennedy, Matt
+Knox, Andrew Kolesnikov, Silakhdar Krikeb, Allen Kuo, Paul Laderoute,
+James Lee, Gang Liang, Robert Lopez, André Louw, John Maiden,
+Katiuscia Manzoni, Francesca Mariani, Slava Mazur, Enrico Michelotti,
+Radu Mondescu, Bart Mosley, Tiziano Müller, Bojan Nikolic, Jean Nkeng,
+Andrea Odetti, Mike Parker, Guillaume Pealat, Gilbert Peffer, Walter
+Penschke, Adrien Pinatton, Gianni Piolanti, Mario Pucci, J. Erik
+Radmall, Fabio Ramponi, Maria Cristina Recchioni, Dimitri Reiswich,
+Sadruddin Rejeb, Alpha Sanou Toure, Tamas Sashalmi, Peter
+Schmitteckert, Ralph Schreyer, David Schwartz, Eugene Shevkoplyas,
+Enrico Sirola, Maxim Sokolov, Niels Elken Sønderby, Andreas Spengler,
+Roland Stamm, Marco Tarenghi, François du Vignaud, Charles Whitmore,
+Bernd Johannes Wuebben, Sun Xiuxin, Jeff Yu, and Francesco Zirilli.
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
 Methods in Finance".

@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2004 StatPro Italia srl
- Copyright (C) Berndt Engelmann 2009
+ Copyright (C) 2009 Berndt Engelmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
