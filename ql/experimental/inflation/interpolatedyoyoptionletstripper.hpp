@@ -105,7 +105,7 @@ namespace QuantLib {
                    Real priceToMatch)
     : K_(K), slope_(slope),
       capfloor_(MakeYoYInflationCapFloor(type, lag, fixingDays, anIndex, K_,
-                                         (Rate)floor(0.5+surf->minMaturity()))
+                                         (Size)std::floor(0.5+surf->minMaturity()))
                 .withNominal(10000.0) ),
       priceToMatch_(priceToMatch), surf_(surf), p_(p) {
         tvec_ = std::vector<Time>(2);
@@ -114,13 +114,13 @@ namespace QuantLib {
         lag_ = surf_->lag();
         capfloor_ =
             MakeYoYInflationCapFloor(type, lag_, fixingDays, anIndex, K_,
-                                     (Rate)floor(0.5+surf->minMaturity()))
+                                     (Size)std::floor(0.5+surf->minMaturity()))
             .withNominal(10000.0) ;
 
         // shortest time available from price surface
         dvec_[0] = surf_->baseDate();
         dvec_[1] = surf_->baseDate() +
-                   Period(surf_->minMaturity(), Years) +
+                   Period(Integer(surf_->minMaturity()), Years) +
                    Period(7, Days);
         tvec_[0] = surf_->dayCounter().yearFraction(surf_->referenceDate(),
                                                     dvec_[0] );
@@ -128,7 +128,7 @@ namespace QuantLib {
                                                     dvec_[1]);
 
         Real eps = 1.0e-12;
-        Size n = floor(0.5 + surf_->minMaturity());
+        Size n = (Size)std::floor(0.5 + surf_->minMaturity());
         QL_REQUIRE( abs(surf_->minMaturity() - n) < eps,
                     "first maturity in price surface not an integer: "
                     << surf_->minMaturity());
