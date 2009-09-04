@@ -33,7 +33,7 @@
 #include <boost/numeric/ublas/lu.hpp>
 #endif
 
-#if defined(QL_PATCH_MSVC71) || defined(QL_PATCH_MSVC80)
+#if defined(QL_PATCH_MSVC)
 #pragma warning(pop)
 #endif
 
