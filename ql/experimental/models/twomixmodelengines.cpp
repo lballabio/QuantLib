@@ -107,7 +107,7 @@ namespace QuantLib {
             Real d1 = - mu_(t) * t;
             Real d2 = lambda_(t)*mu_(t)*t / (1.0 - lambda_(t));
             Real expectedDrift = lambda_(t)*d1 + (1-lambda_(t))*d2;
-            QL_REQUIRE(abs(expectedDrift)<1e-20,
+            QL_REQUIRE(std::fabs(expectedDrift)<1e-20,
                        "expected drift in mixture !=0: "<<expectedDrift);
             if ( type == YoYInflationCapFloor::Cap ) {
                 fu = Null<Rate>();
@@ -249,7 +249,7 @@ namespace QuantLib {
                             (1.0 - model_->lambda(t));
                 Real expectedDrift = model_->lambda(t)*d1 +
                                      (1-model_->lambda(t))*d2;
-                QL_REQUIRE(abs(expectedDrift)<1e-12,
+                QL_REQUIRE(std::fabs(expectedDrift)<1e-12,
                            "expected drift in mixture !=0: "<<expectedDrift);
 
                 if ( type == YoYInflationCapFloor::Cap ) {
