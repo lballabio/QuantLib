@@ -29,7 +29,7 @@
 
 namespace QuantLib {
 
-    //! e.g. for French Inflation product BSM...
+    //! just what it says
     class InflationCappedCouponPricer : public virtual Observer,
                                         public virtual Observable {
       public:
