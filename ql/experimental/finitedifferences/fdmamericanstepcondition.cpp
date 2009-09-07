@@ -41,8 +41,8 @@ namespace QuantLib {
             ++iter) {
             for (Size i=0; i < dims; ++i)
                 locations[i] = mesher_->location(iter, i);
-                
-			const Real innerValue = calculator_->innerValue(iter);
+
+            const Real innerValue = calculator_->innerValue(iter);
             if (innerValue > a[iter.index()]) {
                 a[iter.index()] = innerValue;
             }

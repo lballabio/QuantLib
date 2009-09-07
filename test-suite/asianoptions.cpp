@@ -667,10 +667,10 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
                         qRate->value(), rRate->value(), today,
                         vol->value(), expected, calculated, tolerance);
         }
-        
+
         if(cases4[l].fixings < 100) {
-        	engine = boost::shared_ptr<PricingEngine>(
-        			new FdBlackScholesAsianEngine(stochProcess, 100, 100, 100));
+            engine = boost::shared_ptr<PricingEngine>(
+                    new FdBlackScholesAsianEngine(stochProcess, 100, 100, 100));
             option.setPricingEngine(engine);
             calculated = option.NPV();
             if (std::fabs(calculated-expected) > tolerance) {

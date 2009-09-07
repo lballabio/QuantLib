@@ -481,7 +481,7 @@ namespace QuantLib {
                 .withFixedLegTerminationDateConvention(fixedConvention_)
                 .withFixedLegCalendar(calendar_)
                 .withFloatingLegCalendar(calendar_)
-        	    .withDiscountingTermStructure(discountingCurve_);
+                .withDiscountingTermStructure(discountingCurve_);
         }
 
         earliestDate_ = swap_->startDate();

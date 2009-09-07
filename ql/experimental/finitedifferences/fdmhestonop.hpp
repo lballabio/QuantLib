@@ -41,7 +41,7 @@ namespace QuantLib {
             const boost::shared_ptr<FdmMesher>& mesher,
             const boost::shared_ptr<YieldTermStructure>& rTS,
             const boost::shared_ptr<YieldTermStructure>& qTS,
-			const boost::shared_ptr<FdmQuantoHelper>& quantoHelper);
+            const boost::shared_ptr<FdmQuantoHelper>& quantoHelper);
 
         void setTime(Time t1, Time t2);
         const TripleBandLinearOp& getMap() const;
@@ -54,7 +54,7 @@ namespace QuantLib {
 
         const boost::shared_ptr<FdmMesher> mesher_;
         const boost::shared_ptr<YieldTermStructure> rTS_, qTS_;
-		const boost::shared_ptr<FdmQuantoHelper> quantoHelper_;
+        const boost::shared_ptr<FdmQuantoHelper> quantoHelper_;
     };
 
     class FdmHestonVariancePart {
@@ -80,8 +80,8 @@ namespace QuantLib {
         FdmHestonOp(
             const boost::shared_ptr<FdmMesher>& mesher,
             const boost::shared_ptr<HestonProcess>& hestonProcess,
-			const boost::shared_ptr<FdmQuantoHelper>& quantoHelper 
-										= boost::shared_ptr<FdmQuantoHelper>());
+            const boost::shared_ptr<FdmQuantoHelper>& quantoHelper
+                                        = boost::shared_ptr<FdmQuantoHelper>());
 
         Size size() const;
         void setTime(Time t1, Time t2);

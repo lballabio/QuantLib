@@ -28,22 +28,22 @@
 
 namespace QuantLib {
 
-	FdmArithmeticAverageCondition::FdmArithmeticAverageCondition(
-									const std::vector<Time> & averageTimes,
-									Real fixedSum, Size pastFixings,
-									const boost::shared_ptr<FdmMesher> & mesher,
-									Size equityDirection)
-    : x_(mesher->layout()->dim()[equityDirection]), 
+    FdmArithmeticAverageCondition::FdmArithmeticAverageCondition(
+                                    const std::vector<Time> & averageTimes,
+                                    Real fixedSum, Size pastFixings,
+                                    const boost::shared_ptr<FdmMesher> & mesher,
+                                    Size equityDirection)
+    : x_(mesher->layout()->dim()[equityDirection]),
       a_(mesher->layout()->dim()[equityDirection == 0 ? 1 : 0]),
-      averageTimes_(averageTimes), fixedSum_(fixedSum), 
-      pastFixings_(pastFixings), mesher_(mesher), 
+      averageTimes_(averageTimes), fixedSum_(fixedSum),
+      pastFixings_(pastFixings), mesher_(mesher),
       equityDirection_(equityDirection) {
-    	
-    	QL_REQUIRE(mesher->layout()->dim().size()==2, "2D allowed only");
-    	QL_REQUIRE(equityDirection == 0 || equityDirection == 1,
-    			   "equityDirection has to be 0 or 1");
 
-    	const Size xSpacing = mesher_->layout()->spacing()[equityDirection];
+        QL_REQUIRE(mesher->layout()->dim().size()==2, "2D allowed only");
+        QL_REQUIRE(equityDirection == 0 || equityDirection == 1,
+                   "equityDirection has to be 0 or 1");
+
+        const Size xSpacing = mesher_->layout()->spacing()[equityDirection];
         Array tmp = mesher_->locations(equityDirection);
         for (Size i = 0; i < x_.size(); ++i) {
             x_[i] = std::exp(tmp[i*xSpacing]);
@@ -60,7 +60,7 @@ namespace QuantLib {
         const std::vector<Time>::const_iterator iter
             = std::find(averageTimes_.begin(), averageTimes_.end(), t);
         const Size nTimes
-        	= std::count(averageTimes_.begin(), averageTimes_.end(), t);
+            = std::count(averageTimes_.begin(), averageTimes_.end(), t);
         if (nTimes > 0) {
             Array aCopy(a);
             const Size iT = iter - averageTimes_.begin() + 1 + pastFixings_;
@@ -68,19 +68,19 @@ namespace QuantLib {
             const Size xSpacing = mesher_->layout()->spacing()[equityDirection_];
             const Size aSpacing = mesher_->layout()->spacing()[averageDirection];
             Array tmp(a_.size());
-            
+
             for (Size i=0; i<x_.size(); ++i) {
-	            for (Size j=0; j<a_.size(); ++j) {
-	                Size index = i*xSpacing + j*aSpacing;
-	                tmp[j] = aCopy[index];
-	            }
-	            MonotonicCubicNaturalSpline interp(a_.begin(), a_.end(),
-	                                       tmp.begin());
-	            for (Size j=0; j<a_.size(); ++j) {
-	                Size index = i*xSpacing + j*aSpacing;
-	                a[index] = interp((iT-nTimes)/(double)(iT)*a_[j] + 
-	                		          nTimes/(double)(iT)*x_[i], true);
-	            }
+                for (Size j=0; j<a_.size(); ++j) {
+                    Size index = i*xSpacing + j*aSpacing;
+                    tmp[j] = aCopy[index];
+                }
+                MonotonicCubicNaturalSpline interp(a_.begin(), a_.end(),
+                                           tmp.begin());
+                for (Size j=0; j<a_.size(); ++j) {
+                    Size index = i*xSpacing + j*aSpacing;
+                    a[index] = interp((iT-nTimes)/(double)(iT)*a_[j] +
+                                      nTimes/(double)(iT)*x_[i], true);
+                }
             }
         }
     }

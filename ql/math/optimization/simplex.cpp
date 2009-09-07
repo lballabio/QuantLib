@@ -74,7 +74,7 @@ namespace QuantLib {
             factor *= 0.5;
         } while (!P.constraint().test(pTry) && std::fabs(factor) > QL_EPSILON);
         if (std::fabs(factor) <= QL_EPSILON) {
-        	return values_[iHighest];
+            return values_[iHighest];
         }
         factor *= 2.0;
         Real vTry = P.value(pTry);

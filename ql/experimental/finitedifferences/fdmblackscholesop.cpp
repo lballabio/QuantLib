@@ -38,7 +38,7 @@ namespace QuantLib {
       volTS_ (bsProcess->blackVolatility().currentLink()),
       localVol_((localVol) ? bsProcess->localVolatility().currentLink()
                            : boost::shared_ptr<LocalVolTermStructure>()),
-      x_     ((localVol) ? Array(Exp(mesher->locations(0))) : Array()),                  
+      x_     ((localVol) ? Array(Exp(mesher->locations(0))) : Array()),
       dxMap_ (FirstDerivativeOp(0, mesher)),
       dxxMap_(SecondDerivativeOp(0, mesher)),
       mapT_  (0, mesher),
@@ -54,15 +54,15 @@ namespace QuantLib {
             const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
             const FdmLinearOpIterator endIter = layout->end();
 
-            Array v(layout->size());            
-            for (FdmLinearOpIterator iter = layout->begin(); 
+            Array v(layout->size());
+            for (FdmLinearOpIterator iter = layout->begin();
                  iter!=endIter; ++iter) {
                 const Size i = iter.index();
 
                 if (illegalLocalVolOverwrite_ < 0.0) {
                     v[i] = square<Real>()(
                                 localVol_->localVol(0.5*(t1+t2), x_[i], true));
-                } 
+                }
                 else {
                     try {
                         v[i] = square<Real>()(
@@ -77,7 +77,7 @@ namespace QuantLib {
                         dxxMap_.mult(0.5*v), Array(1, -r));
         }
         else {
-            const Real v 
+            const Real v
                 = volTS_->blackForwardVariance(t1, t2, strike_)/(t2-t1);
             mapT_.axpyb(Array(1, r - q - 0.5*v), dxMap_,
                         dxxMap_.mult(0.5*Array(mesher_->layout()->size(), v)),
@@ -98,14 +98,14 @@ namespace QuantLib {
         if (direction == 0)
             return mapT_.apply(r);
         else {
-        	Array retVal(r.size(), 0.0);
-        	return retVal;
+            Array retVal(r.size(), 0.0);
+            return retVal;
         }
     }
 
     Disposable<Array> FdmBlackScholesOp::apply_mixed(const Array& r) const {
-    	Array retVal(r.size(), 0.0);
-    	return retVal;
+        Array retVal(r.size(), 0.0);
+        return retVal;
     }
 
     Disposable<Array> FdmBlackScholesOp::solve_splitting(Size direction,
@@ -117,8 +117,8 @@ namespace QuantLib {
             return retVal;
         }
     }
-    
-    Disposable<Array> FdmBlackScholesOp::preconditioner(const Array& r, 
+
+    Disposable<Array> FdmBlackScholesOp::preconditioner(const Array& r,
                                                         Real dt) const {
         return solve_splitting(0, r, dt);
     }

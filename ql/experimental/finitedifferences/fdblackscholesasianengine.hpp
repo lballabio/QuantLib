@@ -40,9 +40,9 @@ namespace QuantLib {
                                DiscreteAveragingAsianOption::results> {
       public:
         // Constructor
-    	  FdBlackScholesAsianEngine(
+        FdBlackScholesAsianEngine(
                       const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
-                      Size tGrid = 100, Size xGrid = 100, Size aGrid = 50, 
+                      Size tGrid = 100, Size xGrid = 100, Size aGrid = 50,
                       Real theta=0.5);
 
         void calculate() const;

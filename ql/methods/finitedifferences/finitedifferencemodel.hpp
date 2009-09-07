@@ -100,7 +100,7 @@ namespace QuantLib {
 
             if(!stoppingTimes_.empty() && stoppingTimes_.back() == from) {
                 if (condition)
-                    condition->applyTo(a,from);            	
+                    condition->applyTo(a,from);
             }
             for (Size i=0; i<steps; ++i, t -= dt) {
                 Time now = t, next = t-dt;

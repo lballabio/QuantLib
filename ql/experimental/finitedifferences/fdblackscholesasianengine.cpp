@@ -39,19 +39,19 @@ namespace QuantLib {
             Size tGrid, Size xGrid, Size aGrid, Real theta)
     : GenericEngine<DiscreteAveragingAsianOption::arguments,
                     DiscreteAveragingAsianOption::results>(),
-      process_(process), tGrid_(tGrid), xGrid_(xGrid), aGrid_(aGrid), 
+      process_(process), tGrid_(tGrid), xGrid_(xGrid), aGrid_(aGrid),
       theta_(theta) {}
 
-                    
+
     void FdBlackScholesAsianEngine::calculate() const {
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "European exercise supported only");
         QL_REQUIRE(arguments_.averageType == Average::Arithmetic,
-        		   "Arithmetic averaging supported only");
-        QL_REQUIRE(   arguments_.runningAccumulator == 0 
-        		   || arguments_.pastFixings > 0,
-        		   "Running average requires at least one past fixing");
+                   "Arithmetic averaging supported only");
+        QL_REQUIRE(   arguments_.runningAccumulator == 0
+                   || arguments_.pastFixings > 0,
+                   "Running average requires at least one past fixing");
 
         // 1. Layout
         std::vector<Size> dim;
@@ -65,11 +65,11 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         const Time maturity = process_->time(arguments_.exercise->lastDate());
         const boost::shared_ptr<Fdm1dMesher> equityMesher(
-            new FdmBlackScholesMesher(xGrid_, process_, maturity, 
-            		                  payoff->strike()));
+            new FdmBlackScholesMesher(xGrid_, process_, maturity,
+                                      payoff->strike()));
         const boost::shared_ptr<Fdm1dMesher> averageMesher(
             new FdmBlackScholesMesher(aGrid_, process_, maturity,
-	                                  payoff->strike()));
+                                      payoff->strike()));
 
         std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
         meshers.push_back(equityMesher);
@@ -88,19 +88,19 @@ namespace QuantLib {
         // 4.1 Arithmetic average step conditions
         std::vector<Time> averageTimes;
         for (Size i=0; i<arguments_.fixingDates.size(); ++i) {
-        	Time t = process_->time(arguments_.fixingDates[i]);
-        	QL_REQUIRE(t >= 0, "Fixing dates must not contain past date");
-        	averageTimes.push_back(t);
+            Time t = process_->time(arguments_.fixingDates[i]);
+            QL_REQUIRE(t >= 0, "Fixing dates must not contain past date");
+            averageTimes.push_back(t);
         }
         stoppingTimes.push_back(std::vector<Time>(averageTimes));
         stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
-        		new FdmArithmeticAverageCondition(
-        				averageTimes, arguments_.runningAccumulator,
-        				arguments_.pastFixings, mesher, 0)));
+                new FdmArithmeticAverageCondition(
+                        averageTimes, arguments_.runningAccumulator,
+                        arguments_.pastFixings, mesher, 0)));
 
         boost::shared_ptr<FdmStepConditionComposite> conditions(
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));
-        
+
         // 5. Boundary conditions
         std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;
 
@@ -108,12 +108,12 @@ namespace QuantLib {
         boost::shared_ptr<FdmSimple2dBSSolver> solver(
                 new FdmSimple2dBSSolver(
                                 Handle<GeneralizedBlackScholesProcess>(process_),
-                                mesher, boundaries, conditions, calculator, 
+                                mesher, boundaries, conditions, calculator,
                                 payoff->strike(), maturity, tGrid_, theta_));
 
         const Real spot = process_->x0();
-        const Real avg = arguments_.runningAccumulator == 0 
-        		 ? spot : arguments_.runningAccumulator/arguments_.pastFixings;
+        const Real avg = arguments_.runningAccumulator == 0
+                 ? spot : arguments_.runningAccumulator/arguments_.pastFixings;
         results_.value = solver->valueAt(spot, avg);
         results_.delta = solver->deltaAt(spot, avg, spot*0.01);
         results_.gamma = solver->gammaAt(spot, avg, spot*0.01);

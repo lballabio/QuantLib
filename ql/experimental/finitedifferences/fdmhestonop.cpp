@@ -29,7 +29,7 @@ namespace QuantLib {
         const boost::shared_ptr<FdmMesher>& mesher,
         const boost::shared_ptr<YieldTermStructure>& rTS,
         const boost::shared_ptr<YieldTermStructure>& qTS,
-		const boost::shared_ptr<FdmQuantoHelper>& quantoHelper)
+        const boost::shared_ptr<FdmQuantoHelper>& quantoHelper)
     : varianceValues_(0.5*mesher->locations(1)),
       dxMap_ (FirstDerivativeOp(0, mesher)),
       dxxMap_(SecondDerivativeOp(0, mesher).mult(0.5*mesher->locations(1))),
@@ -37,7 +37,7 @@ namespace QuantLib {
       mesher_(mesher),
       rTS_(rTS),
       qTS_(qTS),
-	  quantoHelper_(quantoHelper) {
+      quantoHelper_(quantoHelper) {
 
         // on the boundary s_min and s_max the second derivative
         // d^2V/dS^2 is zero and due to Ito's Lemma the variance term
@@ -58,15 +58,15 @@ namespace QuantLib {
         const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
         const Rate q = qTS_->forwardRate(t1, t2, Continuous).rate();
 
-		if (quantoHelper_) {
-			mapT_.axpyb(r - q - varianceValues_
-				- quantoHelper_->quantoAdjustment(
-				volatilityValues_, t1, t2), 
-				dxMap_, dxxMap_, Array(1, -0.5*r));
-		}
-		else {
-			mapT_.axpyb(r - q - varianceValues_, dxMap_, dxxMap_, Array(1, -0.5*r));
-		}
+        if (quantoHelper_) {
+            mapT_.axpyb(r - q - varianceValues_
+                - quantoHelper_->quantoAdjustment(
+                volatilityValues_, t1, t2),
+                dxMap_, dxxMap_, Array(1, -0.5*r));
+        }
+        else {
+            mapT_.axpyb(r - q - varianceValues_, dxMap_, dxxMap_, Array(1, -0.5*r));
+        }
     }
 
     const TripleBandLinearOp& FdmHestonEquityPart::getMap() const {
@@ -97,7 +97,7 @@ namespace QuantLib {
     FdmHestonOp::FdmHestonOp(
         const boost::shared_ptr<FdmMesher>& mesher,
         const boost::shared_ptr<HestonProcess> & hestonProcess,
-		const boost::shared_ptr<FdmQuantoHelper>& quantoHelper)
+        const boost::shared_ptr<FdmQuantoHelper>& quantoHelper)
     : v0_(hestonProcess->v0()),
       kappa_(hestonProcess->kappa()),
       theta_(hestonProcess->theta()),
@@ -110,7 +110,7 @@ namespace QuantLib {
              sigma_, kappa_, theta_),
       dxMap_(mesher,
              rTS_, hestonProcess->dividendYield().currentLink(),
-			 quantoHelper) {
+             quantoHelper) {
     }
 
 
@@ -142,10 +142,10 @@ namespace QuantLib {
         return correlationMap_.apply(r);
     }
 
-    Disposable<Array> 
+    Disposable<Array>
         FdmHestonOp::solve_splitting(Size direction,
                                      const Array& r, Real a) const {
-        
+
         if (direction == 0) {
             return dxMap_.getMap().solve_splitting(r, a, 1.0);
         }
@@ -156,7 +156,7 @@ namespace QuantLib {
             QL_FAIL("direction too large");
     }
 
-    Disposable<Array> 
+    Disposable<Array>
         FdmHestonOp::preconditioner(const Array& r, Real dt) const {
 
         return solve_splitting(0, r, dt);

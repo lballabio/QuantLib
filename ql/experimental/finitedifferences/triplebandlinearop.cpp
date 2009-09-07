@@ -132,7 +132,7 @@ namespace QuantLib {
                 }
             }
             else {
-				Array::const_iterator bptr(b.begin());
+                Array::const_iterator bptr(b.begin());
                 const Size binc = (b.size() > 1) ? 1 : 0;
 
                 for (Size i=0; i < size; ++i) {

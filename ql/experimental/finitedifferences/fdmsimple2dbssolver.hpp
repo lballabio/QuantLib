@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! 
+/*!
  * \file fdmsimple2dbssolver.hpp
 */
 
@@ -31,13 +31,13 @@
 
 namespace QuantLib {
 
-	class FdmInnerValueCalculator;
-	class FdmMesher;
-	class FdmSnapshotCondition;
-	class FdmStepConditionComposite;
-	class BicubicSpline;
+    class FdmInnerValueCalculator;
+    class FdmMesher;
+    class FdmSnapshotCondition;
+    class FdmStepConditionComposite;
+    class BicubicSpline;
 
-	class FdmSimple2dBSSolver : LazyObject {
+    class FdmSimple2dBSSolver : LazyObject {
       public:
         typedef std::vector<boost::shared_ptr<FdmDirichletBoundary> >
             BoundaryConditionSet;

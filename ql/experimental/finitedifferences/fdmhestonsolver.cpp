@@ -63,9 +63,9 @@ namespace QuantLib {
         const Time maturity,
         const Size timeSteps,
         Size dampingSteps,
-        FdmBackwardSolver::FdmSchemeType schemeType, 
+        FdmBackwardSolver::FdmSchemeType schemeType,
         Real theta, Real mu,
-		const Handle<FdmQuantoHelper>& quantoHelper)
+        const Handle<FdmQuantoHelper>& quantoHelper)
     : process_(process),
       mesher_(mesher),
       bcSet_(bcSet),
@@ -80,11 +80,11 @@ namespace QuantLib {
       schemeType_(schemeType),
       theta_(theta),
       mu_(mu),
-	  quantoHelper_(quantoHelper),
+      quantoHelper_(quantoHelper),
       initialValues_(mesher->layout()->size()),
       resultValues_(mesher->layout()->dim()[1], mesher->layout()->dim()[0]) {
         registerWith(process_);
-		registerWith(quantoHelper_);
+        registerWith(quantoHelper_);
 
         x_.reserve(mesher->layout()->dim()[0]);
         v_.reserve(mesher->layout()->dim()[1]);
@@ -106,9 +106,10 @@ namespace QuantLib {
 
     void FdmHestonSolver::performCalculations() const {
         boost::shared_ptr<FdmHestonOp> map(
-                new FdmHestonOp(mesher_, process_.currentLink(), 
-							    (!quantoHelper_.empty()) ? quantoHelper_.currentLink() 
-										: boost::shared_ptr<FdmQuantoHelper>()));
+                new FdmHestonOp(
+                        mesher_, process_.currentLink(),
+                        (!quantoHelper_.empty()) ? quantoHelper_.currentLink()
+                                     : boost::shared_ptr<FdmQuantoHelper>()));
 
         Array rhs(initialValues_.size());
         std::copy(initialValues_.begin(), initialValues_.end(), rhs.begin());
@@ -141,7 +142,7 @@ namespace QuantLib {
         return (interpolation_->secondDerivativeX(x, v)
                 -interpolation_->derivativeX(x, v))/(s*s);
     }
-    
+
     Real FdmHestonSolver::meanVarianceDeltaAt(Real s, Real v) const {
         calculate();
         const Real x = std::log(s);
@@ -153,7 +154,7 @@ namespace QuantLib {
         calculate();
         const Real x = std::log(s);
         const Real alpha = process_->rho()*process_->sigma()/s;
-        return gammaAt(s, v) 
+        return gammaAt(s, v)
                 +  interpolation_->secondDerivativeY(x, v)*alpha*alpha
                 +2*interpolation_->derivativeXY(x, v)*alpha/s;
     }

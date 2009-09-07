@@ -31,9 +31,9 @@ namespace QuantLib {
 
     class FdmArithmeticAverageCondition : public StepCondition<Array> {
       public:
-    	  FdmArithmeticAverageCondition(
-    			  				const std::vector<Time> & averageTimes,
-    			  				Real fixedSum, Size pastFixings,
+        FdmArithmeticAverageCondition(
+                                const std::vector<Time> & averageTimes,
+                                Real fixedSum, Size pastFixings,
                                 const boost::shared_ptr<FdmMesher> & mesher,
                                 Size equityDirection);
 

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! 
+/*!
  * \file fdmsimple2dbssolver.cpp
 */
 
@@ -82,7 +82,7 @@ namespace QuantLib {
 
         x_.reserve(mesher->layout()->dim()[0]);
         a_.reserve(mesher->layout()->dim()[1]);
-        
+
         const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
         const FdmLinearOpIterator endIter = layout->end();
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
@@ -112,7 +112,7 @@ namespace QuantLib {
         for (Size j=0; j < a_.size(); ++j)
             std::copy(rhs.begin()+j*x_.size(), rhs.begin()+(j+1)*x_.size(),
                       resultValues_.row_begin(j));
-	
+
         interpolation_ = boost::shared_ptr<BicubicSpline> (
             new BicubicSpline(x_.begin(), x_.end(),
                               a_.begin(), a_.end(),
