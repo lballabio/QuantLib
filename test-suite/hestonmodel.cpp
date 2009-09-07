@@ -472,7 +472,7 @@ void HestonModelTest::testMcVsCached() {
 }
 
 void HestonModelTest::testFdBarrierVsCached() {
-    BOOST_MESSAGE("Testing FD Barrier Heston engine against cached values...");
+    BOOST_MESSAGE("Testing FD barrier Heston engine against cached values...");
 
     SavedSettings backup;
 
@@ -525,7 +525,7 @@ void HestonModelTest::testFdBarrierVsCached() {
 }
 
 void HestonModelTest::testFdVanillaVsCached() {
-    BOOST_MESSAGE("Testing FD Vanilla Heston engine against cached values...");
+    BOOST_MESSAGE("Testing FD vanilla Heston engine against cached values...");
 
     SavedSettings backup;
 
@@ -567,7 +567,7 @@ void HestonModelTest::testFdVanillaVsCached() {
                    << "\n    error:      " << QL_SCIENTIFIC << error);
     }
 
-    BOOST_MESSAGE("Testing FD Vanilla Heston engine for discrete dividends ...");
+    BOOST_MESSAGE("Testing FD vanilla Heston engine for discrete dividends...");
 
     payoff = boost::shared_ptr<StrikedTypePayoff>(
                           new PlainVanillaPayoff(Option::Call, 95.0));
@@ -610,7 +610,7 @@ void HestonModelTest::testFdVanillaVsCached() {
                    << "\n    error:      " << QL_SCIENTIFIC << error);
     }
 
-    BOOST_MESSAGE("Testing FD Vanilla Heston engine for american exercise ...");
+    BOOST_MESSAGE("Testing FD vanilla Heston engine for american exercise...");
 
     dividendTS = Handle<YieldTermStructure>(flatRate(0.03, dayCounter));
     process = boost::shared_ptr<HestonProcess>(new HestonProcess(
@@ -648,7 +648,7 @@ void HestonModelTest::testFdVanillaVsCached() {
 
 void HestonModelTest::testKahlJaeckelCase() {
     BOOST_MESSAGE(
-          "Testing MC and FD Heston engine for the Kahl-Jaeckel example...");
+          "Testing MC and FD Heston engines for the Kahl-Jaeckel example...");
 
     /* Example taken from Wilmott mag (Sept. 2005).
        "Not-so-complex logarithms in the Heston model",
@@ -853,7 +853,7 @@ void HestonModelTest::testDifferentIntegrals() {
 }
 
 void HestonModelTest::testMultipleStrikesEngine() {
-    BOOST_MESSAGE("Testing Multiple Strikes Fd Heston engine...");
+    BOOST_MESSAGE("Testing multiple-strikes FD Heston engine...");
 
     SavedSettings backup;
 

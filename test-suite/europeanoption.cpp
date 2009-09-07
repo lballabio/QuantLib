@@ -1389,7 +1389,7 @@ void EuropeanOptionTest::testPriceCurve() {
 
 
 void EuropeanOptionTest::testLocalVolatility() {
-    BOOST_MESSAGE("Testing Finite Difference with Local Volatility ...");
+    BOOST_MESSAGE("Testing finite-differences with local volatility...");
 
     SavedSettings backup;
 

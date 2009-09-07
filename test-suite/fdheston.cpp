@@ -55,7 +55,7 @@ namespace {
 
 void FdHestonTest::testFdmHestonBarrierVsBlackScholes() {
 
-    BOOST_MESSAGE("Testing FDM with Barrier Option in Heston model ...");
+    BOOST_MESSAGE("Testing FDM with barrier option in Heston model...");
 
     SavedSettings backup;
 
@@ -206,7 +206,7 @@ void FdHestonTest::testFdmHestonBarrierVsBlackScholes() {
 
 void FdHestonTest::testFdmHestonBarrier() {
 
-    BOOST_MESSAGE("Testing FDM with Barrier Option for Heston model vs "
+    BOOST_MESSAGE("Testing FDM with barrier option for Heston model vs "
                   "Black-Scholes model...");
 
     SavedSettings backup;
@@ -260,7 +260,7 @@ void FdHestonTest::testFdmHestonBarrier() {
 
 void FdHestonTest::testFdmHestonAmerican() {
 
-    BOOST_MESSAGE("Testing FDM with American Option in Heston model ...");
+    BOOST_MESSAGE("Testing FDM with American option in Heston model...");
 
     SavedSettings backup;
 
@@ -437,8 +437,8 @@ void FdHestonTest::testFdmHestonBlackScholes() {
 
 void FdHestonTest::testFdmHestonEuropeanWithDividends() {
 
-    BOOST_MESSAGE("Testing FDM with European Option with dividends"
-                  " in Heston model ...");
+    BOOST_MESSAGE("Testing FDM with European option with dividends"
+                  " in Heston model...");
 
     SavedSettings backup;
 

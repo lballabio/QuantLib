@@ -160,7 +160,7 @@ void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
 
 void LinearLeastSquaresRegressionTest::test1dLinearRegression() {
 
-    BOOST_MESSAGE("Testing 1d simple linear least-squares regression...");
+    BOOST_MESSAGE("Testing 1D simple linear least-squares regression...");
 
     /* Example taken from the QuantLib-User list, see posting
      * Multiple linear regression/weighted regression, Boris Skorodumov */

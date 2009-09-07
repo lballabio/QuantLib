@@ -496,7 +496,7 @@ void AssetSwapTest::testConsistency() {
 
 void AssetSwapTest::testImpliedValue() {
 
-    BOOST_MESSAGE("Testing bond implied value against asset-swap fair price"
+    BOOST_MESSAGE("Testing implied bond value against asset-swap fair price"
                   " with null spread...");
 
     CommonVars vars;
@@ -1608,7 +1608,7 @@ void AssetSwapTest::testZSpread() {
 
 void AssetSwapTest::testGenericBondImplied() {
 
-    BOOST_MESSAGE("Testing generic bond implied value against"
+    BOOST_MESSAGE("Testing implied generic-bond value against"
                   " asset-swap fair price with null spread...");
 
     CommonVars vars;

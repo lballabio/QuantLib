@@ -129,7 +129,7 @@ namespace {
 
 void FdmLinearOpTest::testFdmLinearOpLayout() {
 
-    BOOST_MESSAGE("Testing index of an linear operator...");
+    BOOST_MESSAGE("Testing indexing of a linear operator...");
 
     SavedSettings backup;
 
@@ -236,7 +236,7 @@ void FdmLinearOpTest::testUniformGridMesher() {
 
 void FdmLinearOpTest::testFirstDerivativesMapApply() {
 
-    BOOST_MESSAGE("Testing apply of first derivatives map...");
+    BOOST_MESSAGE("Testing application of first-derivatives map...");
 
         SavedSettings backup;
 
@@ -300,7 +300,7 @@ void FdmLinearOpTest::testFirstDerivativesMapApply() {
 
 void FdmLinearOpTest::testSecondDerivativesMapApply() {
 
-    BOOST_MESSAGE("Testing apply of second derivatives map...");
+    BOOST_MESSAGE("Testing application of second-derivatives map...");
 
         SavedSettings backup;
 
@@ -389,7 +389,8 @@ void FdmLinearOpTest::testSecondDerivativesMapApply() {
 
 void FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply() {
 
-    BOOST_MESSAGE("Testing apply of second order mixed derivatives map...");
+    BOOST_MESSAGE(
+        "Testing application of second-order mixed-derivatives map...");
 
         SavedSettings backup;
 
@@ -490,7 +491,7 @@ void FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply() {
 
 void FdmLinearOpTest::testTripleBandMapSolve() {
 
-    BOOST_MESSAGE("Testing Triple Band Map Solve ...");
+    BOOST_MESSAGE("Testing triple-band map solution...");
 
     SavedSettings backup;
 
@@ -575,7 +576,7 @@ void FdmLinearOpTest::testTripleBandMapSolve() {
 
 void FdmLinearOpTest::testFdmHestonBarrier() {
 
-    BOOST_MESSAGE("Testing FDM with Barrier Option in Heston model ...");
+    BOOST_MESSAGE("Testing FDM with Barrier option in Heston model...");
 
     SavedSettings backup;
 
@@ -655,21 +656,21 @@ void FdmLinearOpTest::testFdmHestonBarrier() {
     const Real gammaExpected = -0.034296;
 
     if (std::fabs(npv - npvExpected) > 0.000001) {
-        QL_FAIL("Error in calculating PV for Heston Barrier Option");
+        QL_FAIL("Error in calculating PV for Heston barrier option");
     }
 
     if (std::fabs(delta - deltaExpected) > 0.000001) {
-        QL_FAIL("Error in calculating Delta for Heston Barrier Option");
+        QL_FAIL("Error in calculating Delta for Heston barrier option");
     }
 
     if (std::fabs(gamma - gammaExpected) > 0.000001) {
-            QL_FAIL("Error in calculating Gamma for Heston Barrier Option");
+            QL_FAIL("Error in calculating Gamma for Heston barrier option");
     }
 }
 
 void FdmLinearOpTest::testFdmHestonAmerican() {
 
-    BOOST_MESSAGE("Testing FDM with American Option in Heston model ...");
+    BOOST_MESSAGE("Testing FDM with American option in Heston model...");
 
     SavedSettings backup;
 
@@ -748,7 +749,7 @@ void FdmLinearOpTest::testFdmHestonAmerican() {
 
 void FdmLinearOpTest::testFdmHestonExpress() {
 
-    BOOST_MESSAGE("Testing FDM with Express Certificate in Heston model ...");
+    BOOST_MESSAGE("Testing FDM with express certificate in Heston model...");
 
     SavedSettings backup;
 
@@ -841,7 +842,7 @@ void FdmLinearOpTest::testFdmHestonExpress() {
 }
 
 void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
-    BOOST_MESSAGE("Testing FDM with Heston Hull-White model ...");
+    BOOST_MESSAGE("Testing FDM with Heston Hull-White model...");
 
     SavedSettings backup;
 
@@ -978,7 +979,7 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
 
 void FdmLinearOpTest::testBiCGstab() {
 
-    BOOST_MESSAGE("Testing BiCGstab with Heston operator ...");
+    BOOST_MESSAGE("Testing BiCGstab with Heston operator...");
 
     SavedSettings backup;
 
@@ -1033,8 +1034,8 @@ void FdmLinearOpTest::testBiCGstab() {
 
 void FdmLinearOpTest::testCrankNicolsonWithDamping() {
 
-    BOOST_MESSAGE("Testing CrankNicolson with initial implicit damping steps "
-                  "for a digital option ...");
+    BOOST_MESSAGE("Testing Crank-Nicolson with initial implicit damping steps "
+                  "for a digital option...");
 
     SavedSettings backup;
 

@@ -1316,7 +1316,7 @@ void InterpolationTest::testSabrInterpolation(){
 
 void InterpolationTest::testKernelInterpolation() {
 
-    BOOST_MESSAGE("Testing kernel 1D interpolation ...");
+    BOOST_MESSAGE("Testing kernel 1D interpolation...");
 
     std::vector<Real> deltaGrid(5); // x-values, here delta in FX
     deltaGrid[0]=0.10; deltaGrid[1]=0.25; deltaGrid[2]=0.50;
@@ -1437,8 +1437,8 @@ void InterpolationTest::testKernelInterpolation() {
 }
 
 void InterpolationTest::testBicubicDerivatives() {
-    BOOST_MESSAGE("Testing bicubic spline derivatives ...");
-    
+    BOOST_MESSAGE("Testing bicubic spline derivatives...");
+
     std::vector<Real> x(100), y(100);
     for (Size i=0; i < 100; ++i) {
         x[i] = y[i] = i/20.0;

@@ -237,7 +237,7 @@ void SwapForwardMappingsTest::testForwardSwapJacobians()
 
     {
 
-        BOOST_MESSAGE("Testing forward-rate cm-swap Jacobian...");
+        BOOST_MESSAGE("Testing forward-rate constant-maturity swap Jacobian...");
         MarketModelData marketData;
         const std::vector<Time>& rateTimes = marketData.rateTimes();
         const std::vector<Rate>& forwards = marketData.forwards();
@@ -371,7 +371,7 @@ void SwapForwardMappingsTest::testForwardCoterminalMappings() {
 void SwapForwardMappingsTest::testSwaptionImpliedVolatility() 
 {
 
-    BOOST_MESSAGE("Testing swaption implied vol in LMM using HW approximation...");
+    BOOST_MESSAGE("Testing implied swaption vol in LMM using HW approximation...");
     MarketModelData marketData;
     const std::vector<Time>& rateTimes = marketData.rateTimes();
     const std::vector<Rate>& forwards = marketData.forwards();

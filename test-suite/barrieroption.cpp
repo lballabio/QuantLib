@@ -566,7 +566,7 @@ void BarrierOptionTest::testPerturbative() {
 }
 
 void BarrierOptionTest::testLocalVolAndHestonComparison() {
-    BOOST_MESSAGE("Testing Local Volatility and Heston FD engines "
+    BOOST_MESSAGE("Testing local volatility and Heston FD engines "
                   "for barrier options...");
 
     SavedSettings backup;
