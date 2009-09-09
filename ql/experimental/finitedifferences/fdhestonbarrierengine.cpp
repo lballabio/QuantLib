@@ -160,7 +160,7 @@ namespace QuantLib {
                                           dividendCondition->dividendDates(), 
                                           dividendCondition->dividends()));
             vanillaOption->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                    new FdHestonVanillaEngine(model_, tGrid_, xGrid_, 
+                    new FdHestonVanillaEngine(*model_, tGrid_, xGrid_, 
                                               vGrid_, dampingSteps_,
                                               type_, theta_, mu_)));
             // Calculate the rebate value
@@ -176,7 +176,7 @@ namespace QuantLib {
             const Size rebateDampingSteps 
                 = (dampingSteps_ > 0) ? std::min(Size(1), dampingSteps_/2) : 0; 
             rebateOption->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                    new FdHestonRebateEngine(model_, tGrid_, 
+                    new FdHestonRebateEngine(*model_, tGrid_, 
                                              std::max(xGridMin, xGrid_/4), 
                                              std::max(vGridMin, vGrid_/4),
                                              rebateDampingSteps,

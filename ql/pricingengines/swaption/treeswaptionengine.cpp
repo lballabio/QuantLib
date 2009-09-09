@@ -47,13 +47,13 @@ namespace QuantLib {
 
         QL_REQUIRE(arguments_.settlementType==Settlement::Physical,
                    "cash-settled swaptions not priced with tree engine");
-        QL_REQUIRE(model_, "no model specified");
+        QL_REQUIRE(!model_.empty(), "no model specified");
 
         Date referenceDate;
         DayCounter dayCounter;
 
         boost::shared_ptr<TermStructureConsistentModel> tsmodel =
-            boost::dynamic_pointer_cast<TermStructureConsistentModel>(model_);
+            boost::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
         if (tsmodel) {
             referenceDate = tsmodel->termStructure()->referenceDate();
             dayCounter = tsmodel->termStructure()->dayCounter();

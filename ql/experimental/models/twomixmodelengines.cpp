@@ -330,7 +330,7 @@ namespace QuantLib {
     // MNDM model, arbitrary gearings are allowed.
     void SLMUP2CapFloorModelEngine::calculate() const {
 
-        QL_REQUIRE(model_,
+        QL_REQUIRE(!model_.empty(),
                    "no model given in SLMUP2CapFloorModelEngine::calculate()");
 
         Real value = 0.0;

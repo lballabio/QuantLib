@@ -34,7 +34,7 @@ namespace QuantLib {
     std::complex<Real> BatesEngine::addOnTerm(Real phi,
                                                       Time t, Size j) const {
         boost::shared_ptr<BatesModel> batesModel =
-            boost::dynamic_pointer_cast<BatesModel>(model_);
+            boost::dynamic_pointer_cast<BatesModel>(*model_);
 
         const Real nu_     = batesModel->nu();
         const Real delta2_ = 0.5*batesModel->delta()*batesModel->delta();
@@ -65,7 +65,7 @@ namespace QuantLib {
             BatesEngine::addOnTerm(phi, t, j);
 
         boost::shared_ptr<BatesDetJumpModel> batesDetJumpModel =
-            boost::dynamic_pointer_cast<BatesDetJumpModel>(model_);
+            boost::dynamic_pointer_cast<BatesDetJumpModel>(*model_);
 
         const Real lambda      = batesDetJumpModel->lambda();
         const Real kappaLambda = batesDetJumpModel->kappaLambda();
@@ -90,7 +90,7 @@ namespace QuantLib {
     std::complex<Real> BatesDoubleExpEngine::addOnTerm(
         Real phi, Time t, Size j) const {
         boost::shared_ptr<BatesDoubleExpModel> batesDoubleExpModel =
-            boost::dynamic_pointer_cast<BatesDoubleExpModel>(model_);
+            boost::dynamic_pointer_cast<BatesDoubleExpModel>(*model_);
 
         const Real p_     = batesDoubleExpModel->p();
         const Real q_     = 1.0-p_;
@@ -120,7 +120,7 @@ namespace QuantLib {
             BatesDoubleExpEngine::addOnTerm(phi, t, j);
 
         boost::shared_ptr<BatesDoubleExpDetJumpModel> doubleExpDetJumpModel
-            = boost::dynamic_pointer_cast<BatesDoubleExpDetJumpModel>(model_);
+            = boost::dynamic_pointer_cast<BatesDoubleExpDetJumpModel>(*model_);
 
         const Real lambda      = doubleExpDetJumpModel->lambda();
         const Real kappaLambda = doubleExpDetJumpModel->kappaLambda();

@@ -33,13 +33,13 @@ namespace QuantLib {
 
 
     void AnalyticCapFloorEngine::calculate() const {
-        QL_REQUIRE(model_, "null model");
+        QL_REQUIRE(!model_.empty(), "null model");
 
         Date referenceDate;
         DayCounter dayCounter;
 
         boost::shared_ptr<TermStructureConsistentModel> tsmodel =
-            boost::dynamic_pointer_cast<TermStructureConsistentModel>(model_);
+            boost::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
         if (tsmodel) {
             referenceDate = tsmodel->termStructure()->referenceDate();
             dayCounter = tsmodel->termStructure()->dayCounter();

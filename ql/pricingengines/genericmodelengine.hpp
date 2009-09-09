@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,10 +22,11 @@
     \brief Generic option engine based on a model
 */
 
-#ifndef quantlib_generic_model_engine_h
-#define quantlib_generic_model_engine_h
+#ifndef quantlib_generic_model_engine_hpp
+#define quantlib_generic_model_engine_hpp
 
 #include <ql/pricingengine.hpp>
+#include <ql/handle.hpp>
 
 namespace QuantLib {
 
@@ -36,21 +38,16 @@ namespace QuantLib {
     class GenericModelEngine
         : public GenericEngine<ArgumentsType, ResultsType> {
       public:
-        GenericModelEngine() {}
+        GenericModelEngine(const Handle<ModelType>& model = Handle<ModelType>())
+        : model_(model) {
+            this->registerWith(model_);
+        }
         GenericModelEngine(const boost::shared_ptr<ModelType>& model)
         : model_(model) {
             this->registerWith(model_);
         }
-        void setModel(const boost::shared_ptr<ModelType>& model) {
-            if (model_)
-                this->unregisterWith(model_);
-            model_ = model;
-            if (model_)
-                this->registerWith(model_);
-            this->update();
-        }
       protected:
-        boost::shared_ptr<ModelType> model_;
+        Handle<ModelType> model_;
     };
 
 }

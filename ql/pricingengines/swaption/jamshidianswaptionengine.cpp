@@ -63,7 +63,7 @@ namespace QuantLib {
         DayCounter dayCounter;
 
         boost::shared_ptr<TermStructureConsistentModel> tsmodel =
-            boost::dynamic_pointer_cast<TermStructureConsistentModel>(model_);
+            boost::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
         if (tsmodel) {
             referenceDate = tsmodel->termStructure()->referenceDate();
             dayCounter = tsmodel->termStructure()->dayCounter();
@@ -84,7 +84,7 @@ namespace QuantLib {
                 dayCounter.yearFraction(referenceDate,
                                         arguments_.fixedPayDates[i]);
 
-        rStarFinder finder(model_, arguments_.nominal, maturity,
+        rStarFinder finder(*model_, arguments_.nominal, maturity,
                            fixedPayTimes, amounts);
         Brent s1d;
         Rate minStrike = -10.0;

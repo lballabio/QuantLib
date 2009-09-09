@@ -208,7 +208,7 @@ namespace QuantLib {
      
         if (controlVariate_) {
             boost::shared_ptr<PricingEngine> analyticEngine(
-                                        new AnalyticHestonEngine(model_, 164));
+                                       new AnalyticHestonEngine(*model_, 164));
             boost::shared_ptr<Exercise> exercise(
                         new EuropeanExercise(arguments_.exercise->lastDate()));
             
@@ -217,7 +217,7 @@ namespace QuantLib {
             Real analyticNPV = option.NPV();
 
             boost::shared_ptr<FdHestonVanillaEngine> fdEngine(
-                    new FdHestonVanillaEngine(model_, tGrid_, xGrid_, 
+                    new FdHestonVanillaEngine(*model_, tGrid_, xGrid_, 
                                               vGrid_, dampingSteps_, 
                                               type_, theta_, mu_));
             fdEngine->enableMultipleStrikesCaching(strikes_);
