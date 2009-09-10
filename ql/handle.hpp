@@ -55,7 +55,9 @@ namespace QuantLib {
         };
         boost::shared_ptr<Link> link_;
       public:
-        /*! \warning <tt>registerAsObserver</tt> is left as a backdoor
+        /*! \name Constructors
+
+            \warning <tt>registerAsObserver</tt> is left as a backdoor
                      in case the programmer cannot guarantee that the
                      object pointed to will remain alive for the whole
                      lifetime of the handle---namely, it should be set
@@ -69,9 +71,12 @@ namespace QuantLib {
                      responsibility to ensure that the handle gets
                      destroyed before the pointed object does.
         */
-        explicit Handle(
-                       const boost::shared_ptr<T>& h = boost::shared_ptr<T>(),
-                       bool registerAsObserver = true);
+        //@{
+        explicit Handle(const boost::shared_ptr<T>& p = boost::shared_ptr<T>(),
+                        bool registerAsObserver = true);
+        explicit Handle(T* p,
+                        bool registerAsObserver = true);
+        //@}
         //! dereferencing
         const boost::shared_ptr<T>& currentLink() const;
         const boost::shared_ptr<T>& operator->() const;
@@ -103,19 +108,19 @@ namespace QuantLib {
         handles that were created as copies of such instance.
 
         \pre Class T must inherit from Observable
+
+        \warning see the Handle documentation for issues
+                 relatives to <tt>registerAsObserver</tt>.
     */
     template <class T>
     class RelinkableHandle : public Handle<T> {
       public:
-        /*! \warning see the Handle documentation for issues
-                     relatives to <tt>registerAsObserver</tt>.
-        */
         explicit RelinkableHandle(
-                       const boost::shared_ptr<T>& h = boost::shared_ptr<T>(),
+                       const boost::shared_ptr<T>& p = boost::shared_ptr<T>(),
                        bool registerAsObserver = true);
-        /*! \warning see the Handle documentation for issues
-                     relatives to <tt>registerAsObserver</tt>.
-        */
+        explicit RelinkableHandle(
+                       T* p,
+                       bool registerAsObserver = true);
         void linkTo(const boost::shared_ptr<T>&,
                     bool registerAsObserver = true);
     };
@@ -144,10 +149,16 @@ namespace QuantLib {
         }
     }
 
+
     template <class T>
-    inline Handle<T>::Handle(const boost::shared_ptr<T>& h,
+    inline Handle<T>::Handle(const boost::shared_ptr<T>& p,
                              bool registerAsObserver)
-    : link_(new Link(h,registerAsObserver)) {}
+    : link_(new Link(p,registerAsObserver)) {}
+
+    template <class T>
+    inline Handle<T>::Handle(T* p,
+                             bool registerAsObserver)
+    : link_(new Link(boost::shared_ptr<T>(p),registerAsObserver)) {}
 
     template <class T>
     inline const boost::shared_ptr<T>& Handle<T>::currentLink() const {
@@ -177,10 +188,16 @@ namespace QuantLib {
         return link_;
     }
 
+
     template <class T>
-    inline RelinkableHandle<T>::RelinkableHandle(const boost::shared_ptr<T>& h,
+    inline RelinkableHandle<T>::RelinkableHandle(const boost::shared_ptr<T>& p,
                                                  bool registerAsObserver)
-    : Handle<T>(h,registerAsObserver) {}
+    : Handle<T>(p,registerAsObserver) {}
+
+    template <class T>
+    inline RelinkableHandle<T>::RelinkableHandle(T* p,
+                                                 bool registerAsObserver)
+    : Handle<T>(p,registerAsObserver) {}
 
     template <class T>
     inline void RelinkableHandle<T>::linkTo(const boost::shared_ptr<T>& h,
