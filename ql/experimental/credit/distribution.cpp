@@ -22,6 +22,7 @@
  */
 
 #include <ql/experimental/credit/distribution.hpp>
+#include <ql/math/comparison.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
@@ -51,7 +52,9 @@ namespace QuantLib {
     //-------------------------------------------------------------------------
     int Distribution::locate (Real x) {
     //-------------------------------------------------------------------------
-        QL_REQUIRE (x >= x_.front() && x <= x_.back() + dx_.back(),
+        QL_REQUIRE ((x >= x_.front() || close(x, x_.front())) &&
+                    (x <= x_.back() + dx_.back()
+                     || close(x, x_.back() + dx_.back())),
                     "coordinate " << x
                     << " out of range [" << x_.front() << "; "
                     << x_.back() + dx_.back() << "]");
