@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file frhico.hpp
+/*! \file frhicp.hpp
     \brief French HICP inflation indexes
 */
 

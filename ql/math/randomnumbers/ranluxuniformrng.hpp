@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file ranlux.hpp
+/*! \file ranluxuniformrng.hpp
     \brief "Luxury" random number generator.
 */
 

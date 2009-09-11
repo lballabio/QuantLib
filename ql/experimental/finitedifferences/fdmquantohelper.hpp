@@ -18,8 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmquantohelper.cpp
-\brief quanto helper to store market data needed for the quanto adjustment.
+/*! \file fdmquantohelper.hpp
+    \brief helper class storing market data needed for the quanto adjustment.
 */
 
 #ifndef quantlib_fdm_quanto_helper_hpp

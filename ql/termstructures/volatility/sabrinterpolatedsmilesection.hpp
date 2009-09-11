@@ -18,7 +18,7 @@ Copyright (C) 2006 François du Vignaud
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file SabrInterpolatedSmileSection.hpp
+/*! \file sabrinterpolatedsmilesection.hpp
     \brief Interpolated smile section class
 */
 

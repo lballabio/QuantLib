@@ -88,8 +88,8 @@ namespace QuantLib {
 
         References:
 
-        D. Bates, Jumps and stochastic volatilit: exchange rate processes
-        implicit in Deutsche mark options",
+        D. Bates, Jumps and stochastic volatility: exchange rate processes
+        implicit in Deutsche mark options,
         Review of Financial Sudies 9, 69-107.
 
         A. Sepp, Pricing European-Style Options under Jump Diffusion

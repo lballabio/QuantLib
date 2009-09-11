@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticcompoundengine.hpp
+/*! \file analyticcompoundoptionengine.hpp
     \brief Analytic compound option engines
 */
 

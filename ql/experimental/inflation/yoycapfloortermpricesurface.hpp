@@ -206,6 +206,8 @@ namespace QuantLib {
 
 
 
+    #ifndef __DOXYGEN__
+
     // template definitions
 
     template<class I2D, class I1D>
@@ -507,6 +509,8 @@ namespace QuantLib {
                        << ", implied quote " << YYhelpers[i]->impliedQuote());
         }
     }
+
+    #endif
 
 }
 

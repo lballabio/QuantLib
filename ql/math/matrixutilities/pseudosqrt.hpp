@@ -40,10 +40,10 @@ namespace QuantLib {
         return an approximation of the pseudo square root
         using a (user selected) salvaging algorithm.
 
-        For more information see: "The most general methodology to create
-        a valid correlation matrix for risk management and option pricing
-        purposes", by R. Rebonato and P. Jäckel.
-        The Journal of Risk, 2(2), Winter 1999/2000
+        For more information see: R. Rebonato and P. Jäckel, The most
+        general methodology to create a valid correlation matrix for
+        risk management and option pricing purposes, The Journal of
+        Risk, 2(2), Winter 1999/2000.
         http://www.rebonato.com/correlationmatrix.pdf
 
         Revised and extended in "Monte Carlo Methods in Finance",
