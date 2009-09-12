@@ -57,6 +57,8 @@ namespace QuantLib {
         // in conjunction with boost::bind (e.g. gcc-4.1.1).
         // Therefore this workaround function will be defined.
         inline Real f_workaround(const Array& a, Size i) {
+            QL_REQUIRE(i < a.size(), 
+                       "dimension of the basis system is too large");
             return a[i];
         }
     }
