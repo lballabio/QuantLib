@@ -53,12 +53,9 @@ namespace QuantLib {
             const Size order_;
         };
 
-        // some compilers have problems with Array::operator[]
-        // in conjunction with boost::bind (e.g. gcc-4.1.1).
-        // Therefore this workaround function will be defined.
-        inline Real f_workaround(const Array& a, Size i) {
-            QL_REQUIRE(i < a.size(), 
-                       "dimension of the basis system is too large");
+        inline Real f_workaround(const Array& a, Size i, Size dim) {
+            QL_REQUIRE(a.size() == dim, 
+                       "wrong dimension of the basis system");
             return a[i];
         }
     }
@@ -109,8 +106,7 @@ namespace QuantLib {
 
         return ret;
     }
-
-
+    
     std::vector<boost::function1<Real, Array> >
     LsmBasisSystem::multiPathBasisSystem(Size dim, Size order,
                                          PolynomType polynomType) {
@@ -119,7 +115,8 @@ namespace QuantLib {
             = pathBasisSystem(order, polynomType);
 
         std::vector<boost::function1<Real, Array> > ret;
-        ret.push_back(constant<Array, Real>(1.0));
+        ret.push_back(bind(constant<Real, Real>(1.0),
+                           bind(f_workaround, _1, 0, dim)));
 
         for (Size i=1; i<=order; ++i) {
             const std::vector<boost::function1<Real, Array> > a
@@ -193,7 +190,7 @@ namespace QuantLib {
 
            for (Size j=0; j<dim; ++j) {
                const boost::function1<Real, Array> a
-                   = bind(b[i], bind(f_workaround, _1, j));
+                   = bind(b[i], bind(f_workaround, _1, j, dim));
 
                if (i == order) {
                    ret.push_back(a);
