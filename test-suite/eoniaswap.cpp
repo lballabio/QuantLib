@@ -19,8 +19,8 @@
 
 #include "eoniaswap.hpp"
 #include "utilities.hpp"
+
 #include <ql/experimental/overnightswap/eoniaswap.hpp>
-#include <ql/experimental/overnightswap/eonia.hpp>
 #include <ql/experimental/overnightswap/eoniacoupon.hpp>
 #include <ql/experimental/overnightswap/eoniaswaphelper.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
@@ -34,12 +34,11 @@
 #include <ql/time/schedule.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
-#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/currencies/europe.hpp>
+#include <ql/utilities/dataformatters.hpp>
 
 #include <iostream>
 #include <iomanip>

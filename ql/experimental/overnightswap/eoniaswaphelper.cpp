@@ -37,7 +37,7 @@ namespace QuantLib {
                                      // eonia leg
                                      const Period& eoniaPeriod,
                                      BusinessDayConvention eoniaConvention,
-                                     const boost::shared_ptr<Eonia>& index,
+                                     const boost::shared_ptr<Eonia>& eoniaIndex,
                                      // fixed leg
                                      const Period& fixedPeriod,
                                      BusinessDayConvention fixedConvention,
@@ -47,11 +47,11 @@ namespace QuantLib {
       calendar_(calendar),
       eoniaPeriod_(eoniaPeriod),
       eoniaConvention_(eoniaConvention),
-      index_(index),
+      eoniaIndex_(eoniaIndex),
       fixedPeriod_(fixedPeriod),
       fixedConvention_(fixedConvention),
       fixedDayCount_(fixedDayCount) {
-        registerWith(index_);
+        registerWith(eoniaIndex_);
         initializeDates();
     }
 
@@ -69,7 +69,7 @@ namespace QuantLib {
             MakeSchedule().from(earliestDate_)
                           .to(maturity)
                           .withTenor(eoniaPeriod_)
-                          .withCalendar(index_->fixingCalendar())
+                          .withCalendar(eoniaIndex_->fixingCalendar())
                           .withConvention(eoniaConvention_)
                           .backwards();
 
@@ -77,7 +77,7 @@ namespace QuantLib {
             MakeSchedule().from(earliestDate_)
                           .to(maturity)
                           .withTenor(fixedPeriod_)
-                          .withCalendar(index_->fixingCalendar())
+                          .withCalendar(eoniaIndex_->fixingCalendar())
                           .withConvention(fixedConvention_)
                           .backwards();
 

@@ -5,6 +5,8 @@
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2006 Chiara Fornarola
+ Copyright (C) 2009 Roland Lichters
+ Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -70,6 +72,29 @@ namespace QuantLib {
                                     Handle<YieldTermStructure>());
     };
 
+    //! %Eonia (Euro Overnight Index Average) rate fixed by the ECB.
+    class Eonia : public DailyTenorEuribor {
+      public:
+        Eonia(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : DailyTenorEuribor(0, h) {}
+    };
+
+    //! %Euribor Tomorrow-Next (a.k.a. Tom-Next)
+    class EuriborTomorrowNext : public DailyTenorEuribor {
+      public:
+        EuriborTomorrowNext(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : DailyTenorEuribor(1, h) {}
+    };
+
+    //! %Euribor Spot-Next
+    class EuriborSpotNext : public DailyTenorEuribor {
+      public:
+        EuriborSpotNext(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : DailyTenorEuribor(2, h) {}
+    };
 
     //! Daily tenor Actual/365 %Euribor index
     /*! Euribor rate adjusted for the mismatch between the actual/360
@@ -81,6 +106,29 @@ namespace QuantLib {
         DailyTenorEuribor365(Natural settlementDays,
                              const Handle<YieldTermStructure>& h =
                                        Handle<YieldTermStructure>());
+    };
+    //! %Eonia365 (Euro Overnight Index Average) rate fixed by the ECB.
+    class Eonia365 : public DailyTenorEuribor365 {
+      public:
+        Eonia365(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : DailyTenorEuribor365(0, h) {}
+    };
+
+    //! %Euribor365 Tomorrow-Next (a.k.a. Tom-Next)
+    class Euribor365TomorrowNext : public DailyTenorEuribor365 {
+      public:
+        Euribor365TomorrowNext(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : DailyTenorEuribor365(1, h) {}
+    };
+
+    //! %Euribor Spot-Next
+    class Euribor365SpotNext : public DailyTenorEuribor365 {
+      public:
+        Euribor365SpotNext(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : DailyTenorEuribor365(2, h) {}
     };
 
 

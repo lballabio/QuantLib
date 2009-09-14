@@ -25,7 +25,7 @@
 #define quantlib_eonia_swap_hpp
 
 #include <ql/instruments/swap.hpp>
-#include <ql/experimental/overnightswap/eonia.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/time/schedule.hpp>
 
 namespace QuantLib {

@@ -62,11 +62,6 @@ namespace QuantLib {
                         continue;
 
                     d2 = std::min(nextValueDate, endDate);
-                    /*
-                    comp *= (1.0
-                             + (index->fixing(fixingDates[i])+coupon_->spread())
-                             * dc.yearFraction(d1, d2));
-                    */
                     comp *= (1.0 + index->fixing(fixingDates[i])
                              * dc.yearFraction(d1, d2));
 
@@ -81,7 +76,6 @@ namespace QuantLib {
                           "interest days " << (endDate - startDate));
 
                 return coupon_->gearing() * rate + coupon_->spread();
-                //return coupon_->gearing() * rate;
             }
 
             Real swapletPrice() const {

@@ -95,4 +95,5 @@ namespace QuantLib {
                 EURCurrency(), TARGET(),
                 euriborConvention(1*Days), euriborEOM(1*Days),
                 Actual365Fixed(), h) {}
+
 }

@@ -42,7 +42,7 @@ namespace QuantLib {
                         // eonia leg
                         const Period& eoniaPeriod,
                         BusinessDayConvention eoniaConvention,
-                        const boost::shared_ptr<Eonia>& index,
+                        const boost::shared_ptr<Eonia>& eoniaIndex,
                         // fixed leg
                         const Period& fixedPeriod,
                         BusinessDayConvention fixedConvention,
@@ -63,7 +63,7 @@ namespace QuantLib {
         Calendar calendar_;
         Period eoniaPeriod_;
         BusinessDayConvention eoniaConvention_;
-        boost::shared_ptr<Eonia> index_;
+        boost::shared_ptr<Eonia> eoniaIndex_;
         Period fixedPeriod_;
         BusinessDayConvention fixedConvention_;
         DayCounter fixedDayCount_;

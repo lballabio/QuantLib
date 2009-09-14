@@ -25,7 +25,7 @@
 #define quantlib_eonia_coupon_hpp
 
 #include <ql/cashflows/floatingratecoupon.hpp>
-#include <ql/experimental/overnightswap/eonia.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/time/schedule.hpp>
 
 namespace QuantLib {
