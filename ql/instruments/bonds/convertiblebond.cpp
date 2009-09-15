@@ -100,9 +100,9 @@ namespace QuantLib {
                       schedule, redemption) {
 
         // !!! notional forcibly set to 100
-        cashflows_ = FixedRateLeg(schedule,dayCounter)
+        cashflows_ = FixedRateLeg(schedule)
             .withNotionals(100.0)
-            .withCouponRates(coupons)
+            .withCouponRates(coupons, dayCounter)
             .withPaymentAdjustment(schedule.businessDayConvention());
 
         addRedemptionsToCashflows(std::vector<Real>(1, redemption));

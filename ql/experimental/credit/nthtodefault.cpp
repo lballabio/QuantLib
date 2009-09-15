@@ -49,9 +49,9 @@ namespace QuantLib {
       yieldTS_(yieldTS), integrationStepSize_(integrationStepSize),
       claim_(claim) {
 
-        premiumLeg_ = FixedRateLeg(premiumSchedule, dayCounter)
+        premiumLeg_ = FixedRateLeg(premiumSchedule)
             .withNotionals(nominal)
-            .withCouponRates(premiumRate)
+            .withCouponRates(premiumRate, dayCounter)
             .withPaymentAdjustment(Unadjusted);
 
         for (Size i=0; i<probabilities_.size(); i++)

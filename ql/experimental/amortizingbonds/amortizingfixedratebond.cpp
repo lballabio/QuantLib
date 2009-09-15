@@ -38,9 +38,9 @@ namespace QuantLib {
 
         maturityDate_ = schedule.endDate();
 
-        cashflows_ = FixedRateLeg(schedule,accrualDayCounter)
+        cashflows_ = FixedRateLeg(schedule)
             .withNotionals(notionals)
-            .withCouponRates(coupons)
+            .withCouponRates(coupons, accrualDayCounter)
             .withPaymentAdjustment(paymentConvention);
 
         addRedemptionsToCashflows();
@@ -182,12 +182,11 @@ namespace QuantLib {
 
         cashflows_ =
             FixedRateLeg(SinkingSchedule(startDate, bondTenor,
-                                         sinkingFrequency, calendar),
-                         accrualDayCounter)
+                                         sinkingFrequency, calendar))
             .withNotionals(SinkingNotionals(startDate, bondTenor,
                                             sinkingFrequency, coupon,
                                             initialFaceAmount))
-            .withCouponRates(coupon)
+            .withCouponRates(coupon, accrualDayCounter)
             .withPaymentAdjustment(paymentConvention);
 
         addRedemptionsToCashflows();

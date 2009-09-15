@@ -41,9 +41,9 @@ namespace QuantLib {
         BusinessDayConvention convention =
             eoniaSchedule.businessDayConvention();
 
-        legs_[0] = FixedRateLeg(fixedSchedule, fixedDayCount)
+        legs_[0] = FixedRateLeg(fixedSchedule)
             .withNotionals(nominal)
-            .withCouponRates(fixedRate)
+            .withCouponRates(fixedRate, fixedDayCount)
             .withPaymentAdjustment(convention);
 
         legs_[1] = EoniaLeg(eoniaSchedule, index)

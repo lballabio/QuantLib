@@ -52,9 +52,9 @@ namespace QuantLib {
         else
             paymentConvention_ = floatingSchedule_.businessDayConvention();
 
-        Leg fixedLeg = FixedRateLeg(fixedSchedule_, fixedDayCount_)
+        Leg fixedLeg = FixedRateLeg(fixedSchedule_)
             .withNotionals(nominal_)
-            .withCouponRates(fixedRate_)
+            .withCouponRates(fixedRate_, fixedDayCount_)
             .withPaymentAdjustment(paymentConvention_);
 
         Leg floatingLeg = IborLeg(floatingSchedule_, iborIndex_)

@@ -41,9 +41,9 @@ namespace QuantLib {
 
         maturityDate_ = schedule.endDate();
 
-        cashflows_ = FixedRateLeg(schedule, accrualDayCounter)
+        cashflows_ = FixedRateLeg(schedule)
             .withNotionals(faceAmount)
-            .withCouponRates(coupons)
+            .withCouponRates(coupons, accrualDayCounter)
             .withPaymentAdjustment(paymentConvention);
 
         addRedemptionsToCashflows(std::vector<Real>(1, redemption));
@@ -97,9 +97,9 @@ namespace QuantLib {
                           rule, endOfMonth,
                           firstDate, nextToLastDate);
 
-        cashflows_ = FixedRateLeg(schedule, accrualDayCounter)
+        cashflows_ = FixedRateLeg(schedule)
             .withNotionals(faceAmount)
-            .withCouponRates(coupons)
+            .withCouponRates(coupons, accrualDayCounter)
             .withPaymentAdjustment(paymentConvention);
 
         addRedemptionsToCashflows(std::vector<Real>(1, redemption));

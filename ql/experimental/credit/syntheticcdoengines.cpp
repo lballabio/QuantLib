@@ -114,8 +114,8 @@ namespace QuantLib {
                 arguments_.upfrontRate * results_.remainingNotional;
 
         vector<boost::shared_ptr<CashFlow> > premiumLeg =
-            FixedRateLeg(arguments_.schedule, arguments_.dayCounter)
-            .withCouponRates(arguments_.runningRate)
+            FixedRateLeg(arguments_.schedule)
+            .withCouponRates(arguments_.runningRate, arguments_.dayCounter)
             .withPaymentAdjustment(arguments_.paymentConvention)
             .withNotionals(1.0);
 
@@ -221,9 +221,9 @@ namespace QuantLib {
         QL_REQUIRE(tmax >= 0, "tmax < 0");
 
         vector<boost::shared_ptr<CashFlow> > premiumLeg =
-            FixedRateLeg(arguments_.schedule, arguments_.dayCounter)
+            FixedRateLeg(arguments_.schedule)
             .withNotionals(1.0)
-            .withCouponRates(arguments_.runningRate)
+            .withCouponRates(arguments_.runningRate, arguments_.dayCounter)
             .withPaymentAdjustment(arguments_.paymentConvention);
 
         boost::shared_ptr<Pool> pool = remainingBasket_->pool();

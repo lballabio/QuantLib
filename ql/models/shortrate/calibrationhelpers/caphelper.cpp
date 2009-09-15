@@ -75,9 +75,9 @@ namespace QuantLib {
                                index->fixingCalendar(),
                                Unadjusted, Unadjusted,
                                DateGeneration::Forward, false);
-        Leg fixedLeg = FixedRateLeg(fixedSchedule,fixedLegDayCounter)
+        Leg fixedLeg = FixedRateLeg(fixedSchedule)
             .withNotionals(nominals)
-            .withCouponRates(fixedRate)
+            .withCouponRates(fixedRate, fixedLegDayCounter)
             .withPaymentAdjustment(index->businessDayConvention());
 
         Swap swap(floatingLeg, fixedLeg);

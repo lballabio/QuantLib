@@ -919,7 +919,7 @@ void BondTest::testBrazilianCached() {
 
         // fixed coupons
         Leg cashflows =
-            FixedRateLeg(schedule, Actual360())
+            FixedRateLeg(schedule)
             .withNotionals(vars.faceAmount)
             .withCouponRates(couponRates)
             .withPaymentAdjustment(ModifiedFollowing);

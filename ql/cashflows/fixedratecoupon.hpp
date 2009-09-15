@@ -49,7 +49,6 @@ namespace QuantLib {
         FixedRateCoupon(const Date& paymentDate,
                         Real nominal,
                         const InterestRate& interestRate,
-                        const DayCounter& dayCounter,
                         const Date& accrualStartDate,
                         const Date& accrualEndDate,
                         const Date& refPeriodStart = Date(),
@@ -63,7 +62,7 @@ namespace QuantLib {
         //@{
         Rate rate() const { return rate_; }
         InterestRate interestRate() const { return rate_; }
-        DayCounter dayCounter() const { return dayCounter_; }
+        DayCounter dayCounter() const { return rate_.dayCounter(); }
         Real accruedAmount(const Date&) const;
         //@}
         //! \name Visitability
@@ -72,7 +71,6 @@ namespace QuantLib {
         //@}
       private:
         InterestRate rate_;
-        DayCounter dayCounter_;
     };
 
 
@@ -80,13 +78,18 @@ namespace QuantLib {
     //! helper class building a sequence of fixed rate coupons
     class FixedRateLeg {
       public:
-        FixedRateLeg(const Schedule& schedule,
-                     const DayCounter& paymentDayCounter);
+        FixedRateLeg(const Schedule& schedule);
         FixedRateLeg& withNotionals(Real);
         FixedRateLeg& withNotionals(const std::vector<Real>&);
-        FixedRateLeg& withCouponRates(Rate);
+        FixedRateLeg& withCouponRates(Rate,
+                                      const DayCounter& paymentDayCounter,
+                                      Compounding comp = Simple,
+                                      Frequency freq = Annual);
+        FixedRateLeg& withCouponRates(const std::vector<Rate>&,
+                                      const DayCounter& paymentDayCounter,
+                                      Compounding comp = Simple,
+                                      Frequency freq = Annual);
         FixedRateLeg& withCouponRates(const InterestRate&);
-        FixedRateLeg& withCouponRates(const std::vector<Rate>&);
         FixedRateLeg& withCouponRates(const std::vector<InterestRate>&);
         FixedRateLeg& withPaymentAdjustment(BusinessDayConvention);
         FixedRateLeg& withFirstPeriodDayCounter(const DayCounter&);
@@ -95,7 +98,7 @@ namespace QuantLib {
         Schedule schedule_;
         std::vector<Real> notionals_;
         std::vector<InterestRate> couponRates_;
-        DayCounter paymentDayCounter_, firstPeriodDayCounter_;
+        DayCounter firstPeriodDC_;
         BusinessDayConvention paymentAdjustment_;
     };
 

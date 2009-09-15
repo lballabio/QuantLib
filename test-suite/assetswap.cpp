@@ -1629,10 +1629,9 @@ void AssetSwapTest::testGenericBondImplied() {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    Leg fixedBondLeg1 = FixedRateLeg(fixedBondSchedule1,
-                                     ActualActual(ActualActual::ISDA))
+    Leg fixedBondLeg1 = FixedRateLeg(fixedBondSchedule1)
         .withNotionals(vars.faceAmount)
-        .withCouponRates(0.04);
+        .withCouponRates(0.04, ActualActual(ActualActual::ISDA));
     Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
     fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
@@ -1678,10 +1677,9 @@ void AssetSwapTest::testGenericBondImplied() {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    Leg fixedBondLeg2 = FixedRateLeg(fixedBondSchedule2,
-                                     Thirty360(Thirty360::BondBasis))
+    Leg fixedBondLeg2 = FixedRateLeg(fixedBondSchedule2)
         .withNotionals(vars.faceAmount)
-        .withCouponRates(0.05);
+        .withCouponRates(0.05, Thirty360(Thirty360::BondBasis));
     Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
     fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
@@ -2016,10 +2014,9 @@ void AssetSwapTest::testMASWWithGenericBond() {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    Leg fixedBondLeg1 = FixedRateLeg(fixedBondSchedule1,
-                                     ActualActual(ActualActual::ISDA))
+    Leg fixedBondLeg1 = FixedRateLeg(fixedBondSchedule1)
         .withNotionals(vars.faceAmount)
-        .withCouponRates(0.04);
+        .withCouponRates(0.04, ActualActual(ActualActual::ISDA));
     Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
     fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
@@ -2077,10 +2074,9 @@ void AssetSwapTest::testMASWWithGenericBond() {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    Leg fixedBondLeg2 = FixedRateLeg(fixedBondSchedule2,
-                                     Thirty360(Thirty360::BondBasis))
+    Leg fixedBondLeg2 = FixedRateLeg(fixedBondSchedule2)
         .withNotionals(vars.faceAmount)
-        .withCouponRates(0.05);
+        .withCouponRates(0.05, Thirty360(Thirty360::BondBasis));
     Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
     fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
@@ -2484,10 +2480,9 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    Leg fixedBondLeg1 = FixedRateLeg(fixedBondSchedule1,
-                                     ActualActual(ActualActual::ISDA))
+    Leg fixedBondLeg1 = FixedRateLeg(fixedBondSchedule1)
         .withNotionals(vars.faceAmount)
-        .withCouponRates(0.04);
+        .withCouponRates(0.04, ActualActual(ActualActual::ISDA));
     Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
     fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
@@ -2531,10 +2526,9 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    Leg fixedBondLeg2 = FixedRateLeg(fixedBondSchedule2,
-                                     Thirty360(Thirty360::BondBasis))
+    Leg fixedBondLeg2 = FixedRateLeg(fixedBondSchedule2)
         .withNotionals(vars.faceAmount)
-        .withCouponRates(0.05);
+        .withCouponRates(0.05, Thirty360(Thirty360::BondBasis));
     Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
     fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
@@ -2852,10 +2846,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    Leg fixedBondLeg1 = FixedRateLeg(fixedBondSchedule1,
-                                     ActualActual(ActualActual::ISDA))
+    Leg fixedBondLeg1 = FixedRateLeg(fixedBondSchedule1)
         .withNotionals(vars.faceAmount)
-        .withCouponRates(0.04);
+        .withCouponRates(0.04, ActualActual(ActualActual::ISDA));
     Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
     fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
@@ -2917,10 +2910,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    Leg fixedBondLeg2 = FixedRateLeg(fixedBondSchedule2,
-                                     Thirty360(Thirty360::BondBasis))
+    Leg fixedBondLeg2 = FixedRateLeg(fixedBondSchedule2)
         .withNotionals(vars.faceAmount)
-        .withCouponRates(0.05);
+        .withCouponRates(0.05, Thirty360(Thirty360::BondBasis));
     Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
     fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
@@ -3415,10 +3407,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    Leg fixedBondLeg1 = FixedRateLeg(fixedBondSchedule1,
-                                     ActualActual(ActualActual::ISDA))
+    Leg fixedBondLeg1 = FixedRateLeg(fixedBondSchedule1)
         .withNotionals(vars.faceAmount)
-        .withCouponRates(0.04);
+        .withCouponRates(0.04, ActualActual(ActualActual::ISDA));
     Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
     fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
@@ -3519,10 +3510,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    Leg fixedBondLeg2 = FixedRateLeg(fixedBondSchedule2,
-                                     Thirty360(Thirty360::BondBasis))
+    Leg fixedBondLeg2 = FixedRateLeg(fixedBondSchedule2)
         .withNotionals(vars.faceAmount)
-        .withCouponRates(0.05);
+        .withCouponRates(0.05, Thirty360(Thirty360::BondBasis));
     Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
     fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new

@@ -258,9 +258,9 @@ void SwapTest::testInArrears() {
 
 
     std::vector<Rate> coupons(1, oneYear);
-    Leg fixedLeg = FixedRateLeg(schedule, dayCounter)
+    Leg fixedLeg = FixedRateLeg(schedule)
         .withNotionals(nominals)
-        .withCouponRates(coupons);
+        .withCouponRates(coupons, dayCounter);
 
     std::vector<Real> gearings;
     std::vector<Rate> spreads;

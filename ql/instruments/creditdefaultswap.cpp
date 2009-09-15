@@ -49,9 +49,9 @@ namespace QuantLib {
                                                          protectionStart) {
         QL_REQUIRE(protectionStart_ >= schedule[0],
                    "protection can not start after accrual");
-        leg_ = FixedRateLeg(schedule, dayCounter)
+        leg_ = FixedRateLeg(schedule)
             .withNotionals(notional)
-            .withCouponRates(spread)
+            .withCouponRates(spread, dayCounter)
             .withPaymentAdjustment(convention);
         upfrontPayment_.reset(new SimpleCashFlow(0.0, schedule[0]));
 
@@ -79,9 +79,9 @@ namespace QuantLib {
                                                          protectionStart) {
         QL_REQUIRE(protectionStart_ <= schedule[0],
                    "protection can not start after accrual");
-        leg_ = FixedRateLeg(schedule, dayCounter)
+        leg_ = FixedRateLeg(schedule)
             .withNotionals(notional)
-            .withCouponRates(runningSpread)
+            .withCouponRates(runningSpread, dayCounter)
             .withPaymentAdjustment(convention);
         Date d = upfrontDate == Null<Date>() ? schedule[0] : upfrontDate;
         upfrontPayment_.reset(new SimpleCashFlow(notional*upfront, d));

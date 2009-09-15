@@ -131,10 +131,9 @@ namespace QuantLib {
 
         if (!isZeroCouponBond) {
             cashflows_ =
-                FixedRateLeg(schedule,
-                             accrualDayCounter)
+                FixedRateLeg(schedule)
                 .withNotionals(faceAmount)
-                .withCouponRates(coupons)
+                .withCouponRates(coupons, accrualDayCounter)
                 .withPaymentAdjustment(paymentConvention);
 
             addRedemptionsToCashflows(std::vector<Real>(1, redemption));

@@ -91,9 +91,9 @@ namespace {
                               convention, convention,
                               DateGeneration::Forward, false);
             std::vector<Rate> coupons(length, 0.0);
-            return FixedRateLeg(schedule, Thirty360())
+            return FixedRateLeg(schedule)
                 .withNotionals(nominals)
-                .withCouponRates(coupons);
+                .withCouponRates(coupons, Thirty360());
         }
 
         Leg makeFloatingLeg(const Date& startDate,
