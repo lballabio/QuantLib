@@ -43,7 +43,6 @@ namespace QuantLib {
                 const std::vector<Spread>& strikeSpreads,
                 const std::vector<std::vector<Handle<Quote> > >& volSpreads,
                 const boost::shared_ptr<SwapIndex>& swapIndexBase,
-                const boost::shared_ptr<SwapIndex>& shortSwapIndexBase,
                 bool vegaWeightedSmileFit,
                 const std::vector<std::vector<Handle<Quote> > >& parametersGuess,
                 const std::vector<bool>& isParameterFixed,
@@ -53,7 +52,6 @@ namespace QuantLib {
                 const boost::shared_ptr<OptimizationMethod>& optMethod)
     : SwaptionVolatilityCube(atmVolStructure, optionTenors, swapTenors,
                              strikeSpreads, volSpreads, swapIndexBase,
-                             shortSwapIndexBase,
                              vegaWeightedSmileFit),
       parametersGuessQuotes_(parametersGuess),
       isParameterFixed_(isParameterFixed), isAtmCalibrated_(isAtmCalibrated),
@@ -482,11 +480,11 @@ namespace QuantLib {
         for (Size i=0; i<2; i++) {
             for (Size j=0; j<2; j++) {
                 atmForwards[i][j] = atmStrike(optionsDateNodes[i],
-                                              swapTenorNodes[j]);                
+                                              swapTenorNodes[j]);
                 // atmVols[i][j] = smiles[i][j]->volatility(atmForwards[i][j]);
                 atmVols[i][j] = atmVol_->volatility(
                     optionsDateNodes[i], swapTenorNodes[j], atmForwards[i][j]);
-                /* With the old implementation the interpolated spreads on ATM 
+                /* With the old implementation the interpolated spreads on ATM
                    volatilities were null even if the spreads on ATM volatilities to be
                    interpolated were non-zero. The new implementation removes
                    this behaviour, but introduces a small ERROR in the cube:
@@ -498,9 +496,9 @@ namespace QuantLib {
                    volatilities in sparse cube whose spreads are used in the calculation.
                    A similar imprecision is introduced to the volatilities in dense cube
                    whith moneyness near to 1.
-                   (See below how spreadVols are calculated). 
+                   (See below how spreadVols are calculated).
                    The extent of this error depends on the quality of the fit: in case of
-                   good fits it is negligibile.                  
+                   good fits it is negligibile.
                 */
             }
         }

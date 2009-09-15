@@ -26,8 +26,9 @@
 
 namespace QuantLib {
 
-    ChfLiborSwapIsdaFix::ChfLiborSwapIsdaFix(const Period& tenor,
-                                             const Handle<YieldTermStructure>& h)
+    ChfLiborSwapIsdaFix::ChfLiborSwapIsdaFix(
+                                         const Period& tenor,
+                                         const Handle<YieldTermStructure>& h)
     : SwapIndex("ChfLiborSwapIsdaFix", // familyName
                 tenor,
                 2, // settlementDays
@@ -39,5 +40,11 @@ namespace QuantLib {
                 tenor > 1*Years ?
                     boost::shared_ptr<IborIndex>(new CHFLibor(6*Months, h)) :
                     boost::shared_ptr<IborIndex>(new CHFLibor(3*Months, h))) {}
+
+    boost::shared_ptr<SwapIndex>
+    ChfLiborSwapIsdaFix::create(const Period& tenor) const {
+        return boost::shared_ptr<SwapIndex>(
+                 new ChfLiborSwapIsdaFix(tenor, iborIndex_->termStructure()));
+    }
 
 }

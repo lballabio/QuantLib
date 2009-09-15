@@ -43,6 +43,7 @@ namespace QuantLib {
         UsdLiborSwapIsdaFixAm(const Period& tenor,
                               const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
+        boost::shared_ptr<SwapIndex> create(const Period& tenor) const;
     };
 
     //! %UsdLiborSwapIsdaFixPm index base class
@@ -59,6 +60,7 @@ namespace QuantLib {
         UsdLiborSwapIsdaFixPm(const Period& tenor,
                               const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
+        boost::shared_ptr<SwapIndex> create(const Period& tenor) const;
     };
 
 }

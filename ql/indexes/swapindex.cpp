@@ -66,4 +66,18 @@ namespace QuantLib {
         return underlyingSwap(fixDate)->maturityDate();
     }
 
+
+    boost::shared_ptr<SwapIndex>
+    SwapIndex::create(const Period& new_tenor) const {
+        return boost::shared_ptr<SwapIndex>(new SwapIndex(familyName_,
+                                                          new_tenor,
+                                                          fixingDays_,
+                                                          currency_,
+                                                          fixingCalendar_,
+                                                          fixedLegTenor_,
+                                                          fixedLegConvention_,
+                                                          dayCounter_,
+                                                          iborIndex_));
+    }
+
 }

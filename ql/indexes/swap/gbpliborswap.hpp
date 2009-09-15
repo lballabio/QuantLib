@@ -44,6 +44,7 @@ namespace QuantLib {
         GbpLiborSwapIsdaFix(const Period& tenor,
                             const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
+        boost::shared_ptr<SwapIndex> create(const Period& tenor) const;
     };
 
 }

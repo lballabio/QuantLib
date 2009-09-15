@@ -191,8 +191,6 @@ namespace {
             iborIndex = shared_ptr<IborIndex>(new Euribor6M(termStructure));
             shared_ptr<SwapIndex> swapIndexBase(new
                 EuriborSwapIsdaFixA(10*Years, termStructure));
-            shared_ptr<SwapIndex> shortSwapIndexBase(new
-                EuriborSwapIsdaFixA(2*Years, termStructure));
 
             bool vegaWeightedSmileFit = false;
 
@@ -204,7 +202,6 @@ namespace {
                                      strikeSpreads,
                                      volSpreads,
                                      swapIndexBase,
-                                     shortSwapIndexBase,
                                      vegaWeightedSmileFit)));
             SabrVolCube2->enableExtrapolation();
 
@@ -234,7 +231,6 @@ namespace {
                                      strikeSpreads,
                                      volSpreads,
                                      swapIndexBase,
-                                     shortSwapIndexBase,
                                      vegaWeightedSmileFit,
                                      guess,
                                      isParameterFixed,

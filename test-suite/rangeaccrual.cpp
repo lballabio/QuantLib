@@ -90,7 +90,6 @@ namespace {
         DayCounter fixedLegDayCounter;
         boost::shared_ptr<IborIndex> iborIndex;
         boost::shared_ptr<SwapIndex> swapIndexBase;
-        boost::shared_ptr<SwapIndex> shortSwapIndexBase;
 
         // Range accrual pricers properties
         std::vector<bool> byCallSpread;
@@ -259,9 +258,6 @@ namespace {
             boost::shared_ptr<SwapIndex> swapIndexBase_(new
                 EuriborSwapIsdaFixA(2*Years, termStructure));
 
-            boost::shared_ptr<SwapIndex> shortSwapIndexBase(new
-                EuriborSwapIsdaFixA(1*Years, termStructure));
-
             vegaWeightedSmileFit = false;
 
             // ATM Volatility structure
@@ -328,7 +324,6 @@ namespace {
                 strikeSpreads,
                 nullVolSpreads,
                 swapIndexBase,
-                shortSwapIndexBase,
                 vegaWeightedSmileFit,
                 parametersGuess,
                 isParameterFixed,
@@ -345,7 +340,6 @@ namespace {
                                                              strikeSpreads,
                                                              nullVolSpreads,
                                                              swapIndexBase,
-                                                             shortSwapIndexBase,
                                                              vegaWeightedSmileFit));
             flatSwaptionVolatilityCube2 = Handle<SwaptionVolatilityStructure>(
                 boost::shared_ptr<SwaptionVolatilityStructure>(flatSwaptionVolatilityCube2ptr));
@@ -371,7 +365,6 @@ namespace {
                 strikeSpreads,
                 volSpreads,
                 swapIndexBase,
-                shortSwapIndexBase,
                 vegaWeightedSmileFit,
                 parametersGuess,
                 isParameterFixed,
