@@ -901,8 +901,9 @@ void BondTest::testBrazilianCached() {
     // The tolerance is high because Andima truncate yields
     Real tolerance = 1.0e-4;
 
-    std::vector<InterestRate> couponRates(1);
-    couponRates[0] = InterestRate(0.1,Thirty360(),Compounded,Annual);
+    std::vector<boost::shared_ptr<InterestRate> > couponRates(1);
+    couponRates[0] = boost::shared_ptr<InterestRate>(new
+        InterestRate(0.1, Thirty360(), Compounded,Annual));
 
     for (Size bondIndex = 0; bondIndex < maturityDates.size(); bondIndex++) {
 

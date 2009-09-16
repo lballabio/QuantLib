@@ -90,14 +90,14 @@ namespace QuantLib {
                                       Compounding comp = Simple,
                                       Frequency freq = Annual);
         FixedRateLeg& withCouponRates(const InterestRate&);
-        FixedRateLeg& withCouponRates(const std::vector<InterestRate>&);
+        FixedRateLeg& withCouponRates(const std::vector<boost::shared_ptr<InterestRate> >&);
         FixedRateLeg& withPaymentAdjustment(BusinessDayConvention);
         FixedRateLeg& withFirstPeriodDayCounter(const DayCounter&);
         operator Leg() const;
       private:
         Schedule schedule_;
         std::vector<Real> notionals_;
-        std::vector<InterestRate> couponRates_;
+        std::vector<boost::shared_ptr<InterestRate> > couponRates_;
         DayCounter firstPeriodDC_;
         BusinessDayConvention paymentAdjustment_;
     };
