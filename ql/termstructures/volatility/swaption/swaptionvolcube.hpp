@@ -45,6 +45,7 @@ namespace QuantLib {
             const std::vector<Spread>& strikeSpreads,
             const std::vector<std::vector<Handle<Quote> > >& volSpreads,
             const boost::shared_ptr<SwapIndex>& swapIndexBase,
+            const boost::shared_ptr<SwapIndex>& shortSwapIndexBase,
             bool vegaWeightedSmileFit);
         //! \name TermStructure interface
         //@{
@@ -87,7 +88,7 @@ namespace QuantLib {
         mutable std::vector<Rate> localStrikes_;
         mutable std::vector<Volatility> localSmile_;
         std::vector<std::vector<Handle<Quote> > > volSpreads_;
-        boost::shared_ptr<SwapIndex> swapIndexBase_;
+        boost::shared_ptr<SwapIndex> swapIndexBase_, shortSwapIndexBase_;
         bool vegaWeightedSmileFit_;
     };
 

@@ -38,6 +38,7 @@ namespace QuantLib {
             const std::vector<Spread>& strikeSpreads,
             const std::vector<std::vector<Handle<Quote> > >& volSpreads,
             const boost::shared_ptr<SwapIndex>& swapIndexBase,
+            const boost::shared_ptr<SwapIndex>& shortSwapIndexBase,
             bool vegaWeightedSmileFit);
         //! \name LazyObject interface
         //@{

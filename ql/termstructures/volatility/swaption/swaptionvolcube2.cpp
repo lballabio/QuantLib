@@ -32,9 +32,11 @@ namespace QuantLib {
         const std::vector<Spread>& strikeSpreads,
         const std::vector<std::vector<Handle<Quote> > >& volSpreads,
         const boost::shared_ptr<SwapIndex>& swapIndexBase,
+        const boost::shared_ptr<SwapIndex>& shortSwapIndexBase,
         bool vegaWeightedSmileFit)
     : SwaptionVolatilityCube(atmVolStructure, optionTenors, swapTenors,
                              strikeSpreads, volSpreads, swapIndexBase,
+                             shortSwapIndexBase,
                              vegaWeightedSmileFit),
       volSpreadsInterpolator_(nStrikes_),
       volSpreadsMatrix_(nStrikes_, Matrix(optionTenors.size(), swapTenors.size(), 0.0)) {
@@ -44,13 +46,13 @@ namespace QuantLib {
 
         SwaptionVolatilityDiscrete::performCalculations();
         //! set volSpreadsMatrix_ by volSpreads_ quotes
-        for (Size i=0; i<nStrikes_; i++)
+        for (Size i=0; i<nStrikes_; i++) 
             for (Size j=0; j<nOptionTenors_; j++)
                 for (Size k=0; k<nSwapTenors_; k++) {
                     volSpreadsMatrix_[i][j][k] =
                         volSpreads_[j*nSwapTenors_+k][i]->value();
                 }
-        //! create volSpreadsInterpolator_
+        //! create volSpreadsInterpolator_ 
         for (Size i=0; i<nStrikes_; i++) {
             volSpreadsInterpolator_[i] = BilinearInterpolation(
                 swapLengths_.begin(), swapLengths_.end(),

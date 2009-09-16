@@ -44,7 +44,6 @@ namespace QuantLib {
         EuriborSwapIsdaFixA(const Period& tenor,
                             const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
-        boost::shared_ptr<SwapIndex> create(const Period& tenor) const;
     };
 
     //! %EuriborSwapIsdaFixB index base class
@@ -62,7 +61,6 @@ namespace QuantLib {
         EuriborSwapIsdaFixB(const Period& tenor,
                             const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
-        boost::shared_ptr<SwapIndex> create(const Period& tenor) const;
     };
 
     //! %EuriborSwapIfrFix index base class
@@ -77,7 +75,6 @@ namespace QuantLib {
         EuriborSwapIfrFix(const Period& tenor,
                           const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
-        boost::shared_ptr<SwapIndex> create(const Period& tenor) const;
     };
 
 }

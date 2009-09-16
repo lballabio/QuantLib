@@ -43,7 +43,6 @@ namespace QuantLib {
         JpyLiborSwapIsdaFixAm(const Period& tenor,
                               const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
-        boost::shared_ptr<SwapIndex> create(const Period& tenor) const;
     };
 
     //! %JpyLiborSwapIsdaFixPm index base class
@@ -60,7 +59,6 @@ namespace QuantLib {
         JpyLiborSwapIsdaFixPm(const Period& tenor,
                               const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
-        boost::shared_ptr<SwapIndex> create(const Period& tenor) const;
     };
 
 }

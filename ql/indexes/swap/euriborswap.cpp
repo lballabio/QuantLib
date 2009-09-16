@@ -26,9 +26,8 @@
 
 namespace QuantLib {
 
-    EuriborSwapIsdaFixA::EuriborSwapIsdaFixA(
-                                         const Period& tenor,
-                                         const Handle<YieldTermStructure>& h)
+    EuriborSwapIsdaFixA::EuriborSwapIsdaFixA(const Period& tenor,
+                                             const Handle<YieldTermStructure>& h)
     : SwapIndex("EuriborSwapIsdaFixA", // familyName
                 tenor,
                 2, // settlementDays
@@ -41,16 +40,8 @@ namespace QuantLib {
                     boost::shared_ptr<IborIndex>(new Euribor(6*Months, h)) :
                     boost::shared_ptr<IborIndex>(new Euribor(3*Months, h))) {}
 
-    boost::shared_ptr<SwapIndex>
-    EuriborSwapIsdaFixA::create(const Period& tenor) const {
-        return boost::shared_ptr<SwapIndex>(
-                 new EuriborSwapIsdaFixA(tenor, iborIndex_->termStructure()));
-    }
-
-
-    EuriborSwapIsdaFixB::EuriborSwapIsdaFixB(
-                                         const Period& tenor,
-                                         const Handle<YieldTermStructure>& h)
+    EuriborSwapIsdaFixB::EuriborSwapIsdaFixB(const Period& tenor,
+                                             const Handle<YieldTermStructure>& h)
     : SwapIndex("EuriborSwapIsdaFixB", // familyName
                 tenor,
                 2, // settlementDays
@@ -62,13 +53,6 @@ namespace QuantLib {
                 tenor > 1*Years ?
                     boost::shared_ptr<IborIndex>(new Euribor(6*Months, h)) :
                     boost::shared_ptr<IborIndex>(new Euribor(3*Months, h))) {}
-
-    boost::shared_ptr<SwapIndex>
-    EuriborSwapIsdaFixB::create(const Period& tenor) const {
-        return boost::shared_ptr<SwapIndex>(
-                 new EuriborSwapIsdaFixB(tenor, iborIndex_->termStructure()));
-    }
-
 
     EuriborSwapIfrFix::EuriborSwapIfrFix(const Period& tenor,
                                          const Handle<YieldTermStructure>& h)
@@ -83,11 +67,5 @@ namespace QuantLib {
                 tenor > 1*Years ?
                     boost::shared_ptr<IborIndex>(new Euribor(6*Months, h)) :
                     boost::shared_ptr<IborIndex>(new Euribor(3*Months, h))) {}
-
-    boost::shared_ptr<SwapIndex>
-    EuriborSwapIfrFix::create(const Period& tenor) const {
-        return boost::shared_ptr<SwapIndex>(
-                   new EuriborSwapIfrFix(tenor, iborIndex_->termStructure()));
-    }
 
 }

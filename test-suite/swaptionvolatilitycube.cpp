@@ -43,7 +43,7 @@ namespace {
 
         RelinkableHandle<YieldTermStructure> termStructure;
 
-        boost::shared_ptr<SwapIndex> swapIndexBase;
+        boost::shared_ptr<SwapIndex> swapIndexBase, shortSwapIndexBase;
         bool vegaWeighedSmileFit;
 
         // cleanup
@@ -137,6 +137,8 @@ namespace {
 
             swapIndexBase = boost::shared_ptr<SwapIndex>(new
                 EuriborSwapIsdaFixA(2*Years, termStructure));
+            shortSwapIndexBase = boost::shared_ptr<SwapIndex>(new
+                EuriborSwapIsdaFixA(1*Years, termStructure));
 
             vegaWeighedSmileFit=false;
         }
@@ -157,6 +159,7 @@ void SwaptionVolatilityCubeTest::testAtmVols() {
                              vars.cube.strikeSpreads,
                              vars.cube.volSpreadsHandle,
                              vars.swapIndexBase,
+                             vars.shortSwapIndexBase,
                              vars.vegaWeighedSmileFit);
 
     Real tolerance = 1.0e-16;
@@ -175,6 +178,7 @@ void SwaptionVolatilityCubeTest::testSmile() {
                              vars.cube.strikeSpreads,
                              vars.cube.volSpreadsHandle,
                              vars.swapIndexBase,
+                             vars.shortSwapIndexBase,
                              vars.vegaWeighedSmileFit);
 
     Real tolerance = 1.0e-16;
@@ -208,6 +212,7 @@ void SwaptionVolatilityCubeTest::testSabrVols() {
                              vars.cube.strikeSpreads,
                              vars.cube.volSpreadsHandle,
                              vars.swapIndexBase,
+                             vars.shortSwapIndexBase,
                              vars.vegaWeighedSmileFit,
                              parametersGuess,
                              isParameterFixed,
@@ -247,6 +252,7 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
                          vars.cube.strikeSpreads,
                          vars.cube.volSpreadsHandle,
                          vars.swapIndexBase,
+                         vars.shortSwapIndexBase,
                          vars.vegaWeighedSmileFit,
                          parametersGuess,
                          isParameterFixed,
@@ -335,6 +341,7 @@ void SwaptionVolatilityCubeTest::testObservability() {
                                                                 vars.cube.strikeSpreads,
                                                                 vars.cube.volSpreadsHandle,
                                                                 vars.swapIndexBase,
+                                                                vars.shortSwapIndexBase,
                                                                 vars.vegaWeighedSmileFit,
                                                                 parametersGuess,
                                                                 isParameterFixed,
@@ -352,6 +359,7 @@ void SwaptionVolatilityCubeTest::testObservability() {
                                                                 vars.cube.strikeSpreads,
                                                                 vars.cube.volSpreadsHandle,
                                                                 vars.swapIndexBase,
+                                                                vars.shortSwapIndexBase,
                                                                 vars.vegaWeighedSmileFit,
                                                                 parametersGuess,
                                                                 isParameterFixed,
@@ -390,6 +398,7 @@ void SwaptionVolatilityCubeTest::testObservability() {
                                                                 vars.cube.strikeSpreads,
                                                                 vars.cube.volSpreadsHandle,
                                                                 vars.swapIndexBase,
+                                                                vars.shortSwapIndexBase,
                                                                 vars.vegaWeighedSmileFit));
     Settings::instance().evaluationDate() =
         vars.conventions.calendar.advance(referenceDate, Period(1, Days),
@@ -402,6 +411,7 @@ void SwaptionVolatilityCubeTest::testObservability() {
                                                                 vars.cube.strikeSpreads,
                                                                 vars.cube.volSpreadsHandle,
                                                                 vars.swapIndexBase,
+                                                                vars.shortSwapIndexBase,
                                                                 vars.vegaWeighedSmileFit));
 
     for (Size i=0;i<vars.cube.tenors.options.size(); i++ ) {

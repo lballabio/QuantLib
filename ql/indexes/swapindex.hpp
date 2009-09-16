@@ -59,11 +59,6 @@ namespace QuantLib {
         boost::shared_ptr<VanillaSwap> underlyingSwap(
                                                 const Date& fixingDate) const;
         //@}
-        //! \name Utilities
-        //@{
-        //! creates a swap index of the same family with a different tenor.
-        virtual boost::shared_ptr<SwapIndex> create(const Period& tenor) const;
-        //@}
       protected:
         Rate forecastFixing(const Date& fixingDate) const;
         Period tenor_;
