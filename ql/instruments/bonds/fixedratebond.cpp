@@ -1,10 +1,11 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
  Copyright (C) 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2007, 2008 Ferdinando Ametrano
+ Copyright (C) 2009 Piter Dias
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -100,6 +101,30 @@ namespace QuantLib {
         cashflows_ = FixedRateLeg(schedule)
             .withNotionals(faceAmount)
             .withCouponRates(coupons, accrualDayCounter)
+            .withPaymentAdjustment(paymentConvention);
+
+        addRedemptionsToCashflows(std::vector<Real>(1, redemption));
+
+        QL_ENSURE(!cashflows().empty(), "bond with no cashflows!");
+        QL_ENSURE(redemptions_.size() == 1, "multiple redemptions created");
+    }
+
+    FixedRateBond::FixedRateBond(Natural settlementDays,
+                                 Real faceAmount,
+                                 const Schedule& schedule,
+                                 const std::vector<InterestRate>& coupons,
+                                 BusinessDayConvention paymentConvention,
+                                 Real redemption,
+                                 const Date& issueDate)
+    : Bond(settlementDays, schedule.calendar(), issueDate),
+      frequency_(schedule.tenor().frequency()),
+      dayCounter_(coupons[0].dayCounter()) {
+
+        maturityDate_ = schedule.endDate();
+
+        cashflows_ = FixedRateLeg(schedule)
+            .withNotionals(faceAmount)
+            .withCouponRates(coupons)
             .withPaymentAdjustment(paymentConvention);
 
         addRedemptionsToCashflows(std::vector<Real>(1, redemption));

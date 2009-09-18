@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2004, 2005 StatPro Italia srl
  Copyright (C) 2007 Ferdinando Ametrano
- Copyright (C) 2007 Piter Dias
+ Copyright (C) 2007, 2009 Piter Dias
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -163,7 +163,8 @@ void BondTest::testZspread() {
     Real tolerance = 1.0e-7;
     Size maxEvaluations = 100;
 
-    Handle<YieldTermStructure> discountCurve(flatRate(vars.today,0.03,Actual360()));
+    Handle<YieldTermStructure> discountCurve(
+                                       flatRate(vars.today,0.03,Actual360()));
 
     Integer issueMonths[] = { -24, -18, -12, -6, 0, 6, 12, 18, 24 };
     Integer lengths[] = { 3, 5, 10, 15, 20 };
@@ -861,11 +862,20 @@ void BondTest::testCachedFloating() {
 void BondTest::testBrazilianCached() {
 
     BOOST_MESSAGE(
-        "Testing Brazilian public bond prices against cached values...");
+        "Testing Brazilian public bond prices against Andima cached values...");
 
     CommonVars vars;
 
+    Natural settlementDays = 1;
+    Real faceAmount = 1000.0;
+    Real redemption = 100.0;
     Date today(6,June,2007);
+    Date issueDate(1,January,2007);
+
+    // The tolerance is high because Andima truncate yields
+    Real tolerance = 1.0e-4;
+
+	// Reset evaluation date
     Settings::instance().evaluationDate() = today;
 
     // NTN-F maturity dates
@@ -877,7 +887,7 @@ void BondTest::testBrazilianCached() {
     maturityDates[4] = Date(1,January,2014);
     maturityDates[5] = Date(1,January,2017);
 
-    // NTN-F yields
+    // Andima NTN-F yields
     std::vector<Rate> yields(6);
     yields[0] = 0.114614;
     yields[1] = 0.105726;
@@ -886,7 +896,7 @@ void BondTest::testBrazilianCached() {
     yields[4] = 0.103218;
     yields[5] = 0.102948;
 
-    // NTN-F prices
+    // Andima NTN-F prices
     std::vector<Rate> prices(6);
     prices[0] = 1034.63031372;
     prices[1] = 1030.09919487;
@@ -895,19 +905,11 @@ void BondTest::testBrazilianCached() {
     prices[4] = 1028.33383817;
     prices[5] = 1026.19716497;
 
-    Natural settlementDays = 1;
-    vars.faceAmount = 1000.0;
-
-    // The tolerance is high because Andima truncate yields
-    Real tolerance = 1.0e-4;
-
-    std::vector<boost::shared_ptr<InterestRate> > couponRates(1);
-    couponRates[0] = boost::shared_ptr<InterestRate>(new
-        InterestRate(0.1, Thirty360(), Compounded,Annual));
+    std::vector<InterestRate> couponRates(1);
+    couponRates[0] = InterestRate(0.1, Thirty360(), Compounded,Annual);
 
     for (Size bondIndex = 0; bondIndex < maturityDates.size(); bondIndex++) {
 
-        // plain
         InterestRate yield(yields[bondIndex],
                            Business252(Brazil()),
                            Compounded, Annual);
@@ -918,28 +920,22 @@ void BondTest::testBrazilianCached() {
                           Unadjusted, Unadjusted,
                           DateGeneration::Backward, false);
 
-        // fixed coupons
-        Leg cashflows =
-            FixedRateLeg(schedule)
-            .withNotionals(vars.faceAmount)
-            .withCouponRates(couponRates)
-            .withPaymentAdjustment(ModifiedFollowing);
-        // redemption
-        cashflows.push_back(boost::shared_ptr<CashFlow>(
-              new SimpleCashFlow(vars.faceAmount, cashflows.back()->date())));
+        FixedRateBond bond(settlementDays,
+            faceAmount,
+			schedule,
+			couponRates,
+			Following,
+			redemption,
+            issueDate);
 
-        Bond bond(settlementDays, Brazil(Brazil::Settlement),
-                  vars.faceAmount, cashflows.back()->date(),
-                  Date(1,January,2007), cashflows);
-
-        Real cachedPrice = prices[bondIndex];
-
-        Real price = vars.faceAmount *
+		Real cachedPrice = prices[bondIndex];
+        Real price = faceAmount *
             (BondFunctions::cleanPrice(bond, yield.rate(), yield.dayCounter(),
                                  yield.compounding(), yield.frequency(),
                                  today) + bond.accruedAmount(today)) / 100.0;
+
         if (std::fabs(price-cachedPrice) > tolerance) {
-            BOOST_ERROR("failed to reproduce cached price:\n"
+            BOOST_ERROR("failed to reproduce Andima cached price:\n"
                         << QL_FIXED
                         << "    calculated: " << price << "\n"
                         << "    expected:   " << cachedPrice << "\n"

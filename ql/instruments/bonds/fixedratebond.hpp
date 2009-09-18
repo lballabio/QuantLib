@@ -1,10 +1,11 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007, 2008 Ferdinando Ametrano
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
  Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2007, 2008 Ferdinando Ametrano
+ Copyright (C) 2009 Piter Dias
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,6 +31,7 @@
 #include <ql/instruments/bond.hpp>
 #include <ql/time/dategenerationrule.hpp>
 #include <ql/time/daycounter.hpp>
+#include <ql/interestrate.hpp>
 
 namespace QuantLib {
 
@@ -66,6 +68,13 @@ namespace QuantLib {
                       const Date& stubDate = Date(),
                       DateGeneration::Rule rule = DateGeneration::Backward,
                       bool endOfMonth = false);
+        FixedRateBond(Natural settlementDays,
+                      Real faceAmount,
+                      const Schedule& schedule,
+                      const std::vector<InterestRate>& coupons,
+                      BusinessDayConvention paymentConvention = Following,
+                      Real redemption = 100.0,
+                      const Date& issueDate = Date());
         Frequency frequency() const { return frequency_; }
         const DayCounter& dayCounter() const { return dayCounter_; }
       protected:

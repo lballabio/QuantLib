@@ -24,7 +24,7 @@ QuantLib is
     Copyright (C) 2005, 2006, 2008 Toyin Akin
     Copyright (C) 2005 Sercan Atalik
     Copyright (C) 2005, 2006 Theo Boafo
-    Copyright (C) 2005, 2006, 2007 Piter Dias
+    Copyright (C) 2005, 2006, 2007, 2009 Piter Dias
     Copyright (C) 2005 Gary Kennedy
     Copyright (C) 2005, 2006, 2007 Joseph Wang
     Copyright (C) 2005 Charles Whitmore
