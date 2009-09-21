@@ -263,7 +263,7 @@ namespace QuantLib {
                             Frequency frequency,
                             Date settlement) {
         InterestRate y(yield, dayCounter, compounding, frequency);
-        return bps(bond, yield, settlement);
+        return bps(bond, y, settlement);
     }
 
     Rate BondFunctions::yield(const Bond& bond,
