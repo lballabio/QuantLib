@@ -75,8 +75,8 @@ namespace QuantLib {
         Rate r;
         if (compound==1.0) {
             QL_REQUIRE(t>=0.0, "non negative time (" << t << ") required");
-            r = 0;
-        ] else {
+            r = 0.0;
+        } else {
             QL_REQUIRE(t>0.0, "positive time (" << t << ") required");
             switch (comp) {
               case Simple:
