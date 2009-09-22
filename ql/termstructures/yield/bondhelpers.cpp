@@ -34,7 +34,9 @@ namespace QuantLib {
                            const boost::shared_ptr<Bond>& bond)
     : RateHelper(cleanPrice), bond_(bond) {
 
-        latestDate_ = bond_->maturityDate();
+        // the bond's last cashflow date, which can be later than
+        // bond's maturity date because of adjustment
+        latestDate_ = bond_->cashflows().back()->date();
         earliestDate_ = bond_->nextCashFlowDate();
 
         boost::shared_ptr<PricingEngine> bondEngine(new
