@@ -116,9 +116,10 @@ void InterestRateTest::testConversions() {
 
         // check that the equivalent InterestRate with *same* daycounter,
         // compounding, and frequency is the *same* InterestRate
-        ir2 = ir.equivalentRate(d1, d2, ir.dayCounter(),
+        ir2 = ir.equivalentRate(ir.dayCounter(),
                                 ir.compounding(),
-                                ir.frequency());
+                                ir.frequency(),
+                                d1, d2);
         error = std::fabs(ir.rate()-ir2.rate());
         if (error>1e-15)
             BOOST_FAIL(std::setprecision(12)
@@ -140,9 +141,10 @@ void InterestRateTest::testConversions() {
 
         // check that the equivalent rate with *same* daycounter,
         // compounding, and frequency is the *same* rate
-        r2 = ir.equivalentRate(d1, d2, ir.dayCounter(),
-                                       ir.compounding(),
-                                       ir.frequency());
+        r2 = ir.equivalentRate(ir.dayCounter(),
+                               ir.compounding(),
+                               ir.frequency(),
+                               d1, d2);
         error = std::fabs(ir.rate()-r2);
         if (error>1e-15)
             BOOST_FAIL(std::setprecision(12)
@@ -152,8 +154,9 @@ void InterestRateTest::testConversions() {
 
         // check that the equivalent InterestRate with *different*
         // compounding, and frequency is the *expected* InterestRate
-        ir3 = ir.equivalentRate(d1, d2, ir.dayCounter(),
-                                cases[i].comp2, cases[i].freq2);
+        ir3 = ir.equivalentRate(ir.dayCounter(),
+                                cases[i].comp2, cases[i].freq2,
+                                d1, d2);
         expectedIR = InterestRate(cases[i].expected, ir.dayCounter(),
                                   cases[i].comp2, cases[i].freq2);
         r3 = roundingPrecision(ir3.rate());
@@ -183,8 +186,9 @@ void InterestRateTest::testConversions() {
 
         // check that the equivalent rate with *different*
         // compounding, and frequency is the *expected* rate
-        r3 = ir.equivalentRate(d1, d2, ir.dayCounter(),
-                               cases[i].comp2, cases[i].freq2);
+        r3 = ir.equivalentRate(ir.dayCounter(),
+                               cases[i].comp2, cases[i].freq2,
+                               d1, d2);
         r3 = roundingPrecision(r3);
         error = std::fabs(r3-cases[i].expected);
         if (error>1.0e-17)

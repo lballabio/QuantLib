@@ -29,8 +29,10 @@ namespace QuantLib {
     InterestRate::InterestRate()
     : r_(Null<Real>()) {}
 
-    InterestRate::InterestRate(Rate r, const DayCounter& dc,
-                               Compounding comp, Frequency freq)
+    InterestRate::InterestRate(Rate r,
+                               const DayCounter& dc,
+                               Compounding comp,
+                               Frequency freq)
     : r_(r), dc_(dc), comp_(comp), freqMakesSense_(false) {
 
         if (comp_==Compounded || comp_==SimpleThenCompounded) {
@@ -62,33 +64,40 @@ namespace QuantLib {
         }
     }
 
-    InterestRate InterestRate::impliedRate(Real compound, Time t,
+    InterestRate InterestRate::impliedRate(Real compound,
                                            const DayCounter& resultDC,
-                                           Compounding comp, Frequency freq) {
+                                           Compounding comp,
+                                           Frequency freq,
+                                           Time t) {
 
         QL_REQUIRE(compound>0.0, "positive compound factor required");
-        QL_REQUIRE(t>0.0, "positive time required");
 
         Rate r;
-        switch (comp) {
-          case Simple:
-            r = (compound - 1.0)/t;
-            break;
-          case Compounded:
-            r = (std::pow(compound, 1.0/(Real(freq)*t))-1.0)*Real(freq);
-            break;
-          case Continuous:
-            r = std::log(compound)/t;
-            break;
-          case SimpleThenCompounded:
-            if (t<=1.0/Real(freq))
+        if (compound==1.0) {
+            QL_REQUIRE(t>=0.0, "non negative time (" << t << ") required");
+            r = 0;
+        ] else {
+            QL_REQUIRE(t>0.0, "positive time (" << t << ") required");
+            switch (comp) {
+              case Simple:
                 r = (compound - 1.0)/t;
-            else
+                break;
+              case Compounded:
                 r = (std::pow(compound, 1.0/(Real(freq)*t))-1.0)*Real(freq);
-            break;
-          default:
-            QL_FAIL("unknown compounding convention ("
-                    << Integer(comp) << ")");
+                break;
+              case Continuous:
+                r = std::log(compound)/t;
+                break;
+              case SimpleThenCompounded:
+                if (t<=1.0/Real(freq))
+                    r = (compound - 1.0)/t;
+                else
+                    r = (std::pow(compound, 1.0/(Real(freq)*t))-1.0)*Real(freq);
+                break;
+              default:
+                QL_FAIL("unknown compounding convention ("
+                        << Integer(comp) << ")");
+            }
         }
         return InterestRate(r, resultDC, comp, freq);
     }

@@ -111,7 +111,7 @@ namespace QuantLib {
               DayCounter dayCount = firstCoupon->dayCounter();
               Real fixedLegCashBPS =
                   CashFlows::bps(fixedLeg,
-                                 InterestRate(atmForward, dayCount, Compounded),
+                                 InterestRate(atmForward, dayCount, Compounded, Annual),
                                  false, termStructure_->referenceDate()) ;
               annuity = std::fabs(fixedLegCashBPS/basisPoint);
               break;

@@ -135,7 +135,7 @@ void CashFlowsTest::testSettings() {
 
 
     // no discount to make calculations easier
-    InterestRate no_discount(0.0);
+    InterestRate no_discount(0.0, Actual365Fixed(), Continuous, Annual);
 
     #define CHECK_NPV(includeRef, expected)                             \
     do {                                                            \

@@ -45,9 +45,9 @@ namespace QuantLib {
         InterestRate();
         //! Standard constructor
         InterestRate(Rate r,
-                     const DayCounter& dc = Actual365Fixed(),
-                     Compounding comp = Continuous,
-                     Frequency freq = Annual);
+                     const DayCounter& dc,
+                     Compounding comp,
+                     Frequency freq);
         //@}
         //! \name conversions
         //@{
@@ -62,6 +62,7 @@ namespace QuantLib {
             return freqMakesSense_ ? Frequency(Integer(freq_)) : NoFrequency;
         }
         //@}
+
         //! \name discount/compound factor calculations
         //@{
         //! discount factor implied by the rate compounded at time t.
@@ -73,9 +74,13 @@ namespace QuantLib {
         }
 
         //! discount factor implied by the rate compounded between two dates
-        DiscountFactor discountFactor(const Date& d1, const Date& d2,
+        DiscountFactor discountFactor(const Date& d1,
+                                      const Date& d2,
                                       const Date& refStart = Date(),
                                       const Date& refEnd = Date()) const {
+            QL_REQUIRE(d2>=d1,
+                       "d1 (" << d1 << ") "
+                       "later than d2 (" << d2 << ")");
             Time t = dc_.yearFraction(d1, d2, refStart, refEnd);
             return discountFactor(t);
         }
@@ -93,9 +98,13 @@ namespace QuantLib {
         /*! returns the compound (a.k.a capitalization) factor
             implied by the rate compounded between two dates.
         */
-        Real compoundFactor(const Date& d1, const Date& d2,
+        Real compoundFactor(const Date& d1,
+                            const Date& d2,
                             const Date& refStart = Date(),
                             const Date& refEnd = Date()) const {
+            QL_REQUIRE(d2>=d1,
+                       "d1 (" << d1 << ") "
+                       "later than d2 (" << d2 << ")");
             Time t = dc_.yearFraction(d1, d2, refStart, refEnd);
             return compoundFactor(t);
         }
@@ -111,26 +120,28 @@ namespace QuantLib {
                      as input.
         */
         static InterestRate impliedRate(Real compound,
-                                        Time t,
                                         const DayCounter& resultDC,
                                         Compounding comp,
-                                        Frequency freq = Annual);
+                                        Frequency freq,
+                                        Time t);
 
         //! implied rate for a given compound factor between two dates.
         /*! The resulting rate is calculated taking the required
             day-counting rule into account.
         */
         static InterestRate impliedRate(Real compound,
-                                        const Date& d1,
-                                        const Date& d2,
                                         const DayCounter& resultDC,
                                         Compounding comp,
-                                        Frequency freq = Annual) {
-            QL_REQUIRE(d2>d1,
+                                        Frequency freq,
+                                        const Date& d1,
+                                        const Date& d2,
+                                        const Date& refStart = Date(),
+                                        const Date& refEnd = Date()) {
+            QL_REQUIRE(d2>=d1,
                        "d1 (" << d1 << ") "
-                       "later than or equal to d2 (" << d2 << ")");
-            Time t = resultDC.yearFraction(d1, d2);
-            return impliedRate(compound, t, resultDC, comp, freq);
+                       "later than d2 (" << d2 << ")");
+            Time t = resultDC.yearFraction(d1, d2, refStart, refEnd);
+            return impliedRate(compound, resultDC, comp, freq, t);
         }
         //@}
 
@@ -144,27 +155,29 @@ namespace QuantLib {
             \warning Time must be measured using the InterestRate's
                      own day counter.
         */
-        InterestRate equivalentRate(Time t,
-                                    Compounding comp,
-                                    Frequency freq = Annual) const {
-            return impliedRate(compoundFactor(t), t, dc_, comp, freq);
+        InterestRate equivalentRate(Compounding comp,
+                                    Frequency freq,
+                                    Time t) const {
+            return impliedRate(compoundFactor(t), dc_, comp, freq, t);
         }
 
         //! equivalent rate for a compounding period between two dates
         /*! The resulting rate is calculated taking the required
             day-counting rule into account.
         */
-        InterestRate equivalentRate(Date d1,
-                                    Date d2,
-                                    const DayCounter& resultDC,
+        InterestRate equivalentRate(const DayCounter& resultDC,
                                     Compounding comp,
-                                    Frequency freq = Annual) const {
-            QL_REQUIRE(d2>d1,
+                                    Frequency freq,
+                                    Date d1,
+                                    Date d2,
+                                    const Date& refStart = Date(),
+                                    const Date& refEnd = Date()) const {
+            QL_REQUIRE(d2>=d1,
                        "d1 (" << d1 << ") "
-                       "later than or equal to d2 (" << d2 << ")");
-            Time t1 = dc_.yearFraction(d1, d2);
-            Time t2 = resultDC.yearFraction(d1, d2);
-            return impliedRate(compoundFactor(t1), t2, resultDC, comp, freq);
+                       "later than d2 (" << d2 << ")");
+            Time t1 = dc_.yearFraction(d1, d2, refStart, refEnd);
+            Time t2 = resultDC.yearFraction(d1, d2, refStart, refEnd);
+            return impliedRate(compoundFactor(t1), resultDC, comp, freq, t2);
         }
         //@}
       private:

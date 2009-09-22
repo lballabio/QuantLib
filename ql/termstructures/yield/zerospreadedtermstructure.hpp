@@ -121,7 +121,7 @@ namespace QuantLib {
                                   zeroRate.dayCounter(),
                                   zeroRate.compounding(),
                                   zeroRate.frequency());
-        return spreadedRate.equivalentRate(t,Continuous,NoFrequency);
+        return spreadedRate.equivalentRate(Continuous, NoFrequency, t);
     }
 
     inline Rate ZeroSpreadedTermStructure::forwardImpl(Time t) const {
