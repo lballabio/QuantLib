@@ -153,7 +153,7 @@ namespace QuantLib {
             }
             else {
             // if number of itm paths is smaller then the number of
-            // calibration functions -> no early exercise
+            // calibration functions then early exercise if exerciseValue > 0
                 coeff_[i] = Array(v_.size(), 0.0);
             }
 
