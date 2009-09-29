@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=1606
+UnitCount=1604
 Type=2
 Ver=1
 ObjFiles=
@@ -15278,26 +15278,6 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit1525]
-FileName=ql\experimental\overnightswap\eonia.cpp
-CompileCpp=1
-Folder=experimental/overnightswap
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit1526]
-FileName=ql\experimental\overnightswap\eonia.hpp
-CompileCpp=1
-Folder=experimental/overnightswap
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit1527]
 FileName=ql\experimental\overnightswap\eoniacoupon.cpp
 CompileCpp=1
 Folder=experimental/overnightswap
@@ -15307,7 +15287,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1528]
+[Unit1526]
 FileName=ql\experimental\overnightswap\eoniacoupon.hpp
 CompileCpp=1
 Folder=experimental/overnightswap
@@ -15317,7 +15297,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1529]
+[Unit1527]
 FileName=ql\experimental\overnightswap\eoniaswap.cpp
 CompileCpp=1
 Folder=experimental/overnightswap
@@ -15327,7 +15307,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1530]
+[Unit1528]
 FileName=ql\experimental\overnightswap\eoniaswap.hpp
 CompileCpp=1
 Folder=experimental/overnightswap
@@ -15337,7 +15317,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1531]
+[Unit1529]
 FileName=ql\experimental\overnightswap\eoniaswaphelper.cpp
 CompileCpp=1
 Folder=experimental/overnightswap
@@ -15347,7 +15327,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1532]
+[Unit1530]
 FileName=ql\indexes\inflation\frhicp.hpp
 CompileCpp=1
 Folder=indexes/inflation
@@ -15357,7 +15337,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1533]
+[Unit1531]
 FileName=ql\indexes\inflation\aucpi.hpp
 CompileCpp=1
 Folder=indexes/inflation
@@ -15367,7 +15347,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1534]
+[Unit1532]
 FileName=ql\math\randomnumbers\ranluxuniformrng.hpp
 CompileCpp=1
 Folder=math/randomnumbers
@@ -15377,7 +15357,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1535]
+[Unit1533]
 FileName=ql\models\marketmodels\evolvers\lognormalfwdrateballand.hpp
 CompileCpp=1
 Folder=models/marketmodels/evolvers
@@ -15387,7 +15367,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1536]
+[Unit1534]
 FileName=ql\models\marketmodels\evolvers\lognormalfwdrateballand.cpp
 CompileCpp=1
 Folder=models/marketmodels/evolvers
@@ -15397,7 +15377,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1537]
+[Unit1535]
 FileName=ql\pricingengines\asian\analytic_discr_geom_av_strike.hpp
 CompileCpp=1
 Folder=pricingengines/asian
@@ -15407,7 +15387,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1538]
+[Unit1536]
 FileName=ql\pricingengines\asian\analytic_discr_geom_av_strike.cpp
 CompileCpp=1
 Folder=pricingengines/asian
@@ -15417,7 +15397,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1539]
+[Unit1537]
 FileName=ql\pricingengines\basket\mceuropeanbasketengine.hpp
 CompileCpp=1
 Folder=pricingengines/basket
@@ -15427,7 +15407,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1540]
+[Unit1538]
 FileName=ql\pricingengines\basket\mceuropeanbasketengine.cpp
 CompileCpp=1
 Folder=pricingengines/basket
@@ -15437,7 +15417,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1541]
+[Unit1539]
 FileName=ql\pricingengines\inflation\discountinginflationswapengines.hpp
 CompileCpp=1
 Folder=pricingengines/inflation
@@ -15447,7 +15427,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1542]
+[Unit1540]
 FileName=ql\pricingengines\inflation\all.hpp
 CompileCpp=1
 Folder=pricingengines/inflation
@@ -15457,7 +15437,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1543]
+[Unit1541]
 FileName=ql\pricingengines\inflation\discountinginflationswapengines.cpp
 CompileCpp=1
 Folder=pricingengines/inflation
@@ -15467,7 +15447,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1544]
+[Unit1542]
 FileName=ql\termstructures\interpolatedcurve.hpp
 CompileCpp=1
 Folder=termstructures
@@ -15477,7 +15457,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1545]
+[Unit1543]
 FileName=ql\event.cpp
 CompileCpp=1
 Folder=QuantLib
@@ -15487,10 +15467,30 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1546]
+[Unit1544]
 FileName=ql\cashflow.cpp
 CompileCpp=1
 Folder=QuantLib
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1545]
+FileName=ql\experimental\credit\recursivecdoengine.hpp
+CompileCpp=1
+Folder=experimental/credit
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1546]
+FileName=ql\experimental\credit\defaultevent.cpp
+CompileCpp=1
+Folder=experimental/credit
 Compile=1
 Link=1
 Priority=1000
@@ -15508,26 +15508,6 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit1547]
-FileName=ql\experimental\credit\recursivecdoengine.hpp
-CompileCpp=1
-Folder=experimental/credit
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit1548]
-FileName=ql\experimental\credit\defaultevent.cpp
-CompileCpp=1
-Folder=experimental/credit
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit1549]
 FileName=ql\experimental\credit\defaultevent.hpp
 CompileCpp=1
 Folder=experimental/credit
@@ -15537,7 +15517,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1550]
+[Unit1548]
 FileName=ql\experimental\credit\defaultprobabilitykey.cpp
 CompileCpp=1
 Folder=experimental/credit
@@ -15547,7 +15527,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1551]
+[Unit1549]
 FileName=ql\experimental\credit\defaultprobabilitykey.hpp
 CompileCpp=1
 Folder=experimental/credit
@@ -15557,7 +15537,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1552]
+[Unit1550]
 FileName=ql\experimental\credit\defaulttype.cpp
 CompileCpp=1
 Folder=experimental/credit
@@ -15567,7 +15547,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1553]
+[Unit1551]
 FileName=ql\experimental\credit\defaulttype.hpp
 CompileCpp=1
 Folder=experimental/credit
@@ -15577,7 +15557,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1554]
+[Unit1552]
 FileName=ql\experimental\credit\recoveryratemodel.cpp
 CompileCpp=1
 Folder=experimental/credit
@@ -15587,7 +15567,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1555]
+[Unit1553]
 FileName=ql\experimental\credit\recoveryratemodel.hpp
 CompileCpp=1
 Folder=experimental/credit
@@ -15597,7 +15577,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1556]
+[Unit1554]
 FileName=ql\experimental\credit\recoveryratequote.cpp
 CompileCpp=1
 Folder=experimental/credit
@@ -15607,7 +15587,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1557]
+[Unit1555]
 FileName=ql\experimental\credit\recoveryratequote.hpp
 CompileCpp=1
 Folder=experimental/credit
@@ -15617,7 +15597,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1558]
+[Unit1556]
 FileName=ql\experimental\finitedifferences\fdmblackscholesmultistrikemesher.hpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15627,7 +15607,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1559]
+[Unit1557]
 FileName=ql\experimental\finitedifferences\bicgstab.cpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15637,7 +15617,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1560]
+[Unit1558]
 FileName=ql\experimental\finitedifferences\bicgstab.hpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15647,7 +15627,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1561]
+[Unit1559]
 FileName=ql\experimental\finitedifferences\concentrating1dmesher.cpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15657,7 +15637,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1562]
+[Unit1560]
 FileName=ql\experimental\finitedifferences\concentrating1dmesher.hpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15667,7 +15647,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1563]
+[Unit1561]
 FileName=ql\experimental\finitedifferences\fdblackscholesasianengine.cpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15677,7 +15657,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1564]
+[Unit1562]
 FileName=ql\experimental\finitedifferences\fdblackscholesasianengine.hpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15687,7 +15667,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1565]
+[Unit1563]
 FileName=ql\experimental\finitedifferences\fdhestonhullwhitevanillaengine.cpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15697,7 +15677,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1566]
+[Unit1564]
 FileName=ql\experimental\finitedifferences\fdhestonhullwhitevanillaengine.hpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15707,7 +15687,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1567]
+[Unit1565]
 FileName=ql\experimental\finitedifferences\fdmarithmeticaveragecondition.cpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15717,7 +15697,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1568]
+[Unit1566]
 FileName=ql\experimental\finitedifferences\fdmarithmeticaveragecondition.hpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15727,7 +15707,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1569]
+[Unit1567]
 FileName=ql\experimental\finitedifferences\fdmblackscholesmesher.cpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15737,7 +15717,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1570]
+[Unit1568]
 FileName=ql\experimental\finitedifferences\fdmblackscholesmesher.hpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15747,7 +15727,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1571]
+[Unit1569]
 FileName=ql\experimental\finitedifferences\fdmblackscholesmultistrikemesher.cpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15757,7 +15737,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1572]
+[Unit1570]
 FileName=ql\experimental\finitedifferences\impliciteulerscheme.hpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15767,7 +15747,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1573]
+[Unit1571]
 FileName=ql\experimental\finitedifferences\fdmhestonhullwhitesolver.cpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15777,7 +15757,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1574]
+[Unit1572]
 FileName=ql\experimental\finitedifferences\fdmhestonhullwhitesolver.hpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15787,7 +15767,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1575]
+[Unit1573]
 FileName=ql\experimental\finitedifferences\fdmhullwhitemesher.cpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15797,7 +15777,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1576]
+[Unit1574]
 FileName=ql\experimental\finitedifferences\fdmhullwhitemesher.hpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15807,7 +15787,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1577]
+[Unit1575]
 FileName=ql\experimental\finitedifferences\fdminnervaluecalculator.cpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15817,7 +15797,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1578]
+[Unit1576]
 FileName=ql\experimental\finitedifferences\fdmsimple2dbssolver.cpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15827,7 +15807,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1579]
+[Unit1577]
 FileName=ql\experimental\finitedifferences\fdmsimple2dbssolver.hpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15837,7 +15817,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1580]
+[Unit1578]
 FileName=ql\experimental\finitedifferences\impliciteulerscheme.cpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -15847,7 +15827,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1581]
+[Unit1579]
 FileName=ql\experimental\inflation\polynomial2Dspline.hpp
 CompileCpp=1
 Folder=experimental/inflation
@@ -15857,7 +15837,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1582]
+[Unit1580]
 FileName=ql\math\interpolations\kernelinterpolation.hpp
 CompileCpp=1
 Folder=math/interpolations
@@ -15867,7 +15847,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1583]
+[Unit1581]
 FileName=ql\math\kernelfunctions.hpp
 CompileCpp=1
 Folder=math
@@ -15877,7 +15857,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1584]
+[Unit1582]
 FileName=ql\math\matrixutilities\factorreduction.hpp
 CompileCpp=1
 Folder=math/matrixutilities
@@ -15887,7 +15867,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1585]
+[Unit1583]
 FileName=ql\math\matrixutilities\factorreduction.cpp
 CompileCpp=1
 Folder=math/matrixutilities
@@ -15897,7 +15877,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1586]
+[Unit1584]
 FileName=ql\math\optimization\bfgs.hpp
 CompileCpp=1
 Folder=math/optimization
@@ -15907,7 +15887,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1587]
+[Unit1585]
 FileName=ql\math\optimization\bfgs.cpp
 CompileCpp=1
 Folder=math/optimization
@@ -15917,7 +15897,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1588]
+[Unit1586]
 FileName=ql\pricingengines\bond\bondfunctions.hpp
 CompileCpp=1
 Folder=pricingengines/bond
@@ -15927,7 +15907,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1589]
+[Unit1587]
 FileName=ql\pricingengines\bond\bondfunctions.cpp
 CompileCpp=1
 Folder=pricingengines/bond
@@ -15937,7 +15917,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1590]
+[Unit1588]
 FileName=ql\termstructures\credit\survivalprobabilitystructure.hpp
 CompileCpp=1
 Folder=termstructures/credit
@@ -15947,7 +15927,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1591]
+[Unit1589]
 FileName=ql\termstructures\credit\interpolatedsurvivalprobabilitycurve.hpp
 CompileCpp=1
 Folder=termstructures/credit
@@ -15957,7 +15937,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1592]
+[Unit1590]
 FileName=ql\termstructures\credit\survivalprobabilitystructure.cpp
 CompileCpp=1
 Folder=termstructures/credit
@@ -15967,7 +15947,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1593]
+[Unit1591]
 FileName=ql\termstructures\inflation\seasonality.hpp
 CompileCpp=1
 Folder=termstructures/inflation
@@ -15977,7 +15957,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1594]
+[Unit1592]
 FileName=ql\termstructures\inflation\seasonality.cpp
 CompileCpp=1
 Folder=termstructures/inflation
@@ -15987,7 +15967,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1595]
+[Unit1593]
 FileName=ql\termstructures\yield\zeroyieldstructure.cpp
 CompileCpp=1
 Folder=termstructures/yield
@@ -15997,7 +15977,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1596]
+[Unit1594]
 FileName=ql\termstructures\yield\flatforward.cpp
 CompileCpp=1
 Folder=termstructures/yield
@@ -16007,7 +15987,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1597]
+[Unit1595]
 FileName=ql\termstructures\yield\forwardstructure.cpp
 CompileCpp=1
 Folder=termstructures/yield
@@ -16017,7 +15997,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1598]
+[Unit1596]
 FileName=ql\experimental\finitedifferences\fdmbackwardsolver.hpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -16027,7 +16007,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1599]
+[Unit1597]
 FileName=ql\experimental\finitedifferences\expliciteulerscheme.cpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -16037,7 +16017,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1600]
+[Unit1598]
 FileName=ql\experimental\finitedifferences\expliciteulerscheme.hpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -16047,7 +16027,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1601]
+[Unit1599]
 FileName=ql\experimental\finitedifferences\fdmbackwardsolver.cpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -16057,7 +16037,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1602]
+[Unit1600]
 FileName=ql\experimental\finitedifferences\modifiedcraigsneydscheme.hpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -16067,7 +16047,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1603]
+[Unit1601]
 FileName=ql\experimental\finitedifferences\modifiedcraigsneydscheme.cpp
 CompileCpp=1
 Folder=experimental/finitedifferences
@@ -16077,10 +16057,30 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1604]
+[Unit1602]
 FileName=ql\time\calendars\weekendsonly.hpp
 CompileCpp=1
 Folder=time/calendars
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1603]
+FileName=ql\time\calendars\weekendsonly.cpp
+CompileCpp=1
+Folder=time/calendars
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1604]
+FileName=ql\version.hpp
+CompileCpp=1
+Folder=QuantLib
 Compile=1
 Link=1
 Priority=1000

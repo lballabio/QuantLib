@@ -9805,14 +9805,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\overnightswap\eonia.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\eonia.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\experimental\overnightswap\eoniacoupon.cpp"
 					>
 				</File>
