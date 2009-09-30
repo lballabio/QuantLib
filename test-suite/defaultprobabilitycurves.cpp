@@ -197,7 +197,7 @@ namespace {
             Date endDate = calendar.advance(settlement, n[i], Years,
                                             convention);
             Schedule schedule(settlement, endDate, Period(frequency), calendar,
-                              convention, convention, rule, false);
+                              convention, Unadjusted, rule, false);
 
             CreditDefaultSwap cds(Protection::Buyer, notional, quote[i],
                                   schedule, convention, dayCounter);
@@ -283,7 +283,7 @@ namespace {
             Date endDate = calendar.advance(settlement, n[i], Years,
                                             convention);
             Schedule schedule(settlement, endDate, Period(frequency), calendar,
-                              convention, convention, rule, false);
+                              convention, Unadjusted, rule, false);
 
             CreditDefaultSwap cds(Protection::Buyer, notional,
                                   quote[i], fixedRate,

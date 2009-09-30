@@ -38,6 +38,8 @@ namespace QuantLib {
             return out << "Twentieth";
           case DateGeneration::TwentiethIMM:
             return out << "TwentiethIMM";
+          case DateGeneration::OldCDS:
+            return out << "OldCDS";
           default:
             QL_FAIL("unknown DateGeneration::Rule (" << Integer(r) << ")");
         }

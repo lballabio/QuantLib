@@ -105,9 +105,11 @@ namespace QuantLib {
                           .withFrequency(frequency_)
                           .withCalendar(calendar_)
                           .withConvention(paymentConvention_)
+                          .withTerminationDateConvention(Unadjusted)
                           .withRule(rule_);
         earliestDate_ = schedule_.dates().front();
-        latestDate_   = schedule_.dates().back();
+        latestDate_   = calendar_.adjust(schedule_.dates().back(),
+                                         paymentConvention_);
     }
 
 

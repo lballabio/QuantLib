@@ -142,6 +142,7 @@ int main(int, char* []) {
             MakeSchedule().from(todaysDate).to(maturities[0])
                           .withFrequency(Quarterly)
                           .withCalendar(calendar)
+                          .withTerminationDateConvention(Unadjusted)
                           .withRule(DateGeneration::TwentiethIMM);
         CreditDefaultSwap cds_3m(Protection::Seller,
                                  nominal,
@@ -154,6 +155,7 @@ int main(int, char* []) {
             MakeSchedule().from(todaysDate).to(maturities[1])
                           .withFrequency(Quarterly)
                           .withCalendar(calendar)
+                          .withTerminationDateConvention(Unadjusted)
                           .withRule(DateGeneration::TwentiethIMM);
         CreditDefaultSwap cds_6m(Protection::Seller,
                                  nominal,
@@ -166,6 +168,7 @@ int main(int, char* []) {
             MakeSchedule().from(todaysDate).to(maturities[2])
                           .withFrequency(Quarterly)
                           .withCalendar(calendar)
+                          .withTerminationDateConvention(Unadjusted)
                           .withRule(DateGeneration::TwentiethIMM);
         CreditDefaultSwap cds_1y(Protection::Seller,
                                  nominal,
@@ -178,6 +181,7 @@ int main(int, char* []) {
             MakeSchedule().from(todaysDate).to(maturities[3])
                           .withFrequency(Quarterly)
                           .withCalendar(calendar)
+                          .withTerminationDateConvention(Unadjusted)
                           .withRule(DateGeneration::TwentiethIMM);
         CreditDefaultSwap cds_2y(Protection::Seller,
                                  nominal,
