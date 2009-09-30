@@ -53,9 +53,6 @@ namespace QuantLib {
         if (isInArrears()) {
             return index_->fixing(fixingDate());
         } else {
-            Handle<YieldTermStructure> termStructure = index_->termStructure();
-            QL_REQUIRE(!termStructure.empty(),
-                       "null term structure set to par coupon");
             Date today = Settings::instance().evaluationDate();
             Date fixing_date = fixingDate();
             if (fixing_date < today) {
@@ -80,6 +77,11 @@ namespace QuantLib {
                     ;       // fall through and forecast
                 }
             }
+
+            // forecast: 0) forecasting curve
+            Handle<YieldTermStructure> termStructure = index_->termStructure();
+            QL_REQUIRE(!termStructure.empty(),
+                       "null term structure set to " << index_->name());
 
             // forecast: 1) startDiscount
             Date fixingValueDate = index_->fixingCalendar().advance(
