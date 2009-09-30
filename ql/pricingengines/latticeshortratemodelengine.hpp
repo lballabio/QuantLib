@@ -77,7 +77,7 @@ namespace QuantLib {
     {
         if (!timeGrid_.empty())
             lattice_ = this->model_->tree(timeGrid_);
-        this->notifyObservers();
+        GenericModelEngine<ShortRateModel, Arguments, Results>::update();
     }
 
 }
