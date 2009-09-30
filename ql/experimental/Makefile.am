@@ -1,7 +1,7 @@
 
 SUBDIRS = amortizingbonds barrieroption callablebonds commodities \
           compoundoption coupons credit finitedifferences inflation \
-          lattices mcbasket models overnightswap processes risk \
+          lattices math mcbasket models overnightswap processes risk \
           varianceoption volatility
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}

@@ -331,6 +331,7 @@ AC_CONFIG_FILES([
     ql/experimental/finitedifferences/Makefile
     ql/experimental/inflation/Makefile
     ql/experimental/lattices/Makefile
+    ql/experimental/math/Makefile
     ql/experimental/mcbasket/Makefile
     ql/experimental/models/Makefile
     ql/experimental/overnightswap/Makefile

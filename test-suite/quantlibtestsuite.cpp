@@ -79,6 +79,7 @@
 #include "exchangerate.hpp"
 #include "extendedtrees.hpp"
 #include "factorial.hpp"
+#include "fastfouriertransform.hpp"
 #include "fdheston.hpp"
 #include "fdmlinearop.hpp"
 #include "forwardoption.hpp"
@@ -246,6 +247,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ExchangeRateTest::suite());
     test->add(ExtendedTreesTest::suite());
     test->add(FactorialTest::suite());
+    test->add(FastFourierTransformTest::suite());
     test->add(FdHestonTest::suite());
     test->add(FdmLinearOpTest::suite());
     test->add(ForwardOptionTest::suite());
