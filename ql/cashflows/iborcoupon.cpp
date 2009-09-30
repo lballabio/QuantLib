@@ -81,7 +81,8 @@ namespace QuantLib {
             // forecast: 0) forecasting curve
             Handle<YieldTermStructure> termStructure = index_->termStructure();
             QL_REQUIRE(!termStructure.empty(),
-                       "null term structure set to " << index_->name());
+                       "null term structure set to this instance of "
+                       << index_->name());
 
             // forecast: 1) startDiscount
             Date fixingValueDate = index_->fixingCalendar().advance(
