@@ -53,6 +53,9 @@ namespace QuantLib {
         const boost::shared_ptr<IborIndex>& iborIndex() const {
             return iborIndex_;
         }
+        //@}
+        //! \name FloatingRateCoupon interface
+        //@{
         //! Implemented in order to manage the case of par coupon
         Rate indexFixing() const;
         //@}
