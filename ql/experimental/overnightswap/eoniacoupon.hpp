@@ -49,13 +49,17 @@ namespace QuantLib {
         //@{
         //! not applicable here; use fixingDates() instead
         Date fixingDate() const;
-        //! fixing dates of the rates to be averaged
-        std::vector<Date> fixingDates() const;
-
         //! not applicable here; use indexFixings() instead
         Rate indexFixing() const;
+
+        //! fixing dates of the rates to be averaged
+        const std::vector<Date>& fixingDates() const {
+            return valueDates_;
+        }
         //! fixings of the underlying index to be averaged
         std::vector<Rate> indexFixings() const;
+        //! fixings of the underlying index to be averaged
+        const std::vector<Time>& dt() const { return dt_; }
 
         //! not applicable here
         Rate convexityAdjustment() const;
@@ -66,7 +70,10 @@ namespace QuantLib {
         void accept(AcyclicVisitor&);
         //@}
       private:
-        Schedule fixingSchedule_;
+          std::vector<Date> valueDates_;
+          Size n_;
+          std::vector<Time> dt_;
+
     };
 
 

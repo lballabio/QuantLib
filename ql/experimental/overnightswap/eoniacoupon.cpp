@@ -93,10 +93,76 @@ namespace QuantLib {
             Rate floorletRate(Rate) const {
                 QL_FAIL("not available");
             }
-          private:
+          protected:
             const EoniaCoupon* coupon_;
         };
 
+        class EoniaCouponPricer2 : public EoniaCouponPricer {
+          public:
+            Rate swapletRate() const {
+
+                Real compoundFactor = 1.0;
+                Date today = Settings::instance().evaluationDate();
+                const boost::shared_ptr<InterestRateIndex>& index =
+                    coupon_->index();
+
+                const std::vector<Date>& fixingDates = coupon_->fixingDates();
+                const std::vector<Time>& dt = coupon_->dt();
+                Size n = dt.size(),
+                     i = 0;
+
+                // already fixed part
+                while (fixingDates[i]<today && i<n) {
+                    // rate must have been fixed
+                    Rate pastFixing = IndexManager::instance().getHistory(
+                                                     index->name())[fixingDates[i]];
+                    QL_REQUIRE(pastFixing != Null<Real>(),
+                               "Missing " << index->name()
+                               << " fixing for " << fixingDates[i]);
+                    compoundFactor *= (1.0 + pastFixing*dt[i]);
+                    ++i;
+                }
+
+                // today is a border case
+                if (fixingDates[i] == today && i<n) {
+                    // might have been fixed
+                    try {
+                        Rate pastFixing = IndexManager::instance().getHistory(
+                                                     index->name())[fixingDates[i]];
+                        if (pastFixing != Null<Real>()) {
+                            compoundFactor *= (1.0 + pastFixing*dt[i]);
+                            ++i;
+                        } else {
+                            ;   // fall through and forecast
+                        }
+                    } catch (Error&) {
+                        ;       // fall through and forecast
+                    }
+                }
+
+                // forward part using telescopic property
+                // to avoid the evaluation of multiple fwd fixings
+                if (i<n) {
+                    // forecast: 0) forecasting curve
+                    Handle<YieldTermStructure> termStructure = index->termStructure();
+                    QL_REQUIRE(!termStructure.empty(),
+                               "null term structure set to this instance of "
+                               << index->name());
+
+                    const std::vector<Date>& valueDates = coupon_->fixingDates();
+
+                    // forecast: 1) startDiscount
+                    DiscountFactor startDiscount = termStructure->discount(valueDates[i]);
+                    // forecast: 2) endDiscount
+                    DiscountFactor endDiscount = termStructure->discount(valueDates.back());
+
+                    compoundFactor *= startDiscount/endDiscount;
+                }
+
+                Rate rate = (compoundFactor - 1.0) / coupon_->accrualPeriod();
+                return coupon_->gearing() * rate + coupon_->spread();
+            }
+        };
     }
 
     EoniaCoupon::EoniaCoupon(const Date& paymentDate,
@@ -111,24 +177,28 @@ namespace QuantLib {
                              const DayCounter& dayCounter)
       : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                            index->fixingDays(), index, gearing, spread,
-                           refPeriodStart, refPeriodEnd, dayCounter, false),
-        fixingSchedule_(MakeSchedule()
-                        .from(startDate)
-                        .to(endDate)
-                        .withTenor(1*Days)
-                        .withCalendar(index->fixingCalendar())
-                        .withConvention(index->businessDayConvention())
-                        .backwards()) {
+                           refPeriodStart, refPeriodEnd, dayCounter, false) {
+
+        Schedule sch = MakeSchedule()
+                            .from(startDate)
+                            .to(endDate)
+                            .withTenor(1*Days)
+                            .withCalendar(index->fixingCalendar())
+                            .withConvention(index->businessDayConvention())
+                            .backwards();
+        valueDates_ = sch.dates();
+        n_ = valueDates_.size()-1;
+        dt_.resize(n_);
+        const DayCounter& dc = index->dayCounter();
+        for (Size i=0; i<n_; ++i)
+            dt_[i] = dc.yearFraction(valueDates_[i], valueDates_[i+1]);
+
         setPricer(boost::shared_ptr<FloatingRateCouponPricer>(
-                                                 new EoniaCouponPricer));
+                                                 new EoniaCouponPricer2));
     }
 
     Date EoniaCoupon::fixingDate() const {
         QL_FAIL("no single fixing date for average-BMA coupon");
-    }
-
-    std::vector<Date> EoniaCoupon::fixingDates() const {
-        return fixingSchedule_.dates();
     }
 
     Rate EoniaCoupon::indexFixing() const {
@@ -136,9 +206,9 @@ namespace QuantLib {
     }
 
     std::vector<Rate> EoniaCoupon::indexFixings() const {
-        std::vector<Rate> fixings(fixingSchedule_.size());
-        for (Size i=0; i<fixings.size(); ++i)
-            fixings[i] = index_->fixing(fixingSchedule_.date(i));
+        std::vector<Rate> fixings(n_);
+        for (Size i=0; i<n_; ++i)
+            fixings[i] = index_->fixing(valueDates_[i]);
         return fixings;
     }
 
