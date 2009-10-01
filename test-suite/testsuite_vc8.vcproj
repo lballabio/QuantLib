@@ -1185,6 +1185,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\fastfouriertransform.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\fdheston.cpp"
 				>
 			</File>
@@ -2323,6 +2327,10 @@
 			</File>
 			<File
 				RelativePath="factorial.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\fastfouriertransform.hpp"
 				>
 			</File>
 			<File

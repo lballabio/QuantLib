@@ -8409,6 +8409,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="math"
+				>
+				<File
+					RelativePath=".\ql\experimental\math\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\fastfouriertransform.hpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\ql\auto_link.hpp"
