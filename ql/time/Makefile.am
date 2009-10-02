@@ -11,6 +11,7 @@ this_include_HEADERS = \
     date.hpp \
     dategenerationrule.hpp \
 	daycounter.hpp \
+	ecb.hpp \
     frequency.hpp \
     imm.hpp \
     period.hpp \
@@ -23,6 +24,7 @@ libTime_la_SOURCES = \
     calendar.cpp \
     date.cpp \
     dategenerationrule.cpp \
+    ecb.cpp \
     frequency.cpp \
     imm.cpp \
     period.cpp \
