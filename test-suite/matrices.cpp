@@ -360,36 +360,36 @@ void MatricesTest::testDeterminant() {
     // expected results calculated with octave
     Real expected[] = { 0.044, -0.012, 5.0, 5.7621e-11, 1.0};
 
-    for (Size i=0; i < LENGTH(testMatrices); ++i) {
-        const Real calculated = determinant(testMatrices[i]);
-        if (std::fabs(expected[i] - calculated) > tol)
+    for (Size j=0; j<LENGTH(testMatrices); ++j) {
+        const Real calculated = determinant(testMatrices[j]);
+        if (std::fabs(expected[j] - calculated) > tol)
             BOOST_FAIL("determinant calculation failed "
-                       << "\n matrix     :\n" << testMatrices[i]
+                       << "\n matrix     :\n" << testMatrices[j]
                        << "\n calculated : " << calculated
-                       << "\n expected   : " << expected[i]);
+                       << "\n expected   : " << expected[j]);
     }
 
     MersenneTwisterUniformRng rng(1234);
-    for (Size i=0; i < 100; ++i) {
-        Matrix m(3,3, 0.0);
+    for (Size j=0; j<100; ++j) {
+        Matrix m(3, 3, 0.0);
         for (Matrix::iterator iter = m.begin(); iter != m.end(); ++iter)
             *iter = rng.next().value;
 
-        if (!(i%3)) {
+        if (!(j%3)) {
             // every third matrix is a singular matrix
             Size row = Size(3*rng.next().value);
             std::fill(m.row_begin(row), m.row_end(row), 0.0);
         }
 
-        const Real& a=m[0][0];
-        const Real& b=m[0][1];
-        const Real& c=m[0][2];
-        const Real& d=m[1][0];
-        const Real& e=m[1][1];
-        const Real& f=m[1][2];
-        const Real& g=m[2][0];
-        const Real& h=m[2][1];
-        const Real& i=m[2][2];
+        Real a=m[0][0];
+        Real b=m[0][1];
+        Real c=m[0][2];
+        Real d=m[1][0];
+        Real e=m[1][1];
+        Real f=m[1][2];
+        Real g=m[2][0];
+        Real h=m[2][1];
+        Real i=m[2][2];
 
         const Real expected = a*e*i+b*f*g+c*d*h-(g*e*c+h*f*a+i*d*b);
         const Real calculated = determinant(m);
@@ -474,22 +474,16 @@ test_suite* MatricesTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Matrix tests");
 
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testOrthogonalProjection));
-
-
-    /*
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testEigenvectors));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testSqrt));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testSVD));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testHighamSqrt));
-    */
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testQRDecomposition));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testQRSolve));
-    /*
     #if !defined(QL_NO_UBLAS_SUPPORT)
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testInverse));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testDeterminant));
     #endif
-    */
     return suite;
 }
 
