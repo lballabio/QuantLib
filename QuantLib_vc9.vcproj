@@ -7974,6 +7974,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\time\ecb.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\time\ecb.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\time\frequency.cpp"
 				>
 				<FileConfiguration
