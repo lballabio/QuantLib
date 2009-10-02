@@ -28,6 +28,7 @@
 class DateTest {
   public:
     static void testConsistency();
+    static void ecbDates();
     static void immDates();
     static void isoDates();
     static boost::unit_test_framework::test_suite* suite();

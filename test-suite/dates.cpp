@@ -23,10 +23,57 @@
 #include "utilities.hpp"
 #include <ql/time/date.hpp>
 #include <ql/time/imm.hpp>
+#include <ql/time/ecb.hpp>
 #include <ql/utilities/dataparsers.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+
+void DateTest::ecbDates() {
+    BOOST_MESSAGE("Testing ECB dates...");
+
+    std::set<Date> knownDates = ECB::knownDates();
+    if (knownDates.empty())
+        BOOST_FAIL("\nempty EBC date vector");
+
+    Size n = ECB::nextDates(Date::minDate()).size();
+    if (n != knownDates.size())
+        BOOST_FAIL("\nnextDates(minDate) returns "  << n <<
+                   " instead of " << knownDates.size() << " dates");
+
+    std::set<Date>::const_iterator i;
+    Date previousEcbDate = Date::minDate(),
+         currentEcbDate, ecbDateMinusOne;
+    for (i=knownDates.begin(); i!=knownDates.end(); ++i) {
+
+        currentEcbDate = *i;
+        if (!ECB::isECBdate(currentEcbDate))
+            BOOST_FAIL("\n" << currentEcbDate << " fails isECBdate check");
+
+        ecbDateMinusOne = currentEcbDate-1;
+        if (ECB::isECBdate(ecbDateMinusOne))
+            BOOST_FAIL("\n" << ecbDateMinusOne << " fails isECBdate check");
+
+        if (ECB::nextDate(ecbDateMinusOne)!=currentEcbDate)
+            BOOST_FAIL("\n next EBC date following " << ecbDateMinusOne <<
+                       " must be " << currentEcbDate);
+
+        if (ECB::nextDate(previousEcbDate)!=currentEcbDate)
+            BOOST_FAIL("\n next EBC date following " << previousEcbDate <<
+                       " must be " << currentEcbDate);
+
+        previousEcbDate = currentEcbDate;
+    }
+
+    Date knownDate = *knownDates.begin();
+    ECB::removeDate(knownDate);
+    if (ECB::isECBdate(knownDate))
+        BOOST_FAIL("\neunable to remove an EBC date");
+    ECB::addDate(knownDate);
+    if (!ECB::isECBdate(knownDate))
+        BOOST_FAIL("\neunable to add an EBC date");
+
+}
 
 void DateTest::immDates() {
     BOOST_MESSAGE("Testing IMM dates...");
@@ -220,6 +267,7 @@ void DateTest::isoDates() {
 test_suite* DateTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Date tests");
     suite->add(QUANTLIB_TEST_CASE(&DateTest::testConsistency));
+    suite->add(QUANTLIB_TEST_CASE(&DateTest::ecbDates));
     suite->add(QUANTLIB_TEST_CASE(&DateTest::immDates));
     suite->add(QUANTLIB_TEST_CASE(&DateTest::isoDates));
     return suite;
