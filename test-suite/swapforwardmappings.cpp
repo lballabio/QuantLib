@@ -60,7 +60,7 @@ namespace {
         const std::vector<Volatility>& volatilities(){return volatilities_;}
         const std::vector<Rate>& displacements(){return displacements_;}
         const std::vector<DiscountFactor>& discountFactors(){return discountFactors_;}
-        const Size nbRates(){return nbRates_;}
+        Size nbRates() {return nbRates_;}
     private:
         std::vector<Time> rateTimes_, accruals_;
         std::vector<Rate> forwards_;
