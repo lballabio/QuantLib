@@ -31,12 +31,15 @@
 #include <ql/math/interpolations/multicubicspline.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/math/interpolations/kernelinterpolation.hpp>
+#include <ql/math/interpolations/kernelinterpolation2d.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/kernelfunctions.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <boost/assign/std/vector.hpp>
+#include <boost/foreach.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -180,6 +183,15 @@ namespace {
         return std::sqrt(s * std::sinh(std::log(t)) +
                          std::exp(std::sin(u) * std::sin(3 * v)) +
                          std::sinh(std::log(v * w)));
+    }
+
+    Real epanechnikovKernel(Real u){
+
+        if(std::fabs(u)<=1){
+            return (3.0/4.0)*(1-u*u);
+        }else{
+            return 0.0;
+        }
     }
 
 }
@@ -1437,6 +1449,127 @@ void InterpolationTest::testKernelInterpolation() {
     }
 }
 
+
+void InterpolationTest::testKernelInterpolation2D(){
+
+    // No test values known from the literature.
+    // Testing for consistency of input output data
+    // at the nodes
+
+    using namespace boost::assign;
+
+    BOOST_MESSAGE("Testing kernel 2D interpolation ...");
+
+    Real mean=0.0, var=0.18;
+    boost::shared_ptr<KernelFunction> myKernel(new GaussianKernel(mean,var));
+
+    std::vector<Real> xVec,yVec;
+    xVec += 0.10,0.20,0.30,0.40,0.50,0.60,0.70,0.80,0.90,1.00;
+    yVec += 1.0,2.0,3.5;
+
+    Matrix M(xVec.size(),yVec.size());
+
+    M[0][0]=0.25; M[1][0]=0.24; M[2][0]=0.23; M[3][0]=0.20; M[4][0]=0.19;
+    M[5][0]=0.20; M[6][0]=0.21; M[7][0]=0.22; M[8][0]=0.26; M[9][0]=0.29;
+
+    M[0][1]=0.27; M[1][1]=0.26; M[2][1]=0.25; M[3][1]=0.22; M[4][1]=0.21;
+    M[5][1]=0.22; M[6][1]=0.23; M[7][1]=0.24; M[8][1]=0.28; M[9][1]=0.31;
+
+    M[0][2]=0.21; M[1][2]=0.22; M[2][2]=0.27; M[3][2]=0.29; M[4][2]=0.24;
+    M[5][2]=0.28; M[6][2]=0.25; M[7][2]=0.22; M[8][2]=0.29; M[9][2]=0.30;
+
+    KernelInterpolation2D kernel2D(xVec.begin(),xVec.end(),
+                                   yVec.begin(),yVec.end(),M,myKernel);
+
+    Real calcVal,expectedVal;
+    Real tolerance = 1.0e-10;
+
+    for(Size i=0;i<M.rows();++i){
+        for(Size j=0;j<M.columns();++j){
+
+            calcVal=kernel2D(xVec[i],yVec[j]);
+            expectedVal=M[i][j];
+
+            if(std::fabs(expectedVal-calcVal)>tolerance){
+
+                BOOST_ERROR("2D Kernel interpolation failed at x = " << xVec[i]
+                            << ", y = " << yVec[j]
+                            << "\n    interpolated value: " << calcVal
+                            << "\n    expected value:     " << expectedVal
+                            << "\n    error:              "
+                            << std::fabs(expectedVal-calcVal));
+            }
+        }
+    }
+
+    // alternative data set
+    std::vector<Real> xVec1,yVec1;
+    xVec1+=80.0,90.0,100.0,110.0;
+    yVec1+=0.5,0.7,1.0,2.0,3.5,4.5,5.5,6.5;
+    Matrix M1(xVec1.size(),yVec1.size());
+
+    M1[0][0]=10.25; M1[1][0]=12.24;M1[2][0]=14.23;M1[3][0]=17.20;
+    M1[0][1]=12.25; M1[1][1]=15.24;M1[2][1]=16.23;M1[3][1]=16.20;
+    M1[0][2]=12.25; M1[1][2]=13.24;M1[2][2]=13.23;M1[3][2]=17.20;
+    M1[0][3]=13.25; M1[1][3]=15.24;M1[2][3]=12.23;M1[3][3]=19.20;
+    M1[0][4]=14.25; M1[1][4]=16.24;M1[2][4]=13.23;M1[3][4]=12.20;
+    M1[0][5]=15.25; M1[1][5]=17.24;M1[2][5]=14.23;M1[3][5]=12.20;
+    M1[0][6]=16.25; M1[1][6]=13.24;M1[2][6]=15.23;M1[3][6]=10.20;
+    M1[0][7]=14.25; M1[1][7]=14.24;M1[2][7]=16.23;M1[3][7]=19.20;
+
+    // test with boost function instead of functor
+    boost::shared_ptr<boost::function<Real (Real)> > epKernelPtr(
+                       new boost::function<Real (Real)>(&epanechnikovKernel));
+
+    KernelInterpolation2D kernel2DEp(xVec1.begin(),xVec1.end(),
+                                     yVec1.begin(),yVec1.end(),M1,epKernelPtr);
+
+    for(Size i=0;i<M1.rows();++i){
+        for(Size j=0;j<M1.columns();++j){
+
+            calcVal=kernel2DEp(xVec1[i],yVec1[j]);
+            expectedVal=M1[i][j];
+
+            if(std::fabs(expectedVal-calcVal)>tolerance){
+
+                BOOST_ERROR("2D Epanechnkikov Kernel interpolation failed at x = " << xVec1[i]
+                            << ", y = " << yVec1[j]
+                            << "\n    interpolated value: " << calcVal
+                            << "\n    expected value:     " << expectedVal
+                            << "\n    error:              "
+                            << std::fabs(expectedVal-calcVal));
+            }
+        }
+    }
+
+    // test updating mechanism by changing initial variables
+    xVec1.clear();yVec1.clear();
+
+    xVec1+=60.0,95.0,105.0,135.0;
+    yVec1+=12.5,13.7,15.0,19.0,26.5,27.5,29.2,36.5;
+
+    kernel2DEp.update();
+
+    for(Size i=0;i<M1.rows();++i){
+        for(Size j=0;j<M1.columns();++j){
+
+            calcVal=kernel2DEp(xVec1[i],yVec1[j]);
+            expectedVal=M1[i][j];
+
+            if(std::fabs(expectedVal-calcVal)>tolerance){
+
+                BOOST_ERROR("2D Epanechnkikov Kernel updated interpolation failed at x = " << xVec1[i]
+                            << ", y = " << yVec1[j]
+                            << "\n    interpolated value: " << calcVal
+                            << "\n    expected value:     " << expectedVal
+                            << "\n    error:              "
+                            << std::fabs(expectedVal-calcVal));
+            }
+        }
+    }
+}
+
+
 void InterpolationTest::testBicubicDerivatives() {
     BOOST_MESSAGE("Testing bicubic spline derivatives...");
 
@@ -1503,6 +1636,8 @@ test_suite* InterpolationTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testForwardFlat));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSabrInterpolation));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testKernelInterpolation));
+    suite->add(QUANTLIB_TEST_CASE(
+                              &InterpolationTest::testKernelInterpolation2D));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBicubicDerivatives));
 
     return suite;

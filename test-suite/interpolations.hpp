@@ -44,6 +44,7 @@ class InterpolationTest {
     static void testForwardFlat();
     static void testSabrInterpolation();
     static void testKernelInterpolation();
+    static void testKernelInterpolation2D();
     static void testBicubicDerivatives();
     static boost::unit_test_framework::test_suite* suite();
 };
