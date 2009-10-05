@@ -1364,8 +1364,7 @@ void InterpolationTest::testKernelInterpolation() {
     // Check that y-values at knots are exactly the feeded y-values,
     // irrespective of kernel parameters
     for (Size i=0; i<lambdaVec.size(); ++i) {
-        boost::shared_ptr<KernelFunction> myKernel(
-                                          new GaussianKernel(0,lambdaVec[i]));
+        GaussianKernel myKernel(0,lambdaVec[i]);
 
         for (Size j=0; j<yd.size(); ++j) {
 
@@ -1417,7 +1416,7 @@ void InterpolationTest::testKernelInterpolation() {
     ytd.push_back(ytd2);
     ytd.push_back(ytd3);
 
-    boost::shared_ptr<KernelFunction> myKernel(new GaussianKernel(0,2.05));
+    GaussianKernel myKernel(0,2.05);
 
     for (Size j=0; j< ytd.size(); ++j) {
         std::vector<Real> currY=yd[j];
@@ -1461,7 +1460,7 @@ void InterpolationTest::testKernelInterpolation2D(){
     BOOST_MESSAGE("Testing kernel 2D interpolation ...");
 
     Real mean=0.0, var=0.18;
-    boost::shared_ptr<KernelFunction> myKernel(new GaussianKernel(mean,var));
+    GaussianKernel myKernel(mean,var);
 
     std::vector<Real> xVec,yVec;
     xVec += 0.10,0.20,0.30,0.40,0.50,0.60,0.70,0.80,0.90,1.00;
@@ -1517,12 +1516,10 @@ void InterpolationTest::testKernelInterpolation2D(){
     M1[0][6]=16.25; M1[1][6]=13.24;M1[2][6]=15.23;M1[3][6]=10.20;
     M1[0][7]=14.25; M1[1][7]=14.24;M1[2][7]=16.23;M1[3][7]=19.20;
 
-    // test with boost function instead of functor
-    boost::shared_ptr<boost::function<Real (Real)> > epKernelPtr(
-                       new boost::function<Real (Real)>(&epanechnikovKernel));
-
+    // test with function pointer
     KernelInterpolation2D kernel2DEp(xVec1.begin(),xVec1.end(),
-                                     yVec1.begin(),yVec1.end(),M1,epKernelPtr);
+                                     yVec1.begin(),yVec1.end(),M1,
+                                     &epanechnikovKernel);
 
     for(Size i=0;i<M1.rows();++i){
         for(Size j=0;j<M1.columns();++j){

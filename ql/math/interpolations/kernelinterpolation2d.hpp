@@ -59,7 +59,7 @@ namespace QuantLib {
             KernelInterpolation2DImpl(const I1& xBegin, const I1& xEnd,
                                       const I2& yBegin, const I2& yEnd,
                                       const M& zData,
-                                      const boost::shared_ptr<Kernel>& kernel)
+                                      const Kernel& kernel)
             : Interpolation2D::templateImpl<I1,I2,M>(xBegin, xEnd,
                                                      yBegin, yEnd, zData),
               xSize_(Size(xEnd-xBegin)), ySize_(Size(yEnd-yBegin)),
@@ -110,7 +110,7 @@ namespace QuantLib {
 
             // returns K(||X-Y||) where X,Y are vectors
             Real kernelAbs(const Array& X, const Array& Y)const{
-                return (*kernel_)(vecNorm(X-Y));
+                return kernel_(vecNorm(X-Y));
             }
 
             Real vecNorm(const Array& X)const{
@@ -184,7 +184,7 @@ namespace QuantLib {
             Real invPrec_;
             Array alphaVec_, yVec_;
             Matrix M_;
-            boost::shared_ptr<Kernel> kernel_;
+            Kernel kernel_;
         };
 
     } // end namespace detail
@@ -206,7 +206,7 @@ namespace QuantLib {
         KernelInterpolation2D(const I1& xBegin, const I1& xEnd,
                             const I2& yBegin, const I2& yEnd,
                             const M& zData,
-                            const boost::shared_ptr<Kernel>& kernel) {
+                            const Kernel& kernel) {
 
             impl_ = boost::shared_ptr<Interpolation2D::Impl>(new
                 detail::KernelInterpolation2DImpl<I1,I2,M,Kernel>(xBegin, xEnd,

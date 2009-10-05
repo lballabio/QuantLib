@@ -38,7 +38,7 @@ namespace QuantLib {
           public:
             KernelInterpolationImpl(const I1& xBegin, const I1& xEnd,
                                     const I2& yBegin,
-                                    const boost::shared_ptr<Kernel>& kernel)
+                                    const Kernel& kernel)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
               xSize_(Size(xEnd-xBegin)),invPrec_(1.0e-7),
               M_(xSize_,xSize_), alphaVec_(xSize_), yVec_(xSize_),
@@ -86,7 +86,7 @@ namespace QuantLib {
         private:
 
             Real kernelAbs(Real x1, Real x2)const{
-                return (*kernel_)(std::fabs(x1-x2));
+                return kernel_(std::fabs(x1-x2));
             }
 
             Real gammaFunc(Real x)const{
@@ -135,7 +135,7 @@ namespace QuantLib {
             Real invPrec_;
             Matrix M_;
             Array alphaVec_,yVec_;
-            boost::shared_ptr<Kernel> kernel_;
+            Kernel kernel_;
         };
 
     } // end namespace detail
@@ -157,7 +157,7 @@ namespace QuantLib {
         template <class I1, class I2, class Kernel>
         KernelInterpolation(const I1& xBegin, const I1& xEnd,
                             const I2& yBegin,
-                            const boost::shared_ptr<Kernel>& kernel) {
+                            const Kernel& kernel) {
             impl_ = boost::shared_ptr<Interpolation::Impl>(new
                 detail::KernelInterpolationImpl<I1,I2,Kernel>(xBegin, xEnd,
                                                               yBegin, kernel));
