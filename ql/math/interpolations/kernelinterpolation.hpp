@@ -17,101 +17,128 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file kernelinterpolation.hpp
-    \brief Kernel interpolation
-*/
 
 #ifndef quantlib_kernel_interpolation_hpp
 #define quantlib_kernel_interpolation_hpp
 
 #include <ql/math/interpolation.hpp>
-#include <ql/math/kernelfunctions.hpp>
 #include <ql/math/matrixutilities/qrdecomposition.hpp>
+
+/*! \file kernelinterpolation.hpp
+    \brief Kernel interpolation
+*/
 
 namespace QuantLib {
 
     namespace detail {
 
-        template <class I1, class I2>
+        template <class I1, class I2, class Kernel>
         class KernelInterpolationImpl
             : public Interpolation::templateImpl<I1,I2> {
           public:
             KernelInterpolationImpl(const I1& xBegin, const I1& xEnd,
                                     const I2& yBegin,
-                                    boost::shared_ptr<KernelFunction>& kernel)
+                                    const boost::shared_ptr<Kernel>& kernel)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
-              kernel_(kernel), xSize_(Size(xEnd-xBegin)) {
-                updateAlphaVector();
-            }
+              xSize_(Size(xEnd-xBegin)),invPrec_(1.0e-7),
+              M_(xSize_,xSize_), alphaVec_(xSize_), yVec_(xSize_),
+              kernel_(kernel) {}
 
             void update() {
-                updateAlphaVector();
+                updateAlphaVec();
             }
 
             Real value(Real x) const {
-                Real sum = 0.0;
-                for (Size i=0; i<xSize_; ++i) {
-                    sum += alpha_[i]*kernelAbs(x,this->xBegin_[i]);
+
+                Real res=0.0;
+
+                for( Size i=0; i< xSize_;++i){
+                    res+=alphaVec_[i]*kernelAbs(x,this->xBegin_[i]);
                 }
-                return sum/gammaFunc(x);
+
+                return res/gammaFunc(x);
             }
 
             Real primitive(Real x) const {
                 QL_FAIL("Primitive calculation not implemented "
-                        "for kernel interpolation.");
+                        "for kernel interpolation");
             }
 
             Real derivative(Real x) const {
-                QL_FAIL("First-derivative calculation not implemented "
-                        "for kernel interpolation.");
+                QL_FAIL("First derivative calculation not implemented "
+                        "for kernel interpolation");
             }
 
             Real secondDerivative(Real) const {
-                QL_FAIL("Second-derivative calculation not implemented "
-                        "for kernel interpolation.");
+                QL_FAIL("Second derivative calculation not implemented "
+                        "for kernel interpolation");
             }
 
-          private:
+            // the calculation will solve y=M*a for a.  Due to
+            // singularity or rounding errors the recalculation
+            // M*a may not give y. Here, a failure will be thrown if
+            // |M*a-y|>=invPrec_
+
+            void setInverseResultPrecision(Real invPrec){
+                invPrec_=invPrec;
+            }
+
+        private:
 
             Real kernelAbs(Real x1, Real x2)const{
                 return (*kernel_)(std::fabs(x1-x2));
             }
 
             Real gammaFunc(Real x)const{
-                Real sum = 0.0;
-                for (Size i=0; i<xSize_; ++i) {
-                    sum += kernelAbs(x,this->xBegin_[i]);
+
+                Real res=0.0;
+
+                for(Size i=0; i< xSize_;++i){
+                    res+=kernelAbs(x,this->xBegin_[i]);
                 }
-                return sum;
+                return res;
             }
 
-            void updateAlphaVector(){
-                // calculates the alpha vector with given fixed
-                // pillars+values
+            void updateAlphaVec(){
+                // Function calculates the alpha vector with given
+                // fixed pillars+values
 
-                Matrix M(xSize_,xSize_);
+                // Write Matrix M
+                Real tmp=0.0;
 
-                for (Size rowIt=0; rowIt<xSize_; ++rowIt) {
-                    for (Size colIt=0; colIt<xSize_; ++colIt) {
-                        M[rowIt][colIt] =
-                            kernelAbs(this->xBegin_[rowIt],
-                                      this->xBegin_[colIt]) /
-                            gammaFunc(this->xBegin_[rowIt]);
+                for(Size rowIt=0; rowIt<xSize_;++rowIt){
+
+                    yVec_[rowIt]=this->yBegin_[rowIt];
+                    tmp=1.0/gammaFunc(this->xBegin_[rowIt]);
+
+                    for(Size colIt=0; colIt<xSize_;++colIt){
+                        M_[rowIt][colIt]=kernelAbs(this->xBegin_[rowIt],
+                                                   this->xBegin_[colIt])*tmp;
                     }
                 }
 
-                const std::vector<Real>& y = this->yValues();
-
                 // Solve y=M*\alpha for \alpha
-                alpha_ = qrSolve(M, Array(y.begin(), y.end()));
+                alphaVec_ = qrSolve(M_, yVec_);
+
+                // check if inversion worked up to a reasonable precision.
+                // I've chosen not to check determinant(M_)!=0 before solving
+
+                Array diffVec=Abs(M_*alphaVec_ - yVec_);
+
+                for (Size i=0; i<diffVec.size(); ++i) {
+                    QL_REQUIRE(diffVec[i] < invPrec_,
+                               "Inversion failed in 1d kernel interpolation");
+                }
             }
 
-            boost::shared_ptr<KernelFunction> kernel_;
-            Array alpha_;
             Size xSize_;
+            Real invPrec_;
+            Matrix M_;
+            Array alphaVec_,yVec_;
+            boost::shared_ptr<Kernel> kernel_;
         };
 
-    }
+    } // end namespace detail
 
 
     //! Kernel interpolation between discrete points
@@ -124,14 +151,16 @@ namespace QuantLib {
     */
     class KernelInterpolation : public Interpolation {
       public:
-        /*! \pre the \f$ x \f$ values must be sorted. */
-        template <class I1, class I2>
+        /*! \pre the \f$ x \f$ values must be sorted.
+            \pre kernel needs a Real operator()(Real x) implementation
+        */
+        template <class I1, class I2, class Kernel>
         KernelInterpolation(const I1& xBegin, const I1& xEnd,
                             const I2& yBegin,
-                            boost::shared_ptr<KernelFunction>& kernel) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(
-                  new detail::KernelInterpolationImpl<I1,I2>(xBegin, xEnd,
-                                                             yBegin, kernel));
+                            const boost::shared_ptr<Kernel>& kernel) {
+            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+                detail::KernelInterpolationImpl<I1,I2,Kernel>(xBegin, xEnd,
+                                                              yBegin, kernel));
             impl_->update();
         }
     };
