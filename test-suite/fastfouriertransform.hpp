@@ -29,7 +29,8 @@
 class FastFourierTransformTest {
   public:
     static void testConstruction();
-    static void testConvolution();
+    static void testSimple();
+    static void testInverse();
     static boost::unit_test_framework::test_suite* suite();
 };
 

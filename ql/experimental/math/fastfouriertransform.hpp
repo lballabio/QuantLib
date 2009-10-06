@@ -63,7 +63,7 @@ namespace QuantLib {
             for (std::size_t s = 1; s <= log2_N; ++s) {
                 std::size_t m = 1 << s;
                 complex w(1.0);
-                complex wm(cs_[s-1], sn_[s-1]);
+                complex wm(cs_[s-1], -sn_[s-1]);
                 for (std::size_t j = 0; j < m/2; ++j) {
                     for (std::size_t k = j; k < N; k += m) {
                         complex t = w * (*(out + k + m/2));
@@ -76,8 +76,50 @@ namespace QuantLib {
             }
         }
 
+        template<typename InputIterator, typename RandomAccessIterator>
+        void transform(InputIterator inBegin, InputIterator inEnd,
+                       RandomAccessIterator out) {
+            transform_impl(inBegin, inEnd, out, false);
+        }
+
+        template<typename InputIterator, typename RandomAccessIterator>
+        void inverse_transform(InputIterator inBegin, InputIterator inEnd,
+                               RandomAccessIterator out) {
+            transform_impl(inBegin, inEnd, out, true);
+        }
+
       private:
         std::vector<double> cs_, sn_;
+
+        template<typename InputIterator, typename RandomAccessIterator>
+        void transform_impl(InputIterator inBegin, InputIterator inEnd,
+                            RandomAccessIterator out,
+                            bool inverse) const {
+            typedef
+                typename std::iterator_traits<RandomAccessIterator>::value_type
+                                                                       complex;
+            const std::size_t log2_N = cs_.size();
+            const std::size_t N = 1 << log2_N;
+            std::size_t i = 0;
+            for (; inBegin != inEnd; ++i, ++inBegin) {
+                *(out + bit_reverse(i, log2_N)) = *inBegin;
+            }
+            QL_REQUIRE (i <= N, "insufficient frequency for FFT");
+            for (std::size_t s = 1; s <= log2_N; ++s) {
+                std::size_t m = 1 << s;
+                complex w(1.0);
+                complex wm(cs_[s-1], inverse ? sn_[s-1] : -sn_[s-1]);
+                for (std::size_t j = 0; j < m/2; ++j) {
+                    for (std::size_t k = j; k < N; k += m) {
+                        complex t = w * (*(out + k + m/2));
+                        complex u = *(out + k);
+                        *(out + k) = u + t;
+                        *(out + k + m/2) = u - t;
+                    }
+                    w *= wm;
+                }
+            }
+        }
 
         static std::size_t bit_reverse(std::size_t x, std::size_t log2_N) {
             std::size_t n = 0;
