@@ -62,7 +62,7 @@ namespace QuantLib {
 
         See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
 
-        \warning This is the rate fixed in London by BBA. Use Euribor if
+        \warning This is the rate fixed in London by BBA. Use Eonia if
                  you're interested in the fixing by the ECB.
     */
     class DailyTenorEURLibor : public IborIndex {
