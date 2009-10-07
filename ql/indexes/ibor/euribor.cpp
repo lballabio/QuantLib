@@ -80,20 +80,4 @@ namespace QuantLib {
                    ") dedicated DailyTenor constructor must be used");
     }
 
-    DailyTenorEuribor::DailyTenorEuribor(Natural settlementDays,
-                                         const Handle<YieldTermStructure>& h)
-    : IborIndex("Euribor", 1*Days,
-                settlementDays,
-                EURCurrency(), TARGET(),
-                euriborConvention(1*Days), euriborEOM(1*Days),
-                Actual360(), h) {}
-
-    DailyTenorEuribor365::DailyTenorEuribor365(Natural settlementDays,
-                                               const Handle<YieldTermStructure>& h)
-    : IborIndex("Euribor365", 1*Days,
-                settlementDays,
-                EURCurrency(), TARGET(),
-                euriborConvention(1*Days), euriborEOM(1*Days),
-                Actual365Fixed(), h) {}
-
 }

@@ -30,71 +30,76 @@ namespace QuantLib {
         void no_deletion(YieldTermStructure*) {}
     }
 
-    EoniaSwapHelper::EoniaSwapHelper(const Handle<Quote>& fixedRate,
-                                     const Period& tenor, // swap maturity
-                                     Natural settlementDays,
-                                     const Calendar& calendar,
-                                     // eonia leg
-                                     const Period& eoniaPeriod,
-                                     BusinessDayConvention eoniaConvention,
-                                     const boost::shared_ptr<Eonia>& eoniaIndex,
-                                     // fixed leg
-                                     const Period& fixedPeriod,
-                                     BusinessDayConvention fixedConvention,
-                                     const DayCounter& fixedDayCount)
+    OISRateHelper::OISRateHelper(const Handle<Quote>& fixedRate,
+                                 const Period& tenor, // swap maturity
+                                 Natural settlementDays,
+                                 const Calendar& calendar,
+                                 // Overnight Indexed leg
+                                 const Period& overnightPeriod,
+                                 BusinessDayConvention overnightConvention,
+                                 const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                                 // fixed leg
+                                 const Period& fixedPeriod,
+                                 BusinessDayConvention fixedConvention,
+                                 const DayCounter& fixedDayCount)
     : RelativeDateRateHelper(fixedRate),
       tenor_(tenor), settlementDays_(settlementDays),
       calendar_(calendar),
-      eoniaPeriod_(eoniaPeriod),
-      eoniaConvention_(eoniaConvention),
-      eoniaIndex_(eoniaIndex),
+      overnightPeriod_(overnightPeriod),
+      overnightConvention_(overnightConvention),
+      overnightIndex_(overnightIndex),
       fixedPeriod_(fixedPeriod),
       fixedConvention_(fixedConvention),
       fixedDayCount_(fixedDayCount) {
-        registerWith(eoniaIndex_);
+        registerWith(overnightIndex_);
         initializeDates();
     }
 
-    void EoniaSwapHelper::initializeDates() {
+    void OISRateHelper::initializeDates() {
         earliestDate_ = calendar_.advance(evaluationDate_,
                                           settlementDays_*Days,
                                           Following);
 
         Date maturity = earliestDate_ + tenor_;
 
-        // dummy Eonia index with curve/swap arguments
-        shared_ptr<Eonia> clonedIndex(new Eonia(termStructureHandle_));
-
-        Schedule eoniaSchedule =
+        Schedule overnightSchedule =
             MakeSchedule().from(earliestDate_)
                           .to(maturity)
-                          .withTenor(eoniaPeriod_)
-                          .withCalendar(eoniaIndex_->fixingCalendar())
-                          .withConvention(eoniaConvention_)
+                          .withTenor(overnightPeriod_)
+                          .withCalendar(overnightIndex_->fixingCalendar())
+                          .withConvention(overnightConvention_)
                           .backwards();
 
         Schedule fixedSchedule =
             MakeSchedule().from(earliestDate_)
                           .to(maturity)
                           .withTenor(fixedPeriod_)
-                          .withCalendar(eoniaIndex_->fixingCalendar())
+                          .withCalendar(overnightIndex_->fixingCalendar())
                           .withConvention(fixedConvention_)
                           .backwards();
 
-        swap_ = shared_ptr<EoniaSwap>(new EoniaSwap(EoniaSwap::Payer, 100.0,
-                                                    eoniaSchedule,
-                                                    0.0,
-                                                    clonedIndex,
-                                                    fixedSchedule,
-                                                    0.0,
-                                                    fixedDayCount_));
+        // dummy OvernightIndex with curve/swap arguments
+        boost::shared_ptr<IborIndex> clonedIborIndex =
+            overnightIndex_->clone(termStructureHandle_);
+        shared_ptr<OvernightIndex> clonedOvernightIndex = 
+            boost::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
+
+        swap_ = shared_ptr<OvernightIndexedSwap>(new
+            OvernightIndexedSwap(OvernightIndexedSwap::Payer,
+                                 100.0,
+                                 overnightSchedule,
+                                 0.0,
+                                 clonedOvernightIndex,
+                                 fixedSchedule,
+                                 0.0,
+                                 fixedDayCount_));
         swap_->setPricingEngine(shared_ptr<PricingEngine>(new
-            DiscountingSwapEngine(clonedIndex->termStructure())));
+            DiscountingSwapEngine(clonedOvernightIndex->termStructure())));
 
         latestDate_ = swap_->maturityDate();
     }
 
-    void EoniaSwapHelper::setTermStructure(YieldTermStructure* t) {
+    void OISRateHelper::setTermStructure(YieldTermStructure* t) {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed
         termStructureHandle_.linkTo(
@@ -103,16 +108,16 @@ namespace QuantLib {
         RelativeDateRateHelper::setTermStructure(t);
     }
 
-    Real EoniaSwapHelper::impliedQuote() const {
+    Real OISRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we didn't register as observers - force calculation
         swap_->recalculate();
         return swap_->fairRate();
     }
 
-    void EoniaSwapHelper::accept(AcyclicVisitor& v) {
-        Visitor<EoniaSwapHelper>* v1 =
-            dynamic_cast<Visitor<EoniaSwapHelper>*>(&v);
+    void OISRateHelper::accept(AcyclicVisitor& v) {
+        Visitor<OISRateHelper>* v1 =
+            dynamic_cast<Visitor<OISRateHelper>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

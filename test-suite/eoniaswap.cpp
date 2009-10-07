@@ -33,6 +33,7 @@
 #include <ql/time/daycounters/simpledaycounter.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/ibor/eonia.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/cashflows.hpp>
@@ -46,7 +47,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-#define Ptr boost::shared_ptr
+using boost::shared_ptr;
 
 typedef PiecewiseYieldCurve<Discount,LogLinear> PiecewiseFlatForward;
 
@@ -154,7 +155,7 @@ namespace {
     struct CommonVars {
         // global data
         Date today, settlement;
-        EoniaSwap::Type type;
+        OvernightIndexedSwap::Type type;
         Real nominal;
         Calendar calendar;
         Natural settlementDays;
@@ -162,20 +163,20 @@ namespace {
         Period fixedEoniaPeriod, floatingEoniaPeriod;
         DayCounter fixedEoniaDayCount;
         BusinessDayConvention fixedEoniaConvention, floatingEoniaConvention;
-        Ptr<Eonia> eoniaIndex;
+        shared_ptr<Eonia> eoniaIndex;
         RelinkableHandle<YieldTermStructure> eoniaTermStructure;
 
         Frequency fixedSwapFrequency;
         DayCounter fixedSwapDayCount;
         BusinessDayConvention fixedSwapConvention;
-        Ptr<IborIndex> swapIndex;
+        shared_ptr<IborIndex> swapIndex;
         RelinkableHandle<YieldTermStructure> swapTermStructure;
 
         // cleanup
         SavedSettings backup;
         
         // utilities
-        Ptr<EoniaSwap> makeSwap(Period length, Rate fixedRate, Spread spread) {
+        shared_ptr<OvernightIndexedSwap> makeSwap(Period length, Rate fixedRate, Spread spread) {
             Date maturity = settlement + length;
             Schedule fixedSchedule(settlement, maturity, fixedEoniaPeriod,
                                    calendar, fixedEoniaConvention,
@@ -186,17 +187,17 @@ namespace {
                                    calendar, floatingEoniaConvention,
                                    floatingEoniaConvention,
                                    DateGeneration::Backward, false);
-            Ptr<EoniaSwap> swap(
-                new EoniaSwap(type, nominal,
+            shared_ptr<OvernightIndexedSwap> swap(
+                new OvernightIndexedSwap(type, nominal,
                               floatSchedule, spread, eoniaIndex, 
                               fixedSchedule, fixedRate, fixedEoniaDayCount));
-            swap->setPricingEngine(Ptr<PricingEngine>(
+            swap->setPricingEngine(shared_ptr<PricingEngine>(
                               new DiscountingSwapEngine(eoniaTermStructure)));
             return swap;
         }
 
         CommonVars() {
-            type = EoniaSwap::Payer;
+            type = OvernightIndexedSwap::Payer;
             settlementDays = 2;
             nominal = 100.0;
             fixedEoniaConvention = ModifiedFollowing;
@@ -204,11 +205,11 @@ namespace {
             fixedEoniaPeriod = 1*Years;
             floatingEoniaPeriod = 1*Years;
             fixedEoniaDayCount = Actual360();
-            eoniaIndex = Ptr<Eonia>(new Eonia(eoniaTermStructure));
+            eoniaIndex = shared_ptr<Eonia>(new Eonia(eoniaTermStructure));
             fixedSwapConvention = ModifiedFollowing;
             fixedSwapFrequency = Annual;
             fixedSwapDayCount = Thirty360();
-            swapIndex = Ptr<IborIndex>(new Euribor3M(swapTermStructure));
+            swapIndex = shared_ptr<IborIndex>(new Euribor3M(swapTermStructure));
             calendar = eoniaIndex->fixingCalendar();
             today = Date(5, February, 2009);
             //today = calendar.adjust(Date::todaysDate());
@@ -234,7 +235,7 @@ void EoniaSwapTest::testFairRate() {
     for (Size i=0; i<LENGTH(lengths); i++) {
         for (Size j=0; j<LENGTH(spreads); j++) {
 
-            Ptr<EoniaSwap> swap =
+            shared_ptr<OvernightIndexedSwap> swap =
                 vars.makeSwap(lengths[i],0.0,spreads[j]);
             swap = vars.makeSwap(lengths[i],swap->fairRate(),spreads[j]);
             if (std::fabs(swap->NPV()) > 1.0e-10) {
@@ -263,7 +264,7 @@ void EoniaSwapTest::testFairSpread() {
     for (Size i=0; i<LENGTH(lengths); i++) {
         for (Size j=0; j<LENGTH(rates); j++) {
 
-            Ptr<EoniaSwap> swap =
+            shared_ptr<OvernightIndexedSwap> swap =
                 vars.makeSwap(lengths[i],rates[j],0.0);
             Spread fairSpread = swap->fairSpread();
             swap = vars.makeSwap(lengths[i], rates[j], fairSpread);
@@ -292,7 +293,7 @@ void EoniaSwapTest::testCachedValue() {
     Real flat = 0.05;
     vars.eoniaTermStructure.linkTo(flatRate(vars.settlement,flat,Actual360()));
     Real fixedRate = exp(flat) - 1;
-    Ptr<EoniaSwap> swap = vars.makeSwap(1*Years, fixedRate, 0.0);
+    shared_ptr<OvernightIndexedSwap> swap = vars.makeSwap(1*Years, fixedRate, 0.0);
     Real cachedNPV   = -0.001730450147;
 
     if (std::fabs(swap->NPV()-cachedNPV) > 1.0e-11)
@@ -309,18 +310,18 @@ void EoniaSwapTest::testBootstrap() {
 
     CommonVars vars;
 
-    std::vector<Ptr<RateHelper> > eoniaHelpers;
-    std::vector<Ptr<RateHelper> > swap3mHelpers;
+    std::vector<shared_ptr<RateHelper> > eoniaHelpers;
+    std::vector<shared_ptr<RateHelper> > swap3mHelpers;
 
-    Ptr<IborIndex> euribor3m(new Euribor3M());
-    Ptr<Eonia> eonia(new Eonia());
+    shared_ptr<IborIndex> euribor3m(new Euribor3M());
+    shared_ptr<Eonia> eonia(new Eonia());
 
     for (Size i = 0; i < LENGTH(depositData); i++) {
         Real rate = 0.01 * depositData[i].rate;
-        Ptr<SimpleQuote> simple = Ptr<SimpleQuote>(new SimpleQuote(rate));
-        Ptr<Quote> quote (simple);
+        shared_ptr<SimpleQuote> simple = shared_ptr<SimpleQuote>(new SimpleQuote(rate));
+        shared_ptr<Quote> quote (simple);
         Period term = depositData[i].n * depositData[i].unit;
-        Ptr<RateHelper> helper(new 
+        shared_ptr<RateHelper> helper(new 
                     DepositRateHelper(Handle<Quote>(quote),
                                       term,
                                       depositData[i].settlementDays,
@@ -337,9 +338,9 @@ void EoniaSwapTest::testBootstrap() {
 
     for (Size i = 0; i < LENGTH(fraData); i++) {
         Real rate = 0.01 * fraData[i].rate;
-        Ptr<SimpleQuote> simple = Ptr<SimpleQuote>(new SimpleQuote(rate));
-        Ptr<Quote> quote (simple);
-        Ptr<RateHelper> helper(new 
+        shared_ptr<SimpleQuote> simple = shared_ptr<SimpleQuote>(new SimpleQuote(rate));
+        shared_ptr<Quote> quote (simple);
+        shared_ptr<RateHelper> helper(new 
                                FraRateHelper(Handle<Quote>(quote),
                                              fraData[i].nExpiry,
                                              fraData[i].nMaturity,
@@ -353,31 +354,30 @@ void EoniaSwapTest::testBootstrap() {
 
     for (Size i = 0; i < LENGTH(eoniaSwapData); i++) {
         Real rate = 0.01 * eoniaSwapData[i].rate;
-        Ptr<SimpleQuote> simple = Ptr<SimpleQuote>(new SimpleQuote(rate));
-        Ptr<Quote> quote (simple);
+        shared_ptr<SimpleQuote> simple = shared_ptr<SimpleQuote>(new SimpleQuote(rate));
+        shared_ptr<Quote> quote (simple);
         Period term = eoniaSwapData[i].n * eoniaSwapData[i].unit;
-        Ptr<RateHelper> helper(new 
-                     EoniaSwapHelper(
-                                     Handle<Quote>(quote), 
-                                     term, 
-                                     eoniaSwapData[i].settlementDays,
-                                     vars.calendar,
-                                     vars.floatingEoniaPeriod, 
-                                     vars.floatingEoniaConvention,
-                                     eonia,
-                                     vars.fixedEoniaPeriod,
-                                     vars.fixedEoniaConvention,
-                                     vars.fixedEoniaDayCount));
+        shared_ptr<RateHelper> helper(new 
+                     OISRateHelper(Handle<Quote>(quote), 
+                                   term, 
+                                   eoniaSwapData[i].settlementDays,
+                                   vars.calendar,
+                                   vars.floatingEoniaPeriod, 
+                                   vars.floatingEoniaConvention,
+                                   eonia,
+                                   vars.fixedEoniaPeriod,
+                                   vars.fixedEoniaConvention,
+                                   vars.fixedEoniaDayCount));
         eoniaHelpers.push_back(helper);
     }
 
     for (Size i = 0; i < LENGTH(swapData); i++) {
         Real rate = 0.01 * swapData[i].rate;
-        Ptr<SimpleQuote> simple = Ptr<SimpleQuote>(new SimpleQuote(rate));
-        Ptr<Quote> quote (simple);
+        shared_ptr<SimpleQuote> simple = shared_ptr<SimpleQuote>(new SimpleQuote(rate));
+        shared_ptr<Quote> quote (simple);
         Period tenor = swapData[i].nIndexUnits * swapData[i].indexUnit;
         Period term = swapData[i].nTermUnits * swapData[i].termUnit;
-        Ptr<RateHelper> helper(new SwapRateHelper(
+        shared_ptr<RateHelper> helper(new SwapRateHelper(
                                Handle<Quote>(quote), 
                                term, 
                                vars.calendar,
@@ -389,10 +389,10 @@ void EoniaSwapTest::testBootstrap() {
             swap3mHelpers.push_back(helper);
     }
 
-    Ptr<PiecewiseFlatForward> eoniaTS(new 
+    shared_ptr<PiecewiseFlatForward> eoniaTS(new 
         PiecewiseFlatForward (vars.today, eoniaHelpers, Actual365Fixed())); 
 
-    Ptr<PiecewiseFlatForward> swapTS(new 
+    shared_ptr<PiecewiseFlatForward> swapTS(new 
         PiecewiseFlatForward (vars.today, swap3mHelpers, Actual365Fixed())); 
                          
     vars.eoniaTermStructure.linkTo(eoniaTS);
@@ -407,7 +407,7 @@ void EoniaSwapTest::testBootstrap() {
     for (Size i = 0; i < LENGTH(eoniaSwapData); i++) {
         Rate expected = eoniaSwapData[i].rate;
         Period term = eoniaSwapData[i].n * eoniaSwapData[i].unit;
-        Ptr<EoniaSwap> swap = vars.makeSwap(term, 0.0, 0.0);
+        shared_ptr<OvernightIndexedSwap> swap = vars.makeSwap(term, 0.0, 0.0);
         Rate calculated = 100.0 * swap->fairRate();
         /*
         std::cout << std::setw(3) << term << " " 

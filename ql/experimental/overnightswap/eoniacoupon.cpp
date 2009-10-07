@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2009 Roland Lichters
+ Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,10 +28,10 @@ namespace QuantLib {
 
     namespace {
 
-        class EoniaCouponPricer : public FloatingRateCouponPricer {
+        class OvernightIndexedCouponPricer : public FloatingRateCouponPricer {
           public:
             void initialize(const FloatingRateCoupon& coupon) {
-                coupon_ = dynamic_cast<const EoniaCoupon*>(&coupon);
+                coupon_ = dynamic_cast<const OvernightIndexedCoupon*>(&coupon);
                 QL_ENSURE(coupon_, "wrong coupon type");
             }
             Rate swapletRate() const {
@@ -94,10 +95,10 @@ namespace QuantLib {
                 QL_FAIL("not available");
             }
           protected:
-            const EoniaCoupon* coupon_;
+            const OvernightIndexedCoupon* coupon_;
         };
 
-        class EoniaCouponPricer2 : public EoniaCouponPricer {
+        class OvernightIndexedCouponPricer2 : public OvernightIndexedCouponPricer {
           public:
             Rate swapletRate() const {
 
@@ -165,11 +166,11 @@ namespace QuantLib {
         };
     }
 
-    EoniaCoupon::EoniaCoupon(const Date& paymentDate,
+    OvernightIndexedCoupon::OvernightIndexedCoupon(const Date& paymentDate,
                              Real nominal,
                              const Date& startDate,
                              const Date& endDate,
-                             const boost::shared_ptr<Eonia>& index,
+                             const boost::shared_ptr<OvernightIndex>& index,
                              Real gearing,
                              Spread spread,
                              const Date& refPeriodStart,
@@ -194,31 +195,31 @@ namespace QuantLib {
             dt_[i] = dc.yearFraction(valueDates_[i], valueDates_[i+1]);
 
         setPricer(boost::shared_ptr<FloatingRateCouponPricer>(
-                                                 new EoniaCouponPricer2));
+                                                 new OvernightIndexedCouponPricer2));
     }
 
-    Date EoniaCoupon::fixingDate() const {
+    Date OvernightIndexedCoupon::fixingDate() const {
         QL_FAIL("no single fixing date for average-BMA coupon");
     }
 
-    Rate EoniaCoupon::indexFixing() const {
+    Rate OvernightIndexedCoupon::indexFixing() const {
         QL_FAIL("no single fixing for average-BMA coupon");
     }
 
-    std::vector<Rate> EoniaCoupon::indexFixings() const {
+    std::vector<Rate> OvernightIndexedCoupon::indexFixings() const {
         std::vector<Rate> fixings(n_);
         for (Size i=0; i<n_; ++i)
             fixings[i] = index_->fixing(valueDates_[i]);
         return fixings;
     }
 
-    Rate EoniaCoupon::convexityAdjustment() const {
-        QL_FAIL("not defined for Eonia coupon");
+    Rate OvernightIndexedCoupon::convexityAdjustment() const {
+        QL_FAIL("not defined for overnight coupon");
     }
 
-    void EoniaCoupon::accept(AcyclicVisitor& v) {
-        Visitor<EoniaCoupon>* v1 =
-            dynamic_cast<Visitor<EoniaCoupon>*>(&v);
+    void OvernightIndexedCoupon::accept(AcyclicVisitor& v) {
+        Visitor<OvernightIndexedCoupon>* v1 =
+            dynamic_cast<Visitor<OvernightIndexedCoupon>*>(&v);
         if (v1 != 0) {
             v1->visit(*this);
         } else {
@@ -226,52 +227,52 @@ namespace QuantLib {
         }
     }
 
-    EoniaLeg::EoniaLeg(const Schedule& schedule,
-                       const boost::shared_ptr<Eonia>& index)
+    OvernightLeg::OvernightLeg(const Schedule& schedule,
+                       const boost::shared_ptr<OvernightIndex>& index)
     : schedule_(schedule), index_(index), paymentAdjustment_(Following) {}
 
-    EoniaLeg& EoniaLeg::withNotionals(Real notional) {
+    OvernightLeg& OvernightLeg::withNotionals(Real notional) {
         notionals_ = std::vector<Real>(1,notional);
         return *this;
     }
 
-    EoniaLeg& EoniaLeg::withNotionals(const std::vector<Real>& notionals) {
+    OvernightLeg& OvernightLeg::withNotionals(const std::vector<Real>& notionals) {
         notionals_ = notionals;
         return *this;
     }
 
-    EoniaLeg& EoniaLeg::withPaymentDayCounter(const DayCounter& dayCounter) {
+    OvernightLeg& OvernightLeg::withPaymentDayCounter(const DayCounter& dayCounter) {
         paymentDayCounter_ = dayCounter;
         return *this;
     }
 
-    EoniaLeg& EoniaLeg::withPaymentAdjustment(
+    OvernightLeg& OvernightLeg::withPaymentAdjustment(
                                            BusinessDayConvention convention) {
         paymentAdjustment_ = convention;
         return *this;
     }
 
-    EoniaLeg& EoniaLeg::withGearings(Real gearing) {
+    OvernightLeg& OvernightLeg::withGearings(Real gearing) {
         gearings_ = std::vector<Real>(1,gearing);
         return *this;
     }
 
-    EoniaLeg& EoniaLeg::withGearings(const std::vector<Real>& gearings) {
+    OvernightLeg& OvernightLeg::withGearings(const std::vector<Real>& gearings) {
         gearings_ = gearings;
         return *this;
     }
 
-    EoniaLeg& EoniaLeg::withSpreads(Spread spread) {
+    OvernightLeg& OvernightLeg::withSpreads(Spread spread) {
         spreads_ = std::vector<Spread>(1,spread);
         return *this;
     }
 
-    EoniaLeg& EoniaLeg::withSpreads(const std::vector<Spread>& spreads) {
+    OvernightLeg& OvernightLeg::withSpreads(const std::vector<Spread>& spreads) {
         spreads_ = spreads;
         return *this;
     }
 
-    EoniaLeg::operator Leg() const {
+    OvernightLeg::operator Leg() const {
 
         QL_REQUIRE(!notionals_.empty(), "no notional given");
 
@@ -296,7 +297,7 @@ namespace QuantLib {
                                          paymentAdjustment_);
 
             cashflows.push_back(boost::shared_ptr<CashFlow>(
-                          new EoniaCoupon(paymentDate,
+                          new OvernightIndexedCoupon(paymentDate,
                                           detail::get(notionals_, i,
                                                       notionals_.back()),
                                           start, end,

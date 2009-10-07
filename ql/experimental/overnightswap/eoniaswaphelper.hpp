@@ -17,12 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file eoniaswaphelper.hpp
-    \brief Eonia swap rate helpers
+/*! \file overnightswaphelper.hpp
+    \brief Overnight Indexed Swap (aka OIS) rate helpers
 */
 
-#ifndef quantlib_eoniaswaphelper_hpp
-#define quantlib_eoniaswaphelper_hpp
+#ifndef quantlib_overnightswaphelper_hpp
+#define quantlib_overnightswaphelper_hpp
 
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
@@ -32,21 +32,21 @@
 
 namespace QuantLib {
 
-    //! Rate helper for bootstrapping over Eonia swap rates
-    class EoniaSwapHelper : public RelativeDateRateHelper {
+    //! Rate helper for bootstrapping over Overnight Indexed Swap rates
+    class OISRateHelper : public RelativeDateRateHelper {
       public:
-        EoniaSwapHelper(const Handle<Quote>& fixedRate,
-                        const Period& tenor, // swap maturity
-                        Natural settlementDays,
-                        const Calendar& calendar,
-                        // eonia leg
-                        const Period& eoniaPeriod,
-                        BusinessDayConvention eoniaConvention,
-                        const boost::shared_ptr<Eonia>& eoniaIndex,
-                        // fixed leg
-                        const Period& fixedPeriod,
-                        BusinessDayConvention fixedConvention,
-                        const DayCounter& fixedDayCount);
+        OISRateHelper(const Handle<Quote>& fixedRate,
+                      const Period& tenor, // swap maturity
+                      Natural settlementDays,
+                      const Calendar& calendar,
+                      // Overnight Index floating leg
+                      const Period& overnightPeriod,
+                      BusinessDayConvention overnightConvention,
+                      const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                      // fixed leg
+                      const Period& fixedPeriod,
+                      BusinessDayConvention fixedConvention,
+                      const DayCounter& fixedDayCount);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -61,14 +61,14 @@ namespace QuantLib {
         Period tenor_;
         Natural settlementDays_;
         Calendar calendar_;
-        Period eoniaPeriod_;
-        BusinessDayConvention eoniaConvention_;
-        boost::shared_ptr<Eonia> eoniaIndex_;
+        Period overnightPeriod_;
+        BusinessDayConvention overnightConvention_;
+        boost::shared_ptr<OvernightIndex> overnightIndex_;
         Period fixedPeriod_;
         BusinessDayConvention fixedConvention_;
         DayCounter fixedDayCount_;
 
-        boost::shared_ptr<EoniaSwap> swap_;
+        boost::shared_ptr<OvernightIndexedSwap> swap_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
 

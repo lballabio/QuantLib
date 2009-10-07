@@ -17,12 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file eoniaswap.hpp
-    \brief Overnight index swap paying compounded Eonia vs. fixed
+/*! \file overnightswap.hpp
+    \brief Overnight index swap paying compounded overnight vs. fixed
 */
 
-#ifndef quantlib_eonia_swap_hpp
-#define quantlib_eonia_swap_hpp
+#ifndef quantlib_overnight_swap_hpp
+#define quantlib_overnight_swap_hpp
 
 #include <ql/instruments/swap.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
@@ -30,16 +30,16 @@
 
 namespace QuantLib {
 
-    //! Overnight index swap paying compounded Eonia vs. fixed coupons
-    class EoniaSwap : public Swap {
+    //! Overnight index swap paying compounded overnight vs. fixed coupons
+    class OvernightIndexedSwap : public Swap {
       public:
         enum Type { Receiver = -1, Payer = 1 };
-        EoniaSwap(Type type,
+        OvernightIndexedSwap(Type type,
                   Real nominal,
-                  // Eonia leg
-                  const Schedule& eoniaSchedule,
-                  Rate eoniaSpread,
-                  const boost::shared_ptr<Eonia>& index,
+                  // overnight leg
+                  const Schedule& overnightSchedule,
+                  Rate overnightSpread,
+                  const boost::shared_ptr<OvernightIndex>& index,
                   // fixed leg
                   const Schedule& fixedSchedule,
                   Rate rate,
@@ -47,19 +47,19 @@ namespace QuantLib {
 
         //! \name Inspectors
         //@{
-        Spread eoniaSpread() const;
+        Spread overnightSpread() const;
         Rate fixedRate() const;
         Real nominal() const;
-        //! "payer" or "receiver" refer to the Eonia leg
+        //! "payer" or "receiver" refer to the overnight leg
         Type type() const;
-        const Leg& eoniaLeg() const;
+        const Leg& overnightLeg() const;
         const Leg& fixedLeg() const;
         //@}
 
         //! \name Results
         //@{
-        Real eoniaLegBPS() const;
-        Real eoniaLegNPV() const;
+        Real overnightLegBPS() const;
+        Real overnightLegNPV() const;
         Spread fairSpread() const;
 
         Real fixedLegBPS() const;
@@ -69,7 +69,7 @@ namespace QuantLib {
       private:
         Type type_;
         Real nominal_;
-        Rate eoniaSpread_;
+        Rate overnightSpread_;
         Rate fixedRate_;
     };
 

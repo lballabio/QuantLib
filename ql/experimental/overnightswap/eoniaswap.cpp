@@ -25,32 +25,32 @@
 
 namespace QuantLib {
 
-  EoniaSwap::EoniaSwap(Type type,
+  OvernightIndexedSwap::OvernightIndexedSwap(Type type,
                        Real nominal,
-                       // Eonia leg
-                       const Schedule& eoniaSchedule,
-                       Rate eoniaSpread,
-                       const boost::shared_ptr<Eonia>& index,
+                       // overnight leg
+                       const Schedule& overnightSchedule,
+                       Rate overnightSpread,
+                       const boost::shared_ptr<OvernightIndex>& index,
                        // fixed leg
                        const Schedule& fixedSchedule,
                        Rate fixedRate,
                        const DayCounter& fixedDayCount)
       : Swap(2), type_(type), nominal_(nominal),
-        eoniaSpread_(eoniaSpread), fixedRate_(fixedRate) {
+        overnightSpread_(overnightSpread), fixedRate_(fixedRate) {
 
         BusinessDayConvention convention =
-            eoniaSchedule.businessDayConvention();
+            overnightSchedule.businessDayConvention();
 
         legs_[0] = FixedRateLeg(fixedSchedule)
             .withNotionals(nominal)
             .withCouponRates(fixedRate, fixedDayCount)
             .withPaymentAdjustment(convention);
 
-        legs_[1] = EoniaLeg(eoniaSchedule, index)
+        legs_[1] = OvernightLeg(overnightSchedule, index)
             .withNotionals(nominal)
             .withPaymentDayCounter(index->dayCounter())
-            .withSpreads(eoniaSpread)
-            .withPaymentAdjustment(eoniaSchedule.businessDayConvention());
+            .withSpreads(overnightSpread)
+            .withPaymentAdjustment(overnightSchedule.businessDayConvention());
 
         for (Size j=0; j<2; ++j) {
             for (Leg::iterator i = legs_[j].begin(); i!= legs_[j].end(); ++i)
@@ -67,65 +67,65 @@ namespace QuantLib {
             payer_[1] = +1.0;
             break;
           default:
-            QL_FAIL("Unknown Eonia-swap type");
+            QL_FAIL("Unknown overnight-swap type");
         }
     }
 
-    Spread EoniaSwap::eoniaSpread() const {
-        return eoniaSpread_;
+    Spread OvernightIndexedSwap::overnightSpread() const {
+        return overnightSpread_;
     }
 
-    Spread EoniaSwap::fixedRate() const {
+    Spread OvernightIndexedSwap::fixedRate() const {
         return fixedRate_;
     }
 
-    Real EoniaSwap::nominal() const {
+    Real OvernightIndexedSwap::nominal() const {
         return nominal_;
     }
 
-    EoniaSwap::Type EoniaSwap::type() const {
+    OvernightIndexedSwap::Type OvernightIndexedSwap::type() const {
         return type_;
     }
 
-    const Leg& EoniaSwap::fixedLeg() const {
+    const Leg& OvernightIndexedSwap::fixedLeg() const {
         return legs_[0];
     }
 
-    const Leg& EoniaSwap::eoniaLeg() const {
+    const Leg& OvernightIndexedSwap::overnightLeg() const {
         return legs_[1];
     }
 
-    Real EoniaSwap::fixedLegBPS() const {
+    Real OvernightIndexedSwap::fixedLegBPS() const {
         calculate();
         QL_REQUIRE(legBPS_[0] != Null<Real>(), "result not available");
         return legBPS_[0];
     }
 
-    Real EoniaSwap::fixedLegNPV() const {
+    Real OvernightIndexedSwap::fixedLegNPV() const {
         calculate();
         QL_REQUIRE(legNPV_[0] != Null<Real>(), "result not available");
         return legNPV_[0];
     }
 
-    Real EoniaSwap::fairRate() const {
+    Real OvernightIndexedSwap::fairRate() const {
         static Spread basisPoint = 1.0e-4;
         calculate();
         return fixedRate_ - NPV_/(fixedLegBPS()/basisPoint);
     }
 
-    Spread EoniaSwap::fairSpread() const {
+    Spread OvernightIndexedSwap::fairSpread() const {
         static Spread basisPoint = 1.0e-4;
         calculate();
-        return eoniaSpread_ - NPV_/(eoniaLegBPS()/basisPoint);
+        return overnightSpread_ - NPV_/(overnightLegBPS()/basisPoint);
     }
 
-    Real EoniaSwap::eoniaLegBPS() const {
+    Real OvernightIndexedSwap::overnightLegBPS() const {
         calculate();
         QL_REQUIRE(legBPS_[1] != Null<Real>(), "result not available");
         return legBPS_[1];
     }
 
-    Real EoniaSwap::eoniaLegNPV() const {
+    Real OvernightIndexedSwap::overnightLegNPV() const {
         calculate();
         QL_REQUIRE(legNPV_[1] != Null<Real>(), "result not available");
         return legNPV_[1];

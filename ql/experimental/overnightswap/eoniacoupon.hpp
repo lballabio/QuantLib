@@ -17,28 +17,28 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file eoniacoupon.hpp
-    \brief coupon paying the compounded daily Eonia rate
+/*! \file overnightcoupon.hpp
+    \brief coupon paying the compounded daily overnight rate
 */
 
-#ifndef quantlib_eonia_coupon_hpp
-#define quantlib_eonia_coupon_hpp
+#ifndef quantlib_overnight_coupon_hpp
+#define quantlib_overnight_coupon_hpp
 
 #include <ql/cashflows/floatingratecoupon.hpp>
-#include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 
-    //! Eonia coupon
-    /*! %Coupon paying the compounded interest due to daily Eonia fixings. */
-    class EoniaCoupon : public FloatingRateCoupon {
+    //! overnight coupon
+    /*! %Coupon paying the compounded interest due to daily overnight fixings. */
+    class OvernightIndexedCoupon : public FloatingRateCoupon {
       public:
-        EoniaCoupon(const Date& paymentDate,
+        OvernightIndexedCoupon(const Date& paymentDate,
                     Real nominal,
                     const Date& startDate,
                     const Date& endDate,
-                    const boost::shared_ptr<Eonia>& index,
+                    const boost::shared_ptr<OvernightIndex>& index,
                     Real gearing = 1.0,
                     Spread spread = 0.0,
                     const Date& refPeriodStart = Date(),
@@ -77,23 +77,23 @@ namespace QuantLib {
     };
 
 
-    //! helper class building a sequence of Eonia coupons
-    class EoniaLeg {
+    //! helper class building a sequence of overnight coupons
+    class OvernightLeg {
       public:
-        EoniaLeg(const Schedule& schedule,
-                 const boost::shared_ptr<Eonia>& index);
-        EoniaLeg& withNotionals(Real notional);
-        EoniaLeg& withNotionals(const std::vector<Real>& notionals);
-        EoniaLeg& withPaymentDayCounter(const DayCounter&);
-        EoniaLeg& withPaymentAdjustment(BusinessDayConvention);
-        EoniaLeg& withGearings(Real gearing);
-        EoniaLeg& withGearings(const std::vector<Real>& gearings);
-        EoniaLeg& withSpreads(Spread spread);
-        EoniaLeg& withSpreads(const std::vector<Spread>& spreads);
+        OvernightLeg(const Schedule& schedule,
+                 const boost::shared_ptr<OvernightIndex>& index);
+        OvernightLeg& withNotionals(Real notional);
+        OvernightLeg& withNotionals(const std::vector<Real>& notionals);
+        OvernightLeg& withPaymentDayCounter(const DayCounter&);
+        OvernightLeg& withPaymentAdjustment(BusinessDayConvention);
+        OvernightLeg& withGearings(Real gearing);
+        OvernightLeg& withGearings(const std::vector<Real>& gearings);
+        OvernightLeg& withSpreads(Spread spread);
+        OvernightLeg& withSpreads(const std::vector<Spread>& spreads);
         operator Leg() const;
       private:
         Schedule schedule_;
-        boost::shared_ptr<Eonia> index_;
+        boost::shared_ptr<OvernightIndex> index_;
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
         BusinessDayConvention paymentAdjustment_;
