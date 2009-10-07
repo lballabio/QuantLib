@@ -73,5 +73,25 @@ namespace QuantLib {
                                                       h));
     }
 
-}
 
+    OverNightIndex::OverNightIndex(const std::string& familyName,
+                                   Natural settlementDays,
+                                   const Currency& curr,
+                                   const Calendar& fixCal,
+                                   const DayCounter& dc,
+                                   const Handle<YieldTermStructure>& h)
+   : IborIndex(familyName, 1*Days, settlementDays, curr,
+               fixCal, Following, false, dc, h) {}
+
+    boost::shared_ptr<IborIndex> OverNightIndex::clone(
+                               const Handle<YieldTermStructure>& h) const {
+        return boost::shared_ptr<IborIndex>(
+                                        new OverNightIndex(familyName(),
+                                                           fixingDays(),
+                                                           currency(),
+                                                           fixingCalendar(),
+                                                           dayCounter(),
+                                                           h));
+    }
+
+}

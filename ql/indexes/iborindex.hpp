@@ -69,6 +69,19 @@ namespace QuantLib {
         bool endOfMonth_;
     };
 
+    class OverNightIndex : public IborIndex {
+      public:
+        OverNightIndex(const std::string& familyName,
+                       Natural settlementDays,
+                       const Currency& currency,
+                       const Calendar& fixingCalendar,
+                       const DayCounter& dayCounter,
+                       const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>());
+        //! returns a copy of itself linked to a different forecast curve
+        boost::shared_ptr<IborIndex> clone(
+                                   const Handle<YieldTermStructure>& h) const;
+    };
 
     // inline definitions
 
