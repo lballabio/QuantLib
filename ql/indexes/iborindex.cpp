@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2008 StatPro Italia srl
+ Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -74,7 +75,7 @@ namespace QuantLib {
     }
 
 
-    OverNightIndex::OverNightIndex(const std::string& familyName,
+    OvernightIndex::OvernightIndex(const std::string& familyName,
                                    Natural settlementDays,
                                    const Currency& curr,
                                    const Calendar& fixCal,
@@ -83,10 +84,10 @@ namespace QuantLib {
    : IborIndex(familyName, 1*Days, settlementDays, curr,
                fixCal, Following, false, dc, h) {}
 
-    boost::shared_ptr<IborIndex> OverNightIndex::clone(
+    boost::shared_ptr<IborIndex> OvernightIndex::clone(
                                const Handle<YieldTermStructure>& h) const {
         return boost::shared_ptr<IborIndex>(
-                                        new OverNightIndex(familyName(),
+                                        new OvernightIndex(familyName(),
                                                            fixingDays(),
                                                            currency(),
                                                            fixingCalendar(),
