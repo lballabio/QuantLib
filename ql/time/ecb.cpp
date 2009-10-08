@@ -19,7 +19,13 @@
 
 #include <ql/time/ecb.hpp>
 #include <ql/settings.hpp>
+#include <ql/utilities/dataparsers.hpp>
 #include <algorithm>
+
+#include <boost/algorithm/string/case_conv.hpp>
+
+using boost::algorithm::to_upper_copy;
+using std::string;
 
 namespace QuantLib {
 
@@ -56,6 +62,105 @@ namespace QuantLib {
         knownDateSet.erase(d);
     }
 
+    Date ECB::date(const string& ecbCode,
+                   const Date& refDate) {
+
+        QL_REQUIRE(isECBcode(ecbCode),
+                   ecbCode << " is not a valid ECB code");
+
+        string code = to_upper_copy(ecbCode);
+        string monthString = code.substr(0, 3);
+        QuantLib::Month m;
+        if (monthString=="JAN")      m = January;
+        else if (monthString=="FEB") m = February;
+        else if (monthString=="MAR") m = March;
+        else if (monthString=="APR") m = April;
+        else if (monthString=="MAY") m = May;
+        else if (monthString=="JUN") m = June;
+        else if (monthString=="JUL") m = July;
+        else if (monthString=="AUG") m = August;
+        else if (monthString=="SEP") m = September;
+        else if (monthString=="OCT") m = October;
+        else if (monthString=="NOV") m = November;
+        else if (monthString=="DEC") m = December;
+        else QL_FAIL("not an ECB month (and it should have been)");
+
+        // lexical_cast causes compilation errors with x64
+        //Year y = boost::lexical_cast<Year>(code.substr(3, 2));
+
+        Year y = io::to_integer(code.substr(3, 2));
+        Date referenceDate = (refDate != Date() ?
+                              refDate :
+                              Date(Settings::instance().evaluationDate()));
+        Year referenceYear = (referenceDate.year() % 100);
+        y += referenceDate.year() - referenceYear;
+        if (y<Date::minDate().year()) 
+            return ECB::nextDate(Date::minDate());
+
+        return ECB::nextDate(Date(1, m, y));
+    }
+
+    string ECB::code(const Date& ecbDate) {
+
+        QL_REQUIRE(isECBdate(ecbDate),
+                   ecbDate << " is not a valid ECB date");
+
+        std::ostringstream ECBcode;
+        unsigned int y = ecbDate.year() % 100;
+        string padding;
+        if (y < 10)
+            padding = "0";
+        switch(ecbDate.month()) {
+          case January:
+            ECBcode << "JAN" << padding << y;
+            break;
+          case February:
+            ECBcode << "FEB" << padding << y;
+            break;
+          case March:
+            ECBcode << "MAR" << padding << y;
+            break;
+          case April:
+            ECBcode << "APR" << padding << y;
+            break;
+          case May:
+            ECBcode << "MAY" << padding << y;
+            break;
+          case June:
+            ECBcode << "JUN" << padding << y;
+            break;
+          case July:
+            ECBcode << "JUL" << padding << y;
+            break;
+          case August:
+            ECBcode << "AUG" << padding << y;
+            break;
+          case September:
+            ECBcode << "SEP" << padding << y;
+            break;
+          case October:
+            ECBcode << "OCT" << padding << y;
+            break;
+          case November:
+            ECBcode << "NOV" << padding << y;
+            break;
+          case December:
+            ECBcode << "DEC" << padding << y;
+            break;
+          default:
+            QL_FAIL("not an ECB month (and it should have been)");
+        }
+
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        QL_ENSURE(isECBcode(ECBcode.str()),
+                  "the result " << ECBcode.str() <<
+                  " is an invalid ECB code");
+        #endif
+        return ECBcode.str();
+    }
+
+
+
     Date ECB::nextDate(const Date& date) {
         Date d = (date == Date() ?
                   Settings::instance().evaluationDate() :
@@ -65,7 +170,7 @@ namespace QuantLib {
             std::upper_bound(knownDates().begin(), knownDates().end(), d);
 
         QL_REQUIRE(i!=knownDates().end(),
-                   "ECB dates after " << *knownDates().end() << " are unknown");
+                   "ECB dates after " << *(--knownDates().end()) << " are unknown");
         return Date(*i);
     }
 
@@ -80,6 +185,77 @@ namespace QuantLib {
         QL_REQUIRE(i!=knownDates().end(),
                    "ECB dates after " << *knownDates().end() << " are unknown");
         return std::vector<Date>(i, knownDates().end());
+    }
+
+
+    bool ECB::isECBcode(const std::string& ecbCode) {
+
+        if (ecbCode.length() != 5)
+            return false;
+
+        string code = to_upper_copy(ecbCode);
+
+        string str1("0123456789");
+        string::size_type loc = str1.find(code.substr(3, 1), 0);
+        if (loc == string::npos)
+            return false;
+        loc = str1.find(code.substr(4, 1), 0);
+        if (loc == string::npos)
+            return false;
+
+        string monthString = code.substr(0, 3);
+        if (monthString=="JAN")      return true;
+        else if (monthString=="FEB") return true;
+        else if (monthString=="MAR") return true;
+        else if (monthString=="APR") return true;
+        else if (monthString=="MAY") return true;
+        else if (monthString=="JUN") return true;
+        else if (monthString=="JUL") return true;
+        else if (monthString=="AUG") return true;
+        else if (monthString=="SEP") return true;
+        else if (monthString=="OCT") return true;
+        else if (monthString=="NOV") return true;
+        else if (monthString=="DEC") return true;
+        else return false;
+    }
+
+    string ECB::nextCode(const std::string& ecbCode) {
+        QL_REQUIRE(isECBcode(ecbCode),
+                   ecbCode << " is not a valid ECB code");
+
+        string code = to_upper_copy(ecbCode);
+        std::ostringstream result;
+
+        string monthString = code.substr(0, 3);
+        if (monthString=="JAN")      result << "FEB" << code.substr(3, 2);
+        else if (monthString=="FEB") result << "MAR" << code.substr(3, 2);
+        else if (monthString=="MAR") result << "APR" << code.substr(3, 2);
+        else if (monthString=="APR") result << "MAY" << code.substr(3, 2);
+        else if (monthString=="MAY") result << "JUN" << code.substr(3, 2);
+        else if (monthString=="JUN") result << "JUL" << code.substr(3, 2);
+        else if (monthString=="JUL") result << "AUG" << code.substr(3, 2);
+        else if (monthString=="AUG") result << "SEP" << code.substr(3, 2);
+        else if (monthString=="SEP") result << "OCT" << code.substr(3, 2);
+        else if (monthString=="OCT") result << "NOV" << code.substr(3, 2);
+        else if (monthString=="NOV") result << "DEC" << code.substr(3, 2);
+        else if (monthString=="DEC") {
+            // lexical_cast causes compilation errors with x64
+            //Year y = boost::lexical_cast<Year>(code.substr(3, 2));
+            unsigned int y = (io::to_integer(code.substr(3, 2)) + 1) % 100;
+            string padding;
+            if (y < 10)
+                padding = "0";
+
+            result << "JAN" << padding << y;
+        } else QL_FAIL("not an ECB month (and it should have been)");
+
+
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        QL_ENSURE(isECBcode(result.str()),
+                  "the result " << result.str() <<
+                  " is an invalid ECB code");
+        #endif
+        return result.str();
     }
 
 }
