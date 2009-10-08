@@ -29,11 +29,6 @@ using namespace QuantLib;
 using namespace boost::unit_test_framework;
 using namespace std;
 
-void FastFourierTransformTest::testConstruction() {
-    BOOST_MESSAGE("Testing fast fourier transform construction...");
-    FastFourierTransform(2);
-}
-
 void FastFourierTransformTest::testSimple() {
     BOOST_MESSAGE("Testing complex direct FFT...");
     typedef std::complex<Real> cx;
@@ -108,7 +103,6 @@ void FastFourierTransformTest::testInverse() {
 
 test_suite* FastFourierTransformTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("fast fourier transform tests");
-    suite->add(QUANTLIB_TEST_CASE(&FastFourierTransformTest::testConstruction));
     suite->add(QUANTLIB_TEST_CASE(&FastFourierTransformTest::testSimple));
     suite->add(QUANTLIB_TEST_CASE(&FastFourierTransformTest::testInverse));
     return suite;
