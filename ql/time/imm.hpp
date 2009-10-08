@@ -80,6 +80,7 @@ namespace QuantLib {
                              bool mainCycle = true,
                              const Date& referenceDate = Date());
 
+        //! next IMM code following the given date
         /*! returns the IMM code for next contract listed in the
             International Money Market section of the Chicago Mercantile
             Exchange.
@@ -87,6 +88,7 @@ namespace QuantLib {
         static std::string nextCode(const Date& d = Date(),
                                     bool mainCycle = true);
 
+        //! next IMM code following the given code
         /*! returns the IMM code for next contract listed in the
             International Money Market section of the Chicago Mercantile
             Exchange.
