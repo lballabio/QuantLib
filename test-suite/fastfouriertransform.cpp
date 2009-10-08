@@ -35,8 +35,7 @@ void FastFourierTransformTest::testConstruction() {
 }
 
 void FastFourierTransformTest::testSimple() {
-    BOOST_MESSAGE("Testing convolution via FFT...");
-
+    BOOST_MESSAGE("Testing complex direct FFT...");
     typedef std::complex<Real> cx;
     cx a[] = { cx(0,0), cx(1,1), cx(3,3), cx(4,4),
                cx(4,4), cx(3,3), cx(1,1), cx(0,0) };
@@ -65,9 +64,9 @@ void FastFourierTransformTest::testInverse() {
     x[2] = 3;
 
     size_t nConv = 2;
-    size_t Log2_N = static_cast<size_t>(std::log((double)(x.size()+nConv)) / std::log (2.0) + 1);
-    FastFourierTransform fft(Log2_N);
-    size_t nFrq = 1 << Log2_N;
+    size_t order = FastFourierTransform::min_order(x.size())+1;
+    FastFourierTransform fft(order);
+    size_t nFrq = fft.output_size();
     std::vector< std::complex<Real> > ft (nFrq);
     std::vector< Real > tmp (nFrq);
 

@@ -34,57 +34,45 @@
 
 namespace QuantLib {
 
+    //! FFT implementation
     class FastFourierTransform {
       public:
-        FastFourierTransform(std::size_t log2_N)
-        : cs_(log2_N), sn_(log2_N) {
-            std::size_t m = 1 << log2_N;
-            cs_[log2_N - 1] = cos (2 * M_PI / m);
-            sn_[log2_N - 1] = sin (2 * M_PI / m);
-            for (std::size_t i = log2_N - 1; i > 0; --i) {
+
+        //! the minimum order required for the given input size
+        static std::size_t min_order(std::size_t inputSize) {
+            return static_cast<std::size_t>(
+                                      std::ceil(std::log(inputSize) / M_LN2));
+        }
+
+        FastFourierTransform(std::size_t order)
+        : cs_(order), sn_(order) {
+            std::size_t m = 1 << order;
+            cs_[order - 1] = std::cos (2 * M_PI / m);
+            sn_[order - 1] = std::sin (2 * M_PI / m);
+            for (std::size_t i = order - 1; i > 0; --i) {
                 cs_ [i - 1] = cs_[i]*cs_[i] - sn_[i]*sn_[i];
                 sn_ [i - 1] = 2*sn_[i]*cs_[i];
             }
         }
 
+        //! The required size for the output vector
+        std::size_t output_size() const {
+            return (1 << cs_.size());
+        }
+
+        //! FFT transform.
+        /*! The output sequence must be allocated by the user */
         template<typename InputIterator, typename RandomAccessIterator>
         void transform(InputIterator inBegin, InputIterator inEnd,
                        RandomAccessIterator out) const {
-            typedef
-                typename std::iterator_traits<RandomAccessIterator>::value_type
-                                                                       complex;
-            const std::size_t log2_N = cs_.size();
-            const std::size_t N = 1 << log2_N;
-            std::size_t i = 0;
-            for (; inBegin != inEnd; ++i, ++inBegin) {
-                *(out + bit_reverse(i, log2_N)) = *inBegin;
-            }
-            QL_REQUIRE (i <= N, "insufficient frequency for FFT");
-            for (std::size_t s = 1; s <= log2_N; ++s) {
-                std::size_t m = 1 << s;
-                complex w(1.0);
-                complex wm(cs_[s-1], -sn_[s-1]);
-                for (std::size_t j = 0; j < m/2; ++j) {
-                    for (std::size_t k = j; k < N; k += m) {
-                        complex t = w * (*(out + k + m/2));
-                        complex u = *(out + k);
-                        *(out + k) = u + t;
-                        *(out + k + m/2) = u - t;
-                    }
-                    w *= wm;
-                }
-            }
-        }
-
-        template<typename InputIterator, typename RandomAccessIterator>
-        void transform(InputIterator inBegin, InputIterator inEnd,
-                       RandomAccessIterator out) {
             transform_impl(inBegin, inEnd, out, false);
         }
 
+        //! Inverse FFT transform.
+        /*! The output sequence must be allocated by the user. */
         template<typename InputIterator, typename RandomAccessIterator>
         void inverse_transform(InputIterator inBegin, InputIterator inEnd,
-                               RandomAccessIterator out) {
+                               RandomAccessIterator out) const {
             transform_impl(inBegin, inEnd, out, true);
         }
 
@@ -98,14 +86,14 @@ namespace QuantLib {
             typedef
                 typename std::iterator_traits<RandomAccessIterator>::value_type
                                                                        complex;
-            const std::size_t log2_N = cs_.size();
-            const std::size_t N = 1 << log2_N;
+            const std::size_t order = cs_.size();
+            const std::size_t N = 1 << order;
             std::size_t i = 0;
             for (; inBegin != inEnd; ++i, ++inBegin) {
-                *(out + bit_reverse(i, log2_N)) = *inBegin;
+                *(out + bit_reverse(i, order)) = *inBegin;
             }
-            QL_REQUIRE (i <= N, "insufficient frequency for FFT");
-            for (std::size_t s = 1; s <= log2_N; ++s) {
+            QL_REQUIRE (i <= N, "FFT order is too small");
+            for (std::size_t s = 1; s <= order; ++s) {
                 std::size_t m = 1 << s;
                 complex w(1.0);
                 complex wm(cs_[s-1], inverse ? sn_[s-1] : -sn_[s-1]);
@@ -121,9 +109,9 @@ namespace QuantLib {
             }
         }
 
-        static std::size_t bit_reverse(std::size_t x, std::size_t log2_N) {
+        static std::size_t bit_reverse(std::size_t x, std::size_t order) {
             std::size_t n = 0;
-            for (std::size_t i = 0; i < log2_N; ++i) {
+            for (std::size_t i = 0; i < order; ++i) {
                 n <<= 1;
                 n |= (x & 1);
                 x >>= 1;
