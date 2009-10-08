@@ -21,8 +21,8 @@
     \brief Overnight index swap paying compounded overnight vs. fixed
 */
 
-#ifndef quantlib_overnight_swap_hpp
-#define quantlib_overnight_swap_hpp
+#ifndef quantlib_overnight_indexed_swap_hpp
+#define quantlib_overnight_indexed_swap_hpp
 
 #include <ql/instruments/swap.hpp>
 #include <ql/indexes/ibor/euribor.hpp>

@@ -21,8 +21,8 @@
     \brief coupon paying the compounded daily overnight rate
 */
 
-#ifndef quantlib_overnight_coupon_hpp
-#define quantlib_overnight_coupon_hpp
+#ifndef quantlib_overnight_indexed_coupon_hpp
+#define quantlib_overnight_indexed_coupon_hpp
 
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/indexes/iborindex.hpp>
