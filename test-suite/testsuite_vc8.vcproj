@@ -1069,10 +1069,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\eoniaswap.cpp"
-				>
-			</File>
-			<File
 				RelativePath="europeanoption.cpp"
 				>
 				<FileConfiguration
@@ -1693,6 +1689,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\overnightindexedswap.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\pagodaoption.cpp"
 				>
 			</File>
@@ -2306,10 +2306,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\eoniaswap.hpp"
-				>
-			</File>
-			<File
 				RelativePath="europeanoption.hpp"
 				>
 			</File>
@@ -2467,6 +2463,10 @@
 			</File>
 			<File
 				RelativePath=".\optionletstripper.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\overnightindexedswap.hpp"
 				>
 			</File>
 			<File

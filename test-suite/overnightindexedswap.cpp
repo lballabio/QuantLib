@@ -17,12 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "eoniaswap.hpp"
+#include "overnightindexedswap.hpp"
 #include "utilities.hpp"
 
-#include <ql/experimental/overnightswap/eoniaswap.hpp>
-#include <ql/experimental/overnightswap/eoniacoupon.hpp>
-#include <ql/experimental/overnightswap/eoniaswaphelper.hpp>
+#include <ql/experimental/overnightswap/oisratehelper.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -32,7 +30,6 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
 #include <ql/time/schedule.hpp>
-#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/eonia.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
