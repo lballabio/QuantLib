@@ -29,28 +29,10 @@ void FactorialTest::testFactorial() {
 
     BOOST_MESSAGE("Testing factorial numbers...");
 
-    Natural i;
-    Real expected = 1.0;
-    Real calculated = Factorial::get(0);
-    if (calculated!=expected)
-        BOOST_ERROR("Factorial(0)\n"
-                    << std::setprecision(16) << QL_SCIENTIFIC
-                    << "    calculated: " << calculated << "\n"
-                    << "    expected:   " << expected);
-    for (i=1; i<28; i++) {
-        expected *= i;
-        calculated   = Factorial::get(i);
-        if (calculated!=expected)
-            BOOST_ERROR("Factorial(" << i << ")\n"
-                        << std::setprecision(16) << QL_SCIENTIFIC
-                        << "    calculated: " << calculated << "\n"
-                        << "    expected:   " << expected);
-    }
-    // Borland cannot manage i>=171
-    // ????????????????????????????
-    for (i=28; i<171; i++) {
-        expected *= i;
-        calculated   = Factorial::get(i);
+    Real expected, calculated;
+    for (Natural i=0; i<171; i++) {
+        expected = (i == 0 ? 1.0 : expected * i);
+        calculated = Factorial::get(i);
         if (std::fabs(calculated-expected)/expected > 1.0e-9)
             BOOST_ERROR("Factorial(" << i << ")\n"
                         << std::setprecision(16) << QL_SCIENTIFIC
