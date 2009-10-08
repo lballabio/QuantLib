@@ -72,6 +72,36 @@ namespace QuantLib {
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
 
+    //! Rate helper for bootstrapping over Overnight Indexed Swap rates
+    class DatedOISRateHelper : public RateHelper {
+      public:
+        DatedOISRateHelper(
+                    const Handle<Quote>& fixedRate,
+                    const Date& startDate,
+                    const Date& endDate,
+                    const Calendar& calendar,
+                    // Overnight Index floating leg
+                    const Period& overnightPeriod,
+                    BusinessDayConvention overnightConvention,
+                    const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                    // fixed leg
+                    const Period& fixedPeriod,
+                    BusinessDayConvention fixedConvention,
+                    const DayCounter& fixedDayCount);
+        //! \name RateHelper interface
+        //@{
+        Real impliedQuote() const;
+        void setTermStructure(YieldTermStructure*);
+        //@}
+        //! \name Visitability
+        //@{
+        void accept(AcyclicVisitor&);
+        //@}
+    protected:
+        boost::shared_ptr<OvernightIndexedSwap> swap_;
+        RelinkableHandle<YieldTermStructure> termStructureHandle_;
+    };
+
 }
 
 #endif

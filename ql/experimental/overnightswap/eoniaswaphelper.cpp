@@ -93,6 +93,7 @@ namespace QuantLib {
                                  fixedSchedule,
                                  0.0,
                                  fixedDayCount_));
+
         swap_->setPricingEngine(shared_ptr<PricingEngine>(new
             DiscountingSwapEngine(clonedOvernightIndex->termStructure())));
 
@@ -118,6 +119,88 @@ namespace QuantLib {
     void OISRateHelper::accept(AcyclicVisitor& v) {
         Visitor<OISRateHelper>* v1 =
             dynamic_cast<Visitor<OISRateHelper>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            RateHelper::accept(v);
+    }
+
+    DatedOISRateHelper::DatedOISRateHelper(
+                    const Handle<Quote>& fixedRate,
+                    const Date& startDate,
+                    const Date& endDate,
+                    const Calendar& calendar,
+                    // Overnight Indexed leg
+                    const Period& overnightPeriod,
+                    BusinessDayConvention overnightConvention,
+                    const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                    // fixed leg
+                    const Period& fixedPeriod,
+                    BusinessDayConvention fixedConvention,
+                    const DayCounter& fixedDayCount)
+    : RateHelper(fixedRate) {
+
+        registerWith(overnightIndex);
+
+        earliestDate_ = startDate;
+
+        Schedule overnightSchedule =
+            MakeSchedule().from(earliestDate_)
+                          .to(endDate)
+                          .withTenor(overnightPeriod)
+                          .withCalendar(overnightIndex->fixingCalendar())
+                          .withConvention(overnightConvention)
+                          .backwards();
+
+        Schedule fixedSchedule =
+            MakeSchedule().from(earliestDate_)
+                          .to(endDate)
+                          .withTenor(fixedPeriod)
+                          .withCalendar(overnightIndex->fixingCalendar())
+                          .withConvention(fixedConvention)
+                          .backwards();
+
+        // dummy OvernightIndex with curve/swap arguments
+        boost::shared_ptr<IborIndex> clonedIborIndex =
+            overnightIndex->clone(termStructureHandle_);
+        shared_ptr<OvernightIndex> clonedOvernightIndex = 
+            boost::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
+
+        swap_ = shared_ptr<OvernightIndexedSwap>(new
+            OvernightIndexedSwap(OvernightIndexedSwap::Payer,
+                                 100.0,
+                                 overnightSchedule,
+                                 0.0,
+                                 clonedOvernightIndex,
+                                 fixedSchedule,
+                                 0.0,
+                                 fixedDayCount));
+
+        swap_->setPricingEngine(shared_ptr<PricingEngine>(new
+            DiscountingSwapEngine(clonedOvernightIndex->termStructure())));
+
+        latestDate_ = swap_->maturityDate();
+    }
+
+    void DatedOISRateHelper::setTermStructure(YieldTermStructure* t) {
+        // do not set the relinkable handle as an observer -
+        // force recalculation when needed
+        termStructureHandle_.linkTo(
+                         shared_ptr<YieldTermStructure>(t,no_deletion),
+                         false);
+        RateHelper::setTermStructure(t);
+    }
+
+    Real DatedOISRateHelper::impliedQuote() const {
+        QL_REQUIRE(termStructure_ != 0, "term structure not set");
+        // we didn't register as observers - force calculation
+        swap_->recalculate();
+        return swap_->fairRate();
+    }
+
+    void DatedOISRateHelper::accept(AcyclicVisitor& v) {
+        Visitor<DatedOISRateHelper>* v1 =
+            dynamic_cast<Visitor<DatedOISRateHelper>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else
