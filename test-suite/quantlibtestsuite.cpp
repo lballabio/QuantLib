@@ -73,7 +73,7 @@
 #include "digitaloption.hpp"
 #include "distributions.hpp"
 #include "dividendoption.hpp"
-#include "eoniaswap.hpp"
+#include "overnightindexedswap.hpp"
 #include "europeanoption.hpp"
 #include "everestoption.hpp"
 #include "exchangerate.hpp"
