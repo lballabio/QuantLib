@@ -4,14 +4,14 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    eoniacoupon.hpp \
-    eoniaswap.hpp \
-    eoniaswaphelper.hpp
+    overnightindexedcoupon.hpp \
+    overnightindexedswap.hpp \
+    oisratehelper.hpp
 
 libOvernightIndexSwap_la_SOURCES = \
-    eoniacoupon.cpp \
-    eoniaswap.cpp \
-    eoniaswaphelper.cpp
+    overnightindexedcoupon.cpp \
+    overnightindexedswap.cpp \
+    oisratehelper.cpp
 
 noinst_LTLIBRARIES = libOvernightIndexSwap.la
 

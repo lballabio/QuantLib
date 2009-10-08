@@ -8237,27 +8237,27 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\overnightswap\eoniacoupon.cpp"
+					RelativePath=".\ql\experimental\overnightswap\oisratehelper.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\overnightswap\eoniacoupon.hpp"
+					RelativePath=".\ql\experimental\overnightswap\oisratehelper.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\overnightswap\eoniaswap.cpp"
+					RelativePath=".\ql\experimental\overnightswap\overnightindexedcoupon.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\overnightswap\eoniaswap.hpp"
+					RelativePath=".\ql\experimental\overnightswap\overnightindexedcoupon.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\overnightswap\eoniaswaphelper.cpp"
+					RelativePath=".\ql\experimental\overnightswap\overnightindexedswap.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\overnightswap\eoniaswaphelper.hpp"
+					RelativePath=".\ql\experimental\overnightswap\overnightindexedswap.hpp"
 					>
 				</File>
 			</Filter>

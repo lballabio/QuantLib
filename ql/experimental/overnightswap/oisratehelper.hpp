@@ -26,7 +26,7 @@
 
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
-#include <ql/experimental/overnightswap/eoniaswap.hpp>
+#include <ql/experimental/overnightswap/overnightindexedswap.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
 

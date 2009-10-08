@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/overnightswap/eoniaswaphelper.hpp>
+#include <ql/experimental/overnightswap/oisratehelper.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/quote.hpp>
 #include <ql/currency.hpp>

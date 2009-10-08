@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/overnightswap/eoniaswap.hpp>
-#include <ql/experimental/overnightswap/eoniacoupon.hpp>
+#include <ql/experimental/overnightswap/overnightindexedswap.hpp>
+#include <ql/experimental/overnightswap/overnightindexedcoupon.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 
 #include <iostream>
