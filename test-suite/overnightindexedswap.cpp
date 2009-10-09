@@ -21,6 +21,7 @@
 #include "utilities.hpp"
 
 #include <ql/experimental/overnightswap/oisratehelper.hpp>
+#include <ql/experimental/overnightswap/makeois.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -31,6 +32,7 @@
 #include <ql/time/daycounters/simpledaycounter.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/indexes/ibor/eonia.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/cashflows.hpp>
@@ -106,21 +108,21 @@ namespace {
         { 2, 15, Months, 1.218 },
         { 2, 18, Months, 1.308 },
         { 2, 21, Months, 1.407 },
-        { 2,  2, Years, 1.510 },
-        { 2,  3, Years, 1.916 },
-        { 2,  4, Years, 2.254 },
-        { 2,  5, Years, 2.523 },
-        { 2,  6, Years, 2.746 },
-        { 2,  7, Years, 2.934 },
-        { 2,  8, Years, 3.092 },
-        { 2,  9, Years, 3.231 },
-        { 2, 10, Years, 3.380 },
-        { 2, 11, Years, 3.457 },
-        { 2, 12, Years, 3.544 },
-        { 2, 15, Years, 3.702 },
-        { 2, 20, Years, 3.703 },
-        { 2, 25, Years, 3.541 },
-        { 2, 30, Years, 3.369 }
+        { 2,  2,  Years, 1.510 },
+        { 2,  3,  Years, 1.916 },
+        { 2,  4,  Years, 2.254 },
+        { 2,  5,  Years, 2.523 },
+        { 2,  6,  Years, 2.746 },
+        { 2,  7,  Years, 2.934 },
+        { 2,  8,  Years, 3.092 },
+        { 2,  9,  Years, 3.231 },
+        { 2, 10,  Years, 3.380 },
+        { 2, 11,  Years, 3.457 },
+        { 2, 12,  Years, 3.544 },
+        { 2, 15,  Years, 3.702 },
+        { 2, 20,  Years, 3.703 },
+        { 2, 25,  Years, 3.541 },
+        { 2, 30,  Years, 3.369 }
     };
 
     FraDatum fraData[] = {
@@ -173,24 +175,13 @@ namespace {
         SavedSettings backup;
         
         // utilities
-        shared_ptr<OvernightIndexedSwap> makeSwap(Period length, Rate fixedRate, Spread spread) {
-            Date maturity = settlement + length;
-            Schedule fixedSchedule(settlement, maturity, fixedEoniaPeriod,
-                                   calendar, fixedEoniaConvention,
-                                   fixedEoniaConvention,
-                                   DateGeneration::Backward, false);
-            Schedule floatSchedule(settlement, maturity,
-                                   floatingEoniaPeriod,
-                                   calendar, floatingEoniaConvention,
-                                   floatingEoniaConvention,
-                                   DateGeneration::Backward, false);
-            shared_ptr<OvernightIndexedSwap> swap(
-                new OvernightIndexedSwap(type, nominal,
-                              floatSchedule, spread, eoniaIndex, 
-                              fixedSchedule, fixedRate, fixedEoniaDayCount));
-            swap->setPricingEngine(shared_ptr<PricingEngine>(
-                              new DiscountingSwapEngine(eoniaTermStructure)));
-            return swap;
+        shared_ptr<OvernightIndexedSwap> makeSwap(Period length,
+                                                  Rate fixedRate,
+                                                  Spread spread) {
+            return MakeOIS(length, eoniaIndex, fixedRate, settlement)
+                .withOvernightLegSpread(spread)
+                .withNominal(nominal)
+                .withDiscountingTermStructure(eoniaTermStructure);
         }
 
         CommonVars() {
@@ -262,16 +253,17 @@ void EoniaSwapTest::testFairSpread() {
         for (Size j=0; j<LENGTH(rates); j++) {
 
             shared_ptr<OvernightIndexedSwap> swap =
-                vars.makeSwap(lengths[i],rates[j],0.0);
+                vars.makeSwap(lengths[i], rates[j], 0.0);
             Spread fairSpread = swap->fairSpread();
             swap = vars.makeSwap(lengths[i], rates[j], fairSpread);
 
             if (std::fabs(swap->NPV()) > 1.0e-10) {
-                BOOST_ERROR("recalculating with implied spread:\n"
-                            << std::setprecision(2)
-                            << "    length: " << lengths[i] << " years\n"
-                            << "    fixed rate: " << io::rate(rates[j]) << "\n"
-                            << "    swap value: " << swap->NPV());
+                BOOST_ERROR("\nrecalculating with implied spread:" <<
+                            std::setprecision(2) <<
+                            "\n     length: " << lengths[i] <<
+                            "\n fixed rate: " << io::rate(rates[j]) <<
+                            "\nfair spread: " << io::rate(fairSpread) <<
+                            "\n swap value: " << swap->NPV());
             }
         }
     }
@@ -291,13 +283,14 @@ void EoniaSwapTest::testCachedValue() {
     vars.eoniaTermStructure.linkTo(flatRate(vars.settlement,flat,Actual360()));
     Real fixedRate = exp(flat) - 1;
     shared_ptr<OvernightIndexedSwap> swap = vars.makeSwap(1*Years, fixedRate, 0.0);
-    Real cachedNPV   = -0.001730450147;
-
-    if (std::fabs(swap->NPV()-cachedNPV) > 1.0e-11)
-        BOOST_ERROR("failed to reproduce cached swap value:\n"
-                    << QL_FIXED << std::setprecision(12)
-                    << "    calculated: " << swap->NPV() << "\n"
-                    << "    expected:   " << cachedNPV);
+    Real cachedNPV   = 0.001730450147;
+    Real tolerance = 1.0e-11;
+    if (std::fabs(swap->NPV()-cachedNPV) > tolerance)
+        BOOST_ERROR("\nfailed to reproduce cached swap value:" <<
+                    QL_FIXED << std::setprecision(12) <<
+                    "\ncalculated: " << swap->NPV() <<
+                    "\n  expected: " << cachedNPV <<
+                    "\n tolerance:" << tolerance);
 }
 
 
@@ -355,16 +348,10 @@ void EoniaSwapTest::testBootstrap() {
         shared_ptr<Quote> quote (simple);
         Period term = eoniaSwapData[i].n * eoniaSwapData[i].unit;
         shared_ptr<RateHelper> helper(new 
-                     OISRateHelper(Handle<Quote>(quote), 
+                     OISRateHelper(eoniaSwapData[i].settlementDays,
                                    term, 
-                                   eoniaSwapData[i].settlementDays,
-                                   vars.calendar,
-                                   vars.floatingEoniaPeriod, 
-                                   vars.floatingEoniaConvention,
-                                   eonia,
-                                   vars.fixedEoniaPeriod,
-                                   vars.fixedEoniaConvention,
-                                   vars.fixedEoniaDayCount));
+                                   Handle<Quote>(quote), 
+                                   eonia));
         eoniaHelpers.push_back(helper);
     }
 

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2009 Roland Lichters
+ Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,36 +22,29 @@
     \brief Overnight Indexed Swap (aka OIS) rate helpers
 */
 
-#ifndef quantlib_overnightswaphelper_hpp
-#define quantlib_overnightswaphelper_hpp
+#ifndef quantlib_oisratehelper_hpp
+#define quantlib_oisratehelper_hpp
 
-#include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/experimental/overnightswap/overnightindexedswap.hpp>
-#include <ql/time/calendar.hpp>
-#include <ql/time/daycounter.hpp>
 
 namespace QuantLib {
 
     //! Rate helper for bootstrapping over Overnight Indexed Swap rates
     class OISRateHelper : public RelativeDateRateHelper {
       public:
-        OISRateHelper(const Handle<Quote>& fixedRate,
+        OISRateHelper(Natural settlementDays,
                       const Period& tenor, // swap maturity
-                      Natural settlementDays,
-                      const Calendar& calendar,
-                      // Overnight Index floating leg
-                      const Period& overnightPeriod,
-                      BusinessDayConvention overnightConvention,
-                      const boost::shared_ptr<OvernightIndex>& overnightIndex,
-                      // fixed leg
-                      const Period& fixedPeriod,
-                      BusinessDayConvention fixedConvention,
-                      const DayCounter& fixedDayCount);
+                      const Handle<Quote>& fixedRate,
+                      const boost::shared_ptr<OvernightIndex>& overnightIndex);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
         void setTermStructure(YieldTermStructure*);
+        //@}
+        //! \name inspectors
+        //@{
+        boost::shared_ptr<OvernightIndexedSwap> swap() const { return swap_; }
         //@}
         //! \name Visitability
         //@{
@@ -58,15 +52,10 @@ namespace QuantLib {
         //@}
     protected:
         void initializeDates();
-        Period tenor_;
+
         Natural settlementDays_;
-        Calendar calendar_;
-        Period overnightPeriod_;
-        BusinessDayConvention overnightConvention_;
+        Period tenor_;
         boost::shared_ptr<OvernightIndex> overnightIndex_;
-        Period fixedPeriod_;
-        BusinessDayConvention fixedConvention_;
-        DayCounter fixedDayCount_;
 
         boost::shared_ptr<OvernightIndexedSwap> swap_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
@@ -76,18 +65,10 @@ namespace QuantLib {
     class DatedOISRateHelper : public RateHelper {
       public:
         DatedOISRateHelper(
-                    const Handle<Quote>& fixedRate,
                     const Date& startDate,
                     const Date& endDate,
-                    const Calendar& calendar,
-                    // Overnight Index floating leg
-                    const Period& overnightPeriod,
-                    BusinessDayConvention overnightConvention,
-                    const boost::shared_ptr<OvernightIndex>& overnightIndex,
-                    // fixed leg
-                    const Period& fixedPeriod,
-                    BusinessDayConvention fixedConvention,
-                    const DayCounter& fixedDayCount);
+                    const Handle<Quote>& fixedRate,
+                    const boost::shared_ptr<OvernightIndex>& overnightIndex);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;

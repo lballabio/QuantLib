@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2009 Roland Lichters
+ Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,9 +19,8 @@
 */
 
 #include <ql/experimental/overnightswap/oisratehelper.hpp>
+#include <ql/experimental/overnightswap/makeois.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/quote.hpp>
-#include <ql/currency.hpp>
 
 using boost::shared_ptr;
 
@@ -30,73 +30,32 @@ namespace QuantLib {
         void no_deletion(YieldTermStructure*) {}
     }
 
-    OISRateHelper::OISRateHelper(const Handle<Quote>& fixedRate,
-                                 const Period& tenor, // swap maturity
-                                 Natural settlementDays,
-                                 const Calendar& calendar,
-                                 // Overnight Indexed leg
-                                 const Period& overnightPeriod,
-                                 BusinessDayConvention overnightConvention,
-                                 const boost::shared_ptr<OvernightIndex>& overnightIndex,
-                                 // fixed leg
-                                 const Period& fixedPeriod,
-                                 BusinessDayConvention fixedConvention,
-                                 const DayCounter& fixedDayCount)
+    OISRateHelper::OISRateHelper(
+                    Natural settlementDays,
+                    const Period& tenor, // swap maturity
+                    const Handle<Quote>& fixedRate,
+                    const boost::shared_ptr<OvernightIndex>& overnightIndex)
     : RelativeDateRateHelper(fixedRate),
-      tenor_(tenor), settlementDays_(settlementDays),
-      calendar_(calendar),
-      overnightPeriod_(overnightPeriod),
-      overnightConvention_(overnightConvention),
-      overnightIndex_(overnightIndex),
-      fixedPeriod_(fixedPeriod),
-      fixedConvention_(fixedConvention),
-      fixedDayCount_(fixedDayCount) {
+      settlementDays_(settlementDays), tenor_(tenor),
+      overnightIndex_(overnightIndex) {
         registerWith(overnightIndex_);
         initializeDates();
     }
 
     void OISRateHelper::initializeDates() {
-        earliestDate_ = calendar_.advance(evaluationDate_,
-                                          settlementDays_*Days,
-                                          Following);
-
-        Date maturity = earliestDate_ + tenor_;
-
-        Schedule overnightSchedule =
-            MakeSchedule().from(earliestDate_)
-                          .to(maturity)
-                          .withTenor(overnightPeriod_)
-                          .withCalendar(overnightIndex_->fixingCalendar())
-                          .withConvention(overnightConvention_)
-                          .backwards();
-
-        Schedule fixedSchedule =
-            MakeSchedule().from(earliestDate_)
-                          .to(maturity)
-                          .withTenor(fixedPeriod_)
-                          .withCalendar(overnightIndex_->fixingCalendar())
-                          .withConvention(fixedConvention_)
-                          .backwards();
 
         // dummy OvernightIndex with curve/swap arguments
+        // review here
         boost::shared_ptr<IborIndex> clonedIborIndex =
             overnightIndex_->clone(termStructureHandle_);
         shared_ptr<OvernightIndex> clonedOvernightIndex = 
             boost::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
 
-        swap_ = shared_ptr<OvernightIndexedSwap>(new
-            OvernightIndexedSwap(OvernightIndexedSwap::Payer,
-                                 100.0,
-                                 overnightSchedule,
-                                 0.0,
-                                 clonedOvernightIndex,
-                                 fixedSchedule,
-                                 0.0,
-                                 fixedDayCount_));
+       swap_ = MakeOIS(tenor_, clonedOvernightIndex, 0.0)
+           .withSettlementDays(settlementDays_)
+           .withDiscountingTermStructure(termStructureHandle_);
 
-        swap_->setPricingEngine(shared_ptr<PricingEngine>(new
-            DiscountingSwapEngine(clonedOvernightIndex->termStructure())));
-
+        earliestDate_ = swap_->startDate();
         latestDate_ = swap_->maturityDate();
     }
 
@@ -126,59 +85,26 @@ namespace QuantLib {
     }
 
     DatedOISRateHelper::DatedOISRateHelper(
-                    const Handle<Quote>& fixedRate,
                     const Date& startDate,
                     const Date& endDate,
-                    const Calendar& calendar,
-                    // Overnight Indexed leg
-                    const Period& overnightPeriod,
-                    BusinessDayConvention overnightConvention,
-                    const boost::shared_ptr<OvernightIndex>& overnightIndex,
-                    // fixed leg
-                    const Period& fixedPeriod,
-                    BusinessDayConvention fixedConvention,
-                    const DayCounter& fixedDayCount)
+                    const Handle<Quote>& fixedRate,
+                    const boost::shared_ptr<OvernightIndex>& overnightIndex)
     : RateHelper(fixedRate) {
 
         registerWith(overnightIndex);
 
-        earliestDate_ = startDate;
-
-        Schedule overnightSchedule =
-            MakeSchedule().from(earliestDate_)
-                          .to(endDate)
-                          .withTenor(overnightPeriod)
-                          .withCalendar(overnightIndex->fixingCalendar())
-                          .withConvention(overnightConvention)
-                          .backwards();
-
-        Schedule fixedSchedule =
-            MakeSchedule().from(earliestDate_)
-                          .to(endDate)
-                          .withTenor(fixedPeriod)
-                          .withCalendar(overnightIndex->fixingCalendar())
-                          .withConvention(fixedConvention)
-                          .backwards();
-
         // dummy OvernightIndex with curve/swap arguments
+        // review here
         boost::shared_ptr<IborIndex> clonedIborIndex =
             overnightIndex->clone(termStructureHandle_);
         shared_ptr<OvernightIndex> clonedOvernightIndex = 
             boost::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
 
-        swap_ = shared_ptr<OvernightIndexedSwap>(new
-            OvernightIndexedSwap(OvernightIndexedSwap::Payer,
-                                 100.0,
-                                 overnightSchedule,
-                                 0.0,
-                                 clonedOvernightIndex,
-                                 fixedSchedule,
-                                 0.0,
-                                 fixedDayCount));
+       swap_ = MakeOIS(Period(), clonedOvernightIndex, 0.0, startDate)
+           .withTerminationDate(endDate)
+           .withDiscountingTermStructure(termStructureHandle_);
 
-        swap_->setPricingEngine(shared_ptr<PricingEngine>(new
-            DiscountingSwapEngine(clonedOvernightIndex->termStructure())));
-
+        earliestDate_ = swap_->startDate();
         latestDate_ = swap_->maturityDate();
     }
 

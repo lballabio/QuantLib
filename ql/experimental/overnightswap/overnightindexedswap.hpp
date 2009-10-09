@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2009 Roland Lichters
+ Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,55 +26,67 @@
 #define quantlib_overnight_indexed_swap_hpp
 
 #include <ql/instruments/swap.hpp>
-#include <ql/indexes/ibor/euribor.hpp>
-#include <ql/time/schedule.hpp>
+#include <ql/time/daycounter.hpp>
 
 namespace QuantLib {
 
-    //! Overnight index swap paying compounded overnight vs. fixed coupons
+    class Schedule;
+    class OvernightIndex;
+
+    //! Overnight indexed swap: fix vs compounded overnight rate
     class OvernightIndexedSwap : public Swap {
       public:
         enum Type { Receiver = -1, Payer = 1 };
-        OvernightIndexedSwap(Type type,
-                  Real nominal,
-                  // overnight leg
-                  const Schedule& overnightSchedule,
-                  Rate overnightSpread,
-                  const boost::shared_ptr<OvernightIndex>& index,
-                  // fixed leg
-                  const Schedule& fixedSchedule,
-                  Rate rate,
-                  const DayCounter& fixedDayCount);
-
+        OvernightIndexedSwap(
+                    Type type,
+                    Real nominal,
+                    const Schedule& schedule,
+                    Rate fixedRate,
+                    const DayCounter& fixedDC,
+                    const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                    Spread overnightSpread = 0.0);
         //! \name Inspectors
         //@{
-        Spread overnightSpread() const;
-        Rate fixedRate() const;
-        Real nominal() const;
-        //! "payer" or "receiver" refer to the overnight leg
-        Type type() const;
-        const Leg& overnightLeg() const;
-        const Leg& fixedLeg() const;
+        Type type() const { return type_; }
+        Real nominal() const { return nominal_; }
+
+        //const Schedule& schedule() { return schedule_; }
+        Frequency paymentFrequency() { return paymentFrequency_; }
+
+        Rate fixedRate() const { return fixedRate_; }
+        const DayCounter& fixedDC() { return fixedDC_; }
+
+        const boost::shared_ptr<OvernightIndex>& overnightIndex();
+        Spread overnightSpread() { return overnightSpread_; }
+
+        const Leg& fixedLeg() const { return legs_[0]; }
+        const Leg& overnightLeg() const { return legs_[1]; }
         //@}
 
         //! \name Results
         //@{
-        Real overnightLegBPS() const;
-        Real overnightLegNPV() const;
-        Spread fairSpread() const;
-
         Real fixedLegBPS() const;
         Real fixedLegNPV() const;
         Real fairRate() const;
+
+        Real overnightLegBPS() const;
+        Real overnightLegNPV() const;
+        Spread fairSpread() const;
         //@}
       private:
         Type type_;
         Real nominal_;
-        Rate overnightSpread_;
+
+        Frequency paymentFrequency_;
+        //Schedule schedule_;
+
         Rate fixedRate_;
+        DayCounter fixedDC_;
+
+        boost::shared_ptr<OvernightIndex> overnightIndex_;
+        Spread overnightSpread_;
     };
 
 }
 
 #endif
-

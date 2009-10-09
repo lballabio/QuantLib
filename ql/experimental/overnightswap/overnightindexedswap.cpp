@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2009 Roland Lichters
+ Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,32 +26,29 @@
 
 namespace QuantLib {
 
-  OvernightIndexedSwap::OvernightIndexedSwap(Type type,
-                       Real nominal,
-                       // overnight leg
-                       const Schedule& overnightSchedule,
-                       Rate overnightSpread,
-                       const boost::shared_ptr<OvernightIndex>& index,
-                       // fixed leg
-                       const Schedule& fixedSchedule,
-                       Rate fixedRate,
-                       const DayCounter& fixedDayCount)
+  OvernightIndexedSwap::OvernightIndexedSwap(
+                    Type type,
+                    Real nominal,
+                    const Schedule& schedule,
+                    Rate fixedRate,
+                    const DayCounter& fixedDC,
+                    const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                    Spread overnightSpread)
       : Swap(2), type_(type), nominal_(nominal),
-        overnightSpread_(overnightSpread), fixedRate_(fixedRate) {
+        paymentFrequency_(schedule.tenor().frequency()),
+        //schedule_(schedule),
+        fixedRate_(fixedRate), fixedDC_(fixedDC),
+        overnightIndex_(overnightIndex), overnightSpread_(overnightSpread) {
 
-        BusinessDayConvention convention =
-            overnightSchedule.businessDayConvention();
+        if (fixedDC_==DayCounter())
+            fixedDC_ = overnightIndex_->dayCounter();
+        legs_[0] = FixedRateLeg(schedule)
+            .withNotionals(nominal_)
+            .withCouponRates(fixedRate_, fixedDC_);
 
-        legs_[0] = FixedRateLeg(fixedSchedule)
-            .withNotionals(nominal)
-            .withCouponRates(fixedRate, fixedDayCount)
-            .withPaymentAdjustment(convention);
-
-        legs_[1] = OvernightLeg(overnightSchedule, index)
-            .withNotionals(nominal)
-            .withPaymentDayCounter(index->dayCounter())
-            .withSpreads(overnightSpread)
-            .withPaymentAdjustment(overnightSchedule.businessDayConvention());
+        legs_[1] = OvernightLeg(schedule, overnightIndex_)
+            .withNotionals(nominal_)
+            .withSpreads(overnightSpread_);
 
         for (Size j=0; j<2; ++j) {
             for (Leg::iterator i = legs_[j].begin(); i!= legs_[j].end(); ++i)
@@ -59,52 +57,16 @@ namespace QuantLib {
 
         switch (type_) {
           case Payer:
-            payer_[0] = +1.0;
-            payer_[1] = -1.0;
-            break;
-          case Receiver:
             payer_[0] = -1.0;
             payer_[1] = +1.0;
+            break;
+          case Receiver:
+            payer_[0] = +1.0;
+            payer_[1] = -1.0;
             break;
           default:
             QL_FAIL("Unknown overnight-swap type");
         }
-    }
-
-    Spread OvernightIndexedSwap::overnightSpread() const {
-        return overnightSpread_;
-    }
-
-    Spread OvernightIndexedSwap::fixedRate() const {
-        return fixedRate_;
-    }
-
-    Real OvernightIndexedSwap::nominal() const {
-        return nominal_;
-    }
-
-    OvernightIndexedSwap::Type OvernightIndexedSwap::type() const {
-        return type_;
-    }
-
-    const Leg& OvernightIndexedSwap::fixedLeg() const {
-        return legs_[0];
-    }
-
-    const Leg& OvernightIndexedSwap::overnightLeg() const {
-        return legs_[1];
-    }
-
-    Real OvernightIndexedSwap::fixedLegBPS() const {
-        calculate();
-        QL_REQUIRE(legBPS_[0] != Null<Real>(), "result not available");
-        return legBPS_[0];
-    }
-
-    Real OvernightIndexedSwap::fixedLegNPV() const {
-        calculate();
-        QL_REQUIRE(legNPV_[0] != Null<Real>(), "result not available");
-        return legNPV_[0];
     }
 
     Real OvernightIndexedSwap::fairRate() const {
@@ -119,10 +81,22 @@ namespace QuantLib {
         return overnightSpread_ - NPV_/(overnightLegBPS()/basisPoint);
     }
 
+    Real OvernightIndexedSwap::fixedLegBPS() const {
+        calculate();
+        QL_REQUIRE(legBPS_[0] != Null<Real>(), "result not available");
+        return legBPS_[0];
+    }
+
     Real OvernightIndexedSwap::overnightLegBPS() const {
         calculate();
         QL_REQUIRE(legBPS_[1] != Null<Real>(), "result not available");
         return legBPS_[1];
+    }
+
+    Real OvernightIndexedSwap::fixedLegNPV() const {
+        calculate();
+        QL_REQUIRE(legNPV_[0] != Null<Real>(), "result not available");
+        return legNPV_[0];
     }
 
     Real OvernightIndexedSwap::overnightLegNPV() const {
