@@ -52,30 +52,30 @@ namespace QuantLib {
         else
             paymentConvention_ = floatingSchedule_.businessDayConvention();
 
-        Leg fixedLeg = FixedRateLeg(fixedSchedule_)
+        legs_[0] = FixedRateLeg(fixedSchedule_)
             .withNotionals(nominal_)
             .withCouponRates(fixedRate_, fixedDayCount_)
             .withPaymentAdjustment(paymentConvention_);
 
-        Leg floatingLeg = IborLeg(floatingSchedule_, iborIndex_)
+        legs_[1] = IborLeg(floatingSchedule_, iborIndex_)
             .withNotionals(nominal_)
             .withPaymentDayCounter(floatingDayCount_)
             .withPaymentAdjustment(paymentConvention_)
-            //.withFixingDays(iborIndex->fixingDays())
             .withSpreads(spread_);
-
-        Leg::const_iterator i;
-        for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
+        for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i)
             registerWith(*i);
 
-        legs_[0] = fixedLeg;
-        legs_[1] = floatingLeg;
-        if (type_==Payer) {
+        switch (type_) {
+          case Payer:
             payer_[0] = -1.0;
             payer_[1] = +1.0;
-        } else {
+            break;
+          case Receiver:
             payer_[0] = +1.0;
             payer_[1] = -1.0;
+            break;
+          default:
+            QL_FAIL("Unknown vanilla-swap type");
         }
     }
 

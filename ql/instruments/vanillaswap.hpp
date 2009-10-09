@@ -33,10 +33,9 @@
 
 namespace QuantLib {
 
-    class Schedule;
     class IborIndex;
 
-    //! Plain-vanilla swap
+    //! Plain-vanilla swap: fix vs floating leg
     /*! \ingroup instruments
 
         If no payment convention is passed, the convention of the
@@ -81,15 +80,8 @@ namespace QuantLib {
             const DayCounter& floatingDayCount,
             boost::optional<BusinessDayConvention> paymentConvention =
                                                                  boost::none);
-        // results
-        Real fixedLegBPS() const;
-        Real fixedLegNPV() const;
-        Rate fairRate() const;
-
-        Real floatingLegBPS() const;
-        Real floatingLegNPV() const;
-        Spread fairSpread() const;
-        // inspectors
+        //! \name Inspectors
+        //@{
         Type type() const;
         Real nominal() const;
 
@@ -106,6 +98,18 @@ namespace QuantLib {
 
         const Leg& fixedLeg() const;
         const Leg& floatingLeg() const;
+        //@}
+
+        //! \name Results
+        //@{
+        Real fixedLegBPS() const;
+        Real fixedLegNPV() const;
+        Rate fairRate() const;
+
+        Real floatingLegBPS() const;
+        Real floatingLegNPV() const;
+        Spread fairSpread() const;
+        //@}
         // other
         void setupArguments(PricingEngine::arguments* args) const;
         void fetchResults(const PricingEngine::results*) const;
