@@ -27,10 +27,13 @@ namespace QuantLib {
 
     Period::Period(Frequency f) {
         switch (f) {
-          case Once:
           case NoFrequency:
             // same as Period()
             units_ = Days;
+            length_ = 0;
+            break;
+          case Once:
+            units_ = Years;
             length_ = 0;
             break;
           case Annual:
@@ -66,7 +69,10 @@ namespace QuantLib {
         // unsigned version
         Size length = std::abs(length_);
 
-        if (length==0) return NoFrequency;
+        if (length==0) {
+            if (units_==Years) return Once;
+            return NoFrequency;
+        }
 
         switch (units_) {
           case Years:

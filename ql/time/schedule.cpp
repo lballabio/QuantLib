@@ -153,7 +153,7 @@ namespace QuantLib {
         switch (rule_) {
 
           case DateGeneration::Zero:
-            tenor_ = 0*Days;
+            tenor_ = 0*Years;
             dates_.push_back(effectiveDate);
             dates_.push_back(terminationDate);
             isRegular_.push_back(true);
