@@ -9821,6 +9821,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\overnightswap\makeois.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\overnightswap\makeois.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\overnightswap\oisratehelper.cpp"
 					>
 				</File>
