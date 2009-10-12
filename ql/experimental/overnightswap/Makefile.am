@@ -4,11 +4,13 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    makeois.hpp \
     overnightindexedcoupon.hpp \
     overnightindexedswap.hpp \
     oisratehelper.hpp
 
 libOvernightIndexSwap_la_SOURCES = \
+    makeois.cpp \
     overnightindexedcoupon.cpp \
     overnightindexedswap.cpp \
     oisratehelper.cpp
