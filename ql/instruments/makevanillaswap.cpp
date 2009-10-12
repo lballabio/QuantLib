@@ -136,13 +136,13 @@ namespace QuantLib {
     MakeVanillaSwap&
     MakeVanillaSwap::withEffectiveDate(const Date& effectiveDate) {
         effectiveDate_ = effectiveDate;
-        swapTenor_ = Period();
         return *this;
     }
 
     MakeVanillaSwap&
     MakeVanillaSwap::withTerminationDate(const Date& terminationDate) {
         terminationDate_ = terminationDate;
+        swapTenor_ = Period();
         return *this;
     }
 
