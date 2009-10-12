@@ -33,12 +33,12 @@ namespace QuantLib {
                     Rate fixedRate,
                     const DayCounter& fixedDC,
                     const boost::shared_ptr<OvernightIndex>& overnightIndex,
-                    Spread overnightSpread)
+                    Spread spread)
       : Swap(2), type_(type), nominal_(nominal),
         paymentFrequency_(schedule.tenor().frequency()),
         //schedule_(schedule),
         fixedRate_(fixedRate), fixedDC_(fixedDC),
-        overnightIndex_(overnightIndex), overnightSpread_(overnightSpread) {
+        overnightIndex_(overnightIndex), spread_(spread) {
 
         if (fixedDC_==DayCounter())
             fixedDC_ = overnightIndex_->dayCounter();
@@ -48,7 +48,7 @@ namespace QuantLib {
 
         legs_[1] = OvernightLeg(schedule, overnightIndex_)
             .withNotionals(nominal_)
-            .withSpreads(overnightSpread_);
+            .withSpreads(spread_);
 
         for (Size j=0; j<2; ++j) {
             for (Leg::iterator i = legs_[j].begin(); i!= legs_[j].end(); ++i)
@@ -78,7 +78,7 @@ namespace QuantLib {
     Spread OvernightIndexedSwap::fairSpread() const {
         static Spread basisPoint = 1.0e-4;
         calculate();
-        return overnightSpread_ - NPV_/(overnightLegBPS()/basisPoint);
+        return spread_ - NPV_/(overnightLegBPS()/basisPoint);
     }
 
     Real OvernightIndexedSwap::fixedLegBPS() const {

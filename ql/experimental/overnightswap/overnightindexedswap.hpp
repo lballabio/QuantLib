@@ -44,7 +44,7 @@ namespace QuantLib {
                     Rate fixedRate,
                     const DayCounter& fixedDC,
                     const boost::shared_ptr<OvernightIndex>& overnightIndex,
-                    Spread overnightSpread = 0.0);
+                    Spread spread = 0.0);
         //! \name Inspectors
         //@{
         Type type() const { return type_; }
@@ -54,10 +54,10 @@ namespace QuantLib {
         Frequency paymentFrequency() { return paymentFrequency_; }
 
         Rate fixedRate() const { return fixedRate_; }
-        const DayCounter& fixedDC() { return fixedDC_; }
+        const DayCounter& fixedDayCount() { return fixedDC_; }
 
         const boost::shared_ptr<OvernightIndex>& overnightIndex();
-        Spread overnightSpread() { return overnightSpread_; }
+        Spread spread() { return spread_; }
 
         const Leg& fixedLeg() const { return legs_[0]; }
         const Leg& overnightLeg() const { return legs_[1]; }
@@ -84,7 +84,7 @@ namespace QuantLib {
         DayCounter fixedDC_;
 
         boost::shared_ptr<OvernightIndex> overnightIndex_;
-        Spread overnightSpread_;
+        Spread spread_;
     };
 
 }
