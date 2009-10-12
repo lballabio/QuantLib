@@ -41,7 +41,7 @@ namespace QuantLib {
         MakeOIS(const Period& swapTenor,
                 const boost::shared_ptr<OvernightIndex>& overnightIndex,
                 Rate fixedRate = Null<Rate>(),
-                const Date& effectiveDate = Date());
+                const Period& fwdStart = 0*Days);
 
         operator OvernightIndexedSwap() const;
         operator boost::shared_ptr<OvernightIndexedSwap>() const ;
@@ -49,8 +49,8 @@ namespace QuantLib {
         MakeOIS& receiveFixed(bool flag = true);
         MakeOIS& withType(OvernightIndexedSwap::Type type);
         MakeOIS& withNominal(Real n);
-
         MakeOIS& withSettlementDays(Natural fixingDays);
+        MakeOIS& withEffectiveDate(const Date&);
         MakeOIS& withTerminationDate(const Date&);
         MakeOIS& withPaymentFrequency(Frequency f);
         MakeOIS& withRule(DateGeneration::Rule r);
@@ -66,16 +66,16 @@ namespace QuantLib {
         Period swapTenor_;
         boost::shared_ptr<OvernightIndex> overnightIndex_;
         Rate fixedRate_;
-        Date effectiveDate_;
+        Period forwardStart_;
         
-        OvernightIndexedSwap::Type type_;
-        Real nominal_;
-
         Natural fixingDays_;
-        Date terminationDate_;
+        Date effectiveDate_, terminationDate_;
         Frequency paymentFrequency_;
         DateGeneration::Rule rule_;
         bool endOfMonth_;
+
+        OvernightIndexedSwap::Type type_;
+        Real nominal_;
 
         Spread overnightSpread_;
         DayCounter fixedDayCount_;

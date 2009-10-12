@@ -1,9 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2007 Ferdinando Ametrano
- Copyright (C) 2006 Katiuscia Manzoni
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,12 +27,12 @@ namespace QuantLib {
     MakeOIS::MakeOIS(const Period& swapTenor,
                      const boost::shared_ptr<OvernightIndex>& overnightIndex,
                      Rate fixedRate,
-                     const Date& effectiveDate)
+                     const Period& forwardStart)
     : swapTenor_(swapTenor), overnightIndex_(overnightIndex),
-      fixedRate_(fixedRate), effectiveDate_(effectiveDate),
-      type_(OvernightIndexedSwap::Payer), nominal_(1.0),
+      fixedRate_(fixedRate), forwardStart_(forwardStart),
       fixingDays_(2), paymentFrequency_(Annual),
       rule_(DateGeneration::Backward), endOfMonth_(true),
+      type_(OvernightIndexedSwap::Payer), nominal_(1.0),
       overnightSpread_(0.0),
       fixedDayCount_(overnightIndex->dayCounter()),
       engine_(new DiscountingSwapEngine(overnightIndex_->termStructure())) {}
@@ -53,7 +51,9 @@ namespace QuantLib {
             startDate = effectiveDate_;
         else {
             Date referenceDate = Settings::instance().evaluationDate();
-            startDate = calendar.advance(referenceDate, fixingDays_*Days);
+            Date spotDate = calendar.advance(referenceDate,
+                                             fixingDays_*Days);
+            startDate = spotDate+forwardStart_;
         }
 
         Date endDate;
@@ -73,10 +73,12 @@ namespace QuantLib {
         Rate usedFixedRate = fixedRate_;
         if (fixedRate_ == Null<Rate>()) {
             QL_REQUIRE(!overnightIndex_->termStructure().empty(),
-                       "no forecasting term structure set to " <<
-                       overnightIndex_->name());
+                       "no forecasting term structure set to this instance of "
+                       << overnightIndex_->name());
             OvernightIndexedSwap temp(type_, nominal_,
-                                      schedule, 0.0, fixedDayCount_,
+                                      schedule,
+                                      0.0, // fixed rate
+                                      fixedDayCount_,
                                       overnightIndex_, overnightSpread_);
             // ATM on the forecasting curve
             bool includeSettlementDateFlows = false;
@@ -116,14 +118,28 @@ namespace QuantLib {
         return *this;
     }
 
+    MakeOIS& MakeOIS::withEffectiveDate(const Date& effectiveDate) {
+        effectiveDate_ = effectiveDate;
+        return *this;
+    }
+
     MakeOIS& MakeOIS::withTerminationDate(const Date& terminationDate) {
         terminationDate_ = terminationDate;
         swapTenor_ = Period();
         return *this;
     }
 
+    MakeOIS& MakeOIS::withPaymentFrequency(Frequency f) {
+        paymentFrequency_ = f;
+        if (paymentFrequency_==Once)
+            rule_ = DateGeneration::Zero;
+        return *this;
+    }
+
     MakeOIS& MakeOIS::withRule(DateGeneration::Rule r) {
         rule_ = r;
+        if (r==DateGeneration::Zero)
+            paymentFrequency_ = Once;
         return *this;
     }
 

@@ -178,7 +178,8 @@ namespace {
         shared_ptr<OvernightIndexedSwap> makeSwap(Period length,
                                                   Rate fixedRate,
                                                   Spread spread) {
-            return MakeOIS(length, eoniaIndex, fixedRate, settlement)
+            return MakeOIS(length, eoniaIndex, fixedRate)
+                .withEffectiveDate(settlement)
                 .withOvernightLegSpread(spread)
                 .withNominal(nominal)
                 .withDiscountingTermStructure(eoniaTermStructure);
