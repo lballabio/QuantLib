@@ -37,22 +37,22 @@ using namespace boost::unit_test_framework;
 #define REPORT_FAILURE(greekName, payoffM, payoffD, exerciseM,    \
                        exerciseD, s, q, r, today,                 \
                        v, expected, calculated, error, tolerance) \
-            BOOST_ERROR( "\n" \
-               << "    mother option type:"   << payoffM->optionType() << "\n" \
-               << "    daughter option type:" << payoffD->optionType() << "\n" \
-               << "    spot value:          " << s << "\n" \
-               << "    strike mother:       " << payoffM->strike() << "\n" \
-               << "    strike daughter:     " << payoffD->strike() << "\n" \
-               << "    dividend yield:      " << io::rate(q) << "\n" \
-               << "    risk-free rate:      " << io::rate(r) << "\n" \
-               << "    reference date:      " << today << "\n" \
-               << "    maturity mother:     " << exerciseM->lastDate() << "\n" \
-               << "    maturity daughter:   " << exerciseD->lastDate() << "\n" \
-               << "    volatility:          " << io::volatility(v) << "\n\n" \
-               << "    expected             " << greekName << ":   " << expected << "\n" \
-               << "    calculated           " << greekName << ": " << calculated << "\n"\
-               << "    error:               " << error << "\n" \
-               << "    tolerance:           " << tolerance);
+            BOOST_FAIL(\
+               "\nmother option type:   " << payoffM->optionType() << \
+               "\ndaughter option type: " << payoffD->optionType() << \
+               "\nspot value:           " << s << \
+               "\nstrike mother:        " << payoffM->strike() << \
+               "\nstrike daughter:      " << payoffD->strike() << \
+               "\ndividend yield:       " << io::rate(q) << \
+               "\nrisk-free rate:       " << io::rate(r) << \
+               "\nreference date:       " << today << \
+               "\nmaturity mother:      " << exerciseM->lastDate() << \
+               "\nmaturity daughter:    " << exerciseD->lastDate() << \
+               "\nvolatility:           " << io::volatility(v) << \
+               "\n  expected " << greekName << ": " << expected << \
+               "\ncalculated " << greekName << ": " << calculated << \
+               "\nerror:                " << error << \
+               "\ntolerance:            " << tolerance);
 
 namespace {
 
