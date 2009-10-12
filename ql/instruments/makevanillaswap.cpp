@@ -22,7 +22,6 @@
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
-#include <ql/settings.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
 
@@ -63,8 +62,8 @@ namespace QuantLib {
         if (effectiveDate_ != Date())
             startDate = effectiveDate_;
         else {
-            Natural fixingDays = iborIndex_->fixingDays();
             Date referenceDate = Settings::instance().evaluationDate();
+            Natural fixingDays = iborIndex_->fixingDays();
             Date spotDate = floatCalendar_.advance(referenceDate,
                                                    fixingDays*Days);
             startDate = spotDate+forwardStart_;
@@ -93,24 +92,28 @@ namespace QuantLib {
         Rate usedFixedRate = fixedRate_;
         if (fixedRate_ == Null<Rate>()) {
             QL_REQUIRE(!iborIndex_->termStructure().empty(),
-                       "no forecasting term structure set to " <<
-                       iborIndex_->name());
+                       "no forecasting term structure set to this instance of "
+                       << iborIndex_->name());
             VanillaSwap temp(type_, nominal_,
-                             fixedSchedule, 0.0, fixedDayCount_,
+                             fixedSchedule,
+                             0.0, // fixed rate
+                             fixedDayCount_,
                              floatSchedule, iborIndex_,
                              floatSpread_, floatDayCount_);
             // ATM on the forecasting curve
-            temp.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                        new DiscountingSwapEngine(iborIndex_->termStructure(),
-                                                  false)));
+            bool includeSettlementDateFlows = false;
+            temp.setPricingEngine(boost::shared_ptr<PricingEngine>(new
+                DiscountingSwapEngine(iborIndex_->termStructure(),
+                                      includeSettlementDateFlows)));
             usedFixedRate = temp.fairRate();
         }
 
         boost::shared_ptr<VanillaSwap> swap(new
-                    VanillaSwap(type_, nominal_,
-                                fixedSchedule, usedFixedRate, fixedDayCount_,
-                                floatSchedule, iborIndex_,
-                                floatSpread_, floatDayCount_));
+            VanillaSwap(type_, nominal_,
+                        fixedSchedule,
+                        usedFixedRate, fixedDayCount_,
+                        floatSchedule,
+                        iborIndex_, floatSpread_, floatDayCount_));
         swap->setPricingEngine(engine_);
         return swap;
     }
@@ -133,6 +136,7 @@ namespace QuantLib {
     MakeVanillaSwap&
     MakeVanillaSwap::withEffectiveDate(const Date& effectiveDate) {
         effectiveDate_ = effectiveDate;
+        swapTenor_ = Period();
         return *this;
     }
 
@@ -144,7 +148,9 @@ namespace QuantLib {
 
     MakeVanillaSwap& MakeVanillaSwap::withRule(DateGeneration::Rule r) {
         fixedRule_ = r;
+        // fixedTenor_ = ??
         floatRule_ = r;
+        // floatTenor_ = ??
         return *this;
     }
 
