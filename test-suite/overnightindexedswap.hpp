@@ -17,15 +17,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_eoniaswap_hpp
-#define quantlib_test_eoniaswap_hpp
+#ifndef quantlib_test_overnight_indexed_swap_hpp
+#define quantlib_test_overnight_indexed_swap_hpp
 
 #include <boost/test/unit_test.hpp>
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
 
-class EoniaSwapTest {
+class OvernightIndexedSwapTest {
   public:
     static void testFairRate();
     static void testFairSpread();

@@ -212,9 +212,9 @@ namespace {
 }
 
 
-void EoniaSwapTest::testFairRate() {
+void OvernightIndexedSwapTest::testFairRate() {
 
-    BOOST_MESSAGE("Testing Eonia swap calculation of fair fixed rate...");
+    BOOST_MESSAGE("Testing Eonia-swap calculation of fair fixed rate...");
 
     CommonVars vars;
 
@@ -240,9 +240,9 @@ void EoniaSwapTest::testFairRate() {
 }
 
 
-void EoniaSwapTest::testFairSpread() {
+void OvernightIndexedSwapTest::testFairSpread() {
 
-    BOOST_MESSAGE("Testing Eonia swap calculation of "
+    BOOST_MESSAGE("Testing Eonia-swap calculation of "
                   "fair floating spread...");
 
     CommonVars vars;
@@ -271,9 +271,9 @@ void EoniaSwapTest::testFairSpread() {
     
 }
 
-void EoniaSwapTest::testCachedValue() {
+void OvernightIndexedSwapTest::testCachedValue() {
 
-    BOOST_MESSAGE("Testing Eonia swap calculation against cached value...");
+    BOOST_MESSAGE("Testing Eonia-swap calculation against cached value...");
 
     CommonVars vars;
 
@@ -295,17 +295,17 @@ void EoniaSwapTest::testCachedValue() {
 }
 
 
-void EoniaSwapTest::testBootstrap() {
+void OvernightIndexedSwapTest::testBootstrap() {
 
-    BOOST_MESSAGE("Testing Eonia swap curve building...");
+    BOOST_MESSAGE("Testing Eonia-swap curve building...");
 
     CommonVars vars;
 
     std::vector<shared_ptr<RateHelper> > eoniaHelpers;
     std::vector<shared_ptr<RateHelper> > swap3mHelpers;
 
-    shared_ptr<IborIndex> euribor3m(new Euribor3M());
-    shared_ptr<Eonia> eonia(new Eonia());
+    shared_ptr<IborIndex> euribor3m(new Euribor3M);
+    shared_ptr<Eonia> eonia(new Eonia);
 
     for (Size i = 0; i < LENGTH(depositData); i++) {
         Real rate = 0.01 * depositData[i].rate;
@@ -430,12 +430,12 @@ void EoniaSwapTest::testBootstrap() {
 }
 
 
-test_suite* EoniaSwapTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Eoniaswap tests");
-    suite->add(QUANTLIB_TEST_CASE(&EoniaSwapTest::testFairRate));
-    suite->add(QUANTLIB_TEST_CASE(&EoniaSwapTest::testFairSpread));
-    suite->add(QUANTLIB_TEST_CASE(&EoniaSwapTest::testCachedValue));
-    suite->add(QUANTLIB_TEST_CASE(&EoniaSwapTest::testBootstrap));
+test_suite* OvernightIndexedSwapTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Overnight-indexed swap tests");
+    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testFairRate));
+    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testFairSpread));
+    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testCachedValue));
+    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testBootstrap));
     return suite;
 }
 

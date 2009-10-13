@@ -73,7 +73,6 @@
 #include "digitaloption.hpp"
 #include "distributions.hpp"
 #include "dividendoption.hpp"
-#include "overnightindexedswap.hpp"
 #include "europeanoption.hpp"
 #include "everestoption.hpp"
 #include "exchangerate.hpp"
@@ -114,6 +113,7 @@
 #include "operators.hpp"
 #include "optimizers.hpp"
 #include "optionletstripper.hpp"
+#include "overnightindexedswap.hpp"
 #include "pagodaoption.hpp"
 #include "pathgenerator.hpp"
 #include "period.hpp"
@@ -241,7 +241,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(DigitalOptionTest::suite());
     test->add(DistributionTest::suite());
     test->add(DividendOptionTest::suite());
-    test->add(EoniaSwapTest::suite());
     test->add(EuropeanOptionTest::suite());
     test->add(EverestOptionTest::suite());
     test->add(ExchangeRateTest::suite());
@@ -280,6 +279,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(OperatorTest::suite());
     test->add(OptimizersTest::suite());
     test->add(OptionletStripperTest::suite());
+    test->add(OvernightIndexedSwapTest::suite());
     test->add(PagodaOptionTest::suite());
     test->add(PathGeneratorTest::suite());
     test->add(PeriodTest::suite());
