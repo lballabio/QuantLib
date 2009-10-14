@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2009 Roland Lichters
+ Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file overnightcoupon.hpp
+/*! \file overnightindexedcoupon.hpp
     \brief coupon paying the compounded daily overnight rate
 */
 
@@ -34,46 +35,42 @@ namespace QuantLib {
     /*! %Coupon paying the compounded interest due to daily overnight fixings. */
     class OvernightIndexedCoupon : public FloatingRateCoupon {
       public:
-        OvernightIndexedCoupon(const Date& paymentDate,
+        OvernightIndexedCoupon(
+                    const Date& paymentDate,
                     Real nominal,
                     const Date& startDate,
                     const Date& endDate,
-                    const boost::shared_ptr<OvernightIndex>& index,
+                    const boost::shared_ptr<OvernightIndex>& overnightIndex,
                     Real gearing = 1.0,
                     Spread spread = 0.0,
                     const Date& refPeriodStart = Date(),
                     const Date& refPeriodEnd = Date(),
                     const DayCounter& dayCounter = DayCounter());
-
+        //! \name Inspectors
+        //@{
+        //! fixing dates for the rates to be compounded
+        const std::vector<Date>& fixingDates() const { return fixingDates_; }
+        //! accrual (compounding) periods
+        const std::vector<Time>& dt() const { return dt_; }
+        //! fixings to be compounded
+        const std::vector<Rate>& indexFixings() const;
+        //! value dates for the rates to be compounded
+        const std::vector<Date>& valueDates() const { return valueDates_; }
+        //@}
         //! \name FloatingRateCoupon interface
         //@{
-        //! not applicable here; use fixingDates() instead
-        Date fixingDate() const;
-        //! not applicable here; use indexFixings() instead
-        Rate indexFixing() const;
-
-        //! fixing dates of the rates to be averaged
-        const std::vector<Date>& fixingDates() const {
-            return valueDates_;
-        }
-        //! fixings of the underlying index to be averaged
-        std::vector<Rate> indexFixings() const;
-        //! fixings of the underlying index to be averaged
-        const std::vector<Time>& dt() const { return dt_; }
-
-        //! not applicable here
-        Rate convexityAdjustment() const;
+        //! the date when the coupon is fully determined
+        Date fixingDate() const { return fixingDates_.back(); }
         //@}
-
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&);
         //@}
       private:
-          std::vector<Date> valueDates_;
-          Size n_;
-          std::vector<Time> dt_;
-
+        std::vector<Date> valueDates_, fixingDates_;
+        mutable std::vector<Rate> fixings_;
+        Size n_;
+        std::vector<Time> dt_;
     };
 
 
@@ -81,7 +78,7 @@ namespace QuantLib {
     class OvernightLeg {
       public:
         OvernightLeg(const Schedule& schedule,
-                 const boost::shared_ptr<OvernightIndex>& index);
+                     const boost::shared_ptr<OvernightIndex>& overnightIndex);
         OvernightLeg& withNotionals(Real notional);
         OvernightLeg& withNotionals(const std::vector<Real>& notionals);
         OvernightLeg& withPaymentDayCounter(const DayCounter&);
@@ -93,7 +90,7 @@ namespace QuantLib {
         operator Leg() const;
       private:
         Schedule schedule_;
-        boost::shared_ptr<OvernightIndex> index_;
+        boost::shared_ptr<OvernightIndex> overnightIndex_;
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
         BusinessDayConvention paymentAdjustment_;
@@ -102,6 +99,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif
