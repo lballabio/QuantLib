@@ -386,10 +386,10 @@ namespace QuantLib {
       fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
       fixedDayCount_(swapIndex->dayCounter()),
       iborIndex_(swapIndex->iborIndex()), spread_(spread),
-      fwdStart_(fwdStart), discountingCurve_(discount) {
+      fwdStart_(fwdStart), discountHandle_(discount) {
         registerWith(iborIndex_);
         registerWith(spread_);
-        registerWith(discountingCurve_);
+        registerWith(discountHandle_);
         initializeDates();
     }
 
@@ -409,10 +409,10 @@ namespace QuantLib {
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
       iborIndex_(iborIndex), spread_(spread),
-      fwdStart_(fwdStart), discountingCurve_(discount) {
+      fwdStart_(fwdStart), discountHandle_(discount) {
         registerWith(iborIndex_);
         registerWith(spread_);
-        registerWith(discountingCurve_);
+        registerWith(discountHandle_);
         initializeDates();
     }
 
@@ -432,10 +432,10 @@ namespace QuantLib {
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
       iborIndex_(iborIndex), spread_(spread),
-      fwdStart_(fwdStart), discountingCurve_(discount) {
+      fwdStart_(fwdStart), discountHandle_(discount) {
         registerWith(iborIndex_);
         registerWith(spread_);
-        registerWith(discountingCurve_);
+        registerWith(discountHandle_);
         initializeDates();
     }
 
@@ -450,10 +450,10 @@ namespace QuantLib {
       fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
       fixedDayCount_(swapIndex->dayCounter()),
       iborIndex_(swapIndex->iborIndex()), spread_(spread),
-      fwdStart_(fwdStart), discountingCurve_(discount) {
+      fwdStart_(fwdStart), discountHandle_(discount) {
         registerWith(iborIndex_);
         registerWith(spread_);
-        registerWith(discountingCurve_);
+        registerWith(discountHandle_);
         initializeDates();
     }
 
@@ -463,26 +463,18 @@ namespace QuantLib {
         boost::shared_ptr<IborIndex> clonedIborIndex =
             iborIndex_->clone(termStructureHandle_);
 
-        // do not pass the spread here, as it might be a Quote
-        // i.e. it can dinamically change
-        if (discountingCurve_.empty()) {
-            swap_ = MakeVanillaSwap(tenor_, clonedIborIndex, 0.0, fwdStart_)
-                .withFixedLegDayCount(fixedDayCount_)
-                .withFixedLegTenor(Period(fixedFrequency_))
-                .withFixedLegConvention(fixedConvention_)
-                .withFixedLegTerminationDateConvention(fixedConvention_)
-                .withFixedLegCalendar(calendar_)
-                .withFloatingLegCalendar(calendar_);
-        } else {
-            swap_ = MakeVanillaSwap(tenor_, clonedIborIndex, 0.0, fwdStart_)
-                .withFixedLegDayCount(fixedDayCount_)
-                .withFixedLegTenor(Period(fixedFrequency_))
-                .withFixedLegConvention(fixedConvention_)
-                .withFixedLegTerminationDateConvention(fixedConvention_)
-                .withFixedLegCalendar(calendar_)
-                .withFloatingLegCalendar(calendar_)
-                .withDiscountingTermStructure(discountingCurve_);
-        }
+        // 1. do not pass the spread here, as it might be a Quote
+        //    i.e. it can dinamically change
+        // 2. input discount curve Handle might be empty now but it could
+        //    be assigned a curve later; use a RelinkableHandle here
+        swap_ = MakeVanillaSwap(tenor_, clonedIborIndex, 0.0, fwdStart_)
+            .withDiscountingTermStructure(discountRelinkableHandle_)
+            .withFixedLegDayCount(fixedDayCount_)
+            .withFixedLegTenor(Period(fixedFrequency_))
+            .withFixedLegConvention(fixedConvention_)
+            .withFixedLegTerminationDateConvention(fixedConvention_)
+            .withFixedLegCalendar(calendar_)
+            .withFloatingLegCalendar(calendar_);
 
         earliestDate_ = swap_->startDate();
 
@@ -504,9 +496,16 @@ namespace QuantLib {
     void SwapRateHelper::setTermStructure(YieldTermStructure* t) {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed
-        termStructureHandle_.linkTo(
-                         shared_ptr<YieldTermStructure>(t,no_deletion),
-                         false);
+        bool observer = false;
+
+        shared_ptr<YieldTermStructure> temp(t, no_deletion);
+        termStructureHandle_.linkTo(temp, observer);
+
+        if (discountHandle_.empty())
+            discountRelinkableHandle_.linkTo(temp, observer);
+        else
+            discountRelinkableHandle_.linkTo(*discountHandle_, observer);
+
         RelativeDateRateHelper::setTermStructure(t);
     }
 

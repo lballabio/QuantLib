@@ -262,7 +262,8 @@ namespace QuantLib {
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
         Handle<Quote> spread_;
         Period fwdStart_;
-        Handle<YieldTermStructure> discountingCurve_;
+        Handle<YieldTermStructure> discountHandle_;
+        RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
     };
 
     //! Rate helper for bootstrapping over BMA swap rates
