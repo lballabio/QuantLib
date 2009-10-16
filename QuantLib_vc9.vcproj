@@ -1190,6 +1190,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\cashflows\overnightindexedcoupon.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\overnightindexedcoupon.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\cashflows\rangeaccrual.cpp"
 				>
 			</File>
@@ -1774,6 +1782,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\instruments\makeois.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\makeois.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\instruments\makeswaption.cpp"
 				>
 			</File>
@@ -1803,6 +1819,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\instruments\oneassetoption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\overnightindexedswap.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\overnightindexedswap.hpp"
 				>
 			</File>
 			<File
@@ -2622,6 +2646,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\interpolations\kernelinterpolation.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\interpolations\kernelinterpolation2d.hpp"
 					>
 				</File>
 				<File
@@ -5450,6 +5478,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\yield\nonlinearfittingmethods.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\oisratehelper.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\oisratehelper.hpp"
 					>
 				</File>
 				<File
@@ -9814,46 +9850,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\compoundoption\compoundoption.hpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="overnightswap"
-				>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\all.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\makeois.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\makeois.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\oisratehelper.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\oisratehelper.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\overnightindexedcoupon.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\overnightindexedcoupon.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\overnightindexedswap.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\overnightindexedswap.hpp"
 					>
 				</File>
 			</Filter>

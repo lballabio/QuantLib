@@ -1224,9 +1224,6 @@
 				RelativePath=".\dividendoption.cpp">
 			</File>
 			<File
-				RelativePath=".\eoniaswap.cpp">
-			</File>
-			<File
 				RelativePath="europeanoption.cpp">
 				<FileConfiguration
 					Name="Debug (static runtime)|Win32">
@@ -1354,6 +1351,9 @@
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\fastfouriertransform.cpp">
 			</File>
 			<File
 				RelativePath=".\fdheston.cpp">
@@ -1912,6 +1912,9 @@
 			</File>
 			<File
 				RelativePath=".\optionletstripper.cpp">
+			</File>
+			<File
+				RelativePath=".\overnightindexedswap.cpp">
 			</File>
 			<File
 				RelativePath=".\pagodaoption.cpp">
@@ -2554,9 +2557,6 @@
 				RelativePath=".\dividendoption.hpp">
 			</File>
 			<File
-				RelativePath=".\eoniaswap.hpp">
-			</File>
-			<File
 				RelativePath="europeanoption.hpp">
 			</File>
 			<File
@@ -2570,6 +2570,9 @@
 			</File>
 			<File
 				RelativePath="factorial.hpp">
+			</File>
+			<File
+				RelativePath=".\fastfouriertransform.hpp">
 			</File>
 			<File
 				RelativePath=".\fdheston.hpp">
@@ -2672,6 +2675,9 @@
 			</File>
 			<File
 				RelativePath=".\optionletstripper.hpp">
+			</File>
+			<File
+				RelativePath=".\overnightindexedswap.hpp">
 			</File>
 			<File
 				RelativePath=".\pagodaoption.hpp">

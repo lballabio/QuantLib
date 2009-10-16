@@ -490,6 +490,12 @@
 				RelativePath=".\ql\cashflows\iborcoupon.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\cashflows\overnightindexedcoupon.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\overnightindexedcoupon.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\cashflows\rangeaccrual.cpp">
 			</File>
 			<File
@@ -607,6 +613,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\indexes\ibor\dkklibor.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\indexes\ibor\eonia.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\indexes\ibor\eonia.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\indexes\ibor\euribor.cpp">
@@ -880,6 +892,12 @@
 				RelativePath=".\ql\instruments\makecms.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\instruments\makeois.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\instruments\makeois.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\instruments\makeswaption.cpp">
 			</File>
 			<File
@@ -902,6 +920,12 @@
 			</File>
 			<File
 				RelativePath=".\ql\instruments\oneassetoption.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\instruments\overnightindexedswap.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\instruments\overnightindexedswap.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\instruments\pagodaoption.cpp">
@@ -1684,6 +1708,9 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\interpolations\kernelinterpolation.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\interpolations\kernelinterpolation2d.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\math\interpolations\linearinterpolation.hpp">
@@ -6153,6 +6180,12 @@
 					RelativePath=".\ql\termstructures\yield\nonlinearfittingmethods.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\yield\oisratehelper.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\oisratehelper.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\yield\piecewiseyieldcurve.hpp">
 				</File>
 				<File
@@ -6404,6 +6437,12 @@
 			</File>
 			<File
 				RelativePath=".\ql\time\daycounter.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\time\ecb.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\time\ecb.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\time\frequency.cpp">
@@ -8034,28 +8073,13 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="overnightswap"
+				Name="math"
 				Filter="">
 				<File
-					RelativePath=".\ql\experimental\overnightswap\all.hpp">
+					RelativePath=".\ql\experimental\math\all.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\experimental\overnightswap\eoniacoupon.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\eoniacoupon.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\eoniaswap.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\eoniaswap.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\eoniaswaphelper.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\eoniaswaphelper.hpp">
+					RelativePath=".\ql\experimental\math\fastfouriertransform.hpp">
 				</File>
 			</Filter>
 		</Filter>

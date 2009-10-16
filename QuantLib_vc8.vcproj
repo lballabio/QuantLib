@@ -802,6 +802,50 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\cashflows\overnightindexedcoupon.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (static runtime)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\overnightindexedcoupon.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\cashflows\rangeaccrual.cpp"
 				>
 			</File>
@@ -1340,6 +1384,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\instruments\makeois.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\makeois.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\instruments\makeswaption.cpp"
 				>
 			</File>
@@ -1369,6 +1421,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\instruments\oneassetoption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\overnightindexedswap.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\overnightindexedswap.hpp"
 				>
 			</File>
 			<File
@@ -1958,6 +2018,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\interpolations\kernelinterpolation.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\interpolations\kernelinterpolation2d.hpp"
 					>
 				</File>
 				<File
@@ -4490,6 +4554,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\yield\nonlinearfittingmethods.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\oisratehelper.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\oisratehelper.hpp"
 					>
 				</File>
 				<File
@@ -8226,46 +8298,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\barrieroption\perturbativebarrieroptionengine.hpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="overnightswap"
-				>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\all.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\makeois.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\makeois.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\oisratehelper.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\oisratehelper.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\overnightindexedcoupon.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\overnightindexedcoupon.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\overnightindexedswap.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\overnightswap\overnightindexedswap.hpp"
 					>
 				</File>
 			</Filter>

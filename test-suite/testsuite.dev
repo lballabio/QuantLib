@@ -1,7 +1,7 @@
 [Project]
 FileName=testsuite.dev
 Name=QuantLib-test-suite
-UnitCount=202
+UnitCount=204
 Type=1
 Ver=1
 ObjFiles=
@@ -1988,26 +1988,6 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit195]
-FileName=eoniaswap.cpp
-CompileCpp=1
-Folder=QuantLib-test-suite
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit196]
-FileName=eoniaswap.hpp
-CompileCpp=1
-Folder=QuantLib-test-suite
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit197]
 FileName=fdheston.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -2017,7 +1997,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit198]
+[Unit196]
 FileName=fdheston.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -2027,7 +2007,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit199]
+[Unit197]
 FileName=inflationvol.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -2037,7 +2017,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit200]
+[Unit198]
 FileName=cashflows.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -2047,7 +2027,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit201]
+[Unit199]
 FileName=cashflows.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -2057,8 +2037,48 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit202]
+[Unit200]
 FileName=inflationvol.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit201]
+FileName=overnightindexedswap.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit202]
+FileName=fastfouriertransform.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit203]
+FileName=fastfouriertransform.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit204]
+FileName=overnightindexedswap.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1
