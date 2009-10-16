@@ -29,11 +29,6 @@
 
 #include <ql/currency.hpp>
 
-#if defined(QL_PATCH_MSVC)
-#pragma warning(push)
-#pragma warning(disable:4819)
-#endif
-
 namespace QuantLib {
 
     //! Australian dollar
@@ -74,8 +69,5 @@ namespace QuantLib {
 
 }
 
-#if defined(QL_PATCH_MSVC)
-#pragma warning(pop)
-#endif
 
 #endif
