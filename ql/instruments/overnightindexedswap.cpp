@@ -18,11 +18,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/overnightswap/overnightindexedswap.hpp>
-#include <ql/experimental/overnightswap/overnightindexedcoupon.hpp>
+#include <ql/instruments/overnightindexedswap.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
-
-#include <iostream>
 
 namespace QuantLib {
 

@@ -34,10 +34,12 @@ this_include_HEADERS = \
     lookbackoption.hpp \
     makecapfloor.hpp \
     makecms.hpp \
+    makeois.hpp \
     makeswaption.hpp \
     makevanillaswap.hpp \
     multiassetoption.hpp \
     oneassetoption.hpp \
+    overnightindexedswap.hpp \
     pagodaoption.hpp \
     payoffs.hpp \
     quantobarrieroption.hpp \
@@ -80,10 +82,12 @@ libInstruments_la_SOURCES = \
     lookbackoption.cpp \
     makecapfloor.cpp \
     makecms.cpp \
+    makeois.cpp \
     makeswaption.cpp \
     makevanillaswap.cpp \
     multiassetoption.cpp \
     oneassetoption.cpp \
+    overnightindexedswap.cpp \
     pagodaoption.cpp \
     payoffs.cpp \
     quantobarrieroption.cpp \

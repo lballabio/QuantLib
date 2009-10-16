@@ -24,7 +24,7 @@
 #ifndef quantlib_makeois_hpp
 #define quantlib_makeois_hpp
 
-#include <ql/experimental/overnightswap/overnightindexedswap.hpp>
+#include <ql/instruments/overnightindexedswap.hpp>
 #include <ql/time/dategenerationrule.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
@@ -67,7 +67,7 @@ namespace QuantLib {
         boost::shared_ptr<OvernightIndex> overnightIndex_;
         Rate fixedRate_;
         Period forwardStart_;
-        
+
         Natural fixingDays_;
         Date effectiveDate_, terminationDate_;
         Frequency paymentFrequency_;

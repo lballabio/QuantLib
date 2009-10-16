@@ -29,10 +29,12 @@
 #include <ql/instruments/lookbackoption.hpp>
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/instruments/makecms.hpp>
+#include <ql/instruments/makeois.hpp>
 #include <ql/instruments/makeswaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/instruments/multiassetoption.hpp>
 #include <ql/instruments/oneassetoption.hpp>
+#include <ql/instruments/overnightindexedswap.hpp>
 #include <ql/instruments/pagodaoption.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/instruments/quantobarrieroption.hpp>

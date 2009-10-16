@@ -18,8 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/overnightswap/oisratehelper.hpp>
-#include <ql/experimental/overnightswap/makeois.hpp>
+#include <ql/termstructures/yield/oisratehelper.hpp>
+#include <ql/instruments/makeois.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 
 using boost::shared_ptr;
@@ -48,7 +48,7 @@ namespace QuantLib {
         // review here
         boost::shared_ptr<IborIndex> clonedIborIndex =
             overnightIndex_->clone(termStructureHandle_);
-        shared_ptr<OvernightIndex> clonedOvernightIndex = 
+        shared_ptr<OvernightIndex> clonedOvernightIndex =
             boost::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
 
        swap_ = MakeOIS(tenor_, clonedOvernightIndex, 0.0)
@@ -97,7 +97,7 @@ namespace QuantLib {
         // review here
         boost::shared_ptr<IborIndex> clonedIborIndex =
             overnightIndex->clone(termStructureHandle_);
-        shared_ptr<OvernightIndex> clonedOvernightIndex = 
+        shared_ptr<OvernightIndex> clonedOvernightIndex =
             boost::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
 
        swap_ = MakeOIS(Period(), clonedOvernightIndex, 0.0)

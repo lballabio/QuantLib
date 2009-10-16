@@ -20,8 +20,8 @@
 #include "overnightindexedswap.hpp"
 #include "utilities.hpp"
 
-#include <ql/experimental/overnightswap/oisratehelper.hpp>
-#include <ql/experimental/overnightswap/makeois.hpp>
+#include <ql/termstructures/yield/oisratehelper.hpp>
+#include <ql/instruments/makeois.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -173,7 +173,7 @@ namespace {
 
         // cleanup
         SavedSettings backup;
-        
+
         // utilities
         shared_ptr<OvernightIndexedSwap> makeSwap(Period length,
                                                   Rate fixedRate,
@@ -220,7 +220,7 @@ void OvernightIndexedSwapTest::testFairRate() {
 
     Period lengths[] = { 1*Years, 2*Years, 5*Years, 10*Years, 20*Years };
     Spread spreads[] = { -0.001, -0.01, 0.0, 0.01, 0.001 };
-    
+
     for (Size i=0; i<LENGTH(lengths); i++) {
         for (Size j=0; j<LENGTH(spreads); j++) {
 
@@ -249,7 +249,7 @@ void OvernightIndexedSwapTest::testFairSpread() {
 
     Period lengths[] = { 1*Years, 2*Years, 5*Years, 10*Years, 20*Years };
     Rate rates[] = { 0.04, 0.05, 0.06, 0.07 };
-    
+
     for (Size i=0; i<LENGTH(lengths); i++) {
         for (Size j=0; j<LENGTH(rates); j++) {
 
@@ -268,7 +268,7 @@ void OvernightIndexedSwapTest::testFairSpread() {
             }
         }
     }
-    
+
 }
 
 void OvernightIndexedSwapTest::testCachedValue() {
@@ -312,7 +312,7 @@ void OvernightIndexedSwapTest::testBootstrap() {
         shared_ptr<SimpleQuote> simple = shared_ptr<SimpleQuote>(new SimpleQuote(rate));
         shared_ptr<Quote> quote (simple);
         Period term = depositData[i].n * depositData[i].unit;
-        shared_ptr<RateHelper> helper(new 
+        shared_ptr<RateHelper> helper(new
                     DepositRateHelper(Handle<Quote>(quote),
                                       term,
                                       depositData[i].settlementDays,
@@ -320,7 +320,7 @@ void OvernightIndexedSwapTest::testBootstrap() {
                                       euribor3m->businessDayConvention(),
                                       euribor3m->endOfMonth(),
                                       euribor3m->dayCounter()));
-        
+
         if (term <= 2*Days)
             eoniaHelpers.push_back(helper);
         if (term <= 3*Months)
@@ -331,7 +331,7 @@ void OvernightIndexedSwapTest::testBootstrap() {
         Real rate = 0.01 * fraData[i].rate;
         shared_ptr<SimpleQuote> simple = shared_ptr<SimpleQuote>(new SimpleQuote(rate));
         shared_ptr<Quote> quote (simple);
-        shared_ptr<RateHelper> helper(new 
+        shared_ptr<RateHelper> helper(new
                                FraRateHelper(Handle<Quote>(quote),
                                              fraData[i].nExpiry,
                                              fraData[i].nMaturity,
@@ -348,10 +348,10 @@ void OvernightIndexedSwapTest::testBootstrap() {
         shared_ptr<SimpleQuote> simple = shared_ptr<SimpleQuote>(new SimpleQuote(rate));
         shared_ptr<Quote> quote (simple);
         Period term = eoniaSwapData[i].n * eoniaSwapData[i].unit;
-        shared_ptr<RateHelper> helper(new 
+        shared_ptr<RateHelper> helper(new
                      OISRateHelper(eoniaSwapData[i].settlementDays,
-                                   term, 
-                                   Handle<Quote>(quote), 
+                                   term,
+                                   Handle<Quote>(quote),
                                    eonia));
         eoniaHelpers.push_back(helper);
     }
@@ -363,8 +363,8 @@ void OvernightIndexedSwapTest::testBootstrap() {
         Period tenor = swapData[i].nIndexUnits * swapData[i].indexUnit;
         Period term = swapData[i].nTermUnits * swapData[i].termUnit;
         shared_ptr<RateHelper> helper(new SwapRateHelper(
-                               Handle<Quote>(quote), 
-                               term, 
+                               Handle<Quote>(quote),
+                               term,
                                vars.calendar,
                                vars.fixedSwapFrequency,
                                vars.fixedSwapConvention,
@@ -374,12 +374,12 @@ void OvernightIndexedSwapTest::testBootstrap() {
             swap3mHelpers.push_back(helper);
     }
 
-    shared_ptr<PiecewiseFlatForward> eoniaTS(new 
-        PiecewiseFlatForward (vars.today, eoniaHelpers, Actual365Fixed())); 
+    shared_ptr<PiecewiseFlatForward> eoniaTS(new
+        PiecewiseFlatForward (vars.today, eoniaHelpers, Actual365Fixed()));
 
-    shared_ptr<PiecewiseFlatForward> swapTS(new 
-        PiecewiseFlatForward (vars.today, swap3mHelpers, Actual365Fixed())); 
-                         
+    shared_ptr<PiecewiseFlatForward> swapTS(new
+        PiecewiseFlatForward (vars.today, swap3mHelpers, Actual365Fixed()));
+
     vars.eoniaTermStructure.linkTo(eoniaTS);
 
     /*
@@ -395,11 +395,11 @@ void OvernightIndexedSwapTest::testBootstrap() {
         shared_ptr<OvernightIndexedSwap> swap = vars.makeSwap(term, 0.0, 0.0);
         Rate calculated = 100.0 * swap->fairRate();
         /*
-        std::cout << std::setw(3) << term << " " 
-                  << std::setprecision(4) 
-                  << expected << " " 
-                  << calculated << " " 
-                  << std::setprecision(8) 
+        std::cout << std::setw(3) << term << " "
+                  << std::setprecision(4)
+                  << expected << " "
+                  << calculated << " "
+                  << std::setprecision(8)
                   << expected - calculated << std::endl;
         */
         if (std::fabs(expected-calculated) > tolerance)
@@ -420,10 +420,10 @@ void OvernightIndexedSwapTest::testBootstrap() {
         Rate zero1d = eoniaTS->zeroRate(d, dc, Continuous, Annual,false).rate();
         Rate zero3m = swapTS->zeroRate(d, dc, Continuous, Annual,false).rate();
         std::cout << std::setw(2) << i << "y  " << io::iso_date(d) << "  "
-                  << std::setprecision(3) 
+                  << std::setprecision(3)
                   << zero3m * 100.0 << " "
                   << zero1d * 100.0 << " "
-                  << std::setprecision(1) 
+                  << std::setprecision(1)
                   << (zero3m - zero1d) * 10000.0 << std::endl;
     }
     */

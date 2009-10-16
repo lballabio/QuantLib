@@ -20,6 +20,7 @@ this_include_HEADERS = \
     fixedratecoupon.hpp \
     floatingratecoupon.hpp \
     iborcoupon.hpp \
+    overnightindexedcoupon.hpp \
     rangeaccrual.hpp \
     replication.hpp \
     simplecashflow.hpp \
@@ -42,6 +43,7 @@ libCashFlows_la_SOURCES = \
     fixedratecoupon.cpp \
     floatingratecoupon.cpp \
     iborcoupon.cpp \
+    overnightindexedcoupon.cpp \
     rangeaccrual.cpp \
     replication.cpp \
     timebasket.cpp
