@@ -39,7 +39,12 @@ namespace QuantLib {
         // really do need more than 25 to get 1e-12 accuracy
         static Size maxIterations() { return 40; }
         static Date initialDate(const YoYInflationTermStructure* t) {
-            return t->referenceDate() - t->lag() ;
+			if (t->indexIsInterpolated()) {
+				return t->referenceDate() - t->observationLag();
+			} else {
+				return inflationPeriod(t->referenceDate() - t->observationLag(), 
+									   t->frequency()).first;
+			}
         }
         static bool dummyInitialValue() { return false; }
         static Rate initialValue(const YoYInflationTermStructure* t) {
@@ -88,16 +93,19 @@ namespace QuantLib {
                const DayCounter& dayCounter,
                const Period& lag,
                Frequency frequency,
+			   bool indexIsInterpolated,
                Rate baseYoYRate,
                const Handle<YieldTermStructure>& nominalTS,
                const std::vector<boost::shared_ptr<typename Traits::helper> >&
                                                                   instruments,
                Real accuracy = 1.0e-12,
                const Interpolator& i = Interpolator())
-        : base_curve(referenceDate, calendar, dayCounter,
-                     lag, frequency, baseYoYRate,
+        : base_curve(referenceDate, calendar, dayCounter, baseYoYRate,
+                     lag, frequency, indexIsInterpolated, 
                      nominalTS, i),
           instruments_(instruments), accuracy_(accuracy) {
+			  
+			 			  
             bootstrap_.setup(this);
         }
         //@}

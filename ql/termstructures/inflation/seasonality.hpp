@@ -161,6 +161,6 @@ namespace QuantLib {
                                                const Date &curveBaseDate, bool isZeroRate) const;
     };
 
-};  // end of namespace QuantLib
+}  // end of namespace QuantLib
 #endif
 

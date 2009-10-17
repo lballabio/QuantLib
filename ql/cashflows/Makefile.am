@@ -6,6 +6,7 @@ this_include_HEADERS = \
     all.hpp \
     averagebmacoupon.hpp \
     capflooredcoupon.hpp \
+    capflooredinflationcoupon.hpp \
     cashflows.hpp \
     cashflowvectors.hpp \
     cmscoupon.hpp \
@@ -20,15 +21,20 @@ this_include_HEADERS = \
     fixedratecoupon.hpp \
     floatingratecoupon.hpp \
     iborcoupon.hpp \
+    indexedcashflow.hpp \
+    inflationcoupon.hpp \
+    inflationcouponpricer.hpp \
     overnightindexedcoupon.hpp \
     rangeaccrual.hpp \
     replication.hpp \
     simplecashflow.hpp \
-    timebasket.hpp
+    timebasket.hpp \
+    yoyinflationcoupon.hpp
 
 libCashFlows_la_SOURCES = \
     averagebmacoupon.cpp \
     capflooredcoupon.cpp \
+    capflooredinflationcoupon.cpp \
     cashflows.cpp \
     cashflowvectors.cpp \
     cmscoupon.cpp \
@@ -43,10 +49,14 @@ libCashFlows_la_SOURCES = \
     fixedratecoupon.cpp \
     floatingratecoupon.cpp \
     iborcoupon.cpp \
+    indexedcashflow.cpp \
+    inflationcoupon.cpp \
+    inflationcouponpricer.cpp \
     overnightindexedcoupon.cpp \
     rangeaccrual.cpp \
     replication.cpp \
-    timebasket.cpp
+    timebasket.cpp \
+    yoyinflationcoupon.cpp
 
 noinst_LTLIBRARIES = libCashFlows.la
 

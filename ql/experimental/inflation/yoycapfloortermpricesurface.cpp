@@ -18,24 +18,26 @@
 */
 
 #include <ql/experimental/inflation/yoycapfloortermpricesurface.hpp>
+#include <ql/indexes/inflationindex.hpp>
 
 namespace QuantLib {
 
     YoYCapFloorTermPriceSurface::
     YoYCapFloorTermPriceSurface(Natural fixingDays,
                                 const Period &lag,
-                                Frequency frequency, Rate baseRate,
+                                const boost::shared_ptr<YoYInflationIndex>& yii,
+								Rate baseRate,
                                 const Handle<YieldTermStructure> &nominal,
                                 const DayCounter &dc,
                                 const Calendar &cal,
                                 const BusinessDayConvention &bdc,
                                 const std::vector<Rate> &cStrikes,
                                 const std::vector<Rate> &fStrikes,
-                                const std::vector<Time> &cfMaturities,
+                                const std::vector<Period> &cfMaturities,
                                 const Matrix &cPrice,
                                 const Matrix &fPrice)
-    : InflationTermStructure(0, cal, lag, frequency, baseRate, nominal, dc),
-      fixingDays_(fixingDays), bdc_(bdc),
+    : InflationTermStructure(0, cal, baseRate, lag, yii->frequency(), yii->interpolated(), nominal, dc),
+	  fixingDays_(fixingDays), bdc_(bdc), yoyIndex_(yii),
       cStrikes_(cStrikes), fStrikes_(fStrikes),
       cfMaturities_(cfMaturities), cPrice_(cPrice), fPrice_(fPrice) {
 
@@ -54,7 +56,7 @@ namespace QuantLib {
 
         // data has correct properties (positive, monotonic)?
         for(Size j = 0; j <cfMaturities_.size(); j++) {
-            QL_REQUIRE( cfMaturities[j] > 0, "non-positive maturities");
+            QL_REQUIRE( cfMaturities[j] > Period(0,Days), "non-positive maturities");
             if(j>0) {
                 QL_REQUIRE( cfMaturities[j] > cfMaturities[j-1],
                             "non-increasing maturities");
@@ -97,6 +99,36 @@ namespace QuantLib {
             QL_REQUIRE( cfStrikes_[i] > cfStrikes_[i-1],
                         "cfStrikes not increasing");
     }
+	
+	Date YoYCapFloorTermPriceSurface::yoyOptionDateFromTenor(const Period& p) const
+	{
+		return Date(referenceDate()+p);
+	}
+	
+	Real YoYCapFloorTermPriceSurface::price(const Period &d, const Rate k) const {
+		return price(yoyOptionDateFromTenor(d), k);
+	}
+
+	Real YoYCapFloorTermPriceSurface::capPrice(const Period &d, const Rate k) const {
+		return capPrice(yoyOptionDateFromTenor(d), k);
+	}
+	
+	Real YoYCapFloorTermPriceSurface::floorPrice(const Period &d, const Rate k) const {
+		return floorPrice(yoyOptionDateFromTenor(d), k);
+	}
+	
+	Rate YoYCapFloorTermPriceSurface::atmYoYSwapRate(const Period &d,
+						bool extrapolate) const {
+		return atmYoYSwapRate(yoyOptionDateFromTenor(d), extrapolate);
+	}
+	
+	Rate YoYCapFloorTermPriceSurface::atmYoYRate(const Period &d,
+												 const Period& obsLag,
+					bool extrapolate) const {
+		return atmYoYRate(yoyOptionDateFromTenor(d), obsLag, extrapolate);
+	}
+	
+	
 
 }
 

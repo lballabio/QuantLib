@@ -24,8 +24,8 @@
 #ifndef quantlib_yoy_optionlet_stripper_hpp
 #define quantlib_yoy_optionlet_stripper_hpp
 
-#include <ql/experimental/inflation/yoyoptionletvolatilitystructures.hpp>
-#include <ql/experimental/inflation/inflationcapfloorengines.hpp>
+#include <ql/experimental/inflation/yoyinflationoptionletvolatilitystructure2.hpp>
+#include <ql/pricingengines/inflation/inflationcapfloorengines.hpp>
 #include <ql/experimental/inflation/yoycapfloortermpricesurface.hpp>
 
 namespace QuantLib {
@@ -57,6 +57,7 @@ namespace QuantLib {
         mutable boost::shared_ptr<YoYInflationCapFloorEngine> p_;
         mutable Period lag_;
         mutable Frequency frequency_;
+		mutable bool indexIsInterpolated_;
     };
 
 }

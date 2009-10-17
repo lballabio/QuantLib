@@ -333,7 +333,6 @@ AC_CONFIG_FILES([
     ql/experimental/lattices/Makefile
     ql/experimental/math/Makefile
     ql/experimental/mcbasket/Makefile
-    ql/experimental/models/Makefile
     ql/experimental/overnightswap/Makefile
     ql/experimental/processes/Makefile
     ql/experimental/risk/Makefile
@@ -409,6 +408,7 @@ AC_CONFIG_FILES([
     ql/termstructures/volatility/Makefile
     ql/termstructures/volatility/equityfx/Makefile
     ql/termstructures/volatility/capfloor/Makefile
+    ql/termstructures/volatility/inflation/Makefile
     ql/termstructures/volatility/optionlet/Makefile
     ql/termstructures/volatility/swaption/Makefile
     ql/termstructures/yield/Makefile

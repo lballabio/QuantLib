@@ -25,13 +25,14 @@
 #include <ql/instruments/forwardvanillaoption.hpp>
 #include <ql/instruments/himalayaoption.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
-#include <ql/instruments/inflationswap.hpp>
+#include <ql/instruments/inflationcapfloor.hpp>
 #include <ql/instruments/lookbackoption.hpp>
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/instruments/makecms.hpp>
 #include <ql/instruments/makeois.hpp>
 #include <ql/instruments/makeswaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
+#include <ql/instruments/makeyoyinflationcapfloor.hpp>
 #include <ql/instruments/multiassetoption.hpp>
 #include <ql/instruments/oneassetoption.hpp>
 #include <ql/instruments/overnightindexedswap.hpp>

@@ -3,6 +3,7 @@
 
 #include <ql/cashflows/averagebmacoupon.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
+#include <ql/cashflows/capflooredinflationcoupon.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/cmscoupon.hpp>
@@ -17,9 +18,13 @@
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/indexedcashflow.hpp>
+#include <ql/cashflows/inflationcoupon.hpp>
+#include <ql/cashflows/inflationcouponpricer.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/cashflows/replication.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/timebasket.hpp>
+#include <ql/cashflows/yoyinflationcoupon.hpp>
 

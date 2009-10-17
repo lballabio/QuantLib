@@ -4,33 +4,20 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    capflooredinflationcoupon.hpp \
     genericindexes.hpp \
-    inflationcapfloor.hpp \
-    inflationcapfloorengines.hpp \
-    inflationcappedcouponpricer.hpp \
-    inflationcoupon.hpp \
-    inflationcouponpricer.hpp \
     interpolatedyoyoptionletstripper.hpp \
     kinterpolatedyoyoptionletvolatilitysurface.hpp \
-    nominalyoyinflationcoupon.hpp \
     piecewiseyoyoptionletvolatility.hpp \
     polynomial2Dspline.hpp \
     yoycapfloortermpricesurface.hpp \
     yoyoptionlethelpers.hpp \
     yoyoptionletstripper.hpp \
-    yoyoptionletvolatilitystructures.hpp
+    yoyinflationoptionletvolatilitystructure2.hpp
 
 libInflation_la_SOURCES = \
-    capflooredinflationcoupon.cpp \
-    inflationcapfloor.cpp \
-    inflationcapfloorengines.cpp \
-    inflationcappedcouponpricer.cpp \
-    inflationcoupon.cpp \
-    inflationcouponpricer.cpp \
-    nominalyoyinflationcoupon.cpp \
     yoycapfloortermpricesurface.cpp \
-    yoyoptionlethelpers.cpp
+    yoyoptionlethelpers.cpp \
+    yoyinflationoptionletvolatilitystructure2.cpp
 
 noinst_LTLIBRARIES = libInflation.la
 

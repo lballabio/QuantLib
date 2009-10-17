@@ -24,7 +24,7 @@
 #ifndef quantlib_piecewise_yoy_optionlet_volatility_hpp
 #define quantlib_piecewise_yoy_optionlet_volatility_hpp
 
-#include <ql/experimental/inflation/yoyoptionletvolatilitystructures.hpp>
+#include <ql/experimental/inflation/yoyinflationoptionletvolatilitystructure2.hpp>
 #include <ql/termstructures/iterativebootstrap.hpp>
 #include <ql/patterns/lazyobject.hpp>
 
@@ -96,6 +96,8 @@ namespace QuantLib {
               BusinessDayConvention bdc,
               const DayCounter& dc,
               const Period &lag,
+			  Frequency frequency,
+			  bool indexIsInterpolated,
               Rate minStrike,
               Rate maxStrike,
               Volatility baseYoYVolatility,
@@ -103,7 +105,9 @@ namespace QuantLib {
                                                                   instruments,
               Real accuracy = 1.0e-12,
               const Interpolator &interpolator = Interpolator())
-        : base_curve(settlementDays, cal, bdc, dc, lag, minStrike, maxStrike,
+        : base_curve(settlementDays, cal, bdc, dc, lag, 
+					 frequency, indexIsInterpolated,
+					 minStrike, maxStrike,
                      baseYoYVolatility, interpolator),
           instruments_(instruments), accuracy_(accuracy) {
             bootstrap_.setup(this);

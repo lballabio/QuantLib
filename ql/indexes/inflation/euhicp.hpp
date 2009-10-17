@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Chris Kenyon
+ Copyright (C) 2007, 2009 Chris Kenyon
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,17 +32,15 @@ namespace QuantLib {
     //! EU HICP index
     class EUHICP : public ZeroInflationIndex {
       public:
-        EUHICP(Frequency frequency,
-               bool revised,
-               bool interpolated,
-               const Handle<ZeroInflationTermStructure>& ts =
-                                        Handle<ZeroInflationTermStructure>())
+        EUHICP(bool interpolated,
+               const RelinkableHandle<ZeroInflationTermStructure>& ts =
+                                        RelinkableHandle<ZeroInflationTermStructure>())
         : ZeroInflationIndex("HICP",
                              EURegion(),
-                             revised,
+                             false,
                              interpolated,
-                             frequency,
-                             Period(3, Months),
+                             Monthly,
+                             Period(1, Months),	// availability
                              EURCurrency(),
                              ts) {}
     };
@@ -51,18 +49,16 @@ namespace QuantLib {
     //! Genuine year-on-year EU HICP (i.e. not a ratio of EU HICP)
     class YYEUHICP : public YoYInflationIndex {
       public:
-        YYEUHICP(Frequency frequency,
-                 bool revised,
-                 bool interpolated,
-                 const Handle<YoYInflationTermStructure>& ts =
-                                         Handle<YoYInflationTermStructure>())
+        YYEUHICP(bool interpolated,
+                 const RelinkableHandle<YoYInflationTermStructure>& ts =
+                                         RelinkableHandle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_HICP",
                             EURegion(),
-                            revised,
+                            false,
                             interpolated,
                             false,
-                            frequency,
-                            Period(3, Months),
+                            Monthly,
+                            Period(1, Months),
                             EURCurrency(),
                             ts) {}
     };
@@ -71,18 +67,16 @@ namespace QuantLib {
     //! Fake year-on-year EU HICP (i.e. a ratio of EU HICP)
     class YYEUHICPr : public YoYInflationIndex {
       public:
-        YYEUHICPr(Frequency frequency,
-                  bool revised,
-                  bool interpolated,
-                  const Handle<YoYInflationTermStructure>& ts =
-                                         Handle<YoYInflationTermStructure>())
+        YYEUHICPr(bool interpolated,
+                  const RelinkableHandle<YoYInflationTermStructure>& ts =
+                                         RelinkableHandle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_HICP",
                             EURegion(),
-                            revised,
+                            false,
                             interpolated,
                             true,
-                            frequency,
-                            Period(3, Months),
+                            Monthly,
+                            Period(1, Months),
                             EURCurrency(),
                             ts) {}
     };

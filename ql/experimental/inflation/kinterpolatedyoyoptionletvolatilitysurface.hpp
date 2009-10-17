@@ -98,7 +98,9 @@ namespace QuantLib {
          const boost::shared_ptr<YoYOptionletStripper> &yoyOptionletStripper,
          const Real slope,
          const Interpolator1D &interpolator)
-    : YoYOptionletVolatilitySurface(settlementDays, cal, bdc, dc, lag),
+    : YoYOptionletVolatilitySurface(settlementDays, cal, bdc, dc, lag,
+									capFloorPrices->yoyIndex()->frequency(), 
+									capFloorPrices->yoyIndex()->interpolated()),
       capFloorPrices_(capFloorPrices), yoyInflationCouponPricer_(pricer),
       yoyOptionletStripper_(yoyOptionletStripper),
       factory1D_(interpolator), slope_(slope), lastDateisSet_(false) {
@@ -110,10 +112,7 @@ namespace QuantLib {
     Date KInterpolatedYoYOptionletVolatilitySurface<Interpolator1D>::
     maxDate() const {
         Size n = capFloorPrices_->maturities().size();
-        // round the maturity - since this should be an integer anyway
-        // this is safe
-        Natural y = (Natural)ceil((capFloorPrices_->maturities()[n-1])-0.5);
-        return referenceDate() + Period( y, Years);
+        return referenceDate()+capFloorPrices_->maturities()[n-1];
     }
 
 

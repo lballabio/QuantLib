@@ -188,6 +188,13 @@ namespace QuantLib {
                                Real forward,
                                Real stdDev,
                                Real discount = 1.0);
+	
+	//! this version applied discounting to (all) the result
+	Real bachelierBlackFormula2(Option::Type optionType,
+                               Real strike,
+                               Real forward,
+                               Real stdDev,
+                               Real discount = 1.0);
 
     /*! Black style formula when forward is normal rather than
         log-normal. This is essentially the model of Bachelier.

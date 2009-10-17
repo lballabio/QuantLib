@@ -18,34 +18,39 @@
 */
 
 #include <ql/termstructures/inflationtermstructure.hpp>
-#include <iostream>
+#include <ql/indexes/inflationindex.hpp>
+
 namespace QuantLib {
 
     InflationTermStructure::InflationTermStructure(
-                                        const Period& lag,
+										Rate baseRate,
+                                        const Period& observationLag,
                                         Frequency frequency,
-                                        Rate baseRate,
+										bool indexIsInterpolated,
                                         const Handle<YieldTermStructure>& yTS,
                                         const DayCounter& dayCounter,
                                         const boost::shared_ptr<Seasonality> &seasonality)
     : TermStructure(dayCounter), nominalTermStructure_(yTS),
-      lag_(lag), frequency_(frequency), baseRate_(baseRate) {
+      observationLag_(observationLag), frequency_(frequency), indexIsInterpolated_(indexIsInterpolated), 
+	  baseRate_(baseRate) {
         registerWith(nominalTermStructure_);
         setSeasonality(seasonality);
-    }
+	}
 
     InflationTermStructure::InflationTermStructure(
                                         const Date& referenceDate,
-                                        const Period& lag,
+										Rate baseRate,
+                                        const Period& observationLag,
                                         Frequency frequency,
-                                        Rate baseRate,
+										const bool indexIsInterpolated,
                                         const Handle<YieldTermStructure>& yTS,
                                         const Calendar& calendar,
                                         const DayCounter& dayCounter,
                                         const boost::shared_ptr<Seasonality> &seasonality)
     : TermStructure(referenceDate, calendar, dayCounter),
-      nominalTermStructure_(yTS), lag_(lag),
-      frequency_(frequency), baseRate_(baseRate) {
+      nominalTermStructure_(yTS), baseRate_(baseRate), observationLag_(observationLag),
+      frequency_(frequency), indexIsInterpolated_(indexIsInterpolated)  
+	   {
         registerWith(nominalTermStructure_);
         setSeasonality(seasonality);
     }
@@ -53,29 +58,34 @@ namespace QuantLib {
     InflationTermStructure::InflationTermStructure(
                                         Natural settlementDays,
                                         const Calendar& calendar,
-                                        const Period& lag,
+										Rate baseRate,
+                                        const Period& observationLag,
                                         Frequency frequency,
-                                        Rate baseRate,
+										bool indexIsInterpolated,
                                         const Handle<YieldTermStructure>& yTS,
                                         const DayCounter &dayCounter,
                                         const boost::shared_ptr<Seasonality> &seasonality)
     : TermStructure(settlementDays, calendar, dayCounter),
-      nominalTermStructure_(yTS), lag_(lag),
-      frequency_(frequency), baseRate_(baseRate) {
+      nominalTermStructure_(yTS), observationLag_(observationLag),
+      frequency_(frequency), indexIsInterpolated_(indexIsInterpolated),
+	  baseRate_(baseRate) {
         registerWith(nominalTermStructure_);
         setSeasonality(seasonality);
+	}
+
+
+    Period InflationTermStructure::observationLag() const {
+        return observationLag_;
     }
-
-
-    Period InflationTermStructure::lag() const {
-        return lag_;
-    }
-
 
     Frequency InflationTermStructure::frequency() const {
         return frequency_;
     }
 
+	bool InflationTermStructure::indexIsInterpolated() const {
+        return indexIsInterpolated_;
+    }
+	
     void InflationTermStructure::setSeasonality(
                           const boost::shared_ptr<Seasonality>& seasonality) {
         // always reset, whether with null or new pointer
@@ -109,13 +119,13 @@ namespace QuantLib {
 
     void InflationTermStructure::checkRange(const Date& d,
                                             bool extrapolate) const {
-        QL_REQUIRE(d >= baseDate(),
+		QL_REQUIRE(d >= baseDate(),
                    "date (" << d << ") is before base date");
         QL_REQUIRE(extrapolate || allowsExtrapolation() || d <= maxDate(),
                    "date (" << d << ") is past max curve date ("
                    << maxDate() << ")");
     }
-
+/*
     void InflationTermStructure::checkRange(Time t,
                                             bool extrapolate) const {
         QL_REQUIRE(t >= timeFromReference(baseDate()),
@@ -124,121 +134,170 @@ namespace QuantLib {
                    "time (" << t << ") is past max curve time ("
                    << maxTime() << ")");
     }
-
+*/
 
 
     ZeroInflationTermStructure::ZeroInflationTermStructure(
                                     const DayCounter& dayCounter,
-                                    const Period& lag,
+									Rate baseZeroRate,
+                                    const Period& observationLag,
                                     Frequency frequency,
-                                    Rate baseZeroRate,
+									bool indexIsInterpolated,
                                     const Handle<YieldTermStructure>& yTS,
                                     const boost::shared_ptr<Seasonality> &seasonality)
-    : InflationTermStructure(lag, frequency, baseZeroRate, yTS, dayCounter, seasonality) {}
+    : InflationTermStructure(baseZeroRate, observationLag, frequency, indexIsInterpolated,
+							 yTS, dayCounter, seasonality) {
+	}
 
     ZeroInflationTermStructure::ZeroInflationTermStructure(
                                     const Date& referenceDate,
                                     const Calendar& calendar,
                                     const DayCounter& dayCounter,
-                                    const Period& lag,
+									Rate baseZeroRate,
+                                    const Period& observationLag,
                                     Frequency frequency,
-                                    Rate baseZeroRate,
+									bool indexIsInterpolated,
                                     const Handle<YieldTermStructure>& yTS,
                                     const boost::shared_ptr<Seasonality> &seasonality)
-    : InflationTermStructure(referenceDate, lag, frequency, baseZeroRate,
-                             yTS, calendar, dayCounter, seasonality) {}
+    : InflationTermStructure(referenceDate, baseZeroRate, observationLag, frequency, indexIsInterpolated,
+                             yTS, calendar, dayCounter, seasonality) {
+	}
 
     ZeroInflationTermStructure::ZeroInflationTermStructure(
                                     Natural settlementDays,
                                     const Calendar& calendar,
                                     const DayCounter& dayCounter,
-                                    const Period& lag,
+									Rate baseZeroRate,
+                                    const Period& observationLag,
                                     Frequency frequency,
-                                    Rate baseZeroRate,
+									bool indexIsInterpolated,
                                     const Handle<YieldTermStructure>& yTS,
                                     const boost::shared_ptr<Seasonality> &seasonality)
-    : InflationTermStructure(settlementDays, calendar, lag, frequency,
-                             baseZeroRate, yTS, dayCounter, seasonality) {}
+    : InflationTermStructure(settlementDays, calendar, baseZeroRate, observationLag, frequency, indexIsInterpolated,
+                             yTS, dayCounter, seasonality) {
+	}
 
-    Rate ZeroInflationTermStructure::zeroRate(const Date &d,
+    Rate ZeroInflationTermStructure::zeroRate(const Date &d, const Period& instObsLag,
+											  bool forceLinearInterpolation,
                                               bool extrapolate) const {
-        InflationTermStructure::checkRange(d, extrapolate);
-        Rate zeroRate = zeroRateImpl(timeFromReference(d));
-        if(hasSeasonality()) {
-            zeroRate = seasonality()->correctZeroRate(d, zeroRate, this);
+		
+		Period useLag = instObsLag;
+		if (instObsLag == Period(-1,Days)) {
+			useLag = observationLag();
+		}
+		
+		Rate zeroRate;
+		if (forceLinearInterpolation) {
+			std::pair<Date,Date> dd = inflationPeriod(d-useLag, frequency());
+			dd.second = dd.second + Period(1,Days);
+			Real dp = dd.second - dd.first;
+			Real dt = d - dd.first;
+			// if we are interpolating we only check the exact point
+			// this prevents falling off the end at curve maturity
+			InflationTermStructure::checkRange(d, extrapolate);
+			Time t1 = timeFromReference(dd.first);
+			Time t2 = timeFromReference(dd.second);
+			zeroRate = zeroRateImpl(t1) + zeroRateImpl(t2) * (dt/dp);
+		} else {
+			if (indexIsInterpolated()) {
+				InflationTermStructure::checkRange(d-useLag, extrapolate);
+				Time t = timeFromReference(d-useLag);
+				zeroRate = zeroRateImpl(t);
+			} else {
+				std::pair<Date,Date> dd = inflationPeriod(d-useLag, frequency());
+				InflationTermStructure::checkRange(dd.first, extrapolate);
+				Time t = timeFromReference(dd.first);
+				zeroRate = zeroRateImpl(t);
+			}
+		}
+
+		if (hasSeasonality()) {
+            zeroRate = seasonality()->correctZeroRate(d-useLag, zeroRate, this);
         }
         return zeroRate;
     }
-
-    Rate ZeroInflationTermStructure::zeroRate(Time t,
-                                              bool extrapolate) const {
-        InflationTermStructure::checkRange(t, extrapolate);
-        std::cout<<"t = "<<t<<std::endl;
-        Date d = referenceDate() + t*Years;
-        std::cout<<"d = "<<d<<std::endl;
-        Rate zeroRate = zeroRateImpl(t);
-        if(hasSeasonality()) {
-            zeroRate = seasonality()->correctZeroRate(d, zeroRate, this);
-        }
-        return zeroRate;
-    }
-
 
     YoYInflationTermStructure::YoYInflationTermStructure(
                                     const DayCounter& dayCounter,
-                                    const Period& lag,
+									Rate baseYoYRate,
+                                    const Period& observationLag,
                                     Frequency frequency,
-                                    Rate baseYoYRate,
+									bool indexIsInterpolated,
                                     const Handle<YieldTermStructure>& yTS,
                                     const boost::shared_ptr<Seasonality> &seasonality)
-    : InflationTermStructure(lag, frequency, baseYoYRate, yTS, dayCounter, seasonality) {}
+    : InflationTermStructure(baseYoYRate, observationLag, frequency, indexIsInterpolated,
+							 yTS, dayCounter, seasonality) {}
 
     YoYInflationTermStructure::YoYInflationTermStructure(
                                     const Date& referenceDate,
                                     const Calendar& calendar,
                                     const DayCounter& dayCounter,
-                                    const Period& lag,
+									Rate baseYoYRate,
+                                    const Period& observationLag,
                                     Frequency frequency,
-                                    Rate baseYoYRate,
+									bool indexIsInterpolated,
                                     const Handle<YieldTermStructure>& yTS,
                                     const boost::shared_ptr<Seasonality> &seasonality)
-    : InflationTermStructure(referenceDate, lag, frequency, baseYoYRate,
+    : InflationTermStructure(referenceDate, baseYoYRate, observationLag, frequency, indexIsInterpolated, 
                              yTS, calendar, dayCounter, seasonality) {}
 
     YoYInflationTermStructure::YoYInflationTermStructure(
                                     Natural settlementDays,
                                     const Calendar& calendar,
                                     const DayCounter& dayCounter,
-                                    const Period& lag,
+									Rate baseYoYRate,
+                                    const Period& observationLag,
                                     Frequency frequency,
-                                    Rate baseYoYRate,
+									bool indexIsInterpolated,
                                     const Handle<YieldTermStructure>& yTS,
                                     const boost::shared_ptr<Seasonality> &seasonality)
-    : InflationTermStructure(settlementDays, calendar,lag, frequency,
-                             baseYoYRate, yTS, dayCounter, seasonality) {}
+    : InflationTermStructure(settlementDays, calendar, baseYoYRate, observationLag, 
+							 frequency, indexIsInterpolated,
+                             yTS, dayCounter, seasonality) {}
 
-    Rate YoYInflationTermStructure::yoyRate(const Date &d,
-                                            bool extrapolate) const {
-        InflationTermStructure::checkRange(d, extrapolate);
-        Rate yoyRate = yoyRateImpl(timeFromReference(d));
-        if(hasSeasonality()) {
-            yoyRate = seasonality()->correctYoYRate(d, yoyRate, this);
+    
+	Rate YoYInflationTermStructure::yoyRate(const Date &d, const Period& instObsLag,
+											  bool forceLinearInterpolation,
+                                              bool extrapolate) const {
+		
+		Period useLag = instObsLag;
+		if (instObsLag == Period(-1,Days)) {
+			useLag = observationLag();
+		}
+		
+		Rate yoyRate;
+		if (forceLinearInterpolation) {
+			std::pair<Date,Date> dd = inflationPeriod(d-useLag, frequency());
+			dd.second = dd.second + Period(1,Days);
+			Real dp = dd.second - dd.first;
+			Real dt = (d-useLag) - dd.first;
+			// if we are interpolating we only check the exact point
+			// this prevents falling off the end at curve maturity
+			InflationTermStructure::checkRange(d, extrapolate);
+			Time t1 = timeFromReference(dd.first);
+			Time t2 = timeFromReference(dd.second);
+			yoyRate = yoyRateImpl(t1) + (yoyRateImpl(t2)-yoyRateImpl(t1)) * (dt/dp);
+		} else {
+			if (indexIsInterpolated()) {
+				InflationTermStructure::checkRange(d-useLag, extrapolate);
+				Time t = timeFromReference(d-useLag);
+				yoyRate = yoyRateImpl(t);
+			} else {
+				std::pair<Date,Date> dd = inflationPeriod(d-useLag, frequency());
+				InflationTermStructure::checkRange(dd.first, extrapolate);
+				Time t = timeFromReference(dd.first);
+				yoyRate = yoyRateImpl(t);
+			}
+		}
+		
+		if (hasSeasonality()) {
+            yoyRate = seasonality()->correctYoYRate(d-useLag, yoyRate, this);
         }
         return yoyRate;
     }
-
-    Rate YoYInflationTermStructure::yoyRate(Time t,
-                                            bool extrapolate) const {
-        InflationTermStructure::checkRange(t, extrapolate);
-        Date d = referenceDate() + t*Years;
-        Rate yoyRate = yoyRateImpl(t);
-        if(hasSeasonality()) {
-            yoyRate = seasonality()->correctYoYRate(d, yoyRate, this);
-        }
-        return yoyRate;
-    }
-
-
+	
+	
+	
 
     std::pair<Date,Date> inflationPeriod(const Date& d,
                                          Frequency frequency) {
@@ -274,5 +333,29 @@ namespace QuantLib {
         return std::make_pair(startDate,endDate);
     }
 
+	
+	Time inflationYearFraction(Frequency f, bool indexIsInterpolated,
+							   const DayCounter &dayCounter,
+							   const Date &d1, const Date &d2) {
+	
+		Time t=0;
+		if (indexIsInterpolated) {
+			// N.B. we do not use linear interpolation between flat
+			// fixing forecasts for forecasts.  This avoids awkwardnesses
+			// when bootstrapping the inflation curve.
+			t = dayCounter.yearFraction(d1, d2);
+        } else {	
+			// I.e. fixing is constant for the whole inflation period.
+			// Use the value for half way along the period.
+			// But the inflation time is the time between period starts
+            std::pair<Date,Date> limD1 = inflationPeriod(d1, f);
+			std::pair<Date,Date> limD2 = inflationPeriod(d2, f);
+			t = dayCounter.yearFraction(limD1.first, limD2.first);	
+		}
+		
+		return t;	
+	}
+	
+	
 }
 

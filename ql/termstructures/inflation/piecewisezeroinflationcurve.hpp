@@ -28,7 +28,7 @@
 #include <ql/termstructures/inflation/interpolatedzeroinflationcurve.hpp>
 #include <ql/termstructures/iterativebootstrap.hpp>
 #include <ql/patterns/lazyobject.hpp>
-
+#include <iostream>
 namespace QuantLib {
 
     //! Bootstrap traits to use for PiecewiseZeroInflationCurve
@@ -39,7 +39,12 @@ namespace QuantLib {
         static Size maxIterations() { return 5; } // calibration is trivial,
                                                   // should be immediate
         static Date initialDate(const ZeroInflationTermStructure* t) {
-            return t->referenceDate() - t->lag();
+			if (t->indexIsInterpolated()) {
+				return t->referenceDate() - t->observationLag();
+			} else {
+				return inflationPeriod(t->referenceDate() - t->observationLag(), 
+									   t->frequency()).first;
+			}
         }
         static bool dummyInitialValue() { return false; }
         static Rate initialValue(const ZeroInflationTermStructure* t) {
@@ -88,6 +93,7 @@ namespace QuantLib {
                const DayCounter& dayCounter,
                const Period& lag,
                Frequency frequency,
+			   bool indexIsInterpolated,
                Rate baseZeroRate,
                const Handle<YieldTermStructure>& nominalTS,
                const std::vector<boost::shared_ptr<typename Traits::helper> >&
@@ -95,7 +101,7 @@ namespace QuantLib {
                Real accuracy = 1.0e-12,
                const Interpolator& i = Interpolator())
         : base_curve(referenceDate, calendar, dayCounter,
-                     lag, frequency, baseZeroRate,
+                     lag, frequency, indexIsInterpolated, baseZeroRate,
                      nominalTS, i),
           instruments_(instruments), accuracy_(accuracy) {
             bootstrap_.setup(this);
@@ -166,7 +172,7 @@ namespace QuantLib {
     template <class I, template <class> class B, class T>
     const std::vector<Real>& PiecewiseZeroInflationCurve<I,B,T>::data() const {
         calculate();
-        return base_curve::data();
+        return base_curve::rates();
     }
 
     template <class I, template <class> class B, class T>

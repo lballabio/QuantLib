@@ -88,7 +88,9 @@
 #include "himalayaoption.hpp"
 #include "hybridhestonhullwhiteprocess.hpp"
 #include "inflation.hpp"
-#include "inflationvol.hpp"
+#include "inflationcapfloor.hpp"
+#include "inflationcapflooredcoupon.hpp"
+#include "inflationvolatility.hpp"
 #include "instruments.hpp"
 #include "integrals.hpp"
 #include "interestrates.hpp"
@@ -255,8 +257,10 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(HestonModelTest::suite());
     test->add(HimalayaOptionTest::suite());
     test->add(HybridHestonHullWhiteProcessTest::suite());
-    test->add(InflationTest::suite());
-    test->add(InflationVolTest::suite());
+    test->add(InflationTest::suite());					// in general inflation & tests
+	test->add(InflationCapFloorTest::suite());			// use indexed coupons, i.e. 
+	test->add(InflationCapFlooredCouponTest::suite());	// QL_USE_INDEXED_COUPON has no effect
+    test->add(InflationVolTest::suite());				// 
     test->add(InstrumentTest::suite());
     test->add(IntegralTest::suite());
     test->add(InterestRateTest::suite());

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file frhicp.hpp
+/*! \file frhico.hpp
     \brief French HICP inflation indexes
 */
 
@@ -32,17 +32,15 @@ namespace QuantLib {
     //! FR HICP index
     class FRHICP : public ZeroInflationIndex {
       public:
-        FRHICP(Frequency frequency,
-               bool revised,
-               bool interpolated,
-               const Handle<ZeroInflationTermStructure>& ts =
-                                         Handle<ZeroInflationTermStructure>())
+        FRHICP(bool interpolated,
+               const RelinkableHandle<ZeroInflationTermStructure>& ts =
+                                         RelinkableHandle<ZeroInflationTermStructure>())
         : ZeroInflationIndex("HICP",
                              FranceRegion(),
-                             revised,
+                             false,
                              interpolated,
-                             frequency,
-                             Period(3, Months),
+                             Monthly,
+                             Period(1, Months),
                              EURCurrency(),
                              ts) {}
     };
@@ -51,18 +49,16 @@ namespace QuantLib {
     //! Genuine year-on-year FR HICP (i.e. not a ratio)
     class YYFRHICP : public YoYInflationIndex {
       public:
-        YYFRHICP(Frequency frequency,
-                 bool revised,
-                 bool interpolated,
-                 const Handle<YoYInflationTermStructure>& ts =
-                                          Handle<YoYInflationTermStructure>())
+        YYFRHICP(bool interpolated,
+                 const RelinkableHandle<YoYInflationTermStructure>& ts =
+                                          RelinkableHandle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_HICP",
                             FranceRegion(),
-                            revised,
+                            false,
                             interpolated,
                             false,
-                            frequency,
-                            Period(3, Months),
+                            Monthly,
+                            Period(1, Months),
                             EURCurrency(),
                             ts) {}
     };
@@ -71,18 +67,16 @@ namespace QuantLib {
     //! Fake year-on-year FR HICP (i.e. a ratio)
     class YYFRHICPr : public YoYInflationIndex {
       public:
-        YYFRHICPr(Frequency frequency,
-                  bool revised,
-                  bool interpolated,
-                  const Handle<YoYInflationTermStructure>& ts =
-                                          Handle<YoYInflationTermStructure>())
+        YYFRHICPr(bool interpolated,
+                  const RelinkableHandle<YoYInflationTermStructure>& ts =
+                                          RelinkableHandle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_HICP",
                             FranceRegion(),
-                            revised,
+                            false,
                             interpolated,
                             true,
-                            frequency,
-                            Period(3, Months),
+                            Monthly,
+                            Period(1, Months),
                             EURCurrency(),
                             ts) {}
     };

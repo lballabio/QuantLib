@@ -12,5 +12,6 @@
 
 #include <ql/termstructures/volatility/equityfx/all.hpp>
 #include <ql/termstructures/volatility/capfloor/all.hpp>
+#include <ql/termstructures/volatility/inflation/all.hpp>
 #include <ql/termstructures/volatility/optionlet/all.hpp>
 #include <ql/termstructures/volatility/swaption/all.hpp>

@@ -38,6 +38,16 @@ namespace QuantLib {
     //! Base class for inflation-rate indexes,
     class InflationIndex : public Index, public Observer {
       public:
+		/*! An inflation index may return interpolated
+		 values.  These are linearly interpolated
+		 values with act/act convention within a period.
+		 Note that stored "fixings" are always flat (constant)
+		 within a period and interpolated as needed.  This
+		 is because interpolation adds an addional availability
+		 lag (because you always need the next period to
+		 give the previous period's value) 
+		 and enables storage of the most recent uninterpolated value.
+		 */
         InflationIndex(const std::string& familyName,
                        const Region& region,
                        bool revised,
@@ -132,16 +142,16 @@ namespace QuantLib {
                            Frequency frequency,
                            const Period& availabilityLag,
                            const Currency& currency,
-                           const Handle<ZeroInflationTermStructure>& ts =
-                                        Handle<ZeroInflationTermStructure>());
+                           const RelinkableHandle<ZeroInflationTermStructure>& ts =
+                                        RelinkableHandle<ZeroInflationTermStructure>());
 
         Rate fixing(const Date& fixingDate,
                     bool forecastTodaysFixing = false) const;
 
-        Handle<ZeroInflationTermStructure> zeroInflationTermStructure() const;
+        RelinkableHandle<ZeroInflationTermStructure> zeroInflationTermStructure() const;
       private:
         Rate forecastFixing(const Date& fixingDate) const;
-        Handle<ZeroInflationTermStructure> zeroInflation_;
+        RelinkableHandle<ZeroInflationTermStructure> zeroInflation_;
     };
 
     //! Base class for year-on-year inflation indices.
@@ -159,18 +169,18 @@ namespace QuantLib {
                           Frequency frequency,
                           const Period& availabilityLag,
                           const Currency& currency,
-                          const Handle<YoYInflationTermStructure>& ts =
-                                         Handle<YoYInflationTermStructure>());
+                          const RelinkableHandle<YoYInflationTermStructure>& ts =
+								RelinkableHandle<YoYInflationTermStructure>());
 
         Rate fixing(const Date& fixingDate,
                     bool forecastTodaysFixing = false) const;
 
         bool ratio() const;
-        Handle<YoYInflationTermStructure> yoyInflationTermStructure() const;
+        RelinkableHandle<YoYInflationTermStructure> yoyInflationTermStructure() const;
       private:
         Rate forecastFixing(const Date& fixingDate) const;
         bool ratio_;
-        Handle<YoYInflationTermStructure> yoyInflation_;
+        RelinkableHandle<YoYInflationTermStructure> yoyInflation_;
     };
 
 }

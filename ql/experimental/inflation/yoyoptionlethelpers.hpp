@@ -24,9 +24,9 @@
 #ifndef quantlib_yoy_optionlet_helpers_hpp
 #define quantlib_yoy_optionlet_helpers_hpp
 
-#include <ql/experimental/inflation/yoyoptionletvolatilitystructures.hpp>
-#include <ql/experimental/inflation/inflationcapfloor.hpp>
-#include <ql/experimental/inflation/inflationcapfloorengines.hpp>
+#include <ql/experimental/inflation/yoyinflationoptionletvolatilitystructure2.hpp>
+#include <ql/instruments/inflationcapfloor.hpp>
+#include <ql/pricingengines/inflation/inflationcapfloorengines.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
 
 namespace QuantLib {
@@ -41,6 +41,8 @@ namespace QuantLib {
                                 // (e.g. bps = 10,000)
                  YoYInflationCapFloor::Type capFloorType,
                  Period &lag,
+				 const DayCounter& yoyDayCounter,
+				 const Calendar& paymentCalendar,
                  Natural fixingDays,
                  const boost::shared_ptr<YoYInflationIndex>& index,
                  Rate strike, Size n,
@@ -56,6 +58,8 @@ namespace QuantLib {
                                                       // nominal & yoy curves
         Rate strike_;
         Size n_;  // how many payments
+		DayCounter yoyDayCounter_;
+		Calendar calendar_;
         boost::shared_ptr<YoYInflationCapFloorEngine> pricer_;
         // what you make
         boost::shared_ptr<YoYInflationCapFloor> yoyCapFloor_;

@@ -83,6 +83,12 @@ namespace QuantLib {
         UKRegion();
     };
 
+	//! USA as geographical/economic region
+    class USRegion : public Region {
+	public:
+        USRegion();
+    };
+	
 
 
     // inline definitions

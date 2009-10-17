@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/inflation/yoyoptionlethelpers.hpp>
+#include <ql/instruments/makeyoyinflationcapfloor.hpp>
 
 namespace QuantLib {
 
@@ -31,6 +32,8 @@ namespace QuantLib {
                   Real notional,
                   YoYInflationCapFloor::Type capFloorType,
                   Period &lag,
+				  const DayCounter& yoyDayCounter,
+				  const Calendar& paymentCalendar,
                   Natural fixingDays,
                   const boost::shared_ptr<YoYInflationIndex>& index,
                   Rate strike, Size n,
@@ -38,19 +41,28 @@ namespace QuantLib {
     : BootstrapHelper<YoYOptionletVolatilitySurface>(price),
       notional_(notional), capFloorType_(capFloorType), lag_(lag),
       fixingDays_(fixingDays), index_(index), strike_(strike), n_(n),
+	  yoyDayCounter_(yoyDayCounter), calendar_(paymentCalendar),
       pricer_(pricer) {
 
         // build the instrument to reprice (only need do this once)
         yoyCapFloor_ = boost::shared_ptr<YoYInflationCapFloor>(
                  new YoYInflationCapFloor(
-                     MakeYoYInflationCapFloor(capFloorType_, lag_,
-                                              fixingDays_, index_, strike_, n_)
-                     .withNominal(notional)));
+                     MakeYoYInflationCapFloor(capFloorType_, n_, calendar_,
+											  index_, lag_, strike_)
+					.withNominal(notional)
+					.withFixingDays(fixingDays_)
+					.withPaymentDayCounter(yoyDayCounter_)
+										  ));
         // dates already build in lag of index/instrument
         // these are the dates of the values of the index
         // that fix the capfloor
-        earliestDate_ = yoyCapFloor_->fixingDates().front();
-        latestDate_ = yoyCapFloor_->fixingDates().back();
+		  earliestDate_ =
+		  boost::dynamic_pointer_cast<YoYInflationCoupon>(yoyCapFloor_->yoyLeg().front())
+		  ->fixingDate();
+		  latestDate_ =
+		  boost::dynamic_pointer_cast<YoYInflationCoupon>(yoyCapFloor_->yoyLeg().back())
+		  ->fixingDate();
+		  
         // each reprice is resetting the inflation surf in the
         // pricer... so set the pricer
         yoyCapFloor_->setPricingEngine(pricer_);

@@ -30,13 +30,14 @@ this_include_HEADERS = \
     forwardvanillaoption.hpp \
     himalayaoption.hpp \
     impliedvolatility.hpp \
-    inflationswap.hpp \
+    inflationcapfloor.hpp \
     lookbackoption.hpp \
     makecapfloor.hpp \
     makecms.hpp \
     makeois.hpp \
     makeswaption.hpp \
     makevanillaswap.hpp \
+    makeyoyinflationcapfloor.hpp \
     multiassetoption.hpp \
     oneassetoption.hpp \
     overnightindexedswap.hpp \
@@ -78,13 +79,14 @@ libInstruments_la_SOURCES = \
     forwardvanillaoption.cpp \
     himalayaoption.cpp \
     impliedvolatility.cpp \
-    inflationswap.cpp \
+    inflationcapfloor.cpp \
     lookbackoption.cpp \
     makecapfloor.cpp \
     makecms.cpp \
     makeois.cpp \
     makeswaption.cpp \
     makevanillaswap.cpp \
+    makeyoyinflationcapfloor.cpp \
     multiassetoption.cpp \
     oneassetoption.cpp \
     overnightindexedswap.cpp \

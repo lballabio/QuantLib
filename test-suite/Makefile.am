@@ -47,7 +47,9 @@ QL_TESTS = \
 	himalayaoption.hpp himalayaoption.cpp \
 	hybridhestonhullwhiteprocess.hpp hybridhestonhullwhiteprocess.cpp \
 	inflation.hpp inflation.cpp \
-	inflationvol.hpp inflationvol.cpp \
+	inflationcapfloor.hpp inflationcapfloor.cpp \
+	inflationcapflooredcoupon.hpp inflationcapflooredcoupon.cpp \
+	inflationvolatility.hpp inflationvolatility.cpp \
 	instruments.hpp instruments.cpp \
 	integrals.hpp integrals.cpp \
 	interestrates.hpp interestrates.cpp \

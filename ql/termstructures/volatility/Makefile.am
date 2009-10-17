@@ -1,5 +1,5 @@
 
-SUBDIRS = equityfx capfloor optionlet swaption
+SUBDIRS = equityfx capfloor inflation optionlet swaption
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
@@ -27,6 +27,7 @@ libVolTermStructures_la_SOURCES = \
 libVolTermStructures_la_LIBADD = \
     equityfx/libEquityFxVol.la \
     capfloor/libCapFloorVol.la \
+    inflation/libInflationVol.la \
     optionlet/libOptionletVol.la \
     swaption/libSwaptionVol.la
 

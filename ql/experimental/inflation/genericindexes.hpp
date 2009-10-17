@@ -47,8 +47,8 @@ namespace QuantLib {
                    bool interpolated,
                    const Period &lag,
                    const Currency &ccy,
-                   const Handle<ZeroInflationTermStructure>& ts =
-                                         Handle<ZeroInflationTermStructure>())
+                   const RelinkableHandle<ZeroInflationTermStructure>& ts =
+                                         RelinkableHandle<ZeroInflationTermStructure>())
         : ZeroInflationIndex("CPI",
                              GenericRegion(),
                              revised,
@@ -68,8 +68,8 @@ namespace QuantLib {
                      bool interpolated,
                      const Period &lag,
                      const Currency &ccy,
-                     const Handle<YoYInflationTermStructure>& ts =
-                                          Handle<YoYInflationTermStructure>())
+                     const RelinkableHandle<YoYInflationTermStructure>& ts =
+                                          RelinkableHandle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_CPI",
                             GenericRegion(),
                             revised,
@@ -89,8 +89,8 @@ namespace QuantLib {
                       bool interpolated,
                       const Period &lag,
                       const Currency &ccy,
-                      const Handle<YoYInflationTermStructure>& ts =
-                                          Handle<YoYInflationTermStructure>())
+                      const RelinkableHandle<YoYInflationTermStructure>& ts =
+                                          RelinkableHandle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_CPI",
                             GenericRegion(),
                             revised,

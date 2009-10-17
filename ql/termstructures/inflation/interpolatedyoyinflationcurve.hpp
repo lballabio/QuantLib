@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007, 2008 Chris Kenyon
+ Copyright (C) 2007, 2008, 2009 Chris Kenyon
  Copyright (C) 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -49,6 +49,7 @@ namespace QuantLib {
                                       const DayCounter& dayCounter,
                                       const Period& lag,
                                       Frequency frequency,
+									  bool indexIsInterpolated,
                                       const Handle<YieldTermStructure>& yTS,
                                       const std::vector<Date>& dates,
                                       const std::vector<Rate>& rates,
@@ -83,9 +84,10 @@ namespace QuantLib {
         InterpolatedYoYInflationCurve(const Date& referenceDate,
                                       const Calendar& calendar,
                                       const DayCounter& dayCounter,
+									  Rate baseYoYRate,
                                       const Period& lag,
                                       Frequency frequency,
-                                      Rate baseYoYRate,
+									  bool indexIsInterpolated,
                                       const Handle<YieldTermStructure>& yTS,
                                       const Interpolator& interpolator
                                                             = Interpolator());
@@ -104,12 +106,13 @@ namespace QuantLib {
                                   const DayCounter& dayCounter,
                                   const Period& lag,
                                   Frequency frequency,
+								  bool indexIsInterpolated,
                                   const Handle<YieldTermStructure>& yTS,
                                   const std::vector<Date>& dates,
                                   const std::vector<Rate>& rates,
                                   const Interpolator& interpolator)
-    : YoYInflationTermStructure(referenceDate, calendar, dayCounter,
-                                lag, frequency, rates[0], yTS),
+    : YoYInflationTermStructure(referenceDate, calendar, dayCounter, rates[0],
+                                lag, frequency, indexIsInterpolated,  yTS),
       InterpolatedCurve<Interpolator>(std::vector<Time>(), rates, interpolator),
       dates_(dates) {
 
@@ -119,7 +122,7 @@ namespace QuantLib {
         // i.e. referenceDate - lag, at least must be in the relevant
         // period
         std::pair<Date,Date> lim =
-            inflationPeriod(yTS->referenceDate() - this->lag(), frequency);
+            inflationPeriod(yTS->referenceDate() - this->observationLag(), frequency);
         QL_REQUIRE(lim.first <= dates_[0] && dates_[0] <= lim.second,
                    "first data date is not in base period, date: " << dates_[0]
                    << " not within [" << lim.first << "," << lim.second << "]");
@@ -159,13 +162,14 @@ namespace QuantLib {
     InterpolatedYoYInflationCurve(const Date& referenceDate,
                                   const Calendar& calendar,
                                   const DayCounter& dayCounter,
+								  Rate baseYoYRate,
                                   const Period& lag,
                                   Frequency frequency,
-                                  Rate baseYoYRate,
+								  bool indexIsInterpolated,
                                   const Handle<YieldTermStructure>& yTS,
                                   const Interpolator& interpolator)
-    : YoYInflationTermStructure(referenceDate, calendar, dayCounter,
-                                lag, frequency, baseYoYRate, yTS),
+    : YoYInflationTermStructure(referenceDate, calendar, dayCounter, baseYoYRate, 
+                                lag, frequency, indexIsInterpolated, yTS),
       InterpolatedCurve<Interpolator>(interpolator) {}
 
 
