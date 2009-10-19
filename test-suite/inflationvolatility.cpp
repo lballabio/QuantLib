@@ -345,7 +345,7 @@ void InflationVolTest::testYoYPriceSurfaceToATM() {
     pair<vector<Time>, vector<Rate> > yyATMt = cfEUprices->atmYoYSwapTimeRates();
 	pair<vector<Date>, vector<Rate> > yyATMd = cfEUprices->atmYoYSwapDateRates();
  
-    Real dy = (Real)lag / 12.0;
+    // Real dy = (Real)lag / 12.0;
     const Real crv[] = {0.024586, 0.0247575, 0.0249396, 0.0252596,
                           0.0258498, 0.0262883, 0.0267915};
     const Real swaps[] = {0.024586, 0.0247575, 0.0249396, 0.0252596,
