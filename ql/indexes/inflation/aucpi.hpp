@@ -35,8 +35,8 @@ namespace QuantLib {
         AUCPI(Frequency frequency,
               bool revised,
               bool interpolated,
-              const RelinkableHandle<ZeroInflationTermStructure>& ts =
-                                         RelinkableHandle<ZeroInflationTermStructure>())
+              const Handle<ZeroInflationTermStructure>& ts =
+                                         Handle<ZeroInflationTermStructure>())
         : ZeroInflationIndex("CPI",
                              AustraliaRegion(),
                              revised,
@@ -54,8 +54,8 @@ namespace QuantLib {
         YYAUCPI(Frequency frequency,
                 bool revised,
                 bool interpolated,
-                const RelinkableHandle<YoYInflationTermStructure>& ts =
-                                          RelinkableHandle<YoYInflationTermStructure>())
+                const Handle<YoYInflationTermStructure>& ts =
+                                          Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_CPI",
                             AustraliaRegion(),
                             revised,
@@ -73,8 +73,8 @@ namespace QuantLib {
         YYAUCPIr(Frequency frequency,
                  bool revised,
                  bool interpolated,
-                 const RelinkableHandle<YoYInflationTermStructure>& ts =
-                                          RelinkableHandle<YoYInflationTermStructure>())
+                 const Handle<YoYInflationTermStructure>& ts =
+                                          Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_CPI",
                             AustraliaRegion(),
                             revised,

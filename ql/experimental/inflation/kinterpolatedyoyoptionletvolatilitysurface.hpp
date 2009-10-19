@@ -38,6 +38,8 @@ namespace QuantLib {
         FittedYoYOptionletVolatilitySurface taking a model, e.g. SABR
         in the interest rate world.  This could use the same stripping
         in the T direction along each K.
+
+        \bug Tests currently fail.
     */
     template<class Interpolator1D>
     class KInterpolatedYoYOptionletVolatilitySurface

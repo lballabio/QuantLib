@@ -142,16 +142,19 @@ namespace QuantLib {
                            Frequency frequency,
                            const Period& availabilityLag,
                            const Currency& currency,
-                           const RelinkableHandle<ZeroInflationTermStructure>& ts =
-                                        RelinkableHandle<ZeroInflationTermStructure>());
+                           const Handle<ZeroInflationTermStructure>& ts =
+                                        Handle<ZeroInflationTermStructure>());
 
         Rate fixing(const Date& fixingDate,
                     bool forecastTodaysFixing = false) const;
 
-        RelinkableHandle<ZeroInflationTermStructure> zeroInflationTermStructure() const;
+        Handle<ZeroInflationTermStructure> zeroInflationTermStructure() const;
+
+        boost::shared_ptr<ZeroInflationIndex> clone(
+                           const Handle<ZeroInflationTermStructure>& h) const;
       private:
         Rate forecastFixing(const Date& fixingDate) const;
-        RelinkableHandle<ZeroInflationTermStructure> zeroInflation_;
+        Handle<ZeroInflationTermStructure> zeroInflation_;
     };
 
     //! Base class for year-on-year inflation indices.
@@ -169,18 +172,21 @@ namespace QuantLib {
                           Frequency frequency,
                           const Period& availabilityLag,
                           const Currency& currency,
-                          const RelinkableHandle<YoYInflationTermStructure>& ts =
-                                RelinkableHandle<YoYInflationTermStructure>());
+                          const Handle<YoYInflationTermStructure>& ts =
+                                Handle<YoYInflationTermStructure>());
 
         Rate fixing(const Date& fixingDate,
                     bool forecastTodaysFixing = false) const;
 
         bool ratio() const;
-        RelinkableHandle<YoYInflationTermStructure> yoyInflationTermStructure() const;
+        Handle<YoYInflationTermStructure> yoyInflationTermStructure() const;
+
+        boost::shared_ptr<YoYInflationIndex> clone(
+                            const Handle<YoYInflationTermStructure>& h) const;
       private:
         Rate forecastFixing(const Date& fixingDate) const;
         bool ratio_;
-        RelinkableHandle<YoYInflationTermStructure> yoyInflation_;
+        Handle<YoYInflationTermStructure> yoyInflation_;
     };
 
 }

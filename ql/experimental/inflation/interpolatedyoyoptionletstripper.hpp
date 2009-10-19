@@ -36,6 +36,8 @@ namespace QuantLib {
 
     /*! The interpolated version interpolates along each K (as opposed
         to fitting a model, say).
+
+        \bug Tests currently fail.
     */
     template <class Interpolator1D>
     class InterpolatedYoYOptionletStripper : public YoYOptionletStripper {

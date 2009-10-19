@@ -33,8 +33,8 @@ namespace QuantLib {
     class FRHICP : public ZeroInflationIndex {
       public:
         FRHICP(bool interpolated,
-               const RelinkableHandle<ZeroInflationTermStructure>& ts =
-                                         RelinkableHandle<ZeroInflationTermStructure>())
+               const Handle<ZeroInflationTermStructure>& ts =
+                                         Handle<ZeroInflationTermStructure>())
         : ZeroInflationIndex("HICP",
                              FranceRegion(),
                              false,
@@ -50,8 +50,8 @@ namespace QuantLib {
     class YYFRHICP : public YoYInflationIndex {
       public:
         YYFRHICP(bool interpolated,
-                 const RelinkableHandle<YoYInflationTermStructure>& ts =
-                                          RelinkableHandle<YoYInflationTermStructure>())
+                 const Handle<YoYInflationTermStructure>& ts =
+                                          Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_HICP",
                             FranceRegion(),
                             false,
@@ -68,8 +68,8 @@ namespace QuantLib {
     class YYFRHICPr : public YoYInflationIndex {
       public:
         YYFRHICPr(bool interpolated,
-                  const RelinkableHandle<YoYInflationTermStructure>& ts =
-                                          RelinkableHandle<YoYInflationTermStructure>())
+                  const Handle<YoYInflationTermStructure>& ts =
+                                          Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_HICP",
                             FranceRegion(),
                             false,

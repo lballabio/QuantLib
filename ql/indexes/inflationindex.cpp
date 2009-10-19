@@ -17,11 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
 #include <ql/indexes/inflationindex.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
-#include <iostream>
+
 namespace QuantLib {
 
     InflationIndex::InflationIndex(const std::string& familyName,
@@ -115,7 +114,7 @@ namespace QuantLib {
                       Frequency frequency,
                       const Period& availabilityLag,
                       const Currency& currency,
-                      const RelinkableHandle<ZeroInflationTermStructure>& zeroInflation)
+                      const Handle<ZeroInflationTermStructure>& zeroInflation)
     : InflationIndex(familyName, region, revised, interpolated,
                      frequency, availabilityLag, currency),
       zeroInflation_(zeroInflation) {
@@ -197,11 +196,19 @@ namespace QuantLib {
     }
 
 
-    RelinkableHandle<ZeroInflationTermStructure>
+    Handle<ZeroInflationTermStructure>
     ZeroInflationIndex::zeroInflationTermStructure() const {
         return zeroInflation_;
     }
 
+
+    boost::shared_ptr<ZeroInflationIndex> ZeroInflationIndex::clone(
+                          const Handle<ZeroInflationTermStructure>& h) const {
+        return boost::shared_ptr<ZeroInflationIndex>(
+                      new ZeroInflationIndex(familyName_, region_, revised_,
+                                             interpolated_, frequency_,
+                                             availabilityLag_, currency_, h));
+    }
 
     // these still need to be fixed to latest versions
 
@@ -214,7 +221,7 @@ namespace QuantLib {
             Frequency frequency,
             const Period& availabilityLag,
             const Currency& currency,
-            const RelinkableHandle<YoYInflationTermStructure>& yoyInflation)
+            const Handle<YoYInflationTermStructure>& yoyInflation)
     : InflationIndex(familyName, region, revised, interpolated,
                      frequency, availabilityLag, currency),
       ratio_(ratio), yoyInflation_(yoyInflation) {
@@ -359,9 +366,17 @@ namespace QuantLib {
         return ratio_;
     }
 
-    RelinkableHandle<YoYInflationTermStructure>
+    Handle<YoYInflationTermStructure>
     YoYInflationIndex::yoyInflationTermStructure() const {
         return yoyInflation_;
+    }
+
+    boost::shared_ptr<YoYInflationIndex> YoYInflationIndex::clone(
+                           const Handle<YoYInflationTermStructure>& h) const {
+        return boost::shared_ptr<YoYInflationIndex>(
+                      new YoYInflationIndex(familyName_, region_, revised_,
+                                            interpolated_, ratio_, frequency_,
+                                            availabilityLag_, currency_, h));
     }
 
 }

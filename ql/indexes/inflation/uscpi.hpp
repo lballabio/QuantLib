@@ -33,8 +33,8 @@ namespace QuantLib {
     class USCPI : public ZeroInflationIndex {
     public:
         USCPI(bool interpolated,
-               const RelinkableHandle<ZeroInflationTermStructure>& ts =
-               RelinkableHandle<ZeroInflationTermStructure>())
+               const Handle<ZeroInflationTermStructure>& ts =
+                                         Handle<ZeroInflationTermStructure>())
         : ZeroInflationIndex("CPI",
                              USRegion(),
                              false,
@@ -50,8 +50,8 @@ namespace QuantLib {
     class YYUSCPI : public YoYInflationIndex {
     public:
         YYUSCPI(bool interpolated,
-                 const RelinkableHandle<YoYInflationTermStructure>& ts =
-                 RelinkableHandle<YoYInflationTermStructure>())
+                 const Handle<YoYInflationTermStructure>& ts =
+                                          Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_CPI",
                             USRegion(),
                             false,
@@ -68,8 +68,8 @@ namespace QuantLib {
     class YYUSCPIr : public YoYInflationIndex {
     public:
         YYUSCPIr(bool interpolated,
-                  const RelinkableHandle<YoYInflationTermStructure>& ts =
-                  RelinkableHandle<YoYInflationTermStructure>())
+                  const Handle<YoYInflationTermStructure>& ts =
+                                          Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_CPI",
                             USRegion(),
                             false,

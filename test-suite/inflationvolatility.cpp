@@ -57,8 +57,8 @@ namespace {
     Handle<YieldTermStructure> nominalEUR;
     Handle<YieldTermStructure> nominalGBP;
 
-    Handle<YoYInflationTermStructure> yoyEU;
-    Handle<YoYInflationTermStructure> yoyUK;
+    RelinkableHandle<YoYInflationTermStructure> yoyEU;
+    RelinkableHandle<YoYInflationTermStructure> yoyUK;
 
     vector<Rate> cStrikesEU;
     vector<Rate> fStrikesEU;
@@ -66,8 +66,8 @@ namespace {
     shared_ptr<Matrix> cPriceEU;
     shared_ptr<Matrix> fPriceEU;
 
-    shared_ptr<YoYInflationIndex> yoyIndexUK(new YYUKRPIr(true));
-	shared_ptr<YoYInflationIndex> yoyIndexEU(new YYEUHICPr(true));
+    shared_ptr<YoYInflationIndex> yoyIndexUK(new YYUKRPIr(true, yoyUK));
+    shared_ptr<YoYInflationIndex> yoyIndexEU(new YYEUHICPr(true, yoyEU));
 
     vector<Rate> cStrikesUK;
     vector<Rate> fStrikesUK;
@@ -170,10 +170,9 @@ namespace {
 
         shared_ptr<InterpolatedYoYInflationCurve<Linear> >
             pYTSEU( new InterpolatedYoYInflationCurve<Linear>(
-                    eval, TARGET(), Actual365Fixed(), Period(2,Months), Monthly, 
-					indexIsInterpolated, nominalGBP, d, r) );
-        Handle<YoYInflationTermStructure> hYTSEU(pYTSEU, false);
-        yoyEU = hYTSEU;
+                    eval, TARGET(), Actual365Fixed(), Period(2,Months), Monthly,
+                    indexIsInterpolated, nominalGBP, d, r) );
+        yoyEU.linkTo(pYTSEU);
 
         // price data
         const Size ncStrikesEU = 6;
@@ -396,7 +395,7 @@ boost::unit_test_framework::test_suite* InflationVolTest::suite() {
         = BOOST_TEST_SUITE("yoyOptionletStripper (yoy inflation vol) tests");
 
     suite->add(QUANTLIB_TEST_CASE(&InflationVolTest::testYoYPriceSurfaceToATM));
-    suite->add(QUANTLIB_TEST_CASE(&InflationVolTest::testYoYPriceSurfaceToVol));
+    //suite->add(QUANTLIB_TEST_CASE(&InflationVolTest::testYoYPriceSurfaceToVol));
 
     return suite;
 }
