@@ -21,8 +21,8 @@
  \brief inflation-coupon pricers
  */
 
-#ifndef NEWquantlib_inflation_coupon_pricer_hpp
-#define NEWquantlib_inflation_coupon_pricer_hpp
+#ifndef quantlib_inflation_coupon_pricer_hpp
+#define quantlib_inflation_coupon_pricer_hpp
 
 #include <ql/cashflow.hpp>
 #include <ql/option.hpp>

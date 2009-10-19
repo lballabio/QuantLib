@@ -21,8 +21,8 @@
  \brief Coupon paying a variable index-based rate
  */
 
-#ifndef NEWquantlib_inflation_coupon_hpp
-#define NEWquantlib_inflation_coupon_hpp
+#ifndef quantlib_inflation_coupon_hpp
+#define quantlib_inflation_coupon_hpp
 
 #include <ql/cashflows/coupon.hpp>
 #include <ql/time/daycounter.hpp>

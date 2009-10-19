@@ -22,8 +22,8 @@
  \brief Bootstrap helpers for inflation term structures
  */
 
-#ifndef quantlib_NEWinflation_helpers_hpp
-#define quantlib_NEWinflation_helpers_hpp
+#ifndef quantlib_inflation_helpers_hpp
+#define quantlib_inflation_helpers_hpp
 
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>

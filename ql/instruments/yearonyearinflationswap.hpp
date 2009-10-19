@@ -22,8 +22,8 @@
  \brief Year-on-year inflation-indexed swap
  */
 
-#ifndef NEWquantlib_yyiis_hpp
-#define NEWquantlib_yyiis_hpp
+#ifndef quantlib_yyiis_hpp
+#define quantlib_yyiis_hpp
 
 #include <ql/instruments/swap.hpp>
 #include <ql/time/calendar.hpp>
