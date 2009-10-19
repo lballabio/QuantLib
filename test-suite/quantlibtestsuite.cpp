@@ -60,7 +60,6 @@
 #include "cdsoption.hpp"
 #include "cliquetoption.hpp"
 #include "cms.hpp"
-#include "compoundforward.hpp"
 #include "compoundoption.hpp"
 #include "convertiblebonds.hpp"
 #include "covariance.hpp"
@@ -257,10 +256,10 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(HestonModelTest::suite());
     test->add(HimalayaOptionTest::suite());
     test->add(HybridHestonHullWhiteProcessTest::suite());
-    test->add(InflationTest::suite());					// in general inflation & tests
-	test->add(InflationCapFloorTest::suite());			// use indexed coupons, i.e. 
-	test->add(InflationCapFlooredCouponTest::suite());	// QL_USE_INDEXED_COUPON has no effect
-    test->add(InflationVolTest::suite());				// 
+    test->add(InflationTest::suite());                  // in general inflation & tests
+    test->add(InflationCapFloorTest::suite());          // use indexed coupons, i.e.
+    test->add(InflationCapFlooredCouponTest::suite());  // QL_USE_INDEXED_COUPON has no effect
+    test->add(InflationVolTest::suite());               //
     test->add(InstrumentTest::suite());
     test->add(IntegralTest::suite());
     test->add(InterestRateTest::suite());
@@ -313,7 +312,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(VolatilityModelsTest::suite());
 
     //tests for deprecated classes
-    test->add(CompoundForwardTest::suite()); // fails with QL_USE_INDEXED_COUPON
     test->add(LiborMarketModelTest::suite());
     test->add(LiborMarketModelProcessTest::suite());
 
