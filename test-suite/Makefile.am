@@ -19,7 +19,6 @@ QL_TESTS = \
 	cdsoption.hpp cdsoption.cpp \
 	cliquetoption.hpp cliquetoption.cpp \
 	cms.hpp cms.cpp \
-	compoundforward.hpp compoundforward.cpp \
 	compoundoption.hpp compoundoption.cpp \
 	convertiblebonds.hpp convertiblebonds.cpp \
 	covariance.hpp covariance.cpp \

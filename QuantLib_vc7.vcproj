@@ -1309,25 +1309,6 @@
 					RelativePath=".\ql\legacy\libormarketmodels\lmvolmodel.hpp">
 				</File>
 			</Filter>
-			<Filter
-				Name="termstructures"
-				Filter="">
-				<File
-					RelativePath=".\ql\legacy\termstructures\all.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\termstructures\compoundforward.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\termstructures\compoundforward.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\termstructures\extendeddiscountcurve.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\termstructures\extendeddiscountcurve.hpp">
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="math"
