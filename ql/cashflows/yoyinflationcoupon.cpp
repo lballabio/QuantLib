@@ -65,10 +65,10 @@ namespace QuantLib {
 	yoyInflationLeg(const Schedule& schedule, const Calendar& paymentCalendar,
 					const boost::shared_ptr<YoYInflationIndex>& index,
 					const Period& observationLag)
-	: schedule_(schedule), paymentCalendar_(paymentCalendar),index_(index), 
+	: schedule_(schedule), index_(index),
 	  observationLag_(observationLag),
-	  paymentAdjustment_(ModifiedFollowing)
-	{}
+	  paymentAdjustment_(ModifiedFollowing),
+      paymentCalendar_(paymentCalendar) {}
 	
 	
 	yoyInflationLeg& yoyInflationLeg::withNotionals(Real notional) {

@@ -34,7 +34,7 @@ namespace QuantLib {
 	  calendar_(cal), index_(index), observationLag_(observationLag),
 	  strike_(strike), firstCapletExcluded_(false),
 	  asOptionlet_(false), effectiveDate_(Date()), forwardStart_(forwardStart),
-	  fixingDays_(0), dayCounter_(Thirty360()), roll_(ModifiedFollowing),
+	  dayCounter_(Thirty360()), roll_(ModifiedFollowing), fixingDays_(0),
 	  nominal_(1000000.0)
 	 {}
 	

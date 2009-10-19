@@ -48,9 +48,9 @@ namespace QuantLib {
                                         const DayCounter& dayCounter,
                                         const boost::shared_ptr<Seasonality> &seasonality)
     : TermStructure(referenceDate, calendar, dayCounter),
-      nominalTermStructure_(yTS), baseRate_(baseRate), observationLag_(observationLag),
-      frequency_(frequency), indexIsInterpolated_(indexIsInterpolated)  
-	   {
+      nominalTermStructure_(yTS), observationLag_(observationLag),
+      frequency_(frequency), indexIsInterpolated_(indexIsInterpolated),
+      baseRate_(baseRate) {
         registerWith(nominalTermStructure_);
         setSeasonality(seasonality);
     }
