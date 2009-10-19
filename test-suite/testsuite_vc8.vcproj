@@ -1221,7 +1221,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\inflationvol.cpp"
+				RelativePath=".\inflationcapfloor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\inflationcapflooredcoupon.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\inflationvolatility.cpp"
 				>
 			</File>
 			<File
@@ -2366,7 +2374,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\inflationvol.hpp"
+				RelativePath=".\inflationcapfloor.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\inflationcapflooredcoupon.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\inflationvolatility.hpp"
 				>
 			</File>
 			<File

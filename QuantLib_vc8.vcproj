@@ -644,6 +644,50 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\cashflows\capflooredinflationcoupon.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (static runtime)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\capflooredinflationcoupon.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\cashflows\cashflows.cpp"
 				>
 			</File>
@@ -802,6 +846,102 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\cashflows\indexedcashflow.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\indexedcashflow.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\inflationcoupon.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (static runtime)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\inflationcoupon.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\inflationcouponpricer.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (static runtime)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (static runtime)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\inflationcouponpricer.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\cashflows\overnightindexedcoupon.cpp"
 				>
 				<FileConfiguration
@@ -917,6 +1057,14 @@
 			</File>
 			<File
 				RelativePath="ql\cashflows\timebasket.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\yoyinflationcoupon.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\yoyinflationcoupon.hpp"
 				>
 			</File>
 		</Filter>
@@ -1158,6 +1306,10 @@
 					RelativePath=".\ql\indexes\inflation\ukrpi.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\indexes\inflation\uscpi.hpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -1352,11 +1504,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\instruments\inflationswap.cpp"
+				RelativePath=".\ql\instruments\inflationcapfloor.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\instruments\inflationswap.hpp"
+				RelativePath=".\ql\instruments\inflationcapfloor.hpp"
 				>
 			</File>
 			<File
@@ -1405,6 +1557,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\instruments\makevanillaswap.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\makeyoyinflationcapfloor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\makeyoyinflationcapfloor.hpp"
 				>
 			</File>
 			<File
@@ -4484,6 +4644,22 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="inflation"
+					>
+					<File
+						RelativePath=".\ql\termstructures\volatility\inflation\all.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\inflation\yoyinflationoptionletvolatilitystructure.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\inflation\yoyinflationoptionletvolatilitystructure.hpp"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="yield"
@@ -6301,11 +6477,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\pricingengines\inflation\discountinginflationswapengines.cpp"
+					RelativePath=".\ql\pricingengines\inflation\inflationcapfloorengines.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\pricingengines\inflation\discountinginflationswapengines.hpp"
+					RelativePath=".\ql\pricingengines\inflation\inflationcapfloorengines.hpp"
 					>
 				</File>
 			</Filter>
@@ -8333,55 +8509,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\inflation\capflooredinflationcoupon.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\inflation\capflooredinflationcoupon.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\experimental\inflation\genericindexes.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\inflation\inflationcapfloor.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\inflation\inflationcapfloor.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\inflation\inflationcapfloorengines.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\inflation\inflationcapfloorengines.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\inflation\inflationcappedcouponpricer.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\inflation\inflationcappedcouponpricer.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\inflation\inflationcoupon.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\inflation\inflationcoupon.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\inflation\inflationcouponpricer.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\inflation\inflationcouponpricer.hpp"
 					>
 				</File>
 				<File
@@ -8390,14 +8518,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\inflation\kinterpolatedyoyoptionletvolatilitysurface.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\inflation\nominalyoyinflationcoupon.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\inflation\nominalyoyinflationcoupon.hpp"
 					>
 				</File>
 				<File
@@ -8417,6 +8537,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\inflation\yoyinflationoptionletvolatilitystructure2.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\yoyinflationoptionletvolatilitystructure2.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\inflation\yoyoptionlethelpers.cpp"
 					>
 				</File>
@@ -8426,42 +8554,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\inflation\yoyoptionletstripper.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\inflation\yoyoptionletvolatilitystructures.hpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="models"
-				>
-				<File
-					RelativePath=".\ql\experimental\models\all.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\models\twomixmodel.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\models\twomixmodel.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\models\twomixmodelengines.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\models\twomixmodelengines.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\models\twomixmodelhelpers.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\models\twomixmodelhelpers.hpp"
 					>
 				</File>
 			</Filter>
