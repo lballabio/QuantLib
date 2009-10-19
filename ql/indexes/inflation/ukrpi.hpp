@@ -34,7 +34,7 @@ namespace QuantLib {
       public:
         UKRPI(bool interpolated,
               const RelinkableHandle<ZeroInflationTermStructure>& ts =
-					RelinkableHandle<ZeroInflationTermStructure>())
+                    RelinkableHandle<ZeroInflationTermStructure>())
         : ZeroInflationIndex("RPI",
                              UKRegion(),
                              false,
@@ -51,7 +51,7 @@ namespace QuantLib {
       public:
         YYUKRPI(bool interpolated,
                 const RelinkableHandle<YoYInflationTermStructure>& ts =
-						RelinkableHandle<YoYInflationTermStructure>())
+                        RelinkableHandle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_RPI",
                             UKRegion(),
                             false,
@@ -69,7 +69,7 @@ namespace QuantLib {
       public:
         YYUKRPIr(bool interpolated,
                  const RelinkableHandle<YoYInflationTermStructure>& ts =
-						RelinkableHandle<YoYInflationTermStructure>())
+                        RelinkableHandle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_RPI",
                             UKRegion(),
                             false,

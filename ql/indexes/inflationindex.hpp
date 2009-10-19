@@ -38,16 +38,16 @@ namespace QuantLib {
     //! Base class for inflation-rate indexes,
     class InflationIndex : public Index, public Observer {
       public:
-		/*! An inflation index may return interpolated
-		 values.  These are linearly interpolated
-		 values with act/act convention within a period.
-		 Note that stored "fixings" are always flat (constant)
-		 within a period and interpolated as needed.  This
-		 is because interpolation adds an addional availability
-		 lag (because you always need the next period to
-		 give the previous period's value) 
-		 and enables storage of the most recent uninterpolated value.
-		 */
+        /*! An inflation index may return interpolated
+         values.  These are linearly interpolated
+         values with act/act convention within a period.
+         Note that stored "fixings" are always flat (constant)
+         within a period and interpolated as needed.  This
+         is because interpolation adds an addional availability
+         lag (because you always need the next period to
+         give the previous period's value)
+         and enables storage of the most recent uninterpolated value.
+         */
         InflationIndex(const std::string& familyName,
                        const Region& region,
                        bool revised,
@@ -170,7 +170,7 @@ namespace QuantLib {
                           const Period& availabilityLag,
                           const Currency& currency,
                           const RelinkableHandle<YoYInflationTermStructure>& ts =
-								RelinkableHandle<YoYInflationTermStructure>());
+                                RelinkableHandle<YoYInflationTermStructure>());
 
         Rate fixing(const Date& fixingDate,
                     bool forecastTodaysFixing = false) const;

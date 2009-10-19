@@ -40,7 +40,7 @@ namespace QuantLib {
                              false,
                              interpolated,
                              Monthly,
-                             Period(1, Months),	// availability
+                             Period(1, Months), // availability
                              EURCurrency(),
                              ts) {}
     };

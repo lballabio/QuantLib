@@ -2,16 +2,16 @@
 
 /*
  Copyright (C) 2009 Chris Kenyon
- 
+
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
- 
+
  QuantLib is free software: you can redistribute it and/or modify it
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
  <http://quantlib.org/license.shtml>.
- 
+
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
@@ -28,30 +28,30 @@
 #include <ql/currencies/america.hpp>
 
 namespace QuantLib {
-	
+
     //! US CPI index
     class USCPI : public ZeroInflationIndex {
-	public:
+    public:
         USCPI(bool interpolated,
                const RelinkableHandle<ZeroInflationTermStructure>& ts =
-			   RelinkableHandle<ZeroInflationTermStructure>())
+               RelinkableHandle<ZeroInflationTermStructure>())
         : ZeroInflationIndex("CPI",
                              USRegion(),
                              false,
                              interpolated,
                              Monthly,
-                             Period(1, Months),	// availability
+                             Period(1, Months), // availability
                              EURCurrency(),
                              ts) {}
     };
-	
-	
+
+
     //! Genuine year-on-year US CPI (i.e. not a ratio of US CPI)
     class YYUSCPI : public YoYInflationIndex {
-	public:
+    public:
         YYUSCPI(bool interpolated,
                  const RelinkableHandle<YoYInflationTermStructure>& ts =
-				 RelinkableHandle<YoYInflationTermStructure>())
+                 RelinkableHandle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_CPI",
                             USRegion(),
                             false,
@@ -62,14 +62,14 @@ namespace QuantLib {
                             EURCurrency(),
                             ts) {}
     };
-	
-	
+
+
     //! Fake year-on-year US CPI (i.e. a ratio of US CPI)
     class YYUSCPIr : public YoYInflationIndex {
-	public:
+    public:
         YYUSCPIr(bool interpolated,
                   const RelinkableHandle<YoYInflationTermStructure>& ts =
-				  RelinkableHandle<YoYInflationTermStructure>())
+                  RelinkableHandle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_CPI",
                             USRegion(),
                             false,
@@ -80,7 +80,7 @@ namespace QuantLib {
                             EURCurrency(),
                             ts) {}
     };
-	
+
 }
 
 
