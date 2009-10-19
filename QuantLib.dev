@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=1608
+UnitCount=1607
 Type=2
 Ver=1
 ObjFiles=
@@ -16018,16 +16018,6 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit1598]
-FileName=ql\experimental\inflation\yoyinflationoptionletvolatilitystructure2.cpp
-CompileCpp=1
-Folder=experimental/inflation
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit1599]
 FileName=ql\indexes\inflation\uscpi.hpp
 CompileCpp=1
 Folder=indexes/inflation
@@ -16037,7 +16027,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1600]
+[Unit1599]
 FileName=ql\instruments\makeyoyinflationcapfloor.hpp
 CompileCpp=1
 Folder=instruments
@@ -16047,7 +16037,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1601]
+[Unit1600]
 FileName=ql\instruments\inflationcapfloor.cpp
 CompileCpp=1
 Folder=instruments
@@ -16057,7 +16047,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1602]
+[Unit1601]
 FileName=ql\instruments\inflationcapfloor.hpp
 CompileCpp=1
 Folder=instruments
@@ -16067,7 +16057,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1603]
+[Unit1602]
 FileName=ql\instruments\makeyoyinflationcapfloor.cpp
 CompileCpp=1
 Folder=instruments
@@ -16077,7 +16067,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1604]
+[Unit1603]
 FileName=ql\pricingengines\inflation\inflationcapfloorengines.hpp
 CompileCpp=1
 Folder=pricingengines/inflation
@@ -16087,7 +16077,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1605]
+[Unit1604]
 FileName=ql\pricingengines\inflation\inflationcapfloorengines.cpp
 CompileCpp=1
 Folder=pricingengines/inflation
@@ -16097,7 +16087,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1606]
+[Unit1605]
 FileName=ql\termstructures\volatility\inflation\yoyinflationoptionletvolatilitystructure.hpp
 CompileCpp=1
 Folder=termstructures/volatility/inflation
@@ -16107,7 +16097,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1607]
+[Unit1606]
 FileName=ql\termstructures\volatility\inflation\all.hpp
 CompileCpp=1
 Folder=termstructures/volatility/inflation
@@ -16117,7 +16107,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit1608]
+[Unit1607]
 FileName=ql\termstructures\volatility\inflation\yoyinflationoptionletvolatilitystructure.cpp
 CompileCpp=1
 Folder=termstructures/volatility/inflation
@@ -16126,3 +16116,4 @@ Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
+

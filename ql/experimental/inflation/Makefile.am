@@ -16,8 +16,7 @@ this_include_HEADERS = \
 
 libInflation_la_SOURCES = \
     yoycapfloortermpricesurface.cpp \
-    yoyoptionlethelpers.cpp \
-    yoyinflationoptionletvolatilitystructure2.cpp
+    yoyoptionlethelpers.cpp
 
 noinst_LTLIBRARIES = libInflation.la
 

@@ -9957,10 +9957,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\inflation\yoyinflationoptionletvolatilitystructure2.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\experimental\inflation\yoyinflationoptionletvolatilitystructure2.hpp"
 					>
 				</File>
