@@ -18,7 +18,7 @@
  */
 
 #include "inflationvolatility.hpp"
-
+#include "utilities.hpp"
 
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
@@ -83,6 +83,7 @@ namespace {
         // make sure of the evaluation date
         Date eval = Date(Day(23), Month(11), Year(2007));
         Settings::instance().evaluationDate() = eval;
+
         // nominal yield curve (interpolated; times assume year parts have 365 days)
         Real timesEUR[] = {0.0109589, 0.0684932, 0.263014, 0.317808, 0.567123, 0.816438,
                1.06575, 1.31507, 1.56438, 2.0137, 3.01918, 4.01644,
@@ -164,9 +165,9 @@ namespace {
             r.push_back(yoyEUrates[i]);
         }
 
-		bool indexIsInterpolated = true;	// actually false for UKRPI but smooth surfaces are 
-											// better for finding intersections etc
-		
+        bool indexIsInterpolated = true;    // actually false for UKRPI but smooth surfaces are
+                                            // better for finding intersections etc
+
         shared_ptr<InterpolatedYoYInflationCurve<Linear> >
             pYTSEU( new InterpolatedYoYInflationCurve<Linear>(
                     eval, TARGET(), Actual365Fixed(), Period(2,Months), Monthly, 
@@ -179,8 +180,8 @@ namespace {
         const Size nfStrikesEU = 6;
         const Size ncfMaturitiesEU = 7;
         Real capStrikesEU[ncStrikesEU] = {0.02, 0.025, 0.03, 0.035, 0.04, 0.05};
-        Period capMaturitiesEU[ncfMaturitiesEU] = {3*Years, 5*Years, 7*Years, 
-			10*Years, 15*Years, 20*Years, 30*Years};
+        Period capMaturitiesEU[ncfMaturitiesEU] = {3*Years, 5*Years, 7*Years,
+            10*Years, 15*Years, 20*Years, 30*Years};
         Real capPricesEU[ncStrikesEU][ncfMaturitiesEU] =
             {{116.225, 204.945, 296.285, 434.29, 654.47, 844.775, 1132.33},
                 {34.305, 71.575, 114.1, 184.33, 307.595, 421.395, 602.35},
@@ -222,17 +223,51 @@ namespace {
     }
 
 
+    void setupPriceSurface() {
+
+        // construct:
+        //  calendar, business day convention, and day counter are
+        //  taken from the nominal base give the reference date for
+        //  the inflation options (generally 2 or 3 months before
+        //  nominal reference date)
+        Natural fixingDays = 0;
+        Size lag = 3;// must be 3 because we use an interpolated index (EU)
+        Period yyLag = Period(lag,Months);
+        Rate baseRate = 1; // not really used
+        DayCounter dc = Actual365Fixed();
+        TARGET cal;
+        BusinessDayConvention bdc = ModifiedFollowing;
+        boost::shared_ptr<QuantLib::YieldTermStructure> pn =
+            nominalEUR.currentLink();
+        Handle<QuantLib::YieldTermStructure> n(pn,false);
+        boost::shared_ptr<InterpolatedYoYCapFloorTermPriceSurface<Bicubic,Cubic> >
+        cfEUprices(new InterpolatedYoYCapFloorTermPriceSurface<Bicubic,Cubic>(
+                                       fixingDays,
+                                       yyLag, yoyIndexEU, baseRate,
+                                       n, dc,
+                                       cal,    bdc,
+                                       cStrikesEU, fStrikesEU, cfMaturitiesEU,
+                                       (*cPriceEU), (*fPriceEU)));
+
+        priceSurfEU = cfEUprices;
+    }
+
 }
-//****************************************************************************************
+
+//***************************************************************************
 
 
 
 void InflationVolTest::testYoYPriceSurfaceToVol() {
-    BOOST_MESSAGE("Testing yoy price surface to yoy volatility surface");
+    BOOST_MESSAGE("Testing conversion from YoY price surface "
+                  "to YoY volatility surface...");
+
+    SavedSettings backup;
+
     setup();
 
     // first get the price surface set up
-    testYoYPriceSurfaceToATM();
+    setupPriceSurface();
 
     // caplet pricer, recall that setCapletVolatility(Handle<YoYOptionletVolatilitySurface>)
     // exists ... we'll use it with the -Curve variant of the surface
@@ -275,14 +310,14 @@ void InflationVolTest::testYoYPriceSurfaceToVol() {
 
     // now use it for something ... like stating what the T=const lines look like
     const Real volATyear1[] = {
-          0.0129, 0.0095, 0.0085, 0.0075, 0.0066, 
-		  0.0061, 0.0035, 0.0042, 0.0050, 0.0061, 
-		  0.0095
+          0.0129, 0.0095, 0.0085, 0.0075, 0.0066,
+          0.0061, 0.0035, 0.0042, 0.0050, 0.0061,
+          0.0095
     };
     const Real volATyear3[] = {
           0.0079, 0.0058, 0.0052, 0.0046, 0.0041,
-		  0.0037, 0.0021, 0.0026, 0.0031, 0.0037, 
-		  0.0058
+          0.0037, 0.0021, 0.0026, 0.0031, 0.0037,
+          0.0058
     };
 
     Date d = yoySurf->baseDate() + Period(1,Years);
@@ -292,9 +327,9 @@ void InflationVolTest::testYoYPriceSurfaceToVol() {
     Size n = someSlice.first.size();
     Real eps = 0.0001;
     for(Size i = 0; i < n; i++){
-    QL_REQUIRE( fabs(someSlice.second[i] - volATyear1[i]) < eps, 
-			   "could not recover 1yr vol: " << someSlice.second[i]
-			   << " vs " << volATyear1[i] );
+    QL_REQUIRE( fabs(someSlice.second[i] - volATyear1[i]) < eps,
+               "could not recover 1yr vol: " << someSlice.second[i]
+               << " vs " << volATyear1[i] );
     }
 
     d = yoySurf->baseDate() + Period(3,Years);
@@ -302,49 +337,31 @@ void InflationVolTest::testYoYPriceSurfaceToVol() {
         someOtherSlice = yoySurf->Dslice(d);
     n = someOtherSlice.first.size();
     for(Size i = 0; i < n; i++){
-		QL_REQUIRE(fabs(someOtherSlice.second[i]-volATyear3[i]) < eps,
-						"could not recover 3yr vol: "
-						<< someOtherSlice.second[i]<< " vs " << volATyear3[i]);
+        QL_REQUIRE(fabs(someOtherSlice.second[i]-volATyear3[i]) < eps,
+                        "could not recover 3yr vol: "
+                        << someOtherSlice.second[i]<< " vs " << volATyear3[i]);
     }
- 
+
 }
 
 
 
 
 void InflationVolTest::testYoYPriceSurfaceToATM() {
-    BOOST_MESSAGE("Testing YoYCapFloorTermPriceSurface to yoyInflationTermStructure");
+    BOOST_MESSAGE("Testing conversion from YoY cap-floor surface "
+                  "to YoY inflation term structure...");
+
+    SavedSettings backup;
 
     setup();
-	
+
+    setupPriceSurface();
+
     Date eval = Settings::instance().evaluationDate();
 
-    // construct:
-    //  calendar, business day convention, and day counter are taken from the nominal
-    //  base give the reference date for the inflation options (generally 2 or 3 months before
-    //  nominal reference date)
-    Natural fixingDays = 0;
-    Size lag = 3;// must be 3 because we use an interpolated index (EU)
-    Period yyLag = Period(lag,Months);
-    Rate baseRate = 1; // not really used
-    DayCounter dc = Actual365Fixed();
-    TARGET cal;
-    BusinessDayConvention bdc = ModifiedFollowing;
-    boost::shared_ptr<QuantLib::YieldTermStructure> pn = nominalEUR.currentLink();
-    Handle<QuantLib::YieldTermStructure> n(pn,false);
-    boost::shared_ptr<InterpolatedYoYCapFloorTermPriceSurface<Bicubic,Cubic> >
-    cfEUprices(new InterpolatedYoYCapFloorTermPriceSurface<Bicubic,Cubic>(
-                                            fixingDays,
-                                            yyLag, yoyIndexEU, baseRate,
-                                            n, dc,
-                                            cal,    bdc,
-                                            cStrikesEU, fStrikesEU, cfMaturitiesEU,
-                                            (*cPriceEU), (*fPriceEU))
-    );
+    pair<vector<Time>, vector<Rate> > yyATMt = priceSurfEU->atmYoYSwapTimeRates();
+    pair<vector<Date>, vector<Rate> > yyATMd = priceSurfEU->atmYoYSwapDateRates();
 
-    pair<vector<Time>, vector<Rate> > yyATMt = cfEUprices->atmYoYSwapTimeRates();
-	pair<vector<Date>, vector<Rate> > yyATMd = cfEUprices->atmYoYSwapDateRates();
- 
     // Real dy = (Real)lag / 12.0;
     const Real crv[] = {0.024586, 0.0247575, 0.0249396, 0.0252596,
                           0.0258498, 0.0262883, 0.0267915};
@@ -358,20 +375,19 @@ void InflationVolTest::testYoYPriceSurfaceToATM() {
                    "could not recover cached yoy swap curve "
                    << yyATMt.second[i]<< " vs " << crv[i]);
     }
-  
+
     for(Size i = 0; i < yyATMd.first.size(); i++) {
-        QL_REQUIRE(fabs( cfEUprices->atmYoYSwapRate(yyATMd.first[i])  - swaps[i] ) < eps,
+        QL_REQUIRE(fabs( priceSurfEU->atmYoYSwapRate(yyATMd.first[i])  - swaps[i] ) < eps,
                    "could not recover yoy swap curve "
-                   << cfEUprices->atmYoYSwapRate(yyATMd.first[i]) << " vs " << swaps[i]);
+                   << priceSurfEU->atmYoYSwapRate(yyATMd.first[i]) << " vs " << swaps[i]);
     }
     for(Size i = 0; i < yyATMd.first.size(); i++) {
-        QL_REQUIRE(fabs( cfEUprices->atmYoYRate(yyATMd.first[i])  - ayoy[i] ) < eps,
+        QL_REQUIRE(fabs( priceSurfEU->atmYoYRate(yyATMd.first[i])  - ayoy[i] ) < eps,
                    " could not recover cached yoy curve "
-				   << cfEUprices->atmYoYRate(yyATMd.first[i]) << " vs " << ayoy[i]
-				   <<" at "<<yyATMd.first[i]);
+                   << priceSurfEU->atmYoYRate(yyATMd.first[i]) << " vs " << ayoy[i]
+                   <<" at "<<yyATMd.first[i]);
     }
-    priceSurfEU = cfEUprices;
-	 
+
 }
 
 
@@ -379,8 +395,8 @@ boost::unit_test_framework::test_suite* InflationVolTest::suite() {
     boost::unit_test_framework::test_suite* suite
         = BOOST_TEST_SUITE("yoyOptionletStripper (yoy inflation vol) tests");
 
-    suite->add(BOOST_TEST_CASE(&InflationVolTest::testYoYPriceSurfaceToATM));
-    suite->add(BOOST_TEST_CASE(&InflationVolTest::testYoYPriceSurfaceToVol));
+    suite->add(QUANTLIB_TEST_CASE(&InflationVolTest::testYoYPriceSurfaceToATM));
+    suite->add(QUANTLIB_TEST_CASE(&InflationVolTest::testYoYPriceSurfaceToVol));
 
     return suite;
 }
