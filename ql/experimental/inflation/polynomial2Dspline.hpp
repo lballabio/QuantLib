@@ -28,7 +28,6 @@
 
 #include <ql/math/interpolations/interpolation2d.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
-//#include <ql/experimental/inflation/polynomial2D.hpp>
 
 namespace QuantLib {
 
@@ -46,10 +45,10 @@ namespace QuantLib {
                 calculate();
             }
             void calculate() {
-				QL_REQUIRE(this->zData_.rows() == this->yEnd_ - this->yBegin_,
-					"size mismatch of the interpolation data");
-                
-				polynomials_.reserve(this->zData_.columns());
+                QL_REQUIRE(this->zData_.rows() == this->yEnd_ - this->yBegin_,
+                    "size mismatch of the interpolation data");
+
+                polynomials_.reserve(this->zData_.columns());
                 for (Size i=0; i<(this->zData_.columns()); ++i)
                     polynomials_.push_back(Parabolic(
                         this->yBegin_, this->yEnd_,
@@ -61,10 +60,10 @@ namespace QuantLib {
                 for (Size i=0; i<polynomials_.size(); ++i)
                     section[i] = polynomials_[i](y, true);
 
-				QL_REQUIRE(section.size() == this->xEnd_ - this->xBegin_,
+                QL_REQUIRE(section.size() == this->xEnd_ - this->xBegin_,
                            "size mismatch of the interpolation data");
-                
-				CubicInterpolation spline(
+
+                CubicInterpolation spline(
                     this->xBegin_, this->xEnd_,
                     section.begin(),
                     CubicInterpolation::Spline, true,
