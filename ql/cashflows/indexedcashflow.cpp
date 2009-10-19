@@ -19,7 +19,7 @@
 
 
 
-#include "indexedcashflow.hpp"
+#include <ql/cashflows/indexedcashflow.hpp>
 #include <ql/index.hpp>
 
 namespace QuantLib {
