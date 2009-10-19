@@ -38,7 +38,7 @@ interests.
 ============= ADDITIONAL INFORMATION =================
 
 Installation instructions are available at
-<http://quantlib.org/reference/install.html>.
+<http://quantlib.org/install.shtml>.
 
 A list of changes since the previous release is available in News.txt
 (included in this distribution) while a list of past changes can be
