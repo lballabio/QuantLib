@@ -20,8 +20,6 @@
 #include <ql/cashflows/capflooredinflationcoupon.hpp>
 #include <ql/cashflows/inflationcouponpricer.hpp>
 
-#include <iostream>
-
 namespace QuantLib {
 	
     void CappedFlooredYoYInflationCoupon::setCommon(

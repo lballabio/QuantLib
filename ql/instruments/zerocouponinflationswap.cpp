@@ -23,8 +23,6 @@
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/indexedcashflow.hpp>
 
-#include <iostream>
-
 namespace QuantLib {
 
 	/*! Generally inflation indices are available with a lag of 1month

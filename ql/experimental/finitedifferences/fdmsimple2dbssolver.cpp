@@ -32,8 +32,6 @@
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmsnapshotcondition.hpp>
 
-#include <iostream>
-
 namespace QuantLib {
 
     namespace {

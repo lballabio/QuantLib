@@ -26,8 +26,6 @@
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 
-#include <iostream>
-
 using namespace std;
 
 namespace QuantLib {

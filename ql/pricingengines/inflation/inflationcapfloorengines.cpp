@@ -22,8 +22,6 @@
 #include <ql/pricingengines/inflation/inflationcapfloorengines.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 
-#include <iostream>
-
 namespace QuantLib {
 
 

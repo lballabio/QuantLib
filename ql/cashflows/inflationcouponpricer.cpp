@@ -20,7 +20,6 @@
 #include <ql/cashflows/inflationcouponpricer.hpp>
 #include <ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <iostream>
 
 namespace QuantLib {
 

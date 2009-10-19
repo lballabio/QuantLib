@@ -31,10 +31,7 @@
 #include <ql/math/interpolation.hpp>
 #include <ql/math/interpolations/interpolation2d.hpp>
 #include <ql/math/solvers1d/brent.hpp>
-
 #include <ql/experimental/inflation/polynomial2Dspline.hpp>
-
-#include <iostream>
 
 namespace QuantLib {
 

@@ -28,7 +28,7 @@
 #include <ql/termstructures/inflation/interpolatedzeroinflationcurve.hpp>
 #include <ql/termstructures/iterativebootstrap.hpp>
 #include <ql/patterns/lazyobject.hpp>
-#include <iostream>
+
 namespace QuantLib {
 
     //! Bootstrap traits to use for PiecewiseZeroInflationCurve

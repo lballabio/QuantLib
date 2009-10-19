@@ -28,8 +28,6 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 
 #include <cmath>
-#include <iostream>
-#include <iomanip>
 
 namespace QuantLib {
 
@@ -358,7 +356,6 @@ namespace QuantLib {
             else
                 result = digitalPriceWithoutSmile(strike, initialValue, expiry, deflator);
         }
-        //std::cout<<strike<<"\t"<<result<<"\n";
         return result;
     }
 

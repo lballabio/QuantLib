@@ -21,7 +21,6 @@
 #include <ql/termstructures/inflation/inflationhelpers.hpp>
 #include <ql/indexes/inflationindex.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <iostream>
 
 namespace QuantLib {
 

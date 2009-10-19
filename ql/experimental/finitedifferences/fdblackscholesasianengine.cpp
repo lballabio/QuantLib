@@ -29,8 +29,6 @@
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 
-#include <iostream>
-
 namespace QuantLib {
 
 

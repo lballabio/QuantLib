@@ -22,8 +22,6 @@
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/utilities/vectors.hpp>
 
-#include <iostream>
-
 using std::vector;
 using boost::shared_ptr;
 

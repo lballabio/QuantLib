@@ -24,8 +24,6 @@
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/experimental/finitedifferences/fdmarithmeticaveragecondition.hpp>
 
-#include <iostream>
-
 namespace QuantLib {
 
     FdmArithmeticAverageCondition::FdmArithmeticAverageCondition(

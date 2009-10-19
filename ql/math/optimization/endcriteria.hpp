@@ -27,7 +27,7 @@
 #define quantlib_optimization_criteria_hpp
 
 #include <ql/utilities/null.hpp>
-#include <iostream>
+#include <ostream>
 
 namespace QuantLib {
 
