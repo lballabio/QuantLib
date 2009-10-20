@@ -20,9 +20,8 @@
 #include <ql/time/ecb.hpp>
 #include <ql/settings.hpp>
 #include <ql/utilities/dataparsers.hpp>
-#include <algorithm>
-
 #include <boost/algorithm/string/case_conv.hpp>
+#include <algorithm>
 
 using boost::algorithm::to_upper_copy;
 using std::string;
@@ -94,7 +93,7 @@ namespace QuantLib {
                               Date(Settings::instance().evaluationDate()));
         Year referenceYear = (referenceDate.year() % 100);
         y += referenceDate.year() - referenceYear;
-        if (y<Date::minDate().year()) 
+        if (y<Date::minDate().year())
             return ECB::nextDate(Date::minDate());
 
         return ECB::nextDate(Date(1, m, y));
