@@ -675,7 +675,7 @@ void HestonModelTest::testKahlJaeckelCase() {
 
     boost::shared_ptr<HestonProcess> process(new HestonProcess(
                    riskFreeTS, dividendTS, s0, 0.16, 1.0, 0.16, 2.0, -0.8,
-                   HestonProcess::ExactVariance));
+                   HestonProcess::NonCentralChiSquare));
 
     VanillaOption option(payoff, exercise);
 

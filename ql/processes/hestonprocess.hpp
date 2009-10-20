@@ -46,7 +46,7 @@ namespace QuantLib {
     class HestonProcess : public StochasticProcess {
       public:
         enum Discretization { PartialTruncation, FullTruncation,
-                              Reflection, ExactVariance };
+                              Reflection, NonCentralChiSquare };
 
         HestonProcess(const Handle<YieldTermStructure>& riskFreeRate,
                       const Handle<YieldTermStructure>& dividendYield,
