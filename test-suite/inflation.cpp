@@ -883,11 +883,11 @@ void InflationTest::testYYTermStructure() {
                 <<" payment "<<yyS2.paymentConvention());
     }
 
-    Size j=3;
+    Size jj=3;
     for (Size k = 0; k < 14; k++) {
 
         from = nominalTS->referenceDate() - k*Months;
-        to = yyData[j].date - k*Months;
+        to = yyData[jj].date - k*Months;
         Schedule yoySchedule = MakeSchedule().from(from).to(to)
         .withConvention(Unadjusted) // fixed leg gets calendar from
         .withCalendar(calendar)     // schedule
@@ -898,7 +898,7 @@ void InflationTest::testYYTermStructure() {
         YearOnYearInflationSwap yyS3(YearOnYearInflationSwap::Payer,
                                     1000000.0,
                                     yoySchedule,//fixed schedule, but same as yoy
-                                    yyData[j].rate/100.0,
+                                    yyData[jj].rate/100.0,
                                     dc,
                                     yoySchedule,
                                     iir,
