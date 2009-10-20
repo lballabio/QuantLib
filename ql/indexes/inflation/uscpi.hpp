@@ -41,7 +41,7 @@ namespace QuantLib {
                              interpolated,
                              Monthly,
                              Period(1, Months), // availability
-                             EURCurrency(),
+                             USDCurrency(),
                              ts) {}
     };
 
@@ -59,7 +59,7 @@ namespace QuantLib {
                             false,
                             Monthly,
                             Period(1, Months),
-                            EURCurrency(),
+                            USDCurrency(),
                             ts) {}
     };
 
@@ -77,7 +77,7 @@ namespace QuantLib {
                             true,
                             Monthly,
                             Period(1, Months),
-                            EURCurrency(),
+                            USDCurrency(),
                             ts) {}
     };
 
