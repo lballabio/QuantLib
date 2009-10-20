@@ -77,6 +77,7 @@ QuantLib is
     Copyright (C) 2009 Frédéric Degraeve
     Copyright (C) 2009 Dirk Eddelbuettel
     Copyright (C) 2009 Bernd Engelmann
+    Copyright (C) 2009 Liquidnet Holdings, Inc.
     Copyright (C) 2009 Bojan Nikolic
     Copyright (C) 2009 Dimitri Reiswich
     Copyright (C) 2009 Sun Xiuxin
