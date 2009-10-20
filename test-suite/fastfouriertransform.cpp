@@ -58,7 +58,6 @@ void FastFourierTransformTest::testInverse() {
     x[1] = 2;
     x[2] = 3;
 
-    size_t nConv = 2;
     size_t order = FastFourierTransform::min_order(x.size())+1;
     FastFourierTransform fft(order);
     size_t nFrq = fft.output_size();
