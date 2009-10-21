@@ -52,7 +52,8 @@ namespace QuantLib {
         std::vector<Rate> strikeVector(1, strike_);
         if (strike_ == Null<Rate>()) {
             // ATM on the forecasting curve
-            Handle<YieldTermStructure> fc = swap.iborIndex()->termStructure();
+            Handle<YieldTermStructure> fc =
+                swap.iborIndex()->forwardingTermStructure();
             strikeVector[0] = CashFlows::atmRate(leg,**fc,
                                                  false, fc->referenceDate());
         }

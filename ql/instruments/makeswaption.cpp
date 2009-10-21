@@ -62,14 +62,15 @@ namespace QuantLib {
         Rate usedStrike = strike_;
         if (strike_ == Null<Rate>()) {
             // ATM on the forecasting curve
-            QL_REQUIRE(!swapIndex_->termStructure().empty(),
-                       "no forecasting term structure set to " <<
+            QL_REQUIRE(!swapIndex_->forwardingTermStructure().empty(),
+                       "no forwarding term structure set to " <<
                        swapIndex_->name());
             boost::shared_ptr<VanillaSwap> temp =
                 swapIndex_->underlyingSwap(fixingDate_);
             temp->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                        new DiscountingSwapEngine(swapIndex_->termStructure(),
-                                                  false)));
+                new DiscountingSwapEngine(
+                                        swapIndex_->forwardingTermStructure(),
+                                        false)));
             usedStrike = temp->fairRate();
         }
 

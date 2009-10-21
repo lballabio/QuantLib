@@ -68,7 +68,7 @@ namespace QuantLib {
         return fixingCalendar_.isBusinessDay(fixingDate);
     }
 
-    Handle<YieldTermStructure> BMAIndex::termStructure() const {
+    Handle<YieldTermStructure> BMAIndex::forwardingTermStructure() const {
         return termStructure_;
     }
 

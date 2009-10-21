@@ -90,7 +90,7 @@ namespace QuantLib {
         const Volatility var = covarProxy_
             ->integratedCovariance(i, i, process_->fixingTimes()[i]);
         const DiscountFactor dis =
-            process_->index()->termStructure()->discount(bondMaturity);
+            process_->index()->forwardingTermStructure()->discount(bondMaturity);
 
         const Real black = blackFormula(
             (type==Option::Put ? Option::Call : Option::Put),
@@ -200,7 +200,7 @@ namespace QuantLib {
     // the next two methods are meaningless within this context
     // we might remove them from the AffineModel interface
     DiscountFactor LiborForwardModel::discount(Time t) const {
-        return process_->index()->termStructure()->discount(t);
+        return process_->index()->forwardingTermStructure()->discount(t);
     }
 
     Real LiborForwardModel::discountBond(Time, Time maturity, Array) const {

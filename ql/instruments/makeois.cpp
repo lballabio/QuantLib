@@ -35,7 +35,7 @@ namespace QuantLib {
       type_(OvernightIndexedSwap::Payer), nominal_(1.0),
       overnightSpread_(0.0),
       fixedDayCount_(overnightIndex->dayCounter()),
-      engine_(new DiscountingSwapEngine(overnightIndex_->termStructure())) {}
+      engine_(new DiscountingSwapEngine(overnightIndex_->forwardingTermStructure())) {}
 
     MakeOIS::operator OvernightIndexedSwap() const {
         boost::shared_ptr<OvernightIndexedSwap> ois = *this;
@@ -72,8 +72,8 @@ namespace QuantLib {
 
         Rate usedFixedRate = fixedRate_;
         if (fixedRate_ == Null<Rate>()) {
-            QL_REQUIRE(!overnightIndex_->termStructure().empty(),
-                       "no forecasting term structure set to this instance of "
+            QL_REQUIRE(!overnightIndex_->forwardingTermStructure().empty(),
+                       "no forwarding term structure set to this instance of "
                        << overnightIndex_->name());
             OvernightIndexedSwap temp(type_, nominal_,
                                       schedule,
@@ -82,9 +82,10 @@ namespace QuantLib {
                                       overnightIndex_, overnightSpread_);
             // ATM on the forecasting curve
             bool includeSettlementDateFlows = false;
-            temp.setPricingEngine(boost::shared_ptr<PricingEngine>(new
-                DiscountingSwapEngine(overnightIndex_->termStructure(),
-                                      includeSettlementDateFlows)));
+            temp.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                new DiscountingSwapEngine(
+                                   overnightIndex_->forwardingTermStructure(),
+                                   includeSettlementDateFlows)));
             usedFixedRate = temp.fairRate();
         }
 

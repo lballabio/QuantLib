@@ -24,6 +24,7 @@
 
 using std::vector;
 using boost::shared_ptr;
+using boost::dynamic_pointer_cast;
 
 namespace QuantLib {
 
@@ -37,7 +38,9 @@ namespace QuantLib {
             }
             Rate swapletRate() const {
 
-                const shared_ptr<InterestRateIndex>& index = coupon_->index();
+                shared_ptr<OvernightIndex> index =
+                    dynamic_pointer_cast<OvernightIndex>(coupon_->index());
+
                 const vector<Date>& fixingDates = coupon_->fixingDates();
                 const vector<Time>& dt = coupon_->dt();
 
@@ -79,7 +82,8 @@ namespace QuantLib {
                 // forward part using telescopic property in order
                 // to avoid the evaluation of multiple forward fixings
                 if (i<n) {
-                    Handle<YieldTermStructure> curve = index->termStructure();
+                    Handle<YieldTermStructure> curve =
+                        index->forwardingTermStructure();
                     QL_REQUIRE(!curve.empty(),
                                "null yield term structure set to this "
                                "instance of " << index->name());

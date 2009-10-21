@@ -1,6 +1,6 @@
 /*
  Copyright (C) 2006 Ferdinando Ametrano
- Copyright (C) 2006, 2007 StatPro Italia srl
+ Copyright (C) 2006, 2007, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -41,8 +41,8 @@ namespace QuantLib {
         registerWith(iborIndex_);
     }
 
-    Handle<YieldTermStructure> SwapIndex::termStructure() const {
-        return iborIndex_->termStructure();
+    Handle<YieldTermStructure> SwapIndex::forwardingTermStructure() const {
+        return iborIndex_->forwardingTermStructure();
     }
 
     Rate SwapIndex::forecastFixing(const Date& fixingDate) const {

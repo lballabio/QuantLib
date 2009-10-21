@@ -48,13 +48,13 @@ namespace QuantLib {
         std::string name() const;
         bool isValidFixingDate(const Date& fixingDate) const;
         //@}
-        //! \name InterestRateIndex interface
+        //! \name Inspectors
         //@{
-        Handle<YieldTermStructure> termStructure() const;
-        Date maturityDate(const Date& valueDate) const;
+        Handle<YieldTermStructure> forwardingTermStructure() const;
         //@}
         //! \name Date calculations
         //@{
+        Date maturityDate(const Date& valueDate) const;
         /*! This method returns a schedule of fixing dates between
             start and end.
         */

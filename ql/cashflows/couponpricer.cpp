@@ -40,8 +40,9 @@ namespace QuantLib {
         gearing_ = coupon_->gearing();
         spread_ = coupon_->spread();
         Date paymentDate = coupon_->date();
-        const boost::shared_ptr<InterestRateIndex>& index = coupon_->index();
-        Handle<YieldTermStructure> rateCurve = index->termStructure();
+        boost::shared_ptr<IborIndex> index =
+            boost::dynamic_pointer_cast<IborIndex>(coupon_->index());
+        Handle<YieldTermStructure> rateCurve = index->forwardingTermStructure();
 
         Date today = Settings::instance().evaluationDate();
 

@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007, 2009 StatPro Italia srl
  Copyright (C) 2006 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
@@ -68,7 +68,6 @@ namespace QuantLib {
         Date fixingDate(const Date& valueDate) const;
         const Currency& currency() const;
         const DayCounter& dayCounter() const;
-        virtual Handle<YieldTermStructure> termStructure() const = 0;
         //@}
         /*! \name Date calculations
 

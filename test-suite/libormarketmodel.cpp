@@ -72,7 +72,7 @@ namespace {
 
         termStructure.linkTo(boost::shared_ptr<YieldTermStructure>(
                                     new ZeroCurve(dates, rates, dayCounter)));
-        
+
         return index;
     }
 
@@ -223,7 +223,7 @@ void LiborMarketModelTest::testCapletPricing() {
                         new LiborForwardModel(process, volaModel, corrModel));
 
     const Handle<YieldTermStructure> termStructure =
-        process->index()->termStructure();
+        process->index()->forwardingTermStructure();
 
     boost::shared_ptr<AnalyticCapFloorEngine> engine1(
                             new AnalyticCapFloorEngine(model, termStructure));
@@ -271,7 +271,7 @@ void LiborMarketModelTest::testCalibration() {
     boost::shared_ptr<IborIndex> index = makeIndex();
     boost::shared_ptr<LiborForwardModelProcess> process(
         new LiborForwardModelProcess(size, index));
-    Handle<YieldTermStructure> termStructure = index->termStructure();
+    Handle<YieldTermStructure> termStructure = index->forwardingTermStructure();
 
     // set-up the model
     boost::shared_ptr<LmVolatilityModel> volaModel(
@@ -285,7 +285,7 @@ void LiborMarketModelTest::testCalibration() {
                         new LiborForwardModel(process, volaModel, corrModel));
 
     Size swapVolIndex = 0;
-    DayCounter dayCounter=index->termStructure()->dayCounter();
+    DayCounter dayCounter=index->forwardingTermStructure()->dayCounter();
 
     // set-up calibration helper
     std::vector<boost::shared_ptr<CalibrationHelper> > calibrationHelper;
@@ -298,7 +298,7 @@ void LiborMarketModelTest::testCalibration() {
 
         boost::shared_ptr<CalibrationHelper> caphelper(
             new CapHelper(maturity, capVol, index, Annual,
-                          index->dayCounter(), true, termStructure, 
+                          index->dayCounter(), true, termStructure,
                           CalibrationHelper::ImpliedVolError));
 
         caphelper->setPricingEngine(boost::shared_ptr<PricingEngine>(
@@ -318,7 +318,7 @@ void LiborMarketModelTest::testCalibration() {
                     new SwaptionHelper(maturity, len, swaptionVol, index,
                                        index->tenor(), dayCounter,
                                        index->dayCounter(),
-                                       termStructure, 
+                                       termStructure,
                                        CalibrationHelper::ImpliedVolError));
 
                 swaptionHelper->setPricingEngine(
@@ -407,10 +407,10 @@ void LiborMarketModelTest::testSwaptionPricing() {
         liborModel(new LiborForwardModel(process, volaModel, corrModel));
 
     Calendar calendar = index->fixingCalendar();
-    DayCounter dayCounter = index->termStructure()->dayCounter();
+    DayCounter dayCounter = index->forwardingTermStructure()->dayCounter();
     BusinessDayConvention convention = index->businessDayConvention();
 
-    Date settlement  = index->termStructure()->referenceDate();
+    Date settlement  = index->forwardingTermStructure()->referenceDate();
 
     boost::shared_ptr<SwaptionVolatilityMatrix> m =
                 liborModel->getSwaptionVolatilityMatrix();
@@ -429,7 +429,7 @@ void LiborMarketModelTest::testSwaptionPricing() {
                                 schedule, swapRate, dayCounter,
                                 schedule, index, 0.0, index->dayCounter()));
             forwardSwap->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                          new DiscountingSwapEngine(index->termStructure())));
+                new DiscountingSwapEngine(index->forwardingTermStructure())));
 
             // check forward pricing first
             const Real expected = forwardSwap->fairRate();
@@ -446,11 +446,12 @@ void LiborMarketModelTest::testSwaptionPricing() {
                                 schedule, swapRate, dayCounter,
                                 schedule, index, 0.0, index->dayCounter()));
             forwardSwap->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                          new DiscountingSwapEngine(index->termStructure())));
+                new DiscountingSwapEngine(index->forwardingTermStructure())));
 
             if (i == j && i<=size/2) {
                 boost::shared_ptr<PricingEngine> engine(
-                    new LfmSwaptionEngine(liborModel,index->termStructure()));
+                     new LfmSwaptionEngine(liborModel,
+                                           index->forwardingTermStructure()));
                 boost::shared_ptr<Exercise> exercise(
                     new EuropeanExercise(process->fixingDates()[i]));
 

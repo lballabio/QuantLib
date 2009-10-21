@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006, 2008 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2008, 2009 StatPro Italia srl
  Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
@@ -58,6 +58,14 @@ namespace QuantLib {
                                         tenor_,
                                         convention_,
                                         endOfMonth_);
+    }
+
+    BusinessDayConvention IborIndex::businessDayConvention() const {
+        return convention_;
+    }
+
+    Handle<YieldTermStructure> IborIndex::forwardingTermStructure() const {
+        return termStructure_;
     }
 
     boost::shared_ptr<IborIndex> IborIndex::clone(

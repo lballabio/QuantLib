@@ -42,7 +42,8 @@ namespace QuantLib {
                          fixingDays, index, gearing, couponSpread,
                          refPeriodStart, refPeriodEnd, dayCounter),
       rateSpread_(rateSpread) {
-        const Handle<YieldTermStructure>& rateCurve = index->termStructure();
+        const Handle<YieldTermStructure>& rateCurve =
+            index->forwardingTermStructure();
         const Date& referenceDate = rateCurve->referenceDate();
 
         observationsSchedule_ = boost::shared_ptr<Schedule>(new
@@ -84,8 +85,10 @@ namespace QuantLib {
 
         Date paymentDate = coupon_->date();
 
-        const boost::shared_ptr<InterestRateIndex>& index = coupon_->index();
-        const Handle<YieldTermStructure>& rateCurve = index->termStructure();
+        boost::shared_ptr<IborIndex> index =
+            boost::dynamic_pointer_cast<IborIndex>(coupon_->index());
+        const Handle<YieldTermStructure>& rateCurve =
+            index->forwardingTermStructure();
         discount_ = rateCurve->discount(paymentDate);
         accrualFactor_ = coupon_->accrualPeriod();
         spreadLegValue_ = spread_ * accrualFactor_* discount_;

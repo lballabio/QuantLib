@@ -472,7 +472,7 @@ namespace {
                          libor3m, libor3m->dayCounter(),
                          bmaSchedule, bma, vars.bmaDayCounter);
             swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                        new DiscountingSwapEngine(libor3m->termStructure())));
+              new DiscountingSwapEngine(libor3m->forwardingTermStructure())));
 
             Real expectedFraction = bmaData[i].rate/100,
                  estimatedFraction = swap.fairLiborFraction();

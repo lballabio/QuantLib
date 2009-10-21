@@ -59,7 +59,7 @@ namespace QuantLib {
       floatDayCount_(iborIndex->dayCounter()),
       // arbitrary choice:
       //engine_(new DiscountingSwapEngine(iborIndex->termStructure())),
-      engine_(new DiscountingSwapEngine(swapIndex->termStructure())) {}
+      engine_(new DiscountingSwapEngine(swapIndex->forwardingTermStructure())) {}
 
 
     MakeCms::MakeCms(const Period& swapTenor,
@@ -88,7 +88,7 @@ namespace QuantLib {
       floatFirstDate_(Date()), floatNextToLastDate_(Date()),
       cmsDayCount_(Actual360()),
       floatDayCount_(iborIndex_->dayCounter()),
-      engine_(new DiscountingSwapEngine(swapIndex->termStructure())) {}
+      engine_(new DiscountingSwapEngine(swapIndex->forwardingTermStructure())) {}
 
 
     MakeCms::operator Swap() const {
@@ -139,11 +139,11 @@ namespace QuantLib {
 
         Rate usedSpread = iborSpread_;
         if (useAtmSpread_) {
-            QL_REQUIRE(!iborIndex_->termStructure().empty(),
-                       "no forecasting term structure set to " <<
+            QL_REQUIRE(!iborIndex_->forwardingTermStructure().empty(),
+                       "no forwarding term structure set to " <<
                        iborIndex_->name());
-            QL_REQUIRE(!swapIndex_->termStructure().empty(),
-                       "no forecasting term structure set to " <<
+            QL_REQUIRE(!swapIndex_->forwardingTermStructure().empty(),
+                       "no forwarding term structure set to " <<
                        swapIndex_->name());
             QL_REQUIRE(couponPricer_,
                        "no CmsCouponPricer set (yet)");

@@ -49,7 +49,7 @@ namespace QuantLib {
       floatSpread_(0.0),
       fixedDayCount_(Thirty360(Thirty360::BondBasis)),
       floatDayCount_(index->dayCounter()),
-      engine_(new DiscountingSwapEngine(iborIndex_->termStructure())) {}
+      engine_(new DiscountingSwapEngine(iborIndex_->forwardingTermStructure())) {}
 
     MakeVanillaSwap::operator VanillaSwap() const {
         boost::shared_ptr<VanillaSwap> swap = *this;
@@ -91,8 +91,8 @@ namespace QuantLib {
 
         Rate usedFixedRate = fixedRate_;
         if (fixedRate_ == Null<Rate>()) {
-            QL_REQUIRE(!iborIndex_->termStructure().empty(),
-                       "no forecasting term structure set to this instance of "
+            QL_REQUIRE(!iborIndex_->forwardingTermStructure().empty(),
+                       "no forwarding term structure set to this instance of "
                        << iborIndex_->name());
             VanillaSwap temp(type_, nominal_,
                              fixedSchedule,
@@ -103,7 +103,7 @@ namespace QuantLib {
             // ATM on the forecasting curve
             bool includeSettlementDateFlows = false;
             temp.setPricingEngine(boost::shared_ptr<PricingEngine>(new
-                DiscountingSwapEngine(iborIndex_->termStructure(),
+                DiscountingSwapEngine(iborIndex_->forwardingTermStructure(),
                                       includeSettlementDateFlows)));
             usedFixedRate = temp.fairRate();
         }

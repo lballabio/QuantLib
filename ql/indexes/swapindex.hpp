@@ -1,6 +1,6 @@
 /*
  Copyright (C) 2006 Ferdinando Ametrano
- Copyright (C) 2006, 2007 StatPro Italia srl
+ Copyright (C) 2006, 2007, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -45,7 +45,6 @@ namespace QuantLib {
                   const boost::shared_ptr<IborIndex>& iborIndex);
         //! \name InterestRateIndex interface
         //@{
-        Handle<YieldTermStructure> termStructure() const;
         Date maturityDate(const Date& valueDate) const;
         //@}
         //! \name Inspectors
@@ -53,6 +52,7 @@ namespace QuantLib {
         Period fixedLegTenor() const { return fixedLegTenor_; }
         BusinessDayConvention fixedLegConvention() const;
         boost::shared_ptr<IborIndex> iborIndex() const;
+        Handle<YieldTermStructure> forwardingTermStructure() const;
         /*! \warning Relinking the term structure underlying the index will
                      not have effect on the returned swap.
         */

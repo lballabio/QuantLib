@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
  Copyright (C) 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
@@ -44,14 +44,12 @@ namespace QuantLib {
                   const DayCounter& dayCounter,
                   const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
-        //! \name InterestRateIndex interface
-        //@{
-        Handle<YieldTermStructure> termStructure() const;
-        //@}
         //! \name Inspectors
         //@{
         BusinessDayConvention businessDayConvention() const;
         bool endOfMonth() const { return endOfMonth_; }
+        //! the curve used to forecast fixings
+        Handle<YieldTermStructure> forwardingTermStructure() const;
         //@}
         //! \name Date calculations
         //@{
@@ -59,7 +57,7 @@ namespace QuantLib {
         // @}
         //! \name Other methods
         //@{
-        //! returns a copy of itself linked to a different forecast curve
+        //! returns a copy of itself linked to a different forwarding curve
         virtual boost::shared_ptr<IborIndex> clone(
                                    const Handle<YieldTermStructure>& h) const;
         // @}
@@ -70,6 +68,7 @@ namespace QuantLib {
         bool endOfMonth_;
     };
 
+
     class OvernightIndex : public IborIndex {
       public:
         OvernightIndex(const std::string& familyName,
@@ -79,20 +78,10 @@ namespace QuantLib {
                        const DayCounter& dayCounter,
                        const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
-        //! returns a copy of itself linked to a different forecast curve
+        //! returns a copy of itself linked to a different forwarding curve
         boost::shared_ptr<IborIndex> clone(
                                    const Handle<YieldTermStructure>& h) const;
     };
-
-    // inline definitions
-
-    inline BusinessDayConvention IborIndex::businessDayConvention() const {
-        return convention_;
-    }
-
-    inline Handle<YieldTermStructure> IborIndex::termStructure() const {
-        return termStructure_;
-    }
 
 }
 

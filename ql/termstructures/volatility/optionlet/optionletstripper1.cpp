@@ -61,7 +61,8 @@ namespace QuantLib {
         const Date& referenceDate = termVolSurface_->referenceDate();
         const DayCounter& dc = termVolSurface_->dayCounter();
         shared_ptr<BlackCapFloorEngine> dummy(new
-                      BlackCapFloorEngine(iborIndex_->termStructure(), 0.20, dc));
+                    BlackCapFloorEngine(iborIndex_->forwardingTermStructure(),
+                                        0.20, dc));
         for (Size i=0; i<nOptionletTenors_; ++i) {
             CapFloor temp = MakeCapFloor(CapFloor::Cap,
                                          capFloorLengths_[i],
@@ -101,9 +102,10 @@ namespace QuantLib {
                     volQuotes_[i][j] = shared_ptr<SimpleQuote>(new
                                                                 SimpleQuote());
                     shared_ptr<BlackCapFloorEngine> engine(new
-                        BlackCapFloorEngine(iborIndex_->termStructure(),
-                                            Handle<Quote>(volQuotes_[i][j]),
-                                            dc));
+                        BlackCapFloorEngine(
+                                        iborIndex_->forwardingTermStructure(),
+                                        Handle<Quote>(volQuotes_[i][j]),
+                                        dc));
                     capFloors_[i][j] = MakeCapFloor(capFloorType,
                                                     capFloorLengths_[i], iborIndex_,
                                                     strikes[j], 0*Days)
@@ -129,7 +131,8 @@ namespace QuantLib {
                 optionletPrices_[i][j] = capFloorPrices_[i][j] -
                                                         previousCapFloorPrice;
                 previousCapFloorPrice = capFloorPrices_[i][j];
-                DiscountFactor d = iborIndex_->termStructure()->discount(
+                DiscountFactor d =
+                    iborIndex_->forwardingTermStructure()->discount(
                                                    optionletPaymentDates_[i]);
                 DiscountFactor optionletAnnuity=optionletAccrualPeriods_[i]*d;
                 try {

@@ -605,7 +605,7 @@ namespace QuantLib {
                                                 clonedIndex,
                                                 bmaDayCount_));
         swap_->setPricingEngine(shared_ptr<PricingEngine>(new
-            DiscountingSwapEngine(iborIndex_->termStructure())));
+            DiscountingSwapEngine(iborIndex_->forwardingTermStructure())));
 
         Date d = calendar_.adjust(swap_->maturityDate(), Following);
         Weekday w = d.weekday();

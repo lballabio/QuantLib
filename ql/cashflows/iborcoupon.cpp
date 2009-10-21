@@ -79,7 +79,8 @@ namespace QuantLib {
             }
 
             // forecast: 0) forecasting curve
-            Handle<YieldTermStructure> termStructure = index_->termStructure();
+            Handle<YieldTermStructure> termStructure =
+                iborIndex_->forwardingTermStructure();
             QL_REQUIRE(!termStructure.empty(),
                        "null term structure set to this instance of "
                        << index_->name());

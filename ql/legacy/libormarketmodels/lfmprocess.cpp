@@ -50,7 +50,7 @@ namespace QuantLib {
 
         QL_REQUIRE(size_ == flows.size(), "wrong number of cashflows");
 
-        const Date settlement = index_->termStructure()->referenceDate();
+        Date settlement = index_->forwardingTermStructure()->referenceDate();
         const Date startDate =
             boost::dynamic_pointer_cast<IborCoupon>(flows[0])->fixingDate();
 
@@ -179,7 +179,7 @@ namespace QuantLib {
 
     Leg
     LiborForwardModelProcess::cashFlows(Real amount) const {
-        const Date refDate = index_->termStructure()->referenceDate();
+        Date refDate = index_->forwardingTermStructure()->referenceDate();
         Schedule schedule(refDate,
                           refDate + Period(index_->tenor().length()*size_,
                                            index_->tenor().units()),

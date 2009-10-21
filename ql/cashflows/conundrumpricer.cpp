@@ -84,7 +84,7 @@ namespace QuantLib {
         fixingDate_ = coupon_->fixingDate();
         paymentDate_ = coupon_->date();
         const boost::shared_ptr<SwapIndex>& swapIndex = coupon_->swapIndex();
-        rateCurve_ = *(swapIndex->termStructure());
+        rateCurve_ = *(swapIndex->forwardingTermStructure());
 
         Date today = Settings::instance().evaluationDate();
 
@@ -567,7 +567,8 @@ namespace QuantLib {
             swapIndex->underlyingSwap(coupon.fixingDate());
 
         const Schedule& schedule = swap->fixedSchedule();
-        Handle<YieldTermStructure> rateCurve = swapIndex->termStructure();
+        Handle<YieldTermStructure> rateCurve =
+            swapIndex->forwardingTermStructure();
 
         const DayCounter& dc = swapIndex->dayCounter();
 
@@ -669,7 +670,8 @@ namespace QuantLib {
         objectiveFunction_ = boost::shared_ptr<ObjectiveFunction>(new ObjectiveFunction(*this, swapRateValue_));
 
         const Schedule& schedule = swap->fixedSchedule();
-        Handle<YieldTermStructure> rateCurve = swapIndex->termStructure();
+        Handle<YieldTermStructure> rateCurve =
+            swapIndex->forwardingTermStructure();
         const DayCounter& dc = swapIndex->dayCounter();
 
         swapStartTime_ = dc.yearFraction(rateCurve->referenceDate(),

@@ -401,7 +401,8 @@ void CmsTest::testParity() {
     swaptionVols.push_back(vars.SabrVolCube2);
 
     shared_ptr<SwapIndex> swapIndex(new
-        EuriborSwapIsdaFixA(10*Years, vars.iborIndex->termStructure()));
+        EuriborSwapIsdaFixA(10*Years,
+                            vars.iborIndex->forwardingTermStructure()));
     Date startDate = vars.termStructure->referenceDate() + 20*Years;
     Date paymentDate = startDate + 1*Years;
     Date endDate = paymentDate;
