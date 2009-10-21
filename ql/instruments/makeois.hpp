@@ -30,8 +30,6 @@
 
 namespace QuantLib {
 
-    class YieldTermStructure;
-
     //! helper class
     /*! This class provides a more comfortable way
         to instantiate overnight indexed swaps.

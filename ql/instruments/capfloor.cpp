@@ -285,8 +285,11 @@ namespace QuantLib {
     }
 
     Rate CapFloor::atmRate(const YieldTermStructure& discountCurve) const {
+        bool includeSettlementDateFlows = false;
+        Date settlementDate = discountCurve.referenceDate();
         return CashFlows::atmRate(floatingLeg_, discountCurve,
-                                  false, discountCurve.referenceDate());
+                                  includeSettlementDateFlows,
+                                  settlementDate);
     }
 
     Volatility CapFloor::impliedVolatility(
