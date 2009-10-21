@@ -18,9 +18,7 @@
 */
 
 #include <ql/termstructures/volatility/smilesection.hpp>
-#include <ql/termstructures/volatility/sabr.hpp>
 #include <ql/settings.hpp>
-#include <ql/utilities/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -60,47 +58,5 @@ namespace QuantLib {
                    "expiry time must be positive: " <<
                    exerciseTime_ << " not allowed");
     }
-
-    SabrSmileSection::SabrSmileSection(Time timeToExpiry,
-                                       Rate forward,
-                                       const std::vector<Real>& sabrParams)
-    : SmileSection(timeToExpiry), forward_(forward) {
-
-        alpha_ = sabrParams[0];
-        beta_ = sabrParams[1];
-        nu_ = sabrParams[2];
-        rho_ = sabrParams[3];
-
-        QL_REQUIRE(forward_>0.0, "at the money forward rate must be "
-                   "positive: " << io::rate(forward_) << " not allowed");
-        validateSabrParameters(alpha_, beta_, nu_, rho_);
-    }
-
-    SabrSmileSection::SabrSmileSection(const Date& d,
-                                       Rate forward,
-                                       const std::vector<Real>& sabrParams,
-                                       const DayCounter& dc)
-    : SmileSection(d, dc), forward_(forward) {
-
-        alpha_ = sabrParams[0];
-        beta_ = sabrParams[1];
-        nu_ = sabrParams[2];
-        rho_ = sabrParams[3];
-
-        QL_REQUIRE(forward_>0.0, "at the money forward rate must be "
-                   "positive: " << io::rate(forward_) << " not allowed");
-        validateSabrParameters(alpha_, beta_, nu_, rho_);
-    }
-
-     Real SabrSmileSection::varianceImpl(Rate strike) const {
-        Volatility vol = unsafeSabrVolatility(strike, forward_,
-            exerciseTime(), alpha_, beta_, nu_, rho_);
-        return vol*vol*exerciseTime();
-     }
-
-     Real SabrSmileSection::volatilityImpl(Rate strike) const {
-        return unsafeSabrVolatility(strike, forward_,
-            exerciseTime(), alpha_, beta_, nu_, rho_);
-     }
 
 }

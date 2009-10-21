@@ -4357,6 +4357,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\volatility\sabrsmilesection.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\sabrsmilesection.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\volatility\smilesection.cpp"
 					>
 				</File>

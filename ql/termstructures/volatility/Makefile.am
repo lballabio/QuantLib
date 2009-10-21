@@ -12,6 +12,7 @@ this_include_HEADERS = \
     interpolatedsmilesection.hpp \
     sabr.hpp \
     sabrinterpolatedsmilesection.hpp \
+    sabrsmilesection.hpp \
     smilesection.hpp \
     spreadedsmilesection.hpp
 
@@ -21,6 +22,7 @@ libVolTermStructures_la_SOURCES = \
     flatsmilesection.cpp \
     sabr.cpp \
     sabrinterpolatedsmilesection.cpp \
+    sabrsmilesection.cpp \
     smilesection.cpp \
     spreadedsmilesection.cpp
 

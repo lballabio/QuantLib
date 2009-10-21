@@ -29,6 +29,7 @@ Copyright (C) 2006 François du Vignaud
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/termstructures/volatility/smilesection.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 
 namespace QuantLib {
 

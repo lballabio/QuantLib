@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=1602
+UnitCount=1604
 Type=2
 Ver=1
 ObjFiles=
@@ -16067,3 +16067,22 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
+[Unit1603]
+FileName=ql\termstructures\volatility\sabrsmilesection.hpp
+CompileCpp=1
+Folder=termstructures/volatility
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1604]
+FileName=ql\termstructures\volatility\sabrsmilesection.cpp
+CompileCpp=1
+Folder=termstructures/volatility
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=

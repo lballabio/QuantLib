@@ -25,10 +25,8 @@
 #define quantlib_smile_section_hpp
 
 #include <ql/patterns/observable.hpp>
-#include <ql/time/date.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/daycounter.hpp>
 #include <ql/utilities/null.hpp>
-#include <vector>
 
 namespace QuantLib {
 
@@ -71,6 +69,9 @@ namespace QuantLib {
         mutable Time exerciseTime_;
     };
 
+
+    // inline definitions
+
     inline Real SmileSection::variance(Rate strike) const {
         if (strike==Null<Rate>())
             strike = atmLevel();
@@ -93,25 +94,6 @@ namespace QuantLib {
         Volatility v = volatilityImpl(strike);
         return v*v*exerciseTime();
     }
-
-    class SabrSmileSection : public SmileSection {
-      public:
-        SabrSmileSection(Time timeToExpiry,
-                         Rate forward,
-                         const std::vector<Real>& sabrParameters);
-        SabrSmileSection(const Date& d,
-                         Rate forward,
-                         const std::vector<Real>& sabrParameters,
-                         const DayCounter& dc = Actual365Fixed());
-        Real minStrike () const { return 0.0; }
-        Real maxStrike () const { return QL_MAX_REAL; }
-        Real atmLevel() const { return forward_; }
-      protected:
-        Real varianceImpl(Rate strike) const;
-        Volatility volatilityImpl(Rate strike) const;
-      private:
-        Real alpha_, beta_, nu_, rho_, forward_;
-    };
 
 }
 

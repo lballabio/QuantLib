@@ -18,6 +18,7 @@
 */
 
 #include <ql/termstructures/volatility/swaption/swaptionvolcube1.hpp>
+#include <ql/termstructures/volatility/sabrsmilesection.hpp>
 #include <ql/math/interpolations/flatextrapolation2d.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
