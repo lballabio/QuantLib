@@ -27,11 +27,9 @@
 #define quantlib_ibor_index_hpp
 
 #include <ql/indexes/interestrateindex.hpp>
-#include <ql/handle.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
-
-    class YieldTermStructure;
 
     //! base class for Inter-Bank-Offered-Rate indexes (e.g. %Libor, etc.)
     class IborIndex : public InterestRateIndex {
