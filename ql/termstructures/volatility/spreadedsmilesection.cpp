@@ -31,7 +31,7 @@ namespace QuantLib {
     }
 
     Volatility SpreadedSmileSection::volatilityImpl(Rate k) const {
-        return underlyingSection_->volatilityImpl(k) + spread_->value();
+        return underlyingSection_->volatility(k) + spread_->value();
     }
 
 }
