@@ -89,7 +89,7 @@ namespace QuantLib {
 
     Rate BMAIndex::forecastFixing(const Date& fixingDate) const {
         QL_REQUIRE(!termStructure_.empty(),
-                   "no forecasting term structure set to " << name());
+                   "null term structure set to this instance of " << name());
         Date start = fixingCalendar_.advance(fixingDate,1,Days);
         Date end = maturityDate(start);
         return termStructure_->forwardRate(start, end,

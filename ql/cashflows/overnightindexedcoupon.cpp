@@ -85,8 +85,8 @@ namespace QuantLib {
                     Handle<YieldTermStructure> curve =
                         index->forwardingTermStructure();
                     QL_REQUIRE(!curve.empty(),
-                               "null yield term structure set to this "
-                               "instance of " << index->name());
+                               "null term structure set to this instance of "<<
+                               index->name());
 
                     const vector<Date>& dates = coupon_->valueDates();
                     DiscountFactor startDiscount = curve->discount(dates[i]);

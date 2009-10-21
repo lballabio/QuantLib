@@ -73,8 +73,8 @@ namespace QuantLib {
         Rate usedFixedRate = fixedRate_;
         if (fixedRate_ == Null<Rate>()) {
             QL_REQUIRE(!overnightIndex_->forwardingTermStructure().empty(),
-                       "no forwarding term structure set to this instance of "
-                       << overnightIndex_->name());
+                       "null term structure set to this instance of " <<
+                       overnightIndex_->name());
             OvernightIndexedSwap temp(type_, nominal_,
                                       schedule,
                                       0.0, // fixed rate

@@ -82,7 +82,7 @@ namespace QuantLib {
     void Forward::performCalculations() const {
 
         QL_REQUIRE(!discountCurve_.empty(),
-                   "no discounting term structure set to Forward");
+                   "null term structure set to Forward");
 
         boost::shared_ptr<ForwardTypePayoff> ftpayoff =
             boost::dynamic_pointer_cast<ForwardTypePayoff>(payoff_);

@@ -92,8 +92,8 @@ namespace QuantLib {
         Rate usedFixedRate = fixedRate_;
         if (fixedRate_ == Null<Rate>()) {
             QL_REQUIRE(!iborIndex_->forwardingTermStructure().empty(),
-                       "no forwarding term structure set to this instance of "
-                       << iborIndex_->name());
+                       "null term structure set to this instance of " <<
+                       iborIndex_->name());
             VanillaSwap temp(type_, nominal_,
                              fixedSchedule,
                              0.0, // fixed rate

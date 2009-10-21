@@ -63,7 +63,7 @@ namespace QuantLib {
         if (strike_ == Null<Rate>()) {
             // ATM on the forecasting curve
             QL_REQUIRE(!swapIndex_->forwardingTermStructure().empty(),
-                       "no forwarding term structure set to " <<
+                       "null term structure set to this instance of " <<
                        swapIndex_->name());
             boost::shared_ptr<VanillaSwap> temp =
                 swapIndex_->underlyingSwap(fixingDate_);

@@ -82,8 +82,8 @@ namespace QuantLib {
             Handle<YieldTermStructure> termStructure =
                 iborIndex_->forwardingTermStructure();
             QL_REQUIRE(!termStructure.empty(),
-                       "null term structure set to this instance of "
-                       << index_->name());
+                       "null term structure set to this instance of " <<
+                       index_->name());
 
             // forecast: 1) startDiscount
             Date fixingValueDate = index_->fixingCalendar().advance(

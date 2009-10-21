@@ -41,7 +41,7 @@ namespace QuantLib {
 
     Rate IborIndex::forecastFixing(const Date& fixingDate) const {
         QL_REQUIRE(!termStructure_.empty(),
-                   "no forecasting term structure set to " << name());
+                   "null term structure set to this instance of " << name());
         Date fixingValueDate = valueDate(fixingDate);
         Date endValueDate = maturityDate(fixingValueDate);
         DiscountFactor fixingDiscount =

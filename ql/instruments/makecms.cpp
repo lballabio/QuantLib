@@ -140,10 +140,10 @@ namespace QuantLib {
         Rate usedSpread = iborSpread_;
         if (useAtmSpread_) {
             QL_REQUIRE(!iborIndex_->forwardingTermStructure().empty(),
-                       "no forwarding term structure set to " <<
+                       "null term structure set to this instance of " <<
                        iborIndex_->name());
             QL_REQUIRE(!swapIndex_->forwardingTermStructure().empty(),
-                       "no forwarding term structure set to " <<
+                       "null term structure set to this instance of " <<
                        swapIndex_->name());
             QL_REQUIRE(couponPricer_,
                        "no CmsCouponPricer set (yet)");
