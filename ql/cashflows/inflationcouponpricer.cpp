@@ -181,7 +181,7 @@ namespace QuantLib {
 															  Real  forward,
 															  Real stdDev	 
 														  ) const {
-		return bachelierBlackFormula2(optionType,
+		return bachelierBlackFormula(optionType,
 									 effStrike,
 									 forward,
 									 stdDev);

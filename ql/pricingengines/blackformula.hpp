@@ -1,12 +1,12 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Cristina Duminuco
- Copyright (C) 2007 Chiara Fornarola
+ Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2003, 2004, 2005, 2006, 2008 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
- Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2007 Cristina Duminuco
+ Copyright (C) 2007 Chiara Fornarola
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -150,7 +150,7 @@ namespace QuantLib {
                                       Real discount = 1.0,
                                       Real displacement = 0.0);
 
-     /*! Black 1976 formula for  derivative with respect to implied vol, this 
+     /*! Black 1976 formula for  derivative with respect to implied vol, this
      is basically the vega, but if you want 1% change multiply by 1%
     */
     Real blackFormulaVolDerivative(Real strike,
@@ -184,13 +184,6 @@ namespace QuantLib {
                  absoluteVolatility*sqrt(timeToMaturity)
     */
     Real bachelierBlackFormula(Option::Type optionType,
-                               Real strike,
-                               Real forward,
-                               Real stdDev,
-                               Real discount = 1.0);
-	
-	//! this version applied discounting to (all) the result
-	Real bachelierBlackFormula2(Option::Type optionType,
                                Real strike,
                                Real forward,
                                Real stdDev,

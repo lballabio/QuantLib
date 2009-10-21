@@ -175,7 +175,7 @@ namespace QuantLib {
                                                         Rate forward, Real stdDev,
                                                         Real d) const
     {
-        return bachelierBlackFormula2(type, strike,
+        return bachelierBlackFormula(type, strike,
                                      forward, stdDev, d);
     }
 

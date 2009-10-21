@@ -335,31 +335,7 @@ namespace QuantLib {
         if (stdDev==0.0)
             return discount*std::max(d, 0.0);
         CumulativeNormalDistribution phi;
-        Real result = discount*stdDev*phi.derivative(h) + d*phi(h);
-        QL_ENSURE(result>=0.0,
-                  "negative value (" << result << ") for " <<
-                  stdDev << " stdDev, " <<
-                  optionType << " option, " <<
-                  strike << " strike , " <<
-                  forward << " forward");
-        return result;
-    }
-	
-	Real bachelierBlackFormula2(Option::Type optionType,
-                               Real strike,
-                               Real forward,
-                               Real stdDev,
-                               Real discount)
-    {
-        QL_REQUIRE(stdDev>=0.0,
-                   "stdDev (" << stdDev << ") must be non-negative");
-        QL_REQUIRE(discount>0.0,
-                   "discount (" << discount << ") must be positive");
-        Real d = (forward-strike)*optionType, h = d/stdDev;
-        if (stdDev==0.0)
-            return discount*std::max(d, 0.0);
-        CumulativeNormalDistribution phi;
-        Real result = discount*(stdDev*phi.derivative(h) + d*phi(h));//CK change
+        Real result = discount*(stdDev*phi.derivative(h) + d*phi(h));
         QL_ENSURE(result>=0.0,
                   "negative value (" << result << ") for " <<
                   stdDev << " stdDev, " <<
