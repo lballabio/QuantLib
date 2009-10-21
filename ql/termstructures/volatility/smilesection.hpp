@@ -54,9 +54,9 @@ namespace QuantLib {
         const Date& referenceDate() const;
         Time exerciseTime() const { return exerciseTime_; }
         const DayCounter& dayCounter() const { return dc_; }
-        void initializeExerciseTime() const;
       protected:
-        Real varianceImpl(Rate strike) const;
+        virtual void initializeExerciseTime() const;
+        virtual Real varianceImpl(Rate strike) const;
         virtual Volatility volatilityImpl(Rate strike) const = 0;
       private:
         bool isFloating_;
