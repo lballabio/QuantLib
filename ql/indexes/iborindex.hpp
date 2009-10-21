@@ -26,10 +26,12 @@
 #ifndef quantlib_ibor_index_hpp
 #define quantlib_ibor_index_hpp
 
-#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/indexes/interestrateindex.hpp>
+#include <ql/handle.hpp>
 
 namespace QuantLib {
+
+    class YieldTermStructure;
 
     //! base class for Inter-Bank-Offered-Rate indexes (e.g. %Libor, etc.)
     class IborIndex : public InterestRateIndex {
@@ -59,7 +61,7 @@ namespace QuantLib {
         //@{
         //! returns a copy of itself linked to a different forwarding curve
         virtual boost::shared_ptr<IborIndex> clone(
-                                   const Handle<YieldTermStructure>& h) const;
+                        const Handle<YieldTermStructure>& forwarding) const;
         // @}
       protected:
         Rate forecastFixing(const Date& fixingDate) const;

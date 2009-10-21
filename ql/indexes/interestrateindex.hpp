@@ -31,11 +31,8 @@
 #include <ql/currency.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/period.hpp>
-#include <ql/handle.hpp>
 
 namespace QuantLib {
-
-    class YieldTermStructure;
 
     //! base class for interest rate indexes
     /*! \todo add methods returning InterestRate */

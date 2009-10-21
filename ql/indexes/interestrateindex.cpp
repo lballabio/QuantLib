@@ -21,6 +21,7 @@
 
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/settings.hpp>
+
 #include <sstream>
 
 namespace QuantLib {
