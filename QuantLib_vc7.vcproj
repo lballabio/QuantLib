@@ -1203,22 +1203,6 @@
 				RelativePath=".\ql\legacy\all.hpp">
 			</File>
 			<Filter
-				Name="pricers"
-				Filter="">
-				<File
-					RelativePath=".\ql\legacy\pricers\all.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mccliquetoption.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mccliquetoption.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mcpricer.hpp">
-				</File>
-			</Filter>
-			<Filter
 				Name="libormarketmodels"
 				Filter="">
 				<File
