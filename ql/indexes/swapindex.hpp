@@ -24,12 +24,14 @@
 #define quantlib_swapindex_hpp
 
 #include <ql/indexes/interestrateindex.hpp>
+#include <ql/handle.hpp>
 
 namespace QuantLib {
 
     class IborIndex;
     class Schedule;
     class VanillaSwap;
+    class YieldTermStructure;
 
     //! base class for swap-rate indexes
     class SwapIndex : public InterestRateIndex {

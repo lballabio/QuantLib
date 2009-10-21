@@ -43,7 +43,7 @@ namespace QuantLib {
                           const std::vector<Date>& optionletDates,
                           const std::vector<Rate>& strikes,
                           const std::vector<std::vector<Handle<Quote> > >&,
-                          const DayCounter& dc = Actual365Fixed());
+                          const DayCounter& dc);
         //! \name StrippedOptionletBase interface
         //@{
         const std::vector<Rate>& optionletStrikes(Size i) const;

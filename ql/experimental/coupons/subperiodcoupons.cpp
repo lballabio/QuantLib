@@ -21,6 +21,7 @@
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <cmath>
 
 namespace QuantLib {

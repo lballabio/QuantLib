@@ -26,6 +26,7 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 using boost::shared_ptr;
 
