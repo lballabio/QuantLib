@@ -50,8 +50,8 @@ namespace QuantLib {
         virtual void update();
         virtual Real minStrike() const = 0;
         virtual Real maxStrike() const = 0;
-        Real variance(Rate strike = Null<Rate>()) const;
-        Volatility volatility(Rate strike = Null<Rate>()) const;
+        Real variance(Rate strike) const;
+        Volatility volatility(Rate strike) const;
         virtual Real atmLevel() const = 0;
         const Date& exerciseDate() const { return exerciseDate_; }
         const Date& referenceDate() const;
@@ -73,14 +73,10 @@ namespace QuantLib {
     // inline definitions
 
     inline Real SmileSection::variance(Rate strike) const {
-        if (strike==Null<Rate>())
-            strike = atmLevel();
         return varianceImpl(strike);
     }
 
     inline Volatility SmileSection::volatility(Rate strike) const {
-        if (strike==Null<Rate>())
-            strike = atmLevel();
         return volatilityImpl(strike);
     }
 
