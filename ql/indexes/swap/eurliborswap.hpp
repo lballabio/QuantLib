@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Ferdinando Ametrano
+ Copyright (C) 2008, 2009 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,7 +25,6 @@
 #define quantlib_eurliborswap_hpp
 
 #include <ql/indexes/swapindex.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
 
@@ -44,6 +43,9 @@ namespace QuantLib {
         EurLiborSwapIsdaFixA(const Period& tenor,
                              const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
+        EurLiborSwapIsdaFixA(const Period& tenor,
+                             const Handle<YieldTermStructure>& forwarding,
+                             const Handle<YieldTermStructure>& discounting);
     };
 
     //! %EurLiborSwapIsdaFixB index base class
@@ -61,6 +63,9 @@ namespace QuantLib {
         EurLiborSwapIsdaFixB(const Period& tenor,
                              const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
+        EurLiborSwapIsdaFixB(const Period& tenor,
+                             const Handle<YieldTermStructure>& forwarding,
+                             const Handle<YieldTermStructure>& discounting);
     };
 
 
@@ -76,6 +81,9 @@ namespace QuantLib {
         EurLiborSwapIfrFix(const Period& tenor,
                            const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
+        EurLiborSwapIfrFix(const Period& tenor,
+                           const Handle<YieldTermStructure>& forwarding,
+                           const Handle<YieldTermStructure>& discounting);
     };
 
 }

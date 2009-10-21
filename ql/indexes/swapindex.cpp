@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2009 Ferdinando Ametrano
  Copyright (C) 2006, 2007, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -20,7 +20,10 @@
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
+
 #include <sstream>
+
+using boost::shared_ptr;
 
 namespace QuantLib {
 
@@ -32,12 +35,34 @@ namespace QuantLib {
                          const Period& fixedLegTenor,
                          BusinessDayConvention fixedLegConvention,
                          const DayCounter& fixedLegDayCounter,
-                         const boost::shared_ptr<IborIndex>& iborIndex)
+                         const shared_ptr<IborIndex>& iborIndex)
     : InterestRateIndex(familyName, tenor, settlementDays,
                         currency, calendar, fixedLegDayCounter),
       tenor_(tenor), iborIndex_(iborIndex),
       fixedLegTenor_(fixedLegTenor),
-      fixedLegConvention_(fixedLegConvention) {
+      fixedLegConvention_(fixedLegConvention),
+      exogenousDiscount_(false),
+      discount_(Handle<YieldTermStructure>()) {
+        registerWith(iborIndex_);
+    }
+
+    SwapIndex::SwapIndex(const std::string& familyName,
+                         const Period& tenor,
+                         Natural settlementDays,
+                         Currency currency,
+                         const Calendar& calendar,
+                         const Period& fixedLegTenor,
+                         BusinessDayConvention fixedLegConvention,
+                         const DayCounter& fixedLegDayCounter,
+                         const shared_ptr<IborIndex>& iborIndex,
+                         const Handle<YieldTermStructure>& discount)
+    : InterestRateIndex(familyName, tenor, settlementDays,
+                        currency, calendar, fixedLegDayCounter),
+      tenor_(tenor), iborIndex_(iborIndex),
+      fixedLegTenor_(fixedLegTenor),
+      fixedLegConvention_(fixedLegConvention),
+      exogenousDiscount_(true),
+      discount_(discount) {
         registerWith(iborIndex_);
     }
 
@@ -49,21 +74,59 @@ namespace QuantLib {
         return underlyingSwap(fixingDate)->fairRate();
     }
 
-    boost::shared_ptr<VanillaSwap> SwapIndex::underlyingSwap(
-                                               const Date& fixingDate) const {
+    shared_ptr<VanillaSwap>
+    SwapIndex::underlyingSwap(const Date& fixingDate) const {
         Rate fixedRate = 0.0;
-        return MakeVanillaSwap(tenor_, iborIndex_, fixedRate)
-            .withEffectiveDate(valueDate(fixingDate))
-            .withFixedLegCalendar(fixingCalendar())
-            .withFixedLegDayCount(dayCounter_)
-            .withFixedLegTenor(fixedLegTenor_)
-            .withFixedLegConvention(fixedLegConvention_)
-            .withFixedLegTerminationDateConvention(fixedLegConvention_);
+        if (exogenousDiscount_)
+            return MakeVanillaSwap(tenor_, iborIndex_, fixedRate)
+                .withEffectiveDate(valueDate(fixingDate))
+                .withFixedLegCalendar(fixingCalendar())
+                .withFixedLegDayCount(dayCounter_)
+                .withFixedLegTenor(fixedLegTenor_)
+                .withFixedLegConvention(fixedLegConvention_)
+                .withFixedLegTerminationDateConvention(fixedLegConvention_)
+                .withDiscountingTermStructure(discount_);
+        else
+            return MakeVanillaSwap(tenor_, iborIndex_, fixedRate)
+                .withEffectiveDate(valueDate(fixingDate))
+                .withFixedLegCalendar(fixingCalendar())
+                .withFixedLegDayCount(dayCounter_)
+                .withFixedLegTenor(fixedLegTenor_)
+                .withFixedLegConvention(fixedLegConvention_)
+                .withFixedLegTerminationDateConvention(fixedLegConvention_);
     }
 
     Date SwapIndex::maturityDate(const Date& valueDate) const {
         Date fixDate = fixingDate(valueDate);
         return underlyingSwap(fixDate)->maturityDate();
+    }
+
+    shared_ptr<SwapIndex>
+    SwapIndex::clone(const Handle<YieldTermStructure>& forwarding) const {
+
+        if (exogenousDiscount_)
+            return shared_ptr<SwapIndex>(new
+                SwapIndex(familyName(),
+                          tenor(),
+                          fixingDays(),
+                          currency(),
+                          fixingCalendar(),
+                          fixedLegTenor(),
+                          fixedLegConvention(),
+                          dayCounter(),
+                          iborIndex_->clone(forwarding),
+                          discount_));
+        else
+            return shared_ptr<SwapIndex>(new
+                SwapIndex(familyName(),
+                          tenor(),
+                          fixingDays(),
+                          currency(),
+                          fixingCalendar(),
+                          fixedLegTenor(),
+                          fixedLegConvention(),
+                          dayCounter(),
+                          iborIndex_->clone(forwarding)));
     }
 
 }

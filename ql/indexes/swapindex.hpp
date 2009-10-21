@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2009 Ferdinando Ametrano
  Copyright (C) 2006, 2007, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -44,6 +44,16 @@ namespace QuantLib {
                   BusinessDayConvention fixedLegConvention,
                   const DayCounter& fixedLegDayCounter,
                   const boost::shared_ptr<IborIndex>& iborIndex);
+        SwapIndex(const std::string& familyName,
+                  const Period& tenor,
+                  Natural settlementDays,
+                  Currency currency,
+                  const Calendar& calendar,
+                  const Period& fixedLegTenor,
+                  BusinessDayConvention fixedLegConvention,
+                  const DayCounter& fixedLegDayCounter,
+                  const boost::shared_ptr<IborIndex>& iborIndex,
+                  const Handle<YieldTermStructure>& discountingTermStructure);
         //! \name InterestRateIndex interface
         //@{
         Date maturityDate(const Date& valueDate) const;
@@ -52,7 +62,7 @@ namespace QuantLib {
         //@{
         Period fixedLegTenor() const { return fixedLegTenor_; }
         BusinessDayConvention fixedLegConvention() const;
-        boost::shared_ptr<IborIndex> iborIndex() const;
+        boost::shared_ptr<IborIndex> iborIndex() const { return iborIndex_; }
         Handle<YieldTermStructure> forwardingTermStructure() const;
         /*! \warning Relinking the term structure underlying the index will
                      not have effect on the returned swap.
@@ -60,12 +70,20 @@ namespace QuantLib {
         boost::shared_ptr<VanillaSwap> underlyingSwap(
                                                 const Date& fixingDate) const;
         //@}
+        //! \name Other methods
+        //@{
+        //! returns a copy of itself linked to a different forwarding curve
+        virtual boost::shared_ptr<SwapIndex> clone(
+                        const Handle<YieldTermStructure>& forwarding) const;
+        // @}
       protected:
         Rate forecastFixing(const Date& fixingDate) const;
         Period tenor_;
         boost::shared_ptr<IborIndex> iborIndex_;
         Period fixedLegTenor_;
         BusinessDayConvention fixedLegConvention_;
+        bool exogenousDiscount_;
+        Handle<YieldTermStructure> discount_;
     };
 
 
@@ -73,10 +91,6 @@ namespace QuantLib {
 
     inline BusinessDayConvention SwapIndex::fixedLegConvention() const {
         return fixedLegConvention_;
-    }
-
-    inline boost::shared_ptr<IborIndex> SwapIndex::iborIndex() const {
-        return iborIndex_;
     }
 
 }
