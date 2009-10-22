@@ -83,8 +83,8 @@ namespace QuantLib {
           protected:
             Rate K_;
             Real slope_;
-			Frequency frequency_;
-			bool indexIsInterpolated_;
+            Frequency frequency_;
+            bool indexIsInterpolated_;
             std::vector<Time> tvec_;
             std::vector<Date> dvec_;
             mutable std::vector<Volatility> vvec_;
@@ -111,21 +111,21 @@ namespace QuantLib {
                    const boost::shared_ptr<YoYInflationCapFloorEngine> &p,
                    Real priceToMatch)
     : K_(K), slope_(slope), frequency_(anIndex->frequency()),
-	  indexIsInterpolated_(anIndex->interpolated()),
+      indexIsInterpolated_(anIndex->interpolated()),
       capfloor_(MakeYoYInflationCapFloor(type,
-			(Size)std::floor(0.5+surf->timeFromReference(surf->minMaturity())),
-										 surf->calendar(), anIndex, lag, K)
+            (Size)std::floor(0.5+surf->timeFromReference(surf->minMaturity())),
+                                         surf->calendar(), anIndex, lag, K)
                 .withNominal(10000.0) ),
       priceToMatch_(priceToMatch), surf_(surf), p_(p) {
-	
+
         tvec_ = std::vector<Time>(2);
         vvec_ = std::vector<Volatility>(2);
         dvec_ = std::vector<Date>(2);
         lag_ = surf_->observationLag();
         capfloor_ =
-            MakeYoYInflationCapFloor(type, 
-				(Size)std::floor(0.5+surf->timeFromReference(surf->minMaturity())),
-									 surf->calendar(), anIndex, lag, K)
+            MakeYoYInflationCapFloor(type,
+                (Size)std::floor(0.5+surf->timeFromReference(surf->minMaturity())),
+                                     surf->calendar(), anIndex, lag, K)
             .withNominal(10000.0) ;
 
         // shortest time available from price surface
@@ -159,7 +159,7 @@ namespace QuantLib {
             new InterpolatedYoYOptionletVolatilityCurve<Linear>(
                                                0, TARGET(), ModifiedFollowing,
                                                Actual365Fixed(), lag_,
-											   frequency_, indexIsInterpolated_,
+                                               frequency_, indexIsInterpolated_,
                                                dvec_, vvec_,
                                                -1.0, 3.0) ); // strike limits
         Handle<YoYOptionletVolatilitySurface> hCurve(vCurve);
@@ -178,7 +178,7 @@ namespace QuantLib {
         p_ = p;
         lag_ = YoYCapFloorTermPriceSurface_->observationLag();
         frequency_ = YoYCapFloorTermPriceSurface_->frequency();
-		indexIsInterpolated_ = YoYCapFloorTermPriceSurface_->indexIsInterpolated();
+        indexIsInterpolated_ = YoYCapFloorTermPriceSurface_->indexIsInterpolated();
         Natural fixingDays_ = YoYCapFloorTermPriceSurface_->fixingDays();
         Natural settlementDays = 0; // always
         Calendar cal = YoYCapFloorTermPriceSurface_->calendar();
@@ -245,16 +245,16 @@ namespace QuantLib {
                 Size nT = (Size)floor(s->timeFromReference(s->yoyOptionDateFromTenor(Tp))+0.5);
                 helpers.push_back(boost::shared_ptr<YoYOptionletHelper>(
                           new YoYOptionletHelper(quote1, notional, useType,
-                                                 lag_, 
-												 dc, cal, 
-												 fixingDays_,
+                                                 lag_,
+                                                 dc, cal,
+                                                 fixingDays_,
                                                  anIndex, K, nT, p_)));
 
                 boost::shared_ptr<ConstantYoYOptionletVolatility> yoyVolBLACK(
                           new ConstantYoYOptionletVolatility(found, settlementDays,
-															 cal, bdc, dc,
-															 lag_, frequency_,
-															 false,
+                                                             cal, bdc, dc,
+                                                             lag_, frequency_,
+                                                             false,
                                                              // -100% to +300%
                                                              -1.0,3.0));
 
@@ -266,7 +266,7 @@ namespace QuantLib {
             }
             // ***bootstrap***
             // this is the artificial vol at zero so that first section works
-			Real Tmin = s->timeFromReference(s->yoyOptionDateFromTenor(TPmin));
+            Real Tmin = s->timeFromReference(s->yoyOptionDateFromTenor(TPmin));
             Volatility baseYoYVolatility = found - slope * Tmin * found;
             Rate eps = std::max(K, 0.02) / 1000.0;
             Rate minStrike = K-eps;
@@ -274,8 +274,8 @@ namespace QuantLib {
             boost::shared_ptr<
                 PiecewiseYoYOptionletVolatilityCurve<Interpolator1D> > testPW(
                 new PiecewiseYoYOptionletVolatilityCurve<Interpolator1D>(
-											settlementDays, cal, bdc, dc, lag_,
-											frequency_, indexIsInterpolated_,
+                                            settlementDays, cal, bdc, dc, lag_,
+                                            frequency_, indexIsInterpolated_,
                                             minStrike, maxStrike,
                                             baseYoYVolatility,
                                             helperInstruments) );

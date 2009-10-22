@@ -101,8 +101,8 @@ namespace QuantLib {
          const Real slope,
          const Interpolator1D &interpolator)
     : YoYOptionletVolatilitySurface(settlementDays, cal, bdc, dc, lag,
-									capFloorPrices->yoyIndex()->frequency(), 
-									capFloorPrices->yoyIndex()->interpolated()),
+                                    capFloorPrices->yoyIndex()->frequency(),
+                                    capFloorPrices->yoyIndex()->interpolated()),
       capFloorPrices_(capFloorPrices), yoyInflationCouponPricer_(pricer),
       yoyOptionletStripper_(yoyOptionletStripper),
       factory1D_(interpolator), slope_(slope), lastDateisSet_(false) {

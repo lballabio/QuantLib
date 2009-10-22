@@ -875,7 +875,7 @@ void BondTest::testBrazilianCached() {
     // The tolerance is high because Andima truncate yields
     Real tolerance = 1.0e-4;
 
-	// Reset evaluation date
+    // Reset evaluation date
     Settings::instance().evaluationDate() = today;
 
     // NTN-F maturity dates
@@ -922,13 +922,13 @@ void BondTest::testBrazilianCached() {
 
         FixedRateBond bond(settlementDays,
             faceAmount,
-			schedule,
-			couponRates,
-			Following,
-			redemption,
+            schedule,
+            couponRates,
+            Following,
+            redemption,
             issueDate);
 
-		Real cachedPrice = prices[bondIndex];
+        Real cachedPrice = prices[bondIndex];
         Real price = faceAmount *
             (BondFunctions::cleanPrice(bond, yield.rate(), yield.dayCounter(),
                                  yield.compounding(), yield.frequency(),
