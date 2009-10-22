@@ -30,33 +30,38 @@ namespace QuantLib {
 
     //! Capped or floored inflation coupon.
     /*! Essentially a copy of the nominal version but taking a
-     different index and a set of pricers (not just one).
+        different index and a set of pricers (not just one).
 
-     The payoff \f$ P \f$ of a capped inflation-rate coupon
-     with paysWithin = true is:
-     \f[ P = N \times T \times \min(a L + b, C). \f]
-     The payoff of a floored inflation-rate coupon is:
-     \f[ P = N \times T \times \max(a L + b, F). \f]
-     The payoff of a collared inflation-rate coupon is:
-     \f[ P = N \times T \times \min(\max(a L + b, F), C). \f]
-     If paysWithin = false then the inverse is returned
-     (this provides for instrument cap and caplet prices).
+        The payoff \f$ P \f$ of a capped inflation-rate coupon
+        with paysWithin = true is:
 
-     where \f$ N \f$ is the notional, \f$ T \f$ is the accrual
-     time, \f$ L \f$ is the inflation rate, \f$ a \f$ is its
-     gearing, \f$ b \f$ is the spread, and \f$ C \f$ and \f$ F \f$
-     the strikes.
+        \f[ P = N \times T \times \min(a L + b, C). \f]
 
-     They can be decomposed in the following manner.
-     Decomposition of a capped floating rate coupon
-     when paysWithin = true:
-     \f[
-     R = \min(a L + b, C) = (a L + b) + \min(C - b - \xi |a| L, 0)
-     \f]
-     where \f$ \xi = sgn(a) \f$. Then:
-     \f[
-     R = (a L + b) + |a| \min(\frac{C - b}{|a|} - \xi L, 0)
-     \f]
+        where \f$ N \f$ is the notional, \f$ T \f$ is the accrual
+        time, \f$ L \f$ is the inflation rate, \f$ a \f$ is its
+        gearing, \f$ b \f$ is the spread, and \f$ C \f$ and \f$ F \f$
+        the strikes.
+
+        The payoff of a floored inflation-rate coupon is:
+
+        \f[ P = N \times T \times \max(a L + b, F). \f]
+
+        The payoff of a collared inflation-rate coupon is:
+
+        \f[ P = N \times T \times \min(\max(a L + b, F), C). \f]
+
+        If paysWithin = false then the inverse is returned
+        (this provides for instrument cap and caplet prices).
+
+        They can be decomposed in the following manner.  Decomposition
+        of a capped floating rate coupon when paysWithin = true:
+        \f[
+        R = \min(a L + b, C) = (a L + b) + \min(C - b - \xi |a| L, 0)
+        \f]
+        where \f$ \xi = sgn(a) \f$. Then:
+        \f[
+        R = (a L + b) + |a| \min(\frac{C - b}{|a|} - \xi L, 0)
+        \f]
      */
     class CappedFlooredYoYInflationCoupon : public YoYInflationCoupon {
     public:

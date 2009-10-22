@@ -36,9 +36,11 @@
 namespace QuantLib {
 
     //! Abstract base class, inheriting from InflationTermStructure
-    //! \TODO deal with index interpolation
-    //! Since this can create a yoy term structure
-    //! it does take a yoy index.
+    /*! Since this can create a yoy term structure it does take
+        a YoY index.
+
+        \todo deal with index interpolation.
+    */
     class YoYCapFloorTermPriceSurface : public InflationTermStructure {
       public:
         YoYCapFloorTermPriceSurface(Natural fixingDays,
@@ -55,14 +57,14 @@ namespace QuantLib {
                                     const Matrix &cPrice,
                                     const Matrix &fPrice);
 
-        //! inflation term structure interface
-        //@{
-        // virtual Date maxDate() { return yoy_->maxDate();}
-        // virtual Date baseDate() { return yoy_->baseDate();}
-        //@}
+        //-! inflation term structure interface
+        //-@{
+        //- virtual Date maxDate() { return yoy_->maxDate();}
+        //- virtual Date baseDate() { return yoy_->baseDate();}
+        //-@}
 
         //! atm yoy swaps from put-call parity on cap/floor data
-        //! uses interpolation (on surface price data), yearly maturities
+        /*! uses interpolation (on surface price data), yearly maturities. */
         virtual std::pair<std::vector<Time>, std::vector<Rate> >
         atmYoYSwapTimeRates() const = 0;
         virtual std::pair<std::vector<Date>, std::vector<Rate> >
@@ -74,12 +76,13 @@ namespace QuantLib {
         boost::shared_ptr<YoYInflationIndex> yoyIndex() const { return yoyIndex_; }
 
         //! inspectors
+        /*! \note you don't know if price() is a cap or a floor
+                  without checking the YoYSwapATM level.
+            \note atm cap/floor prices are generally
+                  inaccurate because they are from extrapolation
+                  and intersection.
+        */
         //@{
-        //! N.B. you don't know if price() is a cap or a floor
-        //! without checking the YoYSwapATM level.
-        //! N.B. atm cap/floor prices are generally
-        //! inaccurate because they are from extrapolation
-        //! and intersection.
         virtual BusinessDayConvention businessDayConvention() const {return bdc_;}
         virtual Natural fixingDays() const {return fixingDays_;}
         virtual Real price(const Date &d, const Rate k) const = 0;

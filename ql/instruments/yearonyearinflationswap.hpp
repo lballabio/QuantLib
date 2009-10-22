@@ -35,19 +35,19 @@ namespace QuantLib {
 
     //! Year-on-year inflation-indexed swap
     /*! Quoted as a fixed rate \f$ K \f$.  At start:
-     \f[
-     \sum_{i=1}^{M} P_n(0,t_i) N K =
-     \sum_{i=1}^{M} P_n(0,t_i) N \left[ \frac{I(t_i)}{I(t_i-1)} - 1 \right]
-     \f]
-     where \f$ t_M \f$ is the maturity time, \f$ P_n(0,t) \f$ is the
-     nominal discount factor at time \f$ t \f$, \f$ N \f$ is the
-     notional, and \f$ I(t) \f$ is the inflation index value at
-     time \f$ t \f$.
+        \f[
+        \sum_{i=1}^{M} P_n(0,t_i) N K =
+        \sum_{i=1}^{M} P_n(0,t_i) N \left[ \frac{I(t_i)}{I(t_i-1)} - 1 \right]
+        \f]
+        where \f$ t_M \f$ is the maturity time, \f$ P_n(0,t) \f$ is the
+        nominal discount factor at time \f$ t \f$, \f$ N \f$ is the
+        notional, and \f$ I(t) \f$ is the inflation index value at
+        time \f$ t \f$.
 
-     \note These instruments have now been changed to follow typical VanillaSwap
-           type design conventions w.r.t. Schedules etc.
-     */
-
+        \note These instruments have now been changed to follow
+              typical VanillaSwap type design conventions
+              w.r.t. Schedules etc.
+    */
     class YearOnYearInflationSwap : public Swap {
     public:
         enum Type { Receiver = -1, Payer = 1 };
@@ -120,7 +120,7 @@ namespace QuantLib {
     };
 
 
-    //! %Arguments for simple swap calculation
+    //! %Arguments for YoY swap calculation
     class YearOnYearInflationSwap::arguments : public Swap::arguments {
     public:
         arguments() : type(Receiver),
@@ -141,7 +141,7 @@ namespace QuantLib {
         void validate() const;
     };
 
-    //! %Results from simple swap calculation
+    //! %Results from YoY swap calculation
     class YearOnYearInflationSwap::results : public Swap::results {
     public:
         Rate fairRate;

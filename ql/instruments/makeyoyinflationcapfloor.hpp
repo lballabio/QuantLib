@@ -32,8 +32,8 @@
 namespace QuantLib {
 
     //! helper class
-    /*! This class provides a more comfortable way
-     to instantiate standard yoy inflation cap and floor.
+    /*! This class provides a more comfortable way to instantiate
+        standard yoy inflation cap and floor.
      */
     class MakeYoYInflationCapFloor {
     public:

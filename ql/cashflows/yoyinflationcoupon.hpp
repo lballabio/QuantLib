@@ -31,7 +31,7 @@
 namespace QuantLib {
     class YoYInflationCouponPricer;
 
-    //! %Coupon paying a yoy-inflation type index
+    //! %Coupon paying a YoY-inflation type index
     class YoYInflationCoupon : public InflationCoupon {
     public:
         YoYInflationCoupon(const Date& paymentDate,

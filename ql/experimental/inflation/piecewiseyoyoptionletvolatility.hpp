@@ -30,7 +30,7 @@
 
 namespace QuantLib {
 
-    //! traits for inflation vol bootstrap
+    //! traits for inflation-volatility bootstrap
     class YoYInflationVolatilityTraits {
       public:
         typedef BootstrapHelper<YoYOptionletVolatilitySurface> helper;

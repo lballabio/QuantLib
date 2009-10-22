@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-/*! \file blackcapfloorengine.hpp
- \brief Black-formula cap/floor engine
+/*! \file inflationcapfloorengine.hpp
+    \brief Inflation cap/floor engine
  */
 
 #ifndef quantlib_pricers_inflation_capfloor_hpp
@@ -34,17 +34,16 @@ namespace QuantLib {
     class YoYOptionletVolatilitySurface;
     class YoYInflationIndex;
 
-    //! YoY Inflation cap/floor engine root, don't know yet what sort of vol it is.
-    //! The inflation index must be linked to a yoy inflation term structure.  This provides
-    //! the curves, hence the call uses a shared_ptr<> not a handle<> to the index.
-    //
-    /*! \ingroup inflationcapfloorengines */
+    //! Base YoY inflation cap/floor engine
+    /*! This class doesn't know yet what sort of vol it is.  The
+        inflation index must be linked to a yoy inflation term
+        structure.  This provides the curves, hence the call uses a
+        shared_ptr<> not a handle<> to the index.
+    
+        \ingroup inflationcapfloorengines
+    */
     class YoYInflationCapFloorEngine : public YoYInflationCapFloor::engine {
     public:
-     //   YoYInflationCapFloorEngine(const boost::shared_ptr<YoYInflationIndex>&,
-        //                         Volatility vol);
-//        YoYInflationCapFloorEngine(const boost::shared_ptr<YoYInflationIndex>&,
-//                                 const Handle<Quote>& vol);
         YoYInflationCapFloorEngine(const boost::shared_ptr<YoYInflationIndex>&,
                                    const Handle<YoYOptionletVolatilitySurface>& vol);
 

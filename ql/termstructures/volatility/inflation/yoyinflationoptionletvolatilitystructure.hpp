@@ -31,10 +31,11 @@
 namespace QuantLib {
 
     /*! Abstract interface ... no data, only results.
-     Basically used to change the BlackVariance() methods to totalVariance.
-     Also deal with lagged observations of an index with a (usually different)
-     availability lag.
-     */
+
+        Basically used to change the BlackVariance() methods to
+        totalVariance.  Also deal with lagged observations of an index
+        with a (usually different) availability lag.
+    */
     class YoYOptionletVolatilitySurface : public VolatilityTermStructure {
     public:
         //! \name Constructor

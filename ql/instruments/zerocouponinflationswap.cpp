@@ -25,11 +25,11 @@
 
 namespace QuantLib {
 
-    /*! Generally inflation indices are available with a lag of 1month
-        and then observed with a lag of 2-3 months depending whether
-        they use an interpolated fixing or not.  Here, we make the
-        swap use the interpolation of the index to avoid incompatibilities.
-     */
+    /* Generally inflation indices are available with a lag of 1month
+       and then observed with a lag of 2-3 months depending whether
+       they use an interpolated fixing or not.  Here, we make the
+       swap use the interpolation of the index to avoid incompatibilities.
+    */
     ZeroCouponInflationSwap::ZeroCouponInflationSwap(
         Type type,
         Real nominal,

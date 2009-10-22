@@ -28,7 +28,7 @@
 
 namespace QuantLib {
 
-    //! K-interpolated yoy optionlet volatility
+    //! K-interpolated YoY optionlet volatility
     /*! The stripper provides curves in the T direction along each K.
         We don't know whether this is interpolating or fitting in the
         T direction.  Our K direction interpolations are not model

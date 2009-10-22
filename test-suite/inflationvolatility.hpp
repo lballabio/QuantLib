@@ -25,29 +25,6 @@
 /* remember to document new and/or updated tests in the Doxygen
  comment block of the corresponding class */
 
-/*!
-  \file test/yoyoptionletstripper_test.hpp
-  \brief YoY Inflation Cap/Floorlet volatility bootstrap
-
-    Tests bootstrap going from Cap and Floor data,
-    through yoy swap and yoy inflation term structure
-    creation, to volatility surface.  The only extra
-    data required is the nominal yield curve.
-
-    Since strikes go from negative to positive data
-    is given as prices.  The optionlet pricer
-    comes in as the yoyCapFloorEngine type.  We
-    have three:
-    * Black (positive strikes only)
-    * Unit Displaced Diffusion Black (any strike)
-    * Bachelier (any strike)
-
-  \ingroup tests
-*/
-
-/* remember to document new and/or updated tests in the Doxygen
- comment block of the corresponding class */
-
 
 class InflationVolTest {
 public:

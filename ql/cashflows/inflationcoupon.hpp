@@ -34,14 +34,16 @@ namespace QuantLib {
     class YieldTermStructure;
     class InflationCouponPricer;
 
-    //! Base inflation coupon class
-    //! the day counter is usually obtained from the inflation term structure that
-    //! the inflation index uses for forecasting.
-    //! There is no gearing or spread because these are relevant for yoy coupons
-    //! but not zero inflation coupons.
-    //! N.B. inflation indices do not contain day counters or calendars.
+    //! Base inflation-coupon class
+    /*! The day counter is usually obtained from the inflation term
+        structure that the inflation index uses for forecasting.
+        There is no gearing or spread because these are relevant for
+        YoY coupons but not zero inflation coupons.
+
+        \note inflation indices do not contain day counters or calendars.
+    */
     class InflationCoupon : public Coupon,
-    public Observer {
+                            public Observer {
     public:
         InflationCoupon(const Date& paymentDate,
                         Real nominal,
@@ -101,7 +103,7 @@ namespace QuantLib {
         DayCounter dayCounter_;
         Natural fixingDays_;
 
-        //! make sure you were given the correct type of pricer
+        //! makes sure you were given the correct type of pricer
         // this can also done in external pricer setter classes via
         // accept/visit mechanism
         virtual bool checkPricerImpl(const

@@ -33,13 +33,18 @@
 namespace QuantLib {
 
     //! Interpolated flat smile surface
-    //! (Of course, interpolated in T direction and constant in K direction.)
+    /*! Interpolated in T direction and constant in K direction. */
     template <class Interpolator1D>
     class InterpolatedYoYOptionletVolatilityCurve
     : public YoYOptionletVolatilitySurface {
     public:
         //! \name Constructor
+        //@{
         //! calculate the reference date based on the global evaluation date
+        /*! The dates are those of the volatility ... there is no lag
+            on the dates <b>but</b> they are relative to a start date
+            earlier than the reference date as always for inflation.
+        */
         InterpolatedYoYOptionletVolatilityCurve(
                                                 Natural settlementDays,
                                                 const Calendar&,
@@ -53,6 +58,7 @@ namespace QuantLib {
                                                 Rate minStrike,
                                                 Rate maxStrike,
                                                 const Interpolator1D &interpolator = Interpolator1D());
+        //@}
 
         virtual ~InterpolatedYoYOptionletVolatilityCurve() {}
 
@@ -114,10 +120,6 @@ namespace QuantLib {
 
 
 
-    //! The dates are those of the volatility ... there is no lag on
-    //! the dates BUT they are relative to a start date earlier than
-    //! the reference date as always for inflation.
-    //
     template<class Interpolator1D>
     InterpolatedYoYOptionletVolatilityCurve<Interpolator1D>::
     InterpolatedYoYOptionletVolatilityCurve(Natural settlementDays,
