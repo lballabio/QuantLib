@@ -39,12 +39,12 @@ namespace QuantLib {
         static Size maxIterations() { return 5; } // calibration is trivial,
                                                   // should be immediate
         static Date initialDate(const ZeroInflationTermStructure* t) {
-			if (t->indexIsInterpolated()) {
-				return t->referenceDate() - t->observationLag();
-			} else {
-				return inflationPeriod(t->referenceDate() - t->observationLag(), 
-									   t->frequency()).first;
-			}
+            if (t->indexIsInterpolated()) {
+                return t->referenceDate() - t->observationLag();
+            } else {
+                return inflationPeriod(t->referenceDate() - t->observationLag(),
+                                       t->frequency()).first;
+            }
         }
         static bool dummyInitialValue() { return false; }
         static Rate initialValue(const ZeroInflationTermStructure* t) {
@@ -93,7 +93,7 @@ namespace QuantLib {
                const DayCounter& dayCounter,
                const Period& lag,
                Frequency frequency,
-			   bool indexIsInterpolated,
+               bool indexIsInterpolated,
                Rate baseZeroRate,
                const Handle<YieldTermStructure>& nominalTS,
                const std::vector<boost::shared_ptr<typename Traits::helper> >&

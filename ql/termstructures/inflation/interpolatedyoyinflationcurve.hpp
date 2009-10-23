@@ -49,7 +49,7 @@ namespace QuantLib {
                                       const DayCounter& dayCounter,
                                       const Period& lag,
                                       Frequency frequency,
-									  bool indexIsInterpolated,
+                                      bool indexIsInterpolated,
                                       const Handle<YieldTermStructure>& yTS,
                                       const std::vector<Date>& dates,
                                       const std::vector<Rate>& rates,
@@ -84,10 +84,10 @@ namespace QuantLib {
         InterpolatedYoYInflationCurve(const Date& referenceDate,
                                       const Calendar& calendar,
                                       const DayCounter& dayCounter,
-									  Rate baseYoYRate,
+                                      Rate baseYoYRate,
                                       const Period& lag,
                                       Frequency frequency,
-									  bool indexIsInterpolated,
+                                      bool indexIsInterpolated,
                                       const Handle<YieldTermStructure>& yTS,
                                       const Interpolator& interpolator
                                                             = Interpolator());
@@ -106,7 +106,7 @@ namespace QuantLib {
                                   const DayCounter& dayCounter,
                                   const Period& lag,
                                   Frequency frequency,
-								  bool indexIsInterpolated,
+                                  bool indexIsInterpolated,
                                   const Handle<YieldTermStructure>& yTS,
                                   const std::vector<Date>& dates,
                                   const std::vector<Rate>& rates,
@@ -162,13 +162,13 @@ namespace QuantLib {
     InterpolatedYoYInflationCurve(const Date& referenceDate,
                                   const Calendar& calendar,
                                   const DayCounter& dayCounter,
-								  Rate baseYoYRate,
+                                  Rate baseYoYRate,
                                   const Period& lag,
                                   Frequency frequency,
-								  bool indexIsInterpolated,
+                                  bool indexIsInterpolated,
                                   const Handle<YieldTermStructure>& yTS,
                                   const Interpolator& interpolator)
-    : YoYInflationTermStructure(referenceDate, calendar, dayCounter, baseYoYRate, 
+    : YoYInflationTermStructure(referenceDate, calendar, dayCounter, baseYoYRate,
                                 lag, frequency, indexIsInterpolated, yTS),
       InterpolatedCurve<Interpolator>(interpolator) {}
 

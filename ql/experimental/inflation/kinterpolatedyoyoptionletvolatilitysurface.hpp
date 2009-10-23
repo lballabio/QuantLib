@@ -28,7 +28,7 @@
 
 namespace QuantLib {
 
-    //! K-interpolated yoy optionlet volatility
+    //! K-interpolated YoY optionlet volatility
     /*! The stripper provides curves in the T direction along each K.
         We don't know whether this is interpolating or fitting in the
         T direction.  Our K direction interpolations are not model
@@ -101,8 +101,8 @@ namespace QuantLib {
          const Real slope,
          const Interpolator1D &interpolator)
     : YoYOptionletVolatilitySurface(settlementDays, cal, bdc, dc, lag,
-									capFloorPrices->yoyIndex()->frequency(), 
-									capFloorPrices->yoyIndex()->interpolated()),
+                                    capFloorPrices->yoyIndex()->frequency(),
+                                    capFloorPrices->yoyIndex()->interpolated()),
       capFloorPrices_(capFloorPrices), yoyInflationCouponPricer_(pricer),
       yoyOptionletStripper_(yoyOptionletStripper),
       factory1D_(interpolator), slope_(slope), lastDateisSet_(false) {

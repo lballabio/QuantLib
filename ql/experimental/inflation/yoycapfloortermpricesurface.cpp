@@ -26,7 +26,7 @@ namespace QuantLib {
     YoYCapFloorTermPriceSurface(Natural fixingDays,
                                 const Period &lag,
                                 const boost::shared_ptr<YoYInflationIndex>& yii,
-								Rate baseRate,
+                                Rate baseRate,
                                 const Handle<YieldTermStructure> &nominal,
                                 const DayCounter &dc,
                                 const Calendar &cal,
@@ -37,7 +37,7 @@ namespace QuantLib {
                                 const Matrix &cPrice,
                                 const Matrix &fPrice)
     : InflationTermStructure(0, cal, baseRate, lag, yii->frequency(), yii->interpolated(), nominal, dc),
-	  fixingDays_(fixingDays), bdc_(bdc), yoyIndex_(yii),
+      fixingDays_(fixingDays), bdc_(bdc), yoyIndex_(yii),
       cStrikes_(cStrikes), fStrikes_(fStrikes),
       cfMaturities_(cfMaturities), cPrice_(cPrice), fPrice_(fPrice) {
 
@@ -99,36 +99,36 @@ namespace QuantLib {
             QL_REQUIRE( cfStrikes_[i] > cfStrikes_[i-1],
                         "cfStrikes not increasing");
     }
-	
-	Date YoYCapFloorTermPriceSurface::yoyOptionDateFromTenor(const Period& p) const
-	{
-		return Date(referenceDate()+p);
-	}
-	
-	Real YoYCapFloorTermPriceSurface::price(const Period &d, const Rate k) const {
-		return price(yoyOptionDateFromTenor(d), k);
-	}
 
-	Real YoYCapFloorTermPriceSurface::capPrice(const Period &d, const Rate k) const {
-		return capPrice(yoyOptionDateFromTenor(d), k);
-	}
-	
-	Real YoYCapFloorTermPriceSurface::floorPrice(const Period &d, const Rate k) const {
-		return floorPrice(yoyOptionDateFromTenor(d), k);
-	}
-	
-	Rate YoYCapFloorTermPriceSurface::atmYoYSwapRate(const Period &d,
-						bool extrapolate) const {
-		return atmYoYSwapRate(yoyOptionDateFromTenor(d), extrapolate);
-	}
-	
-	Rate YoYCapFloorTermPriceSurface::atmYoYRate(const Period &d,
-												 const Period& obsLag,
-					bool extrapolate) const {
-		return atmYoYRate(yoyOptionDateFromTenor(d), obsLag, extrapolate);
-	}
-	
-	
+    Date YoYCapFloorTermPriceSurface::yoyOptionDateFromTenor(const Period& p) const
+    {
+        return Date(referenceDate()+p);
+    }
+
+    Real YoYCapFloorTermPriceSurface::price(const Period &d, const Rate k) const {
+        return price(yoyOptionDateFromTenor(d), k);
+    }
+
+    Real YoYCapFloorTermPriceSurface::capPrice(const Period &d, const Rate k) const {
+        return capPrice(yoyOptionDateFromTenor(d), k);
+    }
+
+    Real YoYCapFloorTermPriceSurface::floorPrice(const Period &d, const Rate k) const {
+        return floorPrice(yoyOptionDateFromTenor(d), k);
+    }
+
+    Rate YoYCapFloorTermPriceSurface::atmYoYSwapRate(const Period &d,
+                        bool extrapolate) const {
+        return atmYoYSwapRate(yoyOptionDateFromTenor(d), extrapolate);
+    }
+
+    Rate YoYCapFloorTermPriceSurface::atmYoYRate(const Period &d,
+                                                 const Period& obsLag,
+                    bool extrapolate) const {
+        return atmYoYRate(yoyOptionDateFromTenor(d), obsLag, extrapolate);
+    }
+
+
 
 }
 

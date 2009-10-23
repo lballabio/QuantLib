@@ -57,7 +57,7 @@ namespace QuantLib {
         mutable boost::shared_ptr<YoYInflationCapFloorEngine> p_;
         mutable Period lag_;
         mutable Frequency frequency_;
-		mutable bool indexIsInterpolated_;
+        mutable bool indexIsInterpolated_;
     };
 
 }

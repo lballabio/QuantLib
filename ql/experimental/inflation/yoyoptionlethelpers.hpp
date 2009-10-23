@@ -41,8 +41,8 @@ namespace QuantLib {
                                 // (e.g. bps = 10,000)
                  YoYInflationCapFloor::Type capFloorType,
                  Period &lag,
-				 const DayCounter& yoyDayCounter,
-				 const Calendar& paymentCalendar,
+                 const DayCounter& yoyDayCounter,
+                 const Calendar& paymentCalendar,
                  Natural fixingDays,
                  const boost::shared_ptr<YoYInflationIndex>& index,
                  Rate strike, Size n,
@@ -58,8 +58,8 @@ namespace QuantLib {
                                                       // nominal & yoy curves
         Rate strike_;
         Size n_;  // how many payments
-		DayCounter yoyDayCounter_;
-		Calendar calendar_;
+        DayCounter yoyDayCounter_;
+        Calendar calendar_;
         boost::shared_ptr<YoYInflationCapFloorEngine> pricer_;
         // what you make
         boost::shared_ptr<YoYInflationCapFloor> yoyCapFloor_;

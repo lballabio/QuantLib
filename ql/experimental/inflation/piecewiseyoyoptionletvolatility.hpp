@@ -30,7 +30,7 @@
 
 namespace QuantLib {
 
-    //! traits for inflation vol bootstrap
+    //! traits for inflation-volatility bootstrap
     class YoYInflationVolatilityTraits {
       public:
         typedef BootstrapHelper<YoYOptionletVolatilitySurface> helper;
@@ -96,8 +96,8 @@ namespace QuantLib {
               BusinessDayConvention bdc,
               const DayCounter& dc,
               const Period &lag,
-			  Frequency frequency,
-			  bool indexIsInterpolated,
+              Frequency frequency,
+              bool indexIsInterpolated,
               Rate minStrike,
               Rate maxStrike,
               Volatility baseYoYVolatility,
@@ -105,9 +105,9 @@ namespace QuantLib {
                                                                   instruments,
               Real accuracy = 1.0e-12,
               const Interpolator &interpolator = Interpolator())
-        : base_curve(settlementDays, cal, bdc, dc, lag, 
-					 frequency, indexIsInterpolated,
-					 minStrike, maxStrike,
+        : base_curve(settlementDays, cal, bdc, dc, lag,
+                     frequency, indexIsInterpolated,
+                     minStrike, maxStrike,
                      baseYoYVolatility, interpolator),
           instruments_(instruments), accuracy_(accuracy) {
             bootstrap_.setup(this);
