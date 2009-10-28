@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-/*! \file inflationcapfloorengine.hpp
-    \brief Inflation cap/floor engine
+/*! \file inflationcapfloorengines.hpp
+    \brief Inflation cap/floor engines
  */
 
 #ifndef quantlib_pricers_inflation_capfloor_hpp
@@ -39,7 +39,7 @@ namespace QuantLib {
         inflation index must be linked to a yoy inflation term
         structure.  This provides the curves, hence the call uses a
         shared_ptr<> not a handle<> to the index.
-    
+
         \ingroup inflationcapfloorengines
     */
     class YoYInflationCapFloorEngine : public YoYInflationCapFloor::engine {

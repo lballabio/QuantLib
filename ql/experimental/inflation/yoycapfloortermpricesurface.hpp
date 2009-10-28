@@ -237,6 +237,8 @@ namespace QuantLib {
 
     // template definitions
 
+    #ifndef __DOXYGEN__
+
     template<class I2D, class I1D>
     InterpolatedYoYCapFloorTermPriceSurface<I2D,I1D>::
     InterpolatedYoYCapFloorTermPriceSurface(
@@ -263,6 +265,7 @@ namespace QuantLib {
         performCalculations();
     }
 
+    #endif
 
     template<class I2D, class I1D>
     void InterpolatedYoYCapFloorTermPriceSurface<I2D,I1D>::

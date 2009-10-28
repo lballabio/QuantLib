@@ -58,16 +58,22 @@ namespace QuantLib {
         //! \name Constructors
         //@{
         //! CDS quoted as running-spread only
-        /*! @param spread Running spread in fractional units.
-            @param settlesAccrual Whether or not the accrued coupon is
-                                  due in the event of a default.
-            @param paysAtDefaultTime If set to true, any payments
-                                     triggered by a default event are
-                                     due at default time. If set to
-                                     false, they are due at the end of
-                                     the accrual period.
-            @param protectionStart The first date where a default
-                                   event will trigger the contract.
+        /*! @param side  Whether the protection is bought or sold.
+            @param notional  Notional value
+            @param spread  Running spread in fractional units.
+            @param schedule  Coupon schedule.
+            @param paymentConvention  Business-day convention for
+                                      payment-date adjustment.
+            @param dayCounter  Day-count convention for accrual.
+            @param settlesAccrual  Whether or not the accrued coupon is
+                                   due in the event of a default.
+            @param paysAtDefaultTime  If set to true, any payments
+                                      triggered by a default event are
+                                      due at default time. If set to
+                                      false, they are due at the end of
+                                      the accrual period.
+            @param protectionStart  The first date where a default
+                                    event will trigger the contract.
         */
         CreditDefaultSwap(Protection::Side side,
                           Real notional,
@@ -81,8 +87,14 @@ namespace QuantLib {
                           const boost::shared_ptr<Claim>& =
                                                   boost::shared_ptr<Claim>());
         //! CDS quoted as upfront and running spread
-        /*! @param spread Running spread in fractional units.
+        /*! @param side  Whether the protection is bought or sold.
+            @param notional  Notional value
             @param upfront Upfront in fractional units.
+            @param spread Running spread in fractional units.
+            @param schedule  Coupon schedule.
+            @param paymentConvention  Business-day convention for
+                                      payment-date adjustment.
+            @param dayCounter  Day-count convention for accrual.
             @param settlesAccrual Whether or not the accrued coupon is
                                   due in the event of a default.
             @param paysAtDefaultTime If set to true, any payments
@@ -181,11 +193,10 @@ namespace QuantLib {
             quoted for that running only spread.  Refer to: "ISDA
             Standard CDS converter specification." May 2009.
 
-            @param conventionalRecovery
-                   The conventional recovery rate to apply in the
-                   calculation as specified by ISDA, not necessarily
-                   equal to the market-quoted one.  It is typically
-                   0.4 for SeniorSec and 0.2 for subordinate.
+            The conventional recovery rate to apply in the calculation
+            is as specified by ISDA, not necessarily equal to the
+            market-quoted one.  It is typically 0.4 for SeniorSec and
+            0.2 for subordinate.
 
             \note The conversion employs a flat hazard rate. As a result,
                   you will not recover the market quotes.

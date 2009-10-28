@@ -104,16 +104,19 @@ namespace QuantLib {
                                default term structures that allow
                                computing single name default
                                probabilities depending on time
-            \param protectionSeller  sold protection if set to true, purchased
-                                     otherwise
-            \param premiumSchedule   schedule for premium payments
-            \param premiumRate annual premium rate, e.g. 0.05 for 5% p.a.
-            \param dayCounter  day count convention for the premium rate
+            \param copula      one-factor copula
+            \param protectionSeller   sold protection if set to true, purchased
+                                      otherwise
+            \param premiumSchedule    schedule for premium payments
+            \param premiumRate        annual premium rate, e.g. 0.05 for 5% p.a.
+            \param dayCounter         day count convention for the premium rate
+            \param recoveryRate       recovery rate as a fraction
             \param upfrontPremiumRate premium as a tranche notional fraction
-            \param yieldTS     yield term structure handle
-            \param integrationStep   time step for integrating over one
-                                     premium period; if larger than premium
-                                     period length, a single step is taken
+            \param yieldTS            yield term structure handle
+            \param nBuckets           number of distribution buckets
+            \param integrationStep    time step for integrating over one
+                                      premium period; if larger than premium
+                                      period length, a single step is taken
         */
         CDO (Real attachment,
              Real detachment,
