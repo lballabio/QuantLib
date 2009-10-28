@@ -1,3 +1,32 @@
+2009-10-28 14:35  Luigi Ballabio
+
+	* [r16658] ql/experimental/math,
+	  ql/termstructures/volatility/inflation:
+	  
+	  Updated svn:ignore properties.
+
+2009-10-28 14:34  Luigi Ballabio
+
+	* [r16657] Docs/pages/overview.docs, Docs/quantlibheader.html,
+	  Docs/quantlibheaderonline.html:
+	  
+	  Removed hopelessly outdated overview page.
+
+2009-10-28 14:32  Luigi Ballabio
+
+	* [r16656] Docs/pages/install.docs:
+	  
+	  Updated instructions.
+	  
+	  Removed outdated reference to installer; added link to installation
+	  page.
+
+2009-10-28 10:08  Luigi Ballabio
+
+	* [r16652] ChangeLog.txt:
+	  
+	  Updated ChangeLog
+
 2009-10-28 08:25  Luigi Ballabio
 
 	* [r16651] ql/experimental/credit/cdo.hpp,
