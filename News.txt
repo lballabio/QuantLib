@@ -38,6 +38,8 @@ INSTRUMENTS
 - Added implied z-spread calculation for bonds (thanks to Nathan Abbott.)
 - Added inspector to see whether a bond is still tradable (as opposed
   to not expired.)
+- Added constructor for fixed-rate bonds taking a generic InterestRate
+  instance (thanks to Piter Dias.)
 - Added upfront to credit default swaps, including application to CDS
   helpers (thanks to Jose Aparicio.)
 - Added conventional CDS spread calculation (thanks to Jose Aparicio.)
