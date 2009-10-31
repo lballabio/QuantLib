@@ -400,7 +400,7 @@ namespace QuantLib {
             // find the interval where the intersection lies
             bool trialsExceeded = false;
             int numTrials = (int)(maxSearchRange / searchStep);
-            if ( floorPrice_(t,cStrikes_.back()) > capPrice_(t,cStrikes_.front()) ) {
+            if ( floorPrice_(t,fStrikes_.back()) > capPrice_(t,fStrikes_.back()) ) {
                 int counter = 1;
                 bool stop = false;
                 Real strike;
