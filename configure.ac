@@ -30,10 +30,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.])
 AC_PROG_AWK
 AC_PROG_INSTALL
 
-# Default compilation variables
-
-AC_SUBST([CXXFLAGS],[${CXXFLAGS='-g -O2 -Wall'}])
-
 # Help the compiler find external software
 
 AC_ARG_WITH([boost-include],
