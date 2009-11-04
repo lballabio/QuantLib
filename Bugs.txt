@@ -2,8 +2,10 @@ The QuantLib reference manual contains a list of allegedly known bugs
 (see <http://quantlib.org/reference/bug.html>.)
 
 We're looking to volunteers to help us verify them. Your mission,
-should you accept it, is to check the bugs (details later) and add the
-legitimate ones to the bug tracker so that they can be fixed.
+should you accept it, is to check the bugs (details later) and add
+the legitimate ones to the Sourceforge bug tracker at
+<http://sourceforge.net/tracker/?group_id=12740&atid=112740>
+so that they can be fixed.
 
 Offering to provide a patch is welcome, but not necessary---the aim at
 this time is just to have them filed in the tracker. Karma points will
