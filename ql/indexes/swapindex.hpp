@@ -28,9 +28,13 @@
 
 namespace QuantLib {
 
-    class IborIndex;
     class Schedule;
+
+    class IborIndex;
     class VanillaSwap;
+
+    class OvernightIndex;
+    class OvernightIndexedSwap;
 
     //! base class for swap-rate indexes
     class SwapIndex : public InterestRateIndex {
@@ -87,10 +91,37 @@ namespace QuantLib {
     };
 
 
+    //! base class for overnight indexed swap indexes
+    class OvernightIndexedSwapIndex : public SwapIndex {
+      public:
+        OvernightIndexedSwapIndex(
+                  const std::string& familyName,
+                  const Period& tenor,
+                  Natural settlementDays,
+                  Currency currency,
+                  const boost::shared_ptr<OvernightIndex>& overnightIndex);
+        //! \name Inspectors
+        //@{
+        boost::shared_ptr<OvernightIndex> overnightIndex() const;
+        /*! \warning Relinking the term structure underlying the index will
+                     not have effect on the returned swap.
+        */
+        boost::shared_ptr<OvernightIndexedSwap> underlyingSwap(
+                                                const Date& fixingDate) const;
+        //@}
+      protected:
+        boost::shared_ptr<OvernightIndex> overnightIndex_;
+    };
+
     // inline definitions
 
     inline BusinessDayConvention SwapIndex::fixedLegConvention() const {
         return fixedLegConvention_;
+    }
+
+    inline boost::shared_ptr<OvernightIndex>
+    OvernightIndexedSwapIndex::overnightIndex() const {
+        return overnightIndex_;
     }
 
 }

@@ -237,6 +237,8 @@ namespace QuantLib {
 
     // template definitions
 
+    #ifndef __DOXYGEN__
+
     template<class I2D, class I1D>
     InterpolatedYoYCapFloorTermPriceSurface<I2D,I1D>::
     InterpolatedYoYCapFloorTermPriceSurface(
@@ -263,6 +265,7 @@ namespace QuantLib {
         performCalculations();
     }
 
+    #endif
 
     template<class I2D, class I1D>
     void InterpolatedYoYCapFloorTermPriceSurface<I2D,I1D>::
@@ -397,7 +400,7 @@ namespace QuantLib {
             // find the interval where the intersection lies
             bool trialsExceeded = false;
             int numTrials = (int)(maxSearchRange / searchStep);
-            if ( floorPrice_(t,cStrikes_.back()) > capPrice_(t,cStrikes_.front()) ) {
+            if ( floorPrice_(t,fStrikes_.back()) > capPrice_(t,fStrikes_.back()) ) {
                 int counter = 1;
                 bool stop = false;
                 Real strike;

@@ -1,44 +1,84 @@
 
-Notable changes for QuantLib 0.9.7:
+Notable changes for QuantLib 0.9.9:
 
 PORTABILITY
 
-- Microsoft Visual C++ configurations have been renamed. The default
-  Debug and Release configurations now link to the DLL version of the
-  common runtime library. The names of other configuration should now
-  be more descriptive.
-- Fixes for Solaris build.
-
-BONDS
-
-- Added bond example (thanks to Florent Grenier.)
-- Added support for amortizing bonds (thanks to Simon Ibbotson.)
+- Fixes for 64-bit compilation.
+- Fixes for Sun Solaris compilation (thanks to Andreas Spengler.)
 
 CASH FLOWS
 
-- Added two more cashflow analysis functions (thanks to Toyin Akin.)
+- Added overnight-index coupon.
+- Added inflation coupons.
+- Parameterized CashFlows functions with explicit flag specifying
+  whether to include settlement-date cash flows.
+- Added cash-flow related flags to Settings class. They determine
+  whether or not to include today's and/or settlement date's cash
+  flows. They can be overridden while calling CashFlows functions.
 
 DATE/TIME
 
-- Added bespoke calendar.
+- Added EUWAX calendar.
+- Updated 2009 holidays for China, Hong Kong, India, Indonesia,
+  Singapore, and Taiwan.
+- Removed Easter Monday from Canadian holidays (thanks to Matt Knox.)
+- Added weekend-only calendar.
 
 INDEXES
 
-- Added GBP/USD/CHF/JPY swap-rate indexes.
-- Fixed USD LIBOR calendar (settlement, not NYSE.)
+- Added EONIA index.
+- Added French HICP and Australian CPI inflation indexes.
 
-MARKET MODELS
+INSTRUMENTS
 
-- Added first displaced-diffusion stochastic-volatility evolver.
+- Added overnight-index swaps (including helper for yield-curve bootstrap.)
+- Added inflation cap/floors (including interface for inflation cap/floor
+  volatility structures.)
+- Added inspectors for previous and next coupon dates to Bond class.
+- Added implied z-spread calculation for bonds (thanks to Nathan Abbott.)
+- Added inspector to see whether a bond is still tradable (as opposed
+  to not expired.)
+- Added constructor for fixed-rate bonds taking a generic InterestRate
+  instance (thanks to Piter Dias.)
+- Added upfront to credit default swaps, including application to CDS
+  helpers (thanks to Jose Aparicio.)
+- Added conventional CDS spread calculation (thanks to Jose Aparicio.)
+- Enabled non-spot inflation swaps.
+- Migrated asset swaps to pricing-engine framework.
+- Migrated inflation swaps to pricing-engine framework.
+- Migrated old average-strike Asian option pricer to pricing-engine
+  framework (thanks to IMAFA students Jean Nkeng, Adrien Pinatton,
+  and Alpha Sanou Toure.)
 
 PRICING ENGINES
 
-- Monte Carlo average-price options now uses past fixings correctly.
+- Added builders for a few Monte Carlo engines.
+- Most Monte Carlo engines can now specify either relative or absolute
+  target tolerance.
+- Some Monte Carlo engines can now specify either an absolute number
+  of time steps or a number of time steps per year.
+- Added choice of evolver scheme to finite-difference vanilla engines.
 
-QUOTES
+MATH
 
-- added LastFixingQuote, a Quote adapter for the last available fixing
-  of a given index.
+- Implemented Parabolic and Fritsch-Butland cubic interpolations.
+- Added BFGS optimizer (thanks to Frederic Degraeve.)
+- Added 1D and 2D kernel interpolation (thanks to Dimitri Reiswich.)
+- Added Akima and overshooting-minimization spline algorithms (thanks
+  to Sylvain Bertrand.)
+- Added FFT implementation (thanks to Slava Mazur.)
+
+RANDOM NUMBERS
+
+- Added Luescher's luxury random number generator (a proxy for Boost
+  implementation.)
+
+TERM STRUCTURES
+
+- Added hook to swap-rate helpers for external discounting term
+  structure (thanks to Roland Lichters.)
+- Added seasonality to inflation term structures (thanks to Piero Del
+  Boca and Chris Kenyon.)
 
 EXPERIMENTAL FOLDER
 
@@ -48,19 +88,13 @@ order to get user feedback.  Experimental classes are considered
 unstable; their interfaces are likely to change in future
 releases. New contributions for this release were:
 
-- time-dependent binomial trees (thanks to John Maiden.)
-- a new multidimensional FDM framework based on operator splitting
-  using Craig-Sneyd, Hundsdorfer or Douglas schemes (thanks to Andreas
-  Gaida, Ralph Schreyer, and Klaus Spanderen.)
-- implementations of Black-variance curve and surface taking a set of
-  quotes as input (thanks to Frank Hövermann.)
-- synthetic CDO engines (thanks to Roland Lichters.)
-- variance options, together with a Heston-process engine (thanks to
-  Lorella Fatone, Francesca Mariani, Maria Cristina Recchioni, and
-  Francesco Zirilli.)
-- a commodity framework, including instruments such as energy futures
-  and energy swaps (thanks to J. Erik Radmall.)
-- quanto-barrier options (thanks to Paul Farrington.)
-- amortizing bonds (thanks to Simon Ibbotson.)
-- a perturbative engine for barrier options (thanks to Lorella Fatone,
-  Maria Cristina Recchioni, and Francesco Zirilli.)
+- risky bonds and asset-swap options (thanks to Roland Lichters;)
+- spreaded hazard-rate curves (thanks to Roland Lichters;)
+- compound options (thanks to Dimitri Reiswich;)
+- refactored CDS options (thanks to Jose Aparicio;)
+- finite-differences solver for the hybrid Heston Hull-White model,
+  including calibration (thanks to Klaus Spanderen;)
+- finite-differences Asian-option engines (thanks to Ralph Schreyer;)
+- machinery for default-event specification (thanks to Jose Aparicio;)
+- recursive CDO engine (thanks to Jose Aparicio.)
+

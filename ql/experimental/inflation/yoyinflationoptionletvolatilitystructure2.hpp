@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-/*! \file yoyoptionletvolatilitystructures2.hpp
- \brief yoy inflation volatility structures that are still experimental
+/*! \file yoyinflationoptionletvolatilitystructure2.hpp
+    \brief experimental yoy inflation volatility structures
  */
 
 #ifndef quantlib_yoy_optionlet_volatility_structures2_hpp

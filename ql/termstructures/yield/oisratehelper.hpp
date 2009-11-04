@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file overnightswaphelper.hpp
+/*! \file oisratehelper.hpp
     \brief Overnight Indexed Swap (aka OIS) rate helpers
 */
 

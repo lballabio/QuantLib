@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file overnightswap.hpp
+/*! \file overnightindexedswap.hpp
     \brief Overnight index swap paying compounded overnight vs. fixed
 */
 

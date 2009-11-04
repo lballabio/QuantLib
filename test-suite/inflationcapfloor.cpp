@@ -47,15 +47,13 @@
 #include <ql/time/schedule.hpp>
 #include <ql/termstructures/inflation/inflationhelpers.hpp>
 #include <ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.hpp>
-
 #include <ql/pricingengines/blackformula.hpp>
-
-
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 namespace {
+
     struct Datum {
         Date date;
         Rate rate;
@@ -63,11 +61,11 @@ namespace {
 
     template <class T, class U, class I>
     std::vector<boost::shared_ptr<BootstrapHelper<T> > > makeHelpers(
-                    Datum iiData[], Size N,
-                    const boost::shared_ptr<I> &ii, const Period &observationLag,
-                    const Calendar &calendar,
-                    const BusinessDayConvention &bdc,
-                    const DayCounter &dc) {
+                 Datum iiData[], Size N,
+                 const boost::shared_ptr<I> &ii, const Period &observationLag,
+                 const Calendar &calendar,
+                 const BusinessDayConvention &bdc,
+                 const DayCounter &dc) {
 
         std::vector<boost::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Size i=0; i<N; i++) {
@@ -205,7 +203,8 @@ namespace {
         }
 
 
-        boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility, Size which) {
+        boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility,
+                                                    Size which) {
 
             boost::shared_ptr<YoYInflationIndex>
             yyii = boost::dynamic_pointer_cast<YoYInflationIndex>(iir);
@@ -411,6 +410,13 @@ void InflationCapFloorTest::testConsistency() {
 }
 
 
+// Test inflation cap/floor parity, i.e. that cap-floor = swap, note that this
+// is different from nominal because in nominal world standard cap/floors do
+// not have the first optionlet.  This is because they set in advance so
+// there is no point.  However, yoy inflation generally sets in arrears,
+// (actually in arrears with a lag of a few months) thus the first optionlet
+// is relevant.  Hence we can do a parity test without a special definition
+// of the YoY cap/floor instrument.
 void InflationCapFloorTest::testParity() {
 
     BOOST_MESSAGE("Testing yoy inflation cap/floor parity...");

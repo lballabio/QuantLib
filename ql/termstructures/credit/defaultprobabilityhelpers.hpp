@@ -104,7 +104,6 @@ namespace QuantLib {
     //! Spread-quoted CDS hazard rate bootstrap helper.
     class SpreadCdsHelper : public CdsHelper {
       public:
-        /*! @param runningSpread Spread quote in fractional units. */
         SpreadCdsHelper(const Handle<Quote>& runningSpread,
                         const Period& tenor,
                         Integer settlementDays,
@@ -118,7 +117,6 @@ namespace QuantLib {
                         bool settlesAccrual = true,
                         bool paysAtDefaultTime = true);
 
-        /*! @param runningSpread Spread rate in fractional units. */
         SpreadCdsHelper(Rate runningSpread,
                         const Period& tenor,
                         Integer settlementDays,
@@ -139,9 +137,7 @@ namespace QuantLib {
     //! Upfront-quoted CDS hazard rate bootstrap helper.
     class UpfrontCdsHelper : public CdsHelper {
       public:
-        /*! @param upfront Spread quote in fractional units.
-            @param runningSpread Spread rate in fractional units.
-        */
+        /*! \note the upfront must be quoted in fractional units. */
         UpfrontCdsHelper(const Handle<Quote>& upfront,
                          Rate runningSpread,
                          const Period& tenor,
@@ -157,9 +153,7 @@ namespace QuantLib {
                          bool settlesAccrual = true,
                          bool paysAtDefaultTime = true);
 
-        /*! @param upfront upfront in fractional units.
-            @param runningSpread Spread rate in fractional units.
-        */
+        /*! \note the upfront must be quoted in fractional units. */
         UpfrontCdsHelper(Rate upfront,
                          Rate runningSpread,
                          const Period& tenor,

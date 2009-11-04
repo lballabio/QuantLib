@@ -42,11 +42,13 @@
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 #endif
 
+#include <iostream>
 
 
 // anonymous local namespace for data
-//****************************************************************************************
+//*************************************************************************
 namespace {
+
     using namespace std;
     using namespace boost;
     using namespace QuantLib;
@@ -309,14 +311,14 @@ void InflationVolTest::testYoYPriceSurfaceToVol() {
 
     // now use it for something ... like stating what the T=const lines look like
     const Real volATyear1[] = {
-          0.0129, 0.0095, 0.0085, 0.0075, 0.0066,
-          0.0061, 0.0035, 0.0042, 0.0050, 0.0061,
-          0.0095
+          0.0128, 0.0093, 0.0083, 0.0073, 0.0064,
+          0.0058, 0.0042, 0.0046, 0.0053, 0.0064,
+          0.0098
     };
     const Real volATyear3[] = {
-          0.0079, 0.0058, 0.0052, 0.0046, 0.0041,
-          0.0037, 0.0021, 0.0026, 0.0031, 0.0037,
-          0.0058
+          0.0079, 0.0058, 0.0051, 0.0045, 0.0039,
+          0.0035, 0.0026, 0.0028, 0.0033, 0.0039,
+          0.0060
     };
 
     Date d = yoySurf->baseDate() + Period(1,Years);
@@ -326,9 +328,9 @@ void InflationVolTest::testYoYPriceSurfaceToVol() {
     Size n = someSlice.first.size();
     Real eps = 0.0001;
     for(Size i = 0; i < n; i++){
-    QL_REQUIRE( fabs(someSlice.second[i] - volATyear1[i]) < eps,
-               "could not recover 1yr vol: " << someSlice.second[i]
-               << " vs " << volATyear1[i] );
+        QL_REQUIRE( fabs(someSlice.second[i] - volATyear1[i]) < eps,
+                   " could not recover 1yr vol: " << someSlice.second[i]
+                   << " vs " << volATyear1[i] );
     }
 
     d = yoySurf->baseDate() + Period(3,Years);
@@ -338,7 +340,7 @@ void InflationVolTest::testYoYPriceSurfaceToVol() {
     for(Size i = 0; i < n; i++){
         QL_REQUIRE(fabs(someOtherSlice.second[i]-volATyear3[i]) < eps,
                         "could not recover 3yr vol: "
-                        << someOtherSlice.second[i]<< " vs " << volATyear3[i]);
+                        << someOtherSlice.second[i]<< " vs " << volATyear3[i] );
     }
 
 }
@@ -395,7 +397,7 @@ boost::unit_test_framework::test_suite* InflationVolTest::suite() {
         = BOOST_TEST_SUITE("yoyOptionletStripper (yoy inflation vol) tests");
 
     suite->add(QUANTLIB_TEST_CASE(&InflationVolTest::testYoYPriceSurfaceToATM));
-    //suite->add(QUANTLIB_TEST_CASE(&InflationVolTest::testYoYPriceSurfaceToVol));
+    suite->add(QUANTLIB_TEST_CASE(&InflationVolTest::testYoYPriceSurfaceToVol));
 
     return suite;
 }

@@ -1,78 +1,5390 @@
-2008-11-12 09:40  Luigi Ballabio
+2009-11-04 11:54  Luigi Ballabio
 
-	* [r15753] test-suite/piecewiseyieldcurve.cpp:
+	* [r16685] Bugs.txt, Makefile.am:
 	  
-	  Increased tolerance for local-bootstrap check
+	  Added Bugs.txt to distribution.
 
-2008-11-11 15:08  Luigi Ballabio
+2009-11-04 10:46  Chris Kenyon
 
-	* [r15751] Docs/pages/authors.docs, Docs/pages/examples.docs,
-	  Docs/pages/install.docs, Docs/pages/overview.docs,
-	  Docs/pages/resources.docs, Docs/pages/where.docs, Docs/quantlib.css,
-	  ql/experimental/commodities/unitofmeasureconversionmanager.hpp,
+	* [r16680] test-suite/inflationvolatility.cpp:
+	  
+	  missed one number in previous update.
+
+2009-11-04 10:40  Luigi Ballabio
+
+	* [r16679] ql/instruments/inflationcapfloor.hpp,
+	  test-suite/inflationcapfloor.cpp,
+	  test-suite/inflationvolatility.cpp:
+	  
+	  Whitespace cleanup (hard tabs, indentation etc.)
+
+2009-11-04 10:22  Chris Kenyon
+
+	* [r16678] ql/instruments/inflationcapfloor.hpp,
+	  test-suite/inflationcapfloor.cpp,
+	  test-suite/inflationvolatility.cpp:
+	  
+	  Updated test values and documentation.
+
+2009-11-02 11:02  Luigi Ballabio
+
+	* [r16675] Readme.txt:
+	  
+	  Documented problems with Boost 1.40 on Windows.
+
+2009-11-02 10:54  Luigi Ballabio
+
+	* [r16674] configure.ac:
+	  
+	  Let the autotools decide a default.
+
+2009-11-02 10:30  Luigi Ballabio
+
+	* [r16672] Readme.txt:
+	  
+	  Updated Boost requirements.
+
+2009-11-02 10:30  Luigi Ballabio
+
+	* [r16671] Announce.txt:
+	  
+	  Added extra plea to announce.
+	  
+	  We'd like this release to be tried out by as many people as
+	  possible so that we can fix problems before 1.0 comes out.
+
+2009-10-31 11:59  Chris Kenyon
+
+	* [r16670] ql/experimental/inflation/yoycapfloortermpricesurface.hpp:
+	  
+	  bug fix
+
+2009-10-29 08:34  Luigi Ballabio
+
+	* [r16666] Docs/pages/history.docs, News.txt:
+	  
+	  Added missing contribution to history.
+
+2009-10-28 15:13  Luigi Ballabio
+
+	* [r16659] ChangeLog.txt:
+	  
+	  Updated ChangeLog.
+
+2009-10-28 14:35  Luigi Ballabio
+
+	* [r16658] ql/experimental/math,
+	  ql/termstructures/volatility/inflation:
+	  
+	  Updated svn:ignore properties.
+
+2009-10-28 14:34  Luigi Ballabio
+
+	* [r16657] Docs/pages/overview.docs, Docs/quantlibheader.html,
+	  Docs/quantlibheaderonline.html:
+	  
+	  Removed hopelessly outdated overview page.
+
+2009-10-28 14:32  Luigi Ballabio
+
+	* [r16656] Docs/pages/install.docs:
+	  
+	  Updated instructions.
+	  
+	  Removed outdated reference to installer; added link to installation
+	  page.
+
+2009-10-28 10:08  Luigi Ballabio
+
+	* [r16652] ChangeLog.txt:
+	  
+	  Updated ChangeLog
+
+2009-10-28 08:25  Luigi Ballabio
+
+	* [r16651] ql/experimental/credit/cdo.hpp,
+	  ql/experimental/inflation/yoycapfloortermpricesurface.hpp,
+	  ql/experimental/inflation/yoyinflationoptionletvolatilitystructure2.hpp,
+	  ql/indexes/inflation/frhicp.hpp,
+	  ql/instruments/creditdefaultswap.hpp,
+	  ql/instruments/overnightindexedswap.hpp,
+	  ql/pricingengines/inflation/inflationcapfloorengines.hpp,
+	  ql/termstructures/credit/defaultprobabilityhelpers.hpp,
+	  ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.hpp,
+	  ql/termstructures/yield/oisratehelper.hpp:
+	  
+	  Fixed documentation.
+
+2009-10-27 14:38  Luigi Ballabio
+
+	* [r16649] Docs/pages/history.docs, News.txt:
+	  
+	  Updated news
+
+2009-10-27 13:56  Luigi Ballabio
+
+	* [r16648] ql/processes/hestonprocess.cpp,
+	  ql/processes/hestonprocess.hpp, test-suite/hestonmodel.cpp:
+	  
+	  More descriptive enumeration value.
+
+2009-10-22 13:24  Luigi Ballabio
+
+	* [r16640] ql/cashflows/capflooredinflationcoupon.hpp,
+	  ql/cashflows/inflationcoupon.hpp,
+	  ql/cashflows/inflationcouponpricer.hpp,
+	  ql/cashflows/yoyinflationcoupon.hpp,
+	  ql/experimental/inflation/kinterpolatedyoyoptionletvolatilitysurface.hpp,
+	  ql/experimental/inflation/piecewiseyoyoptionletvolatility.hpp,
+	  ql/experimental/inflation/yoycapfloortermpricesurface.hpp,
+	  ql/experimental/inflation/yoyinflationoptionletvolatilitystructure2.hpp,
+	  ql/instruments/inflationcapfloor.hpp,
+	  ql/instruments/makeyoyinflationcapfloor.hpp,
+	  ql/instruments/yearonyearinflationswap.hpp,
+	  ql/instruments/zerocouponinflationswap.cpp,
+	  ql/instruments/zerocouponinflationswap.hpp,
+	  ql/pricingengines/inflation/inflationcapfloorengines.hpp,
+	  ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.hpp,
+	  test-suite/inflationvolatility.hpp:
+	  
+	  Reformatted a few comments.
+
+2009-10-22 13:22  Luigi Ballabio
+
+	* [r16639] ql/cashflows/capflooredinflationcoupon.cpp,
+	  ql/cashflows/capflooredinflationcoupon.hpp,
+	  ql/cashflows/inflationcoupon.hpp,
+	  ql/cashflows/inflationcouponpricer.cpp,
+	  ql/cashflows/inflationcouponpricer.hpp,
+	  ql/cashflows/yoyinflationcoupon.cpp,
+	  ql/cashflows/yoyinflationcoupon.hpp,
+	  ql/experimental/inflation/interpolatedyoyoptionletstripper.hpp,
+	  ql/experimental/inflation/kinterpolatedyoyoptionletvolatilitysurface.hpp,
+	  ql/experimental/inflation/piecewiseyoyoptionletvolatility.hpp,
+	  ql/experimental/inflation/yoycapfloortermpricesurface.cpp,
+	  ql/experimental/inflation/yoycapfloortermpricesurface.hpp,
+	  ql/experimental/inflation/yoyinflationoptionletvolatilitystructure2.hpp,
+	  ql/experimental/inflation/yoyoptionlethelpers.cpp,
+	  ql/experimental/inflation/yoyoptionlethelpers.hpp,
+	  ql/experimental/inflation/yoyoptionletstripper.hpp,
+	  ql/indexes/region.cpp, ql/indexes/region.hpp,
+	  ql/instruments/inflationcapfloor.cpp,
+	  ql/instruments/inflationcapfloor.hpp,
+	  ql/instruments/makeyoyinflationcapfloor.cpp,
+	  ql/instruments/makeyoyinflationcapfloor.hpp,
+	  ql/instruments/yearonyearinflationswap.cpp,
+	  ql/instruments/yearonyearinflationswap.hpp,
+	  ql/instruments/zerocouponinflationswap.cpp,
+	  ql/instruments/zerocouponinflationswap.hpp,
+	  ql/pricingengines/inflation/inflationcapfloorengines.hpp,
+	  ql/termstructures/inflation/inflationhelpers.hpp,
+	  ql/termstructures/inflation/interpolatedyoyinflationcurve.hpp,
+	  ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp,
+	  ql/termstructures/inflation/piecewisezeroinflationcurve.hpp,
+	  ql/termstructures/inflationtermstructure.cpp,
+	  ql/termstructures/inflationtermstructure.hpp,
+	  ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.cpp,
+	  ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.hpp,
+	  test-suite/bonds.cpp, test-suite/inflation.hpp,
+	  test-suite/inflationcapfloor.cpp,
+	  test-suite/inflationcapflooredcoupon.hpp,
+	  test-suite/inflationvolatility.hpp:
+	  
+	  Fixed hard tabs and trailing whitespace.
+
+2009-10-22 13:19  Luigi Ballabio
+
+	* [r16638] QuantLib.dev:
+	  
+	  Trimmed unused entries.
+
+2009-10-22 09:07  Luigi Ballabio
+
+	* [r16635]
+	  
+	  Created branch for 0.9.9 release.
+
+2009-10-21 16:22  Ferdinando Ametrano
+
+	* [r16631] ql/instruments/capfloor.cpp, ql/instruments/makeois.hpp:
+	  
+	  
+
+2009-10-21 16:04  Ferdinando Ametrano
+
+	* [r16630] ql/cashflows/overnightindexedcoupon.cpp,
+	  ql/indexes/swap/euriborswap.cpp, ql/indexes/swap/euriborswap.hpp,
+	  ql/indexes/swap/eurliborswap.cpp, ql/indexes/swap/eurliborswap.hpp,
+	  ql/indexes/swapindex.cpp, ql/indexes/swapindex.hpp:
+	  
+	  - added discounting term structure to SwapIndex and some of its
+	  derived classes (the EUR one for the time being)
+	  - added SwapIndex::clone(Handle<YieldTermStructure>)
+
+2009-10-21 15:49  Luigi Ballabio
+
+	* [r16629] ql/indexes/iborindex.hpp, ql/indexes/swapindex.hpp:
+	  
+	  Restored useful header inclusion.
+	  
+	  GNU gcc instantiates templates earlier and needs to know that
+	  YieldTermStructure inherit from Observable in order to pass it
+	  to Handle as a template parameter. A forward declaration is
+	  not enough.
+
+2009-10-21 15:24  Ferdinando Ametrano
+
+	* [r16628] ql/cashflows/overnightindexedcoupon.cpp,
+	  ql/experimental/coupons/subperiodcoupons.cpp,
+	  ql/indexes/swapindex.hpp, ql/instruments/capfloor.cpp,
+	  ql/pricingengines/capfloor/blackcapfloorengine.cpp,
+	  ql/termstructures/volatility/optionlet/strippedoptionlet.hpp:
+	  
+	  integration of the incomplete Rev16626 (sorry for the partial
+	  commit)
+
+2009-10-21 14:51  Ferdinando Ametrano
+
+	* [r16626] ql/indexes/iborindex.hpp, ql/indexes/interestrateindex.cpp,
+	  ql/indexes/interestrateindex.hpp, ql/indexes/swap/chfliborswap.hpp,
+	  ql/indexes/swap/gbpliborswap.hpp, ql/indexes/swap/jpyliborswap.hpp,
+	  ql/indexes/swap/usdliborswap.hpp:
+	  
+	  removed useless header inclusion
+
+2009-10-21 14:34  Ferdinando Ametrano
+
+	* [r16625] ql/cashflows/iborcoupon.cpp,
+	  ql/cashflows/overnightindexedcoupon.cpp, ql/indexes/bmaindex.cpp,
+	  ql/indexes/iborindex.cpp, ql/instruments/forward.cpp,
+	  ql/instruments/makecms.cpp, ql/instruments/makeois.cpp,
+	  ql/instruments/makeswaption.cpp, ql/instruments/makevanillaswap.cpp:
+	  
+	  homogeneous error message using "this instance of" to make it
+	  clearer to naive users.
+	  forwarding or discounting should be clear based on context
+
+2009-10-21 13:53  Luigi Ballabio
+
+	* [r16624] QuantLib.dev, QuantLib_vc7.vcproj, QuantLib_vc8.vcproj,
+	  QuantLib_vc9.vcproj, configure.ac, ql/legacy/Makefile.am,
+	  ql/legacy/all.hpp, ql/legacy/pricers:
+	  
+	  Removed last legacy pricer.
+
+2009-10-21 13:20  Luigi Ballabio
+
+	* [r16623] ql/cashflows/conundrumpricer.cpp,
+	  ql/cashflows/couponpricer.cpp, ql/cashflows/iborcoupon.cpp,
+	  ql/cashflows/overnightindexedcoupon.cpp,
+	  ql/cashflows/rangeaccrual.cpp,
+	  ql/experimental/coupons/subperiodcoupons.cpp,
+	  ql/indexes/bmaindex.cpp, ql/indexes/bmaindex.hpp,
+	  ql/indexes/iborindex.cpp, ql/indexes/iborindex.hpp,
+	  ql/indexes/interestrateindex.hpp, ql/indexes/swapindex.cpp,
+	  ql/indexes/swapindex.hpp, ql/instruments/makecapfloor.cpp,
+	  ql/instruments/makecms.cpp, ql/instruments/makeois.cpp,
+	  ql/instruments/makeswaption.cpp, ql/instruments/makevanillaswap.cpp,
+	  ql/legacy/libormarketmodels/lfmprocess.cpp,
+	  ql/legacy/libormarketmodels/liborforwardmodel.cpp,
+	  ql/pricingengines/swaption/blackswaptionengine.cpp,
+	  ql/termstructures/volatility/optionlet/optionletstripper1.cpp,
+	  ql/termstructures/volatility/optionlet/optionletstripper2.cpp,
+	  ql/termstructures/yield/ratehelpers.cpp, test-suite/cms.cpp,
+	  test-suite/libormarketmodel.cpp, test-suite/piecewiseyieldcurve.cpp:
+	  
+	  Removed ambiguous termStructure() method from InterestRateIndex
+	  interface.
+	  
+	  The method was moved to derived classes and renamed to
+	  forwardingTermStructure.
+
+2009-10-21 09:19  Luigi Ballabio
+
+	* [r16620] ql/cashflows/inflationcouponpricer.cpp,
+	  ql/pricingengines/blackformula.cpp,
+	  ql/pricingengines/blackformula.hpp,
+	  ql/pricingengines/inflation/inflationcapfloorengines.cpp:
+	  
+	  Fixed Bachelier's formula.
+
+2009-10-21 09:18  Luigi Ballabio
+
+	* [r16619] ql/termstructures/volatility/smilesection.hpp:
+	  
+	  Made virtual a few more methods to improve extensibility.
+
+2009-10-21 09:18  Luigi Ballabio
+
+	* [r16618] ql/termstructures/volatility/smilesection.hpp,
+	  ql/termstructures/volatility/spreadedsmilesection.cpp:
+	  
+	  Derived class SpreadedSmileSection is no longer a friend of its base
+	  class.
+
+2009-10-21 09:17  Luigi Ballabio
+
+	* [r16617] ql/experimental/volatility/blackvolsurface.cpp,
+	  ql/termstructures/volatility/smilesection.hpp:
+	  
+	  Removed default strike from volatility() method.
+
+2009-10-21 09:15  Luigi Ballabio
+
+	* [r16616] QuantLib.dev, QuantLib_vc7.vcproj, QuantLib_vc8.vcproj,
+	  QuantLib_vc9.vcproj, ql/termstructures/volatility/Makefile.am,
+	  ql/termstructures/volatility/all.hpp,
+	  ql/termstructures/volatility/sabrinterpolatedsmilesection.hpp,
+	  ql/termstructures/volatility/sabrsmilesection.cpp,
+	  ql/termstructures/volatility/sabrsmilesection.hpp,
+	  ql/termstructures/volatility/smilesection.cpp,
+	  ql/termstructures/volatility/smilesection.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube1.cpp:
+	  
+	  Moved SabrSmileSection class into own files.
+
+2009-10-20 14:05  Luigi Ballabio
+
+	* [r16615] test-suite/inflation.cpp:
+	  
+	  Prevented warning on VC++7.
+
+2009-10-20 10:48  Luigi Ballabio
+
+	* [r16614] test-suite/fastfouriertransform.cpp:
+	  
+	  Prevented unused-variable warning.
+
+2009-10-20 10:48  Luigi Ballabio
+
+	* [r16613] Docs/pages/license.docs, LICENSE.TXT:
+	  
+	  Updated list of copyright holders.
+
+2009-10-20 10:46  Luigi Ballabio
+
+	* [r16612] ql/indexes/inflation/uscpi.hpp:
+	  
+	  Fixed index currency.
+
+2009-10-20 10:45  Luigi Ballabio
+
+	* [r16611] ql/time/ecb.cpp:
+	  
+	  Including standard headers last.
+
+2009-10-20 08:55  Luigi Ballabio
+
+	* [r16610] ql/processes/hestonprocess.cpp,
+	  ql/processes/hestonprocess.hpp, test-suite/hestonmodel.cpp:
+	  
+	  Renamed Heston-process discretization method.
+	  
+	  The older name (exact variance) is commonly used for yet another
+	  method.
+	  Although the latter is not yet implemented, we better free up the
+	  name.
+
+2009-10-20 08:47  Luigi Ballabio
+
+	* [r16608] ql/cashflows/overnightindexedcoupon.cpp,
+	  ql/cashflows/overnightindexedcoupon.hpp,
+	  ql/experimental/credit/riskybond.cpp,
+	  ql/experimental/credit/riskybond.hpp,
+	  ql/experimental/finitedifferences/bicgstab.cpp,
+	  ql/experimental/finitedifferences/bicgstab.hpp,
+	  ql/experimental/finitedifferences/concentrating1dmesher.hpp,
+	  ql/experimental/finitedifferences/expliciteulerscheme.cpp,
+	  ql/experimental/finitedifferences/expliciteulerscheme.hpp,
+	  ql/experimental/finitedifferences/fdblackscholesasianengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesasianengine.hpp,
+	  ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.hpp,
+	  ql/experimental/finitedifferences/fdmarithmeticaveragecondition.cpp,
+	  ql/experimental/finitedifferences/fdmarithmeticaveragecondition.hpp,
+	  ql/experimental/finitedifferences/fdmbackwardsolver.cpp,
+	  ql/experimental/finitedifferences/fdmbackwardsolver.hpp,
+	  ql/experimental/finitedifferences/fdmblackscholesmesher.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholesmesher.hpp,
+	  ql/experimental/finitedifferences/fdmblackscholesmultistrikemesher.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholesmultistrikemesher.hpp,
+	  ql/experimental/finitedifferences/fdmhestonhullwhitesolver.cpp,
+	  ql/experimental/finitedifferences/fdmhestonhullwhitesolver.hpp,
+	  ql/experimental/finitedifferences/fdmhullwhitemesher.cpp,
+	  ql/experimental/finitedifferences/fdmhullwhitemesher.hpp,
+	  ql/experimental/finitedifferences/fdminnervaluecalculator.cpp,
+	  ql/experimental/finitedifferences/fdmquantohelper.cpp,
+	  ql/experimental/finitedifferences/fdmquantohelper.hpp,
+	  ql/experimental/finitedifferences/fdmsimple2dbssolver.cpp,
+	  ql/experimental/finitedifferences/fdmsimple2dbssolver.hpp,
+	  ql/experimental/finitedifferences/impliciteulerscheme.cpp,
+	  ql/experimental/finitedifferences/impliciteulerscheme.hpp,
+	  ql/experimental/finitedifferences/modifiedcraigsneydscheme.cpp,
+	  ql/experimental/finitedifferences/modifiedcraigsneydscheme.hpp,
+	  ql/experimental/inflation/polynomial2Dspline.hpp,
+	  ql/instruments/overnightindexedswap.cpp,
+	  ql/instruments/overnightindexedswap.hpp,
+	  ql/math/randomnumbers/ranluxuniformrng.hpp,
+	  ql/models/marketmodels/evolvers/lognormalfwdrateballand.cpp,
+	  ql/models/marketmodels/evolvers/lognormalfwdrateballand.hpp,
+	  ql/termstructures/inflation/seasonality.cpp,
+	  ql/termstructures/inflation/seasonality.hpp,
+	  ql/termstructures/volatility/inflation/Makefile.am,
+	  ql/termstructures/yield/oisratehelper.cpp,
+	  ql/termstructures/yield/oisratehelper.hpp, test-suite/fdheston.cpp,
+	  test-suite/fdheston.hpp, test-suite/overnightindexedswap.cpp,
+	  test-suite/overnightindexedswap.hpp:
+	  
+	  Fixed SVN properties
+
+2009-10-19 15:59  Luigi Ballabio
+
+	* [r16606] ql/cashflows/capflooredinflationcoupon.cpp,
+	  ql/cashflows/inflationcouponpricer.cpp,
+	  ql/cashflows/overnightindexedcoupon.cpp,
+	  ql/cashflows/rangeaccrual.cpp, ql/experimental/credit/riskybond.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesasianengine.cpp,
+	  ql/experimental/finitedifferences/fdmarithmeticaveragecondition.cpp,
+	  ql/experimental/finitedifferences/fdmsimple2dbssolver.cpp,
+	  ql/experimental/inflation/yoycapfloortermpricesurface.hpp,
+	  ql/instruments/zerocouponinflationswap.cpp,
+	  ql/math/optimization/endcriteria.hpp,
+	  ql/pricingengines/inflation/inflationcapfloorengines.cpp,
+	  ql/termstructures/inflation/inflationhelpers.cpp,
+	  ql/termstructures/inflation/interpolatedzeroinflationcurve.hpp,
+	  ql/termstructures/inflation/piecewisezeroinflationcurve.hpp:
+	  
+	  Removed <iostream> inclusions.
+
+2009-10-19 15:56  Luigi Ballabio
+
+	* [r16605] ql/cashflows/inflationcoupon.hpp,
+	  ql/cashflows/inflationcouponpricer.hpp,
+	  ql/instruments/yearonyearinflationswap.hpp,
+	  ql/termstructures/inflation/inflationhelpers.hpp:
+	  
+	  Cleaned up include guards.
+
+2009-10-19 15:49  Ferdinando Ametrano
+
+	* [r16604] ql/legacy/all.hpp:
+	  
+	  
+
+2009-10-19 15:44  Luigi Ballabio
+
+	* [r16603] ql/experimental/inflation/genericindexes.hpp,
+	  ql/experimental/inflation/interpolatedyoyoptionletstripper.hpp,
+	  ql/experimental/inflation/kinterpolatedyoyoptionletvolatilitysurface.hpp,
+	  ql/indexes/inflation/aucpi.hpp, ql/indexes/inflation/euhicp.hpp,
+	  ql/indexes/inflation/frhicp.hpp, ql/indexes/inflation/ukrpi.hpp,
+	  ql/indexes/inflation/uscpi.hpp, ql/indexes/inflationindex.cpp,
+	  ql/indexes/inflationindex.hpp,
+	  ql/pricingengines/inflation/inflationcapfloorengines.cpp,
+	  ql/termstructures/inflation/inflationhelpers.cpp,
+	  test-suite/inflationvolatility.cpp:
+	  
+	  Removed relinkable handles from inflation-index interface.
+	  
+	  Action at a distance (such as having the bootstrap process relink
+	  the handle
+	  inside an index) can be a bit too surprising. I uniformed the
+	  behavior with
+	  that of the rest of the library---and in so doing, I broke a test
+	  that relied
+	  on some hidden links. The test (which exercises experimental stuff)
+	  has been
+	  temporarily disabled, and the exercised classes have been marked as
+	  buggy.
+
+2009-10-19 15:42  Luigi Ballabio
+
+	* [r16602] Readme.txt:
+	  
+	  Link changed.
+
+2009-10-19 14:53  Luigi Ballabio
+
+	* [r16601] test-suite/inflationcapflooredcoupon.cpp,
+	  test-suite/inflationvolatility.cpp:
+	  
+	  Cleaned up tests.
+
+2009-10-19 14:53  Luigi Ballabio
+
+	* [r16600] ql/indexes/inflation/euhicp.hpp,
+	  ql/indexes/inflation/ukrpi.hpp, ql/indexes/inflation/uscpi.hpp,
+	  ql/indexes/inflationindex.cpp, ql/indexes/inflationindex.hpp:
+	  
+	  Removed hard tabs and trailing spaces.
+
+2009-10-19 14:52  Luigi Ballabio
+
+	* [r16599] ql/cashflows/indexedcashflow.cpp,
+	  ql/cashflows/inflationcoupon.cpp:
+	  
+	  Used absolute inclusion paths.
+
+2009-10-19 14:52  Luigi Ballabio
+
+	* [r16598] ql/cashflows/indexedcashflow.cpp,
+	  ql/cashflows/indexedcashflow.hpp, ql/cashflows/inflationcoupon.cpp,
+	  test-suite/inflation.cpp:
+	  
+	  Renamed variables for consistency with the rest of the library.
+
+2009-10-19 12:08  Luigi Ballabio
+
+	* [r16597] test-suite/quantlibtestsuite.cpp:
+	  
+	  Removed obsolete legacy tests.
+
+2009-10-19 11:10  Luigi Ballabio
+
+	* [r16596] QuantLib.dev, QuantLib_vc7.vcproj, QuantLib_vc8.vcproj,
+	  QuantLib_vc9.vcproj, configure.ac, ql/legacy/Makefile.am,
+	  ql/legacy/termstructures, test-suite/Makefile.am,
+	  test-suite/compoundforward.cpp, test-suite/compoundforward.hpp,
+	  test-suite/testsuite.dev, test-suite/testsuite_vc7.vcproj,
+	  test-suite/testsuite_vc8.vcproj, test-suite/testsuite_vc9.vcproj:
+	  
+	  Removed legacy term structures.
+
+2009-10-19 10:51  Ferdinando Ametrano
+
+	* [r16595]
+	  ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.cpp:
+	  
+	  avoided VC9 error (isn't it touchy ?!)
+
+2009-10-19 10:33  Luigi Ballabio
+
+	* [r16594] QuantLib.dev, QuantLib_vc7.vcproj, QuantLib_vc8.vcproj,
+	  QuantLib_vc9.vcproj, ql/experimental/inflation/Makefile.am:
+	  
+	  Removed deleted file from builds
+
+2009-10-19 10:23  Ferdinando Ametrano
+
+	* [r16593] ql/experimental/inflation/polynomial2Dspline.hpp:
+	  
+	  replaced hard tabs with 4 spaces
+
+2009-10-19 10:13  Ferdinando Ametrano
+
+	* [r16592]
+	  ql/experimental/inflation/yoyinflationoptionletvolatilitystructure2.cpp:
+	  
+	  removed empty file
+
+2009-10-19 09:56  Luigi Ballabio
+
+	* [r16591] QuantLib.dev:
+	  
+	  Trimmed unused trailing entries from Dev-C++ project.
+
+2009-10-19 09:48  Luigi Ballabio
+
+	* [r16590] test-suite/inflationvolatility.cpp:
+	  
+	  Prevented unused-variable warning.
+
+2009-10-19 09:41  Luigi Ballabio
+
+	* [r16589] ql/cashflows/yoyinflationcoupon.cpp,
+	  ql/instruments/makeyoyinflationcapfloor.cpp,
+	  ql/termstructures/inflationtermstructure.cpp:
+	  
+	  Fixed data-member initialization order.
+
+2009-10-19 09:41  Luigi Ballabio
+
+	* [r16588] ql/termstructures/volatility/inflation/all.hpp:
+	  
+	  Added new all.hpp header to version control.
+
+2009-10-19 09:39  Luigi Ballabio
+
+	* [r16587] QuantLib.dev, QuantLib_vc7.vcproj, QuantLib_vc8.vcproj,
+	  QuantLib_vc9.vcproj, test-suite/testsuite.dev,
+	  test-suite/testsuite_vc7.vcproj, test-suite/testsuite_vc8.vcproj,
+	  test-suite/testsuite_vc9.vcproj:
+	  
+	  Updated VC++ and Dev-C++ projects.
+
+2009-10-19 08:59  Luigi Ballabio
+
+	* [r16586] configure.ac, ql/experimental/overnightswap:
+	  
+	  Removed obsolete experimental/overnightswap folder.
+
+2009-10-17 01:01  Chris Kenyon
+
+	* [r16585] ql/experimental/models:
+	  
+	  Inflation tidy up.
+
+2009-10-17 01:00  Chris Kenyon
+
+	* [r16584] configure.ac, ql/cashflows/Makefile.am,
+	  ql/cashflows/all.hpp, ql/cashflows/capflooredinflationcoupon.cpp,
+	  ql/cashflows/capflooredinflationcoupon.hpp,
+	  ql/cashflows/indexedcashflow.cpp, ql/cashflows/indexedcashflow.hpp,
+	  ql/cashflows/inflationcoupon.cpp, ql/cashflows/inflationcoupon.hpp,
+	  ql/cashflows/inflationcouponpricer.cpp,
+	  ql/cashflows/inflationcouponpricer.hpp,
+	  ql/cashflows/yoyinflationcoupon.cpp,
+	  ql/cashflows/yoyinflationcoupon.hpp, ql/experimental/Makefile.am,
+	  ql/experimental/all.hpp, ql/experimental/inflation/Makefile.am,
+	  ql/experimental/inflation/all.hpp,
+	  ql/experimental/inflation/capflooredinflationcoupon.cpp,
+	  ql/experimental/inflation/capflooredinflationcoupon.hpp,
+	  ql/experimental/inflation/genericindexes.hpp,
+	  ql/experimental/inflation/inflationcapfloor.cpp,
+	  ql/experimental/inflation/inflationcapfloor.hpp,
+	  ql/experimental/inflation/inflationcapfloorengines.cpp,
+	  ql/experimental/inflation/inflationcapfloorengines.hpp,
+	  ql/experimental/inflation/inflationcappedcouponpricer.cpp,
+	  ql/experimental/inflation/inflationcappedcouponpricer.hpp,
+	  ql/experimental/inflation/inflationcoupon.cpp,
+	  ql/experimental/inflation/inflationcoupon.hpp,
+	  ql/experimental/inflation/inflationcouponpricer.cpp,
+	  ql/experimental/inflation/inflationcouponpricer.hpp,
+	  ql/experimental/inflation/interpolatedyoyoptionletstripper.hpp,
+	  ql/experimental/inflation/kinterpolatedyoyoptionletvolatilitysurface.hpp,
+	  ql/experimental/inflation/nominalyoyinflationcoupon.cpp,
+	  ql/experimental/inflation/nominalyoyinflationcoupon.hpp,
+	  ql/experimental/inflation/piecewiseyoyoptionletvolatility.hpp,
+	  ql/experimental/inflation/polynomial2Dspline.hpp,
+	  ql/experimental/inflation/yoycapfloortermpricesurface.cpp,
+	  ql/experimental/inflation/yoycapfloortermpricesurface.hpp,
+	  ql/experimental/inflation/yoyinflationoptionletvolatilitystructure2.cpp,
+	  ql/experimental/inflation/yoyinflationoptionletvolatilitystructure2.hpp,
+	  ql/experimental/inflation/yoyoptionlethelpers.cpp,
+	  ql/experimental/inflation/yoyoptionlethelpers.hpp,
+	  ql/experimental/inflation/yoyoptionletstripper.hpp,
+	  ql/experimental/inflation/yoyoptionletvolatilitystructures.hpp,
+	  ql/experimental/overnightswap,
+	  ql/experimental/overnightswap/Makefile.am,
+	  ql/indexes/inflation/Makefile.am, ql/indexes/inflation/all.hpp,
+	  ql/indexes/inflation/aucpi.hpp, ql/indexes/inflation/euhicp.hpp,
+	  ql/indexes/inflation/frhicp.hpp, ql/indexes/inflation/ukrpi.hpp,
+	  ql/indexes/inflation/uscpi.hpp, ql/indexes/inflationindex.cpp,
+	  ql/indexes/inflationindex.hpp, ql/indexes/region.cpp,
+	  ql/indexes/region.hpp, ql/instruments/Makefile.am,
+	  ql/instruments/all.hpp, ql/instruments/inflationcapfloor.cpp,
+	  ql/instruments/inflationcapfloor.hpp,
+	  ql/instruments/inflationswap.cpp, ql/instruments/inflationswap.hpp,
+	  ql/instruments/makeyoyinflationcapfloor.cpp,
+	  ql/instruments/makeyoyinflationcapfloor.hpp,
+	  ql/instruments/yearonyearinflationswap.cpp,
+	  ql/instruments/yearonyearinflationswap.hpp,
+	  ql/instruments/zerocouponinflationswap.cpp,
+	  ql/instruments/zerocouponinflationswap.hpp,
+	  ql/pricingengines/blackformula.cpp,
+	  ql/pricingengines/blackformula.hpp,
+	  ql/pricingengines/inflation/Makefile.am,
+	  ql/pricingengines/inflation/all.hpp,
+	  ql/pricingengines/inflation/discountinginflationswapengines.cpp,
+	  ql/pricingengines/inflation/discountinginflationswapengines.hpp,
+	  ql/pricingengines/inflation/inflationcapfloorengines.cpp,
+	  ql/pricingengines/inflation/inflationcapfloorengines.hpp,
+	  ql/termstructures/inflation/inflationhelpers.cpp,
+	  ql/termstructures/inflation/inflationhelpers.hpp,
+	  ql/termstructures/inflation/interpolatedyoyinflationcurve.hpp,
+	  ql/termstructures/inflation/interpolatedzeroinflationcurve.hpp,
+	  ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp,
+	  ql/termstructures/inflation/piecewisezeroinflationcurve.hpp,
+	  ql/termstructures/inflation/seasonality.hpp,
+	  ql/termstructures/inflationtermstructure.cpp,
+	  ql/termstructures/inflationtermstructure.hpp,
+	  ql/termstructures/volatility/Makefile.am,
+	  ql/termstructures/volatility/all.hpp,
+	  ql/termstructures/volatility/inflation,
+	  ql/termstructures/volatility/inflation/Makefile.am,
+	  ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.cpp,
+	  ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.hpp,
+	  test-suite/Makefile.am, test-suite/inflation.cpp,
+	  test-suite/inflation.hpp, test-suite/inflationcapfloor.cpp,
+	  test-suite/inflationcapfloor.hpp,
+	  test-suite/inflationcapflooredcoupon.cpp,
+	  test-suite/inflationcapflooredcoupon.hpp,
+	  test-suite/inflationvol.cpp, test-suite/inflationvol.hpp,
+	  test-suite/inflationvolatility.cpp,
+	  test-suite/inflationvolatility.hpp,
+	  test-suite/quantlibtestsuite.cpp:
+	  
+	  Inflation update to deal with aged instruments. Now
+	  caps/floors/cappedfloored coupons/etc are available (with tests).
+	  Only constant inflation vol is in the trunk - stripping remains in
+	  experimental. The backelierBlackFormula seems wrong, but in order
+	  not to break anyone else's code I've added what I think the correct
+	  version is as -2 (at least this is the correct version to use with
+	  inflation). A few inflation-related files have been removed as they
+	  are not important for the current update and have not been updated.
+
+2009-10-16 10:05  Luigi Ballabio
+
+	* [r16582] ql/experimental/overnightswap:
+	  
+	  Deleted empty directory
+
+2009-10-16 10:04  Luigi Ballabio
+
+	* [r16581] QuantLib.dev, QuantLib_vc7.vcproj, QuantLib_vc8.vcproj,
+	  QuantLib_vc9.sln, QuantLib_vc9.vcproj, test-suite/testsuite.dev,
+	  test-suite/testsuite_vc7.vcproj:
+	  
+	  Updated VC++ and Dev-C++ projects.
+
+2009-10-16 09:41  Luigi Ballabio
+
+	* [r16580] Examples/BermudanSwaption/BermudanSwaption_vc9.vcproj,
+	  Examples/Bonds/Bonds_vc9.vcproj, Examples/CDS/CDS_vc9.vcproj,
+	  Examples/CallableBonds/CallableBonds_vc9.vcproj,
+	  Examples/ConvertibleBonds/ConvertibleBonds_vc9.vcproj,
+	  Examples/DiscreteHedging/DiscreteHedging_vc9.vcproj,
+	  Examples/EquityOption/EquityOption_vc9.vcproj,
+	  Examples/FRA/FRA_vc9.vcproj,
+	  Examples/FittedBondCurve/FittedBondCurve_vc9.vcproj,
+	  Examples/Replication/Replication_vc9.vcproj,
+	  Examples/Repo/Repo_vc9.vcproj, Examples/Swap/Swap_vc9.vcproj,
+	  QuantLib_vc9.vcproj, ql/currencies/africa.hpp,
+	  ql/currencies/america.hpp, ql/currencies/asia.hpp,
+	  ql/currencies/europe.hpp, ql/currencies/oceania.hpp,
+	  test-suite/testsuite_vc9.vcproj:
+	  
+	  Removed VC++ warning 4819.
+
+2009-10-16 09:36  Luigi Ballabio
+
+	* [r16579] ql/cashflows/Makefile.am, ql/cashflows/all.hpp,
+	  ql/cashflows/overnightindexedcoupon.cpp,
+	  ql/cashflows/overnightindexedcoupon.hpp,
+	  ql/experimental/Makefile.am, ql/experimental/all.hpp,
+	  ql/experimental/overnightswap/Makefile.am,
+	  ql/experimental/overnightswap/all.hpp,
+	  ql/experimental/overnightswap/makeois.cpp,
+	  ql/experimental/overnightswap/makeois.hpp,
+	  ql/experimental/overnightswap/oisratehelper.cpp,
+	  ql/experimental/overnightswap/oisratehelper.hpp,
+	  ql/experimental/overnightswap/overnightindexedcoupon.cpp,
+	  ql/experimental/overnightswap/overnightindexedcoupon.hpp,
+	  ql/experimental/overnightswap/overnightindexedswap.cpp,
+	  ql/experimental/overnightswap/overnightindexedswap.hpp,
+	  ql/instruments/Makefile.am, ql/instruments/all.hpp,
+	  ql/instruments/makeois.cpp, ql/instruments/makeois.hpp,
+	  ql/instruments/overnightindexedswap.cpp,
+	  ql/instruments/overnightindexedswap.hpp,
+	  ql/termstructures/yield/Makefile.am,
+	  ql/termstructures/yield/all.hpp,
+	  ql/termstructures/yield/oisratehelper.cpp,
+	  ql/termstructures/yield/oisratehelper.hpp,
+	  test-suite/overnightindexedswap.cpp:
+	  
+	  Moved overnight-indexed swaps from experimental tree to core
+	  library.
+
+2009-10-16 08:51  Luigi Ballabio
+
+	* [r16578] ql/currencies/africa.hpp, ql/currencies/america.hpp,
+	  ql/currencies/asia.hpp, ql/currencies/europe.hpp,
+	  ql/currencies/oceania.hpp:
+	  
+	  Tentatively removed VC++9 warning.
+
+2009-10-15 15:42  Ferdinando Ametrano
+
+	* [r16576] ql/termstructures/yield/ratehelpers.cpp,
+	  ql/termstructures/yield/ratehelpers.hpp:
+	  
+	  fixed bug: missed exogenous discount curve.
+	  If exogenous discount curve is provided as input the Handle could be
+	  empty at construction time, but non-empty at calculation time
+
+2009-10-14 15:16  Ferdinando Ametrano
+
+	* [r16567] ql/experimental/overnightswap/overnightindexedcoupon.cpp,
+	  ql/experimental/overnightswap/overnightindexedcoupon.hpp:
+	  
+	  - fixed flows analysis
+	  - removed up obsolete OvernightIndexedCouponPricer
+	  - cleaned up code
+
+2009-10-13 14:14  Luigi Ballabio
+
+	* [r16564] test-suite/overnightindexedswap.cpp,
+	  test-suite/overnightindexedswap.hpp,
+	  test-suite/quantlibtestsuite.cpp:
+	  
+	  Renamed test class.
+
+2009-10-12 17:36  Ferdinando Ametrano
+
+	* [r16558] ql/experimental/overnightswap/overnightindexedswap.cpp,
+	  ql/experimental/overnightswap/overnightindexedswap.hpp:
+	  
+	  rename methods and variables
+
+2009-10-12 17:34  Ferdinando Ametrano
+
+	* [r16557] ql/experimental/overnightswap/makeois.cpp,
+	  ql/experimental/overnightswap/makeois.hpp,
+	  ql/experimental/overnightswap/oisratehelper.cpp,
+	  test-suite/overnightindexedswap.cpp:
+	  
+	  refactored MakeOIS to be more useful (and as side-effect more
+	  similar to MakeVanillaSwap)
+
+2009-10-12 13:33  Ferdinando Ametrano
+
+	* [r16553] ql/instruments/makevanillaswap.cpp:
+	  
+	  fixed error slipped in in my last commit. apologies...
+
+2009-10-12 13:00  Ferdinando Ametrano
+
+	* [r16552] ql/instruments/makevanillaswap.cpp:
+	  
+	  improved error message
+
+2009-10-12 10:16  Luigi Ballabio
+
+	* [r16551] ql/experimental/overnightswap/Makefile.am,
+	  ql/experimental/overnightswap/all.hpp:
+	  
+	  Added new files to autotools build.
+
+2009-10-12 07:45  Ferdinando Ametrano
+
+	* [r16550] test-suite/compoundoption.cpp:
+	  
+	  improved formatting
+
+2009-10-09 17:42  Ferdinando Ametrano
+
+	* [r16549] QuantLib_vc9.vcproj:
+	  
+	  VC9 catching up
+
+2009-10-09 17:39  Ferdinando Ametrano
+
+	* [r16548] QuantLib_vc8.vcproj,
+	  ql/experimental/overnightswap/makeois.cpp,
+	  ql/experimental/overnightswap/makeois.hpp,
+	  ql/experimental/overnightswap/oisratehelper.cpp,
+	  ql/experimental/overnightswap/oisratehelper.hpp,
+	  ql/experimental/overnightswap/overnightindexedswap.cpp,
+	  ql/experimental/overnightswap/overnightindexedswap.hpp,
+	  test-suite/overnightindexedswap.cpp:
+	  
+	  - added MakeOIS factory and cleaned up constructors' code in order
+	  to take better account of market conventions
+	  - inverted OvernightIndexedSwap::Payer/Receiver as in
+	  VanillaSwap::Payer/Receiver
+	  - added QuantLibAddin::OvernightIndexedSwap
+
+2009-10-09 14:49  Ferdinando Ametrano
+
+	* [r16547] ql/instruments/vanillaswap.cpp,
+	  ql/instruments/vanillaswap.hpp:
+	  
+	  modified formatting
+
+2009-10-09 14:47  Ferdinando Ametrano
+
+	* [r16546] ql/time/period.cpp, ql/time/schedule.cpp:
+	  
+	  mapped 0*Years Period into Once Frequency, keeping 0*Days as
+	  NoFrequency. More elegant solutions would be appreciated
+
+2009-10-09 07:45  Ferdinando Ametrano
+
+	* [r16545] ql/experimental/math/fastfouriertransform.hpp:
+	  
+	  avoided VC9 error. Hopefully the fix is correct (test-suite does not
+	  fail)
+
+2009-10-08 15:27  Ferdinando Ametrano
+
+	* [r16543] test-suite/quantlibtestsuite.cpp:
+	  
+	  
+
+2009-10-08 15:10  Ferdinando Ametrano
+
+	* [r16542] QuantLib_vc9.vcproj:
+	  
+	  VC9 catching up
+
+2009-10-08 15:08  Ferdinando Ametrano
+
+	* [r16541] test-suite/Makefile.am, test-suite/eoniaswap.cpp,
+	  test-suite/eoniaswap.hpp, test-suite/overnightindexedswap.cpp,
+	  test-suite/overnightindexedswap.hpp,
+	  test-suite/testsuite_vc8.vcproj, test-suite/testsuite_vc9.vcproj:
+	  
+	  
+
+2009-10-08 14:57  Ferdinando Ametrano
+
+	* [r16540] QuantLib_vc8.vcproj, QuantLib_vc9.vcproj,
+	  ql/experimental/overnightswap/Makefile.am,
+	  ql/experimental/overnightswap/all.hpp,
+	  ql/experimental/overnightswap/eoniacoupon.cpp,
+	  ql/experimental/overnightswap/eoniacoupon.hpp,
+	  ql/experimental/overnightswap/eoniaswap.cpp,
+	  ql/experimental/overnightswap/eoniaswap.hpp,
+	  ql/experimental/overnightswap/eoniaswaphelper.cpp,
+	  ql/experimental/overnightswap/eoniaswaphelper.hpp,
+	  ql/experimental/overnightswap/oisratehelper.cpp,
+	  ql/experimental/overnightswap/oisratehelper.hpp,
+	  ql/experimental/overnightswap/overnightindexedcoupon.cpp,
+	  ql/experimental/overnightswap/overnightindexedcoupon.hpp,
+	  ql/experimental/overnightswap/overnightindexedswap.cpp,
+	  ql/experimental/overnightswap/overnightindexedswap.hpp:
+	  
+	  renamed overnight related files. They are ready to be moved out of
+	  experimental in my opinion
+
+2009-10-08 14:42  Ferdinando Ametrano
+
+	* [r16539] ql/experimental/overnightswap/eoniacoupon.hpp,
+	  ql/experimental/overnightswap/eoniaswap.hpp:
+	  
+	  
+
+2009-10-08 14:38  Ferdinando Ametrano
+
+	* [r16538] ql/experimental/overnightswap/eoniaswaphelper.cpp,
+	  ql/experimental/overnightswap/eoniaswaphelper.hpp:
+	  
+	  added DatedOISRateHelper, useful for ECB dated OIS
+
+2009-10-08 14:27  Ferdinando Ametrano
+
+	* [r16537] ql/time/imm.hpp:
+	  
+	  
+
+2009-10-08 14:27  Ferdinando Ametrano
+
+	* [r16536] ql/time/ecb.cpp, ql/time/ecb.hpp:
+	  
+	  added ECB "codes" handling
+
+2009-10-08 09:23  Luigi Ballabio
+
+	* [r16535] ql/indexes/ibor/Makefile.am, ql/indexes/ibor/all.hpp:
+	  
+	  Added new files to autotools build.
+
+2009-10-08 09:22  Luigi Ballabio
+
+	* [r16534] ql/experimental/math/complexarray.hpp,
+	  ql/math/complexarray.hpp:
+	  
+	  Moved tentative ComplexArray implementation to experimental tree.
+
+2009-10-08 09:22  Luigi Ballabio
+
+	* [r16533] test-suite/fastfouriertransform.cpp,
+	  test-suite/fastfouriertransform.hpp:
+	  
+	  Removed obsolete construction test.
+
+2009-10-08 09:22  Luigi Ballabio
+
+	* [r16532] ql/experimental/math/fastfouriertransform.hpp,
+	  test-suite/fastfouriertransform.cpp:
+	  
+	  Improved FFT interface (thanks to Slava Mazur.)
+
+2009-10-08 09:21  Luigi Ballabio
+
+	* [r16531] Bugs.txt:
+	  
+	  Added short readme about known bugs.
+
+2009-10-08 09:21  Luigi Ballabio
+
+	* [r16529] test-suite/factorial.cpp:
+	  
+	  Unified similar test-case branches.
+
+2009-10-07 11:33  Ferdinando Ametrano
+
+	* [r16528] QuantLib_vc8.vcproj,
+	  ql/experimental/overnightswap/eoniacoupon.cpp,
+	  ql/experimental/overnightswap/eoniacoupon.hpp,
+	  ql/experimental/overnightswap/eoniaswap.cpp,
+	  ql/experimental/overnightswap/eoniaswap.hpp,
+	  ql/experimental/overnightswap/eoniaswaphelper.cpp,
+	  ql/experimental/overnightswap/eoniaswaphelper.hpp,
+	  ql/indexes/ibor/eonia.cpp, ql/indexes/ibor/eonia.hpp,
+	  ql/indexes/ibor/euribor.cpp, ql/indexes/ibor/euribor.hpp,
+	  test-suite/eoniaswap.cpp:
+	  
+	  - generalized from Eonia to OvernightIndex
+	  - removed DailyTenorEuribor (Eonia should be used instead)
+
+2009-10-07 08:56  Ferdinando Ametrano
+
+	* [r16525] ql/indexes/iborindex.cpp, ql/indexes/iborindex.hpp:
+	  
+	  fixed capitalization
+
+2009-10-07 08:37  Ferdinando Ametrano
+
+	* [r16524] ql/indexes/iborindex.cpp, ql/indexes/iborindex.hpp:
+	  
+	  introduced OverNightIndex
+
+2009-10-07 08:36  Ferdinando Ametrano
+
+	* [r16523] ql/indexes/ibor/eurlibor.hpp:
+	  
+	  
+
+2009-10-06 09:21  Luigi Ballabio
+
+	* [r16521] Contributors.txt, Docs/pages/authors.docs,
+	  ql/experimental/math/fastfouriertransform.hpp,
+	  test-suite/fastfouriertransform.cpp,
+	  test-suite/fastfouriertransform.hpp:
+	  
+	  Added explicit methods for direct and inverse FFT.
+	  
+	  Thanks to Adrian O'Neill for the heads-up and to Slava Mazur for the
+	  solution.
+	  A new test case was also added.
+
+2009-10-05 16:03  Luigi Ballabio
+
+	* [r16520] ql/math/interpolations/kernelinterpolation.hpp,
+	  ql/math/interpolations/kernelinterpolation2d.hpp,
+	  test-suite/interpolations.cpp:
+	  
+	  Kernel functions no longer need to be wrapped in shared pointers.
+
+2009-10-05 16:03  Luigi Ballabio
+
+	* [r16519] ql/math/interpolations/Makefile.am,
+	  ql/math/interpolations/all.hpp,
+	  ql/math/interpolations/kernelinterpolation2d.hpp,
+	  test-suite/interpolations.cpp, test-suite/interpolations.hpp:
+	  
+	  Added 2D kernel interpolation (thanks to Dimitri Reiswich.)
+
+2009-10-05 16:02  Luigi Ballabio
+
+	* [r16518] ql/math/interpolations/kernelinterpolation.hpp,
+	  test-suite/interpolations.cpp:
+	  
+	  Kernel interpolation works with generic functor (thanks to Dimitri
+	  Reiswich.)
+
+2009-10-05 09:06  Luigi Ballabio
+
+	* [r16517]
+	  ql/termstructures/volatility/optionlet/optionletstripper1.cpp:
+	  
+	  Fixed variable initialization (thanks to Fabio Ramponi.)
+
+2009-10-02 16:19  Ferdinando Ametrano
+
+	* [r16516] test-suite/dates.cpp:
+	  
+	  
+
+2009-10-02 16:12  Ferdinando Ametrano
+
+	* [r16515] test-suite/testsuite_vc8.vcproj:
+	  
+	  Disabled language extensions for VC8. The same cannot be applied to
+	  VC9, as it throws errors when compiling piecewise bootstrapping code
+	  (yield, credit, and inflation)
+
+2009-10-02 16:09  Ferdinando Ametrano
+
+	* [r16514] test-suite/matrices.cpp:
+	  
+	  - fixed improper (erroneous ?) usage of variable i as Size and const
+	  Real& in the same scope (discovered "using disable language
+	  extensions")
+	  - restored commented out tests (why were they commented out?)
+
+2009-10-02 15:52  Ferdinando Ametrano
+
+	* [r16513] test-suite/swapforwardmappings.cpp:
+	  
+	  removed useless const
+
+2009-10-02 14:09  Luigi Ballabio
+
+	* [r16512] ql/time/Makefile.am, ql/time/all.hpp:
+	  
+	  Added new files to autotools build.
+
+2009-10-02 13:21  Ferdinando Ametrano
+
+	* [r16510] QuantLib_vc8.vcproj, QuantLib_vc9.vcproj:
+	  
+	  VC8/9 catching up
+
+2009-10-02 13:18  Ferdinando Ametrano
+
+	* [r16509] ql/time/ecb.cpp, ql/time/ecb.hpp, test-suite/dates.cpp,
+	  test-suite/dates.hpp:
+	  
+	  added ECB reserve maintenance start dates functions and their test
+
+2009-10-01 07:44  Ferdinando Ametrano
+
+	* [r16505] ql/experimental/overnightswap/eoniacoupon.cpp,
+	  ql/experimental/overnightswap/eoniacoupon.hpp:
+	  
+	  added EoniaCouponPricer2: it improves computational performance
+	  compared to EoniaCouponPricer using telescopic property to avoid
+	  multiple forward fixings estimation. There's still quite some work
+	  to do...
+
+2009-10-01 07:34  Ferdinando Ametrano
+
+	* [r16504] QuantLib_vc8.vcproj, QuantLib_vc9.vcproj,
+	  test-suite/testsuite_vc8.vcproj, test-suite/testsuite_vc9.vcproj:
+	  
+	  VC8/9 catching up
+
+2009-10-01 07:34  Ferdinando Ametrano
+
+	* [r16503] ql/cashflows/floatingratecoupon.cpp:
+	  
+	  
+
+2009-09-30 16:24  Ferdinando Ametrano
+
+	* [r16502] ql/cashflows/iborcoupon.cpp:
+	  
+	  fixed improper error message
+
+2009-09-30 15:24  Ferdinando Ametrano
+
+	* [r16501] ql/cashflows/iborcoupon.hpp:
+	  
+	  
+
+2009-09-30 15:22  Ferdinando Ametrano
+
+	* [r16500] ql/cashflows/iborcoupon.cpp:
+	  
+	  moved check later in the code, where needed
+
+2009-09-30 14:14  Luigi Ballabio
+
+	* [r16499] Examples/CDS/CDS.cpp,
+	  ql/termstructures/credit/defaultprobabilityhelpers.cpp,
+	  ql/time/dategenerationrule.cpp, ql/time/dategenerationrule.hpp,
+	  ql/time/schedule.cpp, test-suite/defaultprobabilitycurves.cpp:
+	  
+	  Added old (short/long coupon) CDS rule (thanks to Jose Aparicio.)
+	  
+	  Also, according to market conventions, termination date is now
+	  unadjusted
+	  for the CDS built inside the helpers.
+
+2009-09-30 12:47  Luigi Ballabio
+
+	* [r16498] configure.ac, ql/experimental/Makefile.am,
+	  ql/experimental/all.hpp, ql/experimental/math,
+	  ql/experimental/math/Makefile.am, ql/experimental/math/all.hpp,
+	  ql/experimental/math/fastfouriertransform.hpp,
+	  ql/math/fastfouriertransform.hpp, test-suite/Makefile.am,
+	  test-suite/fastfouriertransform.cpp,
+	  test-suite/fastfouriertransform.hpp,
+	  test-suite/quantlibtestsuite.cpp:
+	  
+	  Added new FFT implementation (thanks to Slava Mazur.)
+	  
+	  The new implementation was moved to the experimental tree.
+	  A test case is provided.
+
+2009-09-30 12:46  Luigi Ballabio
+
+	* [r16496] ql/pricingengines/latticeshortratemodelengine.hpp:
+	  
+	  Update() correctly calls base-class implementation.
+
+2009-09-29 09:21  Luigi Ballabio
+
+	* [r16493] QuantLib.dev, QuantLib_vc7.vcproj, QuantLib_vc9.vcproj:
+	  
+	  Updated VC7, VC9 and Dev-C++ projects
+
+2009-09-28 19:53  Klaus Spanderen
+
+	* [r16491] ql/methods/montecarlo/longstaffschwartzpathpricer.hpp:
+	  
+	  fixed comment
+
+2009-09-22 11:31  Ferdinando Ametrano
+
+	* [r16487] ql/termstructures/yield/bondhelpers.cpp:
+	  
+	  fixed bug
+
+2009-09-22 09:33  Ferdinando Ametrano
+
+	* [r16486] ql/interestrate.cpp:
+	  
+	  fixed typo
+
+2009-09-22 08:46  Ferdinando Ametrano
+
+	* [r16485] ql/instruments/forward.cpp, ql/interestrate.cpp,
+	  ql/interestrate.hpp,
+	  ql/pricingengines/swaption/blackswaptionengine.cpp,
+	  ql/termstructures/yield/zerospreadedtermstructure.hpp,
+	  ql/termstructures/yieldtermstructure.cpp, test-suite/cashflows.cpp,
+	  test-suite/interestrates.cpp:
+	  
+	  - removed InterestRate constructor's default parameters, avoiding
+	  non-explicit constructor as side effect
+	  - reordered InterestRate member functions' input parameters,
+	  allowing for extra dates needed by some DayCounter
+	  - fixed checks
+	  - exported to Excel the InterestRate full interface (thanks to Piter
+	  Dias)
+
+2009-09-21 13:37  Ferdinando Ametrano
+
+	* [r16484] ql/pricingengines/bond/bondfunctions.cpp:
+	  
+	  fixed bug: InterestRate non-explicit constructor was used instead of
+	  input parameters
+
+2009-09-18 09:21  Luigi Ballabio
+
+	* [r16481] Docs/pages/license.docs, LICENSE.TXT,
+	  ql/cashflows/fixedratecoupon.cpp, ql/cashflows/fixedratecoupon.hpp,
+	  ql/instruments/bonds/fixedratebond.cpp,
+	  ql/instruments/bonds/fixedratebond.hpp, test-suite/bonds.cpp:
+	  
+	  Added fixed-rate bond constructor taking InterestRates (thanks to
+	  Piter Dias.)
+	  
+	  Also reverts Rev16477 so that shared_ptr<InterestRate> is no longer
+	  used.
+	  The new constructor is exported to addins as qlFixedRateBond2.
+
+2009-09-16 14:14  Ferdinando Ametrano
+
+	* [r16477] ql/cashflows/fixedratecoupon.cpp,
+	  ql/cashflows/fixedratecoupon.hpp, test-suite/bonds.cpp:
+	  
+	  switched from vector<InterestRate> to
+	  vector<shared_prt<InterestRate> >
+
+2009-09-16 08:08  Luigi Ballabio
+
+	* [r16472] ql/indexes/swap/chfliborswap.cpp,
+	  ql/indexes/swap/chfliborswap.hpp, ql/indexes/swap/euriborswap.cpp,
+	  ql/indexes/swap/euriborswap.hpp, ql/indexes/swap/eurliborswap.cpp,
+	  ql/indexes/swap/eurliborswap.hpp, ql/indexes/swap/gbpliborswap.cpp,
+	  ql/indexes/swap/gbpliborswap.hpp, ql/indexes/swap/jpyliborswap.cpp,
+	  ql/indexes/swap/jpyliborswap.hpp, ql/indexes/swap/usdliborswap.cpp,
+	  ql/indexes/swap/usdliborswap.hpp, ql/indexes/swapindex.cpp,
+	  ql/indexes/swapindex.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube1.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube1.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube2.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube2.hpp,
+	  test-suite/cms.cpp, test-suite/rangeaccrual.cpp,
+	  test-suite/swaptionvolatilitycube.cpp:
+	  
+	  Reverting Rev16469 for the time being
+
+2009-09-15 16:27  Ferdinando Ametrano
+
+	* [r16471] ql/cashflows/fixedratecoupon.cpp,
+	  ql/cashflows/fixedratecoupon.hpp,
+	  ql/experimental/amortizingbonds/amortizingfixedratebond.cpp,
+	  ql/experimental/callablebonds/callablebond.cpp,
+	  ql/experimental/credit/nthtodefault.cpp,
+	  ql/experimental/credit/syntheticcdoengines.cpp,
+	  ql/experimental/overnightswap/eoniaswap.cpp,
+	  ql/instruments/bonds/convertiblebond.cpp,
+	  ql/instruments/bonds/fixedratebond.cpp,
+	  ql/instruments/creditdefaultswap.cpp,
+	  ql/instruments/vanillaswap.cpp,
+	  ql/models/shortrate/calibrationhelpers/caphelper.cpp,
+	  test-suite/assetswap.cpp, test-suite/bonds.cpp,
+	  test-suite/capflooredcoupon.cpp, test-suite/swap.cpp:
+	  
+	  - removed unused dayCounter input parameter from the
+	  InterestRate-based FixedRateCoupon constructor
+	  - moved dayCounter input parameter from FixedRateLeg constructor to
+	  the appropriate methods
+
+2009-09-15 13:23  Luigi Ballabio
+
+	* [r16470] Contributors.txt, Docs/pages/authors.docs:
+	  
+	  Amendment to the previous commit
+
+2009-09-15 13:15  Luigi Ballabio
+
+	* [r16469] ql/indexes/swap/chfliborswap.cpp,
+	  ql/indexes/swap/chfliborswap.hpp, ql/indexes/swap/euriborswap.cpp,
+	  ql/indexes/swap/euriborswap.hpp, ql/indexes/swap/eurliborswap.cpp,
+	  ql/indexes/swap/eurliborswap.hpp, ql/indexes/swap/gbpliborswap.cpp,
+	  ql/indexes/swap/gbpliborswap.hpp, ql/indexes/swap/jpyliborswap.cpp,
+	  ql/indexes/swap/jpyliborswap.hpp, ql/indexes/swap/usdliborswap.cpp,
+	  ql/indexes/swap/usdliborswap.hpp, ql/indexes/swapindex.cpp,
+	  ql/indexes/swapindex.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube1.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube1.hpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube2.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube2.hpp,
+	  test-suite/cms.cpp, test-suite/rangeaccrual.cpp,
+	  test-suite/swaptionvolatilitycube.cpp:
+	  
+	  Added factory method to swap indexes (thanks to Yan Kuang.)
+
+2009-09-14 19:23  Klaus Spanderen
+
+	* [r16468] ql/experimental/overnightswap/Makefile.am,
+	  ql/experimental/overnightswap/all.hpp:
+	  
+	  removed eonia.cpp and eonia.hpp from Makefile.am
+
+2009-09-14 15:24  Ferdinando Ametrano
+
+	* [r16464] QuantLib_vc8.vcproj,
+	  ql/experimental/overnightswap/eonia.cpp,
+	  ql/experimental/overnightswap/eonia.hpp,
+	  ql/experimental/overnightswap/eoniacoupon.cpp,
+	  ql/experimental/overnightswap/eoniacoupon.hpp,
+	  ql/experimental/overnightswap/eoniaswap.hpp,
+	  ql/experimental/overnightswap/eoniaswaphelper.cpp,
+	  ql/experimental/overnightswap/eoniaswaphelper.hpp,
+	  ql/indexes/ibor/euribor.cpp, ql/indexes/ibor/euribor.hpp,
+	  test-suite/eoniaswap.cpp:
+	  
+	  moved Eonia index into Euribor family inheriting from
+	  DailyTenorEuribor
+
+2009-09-13 20:37  Klaus Spanderen
+
+	* [r16463] ql/methods/montecarlo/lsmbasissystem.cpp:
+	  
+	  added extra QL_REQUIRE to check dimension of the basis system
+
+2009-09-12 18:16  Klaus Spanderen
+
+	* [r16462] ql/methods/montecarlo/lsmbasissystem.cpp:
+	  
+	  added extra QL_REQUIRE to check dimension of the basis system
+
+2009-09-11 08:55  Luigi Ballabio
+
+	* [r16461]
+	  ql/experimental/compoundoption/analyticcompoundoptionengine.hpp,
+	  ql/experimental/finitedifferences/fdmquantohelper.hpp,
+	  ql/experimental/inflation/yoycapfloortermpricesurface.hpp,
+	  ql/indexes/inflation/frhicp.hpp,
+	  ql/math/matrixutilities/pseudosqrt.hpp,
+	  ql/math/randomnumbers/ranluxuniformrng.hpp,
+	  ql/pricingengines/vanilla/batesengine.hpp,
+	  ql/termstructures/volatility/sabrinterpolatedsmilesection.hpp:
+	  
+	  Fixes for documentation.
+
+2009-09-10 08:38  Luigi Ballabio
+
+	* [r16455] ql/experimental/credit/distribution.cpp:
+	  
+	  Allow for rounding errors in precondition.
+
+2009-09-10 08:33  Luigi Ballabio
+
+	* [r16454] ql/handle.hpp:
+	  
+	  Added convenience constructors (thanks to Andrew Kolesnikov.)
+
+2009-09-09 10:35  Luigi Ballabio
+
+	* [r16453] ql/experimental/callablebonds/treecallablebondengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.cpp,
+	  ql/experimental/models/twomixmodelengines.cpp,
+	  ql/pricingengines/capfloor/analyticcapfloorengine.cpp,
+	  ql/pricingengines/capfloor/treecapfloorengine.cpp,
+	  ql/pricingengines/genericmodelengine.hpp,
+	  ql/pricingengines/swap/treeswapengine.cpp,
+	  ql/pricingengines/swaption/jamshidianswaptionengine.cpp,
+	  ql/pricingengines/swaption/treeswaptionengine.cpp,
+	  ql/pricingengines/vanilla/batesengine.cpp:
+	  
+	  Enabled Handles in GenericModelEngine class.
+
+2009-09-07 10:37  Luigi Ballabio
+
+	* [r16451]
+	  ql/experimental/finitedifferences/fdblackscholesasianengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesasianengine.hpp,
+	  ql/experimental/finitedifferences/fdmamericanstepcondition.cpp,
+	  ql/experimental/finitedifferences/fdmarithmeticaveragecondition.cpp,
+	  ql/experimental/finitedifferences/fdmarithmeticaveragecondition.hpp,
+	  ql/experimental/finitedifferences/fdmblackscholesop.cpp,
+	  ql/experimental/finitedifferences/fdmhestonop.cpp,
+	  ql/experimental/finitedifferences/fdmhestonop.hpp,
+	  ql/experimental/finitedifferences/fdmhestonsolver.cpp,
+	  ql/experimental/finitedifferences/fdmquantohelper.cpp,
+	  ql/experimental/finitedifferences/fdmquantohelper.hpp,
+	  ql/experimental/finitedifferences/fdmsimple2dbssolver.cpp,
+	  ql/experimental/finitedifferences/fdmsimple2dbssolver.hpp,
+	  ql/experimental/finitedifferences/triplebandlinearop.cpp,
+	  ql/experimental/inflation/polynomial2Dspline.hpp,
+	  ql/math/optimization/simplex.cpp,
+	  ql/methods/finitedifferences/finitedifferencemodel.hpp,
+	  ql/termstructures/yield/ratehelpers.cpp,
+	  test-suite/asianoptions.cpp, test-suite/inflationvol.hpp:
+	  
+	  Replaced hard-tabs with spaces.
+
+2009-09-07 10:26  Chris Kenyon
+
+	* [r16450] ql/experimental/inflation/inflationcappedcouponpricer.hpp:
+	  
+	  Tidy up documentation slightly.
+
+2009-09-07 09:50  Luigi Ballabio
+
+	* [r16449] test-suite/assetswap.cpp, test-suite/barrieroption.cpp,
+	  test-suite/europeanoption.cpp, test-suite/fdheston.cpp,
+	  test-suite/fdmlinearop.cpp, test-suite/hestonmodel.cpp,
+	  test-suite/interpolations.cpp,
+	  test-suite/linearleastsquaresregression.cpp,
+	  test-suite/swapforwardmappings.cpp:
+	  
+	  Fixed test-suite output.
+
+2009-09-07 09:48  Luigi Ballabio
+
+	* [r16448] test-suite/inflationvol.cpp:
+	  
+	  Ensured resetting of evaluation date.
+
+2009-09-07 08:03  Luigi Ballabio
+
+	* [r16447] ql/experimental/models/twomixmodelengines.cpp:
+	  
+	  Fixed assertions.
+
+2009-09-04 14:42  Luigi Ballabio
+
+	* [r16446] ql/experimental/credit/defaultprobabilitykey.cpp,
+	  ql/experimental/inflation/interpolatedyoyoptionletstripper.hpp:
+	  
+	  Avoided compilation warnings with VC++
+
+2009-09-04 12:40  Luigi Ballabio
+
+	* [r16445] ql/experimental/inflation/polynomial2Dspline.hpp:
+	  
+	  Fixed misspelled name.
+
+2009-09-04 12:37  Luigi Ballabio
+
+	* [r16444] Contributors.txt, Docs/pages/authors.docs,
+	  Docs/pages/license.docs, LICENSE.TXT,
+	  ql/experimental/finitedifferences/fdblackscholesbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesvanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonvanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdmamericanstepcondition.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholesop.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholesop.hpp,
+	  ql/experimental/finitedifferences/fdmblackscholessolver.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholessolver.hpp,
+	  ql/experimental/finitedifferences/fdmhestonsolver.cpp,
+	  ql/experimental/finitedifferences/fdmhestonsolver.hpp,
+	  ql/experimental/finitedifferences/fdminnervaluecalculator.cpp,
+	  ql/experimental/finitedifferences/fdminnervaluecalculator.hpp,
+	  ql/experimental/inflation/polynomial2Dspline.hpp,
+	  ql/models/marketmodels/evolvers/lognormalfwdrateballand.cpp,
+	  ql/models/marketmodels/evolvers/lognormalfwdrateballand.hpp:
+	  
+	  Updated copyrights and contributor list.
+
+2009-09-04 12:37  Luigi Ballabio
+
+	* [r16443] ql/math/matrix.cpp:
+	  
+	  Fixed mismatched conditions
+
+2009-09-02 14:17  Luigi Ballabio
+
+	* [r16437] QuantLib.dev, QuantLib_vc7.vcproj:
+	  
+	  Updated VC7 and Dev-C++ projects
+
+2009-09-02 12:36  Luigi Ballabio
+
+	* [r16436] ql/experimental/credit/recursivecdoengine.hpp:
+	  
+	  Fixed inclusion order
+
+2009-09-02 11:25  Luigi Ballabio
+
+	* [r16435] ql/experimental/credit/recursivecdoengine.hpp,
+	  ql/experimental/finitedifferences/concentrating1dmesher.hpp,
+	  ql/experimental/finitedifferences/fdmblackscholesmesher.hpp,
+	  ql/experimental/finitedifferences/fdmblackscholesmultistrikemesher.hpp,
+	  ql/experimental/finitedifferences/fdmhestonsolver.hpp,
+	  ql/experimental/finitedifferences/fdmhullwhitemesher.hpp,
+	  ql/experimental/finitedifferences/fdminnervaluecalculator.hpp,
+	  ql/experimental/inflation/piecewiseyoyoptionletvolatility.hpp,
+	  ql/instruments/assetswap.hpp,
+	  ql/math/linearleastsquaresregression.hpp:
+	  
+	  Enforced self-consistency of header files.
+
+2009-09-02 08:43  Luigi Ballabio
+
+	* [r16434] ql/pricingengines/basket/mcamericanbasketengine.cpp:
+	  
+	  Removed unused requirement.
+
+2009-09-01 16:18  Luigi Ballabio
+
+	* [r16433] ql/time/calendar.hpp:
+	  
+	  Reversed latest change pending investigation
+
+2009-09-01 16:06  Luigi Ballabio
+
+	* [r16432] ql/time/calendar.hpp:
+	  
+	  Amending previous commit---I meant thanks to Dimitri Reiswich
+
+2009-09-01 16:01  Luigi Ballabio
+
+	* [r16431] ql/time/calendar.hpp:
+	  
+	  Fixed end-of-month detection (thanks to Andrea Odetti.)
+
+2009-09-01 12:46  Ferdinando Ametrano
+
+	* [r16427] QuantLib_vc8.vcproj, QuantLib_vc9.vcproj:
+	  
+	  Vc8/VC9 catching up
+
+2009-09-01 04:43  Klaus Spanderen
+
+	* [r16426]
+	  ql/experimental/finitedifferences/fdhestonbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonvanillaengine.cpp:
+	  
+	  improved parameters for Heston variance mesher
+
+2009-08-31 15:35  Luigi Ballabio
+
+	* [r16425] ql/math/integrals/gaussianorthogonalpolynomial.cpp,
+	  ql/math/integrals/gaussianorthogonalpolynomial.hpp,
+	  ql/math/integrals/gaussianquadratures.hpp,
+	  ql/methods/montecarlo/lsmbasissystem.cpp,
+	  ql/methods/montecarlo/lsmbasissystem.hpp,
+	  ql/pricingengines/basket/mcamericanbasketengine.cpp,
+	  ql/pricingengines/vanilla/analytichestonengine.cpp,
+	  ql/pricingengines/vanilla/analytichestonengine.hpp,
+	  ql/pricingengines/vanilla/mcamericanengine.cpp,
+	  test-suite/gaussianquadratures.cpp, test-suite/hestonmodel.cpp,
+	  test-suite/mclongstaffschwartzengine.cpp:
+	  
+	  Fixed spelling
+
+2009-08-31 14:05  Luigi Ballabio
+
+	* [r16424] test-suite/utilities.hpp:
+	  
+	  Fixes for Boost 1.40
+
+2009-08-28 20:10  Klaus Spanderen
+
+	* [r16423] ql/pricingengines/vanilla/analytichestonengine.cpp:
+	  
+	  better handling of very small \sigma
+
+2009-08-28 19:57  Klaus Spanderen
+
+	* [r16422] ql/pricingengines/vanilla/analytichestonengine.cpp:
+	  
+	  better handling of very small \sigma
+
+2009-08-28 15:51  Luigi Ballabio
+
+	* [r16421] ql/instruments/creditdefaultswap.cpp,
+	  ql/instruments/creditdefaultswap.hpp, ql/time/calendars/Makefile.am,
+	  ql/time/calendars/all.hpp, ql/time/calendars/weekendsonly.cpp,
+	  ql/time/calendars/weekendsonly.hpp:
+	  
+	  Added weekend-only calendar
+
+2009-08-28 14:17  Luigi Ballabio
+
+	* [r16420] ql/instruments/creditdefaultswap.cpp,
+	  ql/instruments/creditdefaultswap.hpp:
+	  
+	  Added conventional CDS spread calculation (thanks to Jose Aparicio.)
+
+2009-08-28 13:53  Luigi Ballabio
+
+	* [r16419] ql/instruments/creditdefaultswap.cpp,
+	  ql/instruments/creditdefaultswap.hpp,
+	  ql/pricingengines/credit/integralcdsengine.cpp,
+	  ql/pricingengines/credit/midpointcdsengine.cpp,
+	  ql/termstructures/credit/defaultprobabilityhelpers.cpp,
+	  ql/termstructures/credit/defaultprobabilityhelpers.hpp:
+	  
+	  Added delay for CDS upfront (thanks to Jose Aparicio.)
+
+2009-08-27 12:34  Luigi Ballabio
+
+	* [r16418] ql/Makefile.am, ql/auto_link.hpp, ql/qldefines.hpp,
+	  ql/quantlib.hpp, ql/version.hpp, test-suite/quantlibbenchmark.cpp,
+	  test-suite/quantlibtestsuite.cpp:
+	  
+	  Moved version number to separate file to avoid library recompilation
+
+2009-08-22 06:57  Roland Lichters
+
+	* [r16417] ql/experimental/credit/issuer.hpp:
+	  
+	  public typedef key_curve_pair
+
+2009-08-22 06:42  Roland Lichters
+
+	* [r16416] ql/experimental/credit/recursivecdoengine.hpp:
+	  
+	  added include
+
+2009-08-18 20:09  Klaus Spanderen
+
+	* [r16415]
+	  ql/experimental/finitedifferences/fdblackscholesbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesbarrierengine.hpp,
+	  ql/experimental/finitedifferences/fdblackscholesrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesrebateengine.hpp,
+	  test-suite/barrieroption.cpp:
+	  
+	  added damping steps to FD Black-Scholes Barrier Engine (thanks nando
+	  for the advice)
+
+2009-08-18 20:04  Klaus Spanderen
+
+	* [r16414] test-suite/hestonmodel.cpp:
+	  
+	  enable all heston model test cases
+
+2009-08-18 18:57  Klaus Spanderen
+
+	* [r16413]
+	  ql/experimental/finitedifferences/fdmhestonvariancemesher.cpp:
+	  
+	  parameter change for GaussLobatto Integration within
+	  HestonVarianceMesher
+
+2009-08-18 08:57  Ferdinando Ametrano
+
+	* [r16411] QuantLib_vc8.vcproj, QuantLib_vc9.vcproj:
+	  
+	  VC8/9 catching up
+
+2009-08-18 08:57  Ferdinando Ametrano
+
+	* [r16410]
+	  ql/experimental/finitedifferences/fdblackscholesbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesrebateengine.cpp:
+	  
+	  added missing damping steps input parameter. Klaus please confirm
+	  the fix is correct
+
+2009-08-18 05:14  Klaus Spanderen
+
+	* [r16409]
+	  ql/experimental/finitedifferences/fdmhestonvariancemesher.cpp,
+	  test-suite/hestonmodel.cpp:
+	  
+	  applied better "skew hint"
+
+2009-08-18 05:12  Klaus Spanderen
+
+	* [r16408]
+	  ql/experimental/finitedifferences/fdhestonbarrierengine.hpp,
+	  ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.hpp,
+	  ql/experimental/finitedifferences/fdhestonrebateengine.hpp,
+	  ql/experimental/finitedifferences/fdhestonvanillaengine.hpp,
+	  ql/experimental/finitedifferences/fdmbackwardsolver.hpp,
+	  ql/experimental/finitedifferences/fdmhestonhullwhitesolver.hpp,
+	  ql/experimental/finitedifferences/fdmhestonsolver.hpp,
+	  test-suite/fdheston.cpp:
+	  
+	  fixed MCVS warnings
+
+2009-08-16 12:25  Klaus Spanderen
+
+	* [r16407]
+	  ql/experimental/finitedifferences/fdmhestonvariancemesher.cpp,
+	  test-suite/hestonmodel.cpp:
+	  
+	  added "skew hint" for large sigma/kappa ratios
+
+2009-08-15 14:55  Klaus Spanderen
+
+	* [r16406] ql/experimental/finitedifferences/Makefile.am,
+	  ql/experimental/finitedifferences/all.hpp,
+	  ql/experimental/finitedifferences/fdmbackwardsolver.cpp,
+	  ql/experimental/finitedifferences/fdmbackwardsolver.hpp,
+	  ql/experimental/finitedifferences/modifiedcraigsneydscheme.cpp,
+	  ql/experimental/finitedifferences/modifiedcraigsneydscheme.hpp,
+	  test-suite/fdheston.cpp:
+	  
+	  added modified Craig-Sneyd scheme, see "ADI finite difference
+	  schemes for option pricingin the Heston model with correlation" by
+	  K. J. in ’t Hout and S. Foulon
+
+2009-08-15 09:47  Klaus Spanderen
+
+	* [r16405]
+	  ql/experimental/finitedifferences/fdhestonbarrierengine.hpp,
+	  ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.hpp,
+	  ql/experimental/finitedifferences/fdhestonrebateengine.hpp,
+	  ql/experimental/finitedifferences/fdhestonvanillaengine.hpp,
+	  ql/experimental/finitedifferences/fdmbackwardsolver.hpp,
+	  ql/experimental/finitedifferences/fdmhestonhullwhitesolver.hpp,
+	  ql/experimental/finitedifferences/fdmhestonsolver.hpp,
+	  test-suite/fdheston.cpp:
+	  
+	  changed default for Hundsdorfer scheme towards theta=0.5+sqrt(3)/6
+	  as recommended in "ADI finite difference schemes for option
+	  pricingin the Heston model with correlation" by K. J. in ’t Hout and
+	  S. Foulon
+
+2009-08-14 11:45  Klaus Spanderen
+
+	* [r16404] test-suite/fdheston.cpp:
+	  
+	  added explicit scheme fdm test case
+
+2009-08-14 10:28  Luigi Ballabio
+
+	* [r16403] QuantLib.dev, QuantLib_vc7.vcproj, QuantLib_vc8.vcproj,
+	  QuantLib_vc9.vcproj:
+	  
+	  Updated Windows projects
+
+2009-08-14 09:01  Luigi Ballabio
+
+	* [r16402] acinclude.m4, configure.ac,
+	  ql/experimental/finitedifferences/concentrating1dmesher.cpp:
+	  
+	  Added configure check for asinh function
+
+2009-08-13 14:55  Luigi Ballabio
+
+	* [r16401]
+	  ql/experimental/finitedifferences/concentrating1dmesher.cpp:
+	  
+	  Added std namespace to math calls
+
+2009-08-13 13:32  Plamen Neykov
+
+	* [r16400]
+	  ql/experimental/finitedifferences/concentrating1dmesher.cpp:
+	  
+	  eol-style property set ...
+
+2009-08-13 13:28  Plamen Neykov
+
+	* [r16399]
+	  ql/experimental/finitedifferences/concentrating1dmesher.cpp:
+	  
+	  in WIN 32 asinh is missing - added macro to calculate it.
+	  see http://msdn.microsoft.com/en-us/library/w3t84e33%28VS.71%29.aspx
+	  for details
+
+2009-08-12 22:47  Klaus Spanderen
+
+	* [r16398] test-suite/europeanoption.cpp:
+	  
+	  fixed local vol tests
+
+2009-08-12 22:01  Klaus Spanderen
+
+	* [r16397] ql/experimental/finitedifferences/Makefile.am,
+	  ql/experimental/finitedifferences/all.hpp,
+	  ql/experimental/finitedifferences/bicgstab.cpp,
+	  ql/experimental/finitedifferences/expliciteulerscheme.cpp,
+	  ql/experimental/finitedifferences/expliciteulerscheme.hpp,
+	  ql/experimental/finitedifferences/fdblackscholesvanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesvanillaengine.hpp,
+	  ql/experimental/finitedifferences/fdhestonbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonbarrierengine.hpp,
+	  ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.hpp,
+	  ql/experimental/finitedifferences/fdhestonrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonrebateengine.hpp,
+	  ql/experimental/finitedifferences/fdhestonvanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonvanillaengine.hpp,
+	  ql/experimental/finitedifferences/fdmbackwardsolver.cpp,
+	  ql/experimental/finitedifferences/fdmbackwardsolver.hpp,
+	  ql/experimental/finitedifferences/fdmblackscholesop.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholesop.hpp,
+	  ql/experimental/finitedifferences/fdmblackscholessolver.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholessolver.hpp,
+	  ql/experimental/finitedifferences/fdmhestonhullwhiteop.cpp,
+	  ql/experimental/finitedifferences/fdmhestonhullwhiteop.hpp,
+	  ql/experimental/finitedifferences/fdmhestonhullwhitesolver.cpp,
+	  ql/experimental/finitedifferences/fdmhestonhullwhitesolver.hpp,
+	  ql/experimental/finitedifferences/fdmhestonop.cpp,
+	  ql/experimental/finitedifferences/fdmhestonop.hpp,
+	  ql/experimental/finitedifferences/fdmhestonsolver.cpp,
+	  ql/experimental/finitedifferences/fdmhestonsolver.hpp,
+	  ql/experimental/finitedifferences/fdmlinearopcomposite.hpp,
+	  ql/experimental/finitedifferences/impliciteulerscheme.cpp,
+	  ql/experimental/finitedifferences/impliciteulerscheme.hpp,
+	  test-suite/fdmlinearop.cpp:
+	  
+	  added damping for fdm splitting schemes
+
+2009-08-12 14:12  Luigi Ballabio
+
+	* [r16396] QuantLib.dev, QuantLib_vc7.vcproj, QuantLib_vc8.vcproj,
+	  QuantLib_vc9.vcproj, test-suite/testsuite.dev,
+	  test-suite/testsuite_vc7.vcproj, test-suite/testsuite_vc9.vcproj:
+	  
+	  Updated Windows projects
+
+2009-08-12 14:06  Luigi Ballabio
+
+	* [r16395] ql/experimental/finitedifferences/fdmhestoninnervalue.hpp:
+	  
+	  Removed obsolete file
+
+2009-08-12 10:36  Luigi Ballabio
+
+	* [r16394] ql/time/schedule.cpp:
+	  
+	  Fixed IMM-date detection (thanks to Radu Mondescu
+
+2009-08-10 13:58  Luigi Ballabio
+
+	* [r16393] ql/math/interpolations/cubicinterpolation.hpp:
+	  
+	  Added Akima and overshooting-minimization spline algorithms (thanks
+	  to Sylvain Bertrand)
+
+2009-08-10 11:49  Luigi Ballabio
+
+	* [r16392] test-suite/fdmlinearop.cpp:
+	  
+	  Relaxed tolerance
+
+2009-08-09 09:34  Klaus Spanderen
+
+	* [r16391] ql/experimental/finitedifferences/impliciteulerscheme.cpp,
+	  ql/experimental/finitedifferences/impliciteulerscheme.hpp:
+	  
+	  better maxIter estimates
+
+2009-08-07 21:54  Klaus Spanderen
+
+	* [r16390] test-suite/fdmlinearop.cpp, test-suite/fdmlinearop.hpp:
+	  
+	  added test case for Crank-Nicolson with initial implicit damping
+
+2009-08-07 21:50  Klaus Spanderen
+
+	* [r16389] ql/experimental/finitedifferences/Makefile.am,
+	  ql/experimental/finitedifferences/all.hpp,
+	  ql/experimental/finitedifferences/impliciteulerscheme.cpp,
+	  ql/experimental/finitedifferences/impliciteulerscheme.hpp:
+	  
+	  added fdm implict euler scheme
+
+2009-08-07 21:48  Klaus Spanderen
+
+	* [r16388] ql/experimental/finitedifferences/craigsneydscheme.hpp,
+	  ql/experimental/finitedifferences/douglasscheme.hpp,
+	  ql/experimental/finitedifferences/fdmhestonhullwhitesolver.cpp,
+	  ql/experimental/finitedifferences/fdmhestonsolver.cpp,
+	  ql/experimental/finitedifferences/hundsdorferscheme.hpp:
+	  
+	  removed useless includes
+
+2009-08-07 21:37  Klaus Spanderen
+
+	* [r16387]
+	  ql/experimental/finitedifferences/fdmhestonvariancemesher.cpp:
+	  
+	  removed useless namespace identifier
+
+2009-08-07 21:36  Klaus Spanderen
+
+	* [r16386]
+	  ql/experimental/finitedifferences/fdmblackscholessolver.cpp:
+	  
+	  removed useless namespace identifier
+
+2009-08-07 21:34  Klaus Spanderen
+
+	* [r16385] ql/experimental/finitedifferences/fdmsimple2dbssolver.cpp:
+	  
+	  removed useless namespace identifier
+
+2009-08-06 19:59  Klaus Spanderen
+
+	* [r16384]
+	  ql/experimental/finitedifferences/fdblackscholesbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesvanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonvanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholesmesher.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholesmesher.hpp:
+	  
+	  improved FdmBlackScholesMesher
+
+2009-08-05 23:01  Klaus Spanderen
+
+	* [r16383] test-suite/fdmlinearop.cpp,
+	  test-suite/hybridhestonhullwhiteprocess.cpp:
+	  
+	  FDM test suite clean up
+
+2009-08-05 22:01  Klaus Spanderen
+
+	* [r16382]
+	  ql/experimental/finitedifferences/fdblackscholesasianengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesvanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonvanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdmamericanstepcondition.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholessolver.cpp,
+	  ql/experimental/finitedifferences/fdmhestonhullwhitesolver.cpp,
+	  ql/experimental/finitedifferences/fdmhestonhullwhitesolver.hpp,
+	  ql/experimental/finitedifferences/fdmhestonsolver.cpp,
+	  ql/experimental/finitedifferences/fdminnervaluecalculator.cpp,
+	  ql/experimental/finitedifferences/fdminnervaluecalculator.hpp,
+	  ql/experimental/finitedifferences/fdmsimple2dbssolver.cpp,
+	  test-suite/fdmlinearop.cpp:
+	  
+	  FdmLogInnerValue support caching of avg inner values
+
+2009-08-04 10:52  Luigi Ballabio
+
+	* [r16381] Announce.txt,
+	  Examples/BermudanSwaption/BermudanSwaption.dev,
+	  Examples/Bonds/Bonds.dev, Examples/CDS/CDS.dev,
+	  Examples/CallableBonds/CallableBonds.dev,
+	  Examples/ConvertibleBonds/ConvertibleBonds.dev,
+	  Examples/DiscreteHedging/DiscreteHedging.dev,
+	  Examples/EquityOption/EquityOption.dev, Examples/FRA/FRA.dev,
+	  Examples/FittedBondCurve/FittedBondCurve.dev,
+	  Examples/Replication/Replication.dev, Examples/Repo/Repo.dev,
+	  Examples/Swap/Swap.dev, QuantLib.dev, QuantLib_vc7.vcproj,
+	  QuantLib_vc8.vcproj, QuantLib_vc9.vcproj, configure.ac,
+	  ql/qldefines.hpp, test-suite/testsuite.dev,
+	  test-suite/testsuite_vc7.vcproj, test-suite/testsuite_vc8.vcproj,
+	  test-suite/testsuite_vc9.vcproj:
+	  
+	  Increased version number
+
+2009-08-03 20:33  Klaus Spanderen
+
+	* [r16378] ql/experimental/finitedifferences/Makefile.am,
+	  ql/experimental/finitedifferences/concentrating1dmesher.cpp,
+	  ql/experimental/finitedifferences/concentrating1dmesher.hpp,
+	  ql/experimental/finitedifferences/fdblackscholesvanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonvanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholesmesher.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholesmesher.hpp,
+	  ql/experimental/finitedifferences/fdmblackscholesmultistrikemesher.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholesmultistrikemesher.hpp,
+	  ql/experimental/finitedifferences/fdminnervaluecalculator.cpp,
+	  ql/experimental/finitedifferences/fdminnervaluecalculator.hpp,
+	  test-suite/europeanoption.cpp, test-suite/fdheston.cpp:
+	  
+	  use concentrating mesher for FD vanilla option pricing engines
+
+2009-08-01 17:30  Klaus Spanderen
+
+	* [r16377]
+	  ql/experimental/finitedifferences/fdminnervaluecalculator.hpp:
+	  
+	  improved inner value calculator
+
+2009-07-31 14:15  Luigi Ballabio
+
+	* [r16376] ql/experimental/risk/sensitivityanalysis.cpp:
+	  
+	  Fixed second-derivative calculation (thanks to Radu Mondescu)
+
+2009-07-30 15:49  Ferdinando Ametrano
+
+	* [r16375] ql/termstructures/volatility/abcd.cpp,
+	  ql/termstructures/volatility/abcd.hpp:
+	  
+	  fixed documentation (thanks to Luca Ferraro)
+
+2009-07-29 16:53  Ferdinando Ametrano
+
+	* [r16373] QuantLib_vc8.vcproj, QuantLib_vc9.vcproj,
+	  test-suite/testsuite_vc8.vcproj, test-suite/testsuite_vc9.vcproj:
+	  
+	  VC8/9 catching up
+
+2009-07-29 16:07  Luigi Ballabio
+
+	* [r16371] ., ql/experimental/credit/Makefile.am,
+	  ql/experimental/credit/all.hpp,
+	  ql/experimental/credit/recursivecdoengine.hpp,
+	  ql/math/matrixutilities/Makefile.am,
+	  ql/math/matrixutilities/all.hpp,
+	  ql/math/matrixutilities/factorreduction.cpp,
+	  ql/math/matrixutilities/factorreduction.hpp:
+	  
+	  Added recursive CDO engine (thanks to Jose Aparicio.)
+
+2009-07-29 16:05  Luigi Ballabio
+
+	* [r16370] ql/experimental/credit/distribution.cpp:
+	  
+	  Fix for numerical glitch (thanks to Jose Aparicio)
+
+2009-07-29 16:04  Luigi Ballabio
+
+	* [r16369] ql/experimental/inflation/yoycapfloortermpricesurface.hpp,
+	  ql/termstructures/inflation/inflationhelpers.cpp,
+	  ql/termstructures/inflation/inflationhelpers.hpp,
+	  test-suite/inflation.cpp:
+	  
+	  Renamed inflation-curve helpers.
+
+2009-07-29 10:47  Ferdinando Ametrano
+
+	* [r16368] ql/termstructures/yield/ratehelpers.cpp,
+	  ql/termstructures/yield/ratehelpers.hpp:
+	  
+	  added hook for exogenously assigned discounting term structure
+	  (thanks to Roland Lichters)
+
+2009-07-29 10:38  Luigi Ballabio
+
+	* [r16367] ., ql/Makefile.am, ql/default.cpp, ql/default.hpp,
+	  ql/experimental/credit/Makefile.am, ql/experimental/credit/all.hpp,
+	  ql/experimental/credit/basket.cpp,
+	  ql/experimental/credit/basket.hpp,
+	  ql/experimental/credit/defaultevent.cpp,
+	  ql/experimental/credit/defaultevent.hpp,
+	  ql/experimental/credit/defaultprobabilitykey.cpp,
+	  ql/experimental/credit/defaultprobabilitykey.hpp,
+	  ql/experimental/credit/defaulttype.cpp,
+	  ql/experimental/credit/defaulttype.hpp,
+	  ql/experimental/credit/issuer.cpp,
+	  ql/experimental/credit/issuer.hpp,
+	  ql/experimental/credit/randomdefaultmodel.cpp,
+	  ql/experimental/credit/randomdefaultmodel.hpp,
+	  ql/experimental/credit/recoveryratemodel.cpp,
+	  ql/experimental/credit/recoveryratemodel.hpp,
+	  ql/experimental/credit/recoveryratequote.cpp,
+	  ql/experimental/credit/recoveryratequote.hpp,
+	  ql/experimental/credit/riskybond.cpp,
+	  ql/experimental/credit/riskybond.hpp,
+	  ql/experimental/credit/syntheticcdo.cpp,
+	  ql/experimental/credit/syntheticcdo.hpp,
+	  ql/experimental/credit/syntheticcdoengines.hpp,
+	  test-suite/Makefile.am, test-suite/cdo.cpp, test-suite/issuer.cpp,
+	  test-suite/issuer.hpp, test-suite/quantlibtestsuite.cpp:
+	  
+	  Added experimental machinery for default specification (thanks to
+	  Jose Aparicio)
+
+2009-07-29 08:40  Ferdinando Ametrano
+
+	* [r16366] ql/instruments/makevanillaswap.cpp:
+	  
+	  used the private variable which has a more expressive name
+
+2009-07-28 20:40  Klaus Spanderen
+
+	* [r16365]
+	  ql/experimental/finitedifferences/fdblackscholesasianengine.cpp,
+	  ql/experimental/finitedifferences/fdminnervaluecalculator.hpp:
+	  
+	  use default for simpson rule
+
+2009-07-28 20:18  Klaus Spanderen
+
+	* [r16364] ql/experimental/finitedifferences/Makefile.am,
+	  ql/experimental/finitedifferences/all.hpp,
+	  ql/experimental/finitedifferences/concentrating1dmesher.hpp,
+	  ql/experimental/finitedifferences/fdblackscholesasianengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesasianengine.hpp,
+	  ql/experimental/finitedifferences/fdblackscholesbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesvanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonvanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdmamericanstepcondition.cpp,
+	  ql/experimental/finitedifferences/fdmarithmeticaveragecondition.cpp,
+	  ql/experimental/finitedifferences/fdmarithmeticaveragecondition.hpp,
+	  ql/experimental/finitedifferences/fdmblackscholesop.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholesop.hpp,
+	  ql/experimental/finitedifferences/fdmblackscholessolver.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholessolver.hpp,
+	  ql/experimental/finitedifferences/fdmhestonsolver.cpp,
+	  ql/experimental/finitedifferences/fdmhestonsolver.hpp,
+	  ql/experimental/finitedifferences/fdminnervaluecalculator.hpp,
+	  ql/experimental/finitedifferences/fdmsimple2dbssolver.cpp,
+	  ql/experimental/finitedifferences/fdmsimple2dbssolver.hpp,
 	  ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp,
-	  ql/experimental/finitedifferences/uniformgridmesher.hpp,
-	  ql/math/matrixutilities/basisincompleteordered.hpp,
+	  ql/methods/finitedifferences/finitedifferencemodel.hpp,
+	  test-suite/asianoptions.cpp, test-suite/fdmlinearop.cpp:
+	  
+	  added finite difference asian average engines (thanks to Ralph
+	  Schreyer)
+
+2009-07-28 12:50  Luigi Ballabio
+
+	* [r16363] ql/math/functional.hpp, test-suite/fdmlinearop.cpp:
+	  
+	  Moved helper functional with test case
+
+2009-07-28 09:43  Roland Lichters
+
+	* [r16362] ql/experimental/credit/riskybond.cpp,
+	  ql/experimental/credit/riskybond.hpp:
+	  
+	  added interest and notional flows
+
+2009-07-28 09:14  Ferdinando Ametrano
+
+	* [r16360] QuantLib_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2009-07-28 09:00  Ferdinando Ametrano
+
+	* [r16359] test-suite/hybridhestonhullwhiteprocess.cpp:
+	  
+	  avoided VC9 warning
+
+2009-07-28 09:00  Ferdinando Ametrano
+
+	* [r16358] QuantLib_vc9.vcproj:
+	  
+	  VC9 catching up
+
+2009-07-25 15:54  Klaus Spanderen
+
+	* [r16357] ql/experimental/finitedifferences/Makefile.am,
+	  ql/experimental/finitedifferences/all.hpp,
+	  ql/experimental/finitedifferences/bicgstab.cpp,
+	  ql/experimental/finitedifferences/bicgstab.hpp,
+	  ql/experimental/finitedifferences/fdmhestonhullwhitesolver.cpp,
+	  ql/math/functional.hpp, test-suite/fdmlinearop.cpp,
+	  test-suite/fdmlinearop.hpp:
+	  
+	  added bicgstab algorithm
+
+2009-07-08 14:34  Luigi Ballabio
+
+	* [r16351] ql/termstructures/credit/defaultprobabilityhelpers.cpp,
+	  test-suite/defaultprobabilitycurves.cpp,
+	  test-suite/defaultprobabilitycurves.hpp:
+	  
+	  Ensure that upfront is taken into account during bootstrap
+
+2009-07-08 11:45  Luigi Ballabio
+
+	* [r16350] ql/instruments/creditdefaultswap.hpp,
+	  ql/pricingengines/credit/integralcdsengine.cpp,
+	  ql/pricingengines/credit/integralcdsengine.hpp,
+	  ql/pricingengines/credit/midpointcdsengine.cpp,
+	  ql/pricingengines/credit/midpointcdsengine.hpp,
+	  ql/termstructures/credit/defaultprobabilityhelpers.cpp,
+	  test-suite/creditdefaultswap.cpp,
+	  test-suite/defaultprobabilitycurves.cpp:
+	  
+	  Modified CDS engines so that they use the new cash-flow flags.
+
+2009-07-08 09:31  Luigi Ballabio
+
+	* [r16349] ql/settings.cpp:
+	  
+	  Avoid notification if date is not actually changed
+
+2009-07-07 16:37  Luigi Ballabio
+
+	* [r16346] ql/instruments/creditdefaultswap.cpp:
+	  
+	  Added missing method implementation
+
+2009-07-07 13:16  Luigi Ballabio
+
+	* [r16345] ., Examples/CDS/CDS.cpp,
+	  ql/experimental/credit/blackcdsoptionengine.cpp,
+	  ql/experimental/credit/cdsoption.cpp,
+	  ql/instruments/creditdefaultswap.cpp,
+	  ql/instruments/creditdefaultswap.hpp,
+	  ql/pricingengines/credit/integralcdsengine.cpp,
+	  ql/pricingengines/credit/midpointcdsengine.cpp,
+	  ql/termstructures/credit/defaultprobabilityhelpers.cpp,
+	  ql/termstructures/credit/defaultprobabilityhelpers.hpp,
+	  test-suite/creditdefaultswap.cpp, test-suite/creditdefaultswap.hpp,
+	  test-suite/defaultprobabilitycurves.cpp:
+	  
+	  Added upfront to CDS (thanks to Jose Aparicio.)
+	  Upfront-based CDS helpers were added, too.
+
+2009-06-30 15:18  Luigi Ballabio
+
+	* [r16337]
+	  ql/pricingengines/inflation/discountinginflationswapengines.cpp,
+	  ql/pricingengines/inflation/discountinginflationswapengines.hpp:
+	  
+	  Modified discounting inflation engines so that they use the new
+	  cash-flow flags.
+
+2009-06-30 14:21  Luigi Ballabio
+
+	* [r16335] ql/pricingengines/bond/discountingbondengine.hpp,
+	  ql/pricingengines/swap/discountingswapengine.hpp:
+	  
+	  Changed engine default to use the default cash-flow flags
+
+2009-06-30 13:29  Luigi Ballabio
+
+	* [r16331] ql/pricingengines/bond/discountingbondengine.cpp,
+	  ql/pricingengines/bond/discountingbondengine.hpp:
+	  
+	  Modified DiscountingBondEngine so that it uses the new cash-flow
+	  flags.
+
+2009-06-29 13:00  Luigi Ballabio
+
+	* [r16324] ql/termstructures/inflationtermstructure.cpp,
+	  ql/termstructures/inflationtermstructure.hpp:
+	  
+	  Added notification to setSeasonality() method.
+	  Removed unneeded boolean flag.
+
+2009-06-29 12:15  Luigi Ballabio
+
+	* [r16323] ql/experimental/inflation/Makefile.am:
+	  
+	  Updated Makefile
+
+2009-06-29 10:36  Ferdinando Ametrano
+
+	* [r16321] ql/cashflows/couponpricer.cpp:
+	  
+	  fixed variable name
+
+2009-06-29 10:35  Ferdinando Ametrano
+
+	* [r16320] ql/experimental/inflation/all.hpp,
+	  ql/experimental/inflation/polynomial2D.hpp,
+	  ql/experimental/inflation/polynomial2Dspline.hpp:
+	  
+	  removed Polynomial2DInterpolation, using CubicInterpolation with
+	  DerivativeApprox::Parabolic instead
+
+2009-06-29 10:29  Luigi Ballabio
+
+	* [r16319] ql/termstructures/inflation/seasonality.hpp:
+	  
+	  Added missing includes (my fault--sorry, folks)
+
+2009-06-29 10:24  Ferdinando Ametrano
+
+	* [r16318] QuantLib_vc8.vcproj,
+	  ql/termstructures/inflation/seasonality.cpp:
+	  
+	  removed VC8 error
+
+2009-06-29 09:31  Luigi Ballabio
+
+	* [r16317] ql/termstructures/inflation/seasonality.hpp:
+	  
+	  Marked warning as such
+
+2009-06-29 09:23  Luigi Ballabio
+
+	* [r16316] ql/termstructures/inflation/seasonality.hpp,
+	  ql/termstructures/inflationtermstructure.hpp:
+	  
+	  Fixed doxygen syntax
+
+2009-06-29 08:50  Luigi Ballabio
+
+	* [r16315] ql/experimental/inflation/all.hpp,
+	  ql/termstructures/inflation/seasonality.cpp:
+	  
+	  Avoided gcc warning
+
+2009-06-28 13:40  Chris Kenyon
+
+	* [r16314] ql/experimental/inflation/all.hpp,
+	  ql/termstructures/inflation/Makefile.am,
+	  ql/termstructures/inflation/all.hpp,
+	  ql/termstructures/inflation/seasonality.cpp,
+	  ql/termstructures/inflation/seasonality.hpp,
+	  ql/termstructures/inflationtermstructure.cpp,
+	  ql/termstructures/inflationtermstructure.hpp,
+	  test-suite/inflation.cpp:
+	  
+	  Add seasonality to inflation termstructures, thanks to [Piero Del
+	  Boca and Chris Kenyon].
+
+2009-06-26 15:34  Luigi Ballabio
+
+	* [r16313] test-suite/quantlibtestsuite.cpp:
+	  
+	  Re-enabled tests
+
+2009-06-25 13:01  Ferdinando Ametrano
+
+	* [r16309] test-suite/assetswap.cpp, test-suite/quantlibtestsuite.cpp:
+	  
+	  restored all asset swap tests
+
+2009-06-25 12:42  Ferdinando Ametrano
+
+	* [r16307] ql/instruments/assetswap.cpp,
+	  ql/pricingengines/swap/discountingswapengine.cpp:
+	  
+	  fixed asset swap bugs: clean price dependence from npvDate and
+	  market asset swap
+
+2009-06-25 12:40  Ferdinando Ametrano
+
+	* [r16306] test-suite/assetswap.cpp:
+	  
+	  fixed formatting
+
+2009-06-25 12:34  Ferdinando Ametrano
+
+	* [r16305] test-suite/assetswap.cpp, test-suite/assetswap.hpp:
+	  
+	  added more tests
+
+2009-06-25 10:43  Ferdinando Ametrano
+
+	* [r16302] test-suite/testsuite_vc9.vcproj:
+	  
+	  VC9 catching up
+
+2009-06-24 14:50  Luigi Ballabio
+
+	* [r16301] ql/instruments/vanillaswap.hpp:
+	  
+	  Documentation fix (follow-up to revision 16300)
+
+2009-06-24 14:44  Luigi Ballabio
+
+	* [r16300] ql/instruments/makeswaption.cpp,
+	  ql/instruments/makevanillaswap.cpp,
+	  ql/legacy/libormarketmodels/lfmswaptionengine.cpp,
+	  ql/models/shortrate/calibrationhelpers/caphelper.cpp,
+	  ql/models/shortrate/calibrationhelpers/swaptionhelper.cpp,
+	  ql/pricingengines/swap/discountingswapengine.cpp,
+	  ql/pricingengines/swap/discountingswapengine.hpp,
+	  ql/pricingengines/swaption/blackswaptionengine.cpp,
+	  ql/pricingengines/swaption/g2swaptionengine.hpp:
+	  
+	  Modified DiscountingSwapEngine so that it uses the new cash-flow
+	  flags.
+
+2009-06-23 20:46  Klaus Spanderen
+
+	* [r16299] test-suite/hestonmodel.cpp, test-suite/hestonmodel.hpp:
+	  
+	  added test case for multiple strikes Heston FD engine
+
+2009-06-23 13:12  Marco Bianchetti
+
+	* [r16298] test-suite/testsuite_vc8.vcproj:
+	  
+	  VC8 catching up with cashflow.xpp
+	  VC9 still to be done (I can't :-)
+
+2009-06-23 10:52  Ferdinando Ametrano
+
+	* [r16297] QuantLib_vc8.vcproj, QuantLib_vc9.vcproj:
+	  
+	  VC8/9 catching up
+
+2009-06-23 05:37  Klaus Spanderen
+
+	* [r16296] ql/experimental/finitedifferences/Makefile.am,
+	  ql/experimental/finitedifferences/all.hpp,
+	  ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.hpp,
+	  ql/experimental/finitedifferences/fdhestonvanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonvanillaengine.hpp,
+	  ql/experimental/finitedifferences/fdmblackscholesmultistrikemesher.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholesmultistrikemesher.hpp,
+	  test-suite/hybridhestonhullwhiteprocess.cpp:
+	  
+	  finished work on calibration of a hybrid Heston-Hull-White model
+	  using multiple strikes finite difference pricing
+
+2009-06-23 05:24  Klaus Spanderen
+
+	* [r16295] ql/pricingengines/vanilla/analytichestonengine.cpp:
+	  
+	  more detailed type cast
+
+2009-06-19 17:21  Ferdinando Ametrano
+
+	* [r16294] QuantLib_vc9.vcproj:
+	  
+	  VC9 catching up
+
+2009-06-19 15:30  Luigi Ballabio
+
+	* [r16289] configure.ac,
+	  ql/pricingengines/capfloor/analyticcapfloorengine.cpp,
+	  ql/userconfig.hpp:
+	  
+	  Removed QL_TODAYS_PAYMENTS macro.
+	  
+	  The remaining occurrence of the macros were replaced with lookups
+	  of the new flags in the Settings class.
+
+2009-06-19 15:27  Luigi Ballabio
+
+	* [r16288] ql/Makefile.am, ql/cashflow.cpp, ql/cashflow.hpp,
+	  ql/event.cpp, ql/event.hpp, ql/settings.cpp, ql/settings.hpp,
+	  test-suite/Makefile.am, test-suite/cashflows.cpp,
+	  test-suite/cashflows.hpp, test-suite/quantlibtestsuite.cpp:
+	  
+	  Added cash-flow related flags to Settings class.
+	  
+	  This commit adds to the Settings class a couple of flags that can be
+	  read
+	  for determining whether or not to include today's (or reference
+	  date's)
+	  cash flows. The Event and CashFlow class were modified to take the
+	  flags
+	  into account; however, the flags are not yet fully supported since
+	  some
+	  engines still hard-code boolean values in their calls to npv() and
+	  related
+	  functions. Fixing this will be the focus of later commits.
+
+2009-06-17 15:17  Luigi Ballabio
+
+	* [r16287]
+	  ql/experimental/compoundoption/analyticcompoundoptionengine.cpp,
+	  test-suite/inflationvol.cpp:
+	  
+	  Removed extra semicolons
+
+2009-06-17 10:33  Ferdinando Ametrano
+
+	* [r16285] QuantLib_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2009-06-16 19:47  Klaus Spanderen
+
+	* [r16284]
+	  ql/experimental/finitedifferences/fdblackscholesbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesvanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonvanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholesmesher.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholesmesher.hpp,
+	  ql/experimental/finitedifferences/fdmhullwhitemesher.cpp,
+	  ql/experimental/finitedifferences/fdmhullwhitemesher.hpp:
+	  
+	  minor interface change
+
+2009-06-16 00:04  Klaus Spanderen
+
+	* [r16283] ql/experimental/finitedifferences/Makefile.am,
+	  ql/experimental/finitedifferences/all.hpp,
+	  ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdmhestonvariancemesher.cpp,
+	  ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp,
+	  ql/experimental/finitedifferences/fdmhullwhitemesher.cpp,
+	  ql/experimental/finitedifferences/fdmhullwhitemesher.hpp,
+	  ql/experimental/models/twomixmodelhelpers.cpp,
+	  ql/models/calibrationhelper.cpp, ql/models/calibrationhelper.hpp,
+	  ql/models/equity/hestonmodelhelper.cpp,
+	  ql/models/equity/hestonmodelhelper.hpp,
+	  ql/models/shortrate/calibrationhelpers/caphelper.cpp,
+	  ql/models/shortrate/calibrationhelpers/caphelper.hpp,
+	  ql/models/shortrate/calibrationhelpers/swaptionhelper.cpp,
+	  ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp,
+	  test-suite/batesmodel.cpp, test-suite/gjrgarchmodel.cpp,
+	  test-suite/hestonmodel.cpp,
+	  test-suite/hybridhestonhullwhiteprocess.cpp,
+	  test-suite/hybridhestonhullwhiteprocess.hpp,
+	  test-suite/libormarketmodel.cpp:
+	  
+	  added hybrid Heston-Hull-White calibration based on fd pricing
+	  engines (first iteration)
+
+2009-06-12 15:21  Luigi Ballabio
+
+	* [r16282] ql/instruments/bond.cpp:
+	  
+	  Deleted dead code branch
+
+2009-06-12 12:52  Luigi Ballabio
+
+	* [r16281] ql/experimental/callablebonds/blackcallablebondengine.cpp,
+	  ql/experimental/callablebonds/callablebond.cpp,
+	  ql/instruments/bonds/convertiblebond.cpp,
+	  ql/instruments/fixedratebondforward.cpp,
+	  ql/termstructures/yield/fittedbonddiscountcurve.cpp:
+	  
+	  Passed explicit do-not-include parameter to a few bond-related
+	  calculations
+
+2009-06-11 17:17  Ferdinando Ametrano
+
+	* [r16279] ql/pricingengines/swap/discountingswapengine.cpp,
+	  ql/pricingengines/swap/discountingswapengine.hpp:
+	  
+	  extended DiscountingSwapEngine constructor to take additional
+	  includeSettlementDateFlows, settlementDate, npvDate parameters into
+	  account
+
+2009-06-10 13:11  Ferdinando Ametrano
+
+	* [r16273] QuantLib_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2009-06-10 13:06  Ferdinando Ametrano
+
+	* [r16271] QuantLib_vc9.vcproj:
+	  
+	  VC9 catching up
+
+2009-06-10 13:05  Ferdinando Ametrano
+
+	* [r16269] ql/instruments/assetswap.cpp:
+	  
+	  fixed bug: bond coupon payment on settlement date was not excluded
+
+2009-06-08 20:00  Klaus Spanderen
+
+	* [r16268] ql/pricingengines/vanilla/analytichestonengine.cpp:
+	  
+	  formatting
+
+2009-06-07 19:17  Klaus Spanderen
+
+	* [r16264]
+	  ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdmlinearoplayout.cpp:
+	  
+	  removed useless static definition
+
+2009-06-07 19:15  Klaus Spanderen
+
+	* [r16263] test-suite/hestonmodel.cpp:
+	  
+	  enable test cases
+
+2009-06-01 21:43  Klaus Spanderen
+
+	* [r16262]
+	  ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.hpp,
+	  ql/experimental/finitedifferences/fdmhestonsolver.cpp,
+	  test-suite/hybridhestonhullwhiteprocess.cpp:
+	  
+	  added control variate for finite differnce Heston Hull-White engine
+
+2009-05-31 13:26  Klaus Spanderen
+
+	* [r16261] test-suite/fdheston.cpp, test-suite/hestonmodel.cpp:
+	  
+	  added Finite Difference solver for the Heston Hull-White model
+
+2009-05-31 10:30  Klaus Spanderen
+
+	* [r16260] ql/experimental/finitedifferences/Makefile.am,
+	  ql/experimental/finitedifferences/all.hpp,
+	  ql/experimental/finitedifferences/fdblackscholesbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesvanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonbarrierengine.hpp,
+	  ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.hpp,
+	  ql/experimental/finitedifferences/fdhestonrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonrebateengine.hpp,
+	  ql/experimental/finitedifferences/fdhestonvanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonvanillaengine.hpp,
+	  ql/experimental/finitedifferences/fdmblackscholesmesher.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholesmesher.hpp,
+	  ql/experimental/finitedifferences/fdmblackscholessolver.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholessolver.hpp,
+	  ql/experimental/finitedifferences/fdmdirichletboundary.hpp,
+	  ql/experimental/finitedifferences/fdmdividendhandler.cpp,
+	  ql/experimental/finitedifferences/fdmdividendhandler.hpp,
+	  ql/experimental/finitedifferences/fdmhestonhullwhitesolver.cpp,
+	  ql/experimental/finitedifferences/fdmhestonhullwhitesolver.hpp,
+	  ql/experimental/finitedifferences/fdmhestonsolver.cpp,
+	  ql/experimental/finitedifferences/fdmhestonsolver.hpp,
+	  ql/math/interpolations/bicubicsplineinterpolation.hpp,
+	  test-suite/fdheston.cpp, test-suite/fdheston.hpp,
+	  test-suite/fdmlinearop.cpp,
+	  test-suite/hybridhestonhullwhiteprocess.cpp,
+	  test-suite/hybridhestonhullwhiteprocess.hpp,
+	  test-suite/interpolations.cpp, test-suite/interpolations.hpp:
+	  
+	  added Finite Difference solver for the Heston Hull-White model
+
+2009-05-25 08:12  Luigi Ballabio
+
+	* [r16256] Examples/FittedBondCurve/FittedBondCurve.cpp:
+	  
+	  Fixed out-of-bounds access (thanks to an anonymous reporter)
+
+2009-05-17 11:58  Klaus Spanderen
+
+	* [r16252]
+	  ql/experimental/finitedifferences/fdblackscholesbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesvanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonrebateengine.cpp:
+	  
+	  removed useless variables
+
+2009-05-17 06:17  Klaus Spanderen
+
+	* [r16251] test-suite/fdheston.cpp, test-suite/fdheston.hpp:
+	  
+	  added new fd heston test case
+
+2009-05-14 09:36  Luigi Ballabio
+
+	* [r16249] ql/termstructures/bootstraphelper.hpp:
+	  
+	  Added missing include
+
+2009-05-14 09:35  Luigi Ballabio
+
+	* [r16248] ql/termstructures/yield/bondhelpers.cpp,
+	  ql/termstructures/yield/bondhelpers.hpp:
+	  
+	  Removed leftovers from Rev16242
+
+2009-05-13 21:09  Klaus Spanderen
+
+	* [r16247] test-suite/fdheston.cpp:
+	  
+	  improved fd heston test case
+
+2009-05-13 12:53  Ferdinando Ametrano
+
+	* [r16246] ql/termstructures/bootstraphelper.hpp,
+	  ql/termstructures/yield/ratehelpers.cpp,
+	  ql/termstructures/yield/ratehelpers.hpp:
+	  
+	  templatized former RelativeDateRateHelper as generic
+	  RelativeDateBootstrapHelper
+
+2009-05-13 12:51  Ferdinando Ametrano
+
+	* [r16245] ql/termstructures/yield/bondhelpers.cpp,
+	  ql/termstructures/yield/bondhelpers.hpp:
+	  
+	  fixed mistaken inheritance (also solved the date-change expired-bond
+	  exception and reverted Rev16242)
+
+2009-05-13 08:18  Luigi Ballabio
+
+	* [r16242] ql/termstructures/yield/bondhelpers.cpp,
+	  ql/termstructures/yield/bondhelpers.hpp:
+	  
+	  Do not throw in initializeDates() when the bond underlying the
+	  helper is expired; invalidate the helper instead.
+	  This avoids raising an exception upon a date-change notification,
+	  delaying the exception to when (and if) the helper is actually used.
+
+2009-05-08 13:55  Ferdinando Ametrano
+
+	* [r16233] Examples/FittedBondCurve/FittedBondCurve.cpp:
+	  
+	  catching up with latest signature changes
+
+2009-05-08 13:51  Ferdinando Ametrano
+
+	* [r16232] ql/patterns/observable.hpp:
+	  
+	  rescued error message
+
+2009-05-08 09:15  Luigi Ballabio
+
+	* [r16231] ql/time/calendars/canada.hpp, ql/time/calendars/japan.cpp,
+	  ql/time/calendars/southafrica.cpp,
+	  ql/time/calendars/southafrica.hpp:
+	  
+	  Miscellaneous calendar fixes
+
+2009-05-07 17:29  Ferdinando Ametrano
+
+	* [r16229] ql/cashflows/cashflows.cpp, ql/cashflows/cashflows.hpp,
+	  ql/experimental/callablebonds/blackcallablebondengine.cpp,
+	  ql/instruments/bond.cpp, ql/instruments/capfloor.cpp,
+	  ql/instruments/makecapfloor.cpp,
+	  ql/pricingengines/bond/bondfunctions.cpp,
+	  ql/pricingengines/bond/discountingbondengine.cpp,
+	  ql/pricingengines/swap/discountingswapengine.cpp,
+	  ql/pricingengines/swaption/blackswaptionengine.cpp,
+	  ql/termstructures/volatility/swaption/cmsmarket.cpp,
+	  ql/termstructures/yield/fittedbonddiscountcurve.cpp:
+	  
+	  - reordered CashFlows functions' parameters, removing dangerous
+	  default values. If null, settlement date defaults to
+	  Settings::instance().evaluationDate() and npv date to settlement
+	  date
+	  - fixed erroneous calls to CashFlows functions
+	  - BlackCallableBondEngine logic should be reviewed
+
+2009-05-06 20:18  Klaus Spanderen
+
+	* [r16228] ql/experimental/finitedifferences/fdmdividendhandler.cpp:
+	  
+	  bug fix for multi dimensional FD dividend helper
+
+2009-05-06 20:13  Klaus Spanderen
+
+	* [r16227] test-suite/fdheston.cpp, test-suite/fdheston.hpp:
+	  
+	  added new FD Heston test cases for american puts
+
+2009-05-06 07:22  Ferdinando Ametrano
+
+	* [r16226] ql/cashflow.hpp, ql/cashflows/cashflows.cpp, ql/event.hpp:
+	  
+	  - overloaded Event::hasOccurred in CashFlow::hasOccurred.
+	  QL_TODAY_PAYMENTS handling is now in the CashFlow class, as this is
+	  the "payment event" class
+	  - removed QL_TODAY_PAYMENTS handling from CashFlows methods
+
+2009-05-05 16:09  Ferdinando Ametrano
+
+	* [r16223] ql/experimental/risk/sensitivityanalysis.cpp:
+	  
+	  fixed bug: using "wasValid" logic instead of isValid
+
+2009-05-05 16:07  Ferdinando Ametrano
+
+	* [r16222] ql/cashflows/cashflows.cpp, ql/cashflows/cashflows.hpp,
+	  ql/pricingengines/bond/bondfunctions.cpp,
+	  ql/pricingengines/bond/discountingbondengine.cpp,
+	  ql/pricingengines/swap/discountingswapengine.cpp:
+	  
+	  parametrized CashFlows functions with explicit
+	  includeSettlementDateFlows; BondFunctions forward to CashFlows
+	  functions setting includeSettlementDateFlows equal to false.
+
+2009-04-28 12:57  Ferdinando Ametrano
+
+	* [r16219] ql/instrument.hpp,
+	  ql/pricingengines/bond/discountingbondengine.cpp,
+	  ql/pricingengines/swap/discountingswapengine.cpp:
+	  
+	  added valuationDate to Instrument::results
+
+2009-04-27 12:14  Luigi Ballabio
+
+	* [r16215] Examples/Bonds/Bonds.cpp, Examples/FRA/FRA.cpp,
+	  Examples/Swap/swapvaluation.cpp,
 	  ql/termstructures/credit/interpolateddefaultdensitycurve.hpp,
 	  ql/termstructures/credit/interpolatedhazardratecurve.hpp,
+	  ql/termstructures/credit/piecewisedefaultcurve.hpp,
+	  ql/termstructures/yield/discountcurve.hpp,
+	  ql/termstructures/yield/forwardcurve.hpp,
+	  ql/termstructures/yield/piecewiseyieldcurve.hpp,
+	  ql/termstructures/yield/zerocurve.hpp,
+	  test-suite/piecewiseyieldcurve.cpp:
+	  
+	  Added overloaded curve constructors to skip jump arguments more
+	  easily
+
+2009-04-27 10:20  Ferdinando Ametrano
+
+	* [r16214] ql/pricingengines/blackcalculator.cpp,
+	  ql/pricingengines/blackcalculator.hpp:
+	  
+	  fixed (stdDev<QL_EPSILON, fwd==strike) case. Thanks to Dimitri
+	  Reiswich
+
+2009-04-27 10:16  Ferdinando Ametrano
+
+	* [r16213] ql/termstructures/volatility/smilesection.cpp,
+	  ql/termstructures/volatility/smilesection.hpp:
+	  
+	  added referenceDate() inspector
+
+2009-04-27 09:49  Ferdinando Ametrano
+
+	* [r16212] test-suite/swaptionvolatilitymatrix.cpp:
+	  
+	  avoided non-trading days
+
+2009-04-26 20:10  Klaus Spanderen
+
+	* [r16211] ql/termstructures/volatility/equityfx/localvolsurface.cpp:
+	  
+	  fixed bug for forward calculation in localvolsurface.cpp (thanks to
+	  Michael Heckl)
+
+2009-04-23 18:14  Ferdinando Ametrano
+
+	* [r16210] ql/instruments/bond.cpp:
+	  
+	  explicited default parameter
+
+2009-04-23 18:14  Ferdinando Ametrano
+
+	* [r16209] ql/pricingengines/bond/bondfunctions.hpp:
+	  
+	  
+
+2009-04-22 17:16  Ferdinando Ametrano
+
+	* [r16208] test-suite/quantlibtestsuite.cpp:
+	  
+	  removed tab
+
+2009-04-22 17:11  Ferdinando Ametrano
+
+	* [r16207] ql/pricingengines/bond/bondfunctions.cpp:
+	  
+	  - added check for tradability in order to avoid division by zero
+	  bond notional
+	  - implemented isTradable as equivalent non-zero notional check
+
+2009-04-22 12:41  Ferdinando Ametrano
+
+	* [r16206] ql/pricingengines/bond/bondfunctions.cpp:
+	  
+	  fixed bug
+
+2009-04-21 15:30  Ferdinando Ametrano
+
+	* [r16205] ql/termstructures/iterativebootstrap.hpp:
+	  
+	  increased error message details
+
+2009-04-21 12:20  Luigi Ballabio
+
+	* [r16204] ql/time/date.cpp:
+	  
+	  Switched to localtime for today's date calculation
+
+2009-04-21 11:03  Ferdinando Ametrano
+
+	* [r16203] ql/instruments/bond.cpp:
+	  
+	  added Bond::isTradable (it forwards to BondFunctions::isTradable)
+
+2009-04-21 10:42  Ferdinando Ametrano
+
+	* [r16202] ql/instruments/bond.cpp, ql/instruments/bond.hpp:
+	  
+	  added Bond::isTradable (it forwards to BondFunctions::isTradable)
+
+2009-04-21 10:41  Ferdinando Ametrano
+
+	* [r16201] ql/pricingengines/bond/bondfunctions.cpp,
+	  ql/pricingengines/bond/bondfunctions.hpp:
+	  
+	  added BondFunctions::isTradable and removed unused
+	  Bondfunctions::isExpired to avoid confusion with
+	  Instrument::isExpired
+
+2009-04-21 10:38  Ferdinando Ametrano
+
+	* [r16200] ql/cashflows/cashflows.cpp:
+	  
+	  reverted Rev16196
+
+2009-04-20 20:25  Klaus Spanderen
+
+	* [r16198] ql/experimental/finitedifferences/craigsneydscheme.hpp,
+	  ql/experimental/finitedifferences/douglasscheme.hpp,
+	  ql/experimental/finitedifferences/hundsdorferscheme.hpp:
+	  
+	  removed useless #include
+
+2009-04-20 17:11  Ferdinando Ametrano
+
+	* [r16197] ql/pricingengines/bond/discountingbondengine.cpp,
+	  ql/pricingengines/swap/discountingswapengine.cpp:
+	  
+	  improved error message (we could even avoid the QL_REQUIRE, relying
+	  just on the check of the Handle dereferencing...)
+
+2009-04-20 17:09  Ferdinando Ametrano
+
+	* [r16196] ql/cashflows/cashflows.cpp:
+	  
+	  made optional parameter explicit in non-npv functions, as it should
+	  never depend on QL_TODAYS_PAYMENTS for those functions
+
+2009-04-20 15:59  Ferdinando Ametrano
+
+	* [r16195] ql/cashflows/cashflows.cpp:
+	  
+	  trying to capture the _unadjusted_ maturity date if possible, as per
+	  ISDA convention
+
+2009-04-20 15:36  Ferdinando Ametrano
+
+	* [r16194] ql/pricingengines/bond/discountingbondengine.cpp,
+	  ql/pricingengines/bond/discountingbondengine.hpp,
+	  ql/pricingengines/swap/discountingswapengine.hpp:
+	  
+	  added DiscountingSwapEngine::discountCurve() inspector
+
+2009-04-20 15:11  Ferdinando Ametrano
+
+	* [r16193] ql/pricingengines/blackscholescalculator.cpp:
+	  
+	  
+
+2009-04-20 15:03  Ferdinando Ametrano
+
+	* [r16192] test-suite/testsuite_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2009-04-20 15:01  Ferdinando Ametrano
+
+	* [r16191] ql/instruments/bond.cpp:
+	  
+	  checking expiration against evaluation date instead of settlement
+	  date
+
+2009-04-20 14:32  Ferdinando Ametrano
+
+	* [r16190] QuantLib_vc9.vcproj,
+	  ql/experimental/inflation/yoycapfloortermpricesurface.hpp:
+	  
+	  commented out unused code
+
+2009-04-20 14:03  Luigi Ballabio
+
+	* [r16189] ql/instruments/bond.cpp:
+	  
+	  Avoided gcc warning
+
+2009-04-20 13:52  Ferdinando Ametrano
+
+	* [r16188] test-suite/testsuite_vc9.vcproj:
+	  
+	  VC9 catching up
+
+2009-04-20 13:52  Ferdinando Ametrano
+
+	* [r16187] QuantLib_vc8.vcproj,
+	  ql/math/interpolations/bicubicsplineinterpolation.hpp,
+	  ql/math/interpolations/cubicinterpolation.hpp:
+	  
+	  fixed documentation and some formatting
+
+2009-04-20 13:18  Luigi Ballabio
+
+	* [r16186] ql/experimental/inflation/Makefile.am,
+	  ql/experimental/inflation/all.hpp:
+	  
+	  Reordered files
+
+2009-04-20 13:17  Luigi Ballabio
+
+	* [r16185] ql/experimental/inflation/yoycapfloortermpricesurface.hpp:
+	  
+	  Fixed case-sensitive include
+
+2009-04-20 10:00  Ferdinando Ametrano
+
+	* [r16184] ql/instruments/bond.hpp:
+	  
+	  removed duplicated typedef (the other one being in ql/cashflow.hpp)
+
+2009-04-19 15:19  Chris Kenyon
+
+	* [r16183] ql/experimental/inflation/Makefile.am,
+	  ql/experimental/inflation/interpolatedyoyoptionletstripper.hpp,
+	  ql/experimental/inflation/polynomial2D.hpp,
+	  ql/experimental/inflation/polynomial2Dspline.hpp,
+	  ql/experimental/inflation/yoycapfloortermpricesurface.hpp,
+	  test-suite/Makefile.am, test-suite/inflationvol.cpp,
+	  test-suite/inflationvol.hpp, test-suite/quantlibtestsuite.cpp:
+	  
+	  Stability updates and test for yoy inflation volatility.
+
+2009-04-17 10:53  Luigi Ballabio
+
+	* [r16182] ql/Makefile.am, ql/event.cpp, ql/event.hpp,
+	  ql/experimental/commodities/energyswap.cpp,
+	  ql/experimental/commodities/energyvanillaswap.cpp,
+	  ql/experimental/credit/cdo.cpp,
+	  ql/experimental/credit/cdsoption.cpp,
+	  ql/experimental/credit/nthtodefault.cpp,
+	  ql/experimental/credit/riskyassetswap.cpp,
+	  ql/experimental/credit/riskyassetswapoption.cpp,
+	  ql/experimental/credit/riskybond.cpp,
+	  ql/experimental/credit/syntheticcdo.cpp,
+	  ql/experimental/mcbasket/pathmultiassetoption.cpp,
+	  ql/experimental/varianceoption/varianceoption.cpp,
+	  ql/instruments/forward.cpp, ql/instruments/forwardrateagreement.cpp,
+	  ql/instruments/inflationswap.cpp,
+	  ql/instruments/multiassetoption.cpp,
+	  ql/instruments/oneassetoption.cpp, ql/instruments/swaption.cpp,
+	  ql/instruments/varianceswap.cpp:
+	  
+	  Following Rev16180:
+	  use of hasOccurredFunction suggested there was a hidden event in
+	  there
+	  (for instance, in Swaption::isExpired, checking to see whether the
+	  last
+	  exercise date had occurred suggests that Exercise could be made an
+	  Event.)
+	  
+	  While we decide what the hidden events are, we use a temporary event
+	  class.
+	  It will be replaced later, but in the meantime, it gives us Event
+	  behavior.
+
+2009-04-17 10:23  Ferdinando Ametrano
+
+	* [r16181] ql/instruments/bond.cpp, ql/instruments/bond.hpp:
+	  
+	  
+
+2009-04-17 08:44  Ferdinando Ametrano
+
+	* [r16180] ql/event.cpp, ql/event.hpp,
+	  ql/experimental/commodities/energyswap.cpp,
+	  ql/experimental/commodities/energyvanillaswap.cpp,
+	  ql/experimental/credit/cdo.cpp,
+	  ql/experimental/credit/cdsoption.cpp,
+	  ql/experimental/credit/nthtodefault.cpp,
+	  ql/experimental/credit/riskyassetswap.cpp,
+	  ql/experimental/credit/riskyassetswapoption.cpp,
+	  ql/experimental/credit/riskybond.cpp,
+	  ql/experimental/credit/syntheticcdo.cpp,
+	  ql/experimental/mcbasket/pathmultiassetoption.cpp,
+	  ql/experimental/varianceoption/varianceoption.cpp,
+	  ql/instruments/forward.cpp, ql/instruments/forwardrateagreement.cpp,
+	  ql/instruments/inflationswap.cpp,
+	  ql/instruments/multiassetoption.cpp,
+	  ql/instruments/oneassetoption.cpp, ql/instruments/swaption.cpp,
+	  ql/instruments/varianceswap.cpp:
+	  
+	  moved hasOccurredFunction out of Event class. It can be placed
+	  outside of event.*pp files if preferred.
+	  This is the core of Rev16174 to be kept, as it removed (often buggy)
+	  code duplicated in 18 different files
+
+2009-04-17 08:38  Ferdinando Ametrano
+
+	* [r16179] ql/cashflow.hpp, ql/cashflows/coupon.hpp,
+	  ql/cashflows/dividend.hpp, ql/cashflows/simplecashflow.hpp,
+	  ql/default.hpp, ql/event.hpp,
+	  ql/experimental/commodities/commoditycashflow.hpp,
+	  ql/instruments/callabilityschedule.hpp:
+	  
+	  partially reverted Rev16174: Event:Date() now returns a copy as
+	  before
+
+2009-04-16 17:40  Ferdinando Ametrano
+
+	* [r16177] ql/instruments/assetswap.cpp, ql/instruments/assetswap.hpp,
+	  ql/instruments/bond.hpp, ql/instruments/bonds/convertiblebond.cpp:
+	  
+	  - removed Bond::faceAmount, as it is now ambiguous for amortizing
+	  bonds
+	  - a warning might be added in ConvertibleBond documentation stating
+	  that its behavior is unspecified in the case of amortizing bonds
+
+2009-04-16 16:23  Ferdinando Ametrano
+
+	* [r16176] QuantLib_vc9.vcproj, ql/instruments/bond.cpp:
+	  
+	  added issue date check
+
+2009-04-16 15:26  Ferdinando Ametrano
+
+	* [r16175] ql/cashflows/cashflows.cpp:
+	  
+	  more readable code
+
+2009-04-16 14:56  Ferdinando Ametrano
+
+	* [r16174] QuantLib_vc8.vcproj, ql/cashflow.hpp,
+	  ql/cashflows/coupon.hpp, ql/cashflows/dividend.hpp,
+	  ql/cashflows/simplecashflow.hpp, ql/default.cpp, ql/default.hpp,
+	  ql/event.cpp, ql/event.hpp,
+	  ql/experimental/commodities/commoditycashflow.hpp,
+	  ql/experimental/commodities/energyswap.cpp,
+	  ql/experimental/commodities/energyvanillaswap.cpp,
+	  ql/experimental/credit/cdo.cpp,
+	  ql/experimental/credit/cdsoption.cpp,
+	  ql/experimental/credit/nthtodefault.cpp,
+	  ql/experimental/credit/riskyassetswap.cpp,
+	  ql/experimental/credit/riskyassetswapoption.cpp,
+	  ql/experimental/credit/riskybond.cpp,
+	  ql/experimental/credit/syntheticcdo.cpp,
+	  ql/experimental/inflation/inflationcapfloor.cpp,
+	  ql/experimental/mcbasket/pathmultiassetoption.cpp,
+	  ql/experimental/varianceoption/varianceoption.cpp,
+	  ql/instruments/bonds/convertiblebond.hpp,
+	  ql/instruments/callabilityschedule.hpp, ql/instruments/capfloor.cpp,
+	  ql/instruments/creditdefaultswap.cpp, ql/instruments/forward.cpp,
+	  ql/instruments/forwardrateagreement.cpp,
+	  ql/instruments/inflationswap.cpp,
+	  ql/instruments/multiassetoption.cpp,
+	  ql/instruments/oneassetoption.cpp, ql/instruments/swap.cpp,
+	  ql/instruments/swaption.cpp, ql/instruments/varianceswap.cpp,
+	  ql/pricingengines/bond/bondfunctions.cpp,
+	  ql/pricingengines/bond/bondfunctions.hpp:
+	  
+	  - added static Event::hasOccurredFunction to encapsulate the
+	  hasOccurred logic to be used also by non-Event object
+	  - used Event::hasOccurredFunction in a few isExpired methods
+	  - modified Event:Date() to return a const reference
+
+2009-04-16 11:47  Ferdinando Ametrano
+
+	* [r16173] ql/experimental/finitedifferences/fdmblackscholesop.cpp:
+	  
+	  avoided VC warning
+
+2009-04-16 08:02  Ferdinando Ametrano
+
+	* [r16171] QuantLib_vc9.vcproj:
+	  
+	  VC9 catching up
+
+2009-04-15 21:52  Klaus Spanderen
+
+	* [r16170] test-suite/barrieroption.cpp, test-suite/barrieroption.hpp,
+	  test-suite/europeanoption.cpp, test-suite/europeanoption.hpp:
+	  
+	  added local volatility test cases
+
+2009-04-15 21:46  Klaus Spanderen
+
+	* [r16169]
+	  ql/experimental/finitedifferences/fdblackscholesbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesbarrierengine.hpp,
+	  ql/experimental/finitedifferences/fdblackscholesrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesrebateengine.hpp,
+	  ql/experimental/finitedifferences/fdblackscholesvanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesvanillaengine.hpp,
+	  ql/experimental/finitedifferences/fdmblackscholesop.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholesop.hpp,
+	  ql/experimental/finitedifferences/fdmblackscholessolver.cpp,
+	  ql/experimental/finitedifferences/fdmblackscholessolver.hpp,
+	  ql/experimental/finitedifferences/fdmhestonhullwhiteop.cpp,
+	  ql/experimental/finitedifferences/fdmhestonop.cpp,
+	  ql/experimental/finitedifferences/fdmquantohelper.cpp:
+	  
+	  added local volatility support for multi dim fdm
+
+2009-04-15 21:11  Klaus Spanderen
+
+	* [r16168] ql/pricingengines/bond/Makefile.am:
+	  
+	  gnu tool chain update
+
+2009-04-15 21:09  Klaus Spanderen
+
+	* [r16167] ql/termstructures/volatility/equityfx/localvolsurface.cpp:
+	  
+	  time-like partial derivative will be calculated along "lines" of
+	  constant
+	  y=\ln\frac{K}{F_T}
+
+2009-04-15 17:43  Ferdinando Ametrano
+
+	* [r16166] QuantLib_vc8.vcproj, ql/cashflows/cashflows.cpp,
+	  ql/cashflows/cashflows.hpp,
+	  ql/experimental/callablebonds/blackcallablebondengine.cpp,
+	  ql/instruments/bond.cpp, ql/pricingengines/bond/all.hpp,
+	  ql/pricingengines/bond/bondfunctions.cpp,
+	  ql/pricingengines/bond/bondfunctions.hpp,
+	  ql/pricingengines/bond/yield.cpp, ql/pricingengines/bond/yield.hpp,
+	  ql/pricingengines/bond/zspread.cpp,
+	  ql/pricingengines/bond/zspread.hpp,
+	  ql/termstructures/yield/fittedbonddiscountcurve.cpp,
+	  test-suite/assetswap.cpp, test-suite/bonds.cpp:
+	  
+	  - added few more CashFlows functions
+	  - provided BondFunctions, i.e. Bond adapters for CashFlows methods
+	  - Bond methods forward to BondFunctions where appropriate
+
+2009-04-15 15:00  Luigi Ballabio
+
+	* [r16164] ql/time/calendars/canada.cpp, ql/time/calendars/canada.hpp:
+	  
+	  Removed Easter Monday from Canadian holidays (thanks to Matt Knox)
+
+2009-04-15 14:22  Luigi Ballabio
+
+	* [r16163] Examples/Bonds/Bonds.cpp:
+	  
+	  Fixed examples (which often get out of sync, being out of someone's
+	  solution...)
+
+2009-04-15 14:21  Luigi Ballabio
+
+	* [r16162] ql/cashflows/cashflows.cpp:
+	  
+	  Avoided gcc warning
+
+2009-04-15 10:19  Ferdinando Ametrano
+
+	* [r16161] ql/cashflows/cashflows.cpp, ql/cashflows/cashflows.hpp,
+	  ql/instruments/bond.cpp, ql/instruments/bond.hpp,
+	  ql/pricingengines/bond/yield.cpp, ql/pricingengines/bond/yield.hpp,
+	  ql/pricingengines/bond/zspread.cpp,
+	  ql/pricingengines/bond/zspread.hpp,
+	  ql/termstructures/yield/bondhelpers.cpp, test-suite/assetswap.cpp,
+	  test-suite/bonds.cpp, test-suite/bonds.hpp:
+	  
+	  Consolidated CashFlow algebra into CashFlows class removing
+	  duplication from Bond class and Bond-related functions.
+	  
+	  CashFlows class:
+	  - consolidated yield/irr calculation
+	  - added z-spread calculation
+	  - added accruedAmount calculation
+	  - renamed CashFlows::xxxCouponDate as CashFlows::xxxCashFlowDate
+	  - added CashFlows::xxxCashFlowAmount functions
+	  - improved CashFlows::startDate and CashFlows::maturityDate
+	  implementations
+	  - extended exDivindendDays usage to all pertinent functions
+	  - grouped documentation in YieldTermStructure/IRR/zSpread sub-sets
+	  - cleaned up header inclusions
+	  
+	  Bond class:
+	  - renamed nextCoupon and previousCoupon to nextCouponRate and
+	  previousCouponRate
+	  - renamed nextCouponDate and previousCouponDate to nextCashFlowDate
+	  and previousCashFlowDate
+	  - maturityDate, accruedAmount now rely on their equivalent CashFlows
+	  methods
+	  
+	  Bond functions:
+	  - moved calculation into CashFlows methods and provided just Bond
+	  adapters
+
+2009-04-15 09:49  Ferdinando Ametrano
+
+	* [r16160] test-suite/swaptionvolatilitymatrix.cpp:
+	  
+	  increased error message details
+
+2009-04-14 18:36  Ferdinando Ametrano
+
+	* [r16159] ql/pricingengines/bond/discountingbondengine.hpp:
+	  
+	  cleaned up header inclusions
+
+2009-04-14 18:33  Ferdinando Ametrano
+
+	* [r16158]
+	  ql/experimental/amortizingbonds/amortizingfixedratebond.hpp,
+	  ql/experimental/amortizingbonds/amortizingfloatingratebond.hpp,
+	  ql/experimental/callablebonds/blackcallablebondengine.cpp,
+	  ql/experimental/callablebonds/callablebond.cpp,
+	  ql/experimental/callablebonds/callablebond.hpp,
+	  ql/instruments/assetswap.hpp,
+	  ql/instruments/bonds/convertiblebond.hpp,
+	  ql/instruments/bonds/fixedratebond.hpp:
+	  
+	  cleaned up header inclusions
+
+2009-04-14 18:32  Ferdinando Ametrano
+
+	* [r16157] ql/interestrate.hpp:
+	  
+	  formatting
+
+2009-04-14 18:30  Ferdinando Ametrano
+
+	* [r16156] ql/cashflows/conundrumpricer.cpp:
+	  
+	  
+
+2009-04-14 10:57  Luigi Ballabio
+
+	* [r16154] ql/cashflows/cashflows.cpp, ql/interestrate.hpp:
+	  
+	  Reverted Rev16153.
+	  We're not sacrificing immutability for convenience.
+	  Just create another instance.
+
+2009-04-14 10:05  Ferdinando Ametrano
+
+	* [r16153] ql/cashflows/cashflows.cpp, ql/interestrate.hpp:
+	  
+	  added set method to InterestRate
+
+2009-04-12 13:50  Klaus Spanderen
+
+	* [r16151] ql/termstructures/yield/Makefile.am:
+	  
+	  added flatforward.cpp to gnu tool chain
+
+2009-04-10 17:26  Ferdinando Ametrano
+
+	* [r16150] QuantLib_vc8.vcproj,
+	  ql/pricingengines/credit/midpointcdsengine.cpp,
+	  ql/termstructures/credit/defaultdensitystructure.cpp,
+	  ql/termstructures/credit/defaultdensitystructure.hpp,
+	  ql/termstructures/credit/hazardratestructure.cpp,
+	  ql/termstructures/credit/hazardratestructure.hpp,
+	  ql/termstructures/credit/interpolateddefaultdensitycurve.hpp,
+	  ql/termstructures/credit/interpolatedhazardratecurve.hpp,
+	  ql/termstructures/credit/interpolatedsurvivalprobabilitycurve.hpp,
+	  ql/termstructures/credit/piecewisedefaultcurve.hpp,
+	  ql/termstructures/credit/survivalprobabilitystructure.cpp,
+	  ql/termstructures/credit/survivalprobabilitystructure.hpp,
+	  ql/termstructures/defaulttermstructure.cpp,
+	  ql/termstructures/defaulttermstructure.hpp,
+	  test-suite/defaultprobabilitycurves.cpp:
+	  
+	  introduced jumps into credit term structures and minor refactoring
+
+2009-04-10 17:14  Ferdinando Ametrano
+
+	* [r16149] test-suite/swaptionvolatilitymatrix.cpp:
+	  
+	  
+
+2009-04-10 17:13  Ferdinando Ametrano
+
+	* [r16148] ql/termstructures/credit/flathazardrate.hpp,
+	  ql/time/schedule.cpp:
+	  
+	  poor man patches
+
+2009-04-10 16:25  Ferdinando Ametrano
+
+	* [r16147] ql/termstructures/credit/flathazardrate.cpp,
+	  ql/termstructures/credit/flathazardrate.hpp:
+	  
+	  added Rate constructor in addition to the Handle<Quote> > one
+
+2009-04-10 15:21  Ferdinando Ametrano
+
+	* [r16146] ql/termstructures/yieldtermstructure.hpp:
+	  
+	  fixed typo
+
+2009-04-10 15:14  Ferdinando Ametrano
+
+	* [r16145] QuantLib_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2009-04-10 15:08  Ferdinando Ametrano
+
+	* [r16144] ql/time/schedule.cpp:
+	  
+	  Unadjusted termination date as per ISDA convention
+
+2009-04-10 15:05  Ferdinando Ametrano
+
+	* [r16143] test-suite/assetswap.cpp, test-suite/batesmodel.cpp,
+	  test-suite/capfloor.cpp, test-suite/capflooredcoupon.cpp,
+	  test-suite/cdo.cpp, test-suite/cdsoption.cpp,
+	  test-suite/gjrgarchmodel.cpp, test-suite/hestonmodel.cpp,
+	  test-suite/nthtodefault.cpp, test-suite/optionletstripper.cpp,
+	  test-suite/swaption.cpp, test-suite/varianceswaps.cpp:
+	  
+	  
+
+2009-04-10 15:00  Ferdinando Ametrano
+
+	* [r16142] QuantLib_vc9.vcproj:
+	  
+	  VC9 catching up
+
+2009-04-10 14:58  Ferdinando Ametrano
+
+	* [r16141] ql/termstructures/yield/discountcurve.hpp,
+	  ql/termstructures/yield/forwardcurve.hpp,
+	  ql/termstructures/yield/zerocurve.hpp:
+	  
+	  
+
+2009-04-10 14:53  Ferdinando Ametrano
+
+	* [r16140] ql/termstructures/yield/forwardstructure.hpp,
+	  ql/termstructures/yield/piecewiseyieldcurve.hpp,
+	  ql/termstructures/yield/zeroyieldstructure.hpp:
+	  
+	  fixed documentation
+
+2009-04-10 14:50  Ferdinando Ametrano
+
+	* [r16139] ql/termstructures/yieldtermstructure.cpp,
+	  ql/termstructures/yieldtermstructure.hpp:
+	  
+	  fixed documentation and parametrized finite differences
+
+2009-04-10 14:46  Ferdinando Ametrano
+
+	* [r16138] ql/termstructures/yield/flatforward.cpp,
+	  ql/termstructures/yield/flatforward.hpp:
+	  
+	  improved documentation and moved constructors in cpp file
+
+2009-04-09 14:34  Luigi Ballabio
+
+	* [r16135] ql/termstructures/yield/Makefile.am:
+	  
+	  Added new files to autotools build
+
+2009-04-09 14:32  Luigi Ballabio
+
+	* [r16134] Examples/FittedBondCurve/FittedBondCurve.cpp:
+	  
+	  Sync with new YieldTermStructure::parRate signature
+
+2009-04-09 14:19  Ferdinando Ametrano
+
+	* [r16133] QuantLib_vc9.vcproj:
+	  
+	  VC9 catching up
+
+2009-04-09 12:59  Ferdinando Ametrano
+
+	* [r16132] QuantLib_vc8.vcproj,
+	  ql/termstructures/yield/discountcurve.hpp,
+	  ql/termstructures/yield/forwardcurve.hpp,
+	  ql/termstructures/yield/forwardstructure.cpp,
+	  ql/termstructures/yield/forwardstructure.hpp,
+	  ql/termstructures/yield/piecewiseyieldcurve.hpp,
+	  ql/termstructures/yield/zerocurve.hpp,
+	  ql/termstructures/yield/zeroyieldstructure.cpp,
+	  ql/termstructures/yield/zeroyieldstructure.hpp,
+	  ql/termstructures/yieldtermstructure.cpp,
+	  ql/termstructures/yieldtermstructure.hpp:
+	  
+	  moved handling of jumps from PiecewiseYieldCurve to
+	  YieldTermStructure base class
+
+2009-04-09 12:51  Luigi Ballabio
+
+	* [r16131] ql/instruments/bond.cpp, ql/instruments/bond.hpp:
+	  
+	  Restored forwarding methods in Bond class
+
+2009-04-09 11:56  Ferdinando Ametrano
+
+	* [r16128] ql/termstructures/yieldtermstructure.cpp,
+	  ql/termstructures/yieldtermstructure.hpp:
+	  
+	  fixed parRate calculation
+
+2009-04-08 16:14  Ferdinando Ametrano
+
+	* [r16126] ql/instruments/bond.hpp:
+	  
+	  removed mismatched parenthesis
+
+2009-04-08 16:05  Ferdinando Ametrano
+
+	* [r16125] ql/termstructures/yieldtermstructure.cpp:
+	  
+	  added check for positive times. Check for increasing times still
+	  missing
+
+2009-04-08 15:50  Luigi Ballabio
+
+	* [r16124] Examples/CDS/CDS.cpp,
+	  ql/experimental/inflation/inflationcapfloor.cpp,
+	  ql/experimental/overnightswap/eoniacoupon.cpp,
+	  ql/experimental/overnightswap/eoniaswaphelper.cpp,
+	  ql/indexes/bmaindex.cpp, ql/instruments/yearonyearinflationswap.cpp,
+	  ql/termstructures/credit/defaultprobabilityhelpers.cpp,
+	  ql/termstructures/yield/ratehelpers.cpp, ql/time/schedule.cpp,
+	  ql/time/schedule.hpp, test-suite/cdo.cpp,
+	  test-suite/convertiblebonds.cpp, test-suite/inflation.cpp,
+	  test-suite/nthtodefault.cpp, test-suite/piecewiseyieldcurve.cpp:
+	  
+	  More MakeSchedule setters instead of anonymous constructor
+	  parameters
+
+2009-04-08 08:16  Luigi Ballabio
+
+	* [r16123] ql/pricingengines/bond/all.hpp:
+	  
+	  Added new files to autotools build
+
+2009-04-08 08:15  Luigi Ballabio
+
+	* [r16122] ql/pricingengines/bond/Makefile.am:
+	  
+	  Added new files to autotools build
+
+2009-04-07 19:04  Ferdinando Ametrano
+
+	* [r16121] ql/pricingengines/bond/yield.cpp,
+	  ql/pricingengines/bond/yield.hpp,
+	  ql/pricingengines/bond/zspread.cpp,
+	  ql/pricingengines/bond/zspread.hpp:
+	  
+	  using forward declarations to reduce header dependencies
+
+2009-04-07 18:44  Ferdinando Ametrano
+
+	* [r16120] ql/instruments/bond.cpp, ql/instruments/bond.hpp:
+	  
+	  removed redundant Bond methods
+
+2009-04-07 18:39  Ferdinando Ametrano
+
+	* [r16119] ql/termstructures/yield/fittedbonddiscountcurve.cpp,
+	  test-suite/bonds.cpp:
+	  
+	  using yield functions instead of equivalent Bond methods
+
+2009-04-07 18:31  Ferdinando Ametrano
+
+	* [r16118]
+	  ql/experimental/amortizingbonds/amortizingfixedratebond.hpp:
+	  
+	  removed ambiguous methods: IRR can be calculated with a frequency
+	  and day-count different from the bond ones
+
+2009-04-07 18:07  Ferdinando Ametrano
+
+	* [r16117] QuantLib_vc9.vcproj:
+	  
+	  VC8 catching up
+
+2009-04-07 17:50  Ferdinando Ametrano
+
+	* [r16116] QuantLib_vc8.vcproj, ql/instruments/bond.cpp,
+	  ql/pricingengines/bond/yield.cpp, ql/pricingengines/bond/yield.hpp,
+	  ql/pricingengines/bond/zspread.cpp:
+	  
+	  moved yield calculation in its own file (as for the z-spread
+	  calculation)
+
+2009-04-07 16:11  Ferdinando Ametrano
+
+	* [r16115] ql/instruments/bond.cpp:
+	  
+	  formatting
+
+2009-04-07 16:07  Ferdinando Ametrano
+
+	* [r16114] ql/pricingengines/bond/zspread.cpp,
+	  ql/pricingengines/bond/zspread.hpp, test-suite/assetswap.cpp:
+	  
+	  improved z-spread calculation and removed redundant dirty-price
+	  based interface
+
+2009-04-06 16:01  Ferdinando Ametrano
+
+	* [r16112]
+	  ql/termstructures/volatility/swaption/swaptionvolstructure.cpp:
+	  
+	  fixed bug with more robust homogeneous swap length calculation (this
+	  fixes today's unit test failure )
+
+2009-04-06 12:32  Luigi Ballabio
+
+	* [r16111] QuantLib_vc8.vcproj, QuantLib_vc9.vcproj:
+	  
+	  VC8 and 9 catching up too much
+
+2009-04-06 09:49  Ferdinando Ametrano
+
+	* [r16110] QuantLib_vc9.vcproj:
+	  
+	  VC9 catching up
+
+2009-04-06 09:48  Ferdinando Ametrano
+
+	* [r16109] QuantLib_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2009-04-06 09:47  Ferdinando Ametrano
+
+	* [r16108] test-suite/fdmlinearop.cpp:
+	  
+	  avoided warning
+
+2009-04-06 08:08  Luigi Ballabio
+
+	* [r16107] Contributors.txt, Docs/pages/authors.docs,
+	  ql/pricingengines/bond/zspread.cpp,
+	  ql/pricingengines/bond/zspread.hpp:
+	  
+	  Added implied z-spread calculation (thanks to Nathan Abbott)
+
+2009-04-03 12:31  Luigi Ballabio
+
+	* [r16105] ql/instruments/bond.cpp, ql/instruments/bond.hpp,
+	  ql/pricingengines/bond/Makefile.am, ql/pricingengines/bond/all.hpp,
+	  ql/pricingengines/bond/zspread.cpp,
+	  ql/pricingengines/bond/zspread.hpp, test-suite/assetswap.cpp:
+	  
+	  Moved z-spread calculations in separate file
+
+2009-04-01 16:18  Luigi Ballabio
+
+	* [r16104] ql/math/array.hpp,
+	  ql/math/interpolations/kernelinterpolation.hpp,
+	  ql/math/linearleastsquaresregression.hpp:
+	  
+	  Replaced Array(std::vector) constructor with the more generic
+	  Array(begin,end)
+
+2009-04-01 16:17  Luigi Ballabio
+
+	* [r16103] ql/models/marketmodels/correlations/expcorrelations.cpp,
+	  ql/models/marketmodels/models/ctsmmcapletcalibration.cpp,
+	  ql/utilities/dataformatters.hpp,
+	  test-suite/marketmodel_smmcapletalphacalibration.cpp,
+	  test-suite/marketmodel_smmcapletcalibration.cpp,
+	  test-suite/marketmodel_smmcaplethomocalibration.cpp:
+	  
+	  Added data formatter for sequences.
+	  This avoids using a conversion to Array for cosmetic purposes.
+
+2009-04-01 13:15  Luigi Ballabio
+
+	* [r16102] ql/experimental/amortizingbonds/amortizingcmsratebond.cpp,
+	  ql/experimental/amortizingbonds/amortizingcmsratebond.hpp,
+	  ql/experimental/amortizingbonds/amortizingfixedratebond.cpp,
+	  ql/experimental/amortizingbonds/amortizingfixedratebond.hpp,
+	  ql/experimental/amortizingbonds/amortizingfloatingratebond.cpp,
+	  ql/experimental/amortizingbonds/amortizingfloatingratebond.hpp:
+	  
+	  Removed confusing redemptions vector from constructor's argument
+	  list
+
+2009-04-01 13:14  Luigi Ballabio
+
+	* [r16101] ql/instruments/bond.hpp:
+	  
+	  Documented internal method
+
+2009-04-01 08:23  Luigi Ballabio
+
+	* [r16099] Contributors.txt, Docs/pages/authors.docs,
+	  ql/math/Makefile.am, ql/math/all.hpp,
+	  ql/math/interpolations/Makefile.am, ql/math/interpolations/all.hpp,
+	  ql/math/interpolations/kernelinterpolation.hpp,
+	  ql/math/kernelfunctions.hpp, test-suite/interpolations.cpp,
+	  test-suite/interpolations.hpp:
+	  
+	  Added kernel interpolation (thanks to Dimitri Reiswich)
+
+2009-03-31 12:39  Luigi Ballabio
+
+	* [r16097] Contributors.txt, Docs/pages/authors.docs,
+	  ql/math/optimization/Makefile.am, ql/math/optimization/all.hpp,
+	  ql/math/optimization/bfgs.cpp, ql/math/optimization/bfgs.hpp,
+	  ql/math/optimization/conjugategradient.cpp,
+	  ql/math/optimization/conjugategradient.hpp,
+	  ql/math/optimization/linesearchbasedmethod.cpp,
+	  ql/math/optimization/linesearchbasedmethod.hpp,
+	  ql/math/optimization/steepestdescent.cpp,
+	  ql/math/optimization/steepestdescent.hpp, test-suite/optimizers.cpp:
+	  
+	  Added BFGS optimizer (thanks to Frederic Degraeve)
+
+2009-03-28 14:37  Klaus Spanderen
+
+	* [r16096] test-suite/fdmlinearop.cpp,
+	  test-suite/hybridhestonhullwhiteprocess.cpp:
+	  
+	  avoid negative forward rates in test cases
+
+2009-03-27 16:06  Ferdinando Ametrano
+
+	* [r16091] ql/termstructures/yield/discountcurve.hpp,
+	  ql/termstructures/yield/forwardcurve.hpp,
+	  ql/termstructures/yield/piecewiseyieldcurve.hpp,
+	  ql/termstructures/yield/zerocurve.hpp:
+	  
+	  added data method
+
+2009-03-27 16:05  Luigi Ballabio
+
+	* [r16090] ql/utilities/dataformatters.cpp:
+	  
+	  Reverted Rev16086
+
+2009-03-27 16:04  Ferdinando Ametrano
+
+	* [r16089] ql/cashflows/cashflows.cpp:
+	  
+	  
+
+2009-03-27 15:41  Ferdinando Ametrano
+
+	* [r16088] ql/termstructures/yield/forwardcurve.hpp:
+	  
+	  
+
+2009-03-27 14:52  Ferdinando Ametrano
+
+	* [r16087]
+	  ql/termstructures/credit/interpolateddefaultdensitycurve.hpp,
+	  ql/termstructures/credit/interpolatedhazardratecurve.hpp,
+	  ql/termstructures/credit/interpolatedsurvivalprobabilitycurve.hpp:
+	  
+	  - implemented flat hazard rate extrapolation for
+	  InterpolatedSurvivalProbabilityCurve.
+	  - InterpolatedDefaultDensityCurve is still using flat default
+	  density extrapolation (to be revisited)
+
+2009-03-27 14:43  Ferdinando Ametrano
+
+	* [r16086] ql/utilities/dataformatters.cpp:
+	  
+	  removed awkward space before percent sign. Revert this if you don't
+	  agree
+
+2009-03-27 13:21  Luigi Ballabio
+
+	* [r16085] ql/math/interpolations/cubicinterpolation.hpp,
+	  ql/math/interpolations/loginterpolation.hpp:
+	  
+	  Fixes for gcc compilation
+
+2009-03-27 11:44  Ferdinando Ametrano
+
+	* [r16084]
+	  ql/experimental/finitedifferences/fdmblackscholessolver.cpp,
+	  ql/math/interpolations/cubicinterpolation.hpp,
+	  ql/math/interpolations/loginterpolation.hpp:
+	  
+	  - added (Log)CubicInterpolation convenience classes, with
+	  homogeneous nomenclature (borrowed from QuantLibXL)
+	  - switched from CubicNaturalSpline to MonotonicCubicNaturalSpline in
+	  FdmBlackScholesSolver to avoid possible spurious waviness
+
+2009-03-26 15:34  Ferdinando Ametrano
+
+	* [r16082] ql/termstructures/yield/discountcurve.hpp,
+	  ql/termstructures/yield/forwardcurve.hpp,
+	  ql/termstructures/yield/zerocurve.hpp:
+	  
+	  implemented flat (instantaneous) forward extrapolation for
+	  InterpolatedDiscountCurve and InterpolatedZeroCurve
+
+2009-03-25 17:18  Luigi Ballabio
+
+	* [r16079] ql/termstructures/yield/zerocurve.hpp:
+	  
+	  Another fix
+
+2009-03-25 16:58  Ferdinando Ametrano
+
+	* [r16078]
+	  ql/termstructures/credit/interpolateddefaultdensitycurve.hpp,
+	  ql/termstructures/credit/interpolatedhazardratecurve.hpp,
+	  ql/termstructures/credit/interpolatedsurvivalprobabilitycurve.hpp:
+	  
+	  added non-negative hazard constraint to
+	  InterpolatedSurvivalProbabilityCurve
+
+2009-03-25 16:48  Ferdinando Ametrano
+
+	* [r16077] ql/termstructures/yieldtermstructure.cpp:
+	  
+	  fixed extrapolation exception due to (right) finite differences
+	  calculation and switched to centered algorithm
+
+2009-03-25 16:45  Ferdinando Ametrano
+
+	* [r16076] ql/experimental/credit/spreadedhazardratecurve.hpp:
+	  
+	  improved documentation
+
+2009-03-25 16:45  Ferdinando Ametrano
+
+	* [r16075] ql/termstructures/yield/discountcurve.hpp,
+	  ql/termstructures/yield/zerocurve.hpp:
+	  
+	  those boring picky compilers...
+
+2009-03-25 16:37  Ferdinando Ametrano
+
+	* [r16074] ql/termstructures/yield/discountcurve.hpp,
+	  ql/termstructures/yield/forwardcurve.hpp:
+	  
+	  fixed non-negative rate requirement
+
+2009-03-25 15:00  Ferdinando Ametrano
+
+	* [r16073]
+	  ql/termstructures/credit/interpolateddefaultdensitycurve.hpp,
+	  ql/termstructures/credit/interpolatedhazardratecurve.hpp:
+	  
+	  "fixed" t=0 value
+	  warning: these files still needs a check as the interpolant
+	  primitive constant does not grant consistency with the required
+	  value at t=0
+
+2009-03-25 14:58  Ferdinando Ametrano
+
+	* [r16072] ql/termstructures/voltermstructure.hpp,
+	  ql/termstructures/yield/forwardstructure.hpp,
+	  ql/termstructures/yieldtermstructure.hpp:
+	  
+	  removed useless default virtual destructor
+
+2009-03-25 14:56  Ferdinando Ametrano
+
+	* [r16071] ql/termstructures/credit/defaultdensitystructure.hpp,
+	  ql/termstructures/credit/flathazardrate.hpp,
+	  ql/termstructures/credit/hazardratestructure.hpp,
+	  ql/termstructures/credit/interpolatedsurvivalprobabilitycurve.hpp,
+	  ql/termstructures/credit/survivalprobabilitystructure.hpp,
+	  ql/termstructures/yield/discountcurve.hpp,
+	  ql/termstructures/yield/fittedbonddiscountcurve.hpp,
+	  ql/termstructures/yield/forwardcurve.hpp,
+	  ql/termstructures/yield/forwardspreadedtermstructure.hpp,
+	  ql/termstructures/yield/impliedtermstructure.hpp,
+	  ql/termstructures/yield/zeroyieldstructure.hpp:
+	  
+	  improved documentation
+
+2009-03-25 14:44  Ferdinando Ametrano
+
+	* [r16070] ql/termstructures/yield/zerocurve.hpp:
+	  
+	  fixed non-negative rate requirement
+
+2009-03-25 11:19  Luigi Ballabio
+
+	* [r16069] ql/termstructures/yield/forwardstructure.hpp:
+	  
+	  Formula embellishment
+
+2009-03-25 10:49  Ferdinando Ametrano
+
+	* [r16068] ql/termstructures/credit/hazardratestructure.hpp,
+	  ql/termstructures/credit/survivalprobabilitystructure.hpp,
+	  ql/termstructures/defaulttermstructure.cpp,
+	  ql/termstructures/defaulttermstructure.hpp:
+	  
+	  improved documentation
+
+2009-03-25 10:33  Ferdinando Ametrano
+
+	* [r16067] ql/termstructures/credit/interpolatedhazardratecurve.hpp:
+	  
+	  removed unused assignment
+	  warning: it needed and still needs a check as the interpolant
+	  primitive constant does not grant consistency with the required
+	  value at t=0
+
+2009-03-25 10:31  Ferdinando Ametrano
+
+	* [r16066] ql/termstructures/yield/forwardstructure.hpp:
+	  
+	  improved documentation
+
+2009-03-25 10:31  Ferdinando Ametrano
+
+	* [r16065] ql/termstructures/yield/forwardcurve.hpp:
+	  
+	  added flat extrapolation
+	  warning: it needed and still needs a check as the interpolant
+	  primitive constant does not grant consistency with the required
+	  value at t=0
+
+2009-03-25 10:27  Ferdinando Ametrano
+
+	* [r16064] ql/termstructures/yieldtermstructure.hpp:
+	  
+	  removed obsolete todo and fixed documentation
+
+2009-03-25 10:16  Luigi Ballabio
+
+	* [r16063] Examples/FittedBondCurve/FittedBondCurve.cpp:
+	  
+	  Fixed old method call
+
+2009-03-25 10:14  Ferdinando Ametrano
+
+	* [r16062] ql/termstructures/localbootstrap.hpp:
+	  
+	  in synch with Rev16055
+
+2009-03-25 10:14  Luigi Ballabio
+
+	* [r16061] ql/termstructures/defaulttermstructure.hpp:
+	  
+	  Not a typo
+
+2009-03-25 09:15  Ferdinando Ametrano
+
+	* [r16060] ql/termstructures/defaulttermstructure.hpp:
+	  
+	  fixed a typo and replaced today with reference date/time
+
+2009-03-24 17:14  Ferdinando Ametrano
+
+	* [r16057]
+	  ql/termstructures/volatility/swaption/swaptionvoldiscrete.hpp:
+	  
+	  fixed documentation
+
+2009-03-24 15:03  Ferdinando Ametrano
+
+	* [r16056] ql/patterns/observable.hpp:
+	  
+	  fixed typo
+
+2009-03-24 10:59  Ferdinando Ametrano
+
+	* [r16055] ql/termstructures/bootstraphelper.hpp,
+	  ql/termstructures/inflation/inflationhelpers.cpp,
+	  ql/termstructures/iterativebootstrap.hpp,
+	  ql/termstructures/yield/fittedbonddiscountcurve.cpp:
+	  
+	  added BootstrapHelper::quote() inspector in order to clean up
+	  redundant Quote interface duplication
+
+2009-03-24 10:36  Ferdinando Ametrano
+
+	* [r16054] QuantLib_vc9.vcproj:
+	  
+	  VC9 catching up
+
+2009-03-23 11:14  Luigi Ballabio
+
+	* [r16051]
+	  ql/termstructures/credit/interpolatedsurvivalprobabilitycurve.hpp:
+	  
+	  Added specialized defaultDensity() implementation
+
+2009-03-23 08:11  Luigi Ballabio
+
+	* [r16050] Contributors.txt, Docs/pages/authors.docs:
+	  
+	  
+
+2009-03-20 18:35  Ferdinando Ametrano
+
+	* [r16049]
+	  ql/termstructures/credit/interpolateddefaultdensitycurve.hpp,
+	  ql/termstructures/credit/interpolatedhazardratecurve.hpp,
+	  ql/termstructures/credit/interpolatedsurvivalprobabilitycurve.hpp,
 	  ql/termstructures/yield/discountcurve.hpp,
 	  ql/termstructures/yield/forwardcurve.hpp,
 	  ql/termstructures/yield/zerocurve.hpp:
 	  
-	  Fixes for generated documentation
+	  added homogeneous checks, inlining, etc
 
-2008-11-11 10:33  Luigi Ballabio
+2009-03-20 18:23  Ferdinando Ametrano
 
-	* [r15750] ql/math/optimization/spherecylinder.cpp:
+	* [r16048] ql/termstructures/yield/forwardstructure.hpp:
 	  
-	  Tentative fix for Solaris
+	  removed inhomogeneous default values
 
-2008-11-10 15:54  Luigi Ballabio
+2009-03-20 18:22  Ferdinando Ametrano
 
-	* [r15748] ql/experimental/lattices/extendedbinomialtree.hpp:
+	* [r16047] ql/termstructures/yield/zeroyieldstructure.hpp:
 	  
-	  Added virtual destructor where missing
-
-2008-11-10 15:54  Luigi Ballabio
-
-	* [r15747] ChangeLog.txt:
 	  
-	  Updated changelog
 
-2008-11-10 15:53  Luigi Ballabio
+2009-03-20 17:56  Ferdinando Ametrano
 
-	* [r15746] Docs/pages/history.docs, News.txt:
+	* [r16046] QuantLib_vc8.vcproj,
+	  ql/termstructures/credit/probabilitytraits.hpp:
 	  
-	  Updated news
+	  minor tweaks
 
-2008-11-07 11:34  Luigi Ballabio
+2009-03-20 15:51  Luigi Ballabio
 
-	* [r15739] ql/models/marketmodels/pathwisediscounter.cpp,
-	  ql/models/marketmodels/products/pathwise/pathwiseproductswaption.hpp:
+	* [r16045] ql/instruments/barrieroption.cpp,
+	  ql/instruments/dividendvanillaoption.cpp,
+	  ql/instruments/impliedvolatility.cpp,
+	  ql/instruments/impliedvolatility.hpp,
+	  ql/instruments/vanillaoption.cpp:
 	  
-	  Fixed trailing/leading empty lines
+	  Moved ImpliedVolatilityHelper class inside namespace detail
 
-2008-11-07 11:33  Luigi Ballabio
+2009-03-20 13:57  Ferdinando Ametrano
 
-	* [r15738] ql/models/marketmodels/pathwisegreeks/vegabumpcluster.cpp:
+	* [r16044] ql/instruments/assetswap.hpp:
 	  
-	  Added copyright notice
+	  added inspector
 
-2008-11-07 11:16  Luigi Ballabio
+2009-03-20 10:15  Luigi Ballabio
 
-	* [r15736]
-	  ql/experimental/finitedifferences/dividendbarrieroption.hpp,
+	* [r16043] ql/termstructures/credit/survivalprobabilitystructure.cpp,
+	  ql/termstructures/credit/survivalprobabilitystructure.hpp:
+	  
+	  Fixed formulas for hazard rate and default density (differentiation
+	  was missing)
+
+2009-03-20 10:13  Luigi Ballabio
+
+	* [r16042] ql/termstructures/credit/Makefile.am,
+	  ql/termstructures/credit/all.hpp:
+	  
+	  Added new files to autotools build
+
+2009-03-20 10:12  Luigi Ballabio
+
+	* [r16041] ql/termstructures/credit/hazardratestructure.cpp,
+	  ql/termstructures/credit/hazardratestructure.hpp:
+	  
+	  Moved implementation back to .cpp file (virtual methods are not
+	  going to get inlined anyway, and this way the header is less likely
+	  to change and trigger recompilation.)
+
+2009-03-19 19:04  Ferdinando Ametrano
+
+	* [r16040] QuantLib_vc8.vcproj,
+	  ql/termstructures/credit/hazardratestructure.cpp,
+	  ql/termstructures/credit/hazardratestructure.hpp,
+	  ql/termstructures/credit/interpolatedsurvivalprobabilitycurve.hpp,
+	  ql/termstructures/credit/probabilitytraits.hpp,
+	  ql/termstructures/credit/survivalprobabilitystructure.cpp,
+	  ql/termstructures/credit/survivalprobabilitystructure.hpp,
+	  test-suite/defaultprobabilitycurves.cpp,
+	  test-suite/defaultprobabilitycurves.hpp:
+	  
+	  added SurvivalProbability credit curve (test included)
+
+2009-03-19 17:06  Ferdinando Ametrano
+
+	* [r16038] ql/termstructures/defaulttermstructure.hpp:
+	  
+	  
+
+2009-03-19 15:13  Luigi Ballabio
+
+	* [r16036] test-suite/cdsoption.cpp, test-suite/creditdefaultswap.cpp,
+	  test-suite/defaultprobabilitycurves.cpp, test-suite/issuer.cpp:
+	  
+	  Sync with Rev16034
+
+2009-03-19 13:57  Ferdinando Ametrano
+
+	* [r16034] ql/instruments/creditdefaultswap.cpp,
+	  ql/termstructures/credit/flathazardrate.cpp,
+	  ql/termstructures/credit/flathazardrate.hpp:
+	  
+	  replaced ambiguous constructor with implicit settlementDays choice
+
+2009-03-19 11:27  Ferdinando Ametrano
+
+	* [r16033] ql/experimental/inflation/nominalyoyinflationcoupon.hpp:
+	  
+	  
+
+2009-03-19 09:55  Ferdinando Ametrano
+
+	* [r16031] ql/cashflows/averagebmacoupon.cpp,
+	  ql/cashflows/averagebmacoupon.hpp,
+	  ql/cashflows/capflooredcoupon.cpp,
+	  ql/cashflows/capflooredcoupon.hpp, ql/cashflows/cashflowvectors.hpp,
+	  ql/cashflows/cmscoupon.cpp, ql/cashflows/cmscoupon.hpp,
+	  ql/cashflows/coupon.cpp, ql/cashflows/coupon.hpp,
+	  ql/cashflows/digitalcmscoupon.cpp, ql/cashflows/digitalcoupon.cpp,
+	  ql/cashflows/digitaliborcoupon.cpp,
+	  ql/cashflows/fixedratecoupon.cpp, ql/cashflows/fixedratecoupon.hpp,
+	  ql/cashflows/floatingratecoupon.cpp,
+	  ql/cashflows/floatingratecoupon.hpp, ql/cashflows/iborcoupon.cpp,
+	  ql/cashflows/iborcoupon.hpp, ql/cashflows/rangeaccrual.cpp,
+	  ql/cashflows/rangeaccrual.hpp,
+	  ql/experimental/coupons/subperiodcoupons.cpp,
+	  ql/experimental/coupons/subperiodcoupons.hpp,
+	  ql/experimental/credit/riskybond.cpp,
+	  ql/experimental/inflation/inflationcoupon.cpp,
+	  ql/experimental/inflation/inflationcoupon.hpp,
+	  ql/experimental/inflation/nominalyoyinflationcoupon.cpp,
+	  ql/experimental/inflation/nominalyoyinflationcoupon.hpp,
+	  ql/experimental/overnightswap/eoniacoupon.cpp, test-suite/cms.cpp,
+	  test-suite/digitalcoupon.cpp, test-suite/rangeaccrual.cpp:
+	  
+	  - partially reverted Rev16029 to have date, nominal order (as it is
+	  a less invasive change than switching to nominal, date)
+	  - also reverted Rev18030
+
+2009-03-18 14:38  Ferdinando Ametrano
+
+	* [r16029] ql/cashflows/averagebmacoupon.cpp,
+	  ql/cashflows/averagebmacoupon.hpp,
+	  ql/cashflows/capflooredcoupon.cpp,
+	  ql/cashflows/capflooredcoupon.hpp, ql/cashflows/cashflowvectors.hpp,
+	  ql/cashflows/cmscoupon.cpp, ql/cashflows/cmscoupon.hpp,
+	  ql/cashflows/digitalcoupon.cpp, ql/cashflows/fixedratecoupon.cpp,
+	  ql/cashflows/fixedratecoupon.hpp,
+	  ql/cashflows/floatingratecoupon.cpp,
+	  ql/cashflows/floatingratecoupon.hpp, ql/cashflows/iborcoupon.cpp,
+	  ql/cashflows/iborcoupon.hpp, ql/cashflows/rangeaccrual.cpp,
+	  ql/cashflows/rangeaccrual.hpp,
+	  ql/experimental/coupons/subperiodcoupons.cpp,
+	  ql/experimental/credit/riskybond.cpp,
+	  ql/experimental/overnightswap/eoniacoupon.cpp, test-suite/cms.cpp,
+	  test-suite/digitalcoupon.cpp:
+	  
+	  cleaned up code:
+	  - added empty notional check where missing
+	  - reordered input parameters so that it's always notional, date
+	  - inlined one-line methods
+
+2009-03-17 14:51  Luigi Ballabio
+
+	* [r16027] ql/experimental/inflation/inflationcappedcouponpricer.cpp:
+	  
+	  Fix for VC++7.1 compilation
+
+2009-03-17 14:47  Luigi Ballabio
+
+	* [r16026] QuantLib.dev, QuantLib_vc7.vcproj, QuantLib_vc8.vcproj,
+	  QuantLib_vc9.vcproj, test-suite/testsuite.dev,
+	  test-suite/testsuite_vc7.vcproj, test-suite/testsuite_vc9.vcproj:
+	  
+	  Updated VC++ and Dev-C++ projects
+
+2009-03-16 16:43  Luigi Ballabio
+
+	* [r16023]
+	  ql/experimental/inflation/interpolatedyoyoptionletstripper.hpp:
+	  
+	  Fix for modified data member in const method
+
+2009-03-12 12:48  Luigi Ballabio
+
+	* [r16020]
+	  ql/experimental/inflation/piecewiseyoyoptionletvolatility.hpp:
+	  
+	  Added required typedefs
+
+2009-03-11 17:40  Ferdinando Ametrano
+
+	* [r16014] ql/instruments/assetswap.cpp, ql/instruments/assetswap.hpp:
+	  
+	  cleaned code, added checks and warning
+
+2009-03-11 11:21  Ferdinando Ametrano
+
+	* [r16011] QuantLib_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2009-03-08 21:04  Klaus Spanderen
+
+	* [r15998] ql/experimental/finitedifferences/fdmhestonsolver.hpp:
+	  
+	  added comment
+
+2009-03-06 11:41  Luigi Ballabio
+
+	* [r15991] ql/legacy/pricers/Makefile.am, ql/legacy/pricers/all.hpp,
+	  ql/legacy/pricers/discretegeometricaso.cpp,
+	  ql/legacy/pricers/discretegeometricaso.hpp,
+	  ql/legacy/pricers/singleassetoption.cpp,
+	  ql/legacy/pricers/singleassetoption.hpp,
+	  ql/pricingengines/asian/Makefile.am,
+	  ql/pricingengines/asian/all.hpp,
+	  ql/pricingengines/asian/analytic_discr_geom_av_strike.cpp,
+	  ql/pricingengines/asian/analytic_discr_geom_av_strike.hpp,
+	  test-suite/asianoptions.cpp, test-suite/asianoptions.hpp:
+	  
+	  Migrated old average-strike option pricer to pricing-engine
+	  framework (thanks to IMAFA students Jean Nkeng, Adrien Pinatton, and
+	  Alpha Sanou Toure)
+
+2009-03-05 18:54  Ferdinando Ametrano
+
+	* [r15988] ql/instruments/assetswap.cpp:
+	  
+	  
+
+2009-03-05 18:11  Ferdinando Ametrano
+
+	* [r15985] ql/instruments/assetswap.cpp, ql/instruments/assetswap.hpp,
+	  test-suite/assetswap.cpp:
+	  
+	  fixed bug: fair (clean) price was not correct for non-par (aka
+	  tel-quel, market) asset swap
+
+2009-03-05 18:09  Ferdinando Ametrano
+
+	* [r15984] ql/event.hpp:
+	  
+	  fixed typo
+
+2009-03-04 11:50  Luigi Ballabio
+
+	* [r15983] QuantLib_vc8.vcproj, QuantLib_vc9.vcproj, ql/time/imm.cpp,
+	  ql/utilities/dataparsers.cpp, ql/utilities/dataparsers.hpp,
+	  ql/utilities/lexicalcastwrapper.cpp,
+	  ql/utilities/lexicalcastwrapper.hpp:
+	  
+	  Moved lexical-cast wrapper (with new name) together with the
+	  existing data parsers
+
+2009-03-04 06:19  Mark Joshi
+
+	* [r15982] QuantLib_vc8.vcproj, QuantLib_vc9.vcproj, ql/time/imm.cpp,
+	  ql/utilities/dataparsers.cpp, ql/utilities/lexicalcastwrapper.cpp,
+	  ql/utilities/lexicalcastwrapper.hpp:
+	  
+	  moved lexical_cast to one location to isolate issues and added
+	  conditional compilation
+
+2009-03-03 15:44  Luigi Ballabio
+
+	* [r15979] ql/time/date.hpp, ql/utilities/null.hpp:
+	  
+	  Moved Null<Date> specialization with Date class
+
+2009-03-03 06:07  Mark Joshi
+
+	* [r15978] Examples/BermudanSwaption/BermudanSwaption_vc9.vcproj,
+	  Examples/Bonds/Bonds_vc9.vcproj, Examples/CDS/CDS_vc9.vcproj,
+	  Examples/CallableBonds/CallableBonds_vc9.vcproj,
+	  Examples/ConvertibleBonds/ConvertibleBonds_vc9.vcproj,
+	  Examples/DiscreteHedging/DiscreteHedging_vc9.vcproj,
+	  Examples/EquityOption/EquityOption_vc9.vcproj,
+	  Examples/FRA/FRA_vc9.vcproj,
+	  Examples/FittedBondCurve/FittedBondCurve_vc9.vcproj,
+	  Examples/Replication/Replication_vc9.vcproj,
+	  Examples/Repo/Repo_vc9.vcproj, Examples/Swap/Swap_vc9.vcproj,
+	  QuantLib_vc9.sln, QuantLib_vc9.vcproj, ql/math/array.hpp,
+	  ql/math/statistics/histogram.cpp, ql/prices.hpp,
+	  ql/pricingengines/mcsimulation.hpp, ql/utilities/null.hpp,
+	  test-suite/fdmlinearop.cpp,
+	  test-suite/mclongstaffschwartzengine.cpp,
+	  test-suite/testsuite_vc9.vcproj:
+	  
+	  now builds and passes all tests under x64 for visual studio 2008
+
+2009-03-02 14:22  Luigi Ballabio
+
+	* [r15976] ql/time/calendars/china.cpp, ql/time/calendars/china.hpp,
+	  ql/time/calendars/hongkong.cpp, ql/time/calendars/hongkong.hpp,
+	  ql/time/calendars/india.cpp, ql/time/calendars/india.hpp,
+	  ql/time/calendars/indonesia.cpp, ql/time/calendars/indonesia.hpp,
+	  ql/time/calendars/singapore.cpp, ql/time/calendars/singapore.hpp,
+	  ql/time/calendars/taiwan.cpp, ql/time/calendars/taiwan.hpp:
+	  
+	  Updated holidays for 2009
+
+2009-03-02 12:23  Luigi Ballabio
+
+	* [r15975] Examples/FittedBondCurve/FittedBondCurve.cpp,
+	  ql/termstructures/yield/bondhelpers.cpp:
+	  
+	  Fixes for example
+
+2009-03-02 09:26  Luigi Ballabio
+
+	* [r15974] test-suite/convertiblebonds.cpp, test-suite/utilities.hpp:
+	  
+	  Avoided warnings
+
+2009-02-27 18:24  Ferdinando Ametrano
+
+	* [r15972] ql/termstructures/yield/bondhelpers.cpp:
+	  
+	  fixed bug: initializeDates was not used.
+	  cleaned up FixedRateBondHelper constructor
+
+2009-02-27 17:13  Ferdinando Ametrano
+
+	* [r15971] ql/termstructures/yield/bondhelpers.cpp,
+	  ql/termstructures/yield/bondhelpers.hpp,
+	  ql/termstructures/yield/fittedbonddiscountcurve.cpp:
+	  
+	  introduced generic BondHelper which allow any kind of bond to be
+	  used in yield curve bootstrapping.
+	  The previous restriction to FixedRateBond was too strong; any bond
+	  can be used to bootstrap a discount yield curve, provided its
+	  cashflows do not depend on the curve being bootstrapped
+
+2009-02-27 16:02  Ferdinando Ametrano
+
+	* [r15970] ql/termstructures/yield/bondhelpers.cpp,
+	  ql/termstructures/yield/bondhelpers.hpp:
+	  
+	  derived FixedRateBondHelper from RelativeDateRateHelper in order to
+	  calculate sensible values for earliestDate_
+
+2009-02-27 15:50  Ferdinando Ametrano
+
+	* [r15968] ql/cashflows/cashflows.cpp, ql/cashflows/cashflows.hpp,
+	  ql/instruments/bond.cpp, ql/instruments/bond.hpp:
+	  
+	  added nextCouponDate and previousCouponDate
+
+2009-02-27 14:36  Ferdinando Ametrano
+
+	* [r15967] ql/termstructures/yield/fittedbonddiscountcurve.cpp:
+	  
+	  explicit up-casting
+
+2009-02-27 14:33  Ferdinando Ametrano
+
+	* [r15966] QuantLib_vc8.vcproj, QuantLib_vc9.vcproj:
+	  
+	  VC8/9 catching up
+
+2009-02-27 12:58  Luigi Ballabio
+
+	* [r15965] ql/processes/blackscholesprocess.cpp,
+	  ql/processes/blackscholesprocess.hpp:
+	  
+	  Disabled wrongly implemented expectation method in Black-Scholes
+	  process
+
+2009-02-25 10:53  Luigi Ballabio
+
+	* [r15964] ql/methods/montecarlo/brownianbridge.hpp:
+	  
+	  Improved documentation (thanks to Bojan Nikolic)
+
+2009-02-24 15:19  Luigi Ballabio
+
+	* [r15962] Examples/CDS/CDS.cpp, ql/Makefile.am, ql/default.hpp,
+	  ql/experimental/credit/Makefile.am, ql/experimental/credit/all.hpp,
+	  ql/experimental/credit/basket.hpp,
+	  ql/experimental/credit/blackcdsoptionengine.cpp,
+	  ql/experimental/credit/blackcdsoptionengine.hpp,
+	  ql/experimental/credit/cdsoption.cpp,
+	  ql/experimental/credit/cdsoption.hpp,
+	  ql/experimental/credit/issuer.cpp,
+	  ql/experimental/credit/issuer.hpp,
+	  ql/experimental/credit/nthtodefault.cpp,
+	  ql/experimental/credit/nthtodefault.hpp,
+	  ql/experimental/credit/pool.hpp,
+	  ql/experimental/credit/riskybond.cpp,
+	  ql/experimental/credit/riskybond.hpp,
+	  ql/experimental/credit/syntheticcdo.hpp,
+	  ql/instruments/creditdefaultswap.cpp,
+	  ql/instruments/creditdefaultswap.hpp, ql/issuer.cpp, ql/issuer.hpp,
+	  ql/pricingengines/credit/integralcdsengine.cpp,
+	  ql/pricingengines/credit/integralcdsengine.hpp,
+	  ql/pricingengines/credit/midpointcdsengine.cpp,
+	  ql/pricingengines/credit/midpointcdsengine.hpp, ql/quantlib.hpp,
+	  ql/termstructures/credit/defaultprobabilityhelpers.cpp,
+	  test-suite/cdsoption.cpp, test-suite/creditdefaultswap.cpp,
+	  test-suite/defaultprobabilitycurves.cpp, test-suite/issuer.cpp,
+	  test-suite/nthtodefault.cpp:
+	  
+	  Removed broken Issuer abstraction from core library.
+	  
+	  The Issuer class failed to take into account the possibility of
+	  several
+	  default-probability curves and recovery rates for each issuer, based
+	  on
+	  seniority or currency.
+	  In most instrument and pricing engines, instances of Issuer were
+	  replaced
+	  by the data members it contained. The Issuer class itself was moved
+	  to
+	  ql/experimental/credit to support the SyntheticCDO class, which uses
+	  it
+	  for the Pool and Basket classes and might used as a case study for
+	  finding
+	  the correct abstraction.
+
+2009-02-24 14:38  Luigi Ballabio
+
+	* [r15959] configure.ac:
+	  
+	  Added checks for more math constants
+
+2009-02-24 14:37  Luigi Ballabio
+
+	* [r15958] test-suite/optionletstripper.cpp:
+	  
+	  Increased test tolerance
+
+2009-02-23 14:35  Luigi Ballabio
+
+	* [r15957] ql/cashflows/rangeaccrual.cpp,
+	  ql/experimental/amortizingbonds/amortizingfixedratebond.cpp,
+	  ql/experimental/credit/onefactorgaussiancopula.cpp,
+	  ql/experimental/credit/onefactorstudentcopula.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesvanillaengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonvanillaengine.cpp,
+	  ql/experimental/lattices/extendedbinomialtree.cpp,
+	  ql/experimental/varianceoption/integralhestonvarianceoptionengine.cpp,
+	  ql/instruments/bond.cpp, ql/math/integrals/kronrodintegral.cpp,
+	  ql/math/matrixutilities/basisincompleteordered.cpp,
+	  ql/math/optimization/spherecylinder.cpp, ql/math/quadratic.cpp,
+	  ql/math/randomnumbers/latticersg.cpp,
+	  ql/math/randomnumbers/latticerules.cpp, ql/math/surface.cpp,
+	  ql/methods/lattices/binomialtree.cpp,
+	  ql/models/marketmodels/evolvers/lognormalfwdrateeulerconstrained.cpp,
+	  ql/models/marketmodels/evolvers/volprocesses/squarerootandersen.cpp,
+	  ql/models/marketmodels/marketmodel.cpp,
+	  ql/models/marketmodels/models/alphafinder.cpp,
+	  ql/models/marketmodels/models/capletcoterminalalphacalibration.cpp,
+	  ql/models/marketmodels/models/capletcoterminalmaxhomogeneity.cpp,
+	  ql/models/marketmodels/models/capletcoterminalperiodic.cpp,
+	  ql/models/marketmodels/models/capletcoterminalswaptioncalibration.cpp,
+	  ql/models/marketmodels/pathwiseaccountingengine.cpp,
+	  ql/models/marketmodels/pathwisegreeks/ratepseudorootjacobian.cpp,
+	  ql/models/marketmodels/pathwisegreeks/swaptionpseudojacobian.cpp,
+	  ql/models/marketmodels/swapforwardmappings.cpp,
+	  ql/pricingengines/blackformula.cpp,
+	  ql/processes/gjrgarchprocess.cpp, ql/processes/hestonprocess.cpp,
+	  ql/processes/hullwhiteprocess.cpp,
+	  ql/termstructures/volatility/swaption/swaptionvolcube1.cpp:
+	  
+	  Fixes for Sun Solaris compilation (thanks to Andreas Spengler)
+
+2009-02-23 12:54  Luigi Ballabio
+
+	* [r15956] ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp,
+	  ql/termstructures/inflation/piecewisezeroinflationcurve.hpp:
+	  
+	  Workaround for VC++9
+
+2009-02-21 16:30  Klaus Spanderen
+
+	* [r15955] ql/pricingengines/asian/mcdiscreteasianengine.hpp,
+	  ql/pricingengines/vanilla/mcamericanengine.hpp,
+	  ql/pricingengines/vanilla/mchestonhullwhiteengine.hpp:
+	  
+	  avoid negative option pv's due to the usage of control variate
+
+2009-02-21 16:06  Klaus Spanderen
+
+	* [r15954] ql/compounding.hpp:
+	  
+	  removed needless include
+
+2009-02-21 13:57  Klaus Spanderen
+
+	* [r15953] ql/math/optimization/levenbergmarquardt.cpp:
+	  
+	  formatting
+
+2009-02-20 13:53  Luigi Ballabio
+
+	* [r15948] ql/cashflows/capflooredcoupon.cpp:
+	  
+	  Added check to prevent use of null value in calculations
+
+2009-02-20 13:37  Ferdinando Ametrano
+
+	* [r15947] ql/instruments/assetswap.cpp, ql/instruments/assetswap.hpp,
+	  test-suite/assetswap.cpp:
+	  
+	  removed redundant parameter
+
+2009-02-20 13:36  Ferdinando Ametrano
+
+	* [r15946] QuantLib_vc8.vcproj, QuantLib_vc9.vcproj:
+	  
+	  VC8/9 catching up
+
+2009-02-20 11:41  Luigi Ballabio
+
+	* [r15943] configure.ac, ql/instruments/inflationswap.cpp,
+	  ql/instruments/inflationswap.hpp,
+	  ql/instruments/yearonyearinflationswap.cpp,
+	  ql/instruments/yearonyearinflationswap.hpp,
+	  ql/instruments/zerocouponinflationswap.cpp,
+	  ql/instruments/zerocouponinflationswap.hpp,
+	  ql/pricingengines/Makefile.am, ql/pricingengines/all.hpp,
+	  ql/pricingengines/inflation,
+	  ql/pricingengines/inflation/Makefile.am,
+	  ql/pricingengines/inflation/all.hpp,
+	  ql/pricingengines/inflation/discountinginflationswapengines.cpp,
+	  ql/pricingengines/inflation/discountinginflationswapengines.hpp,
+	  ql/termstructures/inflation/inflationhelpers.cpp,
+	  ql/termstructures/inflation/inflationhelpers.hpp:
+	  
+	  Migrated inflation swaps to pricing-engine framework
+
+2009-02-19 14:09  Luigi Ballabio
+
+	* [r15941] ql/instruments/assetswap.cpp, ql/instruments/assetswap.hpp,
+	  ql/pricingengines/swap/discountingswapengine.cpp,
+	  test-suite/assetswap.cpp:
+	  
+	  Fully migrated AssetSwap to pricing-engine framework
+
+2009-02-19 09:53  Luigi Ballabio
+
+	* [r15940] ql/instruments/assetswap.cpp, ql/instruments/assetswap.hpp:
+	  
+	  Moved fall-back calculations into inspectors (which makes them more
+	  lazy)
+
+2009-02-18 23:30  Roland Lichters
+
+	* [r15939] ql/experimental/overnightswap/eoniacoupon.cpp:
+	  
+	  eonia swap spread on coupon rather than index
+
+2009-02-18 23:28  Roland Lichters
+
+	* [r15938] ql/experimental/credit/onefactorcopula.hpp:
+	  
+	  added lower integration bound to copula constructor
+
+2009-02-18 15:59  Luigi Ballabio
+
+	* [r15936] Docs/Makefile.am, Docs/images/QL.eps, Docs/images/QL.pdf,
+	  Docs/images/instrument.eps, Docs/images/instrument.pdf,
+	  Docs/qlintro.tex, Docs/quantlib.doxy, Docs/quantlibheader.tex,
+	  Makefile.am:
+	  
+	  Dropped pdf/ps targets (that have been broken for a while now)
+
+2009-02-17 16:28  Luigi Ballabio
+
+	* [r15933] Examples/EquityOption/EquityOption.cpp,
+	  ql/instruments/dividendvanillaoption.cpp,
+	  ql/instruments/vanillaoption.cpp,
+	  ql/pricingengines/vanilla/Makefile.am,
+	  ql/pricingengines/vanilla/fdamericanengine.hpp,
+	  ql/pricingengines/vanilla/fdbermudanengine.hpp,
+	  ql/pricingengines/vanilla/fddividendamericanengine.hpp,
+	  ql/pricingengines/vanilla/fddividendengine.cpp,
+	  ql/pricingengines/vanilla/fddividendengine.hpp,
+	  ql/pricingengines/vanilla/fddividendeuropeanengine.hpp,
+	  ql/pricingengines/vanilla/fddividendshoutengine.hpp,
+	  ql/pricingengines/vanilla/fdeuropeanengine.cpp,
+	  ql/pricingengines/vanilla/fdeuropeanengine.hpp,
+	  ql/pricingengines/vanilla/fdmultiperiodengine.cpp,
+	  ql/pricingengines/vanilla/fdmultiperiodengine.hpp,
+	  ql/pricingengines/vanilla/fdshoutengine.hpp,
+	  ql/pricingengines/vanilla/fdstepconditionengine.cpp,
+	  ql/pricingengines/vanilla/fdstepconditionengine.hpp,
+	  test-suite/americanoption.cpp, test-suite/dividendoption.cpp,
+	  test-suite/europeanoption.cpp, test-suite/hestonmodel.cpp,
+	  test-suite/mclongstaffschwartzengine.cpp:
+	  
+	  Added choice of evolver scheme to finite-difference vanilla engines.
+	  
+	  The available engines were turned into class templates, the template
+	  argument
+	  being the evolver. The default choice is Crank-Nicolson, which was
+	  the one
+	  hard-coded until now.
+
+2009-02-16 17:29  Ferdinando Ametrano
+
+	* [r15930] QuantLib_vc8.vcproj, QuantLib_vc9.vcproj:
+	  
+	  VC8/9 catching up
+
+2009-02-13 16:32  Luigi Ballabio
+
+	* [r15928] configure.ac, ql/experimental/Makefile.am,
+	  ql/experimental/all.hpp, ql/experimental/models,
+	  ql/experimental/models/Makefile.am, ql/experimental/models/all.hpp,
+	  ql/experimental/models/twomixmodel.cpp,
+	  ql/experimental/models/twomixmodel.hpp,
+	  ql/experimental/models/twomixmodelengines.cpp,
+	  ql/experimental/models/twomixmodelengines.hpp,
+	  ql/experimental/models/twomixmodelhelpers.cpp,
+	  ql/experimental/models/twomixmodelhelpers.hpp:
+	  
+	  Added two-component mixture models (thanks to Chris Kenyon)
+
+2009-02-13 16:31  Luigi Ballabio
+
+	* [r15927] ql/instruments/makecapfloor.cpp,
+	  ql/instruments/makecapfloor.hpp:
+	  
+	  Added method to create a single caplet/floorlet
+
+2009-02-13 12:19  Luigi Ballabio
+
+	* [r15926] ql/experimental/inflation/Makefile.am,
+	  ql/experimental/inflation/all.hpp,
+	  ql/experimental/inflation/inflationcapfloorengines.cpp,
+	  ql/experimental/inflation/inflationcapfloorengines.hpp,
+	  ql/experimental/inflation/interpolatedyoyoptionletstripper.hpp,
+	  ql/experimental/inflation/kinterpolatedyoyoptionletvolatilitysurface.hpp,
+	  ql/experimental/inflation/piecewiseyoyoptionletvolatility.hpp,
+	  ql/experimental/inflation/yoycapfloortermpricesurface.cpp,
+	  ql/experimental/inflation/yoycapfloortermpricesurface.hpp,
+	  ql/experimental/inflation/yoyoptionlethelpers.cpp,
+	  ql/experimental/inflation/yoyoptionlethelpers.hpp,
+	  ql/experimental/inflation/yoyoptionletstripper.hpp,
+	  ql/experimental/inflation/yoyoptionletvolatilitystructures.hpp:
+	  
+	  Added more inflation cap/floor volatility structures (thanks to
+	  Chris Kenyon)
+
+2009-02-13 00:38  Mark Joshi
+
+	* [r15925] ql/time/imm.cpp, ql/utilities/dataparsers.cpp:
+	  
+	  removed use of lexical_cast, with this change all of the QuantLib
+	  library compiles under VC9 with x64 toolset
+
+2009-02-12 13:59  Luigi Ballabio
+
+	* [r15924] ql/experimental/inflation/Makefile.am,
+	  ql/experimental/inflation/all.hpp,
+	  ql/experimental/inflation/inflationcapfloor.cpp,
+	  ql/experimental/inflation/inflationcapfloor.hpp,
+	  ql/experimental/inflation/inflationcapfloorengines.cpp,
+	  ql/experimental/inflation/inflationcapfloorengines.hpp,
+	  ql/experimental/inflation/inflationcouponpricer.hpp:
+	  
+	  Added experimental inflation cap/floor (thanks to Chris Kenyon)
+
+2009-02-12 11:16  Luigi Ballabio
+
+	* [r15923] ql/experimental/inflation/Makefile.am,
+	  ql/experimental/inflation/all.hpp,
+	  ql/experimental/inflation/genericindexes.hpp,
+	  ql/indexes/inflation/Makefile.am, ql/indexes/inflation/all.hpp,
+	  ql/indexes/inflation/aucpi.hpp, ql/indexes/inflation/frhicp.hpp:
+	  
+	  More inflation indexes (thanks to Chris Kenyon)
+
+2009-02-12 10:37  Ferdinando Ametrano
+
+	* [r15922] QuantLib_vc8.vcproj, QuantLib_vc9.vcproj:
+	  
+	  VC8/9 catching up
+
+2009-02-12 10:34  Ferdinando Ametrano
+
+	* [r15921] ql/experimental/inflation/inflationcoupon.cpp:
+	  
+	  fixed bug: unary minus operator applied to unsigned type, result
+	  still unsigned
+
+2009-02-12 09:04  Luigi Ballabio
+
+	* [r15920] configure.ac, ql/experimental/Makefile.am,
+	  ql/experimental/all.hpp, ql/experimental/inflation,
+	  ql/experimental/inflation/Makefile.am,
+	  ql/experimental/inflation/all.hpp,
+	  ql/experimental/inflation/capflooredinflationcoupon.cpp,
+	  ql/experimental/inflation/capflooredinflationcoupon.hpp,
+	  ql/experimental/inflation/inflationcappedcouponpricer.cpp,
+	  ql/experimental/inflation/inflationcappedcouponpricer.hpp,
+	  ql/experimental/inflation/inflationcoupon.cpp,
+	  ql/experimental/inflation/inflationcoupon.hpp,
+	  ql/experimental/inflation/inflationcouponpricer.cpp,
+	  ql/experimental/inflation/inflationcouponpricer.hpp,
+	  ql/experimental/inflation/nominalyoyinflationcoupon.cpp,
+	  ql/experimental/inflation/nominalyoyinflationcoupon.hpp,
+	  ql/experimental/inflation/yoyoptionletvolatilitystructures.hpp:
+	  
+	  Added experimental inflation coupons (thanks to Chris Kenyon)
+
+2009-02-11 17:19  Ferdinando Ametrano
+
+	* [r15918] test-suite/testsuite_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2009-02-11 11:16  Luigi Ballabio
+
+	* [r15917] Makefile.am, configure.ac, m4, m4/Makefile.am:
+	  
+	  Support for new libtool features
+
+2009-02-10 21:05  Klaus Spanderen
+
+	* [r15916] ql/math/linearleastsquaresregression.hpp,
+	  ql/methods/montecarlo/longstaffschwartzpathpricer.hpp,
+	  test-suite/linearleastsquaresregression.cpp,
+	  test-suite/linearleastsquaresregression.hpp:
+	  
+	  LinearLeastSquaresRegression improvements, added standardErrors and
+	  LinearRegression
+
+2009-02-10 14:25  Ferdinando Ametrano
+
+	* [r15915] QuantLib_vc9.vcproj, test-suite/testsuite_vc9.vcproj:
+	  
+	  VC9 catching up
+
+2009-02-10 14:03  Luigi Ballabio
+
+	* [r15914] ql/experimental/credit/blackcdsoptionengine.cpp,
+	  ql/experimental/credit/nthtodefault.cpp,
+	  ql/experimental/credit/riskybond.hpp,
+	  ql/experimental/credit/syntheticcdo.cpp, ql/issuer.cpp,
+	  ql/issuer.hpp, ql/pricingengines/credit/integralcdsengine.cpp,
+	  ql/pricingengines/credit/midpointcdsengine.cpp,
+	  test-suite/Makefile.am, test-suite/issuer.cpp,
+	  test-suite/issuer.hpp, test-suite/quantlibtestsuite.cpp:
+	  
+	  Added observability to Issuer class
+
+2009-02-09 16:39  Roland Lichters
+
+	* [r15912] ql/experimental/credit/randomdefaultmodel.cpp,
+	  ql/experimental/credit/randomdefaultmodel.hpp:
+	  
+	  add reset method to randomdefaultmodel.xpp
+
+2009-02-09 15:53  Luigi Ballabio
+
+	* [r15911] ql/termstructures/Makefile.am, ql/termstructures/all.hpp,
+	  ql/termstructures/credit/interpolateddefaultdensitycurve.hpp,
+	  ql/termstructures/credit/interpolatedhazardratecurve.hpp,
+	  ql/termstructures/inflation/interpolatedyoyinflationcurve.hpp,
+	  ql/termstructures/inflation/interpolatedzeroinflationcurve.hpp,
+	  ql/termstructures/interpolatedcurve.hpp,
+	  ql/termstructures/yield/discountcurve.hpp,
+	  ql/termstructures/yield/forwardcurve.hpp,
+	  ql/termstructures/yield/zerocurve.hpp,
+	  test-suite/piecewiseyieldcurve.cpp,
+	  test-suite/piecewiseyieldcurve.hpp:
+	  
+	  Restored copyability for interpolated yield, inflation, and credit
+	  curves
+
+2009-02-09 14:39  Ferdinando Ametrano
+
+	* [r15908] test-suite/fdheston.cpp:
+	  
+	  avoided warning
+
+2009-02-09 11:43  Ferdinando Ametrano
+
+	* [r15905] QuantLib_vc9.vcproj, test-suite/testsuite_vc9.vcproj:
+	  
+	  VC9 catching up
+
+2009-02-09 11:28  Ferdinando Ametrano
+
+	* [r15904] QuantLib_vc8.vcproj, test-suite/testsuite_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2009-02-09 10:38  Luigi Ballabio
+
+	* [r15903] test-suite/quantlibtestsuite.cpp:
+	  
+	  Added new test cases to test run
+
+2009-02-08 18:58  Roland Lichters
+
+	* [r15901] ql/experimental/overnightswap/eoniaswap.cpp,
+	  ql/experimental/overnightswap/eoniaswap.hpp, test-suite/Makefile.am,
+	  test-suite/eoniaswap.cpp, test-suite/eoniaswap.hpp:
+	  
+	  Eonia swap test and fixes
+
+2009-02-06 16:17  Luigi Ballabio
+
+	* [r15898] ql/instruments/vanillaswap.cpp,
+	  ql/instruments/vanillaswap.hpp:
+	  
+	  Prevented quietly using Following convention
+
+2009-02-06 12:56  Luigi Ballabio
+
+	* [r15897] ql/pricingengines/hybrid/binomialconvertibleengine.hpp,
+	  test-suite/convertiblebonds.cpp, test-suite/convertiblebonds.hpp:
+	  
+	  Added check for floating-point overflow
+
+2009-02-06 12:56  Luigi Ballabio
+
+	* [r15896] ql/termstructures/credit/probabilitytraits.hpp:
+	  
+	  higher hazard-rate limit
+
+2009-02-05 16:33  Luigi Ballabio
+
+	* [r15892] ql/experimental/credit/Makefile.am,
+	  ql/experimental/credit/all.hpp,
+	  ql/experimental/credit/blackcdsoptionengine.cpp,
+	  ql/experimental/credit/blackcdsoptionengine.hpp,
+	  ql/experimental/credit/cdsoption.cpp,
+	  ql/experimental/credit/cdsoption.hpp, test-suite/cdsoption.cpp:
+	  
+	  Refactored CDS options (thanks to Jose Aparicio)
+
+2009-02-05 15:16  Luigi Ballabio
+
+	* [r15891] configure.ac, ql/experimental/Makefile.am,
+	  ql/experimental/all.hpp, ql/experimental/compoundoption,
+	  ql/experimental/compoundoption/Makefile.am,
+	  ql/experimental/compoundoption/all.hpp,
+	  ql/experimental/compoundoption/analyticcompoundoptionengine.cpp,
+	  ql/experimental/compoundoption/analyticcompoundoptionengine.hpp,
+	  ql/experimental/compoundoption/compoundoption.cpp,
+	  ql/experimental/compoundoption/compoundoption.hpp,
+	  test-suite/Makefile.am, test-suite/compoundoption.cpp,
+	  test-suite/compoundoption.hpp, test-suite/quantlibtestsuite.cpp:
+	  
+	  Added experimental compound options (thanks to Dimitri Reiswich)
+
+2009-02-05 12:23  Luigi Ballabio
+
+	* [r15890] QuantLib_vc8.vcproj, QuantLib_vc9.vcproj,
+	  ql/models/marketmodels/evolvers/Makefile.am,
+	  ql/models/marketmodels/evolvers/all.hpp,
+	  ql/models/marketmodels/evolvers/lognormalfwdrateBalland.cpp,
+	  ql/models/marketmodels/evolvers/lognormalfwdrateBalland.hpp,
+	  ql/models/marketmodels/evolvers/lognormalfwdrateballand.cpp,
+	  ql/models/marketmodels/evolvers/lognormalfwdrateballand.hpp,
+	  test-suite/marketmodel.cpp:
+	  
+	  changed filename to lowercase; added to gcc build
+
+2009-02-05 03:03  Mark Joshi
+
+	* [r15887] ql/math/interpolation.hpp:
+	  
+	  got rid of warning about casting to int
+
+2009-02-05 02:53  Mark Joshi
+
+	* [r15886] QuantLib_vc8.vcproj, QuantLib_vc9.vcproj,
+	  ql/models/marketmodels/evolvers/lognormalfwdrateBalland.cpp,
+	  ql/models/marketmodels/evolvers/lognormalfwdrateBalland.hpp,
+	  test-suite/marketmodel.cpp, test-suite/testsuite_vc9.vcproj:
+	  
+	  added the non-iterative Balland method for evolving the LMM
+
+2009-02-04 22:21  Klaus Spanderen
+
+	* [r15885] ql/math/optimization/levenbergmarquardt.cpp:
+	  
+	  fixed residualNorm() method. Thanks to Silakhdar Krikeb
+
+2009-02-04 16:13  Luigi Ballabio
+
+	* [r15884] acinclude.m4:
+	  
+	  Fix for new Boost naming scheme on OS X (thanks to Tamas Sashalmi)
+
+2009-02-04 09:26  Luigi Ballabio
+
+	* [r15883] test-suite/riskstats.cpp,
+	  test-suite/swaptionvolatilitymatrix.cpp:
+	  
+	  Fixed floating-point comparisons
+
+2009-02-03 16:14  Luigi Ballabio
+
+	* [r15882] ql/experimental/credit/Makefile.am,
+	  ql/experimental/credit/all.hpp,
+	  ql/experimental/credit/factorspreadedhazardratecurve.hpp,
+	  ql/experimental/credit/spreadedhazardratecurve.hpp:
+	  
+	  Added spreaded hazard-rate curves
+
+2009-02-03 16:12  Luigi Ballabio
+
+	* [r15881] ql/experimental/credit/riskyassetswap.cpp,
+	  ql/experimental/credit/riskyassetswap.hpp:
+	  
+	  Added risky-asset-swap bootstrap helper
+
+2009-02-03 15:09  Luigi Ballabio
+
+	* [r15880] ql/experimental/credit/Makefile.am,
+	  ql/experimental/credit/all.hpp,
+	  ql/experimental/credit/riskyassetswapoption.cpp,
+	  ql/experimental/credit/riskyassetswapoption.hpp:
+	  
+	  Added experimental asset-swap option
+
+2009-02-03 09:25  Luigi Ballabio
+
+	* [r15878] ql/experimental/credit/all.hpp:
+	  
+	  Updated with new files
+
+2009-02-02 18:34  Roland Lichters
+
+	* [r15874] ql/experimental/credit/Makefile.am:
+	  
+	  risky bond added, Makefile.am
+
+2009-02-02 18:33  Roland Lichters
+
+	* [r15873] ql/experimental/credit/riskybond.cpp,
+	  ql/experimental/credit/riskybond.hpp:
+	  
+	  risky bond added
+
+2009-02-02 11:04  Luigi Ballabio
+
+	* [r15872] configure.ac, ql/experimental/Makefile.am,
+	  ql/experimental/all.hpp, ql/experimental/overnightswap,
+	  ql/experimental/overnightswap/eonia.cpp,
+	  ql/experimental/overnightswap/eonia.hpp,
+	  ql/experimental/overnightswap/eoniacoupon.cpp,
+	  ql/experimental/overnightswap/eoniacoupon.hpp,
+	  ql/experimental/overnightswap/eoniaswap.cpp,
+	  ql/experimental/overnightswap/eoniaswap.hpp,
+	  ql/experimental/overnightswap/eoniaswaphelper.cpp,
+	  ql/experimental/overnightswap/eoniaswaphelper.hpp:
+	  
+	  Added new files to gcc build
+
+2009-02-02 03:22  Mark Joshi
+
+	* [r15871] ql/models/marketmodels/evolvers/marketmodelvolprocess.hpp,
+	  ql/models/marketmodels/evolvers/volprocesses/squarerootandersen.cpp,
+	  ql/models/marketmodels/evolvers/volprocesses/squarerootandersen.hpp:
+	  
+	  tweaking SVBGM code
+
+2009-02-01 23:55  Mark Joshi
+
+	* [r15868] ql/models/marketmodels/models/abcdvol.cpp:
+	  
+	  removed overstringent test
+
+2009-02-01 19:11  Roland Lichters
+
+	* [r15867] ql/experimental/overnightswap/Makefile.am,
+	  ql/experimental/overnightswap/all.hpp,
+	  ql/experimental/overnightswap/eonia.cpp,
+	  ql/experimental/overnightswap/eonia.hpp,
+	  ql/experimental/overnightswap/eoniacoupon.cpp,
+	  ql/experimental/overnightswap/eoniacoupon.hpp,
+	  ql/experimental/overnightswap/eoniaswap.cpp,
+	  ql/experimental/overnightswap/eoniaswap.hpp,
+	  ql/experimental/overnightswap/eoniaswaphelper.cpp,
+	  ql/experimental/overnightswap/eoniaswaphelper.hpp:
+	  
+	  eonia index, coupon, swap, helper
+
+2009-02-01 13:00  Roland Lichters
+
+	* [r15866] ql/experimental/overnightswap:
+	  
+	  new subdirectory for overnight index swaps
+
+2009-01-28 13:21  Luigi Ballabio
+
+	* [r15865] ql/math/optimization/simplex.cpp:
+	  
+	  Removed possibility of endless loop (thanks to Slava Mazur)
+
+2009-01-27 10:14  Luigi Ballabio
+
+	* [r15862] ql/cashflows/capflooredcoupon.cpp:
+	  
+	  Replaced duplicated code with call to parent method
+
+2009-01-26 14:48  Luigi Ballabio
+
+	* [r15861] ql/models/shortrate/onefactormodels/coxingersollross.cpp:
+	  
+	  Fixed instantiation of CoxIngersollRoss constraints (thanks to
+	  marcmus)
+
+2009-01-15 21:45  Klaus Spanderen
+
+	* [r15855] test-suite/linearleastsquaresregression.cpp,
+	  test-suite/linearleastsquaresregression.hpp:
+	  
+	  multidimensional least squares regression
+
+2009-01-09 10:05  Luigi Ballabio
+
+	* [r15854] Examples/CallableBonds/CallableBonds.cpp:
+	  
+	  Using a single bond with different engines
+
+2009-01-09 10:00  Luigi Ballabio
+
+	* [r15853] Examples/CallableBonds/CallableBonds.cpp:
+	  
+	  Comparing price instead of NPV, since that's what Bloomberg provides
+	  (thanks to Bart Mosley)
+
+2009-01-08 13:39  Luigi Ballabio
+
+	* [r15847] ql/exercise.cpp:
+	  
+	  Added missing constructor definition (thanks to Andrew Kolesnikov)
+
+2009-01-08 13:26  Luigi Ballabio
+
+	* [r15846] ql/pricingengines/vanilla/fddividendamericanengine.hpp,
+	  ql/pricingengines/vanilla/fddividendengine.cpp,
+	  ql/pricingengines/vanilla/fddividendshoutengine.hpp:
+	  
+	  Fixed intermediate step for finite-differences dividend engines
+	  (thanks to Andrew Kolesnikov)
+
+2009-01-07 10:21  Luigi Ballabio
+
+	* [r15845] ql/cashflows/couponpricer.cpp:
+	  
+	  Fix for discount calculation (thanks to Nathan Abbott)
+
+2009-01-04 10:40  Klaus Spanderen
+
+	* [r15844] ql/math/randomnumbers/Makefile.am,
+	  ql/math/randomnumbers/all.hpp,
+	  ql/math/randomnumbers/ranluxuniformrng.hpp:
+	  
+	  added Luescher's luxury random number generator (proxy for boost
+	  implementation)
+
+2008-12-29 19:43  Joseph Wang
+
+	* [r15842]
+	  ql/experimental/finitedifferences/fdhestonbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonvanillaengine.cpp:
+	  
+	  gcc4 on amd64 was failing because the arguments to max were not the
+	  same type. I reorganized the code to make the types identical
+
+2008-12-29 19:33  Joseph Wang
+
+	* [r15841]
+	  ql/experimental/finitedifferences/fdblackscholesbarrierengine.cpp:
+	  
+	  fix compilation error due to type mismatch on x84_64, and refactor
+	  for readability
+
+2008-12-28 13:29  Klaus Spanderen
+
+	* [r15840] test-suite/quantlibbenchmark.cpp:
+	  
+	  added benchmark results using intel c++ compilter
+
+2008-12-26 17:12  Klaus Spanderen
+
+	* [r15838]
+	  ql/experimental/finitedifferences/fdblackscholesbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesbarrierengine.hpp,
+	  ql/experimental/finitedifferences/fdblackscholesrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdblackscholesrebateengine.hpp,
+	  ql/experimental/finitedifferences/fdblackscholesvanillaengine.cpp,
 	  ql/experimental/finitedifferences/fdblackscholesvanillaengine.hpp,
+	  ql/experimental/finitedifferences/fdhestonbarrierengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonbarrierengine.hpp,
+	  ql/experimental/finitedifferences/fdhestonrebateengine.cpp,
+	  ql/experimental/finitedifferences/fdhestonrebateengine.hpp,
+	  ql/experimental/finitedifferences/fdhestonvanillaengine.cpp,
 	  ql/experimental/finitedifferences/fdhestonvanillaengine.hpp,
-	  ql/math/matrixutilities/qrdecomposition.cpp:
+	  ql/experimental/finitedifferences/fdmdirichletboundary.cpp,
+	  ql/experimental/finitedifferences/fdmdirichletboundary.hpp,
+	  ql/experimental/finitedifferences/fdmhestonsolver.cpp,
+	  ql/experimental/finitedifferences/fdmhestonsolver.hpp,
+	  ql/experimental/finitedifferences/fdmhestonvariancemesher.cpp,
+	  ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp,
+	  ql/experimental/finitedifferences/fdmquantohelper.cpp,
+	  ql/experimental/finitedifferences/fdmquantohelper.hpp,
+	  test-suite/fdheston.cpp, test-suite/fdheston.hpp,
+	  test-suite/fdmlinearop.cpp, test-suite/quantlibbenchmark.cpp:
 	  
-	  Removed hard tabs
+	  improved fdm heston variance mesher
+	  include clean-up
 
-2008-11-07 09:14  Luigi Ballabio
+2008-12-22 12:54  Luigi Ballabio
 
-	* [r15732] Examples/Bonds/Bonds.dev, Examples/Bonds/Bonds_vc7.vcproj,
-	  Examples/Bonds/Bonds_vc8.vcproj, Examples/Bonds/Bonds_vc9.vcproj,
-	  man/Bonds.1, ql/experimental/credit/basket.cpp,
+	* [r15837] ql/instruments/bond.cpp, ql/instruments/bond.hpp:
+	  
+	  Added helper method to help set custom redemption coupon
+
+2008-12-18 18:04  Ferdinando Ametrano
+
+	* [r15833] QuantLib_vc8.vcproj, test-suite/testsuite_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2008-12-18 17:40  Ferdinando Ametrano
+
+	* [r15832] ql/termstructures/volatility/swaption/swaptionvolcube1.cpp:
+	  
+	  fixed formatting
+
+2008-12-16 21:29  Klaus Spanderen
+
+	* [r15830] ql/experimental/finitedifferences/Makefile.am,
+	  ql/experimental/finitedifferences/all.hpp,
+	  ql/experimental/finitedifferences/fdmhestonop.cpp,
+	  ql/experimental/finitedifferences/fdmhestonop.hpp,
+	  ql/experimental/finitedifferences/fdmhestonsolver.cpp,
+	  ql/experimental/finitedifferences/fdmhestonsolver.hpp,
+	  ql/experimental/finitedifferences/fdmquantohelper.cpp,
+	  ql/experimental/finitedifferences/fdmquantohelper.hpp,
+	  ql/experimental/finitedifferences/triplebandlinearop.cpp:
+	  
+	  added FDM Quanto Helper
+
+2008-12-16 21:15  Klaus Spanderen
+
+	* [r15829] ql/time/calendars/germany.cpp,
+	  ql/time/calendars/germany.hpp:
+	  
+	  added EUWAX calendar
+
+2008-12-13 15:24  Klaus Spanderen
+
+	* [r15828] test-suite/quantlibbenchmark.cpp:
+	  
+	  added Heston finite difference benchmark
+	  added results for more recent hardware
+
+2008-12-13 15:23  Klaus Spanderen
+
+	* [r15827] test-suite/Makefile.am, test-suite/fdheston.cpp,
+	  test-suite/fdheston.hpp, test-suite/quantlibtestsuite.cpp:
+	  
+	  added Heston finite difference testcases
+
+2008-12-06 10:29  Klaus Spanderen
+
+	* [r15826] test-suite/fdmlinearop.cpp, test-suite/fdmlinearop.hpp:
+	  
+	  removed obsolete includes
+
+2008-11-27 17:31  Ferdinando Ametrano
+
+	* [r15817] ql/math/interpolations/cubicinterpolation.hpp:
+	  
+	  implemented Parabolic and Fritsch-Butland cubic interpolations
+
+2008-11-25 14:14  Ferdinando Ametrano
+
+	* [r15813] QuantLib_vc9.vcproj:
+	  
+	  VC9 catching up
+
+2008-11-24 18:50  Ferdinando Ametrano
+
+	* [r15811] QuantLib_vc8.vcproj:
+	  
+	  VC8 catching up
+
+2008-11-21 09:48  Luigi Ballabio
+
+	* [r15781] ql/pricingengines/barrier/mcbarrierengine.hpp,
+	  ql/pricingengines/basket/mcamericanbasketengine.hpp,
+	  ql/pricingengines/basket/mceuropeanbasketengine.hpp,
+	  ql/pricingengines/basket/mceverestengine.hpp,
+	  ql/pricingengines/basket/mchimalayaengine.hpp,
+	  ql/pricingengines/basket/mcpagodaengine.hpp,
+	  ql/pricingengines/cliquet/mcperformanceengine.hpp,
+	  ql/pricingengines/vanilla/mchestonhullwhiteengine.hpp,
+	  test-suite/barrieroption.cpp, test-suite/basketoption.cpp,
+	  test-suite/cliquetoption.cpp, test-suite/everestoption.cpp,
+	  test-suite/fdmlinearop.cpp, test-suite/himalayaoption.cpp,
+	  test-suite/hybridhestonhullwhiteprocess.cpp,
+	  test-suite/pagodaoption.cpp:
+	  
+	  Added builders for a few MC engines
+
+2008-11-20 23:13  Klaus Spanderen
+
+	* [r15780] test-suite/linearleastsquaresregression.cpp:
+	  
+	  use inner typedef
+
+2008-11-20 13:34  Luigi Ballabio
+
+	* [r15779] ql/pricingengines/barrier/mcbarrierengine.hpp,
+	  ql/pricingengines/basket/mceuropeanbasketengine.hpp,
+	  ql/pricingengines/basket/mceverestengine.hpp,
+	  test-suite/barrieroption.cpp, test-suite/basketoption.cpp,
+	  test-suite/everestoption.cpp:
+	  
+	  Added timeSteps parameter to a few MC engines besides the existing
+	  timeStepsPerYear
+
+2008-11-20 12:44  Luigi Ballabio
+
+	* [r15778] ql/pricingengines/forward/mcvarianceswapengine.hpp,
+	  ql/pricingengines/mclongstaffschwartzengine.hpp,
+	  ql/pricingengines/vanilla/mcvanillaengine.hpp:
+	  
+	  Fixed requirements (again)
+
+2008-11-20 12:36  Luigi Ballabio
+
+	* [r15777] ql/pricingengines/forward/mcvarianceswapengine.hpp,
+	  ql/pricingengines/mclongstaffschwartzengine.hpp,
+	  ql/pricingengines/vanilla/mcvanillaengine.hpp:
+	  
+	  Fixed requirements
+
+2008-11-20 11:33  Luigi Ballabio
+
+	* [r15776] Examples/EquityOption/EquityOption.cpp,
+	  ql/experimental/mcbasket/mcpathbasketengine.hpp,
+	  ql/pricingengines/asian/mc_discr_arith_av_price.hpp,
+	  ql/pricingengines/asian/mc_discr_arith_av_strike.hpp,
+	  ql/pricingengines/asian/mc_discr_geom_av_price.hpp,
+	  ql/pricingengines/capfloor/mchullwhiteengine.hpp,
+	  ql/pricingengines/forward/mcvarianceswapengine.hpp,
+	  ql/pricingengines/vanilla/mcamericanengine.hpp,
+	  ql/pricingengines/vanilla/mcdigitalengine.hpp,
+	  ql/pricingengines/vanilla/mceuropeanengine.hpp,
+	  ql/pricingengines/vanilla/mceuropeangjrgarchengine.hpp,
+	  ql/pricingengines/vanilla/mceuropeanhestonengine.hpp,
+	  test-suite/batesmodel.cpp, test-suite/gjrgarchmodel.cpp,
+	  test-suite/hestonmodel.cpp,
+	  test-suite/mclongstaffschwartzengine.cpp:
+	  
+	  Renamed method to specify the kind of requested tolerance
+
+2008-11-20 11:24  Ferdinando Ametrano
+
+	* [r15775] ql/time/schedule.cpp:
+	  
+	  fixed bug: the first (next-to-last) date was not always included in
+	  the schedule
+
+2008-11-20 10:32  Luigi Ballabio
+
+	* [r15774] ql/pricingengines/asian/mc_discr_arith_av_price.hpp,
+	  ql/pricingengines/asian/mc_discr_arith_av_strike.hpp,
+	  ql/pricingengines/asian/mc_discr_geom_av_price.hpp,
+	  ql/pricingengines/asian/mcdiscreteasianengine.hpp,
+	  test-suite/asianoptions.cpp:
+	  
+	  Removed unused time-steps parameter
+
+2008-11-19 18:13  Ferdinando Ametrano
+
+	* [r15773] ql/cashflows/iborcoupon.cpp:
+	  
+	  fixed non-positive time bug (it can happen with non-plausible
+	  schedules)
+
+2008-11-19 17:59  Ferdinando Ametrano
+
+	* [r15772] ql/cashflows/iborcoupon.cpp:
+	  
+	  fixed zero time bug (it can happen with non-plausible schedules)
+
+2008-11-19 16:24  Luigi Ballabio
+
+	* [r15771] ql/pricingengines/asian/mc_discr_geom_av_price.hpp,
+	  ql/pricingengines/barrier/mcbarrierengine.hpp,
+	  ql/pricingengines/basket/mcamericanbasketengine.hpp,
+	  ql/pricingengines/basket/mceuropeanbasketengine.hpp,
+	  ql/pricingengines/basket/mceverestengine.hpp,
+	  ql/pricingengines/basket/mchimalayaengine.hpp,
+	  ql/pricingengines/basket/mcpagodaengine.hpp,
+	  ql/pricingengines/vanilla/mcdigitalengine.hpp,
+	  ql/pricingengines/vanilla/mceuropeanengine.hpp,
+	  test-suite/barrieroption.cpp, test-suite/basketoption.cpp,
+	  test-suite/everestoption.cpp, test-suite/himalayaoption.cpp,
+	  test-suite/pagodaoption.cpp:
+	  
+	  Removed unused control-variate switch
+
+2008-11-19 14:47  Luigi Ballabio
+
+	* [r15770] ql/pricingengines/basket/Makefile.am,
+	  ql/pricingengines/basket/all.hpp,
+	  ql/pricingengines/basket/mcbasketengine.cpp,
+	  ql/pricingengines/basket/mcbasketengine.hpp,
+	  ql/pricingengines/basket/mceuropeanbasketengine.cpp,
+	  ql/pricingengines/basket/mceuropeanbasketengine.hpp,
+	  test-suite/basketoption.cpp:
+	  
+	  Renamed engine to more-specific name
+
+2008-11-19 14:07  Luigi Ballabio
+
+	* [r15769] ql/pricingengines/cliquet/mccliquetengine.cpp,
+	  ql/pricingengines/cliquet/mccliquetengine.hpp:
+	  
+	  Removed obsolete files
+
+2008-11-18 14:15  Luigi Ballabio
+
+	* [r15768] Announce.txt,
+	  Examples/BermudanSwaption/BermudanSwaption.dev,
+	  Examples/Bonds/Bonds.dev, Examples/CDS/CDS.dev,
+	  Examples/CallableBonds/CallableBonds.dev,
+	  Examples/ConvertibleBonds/ConvertibleBonds.dev,
+	  Examples/DiscreteHedging/DiscreteHedging.dev,
+	  Examples/EquityOption/EquityOption.dev, Examples/FRA/FRA.dev,
+	  Examples/FittedBondCurve/FittedBondCurve.dev,
+	  Examples/Replication/Replication.dev, Examples/Repo/Repo.dev,
+	  Examples/Swap/Swap.dev, QuantLib.dev, QuantLib_vc7.vcproj,
+	  QuantLib_vc8.vcproj, QuantLib_vc9.vcproj, configure.ac,
+	  ql/qldefines.hpp, test-suite/testsuite.dev,
+	  test-suite/testsuite_vc7.vcproj, test-suite/testsuite_vc8.vcproj,
+	  test-suite/testsuite_vc9.vcproj:
+	  
+	  Increased version number
+
+2008-11-18 12:04  Luigi Ballabio
+
+	* [r15767] ., ChangeLog.txt, Docs/pages/authors.docs,
+	  Docs/pages/examples.docs, Docs/pages/history.docs,
+	  Docs/pages/install.docs, Docs/pages/license.docs,
+	  Docs/pages/overview.docs, Docs/pages/resources.docs,
+	  Docs/pages/where.docs, Docs/quantlib.css, Examples/Bonds/Bonds.dev,
+	  Examples/Bonds/Bonds_vc7.vcproj, Examples/Bonds/Bonds_vc8.vcproj,
+	  Examples/Bonds/Bonds_vc9.vcproj, LICENSE.TXT, News.txt, man/Bonds.1,
+	  ql/cashflows/capflooredcoupon.cpp, ql/cashflows/digitalcoupon.cpp,
+	  ql/experimental/commodities/commoditytype.hpp,
+	  ql/experimental/commodities/exchangecontract.hpp,
+	  ql/experimental/commodities/pricingperiod.hpp,
+	  ql/experimental/commodities/unitofmeasureconversionmanager.hpp,
+	  ql/experimental/credit/basket.cpp,
 	  ql/experimental/credit/basket.hpp, ql/experimental/credit/loss.hpp,
 	  ql/experimental/credit/pool.cpp, ql/experimental/credit/pool.hpp,
 	  ql/experimental/credit/randomdefaultmodel.cpp,
@@ -81,105 +5393,72 @@
 	  ql/experimental/credit/syntheticcdo.hpp,
 	  ql/experimental/credit/syntheticcdoengines.cpp,
 	  ql/experimental/credit/syntheticcdoengines.hpp,
+	  ql/experimental/finitedifferences/dividendbarrieroption.hpp,
+	  ql/experimental/finitedifferences/fdblackscholesvanillaengine.hpp,
+	  ql/experimental/finitedifferences/fdhestonvanillaengine.hpp,
+	  ql/experimental/finitedifferences/fdmhestoninnervalue.hpp,
+	  ql/experimental/finitedifferences/fdminnervaluecalculator.hpp,
+	  ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp,
+	  ql/experimental/finitedifferences/ninepointlinearop.hpp,
+	  ql/experimental/finitedifferences/uniform1dmesher.hpp,
+	  ql/experimental/finitedifferences/uniformgridmesher.hpp,
+	  ql/experimental/lattices/extendedbinomialtree.cpp,
+	  ql/experimental/lattices/extendedbinomialtree.hpp,
+	  ql/indexes/swap/chfliborswap.hpp, ql/indexes/swap/eurliborswap.hpp,
+	  ql/indexes/swap/gbpliborswap.hpp, ql/indexes/swap/jpyliborswap.hpp,
+	  ql/indexes/swap/usdliborswap.hpp, ql/instruments/bond.cpp,
+	  ql/legacy/termstructures/compoundforward.hpp,
+	  ql/math/interpolations/convexmonotoneinterpolation.hpp,
+	  ql/math/matrixutilities/basisincompleteordered.cpp,
+	  ql/math/matrixutilities/basisincompleteordered.hpp,
+	  ql/math/matrixutilities/qrdecomposition.cpp,
+	  ql/math/optimization/spherecylinder.cpp,
+	  ql/math/randomnumbers/sobolrsg.cpp,
 	  ql/models/marketmodels/evolvers/marketmodelvolprocess.cpp,
 	  ql/models/marketmodels/evolvers/marketmodelvolprocess.hpp,
 	  ql/models/marketmodels/evolvers/svddfwdratepc.cpp,
 	  ql/models/marketmodels/evolvers/svddfwdratepc.hpp,
 	  ql/models/marketmodels/evolvers/volprocesses/squarerootandersen.cpp,
-	  ql/models/marketmodels/evolvers/volprocesses/squarerootandersen.hpp:
-	  
-	  Fixed svn properties
-
-2008-11-07 09:08  Luigi Ballabio
-
-	* [r15731] test-suite/marketmodel.cpp:
-	  
-	  Aligned debug with release
-
-2008-11-07 08:28  Luigi Ballabio
-
-	* [r15729] test-suite/marketmodel.cpp:
-	  
-	  Fixed test-case output
-
-2008-11-06 16:25  Luigi Ballabio
-
-	* [r15727] ql/experimental/commodities/exchangecontract.hpp,
-	  ql/experimental/commodities/pricingperiod.hpp,
-	  ql/experimental/finitedifferences/fdmhestoninnervalue.hpp,
-	  ql/experimental/finitedifferences/fdminnervaluecalculator.hpp,
-	  ql/experimental/finitedifferences/uniform1dmesher.hpp,
-	  ql/indexes/swap/chfliborswap.hpp, ql/indexes/swap/eurliborswap.hpp,
-	  ql/indexes/swap/gbpliborswap.hpp, ql/indexes/swap/jpyliborswap.hpp,
-	  ql/indexes/swap/usdliborswap.hpp:
-	  
-	  Enforced self-consistency of headers
-
-2008-11-06 15:49  Luigi Ballabio
-
-	* [r15726] ql/legacy/termstructures/compoundforward.hpp:
-	  
-	  Allow for numerical error
-
-2008-11-06 15:37  Luigi Ballabio
-
-	* [r15725] ql/cashflows/capflooredcoupon.cpp,
-	  ql/cashflows/digitalcoupon.cpp,
-	  ql/experimental/lattices/extendedbinomialtree.cpp,
-	  ql/math/matrixutilities/basisincompleteordered.cpp,
-	  ql/math/randomnumbers/sobolrsg.cpp,
-	  ql/models/marketmodels/evolvers/volprocesses/squarerootandersen.cpp,
+	  ql/models/marketmodels/evolvers/volprocesses/squarerootandersen.hpp,
 	  ql/models/marketmodels/pathwiseaccountingengine.cpp,
+	  ql/models/marketmodels/pathwisediscounter.cpp,
+	  ql/models/marketmodels/pathwisediscounter.hpp,
 	  ql/models/marketmodels/pathwisegreeks/ratepseudorootjacobian.cpp,
+	  ql/models/marketmodels/pathwisegreeks/vegabumpcluster.cpp,
+	  ql/models/marketmodels/pathwisemultiproduct.hpp,
+	  ql/models/marketmodels/products/pathwise/pathwiseproductcaplet.hpp,
+	  ql/models/marketmodels/products/pathwise/pathwiseproductswaption.hpp,
 	  ql/pricingengines/basket/mchimalayaengine.hpp,
 	  ql/pricingengines/basket/mcpagodaengine.hpp,
-	  ql/pricingengines/blackformula.cpp, test-suite/marketmodel.cpp:
+	  ql/pricingengines/blackformula.cpp,
+	  ql/termstructures/credit/interpolateddefaultdensitycurve.hpp,
+	  ql/termstructures/credit/interpolatedhazardratecurve.hpp,
+	  ql/termstructures/localbootstrap.hpp,
+	  ql/termstructures/yield/discountcurve.hpp,
+	  ql/termstructures/yield/forwardcurve.hpp,
+	  ql/termstructures/yield/zerocurve.hpp, test-suite/marketmodel.cpp,
+	  test-suite/piecewiseyieldcurve.cpp,
+	  test-suite/quantlibtestsuite.cpp:
 	  
-	  Removed compilation warnings
+	  Merged 0.9.7 release (QuantLib, QuantLib-SWIG, and QuantLib-site
+	  modules)
 
-2008-11-06 14:21  Luigi Ballabio
+2008-11-06 21:34  Klaus Spanderen
 
-	* [r15724] test-suite/quantlibtestsuite.cpp:
+	* [r15728] ql/pricingengines/vanilla/mchestonhullwhiteengine.hpp,
+	  ql/processes/hybridhestonhullwhiteprocess.cpp,
+	  ql/processes/hybridhestonhullwhiteprocess.hpp,
+	  test-suite/fdmlinearop.cpp,
+	  test-suite/hybridhestonhullwhiteprocess.cpp:
 	  
-	  Removed duplicate suite
+	  improve discretization and control variate of hybrid
+	  Heston-Hull-White process
 
-2008-11-06 13:32  Luigi Ballabio
+2008-11-06 10:44  Ferdinando Ametrano
 
-	* [r15723] ql/instruments/bond.cpp:
+	* [r15722] ql/termstructures/volatility/abcd.hpp:
 	  
-	  Fixed requirement
-
-2008-10-31 16:49  Luigi Ballabio
-
-	* [r15719] ql/experimental/credit/loss.hpp:
-	  
-	  Fixed included file name
-
-2008-10-31 16:28  Luigi Ballabio
-
-	* [r15718] ql/experimental/commodities/commoditytype.hpp,
-	  ql/experimental/credit/loss.hpp,
-	  ql/experimental/finitedifferences/ninepointlinearop.hpp,
-	  ql/models/marketmodels/pathwisediscounter.hpp,
-	  ql/models/marketmodels/products/pathwise/pathwiseproductcaplet.hpp,
-	  ql/models/marketmodels/products/pathwise/pathwiseproductswaption.hpp:
-	  
-	  Fixed inclusion order (ql first, boost second, std last)
-
-2008-10-31 16:24  Luigi Ballabio
-
-	* [r15717] Docs/pages/license.docs, LICENSE.TXT,
-	  ql/math/interpolations/convexmonotoneinterpolation.hpp,
-	  ql/models/marketmodels/pathwisemultiproduct.hpp,
-	  ql/termstructures/localbootstrap.hpp:
-	  
-	  Fixed copyrights and updated license
-
-2008-10-31 15:59  Luigi Ballabio
-
-	* [r15716] :
-	  
-	  Created release branch for version 0.9.7
+	  revisited Abcd Interpolation export to Excel
 
 2008-10-31 15:35  Luigi Ballabio
 

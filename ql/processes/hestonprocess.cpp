@@ -147,7 +147,7 @@ namespace QuantLib {
             retVal[1] = vol*vol
                         +nu*dt + vol2*sdt*(rho_*dw[0] + sqrhov*dw[1]);
             break;
-          case NonCentralChiSquare:
+          case NonCentralChiSquareVariance:
             // use Alan Lewis trick to decorrelate the equity and the variance
             // process by using y(t)=x(t)-\frac{rho}{sigma}\nu(t)
             // and Ito's Lemma. Then use exact sampling for the variance

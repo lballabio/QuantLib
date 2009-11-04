@@ -1,5 +1,4 @@
 
-
         QuantLib --- the free/open-source library for quantitative finance
         ------------------------------------------------------------------
                         <http://quantlib.org>
@@ -16,7 +15,9 @@ The project status is available at <http://quantlib.org>.
 
 QuantLib depends on Boost <http://www.boost.org>. You will need to
 download, build, and install Boost before compiling and using
-QuantLib. Boost 1.31 or later is required; Boost 1.33.1 is suggested.
+QuantLib. Boost 1.34.1 or later is required. Also, problems were
+reported with Microsoft Visual C++ and the recent Boost 1.40 release;
+an earlier release such as 1.39 is suggested for Windows users.
 
 Please report bugs using the Bug Tracker at
 <http://sourceforge.net/tracker/?group_id=12740&atid=112740>,
