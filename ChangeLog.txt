@@ -1,3 +1,76 @@
+2009-11-04 11:54  Luigi Ballabio
+
+	* [r16685] Bugs.txt, Makefile.am:
+	  
+	  Added Bugs.txt to distribution.
+
+2009-11-04 10:46  Chris Kenyon
+
+	* [r16680] test-suite/inflationvolatility.cpp:
+	  
+	  missed one number in previous update.
+
+2009-11-04 10:40  Luigi Ballabio
+
+	* [r16679] ql/instruments/inflationcapfloor.hpp,
+	  test-suite/inflationcapfloor.cpp,
+	  test-suite/inflationvolatility.cpp:
+	  
+	  Whitespace cleanup (hard tabs, indentation etc.)
+
+2009-11-04 10:22  Chris Kenyon
+
+	* [r16678] ql/instruments/inflationcapfloor.hpp,
+	  test-suite/inflationcapfloor.cpp,
+	  test-suite/inflationvolatility.cpp:
+	  
+	  Updated test values and documentation.
+
+2009-11-02 11:02  Luigi Ballabio
+
+	* [r16675] Readme.txt:
+	  
+	  Documented problems with Boost 1.40 on Windows.
+
+2009-11-02 10:54  Luigi Ballabio
+
+	* [r16674] configure.ac:
+	  
+	  Let the autotools decide a default.
+
+2009-11-02 10:30  Luigi Ballabio
+
+	* [r16672] Readme.txt:
+	  
+	  Updated Boost requirements.
+
+2009-11-02 10:30  Luigi Ballabio
+
+	* [r16671] Announce.txt:
+	  
+	  Added extra plea to announce.
+	  
+	  We'd like this release to be tried out by as many people as
+	  possible so that we can fix problems before 1.0 comes out.
+
+2009-10-31 11:59  Chris Kenyon
+
+	* [r16670] ql/experimental/inflation/yoycapfloortermpricesurface.hpp:
+	  
+	  bug fix
+
+2009-10-29 08:34  Luigi Ballabio
+
+	* [r16666] Docs/pages/history.docs, News.txt:
+	  
+	  Added missing contribution to history.
+
+2009-10-28 15:13  Luigi Ballabio
+
+	* [r16659] ChangeLog.txt:
+	  
+	  Updated ChangeLog.
+
 2009-10-28 14:35  Luigi Ballabio
 
 	* [r16658] ql/experimental/math,
@@ -127,7 +200,7 @@
 
 2009-10-22 09:07  Luigi Ballabio
 
-	* [r16635] :
+	* [r16635]
 	  
 	  Created branch for 0.9.9 release.
 
