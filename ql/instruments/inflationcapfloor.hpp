@@ -34,17 +34,20 @@ namespace QuantLib {
 
     //! Base class for yoy inflation cap-like instruments
     /*! \ingroup instruments
+	 
+	 Note that the standard YoY inflation cap/floor defined here 
+	 is different from nominal because in nominal world standard cap/floors do
+	 not have the first optionlet.  This is because they set in advance so
+	 there is no point.  However, yoy inflation generally sets (effectively) in arrears,
+	 (actually in arrears vs lag of a few months) thus the first optionlet
+	 is relevant.  Hence we can do a parity test without a special definition
+	 of the YoY cap/floor instrument.
 
         \test
-        - the correctness of the returned value is tested by checking
-          that the price of a cap (resp. floor) decreases
-          (resp. increases) with the strike rate.
         - the relationship between the values of caps, floors and the
           resulting collars is checked.
         - the put-call parity between the values of caps, floors and
           swaps is checked.
-        - the correctness of the returned implied volatility is tested
-          by using it for reproducing the target value.
         - the correctness of the returned value is tested by checking
           it against a known good value.
      */
