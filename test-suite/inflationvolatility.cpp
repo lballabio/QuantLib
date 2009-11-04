@@ -312,7 +312,7 @@ void InflationVolTest::testYoYPriceSurfaceToVol() {
     // now use it for something ... like stating what the T=const lines look like
     const Real volATyear1[] = {
           0.0128, 0.0093, 0.0083, 0.0073, 0.0064,
-          0.0058, 0.0042, 0.0046, 0.0053, 0.0066,
+          0.0058, 0.0042, 0.0046, 0.0053, 0.0064,
           0.0098
     };
     const Real volATyear3[] = {
