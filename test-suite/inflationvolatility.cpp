@@ -46,8 +46,9 @@
 
 
 // anonymous local namespace for data
-//****************************************************************************************
+//*************************************************************************
 namespace {
+
     using namespace std;
     using namespace boost;
     using namespace QuantLib;
@@ -327,9 +328,9 @@ void InflationVolTest::testYoYPriceSurfaceToVol() {
     Size n = someSlice.first.size();
     Real eps = 0.0001;
     for(Size i = 0; i < n; i++){
-		QL_REQUIRE( fabs(someSlice.second[i] - volATyear1[i]) < eps,
-				   " could not recover 1yr vol: " << someSlice.second[i]
-				   << " vs " << volATyear1[i] );
+        QL_REQUIRE( fabs(someSlice.second[i] - volATyear1[i]) < eps,
+                   " could not recover 1yr vol: " << someSlice.second[i]
+                   << " vs " << volATyear1[i] );
     }
 
     d = yoySurf->baseDate() + Period(3,Years);
