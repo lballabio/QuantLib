@@ -10,6 +10,7 @@ this_include_HEADERS = \
 	lognormalfwdrateballand.hpp \
 	lognormalfwdrateeuler.hpp \
 	lognormalfwdrateeulerconstrained.hpp \
+	lognormalfwdrateiballand.hpp \
 	lognormalfwdrateipc.hpp \
 	lognormalfwdratepc.hpp \
 	marketmodelvolprocess.hpp \
@@ -22,6 +23,7 @@ libMarketModelsEvolvers_la_SOURCES = \
 	lognormalfwdrateballand.cpp \
 	lognormalfwdrateeuler.cpp \
 	lognormalfwdrateeulerconstrained.cpp \
+	lognormalfwdrateiballand.cpp \
 	lognormalfwdrateipc.cpp \
 	lognormalfwdratepc.cpp \
 	marketmodelvolprocess.cpp \
