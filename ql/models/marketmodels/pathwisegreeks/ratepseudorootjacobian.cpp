@@ -134,7 +134,7 @@ namespace QuantLib
         displacements_(displacements),
         numberBumps_(pseudoBumps.size()),
         factors_(pseudoRoot.columns()),
-        bumpedRates_(taus.size()),
+     //   bumpedRates_(taus.size()),
         e_(pseudoRoot.rows(), pseudoRoot.columns()),
         ratios_(taus_.size())
     {
@@ -243,6 +243,96 @@ namespace QuantLib
             }
 
     }
+
+    RatePseudoRootJacobianAllElements::RatePseudoRootJacobianAllElements(const Matrix& pseudoRoot,
+        Size aliveIndex,
+        Size numeraire,
+        const std::vector<Time>& taus,
+        const std::vector<Spread>& displacements)
+        :
+    pseudoRoot_(pseudoRoot),
+        aliveIndex_(aliveIndex),
+        taus_(taus),
+        displacements_(displacements),
+        factors_(pseudoRoot.columns()),
+     //   bumpedRates_(taus.size()),
+        e_(pseudoRoot.rows(), pseudoRoot.columns()),
+        ratios_(taus_.size())
+    {
+        Size numberRates= taus.size();
+
+        QL_REQUIRE(aliveIndex == numeraire,
+            "we can do only do discretely compounding MM acount so aliveIndex must equal numeraire");
+
+        QL_REQUIRE(pseudoRoot_.rows()==numberRates,
+            "pseudoRoot_.rows()<> taus.size()");
+
+        QL_REQUIRE(displacements_.size()==numberRates,
+            "displacements_.size()<> taus.size()");
+
+    }
+
+
+    void RatePseudoRootJacobianAllElements::getBumps(const std::vector<Rate>& oldRates,
+        const std::vector<Real>& discountRatios,
+        const std::vector<Rate>& newRates,
+        const std::vector<Real>& gaussians,
+        std::vector<Matrix>& B)
+    {
+          Size numberRates = taus_.size();
+
+           QL_REQUIRE(B.size() == numberRates, "we need B.size() which is " << B.size() << " to equal numberRates which is "  << numberRates);
+           for (Size j=0; j < B.size(); ++j)
+                      QL_REQUIRE(B[j].columns() == factors_ && B[j].rows() == numberRates , "we need B[j].rows() which is " << B[j].rows() << " to equal numberRates which is "  << numberRates << 
+                      " and B[j].columns() which is " << B[j].columns() << " to be equal to factors which is " << factors_);
+
+
+
+
+        for (Size j=aliveIndex_; j < numberRates; ++j)
+            ratios_[j] = (oldRates[j] + displacements_[j])*discountRatios[j+1];
+
+        for (Size f=0; f < factors_; ++f)
+        {
+            e_[aliveIndex_][f] = 0;
+
+            for (Size j= aliveIndex_+1; j < numberRates; ++j)
+                e_[j][f] = e_[j-1][f] + ratios_[j-1]*pseudoRoot_[j-1][f];
+        }
+
+        // nullify B for rates that have already reset
+        for (Size j=0; j < aliveIndex_; ++j)
+            for (Size k=0; k < numberRates; ++k)
+                for (Size f=0; f < factors_; ++f)
+                      B[j][k][f] =0.0;
+
+
+        for (Size f=0; f < factors_; ++f)
+            for (Size j=aliveIndex_; j < numberRates; ++j)
+            {
+                for (Size k= aliveIndex_; k < j ; ++k)
+                    B[j][k][f] = newRates[j]*ratios_[k]*taus_[k]*pseudoRoot_[j][f];
+
+                Real tmp = 2*ratios_[j]*taus_[j]*pseudoRoot_[j][f];
+                tmp -=  pseudoRoot_[j][f];
+                tmp += e_[j][f]*taus_[j];
+                tmp += gaussians[f];
+                tmp *= (newRates[j]+displacements_[j]);
+
+
+                B[j][j][f] =tmp;
+
+                for (Size k= 0; k < aliveIndex_ ; ++k)
+                    B[j][k][f]=0.0;
+
+                for (Size k= j+1; k < numberRates ; ++k)
+                    B[j][k][f]=0.0;
+
+
+            }
+    }
 }
+
+
 
 

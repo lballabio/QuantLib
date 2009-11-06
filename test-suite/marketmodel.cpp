@@ -2375,7 +2375,6 @@ void MarketModelTest::testPathwiseVegas()
         {
             Size factors = testedFactors[m];
 
-            MTBrownianGeneratorFactory generatorFactory(seed_);
 
             bool logNormal = true;
 
@@ -2394,32 +2393,56 @@ void MarketModelTest::testPathwiseVegas()
             for (Size k=0; k < marketModel->numberOfSteps(); ++k)
                 pseudoRoots.push_back( marketModel->pseudoRoot(k));
 
+         // test that the derivative of swaption implied vols to the pseudo-root elements are correct, finite differencing versus analytic value
 
             for (Size step=0; step < evolution.numberOfSteps(); ++ step)
             {
                 for (Size l=0; l < evolution.numberOfRates(); ++l)
                     for (Size f=0; f < factors; ++f)
                     {
+
+                        // change one pseudo root element in the calibration by adding a bump to it 
+
                         pseudoRoots[step][l][f] += numericalBumpSizeForSwaptionPseudo;
 
+
+                        // create new market model with the pseudo root bumped
+
                         PseudoRootFacade bumpedUp(pseudoRoots,rateTimes,marketModel->initialRates(),marketModel->displacements());
+
+
+                        // compute the implied vol of the swaption with the bumped pseudo roots 
 
                         Real upImpVol = SwapForwardMappings::swaptionImpliedVolatility(bumpedUp,
                             startIndex,
                             endIndex);
 
 
-                        pseudoRoots[step][l][f] -= numericalBumpSizeForSwaptionPseudo;
+                        // undo the bump
 
                         pseudoRoots[step][l][f] -= numericalBumpSizeForSwaptionPseudo;
+
+
+                        // bump down
+
+                        pseudoRoots[step][l][f] -= numericalBumpSizeForSwaptionPseudo;
+
+
+                        // create facade for the bumped down pseudo roots
 
                         PseudoRootFacade bumpedDown(pseudoRoots,rateTimes,marketModel->initialRates(),marketModel->displacements());
+
+                       // compute the implied vol of the swaption with the bumped down pseudo roots 
 
                         Real downImpVol = SwapForwardMappings::swaptionImpliedVolatility(bumpedDown,
                             startIndex,
                             endIndex);
 
+                        // undo bumping
+
                         pseudoRoots[step][l][f] += numericalBumpSizeForSwaptionPseudo;
+
+                        // use symmetric finite differencing to compute the change in the swaptions implied vol for changes in this pseudo-root element
 
                         Real volDeriv = (upImpVol-downImpVol)/(2.0*numericalBumpSizeForSwaptionPseudo);
 
@@ -2449,7 +2472,7 @@ void MarketModelTest::testPathwiseVegas()
         Size testedFactors[] = { std::min<Size>(3UL,todaysForwards.size())
             //    todaysForwards.size()
             //, 4, 8,
-        };
+                                                          };
 
 
 
@@ -2458,7 +2481,6 @@ void MarketModelTest::testPathwiseVegas()
         {
             Size factors = testedFactors[m];
 
-            MTBrownianGeneratorFactory generatorFactory(seed_);
 
             bool logNormal = true;
 
@@ -2479,17 +2501,21 @@ void MarketModelTest::testPathwiseVegas()
                     for (Size k=0; k < marketModel->numberOfSteps(); ++k)
                         pseudoRoots.push_back( marketModel->pseudoRoot(k));
 
+                    // test cap price derivatives with respect to pseudo-root elements
 
                     for (Size step=0; step < evolution.numberOfSteps(); ++ step)
                     {
                         for (Size l=0; l < evolution.numberOfRates(); ++l)
                             for (Size f=0; f < factors; ++f)
                             {
+
+                                // similar to swaption pseudo derivative test but with prices not implied vols
+
                                 pseudoRoots[step][l][f] += numericalBumpSizeForSwaptionPseudo;
 
                                 PseudoRootFacade bumpedUp(pseudoRoots,rateTimes,marketModel->initialRates(),marketModel->displacements());
 
-
+                                // get total covariances of rates with bumped up pseudo-roots , we really only need the variances
                                 Matrix totalCovUp(bumpedUp.totalCovariance( marketModel->numberOfSteps()-1));
 
 
@@ -2499,11 +2525,14 @@ void MarketModelTest::testPathwiseVegas()
 
                                 PseudoRootFacade bumpedDown(pseudoRoots,rateTimes,marketModel->initialRates(),marketModel->displacements());
 
+                                // get total covariances of rates with bumped down pseudo-roots , we really only need the variances
                                 Matrix totalCovDown(bumpedDown.totalCovariance( marketModel->numberOfSteps()-1));
 
 
                                 pseudoRoots[step][l][f] += numericalBumpSizeForSwaptionPseudo;
 
+
+                                // we have to loop through all the caplets underlying the cap to get the price
 
                                 Real priceDeriv=0.0;
                                 for (Size k=startIndex; k < endIndex; ++k)
@@ -2548,7 +2577,7 @@ void MarketModelTest::testPathwiseVegas()
 
                     }
 
-                    // test implied vol
+                    // test the implied vol of the cap, each underlying caplet has a different implied vol and the cap's is different again
 
                     Real impVol = derivative.impliedVolatility();
 
@@ -2592,7 +2621,9 @@ void MarketModelTest::testPathwiseVegas()
 
         }
 
-        // we have tested the price derivative and the implied vol function, now the derivative of the imp vols
+        // we have tested the price derivative and the implied vol function, now the derivative of the cap implied vols
+        // with respect to pseudo-root elements  
+
         // since we have already tested the imp vol function we use it here
 
 
@@ -2600,7 +2631,6 @@ void MarketModelTest::testPathwiseVegas()
         {
             Size factors = testedFactors[m];
 
-            MTBrownianGeneratorFactory generatorFactory(seed_);
 
             bool logNormal = true;
 
@@ -2700,10 +2730,12 @@ void MarketModelTest::testPathwiseVegas()
     for (Size j=0; j<LENGTH(marketModels); j++)
     {
 
-        Size testedFactors[] = { std::min<Size>(1UL,todaysForwards.size())
+        Size testedFactors[] = { 
+                                                                std::min<Size>(1UL,todaysForwards.size())
             //    todaysForwards.size()
             //, 4, 8,
-        };
+                                                        
+                                                            };
 
 
 
@@ -2715,8 +2747,8 @@ void MarketModelTest::testPathwiseVegas()
 
 
             MeasureType measures[] = {
-                MoneyMarket
-            };
+                                                                               MoneyMarket
+                                                                       };
 
             std::vector<Matrix> pseudoBumps;
             std::vector<Matrix> pseudoBumpsDown;
@@ -2768,7 +2800,10 @@ void MarketModelTest::testPathwiseVegas()
             {
 
                 std::vector<Size> numeraires = makeMeasure(product, measures[k]);
+
                 std::vector<RatePseudoRootJacobian> testees;
+                std::vector<RatePseudoRootJacobianAllElements> testees2;
+
                 std::vector<RatePseudoRootJacobianNumerical> testers;
                 std::vector<RatePseudoRootJacobianNumerical> testersDown;
 
@@ -2790,6 +2825,15 @@ void MarketModelTest::testPathwiseVegas()
                         pseudoBumps,
                         marketModel->displacements()
                         ));
+
+                      testees2.push_back(RatePseudoRootJacobianAllElements(pseudoRoot,
+                        evolution.firstAliveRate()[l],
+                        numeraires[l],
+                        evolution.rateTaus(),
+                        marketModel->displacements()
+                        ));
+
+
                     testers.push_back(RatePseudoRootJacobianNumerical(pseudoRoot,
                         evolution.firstAliveRate()[l],
                         numeraires[l],
@@ -2831,11 +2875,21 @@ void MarketModelTest::testPathwiseVegas()
                 Matrix B(pseudoBumps.size(),evolution.numberOfRates());
                 Matrix B2(pseudoBumps.size(),evolution.numberOfRates());
                 Matrix B3(pseudoBumps.size(),evolution.numberOfRates());
+                Matrix B4(pseudoBumps.size(),evolution.numberOfRates());
+
+                std::vector<Matrix> globalB;
+                {
+                    Matrix modelB(evolution.numberOfRates(), factors);
+                    for (Size i=0; i < steps; ++i)
+                        globalB.push_back(modelB);
+                }
+
                 std::vector<Real> oneStepDFs(evolution.numberOfRates()+1);
                 oneStepDFs[0] = 1.0;
 
 
                 Size numberFailures=0;
+                Size numberFailures2=0;
 
                 for (Size l=0; l < pathsToDo; ++l)
                 {
@@ -2866,16 +2920,45 @@ void MarketModelTest::testPathwiseVegas()
                         generator->nextStep(gaussians);
 
                         testees[currentStep].getBumps(oldRates, oneStepDFs, newRates, gaussians, B);
+                        testees2[currentStep].getBumps(oldRates, oneStepDFs, newRates, gaussians, globalB);
+                
+
                         testers[currentStep].getBumps(oldRates, oneStepDFs, newRates, gaussians, B2);
                         testersDown[currentStep].getBumps(oldRates, oneStepDFs, newRates, gaussians, B3);
+
+                        // now do make out put of allElements class into same form 
+
+                        for (Size i1 =0; i1 < pseudoBumps.size(); ++i1)
+                        {
+                            Size j1=0;
+
+                            for (; j1 < evolution.firstAliveRate()[i1]; ++j1)
+                            {
+                                B4[i1][j1]=0.0;
+                            }
+                            for (; j1 < numberRates; ++j1)
+                            {
+                                Real sum =0.0;
+
+                                for (Size k1=evolution.firstAliveRate()[i1]; k1 < numberRates; ++k1)
+                                    for (Size f1=0; f1 < factors; ++f1)
+                                        sum += pseudoBumps[i1][k1][f1]*globalB[j1][k1][f1];
+
+                                B4[i1][j1] =sum;
+
+                            }
+                        }
+
 
 
                         for (Size j=0; j < B.rows(); ++j)
                             for (Size k=0; k < B.columns(); ++k)
                             {
                                 Real analytic = B[j][k]/bumpSizeNumericalDifferentiation;
+                                Real analytic2 = B4[j][k]/bumpSizeNumericalDifferentiation;
                                 Real numerical = (B2[j][k]-B3[j][k])/(2*bumpSizeNumericalDifferentiation);
                                 Real errorSize = (analytic - numerical)/ ( bumpSizeNumericalDifferentiation*bumpSizeNumericalDifferentiation);
+                                Real errorSize2 = (analytic2 - numerical)/ ( bumpSizeNumericalDifferentiation*bumpSizeNumericalDifferentiation);
 
                                 maxError = std::max(maxError,fabs(errorSize));
 
@@ -2889,6 +2972,16 @@ void MarketModelTest::testPathwiseVegas()
 
                                 }
 
+                                if ( fabs( errorSize2  ) > multiplier  )
+                                {
+                                    ++numberFailures2;
+                                    if (printReport_)
+                                        BOOST_MESSAGE("path " << l << " step "
+                                        << currentStep << " j " << j
+                                        << " k " << k << " B4 " << B4[j][k] << "  B2 " << B2[j][k]);
+
+                                }
+
                             }
                             ++currentStep;
                     }
@@ -2898,6 +2991,10 @@ void MarketModelTest::testPathwiseVegas()
 
                 if (numberFailures >0)
                     BOOST_FAIL("Pathwise rate pseudoroot jacobian test fails : " << numberFailures <<"\n");
+
+                
+                if (numberFailures2 >0)
+                    BOOST_FAIL("Pathwise rate pseudoroot jacobian all elements test fails : " << numberFailures2 <<"\n");
             } // end of k loop over measures
 
 
@@ -4493,10 +4590,12 @@ test_suite* MarketModelTest::suite() {
 
 
 
-    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testStochVolForwardsAndOptionlets));
+ 
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPathwiseVegas));
 
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPathwiseMarketVegas));
+
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testStochVolForwardsAndOptionlets));
 
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPathwiseGreeks));
 
