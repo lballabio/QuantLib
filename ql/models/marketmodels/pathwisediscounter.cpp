@@ -78,7 +78,8 @@ void MarketModelPathwiseDiscounter::getFactors(const Matrix& LIBORRates, // LIBO
 
        factors[0] = df;
 
-       for (Size i=0; i <=before_; ++i)
+       Size i=0;
+       for (; i <=before_; ++i)
            factors[i+1] = -df*taus_[i]*Discounts[currentStep][i+1]/Discounts[currentStep][i];
 
        factors[before_+1] *= postWeight_;
