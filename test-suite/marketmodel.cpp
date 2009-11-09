@@ -255,7 +255,7 @@ namespace {
         seed_ = 42;
 
 #ifdef _DEBUG
-        paths_ = 2047;
+        paths_ = 127;
         trainingPaths_ = 31;
 #else
         paths_ = 32767; //262144-1; //; // 2^15-1
@@ -3290,6 +3290,7 @@ void MarketModelTest::testPathwiseVegas()
                     std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
                     MTBrownianGeneratorFactory generatorFactory(seed_);
+                    MTBrownianGeneratorFactory generatorFactory2(seed_);
 
                     bool logNormal = true;
                     boost::shared_ptr<MarketModel> marketModel =
@@ -3298,6 +3299,10 @@ void MarketModelTest::testPathwiseVegas()
 
                     LogNormalFwdRateEuler evolver(marketModel,
                         generatorFactory,
+                        numeraires);
+
+                     LogNormalFwdRateEuler evolver2(marketModel,
+                        generatorFactory2,
                         numeraires);
 
                     //      SequenceStatistics stats(product.numberOfProducts()*(todaysForwards.size()+1+vegaBumps[0].size()));
@@ -3317,8 +3322,22 @@ void MarketModelTest::testPathwiseVegas()
                         todaysDiscounts[initialNumeraire];
 
                     std::vector<Real> values;
-
                     std::vector<Real> errors;
+
+                    std::vector<Real> values2;
+                    std::vector<Real> errors2;
+
+
+                    {
+
+                        PathwiseVegasOuterAccountingEngine accountingengine(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver2)), // method relies heavily on LMM Euler
+                            capsDeflated,
+                            marketModel, // we need pseudo-roots and displacements
+                            vegaBumps,
+                            initialNumeraireValue);
+
+                        accountingengine.multiplePathValues(values2,errors2,pathsToDoSimulation);
+                    }
 
                     {
 
@@ -3329,6 +3348,25 @@ void MarketModelTest::testPathwiseVegas()
                             initialNumeraireValue);
 
                         accountingengine.multiplePathValues(values,errors,pathsToDoSimulation);
+                    }
+
+                    // first test to see that the two implementation give the same results
+
+                    {
+                        Real tol = 1E-8;
+
+                        Size numberMeanFailures =0;
+
+                        for (Size i=0; i <values.size(); ++i)
+                            if (fabs(values[i]-values2[i]) > tol)
+                                ++numberMeanFailures;
+
+                              if (numberMeanFailures >0)
+                                  BOOST_FAIL("Comparison of Pathwise vegas accounting engine and PathwiseVegasOuterAccountingEngine yields discrepancies:" 
+                                                                 << numberMeanFailures 
+                                                                 << "  out of " 
+                                                                 << values.size() );
+
                     }
 
                     // we have computed the vegas now we have to test them against the analytic values
