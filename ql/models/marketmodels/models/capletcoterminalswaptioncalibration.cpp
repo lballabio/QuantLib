@@ -151,12 +151,12 @@ namespace QuantLib {
         std::vector<Real> almostTotCovariance(numberOfRates, 0.0);
         std::vector<Real> leftCovariance(numberOfRates, 0.0);
         for (Size i=0; i<numberOfRates; ++i) {
-            for (Size j=0; j<=i; ++j)
-                totVariance[i] += displacedSwapVariances[i]->variances()[j];
-            for (Integer j=0; j<=static_cast<Integer>(i)-1; ++j)
+            for (Size jj=0; jj<=i; ++jj)
+                totVariance[i] += displacedSwapVariances[i]->variances()[jj];
+            Integer j;
+            for (j=0; j<=static_cast<Integer>(i)-1; ++j)
                 almostTotVariance[i] += swapTimeInhomogeneousVariances[j][i];
-            Integer j=0;
-            for (; j<=static_cast<Integer>(i)-2; ++j) {
+            for (j=0; j<=static_cast<Integer>(i)-2; ++j) {
                 const Matrix& thisPseudo = corrPseudo[j];
                 Real correlation = 0.0;
                 for (Size k=0; k<numberOfFactors; ++k)

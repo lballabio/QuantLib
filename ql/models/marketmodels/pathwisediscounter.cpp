@@ -53,39 +53,34 @@ void MarketModelPathwiseDiscounter::getFactors(const Matrix& LIBORRates, // LIBO
                                  Size currentStep,
                                  std::vector<Real>& factors) const
 {
-       Real preDF=Discounts[currentStep][before_];
-       Real postDF = Discounts[currentStep][before_+1];
+    Real preDF = Discounts[currentStep][before_];
+    Real postDF = Discounts[currentStep][before_+1];
 
-       for (Size i = before_+1; i < numberRates_; ++i)
-            factors[i+1] =0.0;
+    for (Size i=before_+1; i<numberRates_; ++i)
+        factors[i+1] =0.0;
 
-       if (postWeight_ == 0.0)
-       {
-            factors[0] = preDF;
+    if (postWeight_==0.0)
+    {
+        factors[0] = preDF;
 
-            Size i=0;
-            for (; i <before_; ++i)
-                factors[i+1] = -preDF*taus_[i]*Discounts[currentStep][i+1]/Discounts[currentStep][i];
+        for (Size i=0; i<before_; ++i)
+            factors[i+1] = -preDF*taus_[i]*Discounts[currentStep][i+1]/Discounts[currentStep][i];
 
-            factors[before_+1]=0.0;
+        factors[before_+1]=0.0;
 
-           return;
-       }
+        return;
+    }
 
+    Real df = preDF * std::pow(postDF/preDF, postWeight_);
 
+    factors[0] = df;
 
-       Real df = preDF *  std::pow(postDF/preDF, postWeight_);
+    for (Size i=0; i<=before_; ++i)
+       factors[i+1] = -df*taus_[i]*Discounts[currentStep][i+1]/Discounts[currentStep][i];
 
-       factors[0] = df;
+    factors[before_+1] *= postWeight_;
 
-       Size i=0;
-       for (; i <=before_; ++i)
-           factors[i+1] = -df*taus_[i]*Discounts[currentStep][i+1]/Discounts[currentStep][i];
-
-       factors[before_+1] *= postWeight_;
-
-
-        return ;
+    return ;
 }
 
 }

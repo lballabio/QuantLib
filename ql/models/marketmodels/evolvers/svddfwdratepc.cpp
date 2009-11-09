@@ -167,8 +167,8 @@ namespace QuantLib {
         const Matrix& A = marketModel_->pseudoRoot(currentStep_);
         const std::vector<Real>& fixedDrift = fixedDrifts_[currentStep_];
 
-        Size i, alive = alive_[currentStep_];
-        for (i=alive; i<numberOfRates_; ++i) {
+        Size alive = alive_[currentStep_];
+        for (Size i=alive; i<numberOfRates_; ++i) {
             logForwards_[i] += varianceMultiplier*(drifts1_[i] + fixedDrift[i]);
             logForwards_[i] += sdMultiplier*
                 std::inner_product(A.row_begin(i), A.row_end(i),
@@ -180,7 +180,7 @@ namespace QuantLib {
         calculators_[currentStep_].compute(forwards_, drifts2_);
 
         // d) correct forwards using both drifts
-        for (i=alive; i<numberOfRates_; ++i) {
+        for (Size i=alive; i<numberOfRates_; ++i) {
             logForwards_[i] += varianceMultiplier*(drifts2_[i]-drifts1_[i])/2.0;
             forwards_[i] = std::exp(logForwards_[i]) - displacements_[i];
         }
