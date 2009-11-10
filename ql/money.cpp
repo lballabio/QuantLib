@@ -193,12 +193,18 @@ namespace QuantLib {
 
 
     std::ostream& operator<<(std::ostream& out, const Money& m) {
+        #if defined(QL_PATCH_MSVC71) && BOOST_VERSION > 103600
+        // boost::format doesn't work with VC7 - simplified output
+        return out << m.currency().code() << " "
+                   << m.rounded().value();
+        #else
         boost::format fmt(m.currency().format());
         fmt.exceptions(boost::io::all_error_bits ^
                        boost::io::too_many_args_bit);
         return out << fmt % m.rounded().value()
                           % m.currency().code()
                           % m.currency().symbol();
+        #endif
     }
 
 }
