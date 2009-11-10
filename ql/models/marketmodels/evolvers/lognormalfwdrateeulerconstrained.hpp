@@ -25,6 +25,7 @@
 #include <ql/models/marketmodels/constrainedevolver.hpp>
 #include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
 #include <ql/models/marketmodels/driftcomputation/lmmdriftcalculator.hpp>
+#include <valarray>
 
 namespace QuantLib {
 
@@ -47,7 +48,7 @@ namespace QuantLib {
             const std::vector<Size>& endIndexOfSwapRate);
         virtual void setThisConstraint(
             const std::vector<Rate>& rateConstraints,
-            const std::vector<bool>& isConstraintActive);
+            const std::valarray<bool>& isConstraintActive);
         //@}
         //! \name MarketModel interface
         //@{
@@ -71,7 +72,7 @@ namespace QuantLib {
 
         //often changing inputs
         std::vector<Rate> rateConstraints_;
-        std::vector<bool> isConstraintActive_;
+        std::valarray<bool> isConstraintActive_;
 
         // fixed variables
         std::vector<std::vector<Real> > fixedDrifts_;

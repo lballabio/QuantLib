@@ -54,8 +54,8 @@ namespace QuantLib {
         currentStep_ = 0;
     }
 
-    std::vector<bool> TriggeredSwapExercise::isExerciseTime() const {
-        return std::vector<bool>(numberOfExercises(), true);
+    std::valarray<bool> TriggeredSwapExercise::isExerciseTime() const {
+        return std::valarray<bool>(true,numberOfExercises());
     }
 
     void TriggeredSwapExercise::values(const CurveState& state,

@@ -22,12 +22,13 @@
 #include <ql/models/marketmodels/utilities.hpp>
 #include <ql/errors.hpp>
 #include <algorithm>
+#include <valarray>
 
 namespace QuantLib {
 
     void mergeTimes(const std::vector<std::vector<Time> >& times,
                     std::vector<Time>& mergedTimes,
-                    std::vector<std::vector<bool> >& isPresent) {
+                    std::vector<std::valarray<bool> >& isPresent) {
 
         std::vector<Time> allTimes;
         for (Size i=0; i<times.size(); i++) {
@@ -55,10 +56,10 @@ namespace QuantLib {
         }
     }
 
-    std::vector<bool> isInSubset(const std::vector<Time>& set,
+    std::valarray<bool> isInSubset(const std::vector<Time>& set,
                                  const std::vector<Time>& subset) {
 
-        std::vector<bool> result(set.size(), false);
+        std::valarray<bool> result(false,set.size());
         Size dimsubSet = subset.size();
         if (dimsubSet==0)
             return result;

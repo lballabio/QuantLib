@@ -22,6 +22,7 @@
 #define quantlib_constrained_evolver_hpp
 
 #include <ql/models/marketmodels/evolver.hpp>
+#include <valarray>
 
 namespace QuantLib {
 
@@ -45,7 +46,7 @@ namespace QuantLib {
         //! call before each path
         virtual void setThisConstraint(
             const std::vector<Rate>& rateConstraints,
-            const std::vector<bool>& isConstraintActive) = 0;
+            const std::valarray<bool>& isConstraintActive) = 0;
     };
 
 }

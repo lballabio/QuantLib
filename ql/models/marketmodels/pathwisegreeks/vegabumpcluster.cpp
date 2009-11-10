@@ -20,6 +20,7 @@
 #include <ql/models/marketmodels/pathwisegreeks/vegabumpcluster.hpp>
 #include <ql/errors.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <valarray>
 
 namespace QuantLib {
 
@@ -149,14 +150,14 @@ namespace QuantLib {
     {
         if (checked_)
             return full_;
-        std::vector<std::vector<std::vector<bool> > > v;
+        std::vector<std::vector<std::valarray<bool> > > v;
 
         Size factors = associatedVolStructure_->numberOfFactors();
 
-        std::vector<bool> model(factors);
-        std::fill(model.begin(), model.end(), false);
+        std::valarray<bool> model(false,factors);
+    //    std::fill(model.begin(), model.end(), false);
 
-        std::vector<std::vector<bool> > modelTwo;
+        std::vector<std::valarray<bool> > modelTwo;
         for (Size i=0; i < associatedVolStructure_->numberOfRates(); ++i)
             modelTwo.push_back(model);
 
@@ -189,15 +190,15 @@ namespace QuantLib {
         if (checked_)
             return nonOverlapped_;
 
-        std::vector<std::vector<std::vector<bool> > > v;
+        std::vector<std::vector<std::valarray<bool> > > v;
 
         Size factors = associatedVolStructure_->numberOfFactors();
 
 
-        std::vector<bool> model(factors);
-        std::fill(model.begin(), model.end(), false);
+        std::valarray<bool> model(false,factors);
+        //std::fill(model.begin(), model.end(), false);
 
-        std::vector<std::vector<bool> > modelTwo;
+        std::vector<std::valarray<bool> > modelTwo;
         for (Size i=0; i < associatedVolStructure_->numberOfRates(); ++i)
             modelTwo.push_back(model);
 

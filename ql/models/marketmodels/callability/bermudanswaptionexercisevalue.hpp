@@ -24,6 +24,7 @@
 #include <ql/models/marketmodels/callability/exercisevalue.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <boost/shared_ptr.hpp>
+#include <valarray>
 
 namespace QuantLib {
 
@@ -40,7 +41,7 @@ namespace QuantLib {
         void nextStep(const CurveState&);
         void reset();
         // whether or not evolution times are exercise times
-        std::vector<bool> isExerciseTime() const;
+        std::valarray<bool> isExerciseTime() const;
         MarketModelMultiProduct::CashFlow value(const CurveState&) const;
         std::auto_ptr<MarketModelExerciseValue> clone() const;
       private:

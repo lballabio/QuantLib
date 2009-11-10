@@ -24,6 +24,7 @@
 // to be removed using forward declaration
 #include <ql/models/marketmodels/multiproduct.hpp>
 #include <memory>
+#include <valarray>
 
 namespace QuantLib {
 
@@ -41,7 +42,7 @@ namespace QuantLib {
         virtual void nextStep(const CurveState&) = 0;
         virtual void reset() = 0;
         // whether or not evolution times are exercise times
-        virtual std::vector<bool> isExerciseTime() const = 0;
+        virtual std::valarray<bool> isExerciseTime() const = 0;
         virtual MarketModelMultiProduct::CashFlow value(
                                                const CurveState&) const = 0;
         virtual std::auto_ptr<MarketModelExerciseValue> clone() const = 0;

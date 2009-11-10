@@ -314,6 +314,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     //tests for deprecated classes
     test->add(LiborMarketModelTest::suite());
     test->add(LiborMarketModelProcessTest::suite());
+    
 
     test->add(QUANTLIB_TEST_CASE(stopTimer));
 

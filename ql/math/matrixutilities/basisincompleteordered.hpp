@@ -22,6 +22,7 @@
 #define quantlib_basis_incomplete_ordered_hpp
 
 #include <ql/math/matrix.hpp>
+#include <valarray>
 
 namespace QuantLib {
 
@@ -57,7 +58,7 @@ This class is tested in
                               Real multiplierCutOff,
                                Real tolerance  );
 
-        const std::vector<bool>& validVectors() const;
+        const std::valarray<bool>& validVectors() const;
         const std::vector<Real>& GetVector(Size index) const;
 
         Size numberValidVectors() const;
@@ -73,7 +74,7 @@ This class is tested in
         Size dimension_;
 
         //!outputs
-        std::vector<bool> validVectors_;
+        std::valarray<bool> validVectors_;
         std::vector<std::vector<Real> > projectedVectors_;
 
         //!workspace

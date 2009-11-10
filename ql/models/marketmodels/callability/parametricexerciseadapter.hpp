@@ -23,6 +23,7 @@
 
 #include <ql/methods/montecarlo/exercisestrategy.hpp>
 #include <ql/utilities/clone.hpp>
+#include <valarray>
 
 namespace QuantLib {
 
@@ -45,7 +46,7 @@ namespace QuantLib {
         std::vector<std::vector<Real> > parameters_;
         std::vector<Time> exerciseTimes_;
         Size currentStep_, currentExercise_;
-        std::vector<bool> isExerciseTime_;
+        std::valarray<bool> isExerciseTime_;
         std::vector<Size> numberOfVariables_;
         mutable std::vector<Real> variables_;
     };

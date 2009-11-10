@@ -70,8 +70,8 @@ namespace QuantLib {
     }
 
 
-    std::vector<bool> BermudanSwaptionExerciseValue::isExerciseTime() const {
-        return std::vector<bool>(numberOfExercises_,true);
+    std::valarray<bool> BermudanSwaptionExerciseValue::isExerciseTime() const {
+        return std::valarray<bool>(true,numberOfExercises_);
     }
 
     MarketModelMultiProduct::CashFlow

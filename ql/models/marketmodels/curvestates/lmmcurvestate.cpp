@@ -33,7 +33,10 @@ namespace QuantLib {
       cmSwapRates_(numberOfRates_),
       cmSwapAnnuities_(numberOfRates_,rateTaus_[numberOfRates_-1]),
       cotSwapRates_(numberOfRates_),
-      cotAnnuities_(numberOfRates_, rateTaus_[numberOfRates_-1]) {}
+      cotAnnuities_(numberOfRates_, 
+	  rateTaus_[numberOfRates_-1]),
+      firstCotAnnuityComped_(numberOfRates_)
+	{}
 
     void LMMCurveState::setOnForwardRates(const std::vector<Rate>& rates,
                                           Size firstValidIndex) {
@@ -60,6 +63,8 @@ namespace QuantLib {
         // lazy evaluation of:
         // - coterminal swap rates/annuities
         // - constant maturity swap rates/annuities
+
+		firstCotAnnuityComped_ = numberOfRates_;
     }
 
     void LMMCurveState::setOnDiscountRatios(const std::vector<DiscountFactor>& discRatios,
@@ -86,6 +91,8 @@ namespace QuantLib {
         // lazy evaluation of:
         // - coterminal swap rates/annuities
         // - constant maturity swap rates/annuities
+
+		firstCotAnnuityComped_ = numberOfRates_;
     }
 
     Real LMMCurveState::discountRatio(Size i, Size j) const {
@@ -107,19 +114,37 @@ namespace QuantLib {
         QL_REQUIRE(numeraire>=first_ && numeraire<=numberOfRates_,
                    "invalid numeraire");
         QL_REQUIRE(i>=first_ && i<=numberOfRates_, "invalid index");
-        coterminalFromDiscountRatios(first_,
-                                     discRatios_, rateTaus_,
-                                     cotSwapRates_, cotAnnuities_);
-        return cotAnnuities_[i]/discRatios_[numeraire];
+	//        coterminalFromDiscountRatios(first_,
+	//                                   discRatios_, rateTaus_,
+    //                                 cotSwapRates_, cotAnnuities_);
+     
+		if (firstCotAnnuityComped_ <=i)
+			return  cotAnnuities_[i]/discRatios_[numeraire];
+
+		if (firstCotAnnuityComped_ == numberOfRates_)
+		{
+			cotAnnuities_[numberOfRates_-1] = rateTaus_[numberOfRates_-1]*discRatios_[numberOfRates_];
+			--firstCotAnnuityComped_;
+		}
+		
+		for (int j= static_cast<int>(firstCotAnnuityComped_)-1; j >=static_cast<int>(i); --j)
+			cotAnnuities_[j] = cotAnnuities_[j+1]+rateTaus_[j]*discRatios_[j+1];
+
+		firstCotAnnuityComped_ = i;
+
+		return cotAnnuities_[i]/discRatios_[numeraire];
     }
 
     Rate LMMCurveState::coterminalSwapRate(Size i) const {
         QL_REQUIRE(first_<numberOfRates_, "curve state not initialized yet");
         QL_REQUIRE(i>=first_ && i<=numberOfRates_, "invalid index");
-        coterminalFromDiscountRatios(first_,
-                                     discRatios_, rateTaus_,
-                                     cotSwapRates_, cotAnnuities_);
-        return cotSwapRates_[i];
+    //    coterminalFromDiscountRatios(first_,
+      //                               discRatios_, rateTaus_,
+        //                             cotSwapRates_, cotAnnuities_);
+  //      return cotSwapRates_[i];
+
+		Real res = (discRatios_[i]/ discRatios_[numberOfRates_] -1.0)/coterminalSwapAnnuity(numberOfRates_,i);
+		return res;
     }
 
     Rate LMMCurveState::cmSwapAnnuity(Size numeraire,

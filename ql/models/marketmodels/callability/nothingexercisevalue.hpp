@@ -36,7 +36,7 @@ namespace QuantLib {
         void nextStep(const CurveState&);
         void reset();
         // whether or not evolution times are exercise times
-        std::vector<bool> isExerciseTime() const;
+        std::valarray<bool> isExerciseTime() const;
         MarketModelMultiProduct::CashFlow value(const CurveState&) const;
         std::auto_ptr<MarketModelExerciseValue> clone() const;
       private:

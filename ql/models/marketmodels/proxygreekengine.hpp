@@ -26,6 +26,7 @@
 
 #include <ql/math/statistics/sequencestatistics.hpp>
 #include <ql/utilities/clone.hpp>
+#include <valarray>
 
 namespace QuantLib {
 
@@ -69,7 +70,7 @@ namespace QuantLib {
 
         // workspace
         std::vector<Rate> constraints_;
-        std::vector<bool> constraintsActive_;
+        std::valarray<bool> constraintsActive_;
         std::vector<Real> numerairesHeld_;
         std::vector<Size> numberCashFlowsThisStep_;
         std::vector<std::vector<MarketModelMultiProduct::CashFlow> >

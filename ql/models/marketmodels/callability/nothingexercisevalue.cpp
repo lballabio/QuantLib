@@ -60,8 +60,8 @@ namespace QuantLib {
     }
 
 
-    std::vector<bool> NothingExerciseValue::isExerciseTime() const {
-        return std::vector<bool>(numberOfExercises_, true);
+    std::valarray<bool> NothingExerciseValue::isExerciseTime() const {
+        return std::valarray<bool>(true, numberOfExercises_); // opposite way round from vector constructor
     }
 
     MarketModelMultiProduct::CashFlow

@@ -1408,7 +1408,7 @@ void MarketModelTest::testCallableSwapNaif() {
                             std::vector<boost::shared_ptr<MarketModelEvolver> >
                                 innerEvolvers;
 
-                            std::vector<bool> isExerciseTime =
+                            std::valarray<bool> isExerciseTime =
                                 isInSubset(evolution.evolutionTimes(),
                                 naifStrategy.exerciseTimes());
                             for (Size s=0; s < isExerciseTime.size(); ++s) {
@@ -1586,7 +1586,7 @@ void MarketModelTest::testCallableSwapLS() {
                             std::vector<boost::shared_ptr<MarketModelEvolver> >
                                 innerEvolvers;
 
-                            std::vector<bool> isExerciseTime =
+                            std::valarray<bool> isExerciseTime =
                                 isInSubset(evolution.evolutionTimes(),
                                 exerciseStrategy.exerciseTimes());
                             for (Size s=0; s < isExerciseTime.size(); ++s) {
@@ -1757,7 +1757,7 @@ void MarketModelTest::testCallableSwapAnderson() {
                                 evolvers[i]);
                             std::vector<boost::shared_ptr<MarketModelEvolver> >
                                 innerEvolvers;
-                            std::vector<bool> isExerciseTime =
+                            std::valarray<bool> isExerciseTime =
                                 isInSubset(evolution.evolutionTimes(),
                                 exerciseStrategy.exerciseTimes());
                             for (Size s=0; s < isExerciseTime.size(); ++s) {
@@ -4611,7 +4611,7 @@ void MarketModelTest::testIsInSubset() {
     std::vector<Time> set, subset;
     for (Size i=0; i<dim; i++) set.push_back(i*1.0);
     for (Size i=0; i<dim; i++) subset.push_back(dim+i*1.0);
-    std::vector<bool> result = isInSubset(set, subset);
+    std::valarray<bool> result = isInSubset(set, subset);
     if (printReport_) {
         for (Size i=0; i<dim; i++) {
             BOOST_MESSAGE(io::ordinal(i+1) << ":" <<

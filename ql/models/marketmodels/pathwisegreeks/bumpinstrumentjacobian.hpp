@@ -25,6 +25,7 @@
 
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/models/marketmodels/pathwisegreeks/vegabumpcluster.hpp>
+#include <valarray>
 
 namespace QuantLib
 {   
@@ -68,7 +69,7 @@ namespace QuantLib
          VegaBumpCollection bumps_;
          std::vector<Swaption> swaptions_;
          std::vector<Cap> caps_;
-         mutable std::vector<bool> computed_;
+         mutable std::valarray<bool> computed_;
          mutable bool allComputed_;
          mutable std::vector<std::vector<Real> > derivatives_;
          

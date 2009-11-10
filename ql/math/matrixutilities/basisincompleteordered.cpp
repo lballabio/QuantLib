@@ -129,7 +129,7 @@ namespace QuantLib {
       multiplierCutoff_(multiplierCutoff),
       numberVectors_(originalVectors.rows()),
       dimension_(originalVectors.columns()),
-      validVectors_(originalVectors.rows(), true),
+      validVectors_(true,originalVectors.rows()), // opposite way round from vector constructor
       orthoNormalizedVectors_(originalVectors.rows(),
                               originalVectors.columns())
     {
@@ -219,7 +219,7 @@ namespace QuantLib {
 
     } // end of constructor
 
-    const std::vector<bool>& OrthogonalProjections::validVectors() const
+    const std::valarray<bool>& OrthogonalProjections::validVectors() const
     {
         return validVectors_;
 

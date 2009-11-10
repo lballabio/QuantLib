@@ -23,6 +23,7 @@
 #include <ql/models/marketmodels/multiproduct.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/utilities/clone.hpp>
+#include <valarray>
 
 namespace QuantLib {
 
@@ -76,7 +77,7 @@ namespace QuantLib {
         Size currentIndex_;
         std::vector<Time> cashflowTimes_;
         std::vector<std::vector<Time> > allEvolutionTimes_;
-        std::vector<std::vector<bool> > isInSubset_;
+        std::vector<std::valarray<bool> > isInSubset_;
     };
 
 }

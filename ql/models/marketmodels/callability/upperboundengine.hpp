@@ -27,6 +27,7 @@
 #include <ql/math/statistics/sequencestatistics.hpp>
 #include <ql/utilities/clone.hpp>
 #include <utility>
+#include <valarray>
 
 namespace QuantLib {
 
@@ -70,7 +71,7 @@ namespace QuantLib {
         Size underlyingOffset_, rebateOffset_, hedgeOffset_, hedgeRebateOffset_;
         Size numberOfProducts_;
         Size numberOfSteps_;
-        std::vector<bool> isExerciseTime_;
+        std::valarray<bool> isExerciseTime_;
 
         // workspace
         std::vector<Size> numberCashFlowsThisStep_;

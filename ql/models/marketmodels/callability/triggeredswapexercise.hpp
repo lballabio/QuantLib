@@ -36,7 +36,7 @@ namespace QuantLib {
         const EvolutionDescription& evolution() const;
         void nextStep(const CurveState&);
         void reset();
-        std::vector<bool> isExerciseTime() const;
+        std::valarray<bool> isExerciseTime() const;
         void values(const CurveState&,
                     std::vector<Real>& results) const;
 

@@ -23,6 +23,7 @@
 
 #include <ql/types.hpp>
 #include <vector>
+#include <valarray>
 
 namespace QuantLib {
 
@@ -40,7 +41,7 @@ namespace QuantLib {
         virtual void nextStep(const CurveState&) = 0;
         virtual void reset() = 0;
         // whether or not evolution times are exercise times
-        virtual std::vector<bool> isExerciseTime() const = 0;
+        virtual std::valarray<bool> isExerciseTime() const = 0;
         virtual void values(const CurveState&,
                             std::vector<Real>& results) const = 0;
     };

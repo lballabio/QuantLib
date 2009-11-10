@@ -50,7 +50,7 @@ namespace QuantLib {
       private:
         Clone<MarketModelExerciseValue> exercise_;
         Size numberOfProducts_;
-        std::vector<bool> isExerciseTime_;
+        std::valarray<bool> isExerciseTime_;
         Size currentIndex_;
     };
 

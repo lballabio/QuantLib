@@ -25,6 +25,7 @@
 #include <ql/models/marketmodels/multiproduct.hpp>
 #include <ql/methods/montecarlo/exercisestrategy.hpp>
 #include <ql/utilities/clone.hpp>
+#include <valarray>
 
 namespace QuantLib {
 
@@ -59,7 +60,7 @@ namespace QuantLib {
         Clone<ExerciseStrategy<CurveState> > strategy_;
         Clone<MarketModelMultiProduct> rebate_;
         EvolutionDescription evolution_;
-        std::vector<std::vector<bool> > isPresent_;
+        std::vector<std::valarray<bool> > isPresent_;
         std::vector<Time> cashFlowTimes_;
         Size rebateOffset_;
         bool wasCalled_;

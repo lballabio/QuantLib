@@ -59,8 +59,8 @@ namespace QuantLib {
         currentIndex_ = 0;
     }
 
-    std::vector<bool> SwapBasisSystem::isExerciseTime() const {
-        return std::vector<bool>(exerciseTimes_.size(), true);
+    std::valarray<bool> SwapBasisSystem::isExerciseTime() const {
+        return std::valarray<bool>(true, exerciseTimes_.size());
     }
 
     void SwapBasisSystem::values(const CurveState& currentState,

@@ -30,7 +30,7 @@ namespace QuantLib
     VolatilityBumpInstrumentJacobian::VolatilityBumpInstrumentJacobian(const VegaBumpCollection& bumps,
         const std::vector<Swaption>& swaptions,
         const std::vector<Cap>& caps)
-        : bumps_(bumps), swaptions_(swaptions), caps_(caps), computed_(swaptions.size()+caps.size(), false),
+        : bumps_(bumps), swaptions_(swaptions), caps_(caps), computed_(false,swaptions.size()+caps.size()),
         derivatives_(swaptions.size()+caps.size(),std::vector<Real>(bumps.numberBumps())),
         bumpMatrix_(swaptions.size()+caps.size(),bumps_.numberBumps())
     {

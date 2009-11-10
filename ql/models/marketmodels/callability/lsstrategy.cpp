@@ -49,8 +49,8 @@ namespace QuantLib {
                                     control_->evolution().evolutionTimes());
 
         exerciseIndex_ = std::vector<Size>(relevantTimes_.size());
-        isExerciseTime_ = std::vector<bool>(relevantTimes_.size(),false);
-        std::vector<bool> v = exercise_->isExerciseTime();
+        isExerciseTime_ = std::valarray<bool>(false,relevantTimes_.size());
+        std::valarray<bool> v = exercise_->isExerciseTime();
         Size exercises = 0;
         Size i;
         for (i=0; i<relevantTimes_.size(); ++i) {

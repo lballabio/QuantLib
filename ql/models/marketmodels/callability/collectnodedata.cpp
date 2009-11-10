@@ -94,20 +94,20 @@ namespace QuantLib {
 
         std::vector<Time> evolutionTimes = evolution.evolutionTimes();
 
-        std::vector<bool> isProductTime =
+        std::valarray<bool> isProductTime =
             isInSubset(evolutionTimes,
                        product.evolution().evolutionTimes());
-        std::vector<bool> isRebateTime =
+        std::valarray<bool> isRebateTime =
             isInSubset(evolutionTimes,
                        rebate.evolution().evolutionTimes());
-        std::vector<bool> isControlTime =
+        std::valarray<bool> isControlTime =
             isInSubset(evolutionTimes,
                        control.evolution().evolutionTimes());
-        std::vector<bool> isBasisTime =
+        std::valarray<bool> isBasisTime =
             isInSubset(evolutionTimes,
                        dataProvider.evolution().evolutionTimes());
-        std::vector<bool> isExerciseTime(evolutionTimes.size(),false);
-        std::vector<bool> v = rebate.isExerciseTime();
+        std::valarray<bool> isExerciseTime(false,evolutionTimes.size());
+        std::valarray<bool> v = rebate.isExerciseTime();
         Size exercises = 0;
         for (i=0; i<evolutionTimes.size(); ++i) {
             if (isRebateTime[i]) {

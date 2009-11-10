@@ -24,12 +24,13 @@
 
 #include <ql/types.hpp>
 #include <vector>
+#include <valarray>
 
 namespace QuantLib {
 
     void mergeTimes(const std::vector<std::vector<Time> >& times,
                     std::vector<Time>& mergedTimes,
-                    std::vector<std::vector<bool> >& isPresent);
+                    std::vector<std::valarray<bool> >& isPresent);
 
     /*! Look for elements of a set in a subset.
         Returns a vector of booleans such that:
@@ -37,7 +38,7 @@ namespace QuantLib {
 
        \pre both vectors must be strictly increasing.
     */
-    std::vector<bool> isInSubset(const std::vector<Time>& set,
+    std::valarray<bool> isInSubset(const std::vector<Time>& set,
                                  const std::vector<Time>& subset);
 
     //! check for strictly increasing times, first time greater than zero

@@ -55,8 +55,8 @@ namespace QuantLib {
         Size currentIndex_;
         Real principalInNumerairePortfolio_, newPrincipal_;
         std::vector<Time> exerciseTimes_, relevantTimes_;
-        std::vector<bool> isBasisTime_, isRebateTime_, isControlTime_;
-        std::vector<bool> isExerciseTime_;
+        std::valarray<bool> isBasisTime_, isRebateTime_, isControlTime_;
+        std::valarray<bool> isExerciseTime_;
         std::vector<MarketModelDiscounter> rebateDiscounters_;
         std::vector<MarketModelDiscounter> controlDiscounters_;
         mutable std::vector<std::vector<Real> > basisValues_;
