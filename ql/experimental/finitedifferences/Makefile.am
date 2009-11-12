@@ -52,6 +52,7 @@ this_include_HEADERS = \
 	ninepointlinearop.hpp \
 	secondderivativeop.hpp \
 	secondordermixedderivativeop.hpp \
+	sparseilupreconditioner.hpp \
 	triplebandlinearop.hpp \
 	uniform1dmesher.hpp \
 	uniformgridmesher.hpp

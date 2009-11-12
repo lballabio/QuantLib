@@ -49,6 +49,7 @@
 #include <ql/experimental/finitedifferences/ninepointlinearop.hpp>
 #include <ql/experimental/finitedifferences/secondderivativeop.hpp>
 #include <ql/experimental/finitedifferences/secondordermixedderivativeop.hpp>
+#include <ql/experimental/finitedifferences/sparseilupreconditioner.hpp>
 #include <ql/experimental/finitedifferences/triplebandlinearop.hpp>
 #include <ql/experimental/finitedifferences/uniform1dmesher.hpp>
 #include <ql/experimental/finitedifferences/uniformgridmesher.hpp>
