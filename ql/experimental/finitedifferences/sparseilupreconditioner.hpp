@@ -41,8 +41,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
 
-    using namespace boost::numeric::ublas;
-
     /*! References:
 
         Saad, Yousef. 1996, Iterative methods for sparse linear systems,
@@ -50,16 +48,17 @@ namespace QuantLib {
     */
     class SparseILUPreconditioner  {
       public:
-        SparseILUPreconditioner(const compressed_matrix<Real>& A,
-                                Integer lfil = 1);
+        SparseILUPreconditioner(
+                      const boost::numeric::ublas::compressed_matrix<Real>& A,
+                      Integer lfil = 1);
 
-        const compressed_matrix<Real>& L() const;
-        const compressed_matrix<Real>& U() const;
+        const boost::numeric::ublas::compressed_matrix<Real>& L() const;
+        const boost::numeric::ublas::compressed_matrix<Real>& U() const;
 
         Disposable<Array> apply(const Array& b) const;
 
       private:
-        compressed_matrix<Real> L_, U_;
+        boost::numeric::ublas::compressed_matrix<Real> L_, U_;
         std::vector<Size> lBands_, uBands_;
 
         Disposable<Array> forwardSolve(const Array& b) const;
