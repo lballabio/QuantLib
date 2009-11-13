@@ -86,9 +86,13 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
             dummyCashFlowsThisStep_ = std::vector<Size>(products, 0);
             Size n = rebate_->maxNumberOfCashFlowsPerProductPerStep();
+
+            CashFlow modelCashFlow;
+            modelCashFlow.amount.resize(d1.numberOfRates()+1);
+
             dummyCashFlowsGenerated_ =
                 std::vector<std::vector<CashFlow> >(products,
-                std::vector<CashFlow>(n));
+                std::vector<CashFlow>(n, modelCashFlow));
         }
 
         bool CallSpecifiedPathwiseMultiProduct:: alreadyDeflated() const

@@ -32,11 +32,13 @@ namespace QuantLib
 
     MarketModelPathwiseSwap::MarketModelPathwiseSwap(const std::vector<Time>& rateTimes,
                          const std::vector<Real>& accruals,
-                        const std::vector<Rate>& strikes)
+                        const std::vector<Rate>& strikes, 
+                        Real multiplier)
     : rateTimes_(rateTimes), 
       accruals_(accruals),
       strikes_(strikes) ,
-      numberRates_(rateTimes.size()-1)
+      numberRates_(rateTimes.size()-1),
+      multiplier_(multiplier)
     {
         checkIncreasingTimes(rateTimes);
         std::vector<Time> evolTimes(rateTimes_);
@@ -67,17 +69,17 @@ namespace QuantLib
             std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >& cashFlowsGenerated) 
     {
         Rate liborRate = currentState.forwardRate(currentIndex_);
-        cashFlowsGenerated[currentIndex_][0].timeIndex = currentIndex_+1;
+        cashFlowsGenerated[0][0].timeIndex = currentIndex_+1;
 
-        cashFlowsGenerated[currentIndex_][0].amount[0] =
-                     (liborRate-strikes_[currentIndex_])*accruals_[currentIndex_];
+        cashFlowsGenerated[0][0].amount[0] =
+                     (liborRate-strikes_[currentIndex_])*accruals_[currentIndex_]*multiplier_;
 
         numberCashFlowsThisStep[0] = 1;
         
         for (Size i=1; i <= numberRates_; ++i)
                 cashFlowsGenerated[0][0].amount[i] =0;
 
-        cashFlowsGenerated[0][0].amount[currentIndex_+1] = accruals_[currentIndex_];
+        cashFlowsGenerated[0][0].amount[currentIndex_+1] = accruals_[currentIndex_]*multiplier_;
             
         ++currentIndex_;
         return (currentIndex_ == strikes_.size());

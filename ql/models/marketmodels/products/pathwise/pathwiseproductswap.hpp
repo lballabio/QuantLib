@@ -18,8 +18,8 @@
 */
 
 
-#ifndef quantlib_market_model_pathwise_swaption_hpp
-#define quantlib_market_model_pathwise_swaption_hpp
+#ifndef quantlib_market_model_pathwise_swap_hpp
+#define quantlib_market_model_pathwise_swap_hpp
 
 #include <ql/types.hpp>
 #include <ql/models/marketmodels/pathwisemultiproduct.hpp>
@@ -45,7 +45,9 @@ class MarketModelPathwiseSwap : public MarketModelPathwiseMultiProduct
        MarketModelPathwiseSwap(
                           const std::vector<Time>& rateTimes,
                           const std::vector<Time>& accruals,
-                          const std::vector<Rate>& strikes);
+                          const std::vector<Rate>& strikes,
+                          Real multiplier = 1.0 // easy way to swtich between payer and receiver
+                          );
 
         virtual ~MarketModelPathwiseSwap() {}
 
@@ -76,6 +78,8 @@ class MarketModelPathwiseSwap : public MarketModelPathwiseMultiProduct
         std::vector<Real> accruals_;
         std::vector<Rate> strikes_;
         Size numberRates_;
+        Real multiplier_;
+
         // things that vary in a path
         Size currentIndex_;
 
