@@ -44,6 +44,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="."
@@ -127,7 +128,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/Oi- "
+				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="false"
@@ -213,7 +214,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/Oi- "
+				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="false"
@@ -299,6 +300,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="."
@@ -4187,11 +4189,35 @@
 							>
 						</File>
 						<File
+							RelativePath=".\ql\models\marketmodels\products\pathwise\pathwiseproductcallspecified.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\pathwise\pathwiseproductcallspecified.hpp"
+							>
+						</File>
+						<File
 							RelativePath=".\ql\models\marketmodels\products\pathwise\pathwiseproductcaplet.cpp"
 							>
 						</File>
 						<File
 							RelativePath=".\ql\models\marketmodels\products\pathwise\pathwiseproductcaplet.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\pathwise\pathwiseproductcashrebate.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\pathwise\pathwiseproductcashrebate.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\pathwise\pathwiseproductswap.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\pathwise\pathwiseproductswap.hpp"
 							>
 						</File>
 						<File
