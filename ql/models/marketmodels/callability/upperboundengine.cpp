@@ -145,6 +145,7 @@ namespace QuantLib {
             composite_.evolution().evolutionTimes();
         numberOfSteps_ = evolutionTimes.size();
 
+        isExerciseTime_.resize(evolutionTimes.size());
         isExerciseTime_ = isInSubset(evolutionTimes,
                                      hedgeStrategy.exerciseTimes());
 

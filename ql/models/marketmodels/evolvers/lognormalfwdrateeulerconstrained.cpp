@@ -142,6 +142,7 @@ namespace QuantLib {
                    "wrong number of isConstraintActive specified");
 
         rateConstraints_=rateConstraints;
+        isConstraintActive_.resize(isConstraintActive.size());
         isConstraintActive_ = isConstraintActive;
 
         for (unsigned long i=0; i < rateConstraints_.size(); i++)

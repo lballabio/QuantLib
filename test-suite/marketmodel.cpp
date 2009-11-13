@@ -1410,7 +1410,7 @@ void MarketModelTest::testCallableSwapNaif() {
 
                             std::valarray<bool> isExerciseTime =
                                 isInSubset(evolution.evolutionTimes(),
-                                naifStrategy.exerciseTimes());
+                                           naifStrategy.exerciseTimes());
                             for (Size s=0; s < isExerciseTime.size(); ++s) {
                                 if (isExerciseTime[s]) {
                                     MTBrownianGeneratorFactory iFactory(seed_+s);
@@ -1588,7 +1588,7 @@ void MarketModelTest::testCallableSwapLS() {
 
                             std::valarray<bool> isExerciseTime =
                                 isInSubset(evolution.evolutionTimes(),
-                                exerciseStrategy.exerciseTimes());
+                                           exerciseStrategy.exerciseTimes());
                             for (Size s=0; s < isExerciseTime.size(); ++s) {
                                 if (isExerciseTime[s]) {
                                     MTBrownianGeneratorFactory iFactory(seed_+s);
@@ -1759,7 +1759,7 @@ void MarketModelTest::testCallableSwapAnderson() {
                                 innerEvolvers;
                             std::valarray<bool> isExerciseTime =
                                 isInSubset(evolution.evolutionTimes(),
-                                exerciseStrategy.exerciseTimes());
+                                           exerciseStrategy.exerciseTimes());
                             for (Size s=0; s < isExerciseTime.size(); ++s) {
                                 if (isExerciseTime[s]) {
                                     MTBrownianGeneratorFactory iFactory(seed_+s);
