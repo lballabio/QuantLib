@@ -101,6 +101,7 @@ libMultiDimFDM_la_SOURCES = \
 	ninepointlinearop.cpp \
 	secondderivativeop.cpp \
 	secondordermixedderivativeop.cpp \
+	sparseilupreconditioner.cpp \
 	triplebandlinearop.cpp \
 	uniformgridmesher.cpp
 

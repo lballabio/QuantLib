@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=1600
+UnitCount=1602
 Type=2
 Ver=1
 ObjFiles=
@@ -16047,3 +16047,22 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
+[Unit1601]
+FileName=ql\experimental\finitedifferences\sparseilupreconditioner.cpp
+CompileCpp=1
+Folder=experimental/finitedifferences
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1602]
+FileName=ql\experimental\finitedifferences\sparseilupreconditioner.hpp
+CompileCpp=1
+Folder=experimental/finitedifferences
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=

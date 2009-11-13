@@ -7524,6 +7524,12 @@
 					RelativePath=".\ql\experimental\finitedifferences\secondordermixedderivativeop.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\sparseilupreconditioner.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\sparseilupreconditioner.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\triplebandlinearop.cpp">
 				</File>
 				<File
