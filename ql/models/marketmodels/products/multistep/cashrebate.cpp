@@ -28,7 +28,8 @@ namespace QuantLib {
                               const Matrix& amounts,
                               Size numberOfProducts)
     : evolution_(evolution), paymentTimes_(paymentTimes),
-      amounts_(amounts), numberOfProducts_(numberOfProducts) {
+      amounts_(amounts), numberOfProducts_(numberOfProducts)
+    {
 
         checkIncreasingTimes(paymentTimes);
 
@@ -45,28 +46,34 @@ namespace QuantLib {
 
 
     std::vector<Time>
-    MarketModelCashRebate::possibleCashFlowTimes() const {
+    MarketModelCashRebate::possibleCashFlowTimes() const 
+    {
         return paymentTimes_;
     }
 
-    Size MarketModelCashRebate::numberOfProducts() const {
+    Size MarketModelCashRebate::numberOfProducts() const 
+    {
         return numberOfProducts_;
     }
 
-    Size MarketModelCashRebate::maxNumberOfCashFlowsPerProductPerStep() const {
+    Size MarketModelCashRebate::maxNumberOfCashFlowsPerProductPerStep() const 
+    {
         return 1;
     }
 
-    void MarketModelCashRebate::reset() {
+    void MarketModelCashRebate::reset() 
+    {
        currentIndex_=0;
     }
 
     std::vector<Size>
-    MarketModelCashRebate::suggestedNumeraires() const {
+    MarketModelCashRebate::suggestedNumeraires() const 
+    {
         QL_FAIL("not implemented (yet?)");
     }
 
-    const EvolutionDescription& MarketModelCashRebate::evolution() const {
+    const EvolutionDescription& MarketModelCashRebate::evolution() const
+    {
         return evolution_;
     }
 
@@ -75,8 +82,10 @@ namespace QuantLib {
             const CurveState&,
             std::vector<Size>& numberCashFlowsThisStep,
             std::vector<std::vector<MarketModelMultiProduct::CashFlow> >&
-                                                               genCashFlows) {
-        for (Size i=0; i<numberOfProducts_; ++i) {
+                                                               genCashFlows)
+    {
+        for (Size i=0; i<numberOfProducts_; ++i) 
+        {
             numberCashFlowsThisStep[i] = 1;
             genCashFlows[i][0].timeIndex = currentIndex_;
             genCashFlows[i][0].amount = amounts_[i][currentIndex_];
@@ -86,7 +95,8 @@ namespace QuantLib {
     }
 
     std::auto_ptr<MarketModelMultiProduct>
-    MarketModelCashRebate::clone() const {
+    MarketModelCashRebate::clone() const 
+    {
         return std::auto_ptr<MarketModelMultiProduct>(
                                             new MarketModelCashRebate(*this));
     }

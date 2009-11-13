@@ -25,9 +25,16 @@
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/math/matrix.hpp>
 
-namespace QuantLib {
+namespace QuantLib 
+{
+    /*!
+    Class to model receipt of a fixed cash amount once. Product terminates immediately. 
+    Mainly useful as rebate received when another product is cancelled. 
 
-    class MarketModelCashRebate : public MarketModelMultiProduct {
+    */
+
+    class MarketModelCashRebate : public MarketModelMultiProduct 
+    {
       public:
         MarketModelCashRebate(const EvolutionDescription& evolution,
                               const std::vector<Time>& paymentTimes,

@@ -27,8 +27,11 @@ namespace QuantLib {
                          const Clone<MarketModelMultiProduct>& underlying,
                          const Clone<ExerciseStrategy<CurveState> >& strategy,
                          const Clone<MarketModelMultiProduct>& rebate)
-    : underlying_(underlying), strategy_(strategy), rebate_(rebate),
-      callable_(true) {
+                    : underlying_(underlying), 
+                    strategy_(strategy), 
+                    rebate_(rebate),
+                    callable_(true) 
+    {
 
         Size products = underlying_->numberOfProducts();
         EvolutionDescription d1 = underlying->evolution();
@@ -36,14 +39,17 @@ namespace QuantLib {
         const std::vector<Time>& evolutionTimes1 = d1.evolutionTimes();
         const std::vector<Time>& exerciseTimes = strategy->exerciseTimes();
 
-        if (!rebate_.empty()) {
+        if (!rebate_.empty()) 
+        {
             EvolutionDescription d2 = rebate_->evolution();
             const std::vector<Time>& rateTimes2 = d2.rateTimes();
             QL_REQUIRE(rateTimes1.size() == rateTimes2.size() &&
                        std::equal(rateTimes1.begin(), rateTimes1.end(),
                                   rateTimes2.begin()),
                        "incompatible rate times");
-        } else {
+        } 
+        else
+        {
             EvolutionDescription description(rateTimes1, exerciseTimes);
             Matrix amounts(products, exerciseTimes.size(), 0.0);
 
@@ -59,8 +65,8 @@ namespace QuantLib {
         allEvolutionTimes[3] = strategy->relevantTimes();
 
         mergeTimes(allEvolutionTimes,
-                   mergedEvolutionTimes,
-                   isPresent_);
+                                    mergedEvolutionTimes,
+                                    isPresent_);
 
         // TODO: add relevant rates
         evolution_ = EvolutionDescription(rateTimes1, mergedEvolutionTimes);
@@ -69,7 +75,7 @@ namespace QuantLib {
         rebateOffset_ = cashFlowTimes_.size();
         const std::vector<Time> rebateTimes = rebate_->possibleCashFlowTimes();
         cashFlowTimes_.insert(cashFlowTimes_.end(),
-                              rebateTimes.begin(), rebateTimes.end());
+                                                           rebateTimes.begin(), rebateTimes.end());
 
         dummyCashFlowsThisStep_ = std::vector<Size>(products, 0);
         Size n = rebate_->maxNumberOfCashFlowsPerProductPerStep();
@@ -79,30 +85,36 @@ namespace QuantLib {
     }
 
     std::vector<Size>
-    CallSpecifiedMultiProduct::suggestedNumeraires() const {
+    CallSpecifiedMultiProduct::suggestedNumeraires() const 
+    {
         return underlying_->suggestedNumeraires();
     }
 
-    const EvolutionDescription& CallSpecifiedMultiProduct::evolution() const {
+    const EvolutionDescription& CallSpecifiedMultiProduct::evolution() const 
+    {
         return evolution_;
     }
 
     std::vector<Time>
-    CallSpecifiedMultiProduct::possibleCashFlowTimes() const {
+    CallSpecifiedMultiProduct::possibleCashFlowTimes() const 
+    {
         return cashFlowTimes_;
     }
 
-    Size CallSpecifiedMultiProduct::numberOfProducts() const {
+    Size CallSpecifiedMultiProduct::numberOfProducts() const 
+    {
         return underlying_->numberOfProducts();
     }
 
     Size
-    CallSpecifiedMultiProduct::maxNumberOfCashFlowsPerProductPerStep() const {
+    CallSpecifiedMultiProduct::maxNumberOfCashFlowsPerProductPerStep() const 
+    {
         return std::max(underlying_->maxNumberOfCashFlowsPerProductPerStep(),
                         rebate_->maxNumberOfCashFlowsPerProductPerStep());
     }
 
-    void CallSpecifiedMultiProduct::reset() {
+    void CallSpecifiedMultiProduct::reset() 
+    {
         underlying_->reset();
         rebate_->reset();
         strategy_->reset();
@@ -114,7 +126,8 @@ namespace QuantLib {
     bool CallSpecifiedMultiProduct::nextTimeStep(
             const CurveState& currentState,
             std::vector<Size>& numberCashFlowsThisStep,
-            std::vector<std::vector<CashFlow> >& cashFlowsGenerated) {
+            std::vector<std::vector<CashFlow> >& cashFlowsGenerated) 
+    {
 
         bool isUnderlyingTime = isPresent_[0][currentIndex_];
         bool isExerciseTime = isPresent_[1][currentIndex_];
@@ -130,8 +143,10 @@ namespace QuantLib {
         if (!wasCalled_ && isExerciseTime && callable_)
             wasCalled_ = strategy_->exercise(currentState);
 
-        if (wasCalled_) {
-            if (isRebateTime) {
+        if (wasCalled_) 
+        {
+            if (isRebateTime) 
+            {
                 done = rebate_->nextTimeStep(currentState,
                                              numberCashFlowsThisStep,
                                              cashFlowsGenerated);
@@ -139,7 +154,9 @@ namespace QuantLib {
                     for (Size j=0; j<numberCashFlowsThisStep[i]; ++j)
                         cashFlowsGenerated[i][j].timeIndex += rebateOffset_;
             }
-        } else {
+        } 
+        else 
+        {
             if (isRebateTime)
                 rebate_->nextTimeStep(currentState,
                                       dummyCashFlowsThisStep_,
@@ -155,31 +172,37 @@ namespace QuantLib {
     }
 
     std::auto_ptr<MarketModelMultiProduct>
-    CallSpecifiedMultiProduct::clone() const {
+    CallSpecifiedMultiProduct::clone() const 
+    {
         return std::auto_ptr<MarketModelMultiProduct>(
                                         new CallSpecifiedMultiProduct(*this));
     }
 
     const MarketModelMultiProduct&
-    CallSpecifiedMultiProduct::underlying() const {
+    CallSpecifiedMultiProduct::underlying() const 
+    {
         return *underlying_;
     }
 
     const ExerciseStrategy<CurveState>&
-    CallSpecifiedMultiProduct::strategy() const {
+    CallSpecifiedMultiProduct::strategy() const 
+    {
         return *strategy_;
     }
 
     const MarketModelMultiProduct&
-    CallSpecifiedMultiProduct::rebate() const {
+    CallSpecifiedMultiProduct::rebate() const 
+    {
         return *rebate_;
     }
 
-    void CallSpecifiedMultiProduct::enableCallability() {
+    void CallSpecifiedMultiProduct::enableCallability() 
+    {
         callable_ = true;
     }
 
-    void CallSpecifiedMultiProduct::disableCallability() {
+    void CallSpecifiedMultiProduct::disableCallability() 
+    {
         callable_ = false;
     }
 

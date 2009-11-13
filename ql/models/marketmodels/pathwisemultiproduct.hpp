@@ -1,20 +1,20 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2008 Mark Joshi
+Copyright (C) 2006, 2008 Mark Joshi
 
- This file is part of QuantLib, a free-software/open-source library
- for financial quantitative analysts and developers - http://quantlib.org/
+This file is part of QuantLib, a free-software/open-source library
+for financial quantitative analysts and developers - http://quantlib.org/
 
- QuantLib is free software: you can redistribute it and/or modify it
- under the terms of the QuantLib license.  You should have received a
- copy of the license along with this program; if not, please email
- <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+QuantLib is free software: you can redistribute it and/or modify it
+under the terms of the QuantLib license.  You should have received a
+copy of the license along with this program; if not, please email
+<quantlib-dev@lists.sf.net>. The license is also available online at
+<http://quantlib.org/license.shtml>.
 
- This program is distributed in the hope that it will be useful, but WITHOUT
- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE.  See the license for more details.
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
 
@@ -32,26 +32,27 @@ namespace QuantLib {
 
     //! market-model pathwise product
     /*! This is the abstract base class that encapsulates the notion of a
-        product: it contains the information that would be in the termsheet
-        of the product.
+    product: it contains the information that would be in the termsheet
+    of the product.
 
-        It's useful to have it be able to do several products simultaneously.
-        The products would have to have the same underlying rate times of
-        course. The class is therefore really encapsulating the notion of a
-        multi-product.
+    It's useful to have it be able to do several products simultaneously.
+    The products would have to have the same underlying rate times of
+    course. The class is therefore really encapsulating the notion of a
+    multi-product.
 
-        For each time evolved to, it generates the cash flows associated to
-        that time for the state of the yield curve. If one was doing a
-        callable product then this would encompass the product and its
-        exercise strategy.
+    For each time evolved to, it generates the cash flows associated to
+    that time for the state of the yield curve. If one was doing a
+    callable product then this would encompass the product and its
+    exercise strategy.
 
-        This class differs from market-model multi-product in that it also returns the
-        derivative of the pay-off with respect to each forward rate
+    This class differs from market-model multi-product in that it also returns the
+    derivative of the pay-off with respect to each forward rate
 
     */
 
-    class MarketModelPathwiseMultiProduct {
-     public:
+    class MarketModelPathwiseMultiProduct 
+    {
+    public:
         struct CashFlow {
             Size timeIndex;
             std::vector<Real > amount;

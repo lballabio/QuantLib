@@ -3,4 +3,4 @@
 
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductcaplet.hpp>
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductswaption.hpp>
-
+#include <ql/models/marketmodels/products/pathwise/pathwiseproductswap.hpp>

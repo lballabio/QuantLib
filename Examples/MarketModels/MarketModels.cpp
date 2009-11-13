@@ -98,7 +98,7 @@ using namespace QuantLib;
 int main()
 {
 
-    Size numberRates = 10;
+    Size numberRates =20;
     Real accrual = 0.5;
     Real firstTime = 0.5;
 
@@ -185,6 +185,8 @@ int main()
         rateTimes,volLevel, beta,gamma);
 
 
+
+
     FlatVol  calibration(
         volatilities,
         boost::shared_ptr<PiecewiseConstantCorrelation>(new  ExponentialForwardCorrelation(correlations)),
@@ -193,6 +195,8 @@ int main()
         initialRates,
         displacements);
 
+    boost::shared_ptr<MarketModel> marketModel(new FlatVol(calibration));
+
     // we use a factory since their is data that will only be known later 
     SobolBrownianGeneratorFactory generatorFactory(
         SobolBrownianGenerator::Diagonal, seed);
@@ -200,7 +204,7 @@ int main()
     std::vector<Size> numeraires( moneyMarketMeasure(evolution));
 
     // the evolver will actually evolve the rates 
-    LogNormalFwdRatePc  evolver(const boost::shared_ptr<MarketModel>(new FlatVol(calibration)),
+    LogNormalFwdRatePc  evolver(marketModel,
         generatorFactory,
         numeraires   // numeraires for each step
         );
@@ -267,56 +271,134 @@ int main()
     for (Size i=0; i < means.size(); ++i)
         std::cout << means[i] << "\n";
 
-    std::cout << " time to build strategy " << (t2-t1)/static_cast<Real>(CLOCKS_PER_SEC);
-    std::cout << " time to price " << (t3-t2)/static_cast<Real>(CLOCKS_PER_SEC);
-    char c;
-    std::cin >> c;
+    std::cout << " time to build strategy " << (t2-t1)/static_cast<Real>(CLOCKS_PER_SEC)<< " seconds.\n";
+    std::cout << " time to price " << (t3-t2)/static_cast<Real>(CLOCKS_PER_SEC)<< " seconds.\n";
 
-    /*
+    // vegas
+
+    bool allowFactorwiseBumping = true;
+    Real multiplierCutOff = 50.0;
+    Real projectionTolerance = 1E-4;
+    Size pathsToDoVegas = 16384;
+
+    std::vector<VolatilityBumpInstrumentJacobian::Cap> caps;
+
+    Rate capStrike = initialRates[0];
+
+    for (Size i=0; i +2 < numberRates; i=i+3)
+    {
+        VolatilityBumpInstrumentJacobian::Cap nextCap;
+        nextCap.startIndex_ = 0;
+        nextCap.endIndex_ = i;
+        nextCap.strike_ = capStrike;
+        caps.push_back(nextCap);
+    }
+    std::vector<std::pair<Size,Size> > startsAndEnds(caps.size());
+
+
+    for (Size j=0; j < caps.size(); ++j)
+    {
+        startsAndEnds[j].first = caps[j].startIndex_;
+        startsAndEnds[j].second = caps[j].endIndex_;
+
+    }
+
+    std::vector<VolatilityBumpInstrumentJacobian::Swaption> swaptions(numberRates);
+
+    for (Size i=0; i < numberRates; ++i)
+    {
+        swaptions[i].startIndex_ = i;
+        swaptions[i].endIndex_ = numberRates;
+
+    }
+
+     VegaBumpCollection possibleBumps(marketModel,
+                allowFactorwiseBumping);
+
+       OrthogonalizedBumpFinder  bumpFinder(possibleBumps,
+                                                                                                swaptions,
+                                                                                                caps,
+                                                                                                multiplierCutOff, // if vector length grows by more than this discard
+                                                                                                projectionTolerance);      // if vector projection before scaling less than this discard
+        std::vector<std::vector<Matrix> > theBumps;
+
+        bumpFinder.GetVegaBumps(theBumps);
+
+         LogNormalFwdRateEuler evolverEuler(marketModel,
+                                                                                         generatorFactory,
+                                                                                         numeraires
+                                                                                          ) ;
+
+        PathwiseVegasOuterAccountingEngine
+                    accountingEngineVegas(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolverEuler)),
+                    Clone<MarketModelPathwiseMultiProduct>(new MultiProductComposite(allProducts)),
+                    marketModel,
+                    theBumps,
+                    initialNumeraireValue);
+
+        std::vector<Real> values,errors;
+
+        accountingEngineVegas.multiplePathValues(values,errors,pathsToDoVegas);
+
+
+
 
     // upper bound
 
-    //MTBrownianGeneratorFactory uFactory(seed_+142);
-    SobolBrownianGeneratorFactory uFactory(
-    SobolBrownianGenerator::Diagonal, seed_+142);
-    evolver = makeMarketModelEvolver(marketModel,
-    numeraires,
-    uFactory,
-    evolvers[i]);
+    MTBrownianGeneratorFactory uFactory(seed+142);
 
-    std::vector<boost::shared_ptr<MarketModelEvolver> >
-    innerEvolvers;
 
-    std::valarray<bool> isExerciseTime =
-    isInSubset(evolution.evolutionTimes(),
-    exerciseStrategy.exerciseTimes());
-    for (Size s=0; s < isExerciseTime.size(); ++s) {
-    if (isExerciseTime[s]) {
-    MTBrownianGeneratorFactory iFactory(seed_+s);
-    boost::shared_ptr<MarketModelEvolver> e =
-    makeMarketModelEvolver(marketModel,
-    numeraires,
-    iFactory,
-    evolvers[i],
-    s);
-    innerEvolvers.push_back(e);
+     boost::shared_ptr<MarketModelEvolver> upperEvolver(new LogNormalFwdRatePc( boost::shared_ptr<MarketModel>(new FlatVol(calibration)),
+                                                                          uFactory,
+                                                                          numeraires   // numeraires for each step
+                                                                          ));
+
+    std::vector<boost::shared_ptr<MarketModelEvolver> > innerEvolvers;
+
+    std::valarray<bool> isExerciseTime =   isInSubset(evolution.evolutionTimes(),    exerciseStrategy.exerciseTimes());
+
+    for (Size s=0; s < isExerciseTime.size(); ++s) 
+    {
+        if (isExerciseTime[s]) 
+        {
+            MTBrownianGeneratorFactory iFactory(seed+s);
+            boost::shared_ptr<MarketModelEvolver> e =boost::shared_ptr<MarketModelEvolver> (static_cast<MarketModelEvolver*>(new   LogNormalFwdRatePc(boost::shared_ptr<MarketModel>(new FlatVol(calibration)),
+                                                                          uFactory,
+                                                                          numeraires ,  // numeraires for each step
+                                                                          s)));
+  
+              innerEvolvers.push_back(e);
+        }
     }
-    }
 
-    Size initialNumeraire = evolver->numeraires().front();
-    Real initialNumeraireValue =
-    todaysDiscounts[initialNumeraire];
 
-    UpperBoundEngine uEngine(evolver, innerEvolvers,
-    receiverSwap, nullRebate,
-    receiverSwap, nullRebate,
-    exerciseStrategy,
-    initialNumeraireValue);
+
+    UpperBoundEngine uEngine(upperEvolver,  // does outer paths
+                                                                   innerEvolvers, // for sub-simulations that do continuation values
+                                                                   receiverSwap,
+                                                                   nullRebate,
+                                                                   receiverSwap, 
+                                                                   nullRebate,
+                                                                   exerciseStrategy,
+                                                                    initialNumeraireValue);
+    
     Statistics uStats;
-    uEngine.multiplePathValues(uStats,255,256);
-    Real delta = uStats.mean();
-    Real deltaError = uStats.errorEstimate();
-    if (printReport_)
-    BOOST_MESSAGE("    upper bound delta: " << io::rate(delta) << " +- " << io::rate(deltaError));
-    */
+    Size innerPaths = 255;
+    Size outerPaths =256;
+
+    int t4 = clock();
+
+    uEngine.multiplePathValues(uStats,outerPaths,innerPaths);
+    Real upperBound = uStats.mean();
+    Real upperSE = uStats.errorEstimate();
+
+    int t5=clock();
+
+    std::cout << " Upper - lower is " << upperBound << " with standard error " << upperSE << "\n";
+    std::cout << " time to compute upper bound is  " << (t5-t4)/static_cast<Real>(CLOCKS_PER_SEC) << " seconds.\n";
+
+     char c;
+    std::cin >> c;
+
+
 }
