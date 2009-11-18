@@ -25,6 +25,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/callability/nothingexercisevalue.hpp>
 #include <ql/models/marketmodels/callability/parametricexerciseadapter.hpp>
 #include <ql/models/marketmodels/callability/swapbasissystem.hpp>
+#include <ql/models/marketmodels/callability/swapforwardbasissystem.hpp>
 #include <ql/models/marketmodels/callability/swapratetrigger.hpp>
 #include <ql/models/marketmodels/callability/triggeredswapexercise.hpp>
 #include <ql/models/marketmodels/callability/upperboundengine.hpp>
@@ -52,6 +53,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/products/multistep/multistepnothing.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepoptionlets.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepswap.hpp>
+#include <ql/models/marketmodels/products/multistep/multistepinversefloater.hpp>
 #include <ql/models/marketmodels/products/onestep/onestepforwards.hpp>
 #include <ql/models/marketmodels/products/onestep/onestepoptionlets.hpp>
 #include <ql/models/marketmodels/forwardforwardmappings.hpp>
@@ -99,10 +101,67 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 using namespace QuantLib;
 
+std::vector<std::vector<Matrix> > theVegaBumps(bool factorwiseBumping,
+                                               boost::shared_ptr<MarketModel> marketModel, 
+                                               bool doCaps)
+{
+    Real multiplierCutOff = 50.0;
+    Real projectionTolerance = 1E-4;
+    Size numberRates= marketModel->numberOfRates();
+
+    std::vector<VolatilityBumpInstrumentJacobian::Cap> caps;
+
+    if (doCaps)
+    {
+
+        Rate capStrike = marketModel->initialRates()[0];
+
+        for (Size i=0; i< numberRates-1; i=i+1)
+        {
+            VolatilityBumpInstrumentJacobian::Cap nextCap;
+            nextCap.startIndex_ = i;
+            nextCap.endIndex_ = i+1;
+            nextCap.strike_ = capStrike;
+            caps.push_back(nextCap);
+        }
+
+
+    }
+
+
+
+    std::vector<VolatilityBumpInstrumentJacobian::Swaption> swaptions(numberRates);
+
+    for (Size i=0; i < numberRates; ++i)
+    {
+        swaptions[i].startIndex_ = i;
+        swaptions[i].endIndex_ = numberRates;
+
+    }
+
+    VegaBumpCollection possibleBumps(marketModel,
+        factorwiseBumping);
+
+    OrthogonalizedBumpFinder  bumpFinder(possibleBumps,
+        swaptions,
+        caps,
+        multiplierCutOff, // if vector length grows by more than this discard
+        projectionTolerance);      // if vector projection before scaling less than this discard
+
+    std::vector<std::vector<Matrix> > theBumps;
+
+    bumpFinder.GetVegaBumps(theBumps);
+
+    return theBumps;
+
+}
+
+
+
 int main()
 {
 
-    Size numberRates =10;
+    Size numberRates =20;
     Real accrual = 0.5;
     Real firstTime = 0.5;
 
@@ -146,7 +205,10 @@ int main()
     // control that does nothing, need it because some control is expected 
     NothingExerciseValue control(rateTimes);
 
+//    SwapForwardBasisSystem basisSystem(rateTimes,exerciseTimes);
     SwapBasisSystem basisSystem(rateTimes,exerciseTimes);
+
+
 
     // rebate that does nothing, need it because some rebate is expected
     // when you break a swap nothing happens.
@@ -165,6 +227,17 @@ int main()
     Size seed = 12332; // for Sobol generator
     Size trainingPaths = 8192;
     Size paths = 16384;
+    Size vegaPaths = 16384*64;
+
+    std::cout << "training paths, " << trainingPaths << "\n";
+    std::cout << "paths, " << paths << "\n";
+    std::cout << "vega Paths, " << vegaPaths << "\n";
+#ifdef _DEBUG
+   trainingPaths = 512;
+  paths = 1024;
+  vegaPaths = 1024;
+#endif
+
 
     // set up a calibration, this would typically be done by using a calibrator
 
@@ -175,7 +248,7 @@ int main()
 
     Real initialNumeraireValue = 0.95;
 
-    Real volLevel = 0.1;
+    Real volLevel = 0.11;
     Real longTermCorr = 0.5;
     Real beta = 0.2;
     Real gamma = 1.0;
@@ -204,7 +277,7 @@ int main()
 
     boost::shared_ptr<MarketModel> marketModel(new FlatVol(calibration));
 
-    // we use a factory since their is data that will only be known later 
+    // we use a factory since there is data that will only be known later 
     SobolBrownianGeneratorFactory generatorFactory(
         SobolBrownianGenerator::Diagonal, seed);
 
@@ -278,113 +351,84 @@ int main()
     for (Size i=0; i < means.size(); ++i)
         std::cout << means[i] << "\n";
 
-    std::cout << " time to build strategy " << (t2-t1)/static_cast<Real>(CLOCKS_PER_SEC)<< " seconds.\n";
-    std::cout << " time to price " << (t3-t2)/static_cast<Real>(CLOCKS_PER_SEC)<< " seconds.\n";
+    std::cout << " time to build strategy, " << (t2-t1)/static_cast<Real>(CLOCKS_PER_SEC)<< ", seconds.\n";
+    std::cout << " time to price, " << (t3-t2)/static_cast<Real>(CLOCKS_PER_SEC)<< ", seconds.\n";
 
     // vegas
 
-    bool allowFactorwiseBumping = true;
-    Real multiplierCutOff = 50.0;
-    Real projectionTolerance = 1E-4;
-    Size pathsToDoVegas = 16384;
+    // do it twice once with factorwise bumping, once without
+    Size pathsToDoVegas = vegaPaths;
 
-    std::vector<VolatilityBumpInstrumentJacobian::Cap> caps;
-
-    std::vector<std::pair<Size,Size> > startsAndEnds(caps.size());
-
-    bool doCaps = false;
-
-    if (doCaps)
+    for (Size i=0; i < 4; ++i)
     {
 
-        Rate capStrike = initialRates[0];
+        bool allowFactorwiseBumping = i % 2 > 0 ;
 
-        for (Size i=1; i +2 < numberRates; i=i+3)
+        bool doCaps = i / 2 > 0 ;
+
+
+
+
+
+        LogNormalFwdRateEuler evolverEuler(marketModel,
+            generatorFactory,
+            numeraires
+            ) ;
+
+        MarketModelPathwiseSwap receiverPathwiseSwap(  rateTimes,
+            accruals,
+            strikes,
+            receive);
+        Clone<MarketModelPathwiseMultiProduct> receiverPathwiseSwapPtr(receiverPathwiseSwap.clone());
+
+        //  callable receiver swap
+        CallSpecifiedPathwiseMultiProduct callableProductPathwise(receiverPathwiseSwapPtr,
+            exerciseStrategy);
+
+        Clone<MarketModelPathwiseMultiProduct> callableProductPathwisePtr(callableProductPathwise.clone());
+
+
+        std::vector<std::vector<Matrix> > theBumps(theVegaBumps(allowFactorwiseBumping,
+            marketModel, 
+            doCaps));
+
+        PathwiseVegasOuterAccountingEngine
+            accountingEngineVegas(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolverEuler)),
+            callableProductPathwisePtr,
+            marketModel,
+            theBumps,
+            initialNumeraireValue);
+
+        std::vector<Real> values,errors;
+
+        accountingEngineVegas.multiplePathValues(values,errors,pathsToDoVegas);
+
+
+        std::cout << "vega output \n";
+        std::cout << " factorwise bumping " << allowFactorwiseBumping << "\n";
+        std::cout << " doCaps " << doCaps << "\n";
+
+
+
+        Size r=0;
+
+        std::cout << " price estimate, " << values[r++] << "\n";
+
+        for (Size i=0; i < numberRates; ++i, ++r)
+            std::cout << " Delta, " << i << ", " << values[r] << ", " << errors[r] << "\n";
+
+        Real totalVega = 0.0;
+
+        for (; r < values.size(); ++r)
         {
-            VolatilityBumpInstrumentJacobian::Cap nextCap;
-            nextCap.startIndex_ = 0;
-            nextCap.endIndex_ = i;
-            nextCap.strike_ = capStrike;
-            caps.push_back(nextCap);
+            std::cout << " vega, " << r - 1 -  numberRates<< ", " << values[r] << " ," << errors[r] << "\n";
+            totalVega +=  values[r];
         }
 
-
-
-        for (Size j=0; j < caps.size(); ++j)
-        {
-            startsAndEnds[j].first = caps[j].startIndex_;
-            startsAndEnds[j].second = caps[j].endIndex_;
-
-        }  
+        std::cout << " total Vega, " << totalVega << "\n";
     }
 
-    std::vector<VolatilityBumpInstrumentJacobian::Swaption> swaptions(numberRates);
-
-    for (Size i=0; i < numberRates; ++i)
-    {
-        swaptions[i].startIndex_ = i;
-        swaptions[i].endIndex_ = numberRates;
-
-    }
-
-    VegaBumpCollection possibleBumps(marketModel,
-        allowFactorwiseBumping);
-
-    OrthogonalizedBumpFinder  bumpFinder(possibleBumps,
-        swaptions,
-        caps,
-        multiplierCutOff, // if vector length grows by more than this discard
-        projectionTolerance);      // if vector projection before scaling less than this discard
-    std::vector<std::vector<Matrix> > theBumps;
-
-    bumpFinder.GetVegaBumps(theBumps);
-
-    LogNormalFwdRateEuler evolverEuler(marketModel,
-        generatorFactory,
-        numeraires
-        ) ;
-
-    MarketModelPathwiseSwap receiverPathwiseSwap(  rateTimes,
-        accruals,
-        strikes,
-        receive);
-    Clone<MarketModelPathwiseMultiProduct> receiverPathwiseSwapPtr(receiverPathwiseSwap.clone());
-
-    //  callable receiver swap
-    CallSpecifiedPathwiseMultiProduct callableProductPathwise(receiverPathwiseSwapPtr,
-        exerciseStrategy);
-
-    Clone<MarketModelPathwiseMultiProduct> callableProductPathwisePtr(callableProductPathwise.clone());
-
-
-
-    PathwiseVegasOuterAccountingEngine
-        accountingEngineVegas(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolverEuler)),
-        callableProductPathwisePtr,
-        marketModel,
-        theBumps,
-        initialNumeraireValue);
-
-    std::vector<Real> values,errors;
-
-    accountingEngineVegas.multiplePathValues(values,errors,pathsToDoVegas);
-
-
-    std::cout << "vega output \n";
-
-
-    Size r=0;
-
-    std::cout << " price estimate " << values[r++] << "\n";
-
-    for (Size i=0; i < numberRates; ++i, ++r)
-        std::cout << " Delta " << i << " " << values[r] << " " << errors[r] << "\n";
-
-
-    for (; r < values.size(); ++r)
-        std::cout << " vega " << r - 1 -  numberRates<< " " << values[r] << " " << errors[r] << "\n";
-
-    bool doUpperBound = false;
+    bool doUpperBound = true;
 
     if (doUpperBound)
     {
@@ -440,14 +484,14 @@ int main()
 
         int t5=clock();
 
-        std::cout << " Upper - lower is " << upperBound << " with standard error " << upperSE << "\n";
-        std::cout << " time to compute upper bound is  " << (t5-t4)/static_cast<Real>(CLOCKS_PER_SEC) << " seconds.\n";
+        std::cout << " Upper - lower is, " << upperBound << ", with standard error " << upperSE << "\n";
+        std::cout << " time to compute upper bound is,  " << (t5-t4)/static_cast<Real>(CLOCKS_PER_SEC) << ", seconds.\n";
 
     }
 
 
     char c;
-    std::cin >> c;
+  //  std::cin >> c;
 
 
 }
