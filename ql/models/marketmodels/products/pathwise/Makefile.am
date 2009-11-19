@@ -5,10 +5,12 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     pathwiseproductcaplet.hpp \
+    pathwiseproductinversefloater.hpp \
     pathwiseproductswaption.hpp
 
 libMarketModelsProductsPathwise_la_SOURCES = \
     pathwiseproductcaplet.cpp \
+    pathwiseproductinversefloater.cpp \
     pathwiseproductswaption.cpp
 
 noinst_LTLIBRARIES = libMarketModelsProductsPathwise.la

@@ -11,6 +11,7 @@
 #include <ql/models/marketmodels/callability/nothingexercisevalue.hpp>
 #include <ql/models/marketmodels/callability/parametricexerciseadapter.hpp>
 #include <ql/models/marketmodels/callability/swapbasissystem.hpp>
+#include <ql/models/marketmodels/callability/swapforwardbasissystem.hpp>
 #include <ql/models/marketmodels/callability/swapratetrigger.hpp>
 #include <ql/models/marketmodels/callability/triggeredswapexercise.hpp>
 #include <ql/models/marketmodels/callability/upperboundengine.hpp>

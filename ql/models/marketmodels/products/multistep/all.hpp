@@ -8,8 +8,10 @@
 #include <ql/models/marketmodels/products/multistep/multistepcoterminalswaps.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepcoterminalswaptions.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepforwards.hpp>
+#include <ql/models/marketmodels/products/multistep/multistepinversefloater.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepnothing.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepoptionlets.hpp>
+#include <ql/models/marketmodels/products/multistep/multisteppathwisewrapper.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepperiodcapletswaptions.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepratchet.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepswap.hpp>

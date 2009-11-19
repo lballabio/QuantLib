@@ -14,6 +14,7 @@ this_include_HEADERS = \
 	nothingexercisevalue.hpp \
 	parametricexerciseadapter.hpp \
 	swapbasissystem.hpp \
+	swapforwardbasissystem.hpp \
 	swapratetrigger.hpp \
 	triggeredswapexercise.hpp \
 	upperboundengine.hpp
@@ -25,6 +26,7 @@ libMarketModelsCallability_la_SOURCES = \
 	nothingexercisevalue.cpp \
 	parametricexerciseadapter.cpp \
 	swapbasissystem.cpp \
+	swapforwardbasissystem.cpp \
 	swapratetrigger.cpp \
 	triggeredswapexercise.cpp \
 	upperboundengine.cpp

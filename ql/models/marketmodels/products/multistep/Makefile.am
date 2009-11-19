@@ -11,8 +11,10 @@ this_include_HEADERS = \
     multistepcoterminalswaps.hpp \
     multistepcoterminalswaptions.hpp \
     multistepforwards.hpp \
+    multistepinversefloater.hpp \
     multistepnothing.hpp \
     multistepoptionlets.hpp \
+    multisteppathwisewrapper.hpp \
     multistepperiodcapletswaptions.hpp \
     multistepratchet.hpp \
     multistepswap.hpp \
@@ -26,8 +28,10 @@ libMarketModelsProductsMultiStep_la_SOURCES = \
     multistepcoterminalswaps.cpp \
     multistepcoterminalswaptions.cpp \
     multistepforwards.cpp \
+    multistepinversefloater.cpp \
     multistepnothing.cpp \
     multistepoptionlets.cpp \
+    multisteppathwisewrapper.cpp \
     multistepperiodcapletswaptions.cpp \
     multistepratchet.cpp \
     multistepswap.cpp \
