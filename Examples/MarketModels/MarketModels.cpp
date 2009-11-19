@@ -490,7 +490,7 @@ int main()
     }
 
 
-    char c;
+  //  char c;
   //  std::cin >> c;
 
 
