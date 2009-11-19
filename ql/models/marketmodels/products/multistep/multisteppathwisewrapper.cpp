@@ -17,7 +17,7 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/products/multistep/MultiStepPathwiseWrapper.hpp>
+#include <ql/models/marketmodels/products/multistep/multisteppathwisewrapper.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
 
