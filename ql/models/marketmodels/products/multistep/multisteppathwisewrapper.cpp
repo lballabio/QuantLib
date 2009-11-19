@@ -70,6 +70,16 @@ namespace QuantLib
             return done;
         }
 
+        std::vector<Size> MultiProductPathwiseWrapper::suggestedNumeraires() const
+        {
+            return innerProduct_->suggestedNumeraires();
+        }
+
+        const EvolutionDescription& MultiProductPathwiseWrapper::evolution() const
+        {
+            return innerProduct_->evolution();
+        }
+
         std::auto_ptr<MarketModelMultiProduct>  MultiProductPathwiseWrapper::clone() const
         {
                 return   std::auto_ptr<MarketModelMultiProduct>(new MultiProductPathwiseWrapper(*this));
