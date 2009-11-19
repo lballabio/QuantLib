@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+# Visual C++ Express 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuantLib", "QuantLib_vc9.vcproj", "{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testsuite", "test-suite\testsuite_vc9.vcproj", "{A613045C-34AF-4706-AA3C-730C92524F74}"
@@ -67,7 +67,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bonds", "Examples\Bonds\Bon
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MarketModels", "Examples\MarketModels\MarketModels.vcproj", "{47CE2A41-091A-42A3-B40D-F6F0DD689349}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MarketModels", "Examples\MarketModels\MarketModels_vc9.vcproj", "{47CE2A41-091A-42A3-B40D-F6F0DD689349}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
 	EndProjectSection
@@ -308,18 +308,22 @@ Global
 		{C8AFC9D1-704C-4AB5-911B-3C93C27C63D0}.Release|Win32.Build.0 = Release|Win32
 		{C8AFC9D1-704C-4AB5-911B-3C93C27C63D0}.Release|x64.ActiveCfg = Release|x64
 		{C8AFC9D1-704C-4AB5-911B-3C93C27C63D0}.Release|x64.Build.0 = Release|x64
-		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug (static runtime)|Win32.ActiveCfg = Debug|Win32
-		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug (static runtime)|Win32.Build.0 = Debug|Win32
-		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug (static runtime)|x64.ActiveCfg = Debug|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug (static runtime)|Win32.ActiveCfg = Debug (static runtime)|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug (static runtime)|Win32.Build.0 = Debug (static runtime)|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug (static runtime)|x64.ActiveCfg = Debug (static runtime)|x64
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug (static runtime)|x64.Build.0 = Debug (static runtime)|x64
 		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug|Win32.ActiveCfg = Debug|Win32
 		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug|Win32.Build.0 = Debug|Win32
-		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug|x64.ActiveCfg = Debug|Win32
-		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release (static runtime)|Win32.ActiveCfg = Release|Win32
-		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release (static runtime)|Win32.Build.0 = Release|Win32
-		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release (static runtime)|x64.ActiveCfg = Release|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug|x64.ActiveCfg = Debug|x64
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug|x64.Build.0 = Debug|x64
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release (static runtime)|Win32.ActiveCfg = Release (static runtime)|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release (static runtime)|Win32.Build.0 = Release (static runtime)|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release (static runtime)|x64.ActiveCfg = Release (static runtime)|x64
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release (static runtime)|x64.Build.0 = Release (static runtime)|x64
 		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release|Win32.ActiveCfg = Release|Win32
 		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release|Win32.Build.0 = Release|Win32
-		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release|x64.ActiveCfg = Release|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release|x64.ActiveCfg = Release|x64
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
