@@ -3527,6 +3527,14 @@
 							>
 						</File>
 						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepinversefloater.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepinversefloater.hpp"
+							>
+						</File>
+						<File
 							RelativePath=".\ql\models\marketmodels\products\multistep\multistepnothing.cpp"
 							>
 						</File>
@@ -3540,6 +3548,14 @@
 						</File>
 						<File
 							RelativePath=".\ql\models\marketmodels\products\multistep\multistepoptionlets.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multisteppathwisewrapper.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multisteppathwisewrapper.hpp"
 							>
 						</File>
 						<File
@@ -3644,6 +3660,14 @@
 						</File>
 						<File
 							RelativePath=".\ql\models\marketmodels\products\pathwise\pathwiseproductcashrebate.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\pathwise\pathwiseproductinversefloater.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\pathwise\pathwiseproductinversefloater.hpp"
 							>
 						</File>
 						<File
@@ -3945,6 +3969,14 @@
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\callability\swapbasissystem.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\swapforwardbasissystem.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\swapforwardbasissystem.hpp"
 						>
 					</File>
 					<File
