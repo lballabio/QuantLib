@@ -19,8 +19,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\build\vc90\$(ConfigurationName)"
-			IntermediateDirectory=".\build\vc90\$(ConfigurationName)"
+			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -40,7 +40,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc90\$(ConfigurationName)/CallableBonds.tlb"
+				TypeLibraryName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -59,12 +59,12 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc90\$(ConfigurationName)/CallableBonds.pch"
-				AssemblerListingLocation=".\build\vc90\$(ConfigurationName)/"
-				ObjectFile=".\build\vc90\$(ConfigurationName)/"
-				ProgramDataBaseFileName=".\build\vc90\$(ConfigurationName)/"
+				PrecompiledHeaderFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.pch"
+				AssemblerListingLocation=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ObjectFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc90\$(ConfigurationName)/"
+				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="0"
@@ -83,11 +83,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/CallableBonds-vc90-mt.exe"
+				OutputFile=".\bin\CallableBonds-vc90-mt.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib"
-				ProgramDatabaseFile=".\build\vc90\$(ConfigurationName)/CallableBonds.pdb"
+				ProgramDatabaseFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -118,8 +118,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release (static runtime)|Win32"
-			OutputDirectory=".\build\vc90\$(ConfigurationName)"
-			IntermediateDirectory=".\build\vc90\$(ConfigurationName)"
+			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -139,7 +139,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc90\$(ConfigurationName)/CallableBonds.tlb"
+				TypeLibraryName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -158,12 +158,12 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc90\$(ConfigurationName)/CallableBonds.pch"
-				AssemblerListingLocation=".\build\vc90\$(ConfigurationName)/"
-				ObjectFile=".\build\vc90\$(ConfigurationName)/"
-				ProgramDataBaseFileName=".\build\vc90\$(ConfigurationName)/"
+				PrecompiledHeaderFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.pch"
+				AssemblerListingLocation=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ObjectFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc90\$(ConfigurationName)/"
+				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="0"
@@ -182,11 +182,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/CallableBonds-vc90-mt-s.exe"
+				OutputFile=".\bin\CallableBonds-vc90-mt-s.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib"
-				ProgramDatabaseFile=".\build\vc90\$(ConfigurationName)/CallableBonds.pdb"
+				ProgramDatabaseFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -217,8 +217,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\build\vc90\$(ConfigurationName)"
-			IntermediateDirectory=".\build\vc90\$(ConfigurationName)"
+			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -238,7 +238,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc90\$(ConfigurationName)/CallableBonds.tlb"
+				TypeLibraryName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -254,12 +254,12 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc90\$(ConfigurationName)/CallableBonds.pch"
-				AssemblerListingLocation=".\build\vc90\$(ConfigurationName)/"
-				ObjectFile=".\build\vc90\$(ConfigurationName)/"
-				ProgramDataBaseFileName=".\build\vc90\$(ConfigurationName)/"
+				PrecompiledHeaderFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.pch"
+				AssemblerListingLocation=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ObjectFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc90\$(ConfigurationName)/"
+				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -279,12 +279,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/CallableBonds-vc90-mt-gd.exe"
+				OutputFile=".\bin\CallableBonds-vc90-mt-gd.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\build\vc90\$(ConfigurationName)/CallableBonds.pdb"
+				ProgramDatabaseFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -315,8 +315,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug (static runtime)|Win32"
-			OutputDirectory=".\build\vc90\$(ConfigurationName)"
-			IntermediateDirectory=".\build\vc90\$(ConfigurationName)"
+			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -336,7 +336,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc90\$(ConfigurationName)/CallableBonds.tlb"
+				TypeLibraryName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -352,12 +352,12 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc90\$(ConfigurationName)/CallableBonds.pch"
-				AssemblerListingLocation=".\build\vc90\$(ConfigurationName)/"
-				ObjectFile=".\build\vc90\$(ConfigurationName)/"
-				ProgramDataBaseFileName=".\build\vc90\$(ConfigurationName)/"
+				PrecompiledHeaderFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.pch"
+				AssemblerListingLocation=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ObjectFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc90\$(ConfigurationName)/"
+				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -377,12 +377,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/CallableBonds-vc90-mt-sgd.exe"
+				OutputFile=".\bin\CallableBonds-vc90-mt-sgd.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\build\vc90\$(ConfigurationName)/CallableBonds.pdb"
+				ProgramDatabaseFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -413,8 +413,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -435,7 +435,7 @@
 			<Tool
 				Name="VCMIDLTool"
 				TargetEnvironment="3"
-				TypeLibraryName=".\build\vc90\$(ConfigurationName)/CallableBonds.tlb"
+				TypeLibraryName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -454,12 +454,12 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc90\$(ConfigurationName)/CallableBonds.pch"
-				AssemblerListingLocation=".\build\vc90\$(ConfigurationName)/"
-				ObjectFile=".\build\vc90\$(ConfigurationName)/"
-				ProgramDataBaseFileName=".\build\vc90\$(ConfigurationName)/"
+				PrecompiledHeaderFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.pch"
+				AssemblerListingLocation=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ObjectFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc90\$(ConfigurationName)/"
+				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="0"
@@ -477,11 +477,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/CallableBonds-vc90-mt.exe"
+				OutputFile=".\bin\CallableBonds-vc90-$(PlatformName)-mt.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib"
-				ProgramDatabaseFile=".\build\vc90\$(ConfigurationName)/CallableBonds.pdb"
+				ProgramDatabaseFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -512,8 +512,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release (static runtime)|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -534,7 +534,7 @@
 			<Tool
 				Name="VCMIDLTool"
 				TargetEnvironment="3"
-				TypeLibraryName=".\build\vc90\$(ConfigurationName)/CallableBonds.tlb"
+				TypeLibraryName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -553,12 +553,12 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc90\$(ConfigurationName)/CallableBonds.pch"
-				AssemblerListingLocation=".\build\vc90\$(ConfigurationName)/"
-				ObjectFile=".\build\vc90\$(ConfigurationName)/"
-				ProgramDataBaseFileName=".\build\vc90\$(ConfigurationName)/"
+				PrecompiledHeaderFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.pch"
+				AssemblerListingLocation=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ObjectFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc90\$(ConfigurationName)/"
+				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="0"
@@ -576,11 +576,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/CallableBonds-vc90-mt-s.exe"
+				OutputFile=".\bin\CallableBonds-vc90-$(PlatformName)-mt-s.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib"
-				ProgramDatabaseFile=".\build\vc90\$(ConfigurationName)/CallableBonds.pdb"
+				ProgramDatabaseFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -611,8 +611,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -633,7 +633,7 @@
 			<Tool
 				Name="VCMIDLTool"
 				TargetEnvironment="3"
-				TypeLibraryName=".\build\vc90\$(ConfigurationName)/CallableBonds.tlb"
+				TypeLibraryName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -649,12 +649,12 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc90\$(ConfigurationName)/CallableBonds.pch"
-				AssemblerListingLocation=".\build\vc90\$(ConfigurationName)/"
-				ObjectFile=".\build\vc90\$(ConfigurationName)/"
-				ProgramDataBaseFileName=".\build\vc90\$(ConfigurationName)/"
+				PrecompiledHeaderFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.pch"
+				AssemblerListingLocation=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ObjectFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc90\$(ConfigurationName)/"
+				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -673,12 +673,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/CallableBonds-vc90-mt-gd.exe"
+				OutputFile=".\bin\CallableBonds-vc90-$(PlatformName)-mt-gd.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\build\vc90\$(ConfigurationName)/CallableBonds.pdb"
+				ProgramDatabaseFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -709,8 +709,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug (static runtime)|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -731,7 +731,7 @@
 			<Tool
 				Name="VCMIDLTool"
 				TargetEnvironment="3"
-				TypeLibraryName=".\build\vc90\$(ConfigurationName)/CallableBonds.tlb"
+				TypeLibraryName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -747,12 +747,12 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc90\$(ConfigurationName)/CallableBonds.pch"
-				AssemblerListingLocation=".\build\vc90\$(ConfigurationName)/"
-				ObjectFile=".\build\vc90\$(ConfigurationName)/"
-				ProgramDataBaseFileName=".\build\vc90\$(ConfigurationName)/"
+				PrecompiledHeaderFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.pch"
+				AssemblerListingLocation=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ObjectFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc90\$(ConfigurationName)/"
+				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -771,12 +771,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/CallableBonds-vc90-mt-sgd.exe"
+				OutputFile=".\bin\CallableBonds-vc90-$(PlatformName)-mt-sgd.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\build\vc90\$(ConfigurationName)/CallableBonds.pdb"
+				ProgramDatabaseFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\CallableBonds.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
