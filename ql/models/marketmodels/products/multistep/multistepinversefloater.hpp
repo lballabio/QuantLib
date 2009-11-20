@@ -24,6 +24,11 @@
 
 namespace QuantLib {
 
+    /*
+    Tested in MarketModels::testInverseFloater()
+
+    */
+
     class MultiStepInverseFloater : public MultiProductMultiStep {
       public:
         MultiStepInverseFloater(const std::vector<Time>& rateTimes,
@@ -71,7 +76,7 @@ namespace QuantLib {
 
     inline Size
     MultiStepInverseFloater::maxNumberOfCashFlowsPerProductPerStep() const {
-        return 2;
+        return 1;
     }
 
     inline void MultiStepInverseFloater::reset() {

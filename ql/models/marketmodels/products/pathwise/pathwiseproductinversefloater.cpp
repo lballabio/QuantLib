@@ -42,8 +42,8 @@ namespace QuantLib
         fixedAccruals_(fixedAccruals), 
         floatingAccruals_(floatingAccruals),
         fixedStrikes_(fixedStrikes),
-        fixedMultipliers_(fixedMultipliers_),
-        floatingSpreads_(floatingSpreads_),
+        fixedMultipliers_(fixedMultipliers),
+        floatingSpreads_(floatingSpreads),
         paymentTimes_(paymentTimes),
         payer_(payer),
         multiplier_(payer ? -1.0 : 1.0), 
@@ -70,28 +70,29 @@ namespace QuantLib
         std::vector<Size>& numberCashFlowsThisStep,
         std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >& cashFlowsGenerated) 
     {
+        numberCashFlowsThisStep[0] =1 ;
         for (Size i=1; i <= lastIndex_; ++i)
             cashFlowsGenerated[0][0].amount[i] =0;
 
         Rate liborRate = currentState.forwardRate(currentIndex_);
-        Real inverseRate = fixedStrikes_[currentIndex_] - fixedMultipliers_[currentIndex_]*liborRate;
+        Real inverseFloatingCoupon = std::max((fixedStrikes_[currentIndex_] - fixedMultipliers_[currentIndex_]*liborRate),0.0)*fixedAccruals_[currentIndex_] ;
         Real floatingCoupon = (liborRate+floatingSpreads_[currentIndex_])*floatingAccruals_[currentIndex_];
         cashFlowsGenerated[0][0].timeIndex = currentIndex_;
+        cashFlowsGenerated[0][0].amount[0] =multiplier_*(inverseFloatingCoupon - floatingCoupon);
+ 
  
 
-        if (inverseRate > 0.0)
+        if (inverseFloatingCoupon > 0.0)
         {
-            Real inverseFloatingCoupon = inverseRate*fixedAccruals_[currentIndex_] ;
-     
-            cashFlowsGenerated[0][0].amount[0] =multiplier_*(inverseFloatingCoupon - floatingCoupon);
-            cashFlowsGenerated[0][0].amount[currentIndex_] =multiplier_*( - fixedMultipliers_[currentIndex_] - 1.0);
+
+            cashFlowsGenerated[0][0].amount[currentIndex_+1] =multiplier_*( - fixedMultipliers_[currentIndex_]*fixedAccruals_[currentIndex_]  - floatingAccruals_[currentIndex_]);
 
 
         }
         else
         {
-            cashFlowsGenerated[0][0].amount[0] = - multiplier_*floatingCoupon;
-            cashFlowsGenerated[0][0].amount[currentIndex_] =-multiplier_;
+
+            cashFlowsGenerated[0][0].amount[currentIndex_+1] =-multiplier_*floatingAccruals_[currentIndex_];
 
         }
 
@@ -124,7 +125,7 @@ namespace QuantLib
 
     std::vector<Time> MarketModelPathwiseInverseFloater::possibleCashFlowTimes() const
     {
-        return rateTimes_; // note rateTimes_[0] is not used as a cash flow time but it is easier to keep track if we include it.
+        return paymentTimes_; 
     }
 
     Size MarketModelPathwiseInverseFloater::numberOfProducts() const

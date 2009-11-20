@@ -104,6 +104,11 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 
+#include <ql/models/marketmodels/products/multistep/MultiStepInverseFloater.hpp>
+#include <ql/models/marketmodels/products/pathwise/pathwiseproductinversefloater.hpp>
+
+#include <ql/models/marketmodels/products/multistep/MultiStepPathwiseWrapper.hpp>
+
 #if defined(BOOST_MSVC)
 #include <float.h>
 //namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
@@ -803,7 +808,6 @@ void MarketModelTest::testOneStepForwardsAndOptionlets() {
         }
 }
 
-
 void MarketModelTest::testOneStepNormalForwardsAndOptionlets() {
 
     BOOST_MESSAGE("Testing exact repricing of "
@@ -893,6 +897,151 @@ void MarketModelTest::testOneStepNormalForwardsAndOptionlets() {
                     }
                 }
             }
+        }
+}
+
+void MarketModelTest::testInverseFloater() 
+{
+
+    BOOST_MESSAGE("Testing exact repricing of "
+        "inverse floater "
+        "in forward rate market model...");
+
+    setup();
+
+
+    std::vector<Real> fixedStrikes(accruals.size(), 0.1);
+    std::vector<Real> fixedMultipliers(accruals.size(), 2.0);
+    std::vector<Real> floatingSpreads(accruals.size(), 0.002);
+    std::vector<Real> fixedAccruals(accruals);
+    std::vector<Real> floatingAccruals(accruals);
+
+    bool payer = true;
+
+
+    MultiStepInverseFloater product(
+                                                        rateTimes,
+                                                        fixedAccruals,
+                                                         floatingAccruals,
+                                                        fixedStrikes,
+                                                        fixedMultipliers, 
+                                                        floatingSpreads,
+                                                         paymentTimes,
+                                                         payer);
+
+       MarketModelPathwiseInverseFloater productPathwise(
+                                                        rateTimes,
+                                                        fixedAccruals,
+                                                         floatingAccruals,
+                                                        fixedStrikes,
+                                                        fixedMultipliers, 
+                                                        floatingSpreads,
+                                                         paymentTimes,
+                                                         payer);
+
+       MultiProductPathwiseWrapper productWrapped(productPathwise);
+
+       MultiProductComposite productComposite;
+       productComposite.add(product);
+       productComposite.add(productWrapped);
+       productComposite.finalize();
+
+   
+
+    
+    EvolutionDescription evolution = productComposite.evolution();
+
+    MarketModelType marketModels[] = {
+        // CalibratedMM,
+        ExponentialCorrelationFlatVolatility,
+        ExponentialCorrelationAbcdVolatility };
+        for (Size j=0; j<LENGTH(marketModels); j++)
+        {
+
+            Size testedFactors[] = { std::min<Size>(todaysForwards.size(),3)};
+            for (Size m=0; m<LENGTH(testedFactors); ++m) 
+            {
+                Size factors = testedFactors[m];
+
+                MeasureType measures[] = { MoneyMarket};
+                for (Size k=0; k<LENGTH(measures); k++) 
+                {
+                    std::vector<Size> numeraires = makeMeasure(product, measures[k]);
+
+                    bool logNormal = false;
+                    boost::shared_ptr<MarketModel> marketModel =
+                        makeMarketModel(logNormal, evolution, factors, marketModels[j]);
+
+                    EvolverType evolvers[] = {Pc};
+                    boost::shared_ptr<MarketModelEvolver> evolver;
+        
+                    for (Size i=0; i<LENGTH(evolvers); i++)
+                    {
+
+                      
+                            MTBrownianGeneratorFactory generatorFactory(seed_);
+                            //SobolBrownianGeneratorFactory generatorFactory(
+                            //    SobolBrownianGenerator::Diagonal, seed_);
+
+                            evolver = makeMarketModelEvolver(marketModel,
+                                numeraires,
+                                generatorFactory,
+                                evolvers[i]);
+                            std::ostringstream config;
+                            config <<
+                                marketModelTypeToString(marketModels[j]) << ", " <<
+                                factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
+                                measureTypeToString(measures[k]) << ", " <<
+                                evolverTypeToString(evolvers[i]) << ", " <<
+                                "MT BGF";
+                            if (printReport_)
+                                BOOST_MESSAGE("    " << config.str());
+
+                            boost::shared_ptr<SequenceStatisticsInc> stats =
+                                simulate(evolver, productComposite);
+
+                            std::vector<Real> modelVolatilities(accruals.size());
+                            for (Size i=0; i <  accruals.size(); ++i)
+                                    modelVolatilities[i] = sqrt(marketModel->totalCovariance(i)[i][i]);
+                           
+
+
+                             Real truePrice =0.0;
+
+                             for (Size i=0; i < accruals.size(); ++i)
+                             {
+                                        Real floatingCouponPV = floatingAccruals[i] *(todaysForwards[i]+floatingSpreads[i])*todaysDiscounts[i+1];
+                                        Real inverseCouponPV =  2*fixedAccruals[i] *todaysDiscounts[i+1]* blackFormula(Option::Put,
+                                        fixedStrikes[i]/2.0,
+                                        todaysForwards[i],
+                                        modelVolatilities[i]);
+
+                                        truePrice += floatingCouponPV - inverseCouponPV;
+                              }
+
+                                           
+    
+
+
+                            Real priceError = stats->mean()[0] - truePrice;
+                            Real priceSD = stats->errorEstimate()[0];
+
+                            Real errorInSds = priceError/priceSD;
+                            if (fabs(errorInSds) > 4.0)
+                                BOOST_FAIL("Inverse floater product has price error equal to " <<errorInSds << " sds . Price " <<truePrice << " MC price " << stats->mean()[0] <<  " \n" );
+
+                            Real numericalTolerance = 1E-12;
+
+                            if (fabs(stats->mean()[0] - stats->mean()[1]) > numericalTolerance)
+                                BOOST_FAIL("Inverse floater and wrapper pathwise inverse floater do not agree:" << stats->mean()[0]  << "  " << stats->mean()[1] );
+                       
+
+
+
+                        
+                    } // evolvers
+                } // measures
+            } // factors 
         }
 }
 
@@ -4625,8 +4774,9 @@ void MarketModelTest::testIsInSubset() {
 // --- Call the desired tests
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
-
-
+ 
+ suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testInverseFloater));
+ suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapLS));
 
  
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPathwiseVegas));
@@ -4650,7 +4800,7 @@ test_suite* MarketModelTest::suite() {
     //// just one of the tests below is run in order to reduce running times...
     //// uncomment as much as you prefer...
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
-    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapLS));
+
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapAnderson));
 

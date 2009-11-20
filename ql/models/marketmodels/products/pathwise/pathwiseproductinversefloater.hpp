@@ -36,6 +36,8 @@ namespace QuantLib
 
     /*!
     Pathwise product inverse floater for doing Greeks
+    Tested in MarketModels::testInverseFloater()
+
     */
 class MarketModelPathwiseInverseFloater : public MarketModelPathwiseMultiProduct
     {

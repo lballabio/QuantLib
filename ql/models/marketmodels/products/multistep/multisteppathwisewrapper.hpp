@@ -31,6 +31,9 @@ namespace QuantLib
     Pathwise products do everything that ordinary products do and more. This lets
     you treat a pathwise product as an ordinary product. So you only have to write the 
     product once. 
+
+    Tested in MarketModels::testInverseFloater()
+
 */
 
     class MultiProductPathwiseWrapper : public MarketModelMultiProduct
