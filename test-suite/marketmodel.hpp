@@ -28,7 +28,7 @@
 
 class MarketModelTest {
   public:
-    static void MarketModelTest::testInverseFloater();
+    static void testInverseFloater();
     static void testPeriodAdapter();
     static void testAllMultiStepProducts();
     static void testOneStepForwardsAndOptionlets();

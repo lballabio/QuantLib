@@ -104,10 +104,9 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 
-#include <ql/models/marketmodels/products/multistep/MultiStepInverseFloater.hpp>
+#include <ql/models/marketmodels/products/multistep/multistepinversefloater.hpp>
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductinversefloater.hpp>
-
-#include <ql/models/marketmodels/products/multistep/MultiStepPathwiseWrapper.hpp>
+#include <ql/models/marketmodels/products/multistep/multisteppathwisewrapper.hpp>
 
 #if defined(BOOST_MSVC)
 #include <float.h>
