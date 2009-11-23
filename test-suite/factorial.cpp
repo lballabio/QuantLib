@@ -29,20 +29,20 @@ void FactorialTest::testFactorial() {
 
     BOOST_MESSAGE("Testing factorial numbers...");
 
-    Real expected = 0.0;
+    Real expected = 1.0;
     Real calculated = Factorial::get(0);
     if (calculated!=expected)
         BOOST_FAIL("Factorial(0) = " << calculated);
 
-    for (Natural i=1; i<171; i++) {
+    for (Natural i=1; i<171; ++i) {
         expected *= i;
         calculated = Factorial::get(i);
         if (std::fabs(calculated-expected)/expected > 1.0e-9)
             BOOST_FAIL("Factorial(" << i << ")" <<
                        std::setprecision(16) << QL_SCIENTIFIC <<
-                       "\n    calculated: " << calculated <<
-                       "\n    expected:   " << expected <<
-                       "\n    rel. error: " <<
+                       "\n calculated: " << calculated <<
+                       "\n   expected: " << expected <<
+                       "\n rel. error: " <<
                        std::fabs(calculated-expected)/expected);
     }
 }
