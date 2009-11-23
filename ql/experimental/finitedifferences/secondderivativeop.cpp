@@ -40,7 +40,7 @@ namespace QuantLib {
             const Real zeta0  = hm*hp;
             const Real zetap1 = hp*(hm+hp);
 
-            const Real co = iter.coordinates()[direction_];
+            const Size co = iter.coordinates()[direction_];
             if (co == 0 || co == layout->dim()[direction]-1) {
                 lower_[i] = diag_[i] = upper_[i] = 0.0;
             }

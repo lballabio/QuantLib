@@ -126,12 +126,12 @@ namespace QuantLib {
 
         Matrix tmp(size_, size_, 0.0);
 
-        Integer last = std::lower_bound(fixingTimes_.begin(),
+        Size last = std::lower_bound(fixingTimes_.begin(),
                                         fixingTimes_.end(), t)
-                      - fixingTimes_.begin()-1;
+                      - fixingTimes_.begin();
 
-        for (Integer i=0; i<=last; ++i) {
-            const Time dt = ((i<last)? fixingTimes_[i+1] : t )
+        for (Size i=0; i<last; ++i) {
+            const Time dt = ((i+1<last)? fixingTimes_[i+1] : t )
                 - fixingTimes_[i];
 
             for (Size k=i; k<size_-1; ++k) {

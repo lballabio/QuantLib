@@ -509,42 +509,42 @@ namespace QuantLib {
 //===========================================================================//
 
     Real GFunctionFactory::GFunctionStandard::operator()(Real x) {
-        Real n = swapLength_ * q_;
+        Real n = static_cast<Real>(swapLength_) * q_;
         return x / std::pow((1.0 + x/q_), delta_) * 1.0 /
             (1.0 - 1.0 / std::pow((1.0 + x/q_), n));
     }
 
     Real GFunctionFactory::GFunctionStandard::firstDerivative(Real x) {
-        const Real n = swapLength_ * q_;
-        const Real a = 1.0 + x / q_;
-        const Real AA = a - delta_/q_ * x;
-        const Real B = std::pow(a,(n - delta_ - 1.0))/(std::pow(a,n) - 1.0);
+        Real n = static_cast<Real>(swapLength_) * q_;
+        Real a = 1.0 + x / q_;
+        Real AA = a - delta_/q_ * x;
+        Real B = std::pow(a,(n - delta_ - 1.0))/(std::pow(a,n) - 1.0);
 
-        const Real secNum = n * x * std::pow(a,(n-1.0));
-        const Real secDen = q_ * std::pow(a, delta_) * (std::pow(a, n) - 1.0) *
+        Real secNum = n * x * std::pow(a,(n-1.0));
+        Real secDen = q_ * std::pow(a, delta_) * (std::pow(a, n) - 1.0) *
             (std::pow(a, n) - 1.0);
-        const Real sec = secNum / secDen;
+        Real sec = secNum / secDen;
 
         return AA * B - sec;
     }
 
     Real GFunctionFactory::GFunctionStandard::secondDerivative(Real x) {
-        const Real n = swapLength_ * q_;
-        const Real a = 1.0 + x/q_;
-        const Real AA = a - delta_/q_ * x;
-        const Real A1 = (1.0 - delta_)/q_;
-        const Real B = std::pow(a,(n - delta_ - 1.0))/(std::pow(a,n) - 1.0);
-        const Real Num = (1.0 + delta_ - n) * std::pow(a, (n-delta_-2.0)) -
+        Real n = static_cast<Real>(swapLength_) * q_;
+        Real a = 1.0 + x/q_;
+        Real AA = a - delta_/q_ * x;
+        Real A1 = (1.0 - delta_)/q_;
+        Real B = std::pow(a,(n - delta_ - 1.0))/(std::pow(a,n) - 1.0);
+        Real Num = (1.0 + delta_ - n) * std::pow(a, (n-delta_-2.0)) -
             (1.0 + delta_) * std::pow(a, (2.0*n-delta_-2.0));
-        const Real Den = (std::pow(a, n) - 1.0) * (std::pow(a, n) - 1.0);
-        const Real B1 = 1.0 / q_ * Num / Den;
+        Real Den = (std::pow(a, n) - 1.0) * (std::pow(a, n) - 1.0);
+        Real B1 = 1.0 / q_ * Num / Den;
 
-        const Real C =  x / std::pow(a, delta_);
-        const Real C1 = (std::pow(a, delta_)
+        Real C =  x / std::pow(a, delta_);
+        Real C1 = (std::pow(a, delta_)
             - delta_ /q_ * x * std::pow(a, (delta_ - 1.0))) / std::pow(a, 2 * delta_);
 
-        const Real D =  std::pow(a, (n-1.0))/ ((std::pow(a, n) - 1.0) * (std::pow(a, n) - 1.0));
-        const Real D1 = ((n - 1.0) * std::pow(a, (n-2.0)) * (std::pow(a, n) - 1.0)
+        Real D =  std::pow(a, (n-1.0))/ ((std::pow(a, n) - 1.0) * (std::pow(a, n) - 1.0));
+        Real D1 = ((n - 1.0) * std::pow(a, (n-2.0)) * (std::pow(a, n) - 1.0)
             - 2 * n * std::pow(a, (2 * (n-1.0))))
             / (q_ * (std::pow(a, n) - 1.0)*(std::pow(a, n) - 1.0)*(std::pow(a, n) - 1.0));
 

@@ -122,9 +122,9 @@ namespace QuantLib {
                  Real weight = 1.0) {
             if (dimension_ == 0) {
                 // stat wasn't initialized yet
-                Integer dimension = std::distance(begin, end);
-                QL_REQUIRE(dimension>0, "sample error: end<=begin");
-                reset(Size(dimension));
+                QL_REQUIRE(end>begin, "sample error: end<=begin");
+                Size dimension = std::distance(begin, end);
+                reset(dimension);
             }
 
             QL_REQUIRE(std::distance(begin, end) == Integer(dimension_),
