@@ -91,9 +91,7 @@ namespace QuantLib {
                             Real accuracy = 1.0e-4,
                             Natural maxEvaluations = 100,
                             Volatility minVol = 1.0e-7,
-                            Volatility maxVol = 4.0) const {
-            QL_FAIL("not implemented"); return 0.0;
-        }
+                            Volatility maxVol = 4.0) const;
       private:
         Type type_;
         Leg yoyLeg_;
@@ -159,6 +157,20 @@ namespace QuantLib {
                            YoYInflationCapFloor::results> {};
 
     std::ostream& operator<<(std::ostream&, YoYInflationCapFloor::Type);
+
+    // inline
+
+    inline Volatility YoYInflationCapFloor::impliedVolatility(
+                            Real,
+                            const Handle<YoYInflationTermStructure>&,
+                            Volatility,
+                            Real,
+                            Natural,
+                            Volatility,
+                            Volatility) const {
+            QL_FAIL("not implemented yet");
+            return 0.0;
+        }
 
 }
 
