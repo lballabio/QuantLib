@@ -6,11 +6,17 @@ this_include_HEADERS = \
     all.hpp \
     mcpathbasketengine.hpp \
     pathmultiassetoption.hpp \
-    pathpayoff.hpp
+    pathpayoff.hpp \
+    adaptedpathpayoff.hpp \
+    longstaffschwartzmultipathpricer.hpp \
+    mcamericanpathengine.hpp \
+    mclongstaffschwartzpathengine.hpp
 
 libMcBasket_la_SOURCES = \
     mcpathbasketengine.cpp \
-    pathmultiassetoption.cpp
+    pathmultiassetoption.cpp \
+    adaptedpathpayoff.cpp \
+    longstaffschwartzmultipathpricer.cpp
 
 noinst_LTLIBRARIES = libMcBasket.la
 

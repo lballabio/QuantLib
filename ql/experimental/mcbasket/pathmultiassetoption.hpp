@@ -34,9 +34,11 @@ namespace QuantLib {
     //! Base class for path-dependent options on multiple assets
     class PathMultiAssetOption : public Instrument {
       public:
-        PathMultiAssetOption(const boost::shared_ptr<StochasticProcess>&,
-                             const boost::shared_ptr<PricingEngine>& engine
+        PathMultiAssetOption(const boost::shared_ptr<PricingEngine>& engine
                                         = boost::shared_ptr<PricingEngine>());
+
+	virtual ~PathMultiAssetOption() {}
+
         //! \name Instrument interface
         //@{
         class arguments;
@@ -47,15 +49,12 @@ namespace QuantLib {
 
         void setupArguments(PricingEngine::arguments*) const;
 
-        virtual boost::shared_ptr<PathPayoff> pathPayoff()     const = 0;
-        virtual std::vector<Date>             fixingDates()    const = 0;
-        virtual Size                          numberOfAssets() const = 0;
+        virtual boost::shared_ptr<PathPayoff> pathPayoff()  const = 0;
+        virtual std::vector<Date>             fixingDates() const = 0;
 
       protected:
         void setupExpired() const;
 
-        // arguments
-        boost::shared_ptr<StochasticProcess> stochasticProcess_;
     };
 
     //! %Arguments for multi-asset option calculation
@@ -65,7 +64,6 @@ namespace QuantLib {
         arguments() {}
         void validate() const;
 
-        boost::shared_ptr<StochasticProcess> stochasticProcess;
         boost::shared_ptr<PathPayoff>        payoff;
         std::vector<Date>                    fixingDates;
     };

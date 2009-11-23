@@ -31,7 +31,7 @@
 namespace QuantLib {
 
     //! Abstract base class for path-dependent option payoffs
-    class PathPayoff : std::unary_function<Matrix,Array> {
+    class PathPayoff : std::unary_function<Matrix, Disposable<Array> > {
       public:
         virtual ~PathPayoff() {}
         //! \name Payoff interface
@@ -43,7 +43,26 @@ namespace QuantLib {
         virtual std::string name() const = 0;
         virtual std::string description() const = 0;
 
-        virtual Real operator()(const Matrix &values) const = 0;
+
+        /*
+          This function returns all the payoff and early termination payments 
+          for a single path. If the option is cancelled at time i, all payments
+          on and before i are taken into account + the value of exercises[i].
+          i.e.: cancellation at i does not cancel payments[i]!
+         */
+
+        virtual void value(const Matrix       & path, 
+                           Array              & payments, 
+                           Array              & exercises, 
+                           std::vector<Array> & states) const = 0;
+
+        /*
+          Dimension of the basis functions.
+          It must be the same as the size of every element of states in value().
+         */
+
+        virtual Size basisSystemDimension() const = 0;
+
         //@}
         //! \name Visitability
         //@{
@@ -61,7 +80,6 @@ namespace QuantLib {
         else
             QL_FAIL("not a path-payoff visitor");
     }
-
 }
 
 

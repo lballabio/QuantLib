@@ -23,9 +23,9 @@ namespace QuantLib {
 
     EuropeanPathMultiPathPricer::EuropeanPathMultiPathPricer(
                                        boost::shared_ptr<PathPayoff> & payoff,
-                                       std::vector<Size> timePositions,
-                                       DiscountFactor discount)
-    :  payoff_(payoff), timePositions_(timePositions), discount_(discount) {}
+                                       const std::vector<Size> & timePositions,
+                                       const Array & discounts)
+    :  payoff_(payoff), timePositions_(timePositions), discounts_(discounts) {}
 
     Real EuropeanPathMultiPathPricer::operator()(const MultiPath& multiPath)
                                                                        const {
@@ -33,22 +33,30 @@ namespace QuantLib {
         Size n = multiPath.pathSize();
         QL_REQUIRE(n > 0, "the path cannot be empty");
 
-        Size numAssets = multiPath.assetNumber();
-        QL_REQUIRE(numAssets > 0, "there must be some paths");
+        Size numberOfAssets = multiPath.assetNumber();
+        QL_REQUIRE(numberOfAssets > 0, "there must be some paths");
 
         const Size numberOfTimes = timePositions_.size();
 
-        // calculate the final price of each asset
-        Matrix finalPrice(numAssets, numberOfTimes, 0.0);
+        Matrix path(numberOfAssets, numberOfTimes, Null<Real>());
 
         for (Size i = 0; i < numberOfTimes; ++i) {
             const Size pos = timePositions_[i];
-            for (Size j = 0; j < numAssets; j++)
-                finalPrice[j][i] = multiPath[j][pos];
+            for (Size j = 0; j < numberOfAssets; ++j)
+                path[j][i] = multiPath[j][pos];
         }
 
-        Real value = (*payoff_)(finalPrice);
-        return value * discount_;
+        Array values(numberOfTimes, 0.0);
+
+        // ignored
+        Array exercises;
+        std::vector<Array> states;
+
+        payoff_->value(path, values, exercises, states);
+
+        Real discountedPayoff = DotProduct(values, discounts_);
+
+        return discountedPayoff;
     }
 
 }

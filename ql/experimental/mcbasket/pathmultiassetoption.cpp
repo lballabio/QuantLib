@@ -26,13 +26,9 @@
 namespace QuantLib {
 
     PathMultiAssetOption::PathMultiAssetOption(
-                          const boost::shared_ptr<StochasticProcess>& process,
-                          const boost::shared_ptr<PricingEngine>&     engine)
-        : stochasticProcess_(process) {
+                            const boost::shared_ptr<PricingEngine>& engine) {
         if (engine)
             setPricingEngine(engine);
-
-        registerWith(stochasticProcess_);
     }
 
     bool PathMultiAssetOption::isExpired() const {
@@ -50,10 +46,6 @@ namespace QuantLib {
 
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
-        QL_REQUIRE(stochasticProcess_->size() == numberOfAssets(),
-                   "inconsistent sizes");
-
-        arguments->stochasticProcess = stochasticProcess_;
         arguments->payoff            = pathPayoff();
         arguments->fixingDates       = fixingDates();
     }
@@ -61,8 +53,6 @@ namespace QuantLib {
     void PathMultiAssetOption::arguments::validate() const {
         QL_REQUIRE(payoff,                 "no payoff given");
         QL_REQUIRE(fixingDates.size() > 0, "no dates given");
-        QL_REQUIRE(stochasticProcess,      "no process given");
     }
-
 }
 

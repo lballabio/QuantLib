@@ -33,7 +33,8 @@
 
 namespace QuantLib {
 
-    //! Pricing engine for path dependent basket options using Monte Carlo simulation
+    //! Pricing engine for path dependent basket options using 
+    //  Monte Carlo simulation
     template <class RNG = PseudoRandom, class S = Statistics>
     class MCPathBasketEngine  : public PathMultiAssetOption::engine,
                                 public McSimulation<MultiVariate,RNG,S> {
@@ -45,7 +46,8 @@ namespace QuantLib {
         typedef typename McSimulation<MultiVariate,RNG,S>::stats_type
                                                                    stats_type;
         // constructor
-        MCPathBasketEngine(Size timeSteps,
+        MCPathBasketEngine(const boost::shared_ptr<StochasticProcessArray>&,
+                           Size timeSteps,
                            bool brownianBridge,
                            bool antitheticVariate,
                            bool controlVariate,
@@ -72,6 +74,7 @@ namespace QuantLib {
         boost::shared_ptr<path_pricer_type> pathPricer() const;
 
         // data members
+        boost::shared_ptr<StochasticProcessArray> process_;
         Size timeSteps_;
         Size requiredSamples_;
         Size maxSamples_;
@@ -84,29 +87,31 @@ namespace QuantLib {
     class EuropeanPathMultiPathPricer : public PathPricer<MultiPath> {
       public:
         EuropeanPathMultiPathPricer(boost::shared_ptr<PathPayoff> & payoff,
-                                    std::vector<Size> timePositions,
-                                    DiscountFactor discount);
+                                    const std::vector<Size> & timePositions,
+                                    const Array & discounts);
         Real operator()(const MultiPath& multiPath) const;
       private:
         boost::shared_ptr<PathPayoff> payoff_;
         std::vector<Size> timePositions_;
-        DiscountFactor discount_;
+        Array discounts_;
     };
 
 
     // template definitions
 
     template<class RNG, class S>
-    inline MCPathBasketEngine<RNG,S>::MCPathBasketEngine(Size timeSteps,
-                                                         bool brownianBridge,
-                                                         bool antitheticVariate,
-                                                         bool controlVariate,
-                                                         Size requiredSamples,
-                                                         Real requiredTolerance,
-                                                         Size maxSamples,
-                                                         BigNatural seed)
+    inline MCPathBasketEngine<RNG,S>::MCPathBasketEngine(
+             const boost::shared_ptr<StochasticProcessArray>& process,
+             Size timeSteps,
+             bool brownianBridge,
+             bool antitheticVariate,
+             bool controlVariate,
+             Size requiredSamples,
+             Real requiredTolerance,
+             Size maxSamples,
+             BigNatural seed)
     : McSimulation<MultiVariate,RNG,S>(antitheticVariate, controlVariate),
-      timeSteps_(timeSteps),
+      process_(process), timeSteps_(timeSteps),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
       brownianBridge_(brownianBridge), seed_(seed) {}
@@ -120,7 +125,7 @@ namespace QuantLib {
         boost::shared_ptr<PathPayoff> payoff = arguments_.payoff;
         QL_REQUIRE(payoff, "non-basket payoff given");
 
-        Size numAssets = arguments_.stochasticProcess->size();
+        Size numAssets = process_->size();
 
         TimeGrid grid = timeGrid();
 
@@ -128,7 +133,7 @@ namespace QuantLib {
             RNG::make_sequence_generator(numAssets * (grid.size() - 1), seed_);
 
         return boost::shared_ptr<path_generator_type>(
-                         new path_generator_type(arguments_.stochasticProcess,
+                         new path_generator_type(process_,
                                                  grid, gen, brownianBridge_));
     }
 
@@ -140,7 +145,7 @@ namespace QuantLib {
         std::vector<Time> fixingTimes(numberOfFixings);
         for (Size i = 0; i < numberOfFixings; ++i) {
             fixingTimes[i] =
-                this->arguments_.stochasticProcess->time(fixings[i]);
+                this->process_->time(fixings[i]);
         }
 
         return TimeGrid(fixingTimes.begin(), fixingTimes.end(), timeSteps_);
@@ -154,15 +159,9 @@ namespace QuantLib {
         boost::shared_ptr<PathPayoff> payoff = arguments_.payoff;
         QL_REQUIRE(payoff, "non-basket payoff given");
 
-        boost::shared_ptr<StochasticProcessArray> processes =
-            boost::dynamic_pointer_cast<StochasticProcessArray>(
-                                                arguments_.stochasticProcess);
-
-        QL_REQUIRE(processes, "stochastic-process array required");
-
         boost::shared_ptr<GeneralizedBlackScholesProcess> process =
             boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                       processes->process(0));
+                                                       process_->process(0));
         QL_REQUIRE(process, "Black-Scholes process required");
 
         const TimeGrid theTimeGrid = timeGrid();
@@ -170,20 +169,18 @@ namespace QuantLib {
         const std::vector<Time> & times = theTimeGrid.mandatoryTimes();
         const Size numberOfTimes = times.size();
 
-        // calculate the final price of each asset
         std::vector<Size> timePositions(numberOfTimes);
+        Array discountFactors(numberOfTimes);
 
         for (Size i = 0; i < numberOfTimes; ++i) {
             timePositions[i] = theTimeGrid.index(times[i]);
+            discountFactors[i] = process->riskFreeRate()->discount(times[i]);
         }
-
-        DiscountFactor discountFactor =
-            process->riskFreeRate()->discount(times.back());
 
         return boost::shared_ptr<
             typename MCPathBasketEngine<RNG,S>::path_pricer_type>(
                         new EuropeanPathMultiPathPricer(payoff, timePositions,
-                                                        discountFactor));
+                                                        discountFactors));
     }
 
 
@@ -191,7 +188,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCPathBasketEngine {
       public:
-        MakeMCPathBasketEngine();
+        MakeMCPathBasketEngine(const boost::shared_ptr<StochasticProcessArray>&);
         // named parameters
         MakeMCPathBasketEngine& withSteps(Size steps);
         MakeMCPathBasketEngine& withBrownianBridge(bool b = true);
@@ -204,6 +201,7 @@ namespace QuantLib {
         // conversion to pricing engine
         operator boost::shared_ptr<PricingEngine>() const;
       private:
+        boost::shared_ptr<StochasticProcessArray> process_;
         bool antithetic_, controlVariate_;
         Size steps_, samples_, maxSamples_;
         Real tolerance_;
@@ -212,8 +210,10 @@ namespace QuantLib {
     };
 
     template <class RNG, class S>
-    inline MakeMCPathBasketEngine<RNG,S>::MakeMCPathBasketEngine()
-    : antithetic_(false), controlVariate_(false),
+    inline MakeMCPathBasketEngine<RNG,S>::MakeMCPathBasketEngine(
+        const boost::shared_ptr<StochasticProcessArray>& process)
+    : process_(process),
+      antithetic_(false), controlVariate_(false),
       steps_(Null<Size>()),
       samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()), brownianBridge_(false), seed_(0) {}
@@ -286,7 +286,8 @@ namespace QuantLib {
     MakeMCPathBasketEngine<RNG,S>::operator boost::shared_ptr<PricingEngine>()
                                                                        const {
         return boost::shared_ptr<PricingEngine>(new
-            MCPathBasketEngine<RNG,S>(steps_,
+            MCPathBasketEngine<RNG,S>(process_,
+                                      steps_,
                                       brownianBridge_,
                                       antithetic_,
                                       controlVariate_,
