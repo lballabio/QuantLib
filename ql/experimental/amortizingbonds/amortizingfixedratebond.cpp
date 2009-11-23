@@ -104,7 +104,7 @@ namespace QuantLib {
             return false;
         }
 
-        Schedule SinkingSchedule(const Date& startDate,
+        Schedule sinkingSchedule(const Date& startDate,
                                  const Period& maturityTenor,
                                  const Frequency& sinkingFrequency,
                                  const Calendar& paymentCalendar) {
@@ -116,8 +116,7 @@ namespace QuantLib {
             return retVal;
         }
 
-        std::vector<Real> SinkingNotionals(const Date& startDate,
-                                           const Period& maturityTenor,
+        std::vector<Real> sinkingNotionals(const Period& maturityTenor,
                                            const Frequency& sinkingFrequency,
                                            Rate couponRate,
                                            Real initialNotional) {
@@ -141,24 +140,23 @@ namespace QuantLib {
             return notionals;
         }
 
-        std::vector<Real> SinkingRedemptions(const Date& startDate,
-                                             const Period& maturityTenor,
-                                             const Frequency& sinkingFrequency,
-                                             Rate couponRate,
-                                             Real initialNotional) {
+        //std::vector<Real> sinkingRedemptions(const Period& maturityTenor,
+        //                                     const Frequency& sinkingFrequency,
+        //                                     Rate couponRate,
+        //                                     Real initialNotional) {
 
-            std::vector<Real> notionals =
-                SinkingNotionals(startDate, maturityTenor, sinkingFrequency,
-                                 couponRate, initialNotional);
-            Size nPeriods = notionals.size()-1;
-            std::vector<Real> redemptions(nPeriods);
+        //    std::vector<Real> notionals =
+        //        sinkingNotionals(maturityTenor, sinkingFrequency,
+        //                         couponRate, initialNotional);
+        //    Size nPeriods = notionals.size()-1;
+        //    std::vector<Real> redemptions(nPeriods);
 
-            for(Size i = 0; i < nPeriods; ++i) {
-                redemptions[i] =
-                    (notionals[i] - notionals[i+1]) / initialNotional * 100;
-            }
-            return redemptions;
-        }
+        //    for(Size i = 0; i < nPeriods; ++i) {
+        //        redemptions[i] =
+        //            (notionals[i] - notionals[i+1]) / initialNotional * 100;
+        //    }
+        //    return redemptions;
+        //}
 
     }
 
@@ -181,9 +179,9 @@ namespace QuantLib {
         maturityDate_ = startDate + bondTenor;
 
         cashflows_ =
-            FixedRateLeg(SinkingSchedule(startDate, bondTenor,
+            FixedRateLeg(sinkingSchedule(startDate, bondTenor,
                                          sinkingFrequency, calendar))
-            .withNotionals(SinkingNotionals(startDate, bondTenor,
+            .withNotionals(sinkingNotionals(bondTenor,
                                             sinkingFrequency, coupon,
                                             initialFaceAmount))
             .withCouponRates(coupon, accrualDayCounter)
