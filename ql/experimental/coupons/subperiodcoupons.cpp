@@ -140,19 +140,19 @@ namespace QuantLib {
         return swapletPrice()/(accrualFactor_*discount_);
     }
 
-    Real SubPeriodsPricer::capletPrice(Rate effectiveCap) const {
+    Real SubPeriodsPricer::capletPrice(Rate) const {
         QL_FAIL("SubPeriodsPricer::capletPrice not implemented");
     }
 
-    Rate SubPeriodsPricer::capletRate(Rate effectiveCap) const {
+    Rate SubPeriodsPricer::capletRate(Rate) const {
         QL_FAIL("SubPeriodsPricer::capletRate not implemented");
     }
 
-    Real SubPeriodsPricer::floorletPrice(Rate effectiveFloor) const {
+    Real SubPeriodsPricer::floorletPrice(Rate) const {
         QL_FAIL("SubPeriodsPricer::floorletPrice not implemented");
     }
 
-    Rate SubPeriodsPricer::floorletRate(Rate effectiveFloor) const {
+    Rate SubPeriodsPricer::floorletRate(Rate) const {
         QL_FAIL("SubPeriodsPricer::floorletRate not implemented");
     }
 

@@ -28,8 +28,10 @@
 namespace QuantLib {
 
     Disposable<Array> ConjugateGradient::getUpdatedDirection(
-                                       Problem &P, Real fold,
-                                       Real gold2, const Array& oldGradient) {
+                                       Problem &P,
+                                       Real fold,
+                                       Real gold2,
+                                       const Array& oldGradient) {
         return -lineSearch_->lastGradient() +
             (P.gradientNormValue() / gold2) * lineSearch_->searchDirection();
     }

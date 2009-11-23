@@ -66,8 +66,9 @@ namespace QuantLib {
         return x0 * std::exp(dx);
     }
 
-    Real GeneralizedBlackScholesProcess::expectation(Time t0, Real x0,
-                                                     Time dt) const {
+    Real GeneralizedBlackScholesProcess::expectation(Time,
+                                                     Real,
+                                                     Time) const {
         QL_FAIL("not implemented");
     }
 

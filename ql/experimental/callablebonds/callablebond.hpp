@@ -76,7 +76,7 @@ namespace QuantLib {
                               Volatility minVol,
                               Volatility maxVol) const;
         //@}
-        virtual void setupArguments(PricingEngine::arguments* args) const {}
+        virtual void setupArguments(PricingEngine::arguments*) const {}
 
       protected:
         CallableBond(Natural settlementDays,

@@ -48,10 +48,11 @@ MarketModelPathwiseDiscounter::MarketModelPathwiseDiscounter(Time paymentTime,
 
 }
 
-void MarketModelPathwiseDiscounter::getFactors(const Matrix& LIBORRates, // LIBOR rate values for all steps
-                                const Matrix& Discounts, // P(t_0, t_j) for j=0,...n for each step
-                                 Size currentStep,
-                                 std::vector<Real>& factors) const
+void MarketModelPathwiseDiscounter::getFactors(
+            const Matrix& LIBORRates, // LIBOR rate values for all steps
+            const Matrix& Discounts, // P(t_0, t_j) for j=0,...n for each step
+            Size currentStep,
+            std::vector<Real>& factors) const
 {
     Real preDF = Discounts[currentStep][before_];
     Real postDF = Discounts[currentStep][before_+1];

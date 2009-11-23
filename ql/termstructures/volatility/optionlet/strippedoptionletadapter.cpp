@@ -39,7 +39,7 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<SmileSection>
-    StrippedOptionletAdapter::smileSectionImpl(Time length) const {
+    StrippedOptionletAdapter::smileSectionImpl(Time) const {
         QL_FAIL("Not implemented yet");
     }
 

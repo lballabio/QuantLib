@@ -186,13 +186,9 @@ namespace QuantLib {
       volatility_(v), minStrike_(minStrike), maxStrike_(maxStrike) {}
 
 
-    Volatility ConstantYoYOptionletVolatility::
-    volatilityImpl(const Time t, Rate strike) const {
+    Volatility ConstantYoYOptionletVolatility::volatilityImpl(const Time,
+                                                              Rate) const {
         return volatility_;
     }
-
-
-
-
 
 } // namespace QuantLib

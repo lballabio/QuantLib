@@ -27,7 +27,10 @@
 
 namespace QuantLib {
     
-    inline void validateAbcdParameters(Real a, Real b, Real c, Real d) {
+    inline void validateAbcdParameters(Real a,
+                                       Real, // no condition on b
+                                       Real c,
+                                       Real d) {
         QL_REQUIRE(a+d>=0,
                    "a (" << a << ") + d (" << d << ") must be non negative");
         QL_REQUIRE(c>=0,

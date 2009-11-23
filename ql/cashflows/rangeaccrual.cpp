@@ -145,19 +145,19 @@ namespace QuantLib {
         return swapletPrice()/(accrualFactor_*discount_);
     }
 
-    Real RangeAccrualPricer::capletPrice(Rate effectiveCap) const {
+    Real RangeAccrualPricer::capletPrice(Rate) const {
         QL_FAIL("RangeAccrualPricer::capletPrice not implemented");
     }
 
-    Rate RangeAccrualPricer::capletRate(Rate effectiveCap) const {
+    Rate RangeAccrualPricer::capletRate(Rate) const {
         QL_FAIL("RangeAccrualPricer::capletRate not implemented");
     }
 
-    Real RangeAccrualPricer::floorletPrice(Rate effectiveFloor) const {
+    Real RangeAccrualPricer::floorletPrice(Rate) const {
         QL_FAIL("RangeAccrualPricer::floorletPrice not implemented");
     }
 
-    Rate RangeAccrualPricer::floorletRate(Rate effectiveFloor) const {
+    Rate RangeAccrualPricer::floorletRate(Rate) const {
         QL_FAIL("RangeAccrualPricer::floorletRate not implemented");
     }
 
@@ -286,8 +286,8 @@ namespace QuantLib {
     }
 
     Real RangeAccrualPricerByBgm::derLambdaDerLambdaS(Real U,
-                                                        Real lambdaS,
-                                                        Real lambdaT) const{
+                                                      Real lambdaS,
+                                                      Real lambdaT) const{
         Real result;
 
         //const Real p = (U-startTime_)/accrualFactor_;
