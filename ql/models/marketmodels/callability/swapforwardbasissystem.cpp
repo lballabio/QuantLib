@@ -103,7 +103,7 @@ namespace QuantLib
             results[9] = z*z;
         }
         else
-            if ( rateIndex = rateTimes_.size() -3)
+            if ( rateIndex == rateTimes_.size() -3)
             {
                  Real x= currentState.forwardRate(rateIndex);
                   Real y = currentState.forwardRate(rateIndex+1);
