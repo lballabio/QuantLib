@@ -198,8 +198,8 @@ namespace QuantLib {
                     basisOfCurve_->priceImpl(t)
                     * basisOfCurveUomConversionFactor_;
             } catch (const std::exception& e) {
-                QL_REQUIRE(false, "error retrieving price for curve ["
-                           << name() << "]: " << e.what());
+                QL_FAIL("error retrieving price for curve [" << name() <<
+                        "]: " << e.what());
             }
             return basisCurvePriceValue + basisOfCurve_->basisOfPriceImpl(t);
         }

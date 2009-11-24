@@ -71,9 +71,8 @@ namespace QuantLib {
             check on a match of the seniorties of the
             quote and the request.
         */
-        Real recoveryValueImpl(const Date& defaultDate,
-                               const DefaultProbKey& defaultKey
-                               ) const {
+        Real recoveryValueImpl(const Date&,
+                               const DefaultProbKey&) const {
             // no match on requested seniority, all pass
             return quote_->value();
         }

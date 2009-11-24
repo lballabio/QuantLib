@@ -342,7 +342,7 @@ namespace QuantLib {
             }
         }
 
-        QL_FAIL("YoYInflationIndex::fixing, should never get here");
+        // QL_FAIL("YoYInflationIndex::fixing, should never get here");
 
     }
 

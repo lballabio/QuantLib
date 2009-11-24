@@ -237,8 +237,7 @@ namespace QuantLib {
                         // means same for all
                         Real recoveryRates);
         //! This is a stronger than all event and will trigger all of them.
-        bool matchesEventType(
-            const boost::shared_ptr<DefaultType>& contractEvType) const {
+        bool matchesEventType(const boost::shared_ptr<DefaultType>&) const {
             return true;
         }
     };

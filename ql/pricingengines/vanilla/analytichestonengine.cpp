@@ -286,7 +286,6 @@ namespace QuantLib {
         }
         else {
             QL_FAIL("unknown complex logarithm formula");
-            return 0.0;
         }
     }
 

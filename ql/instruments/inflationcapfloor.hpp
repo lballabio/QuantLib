@@ -169,7 +169,6 @@ namespace QuantLib {
                             Volatility,
                             Volatility) const {
             QL_FAIL("not implemented yet");
-            return 0.0;
         }
 
 }
