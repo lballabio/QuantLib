@@ -37,7 +37,11 @@ namespace {
     };
 
     void testTraceOutput(bool enable,
+#if defined(QL_ENABLE_TRACING)
                          const std::string& result) {
+#else
+                         const std::string&) {
+#endif
 
         TestCaseCleaner cleaner;
 
