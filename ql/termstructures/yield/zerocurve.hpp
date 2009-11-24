@@ -98,9 +98,7 @@ namespace QuantLib {
         //@}
         mutable std::vector<Date> dates_;
       private:
-        void initialize(const std::vector<Date>& dates,
-                        const std::vector<Rate>& yields,
-                        const DayCounter& dayCounter);
+        void initialize();
     };
 
     //! Term structure based on linear interpolation of zero yields
@@ -205,7 +203,7 @@ namespace QuantLib {
       InterpolatedCurve<T>(std::vector<Time>(), yields, interpolator),
       dates_(dates)
     {
-        initialize(dates, yields, dayCounter);
+        initialize();
     }
 
     template <class T>
@@ -238,10 +236,7 @@ namespace QuantLib {
     #endif
 
     template <class T>
-    void InterpolatedZeroCurve<T>::initialize(
-                                    const std::vector<Date>& dates,
-                                    const std::vector<Rate>& yields,
-                                    const DayCounter& dayCounter)
+    void InterpolatedZeroCurve<T>::initialize()
     {
         QL_REQUIRE(dates_.size() >= T::requiredPoints,
                    "not enough input dates given");
@@ -254,7 +249,7 @@ namespace QuantLib {
             QL_REQUIRE(dates_[i] > dates_[i-1],
                        "invalid date (" << dates_[i] << ", vs "
                        << dates_[i-1] << ")");
-            this->times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
+            this->times_[i] = dayCounter().yearFraction(dates_[0], dates_[i]);
             QL_REQUIRE(!close(this->times_[i],this->times_[i-1]),
                        "two dates correspond to the same time "
                        "under this curve's day count convention");
