@@ -4,19 +4,19 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    mcpathbasketengine.hpp \
-    pathmultiassetoption.hpp \
-    pathpayoff.hpp \
     adaptedpathpayoff.hpp \
     longstaffschwartzmultipathpricer.hpp \
     mcamericanpathengine.hpp \
-    mclongstaffschwartzpathengine.hpp
+    mclongstaffschwartzpathengine.hpp \
+    mcpathbasketengine.hpp \
+    pathmultiassetoption.hpp \
+    pathpayoff.hpp
 
 libMcBasket_la_SOURCES = \
-    mcpathbasketengine.cpp \
-    pathmultiassetoption.cpp \
     adaptedpathpayoff.cpp \
-    longstaffschwartzmultipathpricer.cpp
+    longstaffschwartzmultipathpricer.cpp \
+    mcpathbasketengine.cpp \
+    pathmultiassetoption.cpp
 
 noinst_LTLIBRARIES = libMcBasket.la
 
