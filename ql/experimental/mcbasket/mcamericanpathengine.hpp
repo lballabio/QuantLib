@@ -22,7 +22,8 @@
 
 #include <ql/experimental/mcbasket/longstaffschwartzmultipathpricer.hpp>
 #include <ql/experimental/mcbasket/mclongstaffschwartzpathengine.hpp>
-
+#include <ql/experimental/mcbasket/pathmultiassetoption.hpp>
+#include <ql/processes/stochasticprocessarray.hpp>
 #include <boost/function.hpp>
 
 namespace QuantLib {
@@ -49,7 +50,7 @@ namespace QuantLib {
                                BigNatural seed,
                                Size nCalibrationSamples = Null<Size>());
       protected:
-        boost::shared_ptr<LongstaffSchwartzMultiPathPricer> 
+        boost::shared_ptr<LongstaffSchwartzMultiPathPricer>
                                                       lsmPathPricer() const;
     };
 
