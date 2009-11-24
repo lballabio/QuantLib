@@ -24,11 +24,10 @@
 
 namespace QuantLib {
 
-    Disposable<Array> SteepestDescent::getUpdatedDirection(
-                                                   Problem &P,
-                                                   Real fold,
-                                                   Real gold2,
-                                                   const Array& oldGradient) {
+    Disposable<Array> SteepestDescent::getUpdatedDirection(Problem&,
+                                                           Real,
+                                                           Real,
+                                                           const Array&) {
         return -lineSearch_->lastGradient();
     }
 

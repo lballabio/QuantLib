@@ -40,6 +40,7 @@ namespace QuantLib {
         virtual ~LineSearchBasedMethod() {}
 
         virtual Disposable<Array>
+        //! computes the new search direction
         getUpdatedDirection(Problem &P,
                             Real fold,
                             Real gold2,

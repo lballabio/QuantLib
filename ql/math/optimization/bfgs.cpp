@@ -24,8 +24,8 @@
 namespace QuantLib {
 
     Disposable<Array> BFGS::getUpdatedDirection(Problem &P,
-                                                Real fold,
-                                                Real gold2,
+                                                Real,
+                                                Real,
                                                 const Array& oldGradient) {
         if (inverseHessian_.rows() == 0)
         {

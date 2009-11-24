@@ -39,11 +39,13 @@ namespace QuantLib {
         SteepestDescent(const boost::shared_ptr<LineSearch>& lineSearch =
                                             boost::shared_ptr<LineSearch>())
         : LineSearchBasedMethod(lineSearch) {}
-        //! computes the new search direction
+        //! \name LineSearchBasedMethod interface
+        //@{
         Disposable<Array> getUpdatedDirection(Problem &P,
                                               Real fold,
                                               Real gold2,
                                               const Array& oldGradient);
+        //@}
     };
 
 }
