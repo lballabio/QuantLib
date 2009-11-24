@@ -76,9 +76,9 @@ namespace {
     // in order to test nested optimizations
     class OptimizationBasedCostFunction : public CostFunction {
       public:
-        Real value(const Array& x) const { return 1.0; }
+        Real value(const Array&) const { return 1.0; }
 
-        Disposable<Array> values(const Array& x) const{
+        Disposable<Array> values(const Array&) const{
             // dummy nested optimization
             Array coefficients(3, 1.0);
             OneDimensionalPolynomialDegreeN oneDimensionalPolynomialDegreeN(coefficients);
