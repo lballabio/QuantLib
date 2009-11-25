@@ -250,7 +250,7 @@ namespace QuantLib {
         QL_REQUIRE(sampleWeight > 0.0,
                    "sampleWeight=0, unsufficient");
 
-        Real sampleNumber = samples();
+        Real sampleNumber = static_cast<Real>(samples());
         QL_REQUIRE(sampleNumber > 1.0,
                    "sample number <=1, unsufficient");
 
