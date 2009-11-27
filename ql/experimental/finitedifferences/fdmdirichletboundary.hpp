@@ -46,9 +46,9 @@ namespace QuantLib {
 
         void applyBeforeApplying(operator_type&) const;
         void applyAfterApplying(array_type&) const;
-        void applyBeforeSolving(operator_type&, array_type& rhs) const;
+        void applyBeforeSolving(operator_type&, array_type&) const;
         void applyAfterSolving(array_type&) const;
-        void setTime(Time t);
+        void setTime(Time);
 
       private:
         const Real value_;

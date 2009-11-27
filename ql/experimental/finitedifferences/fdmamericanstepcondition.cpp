@@ -30,7 +30,7 @@ namespace QuantLib {
       calculator_(calculator) {
     }
 
-    void FdmAmericanStepCondition::applyTo(Array& a, Time t) const {
+    void FdmAmericanStepCondition::applyTo(Array& a, Time) const {
         boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
         const FdmLinearOpIterator endIter = layout->end();
 

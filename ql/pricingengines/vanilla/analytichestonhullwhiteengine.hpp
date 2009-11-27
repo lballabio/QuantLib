@@ -80,7 +80,7 @@ namespace QuantLib {
         void calculate() const;
 
       protected:
-        std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
+        std::complex<Real> addOnTerm(Real phi, Time, Size j) const;
 
       private:
         boost::shared_ptr<HullWhite> hullWhiteModel_;

@@ -61,13 +61,13 @@ namespace QuantLib {
     }
 
     void FdmDirichletBoundary::applyBeforeSolving(FdmLinearOp&,
-                                                  Array& rhs) const {
+                                                  Array&) const {
     }
 
     void FdmDirichletBoundary::applyAfterSolving(Array& rhs) const {
         this->applyAfterApplying(rhs);
     }
 
-    void FdmDirichletBoundary::setTime(Time t) {
+    void FdmDirichletBoundary::setTime(Time) {
     }
 }
