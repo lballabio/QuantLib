@@ -73,7 +73,7 @@ namespace QuantLib {
         return npv;
     }
 
-    Real RiskyBond::totalFutureFlows(Date date) const {
+    Real RiskyBond::totalFutureFlows() const {
         Date today = Settings::instance().evaluationDate();
         Real flow = 0;
         std::vector<boost::shared_ptr<CashFlow> > cf = cashflows();

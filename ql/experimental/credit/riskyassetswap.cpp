@@ -197,8 +197,8 @@ namespace QuantLib {
       tenor_(tenor), settlementDays_(settlementDays), calendar_(calendar),
       fixedConvention_(fixedConvention),
       fixedPeriod_(fixedPeriod), fixedDayCount_(fixedDayCount),
-      floatConvention_(fixedConvention),
-      floatPeriod_(floatPeriod), floatDayCount_(fixedDayCount),
+      floatConvention_(floatConvention),
+      floatPeriod_(floatPeriod), floatDayCount_(floatDayCount),
       recoveryRate_(recoveryRate), yieldTS_(yieldTS),
       integrationStepSize_(integrationStepSize) {
 

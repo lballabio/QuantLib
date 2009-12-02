@@ -125,8 +125,7 @@ namespace QuantLib {
     class ManipulateDistribution {
     public:
         static Distribution convolve (const Distribution& d1,
-                                      const Distribution& d2,
-                                      Size buckets = 0);
+                                      const Distribution& d2);
     };
 
 }

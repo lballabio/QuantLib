@@ -276,8 +276,7 @@ namespace QuantLib {
 
     //-------------------------------------------------------------------------
     Distribution ManipulateDistribution::convolve (const Distribution& d1,
-                                                   const Distribution& d2,
-                                                   Size buckets) {
+                                                   const Distribution& d2) {
     //-------------------------------------------------------------------------
         // force equal constant bucket sizes
         QL_REQUIRE (d1.dx_[0] == d2.dx_[0], "bucket sizes differ in d1 and d2");

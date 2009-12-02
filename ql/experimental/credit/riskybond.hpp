@@ -61,7 +61,7 @@ namespace QuantLib {
         virtual std::vector<boost::shared_ptr<CashFlow> > interestFlows() const = 0;
         virtual std::vector<boost::shared_ptr<CashFlow> > notionalFlows() const = 0;
         Real riskfreeNPV() const;
-        Real totalFutureFlows(Date date) const;
+        Real totalFutureFlows() const;
         std::string name() const;
         Currency ccy() const;
         Handle<YieldTermStructure> yieldTS() const;
