@@ -176,6 +176,62 @@ namespace QuantLib {
 
             retVal[0] = x0[0]*std::exp(dy + rho_/sigma_*(retVal[1]-x0[1]));
             break;
+          case QE:
+          case QE_M:
+          {
+            // for details of the quadratic exponential discretization scheme
+            // see Leif Andersen,
+            // Efficient Simulation of the Heston Stochastic Volatility Model     
+            const Real ex = std::exp(-kappa_*dt);
+              
+            const Real m  =  theta_+(x0[1]-theta_)*ex;
+            const Real s2 =  x0[1]*sigma_*sigma_*ex/kappa_*(1-ex) 
+                           + theta_*sigma_*sigma_/(2*kappa_)*(1-ex)*(1-ex);
+            const Real psi = s2/(m*m);
+
+            const Real g1 =  0.5;
+            const Real g2 =  0.5;
+                  Real k0 = -rho_*kappa_*theta_*dt/sigma_;
+            const Real k1 =  g1*dt*(kappa_*rho_/sigma_-0.5)-rho_/sigma_;
+            const Real k2 =  g2*dt*(kappa_*rho_/sigma_-0.5)+rho_/sigma_;
+            const Real k3 =  g1*dt*(1-rho_*rho_);
+            const Real k4 =  g2*dt*(1-rho_*rho_);
+            const Real A  =  k2+0.5*k4;
+                        
+            if (psi < 1.5) {
+                const Real b2 = 2/psi-1+std::sqrt(2/psi*(2/psi-1));
+                const Real b  = std::sqrt(b2);
+                const Real a  = m/(1+b2);
+                
+                if (discretization_ == QE_M) {
+                    // martingale correction
+                    QL_REQUIRE(A < 1/(2*a), "illegal value");
+                    k0 = -A*b2*a/(1-2*A*a)+0.5*std::log(1-2*A*a)
+                         -(k1+0.5*k3)*x0[1];
+                }                    
+                retVal[1] = a*(b+dw[1])*(b+dw[1]);
+            }
+            else {
+                const Real p = (psi-1)/(psi+1);
+                const Real beta = (1-p)/m;
+                
+                const Real u = CumulativeNormalDistribution()(dw[1]);
+                
+                if (discretization_ == QE_M) {
+                    // martingale correction
+                    QL_REQUIRE(A < beta, "illegal value");
+                    k0 = -std::log(p+beta*(1-p)/(beta-A))-(k1+0.5*k3)*x0[1];
+                }                
+                retVal[1] = ((u <= p) ? 0.0 : std::log((1-p)/(1-u))/beta);
+            }
+            
+            mu =   riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
+                 - dividendYield_->forwardRate(t0, t0+dt, Continuous);
+
+            retVal[0] = x0[0]*std::exp(mu*dt + k0 + k1*x0[1] + k2*retVal[1]
+                                       +std::sqrt(k3*x0[1]+k4*retVal[1])*dw[0]);
+          }
+          break; 
           default:
             QL_FAIL("unknown discretization schema");
         }
