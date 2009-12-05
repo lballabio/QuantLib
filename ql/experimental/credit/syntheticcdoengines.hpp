@@ -81,7 +81,7 @@ namespace QuantLib {
     //! CDO base engine taking schedule steps
     class MidPointCDOEngine : public SyntheticCDO::engine {
     public:
-        MidPointCDOEngine () {}
+        MidPointCDOEngine (Period stepSize = 0*Days) {}
         void calculate() const;
     private:
         virtual Real expectedTrancheLoss(const Date&) const = 0;
