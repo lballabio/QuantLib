@@ -439,13 +439,14 @@ void HestonModelTest::testMcVsCached() {
     Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(1.05)));
 
     boost::shared_ptr<HestonProcess> process(new HestonProcess(
-                   riskFreeTS, dividendTS, s0, 0.3, 1.16, 0.2, 0.8, 0.8));
+                   riskFreeTS, dividendTS, s0, 0.3, 1.16, 0.2, 0.8, 0.8, 
+                   HestonProcess::QE_M));
 
     VanillaOption option(payoff, exercise);
 
     boost::shared_ptr<PricingEngine> engine;
     engine = MakeMCEuropeanHestonEngine<PseudoRandom>(process)
-        .withStepsPerYear(91)
+        .withStepsPerYear(11)
         .withAntitheticVariate()
         .withSamples(50000)
         .withSeed(1234);
@@ -673,16 +674,21 @@ void HestonModelTest::testKahlJaeckelCase() {
 
     Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100)));
 
-    boost::shared_ptr<HestonProcess> process(new HestonProcess(
+    boost::shared_ptr<HestonProcess> processNonCentral(new HestonProcess(
                    riskFreeTS, dividendTS, s0, 0.16, 1.0, 0.16, 2.0, -0.8,
                    HestonProcess::NonCentralChiSquareVariance));
 
+    boost::shared_ptr<HestonProcess> processQE_M(new HestonProcess(
+                   riskFreeTS, dividendTS, s0, 0.16, 1.0, 0.16, 2.0, -0.8,
+                   HestonProcess::QE_M));
+
+    
     VanillaOption option(payoff, exercise);
 
     Real tolerance = 0.1;
 
     boost::shared_ptr<PricingEngine> engine =
-        MakeMCEuropeanHestonEngine<PseudoRandom>(process)
+        MakeMCEuropeanHestonEngine<PseudoRandom>(processNonCentral)
         .withSteps(10)
         .withAntitheticVariate()
         .withAbsoluteTolerance(tolerance)
@@ -691,7 +697,31 @@ void HestonModelTest::testKahlJaeckelCase() {
 
     const Real expected = 4.95212;
           Real calculated = option.NPV();
-    const Real errorEstimate = option.errorEstimate();
+          Real errorEstimate = option.errorEstimate();
+
+    if (std::fabs(calculated - expected) > 2.34*errorEstimate) {
+        BOOST_ERROR("Failed to reproduce cached price with MC engine"
+                    << "\n    calculated: " << calculated
+                    << "\n    expected:   " << expected
+                    << " +/- " << errorEstimate);
+    }
+
+    if (errorEstimate > tolerance) {
+        BOOST_ERROR("failed to reproduce error estimate with MC engine"
+                    << "\n    calculated: " << errorEstimate
+                    << "\n    expected:   " << tolerance);
+    }
+
+    engine =
+        MakeMCEuropeanHestonEngine<PseudoRandom>(processQE_M)
+        .withSteps(100)
+        .withAntitheticVariate()
+        .withAbsoluteTolerance(tolerance)
+        .withSeed(1234);
+    option.setPricingEngine(engine);
+
+    calculated = option.NPV();
+    errorEstimate = option.errorEstimate();
 
     if (std::fabs(calculated - expected) > 2.34*errorEstimate) {
         BOOST_ERROR("Failed to reproduce cached price with MC engine"
@@ -707,8 +737,8 @@ void HestonModelTest::testKahlJaeckelCase() {
     }
 
     engine = boost::shared_ptr<PricingEngine>(new FdHestonVanillaEngine(
-                    boost::shared_ptr<HestonModel>(new HestonModel(process)),
-                    200,400,100));
+                 boost::shared_ptr<HestonModel>(new HestonModel(processQE_M)),
+                 200,400,100));
     option.setPricingEngine(engine);
 
     calculated = option.NPV();
@@ -946,8 +976,7 @@ test_suite* HestonModelTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdBarrierVsCached));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdVanillaVsCached));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMultipleStrikesEngine));
-    // this passes but takes way too long
-    //suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMcVsCached));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMcVsCached));
 
     return suite;
 }
