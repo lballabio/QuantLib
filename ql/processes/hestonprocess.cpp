@@ -215,7 +215,8 @@ namespace QuantLib {
                 const Real p = (psi-1)/(psi+1);
                 const Real beta = (1-p)/m;
                 
-                const Real u = CumulativeNormalDistribution()(dw[1]);
+                const Real u = std::min(1.0-QL_EPSILON,
+                                        CumulativeNormalDistribution()(dw[1]));
                 
                 if (discretization_ == QE_M) {
                     // martingale correction
