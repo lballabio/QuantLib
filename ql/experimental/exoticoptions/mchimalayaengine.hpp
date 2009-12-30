@@ -24,7 +24,7 @@
 #ifndef quantlib_mc_himalaya_engine_hpp
 #define quantlib_mc_himalaya_engine_hpp
 
-#include <ql/instruments/himalayaoption.hpp>
+#include <ql/experimental/exoticoptions/himalayaoption.hpp>
 #include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>

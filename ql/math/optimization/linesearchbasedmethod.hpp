@@ -39,16 +39,14 @@ namespace QuantLib {
                                             boost::shared_ptr<LineSearch>());
         virtual ~LineSearchBasedMethod() {}
 
-        virtual Disposable<Array>
-        //! computes the new search direction
-        getUpdatedDirection(Problem &P,
-                            Real fold,
-                            Real gold2,
-                            const Array& gradient) = 0;
-
         virtual EndCriteria::Type minimize(Problem& P,
                                            const EndCriteria& endCriteria);
       protected:
+        //! computes the new search direction
+        virtual Disposable<Array>
+        getUpdatedDirection(const Problem &P,
+                            Real gold2,
+                            const Array& gradient) = 0;
         //! line search
         boost::shared_ptr<LineSearch> lineSearch_;
     };

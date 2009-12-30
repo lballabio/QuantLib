@@ -38,24 +38,24 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
 
-	using namespace boost::numeric::ublas;
+    using namespace boost::numeric::ublas;
 
     SparseILUPreconditioner::SparseILUPreconditioner(
-                                            const compressed_matrix<Real>& A, 
-                                            Integer lfil) 
-    : L_(compressed_matrix<Real>(A.size1(),A.size2())), 
+                                            const compressed_matrix<Real>& A,
+                                            Integer lfil)
+    : L_(compressed_matrix<Real>(A.size1(),A.size2())),
       U_(compressed_matrix<Real>(A.size1(),A.size2())) {
 
-        QL_REQUIRE(A.size1() == A.size2(), 
+        QL_REQUIRE(A.size1() == A.size2(),
                    "sparse ILU preconditioner works only with square matrices");
- 
+
         for (compressed_matrix<Real>::size_type i=0; i < L_.size1(); ++i)
             L_(i,i) = 1.0;
 
         const Integer n = A.size1();
         std::set<Integer> lBandSet, uBandSet;
 
-        generalized_vector_of_vector<Integer, 
+        generalized_vector_of_vector<Integer,
             row_major, vector<compressed_vector<Integer> > > levs(n,n);
         Integer lfilp = lfil + 1;
 
@@ -67,7 +67,7 @@ namespace QuantLib {
 
             std::vector<Integer> levii(n, 0);
             for (Integer i=0; i<n; ++i) {
-                if(   w[i] > QL_EPSILON 
+                if(   w[i] > QL_EPSILON
                       || w[i] < -1.0*QL_EPSILON) levii[i] = 1;
             }
             Integer jj = -1;
@@ -107,19 +107,19 @@ namespace QuantLib {
                     }
                     for (Size k=0; k<nonZeros.size(); ++k) {
                         const Integer j = nonZeros[k] ;
-                        const Integer temp = levs(jj,j) + jlev ; 
+                        const Integer temp = levs(jj,j) + jlev ;
                         if (levii[j] == 0) {
                             if (temp <= lfilp) {
-                                w[j] =  - fact*nonZeroEntries[k]; 
+                                w[j] =  - fact*nonZeroEntries[k];
                                 levii[j] = temp;
                             }
                         }
-                        else { 
-                            w[j] -= fact*nonZeroEntries[k]; 
-                            levii[j] = std::min(levii[j],temp); 
+                        else {
+                            w[j] -= fact*nonZeroEntries[k];
+                            levii[j] = std::min(levii[j],temp);
                         }
                     }
-                    w[jj] = fact;   
+                    w[jj] = fact;
                 }
             }
             std::vector<Integer> wNonZeros;
@@ -154,7 +154,7 @@ namespace QuantLib {
                         uBandSet.insert(j-ii);
                     }
                 }
-            } 
+            }
         }
         lBands_.resize(lBandSet.size());
         uBands_.resize(uBandSet.size());
@@ -181,10 +181,10 @@ namespace QuantLib {
         y[0]=b[0]/L_(0,0);
         for (Size i=1; i<=n-1; ++i) {
             y[i] = b[i]/L_(i,i);
-            for (Integer j=lBands_.size()-1; 
+            for (Integer j=lBands_.size()-1;
                  j>=0 && i-lBands_[j] <= i-1; --j) {
                 y[i]-=L_(i,i-lBands_[j])*y[i-lBands_[j]]/L_(i,i);
-				}
+            }
         }
         return y;
     }
@@ -206,4 +206,3 @@ namespace QuantLib {
 }
 
 #endif
-

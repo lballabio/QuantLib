@@ -330,11 +330,6 @@ namespace QuantLib {
         return evaluations_;
     }
 
-    std::complex<Real>
-    AnalyticHestonEngine::addOnTerm(Real, Time, Size) const {
-        return std::complex<Real>(0,0);
-    }
-
     void AnalyticHestonEngine::doCalculation(Real riskFreeDiscount,
                                              Real dividendDiscount,
                                              Real spotPrice,

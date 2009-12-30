@@ -49,7 +49,7 @@ MarketModelPathwiseDiscounter::MarketModelPathwiseDiscounter(Time paymentTime,
 }
 
 void MarketModelPathwiseDiscounter::getFactors(
-            const Matrix& LIBORRates, // LIBOR rate values for all steps
+            const Matrix& , // LIBORRates, for all steps
             const Matrix& Discounts, // P(t_0, t_j) for j=0,...n for each step
             Size currentStep,
             std::vector<Real>& factors) const

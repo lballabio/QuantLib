@@ -90,7 +90,7 @@ namespace QuantLib {
         mutable std::vector<Rate> cotSwapRates_;
         mutable std::vector<Real> cotAnnuities_;
 
-		mutable Size firstCotAnnuityComped_;
+        mutable Size firstCotAnnuityComped_;
     };
 
 }

@@ -24,7 +24,7 @@
 #ifndef quantlib_mc_pagoda_engine_hpp
 #define quantlib_mc_pagoda_engine_hpp
 
-#include <ql/instruments/pagodaoption.hpp>
+#include <ql/experimental/exoticoptions/pagodaoption.hpp>
 #include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>

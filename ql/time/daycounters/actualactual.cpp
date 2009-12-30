@@ -122,7 +122,7 @@ namespace QuantLib {
             // then add the remaining time
             Integer i=0;
             Date newRefStart, newRefEnd;
-            do {
+            for (;;) {
                 newRefStart = refPeriodEnd + (months*i)*Months;
                 newRefEnd = refPeriodEnd + (months*(i+1))*Months;
                 if (d2 < newRefEnd) {
@@ -131,7 +131,7 @@ namespace QuantLib {
                     sum += period;
                     i++;
                 }
-            } while (true);
+            }
             sum += yearFraction(newRefStart,d2,newRefStart,newRefEnd);
             return sum;
         }

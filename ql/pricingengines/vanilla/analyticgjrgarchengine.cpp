@@ -94,8 +94,7 @@ namespace QuantLib {
         Real d, del, d_, C, A3, A4, Capp;
         bool constants_match = false;
         
-        if (init_ != true 
-            || b1 != b1_ || b2 != b2_ || b3 != b3_ || la != la_) {
+        if (!init_ || b1 != b1_ || b2 != b2_ || b3 != b3_ || la != la_) {
             // compute the useful coefficients
             m1 = b1 + (b2+b3*N)*(1+la*la) + b3*la*n; // ok
             m2 = b1*b1 + b2*b2*(pow<4>(la)+6*la*la+3)
@@ -131,8 +130,7 @@ namespace QuantLib {
             b1_ = b1; b2_ = b2; b3_ = b3; la_ = la;
             m1_ = m1; m2_ = m2; m3_ = m3; 
             v1_ = v1; v2_ = v2; v3_ = v3; z1_ = z1; z2_ = z2; x1_ = x1;
-        }
-        else if (init_ == true) {
+        } else {
             b1 = b1_; b2 = b2_; b3 = b3_; la = la_;
             m1 = m1_; m2 = m2_; m3 = m3_; 
             v1 = v1_; v2 = v2_; v3 = v3_; z1 = z1_; z2 = z2_; x1 = x1_;
@@ -140,8 +138,7 @@ namespace QuantLib {
         }
         
         // compute the first four moments
-        if (init_ != true 
-            || constants_match != true || b0 != b0_ || h1 != h1_ || T != T_) {
+        if (!init_ || !constants_match || b0 != b0_ || h1 != h1_ || T != T_) {
             b1 = b1_; b2 = b2_; b3 = b3_; la = la_;
             m1 = m1_; m2 = m2_; m3 = m3_; 
             v1 = v1_; v2 = v2_; v3 = v3_; z1 = z1_; z2 = z2_; x1 = x1_;
@@ -257,8 +254,7 @@ namespace QuantLib {
             k4 /= pow<2>(sigma); // 4th standardized moment, ie kurtosis
             ex_ = ex; sigma_ = sigma; 
             k3_ = k3; k4_ = k4; r_ = r; T_ = T; b0_ = b0; h1_ = h1;
-        }
-        else if (init_ == true && constants_match == true) {
+        } else {
             ex = ex_; sigma = sigma_; 
             k3 = k3_; k4 = k4_; r = r_; T = T_; b0 = b0_; h1 = h1_;
         }

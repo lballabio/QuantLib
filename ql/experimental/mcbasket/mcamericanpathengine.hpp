@@ -23,6 +23,7 @@
 #include <ql/experimental/mcbasket/longstaffschwartzmultipathpricer.hpp>
 #include <ql/experimental/mcbasket/mclongstaffschwartzpathengine.hpp>
 #include <ql/experimental/mcbasket/pathmultiassetoption.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
 #include <boost/function.hpp>
 

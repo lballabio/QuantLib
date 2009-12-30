@@ -80,7 +80,9 @@ namespace QuantLib {
         void calculate() const;
 
       protected:
-        std::complex<Real> addOnTerm(Real phi, Time, Size j) const;
+        std::complex<Real> addOnTerm(Real phi,
+                                     Time t,
+                                     Size j) const;
 
       private:
         boost::shared_ptr<HullWhite> hullWhiteModel_;
@@ -88,6 +90,14 @@ namespace QuantLib {
         mutable Real m_;
         mutable Real a_, sigma_;
     };
+
+    inline
+    std::complex<Real> AnalyticHestonHullWhiteEngine::addOnTerm(Real u,
+                                                                Time,
+                                                                Size j) const {
+        return std::complex<Real>(-m_*u*u, u*(m_-2*m_*(j-1)));
+    }
+
 }
 
 #endif

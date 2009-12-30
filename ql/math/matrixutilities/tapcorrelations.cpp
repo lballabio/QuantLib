@@ -117,8 +117,7 @@ namespace QuantLib {
 
     Disposable<Matrix> triangularAnglesParametrizationRankThreeVectorial(
                                                     const Array& parameters,
-                                                    Size nbRows,
-                                                    Size rank) {
+                                                    Size nbRows) {
         QL_REQUIRE(parameters.size() == 3,
                    "the parameter array must contain exactly 3 values" );
         return triangularAnglesParametrizationRankThree(parameters[0],

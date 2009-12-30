@@ -18,12 +18,10 @@
 #include <ql/instruments/dividendschedule.hpp>
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/instruments/europeanoption.hpp>
-#include <ql/instruments/everestoption.hpp>
 #include <ql/instruments/fixedratebondforward.hpp>
 #include <ql/instruments/forward.hpp>
 #include <ql/instruments/forwardrateagreement.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
-#include <ql/instruments/himalayaoption.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
 #include <ql/instruments/inflationcapfloor.hpp>
 #include <ql/instruments/lookbackoption.hpp>
@@ -36,7 +34,6 @@
 #include <ql/instruments/multiassetoption.hpp>
 #include <ql/instruments/oneassetoption.hpp>
 #include <ql/instruments/overnightindexedswap.hpp>
-#include <ql/instruments/pagodaoption.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/instruments/quantobarrieroption.hpp>
 #include <ql/instruments/quantoforwardvanillaoption.hpp>

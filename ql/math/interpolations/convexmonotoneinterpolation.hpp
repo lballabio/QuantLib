@@ -82,10 +82,10 @@ namespace QuantLib {
 
             Real value(Real x) const;
             Real primitive(Real x) const;
-            Real derivative(Real x) const {
+            Real derivative(Real) const {
                 QL_FAIL("Convex-monotone spline derivative not implemented");
             }
-            Real secondDerivative(Real x) const {
+            Real secondDerivative(Real) const {
                 QL_FAIL("Convex-monotone spline second derivative "
                         "not implemented");
             }
@@ -140,7 +140,7 @@ namespace QuantLib {
             : value_(value), prevPrimitive_(prevPrimitive), xPrev_(xPrev)
             {}
 
-            Real value(Real x) const {
+            Real value(Real) const {
                 return value_;
             }
             Real primitive(Real x) const {

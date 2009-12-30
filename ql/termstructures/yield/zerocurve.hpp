@@ -217,7 +217,7 @@ namespace QuantLib {
       InterpolatedCurve<T>(std::vector<Time>(), yields, interpolator),
       dates_(dates)
     {
-        initialize(dates, yields, dayCounter);
+        initialize();
     }
 
     template <class T>
@@ -230,7 +230,7 @@ namespace QuantLib {
       InterpolatedCurve<T>(std::vector<Time>(), yields, interpolator),
       dates_(dates)
     {
-        initialize(dates, yields, dayCounter);
+        initialize();
     }
 
     #endif

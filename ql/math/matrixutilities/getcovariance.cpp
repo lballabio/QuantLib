@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
-Copyright (C) 2004, 2007 Ferdinando Ametrano
+Copyright (C) 2004, 2007, 2009 Ferdinando Ametrano
 
 This file is part of QuantLib, a free-software/open-source library
 for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,10 +21,8 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
 
-    CovarianceDecomposition::CovarianceDecomposition(
-                                                const Matrix& cov,
-                                                Real tolerance,
-                                                SalvagingAlgorithm::Type sa)
+    CovarianceDecomposition::CovarianceDecomposition(const Matrix& cov,
+                                                     Real tolerance)
     : variances_(cov.diagonal()), stdDevs_(Array(cov.rows())),
       correlationMatrix_(Matrix(cov.rows(), cov.rows()))
     {
@@ -48,8 +46,5 @@ namespace QuantLib {
                     cov[i][j]/(stdDevs_[i]*stdDevs_[j]);
             }
         }
-        //Matrix root = pseudoSqrt(correlationMatrix_, sa);
-        //Matrix trasposedRoot = transpose(root);
-        //correlationMatrix_ = root * trasposedRoot;
     }
 }

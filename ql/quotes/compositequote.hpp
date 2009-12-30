@@ -42,6 +42,11 @@ namespace QuantLib {
             const Handle<Quote>& element1,
             const Handle<Quote>& element2,
             const BinaryFunction& f);
+        //! \name inspectors
+        //@{
+        Real value1() const { return element1_->value(); }
+        Real value2() const { return element2_->value(); }
+        //@}
         //! \name Quote interface
         //@{
         Real value() const;

@@ -28,24 +28,26 @@
 namespace QuantLib {
 
     class CurveState;
-/*!
-this class returns the number of units of the discretely compounding money  market account
-that 1 unit of cash at the payment can buy using the LIBOR rates from current step.
+    /*!
+    this class returns the number of units of the discretely compounding money
+    market account that 1 unit of cash at the payment can buy using the LIBOR
+    rates from current step.
 
-It also returns the derivative of this number with respect to each of the rates.
+    It also returns the derivative of this number with respect to each of the
+    rates.
 
-disconuting is purely based on the LIBOR rates in the simulation, to get a discounting back to zero
-you need to multiply by the discount factor of t_0.
-
-*/
+    Discounting is purely based on the simulation LIBOR rates,
+    to get a discounting back to zero you need to multiply by
+    the discount factor of t_0.
+    */
     class MarketModelPathwiseDiscounter {
       public:
         MarketModelPathwiseDiscounter(Time paymentTime,
-                              const std::vector<Time>& rateTimes);
+                                      const std::vector<Time>& rateTimes);
         void getFactors(const Matrix& LIBORRates, // LIBOR rate values for all steps
-                                const Matrix& Discounts, // P(t_0, t_j) for j=0,...n for each step
-                                 Size currentStep,
-                                 std::vector<Real>& factors) const;
+                        const Matrix& Discounts, // P(t_0, t_j) for j=0,...n for each step
+                        Size currentStep,
+                        std::vector<Real>& factors) const;
       private:
         Size before_;
         Size numberRates_;

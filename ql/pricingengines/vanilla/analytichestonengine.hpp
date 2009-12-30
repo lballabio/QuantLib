@@ -121,7 +121,9 @@ namespace QuantLib {
       protected:
         // call back for extended stochastic volatility
         // plus jump diffusion engines like bates model
-        virtual std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
+        virtual std::complex<Real> addOnTerm(Real phi,
+                                             Time t,
+                                             Size j) const;
 
       private:
         class Fj_Helper;
@@ -183,5 +185,16 @@ namespace QuantLib {
         const boost::shared_ptr<Integrator> integrator_;
         const boost::shared_ptr<GaussianQuadrature> gaussianQuadrature_;
     };
+
+    // inline
+
+    inline 
+    std::complex<Real> AnalyticHestonEngine::addOnTerm(Real,
+                                                       Time,
+                                                       Size) const {
+        return std::complex<Real>(0,0);
+    }
+
 }
+
 #endif

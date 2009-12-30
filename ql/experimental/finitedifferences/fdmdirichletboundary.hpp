@@ -41,14 +41,17 @@ namespace QuantLib {
         typedef FdmLinearOp::array_type array_type;
         typedef BoundaryCondition<FdmLinearOp>::Side Side;
 
-        FdmDirichletBoundary(const boost::shared_ptr<FdmLinearOpLayout> & layout,
-                             Real value, Size direction, Side side);
+        FdmDirichletBoundary(const boost::shared_ptr<FdmLinearOpLayout>& layout,
+                             Real value,
+                             Size direction,
+                             Side side);
 
-        void applyBeforeApplying(operator_type&) const;
+        void applyBeforeApplying(operator_type&) const {}
         void applyAfterApplying(array_type&) const;
-        void applyBeforeSolving(operator_type&, array_type&) const;
+        void applyBeforeSolving(operator_type&,
+                                array_type&) const {}
         void applyAfterSolving(array_type&) const;
-        void setTime(Time);
+        void setTime(Time) {}
 
       private:
         const Real value_;
@@ -59,6 +62,11 @@ namespace QuantLib {
     
     typedef std::vector<boost::shared_ptr<FdmDirichletBoundary> >
         FdmBoundaryConditionSet;
+
+    inline void FdmDirichletBoundary::applyAfterSolving(Array& rhs) const {
+        this->applyAfterApplying(rhs);
+    }
+
 }
 
 #endif

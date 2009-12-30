@@ -127,6 +127,8 @@ namespace QuantLib {
     }
 
     inline Natural TermStructure::settlementDays() const {
+        QL_REQUIRE(settlementDays_!=Null<Natural>(),
+                   "settlement days not provided for this instance");
         return settlementDays_;
     }
 

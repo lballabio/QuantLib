@@ -30,7 +30,7 @@
 
 namespace QuantLib {
 
-    //! Normal distribution function
+    //! Poisson distribution function
     /*! Given an integer \f$ k \f$, it returns its probability
         in a Poisson distribution.
 

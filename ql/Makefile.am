@@ -75,7 +75,7 @@ libQuantLib_la_SOURCES = \
 	timegrid.cpp
 
 lib_LTLIBRARIES = libQuantLib.la
-libQuantLib_la_LDFLAGS = -release $(PACKAGE_VERSION)
+libQuantLib_la_LDFLAGS = -version-info 0:0:0
 
 libQuantLib_la_LIBADD = \
     cashflows/libCashFlows.la \
@@ -135,12 +135,4 @@ install-data-hook:
 	rm .config.hpp
 depend:
 	makedepend $(INCLUDES) -- $(CFLAGS) -- $(SOURCES)
-
-if ENABLE_STATIC
-
-install-exec-hook:
-	mv $(DESTDIR)$(libdir)/libQuantLib.a $(DESTDIR)$(libdir)/libQuantLib-$(PACKAGE_VERSION).a
-	cd $(DESTDIR)$(libdir) && $(LN_S) libQuantLib-$(PACKAGE_VERSION).a libQuantLib.a
-endif
-
 

@@ -67,7 +67,6 @@ namespace QuantLib {
                         const Handle<Quote>& creditSpread,
                         const Date& issueDate,
                         Natural settlementDays,
-                        const DayCounter& dayCounter,
                         const Schedule& schedule,
                         Real redemption);
         void performCalculations() const;

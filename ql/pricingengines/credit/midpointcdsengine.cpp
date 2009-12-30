@@ -126,6 +126,7 @@ namespace QuantLib {
             }
         }
 
+        Real upfrontSign = 1.0;
         switch (arguments_.side) {
           case Protection::Seller:
             results_.defaultLegNPV *= -1.0;
@@ -133,6 +134,7 @@ namespace QuantLib {
           case Protection::Buyer:
             results_.couponLegNPV *= -1.0;
             results_.upfrontNPV   *= -1.0;
+            upfrontSign = -1.0;
             break;
           default:
             QL_FAIL("unknown protection side");
@@ -149,10 +151,11 @@ namespace QuantLib {
             results_.fairSpread = Null<Rate>();
         }
 
-        if (results_.upfrontNPV != 0.0) {
+        Real upfrontSensitivity = upfPVO1 * arguments_.notional;
+        if (upfrontSensitivity != 0.0) {
             results_.fairUpfront =
-                -(results_.defaultLegNPV + results_.couponLegNPV)
-                * (*arguments_.upfront) / results_.upfrontNPV;
+                -upfrontSign*(results_.defaultLegNPV + results_.couponLegNPV)
+                / upfrontSensitivity;
         } else {
             results_.fairUpfront = Null<Rate>();
         }

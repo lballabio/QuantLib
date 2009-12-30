@@ -19,6 +19,7 @@
 
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/utilities/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -72,18 +73,22 @@ namespace QuantLib {
             Settings::instance().includeReferenceDateCashFlows();
 
         for (Size i=0; i<arguments_.legs.size(); ++i) {
-            results_.legNPV[i] =
-                arguments_.payer[i] * CashFlows::npv(arguments_.legs[i],
-                                                     **discountCurve_,
-                                                     includeRefDateFlows,
-                                                     settlementDate,
-                                                     results_.valuationDate);
-            results_.legBPS[i] =
-                arguments_.payer[i] * CashFlows::bps(arguments_.legs[i],
-                                                     **discountCurve_,
-                                                     includeRefDateFlows,
-                                                     settlementDate,
-                                                     results_.valuationDate);
+            try {
+                results_.legNPV[i] = arguments_.payer[i] *
+                    CashFlows::npv(arguments_.legs[i],
+                                   **discountCurve_,
+                                   includeRefDateFlows,
+                                   settlementDate,
+                                   results_.valuationDate);
+                results_.legBPS[i] = arguments_.payer[i] *
+                    CashFlows::bps(arguments_.legs[i],
+                                   **discountCurve_,
+                                   includeRefDateFlows,
+                                   settlementDate,
+                                   results_.valuationDate);
+            } catch (std::exception &e) {
+                QL_FAIL(io::ordinal(i+1) << " leg: " << e.what());
+            }
             results_.value += results_.legNPV[i];
             try {
                 Date d = CashFlows::startDate(arguments_.legs[i]);

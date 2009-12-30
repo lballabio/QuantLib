@@ -55,7 +55,7 @@ namespace QuantLib
         Real toleranceUnperiodic,
         Size maxPeriodIterations,
         Real periodTolerance,
-        Real& deformationSize,
+        Real& , // deformationSize used to return information, not set yet
         Real& totalSwaptionError, // ?
         std::vector<Matrix>& swapCovariancePseudoRoots,  // the thing we really want the pseudo root for each time step
         std::vector<Real> & finalScales,  //scalings used for matching

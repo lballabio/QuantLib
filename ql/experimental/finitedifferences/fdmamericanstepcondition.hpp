@@ -38,7 +38,8 @@ namespace QuantLib {
             const boost::shared_ptr<FdmMesher> & mesher,
             const boost::shared_ptr<FdmInnerValueCalculator> & calculator);
 
-        void applyTo(Array& a, Time) const;
+        void applyTo(Array& a,
+                     Time) const;
 
       private:
         const boost::shared_ptr<FdmMesher> mesher_;

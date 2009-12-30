@@ -81,8 +81,8 @@ namespace QuantLib {
                        Real priceToMatch);
             Real operator()(Volatility guess) const;
           protected:
-            Rate K_;
             Real slope_;
+            Rate K_;
             Frequency frequency_;
             bool indexIsInterpolated_;
             std::vector<Time> tvec_;
@@ -103,14 +103,15 @@ namespace QuantLib {
     InterpolatedYoYOptionletStripper<Interpolator1D>::
     ObjectiveFunction::ObjectiveFunction(
                    YoYInflationCapFloor::Type type,
-                   Real slope, Rate K,
+                   Real slope,
+                   Rate K,
                    Period &lag,
                    Natural fixingDays,
                    boost::shared_ptr<YoYInflationIndex> anIndex,
                    const boost::shared_ptr<YoYCapFloorTermPriceSurface> &surf,
                    const boost::shared_ptr<YoYInflationCapFloorEngine> &p,
                    Real priceToMatch)
-    : K_(K), slope_(slope), frequency_(anIndex->frequency()),
+    : slope_(slope), K_(K), frequency_(anIndex->frequency()),
       indexIsInterpolated_(anIndex->interpolated()),
       capfloor_(MakeYoYInflationCapFloor(type,
             (Size)std::floor(0.5+surf->timeFromReference(surf->minMaturity())),

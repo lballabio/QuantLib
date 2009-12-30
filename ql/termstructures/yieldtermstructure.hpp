@@ -146,49 +146,6 @@ namespace QuantLib {
                                  bool extrapolate = false) const;
         //@}
 
-        /*! \name Par rates
-
-            These methods returns the implied par rate for a given
-            sequence of payments at the given dates or times.  In the
-            former case, times are calculated as fractions of year
-            from the reference date.
-
-            \warning though somewhat related to a swap rate, this
-                     method is not to be used for the fair rate of a
-                     real swap, since it does not take into account
-                     all the market conventions' details. The correct
-                     way to evaluate such rate is to instantiate a
-                     SimpleSwap with the correct conventions, pass it
-                     the term structure and call the swap's fairRate()
-                     method.
-        */
-        //@{
-        Rate parRate(Natural tenor,
-                     const Date& startDate,
-                     const DayCounter& resultDayCounter,
-                     Frequency freq = Annual,
-                     bool extrapolate = false) const;
-
-        /*! the first date in the vector must equal the start date;
-            the following dates must equal the par rate payment dates.
-        */
-        Rate parRate(const std::vector<Date>& dates,
-                     const DayCounter& resultDayCounter,
-                     Frequency freq = Annual,
-                     bool extrapolate = false) const;
-
-        /*! the first time in the vector must equal the start time;
-            the following times must equal the par rate payment times.
-
-            The resulting interest rate has the same day-counting rule
-            used by the term structure. The same rule should be used
-            for calculating the passed times t1 and t2.
-        */
-        Rate parRate(const std::vector<Time>& times,
-                     Frequency freq = Annual,
-                     bool extrapolate = false) const;
-        //@}
-
         //! \name Jump inspectors
         //@{
         const std::vector<Date>& jumpDates() const;

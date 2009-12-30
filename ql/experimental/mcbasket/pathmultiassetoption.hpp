@@ -37,7 +37,7 @@ namespace QuantLib {
         PathMultiAssetOption(const boost::shared_ptr<PricingEngine>& engine
                                         = boost::shared_ptr<PricingEngine>());
 
-	virtual ~PathMultiAssetOption() {}
+        virtual ~PathMultiAssetOption() {}
 
         //! \name Instrument interface
         //@{

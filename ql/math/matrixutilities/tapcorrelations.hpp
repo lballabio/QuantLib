@@ -87,8 +87,7 @@ namespace QuantLib {
     // the same function with parameters packed in an Array
     Disposable<Matrix>
     triangularAnglesParametrizationRankThreeVectorial(const Array& paramters,
-                                                      Size nbRows,
-                                                      Size rank);
+                                                      Size nbRows);
 
     // Cost function associated with Frobenius norm.
     // <http://en.wikipedia.org/wiki/Matrix_norm>
@@ -96,9 +95,11 @@ namespace QuantLib {
       public:
         FrobeniusCostFunction(
             const Matrix& target,
-            const boost::function<Disposable<Matrix>(const Array&, Size, Size)>& f,
-            Size matrixSize,
-            Size rank)
+            const boost::function<Disposable<Matrix>(const Array&,
+                                                     Size,
+                                                     Size)>& f,
+                                                     Size matrixSize,
+                                                     Size rank)
         : target_(target), f_(f), matrixSize_(matrixSize), rank_(rank) {}
         Real value (const Array &x) const;
         Disposable<Array> values (const Array &x) const;

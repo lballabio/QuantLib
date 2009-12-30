@@ -123,11 +123,11 @@ namespace QuantLib {
         Real principalInNumerairePortfolio = 1.0;
 
         if (storeRates)
-			constraintsActive_ =false;
-//            std::fill(constraintsActive_.begin(),
-  //                    constraintsActive_.end(),
-    //                  false);
-      //  }
+            constraintsActive_ =false;
+        //            std::fill(constraintsActive_.begin(),
+        //                    constraintsActive_.end(),
+        //                  false);
+        //  }
 
         bool done = false;
         do {

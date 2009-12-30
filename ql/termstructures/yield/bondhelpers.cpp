@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Ferdinando Ametrano
+ Copyright (C) 2008, 2009 Ferdinando Ametrano
  Copyright (C) 2005 Toyin Akin
  Copyright (C) 2007 StatPro Italia srl
 
@@ -32,7 +32,7 @@ namespace QuantLib {
 
     BondHelper::BondHelper(const Handle<Quote>& cleanPrice,
                            const boost::shared_ptr<Bond>& bond)
-    : RateHelper(cleanPrice), bond_(bond) {
+    : RateHelper(cleanPrice), bond_(new Bond(*bond)) {
 
         // the bond's last cashflow date, which can be later than
         // bond's maturity date because of adjustment
@@ -51,10 +51,6 @@ namespace QuantLib {
                  boost::shared_ptr<YieldTermStructure>(t,no_deletion), false);
 
         BootstrapHelper<YieldTermStructure>::setTermStructure(t);
-    }
-
-    boost::shared_ptr<Bond> BondHelper::bond() const {
-        return bond_;
     }
 
     Real BondHelper::impliedQuote() const {
@@ -87,11 +83,10 @@ namespace QuantLib {
         FixedRateBond(settlementDays, faceAmount, schedule,
                       coupons, dayCounter, paymentConvention,
                       redemption, issueDate))) {
-        fixedRateBond_ = boost::dynamic_pointer_cast<FixedRateBond>(bond_);
-    }
-
-    boost::shared_ptr<FixedRateBond> FixedRateBondHelper::fixedRateBond() const {
-        return fixedRateBond_;
+        fixedRateBond_ = boost::shared_ptr<FixedRateBond>(new
+            FixedRateBond(settlementDays, faceAmount, schedule,
+                          coupons, dayCounter, paymentConvention,
+                          redemption, issueDate));
     }
 
     void FixedRateBondHelper::accept(AcyclicVisitor& v) {

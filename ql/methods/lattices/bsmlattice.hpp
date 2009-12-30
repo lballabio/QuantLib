@@ -40,8 +40,11 @@ namespace QuantLib {
                             Time end,
                             Size steps);
 
+        Rate riskFreeRate() const { return riskFreeRate_; }
+        Time dt() const { return dt_; }
         Size size(Size i) const { return tree_->size(i); }
-        DiscountFactor discount(Size, Size) const { return discount_; }
+        DiscountFactor discount(Size,
+                                Size) const { return discount_; }
 
         void stepback(Size i, const Array& values, Array& newValues) const;
 
@@ -54,8 +57,10 @@ namespace QuantLib {
         Real probability(Size i, Size index, Size branch) const {
             return tree_->probability(i, index, branch);
         }
-      private:
+      protected:
         boost::shared_ptr<T> tree_;
+        Rate riskFreeRate_;
+        Time dt_;
         DiscountFactor discount_;
         Real pd_, pu_;
     };
@@ -65,12 +70,15 @@ namespace QuantLib {
 
     template <class T>
     BlackScholesLattice<T>::BlackScholesLattice(
-                              const boost::shared_ptr<T>& tree,
-                              Rate riskFreeRate, Time end, Size steps)
+                                            const boost::shared_ptr<T>& tree,
+                                            Rate riskFreeRate,
+                                            Time end,
+                                            Size steps)
     : TreeLattice1D<BlackScholesLattice<T> >(TimeGrid(end, steps), 2),
-      tree_(tree), discount_(std::exp(-riskFreeRate*(end/steps))) {
-        pd_ = tree->probability(0,0,0);
-        pu_ = tree->probability(0,0,1);
+      tree_(tree), riskFreeRate_(riskFreeRate), dt_(end/steps),
+      discount_(std::exp(-riskFreeRate*(dt_))) {
+        pd_ = tree->probability(0, 0, 0);
+        pu_ = tree->probability(0, 0, 1);
     }
 
     template <class T>

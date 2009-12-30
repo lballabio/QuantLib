@@ -86,6 +86,18 @@ namespace QuantLib {
         boost::shared_ptr<FixedRateBond> fixedRateBond_;
     };
 
+
+    // inline
+
+    inline boost::shared_ptr<Bond> BondHelper::bond() const {
+        return bond_;
+    }
+
+    inline boost::shared_ptr<FixedRateBond>
+    FixedRateBondHelper::fixedRateBond() const {
+        return fixedRateBond_;
+    }
+
 }
 
 #endif

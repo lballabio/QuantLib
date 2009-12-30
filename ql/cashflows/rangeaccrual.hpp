@@ -122,13 +122,13 @@ namespace QuantLib {
 
     };
 
-    class RangeAccrualPricerByBgm: public RangeAccrualPricer {
+    class RangeAccrualPricerByBgm : public RangeAccrualPricer {
 
      public:
         RangeAccrualPricerByBgm(
             Real correlation,
-            const  boost::shared_ptr<SmileSection>& smilesOnExpiry,
-            const  boost::shared_ptr<SmileSection>& smilesOnPayment,
+            const boost::shared_ptr<SmileSection>& smilesOnExpiry,
+            const boost::shared_ptr<SmileSection>& smilesOnPayment,
             bool withSmile,
             bool byCallSpread);
         //! \name Observer interface
@@ -145,8 +145,8 @@ namespace QuantLib {
                                 Real correlation) const;
 
         Real lambda(Real U, Real lambdaS, Real lambdaT) const;
-        Real derLambdaDerLambdaS(Real U, Real lambdaS, Real lambdaT) const;
-        Real derLambdaDerLambdaT(Real U, Real lambdaS, Real lambdaT) const;
+        Real derLambdaDerLambdaS(Real U) const;
+        Real derLambdaDerLambdaT(Real U) const;
 
         std::vector<Real> driftsOverPeriod(Real U, Real lambdaS, Real lambdaT,
                                            Real correlation) const;

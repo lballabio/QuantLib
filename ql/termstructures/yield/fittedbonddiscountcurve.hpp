@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2009 Ferdinando Ametrano
  Copyright (C) 2007 Allen Kuo
 
  This file is part of QuantLib, a free-software/open-source library
@@ -28,7 +29,6 @@
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/math/array.hpp>
 #include <ql/utilities/clone.hpp>
-#include <vector>
 
 namespace QuantLib {
 
@@ -198,7 +198,7 @@ namespace QuantLib {
         /*! user-defined discount curve, as a function of time and an
             array of unknown fitting coefficients \f$ x_i \f$.
         */
-        virtual DiscountFactor discountFunction(const Array &x,
+        virtual DiscountFactor discountFunction(const Array& x,
                                                 Time t) const = 0;
 
         //! constrains discount function to unity at \f$ T=0 \f$, if true
@@ -225,6 +225,52 @@ namespace QuantLib {
         // final value for the minimized cost function
         Real costValue_;
     };
+
+    // inline
+
+    inline Size FittedBondDiscountCurve::numberOfBonds() const {
+        return instruments_.size();
+    }
+
+    inline Date FittedBondDiscountCurve::maxDate() const {
+        calculate();
+        return maxDate_;
+    }
+
+    inline const FittedBondDiscountCurve::FittingMethod&
+    FittedBondDiscountCurve::fitResults() const {
+        calculate();
+        return *fittingMethod_;
+    }
+
+    inline void FittedBondDiscountCurve::update() {
+        TermStructure::update();
+        LazyObject::update();
+    }
+
+    inline void FittedBondDiscountCurve::setup() {
+        for (Size i=0; i<instruments_.size(); ++i)
+            registerWith(instruments_[i]);
+    }
+
+    inline DiscountFactor FittedBondDiscountCurve::discountImpl(Time t) const {
+        calculate();
+        return fittingMethod_->discountFunction(fittingMethod_->solution_, t);
+    }
+
+    inline Integer
+    FittedBondDiscountCurve::FittingMethod::numberOfIterations() const {
+        return numberOfIterations_;
+    }
+
+    inline
+    Real FittedBondDiscountCurve::FittingMethod::minimumCostValue() const {
+        return costValue_;
+    }
+
+    inline Array FittedBondDiscountCurve::FittingMethod::solution() const {
+        return solution_;
+    }
 
 }
 

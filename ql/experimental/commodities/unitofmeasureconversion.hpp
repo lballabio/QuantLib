@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2008 J. Erik Radmall
+ Copyright (C) 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -47,11 +48,7 @@ namespace QuantLib {
         UnitOfMeasureConversion(const CommodityType& commodityType,
                                 const UnitOfMeasure& source,
                                 const UnitOfMeasure& target,
-                                Real conversionFactor,
-                                Type type = Direct);
-
-        UnitOfMeasureConversion(const UnitOfMeasureConversion& r1,
-                                const UnitOfMeasureConversion& r2);
+                                Real conversionFactor);
         //@}
 
         //! \name Inspectors
@@ -72,13 +69,16 @@ namespace QuantLib {
 
         //! \name Utility methods
         //@{
-        //! apply the exchange conversionFactor to a cash amount
+        //! apply the conversion factor to a cash amount
         Quantity convert(const Quantity& quantity) const;
-        //! chain two exchange conversionFactors
+        //! chain two conversion factors
         static UnitOfMeasureConversion chain(const UnitOfMeasureConversion& r1,
                                              const UnitOfMeasureConversion& r2);
         //@}
       protected:
+        UnitOfMeasureConversion(const UnitOfMeasureConversion& r1,
+                                const UnitOfMeasureConversion& r2);
+
         struct Data;
         boost::shared_ptr<Data> data_;
 
@@ -93,16 +93,14 @@ namespace QuantLib {
             conversionFactorChain;
 
             Data(const CommodityType& commodityType,
-                 const UnitOfMeasure& source, const UnitOfMeasure& target,
-                 Real conversionFactor, Type type);
+                 const UnitOfMeasure& source,
+                 const UnitOfMeasure& target,
+                 Real conversionFactor,
+                 Type type);
 
             Data(const UnitOfMeasureConversion& r1,
                  const UnitOfMeasureConversion& r2);
         };
-
-        static std::map<std::string,
-                        boost::shared_ptr<UnitOfMeasureConversion::Data> >
-        unitOfMeasureConversions_;
     };
 
     // inline definitions
@@ -134,6 +132,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

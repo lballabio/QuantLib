@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2003, 2004, 2009 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -97,8 +97,7 @@ namespace QuantLib {
         /*! \pre covarianceMatrix must be symmetric */
         CovarianceDecomposition(
             const Matrix& covarianceMatrix,
-            Real tolerance = 1.0e-12,
-            SalvagingAlgorithm::Type sa = SalvagingAlgorithm::None);
+            Real tolerance = 1.0e-12);
         /*! returns the variances Array */
         const Array& variances() const { return variances_; }
         /*! returns the standard deviations Array */

@@ -7,6 +7,5 @@
 #include <ql/methods/lattices/lattice1d.hpp>
 #include <ql/methods/lattices/lattice2d.hpp>
 #include <ql/methods/lattices/tree.hpp>
-#include <ql/methods/lattices/tflattice.hpp>
 #include <ql/methods/lattices/trinomialtree.hpp>
 

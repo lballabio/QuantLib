@@ -354,7 +354,7 @@ namespace QuantLib {
                           bool betaIsFixed,
                           bool nuIsFixed,
                           bool rhoIsFixed,
-                          bool vegaWeighted = false,
+                          bool vegaWeighted = true,
                           const boost::shared_ptr<EndCriteria>& endCriteria
                                   = boost::shared_ptr<EndCriteria>(),
                           const boost::shared_ptr<OptimizationMethod>& optMethod

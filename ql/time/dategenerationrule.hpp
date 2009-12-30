@@ -56,9 +56,11 @@ namespace QuantLib {
                                  taken to be the twentieth of an IMM
                                  month (used for CDS schedules.)  The
                                  termination date is also modified. */
-            OldCDS          /*!< Same as TwentiethIMM with unrestricted date
+            OldCDS,         /*!< Same as TwentiethIMM with unrestricted date
                                  ends and log/short stub coupon period (old
                                  CDS convention). */
+            CDS             /*!< Credit derivatives standard rule since 'Big
+                                 Bang' changes in 2009.  */
         };
     };
 

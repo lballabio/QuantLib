@@ -58,10 +58,10 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
                 EvolutionDescription description(rateTimes1, exerciseTimes);
                 Matrix amounts(products, exerciseTimes.size(), 0.0);
 
-                rebate_ = MarketModelPathwiseCashRebate(description, 
-                                                                                                                  exerciseTimes,
-                                                                                                                  amounts, 
-                                                                                                                  products);
+                rebate_ = MarketModelPathwiseCashRebate(description,
+                                                        exerciseTimes,
+                                                        amounts,
+                                                        products);
             }
 
             std::vector<Time> mergedEvolutionTimes;

@@ -167,6 +167,7 @@ namespace QuantLib {
     DepositRateHelper::DepositRateHelper(const Handle<Quote>& rate,
                                          const shared_ptr<IborIndex>& i)
     : RelativeDateRateHelper(rate) {
+        // do not use clone, as we do not want to take fixing into account
         iborIndex_ = shared_ptr<IborIndex>(new
             IborIndex("no-fix", // never take fixing into account
                       i->tenor(), i->fixingDays(), Currency(),
@@ -178,6 +179,7 @@ namespace QuantLib {
     DepositRateHelper::DepositRateHelper(Rate rate,
                                          const shared_ptr<IborIndex>& i)
     : RelativeDateRateHelper(rate) {
+        // do not use clone, as we do not want to take fixing into account
         iborIndex_ = shared_ptr<IborIndex>(new
             IborIndex("no-fix", // never take fixing into account
                       i->tenor(), i->fixingDays(), Currency(),
@@ -226,9 +228,13 @@ namespace QuantLib {
                                  const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate), periodToStart_(monthsToStart*Months) {
         QL_REQUIRE(monthsToEnd>monthsToStart,
-                   "monthsToEnd must be grater than monthsToStart");
+                   "monthsToEnd (" << monthsToEnd <<
+                   ") must be grater than monthsToStart (" << monthsToStart <<
+                   ")");
+        // no way to take fixing into account,
+        // even if we would like to for FRA over today
         iborIndex_ = shared_ptr<IborIndex>(new
-            IborIndex("no-fix", // never take fixing into account
+            IborIndex("no-fix", // correct family name would be needed
                       (monthsToEnd-monthsToStart)*Months,
                       fixingDays,
                       Currency(), calendar, convention,
@@ -246,9 +252,13 @@ namespace QuantLib {
                                  const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate),periodToStart_(monthsToStart*Months) {
         QL_REQUIRE(monthsToEnd>monthsToStart,
-                   "monthsToEnd must be grater than monthsToStart");
+                   "monthsToEnd (" << monthsToEnd <<
+                   ") must be grater than monthsToStart (" << monthsToStart <<
+                   ")");
+        // no way to take fixing into account,
+        // even if we would like to for FRA over today
         iborIndex_ = shared_ptr<IborIndex>(new
-            IborIndex("no-fix", // never take fixing into account
+            IborIndex("no-fix", // correct family name would be needed
                       (monthsToEnd-monthsToStart)*Months,
                       fixingDays,
                       Currency(), calendar, convention,
@@ -260,11 +270,13 @@ namespace QuantLib {
                                  Natural monthsToStart,
                                  const shared_ptr<IborIndex>& i)
     : RelativeDateRateHelper(rate), periodToStart_(monthsToStart*Months) {
-        iborIndex_ = shared_ptr<IborIndex>(new
-            IborIndex("no-fix", // never take fixing into account
-                      i->tenor(), i->fixingDays(), Currency(),
-                      i->fixingCalendar(), i->businessDayConvention(),
-                      i->endOfMonth(), i->dayCounter(), termStructureHandle_));
+        // take fixing into account
+        iborIndex_ = i->clone(termStructureHandle_);
+        // We want to be notified of changes of fixings, but we don't
+        // want notifications from termStructureHandle_ (they would
+        // interfere with bootstrapping.)
+        iborIndex_->unregisterWith(termStructureHandle_);
+        registerWith(iborIndex_);
         initializeDates();
     }
 
@@ -272,11 +284,11 @@ namespace QuantLib {
                                  Natural monthsToStart,
                                  const shared_ptr<IborIndex>& i)
     : RelativeDateRateHelper(rate), periodToStart_(monthsToStart*Months) {
-        iborIndex_ = shared_ptr<IborIndex>(new
-            IborIndex("no-fix", // never take fixing into account
-                      i->tenor(), i->fixingDays(), Currency(),
-                      i->fixingCalendar(), i->businessDayConvention(),
-                      i->endOfMonth(), i->dayCounter(), termStructureHandle_));
+        // take fixing into account
+        iborIndex_ = i->clone(termStructureHandle_);
+        // see above
+        iborIndex_->unregisterWith(termStructureHandle_);
+        registerWith(iborIndex_);
         initializeDates();
     }
 
@@ -289,8 +301,10 @@ namespace QuantLib {
                                  bool endOfMonth,
                                  const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate), periodToStart_(periodToStart) {
+        // no way to take fixing into account,
+        // even if we would like to for FRA over today
         iborIndex_ = shared_ptr<IborIndex>(new
-            IborIndex("no-fix", // never take fixing into account
+            IborIndex("no-fix", // correct family name would be needed
                       lengthInMonths*Months,
                       fixingDays,
                       Currency(), calendar, convention,
@@ -307,8 +321,10 @@ namespace QuantLib {
                                  bool endOfMonth,
                                  const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate),periodToStart_(periodToStart) {
+        // no way to take fixing into account,
+        // even if we would like to for FRA over today
         iborIndex_ = shared_ptr<IborIndex>(new
-            IborIndex("no-fix", // never take fixing into account
+            IborIndex("no-fix", // correct family name would be needed
                       lengthInMonths*Months,
                       fixingDays,
                       Currency(), calendar, convention,
@@ -320,11 +336,11 @@ namespace QuantLib {
                                  Period periodToStart,
                                  const shared_ptr<IborIndex>& i)
     : RelativeDateRateHelper(rate), periodToStart_(periodToStart) {
-        iborIndex_ = shared_ptr<IborIndex>(new
-            IborIndex("no-fix", // never take fixing into account
-                      i->tenor(), i->fixingDays(), Currency(),
-                      i->fixingCalendar(), i->businessDayConvention(),
-                      i->endOfMonth(), i->dayCounter(), termStructureHandle_));
+        // take fixing into account
+        iborIndex_ = i->clone(termStructureHandle_);
+        // see above
+        iborIndex_->unregisterWith(termStructureHandle_);
+        registerWith(iborIndex_);
         initializeDates();
     }
 
@@ -332,11 +348,11 @@ namespace QuantLib {
                                  Period periodToStart,
                                  const shared_ptr<IborIndex>& i)
     : RelativeDateRateHelper(rate), periodToStart_(periodToStart) {
-        iborIndex_ = shared_ptr<IborIndex>(new
-            IborIndex("no-fix", // never take fixing into account
-                      i->tenor(), i->fixingDays(), Currency(),
-                      i->fixingCalendar(), i->businessDayConvention(),
-                      i->endOfMonth(), i->dayCounter(), termStructureHandle_));
+        // take fixing into account
+        iborIndex_ = i->clone(termStructureHandle_);
+        // see above
+        iborIndex_->unregisterWith(termStructureHandle_);
+        registerWith(iborIndex_);
         initializeDates();
     }
 
@@ -385,8 +401,14 @@ namespace QuantLib {
       fixedConvention_(swapIndex->fixedLegConvention()),
       fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
       fixedDayCount_(swapIndex->dayCounter()),
-      iborIndex_(swapIndex->iborIndex()), spread_(spread),
+      spread_(spread),
       fwdStart_(fwdStart), discountHandle_(discount) {
+        // take fixing into account
+        iborIndex_ = swapIndex->iborIndex()->clone(termStructureHandle_);
+        // We want to be notified of changes of fixings, but we don't
+        // want notifications from termStructureHandle_ (they would
+        // interfere with bootstrapping.)
+        iborIndex_->unregisterWith(termStructureHandle_);
         registerWith(iborIndex_);
         registerWith(spread_);
         registerWith(discountHandle_);
@@ -408,8 +430,12 @@ namespace QuantLib {
       fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
-      iborIndex_(iborIndex), spread_(spread),
+      spread_(spread),
       fwdStart_(fwdStart), discountHandle_(discount) {
+        // take fixing into account
+        iborIndex_ = iborIndex->clone(termStructureHandle_);
+        // see above
+        iborIndex_->unregisterWith(termStructureHandle_);
         registerWith(iborIndex_);
         registerWith(spread_);
         registerWith(discountHandle_);
@@ -431,8 +457,12 @@ namespace QuantLib {
       fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
-      iborIndex_(iborIndex), spread_(spread),
+      spread_(spread),
       fwdStart_(fwdStart), discountHandle_(discount) {
+        // take fixing into account
+        iborIndex_ = iborIndex->clone(termStructureHandle_);
+        // see above
+        iborIndex_->unregisterWith(termStructureHandle_);
         registerWith(iborIndex_);
         registerWith(spread_);
         registerWith(discountHandle_);
@@ -449,8 +479,12 @@ namespace QuantLib {
       fixedConvention_(swapIndex->fixedLegConvention()),
       fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
       fixedDayCount_(swapIndex->dayCounter()),
-      iborIndex_(swapIndex->iborIndex()), spread_(spread),
+      spread_(spread),
       fwdStart_(fwdStart), discountHandle_(discount) {
+        // take fixing into account
+        iborIndex_ = swapIndex->iborIndex()->clone(termStructureHandle_);
+        // see above
+        iborIndex_->unregisterWith(termStructureHandle_);
         registerWith(iborIndex_);
         registerWith(spread_);
         registerWith(discountHandle_);
@@ -459,15 +493,11 @@ namespace QuantLib {
 
     void SwapRateHelper::initializeDates() {
 
-        // dummy ibor index with curve/swap arguments
-        boost::shared_ptr<IborIndex> clonedIborIndex =
-            iborIndex_->clone(termStructureHandle_);
-
         // 1. do not pass the spread here, as it might be a Quote
         //    i.e. it can dinamically change
         // 2. input discount curve Handle might be empty now but it could
         //    be assigned a curve later; use a RelinkableHandle here
-        swap_ = MakeVanillaSwap(tenor_, clonedIborIndex, 0.0, fwdStart_)
+        swap_ = MakeVanillaSwap(tenor_, iborIndex_, 0.0, fwdStart_)
             .withDiscountingTermStructure(discountRelinkableHandle_)
             .withFixedLegDayCount(fixedDayCount_)
             .withFixedLegTenor(Period(fixedFrequency_))

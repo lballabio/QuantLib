@@ -113,10 +113,12 @@ namespace QuantLib {
             return c->hazardRate(d, true);
         }
         // possible constraints based on previous values
-        static Real minValueAfter(Size, const std::vector<Real>&) {
+        static Real minValueAfter(Size,
+                                  const std::vector<Real>&) {
             return QL_EPSILON;
         }
-        static Real maxValueAfter(Size, const std::vector<Real>& data) {
+        static Real maxValueAfter(Size,
+                                  const std::vector<Real>&) {
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.
             return 200.0;
@@ -160,10 +162,12 @@ namespace QuantLib {
             return c->defaultDensity(d, true);
         }
         // possible constraints based on previous values
-        static Real minValueAfter(Size, const std::vector<Real>&) {
+        static Real minValueAfter(Size,
+                                  const std::vector<Real>&) {
             return QL_EPSILON;
         }
-        static Real maxValueAfter(Size, const std::vector<Real>& data) {
+        static Real maxValueAfter(Size,
+                                  const std::vector<Real>&) {
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.
             return 3.0;

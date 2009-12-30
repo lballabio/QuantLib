@@ -23,12 +23,10 @@ this_include_HEADERS = \
     dividendschedule.hpp \
     dividendvanillaoption.hpp \
     europeanoption.hpp \
-    everestoption.hpp \
     fixedratebondforward.hpp \
     forward.hpp \
     forwardrateagreement.hpp \
     forwardvanillaoption.hpp \
-    himalayaoption.hpp \
     impliedvolatility.hpp \
     inflationcapfloor.hpp \
     lookbackoption.hpp \
@@ -41,7 +39,6 @@ this_include_HEADERS = \
     multiassetoption.hpp \
     oneassetoption.hpp \
     overnightindexedswap.hpp \
-    pagodaoption.hpp \
     payoffs.hpp \
     quantobarrieroption.hpp \
     quantoforwardvanillaoption.hpp \
@@ -72,12 +69,10 @@ libInstruments_la_SOURCES = \
     creditdefaultswap.cpp \
     dividendvanillaoption.cpp \
     europeanoption.cpp \
-    everestoption.cpp \
     fixedratebondforward.cpp \
     forward.cpp \
     forwardrateagreement.cpp \
     forwardvanillaoption.cpp \
-    himalayaoption.cpp \
     impliedvolatility.cpp \
     inflationcapfloor.cpp \
     lookbackoption.cpp \
@@ -90,7 +85,6 @@ libInstruments_la_SOURCES = \
     multiassetoption.cpp \
     oneassetoption.cpp \
     overnightindexedswap.cpp \
-    pagodaoption.cpp \
     payoffs.cpp \
     quantobarrieroption.cpp \
     quantoforwardvanillaoption.cpp \

@@ -68,6 +68,7 @@ namespace QuantLib {
             data_ = c.data_;
             interpolator_ = c.interpolator_;
             setupInterpolation();
+            return *this;
         }
         //@}
 

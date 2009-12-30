@@ -25,8 +25,10 @@
 namespace QuantLib {
 
     FdmDirichletBoundary::FdmDirichletBoundary(
-        const boost::shared_ptr<FdmLinearOpLayout> & layout,
-        Real value, Size direction, FdmDirichletBoundary::Side side)
+                            const boost::shared_ptr<FdmLinearOpLayout>& layout,
+                            Real value,
+                            Size direction,
+                            FdmDirichletBoundary::Side side)
     : value_(value),
       layout_(layout) {
 
@@ -50,9 +52,6 @@ namespace QuantLib {
         }
     }
 
-    void FdmDirichletBoundary::applyBeforeApplying(FdmLinearOp&) const {
-    }
-
     void FdmDirichletBoundary::applyAfterApplying(Array& rhs) const {
         for (std::vector<Size>::const_iterator iter = indicies_.begin();
              iter != indicies_.end(); ++iter) {
@@ -60,14 +59,4 @@ namespace QuantLib {
         }
     }
 
-    void FdmDirichletBoundary::applyBeforeSolving(FdmLinearOp&,
-                                                  Array&) const {
-    }
-
-    void FdmDirichletBoundary::applyAfterSolving(Array& rhs) const {
-        this->applyAfterApplying(rhs);
-    }
-
-    void FdmDirichletBoundary::setTime(Time) {
-    }
 }

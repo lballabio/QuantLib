@@ -32,9 +32,9 @@ namespace QuantLib {
            lineSearch_ = boost::shared_ptr<LineSearch>(new ArmijoLineSearch);
     }
 
-    EndCriteria::Type LineSearchBasedMethod::minimize(
-                                             Problem &P,
-                                             const EndCriteria& endCriteria) {
+    EndCriteria::Type
+    LineSearchBasedMethod::minimize(Problem& P,
+                                    const EndCriteria& endCriteria) {
         // Initializations
         Real ftol = endCriteria.functionEpsilon();
         Size maxStationaryStateIterations_
@@ -86,7 +86,7 @@ namespace QuantLib {
                 P.setGradientNormValue(lineSearch_->lastGradientNorm2());
 
                 // conjugate gradient search direction
-                direction = getUpdatedDirection(P, fold, gold2, prevGradient);
+                direction = getUpdatedDirection(P, gold2, prevGradient);
 
                 sddiff = direction - lineSearch_->searchDirection();
                 normdiff = std::sqrt(DotProduct(sddiff, sddiff));

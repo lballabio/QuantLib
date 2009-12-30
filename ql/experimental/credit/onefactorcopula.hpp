@@ -144,7 +144,8 @@ namespace QuantLib {
             \hat p(m) = F_Z \left( \frac{F_Y^{-1}(p)-a\,m}{\sqrt{1-a^2}}\right)
             \f]
         */
-        Real conditionalProbability(Real prob, Real m) const;
+        Real conditionalProbability(Real prob,
+                                    Real m) const;
 
         //! Vector of conditional probabilities
         /*! \f[
@@ -152,8 +153,8 @@ namespace QuantLib {
             \right)
             \f]
         */
-        std::vector<Real> conditionalProbability(
-                                 const std::vector<Real>& prob, Real m) const;
+        std::vector<Real> conditionalProbability(const std::vector<Real>& prob,
+                                                 Real m) const;
 
         /*! Integral over the density \f$ \rho(m) \f$ of M and the conditional
             probability related to p:
@@ -248,7 +249,11 @@ namespace QuantLib {
         //private:
         // utilities for simple Euler integrations over the density of M
         Size steps() const;
+
+        // i not used yet, might allow varying grid size
+        // for the copula integration in the future
         Real dm(Size i) const;
+
         Real m(Size i) const;
         Real densitydm(Size i) const;
     };
@@ -261,7 +266,7 @@ namespace QuantLib {
         return steps_;
     }
 
-    inline Real OneFactorCopula::dm(Size i) const {
+    inline Real OneFactorCopula::dm(Size) const {
         return (max_ - min_)/ steps_;
     }
 

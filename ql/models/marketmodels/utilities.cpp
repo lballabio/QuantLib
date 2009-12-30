@@ -57,7 +57,7 @@ namespace QuantLib {
     }
 
     std::valarray<bool> isInSubset(const std::vector<Time>& set,
-                                 const std::vector<Time>& subset) {
+                                   const std::vector<Time>& subset) {
 
         std::valarray<bool> result(false,set.size());
         Size dimsubSet = subset.size();
@@ -72,7 +72,7 @@ namespace QuantLib {
         for (Size i=0; i<dimSet; ++i) {  // loop in set
             Size j=0;
             setElement = set[i];
-            while (true) {              // loop in subset
+            for (;;) {              // loop in subset
                 subsetElement = subset[j];
                 result[i] = false;
                 // if smaller no hope, leave false and go to next i

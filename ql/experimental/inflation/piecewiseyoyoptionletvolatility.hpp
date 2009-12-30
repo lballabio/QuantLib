@@ -48,7 +48,7 @@ namespace QuantLib {
                                     // that are _not_ quoted
         }
         static Volatility initialGuess() {return 0.005;}
-        static Volatility guess(const YoYOptionletVolatilitySurface *s,
+        static Volatility guess(const YoYOptionletVolatilitySurface*,
                                 const Date &) {
             return 0.002;
         }

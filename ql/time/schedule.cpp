@@ -32,7 +32,8 @@ namespace QuantLib {
             if (result < d)
                 result += 1*Months;
             if (rule == DateGeneration::TwentiethIMM ||
-                rule == DateGeneration::OldCDS) {
+                rule == DateGeneration::OldCDS ||
+                rule == DateGeneration::CDS) {
                 Month m = result.month();
                 if (m % 3 != 0) { // not a main IMM nmonth
                     Integer skip = 3 - m%3;
@@ -42,6 +43,21 @@ namespace QuantLib {
             return result;
         }
 
+        Date previousTwentieth(const Date& d, DateGeneration::Rule rule) {
+            Date result = Date(20, d.month(), d.year());
+            if (result > d)
+                result -= 1*Months;
+            if (rule == DateGeneration::TwentiethIMM ||
+                rule == DateGeneration::OldCDS ||
+                rule == DateGeneration::CDS) {
+                Month m = result.month();
+                if (m % 3 != 0) { // not a main IMM nmonth
+                    Integer skip = m%3;
+                    result -= skip*Months;
+                }
+            }
+            return result;
+        }
     }
 
 
@@ -110,6 +126,7 @@ namespace QuantLib {
               case DateGeneration::Twentieth:
               case DateGeneration::TwentiethIMM:
               case DateGeneration::OldCDS:
+              case DateGeneration::CDS:
                 QL_FAIL("first date incompatible with " << rule_ <<
                         " date generation rule");
               default:
@@ -138,6 +155,7 @@ namespace QuantLib {
               case DateGeneration::Twentieth:
               case DateGeneration::TwentiethIMM:
               case DateGeneration::OldCDS:
+              case DateGeneration::CDS:
                 QL_FAIL("next to last date incompatible with " << rule_ <<
                         " date generation rule");
               default:
@@ -179,7 +197,7 @@ namespace QuantLib {
             if (firstDate != Date())
                 exitDate = firstDate;
 
-            while (true) {
+            for (;;) {
                 Date temp = nullCalendar.advance(seed,
                     -periods*tenor_, convention, endOfMonth);
                 if (temp < exitDate) {
@@ -197,9 +215,6 @@ namespace QuantLib {
                 }
             }
 
-            if (endOfMonth && calendar.isEndOfMonth(seed))
-                convention=Preceding;
-
             if (calendar.adjust(dates_.front(),convention)!=
                 calendar.adjust(effectiveDate,convention)) {
                 dates_.insert(dates_.begin(), effectiveDate);
@@ -211,15 +226,21 @@ namespace QuantLib {
           case DateGeneration::TwentiethIMM:
           case DateGeneration::ThirdWednesday:
           case DateGeneration::OldCDS:
+          case DateGeneration::CDS:
             QL_REQUIRE(!endOfMonth,
                        "endOfMonth convention incompatible with " << rule_ <<
                        " date generation rule");
           // fall through
           case DateGeneration::Forward:
 
-            dates_.push_back(effectiveDate);
+            if (rule_ == DateGeneration::CDS) {
+                dates_.push_back(previousTwentieth(effectiveDate,
+                                                   DateGeneration::CDS));
+            } else {
+                dates_.push_back(effectiveDate);
+            }
 
-            seed = effectiveDate;
+            seed = dates_.back();
 
             if (firstDate!=Date()) {
                 dates_.push_back(firstDate);
@@ -232,7 +253,8 @@ namespace QuantLib {
                 seed = firstDate;
             } else if (rule_ == DateGeneration::Twentieth ||
                        rule_ == DateGeneration::TwentiethIMM ||
-                       rule_ == DateGeneration::OldCDS) {
+                       rule_ == DateGeneration::OldCDS ||
+                       rule_ == DateGeneration::CDS) {
                 Date next20th = nextTwentieth(effectiveDate, rule_);
                 if (rule_ == DateGeneration::OldCDS) {
                     // distance rule inforced in natural days
@@ -253,7 +275,7 @@ namespace QuantLib {
             if (nextToLastDate != Date())
                 exitDate = nextToLastDate;
 
-            while (true) {
+            for (;;) {
                 Date temp = nullCalendar.advance(seed, periods*tenor_,
                                                  convention, endOfMonth);
                 if (temp > exitDate) {
@@ -271,14 +293,12 @@ namespace QuantLib {
                 }
             }
 
-            if (endOfMonth && calendar.isEndOfMonth(seed))
-                convention=Preceding;
-
             if (calendar.adjust(dates_.back(),terminationDateConvention)!=
                 calendar.adjust(terminationDate,terminationDateConvention)) {
                 if (rule_ == DateGeneration::Twentieth ||
                     rule_ == DateGeneration::TwentiethIMM ||
-                    rule_ == DateGeneration::OldCDS) {
+                    rule_ == DateGeneration::OldCDS ||
+                    rule_ == DateGeneration::CDS) {
                     dates_.push_back(nextTwentieth(terminationDate, rule_));
                     isRegular_.push_back(true);
                 } else {
@@ -300,22 +320,38 @@ namespace QuantLib {
                                              dates_[i].month(),
                                              dates_[i].year());
 
-        // first date not adjusted for CDS schedules
-        if (rule_ != DateGeneration::OldCDS)
-            dates_[0] = calendar.adjust(dates_[0], convention);
-        for (Size i=1; i<dates_.size()-1; ++i)
-            dates_[i] = calendar.adjust(dates_[i], convention);
+        if (endOfMonth && calendar.isEndOfMonth(seed)) {
+            // adjust to end of month
+            if (convention == Unadjusted) {
+                for (Size i=0; i<dates_.size()-1; ++i)
+                    dates_[i] = Date::endOfMonth(dates_[i]);
+            } else {
+                for (Size i=0; i<dates_.size()-1; ++i)
+                    dates_[i] = calendar.endOfMonth(dates_[i]);
+            }
+            if (terminationDateConvention == Unadjusted)
+                dates_.back() = Date::endOfMonth(dates_.back());
+            else
+                dates_.back() = calendar.endOfMonth(dates_.back());
+        } else {
+            // first date not adjusted for CDS schedules
+            if (rule_ != DateGeneration::OldCDS)
+                dates_[0] = calendar.adjust(dates_[0], convention);
+            for (Size i=1; i<dates_.size()-1; ++i)
+                dates_[i] = calendar.adjust(dates_[i], convention);
 
-        // termination date is NOT adjusted as per ISDA
-        // specifications, unless otherwise specified in the
-        // confirmation of the deal or unless we're creating a CDS
-        // schedule
-        if (terminationDateConvention != Unadjusted
-            || rule_ == DateGeneration::Twentieth
-            || rule_ == DateGeneration::TwentiethIMM
-            || rule_ == DateGeneration::OldCDS) {
-            dates_.back() = calendar.adjust(dates_.back(),
-                                            terminationDateConvention);
+            // termination date is NOT adjusted as per ISDA
+            // specifications, unless otherwise specified in the
+            // confirmation of the deal or unless we're creating a CDS
+            // schedule
+            if (terminationDateConvention != Unadjusted
+                || rule_ == DateGeneration::Twentieth
+                || rule_ == DateGeneration::TwentiethIMM
+                || rule_ == DateGeneration::OldCDS
+                || rule_ == DateGeneration::CDS) {
+                dates_.back() = calendar.adjust(dates_.back(),
+                                                terminationDateConvention);
+            }
         }
     }
 

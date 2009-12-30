@@ -17,36 +17,42 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/himalayaoption.hpp>
+#include <ql/experimental/exoticoptions/pagodaoption.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/exercise.hpp>
 
 namespace QuantLib {
 
-    HimalayaOption::HimalayaOption(const std::vector<Date>& fixingDates,
-                                   Real strike)
-    : MultiAssetOption(boost::shared_ptr<Payoff>(
-                                new PlainVanillaPayoff(Option::Call, strike)),
+    PagodaOption::PagodaOption(const std::vector<Date>& fixingDates,
+                               Real roof,
+                               Real fraction)
+    : MultiAssetOption(boost::shared_ptr<Payoff>(new NullPayoff),
                        boost::shared_ptr<Exercise>(
                                    new EuropeanExercise(fixingDates.back()))),
-      fixingDates_(fixingDates) {}
+      fixingDates_(fixingDates), roof_(roof), fraction_(fraction) {}
 
-    void HimalayaOption::setupArguments(PricingEngine::arguments* args) const {
+
+    void PagodaOption::setupArguments(PricingEngine::arguments* args) const {
         MultiAssetOption::setupArguments(args);
 
-        HimalayaOption::arguments* arguments =
-            dynamic_cast<HimalayaOption::arguments*>(args);
+        PagodaOption::arguments* arguments =
+            dynamic_cast<PagodaOption::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
         arguments->fixingDates = fixingDates_;
+        arguments->roof = roof_;
+        arguments->fraction = fraction_;
     }
 
-    HimalayaOption::arguments::arguments() {}
 
-    void HimalayaOption::arguments::validate() const {
+    PagodaOption::arguments::arguments()
+    : roof(Null<Real>()), fraction(Null<Real>()) {}
+
+    void PagodaOption::arguments::validate() const {
         MultiAssetOption::arguments::validate();
-        QL_REQUIRE(!fixingDates.empty(), "no fixing dates given");
+        QL_REQUIRE(!fixingDates.empty(), "no fixingDates given");
+        QL_REQUIRE(roof != Null<Real>(), "no roof given");
+        QL_REQUIRE(fraction != Null<Real>(), "no fraction given");
     }
 
 }
-

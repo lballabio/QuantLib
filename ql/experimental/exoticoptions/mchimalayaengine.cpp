@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/basket/mchimalayaengine.hpp>
+#include <ql/experimental/exoticoptions/mchimalayaengine.hpp>
 #include <ql/payoff.hpp>
 
 namespace QuantLib {

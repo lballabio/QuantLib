@@ -59,12 +59,12 @@ namespace QuantLib {
                 return res/gammaFunc(x);
             }
 
-            Real primitive(Real x) const {
+            Real primitive(Real) const {
                 QL_FAIL("Primitive calculation not implemented "
                         "for kernel interpolation");
             }
 
-            Real derivative(Real x) const {
+            Real derivative(Real) const {
                 QL_FAIL("First derivative calculation not implemented "
                         "for kernel interpolation");
             }

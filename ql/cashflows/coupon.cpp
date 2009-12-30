@@ -45,9 +45,29 @@ namespace QuantLib {
                                          refPeriodEnd_);
     }
 
-    Integer Coupon::accrualDays() const {
+    BigInteger Coupon::accrualDays() const {
         return dayCounter().dayCount(accrualStartDate_,
                                      accrualEndDate_);
+    }
+
+    Time Coupon::accruedPeriod(const Date& d) const {
+        if (d <= accrualStartDate_ || d > paymentDate_) {
+            return 0.0;
+        } else {
+            return dayCounter().yearFraction(accrualStartDate_,
+                                             std::min(d, accrualEndDate_),
+                                             refPeriodStart_,
+                                             refPeriodEnd_);
+        }
+    }
+
+    BigInteger Coupon::accruedDays(const Date& d) const {
+        if (d <= accrualStartDate_ || d > paymentDate_) {
+            return 0;
+        } else {
+            return dayCounter().dayCount(accrualStartDate_,
+                                         std::min(d, accrualEndDate_));
+        }
     }
 
     void Coupon::accept(AcyclicVisitor& v) {

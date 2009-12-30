@@ -17,20 +17,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-
-
 #include <ql/cashflows/indexedcashflow.hpp>
 #include <ql/index.hpp>
 
 namespace QuantLib {
 
     Real IndexedCashFlow::amount() const {
-        return notional_* (index_->fixing(fixingDate_) // usually by extrapolation
-                           / index_->fixing(baseDate_) );
+        Real I0 = index_->fixing(baseDate_);
+        Real I1 = index_->fixing(fixingDate_);
+
+        if (growthOnly_)
+            return notional_ * (I1 / I0 - 1.0);
+        else
+            return notional_ * (I1 / I0);
     }
 
 }
-
-
-
-

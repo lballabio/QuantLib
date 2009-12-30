@@ -5,14 +5,12 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     cmsratebond.hpp \
-    convertiblebond.hpp \
     fixedratebond.hpp \
     floatingratebond.hpp \
     zerocouponbond.hpp
 
 libBonds_la_SOURCES = \
     cmsratebond.cpp \
-    convertiblebond.cpp \
     fixedratebond.cpp \
     floatingratebond.cpp \
     zerocouponbond.cpp

@@ -68,6 +68,7 @@ namespace QuantLib {
         BusinessDayConvention fixedLegConvention() const;
         boost::shared_ptr<IborIndex> iborIndex() const { return iborIndex_; }
         Handle<YieldTermStructure> forwardingTermStructure() const;
+        bool exogenousDiscount() const;
         /*! \warning Relinking the term structure underlying the index will
                      not have effect on the returned swap.
         */
@@ -117,6 +118,10 @@ namespace QuantLib {
 
     inline BusinessDayConvention SwapIndex::fixedLegConvention() const {
         return fixedLegConvention_;
+    }
+
+    inline bool SwapIndex::exogenousDiscount() const {
+        return exogenousDiscount_;
     }
 
     inline boost::shared_ptr<OvernightIndex>

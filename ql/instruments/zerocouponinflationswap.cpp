@@ -81,12 +81,14 @@ namespace QuantLib {
         // term structure before allowing users to create instruments.
         Real T = inflationYearFraction(infIndex_->frequency(), infIndex_->interpolated(),
                                        dayCounter_, baseDate_, obsDate_);
-        Real fixedAmount = nominal * std::pow(1.0 + fixedRate, T);
+        // N.B. the -1.0 is because swaps only exchange growth, not notionals as well
+        Real fixedAmount = nominal * ( std::pow(1.0 + fixedRate, T) - 1.0 );
 
         legs_[0].push_back(boost::shared_ptr<CashFlow>(
             new SimpleCashFlow(fixedAmount, fixedPayDate)));
+        bool growthOnly = true;
         legs_[1].push_back(boost::shared_ptr<CashFlow>(
-            new IndexedCashFlow(nominal,infIndex,baseDate_,obsDate_,infPayDate)));
+            new IndexedCashFlow(nominal,infIndex,baseDate_,obsDate_,infPayDate,growthOnly)));
 
         for (Size j=0; j<2; ++j) {
             for (Leg::iterator i = legs_[j].begin(); i!= legs_[j].end(); ++i)
@@ -135,18 +137,18 @@ namespace QuantLib {
         boost::dynamic_pointer_cast<IndexedCashFlow>(legs_[1].at(0));
         QL_REQUIRE(icf,"failed to downcast to IndexedCashFlow in ::fairRate()");
 
-        Real growth = icf->amount() / icf->notional();
-        Real T = inflationYearFraction(infIndex_->frequency(), infIndex_->interpolated(),
+        // +1 because the IndexedCashFlow has growthOnly=true
+        Real growth = icf->amount() / icf->notional() + 1.0;
+        Real T = inflationYearFraction(infIndex_->frequency(),
+                                       infIndex_->interpolated(),
                                        dayCounter_, baseDate_, obsDate_);
-        // growth = std::pow(1.0 + fixedRate, T);
-        Real fair = std::pow(growth,1.0/T) - 1.0;
+
+        return std::pow(growth,1.0/T) - 1.0;
 
         // we cannot use this simple definition because
         // it does not work for already-issued instruments
-        //return infIndex_->zeroInflationTermStructure()->zeroRate(
+        // return infIndex_->zeroInflationTermStructure()->zeroRate(
         //      maturityDate(), observationLag(), infIndex_->interpolated());
-
-        return fair;
     }
 
 

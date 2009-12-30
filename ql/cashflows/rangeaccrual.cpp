@@ -285,18 +285,14 @@ namespace QuantLib {
         return result;
     }
 
-    Real RangeAccrualPricerByBgm::derLambdaDerLambdaS(Real U,
-                                                      Real lambdaS,
-                                                      Real lambdaT) const{
-        Real result;
+    Real RangeAccrualPricerByBgm::derLambdaDerLambdaS(Real U) const {
 
-        //const Real p = (U-startTime_)/accrualFactor_;
-        const Real q = (endTime_-U)/accrualFactor_;
+        if (startTime_>0) {
+            Real q = (endTime_-U)/accrualFactor_;
+            return q;
+        } else
+            return 0.0;
 
-        if(startTime_ > 0){result = q;}
-        else {result = 0.;}
-
-        return result;
     }
 
     Real RangeAccrualPricerByBgm::derDriftDerLambdaT(Real U,
@@ -320,18 +316,14 @@ namespace QuantLib {
         return result;
     }
 
-    Real RangeAccrualPricerByBgm::derLambdaDerLambdaT(Real U,
-                                                        Real lambdaS,
-                                                        Real lambdaT) const{
-        Real result;
+    Real RangeAccrualPricerByBgm::derLambdaDerLambdaT(Real U) const {
 
-        const Real p = (U-startTime_)/accrualFactor_;
-        //const Real q = (endTime_-U)/accrualFactor_;
+        if (startTime_>0) {
+            Real p = (U-startTime_)/accrualFactor_;
+            return p;
+        } else
+            return 0.0;
 
-        if(startTime_ > 0){result = p;}
-        else {result = 1.;}
-
-        return result;
     }
 
     Real RangeAccrualPricerByBgm::digitalRangePrice(Real lowerTrigger,
@@ -468,8 +460,8 @@ namespace QuantLib {
         Real lambdaT = smilesOnPayment_->volatility(strike);
         //Real lambdaU = lambda(expiry, lambdaS, lambdaT);
 
-        Real derLambdaDerK = derLambdaDerLambdaS(expiry, lambdaS, lambdaT)*derSmileS +
-                               derLambdaDerLambdaT(expiry, lambdaS, lambdaT)*derSmileT;
+        Real derLambdaDerK = derLambdaDerLambdaS(expiry) * derSmileS +
+                             derLambdaDerLambdaT(expiry) * derSmileT;
         //Real derDriftDerK = derDriftDerLambdaS(expiry, lambdaS, lambdaT, correlation_)*derSmileS +
         //                      derDriftDerLambdaT(expiry, lambdaS, lambdaT, correlation_)*derSmileT +
         //                      lambdaU * derLambdaDerK;

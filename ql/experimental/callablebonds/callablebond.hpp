@@ -80,12 +80,8 @@ namespace QuantLib {
 
       protected:
         CallableBond(Natural settlementDays,
-                     Real faceAmount,
                      const Schedule& schedule,
                      const DayCounter& paymentDayCounter,
-                     // superfluous given schedule's bd convention
-                     BusinessDayConvention paymentConvention = Following,
-                     Real redemption = 100.0,
                      const Date& issueDate = Date(),
                      const CallabilitySchedule& putCallSchedule
                                                      = CallabilitySchedule());

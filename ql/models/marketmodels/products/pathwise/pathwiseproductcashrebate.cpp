@@ -87,7 +87,7 @@ namespace QuantLib
 
 
     bool MarketModelPathwiseCashRebate::nextTimeStep(
-            const CurveState& currentState,
+            const CurveState&,
             std::vector<Size>& numberCashFlowsThisStep,
             std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >& cashFlowsGenerated) 
     {
@@ -114,4 +114,3 @@ namespace QuantLib
 
 
 }
-

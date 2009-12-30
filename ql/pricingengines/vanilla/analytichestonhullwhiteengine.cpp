@@ -66,9 +66,4 @@ namespace QuantLib {
         AnalyticHestonEngine::calculate();
     }
 
-    std::complex<Real> AnalyticHestonHullWhiteEngine::addOnTerm(Real u,
-                                                                Time,
-                                                                Size j) const {
-        return std::complex<Real>(-m_*u*u, u*(m_-2*m_*(j-1)));
-    }
 }

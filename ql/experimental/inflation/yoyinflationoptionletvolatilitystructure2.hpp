@@ -187,16 +187,11 @@ namespace QuantLib {
     //! For the curve strike is ignored because the smile is (can only be) flat.
     template<class Interpolator1D>
     inline Volatility InterpolatedYoYOptionletVolatilityCurve<Interpolator1D>::
-    volatilityImpl(const Time t, Rate strike) const {
+    volatilityImpl(const Time t,
+                   Rate strike) const {
         return interpolation_(t);
     }
-
-
-
-
-
 
 } // namespace QuantLib
 
 #endif
-

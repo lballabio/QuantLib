@@ -25,11 +25,8 @@
 namespace QuantLib {
 
     CallableBond::CallableBond(Natural settlementDays,
-                               Real faceAmount,
                                const Schedule& schedule,
                                const DayCounter& paymentDayCounter,
-                               BusinessDayConvention paymentConvention,
-                               Real redemption,
                                const Date& issueDate,
                                const CallabilitySchedule& putCallSchedule)
     : Bond(settlementDays, schedule.calendar(), issueDate),
@@ -121,8 +118,7 @@ namespace QuantLib {
                               Real redemption,
                               const Date& issueDate,
                               const CallabilitySchedule& putCallSchedule)
-    : CallableBond(settlementDays, faceAmount, schedule,
-                   accrualDayCounter, paymentConvention, redemption,
+    : CallableBond(settlementDays, schedule, accrualDayCounter,
                    issueDate, putCallSchedule) {
 
         frequency_ = schedule.tenor().frequency();

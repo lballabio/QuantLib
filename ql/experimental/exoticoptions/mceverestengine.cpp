@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/basket/mceverestengine.hpp>
+#include <ql/experimental/exoticoptions/mceverestengine.hpp>
 
 namespace QuantLib {
 
