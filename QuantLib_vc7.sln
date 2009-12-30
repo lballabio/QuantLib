@@ -68,6 +68,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bonds", "Examples\Bonds\Bon
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MarketModels", "Examples\MarketModels\MarketModels_vc7.vcproj", "{47CE2A41-091A-42A3-B40D-F6F0DD689349}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -248,6 +253,18 @@ Global
 		{C8AFC9D1-704C-4AB5-911B-3C93C27C63D0}.Release (single-threaded runtime).Build.0 = Release (single-threaded runtime)|Win32
 		{C8AFC9D1-704C-4AB5-911B-3C93C27C63D0}.Release (static runtime).ActiveCfg = Release (static runtime)|Win32
 		{C8AFC9D1-704C-4AB5-911B-3C93C27C63D0}.Release (static runtime).Build.0 = Release (static runtime)|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug.ActiveCfg = Debug|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug.Build.0 = Debug|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug (single-threaded runtime).ActiveCfg = Debug (single-threaded runtime)|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug (single-threaded runtime).Build.0 = Debug (single-threaded runtime)|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug (static runtime).ActiveCfg = Debug (static runtime)|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug (static runtime).Build.0 = Debug (static runtime)|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release.ActiveCfg = Release|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release.Build.0 = Release|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release (single-threaded runtime).ActiveCfg = Release (single-threaded runtime)|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release (single-threaded runtime).Build.0 = Release (single-threaded runtime)|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release (static runtime).ActiveCfg = Release (static runtime)|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release (static runtime).Build.0 = Release (static runtime)|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

@@ -63,10 +63,11 @@
 				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				BrowseInformation="0"
 				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 				CompileAs="0"
+				DisableSpecificWarnings="4512;4511;4505"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -81,7 +82,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin\QuantLib-test-suite-vc90-mt-sgd-0_9_9.exe"
+				OutputFile=".\bin\QuantLib-test-suite-vc90-mt-sgd.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
@@ -169,9 +170,10 @@
 				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				BrowseInformation="0"
 				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="true"
 				CompileAs="0"
+				DisableSpecificWarnings="4512;4511;4505"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -186,7 +188,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin\QuantLib-test-suite-vc90-mt-s-0_9_9.exe"
+				OutputFile=".\bin\QuantLib-test-suite-vc90-mt-s.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
@@ -269,10 +271,11 @@
 				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				BrowseInformation="0"
 				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 				CompileAs="0"
+				DisableSpecificWarnings="4512;4511;4505"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -287,7 +290,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin\QuantLib-test-suite-vc90-mt-gd-0_9_9.exe"
+				OutputFile=".\bin\QuantLib-test-suite-vc90-mt-gd.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
@@ -374,9 +377,10 @@
 				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				BrowseInformation="0"
 				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="true"
 				CompileAs="0"
+				DisableSpecificWarnings="4512;4511;4505"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -391,7 +395,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin\QuantLib-test-suite-vc90-mt-0_9_9.exe"
+				OutputFile=".\bin\QuantLib-test-suite-vc90-mt.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
@@ -493,7 +497,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin\QuantLib-test-suite-vc90-$(PlatformName)-mt-sgd-0_9_9.exe"
+				OutputFile=".\bin\QuantLib-test-suite-vc90-$(PlatformName)-mt-sgd.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
@@ -598,7 +602,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin\QuantLib-test-suite-vc90-$(PlatformName)-mt-s-0_9_9_x64.exe"
+				OutputFile=".\bin\QuantLib-test-suite-vc90-$(PlatformName)-mt-s_x64.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
@@ -699,7 +703,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin\QuantLib-test-suite-vc90-$(PlatformName)-mt-gd-0_9_9.exe"
+				OutputFile=".\bin\QuantLib-test-suite-vc90-$(PlatformName)-mt-gd.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
@@ -803,7 +807,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin\QuantLib-test-suite-vc90-$(PlatformName)-mt-0_9_9.exe"
+				OutputFile=".\bin\QuantLib-test-suite-vc90-$(PlatformName)-mt.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"

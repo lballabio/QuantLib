@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2007 Klaus Spanderen
+ Copyright (C) 2005, 2007, 2009 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -439,8 +439,8 @@ void HestonModelTest::testMcVsCached() {
     Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(1.05)));
 
     boost::shared_ptr<HestonProcess> process(new HestonProcess(
-                   riskFreeTS, dividendTS, s0, 0.3, 1.16, 0.2, 0.8, 0.8, 
-                   HestonProcess::QE_M));
+                   riskFreeTS, dividendTS, s0, 0.3, 1.16, 0.2, 0.8, 0.8,
+                   HestonProcess::QuadraticExponentialMartingale));
 
     VanillaOption option(payoff, exercise);
 
@@ -680,9 +680,9 @@ void HestonModelTest::testKahlJaeckelCase() {
 
     boost::shared_ptr<HestonProcess> processQE_M(new HestonProcess(
                    riskFreeTS, dividendTS, s0, 0.16, 1.0, 0.16, 2.0, -0.8,
-                   HestonProcess::QE_M));
+                   HestonProcess::QuadraticExponentialMartingale));
 
-    
+
     VanillaOption option(payoff, exercise);
 
     Real tolerance = 0.1;

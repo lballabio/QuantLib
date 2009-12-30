@@ -341,7 +341,6 @@ namespace {
             }
             // make compiler happy
             QL_FAIL("never get here - no engine resolution");
-            return boost::shared_ptr<PricingEngine>();
         }
 
 

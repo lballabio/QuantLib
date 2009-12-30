@@ -533,6 +533,27 @@ void CreditDefaultSwapTest::testFairUpfront() {
             "Failed to reproduce null NPV with calculated fair upfront\n"
             << "    calculated upfront: " << io::rate(fairUpfront) << "\n"
             << "    calculated NPV:     " << fairNPV);
+
+    // same with null upfront to begin with
+    upfront = 0.0;
+    CreditDefaultSwap cds2(Protection::Seller, notional, upfront, fixedRate,
+                           schedule, convention, dayCount, true, true);
+    cds2.setPricingEngine(engine);
+
+    fairUpfront = cds2.fairUpfront();
+
+    CreditDefaultSwap fairCds2(Protection::Seller, notional,
+                               fairUpfront, fixedRate,
+                               schedule, convention, dayCount, true, true);
+    fairCds2.setPricingEngine(engine);
+
+    fairNPV = fairCds2.NPV();
+
+    if (std::fabs(fairNPV) > tolerance)
+        BOOST_ERROR(
+            "Failed to reproduce null NPV with calculated fair upfront\n"
+            << "    calculated upfront: " << io::rate(fairUpfront) << "\n"
+            << "    calculated NPV:     " << fairNPV);
 }
 
 

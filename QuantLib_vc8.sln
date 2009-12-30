@@ -67,6 +67,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bonds", "Examples\Bonds\Bon
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MarketModels", "Examples\MarketModels\MarketModels_vc8.vcproj", "{47CE2A41-091A-42A3-B40D-F6F0DD689349}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug (static runtime)|Win32 = Debug (static runtime)|Win32
@@ -187,6 +192,14 @@ Global
 		{C8AFC9D1-704C-4AB5-911B-3C93C27C63D0}.Release (static runtime)|Win32.Build.0 = Release (static runtime)|Win32
 		{C8AFC9D1-704C-4AB5-911B-3C93C27C63D0}.Release|Win32.ActiveCfg = Release|Win32
 		{C8AFC9D1-704C-4AB5-911B-3C93C27C63D0}.Release|Win32.Build.0 = Release|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug (static runtime)|Win32.ActiveCfg = Debug (static runtime)|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug (static runtime)|Win32.Build.0 = Debug (static runtime)|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug|Win32.ActiveCfg = Debug|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Debug|Win32.Build.0 = Debug|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release (static runtime)|Win32.ActiveCfg = Release (static runtime)|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release (static runtime)|Win32.Build.0 = Release (static runtime)|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release|Win32.ActiveCfg = Release|Win32
+		{47CE2A41-091A-42A3-B40D-F6F0DD689349}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

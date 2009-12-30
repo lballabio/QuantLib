@@ -711,7 +711,8 @@ void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
                    boost::bind(&Actual365Fixed::yearFraction,
                                dc, today, _1, Date(), Date()));
 
-    for (Size i=0; i<=maturity; ++i) times[i] = i;
+    for (Size i=0; i<=maturity; ++i)
+        times[i] = static_cast<Time>(i);
 
     TimeGrid grid(times.begin(), times.end());
 

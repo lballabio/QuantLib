@@ -77,7 +77,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/QuantLib-test-suite-vc80-mt-sgd-0_9_9.exe"
+				OutputFile=".\bin/QuantLib-test-suite-vc80-mt-sgd.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
@@ -183,7 +183,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/QuantLib-test-suite-vc80-mt-s-0_9_9.exe"
+				OutputFile=".\bin/QuantLib-test-suite-vc80-mt-s.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
@@ -285,7 +285,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/QuantLib-test-suite-vc80-mt-gd-0_9_9.exe"
+				OutputFile=".\bin/QuantLib-test-suite-vc80-mt-gd.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
@@ -390,7 +390,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/QuantLib-test-suite-vc80-mt-0_9_9.exe"
+				OutputFile=".\bin/QuantLib-test-suite-vc80-mt.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"

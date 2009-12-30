@@ -20,12 +20,12 @@
 
 #include "convertiblebonds.hpp"
 #include "utilities.hpp"
-#include <ql/instruments/bonds/convertiblebond.hpp>
+#include <ql/experimental/convertiblebonds/convertiblebond.hpp>
+#include <ql/experimental/convertiblebonds/binomialconvertibleengine.hpp>
 #include <ql/instruments/bonds/zerocouponbond.hpp>
 #include <ql/instruments/bonds/fixedratebond.hpp>
 #include <ql/instruments/bonds/floatingratebond.hpp>
 #include <ql/instruments/vanillaoption.hpp>
-#include <ql/pricingengines/hybrid/binomialconvertibleengine.hpp>
 #include <ql/pricingengines/vanilla/binomialengine.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/unitedstates.hpp>

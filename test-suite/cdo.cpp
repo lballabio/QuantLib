@@ -150,11 +150,11 @@ void CdoTest::testHW() {
                                    42));
 
     boost::shared_ptr<PricingEngine> engine1(
-                          new IHPIntegralCDOEngine(hCopula, nBuckets, period));
+                          new IHPIntegralCDOEngine(hCopula, nBuckets));
     boost::shared_ptr<PricingEngine> engine2(
                           new IHPMidPointCDOEngine(hCopula, nBuckets));
     boost::shared_ptr<PricingEngine> engine3(
-                          new HPIntegralCDOEngine(hCopula, nBuckets, period));
+                          new HPIntegralCDOEngine(hCopula, nBuckets));
     boost::shared_ptr<PricingEngine> engine4(
                           new HPMidPointCDOEngine(hCopula, nBuckets));
     boost::shared_ptr<PricingEngine> engine5(

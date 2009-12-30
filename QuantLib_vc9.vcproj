@@ -64,10 +64,11 @@
 				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				BrowseInformation="0"
 				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
 				CompileAs="0"
+				DisableSpecificWarnings="4512;4511;4505"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -84,7 +85,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc90-mt-0_9_9.lib"
+				OutputFile=".\lib\QuantLib-vc90-mt.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -147,10 +148,11 @@
 				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				BrowseInformation="0"
 				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
 				CompileAs="0"
+				DisableSpecificWarnings="4512;4511;4505"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -167,7 +169,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc90-mt-gd-0_9_9.lib"
+				OutputFile=".\lib\QuantLib-vc90-mt-gd.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -233,10 +235,11 @@
 				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				BrowseInformation="0"
 				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
 				CompileAs="0"
+				DisableSpecificWarnings="4512;4511;4505"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -253,7 +256,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc90-mt-s-0_9_9.lib"
+				OutputFile=".\lib\QuantLib-vc90-mt-s.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -316,11 +319,12 @@
 				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				BrowseInformation="0"
 				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 				CompileAs="0"
+				DisableSpecificWarnings="4512;4511;4505"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -337,7 +341,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc90-mt-sgd-0_9_9.lib"
+				OutputFile=".\lib\QuantLib-vc90-mt-sgd.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -423,7 +427,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc90-$(PlatformName)-mt-0_9_9.lib"
+				OutputFile=".\lib\QuantLib-vc90-$(PlatformName)-mt.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -507,7 +511,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc90-$(PlatformName)-mt-gd-0_9_9.lib"
+				OutputFile=".\lib\QuantLib-vc90-$(PlatformName)-mt-gd.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -593,7 +597,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc90-$(PlatformName)-mt-s-0_9_9.lib"
+				OutputFile=".\lib\QuantLib-vc90-$(PlatformName)-mt-s.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -677,7 +681,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc90-$(PlatformName)-mt-sgd-0_9_9.lib"
+				OutputFile=".\lib\QuantLib-vc90-$(PlatformName)-mt-sgd.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -945,10 +949,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\methods\lattices\lattice2d.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\methods\lattices\tflattice.hpp"
 					>
 				</File>
 				<File
@@ -1557,14 +1557,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\instruments\everestoption.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\instruments\everestoption.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\instruments\fixedratebondforward.cpp"
 				>
 			</File>
@@ -1594,14 +1586,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\instruments\forwardvanillaoption.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\instruments\himalayaoption.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\instruments\himalayaoption.hpp"
 				>
 			</File>
 			<File
@@ -1698,14 +1682,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\instruments\overnightindexedswap.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\instruments\pagodaoption.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\instruments\pagodaoption.hpp"
 				>
 			</File>
 			<File
@@ -1825,14 +1801,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\instruments\bonds\cmsratebond.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\instruments\bonds\convertiblebond.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\instruments\bonds\convertiblebond.hpp"
 					>
 				</File>
 				<File
@@ -3060,6 +3028,14 @@
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateeulerconstrained.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateiballand.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateiballand.hpp"
 						>
 					</File>
 					<File
@@ -4956,30 +4932,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\pricingengines\basket\mceverestengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\pricingengines\basket\mceverestengine.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\pricingengines\basket\mchimalayaengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\pricingengines\basket\mchimalayaengine.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\pricingengines\basket\mcpagodaengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\pricingengines\basket\mcpagodaengine.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\pricingengines\basket\stulzengine.cpp"
 					>
 				</File>
@@ -5361,26 +5313,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\cliquet\mcperformanceengine.hpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="hybrid"
-				>
-				<File
-					RelativePath=".\ql\pricingengines\hybrid\all.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\pricingengines\hybrid\binomialconvertibleengine.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\pricingengines\hybrid\discretizedconvertible.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\pricingengines\hybrid\discretizedconvertible.hpp"
 					>
 				</File>
 			</Filter>
@@ -6313,6 +6245,62 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\coupons\subperiodcoupons.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="exoticoptions"
+				>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\everestoption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\everestoption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\himalayaoption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\himalayaoption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\mceverestengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\mceverestengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\mchimalayaengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\mchimalayaengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\mcpagodaengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\mcpagodaengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\pagodaoption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\pagodaoption.hpp"
 					>
 				</File>
 			</Filter>
@@ -7265,6 +7253,38 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\barrieroption\perturbativebarrieroptionengine.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="convertiblebonds"
+				>
+				<File
+					RelativePath=".\ql\experimental\convertiblebonds\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\convertiblebonds\binomialconvertibleengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\convertiblebonds\convertiblebond.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\convertiblebonds\convertiblebond.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\convertiblebonds\discretizedconvertible.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\convertiblebonds\discretizedconvertible.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\convertiblebonds\tflattice.hpp"
 					>
 				</File>
 			</Filter>

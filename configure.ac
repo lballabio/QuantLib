@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib], [0.9.9],
+AC_INIT([QuantLib], [1.0b1],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib])
 AC_PREREQ(2.50)
@@ -322,8 +322,10 @@ AC_CONFIG_FILES([
     ql/experimental/callablebonds/Makefile
     ql/experimental/commodities/Makefile
     ql/experimental/compoundoption/Makefile
+    ql/experimental/convertiblebonds/Makefile
     ql/experimental/coupons/Makefile
     ql/experimental/credit/Makefile
+    ql/experimental/exoticoptions/Makefile
     ql/experimental/finitedifferences/Makefile
     ql/experimental/inflation/Makefile
     ql/experimental/lattices/Makefile
@@ -386,7 +388,6 @@ AC_CONFIG_FILES([
     ql/pricingengines/cliquet/Makefile
     ql/pricingengines/credit/Makefile
     ql/pricingengines/forward/Makefile
-    ql/pricingengines/hybrid/Makefile
     ql/pricingengines/inflation/Makefile
     ql/pricingengines/lookback/Makefile
     ql/pricingengines/quanto/Makefile
@@ -422,6 +423,7 @@ AC_CONFIG_FILES([
     Examples/EquityOption/Makefile
     Examples/FittedBondCurve/Makefile
     Examples/FRA/Makefile
+    Examples/MarketModels/Makefile
     Examples/Replication/Makefile
     Examples/Repo/Makefile
     Examples/Swap/Makefile

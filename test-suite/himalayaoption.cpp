@@ -19,8 +19,8 @@
 
 #include "himalayaoption.hpp"
 #include "utilities.hpp"
-#include <ql/instruments/himalayaoption.hpp>
-#include <ql/pricingengines/basket/mchimalayaengine.hpp>
+#include <ql/experimental/exoticoptions/himalayaoption.hpp>
+#include <ql/experimental/exoticoptions/mchimalayaengine.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/quotes/simplequote.hpp>

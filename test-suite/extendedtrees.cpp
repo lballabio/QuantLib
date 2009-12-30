@@ -78,8 +78,7 @@ namespace {
                const boost::shared_ptr<YieldTermStructure>& r,
                const boost::shared_ptr<BlackVolTermStructure>& vol,
                EngineType engineType,
-               Size binomialSteps,
-               Size samples) {
+               Size binomialSteps) {
 
         boost::shared_ptr<GeneralizedBlackScholesProcess> stochProcess =
             makeProcess(u,q,r,vol);
@@ -166,7 +165,6 @@ namespace {
 
     void testEngineConsistency(EngineType engine,
                                Size binomialSteps,
-                               Size samples,
                                std::map<std::string,Real> tolerance) {
 
         QL_TEST_START_TIMING
@@ -206,11 +204,11 @@ namespace {
               // reference option
               boost::shared_ptr<VanillaOption> refOption =
                   makeOption(payoff, exercise, spot, qTS, rTS, volTS,
-                             Analytic, Null<Size>(), Null<Size>());
+                             Analytic, Null<Size>());
               // option to check
               boost::shared_ptr<VanillaOption> option =
                   makeOption(payoff, exercise, spot, qTS, rTS, volTS,
-                             engine, binomialSteps, samples);
+                             engine, binomialSteps);
 
               for (Size l=0; l<LENGTH(underlyings); l++) {
                 for (Size m=0; m<LENGTH(qRates); m++) {
@@ -275,13 +273,12 @@ void ExtendedTreesTest::testJRBinomialEngines() {
 
     EngineType engine = JR;
     Size steps = 251;
-    Size samples = Null<Size>();
     std::map<std::string,Real> relativeTol;
     relativeTol["value"] = 0.002;
     relativeTol["delta"] = 1.0e-3;
     relativeTol["gamma"] = 1.0e-4;
     relativeTol["theta"] = 0.03;
-    testEngineConsistency(engine,steps,samples,relativeTol);
+    testEngineConsistency(engine, steps, relativeTol);
 }
 
 void ExtendedTreesTest::testCRRBinomialEngines() {
@@ -293,13 +290,12 @@ void ExtendedTreesTest::testCRRBinomialEngines() {
 
     EngineType engine = CRR;
     Size steps = 501;
-    Size samples = Null<Size>();
     std::map<std::string,Real> relativeTol;
     relativeTol["value"] = 0.02;
     relativeTol["delta"] = 1.0e-3;
     relativeTol["gamma"] = 1.0e-4;
     relativeTol["theta"] = 0.03;
-    testEngineConsistency(engine,steps,samples,relativeTol);
+    testEngineConsistency(engine, steps, relativeTol);
 }
 
 void ExtendedTreesTest::testEQPBinomialEngines() {
@@ -311,13 +307,12 @@ void ExtendedTreesTest::testEQPBinomialEngines() {
 
     EngineType engine = EQP;
     Size steps = 501;
-    Size samples = Null<Size>();
     std::map<std::string,Real> relativeTol;
     relativeTol["value"] = 0.02;
     relativeTol["delta"] = 1.0e-3;
     relativeTol["gamma"] = 1.0e-4;
     relativeTol["theta"] = 0.03;
-    testEngineConsistency(engine,steps,samples,relativeTol);
+    testEngineConsistency(engine, steps, relativeTol);
 }
 
 void ExtendedTreesTest::testTGEOBinomialEngines() {
@@ -329,13 +324,12 @@ void ExtendedTreesTest::testTGEOBinomialEngines() {
 
     EngineType engine = TGEO;
     Size steps = 251;
-    Size samples = Null<Size>();
     std::map<std::string,Real> relativeTol;
     relativeTol["value"] = 0.002;
     relativeTol["delta"] = 1.0e-3;
     relativeTol["gamma"] = 1.0e-4;
     relativeTol["theta"] = 0.03;
-    testEngineConsistency(engine,steps,samples,relativeTol);
+    testEngineConsistency(engine, steps, relativeTol);
 }
 
 void ExtendedTreesTest::testTIANBinomialEngines() {
@@ -347,13 +341,12 @@ void ExtendedTreesTest::testTIANBinomialEngines() {
 
     EngineType engine = TIAN;
     Size steps = 251;
-    Size samples = Null<Size>();
     std::map<std::string,Real> relativeTol;
     relativeTol["value"] = 0.002;
     relativeTol["delta"] = 1.0e-3;
     relativeTol["gamma"] = 1.0e-4;
     relativeTol["theta"] = 0.03;
-    testEngineConsistency(engine,steps,samples,relativeTol);
+    testEngineConsistency(engine, steps, relativeTol);
 }
 
 void ExtendedTreesTest::testLRBinomialEngines() {
@@ -365,13 +358,12 @@ void ExtendedTreesTest::testLRBinomialEngines() {
 
     EngineType engine = LR;
     Size steps = 251;
-    Size samples = Null<Size>();
     std::map<std::string,Real> relativeTol;
     relativeTol["value"] = 1.0e-6;
     relativeTol["delta"] = 1.0e-3;
     relativeTol["gamma"] = 1.0e-4;
     relativeTol["theta"] = 0.03;
-    testEngineConsistency(engine,steps,samples,relativeTol);
+    testEngineConsistency(engine, steps, relativeTol);
 }
 
 void ExtendedTreesTest::testJOSHIBinomialEngines() {
@@ -383,13 +375,12 @@ void ExtendedTreesTest::testJOSHIBinomialEngines() {
 
     EngineType engine = JOSHI;
     Size steps = 251;
-    Size samples = Null<Size>();
     std::map<std::string,Real> relativeTol;
     relativeTol["value"] = 1.0e-7;
     relativeTol["delta"] = 1.0e-3;
     relativeTol["gamma"] = 1.0e-4;
     relativeTol["theta"] = 0.03;
-    testEngineConsistency(engine,steps,samples,relativeTol);
+    testEngineConsistency(engine, steps, relativeTol);
 }
 
 test_suite* ExtendedTreesTest::suite() {

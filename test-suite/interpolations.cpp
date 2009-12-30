@@ -1457,7 +1457,7 @@ void InterpolationTest::testKernelInterpolation2D(){
 
     using namespace boost::assign;
 
-    BOOST_MESSAGE("Testing kernel 2D interpolation ...");
+    BOOST_MESSAGE("Testing kernel 2D interpolation...");
 
     Real mean=0.0, var=0.18;
     GaussianKernel myKernel(mean,var);

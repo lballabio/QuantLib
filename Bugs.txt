@@ -14,11 +14,10 @@ instead of doing it anonymously.
 
 As for the bugs:
 
-- some of them were reproduced, e.g., the CompoundForward one; the
-  corresponding test-suite would fail if run with
-  QL_USE_INDEXED_COUPON defined (the test cases are currently disabled
-  in that case.) In this case, the only step needed is to file the bug
-  with a reference to the test cases.
+- some of them were reproduced; for instance, the AssetSwap test cases
+  would fail if run with QL_USE_INDEXED_COUPON defined.  In this case,
+  the only step needed is to file the bug with a reference to the test
+  cases.
 
 - some of them generically state that "the results are not
   reliable". Each such class should be stress-tested with different
