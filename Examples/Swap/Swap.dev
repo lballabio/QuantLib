@@ -7,7 +7,7 @@ Type=1
 Compiler=-D__GNUWIN32__ -W -fexceptions -finline-functions -DNDEBUG -DNOMINMAX -DWIN32 -D_CONSOLE -D_MBCS_@@_
 CppCompiler=-D__GNUWIN32__ -W -fexceptions -finline-functions -DNDEBUG -DNOMINMAX -DWIN32 -D_CONSOLE -D_MBCS_@@_
 Includes=../..
-Linker=-lkernel32 -luser32 -lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32 -lkernel32 -luser32 -lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32_@@_-lQuantLib-mgw-0_9_9_@@_
+Linker=-lkernel32 -luser32 -lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32 -lkernel32 -luser32 -lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32_@@_-lQuantLib-mgw_@@_
 Libs=..\..\lib
 UnitCount=1
 Folders="Header Files","Resource Files","Source Files"
@@ -41,8 +41,8 @@ BuildCmd=
 
 [VersionInfo]
 Major=0
-Minor=9
-Release=9
+Minor=0
+Release=0
 Build=0
 LanguageID=1033
 CharsetID=1252

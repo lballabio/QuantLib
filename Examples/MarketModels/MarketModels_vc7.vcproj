@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="BermudanSwaption"
-	ProjectGUID="{940A0AFC-9F9F-4797-A0FF-99543F67C1D9}"
+	Name="MarketModels"
+	ProjectGUID="{47CE2A41-091A-42A3-B40D-F6F0DD689349}"
 	SccProjectName=""
 	SccLocalPath="">
 	<Platforms>
@@ -34,7 +34,7 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc71\$(ConfigurationName)/BermudanSwaption.pch"
+				PrecompiledHeaderFile=".\build\vc71\$(ConfigurationName)/MarketModels.pch"
 				AssemblerListingLocation=".\build\vc71\$(ConfigurationName)/"
 				ObjectFile=".\build\vc71\$(ConfigurationName)/"
 				ProgramDataBaseFileName=".\build\vc71\$(ConfigurationName)/"
@@ -48,17 +48,17 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/BermudanSwaption-vc71-sgd.exe"
+				OutputFile=".\bin/MarketModels-vc71-sgd.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\build\vc71\$(ConfigurationName)/BermudanSwaption.pdb"
+				ProgramDatabaseFile=".\build\vc71\$(ConfigurationName)/MarketModels.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc71\$(ConfigurationName)/BermudanSwaption.tlb"
+				TypeLibraryName=".\build\vc71\$(ConfigurationName)/MarketModels.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -108,7 +108,7 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc71\$(ConfigurationName)/BermudanSwaption.pch"
+				PrecompiledHeaderFile=".\build\vc71\$(ConfigurationName)/MarketModels.pch"
 				AssemblerListingLocation=".\build\vc71\$(ConfigurationName)/"
 				ObjectFile=".\build\vc71\$(ConfigurationName)/"
 				ProgramDataBaseFileName=".\build\vc71\$(ConfigurationName)/"
@@ -121,16 +121,16 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/BermudanSwaption-vc71-mt.exe"
+				OutputFile=".\bin/MarketModels-vc71-mt.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
-				ProgramDatabaseFile=".\build\vc71\$(ConfigurationName)/BermudanSwaption.pdb"
+				ProgramDatabaseFile=".\build\vc71\$(ConfigurationName)/MarketModels.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc71\$(ConfigurationName)/BermudanSwaption.tlb"
+				TypeLibraryName=".\build\vc71\$(ConfigurationName)/MarketModels.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -180,7 +180,7 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc71\$(ConfigurationName)/BermudanSwaption.pch"
+				PrecompiledHeaderFile=".\build\vc71\$(ConfigurationName)/MarketModels.pch"
 				AssemblerListingLocation=".\build\vc71\$(ConfigurationName)/"
 				ObjectFile=".\build\vc71\$(ConfigurationName)/"
 				ProgramDataBaseFileName=".\build\vc71\$(ConfigurationName)/"
@@ -193,16 +193,16 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/BermudanSwaption-vc71-mt-s.exe"
+				OutputFile=".\bin/MarketModels-vc71-mt-s.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
-				ProgramDatabaseFile=".\build\vc71\$(ConfigurationName)/BermudanSwaption.pdb"
+				ProgramDatabaseFile=".\build\vc71\$(ConfigurationName)/MarketModels.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc71\$(ConfigurationName)/BermudanSwaption.tlb"
+				TypeLibraryName=".\build\vc71\$(ConfigurationName)/MarketModels.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -252,7 +252,7 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc71\$(ConfigurationName)/BermudanSwaption.pch"
+				PrecompiledHeaderFile=".\build\vc71\$(ConfigurationName)/MarketModels.pch"
 				AssemblerListingLocation=".\build\vc71\$(ConfigurationName)/"
 				ObjectFile=".\build\vc71\$(ConfigurationName)/"
 				ProgramDataBaseFileName=".\build\vc71\$(ConfigurationName)/"
@@ -265,16 +265,16 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/BermudanSwaption-vc71-s.exe"
+				OutputFile=".\bin/MarketModels-vc71-s.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
-				ProgramDatabaseFile=".\build\vc71\$(ConfigurationName)/BermudanSwaption.pdb"
+				ProgramDatabaseFile=".\build\vc71\$(ConfigurationName)/MarketModels.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc71\$(ConfigurationName)/BermudanSwaption.tlb"
+				TypeLibraryName=".\build\vc71\$(ConfigurationName)/MarketModels.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -320,7 +320,7 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc71\$(ConfigurationName)/BermudanSwaption.pch"
+				PrecompiledHeaderFile=".\build\vc71\$(ConfigurationName)/MarketModels.pch"
 				AssemblerListingLocation=".\build\vc71\$(ConfigurationName)/"
 				ObjectFile=".\build\vc71\$(ConfigurationName)/"
 				ProgramDataBaseFileName=".\build\vc71\$(ConfigurationName)/"
@@ -334,17 +334,17 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/BermudanSwaption-vc71-mt-gd.exe"
+				OutputFile=".\bin/MarketModels-vc71-mt-gd.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\build\vc71\$(ConfigurationName)/BermudanSwaption.pdb"
+				ProgramDatabaseFile=".\build\vc71\$(ConfigurationName)/MarketModels.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc71\$(ConfigurationName)/BermudanSwaption.tlb"
+				TypeLibraryName=".\build\vc71\$(ConfigurationName)/MarketModels.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -390,7 +390,7 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc71\$(ConfigurationName)/BermudanSwaption.pch"
+				PrecompiledHeaderFile=".\build\vc71\$(ConfigurationName)/MarketModels.pch"
 				AssemblerListingLocation=".\build\vc71\$(ConfigurationName)/"
 				ObjectFile=".\build\vc71\$(ConfigurationName)/"
 				ProgramDataBaseFileName=".\build\vc71\$(ConfigurationName)/"
@@ -404,17 +404,17 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/BermudanSwaption-vc71-mt-sgd.exe"
+				OutputFile=".\bin/MarketModels-vc71-mt-sgd.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\build\vc71\$(ConfigurationName)/BermudanSwaption.pdb"
+				ProgramDatabaseFile=".\build\vc71\$(ConfigurationName)/MarketModels.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc71\$(ConfigurationName)/BermudanSwaption.tlb"
+				TypeLibraryName=".\build\vc71\$(ConfigurationName)/MarketModels.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -445,7 +445,7 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
-				RelativePath="BermudanSwaption.cpp">
+				RelativePath="MarketModels.cpp">
 				<FileConfiguration
 					Name="Debug (single-threaded runtime)|Win32">
 					<Tool

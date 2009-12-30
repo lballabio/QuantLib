@@ -1,6 +1,6 @@
 [Project]
-FileName=CDS.dev
-Name=CDS
+FileName=MarketModels.dev
+Name=MarketModels
 Ver=1
 IsCpp=1
 Type=1
@@ -9,17 +9,17 @@ CppCompiler=-D__GNUWIN32__ -W -fexceptions -finline-functions -DNDEBUG -DWIN32 -
 Includes=../..
 Linker=-lkernel32 -luser32 -lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32 -lkernel32 -luser32 -lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32_@@_-lQuantLib-mgw_@@_
 Libs=..\..\lib
-UnitCount=2
+UnitCount=1
 Folders="Header Files","Resource Files","Source Files"
 ObjFiles=
-PrivateResource=CDS_private.rc
+PrivateResource=MarketModels_private.rc
 ResourceIncludes=
 MakeIncludes=
 Icon=
 ExeOutput=bin
 ObjectOutput=build\mingw
 OverrideOutput=1
-OverrideOutputName=CDS-mgw.exe
+OverrideOutputName=MarketModels-mgw.exe
 HostApplication=
 CommandLine=
 UseCustomMakefile=0
@@ -30,7 +30,7 @@ CompilerSet=0
 CompilerSettings=0000000000000000000000
 
 [Unit1]
-FileName=CDS.cpp
+FileName=MarketModels.cpp
 Folder="Source Files"
 Compile=1
 CompileCpp=1

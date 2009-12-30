@@ -778,10 +778,10 @@ int main(int, char* []) {
         return 0;
 
     } catch (std::exception& e) {
-        std::cout << e.what() << std::endl;
+        std::cerr << e.what() << std::endl;
         return 1;
     } catch (...) {
-        std::cout << "unknown error" << std::endl;
+        std::cerr << "unknown error" << std::endl;
         return 1;
     }
 }

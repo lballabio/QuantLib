@@ -16,53 +16,12 @@ This program is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+#include <ql/qldefines.hpp>
+#include <ql/version.hpp>
+#ifdef BOOST_MSVC
 #  include <ql/auto_link.hpp>
-#include <ql/models/marketmodels/accountingengine.hpp>
-#include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
-#include <ql/models/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
-#include <ql/models/marketmodels/callability/collectnodedata.hpp>
-#include <ql/models/marketmodels/callability/lsstrategy.hpp>
-#include <ql/models/marketmodels/callability/nothingexercisevalue.hpp>
-#include <ql/models/marketmodels/callability/parametricexerciseadapter.hpp>
-#include <ql/models/marketmodels/callability/swapbasissystem.hpp>
-#include <ql/models/marketmodels/callability/swapforwardbasissystem.hpp>
-#include <ql/models/marketmodels/callability/swapratetrigger.hpp>
-#include <ql/models/marketmodels/callability/triggeredswapexercise.hpp>
-#include <ql/models/marketmodels/callability/upperboundengine.hpp>
-#include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
-#include <ql/models/marketmodels/driftcomputation/lmmdriftcalculator.hpp>
-#include <ql/models/marketmodels/evolvers/lognormalfwdrateeuler.hpp>
-#include <ql/models/marketmodels/evolvers/lognormalfwdrateeulerconstrained.hpp>
-#include <ql/models/marketmodels/evolvers/lognormalfwdrateipc.hpp>
-#include <ql/models/marketmodels/evolvers/lognormalfwdrateballand.hpp>
-#include <ql/models/marketmodels/evolvers/lognormalfwdratepc.hpp>
-#include <ql/models/marketmodels/evolvers/normalfwdratepc.hpp>
-#include <ql/models/marketmodels/discounter.hpp>
-#include <ql/models/marketmodels/models/abcdvol.hpp>
-#include <ql/models/marketmodels/models/flatvol.hpp>
-#include <ql/models/marketmodels/correlations/expcorrelations.hpp>
-#include <ql/models/marketmodels/correlations/timehomogeneousforwardcorrelation.hpp>
-#include <ql/models/marketmodels/products/multiproductcomposite.hpp>
-#include <ql/models/marketmodels/products/multistep/callspecifiedmultiproduct.hpp>
-#include <ql/models/marketmodels/products/multistep/exerciseadapter.hpp>
-#include <ql/models/marketmodels/products/multistep/multistepcoinitialswaps.hpp>
-#include <ql/models/marketmodels/products/multistep/multistepcoterminalswaps.hpp>
-#include <ql/models/marketmodels/products/multistep/multistepcoterminalswaptions.hpp>
-#include <ql/models/marketmodels/products/multistep/multistepperiodcapletswaptions.hpp>
-#include <ql/models/marketmodels/products/multistep/multistepforwards.hpp>
-#include <ql/models/marketmodels/products/multistep/multistepnothing.hpp>
-#include <ql/models/marketmodels/products/multistep/multistepoptionlets.hpp>
-#include <ql/models/marketmodels/products/multistep/multistepswap.hpp>
-#include <ql/models/marketmodels/products/multistep/multistepinversefloater.hpp>
-#include <ql/models/marketmodels/products/onestep/onestepforwards.hpp>
-#include <ql/models/marketmodels/products/onestep/onestepoptionlets.hpp>
-#include <ql/models/marketmodels/forwardforwardmappings.hpp>
-#include <ql/models/marketmodels/proxygreekengine.hpp>
-#include <ql/models/marketmodels/swapforwardmappings.hpp>
-#include <ql/models/marketmodels/models/fwdperiodadapter.hpp>
-#include <ql/models/marketmodels/models/fwdtocotswapadapter.hpp>
-#include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
-#include <ql/models/marketmodels/utilities.hpp>
+#endif
+#include <ql/models/marketmodels/all.hpp>
 #include <ql/methods/montecarlo/genericlsregression.hpp>
 #include <ql/legacy/libormarketmodels/lmlinexpcorrmodel.hpp>
 #include <ql/legacy/libormarketmodels/lmextlinexpvolmodel.hpp>
@@ -80,23 +39,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <sstream>
-
-#include <ql/models/marketmodels/products/pathwise/pathwiseproductcaplet.hpp>
-#include <ql/models/marketmodels/products/pathwise/pathwiseproductswaption.hpp>
-#include <ql/models/marketmodels/products/pathwise/pathwiseproductswap.hpp>
-#include <ql/models/marketmodels/products/pathwise/pathwiseproductcallspecified.hpp>
-
-#include <ql/models/marketmodels/pathwiseaccountingengine.hpp>
-#include <ql/models/marketmodels/pathwisegreeks/ratepseudorootjacobian.hpp>
-#include <ql/models/marketmodels/pathwisegreeks/swaptionpseudojacobian.hpp>
-
-#include <ql/models/marketmodels/models/pseudorootfacade.hpp>
-
-#include <ql/models/marketmodels/pathwisegreeks/bumpinstrumentjacobian.hpp>
-
-#include <ql/models/marketmodels/products/pathwise/pathwiseproductinversefloater.hpp>
-
-
 #include <iostream>
 #include <ctime>
 
@@ -844,8 +786,16 @@ int InverseFloater(Real rateLevel)
 
 int main()
 {
-    for (Size i=5; i < 10; ++i)
-        InverseFloater(i/100.0);
+    try {
+        for (Size i=5; i < 10; ++i)
+            InverseFloater(i/100.0);
 
-    return 0;
+        return 0;
+    } catch (std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return 1;
+    } catch (...) {
+        std::cerr << "unknown error" << std::endl;
+        return 1;
+    }
 }

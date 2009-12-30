@@ -11,6 +11,7 @@ SUBDIRS = \
     EquityOption \
     FittedBondCurve \
     FRA \
+    MarketModels \
     Replication \
     Repo \
     Swap
