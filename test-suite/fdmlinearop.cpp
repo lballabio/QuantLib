@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2008, 2009, 2010 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -63,6 +63,12 @@
 #include <ql/experimental/finitedifferences/firstderivativeop.hpp>
 #include <ql/experimental/finitedifferences/secondderivativeop.hpp>
 #include <ql/experimental/finitedifferences/secondordermixedderivativeop.hpp>
+#include <ql/experimental/finitedifferences/sparseilupreconditioner.hpp>
+
+#if !defined(QL_NO_UBLAS_SUPPORT)
+#include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/operation.hpp>
+#endif
 
 #include <boost/bind.hpp>
 
@@ -977,21 +983,37 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     }
 }
 
-void FdmLinearOpTest::testBiCGstab() {
+#if !defined(QL_NO_UBLAS_SUPPORT)
+namespace {
+    Disposable<Array> axpy(
+        const boost::numeric::ublas::compressed_matrix<Real>& A,
+        const Array& x) {
+        
+        boost::numeric::ublas::vector<Real> tmpX(x.size()), y(x.size());
+        std::copy(x.begin(), x.end(), tmpX.begin());
+        boost::numeric::ublas::axpy_prod(A, tmpX, y);
 
+        Array retVal(y.begin(), y.end());
+        return retVal;
+    }
+}
+#endif
+
+
+void FdmLinearOpTest::testBiCGstab() {
+#if !defined(QL_NO_UBLAS_SUPPORT)
     BOOST_MESSAGE("Testing BiCGstab with Heston operator...");
 
     SavedSettings backup;
-
+    
     const Size n=41, m=21;
     const Real theta = 1.0;
-    Matrix a(n*m, n*m, 0.0);
-
-
+    boost::numeric::ublas::compressed_matrix<Real> a(n*m, n*m);
+    
     for (Size i=0; i < n; ++i) {
         for (Size j=0; j < m; ++j) {
             const Size k = i*m+j;
-            a[k][k]=1.0;
+            a(k,k)=1.0;
 
             if (i > 0 && j > 0 && i <n-1 && j < m-1) {
                 const Size im1 = i-1;
@@ -1000,36 +1022,41 @@ void FdmLinearOpTest::testBiCGstab() {
                 const Size jp1 = j+1;
                 const Real delta = theta/((ip1-im1)*(jp1-jm1));
 
-                a[k][im1*m+jm1] =  delta;
-                a[k][im1*m+jp1] = -delta;
-                a[k][ip1*m+jm1] = -delta;
-                a[k][ip1*m+jp1] =  delta;
+                a(k,im1*m+jm1) =  delta;
+                a(k,im1*m+jp1) = -delta;
+                a(k,ip1*m+jm1) = -delta;
+                a(k,ip1*m+jp1) =  delta;
             }
         }
     }
-
+    
     boost::function<Disposable<Array>(const Array&)> matmult(
-         boost::bind(multiplies<const Matrix&, const Array&,
-                                Disposable<Array> >(), a, _1));
-
+                                                    boost::bind(&axpy, a, _1));
+    
+    SparseILUPreconditioner ilu(a, 4);
+    boost::function<Disposable<Array>(const Array&)> precond(
+         boost::bind(&SparseILUPreconditioner::apply, &ilu, _1));
+    
     Array b(n*m);
     MersenneTwisterUniformRng rng(1234);
     for (Size i=0; i < b.size(); ++i) {
         b[i] = rng.next().value;
     }
 
-    const Real tol = 1e-6;
+    const Real tol = 1e-10;
 
-    const BiCGstab biCGstab(matmult, n*m, tol);
+    const BiCGstab biCGstab(matmult, n*m, tol, precond);
     const Array x = biCGstab.solve(b).x;
 
-    const Real error = std::sqrt(DotProduct(b-a*x, b-a*x)/DotProduct(b,b));
+    const Real error = std::sqrt(DotProduct(b-axpy(a, x), 
+                                 b-axpy(a, x))/DotProduct(b,b));
 
     if (error > tol) {
         QL_FAIL("Error calculating the inverse using BiCGstab" <<
                 "\n tolerance:  " << tol <<
                 "\n error:      " << error);
-    }
+    }  
+#endif
 }
 
 void FdmLinearOpTest::testCrankNicolsonWithDamping() {
@@ -1149,4 +1176,5 @@ test_suite* FdmLinearOpTest::suite() {
         QUANTLIB_TEST_CASE(&FdmLinearOpTest::testCrankNicolsonWithDamping));
 
     return suite;
+    
 }
