@@ -154,12 +154,14 @@ namespace QuantLib {
 
         const Real mu = m1 + m2 + m3 + m4 + m5;
 
-        Array retVal(3), xt(2), dwt(2);
+        Array retVal(3);
         
-        xt[0]  = x0[0]; xt[1]  = x0[1];
-        dwt[0] = dw[0]; dwt[1] = dw[1];
-        
-        retVal[1] = hestonProcess_->evolve(t0, xt, dt, dwt)[1];
+        const Real eta2 = hestonProcess_->sigma() * eta;
+        const Real nu 
+            = hestonProcess_->kappa()*(hestonProcess_->theta() - eta*eta);
+
+        retVal[1] = x0[1] + nu*dt + eta2*std::sqrt(dt)
+                                          *(xi*dw[0]+std::sqrt(1-xi*xi)*dw[1]);
 
         if (discretization_ == BSMHullWhite) {
             const Real v1 = eta*eta*dt 
