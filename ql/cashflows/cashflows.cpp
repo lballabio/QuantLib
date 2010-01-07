@@ -630,7 +630,7 @@ namespace QuantLib {
                         Date npvDate) {
         return npv(leg, InterestRate(yield, dc, comp, freq),
                    includeSettlementDateFlows,
-                   settlementDate, npvDate);  
+                   settlementDate, npvDate);
     }
 
     Real CashFlows::bps(const Leg& leg,
@@ -665,7 +665,7 @@ namespace QuantLib {
                         Date npvDate) {
         return bps(leg, InterestRate(yield, dc, comp, freq),
                    includeSettlementDateFlows,
-                   settlementDate, npvDate);  
+                   settlementDate, npvDate);
     }
 
     Rate CashFlows::yield(const Leg& leg,
@@ -808,7 +808,7 @@ namespace QuantLib {
                               Date npvDate) {
         return convexity(leg, InterestRate(yield, dc, comp, freq),
                          includeSettlementDateFlows,
-                         settlementDate, npvDate);  
+                         settlementDate, npvDate);
     }
 
     Real CashFlows::basisPointValue(const Leg& leg,

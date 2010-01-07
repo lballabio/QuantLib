@@ -25,7 +25,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
 
-    bool Seasonality::isConsistent(const InflationTermStructure *iTS) const {
+    bool Seasonality::isConsistent(const InflationTermStructure&) const {
         return true;
     }
 
@@ -61,7 +61,7 @@ namespace QuantLib {
     }
 
 
-    bool MultiplicativePriceSeasonality::isConsistent(const InflationTermStructure *iTS) const
+    bool MultiplicativePriceSeasonality::isConsistent(const InflationTermStructure& iTS) const
     {
         // If multi-year is the specification consistent with the term structure start date?
         // We do NOT test daily seasonality because this will, in general, never be consistent
@@ -72,7 +72,7 @@ namespace QuantLib {
         // how many years do you need to test?
         Size nTest = seasonalityFactors().size() / this->frequency();
         // ... relative to the start of the inflation curve
-        std::pair<Date,Date> lim = inflationPeriod(iTS->baseDate(), iTS->frequency());
+        std::pair<Date,Date> lim = inflationPeriod(iTS.baseDate(), iTS.frequency());
         Date curveBaseDate = lim.second;
         Real factorBase = this->seasonalityFactor(curveBaseDate);
 
@@ -121,19 +121,19 @@ namespace QuantLib {
 
     Rate MultiplicativePriceSeasonality::correctZeroRate(const Date &d,
                                                          const Rate r,
-                                                         const InflationTermStructure *iTS) const {
-        std::pair<Date,Date> lim = inflationPeriod(iTS->baseDate(), iTS->frequency());
+                                                         const InflationTermStructure& iTS) const {
+        std::pair<Date,Date> lim = inflationPeriod(iTS.baseDate(), iTS.frequency());
         Date curveBaseDate = lim.second;
-        return seasonalityCorrection(r, d, iTS->dayCounter(), curveBaseDate, true);
+        return seasonalityCorrection(r, d, iTS.dayCounter(), curveBaseDate, true);
     }
 
 
     Rate MultiplicativePriceSeasonality::correctYoYRate(const Date &d,
                                                         const Rate r,
-                                                        const InflationTermStructure *iTS) const {
-        std::pair<Date,Date> lim = inflationPeriod(iTS->baseDate(), iTS->frequency());
+                                                        const InflationTermStructure& iTS) const {
+        std::pair<Date,Date> lim = inflationPeriod(iTS.baseDate(), iTS.frequency());
         Date curveBaseDate = lim.second;
-        return seasonalityCorrection(r, d, iTS->dayCounter(), curveBaseDate, false);
+        return seasonalityCorrection(r, d, iTS.dayCounter(), curveBaseDate, false);
     }
 
 

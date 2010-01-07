@@ -69,7 +69,7 @@ namespace QuantLib {
                                              Rate riskFreeRate,
                                              Time end,
                                              Size steps,
-                                             Real creditSpread,
+                                             Spread creditSpread,
                                              Volatility sigma,
                                              Spread divYield)
     : BlackScholesLattice<T>(tree, riskFreeRate, end, steps),

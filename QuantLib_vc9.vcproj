@@ -64,11 +64,10 @@
 				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				BrowseInformation="0"
 				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				WarningLevel="4"
+				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
 				CompileAs="0"
-				DisableSpecificWarnings="4512;4511;4505"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -148,11 +147,10 @@
 				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				BrowseInformation="0"
 				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				WarningLevel="4"
+				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
 				CompileAs="0"
-				DisableSpecificWarnings="4512;4511;4505"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -235,11 +233,10 @@
 				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				BrowseInformation="0"
 				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				WarningLevel="4"
+				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
 				CompileAs="0"
-				DisableSpecificWarnings="4512;4511;4505"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -319,12 +316,11 @@
 				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
 				BrowseInformation="0"
 				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				WarningLevel="4"
+				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 				CompileAs="0"
-				DisableSpecificWarnings="4512;4511;4505"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

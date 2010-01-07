@@ -145,6 +145,9 @@ namespace QuantLib {
                            const Handle<ZeroInflationTermStructure>& ts =
                                         Handle<ZeroInflationTermStructure>());
 
+        /*! \warning the forecastTodaysFixing parameter (required by
+                     the Index interface) is currently ignored.
+        */
         Rate fixing(const Date& fixingDate,
                     bool forecastTodaysFixing = false) const;
 
@@ -175,6 +178,9 @@ namespace QuantLib {
                           const Handle<YoYInflationTermStructure>& ts =
                                 Handle<YoYInflationTermStructure>());
 
+        /*! \warning the forecastTodaysFixing parameter (required by
+                     the Index interface) is currently ignored.
+        */
         Rate fixing(const Date& fixingDate,
                     bool forecastTodaysFixing = false) const;
 

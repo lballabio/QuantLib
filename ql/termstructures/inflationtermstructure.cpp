@@ -91,7 +91,7 @@ namespace QuantLib {
         // always reset, whether with null or new pointer
         seasonality_ = seasonality;
         if (seasonality_) {
-            QL_REQUIRE(seasonality_->isConsistent(this),
+            QL_REQUIRE(seasonality_->isConsistent(*this),
                        "Seasonality inconsistent with "
                        "inflation term structure");
         }
@@ -212,7 +212,7 @@ namespace QuantLib {
         }
 
         if (hasSeasonality()) {
-            zeroRate = seasonality()->correctZeroRate(d-useLag, zeroRate, this);
+            zeroRate = seasonality()->correctZeroRate(d-useLag, zeroRate, *this);
         }
         return zeroRate;
     }
@@ -291,7 +291,7 @@ namespace QuantLib {
         }
 
         if (hasSeasonality()) {
-            yoyRate = seasonality()->correctYoYRate(d-useLag, yoyRate, this);
+            yoyRate = seasonality()->correctYoYRate(d-useLag, yoyRate, *this);
         }
         return yoyRate;
     }

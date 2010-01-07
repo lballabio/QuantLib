@@ -403,7 +403,7 @@ namespace QuantLib {
             if ( floorPrice_(t,fStrikes_.back()) > capPrice_(t,fStrikes_.back()) ) {
                 int counter = 1;
                 bool stop = false;
-                Real strike;
+                Real strike = 0.0;
                 while (stop == false) {
                     strike = fStrikes_.back() - counter * searchStep;
                     if (floorPrice_(t, strike) < capPrice_(t, strike))
@@ -421,7 +421,7 @@ namespace QuantLib {
             } else {
                 int counter = 1;
                 bool stop = false;
-                Real strike;
+                Real strike = 0.0;
                 while (stop == false) {
                     strike = fStrikes_.back() + counter * searchStep;
                     if (floorPrice_(t, strike) > capPrice_(t, strike))

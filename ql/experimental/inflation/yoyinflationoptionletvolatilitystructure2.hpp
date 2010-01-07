@@ -188,7 +188,7 @@ namespace QuantLib {
     template<class Interpolator1D>
     inline Volatility InterpolatedYoYOptionletVolatilityCurve<Interpolator1D>::
     volatilityImpl(const Time t,
-                   Rate strike) const {
+                   Rate) const {
         return interpolation_(t);
     }
 

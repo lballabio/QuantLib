@@ -58,9 +58,9 @@ namespace QuantLib {
         //! \name Seasonality interface
         //@{
         virtual Rate correctZeroRate(const Date &d, const Rate r,
-                                     const InflationTermStructure *iTS) const = 0;
+                                     const InflationTermStructure& iTS) const = 0;
         virtual Rate correctYoYRate(const Date &d, const Rate r,
-                                    const InflationTermStructure *iTS) const = 0;
+                                    const InflationTermStructure& iTS) const = 0;
         /*! It is possible for multi-year seasonalities to be
             inconsistent with the inflation term structure they are
             given to.  This method enables testing - but programmers
@@ -71,7 +71,7 @@ namespace QuantLib {
             Alternatively, the seasonality can be set _before_ the
             inflation curve is bootstrapped.
         */
-        virtual bool isConsistent(const InflationTermStructure *iTS) const;
+        virtual bool isConsistent(const InflationTermStructure& iTS) const;
         //@}
 
         virtual ~Seasonality() {}
@@ -146,10 +146,10 @@ namespace QuantLib {
             //! \name Seasonality interface
             //@{
             virtual Rate correctZeroRate(const Date &d, const Rate r,
-                                         const InflationTermStructure *iTS) const;
+                                         const InflationTermStructure& iTS) const;
             virtual Rate correctYoYRate(const Date &d, const Rate r,
-                                        const InflationTermStructure *iTS) const;
-            virtual bool isConsistent(const InflationTermStructure *iTS) const;
+                                        const InflationTermStructure& iTS) const;
+            virtual bool isConsistent(const InflationTermStructure& iTS) const;
             //@}
 
             //Destructor

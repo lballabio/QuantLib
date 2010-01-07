@@ -122,7 +122,7 @@ namespace QuantLib {
     }
 
     Rate ZeroInflationIndex::fixing(const Date& aFixingDate,
-                                    bool forecastTodaysFixing) const {
+                                    bool /*forecastTodaysFixing*/) const {
 
         // Stored fixings are always non-interpolated.
         // If an interpolated fixing is required then
@@ -230,7 +230,7 @@ namespace QuantLib {
 
 
     Rate YoYInflationIndex::fixing(const Date& fixingDate,
-                                   bool forecastTodaysFixingIgnored) const {
+                                   bool /*forecastTodaysFixing*/) const {
 
         Date today = Settings::instance().evaluationDate();
         Date todayMinusLag = today - availabilityLag_;
