@@ -15,6 +15,7 @@ dist_man_MANS += BermudanSwaption.1 \
                  EquityOption.1 \
                  FittedBondCurve.1 \
                  FRA.1 \
+                 MarketModels.1 \
                  SwapValuation.1 \
                  Replication.1 \
                  Repo.1
@@ -30,6 +31,7 @@ EXTRA_DIST += BermudanSwaption.1 \
               EquityOption.1 \
               FittedBondCurve.1 \
               FRA.1 \
+              MarketModels.1 \
               SwapValuation.1 \
               Replication.1 \
               Repo.1
