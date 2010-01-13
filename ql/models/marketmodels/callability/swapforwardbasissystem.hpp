@@ -19,14 +19,14 @@
 
 
 #ifndef quantlib_swap_forward_basis_system_hpp
-#define quantlib_swap_basis_system_hpp
+#define quantlib_swap_forward_basis_system_hpp
 
 #include <ql/models/marketmodels/callability/marketmodelbasissystem.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 
 namespace QuantLib {
 
-    class SwapForwardBasisSystem : public MarketModelBasisSystem 
+    class SwapForwardBasisSystem : public MarketModelBasisSystem
     {
       public:
         SwapForwardBasisSystem(const std::vector<Time>& rateTimes,
@@ -38,7 +38,7 @@ namespace QuantLib {
         void nextStep(const CurveState&);
         void reset();
         std::valarray<bool> isExerciseTime() const;
-        
+
         void values(const CurveState&,
                                   std::vector<Real>& results) const;
 

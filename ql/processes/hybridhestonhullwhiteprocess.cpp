@@ -157,7 +157,7 @@ namespace QuantLib {
         Array retVal(3);
         
         const Real eta2 = hestonProcess_->sigma() * eta;
-        const Real nu 
+        const Real nu
             = hestonProcess_->kappa()*(hestonProcess_->theta() - eta*eta);
 
         retVal[1] = x0[1] + nu*dt + eta2*std::sqrt(dt)
@@ -238,4 +238,3 @@ namespace QuantLib {
         endDiscount_ = hestonProcess_->riskFreeRate()->discount(T_);
     }
 }
-
