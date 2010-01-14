@@ -25,7 +25,8 @@
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp>
 
-#include <vector>
+#include <set>
+#include <algorithm>
 
 namespace QuantLib {
 
@@ -39,8 +40,7 @@ namespace QuantLib {
         const Real df  = 4*process->theta()*process->kappa()/
                             square<Real>()(process->sigma());
         try {
-            std::vector<std::pair<Real, Real> > grid;
-            grid.reserve(size*tAvgSteps);
+            std::multiset<std::pair<Real, Real> > grid;
             
             for (Size l=1; l<=tAvgSteps; ++l) {
                 const Real t = (maturity*l)/tAvgSteps;
@@ -61,7 +61,7 @@ namespace QuantLib {
                 Real ps,p = epsilon;
 
                 Real vTmp = qMin;
-                grid.push_back(std::pair<Real, Real>(qMin, epsilon));
+                grid.insert(std::pair<Real, Real>(qMin, epsilon));
                 
                 for (Size i=1; i < size; ++i) {
                     ps = (1 - epsilon - p)/(size-i);
@@ -72,16 +72,20 @@ namespace QuantLib {
                     const Real vx = std::max(vTmp+minVStep, tmp);
                     p = NonCentralChiSquareDistribution(df, ncp)(vx/k);
                     vTmp=vx;
-                    grid.push_back(std::pair<Real, Real>(vx, p));
+                    grid.insert(std::pair<Real, Real>(vx, p));
                 }
             }
             QL_REQUIRE(grid.size() == size*tAvgSteps, 
                        "something wrong with the grid size");
             
+            std::vector<std::pair<Real, Real> > tp(grid.begin(), grid.end());
+            
             for (Size i=0; i < size; ++i) {
-                for (Size j=0; j < tAvgSteps; ++j) {
-                    vGrid[i]+=grid[i+j*size].first/tAvgSteps;
-                    pGrid[i]+=grid[i+j*size].second/tAvgSteps;
+                const Size b = (i*tp.size())/size;
+                const Size e = ((i+1)*tp.size())/size;
+                for (Size j=b; j < e; ++j) {
+                    vGrid[i]+=tp[j].first/(e-b);
+                    pGrid[i]+=tp[j].second/(e-b);
                 }
             }
         } 
@@ -103,6 +107,8 @@ namespace QuantLib {
 
         Real skewHint = ((process->kappa() != 0.0) 
                 ? std::max(1.0, process->sigma()/process->kappa()) : 1.0);
+        
+        std::sort(pGrid.begin(), pGrid.end());
         volaEstimate_ = GaussLobattoIntegral(100000, 1e-4)(
             boost::function1<Real, Real>(
                 compose(std::ptr_fun<Real, Real>(std::sqrt),
