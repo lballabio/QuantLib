@@ -172,9 +172,6 @@ namespace QuantLib {
               GaussLaguerre, GaussLegendre,
               GaussChebyshev, GaussChebyshev2nd };
 
-        mutable Real c_inf_;
-        mutable boost::function1<Real, Real> f_;
-
         Integration(Algorithm intAlgo,
                     const boost::shared_ptr<GaussianQuadrature>& quadrature);
 

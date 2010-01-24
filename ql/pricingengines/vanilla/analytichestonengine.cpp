@@ -224,10 +224,6 @@ namespace QuantLib {
                                        + 0.5*v0_*term_;
                 }
                 else {
-                    const std::complex<Real> p = (t1-d)/(t1+d);
-                    const std::complex<Real> g
-                        = std::log((1.0 - p*ex)/(1.0 - p));
-
                     return dd_-sx_
                         - (std::exp(-kappa_*term_)*kappa_*theta_
                            +kappa_*theta_*(kappa_*term_-1.0))/(2*kappa_*kappa_)
