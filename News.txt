@@ -1,100 +1,62 @@
 
-Notable changes for QuantLib 0.9.9:
+Notable changes for QuantLib 1.0:
 
 PORTABILITY
 
-- Fixes for 64-bit compilation.
-- Fixes for Sun Solaris compilation (thanks to Andreas Spengler.)
+- Fixes for x64 Visual Studio compilation (thanks to Craig Miller.)
 
-CASH FLOWS
+- Enabled language extensions in Visual Studio projects.
 
-- Added overnight-index coupon.
-- Added inflation coupons.
-- Parameterized CashFlows functions with explicit flag specifying
-  whether to include settlement-date cash flows.
-- Added cash-flow related flags to Settings class. They determine
-  whether or not to include today's and/or settlement date's cash
-  flows. They can be overridden while calling CashFlows functions.
+- Prevented make errors with older shells (thanks to Walter Eaves.)
 
 DATE/TIME
 
-- Added EUWAX calendar.
-- Updated 2009 holidays for China, Hong Kong, India, Indonesia,
-  Singapore, and Taiwan.
-- Removed Easter Monday from Canadian holidays (thanks to Matt Knox.)
-- Added weekend-only calendar.
+- Changes to end-of-month adjustment. In a schedule, the Unadjusted
+  convention now supersedes a non-null calendar and causes dates to
+  roll on the unadjusted end of month (possibly a holiday.)
 
-INDEXES
+- Added new date-generation rule for CDS (thanks to Jose Aparicio.)
 
-- Added EONIA index.
-- Added French HICP and Australian CPI inflation indexes.
+- Fix for CDS fair-upfront calculation (thanks to Jose Aparicio.)
+  Previously, fair-upfront calculation required a non-null upfront
+  to begin with. This is no longer the case.
 
 INSTRUMENTS
 
-- Added overnight-index swaps (including helper for yield-curve bootstrap.)
-- Added inflation cap/floors (including interface for inflation cap/floor
-  volatility structures.)
-- Added inspectors for previous and next coupon dates to Bond class.
-- Added implied z-spread calculation for bonds (thanks to Nathan Abbott.)
-- Added inspector to see whether a bond is still tradable (as opposed
-  to not expired.)
-- Added constructor for fixed-rate bonds taking a generic InterestRate
-  instance (thanks to Piter Dias.)
-- Added upfront to credit default swaps, including application to CDS
-  helpers (thanks to Jose Aparicio.)
-- Added conventional CDS spread calculation (thanks to Jose Aparicio.)
-- Enabled non-spot inflation swaps.
-- Migrated asset swaps to pricing-engine framework.
-- Migrated inflation swaps to pricing-engine framework.
-- Migrated old average-strike Asian option pricer to pricing-engine
-  framework (thanks to IMAFA students Jean Nkeng, Adrien Pinatton,
-  and Alpha Sanou Toure.)
+- Fixed discounting of dividends on convertible-bond grid (thanks to
+  Benoit Houzelle and Samuel Lerouge.)
 
-PRICING ENGINES
+CASH FLOWS
 
-- Added builders for a few Monte Carlo engines.
-- Most Monte Carlo engines can now specify either relative or absolute
-  target tolerance.
-- Some Monte Carlo engines can now specify either an absolute number
-  of time steps or a number of time steps per year.
-- Added choice of evolver scheme to finite-difference vanilla engines.
+- A number of CashFlows methods now return a meaningful result even
+  if the passed leg is empty.
 
-MATH
+PROCESSES
 
-- Implemented Parabolic and Fritsch-Butland cubic interpolations.
-- Added BFGS optimizer (thanks to Frederic Degraeve.)
-- Added 1D and 2D kernel interpolation (thanks to Dimitri Reiswich.)
-- Added Akima and overshooting-minimization spline algorithms (thanks
-  to Sylvain Bertrand.)
-- Added FFT implementation (thanks to Slava Mazur.)
-
-RANDOM NUMBERS
-
-- Added Luescher's luxury random number generator (a proxy for Boost
-  implementation.)
+- Changed default discretization for Heston process.  The new
+  default (giving a better performance) is quadratic exponential
+  with Martingale correction.
 
 TERM STRUCTURES
 
-- Added hook to swap-rate helpers for external discounting term
-  structure (thanks to Roland Lichters.)
-- Added seasonality to inflation term structures (thanks to Piero Del
-  Boca and Chris Kenyon.)
+- Removed ambiguous parRate member functions from YieldTermStructure
+  interface.
+
+EXAMPLES
+
+- Added market-model example.
 
 EXPERIMENTAL FOLDER
 
 The ql/experimental folder contains code which is still not fully
 integrated with the library or even fully tested, but is released in
 order to get user feedback.  Experimental classes are considered
-unstable; their interfaces are likely to change in future
-releases. New contributions for this release were:
+unstable; their interfaces might change in future releases.
+New contributions for this release were:
 
-- risky bonds and asset-swap options (thanks to Roland Lichters;)
-- spreaded hazard-rate curves (thanks to Roland Lichters;)
-- compound options (thanks to Dimitri Reiswich;)
-- refactored CDS options (thanks to Jose Aparicio;)
-- finite-differences solver for the hybrid Heston Hull-White model,
-  including calibration (thanks to Klaus Spanderen;)
-- finite-differences Asian-option engines (thanks to Ralph Schreyer;)
-- machinery for default-event specification (thanks to Jose Aparicio;)
-- recursive CDO engine (thanks to Jose Aparicio.)
+- Longstaff-Schwartz algorithm for basket products including coupon
+  payments (thanks to Andrea Odetti;)
+
+- added sparse incomplete LU preconditioner for 2D finite-difference
+  models (thanks to Ralph Schreyer.)
 

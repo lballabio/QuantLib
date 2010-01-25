@@ -79,7 +79,7 @@ namespace QuantLib {
                        "something wrong with the grid size");
             
             std::vector<std::pair<Real, Real> > tp(grid.begin(), grid.end());
-            
+
             for (Size i=0; i < size; ++i) {
                 const Size b = (i*tp.size())/size;
                 const Size e = ((i+1)*tp.size())/size;
@@ -107,7 +107,7 @@ namespace QuantLib {
 
         Real skewHint = ((process->kappa() != 0.0) 
                 ? std::max(1.0, process->sigma()/process->kappa()) : 1.0);
-        
+
         std::sort(pGrid.begin(), pGrid.end());
         volaEstimate_ = GaussLobattoIntegral(100000, 1e-4)(
             boost::function1<Real, Real>(

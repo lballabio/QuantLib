@@ -21,74 +21,69 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
 
-	Size MultiProductComposite::numberOfProducts() const {
-		Size result = 0;
-		for (const_iterator i=components_.begin(); i!=components_.end(); ++i)
-			result += i->product->numberOfProducts();
-		return result;
-	}
+    Size MultiProductComposite::numberOfProducts() const {
+        Size result = 0;
+        for (const_iterator i=components_.begin(); i!=components_.end(); ++i)
+            result += i->product->numberOfProducts();
+        return result;
+    }
 
 
-	Size MultiProductComposite::maxNumberOfCashFlowsPerProductPerStep() const {
-		Size result = 0;
-		for (const_iterator i=components_.begin(); i!=components_.end(); ++i)
-			result = std::max(result,
-			i->product
-			->maxNumberOfCashFlowsPerProductPerStep());
-		return result;
-	}
+    Size MultiProductComposite::maxNumberOfCashFlowsPerProductPerStep() const {
+        Size result = 0;
+        for (const_iterator i=components_.begin(); i!=components_.end(); ++i)
+            result = std::max(result,
+            i->product
+            ->maxNumberOfCashFlowsPerProductPerStep());
+        return result;
+    }
 
 
-	bool MultiProductComposite::nextTimeStep(
-		const CurveState& currentState,
-		std::vector<Size>& numberCashFlowsThisStep,
-		std::vector<std::vector<CashFlow> >& cashFlowsGenerated) {
-			QL_REQUIRE(finalized_, "composite not finalized");
-			bool done = true;
-			Size n = 0, offset = 0;
-			// for each sub-product...
-			for (iterator i=components_.begin(); i!=components_.end(); ++i, ++n) 
-			{
-				if (isInSubset_[n][currentIndex_] && !i->done) 
-				{
-					// ...make it evolve...
-					bool thisDone = i->product->nextTimeStep(currentState,
-						i->numberOfCashflows,
-						i->cashflows);
-					// ...and copy the results. Time indices need to be remapped
-					// so that they point into all cash-flow times. Amounts need
-					// to be adjusted by the corresponding multiplier.
-					for (Size j=0; j<i->product->numberOfProducts(); ++j) 
-					{
-						numberCashFlowsThisStep[j+offset] =
-							i->numberOfCashflows[j];
-						for (Size k=0; k<i->numberOfCashflows[j]; ++k) 
-						{
-							CashFlow& from = i->cashflows[j][k];
-							CashFlow& to = cashFlowsGenerated[j+offset][k];
-							to.timeIndex = i->timeIndices[from.timeIndex];
-							to.amount = from.amount * i->multiplier;
-						}
-					}
-					// finally, set done to false if this product isn't done
-					done = done && thisDone;
-				}
-				else
-					for (Size j=0; j<i->product->numberOfProducts(); ++j) 					
-						numberCashFlowsThisStep[j+offset] =0;
+    bool MultiProductComposite::nextTimeStep(
+                     const CurveState& currentState,
+                     std::vector<Size>& numberCashFlowsThisStep,
+                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated) {
+        QL_REQUIRE(finalized_, "composite not finalized");
+        bool done = true;
+        Size n = 0, offset = 0;
+        // for each sub-product...
+        for (iterator i=components_.begin(); i!=components_.end(); ++i, ++n) {
+            if (isInSubset_[n][currentIndex_] && !i->done) {
+                // ...make it evolve...
+                bool thisDone = i->product->nextTimeStep(currentState,
+                                                         i->numberOfCashflows,
+                                                         i->cashflows);
+                // ...and copy the results. Time indices need to be remapped
+                // so that they point into all cash-flow times. Amounts need
+                // to be adjusted by the corresponding multiplier.
+                for (Size j=0; j<i->product->numberOfProducts(); ++j) {
+                    numberCashFlowsThisStep[j+offset] =
+                        i->numberOfCashflows[j];
+                    for (Size k=0; k<i->numberOfCashflows[j]; ++k) {
+                        CashFlow& from = i->cashflows[j][k];
+                        CashFlow& to = cashFlowsGenerated[j+offset][k];
+                        to.timeIndex = i->timeIndices[from.timeIndex];
+                        to.amount = from.amount * i->multiplier;
+                    }
+                }
+                // finally, set done to false if this product isn't done
+                done = done && thisDone;
+            }
+            else
+                for (Size j=0; j<i->product->numberOfProducts(); ++j)
+                    numberCashFlowsThisStep[j+offset] =0;
 
-				// the offset is updated whether or not the product was evolved
-				offset += i->product->numberOfProducts();
-			}
-			++currentIndex_;
-			return done;
-	}
+            // the offset is updated whether or not the product was evolved
+            offset += i->product->numberOfProducts();
+        }
+        ++currentIndex_;
+        return done;
+    }
 
-	std::auto_ptr<MarketModelMultiProduct>
-		MultiProductComposite::clone() const {
-			return std::auto_ptr<MarketModelMultiProduct>(
-				new MultiProductComposite(*this));
-	}
+    std::auto_ptr<MarketModelMultiProduct>
+        MultiProductComposite::clone() const {
+            return std::auto_ptr<MarketModelMultiProduct>(
+                new MultiProductComposite(*this));
+    }
 
 }
-
