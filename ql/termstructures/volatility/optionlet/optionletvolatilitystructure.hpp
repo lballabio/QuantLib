@@ -47,8 +47,8 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        OptionletVolatilityStructure(const Calendar& cal,
-                                     BusinessDayConvention bdc,
+        OptionletVolatilityStructure(const Calendar& cal = Calendar(),
+                                     BusinessDayConvention bdc = Following,
                                      const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
         OptionletVolatilityStructure(const Date& referenceDate,
