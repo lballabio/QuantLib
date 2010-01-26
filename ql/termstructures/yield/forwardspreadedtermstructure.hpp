@@ -47,14 +47,14 @@ namespace QuantLib {
       public:
         ForwardSpreadedTermStructure(const Handle<YieldTermStructure>&,
                                      const Handle<Quote>& spread);
-        //! \name YieldTermStructure interface
+        //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const;
-        Calendar calendar() const;
-        Natural settlementDays() const;
-        const Date& referenceDate() const;
         Date maxDate() const;
         Time maxTime() const;
+        const Date& referenceDate() const;
+        Calendar calendar() const;
+        Natural settlementDays() const;
         //@}
       protected:
         //! \name ForwardRateStructure implementation
