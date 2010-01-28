@@ -51,9 +51,9 @@ namespace QuantLib {
         shared_ptr<OvernightIndex> clonedOvernightIndex =
             boost::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
 
-       swap_ = MakeOIS(tenor_, clonedOvernightIndex, 0.0)
-           .withSettlementDays(settlementDays_)
-           .withDiscountingTermStructure(termStructureHandle_);
+        swap_ = MakeOIS(tenor_, clonedOvernightIndex, 0.0)
+            .withSettlementDays(settlementDays_)
+            .withDiscountingTermStructure(termStructureHandle_);
 
         earliestDate_ = swap_->startDate();
         latestDate_ = swap_->maturityDate();

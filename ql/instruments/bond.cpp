@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
- Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2007, 2008, 2010 StatPro Italia srl
  Copyright (C) 2007, 2008, 2009 Ferdinando Ametrano
  Copyright (C) 2007 Chiara Fornarola
  Copyright (C) 2008 Simon Ibbotson
@@ -172,7 +172,11 @@ namespace QuantLib {
     }
 
     Real Bond::dirtyPrice() const {
-        return settlementValue() * 100.0 / notional(settlementDate());
+        Real currentNotional = notional(settlementDate());
+        if (currentNotional == 0.0)
+            return 0.0;
+        else
+            return settlementValue()*100.0/currentNotional;
     }
 
     Real Bond::settlementValue() const {
@@ -192,6 +196,10 @@ namespace QuantLib {
                      Frequency freq,
                      Real accuracy,
                      Size maxEvaluations) const {
+        Real currentNotional = notional(settlementDate());
+        if (currentNotional == 0.0)
+            return 0.0;
+
         return BondFunctions::yield(*this, cleanPrice(), dc, comp, freq,
                                     settlementDate(),
                                     accuracy, maxEvaluations);
@@ -210,6 +218,10 @@ namespace QuantLib {
                           Compounding comp,
                           Frequency freq,
                           Date settlement) const {
+        Real currentNotional = notional(settlementDate());
+        if (currentNotional == 0.0)
+            return 0.0;
+
         return BondFunctions::cleanPrice(*this, y, dc, comp, freq, settlement)
             + accruedAmount(settlement);
     }
@@ -221,11 +233,19 @@ namespace QuantLib {
                      Date settlement,
                      Real accuracy,
                      Size maxEvaluations) const {
+        Real currentNotional = notional(settlementDate());
+        if (currentNotional == 0.0)
+            return 0.0;
+
         return BondFunctions::yield(*this, cleanPrice, dc, comp, freq,
                                     settlement, accuracy, maxEvaluations);
     }
 
     Real Bond::accruedAmount(Date settlement) const {
+        Real currentNotional = notional(settlementDate());
+        if (currentNotional == 0.0)
+            return 0.0;
+
         return BondFunctions::accruedAmount(*this, settlement);
     }
 

@@ -94,7 +94,7 @@ namespace QuantLib {
                 x = 0.0;
             } else {
                 QL_FAIL("InverseCumulativeNormal(" << x
-                   << ") undefined: must be 0 < x < 1");
+                        << ") undefined: must be 0 < x < 1");
             }
         }
 
