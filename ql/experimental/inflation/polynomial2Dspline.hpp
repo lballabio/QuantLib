@@ -31,7 +31,7 @@
 
 namespace QuantLib {
 
-    namespace detail2 {
+    namespace detail {
 
         template <class I1, class I2, class M>
         class Polynomial2DSplineImpl
@@ -86,7 +86,7 @@ namespace QuantLib {
                            const I2& yBegin, const I2& yEnd,
                            const M& zData) {
             impl_ = boost::shared_ptr<Interpolation2D::Impl>(
-                  new detail2::Polynomial2DSplineImpl<I1,I2,M>(xBegin, xEnd,
+                  new detail::Polynomial2DSplineImpl<I1,I2,M>(xBegin, xEnd,
                                                               yBegin, yEnd, zData));
         }
     };
