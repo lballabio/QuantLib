@@ -573,6 +573,9 @@
 				RelativePath=".\assetswap.cpp">
 			</File>
 			<File
+				RelativePath=".\autocovariances.cpp">
+			</File>
+			<File
 				RelativePath="barrieroption.cpp">
 				<FileConfiguration
 					Name="Debug (static runtime)|Win32">
@@ -2420,6 +2423,9 @@
 			</File>
 			<File
 				RelativePath=".\assetswap.hpp">
+			</File>
+			<File
+				RelativePath=".\autocovariances.hpp">
 			</File>
 			<File
 				RelativePath="barrieroption.hpp">

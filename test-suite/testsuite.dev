@@ -1,7 +1,7 @@
 [Project]
 FileName=testsuite.dev
 Name=QuantLib-test-suite
-UnitCount=206
+UnitCount=208
 Type=1
 Ver=1
 ObjFiles=
@@ -2107,3 +2107,22 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
+[Unit207]
+FileName=autocovariances.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit208]
+FileName=autocovariances.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=

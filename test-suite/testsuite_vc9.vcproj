@@ -867,6 +867,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\autocovariances.cpp"
+				>
+			</File>
+			<File
 				RelativePath="barrieroption.cpp"
 				>
 			</File>
@@ -1277,6 +1281,10 @@
 			</File>
 			<File
 				RelativePath=".\assetswap.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\autocovariances.hpp"
 				>
 			</File>
 			<File

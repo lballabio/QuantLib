@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=1625
+UnitCount=1626
 Type=2
 Ver=1
 ObjFiles=
@@ -16291,6 +16291,16 @@ BuildCmd=
 FileName=ql\experimental\exoticoptions\all.hpp
 CompileCpp=1
 Folder=experimental/exoticoptions
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1626]
+FileName=ql\experimental\math\autocovariance.hpp
+CompileCpp=1
+Folder=experimental/math
 Compile=1
 Link=1
 Priority=1000

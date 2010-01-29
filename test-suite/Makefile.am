@@ -5,6 +5,7 @@ QL_TESTS = \
 	array.hpp array.cpp \
 	asianoptions.hpp asianoptions.cpp \
 	assetswap.hpp assetswap.cpp \
+	autocovariances.hpp autocovariances.cpp \
 	barrieroption.hpp barrieroption.cpp \
 	basketoption.hpp basketoption.cpp \
 	batesmodel.hpp batesmodel.cpp \

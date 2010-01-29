@@ -1416,6 +1416,9 @@
 					RelativePath=".\ql\experimental\math\all.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\experimental\math\autocovariance.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\experimental\math\fastfouriertransform.hpp">
 				</File>
 			</Filter>

@@ -7368,6 +7368,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\math\autocovariance.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\math\fastfouriertransform.hpp"
 					>
 				</File>
