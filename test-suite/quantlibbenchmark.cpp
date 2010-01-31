@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2008 Klaus Spanderen
+ Copyright (C) 2006, 2008, 2010 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -116,15 +116,15 @@ namespace {
     class Benchmark {
       public:
         typedef void (*fct_ptr)();
-        Benchmark(std::string name, fct_ptr f, double mflops)
-        : f_(f), name_(name), mflops_(mflops) {
+        Benchmark(std::string name, fct_ptr f, double mflop)
+        : f_(f), name_(name), mflop_(mflop) {
         }
 
         test_case* getTestCase() const {
             return QUANTLIB_TEST_CASE(f_);
         }
-        double getMflops() const {
-            return mflops_;
+        double getMflop() const {
+            return mflop_;
         }
         std::string getName() const {
             return name_;
@@ -132,8 +132,8 @@ namespace {
       private:
         fct_ptr f_;
         const std::string name_;
-        const double mflops_; // total number of mega floating
-                              // point operations (not per sec!)
+        const double mflop_; // total number of mega floating
+                             // point operations (not per sec!)
     };
 
     boost::timer t;
@@ -142,14 +142,15 @@ namespace {
 
     /* PAPI code
     float real_time, proc_time, mflops;
-    long_long flpins;
+    long_long lflops, flop=0;
     */
 
     void startTimer() {
         t.restart();
 
         /* PAPI code
-        PAPI_flips(&real_time, &proc_time, &flpins, &mflops);
+        lflop = flop;
+        PAPI_flops(&real_time, &proc_time, &flop, &mflops);
         */
     }
 
@@ -157,9 +158,9 @@ namespace {
         runTimes.push_back(t.elapsed());
 
         /* PAPI code
-        PAPI_flips(&real_time, &proc_time, &flpins, &mflops);
-        printf("Real_time: %f Proc_time: %f Total mflpins: %f MFLOPS %f\n",
-               real_time, proc_time, flpins/1e6, mflops);
+        PAPI_flops(&real_time, &proc_time, &flop, &mflops);
+        printf("Real_time: %f Proc_time: %f Total mflop: %f\n",
+               real_time, proc_time, (flop-lflop)/1e6);
         */
     }
 
@@ -182,7 +183,7 @@ namespace {
         std::list<Benchmark>::const_iterator iterBM = bm.begin();
 
         while (iterT != runTimes.end()) {
-            const double mflopsPerSec = iterBM->getMflops()/(*iterT);
+            const double mflopsPerSec = iterBM->getMflop()/(*iterT);
             std::cout << iterBM->getName()
                       << std::string(42-iterBM->getName().length(),' ') << ":"
                       << std::fixed << std::setw(6) << std::setprecision(1)
@@ -212,23 +213,23 @@ test_suite* init_unit_test_suite(int, char*[]) {
     bm.push_back(Benchmark("AmericanOption::FdAmericanGreeks",
         &AmericanOptionTest::testFdAmericanGreeks, 518.31));
     bm.push_back(Benchmark("AmericanOption::FdShoutGreeks",
-        &AmericanOptionTest::testFdShoutGreeks, 545.93));
+        &AmericanOptionTest::testFdShoutGreeks, 546.58));
     bm.push_back(Benchmark("AsianOption::MCArithmeticAveragePrice",
-        &AsianOptionTest::testMCDiscreteArithmeticAveragePrice, 4368.05));
+        &AsianOptionTest::testMCDiscreteArithmeticAveragePrice, 5186.13));
     bm.push_back(Benchmark("BarrierOption::BabsiriValues",
-        &BarrierOptionTest::testBabsiriValues, 967.4));
+        &BarrierOptionTest::testBabsiriValues, 880.8));
     bm.push_back(Benchmark("BasketOption::EuroTwoValues",
-        &BasketOptionTest::testEuroTwoValues, 397.32));
+        &BasketOptionTest::testEuroTwoValues, 340.04));
     bm.push_back(Benchmark("BasketOption::TavellaValues",
-        &BasketOptionTest::testTavellaValues, 1030.41));
+        &BasketOptionTest::testTavellaValues, 933.80));
     bm.push_back(Benchmark("BasketOption::OddSamples",
-        &BasketOptionTest::testOddSamples, 755.34));
+        &BasketOptionTest::testOddSamples, 642.46));
     bm.push_back(Benchmark("BatesModel::DAXCalibration",
-        &BatesModelTest::testDAXCalibration, 2545.07));
+        &BatesModelTest::testDAXCalibration, 1993.35));
     bm.push_back(Benchmark("ConvertibleBondTest::testBond",
         &ConvertibleBondTest::testBond, 159.85));
     bm.push_back(Benchmark("DigitalOption::MCCashAtHit",
-        &DigitalOptionTest::testMCCashAtHit,1054.19));
+        &DigitalOptionTest::testMCCashAtHit,995.87));
     bm.push_back(Benchmark("DividendOption::FdEuropeanValues",
         &DividendOptionTest::testFdEuropeanValues, 992.12));
     bm.push_back(Benchmark("DividendOption::FdEuropeanGreeks",
@@ -236,37 +237,37 @@ test_suite* init_unit_test_suite(int, char*[]) {
     bm.push_back(Benchmark("DividendOption::FdAmericanGreeks",
         &DividendOptionTest::testFdAmericanGreeks, 1113.74));
     bm.push_back(Benchmark("EuropeanOption::FdMcEngines",
-        &EuropeanOptionTest::testMcEngines, 2316.09));
+        &EuropeanOptionTest::testMcEngines, 1988.63));
     bm.push_back(Benchmark("EuropeanOption::ImpliedVol",
-        &EuropeanOptionTest::testImpliedVol, 130.47));
+        &EuropeanOptionTest::testImpliedVol, 131.51));
     bm.push_back(Benchmark("EuropeanOption::FdEngines",
         &EuropeanOptionTest::testFdEngines, 148.43));
     bm.push_back(Benchmark("EuropeanOption::PriceCurve",
         &EuropeanOptionTest::testPriceCurve, 414.76));
     bm.push_back(Benchmark("FdHestonTest::testFdmHestonAmerican",
-        &FdHestonTest::testFdmHestonAmerican, 181.22));
+        &FdHestonTest::testFdmHestonAmerican, 234.21));
     bm.push_back(Benchmark("HestonModel::DAXCalibration",
-        &HestonModelTest::testDAXCalibration, 744.41));
+        &HestonModelTest::testDAXCalibration, 555.19));
     bm.push_back(Benchmark("HestonModel::McVsCached",
-        &HestonModelTest::testMcVsCached, 1326.30));
+        &HestonModelTest::testMcVsCached, 150.04));
     bm.push_back(Benchmark("InterpolationTest::testSabrInterpolation",
         &InterpolationTest::testSabrInterpolation, 2266.06));
     bm.push_back(Benchmark("JumpDiffusion::Greeks",
-        &JumpDiffusionTest::testGreeks, 301.98));
+        &JumpDiffusionTest::testGreeks, 433.77));
     bm.push_back(Benchmark("MarketModelCmsTest::testCmSwapsSwaptions",
         &MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions,
-        11486.28));
+        11497.73));
     bm.push_back(Benchmark("MarketModelSmmTest::testMultiSmmSwaptions",
         &MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions,
-        11231.11));
+        11244.95));
     bm.push_back(Benchmark("QuantoOption::ForwardGreeks",
-        &QuantoOptionTest::testForwardGreeks, 89.36));
+        &QuantoOptionTest::testForwardGreeks, 90.98));
     bm.push_back(Benchmark("RandomNumber::MersenneTwisterDescrepancy",
         &LowDiscrepancyTest::testMersenneTwisterDiscrepancy, 951.98));
     bm.push_back(Benchmark("RiskStatistics::Results",
         &RiskStatisticsTest::testResults, 300.28));
     bm.push_back(Benchmark("ShortRateModel::Swaps",
-        &ShortRateModelTest::testSwaps, 445.91));
+        &ShortRateModelTest::testSwaps, 454.73));
 
     test_suite* test = BOOST_TEST_SUITE("QuantLib benchmark suite");
 
