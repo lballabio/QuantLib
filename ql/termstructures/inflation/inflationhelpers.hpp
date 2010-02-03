@@ -43,7 +43,7 @@ namespace QuantLib {
             const Calendar& calendar,   // index may have null calendar as valid on every day
             BusinessDayConvention paymentConvention,
             const DayCounter& dayCounter,
-            const boost::shared_ptr<ZeroInflationIndex> zii);
+            const boost::shared_ptr<ZeroInflationIndex>& zii);
 
         void setTermStructure(ZeroInflationTermStructure*);
         Real impliedQuote() const;
@@ -68,7 +68,7 @@ namespace QuantLib {
                                       const Calendar& calendar,
                                       BusinessDayConvention paymentConvention,
                                       const DayCounter& dayCounter,
-                                      const boost::shared_ptr<YoYInflationIndex> yii);
+                                      const boost::shared_ptr<YoYInflationIndex>& yii);
 
         void setTermStructure(YoYInflationTermStructure*);
         Real impliedQuote() const;

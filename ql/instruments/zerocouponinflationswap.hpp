@@ -76,7 +76,7 @@ namespace QuantLib {
                                    BusinessDayConvention fixConvention,
                                    const DayCounter& dayCounter,
                                    Rate fixedRate,
-                                   boost::shared_ptr<ZeroInflationIndex> &infIndex,
+                                   const boost::shared_ptr<ZeroInflationIndex> &infIndex,
                                    const Period& observationLag,
                                    bool adjustInfObsDates = false,
                                    Calendar infCalendar = Calendar(),

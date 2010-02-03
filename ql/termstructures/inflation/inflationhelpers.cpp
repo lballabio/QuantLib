@@ -36,7 +36,7 @@ namespace QuantLib {
         const Calendar& calendar,   // index may have null calendar as valid on every day
         BusinessDayConvention paymentConvention,
         const DayCounter& dayCounter,
-        const boost::shared_ptr<ZeroInflationIndex> zii)
+        const boost::shared_ptr<ZeroInflationIndex>& zii)
     : BootstrapHelper<ZeroInflationTermStructure>(quote),
     swapObsLag_(swapObsLag), maturity_(maturity), calendar_(calendar),
     paymentConvention_(paymentConvention), dayCounter_(dayCounter),
@@ -121,7 +121,7 @@ namespace QuantLib {
         const Calendar& calendar,
         BusinessDayConvention paymentConvention,
         const DayCounter& dayCounter,
-        const boost::shared_ptr<YoYInflationIndex> yii)
+        const boost::shared_ptr<YoYInflationIndex>& yii)
     : BootstrapHelper<YoYInflationTermStructure>(quote),
     swapObsLag_(swapObsLag), maturity_(maturity),
     calendar_(calendar), paymentConvention_(paymentConvention),

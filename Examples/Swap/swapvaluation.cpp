@@ -448,6 +448,7 @@ int main(int, char* []) {
         std::string tab(8, ' ');
 
         // calculations
+        std::cout << d1w->earliestDate() << std::endl;
 
         std::cout << dblrule << std::endl;
         std::cout <<  "5-year market swap-rate = "
