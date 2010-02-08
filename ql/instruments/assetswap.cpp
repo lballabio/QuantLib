@@ -93,7 +93,10 @@ namespace QuantLib {
 
         const Leg& bondLeg = bond_->cashflows();
         for (Leg::const_iterator i=bondLeg.begin(); i<bondLeg.end(); ++i) {
-            if (!(*i)->hasOccurred(upfrontDate_, false))
+            // whatever might be the choice for the discounting engine
+            // bond flows on upfrontDate_ must be discarded
+            bool upfrontDateBondFlows = false;
+            if (!(*i)->hasOccurred(upfrontDate_, upfrontDateBondFlows))
                 legs_[0].push_back(*i);
         }
 
