@@ -130,10 +130,10 @@ namespace QuantLib {
         LogCubic(CubicInterpolation::DerivativeApprox da,
                   bool monotonic = true,
                   CubicInterpolation::BoundaryCondition leftCondition
-                     = CubicInterpolation::SecondDerivative,
+                      = CubicInterpolation::SecondDerivative,
                   Real leftConditionValue = 0.0,
                   CubicInterpolation::BoundaryCondition rightCondition
-                     = CubicInterpolation::SecondDerivative,
+                      = CubicInterpolation::SecondDerivative,
                   Real rightConditionValue = 0.0)
         : da_(da), monotonic_(monotonic),
           leftType_(leftCondition), rightType_(rightCondition),
