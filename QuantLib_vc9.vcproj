@@ -2036,6 +2036,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\interpolations\mixedinterpolation.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\interpolations\multicubicspline.hpp"
 					>
 				</File>
