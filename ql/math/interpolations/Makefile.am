@@ -18,6 +18,7 @@ this_include_HEADERS = \
 	kernelinterpolation2d.hpp \
 	linearinterpolation.hpp \
 	loginterpolation.hpp \
+	mixedinterpolation.hpp \
 	multicubicspline.hpp \
 	sabrinterpolation.hpp
 
