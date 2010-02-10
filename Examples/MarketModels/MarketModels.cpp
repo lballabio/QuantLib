@@ -44,8 +44,17 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 using namespace QuantLib;
 
+#if defined(QL_ENABLE_SESSIONS)
+namespace QuantLib {
+
+    Integer sessionId() { return 0; }
+
+}
+#endif
+
+
 std::vector<std::vector<Matrix> > theVegaBumps(bool factorwiseBumping,
-                                               boost::shared_ptr<MarketModel> marketModel, 
+                                               boost::shared_ptr<MarketModel> marketModel,
                                                bool doCaps)
 {
     Real multiplierCutOff = 50.0;
@@ -137,7 +146,7 @@ int Bermudan()
     std::vector<Rate> exerciseTimes(rateTimes);
     exerciseTimes.pop_back();
 
-    // naive exercise strategy, exercise above a trigger level 
+    // naive exercise strategy, exercise above a trigger level
     std::vector<Rate> swapTriggers(exerciseTimes.size(), fixedRate);
     SwapRateTrigger naifStrategy(rateTimes, swapTriggers, exerciseTimes);
 
@@ -145,7 +154,7 @@ int Bermudan()
     std::vector<std::vector<NodeData> > collectedData;
     std::vector<std::vector<Real> > basisCoefficients;
 
-    // control that does nothing, need it because some control is expected 
+    // control that does nothing, need it because some control is expected
     NothingExerciseValue control(rateTimes);
 
 //    SwapForwardBasisSystem basisSystem(rateTimes,exerciseTimes);
@@ -199,7 +208,7 @@ int Bermudan()
 
     Spread displacementLevel =0.02;
 
-    // set up vectors 
+    // set up vectors
     std::vector<Rate> initialRates(numberRates,rateLevel);
     std::vector<Volatility> volatilities(numberRates, volLevel);
     std::vector<Spread> displacements(numberRates, displacementLevel);
@@ -220,13 +229,13 @@ int Bermudan()
 
     boost::shared_ptr<MarketModel> marketModel(new FlatVol(calibration));
 
-    // we use a factory since there is data that will only be known later 
+    // we use a factory since there is data that will only be known later
     SobolBrownianGeneratorFactory generatorFactory(
         SobolBrownianGenerator::Diagonal, seed);
 
     std::vector<Size> numeraires( moneyMarketMeasure(evolution));
 
-    // the evolver will actually evolve the rates 
+    // the evolver will actually evolve the rates
     LogNormalFwdRatePc  evolver(marketModel,
         generatorFactory,
         numeraires   // numeraires for each step
@@ -238,10 +247,10 @@ int Bermudan()
 
     // gather data before computing exercise strategy
     collectNodeData(evolver,
-        receiverSwap, 
-        basisSystem, 
+        receiverSwap,
+        basisSystem,
         nullRebate,
-        control, 
+        control,
         trainingPaths,
         collectedData);
 
@@ -253,7 +262,7 @@ int Bermudan()
         basisCoefficients);
 
 
-    // turn the coefficients into an exercise strategy 
+    // turn the coefficients into an exercise strategy
     LongstaffSchwartzExerciseStrategy exerciseStrategy(
         basisSystem, basisCoefficients,
         evolution, numeraires,
@@ -332,7 +341,7 @@ int Bermudan()
 
 
         std::vector<std::vector<Matrix> > theBumps(theVegaBumps(allowFactorwiseBumping,
-            marketModel, 
+            marketModel,
             doCaps));
 
         PathwiseVegasOuterAccountingEngine
@@ -390,9 +399,9 @@ int Bermudan()
 
         std::valarray<bool> isExerciseTime =   isInSubset(evolution.evolutionTimes(),    exerciseStrategy.exerciseTimes());
 
-        for (Size s=0; s < isExerciseTime.size(); ++s) 
+        for (Size s=0; s < isExerciseTime.size(); ++s)
         {
-            if (isExerciseTime[s]) 
+            if (isExerciseTime[s])
             {
                 MTBrownianGeneratorFactory iFactory(seed+s);
                 boost::shared_ptr<MarketModelEvolver> e =boost::shared_ptr<MarketModelEvolver> (static_cast<MarketModelEvolver*>(new   LogNormalFwdRatePc(boost::shared_ptr<MarketModel>(new FlatVol(calibration)),
@@ -410,7 +419,7 @@ int Bermudan()
             innerEvolvers, // for sub-simulations that do continuation values
             receiverSwap,
             nullRebate,
-            receiverSwap, 
+            receiverSwap,
             nullRebate,
             exerciseStrategy,
             initialNumeraireValue);
@@ -466,7 +475,7 @@ int InverseFloater(Real rateLevel)
                                                         accruals,
                                                          accruals,
                                                         fixedStrikes,
-                                                        fixedMultipliers, 
+                                                        fixedMultipliers,
                                                         floatingSpreads,
                                                          paymentTimes,
                                                          payer);
@@ -478,7 +487,7 @@ int InverseFloater(Real rateLevel)
     std::vector<Rate> exerciseTimes(rateTimes);
     exerciseTimes.pop_back();
 
-    // naive exercise strategy, exercise above a trigger level 
+    // naive exercise strategy, exercise above a trigger level
     Real trigger =0.05;
     std::vector<Rate> swapTriggers(exerciseTimes.size(), trigger);
     SwapRateTrigger naifStrategy(rateTimes, swapTriggers, exerciseTimes);
@@ -487,7 +496,7 @@ int InverseFloater(Real rateLevel)
     std::vector<std::vector<NodeData> > collectedData;
     std::vector<std::vector<Real> > basisCoefficients;
 
-    // control that does nothing, need it because some control is expected 
+    // control that does nothing, need it because some control is expected
     NothingExerciseValue control(rateTimes);
 
    SwapForwardBasisSystem basisSystem(rateTimes,exerciseTimes);
@@ -548,7 +557,7 @@ int InverseFloater(Real rateLevel)
 
     Spread displacementLevel =0.02;
 
-    // set up vectors 
+    // set up vectors
     std::vector<Rate> initialRates(numberRates,rateLevel);
     std::vector<Volatility> volatilities(numberRates, volLevel);
     std::vector<Spread> displacements(numberRates, displacementLevel);
@@ -569,13 +578,13 @@ int InverseFloater(Real rateLevel)
 
     boost::shared_ptr<MarketModel> marketModel(new FlatVol(calibration));
 
-    // we use a factory since there is data that will only be known later 
+    // we use a factory since there is data that will only be known later
     SobolBrownianGeneratorFactory generatorFactory(
         SobolBrownianGenerator::Diagonal, seed);
 
     std::vector<Size> numeraires( moneyMarketMeasure(evolution));
 
-    // the evolver will actually evolve the rates 
+    // the evolver will actually evolve the rates
     LogNormalFwdRatePc  evolver(marketModel,
         generatorFactory,
         numeraires   // numeraires for each step
@@ -587,10 +596,10 @@ int InverseFloater(Real rateLevel)
 
     // gather data before computing exercise strategy
     collectNodeData(evolver,
-        inverseFloater, 
-        basisSystem, 
+        inverseFloater,
+        basisSystem,
         nullRebate,
-        control, 
+        control,
         trainingPaths,
         collectedData);
 
@@ -602,7 +611,7 @@ int InverseFloater(Real rateLevel)
         basisCoefficients);
 
 
-    // turn the coefficients into an exercise strategy 
+    // turn the coefficients into an exercise strategy
     LongstaffSchwartzExerciseStrategy exerciseStrategy(
         basisSystem, basisCoefficients,
         evolution, numeraires,
@@ -662,7 +671,7 @@ int InverseFloater(Real rateLevel)
                                                          accruals,
                                                          accruals,
                                                          fixedStrikes,
-                                                         fixedMultipliers, 
+                                                         fixedMultipliers,
                                                          floatingSpreads,
                                                          paymentTimes,
                                                          payer);
@@ -677,7 +686,7 @@ int InverseFloater(Real rateLevel)
 
 
         std::vector<std::vector<Matrix> > theBumps(theVegaBumps(allowFactorwiseBumping,
-            marketModel, 
+            marketModel,
             doCaps));
 
         PathwiseVegasOuterAccountingEngine
@@ -736,9 +745,9 @@ int InverseFloater(Real rateLevel)
 
         std::valarray<bool> isExerciseTime =   isInSubset(evolution.evolutionTimes(),    exerciseStrategy.exerciseTimes());
 
-        for (Size s=0; s < isExerciseTime.size(); ++s) 
+        for (Size s=0; s < isExerciseTime.size(); ++s)
         {
-            if (isExerciseTime[s]) 
+            if (isExerciseTime[s])
             {
                 MTBrownianGeneratorFactory iFactory(seed+s);
                 boost::shared_ptr<MarketModelEvolver> e =boost::shared_ptr<MarketModelEvolver> (static_cast<MarketModelEvolver*>(new   LogNormalFwdRatePc(boost::shared_ptr<MarketModel>(new FlatVol(calibration)),
@@ -756,7 +765,7 @@ int InverseFloater(Real rateLevel)
             innerEvolvers, // for sub-simulations that do continuation values
             inverseFloater,
             nullRebate,
-            inverseFloater, 
+            inverseFloater,
             nullRebate,
             exerciseStrategy,
             initialNumeraireValue);
