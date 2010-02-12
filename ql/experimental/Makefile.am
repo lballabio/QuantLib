@@ -1,7 +1,7 @@
 
 SUBDIRS = amortizingbonds barrieroption callablebonds commodities \
           compoundoption convertiblebonds coupons credit \
-          exoticoptions finitedifferences inflation lattices \
+          exoticoptions finitedifferences fx inflation lattices \
           math mcbasket processes risk varianceoption volatility
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
@@ -23,6 +23,7 @@ libExperimental_la_LIBADD = \
     credit/libCredit.la \
     exoticoptions/libExoticOptions.la \
     finitedifferences/libMultiDimFDM.la \
+    fx/libFX.la \
     inflation/libInflation.la \
     lattices/libLattices.la \
     mcbasket/libMcBasket.la \

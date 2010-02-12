@@ -10,6 +10,7 @@ QL_TESTS = \
 	basketoption.hpp basketoption.cpp \
 	batesmodel.hpp batesmodel.cpp \
 	bermudanswaption.hpp bermudanswaption.cpp \
+	blackdeltacalculator.hpp blackdeltacalculator.cpp \
 	bonds.hpp bonds.cpp \
 	brownianbridge.hpp brownianbridge.cpp \
 	calendars.hpp calendars.cpp \

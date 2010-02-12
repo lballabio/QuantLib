@@ -1,7 +1,7 @@
 [Project]
 FileName=testsuite.dev
 Name=QuantLib-test-suite
-UnitCount=208
+UnitCount=210
 Type=1
 Ver=1
 ObjFiles=
@@ -2119,6 +2119,26 @@ BuildCmd=
 
 [Unit208]
 FileName=autocovariances.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit209]
+FileName=blackdeltacalculator.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit210]
+FileName=blackdeltacalculator.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1

@@ -11,7 +11,7 @@ AC_CONFIG_MACRO_DIR([m4])
 
 AC_COPYRIGHT([
 Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
-Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
+Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 StatPro Italia srl
 Copyright (C) 2004, 2005 Ferdinando Ametrano
 
 This file is part of QuantLib, a free-software/open-source library
@@ -327,6 +327,7 @@ AC_CONFIG_FILES([
     ql/experimental/credit/Makefile
     ql/experimental/exoticoptions/Makefile
     ql/experimental/finitedifferences/Makefile
+    ql/experimental/fx/Makefile
     ql/experimental/inflation/Makefile
     ql/experimental/lattices/Makefile
     ql/experimental/math/Makefile

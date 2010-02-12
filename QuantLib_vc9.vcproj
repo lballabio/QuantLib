@@ -6249,6 +6249,30 @@
 				</File>
 			</Filter>
 			<Filter
+				Name="fx"
+				>
+				<File
+					RelativePath=".\ql\experimental\fx\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\fx\blackdeltacalculator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\fx\blackdeltacalculator.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\fx\deltavolquote.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\fx\deltavolquote.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
 				Name="exoticoptions"
 				>
 				<File

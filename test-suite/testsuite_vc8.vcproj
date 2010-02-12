@@ -659,6 +659,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\blackdeltacalculator.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\bonds.cpp"
 				>
 			</File>
@@ -2177,6 +2181,10 @@
 			</File>
 			<File
 				RelativePath=".\bermudanswaption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\blackdeltacalculator.hpp"
 				>
 			</File>
 			<File
