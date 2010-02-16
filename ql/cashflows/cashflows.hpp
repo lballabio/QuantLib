@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2005, 2006 StatPro Italia srl
  Copyright (C) 2005 Charles Whitmore
- Copyright (C) 2007, 2008, 2009 Ferdinando Ametrano
+ Copyright (C) 2007, 2008, 2009, 2010 Ferdinando Ametrano
  Copyright (C) 2008 Toyin Akin
 
  This file is part of QuantLib, a free-software/open-source library
@@ -92,8 +92,36 @@ namespace QuantLib {
         nextCouponRate(const Leg& leg,
                        bool includeSettlementDateFlows,
                        Date settlementDate = Date());
+        static Date
+        accrualStartDate(const Leg& leg,
+                         bool includeSettlementDateFlows,
+                         Date settlDate = Date());
+        static Date
+        accrualEndDate(const Leg& leg,
+                       bool includeSettlementDateFlows,
+                       Date settlementDate = Date());
+        static Date
+        referencePeriodStart(const Leg& leg,
+                             bool includeSettlementDateFlows,
+                             Date settlDate = Date());
+        static Date
+        referencePeriodEnd(const Leg& leg,
+                           bool includeSettlementDateFlows,
+                           Date settlDate = Date());
+        static Time
+        accrualPeriod(const Leg& leg,
+                      bool includeSettlementDateFlows,
+                      Date settlementDate = Date());
         static BigInteger
         accrualDays(const Leg& leg,
+                    bool includeSettlementDateFlows,
+                    Date settlementDate = Date());
+        static Time
+        accruedPeriod(const Leg& leg,
+                      bool includeSettlementDateFlows,
+                      Date settlementDate = Date());
+        static BigInteger
+        accruedDays(const Leg& leg,
                     bool includeSettlementDateFlows,
                     Date settlementDate = Date());
         static Real
@@ -313,7 +341,7 @@ namespace QuantLib {
             and the relative frequency and day counter.
         */
         static Real npv(const Leg& leg,
-                        const boost::shared_ptr<YieldTermStructure>&,
+                        const boost::shared_ptr<YieldTermStructure>& discount,
                         Spread zSpread,
                         const DayCounter& dayCounter,
                         Compounding compounding,
@@ -323,8 +351,8 @@ namespace QuantLib {
                         Date npvDate = Date());
         //! implied Z-spread.
         static Spread zSpread(const Leg& leg,
-                              const boost::shared_ptr<YieldTermStructure>&,
                               Real npv,
+                              const boost::shared_ptr<YieldTermStructure>&,
                               const DayCounter& dayCounter,
                               Compounding compounding,
                               Frequency frequency,
@@ -334,6 +362,23 @@ namespace QuantLib {
                               Real accuracy = 1.0e-10,
                               Size maxIterations = 100,
                               Rate guess = 0.0);
+        //! deprecated implied Z-spread.
+        static Spread zSpread(const Leg& leg,
+                              const boost::shared_ptr<YieldTermStructure>& d,
+                              Real npv,
+                              const DayCounter& dayCounter,
+                              Compounding compounding,
+                              Frequency frequency,
+                              bool includeSettlementDateFlows,
+                              Date settlementDate = Date(),
+                              Date npvDate = Date(),
+                              Real accuracy = 1.0e-10,
+                              Size maxIterations = 100,
+                              Rate guess = 0.0) {
+            return zSpread(leg, npv, d, dayCounter, compounding, frequency,
+                           includeSettlementDateFlows, settlementDate, npvDate,
+                           accuracy, maxIterations, guess);
+        }
         //@}
 
     };

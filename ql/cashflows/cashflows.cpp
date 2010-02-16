@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2005, 2006 StatPro Italia srl
  Copyright (C) 2005 Charles Whitmore
- Copyright (C) 2007, 2008, 2009 Ferdinando Ametrano
+ Copyright (C) 2007, 2008, 2009, 2010 Ferdinando Ametrano
  Copyright (C) 2008 Toyin Akin
 
  This file is part of QuantLib, a free-software/open-source library
@@ -220,6 +220,91 @@ namespace QuantLib {
         return aggregateRate(leg, cf);
     }
 
+    Date CashFlows::accrualStartDate(const Leg& leg,
+                                     bool includeSettlementDateFlows,
+                                     Date settlementDate) {
+        Leg::const_iterator cf = nextCashFlow(leg,
+                                              includeSettlementDateFlows,
+                                              settlementDate);
+        if (cf==leg.end()) return Date();
+
+        Date paymentDate = (*cf)->date();
+        for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
+            shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+            if (cp)
+                return cp->accrualStartDate();
+        }
+        return Date();
+    }
+
+    Date CashFlows::accrualEndDate(const Leg& leg,
+                                   bool includeSettlementDateFlows,
+                                   Date settlementDate) {
+        Leg::const_iterator cf = nextCashFlow(leg,
+                                              includeSettlementDateFlows,
+                                              settlementDate);
+        if (cf==leg.end()) return Date();
+
+        Date paymentDate = (*cf)->date();
+        for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
+            shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+            if (cp)
+                return cp->accrualEndDate();
+        }
+        return Date();
+    }
+
+    Date CashFlows::referencePeriodStart(const Leg& leg,
+                                         bool includeSettlementDateFlows,
+                                         Date settlementDate) {
+        Leg::const_iterator cf = nextCashFlow(leg,
+                                              includeSettlementDateFlows,
+                                              settlementDate);
+        if (cf==leg.end()) return Date();
+
+        Date paymentDate = (*cf)->date();
+        for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
+            shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+            if (cp)
+                return cp->referencePeriodStart();
+        }
+        return Date();
+    }
+
+    Date CashFlows::referencePeriodEnd(const Leg& leg,
+                                       bool includeSettlementDateFlows,
+                                       Date settlementDate) {
+        Leg::const_iterator cf = nextCashFlow(leg,
+                                              includeSettlementDateFlows,
+                                              settlementDate);
+        if (cf==leg.end()) return Date();
+
+        Date paymentDate = (*cf)->date();
+        for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
+            shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+            if (cp)
+                return cp->referencePeriodEnd();
+        }
+        return Date();
+    }
+
+    Time CashFlows::accrualPeriod(const Leg& leg,
+                                  bool includeSettlementDateFlows,
+                                  Date settlementDate) {
+        Leg::const_iterator cf = nextCashFlow(leg,
+                                              includeSettlementDateFlows,
+                                              settlementDate);
+        if (cf==leg.end()) return 0;
+
+        Date paymentDate = (*cf)->date();
+        for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
+            shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+            if (cp)
+                return cp->accrualPeriod();
+        }
+        return 0;
+    }
+
     BigInteger CashFlows::accrualDays(const Leg& leg,
                                       bool includeSettlementDateFlows,
                                       Date settlementDate) {
@@ -233,6 +318,40 @@ namespace QuantLib {
             shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
             if (cp)
                 return cp->accrualDays();
+        }
+        return 0;
+    }
+
+    Time CashFlows::accruedPeriod(const Leg& leg,
+                                  bool includeSettlementDateFlows,
+                                  Date settlementDate) {
+        Leg::const_iterator cf = nextCashFlow(leg,
+                                              includeSettlementDateFlows,
+                                              settlementDate);
+        if (cf==leg.end()) return 0;
+
+        Date paymentDate = (*cf)->date();
+        for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
+            shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+            if (cp)
+                return cp->accruedPeriod(settlementDate);
+        }
+        return 0;
+    }
+
+    BigInteger CashFlows::accruedDays(const Leg& leg,
+                                      bool includeSettlementDateFlows,
+                                      Date settlementDate) {
+        Leg::const_iterator cf = nextCashFlow(leg,
+                                              includeSettlementDateFlows,
+                                              settlementDate);
+        if (cf==leg.end()) return 0;
+
+        Date paymentDate = (*cf)->date();
+        for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
+            shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+            if (cp)
+                return cp->accruedDays(settlementDate);
         }
         return 0;
     }
@@ -975,8 +1094,8 @@ namespace QuantLib {
     }
 
     Spread CashFlows::zSpread(const Leg& leg,
-                              const shared_ptr<YieldTermStructure>& discount,
                               Real npv,
+                              const shared_ptr<YieldTermStructure>& discount,
                               const DayCounter& dayCounter,
                               Compounding compounding,
                               Frequency frequency,
