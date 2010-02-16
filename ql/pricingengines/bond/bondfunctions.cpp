@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2009 Nathan Abbott
- Copyright (C) 2007, 2008, 2009 Ferdinando Ametrano
+ Copyright (C) 2007, 2008, 2009, 2010 Ferdinando Ametrano
  Copyright (C) 2007 Chiara Fornarola
  Copyright (C) 2008 Simon Ibbotson
  Copyright (C) 2004 M-Dimension Consulting Inc.
@@ -151,6 +151,71 @@ namespace QuantLib {
                                          false, settlement);
     }
 
+    Date BondFunctions::accrualStartDate(const Bond& bond,
+                                         Date settlement) {
+        if (settlement == Date())
+            settlement = bond.settlementDate();
+
+        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
+                   "non tradable at " << settlement <<
+                   " (maturity being " << bond.maturityDate() << ")");
+
+        return CashFlows::accrualStartDate(bond.cashflows(),
+                                           false, settlement);
+    }
+
+    Date BondFunctions::accrualEndDate(const Bond& bond,
+                                       Date settlement) {
+        if (settlement == Date())
+            settlement = bond.settlementDate();
+
+        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
+                   "non tradable at " << settlement <<
+                   " (maturity being " << bond.maturityDate() << ")");
+
+        return CashFlows::accrualEndDate(bond.cashflows(),
+                                         false, settlement);
+    }
+
+    Date BondFunctions::referencePeriodStart(const Bond& bond,
+                                             Date settlement) {
+        if (settlement == Date())
+            settlement = bond.settlementDate();
+
+        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
+                   "non tradable at " << settlement <<
+                   " (maturity being " << bond.maturityDate() << ")");
+
+        return CashFlows::referencePeriodStart(bond.cashflows(),
+                                               false, settlement);
+    }
+
+    Date BondFunctions::referencePeriodEnd(const Bond& bond,
+                                           Date settlement) {
+        if (settlement == Date())
+            settlement = bond.settlementDate();
+
+        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
+                   "non tradable at " << settlement <<
+                   " (maturity being " << bond.maturityDate() << ")");
+
+        return CashFlows::referencePeriodEnd(bond.cashflows(),
+                                             false, settlement);
+    }
+
+    Time BondFunctions::accrualPeriod(const Bond& bond,
+                                      Date settlement) {
+        if (settlement == Date())
+            settlement = bond.settlementDate();
+
+        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
+                   "non tradable at " << settlement <<
+                   " (maturity being " << bond.maturityDate() << ")");
+
+        return CashFlows::accrualPeriod(bond.cashflows(),
+                                        false, settlement);
+    }
+
     BigInteger BondFunctions::accrualDays(const Bond& bond,
                                           Date settlement) {
         if (settlement == Date())
@@ -161,6 +226,32 @@ namespace QuantLib {
                    " (maturity being " << bond.maturityDate() << ")");
 
         return CashFlows::accrualDays(bond.cashflows(),
+                                      false, settlement);
+    }
+
+    Time BondFunctions::accruedPeriod(const Bond& bond,
+                                      Date settlement) {
+        if (settlement == Date())
+            settlement = bond.settlementDate();
+
+        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
+                   "non tradable at " << settlement <<
+                   " (maturity being " << bond.maturityDate() << ")");
+
+        return CashFlows::accruedPeriod(bond.cashflows(),
+                                        false, settlement);
+    }
+
+    BigInteger BondFunctions::accruedDays(const Bond& bond,
+                                          Date settlement) {
+        if (settlement == Date())
+            settlement = bond.settlementDate();
+
+        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
+                   "non tradable at " << settlement <<
+                   " (maturity being " << bond.maturityDate() << ")");
+
+        return CashFlows::accruedDays(bond.cashflows(),
                                       false, settlement);
     }
 
@@ -177,6 +268,8 @@ namespace QuantLib {
                                         false, settlement) *
             100.0 / bond.notional(settlement);
     }
+
+
 
     Real BondFunctions::cleanPrice(const Bond& bond,
                                    const YieldTermStructure& discountCurve,

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007, 2008, 2009 Ferdinando Ametrano
+ Copyright (C) 2007, 2008, 2009, 2010 Ferdinando Ametrano
  Copyright (C) 2007 Chiara Fornarola
  Copyright (C) 2009 StatPro Italia srl
  Copyright (C) 2009 Nathan Abbott
@@ -80,8 +80,22 @@ namespace QuantLib {
                                        Date settlementDate = Date());
         static Rate nextCouponRate(const Bond& bond,
                                    Date settlementDate = Date());
+        static Date accrualStartDate(const Bond& bond,
+                                     Date settlementDate = Date());
+        static Date accrualEndDate(const Bond& bond,
+                                   Date settlementDate = Date());
+        static Date referencePeriodStart(const Bond& bond,
+                                         Date settlementDate = Date());
+        static Date referencePeriodEnd(const Bond& bond,
+                                       Date settlementDate = Date());
+        static Time accrualPeriod(const Bond& bond,
+                                  Date settlementDate = Date());
         static BigInteger accrualDays(const Bond& bond,
-                                Date settlementDate = Date());
+                                      Date settlementDate = Date());
+        static Time accruedPeriod(const Bond& bond,
+                                  Date settlementDate = Date());
+        static BigInteger accruedDays(const Bond& bond,
+                                      Date settlementDate = Date());
         static Real accruedAmount(const Bond& bond,
                                   Date settlementDate = Date());
         //@}
