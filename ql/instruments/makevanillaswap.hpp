@@ -44,7 +44,7 @@ namespace QuantLib {
                         const Period& forwardStart = 0*Days);
 
         operator VanillaSwap() const;
-        operator boost::shared_ptr<VanillaSwap>() const ;
+        operator boost::shared_ptr<VanillaSwap>() const;
 
         MakeVanillaSwap& receiveFixed(bool flag = true);
         MakeVanillaSwap& withType(VanillaSwap::Type type);
