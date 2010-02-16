@@ -2,6 +2,7 @@
  Copyright (C) 2006 Giorgio Facchinetti
  Copyright (C) 2006 Mario Pucci
  Copyright (C) 2006, 2007 StatPro Italia srl
+ Copyright (C) 2010 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -140,10 +141,17 @@ namespace QuantLib {
     }
 
     CmsLeg::operator Leg() const {
-        return FloatingLeg<SwapIndex, CmsCoupon, CappedFlooredCmsCoupon>(
+        boost::shared_ptr<Leg> leg = *this;
+        return *leg;
+    }
+
+    CmsLeg::operator boost::shared_ptr<Leg>() const {
+        boost::shared_ptr<Leg> leg;
+        *leg = FloatingLeg<SwapIndex, CmsCoupon, CappedFlooredCmsCoupon>(
                          schedule_, notionals_, swapIndex_, paymentDayCounter_,
                          paymentAdjustment_, fixingDays_, gearings_, spreads_,
                          caps_, floors_, inArrears_, zeroPayments_);
-    }
+         return leg;
+   }
 
 }

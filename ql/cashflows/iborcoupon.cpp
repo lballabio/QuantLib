@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2007 Cristina Duminuco
+ Copyright (C) 2010 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -209,18 +210,23 @@ namespace QuantLib {
     }
 
     IborLeg::operator Leg() const {
+        boost::shared_ptr<Leg> leg = *this;
+        return *leg;
+    }
 
-        Leg cashflows =
-            FloatingLeg<IborIndex, IborCoupon, CappedFlooredIborCoupon>(
+    IborLeg::operator boost::shared_ptr<Leg>() const {
+
+        boost::shared_ptr<Leg> leg;
+        *leg = FloatingLeg<IborIndex, IborCoupon, CappedFlooredIborCoupon>(
                          schedule_, notionals_, index_, paymentDayCounter_,
                          paymentAdjustment_, fixingDays_, gearings_, spreads_,
                          caps_, floors_, inArrears_, zeroPayments_);
 
         if (caps_.empty() && floors_.empty() && !inArrears_)
-            setCouponPricer(cashflows,
+            setCouponPricer(*leg,
                             boost::shared_ptr<FloatingRateCouponPricer>(
                                                   new BlackIborCouponPricer));
-        return cashflows;
+        return leg;
     }
 
 }

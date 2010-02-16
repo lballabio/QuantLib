@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006, 2007 Giorgio Facchinetti
  Copyright (C) 2006, 2007 Mario Pucci
+ Copyright (C) 2010 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -624,6 +625,11 @@ namespace QuantLib {
     }
 
     RangeAccrualLeg::operator Leg() const {
+        boost::shared_ptr<Leg> leg = *this;
+        return *leg;
+    }
+
+    RangeAccrualLeg::operator boost::shared_ptr<Leg>() const {
 
         QL_REQUIRE(!notionals_.empty(), "no notional given");
 
@@ -647,7 +653,8 @@ namespace QuantLib {
                    "too many upperTriggers (" << upperTriggers_.size() <<
                    "), only " << n << " required");
 
-        Leg leg; leg.reserve(n);
+        boost::shared_ptr<Leg> leg;
+        leg->reserve(n);
 
         // the following is not always correct
         Calendar calendar = schedule_.calendar();
@@ -669,7 +676,7 @@ namespace QuantLib {
                 refEnd = calendar.adjust(start + schedule_.tenor(), bdc);
             }
             if (detail::get(gearings_, i, 1.0) == 0.0) { // fixed coupon
-                leg.push_back(boost::shared_ptr<CashFlow>(new
+                leg->push_back(boost::shared_ptr<CashFlow>(new
                     FixedRateCoupon(paymentDate,
                                     detail::get(notionals_, i, Null<Real>()),
                                     detail::get(spreads_, i, 0.0),
@@ -684,7 +691,7 @@ namespace QuantLib {
                                  observationConvention_,
                                  DateGeneration::Forward, false)));
 
-                    leg.push_back(boost::shared_ptr<CashFlow>(new
+                    leg->push_back(boost::shared_ptr<CashFlow>(new
                        RangeAccrualFloatersCoupon(
                             paymentDate,
                             detail::get(notionals_, i, Null<Real>()),

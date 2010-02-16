@@ -2,6 +2,7 @@
  Copyright (C) 2006 Giorgio Facchinetti
  Copyright (C) 2006 Mario Pucci
  Copyright (C) 2006, 2007 StatPro Italia srl
+ Copyright (C) 2010 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -87,6 +88,7 @@ namespace QuantLib {
         CmsLeg& inArrears(bool flag = true);
         CmsLeg& withZeroPayments(bool flag = true);
         operator Leg() const;
+        operator boost::shared_ptr<Leg>() const;
       private:
         Schedule schedule_;
         boost::shared_ptr<SwapIndex> swapIndex_;

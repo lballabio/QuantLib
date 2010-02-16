@@ -4,6 +4,7 @@
 
  Copyright (C) 2006, 2007 Giorgio Facchinetti
  Copyright (C) 2006, 2007 Mario Pucci
+ Copyright (C) 2010 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -219,6 +220,7 @@ namespace QuantLib {
         RangeAccrualLeg& withUpperTriggers(const std::vector<Rate>& triggers);
         RangeAccrualLeg& withObservationTenor(const Period&);
         RangeAccrualLeg& withObservationConvention(BusinessDayConvention);
+        operator boost::shared_ptr<Leg>() const;
         operator Leg() const;
       private:
         Schedule schedule_;

@@ -4,6 +4,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2007 StatPro Italia srl
  Copyright (C) 2007 Piter Dias
+ Copyright (C) 2010 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -94,6 +95,7 @@ namespace QuantLib {
         FixedRateLeg& withPaymentAdjustment(BusinessDayConvention);
         FixedRateLeg& withFirstPeriodDayCounter(const DayCounter&);
         operator Leg() const;
+        operator boost::shared_ptr<Leg>() const;
       private:
         Schedule schedule_;
         std::vector<Real> notionals_;

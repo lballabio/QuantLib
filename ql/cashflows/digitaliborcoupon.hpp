@@ -1,9 +1,10 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
-  Copyright (C) 2007 Cristina Duminuco
-  Copyright (C) 2007 Giorgio Facchinetti
-  Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007 Cristina Duminuco
+ Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2010 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -87,6 +88,7 @@ namespace QuantLib {
                     const boost::shared_ptr<DigitalReplication>& replication =
                                      boost::shared_ptr<DigitalReplication>());
         operator Leg() const;
+        operator boost::shared_ptr<Leg>() const;
       private:
         Schedule schedule_;
         boost::shared_ptr<IborIndex> index_;

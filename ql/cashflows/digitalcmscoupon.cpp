@@ -1,9 +1,10 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
-  Copyright (C) 2007 Cristina Duminuco
-  Copyright (C) 2007 Giorgio Facchinetti
-  Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007 Cristina Duminuco
+ Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2010 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -190,8 +191,14 @@ namespace QuantLib {
     }
 
     DigitalCmsLeg::operator Leg() const {
+        boost::shared_ptr<Leg> leg = *this;
+        return *leg;
+    }
 
-        return FloatingDigitalLeg<SwapIndex, CmsCoupon, DigitalCmsCoupon>(
+    DigitalCmsLeg::operator boost::shared_ptr<Leg>() const {
+
+        boost::shared_ptr<Leg> leg;
+        *leg = FloatingDigitalLeg<SwapIndex, CmsCoupon, DigitalCmsCoupon>(
                             schedule_, notionals_, index_, paymentDayCounter_,
                             paymentAdjustment_, fixingDays_,
                             gearings_, spreads_, inArrears_,
@@ -200,7 +207,7 @@ namespace QuantLib {
                             putStrikes_, longPutOption_,
                             putATM_, putPayoffs_,
                             replication_);
+        return leg;
     }
 
 }
-
