@@ -5,7 +5,6 @@
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2007 Cristina Duminuco
  Copyright (C) 2007 StatPro Italia srl
- Copyright (C) 2010 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -91,7 +90,6 @@ namespace QuantLib {
         IborLeg& inArrears(bool flag = true);
         IborLeg& withZeroPayments(bool flag = true);
         operator Leg() const;
-        operator boost::shared_ptr<Leg>() const;
       private:
         Schedule schedule_;
         boost::shared_ptr<IborIndex> index_;

@@ -210,20 +210,14 @@ namespace QuantLib {
     }
 
     IborLeg::operator Leg() const {
-        boost::shared_ptr<Leg> leg = *this;
-        return *leg;
-    }
 
-    IborLeg::operator boost::shared_ptr<Leg>() const {
-
-        boost::shared_ptr<Leg> leg(new Leg);
-        *leg = FloatingLeg<IborIndex, IborCoupon, CappedFlooredIborCoupon>(
+        Leg leg = FloatingLeg<IborIndex, IborCoupon, CappedFlooredIborCoupon>(
                          schedule_, notionals_, index_, paymentDayCounter_,
                          paymentAdjustment_, fixingDays_, gearings_, spreads_,
                          caps_, floors_, inArrears_, zeroPayments_);
 
         if (caps_.empty() && floors_.empty() && !inArrears_)
-            setCouponPricer(*leg,
+            setCouponPricer(leg,
                             boost::shared_ptr<FloatingRateCouponPricer>(
                                                   new BlackIborCouponPricer));
         return leg;

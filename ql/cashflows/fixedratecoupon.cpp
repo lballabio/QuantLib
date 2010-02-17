@@ -4,7 +4,6 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2007 StatPro Italia srl
  Copyright (C) 2007 Piter Dias
- Copyright (C) 2010 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -132,16 +131,11 @@ namespace QuantLib {
     }
 
     FixedRateLeg::operator Leg() const {
-        boost::shared_ptr<Leg> leg = *this;
-        return *leg;
-    }
-
-    FixedRateLeg::operator boost::shared_ptr<Leg>() const {
 
         QL_REQUIRE(!couponRates_.empty(), "no coupon rates given");
         QL_REQUIRE(!notionals_.empty(), "no notional given");
 
-        boost::shared_ptr<Leg> leg(new Leg);
+        Leg leg;
 
         // the following is not always correct
         Calendar calendar = schedule_.calendar();
@@ -159,7 +153,7 @@ namespace QuantLib {
             shared_ptr<CashFlow> temp(new
                 FixedRateCoupon(paymentDate, nominal, rate,
                                 start, end, start, end));
-            leg->push_back(temp);
+            leg.push_back(temp);
         } else {
             Date ref = end - schedule_.tenor();
             ref = calendar.adjust(ref, schedule_.businessDayConvention());
@@ -167,7 +161,7 @@ namespace QuantLib {
                            firstPeriodDC_.empty() ? rate.dayCounter()
                                                   : firstPeriodDC_,
                            rate.compounding(), rate.frequency());
-            leg->push_back(shared_ptr<CashFlow>(new
+            leg.push_back(shared_ptr<CashFlow>(new
                 FixedRateCoupon(paymentDate, nominal, r,
                                 start, end, ref, end)));
         }
@@ -183,7 +177,7 @@ namespace QuantLib {
                 nominal = notionals_[i-1];
             else
                 nominal = notionals_.back();
-            leg->push_back(shared_ptr<CashFlow>(new
+            leg.push_back(shared_ptr<CashFlow>(new
                 FixedRateCoupon(paymentDate, nominal, rate,
                                 start, end, start, end)));
         }
@@ -201,13 +195,13 @@ namespace QuantLib {
             else
                 nominal = notionals_.back();
             if (schedule_.isRegular(N-1)) {
-                leg->push_back(shared_ptr<CashFlow>(new
+                leg.push_back(shared_ptr<CashFlow>(new
                     FixedRateCoupon(paymentDate, nominal, rate,
                                     start, end, start, end)));
             } else {
                 Date ref = start + schedule_.tenor();
                 ref = calendar.adjust(ref, schedule_.businessDayConvention());
-                leg->push_back(shared_ptr<CashFlow>(new
+                leg.push_back(shared_ptr<CashFlow>(new
                     FixedRateCoupon(paymentDate, nominal, rate,
                                     start, end, start, ref)));
             }
