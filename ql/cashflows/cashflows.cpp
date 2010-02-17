@@ -151,7 +151,12 @@ namespace QuantLib {
                                                   includeSettlementDateFlows,
                                                   settlementDate);
         if (cf==leg.end()) return Real();
-        return (*cf)->amount();
+
+        Date paymentDate = (*cf)->date();
+        Real result = 0.0;
+        for (; cf>=leg.begin() && (*cf)->date()==paymentDate; --cf)
+            result += (*cf)->amount();
+        return result;
     }
 
     Real CashFlows::nextCashFlowAmount(const Leg& leg,
@@ -161,7 +166,12 @@ namespace QuantLib {
                                               includeSettlementDateFlows,
                                               settlementDate);
         if (cf==leg.end()) return Real();
-        return (*cf)->amount();
+
+        Date paymentDate = (*cf)->date();
+        Real result = 0.0;
+        for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf)
+            result += (*cf)->amount();
+        return result;
     }
 
     // Coupon utility functions
