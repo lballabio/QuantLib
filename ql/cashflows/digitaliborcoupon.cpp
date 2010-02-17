@@ -196,7 +196,7 @@ namespace QuantLib {
 
     DigitalIborLeg::operator boost::shared_ptr<Leg>() const {
 
-        boost::shared_ptr<Leg> leg;
+        boost::shared_ptr<Leg> leg(new Leg);
         *leg = FloatingDigitalLeg<IborIndex, IborCoupon, DigitalIborCoupon>(
                             schedule_, notionals_, index_, paymentDayCounter_,
                             paymentAdjustment_, fixingDays_,

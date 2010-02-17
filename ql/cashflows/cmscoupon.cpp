@@ -146,7 +146,7 @@ namespace QuantLib {
     }
 
     CmsLeg::operator boost::shared_ptr<Leg>() const {
-        boost::shared_ptr<Leg> leg;
+        boost::shared_ptr<Leg> leg(new Leg);
         *leg = FloatingLeg<SwapIndex, CmsCoupon, CappedFlooredCmsCoupon>(
                          schedule_, notionals_, swapIndex_, paymentDayCounter_,
                          paymentAdjustment_, fixingDays_, gearings_, spreads_,

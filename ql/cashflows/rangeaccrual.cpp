@@ -653,7 +653,7 @@ namespace QuantLib {
                    "too many upperTriggers (" << upperTriggers_.size() <<
                    "), only " << n << " required");
 
-        boost::shared_ptr<Leg> leg;
+        boost::shared_ptr<Leg> leg(new Leg);
         leg->reserve(n);
 
         // the following is not always correct

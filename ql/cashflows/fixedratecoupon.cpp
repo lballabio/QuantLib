@@ -141,7 +141,7 @@ namespace QuantLib {
         QL_REQUIRE(!couponRates_.empty(), "no coupon rates given");
         QL_REQUIRE(!notionals_.empty(), "no notional given");
 
-        boost::shared_ptr<Leg> leg;
+        boost::shared_ptr<Leg> leg(new Leg);
 
         // the following is not always correct
         Calendar calendar = schedule_.calendar();
@@ -156,9 +156,10 @@ namespace QuantLib {
                        firstPeriodDC_ == rate.dayCounter(),
                        "regular first coupon "
                        "does not allow a first-period day count");
-            leg->push_back(shared_ptr<CashFlow>(new
+            shared_ptr<CashFlow> temp(new
                 FixedRateCoupon(paymentDate, nominal, rate,
-                                start, end, start, end)));
+                                start, end, start, end));
+            leg->push_back(temp);
         } else {
             Date ref = end - schedule_.tenor();
             ref = calendar.adjust(ref, schedule_.businessDayConvention());
