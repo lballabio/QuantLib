@@ -136,6 +136,7 @@ namespace QuantLib {
         QL_REQUIRE(!notionals_.empty(), "no notional given");
 
         Leg leg;
+        leg.reserve(schedule_.size()-1);
 
         // the following is not always correct
         Calendar calendar = schedule_.calendar();
@@ -210,4 +211,3 @@ namespace QuantLib {
     }
 
 }
-
