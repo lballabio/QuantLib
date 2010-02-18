@@ -1,3 +1,103 @@
+2010-02-17 15:09  Luigi Ballabio
+
+	* [r17114] ql/cashflows/cashflows.cpp:
+	  
+	  Backported revision 17112 from trunk.
+	  
+	  Cash flows on the same date should be aggregated in the return
+	  value of CashFlows::nextCashFlowAmount and previous CashFlowAmount.
+
+2010-02-10 09:09  Luigi Ballabio
+
+	* [r17087] Examples/MarketModels/MarketModels.cpp:
+	  
+	  Added sessionId() implementation (thanks to Nathan Abbott.)
+	  
+	  The function is required when QL_ENABLE_SESSIONS is defined.
+
+2010-02-10 09:09  Luigi Ballabio
+
+	* [r17086] Announce.txt, configure.ac, ql/version.hpp:
+	  
+	  Increased version number to 1.0.
+
+2010-02-03 13:42  Ferdinando Ametrano
+
+	* [r17060] ql/instruments/makeois.cpp:
+	  
+	  fixed bug
+
+2010-02-02 16:44  Luigi Ballabio
+
+	* [r17058] ql/termstructures/inflation/inflationhelpers.cpp,
+	  ql/termstructures/inflation/inflationhelpers.hpp:
+	  
+	  Correctly pass the arguments as const references.
+
+2010-01-29 15:17  Luigi Ballabio
+
+	* [r17056] ql/instruments/zerocouponinflationswap.cpp,
+	  ql/instruments/zerocouponinflationswap.hpp:
+	  
+	  Passing argument by const reference.
+
+2010-01-27 18:37  Ferdinando Ametrano
+
+	* [r17051] ql/instruments/makeois.cpp:
+	  
+	  fixed bug: standard EONIA OIS swap EOM convention is not enforced
+	  for tenor longer than 2Y, and it was poorly enforced for shorter
+	  tenor
+
+2010-01-27 17:53  Ferdinando Ametrano
+
+	* [r17050] ql/termstructures/yield/oisratehelper.cpp:
+	  
+	  fixed indentation
+
+2010-01-27 13:00  Luigi Ballabio
+
+	* [r17048] Announce.txt, configure.ac, ql/version.hpp:
+	  
+	  Increased version number to 1.0b3.
+
+2010-01-27 12:58  Luigi Ballabio
+
+	* [r17047] ql/instruments/bond.cpp:
+	  
+	  Added guards against division by null notional.
+
+2010-01-27 12:58  Luigi Ballabio
+
+	* [r17046] ql/math/distributions/normaldistribution.cpp:
+	  
+	  Fixed indentation.
+
+2010-01-26 11:52  Ferdinando Ametrano
+
+	* [r17041]
+	  ql/termstructures/volatility/optionlet/spreadedoptionletvol.hpp:
+	  
+	  forwarded missing virtual method
+
+2010-01-22 10:12  Luigi Ballabio
+
+	* [r17026] Readme.txt:
+	  
+	  Updated ReadMe.
+
+2010-01-22 10:11  Luigi Ballabio
+
+	* [r17025] ql/models/marketmodels/products/multiproductcomposite.cpp:
+	  
+	  Backported revision 17024 from trunk.
+
+2010-01-21 13:56  Luigi Ballabio
+
+	* [r17020] ChangeLog.txt, Docs/pages/history.docs, News.txt:
+	  
+	  Updated ChangeLog and News
+
 2010-01-14 11:45  Luigi Ballabio
 
 	* [r17011] man/BermudanSwaption.1, man/Bonds.1, man/CDS.1,
