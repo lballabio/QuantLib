@@ -154,8 +154,23 @@ namespace QuantLib {
 
         Date paymentDate = (*cf)->date();
         Real result = 0.0;
-        for (; cf>=leg.begin() && (*cf)->date()==paymentDate; --cf)
+
+        // when cf==leg.begin() the following code crashes at --cf
+        // on VC8/9 Debug (boundary check)
+        // but it also crashes in Release mode as if it would evaluate
+        // (*cf) even when cf<leg.begin()
+        //
+        // help or suggestion would be appreciated
+        //
+        //for (; cf>=leg.begin() && (*cf)->date()==paymentDate; --cf)
+        //    result += (*cf)->amount();
+
+        // ugly patch...
+        for (; cf>leg.begin() && (*cf)->date()==paymentDate; --cf)
             result += (*cf)->amount();
+        if (cf==leg.begin() && (*cf)->date()==paymentDate)
+            result += (*cf)->amount();
+
         return result;
     }
 
