@@ -45,6 +45,7 @@ namespace QuantLib {
     */
     class FixedRateBond : public Bond {
       public:
+        //! simple annual compounding coupon rates
         FixedRateBond(Natural settlementDays,
                       Real faceAmount,
                       const Schedule& schedule,
@@ -54,6 +55,8 @@ namespace QuantLib {
                       Real redemption = 100.0,
                       const Date& issueDate = Date(),
                       const Calendar& paymentCalendar = Calendar());
+        /*! simple annual compounding coupon rates
+            with internal schedule calculation */
         FixedRateBond(Natural settlementDays,
                       const Calendar& couponCalendar,
                       Real faceAmount,
@@ -70,6 +73,7 @@ namespace QuantLib {
                       DateGeneration::Rule rule = DateGeneration::Backward,
                       bool endOfMonth = false,
                       const Calendar& paymentCalendar = Calendar());
+        //! generic compounding and frequency InterestRate coupons 
         FixedRateBond(Natural settlementDays,
                       Real faceAmount,
                       const Schedule& schedule,
