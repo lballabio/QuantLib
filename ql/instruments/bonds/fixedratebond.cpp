@@ -4,7 +4,7 @@
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
  Copyright (C) 2005, 2006, 2007 StatPro Italia srl
- Copyright (C) 2007, 2008 Ferdinando Ametrano
+ Copyright (C) 2007, 2008, 2010 Ferdinando Ametrano
  Copyright (C) 2009 Piter Dias
 
  This file is part of QuantLib, a free-software/open-source library
@@ -35,8 +35,11 @@ namespace QuantLib {
                                  const DayCounter& accrualDayCounter,
                                  BusinessDayConvention paymentConvention,
                                  Real redemption,
-                                 const Date& issueDate)
-    : Bond(settlementDays, schedule.calendar(), issueDate),
+                                 const Date& issueDate,
+                                 const Calendar& paymentCalendar)
+     : Bond(settlementDays,
+            paymentCalendar==Calendar() ? schedule.calendar() : paymentCalendar,
+            issueDate),
       frequency_(schedule.tenor().frequency()),
       dayCounter_(accrualDayCounter) {
 
@@ -45,6 +48,7 @@ namespace QuantLib {
         cashflows_ = FixedRateLeg(schedule)
             .withNotionals(faceAmount)
             .withCouponRates(coupons, accrualDayCounter)
+            .withPaymentCalendar(calendar_)
             .withPaymentAdjustment(paymentConvention);
 
         addRedemptionsToCashflows(std::vector<Real>(1, redemption));
@@ -67,8 +71,11 @@ namespace QuantLib {
                                  const Date& issueDate,
                                  const Date& stubDate,
                                  DateGeneration::Rule rule,
-                                 bool endOfMonth)
-    : Bond(settlementDays, calendar, issueDate),
+                                 bool endOfMonth,
+                                 const Calendar& paymentCalendar)
+     : Bond(settlementDays,
+            paymentCalendar==Calendar() ? calendar : paymentCalendar,
+            issueDate),
       frequency_(tenor.frequency()), dayCounter_(accrualDayCounter) {
 
         maturityDate_ = maturityDate;
@@ -94,13 +101,14 @@ namespace QuantLib {
         }
 
         Schedule schedule(startDate, maturityDate_, tenor,
-                          calendar_, accrualConvention, accrualConvention,
+                          calendar, accrualConvention, accrualConvention,
                           rule, endOfMonth,
                           firstDate, nextToLastDate);
 
         cashflows_ = FixedRateLeg(schedule)
             .withNotionals(faceAmount)
             .withCouponRates(coupons, accrualDayCounter)
+            .withPaymentCalendar(calendar_)
             .withPaymentAdjustment(paymentConvention);
 
         addRedemptionsToCashflows(std::vector<Real>(1, redemption));
@@ -115,8 +123,11 @@ namespace QuantLib {
                                  const std::vector<InterestRate>& coupons,
                                  BusinessDayConvention paymentConvention,
                                  Real redemption,
-                                 const Date& issueDate)
-    : Bond(settlementDays, schedule.calendar(), issueDate),
+                                 const Date& issueDate,
+                                 const Calendar& paymentCalendar)
+     : Bond(settlementDays,
+            paymentCalendar==Calendar() ? schedule.calendar() : paymentCalendar,
+            issueDate),
       frequency_(schedule.tenor().frequency()),
       dayCounter_(coupons[0].dayCounter()) {
 
@@ -125,6 +136,7 @@ namespace QuantLib {
         cashflows_ = FixedRateLeg(schedule)
             .withNotionals(faceAmount)
             .withCouponRates(coupons)
+            .withPaymentCalendar(calendar_)
             .withPaymentAdjustment(paymentConvention);
 
         addRedemptionsToCashflows(std::vector<Real>(1, redemption));

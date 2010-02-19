@@ -4,7 +4,7 @@
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
  Copyright (C) 2005 StatPro Italia srl
- Copyright (C) 2007, 2008 Ferdinando Ametrano
+ Copyright (C) 2007, 2008, 2010 Ferdinando Ametrano
  Copyright (C) 2009 Piter Dias
 
  This file is part of QuantLib, a free-software/open-source library
@@ -52,9 +52,10 @@ namespace QuantLib {
                       const DayCounter& accrualDayCounter,
                       BusinessDayConvention paymentConvention = Following,
                       Real redemption = 100.0,
-                      const Date& issueDate = Date());
+                      const Date& issueDate = Date(),
+                      const Calendar& paymentCalendar = Calendar());
         FixedRateBond(Natural settlementDays,
-                      const Calendar& calendar,
+                      const Calendar& couponCalendar,
                       Real faceAmount,
                       const Date& startDate,
                       const Date& maturityDate,
@@ -67,14 +68,16 @@ namespace QuantLib {
                       const Date& issueDate = Date(),
                       const Date& stubDate = Date(),
                       DateGeneration::Rule rule = DateGeneration::Backward,
-                      bool endOfMonth = false);
+                      bool endOfMonth = false,
+                      const Calendar& paymentCalendar = Calendar());
         FixedRateBond(Natural settlementDays,
                       Real faceAmount,
                       const Schedule& schedule,
                       const std::vector<InterestRate>& coupons,
                       BusinessDayConvention paymentConvention = Following,
                       Real redemption = 100.0,
-                      const Date& issueDate = Date());
+                      const Date& issueDate = Date(),
+                      const Calendar& paymentCalendar = Calendar());
         Frequency frequency() const { return frequency_; }
         const DayCounter& dayCounter() const { return dayCounter_; }
       protected:

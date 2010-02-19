@@ -4,6 +4,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2007 StatPro Italia srl
  Copyright (C) 2007 Piter Dias
+ Copyright (C) 2010 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -70,50 +71,46 @@ namespace QuantLib {
 
 
     FixedRateLeg::FixedRateLeg(const Schedule& schedule)
-    : schedule_(schedule), paymentAdjustment_(Following) {}
+    : schedule_(schedule), calendar_(schedule.calendar()),
+      paymentAdjustment_(Following) {}
 
     FixedRateLeg& FixedRateLeg::withNotionals(Real notional) {
         notionals_ = vector<Real>(1,notional);
         return *this;
     }
 
-    FixedRateLeg& FixedRateLeg::withNotionals(
-                                         const vector<Real>& notionals) {
+    FixedRateLeg& FixedRateLeg::withNotionals(const vector<Real>& notionals) {
         notionals_ = notionals;
         return *this;
     }
 
-    FixedRateLeg& FixedRateLeg::withCouponRates(
-                                        Rate rate,
-                                        const DayCounter& paymentDayCounter,
-                                        Compounding comp,
-                                        Frequency freq) {
+    FixedRateLeg& FixedRateLeg::withCouponRates(Rate rate,
+                                                const DayCounter& dc,
+                                                Compounding comp,
+                                                Frequency freq) {
         couponRates_.resize(1);
-        couponRates_[0] = InterestRate(rate, paymentDayCounter, comp, freq);
+        couponRates_[0] = InterestRate(rate, dc, comp, freq);
         return *this;
     }
 
-    FixedRateLeg& FixedRateLeg::withCouponRates(
-                                            const InterestRate& interestRate) {
+    FixedRateLeg& FixedRateLeg::withCouponRates(const InterestRate& i) {
         couponRates_.resize(1);
-        couponRates_[0] = interestRate;
+        couponRates_[0] = i;
         return *this;
     }
 
-    FixedRateLeg& FixedRateLeg::withCouponRates(
-                                        const vector<Rate>& rates,
-                                        const DayCounter& paymentDayCounter,
-                                        Compounding comp,
-                                        Frequency freq) {
+    FixedRateLeg& FixedRateLeg::withCouponRates(const vector<Rate>& rates,
+                                                const DayCounter& dc,
+                                                Compounding comp,
+                                                Frequency freq) {
         couponRates_.resize(rates.size());
         for (Size i=0; i<rates.size(); ++i)
-            couponRates_[i] = InterestRate(rates[i], paymentDayCounter,
-                                           comp, freq);
+            couponRates_[i] = InterestRate(rates[i], dc, comp, freq);
         return *this;
     }
 
     FixedRateLeg& FixedRateLeg::withCouponRates(
-            const vector<InterestRate>& interestRates) {
+                                const vector<InterestRate>& interestRates) {
         couponRates_ = interestRates;
         return *this;
     }
@@ -130,6 +127,11 @@ namespace QuantLib {
         return *this;
     }
 
+    FixedRateLeg& FixedRateLeg::withPaymentCalendar(const Calendar& cal) {
+        calendar_ = cal;
+        return *this;
+    }
+
     FixedRateLeg::operator Leg() const {
 
         QL_REQUIRE(!couponRates_.empty(), "no coupon rates given");
@@ -138,12 +140,11 @@ namespace QuantLib {
         Leg leg;
         leg.reserve(schedule_.size()-1);
 
-        // the following is not always correct
-        Calendar calendar = schedule_.calendar();
+        Calendar schCalendar = schedule_.calendar();
 
         // first period might be short or long
         Date start = schedule_.date(0), end = schedule_.date(1);
-        Date paymentDate = calendar.adjust(end, paymentAdjustment_);
+        Date paymentDate = calendar_.adjust(end, paymentAdjustment_);
         InterestRate rate = couponRates_[0];
         Real nominal = notionals_[0];
         if (schedule_.isRegular(1)) {
@@ -157,7 +158,7 @@ namespace QuantLib {
             leg.push_back(temp);
         } else {
             Date ref = end - schedule_.tenor();
-            ref = calendar.adjust(ref, schedule_.businessDayConvention());
+            ref = schCalendar.adjust(ref, schedule_.businessDayConvention());
             InterestRate r(rate.rate(),
                            firstPeriodDC_.empty() ? rate.dayCounter()
                                                   : firstPeriodDC_,
@@ -169,7 +170,7 @@ namespace QuantLib {
         // regular periods
         for (Size i=2; i<schedule_.size()-1; ++i) {
             start = end; end = schedule_.date(i);
-            paymentDate = calendar.adjust(end, paymentAdjustment_);
+            paymentDate = calendar_.adjust(end, paymentAdjustment_);
             if ((i-1) < couponRates_.size())
                 rate = couponRates_[i-1];
             else
@@ -186,7 +187,7 @@ namespace QuantLib {
             // last period might be short or long
             Size N = schedule_.size();
             start = end; end = schedule_.date(N-1);
-            paymentDate = calendar.adjust(end, paymentAdjustment_);
+            paymentDate = calendar_.adjust(end, paymentAdjustment_);
             if ((N-2) < couponRates_.size())
                 rate = couponRates_[N-2];
             else
@@ -201,7 +202,7 @@ namespace QuantLib {
                                     start, end, start, end)));
             } else {
                 Date ref = start + schedule_.tenor();
-                ref = calendar.adjust(ref, schedule_.businessDayConvention());
+                ref = schCalendar.adjust(ref, schedule_.businessDayConvention());
                 leg.push_back(shared_ptr<CashFlow>(new
                     FixedRateCoupon(paymentDate, nominal, rate,
                                     start, end, start, ref)));
