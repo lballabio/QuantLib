@@ -45,12 +45,15 @@ namespace QuantLib {
         results_.value = CashFlows::npv(arguments_.cashflows,
                                         **discountCurve_,
                                         includeRefDateFlows,
+                                        results_.valuationDate,
                                         results_.valuationDate);
 
-        const Date& settlementDate = arguments_.settlementDate;
+        // a bond's cashflow on settlement date is never taken into account
         results_.settlementValue = CashFlows::npv(arguments_.cashflows,
                                                   **discountCurve_,
-                                                  false, settlementDate);
+                                                  false,
+                                                  arguments_.settlementDate,
+                                                  arguments_.settlementDate);
     }
 
 }
