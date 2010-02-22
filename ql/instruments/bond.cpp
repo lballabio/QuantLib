@@ -76,6 +76,9 @@ namespace QuantLib {
             std::sort(cashflows_.begin(), cashflows_.end()-1,
                       earlier_than<boost::shared_ptr<CashFlow> >());
 
+            if (maturityDate_ == Date())
+                maturityDate_ = CashFlows::maturityDate(cashflows);
+
             if (issueDate_ != Date()) {
                 QL_REQUIRE(issueDate_<cashflows_[0]->date(),
                            "issue date (" << issueDate_ <<
@@ -89,7 +92,7 @@ namespace QuantLib {
             notionalSchedule_[0] = Date();
             notionals_[0] = faceAmount;
 
-            notionalSchedule_[1] = maturityDate;
+            notionalSchedule_[1] = maturityDate_;
             notionals_[1] = 0.0;
 
             redemptions_.push_back(cashflows.back());
