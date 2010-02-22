@@ -52,10 +52,6 @@ namespace QuantLib {
         if (settlement == Date())
             settlement = bond.settlementDate();
 
-        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
-                   "non tradable at " << settlement <<
-                   " (maturity being " << bond.maturityDate() << ")");
-
         return CashFlows::previousCashFlow(bond.cashflows(),
                                            false, settlement);
     }
@@ -64,10 +60,6 @@ namespace QuantLib {
                                                     Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
-
-        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
-                   "non tradable at " << settlement <<
-                   " (maturity being " << bond.maturityDate() << ")");
 
         return CashFlows::nextCashFlow(bond.cashflows(),
                                        false, settlement);
@@ -78,10 +70,6 @@ namespace QuantLib {
         if (settlement == Date())
             settlement = bond.settlementDate();
 
-        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
-                   "non tradable at " << settlement <<
-                   " (maturity being " << bond.maturityDate() << ")");
-
         return CashFlows::previousCashFlowDate(bond.cashflows(),
                                                false, settlement);
     }
@@ -90,10 +78,6 @@ namespace QuantLib {
                                          Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
-
-        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
-                   "non tradable at " << settlement <<
-                   " (maturity being " << bond.maturityDate() << ")");
 
         return CashFlows::nextCashFlowDate(bond.cashflows(),
                                            false, settlement);
@@ -104,10 +88,6 @@ namespace QuantLib {
         if (settlement == Date())
             settlement = bond.settlementDate();
 
-        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
-                   "non tradable at " << settlement <<
-                   " (maturity being " << bond.maturityDate() << ")");
-
         return CashFlows::previousCashFlowAmount(bond.cashflows(),
                                                  false, settlement);
     }
@@ -116,10 +96,6 @@ namespace QuantLib {
                                            Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
-
-        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
-                   "non tradable at " << settlement <<
-                   " (maturity being " << bond.maturityDate() << ")");
 
         return CashFlows::nextCashFlowAmount(bond.cashflows(),
                                              false, settlement);
@@ -130,10 +106,6 @@ namespace QuantLib {
         if (settlement == Date())
             settlement = bond.settlementDate();
 
-        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
-                   "non tradable at " << settlement <<
-                   " (maturity being " << bond.maturityDate() << ")");
-
         return CashFlows::previousCouponRate(bond.cashflows(),
                                              false, settlement);
     }
@@ -142,10 +114,6 @@ namespace QuantLib {
                                        Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
-
-        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
-                   "non tradable at " << settlement <<
-                   " (maturity being " << bond.maturityDate() << ")");
 
         return CashFlows::nextCouponRate(bond.cashflows(),
                                          false, settlement);
