@@ -81,29 +81,22 @@ namespace QuantLib {
         return true;
     }
 
-    Leg::const_iterator
+    Leg::const_reverse_iterator
     CashFlows::previousCashFlow(const Leg& leg,
                                 bool includeSettlementDateFlows,
                                 Date settlementDate) {
         if (leg.empty())
-            return leg.end();
+            return leg.rend();
 
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
 
-        if ( ! (*leg.begin())->hasOccurred(settlementDate,
-                                           includeSettlementDateFlows) )
-            return leg.end();
-
-        Leg::const_iterator i = nextCashFlow(leg,
-                                             includeSettlementDateFlows,
-                                             settlementDate);
-        // --i is not what we're looking for since there
-        // might be more than one CashFlow at (*--i)->date()
-        Date beforeLastPaymentDate = (*--i)->date()-1;
-        return nextCashFlow(leg,
-                            includeSettlementDateFlows,
-                            beforeLastPaymentDate);
+        Leg::const_reverse_iterator i;
+        for (i = leg.rbegin(); i<leg.rend(); ++i) {
+            if ( (*i)->hasOccurred(settlementDate, includeSettlementDateFlows) )
+                return i;
+        }
+        return leg.rend();
     }
 
     Leg::const_iterator
@@ -127,60 +120,51 @@ namespace QuantLib {
     Date CashFlows::previousCashFlowDate(const Leg& leg,
                                          bool includeSettlementDateFlows,
                                          Date settlementDate) {
-        Leg::const_iterator cf = previousCashFlow(leg,
-                                                  includeSettlementDateFlows,
-                                                  settlementDate);
-        if (cf==leg.end()) return Date();
+        Leg::const_reverse_iterator cf;
+        cf = previousCashFlow(leg, includeSettlementDateFlows, settlementDate);
+
+        if (cf==leg.rend())
+            return Date();
+
         return (*cf)->date();
     }
 
     Date CashFlows::nextCashFlowDate(const Leg& leg,
                                      bool includeSettlementDateFlows,
                                      Date settlementDate) {
-        Leg::const_iterator cf = nextCashFlow(leg,
-                                              includeSettlementDateFlows,
-                                              settlementDate);
-        if (cf==leg.end()) return Date();
+        Leg::const_iterator cf;
+        cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
+
+        if (cf==leg.end())
+            return Date();
+
         return (*cf)->date();
     }
 
     Real CashFlows::previousCashFlowAmount(const Leg& leg,
                                            bool includeSettlementDateFlows,
                                            Date settlementDate) {
-        Leg::const_iterator cf = previousCashFlow(leg,
-                                                  includeSettlementDateFlows,
-                                                  settlementDate);
-        if (cf==leg.end()) return Real();
+        Leg::const_reverse_iterator cf;
+        cf = previousCashFlow(leg, includeSettlementDateFlows, settlementDate);
+
+        if (cf==leg.rend())
+            return Real();
 
         Date paymentDate = (*cf)->date();
         Real result = 0.0;
-
-        // when cf==leg.begin() the following code crashes at --cf
-        // on VC8/9 Debug (boundary check)
-        // but it also crashes in Release mode as if it would evaluate
-        // (*cf) even when cf<leg.begin()
-        //
-        // help or suggestion would be appreciated
-        //
-        //for (; cf>=leg.begin() && (*cf)->date()==paymentDate; --cf)
-        //    result += (*cf)->amount();
-
-        // ugly patch...
-        for (; cf>leg.begin() && (*cf)->date()==paymentDate; --cf)
+        for (; cf<leg.rend() && (*cf)->date()==paymentDate; ++cf)
             result += (*cf)->amount();
-        if (cf==leg.begin() && (*cf)->date()==paymentDate)
-            result += (*cf)->amount();
-
         return result;
     }
 
     Real CashFlows::nextCashFlowAmount(const Leg& leg,
                                        bool includeSettlementDateFlows,
                                        Date settlementDate) {
-        Leg::const_iterator cf = nextCashFlow(leg,
-                                              includeSettlementDateFlows,
-                                              settlementDate);
-        if (cf==leg.end()) return Real();
+        Leg::const_iterator cf;
+        cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
+
+        if (cf==leg.end())
+            return Real();
 
         Date paymentDate = (*cf)->date();
         Real result = 0.0;
@@ -192,18 +176,20 @@ namespace QuantLib {
     // Coupon utility functions
     namespace {
 
+        template<typename Iter>
         Rate aggregateRate(const Leg& leg,
-                           Leg::const_iterator cf) {
-            if (cf==leg.end()) return 0.0;
+                           Iter first,
+                           Iter last) {
+            if (first==last) return 0.0;
 
-            Date paymentDate = (*cf)->date();
+            Date paymentDate = (*first)->date();
             bool firstCouponFound = false;
             Real nominal = 0.0;
             Time accrualPeriod = 0.0;
             DayCounter dc;
             Rate result = 0.0;
-            for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
-                shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+            for (; first<last && (*first)->date()==paymentDate; ++first) {
+                shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*first);
                 if (cp) {
                     if (firstCouponFound) {
                         QL_REQUIRE(nominal       == cp->nominal() &&
@@ -221,7 +207,7 @@ namespace QuantLib {
                 }
             }
             QL_ENSURE(firstCouponFound,
-                      "next cashflow (" << paymentDate << ") is not a coupon");
+                      "no coupon paid at cashflow date " << paymentDate);
             return result;
         }
 
@@ -230,19 +216,18 @@ namespace QuantLib {
     Rate CashFlows::previousCouponRate(const Leg& leg,
                                        bool includeSettlementDateFlows,
                                        Date settlementDate) {
-        Leg::const_iterator cf = previousCashFlow(leg,
-                                                  includeSettlementDateFlows,
-                                                  settlementDate);
-        return aggregateRate(leg, cf);
+        Leg::const_reverse_iterator cf;
+        cf = previousCashFlow(leg, includeSettlementDateFlows, settlementDate);
+
+        return aggregateRate<Leg::const_reverse_iterator>(leg, cf, leg.rend());
     }
 
     Rate CashFlows::nextCouponRate(const Leg& leg,
                                    bool includeSettlementDateFlows,
                                    Date settlementDate) {
-        Leg::const_iterator cf = nextCashFlow(leg,
-                                              includeSettlementDateFlows,
-                                              settlementDate);
-        return aggregateRate(leg, cf);
+        Leg::const_iterator cf;
+        cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
+        return aggregateRate<Leg::const_iterator>(leg, cf, leg.end());
     }
 
     Date CashFlows::accrualStartDate(const Leg& leg,

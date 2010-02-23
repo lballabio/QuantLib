@@ -60,8 +60,9 @@ namespace QuantLib {
 
         //! \name CashFlow inspectors
         //@{
-        static Leg::const_iterator previousCashFlow(const Bond& bond,
-                                                    Date refDate = Date());
+        static Leg::const_reverse_iterator
+        previousCashFlow(const Bond& bond,
+                         Date refDate = Date());
         static Leg::const_iterator nextCashFlow(const Bond& bond,
                                                 Date refDate = Date());
         static Date previousCashFlowDate(const Bond& bond,

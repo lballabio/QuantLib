@@ -55,7 +55,7 @@ namespace QuantLib {
         //! \name CashFlow functions
         //@{
         //! the last cashflow paying before or at the given date
-        static Leg::const_iterator
+        static Leg::const_reverse_iterator
         previousCashFlow(const Leg& leg,
                          bool includeSettlementDateFlows,
                          Date settlementDate = Date());

@@ -47,8 +47,9 @@ namespace QuantLib {
         return bond.notional(settlement)!=0.0;
     }
 
-    Leg::const_iterator BondFunctions::previousCashFlow(const Bond& bond,
-                                                        Date settlement) {
+    Leg::const_reverse_iterator
+    BondFunctions::previousCashFlow(const Bond& bond,
+                                    Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
 
