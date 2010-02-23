@@ -1,0 +1,43 @@
+.\" Man page contributed by Dirk Eddelbuettel <edd@debian.org>
+.\" and released under the Quantlib license
+.TH QUANTLIB-CONFIG 1 "20 September 2001" QuantLib
+.SH NAME
+quantlib-config - compiler / linker flags for QuantLib
+.SH SYNOPSIS
+.B quantlib-config
+[\-\-prefix[=DIR]]  [\-\-exec-prefix[=DIR]]  [\-\-version] [\-\-libs] [\-\-cflags]
+.SH DESCRIPTION
+.PP
+.B quantlib-config
+is a tool which can be used to determine the compiler and linker flags that
+should be used to compile and link programs that use \fIQuantLib\fP.
+.SH OPTIONS
+.B quantlib-config
+accepts the following options:
+.TP 8
+.B  \-\-prefix[=DIR]
+Show the QuantLib installation prefix.
+.TP 8
+.B  \-\-exec-prefix[=DIR]
+Show the QuantLib execution direction prefix.
+.TP 8
+.B  \-\-libs
+Print the linker flags that are necessary to link a \fIQuantLib\fP program.
+.TP 8
+.B  \-\-cflags
+Print the compiler flags that are necessary to compile a \fIQuantLib\fP program.
+.TP 8
+.B  \-\-version
+Print the currently installed version of \fIQuantLib\fP on the standard output.
+.SH SEE ALSO
+.BR gtk-config (1),
+.BR gnome-config (1),
+the QuantLib documentation and website at
+.IR http://quantlib.org .
+.SH AUTHORS
+The QuantLib Group (see
+.IR Authors.txt ).
+
+This manual page was added by Dirk Eddelbuettel
+<edd@debian.org>, the Debian GNU/Linux maintainer for
+.BR quantlib .
