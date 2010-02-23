@@ -808,6 +808,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\cashflows\simplecashflow.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\cashflows\simplecashflow.hpp"
 				>
 			</File>

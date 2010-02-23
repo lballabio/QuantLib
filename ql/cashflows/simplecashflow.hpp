@@ -33,8 +33,7 @@ namespace QuantLib {
     class SimpleCashFlow : public CashFlow {
       public:
         SimpleCashFlow(Real amount,
-                       const Date& date)
-        : amount_(amount), date_(date) {}
+                       const Date& date);
         //! \name Event interface
         //@{
         Date date() const { return date_; }

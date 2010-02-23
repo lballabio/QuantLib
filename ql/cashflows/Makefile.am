@@ -55,6 +55,7 @@ libCashFlows_la_SOURCES = \
     overnightindexedcoupon.cpp \
     rangeaccrual.cpp \
     replication.cpp \
+    simplecashflow.cpp \
     timebasket.cpp \
     yoyinflationcoupon.cpp
 
