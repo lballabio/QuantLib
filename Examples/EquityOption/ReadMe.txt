@@ -1,0 +1,1 @@
+Calculates equity option values with a number of methods

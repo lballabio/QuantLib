@@ -1,0 +1,95 @@
+
+/*
+ Copyright (C) 2000-2003 StatPro Italia srl
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+/*! \defgroup utilities Utilities
+
+    Iterators are meant to build a sequence on the fly from one or more other
+    sequences, without having to allocate place for storing it. A couple of
+    examples: suppose we have a function which calculates the average of a
+    sequence, and that for genericity we have implemented it as a template
+    function which takes the beginning and the end of the sequence, so that
+    its declaration is:
+
+    \code
+    template <class Iterator>
+    typename Iterator::value_type
+    average(const Iterator& begin, const Iterator& end)
+    \endcode
+
+    This kind of genericity allows one to use the same function to calculate
+    the average of a std::vector, a std::list, a QuantLib::History, any other
+    container, of a subset of any of the former.
+
+    Now let's say we have two sequences of numbers, and we want to calculate
+    the average of their products. One approach could be to store the products
+    in another sequence, and to calculate the average of the latter, as in:
+
+    \code
+    // we have sequence1 and sequence2 and assume equal size:
+    // first we store their product in a vector...
+    std::vector<double> products;
+    std::transform(sequence1.begin(),sequence1.end(), // first sequence
+                   sequence2.begin(),                 // second sequence
+                   std::back_inserter(products),      // output
+                   std::multiplies<double>());        // operation to perform
+    // ...then we calculate the average
+    double result = average(products.begin(),products.end());
+    \endcode
+
+    The above works, however, it might be not particularly efficient since we
+    have to allocate the product vector, quite possibly just to throw it away
+    when the calculation is done.
+
+    QuantLib::coupling_iterator allows us to do the same thing
+    without allocating the extra vector: what we do is simply:
+
+    \code
+    // we have sequence1 and sequence2 and assume equal size:
+    double result = average(
+        make_coupling_iterator(sequence1.begin(),
+                               sequence2.begin(),
+                               std::multiplies<double()),
+        make_coupling_iterator(sequence1.end(),
+                               sequence2.end(),
+                               std::multiplies<double()));
+    \endcode
+
+    The call to make_coupling_iterator creates an iterator which is really a
+    reference to the two iterators and the operation we passed. Dereferencing
+    such iterator returns the result of applying such operation to the values
+    pointed to by the two contained iterators. Advancing the coupling iterator
+    advances the two underlying ones. One can see how iterating on such
+    iterator generates the products one by one so that they can be processed 
+    by <tt>average()</tt>, but does not need allocating memory for storing 
+    the results. The product sequence is generated on the fly.
+
+    The other iterators share the same principle but have different
+    functionalities:
+    - combining_iterator is the same as coupling_iterator, but works on 
+    \f$ N \f$ sequences while the latter works on 2;
+    - filtering_iterator generates the elements of a given sequence which
+    satisfy a given predicate, i.e., it takes a sequence 
+    \f$ [x_0,x_1,\dots] \f$ and a predicate \f$ p \f$ and generates the 
+    sequence of those \f$ x_i \f$ for which \f$ p(x_i) \f$ returns 
+    <tt>true</tt>;
+    - processing_iterator takes a sequence \f$ [x_0,x_1,\dots] \f$ and a 
+    function \f$ f \f$ and generates the sequence 
+    \f$ [f(x_0),f(x_1),\dots] \f$;
+    - stepping_iterator takes a sequence \f$ [x_0,x_1,\dots] \f$ and a step 
+    \f$ m \f$ and generates the sequence \f$ [x_0,x_m,x_{2m},\dots] \f$ 
+*/

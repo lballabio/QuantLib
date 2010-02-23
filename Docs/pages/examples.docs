@@ -1,0 +1,75 @@
+
+/*
+ Copyright (C) 2000-2008 StatPro Italia srl
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+/*! \example BermudanSwaption.cpp
+    This example prices a few bermudan swaptions using different
+    short-rate models calibrated to market swaptions.
+*/
+
+/*! \example Bonds.cpp
+    This example shows how to set up a term structure and then price
+    some simple bonds. The last part is dedicated to peripherical
+    computations such as "Yield to Price" or "Price to Yield"
+*/
+
+/*! \example CallableBonds.cpp
+    This examples prices a number of callable bonds and compares the
+    results to known good data. It uses the experimental CallableBond
+    class.
+*/
+
+/*! \example CDS.cpp
+    This example bootstraps a default-probability curve over a number
+    of CDS and reprices them.
+*/
+
+/*! \example ConvertibleBonds.cpp
+    This example evaluates convertible bond prices.
+*/
+
+/*! \example DiscreteHedging.cpp
+    This is an example of using the %QuantLib Monte Carlo framework.
+*/
+
+/*! \example EquityOption.cpp
+    This example evaluates European, American and Bermudan options
+    using different methods.
+ */
+
+/*! \example FittedBondCurve.cpp
+    This example fits a discount curve over a set of bonds with a
+    number of methods.
+ */
+
+/*! \example FRA.cpp
+    This example evaluates a forward-rate agreement.
+ */
+
+/*! \example Replication.cpp
+    This example uses the CompositeInstrument class to perform static
+    replication of a down-and-out barrier option.
+ */
+
+/*! \example Repo.cpp
+    This example evaluates a repo on a fixed-coupon bond.
+ */
+
+/*! \example swapvaluation.cpp
+    This is an example of using a %QuantLib term structure for pricing
+    a simple swap.
+*/

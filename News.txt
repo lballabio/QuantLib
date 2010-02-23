@@ -1,0 +1,62 @@
+
+Notable changes for QuantLib 1.0:
+
+PORTABILITY
+
+- Fixes for x64 Visual Studio compilation (thanks to Craig Miller.)
+
+- Enabled language extensions in Visual Studio projects.
+
+- Prevented make errors with older shells (thanks to Walter Eaves.)
+
+DATE/TIME
+
+- Changes to end-of-month adjustment. In a schedule, the Unadjusted
+  convention now supersedes a non-null calendar and causes dates to
+  roll on the unadjusted end of month (possibly a holiday.)
+
+- Added new date-generation rule for CDS (thanks to Jose Aparicio.)
+
+- Fix for CDS fair-upfront calculation (thanks to Jose Aparicio.)
+  Previously, fair-upfront calculation required a non-null upfront
+  to begin with. This is no longer the case.
+
+INSTRUMENTS
+
+- Fixed discounting of dividends on convertible-bond grid (thanks to
+  Benoit Houzelle and Samuel Lerouge.)
+
+CASH FLOWS
+
+- A number of CashFlows methods now return a meaningful result even
+  if the passed leg is empty.
+
+PROCESSES
+
+- Changed default discretization for Heston process.  The new
+  default (giving a better performance) is quadratic exponential
+  with Martingale correction.
+
+TERM STRUCTURES
+
+- Removed ambiguous parRate member functions from YieldTermStructure
+  interface.
+
+EXAMPLES
+
+- Added market-model example.
+
+EXPERIMENTAL FOLDER
+
+The ql/experimental folder contains code which is still not fully
+integrated with the library or even fully tested, but is released in
+order to get user feedback.  Experimental classes are considered
+unstable; their interfaces might change in future releases.
+New contributions for this release were:
+
+- Longstaff-Schwartz algorithm for basket products including coupon
+  payments (thanks to Andrea Odetti;)
+
+- added sparse incomplete LU preconditioner for 2D finite-difference
+  models (thanks to Ralph Schreyer.)
+
