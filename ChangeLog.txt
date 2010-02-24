@@ -1,3 +1,36 @@
+2010-02-23 14:33  Luigi Ballabio
+
+	* [r17148] ql/cashflows/cashflows.cpp, ql/cashflows/cashflows.hpp,
+	  ql/pricingengines/bond/bondfunctions.cpp,
+	  ql/pricingengines/bond/bondfunctions.hpp:
+	  
+	  Backported revision 17145 from trunk.
+	  
+	  - fixed bug in the previousAmount and previousRate functions;
+	  - switched to reverse iterator signature for previousXXX functions.
+
+2010-02-23 14:33  Luigi Ballabio
+
+	* [r17147] ql/pricingengines/bond/bondfunctions.cpp:
+	  
+	  Backported revision 17144 from trunk.
+	  
+	  Removed tradability requirement for next/previous inspectors.
+
+2010-02-23 14:33  Luigi Ballabio
+
+	* [r17146] ql/instruments/bond.cpp:
+	  
+	  Backported revision 17143 from trunk.
+	  
+	  Fixed "null maturity date" wrong behavior.
+
+2010-02-17 15:32  Luigi Ballabio
+
+	* [r17115] ChangeLog.txt:
+	  
+	  Updated ChangeLog
+
 2010-02-17 15:09  Luigi Ballabio
 
 	* [r17114] ql/cashflows/cashflows.cpp:

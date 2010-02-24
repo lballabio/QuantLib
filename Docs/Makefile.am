@@ -28,7 +28,7 @@ dist-hook:
 	mkdir -p $(distdir)/pages $(distdir)/Examples $(distdir)/images
 	cp -p $(srcdir)/pages/*.docs $(distdir)/pages
 	cp -p $(srcdir)/Examples/*.cpp $(distdir)/Examples
-	cp -p $(srcdir)/images/*.bmp $(srcdir)/images/*.jpg \
+	cp -p $(srcdir)/images/*.jpg \
 	      $(srcdir)/images/*.png $(srcdir)/images/*.ico \
 	      $(distdir)/images
 
