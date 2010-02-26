@@ -41,7 +41,9 @@ namespace QuantLib {
                                    const Interpolator1& factory1 = Interpolator1(),
                                    const Interpolator2& factory2 = Interpolator2())
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
-              n_(n), xBegin2_(this->xBegin_+n) {
+              n_(n) {
+
+                xBegin2_ = this->xBegin_+n;
 
                 QL_REQUIRE(xBegin2_<this->xEnd_,
                            "too large n (" << n << ") for " <<
@@ -81,7 +83,6 @@ namespace QuantLib {
             Size switchIndex() { return n_; }
           private:
             I1 xBegin2_;
-            //I2 yBegin2_;
             Size n_;
             Interpolation interpolation1_, interpolation2_;
         };
