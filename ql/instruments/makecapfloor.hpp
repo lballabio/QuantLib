@@ -43,7 +43,7 @@ namespace QuantLib {
                      const Period& forwardStart = 0*Days);
 
         operator CapFloor() const;
-        operator boost::shared_ptr<CapFloor>() const ;
+        operator boost::shared_ptr<CapFloor>() const;
 
         MakeCapFloor& withNominal(Real n);
         MakeCapFloor& withEffectiveDate(const Date& effectiveDate,
