@@ -50,7 +50,21 @@ namespace QuantLib {
                                      Real discount)
     : strike_(p->strike()), forward_(forward), stdDev_(stdDev),
       discount_(discount), variance_(stdDev*stdDev) {
+        initialize(p);
+    }
 
+    BlackCalculator::BlackCalculator(Option::Type optionType,
+                                     Real strike,
+                                     Real forward,
+                                     Real stdDev,
+                                     Real discount)
+    : strike_(strike), forward_(forward), stdDev_(stdDev),
+      discount_(discount), variance_(stdDev*stdDev) {
+        initialize(shared_ptr<StrikedTypePayoff>(new
+            PlainVanillaPayoff(optionType, strike)));
+    }
+
+    void BlackCalculator::initialize(const shared_ptr<StrikedTypePayoff>& p) {
         QL_REQUIRE(strike_>=0.0,
                    "strike (" << strike_ << ") must be non-negative");
         QL_REQUIRE(forward_>0.0,
@@ -71,7 +85,7 @@ namespace QuantLib {
                 n_d1_ = 0.0;
                 n_d2_ = 0.0;
             } else {
-                d1_ = std::log(forward/strike_)/stdDev_ + 0.5*stdDev_;
+                d1_ = std::log(forward_/strike_)/stdDev_ + 0.5*stdDev_;
                 d2_ = d1_-stdDev_;
                 CumulativeNormalDistribution f;
                 cum_d1_ = f(d1_);
@@ -80,14 +94,14 @@ namespace QuantLib {
                 n_d2_ = f.derivative(d2_);
             }
         } else {
-            if (close(forward, strike_)) {
+            if (close(forward_, strike_)) {
                 d1_ = 0;
                 d2_ = 0;
                 cum_d1_ = 0.5;
                 cum_d2_ = 0.5;
                 n_d1_ = M_SQRT_2 * M_1_SQRTPI;
                 n_d2_ = M_SQRT_2 * M_1_SQRTPI;
-            } else if (forward>strike_) {
+            } else if (forward_>strike_) {
                 d1_ = QL_MAX_REAL;
                 d2_ = QL_MAX_REAL;
                 cum_d1_ = 1.0;
@@ -281,18 +295,9 @@ namespace QuantLib {
         QL_REQUIRE(maturity>=0.0,
                    "maturity (" << maturity << ") must be non-negative");
         if (close(maturity, 0.0)) return 0.0;
-        //vol = stdDev_ / std::sqrt(maturity);
-        //rate = -std::log(discount_)/maturity;
-        //dividendRate = -std::log(forward_ / spot * discount_)/maturity;
-        //return rate*value() - (rate-dividendRate)*spot*delta(spot)
-        //    - 0.5*vol*vol*spot*spot*gamma(spot);
         return -( std::log(discount_)            * value()
                  +std::log(forward_/spot) * spot * delta(spot)
                  +0.5*variance_ * spot  * spot * gamma(spot))/maturity;
-    }
-
-    Real BlackCalculator::thetaPerDay(Real spot, Time maturity) const {
-        return theta(spot, maturity)/365.0;
     }
 
     Real BlackCalculator::vega(Time maturity) const {
@@ -335,14 +340,6 @@ namespace QuantLib {
         return maturity * discount_ * temp;
     }
 
-    Real BlackCalculator::itmCashProbability() const {
-        return cum_d2_;
-    }
-
-    Real BlackCalculator::itmAssetProbability() const {
-        return cum_d1_;
-    }
-
     Real BlackCalculator::strikeSensitivity() const {
 
         Real temp = stdDev_*strike_;
@@ -353,14 +350,6 @@ namespace QuantLib {
             DalphaDstrike * forward_ + DbetaDstrike * x_ + beta_ * DxDstrike_;
 
         return discount_ * temp2;
-    }
-
-    Real BlackCalculator::alpha() const {
-        return alpha_;
-    }
-
-    Real BlackCalculator::beta() const {
-        return beta_;
     }
 
 }

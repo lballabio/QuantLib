@@ -36,25 +36,19 @@ namespace QuantLib {
                    "growth (" << growth_ << ") must be positive");
     }
 
-
-    Real BlackScholesCalculator::delta() const {
-        return BlackCalculator::delta(spot_);
-    }
-
-    Real BlackScholesCalculator::elasticity() const {
-        return BlackCalculator::elasticity(spot_);
-    }
-
-    Real BlackScholesCalculator::gamma() const {
-        return BlackCalculator::gamma(spot_);
-    }
-
-    Real BlackScholesCalculator::theta(Time maturity) const {
-        return BlackCalculator::theta(spot_, maturity);
-    }
-
-    Real BlackScholesCalculator::thetaPerDay(Time maturity) const {
-        return BlackCalculator::thetaPerDay(spot_, maturity);
+    BlackScholesCalculator::BlackScholesCalculator(Option::Type type,
+                                                   Real strike,
+                                                   Real spot,
+                                                   DiscountFactor growth,
+                                                   Real stdDev,
+                                                   DiscountFactor discount)
+    : BlackCalculator(type, strike, spot*growth/discount, stdDev, discount),
+      spot_(spot), growth_(growth)
+    {
+        QL_REQUIRE(spot_>0.0,
+                   "spot (" << spot_ << ") must be positive");
+        QL_REQUIRE(growth_>0.0,
+                   "growth (" << growth_ << ") must be positive");
     }
 
 }

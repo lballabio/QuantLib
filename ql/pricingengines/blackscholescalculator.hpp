@@ -37,6 +37,12 @@ namespace QuantLib {
                         DiscountFactor growth,
                         Real stdDev,
                         DiscountFactor discount);
+        BlackScholesCalculator(Option::Type optionType,
+                               Real strike,
+                               Real spot,
+                               DiscountFactor growth,
+                               Real stdDev,
+                               DiscountFactor discount);
         virtual ~BlackScholesCalculator() {}
         /*! Sensitivity to change in the underlying spot price. */
         Real delta() const;
@@ -55,6 +61,27 @@ namespace QuantLib {
         Real spot_;
         DiscountFactor growth_;
     };
+
+    // inline
+    inline Real BlackScholesCalculator::delta() const {
+        return BlackCalculator::delta(spot_);
+    }
+
+    inline Real BlackScholesCalculator::elasticity() const {
+        return BlackCalculator::elasticity(spot_);
+    }
+
+    inline Real BlackScholesCalculator::gamma() const {
+        return BlackCalculator::gamma(spot_);
+    }
+
+    inline Real BlackScholesCalculator::theta(Time maturity) const {
+        return BlackCalculator::theta(spot_, maturity);
+    }
+
+    inline Real BlackScholesCalculator::thetaPerDay(Time maturity) const {
+        return BlackCalculator::thetaPerDay(spot_, maturity);
+    }
 
 }
 
