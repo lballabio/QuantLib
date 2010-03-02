@@ -41,20 +41,20 @@ namespace QuantLib {
     */
     class BlackSwaptionEngine : public Swaption::engine {
       public:
-        BlackSwaptionEngine(const Handle<YieldTermStructure>& termStructure,
+        BlackSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
                             Volatility vol,
                             const DayCounter& dc = Actual365Fixed());
-        BlackSwaptionEngine(const Handle<YieldTermStructure>& termStructure,
+        BlackSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
                             const Handle<Quote>& vol,
                             const DayCounter& dc = Actual365Fixed());
         BlackSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
                             const Handle<SwaptionVolatilityStructure>& vol);
         void calculate() const;
-        Handle<YieldTermStructure> termStructure();
-        Handle<SwaptionVolatilityStructure> volatility();
+        Handle<YieldTermStructure> termStructure() { return discountCurve_; }
+        Handle<SwaptionVolatilityStructure> volatility() { return vol_; }
       private:
-        Handle<YieldTermStructure> termStructure_;
-        Handle<SwaptionVolatilityStructure> volatility_;
+        Handle<YieldTermStructure> discountCurve_;
+        Handle<SwaptionVolatilityStructure> vol_;
     };
 
 }

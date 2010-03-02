@@ -34,33 +34,33 @@
 namespace QuantLib {
 
     BlackSwaptionEngine::BlackSwaptionEngine(
-                              const Handle<YieldTermStructure>& termStructure,
+                              const Handle<YieldTermStructure>& discountCurve,
                               Volatility vol,
                               const DayCounter& dc)
-    : termStructure_(termStructure),
-      volatility_(boost::shared_ptr<SwaptionVolatilityStructure>(new
+    : discountCurve_(discountCurve),
+      vol_(boost::shared_ptr<SwaptionVolatilityStructure>(new
           ConstantSwaptionVolatility(0, NullCalendar(), Following, vol, dc))) {
-        registerWith(termStructure_);
+        registerWith(discountCurve_);
     }
 
     BlackSwaptionEngine::BlackSwaptionEngine(
-                            const Handle<YieldTermStructure>& termStructure,
+                            const Handle<YieldTermStructure>& discountCurve,
                             const Handle<Quote>& vol,
                             const DayCounter& dc)
-    : termStructure_(termStructure),
-      volatility_(boost::shared_ptr<SwaptionVolatilityStructure>(new
+    : discountCurve_(discountCurve),
+      vol_(boost::shared_ptr<SwaptionVolatilityStructure>(new
           ConstantSwaptionVolatility(0, NullCalendar(), Following, vol, dc))) {
-        registerWith(termStructure_);
-        registerWith(volatility_);
+        registerWith(discountCurve_);
+        registerWith(vol_);
     }
 
     BlackSwaptionEngine::BlackSwaptionEngine(
-                        const Handle<YieldTermStructure>& termStructure,
+                        const Handle<YieldTermStructure>& discountCurve,
                         const Handle<SwaptionVolatilityStructure>& volatility)
-    : termStructure_(termStructure),
-      volatility_(volatility) {
-        registerWith(termStructure_);
-        registerWith(volatility_);
+    : discountCurve_(discountCurve),
+      vol_(volatility) {
+        registerWith(discountCurve_);
+        registerWith(vol_);
     }
 
     void BlackSwaptionEngine::calculate() const {
@@ -97,7 +97,7 @@ namespace QuantLib {
 
         // using the discounting curve
         swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                           new DiscountingSwapEngine(termStructure_, false)));
+                           new DiscountingSwapEngine(discountCurve_, false)));
         Real annuity;
         switch(arguments_.settlementType) {
           case Settlement::Physical: {
@@ -112,7 +112,7 @@ namespace QuantLib {
               Real fixedLegCashBPS =
                   CashFlows::bps(fixedLeg,
                                  InterestRate(atmForward, dayCount, Compounded, Annual),
-                                 false, termStructure_->referenceDate()) ;
+                                 false, discountCurve_->referenceDate()) ;
               annuity = std::fabs(fixedLegCashBPS/basisPoint);
               break;
           }
@@ -123,11 +123,11 @@ namespace QuantLib {
 
         // the swap length calculation might be improved using the value date
         // of the exercise date
-        Time swapLength =  volatility_->swapLength(exerciseDate,
+        Time swapLength =  vol_->swapLength(exerciseDate,
                                                    arguments_.floatingPayDates.back());
         results_.additionalResults["swapLength"] = swapLength;
 
-        Real variance = volatility_->blackVariance(exerciseDate,
+        Real variance = vol_->blackVariance(exerciseDate,
                                                    swapLength,
                                                    strike);
         Real stdDev = std::sqrt(variance);
@@ -136,17 +136,9 @@ namespace QuantLib {
                                                 Option::Call : Option::Put;
         results_.value = blackFormula(w, strike, atmForward, stdDev, annuity);
 
-        Time exerciseTime = volatility_->timeFromReference(exerciseDate);
+        Time exerciseTime = vol_->timeFromReference(exerciseDate);
         results_.additionalResults["vega"] = std::sqrt(exerciseTime) *
             blackFormulaStdDevDerivative(strike, atmForward, stdDev, annuity);
-    }
-
-    Handle<YieldTermStructure> BlackSwaptionEngine::termStructure() {
-        return termStructure_;
-    }
-
-    Handle<SwaptionVolatilityStructure> BlackSwaptionEngine::volatility() {
-        return volatility_;
     }
 
 }

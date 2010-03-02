@@ -28,32 +28,32 @@
 namespace QuantLib {
 
     BlackCapFloorEngine::BlackCapFloorEngine(
-                              const Handle<YieldTermStructure>& termStructure,
+                              const Handle<YieldTermStructure>& discountCurve,
                               Volatility v,
                               const DayCounter& dc)
-    : termStructure_(termStructure),
-      volatility_(boost::shared_ptr<OptionletVolatilityStructure>(new
+    : discountCurve_(discountCurve),
+      vol_(boost::shared_ptr<OptionletVolatilityStructure>(new
           ConstantOptionletVolatility(0, NullCalendar(), Following, v, dc))) {
-        registerWith(termStructure_);
+        registerWith(discountCurve_);
     }
 
     BlackCapFloorEngine::BlackCapFloorEngine(
-                              const Handle<YieldTermStructure>& termStructure,
+                              const Handle<YieldTermStructure>& discountCurve,
                               const Handle<Quote>& v,
                               const DayCounter& dc)
-    : termStructure_(termStructure),
-      volatility_(boost::shared_ptr<OptionletVolatilityStructure>(new
+    : discountCurve_(discountCurve),
+      vol_(boost::shared_ptr<OptionletVolatilityStructure>(new
           ConstantOptionletVolatility(0, NullCalendar(), Following, v, dc))) {
-        registerWith(termStructure_);
-        registerWith(volatility_);
+        registerWith(discountCurve_);
+        registerWith(vol_);
     }
 
     BlackCapFloorEngine::BlackCapFloorEngine(
-                       const Handle<YieldTermStructure>& termStructure,
+                       const Handle<YieldTermStructure>& discountCurve,
                        const Handle<OptionletVolatilityStructure>& volatility)
-    : termStructure_(termStructure), volatility_(volatility) {
-        registerWith(termStructure_);
-        registerWith(volatility_);
+    : discountCurve_(discountCurve), vol_(volatility) {
+        registerWith(discountCurve_);
+        registerWith(vol_);
     }
 
     void BlackCapFloorEngine::calculate() const {
@@ -64,15 +64,18 @@ namespace QuantLib {
         std::vector<Real> vegas(optionlets, 0.0);
         std::vector<Real> stdDevs(optionlets, 0.0);
         CapFloor::Type type = arguments_.type;
-        Date today = volatility_->referenceDate();
-        Date settlement = termStructure_->referenceDate();
+        Date today = vol_->referenceDate();
+        Date settlement = discountCurve_->referenceDate();
 
         for (Size i=0; i<optionlets; ++i) {
             Date paymentDate = arguments_.endDates[i];
-            if (paymentDate > settlement) { // discard expired caplets
+            // handling of settlementDate, npvDate and includeSettlementFlows
+            // should be implemented.
+            // For the time being just discard expired caplets
+            if (paymentDate > settlement) {
                 DiscountFactor d = arguments_.nominals[i] *
                                    arguments_.gearings[i] *
-                                   termStructure_->discount(paymentDate) *
+                                   discountCurve_->discount(paymentDate) *
                                    arguments_.accrualTimes[i];
 
                 Rate forward = arguments_.forwards[i];
@@ -80,14 +83,13 @@ namespace QuantLib {
                 Date fixingDate = arguments_.fixingDates[i];
                 Time sqrtTime = 0.0;
                 if (fixingDate > today)
-                    sqrtTime = std::sqrt(
-                        volatility_->timeFromReference(fixingDate));
+                    sqrtTime = std::sqrt(vol_->timeFromReference(fixingDate));
 
                 if (type == CapFloor::Cap || type == CapFloor::Collar) {
                     Rate strike = arguments_.capRates[i];
                     if (sqrtTime>0.0) {
-                        stdDevs[i] = std::sqrt(
-                            volatility_->blackVariance(fixingDate, strike));
+                        stdDevs[i] = std::sqrt(vol_->blackVariance(fixingDate,
+                                                                   strike));
                         vegas[i] = blackFormulaStdDevDerivative(
                             strike, forward, stdDevs[i], d) * sqrtTime;
                     }
@@ -99,8 +101,8 @@ namespace QuantLib {
                     Rate strike = arguments_.floorRates[i];
                     Real floorletVega = 0.0;
                     if (sqrtTime>0.0) {
-                        stdDevs[i] = std::sqrt(
-                            volatility_->blackVariance(fixingDate, strike));
+                        stdDevs[i] = std::sqrt(vol_->blackVariance(fixingDate,
+                                                                   strike));
                         floorletVega = blackFormulaStdDevDerivative(
                             strike, forward, stdDevs[i], d) * sqrtTime;
                     }
@@ -127,14 +129,6 @@ namespace QuantLib {
         results_.additionalResults["optionletsAtmForward"] = arguments_.forwards;
         if (type != CapFloor::Collar)
             results_.additionalResults["optionletsStdDev"] = stdDevs;
-    }
-
-    Handle<YieldTermStructure> BlackCapFloorEngine::termStructure() {
-        return termStructure_;
-    }
-
-    Handle<OptionletVolatilityStructure> BlackCapFloorEngine::volatility() {
-        return volatility_;
     }
 
 }
