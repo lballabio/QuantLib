@@ -25,10 +25,9 @@
 #define quantlib_indexed_cash_flow_hpp
 
 #include <ql/cashflow.hpp>
+#include <ql/index.hpp>
 
 namespace QuantLib {
-
-    class Index;
 
     //! Cash flow dependent on an index ratio.
 
@@ -41,7 +40,8 @@ namespace QuantLib {
         growthOnly = false means i(T)/i(0), which is a bond-type setting.
         growthOnly = true means i(T)/i(0) - 1, which is a swap-type setting.
     */
-    class IndexedCashFlow : public CashFlow {
+    class IndexedCashFlow : public CashFlow,
+                            public Observer {
       public:
         IndexedCashFlow(Real notional,
                         const boost::shared_ptr<Index> &index,
@@ -51,7 +51,9 @@ namespace QuantLib {
                         bool growthOnly = false)
         : notional_(notional), index_(index),
           baseDate_(baseDate), fixingDate_(fixingDate),
-          paymentDate_(paymentDate), growthOnly_(growthOnly) {}
+          paymentDate_(paymentDate), growthOnly_(growthOnly) {
+            registerWith(index);
+        }
         //! \name Event interface
         //@{
         Date date() const { return paymentDate_; }
@@ -68,6 +70,10 @@ namespace QuantLib {
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
+        //@}
+        //! \name Observer interface
+        //@{
+        void update() { notifyObservers(); }
         //@}
       private:
         Real notional_;

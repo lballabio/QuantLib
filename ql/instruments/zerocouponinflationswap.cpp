@@ -164,6 +164,13 @@ namespace QuantLib {
         return legNPV_[1];
     }
 
+    const Leg& ZeroCouponInflationSwap::fixedLeg() const {
+        return legs_[0];
+    }
+
+    const Leg& ZeroCouponInflationSwap::inflationLeg() const {
+        return legs_[1];
+    }
 
 }
 

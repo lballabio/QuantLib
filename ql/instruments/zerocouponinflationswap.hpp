@@ -85,7 +85,7 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         //! "payer" or "receiver" refer to the inflation-indexed leg
-        Type type() const;
+        Type type() const { return type_; }
         Real nominal() const { return nominal_; }
         //! \f$ K \f$ in the above formula.
         Rate fixedRate() const { return fixedRate_; }
@@ -93,9 +93,9 @@ namespace QuantLib {
         Period observationLag() const { return observationLag_; }
         DayCounter dayCounter() const { return dayCounter_; }
         //! just one cashflow (that is not a coupon) in each leg
-        Leg&  fixedLeg() const;
+        const Leg& fixedLeg() const;
         //! just one cashflow (that is not a coupon) in each leg
-        Leg& inflationLeg() const;
+        const Leg& inflationLeg() const;
         //@}
 
         //! \name Instrument interface
