@@ -55,7 +55,9 @@ namespace QuantLib {
                               Real targetValue)
         : discountCurve_(discountCurve), targetValue_(targetValue) {
 
-            vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(-1.0));
+            // set an implausible value, so that calculation is forced
+            // at first ImpliedVolHelper::operator()(Volatility x) call
+            vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(-1));
             Handle<Quote> h(vol_);
             engine_ = boost::shared_ptr<PricingEngine>(new
                                     BlackCapFloorEngine(discountCurve_, h));
@@ -292,18 +294,17 @@ namespace QuantLib {
                                   settlementDate);
     }
 
-    Volatility CapFloor::impliedVolatility(
-                              Real targetValue,
-                              const Handle<YieldTermStructure>& discountCurve,
-                              Volatility guess,
-                              Real accuracy,
-                              Natural maxEvaluations,
-                              Volatility minVol,
-                              Volatility maxVol) const {
-        calculate();
+    Volatility CapFloor::impliedVolatility(Real targetValue,
+                                           const Handle<YieldTermStructure>& d,
+                                           Volatility guess,
+                                           Real accuracy,
+                                           Natural maxEvaluations,
+                                           Volatility minVol,
+                                           Volatility maxVol) const {
+        //calculate();
         QL_REQUIRE(!isExpired(), "instrument expired");
 
-        ImpliedVolHelper f(*this, discountCurve, targetValue);
+        ImpliedVolHelper f(*this, d, targetValue);
         //Brent solver;
         NewtonSafe solver;
         solver.setMaxEvaluations(maxEvaluations);

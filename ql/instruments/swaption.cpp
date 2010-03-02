@@ -52,6 +52,8 @@ namespace QuantLib {
                               Real targetValue)
         : discountCurve_(discountCurve), targetValue_(targetValue) {
 
+            // set an implausible value, so that calculation is forced
+            // at first ImpliedVolHelper::operator()(Volatility x) call
             vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(-1.0));
             Handle<Quote> h(vol_);
             engine_ = boost::shared_ptr<PricingEngine>(new
@@ -135,7 +137,7 @@ namespace QuantLib {
                               Natural maxEvaluations,
                               Volatility minVol,
                               Volatility maxVol) const {
-        calculate();
+        //calculate();
         QL_REQUIRE(!isExpired(), "instrument expired");
 
         ImpliedVolHelper f(*this, discountCurve, targetValue);
