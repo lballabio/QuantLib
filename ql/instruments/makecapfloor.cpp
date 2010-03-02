@@ -20,12 +20,16 @@
 
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+
+using boost::shared_ptr;
+using boost::dynamic_pointer_cast;
 
 namespace QuantLib {
 
     MakeCapFloor::MakeCapFloor(CapFloor::Type capFloorType,
                                const Period& tenor,
-                               const boost::shared_ptr<IborIndex>& iborIndex,
+                               const shared_ptr<IborIndex>& iborIndex,
                                Rate strike,
                                const Period& forwardStart)
     : capFloorType_(capFloorType), strike_(strike),
@@ -33,11 +37,11 @@ namespace QuantLib {
       makeVanillaSwap_(MakeVanillaSwap(tenor, iborIndex, 0.0, forwardStart)) {}
 
     MakeCapFloor::operator CapFloor() const {
-        boost::shared_ptr<CapFloor> capfloor = *this;
+        shared_ptr<CapFloor> capfloor = *this;
         return *capfloor;
     }
 
-    MakeCapFloor::operator boost::shared_ptr<CapFloor>() const {
+    MakeCapFloor::operator shared_ptr<CapFloor>() const {
 
         VanillaSwap swap = makeVanillaSwap_;
 
@@ -51,14 +55,21 @@ namespace QuantLib {
 
         std::vector<Rate> strikeVector(1, strike_);
         if (strike_ == Null<Rate>()) {
-            // ATM on the forecasting curve
-            Handle<YieldTermStructure> fc =
-                swap.iborIndex()->forwardingTermStructure();
-            strikeVector[0] = CashFlows::atmRate(leg,**fc,
-                                                 false, fc->referenceDate());
+
+            // temporary patch...
+            // should be fixed for every CapFloor::Engine
+            shared_ptr<BlackCapFloorEngine> temp = 
+                dynamic_pointer_cast<BlackCapFloorEngine>(engine_);
+            QL_REQUIRE(temp,
+                       "cannot calculate ATM without a BlackCapFloorEngine");
+            Handle<YieldTermStructure> discountCurve = temp->termStructure();
+            strikeVector[0] = CashFlows::atmRate(leg,
+                                                 **discountCurve,
+                                                 false,
+                                                 discountCurve->referenceDate());
         }
 
-        boost::shared_ptr<CapFloor> capFloor(new
+        shared_ptr<CapFloor> capFloor(new
             CapFloor(capFloorType_, leg, strikeVector));
         capFloor->setPricingEngine(engine_);
         return capFloor;
@@ -142,7 +153,7 @@ namespace QuantLib {
     }
 
     MakeCapFloor& MakeCapFloor::withPricingEngine(
-                             const boost::shared_ptr<PricingEngine>& engine) {
+                             const shared_ptr<PricingEngine>& engine) {
         engine_ = engine;
         return *this;
     }
