@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2007 Ferdinando Ametrano
+ Copyright (C) 2006, 2007, 2010 Ferdinando Ametrano
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2006 StatPro Italia srl
 
@@ -77,7 +77,9 @@ namespace QuantLib {
         MakeVanillaSwap& withFloatingLegSpread(Spread sp);
 
         MakeVanillaSwap& withDiscountingTermStructure(
-                  const Handle<YieldTermStructure>& discountingTermStructure);
+                              const Handle<YieldTermStructure>& discountCurve);
+        MakeVanillaSwap& withPricingEngine(
+                              const boost::shared_ptr<PricingEngine>& engine);
       private:
         Period swapTenor_;
         boost::shared_ptr<IborIndex> iborIndex_;

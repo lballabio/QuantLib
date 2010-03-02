@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2007 Ferdinando Ametrano
+ Copyright (C) 2006, 2007, 2010 Ferdinando Ametrano
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2006 StatPro Italia srl
 
@@ -49,7 +49,10 @@ namespace QuantLib {
       floatSpread_(0.0),
       fixedDayCount_(Thirty360(Thirty360::BondBasis)),
       floatDayCount_(index->dayCounter()),
-      engine_(new DiscountingSwapEngine(iborIndex_->forwardingTermStructure())) {}
+      engine_(new DiscountingSwapEngine(iborIndex_->forwardingTermStructure(),
+                                        false))
+    {
+    }
 
     MakeVanillaSwap::operator VanillaSwap() const {
         boost::shared_ptr<VanillaSwap> swap = *this;
@@ -100,11 +103,7 @@ namespace QuantLib {
                              fixedDayCount_,
                              floatSchedule, iborIndex_,
                              floatSpread_, floatDayCount_);
-            // ATM on the forecasting curve
-            bool includeSettlementDateFlows = false;
-            temp.setPricingEngine(boost::shared_ptr<PricingEngine>(new
-                DiscountingSwapEngine(iborIndex_->forwardingTermStructure(),
-                                      includeSettlementDateFlows)));
+            temp.setPricingEngine(engine_);
             usedFixedRate = temp.fairRate();
         }
 
@@ -155,9 +154,16 @@ namespace QuantLib {
     }
 
     MakeVanillaSwap& MakeVanillaSwap::withDiscountingTermStructure(
-                const Handle<YieldTermStructure>& discountingTermStructure) {
+                const Handle<YieldTermStructure>& disc) {
+        bool includeSettlementDateFlows = false;
         engine_ = boost::shared_ptr<PricingEngine>(new
-                            DiscountingSwapEngine(discountingTermStructure));
+            DiscountingSwapEngine(disc, includeSettlementDateFlows));
+        return *this;
+    }
+
+    MakeVanillaSwap& MakeVanillaSwap::withPricingEngine(
+                             const boost::shared_ptr<PricingEngine>& engine) {
+        engine_ = engine;
         return *this;
     }
 
