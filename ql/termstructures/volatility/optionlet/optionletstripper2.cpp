@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2010 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -148,35 +149,40 @@ namespace QuantLib {
         return atmCapFloorPrices_;
     }
 
-//===========================================================================//
-//                 OptionletStripper2::ObjectiveFunction                     //
-//===========================================================================//
+//==========================================================================//
+//                 OptionletStripper2::ObjectiveFunction                    //
+//==========================================================================//
 
     OptionletStripper2::ObjectiveFunction::ObjectiveFunction(
             const boost::shared_ptr<OptionletStripper1>& optionletStripper1,
             const boost::shared_ptr<CapFloor>& cap,
-            Real targetValue):
-       stripper1_(optionletStripper1),
-       cap_(cap),
-       targetValue_(targetValue) {}
-
-    Real OptionletStripper2::ObjectiveFunction::operator()(Volatility s) const
+            Real targetValue)
+    : cap_(cap),
+      targetValue_(targetValue)
     {
         boost::shared_ptr<OptionletVolatilityStructure> adapter(new
-            StrippedOptionletAdapter(stripper1_));
+            StrippedOptionletAdapter(optionletStripper1));
 
-        boost::shared_ptr<SimpleQuote> spreadQuote(new SimpleQuote(s));
+        // set an implausible value, so that calculation is forced
+        // at first operator()(Volatility x) call
+        spreadQuote_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(-1.0));
 
         boost::shared_ptr<OptionletVolatilityStructure> spreadedAdapter(new
-            SpreadedOptionletVolatility(Handle<OptionletVolatilityStructure>(adapter),
-                                 Handle<Quote>(spreadQuote)));
+            SpreadedOptionletVolatility(Handle<OptionletVolatilityStructure>(
+                adapter), Handle<Quote>(spreadQuote_)));
 
         boost::shared_ptr<BlackCapFloorEngine> engine(new
             BlackCapFloorEngine(
-                stripper1_->iborIndex()->forwardingTermStructure(),
+                optionletStripper1->iborIndex()->forwardingTermStructure(),
                 Handle<OptionletVolatilityStructure>(spreadedAdapter)));
 
         cap_->setPricingEngine(engine);
+    }
+
+    Real OptionletStripper2::ObjectiveFunction::operator()(Volatility s) const
+    {
+        if (s!=spreadQuote_->value())
+            spreadQuote_->setValue(s);
         return cap_->NPV()-targetValue_;
     }
 }
