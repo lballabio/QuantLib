@@ -55,7 +55,7 @@ namespace QuantLib {
 
         //! \name LazyObject interface
         //@{
-        void performCalculations () const;
+        void performCalculations() const;
         //@}
       private:
         mutable Matrix capFloorPrices_, optionletPrices_;

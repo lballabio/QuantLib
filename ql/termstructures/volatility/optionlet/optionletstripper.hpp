@@ -32,11 +32,11 @@ namespace QuantLib {
 
     class IborIndex;
 
+    /*! StrippedOptionletBase specialization. It's up to derived
+        classes to implement LazyObject::performCalculations
+    */
     class OptionletStripper : public StrippedOptionletBase {
       public:
-        OptionletStripper(const boost::shared_ptr<CapFloorTermVolSurface>&,
-                          const boost::shared_ptr<IborIndex>& iborIndex_);
-
         //! \name StrippedOptionletBase interface
         //@{
         const std::vector<Rate>& optionletStrikes(Size i) const;
@@ -61,6 +61,8 @@ namespace QuantLib {
         boost::shared_ptr<IborIndex> iborIndex() const;
 
       protected:
+        OptionletStripper(const boost::shared_ptr<CapFloorTermVolSurface>&,
+                          const boost::shared_ptr<IborIndex>& iborIndex_);
         const boost::shared_ptr<CapFloorTermVolSurface> termVolSurface_;
         const boost::shared_ptr<IborIndex> iborIndex_;
         Size nStrikes_;
