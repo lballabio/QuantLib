@@ -54,12 +54,11 @@ namespace QuantLib {
     }
 
     void IndexManager::clearHistory(const string& name) {
-        data_[to_upper_copy(name)] = TimeSeries<Real>();
+        data_.erase(to_upper_copy(name));
     }
 
     void IndexManager::clearHistories() {
-        for (history_map::iterator i=data_.begin(); i!=data_.end(); ++i)
-            i->second = TimeSeries<Real>();
+        data_.clear();
     }
 
 }
