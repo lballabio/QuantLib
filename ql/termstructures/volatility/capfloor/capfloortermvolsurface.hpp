@@ -34,10 +34,9 @@
 namespace QuantLib {
 
     //! Cap/floor smile volatility surface
-    /*! This class provides the volatility for a given cap by 
-        interpolating a volatility surface whose elements are the 
-        market term volatilities of a set of caps/floors with given
-        length and given strike.
+    /*! This class provides the volatility for a given cap/floor interpolating
+        a volatility surface whose elements are the market term volatilities
+        of a set of caps/floors with given length and given strike.
     */
     class CapFloorTermVolSurface : public CapFloorTermVolatilityStructure,
                                    public LazyObject {

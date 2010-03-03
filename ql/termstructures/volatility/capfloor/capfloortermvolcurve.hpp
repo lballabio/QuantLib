@@ -37,10 +37,9 @@
 namespace QuantLib {
 
     //! Cap/floor at-the-money term-volatility vector
-    /*! This class provides the at-the-money volatility for a given
-        cap by interpolating a volatility vector whose elements are
-        the market volatilities of a set of caps/floors with given
-        length.
+    /*! This class provides the at-the-money volatility for a given cap/floor
+        interpolating a volatility vector whose elements are the market
+        volatilities of a set of caps/floors with given length.
     */
     class CapFloorTermVolCurve : public CapFloorTermVolatilityStructure,
                                  public LazyObject,
