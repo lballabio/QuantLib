@@ -73,20 +73,18 @@ namespace QuantLib {
                                     atmCapFloorTermVolCurve_->optionTimes();
 
         for (Size j=0; j<nOptionExpiries_; ++j) {
-            caps_[j] = MakeCapFloor(CapFloor::Cap,
-                                    optionExpiriesTenors[j],
-                                    iborIndex_,
-                                    Null<Real>(),
-                                    0*Days);
-            atmCapFloorStrikes_[j] =
-                caps_[j]->atmRate(**iborIndex_->forwardingTermStructure());
-            Volatility atmOptionVol =
-                atmCapFloorTermVolCurve_->volatility(optionExpiriesTimes[j],
-                                                     atmCapFloorStrikes_[j]);
+            Volatility atmOptionVol = atmCapFloorTermVolCurve_->volatility(
+                optionExpiriesTimes[j], 33.3333); // dummy strike
             boost::shared_ptr<BlackCapFloorEngine> engine(new
                     BlackCapFloorEngine(iborIndex_->forwardingTermStructure(),
                                         atmOptionVol, dc_));
-            caps_[j]->setPricingEngine(engine);
+            caps_[j] = MakeCapFloor(CapFloor::Cap,
+                                    optionExpiriesTenors[j],
+                                    iborIndex_,
+                                    Null<Rate>(),
+                                    0*Days).withPricingEngine(engine);
+            atmCapFloorStrikes_[j] =
+                caps_[j]->atmRate(**iborIndex_->forwardingTermStructure());
             atmCapFloorPrices_[j] = caps_[j]->NPV();
         }
 
