@@ -246,6 +246,19 @@ int main(int, char* []) {
 
         printOutput("(d) cubic B-splines", ts4);
 
+        SvenssonFitting svensson;
+
+        boost::shared_ptr<FittedBondDiscountCurve> ts5 (
+                        new FittedBondDiscountCurve(curveSettlementDays,
+                                                    calendar,
+                                                    instrumentsA,
+                                                    dc,
+                                                    svensson,
+                                                    tolerance,
+                                                    max));
+
+        printOutput("(e) Svensson", ts5);
+
 
         cout << "Output par rates for each curve. In this case, "
              << endl
@@ -259,7 +272,8 @@ int main(int, char* []) {
              << setw(6) << "(a)" << " | "
              << setw(6) << "(b)" << " | "
              << setw(6) << "(c)" << " | "
-             << setw(6) << "(d)" << endl;
+             << setw(6) << "(d)" << " | "
+             << setw(6) << "(e)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -296,7 +310,10 @@ int main(int, char* []) {
                  << 100.*parRate(*ts3,keyDates,dc) << " | "
                  // cubic bsplines
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*parRate(*ts4,keyDates,dc) << endl;
+                 << 100.*parRate(*ts4,keyDates,dc) << " | "
+                 // Svensson
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*parRate(*ts5,keyDates,dc) << endl;
         }
 
         cout << endl << endl << endl;
@@ -320,6 +337,8 @@ int main(int, char* []) {
         printOutput("(c) Nelson Siegel", ts3);
 
         printOutput("(d) cubic B-splines", ts4);
+
+        printOutput("(e) Svensson", ts5);
 
         cout << endl
              << endl;
@@ -368,7 +387,10 @@ int main(int, char* []) {
                  << 100.*parRate(*ts3,keyDates,dc) << " | "
                  // cubic bsplines
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*parRate(*ts4,keyDates,dc) << endl;
+                 << 100.*parRate(*ts4,keyDates,dc) << " | "
+                 // Svensson
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*parRate(*ts5,keyDates,dc) << endl;
         }
 
         cout << endl << endl << endl;
@@ -441,6 +463,17 @@ int main(int, char* []) {
 
         printOutput("(d) cubic B-splines", ts44);
 
+        boost::shared_ptr<FittedBondDiscountCurve> ts55 (
+                       new FittedBondDiscountCurve(curveSettlementDays,
+                                                   calendar,
+                                                   instrumentsA,
+                                                   dc,
+                                                   svensson,
+                                                   tolerance,
+                                                   max));
+
+        printOutput("(e) Svensson", ts55);
+
 
         cout << setw(6) << "tenor" << " | "
              << setw(6) << "coupon" << " | "
@@ -448,7 +481,8 @@ int main(int, char* []) {
              << setw(6) << "(a)" << " | "
              << setw(6) << "(b)" << " | "
              << setw(6) << "(c)" << " | "
-             << setw(6) << "(d)" << endl;
+             << setw(6) << "(d)" << " | "
+             << setw(6) << "(e)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -485,7 +519,10 @@ int main(int, char* []) {
                  << 100.*parRate(*ts33,keyDates,dc) << " | "
                  // cubic bsplines
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*parRate(*ts44,keyDates,dc) << endl;
+                 << 100.*parRate(*ts44,keyDates,dc) << " | "
+                 // Svensson
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*parRate(*ts55,keyDates,dc) << endl;
         }
 
 
@@ -522,7 +559,8 @@ int main(int, char* []) {
              << setw(6) << "(a)" << " | "
              << setw(6) << "(b)" << " | "
              << setw(6) << "(c)" << " | "
-             << setw(6) << "(d)" << endl;
+             << setw(6) << "(d)" << " | "
+             << setw(6) << "(e)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -559,7 +597,10 @@ int main(int, char* []) {
                  << 100.*parRate(*ts33,keyDates,dc) << " | "
                  // cubic bsplines
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*parRate(*ts44,keyDates,dc) << endl;
+                 << 100.*parRate(*ts44,keyDates,dc) << " | "
+                 // Svensson
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*parRate(*ts55,keyDates,dc) << endl;
         }
 
 

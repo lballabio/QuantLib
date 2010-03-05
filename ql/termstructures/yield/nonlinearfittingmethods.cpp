@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Allen Kuo
+ Copyright (C) 2010 Alessandro Roveda
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -85,6 +86,35 @@ namespace QuantLib {
         DiscountFactor d = std::exp(-zeroRate * t) ;
         return d;
     }
+
+
+    SvenssonFitting::SvenssonFitting()
+    : FittedBondDiscountCurve::FittingMethod(true) {}
+
+    std::auto_ptr<FittedBondDiscountCurve::FittingMethod>
+    SvenssonFitting::clone() const {
+        return std::auto_ptr<FittedBondDiscountCurve::FittingMethod>(
+                                              new SvenssonFitting(*this));
+    }
+
+    Size SvenssonFitting::size() const {
+        return 6;
+    }
+
+    DiscountFactor SvenssonFitting::discountFunction(const Array& x,
+                                                     Time t) const {
+        Real kappa = x[size()-2];
+        Real kappa_1 = x[size()-1];
+
+        Real zeroRate = x[0] + (x[1] + x[2])*
+                        (1.0 - std::exp(-kappa*t))/
+                        ((kappa+QL_EPSILON)*(t+QL_EPSILON)) -
+                        (x[2])*std::exp(-kappa*t) +
+                        x[3]* (((1.0 - std::exp(-kappa*t))/((kappa_1+QL_EPSILON)*(t+QL_EPSILON)))- std::exp(-kappa_1*t));
+        DiscountFactor d = std::exp(-zeroRate * t) ;
+        return d;
+    }
+
 
 
     CubicBSplinesFitting::CubicBSplinesFitting(const std::vector<Time>& knots,

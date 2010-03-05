@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Allen Kuo
+ Copyright (C) 2010 Alessandro Roveda
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -66,6 +67,29 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         NelsonSiegelFitting();
+        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
+      private:
+        Size size() const;
+        DiscountFactor discountFunction(const Array& x, Time t) const;
+    };
+
+
+    //! Svensson Fitting method
+    /*! Fits a discount function to the form
+        \f$ d(t) = \exp^{-r t}, \f$ where the zero rate \f$r\f$ is defined as
+        \f[
+        r \equiv c_0 + (c_0 + c_1)*(1 - exp^{-\kappa*t}/(\kappa t)
+        - c_2 exp^{ - \kappa t}
+        + c_3*{(1 - exp^{-\kappa*t}/(\kappa_1 t)) -exp^{-\kappa_1*t}}.
+        \f]
+        See: Svensson, L. (1994). Estimating and interpreting forward
+        interest rates: Sweden 1992-4.
+        Discussion paper, Centre for Economic Policy Research(1051).
+    */
+    class SvenssonFitting
+        : public FittedBondDiscountCurve::FittingMethod {
+      public:
+        SvenssonFitting();
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
       private:
         Size size() const;
