@@ -219,7 +219,7 @@ int main(int, char* []) {
                                                     tolerance,
                                                     max));
 
-        printOutput("(c) Nelson Siegel", ts3);
+        printOutput("(c) Nelson-Siegel", ts3);
 
 
         // a cubic bspline curve with 11 knot points, implies
@@ -305,7 +305,7 @@ int main(int, char* []) {
                  // simple polynomial
                  << setw(6) << fixed << setprecision(3)
                  << 100.*parRate(*ts2,keyDates,dc) << " | "
-                 // nelson siegel
+                 // Nelson-Siegel
                  << setw(6) << fixed << setprecision(3)
                  << 100.*parRate(*ts3,keyDates,dc) << " | "
                  // cubic bsplines
@@ -334,7 +334,7 @@ int main(int, char* []) {
 
         printOutput("(b) simple polynomial", ts2);
 
-        printOutput("(c) Nelson Siegel", ts3);
+        printOutput("(c) Nelson-Siegel", ts3);
 
         printOutput("(d) cubic B-splines", ts4);
 
@@ -382,7 +382,7 @@ int main(int, char* []) {
                  // simple polynomial
                  << setw(6) << fixed << setprecision(3)
                  << 100.*parRate(*ts2,keyDates,dc) << " | "
-                 // nelson siegel
+                 // Nelson-Siegel
                  << setw(6) << fixed << setprecision(3)
                  << 100.*parRate(*ts3,keyDates,dc) << " | "
                  // cubic bsplines
@@ -449,7 +449,7 @@ int main(int, char* []) {
                                                     tolerance,
                                                     max));
 
-        printOutput("(c) Nelson Siegel", ts33);
+        printOutput("(c) Nelson-Siegel", ts33);
 
 
         boost::shared_ptr<FittedBondDiscountCurve> ts44 (
@@ -514,7 +514,7 @@ int main(int, char* []) {
                  // simple polynomial
                  << setw(6) << fixed << setprecision(3)
                  << 100.*parRate(*ts22,keyDates,dc) << " | "
-                 // nelson siegel
+                 // Nelson-Siegel
                  << setw(6) << fixed << setprecision(3)
                  << 100.*parRate(*ts33,keyDates,dc) << " | "
                  // cubic bsplines
@@ -592,7 +592,7 @@ int main(int, char* []) {
                  // simple polynomial
                  << setw(6) << fixed << setprecision(3)
                  << 100.*parRate(*ts22,keyDates,dc) << " | "
-                 // nelson siegel
+                 // Nelson-Siegel
                  << setw(6) << fixed << setprecision(3)
                  << 100.*parRate(*ts33,keyDates,dc) << " | "
                  // cubic bsplines
