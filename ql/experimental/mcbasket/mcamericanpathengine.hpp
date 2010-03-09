@@ -45,6 +45,7 @@ namespace QuantLib {
                                Size timeStepsPerYear,
                                bool brownianBridge,
                                bool antitheticVariate,
+                               bool controlVariate,
                                Size requiredSamples,
                                Real requiredTolerance,
                                Size maxSamples,
@@ -67,6 +68,7 @@ namespace QuantLib {
         MakeMCAmericanPathEngine& withStepsPerYear(Size steps);
         MakeMCAmericanPathEngine& withBrownianBridge(bool b = true);
         MakeMCAmericanPathEngine& withAntitheticVariate(bool b = true);
+        MakeMCAmericanPathEngine& withControlVariate(bool b = true);
         MakeMCAmericanPathEngine& withSamples(Size samples);
         MakeMCAmericanPathEngine& withAbsoluteTolerance(Real tolerance);
         MakeMCAmericanPathEngine& withMaxSamples(Size samples);
@@ -76,7 +78,7 @@ namespace QuantLib {
         operator boost::shared_ptr<PricingEngine>() const;
       private:
         boost::shared_ptr<StochasticProcessArray> process_;
-        bool brownianBridge_, antithetic_;
+        bool brownianBridge_, antithetic_, controlVariate_;
         Size steps_, stepsPerYear_, samples_, maxSamples_, calibrationSamples_;
         Real tolerance_;
         BigNatural seed_;
@@ -90,6 +92,7 @@ namespace QuantLib {
                    Size timeStepsPerYear,
                    bool brownianBridge,
                    bool antitheticVariate,
+                   bool controlVariate,
                    Size requiredSamples,
                    Real requiredTolerance,
                    Size maxSamples,
@@ -101,7 +104,7 @@ namespace QuantLib {
                                                       timeStepsPerYear,
                                                       brownianBridge,
                                                       antitheticVariate,
-                                                      false,
+                                                      controlVariate,
                                                       requiredSamples,
                                                       requiredTolerance,
                                                       maxSamples,
@@ -151,6 +154,7 @@ namespace QuantLib {
     inline MakeMCAmericanPathEngine<RNG>::MakeMCAmericanPathEngine(
                      const boost::shared_ptr<StochasticProcessArray>& process)
     : process_(process), brownianBridge_(false), antithetic_(false),
+      controlVariate_(false),
       steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
       samples_(Null<Size>()), maxSamples_(Null<Size>()),
       calibrationSamples_(Null<Size>()),
@@ -181,6 +185,13 @@ namespace QuantLib {
     inline MakeMCAmericanPathEngine<RNG>&
     MakeMCAmericanPathEngine<RNG>::withAntitheticVariate(bool b) {
         antithetic_ = b;
+        return *this;
+    }
+
+    template <class RNG>
+    inline MakeMCAmericanPathEngine<RNG>&
+    MakeMCAmericanPathEngine<RNG>::withControlVariate(bool b) {
+        controlVariate_ = b;
         return *this;
     }
 
@@ -240,6 +251,7 @@ namespace QuantLib {
                                         stepsPerYear_,
                                         brownianBridge_,
                                         antithetic_,
+                                        controlVariate_,
                                         samples_,
                                         tolerance_,
                                         maxSamples_,

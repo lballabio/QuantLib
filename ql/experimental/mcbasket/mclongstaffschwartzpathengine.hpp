@@ -175,7 +175,9 @@ namespace QuantLib {
                 this->process_->time(fixings[i]);
         }
 
-        return TimeGrid(fixingTimes.begin(), fixingTimes.end(), timeSteps_);
+        const Size numberOfTimeSteps = timeSteps_ != Null<Size>() ? timeSteps_ : timeStepsPerYear_ * fixingTimes.back();
+
+        return TimeGrid(fixingTimes.begin(), fixingTimes.end(), numberOfTimeSteps);
      }
 
     template <class GenericEngine, template <class> class MC,

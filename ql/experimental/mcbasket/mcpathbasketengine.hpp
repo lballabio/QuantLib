@@ -33,7 +33,7 @@
 
 namespace QuantLib {
 
-    //! Pricing engine for path dependent basket options using 
+    //! Pricing engine for path dependent basket options using
     //  Monte Carlo simulation
     template <class RNG = PseudoRandom, class S = Statistics>
     class MCPathBasketEngine  : public PathMultiAssetOption::engine,
@@ -48,6 +48,7 @@ namespace QuantLib {
         // constructor
         MCPathBasketEngine(const boost::shared_ptr<StochasticProcessArray>&,
                            Size timeSteps,
+                           Size timeStepsPerYear,
                            bool brownianBridge,
                            bool antitheticVariate,
                            bool controlVariate,
@@ -76,6 +77,7 @@ namespace QuantLib {
         // data members
         boost::shared_ptr<StochasticProcessArray> process_;
         Size timeSteps_;
+        Size timeStepsPerYear_;
         Size requiredSamples_;
         Size maxSamples_;
         Real requiredTolerance_;
@@ -103,6 +105,7 @@ namespace QuantLib {
     inline MCPathBasketEngine<RNG,S>::MCPathBasketEngine(
              const boost::shared_ptr<StochasticProcessArray>& process,
              Size timeSteps,
+             Size timeStepsPerYear,
              bool brownianBridge,
              bool antitheticVariate,
              bool controlVariate,
@@ -111,10 +114,24 @@ namespace QuantLib {
              Size maxSamples,
              BigNatural seed)
     : McSimulation<MultiVariate,RNG,S>(antitheticVariate, controlVariate),
-      process_(process), timeSteps_(timeSteps),
+      process_(process), timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
-      brownianBridge_(brownianBridge), seed_(seed) {}
+      brownianBridge_(brownianBridge), seed_(seed) {
+        QL_REQUIRE(timeSteps != Null<Size>() ||
+                   timeStepsPerYear != Null<Size>(),
+                   "no time steps provided");
+        QL_REQUIRE(timeSteps == Null<Size>() ||
+                   timeStepsPerYear == Null<Size>(),
+                   "both time steps and time steps per year were provided");
+        QL_REQUIRE(timeSteps != 0,
+                   "timeSteps must be positive, " << timeSteps <<
+                   " not allowed");
+        QL_REQUIRE(timeStepsPerYear != 0,
+                   "timeStepsPerYear must be positive, "
+                   << timeStepsPerYear << " not allowed");
+        this->registerWith(process_);
+    }
 
 
     template<class RNG, class S>
@@ -148,7 +165,9 @@ namespace QuantLib {
                 this->process_->time(fixings[i]);
         }
 
-        return TimeGrid(fixingTimes.begin(), fixingTimes.end(), timeSteps_);
+        const Size numberOfTimeSteps = timeSteps_ != Null<Size>() ? timeSteps_ : timeStepsPerYear_ * fixingTimes.back();
+
+        return TimeGrid(fixingTimes.begin(), fixingTimes.end(), numberOfTimeSteps);
     }
 
     template <class RNG, class S>
@@ -191,6 +210,7 @@ namespace QuantLib {
         MakeMCPathBasketEngine(const boost::shared_ptr<StochasticProcessArray>&);
         // named parameters
         MakeMCPathBasketEngine& withSteps(Size steps);
+        MakeMCPathBasketEngine& withStepsPerYear(Size steps);
         MakeMCPathBasketEngine& withBrownianBridge(bool b = true);
         MakeMCPathBasketEngine& withSamples(Size samples);
         MakeMCPathBasketEngine& withAbsoluteTolerance(Real tolerance);
@@ -203,7 +223,7 @@ namespace QuantLib {
       private:
         boost::shared_ptr<StochasticProcessArray> process_;
         bool antithetic_, controlVariate_;
-        Size steps_, samples_, maxSamples_;
+        Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
         bool brownianBridge_;
         BigNatural seed_;
@@ -214,7 +234,7 @@ namespace QuantLib {
         const boost::shared_ptr<StochasticProcessArray>& process)
     : process_(process),
       antithetic_(false), controlVariate_(false),
-      steps_(Null<Size>()),
+      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
       samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()), brownianBridge_(false), seed_(0) {}
 
@@ -222,6 +242,13 @@ namespace QuantLib {
     inline MakeMCPathBasketEngine<RNG,S>&
     MakeMCPathBasketEngine<RNG,S>::withSteps(Size steps) {
         steps_ = steps;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCPathBasketEngine<RNG,S>&
+    MakeMCPathBasketEngine<RNG,S>::withStepsPerYear(Size steps) {
+        stepsPerYear_ = steps;
         return *this;
     }
 
@@ -288,6 +315,7 @@ namespace QuantLib {
         return boost::shared_ptr<PricingEngine>(new
             MCPathBasketEngine<RNG,S>(process_,
                                       steps_,
+                                      stepsPerYear_,
                                       brownianBridge_,
                                       antithetic_,
                                       controlVariate_,
