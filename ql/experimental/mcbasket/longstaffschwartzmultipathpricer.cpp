@@ -23,8 +23,8 @@
 namespace QuantLib {
 
     LongstaffSchwartzMultiPathPricer::PathInfo::PathInfo(Size numberOfTimes)
-        : payments(numberOfTimes),
-          exercises(numberOfTimes),
+        : payments(numberOfTimes, 0.0),
+          exercises(numberOfTimes, 0.0),
           states(numberOfTimes) {
     }
 
@@ -97,14 +97,20 @@ namespace QuantLib {
         // exercise at time t, cancels all payment AFTER t
 
         const Size len = path.pathLength();
-        const Real payoff = path.payments[len - 1];
-        const Real exercise = path.exercises[len - 1];
-
         Real price = 0.0;
-        // at the end the continuation value is 0.0
-        if (exercise > 0.0)
-            price += exercise;
-        price += payoff;
+
+        // this is the last event date
+        {
+            const Real payoff = path.payments[len - 1];
+            const Real exercise = path.exercises[len - 1];
+            const Array & states = path.states[len - 1];
+            const bool canExercise = !states.empty();
+
+            // at the end the continuation value is 0.0
+            if (canExercise && exercise > 0.0)
+                price += exercise;
+            price += payoff;
+        }
 
         for (Integer i = len - 2; i >= 0; --i) {
             price *= dF_[i + 1] / dF_[i];
@@ -117,23 +123,28 @@ namespace QuantLib {
               - v_.size() => use estimated continuation value 
                 (if > lowerBounds_[i])
               - v_.size() + 1 => always exercise
-             */
 
-            if (coeff_[i].size() == v_.size() + 1) {   
-                // special value always exercise
-                price = exercise;
-            }
-            else {
-                if (!coeff_[i].empty() && exercise > lowerBounds_[i]) {
-                    const Array & regValue = path.states[i];
-                    
-                    Real continuationValue = 0.0;
-                    for (Size l = 0; l < v_.size(); ++l) {
-                        continuationValue += coeff_[i][l] * v_[l](regValue);
-                    }
-                    
-                    if (continuationValue < exercise) {
-                        price = exercise;
+              In any case if states is empty, no exercise is allowed.
+             */
+            const Array & states = path.states[i];
+            const bool canExercise = !states.empty();
+
+            if (canExercise) {
+                if (coeff_[i].size() == v_.size() + 1) {   
+                    // special value always exercise
+                    price = exercise;
+                }
+                else {
+                    if (!coeff_[i].empty() && exercise > lowerBounds_[i]) {
+                        
+                        Real continuationValue = 0.0;
+                        for (Size l = 0; l < v_.size(); ++l) {
+                            continuationValue += coeff_[i][l] * v_[l](states);
+                        }
+                        
+                        if (continuationValue < exercise) {
+                            price = exercise;
+                        }
                     }
                 }
             }
@@ -146,7 +157,9 @@ namespace QuantLib {
 
     void LongstaffSchwartzMultiPathPricer::calibrate() {
         const Size n = paths_.size(); // number of paths
-        Array prices(n, 0.0), exercise(n);
+        Array prices(n, 0.0), exercise(n, 0.0);
+
+        const Size basisDimension = payoff_->basisSystemDimension();
 
         const Size len = paths_[0].pathLength();
 
@@ -155,22 +168,24 @@ namespace QuantLib {
           so that only itm paths contribute to the regression.
          */
 
-        lowerBounds_[len - 1] = QL_MAX_REAL;
         for (Size j = 0; j < n; ++j) {
             const Real payoff = paths_[j].payments[len - 1];
             const Real exercise = paths_[j].exercises[len - 1];
+            const Array & states = paths_[j].states[len - 1];
+            const bool canExercise = !states.empty();
 
             // at the end the continuation value is 0.0
-            if (exercise > 0.0)
+            if (canExercise && exercise > 0.0)
                 prices[j] += exercise;
             prices[j] += payoff;
-            lowerBounds_[len - 1] = std::min(lowerBounds_[len - 1], prices[j]);
         }
+
+        lowerBounds_[len - 1] = *std::min_element(prices.begin(), prices.end());
 
         std::vector<bool> lsExercise(n);
 
         for (Integer i = len - 2; i >= 0; --i) {
-            std::vector<Real>      y;
+            std::vector<Real>  y;
             std::vector<Array> x;
 
             // prices are discounted up to time i
@@ -182,8 +197,19 @@ namespace QuantLib {
             for (Size j = 0; j < n; ++j) {
                 exercise[j] = paths_[j].exercises[i];
 
-                if (exercise[j] > lowerBounds_[i + 1]) {
-                    x.push_back(paths_[j].states[i]);
+                // If states is empty, no exercise in this path
+                // and the path will not partecipate to the Lesat Square regression
+
+                const Array & states = paths_[j].states[i];
+                QL_REQUIRE(states.empty() || states.size() == basisDimension, 
+                           "Invalid size of basis system");
+
+                // only paths that could potentially create exercise opportunities
+                // partecipate to the regression
+
+                // if exercise is lower than minimum continuation value, no point in considering it
+                if (!states.empty() && exercise[j] > lowerBounds_[i + 1]) {
+                    x.push_back(states);
                     y.push_back(prices[j]);
                 }
             }
@@ -194,33 +220,43 @@ namespace QuantLib {
             }
             else {
             // if number of itm paths is smaller then the number of
-            // calibration functions -> always exercise
-                coeff_[i] = Array(v_.size() + 1);
+            // calibration functions -> never exercise
+                QL_TRACE("Not enough itm paths: default decision is NEVER");
+                coeff_[i] = Array(0);
             }
 
-            /* attempt to avoid static arbitrage given by always 
-               or never exercising. always is absolute: regardless of the 
-               lowerBoundContinuationValue_ (this could be changed)
+            /* attempt to avoid static arbitrage given by always or never exercising.
+
+               always is absolute: regardless of the lowerBoundContinuationValue_ (this could be changed)
+               but it still honours "canExercise"
              */
             double sumOptimized = 0.0;
             double sumNoExercise = 0.0;
-            double sumAlwaysExercise = 0.0;
+            double sumAlwaysExercise = 0.0; // always, if allowed
 
             for (Size j = 0, k = 0; j < n; ++j) {
                 sumNoExercise += prices[j];
-                sumAlwaysExercise += exercise[j];
                 lsExercise[j] = false;
-                if (exercise[j] > lowerBounds_[i + 1]) {
-                    Real continuationValue = 0.0;
-                    for (Size l = 0; l < v_.size(); ++l) {
-                        continuationValue += coeff_[i][l] * v_[l](x[k]);
-                    }
 
-                    if (continuationValue < exercise[j]) {
-                        lsExercise[j] = true;
+                const bool canExercise = !paths_[j].states[i].empty();
+                if (canExercise) {
+                    sumAlwaysExercise += exercise[j];
+                    if (!coeff_[i].empty() && exercise[j] > lowerBounds_[i + 1]) {
+                        Real continuationValue = 0.0;
+                        for (Size l = 0; l < v_.size(); ++l) {
+                            continuationValue += coeff_[i][l] * v_[l](x[k]);
+                        }
+                        
+                        if (continuationValue < exercise[j]) {
+                            lsExercise[j] = true;
+                        }
+                        ++k;
                     }
-                    ++k;
                 }
+                else {
+                    sumAlwaysExercise += prices[j];
+                }
+
                 sumOptimized += lsExercise[j] ? exercise[j] : prices[j];
             }
 
@@ -234,17 +270,21 @@ namespace QuantLib {
                      << ", Continuation: " << sumNoExercise 
                      << ", Termination: " << sumAlwaysExercise);
 
-            if (  sumOptimized > sumNoExercise 
-                && sumOptimized > sumAlwaysExercise) {
+            if (  sumOptimized >= sumNoExercise 
+                && sumOptimized >= sumAlwaysExercise) {
                 
                 QL_TRACE("Accepted LS decision");
                 for (Size j = 0; j < n; ++j) {
+                    // lsExercise already contains "canExercise"
                     prices[j] = lsExercise[j] ? exercise[j] : prices[j];
                 }
             }
             else if (sumAlwaysExercise > sumNoExercise) {
                 QL_TRACE("Overridden bad LS decision: ALWAYS");
-                prices = exercise;
+                for (Size j = 0; j < n; ++j) {
+                    const bool canExercise = !paths_[j].states[i].empty();
+                    prices[j] = canExercise ? exercise[j] : prices[j];
+                }
                 // special value to indicate always exercise
                 coeff_[i] = Array(v_.size() + 1); 
             }
@@ -255,15 +295,14 @@ namespace QuantLib {
                 coeff_[i] = Array(0); 
             }
 
-            lowerBounds_[i] = QL_MAX_REAL;
-
             // then we add in any case the payment at time t
             // which is made even if cancellation happens at t
             for (Size j = 0; j < n; ++j) {
                 const Real payoff = paths_[j].payments[i];
                 prices[j] += payoff;
-                lowerBounds_[i] = std::min(lowerBounds_[i], prices[j]);
             }
+
+            lowerBounds_[i] = *std::min_element(prices.begin(), prices.end());
         }
 
         // remove calibration paths

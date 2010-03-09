@@ -53,6 +53,9 @@ namespace QuantLib {
           i.e.: cancellation at i does not cancel payments[i]!
 
           forwardTermStructures contains the yield term structure at each fixing date
+
+          leave states empty to signal exercise is not possible
+          in that case, exercises[] will not be accessed.
          */
 
         virtual void value(const Matrix       & path, 

@@ -55,6 +55,8 @@ namespace QuantLib {
 
         payoff_->value(path, forwardTermStructures_, values, exercises, states);
 
+        // in this engine we ignore early exercise
+
         Real discountedPayoff = DotProduct(values, discounts_);
 
         return discountedPayoff;
