@@ -36,6 +36,7 @@ namespace QuantLib {
     LongstaffSchwartzMultiPathPricer::LongstaffSchwartzMultiPathPricer(
         const boost::shared_ptr<PathPayoff>& payoff,
         const std::vector<Size> & timePositions,
+        const std::vector<Handle<YieldTermStructure> > & forwardTermStructures,
         const Array & discounts,
         Size polynomOrder,
         LsmBasisSystem::PolynomType polynomType)
@@ -44,6 +45,7 @@ namespace QuantLib {
       coeff_     (new Array[timePositions.size() - 1]),
       lowerBounds_(new Real[timePositions.size()]),
       timePositions_(timePositions),
+      forwardTermStructures_(forwardTermStructures),
       dF_        (discounts),
       v_         (LsmBasisSystem::multiPathBasisSystem(payoff->basisSystemDimension(),
                                                        polynomOrder,
@@ -75,7 +77,7 @@ namespace QuantLib {
         
         PathInfo info(numberOfTimes);
 
-        payoff_->value(path, info.payments, info.exercises, info.states);
+        payoff_->value(path, forwardTermStructures_, info.payments, info.exercises, info.states);
 
         return info;
     }
@@ -255,7 +257,7 @@ namespace QuantLib {
 
             lowerBounds_[i] = QL_MAX_REAL;
 
-            // the we add in any case the payment at time t
+            // then we add in any case the payment at time t
             // which is made even if cancellation happens at t
             for (Size j = 0; j < n; ++j) {
                 const Real payoff = paths_[j].payments[i];

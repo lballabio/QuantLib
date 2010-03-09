@@ -27,10 +27,12 @@ namespace QuantLib {
    */
   AdaptedPathPayoff::ValuationData::ValuationData(
                                               const Matrix       & path,
+                                              const std::vector<Handle<YieldTermStructure> > & forwardTermStructures,
                                               Array              & payments,
                                               Array              & exercises,
                                               std::vector<Array> & states) :
     path_(path),
+    forwardTermStructures_(forwardTermStructures),
     payments_(payments), exercises_(exercises), states_(states),
     maximumTimeRead_(0)
   { }
@@ -47,6 +49,12 @@ namespace QuantLib {
     maximumTimeRead_ = std::max(maximumTimeRead_, time);
 
     return path_[asset][time];
+  }
+
+  const Handle<YieldTermStructure> & AdaptedPathPayoff::ValuationData::getYieldTermStructure(Size time) {
+    maximumTimeRead_ = std::max(maximumTimeRead_, time);
+
+    return forwardTermStructures_[time];
   }
 
   void AdaptedPathPayoff::ValuationData::setPayoffValue(Size time, Real value) {
@@ -78,10 +86,11 @@ namespace QuantLib {
 
 
   void AdaptedPathPayoff::value(const Matrix       & path,
+                                const std::vector<Handle<YieldTermStructure> > & forwardTermStructures,
                                 Array              & payments,
                                 Array              & exercises,
                                 std::vector<Array> & states) const {
-    ValuationData data(path, payments, exercises, states);
+    ValuationData data(path, forwardTermStructures, payments, exercises, states);
 
     operator()(data);
   }

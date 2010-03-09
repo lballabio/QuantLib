@@ -29,6 +29,7 @@
 #include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
+#include <ql/termstructures/yield/impliedtermstructure.hpp>
 #include <ql/timegrid.hpp>
 
 namespace QuantLib {
@@ -90,11 +91,13 @@ namespace QuantLib {
       public:
         EuropeanPathMultiPathPricer(boost::shared_ptr<PathPayoff> & payoff,
                                     const std::vector<Size> & timePositions,
+                                    const std::vector<Handle<YieldTermStructure> > & forwardTermStructures,
                                     const Array & discounts);
         Real operator()(const MultiPath& multiPath) const;
       private:
         boost::shared_ptr<PathPayoff> payoff_;
         std::vector<Size> timePositions_;
+        std::vector<Handle<YieldTermStructure> > forwardTermStructures_;
         Array discounts_;
     };
 
@@ -188,17 +191,27 @@ namespace QuantLib {
         const std::vector<Time> & times = theTimeGrid.mandatoryTimes();
         const Size numberOfTimes = times.size();
 
+        const std::vector<Date> & fixings = this->arguments_.fixingDates;
+
+        QL_REQUIRE(fixings.size() == numberOfTimes, "Invalid dates/times");
+
         std::vector<Size> timePositions(numberOfTimes);
         Array discountFactors(numberOfTimes);
+        std::vector<Handle<YieldTermStructure> > forwardTermStructures(numberOfTimes);
+
+        const Handle<YieldTermStructure> & riskFreeRate = process->riskFreeRate();
 
         for (Size i = 0; i < numberOfTimes; ++i) {
             timePositions[i] = theTimeGrid.index(times[i]);
-            discountFactors[i] = process->riskFreeRate()->discount(times[i]);
+            discountFactors[i] = riskFreeRate->discount(times[i]);
+            forwardTermStructures[i] = Handle<YieldTermStructure>(
+                        new ImpliedTermStructure(riskFreeRate, fixings[i]));
         }
 
         return boost::shared_ptr<
             typename MCPathBasketEngine<RNG,S>::path_pricer_type>(
                         new EuropeanPathMultiPathPricer(payoff, timePositions,
+                                                        forwardTermStructures,
                                                         discountFactors));
     }
 

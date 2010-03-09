@@ -38,6 +38,8 @@ namespace QuantLib {
 
             Real getAssetValue(Size time, Size asset);
 
+            const Handle<YieldTermStructure> & getYieldTermStructure(Size time);
+
             void setPayoffValue(Size time, Real value);
 
             // set the exercise payoff if the option is exercised at time "time"
@@ -49,11 +51,13 @@ namespace QuantLib {
             friend class AdaptedPathPayoff;
 
             ValuationData(const Matrix       & path, 
+                          const std::vector<Handle<YieldTermStructure> > & forwardTermStructures,
                           Array              & payments, 
                           Array              & exercises, 
                           std::vector<Array> & states);
 
             const Matrix & path_;
+            const std::vector<Handle<YieldTermStructure> > & forwardTermStructures_;
 
             Array & payments_;
             Array & exercises_;
@@ -63,6 +67,7 @@ namespace QuantLib {
         };
 
         virtual void value(const Matrix       & path, 
+                           const std::vector<Handle<YieldTermStructure> > & forwardTermStructures,
                            Array              & payments, 
                            Array              & exercises, 
                            std::vector<Array> & states) const;

@@ -26,6 +26,8 @@
 
 #include <ql/math/matrix.hpp>
 #include <ql/patterns/visitor.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/handle.hpp>
 #include <functional>
 
 namespace QuantLib {
@@ -49,9 +51,12 @@ namespace QuantLib {
           for a single path. If the option is cancelled at time i, all payments
           on and before i are taken into account + the value of exercises[i].
           i.e.: cancellation at i does not cancel payments[i]!
+
+          forwardTermStructures contains the yield term structure at each fixing date
          */
 
         virtual void value(const Matrix       & path, 
+                           const std::vector<Handle<YieldTermStructure> > & forwardTermStructures,
                            Array              & payments, 
                            Array              & exercises, 
                            std::vector<Array> & states) const = 0;

@@ -24,8 +24,9 @@ namespace QuantLib {
     EuropeanPathMultiPathPricer::EuropeanPathMultiPathPricer(
                                        boost::shared_ptr<PathPayoff> & payoff,
                                        const std::vector<Size> & timePositions,
+                                       const std::vector<Handle<YieldTermStructure> > & forwardTermStructures,
                                        const Array & discounts)
-    :  payoff_(payoff), timePositions_(timePositions), discounts_(discounts) {}
+    :  payoff_(payoff), timePositions_(timePositions), forwardTermStructures_(forwardTermStructures), discounts_(discounts) {}
 
     Real EuropeanPathMultiPathPricer::operator()(const MultiPath& multiPath)
                                                                        const {
@@ -52,7 +53,7 @@ namespace QuantLib {
         Array exercises;
         std::vector<Array> states;
 
-        payoff_->value(path, values, exercises, states);
+        payoff_->value(path, forwardTermStructures_, values, exercises, states);
 
         Real discountedPayoff = DotProduct(values, discounts_);
 

@@ -50,6 +50,7 @@ namespace QuantLib {
         LongstaffSchwartzMultiPathPricer(
             const boost::shared_ptr<PathPayoff>& ,
             const std::vector<Size> &,
+            const std::vector<Handle<YieldTermStructure> > &,
             const Array &,
             Size ,
             LsmBasisSystem::PolynomType );
@@ -78,6 +79,7 @@ namespace QuantLib {
         boost::scoped_array<Real> lowerBounds_;
 
         const std::vector<Size> timePositions_;
+        const std::vector<Handle<YieldTermStructure> > forwardTermStructures_;
         const Array dF_;
 
         mutable std::vector<PathInfo> paths_;
