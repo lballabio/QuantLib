@@ -29,6 +29,7 @@
 
 namespace QuantLib {
 
+    //! Gaussian copula
     class GaussianCopula : public std::binary_function<Real,Real,Real> {
       public:
         GaussianCopula(Real rho);

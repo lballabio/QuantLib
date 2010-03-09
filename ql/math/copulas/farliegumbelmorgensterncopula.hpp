@@ -29,6 +29,7 @@
 
 namespace QuantLib {
 
+    //! Farlie-Gumbel-Morgenstern copula
     class FarlieGumbelMorgensternCopula
                                 : public std::binary_function<Real,Real,Real> {
       public:

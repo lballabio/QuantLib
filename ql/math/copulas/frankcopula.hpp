@@ -29,6 +29,7 @@
 
 namespace QuantLib {
 
+    //! Frank copula
     class FrankCopula : public std::binary_function<Real,Real,Real> {
       public:
         FrankCopula(Real theta);

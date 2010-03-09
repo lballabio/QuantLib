@@ -29,6 +29,7 @@
 
 namespace QuantLib {
 
+    //! Gumbel copula
     class GumbelCopula : public std::binary_function<Real,Real,Real> {
       public:
         GumbelCopula(Real theta);

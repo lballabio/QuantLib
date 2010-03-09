@@ -29,6 +29,7 @@
 
 namespace QuantLib {
 
+    //! max copula
     class MaxCopula : public std::binary_function<Real,Real,Real> {
       public:
         Real operator()(Real x, Real y) const;

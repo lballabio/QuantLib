@@ -29,6 +29,7 @@
 
 namespace QuantLib {
 
+    //! Clayton copula
     class ClaytonCopula : public std::binary_function<Real,Real,Real> {
       public:
         ClaytonCopula(Real theta);
