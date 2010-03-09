@@ -3,26 +3,34 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
+	alimikhailhaqcopula.hpp \
 	claytoncopula.hpp \
 	farliegumbelmorgensterncopula.hpp \
 	frankcopula.hpp \
+	galamboscopula.hpp \
 	gaussiancopula.hpp \
 	gumbelcopula.hpp \
+	huslerreisscopula.hpp \
 	independentcopula.hpp \
 	marshallolkincopula.hpp \
 	maxcopula.hpp \
-	mincopula.hpp
+	mincopula.hpp \
+	plackettcopula.hpp
 
 libCopulas_la_SOURCES = \
+	alimikhailhaqcopula.cpp \
 	claytoncopula.cpp \
 	farliegumbelmorgensterncopula.cpp \
 	frankcopula.cpp \
+	galamboscopula.cpp \
 	gaussiancopula.cpp \
 	gumbelcopula.cpp \
+	huslerreisscopula.cpp \
 	independentcopula.cpp \
 	marshallolkincopula.cpp \
 	maxcopula.cpp \
-	mincopula.cpp
+	mincopula.cpp \
+	plackettcopula.cpp
 
 noinst_LTLIBRARIES = libCopulas.la
 

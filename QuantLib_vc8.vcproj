@@ -2267,6 +2267,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\copulas\alimikhailhaqcopula.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\alimikhailhaqcopula.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\copulas\claytoncopula.cpp"
 					>
 				</File>
@@ -2291,6 +2299,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\copulas\galamboscopula.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\galamboscopula.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\copulas\gaussiancopula.cpp"
 					>
 				</File>
@@ -2304,6 +2320,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\copulas\gumbelcopula.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\huslerreisscopula.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\huslerreisscopula.hpp"
 					>
 				</File>
 				<File
@@ -2336,6 +2360,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\copulas\mincopula.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\plackettcopula.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\plackettcopula.hpp"
 					>
 				</File>
 			</Filter>
