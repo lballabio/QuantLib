@@ -103,6 +103,7 @@ QL_TESTS = \
 	tqreigendecomposition.hpp tqreigendecomposition.cpp \
 	tracing.hpp tracing.cpp \
 	utilities.hpp utilities.cpp \
+	variancegamma.hpp variancegamma.cpp \
 	varianceoption.hpp varianceoption.cpp \
 	varianceswaps.hpp varianceswaps.cpp \
 	volatilitymodels.hpp volatilitymodels.cpp

@@ -2131,6 +2131,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\variancegamma.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\varianceoption.cpp"
 				>
 			</File>
@@ -2553,6 +2557,10 @@
 			</File>
 			<File
 				RelativePath="utilities.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\variancegamma.hpp"
 				>
 			</File>
 			<File

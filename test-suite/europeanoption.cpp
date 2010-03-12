@@ -30,6 +30,7 @@
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/binomialengine.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesvanillaengine.hpp>
+#include <ql/experimental/variancegamma/fftvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/integralengine.hpp>
@@ -81,7 +82,8 @@ namespace {
                       JR, CRR, EQP, TGEO, TIAN, LR, JOSHI,
                       FiniteDifferences,
                       Integral,
-                      PseudoMonteCarlo, QuasiMonteCarlo };
+                      PseudoMonteCarlo, QuasiMonteCarlo,
+                      FFT };
 
     boost::shared_ptr<GeneralizedBlackScholesProcess>
     makeProcess(const boost::shared_ptr<Quote>& u,
@@ -169,12 +171,16 @@ namespace {
                 .withSteps(1)
                 .withSamples(samples);
             break;
+          case FFT:
+              engine = boost::shared_ptr<PricingEngine>(
+                                          new FFTVanillaEngine(stochProcess));
+            break;
           default:
             QL_FAIL("unknown engine type");
         }
 
         boost::shared_ptr<VanillaOption> option(
-                                        new EuropeanOption(payoff, exercise));
+            new EuropeanOption(payoff, exercise));
         option->setPricingEngine(engine);
         return option;
     }
@@ -205,6 +211,8 @@ namespace {
             return "MonteCarlo";
           case QuasiMonteCarlo:
             return "Quasi-MonteCarlo";
+          case FFT:
+            return "FFT";
           default:
             QL_FAIL("unknown engine type");
         }
@@ -1290,6 +1298,22 @@ void EuropeanOptionTest::testQmcEngines() {
     testEngineConsistency(engine,steps,samples,relativeTol);
 }
 
+void EuropeanOptionTest::testFFTEngines() {
+
+    BOOST_MESSAGE("Testing FFT European engines "
+                  "against analytic results...");
+
+    SavedSettings backup;
+
+    EngineType engine = FFT;
+    Size steps = Null<Size>();
+    Size samples = Null<Size>();
+    std::map<std::string,Real> relativeTol;
+    relativeTol["value"] = 0.01;
+    testEngineConsistency(engine,steps,samples,relativeTol);
+}
+
+
 void EuropeanOptionTest::testPriceCurve() {
 
     BOOST_MESSAGE("Testing European price curves...");
@@ -1545,6 +1569,8 @@ test_suite* EuropeanOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testIntegralEngines));
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testMcEngines));
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testQmcEngines));
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testFFTEngines));
+
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testPriceCurve));
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testLocalVolatility));

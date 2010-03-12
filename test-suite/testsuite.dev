@@ -1,7 +1,7 @@
 [Project]
 FileName=testsuite.dev
 Name=QuantLib-test-suite
-UnitCount=210
+UnitCount=212
 Type=1
 Ver=1
 ObjFiles=
@@ -2139,6 +2139,26 @@ BuildCmd=
 
 [Unit210]
 FileName=blackdeltacalculator.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit211]
+FileName=variancegamma.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit212]
+FileName=variancegamma.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1

@@ -7081,6 +7081,62 @@
 				</File>
 			</Filter>
 			<Filter
+				Name="variancegamma"
+				>
+				<File
+					RelativePath=".\ql\experimental\variancegamma\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\variancegamma\analyticvariancegammaengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\variancegamma\analyticvariancegammaengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\variancegamma\fftengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\variancegamma\fftengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\variancegamma\fftvanillaengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\variancegamma\fftvanillaengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\variancegamma\fftvariancegammaengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\variancegamma\fftvariancegammaengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\variancegamma\variancegammamodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\variancegamma\variancegammamodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\variancegamma\variancegammaprocess.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\variancegamma\variancegammaprocess.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
 				Name="lattices"
 				>
 				<File
