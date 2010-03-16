@@ -139,11 +139,13 @@ namespace QuantLib {
             std::vector<Time> times_;
         };
       public:
-        PiecewiseConstantParameter(const std::vector<Time>& times)
+        PiecewiseConstantParameter(const std::vector<Time>& times,
+                                   const Constraint& constraint =
+                                                             NoConstraint())
         : Parameter(times.size()+1,
                     boost::shared_ptr<Parameter::Impl>(
                                  new PiecewiseConstantParameter::Impl(times)),
-                    NoConstraint())
+                    constraint)
         {}
     };
 
