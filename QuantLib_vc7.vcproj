@@ -1511,6 +1511,25 @@
 				</File>
 			</Filter>
 			<Filter
+				Name="shortrate"
+				Filter="">
+				<File
+					RelativePath=".\ql\experimental\shortrate\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\shortrate\generalizedhullwhite.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\shortrate\generalizedhullwhite.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\shortrate\generalizedornsteinuhlenbeckprocess.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\shortrate\generalizedornsteinuhlenbeckprocess.hpp">
+				</File>
+			</Filter>
+			<Filter
 				Name="variancegamma"
 				Filter="">
 				<File
