@@ -59,6 +59,18 @@ namespace QuantLib {
         boost::scoped_array<double> wa2(new double[n]);
         boost::scoped_array<double> wa3(new double[n]);
         boost::scoped_array<double> wa4(new double[m]);
+        // requirements; check here to get more detailed error messages.
+        QL_REQUIRE(n > 0, "no variables given");
+        QL_REQUIRE(m >= n,
+                   "less functions (" << m <<
+                   ") than available variables (" << n << ")");
+        QL_REQUIRE(endCriteria.functionEpsilon() >= 0.0,
+                   "negative f tolerance");
+        QL_REQUIRE(xtol_ >= 0.0, "negative x tolerance");
+        QL_REQUIRE(gtol_ >= 0.0, "negative g tolerance");
+        QL_REQUIRE(endCriteria.maxIterations() > 0,
+                   "null number of evaluations");
+
         // call lmdif to minimize the sum of the squares of m functions
         // in n variables by the Levenberg-Marquardt algorithm.
         MINPACK::LmdifCostFunction lmdifCostFunction = 
