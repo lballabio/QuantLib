@@ -4,20 +4,24 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    analyticsimplechooserengine.hpp \
     everestoption.hpp \
     himalayaoption.hpp \
     mceverestengine.hpp \
     mchimalayaengine.hpp \
     mcpagodaengine.hpp \
-    pagodaoption.hpp
+    pagodaoption.hpp \
+    simplechooseroption.hpp
 
 libExoticOptions_la_SOURCES = \
+    analyticsimplechooserengine.cpp \
     everestoption.cpp \
     himalayaoption.cpp \
     mceverestengine.cpp \
     mchimalayaengine.cpp \
     mcpagodaengine.cpp \
-    pagodaoption.cpp
+    pagodaoption.cpp \
+    simplechooseroption.cpp
 
 noinst_LTLIBRARIES = libExoticOptions.la
 

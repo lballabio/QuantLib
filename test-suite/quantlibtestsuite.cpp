@@ -60,6 +60,7 @@
 #include "cashflows.hpp"
 #include "cdo.hpp"
 #include "cdsoption.hpp"
+#include "chooseroption.hpp"
 #include "cliquetoption.hpp"
 #include "cms.hpp"
 #include "compoundoption.hpp"
@@ -233,6 +234,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CashFlowsTest::suite());
     test->add(CdsOptionTest::suite());
     test->add(CdoTest::suite());
+    test->add(ChooserOptionTest::suite());
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
     test->add(CompoundOptionTest::suite());

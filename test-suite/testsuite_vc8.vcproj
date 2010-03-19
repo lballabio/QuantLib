@@ -511,6 +511,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\chooseroption.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\cliquetoption.cpp"
 				>
 			</File>
@@ -933,6 +937,10 @@
 			</File>
 			<File
 				RelativePath=".\cdsoption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\chooseroption.hpp"
 				>
 			</File>
 			<File

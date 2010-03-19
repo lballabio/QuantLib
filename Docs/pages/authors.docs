@@ -40,27 +40,28 @@
 
     We gratefully acknowledge contributions from Nathan Abbott, Xavier
     Abulker, Toyin Akin, Mario Aleppo, Jose Aparicio, Sercan Atalik,
-    Christopher Baus, Thomas Becker, Adolfo Benin, Hachemi Benyahia,
-    Luca Berardi, Sylvain Bertrand, David Binderman, Theo Boafo, Joe
-    Byers, Antoine Cellerier, Yee Man Chan, Aurelien Chanudet, Yiping
-    Chen, Warren Chou, Jon Davidson, Daniele De Francesco,
-    Fr&eacute;d&eacute;ric Degraeve, Piero Del Boca, Piter Dias,
-    Cristina Duminuco, Dirk Eddelbuettel, Bernd Engelmann, Giorgio
-    Facchinetti, Paul Farrington, Lorella Fatone, Luca Ferraro, Chiara
-    Fornarola, Silvia Frasson, Andreas Gaida, Matteo Gallivanoni,
-    Roman Gitlin, Marek Glowacki, Richard Gomes, Richard Gould,
-    Florent Grenier, Cavit Hafizoglu, Michael Heckl, Laurent Hoffmann,
-    Beno&icirc;t Houzelle, Frank H&ouml;vermann, Charles Chongseok
-    Hyun, Simon Ibbotson, Tomoya Kawanishi, Gary Kennedy, Matt Knox,
-    Andrew Kolesnikov, Silakhdar Krikeb, Yan Kuang, Allen Kuo, Paul
-    Laderoute, James Lee, Samuel Lerouge, Gang Liang, Robert Lopez,
-    Andr&eacute; Louw, John Maiden, Katiuscia Manzoni, Francesca
-    Mariani, Slava Mazur, Enrico Michelotti, Radu Mondescu, Bart
-    Mosley, Tiziano M&uuml;ller, Bojan Nikolic, Jean Nkeng, Adrian
-    O'Neill, Andrea Odetti, Mike Parker, Guillaume Pealat, Gilbert
-    Peffer, Walter Penschke, Adrien Pinatton, Gianni Piolanti, Mario
-    Pucci, J. Erik Radmall, Fabio Ramponi, Maria Cristina Recchioni,
-    Dimitri Reiswich, Sadruddin Rejeb, Alessandro Roveda, Alpha Sanou
+    Cl&eacute;ment Barret, Christopher Baus, Thomas Becker, Adolfo
+    Benin, Hachemi Benyahia, Luca Berardi, Sylvain Bertrand, David
+    Binderman, Theo Boafo, Fakher Braham, Joe Byers, Antoine
+    Cellerier, Yee Man Chan, Aurelien Chanudet, Yiping Chen, Warren
+    Chou, Jon Davidson, Daniele De Francesco, Fr&eacute;d&eacute;ric
+    Degraeve, Piero Del Boca, Piter Dias, Cristina Duminuco, Dirk
+    Eddelbuettel, Bernd Engelmann, Giorgio Facchinetti, Paul
+    Farrington, Lorella Fatone, Luca Ferraro, Chiara Fornarola, Silvia
+    Frasson, Andreas Gaida, Matteo Gallivanoni, Roman Gitlin, Marek
+    Glowacki, Richard Gomes, Richard Gould, Florent Grenier, Cavit
+    Hafizoglu, Michael Heckl, Laurent Hoffmann, Beno&icirc;t Houzelle,
+    Frank H&ouml;vermann, Charles Chongseok Hyun, Simon Ibbotson,
+    Tomoya Kawanishi, Gary Kennedy, Matt Knox, Andrew Kolesnikov,
+    Silakhdar Krikeb, Yan Kuang, Allen Kuo, Paul Laderoute, James Lee,
+    Samuel Lerouge, Gang Liang, Robert Lopez, Andr&eacute; Louw, John
+    Maiden, Katiuscia Manzoni, Francesca Mariani, Slava Mazur, Enrico
+    Michelotti, Radu Mondescu, Bart Mosley, Tiziano M&uuml;ller, Bojan
+    Nikolic, Jean Nkeng, Adrian O'Neill, Andrea Odetti, Mike Parker,
+    Guillaume Pealat, Gilbert Peffer, Walter Penschke, Adrien
+    Pinatton, Gianni Piolanti, Mario Pucci, J. Erik Radmall, Fabio
+    Ramponi, Maria Cristina Recchioni, Dimitri Reiswich, Sadruddin
+    Rejeb, Alessandro Roveda, Mohamed Amine Sadaoui, Alpha Sanou
     Toure, Tamas Sashalmi, Peter Schmitteckert, Ralph Schreyer, David
     Schwartz, Eugene Shevkoplyas, Enrico Sirola, Maxim Sokolov, Niels
     Elken S&oslash;nderby, Andreas Spengler, Roland Stamm, Marco

@@ -1022,6 +1022,12 @@
 					RelativePath=".\ql\experimental\exoticoptions\all.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticsimplechooserengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticsimplechooserengine.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\experimental\exoticoptions\everestoption.cpp">
 				</File>
 				<File
@@ -1056,6 +1062,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\exoticoptions\pagodaoption.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\simplechooseroption.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\simplechooseroption.hpp">
 				</File>
 			</Filter>
 			<Filter

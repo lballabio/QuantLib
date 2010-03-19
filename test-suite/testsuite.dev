@@ -1,7 +1,7 @@
 [Project]
 FileName=testsuite.dev
 Name=QuantLib-test-suite
-UnitCount=212
+UnitCount=214
 Type=1
 Ver=1
 ObjFiles=
@@ -2159,6 +2159,26 @@ BuildCmd=
 
 [Unit212]
 FileName=variancegamma.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit213]
+FileName=chooseroption.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit214]
+FileName=chooseroption.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1

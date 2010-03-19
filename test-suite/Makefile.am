@@ -19,6 +19,7 @@ QL_TESTS = \
 	cashflows.hpp cashflows.cpp \
 	cdo.hpp cdo.cpp \
 	cdsoption.hpp cdsoption.cpp \
+	chooseroption.hpp chooseroption.cpp \
 	cliquetoption.hpp cliquetoption.cpp \
 	cms.hpp cms.cpp \
 	compoundoption.hpp compoundoption.cpp \
