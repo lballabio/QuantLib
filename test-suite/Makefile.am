@@ -62,6 +62,7 @@ QL_TESTS = \
 	linearleastsquaresregression.hpp linearleastsquaresregression.cpp \
 	lookbackoptions.hpp lookbackoptions.cpp \
 	lowdiscrepancysequences.hpp lowdiscrepancysequences.cpp \
+	margrabeoption.hpp margrabeoption.cpp \
 	marketmodel.hpp marketmodel.cpp \
 	marketmodel_cms.hpp marketmodel_cms.cpp \
 	marketmodel_smm.hpp marketmodel_smm.cpp \

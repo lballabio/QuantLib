@@ -6316,6 +6316,22 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticamericanmargrabeengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticamericanmargrabeengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\exoticoptions\analyticsimplechooserengine.cpp"
 					>
 				</File>
@@ -6337,6 +6353,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\exoticoptions\himalayaoption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\margrabeoption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\margrabeoption.hpp"
 					>
 				</File>
 				<File

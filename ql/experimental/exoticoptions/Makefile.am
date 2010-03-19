@@ -4,9 +4,12 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    analyticamericanmargrabeengine.hpp \
+    analyticeuropeanmargrabeengine.hpp \
     analyticsimplechooserengine.hpp \
     everestoption.hpp \
     himalayaoption.hpp \
+    margrabeoption.hpp \
     mceverestengine.hpp \
     mchimalayaengine.hpp \
     mcpagodaengine.hpp \
@@ -14,9 +17,12 @@ this_include_HEADERS = \
     simplechooseroption.hpp
 
 libExoticOptions_la_SOURCES = \
+    analyticamericanmargrabeengine.cpp \
+    analyticeuropeanmargrabeengine.cpp \
     analyticsimplechooserengine.cpp \
     everestoption.cpp \
     himalayaoption.cpp \
+    margrabeoption.cpp \
     mceverestengine.cpp \
     mchimalayaengine.cpp \
     mcpagodaengine.cpp \

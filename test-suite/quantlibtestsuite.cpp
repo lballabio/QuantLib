@@ -103,6 +103,7 @@
 #include "jumpdiffusion.hpp"
 #include "lookbackoptions.hpp"
 #include "lowdiscrepancysequences.hpp"
+#include "margrabeoption.hpp"
 #include "marketmodel.hpp"
 #include "marketmodel_smmcapletalphacalibration.hpp"
 #include "marketmodel_smmcapletcalibration.hpp"
@@ -275,6 +276,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(LinearLeastSquaresRegressionTest::suite());
     test->add(LookbackOptionTest::suite());
     test->add(LowDiscrepancyTest::suite());
+    test->add(MargrabeOptionTest::suite());
     test->add(MarketModelTest::suite());
     test->add(MarketModelCmsTest::suite());
     test->add(MarketModelSmmTest::suite());

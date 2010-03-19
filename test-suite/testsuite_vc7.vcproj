@@ -630,6 +630,9 @@
 				RelativePath="lowdiscrepancysequences.cpp">
 			</File>
 			<File
+				RelativePath=".\margrabeoption.cpp">
+			</File>
+			<File
 				RelativePath=".\marketmodel.cpp">
 			</File>
 			<File
@@ -950,6 +953,9 @@
 			</File>
 			<File
 				RelativePath="lowdiscrepancysequences.hpp">
+			</File>
+			<File
+				RelativePath=".\margrabeoption.hpp">
 			</File>
 			<File
 				RelativePath=".\marketmodel.hpp">
