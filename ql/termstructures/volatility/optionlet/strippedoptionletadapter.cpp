@@ -87,9 +87,9 @@ namespace QuantLib {
             //                              //optMethod_
             //                              ));
             strikeInterpolations_[i] = boost::shared_ptr<LinearInterpolation>(new
-                    LinearInterpolation(optionletStrikes.begin(),
-                                       optionletStrikes.end(),
-                                       optionletVolatilities.begin()));
+                LinearInterpolation(optionletStrikes.begin(),
+                                    optionletStrikes.end(),
+                                    optionletVolatilities.begin()));
 
             //QL_ENSURE(strikeInterpolations_[i]->endCriteria()!=EndCriteria::MaxIterations,
             //          "section calibration failed: "
