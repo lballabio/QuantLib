@@ -60,9 +60,9 @@ namespace QuantLib {
         const FdmBoundaryConditionSet& bcSet,
         const boost::shared_ptr<FdmStepConditionComposite> & condition,
         const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
-        const Time maturity,
-        const Size timeSteps,
-        const Size dampingSteps,
+        Time maturity,
+        Size timeSteps,
+        Size dampingSteps,
         FdmBackwardSolver::FdmSchemeType schemeType, 
         Real theta, Real mu)
     : hestonProcess_(hestonProcess),
