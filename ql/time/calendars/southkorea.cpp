@@ -82,11 +82,12 @@ namespace QuantLib {
             || ((d == 6 || d == 7 || d == 8) && m == February && y == 2008)
             || ((d == 25 || d == 26 || d == 27) && m == January && y == 2009)
             || ((d == 13 || d == 14 || d == 15) && m == February && y == 2010)
-            // Election Day 2004
+            // Election Days
             || (d == 15 && m == April && y == 2004)    // National Assembly
             || (d == 31 && m == May && y == 2006)      // Regional election
             || (d == 19 && m == December && y == 2007) // Presidency
-            || (d ==  9 && m == April && y == 2008)
+            || (d ==  9 && m == April && y == 2008)    // National Assembly
+            || (d ==  2 && m == June && y == 2010)     // Local election
             // Buddha's birthday
             || (d == 26 && m == May && y == 2004)
             || (d == 15 && m == May && y == 2005)
@@ -123,6 +124,9 @@ namespace QuantLib {
             || (d == 30 && m == December && y == 2005)
             || (d == 29 && m == December && y == 2006)
             || (d == 31 && m == December && y == 2007)
+            || (d == 31 && m == December && y == 2008)
+            || (d == 31 && m == December && y == 2009)
+            || (d == 31 && m == December && y == 2010)
             )
             return false;
 

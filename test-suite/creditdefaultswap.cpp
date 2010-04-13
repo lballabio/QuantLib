@@ -303,7 +303,9 @@ void CreditDefaultSwapTest::testImpliedHazardRate() {
     SavedSettings backup;
 
     // Initialize curves
-    Date today = Settings::instance().evaluationDate();
+    Calendar calendar = TARGET();
+    Date today = calendar.adjust(Date::todaysDate());
+    Settings::instance().evaluationDate() = today;
 
     Rate h1 = 0.30, h2 = 0.40;
     DayCounter dayCounter = Actual365Fixed();
@@ -330,7 +332,6 @@ void CreditDefaultSwapTest::testImpliedHazardRate() {
                             new FlatForward(today,0.03,Actual360())));
 
 
-    Calendar calendar = TARGET();
     Frequency frequency = Semiannual;
     BusinessDayConvention convention = ModifiedFollowing;
 

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2007, 2008, 2009 StatPro Italia srl
+ Copyright (C) 2005, 2007, 2008, 2009, 2010 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,6 +29,7 @@ namespace QuantLib {
         switch (market) {
           case BEJ:
           case JSX:
+          case IDX:
             impl_ = bejImpl;
             break;
           default:
@@ -163,6 +164,27 @@ namespace QuantLib {
                 || (d == 27 && m == November)
                 // Islamic New Year
                 || (d == 18 && m == December)
+                // Public Holiday
+                || (d == 24 && m == December)
+                // Trading holiday
+                || (d == 31 && m == December)
+                )
+                return false;
+        }
+
+        if (y == 2010) {
+            if (// Birthday of the prophet Muhammad SAW
+                   (d == 26 && m == February)
+                // Saka's New Year
+                || (d == 16 && m == March)
+                // Birth of Buddha
+                || (d == 28 && m == May)
+                // Ied Fitr
+                || (d >= 8 && d <= 14 && m == September)
+                // Ied Adha
+                || (d == 17 && m == November)
+                // Islamic New Year
+                || (d == 7 && m == December)
                 // Public Holiday
                 || (d == 24 && m == December)
                 // Trading holiday

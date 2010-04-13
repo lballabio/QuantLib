@@ -78,6 +78,7 @@ namespace QuantLib {
 
     void HaganPricer::initialize(const FloatingRateCoupon& coupon){
         coupon_ =  dynamic_cast<const CmsCoupon*>(&coupon);
+        QL_REQUIRE(coupon_, "CMS coupon needed");
         gearing_ = coupon_->gearing();
         spread_ = coupon_->spread();
 

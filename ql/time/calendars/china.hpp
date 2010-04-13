@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 FIMAT Group
- Copyright (C) 2008, 2009 StatPro Italia srl
+ Copyright (C) 2008, 2009, 2010 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -41,7 +41,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given (data available for
-        2004-2009 only):
+        2004-2010 only):
         <ul>
         <li>Chinese New Year</li>
         <li>Ching Ming Festival</li>
@@ -49,7 +49,7 @@ namespace QuantLib {
         <li>Mid-Autumn Festival</li>
         </ul>
 
-        Data from <http://www.sse.com.cn/sseportal/en_us/ps/home.shtml>
+        Data from <http://www.sse.com.cn/sseportal/en/home/home.shtml>
 
         \ingroup calendars
     */

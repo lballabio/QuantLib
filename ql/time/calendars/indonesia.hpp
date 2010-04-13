@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2007, 2008, 2009 StatPro Italia srl
+ Copyright (C) 2005, 2007, 2008, 2009, 2010 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,8 +29,8 @@
 namespace QuantLib {
 
     //! %Indonesian calendars
-    /*! Holidays for the Jakarta stock exchange
-        (data from <http://www.jsx.co.id/>):
+    /*! Holidays for the Indonesia stock exchange
+        (data from <http://www.idx.co.id/>):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
@@ -42,7 +42,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2005-2009 only:)
+        (data available for 2005-2010 only:)
         <ul>
         <li>Idul Adha</li>
         <li>Ied Adha</li>
@@ -67,10 +67,11 @@ namespace QuantLib {
             bool isBusinessDay(const Date&) const;
         };
       public:
-        enum Market { BEJ,  //!< Jakarta stock exchange
-                      JSX   //!< Jakarta stock exchange
+        enum Market { BEJ,  //!< Jakarta stock exchange (merged into IDX)
+                      JSX,  //!< Jakarta stock exchange (merged into IDX)
+                      IDX   //!< Indonesia stock exchange
         };
-        Indonesia(Market m = BEJ);
+        Indonesia(Market m = IDX);
     };
 
 }

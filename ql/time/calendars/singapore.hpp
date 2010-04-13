@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 FIMAT Group
- Copyright (C) 2007, 2008, 2009 StatPro Italia srl
+ Copyright (C) 2007, 2008, 2009, 2010 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,7 +31,7 @@ namespace QuantLib {
 
     //! %Singapore calendars
     /*! Holidays for the Singapore exchange
-        (data from <http://www.ses.com.sg>):
+        (data from <http://www.simex.com.sg>):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
@@ -43,7 +43,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2004-2008 only:)
+        (data available for 2004-2010 only:)
         <ul>
         <li>Chinese New Year</li>
         <li>Hari Raya Haji</li>

@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 FIMAT Group
- Copyright (C) 2007, 2009 StatPro Italia srl
+ Copyright (C) 2007, 2009, 2010 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -46,7 +46,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2004-2009 only:)
+        (data available for 2004-2010 only:)
         <ul>
         <li>Lunar New Year</li>
         <li>Chinese New Year</li>

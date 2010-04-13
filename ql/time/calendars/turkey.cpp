@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Sercan Atalik
+ Copyright (C) 2010 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -52,39 +53,51 @@ namespace QuantLib {
 
         // Local Holidays
         if (y == 2004) {
-            // kurban
+            // Kurban
             if ((m == February && d <= 4)
-            // ramazan
+            // Ramadan
                 || (m == November && d >= 14 && d <= 16))
                 return false;
         } else if (y == 2005) {
-            // kurban
+            // Kurban
             if ((m == January && d >= 19 && d <= 21)
-            // ramazan
+            // Ramadan
                 || (m == November && d >= 2 && d <= 5))
                 return false;
         } else if (y == 2006) {
-            // kurban
-            if ((m == January && d >= 9 && d <= 13)
-            // ramazan
+            // Kurban
+            if ((m == January && d >= 10 && d <= 13)
+            // Ramadan
                 || (m == October && d >= 23 && d <= 25)
-            // kurban
-                || (m == December && d >= 30))
+            // Kurban
+                || (m == December && d == 31))
                 return false;
         } else if (y == 2007) {
-            // kurban
-            if ((m == January && d <= 4)
-            // ramazan
-                || (m == October && d >= 11 && d <= 14)
-            // kurban
-                || (m == December && d >= 19 && d <= 23))
+            // Kurban
+            if ((m == January && d <= 3)
+            // Ramadan
+                || (m == October && d >= 12 && d <= 14)
+            // Kurban
+                || (m == December && d >= 20 && d <= 23))
                 return false;
         } else if (y == 2008) {
-            // ramazan
-            if ((m == September && d >= 29)
+            // Ramadan
+            if ((m == September && d == 30)
                 || (m == October && d <= 2)
-                // kurban
-                || (m == December && d >= 7 && d <= 11))
+            // Kurban
+                || (m == December && d >= 8 && d <= 11))
+                return false;
+        } else if (y == 2009) {
+            // Ramadan
+            if ((m == September && d >= 20 && d <= 22)
+            // Kurban
+                || (m == November && d >= 27 && d <= 30))
+                return false;
+        } else if (y == 2010) {
+            // Ramadan
+            if ((m == September && d >= 9 && d <= 11)
+            // Kurban
+                || (m == November && d >= 16 && d <= 19))
                 return false;
         }
         return true;

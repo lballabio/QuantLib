@@ -19,10 +19,10 @@ Robert Lopez, André Louw, John Maiden, Katiuscia Manzoni, Francesca
 Mariani, Slava Mazur, Enrico Michelotti, Radu Mondescu, Bart Mosley,
 Tiziano Müller, Bojan Nikolic, Jean Nkeng, Adrian O'Neill, Andrea
 Odetti, Mike Parker, Guillaume Pealat, Gilbert Peffer, Walter
-Penschke, Adrien Pinatton, Gianni Piolanti, Mario Pucci, J. Erik
-Radmall, Fabio Ramponi, Maria Cristina Recchioni, Dimitri Reiswich,
-Sadruddin Rejeb, Alessandro Roveda, Mohamed Amine Sadaoui, Alpha Sanou
-Toure, Tamas Sashalmi, Peter Schmitteckert, Ralph Schreyer, David
+Penschke, Francesco Perissin, Adrien Pinatton, Gianni Piolanti,
+Mario Pucci, J. Erik Radmall, Fabio Ramponi, Maria Cristina Recchioni,
+Dimitri Reiswich, Sadruddin Rejeb, Alessandro Roveda, Mohamed Amine Sadaoui,
+Alpha Sanou Toure, Tamas Sashalmi, Peter Schmitteckert, Ralph Schreyer, David
 Schwartz, Eugene Shevkoplyas, Enrico Sirola, Maxim Sokolov, Niels
 Elken Sønderby, Andreas Spengler, Roland Stamm, Marco Tarenghi,
 François du Vignaud, Charles Whitmore, Bernd Johannes Wuebben, Sun

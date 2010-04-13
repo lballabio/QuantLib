@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Sercan Atalik
+ Copyright (C) 2010 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,14 +30,17 @@
 namespace QuantLib {
 
     //! Turkish calendar
-    /*! Holidays:
+    /*! Holidays for the Istanbul Stock Exchange:
+        (data from <http://www.ise.org/Markets/OfficialHolidays.aspx?sflang=en>):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
         <li>New Year's Day, January 1st</li>
-        <li>National Holidays (April 23rd, May 19th, August 30th,
-            October 29th</li>
-        <li>Local Holidays (Kurban, Ramadan; 2004 to 2009 only) </li>
+        <li>National Sovereignty and Children’s Day, April 23rd</li>
+        <li>Youth and Sports Day, May 19th</li>
+        <li>Victory Day, August 30th</li>
+        <li>Republic Day, October 29th</li>
+        <li>Local Holidays (Kurban, Ramadan; 2004 to 2010 only) </li>
         </ul>
 
         \ingroup calendars

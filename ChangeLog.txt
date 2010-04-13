@@ -1,3 +1,70 @@
+2010-04-06 13:38  Luigi Ballabio
+
+	* [r17236] ql/patterns/singleton.hpp:
+	  
+	  Fix: manage Singleton correctly in .Net (thanks to Nathan Abbott.)
+
+2010-03-08 08:59  Luigi Ballabio
+
+	* [r17212] ql/experimental/callablebonds/callablebond.cpp:
+	  
+	  Bug fix: create exercise-date vector correctly.
+	  
+	  Previously, the actual exercise dates were stored after a number
+	  of null dates. For most choices of day counter, this resulted in
+	  negative exercise times that were simply discarded. For some
+	  (e.g., ActualActual::Bond) it resulted in an exception instead.
+
+2010-03-08 08:57  Luigi Ballabio
+
+	* [r17211] ql/time/calendars/china.cpp, ql/time/calendars/china.hpp,
+	  ql/time/calendars/hongkong.cpp, ql/time/calendars/hongkong.hpp,
+	  ql/time/calendars/india.cpp, ql/time/calendars/india.hpp,
+	  ql/time/calendars/indonesia.cpp, ql/time/calendars/indonesia.hpp,
+	  ql/time/calendars/singapore.cpp, ql/time/calendars/singapore.hpp,
+	  ql/time/calendars/southkorea.cpp, ql/time/calendars/taiwan.cpp,
+	  ql/time/calendars/taiwan.hpp, ql/time/calendars/turkey.cpp,
+	  ql/time/calendars/turkey.hpp:
+	  
+	  Update: added 2010 moving holidays for Eastern calendars.
+
+2010-03-01 09:32  Luigi Ballabio
+
+	* [r17180] ql/instruments/zerocouponinflationswap.cpp,
+	  ql/instruments/zerocouponinflationswap.hpp:
+	  
+	  Bug fix: added missing method implementations.
+
+2010-03-01 09:32  Luigi Ballabio
+
+	* [r17179] ql/cashflows/indexedcashflow.hpp:
+	  
+	  Bug fix: let an IndexedCashFlow observe its index.
+	  
+	  Previously, index changes would not be propagated to the cash flow
+	  and thus to any observers of the latter. This affected zero-coupon
+	  inflation swaps.
+
+2010-02-24 11:22  Luigi Ballabio
+
+	* [r17170] Docs/Makefile.am:
+	  
+	  
+
+2010-02-24 11:10  Luigi Ballabio
+
+	* [r17167] Docs/images/QL-small.jpg, Docs/images/QL-title.jpg,
+	  Docs/images/QL.bmp, Docs/images/QL.jpg, Docs/images/favicon.ico,
+	  Docs/quantlibheader.html, Docs/quantlibheaderonline.html:
+	  
+	  Replaced unlicensed font in logo.
+
+2010-02-23 15:08  Luigi Ballabio
+
+	* [r17153] ChangeLog.txt:
+	  
+	  Updated ChangeLogs.
+
 2010-02-23 14:33  Luigi Ballabio
 
 	* [r17148] ql/cashflows/cashflows.cpp, ql/cashflows/cashflows.hpp,

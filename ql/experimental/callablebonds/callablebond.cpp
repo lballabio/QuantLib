@@ -187,9 +187,9 @@ namespace QuantLib {
         const Leg& cfs = cashflows();
 
         arguments->couponDates.clear();
-        arguments->couponDates = std::vector<Date>(cfs.size()-1);
+        arguments->couponDates.reserve(cfs.size()-1);
         arguments->couponAmounts.clear();
-        arguments->couponAmounts = std::vector<Real>(cfs.size()-1);
+        arguments->couponAmounts.reserve(cfs.size()-1);
 
         for (Size i=0; i<cfs.size()-1; i++) {
             if (!cfs[i]->hasOccurred(settlement, false)) {

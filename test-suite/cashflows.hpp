@@ -25,6 +25,7 @@
 class CashFlowsTest {
   public:
     static void testSettings();
+    static void testAccessViolation();
     static boost::unit_test_framework::test_suite* suite();
 };
 

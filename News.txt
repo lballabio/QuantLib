@@ -1,62 +1,39 @@
 
-Notable changes for QuantLib 1.0:
+Changes for QuantLib 1.0.1:
 
-PORTABILITY
+- Added moving holidays for 2010 to Eastern calendars.
 
-- Fixes for x64 Visual Studio compilation (thanks to Craig Miller.)
+- The Singleton class should now work correctly when used on the .Net
+  platform (thanks to Nathan Abbott.)
 
-- Enabled language extensions in Visual Studio projects.
+- Bug fix: let an IndexedCashFlow observe its index.
+  Previously, index changes would not be propagated to the cash flow
+  and thus to any observers of the latter. This affected zero-coupon
+  inflation swaps.
 
-- Prevented make errors with older shells (thanks to Walter Eaves.)
+- Bug fix: added missing method implementations to zero-coupon
+  inflation swaps.
+  A couple of methods were declared but not defined.
 
-DATE/TIME
+- Bug fix: create exercise-date vector correctly for callable bonds.
+  Previously, the actual exercise dates were stored after a number
+  of null dates. For most choices of day counter, this resulted in
+  negative exercise times that were harmlessly discarded. For some
+  day counters (e.g., ActualActual::Bond) the null dates caused an
+  exception instead.
 
-- Changes to end-of-month adjustment. In a schedule, the Unadjusted
-  convention now supersedes a non-null calendar and causes dates to
-  roll on the unadjusted end of month (possibly a holiday.)
+- Bug fix: properly account for CDS protection-start date.
+  During bootstrap of the default-probability curve, the
+  protection-start date was taken into account when calculating the
+  coupon schedule of the underlying CDS but not when calculating its
+  value (a few days of protection could be lost.)
+  Also, sometimes the protection-start date was compared incorrectly
+  to the accrual-start date leading to false positives when checking
+  requirements.
 
-- Added new date-generation rule for CDS (thanks to Jose Aparicio.)
-
-- Fix for CDS fair-upfront calculation (thanks to Jose Aparicio.)
-  Previously, fair-upfront calculation required a non-null upfront
-  to begin with. This is no longer the case.
-
-INSTRUMENTS
-
-- Fixed discounting of dividends on convertible-bond grid (thanks to
-  Benoit Houzelle and Samuel Lerouge.)
-
-CASH FLOWS
-
-- A number of CashFlows methods now return a meaningful result even
-  if the passed leg is empty.
-
-PROCESSES
-
-- Changed default discretization for Heston process.  The new
-  default (giving a better performance) is quadratic exponential
-  with Martingale correction.
-
-TERM STRUCTURES
-
-- Removed ambiguous parRate member functions from YieldTermStructure
-  interface.
-
-EXAMPLES
-
-- Added market-model example.
-
-EXPERIMENTAL FOLDER
-
-The ql/experimental folder contains code which is still not fully
-integrated with the library or even fully tested, but is released in
-order to get user feedback.  Experimental classes are considered
-unstable; their interfaces might change in future releases.
-New contributions for this release were:
-
-- Longstaff-Schwartz algorithm for basket products including coupon
-  payments (thanks to Andrea Odetti;)
-
-- added sparse incomplete LU preconditioner for 2D finite-difference
-  models (thanks to Ralph Schreyer.)
+- Bug fix: coupon pricers now properly check for the result of the
+  dynamic_cast they perform.
+  Previously, setting a pricer to a coupon of the wrong type would
+  cause an access violation by dereferencing the null pointer
+  returned by the failed cast.
 

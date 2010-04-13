@@ -94,7 +94,7 @@ namespace QuantLib {
     }
 
     void CdsHelper::initializeDates() {
-        Date protectionStart_ = evaluationDate_ + settlementDays_;
+        protectionStart_ = evaluationDate_ + settlementDays_;
         Date startDate = calendar_.adjust(protectionStart_,
                                           paymentConvention_);
         Date endDate = evaluationDate_ + tenor_;

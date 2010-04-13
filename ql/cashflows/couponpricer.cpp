@@ -37,6 +37,7 @@ namespace QuantLib {
 
     void BlackIborCouponPricer::initialize(const FloatingRateCoupon& coupon) {
         coupon_ = dynamic_cast<const IborCoupon*>(&coupon);
+        QL_REQUIRE(coupon_, "Libor coupon required");
         gearing_ = coupon_->gearing();
         spread_ = coupon_->spread();
         Date paymentDate = coupon_->date();

@@ -21,6 +21,12 @@
 #include "utilities.hpp"
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
+#include <ql/cashflows/floatingratecoupon.hpp>
+#include <ql/cashflows/couponpricer.hpp>
+#include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/indexes/ibor/usdlibor.hpp>
 #include <ql/settings.hpp>
 
 using namespace QuantLib;
@@ -161,10 +167,55 @@ void CashFlowsTest::testSettings() {
 
 }
 
+void CashFlowsTest::testAccessViolation() {
+    BOOST_MESSAGE("Testing dynamic cast of coupon in Black pricer...");
+
+    SavedSettings backup;
+
+    Date todaysDate(7, April, 2010);
+    Date settlementDate(9, April, 2010);
+    Settings::instance().evaluationDate() = todaysDate;
+    Calendar calendar = TARGET();
+
+    Handle<YieldTermStructure> rhTermStructure(
+        flatRate(settlementDate, 0.04875825, Actual365Fixed()));
+
+	Volatility volatility = 0.10;
+	Handle<OptionletVolatilityStructure> vol;
+	vol = Handle<OptionletVolatilityStructure>(
+			 boost::shared_ptr<OptionletVolatilityStructure>(
+                 new ConstantOptionletVolatility(
+							 2,
+							 calendar,
+							 ModifiedFollowing,
+							 volatility,
+							 Actual365Fixed())));
+
+	boost::shared_ptr<IborIndex> index3m (new USDLibor(3*Months,
+                                                       rhTermStructure));
+
+	Date payDate(20, December, 2013);
+	Date startDate(20, September, 2013);
+	Date endDate(20, December, 2013);
+	Rate spread = 0.0115;
+	boost::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer(vol));
+    boost::shared_ptr<FloatingRateCoupon> coupon(
+        new FloatingRateCoupon(payDate,100, startDate, endDate, 2,
+                               index3m, 1.0 , spread / 100));
+	coupon->setPricer(pricer);
+
+    try {
+        // this caused an access violation in version 1.0
+    	Real amount = coupon->amount();
+    } catch (Error&) {
+        // ok; proper exception thrown
+    }
+}
 
 test_suite* CashFlowsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Cash flows tests");
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testSettings));
+    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testAccessViolation));
     return suite;
 }
 

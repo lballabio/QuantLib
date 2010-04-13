@@ -105,6 +105,7 @@ namespace QuantLib {
 
     void RangeAccrualPricer::initialize(const FloatingRateCoupon& coupon){
         coupon_ =  dynamic_cast<const RangeAccrualFloatersCoupon*>(&coupon);
+        QL_REQUIRE(coupon_, "range-accrual coupon required");
         gearing_ = coupon_->gearing();
         spread_ = coupon_->spread();
 

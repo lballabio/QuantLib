@@ -116,6 +116,7 @@ namespace QuantLib {
 
     void YoYInflationCouponPricer::initialize(const InflationCoupon& coupon) {
         coupon_ = dynamic_cast<const YoYInflationCoupon*>(&coupon);
+        QL_REQUIRE(coupon_, "year-on-year inflation coupon needed");
         gearing_ = coupon_->gearing();
         spread_ = coupon_->spread();
         paymentDate_ = coupon_->date();

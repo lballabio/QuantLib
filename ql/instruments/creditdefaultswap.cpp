@@ -47,7 +47,7 @@ namespace QuantLib {
       paysAtDefaultTime_(paysAtDefaultTime), claim_(claim),
       protectionStart_(protectionStart == Null<Date>() ? schedule[0] :
                                                          protectionStart) {
-        QL_REQUIRE(protectionStart_ >= schedule[0],
+        QL_REQUIRE(protectionStart_ <= schedule[0],
                    "protection can not start after accrual");
         leg_ = FixedRateLeg(schedule)
             .withNotionals(notional)

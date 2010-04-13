@@ -81,6 +81,7 @@ namespace QuantLib {
 
     void SubPeriodsPricer::initialize(const FloatingRateCoupon& coupon) {
         coupon_ =  dynamic_cast<const SubPeriodsCoupon*>(&coupon);
+        QL_REQUIRE(coupon_, "sub-periods coupon required");
         gearing_ = coupon_->gearing();
         spread_ = coupon_->spread();
 

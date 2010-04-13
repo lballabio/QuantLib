@@ -31,6 +31,19 @@
 
 namespace QuantLib {
 
+    #if defined(QL_ENABLE_SESSIONS)
+    // definition must be provided by the user
+    Integer sessionId();
+    #endif
+
+    // this is required on VC++ (with a slightly different syntax depending
+    // on the compiler version) when CLR support is enabled
+    #if defined(QL_PATCH_MSVC71)
+        #pragma unmanaged
+    #elif defined(QL_PATCH_MSVC)
+        #pragma managed(push, off)
+    #endif
+
     //! Basic support for the singleton pattern.
     /*! The typical use of this class is:
         \code
@@ -58,17 +71,9 @@ namespace QuantLib {
         Singleton() {}
     };
 
-    #if defined(QL_ENABLE_SESSIONS)
-    // definition must be provided by the user
-    Integer sessionId();
-    #endif
-
     // template definitions
 
     template <class T>
-    #if defined(QL_PATCH_MSVC) && defined(_MANAGED)
-    inline  // this seems to be required when CLR support is enabled
-    #endif
     T& Singleton<T>::instance() {
         static std::map<Integer, boost::shared_ptr<T> > instances_;
         #if defined(QL_ENABLE_SESSIONS)
@@ -81,6 +86,13 @@ namespace QuantLib {
             instance = boost::shared_ptr<T>(new T);
         return *instance;
     }
+
+    // reverts the change above
+    #if defined(QL_PATCH_MSVC71)
+        #pragma managed
+    #elif defined(QL_PATCH_MSVC)
+        #pragma managed(pop)
+    #endif
 
 }
 

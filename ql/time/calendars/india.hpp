@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2007, 2008, 2009 StatPro Italia srl
+ Copyright (C) 2005, 2007, 2008, 2009, 2010 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,8 +42,8 @@ namespace QuantLib {
         <li>Christmas, December 25th</li>
         </ul>
 
-        Other holidays for which no rule is given (data available for
-        2005-2009 only:)
+        Other holidays for which no rule is given
+        (data available for 2005-2010 only:)
         <ul>
         <li>Bakri Id</li>
         <li>Moharram</li>

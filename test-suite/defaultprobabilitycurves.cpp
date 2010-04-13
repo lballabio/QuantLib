@@ -145,10 +145,8 @@ namespace {
         Calendar calendar = TARGET();
 
         Date today = Settings::instance().evaluationDate();
-        Date startDate = today;
-        Date endDate = startDate;
 
-        Integer settlementDays = 0;
+        Integer settlementDays = 1;
 
         std::vector<Real> quote;
         quote.push_back(0.005);
@@ -192,15 +190,21 @@ namespace {
         Real notional = 1.0;
         double tolerance = 1.0e-6;
 
+        // ensure apple-to-apple comparison
+        SavedSettings backup;
+        Settings::instance().includeTodaysCashFlows() = true;
+
         for (Size i=0; i<n.size(); i++) {
-            Date settlement = calendar.advance(today, settlementDays, Days);
-            Date endDate = calendar.advance(settlement, n[i], Years,
-                                            convention);
-            Schedule schedule(settlement, endDate, Period(frequency), calendar,
+            Date protectionStart = today + settlementDays;
+            Date startDate = calendar.adjust(protectionStart, convention);
+            Date endDate = today + n[i]*Years;
+
+            Schedule schedule(startDate, endDate, Period(frequency), calendar,
                               convention, Unadjusted, rule, false);
 
             CreditDefaultSwap cds(Protection::Buyer, notional, quote[i],
-                                  schedule, convention, dayCounter);
+                                  schedule, convention, dayCounter,
+                                  true, true, protectionStart);
             cds.setPricingEngine(boost::shared_ptr<PricingEngine>(
                            new MidPointCdsEngine(piecewiseCurve, recoveryRate,
                                                  discountCurve)));
@@ -225,8 +229,6 @@ namespace {
         Calendar calendar = TARGET();
 
         Date today = Settings::instance().evaluationDate();
-        Date startDate = today;
-        Date endDate = startDate;
 
         Integer settlementDays = 0;
 
@@ -279,15 +281,17 @@ namespace {
         Settings::instance().includeTodaysCashFlows() = true;
 
         for (Size i=0; i<n.size(); i++) {
-            Date settlement = calendar.advance(today, settlementDays, Days);
-            Date endDate = calendar.advance(settlement, n[i], Years,
-                                            convention);
-            Schedule schedule(settlement, endDate, Period(frequency), calendar,
+            Date protectionStart = today + settlementDays;
+            Date startDate = calendar.adjust(protectionStart, convention);
+            Date endDate = today + n[i]*Years;
+
+            Schedule schedule(startDate, endDate, Period(frequency), calendar,
                               convention, Unadjusted, rule, false);
 
             CreditDefaultSwap cds(Protection::Buyer, notional,
                                   quote[i], fixedRate,
-                                  schedule, convention, dayCounter);
+                                  schedule, convention, dayCounter,
+                                  true, true, protectionStart);
             cds.setPricingEngine(boost::shared_ptr<PricingEngine>(
                            new MidPointCdsEngine(piecewiseCurve, recoveryRate,
                                                  discountCurve, true)));
