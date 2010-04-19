@@ -37,6 +37,7 @@ this_include_HEADERS = \
 	index.hpp \
 	instrument.hpp \
 	interestrate.hpp \
+	mathconstants.hpp \
 	money.hpp \
 	numericalmethod.hpp \
 	option.hpp \
@@ -98,6 +99,7 @@ EXTRA_DIST= \
 	config.ansi.hpp \
 	config.msvc.hpp \
 	config.mingw.hpp \
+	config.sun.hpp \
 	userconfig.hpp
 
 quantlib.hpp: Makefile.am
@@ -111,7 +113,7 @@ quantlib.hpp: Makefile.am
 	echo "#endif" >> $@
 	echo >> $@
 	for i in $(filter-out auto_link.hpp config.hpp quantlib.hpp \
-                          qldefines.hpp version.hpp, \
+                          qldefines.hpp mathconstants.hpp version.hpp, \
 	           $(this_include_HEADERS)); do \
 		echo "#include <${subdir}/$$i>" >> $@; \
 	done

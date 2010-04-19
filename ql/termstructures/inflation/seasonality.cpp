@@ -148,7 +148,7 @@ namespace QuantLib {
             which = 0;
         } else {
             // days, weeks, months, years are the only time unit possibilities
-            Integer diffDays = abs(to - from);  // in days
+            Integer diffDays = std::abs(to - from);  // in days
             Integer dir = 1;
             if(from > to)dir = -1;
             Integer diff;

@@ -76,7 +76,7 @@ namespace QuantLib {
     }
 
     Real DefaultEvent::DefaultSettlement::recoveryRate(
-        const Seniority sen) const {
+        Seniority sen) const {
         // expensive require cause called often...... fix me
         QL_REQUIRE(sen != NoSeniority,
             "NoSeniority is not valid for recovery rate request.");

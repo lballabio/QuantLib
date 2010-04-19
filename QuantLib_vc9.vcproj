@@ -7590,6 +7590,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ql\config.sun.hpp"
+			>
+		</File>
+		<File
 			RelativePath=".\ql\currency.cpp"
 			>
 		</File>
@@ -7667,6 +7671,10 @@
 		</File>
 		<File
 			RelativePath=".\ql\interestrate.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\mathconstants.hpp"
 			>
 		</File>
 		<File

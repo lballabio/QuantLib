@@ -65,21 +65,6 @@ AC_LANG([C++])
 
 # Check for mandatory features
 
-QL_CHECK_CONSTANT([M_PI],[double],[cmath],
-                  [3.141592653589793238462643383280],[pi])
-QL_CHECK_CONSTANT([M_PI_2],[double],[cmath],
-                  [1.57079632679489661923],[pi/2])
-QL_CHECK_CONSTANT([M_SQRTPI],[double],[cmath],
-                  [1.77245385090551602792981],[sqrt(pi)])
-QL_CHECK_CONSTANT([M_1_SQRTPI],[double],[cmath],
-                  [0.564189583547756286948],[1/sqrt(pi)])
-QL_CHECK_CONSTANT([M_SQRT2],[double],[cmath],
-                  [1.41421356237309504880],[sqrt(2)])
-QL_CHECK_CONSTANT([M_SQRT_2],[double],[cmath],
-                  [0.7071067811865475244008443621048],[1/sqrt(2)])
-QL_CHECK_CONSTANT([M_LN2],[double],[cmath],
-                  [0.693147180559945309417],[ln(2)])
-
 QL_CHECK_ASINH
 
 # Check for Boost components

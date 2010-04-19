@@ -50,8 +50,10 @@ namespace QuantLib {
             leg.erase(leg.begin());
 
         // only leaves the last coupon
-        if (asOptionlet_ && leg.size() > 1)
-            leg.erase(leg.begin(), --leg.end());
+        if (asOptionlet_ && leg.size() > 1) {
+            Leg::iterator end = leg.end();  // Sun Studio needs an lvalue
+            leg.erase(leg.begin(), --end);
+        }
 
         std::vector<Rate> strikeVector(1, strike_);
         if (strike_ == Null<Rate>()) {

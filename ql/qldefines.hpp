@@ -64,6 +64,8 @@
    #include <ql/config.msvc.hpp>
 #elif defined(__MINGW32__)      // Minimalistic GNU for Windows
    #include <ql/config.mingw.hpp>
+#elif defined(__SUNPRO_CC)      // Sun Studio
+   #include <ql/config.sun.hpp>
 #else                           // We hope that the compiler follows ANSI
    #include <ql/config.ansi.hpp>
 #endif
@@ -77,9 +79,13 @@
 #endif
 
 
+// ensure that needed math constants are defined
+#include <ql/mathconstants.hpp>
+
+
 // import global functions into std namespace
-#include <cmath>
 #if defined(BOOST_NO_STDC_NAMESPACE)
+    #include <cmath>
     namespace std {
         using ::sqrt; using ::abs; using ::fabs;
         using ::exp; using ::log; using ::pow;

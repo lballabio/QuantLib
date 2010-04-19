@@ -6,6 +6,9 @@ Changes for QuantLib 1.0.1:
 - The Singleton class should now work correctly when used on the .Net
   platform (thanks to Nathan Abbott.)
 
+- QuantLib now compiles with the Sun Studio compiler on the Solaris
+  platform (thanks to Norbert Irmer for the report and for testing.)
+
 - Bug fix: let an IndexedCashFlow observe its index.
   Previously, index changes would not be propagated to the cash flow
   and thus to any observers of the latter. This affected zero-coupon

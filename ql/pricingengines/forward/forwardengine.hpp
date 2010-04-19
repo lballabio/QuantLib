@@ -64,21 +64,6 @@ namespace QuantLib {
 
     // template definitions
 
-    template <class ArgumentsType>
-    void ForwardOptionArguments<ArgumentsType>::validate() const {
-        ArgumentsType::validate();
-
-        QL_REQUIRE(moneyness != Null<Real>(), "null moneyness given");
-        QL_REQUIRE(moneyness > 0.0, "negative or zero moneyness given");
-
-        QL_REQUIRE(resetDate != Null<Date>(), "null reset date given");
-        QL_REQUIRE(resetDate >= Settings::instance().evaluationDate(),
-                   "reset date in the past");
-        QL_REQUIRE(this->exercise->lastDate() > resetDate,
-                   "reset date later or equal to maturity");
-    }
-
-
     template <class Engine>
     ForwardVanillaEngine<Engine>::ForwardVanillaEngine(
         const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)

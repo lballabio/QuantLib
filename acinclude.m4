@@ -1,19 +1,4 @@
 
-# QL_CHECK_CONSTANT(NAME,TYPE,HEADER,VALUE,DESCRIPTION)
-# ----------------------------------------------
-# Check whether the constant NAME (of type TYPE) exists in HEADER.
-# It defines it as VALUE if it cannot be found.
-AC_DEFUN([QL_CHECK_CONSTANT],
-[AC_MSG_CHECKING([for $1])
- AC_TRY_COMPILE(
-    [@%:@include<$3>],
-    [$2 x = $1;],
-    [AC_MSG_RESULT([yes])],
-    [AC_MSG_RESULT([no])
-     AC_DEFINE([$1],[$4],[$5])
-    ])
-])
-
 # QL_CHECK_LONG_LONG
 # ----------------------------------------------
 # Check whether long long is supported.
