@@ -1,0 +1,42 @@
+
+Changes for QuantLib 1.0.1:
+
+- Added moving holidays for 2010 to Eastern calendars.
+
+- The Singleton class should now work correctly when used on the .Net
+  platform (thanks to Nathan Abbott.)
+
+- QuantLib now compiles with the Sun Studio compiler on the Solaris
+  platform (thanks to Norbert Irmer for the report and for testing.)
+
+- Bug fix: let an IndexedCashFlow observe its index.
+  Previously, index changes would not be propagated to the cash flow
+  and thus to any observers of the latter. This affected zero-coupon
+  inflation swaps.
+
+- Bug fix: added missing method implementations to zero-coupon
+  inflation swaps.
+  A couple of methods were declared but not defined.
+
+- Bug fix: create exercise-date vector correctly for callable bonds.
+  Previously, the actual exercise dates were stored after a number
+  of null dates. For most choices of day counter, this resulted in
+  negative exercise times that were harmlessly discarded. For some
+  day counters (e.g., ActualActual::Bond) the null dates caused an
+  exception instead.
+
+- Bug fix: properly account for CDS protection-start date.
+  During bootstrap of the default-probability curve, the
+  protection-start date was taken into account when calculating the
+  coupon schedule of the underlying CDS but not when calculating its
+  value (a few days of protection could be lost.)
+  Also, sometimes the protection-start date was compared incorrectly
+  to the accrual-start date leading to false positives when checking
+  requirements.
+
+- Bug fix: coupon pricers now properly check for the result of the
+  dynamic_cast they perform.
+  Previously, setting a pricer to a coupon of the wrong type would
+  cause an access violation by dereferencing the null pointer
+  returned by the failed cast.
+
