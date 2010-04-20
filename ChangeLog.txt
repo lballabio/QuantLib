@@ -1,3 +1,138 @@
+2010-04-16 13:27  Luigi Ballabio
+
+	* [r17251] ql/Makefile.am, ql/quantlib.hpp:
+	  
+	  Amendment of revision 17249: fixed name of newly-added file in
+	  Makefile.
+
+2010-04-16 12:24  Luigi Ballabio
+
+	* [r17250] Contributors.txt, News.txt, QuantLib.dev,
+	  QuantLib_vc7.vcproj, QuantLib_vc8.vcproj, QuantLib_vc9.vcproj,
+	  ql/Makefile.am, ql/config.sun.hpp, ql/instruments/makecapfloor.cpp,
+	  ql/instruments/makeyoyinflationcapfloor.cpp, ql/qldefines.hpp,
+	  ql/termstructures/inflation/seasonality.cpp:
+	  
+	  Bug fix: QuantLib now compiles with Sun Studio on Solaris.
+	  
+	  Unlike gcc and VC++, Sun Studio does not make math functions
+	  available
+	  in the global namespace when including the <cmath> header. Now we
+	  added
+	  a few using directives for them, thus reproducing the other
+	  compilers'
+	  bad behavior. Not extremely clean, but it sure beats hunting the
+	  sources
+	  for all instances of unqualified math functions before each release.
+	  
+	  Other minor fixes include reordering a couple of expressions so that
+	  they're more palatable to Sun Studio (for which v.end(), where v is
+	  a std::vector, is not an lvalue) and adding the std:: qualification
+	  to a function call.
+	  
+	  Thanks to Norbert Irmer for the report and for testing the changes.
+
+2010-04-16 12:24  Luigi Ballabio
+
+	* [r17249] QuantLib.dev, QuantLib_vc7.vcproj, QuantLib_vc8.vcproj,
+	  QuantLib_vc9.vcproj, acinclude.m4, configure.ac, ql/Makefile.am,
+	  ql/config.ansi.hpp, ql/config.mingw.hpp, ql/config.msvc.hpp,
+	  ql/mathconstants.hpp, ql/qldefines.hpp, ql/quantlib.hpp:
+	  
+	  Update: unified treatment of missing math constants.
+	  
+	  Previously, the presence of needed constants such as M_PI was
+	  checked
+	  in ./configure as well as in several compiler-specific configuration
+	  files (sometimes without even including the <cmath> header first.)
+	  It is now checked in a single header file.
+
+2010-04-16 12:21  Luigi Ballabio
+
+	* [r17248] ql/instruments/forwardvanillaoption.hpp,
+	  ql/pricingengines/forward/forwardengine.hpp:
+	  
+	  Bug fix: moved method definition to correct header file.
+	  
+	  Although ForwardOptionArguments<A> was declared in the header
+	  forwardvanillaoption.hpp, its validate method was defined in
+	  forwardengine.hpp. The definition is now in the correct file.
+	  Thanks to Norbert Irmer for the bug report.
+
+2010-04-16 12:20  Luigi Ballabio
+
+	* [r17247] ql/experimental/credit/defaultevent.cpp,
+	  ql/experimental/finitedifferences/fdmhestonhullwhitesolver.cpp,
+	  ql/experimental/finitedifferences/fdmhestonsolver.cpp:
+	  
+	  Bug fix: corrected wrong constructor signatures in cpp files.
+	  
+	  A few constructors were declared as taking doubles and defined as
+	  taking const doubles. Strangely enough, neither gcc nor VC++ had
+	  anything to say about that.
+	  Thanks to Norbert Irmer for the bug report.
+
+2010-04-13 08:50  Luigi Ballabio
+
+	* [r17244] Contributors.txt, News.txt,
+	  ql/cashflows/conundrumpricer.cpp, ql/cashflows/couponpricer.cpp,
+	  ql/cashflows/inflationcouponpricer.cpp,
+	  ql/cashflows/rangeaccrual.cpp,
+	  ql/experimental/coupons/subperiodcoupons.cpp,
+	  test-suite/cashflows.cpp, test-suite/cashflows.hpp:
+	  
+	  Bug fix: checked dynamic_cast result to preven access violation.
+	  
+	  Regression test added.
+	  Thanks to Francesco Perissin for the bug report.
+
+2010-04-09 16:07  Luigi Ballabio
+
+	* [r17242] test-suite/creditdefaultswap.cpp:
+	  
+	  Test fix: ensure that today's date is a business day.
+	  
+	  Thanks to Gary Kennedy for reporting the issue.
+
+2010-04-09 13:19  Luigi Ballabio
+
+	* [r17241] News.txt,
+	  ql/termstructures/credit/defaultprobabilityhelpers.cpp,
+	  test-suite/defaultprobabilitycurves.cpp:
+	  
+	  Bug fix: properly account for protection-start date.
+	  
+	  Previously, the protection-start date was taken into account when
+	  calculating the CDS coupon schedule, but not when calculating its
+	  value (a few days of protection could be lost.)
+
+2010-04-09 13:17  Luigi Ballabio
+
+	* [r17240] ql/instruments/creditdefaultswap.cpp:
+	  
+	  Bug fix: comparison between protection start and accrual start was
+	  incorrect.
+
+2010-04-09 13:15  Luigi Ballabio
+
+	* [r17239] test-suite/defaultprobabilitycurves.cpp:
+	  
+	  Test fix: correct schedule calculation for the repriced CDS.
+	  
+	  Thanks to Kevin Kim for reporting the issue.
+
+2010-04-07 13:12  Luigi Ballabio
+
+	* [r17238] Announce.txt, configure.ac, ql/version.hpp:
+	  
+	  Increased version number to 1.0.1.
+
+2010-04-07 08:02  Luigi Ballabio
+
+	* [r17237] ChangeLog.txt, News.txt:
+	  
+	  Updated ChangeLog and News.
+
 2010-04-06 13:38  Luigi Ballabio
 
 	* [r17236] ql/patterns/singleton.hpp:
