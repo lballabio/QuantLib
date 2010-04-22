@@ -65,9 +65,8 @@ namespace QuantLib {
                    "not enough instruments: " << n << " provided, " <<
                    Interpolator::requiredPoints-1 << " required");
 
-        for (Size i=0; i<n; ++i){
+        for (Size i=0; i<n; ++i)
             ts_->registerWith(ts_->instruments_[i]);
-        }
     }
 
 
