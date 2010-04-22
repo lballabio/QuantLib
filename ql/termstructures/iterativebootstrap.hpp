@@ -44,8 +44,10 @@ namespace QuantLib {
         void setup(Curve* ts);
         void calculate() const;
       private:
+        void initialize() const;
         mutable bool validCurve_;
         Curve* ts_;
+        mutable Size firstInstrument_;
     };
 
 
@@ -61,72 +63,75 @@ namespace QuantLib {
         ts_ = ts;
 
         Size n = ts_->instruments_.size();
-        QL_REQUIRE(n+1 >= Interpolator::requiredPoints,
-                   "not enough instruments: " << n << " provided, " <<
-                   Interpolator::requiredPoints-1 << " required");
-
         for (Size i=0; i<n; ++i)
             ts_->registerWith(ts_->instruments_[i]);
     }
 
-
     template <class Curve>
-    void IterativeBootstrap<Curve>::calculate() const {
-
-        Size n = ts_->instruments_.size();
-
+    void IterativeBootstrap<Curve>::initialize() const {
         // ensure rate helpers are sorted
         std::sort(ts_->instruments_.begin(), ts_->instruments_.end(),
                   detail::BootstrapHelperSorter());
 
-        // check that there is no instruments with the same maturity
-        for (Size i=1; i<n; ++i) {
-            Date m1 = ts_->instruments_[i-1]->latestDate(),
-                 m2 = ts_->instruments_[i]->latestDate();
-            QL_REQUIRE(m1 != m2,
-                       "two instruments have the same maturity ("<< m1 <<")");
+        // skip expired instruments
+        Date firstDate = Traits::initialDate(ts_);
+        Size n = ts_->instruments_.size();
+        QL_REQUIRE(ts_->instruments_[n-1]->latestDate()>firstDate,
+                   "all instruments expired");
+        firstInstrument_ = 0;
+        while (ts_->instruments_[firstInstrument_]->latestDate() <= firstDate)
+            ++firstInstrument_;
+        Size alive = n-firstInstrument_;
+        QL_REQUIRE(alive >= Interpolator::requiredPoints-1,
+                   "not enough alive instruments: " << alive <<
+                   " provided, " << Interpolator::requiredPoints-1 <<
+                   " required");
+
+        // calculate dates and times
+        ts_->dates_.resize(alive+1);
+        ts_->times_.resize(alive+1);
+        ts_->dates_[0] = firstDate;
+        ts_->times_[0] = ts_->timeFromReference(firstDate);
+        Size j=1; // pillar counter
+        for (Size i=firstInstrument_; i<n; ++i) {
+            // check for duplicated maturity
+            QL_REQUIRE(ts_->dates_[j-1] != ts_->instruments_[i]->latestDate(),
+                       "two instruments have the same maturity (" <<
+                       ts_->dates_[j-1] << ")");
+            ts_->dates_[j] = ts_->instruments_[i]->latestDate();
+            ts_->times_[j] = ts_->timeFromReference(ts_->dates_[j]);
+            ++j;
         }
 
-        // check that there is no instruments with invalid quote
-        for (Size i=0; i<n; ++i)
+        // set initial guess only if the current curve cannot be used as guess
+        if (!validCurve_ || ts_->data_.size()!=alive+1) {
+            ts_->data_.resize(alive+1);
+            ts_->data_[0] = Traits::initialValue(ts_);
+            for (Size j=1; j<alive+1; ++j)
+                ts_->data_[j] = Traits::initialGuess();
+        }
+
+    }
+
+    template <class Curve>
+    void IterativeBootstrap<Curve>::calculate() const {
+
+        initialize();
+
+        Size n = ts_->instruments_.size();
+        Size alive = n-firstInstrument_;
+
+        // setup instruments
+        for (Size i=firstInstrument_; i<n; ++i) {
+            // check for valid quote
             QL_REQUIRE(ts_->instruments_[i]->quote()->isValid(),
                        io::ordinal(i+1) << " instrument (maturity: " <<
                        ts_->instruments_[i]->latestDate() <<
                        ") has an invalid quote");
-
-        // setup instruments
-        for (Size i=0; i<n; ++i) {
             // don't try this at home!
             // This call creates instruments, and removes "const".
             // There is a significant interaction with observability.
             ts_->instruments_[i]->setTermStructure(const_cast<Curve*>(ts_));
-        }
-
-        // calculate dates and times
-        ts_->dates_.resize(n+1);
-        ts_->times_.resize(n+1);
-        ts_->dates_[0] = Traits::initialDate(ts_);
-        ts_->times_[0] = ts_->timeFromReference(ts_->dates_[0]);
-        // check for expired instruments
-        QL_REQUIRE(ts_->dates_[0] < ts_->instruments_[0]->latestDate(),
-                   "instrument expired at " <<
-                   ts_->instruments_[0]->latestDate() <<
-                   ", reference date being " << ts_->dates_[0]);
-        for (Size i=0; i<n; ++i) {
-            ts_->dates_[i+1] = ts_->instruments_[i]->latestDate();
-            ts_->times_[i+1] = ts_->timeFromReference(ts_->dates_[i+1]);
-        }
-
-        // set initial guess only if the current curve cannot be used as guess
-        if (validCurve_) {
-            QL_ENSURE(ts_->data_.size() == n+1,
-                      "dimension mismatch: expected " << n+1 <<
-                      ", actual " << ts_->data_.size());
-        } else {
-            ts_->data_.resize(n+1);
-            ts_->data_[0] = Traits::initialValue(ts_);
-            for (Size i=0; i<n; ++i)
-                ts_->data_[i+1] = Traits::initialGuess();
         }
 
         Brent solver;
@@ -141,7 +146,7 @@ namespace QuantLib {
                                                       ts_->times_.end(),
                                                       ts_->data_.begin());
             }
-            for (Size i=1; i<n+1; ++i) {
+            for (Size i=1; i<alive+1; ++i) {
 
                 // calculate guess before extending interpolation
                 // to ensure that any extrapolation is performed
@@ -217,7 +222,7 @@ namespace QuantLib {
 
             // exit conditions
             Real improvement = 0.0;
-            for (Size i=1; i<n+1; ++i)
+            for (Size i=1; i<alive+1; ++i)
                 improvement=std::max(improvement,
                                      std::fabs(ts_->data_[i]-previousData[i]));
             if (improvement<=ts_->accuracy_)  // convergence reached
