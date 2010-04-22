@@ -152,7 +152,7 @@ namespace QuantLib {
                 // to ensure that any extrapolation is performed
                 // using the curve bootstrapped so far and no more
                 boost::shared_ptr<typename Traits::helper> instrument =
-                    ts_->instruments_[i-1];
+                    ts_->instruments_[i-1+firstInstrument_];
                 Rate guess = 0.0;
                 if (validCurve_ || iteration>0) {
                     guess = ts_->data_[i];
@@ -201,10 +201,10 @@ namespace QuantLib {
                 } catch (std::exception &e) {
                     validCurve_ = false;
                     QL_FAIL(io::ordinal(iteration+1) << " iteration: "
-                            "failed at " << io::ordinal(i) << " instrument"
-                            ", maturity " << ts_->dates_[i] <<
-                            ", reference date " << ts_->dates_[0] <<
-                            ": " << e.what());
+                            "failed at " << io::ordinal(i) <<
+                            " alive instrument, maturity " <<
+                            instrument->latestDate() << ", reference date " <<
+                            ts_->dates_[0] << ": " << e.what());
                 }
             }
 
