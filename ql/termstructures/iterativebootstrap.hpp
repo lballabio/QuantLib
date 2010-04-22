@@ -104,10 +104,15 @@ namespace QuantLib {
         }
 
         // calculate dates and times
-        ts_->dates_ = std::vector<Date>(n+1);
-        ts_->times_ = std::vector<Time>(n+1);
+        ts_->dates_.resize(n+1);
+        ts_->times_.resize(n+1);
         ts_->dates_[0] = Traits::initialDate(ts_);
         ts_->times_[0] = ts_->timeFromReference(ts_->dates_[0]);
+        // check for expired instruments
+        QL_REQUIRE(ts_->dates_[0] < ts_->instruments_[0]->latestDate(),
+                   "instrument expired at " <<
+                   ts_->instruments_[0]->latestDate() <<
+                   ", reference date being " << ts_->dates_[0]);
         for (Size i=0; i<n; ++i) {
             ts_->dates_[i+1] = ts_->instruments_[i]->latestDate();
             ts_->times_[i+1] = ts_->timeFromReference(ts_->dates_[i+1]);
@@ -119,7 +124,7 @@ namespace QuantLib {
                       "dimension mismatch: expected " << n+1 <<
                       ", actual " << ts_->data_.size());
         } else {
-            ts_->data_ = std::vector<Rate>(n+1);
+            ts_->data_.resize(n+1);
             ts_->data_[0] = Traits::initialValue(ts_);
             for (Size i=0; i<n; ++i)
                 ts_->data_[i+1] = Traits::initialGuess();
