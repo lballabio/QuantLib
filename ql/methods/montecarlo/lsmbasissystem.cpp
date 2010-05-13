@@ -152,7 +152,8 @@ namespace QuantLib {
             // find duplicates
             for (k=0; k<ret.size(); ++k) {
                 if (std::find_if(v.begin(), v.end(),
-                                 bind(equal_within<Real>(10*v[k]*QL_EPSILON),
+                                 bind(equal_within<Real>(
+                                             std::fabs(50*v[k]*QL_EPSILON)),
                                       v[k], _1) )
                     == v.begin() + k) {
 
