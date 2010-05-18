@@ -2,7 +2,8 @@
 
 /*
  Copyright (C) 2006 Klaus Spanderen
-
+ Copyright (C) 2010 Kakhkhor Abdijalilov  
+ 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -20,194 +21,148 @@
 /*! \file lsmbasissystem.cpp
     \brief utility classes for longstaff schwartz early exercise Monte Carlo
 */
+// lsmbasissystem.hpp
 
-#include <ql/methods/montecarlo/lsmbasissystem.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
-#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
-#include <boost/bind.hpp>
-#include <boost/lambda/bind.hpp>
-#include <boost/lambda/lambda.hpp>
-#include <deque>
+#include <ql/methods/montecarlo/lsmbasissystem.hpp>
 
-using boost::bind;
+#include <boost/bind.hpp>
+#include <set>
+#include <numeric>
 
 namespace QuantLib {
-
     namespace {
 
+        // makes typing a little easier
+        typedef std::vector<boost::function1<Real, Real> > VF_R;
+        typedef std::vector<boost::function1<Real, Array> > VF_A;
+        typedef std::vector<std::vector<Size> > VV;
+        Real (GaussianOrthogonalPolynomial::*ptr_w)(Size, Real) const =
+            &GaussianOrthogonalPolynomial::weightedValue;
+
+        // pow(x, order)
         class MonomialFct : public std::unary_function<Real, Real> {
           public:
-            MonomialFct(Size order) : order_(order) {}
-
+            MonomialFct(Size order): order_(order) {}
             inline Real operator()(const Real x) const {
                 Real ret = 1.0;
-                for (Size i=0; i<order_; ++i) {
-                    ret*=x;
-                }
-
+                for(Size i=0; i<order_; ++i)
+                    ret *= x;
                 return ret;
             }
-
           private:
             const Size order_;
         };
 
-        inline Real f_workaround(const Array& a, Size i, Size dim) {
-            QL_REQUIRE(a.size() == dim, 
-                       "wrong dimension of the basis system");
-            return a[i];
+        /* multiplies [Real -> Real] functors
+           to create [Array -> Real] functor */
+        class MultiDimFct : public std::unary_function<Real, Array> {
+          public:
+            MultiDimFct(const VF_R b): b_(b) {
+                QL_REQUIRE(b_.size()>0, "zero size basis");
+            }
+            inline Real operator()(const Array& a) const {
+                #if defined(QL_EXTRA_SAFETY_CHECKS)
+                QL_REQUIRE(b_.size()==a.size(), "wrong argument size");
+                #endif
+                Real ret = b_[0].operator()(a[0]);
+                for(Size i=1; i<b_.size(); ++i)
+                    ret *= b_[i].operator()(a[i]);
+                return ret;
+            }
+          private:
+            const VF_R b_;
+        };
+
+        // check size and order of tuples
+        void check_tuples(const VV& v, Size dim, Size order) {
+            for(Size i=0; i<v.size(); ++i) {
+                QL_REQUIRE(dim==v[i].size(), "wrong tuple size");
+                QL_REQUIRE(order==std::accumulate(v[i].begin(), v[i].end(), 0u),
+                    "wrong tuple order");
+            }
         }
-    }
 
-    std::vector<boost::function1<Real, Real> >
-    LsmBasisSystem::pathBasisSystem(Size order, PolynomType polynomType) {
+        // build order N+1 tuples from order N tuples
+        VV next_order_tuples(const VV& v) {
+            const Size order = std::accumulate(v[0].begin(), v[0].end(), 0u);
+            const Size dim = v[0].size();
 
-        std::vector<boost::function1<Real, Real> > ret;
+            check_tuples(v, dim, order);
+
+            // the set of unique tuples
+            std::set<std::vector<Size> > tuples;
+            std::vector<Size> x;
+            for(Size i=0; i<dim; ++i) {
+                // increase i-th value in every tuple by 1
+                for(Size j=0; j<v.size(); ++j) {
+                    x = v[j];
+                    x[i] += 1;
+                    tuples.insert(x);
+                }
+            }
+
+            VV ret(tuples.begin(), tuples.end());
+            return ret;
+        }
+    } 
+
+    // LsmBasisSystem static methods
+
+    VF_R LsmBasisSystem::pathBasisSystem(Size order, PolynomType polyType) {
+        VF_R ret(order+1);
         for (Size i=0; i<=order; ++i) {
-            switch (polynomType) {
+            switch (polyType) {
               case Monomial:
-                  ret.push_back(MonomialFct(i));
+                ret[i] = MonomialFct(i);
                 break;
               case Laguerre:
-                ret.push_back(
-                    bind(&GaussianOrthogonalPolynomial::weightedValue,
-                                GaussLaguerrePolynomial(), i, _1));
+                ret[i] = boost::bind(ptr_w, GaussLaguerrePolynomial(), i, _1);
                 break;
               case Hermite:
-                ret.push_back(
-                    bind(&GaussianOrthogonalPolynomial::weightedValue,
-                                GaussHermitePolynomial(), i, _1));
+                ret[i] = boost::bind(ptr_w, GaussHermitePolynomial(), i, _1);
                 break;
               case Hyperbolic:
-                ret.push_back(
-                    bind(&GaussianOrthogonalPolynomial::weightedValue,
-                                GaussHyperbolicPolynomial(), i, _1));
+                ret[i] = boost::bind(ptr_w, GaussHyperbolicPolynomial(), i, _1);
                 break;
               case Legendre:
-                ret.push_back(
-                    bind(&GaussianOrthogonalPolynomial::weightedValue,
-                                GaussLegendrePolynomial(), i, _1));
+                ret[i] = boost::bind(ptr_w, GaussLegendrePolynomial(), i, _1);
                 break;
               case Chebyshev:
-                ret.push_back(
-                    bind(&GaussianOrthogonalPolynomial::weightedValue,
-                                GaussChebyshevPolynomial(), i, _1));
+                ret[i] = boost::bind(ptr_w, GaussChebyshevPolynomial(), i, _1);
                 break;
               case Chebyshev2nd:
-                ret.push_back(
-                    bind(&GaussianOrthogonalPolynomial::weightedValue,
-                                GaussChebyshev2ndPolynomial(), i, _1));
+                ret[i] = boost::bind(ptr_w,GaussChebyshev2ndPolynomial(),i, _1);
                 break;
               default:
                 QL_FAIL("unknown regression type");
             }
         }
-
-        return ret;
-    }
-    
-    std::vector<boost::function1<Real, Array> >
-    LsmBasisSystem::multiPathBasisSystem(Size dim, Size order,
-                                         PolynomType polynomType) {
-
-        const std::vector<boost::function1<Real, Real> > b
-            = pathBasisSystem(order, polynomType);
-
-        std::vector<boost::function1<Real, Array> > ret;
-        ret.push_back(bind(constant<Real, Real>(1.0),
-                           bind(f_workaround, _1, 0, dim)));
-
-        for (Size i=1; i<=order; ++i) {
-            const std::vector<boost::function1<Real, Array> > a
-                = w(dim, i, polynomType, b);
-
-            for (std::vector<boost::function1<Real, Array> >::const_iterator
-                     iter = a.begin(); iter < a.end(); ++iter) {
-                ret.push_back(*iter);
-            }
-        }
-
-        // remove-o-zap: now remove redundant functions.
-        // usually we do have a lot of them due to the construction schema.
-        // We use a more "hands on" method here.
-        std::deque<bool> rm(ret.size(), true);
-
-        Array x(dim), v(ret.size());
-        MersenneTwisterUniformRng rng(1234UL);
-
-        for (Size i=0; i<10; ++i) {
-            Size k;
-
-            // calculate random x vector
-            for (k=0; k<dim; ++k) {
-                x[k] = rng.next().value;
-            }
-
-            // get return values for all basis functions
-            for (k=0; k<ret.size(); ++k) {
-                v[k] = ret[k](x);
-            }
-
-            // find duplicates
-            for (k=0; k<ret.size(); ++k) {
-                if (std::find_if(v.begin(), v.end(),
-                                 bind(equal_within<Real>(
-                                             std::fabs(50*v[k]*QL_EPSILON)),
-                                      v[k], _1) )
-                    == v.begin() + k) {
-
-                    // don't remove this item, it's unique!
-                    rm[k] = false;
-                }
-            }
-        }
-
-        std::vector<boost::function1<Real, Array> >::iterator
-            iter = ret.begin();
-
-        for (Size i=0; i < rm.size(); ++i) {
-            if (rm[i]) {
-                iter = ret.erase(iter);
-            }
-            else {
-                ++iter;
-            }
-        }
-
         return ret;
     }
 
-
-    std::vector<boost::function1<Real, Array> >
-    LsmBasisSystem::w(Size dim, Size order, PolynomType polynomType,
-                      const std::vector<boost::function1<Real, Real> > & b) {
-
-       std::vector<boost::function1<Real, Array> > ret;
-
-       for (Size i=order; i>=1; --i) {
-           const std::vector<boost::function1<Real, Array> > left
-                = w(dim, order-i, polynomType, b);
-
-           for (Size j=0; j<dim; ++j) {
-               const boost::function1<Real, Array> a
-                   = bind(b[i], bind(f_workaround, _1, j, dim));
-
-               if (i == order) {
-                   ret.push_back(a);
-               }
-               else {
-                   // add linear combinations
-                   for (Size j=0; j<left.size(); ++j) {
-                       ret.push_back(
-                            boost::lambda::bind(a,      (boost::lambda::_1))
-                           *boost::lambda::bind(left[j],(boost::lambda::_1)));
-                   }
-               }
-           }
-       }
-
-       return ret;
+    VF_A LsmBasisSystem::multiPathBasisSystem(Size dim, Size order,
+                                              PolynomType polyType) {
+        QL_REQUIRE(dim>0, "zero dimension");
+        // get single factor basis
+        VF_R pathBasis = pathBasisSystem(order, polyType);
+        VF_A ret;
+        // 0-th order term
+        VF_R term(dim, pathBasis[0]);
+        ret.push_back(MultiDimFct(term));
+        // start with all 0 tuple
+        VV tuples(1, std::vector<Size>(dim));
+        // add multi-factor terms
+        for(Size i=1; i<=order; ++i) {
+            tuples = next_order_tuples(tuples);
+            // now we have all tuples of order i
+            // for each tuple add the corresponding term
+            for(Size j=0; j<tuples.size(); ++j) {
+                for(Size k=0; k<dim; ++k)
+                    term[k] = pathBasis[tuples[j][k]];
+                ret.push_back(MultiDimFct(term));
+            }
+        }
+        return ret;
     }
-
 }

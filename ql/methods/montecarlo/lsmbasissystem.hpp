@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Klaus Spanderen
+ Copyright (C) 2010 Kakhkhor Abdijalilov  
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,6 +22,8 @@
     \brief utility classes for Longstaff-Schwartz early-exercise Monte Carlo
 */
 
+// lsmbasissystem.hpp
+
 #ifndef quantlib_lsm_basis_system_hpp
 #define quantlib_lsm_basis_system_hpp
 
@@ -37,17 +40,12 @@ namespace QuantLib {
                            Legendre, Chebyshev, Chebyshev2nd };
 
         static std::vector<boost::function1<Real, Real> >
-            pathBasisSystem(Size order, PolynomType polynomType);
+            pathBasisSystem(Size order, PolynomType polyType);
 
         static std::vector<boost::function1<Real, Array> >
-            multiPathBasisSystem(Size dim, Size order,
-                                 PolynomType polynomType);
-
-      private:
-        static std::vector<boost::function1<Real, Array> >
-            w(Size dim, Size order, PolynomType polynomType,
-              const std::vector<boost::function1<Real, Real> > & basis);
+            multiPathBasisSystem(Size dim, Size order, PolynomType polyType);
     };
+
 
 }
 
