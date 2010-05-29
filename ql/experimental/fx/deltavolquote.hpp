@@ -80,8 +80,8 @@ namespace QuantLib {
           Real delta_;
           Handle<Quote> vol_;
           DeltaType deltaType_;
-          AtmType atmType_;
           Time maturity_;
+          AtmType atmType_;
     };
 
 }

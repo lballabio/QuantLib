@@ -28,8 +28,9 @@ namespace QuantLib {
                         DiscountFactor dDiscount,   // domestic discount
                         DiscountFactor fDiscount,   // foreign  discount
                         Real stdDev):
-    dt_(dt), spot_(spot), stdDev_(stdDev), ot_(ot),
+    dt_(dt), ot_(ot),
     dDiscount_(dDiscount), fDiscount_(fDiscount),
+    stdDev_(stdDev), spot_(spot),
     forward_(spot*fDiscount/dDiscount), phi_(Integer(ot)) {
 
         QL_REQUIRE(spot_>0.0,

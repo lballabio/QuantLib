@@ -36,7 +36,7 @@ namespace QuantLib {
                                  DeltaType deltaType,
                                  Time maturity,
                                  AtmType atmType)
-    : vol_(vol), deltaType_(deltaType), atmType_(atmType), maturity_(maturity) {
+    : vol_(vol), deltaType_(deltaType), maturity_(maturity), atmType_(atmType) {
 
         registerWith(vol_);
 
