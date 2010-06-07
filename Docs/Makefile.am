@@ -14,6 +14,8 @@ DOXYGEN_CUSTOM := quantlib.css print.css \
 DOXYGEN_INPUT := $(shell find ${top_srcdir} -name *.hpp) \
                  $(wildcard pages/*.docs)
 
+BASEPATH = @abs_top_srcdir@
+
 %.gz: %
 	rm -f $@
 	gzip --best $<
@@ -56,16 +58,17 @@ docs-online: .time-stamp-online
            -e "s/SHOW_FILES             = YES/SHOW_FILES             = NO/" \
            -e "s/INCLUDE_GRAPH          = YES/INCLUDE_GRAPH          = NO/" \
            -e "s/SEARCHENGINE           = NO/SEARCHENGINE           = YES/" \
-           -e "s/HTML_OUTPUT            = html/HTML_OUTPUT            = html-online/" \
+           -e "s/HTML_OUTPUT            = html/HTML_OUTPUT            = reference-$(VERSION)/" \
            -e "s|ql_basepath|${BASEPATH}/|" \
            -e "s|ql_version|$(VERSION)|" \
 	       quantlib.doxy > .quantlib.doxy
 	$(DOXYGEN) .quantlib.doxy
 	rm -f .quantlib.doxy
-	rm -f html-online/*.md5
-	cp -f images/*.jpg html-online
-	cp -f images/*.png html-online
-	cp -f images/*.ico html-online
+	rm -f reference-$(VERSION)/*.md5
+	rm -f reference-$(VERSION)/*.map
+	cp -f images/*.jpg reference-$(VERSION)
+	cp -f images/*.png reference-$(VERSION)
+	cp -f images/*.ico reference-$(VERSION)
 	touch .time-stamp-online
 
 docs-man: .time-stamp-man
@@ -83,7 +86,8 @@ docs-man-dist: docs-man
 
 docs-clean:
 	rm -Rf man
-	rm -Rf html-online html
+	rm -Rf html
+	rm -Rf reference-*
 	rm -f .time-stamp*
 
 

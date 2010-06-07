@@ -41,17 +41,16 @@ benchmark:
 	$(MAKE) -C test-suite benchmark
 
 .PHONY: docs docs-man docs-online docs-dist docs-clean
-BASEPATH = @abs_top_srcdir@
 docs:
-	BASEPATH=$(BASEPATH) $(MAKE) -C Docs docs-all
+	$(MAKE) -C Docs docs-all
 html-local:
-	BASEPATH=$(BASEPATH) $(MAKE) -C Docs docs-html
+	$(MAKE) -C Docs docs-html
 docs-man:
-	BASEPATH=$(BASEPATH) $(MAKE) -C Docs docs-man
+	$(MAKE) -C Docs docs-man
 docs-online:
-	BASEPATH=$(BASEPATH) $(MAKE) -C Docs docs-online
+	$(MAKE) -C Docs docs-online
 docs-dist:
-	BASEPATH=$(BASEPATH) $(MAKE) -C Docs docs-dist
+	$(MAKE) -C Docs docs-dist
 docs-clean:
 	$(MAKE) -C Docs docs-clean
 
