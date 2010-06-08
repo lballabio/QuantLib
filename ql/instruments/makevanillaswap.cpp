@@ -89,7 +89,7 @@ namespace QuantLib {
                                floatTenor_, floatCalendar_,
                                floatConvention_,
                                floatTerminationDateConvention_,
-                               floatRule_ , floatEndOfMonth_,
+                               floatRule_, floatEndOfMonth_,
                                floatFirstDate_, floatNextToLastDate_);
 
         Rate usedFixedRate = fixedRate_;
