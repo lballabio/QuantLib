@@ -91,7 +91,7 @@ namespace QuantLib {
                     return root_;
                 froot = f(root_);
                 dfroot = f.derivative(root_);
-                evaluationNumber_++;
+                ++evaluationNumber_;
                 if (froot < 0.0)
                     xl=root_;
                 else

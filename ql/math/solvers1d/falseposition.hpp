@@ -35,7 +35,8 @@ namespace QuantLib {
     class FalsePosition : public Solver1D<FalsePosition> {
       public:
         template <class F>
-        Real solveImpl(const F& f, Real xAccuracy) const {
+        Real solveImpl(const F& f,
+                       Real xAccuracy) const {
 
             /* The implementation of the algorithm was inspired by
                Press, Teukolsky, Vetterling, and Flannery,
@@ -43,8 +44,7 @@ namespace QuantLib {
                Cambridge University Press
             */
 
-            Real fl, fh, xl, xh, dx, del, froot;
-
+            Real fl, fh, xl, xh;
             // Identify the limits so that xl corresponds to the low side
             if (fxMin_ < 0.0) {
                 xl=xMin_;
@@ -57,13 +57,13 @@ namespace QuantLib {
                 xh=xMin_;
                 fh = fxMin_;
             }
-            dx=xh-xl;
 
+            Real del, froot;
             while (evaluationNumber_<=maxEvaluations_) {
                 // Increment with respect to latest value
-                root_=xl+dx*fl/(fl-fh);
+                root_=xl+(xh-xl)*fl/(fl-fh);
                 froot=f(root_);
-                evaluationNumber_++;
+                ++evaluationNumber_;
                 if (froot < 0.0) {       // Replace appropriate limit
                     del=xl-root_;
                     xl=root_;
@@ -73,11 +73,9 @@ namespace QuantLib {
                     xh=root_;
                     fh=froot;
                 }
-                dx=xh-xl;
                 // Convergence criterion
-                if (std::fabs(del) < xAccuracy || froot == 0.0)  {
+                if (std::fabs(del) < xAccuracy || froot == 0.0)
                     return root_;
-                }
             }
 
             QL_FAIL("maximum number of function evaluations ("

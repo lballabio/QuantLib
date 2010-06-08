@@ -35,7 +35,8 @@ namespace QuantLib {
     class Bisection : public Solver1D<Bisection> {
       public:
         template <class F>
-        Real solveImpl(const F& f, Real xAccuracy) const {
+        Real solveImpl(const F& f,
+                       Real xAccuracy) const {
 
             /* The implementation of the algorithm was inspired by
                Press, Teukolsky, Vetterling, and Flannery,
@@ -58,12 +59,11 @@ namespace QuantLib {
                 dx /= 2.0;
                 xMid=root_+dx;
                 fMid=f(xMid);
-                evaluationNumber_++;
+                ++evaluationNumber_;
                 if (fMid <= 0.0)
                     root_=xMid;
-                if (std::fabs(dx) < xAccuracy || fMid == 0.0) {
+                if (std::fabs(dx) < xAccuracy || fMid == 0.0)
                     return root_;
-                }
             }
             QL_FAIL("maximum number of function evaluations ("
                     << maxEvaluations_ << ") exceeded");

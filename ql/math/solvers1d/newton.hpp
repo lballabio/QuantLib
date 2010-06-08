@@ -67,7 +67,7 @@ namespace QuantLib {
                     return root_;
                 froot = f(root_);
                 dfroot = f.derivative(root_);
-                evaluationNumber_++;
+                ++evaluationNumber_;
             }
 
             QL_FAIL("maximum number of function evaluations ("
