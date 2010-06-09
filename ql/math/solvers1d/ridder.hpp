@@ -35,7 +35,8 @@ namespace QuantLib {
     class Ridder : public Solver1D<Ridder> {
       public:
         template <class F>
-        Real solveImpl(const F& f, Real xAcc) const {
+        Real solveImpl(const F& f,
+                       Real xAcc) const {
 
             /* The implementation of the algorithm was inspired by
                Press, Teukolsky, Vetterling, and Flannery,
@@ -54,12 +55,12 @@ namespace QuantLib {
             root_ = QL_MIN_REAL;
 
             while (evaluationNumber_<=maxEvaluations_) {
-                xMid=0.5*(xMin_+xMax_);
+                xMid = 0.5*(xMin_+xMax_);
                 // First of two function evaluations per iteraton
-                fxMid=f(xMid);
-                evaluationNumber_++;
+                fxMid = f(xMid);
+                ++evaluationNumber_;
                 s = std::sqrt(fxMid*fxMid-fxMin_*fxMax_);
-                if (s == 0.0)
+                if (close(s, 0.0))
                     return root_;
                 // Updating formula
                 nextRoot = xMid + (xMid - xMin_) *
@@ -67,25 +68,25 @@ namespace QuantLib {
                 if (std::fabs(nextRoot-root_) <= xAccuracy)
                     return root_;
 
-                root_=nextRoot;
+                root_ = nextRoot;
                 // Second of two function evaluations per iteration
-                froot=f(root_);
-                evaluationNumber_++;
-                if (froot == 0.0)
+                froot = f(root_);
+                ++evaluationNumber_;
+                if (close(froot, 0.0))
                     return root_;
 
                 // Bookkeeping to keep the root bracketed on next iteration
                 if (sign(fxMid,froot) != fxMid) {
-                    xMin_=xMid;
-                    fxMin_=fxMid;
-                    xMax_=root_;
-                    fxMax_=froot;
+                    xMin_ = xMid;
+                    fxMin_ = fxMid;
+                    xMax_ = root_;
+                    fxMax_ = froot;
                 } else if (sign(fxMin_,froot) != fxMin_) {
-                    xMax_=root_;
-                    fxMax_=froot;
+                    xMax_ = root_;
+                    fxMax_ = froot;
                 } else if (sign(fxMax_,froot) != fxMax_) {
-                    xMin_=root_;
-                    fxMin_=froot;
+                    xMin_ = root_;
+                    fxMin_ = froot;
                 } else {
                     QL_FAIL("never get here.");
                 }
@@ -103,6 +104,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

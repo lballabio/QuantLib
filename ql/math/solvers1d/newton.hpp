@@ -38,7 +38,8 @@ namespace QuantLib {
     class Newton : public Solver1D<Newton> {
       public:
         template <class F>
-        Real solveImpl(const F& f, Real xAccuracy) const {
+        Real solveImpl(const F& f,
+                       Real xAccuracy) const {
 
             /* The implementation of the algorithm was inspired by
                Press, Teukolsky, Vetterling, and Flannery,
@@ -52,10 +53,10 @@ namespace QuantLib {
             dfroot = f.derivative(root_);
             QL_REQUIRE(dfroot != Null<Real>(),
                        "Newton requires function's derivative");
-            evaluationNumber_++;
+            ++evaluationNumber_;
 
             while (evaluationNumber_<=maxEvaluations_) {
-                dx=froot/dfroot;
+                dx = froot/dfroot;
                 root_ -= dx;
                 // jumped out of brackets, switch to NewtonSafe
                 if ((xMin_-root_)*(root_-xMax_) < 0.0) {
@@ -76,6 +77,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

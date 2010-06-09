@@ -57,12 +57,12 @@ namespace QuantLib {
 
             while (evaluationNumber_<=maxEvaluations_) {
                 dx /= 2.0;
-                xMid=root_+dx;
-                fMid=f(xMid);
+                xMid = root_+dx;
+                fMid = f(xMid);
                 ++evaluationNumber_;
                 if (fMid <= 0.0)
-                    root_=xMid;
-                if (std::fabs(dx) < xAccuracy || fMid == 0.0)
+                    root_ = xMid;
+                if (std::fabs(dx) < xAccuracy || (close(fMid, 0.0)))
                     return root_;
             }
             QL_FAIL("maximum number of function evaluations ("
@@ -71,6 +71,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

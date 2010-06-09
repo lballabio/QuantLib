@@ -38,7 +38,8 @@ namespace QuantLib {
     class NewtonSafe : public Solver1D<NewtonSafe> {
       public:
         template <class F>
-        Real solveImpl(const F& f, Real xAccuracy) const {
+        Real solveImpl(const F& f,
+                       Real xAccuracy) const {
 
             /* The implementation of the algorithm was inspired by
                Press, Teukolsky, Vetterling, and Flannery,
@@ -51,26 +52,26 @@ namespace QuantLib {
 
             // Orient the search so that f(xl) < 0
             if (fxMin_ < 0.0) {
-                xl=xMin_;
-                xh=xMax_;
+                xl = xMin_;
+                xh = xMax_;
             } else {
-                xh=xMin_;
-                xl=xMax_;
+                xh = xMin_;
+                xl = xMax_;
             }
 
             // the "stepsize before last"
-            dxold=xMax_-xMin_;
+            dxold = xMax_-xMin_;
             // it was dxold=std::fabs(xMax_-xMin_); in Numerical Recipes
             // here (xMax_-xMin_ > 0) is verified in the constructor
 
             // and the last step
-            dx=dxold;
+            dx = dxold;
 
             froot = f(root_);
             dfroot = f.derivative(root_);
             QL_REQUIRE(dfroot != Null<Real>(),
                        "NewtonSafe requires function's derivative");
-            evaluationNumber_++;
+            ++evaluationNumber_;
 
             while (evaluationNumber_<=maxEvaluations_) {
                 // Bisect if (out of range || not decreasing fast enough)
@@ -82,8 +83,8 @@ namespace QuantLib {
                     dx = (xh-xl)/2.0;
                     root_=xl+dx;
                 } else {
-                    dxold=dx;
-                    dx=froot/dfroot;
+                    dxold = dx;
+                    dx = froot/dfroot;
                     root_ -= dx;
                 }
                 // Convergence criterion
@@ -104,6 +105,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

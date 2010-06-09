@@ -47,34 +47,34 @@ namespace QuantLib {
             Real fl, fh, xl, xh;
             // Identify the limits so that xl corresponds to the low side
             if (fxMin_ < 0.0) {
-                xl=xMin_;
+                xl = xMin_;
                 fl = fxMin_;
-                xh=xMax_;
+                xh = xMax_;
                 fh = fxMax_;
             } else {
-                xl=xMax_;
+                xl = xMax_;
                 fl = fxMax_;
-                xh=xMin_;
+                xh = xMin_;
                 fh = fxMin_;
             }
 
             Real del, froot;
             while (evaluationNumber_<=maxEvaluations_) {
                 // Increment with respect to latest value
-                root_=xl+(xh-xl)*fl/(fl-fh);
-                froot=f(root_);
+                root_ = xl+(xh-xl)*fl/(fl-fh);
+                froot = f(root_);
                 ++evaluationNumber_;
                 if (froot < 0.0) {       // Replace appropriate limit
-                    del=xl-root_;
-                    xl=root_;
-                    fl=froot;
+                    del = xl-root_;
+                    xl = root_;
+                    fl = froot;
                 } else {
-                    del=xh-root_;
-                    xh=root_;
-                    fh=froot;
+                    del = xh-root_;
+                    xh = root_;
+                    fh = froot;
                 }
                 // Convergence criterion
-                if (std::fabs(del) < xAccuracy || froot == 0.0)
+                if (std::fabs(del) < xAccuracy || (close(froot, 0.0)))
                     return root_;
             }
 
@@ -84,6 +84,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

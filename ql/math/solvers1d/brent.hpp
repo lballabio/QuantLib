@@ -35,7 +35,8 @@ namespace QuantLib {
     class Brent : public Solver1D<Brent> {
       public:
         template <class F>
-        Real solveImpl(const F& f, Real xAccuracy) const {
+        Real solveImpl(const F& f,
+                       Real xAccuracy) const {
 
             /* The implementation of the algorithm was inspired by
                Press, Teukolsky, Vetterling, and Flannery,
@@ -70,14 +71,14 @@ namespace QuantLib {
                 // Convergence check
                 xAcc1=2.0*QL_EPSILON*std::fabs(root_)+0.5*xAccuracy;
                 xMid=(xMax_-root_)/2.0;
-                if (std::fabs(xMid) <= xAcc1 || froot == 0.0)
+                if (std::fabs(xMid) <= xAcc1 || (close(froot, 0.0)))
                     return root_;
                 if (std::fabs(e) >= xAcc1 &&
                     std::fabs(fxMin_) > std::fabs(froot)) {
 
                     // Attempt inverse quadratic interpolation
                     s=froot/fxMin_;
-                    if (xMin_ == xMax_) {
+                    if (close(xMin_,xMax_)) {
                         p=2.0*xMid*s;
                         q=1.0-s;
                     } else {
@@ -109,7 +110,7 @@ namespace QuantLib {
                 else
                     root_ += sign(xAcc1,xMid);
                 froot=f(root_);
-                evaluationNumber_++;
+                ++evaluationNumber_;
             }
             QL_FAIL("maximum number of function evaluations ("
                     << maxEvaluations_ << ") exceeded");
@@ -121,6 +122,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

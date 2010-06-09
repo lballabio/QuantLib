@@ -24,6 +24,7 @@
 #ifndef quantlib_solver1d_hpp
 #define quantlib_solver1d_hpp
 
+#include <ql/math/comparison.hpp>
 #include <ql/utilities/null.hpp>
 #include <ql/patterns/curiouslyrecurring.hpp>
 #include <ql/errors.hpp>
@@ -98,9 +99,9 @@ namespace QuantLib {
             fxMax_ = f(root_);
 
             // monotonically crescent bias, as in optionValue(volatility)
-            if (fxMax_ == 0.0)
+            if (close(fxMax_,0.0))
                 return root_;
-            else if (fxMax_ > 0.0) {
+            else if (close(fxMax_, 0.0)) {
                 xMin_ = enforceBounds_(root_ - step);
                 fxMin_ = f(xMin_);
                 xMax_ = root_;
@@ -114,8 +115,10 @@ namespace QuantLib {
             evaluationNumber_ = 2;
             while (evaluationNumber_ <= maxEvaluations_) {
                 if (fxMin_*fxMax_ <= 0.0) {
-                    if (fxMin_ == 0.0)    return xMin_;
-                    if (fxMax_ == 0.0)    return xMax_;
+                    if (close(fxMin_, 0.0))
+                        return xMin_;
+                    if (close(fxMax_, 0.0))
+                        return xMax_;
                     root_ = (xMax_+xMin_)/2.0;
                     return this->impl().solveImpl(f, accuracy);
                 }
@@ -183,11 +186,11 @@ namespace QuantLib {
                        << ") > enforced hi bound (" << upperBound_ << ")");
 
             fxMin_ = f(xMin_);
-            if (fxMin_ == 0.0)
+            if (close(fxMin_, 0.0))
                 return xMin_;
 
             fxMax_ = f(xMax_);
-            if (fxMax_ == 0.0)
+            if (close(fxMax_, 0.0))
                 return xMax_;
 
             evaluationNumber_ = 2;
