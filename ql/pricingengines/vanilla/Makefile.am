@@ -11,6 +11,7 @@ this_include_HEADERS = \
     analyticgjrgarchengine.hpp \
     analytichestonengine.hpp \
     analytichestonhullwhiteengine.hpp \
+    analyticptdhestonengine.hpp \
     baroneadesiwhaleyengine.hpp \
     batesengine.hpp \
     binomialengine.hpp \
@@ -47,6 +48,7 @@ libVanillaEngines_la_SOURCES = \
     analyticgjrgarchengine.cpp \
     analytichestonengine.cpp \
     analytichestonhullwhiteengine.cpp \
+    analyticptdhestonengine.cpp \
     baroneadesiwhaleyengine.cpp \
     batesengine.cpp \
     bjerksundstenslandengine.cpp \

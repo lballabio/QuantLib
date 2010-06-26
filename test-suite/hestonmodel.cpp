@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2007, 2009 Klaus Spanderen
+ Copyright (C) 2005, 2007, 2009, 2010 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,11 +24,13 @@
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/models/equity/hestonmodelhelper.hpp>
+#include <ql/models/equity/piecewisetimedependenthestonmodel.hpp>
 #include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/fdamericanengine.hpp>
 #include <ql/pricingengines/vanilla/fddividendeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/fdeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/analyticptdhestonengine.hpp>
 #include <ql/experimental/finitedifferences/fdhestonbarrierengine.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesbarrierengine.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesvanillaengine.hpp>
@@ -48,6 +50,90 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+
+namespace {
+
+    struct CalibrationMarketData {
+        Handle<Quote> s0;
+        Handle<YieldTermStructure> riskFreeTS, dividendYield;
+        std::vector<boost::shared_ptr<CalibrationHelper> > options;
+    };
+
+    CalibrationMarketData getDAXCalibrationMarketData() {
+        /* this example is taken from A. Sepp
+           Pricing European-Style Options under Jump Diffusion Processes
+           with Stochstic Volatility: Applications of Fourier Transform
+           http://math.ut.ee/~spartak/papers/stochjumpvols.pdf
+        */
+
+        Date settlementDate(Settings::instance().evaluationDate());
+        
+        DayCounter dayCounter = Actual365Fixed();
+        Calendar calendar = TARGET();
+        
+        Integer t[] = { 13, 41, 75, 165, 256, 345, 524, 703 };
+        Rate r[] = { 0.0357,0.0349,0.0341,0.0355,0.0359,0.0368,0.0386,0.0401 };
+        
+        std::vector<Date> dates;
+        std::vector<Rate> rates;
+        dates.push_back(settlementDate);
+        rates.push_back(0.0357);
+        Size i;
+        for (i = 0; i < 8; ++i) {
+            dates.push_back(settlementDate + t[i]);
+            rates.push_back(r[i]);
+        }
+        // FLOATING_POINT_EXCEPTION
+        Handle<YieldTermStructure> riskFreeTS(
+                           boost::shared_ptr<YieldTermStructure>(
+                                      new ZeroCurve(dates, rates, dayCounter)));
+        
+        Handle<YieldTermStructure> dividendYield(
+                                    flatRate(settlementDate, 0.0, dayCounter));
+        
+        Volatility v[] =
+          { 0.6625,0.4875,0.4204,0.3667,0.3431,0.3267,0.3121,0.3121,
+            0.6007,0.4543,0.3967,0.3511,0.3279,0.3154,0.2984,0.2921,
+            0.5084,0.4221,0.3718,0.3327,0.3155,0.3027,0.2919,0.2889,
+            0.4541,0.3869,0.3492,0.3149,0.2963,0.2926,0.2819,0.2800,
+            0.4060,0.3607,0.3330,0.2999,0.2887,0.2811,0.2751,0.2775,
+            0.3726,0.3396,0.3108,0.2781,0.2788,0.2722,0.2661,0.2686,
+            0.3550,0.3277,0.3012,0.2781,0.2781,0.2661,0.2661,0.2681,
+            0.3428,0.3209,0.2958,0.2740,0.2688,0.2627,0.2580,0.2620,
+            0.3302,0.3062,0.2799,0.2631,0.2573,0.2533,0.2504,0.2544,
+            0.3343,0.2959,0.2705,0.2540,0.2504,0.2464,0.2448,0.2462,
+            0.3460,0.2845,0.2624,0.2463,0.2425,0.2385,0.2373,0.2422,
+            0.3857,0.2860,0.2578,0.2399,0.2357,0.2327,0.2312,0.2351,
+            0.3976,0.2860,0.2607,0.2356,0.2297,0.2268,0.2241,0.2320 };
+        
+        Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(4468.17)));
+        Real strike[] = { 3400,3600,3800,4000,4200,4400,
+                          4500,4600,4800,5000,5200,5400,5600 };
+        
+        std::vector<boost::shared_ptr<CalibrationHelper> > options;
+        
+        for (Size s = 0; s < 13; ++s) {
+            for (Size m = 0; m < 8; ++m) {
+                Handle<Quote> vol(boost::shared_ptr<Quote>(
+                                                    new SimpleQuote(v[s*8+m])));
+        
+                Period maturity((int)((t[m]+3)/7.), Weeks); // round to weeks
+                options.push_back(boost::shared_ptr<CalibrationHelper>(
+                        new HestonModelHelper(maturity, calendar,
+                                              s0->value(), strike[s], vol,
+                                              riskFreeTS, dividendYield,
+                                          CalibrationHelper::ImpliedVolError)));
+            }
+        }
+        
+        CalibrationMarketData marketData
+                                    ={ s0, riskFreeTS, dividendYield, options };
+        
+        return marketData;
+    }
+        
+}
+
 
 void HestonModelTest::testBlackCalibration() {
     BOOST_MESSAGE(
@@ -148,11 +234,6 @@ void HestonModelTest::testBlackCalibration() {
 
 
 void HestonModelTest::testDAXCalibration() {
-    /* this example is taken from A. Sepp
-       Pricing European-Style Options under Jump Diffusion Processes
-       with Stochstic Volatility: Applications of Fourier Transform
-       http://math.ut.ee/~spartak/papers/stochjumpvols.pdf
-    */
 
     BOOST_MESSAGE(
              "Testing Heston model calibration using DAX volatility data...");
@@ -162,63 +243,14 @@ void HestonModelTest::testDAXCalibration() {
     Date settlementDate(5, July, 2002);
     Settings::instance().evaluationDate() = settlementDate;
 
-    DayCounter dayCounter = Actual365Fixed();
-    Calendar calendar = TARGET();
+    CalibrationMarketData marketData = getDAXCalibrationMarketData();
+    
+    const Handle<YieldTermStructure> riskFreeTS = marketData.riskFreeTS;
+    const Handle<YieldTermStructure> dividendTS = marketData.dividendYield;
+    const Handle<Quote> s0 = marketData.s0;
 
-    Integer t[] = { 13, 41, 75, 165, 256, 345, 524, 703 };
-    Rate r[] = { 0.0357,0.0349,0.0341,0.0355,0.0359,0.0368,0.0386,0.0401 };
-
-    std::vector<Date> dates;
-    std::vector<Rate> rates;
-    dates.push_back(settlementDate);
-    rates.push_back(0.0357);
-    Size i;
-    for (i = 0; i < 8; ++i) {
-        dates.push_back(settlementDate + t[i]);
-        rates.push_back(r[i]);
-    }
-    // FLOATING_POINT_EXCEPTION
-    Handle<YieldTermStructure> riskFreeTS(
-                       boost::shared_ptr<YieldTermStructure>(
-                                    new ZeroCurve(dates, rates, dayCounter)));
-
-    Handle<YieldTermStructure> dividendTS(
-                                   flatRate(settlementDate, 0.0, dayCounter));
-
-    Volatility v[] =
-      { 0.6625,0.4875,0.4204,0.3667,0.3431,0.3267,0.3121,0.3121,
-        0.6007,0.4543,0.3967,0.3511,0.3279,0.3154,0.2984,0.2921,
-        0.5084,0.4221,0.3718,0.3327,0.3155,0.3027,0.2919,0.2889,
-        0.4541,0.3869,0.3492,0.3149,0.2963,0.2926,0.2819,0.2800,
-        0.4060,0.3607,0.3330,0.2999,0.2887,0.2811,0.2751,0.2775,
-        0.3726,0.3396,0.3108,0.2781,0.2788,0.2722,0.2661,0.2686,
-        0.3550,0.3277,0.3012,0.2781,0.2781,0.2661,0.2661,0.2681,
-        0.3428,0.3209,0.2958,0.2740,0.2688,0.2627,0.2580,0.2620,
-        0.3302,0.3062,0.2799,0.2631,0.2573,0.2533,0.2504,0.2544,
-        0.3343,0.2959,0.2705,0.2540,0.2504,0.2464,0.2448,0.2462,
-        0.3460,0.2845,0.2624,0.2463,0.2425,0.2385,0.2373,0.2422,
-        0.3857,0.2860,0.2578,0.2399,0.2357,0.2327,0.2312,0.2351,
-        0.3976,0.2860,0.2607,0.2356,0.2297,0.2268,0.2241,0.2320 };
-
-    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(4468.17)));
-    Real strike[] = { 3400,3600,3800,4000,4200,4400,
-                      4500,4600,4800,5000,5200,5400,5600 };
-
-    std::vector<boost::shared_ptr<CalibrationHelper> > options;
-
-    for (Size s = 0; s < 13; ++s) {
-        for (Size m = 0; m < 8; ++m) {
-            Handle<Quote> vol(boost::shared_ptr<Quote>(
-                                                  new SimpleQuote(v[s*8+m])));
-
-            Period maturity((int)((t[m]+3)/7.), Weeks); // round to weeks
-            options.push_back(boost::shared_ptr<CalibrationHelper>(
-                    new HestonModelHelper(maturity, calendar,
-                                          s0->value(), strike[s], vol,
-                                          riskFreeTS, dividendTS,
-                                          CalibrationHelper::ImpliedVolError)));
-        }
-    }
+    const std::vector<boost::shared_ptr<CalibrationHelper> > options
+                                                    = marketData.options;
 
     const Real v0=0.1;
     const Real kappa=1.0;
@@ -234,14 +266,14 @@ void HestonModelTest::testDAXCalibration() {
     boost::shared_ptr<PricingEngine> engine(
                                          new AnalyticHestonEngine(model, 64));
 
-    for (i = 0; i < options.size(); ++i)
+    for (Size i = 0; i < options.size(); ++i)
         options[i]->setPricingEngine(engine);
 
     LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
     model->calibrate(options, om, EndCriteria(400, 40, 1.0e-8, 1.0e-8, 1.0e-8));
 
     Real sse = 0;
-    for (i = 0; i < 13*8; ++i) {
+    for (Size i = 0; i < 13*8; ++i) {
         const Real diff = options[i]->calibrationError()*100.0;
         sse += diff*diff;
     }
@@ -961,6 +993,131 @@ void HestonModelTest::testMultipleStrikesEngine() {
 }
 
 
+
+void HestonModelTest::testAnalyticPiecewiseTimeDependent() {
+    BOOST_MESSAGE("Testing analytic piecewise time dependent Heston prices...");
+
+    SavedSettings backup;
+
+    Date settlementDate(27, December, 2004);
+    Settings::instance().evaluationDate() = settlementDate;
+    DayCounter dayCounter = ActualActual();
+    Date exerciseDate(28, March, 2005);
+
+    boost::shared_ptr<StrikedTypePayoff> payoff(
+                                  new PlainVanillaPayoff(Option::Call, 1.0));
+    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+
+    std::vector<Date> dates; 
+    dates.push_back(settlementDate); dates.push_back(Date(01, January, 2007));
+    std::vector<Rate> irates;
+    irates.push_back(0.0); irates.push_back(0.2);
+    Handle<YieldTermStructure> riskFreeTS(
+            boost::shared_ptr<YieldTermStructure>(
+                                    new ZeroCurve(dates, irates, dayCounter)));
+
+    std::vector<Rate> qrates;
+    qrates.push_back(0.0); qrates.push_back(0.3);
+    Handle<YieldTermStructure> dividendTS(
+            boost::shared_ptr<YieldTermStructure>(
+                                    new ZeroCurve(dates, qrates, dayCounter)));
+    
+
+    const Real v0 = 0.1;
+    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(1.0)));
+
+    ConstantParameter theta(0.09, PositiveConstraint());
+    ConstantParameter kappa(3.16, PositiveConstraint());
+    ConstantParameter sigma(4.40, PositiveConstraint());
+    ConstantParameter rho  (-0.8, BoundaryConstraint(-1.0, 1.0));
+
+    boost::shared_ptr<PiecewiseTimeDependentHestonModel> model(
+        new PiecewiseTimeDependentHestonModel(riskFreeTS, dividendTS,
+                                              s0, v0, theta, kappa, 
+                                              sigma, rho, TimeGrid(20.0, 2)));
+    
+    VanillaOption option(payoff, exercise);
+    option.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                           new AnalyticPTDHestonEngine(model)));
+
+    const Real calculated = option.NPV();
+    boost::shared_ptr<HestonProcess> hestonProcess(
+        new HestonProcess(riskFreeTS, dividendTS, s0, v0,
+                          kappa(0.0), theta(0.0), sigma(0.0), rho(0.0)));
+    boost::shared_ptr<HestonModel> hestonModel(new HestonModel(hestonProcess));
+    option.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                    new AnalyticHestonEngine(hestonModel)));
+    
+    const Real expected = option.NPV();
+    
+    if (std::fabs(calculated-expected) > 1e-12) {
+        BOOST_FAIL("failed to reproduce heston prices "
+                   << "\n    calculated: " << calculated
+                   << "\n    expected:   " << expected);
+    }
+}
+
+void HestonModelTest::testDAXCalibrationOfTimeDependentModel() {
+    BOOST_MESSAGE(
+             "Testing Time dependent Heston model calibration ...");
+
+    SavedSettings backup;
+
+    Date settlementDate(5, July, 2002);
+    Settings::instance().evaluationDate() = settlementDate;
+
+    CalibrationMarketData marketData = getDAXCalibrationMarketData();
+    
+    const Handle<YieldTermStructure> riskFreeTS = marketData.riskFreeTS;
+    const Handle<YieldTermStructure> dividendTS = marketData.dividendYield;
+    const Handle<Quote> s0 = marketData.s0;
+
+    const std::vector<boost::shared_ptr<CalibrationHelper> > options
+                                                    = marketData.options;
+
+    std::vector<Time> modelTimes;
+    modelTimes.push_back(0.25);
+    modelTimes.push_back(10.0);
+    const TimeGrid modelGrid(modelTimes.begin(), modelTimes.end());
+
+    const Real v0=0.1;
+    ConstantParameter sigma( 0.5, PositiveConstraint());
+    ConstantParameter theta( 0.1, PositiveConstraint());
+    ConstantParameter rho( -0.5, BoundaryConstraint(-1.0, 1.0));
+   
+    std::vector<Time> pTimes(1, 0.25);
+    PiecewiseConstantParameter kappa(pTimes, PositiveConstraint());
+    
+    for (Size i=0; i < pTimes.size()+1; ++i) {
+        kappa.setParam(i, 10.0);
+    }
+
+    boost::shared_ptr<PiecewiseTimeDependentHestonModel> model(
+        new PiecewiseTimeDependentHestonModel(riskFreeTS, dividendTS,
+                                              s0, v0, theta, kappa, 
+                                              sigma, rho, modelGrid));
+    
+    boost::shared_ptr<PricingEngine> engine(new AnalyticPTDHestonEngine(model));
+    for (Size i = 0; i < options.size(); ++i)
+        options[i]->setPricingEngine(engine);
+
+    LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
+    model->calibrate(options, om, EndCriteria(400, 40, 1.0e-8, 1.0e-8, 1.0e-8));
+
+    Real sse = 0;
+    for (Size i = 0; i < 13*8; ++i) {
+        const Real diff = options[i]->calibrationError()*100.0;
+        sse += diff*diff;
+    }
+    
+    Real expected = 74.4;
+    if (std::fabs(sse - expected) > 1.0) {
+        BOOST_FAIL("Failed to reproduce calibration error"
+                   << "\n    calculated: " << sse
+                   << "\n    expected:   " << expected);
+    }
+}
+
 test_suite* HestonModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
 
@@ -977,7 +1134,10 @@ test_suite* HestonModelTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdVanillaVsCached));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMultipleStrikesEngine));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMcVsCached));
+    suite->add(QUANTLIB_TEST_CASE(
+                    &HestonModelTest::testAnalyticPiecewiseTimeDependent));
+    suite->add(QUANTLIB_TEST_CASE(
+                    &HestonModelTest::testDAXCalibrationOfTimeDependentModel));
 
     return suite;
 }
-

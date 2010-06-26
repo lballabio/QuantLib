@@ -7,13 +7,15 @@ this_include_HEADERS = \
     batesmodel.hpp \
     gjrgarchmodel.hpp \
     hestonmodel.hpp \
-    hestonmodelhelper.hpp
+    hestonmodelhelper.hpp \
+    piecewisetimedependenthestonmodel.hpp
 
 libEquityModels_la_SOURCES = \
     batesmodel.cpp \
     gjrgarchmodel.cpp \
     hestonmodel.cpp \
-    hestonmodelhelper.cpp
+    hestonmodelhelper.cpp \
+    piecewisetimedependenthestonmodel.cpp
 
 noinst_LTLIBRARIES = libEquityModels.la
 
