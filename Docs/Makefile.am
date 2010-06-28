@@ -58,6 +58,7 @@ docs-online: .time-stamp-online
            -e "s/SHOW_FILES             = YES/SHOW_FILES             = NO/" \
            -e "s/INCLUDE_GRAPH          = YES/INCLUDE_GRAPH          = NO/" \
            -e "s/SEARCHENGINE           = NO/SEARCHENGINE           = YES/" \
+           -e "s/SERVER_BASED_SEARCH    = NO/SERVER_BASED_SEARCH    = YES/" \
            -e "s/HTML_OUTPUT            = html/HTML_OUTPUT            = reference-$(VERSION)/" \
            -e "s|ql_basepath|${BASEPATH}/|" \
            -e "s|ql_version|$(VERSION)|" \
