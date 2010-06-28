@@ -36,6 +36,7 @@
 namespace QuantLib {
 
     //! Payment schedule
+    /*! \ingroup datetime */
     class Schedule {
       public:
         Schedule(const std::vector<Date>&,

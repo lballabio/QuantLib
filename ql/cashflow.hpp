@@ -65,6 +65,7 @@ namespace QuantLib {
         //@}
     };
 
+    //! Sequence of cash-flows
     typedef std::vector<boost::shared_ptr<CashFlow> > Leg;
 
     template <>
