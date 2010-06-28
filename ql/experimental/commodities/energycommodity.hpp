@@ -51,8 +51,10 @@ namespace QuantLib {
 
     typedef std::map<Date, EnergyDailyPosition> EnergyDailyPositions;
 
+    #ifndef __DOXYGEN__
     std::ostream& operator<<(std::ostream& out,
                              const EnergyDailyPositions& dailyPositions);
+    #endif
 
 
 

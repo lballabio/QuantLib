@@ -86,8 +86,10 @@ namespace QuantLib {
     typedef std::map<Date, boost::shared_ptr<CommodityCashFlow> >
                                                            CommodityCashFlows;
 
+    #ifndef __DOXYGEN__
     std::ostream& operator<<(std::ostream& out,
                              const CommodityCashFlows& cashFlows);
+    #endif
 
 }
 

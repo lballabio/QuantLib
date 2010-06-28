@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file chooseroption.hpp
-    \brief Chooser option on a single asset
+/*! \file simplechooseroption.hpp
+    \brief Simple chooser option on a single asset
 */
 
 #ifndef quantlib_simple_chooser_option_hpp

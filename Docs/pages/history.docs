@@ -1223,7 +1223,7 @@
     - added discrete time forward methods
     - added DiscountCurve (loglinear interpolated) and CompoundForward term
       structures
-    - ForwardSpreadedTermStructure moved under %QuantLib::TermStructures
+    - ForwardSpreadedTermStructure moved under QuantLib::TermStructures
       namespace
 
     FIXED INCOME
