@@ -44,6 +44,10 @@ namespace QuantLib {
                   const DayCounter& dayCounter,
                   const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
+        //! \name InterestRateIndex interface
+        //@{
+        Date maturityDate(const Date& valueDate) const;
+        // @}
         //! \name Inspectors
         //@{
         BusinessDayConvention businessDayConvention() const;
@@ -51,10 +55,6 @@ namespace QuantLib {
         //! the curve used to forecast fixings
         Handle<YieldTermStructure> forwardingTermStructure() const;
         //@}
-        //! \name Date calculations
-        //@{
-        Date maturityDate(const Date& valueDate) const;
-        // @}
         //! \name Other methods
         //@{
         //! returns a copy of itself linked to a different forwarding curve
@@ -62,7 +62,10 @@ namespace QuantLib {
                         const Handle<YieldTermStructure>& forwarding) const;
         // @}
       protected:
+        //! \name InterestRateIndex interface
+        //@{
         Rate forecastFixing(const Date& fixingDate) const;
+        // @}
         BusinessDayConvention convention_;
         Handle<YieldTermStructure> termStructure_;
         bool endOfMonth_;
