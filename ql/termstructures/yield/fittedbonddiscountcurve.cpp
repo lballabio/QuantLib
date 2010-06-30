@@ -48,7 +48,7 @@ namespace QuantLib {
     FittedBondDiscountCurve::FittedBondDiscountCurve (
                  Natural settlementDays,
                  const Calendar& calendar,
-                 const vector<shared_ptr<FixedRateBondHelper> >& instruments,
+                 const vector<shared_ptr<BondHelper> >& bondHelpers,
                  const DayCounter& dayCounter,
                  const FittingMethod& fittingMethod,
                  Real accuracy,
@@ -60,7 +60,7 @@ namespace QuantLib {
       maxEvaluations_(maxEvaluations),
       simplexLambda_(simplexLambda),
       guessSolution_(guess),
-      instruments_(instruments),
+      bondHelpers_(bondHelpers),
       fittingMethod_(fittingMethod) {
 
         fittingMethod_->curve_ = this;
@@ -70,7 +70,7 @@ namespace QuantLib {
 
     FittedBondDiscountCurve::FittedBondDiscountCurve (
                  const Date& referenceDate,
-                 const vector<shared_ptr<FixedRateBondHelper> >& instruments,
+                 const vector<shared_ptr<BondHelper> >& bondHelpers,
                  const DayCounter& dayCounter,
                  const FittingMethod& fittingMethod,
                  Real accuracy,
@@ -82,7 +82,7 @@ namespace QuantLib {
       maxEvaluations_(maxEvaluations),
       simplexLambda_(simplexLambda),
       guessSolution_(guess),
-      instruments_(instruments),
+      bondHelpers_(bondHelpers),
       fittingMethod_(fittingMethod) {
 
         fittingMethod_->curve_ = this;
@@ -92,15 +92,15 @@ namespace QuantLib {
 
     void FittedBondDiscountCurve::performCalculations() const {
 
-        QL_REQUIRE(!instruments_.empty(), "no instruments given");
+        QL_REQUIRE(!bondHelpers_.empty(), "no bondHelpers given");
 
         maxDate_ = Date::minDate();
         Date refDate = referenceDate();
 
         // double check bond quotes still valid and/or instruments not expired
-        for (Size i=0; i<instruments_.size(); ++i) {
-            shared_ptr<Bond> bond = instruments_[i]->bond();
-            QL_REQUIRE(instruments_[i]->quote()->isValid(),
+        for (Size i=0; i<bondHelpers_.size(); ++i) {
+            shared_ptr<Bond> bond = bondHelpers_[i]->bond();
+            QL_REQUIRE(bondHelpers_[i]->quote()->isValid(),
                        io::ordinal(i+1) << " bond (maturity: " <<
                        bond->maturityDate() << ") has an invalid price quote");
             Date bondSettlement = bond->settlementDate();
@@ -112,8 +112,8 @@ namespace QuantLib {
                        io::ordinal(i+1) << " bond non tradable at " <<
                        bondSettlement << " settlement date (maturity"
                        " being " << bond->maturityDate() << ")");
-            maxDate_ = std::max(maxDate_, instruments_[i]->latestDate());
-            instruments_[i]->setTermStructure(
+            maxDate_ = std::max(maxDate_, bondHelpers_[i]->latestDate());
+            bondHelpers_[i]->setTermStructure(
                                   const_cast<FittedBondDiscountCurve*>(this));
         }
 
@@ -135,16 +135,16 @@ namespace QuantLib {
         Compounding yieldComp = Compounded;
         Frequency yieldFreq = Annual;
 
-        Size n = curve_->instruments_.size();
+        Size n = curve_->bondHelpers_.size();
         costFunction_ = shared_ptr<FittingCost>(new FittingCost(this));
         costFunction_->firstCashFlow_.resize(n);
         weights_ = Array(n);
         Real squaredSum = 0.0;
-        for (Size i=0; i<curve_->instruments_.size(); ++i) {
-            shared_ptr<Bond> bond = curve_->instruments_[i]->bond();
+        for (Size i=0; i<curve_->bondHelpers_.size(); ++i) {
+            shared_ptr<Bond> bond = curve_->bondHelpers_[i]->bond();
 
             Leg leg = bond->cashflows();
-            Real cleanPrice = curve_->instruments_[i]->quote()->value();
+            Real cleanPrice = curve_->bondHelpers_[i]->quote()->value();
             
             Date bondSettlement = bond->settlementDate();
             Rate ytm = BondFunctions::yield(*bond, cleanPrice,
@@ -219,11 +219,11 @@ namespace QuantLib {
         const DayCounter& dc = fittingMethod_->curve_->dayCounter();
 
         Real squaredError = 0.0;
-        Size n = fittingMethod_->curve_->instruments_.size();
+        Size n = fittingMethod_->curve_->bondHelpers_.size();
         for (Size i=0; i<n; ++i) {
 
             shared_ptr<Bond> bond =
-                            fittingMethod_->curve_->instruments_[i]->bond();
+                            fittingMethod_->curve_->bondHelpers_[i]->bond();
             Date bondSettlement = bond->settlementDate();
 
             // CleanPrice_i = sum( cf_k * d(t_k) ) - accruedAmount
@@ -241,7 +241,7 @@ namespace QuantLib {
                 modelPrice /= fittingMethod_->discountFunction(x, tenor);
             }
             Real marketPrice =
-                fittingMethod_->curve_->instruments_[i]->quote()->value();
+                fittingMethod_->curve_->bondHelpers_[i]->quote()->value();
             Real error = modelPrice - marketPrice;
             Real weightedError = fittingMethod_->weights_[i] * error;
             squaredError += weightedError * weightedError;

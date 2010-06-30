@@ -19,7 +19,7 @@
 */
 
 /*! \file fittedbonddiscountcurve.hpp
-    \brief discount curve fitted to a set of fixed-coupon bonds
+    \brief discount curve fitted to a set of bonds
 */
 
 #ifndef quantlib_fitted_bond_discount_curve_hpp
@@ -92,8 +92,7 @@ namespace QuantLib {
         FittedBondDiscountCurve(
                  Natural settlementDays,
                  const Calendar& calendar,
-                 const std::vector<boost::shared_ptr<FixedRateBondHelper> >&
-                                                                  instruments,
+                 const std::vector<boost::shared_ptr<BondHelper> >& bonds,
                  const DayCounter& dayCounter,
                  const FittingMethod& fittingMethod,
                  Real accuracy = 1.0e-10,
@@ -103,8 +102,7 @@ namespace QuantLib {
         //! curve reference date fixed for life of curve
         FittedBondDiscountCurve(
                  const Date &referenceDate,
-                 const std::vector<boost::shared_ptr<FixedRateBondHelper> >&
-                                                                  instruments,
+                 const std::vector<boost::shared_ptr<BondHelper> >& bonds,
                  const DayCounter& dayCounter,
                  const FittingMethod& fittingMethod,
                  Real accuracy = 1.0e-10,
@@ -141,7 +139,7 @@ namespace QuantLib {
         // a guess solution may be passed into the constructor to speed calcs
         Array guessSolution_;
         mutable Date maxDate_;
-        std::vector<boost::shared_ptr<FixedRateBondHelper> > instruments_;
+        std::vector<boost::shared_ptr<BondHelper> > bondHelpers_;
         Clone<FittingMethod> fittingMethod_;
     };
 
@@ -229,7 +227,7 @@ namespace QuantLib {
     // inline
 
     inline Size FittedBondDiscountCurve::numberOfBonds() const {
-        return instruments_.size();
+        return bondHelpers_.size();
     }
 
     inline Date FittedBondDiscountCurve::maxDate() const {
@@ -249,8 +247,8 @@ namespace QuantLib {
     }
 
     inline void FittedBondDiscountCurve::setup() {
-        for (Size i=0; i<instruments_.size(); ++i)
-            registerWith(instruments_[i]);
+        for (Size i=0; i<bondHelpers_.size(); ++i)
+            registerWith(bondHelpers_[i]);
     }
 
     inline DiscountFactor FittedBondDiscountCurve::discountImpl(Time t) const {
