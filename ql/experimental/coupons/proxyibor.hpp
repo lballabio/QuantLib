@@ -39,21 +39,21 @@ namespace QuantLib {
                   BusinessDayConvention convention,
                   bool endOfMonth,
                   const DayCounter& dayCounter,
-                  Real gearing,
+                  const Handle<Quote>& gearing,
                   const boost::shared_ptr<IborIndex>& iborIndex,
-                  Spread spread);
+                  const Handle<Quote>& spread);
       private:
         // overload
         Rate forecastFixing(const Date& fixingDate) const;
 
-        Real gearing_;
+        Handle<Quote> gearing_;
         boost::shared_ptr<IborIndex> iborIndex_;
-        Spread spread_;
+        Handle<Quote> spread_;
     };
 
     inline Rate ProxyIbor::forecastFixing(const Date& fixingDate) const {
         Rate proxy = iborIndex_->fixing(fixingDate);
-        return gearing_ * proxy * spread_;
+        return gearing_->value() * proxy * spread_->value();
     }
 
 }

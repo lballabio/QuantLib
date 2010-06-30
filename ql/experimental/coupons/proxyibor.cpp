@@ -29,9 +29,9 @@ namespace QuantLib {
                          BusinessDayConvention convention,
                          bool endOfMonth,
                          const DayCounter& dayCounter,
-                         Real gearing,
+                         const Handle<Quote>& gearing,
                          const boost::shared_ptr<IborIndex>& iborIndex,
-                         Spread spread)
+                         const Handle<Quote>& spread)
     : IborIndex(familyName, tenor, settlementDays, currency,
                 fixingCalendar, convention, endOfMonth, dayCounter),
       gearing_(gearing), iborIndex_(iborIndex), spread_(spread) {
