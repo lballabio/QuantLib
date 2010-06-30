@@ -2612,15 +2612,15 @@
 				Name="copulas"
 				>
 				<File
-					RelativePath=".\ql\math\copulas\all.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\math\copulas\alimikhailhaqcopula.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\math\copulas\alimikhailhaqcopula.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\copulas\all.hpp"
 					>
 				</File>
 				<File
@@ -3911,6 +3911,14 @@
 					RelativePath=".\ql\models\equity\hestonmodelhelper.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\models\equity\piecewisetimedependenthestonmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\models\equity\piecewisetimedependenthestonmodel.hpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -5073,6 +5081,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\vanilla\analytichestonhullwhiteengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\analyticptdhestonengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\analyticptdhestonengine.hpp"
 					>
 				</File>
 				<File
@@ -6265,6 +6281,14 @@
 				>
 				<File
 					RelativePath=".\ql\experimental\coupons\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\coupons\proxyibor.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\coupons\proxyibor.hpp"
 					>
 				</File>
 				<File
