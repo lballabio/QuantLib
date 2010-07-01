@@ -135,7 +135,7 @@ int main(int, char* []) {
         cout << "Bonds' settlement date: " << bondSettlementDate << endl;
         cout << "Calculating fit for 15 bonds....." << endl << endl;
 
-        std::vector<boost::shared_ptr<FixedRateBondHelper> > instrumentsA;
+        std::vector<boost::shared_ptr<BondHelper> > instrumentsA;
         std::vector<boost::shared_ptr<RateHelper> > instrumentsB;
 
         for (Size j=0; j<LENGTH(lengths); j++) {
@@ -146,7 +146,7 @@ int main(int, char* []) {
                               calendar, accrualConvention, accrualConvention,
                               DateGeneration::Backward, false);
 
-            boost::shared_ptr<FixedRateBondHelper> helperA(
+            boost::shared_ptr<BondHelper> helperA(
                      new FixedRateBondHelper(quoteHandle[j],
                                              bondSettlementDays,
                                              100.0,
