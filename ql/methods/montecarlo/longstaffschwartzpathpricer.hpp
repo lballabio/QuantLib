@@ -128,10 +128,8 @@ namespace QuantLib {
         Array prices(n), exercise(n);
         const Size len = EarlyExerciseTraits<PathType>::pathLength(paths_[0]);
 
-        std::transform(paths_.begin(), paths_.end(), prices.begin(),
-                       boost::bind(&EarlyExercisePathPricer<PathType>
-                                     ::operator(),
-                                   pathPricer_.get(), _1, len-1));
+        for (Size i=0; i<n; ++i)
+            prices[i] = (*pathPricer_)(paths_[i], len-1);
 
         for (Size i=len-2; i>0; --i) {
             std::vector<Real>      y;
@@ -172,8 +170,9 @@ namespace QuantLib {
             }
         }
 
-        // remove calibration paths
-        paths_.clear();
+        // remove calibration paths and release memory
+        std::vector<PathType> empty;
+        paths_.swap(empty);
         // entering the calculation phase
         calibrationPhase_ = false;
     }
