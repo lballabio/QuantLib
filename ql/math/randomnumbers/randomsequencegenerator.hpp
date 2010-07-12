@@ -38,6 +38,11 @@ namespace QuantLib {
         \code
             RNG::sample_type RNG::next() const;
         \endcode
+        If a client of this class wants to use the nextInt32Sequence method,
+        class RNG must also implement
+        \code
+            unsigned long RNG::nextInt32() const;
+        \endcode
 
         \warning do not use with low-discrepancy sequence generator.
     */
