@@ -43,7 +43,7 @@ namespace QuantLib {
     */
     class CapFloorTermVolCurve : public CapFloorTermVolatilityStructure,
                                  public LazyObject,
-                                 public boost::noncopyable {
+                                 private boost::noncopyable {
       public:
         //! floating reference date, floating market data
         CapFloorTermVolCurve(Natural settlementDays,
