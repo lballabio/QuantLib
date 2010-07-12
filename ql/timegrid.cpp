@@ -30,7 +30,7 @@ namespace QuantLib {
         QL_REQUIRE(end > 0.0,
                    "negative times not allowed");
         Time dt = end/steps;
-        times_.reserve(steps);
+        times_.reserve(steps+1);
         for (Size i=0; i<=steps; i++)
             times_.push_back(dt*i);
 

@@ -2,6 +2,7 @@
 We gratefully acknowledge contributions from:
 
 Nathan Abbott
+Kakhkhor Abdijalilov
 Xavier Abulker
 Toyin Akin
 Marius Akre
