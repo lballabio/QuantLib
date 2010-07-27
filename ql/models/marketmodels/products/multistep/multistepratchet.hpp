@@ -55,6 +55,7 @@ namespace QuantLib {
         bool payer_;
         Real multiplier_;
         Size lastIndex_;
+        Real initialFloor_;
         // things that vary in a path
         Real floor_;
         Size currentIndex_;
@@ -77,8 +78,10 @@ namespace QuantLib {
         return 1;
     }
 
-    inline void MultiStepRatchet::reset() {
+    inline void MultiStepRatchet::reset() 
+    {
        currentIndex_=0;
+       floor_ = initialFloor_;
     }
 
 }

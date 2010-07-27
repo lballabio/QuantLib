@@ -261,7 +261,15 @@ namespace QuantLib {
         std::vector<Matrix> totalCashFlowsThisIndex_; // need product cross times cross which sensitivity
 
         std::vector<std::vector<Size> > cashFlowIndicesThisStep_;
+/*
+        // experimental
 
+        std::vector<std::vector<Real> > gaussians_;
+        int distinguishedFactor_;
+        int distinguishedRate_;
+        int  distinguishedStep_;
+
+*/
     };
 
 }

@@ -39,7 +39,7 @@ namespace QuantLib {
       spreadOfFloor_(spreadOfFloor), spreadOfFixing_(spreadOfFixing),
       payer_(payer), multiplier_(payer ? 1.0 : -1.0),
       lastIndex_(rateTimes.size()-1),
-      floor_(initialFloor) {
+      initialFloor_(initialFloor) {
         checkIncreasingTimes(paymentTimes);
     }
 

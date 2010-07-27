@@ -24,6 +24,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <algorithm>
+#include <iostream>
 
 namespace QuantLib {
 
@@ -860,7 +861,12 @@ namespace QuantLib {
         } // modelVegaMatrix destroyed here 
 
         numberElementaryVegas_ = numberSteps_*numberRates_*factors_;
-
+/*
+        gaussians_.resize(numberSteps_);
+        distinguishedFactor_=0;
+        distinguishedRate_=0;
+        distinguishedStep_=0;
+*/
     }
 
     Real PathwiseVegasOuterAccountingEngine::singlePathValues(std::vector<Real>& values)
@@ -924,6 +930,8 @@ namespace QuantLib {
                                          currentForwards_,
                                          evolver_->browniansThisStep(),
                                          jacobiansThisPaths_[thisStep]);
+
+//            gaussians_[thisStep] = evolver_->browniansThisStep();
 
 
 
@@ -1074,7 +1082,15 @@ namespace QuantLib {
                                 Real sensitivity =0.0;
 
                                 for (Size r=0; r < numberRates_; ++r)
+                                {
                                         sensitivity += V_[i][nextIndex][r]*jacobiansThisPaths_[j][r][k][f];
+
+                                  }
+/*
+                                  if (j ==distinguishedStep_ && k ==distinguishedRate_ &&f== distinguishedFactor_)
+                                      std::cout << sensitivity << "," <<  jacobiansThisPaths_[j][j][k][f] << "," << gaussians_[j][f] << "," << V_[i][nextIndex][j] << "," << LIBORRates_[nextIndex][j] << "\n";
+  */                
+
 
                                 elementary_vegas_ThisPath_[i][j][k][f] = sensitivity;
                         }
