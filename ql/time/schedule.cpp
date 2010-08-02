@@ -352,6 +352,14 @@ namespace QuantLib {
                                                 terminationDateConvention);
             }
         }
+
+        // final safety check to remove duplicated last dates, if any
+        // it can happen if EOM is applied to two near dates
+        if (dates_.back() == dates_[dates_.size()-2]) {
+            dates_.pop_back();
+            isRegular_.pop_back();
+        }
+
     }
 
     std::vector<Date>::const_iterator
