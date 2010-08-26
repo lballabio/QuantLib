@@ -72,7 +72,7 @@ namespace QuantLib {
       finalIsRegular_(true),
       dates_(dates) {}
 
-    Schedule::Schedule(const Date& effectiveDate,
+    Schedule::Schedule(Date effectiveDate,
                        const Date& terminationDate,
                        const Period& tenor,
                        const Calendar& cal,
@@ -92,8 +92,25 @@ namespace QuantLib {
       finalIsRegular_(true)
     {
         // sanity checks
-        QL_REQUIRE(effectiveDate != Date(), "null effective date");
         QL_REQUIRE(terminationDate != Date(), "null termination date");
+
+        // in many cases (e.g. non-expired bonds) the effective date is not
+        // really necessary. In these cases a decent placeholder is enough
+        if (effectiveDate==Date() && first==Date()
+                                  && rule==DateGeneration::Backward) {
+            Date evalDate = Settings::instance().evaluationDate();
+            QL_REQUIRE(evalDate < terminationDate, "null effective date");
+            Natural y;
+            if (nextToLast != Date()) {
+                y = (nextToLast - evalDate)/366 + 1;
+                effectiveDate = nextToLast - y*Years;
+            } else {
+                y = (terminationDate - evalDate)/366 + 1;
+                effectiveDate = terminationDate - y*Years;
+            }
+        } else
+            QL_REQUIRE(effectiveDate != Date(), "null effective date");
+
         QL_REQUIRE(effectiveDate < terminationDate,
                    "effective date (" << effectiveDate
                    << ") later than or equal to termination date ("

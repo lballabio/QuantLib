@@ -42,7 +42,7 @@ namespace QuantLib {
         Schedule(const std::vector<Date>&,
                  const Calendar& calendar = NullCalendar(),
                  BusinessDayConvention convention = Unadjusted);
-        Schedule(const Date& effectiveDate,
+        Schedule(Date effectiveDate,
                  const Date& terminationDate,
                  const Period& tenor,
                  const Calendar& calendar,
