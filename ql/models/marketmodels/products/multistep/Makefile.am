@@ -18,7 +18,8 @@ this_include_HEADERS = \
     multistepperiodcapletswaptions.hpp \
     multistepratchet.hpp \
     multistepswap.hpp \
-    multistepswaption.hpp
+    multistepswaption.hpp \
+    multisteptarn.hpp
 
 libMarketModelsProductsMultiStep_la_SOURCES = \
     callspecifiedmultiproduct.cpp \
@@ -35,7 +36,8 @@ libMarketModelsProductsMultiStep_la_SOURCES = \
     multistepperiodcapletswaptions.cpp \
     multistepratchet.cpp \
     multistepswap.cpp \
-    multistepswaption.cpp
+    multistepswaption.cpp \
+    multisteptarn.cpp
 
 noinst_LTLIBRARIES = libMarketModelsProductsMultiStep.la
 
