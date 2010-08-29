@@ -90,7 +90,7 @@ namespace QuantLib {
         std::complex<Real> D = 0.0;
         std::complex<Real> C = 0.0;
 
-        for (Size i=timeGrid_.size(); i > 0; --i) {
+        for (Size i=timeGrid_.size()-1; i > 0; --i) {
             const Time begin = timeGrid_[i-1];
             if (begin < term_) {
                 const Time end = std::min(term_, timeGrid_[i]);
