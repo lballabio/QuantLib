@@ -3461,6 +3461,14 @@
 							RelativePath=".\ql\models\marketmodels\products\multistep\multistepswaption.hpp"
 							>
 						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multisteptarn.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multisteptarn.hpp"
+							>
+						</File>
 					</Filter>
 					<Filter
 						Name="onestep"
