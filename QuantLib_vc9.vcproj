@@ -1796,6 +1796,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\instruments\bonds\btp.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\instruments\bonds\btp.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\instruments\bonds\cmsratebond.cpp"
 					>
 				</File>
