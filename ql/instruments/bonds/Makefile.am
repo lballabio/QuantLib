@@ -4,12 +4,14 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    btp.hpp \
     cmsratebond.hpp \
     fixedratebond.hpp \
     floatingratebond.hpp \
     zerocouponbond.hpp
 
 libBonds_la_SOURCES = \
+    btp.cpp \
     cmsratebond.cpp \
     fixedratebond.cpp \
     floatingratebond.cpp \
