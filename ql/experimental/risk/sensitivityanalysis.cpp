@@ -22,6 +22,7 @@
 #include <ql/instrument.hpp>
 
 using std::vector;
+using std::pair;
 using boost::shared_ptr;
 
 namespace QuantLib {
@@ -55,10 +56,10 @@ namespace QuantLib {
         return npv;
     }
 
-    std::pair<Real, Real>
+    pair<Real, Real>
     parallelAnalysis(const vector<Handle<SimpleQuote> >& quotes,
                      const vector<shared_ptr<Instrument> >& instruments,
-                     const std::vector<Real>& quantities,
+                     const vector<Real>& quantities,
                      Real shift,
                      SensitivityAnalysis type,
                      Real referenceNpv)
@@ -68,7 +69,7 @@ namespace QuantLib {
 
         QL_REQUIRE(shift!=0.0, "zero shift not allowed");
 
-        std::pair<Real, Real> result(0.0, 0.0);
+        pair<Real, Real> result(0.0, 0.0);
         if (instruments.empty()) return result;
 
         if (referenceNpv==Null<Real>())
@@ -115,17 +116,17 @@ namespace QuantLib {
         return result;
     }
 
-    std::pair<Real, Real>
+    pair<Real, Real>
     bucketAnalysis(Handle<SimpleQuote> quote,
                    const vector<shared_ptr<Instrument> >& instruments,
-                   const std::vector<Real>& quantities,
+                   const vector<Real>& quantities,
                    Real shift,
                    SensitivityAnalysis type,
                    Real referenceNpv)
     {
         QL_REQUIRE(shift!=0.0, "zero shift not allowed");
 
-        std::pair<Real, Real> result(0.0, 0.0);
+        pair<Real, Real> result(0.0, 0.0);
         if (instruments.empty()) return result;
 
         if (referenceNpv==Null<Real>())
@@ -163,23 +164,121 @@ namespace QuantLib {
         return result;
     }
 
-    std::pair<vector<Real>, vector<Real> >
+
+    void
+    bucketAnalysis(vector<Real>& deltaVector, // delta result
+                   vector<Real>& gammaVector, // gamma result
+                   Handle<SimpleQuote> quote,
+                   const vector<Handle<Quote> >& params,
+                   Real shift,
+                   SensitivityAnalysis type,
+                   vector<Real>& refVals)
+    {
+        QL_REQUIRE(shift!=0.0, "zero shift not allowed");
+
+        QL_REQUIRE(!params.empty(), "empty parameters vector");
+        Size m = params.size();
+        deltaVector.resize(m);
+        gammaVector.resize(m);
+
+        if (!quote->isValid()) {
+            for (Size j=0; j<m; ++j) {
+                deltaVector[j]=Null<Real>();
+                gammaVector[j]=Null<Real>();
+            }
+            return;
+        }
+        Real quoteValue = quote->value();
+
+        if (!refVals.empty()) {
+            QL_REQUIRE(refVals.size()==m,
+                       "referenceValues has size " <<
+                       refVals.size() << ", instead of " << m);
+        } else {
+            // calculate parameters' reference values
+            refVals = vector<Real>(m, Null<Real>());
+            for (Size j=0; j<m; ++j) {
+                if (params[j]->isValid()) // fault tolerant
+                    refVals[j] = params[j]->value();
+            }
+        }
+
+        try {
+            switch (type) {
+              case OneSide:
+                {
+                    quote->setValue(quoteValue+shift);
+                    for (Size j=0; j<m; ++j) {
+                        gammaVector[j] = Null<Real>();
+                        if (refVals[j] != Null<Real>())
+                            deltaVector[j] = (params[j]->value()-refVals[j])/shift;
+                        else
+                            deltaVector[j] = Null<Real>();
+                    }
+                }
+                break;
+              case Centered:
+                {
+                    quote->setValue(quoteValue+shift);
+                    vector<Real> plus(m);
+                    for (Size j=0; j<m; ++j) {
+                        if (refVals[j] != Null<Real>())
+                            plus[j] = params[j]->value();
+                    }
+                    quote->setValue(quoteValue-shift);
+                    for (Size j=0; j<m; ++j) {
+                        if (refVals[j] != Null<Real>()) {
+                            Real minus = params[j]->value();
+                            deltaVector[j] = (plus[j]-minus)/(2.0*shift);
+                            gammaVector[j] = (plus[j]-2.0*refVals[j]+minus)/(shift*shift);
+                        } else {
+                            deltaVector[j] = Null<Real>();
+                            gammaVector[j] = Null<Real>();
+                        }
+                    }
+                }
+                break;
+              default:
+                  QL_FAIL("unknown SensitivityAnalysis (" <<
+                          Integer(type) << ")");
+            } // end switch
+
+            // restore the quote to its original state
+            quote->setValue(quoteValue);
+
+            return;
+        } catch (std::exception& e) {
+            // restore the quote to its original state
+            quote->setValue(quoteValue);
+            throw e;
+        } catch (...) {
+            // restore the quote to its original state
+            quote->setValue(quoteValue);
+        }
+
+    }
+
+
+
+
+
+    pair<vector<Real>, vector<Real> >
     bucketAnalysis(const vector<Handle<SimpleQuote> >& quotes,
                    const vector<shared_ptr<Instrument> >& instr,
-                   const std::vector<Real>& quant,
+                   const vector<Real>& quant,
                    Real shift,
                    SensitivityAnalysis type)
     {
         QL_REQUIRE(!quotes.empty(), "empty SimpleQuote vector");
         Size n = quotes.size();
-        std::pair<vector<Real>, vector<Real> > result(vector<Real>(n, 0.0),
-                                                      vector<Real>(n, 0.0));
+        pair<vector<Real>, vector<Real> > result(vector<Real>(n, 0.0),
+                                                 vector<Real>(n, 0.0));
 
         if (instr.empty()) return result;
 
         Real npv = aggregateNPV(instr, quant);
 
-        std::pair<Real, Real> tmp;
+        pair<Real, Real> tmp;
         for (Size i=0; i<n; ++i) {
             tmp = bucketAnalysis(quotes[i], instr, quant, shift, type, npv);
             result.first[i] = tmp.first;
@@ -189,10 +288,41 @@ namespace QuantLib {
         return result;
     }
 
-    std::pair<vector<vector<Real> >, vector<vector<Real> > >
+    void
+    bucketAnalysis(std::vector<std::vector<Real> >& deltaMatrix, // result
+                   std::vector<std::vector<Real> >& gammaMatrix, // result
+                   const vector<Handle<SimpleQuote> >& quotes,
+                   const vector<Handle<Quote> >& parameters,
+                   Real shift,
+                   SensitivityAnalysis type)
+    {
+        QL_REQUIRE(!quotes.empty(), "empty SimpleQuote vector");
+        QL_REQUIRE(!parameters.empty(), "empty parameters vector");
+
+        Size n = quotes.size();
+        deltaMatrix.resize(n);
+        gammaMatrix.resize(n);
+
+        Size m = parameters.size();
+        vector<Real> referenceValues(m, Null<Real>());
+        for (Size i=0; i<m; ++i) {
+            if (parameters[i]->isValid())
+                referenceValues[i] = parameters[i]->value();
+        }
+
+        for (Size i=0; i<n; ++i) {
+            bucketAnalysis(deltaMatrix[i], gammaMatrix[i],
+                           quotes[i], parameters, shift, type,
+                           referenceValues);
+        }
+
+        return;
+    }
+
+    pair<vector<vector<Real> >, vector<vector<Real> > >
     bucketAnalysis(const vector<vector<Handle<SimpleQuote> > >& quotes,
                    const vector<shared_ptr<Instrument> >& instr,
-                   const std::vector<Real>& quant,
+                   const vector<Real>& quant,
                    Real shift,
                    SensitivityAnalysis type)
     {
@@ -206,14 +336,14 @@ namespace QuantLib {
             second[i] = vector<Real>(tmp, 0.0);
         }
 
-        std::pair<vector<vector<Real> >, vector<vector<Real> > >
+        pair<vector<vector<Real> >, vector<vector<Real> > >
             result(first, second);
 
         if (instr.empty()) return result;
 
         Real npv = aggregateNPV(instr, quant);
 
-        std::pair<Real, Real> tmp;
+        pair<Real, Real> tmp;
         for (Size i=0; i<n; ++i) {
           for (Size j=0; j<quotes[i].size(); ++j) {
             tmp = bucketAnalysis(quotes[i][j], instr, quant, shift, type, npv);

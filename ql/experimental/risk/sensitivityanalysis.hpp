@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Ferdinando Ametrano
+ Copyright (C) 2008, 2010 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,6 +24,7 @@
 #ifndef quantlib_sensitivity_analysis_hpp
 #define quantlib_sensitivity_analysis_hpp
 
+//#include <ql/math/matrix.hpp>
 #include <ql/types.hpp>
 #include <ql/utilities/null.hpp>
 #include <boost/shared_ptr.hpp>
@@ -33,6 +34,7 @@ namespace QuantLib {
 
     template <class T>
     class Handle;
+    class Quote;
     class SimpleQuote;
     class Instrument;
 
@@ -50,7 +52,7 @@ namespace QuantLib {
     Real aggregateNPV(const std::vector<boost::shared_ptr<Instrument> >&,
                       const std::vector<Real>& quantities);
 
-    //! parallel shift sensitivity analysis for a SimpleQuote vector
+    //! parallel shift PV01 sensitivity analysis for a SimpleQuote vector
     /*! returns a pair of first and second derivative values calculated as
         prescribed by SensitivityAnalysis. Second derivative might not be
         available depending on SensitivityAnalysis value.
@@ -68,7 +70,7 @@ namespace QuantLib {
                      SensitivityAnalysis type = Centered,
                      Real referenceNpv = Null<Real>());
 
-    //! parallel shift sensitivity analysis for a SimpleQuote matrix
+    //! parallel shift PV01 sensitivity analysis for a SimpleQuote matrix
     /*! returns a pair of first and second derivative values calculated as
         prescribed by SensitivityAnalysis. Second derivative might not be
         available depending on SensitivityAnalysis value.
@@ -86,7 +88,7 @@ namespace QuantLib {
                      SensitivityAnalysis type = Centered,
                      Real referenceNpv = Null<Real>());
 
-    //! (bucket) sensitivity analysis for a (single) SimpleQuote
+    //! (bucket) PV01 sensitivity analysis for a (single) SimpleQuote
     /*! returns a pair of first and second derivative values calculated as
         prescribed by SensitivityAnalysis. Second derivative might not be
         available depending on SensitivityAnalysis value.
@@ -102,7 +104,25 @@ namespace QuantLib {
                    SensitivityAnalysis type = Centered,
                    Real referenceNpv = Null<Real>());
 
-    //! bucket sensitivity analysis for a SimpleQuote vector
+    //! (bucket) parameters' sensitivity analysis for a (single) SimpleQuote
+    /*! returns a vector (one element for each paramet) of pair of first and
+        second derivative values calculated as prescribed by
+        SensitivityAnalysis. Second derivative might not be available
+        depending on SensitivityAnalysis value.
+
+        Empty quantities vector is considered as unit vector. The same if
+        the vector is of size one.
+    */
+    void
+    bucketAnalysis(std::vector<Real>& deltaVector, // result
+                   std::vector<Real>& gammaVector, // result
+                   Handle<SimpleQuote> quote,
+                   const std::vector<Handle<Quote> >& parameters,
+                   Real shift = 0.0001,
+                   SensitivityAnalysis type = Centered,
+                   std::vector<Real>& referenceValues = std::vector<Real>());
+
+    //! bucket PV01 sensitivity analysis for a SimpleQuote vector
     /*! returns a pair of first and second derivative vectors calculated as
         prescribed by SensitivityAnalysis. Second derivative might not be
         available depending on SensitivityAnalysis value.
@@ -113,11 +133,31 @@ namespace QuantLib {
         The (bucket) SimpleQuotes are tweaked one by one separately.
     */
     std::pair<std::vector<Real>, std::vector<Real> >
-    bucketAnalysis(const std::vector<Handle<SimpleQuote> >&,
+    bucketAnalysis(const std::vector<Handle<SimpleQuote> >& quotes,
                    const std::vector<boost::shared_ptr<Instrument> >&,
                    const std::vector<Real>& quantities,
                    Real shift = 0.0001,
                    SensitivityAnalysis type = Centered);
+
+    //! bucket parameters' sensitivity analysis for a SimpleQuote vector
+    /*! returns a vector (one element for each paramet) of pair of first and
+        second derivative vectors calculated as prescribed by
+        SensitivityAnalysis. Second derivative might not be available
+        depending on SensitivityAnalysis value.
+
+        Empty quantities vector is considered as unit vector. The same if
+        the vector is of size one.
+
+        The (bucket) SimpleQuotes are tweaked one by one separately.
+    */
+    void
+    bucketAnalysis(std::vector<std::vector<Real> >& deltaMatrix, // result
+                   std::vector<std::vector<Real> >& gammaMatrix, // result
+                   const std::vector<Handle<SimpleQuote> >& quotes,
+                   const std::vector<Handle<Quote> >& parameters,
+                   Real shift = 0.0001,
+                   SensitivityAnalysis type = Centered);
+
 
     //! bucket sensitivity analysis for a SimpleQuote matrix
     /*! returns a pair of first and second derivative metrices calculated as
