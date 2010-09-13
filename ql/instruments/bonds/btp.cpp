@@ -102,65 +102,89 @@ namespace QuantLib {
                             const Handle<YieldTermStructure>& discountCurve)
     : basket_(basket),
       euriborIndex_(euriborIndex), discountCurve_(discountCurve),
-      yields_(basket_->size(), 0.05), durations_(basket_->size()) {
+      yields_(basket_->size(), 0.05), durations_(basket_->size()),
+      nSwaps_(15), // TODO: generalize number of swaps and their lenghts
+      swaps_(nSwaps_),
+      swapLenghts_(nSwaps_), swapBondDurations_(nSwaps_, Null<Time>()),
+      swapBondYields_(nSwaps_, 0.05), swapRates_(nSwaps_, Null<Rate>())
+    {
         registerWith(basket_);
+        registerWith(euriborIndex_);
+        registerWith(discountCurve_);
 
-        // TODO: generalize number of swaps and their lenghts
         Rate dummyRate = 0.05;
-        for (Size i=0; i<10; ++i) {
-            Natural lenght = i+2;
-            swapLenghts_.push_back(lenght);
-            boost::shared_ptr<VanillaSwap> swap =
-                MakeVanillaSwap(lenght*Years, euriborIndex_, dummyRate, 1*Days).
-                    withDiscountingTermStructure(discountCurve_);
-            swaps_.push_back(swap);
+        for (Size i=0; i<nSwaps_; ++i) {
+            swapLenghts_[i] = i+1;
+            swaps_[i] = MakeVanillaSwap(
+                swapLenghts_[i]*Years, euriborIndex_, dummyRate, 1*Days)
+                                .withDiscountingTermStructure(discountCurve_);
         }
-        nSwaps_ = swaps_.size();
     }
 
     void RendistatoCalculator::performCalculations() const {
 
         const std::vector<boost::shared_ptr<BTP> >& btps = basket_->btps();
         const std::vector<Handle<Quote> >& quotes = basket_->cleanPriceQuotes();
+        Date bondSettlementDate = btps[0]->settlementDate();
         for (Size i=0; i<basket_->size(); ++i) {
             yields_[i] = BondFunctions::yield(
                 *btps[i], quotes[i]->value(),
                 ActualActual(ActualActual::ISMA), Compounded, Annual,
-                // settlementDate, accuracy, maxIterations, guess
-                Date(), 1.0e-10, 100, yields_[i]); 
+                bondSettlementDate,
+                // accuracy, maxIterations, guess
+                1.0e-10, 100, yields_[i]);
             durations_[i] = BondFunctions::duration(
                 *btps[i], yields_[i],
                 ActualActual(ActualActual::ISMA), Compounded, Annual,
-                Duration::Modified, Date()); // settlementDate
+                Duration::Modified, bondSettlementDate);
         }
         duration_ = std::inner_product(basket_->weights().begin(),
                                        basket_->weights().end(),
                                        durations_.begin(), 0.0);
 
-        equivalentSwapIndex_=nSwaps_-1;
-        // starting from second swap
+        Natural settlDays = 3;
+        DayCounter fixedDayCount = swaps_[0]->fixedDayCount();
+        equivalentSwapIndex_ = nSwaps_-1;
+        swapRates_[0]= swaps_[0]->fairRate();
+        FixedRateBond swapBond(settlDays,
+                               100.0,      // faceAmount
+                               swaps_[0]->fixedSchedule(),
+                               std::vector<Rate>(1, swapRates_[0]),
+                               fixedDayCount,
+                               Following, // paymentConvention
+                               100.0);    // redemption
+        swapBondYields_[0] = BondFunctions::yield(swapBond,
+            100.0, // floating leg NPV including end payment
+            ActualActual(ActualActual::ISMA), Compounded, Annual,
+            bondSettlementDate,
+            // accuracy, maxIterations, guess
+            1.0e-10, 100, swapBondYields_[0]);
+        swapBondDurations_[0] = BondFunctions::duration(
+            swapBond, swapBondYields_[0],
+            ActualActual(ActualActual::ISMA), Compounded, Annual,
+            Duration::Modified, bondSettlementDate);
         for (Size i=1; i<nSwaps_; ++i) {
-            Rate swapRate = swaps_[i]->fairRate();
-            FixedRateBond swapBond(btps[i]->settlementDays(),
-                                   100.0, // faceAmount
+            swapRates_[i]= swaps_[i]->fairRate();
+            FixedRateBond swapBond(settlDays,
+                                   100.0,      // faceAmount
                                    swaps_[i]->fixedSchedule(),
-                                   std::vector<Rate>(1, swapRate),
-                                   swaps_[i]->fixedDayCount(),
-                                   Following, 100.0); // paymentConvention, redemption
-            // should be the NPV of the floating leg with end payment
-            Real swapBondPrice = 100.0;
-            Rate swapBondYield = BondFunctions::yield(
-                swapBond, swapBondPrice,
+                                   std::vector<Rate>(1, swapRates_[i]),
+                                   fixedDayCount,
+                                   Following, // paymentConvention
+                                   100.0);    // redemption
+            swapBondYields_[i] = BondFunctions::yield(swapBond,
+                100.0, // floating leg NPV including end payment
                 ActualActual(ActualActual::ISMA), Compounded, Annual,
-                // settlementDate, accuracy, maxIterations, guess
-                Date(), 1.0e-10, 100, swapRate);
-            Time swapBondDuration = BondFunctions::duration(
-                swapBond, swapBondYield,
+                bondSettlementDate,
+                // accuracy, maxIterations, guess
+                1.0e-10, 100, swapBondYields_[i]);
+            swapBondDurations_[i] = BondFunctions::duration(
+                swapBond, swapBondYields_[i],
                 ActualActual(ActualActual::ISMA), Compounded, Annual,
-                Duration::Modified, Date()); // settlementDate
-            if (swapBondDuration > duration_) {
+                Duration::Modified, bondSettlementDate);
+            if (swapBondDurations_[i] > duration_) {
                 equivalentSwapIndex_ = i-1;
-                continue; // exit the loop
+                break; // exit the loop
             }
         }
 

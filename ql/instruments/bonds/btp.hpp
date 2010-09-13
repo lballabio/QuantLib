@@ -62,9 +62,9 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         Size size() const { return n_;}
-        const std::vector<boost::shared_ptr<BTP> >& btps() const { return btps_;}
+        const std::vector<boost::shared_ptr<BTP> >& btps() const;
+        const std::vector<Handle<Quote> >& cleanPriceQuotes() const;
         const std::vector<Real>& outstandings() const { return outstandings_;}
-        const std::vector<Handle<Quote> >& cleanPriceQuotes() const { return quotes_;}
         const std::vector<Real>& weights() const { return weights_;}
         Real outstanding() const { return outstanding_;}
         //@}
@@ -89,14 +89,22 @@ namespace QuantLib {
         //! \name Calculations
         //@{
         Rate yield() const;
-        const std::vector<Rate>& yields() const;
         Time duration() const;
+        // bonds
+        const std::vector<Rate>& yields() const;
         const std::vector<Time>& durations() const;
+        // swaps
+        const std::vector<Time>& swapLengths() const;
+        const std::vector<Rate>& swapRates() const;
+        const std::vector<Rate>& swapYields() const;
+        const std::vector<Time>& swapDurations() const;
         //@}
         //! \name Equivalent Swap proxy
         //@{
         boost::shared_ptr<VanillaSwap> equivalentSwap() const;
-        Rate equivalentSwapRate() const { return equivalentSwap()->fairRate();}
+        Rate equivalentSwapRate() const;
+        Rate equivalentSwapYield() const;
+        Time equivalentSwapDuration() const;
         Time equivalentSwapLength() const;
         Spread equivalentSwapSpread() const;
         //@}
@@ -115,9 +123,11 @@ namespace QuantLib {
         mutable Time duration_;
         mutable Size equivalentSwapIndex_;
 
-        std::vector<boost::shared_ptr<VanillaSwap> > swaps_;
-        std::vector<Time> swapLenghts_;
         Size nSwaps_;
+        mutable std::vector<boost::shared_ptr<VanillaSwap> > swaps_;
+        std::vector<Time> swapLenghts_;
+        mutable std::vector<Time> swapBondDurations_;
+        mutable std::vector<Rate> swapBondYields_, swapRates_;
     };
 
     //! RendistatoCalculator equivalent swap lenth Quote adapter
@@ -143,16 +153,21 @@ namespace QuantLib {
     };
 
     // inline
-    
+
+    inline const std::vector<boost::shared_ptr<BTP> >&
+    RendistatoBasket::btps() const {
+        return btps_;
+    }
+
+    inline const std::vector<Handle<Quote> >&
+    RendistatoBasket::cleanPriceQuotes() const {
+        return quotes_;
+    }
+
     inline Rate RendistatoCalculator::yield() const {
         return std::inner_product(basket_->weights().begin(),
                                   basket_->weights().end(),
                                   yields().begin(), 0.0);
-    }
-
-    inline const std::vector<Rate>& RendistatoCalculator::yields() const {
-        calculate();
-        return yields_;
     }
 
     inline Time RendistatoCalculator::duration() const {
@@ -160,15 +175,54 @@ namespace QuantLib {
         return duration_;
     }
 
+    inline const std::vector<Rate>& RendistatoCalculator::yields() const {
+        calculate();
+        return yields_;
+    }
+
     inline const std::vector<Time>& RendistatoCalculator::durations() const {
         calculate();
         return durations_;
+    }
+
+    inline const std::vector<Time>& RendistatoCalculator::swapLengths() const {
+        return swapLenghts_;
+    }
+
+    inline const std::vector<Rate>& RendistatoCalculator::swapRates() const {
+        calculate();
+        return swapRates_;
+    }
+
+    inline const std::vector<Rate>& RendistatoCalculator::swapYields() const {
+        calculate();
+        return swapBondYields_;
+    }
+
+    inline const std::vector<Time>& RendistatoCalculator::swapDurations() const {
+        calculate();
+        return swapBondDurations_;
     }
 
     inline boost::shared_ptr<VanillaSwap>
     RendistatoCalculator::equivalentSwap() const {
         calculate();
         return swaps_[equivalentSwapIndex_];
+    }
+
+    inline Rate RendistatoCalculator::equivalentSwapRate() const {
+        calculate();
+        return swapRates_[equivalentSwapIndex_];
+    }
+
+    inline Rate RendistatoCalculator::equivalentSwapYield() const {
+        calculate();
+        return swapBondYields_[equivalentSwapIndex_];
+    }
+
+    inline Time RendistatoCalculator::equivalentSwapDuration() const {
+        calculate();
+        return swapBondDurations_[equivalentSwapIndex_];
     }
 
     inline Time RendistatoCalculator::equivalentSwapLength() const {
