@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006 Roland Lichters
  Copyright (C) 2006, 2008 StatPro Italia srl
+ Copyright (C) 2010 Robert Philipp
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -46,7 +47,10 @@ namespace QuantLib {
       PiecewiseZeroSpreadedTermStructure(
                                    const Handle<YieldTermStructure>&,
                                    const std::vector<Handle<Quote> >& spreads,
-                                   const std::vector<Date>& dates);
+                                   const std::vector<Date>& dates,
+                                   Compounding comp = Continuous,
+                                   Frequency freq = NoFrequency,
+                                   const DayCounter& dc = DayCounter());
       //! \name YieldTermStructure interface
       //@{
       DayCounter dayCounter() const;
@@ -61,10 +65,14 @@ namespace QuantLib {
       void update();
     private:
       void updateTimes();
+      Spread calcSpread(Time t) const;
       Handle<YieldTermStructure> originalCurve_;
       std::vector<Handle<Quote> > spreads_;
       std::vector<Date> dates_;
       std::vector<Time> times_;
+      Compounding comp_;
+      Frequency freq_;
+      DayCounter dc_;
   };
 
 
@@ -74,9 +82,12 @@ namespace QuantLib {
     PiecewiseZeroSpreadedTermStructure::PiecewiseZeroSpreadedTermStructure(
                                    const Handle<YieldTermStructure>& h,
                                    const std::vector<Handle<Quote> >& spreads,
-                                   const std::vector<Date>& dates)
+                                   const std::vector<Date>& dates,
+                                   Compounding comp,
+                                   Frequency freq,
+                                   const DayCounter& dc)
     : originalCurve_(h), spreads_(spreads), dates_(dates),
-      times_(dates_.size()) {
+      times_(dates_.size()), comp_(comp), freq_(freq), dc_(dc) {
         QL_REQUIRE(!spreads_.empty(), "no spreads given");
         QL_REQUIRE(spreads_.size() == dates_.size(),
                    "spread and date vector have different sizes");
@@ -109,17 +120,27 @@ namespace QuantLib {
 
     inline Rate
     PiecewiseZeroSpreadedTermStructure::zeroYieldImpl(Time t) const {
-        Rate z = originalCurve_->zeroRate(t, Continuous, NoFrequency, true);
+        Spread spread = calcSpread(t);
+        InterestRate zeroRate = originalCurve_->zeroRate(t, comp_, freq_, true);
+        InterestRate spreadedRate(zeroRate + spread,
+                                  zeroRate.dayCounter(),
+                                  zeroRate.compounding(),
+                                  zeroRate.frequency());
+        return spreadedRate.equivalentRate(Continuous, NoFrequency, t);
+    }
+
+    inline Spread
+    PiecewiseZeroSpreadedTermStructure::calcSpread(Time t) const {
         if (t <= times_.front()) {
-            return z + spreads_.front()->value();
+            return spreads_.front()->value();
         } else if (t >= times_.back()) {
-            return z + spreads_.back()->value();
+            return spreads_.back()->value();
         } else {
             Size i;
             for (i = 0; i < times_.size(); i++)
                 if (times_[i] > t) break;
             Time dt = times_[i] - times_[i-1];
-            return z + spreads_[i]->value() * (t - times_[i-1]) / dt
+            return spreads_[i]->value() * (t - times_[i-1]) / dt
                 + spreads_[i-1]->value() * (times_[i] - t) / dt;
         }
     }
