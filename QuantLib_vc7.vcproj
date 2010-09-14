@@ -2147,6 +2147,12 @@
 					RelativePath=".\ql\instruments\bonds\all.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\instruments\bonds\btp.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\instruments\bonds\btp.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\instruments\bonds\cmsratebond.cpp">
 				</File>
 				<File
@@ -3875,6 +3881,12 @@
 						</File>
 						<File
 							RelativePath=".\ql\models\marketmodels\products\multistep\multistepswaption.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multisteptarn.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multisteptarn.hpp">
 						</File>
 					</Filter>
 					<Filter
