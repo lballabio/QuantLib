@@ -131,9 +131,11 @@ namespace QuantLib {
         for (Size i=0; i<n; ++i)
             prices[i] = (*pathPricer_)(paths_[i], len-1);
 
+        std::vector<Real>      y;
+        std::vector<StateType> x;
         for (Size i=len-2; i>0; --i) {
-            std::vector<Real>      y;
-            std::vector<StateType> x;
+            y.clear();
+            x.clear();
 
             //roll back step
             for (Size j=0; j<n; ++j) {
