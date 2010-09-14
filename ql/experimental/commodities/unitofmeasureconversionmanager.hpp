@@ -36,7 +36,6 @@ namespace QuantLib {
         friend class Singleton<UnitOfMeasureConversionManager>;
 
       public:
-        UnitOfMeasureConversionManager();
         UnitOfMeasureConversion lookup(
             const CommodityType& commodityType,
             const UnitOfMeasure&,
@@ -48,6 +47,7 @@ namespace QuantLib {
 
       private:
         std::list<UnitOfMeasureConversion> data_;
+        UnitOfMeasureConversionManager();
         void addKnownConversionFactors();
         UnitOfMeasureConversion directLookup(const CommodityType& commodityType,
                                              const UnitOfMeasure& source,
