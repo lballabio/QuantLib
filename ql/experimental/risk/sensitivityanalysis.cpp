@@ -168,11 +168,11 @@ namespace QuantLib {
     void
     bucketAnalysis(vector<Real>& deltaVector, // delta result
                    vector<Real>& gammaVector, // gamma result
+                   vector<Real>& refVals,
                    Handle<SimpleQuote> quote,
                    const vector<Handle<Quote> >& params,
                    Real shift,
-                   SensitivityAnalysis type,
-                   vector<Real>& refVals)
+                   SensitivityAnalysis type)
     {
         QL_REQUIRE(shift!=0.0, "zero shift not allowed");
 
@@ -311,9 +311,8 @@ namespace QuantLib {
         }
 
         for (Size i=0; i<n; ++i) {
-            bucketAnalysis(deltaMatrix[i], gammaMatrix[i],
-                           quotes[i], parameters, shift, type,
-                           referenceValues);
+            bucketAnalysis(deltaMatrix[i], gammaMatrix[i], referenceValues,
+                           quotes[i], parameters, shift, type);
         }
 
         return;

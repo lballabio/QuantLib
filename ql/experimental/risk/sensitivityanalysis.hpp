@@ -116,11 +116,11 @@ namespace QuantLib {
     void
     bucketAnalysis(std::vector<Real>& deltaVector, // result
                    std::vector<Real>& gammaVector, // result
+                   std::vector<Real>& referenceValues,
                    Handle<SimpleQuote> quote,
                    const std::vector<Handle<Quote> >& parameters,
                    Real shift = 0.0001,
-                   SensitivityAnalysis type = Centered,
-                   std::vector<Real>& referenceValues = std::vector<Real>());
+                   SensitivityAnalysis type = Centered);
 
     //! bucket PV01 sensitivity analysis for a SimpleQuote vector
     /*! returns a pair of first and second derivative vectors calculated as
