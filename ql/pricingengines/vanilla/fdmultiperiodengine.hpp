@@ -91,7 +91,7 @@ namespace QuantLib {
     FDMultiPeriodEngine<Scheme>::FDMultiPeriodEngine(
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size gridPoints, Size timeSteps, bool timeDependent)
-    : FDVanillaEngine(process, gridPoints, timeSteps, timeDependent),
+    : FDVanillaEngine(process, timeSteps, gridPoints, timeDependent),
       timeStepPerPeriod_(timeSteps) {}
 
     template <template <class> class Scheme>

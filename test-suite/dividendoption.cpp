@@ -847,7 +847,7 @@ namespace {
                             new BlackScholesMertonProcess(Handle<Quote>(spot),
                                                           qTS, rTS, volTS));
 
-        Size timeSteps = 40;
+        Size timeSteps = 300;
         Size gridPoints = 300;
 
         boost::shared_ptr<PricingEngine> engine(

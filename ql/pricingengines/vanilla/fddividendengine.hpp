@@ -43,8 +43,8 @@ namespace QuantLib {
              Size timeSteps = 100,
              Size gridPoints = 100,
              bool timeDependent = false)
-        : FDMultiPeriodEngine<Scheme>(process, timeSteps,
-                                      gridPoints, timeDependent) {}
+        : FDMultiPeriodEngine<Scheme>(process, gridPoints,
+                                      timeSteps, timeDependent) {}
       protected:
         virtual void setupArguments(const PricingEngine::arguments*) const;
         void setGridLimits() const = 0;

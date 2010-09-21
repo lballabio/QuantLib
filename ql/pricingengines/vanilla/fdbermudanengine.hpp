@@ -42,8 +42,8 @@ namespace QuantLib {
              Size timeSteps = 100,
              Size gridPoints = 100,
              bool timeDependent = false)
-        : FDMultiPeriodEngine<Scheme>(process, timeSteps,
-                                      gridPoints, timeDependent) {}
+        : FDMultiPeriodEngine<Scheme>(process, gridPoints,
+                                      timeSteps, timeDependent) {}
         void calculate() const {
             this->setupArguments(&arguments_);
             FDMultiPeriodEngine<Scheme>::calculate(&results_);
