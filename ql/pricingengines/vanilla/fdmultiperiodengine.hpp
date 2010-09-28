@@ -40,7 +40,7 @@ namespace QuantLib {
 
         FDMultiPeriodEngine(
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size gridPoints = 100, Size timeSteps = 100,
+             Size timeSteps = 100, Size gridPoints = 100,
              bool timeDependent = false);
         mutable std::vector<boost::shared_ptr<Event> > events_;
         mutable std::vector<Time> stoppingTimes_;
@@ -90,7 +90,7 @@ namespace QuantLib {
     template <template <class> class Scheme>
     FDMultiPeriodEngine<Scheme>::FDMultiPeriodEngine(
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size gridPoints, Size timeSteps, bool timeDependent)
+             Size timeSteps, Size gridPoints, bool timeDependent)
     : FDVanillaEngine(process, timeSteps, gridPoints, timeDependent),
       timeStepPerPeriod_(timeSteps) {}
 
