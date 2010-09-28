@@ -72,11 +72,8 @@ namespace QuantLib {
         registerWith(atmVol_);
         atmVol_->enableExtrapolation();
 
-        // register with SwapIndexBase
-        if (!swapIndexBase_)
-            registerWith(swapIndexBase_);
-        if (!shortSwapIndexBase_)
-            registerWith(swapIndexBase_);
+        registerWith(swapIndexBase_);
+        registerWith(shortSwapIndexBase_);
 
         QL_REQUIRE(shortSwapIndexBase_->tenor()<swapIndexBase_->tenor(),
                    "short index tenor (" << shortSwapIndexBase_->tenor() <<
