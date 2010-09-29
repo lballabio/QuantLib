@@ -1346,7 +1346,7 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
         boost::shared_ptr<FdHestonHullWhiteVanillaEngine> engine(
             new FdHestonHullWhiteVanillaEngine(fdmHestonModel, hwProcess, 
                                                equityShortRateCorr, 
-                                               tGrid, 61, 13, 9, true));
+                                               tGrid, 61, 13, 9, 0, true));
         
         engine->enableMultipleStrikesCaching(
                      std::vector<Real>(strikes, strikes + LENGTH(strikes)));
