@@ -22,6 +22,7 @@ QL_TESTS = \
 	chooseroption.hpp chooseroption.cpp \
 	cliquetoption.hpp cliquetoption.cpp \
 	cms.hpp cms.cpp \
+	commodityunitofmeasure.hpp commodityunitofmeasure.cpp \
 	compoundoption.hpp compoundoption.cpp \
 	convertiblebonds.hpp convertiblebonds.cpp \
 	covariance.hpp covariance.cpp \

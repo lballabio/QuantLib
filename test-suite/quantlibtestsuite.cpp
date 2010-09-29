@@ -63,6 +63,7 @@
 #include "chooseroption.hpp"
 #include "cliquetoption.hpp"
 #include "cms.hpp"
+#include "commodityunitofmeasure.hpp"
 #include "compoundoption.hpp"
 #include "convertiblebonds.hpp"
 #include "covariance.hpp"
@@ -238,6 +239,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ChooserOptionTest::suite());
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
+    test->add(CommodityUnitOfMeasureTest::suite());
     test->add(CompoundOptionTest::suite());
     test->add(ConvertibleBondTest::suite());
     test->add(CovarianceTest::suite());

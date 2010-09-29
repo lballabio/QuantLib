@@ -31,6 +31,8 @@
 
 namespace QuantLib {
 
+    //! repository of conversion factors between units of measure
+    /*! \test lookup of direct unit of measure conversion is tested. */
     class UnitOfMeasureConversionManager
         : public Singleton<UnitOfMeasureConversionManager> {
         friend class Singleton<UnitOfMeasureConversionManager>;

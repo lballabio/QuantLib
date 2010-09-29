@@ -935,6 +935,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\commodityunitofmeasure.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\compoundoption.cpp"
 				>
 			</File>
@@ -1365,6 +1369,10 @@
 			</File>
 			<File
 				RelativePath=".\cms.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\commodityunitofmeasure.hpp"
 				>
 			</File>
 			<File
