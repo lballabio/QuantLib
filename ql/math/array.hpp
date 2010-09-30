@@ -112,6 +112,7 @@ namespace QuantLib {
         //! whether the array is empty
         bool empty() const;
         //@}
+        typedef Size size_type;
         typedef Real value_type;
         typedef Real* iterator;
         typedef const Real* const_iterator;
