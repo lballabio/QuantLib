@@ -24,7 +24,7 @@
 
 namespace QuantLib {
 
-  OvernightIndexedSwap::OvernightIndexedSwap(
+    OvernightIndexedSwap::OvernightIndexedSwap(
                     Type type,
                     Real nominal,
                     const Schedule& schedule,
@@ -32,20 +32,42 @@ namespace QuantLib {
                     const DayCounter& fixedDC,
                     const boost::shared_ptr<OvernightIndex>& overnightIndex,
                     Spread spread)
-      : Swap(2), type_(type), nominal_(nominal),
-        paymentFrequency_(schedule.tenor().frequency()),
-        //schedule_(schedule),
-        fixedRate_(fixedRate), fixedDC_(fixedDC),
-        overnightIndex_(overnightIndex), spread_(spread) {
+    : Swap(2), type_(type),
+      nominals_(std::vector<Real>(1, nominal)),
+      paymentFrequency_(schedule.tenor().frequency()),
+      fixedRate_(fixedRate), fixedDC_(fixedDC),
+      overnightIndex_(overnightIndex), spread_(spread) {
 
+          initialize(schedule);
+
+    }
+
+    OvernightIndexedSwap::OvernightIndexedSwap(
+                    Type type,
+                    std::vector<Real> nominals,
+                    const Schedule& schedule,
+                    Rate fixedRate,
+                    const DayCounter& fixedDC,
+                    const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                    Spread spread)
+    : Swap(2), type_(type), nominals_(nominals),
+      paymentFrequency_(schedule.tenor().frequency()),
+      fixedRate_(fixedRate), fixedDC_(fixedDC),
+      overnightIndex_(overnightIndex), spread_(spread) {
+
+          initialize(schedule);
+
+    }
+
+    void OvernightIndexedSwap::initialize(const Schedule& schedule) {
         if (fixedDC_==DayCounter())
             fixedDC_ = overnightIndex_->dayCounter();
         legs_[0] = FixedRateLeg(schedule)
-            .withNotionals(nominal_)
+            .withNotionals(nominals_)
             .withCouponRates(fixedRate_, fixedDC_);
 
         legs_[1] = OvernightLeg(schedule, overnightIndex_)
-            .withNotionals(nominal_)
+            .withNotionals(nominals_)
             .withSpreads(spread_);
 
         for (Size j=0; j<2; ++j) {

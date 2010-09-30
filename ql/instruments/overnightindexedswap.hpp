@@ -45,10 +45,19 @@ namespace QuantLib {
                     const DayCounter& fixedDC,
                     const boost::shared_ptr<OvernightIndex>& overnightIndex,
                     Spread spread = 0.0);
+        OvernightIndexedSwap(
+                    Type type,
+                    std::vector<Real> nominals,
+                    const Schedule& schedule,
+                    Rate fixedRate,
+                    const DayCounter& fixedDC,
+                    const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                    Spread spread = 0.0);
         //! \name Inspectors
         //@{
         Type type() const { return type_; }
-        Real nominal() const { return nominal_; }
+        Real nominal() const;
+        std::vector<Real> nominals() const { return nominals_; }
 
         //const Schedule& schedule() { return schedule_; }
         Frequency paymentFrequency() { return paymentFrequency_; }
@@ -74,8 +83,9 @@ namespace QuantLib {
         Spread fairSpread() const;
         //@}
       private:
+        void initialize(const Schedule& schedule);
         Type type_;
-        Real nominal_;
+        std::vector<Real> nominals_;
 
         Frequency paymentFrequency_;
         //Schedule schedule_;
@@ -86,6 +96,14 @@ namespace QuantLib {
         boost::shared_ptr<OvernightIndex> overnightIndex_;
         Spread spread_;
     };
+
+
+    // inline
+
+    inline Real OvernightIndexedSwap::nominal() const {
+        QL_REQUIRE(nominals_.size()==1, "varying nominals");
+        return nominals_[0];
+    }
 
 }
 
