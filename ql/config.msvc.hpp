@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2010 StatPro Italia srl
  Copyright (C) 2004, 2008 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
@@ -89,6 +89,12 @@
 // see the corresponding pragmas in the 7.1 section
 #  pragma warning(disable: 4267)
 #  pragma warning(disable: 4224)
+#elif (_MSC_VER == 1600)
+// move inside here configs specific to VC++ 10 (2010)
+#  define QL_PATCH_MSVC100
+#  define QL_WORKING_BOOST_STREAMS
+// this goes here until we figure out what's wrong with boost::uBLAS
+#  define QL_NO_UBLAS_SUPPORT
 #else
 #  error "unknown Microsoft compiler"
 #endif

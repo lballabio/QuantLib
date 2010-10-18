@@ -34,7 +34,7 @@
 
 #include <ql/quantlib.hpp>
 #include <vector>
-#include <math.h>
+#include <cmath>
 #include <iomanip>
 #include <iostream>
 #include <boost/timer.hpp>

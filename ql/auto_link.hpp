@@ -36,6 +36,8 @@
 #  else
 #    define QL_LIB_TOOLSET "vc90"
 #  endif
+#elif (_MSC_VER == 1600)
+#  define QL_LIB_TOOLSET "vc100"
 #else
 #  error "unknown Microsoft compiler"
 #endif

@@ -65,19 +65,19 @@ namespace {
     vector<Rate> cStrikesEU;
     vector<Rate> fStrikesEU;
     vector<Period> cfMaturitiesEU;
-    shared_ptr<Matrix> cPriceEU;
-    shared_ptr<Matrix> fPriceEU;
+    boost::shared_ptr<Matrix> cPriceEU;
+    boost::shared_ptr<Matrix> fPriceEU;
 
-    shared_ptr<YoYInflationIndex> yoyIndexUK(new YYUKRPIr(true, yoyUK));
-    shared_ptr<YoYInflationIndex> yoyIndexEU(new YYEUHICPr(true, yoyEU));
+    boost::shared_ptr<YoYInflationIndex> yoyIndexUK(new YYUKRPIr(true, yoyUK));
+    boost::shared_ptr<YoYInflationIndex> yoyIndexEU(new YYEUHICPr(true, yoyEU));
 
     vector<Rate> cStrikesUK;
     vector<Rate> fStrikesUK;
     vector<Period> cfMaturitiesUK;
-    shared_ptr<Matrix> cPriceUK;
-    shared_ptr<Matrix> fPriceUK;
+    boost::shared_ptr<Matrix> cPriceUK;
+    boost::shared_ptr<Matrix> fPriceUK;
 
-    shared_ptr<InterpolatedYoYCapFloorTermPriceSurface<Bicubic,Cubic> > priceSurfEU;
+    boost::shared_ptr<InterpolatedYoYCapFloorTermPriceSurface<Bicubic,Cubic> > priceSurfEU;
 
 
     void setup() {
@@ -123,7 +123,7 @@ namespace {
             d.push_back( dd );
         }
 
-        shared_ptr<InterpolatedZeroCurve<Cubic> >
+        boost::shared_ptr<InterpolatedZeroCurve<Cubic> >
             euriborTS(new InterpolatedZeroCurve<Cubic>(d, r, Actual365Fixed()));
         Handle<YieldTermStructure> nominalHeur(euriborTS, false);
         nominalEUR = nominalHeur;   // copy to global
@@ -138,7 +138,7 @@ namespace {
             d.push_back( dd );
         }
 
-        shared_ptr<InterpolatedZeroCurve<Cubic> >
+        boost::shared_ptr<InterpolatedZeroCurve<Cubic> >
             gbpLiborTS(new InterpolatedZeroCurve<Cubic>(d, r, Actual365Fixed()));
         Handle<YieldTermStructure> nominalHgbp(gbpLiborTS, false);
         nominalGBP = nominalHgbp;   // copy to global
@@ -170,7 +170,7 @@ namespace {
         bool indexIsInterpolated = true;    // actually false for UKRPI but smooth surfaces are
                                             // better for finding intersections etc
 
-        shared_ptr<InterpolatedYoYInflationCurve<Linear> >
+        boost::shared_ptr<InterpolatedYoYInflationCurve<Linear> >
             pYTSEU( new InterpolatedYoYInflationCurve<Linear>(
                     eval, TARGET(), Actual365Fixed(), Period(2,Months), Monthly,
                     indexIsInterpolated, nominalGBP, d, r) );
@@ -207,8 +207,8 @@ namespace {
         for(Size i = 0; i < ncStrikesEU; i++) cStrikesEU.push_back(capStrikesEU[i]);
         for(Size i = 0; i < nfStrikesEU; i++) fStrikesEU.push_back(floorStrikesEU[i]);
         for(Size i = 0; i < ncfMaturitiesEU; i++) cfMaturitiesEU.push_back(capMaturitiesEU[i]);
-        shared_ptr<Matrix> tcPriceEU(new Matrix(ncStrikesEU, ncfMaturitiesEU));
-        shared_ptr<Matrix> tfPriceEU(new Matrix(nfStrikesEU, ncfMaturitiesEU));
+        boost::shared_ptr<Matrix> tcPriceEU(new Matrix(ncStrikesEU, ncfMaturitiesEU));
+        boost::shared_ptr<Matrix> tfPriceEU(new Matrix(nfStrikesEU, ncfMaturitiesEU));
         for(Size i = 0; i < ncStrikesEU; i++) {
             for(Size j = 0; j < ncfMaturitiesEU; j++) {
                 (*tcPriceEU)[i][j] = capPricesEU[i][j];

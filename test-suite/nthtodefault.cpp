@@ -129,23 +129,23 @@ void NthToDefaultTest::testGauss() {
     gridDates.push_back (TARGET().advance (asofDate, Period (5, Years)));
     gridDates.push_back (TARGET().advance (asofDate, Period (7, Years)));
 
-    shared_ptr<YieldTermStructure> yieldPtr (
+    boost::shared_ptr<YieldTermStructure> yieldPtr (
                                    new FlatForward (asofDate, rate, dc, cmp));
     Handle<YieldTermStructure> yieldHandle (yieldPtr);
 
     vector<Handle<DefaultProbabilityTermStructure> > probabilities;
     Period maxTerm (10, Years);
     for (Size i = 0; i < lambda.size(); i++) {
-        Handle<Quote> h(shared_ptr<Quote>(new SimpleQuote(lambda[i])));
-        shared_ptr<DefaultProbabilityTermStructure> ptr (
+        Handle<Quote> h(boost::shared_ptr<Quote>(new SimpleQuote(lambda[i])));
+        boost::shared_ptr<DefaultProbabilityTermStructure> ptr (
                                          new FlatHazardRate(asofDate, h, dc));
         probabilities.push_back(Handle<DefaultProbabilityTermStructure>(ptr));
     }
 
-    shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.0));
     Handle<Quote> correlationHandle (simpleQuote);
 
-    shared_ptr<OneFactorCopula> gaussianCopula (
+    boost::shared_ptr<OneFactorCopula> gaussianCopula (
                              new OneFactorGaussianCopula (correlationHandle));
     Handle<OneFactorCopula> copula (gaussianCopula);
 
@@ -154,7 +154,7 @@ void NthToDefaultTest::testGauss() {
 
     CreditDefaultSwap cds (Protection::Seller, 100.0, 0.02,
                            schedule, Following, Actual360());
-    cds.setPricingEngine(shared_ptr<PricingEngine>(
+    cds.setPricingEngine(boost::shared_ptr<PricingEngine>(
                              new IntegralCdsEngine(timeUnit, probabilities[0],
                                                    recovery, yieldHandle)));
 
@@ -241,24 +241,24 @@ void NthToDefaultTest::testGaussStudent() {
     gridDates.push_back (TARGET().advance (asofDate, Period (5, Years)));
     gridDates.push_back (TARGET().advance (asofDate, Period (7, Years)));
 
-    shared_ptr<YieldTermStructure> yieldPtr (new FlatForward (asofDate, rate, dc, cmp));
+    boost::shared_ptr<YieldTermStructure> yieldPtr (new FlatForward (asofDate, rate, dc, cmp));
     Handle<YieldTermStructure> yieldHandle (yieldPtr);
 
     vector<Handle<DefaultProbabilityTermStructure> > probabilities;
     Period maxTerm (10, Years);
     for (Size i = 0; i < lambda.size(); i++) {
-        Handle<Quote> h(shared_ptr<Quote>(new SimpleQuote(lambda[i])));
-        shared_ptr<DefaultProbabilityTermStructure> ptr (
+        Handle<Quote> h(boost::shared_ptr<Quote>(new SimpleQuote(lambda[i])));
+        boost::shared_ptr<DefaultProbabilityTermStructure> ptr (
                                          new FlatHazardRate(asofDate, h, dc));
         probabilities.push_back(Handle<DefaultProbabilityTermStructure>(ptr));
     }
 
-    shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.3));
+    boost::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.3));
     Handle<Quote> correlationHandle (simpleQuote);
 
-    shared_ptr<OneFactorCopula> gaussianCopula (
+    boost::shared_ptr<OneFactorCopula> gaussianCopula (
                              new OneFactorGaussianCopula (correlationHandle));
-    shared_ptr<OneFactorCopula> studentCopula (
+    boost::shared_ptr<OneFactorCopula> studentCopula (
                         new OneFactorStudentCopula (correlationHandle, 5, 5));
     RelinkableHandle<OneFactorCopula> copula;
 
