@@ -15,6 +15,8 @@ EXTRA_DIST = \
     EquityOption_vc7.vcproj \
     EquityOption_vc8.vcproj \
     EquityOption_vc9.vcproj \
+    EquityOption_vc10.vcxproj \
+    EquityOption_vc10.vcxproj.filters \
     ReadMe.txt
 
 .PHONY: examples check-examples

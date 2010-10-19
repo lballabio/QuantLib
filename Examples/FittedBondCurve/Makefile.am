@@ -15,6 +15,8 @@ EXTRA_DIST = \
     FittedBondCurve_vc7.vcproj \
     FittedBondCurve_vc8.vcproj \
     FittedBondCurve_vc9.vcproj \
+    FittedBondCurve_vc10.vcxproj \
+    FittedBondCurve_vc10.vcxproj.filters \
     ReadMe.txt
 
 .PHONY: examples check-examples

@@ -15,6 +15,8 @@ EXTRA_DIST = \
     DiscreteHedging_vc7.vcproj \
     DiscreteHedging_vc8.vcproj \
     DiscreteHedging_vc9.vcproj \
+    DiscreteHedging_vc10.vcxproj \
+    DiscreteHedging_vc10.vcxproj.filters \
     ReadMe.txt
 
 .PHONY: examples check-examples

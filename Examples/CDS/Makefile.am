@@ -15,6 +15,8 @@ EXTRA_DIST = \
     CDS_vc7.vcproj \
     CDS_vc8.vcproj \
     CDS_vc9.vcproj \
+    CDS_vc10.vcxproj \
+    CDS_vc10.vcxproj.filters \
     ReadMe.txt
 
 .PHONY: examples check-examples
