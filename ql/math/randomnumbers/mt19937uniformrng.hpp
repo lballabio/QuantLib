@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2010 Kakhkhor Abdijalilov
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,8 +22,8 @@
     \brief Mersenne Twister uniform random number generator
 */
 
-#ifndef quantlib_mersennetwister_uniform_rng_h
-#define quantlib_mersennetwister_uniform_rng_h
+#ifndef quantlib_mersennetwister_uniform_rng_hpp
+#define quantlib_mersennetwister_uniform_rng_hpp
 
 #include <ql/methods/montecarlo/sample.hpp>
 #include <vector>
@@ -38,6 +39,9 @@ namespace QuantLib {
               checking them against known good results.
     */
     class MersenneTwisterUniformRng {
+      private:
+        static const Size N = 624; // state size
+        static const Size M = 397; // shift size
       public:
         typedef Sample<Real> sample_type;
         /*! if the given seed is 0, a random seed will be chosen
@@ -46,19 +50,31 @@ namespace QuantLib {
         explicit MersenneTwisterUniformRng(
                                      const std::vector<unsigned long>& seeds);
         /*! returns a sample with weight 1.0 containing a random number
-            on (0.0, 1.0)-real-interval  */
-        sample_type next() const {
-            // divide by 2^32
-            Real result = (Real(nextInt32()) + 0.5)/4294967296.0;
-            return sample_type(result,1.0);
+            in the (0.0, 1.0) interval  */
+        sample_type next() const { return sample_type(nextReal(),1.0); }
+        //! return a random number in the (0.0, 1.0)-interval
+        Real nextReal() const {
+            return (Real(nextInt32()) + 0.5)/4294967296.0;
         }
-        //! return  a random number on [0,0xffffffff]-interval
-        unsigned long nextInt32() const;
+        //! return a random integer in the [0,0xffffffff]-interval
+        unsigned long nextInt32() const  {
+            if (mti==N)
+                twist(); /* generate N words at a time */
+
+            unsigned long y = mt[mti++];
+
+            /* Tempering */
+            y ^= (y >> 11);
+            y ^= (y << 7) & 0x9d2c5680UL;
+            y ^= (y << 15) & 0xefc60000UL;
+            y ^= (y >> 18);
+            return y;
+        }
       private:
         void seedInitialization(unsigned long seed);
-        mutable std::vector<unsigned long> mt;
+        void twist() const;
+        mutable unsigned long mt[N];
         mutable Size mti;
-        static const Size N, M;
         static const unsigned long MATRIX_A, UPPER_MASK, LOWER_MASK;
     };
 

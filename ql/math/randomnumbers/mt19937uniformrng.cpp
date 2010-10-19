@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2010 Kakhkhor Abdijalilov
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -70,9 +71,6 @@
 
 namespace QuantLib {
 
-    // Period parameters
-    const Size MersenneTwisterUniformRng::N = 624;
-    const Size MersenneTwisterUniformRng::M = 397;
     // constant vector a
     const unsigned long MersenneTwisterUniformRng::MATRIX_A = 0x9908b0dfUL;
     // most significant w-r bits
@@ -81,8 +79,7 @@ namespace QuantLib {
     const unsigned long MersenneTwisterUniformRng::LOWER_MASK=0x7fffffffUL;
 
 
-    MersenneTwisterUniformRng::MersenneTwisterUniformRng(unsigned long seed)
-    : mt(N) {
+    MersenneTwisterUniformRng::MersenneTwisterUniformRng(unsigned long seed) {
         seedInitialization(seed);
     }
 
@@ -103,8 +100,7 @@ namespace QuantLib {
     }
 
     MersenneTwisterUniformRng::MersenneTwisterUniformRng(
-                                      const std::vector<unsigned long>& seeds)
-    : mt(N) {
+                                      const std::vector<unsigned long>& seeds) {
         seedInitialization(19650218UL);
         Size i=1, j=0, k = (N>seeds.size() ? N : seeds.size());
         for (; k; k--) {
@@ -123,42 +119,27 @@ namespace QuantLib {
             if (i>=N) { mt[0] = mt[N-1]; i=1; }
         }
 
-        mt[0] = 0x80000000UL; /*MSB is 1; assuring non-zero initial array*/
+        mt[0] = UPPER_MASK; /*MSB is 1; assuring non-zero initial array*/
     }
 
-
-    unsigned long MersenneTwisterUniformRng::nextInt32() const {
-
-        unsigned long y;
-        static unsigned long mag01[2]={0x0UL, MATRIX_A};
+    void MersenneTwisterUniformRng::twist() const {
+        static const unsigned long mag01[2]={0x0UL, MATRIX_A};
         /* mag01[x] = x * MATRIX_A  for x=0,1 */
+        Size kk;
+        unsigned long y;
 
-        if (mti >= N) { /* generate N words at one time */
-            Size kk;
-
-            for (kk=0;kk<N-M;kk++) {
-                y = (mt[kk]&UPPER_MASK)|(mt[kk+1]&LOWER_MASK);
-                mt[kk] = mt[kk+M] ^ (y >> 1) ^ mag01[y & 0x1UL];
-            }
-            for (;kk<N-1;kk++) {
-                y = (mt[kk]&UPPER_MASK)|(mt[kk+1]&LOWER_MASK);
-                mt[kk] = mt[kk+(M-N)] ^ (y >> 1) ^ mag01[y & 0x1UL];
-            }
-            y = (mt[N-1]&UPPER_MASK)|(mt[0]&LOWER_MASK);
-            mt[N-1] = mt[M-1] ^ (y >> 1) ^ mag01[y & 0x1UL];
-
-            mti = 0;
+        for (kk=0;kk<N-M;kk++) {
+            y = (mt[kk]&UPPER_MASK)|(mt[kk+1]&LOWER_MASK);
+            mt[kk] = mt[kk+M] ^ (y >> 1) ^ mag01[y & 0x1UL];
         }
+        for (;kk<N-1;kk++) {
+            y = (mt[kk]&UPPER_MASK)|(mt[kk+1]&LOWER_MASK);
+            mt[kk] = mt[kk+(M-N)] ^ (y >> 1) ^ mag01[y & 0x1UL];
+        }
+        y = (mt[N-1]&UPPER_MASK)|(mt[0]&LOWER_MASK);
+        mt[N-1] = mt[M-1] ^ (y >> 1) ^ mag01[y & 0x1UL];
 
-        y = mt[mti++];
-
-        /* Tempering */
-        y ^= (y >> 11);
-        y ^= (y << 7) & 0x9d2c5680UL;
-        y ^= (y << 15) & 0xefc60000UL;
-        y ^= (y >> 18);
-
-        return y;
+        mti = 0;
     }
 
 }
