@@ -4,6 +4,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2002, 2003 Ferdinando Ametrano
  Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2010 Kakhkhor Abdijalilov
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -85,7 +86,7 @@ namespace QuantLib {
     const Real InverseCumulativeNormal::x_low_ = 0.02425;
     const Real InverseCumulativeNormal::x_high_= 1.0 - x_low_;
 
-    Real InverseCumulativeNormal::operator()(Real x) const {
+    Real InverseCumulativeNormal::tail_value(Real x) {
         if (x < 0.0 || x > 1.0) {
             // try to recover if due to numerical error
             if (close_enough(x, 1.0)) {
@@ -98,19 +99,12 @@ namespace QuantLib {
             }
         }
 
-        Real z, r;
-
+        Real z;
         if (x < x_low_) {
             // Rational approximation for the lower region 0<x<u_low
             z = std::sqrt(-2.0*std::log(x));
             z = (((((c1_*z+c2_)*z+c3_)*z+c4_)*z+c5_)*z+c6_) /
                 ((((d1_*z+d2_)*z+d3_)*z+d4_)*z+1.0);
-        } else if (x <= x_high_) {
-            // Rational approximation for the central region u_low<=x<=u_high
-            z = x - 0.5;
-            r = z*z;
-            z = (((((a1_*r+a2_)*r+a3_)*r+a4_)*r+a5_)*r+a6_)*z /
-                (((((b1_*r+b2_)*r+b3_)*r+b4_)*r+b5_)*r+1.0);
         } else {
             // Rational approximation for the upper region u_high<x<1
             z = std::sqrt(-2.0*std::log(1.0-x));
@@ -118,21 +112,8 @@ namespace QuantLib {
                 ((((d1_*z+d2_)*z+d3_)*z+d4_)*z+1.0);
         }
 
-
-        // The relative error of the approximation has absolute value less
-        // than 1.15e-9.  One iteration of Halley's rational method (third
-        // order) gives full machine precision.
-        // #define REFINE_TO_FULL_MACHINE_PRECISION_USING_HALLEYS_METHOD
-        #ifdef  REFINE_TO_FULL_MACHINE_PRECISION_USING_HALLEYS_METHOD
-        // error (f_(z) - x) divided by the cumulative's derivative
-        r = (f_(z) - x) * M_SQRT2 * M_SQRTPI * exp(0.5 * z*z);
-        //  Halley's method
-        z -= r/(1+0.5*z*r);
-        #endif
-
-        return average_ + z*sigma_;
+        return z;
     }
-
 
     const Real MoroInverseCumulativeNormal::a0_ =  2.50662823884;
     const Real MoroInverseCumulativeNormal::a1_ =-18.61500062529;
