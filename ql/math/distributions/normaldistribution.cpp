@@ -87,12 +87,12 @@ namespace QuantLib {
     const Real InverseCumulativeNormal::x_high_= 1.0 - x_low_;
 
     Real InverseCumulativeNormal::tail_value(Real x) {
-        if (x < 0.0 || x > 1.0) {
+        if (x <= 0.0 || x >= 1.0) {
             // try to recover if due to numerical error
             if (close_enough(x, 1.0)) {
-                x = 1.0;
+                return QL_MAX_REAL; // largest value available
             } else if (std::fabs(x) < QL_EPSILON) {
-                x = 0.0;
+                return QL_MIN_REAL; // largest negative value available
             } else {
                 QL_FAIL("InverseCumulativeNormal(" << x
                         << ") undefined: must be 0 < x < 1");
