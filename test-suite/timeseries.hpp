@@ -29,6 +29,7 @@ class TimeSeriesTest {
   public:
     static void testConstruction();
     static void testIntervalPrice();
+    static void testIterators();
     static boost::unit_test_framework::test_suite* suite();
     
 };
