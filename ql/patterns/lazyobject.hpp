@@ -113,6 +113,10 @@ namespace QuantLib {
         calculated_ = frozen_ = false;
         try {
             calculate();
+        } catch (std::exception& e) {
+            frozen_ = wasFrozen;
+            notifyObservers();
+            throw e;
         } catch (...) {
             frozen_ = wasFrozen;
             notifyObservers();
@@ -138,6 +142,9 @@ namespace QuantLib {
                                   // case of bootstrapping
             try {
                 performCalculations();
+            } catch (std::exception& e) {
+                calculated_ = false;
+                throw e;
             } catch (...) {
                 calculated_ = false;
                 throw;
