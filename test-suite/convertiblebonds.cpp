@@ -444,8 +444,12 @@ void ConvertibleBondTest::testRegression() {
     try {
         Real x = bond.NPV();  // should throw; if not, an INF was not detected.
         BOOST_FAIL("INF result was not detected: " << x << " returned");
-    } catch (...) {
+    } catch (Error&) {
         // as expected. Do nothing.
+
+        // Note: we're expecting an Error we threw, not just any
+        // exception.  If something else is thrown, then there's
+        // another problem and the test must fail.
     }
 }
 

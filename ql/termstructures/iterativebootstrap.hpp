@@ -176,16 +176,6 @@ namespace QuantLib {
                                                       ts_->times_.begin(),
                                                       ts_->times_.begin()+i+1,
                                                       ts_->data_.begin());
-                    } catch (std::exception& e) {
-                        if (!Interpolator::global)
-                            throw e; // no chance to fix it in a later iteration
-
-                        // otherwise, if the target interpolation is
-                        // not usable yet
-                        ts_->interpolation_ = Linear().interpolate(
-                                                      ts_->times_.begin(),
-                                                      ts_->times_.begin()+i+1,
-                                                      ts_->data_.begin());
                     } catch (...) {
                         if (!Interpolator::global)
                             throw; // no chance to fix it in a later iteration

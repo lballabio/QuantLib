@@ -106,11 +106,6 @@ namespace QuantLib {
             for (Size i=0; i<n; ++i)
                 if (quotes[i]->isValid())
                     quotes[i]->setValue(quoteValues[i]);
-        } catch (std::exception& e) {
-            for (Size i=0; i<n; ++i)
-                if (quoteValues[i]!=Null<Real>())
-                    quotes[i]->setValue(quoteValues[i]);
-            throw e;
         } catch (...) {
             for (Size i=0; i<n; ++i)
                 if (quoteValues[i]!=Null<Real>())
@@ -161,9 +156,6 @@ namespace QuantLib {
                           Integer(type) << ")");
             }
             quote->setValue(quoteValue);
-        } catch (std::exception& e) {
-            quote->setValue(quoteValue);
-            throw e;
         } catch (...) {
             quote->setValue(quoteValue);
             throw;
@@ -255,13 +247,10 @@ namespace QuantLib {
             quote->setValue(quoteValue);
 
             return;
-        } catch (std::exception& e) {
-            // restore the quote to its original state
-            quote->setValue(quoteValue);
-            throw e;
         } catch (...) {
             // restore the quote to its original state
             quote->setValue(quoteValue);
+            throw;
         }
 
     }
