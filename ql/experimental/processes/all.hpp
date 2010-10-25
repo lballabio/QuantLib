@@ -2,4 +2,5 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/experimental/processes/extendedblackscholesprocess.hpp>
+#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
 
