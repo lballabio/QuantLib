@@ -846,6 +846,12 @@
 					RelativePath=".\ql\experimental\coupons\all.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\experimental\coupons\proxyibor.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\coupons\proxyibor.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\experimental\coupons\quantocouponpricer.cpp">
 				</File>
 				<File
@@ -1471,7 +1477,16 @@
 					RelativePath=".\ql\experimental\math\autocovariance.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\experimental\math\claytoncopularng.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\farliegumbelmorgensterncopularng.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\experimental\math\fastfouriertransform.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\frankcopularng.hpp">
 				</File>
 			</Filter>
 			<Filter
@@ -1525,6 +1540,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\processes\extendedblackscholesprocess.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\processes\extendedornsteinuhlenbeckprocess.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\processes\extendedornsteinuhlenbeckprocess.hpp">
 				</File>
 			</Filter>
 			<Filter
@@ -2613,6 +2634,9 @@
 					RelativePath=".\ql\math\interpolations\loginterpolation.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\math\interpolations\mixedinterpolation.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\math\interpolations\multicubicspline.hpp">
 				</File>
 				<File
@@ -3201,6 +3225,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\models\equity\hestonmodelhelper.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\equity\piecewisetimedependenthestonmodel.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\equity\piecewisetimedependenthestonmodel.hpp">
 				</File>
 			</Filter>
 			<Filter
@@ -4490,6 +4520,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\vanilla\analytichestonhullwhiteengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\analyticptdhestonengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\analyticptdhestonengine.hpp">
 				</File>
 				<File
 					RelativePath="ql\pricingengines\vanilla\baroneadesiwhaleyengine.cpp">

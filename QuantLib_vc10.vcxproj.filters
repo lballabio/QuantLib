@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="methods">
@@ -3054,6 +3054,9 @@
     <ClInclude Include="ql\experimental\processes\extendedblackscholesprocess.hpp">
       <Filter>experimental\processes</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\processes\extendedornsteinuhlenbeckprocess.hpp">
+      <Filter>experimental\processes</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\risk\all.hpp">
       <Filter>experimental\risk</Filter>
     </ClInclude>
@@ -3252,7 +3255,16 @@
     <ClInclude Include="ql\experimental\math\autocovariance.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\math\claytoncopularng.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\math\farliegumbelmorgensterncopularng.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\math\fastfouriertransform.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\math\frankcopularng.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
     <ClInclude Include="ql\auto_link.hpp" />
@@ -5094,6 +5106,9 @@
       <Filter>experimental\mcbasket</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\processes\extendedblackscholesprocess.cpp">
+      <Filter>experimental\processes</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\processes\extendedornsteinuhlenbeckprocess.cpp">
       <Filter>experimental\processes</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\risk\sensitivityanalysis.cpp">

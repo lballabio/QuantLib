@@ -7119,6 +7119,14 @@
 					RelativePath=".\ql\experimental\processes\extendedblackscholesprocess.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\experimental\processes\extendedornsteinuhlenbeckprocess.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\processes\extendedornsteinuhlenbeckprocess.hpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="risk"
@@ -7596,7 +7604,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\math\claytoncopularng.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\farliegumbelmorgensterncopularng.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\math\fastfouriertransform.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\frankcopularng.hpp"
 					>
 				</File>
 			</Filter>

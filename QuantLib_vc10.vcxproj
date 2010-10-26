@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -1166,6 +1166,7 @@
     <ClInclude Include="ql\experimental\mcbasket\pathpayoff.hpp" />
     <ClInclude Include="ql\experimental\processes\all.hpp" />
     <ClInclude Include="ql\experimental\processes\extendedblackscholesprocess.hpp" />
+    <ClInclude Include="ql\experimental\processes\extendedornsteinuhlenbeckprocess.hpp" />
     <ClInclude Include="ql\experimental\risk\all.hpp" />
     <ClInclude Include="ql\experimental\risk\sensitivityanalysis.hpp" />
     <ClInclude Include="ql\experimental\shortrate\all.hpp" />
@@ -1232,7 +1233,10 @@
     <ClInclude Include="ql\experimental\inflation\yoyoptionletstripper.hpp" />
     <ClInclude Include="ql\experimental\math\all.hpp" />
     <ClInclude Include="ql\experimental\math\autocovariance.hpp" />
+    <ClInclude Include="ql\experimental\math\claytoncopularng.hpp" />
+    <ClInclude Include="ql\experimental\math\farliegumbelmorgensterncopularng.hpp" />
     <ClInclude Include="ql\experimental\math\fastfouriertransform.hpp" />
+    <ClInclude Include="ql\experimental\math\frankcopularng.hpp" />
     <ClInclude Include="ql\auto_link.hpp" />
     <ClInclude Include="ql\cashflow.hpp" />
     <ClInclude Include="ql\compounding.hpp" />
@@ -1874,6 +1878,7 @@
     <ClCompile Include="ql\experimental\mcbasket\mcpathbasketengine.cpp" />
     <ClCompile Include="ql\experimental\mcbasket\pathmultiassetoption.cpp" />
     <ClCompile Include="ql\experimental\processes\extendedblackscholesprocess.cpp" />
+    <ClCompile Include="ql\experimental\processes\extendedornsteinuhlenbeckprocess.cpp" />
     <ClCompile Include="ql\experimental\risk\sensitivityanalysis.cpp" />
     <ClCompile Include="ql\experimental\shortrate\generalizedhullwhite.cpp" />
     <ClCompile Include="ql\experimental\shortrate\generalizedornsteinuhlenbeckprocess.cpp" />
