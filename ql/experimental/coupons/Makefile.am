@@ -4,10 +4,12 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    proxyibor.hpp \
     quantocouponpricer.hpp \
     subperiodcoupons.hpp
 
 libCoupons_la_SOURCES = \
+    proxyibor.cpp \
     quantocouponpricer.cpp \
     subperiodcoupons.cpp
 
