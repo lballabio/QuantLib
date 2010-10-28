@@ -22,6 +22,7 @@ this_include_HEADERS = \
 	fdmamericanstepcondition.hpp \
     fdmarithmeticaveragecondition.hpp \
     fdmbackwardsolver.hpp \
+	fdmbermudanstepcondition.hpp \
 	fdmblackscholesmesher.hpp \
 	fdmblackscholesmultistrikemesher.hpp \
 	fdmblackscholesop.hpp \
@@ -75,6 +76,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdmamericanstepcondition.cpp \
     fdmarithmeticaveragecondition.cpp \
     fdmbackwardsolver.cpp \
+	fdmbermudanstepcondition.cpp \
 	fdmblackscholesmesher.cpp \
 	fdmblackscholesmultistrikemesher.cpp \
 	fdmblackscholesop.cpp \

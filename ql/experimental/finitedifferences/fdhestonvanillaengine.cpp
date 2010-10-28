@@ -22,6 +22,7 @@
 #include <ql/experimental/finitedifferences/fdhestonvanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
+#include <ql/experimental/finitedifferences/fdmbermudanstepcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
@@ -141,10 +142,25 @@ namespace QuantLib {
             stoppingTimes.push_back(dividendCondition->dividendTimes());
         }
 
-        // 4.2 Step condition if american exercise
+        // 4.2 Step condition if american or bermudan exercise
+        QL_REQUIRE(   arguments_.exercise->type() == Exercise::American
+                   || arguments_.exercise->type() == Exercise::European
+                   || arguments_.exercise->type() == Exercise::Bermudan,
+                   "exercise type is not supported");
+
         if (arguments_.exercise->type() == Exercise::American) {
             stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
                             new FdmAmericanStepCondition(mesher, calculator)));
+        }
+        else if (arguments_.exercise->type() == Exercise::Bermudan) {
+            boost::shared_ptr<FdmBermudanStepCondition> bermudanCondition(
+                new FdmBermudanStepCondition(
+                                    arguments_.exercise->dates(),
+                                    process->riskFreeRate()->referenceDate(),
+                                    process->riskFreeRate()->dayCounter(),
+                                    mesher, calculator));
+            stepConditions.push_back(bermudanCondition);
+            stoppingTimes.push_back(bermudanCondition->exerciseTimes());
         }
 
         boost::shared_ptr<FdmStepConditionComposite> conditions(

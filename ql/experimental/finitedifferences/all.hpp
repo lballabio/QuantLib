@@ -19,6 +19,7 @@
 #include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmarithmeticaveragecondition.hpp>
 #include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
+#include <ql/experimental/finitedifferences/fdmbermudanstepcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmultistrikemesher.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesop.hpp>

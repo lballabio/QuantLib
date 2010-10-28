@@ -21,6 +21,7 @@
 #include <ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
+#include <ql/experimental/finitedifferences/fdmbermudanstepcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
 #include <ql/experimental/finitedifferences/uniform1dmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
@@ -159,12 +160,27 @@ namespace QuantLib {
             stoppingTimes.push_back(dividendCondition->dividendTimes());
         }
 
-        // 3.2 Step condition if american exercise
+        // 3.2 Step condition if american or bermudan exercise 
+        QL_REQUIRE(   arguments_.exercise->type() == Exercise::American
+                   || arguments_.exercise->type() == Exercise::European
+                   || arguments_.exercise->type() == Exercise::Bermudan,
+                   "exercise type is not supported");
+
         boost::shared_ptr<FdmInnerValueCalculator> calculator(
                             new FdmLogInnerValue(arguments_.payoff, mesher, 0));
         if (arguments_.exercise->type() == Exercise::American) {
             stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
                             new FdmAmericanStepCondition(mesher, calculator)));
+        }
+        else if (arguments_.exercise->type() == Exercise::Bermudan) {
+            boost::shared_ptr<FdmBermudanStepCondition> bermudanCondition(
+                new FdmBermudanStepCondition(
+                                arguments_.exercise->dates(),
+                                hestonProcess->riskFreeRate()->referenceDate(),
+                                hestonProcess->riskFreeRate()->dayCounter(),
+                                mesher, calculator));
+            stepConditions.push_back(bermudanCondition);
+            stoppingTimes.push_back(bermudanCondition->exerciseTimes());
         }
 
         boost::shared_ptr<FdmStepConditionComposite> conditions(
