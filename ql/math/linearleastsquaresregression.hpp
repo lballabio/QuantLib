@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2009 Dirk Eddelbuettel
  Copyright (C) 2006, 2009 Klaus Spanderen
+ Copyright (C) 2010 Kakhkhor Abdijalilov
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -113,20 +114,18 @@ namespace QuantLib {
         const Matrix& V = svd.V();
         const Matrix& U = svd.U();
         const Array&  w = svd.singularValues();
-        const Real threshold = n*QL_EPSILON;
 
-        for (i=0; i<m; ++i) {
-            if (w[i] > threshold) {
-                const Real u = std::inner_product(U.column_begin(i),
-                                                  U.column_end(i),
-                                                  y.begin(), 0.0)/w[i];
+        for (i=0; i<svd.rank(); ++i) {
+            const Real u = std::inner_product(U.column_begin(i),
+                                              U.column_end(i),
+                                              y.begin(), 0.0)/w[i];
 
-                for (Size j=0; j<m; ++j) {
-                    a_[j]  +=u*V[j][i];
-                    err_[j]+=V[j][i]*V[j][i]/(w[i]*w[i]);
-                }
+            for (Size j=0; j<m; ++j) {
+                a_[j]+=u*V[j][i];
+                err_[j]+=V[j][i]*V[j][i]/(w[i]*w[i]);
             }
         }
+
         err_      = Sqrt(err_);
         residuals_= A*a_-Array(y.begin(), y.end());
 
