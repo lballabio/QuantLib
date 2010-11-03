@@ -505,15 +505,15 @@ namespace QuantLib {
         return S;
     }
 
-    Real SVD::norm2() {
+    Real SVD::norm2() const {
         return s_[0];
     }
 
-    Real SVD::cond() {
+    Real SVD::cond() const {
         return s_[0]/s_[n_-1];
     }
 
-    Integer SVD::rank() {
+    Integer SVD::rank() const {
         Real eps = std::pow(2.0,-52.0);
         Real tol = m_*s_[0]*eps;
         Integer r = 0;
