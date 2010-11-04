@@ -513,10 +513,10 @@ namespace QuantLib {
         return s_[0]/s_[n_-1];
     }
 
-    Integer SVD::rank() const {
-        Real eps = std::pow(2.0,-52.0);
+    Size SVD::rank() const {
+        Real eps = QL_EPSILON;
         Real tol = m_*s_[0]*eps;
-        Integer r = 0;
+        Size r = 0;
         for (Size i = 0; i < s_.size(); i++) {
             if (s_[i] > tol) {
                 r++;
@@ -527,7 +527,8 @@ namespace QuantLib {
 
     Disposable<Array> SVD::solveFor(const Array& b) const{
         Matrix W(n_, n_, 0.0);
-        for (Size i=0; i<Size(n_); i++)
+        const Size numericalRank = this->rank();
+        for (Size i=0; i<numericalRank; i++)
             W[i][i] = 1./s_[i];
 
         Matrix inverse = V()* W * transpose(U());

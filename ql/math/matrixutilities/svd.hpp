@@ -61,8 +61,8 @@ namespace QuantLib {
         const Array& singularValues() const;
         Disposable<Matrix> S() const;
         Real norm2() const;
-        Real cond() const;
-        Integer rank() const;
+        Real cond()  const;
+        Size rank()  const;
         // utilities
         Disposable<Array> solveFor(const Array&) const;
       private:
