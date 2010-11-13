@@ -50,15 +50,13 @@ namespace QuantLib {
                 const Real k = square<Real>()(process->sigma())
                     *(1-std::exp(-process->kappa()*t))/(4*process->kappa());
 
-                const Real qMin = std::min(process->v0(),
-                    k*InverseNonCentralChiSquareDistribution(
-                                            df, ncp, 1000, 1e-8)(epsilon));
+                const Real qMin = 0.0; // v_min = 0.0;
                 const Real qMax = std::max(process->v0(),
                     k*InverseNonCentralChiSquareDistribution(
                                             df, ncp, 1000,  1e-8)(1-epsilon));
 
                 const Real minVStep=(qMax-qMin)/(50*size);
-                Real ps,p = epsilon;
+                Real ps,p = 0.0;
 
                 Real vTmp = qMin;
                 grid.insert(std::pair<Real, Real>(qMin, epsilon));
