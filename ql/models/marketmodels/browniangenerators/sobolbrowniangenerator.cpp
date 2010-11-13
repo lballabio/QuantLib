@@ -155,6 +155,43 @@ namespace QuantLib {
         lastStep_ = 0;
         return sample.weight;
     }
+    
+    
+    const std::vector<std::vector<Size> >& 
+    SobolBrownianGenerator::orderedIndices() const {
+        return orderedIndices_;
+    }
+
+    std::vector<std::vector<Real> > SobolBrownianGenerator::transform(
+                            const std::vector<std::vector<Real> >& variates) {
+        
+        QL_REQUIRE(   (variates.size() == factors_*steps_),
+                   "inconsistent variate vector");
+
+        const Size dim    = factors_*steps_;
+        const Size nPaths = variates.front().size();
+        
+        std::vector<std::vector<Real> > 
+                       retVal(factors_, std::vector<Real>(nPaths*steps_));
+        
+        for (Size j=0; j < nPaths; ++j) {
+            std::vector<Real> sample(steps_*factors_);
+            for (Size k=0; k < dim; ++k) {
+                sample[k] = variates[k][j];
+            }
+            for (Size i=0; i<factors_; ++i) {
+                bridge_.transform(boost::make_permutation_iterator(
+                                                  sample.begin(),
+                                                  orderedIndices_[i].begin()),
+                          boost::make_permutation_iterator(
+                                                  sample.begin(),
+                                                  orderedIndices_[i].end()),
+                          retVal[i].begin()+j*steps_);
+            }
+        }
+        
+        return retVal;
+    }
 
     Real SobolBrownianGenerator::nextStep(std::vector<Real>& output) {
         #if defined(QL_EXTRA_SAFETY_CHECKS)

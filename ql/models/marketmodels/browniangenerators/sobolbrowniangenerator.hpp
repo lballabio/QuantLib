@@ -59,6 +59,12 @@ namespace QuantLib {
 
         Size numberOfFactors() const;
         Size numberOfSteps() const;
+        
+        // test interface
+        const std::vector<std::vector<Size> >& orderedIndices() const;
+        std::vector<std::vector<Real> > transform(
+                              const std::vector<std::vector<Real> >& variates);
+
       private:
         Size factors_, steps_;
         Ordering ordering_;
