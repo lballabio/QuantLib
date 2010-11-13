@@ -59,7 +59,9 @@ namespace QuantLib {
         }
 
         Size order() const { return x_.size(); }
-
+        const Array& weights() { return w_; }
+        const Array& x()       { return x_; }
+        
       private:
         Array x_, w_;
     };
