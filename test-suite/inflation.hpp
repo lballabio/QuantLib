@@ -27,6 +27,7 @@
 
 class InflationTest {
 public:
+	static void testPeriod();
     static void testZeroIndex();
     static void testZeroTermStructure();
     static void testYYIndex();

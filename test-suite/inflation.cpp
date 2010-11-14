@@ -918,6 +918,32 @@ void InflationTest::testYYTermStructure() {
 
 }
 
+void InflationTest::testPeriod() {
+    BOOST_MESSAGE("Testing inflation period...");
+	
+	Date d;
+	Frequency f;
+	std::pair<Date,Date> res;
+	
+	// fails by crashing out
+	for (Size i=1; i<=12; i++){
+		d = Date(1,Month(i),2009);
+		
+		f = Monthly;
+		res = inflationPeriod (d,f);
+		
+		f = Quarterly;
+		res = inflationPeriod (d,f);
+		
+		f = Semiannual;
+		res = inflationPeriod (d,f);
+		
+		f = Annual;
+		res = inflationPeriod (d,f);
+	}
+}
+
+
 
 
 test_suite* InflationTest::suite() {
