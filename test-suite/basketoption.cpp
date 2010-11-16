@@ -24,6 +24,7 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/basketoption.hpp>
 #include <ql/pricingengines/basket/stulzengine.hpp>
+#include <ql/pricingengines/basket/kirkengine.hpp>
 #include <ql/pricingengines/basket/mceuropeanbasketengine.hpp>
 #include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
@@ -87,7 +88,7 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-    enum BasketType { MinBasket, MaxBasket };
+    enum BasketType { MinBasket, MaxBasket, SpreadBasket };
 
     std::string basketTypeToString(BasketType basketType) {
         switch (basketType) {
@@ -95,6 +96,8 @@ namespace {
             return "MinBasket";
           case MaxBasket:
             return "MaxBasket";
+          case SpreadBasket:
+            return "Spread";
         }
         QL_FAIL("unknown basket option type");
     }
@@ -107,6 +110,8 @@ namespace {
             return boost::shared_ptr<BasketPayoff>(new MinBasketPayoff(p));
           case MaxBasket:
             return boost::shared_ptr<BasketPayoff>(new MaxBasketPayoff(p));
+          case SpreadBasket:
+            return boost::shared_ptr<BasketPayoff>(new SpreadBasketPayoff(p));
         }
         QL_FAIL("unknown basket option type");
     }
@@ -220,7 +225,29 @@ void BasketOptionTest::testEuroTwoValues() {
         {MinBasket,  Option::Put,   98.0, 100.0, 105.0, 0.06, 0.09, 0.05, 0.50, 0.11, 0.16, 0.63,  3.5224, 1.0e-4},
         // data from "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 pag 58
         {MaxBasket, Option::Call,   98.0, 100.0, 105.0, 0.06, 0.09, 0.05, 0.50, 0.11, 0.16, 0.63,  8.0701, 1.0e-4},
-        {MaxBasket,  Option::Put,   98.0, 100.0, 105.0, 0.06, 0.09, 0.05, 0.50, 0.11, 0.16, 0.63,  1.2181, 1.0e-4}
+        {MaxBasket,  Option::Put,   98.0, 100.0, 105.0, 0.06, 0.09, 0.05, 0.50, 0.11, 0.16, 0.63,  1.2181, 1.0e-4},
+
+        /* "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 pag 59-60
+            Kirk approx. for a european two-asset spread option */
+
+        {SpreadBasket, Option::Call, 3.0,  120.786, 118.806, 0.0, 0.0, 0.10,  0.1, 0.20, 0.20, -0.5, 4.7530, 1.0e-3},
+        {SpreadBasket, Option::Call, 3.0,  120.786, 118.806, 0.0, 0.0, 0.10,  0.1, 0.20, 0.20,  0.0, 3.7970, 1.0e-3},
+        {SpreadBasket, Option::Call, 3.0,  120.786, 118.806, 0.0, 0.0, 0.10,  0.1, 0.20, 0.20,  0.5, 2.5537, 1.0e-3},
+        {SpreadBasket, Option::Call, 3.0,  120.786, 118.806, 0.0, 0.0, 0.10,  0.1, 0.25, 0.20, -0.5, 5.4275, 1.0e-3},
+        {SpreadBasket, Option::Call, 3.0,  120.786, 118.806, 0.0, 0.0, 0.10,  0.1, 0.25, 0.20,  0.0, 4.3712, 1.0e-3},
+        {SpreadBasket, Option::Call, 3.0,  120.786, 118.806, 0.0, 0.0, 0.10,  0.1, 0.25, 0.20,  0.5, 3.0086, 1.0e-3},
+        {SpreadBasket, Option::Call, 3.0,  120.786, 118.806, 0.0, 0.0, 0.10,  0.1, 0.20, 0.25, -0.5, 5.4061, 1.0e-3},
+        {SpreadBasket, Option::Call, 3.0,  120.786, 118.806, 0.0, 0.0, 0.10,  0.1, 0.20, 0.25,  0.0, 4.3451, 1.0e-3},
+        {SpreadBasket, Option::Call, 3.0,  120.786, 118.806, 0.0, 0.0, 0.10,  0.1, 0.20, 0.25,  0.5, 2.9723, 1.0e-3},
+        {SpreadBasket, Option::Call, 3.0,  116.050, 114.148, 0.0, 0.0, 0.10,  0.5, 0.20, 0.20, -0.5,10.7517, 1.0e-3},
+        {SpreadBasket, Option::Call, 3.0,  116.050, 114.148, 0.0, 0.0, 0.10,  0.5, 0.20, 0.20,  0.0, 8.7020, 1.0e-3},
+        {SpreadBasket, Option::Call, 3.0,  116.050, 114.148, 0.0, 0.0, 0.10,  0.5, 0.20, 0.20,  0.5, 6.0257, 1.0e-3},
+        {SpreadBasket, Option::Call, 3.0,  116.050, 114.148, 0.0, 0.0, 0.10,  0.5, 0.25, 0.20, -0.5,12.1941, 1.0e-3},
+        {SpreadBasket, Option::Call, 3.0,  116.050, 114.148, 0.0, 0.0, 0.10,  0.5, 0.25, 0.20,  0.0, 9.9340, 1.0e-3},
+        {SpreadBasket, Option::Call, 3.0,  116.050, 114.148, 0.0, 0.0, 0.10,  0.5, 0.25, 0.20,  0.5, 7.0067, 1.0e-3},
+        {SpreadBasket, Option::Call, 3.0,  116.050, 114.148, 0.0, 0.0, 0.10,  0.5, 0.20, 0.25, -0.5,12.1483, 1.0e-3},
+        {SpreadBasket, Option::Call, 3.0,  116.050, 114.148, 0.0, 0.0, 0.10,  0.5, 0.20, 0.25,  0.0, 9.8780, 1.0e-3},
+        {SpreadBasket, Option::Call, 3.0,  116.050, 114.148, 0.0, 0.0, 0.10,  0.5, 0.20, 0.25,  0.5, 6.9284, 1.0e-3}
     };
 
     DayCounter dc = Actual360();
@@ -285,9 +312,22 @@ void BasketOptionTest::testEuroTwoValues() {
                          new StochasticProcessArray(procs,correlationMatrix));
 
 
-        boost::shared_ptr<PricingEngine> engine(new StulzEngine(stochProcess1,
-                                                                stochProcess2,
-                                                                values[i].rho));
+        boost::shared_ptr<PricingEngine> engine;
+        switch(values[i].basketType) {
+          case MaxBasket: 
+          case MinBasket:
+            engine=boost::shared_ptr<PricingEngine>(
+                new StulzEngine(stochProcess1, stochProcess2, values[i].rho));
+            break;
+          case SpreadBasket:
+            engine=boost::shared_ptr<PricingEngine>(
+                  new KirkEngine(stochProcess1, stochProcess2, values[i].rho));
+            break;
+          default:
+              QL_FAIL("unknown basket type");
+              
+        }
+
         boost::shared_ptr<PricingEngine> mcEngine =
             MakeMCEuropeanBasketEngine<PseudoRandom, Statistics>(process)
             .withStepsPerYear(1)

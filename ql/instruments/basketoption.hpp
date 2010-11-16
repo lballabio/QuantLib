@@ -87,6 +87,17 @@ namespace QuantLib {
     };
 
 
+    class SpreadBasketPayoff : public BasketPayoff {
+      public:
+          SpreadBasketPayoff(const boost::shared_ptr<Payoff> &p)
+        : BasketPayoff(p) {}
+        Real accumulate (const Array &a) const {
+            QL_REQUIRE(a.size() == 2, 
+                    "payoff is only defined for two underlyings");
+            return a[0]-a[1];
+        }
+    };
+    
     //! Basket option on a number of assets
     /*! \ingroup instruments */
     class BasketOption : public MultiAssetOption {
