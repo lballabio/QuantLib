@@ -927,13 +927,11 @@ void BasketOptionTest::testOddSamples() {
 test_suite* BasketOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Basket option tests");
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testEuroTwoValues));
-    /*
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(
                                &BasketOptionTest::testBarraquandThreeValues));
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testTavellaValues));
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testOneDAmericanValues));
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testOddSamples));
-    */
     return suite;
 }
