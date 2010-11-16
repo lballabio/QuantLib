@@ -26,8 +26,8 @@
 namespace QuantLib {
 
     KirkEngine::KirkEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process1,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process2,
+            const boost::shared_ptr<BlackProcess>& process1,
+            const boost::shared_ptr<BlackProcess>& process2,
             Real correlation)
     : process1_(process1), process2_(process2), rho_(correlation) {
         registerWith(process1_);
@@ -51,36 +51,33 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(
                                                    spreadPayoff->basePayoff());
         QL_REQUIRE(payoff, "non-plain payoff given");
-
         const Real strike = payoff->strike();
+        
+        const Real f1 = process1_->stateVariable()->value();
+        const Real f2 = process2_->stateVariable()->value();
+
+        // use atm vols
         const Real variance1 = process1_->blackVolatility()->blackVariance(
-                                                exercise->lastDate(), strike);
+                                                exercise->lastDate(), f1);
         const Real variance2 = process2_->blackVolatility()->blackVariance(
-                                                exercise->lastDate(), strike);
+                                                exercise->lastDate(), f2);
 
         const DiscountFactor riskFreeDiscount =
             process1_->riskFreeRate()->discount(exercise->lastDate());
 
-        const Real forward1 = process1_->stateVariable()->value() *
-            process1_->dividendYield()->discount(exercise->lastDate()) 
-            / riskFreeDiscount;
-        const Real forward2 = process2_->stateVariable()->value() *
-            process2_->dividendYield()->discount(exercise->lastDate())
-            / riskFreeDiscount;
-
-        const Real f = forward1/(forward2 + strike);
+        const Real f = f1/(f2 + strike);
         const Real v 
             = std::sqrt(variance1 
-                        + variance2*square<Real>()(forward2/(forward2+strike))
+                        + variance2*square<Real>()(f2/(f2+strike))
                         - 2*rho_*std::sqrt(variance1*variance2)
-                            *(forward2/(forward2+strike)));
+                            *(f2/(f2+strike)));
         
         BlackCalculator black(
              boost::shared_ptr<PlainVanillaPayoff>(
                  new PlainVanillaPayoff(payoff->optionType(),1.0)),
              f, v, riskFreeDiscount);
         
-        results_.value = (forward2 + payoff->strike())*black.value();
+        results_.value = (f2 + strike)*black.value();
     }
 }
 

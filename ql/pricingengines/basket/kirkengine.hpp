@@ -29,7 +29,7 @@
 
 namespace QuantLib {
 
-    //! Pricing engine for spread option
+    //! Pricing engine for spread option on two futures
     /*! This class implements formulae from
         "Correlation in the Energy Markets", E. Kirk
         Managing Energy Price Risk. 
@@ -43,13 +43,13 @@ namespace QuantLib {
     class KirkEngine : public BasketOption::engine {
       public:
         KirkEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process1,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process2,
+            const boost::shared_ptr<BlackProcess>& process1,
+            const boost::shared_ptr<BlackProcess>& process2,
             Real correlation);
         void calculate() const;
       private:
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process1_;
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process2_;
+        boost::shared_ptr<BlackProcess> process1_;
+        boost::shared_ptr<BlackProcess> process2_;
         Real rho_;
     };
 
