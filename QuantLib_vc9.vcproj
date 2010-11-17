@@ -4976,6 +4976,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\basket\kirkengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\basket\kirkengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\basket\mcamericanbasketengine.cpp"
 					>
 				</File>
@@ -6797,6 +6805,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmbackwardsolver.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmbermudanstepcondition.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmbermudanstepcondition.hpp"
 					>
 				</File>
 				<File
