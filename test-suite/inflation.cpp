@@ -943,12 +943,11 @@ void InflationTest::testPeriod() {
 	}
 }
 
-
-
-
 test_suite* InflationTest::suite() {
 
     test_suite* suite = BOOST_TEST_SUITE("Inflation tests");
+	
+	suite->add(QUANTLIB_TEST_CASE(&InflationTest::testPeriod));
 
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testZeroIndex));
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testZeroTermStructure));
@@ -956,8 +955,5 @@ test_suite* InflationTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testYYIndex));
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testYYTermStructure));
 
-
     return suite;
 }
-
-
