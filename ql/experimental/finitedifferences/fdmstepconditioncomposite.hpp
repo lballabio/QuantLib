@@ -31,6 +31,8 @@
 
 namespace QuantLib {
 
+    class FdmSnapshotCondition;
+    
     class FdmStepConditionComposite : public StepCondition<Array> {
     public:
         typedef std::list<boost::shared_ptr<StepCondition<Array> > > Conditions;
@@ -43,6 +45,10 @@ namespace QuantLib {
         const std::vector<Time>& stoppingTimes() const;
         const Conditions& conditions() const;
 
+        static boost::shared_ptr<FdmStepConditionComposite> joinConditions(
+                    const boost::shared_ptr<FdmSnapshotCondition>& c1,
+                    const boost::shared_ptr<FdmStepConditionComposite>& c2);
+        
     private:
         std::vector<Time> stoppingTimes_;
         const Conditions conditions_;

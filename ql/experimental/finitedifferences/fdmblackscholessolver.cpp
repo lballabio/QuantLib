@@ -26,24 +26,6 @@
 
 namespace QuantLib {
 
-    namespace {
-        const boost::shared_ptr<FdmStepConditionComposite> addCondition(
-                     const boost::shared_ptr<FdmSnapshotCondition>& c1,
-                     const boost::shared_ptr<FdmStepConditionComposite>& c2) {
-
-             std::list<std::vector<Time> > stoppingTimes;
-             stoppingTimes.push_back(std::vector<Time>(1, c1->getTime()));
-             stoppingTimes.push_back(c2->stoppingTimes());
-
-             FdmStepConditionComposite::Conditions conditions;
-             conditions.push_back(c1);
-             conditions.push_back(c2);
-
-             return boost::shared_ptr<FdmStepConditionComposite>(
-                 new FdmStepConditionComposite(stoppingTimes, conditions));
-        }
-    }
-
     FdmBlackScholesSolver::FdmBlackScholesSolver(
         const Handle<GeneralizedBlackScholesProcess>& process,
         const boost::shared_ptr<FdmMesher>& mesher,
@@ -64,7 +46,8 @@ namespace QuantLib {
         0.99*std::min(1.0/365.0,
                       condition->stoppingTimes().empty() ? maturity :
                                  condition->stoppingTimes().front()))),
-      condition_(addCondition(thetaCondition_, condition)),
+      condition_(FdmStepConditionComposite::joinConditions(thetaCondition_, 
+                                                           condition)),
       strike_(strike),
       maturity_(maturity),
       timeSteps_(timeSteps),

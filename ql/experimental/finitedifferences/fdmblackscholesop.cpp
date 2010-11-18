@@ -31,19 +31,21 @@ namespace QuantLib {
         const boost::shared_ptr<GeneralizedBlackScholesProcess> & bsProcess,
         Real strike,
         bool localVol,
-        Real illegalLocalVolOverwrite)
+        Real illegalLocalVolOverwrite,
+        Size direction)
     : mesher_(mesher),
       rTS_   (bsProcess->riskFreeRate().currentLink()),
       qTS_   (bsProcess->dividendYield().currentLink()),
       volTS_ (bsProcess->blackVolatility().currentLink()),
       localVol_((localVol) ? bsProcess->localVolatility().currentLink()
                            : boost::shared_ptr<LocalVolTermStructure>()),
-      x_     ((localVol) ? Array(Exp(mesher->locations(0))) : Array()),
-      dxMap_ (FirstDerivativeOp(0, mesher)),
-      dxxMap_(SecondDerivativeOp(0, mesher)),
-      mapT_  (0, mesher),
+      x_     ((localVol) ? Array(Exp(mesher->locations(direction))) : Array()),
+      dxMap_ (FirstDerivativeOp(direction, mesher)),
+      dxxMap_(SecondDerivativeOp(direction, mesher)),
+      mapT_  (direction, mesher),
       strike_(strike),
-      illegalLocalVolOverwrite_(illegalLocalVolOverwrite) {
+      illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
+      direction_(direction) {
     }
 
     void FdmBlackScholesOp::setTime(Time t1, Time t2) {
@@ -95,7 +97,7 @@ namespace QuantLib {
 
     Disposable<Array> FdmBlackScholesOp::apply_direction(Size direction,
                                                     const Array& r) const {
-        if (direction == 0)
+        if (direction == direction_)
             return mapT_.apply(r);
         else {
             Array retVal(r.size(), 0.0);
@@ -110,7 +112,7 @@ namespace QuantLib {
 
     Disposable<Array> FdmBlackScholesOp::solve_splitting(Size direction,
                                                 const Array& r, Real dt) const {
-        if (direction == 0)
+        if (direction == direction_)
             return mapT_.solve_splitting(r, dt, 1.0);
         else {
             Array retVal(r);
@@ -120,6 +122,6 @@ namespace QuantLib {
 
     Disposable<Array> FdmBlackScholesOp::preconditioner(const Array& r,
                                                         Real dt) const {
-        return solve_splitting(0, r, dt);
+        return solve_splitting(direction_, r, dt);
     }
 }

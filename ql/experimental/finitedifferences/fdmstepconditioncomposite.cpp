@@ -19,6 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/experimental/finitedifferences/fdmsnapshotcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 
 namespace QuantLib {
@@ -52,5 +53,22 @@ namespace QuantLib {
              iter != conditions_.end(); ++iter) {
             (*iter)->applyTo(a, t);
         }
+    }
+    
+    boost::shared_ptr<FdmStepConditionComposite> 
+    FdmStepConditionComposite::joinConditions(
+                const boost::shared_ptr<FdmSnapshotCondition>& c1,
+                const boost::shared_ptr<FdmStepConditionComposite>& c2) {
+
+        std::list<std::vector<Time> > stoppingTimes;
+        stoppingTimes.push_back(std::vector<Time>(1, c1->getTime()));
+        stoppingTimes.push_back(c2->stoppingTimes());
+
+        FdmStepConditionComposite::Conditions conditions;
+        conditions.push_back(c1);
+        conditions.push_back(c2);
+
+        return boost::shared_ptr<FdmStepConditionComposite>(
+            new FdmStepConditionComposite(stoppingTimes, conditions));
     }
 }

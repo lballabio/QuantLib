@@ -41,7 +41,8 @@ namespace QuantLib {
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
             Real strike,
             bool localVol = false,
-            Real illegalLocalVolOverwrite = -Null<Real>());
+            Real illegalLocalVolOverwrite = -Null<Real>(),
+            Size direction = 0);
 
         Size size() const;
         void setTime(Time t1, Time t2);
@@ -65,6 +66,7 @@ namespace QuantLib {
         TripleBandLinearOp mapT_;
         const Real strike_;
         const Real illegalLocalVolOverwrite_;
+        const Size direction_;
     };
 }
 

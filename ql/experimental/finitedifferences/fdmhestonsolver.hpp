@@ -34,7 +34,6 @@
 
 namespace QuantLib {
 
-    class FdmDirichletBoundary;
     class FdmInnerValueCalculator;
     class FdmMesher;
     class FdmSnapshotCondition;
