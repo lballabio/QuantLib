@@ -5,11 +5,13 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     extendedblackscholesprocess.hpp \
-    extendedornsteinuhlenbeckprocess.hpp
+    extendedornsteinuhlenbeckprocess.hpp \
+    vegastressedblackscholesprocess.hpp
 
 libProcesses_la_SOURCES = \
     extendedblackscholesprocess.cpp \
-    extendedornsteinuhlenbeckprocess.cpp
+    extendedornsteinuhlenbeckprocess.cpp \
+    vegastressedblackscholesprocess.cpp
 
 noinst_LTLIBRARIES = libProcesses.la
 

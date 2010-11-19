@@ -3,4 +3,5 @@
 
 #include <ql/experimental/processes/extendedblackscholesprocess.hpp>
 #include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
+#include <ql/experimental/processes/vegastressedblackscholesprocess.hpp>
 
