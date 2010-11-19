@@ -29,7 +29,7 @@ namespace QuantLib {
 
     KnuthUniformRng::KnuthUniformRng(long seed)
     : ranf_arr_buf(QUALITY), ran_u(QUALITY) {
-        ranf_arr_ptr = ranf_arr_sentinel = ranf_arr_buf.end();
+        ranf_arr_ptr = ranf_arr_sentinel = ranf_arr_buf.size();
         ranf_start(seed != 0 ? seed : SeedGenerator::instance().get());
     }
 
@@ -77,8 +77,8 @@ namespace QuantLib {
 
     double KnuthUniformRng::ranf_arr_cycle() const {
         ranf_array(ranf_arr_buf,QUALITY);
-        ranf_arr_ptr=ranf_arr_buf.begin()+1;
-        ranf_arr_sentinel = ranf_arr_buf.begin()+100;
+        ranf_arr_ptr = 1;
+        ranf_arr_sentinel = 100;
         return ranf_arr_buf[0];
     }
 

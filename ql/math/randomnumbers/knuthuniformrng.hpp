@@ -53,8 +53,7 @@ namespace QuantLib {
       private:
         static const int KK, LL, TT, QUALITY;
         mutable std::vector<double> ranf_arr_buf;
-        mutable std::vector<double>::const_iterator ranf_arr_ptr,
-            ranf_arr_sentinel;
+        mutable size_t ranf_arr_ptr, ranf_arr_sentinel;
         mutable std::vector<double> ran_u;
         double mod_sum(double x, double y) const;
         bool is_odd(int s) const;
@@ -68,7 +67,7 @@ namespace QuantLib {
 
     inline KnuthUniformRng::sample_type KnuthUniformRng::next() const {
         double result = (ranf_arr_ptr != ranf_arr_sentinel ?
-                         *ranf_arr_ptr++ :
+                         ranf_arr_buf[ranf_arr_ptr++] :
                          ranf_arr_cycle());
         return sample_type(result,1.0);
     }
