@@ -877,6 +877,7 @@
     <ClInclude Include="ql\pricingengines\basket\all.hpp" />
     <ClInclude Include="ql\pricingengines\basket\mcamericanbasketengine.hpp" />
     <ClInclude Include="ql\pricingengines\basket\mceuropeanbasketengine.hpp" />
+    <ClInclude Include="ql\pricingengines\basket\kirkengine.hpp" />
     <ClInclude Include="ql\pricingengines\basket\stulzengine.hpp" />
     <ClInclude Include="ql\pricingengines\forward\all.hpp" />
     <ClInclude Include="ql\pricingengines\forward\forwardengine.hpp" />
@@ -1122,6 +1123,7 @@
     <ClInclude Include="ql\experimental\finitedifferences\fdmamericanstepcondition.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmarithmeticaveragecondition.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmbackwardsolver.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\fdmbermudanstepcondition.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmblackscholesmesher.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmblackscholesmultistrikemesher.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmblackscholesop.hpp" />
@@ -1167,6 +1169,7 @@
     <ClInclude Include="ql\experimental\processes\all.hpp" />
     <ClInclude Include="ql\experimental\processes\extendedblackscholesprocess.hpp" />
     <ClInclude Include="ql\experimental\processes\extendedornsteinuhlenbeckprocess.hpp" />
+    <ClInclude Include="ql\experimental\processes\vegastressedblackscholesprocess.hpp" />
     <ClInclude Include="ql\experimental\risk\all.hpp" />
     <ClInclude Include="ql\experimental\risk\sensitivityanalysis.hpp" />
     <ClInclude Include="ql\experimental\shortrate\all.hpp" />
@@ -1662,6 +1665,7 @@
     <ClCompile Include="ql\pricingengines\barrier\mcbarrierengine.cpp" />
     <ClCompile Include="ql\pricingengines\basket\mcamericanbasketengine.cpp" />
     <ClCompile Include="ql\pricingengines\basket\mceuropeanbasketengine.cpp" />
+    <ClCompile Include="ql\pricingengines\basket\kirkengine.cpp" />
     <ClCompile Include="ql\pricingengines\basket\stulzengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\analyticbsmhullwhiteengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\analyticdigitalamericanengine.cpp" />
@@ -1844,6 +1848,7 @@
     <ClCompile Include="ql\experimental\finitedifferences\fdmamericanstepcondition.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmarithmeticaveragecondition.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmbackwardsolver.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\fdmbermudanstepcondition.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmblackscholesmesher.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmblackscholesmultistrikemesher.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmblackscholesop.cpp" />
@@ -1879,6 +1884,7 @@
     <ClCompile Include="ql\experimental\mcbasket\pathmultiassetoption.cpp" />
     <ClCompile Include="ql\experimental\processes\extendedblackscholesprocess.cpp" />
     <ClCompile Include="ql\experimental\processes\extendedornsteinuhlenbeckprocess.cpp" />
+    <ClCompile Include="ql\experimental\processes\vegastressedblackscholesprocess.cpp" />
     <ClCompile Include="ql\experimental\risk\sensitivityanalysis.cpp" />
     <ClCompile Include="ql\experimental\shortrate\generalizedhullwhite.cpp" />
     <ClCompile Include="ql\experimental\shortrate\generalizedornsteinuhlenbeckprocess.cpp" />

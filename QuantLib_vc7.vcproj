@@ -1206,6 +1206,12 @@
 					RelativePath=".\ql\experimental\finitedifferences\fdmbackwardsolver.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmbermudanstepcondition.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmbermudanstepcondition.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholesmesher.cpp">
 				</File>
 				<File
@@ -1546,6 +1552,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\processes\extendedornsteinuhlenbeckprocess.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\processes\vegastressedblackscholesprocess.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\processes\vegastressedblackscholesprocess.hpp">
 				</File>
 			</Filter>
 			<Filter
@@ -4245,6 +4257,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\basket\mceuropeanbasketengine.hpp">
+				</File>
+				<File
+					RelativePath="ql\pricingengines\basket\kirkengine.cpp">
+				</File>
+				<File
+					RelativePath="ql\pricingengines\basket\kirkengine.hpp">
 				</File>
 				<File
 					RelativePath="ql\pricingengines\basket\stulzengine.cpp">

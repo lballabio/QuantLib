@@ -7143,6 +7143,14 @@
 					RelativePath=".\ql\experimental\processes\extendedornsteinuhlenbeckprocess.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\experimental\processes\vegastressedblackscholesprocess.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\processes\vegastressedblackscholesprocess.hpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="risk"

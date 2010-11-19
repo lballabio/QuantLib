@@ -2187,6 +2187,9 @@
     <ClInclude Include="ql\pricingengines\basket\mceuropeanbasketengine.hpp">
       <Filter>pricingengines\basket</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\basket\kirkengine.hpp">
+      <Filter>pricingengines\basket</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\basket\stulzengine.hpp">
       <Filter>pricingengines\basket</Filter>
     </ClInclude>
@@ -2922,6 +2925,9 @@
     <ClInclude Include="ql\experimental\finitedifferences\fdmbackwardsolver.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmbermudanstepcondition.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdmblackscholesmesher.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
@@ -3055,6 +3061,9 @@
       <Filter>experimental\processes</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\processes\extendedornsteinuhlenbeckprocess.hpp">
+      <Filter>experimental\processes</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\processes\vegastressedblackscholesprocess.hpp">
       <Filter>experimental\processes</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\risk\all.hpp">
@@ -4460,6 +4469,9 @@
     <ClCompile Include="ql\pricingengines\basket\mceuropeanbasketengine.cpp">
       <Filter>pricingengines\basket</Filter>
     </ClCompile>
+    <ClCompile Include="ql\pricingengines\basket\kirkengine.cpp">
+      <Filter>pricingengines\basket</Filter>
+    </ClCompile>
     <ClCompile Include="ql\pricingengines\basket\stulzengine.cpp">
       <Filter>pricingengines\basket</Filter>
     </ClCompile>
@@ -5006,6 +5018,9 @@
     <ClCompile Include="ql\experimental\finitedifferences\fdmbackwardsolver.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdmbermudanstepcondition.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\finitedifferences\fdmblackscholesmesher.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
@@ -5109,6 +5124,9 @@
       <Filter>experimental\processes</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\processes\extendedornsteinuhlenbeckprocess.cpp">
+      <Filter>experimental\processes</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\processes\vegastressedblackscholesprocess.cpp">
       <Filter>experimental\processes</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\risk\sensitivityanalysis.cpp">
