@@ -25,9 +25,6 @@
 #include <ql/experimental/finitedifferences/fdmmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmsnapshotcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmquantohelper.hpp>
-#include <ql/experimental/finitedifferences/hundsdorferscheme.hpp>
-#include <ql/experimental/finitedifferences/craigsneydscheme.hpp>
-#include <ql/experimental/finitedifferences/douglasscheme.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonhullwhiteop.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 

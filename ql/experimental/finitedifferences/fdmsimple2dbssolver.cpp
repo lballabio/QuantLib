@@ -22,10 +22,10 @@
 */
 
 #include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
+#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/experimental/finitedifferences/douglasscheme.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesop.hpp>
 #include <ql/experimental/finitedifferences/fdmsimple2dbssolver.hpp>
-#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
