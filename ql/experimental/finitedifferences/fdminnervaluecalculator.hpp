@@ -33,6 +33,7 @@
 namespace QuantLib {
 
     class Payoff;
+    class BasketPayoff;
     class FdmMesher;
     class FdmLinearOpIterator;
 
@@ -62,6 +63,19 @@ namespace QuantLib {
         const boost::shared_ptr<FdmMesher> mesher_;
         const Size direction_;
         std::vector<Real> avgInnerValues_;
+    };
+
+    class FdmLogBasketInnerValue : public FdmInnerValueCalculator {
+      public:
+        FdmLogBasketInnerValue(const boost::shared_ptr<BasketPayoff>& payoff,
+                               const boost::shared_ptr<FdmMesher>& mesher);
+
+        Real innerValue(const FdmLinearOpIterator& iter);
+        Real avgInnerValue(const FdmLinearOpIterator& iter);
+
+      private:
+        const boost::shared_ptr<BasketPayoff> payoff_;
+        const boost::shared_ptr<FdmMesher> mesher_;
     };
 }
 

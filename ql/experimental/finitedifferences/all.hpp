@@ -7,6 +7,7 @@
 #include <ql/experimental/finitedifferences/dividendbarrieroption.hpp>
 #include <ql/experimental/finitedifferences/douglasscheme.hpp>
 #include <ql/experimental/finitedifferences/expliciteulerscheme.hpp>
+#include <ql/experimental/finitedifferences/fd2dblackscholesvanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesasianengine.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesbarrierengine.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesrebateengine.hpp>
@@ -16,7 +17,8 @@
 #include <ql/experimental/finitedifferences/fdhestonvanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdm1dmesher.hpp>
-#include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
+#include <ql/experimental/finitedifferences/fdm2dblackscholesop.hpp>
+#include <ql/experimental/finitedifferences/fdm2dblackscholessolver.hpp>
 #include <ql/experimental/finitedifferences/fdmarithmeticaveragecondition.hpp>
 #include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmbermudanstepcondition.hpp>

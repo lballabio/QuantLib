@@ -26,6 +26,7 @@
 #include <ql/payoff.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
+#include <ql/instruments/basketoption.hpp>
 #include <ql/experimental/finitedifferences/fdmmesher.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 
@@ -97,5 +98,25 @@ namespace QuantLib {
         }
                     
         return retVal;
+    }
+    
+    FdmLogBasketInnerValue::FdmLogBasketInnerValue(
+                                const boost::shared_ptr<BasketPayoff>& payoff,
+                                const boost::shared_ptr<FdmMesher>& mesher)
+    : payoff_(payoff),
+      mesher_(mesher) { }
+
+    Real FdmLogBasketInnerValue::innerValue(const FdmLinearOpIterator& iter) {
+        Array x(mesher_->layout()->dim().size());
+        for (Size i=0; i < x.size(); ++i) {
+            x[i] = std::exp(mesher_->location(iter, i));
+        }
+        
+        return payoff_->operator()(x);
+    }
+    
+    Real 
+    FdmLogBasketInnerValue::avgInnerValue(const FdmLinearOpIterator& iter) {
+        return innerValue(iter);
     }
 }

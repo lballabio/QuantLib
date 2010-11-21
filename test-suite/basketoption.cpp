@@ -31,6 +31,7 @@
 #include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/experimental/finitedifferences/fd2dblackscholesvanillaengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <boost/progress.hpp>
 
@@ -269,7 +270,8 @@ void BasketOptionTest::testEuroTwoValues() {
     boost::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
 
-    Real mcRelativeErrorTolerance = 0.01;
+    const Real mcRelativeErrorTolerance = 0.01;
+    const Real fdRelativeErrorTolerance = 0.01;
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -345,6 +347,10 @@ void BasketOptionTest::testEuroTwoValues() {
             .withSamples(10000)
             .withSeed(42);
 
+        boost::shared_ptr<PricingEngine> fdEngine(
+                    new Fd2dBlackScholesVanillaEngine(p1, p2, values[i].rho,
+                                                      50, 50, 15));
+        
         BasketOption basketOption(basketTypeToPayoff(values[i].basketType,
                                                      payoff),
                                   exercise);
@@ -362,10 +368,23 @@ void BasketOptionTest::testEuroTwoValues() {
                              calculated, error, values[i].tol);
         }
 
+        // fd engine
+        basketOption.setPricingEngine(fdEngine);
+        calculated = basketOption.NPV();
+        Real relError = relativeError(calculated, expected, expected);
+        if (relError > mcRelativeErrorTolerance ) {
+            REPORT_FAILURE_2("FD value", values[i].basketType, payoff,
+                             exercise, values[i].s1, values[i].s2,
+                             values[i].q1, values[i].q2, values[i].r,
+                             today, values[i].v1, values[i].v2, values[i].rho,
+                             values[i].result, calculated, relError,
+                             fdRelativeErrorTolerance);
+        }
+
         // mc engine
         basketOption.setPricingEngine(mcEngine);
         calculated = basketOption.NPV();
-        Real relError = relativeError(calculated, expected, values[i].s1);
+        relError = relativeError(calculated, expected, values[i].s1);
         if (relError > mcRelativeErrorTolerance ) {
             REPORT_FAILURE_2("MC value", values[i].basketType, payoff,
                              exercise, values[i].s1, values[i].s2,
@@ -933,5 +952,6 @@ test_suite* BasketOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testTavellaValues));
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testOneDAmericanValues));
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testOddSamples));
+
     return suite;
 }
