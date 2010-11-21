@@ -29,7 +29,7 @@
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
-#include <ql/experimental/finitedifferences/fdmhestonsolver.hpp>
+#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 
 namespace QuantLib {
 
