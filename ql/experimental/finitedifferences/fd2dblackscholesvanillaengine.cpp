@@ -36,15 +36,13 @@ namespace QuantLib {
         Real correlation,
         Size xGrid, Size yGrid,
         Size tGrid, Size dampingSteps,
-        FdmBackwardSolver::FdmSchemeType type,
-        Real theta, Real mu)
+        const FdmSchemeDesc& schemeDesc)
     : p1_(p1),
       p2_(p2),
       correlation_(correlation),
       xGrid_(xGrid), yGrid_(yGrid), tGrid_(tGrid),
       dampingSteps_(dampingSteps),
-      schemeType_(type),
-      theta_(theta), mu_(mu) {
+      schemeDesc_(schemeDesc) {
     }
 
     void Fd2dBlackScholesVanillaEngine::calculate() const {
@@ -120,7 +118,7 @@ namespace QuantLib {
                              correlation_,
                              mesher, boundaries, conditions, calculator,
                              maturity, tGrid_, dampingSteps_,
-                             schemeType_, theta_, mu_));
+                             schemeDesc_));
 
         const Real x = p1_->x0();
         const Real y = p2_->x0();
