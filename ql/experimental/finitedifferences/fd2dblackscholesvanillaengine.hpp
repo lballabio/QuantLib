@@ -47,10 +47,7 @@ namespace QuantLib {
                 Real correlation,
                 Size xGrid = 100, Size yGrid = 100, 
                 Size tGrid = 50, Size dampingSteps = 0,
-                FdmBackwardSolver::FdmSchemeType type 
-                                            = FdmBackwardSolver::Hundsdorfer,
-                Real theta = 0.5+std::sqrt(3.0)/6,
-                Real mu = 0.5);
+                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer);
 
         void calculate() const;
 
@@ -60,8 +57,7 @@ namespace QuantLib {
         const Real correlation_;
         const Size xGrid_, yGrid_, tGrid_;
         const Size dampingSteps_;
-        const FdmBackwardSolver::FdmSchemeType schemeType_;
-        const Real theta_, mu_;
+        const FdmSchemeDesc schemeDesc_;
     };
 }
 

@@ -987,17 +987,15 @@ namespace {
     
     struct SchemeData {
         const char* const name;
-        FdmBackwardSolver::FdmSchemeType schemeType;
-        Real theta;
-        Real mu;
+        FdmSchemeDesc schemeDesc;
     };
-    
+        
     SchemeData schemes[] = {
-        { "HV2", FdmBackwardSolver::Hundsdorfer, 0.5+std::sqrt(3.0)/6, 0.5 },
-        { "HV1", FdmBackwardSolver::Hundsdorfer, 1.0-std::sqrt(2.0)/2, 0.5 },
-        { "CS" , FdmBackwardSolver::CraigSneyd, 0.5, 0.5 },
-        { "MCS", FdmBackwardSolver::ModifiedCraigSneyd, 0.3, 0.3 },
-        { "DS" , FdmBackwardSolver::Douglas, 0.5, 0.5 }
+        { "HV2", FdmSchemeDesc::Hundsdorfer },
+        { "HV1", FdmSchemeDesc::ModifiedHundsdorfer },
+        { "CS" , FdmSchemeDesc::CraigSneyd },
+        { "MCS", FdmSchemeDesc::ModifiedCraigSneyd },
+        { "DS" , FdmSchemeDesc::Douglas }
     };
 
     struct VanillaOptionData {
@@ -1040,7 +1038,6 @@ namespace {
     }
 }
 
-#include <iostream>
 void HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing() {
     BOOST_MESSAGE("Testing convergence speed of Heston-Hull-White engine...");
     
@@ -1090,14 +1087,12 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing() {
                 Size tSteps = Size(maturity*listOfTimeStepsPerYear[u]);
     
                 boost::shared_ptr<FdHestonHullWhiteVanillaEngine> fdEngine(
-                                new FdHestonHullWhiteVanillaEngine(
+                    new FdHestonHullWhiteVanillaEngine(
                                     hestonModel, hwProcess, equityIrCorr,  
                                     tSteps, 400, 2, 10, 0, controlVariate[i],
-                                    scheme.schemeType, 
-                                    scheme.theta, scheme.mu));
+                                    scheme.schemeDesc));
                 fdEngine->enableMultipleStrikesCaching(
-                    std::vector<Real>(strikes, 
-                                      strikes + LENGTH(strikes)));
+                    std::vector<Real>(strikes, strikes + LENGTH(strikes)));
     
                 Real avgPriceDiff = 0.0;
                 for (Size k=0; k < LENGTH(strikes); ++k) {
@@ -1163,11 +1158,9 @@ void HybridHestonHullWhiteProcessTest::testSpatialDiscretizatinError() {
                 boost::shared_ptr<FdHestonVanillaEngine> fdEngine(
                     new FdHestonVanillaEngine(
                         hestonModel, tSteps, 200, 40, 0,
-                        schemes[i].schemeType, 
-                        schemes[i].theta,schemes[i].mu));
+                        schemes[i].schemeDesc));
                 fdEngine->enableMultipleStrikesCaching(
-                    std::vector<Real>(strikes, 
-                                      strikes + LENGTH(strikes)));
+                    std::vector<Real>(strikes, strikes + LENGTH(strikes)));
     
                 for (Size k=0; k < LENGTH(strikes); ++k) {
                     VanillaOptionData optionData 

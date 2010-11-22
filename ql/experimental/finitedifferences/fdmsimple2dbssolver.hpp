@@ -51,7 +51,7 @@ namespace QuantLib {
             Real strike,
             Time maturity,
             Size timeSteps,
-            Real theta = 0.5);
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas);
 
         Real valueAt(Real s, Real a) const;
         Real deltaAt(Real s, Real a, Real eps) const;
@@ -71,7 +71,7 @@ namespace QuantLib {
         const Time maturity_;
         const Size timeSteps_;
 
-        const Real theta_;
+        const FdmSchemeDesc schemeDesc_;
 
         std::vector<Real> x_, a_, initialValues_;
         mutable Matrix resultValues_;

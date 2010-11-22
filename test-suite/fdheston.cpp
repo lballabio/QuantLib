@@ -420,7 +420,7 @@ void FdHestonTest::testFdmHestonBlackScholes() {
              new FdHestonVanillaEngine(boost::shared_ptr<HestonModel>(
                                            new HestonModel(hestonProcess)), 
                                        10000, 400, 5, 0, 
-                                       FdmBackwardSolver::ExplicitEuler)));
+                                       FdmSchemeDesc::ExplicitEuler)));
         
         calculated = option.NPV();
         if (std::fabs(calculated - expected) > tol) {
@@ -503,13 +503,7 @@ namespace {
         Real q;
         Real T;
         Real K;
-    };
-    
-    struct SchemeData {
-        FdmBackwardSolver::FdmSchemeType schemeType;
-        Real theta;
-        Real mu;
-    };
+    };    
 }
 
 void FdHestonTest::testFdmHestonConvergence() {
@@ -529,14 +523,11 @@ void FdHestonTest::testFdmHestonConvergence() {
         { 0.6067, 0.0707, 0.2928, -0.7571, 0.03  , 0.0   , 3.0 , 100 },
         { 2.5   , 0.06  , 0.5   , -0.1   , 0.0507, 0.0469, 0.25, 100 }
     };
-    
-    SchemeData schemes[] = {
-        { FdmBackwardSolver::Hundsdorfer, 0.5+std::sqrt(3.0)/6, 0.5 },
-        { FdmBackwardSolver::ModifiedCraigSneyd, 0.3, 0.3 }
-        // runs through but takes too long
-        //{ FdmBackwardSolver::Hundsdorfer, 1.0-std::sqrt(2)/2, 0.5 },
-        //{ FdmBackwardSolver::CraigSneyd, 0.5, 0.5 },
-    };
+
+    FdmSchemeDesc schemes[] = { FdmSchemeDesc::Hundsdorfer, 
+                                FdmSchemeDesc::ModifiedCraigSneyd,
+                                FdmSchemeDesc::ModifiedHundsdorfer, 
+                                FdmSchemeDesc::CraigSneyd };
     
     Size tn[] = { 100 };
     Real v0[] = { 0.04 };
@@ -577,8 +568,7 @@ void FdHestonTest::testFdmHestonConvergence() {
                              boost::shared_ptr<HestonModel>(
                                  new HestonModel(hestonProcess)), 
                              tn[j], 400, 100, 0, 
-                             schemes[l].schemeType,
-                             schemes[l].theta, schemes[l].mu));
+                             schemes[l]));
                     option.setPricingEngine(engine);
                     
                     const Real calculated = option.NPV();
@@ -606,7 +596,6 @@ void FdHestonTest::testFdmHestonConvergence() {
 
 test_suite* FdHestonTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Finite Difference Heston tests");
-
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBarrier));
     suite->add(QUANTLIB_TEST_CASE(
                          &FdHestonTest::testFdmHestonBarrierVsBlackScholes));
@@ -617,6 +606,5 @@ test_suite* FdHestonTest::suite() {
                     &FdHestonTest::testFdmHestonEuropeanWithDividends));
 
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonConvergence));
-
     return suite;
 }

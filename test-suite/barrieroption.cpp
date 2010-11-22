@@ -652,7 +652,8 @@ void BarrierOptionTest::testLocalVolAndHestonComparison() {
     
     boost::shared_ptr<PricingEngine> fdLocalVolEngine(
                    new FdBlackScholesBarrierEngine(localVolProcess, 100, 400, 0,
-                                                   0.5, true, 0.35));
+                                                   FdmSchemeDesc::Douglas, 
+                                                   true, 0.35));
     
     const Real strike  = s0->value();
     const Real barrier = 3000;

@@ -52,11 +52,8 @@ namespace QuantLib {
             const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
             Time maturity,
             Size timeSteps,
-            Size dampingSteps,
-            FdmBackwardSolver::FdmSchemeType type
-                                        = FdmBackwardSolver::Hundsdorfer,
-            Real theta = 0.5+std::sqrt(3.0)/6,
-            Real mu = 0.5);
+            Size dampingSteps = 0,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer);
 
         Real valueAt(Real x, Real y) const;
         Real thetaAt(Real x, Real y) const;
@@ -79,10 +76,8 @@ namespace QuantLib {
         const boost::shared_ptr<FdmStepConditionComposite> condition_;
         const Time maturity_;
         const Size timeSteps_;
-        
-        const Size dampingSteps_;        
-        const FdmBackwardSolver::FdmSchemeType schemeType_;
-        const Real theta_, mu_;
+        const Size dampingSteps_;
+        const FdmSchemeDesc schemeDesc_;
 
         std::vector<Real> x_, y_, initialValues_;
         mutable Matrix resultValues_;
