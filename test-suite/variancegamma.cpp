@@ -152,7 +152,7 @@ void VarianceGammaTest::testVarianceGamma() {
             new FFTVarianceGammaEngine(stochProcess));
 
         // which requires a list of options
-        FFTEngine::VanillaOptionList optionList;
+        std::vector<boost::shared_ptr<Instrument> > optionList;
 
         std::vector<boost::shared_ptr<StrikedTypePayoff> > payoffs;
         for (Size j=0; j<LENGTH(options); j++)
@@ -187,7 +187,7 @@ void VarianceGammaTest::testVarianceGamma() {
         fftEngine->precalculate(optionList);
         for (Size j=0; j<LENGTH(options); j++)
         {
-            boost::shared_ptr<VanillaOption> option = optionList[j];
+            boost::shared_ptr<VanillaOption> option = boost::static_pointer_cast<VanillaOption>(optionList[j]);
             option->setPricingEngine(fftEngine);
 
             Real calculated = option->NPV();

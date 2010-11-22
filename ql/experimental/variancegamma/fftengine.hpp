@@ -35,7 +35,7 @@ namespace QuantLib {
     
         The FFT engine calculates the values of all options with the same expiry at the same time.
         For that reason it is very inefficient to price options individually.  When using this engine
-        you should collect all the options you wish to price in a VanillaOptionList and call 
+        you should collect all the options you wish to price in a list and call 
         the engine's precalculate method before calling the NPV method of the option.
 
         References:
@@ -52,8 +52,7 @@ namespace QuantLib {
         void calculate() const;
         void update();
 
-        typedef std::vector<boost::shared_ptr<VanillaOption> > VanillaOptionList;
-        void precalculate(const VanillaOptionList& optionList);
+        void precalculate(const std::vector<boost::shared_ptr<Instrument> >& optionList);
         virtual std::auto_ptr<FFTEngine> clone() const = 0;
 
     protected:

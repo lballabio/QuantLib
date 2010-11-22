@@ -68,7 +68,7 @@ namespace QuantLib {
         boost::shared_ptr<Exercise> exercise) const
     {
         boost::shared_ptr<VanillaOption> option(new VanillaOption(payoff, exercise));
-        VanillaOptionList optionList;
+        std::vector<boost::shared_ptr<Instrument> > optionList;
         optionList.push_back(option);
 
         boost::shared_ptr<FFTEngine> tempEngine(clone().release());
@@ -77,7 +77,7 @@ namespace QuantLib {
         results_.value = option->NPV();
     }
 
-    void FFTEngine::precalculate(const VanillaOptionList& optionList) {
+    void FFTEngine::precalculate(const std::vector<boost::shared_ptr<Instrument> >& optionList) {
         // Group payoffs by expiry date
         // as with FFT we can compute a bunch of these at once
         resultMap_.clear();
@@ -86,10 +86,11 @@ namespace QuantLib {
         typedef std::map<Date, PayoffList> PayoffMap;
         PayoffMap payoffMap;
         
-        for (VanillaOptionList::const_iterator optIt = optionList.begin();
+        for (std::vector<boost::shared_ptr<Instrument> >::const_iterator optIt = optionList.begin();
             optIt != optionList.end(); optIt++)
         {
-            boost::shared_ptr<VanillaOption> option = *optIt;
+            boost::shared_ptr<VanillaOption> option = boost::dynamic_pointer_cast<VanillaOption>(*optIt);
+            QL_REQUIRE(option, "instrument must be option");
             QL_REQUIRE(option->exercise()->type() == Exercise::European,
                 "not an European Option");
 
