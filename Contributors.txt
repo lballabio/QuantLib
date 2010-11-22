@@ -9,6 +9,7 @@ Marius Akre
 Mario Aleppo
 Jose Aparicio
 Sercan Atalik
+Lluis Pujol Bajador
 Clément Barret
 Christopher Baus
 Thomas Becker
