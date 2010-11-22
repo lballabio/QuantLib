@@ -43,8 +43,7 @@ namespace QuantLib {
             Size vGrid, Size rGrid,
             Size dampingSteps,
             bool controlVariate,
-            FdmBackwardSolver::FdmSchemeType type, 
-            Real theta, Real mu)
+            const FdmSchemeDesc& schemeDesc)
     : GenericModelEngine<HestonModel,
                          DividendVanillaOption::arguments,
                          DividendVanillaOption::results>(hestonModel),
@@ -53,8 +52,8 @@ namespace QuantLib {
       tGrid_(tGrid), xGrid_(xGrid), 
       vGrid_(vGrid), rGrid_(rGrid),
       dampingSteps_(dampingSteps),
-      controlVariate_(controlVariate),
-      type_(type), theta_(theta), mu_(mu) {
+      schemeDesc_(schemeDesc),
+      controlVariate_(controlVariate) {
     }
 
     void FdHestonHullWhiteVanillaEngine::calculate() const {
@@ -197,7 +196,7 @@ namespace QuantLib {
                                          mesher, boundaries, conditions,
                                          calculator, 
                                          maturity, tGrid_, dampingSteps_,
-                                         type_, theta_, mu_));
+                                         schemeDesc_));
 
         const Real spot = hestonProcess->s0()->value();
         const Real v0   = hestonProcess->v0();
@@ -235,7 +234,7 @@ namespace QuantLib {
             boost::shared_ptr<FdHestonVanillaEngine> fdEngine(
                     new FdHestonVanillaEngine(*model_, tGrid_, xGrid_, 
                                               vGrid_, dampingSteps_, 
-                                              type_, theta_, mu_));
+                                              schemeDesc_));
             fdEngine->enableMultipleStrikesCaching(strikes_);
             option.setPricingEngine(fdEngine);
             

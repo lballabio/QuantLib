@@ -29,6 +29,7 @@
 #include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
+#include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesrebateengine.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesvanillaengine.hpp>
 
@@ -36,12 +37,13 @@ namespace QuantLib {
 
     FdBlackScholesBarrierEngine::FdBlackScholesBarrierEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Size tGrid, Size xGrid, Size dampingSteps, Real theta,
+            Size tGrid, Size xGrid, Size dampingSteps, 
+            const FdmSchemeDesc& schemeDesc,
             bool localVol, Real illegalLocalVolOverwrite)
     : GenericEngine<DividendBarrierOption::arguments,
                     DividendBarrierOption::results>(),
       process_(process), tGrid_(tGrid), xGrid_(xGrid), 
-      dampingSteps_(dampingSteps), theta_(theta),
+      dampingSteps_(dampingSteps), schemeDesc_(schemeDesc),
       localVol_(localVol), illegalLocalVolOverwrite_(illegalLocalVolOverwrite){
     }
 
@@ -126,8 +128,8 @@ namespace QuantLib {
                                 Handle<GeneralizedBlackScholesProcess>(process_),
                                 mesher, boundaries, conditions, calculator,
                                 payoff->strike(), maturity, tGrid_,
-                                dampingSteps_,
-                                theta_, localVol_, illegalLocalVolOverwrite_));
+                                dampingSteps_, schemeDesc_, 
+                                localVol_, illegalLocalVolOverwrite_));
 
         const Real spot = process_->x0();
         results_.value = solver->valueAt(spot);
@@ -153,7 +155,7 @@ namespace QuantLib {
                 new FdBlackScholesVanillaEngine(
                         process_, tGrid_, xGrid_,
                         0, // dampingSteps
-                        theta_, localVol_, illegalLocalVolOverwrite_)));
+                        schemeDesc_, localVol_, illegalLocalVolOverwrite_)));
 
             // Calculate the rebate value
             boost::shared_ptr<DividendBarrierOption> rebateOption(
@@ -171,7 +173,7 @@ namespace QuantLib {
             rebateOption->setPricingEngine(boost::shared_ptr<PricingEngine>(
                     new FdBlackScholesRebateEngine(
                             process_, tGrid_, std::max(min_grid_size, xGrid_/5), 
-                            rebateDampingSteps, theta_, localVol_, 
+                            rebateDampingSteps, schemeDesc_, localVol_, 
                             illegalLocalVolOverwrite_)));
 
             results_.value = vanillaOption->NPV()   + rebateOption->NPV()

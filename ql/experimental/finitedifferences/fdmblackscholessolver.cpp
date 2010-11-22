@@ -19,7 +19,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
+#include <ql/experimental/finitedifferences/fdmmesher.hpp>
+#include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
+#include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
+#include <ql/experimental/finitedifferences/fdmsnapshotcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesop.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholessolver.hpp>
@@ -36,7 +42,7 @@ namespace QuantLib {
         Time maturity,
         Size timeSteps,
         Size dampingSteps,
-        Real theta,
+        const FdmSchemeDesc& schemeDesc,
         bool localVol,
         Real illegalLocalVolOverwrite)
     : process_(process),
@@ -52,7 +58,7 @@ namespace QuantLib {
       maturity_(maturity),
       timeSteps_(timeSteps),
       dampingSteps_(dampingSteps),
-      theta_(theta),
+      schemeDesc_(schemeDesc),
       localVol_(localVol),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
       initialValues_(mesher->layout()->size()),
@@ -78,9 +84,8 @@ namespace QuantLib {
         Array rhs(initialValues_.size());
         std::copy(initialValues_.begin(), initialValues_.end(), rhs.begin());
 
-        FdmBackwardSolver(map, bcSet_, condition_, 
-                          FdmBackwardSolver::Douglas, theta_, 0.0)
-            .rollback(rhs, maturity_, 0.0, timeSteps_, dampingSteps_);
+        FdmBackwardSolver(map, bcSet_, condition_, schemeDesc_)
+                   .rollback(rhs, maturity_, 0.0, timeSteps_, dampingSteps_);
 
         std::copy(rhs.begin(), rhs.end(), resultValues_.begin());
 

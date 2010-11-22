@@ -33,22 +33,34 @@
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 
 namespace QuantLib {
+    
+    FdmSchemeDesc FdmSchemeDesc::Douglas 
+               = { FdmSchemeDesc::DouglasType, 0.5, 0.0 };
+    FdmSchemeDesc FdmSchemeDesc::CraigSneyd
+               = { FdmSchemeDesc::CraigSneydType,0.5, 0.5 };
+    FdmSchemeDesc FdmSchemeDesc::ModifiedCraigSneyd 
+               = { FdmSchemeDesc::ModifiedCraigSneydType, 1.0/3.0, 1.0/3.0 };
+    FdmSchemeDesc FdmSchemeDesc::Hundsdorfer
+               = { FdmSchemeDesc::HundsdorferType, 0.5+std::sqrt(3.0)/6, 0.5 };
+    FdmSchemeDesc FdmSchemeDesc::ModifiedHundsdorfer
+               = { FdmSchemeDesc::HundsdorferType, 1.0-std::sqrt(2.0)/2, 0.5 };
+    FdmSchemeDesc FdmSchemeDesc::ExplicitEuler
+               = { FdmSchemeDesc::ExplicitEulerType, 0.0, 0.0 };
+    FdmSchemeDesc FdmSchemeDesc::ImplicitEuler
+               = { FdmSchemeDesc::ImplicitEulerType, 0.0, 0.0 };
 
     FdmBackwardSolver::FdmBackwardSolver(
         const boost::shared_ptr<FdmLinearOpComposite>& map,
         const FdmBoundaryConditionSet& bcSet,
         const boost::shared_ptr<FdmStepConditionComposite> condition,
-        FdmBackwardSolver::FdmSchemeType schemeType,
-        Real theta, 
-        Real mu)
+        const FdmSchemeDesc& schemeDesc)
     : map_(map), bcSet_(bcSet),
       condition_((condition) ? condition 
                              : boost::shared_ptr<FdmStepConditionComposite>(
                                  new FdmStepConditionComposite(
                                      std::list<std::vector<Time> >(),
                                      FdmStepConditionComposite::Conditions()))),
-      schemeType_(schemeType),
-      theta_(theta), mu_(mu) {
+      schemeDesc_(schemeDesc) {
      }
         
     void FdmBackwardSolver::rollback(FdmBackwardSolver::array_type& rhs, 
@@ -59,7 +71,8 @@ namespace QuantLib {
         const Size allSteps = steps + dampingSteps;
         const Time dampingTo = from - (deltaT*dampingSteps)/allSteps;
                     
-        if (dampingSteps && schemeType_ != ImplicitEuler) {
+        if (   dampingSteps 
+            && schemeDesc_.type != FdmSchemeDesc::ImplicitEulerType) {
             ImplicitEulerScheme implicitEvolver(map_, bcSet_);    
             FiniteDifferenceModel<ImplicitEulerScheme> 
                     dampingModel(implicitEvolver, condition_->stoppingTimes());
@@ -67,40 +80,44 @@ namespace QuantLib {
                                   dampingSteps, *condition_);
         }
         
-        switch (schemeType_) {
-          case Hundsdorfer:
+        switch (schemeDesc_.type) {
+          case FdmSchemeDesc::HundsdorferType:
             {
-                HundsdorferScheme hsEvolver(theta_, mu_, map_, bcSet_);
+                HundsdorferScheme hsEvolver(schemeDesc_.theta, schemeDesc_.mu, 
+                                            map_, bcSet_);
                 FiniteDifferenceModel<HundsdorferScheme> 
                                hsModel(hsEvolver, condition_->stoppingTimes());
                 hsModel.rollback(rhs, dampingTo, to, steps, *condition_);
             }
             break;
-          case Douglas:
+          case FdmSchemeDesc::DouglasType:
             {
-                DouglasScheme dsEvolver(theta_, map_, bcSet_);
+                DouglasScheme dsEvolver(schemeDesc_.theta, map_, bcSet_);
                 FiniteDifferenceModel<DouglasScheme> 
                                dsModel(dsEvolver, condition_->stoppingTimes());
                 dsModel.rollback(rhs, dampingTo, to, steps, *condition_);
             }
             break;
-          case CraigSneyd:
+          case FdmSchemeDesc::CraigSneydType:
             {
-                CraigSneydScheme csEvolver(theta_, mu_, map_, bcSet_);
+                CraigSneydScheme csEvolver(schemeDesc_.theta, schemeDesc_.mu, 
+                                           map_, bcSet_);
                 FiniteDifferenceModel<CraigSneydScheme> 
                                csModel(csEvolver, condition_->stoppingTimes());
                 csModel.rollback(rhs, dampingTo, to, steps, *condition_);
             }
             break;
-          case ModifiedCraigSneyd:
+          case FdmSchemeDesc::ModifiedCraigSneydType:
             {
-                ModifiedCraigSneydScheme csEvolver(theta_, mu_, map_, bcSet_);
+                ModifiedCraigSneydScheme csEvolver(schemeDesc_.theta, 
+                                                   schemeDesc_.mu,
+                                                   map_, bcSet_);
                 FiniteDifferenceModel<ModifiedCraigSneydScheme> 
                               mcsModel(csEvolver, condition_->stoppingTimes());
                 mcsModel.rollback(rhs, dampingTo, to, steps, *condition_);
             }
             break;
-          case ImplicitEuler:
+          case FdmSchemeDesc::ImplicitEulerType:
             {
                 ImplicitEulerScheme implicitEvolver(map_, bcSet_);
                 FiniteDifferenceModel<ImplicitEulerScheme> 
@@ -108,7 +125,7 @@ namespace QuantLib {
                 implicitModel.rollback(rhs, from, to, allSteps, *condition_);
             }
             break;
-          case ExplicitEuler:
+          case FdmSchemeDesc::ExplicitEulerType:
             {
                 ExplicitEulerScheme explicitEvolver(map_, bcSet_);
                 FiniteDifferenceModel<ExplicitEulerScheme> 

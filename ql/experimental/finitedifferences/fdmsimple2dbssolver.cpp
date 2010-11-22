@@ -23,7 +23,7 @@
 
 #include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
-#include <ql/experimental/finitedifferences/douglasscheme.hpp>
+#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesop.hpp>
 #include <ql/experimental/finitedifferences/fdmsimple2dbssolver.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
@@ -42,7 +42,7 @@ namespace QuantLib {
         Real strike,
         Time maturity,
         Size timeSteps,
-        Real theta)
+        const FdmSchemeDesc& schemeDesc)
     : process_(process),
       mesher_(mesher),
       bcSet_(bcSet),
@@ -55,7 +55,7 @@ namespace QuantLib {
       strike_(strike),
       maturity_(maturity),
       timeSteps_(timeSteps),
-      theta_(theta),
+      schemeDesc_(schemeDesc),
       initialValues_(mesher->layout()->size()),
       resultValues_(mesher->layout()->dim()[1], mesher->layout()->dim()[0]) {
         registerWith(process_);
@@ -84,10 +84,8 @@ namespace QuantLib {
         Array rhs(initialValues_.size());
         std::copy(initialValues_.begin(), initialValues_.end(), rhs.begin());
 
-        DouglasScheme dsEvolver(theta_, map, bcSet_);
-        FiniteDifferenceModel<DouglasScheme> dsModel(
-            dsEvolver, condition_->stoppingTimes());
-        dsModel.rollback(rhs, maturity_, 0.0, timeSteps_, *condition_);
+        FdmBackwardSolver(map, bcSet_, condition_, schemeDesc_)
+                               .rollback(rhs, maturity_, 0.0, timeSteps_, 0);
 
         for (Size j=0; j < a_.size(); ++j)
             std::copy(rhs.begin()+j*x_.size(), rhs.begin()+(j+1)*x_.size(),

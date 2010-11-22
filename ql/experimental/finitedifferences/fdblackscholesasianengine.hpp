@@ -26,15 +26,17 @@
 
 #include <ql/pricingengine.hpp>
 #include <ql/instruments/asianoption.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 
 namespace QuantLib {
 
     //! Finite-Differences Black Scholes arithmetic asian option engine
 
     /*! \ingroup vanillaengines
-
     */
+
+    class GeneralizedBlackScholesProcess;
+    
     class FdBlackScholesAsianEngine
         : public GenericEngine<DiscreteAveragingAsianOption::arguments,
                                DiscreteAveragingAsianOption::results> {
@@ -43,14 +45,14 @@ namespace QuantLib {
         FdBlackScholesAsianEngine(
                       const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
                       Size tGrid = 100, Size xGrid = 100, Size aGrid = 50,
-                      Real theta=0.5);
+                      const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas);
 
         void calculate() const;
 
       private:
         const boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         const Size tGrid_, xGrid_, aGrid_;
-        const Real theta_;
+        const FdmSchemeDesc schemeDesc_;
     };
 
 

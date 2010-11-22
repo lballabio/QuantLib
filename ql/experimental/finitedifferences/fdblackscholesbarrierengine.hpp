@@ -26,8 +26,9 @@
 #ifndef quantlib_fd_black_scholes_barrier_engine_hpp
 #define quantlib_fd_black_scholes_barrier_engine_hpp
 
-#include <ql/experimental/finitedifferences/dividendbarrieroption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
+#include <ql/experimental/finitedifferences/dividendbarrieroption.hpp>
 
 namespace QuantLib {
 
@@ -48,7 +49,7 @@ namespace QuantLib {
           FdBlackScholesBarrierEngine(
                 const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
                 Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
-                Real theta=0.5,
+                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas,
                 bool localVol = false, 
                 Real illegalLocalVolOverwrite = -Null<Real>());
 
@@ -57,7 +58,7 @@ namespace QuantLib {
       private:
         const boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         const Size tGrid_, xGrid_, dampingSteps_;
-        const Real theta_;
+        const FdmSchemeDesc schemeDesc_;
         const bool localVol_;
         const Real illegalLocalVolOverwrite_;
     };

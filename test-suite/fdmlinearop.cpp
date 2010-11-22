@@ -1126,7 +1126,7 @@ void FdmLinearOpTest::testCrankNicolsonWithDamping() {
 
     FdmBackwardSolver solver(map, FdmBoundaryConditionSet(), 
                              boost::shared_ptr<FdmStepConditionComposite>(),
-                             FdmBackwardSolver::Douglas, 0.5, 0.5);
+                             FdmSchemeDesc::Douglas);
     solver.rollback(rhs, maturity, 0.0, csSteps, dampingSteps);
 
     MonotonicCubicNaturalSpline spline(x.begin(), x.end(), rhs.begin());

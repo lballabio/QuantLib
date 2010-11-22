@@ -54,17 +54,13 @@ namespace QuantLib {
             const boost::shared_ptr<HestonModel>& model,
             Size tGrid = 100, Size xGrid = 100, 
             Size vGrid = 50, Size dampingSteps = 0,
-            FdmBackwardSolver::FdmSchemeType type 
-                                    = FdmBackwardSolver::Hundsdorfer,
-            Real theta = 0.5+std::sqrt(3.0)/6,
-            Real mu = 0.5);
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer);
 
         void calculate() const;
 
       private:
         const Size tGrid_, xGrid_, vGrid_, dampingSteps_;
-        const FdmBackwardSolver::FdmSchemeType type_;
-        const Real theta_, mu_;
+        const FdmSchemeDesc schemeDesc_;
     };
 
 

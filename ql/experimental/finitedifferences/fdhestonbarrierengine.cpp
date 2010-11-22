@@ -35,13 +35,13 @@ namespace QuantLib {
     FdHestonBarrierEngine::FdHestonBarrierEngine(
             const boost::shared_ptr<HestonModel>& model,
             Size tGrid, Size xGrid, Size vGrid, Size dampingSteps,
-            FdmBackwardSolver::FdmSchemeType type, Real theta, Real mu)
+            const FdmSchemeDesc& schemeDesc)
     : GenericModelEngine<HestonModel,
                         DividendBarrierOption::arguments,
                         DividendBarrierOption::results>(model),
       tGrid_(tGrid), xGrid_(xGrid), 
       vGrid_(vGrid), dampingSteps_(dampingSteps),
-      type_(type), theta_(theta), mu_(mu) {
+      schemeDesc_(schemeDesc) {
     }
 
     void FdHestonBarrierEngine::calculate() const {
@@ -138,8 +138,7 @@ namespace QuantLib {
                                         Handle<HestonProcess>(process),
                                         mesher, boundaries, conditions, 
                                         calculator, maturity, tGrid_,
-                                        dampingSteps_,
-                                        type_, theta_, mu_));
+                                        dampingSteps_, schemeDesc_));
 
         const Real spot = process->s0()->value();
         results_.value = solver->valueAt(spot, process->v0());
@@ -162,7 +161,7 @@ namespace QuantLib {
             vanillaOption->setPricingEngine(boost::shared_ptr<PricingEngine>(
                     new FdHestonVanillaEngine(*model_, tGrid_, xGrid_, 
                                               vGrid_, dampingSteps_,
-                                              type_, theta_, mu_)));
+                                              schemeDesc_)));
             // Calculate the rebate value
             boost::shared_ptr<DividendBarrierOption> rebateOption(
                 new DividendBarrierOption(arguments_.barrierType,
@@ -180,7 +179,7 @@ namespace QuantLib {
                                              std::max(xGridMin, xGrid_/4), 
                                              std::max(vGridMin, vGrid_/4),
                                              rebateDampingSteps,
-                                             type_, theta_, mu_)));
+                                             schemeDesc_)));
 
             results_.value = vanillaOption->NPV()   + rebateOption->NPV()
                                                     - results_.value;

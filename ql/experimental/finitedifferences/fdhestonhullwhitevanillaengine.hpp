@@ -28,6 +28,7 @@
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/processes/hullwhiteprocess.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
+#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonhullwhitesolver.hpp>
 
 namespace QuantLib {
@@ -54,10 +55,7 @@ namespace QuantLib {
             Size vGrid = 40, Size rGrid = 20,
             Size dampingSteps = 0,
             bool controlVariate = true,
-            FdmBackwardSolver::FdmSchemeType type 
-                                    = FdmBackwardSolver::Hundsdorfer,
-            Real theta = 0.5+std::sqrt(3.0)/6,
-            Real mu = 0.5);
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer);
 
         void calculate() const;
 
@@ -70,9 +68,8 @@ namespace QuantLib {
         const Real corrEquityShortRate_;
         const Size tGrid_, xGrid_, vGrid_, rGrid_;
         const Size dampingSteps_;
+        const FdmSchemeDesc schemeDesc_;
         const bool controlVariate_;
-        const FdmBackwardSolver::FdmSchemeType type_;
-        const Real theta_, mu_;
         
         std::vector<Real> strikes_;
         mutable std::vector<std::pair<DividendVanillaOption::arguments,

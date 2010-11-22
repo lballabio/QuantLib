@@ -27,15 +27,17 @@
 
 #include <ql/handle.hpp>
 #include <ql/patterns/lazyobject.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/math/interpolations/cubicinterpolation.hpp>
-#include <ql/experimental/finitedifferences/fdmmesher.hpp>
+#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
-#include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
-#include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
-#include <ql/experimental/finitedifferences/fdmsnapshotcondition.hpp>
 
 namespace QuantLib {
+
+    class FdmMesher;
+    class FdmSnapshotCondition;
+    class FdmInnerValueCalculator;
+    class FdmStepConditionComposite;
+    class CubicInterpolation;
+    class GeneralizedBlackScholesProcess;
 
     class FdmBlackScholesSolver : public LazyObject {
       public:
@@ -52,7 +54,7 @@ namespace QuantLib {
             Time maturity,
             Size timeSteps,
             Size dampingSteps = 0,
-            Real theta = 0.5,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas,
             bool localVol = false,
             Real illegalLocalVolOverwrite = -Null<Real>());
 
@@ -75,7 +77,7 @@ namespace QuantLib {
         const Size timeSteps_;
         const Size dampingSteps_;
 
-        const Real theta_;
+        const FdmSchemeDesc schemeDesc_;
         const bool localVol_;
         const Real illegalLocalVolOverwrite_;
 

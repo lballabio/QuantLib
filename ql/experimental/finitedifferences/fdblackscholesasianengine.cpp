@@ -18,7 +18,9 @@
 */
 
 #include <ql/exercise.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/experimental/finitedifferences/fdmarithmeticaveragecondition.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesasianengine.hpp>
 #include <ql/experimental/finitedifferences/fdmsimple2dbssolver.hpp>
@@ -27,18 +29,18 @@
 #include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
-#include <ql/time/daycounters/actualactual.hpp>
 
 namespace QuantLib {
 
 
     FdBlackScholesAsianEngine::FdBlackScholesAsianEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Size tGrid, Size xGrid, Size aGrid, Real theta)
+            Size tGrid, Size xGrid, Size aGrid, 
+            const FdmSchemeDesc& schemeDesc)
     : GenericEngine<DiscreteAveragingAsianOption::arguments,
                     DiscreteAveragingAsianOption::results>(),
       process_(process), tGrid_(tGrid), xGrid_(xGrid), aGrid_(aGrid),
-      theta_(theta) {}
+      schemeDesc_(schemeDesc) {}
 
 
     void FdBlackScholesAsianEngine::calculate() const {
@@ -107,7 +109,8 @@ namespace QuantLib {
                 new FdmSimple2dBSSolver(
                                 Handle<GeneralizedBlackScholesProcess>(process_),
                                 mesher, boundaries, conditions, calculator,
-                                payoff->strike(), maturity, tGrid_, theta_));
+                                payoff->strike(),maturity, tGrid_,
+                                schemeDesc_));
 
         const Real spot = process_->x0();
         const Real avg = arguments_.runningAccumulator == 0

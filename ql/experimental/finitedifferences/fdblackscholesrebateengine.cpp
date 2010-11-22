@@ -26,18 +26,21 @@
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
+#include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
 
 namespace QuantLib {
 
     FdBlackScholesRebateEngine::FdBlackScholesRebateEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Size tGrid, Size xGrid, Size dampingSteps, Real theta,
+            Size tGrid, Size xGrid, Size dampingSteps, 
+            const FdmSchemeDesc& schemeDesc,
             bool localVol, Real illegalLocalVolOverwrite)
     : GenericEngine<DividendBarrierOption::arguments,
                     DividendBarrierOption::results>(),
       process_(process), tGrid_(tGrid), xGrid_(xGrid), 
-      dampingSteps_(dampingSteps), theta_(theta),
+      dampingSteps_(dampingSteps), 
+      schemeDesc_(schemeDesc),
       localVol_(localVol), illegalLocalVolOverwrite_(illegalLocalVolOverwrite){
     }
 
@@ -123,8 +126,8 @@ namespace QuantLib {
                                 Handle<GeneralizedBlackScholesProcess>(process_),
                                 mesher, boundaries, conditions, calculator,
                                 payoff->strike(), maturity, tGrid_,
-                                dampingSteps_,
-                                theta_, localVol_, illegalLocalVolOverwrite_));
+                                dampingSteps_, schemeDesc_,
+                                localVol_, illegalLocalVolOverwrite_));
 
         const Real spot = process_->x0();
         results_.value = solver->valueAt(spot);

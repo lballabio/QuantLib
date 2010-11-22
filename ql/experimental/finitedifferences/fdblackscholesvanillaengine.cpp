@@ -20,6 +20,7 @@
 */
 
 #include <ql/exercise.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholessolver.hpp>
@@ -28,19 +29,22 @@
 #include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesvanillaengine.hpp>
+#include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmbermudanstepcondition.hpp>
 
 namespace QuantLib {
 
     FdBlackScholesVanillaEngine::FdBlackScholesVanillaEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Size tGrid, Size xGrid, Size dampingSteps, Real theta,
+            Size tGrid, Size xGrid, Size dampingSteps, 
+            const FdmSchemeDesc& schemeDesc,
             bool localVol, Real illegalLocalVolOverwrite)
     : GenericEngine<DividendVanillaOption::arguments,
                     DividendVanillaOption::results>(),
       process_(process),
       tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
-      theta_(theta), localVol_(localVol),
+      schemeDesc_(schemeDesc), 
+      localVol_(localVol),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite) {
     }
 
@@ -119,8 +123,9 @@ namespace QuantLib {
                 new FdmBlackScholesSolver(
                              Handle<GeneralizedBlackScholesProcess>(process_),
                              mesher, boundaries, conditions, calculator,
-                             payoff->strike(), maturity, tGrid_, dampingSteps_,
-                             theta_, localVol_, illegalLocalVolOverwrite_));
+                             payoff->strike(), maturity, tGrid_, 
+                             dampingSteps_, schemeDesc_, 
+                             localVol_, illegalLocalVolOverwrite_));
 
         const Real spot = process_->x0();
         results_.value = solver->valueAt(spot);

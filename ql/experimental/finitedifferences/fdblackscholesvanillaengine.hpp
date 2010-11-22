@@ -28,7 +28,7 @@
 
 #include <ql/pricingengine.hpp>
 #include <ql/instruments/dividendvanillaoption.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 
 namespace QuantLib {
 
@@ -40,6 +40,8 @@ namespace QuantLib {
               reproducing results available in web/literature
               and comparison with Black pricing.
     */
+    class GeneralizedBlackScholesProcess;
+
     class FdBlackScholesVanillaEngine
         : public GenericEngine<DividendVanillaOption::arguments,
                                DividendVanillaOption::results> {
@@ -48,7 +50,7 @@ namespace QuantLib {
           FdBlackScholesVanillaEngine(
                 const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
                 Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
-                Real theta=0.5,
+                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas,
                 bool localVol = false,
                 Real illegalLocalVolOverwrite = -Null<Real>());
 
@@ -57,7 +59,7 @@ namespace QuantLib {
       private:
         const boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         const Size tGrid_, xGrid_, dampingSteps_;
-        const Real theta_;
+        const FdmSchemeDesc schemeDesc_;
         const bool localVol_;
         const Real illegalLocalVolOverwrite_;
     };

@@ -52,10 +52,7 @@ namespace QuantLib {
             Time maturity,
             Size timeSteps,
             Size dampingSteps = 0,
-            FdmBackwardSolver::FdmSchemeType type
-                                        = FdmBackwardSolver::Hundsdorfer,
-            Real theta = 0.5+std::sqrt(3.0)/6,
-            Real mu = 0.5,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer,
             const Handle<FdmQuantoHelper>& quantoHelper
                                                 = Handle<FdmQuantoHelper>());
 
@@ -86,8 +83,7 @@ namespace QuantLib {
         const Size timeSteps_;
         const Size dampingSteps_;
 
-        const FdmBackwardSolver::FdmSchemeType schemeType_;
-        const Real theta_, mu_;
+        const FdmSchemeDesc schemeDesc_;
         const Handle<FdmQuantoHelper> quantoHelper_;
 
         std::vector<Real> x_, v_, initialValues_;

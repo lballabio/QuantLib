@@ -42,8 +42,7 @@ namespace QuantLib {
         Time maturity,
         Size timeSteps,
         Size dampingSteps,
-        FdmBackwardSolver::FdmSchemeType schemeType,
-        Real theta, Real mu,
+        const FdmSchemeDesc& schemeDesc,
         const Handle<FdmQuantoHelper>& quantoHelper)
     : process_(process),
       mesher_(mesher),
@@ -57,9 +56,7 @@ namespace QuantLib {
       maturity_(maturity),
       timeSteps_(timeSteps),
       dampingSteps_(dampingSteps),
-      schemeType_(schemeType),
-      theta_(theta),
-      mu_(mu),
+      schemeDesc_(schemeDesc),
       quantoHelper_(quantoHelper),
       initialValues_(mesher->layout()->size()),
       resultValues_(mesher->layout()->dim()[1], mesher->layout()->dim()[0]) {
@@ -94,7 +91,7 @@ namespace QuantLib {
         Array rhs(initialValues_.size());
         std::copy(initialValues_.begin(), initialValues_.end(), rhs.begin());
 
-        FdmBackwardSolver(map, bcSet_, condition_, schemeType_, theta_, mu_)
+        FdmBackwardSolver(map, bcSet_, condition_, schemeDesc_)
             .rollback(rhs, maturity_, 0.0, timeSteps_, dampingSteps_);
 
         std::copy(rhs.begin(), rhs.end(), resultValues_.begin());
