@@ -273,8 +273,8 @@ namespace QuantLib {
           private:
             const data &d_, &d2_;
             const data_table &y_;
-            mutable data_table &y2_;
-            mutable output_data &v_;
+            data_table &y2_;
+            output_data &v_;
         };
 
         class base_cubic_splint : public std::unary_function<base_arg_type,Real> {
@@ -333,8 +333,8 @@ namespace QuantLib {
             const dimensions &i_;
             const data &d_, &d2_;
             const data_table &y_;
-            mutable data_table &y2_;
-            mutable output_data &v_, &v1_, &v2_;
+            data_table &y2_;
+            output_data &v_, &v1_, &v2_;
         };
 
         typedef base_cubic_spline               cubic_spline_01;
