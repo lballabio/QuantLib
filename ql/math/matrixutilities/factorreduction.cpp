@@ -24,7 +24,7 @@
 namespace QuantLib {
 
     Disposable<std::vector<Real> >
-    factorReduction(Matrix& mtrx,
+    factorReduction(Matrix mtrx,
                     Size maxIters) {
         static Real tolerance = 1.e-6;
 

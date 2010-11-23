@@ -64,7 +64,7 @@ namespace QuantLib {
                            Size quadOrder = 20)
         : correlQuote_(correl), copula_(), nBuckets_(nbuckets),
           integral_(quadOrder), wk_(),
-          oneFactorCorrels_(factorReduction(Matrix(correlMtrx)))
+          oneFactorCorrels_(factorReduction(correlMtrx))
         {
             // at least
             QL_REQUIRE(!oneFactorCorrels_.empty(),
