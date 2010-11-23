@@ -20,7 +20,6 @@
 #ifndef recursive_cdo_engine_hpp
 #define recursive_cdo_engine_hpp
 
-#include <ql/quotes/simplequote.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/matrixutilities/factorreduction.hpp>
@@ -59,7 +58,7 @@ namespace QuantLib {
         }
 
         //! Correlation name to name single factor construction
-        RecursiveCdoEngine(const Handle<SimpleQuote>& correl,
+        RecursiveCdoEngine(const Handle<Quote>& correl,
                            const Matrix& correlMtrx,
                            Size nbuckets  = 1,
                            Size quadOrder = 20)
