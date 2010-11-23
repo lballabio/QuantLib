@@ -1111,6 +1111,7 @@
     <ClInclude Include="ql\experimental\finitedifferences\dividendbarrieroption.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\douglasscheme.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\expliciteulerscheme.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\fd2dblackscholesvanillaengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdblackscholesasianengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdblackscholesbarrierengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdblackscholesrebateengine.hpp" />
@@ -1120,6 +1121,8 @@
     <ClInclude Include="ql\experimental\finitedifferences\fdhestonrebateengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdhestonvanillaengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdm1dmesher.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\fdm2dblackscholesop.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\fdm2dblackscholessolver.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmamericanstepcondition.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmarithmeticaveragecondition.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmbackwardsolver.hpp" />
@@ -1837,6 +1840,7 @@
     <ClCompile Include="ql\experimental\finitedifferences\dividendbarrieroption.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\douglasscheme.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\expliciteulerscheme.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\fd2dblackscholesvanillaengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdblackscholesasianengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdblackscholesbarrierengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdblackscholesrebateengine.cpp" />
@@ -1845,6 +1849,8 @@
     <ClCompile Include="ql\experimental\finitedifferences\fdhestonhullwhitevanillaengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdhestonrebateengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdhestonvanillaengine.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\fdm2dblackscholesop.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\fdm2dblackscholessolver.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmamericanstepcondition.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmarithmeticaveragecondition.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmbackwardsolver.cpp" />

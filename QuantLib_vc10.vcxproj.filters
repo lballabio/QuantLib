@@ -2889,6 +2889,9 @@
     <ClInclude Include="ql\experimental\finitedifferences\expliciteulerscheme.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fd2dblackscholesvanillaengine.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdblackscholesasianengine.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
@@ -2914,6 +2917,12 @@
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdm1dmesher.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdm2dblackscholesop.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdm2dblackscholessolver.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdmamericanstepcondition.hpp">
@@ -4985,6 +4994,9 @@
     <ClCompile Include="ql\experimental\finitedifferences\expliciteulerscheme.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fd2dblackscholesvanillaengine.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\finitedifferences\fdblackscholesasianengine.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
@@ -5007,6 +5019,12 @@
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\finitedifferences\fdhestonvanillaengine.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdm2dblackscholesop.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdm2dblackscholessolver.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\finitedifferences\fdmamericanstepcondition.cpp">

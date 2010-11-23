@@ -1137,6 +1137,12 @@
 					RelativePath=".\ql\experimental\finitedifferences\expliciteulerscheme.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\fd2dblackscholesvanillaengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fd2dblackscholesvanillaengine.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdblackscholesasianengine.cpp">
 				</File>
 				<File
@@ -1186,6 +1192,18 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdm1dmesher.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdm2dblackscholesop.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdm2dblackscholesop.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdm2dblackscholessolver.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdm2dblackscholessolver.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmamericanstepcondition.cpp">
