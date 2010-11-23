@@ -22,6 +22,7 @@ this_include_HEADERS = \
 	fdm1dmesher.hpp \
 	fdm2dblackscholesop.hpp \
 	fdm2dblackscholessolver.hpp \
+    fdmamericanstepcondition.hpp \
     fdmarithmeticaveragecondition.hpp \
     fdmbackwardsolver.hpp \
 	fdmbermudanstepcondition.hpp \
