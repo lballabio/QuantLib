@@ -107,8 +107,8 @@ namespace QuantLib {
                                    const std::vector<Date>& dates,
                                    const std::vector<Rate>& rates,
                                    const Interpolator& interpolator)
-    : ZeroInflationTermStructure(referenceDate, calendar, dayCounter,
-                                 lag, frequency, indexIsInterpolated, rates[0], yTS),
+    : ZeroInflationTermStructure(referenceDate, calendar, dayCounter, rates[0],
+                                 lag, frequency, indexIsInterpolated, yTS),
       InterpolatedCurve<Interpolator>(std::vector<Time>(), rates, interpolator),
       dates_(dates) {
 
