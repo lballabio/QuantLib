@@ -31,10 +31,11 @@ namespace QuantLib {
                              Real relTolerance, Size maxEvaluations)
     : AnalyticHestonEngine(model, relTolerance, maxEvaluations) { }
 
-    std::complex<Real> BatesEngine::addOnTerm(Real phi,
-                                                      Time t, Size j) const {
+    std::complex<Real> BatesEngine::addOnTerm(
+                                            Real phi, Time t, Size j) const {
+        
         boost::shared_ptr<BatesModel> batesModel =
-            boost::dynamic_pointer_cast<BatesModel>(*model_);
+                            boost::dynamic_pointer_cast<BatesModel>(*model_);
 
         const Real nu_     = batesModel->nu();
         const Real delta2_ = 0.5*batesModel->delta()*batesModel->delta();
@@ -49,7 +50,7 @@ namespace QuantLib {
 
 
     BatesDetJumpEngine::BatesDetJumpEngine(
-        const boost::shared_ptr<BatesDetJumpModel> & model,
+        const boost::shared_ptr<BatesDetJumpModel>& model,
         Size integrationOrder)
     : BatesEngine(model, integrationOrder) { }
 
