@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007, 2009 Chris Kenyon
+ Copyright (C) 2010 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -45,6 +46,22 @@ namespace QuantLib {
                              ts) {}
     };
 
+    //! EU HICPXT index
+    class EUHICPXT : public ZeroInflationIndex {
+      public:
+        EUHICPXT(bool interpolated,
+                 const Handle<ZeroInflationTermStructure>& ts =
+                                        Handle<ZeroInflationTermStructure>())
+        : ZeroInflationIndex("HICPXT",
+                             EURegion(),
+                             false,
+                             interpolated,
+                             Monthly,
+                             Period(1, Months), // availability
+                             EURCurrency(),
+                             ts) {}
+    };
+
 
     //! Genuine year-on-year EU HICP (i.e. not a ratio of EU HICP)
     class YYEUHICP : public YoYInflationIndex {
@@ -53,6 +70,23 @@ namespace QuantLib {
                  const Handle<YoYInflationTermStructure>& ts =
                                          Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_HICP",
+                            EURegion(),
+                            false,
+                            interpolated,
+                            false,
+                            Monthly,
+                            Period(1, Months),
+                            EURCurrency(),
+                            ts) {}
+    };
+
+    //! Genuine year-on-year EU HICPXT
+    class YYEUHICPXT : public YoYInflationIndex {
+      public:
+        YYEUHICPXT(bool interpolated,
+                   const Handle<YoYInflationTermStructure>& ts =
+                                         Handle<YoYInflationTermStructure>())
+        : YoYInflationIndex("YY_HICPXT",
                             EURegion(),
                             false,
                             interpolated,
