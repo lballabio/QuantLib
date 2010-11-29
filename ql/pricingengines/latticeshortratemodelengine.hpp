@@ -41,7 +41,9 @@ namespace QuantLib {
         LatticeShortRateModelEngine(
                                const boost::shared_ptr<ShortRateModel>& model,
                                Size timeSteps);
-
+        LatticeShortRateModelEngine(
+                               const Handle<ShortRateModel>& model,
+                               Size timeSteps);
         LatticeShortRateModelEngine(
                                const boost::shared_ptr<ShortRateModel>& model,
                                const TimeGrid& timeGrid);
@@ -55,6 +57,17 @@ namespace QuantLib {
     template <class Arguments, class Results>
     LatticeShortRateModelEngine<Arguments, Results>::LatticeShortRateModelEngine(
             const boost::shared_ptr<ShortRateModel>& model,
+            Size timeSteps)
+    : GenericModelEngine<ShortRateModel, Arguments, Results>(model),
+      timeSteps_(timeSteps) {
+        QL_REQUIRE(timeSteps>0,
+                   "timeSteps must be positive, " << timeSteps <<
+                   " not allowed");
+    }
+
+    template <class Arguments, class Results>
+    LatticeShortRateModelEngine<Arguments, Results>::LatticeShortRateModelEngine(
+            const Handle<ShortRateModel>& model,
             Size timeSteps)
     : GenericModelEngine<ShortRateModel, Arguments, Results>(model),
       timeSteps_(timeSteps) {

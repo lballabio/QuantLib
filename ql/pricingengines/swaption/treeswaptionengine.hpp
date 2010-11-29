@@ -58,6 +58,10 @@ namespace QuantLib {
                            const TimeGrid& timeGrid,
                            const Handle<YieldTermStructure>& termStructure =
                                                  Handle<YieldTermStructure>());
+        TreeSwaptionEngine(const Handle<ShortRateModel>&,
+                           Size timeSteps,
+                           const Handle<YieldTermStructure>& termStructure =
+                                                 Handle<YieldTermStructure>());
         //@}
         void calculate() const;
       private:

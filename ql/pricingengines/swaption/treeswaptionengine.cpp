@@ -34,11 +34,21 @@ namespace QuantLib {
     }
 
     TreeSwaptionEngine::TreeSwaptionEngine(
-                               const boost::shared_ptr<ShortRateModel>& model,
+                              const boost::shared_ptr<ShortRateModel>& model,
                               const TimeGrid& timeGrid,
                               const Handle<YieldTermStructure>& termStructure)
     : LatticeShortRateModelEngine<Swaption::arguments,
                                   Swaption::results>(model, timeGrid),
+      termStructure_(termStructure) {
+        registerWith(termStructure_);
+    }
+
+    TreeSwaptionEngine::TreeSwaptionEngine(
+                              const Handle<ShortRateModel>& model,
+                              Size timeSteps,
+                              const Handle<YieldTermStructure>& termStructure)
+    : LatticeShortRateModelEngine<Swaption::arguments,
+                                  Swaption::results>(model, timeSteps),
       termStructure_(termStructure) {
         registerWith(termStructure_);
     }
