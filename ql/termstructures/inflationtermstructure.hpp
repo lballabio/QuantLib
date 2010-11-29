@@ -114,8 +114,8 @@ namespace QuantLib {
         // range-checking
         void checkRange(const Date&,
                         bool extrapolate) const;
-        //void checkRange(Time t,
-          //              bool extrapolate) const;
+        void checkRange(Time t,
+                        bool extrapolate) const;
 
         boost::shared_ptr<Seasonality> seasonality_;
     };
@@ -159,14 +159,12 @@ namespace QuantLib {
 
         //! \name Inspectors
         //@{
-        //! zero-coupon inflation rate for an instrument with maturity (pay date) d
-        //! that observes with given lag and interpolation.
-        //! Since inflation is highly linked to dates (lags, interpolation, months for seasonality, etc)
-        //! we do NOT provide a "time" version of the rate lookup.
+        //! zero-coupon inflation rate.
         /*! Essentially the fair rate for a zero-coupon inflation swap
             (by definition), i.e. the zero term structure uses yearly
             compounding, which is assumed for ZCIIS instrument quotes.
-            N.B. by default you get the same as lag and interpolation
+
+            \note by default you get the same as lag and interpolation
             as the term structure.
             If you want to get predictions of RPI/CPI/etc then use an
             index.
@@ -174,7 +172,15 @@ namespace QuantLib {
         Rate zeroRate(const Date &d, const Period& instObsLag = Period(-1,Days),
                       bool forceLinearInterpolation = false,
                       bool extrapolate = false) const;
-
+        //! zero-coupon inflation rate.
+        /*! \warning Since inflation is highly linked to dates (lags,
+                     interpolation, months for seasonality, etc) this
+                     method cannot account for all effects.  If you
+                     call it, You'll have to manage lag, seasonality
+                     etc. yourself.
+        */
+        Rate zeroRate(Time t,
+                      bool extrapolate = false) const;
         //@}
       protected:
         //! to be defined in derived classes
@@ -218,16 +224,24 @@ namespace QuantLib {
 
         //! \name Inspectors
         //@{
-        //! year-on-year inflation rate, forceLinearInterpolation
-        //! is relative to the frequency of the TS.
-        //! Since inflation is highly linked to dates (lags, interpolation, months for seasonality etc)
-        //! we do NOT provide a "time" version of the rate lookup.
-        /*! \note this is not the year-on-year swap (YYIIS) rate. */
+        //! year-on-year inflation rate.
+        /*! The forceLinearInterpolation parameter is relative to the
+            frequency of the TS.
+
+            \note this is not the year-on-year swap (YYIIS) rate.
+        */
         Rate yoyRate(const Date &d, const Period& instObsLag = Period(-1,Days),
                      bool forceLinearInterpolation = false,
                      bool extrapolate = false) const;
-
-
+        //! year-on-year inflation rate.
+        /*! \warning Since inflation is highly linked to dates (lags,
+                     interpolation, months for seasonality, etc) this
+                     method cannot account for all effects.  If you
+                     call it, You'll have to manage lag, seasonality
+                     etc. yourself.
+        */
+        Rate yoyRate(Time t,
+                     bool extrapolate = false) const;
         //@}
       protected:
         //! to be defined in derived classes

@@ -125,7 +125,7 @@ namespace QuantLib {
                    "date (" << d << ") is past max curve date ("
                    << maxDate() << ")");
     }
-/*
+
     void InflationTermStructure::checkRange(Time t,
                                             bool extrapolate) const {
         QL_REQUIRE(t >= timeFromReference(baseDate()),
@@ -134,7 +134,6 @@ namespace QuantLib {
                    "time (" << t << ") is past max curve time ("
                    << maxTime() << ")");
     }
-*/
 
 
     ZeroInflationTermStructure::ZeroInflationTermStructure(
@@ -217,6 +216,12 @@ namespace QuantLib {
         return zeroRate;
     }
 
+    Rate ZeroInflationTermStructure::zeroRate(Time t,
+                                              bool extrapolate) const {
+        checkRange(t, extrapolate);
+        return zeroRateImpl(t);
+    }
+
     YoYInflationTermStructure::YoYInflationTermStructure(
                                     const DayCounter& dayCounter,
                                     Rate baseYoYRate,
@@ -294,6 +299,12 @@ namespace QuantLib {
             yoyRate = seasonality()->correctYoYRate(d-useLag, yoyRate, *this);
         }
         return yoyRate;
+    }
+
+    Rate YoYInflationTermStructure::yoyRate(Time t,
+                                            bool extrapolate) const {
+        checkRange(t, extrapolate);
+        return yoyRateImpl(t);
     }
 
 
