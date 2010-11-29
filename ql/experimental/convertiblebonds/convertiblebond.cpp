@@ -44,6 +44,14 @@ namespace QuantLib {
 
         maturityDate_ = schedule.endDate();
 
+        if (!callability.empty()) {
+            QL_REQUIRE(callability.back()->date() <= maturityDate_,
+                       "last callability date ("
+                       << callability.back()->date()
+                       << ") later than maturity ("
+                       << maturityDate_ << ")");
+        }
+
         registerWith(creditSpread);
     }
 
