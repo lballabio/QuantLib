@@ -2556,6 +2556,9 @@
     <ClInclude Include="ql\time\calendars\poland.hpp">
       <Filter>time\calendars</Filter>
     </ClInclude>
+    <ClInclude Include="ql\time\calendars\russia.hpp">
+      <Filter>time\calendars</Filter>
+    </ClInclude>
     <ClInclude Include="ql\time\calendars\saudiarabia.hpp">
       <Filter>time\calendars</Filter>
     </ClInclude>
@@ -4722,6 +4725,9 @@
       <Filter>time\calendars</Filter>
     </ClCompile>
     <ClCompile Include="ql\time\calendars\poland.cpp">
+      <Filter>time\calendars</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\time\calendars\russia.cpp">
       <Filter>time\calendars</Filter>
     </ClCompile>
     <ClCompile Include="ql\time\calendars\saudiarabia.cpp">

@@ -5515,6 +5515,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\time\calendars\russia.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\russia.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\time\calendars\saudiarabia.cpp"
 					>
 				</File>
