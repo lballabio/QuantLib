@@ -87,11 +87,24 @@ namespace QuantLib {
         //! "payer" or "receiver" refer to the inflation-indexed leg
         Type type() const { return type_; }
         Real nominal() const { return nominal_; }
+        Date startDate() const { return startDate_; }
+        Date maturityDate() const { return maturityDate_; }
+        Calendar fixedCalendar() const { return fixCalendar_; }
+        BusinessDayConvention fixedConvention() const {
+            return fixConvention_;
+        }
+        DayCounter dayCounter() const { return dayCounter_; }
         //! \f$ K \f$ in the above formula.
         Rate fixedRate() const { return fixedRate_; }
-        boost::shared_ptr<ZeroInflationIndex> inflationIndex() const { return infIndex_; }
+        boost::shared_ptr<ZeroInflationIndex> inflationIndex() const {
+            return infIndex_;
+        }
         Period observationLag() const { return observationLag_; }
-        DayCounter dayCounter() const { return dayCounter_; }
+        bool adjustObservationDates() const { return adjustInfObsDates_; }
+        Calendar inflationCalendar() const { return infCalendar_; }
+        BusinessDayConvention inflationConvention() const {
+            return infConvention_;
+        }
         //! just one cashflow (that is not a coupon) in each leg
         const Leg& fixedLeg() const;
         //! just one cashflow (that is not a coupon) in each leg
@@ -114,9 +127,15 @@ namespace QuantLib {
     protected:
         Type type_;
         Real nominal_;
+        Date startDate_, maturityDate_;
+        Calendar fixCalendar_;
+        BusinessDayConvention fixConvention_;
         Rate fixedRate_;
         boost::shared_ptr<ZeroInflationIndex> infIndex_;
         Period observationLag_;
+        bool adjustInfObsDates_;
+        Calendar infCalendar_;
+        BusinessDayConvention infConvention_;
         DayCounter dayCounter_;
         Date baseDate_, obsDate_;
     };

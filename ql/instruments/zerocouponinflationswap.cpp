@@ -44,8 +44,13 @@ namespace QuantLib {
         bool adjustInfObsDates,
         Calendar infCalendar,
         BusinessDayConvention infConvention)
-    : Swap(2), type_(type), nominal_(nominal), fixedRate_(fixedRate),
-    infIndex_(infIndex), observationLag_(observationLag), dayCounter_(dayCounter) {
+    : Swap(2), type_(type), nominal_(nominal),
+      startDate_(startDate), maturityDate_(maturity),
+      fixCalendar_(fixCalendar), fixConvention_(fixConvention),
+      fixedRate_(fixedRate), infIndex_(infIndex),
+      observationLag_(observationLag), adjustInfObsDates_(adjustInfObsDates),
+      infCalendar_(infCalendar), infConvention_(infConvention),
+      dayCounter_(dayCounter) {
         // first check compatibility of index and swap definitions
         if (infIndex_->interpolated()) {
             Period pShift(infIndex_->frequency());
@@ -62,19 +67,19 @@ namespace QuantLib {
                        << " versus obs lag = " << observationLag_);
         }
 
-        if (infCalendar==Calendar()) infCalendar = fixCalendar;
-        if (infConvention==BusinessDayConvention()) infConvention = fixConvention;
+        if (infCalendar_==Calendar()) infCalendar_ = fixCalendar_;
+        if (infConvention_==BusinessDayConvention()) infConvention_ = fixConvention_;
 
-        if (adjustInfObsDates) {
-            baseDate_ = infCalendar.adjust(startDate - observationLag_, infConvention);
-            obsDate_ = infCalendar.adjust(maturity - observationLag_, infConvention);
+        if (adjustInfObsDates_) {
+            baseDate_ = infCalendar_.adjust(startDate - observationLag_, infConvention_);
+            obsDate_ = infCalendar_.adjust(maturity - observationLag_, infConvention_);
         } else {
             baseDate_ = startDate - observationLag_;
             obsDate_ = maturity - observationLag_;
         }
 
-        Date infPayDate = infCalendar.adjust(maturity, infConvention);
-        Date fixedPayDate = fixCalendar.adjust(maturity, fixConvention);
+        Date infPayDate = infCalendar_.adjust(maturity, infConvention_);
+        Date fixedPayDate = fixCalendar_.adjust(maturity, fixConvention_);
 
         // At this point the index may not be able to forecast
         // i.e. do not want to force the existence of an inflation
