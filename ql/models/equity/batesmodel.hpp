@@ -24,6 +24,7 @@
 #ifndef quantlib_bates_model_hpp
 #define quantlib_bates_model_hpp
 
+#include <ql/processes/batesprocess.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 
 namespace QuantLib {
@@ -41,20 +42,21 @@ namespace QuantLib {
     */
     class BatesModel : public HestonModel {
       public:
-        BatesModel(const boost::shared_ptr<HestonProcess> & process,
-                   Real lambda = 0.1, Real nu = 0.0, Real delta = 0.1);
+        BatesModel(const boost::shared_ptr<BatesProcess> & process);
 
         Real nu()     const { return arguments_[5](0.0); }
         Real delta()  const { return arguments_[6](0.0); }
         Real lambda() const { return arguments_[7](0.0); }
+
+      protected:
+        void generateArguments();
     };
 
 
     class BatesDetJumpModel : public BatesModel {
       public:
         BatesDetJumpModel(
-            const boost::shared_ptr<HestonProcess> & process,
-            Real lambda = 0.1, Real nu = 0.0, Real delta = 0.1,
+            const boost::shared_ptr<BatesProcess> & process,
             Real kappaLambda = 1.0, Real thetaLambda = 0.1);
 
         Real kappaLambda() const { return arguments_[8](0.0); }

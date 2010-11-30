@@ -11,6 +11,7 @@ this_include_HEADERS = \
 	douglasscheme.hpp \
 	expliciteulerscheme.hpp \
 	fd2dblackscholesvanillaengine.hpp \
+	fdbatesvanillaengine.hpp \
 	fdblackscholesasianengine.hpp \
 	fdblackscholesbarrierengine.hpp \
 	fdblackscholesrebateengine.hpp \
@@ -25,6 +26,8 @@ this_include_HEADERS = \
     fdmamericanstepcondition.hpp \
     fdmarithmeticaveragecondition.hpp \
     fdmbackwardsolver.hpp \
+    fdmbatesop.hpp \
+    fdmbatessolver.hpp \
 	fdmbermudanstepcondition.hpp \
 	fdmblackscholesmesher.hpp \
 	fdmblackscholesmultistrikemesher.hpp \
@@ -34,6 +37,7 @@ this_include_HEADERS = \
 	fdmdividendhandler.hpp \
 	fdmhestonhullwhiteop.hpp \
 	fdmhestonhullwhitesolver.hpp \
+	fdmhestonlikesolverfactory.hpp \
 	fdmhestonop.hpp \
 	fdmhestonsolver.hpp \
 	fdmhestonvariancemesher.hpp \
@@ -69,6 +73,7 @@ libMultiDimFDM_la_SOURCES = \
 	douglasscheme.cpp \
 	expliciteulerscheme.cpp \
 	fd2dblackscholesvanillaengine.cpp \
+	fdbatesvanillaengine.cpp \
 	fdblackscholesasianengine.cpp \
 	fdblackscholesbarrierengine.cpp \
 	fdblackscholesrebateengine.cpp \
@@ -82,6 +87,8 @@ libMultiDimFDM_la_SOURCES = \
 	fdmamericanstepcondition.cpp \
     fdmarithmeticaveragecondition.cpp \
     fdmbackwardsolver.cpp \
+    fdmbatesop.cpp \
+    fdmbatessolver.cpp \
 	fdmbermudanstepcondition.cpp \
 	fdmblackscholesmesher.cpp \
 	fdmblackscholesmultistrikemesher.cpp \
@@ -91,6 +98,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdmdividendhandler.cpp \
 	fdmhestonhullwhiteop.cpp \
 	fdmhestonhullwhitesolver.cpp \
+	fdmhestonlikesolverfactory.cpp \
 	fdmhestonop.cpp \
 	fdmhestonsolver.cpp \
 	fdmhestonvariancemesher.cpp \

@@ -621,7 +621,7 @@ void FdmLinearOpTest::testFdmHestonBarrier() {
 
     std::vector<boost::shared_ptr<FdmDirichletBoundary> > bcSet;
     bcSet.push_back(boost::shared_ptr<FdmDirichletBoundary>(
-        new FdmDirichletBoundary(mesher->layout(), 0.0, 0,
+        new FdmDirichletBoundary(mesher, 0.0, 0,
                                  FdmDirichletBoundary::Upper)));
 
     const Real theta=0.5+std::sqrt(3.0)/6.;

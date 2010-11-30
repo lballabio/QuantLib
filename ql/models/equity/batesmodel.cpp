@@ -21,22 +21,32 @@
 
 namespace QuantLib {
 
-    BatesModel::BatesModel(const boost::shared_ptr<HestonProcess> & process,
-                           Real lambda, Real nu, Real delta)
+    BatesModel::BatesModel(const boost::shared_ptr<BatesProcess> & process)
     : HestonModel(process) {
         arguments_.resize(8);
 
-        arguments_[5] = ConstantParameter(nu,     NoConstraint());
-        arguments_[6] = ConstantParameter(delta,  PositiveConstraint());
-        arguments_[7] = ConstantParameter(lambda, PositiveConstraint());
+        arguments_[5] 
+                = ConstantParameter(process->nu(),     NoConstraint());
+        arguments_[6] 
+                = ConstantParameter(process->delta(),  PositiveConstraint());
+        arguments_[7] 
+                = ConstantParameter(process->lambda(), PositiveConstraint());
+        
+        generateArguments();
     }
 
+    void BatesModel::generateArguments() {
+        process_.reset(new BatesProcess(
+             process_->riskFreeRate(), process_->dividendYield(),
+             process_->s0(), v0(), 
+             kappa(), theta(), sigma(), rho(),
+             lambda(), nu(), delta()));
+    }
 
     BatesDetJumpModel::BatesDetJumpModel(
-            const boost::shared_ptr<HestonProcess> & process,
-            Real lambda, Real nu, Real delta,
+            const boost::shared_ptr<BatesProcess> & process,
             Real kappaLambda, Real thetaLambda)
-    : BatesModel(process, lambda, nu, delta) {
+    : BatesModel(process) {
         arguments_.resize(10);
 
         arguments_[8] =

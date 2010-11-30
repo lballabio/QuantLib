@@ -109,14 +109,14 @@ namespace QuantLib {
         if (   arguments_.barrierType == Barrier::DownIn
             || arguments_.barrierType == Barrier::DownOut) {
             boundaries.push_back(boost::shared_ptr<FdmDirichletBoundary>(
-                new FdmDirichletBoundary(layout, arguments_.rebate, 0,
+                new FdmDirichletBoundary(mesher, arguments_.rebate, 0,
                                          FdmDirichletBoundary::Lower)));
 
         }
         if (   arguments_.barrierType == Barrier::UpIn
             || arguments_.barrierType == Barrier::UpOut) {
             boundaries.push_back(boost::shared_ptr<FdmDirichletBoundary>(
-                new FdmDirichletBoundary(layout, arguments_.rebate, 0,
+                new FdmDirichletBoundary(mesher, arguments_.rebate, 0,
                                          FdmDirichletBoundary::Upper)));
         }
 

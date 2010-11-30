@@ -98,18 +98,16 @@ namespace QuantLib {
         const boost::shared_ptr<FdmMesher>& mesher,
         const boost::shared_ptr<HestonProcess> & hestonProcess,
         const boost::shared_ptr<FdmQuantoHelper>& quantoHelper)
-    : v0_(hestonProcess->v0()),
-      kappa_(hestonProcess->kappa()),
-      theta_(hestonProcess->theta()),
-      sigma_(hestonProcess->sigma()),
-      rho_  (hestonProcess->rho()),
-      rTS_  (hestonProcess->riskFreeRate().currentLink()),
-      correlationMap_(SecondOrderMixedDerivativeOp(0, 1, mesher)
-                        .mult(rho_*sigma_*mesher->locations(1))),
-      dyMap_(mesher, rTS_,
-             sigma_, kappa_, theta_),
+    : correlationMap_(SecondOrderMixedDerivativeOp(0, 1, mesher)
+                        .mult(hestonProcess->rho()*hestonProcess->sigma()
+                                *mesher->locations(1))),
+      dyMap_(mesher, hestonProcess->riskFreeRate().currentLink(),
+              hestonProcess->sigma(), 
+              hestonProcess->kappa(), 
+              hestonProcess->theta()),
       dxMap_(mesher,
-             rTS_, hestonProcess->dividendYield().currentLink(),
+             hestonProcess->riskFreeRate().currentLink(), 
+             hestonProcess->dividendYield().currentLink(),
              quantoHelper) {
     }
 
@@ -129,7 +127,7 @@ namespace QuantLib {
     }
 
     Disposable<Array> FdmHestonOp::apply_direction(Size direction,
-                                                    const Array& r) const {
+                                                   const Array& r) const {
         if (direction == 0)
             return dxMap_.getMap().apply(r);
         else if (direction == 1)

@@ -19,19 +19,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+
+#include <ql/experimental/finitedifferences/fdmmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 
 namespace QuantLib {
 
     FdmDirichletBoundary::FdmDirichletBoundary(
-                            const boost::shared_ptr<FdmLinearOpLayout>& layout,
-                            Real value,
-                            Size direction,
+                            const boost::shared_ptr<FdmMesher>& mesher,
+                            Real valueOnBoundary, Size direction,
                             FdmDirichletBoundary::Side side)
-    : value_(value),
-      layout_(layout) {
-
+    : side_(side),
+      valueOnBoundary_(valueOnBoundary) {
+                                
+        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+                                
         std::vector<Size> newDim(layout->dim());
         newDim[direction] = 1;
         const Size hyperSize = std::accumulate(newDim.begin(), newDim.end(),
@@ -42,21 +45,37 @@ namespace QuantLib {
         const FdmLinearOpIterator endIter = layout->end();
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
             ++iter) {
-            if ((side == Lower && iter.coordinates()[direction] == 0)
-                || (side == Upper
-                && iter.coordinates()[direction] == layout->dim()[direction]-1)) {
+            if (   (side == Lower && iter.coordinates()[direction] == 0)
+                || (side == Upper && iter.coordinates()[direction] 
+                                            == layout->dim()[direction]-1)) {
 
                 QL_REQUIRE(hyperSize > i, "index missmatch");
                 indicies_[i++] = iter.index();
             }
+        }
+        
+        if (side_ == Lower) {
+            xExtreme_ = mesher->locations(direction)[0];
+        }
+        else if (side_ == Upper) {
+            xExtreme_ 
+                = mesher->locations(direction)[layout->dim()[direction]-1];
         }
     }
 
     void FdmDirichletBoundary::applyAfterApplying(Array& rhs) const {
         for (std::vector<Size>::const_iterator iter = indicies_.begin();
              iter != indicies_.end(); ++iter) {
-            rhs[*iter] = value_;
+            rhs[*iter] = valueOnBoundary_;
         }
     }
-
+    
+    void FdmDirichletBoundary::applyAfterSolving(Array& rhs) const {
+        this->applyAfterApplying(rhs);
+    }
+    
+    Real FdmDirichletBoundary::applyAfterApplying(Real x, Real value) const {
+        return (   (side_ == Lower && x < xExtreme_) 
+                || (side_ == Upper && x > xExtreme_)) ? valueOnBoundary_ : value;
+    }
 }

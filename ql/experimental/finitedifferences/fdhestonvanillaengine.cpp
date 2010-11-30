@@ -19,17 +19,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+
+#include <ql/processes/batesprocess.hpp>
+#include <ql/experimental/finitedifferences/fdmquantohelper.hpp>
 #include <ql/experimental/finitedifferences/fdhestonvanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmbermudanstepcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonsolver.hpp>
+#include <ql/experimental/finitedifferences/fdmbatessolver.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
+#include <ql/experimental/finitedifferences/fdmhestonlikesolverfactory.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmultistrikemesher.hpp>
 
 namespace QuantLib {
@@ -47,7 +52,7 @@ namespace QuantLib {
     }
 
     void FdHestonVanillaEngine::calculate() const {
-        
+
         // cache lookup for precalculated results
         for (Size i=0; i < cachedArgs2results_.size(); ++i) {
             if (   cachedArgs2results_[i].first.exercise->type() 
@@ -171,13 +176,13 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;
 
         // 6. Solver
-        boost::shared_ptr<FdmHestonSolver> solver(new FdmHestonSolver(
-                                        Handle<HestonProcess>(process),
-                                        mesher, boundaries, conditions,
-                                        calculator, maturity, 
-                                        tGrid_, dampingSteps_,
-                                        schemeDesc_));
-
+        boost::shared_ptr<FdmHestonSolver> solver = 
+            FdmHestonLikeSolverFactory().create(Handle<HestonProcess>(process),
+                                                mesher, boundaries, conditions,
+                                                calculator, maturity, 
+                                                tGrid_, dampingSteps_,
+                                                schemeDesc_, 
+                                                Handle<FdmQuantoHelper>());
         const Real v0   = process->v0();
         const Real spot = process->s0()->value();
 

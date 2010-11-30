@@ -96,9 +96,6 @@ namespace QuantLib {
         Disposable<Array> preconditioner(const Array& r, Real s) const;
 
       private:
-        const Real v0_, kappa_, theta_, sigma_, rho_;
-        const boost::shared_ptr<YieldTermStructure> rTS_;
-
         NinePointLinearOp correlationMap_;
         FdmHestonVariancePart dyMap_;
         FdmHestonEquityPart dxMap_;

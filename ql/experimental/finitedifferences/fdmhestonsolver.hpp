@@ -72,7 +72,8 @@ namespace QuantLib {
 
       protected:
         void performCalculations() const;
-
+        void backwardSolve(boost::shared_ptr<FdmLinearOpComposite>& map) const;
+        
       private:
         Handle<HestonProcess> process_;
         const boost::shared_ptr<FdmMesher> mesher_;

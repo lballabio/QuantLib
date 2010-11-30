@@ -81,12 +81,8 @@ namespace QuantLib {
         }
     }
 
-    void FdmHestonSolver::performCalculations() const {
-        boost::shared_ptr<FdmHestonOp> map(
-                new FdmHestonOp(
-                        mesher_, process_.currentLink(),
-                        (!quantoHelper_.empty()) ? quantoHelper_.currentLink()
-                                     : boost::shared_ptr<FdmQuantoHelper>()));
+    void FdmHestonSolver::backwardSolve(
+                       boost::shared_ptr<FdmLinearOpComposite>& map) const {
 
         Array rhs(initialValues_.size());
         std::copy(initialValues_.begin(), initialValues_.end(), rhs.begin());
@@ -99,6 +95,15 @@ namespace QuantLib {
             new BicubicSpline(x_.begin(), x_.end(),
                               v_.begin(), v_.end(),
                               resultValues_));
+    }
+        
+    void FdmHestonSolver::performCalculations() const {
+        boost::shared_ptr<FdmLinearOpComposite> map(
+                new FdmHestonOp(
+                        mesher_, process_.currentLink(),
+                        (!quantoHelper_.empty()) ? quantoHelper_.currentLink()
+                                     : boost::shared_ptr<FdmQuantoHelper>()));
+        this->backwardSolve(map);
     }
 
     Real FdmHestonSolver::valueAt(Real s, Real v) const {
