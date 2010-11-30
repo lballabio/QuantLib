@@ -100,7 +100,7 @@ void LinearLeastSquaresRegressionTest::testRegression() {
 }
 
 namespace {
-    Real f(const Array& a, Size i) {
+    Real f(const std::vector<Real>& a, Size i) {
         return a[i];
     }
 }
@@ -116,8 +116,8 @@ void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
     const Real tolerance = 0.01;
     PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234u));
 
-    std::vector<boost::function1<Real, Array> > v;
-    v.push_back(constant<Array, Real>(1.0));
+    std::vector<boost::function1<Real, std::vector<Real> > > v;
+    v.push_back(constant<std::vector<Real>, Real>(1.0));
     for (Size i=0; i < dims; ++i) {
         v.push_back(boost::bind(f, _1, i));
     }
@@ -128,7 +128,7 @@ void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
     }
     
     std::vector<Real> y(nr, 0.0);
-    std::vector<Array> x(nr, Array(dims));
+    std::vector<std::vector<Real> > x(nr, std::vector<Real>(dims));
     for (Size i=0; i < nr; ++i) {
         for (Size j=0; j < dims; ++j) {
             x[i][j] = rng.next().value;
@@ -140,7 +140,8 @@ void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
         y[i] += rng.next().value;
     }
     
-    LinearLeastSquaresRegression<Array> m(x, y, v);
+    LinearRegression reg(x,y);
+    LinearLeastSquaresRegression<std::vector<Real> > m(x, y, v);
     
     for (Size i=0; i < v.size(); ++i) {
         if (m.standardErrors()[i] > tolerance) {
@@ -150,6 +151,12 @@ void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
         }
         
         if (std::fabs(m.coefficients()[i]-coeff[i]) > 3*tolerance) {
+            BOOST_ERROR("Failed to reproduce linear regression coef."
+                        << "\n    calculated: " << m.coefficients()[i]
+                        << "\n    error:      " << m.standardErrors()[i]
+                        << "\n    expected:   " << coeff[i]);
+        }
+        if (std::fabs(reg.coefficients()[i]-coeff[i]) > 3*tolerance) {
             BOOST_ERROR("Failed to reproduce linear regression coef."
                         << "\n    calculated: " << m.coefficients()[i]
                         << "\n    error:      " << m.standardErrors()[i]

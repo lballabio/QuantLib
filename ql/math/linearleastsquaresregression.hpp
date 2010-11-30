@@ -177,7 +177,14 @@ namespace QuantLib {
     inline LinearRegression::LinearRegression(
         const std::vector<std::vector<Real> >& x,
         const std::vector<Real>& y)
-    : reg_(x, y, details::linearFcts(x.size())) { }
+    : reg_(x, y, details::linearFcts(x[0].size())) {
+#ifdef QL_EXTRA_SAFETY_CHECKS
+        for (Size i=1; i < x.size(); ++i) {
+            QL_REQUIRE(x[i-1].size() == x[i].size(),
+                        "inconsistent sample size");
+        }
+#endif        
+    }
 
     inline LinearRegression::LinearRegression(
         const std::vector<Real>& x,
