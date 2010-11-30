@@ -1244,6 +1244,7 @@
     <ClInclude Include="ql\experimental\math\farliegumbelmorgensterncopularng.hpp" />
     <ClInclude Include="ql\experimental\math\fastfouriertransform.hpp" />
     <ClInclude Include="ql\experimental\math\frankcopularng.hpp" />
+    <ClInclude Include="ql\experimental\math\zigguratrng.hpp" />
     <ClInclude Include="ql\auto_link.hpp" />
     <ClInclude Include="ql\cashflow.hpp" />
     <ClInclude Include="ql\compounding.hpp" />
@@ -1934,6 +1935,7 @@
     <ClCompile Include="ql\experimental\compoundoption\compoundoption.cpp" />
     <ClCompile Include="ql\experimental\inflation\yoycapfloortermpricesurface.cpp" />
     <ClCompile Include="ql\experimental\inflation\yoyoptionlethelpers.cpp" />
+    <ClCompile Include="ql\experimental\math\zigguratrng.cpp" />
     <ClCompile Include="ql\cashflow.cpp" />
     <ClCompile Include="ql\currency.cpp" />
     <ClCompile Include="ql\discretizedasset.cpp" />

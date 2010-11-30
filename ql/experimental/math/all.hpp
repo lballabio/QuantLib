@@ -6,4 +6,5 @@
 #include <ql/experimental/math/farliegumbelmorgensterncopularng.hpp>
 #include <ql/experimental/math/fastfouriertransform.hpp>
 #include <ql/experimental/math/frankcopularng.hpp>
+#include <ql/experimental/math/zigguratrng.hpp>
 

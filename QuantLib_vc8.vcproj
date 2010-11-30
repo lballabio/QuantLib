@@ -7322,6 +7322,14 @@
 					RelativePath=".\ql\experimental\math\frankcopularng.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\experimental\math\zigguratrng.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\zigguratrng.hpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<File

@@ -27,6 +27,7 @@ libExperimental_la_LIBADD = \
     fx/libFX.la \
     inflation/libInflation.la \
     lattices/libLattices.la \
+    math/libMath.la \
     mcbasket/libMcBasket.la \
     processes/libProcesses.la \
     risk/libRisk.la \
