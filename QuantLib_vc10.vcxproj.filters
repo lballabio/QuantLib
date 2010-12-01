@@ -2895,6 +2895,9 @@
     <ClInclude Include="ql\experimental\finitedifferences\fd2dblackscholesvanillaengine.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdbatesvanillaengine.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdblackscholesasianengine.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
@@ -2937,6 +2940,12 @@
     <ClInclude Include="ql\experimental\finitedifferences\fdmbackwardsolver.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmbatesop.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmbatessolver.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdmbermudanstepcondition.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
@@ -2962,6 +2971,9 @@
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdmhestonhullwhitesolver.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmhestonlikesolverfactory.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdmhestonop.hpp">
@@ -5006,6 +5018,9 @@
     <ClCompile Include="ql\experimental\finitedifferences\fd2dblackscholesvanillaengine.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdbatesvanillaengine.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\finitedifferences\fdblackscholesasianengine.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
@@ -5045,6 +5060,12 @@
     <ClCompile Include="ql\experimental\finitedifferences\fdmbackwardsolver.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdmbatesop.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdmbatessolver.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\finitedifferences\fdmbermudanstepcondition.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
@@ -5070,6 +5091,9 @@
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\finitedifferences\fdmhestonhullwhitesolver.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdmhestonlikesolverfactory.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\finitedifferences\fdmhestonop.cpp">

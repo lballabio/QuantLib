@@ -6732,6 +6732,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdbatesvanillaengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdbatesvanillaengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdblackscholesasianengine.cpp"
 					>
 				</File>
@@ -6840,6 +6848,22 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmbatesop.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmbatesop.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmbatessolver.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmbatessolver.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmbermudanstepcondition.cpp"
 					>
 				</File>
@@ -6909,6 +6933,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmhestonhullwhitesolver.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmhestonlikesolverfactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmhestonlikesolverfactory.hpp"
 					>
 				</File>
 				<File
