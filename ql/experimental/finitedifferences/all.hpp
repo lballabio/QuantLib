@@ -8,6 +8,7 @@
 #include <ql/experimental/finitedifferences/douglasscheme.hpp>
 #include <ql/experimental/finitedifferences/expliciteulerscheme.hpp>
 #include <ql/experimental/finitedifferences/fd2dblackscholesvanillaengine.hpp>
+#include <ql/experimental/finitedifferences/fdbatesvanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesasianengine.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesbarrierengine.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesrebateengine.hpp>
@@ -22,6 +23,8 @@
 #include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmarithmeticaveragecondition.hpp>
 #include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
+#include <ql/experimental/finitedifferences/fdmbatesop.hpp>
+#include <ql/experimental/finitedifferences/fdmbatessolver.hpp>
 #include <ql/experimental/finitedifferences/fdmbermudanstepcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmultistrikemesher.hpp>
@@ -31,6 +34,7 @@
 #include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonhullwhiteop.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonhullwhitesolver.hpp>
+#include <ql/experimental/finitedifferences/fdmhestonlikesolverfactory.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonop.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp>
