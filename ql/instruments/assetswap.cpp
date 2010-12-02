@@ -82,11 +82,17 @@ namespace QuantLib {
         if (!parSwap_)
             notional *= dirtyPrice/100.0;
 
-        legs_[1] = IborLeg(schedule, index)
-            .withNotionals(notional)
-            .withPaymentDayCounter(floatingDayCounter)
-            .withPaymentAdjustment(paymentAdjustment)
-            .withSpreads(spread);
+        if (floatingDayCounter==DayCounter())
+            legs_[1] = IborLeg(schedule, index)
+                .withNotionals(notional)
+                .withPaymentAdjustment(paymentAdjustment)
+                .withSpreads(spread);
+        else
+            legs_[1] = IborLeg(schedule, index)
+                .withNotionals(notional)
+                .withPaymentDayCounter(floatingDayCounter)
+                .withPaymentAdjustment(paymentAdjustment)
+                .withSpreads(spread);
 
         for (Leg::const_iterator i=legs_[1].begin(); i<legs_[1].end(); ++i)
             registerWith(*i);
