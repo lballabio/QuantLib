@@ -97,26 +97,57 @@ namespace QuantLib {
                                            const Period& swapTenor) const {
 
         // FIXME use a familyName-based index factory
-        if (swapTenor>shortSwapIndexBase_->tenor())
-            return SwapIndex(swapIndexBase_->familyName(),
-                             swapTenor,
-                             swapIndexBase_->fixingDays(),
-                             swapIndexBase_->currency(),
-                             swapIndexBase_->fixingCalendar(),
-                             swapIndexBase_->fixedLegTenor(),
-                             swapIndexBase_->fixedLegConvention(),
-                             swapIndexBase_->dayCounter(),
-                             swapIndexBase_->iborIndex()).fixing(optionD);
-        else
-            return SwapIndex(shortSwapIndexBase_->familyName(),
-                             swapTenor,
-                             shortSwapIndexBase_->fixingDays(),
-                             shortSwapIndexBase_->currency(),
-                             shortSwapIndexBase_->fixingCalendar(),
-                             shortSwapIndexBase_->fixedLegTenor(),
-                             shortSwapIndexBase_->fixedLegConvention(),
-                             shortSwapIndexBase_->dayCounter(),
-                             shortSwapIndexBase_->iborIndex()).fixing(optionD);
+        if (swapTenor > shortSwapIndexBase_->tenor()) {
+            if (swapIndexBase_->exogenousDiscount()) {
+                return SwapIndex(swapIndexBase_->familyName(),
+                                 swapTenor,
+                                 swapIndexBase_->fixingDays(),
+                                 swapIndexBase_->currency(),
+                                 swapIndexBase_->fixingCalendar(),
+                                 swapIndexBase_->fixedLegTenor(),
+                                 swapIndexBase_->fixedLegConvention(),
+                                 swapIndexBase_->dayCounter(),
+                                 swapIndexBase_->iborIndex(),
+                                 swapIndexBase_->discountingTermStructure())
+                    .fixing(optionD);
+            } else {
+                return SwapIndex(swapIndexBase_->familyName(),
+                                 swapTenor,
+                                 swapIndexBase_->fixingDays(),
+                                 swapIndexBase_->currency(),
+                                 swapIndexBase_->fixingCalendar(),
+                                 swapIndexBase_->fixedLegTenor(),
+                                 swapIndexBase_->fixedLegConvention(),
+                                 swapIndexBase_->dayCounter(),
+                                 swapIndexBase_->iborIndex())
+                    .fixing(optionD);
+            }
+        } else {
+            if (shortSwapIndexBase_->exogenousDiscount()) {
+                return SwapIndex(shortSwapIndexBase_->familyName(),
+                                 swapTenor,
+                                 shortSwapIndexBase_->fixingDays(),
+                                 shortSwapIndexBase_->currency(),
+                                 shortSwapIndexBase_->fixingCalendar(),
+                                 shortSwapIndexBase_->fixedLegTenor(),
+                                 shortSwapIndexBase_->fixedLegConvention(),
+                                 shortSwapIndexBase_->dayCounter(),
+                                 shortSwapIndexBase_->iborIndex(),
+                                 shortSwapIndexBase_->discountingTermStructure())
+                    .fixing(optionD);
+            } else {
+                return SwapIndex(shortSwapIndexBase_->familyName(),
+                                 swapTenor,
+                                 shortSwapIndexBase_->fixingDays(),
+                                 shortSwapIndexBase_->currency(),
+                                 shortSwapIndexBase_->fixingCalendar(),
+                                 shortSwapIndexBase_->fixedLegTenor(),
+                                 shortSwapIndexBase_->fixedLegConvention(),
+                                 shortSwapIndexBase_->dayCounter(),
+                                 shortSwapIndexBase_->iborIndex())
+                    .fixing(optionD);
+            }
+        }
     }
 
 }
