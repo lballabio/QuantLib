@@ -71,6 +71,10 @@ namespace QuantLib {
         return iborIndex_->forwardingTermStructure();
     }
 
+    Handle<YieldTermStructure> SwapIndex::discountingTermStructure() const {
+        return discount_;  // empty if not exogenous
+    }
+
     Rate SwapIndex::forecastFixing(const Date& fixingDate) const {
         return underlyingSwap(fixingDate)->fairRate();
     }
