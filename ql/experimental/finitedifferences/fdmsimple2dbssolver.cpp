@@ -36,7 +36,7 @@ namespace QuantLib {
     FdmSimple2dBSSolver::FdmSimple2dBSSolver(
         const Handle<GeneralizedBlackScholesProcess>& process,
         const boost::shared_ptr<FdmMesher>& mesher,
-        const FdmSimple2dBSSolver::BoundaryConditionSet& bcSet,
+        const FdmBoundaryConditionSet& bcSet,
         const boost::shared_ptr<FdmStepConditionComposite> & condition,
         const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
         Real strike,

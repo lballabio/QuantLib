@@ -27,6 +27,7 @@
 #include <ql/handle.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
 
 namespace QuantLib {
@@ -39,13 +40,10 @@ namespace QuantLib {
 
     class FdmSimple2dBSSolver : LazyObject {
       public:
-        typedef std::vector<boost::shared_ptr<FdmDirichletBoundary> >
-            BoundaryConditionSet;
-
         FdmSimple2dBSSolver(
             const Handle<GeneralizedBlackScholesProcess>& process,
             const boost::shared_ptr<FdmMesher>& mesher,
-            const BoundaryConditionSet & bcSet,
+            const FdmBoundaryConditionSet & bcSet,
             const boost::shared_ptr<FdmStepConditionComposite> & condition,
             const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
             Real strike,
@@ -64,7 +62,7 @@ namespace QuantLib {
       private:
         Handle<GeneralizedBlackScholesProcess> process_;
         const boost::shared_ptr<FdmMesher> mesher_;
-        const BoundaryConditionSet bcSet_;
+        const FdmBoundaryConditionSet bcSet_;
         const boost::shared_ptr<FdmSnapshotCondition> thetaCondition_;
         const boost::shared_ptr<FdmStepConditionComposite> condition_;
         const Real strike_;
