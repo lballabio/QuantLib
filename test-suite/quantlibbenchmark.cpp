@@ -244,6 +244,8 @@ test_suite* init_unit_test_suite(int, char*[]) {
         &EuropeanOptionTest::testPriceCurve, 414.76));
     bm.push_back(Benchmark("FdHestonTest::testFdmHestonAmerican",
         &FdHestonTest::testFdmHestonAmerican, 234.21));
+    bm.push_back(Benchmark("HestonModel::DAXCalibration",
+        &HestonModelTest::testDAXCalibration, 555.19));
     bm.push_back(Benchmark("InterpolationTest::testSabrInterpolation",
         &InterpolationTest::testSabrInterpolation, 2266.06));
     bm.push_back(Benchmark("JumpDiffusion::Greeks",
