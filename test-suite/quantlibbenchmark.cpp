@@ -230,8 +230,6 @@ test_suite* init_unit_test_suite(int, char*[]) {
         &ConvertibleBondTest::testBond, 159.85));
     bm.push_back(Benchmark("DigitalOption::MCCashAtHit",
         &DigitalOptionTest::testMCCashAtHit,995.87));
-    bm.push_back(Benchmark("DividendOption::FdEuropeanValues",
-        &DividendOptionTest::testFdEuropeanValues, 992.12));
     bm.push_back(Benchmark("DividendOption::FdEuropeanGreeks",
         &DividendOptionTest::testFdEuropeanGreeks, 949.52));
     bm.push_back(Benchmark("DividendOption::FdAmericanGreeks",
@@ -246,10 +244,6 @@ test_suite* init_unit_test_suite(int, char*[]) {
         &EuropeanOptionTest::testPriceCurve, 414.76));
     bm.push_back(Benchmark("FdHestonTest::testFdmHestonAmerican",
         &FdHestonTest::testFdmHestonAmerican, 234.21));
-    bm.push_back(Benchmark("HestonModel::DAXCalibration",
-        &HestonModelTest::testDAXCalibration, 555.19));
-    bm.push_back(Benchmark("HestonModel::McVsCached",
-        &HestonModelTest::testMcVsCached, 150.04));
     bm.push_back(Benchmark("InterpolationTest::testSabrInterpolation",
         &InterpolationTest::testSabrInterpolation, 2266.06));
     bm.push_back(Benchmark("JumpDiffusion::Greeks",
