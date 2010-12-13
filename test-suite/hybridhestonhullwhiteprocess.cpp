@@ -1178,9 +1178,11 @@ void HybridHestonHullWhiteProcessTest::testSpatialDiscretizatinError() {
                 }
     
                 if (avgPriceDiff > tol[i]) {
-                     BOOST_ERROR("Failed to reproduce Heston prices"
-                             << "\n   scheme       : " << schemes[i].name
-                             << "\n   model        : " << hestonModels[j].name);                     
+                    BOOST_ERROR("\nFailed to reproduce Heston prices" <<
+                        "\n scheme    : " << schemes[i].name <<
+                        "\n model     : " << hestonModels[j].name <<
+                        "\n error     : " << avgPriceDiff <<
+                        "\n tolerance : " << tol[i]);
                 }
             }
         }
