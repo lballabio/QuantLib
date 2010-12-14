@@ -45,7 +45,7 @@ namespace QuantLib {
         FdBlackScholesAsianEngine(
                       const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
                       Size tGrid = 100, Size xGrid = 100, Size aGrid = 50,
-                      const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas);
+                      const FdmSchemeDesc& schemeDesc=FdmSchemeDesc::Douglas());
 
         void calculate() const;
 

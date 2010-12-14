@@ -53,7 +53,7 @@ namespace QuantLib {
             Time maturity,
             Size timeSteps,
             Size dampingSteps = 0,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer);
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
         Real valueAt(Real x, Real y) const;
         Real thetaAt(Real x, Real y) const;

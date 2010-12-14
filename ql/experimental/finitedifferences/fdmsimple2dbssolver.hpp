@@ -49,7 +49,7 @@ namespace QuantLib {
             Real strike,
             Time maturity,
             Size timeSteps,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas);
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 
         Real valueAt(Real s, Real a) const;
         Real deltaAt(Real s, Real a, Real eps) const;
