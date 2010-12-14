@@ -64,7 +64,7 @@ namespace QuantLib {
             boost::shared_ptr<Exercise> exercise) const;
 
         boost::shared_ptr<StochasticProcess1D> process_;
-        Real lambda_;	// Log strike spacing
+        Real lambda_;   // Log strike spacing
 
     private:
         typedef std::map<boost::shared_ptr<StrikedTypePayoff>, Real> PayoffResultMap;

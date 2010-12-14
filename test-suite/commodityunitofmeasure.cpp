@@ -29,11 +29,11 @@ void CommodityUnitOfMeasureTest::testDirect() {
 
     BOOST_MESSAGE("Testing direct commodity unit of measure conversions...");
 
-	UnitOfMeasureConversionManager& UOMManager =
+    UnitOfMeasureConversionManager& UOMManager =
         UnitOfMeasureConversionManager::instance();
 
-	//MB to BBL 
-	Quantity actual =
+    //MB to BBL
+    Quantity actual =
         UnitOfMeasureConversion(NullCommodityType(), MBUnitOfMeasure(),
                                 BarrelUnitOfMeasure(), 1000)
         .convert(Quantity(NullCommodityType(), MBUnitOfMeasure(), 1000));
@@ -42,7 +42,7 @@ void CommodityUnitOfMeasureTest::testDirect() {
                           MBUnitOfMeasure(), UnitOfMeasureConversion::Direct)
         .convert(Quantity(NullCommodityType(), MBUnitOfMeasure(), 1000));
 
-	 if (!close(calc,actual)) {
+     if (!close(calc,actual)) {
         BOOST_FAIL("Wrong result for MB to BBL Conversion: \n"
                    << "    actual:     " << actual << "\n"
                    << "    calculated: " << calc);
@@ -59,7 +59,7 @@ void CommodityUnitOfMeasureTest::testDirect() {
                            UnitOfMeasureConversion::Direct)
          .convert(Quantity(NullCommodityType(), GallonUnitOfMeasure(), 1000));
 
-	 if (!close(calc,actual)) {
+     if (!close(calc,actual)) {
         BOOST_FAIL("Wrong result for BBL to Gallon Conversion: \n"
                    << "    actual:     " << actual << "\n"
                    << "    calculated: " << calc);
@@ -76,7 +76,7 @@ void CommodityUnitOfMeasureTest::testDirect() {
                            UnitOfMeasureConversion::Direct)
          .convert(Quantity(NullCommodityType(), LitreUnitOfMeasure(), 1000));
 
-	 if (!close(calc,actual)) {
+     if (!close(calc,actual)) {
         BOOST_FAIL("Wrong result for BBL to Litre Conversion: \n"
                    << "    actual:     " << actual << "\n"
                    << "    calculated: " << calc);
@@ -93,7 +93,7 @@ void CommodityUnitOfMeasureTest::testDirect() {
                            UnitOfMeasureConversion::Direct)
          .convert(Quantity(NullCommodityType(),KilolitreUnitOfMeasure(),1000));
 
-	 if (!close(calc,actual)) {
+     if (!close(calc,actual)) {
         BOOST_FAIL("Wrong result for BBL to KiloLitre Conversion: \n"
                    << "    actual:     " << actual << "\n"
                    << "    calculated: " << calc);
@@ -109,7 +109,7 @@ void CommodityUnitOfMeasureTest::testDirect() {
                            MBUnitOfMeasure(), UnitOfMeasureConversion::Direct)
          .convert(Quantity(NullCommodityType(),MBUnitOfMeasure(),1000));
 
-	 if (!close(calc,actual)) {
+     if (!close(calc,actual)) {
         BOOST_FAIL("Wrong result for MB to Gallon Conversion: \n"
                    << "    actual:     " << actual << "\n"
                    << "    calculated: " << calc);
@@ -126,7 +126,7 @@ void CommodityUnitOfMeasureTest::testDirect() {
                            UnitOfMeasureConversion::Direct)
          .convert(Quantity(NullCommodityType(),LitreUnitOfMeasure(),1000));
 
-	 if (!close(calc,actual)) {
+     if (!close(calc,actual)) {
         BOOST_FAIL("Wrong result for Gallon to Litre Conversion: \n"
                    << "    actual:     " << actual << "\n"
                    << "    calculated: " << calc);

@@ -30,7 +30,7 @@
 
 namespace QuantLib {
 
-	class OrnsteinUhlenbeckProcess;
+    class OrnsteinUhlenbeckProcess;
 
     //! Extended Ornstein-Uhlenbeck process class
     /*! This class describes the Ornstein-Uhlenbeck process governed by
@@ -47,8 +47,8 @@ namespace QuantLib {
         ExtendedOrnsteinUhlenbeckProcess(
                                 Real speed, Volatility sigma, Real x0,
                                 const boost::function<Real (Real)>& b,
-								Discretization discretization = MidPoint,
-								Real intEps = 1e-4);
+                                Discretization discretization = MidPoint,
+                                Real intEps = 1e-4);
 
         //! \name StochasticProcess interface
         //@{
@@ -65,9 +65,9 @@ namespace QuantLib {
         const Real speed_;
         const Volatility vol_;
         const boost::function<Real (Real)> b_;
-		const Real intEps_;
+        const Real intEps_;
         const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess_;
-		const Discretization discretization_;
+        const Discretization discretization_;
     };
 }
 
