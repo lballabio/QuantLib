@@ -27,10 +27,12 @@
 
 #include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
+#include <ql/handle.hpp>
 
 namespace QuantLib {
 
     class HestonProcess;
+    class FdmHestonSolver;
     class FdmMesher;
     class FdmQuantoHelper;
     class FdmInnerValueCalculator;

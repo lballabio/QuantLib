@@ -28,6 +28,7 @@
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
+#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 
 namespace QuantLib {
 
