@@ -45,7 +45,7 @@ namespace QuantLib {
           FdBlackScholesRebateEngine(
                 const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
                 Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
-                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas,
+                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
                 bool localVol = false, 
                 Real illegalLocalVolOverwrite = -Null<Real>());
 

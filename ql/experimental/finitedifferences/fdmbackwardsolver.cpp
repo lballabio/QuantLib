@@ -34,20 +34,39 @@
 
 namespace QuantLib {
     
-    FdmSchemeDesc FdmSchemeDesc::Douglas 
-               = { FdmSchemeDesc::DouglasType, 0.5, 0.0 };
-    FdmSchemeDesc FdmSchemeDesc::CraigSneyd
-               = { FdmSchemeDesc::CraigSneydType,0.5, 0.5 };
-    FdmSchemeDesc FdmSchemeDesc::ModifiedCraigSneyd 
-               = { FdmSchemeDesc::ModifiedCraigSneydType, 1.0/3.0, 1.0/3.0 };
-    FdmSchemeDesc FdmSchemeDesc::Hundsdorfer
-               = { FdmSchemeDesc::HundsdorferType, 0.5+std::sqrt(3.0)/6, 0.5 };
-    FdmSchemeDesc FdmSchemeDesc::ModifiedHundsdorfer
-               = { FdmSchemeDesc::HundsdorferType, 1.0-std::sqrt(2.0)/2, 0.5 };
-    FdmSchemeDesc FdmSchemeDesc::ExplicitEuler
-               = { FdmSchemeDesc::ExplicitEulerType, 0.0, 0.0 };
-    FdmSchemeDesc FdmSchemeDesc::ImplicitEuler
-               = { FdmSchemeDesc::ImplicitEulerType, 0.0, 0.0 };
+    FdmSchemeDesc::FdmSchemeDesc(FdmSchemeType aType, Real aTheta, Real aMu)
+    : type(aType), theta(aTheta), mu(aMu) { }
+
+    FdmSchemeDesc FdmSchemeDesc::Douglas() { 
+        return FdmSchemeDesc(FdmSchemeDesc::DouglasType, 0.5, 0.0);
+    }
+    
+    FdmSchemeDesc FdmSchemeDesc::CraigSneyd() {
+        return FdmSchemeDesc(FdmSchemeDesc::CraigSneydType,0.5, 0.5);
+    }
+    
+    FdmSchemeDesc FdmSchemeDesc::ModifiedCraigSneyd() { 
+        return FdmSchemeDesc(FdmSchemeDesc::ModifiedCraigSneydType, 
+                             1.0/3.0, 1.0/3.0);
+    }
+    
+    FdmSchemeDesc FdmSchemeDesc::Hundsdorfer() {
+        return FdmSchemeDesc(FdmSchemeDesc::HundsdorferType, 
+                             0.5+std::sqrt(3.0)/6, 0.5);
+    }
+    
+    FdmSchemeDesc FdmSchemeDesc::ModifiedHundsdorfer() {
+        return FdmSchemeDesc(FdmSchemeDesc::HundsdorferType, 
+                             1.0-std::sqrt(2.0)/2, 0.5);
+    }
+    
+    FdmSchemeDesc FdmSchemeDesc::ExplicitEuler() {
+        return FdmSchemeDesc(FdmSchemeDesc::ExplicitEulerType, 0.0, 0.0);
+    }
+
+    FdmSchemeDesc FdmSchemeDesc::ImplicitEuler() {
+        return FdmSchemeDesc(FdmSchemeDesc::ImplicitEulerType, 0.0, 0.0);
+    }
 
     FdmBackwardSolver::FdmBackwardSolver(
         const boost::shared_ptr<FdmLinearOpComposite>& map,

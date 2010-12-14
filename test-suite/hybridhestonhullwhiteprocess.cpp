@@ -991,22 +991,17 @@ namespace {
     };
         
     SchemeData schemes[] = {
-        { "HV2", FdmSchemeDesc::Hundsdorfer },
-        { "HV1", FdmSchemeDesc::ModifiedHundsdorfer },
-        { "CS" , FdmSchemeDesc::CraigSneyd },
-        { "MCS", FdmSchemeDesc::ModifiedCraigSneyd },
-        { "DS" , FdmSchemeDesc::Douglas }
+        { "HV2", FdmSchemeDesc::Hundsdorfer() },
+        { "HV1", FdmSchemeDesc::ModifiedHundsdorfer() },
+        { "CS" , FdmSchemeDesc::CraigSneyd() },
+        { "MCS", FdmSchemeDesc::ModifiedCraigSneyd() },
+        { "DS" , FdmSchemeDesc::Douglas() }
     };
 
     struct VanillaOptionData {
         Real strike;
         Time maturity;
         Option::Type optionType;
-    };
-
-    struct FdHestonHullWhiteGrid {
-        const char* const name;
-        Size timeStepsPerYear, xGrid, vGrid, rGrid, dampingSteps;
     };
 
     boost::shared_ptr<HestonProcess> makeHestonProcess(

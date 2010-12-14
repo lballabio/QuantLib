@@ -420,7 +420,7 @@ void FdHestonTest::testFdmHestonBlackScholes() {
              new FdHestonVanillaEngine(boost::shared_ptr<HestonModel>(
                                            new HestonModel(hestonProcess)), 
                                        10000, 400, 5, 0, 
-                                       FdmSchemeDesc::ExplicitEuler)));
+                                       FdmSchemeDesc::ExplicitEuler())));
         
         calculated = option.NPV();
         if (std::fabs(calculated - expected) > tol) {
@@ -524,10 +524,10 @@ void FdHestonTest::testFdmHestonConvergence() {
         { 2.5   , 0.06  , 0.5   , -0.1   , 0.0507, 0.0469, 0.25, 100 }
     };
 
-    FdmSchemeDesc schemes[] = { FdmSchemeDesc::Hundsdorfer, 
-                                FdmSchemeDesc::ModifiedCraigSneyd,
-                                FdmSchemeDesc::ModifiedHundsdorfer, 
-                                FdmSchemeDesc::CraigSneyd };
+    FdmSchemeDesc schemes[] = { FdmSchemeDesc::Hundsdorfer(), 
+                                FdmSchemeDesc::ModifiedCraigSneyd(),
+                                FdmSchemeDesc::ModifiedHundsdorfer(), 
+                                FdmSchemeDesc::CraigSneyd() };
     
     Size tn[] = { 100 };
     Real v0[] = { 0.04 };

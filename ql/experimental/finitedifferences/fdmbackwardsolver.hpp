@@ -36,13 +36,20 @@ namespace QuantLib {
         enum FdmSchemeType { HundsdorferType, DouglasType, 
                              CraigSneydType, ModifiedCraigSneydType, 
                              ImplicitEulerType, ExplicitEulerType };
+
+        FdmSchemeDesc(FdmSchemeType type, Real theta, Real mu);
+
         const FdmSchemeType type;
         const Real theta, mu;
-        
+
         // some default scheme descriptions
-        static FdmSchemeDesc Douglas, ImplicitEuler, ExplicitEuler,
-                             CraigSneyd, ModifiedCraigSneyd, 
-                             Hundsdorfer, ModifiedHundsdorfer;
+        static FdmSchemeDesc Douglas();
+        static FdmSchemeDesc ImplicitEuler();
+        static FdmSchemeDesc ExplicitEuler();
+        static FdmSchemeDesc CraigSneyd();
+        static FdmSchemeDesc ModifiedCraigSneyd(); 
+        static FdmSchemeDesc Hundsdorfer();
+        static FdmSchemeDesc ModifiedHundsdorfer();
     };
         
     class FdmBackwardSolver {

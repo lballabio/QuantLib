@@ -52,7 +52,7 @@ namespace QuantLib {
             Time maturity,
             Size timeSteps,
             Size dampingSteps = 0,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
             const Handle<FdmQuantoHelper>& quantoHelper
                                                 = Handle<FdmQuantoHelper>());
 

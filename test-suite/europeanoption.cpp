@@ -1532,7 +1532,7 @@ void EuropeanOptionTest::testLocalVolatility() {
             // delta/gamma are not the same by definition (model implied greeks)
             option.setPricingEngine(boost::shared_ptr<PricingEngine>(
                     new FdBlackScholesVanillaEngine(process, 25, 400, 0, 
-                                                    FdmSchemeDesc::Douglas, 
+                                                    FdmSchemeDesc::Douglas(), 
                                                     true, 0.35)));
             calculatedNPV = option.NPV();
             if (std::fabs(expectedNPV - calculatedNPV) > tol*expectedNPV) {

@@ -46,7 +46,7 @@ namespace QuantLib {
             const boost::shared_ptr<BatesModel>& model,
             Size tGrid = 100, Size xGrid = 100, 
             Size vGrid = 50, Size dampingSteps = 0,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer);
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
         
         void calculate() const;

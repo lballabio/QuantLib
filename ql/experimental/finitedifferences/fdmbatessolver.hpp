@@ -41,7 +41,7 @@ namespace QuantLib {
             Size timeSteps,
             Size dampingSteps = 0,
             Size integroIntegrationOrder = 12,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
             const Handle<FdmQuantoHelper>& quantoHelper
                                                 = Handle<FdmQuantoHelper>());
         

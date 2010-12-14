@@ -55,7 +55,7 @@ namespace QuantLib {
             Size vGrid = 40, Size rGrid = 20,
             Size dampingSteps = 0,
             bool controlVariate = true,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer);
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
         void calculate() const;
 

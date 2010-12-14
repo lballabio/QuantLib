@@ -47,7 +47,7 @@ namespace QuantLib {
                 Real correlation,
                 Size xGrid = 100, Size yGrid = 100, 
                 Size tGrid = 50, Size dampingSteps = 0,
-                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer);
+                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
         void calculate() const;
 
