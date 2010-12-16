@@ -20,6 +20,7 @@ this_include_HEADERS = \
 	fdhestonrebateengine.hpp \
 	fdhestonvanillaengine.hpp \
 	fdhestonhullwhitevanillaengine.hpp \
+    fdsimplebsswingengine.hpp \
 	fdm1dmesher.hpp \
 	fdm2dblackscholesop.hpp \
 	fdm2dblackscholessolver.hpp \
@@ -51,6 +52,7 @@ this_include_HEADERS = \
 	fdmmeshercomposite.hpp \
 	fdmquantohelper.hpp \
     fdmsimple2dbssolver.hpp \
+    fdmsimpleswingcondition.hpp \
 	fdmsnapshotcondition.hpp \
 	fdmstepconditioncomposite.hpp \
 	firstderivativeop.hpp \
@@ -82,6 +84,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdhestonrebateengine.cpp \
 	fdhestonvanillaengine.cpp \
 	fdhestonhullwhitevanillaengine.cpp \
+    fdsimplebsswingengine.cpp \
 	fdm2dblackscholesop.cpp \
 	fdm2dblackscholessolver.cpp \
 	fdmamericanstepcondition.cpp \
@@ -108,6 +111,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdmmeshercomposite.cpp \
 	fdmquantohelper.cpp \
     fdmsimple2dbssolver.cpp \
+    fdmsimpleswingcondition.cpp \
 	fdmsnapshotcondition.cpp \
 	fdmstepconditioncomposite.cpp \
 	firstderivativeop.cpp \

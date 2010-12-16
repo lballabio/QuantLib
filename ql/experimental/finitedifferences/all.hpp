@@ -17,6 +17,7 @@
 #include <ql/experimental/finitedifferences/fdhestonrebateengine.hpp>
 #include <ql/experimental/finitedifferences/fdhestonvanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.hpp>
+#include <ql/experimental/finitedifferences/fdsimplebsswingengine.hpp>
 #include <ql/experimental/finitedifferences/fdm1dmesher.hpp>
 #include <ql/experimental/finitedifferences/fdm2dblackscholesop.hpp>
 #include <ql/experimental/finitedifferences/fdm2dblackscholessolver.hpp>
@@ -48,6 +49,7 @@
 #include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmquantohelper.hpp>
 #include <ql/experimental/finitedifferences/fdmsimple2dbssolver.hpp>
+#include <ql/experimental/finitedifferences/fdmsimpleswingcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmsnapshotcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/firstderivativeop.hpp>
