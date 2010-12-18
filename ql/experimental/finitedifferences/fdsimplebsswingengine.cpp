@@ -117,7 +117,7 @@ namespace QuantLib {
                                schemeDesc_));
     
         const Real spot = process_->x0();
-        const Real y = std::exp(arguments_.exerciseRights);
+        const Real y = std::exp(Real(arguments_.exerciseRights));
         
         results_.value = solver->valueAt(spot, y);
         results_.delta = solver->deltaAt(spot, y, spot*0.01);
