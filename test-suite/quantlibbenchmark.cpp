@@ -81,11 +81,18 @@
    for example) also #define _MSC_VER
 */
 #ifdef BOOST_MSVC
+#  include <ql/auto_link.hpp>
 #  define BOOST_LIB_NAME boost_unit_test_framework
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME
-#endif
 
+/* uncomment the following lines to unmask floating-point exceptions.
+   See http://www.wilmott.com/messageview.cfm?catid=10&threadid=9481
+*/
+//#  include <float.h>
+//   namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
+
+#endif
 #include "utilities.hpp"
 
 #include "americanoption.hpp"
