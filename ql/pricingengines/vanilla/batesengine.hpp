@@ -46,7 +46,7 @@ namespace QuantLib {
 
         N is a Poisson process with the intensity \f$ \lambda
         \f$. When a jump occurs the magnitude J has the probability
-        distribution function \f$ \omega(J) \f$.
+        density function \f$ \omega(J) \f$.
 
         1.1 Log-Normal Jump Diffusion: BatesEngine
 
