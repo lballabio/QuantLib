@@ -19,6 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/experimental/finitedifferences/fdmmesher.hpp>
 #include <ql/experimental/finitedifferences/firstderivativeop.hpp>
 
 namespace QuantLib {

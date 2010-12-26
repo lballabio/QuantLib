@@ -30,13 +30,13 @@
 #ifndef quantlib_triple_band_linear_op_hpp
 #define quantlib_triple_band_linear_op_hpp
 
-#include <ql/experimental/finitedifferences/fdmmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearop.hpp>
 #include <boost/shared_array.hpp>
-#include <deque>
 
 namespace QuantLib {
 
+    class FdmMesher;
+    
     class TripleBandLinearOp : public FdmLinearOp {
       public:
         TripleBandLinearOp(Size direction,

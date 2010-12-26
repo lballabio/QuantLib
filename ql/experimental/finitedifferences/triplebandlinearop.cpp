@@ -19,6 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/experimental/finitedifferences/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
 #include <ql/experimental/finitedifferences/triplebandlinearop.hpp>
 
@@ -55,10 +56,6 @@ namespace QuantLib {
                   std::inner_product(coordinates.begin(), coordinates.end(),
                                      newSpacing.begin(), Size(0));
             reverseIndex_[newIndex] = i;
-
-            //lowerEdge_[newIndex] = (coordinates[direction_] != 0);
-            //upperEdge_[newIndex] =
-            //    (coordinates[direction_] != layout->dim()[direction_]-1);
         }
     }
 
