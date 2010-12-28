@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2009 Dirk Eddelbuettel
- Copyright (C) 2006, 2009 Klaus Spanderen
+ Copyright (C) 2006, 2009, 2010 Klaus Spanderen
  Copyright (C) 2010 Kakhkhor Abdijalilov
  Copyright (C) 2010 Slava Mazur
 
@@ -66,9 +66,6 @@ namespace QuantLib {
         //! modeling uncertainty as definied in Numerical Recipes
         const Array& error()          const { return err_;}
 
-        template <class OtherLinearLeastSquaresRegression>
-        void swap (OtherLinearLeastSquaresRegression &other);
-
 #ifndef QL_DISABLE_DEPRECATED
         const Array& a() const     { return a_;  }
 #endif
@@ -78,10 +75,6 @@ namespace QuantLib {
 
     protected:
         Array a_, err_, residuals_, standardErrors_;
-
-        LinearLeastSquaresRegression(Size n, Size m) 
-        : a_(m, 0), err_(m, 0), residuals_(n, 0), standardErrors_(m, 0) {
-        }
 
         template <class xIterator, class yIterator, class vIterator>
         void calculate(
@@ -103,6 +96,7 @@ namespace QuantLib {
     };
 
     namespace details {
+        
         template <class Container>
         class LinearFct : public std::unary_function<Real, Container > {
         public:
@@ -117,44 +111,42 @@ namespace QuantLib {
         };
 
         // 1d implementation (arithmetic types)
-        template <class xContainer, class yContainer, bool>
-        class LinearFcts  
-        : public LinearLeastSquaresRegression<typename xContainer::value_type> {
+        template <class xContainer, bool>
+        class LinearFcts {
         public:
             typedef typename xContainer::value_type ArgumentType;
-            typedef LinearLeastSquaresRegression<ArgumentType> Super;
-            LinearFcts (const xContainer &x, 
-                        const yContainer &y, Real intercept) : 
-            Super(y.size(), (intercept ? 2 : 1)) {
+            LinearFcts (const xContainer &x, Real intercept) {
                 if (intercept)
                     v.push_back(constant<ArgumentType, Real>(intercept));
                 v.push_back(identity<ArgumentType>());
-                calculate(x.begin(), x.end(), 
-                          y.begin(), y.end(), v.begin(), v.end());
             }
 
+            const std::vector< boost::function1<Real, ArgumentType> > & fcts() {
+                return v;
+            }
+
+        private:
             std::vector< boost::function1<Real, ArgumentType> > v;
         };
 
         // multi-dimensional implementation (container types)
-        template <class xContainer, class yContainer>
-        class LinearFcts<xContainer, yContainer, false> 
-            : public LinearLeastSquaresRegression<
-                                            typename xContainer::value_type> {
+        template <class xContainer>
+        class LinearFcts<xContainer, false>  {
         public:
             typedef typename xContainer::value_type ArgumentType;
-            typedef LinearLeastSquaresRegression<ArgumentType> Super;
-            LinearFcts (const xContainer &x, const yContainer &y,Real intercept) : 
-            Super(y.size(),(intercept ? x.begin()->size()+1 : x.begin()->size())) {
+            LinearFcts (const xContainer &x, Real intercept)
+            {
                 if (intercept)
                     v.push_back(constant<ArgumentType, Real>(intercept));
                 Size m = x.begin()->size();
                 for (Size i = 0; i < m; ++i)
                     v.push_back(LinearFct<ArgumentType>(i));
-                calculate(x.begin(), x.end(), 
-                          y.begin(), y.end(), v.begin(), v.end());
             }
-
+            
+            const std::vector< boost::function1<Real, ArgumentType> > & fcts() {
+                return v;
+            }
+        private:
             std::vector< boost::function1<Real, ArgumentType> > v;
         };
     }
@@ -235,28 +227,13 @@ namespace QuantLib {
             calculate(xBegin, xEnd, yBegin, yEnd, vBegin, vEnd);
     }
 
-    template <class ArgumentType>
-    template <class OtherLinearLeastSquaresRegression> inline
-        void LinearLeastSquaresRegression<ArgumentType>::swap
-                                (OtherLinearLeastSquaresRegression &other) {
-            LinearLeastSquaresRegression<ArgumentType> &tmp 
-                = (LinearLeastSquaresRegression<ArgumentType> &)(other);
-            a_.swap(tmp.a_);
-            err_.swap(tmp.err_);
-            residuals_.swap(tmp.residuals_);
-            standardErrors_.swap(tmp.standardErrors_);
-    }
-
     template <class xContainer, class yContainer> inline
         LinearRegression::LinearRegression(const xContainer& x, 
                                            const yContainer& y, Real intercept) 
-    : LinearLeastSquaresRegression<Real> (1, 1) {
-        typedef typename xContainer::value_type ArgumentType;
-        details::LinearFcts<xContainer, yContainer, 
-                            boost::is_arithmetic<ArgumentType>::value> 
-                                                          lfs(x, y, intercept);
-                                                          
-        lfs.swap(static_cast<LinearLeastSquaresRegression<Real>&>(*this));
+    : LinearLeastSquaresRegression<Real>(x, y, 
+          details::LinearFcts<xContainer, 
+              boost::is_arithmetic<typename xContainer::value_type>::value>
+                                                        (x, intercept).fcts()) {
     }
 
     template <class xContainer, class yContainer, class vContainer> inline
