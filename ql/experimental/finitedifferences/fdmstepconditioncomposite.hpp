@@ -26,12 +26,19 @@
 #ifndef quantlib_fdm_step_condition_composite_hpp
 #define quantlib_fdm_step_condition_composite_hpp
 
+#include <ql/time/date.hpp>
+#include <ql/time/daycounter.hpp>
+#include <ql/instruments/dividendschedule.hpp>
 #include <ql/methods/finitedifferences/stepcondition.hpp>
+
 #include <set>
 
 namespace QuantLib {
 
+    class FdmMesher;
+    class Exercise;
     class FdmSnapshotCondition;
+    class FdmInnerValueCalculator;
     
     class FdmStepConditionComposite : public StepCondition<Array> {
     public:
@@ -48,6 +55,14 @@ namespace QuantLib {
         static boost::shared_ptr<FdmStepConditionComposite> joinConditions(
                     const boost::shared_ptr<FdmSnapshotCondition>& c1,
                     const boost::shared_ptr<FdmStepConditionComposite>& c2);
+
+        static boost::shared_ptr<FdmStepConditionComposite> vanillaComposite(
+             const DividendSchedule& schedule,
+             const boost::shared_ptr<Exercise>& exercise,
+             const boost::shared_ptr<FdmMesher>& mesher,
+             const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
+             const Date& refDate,
+             const DayCounter& dayCounter);
         
     private:
         std::vector<Time> stoppingTimes_;

@@ -19,8 +19,16 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+
+#include <ql/exercise.hpp>
+#include <ql/experimental/finitedifferences/fdmmesher.hpp>
+#include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
 #include <ql/experimental/finitedifferences/fdmsnapshotcondition.hpp>
+#include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
+#include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
+#include <ql/experimental/finitedifferences/fdmbermudanstepcondition.hpp>
+
 
 namespace QuantLib {
 
@@ -71,4 +79,47 @@ namespace QuantLib {
         return boost::shared_ptr<FdmStepConditionComposite>(
             new FdmStepConditionComposite(stoppingTimes, conditions));
     }
+
+    boost::shared_ptr<FdmStepConditionComposite> 
+    FdmStepConditionComposite::vanillaComposite(
+                 const DividendSchedule& cashFlow,
+                 const boost::shared_ptr<Exercise>& exercise,
+                 const boost::shared_ptr<FdmMesher>& mesher,
+                 const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
+                 const Date& refDate,
+                 const DayCounter& dayCounter) {
+        
+        std::list<std::vector<Time> > stoppingTimes;
+        std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;
+
+        if(!cashFlow.empty()) {
+            boost::shared_ptr<FdmDividendHandler> dividendCondition(
+                new FdmDividendHandler(cashFlow, mesher,
+                                       refDate, dayCounter, 0));
+            stepConditions.push_back(dividendCondition);
+            stoppingTimes.push_back(dividendCondition->dividendTimes());
+        }
+
+        QL_REQUIRE(   exercise->type() == Exercise::American
+                   || exercise->type() == Exercise::European
+                   || exercise->type() == Exercise::Bermudan,
+                   "exercise type is not supported");
+        if (exercise->type() == Exercise::American) {
+            stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
+                          new FdmAmericanStepCondition(mesher,calculator)));
+        }
+        else if (exercise->type() == Exercise::Bermudan) {
+            boost::shared_ptr<FdmBermudanStepCondition> bermudanCondition(
+                new FdmBermudanStepCondition(exercise->dates(),
+                                             refDate, dayCounter,
+                                             mesher, calculator));
+            stepConditions.push_back(bermudanCondition);
+            stoppingTimes.push_back(bermudanCondition->exerciseTimes());
+        }
+        
+        return boost::shared_ptr<FdmStepConditionComposite>(
+            new FdmStepConditionComposite(stoppingTimes, stepConditions));
+
+    }
+
 }

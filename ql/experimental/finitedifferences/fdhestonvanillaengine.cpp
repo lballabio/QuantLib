@@ -24,9 +24,6 @@
 #include <ql/experimental/finitedifferences/fdmquantohelper.hpp>
 #include <ql/experimental/finitedifferences/fdhestonvanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
-#include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
-#include <ql/experimental/finitedifferences/fdmbermudanstepcondition.hpp>
-#include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmbatessolver.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp>
@@ -81,8 +78,7 @@ namespace QuantLib {
         std::vector<Size> dim;
         dim.push_back(xGrid_);
         dim.push_back(vGrid_);
-        const boost::shared_ptr<FdmLinearOpLayout> layout(
-                                              new FdmLinearOpLayout(dim));
+        boost::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
 
         // 2. Mesher
         const boost::shared_ptr<HestonProcess> process = model_->process();
@@ -126,57 +122,26 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
         meshers.push_back(equityMesher);
         meshers.push_back(varianceMesher);
-        boost::shared_ptr<FdmMesher> mesher(
+        const boost::shared_ptr<FdmMesher> mesher(
                                      new FdmMesherComposite(layout, meshers));
 
         // 3. Calculator
-        boost::shared_ptr<FdmInnerValueCalculator> calculator(
+        const boost::shared_ptr<FdmInnerValueCalculator> calculator(
                           new FdmLogInnerValue(arguments_.payoff, mesher, 0));
 
         // 4. Step conditions
-        std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;
-        std::list<std::vector<Time> > stoppingTimes;
-
-        // 4.1 Step condition if discrete dividends
-        if(!arguments_.cashFlow.empty()) {
-            boost::shared_ptr<FdmDividendHandler> dividendCondition(
-                new FdmDividendHandler(arguments_.cashFlow, mesher,
-                                       process->riskFreeRate()->referenceDate(),
-                                       process->riskFreeRate()->dayCounter(),
-                                       0));
-            stepConditions.push_back(dividendCondition);
-            stoppingTimes.push_back(dividendCondition->dividendTimes());
-        }
-
-        // 4.2 Step condition if american or bermudan exercise
-        QL_REQUIRE(   arguments_.exercise->type() == Exercise::American
-                   || arguments_.exercise->type() == Exercise::European
-                   || arguments_.exercise->type() == Exercise::Bermudan,
-                   "exercise type is not supported");
-
-        if (arguments_.exercise->type() == Exercise::American) {
-            stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
-                            new FdmAmericanStepCondition(mesher, calculator)));
-        }
-        else if (arguments_.exercise->type() == Exercise::Bermudan) {
-            boost::shared_ptr<FdmBermudanStepCondition> bermudanCondition(
-                new FdmBermudanStepCondition(
-                                    arguments_.exercise->dates(),
-                                    process->riskFreeRate()->referenceDate(),
-                                    process->riskFreeRate()->dayCounter(),
-                                    mesher, calculator));
-            stepConditions.push_back(bermudanCondition);
-            stoppingTimes.push_back(bermudanCondition->exerciseTimes());
-        }
-
-        boost::shared_ptr<FdmStepConditionComposite> conditions(
-                new FdmStepConditionComposite(stoppingTimes, stepConditions));
+        const boost::shared_ptr<FdmStepConditionComposite> conditions = 
+             FdmStepConditionComposite::vanillaComposite(
+                                 arguments_.cashFlow, arguments_.exercise, 
+                                 mesher, calculator, 
+                                 process->riskFreeRate()->referenceDate(),
+                                 process->riskFreeRate()->dayCounter());
 
         // 5. Boundary conditions
-        std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;
+        const std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;
 
         // 6. Solver
-        boost::shared_ptr<FdmHestonSolver> solver = 
+        const boost::shared_ptr<FdmHestonSolver> solver = 
             FdmHestonLikeSolverFactory().create(Handle<HestonProcess>(process),
                                                 mesher, boundaries, conditions,
                                                 calculator, maturity, 

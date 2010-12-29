@@ -18,15 +18,13 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
-#include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/fdm2dblackscholessolver.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
+#include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
 #include <ql/experimental/finitedifferences/fd2dblackscholesvanillaengine.hpp>
-#include <ql/experimental/finitedifferences/fdmbermudanstepcondition.hpp>
 
 namespace QuantLib {
 
@@ -50,8 +48,7 @@ namespace QuantLib {
         std::vector<Size> dim;
         dim.push_back(xGrid_);
         dim.push_back(yGrid_);
-        const boost::shared_ptr<FdmLinearOpLayout> layout(
-                                              new FdmLinearOpLayout(dim));
+        boost::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
 
         const boost::shared_ptr<BasketPayoff> payoff =
             boost::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
@@ -73,39 +70,20 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
         meshers.push_back(em1);
         meshers.push_back(em2);
-        boost::shared_ptr<FdmMesher> mesher (
+        const boost::shared_ptr<FdmMesher> mesher (
                                      new FdmMesherComposite(layout, meshers));
 
         // 3. Calculator
-        boost::shared_ptr<FdmInnerValueCalculator> calculator(
+        const boost::shared_ptr<FdmInnerValueCalculator> calculator(
                                 new FdmLogBasketInnerValue(payoff, mesher));
 
         // 4. Step conditions
-        std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;
-        std::list<std::vector<Time> > stoppingTimes;
-
-        // 4.2 Step condition if american or bermudan exercise
-        QL_REQUIRE(   arguments_.exercise->type() == Exercise::American
-                   || arguments_.exercise->type() == Exercise::European
-                   || arguments_.exercise->type() == Exercise::Bermudan,
-                   "exercise type is not supported");
-        if (arguments_.exercise->type() == Exercise::American) {
-            stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
-                            new FdmAmericanStepCondition(mesher,calculator)));
-        }
-        else if (arguments_.exercise->type() == Exercise::Bermudan) {
-            boost::shared_ptr<FdmBermudanStepCondition> bermudanCondition(
-                new FdmBermudanStepCondition(
-                                    arguments_.exercise->dates(),
+        const boost::shared_ptr<FdmStepConditionComposite> conditions =
+            FdmStepConditionComposite::vanillaComposite(
+                                    DividendSchedule(), arguments_.exercise, 
+                                    mesher, calculator, 
                                     p1_->riskFreeRate()->referenceDate(),
-                                    p1_->riskFreeRate()->dayCounter(),
-                                    mesher, calculator));
-            stepConditions.push_back(bermudanCondition);
-            stoppingTimes.push_back(bermudanCondition->exerciseTimes());
-        }
-
-        boost::shared_ptr<FdmStepConditionComposite> conditions(
-                new FdmStepConditionComposite(stoppingTimes, stepConditions));
+                                    p1_->riskFreeRate()->dayCounter());
 
         // 5. Boundary conditions
         std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;

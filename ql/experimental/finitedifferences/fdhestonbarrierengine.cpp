@@ -50,8 +50,7 @@ namespace QuantLib {
         std::vector<Size> dim;
         dim.push_back(xGrid_);
         dim.push_back(vGrid_);
-        const boost::shared_ptr<FdmLinearOpLayout> layout(
-                                              new FdmLinearOpLayout(dim));
+        boost::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
 
         // 2. Mesher
         const boost::shared_ptr<HestonProcess>& process = model_->process();
@@ -89,7 +88,7 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
         meshers.push_back(equityMesher);
         meshers.push_back(varianceMesher);
-        boost::shared_ptr<FdmMesher> mesher (
+        const boost::shared_ptr<FdmMesher> mesher (
                                      new FdmMesherComposite(layout, meshers));
 
         // 3. Calculator

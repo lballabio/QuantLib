@@ -21,7 +21,6 @@
 
 #include <ql/exercise.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesrebateengine.hpp>
-#include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholessolver.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
@@ -47,10 +46,8 @@ namespace QuantLib {
     void FdBlackScholesRebateEngine::calculate() const {
 
         // 1. Layout
-        std::vector<Size> dim;
-        dim.push_back(xGrid_);
-        const boost::shared_ptr<FdmLinearOpLayout> layout(
-                                              new FdmLinearOpLayout(dim));
+        std::vector<Size> dim(1, xGrid_);
+        boost::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
 
         // 2. Mesher
         const boost::shared_ptr<StrikedTypePayoff> payoff =
@@ -72,37 +69,26 @@ namespace QuantLib {
             new FdmBlackScholesMesher(xGrid_, process_, maturity,
                                       payoff->strike(), xMin, xMax));
         
-        std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
-        meshers.push_back(equityMesher);
-        boost::shared_ptr<FdmMesher> mesher (
+        std::vector<boost::shared_ptr<Fdm1dMesher> > meshers(1, equityMesher);
+        const boost::shared_ptr<FdmMesher> mesher (
                                      new FdmMesherComposite(layout, meshers));
         
         // 3. Calculator
-        boost::shared_ptr<StrikedTypePayoff> rebatePayoff(
+        const boost::shared_ptr<StrikedTypePayoff> rebatePayoff(
                 new CashOrNothingPayoff(Option::Call, 0.0, arguments_.rebate));
-        boost::shared_ptr<FdmInnerValueCalculator> calculator(
+        const boost::shared_ptr<FdmInnerValueCalculator> calculator(
                                 new FdmLogInnerValue(rebatePayoff, mesher, 0));
 
         // 4. Step conditions
-        std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;
-        std::list<std::vector<Time> > stoppingTimes;
-
-        // 4.1 Step condition if discrete dividends
-        boost::shared_ptr<FdmDividendHandler> dividendCondition(
-            new FdmDividendHandler(arguments_.cashFlow, mesher,
-                                   process_->riskFreeRate()->referenceDate(),
-                                   process_->riskFreeRate()->dayCounter(), 0));
-
-        if(!arguments_.cashFlow.empty()) {
-            stepConditions.push_back(dividendCondition);
-            stoppingTimes.push_back(dividendCondition->dividendTimes());
-        }
-
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "only european style option are supported");
-
-        boost::shared_ptr<FdmStepConditionComposite> conditions(
-                new FdmStepConditionComposite(stoppingTimes, stepConditions));
+        
+        const boost::shared_ptr<FdmStepConditionComposite> conditions =
+            FdmStepConditionComposite::vanillaComposite(
+                                arguments_.cashFlow, arguments_.exercise, 
+                                mesher, calculator, 
+                                process_->riskFreeRate()->referenceDate(),
+                                process_->riskFreeRate()->dayCounter());
 
         // 5. Boundary conditions
         std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;
@@ -121,7 +107,7 @@ namespace QuantLib {
         }
 
         // 6. Solver
-        boost::shared_ptr<FdmBlackScholesSolver> solver(
+        const boost::shared_ptr<FdmBlackScholesSolver> solver(
                 new FdmBlackScholesSolver(
                                 Handle<GeneralizedBlackScholesProcess>(process_),
                                 mesher, boundaries, conditions, calculator,
