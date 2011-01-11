@@ -38,7 +38,7 @@ namespace QuantLib {
         numerairesHeld_(product->numberOfProducts()),
         numberCashFlowsThisStep_(product->numberOfProducts()),
         cashFlowsGenerated_(product->numberOfProducts()) ,
-        deflatorAndDerivatives_(product->numberOfProducts()+1)
+        deflatorAndDerivatives_(pseudoRootStructure_->numberOfRates()+1)
     {
 
         numberRates_ = pseudoRootStructure_->numberOfRates();
