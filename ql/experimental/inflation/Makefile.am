@@ -4,6 +4,8 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    cpicapfloortermpricesurface.hpp \
+    cpioptionletvolatilitystructure.hpp \
     genericindexes.hpp \
     interpolatedyoyoptionletstripper.hpp \
     kinterpolatedyoyoptionletvolatilitysurface.hpp \
@@ -15,6 +17,8 @@ this_include_HEADERS = \
     yoyinflationoptionletvolatilitystructure2.hpp
 
 libInflation_la_SOURCES = \
+    cpicapfloortermpricesurface.cpp \
+    cpioptionletvolatilitystructure.cpp \
     yoycapfloortermpricesurface.cpp \
     yoyoptionlethelpers.cpp
 

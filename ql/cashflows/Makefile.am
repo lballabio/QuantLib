@@ -5,6 +5,7 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     averagebmacoupon.hpp \
+    baseindexedcashflow.hpp \
     capflooredcoupon.hpp \
     capflooredinflationcoupon.hpp \
     cashflows.hpp \
@@ -13,6 +14,8 @@ this_include_HEADERS = \
     conundrumpricer.hpp \
     coupon.hpp \
     couponpricer.hpp \
+    cpicoupon.hpp \
+    cpicouponpricer.hpp \
     digitalcmscoupon.hpp \
     digitalcoupon.hpp \
     digitaliborcoupon.hpp \
@@ -33,6 +36,7 @@ this_include_HEADERS = \
 
 libCashFlows_la_SOURCES = \
     averagebmacoupon.cpp \
+    baseindexedcashflow.cpp \
     capflooredcoupon.cpp \
     capflooredinflationcoupon.cpp \
     cashflows.cpp \
@@ -41,6 +45,8 @@ libCashFlows_la_SOURCES = \
     conundrumpricer.cpp \
     coupon.cpp \
     couponpricer.cpp \
+    cpicoupon.cpp \
+    cpicouponpricer.cpp \
     digitalcmscoupon.cpp \
     digitalcoupon.cpp \
     digitaliborcoupon.cpp \

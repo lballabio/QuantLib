@@ -93,6 +93,8 @@
 #include "inflation.hpp"
 #include "inflationcapfloor.hpp"
 #include "inflationcapflooredcoupon.hpp"
+#include "inflationcpicapfloor.hpp"
+#include "inflationcpiswap.hpp"
 #include "inflationvolatility.hpp"
 #include "instruments.hpp"
 #include "integrals.hpp"
@@ -269,6 +271,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(InflationTest::suite());                  // in general inflation & tests
     test->add(InflationCapFloorTest::suite());          // use indexed coupons, i.e.
     test->add(InflationCapFlooredCouponTest::suite());  // QL_USE_INDEXED_COUPON has no effect
+	test->add(CPISwapTest::suite());					//
+	test->add(InflationCPICapFloorTest::suite());		//
     test->add(InflationVolTest::suite());               //
     test->add(InstrumentTest::suite());
     test->add(IntegralTest::suite());

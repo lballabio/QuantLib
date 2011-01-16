@@ -19,6 +19,8 @@ this_include_HEADERS = \
     claim.hpp \
     cliquetoption.hpp \
     compositeinstrument.hpp \
+    cpiswap.hpp \
+    cpicapfloor.hpp \
     creditdefaultswap.hpp \
     dividendschedule.hpp \
     dividendvanillaoption.hpp \
@@ -67,6 +69,8 @@ libInstruments_la_SOURCES = \
     claim.cpp \
     cliquetoption.cpp \
     compositeinstrument.cpp \
+    cpiswap.cpp \
+    cpicapfloor.cpp \
     creditdefaultswap.cpp \
     dividendvanillaoption.cpp \
     europeanoption.cpp \

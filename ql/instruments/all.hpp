@@ -14,6 +14,8 @@
 #include <ql/instruments/claim.hpp>
 #include <ql/instruments/cliquetoption.hpp>
 #include <ql/instruments/compositeinstrument.hpp>
+#include <ql/instruments/cpiswap.hpp>
+#include <ql/instruments/cpicapfloor.hpp>
 #include <ql/instruments/creditdefaultswap.hpp>
 #include <ql/instruments/dividendschedule.hpp>
 #include <ql/instruments/dividendvanillaoption.hpp>
