@@ -18,8 +18,6 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/time/daycounters/actualactual.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/experimental/finitedifferences/fdmarithmeticaveragecondition.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesasianengine.hpp>
@@ -105,12 +103,12 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;
 
         // 6. Solver
+        FdmSolverDesc solverDesc = { mesher, boundaries, conditions,
+                                     calculator, maturity, tGrid_, 0 };
         boost::shared_ptr<FdmSimple2dBSSolver> solver(
-                new FdmSimple2dBSSolver(
-                                Handle<GeneralizedBlackScholesProcess>(process_),
-                                mesher, boundaries, conditions, calculator,
-                                payoff->strike(),maturity, tGrid_,
-                                schemeDesc_));
+              new FdmSimple2dBSSolver(
+                              Handle<GeneralizedBlackScholesProcess>(process_),
+                              payoff->strike(), solverDesc, schemeDesc_));
 
         const Real spot = process_->x0();
         const Real avg = arguments_.runningAccumulator == 0

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2009 Klaus Spanderen
+ Copyright (C) 2009, 2011 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,15 +18,15 @@
 */
 
 #include <ql/math/functional.hpp>
-#include <ql/processes/hullwhiteprocess.hpp>
+#include <ql/stochasticprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/experimental/finitedifferences/fdmhullwhitemesher.hpp>
+#include <ql/experimental/finitedifferences/fdmsimpleprocess1dmesher.hpp>
 
 namespace QuantLib {
 
-    FdmHullWhiteMesher::FdmHullWhiteMesher(
+    FdmSimpleProcess1dMesher::FdmSimpleProcess1dMesher(
         Size size,
-        const boost::shared_ptr<HullWhiteProcess>& process,
+        const boost::shared_ptr<StochasticProcess1D>& process,
         Time maturity, Size tAvgSteps, Real eps)
         : Fdm1dMesher(size) {
             
@@ -57,6 +57,6 @@ namespace QuantLib {
         for (Size i=0; i < size-1; ++i) {
             dminus_[i+1] = dplus_[i] = locations_[i+1] - locations_[i];
         }
-        dplus_.back() = dminus_.front() = Null<Real>();
+        dplus_.back() = dminus_.front() = Null<Real>();        
     }
 }

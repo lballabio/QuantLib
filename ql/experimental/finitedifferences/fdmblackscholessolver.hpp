@@ -27,16 +27,13 @@
 
 #include <ql/handle.hpp>
 #include <ql/patterns/lazyobject.hpp>
+#include <ql/experimental/finitedifferences/fdmsolverdesc.hpp>
 #include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
-#include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
 
 namespace QuantLib {
 
-    class FdmMesher;
-    class FdmSnapshotCondition;
-    class FdmInnerValueCalculator;
-    class FdmStepConditionComposite;
     class CubicInterpolation;
+    class FdmSnapshotCondition;
     class GeneralizedBlackScholesProcess;
 
     class FdmBlackScholesSolver : public LazyObject {
@@ -46,14 +43,8 @@ namespace QuantLib {
 
         FdmBlackScholesSolver(
             const Handle<GeneralizedBlackScholesProcess>& process,
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const BoundaryConditionSet & bcSet,
-            const boost::shared_ptr<FdmStepConditionComposite> & condition,
-            const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
             Real strike,
-            Time maturity,
-            Size timeSteps,
-            Size dampingSteps = 0,
+            const FdmSolverDesc& solverDesc,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
             bool localVol = false,
             Real illegalLocalVolOverwrite = -Null<Real>());
@@ -68,16 +59,12 @@ namespace QuantLib {
 
       private:
         Handle<GeneralizedBlackScholesProcess> process_;
-        const boost::shared_ptr<FdmMesher> mesher_;
-        const BoundaryConditionSet bcSet_;
-        const boost::shared_ptr<FdmSnapshotCondition> thetaCondition_;
-        const boost::shared_ptr<FdmStepConditionComposite> condition_;
         const Real strike_;
-        const Time maturity_;
-        const Size timeSteps_;
-        const Size dampingSteps_;
-
+        const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
+        const boost::shared_ptr<FdmMesher> mesher_;
+        const boost::shared_ptr<FdmSnapshotCondition> thetaCondition_;
+        const boost::shared_ptr<FdmStepConditionComposite> conditions_;
         const bool localVol_;
         const Real illegalLocalVolOverwrite_;
 

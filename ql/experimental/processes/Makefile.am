@@ -4,13 +4,17 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    extouwithjumpsprocess.hpp \
     extendedblackscholesprocess.hpp \
     extendedornsteinuhlenbeckprocess.hpp \
+    gemanroncoroniprocess.hpp \
     vegastressedblackscholesprocess.hpp
 
 libProcesses_la_SOURCES = \
+	extouwithjumpsprocess.cpp \
     extendedblackscholesprocess.cpp \
     extendedornsteinuhlenbeckprocess.cpp \
+    gemanroncoroniprocess.cpp \
     vegastressedblackscholesprocess.cpp
 
 noinst_LTLIBRARIES = libProcesses.la

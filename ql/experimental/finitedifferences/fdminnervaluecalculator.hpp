@@ -77,6 +77,12 @@ namespace QuantLib {
         const boost::shared_ptr<BasketPayoff> payoff_;
         const boost::shared_ptr<FdmMesher> mesher_;
     };
+
+    class FdmZeroInnerValue : public FdmInnerValueCalculator {
+      public:
+        Real innerValue(const FdmLinearOpIterator&)    { return 0.0; }
+        Real avgInnerValue(const FdmLinearOpIterator&) { return 0.0; }
+    };
 }
 
 #endif

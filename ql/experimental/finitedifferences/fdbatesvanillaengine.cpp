@@ -21,7 +21,9 @@
     \brief Partial Integro Finite-Differences Bates vanilla option engine
 */
 
+#include <ql/processes/batesprocess.hpp>
 
+#include <ql/experimental/finitedifferences/fdmbatessolver.hpp>
 #include <ql/experimental/finitedifferences/fdbatesvanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdhestonvanillaengine.hpp>
 
@@ -35,28 +37,34 @@ namespace QuantLib {
     : GenericModelEngine<BatesModel,
                          DividendVanillaOption::arguments,
                          DividendVanillaOption::results>(model),
-      hestonEngine_(new FdHestonVanillaEngine(model, tGrid, xGrid, vGrid, 
-                                              dampingSteps, schemeDesc)) {
+       tGrid_(tGrid), xGrid_(xGrid),
+       vGrid_(vGrid), dampingSteps_(dampingSteps),
+       schemeDesc_(schemeDesc) {
     }
 
     void FdBatesVanillaEngine::calculate() const {
-        hestonEngine_->calculate();
-        
-        results_ = *dynamic_cast<const DividendVanillaOption::results*>(
-                                                hestonEngine_->getResults());
-    }
-    
-    PricingEngine::arguments* FdBatesVanillaEngine::getArguments() const { 
-        return hestonEngine_->getArguments(); 
-    }
-    
-    const PricingEngine::results* FdBatesVanillaEngine::getResults() const {
-        return hestonEngine_->getResults();
-    }
-    
-    void FdBatesVanillaEngine::reset() {
-        hestonEngine_->reset();
-    }
+        FdHestonVanillaEngine helperEngine(model_.currentLink(),
+                                           tGrid_, xGrid_, vGrid_,
+                                           dampingSteps_, schemeDesc_);
 
+        *dynamic_cast<DividendVanillaOption::arguments*>(
+                               helperEngine.getArguments()) = arguments_;
 
+        FdmSolverDesc solverDesc = helperEngine.getSolverDesc(2.0);
+
+        const boost::shared_ptr<BatesProcess> process =
+                boost::dynamic_pointer_cast<BatesProcess>(model_->process());
+
+        boost::shared_ptr<FdmBatesSolver> solver(
+            new FdmBatesSolver(Handle<BatesProcess>(process),
+                               solverDesc, schemeDesc_));
+
+        const Real v0   = process->v0();
+        const Real spot = process->s0()->value();
+
+        results_.value = solver->valueAt(spot, v0);
+        results_.delta = solver->deltaAt(spot, v0);
+        results_.gamma = solver->gammaAt(spot, v0);
+        results_.theta = solver->thetaAt(spot, v0);
+    }
 }

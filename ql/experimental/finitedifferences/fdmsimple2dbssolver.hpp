@@ -26,29 +26,20 @@
 
 #include <ql/handle.hpp>
 #include <ql/patterns/lazyobject.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/experimental/finitedifferences/fdmsolverdesc.hpp>
 #include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
-#include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
 
 namespace QuantLib {
 
-    class FdmInnerValueCalculator;
-    class FdmMesher;
-    class FdmSnapshotCondition;
-    class FdmStepConditionComposite;
-    class BicubicSpline;
+    class Fdm2DimSolver;
+    class GeneralizedBlackScholesProcess;
 
     class FdmSimple2dBSSolver : LazyObject {
       public:
         FdmSimple2dBSSolver(
             const Handle<GeneralizedBlackScholesProcess>& process,
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const FdmBoundaryConditionSet & bcSet,
-            const boost::shared_ptr<FdmStepConditionComposite> & condition,
-            const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
             Real strike,
-            Time maturity,
-            Size timeSteps,
+            const FdmSolverDesc& desc,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 
         Real valueAt(Real s, Real a) const;
@@ -61,19 +52,11 @@ namespace QuantLib {
 
       private:
         Handle<GeneralizedBlackScholesProcess> process_;
-        const boost::shared_ptr<FdmMesher> mesher_;
-        const FdmBoundaryConditionSet bcSet_;
-        const boost::shared_ptr<FdmSnapshotCondition> thetaCondition_;
-        const boost::shared_ptr<FdmStepConditionComposite> condition_;
         const Real strike_;
-        const Time maturity_;
-        const Size timeSteps_;
-
+        const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
 
-        std::vector<Real> x_, a_, initialValues_;
-        mutable Matrix resultValues_;
-        mutable boost::shared_ptr<BicubicSpline> interpolation_;
+        mutable boost::shared_ptr<Fdm2DimSolver> solver_;
     };
 }
 

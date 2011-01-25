@@ -89,14 +89,15 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;
 
         // 6. Solver
+        const FdmSolverDesc solverDesc = { mesher, boundaries,
+                                           conditions, calculator,
+                                           maturity, tGrid_, dampingSteps_ };
+
         boost::shared_ptr<Fdm2dBlackScholesSolver> solver(
                 new Fdm2dBlackScholesSolver(
                              Handle<GeneralizedBlackScholesProcess>(p1_),
                              Handle<GeneralizedBlackScholesProcess>(p2_),
-                             correlation_,
-                             mesher, boundaries, conditions, calculator,
-                             maturity, tGrid_, dampingSteps_,
-                             schemeDesc_));
+                             correlation_, solverDesc, schemeDesc_));
 
         const Real x = p1_->x0();
         const Real y = p2_->x0();

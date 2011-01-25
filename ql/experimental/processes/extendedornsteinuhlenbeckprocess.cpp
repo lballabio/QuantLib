@@ -95,9 +95,10 @@ namespace QuantLib {
 		  case GaussLobatto:
 		      return ouProcess_->expectation(t0, x0, dt)
 				  + speed_*std::exp(-speed_*(t0+dt))
-				  * GaussLobattoIntegral(100000, intEps_)(boost::lambda::bind(b_, _1)
-									*boost::lambda::bind(std::ptr_fun<Real, Real>(std::exp), 
-										  speed_*_1), t0, t0+dt);
+				  * GaussLobattoIntegral(100000, intEps_)(
+				         boost::lambda::bind(b_, boost::lambda::_1)
+						*boost::lambda::bind(std::ptr_fun<Real, Real>(std::exp),
+										  speed_*boost::lambda::_1), t0, t0+dt);
 			break;
 		  default:
 			QL_FAIL("unknown discretization scheme");

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2009 Klaus Spanderen
+ Copyright (C) 2009, 2011 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,25 +17,25 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmhullwhitemesher.hpp
-    \brief One-dimensional grid mesher for the Hull-White short rate process
+/*! \file fdmsimpleprocess1dmesher.hpp
+    \brief One-dimensional grid mesher
 */
 
-#ifndef quantlib_fdm_hull_white_mesher_hpp
-#define quantlib_fdm_hull_white_mesher_hpp
+#ifndef quantlib_fdm_simple_process_1d_mesher_hpp
+#define quantlib_fdm_simple_process_1d_mesher_hpp
 
 #include <ql/experimental/finitedifferences/fdm1dmesher.hpp>
 #include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
 
-    class HullWhiteProcess;
+    class StochasticProcess1D;
 
-    class FdmHullWhiteMesher : public Fdm1dMesher {
+    class FdmSimpleProcess1dMesher : public Fdm1dMesher {
       public:
-        FdmHullWhiteMesher(
+          FdmSimpleProcess1dMesher(
             Size size,
-            const boost::shared_ptr<HullWhiteProcess>& process,
+            const boost::shared_ptr<StochasticProcess1D>& process,
             Time maturity, Size tAvgSteps = 10, Real epsilon = 0.0001);
     };
 

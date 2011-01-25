@@ -52,7 +52,7 @@ QL_TESTS = \
 	inflation.hpp inflation.cpp \
 	inflationcapfloor.hpp inflationcapfloor.cpp \
 	inflationcapflooredcoupon.hpp inflationcapflooredcoupon.cpp \
-        inflationcpicapfloor.hpp inflationcpicapfloor.cpp \
+    inflationcpicapfloor.hpp inflationcpicapfloor.cpp \
 	inflationcpiswap.hpp inflationcpiswap.cpp \
 	inflationvolatility.hpp inflationvolatility.cpp \
 	instruments.hpp instruments.cpp \
@@ -102,6 +102,7 @@ QL_TESTS = \
 	swaptionvolatilitycube.hpp swaptionvolatilitycube.cpp \
 	swaptionvolatilitymatrix.hpp swaptionvolatilitymatrix.cpp \
 	swaptionvolstructuresutilities.hpp \
+	swingoption.hpp swingoption.cpp \
 	termstructures.hpp termstructures.cpp \
 	timeseries.hpp timeseries.cpp \
 	transformedgrid.hpp transformedgrid.cpp \

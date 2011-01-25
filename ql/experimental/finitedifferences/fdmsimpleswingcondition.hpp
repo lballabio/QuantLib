@@ -26,26 +26,25 @@
 
 #include <ql/methods/finitedifferences/stepcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmmesher.hpp>
+#include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 
 namespace QuantLib {
 
     class FdmSimpleSwingCondition : public StepCondition<Array> {
       public:
-          FdmSimpleSwingCondition(const std::vector<Time> & exerciseTimes,
-                                  const boost::shared_ptr<FdmMesher> & mesher,
-                                  const boost::shared_ptr<Payoff> & payoff,
-                                  Size equityDirection,
-                                  Size swingDirection);
+          FdmSimpleSwingCondition(
+                  const std::vector<Time> & exerciseTimes,
+                  const boost::shared_ptr<FdmMesher>& mesher,
+                  const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
+                  Size swingDirection);
     
         void applyTo(Array& a, Time t) const;
     
       private:
-        Array x_; // grid-equity values in physical units
-    
         const std::vector<Time> exerciseTimes_;
         const boost::shared_ptr<FdmMesher> mesher_;
-        const boost::shared_ptr<Payoff> payoff_;
-        const Size equityDirection_, swingDirection_;
+        const boost::shared_ptr<FdmInnerValueCalculator> calculator_;
+        const Size swingDirection_;
     };
 }
 #endif

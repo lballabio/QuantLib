@@ -34,45 +34,39 @@ namespace QuantLib {
 
     FdmBlackScholesSolver::FdmBlackScholesSolver(
         const Handle<GeneralizedBlackScholesProcess>& process,
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const FdmBlackScholesSolver::BoundaryConditionSet& bcSet,
-        const boost::shared_ptr<FdmStepConditionComposite> & condition,
-        const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
         Real strike,
-        Time maturity,
-        Size timeSteps,
-        Size dampingSteps,
+        const FdmSolverDesc& solverDesc,
         const FdmSchemeDesc& schemeDesc,
         bool localVol,
         Real illegalLocalVolOverwrite)
     : process_(process),
-      mesher_(mesher),
-      bcSet_(bcSet),
+      strike_(strike),
+      solverDesc_(solverDesc),
+      schemeDesc_(schemeDesc),
+      mesher_(solverDesc.mesher),
       thetaCondition_(new FdmSnapshotCondition(
         0.99*std::min(1.0/365.0,
-                      condition->stoppingTimes().empty() ? maturity :
-                                 condition->stoppingTimes().front()))),
-      condition_(FdmStepConditionComposite::joinConditions(thetaCondition_, 
-                                                           condition)),
-      strike_(strike),
-      maturity_(maturity),
-      timeSteps_(timeSteps),
-      dampingSteps_(dampingSteps),
-      schemeDesc_(schemeDesc),
+                   solverDesc.condition->stoppingTimes().empty()
+                       ? solverDesc.maturity
+                       : solverDesc.condition->stoppingTimes().front()))),
+      conditions_(FdmStepConditionComposite::joinConditions(thetaCondition_,
+                                                      solverDesc.condition)),
       localVol_(localVol),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
-      initialValues_(mesher->layout()->size()),
-      resultValues_(mesher->layout()->dim()[0]) {
+      initialValues_(mesher_->layout()->size()),
+      resultValues_(mesher_->layout()->dim()[0]) {
+
         registerWith(process_);
 
-        x_.reserve(mesher->layout()->dim()[0]);
+        x_.reserve(mesher_->layout()->dim()[0]);
 
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
         const FdmLinearOpIterator endIter = layout->end();
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
              ++iter) {
-            initialValues_[iter.index()] = calculator->avgInnerValue(iter);
-            x_.push_back(mesher->location(iter, 0));
+            initialValues_[iter.index()]
+                               = solverDesc.calculator->avgInnerValue(iter);
+            x_.push_back(mesher_->location(iter, 0));
         }
     }
 
@@ -84,8 +78,9 @@ namespace QuantLib {
         Array rhs(initialValues_.size());
         std::copy(initialValues_.begin(), initialValues_.end(), rhs.begin());
 
-        FdmBackwardSolver(map, bcSet_, condition_, schemeDesc_)
-                   .rollback(rhs, maturity_, 0.0, timeSteps_, dampingSteps_);
+        FdmBackwardSolver(map, solverDesc_.bcSet, conditions_, schemeDesc_)
+            .rollback(rhs, solverDesc_.maturity, 0.0,
+                      solverDesc_.timeSteps, solverDesc_.dampingSteps);
 
         std::copy(rhs.begin(), rhs.end(), resultValues_.begin());
 
@@ -111,7 +106,7 @@ namespace QuantLib {
     }
 
     Real FdmBlackScholesSolver::thetaAt(Real s) const {
-        QL_REQUIRE(condition_->stoppingTimes().front() > 0.0,
+        QL_REQUIRE(conditions_->stoppingTimes().front() > 0.0,
                    "stopping time at zero-> can't calculate theta");
 
         calculate();

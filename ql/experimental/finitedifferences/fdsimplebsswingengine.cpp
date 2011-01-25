@@ -33,14 +33,6 @@
 #include <ql/experimental/finitedifferences/fdmsimple2dbssolver.hpp>
 
 namespace QuantLib {
-
-    namespace {
-        class FdmZeroInnerValue : public FdmInnerValueCalculator {
-          public:
-            Real innerValue(const FdmLinearOpIterator&)    { return 0.0; }
-            Real avgInnerValue(const FdmLinearOpIterator&) { return 0.0; }
-        };
-    }
     
     FdSimpleBSSwingEngine::FdSimpleBSSwingEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
@@ -99,8 +91,12 @@ namespace QuantLib {
         }
         stoppingTimes.push_back(exerciseTimes);
         
+        boost::shared_ptr<FdmInnerValueCalculator> exerciseCalculator(
+                                    new FdmLogInnerValue(payoff, mesher, 0));
+
         stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
-            new FdmSimpleSwingCondition(exerciseTimes, mesher, payoff, 0, 1)));
+            new FdmSimpleSwingCondition(exerciseTimes,
+                                        mesher, exerciseCalculator, 1)));
         
         boost::shared_ptr<FdmStepConditionComposite> conditions(
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));
@@ -109,12 +105,12 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;
         
         // 6. Solver
+        FdmSolverDesc solverDesc = { mesher, boundaries, conditions,
+                                     calculator, maturity, tGrid_, 0 };
         boost::shared_ptr<FdmSimple2dBSSolver> solver(
                 new FdmSimple2dBSSolver(
                                Handle<GeneralizedBlackScholesProcess>(process_),
-                               mesher, boundaries, conditions, calculator,
-                               payoff->strike(),maturity, tGrid_,
-                               schemeDesc_));
+                               payoff->strike(), solverDesc, schemeDesc_));
     
         const Real spot = process_->x0();
         const Real y = std::exp(Real(arguments_.exerciseRights));

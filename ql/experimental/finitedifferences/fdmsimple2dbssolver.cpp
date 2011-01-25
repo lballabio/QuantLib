@@ -21,85 +21,36 @@
  * \file fdmsimple2dbssolver.cpp
 */
 
-#include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
-#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
-#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesop.hpp>
+#include <ql/experimental/finitedifferences/fdm2dimsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmsimple2dbssolver.hpp>
-#include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
-#include <ql/experimental/finitedifferences/fdmmesher.hpp>
-#include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
-#include <ql/experimental/finitedifferences/fdmsnapshotcondition.hpp>
 
 namespace QuantLib {
 
     FdmSimple2dBSSolver::FdmSimple2dBSSolver(
         const Handle<GeneralizedBlackScholesProcess>& process,
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const FdmBoundaryConditionSet& bcSet,
-        const boost::shared_ptr<FdmStepConditionComposite> & condition,
-        const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
         Real strike,
-        Time maturity,
-        Size timeSteps,
+        const FdmSolverDesc& solverDesc,
         const FdmSchemeDesc& schemeDesc)
     : process_(process),
-      mesher_(mesher),
-      bcSet_(bcSet),
-      thetaCondition_(new FdmSnapshotCondition(
-        0.99*std::min(1.0/365.0,
-                      condition->stoppingTimes().empty() ? maturity :
-                                 condition->stoppingTimes().front()))),
-      condition_(FdmStepConditionComposite::joinConditions(thetaCondition_, 
-                                                           condition)),
       strike_(strike),
-      maturity_(maturity),
-      timeSteps_(timeSteps),
-      schemeDesc_(schemeDesc),
-      initialValues_(mesher->layout()->size()),
-      resultValues_(mesher->layout()->dim()[1], mesher->layout()->dim()[0]) {
+      solverDesc_(solverDesc),
+      schemeDesc_(schemeDesc) {
+
         registerWith(process_);
-
-        x_.reserve(mesher->layout()->dim()[0]);
-        a_.reserve(mesher->layout()->dim()[1]);
-
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
-        const FdmLinearOpIterator endIter = layout->end();
-        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-             ++iter) {
-            initialValues_[iter.index()] = calculator->avgInnerValue(iter);
-            if (!iter.coordinates()[1]) {
-                x_.push_back(mesher->location(iter, 0));
-            }
-            if (!iter.coordinates()[0]) {
-                a_.push_back(mesher->location(iter, 1));
-            }
-        }
     }
 
     void FdmSimple2dBSSolver::performCalculations() const {
-        boost::shared_ptr<FdmBlackScholesOp> map(new FdmBlackScholesOp(
-                mesher_, process_.currentLink(), strike_));
+        boost::shared_ptr<FdmBlackScholesOp> op(new FdmBlackScholesOp(
+                solverDesc_.mesher, process_.currentLink(), strike_));
 
-        Array rhs(initialValues_.size());
-        std::copy(initialValues_.begin(), initialValues_.end(), rhs.begin());
-
-        FdmBackwardSolver(map, bcSet_, condition_, schemeDesc_)
-                               .rollback(rhs, maturity_, 0.0, timeSteps_, 0);
-
-        for (Size j=0; j < a_.size(); ++j)
-            std::copy(rhs.begin()+j*x_.size(), rhs.begin()+(j+1)*x_.size(),
-                      resultValues_.row_begin(j));
-
-        interpolation_ = boost::shared_ptr<BicubicSpline> (
-            new BicubicSpline(x_.begin(), x_.end(),
-                              a_.begin(), a_.end(),
-                              resultValues_));
+        solver_ = boost::shared_ptr<Fdm2DimSolver>(
+                            new Fdm2DimSolver(solverDesc_, schemeDesc_, op));
     }
 
     Real FdmSimple2dBSSolver::valueAt(Real s, Real a) const {
         calculate();
-        return interpolation_->operator()(std::log(s), std::log(a));
+        return solver_->interpolateAt(std::log(s), std::log(a));
     }
 
     Real FdmSimple2dBSSolver::deltaAt(Real s, Real a, Real eps) const {
@@ -111,19 +62,7 @@ namespace QuantLib {
     }
 
     Real FdmSimple2dBSSolver::thetaAt(Real s, Real a) const {
-        QL_REQUIRE(condition_->stoppingTimes().front() > 0.0,
-                   "stopping time at zero-> can't calculate theta");
-
         calculate();
-        Matrix thetaValues(resultValues_.rows(), resultValues_.columns());
-
-        const Array& rhs = thetaCondition_->getValues();
-        for (Size j=0; j < a_.size(); ++j)
-            std::copy(rhs.begin()+j*x_.size(), rhs.begin()+(j+1)*x_.size(),
-                      thetaValues.row_begin(j));
-
-        return (BicubicSpline(x_.begin(), x_.end(), a_.begin(), a_.end(),
-                              thetaValues)(std::log(s), std::log(a)) - valueAt(s, a))
-              / thetaCondition_->getTime();
+        return solver_->thetaAt(std::log(s), std::log(a));
     }
 }

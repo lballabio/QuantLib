@@ -20,13 +20,10 @@
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
-#include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
-#include <ql/experimental/finitedifferences/fdmbermudanstepcondition.hpp>
-#include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
 #include <ql/experimental/finitedifferences/uniform1dmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmultistrikemesher.hpp>
-#include <ql/experimental/finitedifferences/fdmhullwhitemesher.hpp>
+#include <ql/experimental/finitedifferences/fdmsimpleprocess1dmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
@@ -87,8 +84,7 @@ namespace QuantLib {
         dim.push_back(xGrid_);
         dim.push_back(vGrid_);
         dim.push_back(rGrid_);
-        const boost::shared_ptr<FdmLinearOpLayout> layout(
-                                              new FdmLinearOpLayout(dim));
+        boost::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
 
         // 2. Mesher
         const boost::shared_ptr<HestonProcess> hestonProcess=model_->process();
@@ -135,68 +131,40 @@ namespace QuantLib {
         //2.3 The short rate mesher        
         const Rate r0 = hwProcess_->x0();
         const boost::shared_ptr<Fdm1dMesher> shortRateMesher(
-                        new FdmHullWhiteMesher(rGrid_, hwProcess_, maturity));
+                     new FdmSimpleProcess1dMesher(rGrid_, hwProcess_, maturity));
         
         std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
         meshers.push_back(equityMesher);
         meshers.push_back(varianceMesher);
         meshers.push_back(shortRateMesher);
-        boost::shared_ptr<FdmMesher> mesher(
+        const boost::shared_ptr<FdmMesher> mesher(
                                      new FdmMesherComposite(layout, meshers));
 
-        // 3. Step conditions
-        std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;
-        std::list<std::vector<Time> > stoppingTimes;
-
-        // 3.1 Step condition if discrete dividends
-        if(!arguments_.cashFlow.empty()) {
-            boost::shared_ptr<FdmDividendHandler> dividendCondition(
-                new FdmDividendHandler(
-                    arguments_.cashFlow, mesher,
-                    hestonProcess->riskFreeRate()->referenceDate(),
-                    hestonProcess->riskFreeRate()->dayCounter(), 0));
-            stepConditions.push_back(dividendCondition);
-            stoppingTimes.push_back(dividendCondition->dividendTimes());
-        }
-
-        // 3.2 Step condition if american or bermudan exercise 
-        QL_REQUIRE(   arguments_.exercise->type() == Exercise::American
-                   || arguments_.exercise->type() == Exercise::European
-                   || arguments_.exercise->type() == Exercise::Bermudan,
-                   "exercise type is not supported");
-
-        boost::shared_ptr<FdmInnerValueCalculator> calculator(
+        // 3. Calculator
+        const boost::shared_ptr<FdmInnerValueCalculator> calculator(
                             new FdmLogInnerValue(arguments_.payoff, mesher, 0));
-        if (arguments_.exercise->type() == Exercise::American) {
-            stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
-                            new FdmAmericanStepCondition(mesher, calculator)));
-        }
-        else if (arguments_.exercise->type() == Exercise::Bermudan) {
-            boost::shared_ptr<FdmBermudanStepCondition> bermudanCondition(
-                new FdmBermudanStepCondition(
-                                arguments_.exercise->dates(),
+
+        // 4. Step conditions
+        const boost::shared_ptr<FdmStepConditionComposite> conditions = 
+            FdmStepConditionComposite::vanillaComposite(
+                                arguments_.cashFlow, arguments_.exercise, 
+                                mesher, calculator, 
                                 hestonProcess->riskFreeRate()->referenceDate(),
-                                hestonProcess->riskFreeRate()->dayCounter(),
-                                mesher, calculator));
-            stepConditions.push_back(bermudanCondition);
-            stoppingTimes.push_back(bermudanCondition->exerciseTimes());
-        }
+                                hestonProcess->riskFreeRate()->dayCounter());
 
-        boost::shared_ptr<FdmStepConditionComposite> conditions(
-                new FdmStepConditionComposite(stoppingTimes, stepConditions));
+        // 5. Boundary conditions
+        const std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;
 
-        // 4. Boundary conditions
-        std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;
+        // 6. Solver
+        const FdmSolverDesc solverDesc = { mesher, boundaries, conditions,
+                                           calculator, maturity,
+                                           tGrid_, dampingSteps_ };
 
-        // 5. Solver
-        boost::shared_ptr<FdmHestonHullWhiteSolver> solver(
+        const boost::shared_ptr<FdmHestonHullWhiteSolver> solver(
             new FdmHestonHullWhiteSolver(Handle<HestonProcess>(hestonProcess),
                                          Handle<HullWhiteProcess>(hwProcess_),
                                          corrEquityShortRate_,
-                                         mesher, boundaries, conditions,
-                                         calculator, 
-                                         maturity, tGrid_, dampingSteps_,
-                                         schemeDesc_));
+                                         solverDesc, schemeDesc_));
 
         const Real spot = hestonProcess->s0()->value();
         const Real v0   = hestonProcess->v0();

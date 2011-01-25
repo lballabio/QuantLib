@@ -31,7 +31,6 @@
 
 namespace QuantLib {
 
-    class FdHestonVanillaEngine;
 
     //! Partial Integro FiniteDifferences Bates Vanilla Option engine
 
@@ -51,13 +50,9 @@ namespace QuantLib {
         
         void calculate() const;
         
-        // deligate rest of the interface
-        arguments* getArguments() const;
-        const results* getResults() const;
-        void reset();
-
       private:
-        const boost::shared_ptr<FdHestonVanillaEngine> hestonEngine_;
+        const Size tGrid_, xGrid_, vGrid_, dampingSteps_;
+        const FdmSchemeDesc schemeDesc_;
     };
 }
 

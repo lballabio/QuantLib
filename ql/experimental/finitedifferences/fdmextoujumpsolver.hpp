@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2010 Klaus Spanderen
+ Copyright (C) 2011 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,11 +17,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdm2dblackscholessolver.hpp
+/*! \file fdmextoujumpsolver.hpp
 */
 
-#ifndef quantlib_fdm_2d_black_scholes_solver_hpp
-#define quantlib_fdm_2d_black_scholes_solver_hpp
+#ifndef quantlib_fdm_ext_ou_jump_solver_hpp
+#define quantlib_fdm_ext_ou_jump_solver_hpp
 
 #include <ql/handle.hpp>
 #include <ql/patterns/lazyobject.hpp>
@@ -31,32 +31,24 @@
 namespace QuantLib {
 
     class Fdm2DimSolver;
-    class GeneralizedBlackScholesProcess;
+    class ExtOUWithJumpsProcess;
 
-    class Fdm2dBlackScholesSolver : public LazyObject {
+    class FdmExtOUJumpSolver : public LazyObject {
       public:
-        Fdm2dBlackScholesSolver(
-            const Handle<GeneralizedBlackScholesProcess>& p1,
-            const Handle<GeneralizedBlackScholesProcess>& p2,
-            const Real correlation,
+          FdmExtOUJumpSolver(
+            const Handle<ExtOUWithJumpsProcess>& process,
+            const boost::shared_ptr<YieldTermStructure>& rTS,
             const FdmSolverDesc& solverDesc,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
         Real valueAt(Real x, Real y) const;
-        Real thetaAt(Real x, Real y) const;
-
-        Real deltaXat(Real x, Real y) const;
-        Real deltaYat(Real x, Real y) const;
-        Real gammaXat(Real x, Real y) const;
-        Real gammaYat(Real x, Real y) const;
-
+        
       protected:
         void performCalculations() const;
 
       private:
-        const Handle<GeneralizedBlackScholesProcess> p1_;
-        const Handle<GeneralizedBlackScholesProcess> p2_;
-        const Real correlation_;
+        const Handle<ExtOUWithJumpsProcess> process_;
+        const boost::shared_ptr<YieldTermStructure> rTS_;
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
 

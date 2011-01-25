@@ -27,17 +27,14 @@
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/processes/hullwhiteprocess.hpp>
+#include <ql/experimental/finitedifferences/fdmsolverdesc.hpp>
 #include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
 
 
 namespace QuantLib {
 
-    class FdmMesher;
-    class FdmInnerValueCalculator;
-    class FdmSnapshotCondition;
-    class FdmStepConditionComposite;
-    class BicubicSpline;
+    class Fdm3DimSolver;
 
     class FdmHestonHullWhiteSolver : public LazyObject {
       public:
@@ -45,13 +42,7 @@ namespace QuantLib {
             const Handle<HestonProcess>& hestonProcess,
             const Handle<HullWhiteProcess>& hwProcess,
             Rate corrEquityShortRate,
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const FdmBoundaryConditionSet& bcSet,
-            const boost::shared_ptr<FdmStepConditionComposite> & condition,
-            const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
-            Time maturity,
-            Size timeSteps,
-            Size dampingSteps = 0,
+            const FdmSolverDesc& solverDesc,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
         Real valueAt(Real s, Real v, Rate r) const;
@@ -73,19 +64,10 @@ namespace QuantLib {
         const Handle<HullWhiteProcess> hwProcess_;
         const Real corrEquityShortRate_;
         
-        const boost::shared_ptr<FdmMesher> mesher_;
-        const FdmBoundaryConditionSet bcSet_;
-        const boost::shared_ptr<FdmSnapshotCondition> thetaCondition_;
-        const boost::shared_ptr<FdmStepConditionComposite> condition_;
-        const Time maturity_;
-        const Size timeSteps_;
-        const Size dampingSteps_;
-
+        const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
 
-        std::vector<Real> x_, v_, r_, initialValues_;
-        mutable std::vector<Matrix> resultValues_;
-        mutable std::vector<boost::shared_ptr<BicubicSpline> > interpolation_;
+        mutable boost::shared_ptr<Fdm3DimSolver> solver_;
     };
 }
 

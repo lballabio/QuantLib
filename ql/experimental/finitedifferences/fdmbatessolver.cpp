@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2010 Klaus Spanderen
+ Copyright (C) 2010, 2011 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,6 +22,7 @@
 
 #include <ql/processes/batesprocess.hpp>
 #include <ql/experimental/finitedifferences/fdmbatesop.hpp>
+#include <ql/experimental/finitedifferences/fdm2dimsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmbatessolver.hpp>
 
 
@@ -29,37 +30,50 @@ namespace QuantLib {
     
     FdmBatesSolver::FdmBatesSolver(
             const Handle<BatesProcess>& process,
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const FdmBoundaryConditionSet& bcSet,
-            const boost::shared_ptr<FdmStepConditionComposite> & condition,
-            const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
-            Time maturity,
-            Size timeSteps,
-            Size dampingSteps,
-            Size integroIntegrationOrder,
+            const FdmSolverDesc& solverDesc,
             const FdmSchemeDesc& schemeDesc,
+            Size integroIntegrationOrder,
             const Handle<FdmQuantoHelper>& quantoHelper)
-    : FdmHestonSolver(Handle<HestonProcess>(process.currentLink()),
-                      mesher, bcSet, condition, 
-                      calculator, maturity, timeSteps, 0,
-                      schemeDesc, quantoHelper),
+    : process_(process),
+      solverDesc_(solverDesc),
+      schemeDesc_(schemeDesc),
       integroIntegrationOrder_(integroIntegrationOrder),
-      bcSet_(bcSet),
-      batesProcess_(process),
-      mesher_      (mesher),
       quantoHelper_(quantoHelper) {
-
-        registerWith(batesProcess_);
+        registerWith(process_);
         registerWith(quantoHelper_);
     }
           
     void FdmBatesSolver::performCalculations() const {
-        boost::shared_ptr<FdmLinearOpComposite> map(
-            new FdmBatesOp(mesher_, batesProcess_.currentLink(), bcSet_,
-                           integroIntegrationOrder_, 
+        boost::shared_ptr<FdmLinearOpComposite> op(
+            new FdmBatesOp(solverDesc_.mesher, process_.currentLink(),
+                           solverDesc_.bcSet, integroIntegrationOrder_,
                            (!quantoHelper_.empty()) 
                                    ? quantoHelper_.currentLink()
                                    : boost::shared_ptr<FdmQuantoHelper>()));
-        backwardSolve(map);
+
+        solver_ = boost::shared_ptr<Fdm2DimSolver>(
+                               new Fdm2DimSolver(solverDesc_, schemeDesc_, op));
     }
+
+    Real FdmBatesSolver::valueAt(Real s, Real v) const {
+        calculate();
+        return solver_->interpolateAt(std::log(s), v);
+    }
+
+    Real FdmBatesSolver::deltaAt(Real s, Real v) const {
+        calculate();
+        return solver_->derivativeX(std::log(s), v)/s;
+    }
+
+    Real FdmBatesSolver::gammaAt(Real s, Real v) const {
+        calculate();
+        const Real x = std::log(s);
+        return (solver_->derivativeXX(x, v)-solver_->derivativeX(x, v))/(s*s);
+    }
+
+    Real FdmBatesSolver::thetaAt(Real s, Real v) const {
+        calculate();
+        return solver_->thetaAt(std::log(s), v);
+    }
+
 }

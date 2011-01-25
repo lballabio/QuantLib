@@ -110,6 +110,8 @@ namespace QuantLib {
     Disposable<Array> FdmBatesOp::integro(const Array& r) const {
         const boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
         
+        QL_REQUIRE(layout->dim().size() == 2, "invalid layout dimension");
+
         Array x(layout->dim()[0]);
         Matrix f(layout->dim()[1], layout->dim()[0]);
         

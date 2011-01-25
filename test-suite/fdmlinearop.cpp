@@ -818,8 +818,9 @@ void FdmLinearOpTest::testFdmHestonExpress() {
                                     new FdmLogInnerValue(payoff, mesher, 0));
 
     std::vector<boost::shared_ptr<FdmDirichletBoundary> > bcSet;
-    FdmHestonSolver solver(hestonProcess,
-                           mesher, bcSet, condition, calculator, 1.0, 50);
+    const FdmSolverDesc solverDesc = { mesher, bcSet,
+                                       condition, calculator, 1.0, 50, 0 };
+    FdmHestonSolver solver(hestonProcess, solverDesc);
 
     const Real s = s0->value();
     const Real v0 = 0.04;

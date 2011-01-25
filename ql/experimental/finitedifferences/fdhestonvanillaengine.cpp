@@ -21,17 +21,14 @@
 
 
 #include <ql/processes/batesprocess.hpp>
-#include <ql/experimental/finitedifferences/fdmquantohelper.hpp>
 #include <ql/experimental/finitedifferences/fdhestonvanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonsolver.hpp>
-#include <ql/experimental/finitedifferences/fdmbatessolver.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
-#include <ql/experimental/finitedifferences/fdmhestonlikesolverfactory.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesmultistrikemesher.hpp>
 
 namespace QuantLib {
@@ -48,32 +45,8 @@ namespace QuantLib {
       schemeDesc_(schemeDesc) {
     }
 
-    void FdHestonVanillaEngine::calculate() const {
 
-        // cache lookup for precalculated results
-        for (Size i=0; i < cachedArgs2results_.size(); ++i) {
-            if (   cachedArgs2results_[i].first.exercise->type() 
-                        == arguments_.exercise->type()
-                && cachedArgs2results_[i].first.exercise->dates()
-                        == arguments_.exercise->dates()) {
-                boost::shared_ptr<PlainVanillaPayoff> p1 =
-                    boost::dynamic_pointer_cast<PlainVanillaPayoff>(
-                                                            arguments_.payoff);
-                boost::shared_ptr<PlainVanillaPayoff> p2 =
-                    boost::dynamic_pointer_cast<PlainVanillaPayoff>(
-                                          cachedArgs2results_[i].first.payoff);
-                
-                if (p1 && p1->strike()     == p2->strike() 
-                       && p1->optionType() == p2->optionType()) {
-                    QL_REQUIRE(arguments_.cashFlow.empty(),
-                               "multiple strikes engine does "
-                               "not work with discrete dividends");
-                    results_ = cachedArgs2results_[i].second;
-                    return;
-                }
-            }
-        }
-
+    FdmSolverDesc FdHestonVanillaEngine::getSolverDesc(Real scaleFactor) const {
         // 1. Layout
         std::vector<Size> dim;
         dim.push_back(xGrid_);
@@ -141,13 +114,45 @@ namespace QuantLib {
         const std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;
 
         // 6. Solver
-        const boost::shared_ptr<FdmHestonSolver> solver = 
-            FdmHestonLikeSolverFactory().create(Handle<HestonProcess>(process),
-                                                mesher, boundaries, conditions,
-                                                calculator, maturity, 
-                                                tGrid_, dampingSteps_,
-                                                schemeDesc_, 
-                                                Handle<FdmQuantoHelper>());
+        FdmSolverDesc solverDesc = { mesher, boundaries, conditions,
+                                     calculator, maturity,
+                                     tGrid_, dampingSteps_ };
+
+       return solverDesc;
+    }
+
+    void FdHestonVanillaEngine::calculate() const {
+
+        // cache lookup for precalculated results
+        for (Size i=0; i < cachedArgs2results_.size(); ++i) {
+            if (   cachedArgs2results_[i].first.exercise->type()
+                        == arguments_.exercise->type()
+                && cachedArgs2results_[i].first.exercise->dates()
+                        == arguments_.exercise->dates()) {
+                boost::shared_ptr<PlainVanillaPayoff> p1 =
+                    boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+                                                            arguments_.payoff);
+                boost::shared_ptr<PlainVanillaPayoff> p2 =
+                    boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+                                          cachedArgs2results_[i].first.payoff);
+
+                if (p1 && p1->strike()     == p2->strike()
+                       && p1->optionType() == p2->optionType()) {
+                    QL_REQUIRE(arguments_.cashFlow.empty(),
+                               "multiple strikes engine does "
+                               "not work with discrete dividends");
+                    results_ = cachedArgs2results_[i].second;
+                    return;
+                }
+            }
+        }
+
+        const boost::shared_ptr<HestonProcess> process = model_->process();
+
+        boost::shared_ptr<FdmHestonSolver> solver(new FdmHestonSolver(
+                    Handle<HestonProcess>(process),
+                    getSolverDesc(1.5), schemeDesc_));
+
         const Real v0   = process->v0();
         const Real spot = process->s0()->value();
 
@@ -156,7 +161,9 @@ namespace QuantLib {
         results_.gamma = solver->gammaAt(spot, v0);
         results_.theta = solver->thetaAt(spot, v0);
         
-        cachedArgs2results_.resize(strikes_.size());        
+        cachedArgs2results_.resize(strikes_.size());
+        const boost::shared_ptr<StrikedTypePayoff> payoff =
+            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         for (Size i=0; i < strikes_.size(); ++i) {
             cachedArgs2results_[i].first.exercise = arguments_.exercise;
             cachedArgs2results_[i].first.payoff = 

@@ -29,6 +29,7 @@
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
+#include <ql/experimental/finitedifferences/fdmsolverdesc.hpp>
 #include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 
 namespace QuantLib {
@@ -59,6 +60,9 @@ namespace QuantLib {
         void update();
         void enableMultipleStrikesCaching(const std::vector<Real>& strikes);
         
+        // helper method for Heston like engines
+        FdmSolverDesc getSolverDesc(Real equityScaleFactor) const;
+
       private:
         const Size tGrid_, xGrid_, vGrid_, dampingSteps_;
         const FdmSchemeDesc schemeDesc_;

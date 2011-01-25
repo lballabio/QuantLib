@@ -23,22 +23,13 @@ namespace QuantLib {
 
     FdmSimpleSwingCondition::FdmSimpleSwingCondition(
             const std::vector<Time> & exerciseTimes,
-            const boost::shared_ptr<FdmMesher> & mesher,
-            const boost::shared_ptr<Payoff> & payoff,
-            Size equityDirection,
+            const boost::shared_ptr<FdmMesher>& mesher,
+            const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
             Size swingDirection)
-    : x_(mesher->layout()->dim()[0]),
-      exerciseTimes_(exerciseTimes), 
-      mesher_(mesher),
-      payoff_(payoff),
-      equityDirection_(equityDirection),
+    : exerciseTimes_ (exerciseTimes),
+      mesher_        (mesher),
+      calculator_    (calculator),
       swingDirection_(swingDirection) {
-                
-        const Size xSpacing = mesher_->layout()->spacing()[equityDirection_];
-        Array tmp = mesher_->locations(equityDirection_);
-        for (Size i = 0; i < x_.size(); ++i) {
-            x_[i] = std::exp(tmp[i*xSpacing]);
-        }
     }
     
     void FdmSimpleSwingCondition::applyTo(Array& a, Time t) const {
@@ -56,11 +47,10 @@ namespace QuantLib {
                 
                 const std::vector<Size>& coor = iter.coordinates();
                 
-                const Real x = x_[coor[equityDirection_]];
                 const Size exerciseValue = coor[swingDirection_];
                 
                 if (exerciseValue > 0) {
-                    const Real cashflow = (*payoff_)(x);
+                    const Real cashflow = calculator_->innerValue(iter);
                     const Real currentValue = a[iter.index()];
                     const Real valueMinusOneExRight 
                          = a[layout->neighbourhood(iter, swingDirection_, -1)];

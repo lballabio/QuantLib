@@ -133,11 +133,12 @@ namespace QuantLib {
         }
 
         // 6. Solver
+        FdmSolverDesc solverDesc = { mesher, boundaries, conditions,
+                                     calculator, maturity,
+                                     tGrid_, dampingSteps_ };
+
         boost::shared_ptr<FdmHestonSolver> solver(new FdmHestonSolver(
-                                        Handle<HestonProcess>(process),
-                                        mesher, boundaries, conditions, 
-                                        calculator, maturity, tGrid_,
-                                        dampingSteps_, schemeDesc_));
+                    Handle<HestonProcess>(process), solverDesc, schemeDesc_));
 
         const Real spot = process->s0()->value();
         results_.value = solver->valueAt(spot, process->v0());

@@ -107,12 +107,13 @@ namespace QuantLib {
         }
 
         // 6. Solver
+        FdmSolverDesc solverDesc = { mesher, boundaries, conditions, calculator,
+                                     maturity, tGrid_, dampingSteps_ };
+
         const boost::shared_ptr<FdmBlackScholesSolver> solver(
                 new FdmBlackScholesSolver(
                                 Handle<GeneralizedBlackScholesProcess>(process_),
-                                mesher, boundaries, conditions, calculator,
-                                payoff->strike(), maturity, tGrid_,
-                                dampingSteps_, schemeDesc_,
+                                payoff->strike(), solverDesc, schemeDesc_,
                                 localVol_, illegalLocalVolOverwrite_));
 
         const Real spot = process_->x0();

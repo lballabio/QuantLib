@@ -10,20 +10,23 @@ this_include_HEADERS = \
 	dividendbarrieroption.hpp \
 	douglasscheme.hpp \
 	expliciteulerscheme.hpp \
+	exponentialjump1dmesher.hpp \
 	fd2dblackscholesvanillaengine.hpp \
 	fdbatesvanillaengine.hpp \
 	fdblackscholesasianengine.hpp \
 	fdblackscholesbarrierengine.hpp \
 	fdblackscholesrebateengine.hpp \
 	fdblackscholesvanillaengine.hpp \
+    fdextoujumpvanillaengine.hpp \
 	fdhestonbarrierengine.hpp \
 	fdhestonrebateengine.hpp \
 	fdhestonvanillaengine.hpp \
 	fdhestonhullwhitevanillaengine.hpp \
-    fdsimplebsswingengine.hpp \
 	fdm1dmesher.hpp \
 	fdm2dblackscholesop.hpp \
 	fdm2dblackscholessolver.hpp \
+	fdm2dimsolver.hpp \
+	fdm3dimsolver.hpp \
     fdmamericanstepcondition.hpp \
     fdmarithmeticaveragecondition.hpp \
     fdmbackwardsolver.hpp \
@@ -36,13 +39,14 @@ this_include_HEADERS = \
 	fdmblackscholessolver.hpp \
 	fdmdirichletboundary.hpp \
 	fdmdividendhandler.hpp \
+	fdmextoujumpmodelinnervalue.hpp \
+	fdmextoujumpop.hpp \
+	fdmextoujumpsolver.hpp \
 	fdmhestonhullwhiteop.hpp \
 	fdmhestonhullwhitesolver.hpp \
-	fdmhestonlikesolverfactory.hpp \
 	fdmhestonop.hpp \
 	fdmhestonsolver.hpp \
 	fdmhestonvariancemesher.hpp \
-	fdmhullwhitemesher.hpp \
 	fdminnervaluecalculator.hpp \
 	fdmlinearop.hpp \
 	fdmlinearopcomposite.hpp \
@@ -52,9 +56,14 @@ this_include_HEADERS = \
 	fdmmeshercomposite.hpp \
 	fdmquantohelper.hpp \
     fdmsimple2dbssolver.hpp \
+    fdmsimple3dextoujumpsolver.hpp \
+    fdmsimpleprocess1dmesher.hpp \
     fdmsimpleswingcondition.hpp \
 	fdmsnapshotcondition.hpp \
+	fdmsolverdesc.hpp \
 	fdmstepconditioncomposite.hpp \
+    fdsimplebsswingengine.hpp \
+	fdsimpleextoujumpswingengine.hpp \
 	firstderivativeop.hpp \
 	hundsdorferscheme.hpp \
 	impliciteulerscheme.hpp \
@@ -74,19 +83,22 @@ libMultiDimFDM_la_SOURCES = \
 	dividendbarrieroption.cpp \
 	douglasscheme.cpp \
 	expliciteulerscheme.cpp \
+	exponentialjump1dmesher.cpp \
 	fd2dblackscholesvanillaengine.cpp \
 	fdbatesvanillaengine.cpp \
 	fdblackscholesasianengine.cpp \
 	fdblackscholesbarrierengine.cpp \
 	fdblackscholesrebateengine.cpp \
 	fdblackscholesvanillaengine.cpp \
+    fdextoujumpvanillaengine.cpp \
 	fdhestonbarrierengine.cpp \
 	fdhestonrebateengine.cpp \
 	fdhestonvanillaengine.cpp \
 	fdhestonhullwhitevanillaengine.cpp \
-    fdsimplebsswingengine.cpp \
 	fdm2dblackscholesop.cpp \
 	fdm2dblackscholessolver.cpp \
+	fdm2dimsolver.cpp \
+	fdm3dimsolver.cpp \
 	fdmamericanstepcondition.cpp \
     fdmarithmeticaveragecondition.cpp \
     fdmbackwardsolver.cpp \
@@ -99,21 +111,24 @@ libMultiDimFDM_la_SOURCES = \
 	fdmblackscholessolver.cpp \
 	fdmdirichletboundary.cpp \
 	fdmdividendhandler.cpp \
+	fdmextoujumpop.cpp \
+	fdmextoujumpsolver.cpp \
 	fdmhestonhullwhiteop.cpp \
 	fdmhestonhullwhitesolver.cpp \
-	fdmhestonlikesolverfactory.cpp \
 	fdmhestonop.cpp \
 	fdmhestonsolver.cpp \
 	fdmhestonvariancemesher.cpp \
-	fdmhullwhitemesher.cpp \
 	fdminnervaluecalculator.cpp \
 	fdmlinearoplayout.cpp \
 	fdmmeshercomposite.cpp \
 	fdmquantohelper.cpp \
     fdmsimple2dbssolver.cpp \
+    fdmsimpleprocess1dmesher.cpp \
     fdmsimpleswingcondition.cpp \
 	fdmsnapshotcondition.cpp \
 	fdmstepconditioncomposite.cpp \
+    fdsimplebsswingengine.cpp \
+	fdsimpleextoujumpswingengine.cpp \
 	firstderivativeop.cpp \
 	hundsdorferscheme.cpp \
 	impliciteulerscheme.cpp \

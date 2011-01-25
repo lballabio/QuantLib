@@ -23,37 +23,49 @@
 #ifndef quantlib_fdm_bates_solver_hpp
 #define quantlib_fdm_bates_solver_hpp
 
+#include <ql/handle.hpp>
+#include <ql/patterns/lazyobject.hpp>
+#include <ql/experimental/finitedifferences/fdmquantohelper.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonsolver.hpp>
+#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
+#include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
 
 namespace QuantLib {
     
     class BatesProcess;
 
-    class FdmBatesSolver : public FdmHestonSolver {
+    class FdmBatesSolver : public LazyObject {
       public:
         FdmBatesSolver(
             const Handle<BatesProcess>& process,
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const FdmBoundaryConditionSet & bcSet,
-            const boost::shared_ptr<FdmStepConditionComposite> & condition,
-            const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
-            Time maturity,
-            Size timeSteps,
-            Size dampingSteps = 0,
-            Size integroIntegrationOrder = 12,
+            const FdmSolverDesc& solverDesc,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+            Size integroIntegrationOrder = 12,
             const Handle<FdmQuantoHelper>& quantoHelper
                                                 = Handle<FdmQuantoHelper>());
         
+        Real valueAt(Real s, Real v) const;
+        Real thetaAt(Real s, Real v) const;
+
+        // First and second order derivative with respect to S_t.
+        // Please note that this is not the "model implied" delta or gamma.
+        // E.g. see Fabio Mercurio, Massimo Morini
+        // "A Note on Hedging with Local and Stochastic Volatility Models",
+        // http://papers.ssrn.com/sol3/papers.cfm?abstract_id=1294284
+        Real deltaAt(Real s, Real v) const;
+        Real gammaAt(Real s, Real v) const;
+
       protected:
         void performCalculations() const;
         
       private:
+        const Handle<BatesProcess> process_;
+        const FdmSolverDesc solverDesc_;
+        const FdmSchemeDesc schemeDesc_;
         const Size integroIntegrationOrder_;
-        const FdmBoundaryConditionSet bcSet_;
-        const Handle<BatesProcess> batesProcess_;
-        const boost::shared_ptr<FdmMesher> mesher_;
         const Handle<FdmQuantoHelper> quantoHelper_;
+
+        mutable boost::shared_ptr<Fdm2DimSolver> solver_;
     };
 }
 
