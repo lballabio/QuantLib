@@ -1,7 +1,7 @@
 [Project]
 FileName=testsuite.dev
 Name=QuantLib-test-suite
-UnitCount=216
+UnitCount=218
 Type=1
 Ver=1
 ObjFiles=
