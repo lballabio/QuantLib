@@ -922,15 +922,35 @@ void HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine() {
                              new HestonModel(hestonProcess)),
                                        hwProcess, corr[i], 50, 200, 10, 15)));    
             const Real calculated = option.NPV();
+            const Real calculatedDelta = option.delta();
+            const Real calculatedGamma = option.gamma();
             
             option.setPricingEngine(boost::shared_ptr<PricingEngine>(
                 new AnalyticBSMHullWhiteEngine(corr[i],
                                                stochProcess, hwModel)));
             const Real expected = option.NPV();
+            const Real expectedDelta = option.delta();
+            const Real expectedGamma = option.gamma();
 
-            const Real tol = 0.01;
-            if (std::fabs(calculated - expected) > tol) {
-                 BOOST_ERROR("Failed to reproduce analytic values"
+            const Real npvTol = 0.01;
+            if (std::fabs(calculated - expected) > npvTol) {
+                 BOOST_ERROR("Failed to reproduce analytic npv values"
+                         << "\n   corr:       " << corr[i]
+                         << "\n   strike:     " << strike[j]
+                         << "\n   calculated: " << calculated
+                         << "\n   expected:   " << expected);
+            }
+            const Real deltaTol = 0.001;
+            if (std::fabs(calculatedDelta - expectedDelta) > deltaTol) {
+                 BOOST_ERROR("Failed to reproduce analytic delta values"
+                         << "\n   corr:       " << corr[i]
+                         << "\n   strike:     " << strike[j]
+                         << "\n   calculated: " << calculated
+                         << "\n   expected:   " << expected);
+            }
+            const Real gammaTol = 0.001;
+            if (std::fabs(calculatedGamma - expectedGamma) > gammaTol) {
+                 BOOST_ERROR("Failed to reproduce analytic gamma values"
                          << "\n   corr:       " << corr[i]
                          << "\n   strike:     " << strike[j]
                          << "\n   calculated: " << calculated
@@ -1413,7 +1433,7 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
     
 test_suite* HybridHestonHullWhiteProcessTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Hybrid Heston-HullWhite tests");
-    
+
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine));
