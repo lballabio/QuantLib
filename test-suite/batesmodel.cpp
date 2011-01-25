@@ -368,9 +368,9 @@ void BatesModelTest::testAnalyticVsMCPricing() {
         const Real fdTolerance = 0.2;
         const Real fdError = std::fabs(fdCalculated - expected);
         if (fdError > fdTolerance) {
-            BOOST_FAIL("failed to PIDE price for BatesEngine"
+            BOOST_FAIL("failed to reproduce PIDE price for BatesEngine"
                        << QL_FIXED << std::setprecision(8)
-                       << "\n    calculated: " << calculated
+                       << "\n    calculated: " << fdCalculated
                        << "\n    expected:   " << expected
                        << "\n    error: "      << fdError
                        << "\n    tolerance:  " << fdTolerance);
