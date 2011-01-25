@@ -143,6 +143,40 @@ int main(int, char* []) {
                   << std::setw(widths[3]) << std::left << "N/A"
                   << std::endl;
 
+        // semi-analytic Heston for European
+        method = "Heston semi-analytic";
+        boost::shared_ptr<HestonProcess> hestonProcess(
+            new HestonProcess(flatTermStructure, flatDividendTS,
+                              underlyingH, volatility*volatility,
+                              1.0, volatility*volatility, 0.001, 0.0));
+        boost::shared_ptr<HestonModel> hestonModel(
+                                              new HestonModel(hestonProcess));
+        europeanOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                     new AnalyticHestonEngine(hestonModel)));
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << europeanOption.NPV()
+                  << std::setw(widths[2]) << std::left << "N/A"
+                  << std::setw(widths[3]) << std::left << "N/A"
+                  << std::endl;
+
+        // semi-analytic Bates for European
+        method = "Bates semi-analytic";
+        boost::shared_ptr<BatesProcess> batesProcess(
+            new BatesProcess(flatTermStructure, flatDividendTS,
+                             underlyingH, volatility*volatility,
+                             1.0, volatility*volatility, 0.001, 0.0,
+                             1e-14, 1e-14, 1e-14));
+        boost::shared_ptr<BatesModel> batesModel(new BatesModel(batesProcess));
+        europeanOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                                new BatesEngine(batesModel)));
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << europeanOption.NPV()
+                  << std::setw(widths[2]) << std::left << "N/A"
+                  << std::setw(widths[3]) << std::left << "N/A"
+                  << std::endl;
+
         // Barone-Adesi and Whaley approximation for American
         method = "Barone-Adesi/Whaley";
         americanOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
