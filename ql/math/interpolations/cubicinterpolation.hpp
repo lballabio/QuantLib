@@ -82,7 +82,7 @@ namespace QuantLib {
         been applied.
 
         While some non-linear schemes (Modified Parabolic, Fritsch-Butland,
-        Kruger) are guaranteed to be locally monotone in their original
+        Kruger) are guaranteed to be locally monotonic in their original
         approximation, all other schemes must be filtered according to the
         Hyman criteria at the expense of their linearity.
 
