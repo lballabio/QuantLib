@@ -18,6 +18,7 @@ this_include_HEADERS = \
 	errorfunction.hpp \
 	factorial.hpp \
 	functional.hpp \
+	generallinearleastsquares.hpp \
 	kernelfunctions.hpp \
 	incompletegamma.hpp \
 	interpolation.hpp \

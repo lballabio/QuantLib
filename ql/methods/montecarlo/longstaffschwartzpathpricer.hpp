@@ -26,7 +26,7 @@
 
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/math/functional.hpp>
-#include <ql/math/linearleastsquaresregression.hpp>
+#include <ql/math/generallinearleastsquares.hpp>
 #include <ql/methods/montecarlo/pathpricer.hpp>
 #include <ql/methods/montecarlo/earlyexercisepathpricer.hpp>
 #include <boost/bind.hpp>
@@ -148,8 +148,7 @@ namespace QuantLib {
             }
 
             if (v_.size() <=  x.size()) {
-                coeff_[i] = LinearLeastSquaresRegression<StateType>(x, y, v_)
-                                .coefficients();
+                coeff_[i] = GeneralLinearLeastSquares(x, y, v_).coefficients();
             }
             else {
             // if number of itm paths is smaller then the number of

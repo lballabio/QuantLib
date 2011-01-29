@@ -17,6 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/math/generallinearleastsquares.hpp>
 #include <ql/experimental/mcbasket/longstaffschwartzmultipathpricer.hpp>
 #include <ql/utilities/tracing.hpp>
 
@@ -215,8 +216,7 @@ namespace QuantLib {
             }
 
             if (v_.size() <=  x.size()) {
-                coeff_[i] = LinearLeastSquaresRegression<Array>(x, y, v_)
-                                                            .coefficients();
+                coeff_[i] = GeneralLinearLeastSquares(x, y, v_).coefficients();
             }
             else {
             // if number of itm paths is smaller then the number of

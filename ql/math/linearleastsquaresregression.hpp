@@ -27,93 +27,29 @@
 #ifndef quantlib_linear_least_squares_regression_hpp
 #define quantlib_linear_least_squares_regression_hpp
 
-#include <ql/qldefines.hpp>
-#include <ql/math/matrixutilities/svd.hpp>
-#include <ql/math/array.hpp>
-#include <ql/math/functional.hpp>
-#include <boost/function.hpp>
-#include <boost/type_traits.hpp>
-#include <vector>
+#include <ql/math/generallinearleastsquares.hpp>
 
 namespace QuantLib {
 
-    //! general linear least squares regression
-    /*! References:
-    "Numerical Recipes in C", 2nd edition,
-    Press, Teukolsky, Vetterling, Flannery,
-
-    \test the correctness of the returned values is tested by
-    checking their properties.
-    */
-    template <class ArgumentType = Real>
-    class LinearLeastSquaresRegression {
-    public:
-        template <class xContainer, class yContainer, class vContainer>
-        LinearLeastSquaresRegression(const xContainer & x, 
-                                     const yContainer &y, const vContainer & v);
-
-        template<class xIterator, class yIterator, class vIterator>
-        LinearLeastSquaresRegression(
-            xIterator xBegin, xIterator xEnd,
-            yIterator yBegin, yIterator yEnd,
-            vIterator vBegin, vIterator vEnd);
-
-        const Array& coefficients()   const { return a_; }
-        const Array& residuals()      const { return residuals_; }
-
-        //! standard parameter errors as given by Excel, R etc.
-        const Array& standardErrors() const { return standardErrors_; }
-        //! modeling uncertainty as definied in Numerical Recipes
-        const Array& error()          const { return err_;}
-
-#ifndef QL_DISABLE_DEPRECATED
-        const Array& a() const     { return a_;  }
-#endif
-        Size size() const { return residuals_.size(); }
-
-        Size dim() const { return a_.size(); }
-
-    protected:
-        Array a_, err_, residuals_, standardErrors_;
-
-        template <class xIterator, class yIterator, class vIterator>
-        void calculate(
-            xIterator xBegin, xIterator xEnd,
-            yIterator yBegin, yIterator yEnd,
-            vIterator vBegin, vIterator vEnd);
-    };
-
-    class LinearRegression : public LinearLeastSquaresRegression<Real> {
-    public:
-        //! linear regression y_i = a_0 + a_1*x_0 +..+a_n*x_{n-1} + eps
-        template <class xContainer, class yContainer>
-        LinearRegression(const xContainer& x, 
-                         const yContainer& y, Real intercept = 1.0);
-
-        template <class xContainer, class yContainer, class vContainer>
-        LinearRegression(const xContainer& x, 
-                         const yContainer& y, const vContainer &v);
-    };
-
     namespace details {
-        
+
         template <class Container>
         class LinearFct : public std::unary_function<Real, Container > {
-        public:
+          public:
             LinearFct(Size i) : i_(i) {}
 
             inline Real operator()(const Container& x) const {
                 return x[i_];
             }
 
-        private:
+          private:
             const Size i_;
-        };
+       };
 
         // 1d implementation (arithmetic types)
         template <class xContainer, bool>
         class LinearFcts {
-        public:
+          public:
             typedef typename xContainer::value_type ArgumentType;
             LinearFcts (const xContainer &x, Real intercept) {
                 if (intercept)
@@ -125,112 +61,48 @@ namespace QuantLib {
                 return v;
             }
 
-        private:
+          private:
             std::vector< boost::function1<Real, ArgumentType> > v;
         };
 
         // multi-dimensional implementation (container types)
         template <class xContainer>
         class LinearFcts<xContainer, false>  {
-        public:
+          public:
             typedef typename xContainer::value_type ArgumentType;
-            LinearFcts (const xContainer &x, Real intercept)
-            {
+            LinearFcts (const xContainer &x, Real intercept) {
                 if (intercept)
                     v.push_back(constant<ArgumentType, Real>(intercept));
                 Size m = x.begin()->size();
                 for (Size i = 0; i < m; ++i)
                     v.push_back(LinearFct<ArgumentType>(i));
             }
-            
+
             const std::vector< boost::function1<Real, ArgumentType> > & fcts() {
-                return v;
+               return v;
             }
-        private:
+          private:
             std::vector< boost::function1<Real, ArgumentType> > v;
         };
     }
 
-    template <class ArgumentType>
-    template <class xIterator, class yIterator, class vIterator>
-    void LinearLeastSquaresRegression<ArgumentType>::calculate(
-        xIterator xBegin, xIterator xEnd,
-        yIterator yBegin, yIterator yEnd,
-        vIterator vBegin, vIterator vEnd) {
+    class LinearRegression : public GeneralLinearLeastSquares {
+    public:
+        //! linear regression y_i = a_0 + a_1*x_0 +..+a_n*x_{n-1} + eps
+        template <class xContainer, class yContainer>
+        LinearRegression(const xContainer& x, 
+                         const yContainer& y, Real intercept = 1.0);
 
-            const Size n = residuals_.size();
-            const Size m = err_.size();
+        template <class xContainer, class yContainer, class vContainer>
+        LinearRegression(const xContainer& x, 
+                         const yContainer& y, const vContainer &v);
+    };
 
-            QL_REQUIRE( n == Size(std::distance(yBegin, yEnd)),
-                "sample set need to be of the same size");
-            QL_REQUIRE(n >= m, "sample set is too small");
-
-            Size i;
-
-            Matrix A(n, m);
-            for (i=0; i<m; ++i)
-                std::transform(xBegin, xEnd, A.column_begin(i), *vBegin++);
-
-            const SVD svd(A);
-            const Matrix& V = svd.V();
-            const Matrix& U = svd.U();
-            const Array& w = svd.singularValues();
-            const Real threshold = n*QL_EPSILON;
-
-            for (i=0; i<m; ++i) {
-                if (w[i] > threshold) {
-                    const Real u = std::inner_product(U.column_begin(i),
-                        U.column_end(i),
-                        yBegin, 0.0)/w[i];
-
-                    for (Size j=0; j<m; ++j) {
-                        a_[j]  +=u*V[j][i];
-                        err_[j]+=V[j][i]*V[j][i]/(w[i]*w[i]);
-                    }
-                }
-            }
-            err_      = Sqrt(err_);
-            Array tmp = A*a_;
-            std::transform(tmp.begin(), tmp.end(), 
-                           yBegin, residuals_.begin(), std::minus<Real>());
-
-            const Real chiSq
-                = std::inner_product(residuals_.begin(), residuals_.end(),
-                residuals_.begin(), 0.0);
-            std::transform(err_.begin(), err_.end(), standardErrors_.begin(),
-                std::bind1st(std::multiplies<Real>(),
-                std::sqrt(chiSq/(n-2))));
-    }
-
-    template <class ArgumentType>
-    template <class xContainer, class yContainer, class vContainer> inline
-        LinearLeastSquaresRegression<ArgumentType>::LinearLeastSquaresRegression(
-            const xContainer & x, 
-            const yContainer &y, const vContainer & v) 
-    : a_(v.size(), 0.0), 
-      err_(v.size(), 0.0), 
-      residuals_(y.size()), 
-      standardErrors_(v.size()) {
-        calculate(x.begin(), x.end(), y.begin(), y.end(), v.begin(), v.end());
-    }
-
-    template <class ArgumentType>
-    template<class xIterator, class yIterator, class vIterator> inline
-        LinearLeastSquaresRegression<ArgumentType>::LinearLeastSquaresRegression(
-        xIterator xBegin, xIterator xEnd,
-        yIterator yBegin, yIterator yEnd,
-        vIterator vBegin, vIterator vEnd) : 
-    a_(std::distance(vBegin, vEnd), 0.0),
-        err_(a_.size(), 0.0),
-        residuals_(std::distance(yBegin, yEnd)),
-        standardErrors_(a_.size()) {
-            calculate(xBegin, xEnd, yBegin, yEnd, vBegin, vEnd);
-    }
 
     template <class xContainer, class yContainer> inline
         LinearRegression::LinearRegression(const xContainer& x, 
                                            const yContainer& y, Real intercept) 
-    : LinearLeastSquaresRegression<Real>(x, y, 
+    : GeneralLinearLeastSquares(x, y,
           details::LinearFcts<xContainer, 
               boost::is_arithmetic<typename xContainer::value_type>::value>
                                                         (x, intercept).fcts()) {
@@ -240,7 +112,21 @@ namespace QuantLib {
         LinearRegression::LinearRegression(const xContainer& x, 
                                            const yContainer& y, 
                                            const vContainer &v) 
-    : LinearLeastSquaresRegression<Real> (x, y, v) {
+    : GeneralLinearLeastSquares(x, y, v) {
     }
+
+    // general linear least squares regression
+    // this interface is support for backward compatibility only
+    // please use GeneralLinearLeastSquares directly
+    template <class ArgumentType = Real>
+    class LinearLeastSquaresRegression : public GeneralLinearLeastSquares {
+      public:
+        LinearLeastSquaresRegression(
+            const std::vector<ArgumentType> & x,
+            const std::vector<Real> &         y,
+            const std::vector<boost::function1<Real, ArgumentType> > & v)
+        : GeneralLinearLeastSquares(x, y, v) {
+        }
+    };
 }
 #endif
