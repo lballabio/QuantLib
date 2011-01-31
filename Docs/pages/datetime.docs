@@ -1,0 +1,57 @@
+
+/*
+ Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2000-2004 StatPro Italia srl
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+/*! \defgroup datetime Date and time calculations
+
+    The concrete class <tt>QuantLib::Date</tt> implements the concept
+    of date. Its functionalities include:
+
+    - providing basic information such as weekday, day of the month,
+      day of the year, month, and year;
+
+    - comparing two dates to determine whether they are equal, or
+      which one is the earlier or later, or the difference between them
+      expressed in days;
+
+    - incrementing or decrementing a date of a given number of days,
+      or of a given period expressed in weeks, months, or years.
+
+    @{
+*/
+
+/*! \defgroup calendars Calendars
+
+    The class <tt>QuantLib::Calendar</tt> provides the interface for
+    determining whether a date is a business day or a holiday for a
+    given exchange or a given country, and for incrementing/decrementing
+    a date of a given number of business days. A number of calendars is
+    contained in the <tt>ql/Calendars</tt> directory.
+*/
+
+/*! \defgroup daycounters Day counters
+
+    The class <tt>QuantLib::DayCounter</tt> provides more advanced
+    means of measuring the distance between two dates according to a
+    given market convention, both as number of days of fraction of
+    year. A number of such conventions is contained in the
+    <tt>ql/DayCounters</tt> directory.
+*/
+
+/*! @} */
+

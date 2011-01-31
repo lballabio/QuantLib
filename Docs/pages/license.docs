@@ -1,0 +1,159 @@
+
+/*! \page license QuantLib License
+
+<pre>
+    Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+
+    Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
+    Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+
+    Copyright (C) 2002, 2003, 2004 Decillion Pty(Ltd)
+    Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Ferdinando Ametrano
+
+    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 StatPro Italia srl
+    Copyright (C) 2003, 2004, 2007 Neil Firth
+    Copyright (C) 2003, 2004 Roman Gitlin
+    Copyright (C) 2003 Niels Elken Sønderby
+    Copyright (C) 2003 Kawanishi Tomoya
+
+    Copyright (C) 2004 FIMAT Group
+    Copyright (C) 2004 M-Dimension Consulting Inc.
+    Copyright (C) 2004 Mike Parker
+    Copyright (C) 2004 Walter Penschke
+    Copyright (C) 2004 Gianni Piolanti
+    Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010 Klaus Spanderen
+    Copyright (C) 2004 Jeff Yu
+
+    Copyright (C) 2005, 2006, 2008 Toyin Akin
+    Copyright (C) 2005 Sercan Atalik
+    Copyright (C) 2005, 2006 Theo Boafo
+    Copyright (C) 2005, 2006, 2007, 2009 Piter Dias
+    Copyright (C) 2005 Gary Kennedy
+    Copyright (C) 2005, 2006, 2007 Joseph Wang
+    Copyright (C) 2005 Charles Whitmore
+
+    Copyright (C) 2006, 2007 Banca Profilo S.p.A.
+    Copyright (C) 2006, 2007 Marco Bianchetti
+    Copyright (C) 2006 Yiping Chen
+    Copyright (C) 2006 Warren Chou
+    Copyright (C) 2006, 2007 Cristina Duminuco
+    Copyright (C) 2006, 2007 Giorgio Facchinetti
+    Copyright (C) 2006, 2007 Chiara Fornarola
+    Copyright (C) 2006 Silvia Frasson
+    Copyright (C) 2006 Richard Gould
+    Copyright (C) 2006, 2007, 2008, 2009, 2010 Mark Joshi
+    Copyright (C) 2006, 2007, 2008 Allen Kuo
+    Copyright (C) 2006, 2007, 2008, 2009 Roland Lichters
+    Copyright (C) 2006, 2007 Katiuscia Manzoni
+    Copyright (C) 2006, 2007 Mario Pucci
+    Copyright (C) 2006, 2007 François du Vignaud
+
+    Copyright (C) 2007 Affine Group Limited
+    Copyright (C) 2007 Richard Gomes
+    Copyright (C) 2007, 2008 Laurent Hoffmann
+    Copyright (C) 2007, 2008, 2009 Chris Kenyon
+    Copyright (C) 2007 Gang Liang
+
+    Copyright (C) 2008, 2009 Jose Aparicio
+    Copyright (C) 2008 Yee Man Chan
+    Copyright (C) 2008 Charles Chongseok Hyun
+    Copyright (C) 2008 Piero Del Boca
+    Copyright (C) 2008 Paul Farrington
+    Copyright (C) 2008 Lorella Fatone
+    Copyright (C) 2008, 2009 Andreas Gaida
+    Copyright (C) 2008 Marek Glowacki
+    Copyright (C) 2008 Florent Grenier
+    Copyright (C) 2008 Frank Hövermann
+    Copyright (C) 2008 Simon Ibbotson
+    Copyright (C) 2008 John Maiden
+    Copyright (C) 2008 Francesca Mariani
+    Copyright (C) 2008, 2009, 2010 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
+    Copyright (C) 2008, 2009 Andrea Odetti
+    Copyright (C) 2008 J. Erik Radmall
+    Copyright (C) 2008 Maria Cristina Recchioni
+    Copyright (C) 2008, 2009 Ralph Schreyer
+    Copyright (C) 2008 Roland Stamm
+    Copyright (C) 2008 Francesco Zirilli
+
+    Copyright (C) 2009 Nathan Abbott
+    Copyright (C) 2009 Sylvain Bertrand
+    Copyright (C) 2009 Frédéric Degraeve
+    Copyright (C) 2009 Dirk Eddelbuettel
+    Copyright (C) 2009 Bernd Engelmann
+    Copyright (C) 2009, 2010 Liquidnet Holdings, Inc.
+    Copyright (C) 2009 Bojan Nikolic
+    Copyright (C) 2009, 2010 Dimitri Reiswich
+    Copyright (C) 2009 Sun Xiuxin
+
+    Copyright (C) 2010 Kakhkhor Abdijalilov
+    Copyright (C) 2010 Hachemi Benyahia
+    Copyright (C) 2010 Manas Bhatt
+    Copyright (C) 2010 DeriveXperts SAS
+    Copyright (C) 2010 Cavit Hafizoglu
+    Copyright (C) 2010 Michael Heckl
+    Copyright (C) 2010 Liquidnet Holdings Inc.
+    Copyright (C) 2010 Adrian O' Neill
+    Copyright (C) 2010 Robert Philipp
+    Copyright (C) 2010 Alessandro Roveda
+    Copyright (C) 2010 SunTrust Bank
+
+QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
+Methods in Finance".
+
+QuantLib includes software developed by the University of Chicago,
+as Operator of Argonne National Laboratory.
+
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+    Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the following disclaimer.
+
+    Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+
+    Neither the names of the copyright holders nor the names of the QuantLib
+    Group and its contributors may be used to endorse or promote products
+    derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+</pre>
+
+<hr>
+\section licensecomments Comments on Copyright and License
+
+%QuantLib is Non-Copylefted Free Software [1] released under the modified BSD
+License [2] (also know as XFree86-style license).
+
+%QuantLib is Open Source [3] because of its license: it is OSI Certified Open
+Source Software [4]. OSI Certified is a certification mark of the Open Source
+Initiative [5].
+
+The modified BSD License is GPL compatible as confirmed by the Free Software
+Foundation [6].
+
+This license has been adopted to allow free use of %QuantLib and its source, to
+make %QuantLib flourish as a free-software/open-source project. It allows
+proprietary extensions to be commercialized.
+
+[1] http://www.gnu.org/philosophy/categories.html#Non-CopyleftedFreeSoftware<br>
+[2] http://www.opensource.org/licenses/bsd-license.html<br>
+[3] http://www.opensource.org/docs/definition.html<br>
+[4] http://www.opensource.org/docs/certification_mark.html<br>
+[5] http://www.opensource.org<br>
+[6] http://www.gnu.org/philosophy/bsd.html
+*/
