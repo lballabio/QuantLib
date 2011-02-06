@@ -24,6 +24,8 @@
 #include <ql/math/functional.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/instruments/vanillaoption.hpp>
+#include <ql/instruments/vanillaswingoption.hpp>
+#include <ql/instruments/vanillastorageoption.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/math/statistics/generalstatistics.hpp>
@@ -39,10 +41,10 @@
 #include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
 #include <ql/experimental/finitedifferences/fdsimplebsswingengine.hpp>
 #include <ql/experimental/finitedifferences/fdextoujumpvanillaengine.hpp>
+#include <ql/experimental/finitedifferences/fdsimpleextoustorageengine.hpp>
 #include <ql/experimental/finitedifferences/fdsimpleextoujumpswingengine.hpp>
 #include <ql/experimental/finitedifferences/exponentialjump1dmesher.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesvanillaengine.hpp>
-#include <ql/instruments/vanillaswingoption.hpp>
 
 #include <boost/lambda/lambda.hpp>
 #include <deque>
@@ -500,6 +502,44 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
     }
 }
 
+void SwingOptionTest::testSimpleExtOUStorageEngine() {
+
+    BOOST_MESSAGE("Testing Simple Storage option based on ext. OU  model...");
+
+    Date settlementDate = Date::todaysDate();
+    Settings::instance().evaluationDate() = settlementDate;
+    DayCounter dayCounter = ActualActual();
+    Date maturityDate = settlementDate + Period(12, Months);
+
+    std::vector<Date> exerciseDates(1, settlementDate+Period(1, Days));
+    while (exerciseDates.back() < maturityDate) {
+        exerciseDates.push_back(exerciseDates.back()+Period(1, Days));
+    }
+    boost::shared_ptr<BermudanExercise> bermudanExercise(
+                                        new BermudanExercise(exerciseDates));
+
+    const Real x0 = 3.0;
+    const Real speed = 1.0;
+    const Real volatility = 0.5;
+    const Rate irRate = 0.1;
+
+    boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess(
+        new ExtendedOrnsteinUhlenbeckProcess(speed, volatility, x0,
+                                             constant<Real, Real>(x0)));
+
+    boost::shared_ptr<YieldTermStructure> rTS(
+                                flatRate(settlementDate, irRate, dayCounter));
+
+    boost::shared_ptr<PricingEngine> storageEngine(
+               new FdSimpleExtOUStorageEngine(ouProcess, rTS, 1, 100));
+
+    VanillaStorageOption storageOption(bermudanExercise, 50, 0, 1);
+
+    storageOption.setPricingEngine(storageEngine);
+    const Real storageOptionPrice = storageOption.NPV();
+
+    printf("storage value is %f\n", storageOptionPrice);
+}
 
 
 test_suite* SwingOptionTest::suite() {
@@ -515,6 +555,8 @@ test_suite* SwingOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&SwingOptionTest::testExtOUJumpVanillaEngine));
     suite->add(QUANTLIB_TEST_CASE(
                             &SwingOptionTest::testExtOUJumpSwingOption));
+    suite->add(QUANTLIB_TEST_CASE(
+                            &SwingOptionTest::testSimpleExtOUStorageEngine));
     
     return suite;
 }

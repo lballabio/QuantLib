@@ -33,6 +33,7 @@ class SwingOptionTest {
     static void testExtOUJumpSwingOption();
 	static void testFdmExponentialJump1dMesher();
 	static void testExtOUJumpVanillaEngine();
+    static void testSimpleExtOUStorageEngine();
     static boost::unit_test_framework::test_suite* suite();
 };
 

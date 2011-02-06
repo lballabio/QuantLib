@@ -36,6 +36,7 @@
 #include <ql/experimental/finitedifferences/fdmblackscholessolver.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
 #include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
+#include <ql/experimental/finitedifferences/fdmextendedornsteinuhlenbeckop.hpp>
 #include <ql/experimental/finitedifferences/fdmextoujumpmodelinnervalue.hpp>
 #include <ql/experimental/finitedifferences/fdmextoujumpop.hpp>
 #include <ql/experimental/finitedifferences/fdmextoujumpsolver.hpp>
@@ -53,8 +54,10 @@
 #include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmquantohelper.hpp>
 #include <ql/experimental/finitedifferences/fdmsimple2dbssolver.hpp>
+#include <ql/experimental/finitedifferences/fdmsimple2dextousolver.hpp>
 #include <ql/experimental/finitedifferences/fdmsimple3dextoujumpsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmsimpleprocess1dmesher.hpp>
+#include <ql/experimental/finitedifferences/fdmsimplestoragecondition.hpp>
 #include <ql/experimental/finitedifferences/fdmsimpleswingcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmsnapshotcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmsolverdesc.hpp>

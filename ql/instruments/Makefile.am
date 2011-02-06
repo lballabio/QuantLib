@@ -50,6 +50,7 @@ this_include_HEADERS = \
     swap.hpp \
     swaption.hpp \
     vanillaoption.hpp \
+	vanillastorageoption.hpp \
 	vanillaswingoption.hpp \
     vanillaswap.hpp \
     varianceswap.hpp \

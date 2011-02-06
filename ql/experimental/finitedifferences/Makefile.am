@@ -39,6 +39,7 @@ this_include_HEADERS = \
 	fdmblackscholessolver.hpp \
 	fdmdirichletboundary.hpp \
 	fdmdividendhandler.hpp \
+	fdmextendedornsteinuhlenbeckop.hpp \
 	fdmextoujumpmodelinnervalue.hpp \
 	fdmextoujumpop.hpp \
 	fdmextoujumpsolver.hpp \
@@ -56,8 +57,10 @@ this_include_HEADERS = \
 	fdmmeshercomposite.hpp \
 	fdmquantohelper.hpp \
     fdmsimple2dbssolver.hpp \
+	fdmsimple2dextousolver.hpp \
     fdmsimple3dextoujumpsolver.hpp \
     fdmsimpleprocess1dmesher.hpp \
+    fdmsimplestoragecondition.hpp \
     fdmsimpleswingcondition.hpp \
 	fdmsnapshotcondition.hpp \
 	fdmsolverdesc.hpp \
@@ -111,6 +114,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdmblackscholessolver.cpp \
 	fdmdirichletboundary.cpp \
 	fdmdividendhandler.cpp \
+	fdmextendedornsteinuhlenbeckop.cpp \
 	fdmextoujumpop.cpp \
 	fdmextoujumpsolver.cpp \
 	fdmhestonhullwhiteop.cpp \
@@ -124,11 +128,13 @@ libMultiDimFDM_la_SOURCES = \
 	fdmquantohelper.cpp \
     fdmsimple2dbssolver.cpp \
     fdmsimpleprocess1dmesher.cpp \
+    fdmsimplestoragecondition.cpp \
     fdmsimpleswingcondition.cpp \
 	fdmsnapshotcondition.cpp \
 	fdmstepconditioncomposite.cpp \
     fdsimplebsswingengine.cpp \
 	fdsimpleextoujumpswingengine.cpp \
+    fdsimpleextoustorageengine.cpp \
 	firstderivativeop.cpp \
 	hundsdorferscheme.cpp \
 	impliciteulerscheme.cpp \
