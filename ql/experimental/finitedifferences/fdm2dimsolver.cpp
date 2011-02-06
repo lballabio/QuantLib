@@ -46,10 +46,11 @@ namespace QuantLib {
       initialValues_(mesher_->layout()->size()),
       resultValues_(mesher_->layout()->dim()[1], mesher_->layout()->dim()[0]) {
 
-        x_.reserve(mesher_->layout()->dim()[0]);
-        y_.reserve(mesher_->layout()->dim()[1]);
-
         const boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+
+        x_.reserve(layout->dim()[0]);
+        y_.reserve(layout->dim()[1]);
+
         const FdmLinearOpIterator endIter = layout->end();
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
              ++iter) {

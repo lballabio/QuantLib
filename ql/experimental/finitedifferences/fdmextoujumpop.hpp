@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmexpoujumpop.hpp
+/*! \file fdmextoujumpop.hpp
     \brief Ornstein Uhlenbeck process plus jumps (Kluge Model)
 */
 
@@ -25,7 +25,6 @@
 #define quantlib_fdm_ext_ou_jump_op_hpp
 
 #include <ql/math/integrals/gaussianquadratures.hpp>
-#include <ql/experimental/finitedifferences/firstderivativeop.hpp>
 #include <ql/experimental/finitedifferences/triplebandlinearop.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearopcomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
@@ -37,7 +36,7 @@ namespace QuantLib {
     class YieldTermStructure;
     class LinearInterpolation;
     class ExtOUWithJumpsProcess;
-
+    class FdmExtendedOrnsteinUhlenbackOp;
     
     /*! References:
         Kluge, Timo L., 2008. Pricing Swing Options and other 
@@ -87,10 +86,9 @@ namespace QuantLib {
         GaussLaguerreIntegration gaussLaguerreIntegration_;
         
         const Array x_;
-        const FirstDerivativeOp dxMap_;
-        const TripleBandLinearOp dxxMap_, dyMap_;
-        TripleBandLinearOp mapX_, mapY_;
-        
+        const boost::shared_ptr<FdmExtendedOrnsteinUhlenbackOp> ouOp_;
+
+        const TripleBandLinearOp dyMap_;
     };
 }
 #endif

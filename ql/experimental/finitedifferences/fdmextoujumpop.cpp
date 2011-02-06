@@ -28,6 +28,7 @@
 #include <ql/experimental/processes/extouwithjumpsprocess.hpp>
 #include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
 #include <ql/experimental/finitedifferences/fdmextoujumpop.hpp>
+#include <ql/experimental/finitedifferences/fdmextendedornsteinuhlenbeckop.hpp>
 #include <ql/experimental/finitedifferences/secondderivativeop.hpp>
 
 namespace QuantLib {
@@ -44,39 +45,23 @@ namespace QuantLib {
       bcSet_  (bcSet),
       gaussLaguerreIntegration_(integroIntegrationOrder),
       x_      (mesher->locations(0)),
-      dxMap_  (0, mesher),
-      dxxMap_ (SecondDerivativeOp(0, mesher)
-          .mult(0.5*square<Real>()(
-                  process->getExtendedOrnsteinUhlenbeckProcess()->volatility())
-                *Array(mesher->layout()->size(), 1.))),
+      ouOp_   (new FdmExtendedOrnsteinUhlenbackOp(
+                   mesher,
+                   process->getExtendedOrnsteinUhlenbeckProcess(), rTS, bcSet)),
       dyMap_  (FirstDerivativeOp(1, mesher)
-                .mult(-process->beta()*mesher->locations(1))),
-      mapX_   (0, mesher),
-      mapY_   (1, mesher) {
+                .mult(-process->beta()*mesher->locations(1))) {
     }
         
     Size FdmExtOUJumpOp::size() const {
-        return 2;
+        return mesher_->layout()->dim().size();;
     }
     
     void FdmExtOUJumpOp::setTime(Time t1, Time t2) {
-        const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
-        
-        const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
-        const FdmLinearOpIterator endIter = layout->end();
-
-        Array drift(layout->size());
-        for (FdmLinearOpIterator iter = layout->begin();
-             iter!=endIter; ++iter) {
-            const Size i = iter.index();
-            drift[i] = process_->drift(0.5*(t1+t2), Array(2, x_[i]))[0];
-        }
-        mapX_.axpyb(drift, dxMap_, dxxMap_, Array(1, -0.5*r));
-        mapY_ = dyMap_.add(Array(mesher_->layout()->size(), -0.5*r));
+        ouOp_->setTime(t1, t2);
     }
     
     Disposable<Array> FdmExtOUJumpOp::apply(const Array& r) const {
-        return apply_direction(0, r) + apply_direction(1, r) + integro(r);
+        return ouOp_->apply(r) + apply_direction(1, r) + integro(r);
     }
     
     Disposable<Array> FdmExtOUJumpOp::apply_mixed(const Array& r) const {
@@ -86,30 +71,34 @@ namespace QuantLib {
     Disposable<Array> FdmExtOUJumpOp::apply_direction(Size direction,
                                                       const Array& r) const {
         if (direction == 0)
-            return mapX_.apply(r);
+            return ouOp_->apply_direction(direction, r);
         else if (direction == 1)
-            return mapY_.apply(r);
-        else
-            QL_FAIL("direction too large");
+            return dyMap_.apply(r);
+        else {
+            Array retVal(r.size(), 0.0);
+            return retVal;
+        }
     }
 
     Disposable<Array> 
         FdmExtOUJumpOp::solve_splitting(Size direction, 
                                         const Array& r, Real a) const {
         if (direction == 0) {
-            return mapX_.solve_splitting(r, a, 1.0);
+            return ouOp_->solve_splitting(direction, r, a);
         }
         else if (direction == 1) {
-            return mapY_.solve_splitting(r, a, 1.0);
+            return dyMap_.solve_splitting(r, a, 1.0);
         }
-        else
-            QL_FAIL("direction too large");
+        else {
+            Array retVal(r);
+            return retVal;
+        }
     }
     
     Disposable<Array>
         FdmExtOUJumpOp::preconditioner(const Array& r, Real dt) const {
 
-        return solve_splitting(0, r, dt);
+        return ouOp_->solve_splitting(0, r, dt);
     }
     
     FdmExtOUJumpOp::IntegroIntegrand::IntegroIntegrand(

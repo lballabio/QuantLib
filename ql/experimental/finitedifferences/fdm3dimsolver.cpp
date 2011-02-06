@@ -50,11 +50,12 @@ namespace QuantLib {
                            mesher_->layout()->dim()[0])),
       interpolation_(mesher_->layout()->dim()[2]) {
 
-        x_.reserve(mesher_->layout()->dim()[0]);
-        y_.reserve(mesher_->layout()->dim()[1]);
-        z_.reserve(mesher_->layout()->dim()[2]);
-
         const boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+
+        x_.reserve(layout->dim()[0]);
+        y_.reserve(layout->dim()[1]);
+        z_.reserve(layout->dim()[2]);
+
         const FdmLinearOpIterator endIter = layout->end();
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
              ++iter) {

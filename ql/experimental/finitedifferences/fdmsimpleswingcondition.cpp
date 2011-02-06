@@ -33,12 +33,12 @@ namespace QuantLib {
     }
     
     void FdmSimpleSwingCondition::applyTo(Array& a, Time t) const {
-        Array retVal = a;
-        
         const std::vector<Time>::const_iterator iter
             = std::find(exerciseTimes_.begin(), exerciseTimes_.end(), t);
         
-        if (iter != exerciseTimes_.end()) {    
+        if (iter != exerciseTimes_.end()) {
+            Array retVal= a;
+
             const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
             const FdmLinearOpIterator endIter = layout->end();
             
@@ -60,8 +60,7 @@ namespace QuantLib {
                     }
                 }
             }
+            a = retVal;
         }
-            
-        a = retVal;
     }
 }
