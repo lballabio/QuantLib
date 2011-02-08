@@ -536,9 +536,15 @@ void SwingOptionTest::testSimpleExtOUStorageEngine() {
     VanillaStorageOption storageOption(bermudanExercise, 50, 0, 1);
 
     storageOption.setPricingEngine(storageEngine);
-    const Real storageOptionPrice = storageOption.NPV();
 
-    printf("storage value is %f\n", storageOptionPrice);
+    const Real expected = 69.729589;
+    const Real calculated = storageOption.NPV();
+
+    if (std::fabs(expected - calculated) > 2e-2) {
+        BOOST_ERROR("Failed to reproduce cached values"
+                   << "\n    calculated: " << calculated
+                   << "\n    expected:   " << expected);
+    }
 }
 
 

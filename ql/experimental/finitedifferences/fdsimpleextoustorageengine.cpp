@@ -92,11 +92,10 @@ namespace QuantLib {
                    "Bermudan exercise supported only");
 
         // 1. Layout
-        const Size yGrid = arguments_.capacity/arguments_.changeRate+1;
+        const Size yGrid = Size(arguments_.capacity/arguments_.changeRate+1);
         std::vector<Size> dim;
         dim.push_back(xGrid_);
         dim.push_back(yGrid);
-        printf("yGrid is %i\n",yGrid);
         const boost::shared_ptr<FdmLinearOpLayout> layout(
                                               new FdmLinearOpLayout(dim));
 
@@ -110,7 +109,7 @@ namespace QuantLib {
 
         const boost::shared_ptr<Fdm1dMesher> storageMesher(
             new Uniform1dMesher(0, arguments_.capacity,
-                                arguments_.capacity/arguments_.changeRate+1));
+                                Size(arguments_.capacity/arguments_.changeRate+1)));
 
         std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
         meshers.push_back(xMesher);
@@ -137,7 +136,6 @@ namespace QuantLib {
             exerciseTimes.push_back(t);
         }
         stoppingTimes.push_back(exerciseTimes);
-        printf("number of exervise times are %i\n",exerciseTimes.size());
 
         boost::shared_ptr<FdmInnerValueCalculator> underlyingCalculator(
                                                new FdmUnderlyingValue(mesher));
