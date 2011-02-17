@@ -100,7 +100,7 @@ namespace QuantLib {
     class CubicInterpolation : public Interpolation {
       public:
         enum DerivativeApprox {
-            /*! Spline approximation (non-local, non-monotone, linear[?]).
+            /*! Spline approximation (non-local, non-monotonic, linear[?]).
                 Different boundary conditions can be used on the left and right
                 boundaries: see BoundaryCondition.
             */
@@ -112,19 +112,19 @@ namespace QuantLib {
             //! Overshooting minimization 2nd derivative
             SplineOM2,
 
-            //! Fourth-order approximation (local, non-monotone, linear)
+            //! Fourth-order approximation (local, non-monotonic, linear)
             FourthOrder,
 
-            //! Parabolic approximation (local, non-monotone, linear)
+            //! Parabolic approximation (local, non-monotonic, linear)
             Parabolic,
 
-            //! Fritsch-Butland approximation (local, monotone, non-linear)
+            //! Fritsch-Butland approximation (local, monotonic, non-linear)
             FritschButland,
 
-            //! Akima approximation (local, non-monotone, non-linear)
+            //! Akima approximation (local, non-monotonic, non-linear)
             Akima,
 
-            //! Kruger approximation (local, monotone, non-linear)
+            //! Kruger approximation (local, monotonic, non-linear)
             Kruger
         };
         enum BoundaryCondition {
