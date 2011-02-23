@@ -30,8 +30,6 @@
 
 namespace QuantLib {
 
-    class QuantLib::Index;
-
 	//! when you observe an index, how do you interpolate between fixings?
 	//! \enum as the index, keep flat, or linear
 	enum indexInterpolationType {

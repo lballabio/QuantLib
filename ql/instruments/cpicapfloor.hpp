@@ -35,8 +35,6 @@
 
 namespace QuantLib {
 	
-    class QuantLib::ZeroInflationIndex;
-	
     //! CPI cap or floor
     /*! Quoted as a fixed strike rate \f$ K \f$.  Payoff:
 	 \f[

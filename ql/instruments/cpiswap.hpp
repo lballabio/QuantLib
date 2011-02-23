@@ -35,7 +35,7 @@
 
 namespace QuantLib {
 	
-    class QuantLib::ZeroInflationIndex;
+    class ZeroInflationIndex;
 	
     //! zero-inflation-indexed swap, 
     /*! fixed x zero-inflation, i.e. fixed x CPI(i'th fixing)/CPI(base)

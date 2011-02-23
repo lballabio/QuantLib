@@ -34,7 +34,7 @@
 
 namespace QuantLib {
 	
-    class QuantLib::Schedule;
+    class Schedule;
 	
     //! cpi bond; if there is only one date in the schedule it 
 	//! is a zero bond returning an inflated notional.
