@@ -383,7 +383,7 @@ void CPISwapTest::zciisconsistency() {
 	Real inflationNominal = nominal;
 	Real floatNominal = inflationNominal * std::pow(1.0+quote,50);
 	bool subtractInflationNominal = true;
-	Real dummySpread, dummyFixedRate;
+	Real dummySpread=0.0, dummyFixedRate=0.0;
 	Natural fixingDays = 0;
 	Date baseDate = startDate - observationLag;
 	Real baseCPI = common.ii->fixing(baseDate);

@@ -94,9 +94,9 @@ namespace QuantLib {
 		
     protected:
 		Real baseCPI_;
-		indexInterpolationType observationInterpolation_;
         Real fixedRate_;
         Spread spread_;
+        indexInterpolationType observationInterpolation_;
         
 		bool checkPricerImpl(const boost::shared_ptr<InflationCouponPricer>&) const;
 		
