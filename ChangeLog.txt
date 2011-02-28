@@ -1,3 +1,48 @@
+2011-02-28 12:58  Luigi Ballabio
+
+	* [r17639] Docs/pages/history.docs:
+	  
+	  Updated release date.
+
+2011-02-28 12:57  Luigi Ballabio
+
+	* [r17638] Docs/pages/history.docs, News.txt:
+	  
+	  Updated news.
+
+2011-02-28 12:56  Luigi Ballabio
+
+	* [r17637] QuantLib.dev, QuantLib_vc10.vcxproj,
+	  QuantLib_vc10.vcxproj.filters, QuantLib_vc7.vcproj,
+	  QuantLib_vc8.vcproj, ql/indexes/ibor/all.hpp:
+	  
+	  Added new files to all projects.
+
+2011-02-25 18:42  Ferdinando Ametrano
+
+	* [r17635] ql/indexes/ibor/Makefile.am:
+	  
+	  added Sonia class
+
+2011-02-25 18:40  Ferdinando Ametrano
+
+	* [r17634] QuantLib_vc9.vcproj, ql/indexes/ibor/sonia.cpp,
+	  ql/indexes/ibor/sonia.hpp:
+	  
+	  added Sonia class
+
+2011-02-17 15:09  Ferdinando Ametrano
+
+	* [r17622] ql/math/interpolations/cubicinterpolation.hpp:
+	  
+	  fixed typo
+
+2011-01-31 10:38  Luigi Ballabio
+
+	* [r17608] ChangeLog.txt, Docs/pages/history.docs, News.txt:
+	  
+	  Updated changelog and news.
+
 2011-01-26 09:00  Ferdinando Ametrano
 
 	* [r17600] ql/math/interpolations/cubicinterpolation.hpp:
