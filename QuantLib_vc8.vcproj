@@ -975,6 +975,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\indexes\ibor\sonia.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\indexes\ibor\sonia.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\indexes\ibor\tibor.hpp"
 					>
 				</File>
