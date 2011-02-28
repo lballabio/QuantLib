@@ -1,0 +1,50 @@
+
+/*
+ Copyright (C) 2000-2005, 2007, 2009 StatPro Italia srl
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+/*! \page install Installation
+
+    Before installing QuantLib, make sure that you have a working
+    Boost installation; see
+    <http://www.boost.org/more/getting_started.html>
+    for instructions.
+
+    \section linux Linux/Unix/Mac OS X/Cygwin
+    A tarball of the source distribution is available from <br>
+    <http://quantlib.org/download.shtml>
+
+    After uncompressing the sources:
+    -# `cd' to the %QuantLib directory and type `./configure' to
+       configure the package for your system; see the \ref config section
+       for configuration options.
+    -# Type `make' to compile the package.
+    -# Type `make install' to install the library. This might require
+       administrative privileges.
+
+    \section win32 Win32
+    A zip archiveof the source distribution is available at <br>
+    <http://quantlib.org/download.shtml>
+
+    Before compiling the library, you might want to edit the file
+    "ql/userconfig.hpp"; see the \ref config section for details.
+
+    Projects files are supplied for building the library with
+    Microsoft Visual C++ 7.1, 8.0 and 9.0 and with Dev-C++.
+
+    Detailed instructions for compilation under Visual C++ are
+    available at <http://quantlib.org/install/vc9.shtml>.
+*/

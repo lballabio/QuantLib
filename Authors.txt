@@ -1,0 +1,12 @@
+Ferdinando Ametrano, Banca IMI SpA, administrator
+Luigi Ballabio, StatPro Italia srl, administrator
+Marco Bianchetti, Banca IMI SpA
+Nicolas Di Césaré
+Dirk Eddelbuettel
+Neil Firth, Mathematical Institute, University of Oxford
+Nicola Jean, StatPro Italia srl
+Chris Kenyon
+Roland Lichters
+Marco Marchioro, StatPro Italia srl
+Klaus Spanderen
+Joseph Wang
