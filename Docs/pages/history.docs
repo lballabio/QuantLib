@@ -49,6 +49,7 @@
     INDEXES
     - Added inspector for discounting curve to swap index (thanks to Peter
       Caspers.)
+    - Added SONIA index.
     - Added HICPXT indexes.
 
     TERM STRUCTURES
