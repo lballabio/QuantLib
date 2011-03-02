@@ -1,3 +1,45 @@
+2011-03-02 12:44  Luigi Ballabio
+
+	* [r17651] ql/cashflows/simplecashflow.hpp,
+	  ql/experimental/credit/riskybond.cpp, ql/instruments/bond.cpp:
+	  
+	  Added specialized cash flow classes.
+	  
+	  The new classes have the same functionality of SimpleCashFlow
+	  (from which they inherit) but make it easier for visitors to
+	  distinguish cash flows.
+
+2011-03-02 11:51  Ferdinando Ametrano
+
+	* [r17649] ql/indexes/swap/chfliborswap.cpp,
+	  ql/indexes/swap/chfliborswap.hpp, ql/indexes/swap/gbpliborswap.cpp,
+	  ql/indexes/swap/gbpliborswap.hpp, ql/indexes/swap/jpyliborswap.cpp,
+	  ql/indexes/swap/jpyliborswap.hpp, ql/indexes/swap/usdliborswap.cpp,
+	  ql/indexes/swap/usdliborswap.hpp:
+	  
+	  added exogenous discounting in swap indexes
+
+2011-03-02 09:49  Ferdinando Ametrano
+
+	* [r17647] ql/indexes/swap/gbpliborswap.cpp:
+	  
+	  fixed bug
+
+2011-03-01 12:19  Luigi Ballabio
+
+	* [r17644] ql/math/array.hpp, ql/math/matrix.hpp:
+	  
+	  Prevented assertion error in VC++10 debug mode.
+	  
+	  VC++10 checks the destination of a std::copy even if nothing
+	  will be copied (as in copy(begin, begin+0, NULL).)
+
+2011-02-28 14:26  Luigi Ballabio
+
+	* [r17640] ChangeLog.txt:
+	  
+	  Updated changelog
+
 2011-02-28 12:58  Luigi Ballabio
 
 	* [r17639] Docs/pages/history.docs:

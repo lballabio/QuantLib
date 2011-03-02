@@ -49,6 +49,7 @@
     INDEXES
     - Added inspector for discounting curve to swap index (thanks to Peter
       Caspers.)
+    - Added exogenous discounting to all swap indexes.
     - Added SONIA index.
     - Added HICPXT indexes.
 
