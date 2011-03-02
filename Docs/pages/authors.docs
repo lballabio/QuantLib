@@ -1,0 +1,167 @@
+
+/*
+ Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2000-2003 StatPro Italia srl
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+/*! \page group The QuantLib Group
+
+    \section authors Authors
+
+    The %QuantLib Group members are:
+
+    - Ferdinando Ametrano, Banca IMI SpA, administrator
+    - Luigi Ballabio, StatPro Italia srl, administrator
+    - Marco Bianchetti, Banca IMI SpA
+    - Nicolas Di C&eacute;sar&eacute;
+    - Dirk Eddelbuettel
+    - Neil Firth, Mathematical Institute, University of Oxford
+    - Nicola Jean, StatPro Italia srl
+    - Chris Kenyon
+    - Roland Lichters
+    - Marco Marchioro, StatPro Italia srl
+    - Klaus Spanderen
+    - Joseph Wang
+    
+    \section contributors Contributors
+
+    We gratefully acknowledge contributions from
+    Nathan Abbott,
+    Kakhkhor Abdijalilov,
+    Xavier Abulker,
+    Toyin Akin,
+    Marius Akre,
+    Mario Aleppo,
+    Jose Aparicio,
+    Sercan Atalik,
+    Lluis Pujol Bajador,
+    Cl&eacute;ment Barret,
+    Christopher Baus,
+    Thomas Becker,
+    Micha&euml;l Benguigui,
+    Adolfo Benin,
+    Hachemi Benyahia,
+    Luca Berardi,
+    Sylvain Bertrand,
+    Manas Bhatt,
+    David Binderman,
+    Theo Boafo,
+    Fakher Braham,
+    Joe Byers,
+    Peter Caspers,
+    Antoine Cellerier,
+    Yee Man Chan,
+    Aurelien Chanudet,
+    Yiping Chen,
+    Yanice Cherrak,
+    Warren Chou,
+    Jon Davidson,
+    Daniele De Francesco,
+    Fr&eacute;d&eacute;ric Degraeve,
+    Piero Del Boca,
+    Piter Dias,
+    Cristina Duminuco,
+    Dirk Eddelbuettel,
+    Bernd Engelmann,
+    Giorgio Facchinetti,
+    Paul Farrington,
+    Lorella Fatone,
+    Luca Ferraro,
+    Chiara Fornarola,
+    Silvia Frasson,
+    Andreas Gaida,
+    Matteo Gallivanoni,
+    Roman Gitlin,
+    Marek Glowacki,
+    Richard Gomes,
+    Richard Gould,
+    Florent Grenier,
+    Cavit Hafizoglu,
+    Michael Heckl,
+    Laurent Hoffmann,
+    Beno&icirc;t Houzelle,
+    Frank H&ouml;vermann,
+    Charles Chongseok Hyun,
+    Simon Ibbotson,
+    Norbert Irmer,
+    Tomoya Kawanishi,
+    Gary Kennedy,
+    Matt Knox,
+    Andrew Kolesnikov,
+    Silakhdar Krikeb,
+    Yan Kuang,
+    Allen Kuo,
+    Paul Laderoute,
+    James Lee,
+    Samuel Lerouge,
+    Gang Liang,
+    Robert Lopez,
+    Andr&eacute; Louw,
+    John Maiden,
+    Katiuscia Manzoni,
+    Francesca Mariani,
+    Slava Mazur,
+    Enrico Michelotti,
+    Radu Mondescu,
+    Bart Mosley,
+    Tiziano M&uuml;ller,
+    Bojan Nikolic,
+    Jean Nkeng,
+    Adrian O'Neill,
+    Andrea Odetti,
+    Mike Parker,
+    Guillaume Pealat,
+    Gilbert Peffer,
+    Walter Penschke,
+    Francesco Perissin,
+    Robert Philipp,
+    Adrien Pinatton,
+    Gianni Piolanti,
+    Mario Pucci,
+    J. Erik Radmall,
+    Fabio Ramponi,
+    Maria Cristina Recchioni,
+    Dimitri Reiswich,
+    Sadruddin Rejeb,
+    Alessandro Roveda,
+    Mohamed Amine Sadaoui,
+    Alpha Sanou Toure,
+    Tamas Sashalmi,
+    Peter Schmitteckert,
+    Ralph Schreyer,
+    David Schwartz,
+    Eugene Shevkoplyas,
+    Enrico Sirola,
+    Maxim Sokolov,
+    Niels Elken S&oslash;nderby,
+    Andreas Spengler,
+    Roland Stamm,
+    Marco Tarenghi,
+    Fran&ccedil;ois du Vignaud,
+    Charles Whitmore,
+    Bernd Johannes Wuebben,
+    Sun Xiuxin,
+    Jeff Yu,
+    and Francesco Zirilli.
+
+    %QuantLib also includes code taken from Peter J&auml;ckel's book
+    "Monte Carlo Methods in Finance".
+
+    %QuantLib includes software developed by the University of
+    Chicago, as Operator of Argonne National Laboratory.
+
+*/
+

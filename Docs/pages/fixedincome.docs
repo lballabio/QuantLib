@@ -1,0 +1,122 @@
+
+/*
+ Copyright (C) 2000-2003 Sadruddin Rejeb
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+/*! \defgroup shortrate Short-rate modelling framework
+
+    This framework (corresponding to the ql/ShortRateModels directory)
+    implements some single-factor and two-factor short rate models. The models 
+    implemented in this library are widely used by practitionners. For the 
+    moment, the ShortRateModels::Model class defines the short-rate dynamics
+    with stochastic equations of the type 
+    \f[ 
+        dx_i = \mu(t,x_i) dt + \sigma(t,x_i) dW_t 
+    \f]
+    where \f$ r = f(t,x) \f$. If the model is affine (i.e. derived from the
+    QuantLib::AffineModel class), analytical formulas 
+    for discount bonds and discount bond options are given (useful for 
+    calibration). 
+
+    \section singlefactormodels Single-factor models
+    
+    \par The Hull & White model
+    \f[
+        dr_t = (\theta(t) - \alpha(t) r_t)dt + \sigma(t) dW_t
+    \f]
+    When \f$ \alpha \f$ and \f$ \sigma \f$ are constants, this model
+    has analytical formulas for discount bonds and discount bond options.
+
+    \par The Black-Karasinski model
+    \f[
+        d\ln{r_t} = (\theta(t) - \alpha \ln{r_t})dt + \sigma dW_t
+    \f]
+    No analytical tractability here.
+
+    \par The extended Cox-Ingersoll-Ross model
+    \f[
+        dr_t = (\theta(t) - k r_t)dt + \sigma \sqrt{r_t} dW_t
+    \f]
+    There are analytical formulas for discount bonds (and soon for discount 
+    bond options).
+
+    \section calibration Calibration
+
+    The class CalibrationHelper is a base class that facilitates the 
+    instanciation of market instruments used for calibration. It has
+    a method marketValue() that gives the market price using a Black
+    formula, and a modelValue() method that gives the price according to
+    a model
+
+    Derived classed are
+    QuantLib::CapHelper and
+    QuantLib::SwaptionHelper. 
+
+    For the calibration itself, you must choose an optimization method that
+    will find constant parameters such that the value:
+    \f[
+        V = \sqrt{\sum_{i=1}^{n} \frac{(T_i - M_i)^2}{M_i}},
+    \f]
+    where \f$ T_i \f$ is the price given by the model and \f$ M_i \f$ is the
+    market price, is minimized. A few optimization methods are available in 
+    the ql/Optimization directory.
+
+    \section twofactormodels Two-factor models
+
+    \section pricers Pricers
+
+    \par Analytical pricers
+
+    If the model is affine, i.e. discount bond options formulas exist, caps are
+    easily priced since they are a portfolio of discount bond options. Such a
+    pricer is implemented in QuantLib::AnalyticalCapFloor.
+    In the case of single-factor affine models, swaptions can be priced using
+    the Jamshidian decomposition, implemented in 
+    QuantLib::JamshidianSwaption.
+
+    \par Using Finite Differences
+
+    (Doesn't work for the moment)
+    For the moment, this is only available for single-factor affine models.
+    If \f$ x = x(t, r) \f$ is the state variable and follows this stochastic 
+    process:
+    \f[
+        dx_t = \mu(t,x)dt + \sigma(t,x)dW_t
+    \f]
+    any european-style instrument will follow the following PDE:
+
+    \f[
+        \frac{\partial P}{\partial t} + \mu \frac{\partial P}{\partial x}
+        + \frac{1}{2} \sigma^2 \frac{\partial^2 P}{\partial x^2} = r(t,x)P
+    \f]
+    
+    The adequate operator to feed a Finite Difference Model instance is defined
+    in the QuantLib::OneFactorOperator class.
+
+    \par Using Trees
+
+    Each model derived from the single-factor model class has the ability to 
+    return a trinomial tree. For yield-curve consistent models, the fitting
+    parameter can be determined either analytically (when possible) or 
+    numerically. When a tree is built, it is then pretty straightforward to 
+    implement a pricer for any path-independant derivative. Just implement
+    a class derived from NumericalDerivative (see 
+    QuantLib::NumericalSwaption for example) and roll it back until 
+    the present time...
+    Just look at QuantLib::TreeCapFloor and 
+    QuantLib::TreeSwaption for working pricers.
+
+*/

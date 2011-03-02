@@ -1,0 +1,127 @@
+
+We gratefully acknowledge contributions from:
+
+Nathan Abbott
+Kakhkhor Abdijalilov
+Xavier Abulker
+Toyin Akin
+Marius Akre
+Mario Aleppo
+Jose Aparicio
+Sercan Atalik
+Lluis Pujol Bajador
+Clément Barret
+Christopher Baus
+Thomas Becker
+Michaël Benguigui
+Adolfo Benin
+Hachemi Benyahia
+Luca Berardi
+Sylvain Bertrand
+Manas Bhatt
+David Binderman
+Theo Boafo
+Fakher Braham
+Joe Byers
+Peter Caspers
+Antoine Cellerier
+Yee Man Chan
+Aurelien Chanudet
+Yiping Chen
+Yanice Cherrak
+Warren Chou
+Jon Davidson
+Daniele De Francesco
+Frédéric Degraeve
+Piero Del Boca
+Piter Dias
+Cristina Duminuco
+Dirk Eddelbuettel
+Bernd Engelmann
+Giorgio Facchinetti
+Paul Farrington
+Lorella Fatone
+Luca Ferraro
+Chiara Fornarola
+Silvia Frasson
+Andreas Gaida
+Matteo Gallivanoni
+Roman Gitlin
+Marek Glowacki
+Richard Gomes
+Richard Gould
+Florent Grenier
+Cavit Hafizoglu
+Michael Heckl
+Laurent Hoffmann
+Benoît Houzelle
+Frank Hövermann
+Charles Chongseok Hyun
+Simon Ibbotson
+Norbert Irmer
+Tomoya Kawanishi
+Gary Kennedy
+Matt Knox
+Andrew Kolesnikov
+Silakhdar Krikeb
+Yan Kuang
+Allen Kuo
+Paul Laderoute
+James Lee
+Samuel Lerouge
+Gang Liang
+Robert Lopez
+André Louw
+John Maiden
+Katiuscia Manzoni
+Francesca Mariani
+Slava Mazur
+Enrico Michelotti
+Radu Mondescu
+Bart Mosley
+Tiziano Müller
+Bojan Nikolic
+Jean Nkeng
+Adrian O'Neill
+Andrea Odetti
+Mike Parker
+Guillaume Pealat
+Gilbert Peffer
+Walter Penschke
+Francesco Perissin
+Robert Philipp
+Adrien Pinatton
+Gianni Piolanti
+Mario Pucci
+J. Erik Radmall
+Fabio Ramponi
+Maria Cristina Recchioni
+Dimitri Reiswich
+Sadruddin Rejeb
+Alessandro Roveda
+Mohamed Amine Sadaoui
+Alpha Sanou Toure
+Tamas Sashalmi
+Peter Schmitteckert
+Ralph Schreyer
+David Schwartz
+Eugene Shevkoplyas
+Enrico Sirola
+Maxim Sokolov
+Niels Elken Sønderby
+Andreas Spengler
+Roland Stamm
+Marco Tarenghi
+François du Vignaud
+Charles Whitmore
+Bernd Johannes Wuebben
+Sun Xiuxin
+Jeff Yu
+Francesco Zirilli
+
+QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
+Methods in Finance".
+
+QuantLib includes software developed by the University of Chicago,
+as Operator of Argonne National Laboratory.
+

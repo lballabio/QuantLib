@@ -1,0 +1,142 @@
+
+Notable changes for QuantLib 1.1:
+
+PORTABILITY
+
+- Added support for Microsoft Visual C++ 2010.
+
+- Fixed m4 macro for QuantLib detection.  It now works also when asked
+  for versions such as 1.1 (as opposed to 1.1.0).
+
+
+DATE/TIME
+
+- Added Russian calendar.
+
+- Revamped time-series iterators (thanks to Slava Mazur.)  Iterators
+  on dates and values were added, as well as C++0X-style cbegin() and
+  cend() iterators.
+
+
+INSTRUMENTS
+
+- Added a few inspectors to zero-coupon inflation swaps.
+
+- Added Kirk approximation for two-asset spread options.
+
+- Added specialized BTP class (Italian government bonds) and related
+  RendistatoCalculator class to help instantiation of this type of
+  FixedRateBond.
+
+- Added analytic pricing engine for the piecewise-constant
+  time-dependent Heston model.
+
+- Added paymentCalendar to FixedRateBond, possibly different
+  than the one used for accrual-date calculation.
+
+
+PROCESSES
+
+- Added Quadratic Exponential discretization scheme for the Heston
+  process, including martingale correction.
+
+
+INDEXES
+
+- Added inspector for discounting curve to swap index (thanks to Peter
+  Caspers.)
+
+- Added exogenous discounting to all swap indexes.
+
+- Added SONIA index.
+
+- Added HICPXT indexes.
+
+
+TERM STRUCTURES
+
+- Added time-based interface to inflation curves.
+
+- Piecewise zero-spreaded term structure can now manage spread with
+  any compounding (thanks to Robert Philipp.)
+
+- FittedBondDiscountCurve now works with any BondHelpers, not only
+  FixedRateBondHelpers.
+
+- Added Svensson curve-fitting method (thanks to Alessandro Roveda.)
+
+
+MATH
+
+- Added Ziggurat random-number generator (thanks to Kakhkhor
+  Abdijalilov.)
+
+- Added experimental copula-based random-number generators (thanks to
+  Hachemi Benyahia.)
+
+- More performant implementation of inverse cumulative distribution
+  (thanks to Kakhkhor Abdijalilov.)
+
+- More performant mt19937 implementation (thanks to Kakhkhor
+  Abdijalilov.)
+
+- Added more copulas (thanks to Hachemi Benyahia.)  The new formulas
+  are for Ali-Mikhail-Haq copula, Galambos copula, Husler-Reiss
+  copula, and Plackett copula.
+
+- Added autocovariance calculation (thanks to Slava Mazur.)
+
+
+MONTE CARLO
+
+- Improved LSM basis system (thanks to Kakhkhor Abdijalilov.)
+
+
+UTILITIES
+
+- Reworked Null class template (thanks to Kakhkhor Abdijalilov.)  The
+  new implementation avoids the need for a macro on 64-bit systems and
+  automatically covers all floating-point and integer types.
+
+
+EXPERIMENTAL FOLDER
+
+The ql/experimental folder contains code which is still not fully
+integrated with the library or even fully tested, but is released in
+order to get user feedback.  Experimental classes are considered
+unstable; their interfaces might change in future releases.
+
+New contributions for this release were:
+
+- 2D finite-difference Bates engine based on the partial integro
+  differential equation.
+
+- 2D finite-difference engine for Black-Scholes processes (including
+  local volatility.)
+
+- Black-Scholes process with support for vega stress test (thanks to
+  Michael Heckl.)
+
+- Extended Ornstein-Uhlenbeck process.
+
+- Margrabe option (thanks to IMAFA/Polytech'Nice students Marius Akre,
+  Michael Benguigui, and Yanice Cherrak.)
+
+- Simple chooser option (thanks to IMAFA/Polytech'Nice students
+  Clement Barret, Fakher Braham, and Mohamed Amine Sadaoui.)
+
+- Generalized Hull-White model (thanks to Cavit Hafizoglu.)  The
+  generalized model can take piecewise-constant parameters instead of
+  constant ones. A matching generalized Ornstein-Uhlenbeck process was
+  also added.
+
+- Variance-gamma implementation (thanks to Adrian O'Neill.)
+  Contributed classes include a variance-gamma process and model (with
+  data but no behavior at this time) and a couple of working engines
+  for European options.
+
+- Hybrid products in the McBasket framework (thanks to Andrea Odetti.)
+  Path pricers now take a vector of YieldTermStructures that contains
+  the (possibly stochastic) yield curves.
+
+- Delta calculator for FX options (thanks to Dimitri Reiswich.)
