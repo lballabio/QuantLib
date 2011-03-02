@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Ferdinando Ametrano
+ Copyright (C) 2008, 2011 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,6 +42,9 @@ namespace QuantLib {
         JpyLiborSwapIsdaFixAm(const Period& tenor,
                               const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
+        JpyLiborSwapIsdaFixAm(const Period& tenor,
+                              const Handle<YieldTermStructure>& forwarding,
+                             const Handle<YieldTermStructure>& discounting);
     };
 
     //! %JpyLiborSwapIsdaFixPm index base class
@@ -58,6 +61,9 @@ namespace QuantLib {
         JpyLiborSwapIsdaFixPm(const Period& tenor,
                               const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
+        JpyLiborSwapIsdaFixPm(const Period& tenor,
+                              const Handle<YieldTermStructure>& forwarding,
+                             const Handle<YieldTermStructure>& discounting);
     };
 
 }
