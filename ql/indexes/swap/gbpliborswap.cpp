@@ -30,7 +30,7 @@ namespace QuantLib {
                                              const Handle<YieldTermStructure>& h)
     : SwapIndex("GbpLiborSwapIsdaFix", // familyName
                 tenor,
-                2, // settlementDays
+                0, // settlementDays
                 GBPCurrency(),
                 TARGET(),
                 tenor > 1*Years ? // fixedLegTenor
