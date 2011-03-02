@@ -24,6 +24,7 @@
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
+#include <ql/currencies/europe.hpp>
 
 namespace QuantLib {
 
@@ -37,7 +38,7 @@ namespace QuantLib {
       fixedCalendar_(index->fixingCalendar()),
       floatCalendar_(index->fixingCalendar()),
       type_(VanillaSwap::Payer), nominal_(1.0),
-      fixedTenor_(Period(1, Years)), floatTenor_(index->tenor()),
+      floatTenor_(index->tenor()),
       fixedConvention_(ModifiedFollowing),
       fixedTerminationDateConvention_(ModifiedFollowing),
       floatConvention_(index->businessDayConvention()),
@@ -47,7 +48,6 @@ namespace QuantLib {
       fixedFirstDate_(Date()), fixedNextToLastDate_(Date()),
       floatFirstDate_(Date()), floatNextToLastDate_(Date()),
       floatSpread_(0.0),
-      fixedDayCount_(Thirty360(Thirty360::BondBasis)),
       floatDayCount_(index->dayCounter()),
       engine_(new DiscountingSwapEngine(iborIndex_->forwardingTermStructure(),
                                         false))
@@ -78,8 +78,21 @@ namespace QuantLib {
         else
             endDate = startDate+swapTenor_;
 
+        Period fixedTenor;
+        if (fixedTenor_ != Period())
+            fixedTenor = fixedTenor_;
+        else {
+            const Currency& curr = iborIndex_->currency();
+            if (curr == EURCurrency())
+                fixedTenor = Period(1, Years);
+            else if (curr == GBPCurrency())
+                fixedTenor = Period(6, Months);
+            else
+                fixedTenor = Period(1, Years);
+        }
+
         Schedule fixedSchedule(startDate, endDate,
-                               fixedTenor_, fixedCalendar_,
+                               fixedTenor, fixedCalendar_,
                                fixedConvention_,
                                fixedTerminationDateConvention_,
                                fixedRule_, fixedEndOfMonth_,
@@ -92,6 +105,19 @@ namespace QuantLib {
                                floatRule_, floatEndOfMonth_,
                                floatFirstDate_, floatNextToLastDate_);
 
+        DayCounter fixedDayCount;
+        if (fixedDayCount_ != DayCounter())
+            fixedDayCount = fixedDayCount_;
+        else {
+            const Currency& curr = iborIndex_->currency();
+            if (curr == EURCurrency())
+                fixedDayCount = Thirty360(Thirty360::BondBasis);
+            else if (curr == GBPCurrency())
+                fixedDayCount = Actual365Fixed();
+            else
+                fixedDayCount = Thirty360(Thirty360::BondBasis);
+        }
+
         Rate usedFixedRate = fixedRate_;
         if (fixedRate_ == Null<Rate>()) {
             QL_REQUIRE(!iborIndex_->forwardingTermStructure().empty(),
@@ -100,7 +126,7 @@ namespace QuantLib {
             VanillaSwap temp(type_, nominal_,
                              fixedSchedule,
                              0.0, // fixed rate
-                             fixedDayCount_,
+                             fixedDayCount,
                              floatSchedule, iborIndex_,
                              floatSpread_, floatDayCount_);
             temp.setPricingEngine(engine_);
@@ -110,7 +136,7 @@ namespace QuantLib {
         boost::shared_ptr<VanillaSwap> swap(new
             VanillaSwap(type_, nominal_,
                         fixedSchedule,
-                        usedFixedRate, fixedDayCount_,
+                        usedFixedRate, fixedDayCount,
                         floatSchedule,
                         iborIndex_, floatSpread_, floatDayCount_));
         swap->setPricingEngine(engine_);
@@ -147,9 +173,7 @@ namespace QuantLib {
 
     MakeVanillaSwap& MakeVanillaSwap::withRule(DateGeneration::Rule r) {
         fixedRule_ = r;
-        // fixedTenor_ = ??
         floatRule_ = r;
-        // floatTenor_ = ??
         return *this;
     }
 
