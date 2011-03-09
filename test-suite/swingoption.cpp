@@ -531,13 +531,13 @@ void SwingOptionTest::testSimpleExtOUStorageEngine() {
                                 flatRate(settlementDate, irRate, dayCounter));
 
     boost::shared_ptr<PricingEngine> storageEngine(
-               new FdSimpleExtOUStorageEngine(ouProcess, rTS, 1, 100));
+               new FdSimpleExtOUStorageEngine(ouProcess, rTS, 1, 25));
 
     VanillaStorageOption storageOption(bermudanExercise, 50, 0, 1);
 
     storageOption.setPricingEngine(storageEngine);
 
-    const Real expected = 69.729589;
+    const Real expected = 69.731711;
     const Real calculated = storageOption.NPV();
 
     if (std::fabs(expected - calculated) > 2e-2) {
