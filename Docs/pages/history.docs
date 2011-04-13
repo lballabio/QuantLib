@@ -1,0 +1,1563 @@
+
+/*
+ Copyright (C) 2000-2011 StatPro Italia srl
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+/*! \page history Version history
+
+    <strong>Release 1.1 - May 2011</strong>
+
+    PORTABILITY
+    - Added support for Microsoft Visual C++ 2010.
+    - Fixed m4 macro for QuantLib detection.  It now works also when asked
+      for versions such as 1.1 (as opposed to 1.1.0).
+
+    DATE/TIME
+    - Added Russian calendar.
+    - Revamped time-series iterators (thanks to Slava Mazur.)  Iterators
+      on dates and values were added, as well as C++0X-style cbegin() and
+      cend() iterators.
+
+    INSTRUMENTS
+    - Added a few inspectors to zero-coupon inflation swaps.
+    - Added Kirk approximation for two-asset spread options.
+    - Added specialized BTP class (Italian government bonds) and related
+      RendistatoCalculator class to help instantiation of this type of
+      FixedRateBond.
+    - Added analytic pricing engine for the piecewise-constant
+      time-dependent Heston model.
+    - Added paymentCalendar to FixedRateBond, possibly different
+      than the one used for accrual-date calculation.
+
+    PROCESSES
+    - Added Quadratic Exponential discretization scheme for the Heston
+      process, including martingale correction.
+
+    INDEXES
+    - Added inspector for discounting curve to swap index (thanks to Peter
+      Caspers.)
+    - Added exogenous discounting to all swap indexes.
+    - Added SONIA index.
+    - Added HICPXT indexes.
+
+    TERM STRUCTURES
+    - Added time-based interface to inflation curves.
+    - Piecewise zero-spreaded term structure can now manage spread with
+      any compounding (thanks to Robert Philipp.)
+    - FittedBondDiscountCurve now works with any BondHelpers, not only
+      FixedRateBondHelpers.
+    - Added Svensson curve-fitting method (thanks to Alessandro Roveda.)
+
+    MATH
+    - Added Ziggurat random-number generator (thanks to Kakhkhor
+      Abdijalilov.)
+    - Added experimental copula-based random-number generators (thanks to
+      Hachemi Benyahia.)
+    - More performant implementation of inverse cumulative distribution
+      (thanks to Kakhkhor Abdijalilov.)
+    - More performant mt19937 implementation (thanks to Kakhkhor
+      Abdijalilov.)
+    - Added more copulas (thanks to Hachemi Benyahia.)  The new formulas
+      are for Ali-Mikhail-Haq copula, Galambos copula, Husler-Reiss
+      copula, and Plackett copula.
+    - Added autocovariance calculation (thanks to Slava Mazur.)
+
+    MONTE CARLO
+    - Improved LSM basis system (thanks to Kakhkhor Abdijalilov.)
+
+    UTILITIES
+    - Reworked Null class template (thanks to Kakhkhor Abdijalilov.)  The
+      new implementation avoids the need for a macro on 64-bit systems and
+      automatically covers all floating-point and integer types.
+
+    EXPERIMENTAL FOLDER
+
+    The ql/experimental folder contains code which is still not fully
+    integrated with the library or even fully tested, but is released in
+    order to get user feedback.  Experimental classes are considered
+    unstable; their interfaces might change in future releases.
+
+    New contributions for this release were:
+    - 2D finite-difference Bates engine based on the partial integro
+      differential equation.
+    - 2D finite-difference engine for Black-Scholes processes (including
+      local volatility.)
+    - Black-Scholes process with support for vega stress test (thanks to
+      Michael Heckl.)
+    - Extended Ornstein-Uhlenbeck process.
+    - Margrabe option (thanks to IMAFA/Polytech'Nice students Marius Akre,
+      Michael Benguigui, and Yanice Cherrak.)
+    - Simple chooser option (thanks to IMAFA/Polytech'Nice students
+      Clement Barret, Fakher Braham, and Mohamed Amine Sadaoui.)
+    - Generalized Hull-White model (thanks to Cavit Hafizoglu.)  The
+      generalized model can take piecewise-constant parameters instead of
+      constant ones. A matching generalized Ornstein-Uhlenbeck process was
+      also added.
+    - Variance-gamma implementation (thanks to Adrian O'Neill.)
+      Contributed classes include a variance-gamma process and model (with
+      data but no behavior at this time) and a couple of working engines
+      for European options.
+    - Hybrid products in the McBasket framework (thanks to Andrea Odetti.)
+      Path pricers now take a vector of YieldTermStructures that contains
+      the (possibly stochastic) yield curves.
+    - Delta calculator for FX options (thanks to Dimitri Reiswich.)
+
+    <strong>Release 1.0.1 - September 17th, 2010</strong>
+
+    Bug-fix release.
+
+    <strong>Release 1.0 - February 24th, 2010</strong>
+
+    PORTABILITY
+    - Fixes for x64 Visual Studio compilation (thanks to Craig Miller.)
+    - Enabled language extensions in Visual Studio projects.
+    - Prevented make errors with older shells (thanks to Walter Eaves.)
+
+    DATE/TIME
+    - Changes to end-of-month adjustment. In a schedule, the Unadjusted
+      convention now supersedes a non-null calendar and causes dates to
+      roll on the unadjusted end of month (possibly a holiday.)
+    - Added new date-generation rule for CDS (thanks to Jose Aparicio.)
+    - Fix for CDS fair-upfront calculation (thanks to Jose Aparicio.)
+      Previously, fair-upfront calculation required a non-null upfront
+      to begin with. This is no longer the case.
+
+    INSTRUMENTS
+    - Fixed discounting of dividends on convertible-bond grid (thanks to
+      Benoit Houzelle and Samuel Lerouge.)
+
+    CASH FLOWS
+    - A number of CashFlows methods now return a meaningful result even
+      if the passed leg is empty.
+
+    PROCESSES
+    - Changed default discretization for Heston process.  The new
+      default (giving a better performance) is quadratic exponential
+      with Martingale correction.
+
+    TERM STRUCTURES
+    - Removed ambiguous parRate member functions from YieldTermStructure
+      interface.
+
+    EXAMPLES
+    - Added market-model example.
+
+    EXPERIMENTAL FOLDER
+
+    The ql/experimental folder contains code which is still not fully
+    integrated with the library or even fully tested, but is released in
+    order to get user feedback.  Experimental classes are considered
+    unstable; their interfaces might change in future releases.
+
+    New contributions for this release were:
+    - Longstaff-Schwartz algorithm for basket products including coupon
+      payments (thanks to Andrea Odetti;)
+    - added sparse incomplete LU preconditioner for 2D finite-difference
+      models (thanks to Ralph Schreyer.)
+
+
+    <strong>Release 0.9.9 - November 2009</strong>
+
+    PORTABILITY
+    - Fixes for 64-bit compilation.
+    - Fixes for Sun Solaris compilation (thanks to Andreas Spengler.)
+
+    CASH FLOWS
+    - Added overnight-index coupon.
+    - Added inflation coupons.
+    - Parameterized CashFlows functions with explicit flag specifying
+      whether to include settlement-date cash flows.
+    - Added cash-flow related flags to Settings class. They determine
+      whether or not to include today's and/or settlement date's cash
+      flows. They can be overridden while calling CashFlows functions.
+
+    DATE/TIME
+    - Added EUWAX calendar.
+    - Updated 2009 holidays for China, Hong Kong, India, Indonesia,
+      Singapore, and Taiwan.
+    - Removed Easter Monday from Canadian holidays (thanks to Matt Knox.)
+    - Added weekend-only calendar.
+
+    INDEXES
+    - Added EONIA index.
+    - Added French HICP and Australian CPI inflation indexes.
+
+    INSTRUMENTS
+    - Added overnight-index swaps (including helper for yield-curve bootstrap.)
+    - Added inflation cap/floors (including interface for inflation cap/floor
+      volatility structures.)
+    - Added inspectors for previous and next coupon dates to Bond class.
+    - Added implied z-spread calculation for bonds (thanks to Nathan Abbott.)
+    - Added inspector to see whether a bond is still tradable (as opposed
+      to not expired.)
+    - Added constructor for fixed-rate bonds taking a generic InterestRate
+      instance (thanks to Piter Dias.)
+    - Added upfront to credit default swaps, including application to CDS
+      helpers (thanks to Jose Aparicio.)
+    - Added conventional CDS spread calculation (thanks to Jose Aparicio.)
+    - Enabled non-spot inflation swaps.
+    - Migrated asset swaps to pricing-engine framework.
+    - Migrated inflation swaps to pricing-engine framework.
+    - Migrated old average-strike Asian option pricer to pricing-engine
+      framework (thanks to IMAFA students Jean Nkeng, Adrien Pinatton,
+      and Alpha Sanou Toure.)
+
+    PRICING ENGINES
+    - Added builders for a few Monte Carlo engines.
+    - Most Monte Carlo engines can now specify either relative or absolute
+      target tolerance.
+    - Some Monte Carlo engines can now specify either an absolute number
+      of time steps or a number of time steps per year.
+    - Added choice of evolver scheme to finite-difference vanilla engines.
+
+    MATH
+    - Implemented Parabolic and Fritsch-Butland cubic interpolations.
+    - Added BFGS optimizer (thanks to Frederic Degraeve.)
+    - Added 1D and 2D kernel interpolation (thanks to Dimitri Reiswich.)
+    - Added Akima and overshooting-minimization spline algorithms (thanks
+      to Sylvain Bertrand.)
+    - Added FFT implementation (thanks to Slava Mazur.)
+
+    RANDOM NUMBERS
+    - Added Luescher's luxury random number generator (a proxy for Boost
+      implementation.)
+
+    TERM STRUCTURES
+    - Added hook to swap-rate helpers for external discounting term
+      structure (thanks to Roland Lichters.)
+    - Added seasonality to inflation term structures (thanks to Piero Del
+      Boca and Chris Kenyon.)
+
+    EXPERIMENTAL FOLDER
+
+    New contributions for this release were:
+    - risky bonds and asset-swap options (thanks to Roland Lichters;)
+    - spreaded hazard-rate curves (thanks to Roland Lichters;)
+    - compound options (thanks to Dimitri Reiswich;)
+    - refactored CDS options (thanks to Jose Aparicio;)
+    - finite-differences solver for the hybrid Heston Hull-White model,
+      including calibration (thanks to Klaus Spanderen;)
+    - finite-differences Asian-option engines (thanks to Ralph Schreyer;)
+    - machinery for default-event specification (thanks to Jose Aparicio;)
+    - recursive CDO engine (thanks to Jose Aparicio.)
+
+
+    <strong>Release 0.9.7 - November 18th, 2008</strong>
+
+    PORTABILITY
+    - Microsoft Visual C++ configurations have been renamed. The
+      default Debug and Release configurations now link to the DLL
+      version of the common runtime library. The names of other
+      configuration should now be more descriptive.
+    - Fixes for Solaris build.
+
+    BONDS
+    - Added bond example (thanks to Florent Grenier.)
+    - Added support for amortizing bonds (thanks to Simon Ibbotson.)
+
+    CASH FLOWS
+    - Added two more cashflow analysis functions (thanks to Toyin Akin.)
+
+    DATE/TIME
+    - Added bespoke calendar.
+
+    INDEXES
+    - Added GBP/USD/CHF/JPY swap-rate indexes.
+    - Fixed USD LIBOR calendar (settlement, not NYSE.)
+
+    MARKET MODELS
+    - Added first displaced-diffusion stochastic-volatility evolver.
+
+    PRICING ENGINES
+    - Monte Carlo average-price options now uses past fixings correctly.
+
+    QUOTES
+    - added LastFixingQuote, a Quote adapter for the last available
+      fixing of a given index.
+
+    EXPERIMENTAL FOLDER
+
+    New contributions for this release were:
+    - time-dependent binomial trees (thanks to John Maiden.)
+    - a new multidimensional FDM framework based on operator splitting
+      using Craig-Sneyd, Hundsdorfer or Douglas schemes (thanks to
+      Andreas Gaida, Ralph Schreyer, and Klaus Spanderen.)
+    - implementations of Black-variance curve and surface taking a set
+      of quotes as input (thanks to Frank Hövermann.)
+    - synthetic CDO engines (thanks to Roland Lichters.)
+    - variance options, together with a Heston-process engine (thanks
+      to Lorella Fatone, Francesca Mariani, Maria Cristina Recchioni,
+      and Francesco Zirilli.)
+    - a commodity framework, including instruments such as energy
+      futures and energy swaps (thanks to J. Erik Radmall.)
+    - quanto-barrier options (thanks to Paul Farrington.)
+    - amortizing bonds (thanks to Simon Ibbotson.)
+    - a perturbative engine for barrier options (thanks to Lorella
+      Fatone, Maria Cristina Recchioni, and Francesco Zirilli.)
+
+    <strong>Release 0.9.6 - August 6th, 2008</strong>
+
+    Bug-fix release for QuantLib 0.9.5.  It fixes a bug that would
+    cause bootstrapped term structures to silently switch to linear
+    interpolation when log-linear was requested.
+
+    <strong>Release 0.9.5 - July 30th, 2008</strong>
+
+    CREDIT FRAMEWORK
+
+    New credit framework due to the joint efforts of StatPro Italia,
+    Roland Lichters, Chris Kenyon, and Jose Aparicio. The framework
+    currently include:
+    - Interface for default-probability term structure and adapters for
+      hazard-rate and default-density structures.
+    - Flat hazard-rate curve.
+    - Interpolated hazard-rate and default-density curves.
+    - Credit-default swaps (mid-point and integral engines.)
+    - Bootstrapped piecewise default-probability curve.
+    - CDS example.
+
+    PORTABILITY
+    - Added support for Microsoft Visual C++ 2008 (Boost 1.35 is required
+      for this compiler.)
+    - Fixes for Cygwin build.
+
+    EXPERIMENTAL FOLDER
+
+    The new ql/experimental folder contains code which is still not
+    fully integrated with the library, but is released in order to get
+    user feedback.  Experimental classes are considered unstable;
+    their interfaces are likely to change in future releases. The
+    folder currently include:
+    - Generic MC basket option (thanks to Andrea Odetti.)
+    - CDS option (thanks to Roland Stamm.)
+    - Nth-to-default swap (thanks to Roland Lichters.)
+    - Extended Black-Scholes-Merton process (thanks to Frank H&ouml;vermann.)
+    - Quanto-adjusted coupons and averaged coupons (thanks to Toyin Akin.)
+    - Callable bonds (thanks to Allen Kuo.)
+    - New framework for volatility term structures.
+    - Sensitivity analysis functions.
+
+    CALENDARS
+    - Added 2008 holidays for China, India, Indonesia, Singapore, and Taiwan.
+    - Added one-off holiday (President Reagan's and Ford's funerals) to
+      NYSE calendar.
+    - Fixed South Korea calendar (thanks to Charles Chongseok Hyun.)
+
+    CURRENCIES
+    - Added Peruvian currency.
+
+    DATES
+    - Added date-generation rules for CDS schedules (i.e., rolling to the
+      20th of the month.)
+
+    INDEXES
+    - Added SEK LIBOR index.
+
+    INSTRUMENTS
+    - Ported Himalaya and Everest options to pricing-engine framework
+      (thanks to the IMAFA students at Polytech'Nice Sophia:
+      J&eacute;r&ocirc;me Bessi, S&eacute;bastien Bonifaci, Benjamin
+      Degerbaix and Renaud Pentel.)
+
+    MATH
+    - Added matrix determinant.
+    - Added QR matrix decomposition.
+    - Added a number of copulas (thanks to Marek Glowacki.)
+    - Added constrained cubic spline.
+    - Implemented derivative and second derivative of log-interpolations.
+    - Added Gauss-Lobatto integration.
+    - Added student-t distribution (thanks to Roland Lichters.)
+
+    MODELS
+    - Added calibrated GJR-GARCH model (thanks to Yee Man Chan.)
+    - Added Feller constraint to Heston model.
+
+    PRICING ENGINES
+    - Refactored variance-swap engines (the underlying stochastic process
+      is now passed to the pricing engine.)
+    - Added GJR-GARCH pricing engines for vanilla options (thanks to Yee
+      Man Chan.)
+
+    PROCESSES
+    - Added Euler end-point discretization (thanks to Frank H&ouml;vermann.)
+    - Added GJR-GARCH process (thanks to Yee Man Chan.)
+    - Added Bates process.
+
+    TERM STRUCTURES
+    - Added turn-of-year effect to yield-curve bootstrapping (generalized
+      to multiple jumps at arbitrary dates.)
+    - Added local bootstrap of forward rates (thanks to Simon Ibbotson.)
+    - Disabled copies of interpolated curves (the existing behavior was
+      incorrect. A fix to re-enable copying will be included in a future
+      release.)
+
+    VOLATILITY
+    - Added constant cap/floor term volatility structure.
+    - Added stripped optionlet.
+
+
+    <strong>Release 0.9.0 - December 24th, 2007</strong>
+
+    PORTABILITY
+    - Fixes for MSYS and Cygwin build.
+    - Fixes for VC++ build with CLR support enabled.
+    - Dropped MetroWerks CodeWarrior support.
+
+    CALENDARS
+    - Fix for business-days calculation (thanks to Piter Dias.)
+    - Updated Hong Kong's holidays for 2008 and China's for 2007.
+    - Added new holiday to Canadian calendars (thanks to Matt Knox.)
+    - Fixed joint-calendar specification (thanks to Jay Walters.)
+    - Split Canadian calendar into settlement and TSX (thanks to Matt Knox.)
+    - Added Brazilian exchange calendar (thanks to Richard Gomes.)
+    - Fixes for the Brazilian calendars (thanks to Piter Dias.)
+
+    CASH FLOWS
+    - Added average-BMA coupon (thanks to Roland Lichters.)
+    - Fixed-rate coupons can now accept an InterestRate instance (thanks
+      to Piter Dias.)
+    - implemented cash-flow vector builders as helper classes to ease
+      skipping default parameters and single/multiple inputs.
+
+    DATES
+    - Extended date range up to year 2199.
+    - Fixed period comparison (thanks to Chris Kenyon.)
+    - Fixed short date formatting (thanks to Robert Lopez.)
+    - Enhanced period algebra.
+
+    INDEXES
+    - Added BMA index (thanks to Roland Lichters.)
+    - Added inflation indexes (thanks to Chris Kenyon.)
+    - Added historical interest-rate index analysis.
+
+    INSTRUMENTS
+    - Added BMA swaps (thanks to Roland Lichters.)
+    - Added year-on-year and zero-coupon inflation swaps (thanks to
+      Chris Kenyon.)
+    - Fixed stub-date management and backward date generation for
+      fixed-rate bonds (thanks to Toyin Akin.)
+    - Added clean/dirty bond-price calculation from Z-spread.
+
+    LATTICES
+    - Fixed Tsiveriotis-Fernandes tree initialization (thanks to John Maiden.)
+
+    MATH
+    - Added multi-dimensional cost function for least-square problems
+      (thanks to Guillaume Pealat.)
+    - Added histogram class (thanks to Gang Liang.)
+    - Added log-cubic interpolation.
+    - Fixed conjugate-gradient bug.
+    - Fixed nested Levenberg-Marquardt bug.
+
+    PRICING ENGINES
+    - Refactored option engines (the underlying stochastic process is now
+      passed to the pricing engine.)
+    - Refactored bond, cap/floor, swap, and swaption engines (the discount
+      curve is now passed to the pricing engine.)
+    - Added Heston/Hull-White analytic and Monte Carlo engines for
+      vanilla options.
+    - Fixed bug in blackFormulaCashItmProbability in case of non null
+      displacement.
+
+    PROCESSES
+    - Added hybrid Heston/Hull-White process.
+    - Fixed joint-process bug.
+
+    QUOTES
+    - Added forward-swap quote.
+
+    RANDOM NUMBERS
+    - Fixed ordering of primitive polynomials for Sobol/Levitan and
+      Sobol/Levitan/Lemieux methods.
+    - Added JoeKuoD5, JoeKuoD6 and JoeKuoD7 direction integers for
+      Sobol generator.
+    - Added Kuo, Kuo2 and Kuo3 direction integers for Sobol generator.
+    - Added class to generate low-discrepancy sequences using a lattice rule.
+
+    TERM STRUCTURES
+    - Added discount curve fitted on bond prices (thanks to Allen Kuo.)
+    - Added BMA-swap rate helper (thanks to Roland Lichters.)
+    - Made SwapRateHelper forward-start enabled.
+    - Added universal term-structure bootstrapper (thanks to Chris Kenyon.)
+    - Added abstract inflation term structures (thanks to Chris Kenyon.)
+    - Added piecewise inflation curves (thanks to Chris Kenyon.)
+
+
+    <strong>Release 0.8.1 - June 4th, 2007</strong>
+
+    PORTABILITY
+    - Version 0.8.1 adds support for Boost 1.34 on Linux systems. If
+      you are using version 0.8.0 on Windows systems, you do not need
+      this upgrade.
+
+
+    <strong>Release 0.8.0 - May 30th, 2007</strong>
+
+    PORTABILITY
+    - Version 0.8.0 is the last %QuantLib release to support the
+      Metrowerks CodeWarrior compiler (which was discountinued by
+      Metrowerks.)  If you use such compiler and want support to
+      continue, you can volunteer for maintaining the necessary
+      patches: contact the %QuantLib developers for information.
+
+    SOURCE TREE
+    - Files and folders in the source tree have been reorganized
+      (hopefully for th ebetter.) If you only included
+      <ql/quantlib.hpp>, all changes were taken care of for you. if
+      you included specific headers, you might want to check its
+      current location; in particular, all folder names are now
+      lowercase.
+
+    CALENDARS
+    - Added 2007 holidays for Indonesia, Saudi Arabia, and South Korea
+      calendars.
+
+    CASH FLOWS
+    - Added floater range-accrual coupons.
+
+    INDEXES
+    - Added EuriborSwapFixB family.
+
+    INSTRUMENTS
+    - Added capped/floored floating-rate bond. It can also be used for
+      reverse floaters.
+    - Added delta, gamma and theta to binomial option engines (thanks
+      to Steve Cook.)
+    - Refactored basket engines to allow for more payoffs.
+
+    LIBOR MARKET MODEL
+    - This release includes an experimental implementation of a Libor
+      market model developed with Mark Joshi.  Improvements since
+      release 0.4.0 include normal forward-rate market model,
+      lognormal CMS market model, lognormal coterminal-swap market
+      model, and calibration to caplets and coterminal swaptions.  The
+      interface of the model and its integration with the bulk of the
+      library are still in development.
+
+    MATH
+    - Adaptive Gauss-Kronrod integration added.
+    - Added Higham's nearest correlation matrix method (thanks to Neil
+      Firth)
+    - Refactored optimization framework.
+
+    PROCESSES
+    - Added new discretization schema to Heston process.
+
+    UTILITIES
+    - The Handle class was split into RelinkableHandle (behaving like
+      the old Handle class) and Handle (which is notified when its
+      copies are relinked, but cannot itself be relinked.) The former
+      can safely be returned from inspectors.
+
+
+    <strong>Release 0.4.0 - February 20th, 2007</strong>
+
+    PORTABILITY
+    - Starting with release 0.4.0, the Borland free compiler 5.5 and
+      Microsoft Visual C++ 6.0 are no longer supported.  If you use
+      one of these compilers and want support to continue, you can
+      volunteer for maintaining the necessary patches: contact the
+      %QuantLib developers for information.
+
+    CALENDARS
+    - Added 2007 holidays for Hong Kong, India, Singapore, and Taiwan
+      exchanges.
+
+    LIBOR MARKET MODEL
+    - This release includes an experimental implementation of a Libor
+      market model developed with Mark Joshi.  Improvements since
+      release 0.3.14 include the use of quasi-random number generators
+      and the calculation of Greeks and of upper bounds for
+      instruments with early-exercise features.  The interface of the
+      model and its integration with the bulk of the library are still
+      in development.
+
+    INSTRUMENTS
+    - Added helper classes to make it easier to instantiate swaps,
+      caps/floors, and CMS instruments.
+
+    INTEREST RATES
+    - Added capped/floored floating-rate coupons (including convexity
+      adjustment.)
+
+    MATH
+    - Curve, domain and surface interfaces added.
+
+    PROCESSES
+    - Added reversion level to Ornstein-Uhlenbeck process (thanks to
+      Roland Lichters.)
+
+    VOLATILITY TERM STRUCTURES
+    - Added stripping of caplet-volatility term structure from cap
+      quotes.
+    - Improved SABR interpolation and calibration.
+
+
+    <strong>Release 0.3.14 - November 6th, 2006</strong>
+
+    PORTABILITY
+    - Version 0.3.14 is the last %QuantLib release to support the Borland
+      free compiler 5.5 and Microsoft Visual C++ 6.0. If you use one
+      of these compilers and want support to continue, you can volunteer
+      for maintaining the necessary patches: contact the %QuantLib
+      developers for information.
+
+    LIBOR MARKET MODEL
+    - This release includes an experimental implementation of a Libor
+      market model developed with Mark Joshi.  The interface and its
+      integration with the bulk of the library are still in development.
+
+    CURRENCIES
+    - Added Romanian new lev.
+
+    DATES, CALENDARS, AND DAY COUNTERS
+    - Added all serial 3M IMM futures (thanks to Toyin Akin.)
+    - Reworked the Schedule class so that it follows market
+      conventions more closely.
+    - Added business/252 day-count convention (thanks to Piter Dias.)
+
+    INTEREST RATES
+    - Added base swap-rate class and a number of actual swap rates.
+    - Added constant-maturity swap coupons (including convexity
+      adjustment.)
+
+    INSTRUMENTS
+    - Added asset swaps.
+    - Added face amount to bonds (defaulting to 100.)
+
+    MATH
+    - Added hypersphere and lower-diagonal salvaging algorithms
+      (thanks to Yiping Chen.)
+
+    PRICING ENGINES
+    - Added Longstaff-Schwartz Monte-Carlo algorithm for
+      American/Bermudan equity options with deterministic interest
+      rates.
+
+    TERM STRUCTURE
+    - Added piecewise-spreaded yield curve (thanks to Roland Lichters.)
+
+
+    <strong>Release 0.3.13 - July 31st, 2006</strong>
+
+    CALENDARS
+    - Added NERC calendar (thanks to Joe Byers.)
+
+    INSTRUMENTS AND PRICING ENGINES
+    - Added continuous fixed and floating lookback options (thanks to
+      Warren Chou.)
+    - Added FRA and forward fixed-coupon bonds; examples provided
+      (thanks to Allen Kuo.)
+    - Added variance swaps (thanks to Warren Chou.)
+    - Added composite instrument; example provided.
+    - Added cash-settled swaption pricing in Black swaption engine;
+      test provided.
+    - Added discrete dividends and soft callability to convertible bonds.
+
+    INTEREST RATES
+    - Fixed business-day conventions for Euribor and LIBOR indices
+      (following below one month, month-end from one month onwards.)
+
+    MODELS
+    - Added more complex market parameterizations and performance
+      improvements for Libor market model (thanks to Klaus Spanderen.)
+
+    PROCESSES
+    - Renamed BlackScholedProcess to GeneralizedBlackScholedProcess;
+      specialized classes added for Black-Scholes, Merton, Black and
+      Garman-Kohlhagen processes.
+    - Added Hull-White and G2 processes for Monte Carlo simulation
+      (thanks to Banca Profilo.)
+
+    RANDOM NUMBERS
+    - Added possibility to skip directly to the n-th item in a Sobol
+      sequence (thanks to Richard Gould.)
+
+    MATH
+    - Added SABR interpolation for volatilities.
+    - Added general linear least-squares regression (thanks to Klaus
+      Spanderen.)
+
+
+    <strong>Release 0.3.12 - March 27th, 2006</strong>
+
+    CALENDARS
+    - Added Brazilian calendar (thanks to Piter Dias.)
+    - Added Argentinian, Icelandic, Indonesian, Mexican, and Ukrainian
+      calendars.
+
+    INSTRUMENTS AND PRICING ENGINES
+    - Added convertible bonds (thanks to Theo Boafo.)
+    - The cash flows returned by the Bond::cashflows method now
+      include the redemption.
+    - SimpleSwap can now be set an engine. If none is set, the old
+      cash-flow-based calculation is used.
+    - Generalized McVanillaEngine so that it can manage n-dimensional
+      processes; it now subsumes McHestonEngine.
+    - Added pricing of Bermudan options on binomial trees (thanks to
+      Enrico Michelotti.)
+    - Separated accrual and payment conventions for bonds.
+    - Modified basis-point sensitivity calculation so that it returns
+      the cash variation for a basis-point change in rate (it used to
+      return the figure to be multiplied by the variation in order to
+      obtain the same result.)
+
+    MODELS
+    - Added weights to short-rate model calibration (thanks to Enrico
+      Michelotti.)
+    - Added Libor market model (thanks to Klaus Spanderen.)
+
+    OPTIMIZATION
+    - Added Levenberg-Marquardt optimization method (thanks to Klaus
+      Spanderen.)
+
+    EXAMPLES
+    - Merged American and European option examples; added Bermudan
+      option.
+    - Added convertible-bond example (thanks to Theo Boafo.)
+
+
+    <strong>Release 0.3.11 - October 20th, 2005</strong>
+
+    GLOBAL FEATURES
+    - Added configuration option for adding current function
+      information to error messages.
+    - Added hook for multiple sessions to Singleton.
+
+    CALENDARS
+    - Added Bombay and Taipei calendars.
+
+    CURRENCIES
+    - Added new Turkish lira.
+
+    INDEXES
+    - More accurate LIBOR calendars (thanks to Daniele de Francesco.)
+    - Added DKKLibor, EURLibor, and NZDLibor indexes.
+    - Added TRLibor index (thanks to Sercan Atalik.)
+
+    PRICING ENGINES
+    - Added Bates stochastic-volatility model; tests provided (thanks
+      to Klaus Spanderen.)
+    - Added vega to analytic discrete-averaging Asian engine; test
+      provided (thanks to Gary Kennedy.)
+    - Added stochastic process for caplet Libor market model; tests
+      provided (thanks to Klaus Spanderen.)
+
+    TERM STRUCTURES
+    - Added fixed-coupon bond helper for curve bootstrapping (thanks
+      to Toyin Akin.)
+
+    MATH
+    - Added tabulated Gauss-Legendre quadratures (thanks to Gary
+      Kennedy.)
+    - Added more precise implementation of bivariate cumulative normal
+      distribution (thanks to Gary Kennedy.)
+
+
+    <strong>Release 0.3.10 - July 14th, 2005</strong>
+
+    GLOBAL FEATURES
+    - The suggested syntax for setting and registering with the global
+      evaluation date is now:
+      \code
+      Settings::instance().evaluationDate() = date;
+      registerWith(Settings::instance().evaluationDate());
+      \endcode
+
+    CALENDARS
+    - Istanbul calendar added (thanks to Serkan Atalik.)
+
+    LATTICE FRAMEWORK
+    - Faster implementation of binomial and trinomial trees.
+
+    MONTE CARLO FRAMEWORK
+    - Added generic multi-dimensional stochastic process.
+    - Added stochastic process array (thanks to Klaus Spanderen.)
+    - Multi-path generator now takes a generic stochastic process;
+      tests provided.
+    - New Path class implemented which stores asset values rather than
+      variations; this makes pricers independent on whether or not
+      log-variations were calculated. The new class is enabled when
+      QL_DISABLE_DEPRECATED is defined; the old class is used
+      otherwise.
+
+    INSTRUMENTS
+    - Multi-asset option now takes a generic stochastic process.
+
+    MODELS
+    - Added Heston stochastic-volatility model; tests provided (thanks
+      to Klaus Spanderen.) Provided code include:
+      - a corresponding stochastic process;
+      - analytic and Monte Carlo option-pricing engines;
+      - parameter calibration.
+
+    CASH FLOWS
+    - Cash-flow analyses such as NPV, IRR, convexity and duration added
+      (thanks to Charles Whitmore.)
+
+    MATH
+    - Added Gaussian orthogonal polynomials and Gaussian quadratures;
+      tests provided (thanks to Klaus Spanderen.)
+    - Convergence statistics added; tests provided (thanks to Gary
+      Kennedy.)
+
+
+    <strong>Release 0.3.9 - May 2nd, 2005</strong>
+
+    GLOBAL FEATURES
+    - QL_SQRT, QL_MIN etc. deprecated in favor of std::sqrt,
+      std::min...
+    - Added a tentative tracing facility to ease debugging.
+    - Formatters deprecated in favor of output manipulators. A number
+      of data types can now be sent directly to output streams. 
+    - Stream-based implementation of QL_REQUIRE, QL_TRACE and similar
+      macros. Together with manipulators, this allows one to write
+      simpler error messages, as in:
+      \code
+      QL_FAIL("forward at date " << d << " is " << io::rate(f));
+      \endcode
+
+    INSTRUMENTS
+    - Improved Bond class
+      - yield-related calculation can be performed with either
+        compounded or continuous compounding;
+      - added theoretical price based on discount curve;
+      - fixed-rate coupon bonds can define different rates for each
+        coupon;
+      - added zero-coupon and floating-rate bonds (thanks to StatPro.)
+    - Option instruments now take a generic StochasticProcess;
+      however, most pricing engines still require a
+      BlackScholesProcess. They should be checked to see whether the
+      requirement can be relaxed.  Following this change,
+      Merton76Process no longer inherits from
+      BlackScholesProcess. This avoids erroneous upcasts.
+    - Partial fix for Bermudan swaptions with exercise lag (thanks to
+      Luca Berardi for the report and discussion.)
+    - Fix for analytic cap/floor engine; caplets/floorlets whose
+      fixing is in the past are now calculated correctly (thanks to
+      Aurelien Chanudet.)
+
+    CALENDARS
+    - Added Bratislava and Prague calendars.
+
+    INDICES
+    - Fixed calendars for LIBOR fixings (thanks to Daniele De
+      Francesco.)
+
+    FINITE_DIFFERENCES FRAMEWORK
+    - Migrated finite-difference pricers to pricing-engine framework
+      (thanks to Joseph Wang.)
+
+    YIELD TERM STRUCTURES
+    - Added generic piecewise yield term structure. Client code can
+      choose what to interpolate (discounts, zero yields, forwards)
+      and how (linear, log-linear, flat) by instantiating types such
+      as:
+      \code
+      PiecewiseYieldCurve<Discount,LogLinear>
+      PiecewiseYieldCurve<ZeroYield,Linear>
+      PiecewiseYieldCurve<ForwardRate,Linear>
+      \endcode
+    - Interpolated discount, zero-yield and forward-rate curves can
+      now be set any interpolation.
+    - FlatForward can now take rates with compounding other than
+      continuous.
+    - Fix for extrapolation in zero-spreaded and forward-spreaded
+      yield term structure (thanks to Adjriou Belak for the report.)
+
+    MATH
+    - Added backward- and forward-flat interpolations.
+
+
+    <strong>Release 0.3.8 - December 22nd, 2004</strong>
+
+    REQUIRED PACKAGES
+    - Boost version 1.31.0 or later is now required.
+
+    DOCUMENTATION
+    - Documentation now includes a FAQ page.
+
+    GLOBAL FEATURES
+    - Global evaluation date added through Settings class.  Used for
+      index-fixing and exchange-rate lookup.
+    - added InterestRate class, which encapsulate the interest rate
+      compounding algebra. It manages day-counting convention,
+      compounding convention, conversion between different
+      conventions, and discount/compounding factor calculations. It
+      also has its own formatter.
+
+    INSTRUMENTS
+
+    - Bond and FixedCouponBond classes added (thanks to Jeff Yu)
+      providing price/yield conversions; tests provided.
+
+    DATE, CALENDARS, AND DAY COUNT CONVENTIONS
+    - Reworked Date interface. Added nextWeekday() and nthWeekday()
+      static methods to the class Date. Added nextIMM() for the
+      calculation of the next IMM date.
+    - Added WeekdayFormatter and FrequencyFormatter
+    - Added "1/1" day counter. The Actual365 is deprecated: as per
+      ISDA documentation "Actual/365" is the same as
+      "Actual/Actual". Use the ActualActual class instead, or the
+      Actual365Fixed class.
+    - Added dayCounterFromString(std::string) to QuantLibFunctions.
+    - Improved Beijing calendar (thanks to Zhou Wu.)
+
+    CURRENCIES AND FX RATES
+    - Added currency classes; CurrencyTag replaced in library code.
+    - Added money class providing arithmetic with or without
+      conversions; tests provided.
+    - Added exchange-rate class; tests provided.
+    - Added exchange-rate manager with smart rate lookup, i.e., able
+      to derive a missing exchange rate as a chain of provided rates;
+      tests provided.
+
+    MONTE CARLO FRAMEWORK
+    - Added Faure low-discrepancy sequence (thanks to Gianni Piolanti;)
+      tests provided.
+    - Added randomized (shifted) low discrepancy sequences that will
+      be used for randomized quasi Monte Carlo.
+    - Added SeedGenerator class, for random generation of seeds when
+      they are not given by the user.
+    - Added the implementation of Sobol sequences using the
+      coefficients of the free direction integers as provided by
+      Bratley and Fox, who credited unpublished work of Sobol's and
+      Levitan's.
+    - Added an implementation of Sobol sequences using the
+      coefficients of the free direction integers of Lemieux, Cieslak,
+      and Luttmer. Coefficients for d<=40 are the same as in
+      Bradley-Fox. For dimension 40<d<=360 the coefficients have been
+      calculated as optimal values based on the "resolution"
+      criterion. The values has been provided by Christiane Lemieux,
+      private communication, September 2004.
+    - PathGenerator now works correctly with processes describing S
+      instead of log S. Geometric Brownian process added (thanks to
+      Walter Penschke.)
+
+    LATTICE FRAMEWORK
+    - Reworked the DiscretizedAsset interface.
+
+    PRICING ENGINES FRAMEWORK
+    - Added pricing engine for American options with Ju quadratic
+      approximation.
+    - Average-price Asian pricers have been deprecated. New equivalent
+      pricing engines added.
+
+    FIXED INCOME
+    - Added current coupon to discretized swap and cap/floor.
+    - Added IndexManager as a singleton (will replace
+      XiborManager--already obsoleted in library code.)
+    - Added DayCounter parameter to ParCoupon (to be used for accruing
+      spreads and past fixings.) When missing, it defaults to that of
+      the term structure.
+    - Added compilation flag to select default floating-coupon type.
+    - IndexedCoupon can now take a generic index rather than a Libor
+      (thanks to Daniele De Francesco.)
+    - Added hooks for convexity adjustment in floating-rate coupons;
+      implemented adjustment for InArrearIndexedCoupon.
+
+    YIELD TERM STRUCTURE
+    - TermStructure renamed to YieldTermStructure (the former name was
+      deprecated.)
+    - New base class BaseTermStructure which can calculate its
+      reference date based on the global evaluation date.
+      YieldTermStructure, BlackVolTermStructure,
+      LocalVolTermStructure, CapFlatVolatilityStructure,
+      CapletForwardVolatilityStructure, and
+      SwaptionVolatilityStructure are now derived from
+      BaseTermStructure so that they inherit its functionality.
+
+    PATTERNS
+    - Added Singleton pattern.
+
+    MATH
+    - Added N-dimensional cubic spline (thanks to Roman Gitlin.)
+    - Added CovarianceDecomposition class (decomposes a covariance
+      matrix into standard deviations and correlations)
+
+    MISCELLANEA
+    - Renamed RelinkableHandle to Handle.
+
+    PORTABILITY
+    - Support for Dev-C++ IDE added.
+    - Fixes for gcc 2.95 added (thanks to Michael Dirkmann.)
+
+
+    <strong>Release 0.3.7 - July 23rd, 2004</strong>
+
+    <center>IMPORTANT</center>
+
+    %QuantLib now depends on the Boost library (www.boost.org).
+
+    You will need a working Boost installation in order to compile and
+    use %QuantLib. Instructions for installing Boost from sources are
+    available at <http://www.boost.org/more/getting_started.html>.
+    Pre-packaged binaries might be available from other sources.
+    Google is your friend (or Debian, or Fink...)
+
+    <HR>
+
+    DATE, CALENDARS, AND DAY COUNT CONVENTIONS
+    - Working on differentiating calendars depending on country or
+      exchange, instead of city.
+    - Added Italy (Settlement, Exchange),
+      United Kingdom (Settlement, Exchange, Metals),
+      United States (Settlement, Exchange, GovermentBond), Xetra.
+    - Milan, London, and NewYork calendars have been deprecated.
+    - Added (old-style) calendars: Beijing, Hong Kong, Riyadh, Seoul,
+      Singapore, Taiwan.
+    - RollingConvention has been renamed BusinessDayConvention, as for
+      ISDA definitions.
+
+    MATH
+    - Added rounding algorythms as per OMG enumeration/definition.
+
+    TEST SUITE
+    - Moved to Boost unit test framework. CppUnit is no longer needed.
+    - Added test for quanto and forward compound engines.
+    - Added test for roundings.
+    - Added test for discrete dividend European options.
+    - Added test for cliquet options.
+
+    MISCELLANEA
+    - enable/disableExtrapolation() methods were added to a few classes
+      such as TermStructure. They make it possible to persistently allow
+      extrapolation without the need of specifying it at every method
+      call.
+    - Added user-configurable flag to disable usage of deprecated
+      classes.
+
+    PORTABILITY
+    - Fink package available
+    - Visual C++ 7.x project files added
+
+
+    <strong>Release 0.3.6 - April 15th, 2004</strong>
+
+    Bug-fix release for %QuantLib 0.3.5. A bug was removed where calls
+    to impliedVolatility() would break the state of the option and of
+    all options sharing the same stochastic process.
+
+
+    <strong>Release 0.3.5 - March 31th, 2004</strong>
+
+    BOOST SUPPORT
+    - When available, %QuantLib 0.3.5 now uses parts of the Boost
+      library.  The presence of Boost is detected automatically under
+      Unix/Linux systems; on Windows systems, it must be enabled by
+      uncommenting the relevant line in ql/userconfig.hpp.
+
+    - In the next %QuantLib release, the presence of the Boost library
+      will be mandatory.
+
+    MONTE CARLO FRAMEWORK
+    - Modified MultiPath interface to remove drifts. They are now in
+      the stochastic processes.
+    - Preliminary implementation of Longstaff-Schwartz least-squares
+	- Monte Carlo pricer for European basket options
+	- Brownian-bridge bugs fixed
+	- StochasticProcess base class and derived classes (diffusion,
+	  jump-diffusion, etc.) have been created.
+
+    PRICING ENGINES FRAMEWORK
+    - Pricing engines now use Payoff and Exercise classes.
+    - American basket options.
+    - Binary barrier option replaced by vanilla option with digital payoff.
+	- Stulz engine for max and min basket calls and puts on two assets.
+	- American binary option added (a.k.a. one-touch, american digital,
+	  americal barrier, etc.) with different payoffs (cash/asset at
+	  hit/expiry, etc.)
+	- Added engine for Merton 1976 jump-diffusion process.
+	- Added Bjerksund and Stensland approximation for American option
+      (still unstable.)
+	- Added Barone-Adesi and Whaley approximation for American option.
+	- Improved Black formula engine with more greeks added.
+	- Discrete geometric asian option.
+	- Added Leisen-Reimer binomial tree.
+
+    SHORT RATE MODELS
+	- Model renamed to ShortRateModel. A typedef is provided for backward
+	  compatibility--it will be removed in subsequent releases.
+
+    VOLATILITY FRAMEWORK
+	- bug fix for short time (0<=t<=Tmin) interpolation
+
+    OPTIMIZATION FRAMEWORK
+	- Method renamed to OptimizationMethod. A typedef is provided for
+      backward compatibility--it will be removed in subsequent releases.
+
+    PATTERNS
+	- Composite pattern
+
+    MATH
+    - Improved cubic spline interpolation. It now handles end conditions
+      such as first derivative value, second derivative value, not-a-knot.
+      Hyman filter for monotonically constrained interpolation has been
+      implemented. Primitive calculation has been enabled in
+      addition to derivative and second derivative.
+    - Primitive, first derivative, and second derivative functions are available
+      for linear interpolator.
+    - Singular value decomposition improved.
+    - Added bivariate cumulative normal distribution.
+	- Added binomial coefficient calculation, binomial distribution,
+	  cumulative binomial distribution, and	Peizer-Pratt inversion (method 2.)
+	- Added beta functions.
+	- Added Poisson distribution and cumulative distribution.
+	- Added incomplete gamma functions.
+	- Added factorial calculation.
+	- Added rank-reduced square root and improved pseudo-square root
+      of square symmetric matrices.
+	- Added Cholesky decomposition.
+
+    TEST SUITE
+    - Added test for cubic spline interpolation.
+    - Added test for singular value decomposition.
+    - Added test for two-asset baskets using the Stulz pricing engine.
+	- Added test for Monte Carlo American cash-at-hit options.
+	- Added test for jump-diffusion engine.
+	- Added test for American and European digital options.
+
+    MISCELLANEA
+    - Inner namespaces have been deprecated.
+	- Added frequency enumeration, including 'once'.
+	- MarketElement renamed to Quote.
+    - Handling strike=0.0 where possible.
+    - More Payoff classes have been introduced: gap, asset-or-nothing,
+      cash-or-nothing. Payoff is now extensively used.
+    - Exercise class is now polymorphic. More derived classes have been
+      introduced, and they are now extensively used.
+    - Introduced QL_FAIL macro.
+	- Added calendar for Copenhagen
+    - 14 April 2004 (election day) added to Johannesburg calendar as
+      a one-off holiday.
+    - Documentation generated with Doxygen 1.3.6.
+    - Win32 installer generated with NSIS 2.0.
+
+
+    <strong>Release 0.3.4 - November 21th, 2003</strong>
+
+    MONTE CARLO FRAMEWORK
+    - MC European in one step with strike-independent vol curve (hopefully)
+    - Path pricer for Binary options. It should cover both European and
+      American style options.  Also known as: Digital, Binary, Cash-At-Hit,
+      Cash-At-Expiry.
+    - Path pricers for barrier options
+
+    PRICING ENGINES FRAMEWORK
+    - More options moved to the new pricing engine framework: binary, barrier
+    - Changed setupEngine() into setupArguments(args)
+    - Moved pricing-engine machinery up to Instrument class
+
+    FIXED INCOME
+    - New basis-point sensitivity functions
+    - Added Swap::startDate() and maturity()
+    - Cap/floor fixing days taken into account
+
+    SHORT RATE MODELS
+    - An additional constraint can now be passed to the calibration
+
+    VOLATILITY FRAMEWORK
+    - Visitable volatility term structures
+
+    OPTIMIZATION FRAMEWORK
+    - Added composite constraint
+
+    PATTERNS
+    - Visitor, Alexandrescu-style (saves some code duplication)
+
+    MATH
+    - Added more integration algorithms contributed by Roman Gitlin
+    - Relaxed constaints on interval boundaries for integration algorithms
+    - Interpolation traits
+
+    TEST SUITE
+    - Added implied cap/floor term volatility test
+    - Added test for binary options in PricingEngine Framework.
+    - Added tests for Barrier options in PricingEngine Framework. Some Monte
+      Carlo tests, but not comprehensive.
+
+    MISCELLANEA
+    - Conditionally allowed negative yields (disabled by default)
+    - Null calendar and simple day counter for reproducing theoretical
+      calculations
+    - Fixed for VC++.Net compilation
+    - Added spec file for RPMs
+    - Added global flag for early/late payments
+    - Enabled test suite for Borland
+    - Removed OnTheEdge VC++ configurations
+    - Added VC++ configurations for static and dynamic Multithread libraries
+    - Upgraded to use Doxygen 1.3.4
+
+
+    <strong>Release 0.3.3 - September 3rd, 2003</strong>
+
+    MONTE CARLO FRAMEWORK
+    - Re-templatized Monte Carlo model based on traits.
+    - New path generator based on DiffusionProcess, TimeGrid,
+      and externally initialized random number generator.
+    - Added Halton low discrepancy sequence.
+    - Added sequence generators: random sequence generator creates
+      a sequence generator out of a random number generator.
+      InvCumGaussianRsg creates a gaussian sequence generator out of a
+      uniform (random or low discrepancy) sequence generator.
+    - RNG as constructor input constructor( long seed) deprecated.
+    - Mersenne Twister random number generator added
+    - Old PathPricers, PathGenerators, etc are available with a trailing _old
+    - Added J&auml;ckel's Brownian Bridge (not used yet.)
+    - Sobol Random Sequence Generator. Unit and J&auml;ckel.
+    - Added randomized Halton sequences.
+
+    FINITE DIFFERENCE FRAMEWORK
+    - Old class Grid no longer exists, use CenteredGrid to obtain the
+      same result.
+
+    LATTICE FRAMEWORK
+    - Abstracted discretized option.
+    - Additive binomial trees.  All binomial trees now use DiffusionProcess.
+    - Added Tian binomial tree.
+
+    PRICING ENGINES FRAMEWORK
+    - Partially implemented.
+    - Quanto forward compounded engines.
+    - Integral (european) pricing engine.
+
+    YIELD TERM STRUCTURE
+    - ZeroCurve: a term structure based on linear interpolation of
+      zero yields.
+
+    FIXED INCOME
+    - Up-front and in-arrear indexed coupon.
+    - Specific implementation of compound forward rate from zero yield.
+    - Added compound forward and zero coupon implementations.
+    - Added Futures rate helper with specified maturity date.
+    - Added bucketed bps calculation.
+    - Added swap constructor using specified maturity date as well as
+      added functionality in Scheduler.
+    - Added date-bucketed basis point sensitivity based on 1st derivative
+      of zero coupon rate.
+
+    OPTIMIZATION FRAMEWORK
+    - Solvers now take any function. ObjectiveFunction disappeared.
+
+    PATTERNS
+    - Abstracted lazy object.
+    - Abstracted the curiously recurring template pattern.
+
+    DATE AND CALENDARS
+    - Added joint calendars.
+    - Tokyo, Stockholm, Johannesburg calendar improved.
+    - "MonthEndReference" business day rolling convention. Similar to
+      "ModifiedFollowing", unless where original date is last business
+      day of month all resulting dates will also be last business day of
+      month.
+    - Added basic date generation starting from the end.
+
+    MATH
+    - Added Gauss-Kronrod integration algorithm.
+    - Added primitive polynomial modulo 2 up to dimension 18 (available up
+      to dimension 27.)
+    - Added BicubicSplineInterpolation.
+    - Numerical Recipes algorithm is back since there is a problem with
+      Nicolas' code: it is unable to fit a straight line, it waves around
+      the line.
+    - Prime number generation.
+    - Acklam's approximation for inverse cumulative normal distribution
+      function (replaced Moro's algorithm as default.)
+    - Added error function.
+    - Improved Cumulative Normal Distribution function using the
+      error function.
+    - Matrix pseudo square algorithm using salvaging algorithm(s).
+    - Added SequenceStatistics.
+    - Major Statistic reworking.
+    - Added DiscrepancyStatistic that inherits from SequenceStatistic and
+      extends it with the calculation of L2-discrepancy.
+    - HStatistics.
+    - Added first and second derivative ot cubic splines.
+
+    RISK MEASURES
+    - Introduced semiVariance and regret.
+    - Redefinition of average shorfall (normalization factor now is
+      cumulative(target) instead of 1.0)
+
+    MISCELLANEA
+    - QuEP 9 "generic disposable objects" implemented.
+    - Added test suite.
+    - Dataformatters extended to format long integers, Ordinal numerals,
+      power of two formatting.
+    - Exercise class adopted.
+    - Added user configuration section.
+    - Inhibited automatic conversion of Handle<T> to RelinkableHandle<T>.
+    - Diffusion process extended.
+    - Added strikeSensitivity to the Greeks.
+    - BS does handle t==0.0 and sigma==0.0.
+    - TimeGrid has been reworked.
+    - Added payoff file for Payoff classes.  Added Cash-Or-Nothing and
+      Asset-Or-Nothing payoff classes.
+    - Upgraded to use Doxygen 1.3.
+
+    <strong>Release 0.3.1 - February 4th, 2003</strong>
+
+    FINITE DIFFERENCE FRAMEWORK
+    - partially implemented QuEP 2 (http://quantlib.org/quep.shtml)
+
+    VOLATILITY FRAMEWORK
+    - added Black and local volatility interface
+
+    PRICING ENGINES FRAMEWORK
+    - partially implemented QuEP 5 (http://quantlib.org/quep.shtml)
+
+    YIELD TERM STRUCTURE
+    - interface revisited
+    - added discrete time forward methods
+    - added DiscountCurve (loglinear interpolated) and CompoundForward term
+      structures
+    - ForwardSpreadedTermStructure moved under QuantLib::TermStructures
+      namespace
+
+    FIXED INCOME
+    - Modified coupons so that the payment date can be after the end of the
+      accrual period
+
+    MISCELLANEA
+	- added/verified holidays of many calendars
+	- added new calendars
+	- added new currencies
+	- more date formatters
+    - added Period(std::string&)
+    - it is now possible to advance a calandar using a Period
+    - added LogLinear Interpolation
+    - the allowExtrapolation boolean in interpolation classes has been removed
+      from constructors and added to the operator()
+    - Renamed Solver1D::lowBound and hiBound
+    - bug fixes
+
+    BUILD PROCESS
+    - More autoconfiscated time functions and types
+    - Migrated to latest autotools
+    - added patches for Darwin and Solaris
+
+
+    <strong>Release 0.3.0 - May 6th, 2002</strong>
+
+        MONTE CARLO FRAMEWORK
+        - Path and MultiPath are time-aware
+        - McPricer: extended interface, improved convergency algorithm
+
+        FINITE DIFFERENCE FRAMEWORK
+        - added mixed (implicit/explicit) scheme, from which Crank-Nicolson,
+          ImplicitEuler, and ExplicitEuler are now derived
+        - Finite Difference exercise conditions are now in the
+          FiniteDifferences folder/namespace
+        - Finite Difference pricers now start with 'Fd' letters
+        - BSMNumericalOption became BsmFdOption
+
+        LATTICE FRAMEWORK
+        - introduced first version of the framework
+        - CRR and JR binomial trees
+
+        VOLATILITY FRAMEWORK
+        - early works on reorganization of vol structures
+
+    	YIELD TERM STRUCTURE
+        - new TermStructure class based on affine model
+        - yield curves can be spreaded in term of zeros
+         (ZeroSpreadedTermStructure) and forwards
+         (ForwardSpreadedTermStructure)
+        - Added dates() and times() to PiecewiseFlatForward
+        - discount factor accuracy in the yield curve bootstrapping is an
+          input
+        - added single factor short-rate models (Hull-White, Black-Karasinski)
+        - added two factor short-rate models framework
+        - cap/floor and swaption calibration helpers
+        - added bermudan swaption pricing example (including BK and HW
+          calibrations)
+
+        FIXED INCOME
+        - cap/floor and  swaption tree pricer
+        - cap/floor analytical pricer
+        - vanilla swaption Jamshidian pricer
+        - Added	accruedAmount() to coupons
+        - Made cash	flow vector builders into functions
+
+        OPTIMIZATION FRAMEWORK
+        - added conjugate gradient, simplex
+
+        PATTERNS
+        - implemented QuEP 8 and 10
+
+        MISCELLANEA
+        - added allowExtrapolation parameter to interpolaton classes
+        - added 2D bilinear interpolation
+        - better spline interpolation algorithm
+        - Added non-central chi-square distribution function.
+        - Improved Inverse Cumulative Normal Distribution using Moro's
+          algorithm
+        - Introduced class representing stochastic processes
+        - added isExpired() to Instrument interface
+        - added functions folder and namespace for %QuantLibXL and any other
+          function-like interface to %QuantLib
+        - Handle is now castable to an Handle of a compatible type
+        - added downsideVariance to the Statistics class
+        - kustosis() and skewness() now handles the case of stddev == 0 and/or
+          variance == 0
+        - added Correlation Matrix to MultiVariateAccumulator
+        - enforced MS VC compilation settings
+        - added "-debug" to the QL_VERSION version string ifdef QL_DEBUG
+        - "make check" runs the example programs under Borland C++
+        - fixed compilation with "g++ -pedantic"
+        - Spread as market element
+        - new calendars introduced
+        - new Xibor Indexes introduced
+        - Added optional day count to libor indexes
+        - Shortened file names within 31 char limit to support HFS
+
+
+    <strong>Release 0.2.1 - December 3rd, 2001</strong>
+
+        MONTE CARLO FRAMEWORK
+        - Path and MultiPath are now classes on their own
+        - PathPricer now handles both Path and MultiPath
+        - MonteCarloModel now handles both single factor and
+          multi factors simulations.
+        - McPricer now handles both single factor and
+          multi factors pricing. New pricing interface
+        - antithetic variance-reduction technique made possible in Monte Carlo
+          for both single factor and multi factors
+        - Control Variate specific class removed: control variation
+          technique is now handled by the general MC model
+        - average price and average strike asian option refactored
+        - Sample as a (value,weight) struct
+        - random number generators moved under RandomNumbers folder and
+          namespace
+
+        FINITE DIFFERENCE FRAMEWORK
+        - BackwardEuler and ForwardEuler renamed ImplicitEuler and
+          ExplicitEuler,
+          respectively
+        - refactoring of TridiagonalOperator and derived classes
+
+        YIELD TERM STRUCTURE AND FIXED INCOME
+        - Added some useful methods to term structure classes
+        - Allowed passing a quote to RateHelpers as double
+        - added FuturesRateHelpers (no convexity adjustment yet)
+        - PiecewiseFlatForward now observer of rates passed as MarketElements
+        - Unified Date and Time interface in TermStructure
+        - Added BPS to generic swap legs
+        - added term_structure+swap example
+        - Fixing days introduced for floating-coupon bond
+
+        PATTERNS
+        - Added factory pattern
+        - Calendar and DayCounter now use the Strategy pattern
+
+        VARIOUS
+        - used do-while-false idiom in QL_REQUIRE-like macros
+        - now using size_t where appropriate
+        - dividendYield is now a Spread instead of a Rate (that is: cost of
+          carry is allowed)
+        - RelinkableHandle initialized with an optional Handle
+        - Worked around VC++ problems in History constructor
+        - added QL_VERSION and QL_HEX_VERSION
+        - generic bug fixes
+        - removed classes deprecated in 0.2.0
+
+       INSTALLATION FACILITIES
+        - improved and smoother Win32 binary installer
+
+       DOCUMENTATION
+        - general re-hauling
+        - improved and extended Monte Carlo documentation
+        - improved and extended examples
+        - Upgraded to Doxygen 1.2.11.1
+        - Added man pages for installed executables
+        - added docs in Windows Help format
+        - added info on "Win32 OnTheEdgeRelease" and  "Win32 OnTheEdgeDebug"
+          MS VC++ configurations
+        - additional information on how to create a MS VC++ project based on
+          %QuantLib
+
+    <strong>Release 0.2.0 - September 18th, 2001</strong>
+
+    - Library:
+        - source code moved under ql, better GNU standards
+        - gcc build dir can now be separated from source tree
+        - gcc 3.0.1 port
+        - clean compilation (no warnings)
+        - bootstrap script on cygwin
+        - Fixed automatic choice of seed for random number generators
+        - Actual/actual classes
+        - extended platform support (see table in documentation)
+        - antithetic variance-reduction technique made possible in Monte
+          Carlo
+        - added dividend-Rho greek
+        - First implementation of segment integral (to be redesigned)
+        - Knuth random generator
+        - Cash flows, scheduler, and swap (both generic and simple) added
+        - added ICGaussian random generator
+        - generic bug fixes
+    - Installation facilities:
+        - improved and smoother Win32 binary installer
+        - better distribution
+        - debian packages available
+    - Documentation:
+        - general re-hauling
+        - added examples of using %QuantLib and of projects based on QL
+
+    <strong>Release 0.1.9 - May 31st, 2001</strong>
+
+    - Library:
+      - Style guidelines introduced (see http://quantlib.org/style.shtml)
+        and partially enforced
+      - full support for Microsoft Visual Studio
+      - full support for Linux/gcc
+      - momentarily broken support for Metrowerks CodeWarrior
+      - autoconfiscation (with specialized config.*.hpp files for platforms
+        without automake/autoconf support)
+      - Include files moved under Include/ql folder and referenced as
+        "ql/header.hpp"
+      - Implemented expression templates techniques for array algebra
+        optimization
+      - Added custom iterators
+      - Improved term structure
+      - Added Asian, Bermudan, Shout, Cliquet, Himalaya, and Barrier
+        options (all with greeks calculation, control variated where
+        possible)
+      - Added Helsinki and Wellington calendars
+      - Improved Normal distribution related functions: cumulative, inverse
+        cumulative, etc.
+      - Added uniform and Gaussian random number generators
+      - Added Statistics class (mean, variance, skewness, downside variance,
+        etc.)
+      - Added RiskMeasures class: VAR, average shortfall, expected shortfall,
+        etc.
+      - Added RiskStatistics class combining Statistics and RiskMeasures
+      - Added sample accumulator for multivariate analysis
+      - Added Monte Carlo tools
+      - Added matrix-related functions (square root, symmetric Schur
+        decomposition)
+      - Added interpolation framework (linear and cubic spline interpolation
+        implemented).
+    - Installation facilities:
+      - Added Win32 GUI installer for binaries
+    - Documentation:
+      - support for Doxygen 1.2.7
+      - Added man documentation
+
+    <strong>Release 0.1.1 - November 21st, 2000</strong>
+
+    Initial release.
+
+*/

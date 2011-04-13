@@ -1,0 +1,45 @@
+.\" Man page contributed by Dirk Eddelbuettel <edd@debian.org>
+.\" and released under the Quantlib license
+.TH FITTEDBONDCURVE 1 "25 February 2006" QuantLib
+.SH NAME
+FittedBondCurve - Example of using QuantLib to fit discount curves
+.SH SYNOPSIS
+.B FittedBondCurve
+.SH DESCRIPTION
+.PP
+.B FittedBondCurve
+is an example of using \fIQuantLib\fP.
+
+For a given set of coupons and terms to maturity, it computes the value of a
+bond by fitting the yields to a curve using different methods.
+
+The fitting methods are exponential splines, simple polynomials,
+Nelson-Siegel, and cubic B-splines.  It then shifts the evaluation date
+into the future to compute implied forward par rates. It also computes yields
+after small price shifts.
+
+.SH SEE ALSO
+The source code
+.IR FittedBondCurve.cpp ,
+.BR BermudanSwaption (1),
+.BR Bonds (1),
+.BR CallableBonds (1),
+.BR CDS (1),
+.BR ConvertibleBonds (1),
+.BR DiscreteHedging (1),
+.BR EquityOption (1),
+.BR FRA (1),
+.BR MarketModels (1),
+.BR Replication (1),
+.BR Repo (1),
+.BR SwapValuation (1),
+the QuantLib documentation and website at
+.IR http://quantlib.org .
+
+.SH AUTHORS
+The QuantLib Group (see
+.IR Authors.txt ).
+
+This manual page was added by Dirk Eddelbuettel <edd@debian.org>,
+the Debian GNU/Linux maintainer for
+.BR QuantLib .
