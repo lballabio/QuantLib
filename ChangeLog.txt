@@ -1,3 +1,22 @@
+2011-03-22 11:33  Ferdinando Ametrano
+
+	* [r17672] ql/termstructures/yield/ratehelpers.cpp,
+	  ql/termstructures/yield/ratehelpers.hpp:
+	  
+	  added IMM-start IMM-end FutureRateHelper constructors
+
+2011-03-02 18:35  Ferdinando Ametrano
+
+	* [r17657] ql/instruments/makevanillaswap.cpp:
+	  
+	  avoided hard-coded EUR conventions
+
+2011-03-02 13:02  Luigi Ballabio
+
+	* [r17652] ChangeLog.txt, Docs/pages/history.docs, News.txt:
+	  
+	  Updated changelog and news
+
 2011-03-02 12:44  Luigi Ballabio
 
 	* [r17651] ql/cashflows/simplecashflow.hpp,
@@ -77,7 +96,7 @@
 
 	* [r17622] ql/math/interpolations/cubicinterpolation.hpp:
 	  
-	  fixed typo
+	  fixed (ignorance) typo
 
 2011-01-31 10:38  Luigi Ballabio
 
