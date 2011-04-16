@@ -77,6 +77,7 @@
 #include <string>
 
 /* PAPI code
+#include <stdio.h
 #include <papi.h>
 */
 
@@ -152,7 +153,7 @@ namespace {
 
     /* PAPI code
     float real_time, proc_time, mflops;
-    long_long lflops, flop=0;
+    long_long lflop, flop=0;
     */
 
     void startTimer() {
