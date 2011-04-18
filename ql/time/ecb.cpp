@@ -69,7 +69,7 @@ namespace QuantLib {
 
         string code = to_upper_copy(ecbCode);
         string monthString = code.substr(0, 3);
-        QuantLib::Month m;
+        Month m;
         if (monthString=="JAN")      m = January;
         else if (monthString=="FEB") m = February;
         else if (monthString=="MAR") m = March;
