@@ -58,7 +58,7 @@ namespace QuantLib {
                                                       discount, displacement,
                                                       impliedStdev_,
                                                       accuracy_, maxIter_);
-        } catch(QuantLib::Error&) {
+        } catch(Error&) {
             impliedStdev_ = 0.0;
         }
     }
