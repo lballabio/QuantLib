@@ -448,7 +448,7 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
     }
 
     TimeGrid grid(exerciseTimes.begin(), exerciseTimes.end(), 60);
-    std::vector<Time> exerciseIndex(exerciseDates.size());
+    std::vector<Size> exerciseIndex(exerciseDates.size());
     for (Size i=0; i < exerciseIndex.size(); ++i) {
         exerciseIndex[i] = grid.closestIndex(exerciseTimes[i]);
     }
@@ -461,7 +461,7 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
     const Real jumpIntensity = 1.0;
     const Real speed = 1.0;
     const Real volatility = 2.0;
-    const Rate irRate = 0.10;
+    const Rate irRate = 0.1;
 
     boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess(
         new ExtendedOrnsteinUhlenbeckProcess(speed, volatility, x0[0],
@@ -482,13 +482,12 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
     bermudanOption.setPricingEngine(vanillaEngine);
     const Real bermudanOptionPrices = bermudanOption.NPV();
 
-    const Size nrTrails = 100;
+    const Size nrTrails = 16000;
     typedef PseudoRandom::rsg_type rsg_type;
     typedef MultiPathGenerator<rsg_type>::sample_type sample_type;
     rsg_type rsg = PseudoRandom::make_sequence_generator(
                     jumpProcess->factors()*(grid.size()-1), BigNatural(421));
 
-    GeneralStatistics npv;
     MultiPathGenerator<rsg_type> generator(jumpProcess, grid, rsg, false);
 
     for (Size i=0; i < exerciseDates.size(); ++i) {
@@ -522,13 +521,17 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
         }
 
         // use MC plus perfect forecast to find an upper bound
+        GeneralStatistics npv;
         for (Size n=0; n < nrTrails; ++n) {
             sample_type path = generator.next();
 
             std::vector<Real> exerciseValues(exerciseTimes.size());
             for (Size k=0; k < exerciseTimes.size(); ++k) {
-                exerciseValues[k] = (*payoff)(path.value[0][exerciseIndex[k]])
-                                               *rTS->discount(exerciseDates[k]);
+                const Real x = path.value[0][exerciseIndex[k]];
+                const Real y = path.value[1][exerciseIndex[k]];
+                const Real s = std::exp(x+y);
+
+                exerciseValues[k] =(*payoff)(s)*rTS->discount(exerciseDates[k]);
             }
             std::sort(exerciseValues.begin(), exerciseValues.end(),
                       std::greater<Real>());
@@ -584,7 +587,7 @@ void SwingOptionTest::testSimpleExtOUStorageEngine() {
 
     storageOption.setPricingEngine(storageEngine);
 
-    const Real expected = 69.731711;
+    const Real expected = 69.6914;
     const Real calculated = storageOption.NPV();
 
     if (std::fabs(expected - calculated) > 2e-2) {
