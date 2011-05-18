@@ -441,6 +441,18 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
     boost::shared_ptr<BermudanExercise> bermudanExercise(
                                         new BermudanExercise(exerciseDates));
 
+    std::vector<Time> exerciseTimes(exerciseDates.size());
+    for (Size i=0; i < exerciseTimes.size(); ++i) {
+        exerciseTimes[i]
+                 = dayCounter.yearFraction(settlementDate, exerciseDates[i]);
+    }
+
+    TimeGrid grid(exerciseTimes.begin(), exerciseTimes.end(), 60);
+    std::vector<Time> exerciseIndex(exerciseDates.size());
+    for (Size i=0; i < exerciseIndex.size(); ++i) {
+        exerciseIndex[i] = grid.closestIndex(exerciseTimes[i]);
+    }
+
     Array x0(2);
     x0[0] = 3.0; x0[1] = 0.0;
 
@@ -470,6 +482,15 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
     bermudanOption.setPricingEngine(vanillaEngine);
     const Real bermudanOptionPrices = bermudanOption.NPV();
 
+    const Size nrTrails = 100;
+    typedef PseudoRandom::rsg_type rsg_type;
+    typedef MultiPathGenerator<rsg_type>::sample_type sample_type;
+    rsg_type rsg = PseudoRandom::make_sequence_generator(
+                    jumpProcess->factors()*(grid.size()-1), BigNatural(421));
+
+    GeneralStatistics npv;
+    MultiPathGenerator<rsg_type> generator(jumpProcess, grid, rsg, false);
+
     for (Size i=0; i < exerciseDates.size(); ++i) {
         const Size exerciseRights = i+1;
 
@@ -498,6 +519,32 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
             BOOST_ERROR("Failed to reproduce lower bounds"
                        << "\n    lower Bound: " << lowerBound
                        << "\n    Price:       " << swingOptionPrice);
+        }
+
+        // use MC plus perfect forecast to find an upper bound
+        for (Size n=0; n < nrTrails; ++n) {
+            sample_type path = generator.next();
+
+            std::vector<Real> exerciseValues(exerciseTimes.size());
+            for (Size k=0; k < exerciseTimes.size(); ++k) {
+                exerciseValues[k] = (*payoff)(path.value[0][exerciseIndex[k]])
+                                               *rTS->discount(exerciseDates[k]);
+            }
+            std::sort(exerciseValues.begin(), exerciseValues.end(),
+                      std::greater<Real>());
+
+            Real npCashFlows
+                = std::accumulate(exerciseValues.begin(),
+                                  exerciseValues.begin()+exerciseRights, 0.0);
+            npv.add(npCashFlows);
+        }
+
+        const Real mcUpperBound = npv.mean();
+        const Real mcErrorUpperBound = npv.errorEstimate();
+        if (swingOptionPrice - mcUpperBound > 2.36*mcErrorUpperBound) {
+            BOOST_ERROR("Failed to reproduce mc upper bounds"
+                       << "\n    mc upper Bound: " << mcUpperBound
+                       << "\n    Price:          " << swingOptionPrice);
         }
     }
 }
