@@ -52,7 +52,7 @@ namespace QuantLib {
         // 1. Layout
         std::vector<Size> dim;
         dim.push_back(xGrid_);
-        dim.push_back(arguments_.exerciseRights+1);
+        dim.push_back(arguments_.maxExerciseRights+1);
         const boost::shared_ptr<FdmLinearOpLayout> layout(
                                               new FdmLinearOpLayout(dim));
         
@@ -65,8 +65,8 @@ namespace QuantLib {
                                       maturity, payoff->strike()));
         
         const boost::shared_ptr<Fdm1dMesher> exerciseMesher(
-                 new Uniform1dMesher(0, arguments_.exerciseRights, 
-                                        arguments_.exerciseRights+1));
+                 new Uniform1dMesher(0, arguments_.maxExerciseRights,
+                                        arguments_.maxExerciseRights+1));
         
         std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
         meshers.push_back(equityMesher);
@@ -113,8 +113,17 @@ namespace QuantLib {
                                payoff->strike(), solverDesc, schemeDesc_));
     
         const Real spot = process_->x0();
-        const Real y = std::exp(Real(arguments_.exerciseRights));
         
+        std::vector< std::pair<Real, Real> > exerciseValues;
+        for (Size i=arguments_.minExerciseRights;
+             i <= arguments_.maxExerciseRights; ++i) {
+            const Real y = std::exp(i);
+            exerciseValues.push_back(
+                           std::pair<Real, Real>(solver->valueAt(spot, y), y));
+        }
+        const Real y = std::max_element(exerciseValues.begin(),
+                                        exerciseValues.end())->second;
+
         results_.value = solver->valueAt(spot, y);
         results_.delta = solver->deltaAt(spot, y, spot*0.01);
         results_.gamma = solver->gammaAt(spot, y, spot*0.01);

@@ -20,16 +20,14 @@
 #include "swingoption.hpp"
 #include "utilities.hpp"
 
-#include <ql/time/daycounters/actualactual.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/instruments/vanillaswingoption.hpp>
 #include <ql/instruments/vanillastorageoption.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
-#include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/math/statistics/generalstatistics.hpp>
-#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
@@ -391,7 +389,8 @@ void SwingOptionTest::testFdBSSwingOption() {
     for (Size i=0; i < exerciseDates.size(); ++i) {
         const Size exerciseRights = i+1;
         
-        VanillaSwingOption swingOption(payoff, bermudanExercise,exerciseRights);
+        VanillaSwingOption swingOption(payoff, bermudanExercise,
+                                       exerciseRights, exerciseRights);
         swingOption.setPricingEngine(engine);
         const Real swingOptionPrice = swingOption.NPV();
 
@@ -493,7 +492,8 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
     for (Size i=0; i < exerciseDates.size(); ++i) {
         const Size exerciseRights = i+1;
 
-        VanillaSwingOption swingOption(payoff, bermudanExercise,exerciseRights);
+        VanillaSwingOption swingOption(payoff, bermudanExercise,
+                                       exerciseRights, exerciseRights);
         swingOption.setPricingEngine(swingEngine);
         const Real swingOptionPrice = swingOption.NPV();
 

@@ -37,15 +37,16 @@ namespace QuantLib {
           class arguments;
           VanillaSwingOption(const boost::shared_ptr<StrikedTypePayoff>& payoff,
                              const boost::shared_ptr<BermudanExercise>& ex,
-                             Size exerciseRights)
+                             Size minExerciseRights, Size maxExerciseRights)
         : OneAssetOption(payoff, ex),
-          exerciseRights_(exerciseRights) {}
+          minExerciseRights_(minExerciseRights),
+          maxExerciseRights_(maxExerciseRights) {}
 
         bool isExpired() const;
         void setupArguments(PricingEngine::arguments*) const;
         
       private:
-        const Size exerciseRights_;
+        const Size minExerciseRights_, maxExerciseRights_;
     };
 
     class VanillaSwingOption::arguments 
@@ -56,12 +57,14 @@ namespace QuantLib {
             QL_REQUIRE(payoff, "no payoff given");
             QL_REQUIRE(exercise, "no exercise given");
 
-            QL_REQUIRE(exercise->dates().size() >= exerciseRights,
+            QL_REQUIRE(minExerciseRights <= maxExerciseRights,
+                       "minExerciseRights <= maxExerciseRights")
+            QL_REQUIRE(exercise->dates().size() >= maxExerciseRights,
                        "number of exercise rights exceeds "
                        "number of exercise dates");
         }
 
-        Size exerciseRights;
+        Size minExerciseRights, maxExerciseRights;
         boost::shared_ptr<StrikedTypePayoff> payoff;
         boost::shared_ptr<BermudanExercise> exercise;
     };
@@ -76,7 +79,8 @@ namespace QuantLib {
             = boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
         arguments->exercise 
             = boost::dynamic_pointer_cast<BermudanExercise>(exercise_);
-        arguments->exerciseRights = exerciseRights_;
+        arguments->minExerciseRights = minExerciseRights_;
+        arguments->maxExerciseRights = maxExerciseRights_;
     }
     
     inline bool VanillaSwingOption::isExpired() const {

@@ -60,7 +60,7 @@ namespace QuantLib {
         std::vector<Size> dim;
         dim.push_back(xGrid_);
         dim.push_back(yGrid_);
-        dim.push_back(arguments_.exerciseRights+1);
+        dim.push_back(arguments_.maxExerciseRights+1);
         const boost::shared_ptr<FdmLinearOpLayout> layout(
                                             new FdmLinearOpLayout(dim));
 
@@ -79,8 +79,8 @@ namespace QuantLib {
                                                     process_->jumpIntensity(),
                                                     process_->eta()));
         const boost::shared_ptr<Fdm1dMesher> exerciseMesher(
-                         new Uniform1dMesher(0, arguments_.exerciseRights,
-                                                arguments_.exerciseRights+1));
+                       new Uniform1dMesher(0, arguments_.maxExerciseRights,
+                                              arguments_.maxExerciseRights+1));
 
         std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
         meshers.push_back(xMesher);
@@ -134,7 +134,16 @@ namespace QuantLib {
 
         const Real x = process_->initialValues()[0];
         const Real y = process_->initialValues()[1];
-        const Real z = Real(arguments_.exerciseRights);
+
+        std::vector< std::pair<Real, Real> > exerciseValues;
+        for (Size i=arguments_.minExerciseRights;
+             i <= arguments_.maxExerciseRights; ++i) {
+            const Real z = Real(i);
+            exerciseValues.push_back(std::pair<Real, Real>(
+                                       solver->valueAt(x, y, z), z));
+        }
+        const Real z = std::max_element(exerciseValues.begin(),
+                                        exerciseValues.end())->second;
 
         results_.value = solver->valueAt(x, y, z);
     }
