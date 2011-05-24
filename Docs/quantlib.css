@@ -42,6 +42,12 @@ ul#profiles li {
     vertical-align: top;
 }
 
+div.textblock {
+    margin-right: 17em;
+    padding: 1em;
+    vertical-align: top;
+}
+
 #header {
     margin-left: 1em;
     text-align: left;
