@@ -35,8 +35,8 @@ namespace QuantLib {
         an extension of the Lucia and Schwartz model
         \f[
         \begin{array}{rcl}
-        S = exp(X_t + Y_t)
-        dX_t  &=& \alpha(\mu(t)-X_t)dt + \sigmga dW_t \\
+        S &=& exp(X_t + Y_t) \\
+        dX_t  &=& \alpha(\mu(t)-X_t)dt + \sigma dW_t \\
         dY_t  &=& -\beta Y_{t-}dt + J_tdN_t \\
         \omega(J)&=& \eta_u e^{-\eta_u J}
         \end{array}
