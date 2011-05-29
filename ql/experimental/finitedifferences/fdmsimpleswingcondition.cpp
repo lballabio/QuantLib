@@ -39,6 +39,8 @@ namespace QuantLib {
         if (iter != exerciseTimes_.end()) {
             Array retVal= a;
 
+            const Size d = std::distance(iter, exerciseTimes_.end());
+
             const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
             const FdmLinearOpIterator endIter = layout->end();
             
@@ -55,7 +57,8 @@ namespace QuantLib {
                     const Real valueMinusOneExRight 
                          = a[layout->neighbourhood(iter, swingDirection_, -1)];
                     
-                    if (currentValue < cashflow + valueMinusOneExRight) {
+                    if (   currentValue < cashflow + valueMinusOneExRight
+                        || exerciseValue >= d ) {
                         retVal[iter.index()] = cashflow + valueMinusOneExRight;
                     }
                 }

@@ -41,7 +41,7 @@ namespace QuantLib {
             FdSimpleExtOUJumpSwingEngine(
               const boost::shared_ptr<ExtOUWithJumpsProcess>& p,
               const boost::shared_ptr<YieldTermStructure>& rTS,
-              Size tGrid = 50, Size xGrid = 100, Size yGrid=50,
+              Size tGrid = 50, Size xGrid = 200, Size yGrid=50,
               const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
         void calculate() const;
