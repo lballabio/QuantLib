@@ -34,11 +34,11 @@ namespace QuantLib {
         \f[
         \begin{array}{rcl}
             dE(t) &=& \left[ \frac{\partial}{\partial t} \mu(t)
-				+\theta_1 \left(\mu(t)-E(t^-)\right)\right]dt
-				+\sigma dW(t) + h(E(t^-))dJ(t) 
-			\mu(t)&=& \alpha + \beta t +\gamma \cos(\epsilon+2\pi t)
-				+\delta \cos(\zeta + 4\pi t)
-		\end{array}
+                +\theta_1 \left(\mu(t)-E(t^-)\right)\right]dt
+                +\sigma dW(t) + h(E(t^-))dJ(t) 
+            \mu(t)&=& \alpha + \beta t +\gamma \cos(\epsilon+2\pi t)
+                +\delta \cos(\zeta + 4\pi t)
+        \end{array}
         \f]
 
         \ingroup processes
@@ -46,31 +46,31 @@ namespace QuantLib {
     class GemanRoncoroniProcess : public StochasticProcess1D {
       public:
         GemanRoncoroniProcess(Real x0, 
-							  Real alpha, Real beta, 
-							  Real gamma, Real delta, 
-							  Real eps, Real zeta, Real d, 
-							  Real k, Real tau,
-							  Real sig2, Real a, Real b,
-							  Real theta1, Real theta2, Real theta3,
-							  Real psi);
+                              Real alpha, Real beta, 
+                              Real gamma, Real delta, 
+                              Real eps, Real zeta, Real d, 
+                              Real k, Real tau,
+                              Real sig2, Real a, Real b,
+                              Real theta1, Real theta2, Real theta3,
+                              Real psi);
 
         Real x0() const;
         Real drift(Time t, Real x)     const;
         Real diffusion(Time t, Real x) const;
-		Real stdDeviation(Time t0, Real x0, Time dt)    const;
+        Real stdDeviation(Time t0, Real x0, Time dt)    const;
         Real evolve(Time t0, Real x0, Time dt, Real dw) const;
 
-		Real evolve(Time t0, Real x0, Time dt, Real dw, const Array& du) const;
+        Real evolve(Time t0, Real x0, Time dt, Real dw, const Array& du) const;
         
-	private:
-		const Real x0_;
-		const Real alpha_, beta_, gamma_, delta_;
-		const Real eps_, zeta_, d_; 
-		const Real k_, tau_;
-		const Real sig2_, a_, b_;
-		const Real theta1_, theta2_, theta3_;
-		const Real psi_;
-		mutable boost::shared_ptr<PseudoRandom::urng_type> urng_;
+    private:
+        const Real x0_;
+        const Real alpha_, beta_, gamma_, delta_;
+        const Real eps_, zeta_, d_; 
+        const Real k_, tau_;
+        const Real sig2_, a_, b_;
+        const Real theta1_, theta2_, theta3_;
+        const Real psi_;
+        mutable boost::shared_ptr<PseudoRandom::urng_type> urng_;
     };
 }
 
