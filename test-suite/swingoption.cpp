@@ -172,7 +172,7 @@ void SwingOptionTest::testGemanRoncoroniProcess() {
     
     const Time T = 10.0;
     const Size stepsPerYear = 250;
-    const Size steps = T*stepsPerYear;
+    const Size steps = Size(T*Real(stepsPerYear));
     
     TimeGrid grid(T, steps);
 
