@@ -18,7 +18,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
 /*! \file variancegammamodel.hpp
-	\brief Variance Gamma model
+    \brief Variance Gamma model
 */
 
 #ifndef quantlib_variance_gamma_model_hpp
@@ -29,33 +29,33 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
 
-	//! Variance Gamma model
-	/*! References:
+    //! Variance Gamma model
+    /*! References:
 
-		Dilip B. Madan, Peter Carr, Eric C. Chang (1998)
-		"The variance gamma process and option pricing,"
-		European Finance Review, 2, 79-105
+        Dilip B. Madan, Peter Carr, Eric C. Chang (1998)
+        "The variance gamma process and option pricing,"
+        European Finance Review, 2, 79-105
 
-		\warning calibration is not implemented for VG
-	*/
-	class VarianceGammaModel : public CalibratedModel {
+        \warning calibration is not implemented for VG
+    */
+    class VarianceGammaModel : public CalibratedModel {
       public:
-		VarianceGammaModel(const boost::shared_ptr<VarianceGammaProcess>& process);
+        VarianceGammaModel(const boost::shared_ptr<VarianceGammaProcess>& process);
 
-		// sigma
-		Real sigma() const { return arguments_[0](0.0); }
-		// nu
-		Real nu() const { return arguments_[1](0.0); }
-		// theta
-		Real theta() const { return arguments_[2](0.0); }
+        // sigma
+        Real sigma() const { return arguments_[0](0.0); }
+        // nu
+        Real nu() const { return arguments_[1](0.0); }
+        // theta
+        Real theta() const { return arguments_[2](0.0); }
 
-		// underlying process
-		boost::shared_ptr<VarianceGammaProcess> process() const { return process_; }
+        // underlying process
+        boost::shared_ptr<VarianceGammaProcess> process() const { return process_; }
 
-	protected:
-		void generateArguments();
-		boost::shared_ptr<VarianceGammaProcess> process_;
-	};
+    protected:
+        void generateArguments();
+        boost::shared_ptr<VarianceGammaProcess> process_;
+    };
 
 }
 

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2010 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -52,6 +53,37 @@ namespace QuantLib {
     };
 
 
+    //! Bond redemption
+    /*! This class specializes SimpleCashFlow so that visitors
+        can perform more detailed cash-flow analysis.
+    */
+    class Redemption : public SimpleCashFlow {
+      public:
+        Redemption(Real amount,
+                   const Date& date)
+        : SimpleCashFlow(amount, date) {}
+        //! \name Visitability
+        //@{
+        virtual void accept(AcyclicVisitor&);
+        //@}
+    };
+
+    //! Amortizing payment
+    /*! This class specializes SimpleCashFlow so that visitors
+        can perform more detailed cash-flow analysis.
+    */
+    class AmortizingPayment : public SimpleCashFlow {
+      public:
+        AmortizingPayment(Real amount,
+                          const Date& date)
+        : SimpleCashFlow(amount, date) {}
+        //! \name Visitability
+        //@{
+        virtual void accept(AcyclicVisitor&);
+        //@}
+    };
+
+
     // inline definitions
 
     inline void SimpleCashFlow::accept(AcyclicVisitor& v) {
@@ -61,6 +93,24 @@ namespace QuantLib {
             v1->visit(*this);
         else
             CashFlow::accept(v);
+    }
+
+    inline void Redemption::accept(AcyclicVisitor& v) {
+        Visitor<Redemption>* v1 =
+            dynamic_cast<Visitor<Redemption>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            SimpleCashFlow::accept(v);
+    }
+
+    inline void AmortizingPayment::accept(AcyclicVisitor& v) {
+        Visitor<AmortizingPayment>* v1 =
+            dynamic_cast<Visitor<AmortizingPayment>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            SimpleCashFlow::accept(v);
     }
 
 }

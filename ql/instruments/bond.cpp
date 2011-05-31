@@ -305,10 +305,14 @@ namespace QuantLib {
                      !redemptions.empty()   ? redemptions.back() :
                                               100.0;
             Real amount = (R/100.0)*(notionals_[i-1]-notionals_[i]);
-            boost::shared_ptr<CashFlow> redemption(
-                            new SimpleCashFlow(amount, notionalSchedule_[i]));
-            cashflows_.push_back(redemption);
-            redemptions_.push_back(redemption);
+            boost::shared_ptr<CashFlow> payment;
+            if (i < notionalSchedule_.size()-1)
+                payment.reset(new AmortizingPayment(amount,
+                                                    notionalSchedule_[i]));
+            else
+                payment.reset(new Redemption(amount, notionalSchedule_[i]));
+            cashflows_.push_back(payment);
+            redemptions_.push_back(payment);
         }
         // stable_sort now moves the redemptions to the right places
         // while ensuring that they follow coupons with the same date.
@@ -321,7 +325,7 @@ namespace QuantLib {
                                    const Date& date) {
 
         boost::shared_ptr<CashFlow> redemptionCashflow(
-                         new SimpleCashFlow(notional*redemption/100.0, date));
+                         new Redemption(notional*redemption/100.0, date));
         setSingleRedemption(notional, redemptionCashflow);
     }
 

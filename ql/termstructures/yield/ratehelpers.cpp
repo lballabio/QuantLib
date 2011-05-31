@@ -79,6 +79,60 @@ namespace QuantLib {
 
     FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
                                          const Date& immDate,
+                                         const Date& endDate,
+                                         const DayCounter& dayCounter,
+                                         const Handle<Quote>& convAdj)
+    : RateHelper(price), convAdj_(convAdj) {
+        QL_REQUIRE(IMM::isIMMdate(immDate, false),
+                   immDate << " is not a valid IMM date");
+        earliestDate_ = immDate;
+
+        if (endDate==Date()) {
+            latestDate_ = IMM::nextDate(immDate, false);
+            latestDate_ = IMM::nextDate(latestDate_, false);
+            latestDate_ = IMM::nextDate(latestDate_, false);
+        } else { 
+            QL_REQUIRE(endDate>immDate,
+                       "end date (" << endDate <<
+                       ") must be greater than IMM start date (" <<
+                       immDate << ")");
+            latestDate_ = endDate;
+        }
+
+        yearFraction_ = dayCounter.yearFraction(earliestDate_, latestDate_);
+
+        registerWith(convAdj_);
+    }
+
+    FuturesRateHelper::FuturesRateHelper(Real price,
+                                         const Date& immDate,
+                                         const Date& endDate,
+                                         const DayCounter& dayCounter,
+                                         Rate convAdj)
+    : RateHelper(price),
+      convAdj_(Handle<Quote>(shared_ptr<Quote>(new SimpleQuote(convAdj))))
+    {
+        QL_REQUIRE(IMM::isIMMdate(immDate, false),
+                   immDate << "is not a valid IMM date");
+        earliestDate_ = immDate;
+        
+        if (endDate==Date()) {
+            latestDate_ = IMM::nextDate(immDate, false);
+            latestDate_ = IMM::nextDate(latestDate_, false);
+            latestDate_ = IMM::nextDate(latestDate_, false);
+        } else { 
+            QL_REQUIRE(endDate>immDate,
+                       "end date (" << endDate <<
+                       ") must be greater than IMM start date (" <<
+                       immDate << ")");
+            latestDate_ = endDate;
+        }
+
+        yearFraction_ = dayCounter.yearFraction(earliestDate_, latestDate_);
+    }
+
+    FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
+                                         const Date& immDate,
                                          const shared_ptr<IborIndex>& i,
                                          const Handle<Quote>& convAdj)
     : RateHelper(price), convAdj_(convAdj) {

@@ -26,6 +26,8 @@
 #define quantlib_clayton_copula_rng_hpp
 
 #include <ql/methods/montecarlo/sample.hpp>
+#include <ql/errors.hpp>
+#include <vector>
 
 namespace QuantLib {
 

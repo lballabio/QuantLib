@@ -43,7 +43,7 @@ namespace QuantLib {
         std::ostream& operator<<(std::ostream& out,
                                  const percent_holder& holder) {
             std::ios::fmtflags flags = out.flags();
-            Size width = out.width();
+            Size width = (Size)out.width();
             if (width > 2)
                 out.width(width-2); // eat space used by percent sign
             out << std::fixed;

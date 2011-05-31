@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Ferdinando Ametrano
+ Copyright (C) 2008, 2011 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,10 +23,13 @@
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/currencies/asia.hpp>
 
+using boost::shared_ptr;
+
 namespace QuantLib {
 
-    JpyLiborSwapIsdaFixAm::JpyLiborSwapIsdaFixAm(const Period& tenor,
-                                                 const Handle<YieldTermStructure>& h)
+    JpyLiborSwapIsdaFixAm::JpyLiborSwapIsdaFixAm(
+                                const Period& tenor,
+                                const Handle<YieldTermStructure>& h)
     : SwapIndex("JpyLiborSwapIsdaFixAm", // familyName
                 tenor,
                 2, // settlementDays
@@ -37,8 +40,24 @@ namespace QuantLib {
                 ActualActual(ActualActual::ISDA), // fixedLegDaycounter
                 boost::shared_ptr<IborIndex>(new JPYLibor(6*Months, h))) {}
 
-    JpyLiborSwapIsdaFixPm::JpyLiborSwapIsdaFixPm(const Period& tenor,
-                                                 const Handle<YieldTermStructure>& h)
+    JpyLiborSwapIsdaFixAm::JpyLiborSwapIsdaFixAm(
+                                const Period& tenor,
+                                const Handle<YieldTermStructure>& forwarding,
+                                const Handle<YieldTermStructure>& discounting)
+    : SwapIndex("JpyLiborSwapIsdaFixAm", // familyName
+                tenor,
+                2, // settlementDays
+                JPYCurrency(),
+                TARGET(),
+                6*Months, // fixedLegTenor
+                ModifiedFollowing, // fixedLegConvention
+                ActualActual(ActualActual::ISDA), // fixedLegDaycounter
+                shared_ptr<IborIndex>(new JPYLibor(6*Months, forwarding)),
+                discounting) {}
+
+    JpyLiborSwapIsdaFixPm::JpyLiborSwapIsdaFixPm(
+                                const Period& tenor,
+                                const Handle<YieldTermStructure>& h)
     : SwapIndex("JpyLiborSwapIsdaFixPm", // familyName
                 tenor,
                 2, // settlementDays
@@ -48,5 +67,20 @@ namespace QuantLib {
                 ModifiedFollowing, // fixedLegConvention
                 ActualActual(ActualActual::ISDA), // fixedLegDaycounter
                 boost::shared_ptr<IborIndex>(new JPYLibor(6*Months, h))) {}
+
+    JpyLiborSwapIsdaFixPm::JpyLiborSwapIsdaFixPm(
+                                const Period& tenor,
+                                const Handle<YieldTermStructure>& forwarding,
+                                const Handle<YieldTermStructure>& discounting)
+    : SwapIndex("JpyLiborSwapIsdaFixPm", // familyName
+                tenor,
+                2, // settlementDays
+                JPYCurrency(),
+                TARGET(),
+                6*Months, // fixedLegTenor
+                ModifiedFollowing, // fixedLegConvention
+                ActualActual(ActualActual::ISDA), // fixedLegDaycounter
+                shared_ptr<IborIndex>(new JPYLibor(6*Months, forwarding)),
+                discounting) {}
 
 }

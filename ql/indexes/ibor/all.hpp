@@ -15,6 +15,7 @@
 #include <ql/indexes/ibor/libor.hpp>
 #include <ql/indexes/ibor/nzdlibor.hpp>
 #include <ql/indexes/ibor/seklibor.hpp>
+#include <ql/indexes/ibor/sonia.hpp>
 #include <ql/indexes/ibor/tibor.hpp>
 #include <ql/indexes/ibor/trlibor.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>

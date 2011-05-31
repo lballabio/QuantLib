@@ -221,6 +221,9 @@ namespace QuantLib {
 
     inline Array::Array(const Array& from)
     : data_(from.n_ ? new Real[from.n_] : (Real*)(0)), n_(from.n_) {
+        #if defined(QL_PATCH_MSVC) && defined(QL_DEBUG)
+        if (n_)
+        #endif
         std::copy(from.begin(),from.end(),begin());
     }
 
@@ -258,6 +261,9 @@ namespace QuantLib {
             Size n = std::distance(begin, end);
             data_.reset(n ? new Real[n] : (Real*)(0));
             n_ = n;
+            #if defined(QL_PATCH_MSVC) && defined(QL_DEBUG)
+            if (n_)
+            #endif
             std::copy(begin, end, a.begin());
         }
 

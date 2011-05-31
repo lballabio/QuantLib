@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007, 2009 Chris Kenyon
+ Copyright (C) 2011 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,26 +15,18 @@
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
- */
+*/
 
-#ifndef quantlib_test_inflation_hpp
-#define quantlib_test_inflation_hpp
+#include <ql/indexes/ibor/sonia.hpp>
+#include <ql/time/calendars/unitedkingdom.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/currencies/europe.hpp>
 
-#include <boost/test/unit_test.hpp>
+namespace QuantLib {
 
-/* remember to document new and/or updated tests in the Doxygen
- comment block of the corresponding class */
+    Sonia::Sonia(const Handle<YieldTermStructure>& h)
+    : OvernightIndex("Sonia", 0, GBPCurrency(),
+                     UnitedKingdom(UnitedKingdom::Exchange),
+                     Actual365Fixed(), h) {}
 
-class InflationTest {
-public:
-    static void testPeriod();
-    static void testZeroIndex();
-    static void testZeroTermStructure();
-    static void testYYIndex();
-    static void testYYTermStructure();
-    static boost::unit_test_framework::test_suite* suite();
-};
-
-
-#endif
-
+}

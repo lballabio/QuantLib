@@ -62,6 +62,16 @@ namespace QuantLib {
                           const DayCounter& dayCounter,
                           Rate convexityAdjustment = 0.0);
         FuturesRateHelper(const Handle<Quote>& price,
+                          const Date& immStartDate,
+                          const Date& endDate,
+                          const DayCounter& dayCounter,
+                          const Handle<Quote>& convexityAdjustment = Handle<Quote>());
+        FuturesRateHelper(Real price,
+                          const Date& immStartDate,
+                          const Date& endDate,
+                          const DayCounter& dayCounter,
+                          Rate convexityAdjustment = 0.0);
+        FuturesRateHelper(const Handle<Quote>& price,
                           const Date& immDate,
                           const boost::shared_ptr<IborIndex>& iborIndex,
                           const Handle<Quote>& convexityAdjustment = Handle<Quote>());

@@ -38,15 +38,15 @@ namespace QuantLib {
 
         \ingroup processes
 
-		where the coefficients a and sigma are piecewise linear.
+        where the coefficients a and sigma are piecewise linear.
     */
     class GeneralizedOrnsteinUhlenbeckProcess : public StochasticProcess1D {
       public:
         GeneralizedOrnsteinUhlenbeckProcess(
               const boost::function<Real (Time)>& speed,
               const boost::function<Real (Time)>& vol,
-			  Real x0 = 0.0,
-			  Real level = 0.0);
+              Real x0 = 0.0,
+              Real level = 0.0);
         //! \name StochasticProcess1D interface
         //@{
         Real x0() const;

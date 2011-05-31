@@ -23,7 +23,9 @@
 #include <ql/timeseries.hpp>
 #include <ql/prices.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
-#include <boost/unordered_map.hpp>
+#if BOOST_VERSION >= 103600
+    #include <boost/unordered_map.hpp>
+#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -85,6 +87,7 @@ void TimeSeriesTest::testIntervalPrice() {
                                                                low);
 }
 
+#if BOOST_VERSION >= 103600
 namespace boost {
 
     template<>
@@ -95,6 +98,7 @@ namespace boost {
     };
 
 }
+#endif
 
 void TimeSeriesTest::testIterators() {
     BOOST_MESSAGE("Testing time series iterators...");
@@ -133,9 +137,8 @@ void TimeSeriesTest::testIterators() {
         BOOST_ERROR("value does not match");
     }
 
-
+    #if BOOST_VERSION >= 103600
     // unordered container
-
     typedef TimeSeries<int, boost::unordered_map<Date, int> >
                                                           TimeSeriesUnordered;
     TimeSeriesUnordered ts1;
@@ -151,7 +154,7 @@ void TimeSeriesTest::testIterators() {
             BOOST_ERROR("value does not match");
         }
     }
-
+    #endif
 
     // reverse iterators
 

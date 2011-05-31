@@ -28,6 +28,7 @@
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/experimental/finitedifferences/fdmsolverdesc.hpp>
 #include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
+#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 
 namespace QuantLib {
 

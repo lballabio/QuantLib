@@ -44,22 +44,22 @@ namespace QuantLib {
     }
 
 
-	/* Private function used by solver to determine time-dependent parameter
+    /* Private function used by solver to determine time-dependent parameter
        df(r) = [theta(t) - a(t) f(r)]dt + sigma(t) dz
        dg = [theta(t) - a(t) g(t)] dt
        dx = -a(t) x dt + sigma(t) dz
        x = f(r) - g(t)
-	*/
-	// Change the overloaded operator to change the model by changing
-	// the function below
+    */
+    // Change the overloaded operator to change the model by changing
+    // the function below
 
-	Real fInverse_(Real x) {
-		return std::exp(x);
-	}
+    Real fInverse_(Real x) {
+        return std::exp(x);
+    }
 
-	class GeneralizedHullWhite::Helper {
+    class GeneralizedHullWhite::Helper {
       public:
-		Helper(const Size i, const Real xMin, const Real dx,
+        Helper(const Size i, const Real xMin, const Real dx,
                const Real discountBondPrice,
                const boost::shared_ptr<ShortRateTree>& tree)
         : size_(tree->size(i)),
@@ -68,30 +68,30 @@ namespace QuantLib {
           statePrices_(tree->statePrices(i)),
           discountBondPrice_(discountBondPrice){}
 
-		Real operator()(const Real theta) const {
-			Real value = discountBondPrice_;
-			Real x = xMin_;
-			for (Size j=0; j<size_; j++) {
-				Real discount = std::exp(- fInverse_(theta+x)*dt_);
-				value -= statePrices_[j]*discount;
-				x += dx_;
-			}
+        Real operator()(const Real theta) const {
+            Real value = discountBondPrice_;
+            Real x = xMin_;
+            for (Size j=0; j<size_; j++) {
+                Real discount = std::exp(- fInverse_(theta+x)*dt_);
+                value -= statePrices_[j]*discount;
+                x += dx_;
+            }
 
-			return value;
-		}
+            return value;
+        }
 
       private:
-		Size size_;
-		Time dt_;
-		Real xMin_, dx_;
-		const Array& statePrices_;
-		Real discountBondPrice_;
-	};
+        Size size_;
+        Time dt_;
+        Real xMin_, dx_;
+        const Array& statePrices_;
+        Real discountBondPrice_;
+    };
 
-	GeneralizedHullWhite::GeneralizedHullWhite(
-		const Handle<YieldTermStructure>& yieldtermStructure,
-		const std::vector<Date>& speedstructure,
-		const std::vector<Date>& volstructure)
+    GeneralizedHullWhite::GeneralizedHullWhite(
+        const Handle<YieldTermStructure>& yieldtermStructure,
+        const std::vector<Date>& speedstructure,
+        const std::vector<Date>& volstructure)
     : OneFactorModel(2), TermStructureConsistentModel(yieldtermStructure),
       speedstructure_(speedstructure), volstructure_(volstructure),
       a_(arguments_[0]), sigma_(arguments_[1]) {
@@ -124,14 +124,14 @@ namespace QuantLib {
         }
 
         registerWith(yieldtermStructure);
-	}
+    }
 
-	GeneralizedHullWhite::GeneralizedHullWhite(
+    GeneralizedHullWhite::GeneralizedHullWhite(
         const Handle<YieldTermStructure>& yieldtermStructure,
-		const std::vector<Date>& speedstructure,
-		const std::vector<Date>& volstructure,
-		const std::vector<Real>& speed,
-		const std::vector<Real>& vol)
+        const std::vector<Date>& speedstructure,
+        const std::vector<Date>& volstructure,
+        const std::vector<Real>& speed,
+        const std::vector<Real>& vol)
   : OneFactorModel(2), TermStructureConsistentModel(yieldtermStructure),
     speedstructure_(speedstructure),
     volstructure_(volstructure),
@@ -164,65 +164,65 @@ namespace QuantLib {
         }
 
         registerWith(yieldtermStructure);
-	}
+    }
 
-	boost::shared_ptr<Lattice> GeneralizedHullWhite::tree(
+    boost::shared_ptr<Lattice> GeneralizedHullWhite::tree(
                                                   const TimeGrid& grid) const{
 
-		TermStructureFittingParameter phi(termStructure());
-		boost::shared_ptr<ShortRateDynamics> numericDynamics(
-			new Dynamics(phi, speed(), vol()));
-		boost::shared_ptr<TrinomialTree> trinomial(
-			new TrinomialTree(numericDynamics->process(), grid));
-		boost::shared_ptr<ShortRateTree> numericTree(
-			new ShortRateTree(trinomial, numericDynamics, grid));
-		typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
-		boost::shared_ptr<NumericalImpl> impl =
-			boost::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
+        TermStructureFittingParameter phi(termStructure());
+        boost::shared_ptr<ShortRateDynamics> numericDynamics(
+            new Dynamics(phi, speed(), vol()));
+        boost::shared_ptr<TrinomialTree> trinomial(
+            new TrinomialTree(numericDynamics->process(), grid));
+        boost::shared_ptr<ShortRateTree> numericTree(
+            new ShortRateTree(trinomial, numericDynamics, grid));
+        typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
+        boost::shared_ptr<NumericalImpl> impl =
+            boost::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
 
-		impl->reset();
-		Real value = 1.0;
-		Real vMin = -50.0;
-		Real vMax = 50.0;
+        impl->reset();
+        Real value = 1.0;
+        Real vMin = -50.0;
+        Real vMax = 50.0;
 
-		for (Size i=0; i<(grid.size() - 1); i++) {
-			Real discountBond = termStructure()->discount(grid[i+1]);
-			Real xMin = trinomial->underlying(i, 0);
-			Real dx = trinomial->dx(i);
-			Helper finder(i, xMin, dx, discountBond, numericTree);
-			Brent s1d;
-			s1d.setMaxEvaluations(1000);
-			value = s1d.solve(finder, 1e-7, value, vMin, vMax);
-			impl->set(grid[i], value);
-		}
+        for (Size i=0; i<(grid.size() - 1); i++) {
+            Real discountBond = termStructure()->discount(grid[i+1]);
+            Real xMin = trinomial->underlying(i, 0);
+            Real dx = trinomial->dx(i);
+            Helper finder(i, xMin, dx, discountBond, numericTree);
+            Brent s1d;
+            s1d.setMaxEvaluations(1000);
+            value = s1d.solve(finder, 1e-7, value, vMin, vMax);
+            impl->set(grid[i], value);
+        }
 
-		return numericTree;
-	}
+        return numericTree;
+    }
 
     boost::function<Real (Time)> GeneralizedHullWhite::speed() const {
 
-		std::vector<Real> speedvals;
-		speedvals.push_back(a_(0.0001));
-		for (Size i=0;i<a_.size()-1;i++)
-			speedvals.push_back(
-			a_(
-			(speedstructure_[i+1]-speedstructure_[0])/365.0
-			- 0.00001));
+        std::vector<Real> speedvals;
+        speedvals.push_back(a_(0.0001));
+        for (Size i=0;i<a_.size()-1;i++)
+            speedvals.push_back(
+            a_(
+            (speedstructure_[i+1]-speedstructure_[0])/365.0
+            - 0.00001));
 
-		return PiecewiseLinearCurve(speedperiods_, speedvals);
-	}
+        return PiecewiseLinearCurve(speedperiods_, speedvals);
+    }
 
     boost::function<Real (Time)> GeneralizedHullWhite::vol() const {
 
-		std::vector<Real> volvals;
-		volvals.push_back(sigma_(0.0001));
-		for (Size i=0;i<sigma_.size()-1;i++)
-			volvals.push_back(
-			sigma_(
-			(speedstructure_[i+1]-speedstructure_[0])/365.0
-			- 0.00001));
+        std::vector<Real> volvals;
+        volvals.push_back(sigma_(0.0001));
+        for (Size i=0;i<sigma_.size()-1;i++)
+            volvals.push_back(
+            sigma_(
+            (speedstructure_[i+1]-speedstructure_[0])/365.0
+            - 0.00001));
 
-		return PiecewiseLinearCurve(volperiods_, volvals);
-	}
+        return PiecewiseLinearCurve(volperiods_, volvals);
+    }
 
 }

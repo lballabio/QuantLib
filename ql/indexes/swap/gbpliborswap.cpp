@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2007, 2008 Ferdinando Ametrano
+ Copyright (C) 2006, 2007, 2008, 2011 Ferdinando Ametrano
  Copyright (C) 2006 Chiara Fornarola
 
  This file is part of QuantLib, a free-software/open-source library
@@ -24,13 +24,16 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/currencies/europe.hpp>
 
+using boost::shared_ptr;
+
 namespace QuantLib {
 
-    GbpLiborSwapIsdaFix::GbpLiborSwapIsdaFix(const Period& tenor,
-                                             const Handle<YieldTermStructure>& h)
+    GbpLiborSwapIsdaFix::GbpLiborSwapIsdaFix(
+                            const Period& tenor,
+                            const Handle<YieldTermStructure>& h)
     : SwapIndex("GbpLiborSwapIsdaFix", // familyName
                 tenor,
-                2, // settlementDays
+                0, // settlementDays
                 GBPCurrency(),
                 TARGET(),
                 tenor > 1*Years ? // fixedLegTenor
@@ -38,7 +41,25 @@ namespace QuantLib {
                 ModifiedFollowing, // fixedLegConvention
                 Actual365Fixed(), // fixedLegDaycounter
                 tenor > 1*Years ?
-                    boost::shared_ptr<IborIndex>(new GBPLibor(6*Months, h)) :
-                    boost::shared_ptr<IborIndex>(new GBPLibor(3*Months, h))) {}
+                    shared_ptr<IborIndex>(new GBPLibor(6*Months, h)) :
+                    shared_ptr<IborIndex>(new GBPLibor(3*Months, h))) {}
+
+    GbpLiborSwapIsdaFix::GbpLiborSwapIsdaFix(
+                            const Period& tenor,
+                            const Handle<YieldTermStructure>& forwarding,
+                            const Handle<YieldTermStructure>& discounting)
+    : SwapIndex("GbpLiborSwapIsdaFix", // familyName
+                tenor,
+                0, // settlementDays
+                GBPCurrency(),
+                TARGET(),
+                tenor > 1*Years ? // fixedLegTenor
+                    6*Months : 1*Years,
+                ModifiedFollowing, // fixedLegConvention
+                Actual365Fixed(), // fixedLegDaycounter
+                tenor > 1*Years ?
+                    shared_ptr<IborIndex>(new GBPLibor(6*Months, forwarding)) :
+                    shared_ptr<IborIndex>(new GBPLibor(3*Months, forwarding)),
+                discounting) {}
 
 }

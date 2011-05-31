@@ -26,6 +26,8 @@
 #define quantlib_farlie_gumbel_morgenstern_copula_rng_hpp
 
 #include <ql/methods/montecarlo/sample.hpp>
+#include <ql/errors.hpp>
+#include <vector>
 
 namespace QuantLib {
 

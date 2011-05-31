@@ -142,7 +142,7 @@ namespace QuantLib {
                    FixedRateCoupon(dates[i], previousNotional,
                                    rate_, dayCounter_, dates[i-1], dates[i]));
             boost::shared_ptr<CashFlow> amortization(new
-                 SimpleCashFlow(previousNotional - currentNotional, dates[i]));
+                 AmortizingPayment(previousNotional - currentNotional, dates[i]));
             previousNotional = currentNotional;
 
             leg_.push_back(interest);
@@ -154,7 +154,7 @@ namespace QuantLib {
         }
 
         boost::shared_ptr<CashFlow> redemption(new
-                 SimpleCashFlow(previousNotional, schedule_.dates().back()));
+                 Redemption(previousNotional, schedule_.dates().back()));
         leg_.push_back(redemption);
         redemptionLeg_.push_back(redemption);
     }
@@ -220,7 +220,7 @@ namespace QuantLib {
                    IborCoupon(dates[i], previousNotional, dates[i-1], dates[i],
                               fixingDays_, index_, 1.0, spread_));
             boost::shared_ptr<CashFlow> amortization(new
-                 SimpleCashFlow(previousNotional - currentNotional, dates[i]));
+                 AmortizingPayment(previousNotional - currentNotional, dates[i]));
             previousNotional = currentNotional;
 
             leg_.push_back(interest);
@@ -232,7 +232,7 @@ namespace QuantLib {
         }
 
         boost::shared_ptr<CashFlow> redemption(new
-                 SimpleCashFlow(previousNotional, schedule_.dates().back()));
+                 Redemption(previousNotional, schedule_.dates().back()));
         leg_.push_back(redemption);
         redemptionLeg_.push_back(redemption);
 

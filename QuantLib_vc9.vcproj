@@ -1320,6 +1320,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\indexes\ibor\sonia.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\indexes\ibor\sonia.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\indexes\ibor\tibor.hpp"
 					>
 				</File>
@@ -6936,14 +6944,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmhestonlikesolverfactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmhestonlikesolverfactory.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmhestonop.cpp"
 					>
 				</File>
@@ -6965,14 +6965,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmhestonvariancemesher.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmhullwhitemesher.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmhullwhitemesher.hpp"
 					>
 				</File>
 				<File

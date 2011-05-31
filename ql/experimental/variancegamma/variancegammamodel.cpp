@@ -22,29 +22,29 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
 
-	VarianceGammaModel::VarianceGammaModel(
-		const boost::shared_ptr<VarianceGammaProcess> & process)
-		: CalibratedModel(3), process_(process) {
-			arguments_[0] = ConstantParameter(process->sigma(),
-				PositiveConstraint());
-			arguments_[1] = ConstantParameter(process->nu(),
-				PositiveConstraint());
-			arguments_[2] = ConstantParameter(process->theta(),
-				NoConstraint());
+    VarianceGammaModel::VarianceGammaModel(
+        const boost::shared_ptr<VarianceGammaProcess> & process)
+        : CalibratedModel(3), process_(process) {
+            arguments_[0] = ConstantParameter(process->sigma(),
+                PositiveConstraint());
+            arguments_[1] = ConstantParameter(process->nu(),
+                PositiveConstraint());
+            arguments_[2] = ConstantParameter(process->theta(),
+                NoConstraint());
 
-			generateArguments();
+            generateArguments();
 
-			registerWith(process_->riskFreeRate());
-			registerWith(process_->dividendYield());
-			registerWith(process_->s0());
-	}
+            registerWith(process_->riskFreeRate());
+            registerWith(process_->dividendYield());
+            registerWith(process_->s0());
+    }
 
-	void VarianceGammaModel::generateArguments() {
-		process_.reset(new VarianceGammaProcess(process_->s0(),
-			process_->dividendYield(),
-			process_->riskFreeRate(),
-			sigma(), nu(), theta()));
-	}
+    void VarianceGammaModel::generateArguments() {
+        process_.reset(new VarianceGammaProcess(process_->s0(),
+            process_->dividendYield(),
+            process_->riskFreeRate(),
+            sigma(), nu(), theta()));
+    }
 
 }
 
