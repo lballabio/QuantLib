@@ -117,7 +117,7 @@ namespace QuantLib {
         std::vector< std::pair<Real, Real> > exerciseValues;
         for (Size i=arguments_.minExerciseRights;
              i <= arguments_.maxExerciseRights; ++i) {
-            const Real y = std::exp(i);
+            const Real y = std::exp(Real(i));
             exerciseValues.push_back(
                            std::pair<Real, Real>(solver->valueAt(spot, y), y));
         }
