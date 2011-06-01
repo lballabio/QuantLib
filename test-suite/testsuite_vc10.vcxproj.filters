@@ -338,6 +338,15 @@
     <ClCompile Include="quantlibtestsuite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="inflationcpicapfloor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="inflationcpiswap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="swingoption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="americanoption.hpp">
@@ -665,6 +674,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="volatilitymodels.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="swingoption.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inflationcpicapfloor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inflationcpiswap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

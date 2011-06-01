@@ -368,6 +368,8 @@
     <ClCompile Include="inflation.cpp" />
     <ClCompile Include="inflationcapfloor.cpp" />
     <ClCompile Include="inflationcapflooredcoupon.cpp" />
+    <ClCompile Include="inflationcpicapfloor.cpp" />
+    <ClCompile Include="inflationcpiswap.cpp" />
     <ClCompile Include="inflationvolatility.cpp" />
     <ClCompile Include="instruments.cpp" />
     <ClCompile Include="integrals.cpp" />
@@ -415,6 +417,7 @@
     <ClCompile Include="swaption.cpp" />
     <ClCompile Include="swaptionvolatilitycube.cpp" />
     <ClCompile Include="swaptionvolatilitymatrix.cpp" />
+    <ClCompile Include="swingoption.cpp" />
     <ClCompile Include="termstructures.cpp" />
     <ClCompile Include="timeseries.cpp" />
     <ClCompile Include="tqreigendecomposition.cpp" />
@@ -479,6 +482,8 @@
     <ClInclude Include="inflation.hpp" />
     <ClInclude Include="inflationcapfloor.hpp" />
     <ClInclude Include="inflationcapflooredcoupon.hpp" />
+    <ClInclude Include="inflationcpicapfloor.hpp" />
+    <ClInclude Include="inflationcpiswap.hpp" />
     <ClInclude Include="inflationvolatility.hpp" />
     <ClInclude Include="instruments.hpp" />
     <ClInclude Include="integrals.hpp" />
@@ -527,6 +532,7 @@
     <ClInclude Include="swaptionvolatilitycube.hpp" />
     <ClInclude Include="swaptionvolatilitymatrix.hpp" />
     <ClInclude Include="swaptionvolstructuresutilities.hpp" />
+    <ClInclude Include="swingoption.hpp" />
     <ClInclude Include="termstructures.hpp" />
     <ClInclude Include="timeseries.hpp" />
     <ClInclude Include="tqreigendecomposition.hpp" />

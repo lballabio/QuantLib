@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="methods">
@@ -2976,9 +2976,6 @@
     <ClInclude Include="ql\experimental\finitedifferences\fdmhestonhullwhitesolver.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\finitedifferences\fdmhestonlikesolverfactory.hpp">
-      <Filter>experimental\finitedifferences</Filter>
-    </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdmhestonop.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
@@ -2986,9 +2983,6 @@
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdmhestonvariancemesher.hpp">
-      <Filter>experimental\finitedifferences</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\finitedifferences\fdmhullwhitemesher.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdminnervaluecalculator.hpp">
@@ -3345,6 +3339,96 @@
     <ClInclude Include="ql\userconfig.hpp" />
     <ClInclude Include="ql\version.hpp" />
     <ClInclude Include="ql\volatilitymodel.hpp" />
+    <ClInclude Include="ql\cashflows\baseindexedcashflow.hpp">
+      <Filter>cashflows</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\cashflows\cpicoupon.hpp">
+      <Filter>cashflows</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\cashflows\cpicouponpricer.hpp">
+      <Filter>cashflows</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\cpicapfloor.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\cpiswap.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\vanillastorageoption.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\vanillaswingoption.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\bonds\cpibond.hpp">
+      <Filter>instruments\bonds</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\inflation\cpicapfloorengines.hpp">
+      <Filter>pricingengines\inflation</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\exponentialjump1dmesher.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdextoujumpvanillaengine.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdm2dimsolver.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdm3dimsolver.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmextendedornsteinuhlenbeckop.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmextoujumpmodelinnervalue.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmextoujumpop.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmextoujumpsolver.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmsimple2dextousolver.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmsimple3dextoujumpsolver.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmsimpleprocess1dmesher.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmsimplestoragecondition.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmsimpleswingcondition.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmsolverdesc.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdsimplebsswingengine.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdsimpleextoujumpswingengine.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdsimpleextoustorageengine.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\processes\extouwithjumpsprocess.hpp">
+      <Filter>experimental\processes</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\processes\gemanroncoroniprocess.hpp">
+      <Filter>experimental\processes</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\inflation\cpicapfloortermpricesurface.hpp">
+      <Filter>experimental\inflation</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\inflation\cpioptionletvolatilitystructure.hpp">
+      <Filter>experimental\inflation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -5099,9 +5183,6 @@
     <ClCompile Include="ql\experimental\finitedifferences\fdmhestonhullwhitesolver.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\finitedifferences\fdmhestonlikesolverfactory.cpp">
-      <Filter>experimental\finitedifferences</Filter>
-    </ClCompile>
     <ClCompile Include="ql\experimental\finitedifferences\fdmhestonop.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
@@ -5109,9 +5190,6 @@
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\finitedifferences\fdmhestonvariancemesher.cpp">
-      <Filter>experimental\finitedifferences</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\finitedifferences\fdmhullwhitemesher.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\finitedifferences\fdminnervaluecalculator.cpp">
@@ -5328,5 +5406,77 @@
     <ClCompile Include="ql\stochasticprocess.cpp" />
     <ClCompile Include="ql\termstructure.cpp" />
     <ClCompile Include="ql\timegrid.cpp" />
+    <ClCompile Include="ql\cashflows\baseindexedcashflow.cpp">
+      <Filter>cashflows</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\cashflows\cpicoupon.cpp">
+      <Filter>cashflows</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\cashflows\cpicouponpricer.cpp">
+      <Filter>cashflows</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\cpicapfloor.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\cpiswap.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\bonds\cpibond.cpp">
+      <Filter>instruments\bonds</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\inflation\cpicapfloorengines.cpp">
+      <Filter>pricingengines\inflation</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\exponentialjump1dmesher.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdextoujumpvanillaengine.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdm2dimsolver.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdm3dimsolver.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdmextendedornsteinuhlenbeckop.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdmextoujumpop.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdmextoujumpsolver.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdmsimpleprocess1dmesher.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdmsimplestoragecondition.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdmsimpleswingcondition.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdsimplebsswingengine.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdsimpleextoujumpswingengine.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdsimpleextoustorageengine.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\processes\extouwithjumpsprocess.cpp">
+      <Filter>experimental\processes</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\processes\gemanroncoroniprocess.cpp">
+      <Filter>experimental\processes</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\inflation\cpicapfloortermpricesurface.cpp">
+      <Filter>experimental\inflation</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\inflation\cpioptionletvolatilitystructure.cpp">
+      <Filter>experimental\inflation</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
