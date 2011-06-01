@@ -184,7 +184,7 @@ namespace QuantLib {
 			
 			//! remember that the strikes use the quoting convention
 			//@{
-			virtual Real price(const Date &d, const Rate k) const;
+			virtual Real price(const Date &d, Rate k) const;
 			virtual Real capPrice(const Date &d, Rate k) const;
 			virtual Real floorPrice(const Date &d, Rate k) const;
 			//@}
