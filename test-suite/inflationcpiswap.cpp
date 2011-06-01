@@ -300,8 +300,8 @@ void CPISwapTest::consistency() {
 	Date baseDate = floatSchedule[0] - contractObservationLag;
 	Date asofDate = Settings::instance().evaluationDate();	
 
-	float floatFix[] = {0.06255,0.05975,0.0637,0.018425,0.0073438,-1,-1};
-	float cpiFix[] = {211.4,217.2,211.4,213.4,-2,-2};
+	Real floatFix[] = {0.06255,0.05975,0.0637,0.018425,0.0073438,-1,-1};
+	Real cpiFix[] = {211.4,217.2,211.4,213.4,-2,-2};
 	for(Size i=0;i<floatSchedule.size(); i++){
 		if (floatSchedule[i] < common.evaluationDate) {
 			floatIndex->addFixing(floatSchedule[i], floatFix[i],true);//true=overwrite
@@ -456,8 +456,8 @@ void CPISwapTest::cpibondconsistency() {
 	Date baseDate = floatSchedule[0] - contractObservationLag;
 	Date asofDate = Settings::instance().evaluationDate();	
 	
-	float floatFix[] = {0.06255,0.05975,0.0637,0.018425,0.0073438,-1,-1};
-	float cpiFix[] = {211.4,217.2,211.4,213.4,-2,-2};
+	Real floatFix[] = {0.06255,0.05975,0.0637,0.018425,0.0073438,-1,-1};
+	Real cpiFix[] = {211.4,217.2,211.4,213.4,-2,-2};
 	for(Size i=0;i<floatSchedule.size(); i++){
 		if (floatSchedule[i] < common.evaluationDate) {
 			floatIndex->addFixing(floatSchedule[i], floatFix[i],true);//true=overwrite
