@@ -366,8 +366,9 @@ void SwingOptionTest::testFdBSSwingOption() {
     while (exerciseDates.back() < maturityDate) {
         exerciseDates.push_back(exerciseDates.back()+Period(1, Months));
     }
-    boost::shared_ptr<BermudanExercise> bermudanExercise(
-                                        new BermudanExercise(exerciseDates));
+
+    boost::shared_ptr<SwingExercise> swingExercise(
+                                            new SwingExercise(exerciseDates));
 
     Handle<YieldTermStructure> riskFreeTS(flatRate(0.14, dayCounter));
     Handle<YieldTermStructure> dividendTS(flatRate(0.02, dayCounter));
@@ -381,7 +382,7 @@ void SwingOptionTest::testFdBSSwingOption() {
     boost::shared_ptr<PricingEngine> engine(
                                 new FdSimpleBSSwingEngine(process, 50, 200));
     
-    VanillaOption bermudanOption(payoff, bermudanExercise);
+    VanillaOption bermudanOption(payoff, swingExercise);
     bermudanOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
                           new FdBlackScholesVanillaEngine(process, 50, 200)));
     const Real bermudanOptionPrices = bermudanOption.NPV();
@@ -389,7 +390,7 @@ void SwingOptionTest::testFdBSSwingOption() {
     for (Size i=0; i < exerciseDates.size(); ++i) {
         const Size exerciseRights = i+1;
         
-        VanillaSwingOption swingOption(payoff, bermudanExercise,
+        VanillaSwingOption swingOption(payoff, swingExercise,
                                        exerciseRights, exerciseRights);
         swingOption.setPricingEngine(engine);
         const Real swingOptionPrice = swingOption.NPV();
@@ -437,8 +438,8 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
     while (exerciseDates.back() < maturityDate) {
         exerciseDates.push_back(exerciseDates.back()+Period(1, Months));
     }
-    boost::shared_ptr<BermudanExercise> bermudanExercise(
-                                        new BermudanExercise(exerciseDates));
+    boost::shared_ptr<SwingExercise> swingExercise(
+                                            new SwingExercise(exerciseDates));
 
     std::vector<Time> exerciseTimes(exerciseDates.size());
     for (Size i=0; i < exerciseTimes.size(); ++i) {
@@ -477,7 +478,7 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
     boost::shared_ptr<PricingEngine> vanillaEngine(
                 new FdExtOUJumpVanillaEngine(jumpProcess, rTS, 25, 50, 25));
 
-    VanillaOption bermudanOption(payoff, bermudanExercise);
+    VanillaOption bermudanOption(payoff, swingExercise);
     bermudanOption.setPricingEngine(vanillaEngine);
     const Real bermudanOptionPrices = bermudanOption.NPV();
 
@@ -492,7 +493,7 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
     for (Size i=0; i < exerciseDates.size(); ++i) {
         const Size exerciseRights = i+1;
 
-        VanillaSwingOption swingOption(payoff, bermudanExercise,
+        VanillaSwingOption swingOption(payoff, swingExercise,
                                        exerciseRights, exerciseRights);
         swingOption.setPricingEngine(swingEngine);
         const Real swingOptionPrice = swingOption.NPV();

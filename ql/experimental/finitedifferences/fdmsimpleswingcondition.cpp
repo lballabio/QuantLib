@@ -52,7 +52,7 @@ namespace QuantLib {
                 const Size exerciseValue = coor[swingDirection_];
                 
                 if (exerciseValue > 0) {
-                    const Real cashflow = calculator_->innerValue(iter);
+                    const Real cashflow = calculator_->innerValue(iter, t);
                     const Real currentValue = a[iter.index()];
                     const Real valueMinusOneExRight 
                          = a[layout->neighbourhood(iter, swingDirection_, -1)];

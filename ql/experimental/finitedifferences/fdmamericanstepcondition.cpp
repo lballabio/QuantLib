@@ -30,8 +30,7 @@ namespace QuantLib {
       calculator_(calculator) {
     }
 
-    void FdmAmericanStepCondition::applyTo(Array& a,
-                                           Time) const {
+    void FdmAmericanStepCondition::applyTo(Array& a, Time t) const {
         boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
         const FdmLinearOpIterator endIter = layout->end();
 
@@ -43,7 +42,7 @@ namespace QuantLib {
             for (Size i=0; i < dims; ++i)
                 locations[i] = mesher_->location(iter, i);
 
-            const Real innerValue = calculator_->innerValue(iter);
+            const Real innerValue = calculator_->innerValue(iter, t);
             if (innerValue > a[iter.index()]) {
                 a[iter.index()] = innerValue;
             }

@@ -44,17 +44,21 @@ namespace QuantLib {
               const boost::shared_ptr<ExtOUWithJumpsProcess>& process,
               const boost::shared_ptr<YieldTermStructure>& rTS,
               Size tGrid, Size xGrid, Size yGrid,
+              const boost::shared_ptr<Shape>& shape,
               const FdmSchemeDesc& schemeDesc)
     : process_(process),
       rTS_(rTS),
+      shape_(shape),
       tGrid_(tGrid), xGrid_(xGrid), yGrid_(yGrid),
       schemeDesc_(schemeDesc) {
     }
 
     void FdSimpleExtOUJumpSwingEngine::calculate() const {
 
-        QL_REQUIRE(arguments_.exercise->type() == Exercise::Bermudan,
-                   "Bermudan exercise supported only");
+        boost::shared_ptr<SwingExercise> swingExercise(
+            boost::dynamic_pointer_cast<SwingExercise>(arguments_.exercise));
+
+        QL_REQUIRE(swingExercise, "Swing exercise supported only");
 
         // 1. Layout
         std::vector<Size> dim;
@@ -98,10 +102,16 @@ namespace QuantLib {
 
         // 4.1 Bermudan step conditions
         std::vector<Time> exerciseTimes;
-        for (Size i=0; i<arguments_.exercise->dates().size(); ++i) {
-            const Time t = rTS_->dayCounter()
-                           .yearFraction(rTS_->referenceDate(),
-                                         arguments_.exercise->dates()[i]);
+        for (Size i=0; i<swingExercise->dates().size(); ++i) {
+            Time t = rTS_->dayCounter().yearFraction(rTS_->referenceDate(),
+                                                     swingExercise->dates()[i]);
+
+            const Time dt = rTS_->dayCounter()
+                .yearFraction(rTS_->referenceDate(),
+                              swingExercise->dates()[i]+Period(1u, Days)) - t;
+
+            t += dt*swingExercise->seconds()[i]/(24*3600.);
+
             QL_REQUIRE(t >= 0, "exercise dates must not contain past date");
             exerciseTimes.push_back(t);
         }
@@ -110,11 +120,11 @@ namespace QuantLib {
         const boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         boost::shared_ptr<FdmInnerValueCalculator> exerciseCalculator(
-                           new FdmExtOUJumpModelInnerValue(payoff, mesher));
+                      new FdmExtOUJumpModelInnerValue(payoff, mesher, shape_));
 
         stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
-                new FdmSimpleSwingCondition(exerciseTimes,
-                                            mesher, exerciseCalculator, 2)));
+                new FdmSimpleSwingCondition(exerciseTimes, mesher,
+                                            exerciseCalculator, 2)));
 
         boost::shared_ptr<FdmStepConditionComposite> conditions(
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));

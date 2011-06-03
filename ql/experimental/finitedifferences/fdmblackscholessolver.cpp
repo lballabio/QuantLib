@@ -65,7 +65,8 @@ namespace QuantLib {
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
              ++iter) {
             initialValues_[iter.index()]
-                               = solverDesc.calculator->avgInnerValue(iter);
+                 = solverDesc.calculator->avgInnerValue(iter,
+                                                        solverDesc.maturity);
             x_.push_back(mesher_->location(iter, 0));
         }
     }

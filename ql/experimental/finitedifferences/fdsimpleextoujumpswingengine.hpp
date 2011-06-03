@@ -27,6 +27,7 @@
 #include <ql/pricingengine.hpp>
 #include <ql/instruments/vanillaswingoption.hpp>
 #include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
+#include <ql/experimental/finitedifferences/fdmextoujumpmodelinnervalue.hpp>
 
 namespace QuantLib {
 
@@ -38,10 +39,14 @@ namespace QuantLib {
         : public GenericEngine<VanillaSwingOption::arguments,
                                VanillaSwingOption::results> {
       public:
+            typedef FdmExtOUJumpModelInnerValue::Shape Shape;
+
             FdSimpleExtOUJumpSwingEngine(
               const boost::shared_ptr<ExtOUWithJumpsProcess>& p,
               const boost::shared_ptr<YieldTermStructure>& rTS,
               Size tGrid = 50, Size xGrid = 200, Size yGrid=50,
+              const boost::shared_ptr<Shape>& shape
+                                                 = boost::shared_ptr<Shape>(),
               const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
         void calculate() const;
@@ -49,6 +54,7 @@ namespace QuantLib {
       private:
         const boost::shared_ptr<ExtOUWithJumpsProcess> process_;
         const boost::shared_ptr<YieldTermStructure> rTS_;
+        const boost::shared_ptr<Shape> shape_;
         const Size tGrid_, xGrid_, yGrid_;
         const FdmSchemeDesc schemeDesc_;
     };

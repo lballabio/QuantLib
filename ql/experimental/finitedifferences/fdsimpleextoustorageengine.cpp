@@ -45,11 +45,11 @@ namespace QuantLib {
             FdmUnderlyingValue(const boost::shared_ptr<FdmMesher>& mesher)
             : mesher_(mesher) { }
 
-            Real innerValue(const FdmLinearOpIterator& iter) {
+            Real innerValue(const FdmLinearOpIterator& iter, Time) {
                 return std::exp(mesher_->location(iter, 0));
             }
-            Real avgInnerValue(const FdmLinearOpIterator& iter) {
-                return innerValue(iter);
+            Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
+                return innerValue(iter, t);
             }
           private:
             const boost::shared_ptr<FdmMesher> mesher_;
@@ -60,13 +60,13 @@ namespace QuantLib {
             FdmStorageValue(const boost::shared_ptr<FdmMesher>& mesher)
             : mesher_(mesher) { }
 
-            Real innerValue(const FdmLinearOpIterator& iter) {
+            Real innerValue(const FdmLinearOpIterator& iter, Time) {
                 const Real s = std::exp(mesher_->location(iter, 0));
                 const Real v = mesher_->location(iter, 1);
                 return s*v;
             }
-            Real avgInnerValue(const FdmLinearOpIterator& iter) {
-                return innerValue(iter);
+            Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
+                return innerValue(iter, t);
             }
           private:
             const boost::shared_ptr<FdmMesher> mesher_;

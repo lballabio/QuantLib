@@ -95,8 +95,8 @@ namespace QuantLib {
                                     new FdmLogInnerValue(payoff, mesher, 0));
 
         stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
-            new FdmSimpleSwingCondition(exerciseTimes,
-                                        mesher, exerciseCalculator, 1)));
+            new FdmSimpleSwingCondition(exerciseTimes, mesher,
+                                        exerciseCalculator, 1)));
         
         boost::shared_ptr<FdmStepConditionComposite> conditions(
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));

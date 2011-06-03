@@ -72,7 +72,7 @@ namespace QuantLib {
                 const Real x = x_[coor[0]];
                 const Real y = y_[coor[1]];
 
-                const Real price = calculator_->innerValue(iter);
+                const Real price = calculator_->innerValue(iter, t);
                 Real currentValue = a[iter.index()];
 
                 // sell

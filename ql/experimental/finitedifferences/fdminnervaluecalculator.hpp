@@ -41,8 +41,8 @@ namespace QuantLib {
       public:
         virtual ~FdmInnerValueCalculator() {}
 
-        virtual Real innerValue(const FdmLinearOpIterator& iter) = 0;
-        virtual Real avgInnerValue(const FdmLinearOpIterator& iter) = 0;
+        virtual Real innerValue(const FdmLinearOpIterator& iter, Time t) = 0;
+        virtual Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) = 0;
     };
 
 
@@ -52,12 +52,12 @@ namespace QuantLib {
                          const boost::shared_ptr<FdmMesher>& mesher,
                          Size direction);
 
-        Real innerValue(const FdmLinearOpIterator& iter);
-        Real avgInnerValue(const FdmLinearOpIterator& iter);
+        Real innerValue(const FdmLinearOpIterator& iter, Time);
+        Real avgInnerValue(const FdmLinearOpIterator& iter, Time);
 
       private:
 
-        Real avgInnerValueCalc(const FdmLinearOpIterator& iter);
+        Real avgInnerValueCalc(const FdmLinearOpIterator& iter, Time);
 
         const boost::shared_ptr<Payoff> payoff_;
         const boost::shared_ptr<FdmMesher> mesher_;
@@ -70,8 +70,8 @@ namespace QuantLib {
         FdmLogBasketInnerValue(const boost::shared_ptr<BasketPayoff>& payoff,
                                const boost::shared_ptr<FdmMesher>& mesher);
 
-        Real innerValue(const FdmLinearOpIterator& iter);
-        Real avgInnerValue(const FdmLinearOpIterator& iter);
+        Real innerValue(const FdmLinearOpIterator& iter, Time);
+        Real avgInnerValue(const FdmLinearOpIterator& iter, Time);
 
       private:
         const boost::shared_ptr<BasketPayoff> payoff_;
@@ -80,8 +80,8 @@ namespace QuantLib {
 
     class FdmZeroInnerValue : public FdmInnerValueCalculator {
       public:
-        Real innerValue(const FdmLinearOpIterator&)    { return 0.0; }
-        Real avgInnerValue(const FdmLinearOpIterator&) { return 0.0; }
+        Real innerValue(const FdmLinearOpIterator&, Time)    { return 0.0; }
+        Real avgInnerValue(const FdmLinearOpIterator&, Time) { return 0.0; }
     };
 }
 

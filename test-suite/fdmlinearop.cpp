@@ -1121,7 +1121,7 @@ void FdmLinearOpTest::testCrankNicolsonWithDamping() {
 
     for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
          ++iter) {
-        rhs[iter.index()] = calculator->avgInnerValue(iter);
+        rhs[iter.index()] = calculator->avgInnerValue(iter, maturity);
         x[iter.index()] = mesher->location(iter, 0);
     }
 

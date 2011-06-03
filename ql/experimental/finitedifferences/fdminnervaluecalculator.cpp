@@ -43,13 +43,13 @@ namespace QuantLib {
       direction_ (direction) {
     }
 
-    Real FdmLogInnerValue::innerValue(const FdmLinearOpIterator& iter) {
+    Real FdmLogInnerValue::innerValue(const FdmLinearOpIterator& iter, Time) {
         const Real s = std::exp(mesher_->location(iter, direction_));
         return payoff_->operator()(s);
     }
 
-    Real FdmLogInnerValue::avgInnerValue(const FdmLinearOpIterator& iter) {
-        
+    Real FdmLogInnerValue::avgInnerValue(
+                                    const FdmLinearOpIterator& iter, Time t) {
         if (avgInnerValues_.empty()) {
             // calculate caching values
             avgInnerValues_.resize(mesher_->layout()->dim()[direction_]);
@@ -62,7 +62,7 @@ namespace QuantLib {
                 const Size xn = iter.coordinates()[direction_];
                 if (!initialized[xn]) {
                     initialized[xn]     = true;
-                    avgInnerValues_[xn] = avgInnerValueCalc(iter);
+                    avgInnerValues_[xn] = avgInnerValueCalc(iter, t);
                 }
             }
         }
@@ -70,7 +70,8 @@ namespace QuantLib {
         return avgInnerValues_[iter.coordinates()[direction_]];
     }
     
-    Real FdmLogInnerValue::avgInnerValueCalc(const FdmLinearOpIterator& iter) { 
+    Real FdmLogInnerValue::avgInnerValueCalc(
+                                    const FdmLinearOpIterator& iter, Time t) {
         const Size dim = mesher_->layout()->dim()[direction_];
         const Size coord = iter.coordinates()[direction_];
         const Real loc = mesher_->location(iter,direction_);
@@ -94,7 +95,7 @@ namespace QuantLib {
         }
         catch (Error&) {
             // use default value
-            retVal = innerValue(iter);
+            retVal = innerValue(iter, t);
         }
                     
         return retVal;
@@ -106,7 +107,8 @@ namespace QuantLib {
     : payoff_(payoff),
       mesher_(mesher) { }
 
-    Real FdmLogBasketInnerValue::innerValue(const FdmLinearOpIterator& iter) {
+    Real FdmLogBasketInnerValue::innerValue(
+                                    const FdmLinearOpIterator& iter, Time) {
         Array x(mesher_->layout()->dim().size());
         for (Size i=0; i < x.size(); ++i) {
             x[i] = std::exp(mesher_->location(iter, i));
@@ -116,7 +118,8 @@ namespace QuantLib {
     }
     
     Real 
-    FdmLogBasketInnerValue::avgInnerValue(const FdmLinearOpIterator& iter) {
-        return innerValue(iter);
+    FdmLogBasketInnerValue::avgInnerValue(
+                                    const FdmLinearOpIterator& iter, Time t) {
+        return innerValue(iter, t);
     }
 }
