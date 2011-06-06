@@ -7,6 +7,7 @@ this_include_HEADERS = \
 	bisection.hpp \
 	brent.hpp \
 	falseposition.hpp \
+	finitedifferencenewtonsafe.hpp \
 	newton.hpp \
 	newtonsafe.hpp \
 	ridder.hpp \
