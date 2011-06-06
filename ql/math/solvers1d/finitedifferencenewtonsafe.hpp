@@ -33,7 +33,7 @@ namespace QuantLib {
         \test the correctness of the returned values is tested by
               checking them against known good results.
     */
-    class FiniteDifferenceNewtonSafe : public Solver1D<NewtonSafeFiniteDifferences> {
+    class FiniteDifferenceNewtonSafe : public Solver1D<FiniteDifferenceNewtonSafe> {
       public:
         template <class F>
         Real solveImpl(const F& f,
