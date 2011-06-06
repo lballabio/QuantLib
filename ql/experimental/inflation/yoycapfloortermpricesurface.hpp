@@ -25,12 +25,8 @@
 #ifndef quantlib_yoy_capfloor_term_price_surface_hpp
 #define quantlib_yoy_capfloor_term_price_surface_hpp
 
-#include <ql/termstructures/inflationtermstructure.hpp>
 #include <ql/termstructures/inflation/inflationhelpers.hpp>
 #include <ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp>
-#include <ql/math/interpolation.hpp>
-#include <ql/math/interpolations/interpolation2d.hpp>
-#include <ql/math/solvers1d/brent.hpp>
 #include <ql/experimental/inflation/polynomial2Dspline.hpp>
 
 namespace QuantLib {
@@ -559,4 +555,3 @@ namespace QuantLib {
 
 
 #endif
-

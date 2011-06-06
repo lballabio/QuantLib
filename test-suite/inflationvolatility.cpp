@@ -23,6 +23,7 @@
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/termstructures/inflation/interpolatedyoyinflationcurve.hpp>
 
 #include <ql/cashflows/inflationcoupon.hpp>
 #include <ql/cashflows/inflationcouponpricer.hpp>
