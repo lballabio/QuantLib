@@ -136,9 +136,11 @@ namespace QuantLib {
 
         Brent solver;
         Size maxIterations = Traits::maxIterations();
+        std::vector<Rate> previousData(ts_->data_.size());
+        Real guess, min, max, r, improvement;
 
         for (Size iteration=0; ; ++iteration) {
-            std::vector<Rate> previousData = ts_->data_;
+            previousData = ts_->data_;
             // restart from the previous interpolation
             if (validCurve_) {
                 ts_->interpolation_ = ts_->interpolator_.interpolate(
@@ -153,7 +155,7 @@ namespace QuantLib {
                 // using the curve bootstrapped so far and no more
                 boost::shared_ptr<typename Traits::helper> instrument =
                     ts_->instruments_[i-1+firstInstrument_];
-                Rate guess = 0.0;
+                guess = 0.0;
                 if (validCurve_ || iteration>0) {
                     guess = ts_->data_[i];
                 } else if (i==1) {
@@ -164,8 +166,8 @@ namespace QuantLib {
                 }
 
                 // bracket
-                Real min = Traits::minValueAfter(i, ts_->data_);
-                Real max = Traits::maxValueAfter(i, ts_->data_);
+                min = Traits::minValueAfter(i, ts_->data_);
+                max = Traits::maxValueAfter(i, ts_->data_);
                 if (guess<=min || guess>=max)
                     guess = (min+max)/2.0;
 
@@ -194,7 +196,7 @@ namespace QuantLib {
 
                 try {
                     BootstrapError<Curve> error(ts_, instrument, i);
-                    Real r = solver.solve(error,ts_->accuracy_,guess,min,max);
+                    r = solver.solve(error, ts_->accuracy_, guess, min, max);
                     // redundant assignment (as it has been already performed
                     // by BootstrapError in solve procedure), but safe
                     ts_->data_[i] = r;
@@ -221,7 +223,7 @@ namespace QuantLib {
             }
 
             // exit conditions
-            Real improvement = 0.0;
+            improvement = 0.0;
             for (Size i=1; i<alive+1; ++i)
                 improvement=std::max(improvement,
                                      std::fabs(ts_->data_[i]-previousData[i]));
