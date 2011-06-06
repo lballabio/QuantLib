@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Ferdinando Ametrano
+ Copyright (C) 2008, 2011 Ferdinando Ametrano
  Copyright (C) 2007 Chris Kenyon
  Copyright (C) 2007 StatPro Italia srl
 
@@ -29,7 +29,7 @@
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/termstructures/bootstraperror.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/math/solvers1d/brent.hpp>
+#include <ql/math/solvers1d/finitedifferencenewtonsafe.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 namespace QuantLib {
@@ -134,7 +134,7 @@ namespace QuantLib {
             ts_->instruments_[i]->setTermStructure(const_cast<Curve*>(ts_));
         }
 
-        Brent solver;
+        FiniteDifferenceNewtonSafe solver;
         Size maxIterations = Traits::maxIterations();
         std::vector<Rate> previousData(ts_->data_.size());
         Real guess, min, max, r, improvement;
