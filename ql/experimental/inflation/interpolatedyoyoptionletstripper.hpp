@@ -25,6 +25,7 @@
 #define quantlib_interpolated_yoy_optionlet_stripper_hpp
 
 #include <ql/instruments/makeyoyinflationcapfloor.hpp>
+#include <ql/math/solvers1d/brent.hpp>
 
 #include <ql/experimental/inflation/yoyoptionletstripper.hpp>
 #include <ql/experimental/inflation/piecewiseyoyoptionletvolatility.hpp>
