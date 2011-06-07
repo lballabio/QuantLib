@@ -103,7 +103,7 @@ namespace QuantLib {
         // observers don't expect notifications from frozen objects
         // LazyObject forwards notifications only once until it has been 
         // recalculated
-        if (!frozen_&& calculated_)
+        if (!frozen_ && calculated_)
             notifyObservers();
         calculated_ = false;
     }
