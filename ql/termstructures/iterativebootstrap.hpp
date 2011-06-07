@@ -30,6 +30,7 @@
 #include <ql/termstructures/bootstraperror.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/solvers1d/finitedifferencenewtonsafe.hpp>
+#include <ql/math/solvers1d/brent.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 namespace QuantLib {
@@ -63,8 +64,11 @@ namespace QuantLib {
         ts_ = ts;
 
         Size n = ts_->instruments_.size();
-        for (Size i=0; i<n; ++i)
-            ts_->registerWith(ts_->instruments_[i]);
+        for (Size j=0; j<n; ++j)
+            ts_->registerWith(ts_->instruments_[j]);
+
+        // do not initialize yet: instruments could be invalid here
+        // but valid later when bootstrapping is actually required
     }
 
     template <class Curve>
@@ -92,23 +96,24 @@ namespace QuantLib {
         ts_->times_.resize(alive+1);
         ts_->dates_[0] = firstDate;
         ts_->times_[0] = ts_->timeFromReference(firstDate);
-        Size j=1; // pillar counter
-        for (Size i=firstInstrument_; i<n; ++i) {
+        //     pillar counter: i
+        // instrument counter: j
+        for (Size i=1, j=firstInstrument_; j<n; ++i, ++j) {
             // check for duplicated maturity
-            QL_REQUIRE(ts_->dates_[j-1] != ts_->instruments_[i]->latestDate(),
+            QL_REQUIRE(ts_->dates_[i-1] != ts_->instruments_[j]->latestDate(),
                        "two instruments have the same maturity (" <<
-                       ts_->dates_[j-1] << ")");
-            ts_->dates_[j] = ts_->instruments_[i]->latestDate();
-            ts_->times_[j] = ts_->timeFromReference(ts_->dates_[j]);
-            ++j;
+                       ts_->dates_[i-1] << ")");
+            ts_->dates_[i] = ts_->instruments_[j]->latestDate();
+            ts_->times_[i] = ts_->timeFromReference(ts_->dates_[i]);
         }
 
         // set initial guess only if the current curve cannot be used as guess
         if (!validCurve_ || ts_->data_.size()!=alive+1) {
             ts_->data_.resize(alive+1);
             ts_->data_[0] = Traits::initialValue(ts_);
-            for (Size j=1; j<alive+1; ++j)
-                ts_->data_[j] = Traits::initialGuess();
+            // probably useless loop...
+            for (Size i=1; i<alive+1; ++i)
+                ts_->data_[i] = Traits::initialGuess();
         }
 
     }
@@ -122,80 +127,80 @@ namespace QuantLib {
         Size alive = n-firstInstrument_;
 
         // setup instruments
-        for (Size i=firstInstrument_; i<n; ++i) {
+        for (Size j=firstInstrument_; j<n; ++j) {
             // check for valid quote
-            QL_REQUIRE(ts_->instruments_[i]->quote()->isValid(),
-                       io::ordinal(i+1) << " instrument (maturity: " <<
-                       ts_->instruments_[i]->latestDate() <<
+            QL_REQUIRE(ts_->instruments_[j]->quote()->isValid(),
+                       io::ordinal(j+1) << " instrument (maturity: " <<
+                       ts_->instruments_[j]->latestDate() <<
                        ") has an invalid quote");
             // don't try this at home!
             // This call creates instruments, and removes "const".
             // There is a significant interaction with observability.
-            ts_->instruments_[i]->setTermStructure(const_cast<Curve*>(ts_));
+            ts_->instruments_[j]->setTermStructure(const_cast<Curve*>(ts_));
         }
 
-        FiniteDifferenceNewtonSafe solver;
+        Brent solver;
+        // FiniteDifferenceNewtonSafe solver;
         Size maxIterations = Traits::maxIterations();
         std::vector<Rate> previousData(ts_->data_.size());
-        Real guess, min, max, r, improvement;
 
         for (Size iteration=0; ; ++iteration) {
             previousData = ts_->data_;
+
             // restart from the previous interpolation
-            if (validCurve_) {
+            if (validCurve_ || iteration>0) {
                 ts_->interpolation_ = ts_->interpolator_.interpolate(
                                                       ts_->times_.begin(),
                                                       ts_->times_.end(),
                                                       ts_->data_.begin());
             }
-            for (Size i=1; i<alive+1; ++i) {
 
-                // calculate guess before extending interpolation
-                // to ensure that any extrapolation is performed
-                // using the curve bootstrapped so far and no more
-                boost::shared_ptr<typename Traits::helper> instrument =
-                    ts_->instruments_[i-1+firstInstrument_];
+            for (Size i=1; i<alive+1; ++i) { // pillar loop
+
+                // bracket root
+                Real min = Traits::minValueAfter(i, ts_->data_);
+                Real max = Traits::maxValueAfter(i, ts_->data_);
+
+                // calculate guess and extend interpolation to
+                // include the pillar to be boostrapped
+                Real guess = 0.0;
                 if (validCurve_ || iteration>0) {
-                    guess = ts_->data_[i];
-                } else if (i==1) {
-                    guess = Traits::initialGuess();
+                    guess = ts_->data_[i]; // previous iteration value
+                    // no need to extend interpolation
                 } else {
-                    // most traits extrapolate
-                    guess = Traits::guess(ts_, ts_->dates_[i]);
-                }
+                    if (i==1) // special first pillar case
+                        guess = Traits::initialGuess();
+                    else // most traits extrapolate (using only
+                         // the curve bootstrapped so far)
+                        guess = Traits::guess(ts_, ts_->dates_[i]);
 
-                // bracket
-                min = Traits::minValueAfter(i, ts_->data_);
-                max = Traits::maxValueAfter(i, ts_->data_);
-                if (guess<=min || guess>=max)
-                    guess = (min+max)/2.0;
-
-                if (!validCurve_ && iteration == 0) {
-                    // extend interpolation a point at a time
-                    try {
+                    try { // extend interpolation a point at a time
                         ts_->interpolation_ = ts_->interpolator_.interpolate(
-                                                      ts_->times_.begin(),
-                                                      ts_->times_.begin()+i+1,
-                                                      ts_->data_.begin());
+                            ts_->times_.begin(), ts_->times_.begin()+i+1,
+                            ts_->data_.begin());
+                        ts_->interpolation_.update();
                     } catch (...) {
                         if (!Interpolator::global)
                             throw; // no chance to fix it in a later iteration
 
-                        // otherwise, if the target interpolation is
-                        // not usable yet
+                        // otherwise use Linear while the target
+                        // interpolation is not usable yet
                         ts_->interpolation_ = Linear().interpolate(
-                                                      ts_->times_.begin(),
-                                                      ts_->times_.begin()+i+1,
-                                                      ts_->data_.begin());
+                            ts_->times_.begin(), ts_->times_.begin()+i+1,
+                            ts_->data_.begin());
+                        ts_->interpolation_.update();
                     }
                 }
-                // required because we just changed the data
-                // is it really required?
-                ts_->interpolation_.update();
+                // adjust guess if needed
+                if (guess<=min || guess>=max)
+                    guess = (min+max)/2.0;
 
+                // the actual instrument used for the current pillar
+                boost::shared_ptr<typename Traits::helper> instrument =
+                    ts_->instruments_[i-1+firstInstrument_];
                 try {
                     BootstrapError<Curve> error(ts_, instrument, i);
-                    r = solver.solve(error, ts_->accuracy_, guess, min, max);
+                    Real r = solver.solve(error,ts_->accuracy_,guess,min,max);
                     // redundant assignment (as it has been already performed
                     // by BootstrapError in solve procedure), but safe
                     ts_->data_[i] = r;
@@ -210,26 +215,19 @@ namespace QuantLib {
             }
 
             if (!Interpolator::global)
-                break;      // no need for convergence loop
-            else if (!validCurve_ && iteration == 0) {
-                // ensure the target interpolation is used
-                ts_->interpolation_ =
-                    ts_->interpolator_.interpolate(ts_->times_.begin(),
-                                                   ts_->times_.end(),
-                                                   ts_->data_.begin());
-                // at least one more iteration is needed to check convergence
-                continue;
-            }
+                break;     // no need for convergence loop
+            else if (!validCurve_ && iteration == 0)
+                continue; // at least one more iteration to convergence check
 
-            // exit conditions
-            improvement = 0.0;
+            // exit condition
+            Real improvement = 0.0;
             for (Size i=1; i<alive+1; ++i)
                 improvement=std::max(improvement,
                                      std::fabs(ts_->data_[i]-previousData[i]));
             if (improvement<=ts_->accuracy_)  // convergence reached
                 break;
 
-            QL_REQUIRE(iteration+1 < maxIterations,
+            QL_REQUIRE(iteration+1<maxIterations,
                        "convergence not reached after " <<
                        iteration+1 << " iterations; last improvement " <<
                        improvement << ", required accuracy " <<
