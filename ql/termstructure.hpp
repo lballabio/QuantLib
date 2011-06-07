@@ -104,10 +104,10 @@ namespace QuantLib {
         void checkRange(Time t,
                         bool extrapolate) const;
         bool moving_;
+        mutable bool updated_;
         Calendar calendar_;
       private:
         mutable Date referenceDate_;
-        mutable bool updated_;
         Natural settlementDays_;
         DayCounter dayCounter_;
     };
