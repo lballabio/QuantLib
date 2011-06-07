@@ -31,7 +31,7 @@
 #include <ql/instruments/dividendschedule.hpp>
 #include <ql/methods/finitedifferences/stepcondition.hpp>
 
-#include <set>
+#include <list>
 
 namespace QuantLib {
 
