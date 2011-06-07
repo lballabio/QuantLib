@@ -29,6 +29,7 @@
 #include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmbermudanstepcondition.hpp>
 
+#include <set>
 
 namespace QuantLib {
 
