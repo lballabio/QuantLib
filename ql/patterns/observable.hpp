@@ -27,7 +27,7 @@
 
 #include <ql/errors.hpp>
 #include <boost/shared_ptr.hpp>
-#include <list>
+#include <set>
 
 namespace QuantLib {
 
@@ -50,8 +50,8 @@ namespace QuantLib {
       private:
         void registerObserver(Observer*);
         void unregisterObserver(Observer*);
-        std::list<Observer*> observers_;
-        typedef std::list<Observer*>::iterator iterator;
+        std::set<Observer*> observers_;
+        typedef std::set<Observer*>::iterator iterator;
     };
 
     //! Object that gets notified when a given observable changes
@@ -73,15 +73,15 @@ namespace QuantLib {
         */
         virtual void update() = 0;
       private:
-        std::list<boost::shared_ptr<Observable> > observables_;
-        typedef std::list<boost::shared_ptr<Observable> >::iterator iterator;
+        std::set<boost::shared_ptr<Observable> > observables_;
+        typedef std::set<boost::shared_ptr<Observable> >::iterator iterator;
     };
 
 
     // inline definitions
 
     inline Observable::Observable(const Observable&) {
-        // the observer list is not copied; no observer asked to
+        // the observer set is not copied; no observer asked to
         // register with this object
     }
 
@@ -94,7 +94,7 @@ namespace QuantLib {
                  a later recalculation.
     */
     inline Observable& Observable::operator=(const Observable& o) {
-        // as above, the observer list is not copied. Moreover,
+        // as above, the observer set is not copied. Moreover,
         // observers of this object must be notified of the change
         if (&o != this)
             notifyObservers();
@@ -102,7 +102,7 @@ namespace QuantLib {
     }
 
     inline void Observable::registerObserver(Observer* o) {
-        observers_.push_front(o);
+        observers_.insert(o);
     }
 
     inline void Observable::unregisterObserver(Observer* o) {
@@ -160,7 +160,7 @@ namespace QuantLib {
     inline void Observer::registerWith(
                                      const boost::shared_ptr<Observable>& h) {
         if (h) {
-            observables_.push_front(h);
+            observables_.insert(h);
             h->registerObserver(this);
         }
     }
