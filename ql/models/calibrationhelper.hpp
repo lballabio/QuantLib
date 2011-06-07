@@ -28,6 +28,8 @@
 #include <ql/quote.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
+#include <list>
+
 namespace QuantLib {
     class PricingEngine;
     //! liquid market instrument used during calibration
