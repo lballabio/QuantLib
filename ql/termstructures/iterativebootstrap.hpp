@@ -155,7 +155,6 @@ namespace QuantLib {
                 // using the curve bootstrapped so far and no more
                 boost::shared_ptr<typename Traits::helper> instrument =
                     ts_->instruments_[i-1+firstInstrument_];
-                guess = 0.0;
                 if (validCurve_ || iteration>0) {
                     guess = ts_->data_[i];
                 } else if (i==1) {
