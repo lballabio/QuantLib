@@ -34,6 +34,7 @@ namespace QuantLib {
 
     namespace detail {
         const Rate avgRate = 0.05;
+        const Rate maxRate = 1.0;
     }
 
     //! Discount-curve traits
@@ -74,7 +75,7 @@ namespace QuantLib {
             #if defined(QL_NEGATIVE_RATES)
             // discount are not required to be decreasing--all bets are off.
             // We choose as max a value very unlikely to be exceeded.
-            return 3.0;
+            return 1.1;
             #else
             // discounts cannot increase
             return data[i-1];
@@ -123,7 +124,7 @@ namespace QuantLib {
             #if defined(QL_NEGATIVE_RATES)
             // no constraints.
             // We choose as min a value very unlikely to be exceeded.
-            return -3.0;
+            return -detail::maxRate;
             #else
             return QL_EPSILON;
             #endif
@@ -131,7 +132,7 @@ namespace QuantLib {
         static Rate maxValueAfter(Size, const std::vector<Real>&) {
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.
-            return 3.0;
+            return detail::maxRate;
         }
         // update with new guess
         static void updateGuess(std::vector<Rate>& data,
@@ -178,7 +179,7 @@ namespace QuantLib {
             #if defined(QL_NEGATIVE_RATES)
             // no constraints.
             // We choose as min a value very unlikely to be exceeded.
-            return -3.0;
+            return -detail::maxRate;
             #else
             return QL_EPSILON;
             #endif
@@ -186,7 +187,7 @@ namespace QuantLib {
         static Rate maxValueAfter(Size, const std::vector<Real>&) {
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.
-            return 3.0;
+            return detail::maxRate;
         }
         // update with new guess
         static void updateGuess(std::vector<Rate>& data,
