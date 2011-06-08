@@ -666,11 +666,18 @@ void PiecewiseYieldCurveTest::testObservability() {
         vars.rates[i]->setValue(vars.rates[i]->value()/1.01);
     }
 
+    vars.termStructure->maxDate();
     f.lower();
     Settings::instance().evaluationDate() =
         vars.calendar.advance(vars.today,15,Days);
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of date change");
+
+    f.lower();
+    Settings::instance().evaluationDate() = vars.today;
+    if (f.isUp())
+        BOOST_FAIL("Observer was notified of date change"
+                   " without an intervening recalculation");
 }
 
 
