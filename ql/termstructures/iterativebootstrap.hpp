@@ -46,9 +46,11 @@ namespace QuantLib {
         void calculate() const;
       private:
         void initialize() const;
-        mutable bool validCurve_;
+        mutable bool initialized_, validCurve_;
         Curve* ts_;
-        mutable Size firstInstrument_;
+        Size n_;
+        mutable Size firstInstrument_, alive_;
+        mutable std::vector<Real> previousData_;
     };
 
 
@@ -56,15 +58,14 @@ namespace QuantLib {
 
     template <class Curve>
     IterativeBootstrap<Curve>::IterativeBootstrap()
-    : validCurve_(false), ts_(0) {}
+    : initialized_(false), validCurve_(false), ts_(0) {}
 
     template <class Curve>
     void IterativeBootstrap<Curve>::setup(Curve* ts) {
 
         ts_ = ts;
-
-        Size n = ts_->instruments_.size();
-        for (Size j=0; j<n; ++j)
+        n_ = ts_->instruments_.size();
+        for (Size j=0; j<n_; ++j)
             ts_->registerWith(ts_->instruments_[j]);
 
         // do not initialize yet: instruments could be invalid here
@@ -79,26 +80,25 @@ namespace QuantLib {
 
         // skip expired instruments
         Date firstDate = Traits::initialDate(ts_);
-        Size n = ts_->instruments_.size();
-        QL_REQUIRE(ts_->instruments_[n-1]->latestDate()>firstDate,
+        QL_REQUIRE(ts_->instruments_[n_-1]->latestDate()>firstDate,
                    "all instruments expired");
         firstInstrument_ = 0;
         while (ts_->instruments_[firstInstrument_]->latestDate() <= firstDate)
             ++firstInstrument_;
-        Size alive = n-firstInstrument_;
-        QL_REQUIRE(alive >= Interpolator::requiredPoints-1,
-                   "not enough alive instruments: " << alive <<
+        alive_ = n_-firstInstrument_;
+        QL_REQUIRE(alive_>=Interpolator::requiredPoints-1,
+                   "not enough alive instruments: " << alive_ <<
                    " provided, " << Interpolator::requiredPoints-1 <<
                    " required");
 
         // calculate dates and times
-        ts_->dates_.resize(alive+1);
-        ts_->times_.resize(alive+1);
+        ts_->dates_.resize(alive_+1);
+        ts_->times_.resize(alive_+1);
         ts_->dates_[0] = firstDate;
         ts_->times_[0] = ts_->timeFromReference(firstDate);
         //     pillar counter: i
         // instrument counter: j
-        for (Size i=1, j=firstInstrument_; j<n; ++i, ++j) {
+        for (Size i=1, j=firstInstrument_; j<n_; ++i, ++j) {
             // check for duplicated maturity
             QL_REQUIRE(ts_->dates_[i-1] != ts_->instruments_[j]->latestDate(),
                        "two instruments have the same maturity (" <<
@@ -108,26 +108,25 @@ namespace QuantLib {
         }
 
         // set initial guess only if the current curve cannot be used as guess
-        if (!validCurve_ || ts_->data_.size()!=alive+1) {
-            ts_->data_.resize(alive+1);
+        if (!validCurve_ || ts_->data_.size()!=alive_+1) {
+            ts_->data_.resize(alive_+1);
+            previousData_.resize(alive_+1);
             ts_->data_[0] = Traits::initialValue(ts_);
-            // probably useless loop...
-            for (Size i=1; i<alive+1; ++i)
+            // reasonable numbers needed for the starting interpolation
+            for (Size i=1; i<alive_+1; ++i)
                 ts_->data_[i] = Traits::initialGuess();
         }
-
+        initialized_ = true;
     }
 
     template <class Curve>
     void IterativeBootstrap<Curve>::calculate() const {
 
-        initialize();
-
-        Size n = ts_->instruments_.size();
-        Size alive = n-firstInstrument_;
+        if (!initialized_ || ts_->moving_)
+            initialize();
 
         // setup instruments
-        for (Size j=firstInstrument_; j<n; ++j) {
+        for (Size j=firstInstrument_; j<n_; ++j) {
             // check for valid quote
             QL_REQUIRE(ts_->instruments_[j]->quote()->isValid(),
                        io::ordinal(j+1) << " instrument (maturity: " <<
@@ -139,34 +138,23 @@ namespace QuantLib {
             ts_->instruments_[j]->setTermStructure(const_cast<Curve*>(ts_));
         }
 
-        Brent solver;
-        // FiniteDifferenceNewtonSafe solver;
+        Brent firstSolver;
+        FiniteDifferenceNewtonSafe solver;
         Size maxIterations = Traits::maxIterations();
-        std::vector<Rate> previousData(ts_->data_.size());
 
         for (Size iteration=0; ; ++iteration) {
-            previousData = ts_->data_;
+            previousData_ = ts_->data_;
 
-            // restart from the previous interpolation
-            if (validCurve_ || iteration>0) {
-                ts_->interpolation_ = ts_->interpolator_.interpolate(
-                                                      ts_->times_.begin(),
-                                                      ts_->times_.end(),
-                                                      ts_->data_.begin());
-            }
-
-            for (Size i=1; i<alive+1; ++i) { // pillar loop
+            for (Size i=1; i<alive_+1; ++i) { // pillar loop
 
                 // bracket root
                 Real min = Traits::minValueAfter(i, ts_->data_);
                 Real max = Traits::maxValueAfter(i, ts_->data_);
 
-                // calculate guess and extend interpolation to
-                // include the pillar to be boostrapped
+                // calculate guess and extend interpolation if needed
                 Real guess = 0.0;
                 if (validCurve_ || iteration>0) {
                     guess = ts_->data_[i]; // previous iteration value
-                    // no need to extend interpolation
                 } else {
                     if (i==1) // special first pillar case
                         guess = Traits::initialGuess();
@@ -175,6 +163,7 @@ namespace QuantLib {
                         guess = Traits::guess(ts_, ts_->dates_[i]);
 
                     try { // extend interpolation a point at a time
+                          // including the pillar to be boostrapped
                         ts_->interpolation_ = ts_->interpolator_.interpolate(
                             ts_->times_.begin(), ts_->times_.begin()+i+1,
                             ts_->data_.begin());
@@ -200,10 +189,10 @@ namespace QuantLib {
                     ts_->instruments_[i-1+firstInstrument_];
                 try {
                     BootstrapError<Curve> error(ts_, instrument, i);
-                    Real r = solver.solve(error,ts_->accuracy_,guess,min,max);
-                    // redundant assignment (as it has been already performed
-                    // by BootstrapError in solve procedure), but safe
-                    ts_->data_[i] = r;
+                    if (validCurve_ || iteration>0)
+                        solver.solve(error, ts_->accuracy_, guess, min, max);
+                    else
+                        firstSolver.solve(error,ts_->accuracy_,guess,min,max);
                 } catch (std::exception &e) {
                     validCurve_ = false;
                     QL_FAIL(io::ordinal(iteration+1) << " iteration: "
@@ -220,17 +209,17 @@ namespace QuantLib {
                 continue; // at least one more iteration to convergence check
 
             // exit condition
-            Real improvement = 0.0;
-            for (Size i=1; i<alive+1; ++i)
-                improvement=std::max(improvement,
-                                     std::fabs(ts_->data_[i]-previousData[i]));
-            if (improvement<=ts_->accuracy_)  // convergence reached
+            Real change = 0.0;
+            for (Size i=1; i<alive_+1; ++i)
+                change = std::max(change,
+                                  std::fabs(ts_->data_[i]-previousData_[i]));
+            if (change<=ts_->accuracy_)  // convergence reached
                 break;
 
             QL_REQUIRE(iteration+1<maxIterations,
                        "convergence not reached after " <<
                        iteration+1 << " iterations; last improvement " <<
-                       improvement << ", required accuracy " <<
+                       change << ", required accuracy " <<
                        ts_->accuracy_);
         }
         validCurve_ = true;
