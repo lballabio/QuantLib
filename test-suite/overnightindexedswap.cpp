@@ -388,26 +388,21 @@ void OvernightIndexedSwapTest::testBootstrap() {
     */
 
     // test curve consistency
-    Real tolerance = 1.0e-10;
+    Real tolerance = 1.0e-8;
     for (Size i = 0; i < LENGTH(eoniaSwapData); i++) {
         Rate expected = eoniaSwapData[i].rate;
         Period term = eoniaSwapData[i].n * eoniaSwapData[i].unit;
         shared_ptr<OvernightIndexedSwap> swap = vars.makeSwap(term, 0.0, 0.0);
         Rate calculated = 100.0 * swap->fairRate();
-        /*
-        std::cout << std::setw(3) << term << " "
-                  << std::setprecision(4)
-                  << expected << " "
-                  << calculated << " "
-                  << std::setprecision(8)
-                  << expected - calculated << std::endl;
-        */
-        if (std::fabs(expected-calculated) > tolerance)
-            BOOST_ERROR("curve inconsistency:\n"
-                        << std::setprecision(4)
-                        << "    swap length:     " << term << "\n"
-                        << "    quoted rate:     " << expected << "\n"
-                        << "    calculated rate: " << calculated);
+        Rate error = std::fabs(expected-calculated);
+
+        if (error>tolerance)
+            BOOST_FAIL("curve inconsistency:" << std::setprecision(10) <<
+                        "\n swap length:     " << term <<
+                        "\n quoted rate:     " << expected <<
+                        "\n calculated rate: " << calculated <<
+                        "\n error:           " << error <<
+                        "\n tolerance:       " << tolerance);
     }
 
     // zero spread
