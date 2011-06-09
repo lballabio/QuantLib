@@ -215,20 +215,12 @@ namespace QuantLib {
         if (fairCleanPrice_ != Null<Real>()) {
             return fairCleanPrice_;
         } else {
-            std::vector<DiscountFactor> dfs;
-            DiscountFactor npvDateDiscount;
-            try {
-                dfs = result<std::vector<DiscountFactor> >("startDiscounts");
-                npvDateDiscount = result<DiscountFactor>("npvDateDiscount");
-            } catch (...) {
-                QL_FAIL("fair clean price not available");
-            }
-
-            QL_REQUIRE(dfs[1]!=Null<DiscountFactor>(),
+            QL_REQUIRE(startDiscounts_[1]!=Null<DiscountFactor>(),
                        "fair clean price not available for seasoned deal");
             Real notional = bond_->notional(upfrontDate_);
             if (parSwap_) {
-                fairCleanPrice_ = bondCleanPrice_-NPV_*npvDateDiscount/dfs[1]/(notional/100.0);
+                fairCleanPrice_ = bondCleanPrice_ - 
+                    NPV_*npvDateDiscount_/startDiscounts_[1]/(notional/100.0);
             } else {
                 Real accruedAmount = bond_->accruedAmount(upfrontDate_);
                 Real dirtyPrice = bondCleanPrice_ + accruedAmount;

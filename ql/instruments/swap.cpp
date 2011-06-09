@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2011 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2007, 2008 StatPro Italia srl
 
@@ -29,7 +29,8 @@ namespace QuantLib {
     Swap::Swap(const Leg& firstLeg,
                const Leg& secondLeg)
     : legs_(2), payer_(2),
-      legNPV_(2, 0.0), legBPS_(2, 0.0) {
+      legNPV_(2, 0.0), legBPS_(2, 0.0), startDiscounts_(2, 0.0),
+      npvDateDiscount_(0.0) {
         legs_[0] = firstLeg;
         legs_[1] = secondLeg;
         payer_[0] = -1.0;
@@ -43,7 +44,8 @@ namespace QuantLib {
     Swap::Swap(const std::vector<Leg>& legs,
                const std::vector<bool>& payer)
     : legs_(legs), payer_(legs.size(), 1.0),
-      legNPV_(legs.size(), 0.0), legBPS_(legs.size(), 0.0) {
+      legNPV_(legs.size(), 0.0), legBPS_(legs.size(), 0.0),
+      startDiscounts_(legs.size(), 0.0), npvDateDiscount_(0.0) {
         QL_REQUIRE(payer.size()==legs_.size(),
                    "size mismatch between payer (" << payer.size() <<
                    ") and legs (" << legs_.size() << ")");
@@ -56,7 +58,8 @@ namespace QuantLib {
 
     Swap::Swap(Size legs)
     : legs_(legs), payer_(legs),
-      legNPV_(legs, 0.0), legBPS_(legs, 0.0) {}
+      legNPV_(legs, 0.0), legBPS_(legs, 0.0), startDiscounts_(legs, 0.0),
+      npvDateDiscount_(0.0) {}
 
 
     bool Swap::isExpired() const {
@@ -73,6 +76,8 @@ namespace QuantLib {
         Instrument::setupExpired();
         std::fill(legBPS_.begin(), legBPS_.end(), 0.0);
         std::fill(legNPV_.begin(), legNPV_.end(), 0.0);
+        std::fill(startDiscounts_.begin(), startDiscounts_.end(), 0.0);
+        npvDateDiscount_ = 0.0;
     }
 
     void Swap::setupArguments(PricingEngine::arguments* args) const {
@@ -104,6 +109,21 @@ namespace QuantLib {
         } else {
             std::fill(legBPS_.begin(), legBPS_.end(), Null<Real>());
         }
+
+        if (!results->startDiscounts.empty()) {
+            QL_REQUIRE(results->startDiscounts.size() == startDiscounts_.size(),
+                       "wrong number of leg start discounts returned");
+            startDiscounts_ = results->startDiscounts;
+        } else {
+            std::fill(startDiscounts_.begin(), startDiscounts_.end(),
+                                                    Null<DiscountFactor>());
+        }
+
+        if (results->npvDateDiscount != Null<DiscountFactor>()) {
+            npvDateDiscount_ = results->npvDateDiscount;
+        } else {
+            npvDateDiscount_ = Null<DiscountFactor>();
+        }
     }
 
 
@@ -133,6 +153,8 @@ namespace QuantLib {
         Instrument::results::reset();
         legNPV.clear();
         legBPS.clear();
+        startDiscounts.clear();
+        npvDateDiscount = Null<DiscountFactor>();
     }
 
 }

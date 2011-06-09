@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2011 Ferdinando Ametrano
  Copyright (C) 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -73,6 +73,15 @@ namespace QuantLib {
             calculate();
             return legNPV_[j];
         }
+        DiscountFactor startDiscounts(Size j) const {
+            QL_REQUIRE(j<legs_.size(), "leg #" << j << " doesn't exist!");
+            calculate();
+            return startDiscounts_[j];
+        }
+        DiscountFactor npvDateDiscount() const {
+            calculate();
+            return npvDateDiscount_;
+        }
         const Leg& leg(Size j) const {
             QL_REQUIRE(j<legs_.size(), "leg #" << j << " doesn't exist!");
             return legs_[j];
@@ -95,6 +104,8 @@ namespace QuantLib {
         std::vector<Real> payer_;
         mutable std::vector<Real> legNPV_;
         mutable std::vector<Real> legBPS_;
+        mutable std::vector<DiscountFactor> startDiscounts_;
+        mutable DiscountFactor npvDateDiscount_;
     };
 
 
@@ -109,6 +120,8 @@ namespace QuantLib {
       public:
         std::vector<Real> legNPV;
         std::vector<Real> legBPS;
+        std::vector<DiscountFactor> startDiscounts;
+        DiscountFactor npvDateDiscount;
         void reset();
     };
 
