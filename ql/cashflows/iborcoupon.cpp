@@ -47,9 +47,12 @@ namespace QuantLib {
       iborIndex_(iborIndex),
       fixings_(IndexManager::instance().getHistory(index_->name()))
     {
+    #ifdef QL_USE_INDEXED_COUPON
+        fixingDate_ = fixingDate();
+    #else
         fixingDate_ = fixingDate();
 
-        if (!isInArrears()) {
+        if (!isInArrears_) {
             const Calendar& fixingCalendar = index_->fixingCalendar();
             Natural indexFixingDays = index_->fixingDays();
 
@@ -70,6 +73,7 @@ namespace QuantLib {
                        ":\n non positive time (" << spanningTime_ <<
                        ") using " << dc.name() << " daycounter");
         }
+    #endif
     }
 
     Rate IborCoupon::indexFixing() const {
@@ -77,7 +81,8 @@ namespace QuantLib {
         #ifdef QL_USE_INDEXED_COUPON
         return index_->fixing(fixingDate_);
         #else
-        if (isInArrears()) {
+
+        if (isInArrears_) {
             return index_->fixing(fixingDate_);
         } else {
             Date today = Settings::instance().evaluationDate();
