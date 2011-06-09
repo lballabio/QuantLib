@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007, 2011 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2007 Cristina Duminuco
  Copyright (C) 2007 StatPro Italia srl
@@ -65,6 +65,9 @@ namespace QuantLib {
         //@}
       private:
         boost::shared_ptr<IborIndex> iborIndex_;
+        const TimeSeries<Real>& fixings_;
+        Date fixingDate_, fixingValueDate_, nextFixingValueDate_;
+        Time spanningTime_;
     };
 
 

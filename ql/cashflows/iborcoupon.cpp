@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2007 Cristina Duminuco
- Copyright (C) 2010 Ferdinando Ametrano
+ Copyright (C) 2010, 2011 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -44,32 +44,55 @@ namespace QuantLib {
                          fixingDays, iborIndex, gearing, spread,
                          refPeriodStart, refPeriodEnd,
                          dayCounter, isInArrears),
-      iborIndex_(iborIndex) {}
+      iborIndex_(iborIndex),
+      fixings_(IndexManager::instance().getHistory(index_->name()))
+    {
+        fixingDate_ = fixingDate();
+
+        if (!isInArrears()) {
+            const Calendar& fixingCalendar = index_->fixingCalendar();
+            Natural indexFixingDays = index_->fixingDays();
+
+            fixingValueDate_ = fixingCalendar.advance(
+                fixingDate_, indexFixingDays, Days);
+
+            Date nextFixingDate = fixingCalendar.advance(
+                accrualEndDate_, -static_cast<Integer>(fixingDays), Days);
+            nextFixingValueDate_ = fixingCalendar.advance(
+                nextFixingDate, indexFixingDays, Days);
+
+            const DayCounter& dc = index_->dayCounter();
+            spanningTime_ = dc.yearFraction(fixingValueDate_,
+                                            nextFixingValueDate_);
+            QL_REQUIRE(spanningTime_>0.0,
+                       "\n cannot calculate forward rate between " <<
+                       fixingValueDate_ << " and " << nextFixingValueDate_ <<
+                       ":\n non positive time (" << spanningTime_ <<
+                       ") using " << dc.name() << " daycounter");
+        }
+    }
 
     Rate IborCoupon::indexFixing() const {
 
         #ifdef QL_USE_INDEXED_COUPON
-        return index_->fixing(fixingDate());
+        return index_->fixing(fixingDate_);
         #else
         if (isInArrears()) {
-            return index_->fixing(fixingDate());
+            return index_->fixing(fixingDate_);
         } else {
             Date today = Settings::instance().evaluationDate();
-            Date fixing_date = fixingDate();
-            if (fixing_date < today) {
+            if (fixingDate_ < today) {
                 // must have been fixed
-                Rate pastFixing = IndexManager::instance().getHistory(
-                                                 index_->name())[fixing_date];
+                Rate pastFixing = fixings_[fixingDate_];
                 QL_REQUIRE(pastFixing != Null<Real>(),
                            "Missing " << index_->name()
-                           << " fixing for " << fixing_date);
+                           << " fixing for " << fixingDate_);
                 return pastFixing;
             }
-            if (fixing_date == today) {
+            if (fixingDate_ == today) {
                 // might have been fixed
                 try {
-                    Rate pastFixing = IndexManager::instance().getHistory(
-                                                 index_->name())[fixing_date];
+                    Rate pastFixing = fixings_[fixingDate_];
                     if (pastFixing != Null<Real>())
                         return pastFixing;
                     else
@@ -79,34 +102,16 @@ namespace QuantLib {
                 }
             }
 
-            // forecast: 0) forecasting curve
-            Handle<YieldTermStructure> termStructure =
-                iborIndex_->forwardingTermStructure();
-            QL_REQUIRE(!termStructure.empty(),
+            // forecasting curve
+            Handle<YieldTermStructure> yc =
+                                        iborIndex_->forwardingTermStructure();
+            QL_REQUIRE(!yc.empty(),
                        "null term structure set to this instance of " <<
                        index_->name());
 
-            // forecast: 1) startDiscount
-            Date fixingValueDate = index_->fixingCalendar().advance(
-                fixing_date, index_->fixingDays(), Days);
-            DiscountFactor startDiscount =
-                termStructure->discount(fixingValueDate);
-            // forecast: 2) endDiscount
-            Date nextFixingDate = index_->fixingCalendar().advance(
-                accrualEndDate_, -static_cast<Integer>(fixingDays()), Days);
-            Date nextFixingValueDate = index_->fixingCalendar().advance(
-                nextFixingDate, index_->fixingDays(), Days);
-            DiscountFactor endDiscount =
-                termStructure->discount(nextFixingValueDate);
-            // forecast: 3) spanningTime
-            Time spanningTime = index_->dayCounter().yearFraction(
-                fixingValueDate, nextFixingValueDate);
-            QL_REQUIRE(spanningTime>0.0,
-                       "cannot calculate forward rate between " <<
-                       fixingValueDate << " and " << nextFixingValueDate <<
-                       ": non positive time using " << index_->dayCounter().name());
-            // forecast: 4) implied fixing
-            return (startDiscount/endDiscount-1.0)/spanningTime;
+            DiscountFactor startDiscount = yc->discount(fixingValueDate_);
+            DiscountFactor endDiscount = yc->discount(nextFixingValueDate_);
+            return (startDiscount/endDiscount-1.0)/spanningTime_;
         }
     #endif
 
