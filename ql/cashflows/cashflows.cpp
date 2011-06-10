@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2005, 2006 StatPro Italia srl
  Copyright (C) 2005 Charles Whitmore
- Copyright (C) 2007, 2008, 2009, 2010 Ferdinando Ametrano
+ Copyright (C) 2007, 2008, 2009, 2010, 2011 Ferdinando Ametrano
  Copyright (C) 2008 Toyin Akin
 
  This file is part of QuantLib, a free-software/open-source library
@@ -391,23 +391,17 @@ namespace QuantLib {
                               public Visitor<CashFlow>,
                               public Visitor<Coupon> {
           public:
-            BPSCalculator(const YieldTermStructure& discountCurve,
-                          Date npvDate)
-            : discountCurve_(discountCurve), npvDate_(npvDate), result_(0.0) {
-                QL_REQUIRE(npvDate_!=Date(), "null npv date");
-            }
+            BPSCalculator(const YieldTermStructure& discountCurve)
+            : discountCurve_(discountCurve), result_(0.0) {}
             void visit(Coupon& c) {
                 result_ += c.nominal() *
                            c.accrualPeriod() *
                            discountCurve_.discount(c.date());
             }
             void visit(CashFlow&) {}
-            Real result() const {
-                return result_/discountCurve_.discount(npvDate_);
-            }
+            Real result() const { return result_; }
           private:
             const YieldTermStructure& discountCurve_;
-            Date npvDate_;
             Real result_;
         };
 
@@ -454,13 +448,42 @@ namespace QuantLib {
         if (npvDate == Date())
             npvDate = settlementDate;
 
-        BPSCalculator calc(discountCurve, npvDate);
+        BPSCalculator calc(discountCurve);
         for (Size i=0; i<leg.size(); ++i) {
             if (!leg[i]->hasOccurred(settlementDate,
                                      includeSettlementDateFlows))
                 leg[i]->accept(calc);
         }
-        return basisPoint_*calc.result();
+        return basisPoint_*calc.result()/discountCurve.discount(npvDate);
+    }
+
+    void CashFlows::npvbps(const Leg& leg,
+                           const YieldTermStructure& discountCurve,
+                           bool includeSettlementDateFlows,
+                           Date settlementDate,
+                           Date npvDate,
+                           Real& npv,
+                           Real& bps) {
+
+        npv = 0.0;
+        if (leg.empty()) {
+            bps = 0.0;
+            return;
+        }
+
+        BPSCalculator calc(discountCurve);
+        for (Size i=0; i<leg.size(); ++i) {
+            const boost::shared_ptr<CashFlow>& cf = leg[i];
+            if (!cf->hasOccurred(settlementDate,
+                                 includeSettlementDateFlows)) {
+                npv += cf->amount() *
+                       discountCurve.discount(cf->date());
+                cf->accept(calc);
+            }
+        }
+        DiscountFactor d = discountCurve.discount(npvDate);
+        npv /= d;
+        bps = basisPoint_ * calc.result() / d;
     }
 
     Rate CashFlows::atmRate(const Leg& leg,
@@ -477,11 +500,14 @@ namespace QuantLib {
         if (npvDate == Date())
             npvDate = settlementDate;
 
-        Real bps = CashFlows::bps(leg, discountCurve,
-                                  includeSettlementDateFlows,
-                                  settlementDate, npvDate);
+        Real bps = 0.0;
         if (npv==Null<Real>())
-            npv = CashFlows::npv(leg, discountCurve,
+            CashFlows::npvbps(leg, discountCurve,
+                              includeSettlementDateFlows,
+                              settlementDate, npvDate,
+                              npv, bps);
+        else
+            bps = CashFlows::bps(leg, discountCurve,
                                  includeSettlementDateFlows,
                                  settlementDate, npvDate);
         return basisPoint_*npv/bps;

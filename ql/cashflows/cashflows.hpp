@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2005, 2006 StatPro Italia srl
  Copyright (C) 2005 Charles Whitmore
- Copyright (C) 2007, 2008, 2009, 2010 Ferdinando Ametrano
+ Copyright (C) 2007, 2008, 2009, 2010, 2011 Ferdinando Ametrano
  Copyright (C) 2008 Toyin Akin
 
  This file is part of QuantLib, a free-software/open-source library
@@ -152,6 +152,20 @@ namespace QuantLib {
                         bool includeSettlementDateFlows,
                         Date settlementDate = Date(),
                         Date npvDate = Date());
+
+        //@{
+        //! NPV and BPS of the cash flows.
+        /*! The NPV and BPS of the cash flows calculated
+            together for performance reason
+        */
+        static void npvbps(const Leg& leg,
+                           const YieldTermStructure& discountCurve,
+                           bool includeSettlementDateFlows,
+                           Date settlementDate,
+                           Date npvDate,
+                           Real& npv,
+                           Real& bps);
+
         //! At-the-money rate of the cash flows.
         /*! The result is the fixed rate for which a fixed rate cash flow
             vector, equivalent to the input vector, has the required NPV
