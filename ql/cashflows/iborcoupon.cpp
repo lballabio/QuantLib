@@ -44,7 +44,7 @@ namespace QuantLib {
                          fixingDays, iborIndex, gearing, spread,
                          refPeriodStart, refPeriodEnd,
                          dayCounter, isInArrears),
-      iborIndex_(iborIndex) {
+      iborIndex_(iborIndex), indexName_(index_->name()) {
     #ifdef QL_USE_INDEXED_COUPON
         fixingDate_ = fixingDate();
     #else
@@ -87,7 +87,7 @@ namespace QuantLib {
             if (fixingDate_ < today) {
                 // must have been fixed
                 const TimeSeries<Real>& fixings =
-                    IndexManager::instance().getHistory(index_->name());
+                    IndexManager::instance().getHistory(indexName_);
                 Rate pastFixing = fixings[fixingDate_];
                 QL_REQUIRE(pastFixing != Null<Real>(),
                            "Missing " << index_->name()
@@ -97,7 +97,7 @@ namespace QuantLib {
             if (fixingDate_ == today) {
                 // might have been fixed
                 const TimeSeries<Real>& fixings =
-                    IndexManager::instance().getHistory(index_->name());
+                    IndexManager::instance().getHistory(indexName_);
                 try {
                     Rate pastFixing = fixings[fixingDate_];
                     if (pastFixing != Null<Real>())
