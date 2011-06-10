@@ -38,7 +38,6 @@
 
 #include <ql/methods/montecarlo/path.hpp>
 #include <ql/methods/montecarlo/sample.hpp>
-#include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 
 namespace QuantLib {
 
@@ -77,8 +76,8 @@ namespace QuantLib {
         BrownianBridge(const TimeGrid& timeGrid);
         //! \name inspectors
         //@{
-        Size size() const;
-        const std::vector<Time>& times() const;
+        Size size() const { return size_; }
+        const std::vector<Time>& times() const { return t_; }
         //@}
 
         //! Brownian-bridge generator function
@@ -139,16 +138,6 @@ namespace QuantLib {
         std::vector<Real> leftWeight_, rightWeight_, stdDev_;
     };
 
-
-    inline Size BrownianBridge::size() const {
-        return size_;
-    }
-
-    inline const std::vector<Time>& BrownianBridge::times() const {
-        return t_;
-    }
-
 }
-
 
 #endif
