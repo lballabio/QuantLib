@@ -76,18 +76,15 @@ namespace QuantLib {
         for (Size i=0; i<n; ++i) {
             try {
                 const YieldTermStructure& discount_ref = **discountCurve_;
-                results_.legNPV[i] = arguments_.payer[i] *
-                    CashFlows::npv(arguments_.legs[i],
-                                   discount_ref,
-                                   includeRefDateFlows,
-                                   settlementDate,
-                                   results_.valuationDate);
-                results_.legBPS[i] = arguments_.payer[i] *
-                    CashFlows::bps(arguments_.legs[i],
-                                   discount_ref,
-                                   includeRefDateFlows,
-                                   settlementDate,
-                                   results_.valuationDate);
+                CashFlows::npvbps(arguments_.legs[i],
+                                  discount_ref,
+                                  includeRefDateFlows,
+                                  settlementDate,
+                                  results_.valuationDate,
+                                  results_.legNPV[i],
+                                  results_.legBPS[i]);
+                results_.legNPV[i] *= arguments_.payer[i];
+                results_.legBPS[i] *= arguments_.payer[i];
             } catch (std::exception &e) {
                 QL_FAIL(io::ordinal(i+1) << " leg: " << e.what());
             }
