@@ -3,6 +3,8 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2011 Ferdinando Ametrano
+
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -48,7 +50,7 @@ namespace QuantLib {
         */
         void notifyObservers();
       private:
-        void registerObserver(Observer*);
+        std::pair<std::set<Observer*>::iterator, bool> registerObserver(Observer*);
         void unregisterObserver(Observer*);
         std::set<Observer*> observers_;
         typedef std::set<Observer*>::iterator iterator;
@@ -64,7 +66,7 @@ namespace QuantLib {
         Observer& operator=(const Observer&);
         virtual ~Observer();
         // observer interface
-        void registerWith(const boost::shared_ptr<Observable>&);
+        std::pair<std::set<boost::shared_ptr<Observable> >::iterator, bool> registerWith(const boost::shared_ptr<Observable>&);
         void unregisterWith(const boost::shared_ptr<Observable>&);
         /*! This method must be implemented in derived classes. An
             instance of %Observer does not call this method directly:
@@ -101,8 +103,9 @@ namespace QuantLib {
         return *this;
     }
 
-    inline void Observable::registerObserver(Observer* o) {
-        observers_.insert(o);
+    inline std::pair<std::set<Observer*>::iterator, bool>
+    Observable::registerObserver(Observer* o) {
+        return observers_.insert(o);
     }
 
     inline void Observable::unregisterObserver(Observer* o) {
@@ -157,12 +160,11 @@ namespace QuantLib {
             (*i)->unregisterObserver(this);
     }
 
-    inline void Observer::registerWith(
-                                     const boost::shared_ptr<Observable>& h) {
-        if (h) {
-            observables_.insert(h);
+    inline std::pair<std::set<boost::shared_ptr<Observable> >::iterator, bool>
+    Observer::registerWith(const boost::shared_ptr<Observable>& h) {
+        if (h)
             h->registerObserver(this);
-        }
+        return observables_.insert(h);
     }
 
     inline void Observer::unregisterWith(
