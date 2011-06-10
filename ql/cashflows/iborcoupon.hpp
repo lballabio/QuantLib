@@ -65,7 +65,6 @@ namespace QuantLib {
         //@}
       private:
         boost::shared_ptr<IborIndex> iborIndex_;
-        const TimeSeries<Real>& fixings_;
         Date fixingDate_, fixingValueDate_, nextFixingValueDate_;
         Time spanningTime_;
     };
