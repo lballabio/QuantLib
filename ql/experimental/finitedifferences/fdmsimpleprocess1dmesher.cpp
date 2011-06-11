@@ -27,17 +27,20 @@ namespace QuantLib {
     FdmSimpleProcess1dMesher::FdmSimpleProcess1dMesher(
         Size size,
         const boost::shared_ptr<StochasticProcess1D>& process,
-        Time maturity, Size tAvgSteps, Real eps)
+        Time maturity, Size tAvgSteps, Real eps, Real mandatoryPoint)
         : Fdm1dMesher(size) {
             
         std::fill(locations_.begin(), locations_.end(), 0.0);    
         for (Size l=1; l<=tAvgSteps; ++l) {
             const Real t = (maturity*l)/tAvgSteps;
             
-            const Real qMin = std::min(process->x0(), 
+            const Real mp = (mandatoryPoint != Null<Real>()) ? mandatoryPoint
+                                                             : process->x0();
+
+            const Real qMin = std::min(std::min(mp, process->x0()),
                 process->evolve(0, process->x0(), t, 
                                 InverseCumulativeNormal()(eps)));
-            const Real qMax = std::max(process->x0(),
+            const Real qMax = std::max(std::max(mp, process->x0()),
                 process->evolve(0, process->x0(), t,
                                 InverseCumulativeNormal()(1-eps)));
             

@@ -42,7 +42,8 @@ namespace QuantLib {
                const boost::shared_ptr<FdmMesher>& mesher,
                const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& p,
                const boost::shared_ptr<YieldTermStructure>& rTS,
-               const FdmBoundaryConditionSet& bcSet);
+               const FdmBoundaryConditionSet& bcSet,
+               Size direction = 0);
 
         Size size() const;
         void setTime(Time t1, Time t2);
@@ -61,6 +62,7 @@ namespace QuantLib {
         const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> process_;
         const boost::shared_ptr<YieldTermStructure> rTS_;
         const FdmBoundaryConditionSet bcSet_;
+        const Size direction_;
 
         const Array x_;
         const FirstDerivativeOp dxMap_;

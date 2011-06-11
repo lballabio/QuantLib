@@ -36,7 +36,8 @@ namespace QuantLib {
           FdmSimpleProcess1dMesher(
             Size size,
             const boost::shared_ptr<StochasticProcess1D>& process,
-            Time maturity, Size tAvgSteps = 10, Real epsilon = 0.0001);
+            Time maturity, Size tAvgSteps = 10, Real epsilon = 0.0001,
+            Real mandatoryPoint = Null<Real>());
     };
 
 }

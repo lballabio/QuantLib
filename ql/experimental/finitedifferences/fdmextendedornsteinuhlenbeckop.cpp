@@ -34,17 +34,19 @@ namespace QuantLib {
             const boost::shared_ptr<FdmMesher>& mesher,
             const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& process,
             const boost::shared_ptr<YieldTermStructure>& rTS,
-            const FdmBoundaryConditionSet& bcSet)
-    : mesher_ (mesher),
-      process_(process),
-      rTS_    (rTS),
-      bcSet_  (bcSet),
-      x_      (mesher->locations(0)),
-      dxMap_  (0, mesher),
-      dxxMap_ (SecondDerivativeOp(0, mesher)
-              .mult(0.5*square<Real>()(process_->volatility())
-                *Array(mesher->layout()->size(), 1.))),
-      mapX_   (0, mesher) {
+            const FdmBoundaryConditionSet& bcSet,
+            Size direction)
+    : mesher_   (mesher),
+      process_  (process),
+      rTS_      (rTS),
+      bcSet_    (bcSet),
+      direction_(direction),
+      x_        (mesher->locations(0)),
+      dxMap_    (0, mesher),
+      dxxMap_   (SecondDerivativeOp(0, mesher)
+                .mult(0.5*square<Real>()(process_->volatility())
+                  *Array(mesher->layout()->size(), 1.))),
+      mapX_     (0, mesher) {
     }
 
     Size FdmExtendedOrnsteinUhlenbackOp::size() const {
@@ -79,7 +81,7 @@ namespace QuantLib {
 
     Disposable<Array> FdmExtendedOrnsteinUhlenbackOp::apply_direction(
                                     Size direction, const Array& r) const {
-        if (direction == 0) {
+        if (direction == direction_) {
             return mapX_.apply(r);
         }
         else {
@@ -90,7 +92,7 @@ namespace QuantLib {
 
     Disposable<Array> FdmExtendedOrnsteinUhlenbackOp::solve_splitting(
                             Size direction, const Array& r, Real a) const {
-        if (direction == 0) {
+        if (direction == direction_) {
             return mapX_.solve_splitting(r, a, 1.0);
         }
         else {
@@ -101,6 +103,6 @@ namespace QuantLib {
 
     Disposable<Array> FdmExtendedOrnsteinUhlenbackOp::preconditioner(
                                             const Array& r, Real dt) const {
-        return solve_splitting(0, r, dt);
+        return solve_splitting(direction_, r, dt);
     }
 }

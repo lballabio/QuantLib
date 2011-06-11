@@ -69,9 +69,22 @@ namespace QuantLib {
                                             new FdmLinearOpLayout(dim));
 
         // 2. Mesher
-        const Time maturity
-            = rTS_->dayCounter().yearFraction(rTS_->referenceDate(),
-                                              arguments_.exercise->lastDate());
+        std::vector<Time> exerciseTimes;
+        for (Size i=0; i<swingExercise->dates().size(); ++i) {
+            Time t = rTS_->dayCounter().yearFraction(rTS_->referenceDate(),
+                                                     swingExercise->dates()[i]);
+
+            const Time dt = rTS_->dayCounter()
+                .yearFraction(rTS_->referenceDate(),
+                              swingExercise->dates()[i]+Period(1u, Days)) - t;
+
+            t += dt*swingExercise->seconds()[i]/(24*3600.);
+
+            QL_REQUIRE(t >= 0, "exercise dates must not contain past date");
+            exerciseTimes.push_back(t);
+        }
+
+        const Time maturity = exerciseTimes.back();
         const boost::shared_ptr<StochasticProcess1D> ouProcess(
                               process_->getExtendedOrnsteinUhlenbeckProcess());
         const boost::shared_ptr<Fdm1dMesher> xMesher(
@@ -101,20 +114,6 @@ namespace QuantLib {
         std::list<std::vector<Time> > stoppingTimes;
 
         // 4.1 Bermudan step conditions
-        std::vector<Time> exerciseTimes;
-        for (Size i=0; i<swingExercise->dates().size(); ++i) {
-            Time t = rTS_->dayCounter().yearFraction(rTS_->referenceDate(),
-                                                     swingExercise->dates()[i]);
-
-            const Time dt = rTS_->dayCounter()
-                .yearFraction(rTS_->referenceDate(),
-                              swingExercise->dates()[i]+Period(1u, Days)) - t;
-
-            t += dt*swingExercise->seconds()[i]/(24*3600.);
-
-            QL_REQUIRE(t >= 0, "exercise dates must not contain past date");
-            exerciseTimes.push_back(t);
-        }
         stoppingTimes.push_back(exerciseTimes);
 
         const boost::shared_ptr<StrikedTypePayoff> payoff =
