@@ -147,13 +147,15 @@ namespace QuantLib {
 
             for (Size i=1; i<alive_+1; ++i) { // pillar loop
 
+                bool validData = validCurve_ || iteration>0;
+
                 // bracket root
                 Real min = Traits::minValueAfter(i, ts_->data_);
                 Real max = Traits::maxValueAfter(i, ts_->data_);
 
                 // calculate guess and extend interpolation if needed
                 Real guess = 0.0;
-                if (validCurve_ || iteration>0) {
+                if (validData) {
                     guess = ts_->data_[i]; // previous iteration value
                 } else {
                     if (i==1) // special first pillar case
@@ -191,7 +193,7 @@ namespace QuantLib {
                     ts_->instruments_[i-1+firstInstrument_];
                 try {
                     BootstrapError<Curve> error(ts_, instrument, i);
-                    if (validCurve_ || iteration>0)
+                    if (validData)
                         solver.solve(error, ts_->accuracy_, guess, min, max);
                     else
                         firstSolver.solve(error,ts_->accuracy_,guess,min,max);
