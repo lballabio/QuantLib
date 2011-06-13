@@ -181,8 +181,10 @@ namespace QuantLib {
                     }
                 }
                 // adjust guess if needed
-                if (guess<=min || guess>=max)
-                    guess = (min+max)/2.0;
+                if (guess>=max)
+                    guess = max - (max-min)/5.0;
+                else if (guess<=min)
+                    guess = min + (max-min)/5.0;
 
                 // the actual instrument used for the current pillar
                 boost::shared_ptr<typename Traits::helper> instrument =
