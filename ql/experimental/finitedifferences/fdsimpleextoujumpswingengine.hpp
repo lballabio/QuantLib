@@ -33,6 +33,7 @@ namespace QuantLib {
 
     //! Finite-Differences engine for simple swing options
 
+    class YieldTermStructure;
     class ExtOUWithJumpsProcess;
 
     class FdSimpleExtOUJumpSwingEngine
