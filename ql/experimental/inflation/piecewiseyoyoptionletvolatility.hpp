@@ -39,7 +39,6 @@ namespace QuantLib {
         static Date initialDate(const YoYOptionletVolatilitySurface *s) {
             return s->baseDate();
         }
-        static bool dummyInitialValue() {return false;}
         static Volatility initialValue(const YoYOptionletVolatilitySurface *s) {
             return s->baseLevel();  // REALLLYYYY important because
                                     // generally don't have a clue

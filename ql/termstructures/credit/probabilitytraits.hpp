@@ -56,8 +56,6 @@ namespace QuantLib {
         static Real initialValue(const DefaultProbabilityTermStructure*) {
             return 1.0;
         }
-        // true if the initialValue is just a dummy value
-        static bool dummyInitialValue() { return false; }
         // initial guess
         static Real initialGuess() {
             return 1.0/(1.0+detail::avgHazardRate*0.25);
@@ -103,8 +101,6 @@ namespace QuantLib {
         static Real initialValue(const DefaultProbabilityTermStructure*) {
             return detail::avgHazardRate;
         }
-        // true if the initialValue is just a dummy value
-        static bool dummyInitialValue() { return true; }
         // initial guess
         static Real initialGuess() { return detail::avgHazardRate; }
         // further guesses
@@ -152,8 +148,6 @@ namespace QuantLib {
         static Real initialValue(const DefaultProbabilityTermStructure*) {
             return detail::avgHazardRate;
         }
-        // true if the initialValue is just a dummy value
-        static bool dummyInitialValue() { return true; }
         // initial guess
         static Real initialGuess() { return detail::avgHazardRate; }
         // further guesses

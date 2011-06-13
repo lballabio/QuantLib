@@ -46,7 +46,6 @@ namespace QuantLib {
                                        t->frequency()).first;
             }
         }
-        static bool dummyInitialValue() { return false; }
         static Rate initialValue(const YoYInflationTermStructure* t) {
             return t->baseRate();
         }

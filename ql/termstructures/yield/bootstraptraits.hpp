@@ -54,8 +54,6 @@ namespace QuantLib {
         static DiscountFactor initialValue(const YieldTermStructure*) {
             return 1.0;
         }
-        // true if the initialValue is just a dummy value
-        static bool dummyInitialValue() { return false; }
         // initial guess
         static DiscountFactor initialGuess() {
             return 1.0/(1.0+detail::avgRate*0.25);
@@ -109,8 +107,6 @@ namespace QuantLib {
         static Rate initialValue(const YieldTermStructure*) {
             return detail::avgRate;
         }
-        // true if the initialValue is just a dummy value
-        static bool dummyInitialValue() { return true; }
         // initial guess
         static Rate initialGuess() { return detail::avgRate; }
         // further guesses
@@ -164,8 +160,6 @@ namespace QuantLib {
         static Rate initialValue(const YieldTermStructure*) {
             return detail::avgRate;
         }
-        // true if the initialValue is just a dummy value
-        static bool dummyInitialValue() { return true; }
         // initial guess
         static Rate initialGuess() { return detail::avgRate; }
         // further guesses
