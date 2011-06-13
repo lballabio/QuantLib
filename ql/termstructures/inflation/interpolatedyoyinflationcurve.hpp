@@ -66,6 +66,7 @@ namespace QuantLib {
         //@{
         const std::vector<Date>& dates() const;
         const std::vector<Time>& times() const;
+        const std::vector<Real>& data() const;
         const std::vector<Rate>& rates() const;
         std::vector<std::pair<Date,Rate> > nodes() const;
         //@}
@@ -204,6 +205,12 @@ namespace QuantLib {
     template <class T>
     inline const std::vector<Rate>&
     InterpolatedYoYInflationCurve<T>::rates() const {
+        return this->data_;
+    }
+
+    template <class T>
+    inline const std::vector<Real>&
+    InterpolatedYoYInflationCurve<T>::data() const {
         return this->data_;
     }
 
