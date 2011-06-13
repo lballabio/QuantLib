@@ -205,7 +205,7 @@ namespace QuantLib {
 
             if (!Interpolator::global)
                 break;     // no need for convergence loop
-            else if (!validCurve_ && iteration == 0)
+            else if (iteration == 0)
                 continue; // at least one more iteration to convergence check
 
             // exit condition
