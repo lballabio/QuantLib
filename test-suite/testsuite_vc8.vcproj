@@ -643,6 +643,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\inflationcpicapfloor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\inflationcpiswap.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\inflationvolatility.cpp"
 				>
 			</File>
@@ -828,6 +836,10 @@
 			</File>
 			<File
 				RelativePath=".\swaptionvolatilitymatrix.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\swingoption.cpp"
 				>
 			</File>
 			<File
@@ -1080,6 +1092,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\inflationcpicapfloor.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\inflationcpiswap.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\inflationvolatility.hpp"
 				>
 			</File>
@@ -1269,6 +1289,10 @@
 			</File>
 			<File
 				RelativePath=".\swaptionvolstructuresutilities.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\swingoption.hpp"
 				>
 			</File>
 			<File
