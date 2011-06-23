@@ -26,7 +26,7 @@
 // ===========================================================================
 // NOTE: The following copyright notice applies to the original code,
 //
-// Copyright (C) 2002 Peter Jäckel "Monte Carlo Methods in Finance".
+// Copyright (C) 2002 Peter Jï¿½ckel "Monte Carlo Methods in Finance".
 // All rights reserved.
 //
 // Permission to use, copy, modify, and distribute this software is freely
@@ -78,6 +78,12 @@ namespace QuantLib {
         //@{
         Size size() const { return size_; }
         const std::vector<Time>& times() const { return t_; }
+        const std::vector<Size>& bridgeIndex()  const { return bridgeIndex_; }
+        const std::vector<Size>& leftIndex()    const { return leftIndex_; }
+        const std::vector<Size>& rightIndex()   const { return rightIndex_; }
+        const std::vector<Real>& leftWeight()   const { return leftWeight_; }
+        const std::vector<Real>& rightWeight()  const { return rightWeight_; }
+        const std::vector<Real>& stdDeviation() const { return stdDev_; }
         //@}
 
         //! Brownian-bridge generator function
