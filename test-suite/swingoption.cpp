@@ -588,7 +588,7 @@ void SwingOptionTest::testSimpleExtOUStorageEngine() {
 
     storageOption.setPricingEngine(storageEngine);
 
-    const Real expected = 69.6914;
+    const Real expected = 69.6686;
     const Real calculated = storageOption.NPV();
 
     if (std::fabs(expected - calculated) > 2e-2) {
