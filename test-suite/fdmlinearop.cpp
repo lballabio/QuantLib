@@ -29,10 +29,10 @@
 #include <ql/processes/hullwhiteprocess.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/hybridhestonhullwhiteprocess.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
-#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
+#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
@@ -57,6 +57,8 @@
 #include <ql/experimental/finitedifferences/fdmhestonop.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
+#include <ql/experimental/finitedifferences/fdmndimsolver.hpp>
+#include <ql/experimental/finitedifferences/fdm3dimsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
@@ -848,6 +850,94 @@ void FdmLinearOpTest::testFdmHestonExpress() {
     }
 }
 
+
+namespace {
+
+    boost::shared_ptr<HybridHestonHullWhiteProcess> createHestonHullWhite(
+        Time maturity) {
+
+        DayCounter dc = Actual365Fixed();
+        const Date today = Settings::instance().evaluationDate();
+        Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
+
+        std::vector<Date> dates;
+        std::vector<Rate> rates, divRates;
+
+        for (Size i=0; i <= 25; ++i) {
+            dates.push_back(today+Period(i, Years));
+            rates.push_back(0.05);
+            divRates.push_back(0.02);
+        }
+
+        const Handle<YieldTermStructure> rTS(
+           boost::shared_ptr<YieldTermStructure>(new ZeroCurve(dates, rates, dc)));
+        const Handle<YieldTermStructure> qTS(
+           boost::shared_ptr<YieldTermStructure>(
+                                              new ZeroCurve(dates, divRates, dc)));
+
+        const Real v0 = 0.04;
+        boost::shared_ptr<HestonProcess> hestonProcess(
+            new HestonProcess(rTS, qTS, s0, v0, 1.0, v0*0.75, 0.4, -0.7));
+
+        boost::shared_ptr<HullWhiteForwardProcess> hwFwdProcess(
+                            new HullWhiteForwardProcess(rTS, 0.00883, 0.01));
+        hwFwdProcess->setForwardMeasureTime(maturity);
+
+        const Real equityShortRateCorr = -0.7;
+
+        return boost::shared_ptr<HybridHestonHullWhiteProcess>(
+                new HybridHestonHullWhiteProcess(hestonProcess, hwFwdProcess,
+                                                 equityShortRateCorr));
+    }
+
+    FdmSolverDesc createSolverDesc(
+        const std::vector<Size>& dim,
+        const boost::shared_ptr<HybridHestonHullWhiteProcess>& process) {
+
+        const Time maturity
+                    = process->hullWhiteProcess()->getForwardMeasureTime();
+
+        boost::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
+
+        std::vector<boost::shared_ptr<Fdm1dMesher> > mesher1d;
+        mesher1d.push_back(boost::shared_ptr<Fdm1dMesher>(
+                new Uniform1dMesher(std::log(22.0), std::log(440.0), dim[0])));
+        mesher1d.push_back(boost::shared_ptr<Fdm1dMesher>(
+                new FdmHestonVarianceMesher(dim[1], process->hestonProcess(),
+                                            maturity)));
+        mesher1d.push_back(boost::shared_ptr<Fdm1dMesher>(
+                new Uniform1dMesher(-0.10, 0.20, dim[2])));
+
+        boost::shared_ptr<FdmMesher> mesher(
+                                     new FdmMesherComposite(layout, mesher1d));
+
+        const std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;
+
+        std::list<std::vector<Time> > stoppingTimes;
+        std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;
+
+        boost::shared_ptr<FdmStepConditionComposite> conditions(
+            new FdmStepConditionComposite(
+                                     std::list<std::vector<Time> >(),
+                                     FdmStepConditionComposite::Conditions()));
+
+        boost::shared_ptr<StrikedTypePayoff> payoff(
+                                  new PlainVanillaPayoff(Option::Call, 160.0));
+
+        boost::shared_ptr<FdmInnerValueCalculator> calculator(
+                                       new FdmLogInnerValue(payoff, mesher, 0));
+
+        const Size tGrid = 100;
+        const Size dampingSteps = 0;
+
+        FdmSolverDesc desc = { mesher, boundaries,
+                               conditions, calculator,
+                               maturity, tGrid, dampingSteps };
+
+        return desc;
+    }
+}
+
 void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     BOOST_MESSAGE("Testing FDM with Heston Hull-White model...");
 
@@ -855,83 +945,43 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
 
     const Date today = Date(28, March, 2004);
     Settings::instance().evaluationDate() = today;
+
     Date exerciseDate(28, March, 2012);
-    DayCounter dc = Actual365Fixed();
-    const Time maturity = dc.yearFraction(Settings::instance().evaluationDate(),
-                                          exerciseDate);
-
-    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
-
-    std::vector<Date> dates;
-    std::vector<Rate> rates, divRates;
-
-    for (Size i=0; i <= 25; ++i) {
-        dates.push_back(today+Period(i, Years));
-        rates.push_back(0.05);
-        divRates.push_back(0.02);
-    }
-
-    const Handle<YieldTermStructure> rTS(
-       boost::shared_ptr<YieldTermStructure>(new ZeroCurve(dates, rates, dc)));
-    const Handle<YieldTermStructure> qTS(
-       boost::shared_ptr<YieldTermStructure>(
-                                          new ZeroCurve(dates, divRates, dc)));
-
-    const Real v0 = 0.04;
-    boost::shared_ptr<HestonProcess> hestonProcess(
-        new HestonProcess(rTS, qTS, s0, v0, 1.0, v0*0.75, 0.4, -0.7));
-
-    boost::shared_ptr<HullWhiteProcess> hwProcess(
-                              new HullWhiteProcess(rTS, 0.00883, 0.01));
-
-    boost::shared_ptr<HullWhiteForwardProcess> hwFwdProcess(
-      new HullWhiteForwardProcess(rTS, hwProcess->a(), hwProcess->sigma()));
-    hwFwdProcess->setForwardMeasureTime(maturity);
-
-    const Real equityShortRateCorr = -0.7;
-    boost::shared_ptr<HybridHestonHullWhiteProcess> jointProcess(
-        new HybridHestonHullWhiteProcess(hestonProcess, hwFwdProcess,
-                                         equityShortRateCorr));
+    const Time maturity = Actual365Fixed().yearFraction(today, exerciseDate);
 
     Size dims[] = {51, 31, 31};
     const std::vector<Size> dim(dims, dims+LENGTH(dims));
 
-    boost::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
+    boost::shared_ptr<HybridHestonHullWhiteProcess> jointProcess
+                                            = createHestonHullWhite(maturity);
+    FdmSolverDesc desc = createSolverDesc(dim, jointProcess);
+    boost::shared_ptr<FdmMesher> mesher = desc.mesher;
 
-    std::vector<boost::shared_ptr<Fdm1dMesher> > mesher1d;
-    mesher1d.push_back(boost::shared_ptr<Fdm1dMesher>(
-            new Uniform1dMesher(std::log(22.0), std::log(440.0), dims[0])));
-    mesher1d.push_back(boost::shared_ptr<Fdm1dMesher>(
-            new FdmHestonVarianceMesher(dims[1], hestonProcess, maturity)));
-    mesher1d.push_back(boost::shared_ptr<Fdm1dMesher>(
-            new Uniform1dMesher(-0.10, 0.20, dims[2])));
+    boost::shared_ptr<HullWhiteForwardProcess> hwFwdProcess
+                                            = jointProcess->hullWhiteProcess();
 
-    boost::shared_ptr<FdmMesher> mesher(
-                                 new FdmMesherComposite(layout, mesher1d));
+    boost::shared_ptr<HullWhiteProcess> hwProcess(
+        new HullWhiteProcess(jointProcess->hestonProcess()->riskFreeRate(),
+                             hwFwdProcess->a(), hwFwdProcess->sigma()));
+
     boost::shared_ptr<FdmLinearOpComposite> linearOp(
-        new FdmHestonHullWhiteOp(mesher, hestonProcess, hwProcess,
-                                 equityShortRateCorr));
-
-    boost::shared_ptr<StrikedTypePayoff> payoff(
-                                   new PlainVanillaPayoff(Option::Call, 160.0));
+        new FdmHestonHullWhiteOp(mesher,
+                                 jointProcess->hestonProcess(),
+                                 hwProcess,
+                                 jointProcess->eta()));
 
     Array rhs(mesher->layout()->size());
     const FdmLinearOpIterator endIter = mesher->layout()->end();
     for (FdmLinearOpIterator iter = mesher->layout()->begin();
         iter != endIter; ++iter) {
-            rhs[iter.index()]
-                = payoff->operator ()(std::exp(mesher->location(iter, 0)));
+            rhs[iter.index()] = desc.calculator->avgInnerValue(iter, maturity);
     }
-
-    FdmAmericanStepCondition condition(mesher,
-        boost::shared_ptr<FdmInnerValueCalculator>(
-                                     new FdmLogInnerValue(payoff, mesher, 0)));
 
     const Real theta = 0.5+std::sqrt(3.0)/6.;
     HundsdorferScheme hsEvolver(theta, 0.5, linearOp);
     FiniteDifferenceModel<HundsdorferScheme> hsModel(hsEvolver);
 
-    hsModel.rollback(rhs, maturity, 0.0, 100);
+    hsModel.rollback(rhs, maturity, 0.0, desc.timeSteps);
 
     std::vector<Real> tx, ty, tr, y;
     for (FdmLinearOpIterator iter = mesher->layout()->begin();
@@ -948,21 +998,47 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     }
 
     const Real x0 = 100;
-    for (Size k=0; k < dims[2]; ++k) {
-        Matrix ret(dims[0], dims[1]);
-        for (Size i=0; i < dims[0]; ++i)
-            for (Size j=0; j < dims[1]; ++j)
-                ret[i][j] = rhs[ i+j*dims[0]+k*dims[0]*dims[1] ];
+    const Real v0 = jointProcess->hestonProcess()->v0();
+    const Real r0 = jointProcess->hullWhiteProcess()->x0();
+    for (Size k=0; k < dim[2]; ++k) {
+        Matrix ret(dim[0], dim[1]);
+        for (Size i=0; i < dim[0]; ++i)
+            for (Size j=0; j < dim[1]; ++j)
+                ret[i][j] = rhs[ i+j*dim[0]+k*dim[0]*dim[1] ];
 
-        y.push_back(BilinearInterpolation(
-                    ty.begin(), ty.end(),
-                    tx.begin(), tx.end(), ret)(v0, std::log(x0)));
+        y.push_back(BicubicSpline(ty.begin(), ty.end(),
+                                  tx.begin(), tx.end(), ret)(v0, std::log(x0)));
     }
 
-    const Real calculated
-        = LinearInterpolation(tr.begin(), tr.end(), y.begin())(hwProcess->x0());
+    const Real directCalc
+        = MonotonicCubicNaturalSpline(tr.begin(), tr.end(), y.begin())(r0);
 
-    VanillaOption option(payoff,
+    std::vector<Real> x(3);
+    x[0] = std::log(x0); x[1] = v0; x[2] = r0;
+
+    Fdm3DimSolver solver3d(desc, FdmSchemeDesc::Hundsdorfer(), linearOp);
+    const Real solverCalc = solver3d.interpolateAt(x[0], x[1], x[2]);
+    const Real solverTheta = solver3d.thetaAt(x[0], x[1], x[2]);
+
+    if (std::fabs(directCalc - solverCalc) > 1e-4) {
+        QL_FAIL("Error in calculating PV for Heston Hull White Option");
+    }
+
+
+    FdmNdimSolver<3> solverNd(desc, FdmSchemeDesc::Hundsdorfer(), linearOp);
+    const Real solverNdCalc = solverNd.interpolateAt(x);
+    const Real solverNdTheta = solverNd.thetaAt(x);
+
+    if (std::fabs(solverNdCalc - solverCalc) > 1e-4) {
+        QL_FAIL("Error in calculating PV for Heston Hull White Option");
+    }
+    if (std::fabs(solverNdTheta - solverTheta) > 1e-4) {
+        QL_FAIL("Error in calculating PV for Heston Hull White Option");
+    }
+
+    VanillaOption option(
+            boost::shared_ptr<StrikedTypePayoff>(
+                                new PlainVanillaPayoff(Option::Call, 160.0)),
             boost::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate)));
 
     const Real tol = 0.025;
@@ -979,7 +1055,7 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     // use precalculated value instead
     const Real expected = 4.73;
 
-    if (std::fabs(calculated - expected) > 3*tol) {
+    if (std::fabs(directCalc - expected) > 3*tol) {
         QL_FAIL("Error in calculating PV for Heston Hull White Option");
     }
 }
@@ -1152,6 +1228,7 @@ void FdmLinearOpTest::testCrankNicolsonWithDamping() {
                 "\n calculated:      " << calculatedGamma);
     }
 }
+
 
 test_suite* FdmLinearOpTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("linear operator tests");
