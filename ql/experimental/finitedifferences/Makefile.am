@@ -49,12 +49,14 @@ this_include_HEADERS = \
 	fdmhestonsolver.hpp \
 	fdmhestonvariancemesher.hpp \
 	fdminnervaluecalculator.hpp \
+	fdmklugeextouop.hpp \
 	fdmlinearop.hpp \
 	fdmlinearopcomposite.hpp \
 	fdmlinearopiterator.hpp \
 	fdmlinearoplayout.hpp \
 	fdmmesher.hpp \
 	fdmmeshercomposite.hpp \
+	fdmndimsolver.hpp \
 	fdmquantohelper.hpp \
     fdmsimple2dbssolver.hpp \
 	fdmsimple2dextousolver.hpp \
@@ -123,6 +125,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdmhestonsolver.cpp \
 	fdmhestonvariancemesher.cpp \
 	fdminnervaluecalculator.cpp \
+	fdmklugeextouop.cpp \
 	fdmlinearoplayout.cpp \
 	fdmmeshercomposite.cpp \
 	fdmquantohelper.cpp \

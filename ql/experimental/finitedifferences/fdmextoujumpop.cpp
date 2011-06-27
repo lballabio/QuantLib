@@ -21,9 +21,8 @@
     \brief Ornstein Uhlenbeck process plus jumps (Kluge Model)
 */
 
-#include <ql/math/functional.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/experimental/finitedifferences/fdmmesher.hpp>
 #include <ql/experimental/processes/extouwithjumpsprocess.hpp>
 #include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
@@ -51,23 +50,23 @@ namespace QuantLib {
       dyMap_  (FirstDerivativeOp(1, mesher)
                 .mult(-process->beta()*mesher->locations(1))) {
     }
-        
+
     Size FdmExtOUJumpOp::size() const {
         return mesher_->layout()->dim().size();;
     }
-    
+
     void FdmExtOUJumpOp::setTime(Time t1, Time t2) {
         ouOp_->setTime(t1, t2);
     }
-    
+
     Disposable<Array> FdmExtOUJumpOp::apply(const Array& r) const {
         return ouOp_->apply(r) + apply_direction(1, r) + integro(r);
     }
-    
+
     Disposable<Array> FdmExtOUJumpOp::apply_mixed(const Array& r) const {
         return  integro(r);
     }
-    
+
     Disposable<Array> FdmExtOUJumpOp::apply_direction(Size direction,
                                                       const Array& r) const {
         if (direction == 0)
@@ -80,8 +79,8 @@ namespace QuantLib {
         }
     }
 
-    Disposable<Array> 
-        FdmExtOUJumpOp::solve_splitting(Size direction, 
+    Disposable<Array>
+        FdmExtOUJumpOp::solve_splitting(Size direction,
                                         const Array& r, Real a) const {
         if (direction == 0) {
             return ouOp_->solve_splitting(direction, r, a);
@@ -94,34 +93,34 @@ namespace QuantLib {
             return retVal;
         }
     }
-    
+
     Disposable<Array>
         FdmExtOUJumpOp::preconditioner(const Array& r, Real dt) const {
 
         return ouOp_->solve_splitting(0, r, dt);
     }
-    
+
     FdmExtOUJumpOp::IntegroIntegrand::IntegroIntegrand(
                     const boost::shared_ptr<LinearInterpolation>& interpl,
                     const FdmBoundaryConditionSet& bcSet,
                     Real y, Real eta)
-    : y_      (y), 
-      eta_    (eta), 
-      bcSet_  (bcSet), 
+    : y_      (y),
+      eta_    (eta),
+      bcSet_  (bcSet),
       interpl_(interpl) { }
-                    
+
     Real FdmExtOUJumpOp::IntegroIntegrand::operator()(Real u) const {
         const Real y = y_ + u/eta_;
         Real valueOfDerivative = interpl_->operator()(y, true);
-        
+
         for (FdmBoundaryConditionSet::const_iterator iter=bcSet_.begin();
             iter < bcSet_.end(); ++iter) {
             valueOfDerivative=(*iter)->applyAfterApplying(y, valueOfDerivative);
         }
-        
+
         return std::exp(-u)*valueOfDerivative;
     }
-    
+
     Disposable<Array> FdmExtOUJumpOp::integro(const Array& r) const {
         Array integral(r.size());
 
@@ -131,7 +130,7 @@ namespace QuantLib {
         std::vector<Array>  y(extraDims, Array(layout->dim()[1]));
         std::vector<Matrix> f(extraDims,
                               Matrix(layout->dim()[1], layout->dim()[0]));
-        
+
         const FdmLinearOpIterator endIter = layout->end();
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
             ++iter) {
@@ -155,7 +154,7 @@ namespace QuantLib {
         }
 
         const Real eta = process_->eta();
-        
+
         for (FdmLinearOpIterator iter=layout->begin(); iter!=endIter; ++iter) {
             const Size i = iter.coordinates()[0];
             const Size j = iter.coordinates()[1];

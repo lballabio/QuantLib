@@ -35,7 +35,6 @@ namespace QuantLib {
     : solverDesc_(solverDesc),
       schemeDesc_(schemeDesc),
       op_(op),
-      mesher_(solverDesc.mesher),
       thetaCondition_(new FdmSnapshotCondition(
         0.99*std::min(1.0/365.0,
            solverDesc.condition->stoppingTimes().empty()
@@ -43,10 +42,12 @@ namespace QuantLib {
                     : solverDesc.condition->stoppingTimes().front()))),
       conditions_(FdmStepConditionComposite::joinConditions(thetaCondition_,
                                                          solverDesc.condition)),
-      initialValues_(mesher_->layout()->size()),
-      resultValues_(mesher_->layout()->dim()[1], mesher_->layout()->dim()[0]) {
+      initialValues_(solverDesc.mesher->layout()->size()),
+      resultValues_ (solverDesc.mesher->layout()->dim()[1],
+                     solverDesc.mesher->layout()->dim()[0]) {
 
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+        const boost::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
+        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
 
         x_.reserve(layout->dim()[0]);
         y_.reserve(layout->dim()[1]);
@@ -59,10 +60,10 @@ namespace QuantLib {
                                                          solverDesc.maturity);
 
             if (!iter.coordinates()[1]) {
-                x_.push_back(mesher_->location(iter, 0));
+                x_.push_back(mesher->location(iter, 0));
             }
             if (!iter.coordinates()[0]) {
-                y_.push_back(mesher_->location(iter, 1));
+                y_.push_back(mesher->location(iter, 1));
             }
         }
     }

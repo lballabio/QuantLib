@@ -58,7 +58,6 @@ namespace QuantLib {
         const FdmSchemeDesc schemeDesc_;
         const boost::shared_ptr<FdmLinearOpComposite> op_;
 
-        const boost::shared_ptr<FdmMesher> mesher_;
         const boost::shared_ptr<FdmSnapshotCondition> thetaCondition_;
         const boost::shared_ptr<FdmStepConditionComposite> conditions_;
 
