@@ -7104,6 +7104,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmklugeextouop.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmklugeextouop.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmlinearop.hpp"
 					>
 				</File>
@@ -7133,6 +7141,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmmeshercomposite.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmndimsolver.hpp"
 					>
 				</File>
 				<File
