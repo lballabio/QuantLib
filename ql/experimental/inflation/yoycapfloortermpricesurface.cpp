@@ -18,7 +18,6 @@
 */
 
 #include <ql/experimental/inflation/yoycapfloortermpricesurface.hpp>
-#include <ql/indexes/inflationindex.hpp>
 
 namespace QuantLib {
 
