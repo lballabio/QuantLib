@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2009 Chris Kenyon
+ Copyright (C) 2011 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -46,19 +47,34 @@ namespace QuantLib {
                                     // assumptions on early options
                                     // that are _not_ quoted
         }
-        static Volatility initialGuess() {return 0.005;}
-        static Volatility guess(const YoYOptionletVolatilitySurface*,
-                                const Date &) {
+
+        template <class C>
+        static Volatility guess(Size i,
+                                const C* c,
+                                bool validData) {
+            if (validData) // previous iteration value
+                return c->data()[i];
+
+            if (i==1) // first pillar
+                return 0.005;
+
+            // could/should extrapolate
             return 0.002;
         }
-        static Volatility minValueAfter(Size n,
-                                        const std::vector<Volatility> &v) {
-            return std::max(0.0, v[n-1] - 0.02); // vol cannot be negative
+
+        template <class C>
+        static Volatility minValueAfter(Size i,
+                                        const C* c,
+                                        bool validData) {
+            return std::max(0.0, c->data()[i-1] - 0.02); // vol cannot be negative
         }
-        static Volatility maxValueAfter(Size n,
-                                        const std::vector<Volatility> &v) {
-            return v[n-1] + 0.02;
+        template <class C>
+        static Volatility maxValueAfter(Size i,
+                                        const C* c,
+                                        bool validData) {
+            return c->data()[i-1] + 0.02;
         }
+
         static void updateGuess(std::vector<Volatility> &vols,
                                 Volatility level,
                                 Size i) {
@@ -198,4 +214,3 @@ namespace QuantLib {
 }
 
 #endif
-

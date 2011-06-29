@@ -114,7 +114,7 @@ namespace QuantLib {
             ts_->data_[0] = Traits::initialValue(ts_);
             // reasonable numbers needed for the starting interpolation
             for (Size i=1; i<alive_+1; ++i)
-                ts_->data_[i] = Traits::initialGuess();
+                ts_->data_[i] = Traits::guess(1, ts_, false);
         }
         initialized_ = true;
     }
@@ -149,21 +149,18 @@ namespace QuantLib {
 
                 bool validData = validCurve_ || iteration>0;
 
-                // bracket root
-                Real min = Traits::minValueAfter(i, ts_->data_);
-                Real max = Traits::maxValueAfter(i, ts_->data_);
+                // bracket root and calculate guess
+                Real min = Traits::minValueAfter(i, ts_, validData);
+                Real max = Traits::maxValueAfter(i, ts_, validData);
+                Real guess = Traits::guess(i, ts_, validData);
+                // adjust guess if needed
+                if (guess>=max)
+                    guess = max - (max-min)/5.0;
+                else if (guess<=min)
+                    guess = min + (max-min)/5.0;
 
-                // calculate guess and extend interpolation if needed
-                Real guess = 0.0;
-                if (validData) {
-                    guess = ts_->data_[i]; // previous iteration value
-                } else {
-                    if (i==1) // special first pillar case
-                        guess = Traits::initialGuess();
-                    else // most traits extrapolate (using only
-                         // the curve bootstrapped so far)
-                        guess = Traits::guess(ts_, ts_->dates_[i]);
-
+                // extend interpolation if needed
+                if (!validData) {
                     try { // extend interpolation a point at a time
                           // including the pillar to be boostrapped
                         ts_->interpolation_ = ts_->interpolator_.interpolate(
@@ -182,11 +179,6 @@ namespace QuantLib {
                         ts_->interpolation_.update();
                     }
                 }
-                // adjust guess if needed
-                if (guess>=max)
-                    guess = max - (max-min)/5.0;
-                else if (guess<=min)
-                    guess = min + (max-min)/5.0;
 
                 // the actual instrument used for the current pillar
                 boost::shared_ptr<typename Traits::helper> instrument =

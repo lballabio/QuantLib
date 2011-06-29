@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005, 2007 StatPro Italia srl
+ Copyright (C) 2011 Ferdinando Ametrano
  Copyright (C) 2007 Chris Kenyon
 
  This file is part of QuantLib, a free-software/open-source library
@@ -46,6 +47,7 @@ namespace QuantLib {
         };
         // helper class
         typedef BootstrapHelper<YieldTermStructure> helper;
+
         // start of curve data
         static Date initialDate(const YieldTermStructure* c) {
             return c->referenceDate();
@@ -54,31 +56,44 @@ namespace QuantLib {
         static DiscountFactor initialValue(const YieldTermStructure*) {
             return 1.0;
         }
-        // initial guess
-        static DiscountFactor initialGuess() {
-            return 1.0/(1.0+detail::avgRate*0.25);
-        }
-        // further guesses
-        static DiscountFactor guess(const YieldTermStructure* c,
-                                    const Date& d) {
+
+        // guesses
+        template <class C>
+        static DiscountFactor guess(Size i, 
+                                    const C* c,
+                                    bool validData) {
+            if (validData) // previous iteration value
+                return c->data()[i];
+
+            if (i==1) // first pillar
+                return 1.0/(1.0+detail::avgRate*0.25);
+
+            // extrapolate
+            Date d = c->dates()[i];
             return c->discount(d,true);
         }
+
         // possible constraints based on previous values
-        static DiscountFactor minValueAfter(Size,
-                                            const std::vector<Real>&) {
+        template <class C>
+        static DiscountFactor minValueAfter(Size i,
+                                            const C* c,
+                                            bool validData) {
             return QL_EPSILON;
         }
+        template <class C>
         static DiscountFactor maxValueAfter(Size i,
-                                            const std::vector<Real>& data) {
+                                            const C* c,
+                                            bool validData) {
             #if defined(QL_NEGATIVE_RATES)
             // discount are not required to be decreasing--all bets are off.
             // We choose as max a value very unlikely to be exceeded.
             return 1.1;
             #else
             // discounts cannot increase
-            return data[i-1];
+            return c->data()[i-1];
             #endif
         }
+
         // update with new guess
         static void updateGuess(std::vector<DiscountFactor>& data,
                                 DiscountFactor discount,
@@ -107,16 +122,29 @@ namespace QuantLib {
         static Rate initialValue(const YieldTermStructure*) {
             return detail::avgRate;
         }
-        // initial guess
-        static Rate initialGuess() { return detail::avgRate; }
-        // further guesses
-        static Rate guess(const YieldTermStructure* c,
-                          const Date& d) {
+
+        // guesses
+        template <class C>
+        static Rate guess(Size i,
+                          const C* c,
+                          bool validData) {
+            if (validData) // previous iteration value
+                return c->data()[i];
+
+            if (i==1) // first pillar
+                return detail::avgRate;
+
+            // extrapolate
+            Date d = c->dates()[i];
             return c->zeroRate(d, c->dayCounter(),
                                Continuous, Annual, true);
         }
+
         // possible constraints based on previous values
-        static Rate minValueAfter(Size, const std::vector<Real>&) {
+        template <class C>
+        static Rate minValueAfter(Size i,
+                                  const C* c,
+                                  bool validData) {
             #if defined(QL_NEGATIVE_RATES)
             // no constraints.
             // We choose as min a value very unlikely to be exceeded.
@@ -125,11 +153,15 @@ namespace QuantLib {
             return QL_EPSILON;
             #endif
         }
-        static Rate maxValueAfter(Size, const std::vector<Real>&) {
+        template <class C>
+        static Rate maxValueAfter(Size i,
+                                  const C* c,
+                                  bool validData) {
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.
             return detail::maxRate;
         }
+
         // update with new guess
         static void updateGuess(std::vector<Rate>& data,
                                 Rate rate,
@@ -160,16 +192,29 @@ namespace QuantLib {
         static Rate initialValue(const YieldTermStructure*) {
             return detail::avgRate;
         }
-        // initial guess
-        static Rate initialGuess() { return detail::avgRate; }
-        // further guesses
-        static Rate guess(const YieldTermStructure* c,
-                          const Date& d) {
+
+        // guesses
+        template <class C>
+        static Rate guess(Size i,
+                          const C* c,
+                          bool validData) {
+            if (validData) // previous iteration value
+                return c->data()[i];
+
+            if (i==1) // first pillar
+                return detail::avgRate;
+
+            // extrapolate
+            Date d = c->dates()[i];
             return c->forwardRate(d, d, c->dayCounter(),
                                   Continuous, Annual, true);
         }
+
         // possible constraints based on previous values
-        static Rate minValueAfter(Size, const std::vector<Real>&) {
+        template <class C>
+        static Rate minValueAfter(Size i,
+                                  const C* c,
+                                  bool validData) {
             #if defined(QL_NEGATIVE_RATES)
             // no constraints.
             // We choose as min a value very unlikely to be exceeded.
@@ -178,11 +223,15 @@ namespace QuantLib {
             return QL_EPSILON;
             #endif
         }
-        static Rate maxValueAfter(Size, const std::vector<Real>&) {
+        template <class C>
+        static Rate maxValueAfter(Size i,
+                                  const C* c,
+                                  bool validData) {
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.
             return detail::maxRate;
         }
+
         // update with new guess
         static void updateGuess(std::vector<Rate>& data,
                                 Rate forward,

@@ -222,7 +222,7 @@ namespace QuantLib {
 
             if (iInst >= localisation_) {
                 startArray[localisation_-dataAdjust] =
-                    Traits::guess(ts_, ts_->dates_[iInst]);
+                    Traits::guess(iInst, ts_, false); // ?
             } else {
                 startArray[localisation_-dataAdjust] = ts_->data_[0];
             }

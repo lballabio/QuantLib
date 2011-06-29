@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2007 Chris Kenyon
  Copyright (C) 2007, 2008 StatPro Italia srl
+ Copyright (C) 2011 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -49,18 +50,36 @@ namespace QuantLib {
         static Rate initialValue(const YoYInflationTermStructure* t) {
             return t->baseRate();
         }
-        static Rate initialGuess() { return 0.02; }
-        // further guesses
-        static Rate guess(const YoYInflationTermStructure*, const Date&) {
+
+        // guesses
+        template <class C>
+        static Rate guess(Size i,
+                          const C* c,
+                          bool validData) {
+            if (validData) // previous iteration value
+                return c->data()[i];
+
+            if (i==1) // first pillar
+                return 0.02;    // initial guess at flat inflation
+
+            // could/should extrapolate
             return 0.02;    // initial guess at flat inflation
         }
+
         // possible constraints based on previous values
-        static Rate minValueAfter(Size, const std::vector<Rate>&) {
+        template <class C>
+        static Rate minValueAfter(Size i,
+                                  const C* c,
+                                  bool validData) {
             return -0.3 + QL_EPSILON;
         }
-        static Rate maxValueAfter(Size, const std::vector<Rate>&) {
+        template <class C>
+        static Rate maxValueAfter(Size i,
+                                  const C* c,
+                                  bool validData) {
             return 0.5 - QL_EPSILON;
         }
+
         // update with new guess
         static void updateGuess(std::vector<Rate>& data,
                                 Rate level,
