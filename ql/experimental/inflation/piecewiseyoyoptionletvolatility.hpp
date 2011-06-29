@@ -36,10 +36,11 @@ namespace QuantLib {
       public:
         typedef BootstrapHelper<YoYOptionletVolatilitySurface> helper;
 
-        static Size maxIterations() {return 25;}
+        // start of curve data
         static Date initialDate(const YoYOptionletVolatilitySurface *s) {
             return s->baseDate();
         }
+        // value at reference date
         static Volatility initialValue(const YoYOptionletVolatilitySurface *s) {
             return s->baseLevel();  // REALLLYYYY important because
                                     // generally don't have a clue
@@ -48,6 +49,7 @@ namespace QuantLib {
                                     // that are _not_ quoted
         }
 
+        // guesses
         template <class C>
         static Volatility guess(Size i,
                                 const C* c,
@@ -62,24 +64,28 @@ namespace QuantLib {
             return 0.002;
         }
 
+        // constraints
         template <class C>
         static Volatility minValueAfter(Size i,
                                         const C* c,
-                                        bool validData) {
+                                        bool) {
             return std::max(0.0, c->data()[i-1] - 0.02); // vol cannot be negative
         }
         template <class C>
         static Volatility maxValueAfter(Size i,
                                         const C* c,
-                                        bool validData) {
+                                        bool) {
             return c->data()[i-1] + 0.02;
         }
 
+        // root-finding update
         static void updateGuess(std::vector<Volatility> &vols,
                                 Volatility level,
                                 Size i) {
             vols[i] = level;
         }
+        // upper bound for convergence loop
+        static Size maxIterations() {return 25;}
     };
 
 
