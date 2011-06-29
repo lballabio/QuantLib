@@ -51,6 +51,8 @@ namespace QuantLib {
         Size n_;
         mutable Size firstInstrument_, alive_;
         mutable std::vector<Real> previousData_;
+        Brent firstSolver_;
+        FiniteDifferenceNewtonSafe solver_;
     };
 
 
@@ -138,8 +140,6 @@ namespace QuantLib {
             ts_->instruments_[j]->setTermStructure(const_cast<Curve*>(ts_));
         }
 
-        Brent firstSolver;
-        FiniteDifferenceNewtonSafe solver;
         Size maxIterations = Traits::maxIterations();
 
         for (Size iteration=0; ; ++iteration) {
@@ -186,9 +186,9 @@ namespace QuantLib {
                 try {
                     BootstrapError<Curve> error(ts_, instrument, i);
                     if (validData)
-                        solver.solve(error, ts_->accuracy_, guess, min, max);
+                        solver_.solve(error, ts_->accuracy_, guess, min, max);
                     else
-                        firstSolver.solve(error,ts_->accuracy_,guess,min,max);
+                        firstSolver_.solve(error,ts_->accuracy_,guess,min,max);
                 } catch (std::exception &e) {
                     validCurve_ = false;
                     QL_FAIL(io::ordinal(iteration+1) << " iteration: "
