@@ -5,7 +5,6 @@
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
  Copyright (C) 2011 Ferdinando Ametrano
 
-
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -28,7 +27,10 @@
 #define quantlib_observable_hpp
 
 #include <ql/errors.hpp>
+#include <ql/types.hpp>
+
 #include <boost/shared_ptr.hpp>
+
 #include <set>
 
 namespace QuantLib {
@@ -50,10 +52,10 @@ namespace QuantLib {
         */
         void notifyObservers();
       private:
-        std::pair<std::set<Observer*>::iterator, bool> registerObserver(Observer*);
-        void unregisterObserver(Observer*);
-        std::set<Observer*> observers_;
         typedef std::set<Observer*>::iterator iterator;
+        std::pair<iterator, bool> registerObserver(Observer*);
+        Size unregisterObserver(Observer*);
+        std::set<Observer*> observers_;
     };
 
     //! Object that gets notified when a given observable changes
@@ -66,8 +68,9 @@ namespace QuantLib {
         Observer& operator=(const Observer&);
         virtual ~Observer();
         // observer interface
-        std::pair<std::set<boost::shared_ptr<Observable> >::iterator, bool> registerWith(const boost::shared_ptr<Observable>&);
-        void unregisterWith(const boost::shared_ptr<Observable>&);
+        std::pair<std::set<boost::shared_ptr<Observable> >::iterator, bool>
+                            registerWith(const boost::shared_ptr<Observable>&);
+        Size unregisterWith(const boost::shared_ptr<Observable>&);
         /*! This method must be implemented in derived classes. An
             instance of %Observer does not call this method directly:
             instead, it will be called by the observables the instance
@@ -108,10 +111,8 @@ namespace QuantLib {
         return observers_.insert(o);
     }
 
-    inline void Observable::unregisterObserver(Observer* o) {
-        iterator i = std::find(observers_.begin(),observers_.end(),o);
-        if (i != observers_.end())
-            observers_.erase(i);
+    inline Size Observable::unregisterObserver(Observer* o) {
+        return observers_.erase(o);
     }
 
     inline void Observable::notifyObservers() {
@@ -162,27 +163,20 @@ namespace QuantLib {
 
     inline std::pair<std::set<boost::shared_ptr<Observable> >::iterator, bool>
     Observer::registerWith(const boost::shared_ptr<Observable>& h) {
-        if (h)
+        if (h) {
             h->registerObserver(this);
-        return observables_.insert(h);
+            return observables_.insert(h);
+        }
+        return std::pair<std::set<boost::shared_ptr<Observable> >::iterator, bool>(observables_.end(), false);
     }
 
-    inline void Observer::unregisterWith(
-                                    const boost::shared_ptr<Observable>& h) {
-        if (h) {
-            for (iterator i=observables_.begin();
-                 i!=observables_.end();
-                 ++i) {
-                if (*i == h) {
-                    (*i)->unregisterObserver(this);
-                    observables_.erase(i);
-                    return;
-                }
-            }
-        }
+    inline
+    Size Observer::unregisterWith(const boost::shared_ptr<Observable>& h) {
+        if (h)
+            h->unregisterObserver(this);
+        return observables_.erase(h);
     }
 
 }
-
 
 #endif
