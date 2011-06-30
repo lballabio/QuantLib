@@ -37,6 +37,7 @@ namespace QuantLib {
 
     namespace detail {
         const Rate avgHazardRate = 0.01;
+        const Rate maxHazardRate = 1.0;
     }
 
     //! Survival-Probability-curve traits
@@ -48,6 +49,7 @@ namespace QuantLib {
         };
         // helper class
         typedef BootstrapHelper<DefaultProbabilityTermStructure> helper;
+
         // start of curve data
         static Date initialDate(const DefaultProbabilityTermStructure* c) {
             return c->referenceDate();
@@ -72,22 +74,26 @@ namespace QuantLib {
             Date d = c->dates()[i];
             return c->survivalProbability(d,true);
         }
-
-        // possible constraints based on previous values
+        // constraints
         template <class C>
         static Real minValueAfter(Size i,
                                   const C* c,
                                   bool validData) {
-            return QL_EPSILON;
+            if (validData) {
+                return c->data().back()/2.0;
+            }
+            Time dt = c->times()[i] - c->times()[i-1];
+            return c->data()[i-1] * std::exp(- detail::maxHazardRate * dt);
         }
         template <class C>
         static Real maxValueAfter(Size i,
                                   const C* c,
                                   bool validData) {
+            // survival probability cannot increase
             return c->data()[i-1];
         }
 
-        // update with new guess
+        // root-finding update
         static void updateGuess(std::vector<Real>& data,
                                 Probability p,
                                 Size i) {
@@ -96,6 +102,8 @@ namespace QuantLib {
         // upper bound for convergence loop
         static Size maxIterations() { return 50; }
     };
+
+
 
     //! Hazard-rate-curve traits
     struct HazardRate {
@@ -106,6 +114,7 @@ namespace QuantLib {
         };
         // helper class
         typedef BootstrapHelper<DefaultProbabilityTermStructure> helper;
+
         // start of curve data
         static Date initialDate(const DefaultProbabilityTermStructure* c) {
             return c->referenceDate();
@@ -131,33 +140,41 @@ namespace QuantLib {
             return c->hazardRate(d, true);
         }
 
-        // possible constraints based on previous values
+        // constraints
         template <class C>
         static Real minValueAfter(Size i,
                                   const C* c,
                                   bool validData) {
+            if (validData) {
+                Real r = *(std::min_element(c->data().begin(), c->data().end()));
+                return r/2.0;
+            }
             return QL_EPSILON;
         }
         template <class C>
         static Real maxValueAfter(Size i,
                                   const C* c,
                                   bool validData) {
+            if (validData) {
+                Rate r = *(std::max_element(c->data().begin(), c->data().end()));
+                return r*2.0;
+            }
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.
-            return 200.0;
+            return detail::maxHazardRate;
         }
-
         // update with new guess
         static void updateGuess(std::vector<Real>& data,
                                 Real rate,
                                 Size i) {
             data[i] = rate;
-            if (i == 1)
+            if (i==1)
                 data[0] = rate; // first point is updated as well
         }
         // upper bound for convergence loop
         static Size maxIterations() { return 30; }
     };
+
 
     //! Default-density-curve traits
     struct DefaultDensity {
@@ -193,20 +210,28 @@ namespace QuantLib {
             return c->defaultDensity(d, true);
         }
 
-        // possible constraints based on previous values
+        // constraints
         template <class C>
         static Real minValueAfter(Size i,
                                   const C* c,
                                   bool validData) {
+            if (validData) {
+                Rate r = *(std::min_element(c->data().begin(), c->data().end()));
+                return r/2.0;
+            }
             return QL_EPSILON;
         }
         template <class C>
         static Real maxValueAfter(Size i,
                                   const C* c,
                                   bool validData) {
+            if (validData) {
+                Rate r = *(std::max_element(c->data().begin(), c->data().end()));
+                return r*2.0;
+            }
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.
-            return 3.0;
+            return detail::maxHazardRate;
         }
 
         // update with new guess
@@ -214,7 +239,7 @@ namespace QuantLib {
                                 Real density,
                                 Size i) {
             data[i] = density;
-            if (i == 1)
+            if (i==1)
                 data[0] = density; // first point is updated as well
         }
         // upper bound for convergence loop

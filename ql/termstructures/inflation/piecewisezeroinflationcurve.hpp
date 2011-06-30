@@ -26,68 +26,11 @@
 #ifndef quantlib_piecewise_zero_inflation_curve_hpp
 #define quantlib_piecewise_zero_inflation_curve_hpp
 
-#include <ql/termstructures/inflation/interpolatedzeroinflationcurve.hpp>
 #include <ql/termstructures/iterativebootstrap.hpp>
+#include <ql/termstructures/inflation/inflationtraits.hpp>
 #include <ql/patterns/lazyobject.hpp>
 
 namespace QuantLib {
-
-    //! Bootstrap traits to use for PiecewiseZeroInflationCurve
-    class ZeroInflationTraits {
-      public:
-        typedef BootstrapHelper<ZeroInflationTermStructure> helper;
-
-        static Size maxIterations() { return 5; } // calibration is trivial,
-                                                  // should be immediate
-        static Date initialDate(const ZeroInflationTermStructure* t) {
-            if (t->indexIsInterpolated()) {
-                return t->referenceDate() - t->observationLag();
-            } else {
-                return inflationPeriod(t->referenceDate() - t->observationLag(),
-                                       t->frequency()).first;
-            }
-        }
-        static Rate initialValue(const ZeroInflationTermStructure* t) {
-            return t->baseRate();
-        }
-
-        // guesses
-        template <class C>
-        static Rate guess(Size i,
-                          const C* c,
-                          bool validData) {
-            if (validData) // previous iteration value
-                return c->data()[i];
-
-            if (i==1) // first pillar
-                return 0.02;
-
-            // could/should extrapolate
-            return 0.02;    // initial guess at flat inflation
-        }
-
-        // possible constraints based on previous values
-        template <class C>
-        static Real minValueAfter(Size i,
-                                  const C* c,
-                                  bool validData) {
-            return -0.1 + QL_EPSILON;
-        }
-        template <class C>
-        static Real maxValueAfter(Size i,
-                                  const C* c,
-                                  bool validData) {
-            return 0.3 - QL_EPSILON;
-        }
-
-        // update with new guess
-        static void updateGuess(std::vector<Rate>& data,
-                                Rate level,
-                                Size i) {
-            data[i] = level;
-        }
-    };
-
 
     //! Piecewise zero-inflation term structure
     template <class Interpolator,

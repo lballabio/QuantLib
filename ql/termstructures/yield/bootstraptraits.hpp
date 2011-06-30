@@ -66,11 +66,11 @@ namespace QuantLib {
                 return c->data()[i];
 
             if (i==1) // first pillar
-                return 1.0/(1.0+detail::avgRate*0.25);
+                return 1.0/(1.0+detail::avgRate*c->times()[1]);
 
-            // extrapolate
-            Date d = c->dates()[i];
-            return c->discount(d,true);
+            // flat rate extrapolation
+            Rate r = -std::log(c->data()[i-1])/c->times()[i-1];
+            return std::exp(-r * c->times()[i]);
         }
 
         // possible constraints based on previous values
@@ -78,23 +78,30 @@ namespace QuantLib {
         static DiscountFactor minValueAfter(Size i,
                                             const C* c,
                                             bool validData) {
-            return QL_EPSILON;
+            if (validData) {
+                #if defined(QL_NEGATIVE_RATES)
+                return *(std::min_element(c->data().begin(), c->data().end()))/2.0;
+                #else
+                return c->data().back()/2.0;
+                #endif
+            }
+            Time dt = c->times()[i] - c->times()[i-1];
+            return c->data()[i-1] * std::exp(- detail::maxRate * dt);
         }
         template <class C>
         static DiscountFactor maxValueAfter(Size i,
                                             const C* c,
                                             bool validData) {
             #if defined(QL_NEGATIVE_RATES)
-            // discount are not required to be decreasing--all bets are off.
-            // We choose as max a value very unlikely to be exceeded.
-            return 1.1;
+            Time dt = c->times()[i] - c->times()[i-1];
+            return c->data()[i-1] * std::exp(detail::maxRate * dt);
             #else
             // discounts cannot increase
             return c->data()[i-1];
             #endif
         }
 
-        // update with new guess
+        // root-finding update
         static void updateGuess(std::vector<DiscountFactor>& data,
                                 DiscountFactor discount,
                                 Size i) {
@@ -114,6 +121,7 @@ namespace QuantLib {
         };
         // helper class
         typedef BootstrapHelper<YieldTermStructure> helper;
+
         // start of curve data
         static Date initialDate(const YieldTermStructure* c) {
             return c->referenceDate();
@@ -135,16 +143,24 @@ namespace QuantLib {
                 return detail::avgRate;
 
             // extrapolate
-            Date d = c->dates()[i];
+            Date d = c->dates()[i]; 
             return c->zeroRate(d, c->dayCounter(),
                                Continuous, Annual, true);
         }
 
         // possible constraints based on previous values
         template <class C>
-        static Rate minValueAfter(Size i,
+        static Rate minValueAfter(Size,
                                   const C* c,
                                   bool validData) {
+            if (validData) {
+                Rate r = *(std::min_element(c->data().begin(), c->data().end()));
+                #if defined(QL_NEGATIVE_RATES)
+                return r<0.0 ? r*2.0 : r/2.0;
+                #else
+                return r/2.0;
+                #endif
+            }
             #if defined(QL_NEGATIVE_RATES)
             // no constraints.
             // We choose as min a value very unlikely to be exceeded.
@@ -154,20 +170,28 @@ namespace QuantLib {
             #endif
         }
         template <class C>
-        static Rate maxValueAfter(Size i,
+        static Rate maxValueAfter(Size,
                                   const C* c,
                                   bool validData) {
+            if (validData) {
+                Rate r = *(std::max_element(c->data().begin(), c->data().end()));
+                #if defined(QL_NEGATIVE_RATES)
+                return r<0.0 ? r/2.0 : r*2.0;
+                #else
+                return r*2.0;
+                #endif
+            }
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.
             return detail::maxRate;
         }
 
-        // update with new guess
+        // root-finding update
         static void updateGuess(std::vector<Rate>& data,
                                 Rate rate,
                                 Size i) {
             data[i] = rate;
-            if (i == 1)
+            if (i==1)
                 data[0] = rate; // first point is updated as well
         }
         // upper bound for convergence loop
@@ -184,6 +208,7 @@ namespace QuantLib {
         };
         // helper class
         typedef BootstrapHelper<YieldTermStructure> helper;
+
         // start of curve data
         static Date initialDate(const YieldTermStructure* c) {
             return c->referenceDate();
@@ -212,9 +237,17 @@ namespace QuantLib {
 
         // possible constraints based on previous values
         template <class C>
-        static Rate minValueAfter(Size i,
+        static Rate minValueAfter(Size,
                                   const C* c,
                                   bool validData) {
+            if (validData) {
+                Rate r = *(std::min_element(c->data().begin(), c->data().end()));
+                #if defined(QL_NEGATIVE_RATES)
+                return r<0.0 ? r*2.0 : r/2.0;
+                #else
+                return r/2.0;
+                #endif
+            }
             #if defined(QL_NEGATIVE_RATES)
             // no constraints.
             // We choose as min a value very unlikely to be exceeded.
@@ -224,20 +257,28 @@ namespace QuantLib {
             #endif
         }
         template <class C>
-        static Rate maxValueAfter(Size i,
+        static Rate maxValueAfter(Size,
                                   const C* c,
                                   bool validData) {
+            if (validData) {
+                Rate r = *(std::max_element(c->data().begin(), c->data().end()));
+                #if defined(QL_NEGATIVE_RATES)
+                return r<0.0 ? r/2.0 : r*2.0;
+                #else
+                return r*2.0;
+                #endif
+            }
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.
             return detail::maxRate;
         }
 
-        // update with new guess
+        // root-finding update
         static void updateGuess(std::vector<Rate>& data,
                                 Rate forward,
                                 Size i) {
             data[i] = forward;
-            if (i == 1)
+            if (i==1)
                 data[0] = forward; // first point is updated as well
         }
         // upper bound for convergence loop
