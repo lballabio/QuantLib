@@ -167,7 +167,7 @@ namespace QuantLib {
             h->registerObserver(this);
             return observables_.insert(h);
         }
-        return std::pair<std::set<boost::shared_ptr<Observable> >::iterator, bool>(observables_.end(), false);
+        return std::make_pair(observables_.end(), false);
     }
 
     inline
