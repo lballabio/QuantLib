@@ -19,6 +19,7 @@
 #include <ql/experimental/finitedifferences/fdhestonrebateengine.hpp>
 #include <ql/experimental/finitedifferences/fdhestonvanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.hpp>
+#include <ql/experimental/finitedifferences/fdklugeextouspreadengine.hpp>
 #include <ql/experimental/finitedifferences/fdm1dmesher.hpp>
 #include <ql/experimental/finitedifferences/fdm2dblackscholesop.hpp>
 #include <ql/experimental/finitedifferences/fdm2dblackscholessolver.hpp>
@@ -47,6 +48,8 @@
 #include <ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmklugeextouop.hpp>
+#include <ql/experimental/finitedifferences/fdmklugeextousolver.hpp>
+#include <ql/experimental/finitedifferences/fdmklugeextouspreadinnervalue.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearop.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearopcomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearopiterator.hpp>

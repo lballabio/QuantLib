@@ -22,6 +22,7 @@ this_include_HEADERS = \
 	fdhestonrebateengine.hpp \
 	fdhestonvanillaengine.hpp \
 	fdhestonhullwhitevanillaengine.hpp \
+	fdklugeextouspreadengine.hpp \
 	fdm1dmesher.hpp \
 	fdm2dblackscholesop.hpp \
 	fdm2dblackscholessolver.hpp \
@@ -50,6 +51,8 @@ this_include_HEADERS = \
 	fdmhestonvariancemesher.hpp \
 	fdminnervaluecalculator.hpp \
 	fdmklugeextouop.hpp \
+	fdmklugeextousolver.hpp \
+	fdmklugeextouspreadinnervalue.hpp \
 	fdmlinearop.hpp \
 	fdmlinearopcomposite.hpp \
 	fdmlinearopiterator.hpp \
@@ -100,6 +103,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdhestonrebateengine.cpp \
 	fdhestonvanillaengine.cpp \
 	fdhestonhullwhitevanillaengine.cpp \
+	fdklugeextouspreadengine.cpp \
 	fdm2dblackscholesop.cpp \
 	fdm2dblackscholessolver.cpp \
 	fdm2dimsolver.cpp \
@@ -126,6 +130,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdmhestonvariancemesher.cpp \
 	fdminnervaluecalculator.cpp \
 	fdmklugeextouop.cpp \
+	fdmklugeextousolver.cpp \
 	fdmlinearoplayout.cpp \
 	fdmmeshercomposite.cpp \
 	fdmquantohelper.cpp \

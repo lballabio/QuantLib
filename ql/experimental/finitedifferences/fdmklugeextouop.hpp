@@ -38,9 +38,26 @@ namespace QuantLib {
     class FdmExtOUJumpOp;
     class FdmExtendedOrnsteinUhlenbackOp;
 
+    /*! This class describes a correlated Kluge - extended Ornstein-Uhlenbeck
+        process governed by
+        \f[
+        \begin{array}{rcl}
+            P_t &=& \exp(p_t + X_t + Y_t) \\
+            dX_t &=& -\alpha X_tdt + \sigma_x dW_t^x \\
+            dY_t &=& -\beta Y_{t-}dt + J_tdN_t \\
+            \omega(J) &=& \eta e^{-\eta J} \\
+            G_t &=& \exp(g_t + U_t) \\
+            dU_t &=& -\kappa U_tdt + \sigma_udW_t^u \\
+            \rho &=& \mathrm{corr} (dW_t^x, dW_t^u)
+         \end{array}
+         \f]
+    */
+
     /*! References:
         Kluge, Timo L., 2008. Pricing Swing Options and other
         Electricity Derivatives, http://eprints.maths.ox.ac.uk/246/1/kluge.pdf
+
+        http://spanderen.de/2011/06/13/vpp-pricing-i-stochastic-processes-partial-integro-differential-equation/
     */
 
     class FdmKlugeExtOUOp : public FdmLinearOpComposite {

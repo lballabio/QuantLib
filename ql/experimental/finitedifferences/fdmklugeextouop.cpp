@@ -21,7 +21,10 @@
     \brief Kluge process (power) plus Ornstein Uhlenbeck process (gas)
 */
 
+
+#include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/experimental/finitedifferences/fdmmesher.hpp>
 #include <ql/experimental/processes/extouwithjumpsprocess.hpp>
 #include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
@@ -47,15 +50,21 @@ namespace QuantLib {
       bcSet_  (bcSet),
       klugeOp_(new FdmExtOUJumpOp(mesher, kluge, rTS, bcSet,
                                   integroIntegrationOrder)),
-      ouOp_   (new FdmExtendedOrnsteinUhlenbackOp(mesher, extOU,
-                                                  rTS, bcSet, 2)),
+      ouOp_   (new FdmExtendedOrnsteinUhlenbackOp(
+                  mesher, extOU,
+                  boost::shared_ptr<YieldTermStructure>(
+                      new FlatForward(rTS->referenceDate(),
+                              Handle<Quote>(boost::shared_ptr<Quote>(
+                                      new SimpleQuote(0.0))),
+                                      rTS->dayCounter())),
+                  bcSet, 2)),
       corrMap_(SecondOrderMixedDerivativeOp(0, 2, mesher).mult(
           Array(mesher->layout()->size(), rho*extOU->volatility()
                 *kluge->getExtendedOrnsteinUhlenbeckProcess()->volatility())))
     { }
 
     Size FdmKlugeExtOUOp::size() const {
-        return mesher_->layout()->dim().size();;
+        return mesher_->layout()->dim().size();
     }
 
     void FdmKlugeExtOUOp::setTime(Time t1, Time t2) {
@@ -64,11 +73,11 @@ namespace QuantLib {
     }
 
     Disposable<Array> FdmKlugeExtOUOp::apply(const Array& r) const {
-        return ouOp_->apply(r) + klugeOp_->apply(r) + apply_mixed(r);
+        return ouOp_->apply(r) + klugeOp_->apply(r) + corrMap_.apply(r);
     }
 
     Disposable<Array> FdmKlugeExtOUOp::apply_mixed(const Array& r) const {
-        return  corrMap_.apply(r);
+        return  corrMap_.apply(r) + klugeOp_->apply_mixed(r);
     }
 
     Disposable<Array> FdmKlugeExtOUOp::apply_direction(Size direction,

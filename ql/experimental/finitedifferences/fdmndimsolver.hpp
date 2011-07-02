@@ -26,6 +26,7 @@
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/math/interpolations/multicubicspline.hpp>
 #include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
+#include <ql/experimental/finitedifferences/fdmmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmsolverdesc.hpp>
 #include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmsnapshotcondition.hpp>

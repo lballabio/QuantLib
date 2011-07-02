@@ -23,6 +23,7 @@
 #include <ql/math/functional.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
+#include <ql/instruments/basketoption.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/instruments/vanillaswingoption.hpp>
 #include <ql/instruments/vanillastorageoption.hpp>
@@ -43,6 +44,7 @@
 #include <ql/experimental/finitedifferences/fdsimpleextoujumpswingengine.hpp>
 #include <ql/experimental/finitedifferences/exponentialjump1dmesher.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesvanillaengine.hpp>
+#include <ql/experimental/finitedifferences/fdklugeextouspreadengine.hpp>
 
 #include <boost/lambda/lambda.hpp>
 #include <deque>
@@ -50,6 +52,26 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+
+namespace {
+    boost::shared_ptr<ExtOUWithJumpsProcess> createKlugeProcess() {
+        Array x0(2);
+        x0[0] = 3.0; x0[1] = 0.0;
+
+        const Real beta = 5.0;
+        const Real eta  = 2.0;
+        const Real jumpIntensity = 1.0;
+        const Real speed = 1.0;
+        const Real volatility = 2.0;
+
+        boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess(
+            new ExtendedOrnsteinUhlenbeckProcess(speed, volatility, x0[0],
+                                                 constant<Real, Real>(x0[0])));
+        return boost::shared_ptr<ExtOUWithJumpsProcess>(
+            new ExtOUWithJumpsProcess(ouProcess, x0[1], beta,
+                                      jumpIntensity, eta));
+    }
+}
 
 void SwingOptionTest::testExtendedOrnsteinUhlenbeckProcess() {
 
@@ -148,8 +170,9 @@ void SwingOptionTest::testGemanRoncoroniProcess() {
         								  eps, zeta, d, k, tau, sig2, a, b, 
         								  theta1, theta2, theta3, psi));
 
+
     const Real speed     = 5.0;
-    const Volatility vol = std::sqrt(1.4);    
+    const Volatility vol = std::sqrt(1.4);
     const Real betaG     = 0.08;
     const Real alphaG    = 1.0;
     const Real x0G       = 1.1;
@@ -158,7 +181,7 @@ void SwingOptionTest::testGemanRoncoroniProcess() {
 
     boost::shared_ptr<StochasticProcess1D> eouProcess(
         new ExtendedOrnsteinUhlenbeckProcess(speed, vol, x0G, f,
-                               ExtendedOrnsteinUhlenbeckProcess::Trapezodial));
+                           ExtendedOrnsteinUhlenbeckProcess::Trapezodial));
 
     std::vector<boost::shared_ptr<StochasticProcess1D> > processes;
     processes.push_back(grProcess);
@@ -282,29 +305,16 @@ void SwingOptionTest::testExtOUJumpVanillaEngine() {
 
     BOOST_MESSAGE("Testing finite difference pricer for the Kluge model ...");
 
-    Array x0(2);
-    x0[0] = 3.0; x0[1] = 0.0;
-
-    const Real beta = 5.0;
-    const Real eta  = 2.0;
-    const Real jumpIntensity = 1.0;
-    const Real speed = 1.0;
-    const Real volatility = 2.0;
-    const Rate irRate = 0.10;
-
-    boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess(
-        new ExtendedOrnsteinUhlenbeckProcess(speed, volatility, x0[0],
-                                             constant<Real, Real>(x0[0])));
-    boost::shared_ptr<ExtOUWithJumpsProcess> jumpProcess(
-        new ExtOUWithJumpsProcess(ouProcess, x0[1], beta, jumpIntensity, eta));
-
+    boost::shared_ptr<ExtOUWithJumpsProcess> jumpProcess = createKlugeProcess();
 
     const Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
+
     const DayCounter dc = ActualActual();
     const Date maturityDate = today + Period(12, Months);
     const Time maturity = dc.yearFraction(today, maturityDate);
 
+    const Rate irRate = 0.1;
     boost::shared_ptr<YieldTermStructure> rTS(flatRate(today, irRate, dc));
     boost::shared_ptr<StrikedTypePayoff> payoff(
                                      new PlainVanillaPayoff(Option::Call, 30));
@@ -453,22 +463,9 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
         exerciseIndex[i] = grid.closestIndex(exerciseTimes[i]);
     }
 
-    Array x0(2);
-    x0[0] = 3.0; x0[1] = 0.0;
+    boost::shared_ptr<ExtOUWithJumpsProcess> jumpProcess = createKlugeProcess();
 
-    const Real beta = 5.0;
-    const Real eta  = 2.0;
-    const Real jumpIntensity = 1.0;
-    const Real speed = 1.0;
-    const Real volatility = 2.0;
     const Rate irRate = 0.1;
-
-    boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess(
-        new ExtendedOrnsteinUhlenbeckProcess(speed, volatility, x0[0],
-                                             constant<Real, Real>(x0[0])));
-    boost::shared_ptr<ExtOUWithJumpsProcess> jumpProcess(
-        new ExtOUWithJumpsProcess(ouProcess, x0[1], beta, jumpIntensity, eta));
-
     boost::shared_ptr<YieldTermStructure> rTS(
                                 flatRate(settlementDate, irRate, dayCounter));
 
@@ -599,6 +596,93 @@ void SwingOptionTest::testSimpleExtOUStorageEngine() {
 }
 
 
+void SwingOptionTest::testKlugeExtOUSpreadOption() {
+
+    BOOST_MESSAGE("Testing Simple Kluge ext-Ornstein-Uhlenbeck spread option");
+
+    Date settlementDate = Date::todaysDate();
+    Settings::instance().evaluationDate() = settlementDate;
+
+    DayCounter dayCounter = ActualActual();
+    Date maturityDate = settlementDate + Period(1, Years);
+    Time maturity = dayCounter.yearFraction(settlementDate, maturityDate);
+
+    const Real speed     = 1.0;
+    const Volatility vol = std::sqrt(1.4);
+    const Real betaG     = 0.0;
+    const Real alphaG    = 3.0;
+    const Real x0G       = 3.0;
+
+    const Rate irRate      = 0.0;
+    const Real heatRate    = 2.0;
+    const Real rho         = 0.5;
+
+    boost::shared_ptr<ExtOUWithJumpsProcess>
+                                           klugeProcess = createKlugeProcess();
+    boost::function<Real (Real)> f = alphaG + betaG*boost::lambda::_1;
+
+    boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> extOUProcess(
+        new ExtendedOrnsteinUhlenbeckProcess(speed, vol, x0G, f,
+                           ExtendedOrnsteinUhlenbeckProcess::Trapezodial));
+
+    boost::shared_ptr<YieldTermStructure> rTS(
+                                flatRate(settlementDate, irRate, dayCounter));
+
+    boost::shared_ptr<Payoff> payoff(new PlainVanillaPayoff(Option::Call, 0.0));
+
+    Array spreadFactors(2);
+    spreadFactors[0] = 1.0; spreadFactors[1] = -heatRate;
+    boost::shared_ptr<BasketPayoff> basketPayoff(
+                               new AverageBasketPayoff(payoff, spreadFactors));
+
+    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(maturityDate));
+
+    BasketOption option(basketPayoff, exercise);
+    option.setPricingEngine(boost::shared_ptr<PricingEngine>(
+        new FdKlugeExtOUSpreadEngine(rho,
+                                     klugeProcess, extOUProcess, rTS,
+                                     5, 200, 50, 20)));
+
+    TimeGrid grid(maturity, 50);
+    PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234ul));
+
+    GeneralStatistics npv;
+    const Size nTrails = 20000;
+    for (Size i=0; i < nTrails; ++i) {
+        Real u = extOUProcess->x0();
+        Array x = klugeProcess->initialValues();
+
+        for (Size k=0; k < grid.size()-1; ++k) {
+            const Time t = grid.at(k);
+            const Time dt = grid.dt(k);
+
+            Array dw(3);
+            dw[0] = rng.next().value;
+            dw[1] = rng.next().value;
+            dw[2] = rng.next().value;
+            x = klugeProcess->evolve(t, x, dt, dw);
+
+            const Real du = std::sqrt(1-rho*rho) * rng.next().value + rho*dw[0];
+            u = extOUProcess->evolve(t, u, dt, du);
+        }
+
+        Array p(2);
+        p[0] = x[0] + x[1]; p[1] = u;
+        npv.add((*basketPayoff)(Exp(p)));
+    }
+
+    const Real calculated = option.NPV();
+    const Real expectedMC = npv.mean();
+    const Real mcError = npv.errorEstimate();
+    if (std::fabs(expectedMC - calculated) > 3*mcError) {
+            BOOST_ERROR("Failed to reproduce referenc values"
+                       << "\n    calculated:   " << calculated
+                       << "\n    expected(MC): " << expectedMC
+                       << "\n    mc error    : " << mcError);
+
+    }
+}
+
 test_suite* SwingOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Spark-Option Test");
     suite->add(QUANTLIB_TEST_CASE(
@@ -608,13 +692,14 @@ test_suite* SwingOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&SwingOptionTest::testFdBSSwingOption));
     suite->add(QUANTLIB_TEST_CASE(
                           &SwingOptionTest::testFdmExponentialJump1dMesher));
-
     suite->add(QUANTLIB_TEST_CASE(&SwingOptionTest::testExtOUJumpVanillaEngine));
     suite->add(QUANTLIB_TEST_CASE(
                             &SwingOptionTest::testExtOUJumpSwingOption));
     suite->add(QUANTLIB_TEST_CASE(
                             &SwingOptionTest::testSimpleExtOUStorageEngine));
-    
+    suite->add(QUANTLIB_TEST_CASE(
+                            &SwingOptionTest::testKlugeExtOUSpreadOption));
+
     return suite;
 }
 

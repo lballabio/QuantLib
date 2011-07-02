@@ -41,12 +41,12 @@ namespace QuantLib {
       rTS_      (rTS),
       bcSet_    (bcSet),
       direction_(direction),
-      x_        (mesher->locations(0)),
-      dxMap_    (0, mesher),
-      dxxMap_   (SecondDerivativeOp(0, mesher)
+      x_        (mesher->locations(direction)),
+      dxMap_    (direction, mesher),
+      dxxMap_   (SecondDerivativeOp(direction, mesher)
                 .mult(0.5*square<Real>()(process_->volatility())
                   *Array(mesher->layout()->size(), 1.))),
-      mapX_     (0, mesher) {
+      mapX_     (direction, mesher) {
     }
 
     Size FdmExtendedOrnsteinUhlenbackOp::size() const {

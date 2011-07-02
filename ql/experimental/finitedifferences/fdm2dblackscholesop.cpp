@@ -111,8 +111,7 @@ namespace QuantLib {
     }
 
     Disposable<Array> Fdm2dBlackScholesOp::apply(const Array& x) const {
-        return opX_.apply(x) + opY_.apply(x) + corrMapT_.apply(x) 
-                   + currentForwardRate_*x;
+        return opX_.apply(x) + opY_.apply(x) + apply_mixed(x);
     }
     
     Disposable<Array> Fdm2dBlackScholesOp::apply_mixed(const Array& x) const {
