@@ -52,7 +52,7 @@ namespace QuantLib {
                                 correlation_,
                                 klugeProcess_.currentLink(),
                                 ouProcess_.currentLink(),
-                                rTS_, solverDesc_.bcSet, 32));
+                                rTS_, solverDesc_.bcSet, 16));
 
         solver_ = boost::shared_ptr<FdmNdimSolver<3> >(
                          new FdmNdimSolver<3>(solverDesc_, schemeDesc_, op));
