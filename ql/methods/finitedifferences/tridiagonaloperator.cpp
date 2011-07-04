@@ -46,8 +46,9 @@ namespace QuantLib {
                                              const Array& high)
     : n_(mid.size()),
       diagonal_(mid), lowerDiagonal_(low), upperDiagonal_(high), temp_(n_) {
-        QL_REQUIRE(close(diagonal_[0], 0.0),
-                   "diagonal's first element cannot be close to 0.0");
+        QL_REQUIRE(!close(diagonal_[0], 0.0),
+                   "diagonal's first element (" << diagonal_[0] <<
+                   ") cannot be close to 0.0");
         QL_REQUIRE(low.size() == n_-1,
                    "low diagonal vector of size " << low.size() <<
                    " instead of " << n_-1);
