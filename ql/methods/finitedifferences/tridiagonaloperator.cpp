@@ -46,6 +46,8 @@ namespace QuantLib {
                                              const Array& high)
     : n_(mid.size()),
       diagonal_(mid), lowerDiagonal_(low), upperDiagonal_(high), temp_(n_) {
+        QL_REQUIRE(close(diagonal_[0], 0.0),
+                   "diagonal's first element cannot be close to 0.0");
         QL_REQUIRE(low.size() == n_-1,
                    "low diagonal vector of size " << low.size() <<
                    " instead of " << n_-1);
@@ -60,6 +62,8 @@ namespace QuantLib {
     }
 
     Disposable<Array> TridiagonalOperator::applyTo(const Array& v) const {
+        QL_REQUIRE(n_!=0,
+                   "uninitialized TridiagonalOperator");
         QL_REQUIRE(v.size()==n_,
                    "vector of the wrong size " << v.size() <<
                    " instead of " << n_);
@@ -81,6 +85,8 @@ namespace QuantLib {
 
     Disposable<Array> TridiagonalOperator::solveFor(const Array& rhs) const  {
 
+        QL_REQUIRE(n_!=0,
+                   "uninitialized TridiagonalOperator");
         QL_REQUIRE(rhs.size()==n_,
                    "rhs vector of size " << rhs.size() <<
                    " instead of " << n_);
@@ -88,12 +94,13 @@ namespace QuantLib {
         Array result(n_);
 
         Real bet = diagonal_[0];
-        QL_REQUIRE(bet != 0.0, "division by zero");
+        // redundant check, but harmless
+        QL_REQUIRE(!close(bet, 0.0), "division by zero");
         result[0] = rhs[0]/bet;
         for (Size j=1; j<=n_-1; ++j) {
             temp_[j] = upperDiagonal_[j-1]/bet;
             bet = diagonal_[j]-lowerDiagonal_[j-1]*temp_[j];
-            QL_ENSURE(bet!=0.0, "division by zero");
+            QL_ENSURE(!close(bet, 0.0), "division by zero");
             result[j] = (rhs[j] - lowerDiagonal_[j-1]*result[j-1])/bet;
         }
         // cannot be j>=0 with Size j
@@ -105,6 +112,8 @@ namespace QuantLib {
 
     Disposable<Array> TridiagonalOperator::SOR(const Array& rhs,
                                                Real tol) const {
+        QL_REQUIRE(n_!=0,
+                   "uninitialized TridiagonalOperator");
         QL_REQUIRE(rhs.size()==n_,
                    "rhs vector of size " << rhs.size() <<
                    " instead of " << n_);

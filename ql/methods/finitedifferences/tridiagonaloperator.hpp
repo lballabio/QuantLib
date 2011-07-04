@@ -27,6 +27,7 @@
 #define quantlib_tridiagonal_operator_hpp
 
 #include <ql/math/array.hpp>
+#include <ql/math/comparison.hpp>
 #include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
@@ -129,6 +130,8 @@ namespace QuantLib {
 
     inline void TridiagonalOperator::setFirstRow(Real valB,
                                                  Real valC) {
+        QL_REQUIRE(!close(valB, 0.0),
+                   "diagonal's first element cannot be close to 0.0");
         diagonal_[0]      = valB;
         upperDiagonal_[0] = valC;
     }
