@@ -424,7 +424,7 @@ namespace QuantLib {
                     }
 
                     // solve the system
-                    tmp_ = L_.solveFor(tmp_);
+                    L_.solveFor2(tmp_);
                 } else if (da_==CubicInterpolation::SplineOM1) {
                     Matrix T_(n_-2, n_, 0.0);
                     for (Size i=0; i<n_-2; ++i) {

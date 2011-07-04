@@ -76,6 +76,7 @@ namespace QuantLib {
         Disposable<Array> applyTo(const Array& v) const;
         //! solve linear system for a given right-hand side
         Disposable<Array> solveFor(const Array& rhs) const;
+        void solveFor2(Array& rhs) const;
         //! solve linear system with SOR approach
         Disposable<Array> SOR(const Array& rhs,
                               Real tol) const;
