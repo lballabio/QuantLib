@@ -46,9 +46,6 @@ namespace QuantLib {
                                              const Array& high)
     : n_(mid.size()),
       diagonal_(mid), lowerDiagonal_(low), upperDiagonal_(high), temp_(n_) {
-        QL_REQUIRE(!close(diagonal_[0], 0.0),
-                   "diagonal's first element (" << diagonal_[0] <<
-                   ") cannot be close to 0.0");
         QL_REQUIRE(low.size() == n_-1,
                    "low diagonal vector of size " << low.size() <<
                    " instead of " << n_-1);
@@ -95,8 +92,9 @@ namespace QuantLib {
         Array result(n_);
 
         Real bet = diagonal_[0];
-        // redundant check, but harmless
-        QL_REQUIRE(!close(bet, 0.0), "division by zero");
+        QL_REQUIRE(!close(bet, 0.0),
+                   "diagonal's first element (" << bet <<
+                   ") cannot be close to zero");
         result[0] = rhs[0]/bet;
         for (Size j=1; j<=n_-1; ++j) {
             temp_[j] = upperDiagonal_[j-1]/bet;

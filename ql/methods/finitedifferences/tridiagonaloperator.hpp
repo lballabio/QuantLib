@@ -130,9 +130,6 @@ namespace QuantLib {
 
     inline void TridiagonalOperator::setFirstRow(Real valB,
                                                  Real valC) {
-        QL_REQUIRE(!close(valB, 0.0),
-                   "diagonal's first element (" << valB <<
-                   ") cannot be close to 0.0");
         diagonal_[0]      = valB;
         upperDiagonal_[0] = valC;
     }
