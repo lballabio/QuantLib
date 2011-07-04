@@ -473,12 +473,12 @@ namespace QuantLib {
 
         BPSCalculator calc(discountCurve);
         for (Size i=0; i<leg.size(); ++i) {
-            const boost::shared_ptr<CashFlow>& cf = leg[i];
-            if (!cf->hasOccurred(settlementDate,
-                                 includeSettlementDateFlows)) {
-                npv += cf->amount() *
-                       discountCurve.discount(cf->date());
-                cf->accept(calc);
+            CashFlow& cf = *leg[i];
+            if (!cf.hasOccurred(settlementDate,
+                                includeSettlementDateFlows)) {
+                npv += cf.amount() *
+                       discountCurve.discount(cf.date());
+                cf.accept(calc);
             }
         }
         DiscountFactor d = discountCurve.discount(npvDate);
