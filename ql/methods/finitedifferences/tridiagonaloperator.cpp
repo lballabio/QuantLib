@@ -24,13 +24,17 @@ namespace QuantLib {
 
     TridiagonalOperator::TridiagonalOperator(Size size) {
         if (size>=2) {
+            n_ = size;
             diagonal_      = Array(size);
             lowerDiagonal_ = Array(size-1);
             upperDiagonal_ = Array(size-1);
+            temp_          = Array(size);
         } else if (size==0) {
+            n_ = 0;
             diagonal_      = Array(0);
             lowerDiagonal_ = Array(0);
             upperDiagonal_ = Array(0);
+            temp_          = Array(0);
         } else {
             QL_FAIL("invalid size (" << size << ") for tridiagonal operator "
                     "(must be null or >= 2)");
@@ -40,11 +44,14 @@ namespace QuantLib {
     TridiagonalOperator::TridiagonalOperator(const Array& low,
                                              const Array& mid,
                                              const Array& high)
-    : diagonal_(mid), lowerDiagonal_(low), upperDiagonal_(high) {
-        QL_REQUIRE(low.size() == mid.size()-1,
-                   "wrong size for lower diagonal vector");
-        QL_REQUIRE(high.size() == mid.size()-1,
-                   "wrong size for upper diagonal vector");
+    : n_(mid.size()),
+      diagonal_(mid), lowerDiagonal_(low), upperDiagonal_(high), temp_(n_) {
+        QL_REQUIRE(low.size() == n_-1,
+                   "low diagonal vector of size " << low.size() <<
+                   " instead of " << n_-1);
+        QL_REQUIRE(high.size() == n_-1,
+                   "high diagonal vector of size " << high.size() <<
+                   " instead of " << n_-1);
     }
 
     TridiagonalOperator::TridiagonalOperator(
@@ -53,10 +60,10 @@ namespace QuantLib {
     }
 
     Disposable<Array> TridiagonalOperator::applyTo(const Array& v) const {
-        QL_REQUIRE(v.size()==size(),
-                   "vector of the wrong size (" << v.size()
-                   << "instead of " << size() << ")"  );
-        Array result(size());
+        QL_REQUIRE(v.size()==n_,
+                   "vector of the wrong size " << v.size() <<
+                   " instead of " << n_);
+        Array result(n_);
         std::transform(diagonal_.begin(), diagonal_.end(),
                        v.begin(),
                        result.begin(),
@@ -64,39 +71,43 @@ namespace QuantLib {
 
         // matricial product
         result[0] += upperDiagonal_[0]*v[1];
-        for (Size j=1; j<=size()-2; ++j)
+        for (Size j=1; j<=n_-2; j++)
             result[j] += lowerDiagonal_[j-1]*v[j-1]+
                 upperDiagonal_[j]*v[j+1];
-        result[size()-1] += lowerDiagonal_[size()-2]*v[size()-2];
+        result[n_-1] += lowerDiagonal_[n_-2]*v[n_-2];
 
         return result;
     }
 
     Disposable<Array> TridiagonalOperator::solveFor(const Array& rhs) const  {
-        Size n = size();
-        QL_REQUIRE(rhs.size()==n, "rhs has the wrong size");
 
-        Array result(n), tmp(n);
+        QL_REQUIRE(rhs.size()==n_,
+                   "rhs vector of size " << rhs.size() <<
+                   " instead of " << n_);
+
+        Array result(n_);
 
         Real bet = diagonal_[0];
         QL_REQUIRE(bet != 0.0, "division by zero");
         result[0] = rhs[0]/bet;
-        for (Size j=1; j<=n-1; ++j){
-            tmp[j] = upperDiagonal_[j-1]/bet;
-            bet = diagonal_[j] - lowerDiagonal_[j-1]*tmp[j];
-            QL_ENSURE(bet != 0.0, "division by zero");
+        for (Size j=1; j<=n_-1; ++j) {
+            temp_[j] = upperDiagonal_[j-1]/bet;
+            bet = diagonal_[j]-lowerDiagonal_[j-1]*temp_[j];
+            QL_ENSURE(bet!=0.0, "division by zero");
             result[j] = (rhs[j] - lowerDiagonal_[j-1]*result[j-1])/bet;
         }
         // cannot be j>=0 with Size j
-        for (Size j=n-2; j>0; --j)
-            result[j] -= tmp[j+1]*result[j+1];
-        result[0] -= tmp[1]*result[1];
+        for (Size j=n_-2; j>0; --j)
+            result[j] -= temp_[j+1]*result[j+1];
+        result[0] -= temp_[1]*result[1];
         return result;
     }
 
     Disposable<Array> TridiagonalOperator::SOR(const Array& rhs,
                                                Real tol) const {
-        QL_REQUIRE(rhs.size()==size(), "rhs has the wrong size");
+        QL_REQUIRE(rhs.size()==n_,
+                   "rhs vector of size " << rhs.size() <<
+                   " instead of " << n_);
 
         // initial guess
         Array result = rhs;
@@ -105,20 +116,19 @@ namespace QuantLib {
         Real omega = 1.5;
         Real err = 2.0*tol;
         Real temp;
-        for (Size sorIteration=0; err>tol; ++sorIteration) {
+        for (Size sorIteration=0; err>tol ; ++sorIteration) {
             QL_REQUIRE(sorIteration<100000,
-                       "tolerance (" << tol << ") not reached in "
-                       << sorIteration << " iterations. "
-                       << "The error still is " << err);
+                       "tolerance (" << tol << ") not reached in " <<
+                       sorIteration << " iterations. " <<
+                       "The error still is " << err);
 
             temp = omega * (rhs[0]     -
                             upperDiagonal_[0]   * result[1]-
                             diagonal_[0]        * result[0])/diagonal_[0];
             err = temp*temp;
             result[0] += temp;
-
             Size i;
-            for (i=1; i<size()-1 ; ++i) {
+            for (i=1; i<n_-1 ; ++i) {
                 temp = omega *(rhs[i]     -
                                upperDiagonal_[i]   * result[i+1]-
                                diagonal_[i]        * result[i] -

@@ -83,7 +83,7 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
-        Size size() const { return diagonal_.size(); }
+        Size size() const { return n_; }
         bool isTimeDependent() const { return !!timeSetter_; }
         const Array& lowerDiagonal() const { return lowerDiagonal_; }
         const Array& diagonal() const { return diagonal_; }
@@ -109,7 +109,9 @@ namespace QuantLib {
                                  TridiagonalOperator& L) const = 0;
         };
       protected:
+        Size n_;
         Array diagonal_, lowerDiagonal_, upperDiagonal_;
+        mutable Array temp_;
         boost::shared_ptr<TimeSetter> timeSetter_;
     };
 
@@ -135,7 +137,7 @@ namespace QuantLib {
                                                Real valA,
                                                Real valB,
                                                Real valC) {
-        QL_REQUIRE(i>=1 && i<=size()-2,
+        QL_REQUIRE(i>=1 && i<=n_-2,
                    "out of range in TridiagonalSystem::setMidRow");
         lowerDiagonal_[i-1] = valA;
         diagonal_[i]        = valB;
@@ -145,7 +147,7 @@ namespace QuantLib {
     inline void TridiagonalOperator::setMidRows(Real valA,
                                                 Real valB,
                                                 Real valC) {
-        for (Size i=1; i<=size()-2; ++i) {
+        for (Size i=1; i<=n_-2; i++) {
             lowerDiagonal_[i-1] = valA;
             diagonal_[i]        = valB;
             upperDiagonal_[i]   = valC;
@@ -154,20 +156,22 @@ namespace QuantLib {
 
     inline void TridiagonalOperator::setLastRow(Real valA,
                                                 Real valB) {
-        lowerDiagonal_[size()-2] = valA;
-        diagonal_[size()-1]      = valB;
+        lowerDiagonal_[n_-2] = valA;
+        diagonal_[n_-1]      = valB;
     }
 
     inline void TridiagonalOperator::setTime(Time t) {
         if (timeSetter_)
-            timeSetter_->setTime(t,*this);
+            timeSetter_->setTime(t, *this);
     }
 
     inline void TridiagonalOperator::swap(TridiagonalOperator& from) {
         using std::swap;
+        swap(n_, from.n_);
         diagonal_.swap(from.diagonal_);
         lowerDiagonal_.swap(from.lowerDiagonal_);
         upperDiagonal_.swap(from.upperDiagonal_);
+        temp_.swap(from.temp_);
         swap(timeSetter_, from.timeSetter_);
     }
 
