@@ -78,18 +78,17 @@ namespace QuantLib {
 
         Array result(n), tmp(n);
 
-        Real bet=diagonal_[0];
+        Real bet = diagonal_[0];
         QL_REQUIRE(bet != 0.0, "division by zero");
         result[0] = rhs[0]/bet;
-        Size j;
-        for (j=1; j<=n-1; ++j){
-            tmp[j]=upperDiagonal_[j-1]/bet;
-            bet=diagonal_[j]-lowerDiagonal_[j-1]*tmp[j];
+        for (Size j=1; j<=n-1; ++j){
+            tmp[j] = upperDiagonal_[j-1]/bet;
+            bet = diagonal_[j] - lowerDiagonal_[j-1]*tmp[j];
             QL_ENSURE(bet != 0.0, "division by zero");
-            result[j] = (rhs[j]-lowerDiagonal_[j-1]*result[j-1])/bet;
+            result[j] = (rhs[j] - lowerDiagonal_[j-1]*result[j-1])/bet;
         }
         // cannot be j>=0 with Size j
-        for (j=n-2; j>0; --j)
+        for (Size j=n-2; j>0; --j)
             result[j] -= tmp[j+1]*result[j+1];
         result[0] -= tmp[1]*result[1];
         return result;
