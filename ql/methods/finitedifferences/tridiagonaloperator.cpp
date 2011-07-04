@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2002, 2003, 2011 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -21,6 +21,11 @@
 #include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
 
 namespace QuantLib {
+
+    TridiagonalOperator::TridiagonalOperator(
+                                const Disposable<TridiagonalOperator>& from) {
+        swap(const_cast<Disposable<TridiagonalOperator>&>(from));
+    }
 
     TridiagonalOperator::TridiagonalOperator(Size size) {
         if (size>=2) {
@@ -68,22 +73,23 @@ namespace QuantLib {
     }
 
     Disposable<Array> TridiagonalOperator::solveFor(const Array& rhs) const  {
-        QL_REQUIRE(rhs.size()==size(), "rhs has the wrong size");
+        Size n = size();
+        QL_REQUIRE(rhs.size()==n, "rhs has the wrong size");
 
-        Array result(size()), tmp(size());
+        Array result(n), tmp(n);
 
         Real bet=diagonal_[0];
         QL_REQUIRE(bet != 0.0, "division by zero");
         result[0] = rhs[0]/bet;
         Size j;
-        for (j=1; j<=size()-1; j++){
+        for (j=1; j<=n-1; j++){
             tmp[j]=upperDiagonal_[j-1]/bet;
             bet=diagonal_[j]-lowerDiagonal_[j-1]*tmp[j];
             QL_ENSURE(bet != 0.0, "division by zero");
             result[j] = (rhs[j]-lowerDiagonal_[j-1]*result[j-1])/bet;
         }
         // cannot be j>=0 with Size j
-        for (j=size()-2; j>0; --j)
+        for (j=n-2; j>0; --j)
             result[j] -= tmp[j+1]*result[j+1];
         result[0] -= tmp[1]*result[1];
         return result;
