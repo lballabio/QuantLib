@@ -22,11 +22,6 @@
 
 namespace QuantLib {
 
-    TridiagonalOperator::TridiagonalOperator(
-                                const Disposable<TridiagonalOperator>& from) {
-        swap(const_cast<Disposable<TridiagonalOperator>&>(from));
-    }
-
     TridiagonalOperator::TridiagonalOperator(Size size) {
         if (size>=2) {
             diagonal_      = Array(size);
@@ -52,6 +47,11 @@ namespace QuantLib {
                    "wrong size for upper diagonal vector");
     }
 
+    TridiagonalOperator::TridiagonalOperator(
+                                const Disposable<TridiagonalOperator>& from) {
+        swap(const_cast<Disposable<TridiagonalOperator>&>(from));
+    }
+
     Disposable<Array> TridiagonalOperator::applyTo(const Array& v) const {
         QL_REQUIRE(v.size()==size(),
                    "vector of the wrong size (" << v.size()
@@ -64,7 +64,7 @@ namespace QuantLib {
 
         // matricial product
         result[0] += upperDiagonal_[0]*v[1];
-        for (Size j=1; j<=size()-2; j++)
+        for (Size j=1; j<=size()-2; ++j)
             result[j] += lowerDiagonal_[j-1]*v[j-1]+
                 upperDiagonal_[j]*v[j+1];
         result[size()-1] += lowerDiagonal_[size()-2]*v[size()-2];
@@ -82,7 +82,7 @@ namespace QuantLib {
         QL_REQUIRE(bet != 0.0, "division by zero");
         result[0] = rhs[0]/bet;
         Size j;
-        for (j=1; j<=n-1; j++){
+        for (j=1; j<=n-1; ++j){
             tmp[j]=upperDiagonal_[j-1]/bet;
             bet=diagonal_[j]-lowerDiagonal_[j-1]*tmp[j];
             QL_ENSURE(bet != 0.0, "division by zero");
@@ -103,11 +103,10 @@ namespace QuantLib {
         Array result = rhs;
 
         // solve tridiagonal system with SOR technique
-        Size sorIteration, i;
         Real omega = 1.5;
         Real err = 2.0*tol;
         Real temp;
-        for (sorIteration=0; err>tol ; sorIteration++) {
+        for (Size sorIteration=0; err>tol; ++sorIteration) {
             QL_REQUIRE(sorIteration<100000,
                        "tolerance (" << tol << ") not reached in "
                        << sorIteration << " iterations. "
@@ -119,7 +118,8 @@ namespace QuantLib {
             err = temp*temp;
             result[0] += temp;
 
-            for (i=1; i<size()-1 ; i++) {
+            Size i;
+            for (i=1; i<size()-1 ; ++i) {
                 temp = omega *(rhs[i]     -
                                upperDiagonal_[i]   * result[i+1]-
                                diagonal_[i]        * result[i] -

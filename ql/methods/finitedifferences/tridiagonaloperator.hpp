@@ -64,7 +64,8 @@ namespace QuantLib {
         typedef Array array_type;
         // constructors
         explicit TridiagonalOperator(Size size = 0);
-        TridiagonalOperator(const Array& low, const Array& mid,
+        TridiagonalOperator(const Array& low,
+                            const Array& mid,
                             const Array& high);
         TridiagonalOperator(const Disposable<TridiagonalOperator>&);
         TridiagonalOperator& operator=(const Disposable<TridiagonalOperator>&);
@@ -75,7 +76,8 @@ namespace QuantLib {
         //! solve linear system for a given right-hand side
         Disposable<Array> solveFor(const Array& rhs) const;
         //! solve linear system with SOR approach
-        Disposable<Array> SOR(const Array& rhs, Real tol) const;
+        Disposable<Array> SOR(const Array& rhs,
+                              Real tol) const;
         //! identity instance
         static Disposable<TridiagonalOperator> identity(Size size);
         //@}
@@ -143,7 +145,7 @@ namespace QuantLib {
     inline void TridiagonalOperator::setMidRows(Real valA,
                                                 Real valB,
                                                 Real valC) {
-        for (Size i=1; i<=size()-2; i++) {
+        for (Size i=1; i<=size()-2; ++i) {
             lowerDiagonal_[i-1] = valA;
             diagonal_[i]        = valB;
             upperDiagonal_[i]   = valC;
