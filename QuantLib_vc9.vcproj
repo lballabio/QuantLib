@@ -6896,6 +6896,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdklugeextouspreadengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdklugeextouspreadengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdm1dmesher.hpp"
 					>
 				</File>
@@ -7109,6 +7117,18 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmklugeextouop.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmklugeextousolver.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmklugeextousolver.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmklugeextouspreadinnervalue.hpp"
 					>
 				</File>
 				<File
