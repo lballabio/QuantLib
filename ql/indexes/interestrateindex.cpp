@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2011 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
 
@@ -36,11 +36,7 @@ namespace QuantLib {
       fixingCalendar_(fixingCalendar), currency_(currency),
       dayCounter_(dayCounter) {
         tenor_.normalize();
-        registerWith(Settings::instance().evaluationDate());
-        registerWith(IndexManager::instance().notifier(name()));
-    }
 
-    std::string InterestRateIndex::name() const {
         std::ostringstream out;
         out << familyName_;
         if (tenor_ == 1*Days) {
@@ -56,15 +52,10 @@ namespace QuantLib {
             out << io::short_period(tenor_);
         }
         out << " " << dayCounter_.name();
-        return out.str();
-    }
+        name_ = out.str();
 
-    Calendar InterestRateIndex::fixingCalendar() const {
-        return fixingCalendar_;
-    }
-
-    bool InterestRateIndex::isValidFixingDate(const Date& fixingDate) const {
-        return fixingCalendar().isBusinessDay(fixingDate);
+        registerWith(Settings::instance().evaluationDate());
+        registerWith(IndexManager::instance().notifier(name_));
     }
 
     Rate InterestRateIndex::fixing(const Date& fixingDate,
@@ -77,17 +68,19 @@ namespace QuantLib {
         if (fixingDate < today ||
             (fixingDate == today && enforceTodaysHistoricFixings && !forecastTodaysFixing)) {
             // must have been fixed
-            Rate pastFixing =
-                IndexManager::instance().getHistory(name())[fixingDate];
+            const TimeSeries<Real>& fixings =
+                IndexManager::instance().getHistory(name_);
+            Rate pastFixing = fixings[fixingDate];
             QL_REQUIRE(pastFixing != Null<Real>(),
-                       "Missing " << name() << " fixing for " << fixingDate);
+                       "Missing " << name_ << " fixing for " << fixingDate);
             return pastFixing;
         }
         if ((fixingDate == today) && !forecastTodaysFixing) {
             // might have been fixed
             try {
-                Rate pastFixing =
-                    IndexManager::instance().getHistory(name())[fixingDate];
+                const TimeSeries<Real>& fixings =
+                    IndexManager::instance().getHistory(name_);
+                Rate pastFixing = fixings[fixingDate];
                 if (pastFixing != Null<Real>())
                     return pastFixing;
                 else
@@ -98,20 +91,6 @@ namespace QuantLib {
         }
         // forecast
         return forecastFixing(fixingDate);
-    }
-
-    Date InterestRateIndex::valueDate(const Date& fixingDate) const {
-        QL_REQUIRE(isValidFixingDate(fixingDate),
-                   "Fixing date " << fixingDate << " is not valid");
-        return fixingCalendar().advance(fixingDate, fixingDays_, Days);
-    }
-
-    Date InterestRateIndex::fixingDate(const Date& valueDate) const {
-        Date fixingDate = fixingCalendar().advance(valueDate,
-            -static_cast<Integer>(fixingDays_), Days);
-        QL_ENSURE(isValidFixingDate(fixingDate),
-                  "fixing date " << fixingDate << " is not valid");
-        return fixingDate;
     }
 
 }

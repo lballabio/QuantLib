@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2009 StatPro Italia srl
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2011 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -78,7 +78,7 @@ namespace QuantLib {
         // @}
       protected:
         virtual Rate forecastFixing(const Date& fixingDate) const = 0;
-        std::string familyName_;
+        std::string familyName_, name_;
         Period tenor_;
         Natural fixingDays_;
         Calendar fixingCalendar_;
@@ -88,6 +88,19 @@ namespace QuantLib {
 
 
     // inline definitions
+
+    inline std::string InterestRateIndex::name() const {
+        return name_;
+    }
+
+    inline Calendar InterestRateIndex::fixingCalendar() const {
+        return fixingCalendar_;
+    }
+
+    inline
+    bool InterestRateIndex::isValidFixingDate(const Date& fixingDate) const {
+        return fixingCalendar_.isBusinessDay(fixingDate);
+    }
 
     inline void InterestRateIndex::update() {
         notifyObservers();
@@ -105,12 +118,26 @@ namespace QuantLib {
         return fixingDays_;
     }
 
+    inline Date InterestRateIndex::fixingDate(const Date& valueDate) const {
+        Date fixingDate = fixingCalendar_.advance(valueDate,
+            -static_cast<Integer>(fixingDays_), Days);
+        QL_ENSURE(isValidFixingDate(fixingDate),
+                  "fixing date " << fixingDate << " is not valid");
+        return fixingDate;
+    }
+
     inline const Currency& InterestRateIndex::currency() const {
         return currency_;
     }
 
     inline const DayCounter& InterestRateIndex::dayCounter() const {
         return dayCounter_;
+    }
+
+    inline Date InterestRateIndex::valueDate(const Date& fixingDate) const {
+        QL_REQUIRE(isValidFixingDate(fixingDate),
+                   "Fixing date " << fixingDate << " is not valid");
+        return fixingCalendar_.advance(fixingDate, fixingDays_, Days);
     }
 
 }
