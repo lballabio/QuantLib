@@ -342,12 +342,14 @@ void CPISwapTest::consistency() {
 		} 
 	}
 	
-	
-	QL_REQUIRE(fabs(testInfLegNPV - zisV.legNPV(0)) <1e-5,"failed manual inf leg NPV calc vs pricing engine: "
-			   << testInfLegNPV << " vs " << zisV.legNPV(0));
+	Real error = fabs(testInfLegNPV - zisV.legNPV(0));
+	QL_REQUIRE(error<1e-5,
+               "failed manual inf leg NPV calc vs pricing engine: " <<
+               testInfLegNPV << " vs " << zisV.legNPV(0));
 	
 	Real diff = fabs(1-zisV.NPV()/4191660.0);
-	QL_REQUIRE(diff<1e-5,"failed stored consistency value test, ratio = " << diff);
+	QL_REQUIRE(diff<1e-5,
+               "failed stored consistency value test, ratio = " << diff);
 }
 
 
