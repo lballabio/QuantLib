@@ -201,17 +201,39 @@ namespace QuantLib {
 
 test_suite* init_unit_test_suite(int, char* []) {
 
-    std::string header = "Testing "
-                         #ifdef BOOST_MSVC
-                         QL_LIB_NAME
-                         #else
-                         "QuantLib " QL_VERSION
-                         #endif
-                         #ifdef QL_DISABLE_DEPRECATED
-                         " (deprecated code disabled)"
-                         #endif
-                         ;
-    std::string rule = std::string(header.length(),'=');
+    std::string header =
+        " Testing "
+            #ifdef BOOST_MSVC
+            QL_LIB_NAME
+            #else
+            "QuantLib " QL_VERSION
+            #endif
+        "\n  QL_NEGATIVE_RATES "
+            #ifdef QL_NEGATIVE_RATES
+            "       defined"
+            #else
+            "     undefined"
+            #endif
+        "\n  QL_EXTRA_SAFETY_CHECKS "
+            #ifdef QL_EXTRA_SAFETY_CHECKS
+            "  defined"
+            #else
+            "undefined"
+            #endif
+        "\n  QL_DISABLE_DEPRECATED "
+            #ifdef QL_DISABLE_DEPRECATED
+            "   defined"
+            #else
+            " undefined"
+            #endif
+        "\n  QL_USE_INDEXED_COUPON "
+            #ifdef QL_USE_INDEXED_COUPON
+            "   defined"
+            #else
+            " undefined"
+            #endif
+         ;
+    std::string rule = std::string(35, '=');
 
     BOOST_MESSAGE(rule);
     BOOST_MESSAGE(header);
