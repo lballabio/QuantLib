@@ -84,14 +84,17 @@ namespace QuantLib {
             return index_->fixing(fixingDate_);
         } else {
             Date today = Settings::instance().evaluationDate();
-            if (fixingDate_ < today) {
+            bool enforceTodaysHistoricFixings =
+                Settings::instance().enforcesTodaysHistoricFixings();
+            if (fixingDate_ < today ||
+                (fixingDate == today && enforceTodaysHistoricFixings)) {
                 // must have been fixed
                 const TimeSeries<Real>& fixings =
                     IndexManager::instance().getHistory(indexName_);
                 Rate pastFixing = fixings[fixingDate_];
                 QL_REQUIRE(pastFixing != Null<Real>(),
-                           "Missing " << index_->name()
-                           << " fixing for " << fixingDate_);
+                           "Missing " << indexName_ <<
+                           " fixing for " << fixingDate_);
                 return pastFixing;
             }
             if (fixingDate_ == today) {
