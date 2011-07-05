@@ -38,6 +38,88 @@ Real average = 0.0, sigma = 1.0;
 }
 
 
+void OperatorTest::testTridiagonal() {
+
+    BOOST_MESSAGE("Testing TridiagonalOperator...");
+
+    Size n = 8; // can use 3 for easier debugging
+
+    TridiagonalOperator T(n);
+    T.setFirstRow(1.0, 2.0);
+    T.setMidRows( 0.0, 2.0, 0.0);
+    T.setLastRow(      2.0, 1.0);
+
+    Array original(n, 1.0);
+
+    Array intermediate = T.applyTo(original);
+
+    Array final(intermediate);
+    T.solveFor(final, final);
+    for (Size i=0; i<n; ++i) {
+        if (final[i]!=original[i])
+            BOOST_FAIL("\n applyTo + solveFor does not equal identity:"
+                       "\n            original vector: " << original <<
+                       "\n         transformed vector: " << intermediate <<
+                       "\n inverse transformed vector: " << final);
+    }
+
+    final = Array(n, 0.0);
+    Array temp(intermediate);
+    T.solveFor(temp, final);
+    for (Size i=0; i<n; ++i) {
+        if (temp[i]!=intermediate[i])
+            BOOST_FAIL("\n solveFor altered rhs:"
+                       "\n            original vector: " << original <<
+                       "\n         transformed vector: " << intermediate <<
+                       "\n altered transformed vector: " << temp <<
+                       "\n inverse transformed vector: " << final);
+    }
+    for (Size i=0; i<n; ++i) {
+        if (final[i]!=original[i])
+            BOOST_FAIL("\n applyTo + solveFor does not equal identity:"
+                       "\n            original vector: " << original <<
+                       "\n         transformed vector: " << intermediate <<
+                       "\n inverse transformed vector: " << final);
+    }
+
+    final = T.solveFor(temp);
+    for (Size i=0; i<n; ++i) {
+        if (temp[i]!=intermediate[i])
+            BOOST_FAIL("\n solveFor altered rhs:"
+                       "\n            original vector: " << original <<
+                       "\n         transformed vector: " << intermediate <<
+                       "\n altered transformed vector: " << temp <<
+                       "\n inverse transformed vector: " << final);
+    }
+    for (Size i=0; i<n; ++i) {
+        if (final[i]!=original[i])
+            BOOST_FAIL("\n applyTo + solveFor does not equal identity:"
+                       "\n            original vector: " << original <<
+                       "\n         transformed vector: " << intermediate <<
+                       "\n inverse transformed vector: " << final);
+    }
+
+    Real delta, error = 0.0, tolerance = 1e-9;
+    final = T.SOR(temp, tolerance);
+    for (Size i=0; i<n; ++i) {
+        delta = final[i]-original[i];
+        error += delta * delta;
+        if (temp[i]!=intermediate[i])
+            BOOST_FAIL("\n SOR altered rhs:"
+                       "\n            original vector: " << original <<
+                       "\n         transformed vector: " << intermediate <<
+                       "\n altered transformed vector: " << temp <<
+                       "\n inverse transformed vector: " << final);
+    }
+    if (error>tolerance)
+        BOOST_FAIL("\n applyTo + SOR does not equal identity:"
+                   "\n            original vector: " << original <<
+                   "\n         transformed vector: " << intermediate <<
+                   "\n inverse transformed vector: " << final <<
+                   "\n                      error: " << error <<
+                   "\n                  tolerance: " << tolerance);
+}
+
 void OperatorTest::testConsistency() {
 
     BOOST_MESSAGE("Testing differential operators...");
@@ -169,6 +251,7 @@ void OperatorTest::testBSMOperatorConsistency() {
 
 test_suite* OperatorTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Operator tests");
+    suite->add(QUANTLIB_TEST_CASE(&OperatorTest::testTridiagonal));
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&OperatorTest::testConsistency));
     // FLOATING_POINT_EXCEPTION

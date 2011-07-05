@@ -125,7 +125,7 @@ namespace QuantLib {
             }
             for (i=0; i<bcs_.size(); i++)
                 bcs_[i]->applyBeforeSolving(implicitPart_,a);
-            implicitPart_.solveFor2(a);
+            implicitPart_.solveFor(a, a);
             for (i=0; i<bcs_.size(); i++)
                 bcs_[i]->applyAfterSolving(a);
         }

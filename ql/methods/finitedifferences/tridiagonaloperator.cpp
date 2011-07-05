@@ -83,12 +83,13 @@ namespace QuantLib {
 
     Disposable<Array> TridiagonalOperator::solveFor(const Array& rhs) const  {
 
-        Array result(rhs);
-        solveFor2(result);
+        Array result(rhs.size());
+        solveFor(rhs, result);
         return result;
     }
 
-    void TridiagonalOperator::solveFor2(Array& rhs) const  {
+    void TridiagonalOperator::solveFor(const Array& rhs,
+                                       Array& result) const  {
 
         QL_REQUIRE(n_!=0,
                    "uninitialized TridiagonalOperator");
@@ -100,17 +101,17 @@ namespace QuantLib {
         QL_REQUIRE(!close(bet, 0.0),
                    "diagonal's first element (" << bet <<
                    ") cannot be close to zero");
-        rhs[0] = rhs[0]/bet;
+        result[0] = rhs[0]/bet;
         for (Size j=1; j<=n_-1; ++j) {
             temp_[j] = upperDiagonal_[j-1]/bet;
             bet = diagonal_[j]-lowerDiagonal_[j-1]*temp_[j];
             QL_ENSURE(!close(bet, 0.0), "division by zero");
-            rhs[j] = (rhs[j] - lowerDiagonal_[j-1]*rhs[j-1])/bet;
+            result[j] = (rhs[j] - lowerDiagonal_[j-1]*result[j-1])/bet;
         }
         // cannot be j>=0 with Size j
         for (Size j=n_-2; j>0; --j)
-            rhs[j] -= temp_[j+1]*rhs[j+1];
-        rhs[0] -= temp_[1]*rhs[1];
+            result[j] -= temp_[j+1]*result[j+1];
+        result[0] -= temp_[1]*result[1];
     }
 
     Disposable<Array> TridiagonalOperator::SOR(const Array& rhs,

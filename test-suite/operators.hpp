@@ -27,6 +27,7 @@
 
 class OperatorTest {
   public:
+    static void testTridiagonal();
     static void testConsistency();
     static void testBSMOperatorConsistency();
     static boost::unit_test_framework::test_suite* suite();
