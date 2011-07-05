@@ -87,7 +87,7 @@ namespace QuantLib {
             bool enforceTodaysHistoricFixings =
                 Settings::instance().enforcesTodaysHistoricFixings();
             if (fixingDate_ < today ||
-                (fixingDate == today && enforceTodaysHistoricFixings)) {
+                (fixingDate_ == today && enforceTodaysHistoricFixings)) {
                 // must have been fixed
                 const TimeSeries<Real>& fixings =
                     IndexManager::instance().getHistory(indexName_);
