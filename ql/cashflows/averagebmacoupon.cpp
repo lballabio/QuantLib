@@ -112,13 +112,14 @@ namespace QuantLib {
                                        const DayCounter& dayCounter)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          index->fixingDays(), index, gearing, spread,
-                         refPeriodStart, refPeriodEnd, dayCounter, false),
-      fixingSchedule_(index->fixingSchedule(
-          index->fixingCalendar().advance(
-                           startDate,
-                           -(Integer(index->fixingDays())+bmaCutoffDays)*Days,
-                           Preceding),
-          endDate)) {
+                         refPeriodStart, refPeriodEnd, dayCounter, false)
+    {
+        Calendar cal = index->fixingCalendar();
+        Integer fixingDays = Integer(index->fixingDays());
+        fixingDays += bmaCutoffDays;
+        Date fixingStart = cal.advance(startDate, -fixingDays*Days, Preceding);
+        fixingSchedule_ = index->fixingSchedule(fixingStart, endDate);
+
         setPricer(boost::shared_ptr<FloatingRateCouponPricer>(
                                                  new AverageBMACouponPricer));
     }
