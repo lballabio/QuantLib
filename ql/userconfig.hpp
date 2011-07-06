@@ -74,7 +74,7 @@
    This prevents the midnight change, and it is equivalent to set todays's
    date to Settings. It can be reverted setting Null<Date>() to Settings. */
 #ifndef QL_TODAY_AS_STICKY_EVALDATE
-#   define QL_TODAY_AS_STICKY_EVALDATE
+//#   define QL_TODAY_AS_STICKY_EVALDATE
 #endif
 
 /* Define this to have singletons return different instances for
