@@ -58,7 +58,8 @@ namespace QuantLib {
         /*! This method returns a schedule of fixing dates between
             start and end.
         */
-        Schedule fixingSchedule(const Date& start, const Date& end);
+        Schedule fixingSchedule(const Date& start,
+                                const Date& end);
         // @}
       protected:
         Rate forecastFixing(const Date& fixingDate) const;
