@@ -26,6 +26,8 @@
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
+using boost::shared_ptr;
+
 namespace QuantLib {
 
     IborCoupon::IborCoupon(const Date& paymentDate,
@@ -33,7 +35,7 @@ namespace QuantLib {
                            const Date& startDate,
                            const Date& endDate,
                            Natural fixingDays,
-                           const boost::shared_ptr<IborIndex>& iborIndex,
+                           const shared_ptr<IborIndex>& iborIndex,
                            Real gearing,
                            Spread spread,
                            const Date& refPeriodStart,
@@ -127,7 +129,7 @@ namespace QuantLib {
 
 
     IborLeg::IborLeg(const Schedule& schedule,
-                     const boost::shared_ptr<IborIndex>& index)
+                     const shared_ptr<IborIndex>& index)
     : schedule_(schedule), index_(index),
       paymentAdjustment_(Following),
       inArrears_(false), zeroPayments_(false) {}
@@ -219,10 +221,11 @@ namespace QuantLib {
                          paymentAdjustment_, fixingDays_, gearings_, spreads_,
                          caps_, floors_, inArrears_, zeroPayments_);
 
-        if (caps_.empty() && floors_.empty() && !inArrears_)
-            setCouponPricer(leg,
-                            boost::shared_ptr<FloatingRateCouponPricer>(
-                                                  new BlackIborCouponPricer));
+        if (caps_.empty() && floors_.empty() && !inArrears_) {
+            shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer);
+            setCouponPricer(leg, pricer);
+        }
+
         return leg;
     }
 
