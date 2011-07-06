@@ -5,6 +5,7 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     inflationhelpers.hpp \
+    inflationtraits.hpp \
     interpolatedyoyinflationcurve.hpp \
     interpolatedzeroinflationcurve.hpp \
     piecewiseyoyinflationcurve.hpp \
