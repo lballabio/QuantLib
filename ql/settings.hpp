@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007, 2011 Ferdinando Ametrano
  Copyright (C) 2007 François du Vignaud
  Copyright (C) 2004, 2005, 2007, 2009 StatPro Italia srl
 
@@ -110,8 +110,53 @@ namespace QuantLib {
         bool enforcesTodaysHistoricFixings_;
     };
 
+
+    // inline
+
+    inline Settings::DateProxy::operator Date() const {
+        if (value() == Date())
+            return Date::todaysDate();
+        else
+            return value();
+    }
+
+    inline Settings::DateProxy& Settings::DateProxy::operator=(const Date& d) {
+        ObservableValue<Date>::operator=(d);
+        return *this;
+    }
+
+    inline Settings::DateProxy& Settings::evaluationDate() {
+        return evaluationDate_;
+    }
+
+    inline const Settings::DateProxy& Settings::evaluationDate() const {
+        return evaluationDate_;
+    }
+
+    inline bool& Settings::includeReferenceDateCashFlows() {
+        return includeReferenceDateCashFlows_;
+    }
+
+    inline bool Settings::includeReferenceDateCashFlows() const {
+        return includeReferenceDateCashFlows_;
+    }
+
+    inline boost::optional<bool>& Settings::includeTodaysCashFlows() {
+        return includeTodaysCashFlows_;
+    }
+
+    inline boost::optional<bool> Settings::includeTodaysCashFlows() const {
+        return includeTodaysCashFlows_;
+    }
+
+    inline bool& Settings::enforcesTodaysHistoricFixings() {
+        return enforcesTodaysHistoricFixings_;
+    }
+
+    inline bool Settings::enforcesTodaysHistoricFixings() const {
+        return enforcesTodaysHistoricFixings_;
+    }
+
 }
 
-
 #endif
-

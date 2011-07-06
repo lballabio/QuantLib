@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007, 2011 Ferdinando Ametrano
  Copyright (C) 2007 François du Vignaud
  Copyright (C) 2004, 2005, 2007, 2009 StatPro Italia srl
 
@@ -23,67 +23,23 @@
 
 namespace QuantLib {
 
-    Settings::DateProxy::DateProxy() : ObservableValue<Date>(Date()) {}
-
-    Settings::DateProxy::operator Date() const {
-        if (value() == Date())
-            return Date::todaysDate();
-        else
-            return value();
-    }
-
-    Settings::DateProxy& Settings::DateProxy::operator=(const Date& d) {
-        ObservableValue<Date>::operator=(d);
-        return *this;
-    }
+    Settings::DateProxy::DateProxy()
+    : ObservableValue<Date>(
+                            #ifdef QL_TODAY_AS_STICKY_EVALDATE
+                            Date::todaysDate())
+                            #else
+                            Date())
+                            #endif
+    {}
 
     std::ostream& operator<<(std::ostream& out,
                              const Settings::DateProxy& p) {
         return out << Date(p);
     }
 
-
-
     Settings::Settings()
     : includeReferenceDateCashFlows_(false),
       enforcesTodaysHistoricFixings_(false) {}
-
-    Settings::DateProxy& Settings::evaluationDate() {
-        return evaluationDate_;
-    }
-
-    const Settings::DateProxy& Settings::evaluationDate() const {
-        return evaluationDate_;
-    }
-
-
-    bool& Settings::includeReferenceDateCashFlows() {
-        return includeReferenceDateCashFlows_;
-    }
-
-    bool Settings::includeReferenceDateCashFlows() const {
-        return includeReferenceDateCashFlows_;
-    }
-
-
-    boost::optional<bool>& Settings::includeTodaysCashFlows() {
-        return includeTodaysCashFlows_;
-    }
-
-    boost::optional<bool> Settings::includeTodaysCashFlows() const {
-        return includeTodaysCashFlows_;
-    }
-
-
-    bool& Settings::enforcesTodaysHistoricFixings() {
-        return enforcesTodaysHistoricFixings_;
-    }
-
-    bool Settings::enforcesTodaysHistoricFixings() const {
-        return enforcesTodaysHistoricFixings_;
-    }
-
-
 
     SavedSettings::SavedSettings()
     : evaluationDate_(Settings::instance().evaluationDate()),
@@ -109,4 +65,3 @@ namespace QuantLib {
     }
 
 }
-

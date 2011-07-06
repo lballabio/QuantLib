@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2004, 2011 Ferdinando Ametrano
  Copyright (C) 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -68,6 +68,13 @@
    legs. */
 #ifndef QL_USE_INDEXED_COUPON
 //#   define QL_USE_INDEXED_COUPON
+#endif
+
+/* Define this to have today's date as sticky evaluation date in Settings.
+   This prevents the midnight change, and it is equivalent to set todays's
+   date to Settings. It can be reverted setting Null<Date>() to Settings. */
+#ifndef QL_TODAY_AS_STICKY_EVALDATE
+#   define QL_TODAY_AS_STICKY_EVALDATE
 #endif
 
 /* Define this to have singletons return different instances for
