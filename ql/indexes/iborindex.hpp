@@ -47,6 +47,12 @@ namespace QuantLib {
         //! \name InterestRateIndex interface
         //@{
         Date maturityDate(const Date& valueDate) const;
+        Rate forecastFixing(const Date& fixingDate) const;
+        // @}
+        //! overload to avoid date/time (re)calculation
+        Rate forecastFixing(const Date& valueDate,
+                            const Date& endDate,
+                            Time t) const;
         // @}
         //! \name Inspectors
         //@{
@@ -62,10 +68,6 @@ namespace QuantLib {
                         const Handle<YieldTermStructure>& forwarding) const;
         // @}
       protected:
-        //! \name InterestRateIndex interface
-        //@{
-        Rate forecastFixing(const Date& fixingDate) const;
-        // @}
         BusinessDayConvention convention_;
         Handle<YieldTermStructure> termStructure_;
         bool endOfMonth_;
@@ -85,6 +87,19 @@ namespace QuantLib {
         boost::shared_ptr<IborIndex> clone(
                                    const Handle<YieldTermStructure>& h) const;
     };
+
+
+    // inline
+
+    inline Rate IborIndex::forecastFixing(const Date& d1,
+                                          const Date& d2,
+                                          Time t) const {
+        QL_REQUIRE(!termStructure_.empty(),
+                   "null term structure set to this instance of " << name_);
+        DiscountFactor disc1 = termStructure_->discount(d1);
+        DiscountFactor disc2 = termStructure_->discount(d2);
+        return (disc1/disc2 - 1.0) / t;
+    }
 
 }
 

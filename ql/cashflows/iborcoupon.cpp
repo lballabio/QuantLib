@@ -44,87 +44,75 @@ namespace QuantLib {
                          fixingDays, iborIndex, gearing, spread,
                          refPeriodStart, refPeriodEnd,
                          dayCounter, isInArrears),
-      iborIndex_(iborIndex), indexName_(index_->name()) {
-    #ifdef QL_USE_INDEXED_COUPON
-        fixingDate_ = fixingDate();
-    #else
+      iborIndex_(iborIndex) {
+
         fixingDate_ = fixingDate();
 
-        if (!isInArrears_) {
-            const Calendar& fixingCalendar = index_->fixingCalendar();
-            Natural indexFixingDays = index_->fixingDays();
+        const Calendar& fixingCalendar = index_->fixingCalendar();
+        Natural indexFixingDays = index_->fixingDays();
 
-            fixingValueDate_ = fixingCalendar.advance(
-                fixingDate_, indexFixingDays, Days);
+        fixingValueDate_ = fixingCalendar.advance(
+            fixingDate_, indexFixingDays, Days);
 
+        #ifdef QL_USE_INDEXED_COUPON
+        fixingEndDate_ = index_->maturityDate(fixingValueDate_);
+        #else
+        if (isInArrears_)
+            fixingEndDate_ = index_->maturityDate(fixingValueDate_);
+        else { // par coupon approximation
             Date nextFixingDate = fixingCalendar.advance(
                 accrualEndDate_, -static_cast<Integer>(fixingDays), Days);
-            nextFixingValueDate_ = fixingCalendar.advance(
+            fixingEndDate_ = fixingCalendar.advance(
                 nextFixingDate, indexFixingDays, Days);
-
-            const DayCounter& dc = index_->dayCounter();
-            spanningTime_ = dc.yearFraction(fixingValueDate_,
-                                            nextFixingValueDate_);
-            QL_REQUIRE(spanningTime_>0.0,
-                       "\n cannot calculate forward rate between " <<
-                       fixingValueDate_ << " and " << nextFixingValueDate_ <<
-                       ":\n non positive time (" << spanningTime_ <<
-                       ") using " << dc.name() << " daycounter");
         }
-    #endif
+        #endif
+
+        const DayCounter& dc = index_->dayCounter();
+        spanningTime_ = dc.yearFraction(fixingValueDate_,
+                                        fixingEndDate_);
+        QL_REQUIRE(spanningTime_>0.0,
+                   "\n cannot calculate forward rate between " <<
+                   fixingValueDate_ << " and " << fixingEndDate_ <<
+                   ":\n non positive time (" << spanningTime_ <<
+                   ") using " << dc.name() << " daycounter");
     }
 
     Rate IborCoupon::indexFixing() const {
 
-        #ifdef QL_USE_INDEXED_COUPON
-        return index_->fixing(fixingDate_);
-        #else
+        /* instead of just returning index_->fixing(fixingValueDate_)
+           its logic is duplicated here using a specialized iborIndex
+           forecastFixing overload which
+           1) allows to save date/time recalculations, and
+           2) takes into account par coupon needs
+        */
+        Date today = Settings::instance().evaluationDate();
 
-        if (isInArrears_) {
-            return index_->fixing(fixingDate_);
-        } else {
-            Date today = Settings::instance().evaluationDate();
-            bool enforceTodaysHistoricFixings =
-                Settings::instance().enforcesTodaysHistoricFixings();
-            if (fixingDate_ < today ||
-                (fixingDate_ == today && enforceTodaysHistoricFixings)) {
-                // must have been fixed
-                const TimeSeries<Real>& fixings =
-                    IndexManager::instance().getHistory(indexName_);
-                Rate pastFixing = fixings[fixingDate_];
-                QL_REQUIRE(pastFixing != Null<Real>(),
-                           "Missing " << indexName_ <<
-                           " fixing for " << fixingDate_);
-                return pastFixing;
-            }
-            if (fixingDate_ == today) {
-                // might have been fixed
-                const TimeSeries<Real>& fixings =
-                    IndexManager::instance().getHistory(indexName_);
-                try {
-                    Rate pastFixing = fixings[fixingDate_];
-                    if (pastFixing != Null<Real>())
-                        return pastFixing;
-                    else
-                        ;   // fall through and forecast
-                } catch (Error&) {
-                    ;       // fall through and forecast
-                }
-            }
+        if (fixingDate_>today)
+            return iborIndex_->forecastFixing(fixingValueDate_,
+                                              fixingEndDate_,
+                                              spanningTime_);
 
-            // forecasting curve
-            Handle<YieldTermStructure> yc =
-                                        iborIndex_->forwardingTermStructure();
-            QL_REQUIRE(!yc.empty(),
-                       "null term structure set to this instance of " <<
-                       index_->name());
-
-            DiscountFactor startDiscount = yc->discount(fixingValueDate_);
-            DiscountFactor endDiscount = yc->discount(nextFixingValueDate_);
-            return (startDiscount/endDiscount-1.0)/spanningTime_;
+        if (fixingDate_<today ||
+            Settings::instance().enforcesTodaysHistoricFixings()) {
+            // do not catch exceptions
+            Rate result = index_->pastFixing(fixingDate_);
+            QL_REQUIRE(result != Null<Real>(),
+                       "Missing " << index_->name() << " fixing for " << fixingDate_);
+            return result;
         }
-    #endif
 
+        try {
+            Rate result = index_->pastFixing(fixingDate_);
+            if (result!=Null<Real>())
+                return result;
+            else
+                ;   // fall through and forecast
+        } catch (Error&) {
+                ;   // fall through and forecast
+        }
+        return iborIndex_->forecastFixing(fixingValueDate_,
+                                          fixingEndDate_,
+                                          spanningTime_);
     }
 
     void IborCoupon::accept(AcyclicVisitor& v) {

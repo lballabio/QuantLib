@@ -60,36 +60,36 @@ namespace QuantLib {
 
     Rate InterestRateIndex::fixing(const Date& fixingDate,
                                    bool forecastTodaysFixing) const {
+
         QL_REQUIRE(isValidFixingDate(fixingDate),
                    "Fixing date " << fixingDate << " is not valid");
+
         Date today = Settings::instance().evaluationDate();
-        bool enforceTodaysHistoricFixings =
-            Settings::instance().enforcesTodaysHistoricFixings();
-        if (fixingDate < today ||
-            (fixingDate == today && enforceTodaysHistoricFixings && !forecastTodaysFixing)) {
+
+        if (fixingDate>today ||
+            (fixingDate==today && forecastTodaysFixing))
+            return forecastFixing(fixingDate);
+
+        if (fixingDate<today ||
+            Settings::instance().enforcesTodaysHistoricFixings()) {
             // must have been fixed
-            const TimeSeries<Real>& fixings =
-                IndexManager::instance().getHistory(name_);
-            Rate pastFixing = fixings[fixingDate];
-            QL_REQUIRE(pastFixing != Null<Real>(),
+            // do not catch exceptions
+            Rate result = pastFixing(fixingDate);
+            QL_REQUIRE(result != Null<Real>(),
                        "Missing " << name_ << " fixing for " << fixingDate);
-            return pastFixing;
+            return result;
         }
-        if ((fixingDate == today) && !forecastTodaysFixing) {
+
+        try {
             // might have been fixed
-            try {
-                const TimeSeries<Real>& fixings =
-                    IndexManager::instance().getHistory(name_);
-                Rate pastFixing = fixings[fixingDate];
-                if (pastFixing != Null<Real>())
-                    return pastFixing;
-                else
-                    ;   // fall through and forecast
-            } catch (Error&) {
-                ;       // fall through and forecast
-            }
+            Rate result = pastFixing(fixingDate);
+            if (result!=Null<Real>())
+                return result;
+            else
+                ;   // fall through and forecast
+        } catch (Error&) {
+                ;   // fall through and forecast
         }
-        // forecast
         return forecastFixing(fixingDate);
     }
 

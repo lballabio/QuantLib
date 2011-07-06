@@ -75,9 +75,10 @@ namespace QuantLib {
         */
         virtual Date valueDate(const Date& fixingDate) const;
         virtual Date maturityDate(const Date& valueDate) const = 0;
+        Rate pastFixing(const Date& fixingDate) const;
+        virtual Rate forecastFixing(const Date& fixingDate) const = 0;
         // @}
       protected:
-        virtual Rate forecastFixing(const Date& fixingDate) const = 0;
         std::string familyName_, name_;
         Period tenor_;
         Natural fixingDays_;
@@ -138,6 +139,12 @@ namespace QuantLib {
         QL_REQUIRE(isValidFixingDate(fixingDate),
                    "Fixing date " << fixingDate << " is not valid");
         return fixingCalendar_.advance(fixingDate, fixingDays_, Days);
+    }
+
+    inline Rate InterestRateIndex::pastFixing(const Date& fixingDate) const {
+        const TimeSeries<Real>& fixings =
+            IndexManager::instance().getHistory(name_);
+        return fixings[fixingDate];
     }
 
 }

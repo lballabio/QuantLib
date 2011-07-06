@@ -40,17 +40,15 @@ namespace QuantLib {
       }
 
     Rate IborIndex::forecastFixing(const Date& fixingDate) const {
-        QL_REQUIRE(!termStructure_.empty(),
-                   "null term structure set to this instance of " << name());
-        Date fixingValueDate = valueDate(fixingDate);
-        Date endValueDate = maturityDate(fixingValueDate);
-        DiscountFactor fixingDiscount =
-            termStructure_->discount(fixingValueDate);
-        DiscountFactor endDiscount =
-            termStructure_->discount(endValueDate);
-        Time fixingPeriod =
-            dayCounter_.yearFraction(fixingValueDate, endValueDate);
-        return (fixingDiscount/endDiscount-1.0) / fixingPeriod;
+        Date d1 = valueDate(fixingDate);
+        Date d2 = maturityDate(d1);
+        Time t = dayCounter_.yearFraction(d1, d2);
+        QL_REQUIRE(t>0.0,
+                   "\n cannot calculate forward rate between " <<
+                   d1 << " and " << d2 <<
+                   ":\n non positive time (" << t <<
+                   ") using " << dayCounter_.name() << " daycounter");
+        return forecastFixing(d1, d2, t);
     }
 
     Date IborIndex::maturityDate(const Date& valueDate) const {
